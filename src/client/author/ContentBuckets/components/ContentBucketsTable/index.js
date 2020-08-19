@@ -1,33 +1,27 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { withTheme } from "styled-components";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get, isEmpty, debounce } from "lodash";
-import { Button, Tooltip } from "antd";
+import { EduButton, SearchInputStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
+import { Tooltip } from "antd";
+import { debounce, get, isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 import { StyledFilterDiv } from "../../../../admin/Common/StyledComponents";
-
 import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
-  StyledContentBucketSearch,
   LeftFilterDiv,
-  RightFilterDiv
+  MainContainer,
+  RightFilterDiv,
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../../common/styled";
-
-import { StyledContentBucketsTable, StyledIconCheck, StyledIconClose, StyledIconPencilEdit } from "./styled";
-
-import CreateBucketModalForm from "./CreateBucketModal";
-
-import { receiveBucketsAction, createBucketAction, updateBucketAction } from "../../ducks";
 import { fetchCollectionListRequestAction, getCollectionListSelector } from "../../../ContentCollections/ducks";
-
 import Breadcrumb from "../../../src/components/Breadcrumb";
-
 import ContentSubHeader from "../../../src/components/common/AdminSubHeader/ContentSubHeader";
+import { createBucketAction, receiveBucketsAction, updateBucketAction } from "../../ducks";
+import CreateBucketModalForm from "./CreateBucketModal";
+import { StyledContentBucketsTable, StyledIconCheck, StyledIconClose,Owner, StyledIconPencilEdit  } from "./styled";
 
 const menuActive = { mainMenu: "Content", subMenu: "Buckets" };
 const breadcrumbData = [
@@ -171,7 +165,13 @@ const ContentBucketsTable = ({
     {
       title: t("content.buckets.tableHeader.owner"),
       dataIndex: "owner",
-      render: (owner = "-") => owner,
+      render: (owner = "-") => { 
+        return (
+          <Tooltip placement="right" title={owner}>
+            <Owner>{owner}</Owner>
+          </Tooltip>
+        );
+      },
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const prev = get(a, "owner", "");
@@ -318,32 +318,27 @@ const ContentBucketsTable = ({
 
       <StyledFilterDiv
         style={{
-          marginBottom: "20.7px",
-          padding: "30px",
+          marginBottom: "0px",
+          padding: "20px 10px",
           boxShadow: "none"
         }}
       >
         <LeftFilterDiv width={user.role === roleuser.EDULASTIC_ADMIN ? 100 : 89}>
-          <StyledContentBucketSearch
+          <SearchInputStyled
             placeholder={t("common.searchbyname")}
             onSearch={handleSearchName}
             marginRight={user.role === roleuser.EDULASTIC_ADMIN ? 0 : 20}
+            height="36px"
           />
         </LeftFilterDiv>
         {user.role !== roleuser.EDULASTIC_ADMIN && (
           <RightFilterDiv width={12}>
-            <Button
+            <EduButton
               type="primary"
               onClick={toggleCreateBucketModal}
-              style={{
-                width: "100%",
-                textTransform: "uppercase",
-                height: "40px",
-                fontSize: "11px"
-              }}
             >
               {t("content.buckets.createBuckets")}
-            </Button>
+            </EduButton>
           </RightFilterDiv>
         )}
       </StyledFilterDiv>
@@ -394,6 +389,6 @@ ContentBucketsTable.propTypes = {
   updateBucket: PropTypes.func.isRequired,
   buckets: PropTypes.arrayOf(PropTypes.object).isRequired,
   history: PropTypes.object.isRequired,
-  theme: PropTypes.object,
+  theme: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired
 };

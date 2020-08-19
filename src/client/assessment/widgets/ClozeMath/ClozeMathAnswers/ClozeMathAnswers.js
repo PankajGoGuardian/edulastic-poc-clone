@@ -8,7 +8,6 @@ import MathFormulaAnswer from "./ClozeMathAnswer";
 import MathUnitAnswer from "./ClozeMathUnitAnswer";
 import DropDownAnswer from "./ClozeDropDownAnswer";
 import InputAnswer from "./ClozeInputAnswer";
-import withPoints from "../../../components/HOC/withPoints";
 import { CorrectAnswerContainer } from "../../../styled/CorrectAnswerContainer";
 import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -16,7 +15,6 @@ import { Col } from "../../../styled/WidgetOptions/Col";
 
 const { methods } = math;
 
-const MathFormulaPoints = withPoints(() => <div />);
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
   value: "",
@@ -90,16 +88,20 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     }
   };
 
-  const _changeCorrectPoints = points => {
-    const newItem = cloneDeep(item);
-    newItem.validation.validResponse.score = points;
-    setQuestionData(newItem);
-  };
-
-  const _changeAltPoints = i => points => {
-    const newItem = cloneDeep(item);
-    newItem.validation.altResponses[i].score = points;
-    setQuestionData(newItem);
+  const changeScore = score => {
+    if (!(score > 0)) {
+      return;
+    }
+    const points = parseFloat(score, 10);
+    setQuestionData(
+      produce(item, draft => {
+        if (correctTab === 0) {
+          draft.validation.validResponse.score = points;
+        } else if (correctTab > 0) {
+          draft.validation.altResponses[correctTab - 1].score = points;
+        }
+      })
+    );
   };
 
   const _changeCorrectMethod = ({ methodId, methodIndex, prop, value }) => {
@@ -416,23 +418,18 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       onAdd={_addAnswer}
       validation={item.validation}
       onCloseTab={handleCloseTab}
+      onChangePoints={changeScore}
+      points={
+        correctTab === 0
+          ? get(item, "validation.validResponse.score", 1)
+          : get(item, `validation.altResponses[${correctTab - 1}].score`, 1)
+      }
       fillSections={fillSections}
       cleanSections={cleanSections}
       questionType={item?.title}
+      isCorrectAnsTab={correctTab === 0}
     >
       <CorrectAnswerContainer style={{ border: "none", padding: "0px" }}>
-        {correctTab === 0 && (
-          <MathFormulaPoints
-            points={get(item, "validation.validResponse.score", 1)}
-            onChangePoints={_changeCorrectPoints}
-          />
-        )}
-        {correctTab !== 0 && (
-          <MathFormulaPoints
-            points={get(item, `validation.altResponses[${correctTab - 1}].score`, 1)}
-            onChangePoints={_changeAltPoints(correctTab - 1)}
-          />
-        )}
         <Row>
           <Col span={24}>
             {orderedAnswers.map((answer, index) => {
@@ -489,7 +486,6 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                       onAdd={_addAltMethod(correctTab - 1)}
                       onDelete={_deleteAltMethod(correctTab - 1)}
                       answers={[altAnswer]}
-                      onChangePoints={_changeAltPoints(correctTab - 1)}
                       onChangeKeypad={onChangeKeypad}
                       toggleAdditional={toggleAdditional}
                     />

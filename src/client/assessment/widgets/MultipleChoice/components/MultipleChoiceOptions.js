@@ -1,20 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { arrayMove } from "react-sortable-hoc";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
+import { questionTitle } from "@edulastic/constants";
 import produce from "immer";
 import uuid from "uuid/v4";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
-import { ALPHABET } from "../constants/alphabet";
 import QuillSortableList from "../../../components/QuillSortableList";
 import { updateVariables } from "../../../utils/variables";
 import Question from "../../../components/Question";
@@ -73,7 +68,7 @@ class MultipleChoiceOptions extends Component {
   };
 
   addNewChoiceBtn = () => {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
         draft.options.push({
@@ -103,7 +98,7 @@ class MultipleChoiceOptions extends Component {
     return (
       <Question
         section="main"
-        label={t("component.multiplechoice.multiplechoiceoptions")}
+        label={t("component.multiplechoice.createchoiceoptions")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
@@ -119,23 +114,18 @@ class MultipleChoiceOptions extends Component {
           onChange={this.editOptions}
           fontSize={fontSize}
         />
-        <div>
-          <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
-            {t("component.multiplechoice.addnewchoice")}
-          </CustomStyleBtn>
-        </div>
+        {/** Checking question should not be of type true false
+         * Or show add new choice if the number of option is less than 2 (to undo delete option) */}
+        {(item.title !== questionTitle.MCQ_TRUE_OR_FALSE || item.options.length < 2) && (
+          <div>
+            <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
+              {t("component.multiplechoice.addnewchoice")}
+            </CustomStyleBtn>
+          </div>
+        )}
       </Question>
     );
   }
 }
 
-const enhance = compose(
-  withRouter,
-  withNamespaces("assessment"),
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
-
-export default enhance(MultipleChoiceOptions);
+export default withNamespaces("assessment")(MultipleChoiceOptions);

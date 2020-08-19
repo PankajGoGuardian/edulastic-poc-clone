@@ -5,6 +5,7 @@ import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { Tabs, Tab, MathSpan, highlightSelectedText, RefContext } from "@edulastic/common";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE, CUSTOM_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -23,7 +24,6 @@ import {
   getCustomTokenTemplate,
   removeTokenFromHtml
 } from "./helpers";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const Template = ({
   item,

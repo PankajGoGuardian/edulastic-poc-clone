@@ -9,7 +9,6 @@ import { TabContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import CorrectAnswers from "../CorrectAnswers";
-import withPoints from "../HOC/withPoints";
 import GraphDisplay from "./Display/GraphDisplay";
 
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
@@ -18,8 +17,6 @@ import { SelectInputStyled } from "../../styled/InputStyles";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
-
-const GraphDisplayWithPoints = withPoints(GraphDisplay);
 
 class GraphAnswers extends Component {
   state = {
@@ -78,7 +75,7 @@ class GraphAnswers extends Component {
     setQuestionData({ ...question, validation });
   };
 
-  handleUpdateAltValidationScore = i => points => {
+  handleUpdateAltValidationScore = (i, points) => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
@@ -126,6 +123,15 @@ class GraphAnswers extends Component {
 
       return result;
     });
+  };
+
+  handleChangePoints = points => {
+    const { tab } = this.state;
+    if (tab === 0) {
+      this.handleUpdateCorrectScore(points);
+    } else if (tab > 0) {
+      this.handleUpdateAltValidationScore(tab - 1, points);
+    }
   };
 
   renderOptions = () => {
@@ -184,6 +190,8 @@ class GraphAnswers extends Component {
   render() {
     const { graphData, view, previewTab, ...rest } = this.props;
     const { tab } = this.state;
+    const { validation } = graphData;
+    const points = tab == 0 ? validation.validResponse.score : validation.altResponses[tab - 1].score;
 
     return (
       <CorrectAnswers
@@ -194,22 +202,25 @@ class GraphAnswers extends Component {
         options={this.renderOptions()}
         onTabChange={this.handleTabChange}
         onCloseTab={this.handleAltResponseClose}
+        points={points}
+        onChangePoints={this.handleChangePoints}
         questionType={graphData?.title}
+        isCorrectAnsTab={tab === 0}
       >
         <Fragment>
           {tab === 0 && (
             <TabContainer>
-              <GraphDisplayWithPoints
+              <GraphDisplay
                 value={graphData.validation.validResponse.score}
-                onChangePoints={this.handleUpdateCorrectScore}
                 view={view}
+                onChange={this.updateValidationValue}
                 graphData={graphData}
                 previewTab={previewTab}
                 altAnswerId={graphData.validation.validResponse.id}
                 elements={graphData.validation.validResponse.value}
                 disableResponse={false}
-                onChange={this.updateValidationValue}
-                points={graphData.validation.validResponse.score}
+                item={graphData}
+                isCorrectAnsTab
               />
             </TabContainer>
           )}
@@ -219,10 +230,9 @@ class GraphAnswers extends Component {
               if (i + 1 === tab) {
                 return (
                   <TabContainer>
-                    <GraphDisplayWithPoints
+                    <GraphDisplay
                       key={`alt-answer-${i}`}
                       value={alter.score}
-                      onChangePoints={this.handleUpdateAltValidationScore(i)}
                       view={view}
                       graphData={graphData}
                       previewTab={previewTab}
@@ -230,7 +240,7 @@ class GraphAnswers extends Component {
                       elements={alter.value}
                       disableResponse={false}
                       onChange={val => this.updateAltValidationValue(val, i)}
-                      points={alter.score}
+                      item={graphData}
                     />
                   </TabContainer>
                 );

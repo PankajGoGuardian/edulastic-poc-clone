@@ -2,15 +2,14 @@ import React from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { compose } from "redux";
-import { Menu, Dropdown, message } from "antd";
+import { Menu, Dropdown } from "antd";
 import styled from "styled-components";
-import { roleuser } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { EduButton, Label, FlexContainer,notification } from "@edulastic/common";
+import { EduButton, Label, FlexContainer, notification } from "@edulastic/common";
 import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
-import { getUserRole, isPublisherUserSelector } from "../../../src/selectors/user";
+import { getUserRole, isPublisherUserSelector, getCollectionsToAddContent } from "../../../src/selectors/user";
 import { createTestFromCartAction } from "../../ducks";
 import { getSelectedTestsSelector } from "../../../TestList/ducks";
 import { setAddCollectionModalVisibleAction } from "../../../ContentBuckets/ducks";
@@ -20,14 +19,15 @@ const Actions = ({
   selectedItems,
   selectedTests,
   selectedPlaylists,
-  userRole,
   setAddCollectionModalVisible,
   createTestFromCart,
-  isPublisherUser,
   type,
-  t
+  t,
+  collectionsToWrite
 }) => {
-  if (!(userRole === roleuser.DISTRICT_ADMIN || isPublisherUser)) return null;
+  if (!collectionsToWrite?.length) {
+    return null;
+  }
   let numberOfSelectedItems = selectedItems?.length;
   if (type === "TEST") {
     numberOfSelectedItems = selectedTests?.length;
@@ -39,8 +39,8 @@ const Actions = ({
   // Keep this format as createTestFromCart is directly called in Menu item it will have a payload related to event
   const handleCreateTest = () => {
     if (!numberOfSelectedItems) {
-      return notification({ messageKey: "addItemsToCreateTest"});
-  }
+      return notification({ messageKey: "addItemsToCreateTest" });
+    }
     createTestFromCart();
   };
 
@@ -85,7 +85,8 @@ const mapStateToProps = state => ({
   userRole: getUserRole(state),
   isPublisherUser: isPublisherUserSelector(state),
   selectedTests: getSelectedTestsSelector(state),
-  selectedPlaylists: getSelectedPlaylistSelector(state)
+  selectedPlaylists: getSelectedPlaylistSelector(state),
+  collectionsToWrite: getCollectionsToAddContent(state)
 });
 
 const withConnect = connect(

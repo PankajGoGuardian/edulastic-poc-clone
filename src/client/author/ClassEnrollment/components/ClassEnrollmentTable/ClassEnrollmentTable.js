@@ -1,62 +1,53 @@
-import React from "react";
-import { Icon, Button, Menu, Select } from "antd";
-import { notification, TypeToConfirmModal } from "@edulastic/common";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
-import moment from "moment";
-import { IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-
-import { withNamespaces } from "@edulastic/localization";
+import { CheckboxLabel, EduButton, notification, TypeToConfirmModal } from "@edulastic/common";
+import { SearchInputStyled, SelectInputStyled } from "@edulastic/common/src/components/InputStyles";
 import { roleuser } from "@edulastic/constants";
+import { IconTrash } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Col, Icon, Menu, Row, Select } from "antd";
+import { get, identity, isEmpty, pickBy, uniqBy, unset } from "lodash";
+import moment from "moment";
+import React from "react";
+import { connect } from "react-redux";
 import withRouter from "react-router/withRouter";
-import { AddNewUserModal } from "../Common/AddNewUser";
-import { StyledTable } from "./styled";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-
-import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
-import { getUserOrgId, getUser, getUserRole } from "../../../src/selectors/user";
+import { compose } from "redux";
+import {
+  StyledActionDropDown,
+  StyledClassName,
+  StyledFilterDiv
+} from "../../../../admin/Common/StyledComponents";
+import {
+  FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
+  StyledButton,
+  StyledPagination,
+  StyledTableButton,
+  SubHeaderWrapper,
+  TableContainer
+} from "../../../../common/styled";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
+import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import { getUser, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { AddStudentsToOtherClassModal, AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 import {
-  getClassEnrollmentUsersSelector,
-  getClassEnrollmentUsersCountSelector,
-  requestEnrolExistingUserToClassAction
-} from "../../ducks";
-import {
-  getAddStudentsToOtherClassSelector,
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction,
-  moveUsersToOtherClassAction,
-  getValidatedClassDetails
+  getAddStudentsToOtherClassSelector,
+  getValidatedClassDetails,
+  moveUsersToOtherClassAction
 } from "../../../Student/ducks";
-
-import { AddStudentsToOtherClassModal, AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
-
-import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
-
 import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
-  FilterWrapper,
-  StyledButton,
-  StyledSchoolSearch,
-  StyledTableButton,
-  RightFilterDiv,
-  LeftFilterDiv,
-  StyledPagination
-} from "../../../../common/styled";
-import {
-  StyledFilterDiv,
-  StyledControlDiv,
-  StyledFilterInput,
-  StyledFilterSelect,
-  StyledActionDropDown,
-  StyledAddFilterButton,
-  StyledClassName
-} from "../../../../admin/Common/StyledComponents";
-import Breadcrumb from "../../../src/components/Breadcrumb";
+  getClassEnrollmentUsersCountSelector,
+  getClassEnrollmentUsersSelector,
+  requestEnrolExistingUserToClassAction
+} from "../../ducks";
+import { AddNewUserModal } from "../Common/AddNewUser";
+import { StyledTable } from "./styled";
 
 const { Option } = Select;
 
@@ -74,8 +65,6 @@ class ClassEnrollmentTable extends React.Component {
         }
       ],
       currentPage: 1,
-      confirmText: "",
-      defaultText: "REMOVE",
       addUserFormModalVisible: false,
       removeStudentsModalVisible: false,
       selectedUserIds: [],
@@ -83,7 +72,8 @@ class ClassEnrollmentTable extends React.Component {
       addStudentsModalVisible: false,
       moveUsersModalVisible: false,
       refineButtonActive: false,
-      showAddToGroupModal: false
+      showAddToGroupModal: false,
+      showActive: true
     };
   }
 
@@ -104,8 +94,6 @@ class ClassEnrollmentTable extends React.Component {
       return <StyledClassName key={id}>{username}</StyledClassName>;
     });
   }
-
-  onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
     const { classEnrollmentData } = this.props;
@@ -364,7 +352,7 @@ class ClassEnrollmentTable extends React.Component {
     this.setState({ filtersData: _filtersData });
   };
 
-  addFilter = (e, key) => {
+  addFilter = () => {
     const { filtersData } = this.state;
     if (filtersData.length < 3) {
       this.setState(state => ({
@@ -382,7 +370,7 @@ class ClassEnrollmentTable extends React.Component {
   };
 
   removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     let newFiltersData;
     if (filtersData.length === 1) {
       newFiltersData = [
@@ -406,7 +394,7 @@ class ClassEnrollmentTable extends React.Component {
 
   getSearchQuery = () => {
     const { userOrgId: districtId, userDetails } = this.props;
-    const { filtersData = [], searchByName, currentPage } = this.state;
+    const { filtersData = [], searchByName, currentPage, showActive = true } = this.state;
 
     const { role = "" } = filtersData?.[0] || {};
 
@@ -446,6 +434,7 @@ class ClassEnrollmentTable extends React.Component {
       // sortField,
       // order
     };
+    if (showActive) Object.assign(data, { status: 1 });
     if (userDetails) {
       Object.assign(data, { institutionIds: userDetails.institutionIds });
     }
@@ -462,7 +451,7 @@ class ClassEnrollmentTable extends React.Component {
       }
       return item;
     });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadClassEnrollmentList);
+    this.setState(() => ({ filtersData: _filtersData }), this.loadClassEnrollmentList);
   };
 
   onChangeSearch = event => {
@@ -477,14 +466,16 @@ class ClassEnrollmentTable extends React.Component {
     this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
 
+  onChangeShowActive = e => {
+    this.setState({ showActive: e.target.checked }, this.loadClassEnrollmentList);
+  };
+
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
     const {
       filtersData,
       selectedRowKeys,
-      defaultText,
-      confirmText,
       removeStudentsModalVisible,
       addUserFormModalVisible,
       selectedUserIds,
@@ -492,9 +483,9 @@ class ClassEnrollmentTable extends React.Component {
       addStudentsModalVisible,
       moveUsersModalVisible,
       currentPage,
-      pageNo,
       refineButtonActive,
-      showAddToGroupModal
+      showAddToGroupModal,
+      showActive
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -623,64 +614,78 @@ class ClassEnrollmentTable extends React.Component {
       }
 
       SearchRows.push(
-        <StyledControlDiv>
-          <StyledFilterSelect
-            placeholder={t("common.selectcolumn")}
-            onChange={e => this.changeFilterColumn(e, i)}
-            value={filtersColumn}
-          >
-            <Option value="" disabled>
-              {t("common.selectcolumn")}
-            </Option>
-            <Option value="code">{t("classenrollment.classcode")}</Option>
-            <Option value="fullName">{t("classenrollment.fullname")}</Option>
-            <Option value="username">{t("classenrollment.username")}</Option>
-            <Option value="role">{t("classenrollment.role")}</Option>
-          </StyledFilterSelect>
-          <StyledFilterSelect
-            placeholder={t("common.selectvalue")}
-            onChange={e => this.changeFilterValue(e, i)}
-            value={filtersValue}
-          >
-            {optValues}
-          </StyledFilterSelect>
-          {filtersColumn === "role" ? (
-            <StyledFilterSelect
+        <Row gutter={20}>
+          <Col span={6}>
+            <SelectInputStyled
+              placeholder={t("common.selectcolumn")}
+              onChange={e => this.changeFilterColumn(e, i)}
+              value={filtersColumn}
+              height="32px"
+            >
+              <Option value="" disabled>
+                {t("common.selectcolumn")}
+              </Option>
+              <Option value="code">{t("classenrollment.classcode")}</Option>
+              <Option value="fullName">{t("classenrollment.fullname")}</Option>
+              <Option value="username">{t("classenrollment.username")}</Option>
+              <Option value="role">{t("classenrollment.role")}</Option>
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            <SelectInputStyled
               placeholder={t("common.selectvalue")}
-              onChange={v => this.changeRoleValue(v, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
+              onChange={e => this.changeFilterValue(e, i)}
+              value={filtersValue}
+              height="32px"
             >
-              {roleFilterOptions.map(item => (
-                <Option key={item} value={item.toLowerCase()}>
-                  {item}
-                </Option>
-              ))}
-            </StyledFilterSelect>
-          ) : (
-            <StyledFilterInput
-              placeholder={t("common.entertext")}
-              onChange={e => this.changeFilterText(e, i)}
-              onBlur={e => this.onBlurFilterText(e, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
-            />
+              {optValues}
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            {filtersColumn === "role" ? (
+              <SelectInputStyled
+                placeholder={t("common.selectvalue")}
+                onChange={v => this.changeRoleValue(v, i)}
+                disabled={isFilterTextDisable}
+                value={filterStr}
+                height="32px"
+              >
+                {roleFilterOptions.map(item => (
+                  <Option key={item} value={item.toLowerCase()}>
+                    {item}
+                  </Option>
+                ))}
+              </SelectInputStyled>
+            ) : (
+              <SearchInputStyled
+                placeholder={t("common.entertext")}
+                onChange={e => this.changeFilterText(e, i)}
+                onBlur={e => this.onBlurFilterText(e, i)}
+                disabled={isFilterTextDisable}
+                value={filterStr}
+                height="32px"
+              />
+              )}
+          </Col>
+          <Col span={6} style={{ display: "flex" }}>
+            {i < 2 && (
+              <EduButton
+                type="primary"
+                onClick={e => this.addFilter(e, i)}
+                disabled={isAddFilterDisable || i < filtersData.length - 1}
+                height="32px"
+                width="50%"
+              >
+                {t("common.addfilter")}
+              </EduButton>
             )}
-          {i < 2 && (
-            <StyledAddFilterButton
-              type="primary"
-              onClick={e => this.addFilter(e, i)}
-              disabled={isAddFilterDisable || i < filtersData.length - 1}
-            >
-              {t("common.addfilter")}
-            </StyledAddFilterButton>
-          )}
-          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              {t("common.removefilter")}
-            </StyledAddFilterButton>
-          )}
-        </StyledControlDiv>
+            {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+              <EduButton height="36px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
+                {t("common.removefilter")}
+              </EduButton>
+            )}
+          </Col>
+        </Row>
       );
     }
 
@@ -697,22 +702,26 @@ class ClassEnrollmentTable extends React.Component {
         {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={60}>
-            <StyledSchoolSearch
+          <LeftFilterDiv width={50}>
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
-            <Button type="primary" onClick={this.onOpenaddNewUserModal}>
+            <EduButton type="primary" onClick={this.onOpenaddNewUserModal}>
               {t("classenrollment.addnewuser")}
-            </Button>
+            </EduButton>
           </LeftFilterDiv>
 
-          <RightFilterDiv width={35}>
-            <StyledActionDropDown overlay={actionMenu}>
-              <Button>
+          <RightFilterDiv width={50}>
+            <CheckboxLabel defaultChecked={showActive} onChange={this.onChangeShowActive}>
+              {t("classenrollment.showactiveenrollments")}
+            </CheckboxLabel>
+            <StyledActionDropDown getPopupContainer={triggerNode => triggerNode.parentNode} overlay={actionMenu}>
+              <EduButton isGhost>
                 {t("common.actions")} <Icon type="down" />
-              </Button>
+              </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>

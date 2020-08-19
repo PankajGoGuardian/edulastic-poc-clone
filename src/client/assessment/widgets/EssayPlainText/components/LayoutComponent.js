@@ -20,7 +20,6 @@ import {
   MinHeightOption,
   MaxHeightOption,
   SpecialCharactersOption,
-  BrowserSpellcheckOption,
   CharactersToDisplayOption
 } from "../../../containers/WidgetOptions/components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
@@ -73,6 +72,7 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <SpecialCharactersOption
+                data-cy="specialCharactersOption"
                 onChange={checked => {
                   if (checked) {
                     handleItemChangeChange("characterMap", []);
@@ -83,18 +83,13 @@ class LayoutComponent extends Component {
                 checked={!!item.characterMap}
               />
             </Col>
-            <Col md={12}>
-              <BrowserSpellcheckOption
-                onChange={checked => handleItemChangeChange("spellcheck", checked)}
-                checked={!!item.spellcheck}
-              />
-            </Col>
           </Row>
 
           {Array.isArray(item.characterMap) && (
             <Row gutter={24}>
               <Col md={12}>
                 <CharactersToDisplayOption
+                  data-cy="charactersToDisplayOption"
                   onChange={val =>
                     handleItemChangeChange(
                       "characterMap",
@@ -110,12 +105,14 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <MinHeightOption
+                data-cy="minHeightOption"
                 onChange={val => handleUIStyleChange("minHeight", +val)}
                 value={get(item, "uiStyle.minHeight", 0)}
               />
             </Col>
             <Col md={12}>
               <MaxHeightOption
+                data-cy="maxHeightOption"
                 onChange={val => handleUIStyleChange("max_height", +val)}
                 value={get(item, "uiStyle.max_height", 0)}
               />
@@ -125,12 +122,14 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <PlaceholderOption
+                data-cy="placeholderOption"
                 onChange={val => handleItemChangeChange("placeholder", val)}
                 value={item.placeholder}
               />
             </Col>
             <Col md={12}>
               <FontSizeOption
+                data-cy="fontSizeOption"
                 onChange={val => handleUIStyleChange("fontsize", val)}
                 value={get(item, "uiStyle.fontsize", "normal")}
               />
@@ -138,12 +137,13 @@ class LayoutComponent extends Component {
           </Row>
         </Layout>
 
-        <CheckboxLabel
+        {/* TODO: Remove "submitOverLimit (EV-15489)" if not needed */}
+        {/* <CheckboxLabel
           defaultChecked={item && item.validation && item.validation.submitOverLimit}
           onChange={e => handleValidationChange("submitOverLimit", e.target.checked)}
         >
           {t("component.essayText.submitOverLimit")}
-        </CheckboxLabel>
+        </CheckboxLabel> */}
       </Question>
     );
   }

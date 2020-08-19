@@ -9,7 +9,6 @@ import { withNamespaces } from "@edulastic/localization";
 import { EDIT, BY_COUNT_METHOD } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
-import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -20,8 +19,6 @@ import CanvasSubtitle from "./CanvasSubtitle";
 import ShadesSubtitle from "./ShadesSubtitle";
 import Options from "./components/Options";
 import Question from "../../components/Question";
-
-const OptionsList = withPoints(ShadingPreview);
 
 const ShadingEdit = ({
   item,
@@ -101,20 +98,15 @@ const ShadingEdit = ({
     );
   };
 
-  const renderOptions = () => (
-    <OptionsList
+  const { validation } = item;
+  const response = correctTab === 0 ? validation.validResponse : item.validation.altResponses[correctTab - 1];
+
+  const renderOptions = (
+    <ShadingPreview
       item={item}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
-      method={
-        correctTab === 0 ? item.validation.validResponse.method : item.validation.altResponses[correctTab - 1].method
-      }
-      userAnswer={
-        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
-      }
+      method={response.method}
+      userAnswer={response.value}
       view={EDIT}
     />
   );
@@ -154,11 +146,14 @@ const ShadingEdit = ({
           correctTab={correctTab}
           onAdd={handleAddAnswer}
           validation={item.validation}
-          options={renderOptions()}
+          options={renderOptions}
           onCloseTab={handleCloseTab}
           fillSections={fillSections}
           cleanSections={cleanSections}
           questionType={item?.title}
+          points={response.score}
+          onChangePoints={handlePointsChange}
+          isCorrectAnsTab={correctTab === 0}
         />
       </Question>
 

@@ -145,7 +145,8 @@ const TestPageHeader = ({
   validateTest,
   setDisableAlert,
   playlistHasDraftTests,
-  isCurator
+  isCurator,
+  hasCollectionAccess
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -326,7 +327,10 @@ const TestPageHeader = ({
   const isTestContainsDraftItem = testItems.some(i => i.status === statusConstants.DRAFT);
 
   const showPublishForEC =
-    test.status === statusConstants.PUBLISHED && isTestContainsDraftItem && isEdulasticCurator && !isPlaylist;
+    test.status === statusConstants.PUBLISHED &&
+    isTestContainsDraftItem &&
+    (isEdulasticCurator || isCurator) &&
+    !isPlaylist;
   return (
     <>
       <EditTestModal
@@ -430,7 +434,7 @@ const TestPageHeader = ({
                     isBlue
                     isGhost
                     IconBtn={!isPublishers}
-                    title="Publish Test"
+                    title="Publish and Assign later"
                     data-cy="publish"
                     onClick={handlePublish}
                     disabled={disableButtons}
@@ -441,7 +445,7 @@ const TestPageHeader = ({
                 )
               )
             ) : null}
-            {features.isCurator && testStatus === "inreview" && (
+            {features.isCurator && testStatus === "inreview" && hasCollectionAccess && (
               <EduButton
                 isBlue
                 title={isPlaylist ? "Reject Playlist" : "Reject Test"}
@@ -453,7 +457,7 @@ const TestPageHeader = ({
               </EduButton>
             )}
 
-            {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
+            {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && hasCollectionAccess && (
               <EduButton
                 isBlue
                 title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}
@@ -498,10 +502,9 @@ const TestPageHeader = ({
             {showShareButton &&
               owner &&
               ((showPublishButton && !isEdulasticCurator) || showPublishForEC) &&
-              isDirectOwner &&
               !isPlaylist &&
               editEnable &&
-              ((isCurator && testStatus !== statusConstants.PUBLISHED) || !isCurator) &&
+              ((isCurator && testStatus !== statusConstants.PUBLISHED) || !isCurator || showPublishForEC) &&
               !isRegradeFlow && (
                 <EduButton
                   isBlue

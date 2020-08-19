@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const IndexBox = styled.div`
-  width: 40px;
+  width: 32px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   display: flex;
@@ -11,12 +11,12 @@ export const IndexBox = styled.div`
   ${({ theme, checked, correct }) => `
     background: ${
       checked === undefined && correct === undefined
-        ? theme.widgets.clozeText.indexBoxBgColor
+        ? theme.checkbox.noAnswerIconColor
         : checked === false
-        ? theme.widgets.clozeText.indexBoxNoAnswerBgColor
+        ? theme.checkbox.noAnswerIconColor
         : checked && !correct
-        ? theme.widgets.clozeText.indexBoxIncorrectBgColor
-        : theme.widgets.clozeText.indexBoxCorrectBgColor
+        ? theme.checkbox.wrongIconColor
+        : theme.checkbox.rightIconColor
     };
     color: ${theme.widgets.clozeText.indexBoxColor};
     font-size: ${theme.widgets.clozeText.indexBoxFontSize};

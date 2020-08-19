@@ -1,101 +1,37 @@
-import { FlexContainer, Tab, Tabs } from "@edulastic/common";
+import { FlexContainer } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { AlternateAnswerLink, AddAlternative } from "../../styled/ButtonStyles";
+import { questionTitle } from "@edulastic/constants";
+import { AlternateAnswerLink } from "../../styled/ButtonStyles";
+import PointBlock from "./PointBlock";
+import AnswerTabs from "./AnswerTabs";
 import { Subtitle } from "../../styled/Subtitle";
-import { IconClose } from "./styled/IconClose";
 
 class CorrectAnswers extends Component {
-  state = {
-    tabs: 1
-  };
-
-  calcMaxAltLen = () => {
-    const { validation } = this.props;
-
-    return validation.altResponses ? validation.altResponses.length : 0;
-  };
-
-  updateCountTabs = newCount => {
-    const { tabs } = this.state;
-
-    if (tabs !== newCount) {
-      this.setState({
-        tabs: newCount
-      });
-    }
-  };
-
-  renderLabel = index => {
-    const { t, onCloseTab } = this.props;
-    return (
-      <FlexContainer style={{ marginBottom: 0, marginTop: 0 }}>
-        <span>
-          {t("component.correctanswers.alternate")} {index + 1}
-        </span>
-        <IconClose
-          style={{
-            marginLeft: "auto"
-          }}
-          onClick={e => {
-            e.stopPropagation();
-            onCloseTab(index);
-            this.updateCountTabs(this.calcMaxAltLen());
-          }}
-          data-cy="del-alter"
-        />
-      </FlexContainer>
-    );
-  };
-
-  renderAltResponses = () => {
-    const { validation } = this.props;
-
-    const isAlt = !isEmpty(validation.altResponses);
-
-    if (isAlt) {
-      this.updateCountTabs(this.calcMaxAltLen() + 1);
-
-      return new Array(this.calcMaxAltLen())
-        .fill(true)
-        .map((res, i) => <Tab key={i} label={this.renderLabel(i)} type="primary" />);
-    }
-
-    return null;
-  };
-
-  renderPlusButton = () => {
-    const { onTabChange, onAdd, t } = this.props;
-    return (
-      <AlternateAnswerLink
-        onClick={() => {
-          onTabChange();
-          onAdd();
-        }}
-        color="primary"
-        variant="extendedFab"
-        data-cy="alternate"
-      >
-        {`+ ${t("component.correctanswers.alternativeAnswer")}`}
-      </AlternateAnswerLink>
-    );
-  };
+  get subtitleId() {
+    const { t, questionType } = this.props;
+    return getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`);
+  }
 
   render() {
     const {
       t,
       onTabChange,
+      onCloseTab,
       children,
       correctTab,
       options,
       fillSections,
       cleanSections,
-      questionType
+      validation,
+      onAdd,
+      mixAndMatch,
+      questionType,
+      ...rest
     } = this.props;
-    const { tabs } = this.state;
+    const hidePoint = mixAndMatch && correctTab > 0;
 
     return (
       <div
@@ -104,32 +40,26 @@ class CorrectAnswers extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${questionType}-${t("component.correctanswers.setcorrectanswers")}`
+        <Subtitle id={this.subtitleId}>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+        <FlexContainer justifyContent="space-between" marginBottom="16px">
+          <FlexContainer flexDirection="column">
+            <AnswerTabs
+              mixAndMatch={mixAndMatch}
+              onTabChange={onTabChange}
+              onCloseTab={onCloseTab}
+              correctTab={correctTab}
+              validation={validation}
+            />
+            {!hidePoint && <PointBlock {...rest} correctAnsScore={validation?.validResponse?.score} />}
+          </FlexContainer>
+          {questionType !== questionTitle.MCQ_TRUE_OR_FALSE && !hidePoint && (
+            <FlexContainer alignItems="flex-end">
+              <AlternateAnswerLink onClick={onAdd} color="primary" variant="extendedFab" data-cy="alternate">
+                {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+              </AlternateAnswerLink>
+            </FlexContainer>
           )}
-        >
-          {t("component.correctanswers.setcorrectanswers")}
-        </Subtitle>
-        <AddAlternative>
-          {this.renderPlusButton()}
-          <Tabs
-            value={correctTab}
-            onChange={onTabChange}
-            style={{ marginBottom: 10, marginTop: 20 }}
-          >
-            {tabs > 1 && (
-              <Tab
-                type="primary"
-                data_cy="correct"
-                label={t("component.correctanswers.correct")}
-                borderRadius={tabs === 1}
-                active={correctTab === 0}
-              />
-            )}
-            {this.renderAltResponses()}
-          </Tabs>
-        </AddAlternative>
+        </FlexContainer>
         {children}
         {options}
       </div>
@@ -148,14 +78,17 @@ CorrectAnswers.propTypes = {
   options: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  questionType: PropTypes.any.isRequired
+  questionType: PropTypes.string,
+  hidePoint: PropTypes.bool
 };
 
 CorrectAnswers.defaultProps = {
   options: null,
   children: undefined,
+  hidePoint: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  questionType: ""
 };
 
 export default withNamespaces("assessment")(CorrectAnswers);

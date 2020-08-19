@@ -31,10 +31,7 @@ const CheckboxTemplateBoxLayout = ({
   onClickHandler,
   isExpressGrader,
   item,
-  isPrintPreview,
-  theme: {
-    answerBox: { borderWidth, borderStyle, borderColor, borderRadius }
-  }
+  isPrintPreview
 }) => {
   const widthGreaterThanWindowWidth = window.innerWidth > parseInt(smallDesktopWidth.replace("px", ""), 10);
   return (
@@ -72,9 +69,7 @@ const CheckboxTemplateBoxLayout = ({
             top: isPrintPreview ? `${(top / imageHeight) * 100}%` : top,
             left: isPrintPreview ? `${(left / imageWidth) * 100}%` : left,
             height: responseContainer.height,
-            width: responseContainer.width,
-            border: `${borderWidth} ${borderStyle} ${borderColor}`,
-            borderRadius
+            width: responseContainer.width
           };
           let indexStr = "";
           switch (stemNumeration) {

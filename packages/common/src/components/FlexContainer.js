@@ -5,7 +5,6 @@ import { mobileWidthMax } from "@edulastic/colors";
 
 const FlexContainer = styled.div`
   display: ${({ display }) => display || "flex"};
-  align-items: ${props => (props.alignItems ? props.alignItems : "center")};
   justify-content: ${props => (props.justifyContent ? props.justifyContent : "space-evenly")};
   align-items: ${({ alignItems }) => alignItems || null};
   flex-direction: ${props => props.flexDirection || "row"};

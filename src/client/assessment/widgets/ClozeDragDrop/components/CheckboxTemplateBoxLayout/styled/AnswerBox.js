@@ -7,7 +7,9 @@ export const AnswerBox = styled.div`
   align-items: center;
   vertical-align: middle;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 2px;
+  width: 100%;
+  max-height: ${({ maxHeight }) => maxHeight || ""};
   background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white;
     if (!checked && !correct) {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import JXG from "jsxgraph";
 import { isNumber } from "lodash";
 import getDefaultConfig, { CONSTANT } from "./config";
@@ -134,7 +135,7 @@ class Board {
     this.setCreatingHandler();
   }
 
-  addDragDropValue(value, x, y) {
+  addDragDropValue(value, x, y, dimensions) {
     const coords = canAddElementToBoard(this, x, y);
     DragDrop.removePointForDrag(this);
     if (!coords) {
@@ -143,6 +144,7 @@ class Board {
 
     const element = {
       ...value,
+      dimensions,
       x: coords.usrCoords[1],
       y: coords.usrCoords[2]
     };

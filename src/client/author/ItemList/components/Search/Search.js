@@ -118,7 +118,7 @@ const Search = ({
 
   const handleStandardsAlert = () => {
     if (isStandardsDisabled) {
-      return "Select Grades, Subject, Standard Set before selecting Standards";
+      return "Select Grades, Subject and Standard Set before selecting Standards";
     }
     return "";
   };
@@ -402,6 +402,6 @@ const StandardSelectStyled = styled(SelectInputStyled)`
   }
 
   .ant-select-selection {
-    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")} !important;
+    cursor: pointer !important;
   }
 `;

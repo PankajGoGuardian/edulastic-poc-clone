@@ -1,24 +1,25 @@
-import React, { Component } from "react";
+import { CustomModalStyled, DatePickerStyled, EduButton, FieldLabel, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row } from "antd";
 import * as moment from "moment";
-import { Form, Input, Row, Col, Button, Modal } from "antd";
+import React from "react";
+import { ModalFormItem } from "./styled";
 
-import { ModalFormItem, StyledDatePicker } from "./styled";
 
 class CreateTermModal extends React.Component {
   constructor(props) {
     super(props);
 
-    let dataSource = [...this.props.dataSource];
-    let startDate, endDate, defaultSchoolYear;
+    const dataSource = [...this.props.dataSource];
+    let startDate; let endDate; let defaultSchoolYear;
 
     if (dataSource.length > 0) {
       startDate = moment(dataSource[0].endDate).add(1, "days");
       endDate = moment(dataSource[0].endDate).add(1, "years");
-      defaultSchoolYear = startDate.format("YYYY") + "-" + endDate.format("YYYY");
+      defaultSchoolYear = `${startDate.format("YYYY")  }-${  endDate.format("YYYY")}`;
     } else {
       startDate = moment(new Date()).add(1, "days");
       endDate = moment(new Date()).add(1, "years");
-      defaultSchoolYear = startDate.format("YYYY") + "-" + endDate.format("YYYY");
+      defaultSchoolYear = `${startDate.format("YYYY")  }-${  endDate.format("YYYY")}`;
     }
 
     this.state = {
@@ -74,24 +75,26 @@ class CreateTermModal extends React.Component {
     const { startDate, endDate, defaultSchoolYear } = this.state;
 
     return (
-      <Modal
+      <CustomModalStyled
         visible={modalVisible}
         title="Create School Year"
         onOk={this.onCreateTerm}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button key="back" onClick={this.onCloseModal}>
+          <EduButton isGhost key="back" onClick={this.onCloseModal}>
             No, Cancel
-          </Button>,
-          <Button type="primary" key="submit" onClick={this.onCreateTerm}>
+          </EduButton>,
+          <EduButton type="primary" key="submit" onClick={this.onCreateTerm}>
             Yes, Create >
-          </Button>
+          </EduButton>
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="School Year Name">
+            <ModalFormItem>
+              <FieldLabel>School Year Name</FieldLabel>
               {getFieldDecorator("name", {
                 rules: [
                   {
@@ -101,28 +104,30 @@ class CreateTermModal extends React.Component {
                   { validator: this.checkSchoolNameUnique }
                 ],
                 initialValue: defaultSchoolYear
-              })(<Input placeholder="Enter School Year Name" />)}
+              })(<TextInputStyled placeholder="Enter School Year Name" />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Start Date">
+            <ModalFormItem>
+              <FieldLabel>Start Date</FieldLabel>
               {getFieldDecorator("startDate", {
                 initialValue: startDate
-              })(<StyledDatePicker format={"DD MMM YYYY"} disabled={true} />)}
+              })(<DatePickerStyled format="DD MMM YYYY" disabled />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="End Date">
+            <ModalFormItem>
+              <FieldLabel>End Date</FieldLabel>
               {getFieldDecorator("endDate", {
                 rules: [{ required: true, message: "Please Select End Date" }],
                 initialValue: endDate
               })(
-                <StyledDatePicker
-                  format={"DD MMM YYYY"}
+                <DatePickerStyled
+                  format="DD MMM YYYY"
                   onChange={this.handleEndDateChange}
                   disabledDate={this.disableEndDate}
                 />
@@ -130,7 +135,7 @@ class CreateTermModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </Modal>
+      </CustomModalStyled>
     );
   }
 }

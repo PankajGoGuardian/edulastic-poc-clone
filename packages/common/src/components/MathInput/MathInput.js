@@ -1,4 +1,3 @@
-import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 import { math } from "@edulastic/constants";
 import { Popover } from "antd";
@@ -199,11 +198,16 @@ class MathInput extends React.PureComponent {
         mathField.keystroke("Up");
         break;
       case "{":
+        mathField.write("\\lbrace");
+        break;
       case "}":
-        mathField.write("\\left\\{\\right\\}");
+        mathField.write("\\rbrace");
         break;
       case "\\embed{response}":
         mathField.write(key);
+        break;
+      case "{}":
+        mathField[command]("{");
         break;
       default:
         mathField[command](key);
@@ -266,6 +270,8 @@ class MathInput extends React.PureComponent {
       symbols,
       numberPad,
       fullWidth,
+      height,
+      background,
       className,
       restrictKeys,
       customKeys,
@@ -311,6 +317,8 @@ class MathInput extends React.PureComponent {
         className={className}
         fontStyle={symbols[0] === "units_si" || symbols[0] === "units_us" ? "normal" : "italic"}
         width={style.width}
+        height={height}
+        background={background}
         fontSize={style.fontSize}
         isDocbasedSection={isDocbasedSection}
         ref={this.containerRef}
@@ -338,13 +346,8 @@ class MathInput extends React.PureComponent {
               className="input__math answer-math-input-field"
               style={{
                 ...style,
-                height: "auto",
-                padding: "2px 5px",
                 minHeight: style.height,
-                fontSize: style.fontSize ? style.fontSize : "inherit",
-                background: greyThemeLighter,
-                border: `1px solid ${greyThemeLight}`,
-                paddingRight: "25px"
+                fontSize: style.fontSize ? style.fontSize : "inherit"
               }}
               data-cy="answer-math-input-field"
             >

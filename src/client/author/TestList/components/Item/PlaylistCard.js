@@ -1,6 +1,6 @@
 import React from "react";
 import { first } from "lodash";
-import { IconShare, IconUser } from "@edulastic/icons";
+import { IconUser, IconUsers } from "@edulastic/icons";
 import { cardTitleColor, darkGrey } from "@edulastic/colors";
 import { PremiumLabel, EduButton } from "@edulastic/common";
 
@@ -30,8 +30,6 @@ import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
-import sparkImg from "./assets/spark-math.png";
-import eurekaImg from "./assets/eureka-math.png";
 
 const PlaylistCard = ({
   _source,
@@ -49,17 +47,7 @@ const PlaylistCard = ({
   _id
 }) => {
   const grade = first(_source.grades);
-  const { skin } = _source;
-
-  let { thumbnail } = _source;
-  const isSparkMathSkin = skin === "SPARK";
-  const isPublisherSkin = skin === "PUBLISHER";
-  if (isSparkMathSkin) {
-    thumbnail = sparkImg;
-  }
-  if (isPublisherSkin) {
-    thumbnail = eurekaImg;
-  }
+  const { thumbnail } = _source;
 
   return (
     <Container
@@ -139,7 +127,7 @@ const PlaylistCard = ({
         ) : null}
         {status !== "draft" && (
           <ShareIcon>
-            <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+            <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
             <IconText>{usage}</IconText>
           </ShareIcon>
         )}

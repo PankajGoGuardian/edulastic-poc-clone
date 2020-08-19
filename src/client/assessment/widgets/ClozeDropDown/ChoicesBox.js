@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
 import { MathSpan, SelectInputStyled } from "@edulastic/common";
+import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 
 const { Option } = SelectInputStyled;
 
@@ -106,7 +107,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
   return (
     <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef}>
       <Select
-        value={userAnswer?.value}
+        value={convertToMathTemplate(userAnswer?.value)}
         style={{
           ...styles,
           overflow: "hidden"

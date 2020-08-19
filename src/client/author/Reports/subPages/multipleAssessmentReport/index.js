@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 
 import { Spin } from "antd";
 import { FlexContainer } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
 
 import { getNavigationTabLinks } from "../../common/util";
 
@@ -23,7 +24,7 @@ import PerformanceOverTime from "./PerformanceOverTime";
 import { setMARSettingsAction, getReportsMARSettings } from "./ducks";
 import { getReportsMARFilterData } from "./common/filterDataDucks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
+import { FilterButton, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
 
 const MultipleAssessmentReportContainer = props => {
   const {
@@ -44,6 +45,8 @@ const MultipleAssessmentReportContainer = props => {
 
   const [firstLoad, setFirstLoad] = useState(true);
   const [MARFilterData, setMARFilterData] = useState({});
+  const [ddfilter, setDdFilter] = useState({});
+  const [selectedExtras, setSelectedExtras] = useState({});
 
   useEffect(
     () => () => {
@@ -58,6 +61,22 @@ const MultipleAssessmentReportContainer = props => {
       setMARFilterData({ ..._MARFilterData });
     }
   }, [showApply, _MARFilterData]);
+
+  useEffect(() => {
+    if (!showApply) {
+      setDdFilter({...selectedExtras});
+    }
+  }, [showApply, selectedExtras]);
+
+  const filterlist = extraFilterData[pageTitle] || [];
+
+  useEffect(() => {
+    const initalDdFilters = filterlist.reduce((acc, curr) => ({ ...acc, [curr.key]: "" }), {});
+    setSelectedExtras({ ...initalDdFilters });
+    if (!showApply) {
+      setDdFilter({ ...initalDdFilters });
+    }
+  }, [pageTitle]);
 
   const computeChartNavigationLinks = filt => {
     if (navigation.locToData[pageTitle]) {
@@ -116,32 +135,22 @@ const MultipleAssessmentReportContainer = props => {
     setShowApply(false);
   };
 
-  const filterlist = extraFilterData[pageTitle] || [];
-  const [ddfilter, setDdFilter] = useState({});
-  useEffect(() => {
-    setDdFilter(filterlist.reduce((acc, curr) => ({ ...acc, [curr.key]: "" }), {}));
-  }, [pageTitle]);
-
   const updateCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
+    setShowApply(true);
+    setSelectedExtras({
+      ...selectedExtras,
       [comData]: selected.key === "all" ? "" : selected.key
     });
   };
-
-  let extraFilters = [];
-  if (
-    pageTitle === "performance-over-time" ||
-    pageTitle === "peer-progress-analysis" ||
-    pageTitle === "student-progress"
-  ) {
-    extraFilters = filterlist.map(item => (
+  const pageTitleList = ["performance-over-time", "peer-progress-analysis", "student-progress"];
+  const extraFilters = pageTitleList.includes(pageTitle)
+    ? filterlist.map(item => (
       <SearchField key={item.key}>
         <FilterLabel>{item.title}</FilterLabel>
         <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
       </SearchField>
-    ));
-  }
+    ))
+    : [];
 
   return (
     <>
@@ -163,7 +172,9 @@ const MultipleAssessmentReportContainer = props => {
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
         />
-        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+        <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          <IconFilter />
+        </FilterButton>
         <ReportContaner showFilter={showFilter}>
           <Route
             exact

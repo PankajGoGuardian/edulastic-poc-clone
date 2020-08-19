@@ -1,18 +1,19 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, DatePicker, message } from "antd";
-import { notification } from "@edulastic/common";
-import moment from "moment";
-import { debounce, uniqBy, uniq } from "lodash";
 import { tagsApi } from "@edulastic/api";
-import PropTypes from "prop-types";
-import selectsData from "../../../../TestPage/components/common/selectsData";
 import {
-  ButtonsContainer,
-  OkButton,
-  CancelButton,
-  ModalFormItem,
-  StyledModal
-} from "../../../../../common/styled";
+  CustomModalStyled,
+  DatePickerStyled,
+  EduButton,
+  notification,
+  SelectInputStyled,
+  TextInputStyled
+} from "@edulastic/common";
+import { Col, Form, Row, Select } from "antd";
+import { debounce, uniq, uniqBy } from "lodash";
+import moment from "moment";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
+import selectsData from "../../../../TestPage/components/common/selectsData";
 
 const { Option } = Select;
 const { allGrades, allSubjects } = selectsData;
@@ -57,7 +58,7 @@ class EditClassModal extends Component {
           isInvalidEndDate = startDate > endDate;
 
           if (isInvalidEndDate) {
-            return notification({ messageKey:"startDateGreaterThanEndDate"});
+            return notification({ messageKey: "startDateGreaterThanEndDate" });
           }
 
           Object.assign(saveClassData, { endDate });
@@ -110,7 +111,7 @@ class EditClassModal extends Component {
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
-        notification({ messageKey:"savingTagFailed"});
+        notification({ messageKey: "savingTagFailed" });
       }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
@@ -211,22 +212,19 @@ class EditClassModal extends Component {
     const disabledDate = current => current && current < moment().startOf("day");
 
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("class.components.editclass.title")}
         onOk={this.onSaveClass}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <ButtonsContainer gutter={5}>
-            <Col span={10}>
-              <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
-            </Col>
-            <Col span={11}>
-              <OkButton onClick={this.onSaveClass}>
-                {t("class.components.addclass.saveclass")}
-              </OkButton>
-            </Col>
+          <ButtonsContainer>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("common.cancel")}</EduButton>
+            <EduButton onClick={this.onSaveClass}>
+              {t("class.components.addclass.saveclass")}
+            </EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -241,7 +239,7 @@ class EditClassModal extends Component {
                   }
                 ],
                 initialValue: name
-              })(<Input placeholder={t("class.components.addclass.classname")} />)}
+              })(<TextInputStyled placeholder={t("class.components.addclass.classname")} maxLength={128} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -251,7 +249,7 @@ class EditClassModal extends Component {
               {getFieldDecorator("subject", {
                 initialValue: subject
               })(
-                <Select
+                <SelectInputStyled
                   placeholder={t("class.components.addclass.selectsubject")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
@@ -260,7 +258,7 @@ class EditClassModal extends Component {
                       {el.text}
                     </Select.Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -271,7 +269,7 @@ class EditClassModal extends Component {
               {getFieldDecorator("grades", {
                 initialValue: grades
               })(
-                <Select
+                <SelectInputStyled
                   placeholder={t("class.components.addclass.selectgrade")}
                   mode="multiple"
                   getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -281,7 +279,7 @@ class EditClassModal extends Component {
                       {el.text}
                     </Select.Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -292,7 +290,7 @@ class EditClassModal extends Component {
               {getFieldDecorator("courseId", {
                 initialValue: course && course.id
               })(
-                <Select
+                <SelectInputStyled
                   showSearch
                   placeholder={t("class.components.addclass.placeholder.course")}
                   onSearch={this.fetchCoursesForDistrict}
@@ -304,7 +302,7 @@ class EditClassModal extends Component {
                       {`${c.name}${c.number ? ` - ${c.number}` : ""}`}
                     </Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -315,7 +313,7 @@ class EditClassModal extends Component {
               {getFieldDecorator("tags", {
                 initialValue: alreadySelectedTags
               })(
-                <Select
+                <SelectInputStyled
                   placeholder={t("class.components.addclass.placeholder.tags")}
                   data-cy="tagsSelect"
                   mode="multiple"
@@ -334,14 +332,14 @@ class EditClassModal extends Component {
                       {`${searchValue} (Create new Tag)`}
                     </Select.Option>
                   ) : (
-                    ""
-                  )}
+                      ""
+                    )}
                   {allTagsData.map(({ tagName, _id }) => (
                     <Select.Option key={_id} value={_id} title={tagName}>
                       {tagName}
                     </Select.Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -358,12 +356,12 @@ class EditClassModal extends Component {
                 ],
                 initialValue: ownersData
               })(
-                <Select
+                <SelectInputStyled
                   placeholder="Search by Username"
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {teacherOptions}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -380,12 +378,12 @@ class EditClassModal extends Component {
                 ],
                 initialValue: institutionId
               })(
-                <Select
+                <SelectInputStyled
                   placeholder={t("class.components.addclass.selectschool")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {schoolsOptions}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -395,11 +393,11 @@ class EditClassModal extends Component {
             <ModalFormItem label={t("class.components.editclass.enddate")}>
               {getFieldDecorator("endDate", {
                 initialValue: moment(endDate)
-              })(<DatePicker disabledDate={disabledDate} style={{ width: "100%" }} format="ll" />)}
+              })(<DatePickerStyled disabledDate={disabledDate} style={{ width: "100%" }} format="ll" />)}
             </ModalFormItem>
           </Col>
         </Row>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

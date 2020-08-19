@@ -73,7 +73,7 @@ class ScoreTable extends Component {
     return { columnData };
   }
 
-  getColumnsForTable = (length, submittedLength, showColumnsCount) => {
+  getColumnsForTable = (length, submittedLength) => {
     const { showQuestionModal, isPresentationMode, scoreMode, t } = this.props;
 
     const columns = [
@@ -122,17 +122,14 @@ class ScoreTable extends Component {
 
     for (let index = 0; index < length; index++) {
       let successScore = 0;
-      let num = 0;
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
-      const qids = students[0].questionActivities[index].qids;
       const title = <StyledDivMid>{students[0].questionActivities[index].barLabel}</StyledDivMid>;
       students
         .filter(x => x.status === "submitted")
         .forEach(student => {
-          if (student && !student.questionActivities[index].notStarted) {
+          if (student && student.questionActivities[index] && !student.questionActivities[index]?.notStarted) {
             successScore += student.questionActivities[index].score / student.questionActivities[index].maxScore;
-            num++;
           }
         });
       const averageScore = successScore;
@@ -184,12 +181,12 @@ class ScoreTable extends Component {
   render() {
     let columnInfo = [];
     const { columnData } = this.state;
-    const { testActivity, windowWidth, scoreMode } = this.props;
+    const { testActivity, windowWidth } = this.props;
     const columnsLength = testActivity && testActivity.length !== 0 ? testActivity[0].questionActivities.length : 0;
     const submittedLength = testActivity.filter(x => x.status === "submitted").length;
     const showColumnsCount = windowWidth < 1366 ? 5 : windowWidth < 1600 ? 7 : 10;
     if (columnsLength) {
-      columnInfo = this.getColumnsForTable(columnsLength, submittedLength, showColumnsCount);
+      columnInfo = this.getColumnsForTable(columnsLength, submittedLength);
     }
     const scrollX = columnsLength * 100 + 300;
     const scrollY = window.innerHeight - 250;

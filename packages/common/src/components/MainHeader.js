@@ -71,7 +71,7 @@ const HeaderWrapper = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-    left: 70px;
+    left: ${({ hideSideMenu }) => (hideSideMenu ? "0" : "70px")};
     z-index: 999;
   }
   @media (max-width: ${tabletWidth}) {
@@ -144,7 +144,7 @@ export const TitleWrapper = styled.h1`
   min-width: auto;
   margin: 0px;
   white-space: nowrap;
-  max-width: ${props => (props.noEllipsis ? "unset" : props.titleMaxWidth || "22rem")};
+  max-width: ${props => (props.noEllipsis ? "unset" : props.titleMaxWidth || "352px")};
   overflow: hidden;
   letter-spacing: 0.9px;
   text-overflow: ellipsis;

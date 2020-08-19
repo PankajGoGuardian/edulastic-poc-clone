@@ -2,12 +2,10 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import { testTypes, teacherSide } from "../../../../framework/constants/assignmentStatus";
-import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+import { openPolicyTypes, teacherSide, testTypes } from "../../../../framework/constants/assignmentStatus";
 import FileHelper from "../../../../framework/util/fileHelper";
 
 const teacherSidebar = new TeacherSideBar();
-const studentAssignment = new AssignmentsPage();
 const authorAssignmentPage = new AuthorAssignmentPage();
 const lcb = new LiveClassboardPage();
 const testLibrary = new TestLibrary();
@@ -183,9 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
           testLibrary.assignPage.visitAssignPageById(testId);
           testLibrary.assignPage.selectClass(filters.statusFilter[`${status}`].className);
           if (status === teacherSide.NOT_OPEN) {
-            let start = new Date();
-            start.setMinutes(start.getMinutes() + 10);
-            testLibrary.assignPage.setStartDate(start);
+            testLibrary.assignPage.selectOpenPolicy(openPolicyTypes.MANUAL);
           }
           testLibrary.assignPage.clickOnAssign().then(assgnObj => {
             assignmentIds[status] = assgnObj[testId];
@@ -235,6 +231,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
           authorAssignmentPage.smartFilter.deleteFolder(`${folders[1]}-rename`);
         if (Cypress.$(`[data-cy="${folders[3]}"]`).length > 0)
           authorAssignmentPage.smartFilter.deleteFolder(`${folders[3]}`);
+        if (Cypress.$(`[data-cy="${folders[2]}"]`).length === 0)
+          authorAssignmentPage.smartFilter.createNewFolder(folders[2]);
       });
     });
 
@@ -282,8 +280,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
         .and("have.length", 4);
     });
 
+    // Should be able to delete used folder as per - EV-15966
     it(`delete used folder`, () => {
-      authorAssignmentPage.smartFilter.deleteFolder(`${folders[2]}`, false);
+      authorAssignmentPage.smartFilter.deleteFolder(`${folders[2]}`);
+
+      // assignments should be available in all assingment
+      authorAssignmentPage.smartFilter.clickOnAllAssignment();
+      authorAssignmentPage
+        .getClass()
+        .should("contain.text", classes[1].className)
+        .and("contain.text", classes[2].className)
+        .and("have.length", 4);
     });
   });
 });

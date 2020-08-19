@@ -1,35 +1,26 @@
 import React from "react";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
-
+import { CorrectAnswersContainer } from "@edulastic/common";
 import { getStemNumeration } from "../../../utils/helpers";
 import { Answer } from "./CorrectAnswer";
 
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altIndex, stemNumeration, t }) => (
-  <div
-    className="correctanswer-box"
-    style={{
-      padding: 16,
-      fontSize,
-      width: "100%"
-    }}
+const CorrectAnswerBoxLayout = ({ userAnswers, altIndex, stemNumeration, t }) => (
+  <CorrectAnswersContainer
+    minHeight="auto"
+    title={altIndex ? `${t("component.cloze.altAnswers")} ${altIndex}` : t("component.cloze.correctAnswer")}
+    padding="15px 25px 20px"
+    titleMargin="0px 0px 12px"
   >
-    <CorrectAnswerTitle>
-      {altIndex ? `${t("component.cloze.altAnswers")} ${altIndex}` : t("component.cloze.correctAnswer")}
-    </CorrectAnswerTitle>
-    <Answers>
-      {userAnswers
-        .sort((a, b) => a.index - b.index)
-        .map(answer => (
-          <Answer answer={answer} getStemNumeration={getStemNumeration} stemNumeration={stemNumeration} />
-        ))}
-    </Answers>
-  </div>
+    {userAnswers
+      .sort((a, b) => a.index - b.index)
+      .map(answer => (
+        <Answer answer={answer} getStemNumeration={getStemNumeration} stemNumeration={stemNumeration} />
+      ))}
+  </CorrectAnswersContainer>
 );
 
 CorrectAnswerBoxLayout.propTypes = {
-  fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
   altIndex: PropTypes.array,
   stemNumeration: PropTypes.string.isRequired,
@@ -37,18 +28,8 @@ CorrectAnswerBoxLayout.propTypes = {
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
-  fontSize: "13px",
   userAnswers: [],
   altIndex: 0
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));
-
-const CorrectAnswerTitle = styled.h2`
-  font-size: ${({ theme }) => theme.correctAnswerBoxLayout.titleFontSize};
-`;
-
-const Answers = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;

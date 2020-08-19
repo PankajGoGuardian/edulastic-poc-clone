@@ -1,7 +1,9 @@
-import { CustomModalStyled, EduButton } from "@edulastic/common";
+import { CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common";
 import { Col, Row } from "antd";
+import { extraDesktopWidth } from "@edulastic/colors";
+import styled from "styled-components";
 import React from "react";
-import { InitOptions, LightGreenSpan, ModalFooter, StyledCol, StyledDiv, StyledInput } from "./styled";
+import { InitOptions, LightGreenSpan, ModalFooter, StyledCol, StyledDiv } from "./styled";
 
 const ConfirmationModal = ({
   title,
@@ -14,12 +16,14 @@ const ConfirmationModal = ({
   bodyText,
   okText = "",
   canUndone,
-  bodyStyle = {}
+  bodyStyle = {},
+  bodyTextStyle,
+  placeHolder
 }) => (
-  <CustomModalStyled
+  <ConfirmationModalStyled
     centered
     visible={show}
-    width="750px"
+    width="614px"
     title={title}
     onCancel={onCancel}
     destroyOnClose
@@ -33,39 +37,54 @@ const ConfirmationModal = ({
           {okText.toUpperCase()}
         </EduButton>
       </ModalFooter>
-      ]}
+    ]}
   >
     <InitOptions bodyStyle={bodyStyle}>
       <Row>
         <Col span={24}>
-          <StyledDiv>{bodyText}</StyledDiv>
+          <StyledDiv>
+            {bodyText}&nbsp;
+            {canUndone ? null : <span>This action can NOT be undone.</span>}
+          </StyledDiv>
 
           {canUndone ? (
-            <StyledDiv>
+            <StyledDiv style={bodyTextStyle}>
               If Yes, type<LightGreenSpan> {expectedVal} </LightGreenSpan>
-              in the space given below to proceed.
+              in the space given below and proceed.
             </StyledDiv>
-            ) : (
-              <StyledDiv>
-                This action can NOT be undone.If you are sure, please type{" "}
-                <LightGreenSpan> {expectedVal} </LightGreenSpan> in the space below.
-              </StyledDiv>
-            )}
+          ) : (
+            <StyledDiv style={bodyTextStyle}>
+              If you are sure, please type <LightGreenSpan> {expectedVal} </LightGreenSpan> in the space below and
+              proceed.
+            </StyledDiv>
+          )}
         </Col>
       </Row>
       <Row>
         <StyledCol span={24}>
-          <StyledInput
+          <TextInputStyled
+            align="center"
+            placeHolderAlign="left"
+            placeholder={placeHolder}
             data-cy="confirmationInput"
             value={inputVal}
             onChange={onInputChange}
-              // here paste is not allowed, and user has to manually type in inputVal
+            // here paste is not allowed, and user has to manually type in inputVal
             onPaste={e => e.preventDefault()}
           />
         </StyledCol>
       </Row>
     </InitOptions>
-  </CustomModalStyled>
-  );
+  </ConfirmationModalStyled>
+);
 
 export default ConfirmationModal;
+
+export const ConfirmationModalStyled = styled(CustomModalStyled)`
+  .ant-modal-title {
+    margin-left: 5px;
+  }
+  @media (min-width: ${extraDesktopWidth}) {
+    min-width: 750px !important;
+  }
+`;

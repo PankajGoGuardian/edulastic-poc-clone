@@ -5,7 +5,7 @@ import { withNamespaces } from "react-i18next";
 import styled from "styled-components";
 import { themeColor, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
 import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
-import { IconBarChart, IconMoreVertical, IconQuestionCircle } from "@edulastic/icons";
+import { IconBarChart, IconMoreVertical } from "@edulastic/icons";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import HeaderNavigation from "./HeaderNavigation";
 
@@ -16,12 +16,10 @@ const CustomizedHeaderWrapper = ({
   onDownloadCSVClickCB,
   navigationItems = [],
   activeNavigationKey = "",
+  hideSideMenu,
+  isCliUser,
   t
 }) => {
-  const _onShareClickCB = () => {
-    onShareClickCB();
-  };
-
   const _onPrintClickCB = () => {
     onPrintClickCB();
   };
@@ -32,20 +30,25 @@ const CustomizedHeaderWrapper = ({
 
   const isSmallDesktop = windowWidth >= parseInt(tabletWidth, 10) && windowWidth <= parseInt(smallDesktopWidth, 10);
 
+  let filterNavigationItems = navigationItems;
+  if (isCliUser) {
+    filterNavigationItems = navigationItems.filter(item => item.key !== "peer-performance");
+  }
   const availableNavItems = isSmallDesktop
-    ? navigationItems.filter(ite => ite.key === activeNavigationKey)
-    : navigationItems;
+    ? filterNavigationItems.filter(ite => ite.key === activeNavigationKey)
+    : filterNavigationItems;
 
   const ActionButtonWrapper = isSmallDesktop ? Menu : Fragment;
   const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
+  
   const navMenu = isSmallDesktop
-    ? navigationItems
-        .filter(ite => ite.key !== activeNavigationKey)
-        .map(ite => (
-          <ActionButton key={ite.key}>
-            <Link to={ite.location}>{ite.title}</Link>
-          </ActionButton>
-        ))
+    ? filterNavigationItems
+      .filter(ite => ite.key !== activeNavigationKey)
+      .map(ite => (
+        <ActionButton key={ite.key}>
+          <Link to={ite.location}>{ite.title}</Link>
+        </ActionButton>
+      ))
     : null;
 
   const actionRightButtons = (
@@ -74,12 +77,12 @@ const CustomizedHeaderWrapper = ({
           </ActionButton>
         ) : null}
       </FeaturesSwitch>
-      {activeNavigationKey === "standard-reports" && (
+      {/* {activeNavigationKey === "standard-reports" && (
         <ActionButton isBlue>
           <IconQuestionCircle />
           <span>HOW TO USE INSIGHTS</span>
         </ActionButton>
-      )}
+      )} */}
     </ActionButtonWrapper>
   );
 
@@ -88,6 +91,7 @@ const CustomizedHeaderWrapper = ({
       mobileHeaderHeight={activeNavigationKey !== "standard-reports" ? 100 : ""}
       headingText={t("common.reports")}
       Icon={IconBarChart}
+      hideSideMenu={hideSideMenu}
     >
       {navigationItems.length ? (
         activeNavigationKey === "standard-reports" ? (
@@ -96,7 +100,7 @@ const CustomizedHeaderWrapper = ({
           </FeaturesSwitch>
         ) : (
           <HeaderNavigation navigationItems={availableNavItems} activeItemKey={activeNavigationKey} />
-        )
+          )
       ) : null}
       <StyledCol>
         {!isSmallDesktop && actionRightButtons}

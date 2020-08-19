@@ -5,6 +5,7 @@ import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
 import { FlexContainer } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
@@ -17,7 +18,7 @@ import StudentProfileReportsFilters from "./common/components/filter/StudentProf
 
 import { setSPRSettingsAction, getReportsSPRSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner } from "../../common/styled";
+import { ReportContaner, FilterButton } from "../../common/styled";
 
 const StudentProfileReportContainer = props => {
   const {
@@ -109,7 +110,9 @@ const StudentProfileReportContainer = props => {
             "/author/reports/student-mastery-profile"
           ].find(x => window.location.pathname.startsWith(x))}
         />
-        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+        <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          <IconFilter />
+        </FilterButton>
         <ReportContaner showFilter={showFilter}>
           <Route
             exact

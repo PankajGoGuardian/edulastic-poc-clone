@@ -84,7 +84,14 @@ class ReportsPage {
     else this.getReviewButton().should("not.be.visible");
   }
 
-  verifyStatusIs = status => this.getStatus().should("have.text", status);
+  verifyStatusIs = status =>
+    this.getStatus().should($ele => {
+      const studentStatus = Cypress.$($ele)
+        .text()
+        .toLowerCase()
+        .trim();
+      expect(studentStatus).to.eq(status.toLowerCase());
+    });
 
   validateStats(attemptNum, attempt, score, percent, totalAttempt) {
     if (attempt.split("/")[1] !== "1") this.getAttemptCount().should("have.text", attempt);

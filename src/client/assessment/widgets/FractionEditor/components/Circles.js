@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
-import { mainBlueColor, lightBlue, green, redDark } from "@edulastic/colors/index";
+import { themeColorLight1, lightGrey8, darkRed1 } from "@edulastic/colors/index";
 
 const Circles = ({
   sectors,
@@ -26,31 +26,37 @@ const Circles = ({
     _sectors.push({ index: i + offset, value: 360 / sectors });
   }
 
+  const radius = 150;
+
   return (
-    <PieChart width={400} height={400}>
-      <Pie data={_sectors} cx={200} cy={200} outerRadius={150} dataKey="value">
+    <PieChart width={radius * 2 + 10} height={radius * 2 + 10}>
+      <Pie data={_sectors} cx={radius} cy={radius} outerRadius={radius} dataKey="value">
         {_sectors.map(sector => {
           const hoverProps = {};
-          let fillColor = lightBlue;
+          let fillColor = lightGrey8;
           const _selected = selected.includes(sector.index);
           if (previewTab === "edit" || previewTab === "clear") {
             // edit mode as well as clear
-            fillColor = _selected ? mainBlueColor : lightBlue;
+            fillColor = _selected ? themeColorLight1 : lightGrey8;
           } else if (_selected) {
             // show answers with highlighting (correct: green, wrong: darkRed)
-            fillColor = evaluation ? (evaluation[sector.index] === true ? green : redDark) : mainBlueColor;
+            fillColor = evaluation
+              ? evaluation[sector.index] === true
+                ? themeColorLight1
+                : darkRed1
+              : themeColorLight1;
           }
           if (isExpressGrader && isAnswerModifiable && _selected) {
             // in expressGrader and edit response is on
             // override default highlighting with darkBlue color when selected
-            fillColor = mainBlueColor;
+            fillColor = themeColorLight1;
           }
 
           if (previewTab === "clear") {
-            (hoverProps.onMouseEnter = () => onHover(sector.index)),
-              (hoverProps.onMouseLeave = () => handleSectorBlur(sector.index));
+            hoverProps.onMouseEnter = () => onHover(sector.index);
+            hoverProps.onMouseLeave = () => handleSectorBlur(sector.index);
             if (hovered === sector.index) {
-              fillColor = mainBlueColor;
+              fillColor = themeColorLight1;
             }
           }
           return (

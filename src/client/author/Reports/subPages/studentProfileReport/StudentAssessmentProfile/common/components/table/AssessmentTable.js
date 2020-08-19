@@ -17,13 +17,13 @@ export const StyledTable = styled(Table)`
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
       .ant-table-body {
         overflow-x: auto !important;
+      }
+      @media print {
+        .ant-table-body {
+          overflow-x: hidden !important;
+        }
       }
     }
     .ant-table-fixed-left {
@@ -42,7 +42,7 @@ export const StyledTable = styled(Table)`
       }
       .ant-table-tbody {
         td {
-          padding: 10px 8px;
+          padding: 10px 0px 10px 8px;
           font-size: 11px;
           color: #434b5d;
           font-weight: 600;
@@ -64,7 +64,7 @@ const getFormattedLink = (record, location, pageTitle, value) => (
         // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
         breadCrumb: [
           {
-            title: "REPORTS",
+            title: "INSIGHTS",
             to: "/author/reports"
           },
           {
@@ -160,6 +160,7 @@ const getColumns = (studentName = "", location, pageTitle) => [
     dataIndex: "score",
     align: "right",
     key: "score",
+    width: 90,
     sorter: (a, b) => a.score - b.score,
     render: (score, record) => {
       if (isNaN(score) && score !== null) {
@@ -224,7 +225,7 @@ AssessmentTable.defaultProps = {
   studentName: "",
   selectedTests: [],
   isCsvDownloading: false,
-  onCsvConvert: () => {}
+  onCsvConvert: () => { }
 };
 
 export default AssessmentTable;

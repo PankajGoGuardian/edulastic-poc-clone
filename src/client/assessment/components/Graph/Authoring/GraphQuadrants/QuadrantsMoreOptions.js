@@ -1,10 +1,11 @@
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
+import { evaluationType } from "@edulastic/constants";
 import { Select } from "antd";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
 import { compose } from "redux";
-import isNaN from "lodash/isNaN";
+import { isNaN, isEqual } from "lodash";
 import { AnnotationSettings, ScoreSettings } from "..";
 import { EDIT } from "../../../../constants/constantsForQuestions";
 import Extras from "../../../../containers/Extras";
@@ -19,7 +20,9 @@ import Question from "../../../Question";
 import Tools from "../../common/Tools";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import { GraphDisplay } from "../../Display";
+import { calcDistance } from "../../common/utils";
 
+const types = [evaluationType.exactMatch, evaluationType.partialMatch];
 class QuadrantsMoreOptions extends Component {
   constructor(props) {
     super(props);
@@ -27,21 +30,89 @@ class QuadrantsMoreOptions extends Component {
       ...props.graphData.canvas,
       ...props.graphData.uiStyle
     };
+    this.reg = new RegExp("^[-.0-9]+$");
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      graphData: { canvas, uiStyle }
+    } = this.props;
+
+    if (
+      prevProps.graphData &&
+      (!isEqual(canvas, prevProps.graphData.canvas) || !isEqual(uiStyle, prevProps.graphData.uiStyle))
+    ) {
+      this.updateState();
+    }
+  }
+
+  updateState() {
+    const {
+      graphData: { canvas, uiStyle }
+    } = this.props;
+    this.setState({
+      ...canvas,
+      ...uiStyle
+    });
   }
 
   handleGridChange = event => {
     const value = event.target.value;
-    const reg = new RegExp("^[-.0-9]+$");
-
     if (
       event.target.name !== "xAxisLabel" &&
       event.target.name !== "yAxisLabel" &&
-      (event.target.value === "" || reg.test(value))
+      (event.target.value === "" || this.reg.test(value))
     ) {
       this.setState({ [event.target.name]: value });
     } else if (event.target.name === "xAxisLabel" || event.target.name === "yAxisLabel") {
       this.setState({ [event.target.name]: event.target.value });
     }
+  };
+
+  handleMinMaxChange = event => {
+    const { value, name } = event.target;
+    if (!this.reg.test(value) && value !== "") {
+      return;
+    }
+
+    const { xMin, xMax, yMin, yMax } = this.state;
+    let { xDistance, yDistance, xTickDistance, yTickDistance } = this.state;
+    if (name === "xMin") {
+      xDistance = calcDistance(value, xMax);
+    }
+    if (name === "xMax") {
+      xDistance = calcDistance(xMin, value);
+    }
+    if (name === "yMin") {
+      yDistance = calcDistance(value, yMax);
+    }
+    if (name === "yMax") {
+      yDistance = calcDistance(yMin, value);
+    }
+
+    if (isNaN(xDistance)) {
+      xDistance = 1;
+    }
+    if (isNaN(yDistance)) {
+      yDistance = 1;
+    }
+
+    xTickDistance = xDistance;
+    yTickDistance = yDistance;
+
+    this.setState({ [name]: value, xDistance, yDistance, xTickDistance, yTickDistance });
+  };
+
+  handleMinMaxBluer = () => {
+    const { xMin, xMax, yMin, yMax, xDistance, yDistance, xTickDistance, yTickDistance } = this.state;
+    const { graphData, setCanvas } = this.props;
+    const { uiStyle, canvas } = graphData;
+
+    if (!isNaN(parseFloat(xMin)) && !isNaN(parseFloat(xMax)) && !isNaN(parseFloat(yMin)) && !isNaN(parseFloat(yMax)))
+      setCanvas(
+        { ...canvas, xMin, xMax, xRatio: 1, yMin, yMax, yRatio: 1 },
+        { ...uiStyle, xDistance, yDistance, xTickDistance, yTickDistance }
+      );
   };
 
   isQuadrantsPlacement = () => {
@@ -78,25 +149,6 @@ class QuadrantsMoreOptions extends Component {
       }
     } else {
       setOptions({ ...uiStyle, [name]: value });
-    }
-  };
-
-  handleCanvasChange = event => {
-    const { value, name } = event.target;
-    const {
-      graphData: { canvas },
-      setCanvas
-    } = this.props;
-
-    const _value = parseFloat(value);
-    if (!isNaN(_value)) {
-      canvas[name] = +_value;
-      canvas.xRatio = 1;
-      canvas.yRatio = 1;
-      setCanvas(canvas);
-      this.setState({ [name]: _value });
-    } else {
-      this.setState({ [name]: canvas[name] });
     }
   };
 
@@ -249,7 +301,7 @@ class QuadrantsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <ScoreSettings
-            showSelect={false}
+            scoringTypes={types}
             setValidation={setValidation}
             graphData={graphData}
             advancedAreOpen={advancedAreOpen}
@@ -451,8 +503,8 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   name="xMin"
                   value={xMin}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleCanvasChange}
+                  onChange={this.handleMinMaxChange}
+                  onBlur={this.handleMinMaxBluer}
                   disabled={false}
                   height="30px"
                 />
@@ -462,8 +514,8 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   name="xMax"
                   value={xMax}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleCanvasChange}
+                  onChange={this.handleMinMaxChange}
+                  onBlur={this.handleMinMaxBluer}
                   disabled={false}
                   height="30px"
                 />
@@ -583,8 +635,8 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   name="yMin"
                   value={yMin}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleCanvasChange}
+                  onChange={this.handleMinMaxChange}
+                  onBlur={this.handleMinMaxBluer}
                   disabled={false}
                   height="30px"
                 />
@@ -594,8 +646,8 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   name="yMax"
                   value={yMax}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleCanvasChange}
+                  onChange={this.handleMinMaxChange}
+                  onBlur={this.handleMinMaxBluer}
                   disabled={false}
                   height="30px"
                 />

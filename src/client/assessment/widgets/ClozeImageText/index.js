@@ -66,35 +66,6 @@ class ClozeImageText extends Component {
     };
   };
 
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        const response = {
-          score: 1,
-          value: {}
-        };
-
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.push(response);
-        } else {
-          draft.validation.altResponses = [response];
-        }
-      })
-    );
-  };
-
-  handleRemoveAltResponses = index => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
-        }
-      })
-    );
-  };
-
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
     setQuestionData(
@@ -212,8 +183,6 @@ class ClozeImageText extends Component {
                       uiStyle={uiStyle}
                       backgroundColor={item.background}
                       maxRespCount={item.maxRespCount}
-                      onAddAltResponses={this.handleAddAltResponses}
-                      onRemoveAltResponses={this.handleRemoveAltResponses}
                       fillSections={fillSections}
                       cleanSections={cleanSections}
                       imageOptions={item.imageOptions}

@@ -1,4 +1,5 @@
 import JXG from "jsxgraph";
+import { isObject } from "lodash";
 import { tickLabel } from "./utils";
 import { Tangent, Logarithm, Sin, Parabola, Parabola2 } from "./elements";
 
@@ -208,7 +209,7 @@ function mergeAxesParameters(target, parameters) {
     target.x.ticks.drawLabels = parameters.x.drawLabels;
   }
   if ("drawLabels" in parameters.y) {
-    target.y.ticks.drawLabels = parameters.x.drawLabels;
+    target.y.ticks.drawLabels = parameters.y.drawLabels;
   }
   if ("minArrow" in parameters.x && parameters.x.minArrow === false) {
     target.x.firstArrow = false;
@@ -249,20 +250,50 @@ export function mergeParams(defaultConfig, userConfig) {
 }
 
 export function fillConfigDefaultParameters(config) {
-  if (!config.graphParameters) {
+  if (!isObject(config.graphParameters)) {
     config.graphParameters = defaultGraphParameters();
+  } else {
+    config.graphParameters = {
+      ...defaultGraphParameters(),
+      ...config.graphParameters
+    };
   }
-  if (!config.pointParameters) {
+
+  if (!isObject(config.pointParameters)) {
     config.pointParameters = defaultPointParameters();
+  } else {
+    config.pointParameters = {
+      ...defaultPointParameters(),
+      ...config.pointParameters
+    };
   }
-  if (!config.axesParameters) {
+
+  if (!isObject(config.axesParameters)) {
     config.axesParameters = {
       x: defaultAxesParameters(),
       y: defaultAxesParameters()
     };
+  } else {
+    config.axesParameters = {
+      x: {
+        ...defaultAxesParameters(),
+        ...(config.axesParameters.x || {})
+      },
+      y: {
+        ...defaultAxesParameters(),
+        ...(config.axesParameters.y || {})
+      }
+    };
   }
-  if (!config.gridParameters) {
+
+  if (!isObject(config.gridParameters)) {
     config.gridParameters = defaultGridParameters();
+  } else {
+    config.gridParameters = {
+      ...defaultGridParameters(),
+      ...config.gridParameters
+    };
   }
+
   return config;
 }

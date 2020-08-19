@@ -1,6 +1,6 @@
 import { EduButton, ScrollContext, Tabs, withWindowSizes } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
-import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
+import { IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Pagination } from "antd";
@@ -8,9 +8,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { ThemeProvider } from "styled-components";
+
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
-import { Scratchpad, ScratchpadTool } from "../../../../../common/components/Scratchpad";
 import { themes } from "../../../../../theme";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import {
@@ -34,6 +34,8 @@ import {
   WidgetContainer,
   ReportIssueBtn
 } from "./styled";
+import QuestionPreviewDetails from "./QuestionPreviewDetails";
+import { ScratchpadTool, Scratchpad } from "../../../../../common/components/Scratchpad";
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -251,21 +253,19 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderRightButtons = () => {
-    const { isPassage, item, goToItem, passageTestItems = [], page } = this.props;
-    const { derivedFromId = null, _id: itemId } = item;
-    /**
-     * in v1 migrated type, there is a derived from id on first load
-     * otherwise, it would not be able to detect the current item on first load
-     */
-    const key = derivedFromId || itemId;
-    const currentItem = passageTestItems.findIndex(id => id === key) + 1;
+    const { isPassage, item, goToItem, passageTestItems, page } = this.props;
 
     return (
       <>
         {isPassage && passageTestItems.length > 1 && (page === "addItems" || page === "itemList") && (
           <PassageNavigation>
             <span>PASSAGE ITEMS </span>
-            <Pagination total={passageTestItems.length} pageSize={1} current={currentItem} onChange={goToItem} />
+            <Pagination
+              total={passageTestItems.length}
+              pageSize={1}
+              current={passageTestItems.findIndex(i => i === item.versionId) + 1}
+              onChange={goToItem}
+            />
           </PassageNavigation>
         )}
       </>
@@ -273,7 +273,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   getScrollContainerProps = showScratch => {
-    const { page, fullModal, viewComponent } = this.props;
+    const { page, fullModal, viewComponent, isPassage } = this.props;
     const commonProps = {
       style: {
         overflow: "auto"
@@ -285,7 +285,7 @@ class AuthorTestItemPreview extends Component {
     // item preview popup
     // 90px is scratchpad toolbox height
     if (viewComponent === "authorPreviewPopup") {
-      const tempHeight = fullModal ? "87vh" : "70vh";
+      const tempHeight = isPassage && fullModal ? "calc(100vh - 160px)" : fullModal ? "calc(100vh - 100px)" : "70vh";
       commonProps.style.height = showScratch ? `calc(${tempHeight} - 90px)` : tempHeight;
       return commonProps;
     }
@@ -299,8 +299,12 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderColumns(col, colIndex, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData) {
-    const { style, windowWidth, onlySratchpad, viewComponent, fullModal, ...restProps } = this.props;
+    const { style, windowWidth, onlySratchpad, viewComponent, fullModal, item, isPassage, ...restProps } = this.props;
     const { value, isEnableScratchpad } = this.state;
+    const { createdBy, data = {}, maxScore, _id } = item;
+    const { questions = [] } = data;
+    const [firstQuestion = {}] = questions;
+    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = firstQuestion;
 
     let subCount = 0;
     const columns = (
@@ -312,7 +316,7 @@ class AuthorTestItemPreview extends Component {
                 key={tabIndex}
                 label={tab}
                 style={{
-                  width: `calc(${100 / col.tabs.length}% - 10px)`,
+                  width: `calc(${100 / col.tabs.length}% - 30px)`,
                   textAlign: "center",
                   padding: "5px 15px"
                 }}
@@ -362,6 +366,28 @@ class AuthorTestItemPreview extends Component {
                 })}
             </React.Fragment>
           ))}
+          {!isPassage && (
+            <QuestionPreviewDetails
+              id={_id}
+              createdBy={createdBy}
+              maxScore={maxScore}
+              depthOfKnowledge={depthOfKnowledge}
+              authorDifficulty={authorDifficulty}
+              bloomsTaxonomy={bloomsTaxonomy}
+              tags={tags}
+            />
+          )}
+          {isPassage && colIndex === 1 && (
+            <QuestionPreviewDetails
+              id={_id}
+              createdBy={createdBy}
+              maxScore={maxScore}
+              depthOfKnowledge={depthOfKnowledge}
+              authorDifficulty={authorDifficulty}
+              bloomsTaxonomy={bloomsTaxonomy}
+              tags={tags}
+            />
+          )}
         </WidgetContainer>
       </>
     );
@@ -383,26 +409,26 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  renderCollapseButtons = () => {
+  get collapseButtons() {
     const { collapseDirection } = this.state;
-    const { onlySratchpad } = this.props;
     return (
-      <Divider
-        isCollapsed={!!collapseDirection}
-        collapseDirection={collapseDirection}
-        style={onlySratchpad ? { visibility: "hidden" } : {}}
-      >
-        <div>
+      <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
+        <div className="button-wrapper">
           <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
-            <IconArrowLeft />
+            <IconChevronLeft />
+          </CollapseBtn>
+          <CollapseBtn collapseDirection={collapseDirection} mid>
+            <div className="vertical-line first" />
+            <div className="vertical-line second" />
+            <div className="vertical-line third" />
           </CollapseBtn>
           <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
-            <IconArrowRight />
+            <IconGraphRightArrow />
           </CollapseBtn>
         </div>
       </Divider>
     );
-  };
+  }
 
   getSectionQue = cols => {
     if (cols.length !== 2) return [cols[0]?.widgets?.length];
@@ -432,29 +458,20 @@ class AuthorTestItemPreview extends Component {
    * @param {func}  saveScratchpad is from PeviewModalWithRejectNote component.
    */
   renderColumnsContentArea = ({ sectionQue, resourceCount, scratchpadData, saveScratchpad }) => {
-    const { cols, onlySratchpad } = this.props;
+    const { cols, passageNavigator } = this.props;
     const { collapseDirection } = this.state;
 
-    const collapseButtonShouldRernder = i => i > 0 || collapseDirection === "left";
     return cols.map((col, i) => {
       const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-      if (hideColumn) return "";
-      // show scratch => multipart with heighlightImage, heighlightImage, and reject mode.
       const showScratch = (col.widgets || []).some(w => w.type === questionType.HIGHLIGHT_IMAGE) || !!saveScratchpad;
-
       return (
-        // width of divider 25px
-        <Container width={!collapseDirection ? col.dimension : "100%"}>
-          {collapseButtonShouldRernder(i) && this.renderCollapseButtons(i)}
-          <ColumnContentArea
-            hide={hideColumn}
-            width={collapseButtonShouldRernder(i) ? `calc(100% - 25px)` : null}
-            style={onlySratchpad ? { boxShadow: "none" } : {}}
-          >
+        <Container width={!collapseDirection ? col.dimension : hideColumn ? "0px" : "100%"}>
+          <ColumnContentArea>
+            {i === 1 && passageNavigator}
             {i === 0 ? this.renderLeftButtons(showScratch) : this.renderRightButtons()}
             {this.renderColumns(col, i, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData)}
           </ColumnContentArea>
-          {collapseDirection === "right" && this.renderCollapseButtons(i)}
+          {i === 0 && cols.length > 1 && this.collapseButtons}
         </Container>
       );
     });

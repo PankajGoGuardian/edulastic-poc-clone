@@ -41,7 +41,8 @@ const initialState = {
     schoolId: "",
     teacherId: "",
     assessmentType: ""
-  }
+  },
+  reportType: ""
 };
 
 export const reportSARSettingsReducer = createReducer(initialState, {

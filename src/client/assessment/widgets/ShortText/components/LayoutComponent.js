@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { get } from "lodash";
+import get from "lodash/get";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import {
   Layout,
@@ -20,11 +21,11 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import Question from "../../../components/Question";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class LayoutComponent extends Component {
   render() {
     const { item, setQuestionData, t, advancedAreOpen, fillSections, cleanSections } = this.props;
+    const inputType = get(item, ["uiStyle", "input_type"], "text");
 
     const _change = (prop, uiStyle) => {
       setQuestionData(
@@ -46,6 +47,22 @@ class LayoutComponent extends Component {
       );
     };
 
+    const handleInputTypeChange = val => {
+      setQuestionData(
+        produce(item, draft => {
+          draft.uiStyle = draft.uiStyle || {};
+          /**
+           * if input type number unset the special characters
+           * @see https://snapwiz.atlassian.net/browse/EV-14790 comments
+           */
+          if (val === "number") {
+            draft.characterMap = undefined;
+          }
+          draft.uiStyle.input_type = val;
+        })
+      );
+    };
+
     return (
       <Question
         section="advanced"
@@ -58,6 +75,7 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <SpecialCharactersOption
+                disabled={inputType === "number"}
                 onChange={checked => {
                   if (checked) {
                     _change("characterMap", []);
@@ -94,10 +112,7 @@ class LayoutComponent extends Component {
 
           <Row gutter={24}>
             <Col md={12}>
-              <InputTypeOption
-                onChange={val => _uiStyleChange("input_type", val)}
-                value={get(item, "uiStyle.input_type", "text")}
-              />
+              <InputTypeOption onChange={handleInputTypeChange} value={inputType} />
             </Col>
             <Col md={12}>
               <PlaceholderOption onChange={val => _change("placeholder", val)} value={item.placeholder} />

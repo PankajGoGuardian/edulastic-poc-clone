@@ -26,7 +26,11 @@ import { CHECK, CLEAR } from "../constants/constantsForQuestions";
 import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
 import { hideHintsAction } from "../actions/userInteractions";
 import UnansweredPopup from "./common/UnansweredPopup";
-import { regradedRealtimeAssignmentAction } from "../../student/sharedDucks/AssignmentModule/ducks";
+import {
+  regradedRealtimeAssignmentAction,
+  clearRegradeAssignmentAction
+} from "../../student/sharedDucks/AssignmentModule/ducks";
+import { userWorkSelector } from "../../student/sharedDucks/TestItem";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -38,7 +42,7 @@ const shouldAutoSave = itemRows => {
     formulaessay: 1
   };
   for (const row of itemRows) {
-    for (const widget of row.widgets || []) {
+    for (const widget of row?.widgets || []) {
       if (widget.widgetType === "question" && autoSavableTypes[widget.type]) {
         return true;
       }
@@ -105,6 +109,7 @@ const AssessmentContainer = ({
   testId,
   userId,
   regradedAssignment,
+  clearRegradeAssignment,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -142,6 +147,7 @@ const AssessmentContainer = ({
 
   const onRegradedModalOk = () => {
     history.push(`/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`);
+    clearRegradeAssignment();
     setShowRegradedModal(false);
   };
   const saveCurrentAnswer = payload => {
@@ -178,8 +184,40 @@ const AssessmentContainer = ({
     changePreview(previewTab);
   }, [userPrevAnswer, answersById, items]);
 
+  const hasUserWork = () => {
+    const { userWork = {} } = restProps;
+    const itemId = items[currentItem]?._id; // the id of current item shown during attempt
+    if (!itemId) {
+      // umm, something wrong with component, item id is empty, function should not evaluate
+      return false;
+    }
+    const currentItemWork = { ...userWork?.[itemId] };
+    /**
+     * highlight image has scratchpad saved as false,
+     * if assignment is resumed, but scratchpad was not used previously
+     */
+    if (currentItemWork.scratchpad !== undefined) {
+      const scratchpadUsed = currentItemWork.scratchpad !== false;
+      // delete the property so it does not contribute while checking isEmpty below
+      delete currentItemWork.scratchpad;
+      if (scratchpadUsed) {
+        return true;
+      }
+    }
+
+    return !isEmpty(currentItemWork);
+  };
+
   const getUnAnsweredQuestions = () => {
     const questions = items[currentItem]?.data?.questions || [];
+    /**
+     * if user used scratchpad or other tools like cross out
+     * consider item as attempted
+     * @see https://snapwiz.atlassian.net/browse/EV-17309
+     */
+    if (hasUserWork()) {
+      return [];
+    }
     return questions.filter(q => {
       const qAnswers = answersById[q.id];
       switch (q.type) {
@@ -230,9 +268,9 @@ const AssessmentContainer = ({
               return isEmpty(d);
             }
             if (Array.isArray(d)) {
-              return isEmpty(d || d.value);
+              return isEmpty(d || d?.value);
             }
-            return isEmpty(d.value);
+            return isEmpty(d?.value);
           });
         }
         case questionType.CLASSIFICATION: {
@@ -287,8 +325,8 @@ const AssessmentContainer = ({
     }
   };
 
-  const moveToNext = async (e, needsToProceed = false) => {
-    if (!isLast()) {
+  const moveToNext = async (e, needsToProceed = false, value) => {
+    if (!isLast() && value !== "SUBMIT") {
       gotoQuestion(Number(currentItem) + 1, needsToProceed, "next");
     }
 
@@ -296,7 +334,7 @@ const AssessmentContainer = ({
       closeTestPreviewModal();
     }
 
-    if (isLast() && !preview) {
+    if ((isLast() || value === "SUBMIT") && !preview) {
       const unansweredQs = getUnAnsweredQuestions();
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
         const timeSpent = Date.now() - lastTime.current;
@@ -327,9 +365,11 @@ const AssessmentContainer = ({
     if (!preview) {
       if (!testletType) {
         const timeSpent = Date.now() - lastTime.current;
-        await saveUserAnswer(currentItem, timeSpent, false, groupId);
+        saveUserAnswer(currentItem, timeSpent, false, groupId, {
+          urlToGo: `${url}/${"test-summary"}`,
+          locState: { ...history?.location?.state, fromSummary: true }
+        });
       }
-      history.push(`${url}/test-summary`);
     } else {
       history.push(`/login`);
     }
@@ -552,7 +592,8 @@ const enhance = compose(
       showMagnifier: state.test.showMagnifier,
       enableMagnifier: state.testPlayer.enableMagnifier,
       regradedAssignment: get(state, "studentAssignment.regradedAssignment"),
-      userId: get(state, "user.user._id")
+      userId: get(state, "user.user._id"),
+      userWork: userWorkSelector(state)
     }),
     {
       saveUserResponse,
@@ -562,7 +603,8 @@ const enhance = compose(
       gotoItem: gotoItemAction,
       updateTestPlayer: updateTestPlayerAction,
       hideHints: hideHintsAction,
-      regradedRealtimeAssignment: regradedRealtimeAssignmentAction
+      regradedRealtimeAssignment: regradedRealtimeAssignmentAction,
+      clearRegradeAssignment: clearRegradeAssignmentAction
     }
   )
 );

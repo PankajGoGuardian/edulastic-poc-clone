@@ -57,7 +57,9 @@ import {
   getUserRole,
   getCollectionsSelector,
   getUserFeatures,
-  getItemBucketsSelector
+  getCollectionsToAddContent,
+  isOrganizationDistrictUserSelector,
+  getWritableCollectionsSelector
 } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -72,7 +74,7 @@ import GroupItems from "../GroupItems";
 import MainWorksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
-import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
+import { allowDuplicateCheck, allowContentEditCheck } from "../../../src/utils/permissionCheck";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { hasUserGotAccessToPremiumItem, setDefaultInterests } from "../../../dataUtils";
 import { getCurrentGroup, getClassIds } from "../../../../student/Reports/ducks";
@@ -123,7 +125,7 @@ class Container extends PureComponent {
     questionsUpdated: PropTypes.bool,
     getItemsSubjectAndGrade: PropTypes.func.isRequired,
     itemsSubjectAndGrade: PropTypes.object,
-    orgCollections: PropTypes.array,
+    collectionsToShow: PropTypes.array,
     updateDefaultThumbnail: PropTypes.func.isRequired,
     questions: PropTypes.array,
     questionsById: PropTypes.object,
@@ -149,7 +151,7 @@ class Container extends PureComponent {
     isReleaseScorePremium: false,
     questionsUpdated: false,
     itemsSubjectAndGrade: {},
-    orgCollections: [],
+    collectionsToShow: [],
     questions: [],
     questionsById: {},
     collections: []
@@ -405,7 +407,7 @@ class Container extends PureComponent {
   };
 
   handleChangeCollection = (_, options) => {
-    const { setData, test, orgCollections } = this.props;
+    const { setData, test, collectionsToShow } = this.props;
     const data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
@@ -423,7 +425,7 @@ class Container extends PureComponent {
       });
     }
 
-    const orgCollectionIds = orgCollections.map(o => o._id);
+    const orgCollectionIds = collectionsToShow.map(o => o._id);
     const extraCollections = (test.collections || []).filter(c => !orgCollectionIds.includes(c._id));
     setData({ collections: [...collectionArray, ...extraCollections] });
   };
@@ -470,7 +472,8 @@ class Container extends PureComponent {
       currentTab,
       userRole,
       editEnable,
-      userFeatures
+      userFeatures,
+      collections
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
@@ -479,13 +482,12 @@ class Container extends PureComponent {
     const { showCancelButton = false } = history.location.state || this.state || {};
     const { isShowFilter } = this.state;
     const current = currentTab;
-    console.log("currentTab", currentTab);
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const isOwner =
       (authors && authors.some(x => x._id === userId)) ||
       !params.id ||
       userRole === roleuser.EDULASTIC_CURATOR ||
-      userFeatures.isCurator;
+      (userFeatures.isCurator && allowContentEditCheck(test.collections, collections));
     const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
 
     const props = {
@@ -677,7 +679,7 @@ class Container extends PureComponent {
       safeBrowser,
       sebPassword
     } = test;
-    const { userFeatures } = this.props;
+    const { userFeatures, isOrganizationDistrictUser } = this.props;
     if (!title) {
       notification({ messageKey: "nameShouldNotEmpty" });
       return false;
@@ -703,9 +705,9 @@ class Container extends PureComponent {
       notification({ messageKey: "enterValidPassword" });
       return false;
     }
-    if (userFeatures.isPublisherAuthor || userFeatures.isCurator) {
+    if (userFeatures.isPublisherAuthor || userFeatures.isCurator || isOrganizationDistrictUser) {
       if (test.collections?.length === 0) {
-        notification({ messageKey: "testNotAssociatedWithCollection" });
+        notification({ type: "warn", messageKey: "testNotAssociatedWithCollection" });
         return false;
       }
       if (
@@ -778,9 +780,11 @@ class Container extends PureComponent {
   };
 
   onEnableEdit = onRegrade => {
-    const { test, userId, duplicateTest, currentTab, userRole, setEditEnable, userFeatures } = this.props;
+    const { test, userId, duplicateTest, currentTab, userRole, setEditEnable, userFeatures, collections } = this.props;
     const { _id: testId, authors, title, isUsed } = test;
-    const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
+    const isCurator =
+      (allowContentEditCheck(test.collections, collections) && userFeatures.isCurator) ||
+      userRole === roleuser.EDULASTIC_CURATOR;
     const canEdit = (authors && authors.some(x => x._id === userId)) || isCurator;
     setEditEnable(true);
     if (canEdit) {
@@ -849,7 +853,8 @@ class Container extends PureComponent {
       currentTab,
       testAssignments,
       userRole,
-      editEnable
+      editEnable,
+      writableCollections
     } = this.props;
     if (userRole === roleuser.STUDENT) {
       return null;
@@ -857,7 +862,8 @@ class Container extends PureComponent {
     const { showShareModal, isShowFilter } = this.state;
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
-    const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
+    const hasCollectionAccess = allowContentEditCheck(test.collections, writableCollections);
+    const isCurator = (hasCollectionAccess && userFeatures.isCurator) || userRole === roleuser.EDULASTIC_CURATOR;
     const isOwner = authors?.some(x => x._id === userId);
     const showPublishButton =
       (testStatus !== statusConstants.PUBLISHED && testId && (isOwner || isCurator)) || editEnable;
@@ -871,7 +877,7 @@ class Container extends PureComponent {
       !showEditButton &&
       !showDuplicateButton &&
       (testStatus === "draft" || editEnable);
-    const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
+    const testItems = (itemGroups || []).flatMap(itemGroup => itemGroup.items || []);
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 
     const gradeSubject = { grades, subjects };
@@ -925,6 +931,7 @@ class Container extends PureComponent {
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
+          hasCollectionAccess={hasCollectionAccess}
         />
         {this.renderContent()}
       </>
@@ -956,15 +963,17 @@ const enhance = compose(
       userRole: getUserRole(state),
       isReleaseScorePremium: getReleaseScorePremiumSelector(state),
       collections: getCollectionsSelector(state),
+      writableCollections: getWritableCollectionsSelector(state),
       userFeatures: getUserFeatures(state),
       testAssignments: getAssignmentsSelector(state),
-      orgCollections: getItemBucketsSelector(state),
+      collectionsToShow: getCollectionsToAddContent(state),
       groupId: getCurrentGroup(state),
       classIds: getClassIds(state),
       studentAssignments: getAllAssignmentsSelector(state),
       loadingAssignments: get(state, "publicTest.loadingAssignments"),
       editEnable: get(state, "tests.editEnable"),
-      pageNumber: state?.testsAddItems?.page || 1
+      pageNumber: state?.testsAddItems?.page || 1,
+      isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state)
     }),
     {
       createTest: createTestAction,

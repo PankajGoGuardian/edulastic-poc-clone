@@ -58,9 +58,15 @@ export const PreviewItem = ({
           </IndexBox>
         )}
 
-        {showPopover ? <Popover content={content}>{content}</Popover> : content}
+        {showPopover ? (
+          <Popover placement="bottomLeft" getPopupContainer={triggerNode => triggerNode.parentNode} content={content}>
+            {content}
+          </Popover>
+        ) : (
+          content
+        )}
 
-        {correct !== undefined && <IconWrapper correct={correct} isPrintPreview={isPrintPreview} />}
+        {correct !== undefined && <IconWrapper correct={correct} />}
       </Container>
     </div>
   );

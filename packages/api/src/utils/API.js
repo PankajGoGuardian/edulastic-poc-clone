@@ -112,7 +112,8 @@ export default class API {
     this.instance = axios.create({
       baseURL: this.baseURL,
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "client-epoch": Date.now().toString()
       }
     });
     this.instance.interceptors.request.use(_config => {

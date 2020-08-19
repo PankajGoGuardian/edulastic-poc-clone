@@ -22,6 +22,8 @@ export const RERENDER_ASSIGNMENTS = "[studentAssignments] rerender assignments";
 export const REMOVE_ASSIGNMENT = "[studentAssignments] remove assignment";
 export const REGRADE_ASSIGNMENT_REALTIME = "[studentAssessmentPlayer] regrade assessment realtime";
 export const UPDATE_REALTIME_ASSIGNMENT_TEST_ID = "[studentAssignments] update test id real time";
+export const SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT = "[studentAssignments] set ready for timed assignment";
+export const CLEAR_REGRADE_ASSIGNMENT = "[studentAssignments] clear regrade assignment";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -33,6 +35,8 @@ export const rerenderAssignmentsAction = createAction(RERENDER_ASSIGNMENTS);
 export const removeAssignmentAction = createAction(REMOVE_ASSIGNMENT);
 export const regradedRealtimeAssignmentAction = createAction(REGRADE_ASSIGNMENT_REALTIME);
 export const updateTestIdRealTimeAction = createAction(UPDATE_REALTIME_ASSIGNMENT_TEST_ID);
+export const setConfirmationForTimedAssessmentAction = createAction(SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT);
+export const clearRegradeAssignmentAction = createAction(CLEAR_REGRADE_ASSIGNMENT);
 
 // initial State
 const initialState = {
@@ -49,6 +53,10 @@ const initialState = {
 // fetching assignments
 const setLoading = state => {
   state.isLoading = true;
+};
+
+const setConfirmationForTimedAssessment = (state, { payload }) => {
+  state.unconfirmedTimedAssignment = payload;
 };
 
 // load assignments to store
@@ -69,6 +77,7 @@ const setFilter = (state, { payload }) => {
 
 export default createReducer(initialState, {
   [SET_LOADING]: setLoading,
+  [SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT]: setConfirmationForTimedAssessment,
   [SET_ASSIGNMENTS]: setAssignments,
   [ADD_ASSIGNMENT_REALTIME]: (state, { payload: assignment }) => {
     const { _id: assignmentId } = assignment;
@@ -95,6 +104,9 @@ export default createReducer(initialState, {
   },
   [REGRADE_ASSIGNMENT_REALTIME]: (state, { payload }) => {
     state.regradedAssignment = payload;
+  },
+  [CLEAR_REGRADE_ASSIGNMENT]: state => {
+    delete state.regradedAssignment;
   },
   [UPDATE_REALTIME_ASSIGNMENT_TEST_ID]: (state, { payload }) => {
     const { newTestId, oldTestId, assignmentId } = payload;

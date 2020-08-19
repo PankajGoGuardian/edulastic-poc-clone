@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactQuill from "react-quill";
 import { compose } from "redux";
 import { connect } from "react-redux";
 
@@ -10,23 +9,17 @@ import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 
-import { updateVariables } from "../../utils/variables";
-
 import SortableList from "./components/SortableList";
 import { Subtitle } from "../../styled/Subtitle";
-import { ValidList } from "./constants/validList";
-import { QlToolbar } from "./styled/QlToolbar";
 import Question from "../../components/Question";
 
 class FormattingOptions extends Component {
   render() {
-    const { item, setQuestionData, act, t, fillSections, cleanSections } = this.props;
-
+    const { item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen } = this.props;
     const handleActiveChange = index => {
       setQuestionData(
         produce(item, draft => {
           draft.formattingOptions[index].active = !draft.formattingOptions[index].active;
-          updateVariables(draft);
         })
       );
     };
@@ -35,32 +28,28 @@ class FormattingOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.formattingOptions = arrayMove(draft.formattingOptions, oldIndex, newIndex);
-          updateVariables(draft);
         })
       );
     };
 
     return (
       <Question
-        section="main"
+        section="advanced"
         label={t("component.essayText.rich.formattingOptions")}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
       >
         <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.essayText.rich.formattingOptions")}`)}>
           {t("component.essayText.rich.formattingOptions")}
         </Subtitle>
-        <QlToolbar id="toolbar">
-          <SortableList
-            axis="xy"
-            onSortEnd={handleChange}
-            items={act}
-            useDragHandle
-            validList={ValidList}
-            handleActiveChange={handleActiveChange}
-          />
-        </QlToolbar>
-        <ReactQuill modules={FormattingOptions.modules} readOnly />
+        <SortableList
+          useDragHandle
+          axis="xy"
+          onSortEnd={handleChange}
+          items={item.formattingOptions || []}
+          handleActiveChange={handleActiveChange}
+        />
       </Question>
     );
   }
@@ -68,7 +57,6 @@ class FormattingOptions extends Component {
 
 FormattingOptions.propTypes = {
   item: PropTypes.object.isRequired,
-  act: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,

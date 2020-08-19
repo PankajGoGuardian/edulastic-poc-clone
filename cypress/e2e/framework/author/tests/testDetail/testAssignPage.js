@@ -34,9 +34,26 @@ export default class TestAssignPage {
 
   getNavigateToTestLibraryPage = () => cy.get('[data-cy="assignButton"]').contains("Return to TEST LIBRARY");
 
+  getSafeExamBrowserSwitch = () =>
+    cy.get('[inputfeatures="assessmentSuperPowersRequireSafeExamBrowser"]').find("button");
+
+  getQuitPassord = () => cy.get('[placeholder="Quit Password"]');
+
+  getEvalTypesDropDown = () =>
+    cy
+      .get('[inputfeatures="assessmentSuperPowersCheckAnswerTries"]')
+      .next()
+      .find(".ant-select-arrow-icon");
+
+  getStudentPlayerskin = () => cy.get('[data-cy="playerSkinType"]');
+
+  getPerformanceBandDropDown = () => cy.get('[data-cy="performance-band"]').find(".ant-select-selection");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+
+  selectClassDropdown = () => cy.get('[data-cy = "selectClass"]').click();
 
   clickOnDropDownOptionByText = option => {
     cy.wait(500);
@@ -52,9 +69,14 @@ export default class TestAssignPage {
   };
 
   selectClass = className => {
-    cy.get('[data-cy="selectClass"]').click();
+    this.selectClassDropdown();
     this.clickOnDropDownOptionByText(className);
     cy.focused().blur();
+  };
+
+  verifyNoClassesInDropDown = className => {
+    this.selectClassDropdown().type(className);
+    cy.get(".ant-empty-description").should("contain", "No Data");
   };
 
   selectTestType = type => {
@@ -99,6 +121,13 @@ export default class TestAssignPage {
   selectAnswerOnPaper = () =>
     this.getAnswerOnPaper().then($swich => {
       if (!$swich.hasClass("ant-switch-checked")) {
+        cy.wrap($swich).click();
+      }
+    });
+
+  deselectAnsweOnPaper = () =>
+    this.getAnswerOnPaper().then($swich => {
+      if ($swich.hasClass("ant-switch-checked")) {
         cy.wrap($swich).click();
       }
     });
@@ -162,12 +191,26 @@ export default class TestAssignPage {
   setCheckAnsTries = tries => cy.get('[placeholder="Number of tries"]').type(`{selectall}${tries}`);
 
   clickOnEvalByType = type => {
+    this.getEvalTypesDropDown().click({ force: true });
     cy.get(`[ data-cy=${type}]`).click({ force: true });
   };
 
   proceedWithDuplicate = () => cy.get('[data-cy="duplicate"]').click();
 
   proceedWithNoDuplicate = () => cy.get('[data-cy="noDuplicate"]').click();
+
+  setSafeExamBrowser = pass =>
+    this.getSafeExamBrowserSwitch().then($ele => {
+      if (!$ele.hasClass("ant-switch-checked")) {
+        cy.wrap($ele).click({ force: true });
+      }
+      this.getQuitPassord().type(pass);
+    });
+
+  unSetSafeExamBrowser = () =>
+    this.getSafeExamBrowserSwitch().then($ele => {
+      if ($ele.hasClass("ant-switch-checked")) cy.wrap($ele).click({ force: true });
+    });
 
   // start , end => new Date() instance
   setStartAndCloseDate = (start, end) => {
@@ -201,9 +244,14 @@ export default class TestAssignPage {
     cy.route("POST", "**/assignments").as("assigned");
     cy.contains("ASSIGN").click();
     if (Object.entries(duplicate).length > 0) {
-      cy.wait("@assigned");
-      if (duplicate.duplicate === true) this.proceedWithDuplicate();
-      else this.proceedWithNoDuplicate();
+      cy.wait("@assigned").then(xhr => {
+        assert(
+          xhr.status === 409,
+          `assigning the assignment - ${xhr.status === 409 ? "Warning" : JSON.stringify(xhr.responseBody)}`
+        );
+        if (duplicate.duplicate === true) this.proceedWithDuplicate();
+        else this.proceedWithNoDuplicate();
+      });
     }
     if (!duplicate.willNotAssign) {
       cy.wait("@assigned").then(xhr => {
@@ -221,7 +269,7 @@ export default class TestAssignPage {
       }
       return cy.wait(1).then(() => assignmentIdObj);
     }
-    return cy.wait(1);
+    return this;
   };
 
   // OVER RIDE TEST SETTING
@@ -313,6 +361,22 @@ export default class TestAssignPage {
     cy.get(`[data-cy="createNew"]`).should("exist");
   };
 
+  showAdvancedSettings = () =>
+    cy.get('[data-cy="advanced-option"]').then($ele => {
+      if (Cypress.$($ele).text() === "SHOW ADVANCED OPTIONS") cy.wrap($ele).click({ force: true });
+    });
+
+  selectStudentPlayerSkinByOption = option => {
+    this.showAdvancedSettings();
+    this.getStudentPlayerskin().click({ force: true });
+    this.selectOptionInDropDown(option);
+  };
+
+  selectPerformanceBand = band => {
+    this.getPerformanceBandDropDown().click({ force: true });
+    this.selectOptionInDropDown(band);
+  };
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -336,6 +400,14 @@ export default class TestAssignPage {
       "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
     );
   };
+
+  selectOptionInDropDown = option =>
+    cy
+      .get(".ant-select-dropdown-menu-item")
+      .contains(option)
+      .click({ force: true });
+
+  verifySelectedPerformanceBand = band => this.getPerformanceBandDropDown().should("contain.text", band);
 
   // *** APPHELPERS END ***
 }

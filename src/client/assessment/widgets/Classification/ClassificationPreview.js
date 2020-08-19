@@ -200,10 +200,10 @@ const ClassificationPreview = ({
   const boxes = createEmptyArrayOfArrays();
 
   const onDrop = (itemCurrent, itemTo, from, fromColumnId) => {
-    const columnCount = get(item, "maxResponsePerCell", "");
+    const maxResponsePerCell = get(item, "maxResponsePerCell", "");
     const dItems = cloneDeep(dragItems);
     const userAnswers = cloneDeep(answers);
-    if (columnCount && userAnswers[itemTo.index] && userAnswers[itemTo.index].length >= columnCount) {
+    if (maxResponsePerCell && userAnswers?.[itemTo.columnId]?.length >= maxResponsePerCell) {
       return;
     }
 
@@ -423,7 +423,7 @@ const ClassificationPreview = ({
                 choiceWidth={dragItemMaxWidth}
                 title={t("component.classification.dragItemsTitle")}
               >
-                <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
+                <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} borderNone>
                   <FlexContainer
                     style={{ width: "100%" }}
                     flexDirection="column"

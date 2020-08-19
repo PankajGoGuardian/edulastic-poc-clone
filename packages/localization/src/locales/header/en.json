@@ -3,14 +3,14 @@
     "dashboard": "Dashboard",
     "dashboardTitle": "Assignments",
     "newAssignment": "New Assignment",
-    "playlistLibrary": "Playlist Library",
-    "testLibrary": "Test Library",
+    "playlistLibrary": "Playlist",
+    "testLibrary": "Test",
     "itemBank": "Items",
-    "reports": "Reports",
+    "reports": "Insights",
     "manageClassTitle": "Manage Class",
     "manageGroupTitle": "Groups",
     "newTest": "New Test",
-    "selectQuestionWidget": "Select a Widget (Question or Resource)",
+    "selectQuestionWidget": "Select a Question or Resource",
     "itemDetail": "Item Detail",
     "classLabel": "Class",
     "showLabel": "Show",
@@ -19,6 +19,7 @@
     "skillReportTitle": "Skill Mastery",
     "assignmentsTitle": "Assignments",
     "profileTitle": "My Profile",
-    "subscriptionTitle": "Subscription"
+    "subscriptionTitle": "Subscription",
+    "myClassTitle": "My Classes"
   }
 }

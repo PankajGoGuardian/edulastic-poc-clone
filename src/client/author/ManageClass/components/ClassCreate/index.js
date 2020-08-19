@@ -176,7 +176,7 @@ class ClassCreate extends React.Component {
       case "reports":
         breadCrumbData = [
           {
-            title: "Reports",
+            title: "INSIGHTS",
             to: "/author/reports"
           },
           {

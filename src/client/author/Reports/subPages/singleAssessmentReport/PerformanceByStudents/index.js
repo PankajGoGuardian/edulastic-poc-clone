@@ -12,11 +12,12 @@ import { IconPlusCircle } from "@edulastic/icons";
 
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { StyledH3, StyledCard } from "../../../common/styled";
-import { UpperContainer, StyledDropDownContainer, StyledTable } from "./components/styled";
+import { UpperContainer, StyledDropDownContainer, StyledTable, StyledCharWrapper } from "./components/styled";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
 import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+import PerformanceBandPieChart from "./components/charts/StudentPerformancePie";
 
 // ducks & helpers
 import { parseData, getTableData, getColumns, getProficiencyBandData } from "./util/transformers";
@@ -134,7 +135,6 @@ const PerformanceByStudents = ({
   const onCsvConvert = data => downloadCSV(`Performance by Students.csv`, data);
 
   const _columns = getColumns(columns, res && res.testName, role, location, pageTitle, t);
-
   const testName = get(settings, "selectedTest.title", "");
 
   const checkedStudentsForModal = tableData
@@ -148,6 +148,8 @@ const PerformanceByStudents = ({
       setShowAddToGroupModal(true);
     }
   };
+
+  const chartData = useMemo(() => getTableData(res, filters, range), [res, filters]);
 
   return (
     <>
@@ -163,18 +165,32 @@ const PerformanceByStudents = ({
               checkedStudents={checkedStudentsForModal}
             />
           </FeaturesSwitch>
-          <StyledCard>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>Student score distribution | {testName}</StyledH3>
-              </Col>
-            </Row>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <SimpleBarChartContainer data={parsedData} setRange={setRange} range={range} />
-              </Col>
-            </Row>
-          </StyledCard>
+          <StyledCharWrapper>
+            <StyledCard>
+              <Row type="flex" justify="start">
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                  <StyledH3>Students in Performance Bands(%)</StyledH3>
+                </Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                  <PerformanceBandPieChart bands={bandInfo} data={chartData} onSelect={updateProficiencyFilter} />
+                </Col>
+              </Row>
+            </StyledCard>
+            <StyledCard style={{ width: "100%" }}>
+              <Row type="flex" justify="start">
+                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <StyledH3>Student score distribution | {testName}</StyledH3>
+                </Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                  <SimpleBarChartContainer data={parsedData} setRange={setRange} range={range} />
+                </Col>
+              </Row>
+            </StyledCard>
+          </StyledCharWrapper>
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>

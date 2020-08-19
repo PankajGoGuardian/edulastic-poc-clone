@@ -1,34 +1,42 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { uniqBy } from "lodash";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Button, Input, Select, Radio, Upload, Icon, Spin, message } from "antd";
-import styled from "styled-components";
-import { RadioBtn, RadioGrp,notification } from "@edulastic/common";
+import { tagsApi } from "@edulastic/api";
 import {
-  themeColor,
-  whiteSmoke,
-  numBtnColors,
-  white,
   backgroundGrey2,
   borderGrey2,
+  green,
+  numBtnColors,
   placeholderGray,
+  themeColor,
   themeColorTagsBg,
-  green
+  white,
+  whiteSmoke
 } from "@edulastic/colors";
-import { tagsApi } from "@edulastic/api";
+import {
+  CustomModalStyled,
+  FieldLabel,
+  notification,
+  RadioBtn,
+  RadioGrp,
+  SelectInputStyled,
+  TextInputStyled
+} from "@edulastic/common";
+import { Button, Icon, Select, Spin, Upload } from "antd";
+import { uniqBy } from "lodash";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { addNewTagAction, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
 import {
   fetchCollectionListRequestAction,
-  getFetchCollectionListStateSelector,
   getCollectionListSelector,
-  getSignedUrlSelector,
+  getFetchCollectionListStateSelector,
   getSignedUrlRequestAction,
+  getSignedUrlSelector,
   getSignedUrlSuccessAction,
-  signedUrlFetchingSelector,
-  importStatusSelector
+  importStatusSelector,
+  signedUrlFetchingSelector
 } from "../../ducks";
-import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../TestPage/ducks";
 
 const { Dragger } = Upload;
 
@@ -121,7 +129,7 @@ const ImportContentModal = ({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "testitem" });
       } catch (e) {
-        notification({ messageKey:"savingTagFailed"});
+        notification({ messageKey: "savingTagFailed" });
       }
     } else {
       newTag = newAllTagsData.find(tag => tag._id === id);
@@ -151,18 +159,16 @@ const ImportContentModal = ({
       </NoButton>
       <YesButton
         onClick={() => {
-          if (importType === EXISTING_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) 
-          {
-          return notification({ type: "warn", messageKey: "pleaseSelectCollection"})
+          if (importType === EXISTING_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) {
+            return notification({ type: "warn", messageKey: "pleaseSelectCollection" })
           }
 
-          if (importType === NEW_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim()))
-          {
-            return  notification({ type: "warn", messageKey: "pleaseEnterCollectionName"});
+          if (importType === NEW_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) {
+            return notification({ type: "warn", messageKey: "pleaseEnterCollectionName" });
           }
 
           if (!getSignedUrlData) {
-            return notification({ type: "warn", messageKey: "fileNotFound"});
+            return notification({ type: "warn", messageKey: "fileNotFound" });
           }
 
           handleResponse({
@@ -185,14 +191,21 @@ const ImportContentModal = ({
   const selectedTags = useMemo(() => tags.map(t => t._id), [tags]);
 
   return (
-    <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => closeModel()} width={400}>
+    <CustomModalStyled
+      title={Title}
+      visible={visible}
+      footer={Footer}
+      onCancel={() => closeModel()}
+      width={400}
+      centered
+    >
       <ModalBody>
         <FieldRow>
           <span>Import content from QTI, WebCT and several other formats.</span>
         </FieldRow>
         <FieldRow>
-          <label>Format</label>
-          <SelectStyled
+          <FieldLabel>Format</FieldLabel>
+          <SelectInputStyled
             style={{ width: "100%" }}
             placeholder="Select format"
             getPopupContainer={node => node.parentNode}
@@ -201,11 +214,11 @@ const ImportContentModal = ({
           >
             <Select.Option value="qti">QTI</Select.Option>
             <Select.Option value="webct">WebCT</Select.Option>
-          </SelectStyled>
+          </SelectInputStyled>
         </FieldRow>
         <FieldRow>
-          <lable>TAGS</lable>
-          <SelectStyled
+          <FieldLabel>TAGS</FieldLabel>
+          <SelectInputStyled
             className="tagsSelect"
             mode="multiple"
             optionLabelProp="title"
@@ -222,31 +235,35 @@ const ImportContentModal = ({
                 {`${searchValue} (Create new Tag)`}
               </Select.Option>
             ) : (
-              ""
-            )}
+                ""
+              )}
             {newAllTagsData.map(({ tagName, _id }) => (
               <Select.Option key={_id} value={_id} title={tagName}>
                 {tagName}
               </Select.Option>
             ))}
-          </SelectStyled>
+          </SelectInputStyled>
           {!!searchValue.length && !searchValue.trim().length && (
             <p style={{ color: "red" }}>Please enter valid characters.</p>
           )}
         </FieldRow>
         <FieldRow>
-          <label>Status</label>
+          <FieldLabel>Status</FieldLabel>
           <RadioGrp value={testItemStatus} onChange={event => setItemStatus(event.target.value)}>
             <RadioBtn value={TestItemStatus.PUBLISHED}>PUBLISHED</RadioBtn>
             <RadioBtn value={TestItemStatus.DRAFT}>DRAFT</RadioBtn>
           </RadioGrp>
-          <label>Import Into</label>
+        </FieldRow>
+        <FieldRow>
+          <FieldLabel>Import Into</FieldLabel>
           <RadioGrp value={importType} onChange={evt => setImportType(evt.target.value)}>
             <RadioBtn value={NEW_COLLECTION}>NEW COLLECTION</RadioBtn>
             <RadioBtn value={EXISTING_COLLECTION}>EXISTING COLLECTION</RadioBtn>
           </RadioGrp>
+        </FieldRow>
+        <FieldRow>
           {importType === EXISTING_COLLECTION ? (
-            <SelectStyled
+            <SelectInputStyled
               placeholder="Select a collection"
               getPopupContainer={node => node.parentNode}
               onChange={value => setSelectedCollectionName(value)}
@@ -255,20 +272,20 @@ const ImportContentModal = ({
               {collectionList.map(collection => (
                 <Select.Option value={collection.name}>{collection.name}</Select.Option>
               ))}
-            </SelectStyled>
+            </SelectInputStyled>
           ) : (
-            <Input
+            <TextInputStyled
               placeholder="Enter collection name"
               onChange={ev => setSelectedCollectionName(ev.target.value)}
               value={selectedCollectionName}
             />
-          )}
+            )}
         </FieldRow>
         <FieldRow>
-          <Radio.Group value={uploadType} onChange={e => setUploadType(e.target.value)}>
-            <Radio value={UPLOAD_ZIP}>UPLOAD ZIP</Radio>
-            <Radio value={USE_AWS_S3_BUCKET}>USE AWS S3 BUCKET</Radio>
-          </Radio.Group>
+          <RadioGrp value={uploadType} onChange={e => setUploadType(e.target.value)}>
+            <RadioBtn value={UPLOAD_ZIP}>UPLOAD ZIP</RadioBtn>
+            <RadioBtn value={USE_AWS_S3_BUCKET}>USE AWS S3 BUCKET</RadioBtn>
+          </RadioGrp>
           {signedUrlFetching ? (
             <Spin size="small" />
           ) : uploadType === UPLOAD_ZIP ? (
@@ -282,15 +299,15 @@ const ImportContentModal = ({
               <span>{getSignedUrlData}</span>
             ]
           ) : (
-            <Input
+            <TextInputStyled
               value={getSignedUrlData}
               onChange={e => setSignedUrl(e.target.value)}
               placeholder="Enter aws s3 bucket url"
             />
-          )}
+              )}
         </FieldRow>
       </ModalBody>
-    </StyledModal>
+    </CustomModalStyled>
   );
 };
 

@@ -1,9 +1,10 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
+import { CheckboxLabel, EduButton, notification, TypeToConfirmModal } from "@edulastic/common";
+import { SearchInputStyled, SelectInputStyled } from "@edulastic/common/src/components/InputStyles";
 import { roleuser } from "@edulastic/constants";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { Icon, Menu, message, Select } from "antd";
+import { Col, Icon, Menu, Row, Select } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
@@ -13,10 +14,7 @@ import { compose } from "redux";
 import {
   StyledActionDropDown,
   StyledClassName,
-  StyledControlDiv,
-  StyledFilterDiv,
-  StyledFilterInput,
-  StyledFilterSelect
+  StyledFilterDiv
 } from "../../../../admin/Common/StyledComponents";
 import {
   FilterWrapper,
@@ -24,7 +22,6 @@ import {
   MainContainer,
   RightFilterDiv,
   StyledButton,
-  StyledSchoolSearch,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer
@@ -45,10 +42,7 @@ import {
 import AddCourseModal from "./AddCourseModal/AddCourseModal";
 import EditCourseModal from "./EditCourseModal/EditCourseModal";
 import {
-  CreateCourseBtn,
   StyledCoursesTable,
-  StyledDropdownBtn,
-  StyledFilterButton,
   StyledHeaderColumn,
   StyledPagination,
   StyledSortIcon,
@@ -123,7 +117,7 @@ class CoursesTable extends React.Component {
     });
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     return {
       dataSource: nextProps.courseList,
       selectedRowKeys: nextProps.selectedRowKeys,
@@ -132,7 +126,7 @@ class CoursesTable extends React.Component {
   }
 
   onHeaderCell = colName => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { sortedInfo } = this.state;
     if (sortedInfo.columnKey === colName) {
       if (sortedInfo.order === "asc") {
         sortedInfo.order = "desc";
@@ -156,11 +150,9 @@ class CoursesTable extends React.Component {
   confirmDeactivate = () => {
     const { selectedRowKeys } = this.state;
     const { deactivateCourse } = this.props;
-    const selectedCourses = selectedRowKeys.map(id => {
-      return {
-        id
-      };
-    });
+    const selectedCourses = selectedRowKeys.map(id => ({
+      id
+    }));
     deactivateCourse(selectedCourses);
     this.setState({
       deactivateCourseModalVisible: false
@@ -184,11 +176,11 @@ class CoursesTable extends React.Component {
       this.setState({ uploadCourseModalVisible: true });
     } else if (e.key === "edit course") {
       if (selectedRowKeys.length == 0) {
-       notification({ messageKey:"pleaseSelectCourseEdit"});
+        notification({ messageKey: "pleaseSelectCourseEdit" });
       } else if (selectedRowKeys.length == 1) {
         this.onEditCourse(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        notification({ messageKey:"pleaseSelectSingleCourseEdit"});
+        notification({ messageKey: "pleaseSelectSingleCourseEdit" });
       }
     } else if (e.key === "deactivate course") {
       if (selectedRowKeys.length > 0) {
@@ -196,7 +188,7 @@ class CoursesTable extends React.Component {
           deactivateCourseModalVisible: true
         });
       } else {
-        notification({ messageKey:"pleaseSelectCourseToDelete"});
+        notification({ messageKey: "pleaseSelectCourseToDelete" });
       }
     }
   };
@@ -219,7 +211,7 @@ class CoursesTable extends React.Component {
     const { dataSource, editCourseKey, filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
     const selectedSourceKey = dataSource.filter(item => item.key == editCourseKey);
 
-    let search = {};
+    const search = {};
 
     if (searchByName.length > 0) {
       search.name = { type: "cont", value: searchByName };
@@ -266,12 +258,10 @@ class CoursesTable extends React.Component {
   };
 
   changePagination = pageNumber => {
-    const { filtersData, sortedInfo, searchByName } = this.state;
     this.setState({ currentPage: pageNumber }, this.loadFilteredList);
   };
 
   onChangeShowActive = e => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
@@ -292,7 +282,6 @@ class CoursesTable extends React.Component {
       );
     });
   }
-  onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
   deactivateSingleCourse = ({ _id }) => {
     this.props.setSelectedRowKeys([_id]);
@@ -318,7 +307,6 @@ class CoursesTable extends React.Component {
   };
 
   handleSearchName = value => {
-    const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
   };
 
@@ -378,7 +366,7 @@ class CoursesTable extends React.Component {
   };
 
   addFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     if (filtersData.length < 3) {
       const _filtersData = filtersData.map((item, index) => {
         if (index === key) {
@@ -401,7 +389,7 @@ class CoursesTable extends React.Component {
   };
 
   removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
       newFiltersData.push({
@@ -420,14 +408,14 @@ class CoursesTable extends React.Component {
     const { filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
     const { userOrgId } = this.props;
 
-    let search = {};
+    const search = {};
 
     if (searchByName.length > 0) {
       search.name = [{ type: "cont", value: searchByName }];
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      let { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (!search[filtersColumn]) {
           search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
@@ -501,13 +489,11 @@ class CoursesTable extends React.Component {
         dataIndex: "name",
         editable: true,
         width: 200,
-        onHeaderCell: column => {
-          return {
-            onClick: () => {
-              this.onHeaderCell("name");
-            }
-          };
-        }
+        onHeaderCell: () => ({
+          onClick: () => {
+            this.onHeaderCell("name");
+          }
+        })
       },
       {
         title: (
@@ -528,13 +514,11 @@ class CoursesTable extends React.Component {
         dataIndex: "number",
         editable: true,
         width: 200,
-        onHeaderCell: column => {
-          return {
-            onClick: () => {
-              this.onHeaderCell("number");
-            }
-          };
-        }
+        onHeaderCell: () => ({
+          onClick: () => {
+            this.onHeaderCell("number");
+          }
+        })
       },
       {
         title: (
@@ -568,22 +552,20 @@ class CoursesTable extends React.Component {
       {
         dataIndex: "operation",
         width: 100,
-        render: (text, record) => {
-          return (
-            <div style={{ whiteSpace: "nowrap" }}>
-              {!(isSchoolAdmin && schoolAdminIds.indexOf(record.createdBy._id) === -1) && !!record.active && (
-                <>
-                  <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
-                    <IconPencilEdit color={themeColor} />
-                  </StyledTableButton>
-                  <StyledTableButton onClick={() => this.deactivateSingleCourse(record)} title="Deactivate">
-                    <IconTrash color={themeColor} />
-                  </StyledTableButton>
-                </>
-              )}
-            </div>
-          );
-        }
+        render: (text, record) => (
+          <div style={{ whiteSpace: "nowrap" }}>
+            {!(isSchoolAdmin && schoolAdminIds.indexOf(record.createdBy._id) === -1) && !!record.active && (
+              <>
+                <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
+                  <IconPencilEdit color={themeColor} />
+                </StyledTableButton>
+                <StyledTableButton onClick={() => this.deactivateSingleCourse(record)} title="Deactivate">
+                  <IconTrash color={themeColor} />
+                </StyledTableButton>
+              </>
+            )}
+          </div>
+        )
       }
     ];
 
@@ -598,11 +580,9 @@ class CoursesTable extends React.Component {
       }
     ];
 
-    const columns = columnsInfo.map(col => {
-      return {
-        ...col
-      };
-    });
+    const columns = columnsInfo.map(col => ({
+      ...col
+    }));
 
     const rowSelection = {
       selectedRowKeys,
@@ -632,53 +612,64 @@ class CoursesTable extends React.Component {
         !filtersData[i].filterAdded;
 
       SearchRows.push(
-        <StyledControlDiv key={`${filtersData[i].filtersColumn}${i}`}>
-          <StyledFilterSelect
-            placeholder={t("common.selectcolumn")}
-            onChange={e => this.changeFilterColumn(e, i)}
-            defaultValue={filtersData[i].filtersColumn}
-            value={filtersData[i].filtersColumn}
-          >
-            <Option value="">{t("common.selectcolumn")}</Option>
-            <Option value="name">{t("course.coursename")}</Option>
-            <Option value="number">{t("course.coursenumber")}</Option>
-          </StyledFilterSelect>
-
-          <StyledFilterSelect
-            placeholder={t("common.selectvalue")}
-            onChange={e => this.changeFilterValue(e, i)}
-            value={filtersData[i].filtersValue}
-          >
-            <Option value="">{t("common.selectvalue")}</Option>
-            <Option value="eq">{t("common.equals")}</Option>
-            <Option value="cont">{t("common.contains")}</Option>
-          </StyledFilterSelect>
-
-          <StyledFilterInput
-            placeholder={t("common.entertext")}
-            onChange={e => this.changeFilterText(e, i)}
-            onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-            onBlur={e => this.onBlurFilterText(e, i)}
-            disabled={isFilterTextDisable}
-            value={filtersData[i].filterStr}
-            ref={this.filterTextInputRef[i]}
-          />
-          {i < 2 && (
-            <StyledFilterButton
-              type="primary"
-              onClick={e => this.addFilter(e, i)}
-              disabled={isAddFilterDisable || i < filtersData.length - 1}
+        <Row gutter={20} style={{ marginBottom: "5px" }} key={`${filtersData[i].filtersColumn}${i}`}>
+          <Col span={6}>
+            <SelectInputStyled
+              placeholder={t("common.selectcolumn")}
+              onChange={e => this.changeFilterColumn(e, i)}
+              defaultValue={filtersData[i].filtersColumn}
+              value={filtersData[i].filtersColumn}
+              height="32px"
             >
-              {t("common.addfilter")}
-            </StyledFilterButton>
-          )}
+              <Option value="">{t("common.selectcolumn")}</Option>
+              <Option value="name">{t("course.coursename")}</Option>
+              <Option value="number">{t("course.coursenumber")}</Option>
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            <SelectInputStyled
+              placeholder={t("common.selectvalue")}
+              onChange={e => this.changeFilterValue(e, i)}
+              value={filtersData[i].filtersValue}
+              height="32px"
+            >
+              <Option value="">{t("common.selectvalue")}</Option>
+              <Option value="eq">{t("common.equals")}</Option>
+              <Option value="cont">{t("common.contains")}</Option>
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            <SearchInputStyled
+              placeholder={t("common.entertext")}
+              onChange={e => this.changeFilterText(e, i)}
+              onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+              onBlur={e => this.onBlurFilterText(e, i)}
+              disabled={isFilterTextDisable}
+              value={filtersData[i].filterStr}
+              ref={this.filterTextInputRef[i]}
+              height="32px"
+            />
+          </Col>
+          <Col span={6} style={{ display: "flex" }}>
+            {i < 2 && (
+              <EduButton
+                type="primary"
+                onClick={e => this.addFilter(e, i)}
+                disabled={isAddFilterDisable || i < filtersData.length - 1}
+                height="32px"
+                width="50%"
+              >
+                {t("common.addfilter")}
+              </EduButton>
+            )}
 
-          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              {t("common.removefilter")}
-            </StyledFilterButton>
-          )}
-        </StyledControlDiv>
+            {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+              <EduButton height="32px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
+                {t("common.removefilter")}
+              </EduButton>
+            )}
+          </Col>
+        </Row>
       );
     }
 
@@ -686,7 +677,7 @@ class CoursesTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -695,24 +686,29 @@ class CoursesTable extends React.Component {
         {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={60}>
-            <StyledSchoolSearch
+          <LeftFilterDiv width={50}>
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
-            <CreateCourseBtn type="primary" onClick={this.showAddCourseModal}>
+            <EduButton type="primary" onClick={this.showAddCourseModal}>
               {t("course.createcourse")}
-            </CreateCourseBtn>
+            </EduButton>
           </LeftFilterDiv>
           <RightFilterDiv>
             <CheckboxLabel defaultChecked={showActive} onChange={this.onChangeShowActive}>
               {t("course.showactivecourse")}
             </CheckboxLabel>
-            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-              <StyledDropdownBtn>
+            <StyledActionDropDown
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+              overlay={actionMenu}
+              trigger={["click"]}
+            >
+              <EduButton isGhost>
                 {t("common.actions")} <Icon type="down" />
-              </StyledDropdownBtn>
+              </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
@@ -729,7 +725,7 @@ class CoursesTable extends React.Component {
             pageSize={25}
             total={totalCourseCount}
             onChange={this.changePagination}
-            hideOnSinglePage={true}
+            hideOnSinglePage
           />
         </TableContainer>
         {editCourseModalVisible && editCourseKey != "" && (
@@ -813,6 +809,5 @@ CoursesTable.propTypes = {
   updateCourse: PropTypes.func.isRequired,
   deactivateCourse: PropTypes.func.isRequired,
   setSelectedRowKeys: PropTypes.func.isRequired,
-  setShowActiveStatus: PropTypes.func.isRequired,
   resetUploadModal: PropTypes.func.isRequired
 };

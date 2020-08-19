@@ -38,7 +38,7 @@ class OrderListPreview extends Component {
     const numOfQuestions = questions.length || 1;
 
     const listContainerStyle = {
-      margin: "auto",
+      paddingLeft: "20px",
       minWidth: listItemMinWidth,
       maxWidth: isInline ? numOfQuestions * listItemMaxWidth : listItemMaxWidth
     };
@@ -106,7 +106,6 @@ const OrderListWrapper = styled.div`
   }
   align-items: ${props => (props.styleType === "inline" ? "center" : "flex-start")};
   justify-content: stretch;
-  overflow: auto;
 `;
 
 OrderListPreview.propTypes = {

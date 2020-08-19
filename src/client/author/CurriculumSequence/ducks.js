@@ -15,7 +15,8 @@ import {
   userContextApi,
   groupApi,
   recommendationsApi,
-  TokenStorage as Storage
+  TokenStorage as Storage,
+  testsApi
 } from "@edulastic/api";
 import produce from "immer";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
@@ -134,6 +135,12 @@ export const SET_ACTIVE_RIGHT_PANEL = "[playlist] set active right panel view";
 export const DELETE_PLAYLIST_REQUEST = "[playlist] delete request";
 export const REMOVE_PLAYLIST_FROM_USE = "[playlist] remove from use";
 
+export const UNASSIGN_ASSIGNMENTS_FROM_PLAYLIST = "[playlist] unassign assignments";
+export const UNASSIGN_ASSINMENTS_SUCCESS = "[playlist] unassign assignments success";
+export const TOGGLE_ASSIGNMENTS = "[playlist] toggle assignments";
+export const SET_CURRENT_ASSIGNMENT_IDS = "[playlist] set current assignment ids";
+export const DUPLICATE_PLAYLIST_REQUEST = "[playlist] duplicate request";
+
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
 export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE);
@@ -195,6 +202,11 @@ export const setShowRightSideAction = createAction(SET_SHOW_RIGHT_SIDE_PANEL);
 export const setActiveRightPanelViewAction = createAction(SET_ACTIVE_RIGHT_PANEL);
 export const deletePlaylistRequestAction = createAction(DELETE_PLAYLIST_REQUEST);
 export const removePlaylistFromUseAction = createAction(REMOVE_PLAYLIST_FROM_USE);
+export const unassignAssignmentsfromPlaylistAction = createAction(UNASSIGN_ASSIGNMENTS_FROM_PLAYLIST);
+export const unassignAssignmentsSuccessAction = createAction(UNASSIGN_ASSINMENTS_SUCCESS);
+export const toggleAssignmentsAction = createAction(TOGGLE_ASSIGNMENTS);
+export const setCurrentAssignmentIdsAction = createAction(SET_CURRENT_ASSIGNMENT_IDS);
+export const duplicatePlaylistRequestAction = createAction(DUPLICATE_PLAYLIST_REQUEST);
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -853,6 +865,22 @@ function* fetchAssigned() {
   }
 }
 
+function* duplicatePlayListSaga({ payload }) {
+  try {
+    const { _id, title } = payload;
+    const duplicatedPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
+      _id,
+      title
+    });
+    const newId = duplicatedPlaylist._id;
+    yield put(push(`/author/playlists/${newId}/edit`));
+  } catch (e) {
+    console.error(e);
+    notification({ messageKey: "commonErr" });
+    Sentry.captureException(e);
+  }
+}
+
 function* duplicateManageContentSaga({ payload }) {
   try {
     const { _id: originalId, title: originalTitle, grades, subjects } = payload;
@@ -921,7 +949,13 @@ function* resetToOriginalPlaylist({ payload }) {
     yield call(makeApiRequest, [payload], false);
     yield put(setCustomizeToDraftAction(false));
     yield put(toggleManageContentActiveAction(false));
-    yield put(setActiveRightPanelViewAction("summary"));
+
+    const pathname = yield select(state => state.router.location.pathname);
+    const isMyPlaylist = pathname.includes("use-this");
+
+    if (isMyPlaylist) {
+      yield put(setActiveRightPanelViewAction("summary"));
+    }
   } catch (error) {
     console.error(error);
     notification({ messageKey: "commonErr" });
@@ -1006,6 +1040,7 @@ function* useThisPlayListSaga({ payload }) {
       yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary", fromUseThis } }));
     } else {
       yield put(toggleManageContentActiveAction(false));
+      yield put(setShowRightSideAction(true));
       yield put(setActiveRightPanelViewAction("summary"));
       yield put(
         push({
@@ -1237,7 +1272,7 @@ function* addRecommendationsSaga({ payload }) {
     const workData = yield select(getDifferentiationWorkSelector);
     const structuredData = structureWorkData(workData, statusData);
     yield put(setDifferentiationWorkAction(structuredData));
-    yield call(notification, { msg: response.message });
+    yield call(notification, { type: "success", msg: response.message });
     yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {
     console.error(err);
@@ -1348,6 +1383,24 @@ function* removeFromUseSaga({ payload: id }) {
   }
 }
 
+function* unassignAssignmentsfromPlaylistSaga({ payload }) {
+  try {
+    const { playlistId, moduleId, unsetAssignmentCallback, ...data } = payload;
+    const { deletedIds = [] } = yield call(testsApi.deleteAssignments, data);
+    if (deletedIds.length) {
+      notification({ type: "success", msg: "Assignment(s) successfully unassigned" });
+      yield put(unassignAssignmentsSuccessAction({ moduleId, testId: payload.testId, deletedIds }));
+      yield put(toggleAssignmentsAction({ testId: payload.testId, playlistId }));
+      return;
+    }
+    throw new Error("Failed to unassign");
+  } catch (err) {
+    notification({ msg: "Failed to unassign Assignment(s)" });
+    console.error(err);
+    Sentry.captureException(err);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -1385,7 +1438,9 @@ export function* watcherSaga() {
     yield takeLatest(DELETE_PLAYLIST_REQUEST, deletePlaylistSaga),
     yield takeLatest(REMOVE_PLAYLIST_FROM_USE, removeFromUseSaga),
     yield takeLatest(REVERT_CUSTOMIZE_TO_DRAFT, resetToOriginalPlaylist),
-    yield takeLatest(CHECK_PREVIOUSLY_CUSTOMIZED, checkForPreviouslyCustomizedPlaylist)
+    yield takeLatest(CHECK_PREVIOUSLY_CUSTOMIZED, checkForPreviouslyCustomizedPlaylist),
+    yield takeLatest(UNASSIGN_ASSIGNMENTS_FROM_PLAYLIST, unassignAssignmentsfromPlaylistSaga),
+    yield takeLatest(DUPLICATE_PLAYLIST_REQUEST, duplicatePlayListSaga)
   ]);
 
   const currSequenceUpdateQueue = yield actionChannel(PUT_CURRICULUM_SEQUENCE, buffers.sliding(5));
@@ -1422,7 +1477,6 @@ export function* watcherSaga() {
  * @property {String} openPolicy
  * @property {String} closePolicy
  * @property {Class[]} class
- * @property {Boolean} specificStudents
  * @property {string} testId
  */
 
@@ -1455,7 +1509,6 @@ const getDefaultAssignData = () => ({
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
-  specificStudents: false,
   students: [],
   testId: ""
 });
@@ -1533,7 +1586,8 @@ const initialState = {
   isVideoResourcePreviewModal: false,
   showSumary: true,
   showRightPanel: true,
-  customizeInDraft: false
+  customizeInDraft: false,
+  currentAssignmentIds: []
 };
 
 /**
@@ -2176,5 +2230,30 @@ export default createReducer(initialState, {
   },
   [SET_CUSTOMIZE_TO_DRAFT]: (state, { payload }) => {
     state.customizeInDraft = payload;
+  },
+  [UNASSIGN_ASSINMENTS_SUCCESS]: (state, { payload }) => {
+    state.destinationCurriculumSequence.modules.forEach(_module => {
+      if (_module._id === payload.moduleId) {
+        _module.data.forEach(test => {
+          if (test.contentId === payload.testId) {
+            test.assignments = test.assignments.filter(({ _id }) => !payload.deletedIds.includes(_id));
+          }
+        });
+      }
+    });
+  },
+  [TOGGLE_ASSIGNMENTS]: (state, { payload }) => {
+    const { testId, playlistId } = payload;
+    const { currentAssignmentIds } = state;
+    const { contentId } = JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
+    sessionStorage.removeItem(`playlist/${playlistId}`);
+    if (currentAssignmentIds.includes(testId) || testId === contentId) {
+      currentAssignmentIds.splice(currentAssignmentIds.findIndex(x => x === testId), 1);
+    } else {
+      currentAssignmentIds.push(testId);
+    }
+  },
+  [SET_CURRENT_ASSIGNMENT_IDS]: (state, { payload }) => {
+    state.currentAssignmentIds = payload;
   }
 });

@@ -189,11 +189,6 @@ class LeftFilter extends React.Component {
   };
 
   showDeleteConfirm = folderId => {
-    const { folders } = this.props;
-    const folderContent = folders.filter(folder => folderId === folder._id);
-    if (folderContent[0] && folderContent[0].content && folderContent[0].content.length > 0) {
-      notification({ type: "info", messageKey: "deleteFolder" });
-    }
     this.setState({ selectedFolder: folderId }, () => this.showModal("delFolder"));
   };
 

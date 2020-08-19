@@ -9,7 +9,7 @@ import {
   themeColor
 } from "@edulastic/colors";
 import { Card, FlexContainer } from "@edulastic/common";
-import { Affix, Input, Pagination } from "antd";
+import { Affix, Input, Pagination, Modal } from "antd";
 import styled from "styled-components";
 
 export const ScrollBox = styled.div`
@@ -81,7 +81,7 @@ export const Container = styled.div`
 export const ScrollbarWrapper = styled.div``;
 
 export const Filter = styled.div`
-  width: 250px;
+  width: ${props => (props.isShowFilter ? "20px" : "250px")};
   z-index: 0;
 
   @media (max-width: ${desktopWidth}) {
@@ -113,7 +113,7 @@ export const MobileFilter = styled.div`
 export const Main = styled.div`
   flex: 1;
   background: white;
-  width: calc(100% - 250px);
+  width: ${props => (props.isShowFilter ? "calc(100% - 20px)" : "calc(100% - 250px)")};
   overflow: hidden;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
@@ -151,11 +151,18 @@ export const SearchModalContainer = styled.div`
   width: 100%;
 `;
 
+export const MobileFilterModal = styled(Modal)`
+  display: block;
+  @media (min-width: ${desktopWidth}) {
+    display: block;
+  }
+`;
+
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 250px;
   top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
-  padding: 20px 0px;
+  padding: 0px 0px 20px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${props => props.theme.HeaderHeight.md + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;

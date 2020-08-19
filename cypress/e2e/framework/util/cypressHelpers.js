@@ -65,15 +65,11 @@ export default class CypressHelper {
     console.log("time here", dateTime);
     cy.wait(300);
     if (time) {
-      const [date, time] = dateTime.toLocaleString().split(",");
-      const formattedDate = date
-        .split("/")
-        .reverse()
-        .join("-");
-      const datetimeToSet = `${formattedDate}${time}`;
+      const datetimeToSet = Cypress.moment(dateTime).format("YYYY-MM-DD hh:mm:ss a");
       cy.get(".ant-calendar-date-input-wrap")
         .find("input")
-        .type(`${"{backspace}".repeat(datetimeToSet.substr(1).length)}${datetimeToSet.substr(1)}`);
+        .clear()
+        .type(`${datetimeToSet}`);
       cy.get(".ant-calendar-ok-btn").click({ force: true });
     } else {
       const [day, mon, date, year] = dateTime.toDateString().split(" ");
@@ -86,6 +82,18 @@ export default class CypressHelper {
     }
 
     cy.wait(300);
+  };
+
+  static setCustomBrowserDate = ({ dateToForward = 0, monthToForward = 0, yearToForward = 0 }) => {
+    const date = new Date();
+    return cy.clock(
+      Date.UTC(
+        date.getUTCFullYear() + yearToForward,
+        date.getUTCMonth() + monthToForward,
+        date.getUTCDate() + dateToForward
+      ),
+      ["Date"]
+    );
   };
 
   static getShortId = item => item.slice(item.length - 5);
@@ -109,6 +117,7 @@ export default class CypressHelper {
     cy
       .get(".ant-notification-notice-message")
       .should("contain", msg)
+      .should("be.visible")
       .then($ele => {
         $ele.detach();
       });

@@ -1,5 +1,5 @@
 import { desktopWidth, mobileWidthMax, tabGrey, themeColor, themeColorTagsBg, white } from "@edulastic/colors";
-import { AnswerContext, withWindowSizes, notification } from "@edulastic/common";
+import { AnswerContext, withWindowSizes, notification, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { Avatar, Card, Input } from "antd";
 import { get, isEqual, isUndefined, maxBy, round, sumBy, toNumber } from "lodash";
@@ -42,7 +42,7 @@ class FeedbackRight extends Component {
       maxScore = props?.widget?.validation?.validResponse?.score || 0;
     }
 
-    this.state = { score, maxScore, showPreviewRubric: false };
+    this.state = { score, maxScore, showPreviewRubric: false, showFeedbackSaveBtn: false };
 
     this.scoreInput = React.createRef();
   }
@@ -186,6 +186,7 @@ class FeedbackRight extends Component {
     if (changed) {
       this.setState({ submitted: true }, this.onFeedbackSubmit);
     }
+    this.setState({ showFeedbackSaveBtn: false });
   };
 
   submitScore = () => {
@@ -208,6 +209,7 @@ class FeedbackRight extends Component {
 
   onKeyDownFeedback = e => {
     this.arrowKeyHandler(e);
+    this.setState({ showFeedbackSaveBtn: true })
   };
 
   arrowKeyHandler = ({ keyCode }) => {
@@ -269,7 +271,7 @@ class FeedbackRight extends Component {
       disabled,
       isPracticeQuestion
     } = this.props;
-    const { score, maxScore, feedback, showPreviewRubric, changed } = this.state;
+    const { score, maxScore, feedback, showPreviewRubric, changed, showFeedbackSaveBtn } = this.state;
     let rubricMaxScore = 0;
     if (rubricDetails) rubricMaxScore = sumBy(rubricDetails.criteria, c => maxBy(c.ratings, "points").points);
     const { rubricFeedback } = activity || {};
@@ -284,7 +286,7 @@ class FeedbackRight extends Component {
           {isPresentationMode ? (
             <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
           ) : (
-              <UserAvatar>{getAvatarName(studentName)}</UserAvatar>
+            <UserAvatar>{getAvatarName(studentName)}</UserAvatar>
             )}
           &nbsp;
           {studentName}
@@ -339,14 +341,16 @@ class FeedbackRight extends Component {
             <RubricsButton onClick={() => this.handleRubricAction()}>Grading Rubric</RubricsButton>
           </RubricsWrapper>
         )}
-        <LeaveDiv>{isError ? "Score is too large" : "Leave a feedback!"}</LeaveDiv>
+        <LeaveDiv>
+          <span>{isError ? "Score is too large" : "Student Feedback!"}</span>
+          {showFeedbackSaveBtn && <EduButton height="32px" onClick={this.preCheckSubmit}>Save</EduButton>}
+        </LeaveDiv>
         {!isError && (
           <Fragment>
             <FeedbackInput
               tabIndex={0}
               data-cy="feedBackInput"
               onChange={this.onChangeFeedback}
-              onBlur={this.preCheckSubmit}
               value={feedback}
               disabled={!activity || isPresentationMode}
               onKeyDown={this.onKeyDownFeedback}
@@ -499,6 +503,10 @@ const LeaveDiv = styled.div`
   font-weight: 600;
   color: ${tabGrey};
   font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
 `;
 
 const TitleDiv = styled.div`

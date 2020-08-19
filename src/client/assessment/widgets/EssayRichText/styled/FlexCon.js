@@ -1,35 +1,38 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FlexContainer } from "@edulastic/common";
+import { dashBorderColor, greyThemeDark1, greyThemeDark2, themeColorBlue, white } from "@edulastic/colors";
 
-export const FlexCon = styled(FlexContainer)`
+const activeStyle = css`
+  background: ${themeColorBlue};
+  svg {
+    fill: ${white};
+  }
+`;
+
+const normalStyle = css`
+  background: ${white};
+  svg {
+    fill: ${greyThemeDark1};
+    width: 15px;
+    height: 13px;
+  }
+`;
+
+export const Container = styled(FlexContainer)`
   border-radius: 4px;
-  & > *:first-child {
+  border: 1px solid ${dashBorderColor};
+  background: ${white};
+
+  .drag-handler {
+    fill: ${greyThemeDark2};
+    stroke: ${greyThemeDark2};
+    width: 16px;
+    height: 14px;
+  }
+
+  .option-block {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-  }
-  & > *:last-child {
-    border-top: 1px solid ${props => props.theme.widgets.essayRichText.flexConBorderColor}!important;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-  }
-  border: 1px solid ${props => props.theme.widgets.essayRichText.flexConBorderColor};
-  & > button {
-    &:focus {
-      outline: none;
-    }
-    border: none;
-    padding: 3px 5px;
-    svg {
-      height: auto !important;
-    }
-    .ql-stroke {
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 2;
-    }
-    .ql-stroke.ql-thin {
-      stroke-width: 1;
-    }
+    ${({ active }) => (active ? activeStyle : normalStyle)}
   }
 `;

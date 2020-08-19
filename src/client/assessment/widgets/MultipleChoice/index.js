@@ -19,6 +19,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import { replaceVariables } from "../../utils/variables";
 
 import { ContentArea } from "../../styled/ContentArea";
+import { AdvancedOptionContainer } from "../../styled/AdvancedOptionContainer";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
@@ -39,10 +40,6 @@ const Divider = styled.div`
 `;
 
 class MultipleChoice extends Component {
-  state = {
-    correctTab: 0
-  };
-
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
     const item = view === EDIT ? templateItem : replaceVariables(templateItem);
@@ -73,47 +70,6 @@ class MultipleChoice extends Component {
       uiStyle: item.uiStyle,
       multipleResponses: !!item.multipleResponses
     };
-  };
-
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    const { correctTab } = this.state;
-
-    setQuestionData(
-      produce(item, draft => {
-        const response = {
-          score: 1,
-          value: []
-        };
-
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.push(response);
-        } else {
-          draft.validation.altResponses = [response];
-        }
-      })
-    );
-
-    this.setState({
-      correctTab: correctTab + 1
-    });
-  };
-
-  handleRemoveAltResponses = index => {
-    const { setQuestionData, item } = this.props;
-    const { correctTab } = this.state;
-
-    setQuestionData(
-      produce(item, draft => {
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
-        }
-      })
-    );
-
-    this.setState({
-      correctTab: correctTab + 1
-    });
   };
 
   handleAddAnswer = qid => {
@@ -189,15 +145,16 @@ class MultipleChoice extends Component {
       flowLayout,
       advancedLink,
       disableResponse,
+      setQuestionData,
       ...restProps
     } = this.props;
-    const { correctTab } = this.state;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle, multipleResponses } = this.getRenderData();
     const isV1Multipart = get(col, "isV1Multipart", false);
     const fontSize = getFontSize(uiStyle?.fontsize);
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
     const qId = item.id;
     // const multi_response = this.props.item.multipleResponses;
+
     return (
       <React.Fragment>
         <PaddingDiv className="multiple-choice-wrapper">
@@ -205,8 +162,9 @@ class MultipleChoice extends Component {
             <ContentArea>
               <Authoring
                 item={itemForEdit}
-                fillSections={fillSections}
                 fontSize={fontSize}
+                setQuestionData={setQuestionData}
+                fillSections={fillSections}
                 cleanSections={cleanSections}
               />
               <Question
@@ -218,19 +176,17 @@ class MultipleChoice extends Component {
                 <CorrectAnswers
                   uiStyle={uiStyle}
                   options={previewDisplayOptions}
-                  question={previewStimulus}
+                  question={itemForEdit}
                   multipleResponses={multipleResponses}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
                   validation={item.validation}
                   itemLevelScoring={item.itemLevelScoring}
                   itemLevelScore={item.itemLevelScore}
-                  item={item}
+                  setQuestionData={setQuestionData}
                   styleType="primary"
                   fillSections={fillSections}
                   cleanSections={cleanSections}
-                  correctTab={correctTab}
                   fontSize={fontSize}
+                  queTitle={item?.title}
                   {...restProps}
                 />
                 <Divider />
@@ -248,16 +204,18 @@ class MultipleChoice extends Component {
 
               {advancedLink}
 
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                advancedAreOpen={advancedAreOpen}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-                multipleResponses={multipleResponses}
-                item={item}
-                {...restProps}
-              />
+              <AdvancedOptionContainer>
+                <Options
+                  onChange={this.handleOptionsChange}
+                  uiStyle={uiStyle}
+                  advancedAreOpen={advancedAreOpen}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                  multipleResponses={multipleResponses}
+                  item={item}
+                  {...restProps}
+                />
+              </AdvancedOptionContainer>
             </ContentArea>
           )}
           {view === PREVIEW && (

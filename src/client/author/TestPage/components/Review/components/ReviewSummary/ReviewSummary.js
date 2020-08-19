@@ -5,9 +5,9 @@ import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import { getInterestedStandards } from "../../../../../dataUtils";
 import Tags from "../../../../../src/components/common/Tags";
-import { getInterestedCurriculumsSelector, getItemBucketsSelector } from "../../../../../src/selectors/user";
+import { getInterestedCurriculumsSelector, getCollectionsToAddContent } from "../../../../../src/selectors/user";
 import {
-  getDisableAnswerOnPaperSelector as hasRandomQuestions,
+  getDisableAnswerOnPaperSelector as hasRandomQuestionsSelector,
   getTestEntitySelector,
   getTestSummarySelector
 } from "../../../../ducks";
@@ -43,17 +43,18 @@ const ReviewSummary = ({
   collections = [],
   interestedCurriculums,
   windowWidth,
-  orgCollections,
   test: { itemGroups, metadata },
   summary,
   hasRandomQuestions,
-  isPublishers
+  isPublishers,
+  collectionsToShow
 }) => {
   const questionsCount = summary?.totalItems || 0;
   const totalPoints = summary?.totalPoints || 0;
-  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+
+  const filteredCollections = useMemo(() => collections.filter(c => collectionsToShow.some(o => o._id === c._id)), [
     collections,
-    orgCollections
+    collectionsToShow
   ]);
 
   const skillIdentifiers = (metadata?.skillIdentifiers || []).join(",");
@@ -103,29 +104,28 @@ const ReviewSummary = ({
             ))}
           </SelectInputStyled>
         </InnerFlex>
-        {isPublishers && (
-          <InnerFlex>
-            <FieldLabel>Collections</FieldLabel>
-            <SelectInputStyled
-              showArrow
-              mode="multiple"
-              data-cy="collectionsSelect"
-              size="medium"
-              disabled={!owner || !isEditable}
-              placeholder="Please select"
-              value={filteredCollections.flatMap(c => c.bucketIds)}
-              onChange={onChangeCollection}
-              filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
-              margin="0px 0px 15px"
-            >
-              {orgCollections?.map(o => (
-                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
-                  {`${o.collectionName} - ${o.name}`}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </InnerFlex>
-        )}
+
+        <InnerFlex>
+          <FieldLabel>Collections</FieldLabel>
+          <SelectInputStyled
+            showArrow
+            mode="multiple"
+            data-cy="collectionsSelect"
+            size="medium"
+            disabled={!owner || !isEditable}
+            placeholder="Please select"
+            value={filteredCollections.flatMap(c => c.bucketIds)}
+            onChange={(value, options) => onChangeCollection(value, options)}
+            filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
+            margin="0px 0px 15px"
+          >
+            {collectionsToShow?.map(o => (
+              <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                {`${o.collectionName} - ${o.name}`}
+              </Select.Option>
+            ))}
+          </SelectInputStyled>
+        </InnerFlex>
       </FlexBoxTwo>
 
       <FlexBoxThree>
@@ -168,7 +168,7 @@ const ReviewSummary = ({
         <FlexBoxFour>
           <Row>
             <TableHeaderCol span={12}>Summary</TableHeaderCol>
-            <TableHeaderCol span={6}>Q's</TableHeaderCol>
+            <TableHeaderCol span={6}>Q&apos;s</TableHeaderCol>
             <TableHeaderCol span={6}>Points</TableHeaderCol>
           </Row>
           {summary &&
@@ -206,7 +206,6 @@ const ReviewSummary = ({
 
 ReviewSummary.propTypes = {
   totalPoints: PropTypes.number.isRequired,
-  questionsCount: PropTypes.number.isRequired,
   onChangeGrade: PropTypes.func.isRequired,
   onChangeSubjects: PropTypes.func.isRequired,
   grades: PropTypes.array.isRequired,
@@ -218,13 +217,21 @@ ReviewSummary.propTypes = {
   subjects: PropTypes.array.isRequired
 };
 
+ReviewSummary.defaultProps = {
+  thumbnail: "",
+  summary: {},
+  owner: false,
+  isEditable: false,
+  onChangeField: () => {}
+};
+
 export default connect(
   state => ({
     interestedCurriculums: getInterestedCurriculumsSelector(state),
-    orgCollections: getItemBucketsSelector(state),
     test: getTestEntitySelector(state),
-    hasRandomQuestions: hasRandomQuestions(state),
-    summary: getTestSummarySelector(state)
+    hasRandomQuestions: hasRandomQuestionsSelector(state),
+    summary: getTestSummarySelector(state),
+    collectionsToShow: getCollectionsToAddContent(state)
   }),
   null
 )(ReviewSummary);

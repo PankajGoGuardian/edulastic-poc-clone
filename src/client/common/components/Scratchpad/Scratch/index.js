@@ -49,8 +49,7 @@ const Scratchpad = ({
   readOnly,
   disableResize,
   hideTools,
-  clearClicked, // this is from highlight image
-  isLCBView
+  clearClicked // this is from highlight image
 }) => {
   const [zwibbler, setZwibbler] = useState();
   const [clipBoard, updateClipBoard] = useState();
@@ -271,7 +270,7 @@ const Scratchpad = ({
         showHints: false,
         scrollbars: false,
         readOnly,
-        setFocus: !isLCBView // Zwibbler will be unable to intercept any keyboard commands
+        setFocus: false // Zwibbler will be unable to intercept any keyboard commands
       });
       newZwibbler.on("node-clicked", node => {
         if (isDeleteMode.current) {
@@ -373,8 +372,7 @@ Scratchpad.propTypes = {
   data: PropTypes.string,
   hideTools: PropTypes.bool,
   readOnly: PropTypes.bool,
-  disableResize: PropTypes.bool,
-  isLCBView: PropTypes.bool
+  disableResize: PropTypes.bool
 };
 
 Scratchpad.defaultProps = {
@@ -382,8 +380,7 @@ Scratchpad.defaultProps = {
   readOnly: false,
   disableResize: false,
   hideTools: false,
-  data: "",
-  isLCBView: false
+  data: ""
 };
 
 /**

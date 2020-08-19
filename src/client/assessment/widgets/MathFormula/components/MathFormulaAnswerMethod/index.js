@@ -540,6 +540,7 @@ const MathFormulaAnswerMethod = ({
               {((item.template && item.templateDisplay) || useTemplate) && (
                 <StaticMath
                   {...mathInputProps}
+                  noBorder
                   latex={studentTemplate}
                   innerValues={innerValues}
                   onInput={handleChangeStaticMathInput}
@@ -574,7 +575,7 @@ const MathFormulaAnswerMethod = ({
         )}
       </Row>
 
-      {methodOptions.includes("field") && (
+      {methodOptions?.includes("field") && (
         <StyledRow gutter={24}>
           <Col span={12}>
             <Field value={options.field} onChange={changeOptions} />

@@ -1,12 +1,12 @@
+import { schoolApi, tagsApi, userApi } from "@edulastic/api";
+import { CustomModalStyled, EduButton, notification, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row, Select, Spin } from "antd";
+import { debounce, get, uniq } from "lodash";
 import React, { Component } from "react";
-import { get, debounce, uniq } from "lodash";
-import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
-import { notification } from "@edulastic/common";
-import { schoolApi, userApi, tagsApi, courseApi } from "@edulastic/api";
 import { connect } from "react-redux";
-import selectsData from "../../../../TestPage/components/common/selectsData";
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
 import { getCourseLoading, getCoursesForDistrictSelector } from "../../../../Courses/ducks";
+import selectsData from "../../../../TestPage/components/common/selectsData";
 
 const { Option } = Select;
 const { allGrades, allSubjects } = selectsData;
@@ -120,7 +120,7 @@ class AddClassModal extends Component {
     this.setState({ teacherList: teacherListData, fetchingTeacher: false });
   };
 
-  handleTeacherChange = value => {
+  handleTeacherChange = () => {
     // this code was commented out since the form handles setting of fields automatically, and
     // there is no need to manually set fields
     // this.props.form.setFieldsValue({ teacher: value });
@@ -177,7 +177,7 @@ class AddClassModal extends Component {
 
     const { getFieldDecorator } = this.props.form;
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("class.components.addclass.title")}
         onOk={this.onAddClass}
@@ -186,8 +186,8 @@ class AddClassModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
-            <OkButton onClick={this.onAddClass}>{t("class.components.addclass.title")}</OkButton>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("common.cancel")}</EduButton>
+            <EduButton onClick={this.onAddClass}>{t("class.components.addclass.title")}</EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -201,7 +201,7 @@ class AddClassModal extends Component {
                     message: t("class.components.addclass.validation.class")
                   }
                 ]
-              })(<Input placeholder={t("class.components.addclass.classname")} />)}
+              })(<TextInputStyled placeholder={t("class.components.addclass.classname")} maxLength={128} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -209,7 +209,7 @@ class AddClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label={t("class.components.addclass.subject")}>
               {getFieldDecorator("subject")(
-                <Select
+                <SelectInputStyled
                   placeholder={t("class.components.addclass.selectsubject")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
@@ -218,7 +218,7 @@ class AddClassModal extends Component {
                       {el.text}
                     </Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -227,7 +227,7 @@ class AddClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label={t("class.components.addclass.grade")}>
               {getFieldDecorator("grades")(
-                <Select
+                <SelectInputStyled
                   mode="multiple"
                   placeholder={t("class.components.addclass.selectgrade")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -237,7 +237,7 @@ class AddClassModal extends Component {
                       {text}
                     </Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -246,7 +246,7 @@ class AddClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label={t("class.components.addclass.course")}>
               {getFieldDecorator("courseId")(
-                <Select
+                <SelectInputStyled
                   showSearch
                   onSearch={this.fetchCoursesForDistrict}
                   onFocus={this.fetchCoursesForDistrict}
@@ -258,7 +258,7 @@ class AddClassModal extends Component {
                   {courseList.map(course => (
                     <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -267,7 +267,7 @@ class AddClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label={t("class.components.addclass.tags")}>
               {getFieldDecorator("tags")(
-                <Select
+                <SelectInputStyled
                   data-cy="tagsSelect"
                   mode="multiple"
                   style={{ marginBottom: 0 }}
@@ -286,14 +286,14 @@ class AddClassModal extends Component {
                       {`${searchValue} (Create new Tag)`}
                     </Select.Option>
                   ) : (
-                    ""
-                  )}
+                      ""
+                    )}
                   {allTagsData.map(({ tagName, _id }) => (
                     <Select.Option key={_id} value={_id} title={tagName}>
                       {tagName}
                     </Select.Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -309,7 +309,7 @@ class AddClassModal extends Component {
                   }
                 ]
               })(
-                <Select
+                <SelectInputStyled
                   showSearch
                   labelInValue
                   placeholder={t("class.components.addclass.placeholder.teacher")}
@@ -326,7 +326,7 @@ class AddClassModal extends Component {
                       {`${get(teacher, ["_source", "username"], "")}`}
                     </Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -342,7 +342,7 @@ class AddClassModal extends Component {
                   }
                 ]
               })(
-                <Select
+                <SelectInputStyled
                   showSearch
                   labelInValue
                   placeholder={t("class.components.addclass.placeholder.school")}
@@ -358,12 +358,12 @@ class AddClassModal extends Component {
                       {school._source.name}
                     </Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
         </Row>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

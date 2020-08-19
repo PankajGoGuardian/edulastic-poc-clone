@@ -66,6 +66,10 @@ export default class TeacherManageClassPage {
 
   getArchiveClassInDropDown = () => cy.get("li").contains("Archive Class");
 
+  getunArchiveButton = () => cy.get("span").contains("UNARCHIVE");
+
+  getSchoolDropDown = () => cy.get(`#institutionId`)
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -156,6 +160,7 @@ export default class TeacherManageClassPage {
 
   selectStandardSets = standardSets => {
     this.getStandardSets()
+      .should("not.contain", "No Data")
       .as("selector")
       .click();
     this.clearSelections("standardSets");
@@ -217,6 +222,17 @@ export default class TeacherManageClassPage {
   // class list
   // adding students
 
+  verifyIfSchoolPresent = (schoolName) => {
+    this.getSchoolDropDown().click()
+    cy.get("li").contains(schoolName).should('be.visible')
+    this.getSchoolDropDown().click()
+  }
+
+  selectSchool = (schoolName) => {
+    this.getSchoolDropDown().click()
+    cy.get("li").contains(schoolName).click();
+  }
+
   clickOnAddStudents = () => cy.get('[data-cy="addMultiStu"]').click();
 
   clickOnAddStudent = () => cy.get('[data-cy="addStudent"]').click();
@@ -271,18 +287,20 @@ export default class TeacherManageClassPage {
 
   clickOnDone = () => cy.get("[data-cy='done']").click();
 
-  clickOnAddStudentsButton = () => {
+  clickOnAddStudentsButton = (saveUserToDelete = true) => {
     cy.get("[data-cy='addStudents']").click();
     cy.wait("@newenrollment").then(xhr => expect(xhr.status).to.eq(200));
     return cy.wait("@enrollment").then(xhr => {
       expect(xhr.status).to.eq(200);
-      const res = xhr.responseBody;
-      const _id = [];
-      res.result.students.forEach(stu => {
-        const { _id: stuId } = stu;
-        _id.push(stuId);
-      });
-      cy.saveUserDetailToDelete({ role: "student", _id });
+      if (saveUserToDelete) {
+        const res = xhr.responseBody;
+        const _id = [];
+        res.result.students.forEach(stu => {
+          const { _id: stuId } = stu;
+          _id.push(stuId);
+        });
+        cy.saveUserDetailToDelete({ role: "student", _id });
+      }
     });
   };
 
@@ -311,12 +329,20 @@ export default class TeacherManageClassPage {
     cy.route("DELETE", "**/group/**").as("archieveClass");
     this.clickHeaderDropDown();
     this.getArchiveClassInDropDown().click({ force: true });
-    cy.get("input").type("ARCHIVE");
+    cy.get(".ant-col > input").type("ARCHIVE");
     cy.contains("Yes, Archive").click();
     cy.wait("@archieveClass")
       .its("status")
       .should("be.eq", 200);
   };
+
+  gotoLastPage = () =>
+    cy
+      .get('[title = "Next Page"]')
+      .prev()
+      .click();
+
+  unarchiveButtonNotVisible = () => this.getunArchiveButton().should("not.be.visible");
 
   // *** ACTIONS END ***
 
@@ -395,7 +421,8 @@ export default class TeacherManageClassPage {
     this.getToEnrollStudents()
       .contains(username)
       .should("be.visible");
-    this.clickOnAddStudentsButton();
+
+    this.clickOnAddStudentsButton(false);
     this.clickOnDone();
   }
 
@@ -407,5 +434,35 @@ export default class TeacherManageClassPage {
       .contains("span", className)
       .should("not.exist");
 
+  unArchieveClassByName(className, success = true) {
+    cy.route("POST", "**/search/users").as("searchUser");
+    this.clickOnClassRowByName(className)
+    cy.wait("@searchUser")
+    this.clickUnArchive(success)
+  }
+
+  clickUnArchive(success = true) {
+    cy.route("POST", "**/unarchive").as("unarchive");
+    this.getunArchiveButton().click({ force: true });
+    cy.get(`.ant-modal-body >`).contains("span", "Unarchive").click({ force: true })
+    if (success) {
+      cy.wait("@unarchive").then((xhr) => {
+        expect(xhr.status).to.eq(200)
+      })
+    } else {
+      cy.wait("@unarchive").then((xhr) => {
+        expect(xhr.status, "Expected to join the school before unarchiving class").to.eq(403)
+        expect(xhr.responseBody.message).to.have.string("Class is not part of the current school.")
+      })
+    }
+  }
+
+  goToLastPage() {
+    cy.get("body").then($body => {
+      if ($body.find(".ant-table-pagination > li").length > 0) {
+        cy.get('[title="Next Page"]').prev().click()
+      }
+    })
+  }
   // *** APPHELPERS END ***
 }

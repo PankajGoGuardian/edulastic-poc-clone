@@ -1,7 +1,7 @@
 import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf, keyBy } from "lodash";
 import next from "immer";
 import moment from "moment";
-import calcMethod from "./static/json/calcMethod";
+import calcMethod from "./static/json/calcMethod.json";
 
 export const testTypeHashMap = {
   practice: "practice",
@@ -90,9 +90,12 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
           .split(",")
           .filter(g => g.length)
           .includes(currentFilter.grade) || currentFilter.grade === "All";
+      const checkForSchool = currentFilter.schoolId === "All" ||
+        (item.groupType === "class" && item.schoolId === currentFilter.schoolId);
       if (
         item.groupId &&
         checkForGrades &&
+        checkForSchool &&
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All")
       ) {

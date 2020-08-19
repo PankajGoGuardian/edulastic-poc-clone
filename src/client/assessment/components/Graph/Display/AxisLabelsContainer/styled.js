@@ -44,8 +44,7 @@ export const ContainerWithResponses = styled.div`
     color: ${props => props.theme.widgets.chart.labelStrokeColor};
     border-color: ${props => props.theme.widgets.chart.labelStrokeColor};
     &.mounted::after {
-      border-color: ${props => props.theme.widgets.chart.labelStrokeColor} transparent transparent
-        transparent;
+      border-color: ${props => props.theme.widgets.chart.labelStrokeColor} transparent transparent transparent;
     }
   }
   display: flex;
@@ -64,5 +63,10 @@ export const ContainerWithResponses = styled.div`
         : "row-reverse"};
     justify-content: ${({ responseBoxPosition }) =>
       responseBoxPosition === "top" || responseBoxPosition === "left" ? "flex-start" : "flex-end"};
+  }
+
+  .jsxbox-with-annotation {
+    position: relative;
+    overflow: auto;
   }
 `;

@@ -92,7 +92,8 @@ const Author = ({
   loadDistrictPolicy,
   loadSchoolPolicy,
   schoolId,
-  isProxyUser
+  isProxyUser,
+  isCliUser
 }) => {
   useEffect(() => {
     if (role === roleuser.SCHOOL_ADMIN && schoolId) {
@@ -102,6 +103,13 @@ const Author = ({
       loadDistrictPolicy({ orgId, orgType: "district" });
     }
   }, [orgId, schoolId]);
+
+  useEffect(() => {
+    const intercomElm = document.querySelector(".intercom-lightweight-app");
+    if (intercomElm) {
+      intercomElm.style.display = isCliUser ? "none" : "block";
+    }
+  }, [isCliUser]);
 
   const themeToPass = themes.default;
 
@@ -115,9 +123,9 @@ const Author = ({
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
         <StyledLayout isProxyUser={isProxyUser}>
-          <MainContainer isPrintPreview={isPrintPreview}>
+          <MainContainer isPrintPreview={isPrintPreview || isCliUser}>
             <Spin spinning={districtProfileLoading} />
-            <SidebarCompnent isPrintPreview={isPrintPreview} isProxyUser={isProxyUser} />
+            <SidebarCompnent isPrintPreview={isPrintPreview || isCliUser} isProxyUser={isProxyUser} />
             <Wrapper>
               <ErrorHandler disablePage={isDisablePageInMobile(history.location.pathname)}>
                 <Suspense fallback={<Progress />}>
@@ -171,7 +179,11 @@ const Author = ({
                     <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                     <Route exact path={`${match.url}/printpreview/:assignmentId/:classId`} component={PrintPreview} />
                     <Route exact path={`${match.url}/printAssessment/:testId`} component={PrintAssessment} />
-                    <Route exact path={`${match.url}/manageClass/printPreview`} component={PrintPreviewClass} />
+                    <Route
+                      exact
+                      path={`${match.url}/manageClass/:classId/printpreview`}
+                      component={PrintPreviewClass}
+                    />
                     <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />
                     <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
                     <Route exact path={`${match.url}/manageClass/:classId`} component={ClassDetails} />
@@ -337,6 +349,15 @@ const Author = ({
                       render={props => (
                         <Suspense fallback={<Progress />}>
                           <Gradebook {...props} />
+                        </Suspense>
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/author/gradebook/student/:studentId"
+                      render={props => (
+                        <Suspense fallback={<Progress />}>
+                          <Gradebook {...props} urlHasStudent />
                         </Suspense>
                       )}
                     />
@@ -567,7 +588,8 @@ export default connect(
     districtProfile: get(state, ["districtProfileReducer", "data"], {}),
     districtProfileLoading: get(state, ["districtProfileReducer", "loading"], false),
     schoolId: get(state, "user.saSettingsSchool"),
-    isProxyUser: isProxyUserSelector(state)
+    isProxyUser: isProxyUserSelector(state),
+    isCliUser: get(state, "user.isCliUser", false)
   }),
   {
     loadDistrictPolicy: receiveDistrictPolicyAction,

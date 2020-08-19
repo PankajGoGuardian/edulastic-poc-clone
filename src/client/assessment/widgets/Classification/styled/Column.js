@@ -17,8 +17,7 @@ export const Column = styled.div`
 export const ColumnHeader = styled.div`
   display: flex;
   align-items: center;
-  background-color: ${({ transparent }) => (transparent ? "transparent" : "#ececec")};
-  border: 1px solid #ddd;
+  justify-content: center;
   min-height: 39px;
 `;
 

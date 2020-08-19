@@ -111,7 +111,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
       lcb.verifyStudentStatusIsByIndex(0, studentSide.SUBMITTED.toLowerCase(), true);
 
       // marks should be '0' and que bars should reflect manually graded colors
-      lcb.getStudentScoreByIndex(0).should("contain.text", "0 / 6");
+      lcb.verifyScoreByStudentIndex(0, 0, 6);
       barGraph.verifyQueBarAndToolTipBasedOnAttemptData(attemptTypeData, Cypress._.keys(attemptTypeData.attempt));
     });
     it("> verify author side student view(before manual evaluation)", () => {
@@ -152,7 +152,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     it("> verify status and try closing", () => {
       // closing should not be allowed as still evaluation needs to be done
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
-      lcb.header.clickOnClose(false);
+      lcb.header.clickOnClose();
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
     });
     it("> manual evaluation in question view", () => {
@@ -183,15 +183,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
       lcb.clickOnCardViewTab();
       cy.wait(3000);
       lcb.verifyStudentStatusIsByIndex(0, studentSide.GRADED);
-      lcb.getStudentScoreByIndex(0).should("contain.text", "3 / 6");
+      lcb.verifyScoreByStudentIndex(0, 3, 6);
       lcb.verifyQuestionCards(0, attemptTypes);
       lcb.getStudentPerformanceByIndex(0).should("contain", `50%`);
       barGraph.verifyQueBarAndToolTipBasedOnAttemptData(attemptTypeData, Cypress._.keys(attemptTypeData.attempt));
     });
-    it("> verify status and try closing", () => {
-      // closing should be possible as its evalluated now
-      lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
-      lcb.header.clickOnClose();
+    it("> verify status", () => {
       lcb.header.verifyAssignmentStatus(teacherSide.DONE);
     });
     it("> verify author side express grader", () => {
@@ -251,7 +248,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       testLibraryPage.sidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
-      lcb.getStudentScoreByIndex(0).should("contain.text", "0 / 6");
+      lcb.verifyScoreByStudentIndex(0, 0, 6);
       barGraph.verifyQueBarAndToolTipBasedOnAttemptData(attemptTypeData, Cypress._.keys(attemptTypeData.attempt));
 
       lcb.clickOnStudentsTab();

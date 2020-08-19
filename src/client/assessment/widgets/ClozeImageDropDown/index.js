@@ -92,32 +92,6 @@ class ClozeImageDropDown extends Component {
     );
   };
 
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        const response = {
-          score: 1,
-          value: {}
-        };
-
-        draft.validation.altResponses = draft.validation.altResponses || {};
-        draft.validation.altResponses.push(response);
-      })
-    );
-  };
-
-  handleRemoveAltResponses = index => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
-        }
-      })
-    );
-  };
-
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
     setQuestionData(
@@ -216,13 +190,10 @@ class ClozeImageDropDown extends Component {
                       imageUrl={item.imageUrl}
                       imageWidth={item.imageWidth}
                       imageHeight={item.imageHeight || 0}
-                      question={previewStimulus}
                       showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                       uiStyle={uiStyle}
                       backgroundColor={item.background}
                       maxRespCount={item.maxRespCount}
-                      onAddAltResponses={this.handleAddAltResponses}
-                      onRemoveAltResponses={this.handleRemoveAltResponses}
                       fillSections={fillSections}
                       cleanSections={cleanSections}
                       imageOptions={item.imageOptions}

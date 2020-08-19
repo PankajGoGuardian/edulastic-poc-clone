@@ -176,7 +176,7 @@ class StudentSignup extends React.Component {
           classCode: "Please provide a valid class code."
         }
       }));
-    } else if (error.askPassword) {
+    } else if ((error || {}).askPassword) {
       if (error.passwordMatch === false) {
         notification({ messageKey: "passwordIsIncorrect" });
       }
@@ -199,6 +199,7 @@ class StudentSignup extends React.Component {
   onClickProceed = () => {
     this.handleSubmit();
   };
+
   renderGeneralFormFields = () => {
     const {
       form: { getFieldDecorator, getFieldError },

@@ -390,8 +390,8 @@ function getAreaLinesByPoint({ usrX, usrY }, board, funcs) {
 
 function renderArea(board, points, opacity = 0.3, priorityColor = null) {
   return board.$board.create("polygon", points.map(p => [p.x, p.y]), {
-    fillColor: priorityColor || "#00b2ff",
-    highlightFillColor: priorityColor || "#00b2ff",
+    fillColor: priorityColor || "#434B5D",
+    highlightFillColor: priorityColor || "#434B5D",
     highlightFillOpacity: opacity,
     fillOpacity: opacity,
     hasInnerPoints: false,
@@ -407,8 +407,8 @@ function renderArea(board, points, opacity = 0.3, priorityColor = null) {
 function renderAreaByLines(board, lines, priorityColor = null) {
   return lines.map(({ p1, p2 }) =>
     board.$board.create("line", [[p1.x, p1.y], [p2.x, p2.y]], {
-      strokeColor: priorityColor || "#00b2ff",
-      highlightStrokeColor: priorityColor || "#00b2ff",
+      strokeColor: priorityColor || "#434B5D",
+      highlightStrokeColor: priorityColor || "#434B5D",
       firstarrow: false,
       lastarrow: false,
       straightfirst: false,
@@ -548,7 +548,7 @@ function create(board, object, settings = {}) {
   const { x, y, id = null, priorityColor } = object;
 
   const areaPoint = board.$board.create("point", [x, y], {
-    ...getColorParams(priorityColor || "#00b2ff"),
+    ...getColorParams(priorityColor || "#434B5D"),
     showInfoBox: false,
     size: 7,
     snapToGrid: false,

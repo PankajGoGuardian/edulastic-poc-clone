@@ -1,9 +1,10 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, notification } from "@edulastic/common";
+import { CheckboxLabel, EduButton, notification, SelectInputStyled } from "@edulastic/common";
+import { SearchInputStyled } from "@edulastic/common/src/components/InputStyles";
 import { roleuser } from "@edulastic/constants";
 import { IconNotes, IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, Menu, Select } from "antd";
+import { Col, Icon, Menu, Row, Select } from "antd";
 import { cloneDeep, get, isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -12,12 +13,8 @@ import { Link } from "react-router-dom";
 import { compose } from "redux";
 import {
   StyledActionDropDown,
-  StyledAddFilterButton,
   StyledClassName,
-  StyledControlDiv,
-  StyledFilterDiv,
-  StyledFilterInput,
-  StyledFilterSelect
+  StyledFilterDiv
 } from "../../../../admin/Common/StyledComponents";
 import {
   FilterWrapper,
@@ -26,7 +23,6 @@ import {
   RightFilterDiv,
   StyledButton,
   StyledPagination,
-  StyledSchoolSearch,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer
@@ -53,7 +49,7 @@ import AddClassModal from "./AddClassModal/AddClassModal";
 import ArchiveClassModal from "./ArchiveClassModal/ArchiveClassModal";
 import BulkEditModal from "./BulkEditModal";
 import EditClassModal from "./EditClassModal/EditClassModal";
-import { ClassTable, StyledCreateSchoolBtn, TeacherSpan } from "./styled";
+import { ClassTable, TeacherSpan } from "./styled";
 
 const { Option } = Select;
 
@@ -101,10 +97,6 @@ class ClassesTable extends Component {
           filterAdded: false
         }
       ],
-      sortedInfo: {
-        columnKey: "name",
-        order: "asc"
-      },
       currentPage: 1,
       selectedArchiveClasses: [],
       showActive: true,
@@ -114,7 +106,7 @@ class ClassesTable extends Component {
   }
 
   componentDidMount() {
-    const { userOrgId, loadClassListData, getAllTags, dataPassedWithRoute } = this.props;
+    const { getAllTags, dataPassedWithRoute } = this.props;
     if (!isEmpty(dataPassedWithRoute)) {
       this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
     } else {
@@ -140,7 +132,7 @@ class ClassesTable extends Component {
   //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
   // };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     return {
       dataSource: nextProps.classList
     };
@@ -208,7 +200,6 @@ class ClassesTable extends Component {
   };
 
   changePagination = pageNumber => {
-    const { filtersData, sortedInfo, searchByName } = this.state;
     this.setState({ currentPage: pageNumber }, this.loadFilteredList);
   };
 
@@ -316,7 +307,6 @@ class ClassesTable extends Component {
   };
 
   handleSearchName = value => {
-    const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
   };
 
@@ -345,7 +335,7 @@ class ClassesTable extends Component {
       }
       return item;
     });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
   changeStatusValue = (value, key) => {
@@ -399,8 +389,8 @@ class ClassesTable extends Component {
     this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
   };
 
-  addFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+  addFilter = () => {
+    const { filtersData } = this.state;
     if (filtersData.length < 3) {
       this.setState(state => ({
         filtersData: [
@@ -417,7 +407,7 @@ class ClassesTable extends Component {
   };
 
   removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
       newFiltersData.push({
@@ -512,7 +502,6 @@ class ClassesTable extends Component {
       setBulkEditVisibility,
       setBulkEditMode,
       setBulkEditUpdateView,
-      bulkUpdateClasses,
       allTagsData,
       addNewTag,
       role,
@@ -686,69 +675,83 @@ class ClassesTable extends Component {
       }
 
       SearchRows.push(
-        <StyledControlDiv>
-          <StyledFilterSelect
-            placeholder={t("common.selectcolumn")}
-            onChange={e => this.changeFilterColumn(e, i)}
-            value={filtersColumn}
-          >
-            <Option value="" disabled>
-              {t("common.selectcolumn")}
-            </Option>
-            <Option value="codes">{t("class.code")}</Option>
-            <Option value="courses">{t("class.course")}</Option>
-            <Option value="teachers">{t("class.teacher")}</Option>
-            <Option value="grades">{t("class.grade")}</Option>
-            <Option value="subjects">{t("class.subject")}</Option>
-            <Option value="institutionNames">{t("class.schoolname")}</Option>
-            <Option value="active">{t("class.status")}</Option>
-          </StyledFilterSelect>
-          <StyledFilterSelect
-            placeholder={t("common.selectvalue")}
-            onChange={e => this.changeFilterValue(e, i)}
-            value={filtersValue}
-          >
-            {optValues}
-          </StyledFilterSelect>
-          {filterStrDD[filtersColumn] ? (
-            <StyledFilterSelect
-              placeholder={filterStrDD[filtersColumn].placeholder}
-              onChange={e => this.changeStatusValue(e, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
+        <Row gutter={20} style={{ marginbottom: "5px" }}>
+          <Col span={6}>
+            <SelectInputStyled
+              placeholder={t("common.selectcolumn")}
+              onChange={e => this.changeFilterColumn(e, i)}
+              value={filtersColumn}
+              height="32px"
             >
-              {filterStrDD[filtersColumn].list.map(item => (
-                <Option value={item.value} disabled={item.disabled}>
-                  {item.title}
-                </Option>
-              ))}
-            </StyledFilterSelect>
-          ) : (
-            <StyledFilterInput
-              placeholder={t("common.entertext")}
-              onChange={e => this.changeFilterText(e, i)}
-              onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-              onBlur={e => this.onBlurFilterText(e, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
-              ref={this.filterTextInputRef[i]}
-            />
-          )}
-          {i < 2 && (
-            <StyledAddFilterButton
-              type="primary"
-              onClick={e => this.addFilter(e, i)}
-              disabled={isAddFilterDisable || i < filtersData.length - 1}
+              <Option value="" disabled>
+                {t("common.selectcolumn")}
+              </Option>
+              <Option value="codes">{t("class.code")}</Option>
+              <Option value="courses">{t("class.course")}</Option>
+              <Option value="teachers">{t("class.teacher")}</Option>
+              <Option value="grades">{t("class.grade")}</Option>
+              <Option value="subjects">{t("class.subject")}</Option>
+              <Option value="institutionNames">{t("class.schoolname")}</Option>
+              <Option value="active">{t("class.status")}</Option>
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            <SelectInputStyled
+              placeholder={t("common.selectvalue")}
+              onChange={e => this.changeFilterValue(e, i)}
+              value={filtersValue}
+              height="32px"
             >
-              {t("common.addfilter")}
-            </StyledAddFilterButton>
-          )}
-          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              {t("common.removefilter")}
-            </StyledAddFilterButton>
-          )}
-        </StyledControlDiv>
+              {optValues}
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            {filterStrDD[filtersColumn] ? (
+              <SelectInputStyled
+                placeholder={filterStrDD[filtersColumn].placeholder}
+                onChange={e => this.changeStatusValue(e, i)}
+                disabled={isFilterTextDisable}
+                value={filterStr}
+                height="32px"
+              >
+                {filterStrDD[filtersColumn].list.map(item => (
+                  <Option value={item.value} disabled={item.disabled}>
+                    {item.title}
+                  </Option>
+                ))}
+              </SelectInputStyled>
+            ) : (
+              <SearchInputStyled
+                placeholder={t("common.entertext")}
+                onChange={e => this.changeFilterText(e, i)}
+                onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                onBlur={e => this.onBlurFilterText(e, i)}
+                disabled={isFilterTextDisable}
+                value={filterStr}
+                ref={this.filterTextInputRef[i]}
+                height="32px"
+              />
+              )}
+          </Col>
+          <Col span={6} style={{ display: "flex" }}>
+            {i < 2 && (
+              <EduButton
+                type="primary"
+                width="50%"
+                height="32px"
+                onClick={e => this.addFilter(e, i)}
+                disabled={isAddFilterDisable || i < filtersData.length - 1}
+              >
+                {t("common.addfilter")}
+              </EduButton>
+            )}
+            {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+              <EduButton width="50%" height="32px" type="primary" onClick={e => this.removeFilter(e, i)}>
+                {t("common.removefilter")}
+              </EduButton>
+            )}
+          </Col>
+        </Row>
       );
     }
     return (
@@ -765,14 +768,15 @@ class ClassesTable extends Component {
 
         <StyledFilterDiv>
           <LeftFilterDiv width={60}>
-            <StyledSchoolSearch
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
-            <StyledCreateSchoolBtn type="primary" onClick={this.showAddClassModal}>
+            <EduButton type="primary" onClick={this.showAddClassModal}>
               {t("class.createnewclass")}
-            </StyledCreateSchoolBtn>
+            </EduButton>
           </LeftFilterDiv>
 
           <RightFilterDiv width={35}>
@@ -784,10 +788,14 @@ class ClassesTable extends Component {
             >
               {t("class.showactiveclass")}
             </CheckboxLabel>
-            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-              <Button>
+            <StyledActionDropDown
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+              overlay={actionMenu}
+              trigger={["click"]}
+            >
+              <EduButton isGhost>
                 {t("common.actions")} <Icon type="down" />
-              </Button>
+              </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>

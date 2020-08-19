@@ -1,34 +1,37 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { MathFormulaDisplay } from "@edulastic/common";
+import { MathFormulaDisplay, CorrectAnswersContainer } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-
-import { Wrapper } from "./styled/Wrapper";
 import { Answer } from "./styled/Answer";
 
 export const formatToMathAnswer = answer =>
   answer.search("input__math") !== -1 ? answer : `<span class="input__math" data-latex="${answer}"></span>`;
 
-const CorrectAnswerBox = ({ answer = "", t, altAnswers }) => {
+const CorrectAnswerBox = ({ answer = "", t, altAnswers, theme, index }) => {
   const displayAnswer = formatToMathAnswer(answer);
 
   return (
-    <Wrapper>
-      <h2 style={{ fontSize: 20 }}>
-        {!altAnswers ? t("component.math.correctAnswers") : t("component.math.alternateAnswers")}
-      </h2>
+    <CorrectAnswersContainer
+      title={!altAnswers ? t("component.math.correctAnswers") : `${t("component.math.alternateAnswers")} ${index}`}
+      minHeight="auto"
+    >
       <Answer>
-        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: displayAnswer }} />
+        <MathFormulaDisplay color={theme.answerBox.textColor} dangerouslySetInnerHTML={{ __html: displayAnswer }} />
       </Answer>
-    </Wrapper>
+    </CorrectAnswersContainer>
   );
 };
 
 CorrectAnswerBox.propTypes = {
   answer: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
-  altAnswers: PropTypes.bool.isRequired
+  altAnswers: PropTypes.bool.isRequired,
+  index: PropTypes.number
+};
+
+CorrectAnswerBox.defaultProps = {
+  index: 1
 };
 
 const enhance = compose(withNamespaces("assessment"));

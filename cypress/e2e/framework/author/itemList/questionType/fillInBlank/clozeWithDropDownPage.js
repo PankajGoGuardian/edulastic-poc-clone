@@ -48,9 +48,9 @@ class ClozeDropDownPage {
       .find("label");
 
   checkAnsChoicesLength = (respIndex, lengthOfChoices, expectedLength) => {
-    let arrayOfchoices = [];
+    const arrayOfchoices = [];
     for (let i = 0; i < lengthOfChoices.length; i++) {
-      let container = this.getResponseContainer(respIndex).find(`[data-cy="edit_prefix_${i}"]`);
+      const container = this.getResponseContainer(respIndex).find(`[data-cy="edit_prefix_${i}"]`);
       if (container != "undefined") {
         container.invoke("text").then(txt => {
           arrayOfchoices.push(txt);
@@ -60,7 +60,7 @@ class ClozeDropDownPage {
     expect(arrayOfchoices).to.have.lengthOf(expectedLength);
   };
 
-  getPoints = () => cy.get("#cloze-with-drop-down-points");
+  getPoints = () => cy.get("#text-drop-down-points");
 
   // advance options
   clickOnAdvancedOptions() {
@@ -81,7 +81,7 @@ class ClozeDropDownPage {
   }
 
   verifyShuffleChoices = (index, choices, shuffled = true) => {
-    let arrayOfchoices = [];
+    const arrayOfchoices = [];
     cy.get("[data-cy='drop_down_select']")
       .eq(index)
       .click();
@@ -129,7 +129,7 @@ class ClozeDropDownPage {
   getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
 
   addAlternate() {
-    cy.get('[data-cy="alternative"]').click({ force: true });
+    cy.get('[data-cy="alternate"]').click({ force: true });
     return this;
   }
 
@@ -158,7 +158,7 @@ class ClozeDropDownPage {
       .eq(index - 1)
       .should("be.visible");
 
-  getShowAnsBoxOnPreview = () => cy.get(".response-btn").should("be.visible");
+  getShowAnsBoxOnPreview = () => cy.get(`[data-cy="correctAnswer"]`);
 
   createQuestion = (queKey = "default", queIndex = 0, onlyItem = true) => {
     const item = new EditItemPage();

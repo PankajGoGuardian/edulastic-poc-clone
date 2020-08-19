@@ -306,6 +306,7 @@ const TableList = ({
       sorter: (a, b) => a.name.localeCompare(b.name, "en", { ignorePunctuation: true }),
       width: "20%",
       className: "assignment-name",
+      align: "left",
       render: (text, row) => (
         <Tooltip placement="bottom" title={<div>{text}</div>}>
           <FlexContainer style={{ marginLeft: 0 }} justifyContent="left">
@@ -398,10 +399,12 @@ const TableList = ({
                 assignmentTest,
                 togglePrintModal,
                 canEdit: row.canEdit && !(row.hasAdminAssignments && userRole === roleuser.TEACHER),
-                userClassList
+                userClassList,
+                canUnassign: !(row.hasAdminAssignments && userRole === roleuser.TEACHER)
               })}
               placement="bottomRight"
               trigger={["click"]}
+              getPopupContainer={trigger => trigger.parentNode}
             >
               <EduButton height="28px" width="100%" isGhost data-cy="actions">
                 ACTIONS

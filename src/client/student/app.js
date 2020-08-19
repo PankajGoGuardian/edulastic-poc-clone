@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import PropTypes from "prop-types";
 import { ErrorHandler } from "@edulastic/common";
@@ -7,6 +7,7 @@ import { Layout } from "antd";
 import { connect } from "react-redux";
 import { tabletWidth } from "@edulastic/colors";
 import { userApi } from "@edulastic/api";
+import queryString from "query-string";
 // import { getZoomedTheme } from "./zoomTheme";
 import Sidebar from "./Sidebar/SideMenu";
 import { Assignment } from "./Assignments";
@@ -24,18 +25,25 @@ import StartAssignment from "./StartAssignment";
 import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 import NotFound from "../NotFound";
-import { isProxyUser as isProxyUserSelector } from "./Login/ducks";
+import { isProxyUser as isProxyUserSelector, updateCliUserAction } from "./Login/ducks";
 
-const StudentApp = ({ match, selectedTheme, isProxyUser }) => {
+const StudentApp = ({ match, selectedTheme, isProxyUser, location, updateCliUser, isCliUser }) => {
   const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
+  useEffect(() => {
+    const searchParams = queryString.parse(location.search);
+    if (searchParams.cliUser) {
+      updateCliUser(true);
+    }
+  }, []);
+
   return (
     <ThemeProvider theme={themeToPass}>
       <StyledLayout isProxyUser={isProxyUser}>
-        <MainContainer>
-          <Sidebar isProxyUser={isProxyUser} />
+        <MainContainer isCliUser={isCliUser}>
+          {!isCliUser && <Sidebar isProxyUser={isProxyUser} />}
           <Wrapper>
             <ErrorHandler>
               <Switch>
@@ -75,8 +83,11 @@ const StudentApp = ({ match, selectedTheme, isProxyUser }) => {
 export default connect(({ ui, user }) => ({
   selectedTheme: ui.selectedTheme,
   zoomLevel: ui.zoomLevel,
-  isProxyUser: isProxyUserSelector({ user })
-}))(StudentApp);
+  isProxyUser: isProxyUserSelector({ user }),
+  isCliUser: user?.isCliUser
+}), {
+  updateCliUser: updateCliUserAction
+})(StudentApp);
 
 StudentApp.propTypes = {
   match: PropTypes.object.isRequired,
@@ -84,7 +95,7 @@ StudentApp.propTypes = {
 };
 
 const MainContainer = addThemeBackgroundColor(styled.div`
-  padding-left: 70px;
+  padding-left: ${({ isCliUser }) => isCliUser ? "0" : "70px"};
   width: 100%;
 
   /* &.zoom1 {

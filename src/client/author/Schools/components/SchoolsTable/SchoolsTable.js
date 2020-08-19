@@ -1,54 +1,43 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
-import { Link } from "react-router-dom";
-
-import { Form, Icon, Select, Button, Menu } from "antd";
-
-import { roleuser } from "@edulastic/constants";
-import  {notification} from "@edulastic/common";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-
 import { themeColor } from "@edulastic/colors";
+import { EduButton, notification, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { SearchInputStyled } from "@edulastic/common/src/components/InputStyles";
+import { roleuser } from "@edulastic/constants";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
+import { Col, Form, Icon, Menu, Row, Select } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { compose } from "redux";
+import { StyledActionDropDown, StyledFilterDiv } from "../../../../admin/Common/StyledComponents";
 import {
-  StyledControlDiv,
-  StyledFilterDiv,
-  StyledFilterSelect,
-  StyledAddFilterButton,
-  StyledFilterInput,
-  StyledActionDropDown
-} from "../../../../admin/Common/StyledComponents";
-import {
-  StyledHeaderColumn,
-  StyledSortIconDiv,
-  StyledSortIcon,
-  StyledCreateSchoolButton,
-  StyledSchoolTable
-} from "./styled";
-import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
   FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
   StyledButton,
   StyledPagination,
-  StyledSchoolSearch,
   StyledTableButton,
-  LeftFilterDiv,
-  RightFilterDiv
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../../common/styled";
-
-import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
-import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
-
-// actions
-import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteSchoolsAction, getSchoolsSelector } from "../../ducks";
-import {getUserOrgId, getUserOrgName, getUserRole} from "../../../src/selectors/user";
-import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
 import Breadcrumb from "../../../src/components/Breadcrumb";
+import { getUserOrgId, getUserOrgName, getUserRole } from "../../../src/selectors/user";
+// actions
+import {
+  createSchoolsAction,
+  deleteSchoolsAction,
+  getSchoolsSelector,
+  receiveSchoolsAction,
+  updateSchoolsAction,
+  updateSchoolApprovalRequestAction
+} from "../../ducks";
+import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
+import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
+import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
+import { StyledHeaderColumn, StyledSchoolTable, StyledSortIcon, StyledSortIconDiv } from "./styled";
 
 const Option = Select.Option;
 
@@ -152,23 +141,40 @@ class SchoolsTable extends React.Component {
   };
 
   changeActionMode = e => {
-    const { selectedRowKeys } = this.state;
-    const { t } = this.props;
+    const { selectedRowKeys, dataSource } = this.state;
+    const { t, updateSchoolApprovalRequest } = this.props;
+    const selectedSchoolsData = dataSource.filter(({ _id }) => selectedRowKeys.includes(_id));
 
     if (e.key === "edit school") {
       if (selectedRowKeys.length == 0) {
-        notification({msg:t("school.validations.editSchool")});
+        notification({ msg: t("school.validations.editSchool") });
       } else if (selectedRowKeys.length == 1) {
         this.onEditSchool(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        notification({msg:t("school.validations.editsingleschool")});
+        notification({ msg: t("school.validations.editsingleschool") });
       }
     } else if (e.key === "deactivate school") {
       if (selectedRowKeys.length > 0) {
         this.onDeactivateSchool();
       } else {
-        notification({msg:t("school.validations.deleteschool")});
+        notification({ msg: t("school.validations.deleteschool") });
       }
+    } else if (e.key === "approve school") {
+      if (selectedRowKeys.length === 0) {
+        return notification({ msg: "Please select atleast one school" });
+      }
+      if (selectedSchoolsData.some(({ isApproved }) => isApproved)) {
+        return notification({ msg: "Please select Not Approve schools only" });
+      }
+      updateSchoolApprovalRequest({ schoolIds: selectedRowKeys, isApprove: true });
+    } else if (e.key === "unapprove school") {
+      if (selectedRowKeys.length === 0) {
+        return notification({ msg: "Please select atleast one school" });
+      }
+      if (selectedSchoolsData.some(({ isApproved }) => !isApproved)) {
+        return notification({ msg: "Please select Approved schools only" });
+      }
+      updateSchoolApprovalRequest({ schoolIds: selectedRowKeys, isApprove: false });
     }
   };
 
@@ -395,10 +401,10 @@ class SchoolsTable extends React.Component {
             search[filtersColumn].push(filterStr);
           }
         } else if (!search[filtersColumn]) {
-            search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
-          } else {
-            search[filtersColumn].push({ type: filtersValue, value: filterStr });
-          }
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+        } else {
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+        }
       }
     }
 
@@ -471,10 +477,10 @@ class SchoolsTable extends React.Component {
         editable: true,
         render: name => <span>{name || "-"}</span>,
         onHeaderCell: () => ({
-            onClick: () => {
-              this.onHeaderCell("name");
-            }
-          })
+          onClick: () => {
+            this.onHeaderCell("name");
+          }
+        })
       },
       {
         title: (
@@ -496,10 +502,10 @@ class SchoolsTable extends React.Component {
         editable: true,
         render: city => <span>{city || "-"}</span>,
         onHeaderCell: () => ({
-            onClick: () => {
-              this.onHeaderCell("city");
-            }
-          })
+          onClick: () => {
+            this.onHeaderCell("city");
+          }
+        })
       },
       {
         title: (
@@ -521,10 +527,10 @@ class SchoolsTable extends React.Component {
         editable: true,
         render: state => <span>{state || "-"}</span>,
         onHeaderCell: () => ({
-            onClick: () => {
-              this.onHeaderCell("state");
-            }
-          })
+          onClick: () => {
+            this.onHeaderCell("state");
+          }
+        })
       },
       {
         title: (
@@ -546,10 +552,10 @@ class SchoolsTable extends React.Component {
         editable: true,
         render: zip => <span>{zip || "-"}</span>,
         onHeaderCell: () => ({
-            onClick: () => {
-              this.onHeaderCell("zip");
-            }
-          })
+          onClick: () => {
+            this.onHeaderCell("zip");
+          }
+        })
       },
       {
         title: (
@@ -570,19 +576,19 @@ class SchoolsTable extends React.Component {
         dataIndex: "isApproved",
         editable: true,
         onHeaderCell: () => ({
-            onClick: () => {
-              this.onHeaderCell("isApproved");
-            }
-          }),
+          onClick: () => {
+            this.onHeaderCell("isApproved");
+          }
+        }),
         render: (text, record) => (
           <React.Fragment>
             {typeof record.isApproved === "boolean" && record.isApproved === false ? (
               <span>{t("school.notapproved")}</span>
-              ) : (
-                <span>{t("school.approved")}</span>
-              )}
+            ) : (
+              <span>{t("school.approved")}</span>
+            )}
           </React.Fragment>
-          )
+        )
       },
       {
         title: (
@@ -596,20 +602,20 @@ class SchoolsTable extends React.Component {
         render: (teachersCount, { _id } = {}) => (
           <Link
             to={{
-                pathname: "/author/users/teacher",
-                institutionId: _id
-                // uncomment after school filter is implemented in backend
-                // state: {
-                //   filtersColumn: "institutionNames",
-                //   filtersValue: "eq",
-                //   filterStr: name,
-                //   filterAdded: true
-                // }
-              }}
+              pathname: "/author/users/teacher",
+              institutionId: _id
+              // uncomment after school filter is implemented in backend
+              // state: {
+              //   filtersColumn: "institutionNames",
+              //   filtersValue: "eq",
+              //   filterStr: name,
+              //   filterAdded: true
+              // }
+            }}
           >
             {teachersCount}
           </Link>
-          )
+        )
       },
       {
         title: (
@@ -623,13 +629,13 @@ class SchoolsTable extends React.Component {
         render: (studentsCount, { _id } = {}) => (
           <Link
             to={{
-                pathname: "/author/users/student",
-                institutionId: _id
-              }}
+              pathname: "/author/users/student",
+              institutionId: _id
+            }}
           >
             {studentsCount}
           </Link>
-          )
+        )
       },
       {
         title: (
@@ -643,18 +649,18 @@ class SchoolsTable extends React.Component {
         render: (sectionsCount, { name } = {}) => (
           <Link
             to={{
-                pathname: "/author/Classes",
-                state: {
-                  filtersColumn: "institutionNames",
-                  filtersValue: "eq",
-                  filterStr: name,
-                  filterAdded: true
-                }
-              }}
+              pathname: "/author/Classes",
+              state: {
+                filtersColumn: "institutionNames",
+                filtersValue: "eq",
+                filterStr: name,
+                filterAdded: true
+              }
+            }}
           >
             {sectionsCount}
           </Link>
-          )
+        )
       },
       {
         dataIndex: "operation",
@@ -664,18 +670,18 @@ class SchoolsTable extends React.Component {
               <IconPencilEdit color={themeColor} />
             </StyledTableButton>
             {role === roleuser.DISTRICT_ADMIN && (
-            <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
-              <IconTrash color={themeColor} />
-            </StyledTableButton>
-              )}
+              <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
+                <IconTrash color={themeColor} />
+              </StyledTableButton>
+            )}
           </div>
-          )
+        )
       }
     ];
 
     const columns = columnsInfo.map(col => ({
-        ...col
-      }));
+      ...col
+    }));
 
     const rowSelection = {
       selectedRowKeys,
@@ -686,9 +692,13 @@ class SchoolsTable extends React.Component {
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit school">{t("school.editschool")}</Menu.Item>
-        {role === roleuser.DISTRICT_ADMIN ? (
+        {role === roleuser.DISTRICT_ADMIN && (
           <Menu.Item key="deactivate school">{t("school.deactivateschool")}</Menu.Item>
-        ) : null}
+        )}
+        {role === roleuser.DISTRICT_ADMIN && <Menu.Item key="approve school">{t("school.approveSchool")}</Menu.Item>}
+        {role === roleuser.DISTRICT_ADMIN && (
+          <Menu.Item key="unapprove school">{t("school.unapproveSchool")}</Menu.Item>
+        )}
       </Menu>
     );
 
@@ -711,67 +721,79 @@ class SchoolsTable extends React.Component {
       }
 
       SearchRows.push(
-        <StyledControlDiv>
-          <StyledFilterSelect
-            placeholder={t("common.selectcolumn")}
-            onChange={e => this.changeFilterColumn(e, i)}
-            defaultValue={filtersData[i].filtersColumn}
-            value={filtersData[i].filtersColumn}
-          >
-            <Option value="">{t("common.selectcolumn")}</Option>
-            <Option value="address">{t("school.address")}</Option>
-            <Option value="city">{t("school.city")}</Option>
-            <Option value="state">{t("school.state")}</Option>
-            <Option value="zip">{t("school.zip")}</Option>
-            <Option value="isApproved">{t("school.status")}</Option>
-          </StyledFilterSelect>
-
-          <StyledFilterSelect
-            placeholder={t("common.selectvalue")}
-            onChange={e => this.changeFilterValue(e, i)}
-            value={filtersData[i].filtersValue}
-          >
-            {optValues}
-          </StyledFilterSelect>
-          {filtersData[i].filtersColumn !== "isApproved" ? (
-            <StyledFilterInput
-              placeholder={t("common.entertext")}
-              onChange={e => this.changeFilterText(e, i)}
-              onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-              onBlur={e => this.onBlurFilterText(e, i)}
-              disabled={isFilterTextDisable}
-              value={filtersData[i].filterStr}
-              ref={this.filterTextInputRef[i]}
-            />
-          ) : (
-            <StyledFilterSelect
+        <Row gutter="20" style={{ marginBottom: "5px" }}>
+          <Col span={6}>
+            <SelectInputStyled
+              placeholder={t("common.selectcolumn")}
+              onChange={e => this.changeFilterColumn(e, i)}
+              defaultValue={filtersData[i].filtersColumn}
+              value={filtersData[i].filtersColumn}
+              height="32px"
+            >
+              <Option value="">{t("common.selectcolumn")}</Option>
+              <Option value="address">{t("school.address")}</Option>
+              <Option value="city">{t("school.city")}</Option>
+              <Option value="state">{t("school.state")}</Option>
+              <Option value="zip">{t("school.zip")}</Option>
+              <Option value="isApproved">{t("school.status")}</Option>
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            <SelectInputStyled
               placeholder={t("common.selectvalue")}
-              onChange={e => this.changeStatusValue(e, i)}
-              disabled={isFilterTextDisable}
-              value={filtersData[i].filterStr}
+              onChange={e => this.changeFilterValue(e, i)}
+              value={filtersData[i].filtersValue}
+              height="32px"
             >
-              <Option value="">{t("common.selectvalue")}</Option>
-              <Option value="true">{t("school.approved")}</Option>
-              <Option value="false">{t("school.notapproved")}</Option>
-            </StyledFilterSelect>
-          )}
+              {optValues}
+            </SelectInputStyled>
+          </Col>
+          <Col span={6}>
+            {filtersData[i].filtersColumn !== "isApproved" ? (
+              <TextInputStyled
+                placeholder={t("common.entertext")}
+                onChange={e => this.changeFilterText(e, i)}
+                onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                onBlur={e => this.onBlurFilterText(e, i)}
+                disabled={isFilterTextDisable}
+                value={filtersData[i].filterStr}
+                ref={this.filterTextInputRef[i]}
+                height="32px"
+              />
+            ) : (
+              <SelectInputStyled
+                placeholder={t("common.selectvalue")}
+                onChange={e => this.changeStatusValue(e, i)}
+                disabled={isFilterTextDisable}
+                value={filtersData[i].filterStr}
+                height="32px"
+              >
+                <Option value="">{t("common.selectvalue")}</Option>
+                <Option value="true">{t("school.approved")}</Option>
+                <Option value="false">{t("school.notapproved")}</Option>
+              </SelectInputStyled>
+            )}
+          </Col>
+          <Col span={6} style={{ display: "flex" }}>
+            {i < 2 && (
+              <EduButton
+                height="32px"
+                width="50%"
+                type="primary"
+                onClick={e => this.addFilter(e, i)}
+                disabled={isAddFilterDisable || i < filtersData.length - 1}
+              >
+                {t("common.addfilter")}
+              </EduButton>
+            )}
 
-          {i < 2 && (
-            <StyledAddFilterButton
-              type="primary"
-              onClick={e => this.addFilter(e, i)}
-              disabled={isAddFilterDisable || i < filtersData.length - 1}
-            >
-              {t("common.addfilter")}
-            </StyledAddFilterButton>
-          )}
-
-          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              {t("common.removefilter")}
-            </StyledAddFilterButton>
-          )}
-        </StyledControlDiv>
+            {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+              <EduButton width="50%" height="32px" type="primary" onClick={e => this.removeFilter(e, i)}>
+                {t("common.removefilter")}
+              </EduButton>
+            )}
+          </Col>
+        </Row>
       );
     }
 
@@ -779,7 +801,7 @@ class SchoolsTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton isGhost type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -789,22 +811,27 @@ class SchoolsTable extends React.Component {
 
         <StyledFilterDiv>
           <LeftFilterDiv width={80}>
-            <StyledSchoolSearch
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
             {role === roleuser.DISTRICT_ADMIN ? (
-              <StyledCreateSchoolButton type="primary" onClick={this.showCreateSchoolModal}>
+              <EduButton height="36px" type="primary" onClick={this.showCreateSchoolModal}>
                 {t("school.createschool")}
-              </StyledCreateSchoolButton>
+              </EduButton>
             ) : null}
           </LeftFilterDiv>
           <RightFilterDiv width={15}>
-            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-              <Button>
+            <StyledActionDropDown
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+              overlay={actionMenu}
+              trigger={["click"]}
+            >
+              <EduButton isGhost>
                 {t("common.actions")} <Icon type="down" />
-              </Button>
+              </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
@@ -873,7 +900,8 @@ const enhance = compose(
       loadSchoolsData: receiveSchoolsAction,
       createSchool: createSchoolsAction,
       updateSchool: updateSchoolsAction,
-      deleteSchool: deleteSchoolsAction
+      deleteSchool: deleteSchoolsAction,
+      updateSchoolApprovalRequest: updateSchoolApprovalRequestAction
     }
   )
 );

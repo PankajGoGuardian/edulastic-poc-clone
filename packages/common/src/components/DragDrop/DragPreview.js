@@ -1,5 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { useDragLayer } from "react-dnd";
+import styled from "styled-components";
 import { get } from "lodash";
 import { ScrollContext, HorizontalScrollContext } from "@edulastic/common";
 
@@ -30,7 +31,12 @@ const getItemStyles = (initialOffset, currentOffset) => {
   };
 };
 
-const CustomDragLayer = () => {
+/**
+ * @param {boolean} showPoint
+ * needed only for graph placement type at this moment.
+ * dragging value is on dropcontainer, showPoint is true, otherwise it is false
+ */
+const CustomDragLayer = ({ showPoint }) => {
   const verticalInterval = useRef(null);
   const horizontalInterval = useRef(null);
   const { isDragging, item, initialOffset, currentOffset } = useDragLayer(monitor => ({
@@ -42,14 +48,20 @@ const CustomDragLayer = () => {
   }));
 
   // ------------- vertical drag scroll start -----------------
-  const scrollContext = useContext(ScrollContext);
-  const scrollEl = scrollContext.getScrollElement();
+  const { scrollWindowInsteadContainer, getScrollElement = () => null } = useContext(ScrollContext);
+  const scrollEl = getScrollElement();
+  /**
+   * in edit mode we need to scroll on the window
+   * using scrollBy on the container does not make the page scroll in edit mode
+   * @see https://snapwiz.atlassian.net/browse/EV-17407
+   */
 
   if (scrollEl) {
     const containerTop = scrollEl.offsetTop + 20;
     const containerBottom = scrollEl.offsetTop + scrollEl.offsetHeight - 50; // window.innerHeight - 50;
     const yOffset = get(currentOffset, "y", null);
     const scrollByVertical = yOffset < containerTop ? -10 : 10;
+    const target = scrollWindowInsteadContainer ? window : scrollEl;
     if (
       !verticalInterval.current &&
       scrollByVertical &&
@@ -57,8 +69,9 @@ const CustomDragLayer = () => {
       (yOffset < containerTop || yOffset > containerBottom)
     ) {
       verticalInterval.current = setInterval(() => {
-        scrollEl.scrollBy({
-          top: scrollByVertical
+        target.scrollBy({
+          top: scrollByVertical,
+          behavior: "smooth"
         });
       }, 50);
     } else if (verticalInterval.current && ((yOffset > containerTop && yOffset < containerBottom) || !yOffset)) {
@@ -108,9 +121,61 @@ const CustomDragLayer = () => {
 
   return (
     <div style={layerStyles}>
-      <div style={style}>{preview}</div>
+      <div style={style}>
+        {preview}
+        {showPoint && (
+          <DraggingPointer>
+            <DraggingPoint />
+          </DraggingPointer>
+        )}
+      </div>
     </div>
   );
 };
 
 export default CustomDragLayer;
+
+// these components needed only for graph type
+const DraggingPointer = styled.div`
+  position: absolute;
+  margin-top: -1px;
+  left: calc(25% - 6px);
+  z-index: 1000;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid #434b5d;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 0px;
+  }
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 1px;
+    width: 0;
+    height: 0;
+
+    border-top: 7px solid white;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 0px;
+  }
+`;
+
+const DraggingPoint = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #434b5d;
+`;

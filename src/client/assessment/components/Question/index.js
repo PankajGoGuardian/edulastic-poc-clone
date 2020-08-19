@@ -33,9 +33,6 @@ class Question extends Component {
 
       fillSections(section, label, node, sectionId);
 
-      // fix me
-      // i keep running indefinitely
-      // not sure why it is required.
       this.setState({
         intervalID: setInterval(() => {
           this.updateVariablesOfSection();
@@ -49,7 +46,15 @@ class Question extends Component {
   };
 
   showSection = () => {
-    const { userRole, isPowerTeacher, isPremiumUser, section, label, features } = this.props;
+    const {
+      userRole,
+      isPowerTeacher,
+      isPremiumUser,
+      section,
+      label,
+      features,
+      showScoringSectionAnyRole = false
+    } = this.props;
 
     // show all tools except advanced section and 'Solution' section
     if (section !== "advanced" || label === "Solution") {
@@ -57,16 +62,21 @@ class Question extends Component {
     }
     let showAdvancedTools = true;
 
-    // allowed for teacher/DA/SA having premium feature and enabled power tools
+    /**
+     * allowed for teacher/DA/SA having premium feature and enabled power tools
+     * scoring section needs to be shown for non power users as well
+     * @see https://snapwiz.atlassian.net/browse/EV-15883
+     */
     if (
       (userRole === TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
     ) {
       showAdvancedTools = false;
-      if (isPremiumUser && isPowerTeacher) {
+      if ((isPremiumUser && isPowerTeacher) || showScoringSectionAnyRole) {
         showAdvancedTools = true;
       }
     }
+
     return showAdvancedTools;
   };
 
@@ -80,12 +90,13 @@ class Question extends Component {
 
   updateVariablesOfSection = () => {
     const { el } = this.state;
-    const { fillSections, section, label } = this.props;
-
     const { current: node } = this.node;
 
     if (!node) return false;
+
     if (node.clientHeight !== el.clientHeight || node.offsetTop !== el.offsetTop) {
+      const { fillSections, section, label } = this.props;
+
       fillSections(section, label, node);
 
       this.setState({

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { title } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 
 export const WithIndex = styled.div`
   font-size: ${props => props.theme.widgets.sortList.dragItemWithIndexFontSize};
@@ -9,10 +9,10 @@ export const WithIndex = styled.div`
   background: ${({ checkStyle, correct, theme }) =>
     checkStyle
       ? correct
-        ? `${theme.widgets.sortList.dragItemIndexBoxValidBgColor}`
-        : `${theme.widgets.sortList.dragItemIndexBoxNotValidBgColor}`
-      : "none"};
-  color: ${title};
+        ? `${theme.checkbox.rightIconColor}`
+        : `${theme.checkbox.wrongIconColor}`
+      : `${theme.checkbox.noAnswerIconColor}`};
+  color: ${white};
   flex-shrink: 0;
   display: flex;
   justify-content: center;

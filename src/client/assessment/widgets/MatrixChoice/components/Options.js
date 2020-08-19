@@ -16,6 +16,7 @@ const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch];
 function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, item = {} }) {
   return (
     <WidgetOptions
+      showVariables
       fillSections={fillSections}
       cleanSections={cleanSections}
       scoringTypes={scoringTypes}

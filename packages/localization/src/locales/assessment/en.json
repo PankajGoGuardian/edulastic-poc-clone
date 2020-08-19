@@ -69,7 +69,7 @@
       "standardSet": "Standard set",
       "standard": "Standard",
       "block": "Block",
-      "radioButtonBelow": "Radio Button Below",
+      "radioButtonBelow": "Choice Option Below",
       "horizontal": "Horizontal",
       "vertical": "Vertical",
       "small": "Small",
@@ -404,7 +404,7 @@
       },
       "rich": {
         "templateText": "<p><b>William Shakespeare</b> was an English poet, playwright, and actor, widely regarded as the greatest writer in the English language and the world's...</p>",
-        "formattingOptions": "Text formatting options"
+        "formattingOptions": "Toolbar"
       }
     },
     "shortText": {
@@ -437,13 +437,15 @@
       "alternateAnswer": "Alternate Answer",
       "list": "List",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter your question"
+      "enterQuestion": "Enter your question",
+      "listLabels": "Labels"
     },
     "multiplechoice": {
       "thisisstem": "Enter your question",
       "setcorrectanswers": "Set Correct Answer(s)",
       "addnewchoice": "Add New Choice",
       "multiplechoiceoptions": "Multiple Choice Options",
+      "createchoiceoptions": "Create Options",
       "composequestion": "Question",
       "questionPlaceholder": "Enter your question",
       "optionPlaceholder": "Option",
@@ -676,7 +678,7 @@
       "correct": "Correct",
       "alternate": "Alternate",
       "points": "Points",
-      "alternativeAnswer": "Alternative Answer"
+      "alternativeAnswer": "Alternative answer and score"
     },
     "graphing": {
       "question": {
@@ -752,11 +754,11 @@
         "grid": "Grid",
         "axis_x": "X AXIS",
         "axis_y": "Y AXIS",
-        "distance": "DISTANCE",
+        "distance": "GRID DISTANCE",
         "min": "MIN",
         "max": "MAX",
         "label": "LABEL",
-        "tick_distance": "TICKS DISTANCE",
+        "tick_distance": "LABEL DISTANCE",
         "ratio": "RATIO",
         "show_axis": "SHOW AXIS",
         "comma_in_label": "COMMA IN LABEL",
@@ -899,7 +901,7 @@
       "requireIntervalNotation": "INTERVAL NOTATION"
     },
     "matrix": {
-      "matrixStyle": "Matrix style",
+      "matrixStyle": "Matching Table style",
       "multipleResponses": "Multiple responses",
       "enterQuestion": "Enter your question",
       "multipleChoiceOptions": "Multiple Choice Options",
@@ -978,6 +980,11 @@
     },
     "fractionEditor": {
       "showAnnotations": "Show Annotations"
+    },
+    "uploadfile": {
+      "composeQuestion": "Question",
+      "enterQuestion": "Enter your question",
+      "files": "Files"
     }
   }
 }

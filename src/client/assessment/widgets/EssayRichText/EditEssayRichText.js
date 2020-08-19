@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { isEqual } from "lodash";
 import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
 
-import { withNamespaces } from "@edulastic/localization";
+import { Row, Col } from "antd";
 
+import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
+import { BrowserSpellcheckOption } from "../../containers/WidgetOptions/components";
 import WordLimitAndCount from "../../components/WordLimitAndCount";
 import { ContentArea } from "../../styled/ContentArea";
 import Question from "../../components/Question";
 
 import ComposeQuestion from "./ComposeQuestion";
-import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
@@ -28,14 +28,6 @@ const EditEssayRichText = ({
   advancedLink,
   advancedAreOpen
 }) => {
-  const [act, setAct] = useState(item.formattingOptions || []);
-
-  useEffect(() => {
-    if (!isEqual(act, item.formattingOptions)) {
-      setAct(item.formattingOptions);
-    }
-  });
-
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
@@ -54,14 +46,6 @@ const EditEssayRichText = ({
         setQuestionData={setQuestionData}
       />
 
-      <FormattingOptions
-        item={item}
-        act={act}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-        setQuestionData={setQuestionData}
-      />
-
       <Question
         section="main"
         label={t("component.essayText.wordsLimitTitle")}
@@ -70,23 +54,32 @@ const EditEssayRichText = ({
         item={item}
       >
         <WordLimitAndCount
+          data-cy="setShowWordLimit"
           title={item?.title}
           withOutTopMargin
           onChange={handleItemChangeChange}
           selectValue={item.showWordLimit}
           inputValue={item.maxWord}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-          advancedAreOpen={advancedAreOpen}
-          showHeading={false}
         />
 
-        <CheckboxLabel
-          defaultChecked={item.showWordCount}
-          onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
-        >
-          {t("component.essayText.showWordCheckbox")}
-        </CheckboxLabel>
+        <Row gutter={24}>
+          <Col md={12}>
+            <CheckboxLabel
+              data-cy="showWordCount"
+              defaultChecked={item.showWordCount}
+              onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
+            >
+              {t("component.essayText.showWordCheckbox")}
+            </CheckboxLabel>
+          </Col>
+          <Col md={12}>
+            <BrowserSpellcheckOption
+              data-cy="browserSpellCheckOption"
+              onChange={val => handleItemChangeChange("spellcheck", val)}
+              checked={!!item.spellcheck}
+            />
+          </Col>
+        </Row>
       </Question>
 
       {advancedLink}
@@ -95,6 +88,7 @@ const EditEssayRichText = ({
         item={item}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
         advancedAreOpen={advancedAreOpen}
       />
     </ContentArea>

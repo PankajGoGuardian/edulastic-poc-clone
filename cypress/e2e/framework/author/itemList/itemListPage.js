@@ -60,10 +60,11 @@ class ItemListPage {
       .next();
 
   getViewItemById = id =>
-    cy
-      .get(`[data-cy=${id}]`)
+    this.getItemById(id)
       .find("button")
       .contains("VIEW");
+
+  getItemById = id => cy.get(`[data-cy=${id}]`);
 
   getTotalNoOfItemsInUI = () => cy.get('[class^="styled__PaginationInfo"]');
 
@@ -207,7 +208,7 @@ class ItemListPage {
   };
 
   verifyAbsenceOfitemById = id => {
-    this.getViewItemById(id).should("not.exist");
+    this.getItemById(id).should("not.exist");
   };
 
   verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>

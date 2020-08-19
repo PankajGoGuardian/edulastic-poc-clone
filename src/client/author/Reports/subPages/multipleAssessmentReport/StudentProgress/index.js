@@ -12,7 +12,7 @@ import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 
 import { downloadCSV, filterAccordingToRole, getFormattedName } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
-import { getUserRole } from "../../../../src/selectors/user";
+import { getUserRole, getUser } from "../../../../src/selectors/user";
 import { getFiltersSelector } from "../common/filterDataDucks";
 import { usefetchProgressHook } from "../common/hooks";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
@@ -52,6 +52,7 @@ const StudentProgress = ({
   settings,
   loading,
   role,
+  user,
   filters,
   pageTitle,
   location,
@@ -64,7 +65,7 @@ const StudentProgress = ({
     profiles[0]?.performanceBand ||
     DefaultBandInfo;
 
-  usefetchProgressHook(settings, getStudentProgressRequest);
+  usefetchProgressHook(settings, getStudentProgressRequest, user);
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
 
   const [selectedTrend, setSelectedTrend] = useState("");
@@ -194,6 +195,7 @@ const enhance = connect(
     loading: getReportsStudentProgressLoader(state),
     filters: getFiltersSelector(state),
     role: getUserRole(state),
+    user: getUser(state),
     isCsvDownloading: getCsvDownloadingState(state)
   }),
   {

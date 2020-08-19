@@ -10,7 +10,15 @@ import { FeedbackByQIdSelector, getMaxScoreFromCurrentItem } from "../../sharedD
 import { getClasses } from "../../Login/ducks";
 
 // TODO user  response to show in UI
-const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuestion, style, isStudentReport, classList = [] }) => {
+const StudentFeedback = ({
+  question,
+  qId,
+  qLabel,
+  itemMaxScore,
+  isPracticeQuestion,
+  isStudentReport,
+  classList = []
+}) => {
   const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true, groupId } = question[qId] || {};
 
   let _score = skipped ? 0 : parseFloat(score.toFixed(2));
@@ -60,7 +68,7 @@ const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuesti
 
   const _maxScore = isPracticeQuestion ? "" : maxScore;
   return (
-    <FeedbackWrapper isStudentReport={isStudentReport} style={style}>
+    <FeedbackWrapper isStudentReport={isStudentReport}>
       <FeedbackText isStudentReport={isStudentReport}>
         <QuestionText>{qLabel}</QuestionText> - Teacher Feedback
       </FeedbackText>
@@ -108,9 +116,8 @@ export default connect(
 const FeedbackWrapper = styled.div`
   margin-top: ${props => (props.isStudentReport ? "20px" : "55px")};
   padding: ${props => (props.isStudentReport ? "0px 20px" : "0px")};
-  width: 25%;
+  width: 100%;
   border-radius: 0.5rem;
-  ${({ style }) => style};
 `;
 
 const Total = styled.div`

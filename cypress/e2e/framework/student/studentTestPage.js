@@ -121,7 +121,7 @@ class StudentTestPage {
     if (isSkipped) {
       this.clickOnSkipOnPopUp();
     }
-    if (!onlyPreview) cy.wait("@saved");
+    if (!onlyPreview) return cy.wait("@saved");
   };
 
   clickOnPrevious() {
@@ -173,6 +173,13 @@ class StudentTestPage {
 
   submitTest = () => {
     this.clickSubmitButton();
+    cy.get('[data-cy="Grades"]');
+    cy.url().then(url => {
+      if (!url.includes("/home/grades"))
+        cy.get('[data-cy="Grades"]')
+          .click({ force: true })
+          .click({ force: true });
+    });
     return cy.url().should("include", "/home/grades");
   };
 
@@ -500,9 +507,12 @@ class StudentTestPage {
     cy.get("[data-cy='drop_down_select']")
       .eq(index)
       .click({ force: true });
-    cy.get("body")
+    cy.get(".ant-select-dropdown-menu-item")
       .contains(answer)
       .click({ force: true });
+    cy.get("[data-cy='drop_down_select']")
+      .eq(index)
+      .should("contain", answer);
   };
 
   // cloze with text
@@ -545,6 +555,8 @@ class StudentTestPage {
     cy.server();
     cy.route("POST", "**/test-activity/**").as("saved");
     cy.get(".fr-element")
+      .should("be.visible")
+      .first()
       .type(content)
       .then(() => cy.get("body").click());
     cy.wait("@saved", { timeout: 45000 }); // it will trigger at interval of 30000ms
@@ -863,11 +875,13 @@ class StudentTestPage {
 
   verifyNoOfQuestions = NoOfQues => {
     this.getQueDropDown()
+      .as("question-dropdown")
       .click({ force: true })
       .parent()
       .next()
       .find("li")
       .should("have.length", NoOfQues);
+    cy.get("@question-dropdown").click({ force: true });
   };
 
   // getQuestionText = () => cy.get('[data-cy="styled-wrapped-component"]');
@@ -934,25 +948,28 @@ class StudentTestPage {
   assertCalcType = type => {
     switch (type) {
       case CALCULATOR.SCIENTIFIC:
-        this.getScientificCalc().should("exist");
         this.getScientificCalc()
+          .should("exist")
           .prev()
           .click({ force: true });
         break;
       case CALCULATOR.BASIC:
-        this.getBasicCalc().should("exist");
         this.getBasicCalc()
+          .should("exist")
           .prev()
           .click({ force: true });
         break;
       case CALCULATOR.GRAPH:
-        this.getGraphCalc().should("exist");
         this.getGraphCalc()
+          .should("exist")
           .prev()
           .click({ force: true });
         break;
-      default:
+      case CALCULATOR.NONE:
         this.getCalculatorButton().should("not.exist");
+        break;
+      default:
+        assert.fail(1, 2, "calulator type did not match in student test page");
     }
   };
 
@@ -1046,6 +1063,8 @@ class StudentTestPage {
     });
 
   waitWhileAttempt = hours => cy.wait(CypressHelper.hoursToSeconds(hours) * 1000);
+
+  verifyAssesmentPlayerSkin = skin => cy.get(`[data-cy="${skin}"]`).should("be.visible");
 
   // *** APPHELPERS END ***
 }

@@ -6,7 +6,9 @@ import { connect } from "react-redux";
 
 import { Spin } from "antd";
 import { FlexContainer } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
 
+import queryString from "query-string";
 import ResponseFrequency from "./ResponseFrequency";
 import AssessmentSummary from "./AssessmentSummary";
 import PeerPerformance from "./PeerPerformance";
@@ -22,9 +24,18 @@ import navigation from "../../common/static/json/navigation.json";
 import extraFilterData from "./common/static/extraFilterData.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
+import { setSARSettingsAction, getReportsSARSettings, resetSARSettingsAction } from "./ducks";
+import { updateCliUserAction } from "../../../../student/Login/ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
+import { ReportContaner, SearchField, FilterLabel, FilterButton } from "../../common/styled";
+
+const INITIAL_DD_FILTERS = {
+  gender: "all",
+  frlStatus: "all",
+  ellStatus: "all",
+  iepStatus: "all",
+  race: "all"
+};
 
 const SingleAssessmentReportContainer = props => {
   const {
@@ -38,28 +49,33 @@ const SingleAssessmentReportContainer = props => {
     showApply,
     history,
     location,
-    match
+    match,
+    updateCliUser,
+    cliUser
   } = props;
 
   const [firstLoad, setFirstLoad] = useState(true);
+  const [isCliUser, setCliUser] = useState(cliUser || queryString.parse(location.search).cliUser);
+  const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS });
+  const [selectedExtras, setSelectedExtras] = useState({ ...INITIAL_DD_FILTERS });
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    if (isCliUser) {
+      updateCliUser(true);
+    }
+    return () => {
       console.log("Single Assessment Reports Component Unmount");
       resetAllReports();
-    },
-    []
-  );
+    }
+  }, []);
 
-  const [ddfilter, setDdFilter] = useState({
-    gender: "all",
-    frlStatus: "all",
-    ellStatus: "all",
-    iepStatus: "all",
-    race: "all"
-  });
+  useEffect(() => {
+    if (!showApply) {
+      setDdFilter({ ...selectedExtras });
+    }
+  }, [showApply, selectedExtras]);
 
-  const computeChartNavigationLinks = (sel, filt) => {
+  const computeChartNavigationLinks = (sel, filt, _isCliUser) => {
     if (navigation.locToData[loc]) {
       const arr = Object.keys(filt);
       const obj = {};
@@ -68,6 +84,7 @@ const SingleAssessmentReportContainer = props => {
         const val = filt[item] === "" ? "All" : filt[item];
         obj[item] = val;
       });
+      obj.cliUser = _isCliUser;
       return next(navigation.navigation[navigation.locToData[loc].group], draft => {
         getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`);
       });
@@ -78,17 +95,21 @@ const SingleAssessmentReportContainer = props => {
   useEffect(() => {
     if (settings.selectedTest.key) {
       const arr = Object.keys(settings.requestFilters);
+      
       const obj = {};
       // eslint-disable-next-line array-callback-return
       arr.map(item => {
         const val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
         obj[item] = val;
       });
+      if (isCliUser) {
+        obj.cliUser = true;
+      }
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`;
       history.push(path);
     }
 
-    const navigationItems = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+    const navigationItems = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters, settings.cliUser);
     updateNavigation(navigationItems);
   }, [settings]);
 
@@ -104,7 +125,8 @@ const SingleAssessmentReportContainer = props => {
 
       setSARSettings({
         selectedTest: _settings.selectedTest,
-        requestFilters: obj
+        requestFilters: obj,
+        cliUser: isCliUser
       });
     }
   };
@@ -115,28 +137,35 @@ const SingleAssessmentReportContainer = props => {
     }
   };
 
+  const setShowApply = status => {
+    onRefineResultsCB(null, status, "applyButton");
+  };
+
   const updateCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
+    setShowApply(true);
+    setSelectedExtras({
+      ...selectedExtras,
       [comData]: selected.key
     });
   };
-
-  let extraFilters = [];
-  if (loc === "peer-performance" || loc === "performance-by-standards" || loc === "performance-by-students") {
-    extraFilters = extraFilterData[loc].map(item => (
+  const locList = ["peer-performance", "performance-by-standards", "performance-by-students"];
+  const extraFilters = locList.includes(loc)
+    ? extraFilterData[loc].map(item => (
       <SearchField key={item.key}>
         <FilterLabel>{item.title}</FilterLabel>
         <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
       </SearchField>
-    ));
-  }
+    ))
+    : [];
 
   return (
     <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
       <>
         {firstLoad && <Spin size="large" />}
-        <FlexContainer alignItems="flex-start" display={firstLoad ? "none" : "flex"}>
+        <FlexContainer
+          alignItems="flex-start"
+          display={firstLoad ? "none" : "flex"}
+        >
           <SingleAssessmentReportFilters
             onGoClick={onGoClick}
             loc={loc}
@@ -154,11 +183,13 @@ const SingleAssessmentReportContainer = props => {
             extraFilters={extraFilters}
             style={showFilter ? { display: "block" } : { display: "none" }}
             showApply={showApply}
-            setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
+            setShowApply={setShowApply}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
           />
-          <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+          {!isCliUser && <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+            <IconFilter />
+          </FilterButton>}
           <ReportContaner showFilter={showFilter}>
             <Route
               exact
@@ -208,10 +239,12 @@ const SingleAssessmentReportContainer = props => {
 };
 
 const ConnectedSingleAssessmentReportContainer = connect(
-  state => ({ settings: getReportsSARSettings(state) }),
+  state => ({ settings: getReportsSARSettings(state), cliUser: state.user?.isCliUser }),
   {
     setSARSettings: setSARSettingsAction,
-    resetAllReports: resetAllReportsAction
+    resetAllReports: resetAllReportsAction,
+    updateCliUser: updateCliUserAction,
+    resetSARSettings: resetSARSettingsAction
   }
 )(SingleAssessmentReportContainer);
 

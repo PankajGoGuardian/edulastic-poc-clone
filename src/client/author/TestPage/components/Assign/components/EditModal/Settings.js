@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Col, Radio } from "antd";
-//components
-import { AlignRight, AlignSwitchRight, StyledRowSettings, SettingsWrapper, MaxAttemptIInput, Password } from "./styled";
-//selectors
+// selectors
 import { test } from "@edulastic/constants";
+import { Col, Radio } from "antd";
+import React, { useState } from "react";
 import styled from "styled-components";
+// components
+import { AlignRight, AlignSwitchRight, MaxAttemptIInput, Password, SettingsWrapper, StyledRowSettings } from "./styled";
+
 const { releaseGradeTypes, calculatorKeys, calculators, releaseGradeLabels } = test;
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -100,7 +101,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       </StyledRowSettings>
 
       {/* Safe Exam Browser/Kiosk Mode */}
-      
+
       <StyledRowSettings gutter={16}>
         <Col span={16}>
           <RowTitle>Safe Exam Browser/Kiosk Mode</RowTitle>
@@ -124,7 +125,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
           )}
         </Col>
       </StyledRowSettings>
-      {/*Safe Exam Browser/Kiosk Mode */}
+      {/* Safe Exam Browser/Kiosk Mode */}
 
       {/* Shuffle Question */}
       <StyledRowSettings gutter={16}>
@@ -197,7 +198,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       {/* Require Password */}
 
       {/* Evaluation Method */}
-      <StyledRowSettings gutter={16} islast={true}>
+      <StyledRowSettings gutter={16} islast>
         <Col span={8}>
           <RowTitle>Evaluation Method</RowTitle>
         </Col>
@@ -211,7 +212,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
           </AlignRight>
         </Col>
       </StyledRowSettings>
-      {/*Evaluation Method */}
+      {/* Evaluation Method */}
     </SettingsWrapper>
   );
 };

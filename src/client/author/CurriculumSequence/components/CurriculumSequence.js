@@ -41,7 +41,9 @@ import {
   setActiveRightPanelViewAction,
   deletePlaylistRequestAction,
   removePlaylistFromUseAction,
-  checkPreviouslyCustomizedAction
+  checkPreviouslyCustomizedAction,
+  unassignAssignmentsfromPlaylistAction,
+  duplicatePlaylistRequestAction
 } from "../ducks";
 import { getSummaryData } from "../util";
 /* eslint-enable */
@@ -56,6 +58,8 @@ import CurriculumSubHeader from "./CurriculumHeaders/CurriculumSubHeader";
 import CurriculumBreadCrumb from "./CurriculumHeaders/BreadCrumb";
 import CurriculumRightPanel from "./CurriculumRightPanel";
 import { allowDuplicateCheck } from "../../src/utils/permissionCheck";
+import { DeleteAssignmentModal } from "../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
+import { toggleDeleteAssignmentModalAction } from "../../sharedDucks/assignments";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -168,7 +172,8 @@ class CurriculumSequence extends Component {
     showSummary: false,
     showRightPanel: true,
     isVisibleAddModule: false,
-    moduleForEdit: {}
+    moduleForEdit: {},
+    unassignData: {}
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -362,8 +367,8 @@ class CurriculumSequence extends Component {
       activeRightPanel,
       role,
       isStudent,
-      setShowRightPanel,
       current,
+      setShowRightPanel,
       toggleManageContent,
       checkPreviouslyCustomized
     } = this.props;
@@ -371,7 +376,6 @@ class CurriculumSequence extends Component {
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
 
     const isManageContentActive = activeRightPanel === "manageContent";
-    setShowRightPanel(true);
 
     // if (isManageContentActive && manageContentDirty) {
     //   message.warn("Changes left unsaved. Please save it first");
@@ -395,6 +399,7 @@ class CurriculumSequence extends Component {
         }
       });
     } else {
+      setShowRightPanel(true);
       toggleManageContent(contentName);
     }
   };
@@ -448,16 +453,16 @@ class CurriculumSequence extends Component {
     const isAuthoringFlowReview = current === "review";
     if (isAuthoringFlowReview) {
       setActiveRightPanelView("manageContent");
-    } else if (!urlHasUseThis) {
-      setShowRightPanel(true);
+    } else {
+      setShowRightPanel(!!urlHasUseThis);
       setActiveRightPanelView("summary");
     }
   }
 
   checkWritePermission = () => {
-    const { destinationCurriculumSequence, currentUserId } = this.props;
+    const { destinationCurriculumSequence, currentUserId, customizeInDraft } = this.props;
     // Playlist is being authored - editFlow
-    if (!destinationCurriculumSequence.authors) return true;
+    if (!destinationCurriculumSequence.authors || customizeInDraft) return true;
     return !!destinationCurriculumSequence.authors?.find(x => x?._id === currentUserId);
   };
 
@@ -471,6 +476,20 @@ class CurriculumSequence extends Component {
   discardDraftPlaylist = () => {
     const { discardDraftPlaylist, destinationCurriculumSequence } = this.props;
     discardDraftPlaylist(destinationCurriculumSequence._id);
+  };
+
+  toggleUnassignModal = unassignData => {
+    const { toggleDeleteAssignmentModal } = this.props;
+    this.setState({ unassignData });
+    toggleDeleteAssignmentModal(true);
+  };
+
+  deleteAssignmentFromPlaylist = () => {
+    const { unassignAssignmentsRequest, toggleDeleteAssignmentModal } = this.props;
+    const { unassignData } = this.state;
+    toggleDeleteAssignmentModal(false);
+    unassignAssignmentsRequest(unassignData);
+    this.setState({ unassignData: {} });
   };
 
   render() {
@@ -529,7 +548,8 @@ class CurriculumSequence extends Component {
       location,
       deletePlaylist,
       removePlaylistFromUse,
-      customizeInDraft
+      customizeInDraft,
+      duplicatePlayList
     } = this.props;
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
@@ -618,10 +638,9 @@ class CurriculumSequence extends Component {
 
     const isPlaylistDetailsPage = window.location?.hash === "#review";
     const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
+    const canAllowDuplicate = allowDuplicateCheck(destinationCurriculumSequence.collections, collections, "playlist");
     const shouldHidCustomizeButton =
-      (isPlaylistDetailsPage || urlHasUseThis) &&
-      status === "published" &&
-      (!enableCustomize || !allowDuplicateCheck(destinationCurriculumSequence.collections, collections, "playlist"));
+      (isPlaylistDetailsPage || urlHasUseThis) && status === "published" && (!enableCustomize || !canAllowDuplicate);
 
     const playlistsToSwitch = isStudent ? curatedStudentPlaylists : slicedRecentPlaylists;
     // should show useThis Notification only two times
@@ -662,6 +681,8 @@ class CurriculumSequence extends Component {
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
 
+        <DeleteAssignmentModal deleteAssignmentFromPlaylist={this.deleteAssignmentFromPlaylist} fromPlaylist />
+
         <CurriculumSequenceWrapper>
           <CurriculumHeader
             role={role}
@@ -694,6 +715,8 @@ class CurriculumSequence extends Component {
             customizeInDraft={customizeInDraft}
             publishPlaylistInDraft={this.publishPlaylistInDraft}
             discardDraftPlaylist={this.discardDraftPlaylist}
+            canAllowDuplicate={canAllowDuplicate}
+            duplicatePlayList={duplicatePlayList}
           />
 
           <MainContentWrapper mode={mode}>
@@ -762,6 +785,7 @@ class CurriculumSequence extends Component {
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
                         customizeInDraft={customizeInDraft}
                         isSparkMathPlaylist={isSparkMathPlaylist}
+                        toggleUnassignModal={this.toggleUnassignModal}
                       />
                     )}
                   </Wrapper>
@@ -851,7 +875,10 @@ const enhance = compose(
       setActiveRightPanelView: setActiveRightPanelViewAction,
       deletePlaylist: deletePlaylistRequestAction,
       removePlaylistFromUse: removePlaylistFromUseAction,
-      checkPreviouslyCustomized: checkPreviouslyCustomizedAction
+      checkPreviouslyCustomized: checkPreviouslyCustomizedAction,
+      toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+      unassignAssignmentsRequest: unassignAssignmentsfromPlaylistAction,
+      duplicatePlayList: duplicatePlaylistRequestAction
     }
   )
 );

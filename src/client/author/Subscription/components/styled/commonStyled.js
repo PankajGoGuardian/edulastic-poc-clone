@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Layout, Button } from "antd";
-import { themeColor, fadedBlack, white } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 
 export const Wrapper = styled(Layout)`
   width: 100%;
@@ -15,7 +15,8 @@ export const Title = styled.div`
 
 export const Description = styled.p`
   font-size: 16px;
-  color: ${fadedBlack};
+  color: ${themeColor};
+  font-weight:bold;
 `;
 
 export const Container = styled.div`

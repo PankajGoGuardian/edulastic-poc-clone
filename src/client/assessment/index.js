@@ -5,6 +5,7 @@ import { Spin } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Switch, Route, withRouter } from "react-router-dom";
+
 // themes
 import ThemeContainer from "./themes/index";
 import { loadTestAction } from "./actions/test";
@@ -57,6 +58,26 @@ const AssessmentPlayer = ({
     });
   }, [testId]);
 
+  if (!window.confirmBeforeGoBack && !demo && !preview) {
+    // attaching event func to window to access after component unmounted
+    window.confirmBeforeGoBack = e => {
+      e.preventDefault();
+      const matched = e.target.location.pathname.match(new RegExp("/student/assessment/.*/class/.*/uta/.*/qid/.*"));
+      if (!matched) {
+        if (window.confirm("You are navigating away and you will quit the assignment. Are you sure?")) {
+          // to remove attached event from window after execuation done
+          setTimeout(() => {
+            window.removeEventListener("popstate", window.confirmBeforeGoBack);
+            delete window.confirmBeforeGoBack;
+          }, 1000);
+          return true;
+        }
+        window.history.go(1);
+        return false;
+      }
+    };
+  }
+
   const confirmBeforeQuitting = e => {
     // for older IE versions
     e = e || window.event;
@@ -73,8 +94,17 @@ const AssessmentPlayer = ({
       // can't return undefined from useEffect hook
       return () => {};
     }
-    window.addEventListener("beforeunload", confirmBeforeQuitting);
+    window.removeEventListener("popstate", window.confirmBeforeGoBack);
+    if (!demo && !preview) {
+      window.addEventListener("popstate", window.confirmBeforeGoBack);
+    }
     return () => {
+      if (!demo && !preview && window.confirmBeforeGoBack) {
+        setTimeout(() => {
+          window.removeEventListener("popstate", window.confirmBeforeGoBack);
+          delete window.confirmBeforeGoBack;
+        }, 1000);
+      }
       window.removeEventListener("beforeunload", confirmBeforeQuitting);
     };
   }, []);

@@ -1,7 +1,7 @@
-import { capitalize, groupBy, uniq, isEmpty } from "lodash";
+import { capitalize, groupBy, keyBy, countBy, pickBy, uniq, isEmpty, flatMap } from "lodash";
 
 // constants
-import { testActivityStatus } from "@edulastic/constants";
+import { test as testConstants, testActivityStatus } from "@edulastic/constants";
 
 export const INITIAL_FILTERS = {
   assessmentIds: [],
@@ -25,31 +25,48 @@ export const PAGE_DETAIL = {
 // testActivityStatus from @edulastic/constants
 export const STATUS_LIST = [
   {
+    idx: 0,
     id: "NOT STARTED",
     name: "NOT STARTED",
-    color: "#E5E5E5"
+    color: "#E5E5E5",
+    fgColor: "#a6a6a6"
   },
   {
+    idx: 1,
     id: "START",
     name: "IN PROGRESS",
-    color: "#BEDEFF"
+    color: "#BEDEFF",
+    fgColor: "#66b3ff"
   },
   {
+    idx: 2,
     id: "SUBMITTED",
     name: "SUBMITTED",
-    color: "#FFE9A8"
+    color: "#FFE9A8",
+    fgColor: "#ffc61a"
   },
   {
+    idx: 3,
     id: "GRADED",
     name: "GRADED",
-    color: "#DEF4E8"
+    color: "#DEF4E8",
+    fgColor: "#79d2a1"
   },
   {
+    idx: 4,
     id: "ABSENT",
     name: "ABSENT",
-    color: "#FDE0E9"
+    color: "#FDE0E9",
+    fgColor: "#f787ab"
   }
 ];
+
+export const TEST_TYPE_COLOR = {
+  [testConstants.type.ASSESSMENT]: "#5EB500",
+  [testConstants.type.COMMON]: "#FF9100",
+  [testConstants.type.PRACTICE]: "#00A8FF",
+  "common assessment": "#FF9100"
+};
 
 export const getFormattedName = (...names) => {
   const nameArr = names.filter(n => n?.trim()).map(n => capitalize(n));
@@ -65,17 +82,20 @@ export const getUniqAssessments = (assessments = []) => {
     const subjects = [];
     const grades = [];
     const assessmentIds = [];
+    let testTitle = "";
     const assessment = assessmentGroups[aId][0];
     assessmentGroups[aId].forEach(a => {
       classIds.push(a.classId);
       subjects.push(...a.subjects);
       grades.push(...a.grades);
       assessmentIds.push(a._id);
+      testTitle = testTitle || a.testTitle;
     });
     return {
       id: assessment._id,
-      name: assessment.title,
+      name: testTitle,
       termId: assessment.termId,
+      thumbnail: assessment.thumbnail,
       classIds: uniq(classIds),
       subjects: uniq(subjects),
       grades: uniq(grades),
@@ -96,24 +116,61 @@ export const curateFiltersData = (filtersData, filters) => {
 
 // curate percentScore, status & lastActivityDAte for testActivity
 const getCuratedTestActivity = taGroup => {
-  const ta = taGroup[taGroup.length - 1];
-  const { status, graded, startDate, endDate, score = 0, maxScore = 1 } = ta;
-  const laDate = endDate || startDate || 0;
-  if (status === testActivityStatus.START) {
-    // TODO: check if partial score, can be returned, else query in PRD
-    return { laDate, status: "START" };
-  }
-  if (status === testActivityStatus.SUBMITTED) {
+  const curatedGroup = taGroup.map(ta => {
+    const { status, graded, startDate, endDate, score = 0, maxScore = 1, redirect } = ta;
+    const laDate = endDate || startDate || 0;
+    if (status === testActivityStatus.START) {
+      return { laDate, status: "START", score, maxScore, redirect };
+    }
+    if (status === testActivityStatus.SUBMITTED) {
+      return {
+        laDate,
+        status: graded === "GRADED" ? "GRADED" : "SUBMITTED",
+        percentScore: `${Math.round((100 * score) / maxScore)}%`,
+        score,
+        maxScore,
+        redirect
+      };
+    }
+    if (status === testActivityStatus.ABSENT) {
+      return { laDate, status: "ABSENT", percentScore: "0%", score, maxScore, redirect };
+    }
+    return null;
+  });
+  // if last attempted ta is redirected, show a ta with status "NOT STARTED"
+  if (curatedGroup[0].redirect) {
     return {
-      laDate,
-      status: graded === "GRADED" ? "GRADED" : "SUBMITTED",
-      percentScore: `${Math.round((100 * score) / maxScore)}%`
+      laDate: curatedGroup[0].laDate,
+      status: "NOT STARTED",
+      percentScore: " ",
+      archived: curatedGroup
     };
   }
-  if (status === testActivityStatus.ABSENT) {
-    return { laDate, status: "ABSENT", percentScore: "0%" };
-  }
+  // return last attempted ta with others as archived
+  return curatedGroup[0] && { ...curatedGroup[0], archived: curatedGroup.slice(1) };
 };
+
+// function to get paginated student data for gradebook student drilldown
+const getPaginatedStudentData = (studentData, assessmentsData, pagination) => {
+  const { assignmentPage, assignmentPageSize } = pagination;
+  const assignmentPos = (assignmentPage - 1) * assignmentPageSize;
+  // re-curate to combine student assessments from multiple classes
+  const assMap = keyBy(assessmentsData, "id");
+  const studentAssessments = flatMap(studentData, d => {
+    return Object.entries(d.assessments).map(([aId, aData]) => ({
+      ...assMap[aId],
+      endDate: assMap[aId]?.class?.find(c => c.endDate && c._id === d.classId)?.endDate,
+      ...aData,
+      archived: aData.archived || [],
+      classId: d.classId,
+      key: `${aId}_${d.classId}`
+    }));
+  });
+  // paginate re-curated student assessments
+  const assignmentsCount = studentAssessments.length;
+  const curatedData = studentAssessments.slice(assignmentPos, assignmentPos + assignmentPageSize);
+  return { curatedData, assessmentsData, assignmentsCount, studentsCount: 1 };
+}
 
 // function to get paginated data when test-activity status filter is set
 const getPaginatedData = (curatedData, assessmentsData, pagination) => {
@@ -138,8 +195,10 @@ const getPaginatedData = (curatedData, assessmentsData, pagination) => {
 };
 
 // function to get curated gradebook data
-export const curateGradebookData = (gradebookData, pagination, status) => {
+export const curateGradebookData = (gradebookData, filtersData, pagination, status, urlHasStudent) => {
   const { students = [], assignments = [], testActivities = [], assignmentsCount, studentsCount } = gradebookData;
+  const { assessments: assessmentsList } = filtersData;
+  const mappedAssessmentsById = keyBy(assessmentsList, "_id");
 
   // group test-activity by assignmentId
   const taGroups = groupBy(testActivities, "assignmentId");
@@ -158,20 +217,27 @@ export const curateGradebookData = (gradebookData, pagination, status) => {
       const taCurated = taGroup?.length && getCuratedTestActivity(taGroup);
       if (taCurated) {
         // update test-activity & last-activity date for the assignment-student-class combo
-        if (!status || status === taCurated.status) {
-          assessments[a._id] = { assignmentId: a._id, ...taCurated };
-        }
+        assessments[a._id] = { ...taCurated, assignmentId: a._id, testType: a.testType };
         laDate = Math.max(laDate, taCurated.laDate);
-      } else if (!status || status === "NOT STARTED") {
+      } else {
         // check for not started
         a.class?.forEach(c => {
-          if (c._id === classId && !c.exStudents?.includes(sId) && (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))) {
-            assessments[a._id] = { assignmentId: a._id, laDate: 0, status: "NOT STARTED", percentScore: " " };
+          if (
+            c._id === classId &&
+            !c.exStudents?.includes(sId) &&
+            (!c?.students?.length || (c?.students?.length && c.students?.includes(sId)))
+          ) {
+            assessments[a._id] = {
+              assignmentId: a._id,
+              testType: a.testType,
+              laDate: 0,
+              status: "NOT STARTED",
+              percentScore: " "
+            };
           }
         });
       }
     });
-
     // return updated student data
     return { _id: sId, studentName, classId, className, laDate, assessments };
   });
@@ -196,10 +262,30 @@ export const curateGradebookData = (gradebookData, pagination, status) => {
       const selectPrev = prevLaDate && prevLaDate > v.laDate;
       assessments[assignmentsMap[k]] = selectPrev ? assessments[assignmentsMap[k]] : v;
     });
-    d.assessments = assessments;
+    // filter out the assignments for the selected status
+    d.assessments = pickBy(assessments, a => !status || status === a.status);
+    // assessments count for all status
+    const assessmentsArr = Object.values(assessments);
+    d.countByStatus = countBy(assessmentsArr, a => a.status);
   });
 
-  const assessmentsData = assignmentsData.map(a => ({ id: a._id, name: a.title }));
+  const assessmentsData = assignmentsData.map(a => {
+    const name = mappedAssessmentsById[a._id]?.testTitle || a.title;
+    const thumbnail = mappedAssessmentsById[a._id]?.thumbnail;
+    return { id: a._id, name, class: a.class, thumbnail };
+  });
+
+  if (urlHasStudent) {
+    // calculate overall countByStatus
+    const countByStatus = {};
+    STATUS_LIST.map(({id}) => {
+      countByStatus[id] = 0;
+      curatedData.forEach(d => {
+        countByStatus[id] += (d.countByStatus[id] || 0);
+      });
+    });
+    return { ...getPaginatedStudentData(curatedData, assessmentsData, pagination), countByStatus };
+  }
 
   if (status) {
     return getPaginatedData(curatedData, assessmentsData, pagination);

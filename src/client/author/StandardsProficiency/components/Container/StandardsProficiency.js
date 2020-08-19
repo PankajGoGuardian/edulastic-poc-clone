@@ -1,13 +1,13 @@
-import { EduButton,notification} from "@edulastic/common";
-import { Col, Icon, Input, message, Row } from "antd";
+import { EduButton, notification, CustomModalStyled, FieldLabel, TextInputStyled } from "@edulastic/common";
+import { Col, Icon, Input, Row } from "antd";
 import { get, upperFirst } from "lodash";
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { IconPlusCircle } from "@edulastic/icons";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
 import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import {
   createStandardsProficiencyAction,
@@ -21,9 +21,7 @@ import {
 } from "../../ducks";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 import {
-  CreateProfile,
   ListItemStyled,
-  ModalInput,
   RowStyled,
   SpinContainer,
   StandardsProficiencyDiv,
@@ -105,11 +103,11 @@ function ProfileRow(props) {
 
   return (
     <ListItemStyled>
-      <ProfileModal
+      <CustomModalStyled
         title="Delete Profile"
         onCancel={() => setConfirmVisible(false)}
         visible={confirmVisible}
-        textAlign="left"
+        centered
         footer={[
           <EduButton isGhost onClick={() => setConfirmVisible(false)}>
             NO, CANCEL
@@ -126,14 +124,22 @@ function ProfileRow(props) {
           </EduButton>
         ]}
       >
-        <div className="content">
-          <p>
+        <Row className="content">
+          <Col span={24}>
             <BlueBold>{props.profile.name}</BlueBold> will be removed permanently and can’t be used in future tests.
             This action can NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
-          </p>
-        </div>
-        <ModalInput autoFocus value={deleteText} onChange={e => setDeleteText(e.target.value)} />
-      </ProfileModal>
+          </Col>
+          <Col span={24}>
+            <TextInputStyled
+              style={{ marginTop: "10px" }}
+              align="center"
+              autoFocus
+              value={deleteText}
+              onChange={e => setDeleteText(e.target.value)}
+            />
+          </Col>
+        </Row>
+      </CustomModalStyled>
 
       <StyledProfileRow onClick={e => setEditing(index)} type="flex">
         <Col span={12}>
@@ -149,8 +155,8 @@ function ProfileRow(props) {
               }}
             />
           ) : (
-            profileName
-          )}
+              profileName
+            )}
         </Col>
         <StyledProfileCol span={12}>
           {props.hideEdit ? null : (
@@ -221,7 +227,6 @@ function StandardsProficiency(props) {
     history,
     list,
     create,
-    update,
     remove,
     editingIndex,
     setEditingIndex,
@@ -246,7 +251,7 @@ function StandardsProficiency(props) {
   const handleProfileLimit = () => {
     const canCreateProfile = props.profiles.filter(x => x.createdBy?._id === props.userId).length <= 10;
     if (!canCreateProfile) {
-      notification({ messageKey:"maximumTenProfilesPerUser"});
+      notification({ messageKey: "maximumTenProfilesPerUser" });
       return false;
     }
     return true;
@@ -255,16 +260,16 @@ function StandardsProficiency(props) {
   const createStandardProficiency = () => {
     const name = profileName;
     if (name === "") {
-     notification({ messageKey:"nameCannotBeEmpty"});
+      notification({ messageKey: "nameCannotBeEmpty" });
     } else if (name) {
       // needed for unicode aware length
       if ([...name].length > 150) {
-        notification({ messageKey:"maximumLengthForProifleName150"});
+        notification({ messageKey: "maximumLengthForProifleName150" });
         return;
       }
 
       if (props.profiles.find(p => (p.name || "").toLowerCase() === name.toLowerCase())) {
-       notification({ msg:`Profile with name "${name}" already exists. Please try with a different name`});
+        notification({ msg: `Profile with name "${name}" already exists. Please try with a different name` });
         return;
       }
       create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });
@@ -299,9 +304,10 @@ function StandardsProficiency(props) {
 
   return (
     <StandardsProficiencyDiv>
-      <ProfileModal
+      <CustomModalStyled
         title="Delete Profile"
         visible={conflictModalVisible}
+        centered
         onCancel={() => {
           setConflictModalVisible(false);
           props.setConflitAction(false);
@@ -318,13 +324,13 @@ function StandardsProficiency(props) {
           </EduButton>
         ]}
       >
-        <div className="content">
-          <p>
+        <Row className="content">
+          <Col span={24}>
             <BlueBold>{deleteProficiencyName}</BlueBold> is set as the default value for{" "}
             <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>. Please change the Test Setting before deleting.
-          </p>
-        </div>
-      </ProfileModal>
+          </Col>
+        </Row>
+      </CustomModalStyled>
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout loading={showSpin ? "true" : "false"}>
@@ -336,13 +342,12 @@ function StandardsProficiency(props) {
           )}
 
           <Row type="flex" justify="end">
-            <ProfileModal
+            <CustomModalStyled
               destroyOnClose
               title="Create New Profile"
               visible={confirmVisible}
               onCancel={() => setConfirmVisible(false)}
-              bodyHeight="100px"
-              textAlign="left"
+              centered
               footer={[
                 <EduButton isGhost onClick={() => setConfirmVisible(false)}>
                   CANCEL
@@ -352,12 +357,16 @@ function StandardsProficiency(props) {
                 </EduButton>
               ]}
             >
-              <h4>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</h4>
-              <ModalInput value={profileName} onChange={e => setProfileName(e.target.value)} />
-            </ProfileModal>
-            <CreateProfile type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
-              <i>+</i> Create new Profile
-            </CreateProfile>
+              <Row>
+                <Col span={24}>
+                  <FieldLabel>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</FieldLabel>
+                  <TextInputStyled value={profileName} onChange={e => setProfileName(e.target.value)} />
+                </Col>
+              </Row>
+            </CustomModalStyled>
+            <EduButton type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
+              <IconPlusCircle width={19} height={19} /> Create new Profile
+            </EduButton>
           </Row>
 
           <StyledList
@@ -423,5 +432,5 @@ StandardsProficiency.propTypes = {
   loading: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
   creating: PropTypes.bool.isRequired,
-  profiles: PropTypes.array
+  profiles: PropTypes.array.isRequired
 };

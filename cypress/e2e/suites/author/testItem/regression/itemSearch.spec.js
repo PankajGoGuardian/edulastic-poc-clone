@@ -55,8 +55,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>searching items`, () =>
         // Searched Published Tests should be visible in Entire Library
         it(">search by standards", () => {
           //  testLibrary.sidebar.clickOnItemBank();
-          testLibrary.searchFilters.clearAll();
           Cypress._.keys(standardToSearch).forEach(ele => {
+            testLibrary.searchFilters.clearAll();
             searchFilters.typeInSearchBox(ele);
             standardToSearch[ele].forEach(id => {
               itemListPage.getViewItemById(id).should("be.visible");
@@ -99,7 +99,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>searching items`, () =>
           Cypress._.keys(standardToSearch).forEach(ele => {
             itemListPage.searchFilters.clearAll();
             itemListPage.searchFilters.getAuthoredByMe();
-            itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
             itemListPage.searchFilters.typeInSearchBox(ele);
             standardToSearch[ele].forEach(id => {
               itemListPage.getViewItemById(id, queTexts[id]).should("be.visible");
@@ -111,7 +110,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>searching items`, () =>
           item_ids.forEach(id => {
             itemListPage.searchFilters.clearAll();
             itemListPage.searchFilters.getAuthoredByMe();
-            itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
             itemListPage.searchFilters.typeInSearchBox(id);
             itemListPage.getViewItemById(id, queTexts[id]).should("be.visible");
           });
@@ -203,11 +201,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>searching items`, () =>
       context(">searching in 'entire library'", () => {
         // Searched Draft Items should Not Be visible in Entire Library
         it(">search by standards", () => {
-          searchFilters.clearAll();
           Cypress._.keys(standardToSearch).forEach(ele => {
+            searchFilters.clearAll();
             searchFilters.typeInSearchBox(ele);
             standardToSearch[ele].forEach(id => {
-              itemListPage.getViewItemById(id, queTexts[id]).should("not.exist");
+              cy.get("button").contains("VIEW");
+              itemListPage.getItemById(id).should("not.exist");
             });
           });
         });
@@ -215,18 +214,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>searching items`, () =>
           item_ids.forEach(id => {
             searchFilters.clearAll();
             searchFilters.typeInSearchBox(id);
-            itemListPage.getViewItemById(id, queTexts[id]).should("not.exist");
+            cy.contains("Items Not Available");
           });
         });
         it(">search by content", () => {
           itemListPage.searchFilters.clearAll();
-
           itemListPage.searchFilters.typeInSearchBox(searchkeys[0]);
           cy.contains("Items Not Available");
 
+          itemListPage.searchFilters.clearAll();
           itemListPage.searchFilters.typeInSearchBox(searchkeys[1]);
           cy.contains("Items Not Available");
 
+          itemListPage.searchFilters.clearAll();
           itemListPage.searchFilters.typeInSearchBox(searchkeys.join(" "));
           cy.contains("Items Not Available");
         });

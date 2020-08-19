@@ -1,6 +1,5 @@
 /* eslint-disable func-names */
 import { themeColor } from "@edulastic/colors";
-// import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { beforeUpload, PaddingDiv, notification } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { aws, clozeImage } from "@edulastic/constants";

@@ -122,6 +122,7 @@ const ReviewItems = ({
         userRole={userRole}
         isPowerPremiumAccount={isPowerPremiumAccount}
         showGroupsPanel={showGroupsPanel}
+        scoring={scoring}
       />
 
       {isFetchingAutoselectItems && (

@@ -78,7 +78,7 @@ class Assign extends Component {
 
     const breadcrumbData = [
       {
-        title: "TESTS LIBRARY",
+        title: "TESTS",
         to: "/author/tests"
       },
       {

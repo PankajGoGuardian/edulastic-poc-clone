@@ -13,7 +13,6 @@ import ShadesView from "./components/ShadesView";
 
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
-import { StyledCheckbox } from "./styled/StyledCheckbox";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 class ShadesSubtitle extends Component {
@@ -36,6 +35,13 @@ class ShadesSubtitle extends Component {
 
           if (prop === "columnCount" || prop === "rowCount") {
             draft.canvas.shaded = [];
+          }
+
+          draft.validation.validResponse.value = [];
+          if (draft.validation.altResponses) {
+            draft.validation.altResponses.forEach(altResponse => {
+              altResponse.value = [];
+            });
           }
 
           updateVariables(draft);

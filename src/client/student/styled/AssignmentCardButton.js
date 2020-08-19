@@ -5,7 +5,10 @@ import {
   largeDesktopWidth,
   smallDesktopWidth,
   tabletWidth,
-  mobileWidthMax
+  mobileWidthMax,
+  themeColor,
+  white,
+  themeColorHoverBlue
 } from "@edulastic/colors";
 
 const StartAssignButton = styled(Button)`
@@ -16,17 +19,19 @@ const StartAssignButton = styled(Button)`
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  background: ${props => props.theme.assignment.cardDefaultBtnBgColor};
-  border: solid 1px ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};
+  background: ${themeColor};
+  border: solid 1px ${themeColor};
+  color: ${white};
   padding: 5px 20px;
   cursor: pointer;
   height: 40px;
   margin-left: auto;
   &:hover {
-    background-color: ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};
-    border-color: ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};
+    background-color: ${themeColorHoverBlue};
+    border-color: ${themeColorHoverBlue};
+    color: ${white};
     span {
-      color: ${props => props.theme.assignment.cardDefaultBtnTextHoverColor};
+      color: ${white};
     }
   }
 
@@ -35,7 +40,6 @@ const StartAssignButton = styled(Button)`
   }
 
   span {
-    color: ${props => props.theme.assignment.cardDefaultBtnTextColor};
     font-size: ${props => props.theme.assignment.cardDefaultBtnFontSize};
     font-weight: 600;
     letter-spacing: 0.2px;

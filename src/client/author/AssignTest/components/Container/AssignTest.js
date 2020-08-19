@@ -1,13 +1,14 @@
 import { EduButton, notification } from "@edulastic/common";
 import { assignmentPolicyOptions, roleuser, test as testConst } from "@edulastic/constants";
+import { IconAssignment } from "@edulastic/icons";
 import { Spin } from "antd";
-import produce from "immer";
 import { get, isEmpty, keyBy, omit } from "lodash";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import { IconAssignment } from "@edulastic/icons";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
@@ -48,7 +49,6 @@ class AssignTest extends React.Component {
     super(props);
     this.state = {
       isAdvancedView: props.userRole !== "teacher",
-      specificStudents: false,
       selectedDateOption: false
     };
   }
@@ -150,8 +150,6 @@ class AssignTest extends React.Component {
       notification({ messageKey: "endDate" });
     } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
       notification({ messageKey: "dueDateShouldNotBeGreaterThanEndDate" });
-    } else if (assignment?.class[0]?.specificStudents && assignment.class.every(_class => !_class?.students?.length)) {
-      notification({ messageKey: "selectStudent" });
     } else {
       let updatedAssignment = { ...assignment };
       if (!selectedDateOption) {
@@ -182,7 +180,6 @@ class AssignTest extends React.Component {
   };
 
   onClassFieldChange = (value, group) => {
-    const { specificStudents } = this.state;
     const { assignmentSettings: assignment } = this.props;
     const groupById = keyBy(group, "_id");
     const previousGroupData = keyBy(assignment.class, "_id");
@@ -203,7 +200,6 @@ class AssignTest extends React.Component {
         assignedCount: get(groupById, `${_id}.studentCount`, 0),
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
-        specificStudents,
         ...(canvasData ? { canvasData } : {})
       };
     });
@@ -219,25 +215,6 @@ class AssignTest extends React.Component {
       classData,
       termId
     };
-  };
-
-  toggleSpecificStudents = specificStudents => {
-    const { classList, assignmentSettings: assignment } = this.props;
-    const groupById = keyBy(classList, "_id");
-    const newAssignment = produce(assignment, assignmentCopy => {
-      if (assignmentCopy?.class?.length > 0) {
-        assignmentCopy.class.forEach(_class => {
-          _class.specificStudents = specificStudents;
-          if (!specificStudents) {
-            delete _class.students;
-            _class.assignedCount = get(groupById, `${_class._id}.studentCount`, 0);
-          }
-        });
-      }
-    });
-
-    this.setState({ specificStudents });
-    this.updateAssignmentNew(newAssignment);
   };
 
   updateAssignmentNew = newSettings => {
@@ -261,8 +238,8 @@ class AssignTest extends React.Component {
   };
 
   render() {
-    const { isAdvancedView, specificStudents, selectedDateOption } = this.state;
-    const { assignmentSettings: assignment, isTestLoading } = this.props;
+    const { isAdvancedView, selectedDateOption } = this.state;
+    const { assignmentSettings: assignment, isTestLoading, match } = this.props;
     const {
       classList,
       fetchStudents,
@@ -280,12 +257,17 @@ class AssignTest extends React.Component {
     if (exactMenu?.to === "myPlaylist") {
       exactMenu.to = `playlists/playlist/${_id}/use-this`;
     }
+
+    const moduleId = match.params.moduleId;
+    const _module = playlist.modules?.find(m => m?._id === moduleId);
+    const moduleTitle = _module?.title || "";
+
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
-        <MultipleAssignConfirmation assignment={assignment} isPlaylist={isPlaylist} />
+        <MultipleAssignConfirmation assignment={assignment} isPlaylist={isPlaylist} moduleTitle={moduleTitle} />
         <ListHeader
-          title={`Assign ${title || ""}`}
+          title={`Assign ${moduleTitle || title || ""}`}
           midTitle="PICK CLASSES, GROUPS OR STUDENTS"
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
@@ -317,8 +299,6 @@ class AssignTest extends React.Component {
               updateOptions={this.updateAssignmentNew}
               testSettings={testSettings}
               onClassFieldChange={this.onClassFieldChange}
-              specificStudents={specificStudents}
-              toggleSpecificStudents={this.toggleSpecificStudents}
               defaultTestProfiles={defaultTestProfiles}
             />
           ) : (
@@ -330,8 +310,6 @@ class AssignTest extends React.Component {
               testSettings={testSettings}
               updateOptions={this.updateAssignmentNew}
               onClassFieldChange={this.onClassFieldChange}
-              specificStudents={specificStudents}
-              toggleSpecificStudents={this.toggleSpecificStudents}
               changeDateSelection={this.changeDateSelection}
               selectedDateOption={selectedDateOption}
             />
@@ -342,33 +320,37 @@ class AssignTest extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    classList: getClassListSelector(state),
-    assignments: getAssignmentsSelector(state),
-    students: getStudentsSelector(state),
-    testSettings: getTestEntitySelector(state),
-    userOrgId: getUserOrgId(state),
-    playlist: getPlaylistSelector(state),
-    testItem: getTestSelector(state),
-    userRole: getUserRole(state),
-    isAssigning: state.authorTestAssignments.isAssigning,
-    assignmentSettings: state.assignmentSettings,
-    isTestLoading: getTestsLoadingSelector(state)
-  }),
-  {
-    loadClassList: receiveClassListAction,
-    fetchStudents: fetchGroupMembersAction,
-    fetchAssignments: fetchAssignmentsAction,
-    saveAssignment: saveAssignmentAction,
-    fetchPlaylistById: receivePlaylistByIdAction,
-    fetchTestByID: receiveTestByIdAction,
-    getDefaultTestSettings: getDefaultTestSettingsAction,
-    resetStudents: resetStudentAction,
-    updateAssignmentSettings: updateAssingnmentSettingsAction,
-    clearAssignmentSettings: clearAssignmentSettingsAction
-  }
-)(AssignTest);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      classList: getClassListSelector(state),
+      assignments: getAssignmentsSelector(state),
+      students: getStudentsSelector(state),
+      testSettings: getTestEntitySelector(state),
+      userOrgId: getUserOrgId(state),
+      playlist: getPlaylistSelector(state),
+      testItem: getTestSelector(state),
+      userRole: getUserRole(state),
+      isAssigning: state.authorTestAssignments.isAssigning,
+      assignmentSettings: state.assignmentSettings,
+      isTestLoading: getTestsLoadingSelector(state)
+    }),
+    {
+      loadClassList: receiveClassListAction,
+      fetchStudents: fetchGroupMembersAction,
+      fetchAssignments: fetchAssignmentsAction,
+      saveAssignment: saveAssignmentAction,
+      fetchPlaylistById: receivePlaylistByIdAction,
+      fetchTestByID: receiveTestByIdAction,
+      getDefaultTestSettings: getDefaultTestSettingsAction,
+      resetStudents: resetStudentAction,
+      updateAssignmentSettings: updateAssingnmentSettingsAction,
+      clearAssignmentSettings: clearAssignmentSettingsAction
+    }
+  )
+);
+export default enhance(AssignTest);
 
 AssignTest.propTypes = {
   match: PropTypes.object.isRequired,

@@ -1,87 +1,49 @@
-import { greyThemeDark2, greyThemeDark1 } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
-import { IconImage, IconTranslator } from "@edulastic/icons";
-import React from "react";
+import React, { Fragment, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { SortableElement, SortableHandle } from "react-sortable-hoc";
-import { withTheme } from "styled-components";
-import { FlexCon } from "../styled/FlexCon";
-import { QlBlocks } from "../styled/QlBlocks";
+import { Container } from "../styled/FlexCon";
+import { OptionBlock } from "../styled/OptionBlock";
 
-const DragHandle = withTheme(
-  SortableHandle(({ theme }) => (
-    <QlBlocks>
-      <FlexContainer
-        style={{
-          fontSize: theme.widgets.essayRichText.dragHandleFontSize,
-          color: theme.widgets.essayRichText.dragHandleColor
-        }}
-        justifyContent="center"
-      >
-        <FaBars color={greyThemeDark1} />
-      </FlexContainer>
-    </QlBlocks>
-  ))
-);
+import icons from "../icons";
 
-const SortableItem = SortableElement(({ item, i, handleActiveChange, validList, theme }) => {
-  const { value, param, active } = item;
+const DragHandle = SortableHandle(() => (
+  <OptionBlock justifyContent="center" borderTop>
+    <FaBars className="drag-handler" />
+  </OptionBlock>
+));
+
+const SortableItem = SortableElement(({ item, i, handleActiveChange }) => {
+  const [focused, setFocus] = useState();
+  const { value, active } = item;
+  const optionKey = value === "|" ? "div" : value;
+  const FormatOptionIcon = icons[optionKey] || Fragment;
+
+  const onClickHandler = e => {
+    e.preventDefault();
+    handleActiveChange(i);
+  };
+
+  const onMouseEnterHandler = () => {
+    setFocus(true);
+  };
+
+  const onMouseLeaveHandler = () => {
+    setFocus(false);
+  };
 
   return (
-    <FlexCon childMarginRight={0} flexDirection="column">
-      {value !== "|" ? (
-        <QlBlocks
-          active={active}
-          onClick={e => {
-            e.preventDefault();
-            handleActiveChange(i);
-          }}
-          {...(validList.includes(value) ? { value: param } : {})}
-          className={value === "image" ? "" : `ql-${value}`}
-          type="button"
-        >
-          {value === "specialCharacters" && (
-            <IconTranslator
-              color={
-                active ? theme.widgets.essayRichText.qlBlocksActiveColor : theme.widgets.essayRichText.qlBlocksColor
-              }
-            />
-          )}
-          {value === "image" && (
-            <IconImage
-              color={
-                active ? theme.widgets.essayRichText.qlBlocksActiveColor : theme.widgets.essayRichText.qlBlocksColor
-              }
-            />
-          )}
-        </QlBlocks>
-      ) : (
-        <QlBlocks
-          active={active}
-          onClick={e => {
-            e.preventDefault();
-            handleActiveChange(i);
-          }}
-          {...(validList.includes(value) ? { value: param } : {})}
-          className={`ql-${value}`}
-          type="button"
-        >
-          <div>
-            <b
-              style={{
-                fontSize: theme.widgets.essayRichText.sortableItemFontSize
-              }}
-            >
-              {value}
-            </b>
-            DIV
-          </div>
-        </QlBlocks>
-      )}
-
+    <Container
+      flexDirection="column"
+      active={active || focused}
+      onMouseEnter={onMouseEnterHandler}
+      onMouseLeave={onMouseLeaveHandler}
+    >
+      <OptionBlock onClick={onClickHandler} className="option-block">
+        <FormatOptionIcon />
+      </OptionBlock>
       <DragHandle />
-    </FlexCon>
+    </Container>
   );
 });
 
-export default withTheme(SortableItem);
+export default SortableItem;

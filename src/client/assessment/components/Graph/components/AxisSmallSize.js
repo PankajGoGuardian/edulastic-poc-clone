@@ -85,14 +85,14 @@ class AxisSmallSize extends Component {
           {segments && (
             <UnderAxis>
               <Segment marginTop="11">
-                <Circle diameter="8" bgColor="#00b0ff" color="#00b0ff" />
-                <Line width="58" height="2" color="#00b0ff" />
-                <Circle diameter="8" bgColor="#00b0ff" color="#00b0ff" />
+                <Circle diameter="8" bgColor="#434B5D" color="#434B5D" />
+                <Line width="58" height="2" color="#434B5D" />
+                <Circle diameter="8" bgColor="#434B5D" color="#434B5D" />
               </Segment>
               <Segment marginTop="11">
-                <Circle diameter="8" bgColor="#00b0ff" color="#00b0ff" />
-                <Line width="58" height="2" color="#00b0ff" />
-                <Circle diameter="8" bgColor="#00b0ff" color="#00b0ff" />
+                <Circle diameter="8" bgColor="#434B5D" color="#434B5D" />
+                <Line width="58" height="2" color="#434B5D" />
+                <Circle diameter="8" bgColor="#434B5D" color="#434B5D" />
               </Segment>
             </UnderAxis>
           )}

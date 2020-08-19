@@ -25,7 +25,7 @@ const ControlButtons = styled(Button)`
   transition: none;
   background: ${themeColor};
   position: relative;
-  z-index: 1500;
+  z-index: 1020;
   &.ant-btn[disabled] {
     background: ${themeColor};
   }
@@ -48,7 +48,7 @@ const ControlButtons = styled(Button)`
 
 const AudioButton = styled(EduButton)`
   position: relative;
-  z-index: 1500;
+  z-index: 1020;
 `;
 
 const AudioControls = ({

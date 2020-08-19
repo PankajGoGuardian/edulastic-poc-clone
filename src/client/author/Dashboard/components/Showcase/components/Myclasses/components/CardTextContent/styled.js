@@ -27,6 +27,7 @@ export const RowWrapper = styled(Row)`
   display: flex;
   align-items: center;
   margin-bottom: 14px;
+  height: 44px;
   cursor: pointer;
 `;
 

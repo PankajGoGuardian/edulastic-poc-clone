@@ -215,7 +215,7 @@ class Container extends Component {
           to: "/author/tests"
         },
         {
-          title: testName || state.testName,
+          title: testName || state?.testName,
           to: testPath,
           onClick: toggleModalAction,
           state: { persistStore: true }
@@ -232,7 +232,7 @@ class Container extends Component {
         to: "/author/items"
       },
       {
-        title: "SELECT THE TYPE OF WIDGET",
+        title: "SELECT A QUESTION OR RESOURCE",
         to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
       },
       {
@@ -323,7 +323,7 @@ class Container extends Component {
                   {!multipartItem && (
                     <Menu.Item key="read">
                       <IconRead />
-                      Reading
+                      PASSAGE
                     </Menu.Item>
                   )}
                   <Menu.Item key="highlight">
@@ -350,10 +350,12 @@ class Container extends Component {
                     <IconPlay />
                     Instructions
                   </Menu.Item>
-                  <Menu.Item key="rulers-calculators">
-                    <IconRulerPencil />
-                    Tools
-                  </Menu.Item>
+                  {multipartItem && (
+                    <Menu.Item key="rulers-calculators">
+                      <IconRulerPencil />
+                      Tools
+                    </Menu.Item>
+                  )}
                   {/* implementation is in progress */}
                   {/* <Menu.Item key="other">
                     <IconMore />

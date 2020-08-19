@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { isEmpty } from "lodash";
+import { isEmpty, get, capitalize } from "lodash";
 
 // components
 import { Link } from "react-router-dom";
-import { Spin, Pagination, Row } from "antd";
+import { Spin, Pagination, Row, Avatar } from "antd";
 import { MainHeader, MainContentWrapper, EduButton, withWindowSizes, notification } from "@edulastic/common";
 import { IconInterface, IconFilter, IconPlusCircle } from "@edulastic/icons";
-import GradebookFilters from "./GradebookFilters";
-import GradebookTable from "./GradebookTable";
-import GradebookStatusColors from "./GradebookStatusColors";
+import { themeColorBlue } from "@edulastic/colors";
+import GradebookFilters from "./Gradebook/GradebookFilters";
+import GradebookTable from "./Gradebook/GradebookTable";
+import GradebookStatusColors from "./Gradebook/GradebookStatusColors";
 import {
+  StudentLabel,
   FilterButton,
   TableHeader,
   TableContainer,
@@ -21,6 +23,9 @@ import {
   RightArrow
 } from "./styled";
 import AddToGroupModal from "../../Reports/common/components/Popups/AddToGroupModal";
+import Breadcrumb from "../../src/components/Breadcrumb";
+import ArrowFilter from "./ArrowFilter/ArrowFilter";
+import GradebookStudentTable from "./GradebookStudent/GradebookStudentTable";
 
 // ducks
 import { actions, selectors } from "../ducks";
@@ -28,6 +33,12 @@ import { getCurrentTerm } from "../../src/selectors/user";
 
 // transformers & constants
 import { curateFiltersData, curateGradebookData, INITIAL_FILTERS, PAGE_DETAIL } from "../transformers";
+
+const parseInitialsFromName = name =>
+  (name || "")
+    .split(" ")
+    .map(w => w.trim()[0] || "")
+    .join("");
 
 const Gradebook = ({
   windowWidth,
@@ -43,7 +54,9 @@ const Gradebook = ({
   setFilters,
   pageDetail,
   setPageDetail,
-  termId
+  termId,
+  urlHasStudent,
+  match
 }) => {
   const [onComponentLoad, setOnComponentLoad] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -51,24 +64,28 @@ const Gradebook = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [pseudoPageDetail, setPseudoPageDetail] = useState({ ...PAGE_DETAIL });
 
-  const pagination = filters.status ? pseudoPageDetail : pageDetail;
+  const studentId = get(match.params, "studentId", "");
+
+  const pagination = filters.status || urlHasStudent ? pseudoPageDetail : pageDetail;
   const curatedFiltersData = curateFiltersData(filtersData, filters);
-  const { curatedData, assessmentsData, studentsCount, assignmentsCount } = curateGradebookData(
+  const { curatedData, assessmentsData, studentsCount, assignmentsCount, countByStatus } = curateGradebookData(
     gradebookData,
+    filtersData,
     pagination,
-    filters.status
+    filters.status,
+    urlHasStudent
   );
 
   const setInitialFilters = () => setFilters({ ...INITIAL_FILTERS, termId });
 
   const handlePagination = paginationData =>
-    filters.status ? setPseudoPageDetail(paginationData) : setPageDetail(paginationData);
+    filters.status || urlHasStudent ? setPseudoPageDetail(paginationData) : setPageDetail(paginationData);
 
   const handleAddToGroupClick = () => {
-    if (selectedRows.length < 1) {
-      notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
-    } else {
+    if (selectedRows.length > 0 || (urlHasStudent && studentId)) {
       setShowAddToGroupModal(true);
+    } else {
+      notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
     }
   };
 
@@ -76,6 +93,9 @@ const Gradebook = ({
     fetchFiltersData();
     setOnComponentLoad(false);
   }, []);
+
+  // reset status filter when switching to gradebook student and back
+  useEffect(() => () => setFilters({ ...INITIAL_FILTERS, ...filters, status: "" }), [studentId]);
 
   useEffect(() => {
     if (!isEmpty(filters)) {
@@ -91,7 +111,7 @@ const Gradebook = ({
       const assessmentIds = curatedFiltersData.assessments
         .filter(a => filters.assessmentIds.includes(a.id))
         .flatMap(a => a.assessmentIds);
-      fetchGradebookData({ filters: { ...filters, assessmentIds }, pageDetail });
+      fetchGradebookData({ filters: { ...filters, assessmentIds }, studentId, pageDetail });
       setLoading(true);
     }
   }, [pageDetail]);
@@ -99,9 +119,26 @@ const Gradebook = ({
   useEffect(() => setLoading(false), [gradebookData]);
 
   // select unique students for AddToGroupModal
-  const { students = [] } = gradebookData;
+  const { students = [], studentThumbnail } = gradebookData;
   const selectedStudentIds = Array.from(new Set(selectedRows.map(r => r.split("_")[0])));
-  const selectedStudents = students.filter(s => selectedStudentIds.includes(s._id));
+  const selectedStudents =
+    urlHasStudent && studentId ? students : students.filter(s => selectedStudentIds.includes(s._id));
+  const firstStudentName =
+    urlHasStudent && !loading
+      ? `${capitalize(students?.[0]?.firstName || "")} ${capitalize(students?.[0]?.lastName || "")}`
+      : "";
+
+  // breadcrumb data
+  const breadcrumbData = [
+    {
+      title: "GRADEBOOK",
+      to: "/author/gradebook"
+    },
+    {
+      title: firstStudentName,
+      to: `/author/gradebook/student/${studentId}`
+    }
+  ];
 
   return (
     <div>
@@ -111,7 +148,26 @@ const Gradebook = ({
         onCancel={() => setShowAddToGroupModal(false)}
         checkedStudents={selectedStudents}
       />
-      <MainHeader Icon={IconInterface} headingText="Gradebook" justify="space-between">
+      <MainHeader
+        Icon={IconInterface}
+        headingText="Gradebook"
+        titleMinWidth="auto"
+        justify="space-between"
+        headingSubContent={
+          urlHasStudent && (
+            <StudentLabel>
+              {studentThumbnail ? (
+                <Avatar style={{ marginRight: "10px" }} src={studentThumbnail} />
+              ) : (
+                <Avatar style={{ marginRight: "10px", backgroundColor: themeColorBlue }}>
+                  {parseInitialsFromName(firstStudentName)}
+                </Avatar>
+              )}
+              <span style={{ marginRight: "15px" }}>{firstStudentName}</span>
+            </StudentLabel>
+          )
+        }
+      >
         <Row type="flex">
           <Link to="/author/assignments">
             <EduButton isBlue isGhost>
@@ -124,9 +180,54 @@ const Gradebook = ({
           </EduButton>
         </Row>
       </MainHeader>
+
       {loadingFilters ? (
         <MainContentWrapper>
           <Spin />
+        </MainContentWrapper>
+      ) : urlHasStudent ? (
+        <MainContentWrapper>
+          <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
+            <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+            <ArrowFilter
+              data={curatedFiltersData?.statusList?.map(s => ({
+                ...s,
+                count: countByStatus?.[s.id] || 0
+              }))}
+              selected={filters.status}
+              onClick={selected => setFilters({ ...filters, status: selected })}
+            />
+          </Row>
+          {loading ? (
+            <TableContainer showFilter={showFilter}>
+              <Spin />
+            </TableContainer>
+          ) : (
+            <TableContainer>
+              <GradebookStudentTable dataSource={curatedData} windowHeight={windowHeight} />
+              <Pagination
+                current={pagination.assignmentPage}
+                pageSize={pagination.assignmentPageSize}
+                onChange={assignmentPage =>
+                  handlePagination({
+                    ...pagination,
+                    studentPage: 1,
+                    assignmentPage
+                  })
+                }
+                onShowSizeChange={(_, assignmentPageSize) =>
+                  handlePagination({
+                    ...pagination,
+                    studentPage: 1,
+                    assignmentPage: 1,
+                    assignmentPageSize
+                  })
+                }
+                total={assignmentsCount}
+                showSizeChanger={false}
+              />
+            </TableContainer>
+          )}
         </MainContentWrapper>
       ) : (
         <MainContentWrapper style={{ display: "inline-flex" }}>
@@ -173,7 +274,7 @@ const Gradebook = ({
               />
               <TableFooter>
                 <GradebookStatusColors />
-                {/* NOTE: When status filter is set, assignment pagination is dependent on student pagination */}
+                {/* NOTE: When status filter is set for Gradebook, assignment pagination is dependent on student pagination */}
                 <Pagination
                   current={pagination.studentPage}
                   pageSize={pagination.studentPageSize}

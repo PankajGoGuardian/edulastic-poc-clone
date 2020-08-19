@@ -59,7 +59,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
     student: {
       Submitted: {
         "skip-grading": { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        "restore-grading": { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
+        "restore-grading": { right: 0, wrong: 2, skip: 0, partialCorrect: 1 },
         "manual-grading": { right: "", wrong: "", skip: "", partialCorrect: "" }
       },
       "In Progress": {
@@ -76,7 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
     teacher: {
       Submitted: {
         "skip-grading": { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        "restore-grading": { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
+        "restore-grading": { right: 0, wrong: 2, skip: 0, partialCorrect: 1 },
         "manual-grading": { right: 0, wrong: 0, skip: 0, partialCorrect: 0 }
       },
       "In Progress": {
@@ -110,6 +110,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   let updatedAttempt;
 
   before("create tests", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments("", Teacher.username);
     cy.login("teacher", Teacher.username, Teacher.password);
 
@@ -261,10 +263,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
                     }
                     updatedAttempt = attempt;
 
-                    if (status == studentSide.SUBMITTED) {
+                    if (assignmentStatus.indexOf(studentSide.SUBMITTED) !== -1) {
                       if (attempt !== attemptTypes.PARTIAL_CORRECT && attempt !== attemptTypes.SKIP)
                         updatedAttempt = attempt === attemptTypes.RIGHT ? attemptTypes.WRONG : attemptTypes.RIGHT;
+                      if (option === regradeOptions.edited.AUTO_POINTS)
+                        attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = updatedAttempt;
                     }
+
                     optionsIndex = _.values(regradeOptions.edited).indexOf(option);
                     testLibraryPage.sidebar.clickOnAssignment();
                     authorAssignmentPage.clickOnLCBbyTestId(versionedtestids[optionsIndex][attemptIndex]);
@@ -272,9 +277,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
 
                   it(`> verif lcb card view-`, () => {
                     cy.wait(3000);
-                    lcb
-                      .getStudentScoreByIndex(statusIndex)
-                      .should("contain.text", `${data.teacher[status][`${option}`][`${attempt}`]} / ${data.points}`);
+                    lcb.verifyScoreByStudentIndex(
+                      statusIndex,
+                      data.teacher[status][`${option}`][`${attempt}`],
+                      data.points
+                    );
 
                     lcb
                       .getQuestionsByIndex(0)
@@ -283,11 +290,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
 
                     barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, ["Q1"]);
 
-                    lcb.verifyQuestionCards(statusIndex, [
-                      option === regradeOptions.edited.MANUAL_POINTS && status === studentSide.SUBMITTED
-                        ? attemptTypes.MANUAL_GRADE
-                        : attempt
-                    ]);
+                    status === studentSide.SUBMITTED
+                      ? lcb.verifyQuestionCards(statusIndex, [
+                          option === regradeOptions.edited.MANUAL_POINTS
+                            ? attemptTypes.MANUAL_GRADE
+                            : option === regradeOptions.edited.AUTO_POINTS
+                            ? updatedAttempt
+                            : attempt
+                        ])
+                      : lcb.verifyQuestionCards(statusIndex, [attempt]);
                   });
 
                   it("> verify student centric view", () => {
@@ -301,7 +312,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
 
                     lcb.questionResponsePage.getMaxScore().should("have.text", `${data.points}`);
 
-                    itemPreview.verifyQuestionResponseCard("MCQ_MULTI", attemptData, updatedAttempt);
+                    itemPreview.verifyQuestionResponseCard(
+                      "MCQ_MULTI",
+                      attemptData,
+                      status === studentSide.SUBMITTED ? updatedAttempt : attempt
+                    );
                     barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData[statusIndex], ["Q1"]);
                   });
 
@@ -321,7 +336,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
                     itemPreview.verifyQuestionResponseCard(
                       "MCQ_MULTI",
                       attemptData,
-                      updatedAttempt,
+                      status === studentSide.SUBMITTED ? updatedAttempt : attempt,
                       false,
                       statusIndex
                     );
@@ -372,9 +387,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
                       it(`> verify lcb card view-`, () => {
                         lcb.clickOnCardViewTab();
                         cy.wait(3000);
-                        lcb
-                          .getStudentScoreByIndex(statusIndex)
-                          .should("contain.text", `${data.manualpoints} / ${data.points}`);
+                        lcb.verifyScoreByStudentIndex(statusIndex, data.manualpoints, data.points);
                         lcb.verifyQuestionCards(statusIndex, [attemptTypes.PARTIAL_CORRECT]);
                         barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, ["Q1"]);
                       });

@@ -1,19 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import { Form, Icon, Collapse, Spin, message } from "antd";
-import { EduButton,notification ,CustomModalStyled} from "@edulastic/common";
-import { IconUser } from "@edulastic/icons";
-
 import { enrollmentApi } from "@edulastic/api";
-import BasicFields from "./BasicFields";
-import AdditionalFields from "./AdditionalFields";
-import { StyledModal, Title, ActionButton, PanelHeader, AddForm } from "./styled";
+import { CustomModalStyled, EduButton, notification } from "@edulastic/common";
+import { IconUser } from "@edulastic/icons";
+import { Collapse, Form, Icon, Spin } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
 import { getUserOrgData } from "../../../../src/selectors/user";
-import { fetchStudentsByIdAction } from "../../../ducks";
 import { getValidatedClassDetails } from "../../../../Student/ducks";
-
+import { fetchStudentsByIdAction } from "../../../ducks";
+import AdditionalFields from "./AdditionalFields";
+import BasicFields from "./BasicFields";
+import { AddForm, PanelHeader, Title } from "./styled";
 
 const { Panel } = Collapse;
 class AddStudentModal extends React.Component {
@@ -30,6 +28,7 @@ class AddStudentModal extends React.Component {
       isUpdate: payload
     });
   };
+
   setFounduser = payload => {
     this.setState({
       ...this.state,
@@ -65,7 +64,7 @@ class AddStudentModal extends React.Component {
     };
     const res = await enrollmentApi.SearchAddEnrolMultiStudents(data);
     if (res.status == 200) {
-      notification({ type: "success", messageKey:"userAddedToclassSuccessfully"});
+      notification({ type: "success", messageKey: "userAddedToclassSuccessfully" });
       handleCancel();
       loadStudents({ classId });
       return null;
@@ -103,11 +102,10 @@ class AddStudentModal extends React.Component {
 
     const footer = (
       <>
-        <EduButton height="32px" isGhost onClick={handleCancel}>
+        <EduButton isGhost onClick={handleCancel}>
           No, Cancel
         </EduButton>
         <EduButton
-          height="32px"
           data-cy="addButton"
           onClick={isUpdate ? this.enrollStudent : handleAdd}
           disabled={isFieldTouched("email") && getFieldError("email")}
@@ -118,13 +116,6 @@ class AddStudentModal extends React.Component {
     );
 
     const expandIcon = panelProps => (panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />);
-
-    const BasicDetailsHeader = (
-      <PanelHeader>
-        <Icon type="bars" />
-        <label>Basic Details</label>
-      </PanelHeader>
-    );
 
     const AdditionalDetailsHeader = (
       <PanelHeader>

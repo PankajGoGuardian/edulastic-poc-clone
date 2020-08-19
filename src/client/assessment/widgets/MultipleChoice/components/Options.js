@@ -11,6 +11,7 @@ import Layout from "./Layout";
 function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, item = {} }) {
   return (
     <WidgetOptions
+      showVariables
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}

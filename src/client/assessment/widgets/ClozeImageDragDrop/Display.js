@@ -39,7 +39,8 @@ import {
   LeftResponseContainer,
   RightContainer,
   RightTemplateContainer,
-  RightResponseContainer
+  RightResponseContainer,
+  StyledDisplayContainer
 } from "./styled/layout";
 
 const { DragPreview } = DragDrop;
@@ -414,8 +415,7 @@ class Display extends Component {
       getHeading,
       isPrint = false,
       isPrintPreview = false,
-      view,
-      viewComponent
+      view
     } = this.props;
     const isPrintMode = isPrint || isPrintPreview;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
@@ -494,6 +494,7 @@ class Display extends Component {
           alt={imageAlterText}
           maxHeight={maxHeight}
           maxWidth={maxWidth}
+          preview={preview}
           style={{
             position: "absolute",
             top: imageOptions.y || 0,
@@ -534,8 +535,6 @@ class Display extends Component {
     const idValueMap = this.mapIdAndValue;
 
     const containerStyle = {
-      margin: "auto",
-      overflow: viewComponent !== "authorPreviewPopup" && !isPrintMode && "auto",
       minWidth: choiceMaxWidth,
       maxWidth: !isPrintMode && (responseposition === "left" || responseposition === "right" ? 1050 : 750),
       flexDirection: isPrintMode ? "column" : "row",
@@ -674,68 +673,70 @@ class Display extends Component {
     return (
       <div style={{ fontSize }}>
         <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.displayWrapperRef.current }}>
-          <FlexContainer justifyContent="flex-start" alignItems="baseline">
-            <QuestionLabelWrapper>
-              {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
-            </QuestionLabelWrapper>
-            <QuestionContentWrapper>
-              <QuestionTitleWrapper>
-                <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-              </QuestionTitleWrapper>
-              {responseposition === "top" && (
-                <div style={containerStyle} ref={this.displayWrapperRef}>
-                  <StyledContainer>
-                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                  </StyledContainer>
-                  <StyledContainer>{templateBoxLayout}</StyledContainer>
-                </div>
-              )}
-              {responseposition === "bottom" && (
-                <div style={containerStyle} ref={this.displayWrapperRef}>
-                  <StyledContainer>
-                    <RelativeContainer>{templateBoxLayout}</RelativeContainer>
-                  </StyledContainer>
-                  <StyledContainer>{responseBoxLayout}</StyledContainer>
-                </div>
-              )}
-              {responseposition === "left" && (
-                <LeftContainer style={containerStyle} ref={this.displayWrapperRef}>
-                  <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
-                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                  </LeftResponseContainer>
-                  <LeftTemplateContainer
-                    studentReport={isPrintMode ? true : studentReport}
-                    responseBoxContainerWidth={responseBoxWidth}
-                  >
-                    {templateBoxLayout}
-                  </LeftTemplateContainer>
-                </LeftContainer>
-              )}
-              {responseposition === "right" && (
-                <RightContainer smallSize={smallSize} style={containerStyle} ref={this.displayWrapperRef}>
-                  <RightTemplateContainer
-                    smallSize={smallSize}
-                    studentReport={isPrintMode ? true : studentReport}
-                    responseBoxContainerWidth={responseBoxWidth}
-                  >
-                    {templateBoxLayout}
-                  </RightTemplateContainer>
+          <StyledDisplayContainer>
+            <FlexContainer justifyContent="flex-start" alignItems="baseline">
+              <QuestionLabelWrapper>
+                {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+                {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+              </QuestionLabelWrapper>
+              <QuestionContentWrapper>
+                <QuestionTitleWrapper>
+                  <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+                </QuestionTitleWrapper>
+                {responseposition === "top" && (
+                  <div style={containerStyle} ref={this.displayWrapperRef}>
+                    <StyledContainer>
+                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                    </StyledContainer>
+                    <StyledContainer>{templateBoxLayout}</StyledContainer>
+                  </div>
+                )}
+                {responseposition === "bottom" && (
+                  <div style={containerStyle} ref={this.displayWrapperRef}>
+                    <StyledContainer>
+                      <RelativeContainer>{templateBoxLayout}</RelativeContainer>
+                    </StyledContainer>
+                    <StyledContainer>{responseBoxLayout}</StyledContainer>
+                  </div>
+                )}
+                {responseposition === "left" && (
+                  <LeftContainer style={containerStyle} ref={this.displayWrapperRef}>
+                    <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
+                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                    </LeftResponseContainer>
+                    <LeftTemplateContainer
+                      studentReport={isPrintMode ? true : studentReport}
+                      responseBoxContainerWidth={responseBoxWidth}
+                    >
+                      {templateBoxLayout}
+                    </LeftTemplateContainer>
+                  </LeftContainer>
+                )}
+                {responseposition === "right" && (
+                  <RightContainer smallSize={smallSize} style={containerStyle} ref={this.displayWrapperRef}>
+                    <RightTemplateContainer
+                      smallSize={smallSize}
+                      studentReport={isPrintMode ? true : studentReport}
+                      responseBoxContainerWidth={responseBoxWidth}
+                    >
+                      {templateBoxLayout}
+                    </RightTemplateContainer>
 
-                  <RightResponseContainer
-                    isReviewTab={isReviewTab}
-                    width={responseBoxWidth || null}
-                    smallSize={smallSize}
-                  >
-                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                  </RightResponseContainer>
-                </RightContainer>
-              )}
-              {view && view !== EDIT && <Instructions item={item} />}
-              {answerBox}
-              <DragPreview />
-            </QuestionContentWrapper>
-          </FlexContainer>
+                    <RightResponseContainer
+                      isReviewTab={isReviewTab}
+                      width={responseBoxWidth || null}
+                      smallSize={smallSize}
+                    >
+                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                    </RightResponseContainer>
+                  </RightContainer>
+                )}
+                {view && view !== EDIT && <Instructions item={item} />}
+                {answerBox}
+                <DragPreview />
+              </QuestionContentWrapper>
+            </FlexContainer>
+          </StyledDisplayContainer>
         </HorizontalScrollContext.Provider>
       </div>
     );

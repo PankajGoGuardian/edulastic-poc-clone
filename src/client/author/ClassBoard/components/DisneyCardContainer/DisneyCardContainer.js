@@ -69,11 +69,13 @@ class DisneyCardContainer extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props, state) {
+    const { testActivity, assignmentId, classId, isPresentationMode } = props;
     return {
-      testActivity: props.testActivity,
-      assignmentId: props.assignmentId,
-      classId: props.classId
+      testActivity: !state.isPresentationMode && isPresentationMode ? shuffle(testActivity) : testActivity,
+      assignmentId,
+      classId,
+      isPresentationMode
     };
   }
 
@@ -110,7 +112,7 @@ class DisneyCardContainer extends Component {
     );
 
     const showLoader = () => <Spin size="small" />;
-    let styledCard = [];
+    const styledCard = [];
     const classess = detailedClasses?.filter(({ _id }) => _id === classId);
 
     if (testActivity.length > 0) {
@@ -233,7 +235,7 @@ class DisneyCardContainer extends Component {
                   <CircularDiv
                     data-cy="studentAvatarName"
                     isLink={viewResponseStatus.includes(status.status)}
-                    title={isPresentationMode ? "" : student.userName}
+                    title={student.userName}
                     onClick={e =>
                       viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
                     }
@@ -318,12 +320,15 @@ class DisneyCardContainer extends Component {
                     <StyledFlexDiv>
                       <StyledParaFF>Performance</StyledParaFF>
                       <StyledParaSSS data-cy="studentPerformance">
-                        {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
+                        {student.score > 0 && student.status !== "redirected"
+                          ? round((student.score / student.maxScore) * 100, 2)
+                          : 0}
+                        %
                       </StyledParaSSS>
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {score(currentTestActivity.status || student.status)} / {student.maxScore || 0}
+                        {score(currentTestActivity.status || student.status)}&nbsp;/ {student.maxScore || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>
@@ -334,7 +339,7 @@ class DisneyCardContainer extends Component {
                     .filter(x => !x.disabled)
                     .map((questionAct, questionIndex) => {
                       const weight = questionAct.weight;
-                      if (questionAct.notStarted) {
+                      if (questionAct.notStarted || student.status === "redirected") {
                         return <SquareColorDisabled key={questionIndex} />;
                       }
                       if (questionAct.skipped && questionAct.score === 0) {
@@ -368,7 +373,7 @@ class DisneyCardContainer extends Component {
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
                           {student.status === "redirected" && (
                             <AttemptDiv>
-                              <CenteredStyledParaSS>- / {student.maxScore || 0}</CenteredStyledParaSS>
+                              <CenteredStyledParaSS>-&nbsp;/ {student.maxScore || 0}</CenteredStyledParaSS>
                               <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
                                 Not Started
                               </StyledParaSS>
@@ -388,13 +393,15 @@ class DisneyCardContainer extends Component {
                               )
                             }
                           >
-                            <StyledParaSS>
-                              {score(currentTestActivity.status)} / {student.maxScore || 0}
-                            </StyledParaSS>
+                            <CenteredStyledParaSS>
+                              {score(currentTestActivity.status)}&nbsp;/ {student.maxScore || 0}
+                            </CenteredStyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                             </StyledParaSSS>
-                            <p>Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}</p>
+                            <p style={{ fontSize: "12px" }}>
+                              Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
+                            </p>
                           </AttemptDiv>
                           {recentAttemptsGrouped?.[student.studentId].map(attempt => (
                             <AttemptDiv
@@ -402,13 +409,13 @@ class DisneyCardContainer extends Component {
                               key={attempt._id || attempt.id}
                               onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
                             >
-                              <StyledParaSS>
-                                {score(attempt.status, attempt.score)} / {attempt.maxScore || 0}
-                              </StyledParaSS>
+                              <CenteredStyledParaSS>
+                                {score(attempt.status, attempt.score)}&nbsp;/ {attempt.maxScore || 0}
+                              </CenteredStyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
                               </StyledParaSSS>
-                              <p>Attempt {attempt.number}</p>
+                              <p style={{ fontSize: "12px" }}>Attempt {attempt.number}</p>
                             </AttemptDiv>
                           ))}
                         </StyledFlexDiv>
@@ -422,9 +429,6 @@ class DisneyCardContainer extends Component {
         styledCard.push(studentData);
         return null;
       });
-    }
-    if (isPresentationMode) {
-      styledCard = shuffle(styledCard);
     }
     return (
       <StyledCardContiner>
@@ -465,8 +469,9 @@ const CenteredStyledParaSS = styled(StyledParaSS)`
 
 const RecentAttemptsContainer = styled.div`
   position: absolute;
-  top: 98px;
+  top: 96px;
   width: 100%;
+  height: 80px;
   left: 0px;
   padding-left: 20px;
   box-sizing: border-box;
@@ -474,6 +479,13 @@ const RecentAttemptsContainer = styled.div`
   background: #fff;
   opacity: 0;
   transition: opacity 0.7s;
+  .attempt-container {
+    :hover {
+      cursor: pointer;
+      border: 1px solid #dadae4;
+      box-shadow: 8px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+  }
   ${StyledCard}:hover & {
     opacity: 1;
   }

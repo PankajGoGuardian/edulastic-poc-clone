@@ -1,9 +1,9 @@
 import { assignmentApi } from "@edulastic/api";
 import { uniqBy } from "lodash";
-import { cardTitleColor, darkGrey, fadedBlack, themeColor, red } from "@edulastic/colors";
-import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled } from "@edulastic/common";
+import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
+import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled, EduButton } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
-import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
+import { IconClose, IconEye, IconHeart, IconId, IconUser, IconDynamic, IconUsers, IconPlus } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col } from "antd";
 import PropTypes from "prop-types";
@@ -13,12 +13,18 @@ import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import {
-  AddButtonStyled,
   ViewButton as ViewButtonContainer,
-  ViewButtonStyled
+  ViewButtonStyled,
+  AddRemoveButton
 } from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
-import { getUserRole, isPublisherUserSelector, getCollectionsSelector, getUserId } from "../../../src/selectors/user";
+import {
+  getUserRole,
+  isPublisherUserSelector,
+  getCollectionsSelector,
+  getUserId,
+  getCollectionsToAddContent
+} from "../../../src/selectors/user";
 import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector, toggleTestLikeAction } from "../../ducks";
 import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -45,7 +51,8 @@ import {
   TagsWrapper,
   TestStatus,
   ViewButtonWrapper,
-  DynamicIconWrapper
+  DynamicIconWrapper,
+  AddRemove
 } from "./styled";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import { sharedTypeMap } from "../Item/Item";
@@ -73,11 +80,20 @@ class ListItem extends Component {
     isOpenModal: false
   };
 
-  moveToItem = (e, url = "") => {
+  moveToItem = e => {
     e && e.stopPropagation();
-    const { history, item, match, mode } = this.props;
-    if (mode !== "embedded") {
-      history.push(`${url || match.url}/${item._id}#review`);
+    const { history, item, mode, isPlaylist } = this.props;
+    if (mode === "embedded") return;
+    if (isPlaylist) {
+      history.push(`/author/playlists/${item._id}#review`);
+    } else {
+      const tab = item.title ? "review" : "description";
+      history.push({
+        pathname: `/author/tests/tab/${tab}/id/${item._id}`,
+        state: {
+          editTestFlow: true
+        }
+      });
     }
   };
 
@@ -178,7 +194,8 @@ class ListItem extends Component {
       isPublisherUser,
       orgCollections = [],
       currentUserId,
-      isTestLiked
+      isTestLiked,
+      collectionToWrite
     } = this.props;
     const { analytics = [] } = isPlaylist ? _source : item;
     const likes = analytics?.[0]?.likes || "0";
@@ -199,7 +216,7 @@ class ListItem extends Component {
 
     const isDynamic =
       !isPlaylist &&
-      item.itemGroups.some(
+      item?.itemGroups?.some(
         group =>
           group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
           group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
@@ -249,11 +266,7 @@ class ListItem extends Component {
           testId={currentTestId}
           closeTestPreviewModal={this.hidePreviewModal}
         />
-        <Container
-          onClick={
-            isPlaylist ? e => this.moveToItem(e, `/author/playlists`) : mode === "embedded" ? "" : this.openModal
-          }
-        >
+        <Container onClick={isPlaylist ? e => this.moveToItem(e) : mode === "embedded" ? "" : this.openModal}>
           <ContentWrapper>
             <Col span={24}>
               <Outer>
@@ -325,14 +338,33 @@ class ListItem extends Component {
                     />
                   </ViewButtonWrapper>
                 )}
-                {isPlaylist && (userRole === roleuser.DISTRICT_ADMIN || isPublisherUser) && (
-                  <div onClick={e => e.stopPropagation()}>
-                    <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
-                  </div>
+
+                {isPlaylist && collectionToWrite?.length > 0 && (
+                  <ViewButtonContainer
+                    onClick={e => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <EduButton style={{ marginRight: "10px" }} isGhost data-cy="view" onClick={e => this.moveToItem(e)}>
+                      Details
+                    </EduButton>
+                    <AddRemove selectedToCart={checked}>
+                      <CheckboxLabel
+                        style={{ display: "none" }}
+                        onChange={e => handleCheckboxAction(e, item._id)}
+                        checked={checked}
+                      />
+                      {checked ? <IconClose /> : <IconPlus />}
+                    </AddRemove>
+                  </ViewButtonContainer>
                 )}
+
                 {!isPlaylist &&
                   mode !== "embedded" &&
-                  (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.TEACHER || isPublisherUser) && (
+                  (userRole === roleuser.DISTRICT_ADMIN ||
+                    userRole === roleuser.SCHOOL_ADMIN ||
+                    userRole === roleuser.TEACHER ||
+                    isPublisherUser) && (
                     <ViewButtonContainer>
                       <ViewButtonStyled
                         data-cy="view"
@@ -343,20 +375,16 @@ class ListItem extends Component {
                       >
                         <IconEye /> {t("component.itemlist.preview")}
                       </ViewButtonStyled>
-                      {userRole !== roleuser.TEACHER && (
-                        <AddButtonStyled
+                      {collectionToWrite?.length > 0 && (
+                        <AddRemoveButton
                           onClick={e => {
+                            isInCart ? onRemoveFromCart(item) : onAddToCart(item);
                             e.stopPropagation();
                           }}
+                          selectedToCart={isInCart}
                         >
-                          <CheckboxLabel
-                            checked={isInCart}
-                            ml="24px"
-                            onChange={() => {
-                              isInCart ? onRemoveFromCart(item) : onAddToCart(item);
-                            }}
-                          />
-                        </AddButtonStyled>
+                          {isInCart ? <IconClose /> : <IconPlus />}
+                        </AddRemoveButton>
                       )}
                     </ViewButtonContainer>
                   )}
@@ -411,12 +439,12 @@ class ListItem extends Component {
                     <CardId data-cy="test-id">{testItemId}</CardId>
                   </CardIdWrapper>
                   <IconWrapper>
-                    <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                    <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
                     <IconText>{usage}</IconText>
                   </IconWrapper>
                   {!isPlaylist && (
                     <LikeIconStyled isLiked={isTestLiked} onClick={this.handleLikeTest} style={{ marginLeft: "20px" }}>
-                      <IconHeart color={isTestLiked ? red : darkGrey} width={14} height={14} />
+                      <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
                       <IconText>{likes}</IconText>
                     </LikeIconStyled>
                   )}
@@ -438,7 +466,8 @@ const enhance = compose(
       orgCollections: getCollectionsSelector(state),
       userRole: getUserRole(state),
       isPublisherUser: isPublisherUserSelector(state),
-      currentUserId: getUserId(state)
+      currentUserId: getUserId(state),
+      collectionToWrite: getCollectionsToAddContent(state)
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

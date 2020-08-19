@@ -26,7 +26,6 @@ export const IconWrapper = styled.span`
   color: ${grey};
   cursor: pointer;
   &.disabled {
-    cursor: not-allowed;
     svg path {
       fill: ${grey};
     }

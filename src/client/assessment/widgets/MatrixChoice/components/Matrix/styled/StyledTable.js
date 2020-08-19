@@ -54,10 +54,12 @@ export const StyledTable = styled(Table)`
         border-top: ${props => !props.horizontalLines && 0};
         color: ${mainTextColor};
         min-width: 110px;
-        height: 50px;
+        height: 32px;
       }
       td div {
-        padding: 6px;
+        padding: 0px;
+        margin: 2px;
+        border-radius: 4px;
         word-break: break-word;
       }
       td:nth-of-type(1) div {

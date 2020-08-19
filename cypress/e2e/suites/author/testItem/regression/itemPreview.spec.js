@@ -234,8 +234,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         itemPreview.closePreiview();
         itemListPage.sidebar.clickOnDashboard();
         itemListPage.sidebar.clickOnItemBank();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
         itemListPage.searchFilters.typeInSearchBox(itemIds[itemsInTest.length]);
-        itemListPage.getViewItemById(itemIds[itemsInTest.length]).should("not.be.visible");
+        cy.contains("Items Not Available");
       });
     });
   });

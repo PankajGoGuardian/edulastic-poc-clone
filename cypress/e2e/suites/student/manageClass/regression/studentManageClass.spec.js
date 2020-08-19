@@ -6,7 +6,7 @@ const sideBarPage = new SidebarPage();
 const student = { email: "student3@automation.com", password: "automation" };
 const teacher = { email: "teacher2@automation.com", password: "automation" };
 const manageClass = new ManagePage();
-const invalidClassCode = "V3A9O6";
+const invalidClassCode = "V3A9O1";
 const validClasscode = "69SSKK";
 const alreadyExistingClassCode = "Z9VTUK";
 
@@ -14,7 +14,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
   before(() => {
     cy.clearToken();
     cy.login("student", student.email, student.password);
-    sideBarPage.clickOnManageClass();
+    sideBarPage.clickOnMyClasses();
   });
 
   context(">Test - Manage Class - Active and Archived Classes", () => {
@@ -22,7 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
 
     it(">TC01 verify Active Classes", () => {
       manageClass.selectClassType("ACTIVE");
-      manageClass.verifyShowActiveClass(3);
+      manageClass.verifyShowActiveClass(4);
       manageClass.validateclassName("Automation_class");
       manageClass.validateclassName("automation_class2");
       manageClass.validateclassName("New_automation_Class");
@@ -61,7 +61,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.clickonJoinButton();
       manageClass.validateEnterClassCodeMsg();
       manageClass.clickonCancelButton();
-      cy.contains("Manage Class").should("be.visible");
+      cy.contains("My Classes").should("be.visible");
     });
 
     it(">TC04 verify New valid class code", () => {

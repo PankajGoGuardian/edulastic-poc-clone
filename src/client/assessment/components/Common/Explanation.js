@@ -23,7 +23,10 @@ const Explanation = props => {
 
   const [show, updateShow] = useState(isGrade);
 
-  const onClickHandler = () => updateShow(true);
+  const onClickHandler = e => {
+    e.stopPropagation();
+    updateShow(true);
+  };
 
   return (
     <div data-cy="explanation-container" style={{ width: isStudentReport ? "63%" : "100%" }}>

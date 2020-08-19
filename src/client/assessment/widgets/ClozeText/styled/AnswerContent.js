@@ -1,15 +1,26 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { MathFormulaDisplay } from "@edulastic/common";
 
 export const AnswerContent = styled(MathFormulaDisplay)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 8px 10px;
+  padding: 0px 10px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   vertical-align: middle;
+  text-align: center;
+  min-height: 30px;
+  ${({ inPopover }) =>
+    inPopover &&
+    css`
+      white-space: normal;
+      width: unset;
+      margin-right: 0.5rem;
+    `}
+
   ${({ showIndex, inPopover }) => `
     max-width: ${showIndex ? 560 : 600}px;
     width: ${showIndex && !inPopover ? "calc(100% - 60px)" : "100%"};

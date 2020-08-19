@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Pagination } from "antd";
+
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,7 +17,7 @@ export const StyledTableContainer = styled.div`
 export const DeleteTermModalFooterDiv = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
 `;
 export const StyledButton = styled.a`
   margin-right: 20px;

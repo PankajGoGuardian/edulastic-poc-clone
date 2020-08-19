@@ -7,12 +7,12 @@ import {
   lightGrey3,
   lightGreySecondary,
   themeColor,
-  white
+  white,
+  themeColorBlue
 } from "@edulastic/colors";
 import { EduButton, Card, FieldLabel } from "@edulastic/common";
-import { IconFilter } from "@edulastic/icons";
 import { Text } from "@vx/text";
-import { Col, Slider, Table } from "antd";
+import { Col, Slider, Table, Button } from "antd";
 import styled from "styled-components";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
@@ -42,6 +42,7 @@ export const PrintablePrefix = styled.b`
 
 export const StyledGoButton = styled(EduButton)`
   height: 24px;
+  line-height: 1;
   width: 80px;
   font-size: 11px;
 `;
@@ -344,14 +345,23 @@ export const StyledText = styled.text`
 
 export const PrintableScreen = styled.div`
   @media print {
-    width: 1024px;
-
+    width: 250mm;
+    @page {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
     .fixed-header,
     .navigator-tabs-container,
     .ant-pagination,
     .single-assessment-report-go-button-container,
     .anticon-caret-down {
       display: none;
+    }
+    .ant-table-scroll table {
+      display: contents !important;
+      thead th.class-name-column {
+        min-width: auto !important;
+      }
     }
   }
 `;
@@ -496,30 +506,34 @@ export const HideLinkLabel = styled(StyledLabel)`
 `;
 
 export const ReportContaner = styled.div`
-  width: ${({ showFilter }) => (showFilter ? "calc(100% - 250px)" : "100%")};
-  height: calc(100vh - 170px);
-  overflow: auto;
+  width: ${({ showFilter }) => (showFilter ? "calc(100% - 250px)" : "calc(100% - 35px)")};
   position: relative;
-
-  @media print {
-    overflow: hidden;
-  }
-
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: calc(100vh - 180px);
-  }
 `;
 
-export const FilterIcon = styled(IconFilter).attrs({
-  color: themeColor,
-  width: 15,
-  height: 15
-})`
-  cursor: pointer;
-  margin-right: 8px;
-  margin-top: 4px;
-  margin-left: ${({ showFilter }) => (showFilter ? -55 : 0)}px;
+export const FilterButton = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+  background: ${({ showFilter }) => (showFilter ? themeColorBlue : white)};
+  border-color: ${themeColorBlue} !important;
+  margin-right: ${({ showFilter }) => (showFilter ? 0 : 10)}px;
+  margin-top: -4px;
+  margin-left: ${({ showFilter }) => (showFilter ? -75 : 0)}px;
+  padding: 5px 2px 2px;
+  transition: 0s !important;
 
+  &:focus,
+  &:hover {
+    outline: unset;
+    background: ${({ showFilter }) => (showFilter ? themeColorBlue : white)};
+  }
+
+  svg {
+    fill: ${({ showFilter }) => (showFilter ? white : themeColorBlue)} !important;
+    width: 20px;
+    height: 20px;
+  }
   @media print {
     display: none;
   }

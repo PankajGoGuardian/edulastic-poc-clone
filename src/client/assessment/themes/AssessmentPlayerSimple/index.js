@@ -172,12 +172,12 @@ class AssessmentPlayerSimple extends React.Component {
       previewPlayer,
       scratchPad,
       crossAction,
+      attachments,
       previousQuestionActivities,
       bookmarksInOrder,
       skippedInOrder,
       zoomLevel,
       windowWidth,
-      scratchPadData,
       showHints,
       timedAssignment = false,
       groupId,
@@ -185,8 +185,6 @@ class AssessmentPlayerSimple extends React.Component {
       utaId
     } = this.props;
     const { showExitPopup, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
-
-    const { activeMode, deleteMode, currentColor, fillColor, lineWidth } = scratchPadData;
 
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
@@ -252,13 +250,10 @@ class AssessmentPlayerSimple extends React.Component {
               previousQuestionActivities={previousQuestionActivities}
               zoomLevel={zoomLevel}
               windowWidth={windowWidth}
-              activeMode={activeMode}
               scratchPadMode={scratchPadMode}
-              lineColor={currentColor}
-              deleteMode={deleteMode}
-              lineWidth={lineWidth}
-              fillColor={fillColor}
               saveHistory={this.saveHistory("scratchpad")}
+              saveAttachments={this.saveHistory("attachments")}
+              attachments={attachments}
               history={scratchPad}
               changePreview={this.handleChangePreview}
             />
@@ -294,12 +289,12 @@ const enhance = compose(
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
       scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
       highlights: get(state, `userWork.present[${ownProps?.passage?._id}].resourceId`, null),
+      attachments: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].attachments`, null),
       crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
       userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),
-      scratchPadData: state.scratchpad,
       timedAssignment: state.test?.settings?.timedAssignment,
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag

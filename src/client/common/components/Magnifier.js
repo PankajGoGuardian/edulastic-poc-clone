@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { withWindowSizes } from "@edulastic/common";
 import PropTypes from "prop-types";
-import { themes } from "../../theme";
 import styled from "styled-components";
+import { themes } from "../../theme";
+
 const {
   playerSkin: { magnifierBorderColor }
 } = themes;
@@ -79,7 +80,7 @@ const Magnifier = ({
     sideBar?.addEventListener("scroll", handleSidebarScroll);
     document.addEventListener("click", hideElements);
 
-    //This is to attach events to dom elements after some moment
+    // This is to attach events to dom elements after some moment
     setTimeout(attachEvents, 1000);
 
     return () => {
@@ -87,7 +88,7 @@ const Magnifier = ({
       sideBar?.removeEventListener("scroll", handleSidebarScroll);
       document.removeEventListener("click", hideElements);
 
-      //This is to deattach events to dom elements after some moment
+      // This is to deattach events to dom elements after some moment
       removeAttachedEvents();
     };
   }, []);
@@ -180,21 +181,21 @@ const Magnifier = ({
     TODO: Refactor copyDom mutations to remove duplication from src/client/assessment/themes/AssessmentPlayerTestlet/PlayerContent.js
   */
   const cloneDom = className => {
-    //THis work to clone main container to zoomed container on any specific event happened.
+    // THis work to clone main container to zoomed container on any specific event happened.
     const cls = className;
     return () => {
       clickedClassName.current = cls;
       const mainWrapper = document.querySelector(".zoomed-container-wrapper");
       if (mainWrapper) {
-        //copy after some time as to wait to fully render main container
+        // copy after some time as to wait to fully render main container
         setTimeout(() => {
-          mainWrapper.innerHTML = document.querySelector(".unzoom-container-wrapper").innerHTML;
+          mainWrapper.innerHTML = document.querySelector(".unzoom-container-wrapper")?.innerHTML || "---";
           if (className === "question-select-dropdown") {
             const headerQuestionWrapper = document.querySelector(
               ".unzoom-container-wrapper .question-select-dropdown .ant-select-dropdown-menu"
             );
             headerQuestionWrapper?.addEventListener("scroll", scrollQuestionLIst);
-            //scroll after copy dom
+            // scroll after copy dom
             setTimeout(
               () =>
                 scrollQuestionLIst({
@@ -209,7 +210,7 @@ const Magnifier = ({
               ".unzoom-container-wrapper .parcc-question-list .ant-menu"
             );
             headerParccQUestionList?.addEventListener("scroll", scrollParccReviewList);
-            //scroll after copy dom
+            // scroll after copy dom
             setTimeout(
               () =>
                 scrollParccReviewList({
@@ -222,7 +223,7 @@ const Magnifier = ({
               ".unzoom-container-wrapper .sabc-header-question-list .ant-dropdown-menu"
             );
             headerParccQUestionList?.addEventListener("scroll", scrollSabcQuestionList);
-            //scroll after copy dom
+            // scroll after copy dom
             setTimeout(
               () =>
                 scrollSabcQuestionList({
@@ -238,11 +239,11 @@ const Magnifier = ({
     };
   };
   const hideElements = e => {
-    //THis work to copy dom if any attached event fired before
+    // THis work to copy dom if any attached event fired before
 
     const className = clickedClassName.current;
     if (className) {
-      //copy after some time as to wait to fully render main container
+      // copy after some time as to wait to fully render main container
       setTimeout(() => {
         const elm = document.querySelector(`.unzoom-container-wrapper .${className}`);
         const zoomedElm = document.querySelector(`.zoomed-container-wrapper .${className}`);
@@ -274,7 +275,7 @@ const Magnifier = ({
 
   const onMouseDown = e => {
     if (e.button !== 0) return;
-    var pos = ref.current.getBoundingClientRect();
+    const pos = ref.current.getBoundingClientRect();
     setSetting({
       ...setting,
       dragging: true,
@@ -342,8 +343,8 @@ const Magnifier = ({
             borderRadius: "5px",
             position: "fixed",
             overflow: "hidden",
-            left: setting.pos.x + "px",
-            top: setting.pos.y + "px",
+            left: `${setting.pos.x  }px`,
+            top: `${setting.pos.y  }px`,
             zIndex: 1050,
             cursor: "move",
             background: "white"

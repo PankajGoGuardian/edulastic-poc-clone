@@ -74,9 +74,9 @@ export const releaseGradeTypes = {
 };
 
 export const redirectType = {
-  SCORE_AND_FEEDBACK: "Score & Feedback",
-  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Feedback",
-  FEEDBACK_ONLY: "Feedback only"
+  SCORE_AND_FEEDBACK: "Score & Teacher Feedback",
+  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Teacher Feedback",
+  FEEDBACK_ONLY: "Teacher Feedback only"
 };
 
 export const questionDeliveryType = {
@@ -110,6 +110,10 @@ export const regradeOptions = {
   },
   deleted: {
     REMOVE: "discard-item"
+  },
+  settings: {
+    chooseAll: "choose-all",
+    excludeOveridden: "exclude-overidden"
   }
 };
 
@@ -153,4 +157,19 @@ export const REPORT_HEADERS = {
       masteryStatus: "masteryStatus"
     }
   }
+};
+
+export const EVAL_METHODS = {
+  ALL_OR_NOTHING: "ALL_OR_NOTHING",
+  PARTIAL: "PARTIAL_CREDIT_IGNORE_INCORRECT",
+  PARTIAL_WITH_PENALTY: "PARTIAL_CREDIT",
+  ITEM_LEVEL: "ITEM_LEVEL_EVALUATION"
+};
+
+export const ASSESSMENT_PLAYERS = {
+  EDULASTIC: "Edulastic",
+  PARCC: "TestNav",
+  SBAC: "SBAC",
+  CMAS: "Colorado - CMAS",
+  CASSPP: "California - CASSPP"
 };

@@ -135,7 +135,7 @@
       "flowLayout": "Use Flow Layout"
     },
     "pickupcomponent": {
-      "headertitle": "Select a Widget (Question or Resource)",
+      "headertitle": "Select a Question or Resource",
       "backToAddNew": "Back to Add New",
       "backToSelect": "Back to Select Question Type or Feature",
       "question": "Question",

@@ -33,14 +33,15 @@ const defaultConf = {
 const notification = options => {
   const { messageKey, msg, ...restOptions } = options;
   // get messages from localization
-  const translatedMessage = msg || i18n.t(`notifications:${messageKey}.message`);
+  const translatedMessage =
+    msg || i18n.t(`notifications:${messageKey}.message`) || "Something went wrong! Please contact support.";
   const translatedDescription = msg ? "" : i18n.t(`notifications:${messageKey}.description`);
 
   const config = {
     ...defaultConf,
     ...restOptions,
     message: translatedMessage,
-    description: translatedDescription
+    description: translatedDescription || ""
   };
 
   const { type, description, showButton, buttonLink, buttonText, ...rest } = config;

@@ -1,54 +1,41 @@
-/// <reference types="Cypress"/>
+// / <reference types="Cypress"/>
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
 
 class EssayShortTextPage {
   constructor() {
     this.editToolBar = new EditToolBar();
-
     this.header = new Header();
   }
 
-  // question page
-  getQuestionEditor() {
-    return cy.get(".fr-element").eq(0);
-  }
+  getQuestionEditor = () => cy.get(".fr-element").eq(0);
 
-  getPoints() {
-    return cy.get('[data-cy="points"]').should("exist");
-  }
+  getCorrectValue = () => cy.get('[wrap="wrap"]').find('[type="text"]');
 
-  selectAllowType(option) {
-    //cy.get('.ant-select-selection')
-    cy.get(".ant-select-selection-selected-value");
-    cy.contains("Exact Match").click();
+  // scoring block -> move to common utitly
+  getScoreInput = () => cy.get('[data-cy="maxscore"]');
 
-    cy.contains(option).click();
+  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]');
 
-    cy.get(".ant-select-selection-selected-value");
-    cy.contains("Any text containing").should("have.text", option);
-  }
+  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]');
 
-  getCorrectValue() {
-    return cy
-      .get(".ant-input")
-      .eq(1)
-      .should("exist");
-  }
+  getBrowserSpellCheckOption = () => cy.get('[data-cy="browserSpellCheckOption"]');
+
+  // Display block
+  getSpecialCharactersOption = () => cy.get('[data-cy="specialCharactersOption"]');
+
+  getCharactersToDisplayOption = () => cy.get('[data-cy="charactersToDisplayOption"]');
+
+  getPlaceholderOption = () => cy.get('[data-cy="placeholderOption"]');
+
+  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
 
   // on preview
-  getTextEditor() {
-    //  return cy.get('.ant-input')
-    return cy.get(".ant-input-lg").should("be.visible");
-  }
+  getAnswerBox = () => cy.get('[data-cy="essayShortAuthorPreview"]');
 
-  ansHighLightAsRight = rgb => {
-    this.getTextEditor().should("have.css", "background-color", rgb);
-  };
+  // ACTION STARTS
 
-  ansHighLightAsWrong = rgb => {
-    this.getTextEditor().should("have.css", "background-color", rgb);
-  };
+  // ACTION ENDS
 }
 
 export default EssayShortTextPage;

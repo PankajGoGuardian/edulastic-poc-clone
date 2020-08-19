@@ -105,11 +105,6 @@ export function* receiveTestActivitySaga({ payload }) {
     const students = get(gradebookData, "students", []);
     // the below methods mutates the gradebookData
     classResponse.testItems = classResponse.itemGroups.flatMap(itemGroup => itemGroup.items || []);
-    classResponse.totalItemsCount = classResponse.itemGroups.reduce(
-      (prev, curr) => prev + (curr.deliverItemsCount || curr.items.length),
-      0
-    );
-    const autoselectItemsCount = classResponse.totalItemsCount - classResponse.testItems.length;
     gradebookData.passageData = classResponse.passages;
     gradebookData.testItemsData = classResponse.testItems;
     gradebookData.testItemsDataKeyed = keyBy(classResponse.testItems, "_id");
@@ -125,7 +120,13 @@ export function* receiveTestActivitySaga({ payload }) {
     }));
 
     let entities = [];
-    if (autoselectItemsCount) {
+    const {
+      ITEM_GROUP_DELIVERY_TYPES: { ALL_RANDOM, LIMITED_RANDOM }
+    } = test;
+    const isRandomDelivery = classResponse.itemGroups.some(
+      group => group.deliveryType === ALL_RANDOM || group.deliveryType === LIMITED_RANDOM
+    );
+    if (isRandomDelivery) {
       // students can have different test items so generating student data for each student with its testItems
       const studentsDataWithTestItems = students.map(student => {
         const activity = gradebookData.testActivities.find(a => a.userId === student._id);
@@ -142,12 +143,19 @@ export function* receiveTestActivitySaga({ payload }) {
               };
             });
         } else {
-          const dummyItems = [];
-          for (let i = 0; i < autoselectItemsCount; i++) {
-            dummyItems.push({ _id: "", itemLevelScoring: true });
-          }
-          allItems = [...gradebookData.testItemsData, ...dummyItems];
+          classResponse.itemGroups.forEach(group => {
+            if (group.deliveryType === ALL_RANDOM || group.deliveryType === LIMITED_RANDOM) {
+              const dummyItems = [...new Array(group.deliverItemsCount)].map(() => ({
+                _id: "",
+                itemLevelScoring: true
+              }));
+              allItems.push(...dummyItems);
+            } else {
+              allItems.push(...group.items);
+            }
+          });
         }
+
         return {
           activityId: activity?._id || "",
           studentId: student._id,
@@ -391,18 +399,13 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     yield put(setAllTestActivitiesForStudentAction(result));
   } catch (err) {
     Sentry.captureException(err);
-
-    if (err.response) {
-      const {
-        data: { message: errorMessage }
-      } = err.response;
-      if (errorMessage === "Assignment does not exist anymore") {
-        yield put(redirectToAssignmentsAction(""));
-      }
-      yield call(notification, { msg: errorMessage || "Fetching all test activities failed" });
-    } else {
-      yield call(notification, { msg: "Fetching all test activities failed" });
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
     }
+    yield call(notification, { msg: errorMessage || "Fetching all test activities failed" });
   }
 }
 
@@ -633,9 +636,9 @@ export const getAggregateByQuestion = (entities, studentId) => {
   if (entities.length > 0) {
     let entity = entities[0];
     if (studentId) {
-      entity = entities.find(e => e.studentId === studentId);
+      entity = entities?.find(e => e.studentId === studentId);
     }
-    questionsOrder = (entity.questionActivities || []).reduce((acc, cur, ind) => {
+    questionsOrder = (entity?.questionActivities || []).reduce((acc, cur, ind) => {
       acc[cur._id] = ind;
       return acc;
     }, {});

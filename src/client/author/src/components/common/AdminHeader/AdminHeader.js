@@ -24,10 +24,8 @@ class AdminHeader extends Component {
     // eslint-disable-next-line default-case
     switch (key) {
       case "users":
-        if (role === "district-admin") {
-          history.push(`/author/users/district-admin`);
-        } else if (role === "school-admin") {
-          history.push(`/author/users/school-admin`);
+        if (role === "district-admin" || role === "school-admin") {
+          history.push(`/author/users/teacher`);
         }
         return;
       case "settings":
@@ -53,12 +51,23 @@ class AdminHeader extends Component {
   };
 
   render() {
-    const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel, children, enableStudentGroups } = this.props;
+    const {
+      active,
+      count = 0,
+      role,
+      schoolLevelAdminSettings,
+      manageTabLabel,
+      children,
+      enableStudentGroups
+    } = this.props;
     const schoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     const isDA = role === roleuser.DISTRICT_ADMIN;
     const defaultTab = isDA ? "District Profile" : "School Profile";
     const defaultKey = isDA ? "districtprofile" : "schoolprofile";
-    const activeKey = (active.mainMenu || "").toLocaleLowerCase().split(" ").join("");
+    const activeKey = (active.mainMenu || "")
+      .toLocaleLowerCase()
+      .split(" ")
+      .join("");
     return (
       <MainHeader Icon={IconSettings} headingText={manageTabLabel} mobileHeaderHeight={100}>
         <AdminHeaderContent>

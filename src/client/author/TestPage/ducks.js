@@ -546,9 +546,9 @@ export const getTestItemsRowsSelector = createSelector(
       ?.flatMap(itemGroup => itemGroup.items || [])
       ?.map(item => {
         if (!item || !item.rows) return [];
-        return item.rows.map(row => ({
+        return item?.rows?.map(row => ({
           ...row,
-          widgets: row.widgets.map(widget => {
+          widgets: row?.widgets?.map(widget => {
             let referencePopulate = {
               data: null
             };
@@ -1182,7 +1182,7 @@ export const getTestCreatedItemsSelector = createSelector(
 function* receiveTestByIdSaga({ payload }) {
   try {
     const tests = yield select(state => state.tests);
-    const createdItems = yield select(getTestCreatedItemsSelector);
+    let createdItems = yield select(getTestCreatedItemsSelector);
     const entity = yield call(testsApi.getById, payload.id, {
       data: true,
       requestLatest: payload.requestLatest,
@@ -1212,16 +1212,21 @@ function* receiveTestByIdSaga({ payload }) {
         })
       );
     }
-    entity.itemGroups[currentGroupIndex].items = entity.itemGroups[currentGroupIndex].items.map(testItem =>
-      createdItems.length > 0 &&
-      (createdItems[0]._id === testItem._id || createdItems[0].previousTestItemId === testItem._id)
-        ? createdItems[0]
-        : testItem
-    );
+
+    entity.itemGroups.forEach((itemGroup, groupIndex) => {
+      itemGroup.items.forEach((item, itemIndex) => {
+        if (createdItems?.[0]?._id === item._id || createdItems?.[0]?.previousTestItemId === item._id) {
+          entity.itemGroups[groupIndex].items[itemIndex] = createdItems[0];
+          createdItems = createdItems?.slice(1) || [];
+        }
+      });
+    });
+
     entity.itemGroups[currentGroupIndex].items = uniqBy(
-      [...entity.itemGroups[currentGroupIndex].items, ...createdItems],
+      [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
       x => x.previousTestItemId || x._id
     );
+
     const questions = getQuestions(entity.itemGroups);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
@@ -1480,12 +1485,14 @@ function* updateTestDocBasedSaga({ payload }) {
       itemLevelScoring: false
     };
 
-    const { testId, ...updatedItem } = yield call(updateItemDocBasedSaga, {
+    const response = yield call(updateItemDocBasedSaga, {
       payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
     });
 
+    const { testId, ...updatedItem } = response || {};
+
     // Updating the annotation question Id references using updated item question ids.
-    if (updatedItem.data?.questions?.length && payload.data?.annotations?.length) {
+    if (updatedItem?.data?.questions?.length && payload?.data?.annotations?.length) {
       const versionedQIdMap = {};
       updatedItem.data.questions.forEach(question => {
         const oldQId = question.previousQuestionId;
@@ -2165,7 +2172,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      notification({ messageKey: "testNotAssociatedWithCollection" });
+      notification({ type: "warn", messageKey: "testNotAssociatedWithCollection" });
       return;
     }
     payload = omit(payload, ["alreadyLiked"]);

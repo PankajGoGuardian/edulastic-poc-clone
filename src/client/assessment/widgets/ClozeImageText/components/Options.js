@@ -12,6 +12,7 @@ import Extras from "../../../containers/Extras";
 
 const Options = ({ outerStyle, advancedAreOpen, fillSections, cleanSections, responses, item }) => (
   <WidgetOptions
+    showVariables
     outerStyle={outerStyle}
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}

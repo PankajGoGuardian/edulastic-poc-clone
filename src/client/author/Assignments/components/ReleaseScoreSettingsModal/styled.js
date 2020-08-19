@@ -13,6 +13,11 @@ export const ReleaseGradesModal = styled(ConfirmationModal)`
 `;
 
 export const Info = styled.div`
-  font-weight: 500;
-  margin-top: 10px;
+  display: flex;
+  font-weight: bold;
+  margin-top: 12px;
+`;
+
+export const InfoText = styled.span`
+  margin-left: 22px;
 `;

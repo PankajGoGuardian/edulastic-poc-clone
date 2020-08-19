@@ -119,10 +119,12 @@ export default class TestReviewTab {
   moveQuestionByIndex = index => {
     this.clickOnMoveTo();
     this.getMoveTo()
+      .next()
       .find("input")
       .clear({ force: true })
       .type(index, { force: true });
     this.getMoveTo()
+      .next()
       .contains("Reorder")
       .click({ force: true });
   };
@@ -177,10 +179,21 @@ export default class TestReviewTab {
 
   verifyItemCoutInPreview = count => this.getAllquestionInReview().should("have.length", count);
 
-  verifyItemCoutByGroupInPublisherPreview = (count, group = 1) => {
+  verifyItemCoutByGroupInPublisherPreview = (count, group = 1, deliveryCount) => {
     this.expandGroupByGroupIndex(group);
-    this.getGroupContainerByGroupIndex(group).should("contain.text", `TOTAL ITEMS${count}`);
+    this.getGroupContainerByGroupIndex(group).should("contain", `TOTAL ITEMS${count}`);
+    if (deliveryCount) this.getGroupContainerByGroupIndex(group).should("contain", `Item to Deliver${deliveryCount}`);
     this.getAllQuestionsByGroupIndex(group).should("have.length", count);
+  };
+
+  verifyItemIdsByGroupIndex = (items, group) => {
+    this.expandGroupByGroupIndex(group);
+    this.getAllQuestionsByGroupIndex(group).each((question, index) => {
+      cy.wrap(question)
+        .parent()
+        .invoke("attr", "data-cy")
+        .then(val => expect(val).to.be.oneOf(items));
+    });
   };
   // *** APPHELPERS END ***
 }

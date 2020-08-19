@@ -296,10 +296,10 @@ const SingleAssessmentReportFilters = ({
     setFilters(_filters);
   };
   const updateSchoolsDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      schoolId: selected.key
-    };
+    const _filters = { ...filters, schoolId: selected.key };
+    history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const updateTeachersDropDownCB = selected => {

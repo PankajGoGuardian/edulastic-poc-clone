@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { useRef } from "react";
 import { Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { IconBookmark } from "@edulastic/icons";
+import { IconBookmark, IconSend } from "@edulastic/icons";
 import styled from "styled-components";
 
 import SelectContainer from "./SelectContainer";
@@ -16,10 +16,13 @@ const QuestionSelectDropdown = ({
   bookmarks = [],
   skipped = [],
   dropdownStyle = {},
-  zoomLevel
+  moveToNext,
+  utaId
 }) => {
   const dropdownWrapper = useRef(null);
   const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
+  const showSubmit = sessionStorage.getItem("testAttemptReviewVistedId") === utaId;
+  const scrollableContainer = document.getElementById("assessment-player-default-scroll");
   return (
     <SelectContainer
       ref={dropdownWrapper}
@@ -29,11 +32,11 @@ const QuestionSelectDropdown = ({
       className="question-select-dropdown"
     >
       <Select
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={triggerNode => scrollableContainer || triggerNode.parentNode}
         value={currentItem}
         data-cy="options"
         onChange={value => {
-          gotoQuestion(parseInt(value, 10));
+          value === "SUBMIT" ? moveToNext(null, true, value) : gotoQuestion(parseInt(value, 10));
         }}
       >
         {options.map((item, index) => (
@@ -44,10 +47,15 @@ const QuestionSelectDropdown = ({
             ) : skipped[index] ? (
               <SkippedIcon className="fa fa-exclamation-circle" />
             ) : (
-                  ""
-                )}
+              ""
+            )}
           </Select.Option>
         ))}
+        {showSubmit && (
+          <Select.Option key={options.length} value="SUBMIT">
+            Submit <IconSend />
+          </Select.Option>
+        )}
       </Select>
     </SelectContainer>
   );
@@ -59,12 +67,7 @@ QuestionSelectDropdown.propTypes = {
   gotoQuestion: PropTypes.func.isRequired,
   currentItem: PropTypes.number.isRequired,
   bookmarks: PropTypes.array.isRequired,
-  skipped: PropTypes.array.isRequired,
-  zoomLevel: PropTypes.string
-};
-
-QuestionSelectDropdown.defaultProps = {
-  zoomLevel: localStorage.getItem("zoomLevel") || "1"
+  skipped: PropTypes.array.isRequired
 };
 
 export default withNamespaces("student")(QuestionSelectDropdown);

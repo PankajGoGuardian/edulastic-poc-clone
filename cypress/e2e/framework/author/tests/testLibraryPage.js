@@ -122,7 +122,7 @@ export default class TestLibrary {
 
   getDescriptionOnTestCardById = id => this.getTestCardById(id).find('[data-cy="test-description"]');
 
-  getTestlibraryTitle = () => cy.get('[title="Test Library"]');
+  getTestlibraryTitle = () => cy.get('[title="Test"]');
 
   getDescriptionOnTestCardPopUp = () => cy.get('[data-cy="testcard-description"]').next();
 
@@ -193,10 +193,7 @@ export default class TestLibrary {
     this.getCreateNewTestButton()
       .click()
       .then(() => {
-        if (fromAssignmentsPage)
-          cy.get("a")
-            .contains(" Or Author a Test >>")
-            .click({ force: true });
+        if (fromAssignmentsPage) cy.contains(" Or Author a Test >>").click({ force: true });
         cy.contains("button", "CREATE TEST").click();
       });
   };

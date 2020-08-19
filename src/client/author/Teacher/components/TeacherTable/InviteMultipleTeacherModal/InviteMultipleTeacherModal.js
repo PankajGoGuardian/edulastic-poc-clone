@@ -1,8 +1,8 @@
+import { CustomModalStyled, EduButton } from "@edulastic/common";
+import { Col, Form, Row } from "antd";
 import React, { Component } from "react";
-import { Form, Row, Col } from "antd";
-import { StyledTextArea, PlaceHolderText, AddMulitpleTeachersModal, TextWrapper } from "./styled";
-
-import { ButtonsContainer, OkButton, CancelButton, ModalFormItem } from "../../../../../common/styled";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
+import { PlaceHolderText, StyledTextArea, TextWrapper } from "./styled";
 
 class InviteMultipleTeacherModal extends Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class InviteMultipleTeacherModal extends Component {
     const { modalVisible, t } = this.props;
     const { placeHolderVisible } = this.state;
     return (
-      <AddMulitpleTeachersModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("users.teacher.inviteteacher.title")}
         onOk={this.onInviteTeachers}
@@ -46,8 +46,8 @@ class InviteMultipleTeacherModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>{t("users.teacher.inviteteacher.nocancel")}</CancelButton>
-            <OkButton onClick={this.onInviteTeachers}>{t("users.teacher.inviteteacher.yesadd")}</OkButton>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("users.teacher.inviteteacher.nocancel")}</EduButton>
+            <EduButton onClick={this.onInviteTeachers}>{t("users.teacher.inviteteacher.yesadd")}</EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -81,7 +81,7 @@ class InviteMultipleTeacherModal extends Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </AddMulitpleTeachersModal>
+      </CustomModalStyled>
     );
   }
 }

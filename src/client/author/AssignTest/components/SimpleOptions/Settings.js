@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Row, Col, Radio, Select, Icon, Input, Tooltip, Modal } from "antd";
 import { green, red, blueBorder, themeColor, lightGrey9 } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
-import { RadioBtn, CheckboxLabel, notification } from "@edulastic/common";
+import { RadioBtn, CheckboxLabel, notification, SelectInputStyled, NumberInputStyled } from "@edulastic/common";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 import { withRouter } from "react-router-dom";
@@ -15,11 +15,9 @@ import {
   StyledRowSelect,
   SettingsWrapper,
   Password,
-  StyledSelect,
   StyledDiv,
   CheckBoxWrapper,
   MessageSpan,
-  MaxAttemptIInput,
   DivBlock,
   Label,
   AdvancedButton,
@@ -56,11 +54,11 @@ const {
   accessibilities
 } = test;
 
-const { ALL_OR_NOTHING, PARTIAL_CREDIT, ITEM_LEVEL_EVALUATION, PARTIAL_CREDIT_IGNORE_INCORRECT } = evalTypeLabels;
+const { PARTIAL_CREDIT, PARTIAL_CREDIT_IGNORE_INCORRECT } = evalTypeLabels;
 
 const Settings = ({
-  testSettings,
-  assignmentSettings,
+  testSettings = {},
+  assignmentSettings = {},
   updateAssignmentSettings,
   isAdvanced,
   changeField,
@@ -74,7 +72,10 @@ const Settings = ({
   totalItems,
   match,
   freezeSettings = false,
-  features
+  features,
+  hideTestLevelOptions = false,
+  hideClassLevelOptions = false,
+  calculatorProvider
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -186,9 +187,10 @@ const Settings = ({
     overRideSettings(attr, value);
   };
 
-  const scoringType = assignmentSettings.scoringType || tempTestSettings.scoringType || evalTypes.ITEM_LEVEL_EVALUATION;
+  const scoringType =
+    assignmentSettings?.scoringType || tempTestSettings?.scoringType || evalTypes?.ITEM_LEVEL_EVALUATION;
   const {
-    markAsDone = tempTestSettings.markAsDone,
+    markAsDone = tempTestSettings?.markAsDone,
     releaseScore = tempTestSettings.releaseScore,
     safeBrowser = tempTestSettings.safeBrowser,
     sebPassword = tempTestSettings.sebPassword,
@@ -216,14 +218,15 @@ const Settings = ({
     { key: "enableScratchpad", value: enableScratchpad }
   ].filter(a => features[a.key]);
 
+  const checkForCalculator = premium && calculatorProvider !== "DESMOS";
   const calculatorKeysAvailable =
-    (premium && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
+    (checkForCalculator && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
     calculatorKeys;
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
-        {forClassLevel ? (
+        {forClassLevel && !hideTestLevelOptions ? (
           <>
             <TestTypeSelector
               userRole={userRole}
@@ -245,31 +248,33 @@ const Settings = ({
         ) : null}
 
         {/* Mark as done */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersMarkAsDone"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersMarkAsDone"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={12}>
-              <Label>MARK AS DONE</Label>
-            </Col>
-            <Col span={12}>
-              <AlignRight
-                disabled={forClassLevel || freezeSettings}
-                onChange={e => overRideSettings("markAsDone", e.target.value)}
-                value={markAsDone}
-              >
-                {completionTypeKeys.map(item => (
-                  <RadioBtn value={completionTypes[item]} key={item}>
-                    <Label>{completionTypes[item]}</Label>
-                  </RadioBtn>
-                ))}
-              </AlignRight>
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
+        {!hideTestLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersMarkAsDone"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersMarkAsDone"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={12}>
+                <Label>MARK AS DONE</Label>
+              </Col>
+              <Col span={12}>
+                <AlignRight
+                  disabled={forClassLevel || freezeSettings}
+                  onChange={e => overRideSettings("markAsDone", e.target.value)}
+                  value={markAsDone}
+                >
+                  {completionTypeKeys.map(item => (
+                    <RadioBtn value={completionTypes[item]} key={item}>
+                      <Label>{completionTypes[item]}</Label>
+                    </RadioBtn>
+                  ))}
+                </AlignRight>
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
         {/* Mark as done */}
 
         {/* Release score */}
@@ -279,105 +284,111 @@ const Settings = ({
               <Label>RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Label>
             </Col>
             <Col span={12}>
-              <StyledSelect
+              <SelectInputStyled
                 data-cy="selectRelaseScore"
                 placeholder="Please select"
                 cache="false"
                 value={releaseScore}
                 onChange={changeField("releaseScore")}
+                noBorder
+                height="30px"
               >
                 {_releaseGradeKeys.map((item, index) => (
                   <Select.Option data-cy="class" key={index} value={item}>
                     {releaseGradeTypes[item]}
                   </Select.Option>
                 ))}
-              </StyledSelect>
+              </SelectInputStyled>
             </Col>
           </StyledRowSelect>
         ) : null}
         {/* Release score */}
 
         {/* Maximum attempt */}
-        <FeaturesSwitch
-          inputFeatures="maxAttemptAllowed"
-          actionOnInaccessible="hidden"
-          key="maxAttemptAllowed"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={12}>
-              <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
-            </Col>
-            <Col span={12}>
-              <MaxAttemptIInput
-                type="number"
-                size="large"
-                disabled={forClassLevel || freezeSettings}
-                value={maxAttempts}
-                onChange={e => overRideSettings("maxAttempts", e.target.value)}
-                min={1}
-                step={1}
-              />
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
+        {!hideClassLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="maxAttemptAllowed"
+            actionOnInaccessible="hidden"
+            key="maxAttemptAllowed"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={12}>
+                <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
+              </Col>
+              <Col span={12}>
+                <NumberInputStyled
+                  size="large"
+                  disabled={freezeSettings}
+                  value={maxAttempts}
+                  onChange={value => overRideSettings("maxAttempts", value)}
+                  min={1}
+                  step={1}
+                  bg="white"
+                  width="20%"
+                />
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
         {/* Maximum attempt */}
 
         {/* Safe Exam Browser/Kiosk Mode */}
-
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersRequireSafeExamBrowser"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersRequireSafeExamBrowser"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={12}>
-              <Label style={{ display: "flex" }}>
-                Safe Exam Browser/Kiosk Mode
-                <Tooltip
-                  title="Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to 
+        {!hideTestLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersRequireSafeExamBrowser"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersRequireSafeExamBrowser"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={12}>
+                <Label style={{ display: "flex" }}>
+                  Safe Exam Browser/Kiosk Mode
+                  <Tooltip
+                    title="Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to 
                   lockdown the student's device. To use this feature, Safe Exam Browser (on Windows/Mac/iPad) must 
                   be installed on the student device. On Chromebook, Edulastic Kiosk Mode 2.1 must be installed.
                     The quit password can be used by teacher or proctor to safely exit Safe Exam Browser in the middle 
                   of an assessment. The quit password should not be revealed to the students. The quit password cannot 
                   be used to exit Chromebook Kiosk mode."
-                >
-                  <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "10px" }} />
-                </Tooltip>
-              </Label>
-            </Col>
-            <Col span={12}>
-              <AlignSwitchRight
-                disabled={forClassLevel || freezeSettings}
-                defaultChecked={safeBrowser}
-                size="small"
-                onChange={value => overRideSettings("safeBrowser", value)}
-              />
-              {safeBrowser && (
-                <Password
+                  >
+                    <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "10px" }} />
+                  </Tooltip>
+                </Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
                   disabled={forClassLevel || freezeSettings}
-                  suffix={
-                    <Icon
-                      type={showPassword ? "eye-invisible" : "eye"}
-                      theme="filled"
-                      onClick={() => setShowSebPassword(prevState => !prevState)}
-                    />
-                  }
-                  onChange={e => overRideSettings("sebPassword", e.target.value)}
-                  size="large"
-                  value={sebPassword}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Quit Password"
+                  defaultChecked={safeBrowser}
+                  size="small"
+                  onChange={value => overRideSettings("safeBrowser", value)}
                 />
-              )}
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
+                {safeBrowser && (
+                  <Password
+                    disabled={forClassLevel || freezeSettings}
+                    suffix={
+                      <Icon
+                        type={showPassword ? "eye-invisible" : "eye"}
+                        theme="filled"
+                        onClick={() => setShowSebPassword(prevState => !prevState)}
+                      />
+                    }
+                    onChange={e => overRideSettings("sebPassword", e.target.value)}
+                    size="large"
+                    value={sebPassword}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Quit Password"
+                  />
+                )}
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
         {/* Safe Exam Browser/Kiosk Mode */}
 
         {/* Shuffle Question */
-        !isDocBased && (
+        !isDocBased && !hideTestLevelOptions && (
           <FeaturesSwitch
             inputFeatures="assessmentSuperPowersShuffleQuestions"
             actionOnInaccessible="hidden"
@@ -403,7 +414,7 @@ const Settings = ({
         }
 
         {/* Shuffle Answer Choice */
-        !isDocBased && (
+        !isDocBased && !hideTestLevelOptions && (
           <FeaturesSwitch
             inputFeatures="assessmentSuperPowersShuffleAnswerChoice"
             actionOnInaccessible="hidden"
@@ -429,133 +440,147 @@ const Settings = ({
         }
 
         {/* Show Calculator */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersShowCalculator"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersShowCalculator"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={12}>
-              <Label>SHOW CALCULATOR</Label>
-            </Col>
-            <Col span={12}>
-              <AlignRight
-                disabled={freezeSettings}
-                value={calcType}
-                onChange={e => overRideSettings("calcType", e.target.value)}
-              >
-                {calculatorKeysAvailable.map(item => (
-                  <RadioBtn data-cy={item} value={item} key={item}>
-                    <Label>{calculators[item]}</Label>
-                  </RadioBtn>
-                ))}
-              </AlignRight>
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
+        {!hideClassLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersShowCalculator"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersShowCalculator"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={12}>
+                <Label>SHOW CALCULATOR</Label>
+              </Col>
+              <Col span={12}>
+                <AlignRight
+                  disabled={freezeSettings}
+                  value={calcType}
+                  onChange={e => overRideSettings("calcType", e.target.value)}
+                >
+                  {calculatorKeysAvailable.map(item => (
+                    <RadioBtn data-cy={item} value={item} key={item}>
+                      <Label>{calculators[item]}</Label>
+                    </RadioBtn>
+                  ))}
+                </AlignRight>
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
         {/* Show Calculator */}
 
         {/* Answer on Paper */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersAnswerOnPaper"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersAnswerOnPaper"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={12}>
-              <Label>ANSWER ON PAPER</Label>
-            </Col>
-            <Col span={12}>
-              <AlignSwitchRight
-                disabled={forClassLevel || disableAnswerOnPaper || freezeSettings}
-                size="small"
-                defaultChecked={answerOnPaper}
-                onChange={value => overRideSettings("answerOnPaper", value)}
-              />
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
+        {!hideClassLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersAnswerOnPaper"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersAnswerOnPaper"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={12}>
+                <Label>ANSWER ON PAPER</Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  disabled={disableAnswerOnPaper || freezeSettings}
+                  size="small"
+                  checked={answerOnPaper}
+                  onChange={value => overRideSettings("answerOnPaper", value)}
+                />
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
         {/* Answer on Paper */}
 
         {/* Require Password */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersRequirePassword"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersRequirePassword"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSelect gutter={16}>
-            <Col span={12}>
-              <Label>REQUIRE PASSWORD</Label>
-            </Col>
-            <Col span={12}>
-              <StyledSelect
-                disabled={forClassLevel || freezeSettings}
-                placeholder="Please select"
-                cache="false"
-                value={passwordPolicy}
-                onChange={changeField("passwordPolicy")}
-              >
-                {Object.keys(passwordPolicyValues).map((item, index) => (
-                  <Select.Option data-cy="class" key={index} value={passwordPolicyValues[item]}>
-                    {passwordPolicyOptions[item]}
-                  </Select.Option>
-                ))}
-              </StyledSelect>
+        {!hideTestLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersRequirePassword"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersRequirePassword"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSelect gutter={16}>
+              <Col span={12}>
+                <Label>REQUIRE PASSWORD</Label>
+              </Col>
+              <Col span={12}>
+                <Row>
+                  <Col span={24}>
+                    <SelectInputStyled
+                      disabled={forClassLevel || freezeSettings}
+                      placeholder="Please select"
+                      cache="false"
+                      value={passwordPolicy}
+                      onChange={changeField("passwordPolicy")}
+                      noBorder
+                      height="30px"
+                    >
+                      {Object.keys(passwordPolicyValues).map((item, index) => (
+                        <Select.Option data-cy="class" key={index} value={passwordPolicyValues[item]}>
+                          {passwordPolicyOptions[item]}
+                        </Select.Option>
+                      ))}
+                    </SelectInputStyled>
+                  </Col>
+
+                  {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
+                    <Col span={24}>
+                      <Password
+                        disabled={forClassLevel || freezeSettings}
+                        onChange={e => overRideSettings("assignmentPassword", e.target.value)}
+                        size="large"
+                        value={assignmentPassword}
+                        type="text"
+                        placeholder="Enter Password"
+                        color={passwordStatus.color}
+                      />
+                      <MessageSpan>{passwordStatus.message}</MessageSpan>
+                    </Col>
+                  )}
+
+                  {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
+                    <Col span={24}>
+                      <Input
+                        disabled={forClassLevel || freezeSettings}
+                        required
+                        type="number"
+                        onChange={handleUpdatePasswordExpireIn}
+                        value={passwordExpireIn / 60}
+                        style={{ width: "100px" }}
+                        max={999}
+                        min={1}
+                        step={1}
+                      />{" "}
+                      MINUTES
+                    </Col>
+                  )}
+                </Row>
+              </Col>
               {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
-                <>
-                  <Password
-                    disabled={forClassLevel || freezeSettings}
-                    onChange={e => overRideSettings("assignmentPassword", e.target.value)}
-                    size="large"
-                    value={assignmentPassword}
-                    type="text"
-                    placeholder="Enter Password"
-                    color={passwordStatus.color}
-                  />
-                  <MessageSpan>{passwordStatus.message}</MessageSpan>
-                </>
+                <Col span={24} style={{ marginTop: "10px" }}>
+                  The password is entered by you and does not change. Students must enter this password before they can
+                  take the assessment.
+                </Col>
               )}
               {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
-                <>
-                  <Input
-                    disabled={forClassLevel || freezeSettings}
-                    required
-                    type="number"
-                    onChange={handleUpdatePasswordExpireIn}
-                    value={passwordExpireIn / 60}
-                    style={{ width: "100px", marginLeft: "15px" }}
-                    max={999}
-                    min={1}
-                    step={1}
-                  />{" "}
-                  MINUTES
-                </>
+                <Col span={24} style={{ marginTop: "10px" }}>
+                  Students must enter a password to take the assessment. The password is auto-generated and revealed
+                  only when the assessment is opened. If you select this method, you also need to specify the time in
+                  minutes after which the password would automatically expire. Use this method for highly sensitive and
+                  secure assessments. If you select this method, the teacher or the proctor must open the assessment
+                  manually and announce the password in class when the students are ready to take the assessment.
+                </Col>
               )}
-            </Col>
-            {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
-              <Col span={24} style={{ marginTop: "10px" }}>
-                The password is entered by you and does not change. Students must enter this password before they can
-                take the assessment.
-              </Col>
-            )}
-            {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
-              <Col span={24} style={{ marginTop: "10px" }}>
-                Students must enter a password to take the assessment. The password is auto-generated and revealed only
-                when the assessment is opened. If you select this method, you also need to specify the time in minutes
-                after which the password would automatically expire. Use this method for highly sensitive and secure
-                assessments. If you select this method, the teacher or the proctor must open the assessment manually and
-                announce the password in class when the students are ready to take the assessment.
-              </Col>
-            )}
-          </StyledRowSelect>
-        </FeaturesSwitch>
+            </StyledRowSelect>
+          </FeaturesSwitch>
+        )}
         {/* Require Password */}
 
         {/* Check Answer Tries Per Question */
-        !isDocBased && (
+        !isDocBased && !hideClassLevelOptions && (
           <FeaturesSwitch
             inputFeatures="assessmentSuperPowersCheckAnswerTries"
             actionOnInaccessible="hidden"
@@ -567,14 +592,14 @@ const Settings = ({
                 <Label>CHECK ANSWER TRIES PER QUESTION</Label>
               </Col>
               <Col span={12}>
-                <Input
-                  disabled={forClassLevel || freezeSettings}
-                  onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
+                <NumberInputStyled
+                  disabled={freezeSettings}
+                  onChange={value => overRideSettings("maxAnswerChecks", value)}
                   size="large"
                   value={maxAnswerChecks}
-                  type="number"
                   min={0}
                   placeholder="Number of tries"
+                  bg="white"
                 />
               </Col>
             </StyledRowSettings>
@@ -584,111 +609,105 @@ const Settings = ({
         }
 
         {/* Evaluation Method */}
-        <StyledRowSettings gutter={16}>
-          <Col span={6}>
-            <Label>EVALUATION METHOD</Label>
-          </Col>
-          <Col span={18}>
-            <AlignRight
-              forClassLevel={forClassLevel || freezeSettings}
-              // disabled={forClassLevel}
-              onChange={e => {
-                if (!forClassLevel && !freezeSettings) {
-                  overRideSettings("scoringType", e.target.value);
-                }
-              }}
-              value={scoringType}
-            >
-              <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
-                {evalTypes.ALL_OR_NOTHING}
-              </RadioBtn>
-              <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
-                {evalTypes.PARTIAL_CREDIT}
-              </RadioBtn>
-              <RadioBtn
-                value={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                key={PARTIAL_CREDIT_IGNORE_INCORRECT}
+        {!hideTestLevelOptions && (
+          <StyledRowSelect gutter={16}>
+            <Col span={12}>
+              <Label>EVALUATION METHOD</Label>
+            </Col>
+            <Col span={12}>
+              <SelectInputStyled
+                disabled={forClassLevel || freezeSettings}
+                onChange={value => {
+                  if (!forClassLevel && !freezeSettings) {
+                    overRideSettings("scoringType", value);
+                  }
+                }}
+                value={scoringType}
+                noBorder
+                height="30px"
               >
-                {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
-              </RadioBtn>
-              <RadioBtn value={ITEM_LEVEL_EVALUATION} data-cy={ITEM_LEVEL_EVALUATION} key={ITEM_LEVEL_EVALUATION}>
-                {evalTypes.ITEM_LEVEL_EVALUATION}
-              </RadioBtn>
-            </AlignRight>
-          </Col>
-        </StyledRowSettings>
+                {Object.keys(evalTypes).map((evalKey, index) => (
+                  <Select.Option value={evalKey} data-cy={evalKey} key={evalKey}>
+                    {Object.values(evalTypes)[index]}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+          </StyledRowSelect>
+        )}
         {/* Evaluation Method */}
 
         {/* Timed TEST */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersTimedTest"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersTimedTest"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16} height="40">
-            <Col span={12}>
-              <Label>
-                <span>TIMED TEST</span>
-                <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                  <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "15px" }} />
-                </Tooltip>
-              </Label>
-            </Col>
-            <Col span={10} style={{ display: "flex", flexDirection: "column" }}>
-              <Row style={{ display: "flex", alignItems: "center" }}>
-                <AlignSwitchRight
-                  data-cy="assignment-time-switch"
-                  size="small"
-                  defaultChecked={false}
-                  disabled={forClassLevel || freezeSettings}
-                  checked={timedAssignment}
-                  onChange={value => updateTimedTestAttrs("timedAssignment", value)}
-                />
-                {timedAssignment && (
-                  <>
-                    {/* eslint-disable no-restricted-globals */}
-                    <TimeSpentInput
-                      onChange={e => {
-                        if (e.target.value.length <= 3 && e.target.value <= 300) {
-                          updateTimedTestAttrs("allowedTime", e.target.value * 60 * 1000);
-                        }
-                      }}
-                      size="large"
-                      data-cy="assignment-time"
-                      value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
-                      type="number"
-                      min={1}
-                      max={300}
-                      step={1}
-                    />
-                    <Label>MINUTES</Label>
-                    {/* eslint-enable no-restricted-globals */}
-                  </>
-                )}
-              </Row>
-              <Row>
-                {timedAssignment && (
-                  <CheckBoxWrapper>
-                    <CheckboxLabel
-                      disabled={freezeSettings}
-                      data-cy="exit-allowed"
-                      checked={pauseAllowed}
-                      onChange={e => updateTimedTestAttrs("pauseAllowed", e.target.checked)}
-                    >
-                      <Label>Allow student to save and continue later</Label>
-                    </CheckboxLabel>
-                  </CheckBoxWrapper>
-                )}
-              </Row>
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
+        {!hideTestLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersTimedTest"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersTimedTest"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16} height="40">
+              <Col span={12}>
+                <Label>
+                  <span>TIMED TEST</span>
+                  <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
+                    <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "15px" }} />
+                  </Tooltip>
+                </Label>
+              </Col>
+              <Col span={10} style={{ display: "flex", flexDirection: "column" }}>
+                <Row style={{ display: "flex", alignItems: "center" }}>
+                  <AlignSwitchRight
+                    data-cy="assignment-time-switch"
+                    size="small"
+                    defaultChecked={false}
+                    disabled={forClassLevel || freezeSettings}
+                    checked={timedAssignment}
+                    onChange={value => updateTimedTestAttrs("timedAssignment", value)}
+                  />
+                  {timedAssignment && (
+                    <>
+                      {/* eslint-disable no-restricted-globals */}
+                      <TimeSpentInput
+                        onChange={e => {
+                          if (e.target.value.length <= 3 && e.target.value <= 300) {
+                            updateTimedTestAttrs("allowedTime", e.target.value * 60 * 1000);
+                          }
+                        }}
+                        size="large"
+                        data-cy="assignment-time"
+                        value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
+                        type="number"
+                        min={1}
+                        max={300}
+                        step={1}
+                      />
+                      <Label>MINUTES</Label>
+                      {/* eslint-enable no-restricted-globals */}
+                    </>
+                  )}
+                </Row>
+                <Row>
+                  {timedAssignment && (
+                    <CheckBoxWrapper>
+                      <CheckboxLabel
+                        disabled={freezeSettings}
+                        data-cy="exit-allowed"
+                        checked={pauseAllowed}
+                        onChange={e => updateTimedTestAttrs("pauseAllowed", e.target.checked)}
+                      >
+                        <span>Allow student to save and continue later</span>
+                      </CheckboxLabel>
+                    </CheckBoxWrapper>
+                  )}
+                </Row>
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
         {/* Timed TEST */}
 
         {/* Test Content visibility */}
-        {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
+        {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && !hideTestLevelOptions && (
           <StyledRowSettings gutter={16}>
             <Col span={12}>
               <Label>ITEM CONTENT VISIBILITY TO TEACHERS</Label>
@@ -709,85 +728,90 @@ const Settings = ({
           </StyledRowSettings>
         )}
         {/* Test Content visibility */}
-        <FeaturesSwitch
-          inputFeatures="performanceBands"
-          actionOnInaccessible="hidden"
-          key="performanceBands"
-          gradeSubject={gradeSubject}
-        >
-          <DivBlock>
-            <PeformanceBand
-              disabled={forClassLevel || freezeSettings}
-              setSettingsData={val => overRideSettings("performanceBand", val)}
-              performanceBand={performanceBand}
-            />
-          </DivBlock>
-        </FeaturesSwitch>
-        {!premium && <SubscriptionsBlock />}
-        <DivBlock>
-          <StandardProficiencyTable
-            disabled={forClassLevel || freezeSettings}
-            standardGradingScale={standardGradingScale}
-            setSettingsData={val => overRideSettings("standardGradingScale", val)}
-          />
-        </DivBlock>
-        {premium && (
-          <AdvancedButton onClick={advancedHandler} show={showAdvancedOption}>
-            {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-            <IconCaretDown color={themeColor} width={11} height={6} />
-          </AdvancedButton>
-        )}
-        {showAdvancedOption && (
-          <div>
-            <Block id="accessibility">
-              {!!accessibilityData.length && (
-                <>
-                  <Title>Accessibility</Title>
-                  {!isDocBased && (
-                    <RadioWrapper
-                      disabled={forClassLevel || freezeSettings}
-                      style={{ marginTop: "29px", marginBottom: 0 }}
-                    >
-                      {accessibilityData.map(({ key, value }) => (
-                        <StyledRowSettings key={accessibilities[key]} style={{ width: "100%" }}>
-                          <Col span={12}>
-                            <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
-                          </Col>
-                          <Col span={12}>
-                            <StyledRadioGroup
-                              disabled={forClassLevel || freezeSettings}
-                              onChange={e => overRideSettings(key, e.target.value)}
-                              defaultValue={isUndefined(value) ? true : value}
-                            >
-                              <Radio value>ENABLE</Radio>
-                              <Radio value={false}>DISABLE</Radio>
-                            </StyledRadioGroup>
-                          </Col>
-                        </StyledRowSettings>
-                      ))}
-                    </RadioWrapper>
+
+        {!hideTestLevelOptions && (
+          <>
+            <FeaturesSwitch
+              inputFeatures="performanceBands"
+              actionOnInaccessible="hidden"
+              key="performanceBands"
+              gradeSubject={gradeSubject}
+            >
+              <DivBlock>
+                <PeformanceBand
+                  disabled={forClassLevel || freezeSettings}
+                  setSettingsData={val => overRideSettings("performanceBand", val)}
+                  performanceBand={performanceBand}
+                />
+              </DivBlock>
+            </FeaturesSwitch>
+            {!premium && <SubscriptionsBlock />}
+            <DivBlock>
+              <StandardProficiencyTable
+                disabled={forClassLevel || freezeSettings}
+                standardGradingScale={standardGradingScale}
+                setSettingsData={val => overRideSettings("standardGradingScale", val)}
+              />
+            </DivBlock>
+            {premium && (
+              <AdvancedButton data-cy="advanced-option" onClick={advancedHandler} show={showAdvancedOption}>
+                {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
+                <IconCaretDown color={themeColor} width={11} height={6} />
+              </AdvancedButton>
+            )}
+            {showAdvancedOption && (
+              <div>
+                <Block id="accessibility">
+                  {!!accessibilityData.length && (
+                    <>
+                      <Title>Accessibility</Title>
+                      {!isDocBased && (
+                        <RadioWrapper
+                          disabled={forClassLevel || freezeSettings}
+                          style={{ marginTop: "29px", marginBottom: 0 }}
+                        >
+                          {accessibilityData.map(({ key, value }) => (
+                            <StyledRowSettings key={accessibilities[key]} style={{ width: "100%" }}>
+                              <Col span={12}>
+                                <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
+                              </Col>
+                              <Col span={12}>
+                                <StyledRadioGroup
+                                  disabled={forClassLevel || freezeSettings}
+                                  onChange={e => overRideSettings(key, e.target.value)}
+                                  defaultValue={isUndefined(value) ? true : value}
+                                >
+                                  <Radio value>ENABLE</Radio>
+                                  <Radio value={false}>DISABLE</Radio>
+                                </StyledRadioGroup>
+                              </Col>
+                            </StyledRowSettings>
+                          ))}
+                        </RadioWrapper>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-              {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
-                <FeaturesSwitch
-                  inputFeatures="selectPlayerSkinType"
-                  actionOnInaccessible="hidden"
-                  key="selectPlayerSkin"
-                  gradeSubject={gradeSubject}
-                >
-                  <PlayerSkinSelector
-                    userRole={userRole}
-                    playerSkinType={playerSkinType}
-                    onAssignmentTypeChange={changeField("playerSkinType")}
-                    testType={assignmentSettings?.testType || testSettings.testType}
-                    selectBackgroundWhite
-                    disabled={freezeSettings}
-                  />
-                </FeaturesSwitch>
-              )}
-            </Block>
-          </div>
+                  {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
+                    <FeaturesSwitch
+                      inputFeatures="selectPlayerSkinType"
+                      actionOnInaccessible="hidden"
+                      key="selectPlayerSkin"
+                      gradeSubject={gradeSubject}
+                    >
+                      <PlayerSkinSelector
+                        userRole={userRole}
+                        playerSkinType={playerSkinType}
+                        onAssignmentTypeChange={changeField("playerSkinType")}
+                        testType={assignmentSettings?.testType || testSettings.testType}
+                        selectBackgroundWhite
+                        disabled={freezeSettings}
+                      />
+                    </FeaturesSwitch>
+                  )}
+                </Block>
+              </div>
+            )}
+          </>
         )}
       </StyledDiv>
     </SettingsWrapper>
@@ -799,6 +823,7 @@ export default connect(
     userRole: getUserRole(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
     premium: state?.user?.user?.features?.premium,
+    calculatorProvider: state?.user?.user?.features?.calculatorProvider,
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions
       : state?.tests?.entity?.summary?.totalItems,

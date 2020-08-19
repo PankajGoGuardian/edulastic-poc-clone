@@ -1,13 +1,15 @@
-/// <reference types="Cypress"/>
+// / <reference types="Cypress"/>
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import EssayPlainTextPage from "../../../../framework/author/itemList/questionType/writtenAndSpoken/essayPlainTextPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with plain text" type question`, () => {
   const queData = {
     group: "Writing",
-    queType: "Essay with plain text",
+    queType: questionType.ESSAY_PLAIN,
     queText: "Describe yourself in one sentence?",
     extlink: "www.testdomain.com",
     testtext: "testtext",
@@ -17,8 +19,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
 
   const question = new EssayPlainTextPage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
-  let preview;
 
   before(() => {
     cy.login();
@@ -33,8 +33,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
 
     it(" > [essay_p_s1]] => user create question with default option and save", () => {
       // temporialy visiting preview page in order to question editor box in edit page
-      question.header.preview();
-      question.header.edit();
       question
         .getQuestionEditor()
         .clear()
@@ -46,7 +44,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
     });
 
     it(" > [essay_p_s2] => preview - verify default cut/copy/paste options", () => {
-      preview = question.header.preview();
+      question.header.preview();
       // verify copy paste option
       question
         .getTextEditor()
@@ -63,7 +61,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
 
       question.clickOnpaste();
 
-      question.getTextEditor().should("have.text", `${queData.copycut}${queData.testtext}`);
+      question.getTextEditor().should("have.text", `${queData.testtext}${queData.copycut}${queData.testtext}`);
 
       // verify cut paste option
       question
@@ -89,24 +87,26 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
 
       // typing 5 words
       const words = [1, 2, 3, 4, 5];
-      var i;
+      let i;
       for (i in words) {
         question
           .getTextEditor()
           .type(queData.testtext)
           .type(" ");
 
-        question.getWordCount().should("have.text", words[i] + " Words");
+        question.getWordCount().should("have.text", `${words[i]} Words`);
       }
-
-      // typing overlimit
-      question.getTextEditor().type(queData.testtext);
-
-      // validate
-      question.getTextEditor().should("have.css", "background-color", "rgb(255, 255, 255)");
-      //question.getTextEditor().should("have.css", "background-color", "rgb(251, 223, 231)");
-      question.getWordCount().should("have.text", "6 Words");
-      //question.getWordCount().should("have.text", "6 / 5 Word limit");
     });
+    it(" > [essay_p_s4] => preview - verify cut copy paste option settings", () => {
+      question.header.edit();
+      question.getCopyCheckBox().click({ force: true });
+
+      question.header.preview();
+
+      question.getCopy().should("not.exist");
+      question.getCut().should("be.visible");
+      question.getPaste().should("be.visible");
+    });
+    validateSolutionBlockTests(queData.group, queData.queType);
   });
 });

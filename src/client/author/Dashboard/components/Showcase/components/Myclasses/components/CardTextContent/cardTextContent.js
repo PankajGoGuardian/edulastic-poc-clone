@@ -27,11 +27,20 @@ export const CardTextContent = ({ data, history }) => {
     if (asgnId) history.push(`/author/classboard/${asgnId}/${_id}`);
   };
 
+  const applyClassFilter = () => {
+    const filter = {
+      classId: _id,
+      testType: "",
+      termId: ""
+    };
+    sessionStorage.setItem("filters[Assignments]", JSON.stringify(filter));
+  };
+
   return (
     <CardText>
       <RowWrapper>
         <LeftCol>
-          <Link to="/author/assignments">
+          <Link to="/author/assignments" onClick={applyClassFilter}>
             <IconWrapper>
               <OverlayText data-cy="totalAssignment">{totalAssignment || 0}</OverlayText>
             </IconWrapper>
@@ -39,7 +48,7 @@ export const CardTextContent = ({ data, history }) => {
         </LeftCol>
 
         <CenterCol>
-          <Link to="/author/assignments">
+          <Link to="/author/assignments" onClick={applyClassFilter}>
             <AssignmentCount>{totalAssignment > 1 ? "Assignments" : "Assignment"}</AssignmentCount>
           </Link>
         </CenterCol>

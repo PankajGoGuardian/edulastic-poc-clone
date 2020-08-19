@@ -71,13 +71,13 @@ const SortableQuestionItem = SortableElement(
   }) => (
     <div
       onClick={() => {
-        setCurrentAnnotationTool("cursor");
-        onHighlightQuestion(data.id);
-      }}
+          setCurrentAnnotationTool('cursor');
+          onHighlightQuestion(data.id);
+        }}
       onFocus={() => {
-        setCurrentAnnotationTool("cursor");
-        onHighlightQuestion(data.id);
-      }}
+          setCurrentAnnotationTool('cursor');
+          onHighlightQuestion(data.id);
+        }}
       style={{ display: "flex", marginBottom: "6px", padding: (testMode || review) && "0px 3px" }}
     >
       {!testMode && !review && <DragHandle review={review} />}

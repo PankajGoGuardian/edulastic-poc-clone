@@ -14,8 +14,9 @@ export const EduSwitchStyled = styled(Switch)`
         color: #606060;
         position: absolute;
         font-weight: bold;
-        top: -3px;
+        top: 50%;
         right: 5px;
+        transform: translateY(-50%);
       }
     }
     &.ant-switch-checked {
@@ -24,9 +25,10 @@ export const EduSwitchStyled = styled(Switch)`
         &:after {
           content: "ON";
           color: ${white};
-          top: -3px;
+          top: 50%;
           right: auto;
           left: 5px;
+          transform: translateY(-50%);
         }
       }
     }

@@ -3,19 +3,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import {
-  IconGraphPoint as IconPoint,
-  IconBothIncludedSegment,
-  IconBothNotIncludedSegment,
-  IconOnlyLeftIncludedSegment,
-  IconOnlyRightIncludedSegment,
-  IconInfinityToIncludedSegment,
-  IconIncludedToInfinitySegment,
-  IconInfinityToNotIncludedSegment,
-  IconNotIncludedToInfinitySegment,
-  IconTrash
-} from "@edulastic/icons";
-
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
@@ -27,9 +14,9 @@ import {
 } from "../../Builder/settings";
 import { makeBorder } from "../../Builder";
 import { CONSTANT, Colors } from "../../Builder/config";
-
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
+import Tools from "../../common/Tools";
 import SegmentsTools from "./SegmentsTools";
 import { GraphWrapper, JSXBox } from "./styled";
 
@@ -186,10 +173,13 @@ class AxisSegmentsContainer extends PureComponent {
     this._graph = null;
 
     this.state = {
-      selectedTool: this.getDefaultTool()
+      selectedTool: this.getDefaultTool(),
+      selectedControls: []
     };
 
     this.updateValues = this.updateValues.bind(this);
+
+    this.controls = ["undo", "redo", "reset", "trash"];
   }
 
   getDefaultTool() {
@@ -315,20 +305,7 @@ class AxisSegmentsContainer extends PureComponent {
   }
 
   onSelectTool = ({ name, index, groupIndex }) => {
-    if (name === "undo") {
-      this.onUndo();
-      return;
-    }
-    if (name === "redo") {
-      this.onRedo();
-      return;
-    }
-    if (name === "reset") {
-      this.onReset();
-      return;
-    }
-
-    this.setState({ selectedTool: { name, index, groupIndex } });
+    this.setState({ selectedTool: { name, index, groupIndex }, selectedControls: [] });
     this._graph.setTool(name);
   };
 
@@ -412,125 +389,52 @@ class AxisSegmentsContainer extends PureComponent {
     }
   };
 
-  getIconByToolName = (toolName, options) => {
-    if (!toolName) {
-      return "";
+  onSelectControl = toolName => {
+    if (toolName === "undo") {
+      return this.onUndo();
     }
-
-    const { width } = options;
-
-    const iconsByToolName = {
-      segments_point: () => <IconPoint {...options} />,
-      segment_both_point_included: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconBothIncludedSegment {...newOptions} />;
-      },
-      segment_both_points_hollow: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconBothNotIncludedSegment {...newOptions} />;
-      },
-      segment_left_point_hollow: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconOnlyRightIncludedSegment {...newOptions} />;
-      },
-      segment_right_point_hollow: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconOnlyLeftIncludedSegment {...newOptions} />;
-      },
-      ray_left_direction: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconInfinityToIncludedSegment {...newOptions} />;
-      },
-      ray_right_direction: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconIncludedToInfinitySegment {...newOptions} />;
-      },
-      ray_left_direction_right_hollow: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconInfinityToNotIncludedSegment {...newOptions} />;
-      },
-      ray_right_direction_left_hollow: () => {
-        const newOptions = {
-          ...options,
-          width: width + 40
-        };
-
-        return <IconNotIncludedToInfinitySegment {...newOptions} />;
-      },
-      trash: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10
-        };
-        return <IconTrash {...newOptions} />;
-      },
-      undo: () => "Undo",
-      redo: () => "Redo",
-      reset: () => "Reset"
-    };
-
-    return iconsByToolName[toolName]();
+    if (toolName === "redo") {
+      return this.onRedo();
+    }
+    if (toolName === "reset") {
+      return this.onReset();
+    }
+    this.setState({ selectedControls: [toolName], selectedTool: {} });
+    this._graph.setTool(toolName);
   };
 
   render() {
-    const {
-      layout,
-      canvas,
-      elements,
-      tools,
-      disableResponse,
-      view,
-      graphData,
-      setQuestionData,
-      isPrintPreview
-    } = this.props;
-    const { selectedTool } = this.state;
+    const { layout, tools, disableResponse, view, graphData, setQuestionData, isPrintPreview } = this.props;
+    const { selectedTool, selectedControls } = this.state;
     const vertical = layout.orientation === "vertical";
 
     return (
       <div data-cy="axis-segments-container">
-        <GraphWrapper vertical={vertical}>
+        <GraphWrapper vertical={vertical} width={layout.width}>
+          {!disableResponse && !isPrintPreview && (
+            <Tools
+              controls={this.controls}
+              selected={selectedControls}
+              onSelectControl={this.onSelectControl}
+              onSelect={() => {}}
+              fontSize={layout?.fontSize}
+            />
+          )}
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-            <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+            <AnnotationRnd
+              noBorder={view !== EDIT}
+              question={graphData}
+              setQuestionData={setQuestionData}
+              disableDragging={view !== EDIT}
+            />
           </div>
           {!disableResponse && !isPrintPreview && (
             <SegmentsTools
               tool={selectedTool}
               toolbar={tools}
-              elementsNumber={(elements || []).length}
-              getIconByToolName={this.getIconByToolName}
               onSelect={this.onSelectTool}
               fontSize={layout.fontSize}
-              responsesAllowed={canvas.responsesAllowed}
               vertical={vertical}
             />
           )}

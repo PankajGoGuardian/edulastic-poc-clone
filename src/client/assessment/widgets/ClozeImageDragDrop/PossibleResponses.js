@@ -9,7 +9,6 @@ import { withRouter } from "react-router-dom";
 import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
 
-
 import "react-quill/dist/quill.snow.css";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -58,23 +57,23 @@ class PossibleResponses extends Component {
   remove = (index, id) => {
     const { item, setQuestionData } = this.props;
     const optionIndex = item.options.findIndex(option => option.id === id);
-    if(optionIndex !== -1) {
+    if (optionIndex !== -1) {
       setQuestionData(
         produce(item, draft => {
-          draft.validation.validResponse.value.forEach((arr) => {
-            if (arr?.optionIds.includes(id)) {
+          draft.validation.validResponse.value.forEach(arr => {
+            if (arr?.optionIds?.includes(id)) {
               arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
             }
           });
-  
+
           draft.validation.altResponses.forEach(altResponse => {
             altResponse.value.forEach(arr => {
-              if (arr?.optionIds.includes(id)) {
+              if (arr?.optionIds?.includes(id)) {
                 arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
               }
             });
           });
-  
+
           draft.options.splice(optionIndex, 1);
           updateVariables(draft);
         })
@@ -91,24 +90,23 @@ class PossibleResponses extends Component {
           draft.validation.validResponse.value.forEach(arr => {
             // arr is null for indices 0 and 1 if we drop answer on 3rd directly
             // so adding optional chaining will prevent page crash
-            if (arr?.optionIds.includes(id)) {
+            if (arr?.optionIds?.includes(id)) {
               arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
             }
           });
-  
+
           draft.validation.altResponses.forEach(altResponse => {
             if (altResponse) {
               altResponse.value.forEach(arr => {
-                if (arr?.optionIds.includes(id)) {
+                if (arr?.optionIds?.includes(id)) {
                   arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
                 }
               });
             }
           });
-  
-         
-            draft.options[optionIndex].value = value;
-            updateVariables(draft);
+
+          draft.options[optionIndex].value = value;
+          updateVariables(draft);
         })
       );
     }
@@ -125,7 +123,7 @@ class PossibleResponses extends Component {
 
   render() {
     const { t, item, fillSections, cleanSections } = this.props;
-    
+
     // const options = (item.options || []).map(option => option.value);
     return (
       <Question

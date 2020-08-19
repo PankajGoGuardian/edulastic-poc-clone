@@ -13,13 +13,13 @@ import {
   cardTitleColor,
   greyDarken,
   mainTextColor,
-  backgroundGrey,
-  white
+  white,
+  greyThemeDark4
 } from "@edulastic/colors";
-import { Paper } from "@edulastic/common";
+import { Paper, EduTableStyled } from "@edulastic/common";
 import { IconManage } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
-import { Button, Divider, Icon, Menu, Modal, Table, Row, Col } from "antd";
+import { Button, Divider, Icon, Menu, Modal, Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -30,71 +30,46 @@ export const TableWrapper = styled.div`
   margin-bottom: 30px;
 `;
 
-export const StudentsTable = styled(Table)`
+export const StudentsTable = styled(EduTableStyled)`
   .ant-table {
     overflow: auto;
-    &-thead {
+    .ant-table-thead {
       & > tr {
+        .ant-table-selection-column {
+          text-align: left;
+          .ant-checkbox-wrapper {
+            margin-left: 10px;
+          }
+        }
         & > th {
-          border: none;
-          font-weight: bold;
           font-size: 12px;
-          text-transform: uppercase;
-          color: ${cardTitleColor};
-          background: white;
-          padding: 16px 10px;
-          &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
-          & .ant-table-header-column .ant-table-column-sorters::before {
-            background: ${white};
-          }
-          &.ant-table-column-has-actions.ant-table-column-has-filters
-            &.ant-table-column-has-actions.ant-table-column-has-sorters {
-            text-align: center;
-          }
-          .ant-table-column-sorters {
-            display: flex;
-            justify-content: center;
-
-            .ant-table-column-sorter-inner {
-              &.ant-table-column-sorter-inner-full {
-                margin-top: 0em;
-              }
-              .ant-table-column-sorter {
-                &-up,
-                &-down {
-                  font-size: 10px;
-                }
-              }
-            }
-          }
+          padding: 16px 0px;
         }
       }
     }
-    &-tbody {
+    .ant-table-tbody {
       & > tr {
-        letter-spacing: 0.26px;
-        color: ${secondaryTextColor};
-        font-size: 14px;
-        cursor: pointer;
-        border: none;
-        border-bottom: 15px solid white;
+        .ant-table-selection-column {
+          text-align: left;
+        }
+        .ant-checkbox-wrapper {
+          margin-left: 10px;
+        }
         & > td {
-          border: none;
-          font-weight: 550;
-          padding: 10px 10px;
-        }
-        & > td:last-child {
-          padding: 0px;
-          width: 40px;
-          svg {
-            display: none;
-            width: auto;
-            height: 28px;
-            fill: ${greenDark7};
+          padding: 10px 0px;
+          font-size: 14px;
+          letter-spacing: 0.26px;
+          color: ${secondaryTextColor};
+          &:last-child {
+            padding: 0px;
+            width: 40px;
+            svg {
+              display: none;
+              width: auto;
+              height: 28px;
+              fill: ${greenDark7};
+            }
           }
-        }
-        &:hover:not(.ant-table-expanded-row) > td {
-          background: ${backgroundGrey};
         }
         &:hover:not(.ant-table-expanded-row) > td:last-child {
           svg {
@@ -201,7 +176,6 @@ export const AddStudentButton = styled(Button)`
     background: ${themeColor};
   }
 `;
-
 export const ButtonsWrapper = styled.div`
   display: flex;
   align-items: right;
@@ -300,12 +274,33 @@ export const Studentscount = styled(Col)`
     font-size: 18px;
     color: ${themeColorLighter};
     position: relative;
-    top: 2px;
+    top: 1px;
     margin-left: 10px;
   }
   @media (max-width: ${desktopWidth}) {
     padding-right: 0px;
   }
+`;
+export const CoTeacher = styled(Studentscount)`
+  display: flex;
+  width: 100%;
+  margin-top: 4px;
+  span {
+    font-size: 15px;
+    margin-top: -5px;
+  }
+`;
+export const PopCoTeachers = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 22px;
+  height: 17px;
+  background-color: ${themeColorLighter};
+  color: ${white};
+  margin-top: 1px;
+  margin-left: 5px;
+  border-radius: 2px;
+  cursor: pointer;
 `;
 
 export const MainContainer = styled.div`
@@ -591,7 +586,9 @@ export const FlexDiv = styled.div`
 export const SwitchBox = styled.span`
   font-size: 10px;
   padding-bottom: 10px;
-  margin-left: 21px;
+  margin-left: 10px;
+  position: relative;
+  top: -50px;
   .ant-switch {
     min-width: 32px;
     height: 16px;
@@ -626,6 +623,11 @@ export const GoogleClassSyncModal = styled(Modal)`
     border: none;
     padding: 20px 24px;
   }
+`;
+export const Institution = styled.div`
+  font-size: 14px;
+  color: ${greyThemeDark4};
+  font-weight: normal;
 `;
 
 export const NotEnrolledMessage = styled.div`

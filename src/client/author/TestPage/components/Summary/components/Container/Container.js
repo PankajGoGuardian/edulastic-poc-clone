@@ -16,7 +16,7 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
-import { getUser, getItemBucketsSelector } from "../../../../../src/selectors/user";
+import { getUser, getCollectionsToAddContent } from "../../../../../src/selectors/user";
 import {
   getlastUsedCollectionListSelector,
   getDefaultThumbnailSelector,
@@ -48,7 +48,7 @@ const Summary = ({
   allTagsData,
   allPlaylistTagsData,
   lastUsedCollections,
-  orgCollections,
+  collectionsToShow,
   updateDefaultThumbnail,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
@@ -73,17 +73,17 @@ const Summary = ({
   useEffect(() => {
     // pre-populate collections initially
     const bucketIds = lastUsedCollections.flatMap(c => c.bucketIds);
-    const populatedCollections = orgCollections
+    const populatedCollections = collectionsToShow
       .filter(item => bucketIds.includes(item.bucketId))
       .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
     if (!test.title && !test.collections?.length) {
-      onChangeCollection(null, populatedCollections);
+      onChangeCollection(null, populatedCollections, collectionsToShow);
     }
-  }, [lastUsedCollections, orgCollections]);
+  }, [lastUsedCollections, collectionsToShow]);
 
   const breadcrumbData = [
     {
-      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
+      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS",
       to: showCancelButton ? "/author/assignments" : "/author/tests"
     },
     {
@@ -127,7 +127,7 @@ const Summary = ({
         tags={test.tags}
         analytics={test.analytics}
         collections={test.collections}
-        orgCollections={orgCollections}
+        collectionsToShow={collectionsToShow}
         onChangeField={handleChangeField}
         windowWidth={windowWidth}
         grades={grades}
@@ -195,7 +195,7 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       features: getUserFeatures(state),
       lastUsedCollections: getlastUsedCollectionListSelector(state),
-      orgCollections: getItemBucketsSelector(state)
+      collectionsToShow: getCollectionsToAddContent(state)
     }),
     {
       getAllTags: getAllTagsAction,

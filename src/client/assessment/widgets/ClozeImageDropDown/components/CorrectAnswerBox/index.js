@@ -1,32 +1,33 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, CorrectAnswersContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 
 import { getStemNumeration } from "../../../../utils/helpers";
 import { CorrectAnswerBox } from "./styled/CorrectAnswerBox";
-import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
 import { AnswerBox } from "./styled/AnswerBox";
 import { IndexBox } from "./styled/IndexBox";
 import { AnswerContent } from "./styled/AnswerContent";
 
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnsIndex, stemNumeration, t }) => (
-  <CorrectAnswerBox fontSize={fontSize}>
-    <CorrectAnswerTitle>
-      {altAnsIndex ? `${t("component.cloze.altAnswers")} ${altAnsIndex}` : t("component.cloze.correctAnswer")}
-    </CorrectAnswerTitle>
-    <div>
+  <CorrectAnswersContainer
+    title={altAnsIndex ? `${t("component.cloze.altAnswers")} ${altAnsIndex}` : t("component.cloze.correctAnswer")}
+    fontSize={fontSize}
+    minHeight="auto"
+  >
+    <CorrectAnswerBox>
       {userAnswers.map(userAnswer => (
         <AnswerBox key={`correct-answer-${userAnswer.id}`}>
           <IndexBox>{getStemNumeration(stemNumeration, userAnswer.index)}</IndexBox>
           <AnswerContent>
-            <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer.value || "" }} />
+            <MathSpan dangerouslySetInnerHTML={{ __html: convertToMathTemplate(userAnswer.value) || "" }} />
           </AnswerContent>
         </AnswerBox>
       ))}
-    </div>
-  </CorrectAnswerBox>
+    </CorrectAnswerBox>
+  </CorrectAnswersContainer>
 );
 
 CorrectAnswerBoxLayout.propTypes = {

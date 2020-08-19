@@ -69,9 +69,21 @@ const CollectionsTable = ({
 
     return [
       {
+        title: "Owner",
+        dataIndex: "owner",
+        key: "owner",
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "owner", "");
+          const next = get(b, "owner", "");
+          return next.localeCompare(prev);
+        }
+      },
+      {
         title: "Items",
         dataIndex: "stats.items",
         key: "items",
+        align: "center",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "stats.items", "");
@@ -83,6 +95,7 @@ const CollectionsTable = ({
         title: "Test",
         dataIndex: "stats.test",
         key: "test",
+        align: "center",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "stats.test", "");
@@ -94,6 +107,7 @@ const CollectionsTable = ({
         title: "Playlists",
         dataIndex: "stats.playList",
         key: "playList",
+        align: "center",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "stats.playList", "");
@@ -132,22 +146,13 @@ const CollectionsTable = ({
         );
       }
     },
-    {
-      title: "Owner",
-      dataIndex: "owner",
-      key: "owner",
-      sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => {
-        const prev = get(a, "owner", "");
-        const next = get(b, "owner", "");
-        return next.localeCompare(prev);
-      }
-    },
     ...getExtraColumns(),
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      align: "center",
+      width: 120,
       render: value => {
         if (value == 1) return <StatusText color="green">ACTIVE</StatusText>;
         if (value == 2) return <StatusText color="red">EXPIRED</StatusText>;

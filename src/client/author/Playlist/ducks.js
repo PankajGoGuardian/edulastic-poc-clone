@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
+import { call, put, all, takeEvery, takeLatest } from "redux-saga/effects";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
 import { curriculumSequencesApi, userContextApi, TokenStorage as Storage } from "@edulastic/api";
@@ -13,10 +13,10 @@ export const filterMenuItems = [
   { icon: "book", filter: SMART_FILTERS.ENTIRE_LIBRARY, path: "all", text: "Entire Library" },
   { icon: "folder", filter: SMART_FILTERS.AUTHORED_BY_ME, path: "by-me", text: "Authored by me" },
   { icon: "share-alt", filter: SMART_FILTERS.SHARED_WITH_ME, path: "shared", text: "Shared with me" },
-  { icon: "copy", filter: SMART_FILTERS.CO_AUTHOR, path: "co-author", text: "I am a Co-Author" }
+  { icon: "copy", filter: SMART_FILTERS.CO_AUTHOR, path: "co-author", text: "I am a Co-Author" },
+  { icon: "reload", filter: SMART_FILTERS.PREVIOUSLY_USED, path: "previous", text: "Previously Used" }
 
-  // These two filters are to be enabled later so, commented out
-  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  // This filter will be enabled once playlist favourites feature is implemented
   // { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" }
 ];
 
@@ -62,27 +62,17 @@ function* receivePublishersSaga() {
   }
 }
 
-function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
+function* receivePlaylistsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
   try {
-    const _search = { ...search };
-    // If user is CE then fetch playlists created by only this CE
-    const { _id: userId, permissions: userPermissions = [] } = yield select(state => state.user.user) || {};
-    if (userPermissions.includes("curator")) {
-      if (_search.authoredByIds) {
-        _search.authoredByIds.push(userId);
-      } else {
-        _search.authoredByIds = [userId];
-      }
-    }
-
     const result = yield call(curriculumSequencesApi.searchCurriculumSequences, {
-      search: _search,
+      search,
+      sort,
       page,
       limit
     });
     const deletedPlaylistIds = new Set(yield call(Storage.getDeletedPlaylistIds));
     /**
-     * deleted playlists won't sometimes sync right away to elastic search. 
+     * deleted playlists won't sometimes sync right away to elastic search.
      * they are tracked by sessionStorage of the user who deleted them
      * TODO: Take care of sessionStorage cleanup if ever the bloat becomes too big and causes issue to any user
      */
@@ -145,6 +135,11 @@ export const emptyFilters = {
   createdAt: ""
 };
 
+export const initialSortState = {
+  sortBy: "recency",
+  sortDir: "desc"
+};
+
 // reducer
 const initialState = {
   entities: [],
@@ -159,7 +154,8 @@ const initialState = {
   selectedPlayLists: [],
   filters: {
     ...emptyFilters
-  }
+  },
+  sort: { ...initialSortState }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -207,14 +203,16 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_ALL_PLAYLIST_FILTERS:
       return {
         ...state,
-        filters: payload
+        filters: payload.search,
+        sort: payload.sort
       };
     case CLEAR_PLAYLIST_FILTERS:
       return {
         ...state,
         filters: {
           ...emptyFilters
-        }
+        },
+        sort: { ...initialSortState }
       };
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
       return {
@@ -277,4 +275,9 @@ export const getPlalistFilterSelector = createSelector(
 export const getSelectedPlaylistSelector = createSelector(
   stateSelector,
   state => state.selectedPlayLists
+);
+
+export const getSortFilterStateSelector = createSelector(
+  stateSelector,
+  state => state.sort
 );

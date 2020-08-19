@@ -24,7 +24,7 @@ class AssignmentsPage {
   }
 
   getStatus() {
-    return cy.get('[data-cy="status"]');
+    return cy.get('[data-cy="status"]', { timeout: 30000 });
   }
 
   getAttemptCount() {
@@ -64,8 +64,6 @@ class AssignmentsPage {
 
   getReviewButtonById = id => this.getAssignmentByTestId(id).find('[data-cy="reviewButton"]');
 
-  getStatus = () => cy.get('[data-cy="status"]');
-
   getStatusByPosition = pos => this.getStatus().eq(pos);
 
   getTimeAvailableForAssignmentById = testid =>
@@ -79,6 +77,11 @@ class AssignmentsPage {
       .get(".ant-modal-confirm-btns")
       .find("button")
       .last();
+
+  getAssignmentButtonByTestId = testId =>
+    this.getAssignmentByTestId(testId)
+      .should("be.visible")
+      .find('[data-cy="assignmentButton"]');
 
   verifyTimeAndClickOkOnPopUp = (time, exitAllowed) => {
     cy.wait(500);
@@ -105,6 +108,8 @@ class AssignmentsPage {
   getLaunchRetakeButton = () => cy.get('[data-cy="launch-retake"]');
 
   getTestTypeByTestId = id => this.getAssignmentByTestId(id).find('[data-cy="testType"]');
+
+  getSEBiconByTestId = id => this.getAssignmentByTestId(id).find('[title="This test requires Safe Exam Browser"]');
 
   // *** ELEMENTS END ***
 
@@ -144,10 +149,7 @@ class AssignmentsPage {
     cy.server();
     cy.route("GET", "**/test/**").as("gettest");
 
-    this.getAssignmentByTestId(testId)
-      .should("be.visible")
-      .find('[data-cy="assignmentButton"]')
-      .click({ force: true });
+    this.getAssignmentButtonByTestId(testId).click({ force: true });
 
     if (!isFirstAttempt) this.getLaunchRetakeButton().click({ force: true });
 
@@ -248,7 +250,7 @@ class AssignmentsPage {
 
   verifyAbsenceOfTest = id => cy.get("body").should("not.have.descendants", `[data-cy="test-${id}"]`);
 
-  verifyPresenceOfTest = id => cy.get("body").should("have.descendants", `[data-cy="test-${id}"]`);
+  verifyPresenceOfTest = id => cy.get("body", { timeout: 30000 }).should("have.descendants", `[data-cy="test-${id}"]`);
 
   reviewSubmittedTestById = id => {
     this.getReviewButtonById(id).click({ force: true });

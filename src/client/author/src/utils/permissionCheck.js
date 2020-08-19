@@ -19,3 +19,11 @@ export const allowDuplicateCheck = (entityCollections = [], collections = [], en
   const isAllowDuplicate = bucketIdsWithDuplicatePermission.some(id => bucketIds.includes(id));
   return isAllowDuplicate;
 };
+
+export const allowContentEditCheck = (entityCollections = [], userCollections = []) => {
+  if (!entityCollections || !entityCollections.length) {
+    return true;
+  }
+  const writableCollections = userCollections.filter(item => item.accessLevel === "write" && item.status === 1);
+  return entityCollections.every(cl => writableCollections.some(item => cl._id === item._id));
+};

@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Input, Popover } from "antd";
 import { response as responseDimensions } from "@edulastic/constants";
-import { measureText } from "@edulastic/common";
+import { measureText, TextInputStyled } from "@edulastic/common";
 
 const { TextArea } = Input;
 
-const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, inputRef = useRef(), type, ...rest }) => {
+const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, inputRef, type, ...rest }) => {
   const maxWidth = responseDimensions.clozeTextMaxWidth;
   const [largWidth, toggleLargWidth] = useState(false);
   const [show, toggleShow] = useState(false);
@@ -16,7 +16,7 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
 
   const { disableAutoExpend, ...btnStyle } = style;
 
-  const MInput = multipleLine ? TextArea : Input;
+  const MInput = multipleLine ? TextArea : TextInputStyled;
   const changeInputWidth = (em, val) => {
     // during initialization ref is not attached
     // em is undefined and hence getComputedStyle does not work (EV-10802)
@@ -69,7 +69,7 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
   };
 
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef?.current) {
       const em = multipleLine ? inputRef.current.textAreaRef : inputRef.current.input;
       changeInputWidth(em, value);
     }
@@ -79,7 +79,7 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
   return (
     <Popover visible={show && largWidth && !focused} content={popoverContent}>
       <MInput
-        ref={inputRef}
+        inputRef={inputRef}
         onMouseEnter={showPopover}
         onMouseLeave={hidePopover}
         onFocus={handleFocuse}

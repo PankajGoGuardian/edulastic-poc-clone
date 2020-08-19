@@ -175,6 +175,22 @@ export const apiForms = [
     ]
   },
   {
+    id: "delta-sync-atlas",
+    name: "Trigger Classlink Delta Sync",
+    endPoint: "atlas/delta-sync",
+    method: "post",
+    fields: [
+      {
+        name: "caution",
+        displayName: "Caution",
+        message: "Delta sync takes time to complete, so don't trigger it frequently.",
+        placeholder: "",
+        type: "p",
+        required: false
+      }
+    ]
+  },
+  {
     id: "power-tools",
     name: "Enable Power Tools For Users",
     endPoint: "user/power-teacher",

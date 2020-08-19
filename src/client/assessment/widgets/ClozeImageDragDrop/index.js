@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unused-state */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -29,6 +28,7 @@ import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { WithWindowScroll } from "./WithWindowScroll";
 
 const EmptyWrapper = styled.div`
   overflow-x: auto;
@@ -37,13 +37,6 @@ const EmptyWrapper = styled.div`
 
 class ClozeImageDragDrop extends Component {
   static contextType = AnswerContext;
-
-  state = {
-    duplicatedResponses: false,
-    shuffleOptions: false,
-    showDraghandle: false,
-    transparentResponses: false
-  };
 
   static contextType = AnswerContext;
 
@@ -78,25 +71,6 @@ class ClozeImageDragDrop extends Component {
     };
   };
 
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        const numberOfResponses = draft.responses?.length || 0; // responses cannot be empty, there is validator which checks that
-        const response = {
-          score: 1,
-          value: new Array(numberOfResponses).fill({})
-        };
-
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.push(response);
-        } else {
-          draft.validation.altResponses = [response];
-        }
-      })
-    );
-  };
-
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
     setQuestionData(
@@ -114,26 +88,6 @@ class ClozeImageDragDrop extends Component {
         }
       })
     );
-
-    switch (name) {
-      case "duplicatedResponses": {
-        this.setState({ duplicatedResponses: value });
-        break;
-      }
-      case "shuffleOptions": {
-        this.setState({ shuffleOptions: value });
-        break;
-      }
-      case "show_draghandle": {
-        this.setState({ showDraghandle: value });
-        break;
-      }
-      case "transparent_responses": {
-        this.setState({ transparentResponses: value });
-        break;
-      }
-      default:
-    }
   };
 
   handleAddAnswer = userAnswer => {
@@ -178,50 +132,49 @@ class ClozeImageDragDrop extends Component {
     return (
       <div>
         {view === "edit" && (
-          <ContentArea>
-            <React.Fragment>
-              <div className="authoring">
-                <Authoring
-                  item={itemForEdit}
-                  theme={theme}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                  setQuestionData={setQuestionData}
-                />
-                <Question
-                  section="main"
-                  label={t("component.correctanswers.setcorrectanswers")}
-                  fillSections={fillSections}
-                  position="unset" // position should be unset to make sure auto-scroll works
-                  cleanSections={cleanSections}
-                >
-                  <CorrectAnswers
-                    key={duplicatedResponses || showDraghandle || shuffleOptions}
-                    validation={item.validation}
-                    configureOptions={{
-                      duplicatedResponses,
-                      showDraghandle,
-                      shuffleOptions,
-                      transparentResponses
-                    }}
-                    options={previewDisplayOptions}
-                    imageAlterText={item.imageAlterText}
-                    responses={item.responses}
-                    imageUrl={item.imageUrl}
-                    imageWidth={item.imageWidth}
-                    imageHeight={item.imageHeight}
-                    question={previewStimulus}
-                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                    uiStyle={uiStyle}
-                    backgroundColor={item.background}
-                    maxRespCount={item.maxRespCount}
-                    onAddAltResponses={this.handleAddAltResponses}
+          <WithWindowScroll>
+            <ContentArea>
+              <React.Fragment>
+                <div className="authoring">
+                  <Authoring
+                    item={itemForEdit}
+                    theme={theme}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    questionId={item.id}
-                    imageOptions={item.imageOptions}
-                    item={item}
+                    setQuestionData={setQuestionData}
+                  />
+                  <Question
+                    section="main"
+                    label={t("component.correctanswers.setcorrectanswers")}
+                    fillSections={fillSections}
+                    position="unset" // position should be unset to make sure auto-scroll works
+                    cleanSections={cleanSections}
                   >
+                    <CorrectAnswers
+                      key={duplicatedResponses || showDraghandle || shuffleOptions}
+                      validation={item.validation}
+                      configureOptions={{
+                        duplicatedResponses,
+                        showDraghandle,
+                        shuffleOptions,
+                        transparentResponses
+                      }}
+                      options={previewDisplayOptions}
+                      imageAlterText={item.imageAlterText}
+                      responses={item.responses}
+                      imageUrl={item.imageUrl}
+                      imageWidth={item.imageWidth}
+                      imageHeight={item.imageHeight}
+                      showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                      uiStyle={uiStyle}
+                      backgroundColor={item.background}
+                      maxRespCount={item.maxRespCount}
+                      fillSections={fillSections}
+                      cleanSections={cleanSections}
+                      questionId={item.id}
+                      imageOptions={item.imageOptions}
+                      item={item}
+                    />
                     <CorrectAnswerOptions>
                       <CheckboxLabel
                         data-cy="multi-check"
@@ -266,35 +219,35 @@ class ClozeImageDragDrop extends Component {
                       />
                       <Label>{t("component.cloze.imageDragDrop.maximumresponses")}</Label>
                     </MaxRespCountWrapper>
-                  </CorrectAnswers>
-                </Question>
+                  </Question>
 
-                <Question
-                  section="main"
-                  label={t("common.options.annotations")}
+                  <Question
+                    section="main"
+                    label={t("common.options.annotations")}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                  >
+                    <Annotations question={item} setQuestionData={setQuestionData} editable />
+                  </Question>
+                </div>
+
+                {advancedLink}
+
+                <Options
+                  onChange={this.handleOptionsChange}
+                  uiStyle={uiStyle}
+                  responses={item.responses}
+                  outerStyle={{
+                    padding: "30px 120px"
+                  }}
+                  advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
-                >
-                  <Annotations question={item} setQuestionData={setQuestionData} editable />
-                </Question>
-              </div>
-
-              {advancedLink}
-
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                responses={item.responses}
-                outerStyle={{
-                  padding: "30px 120px"
-                }}
-                advancedAreOpen={advancedAreOpen}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-                item={item}
-              />
-            </React.Fragment>
-          </ContentArea>
+                  item={item}
+                />
+              </React.Fragment>
+            </ContentArea>
+          </WithWindowScroll>
         )}
         {view === "preview" && (
           <Wrapper>

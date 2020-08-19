@@ -2,7 +2,8 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import HotspotPage from "../../../../framework/author/itemList/questionType/highlight/hotspotPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
+import { queColor } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type question`, () => {
   const queData = {
@@ -12,17 +13,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     imageWidth: "600",
     imageHeight: "400",
     altText: "Image Alt Text",
-    outLineColor: "rgba(0, 0, 0, 1)",
-    fillColor: "rgba(255, 0, 0, 0.19)"
+    outLineColor: "rgba(214, 50, 23, 1)",
+    outLineColorCode: "d63217",
+    fillColorCode: "1e4c60",
+    fillColor: "rgba(30, 76, 96, 0.8)",
+    strokeColorSelected: "rgb(150, 35, 16)"
   };
 
-  const spotPoints1 = [[100, 100], [100, 200], [200, 200], [200, 100], [100, 100]];
+  const spotPoints1 = [[50, 50], [50, 100], [100, 100], [100, 50], [50, 50]];
 
-  const spotPoints2 = [[400, 100], [400, 200], [500, 200], [500, 100], [400, 100]];
+  const spotPoints2 = [[150, 150], [150, 200], [200, 200], [200, 150], [150, 150]];
+
+  const spotPoints3 = [[250, 250], [250, 300], [300, 300], [300, 250], [250, 250]];
 
   const question = new HotspotPage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
   let preview;
 
   before(() => {
@@ -38,322 +43,105 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
 
     context(" > TC_195 => Enter question text in Compose Questino text box", () => {
       it(" > Upload image to server", () => {
-        /* cy.fixture("testImages/sample.jpg").then(logo => {
-          Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
-            cy.uploadImage(blob).then(result => {
-              // update uploaded image link to store
-              const imageUrl = result.response.body.result.fileUri;
-              const currentQuestion = question.getCurrentStoreQuestion();
-              currentQuestion.image.source = imageUrl;
-              cy.window()
-                .its("store")
-                .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-              question
-                .getDropZoneImageContainer()
-                .find("img")
-                .should("have.attr", "src", imageUrl);
-            });
-          });
-        }); */
-
-        cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
-          // question
-          //   .getDropZoneImageContainer()
-          //   .find("img")
-          //   .should("have.attr", "src");
-          // cy.wait(3000);
-          question
-            .getDrawArea()
-            .find("img")
-            .should("have.attr", "src");
-
-          question
-            .getHotspotMap()
-            .find("img")
-            .should("have.attr", "src");
-        });
-
-        // test with local image
-        // const testImageUrl = 'https://edureact-dev.s3.amazonaws.com/1551154644960_blob';
-        // const currentQuestion = question.getCurrentStoreQuestion()
-        // currentQuestion.image.source = testImageUrl;
-        // cy.window()
-        //   .its('store')
-        //   .invoke('dispatch', { type: '[author questions] update questions', payload: currentQuestion });
-        // question.getDropZoneImageContainer().find('img').should("have.attr", "src", testImageUrl);
+        cy.uploadFile("testImages/sample.jpg", "input[type=file]");
+        question.isImageDisplayedInQuesArea();
+        question.isImageDisplayedInAnsArea();
       });
 
       it(" > Enter Width (px)", () => {
         question.changeImageWidth(queData.imageWidth);
-        // question
-        //   .getDropZoneImageContainer()
-        //   .find("img")
-        //   .should("have.attr", "width", queData.imageWidth);
-
-        question
-          .getDrawArea()
-          .find("img")
-          .should("have.attr", "width", queData.imageWidth);
-
-        question
-          .getHotspotMap()
-          .find("img")
-          .should("have.attr", "width", queData.imageWidth);
+        question.verifyImageWidthInQuesArea(queData.imageWidth);
+        question.verifyImageWidthInAnsArea(queData.imageWidth);
       });
 
       it(" > Enter Height (px)", () => {
         question.changeImageHeight(queData.imageHeight);
-        // question
-        //   .getDropZoneImageContainer()
-        //   .find("img")
-        //   .should("have.attr", "height", queData.imageHeight);
-        question
-          .getDrawArea()
-          .find("img")
-          .should("have.attr", "height", queData.imageHeight);
-
-        question
-          .getHotspotMap()
-          .find("img")
-          .should("have.attr", "height", queData.imageHeight);
+        question.verifyImageHeightInQuesArea(queData.imageHeight);
+        question.verifyImageHeightInAnsArea(queData.imageHeight);
       });
-
-      // it(" > Image alternative text", () => {
-      //   question.addImageAlternative(queData.altText);
-      //   // question
-      //   //   .getDropZoneImageContainer()
-      //   //   .find("img")
-      //   //   .should("have.attr", "alt", queData.altText);
-
-      //   question
-      //     .getDrawArea()
-      //     .find("img")
-      //     .should("have.attr", "alt", queData.altText);
-      //   question
-      //     .getHotspotMap()
-      //     .find("img")
-      //     .should("have.attr", "alt", queData.altText);
-      // });
-
-      // it(" > Change Image", () => {
-      //   const changedImage = "https://edureact-dev.s3.amazonaws.com/1552317173453_x_ba9b1be5.jpg";
-      //   const currentQuestion = question.getCurrentStoreQuestion();
-      //   currentQuestion.image.source = changedImage;
-      //   cy.window()
-      //     .its("store")
-      //     .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-      //   question
-      //     .getDropZoneImageContainer()
-      //     .find("img")
-      //     .should("have.attr", "src", changedImage);
-      // });
     });
 
     context(" > TC_196 => Area", () => {
       it(" > Draw spots", () => {
         question.clickDrawMode();
-        question
-          .getDrawArea()
-          .then($el => {
-            spotPoints1.forEach(point => {
-              cy.wrap($el).click(point[0], point[1]);
-            });
-            spotPoints2.forEach(point => {
-              cy.wrap($el).click(point[0], point[1]);
-            });
-          })
-          .find("polygon")
-          .should("have.length", 2);
+        question.drawRectangle(spotPoints1);
+        question.drawRectangle(spotPoints2);
+        question.verifyNumberOfPolygonInDrawArea(2);
       });
 
       it(" > Delete spots", () => {
         question.clickDeleteMode();
-        question.getDrawArea().then($el => {
-          cy.wrap($el)
-            .find("polygon")
-            .first()
-            .click()
-            .should("have.length", 1);
-          cy.wrap($el)
-            .find("polygon")
-            .first()
-            .click()
-            .should("have.length", 0);
-        });
+        question.verifyNumberOfPolygonInDrawArea(2);
+        question.clickPolygonInDrawArea(0);
+        question.clickPolygonInDrawArea(0);
+        question.verifyNumberOfPolygonInDrawArea(0);
       });
 
       it(" > Undo", () => {
         question.clickDrawMode();
-        question
-          .getDrawArea()
-          .then($el => {
-            spotPoints1.forEach(point => {
-              cy.wrap($el).click(point[0], point[1]);
-            });
-          })
-          .find("polygon")
-          .should("have.length", 1);
-
-        question.clickAreaUndo().then(() => {
-          question
-            .getDrawArea()
-            .find("polygon")
-            .should("have.length", 0);
-
-          question
-            .getDrawArea()
-            .find("circle")
-            .should("have.length", spotPoints1.length - 1);
-        });
+        question.drawRectangle(spotPoints1);
+        question.verifyNumberOfPolygonInDrawArea(1);
+        question.clickAreaUndo();
+        question.verifyNumberOfPolygonInDrawArea(0);
       });
 
       it(" > Redo", () => {
-        question.clickAreaRedo().then(() => {
-          question
-            .getDrawArea()
-            .find("circle")
-            .should("have.length", 0);
-
-          question
-            .getDrawArea()
-            .find("polygon")
-            .should("have.length", 1);
-        });
+        question.clickAreaRedo();
+        question.verifyNumberOfPolygonInDrawArea(1);
       });
 
       it(" > Clear", () => {
-        question.clickAreaClear().then(() => {
-          question
-            .getDrawArea()
-            .find("polygon")
-            .should("have.length", 0);
-        });
+        question.clickAreaClear();
+        question.verifyNumberOfPolygonInDrawArea(0);
       });
     });
 
     context(" > TC_197 => Attributes", () => {
       before("add sample data", () => {
         question.clickDrawMode();
-        question
-          .getDrawArea()
-          .then($el => {
-            spotPoints1.forEach(point => {
-              cy.wrap($el).click(point[0], point[1]);
-            });
-            spotPoints2.forEach(point => {
-              cy.wrap($el).click(point[0], point[1]);
-            });
-          })
-          .find("polygon")
-          .should("have.length", 2);
+        question.drawRectangle(spotPoints1);
+        question.drawRectangle(spotPoints2);
+        question.verifyNumberOfPolygonInDrawArea(2);
       });
 
       it(" > Fill Color", () => {
-        // const currentQuestion = question.getCurrentStoreQuestion();
-        // currentQuestion.area_attributes.global.fill = queData.fillColor;
-        // cy.window()
-        //   .its("store")
-        //   .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-        // cy.get(".rc-color-picker-trigger")
-        //   .invoke("attr", "style", `background-color: ${queData.fillColor}`)
-        //   .should("have.attr", "style", `background-color: ${queData.fillColor}`);
-        // cy.get("body").click();
-        question
-          .getAnswerContainer()
-          .find("polygon")
-          .invoke("attr", "style", `background-color: ${queData.fillColor}`)
-          .should("have.attr", "style", `background-color: ${queData.fillColor}`);
+        question.changeFillColor(queData.fillColorCode, "80", queData.fillColor);
+        question.verifyPolygonFillColor(queData.fillColor);
       });
 
       it(" > Outline Color", () => {
-        // const currentQuestion = question.getCurrentStoreQuestion();
-        // currentQuestion.area_attributes.global.stroke = queData.outLineColor;
-        // cy.window()
-        //   .its("store")
-        //   .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-
-        question
-          .getAnswerContainer()
-          .find("polygon")
-          .invoke("attr", "style", `stroke: ${queData.outLineColor}`)
-          .should("have.attr", "style", `stroke: ${queData.outLineColor}`);
+        question.changeOutlineColor(queData.outLineColorCode, "100");
+        question.verifyPolygonOutlineColor(queData.outLineColor);
       });
     });
 
     context(" > TC_198 => Set Correct Ansswers", () => {
       it(" > Click on + symbol", () => {
         question.addAlternate();
-        question
-          .getAddedAlternate()
-          .then($el => {
-            cy.wrap($el)
-              .should("be.visible")
-              .click();
-          })
-          .should("not.exist");
+        question.closelternate();
       });
 
       it(" > Update Points", () => {
-        question
-          .getPontsInput()
-          .focus()
-          .clear()
-          .type("{selectall}1")
-          .should("have.value", "1")
-          .type("{uparrow}")
-          .should("have.value", "1.5")
-          .type("{downarrow}")
-          .should("have.value", "1")
-          .blur();
+        question.enterPoints("1");
+        question.enterPoints("1.5");
+        question.enterPoints("1");
       });
 
       it(" > Provide the answer choices", () => {
-        question
-          .getAnswerContainer()
-          .find("polygon")
-          .should("be.visible")
-          .first()
-          .click()
-          .then($el => {
-            cy.wrap($el).should("have.css", "stroke-width", "4px");
-          });
+        question.clickPolygonInAnswerArea(0, true, queData.strokeColorSelected);
+        question.verifyPolygonSelectedInAnsArea(0, true);
       });
 
       it(" > Multiple response", () => {
-        question
-          .getMultipleCheck()
-          .should("be.visible")
-          .click()
-          .find("input")
-          .should("be.checked");
+        question.clickMultipleCheck(true);
 
-        question
-          .getAnswerContainer()
-          .find("polygon")
-          .should("be.visible")
-          .first()
-          .should("have.css", "stroke-width", "4px")
-          .next()
-          .click()
-          .then($el => {
-            cy.wrap($el).should("have.css", "stroke-width", "4px");
-          });
+        question.verifyPolygonSelectedInAnsArea(0, true);
+        question.clickPolygonInAnswerArea(1, true, queData.strokeColorSelected);
+        question.verifyPolygonSelectedInAnsArea(1, true);
 
-        question
-          .getMultipleCheck()
-          .should("be.visible")
-          .click()
-          .find("input")
-          .should("not.checked");
-
-        question
-          .getAnswerContainer()
-          .find("polygon")
-          .should("be.visible")
-          .first()
-          .should("have.css", "stroke-width", "4px")
-          .next()
-          .should("have.css", "stroke-width", "2px");
+        question.clickMultipleCheck(false);
+        question.verifyPolygonSelectedInAnsArea(0, true);
+        question.verifyPolygonSelectedInAnsArea(1, false);
       });
     });
 
@@ -368,74 +156,32 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     });
 
     context(" > TC_200 => Preview items", () => {
-      it(" > Click on preview", () => {
-        preview = editItem.header.preview();
-        // cy.get("body").contains("span", "Check Answer");
-      });
-
       it(" > Click on Check answer", () => {
+        preview = editItem.header.preview();
         preview.checkScore("0/1");
 
         preview.getClear().click();
-        question
-          .getAnswerContainer()
-          .find("polygon")
-          .should("be.visible")
-          .first()
-          .click()
-          .then($el => {
-            cy.wrap($el).should("have.css", "stroke-width", "4px");
-          });
+        question.clickPolygonInAnswerArea(0, true, queData.strokeColorSelected);
+        question.verifyPolygonSelectedInAnsArea(0, true);
 
         preview.checkScore("1/1");
       });
 
       it(" > Click on Show Answers", () => {
         preview.getClear().click();
-        preview
-          .getShowAnswer()
-          .click()
-          .then(() => {
-            question
-              .getAnswerContainer()
-              .find("polygon")
-              .should("be.visible")
-              .first()
-              .should("have.css", "stroke", "rgb(0, 176, 255)");
-          });
+        preview.getShowAnswer().click();
+        question.verifyAnswerShown(0, "rgb(0, 173, 80)");
       });
 
       it(" > Click on Clear", () => {
-        preview
-          .getClear()
-          .click()
-          .then(() => {
-            question
-              .getAnswerContainer()
-              .find("polygon")
-              .should("be.visible")
-              .first()
-              .should("have.css", "stroke", "rgb(0, 176, 255)");
-          });
-
+        preview.getClear().click();
+        question.verifyPolygonOutlineColor("rgba(214, 50, 23, 1)");
         preview.header.edit();
       });
     });
   });
 
-  // context(" > Delete the question after creation", () => {
-  //   context(" > TC_201 => Delete option", () => {
-  //     it(" > Click on delete button in Item Details page", () => {
-  //       editItem
-  //         .getDelButton()
-  //         .should("have.length", 1)
-  //         .click()
-  //         .should("have.length", 0);
-  //     });
-  //   });
-  // });
-
-  context.skip(" > Advanced Options", () => {
+  context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
       editItem.createNewItem();
 
@@ -451,162 +197,227 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     afterEach(() => {
       editItem.header.edit();
     });
+  });
+  describe(" > Layout", () => {
+    it(" > should be able to select small font size", () => {
+      question.getQuestionText().type(queData.queText);
+      const select = question.getFontSizeSelect();
+      const { name, font } = Helpers.fontSize("small");
 
-    describe(" > Layout", () => {
-      it(" > should be able to select small font size", () => {
-        const select = question.getFontSizeSelect();
-        const { name, font } = Helpers.fontSize("small");
+      select.click({ force: true });
 
-        select.should("be.visible").click();
+      question.getSmallFontSizeOption().click({ force: true });
 
-        question
-          .getSmallFontSizeOption()
-          .should("be.visible")
-          .click();
+      select.should("contain", name);
+      question.checkFontSize(font);
+    });
+    it(" > should be able to select normal font size", () => {
+      const select = question.getFontSizeSelect();
+      const { name, font } = Helpers.fontSize("normal");
 
-        select.should("contain", name);
-        question.checkFontSize(font);
-      });
-      it(" > should be able to select normal font size", () => {
-        const select = question.getFontSizeSelect();
-        const { name, font } = Helpers.fontSize("normal");
+      select.click({ force: true });
 
-        select.should("be.visible").click();
+      question.getNormalFontSizeOption().click({ force: true });
 
-        question
-          .getNormalFontSizeOption()
-          .should("be.visible")
-          .click();
+      select.should("contain", name);
+      question.checkFontSize(font);
+    });
+    it(" > should be able to select large font size", () => {
+      const select = question.getFontSizeSelect();
+      const { name, font } = Helpers.fontSize("large");
 
-        select.should("contain", name);
-        question.checkFontSize(font);
-      });
-      it(" > should be able to select large font size", () => {
-        const select = question.getFontSizeSelect();
-        const { name, font } = Helpers.fontSize("large");
+      select.click({ force: true });
 
-        select.should("be.visible").click();
+      question.getLargeFontSizeOption().click({ force: true });
 
-        question
-          .getLargeFontSizeOption()
-          .should("be.visible")
-          .click();
+      select.should("contain", name);
+      question.checkFontSize(font);
+    });
+    it(" > should be able to select extra large font size", () => {
+      const select = question.getFontSizeSelect();
+      const { name, font } = Helpers.fontSize("xlarge");
 
-        select.should("contain", name);
-        question.checkFontSize(font);
-      });
-      it(" > should be able to select extra large font size", () => {
-        const select = question.getFontSizeSelect();
-        const { name, font } = Helpers.fontSize("xlarge");
+      select.click({ force: true });
 
-        select.should("be.visible").click();
+      question.getExtraLargeFontSizeOption().click({ force: true });
 
-        question
-          .getExtraLargeFontSizeOption()
-          .should("be.visible")
-          .click();
+      select.should("contain", name);
+      question.checkFontSize(font);
+    });
+    it(" > should be able to select huge font size", () => {
+      const select = question.getFontSizeSelect();
+      const { name, font } = Helpers.fontSize("xxlarge");
 
-        select.should("contain", name);
-        question.checkFontSize(font);
-      });
-      it(" > should be able to select huge font size", () => {
-        const select = question.getFontSizeSelect();
-        const { name, font } = Helpers.fontSize("xxlarge");
+      select.click({ force: true });
 
-        select.should("be.visible").click();
+      question.getHugeFontSizeOption().click({ force: true });
 
-        question
-          .getHugeFontSizeOption()
-          .should("be.visible")
-          .click();
+      select.should("contain", name);
+      question.checkFontSize(font);
+    });
+    it(" > should be able to change maximum width", () => {
+      const width = 666;
+      question.expandAdvancedOptions();
 
-        select.should("contain", name);
-        question.checkFontSize(font);
-      });
-      it(" > should be able to change maximum width", () => {
-        const width = 666;
+      question
+        .getMaxWidth()
+        .type(`{selectall}${width}`)
+        .should("have.value", `${width}`);
 
-        question
-          .getMaxWidth()
-          .should("be.visible")
-          .clear()
-          .type(`{selectall}${width}`)
-          .should("have.value", `${width}`);
+      question
+        .getHotspotMap()
+        .should("have.css", "max-width")
+        .and("eq", `${width}px`);
+    });
 
-        question
-          .getHotspotMap()
-          .should("be.visible")
-          .should("have.css", "max-width")
-          .and("eq", `${width}px`);
-      });
-      it(" > should be able to select numerical stem numeration", () => {
-        question
-          .getStemNumeration()
-          .should("be.visible")
-          .click()
-          .as("select");
-
-        question
-          .getNumericalStemOption()
-          .should("be.visible")
-          .click();
-
-        cy.get("@select").should("contain", Helpers.stemNumeration.numerical);
-      });
-      it(" > should be able to select uppercase alphabet stem numeration", () => {
-        question
-          .getStemNumeration()
-          .should("be.visible")
-          .click()
-          .as("select");
-
-        question
-          .getUpperAlphaOption()
-          .should("be.visible")
-          .click();
-
-        cy.get("@select").should("contain", Helpers.stemNumeration.upperAlpha);
-      });
-      it(" > should be able to select lowercase alphabet stem numeration", () => {
-        question
-          .getStemNumeration()
-          .should("be.visible")
-          .click()
-          .as("select");
-
-        question
-          .getLowerAlphaOption()
-          .should("be.visible")
-          .click();
-
-        cy.get("@select").should("contain", Helpers.stemNumeration.lowerAlpha);
-      });
+    context("Hint and solution block testing", () => {
+      validateSolutionBlockTests(queData.group, queData.queType);
     });
   });
 
-  // context(" > Scoring block tests", () => {
-  //   before("visit items page and select question type", () => {
-  //     editItem.createNewItem();
+  context(" > Scoring block", () => {
+    before("visit items page and select question type", () => {
+      editItem.createNewItem();
+      // create new que and select type
+      editItem.chooseQuestion(queData.group, queData.queType);
+      cy.uploadFile("testImages/sample.jpg", "input[type=file]");
+      question.isImageDisplayedInQuesArea();
+      question.isImageDisplayedInAnsArea();
+      question.changeImageHeight(queData.imageHeight);
+      question.changeImageWidth(queData.imageWidth);
+      question.drawRectangle(spotPoints1);
+      question.drawRectangle(spotPoints2);
+      question.drawRectangle(spotPoints3);
+      question.verifyNumberOfPolygonInDrawArea(3);
+    });
 
-  //     // create new que and select type
-  //     editItem.chooseQuestion(queData.group, queData.queType);
-  //   });
+    afterEach(() => {
+      preview = editItem.header.preview();
+      question.clickClearInPreview();
+      editItem.header.edit();
+    });
 
-  //   afterEach(() => {
-  //     preview = question.header.preview();
+    it(" > Test score with exact match", () => {
+      // Set answer and points
+      question.enterPoints("4");
+      question.clickPolygonInAnswerArea(0);
 
-  //     preview.getClear().click();
+      preview = question.header.preview();
+      // Correct answer
+      question.clickPolygonInAnswerArea(0);
+      preview.checkScore("4/4");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
 
-  //     preview.header.edit();
-  //   });
+      question.clickClearInPreview();
+      // Incorrect answer
+      question.clickPolygonInAnswerArea(1);
+      preview.checkScore("0/4");
+      question.verifyPolygonColorInPreview(1, queColor.LIGHT_RED2);
 
-  //   it(" > Test score with max score", () => {
-  //     question
-  //       .getMaxScore()
-  //       .clear()
-  //       .type(1);
+      editItem.header.edit();
 
-  //     preview = question.header.preview();
-  //   });
-  // });
+      question.clickMultipleCheck(true);
+      question.clickPolygonInAnswerArea(1);
+
+      // Partial answer
+      preview = question.header.preview();
+      question.clickPolygonInAnswerArea(0);
+      preview.checkScore("0/4");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.clickClearInPreview();
+
+      // Correct answer
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(1);
+      preview.checkScore("4/4");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(1, queColor.GREEN_1);
+    });
+
+    it(" > Test score with partial match", () => {
+      question.enterPoints("3");
+      editItem.showAdvancedOptions();
+      question.selectScoringType("Partial match");
+
+      preview = question.header.preview();
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(2);
+      preview.checkScore("1.5/3");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(2, queColor.LIGHT_RED2);
+      question.clickClearInPreview();
+
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(1);
+      preview.checkScore("3/3");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(1, queColor.GREEN_1);
+    });
+
+    it(" > Test score with partial match with round", () => {
+      editItem.showAdvancedOptions();
+      question.selectRoundingOption("Round down");
+
+      preview = question.header.preview();
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(2);
+      preview.checkScore("1/3");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(2, queColor.LIGHT_RED2);
+      question.clickClearInPreview();
+
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(1);
+      preview.checkScore("3/3");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(1, queColor.GREEN_1);
+    });
+
+    it(" > Test score with partial match with round and with penalty", () => {
+      editItem.showAdvancedOptions();
+      question.selectRoundingOption("None");
+      question.enterPenalty("2");
+
+      preview = question.header.preview();
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(2);
+      preview.checkScore("0.5/3");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(2, queColor.LIGHT_RED2);
+      question.clickClearInPreview();
+
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(1);
+      preview.checkScore("3/3");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(1, queColor.GREEN_1);
+
+      editItem.header.edit();
+      editItem.showAdvancedOptions();
+      question.enterPoints("5");
+      question.selectRoundingOption("Round down");
+
+      preview = question.header.preview();
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(2);
+      preview.checkScore("1/5");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(2, queColor.LIGHT_RED2);
+      question.clickClearInPreview();
+
+      question.clickPolygonInAnswerArea(0);
+      question.clickPolygonInAnswerArea(1);
+      preview.checkScore("5/5");
+      question.verifyPolygonColorInPreview(0, queColor.GREEN_1);
+      question.verifyPolygonColorInPreview(1, queColor.GREEN_1);
+    });
+
+    /* it(" > Test score with partial match with round and with penalty", () => {
+      editItem.showAdvancedOptions()
+      question.selectRoundingOption("None")
+      question.enterPenalty("0")
+
+      question.addAlternate()
+    }) */
+  });
 });

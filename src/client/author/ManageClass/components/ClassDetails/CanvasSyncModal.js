@@ -55,7 +55,12 @@ const CanvasSyncModal = ({
 
     const { id: canvasCourseCode, name: canvasCourseName } = canvasCourseList.find(({ id }) => id === course);
 
-    const { id: sectionId, name: sectionName } = canvasSectionList.find(({ id }) => id === section);
+    const selectedSectionDetails = canvasSectionList.find(({ id }) => id === section);
+    if (!selectedSectionDetails) {
+      return notification({ msg: "bothCourseandSectionRequired" });
+    }
+
+    const { id: sectionId, name: sectionName } = selectedSectionDetails;
 
     const data = {
       userId: user._id,

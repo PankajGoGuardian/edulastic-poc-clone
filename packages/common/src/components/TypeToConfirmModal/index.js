@@ -1,17 +1,13 @@
-import React, { Component } from "react";
-import { Row, Col, Button } from "antd";
+import { CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common";
+import { Col, Row } from "antd";
 import PropTypes from "prop-types";
+import React, { Component } from "react";
 import {
-  StyledCol,
-  StyledP,
-  StyledInput,
-  LightGreenSpan,
-  YesButton,
-  StyledModal,
   ErrorMessage,
-  CancelButton
+  LightGreenSpan,
+  StyledCol,
+  StyledP
 } from "./styled";
-import { EduButton ,CustomModalStyled} from "@edulastic/common";
 
 class TypeToConfirmModal extends Component {
   state = {
@@ -57,7 +53,7 @@ class TypeToConfirmModal extends Component {
     } = this.props;
     const { textValue, errorMsg } = this.state;
 
-    const btnText = "Yes, " + (okButtonText ? okButtonText : title);
+    const btnText = `Yes, ${okButtonText || title}`;
 
     return (
       <CustomModalStyled
@@ -87,7 +83,8 @@ class TypeToConfirmModal extends Component {
         </Row>
         <Row>
           <StyledCol span={24}>
-            <StyledInput
+            <TextInputStyled
+              align="center"
               value={textValue}
               onChange={this.onChangeInput}
               // here paste is not allowed, and user has to manually type in ARCHIVE

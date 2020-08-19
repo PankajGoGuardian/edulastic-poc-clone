@@ -148,7 +148,7 @@ export default class GroupItemsPage {
   };
 
   selectOptionByAttrByGroup = (group, attr) => {
-    cy.get(`[data-cy="Group ${group} ${attr}"]`).click();
+    cy.get(`[data-cy="Group ${group} ${attr}"]`).click({ force: true });
   };
 
   // *** ACTIONS END ***
@@ -202,6 +202,7 @@ export default class GroupItemsPage {
         });
         cy.wait(500);
       }
+      cy.wait(300);
     });
     return cy.wait(1).then(() => testID);
   };
@@ -229,16 +230,16 @@ export default class GroupItemsPage {
     deliverTypeAtStudentSide.forEach((type, ind) => {
       switch (type) {
         case deliverType.ALL:
-          if (shuffle === false) CypressHelper.checkObjectEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
+          if (!shuffle) CypressHelper.checkObjectEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
           else {
-            if (!groups[ind + 1].items.length === 1)
+            if (groups[ind + 1].items.length !== 1)
               CypressHelper.checkObjectInEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
             expect(deliveredGroup[ind + 1].length).to.eq(groups[ind + 1].deliveryCount);
           }
           break;
         case deliverType.LIMITED_RANDOM:
         case deliverType.ALL_RANDOM:
-          if (!groups[ind + 1].items.length === 1)
+          if (groups[ind + 1].items.length !== 1)
             CypressHelper.checkObjectInEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
           expect(deliveredGroup[ind + 1].length).to.eq(groups[ind + 1].deliveryCount);
           break;

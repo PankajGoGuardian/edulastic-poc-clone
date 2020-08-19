@@ -31,9 +31,9 @@ export const QuestionWidgetWrapper = styled.div`
   height: 100%;
   max-height: ${props =>
     `calc(100vh - ${
-      props.testMode
-        ? "0"
-        : props.reportMode
+    props.testMode
+      ? "0"
+      : props.reportMode
         ? props.theme.HeaderHeight.xs + 60
         : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)
     }px)`};
@@ -42,23 +42,23 @@ export const QuestionWidgetWrapper = styled.div`
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     max-height: ${props =>
-      `calc(100vh - ${
-        props.testMode
-          ? "0"
-          : props.reportMode
-          ? props.theme.HeaderHeight.md + 60
-          : props.theme.HeaderHeight.md + (props.review ? 90 : 185)
-      }px)`};
+    `calc(100vh - ${
+    props.testMode
+      ? "0"
+      : props.reportMode
+        ? props.theme.HeaderHeight.md + 60
+        : props.theme.HeaderHeight.md + (props.review ? 90 : 185)
+    }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     max-height: ${props =>
-      `calc(100vh - ${
-        props.testMode
-          ? "0"
-          : props.reportMode
-          ? props.theme.HeaderHeight.xl + 60
-          : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)
-      }px)`};
+    `calc(100vh - ${
+    props.testMode
+      ? "0"
+      : props.reportMode
+        ? props.theme.HeaderHeight.xl + 60
+        : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)
+    }px)`};
   }
 `;
 

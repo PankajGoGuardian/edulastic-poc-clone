@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { Select } from "antd";
 
 import { MathSpan, SelectInputStyled } from "@edulastic/common";
+import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 import { SelectContainer } from "./styled/SelectContainer";
 
 const AnswerDropdown = ({
@@ -39,7 +40,7 @@ const AnswerDropdown = ({
         disabled={disabled}
         data-cy={`dropdown-res-${responseIndex}`}
         getPopupContainer={triggerNode => triggerNode.parentNode}
-        value={defaultValue || undefined} // placeholder doesn't work if value is empty string
+        value={convertToMathTemplate(defaultValue) || undefined} // placeholder doesn't work if value is empty string
         dropdownStyle={dropdownStyle}
         onChange={value => {
           onChange(value);

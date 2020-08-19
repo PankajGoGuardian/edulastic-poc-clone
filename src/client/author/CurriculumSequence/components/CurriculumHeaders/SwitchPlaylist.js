@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Popover } from "antd";
 import { connect } from "react-redux";
-import { themeColor, extraDesktopWidthMax, mobileWidthLarge } from "@edulastic/colors";
+import { extraDesktopWidthMax, mobileWidthLarge, themeColorBlue } from "@edulastic/colors";
 import { IconTile } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { toggleShowUseThisNotificationAction } from "../../ducks";
@@ -50,7 +50,7 @@ const SwitchPlaylist = ({
           style={{ cursor: "pointer" }}
           width={18}
           height={18}
-          color={themeColor}
+          color={themeColorBlue}
         />
         <SwitchLable>SWITCH</SwitchLable>
       </FlexContainer>
@@ -65,7 +65,8 @@ export default connect(
 
 const SwitchLable = styled.div`
   font-size: 12px;
-  color: ${themeColor};
+  align-self: center;
+  color: ${themeColorBlue};
   text-transform: uppercase;
   line-height: 1;
   font-weight: 600;

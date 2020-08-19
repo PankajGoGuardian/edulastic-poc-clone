@@ -3,19 +3,38 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { dashBorderColor } from "@edulastic/colors";
+import { lightGrey1 } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
-const CorrectAnswersContainer = ({ title, children, imageStyle, maxWidth, className, style = {}, minWidth }) => (
+const CorrectAnswersContainer = ({
+  title,
+  children,
+  imageStyle,
+  maxWidth,
+  className,
+  style = {},
+  titleMargin,
+  minWidth,
+  minHeight,
+  noBackground,
+  showBorder,
+  padding,
+  margin
+}) => (
   <div className="__prevent-page-break">
     <Container
       className={`${className} __print_fit_content`}
       maxWidth={maxWidth}
       minWidth={minWidth}
+      minHeight={minHeight}
       imageStyle={imageStyle}
       style={style}
+      noBackground={noBackground}
+      showBorder={showBorder}
+      padding={padding}
+      margin={margin}
     >
-      <Subtitle>{title}</Subtitle>
+      <Subtitle margin={titleMargin}>{title}</Subtitle>
       {children}
     </Container>
   </div>
@@ -35,15 +54,17 @@ CorrectAnswersContainer.defaultProps = {
 export default CorrectAnswersContainer;
 
 const Container = styled.div`
-  margin: 20px 0;
-  padding: 22px 12px;
-  min-height: ${({ minHeight }) => minHeight || 200}px;
   height: auto;
-  border-radius: 10px 0px 0px 10px;
-  background-color: ${dashBorderColor};
   flex: 1 1 30%;
+  margin: ${({ margin }) => margin || "20px 0px"};
+  padding: ${({ padding }) => padding || "22px 12px"};
+  min-height: ${({ minHeight }) => minHeight || 200}px;
+  background-color: ${({ noBackground }) => !noBackground && lightGrey1};
   max-width: ${({ maxWidth }) => maxWidth || null};
-  min-width: ${({ minWidth }) => minWidth || "200px"};
+  min-width: ${({ minWidth }) => minWidth || "650px"};
+  border: ${({ showBorder }) => showBorder && "1px solid #d6d6d6"};
+  border-radius: 4px;
+
   width: 100%;
   img {
     ${({ imageStyle }) =>
@@ -54,8 +75,5 @@ const Container = styled.div`
       `
         : null}
     ${({ imageStyle }) => imageStyle}
-  }
-  h3 {
-    margin-bottom: 30px;
   }
 `;

@@ -10,7 +10,7 @@ import { getCurrentRubricDataSelector, updateRubricDataAction } from "../ducks";
 import { EditRubricContainer, FormContainer, RubricFooter } from "../styled";
 import Criteria from "./Criteria";
 
-const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user }) => {
+const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable }) => {
   const generateCriteriaData = index => ({
     name: `Criteria Name ${index}`,
     id: v4(),
@@ -19,13 +19,13 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
         name: "Rating 1",
         desc: "",
         id: v4(),
-        points: ""
+        points: 0
       },
       {
         name: "Rating 2",
         desc: "",
         id: v4(),
-        points: ""
+        points: 0
       }
     ]
   });
@@ -36,17 +36,16 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
     criteria: [generateCriteriaData(1)]
   });
 
-  const getContent = () => {
-    if (!currentRubricData) {
-      const defaultData = getDefaultRubricData();
-      updateRubricData(defaultData);
-    }
-    return (
-      <>
-        {getCreateNewForm()}
-        {getCreateRubricFields()}
-      </>
-    );
+  const handleFieldChange = (fieldType, e) => {
+    const newState = produce(currentRubricData, draft => {
+      if (fieldType === "rubricName") {
+        draft.name = e.target.value;
+      } else if (fieldType === "rubricDesc") {
+        draft.description = e.target.value;
+      }
+    });
+
+    updateRubricData(newState);
   };
 
   const getCreateNewForm = () => {
@@ -56,7 +55,7 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
         <Form.Item label="RUBRIC NAME">
           {getFieldDecorator("rubricName", {
             initialValue: currentRubricData?.name || "",
-            rules: [{ required: true }, { message: "Rubric name can only be alpha numeric.", pattern: /^[a-z\d\ ]+$/i }]
+            rules: [{ required: true }, { message: "Rubric name can only be alpha numeric.", pattern: /^[a-z\d\s]+$/i }]
           })(
             <Input
               placeholder={isEditable ? "Enter rubric name" : ""}
@@ -77,30 +76,10 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
     );
   };
 
-  const getCreateRubricFields = () => {
-    return (
-      <EditRubricContainer md={24}>
-        {generateCriteria()}
-
-        <RubricFooter>
-          {isEditable && (
-            <CustomStyleBtn margin="0px" onClick={handleAddCriteria}>
-              <span>
-                <Icon type="plus" />
-              </span>
-              &nbsp;&nbsp; Add New Criteria
-            </CustomStyleBtn>
-          )}
-        </RubricFooter>
-      </EditRubricContainer>
-    );
-  };
-
-  const generateCriteria = () => {
-    return currentRubricData?.criteria?.map(criteria => (
+  const generateCriteria = () =>
+    currentRubricData?.criteria?.map(criteria => (
       <Criteria id={criteria.id} key={criteria.id} data={criteria} isEditable={isEditable} />
     ));
-  };
 
   const handleAddCriteria = () => {
     const newCriteria = generateCriteriaData(currentRubricData.criteria.length + 1);
@@ -110,16 +89,34 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
     updateRubricData(newState);
   };
 
-  const handleFieldChange = (fieldType, e) => {
-    const newState = produce(currentRubricData, draft => {
-      if (fieldType === "rubricName") {
-        draft.name = e.target.value;
-      } else if (fieldType === "rubricDesc") {
-        draft.description = e.target.value;
-      }
-    });
+  const getCreateRubricFields = () => (
+    <EditRubricContainer md={24}>
+      {generateCriteria()}
 
-    updateRubricData(newState);
+      <RubricFooter>
+        {isEditable && (
+          <CustomStyleBtn margin="0px" onClick={handleAddCriteria} width="175px">
+            <span>
+              <Icon type="plus" />
+            </span>
+            &nbsp;&nbsp; Add New Criteria
+          </CustomStyleBtn>
+        )}
+      </RubricFooter>
+    </EditRubricContainer>
+  );
+
+  const getContent = () => {
+    if (!currentRubricData) {
+      const defaultData = getDefaultRubricData();
+      updateRubricData(defaultData);
+    }
+    return (
+      <>
+        {getCreateNewForm()}
+        {getCreateRubricFields()}
+      </>
+    );
   };
 
   return <Col md={24}>{getContent()}</Col>;

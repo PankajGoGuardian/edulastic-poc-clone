@@ -1,4 +1,4 @@
-import { groupBy as _groupBy, uniq, get } from "lodash";
+import { uniq } from "lodash";
 
 export const getListOfStudents = (students, classes) => {
   const idList = [];
@@ -19,7 +19,7 @@ export const formatAssignment = assignment => {
   const scoreReleasedClasses = [];
   const googleAssignmentIds = {};
   const classes = (assignment.class || []).map(item => {
-    if (item.specificStudents) {
+    if (item?.students?.length > 0) {
       students = [...students, ...item.students];
     }
 

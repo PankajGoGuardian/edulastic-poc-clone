@@ -1,5 +1,5 @@
-import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
-import { FireBaseService as Fbs, FlexContainer,EduButton } from "@edulastic/common";
+import { extraDesktopWidthMax, mediumDesktopExactWidth, smallDesktopWidth } from "@edulastic/colors";
+import { FireBaseService as Fbs, FlexContainer, EduButton } from "@edulastic/common";
 import { IconAccessibility, IconCircleLogout, IconSend } from "@edulastic/icons";
 import { Button } from "antd";
 import PropTypes from "prop-types";
@@ -172,9 +172,19 @@ export const SaveAndExitButton = styled(StyledButton)`
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     width: auto;
+    &.ant-btn {
+      height: ${props => props.height || "36px"};
+    }
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     margin-left: 5px;
     width: auto;
+    &.ant-btn {
+      height: ${props => props.height || "36px"};
+    }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    height: ${props => props.height || "30px"};
   }
 `;

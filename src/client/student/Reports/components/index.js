@@ -4,30 +4,20 @@ import styled from "styled-components";
 import { Layout, Spin } from "antd";
 
 // components
-import { smallDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import { IconReport } from "@edulastic/icons";
+import { MainContentWrapper } from "@edulastic/common";
+import { withNamespaces } from "react-i18next";
 import Header from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
-import { IconReport } from "@edulastic/icons";
-import { MainContentWrapper } from "@edulastic/common";
-import { withNamespaces } from "react-i18next";
 
 const Wrapper = styled(Layout)`
   width: 100%;
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
-const ContentWrapper = styled.div`
-  padding: 20px 40px;
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 20px 30px;
-  }
-  @media (max-width: ${mobileWidthMax}) {
-    padding: 10px 20px;
-  }
-`;
 
-const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }) => {
+const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, isCliUser, t }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   useEffect(() => {
@@ -44,6 +34,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
         classSelect
         showActiveClass={false}
         classList={activeEnrolledClasses}
+        hideSideMenu={isCliUser}
       />
       <MainContentWrapper>
         <SubHeader />
@@ -59,7 +50,8 @@ export default withNamespaces("header")(
       activeClasses: state.studentEnrollClassList.filteredClasses,
       loading: state.studentEnrollClassList.loading,
       allClasses: state.studentEnrollClassList.allClasses,
-      currentChild: state?.user?.currentChild
+      currentChild: state?.user?.currentChild,
+      isCliUser: state?.user?.isCliUser
     }),
     {
       loadAllClasses: getEnrollClassAction

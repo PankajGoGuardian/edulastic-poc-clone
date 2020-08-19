@@ -6,103 +6,44 @@ import { questionGroup, questionType } from "../../../../constants/questionTypes
 class EssayRichTextPage {
   constructor() {
     this.editToolBar = new EditToolBar();
-
     this.header = new Header();
-
-    this.selectedFormattingOptions = [
-      {
-        sel: '[data-cmd="bold"]',
-        tag: "strong"
-      },
-      {
-        sel: '[data-cmd="italic"]',
-        tag: "em"
-      },
-      {
-        sel: '[data-cmd="underline"]',
-        tag: "u"
-      }
-      //{
-      //  'sel': '[data-cmd="formatOL"]',
-      //   'tag': 'ol > li'
-      // },
-      // {
-      //    'sel': '[data-cmd="formatUL"]',
-      //    'tag': 'ul > li'
-      //}
-    ];
   }
 
-  // question content
   getQuestionEditor = () => cy.get(".fr-element").eq(0);
+  // Text formatting options
 
-  // word limit
-  selectWordLimit(option) {
-    cy.contains("span", "Word limit")
-      .next()
-      .should("be.visible")
-      .click();
+  // scoring block -> move to common utitly
+  getScoreInput = () => cy.get('[data-cy="maxscore"]');
 
-    cy.contains(option)
-      .should("be.visible")
-      .click();
+  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]');
 
-    cy.contains("span", "Word limit")
-      .next()
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]');
 
-    return this;
-  }
+  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]');
+
+  getShowWordCount = () => cy.get('[data-cy="showWordCount"]');
+
+  getBrowserSpellCheckOption = () => cy.get('[data-cy="browserSpellCheckOption"]');
+
+  // Display block
+  getSpecialCharactersOption = () => cy.get('[data-cy="specialCharactersOption"]');
+
+  getCharactersToDisplayOption = () => cy.get('[data-cy="charactersToDisplayOption"]');
+
+  getMinHeightOption = () => cy.get('[data-cy="minHeightOption"]');
+
+  getMaxHeightOption = () => cy.get('[data-cy="maxHeightOption"]');
+
+  getPlaceholderOption = () => cy.get('[data-cy="placeholderOption"]');
+
+  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
 
   // on preview
-  getMainEditor() {
-    return cy.get(".fr-element");
-  }
+  getTextEditor = () => cy.get('*[class^="EssayRichTextPreview"]').find('[contenteditable="true"]');
 
-  getTextEditor() {
-    return (
-      cy
-        .get(".fr-element")
-        // .find('.ql-editor')
-        .should("be.visible")
-    );
-  }
+  getWordCount = () => cy.get('[data-cy="questionRichEssayAuthorPreviewWordCount"]');
 
-  getWordCount() {
-    return (
-      cy
-        .contains("Words")
-        //.next()
-        //.children()
-        //.eq(1)
-        .should("be.visible")
-    );
-  }
-
-  getToobar() {
-    return cy.get(".fr-toolbar");
-  }
-
-  openAdvancedOption = () => {
-    cy.get("body")
-      .contains(" ADVANCED OPTIONS")
-      .then(ele => {
-        if (ele.parent().siblings().length === 3) {
-          cy.wrap(ele).click();
-        }
-      });
-  };
-
-  setPoints = points => {
-    this.openAdvancedOption();
-    cy.get("body")
-      .find("li")
-      .contains("Dynamic Parameters")
-      .click({ force: true });
-    cy.get('[data-cy="maxscore"]').type(`{selectall}${points}`, { force: true });
-  };
-
+  // ACTION STARTS
   createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
     const item = new EditItemPage();
 
@@ -120,6 +61,8 @@ class EssayRichTextPage {
       }
     });
   }
+
+  // ACTION ENDS
 }
 
 export default EssayRichTextPage;

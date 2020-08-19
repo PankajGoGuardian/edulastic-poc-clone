@@ -1,7 +1,4 @@
-/* eslint-disable func-names */
-/* eslint-disable no-undef */
-import React, { useEffect, useState, useContext } from "react";
-
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
@@ -19,23 +16,7 @@ import ClozeInputAnswerDisplay from "./ClozeMathDisplay/ClozeInputAnswerDisplay"
 import ClozeMathAnswerDisplay from "./ClozeMathDisplay/ClozeMathAnswerDisplay";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 import Instructions from "../../components/Instructions";
-
-const getFontSize = size => {
-  switch (size) {
-    case "small":
-      return "11px";
-    case "normal":
-      return "16px";
-    case "large":
-      return "17px";
-    case "xlarge":
-      return "20px";
-    case "xxlarge":
-      return "24px";
-    default:
-      return "14px";
-  }
-};
+import { getFontSize } from "../../utils/helpers";
 
 const ClozeMathPreview = ({
   type,
@@ -58,22 +39,51 @@ const ClozeMathPreview = ({
 }) => {
   const [newHtml, setNewHtml] = useState("");
   const { isAnswerModifiable } = useContext(AnswerContext);
-  const _getMathAnswers = () => get(item, "validation.validResponse.value", []);
 
-  const _getAltMathAnswers = () =>
-    get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
+  const allAnswers = useMemo(() => {
+    if (isExpressGrader || type === SHOW) {
+      return {
+        mathAnswers: get(item, "validation.validResponse.value", []),
+        dropdownAnswers: get(item, "validation.validResponse.dropdown.value", []),
+        textInputAnswers: get(item, "validation.validResponse.textinput.value", []),
+        mathUnitAnswers: get(item, "validation.validResponse.mathUnits.value", []),
+        altMathAnswers: get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res)),
+        altDropDowns: get(item, "validation.altResponses", []).map(alt => get(alt, "dropdown.value", [])),
+        altInputs: get(item, "validation.altResponses", []).map(alt => get(alt, "textinput.value", [])),
+        altMathUnitAnswers: get(item, "validation.altResponses", []).map(alt => get(alt, "mathUnits.value", []))
+      };
+    }
+    return {};
+  }, [item?.validation, type, isExpressGrader]);
 
-  const _getDropDownAnswers = () => get(item, "validation.validResponse.dropdown.value", []);
-  const _getAltDropDownAnswers = () =>
-    get(item, "validation.altResponses", []).map(alt => get(alt, "dropdown.value", []));
+  const uiStyles = useMemo(() => {
+    const styles = {};
+    const { uiStyle = {} } = item;
 
-  const _getTextInputAnswers = () => get(item, "validation.validResponse.textinput.value", []);
-  const _getAltInputsAnswers = () =>
-    get(item, "validation.altResponses", []).map(alt => get(alt, "textinput.value", []));
+    styles.fontSize = getFontSize(uiStyle.fontsize);
 
-  const _getMathUintAnswers = () => get(item, "validation.validResponse.mathUnits.value", []);
-  const _getAltMathUintAnswers = () =>
-    get(item, "validation.altResponses", []).map(alt => get(alt, "mathUnits.value", []));
+    if (uiStyle.heightpx) {
+      styles.height = `${uiStyle.heightpx}px`;
+    }
+
+    if (uiStyle.responseFontScale) {
+      styles.responseFontScale = uiStyle.responseFontScale;
+    }
+
+    if (uiStyle.minWidth) {
+      styles.minWidth = `${uiStyle.minWidth}px`;
+    }
+
+    if (uiStyle.minHeight) {
+      styles.minHeight = `${uiStyle.minHeight}px`;
+    }
+
+    if (parseInt(uiStyle.minWidth, 10) < 25) {
+      styles.padding = "4px 2px";
+    }
+
+    return styles;
+  }, [item.uiStyle]);
 
   const handleAddAnswer = (answer, answerType, id) => {
     if (!isAnswerModifiable) return;
@@ -107,42 +117,12 @@ const ClozeMathPreview = ({
     }
   };
 
-  const getStyles = () => {
-    const uiStyles = {};
-    const { uiStyle = {} } = item;
-
-    uiStyles.fontSize = getFontSize(uiStyle.fontsize);
-
-    if (uiStyle.heightpx) {
-      uiStyles.height = `${uiStyle.heightpx}px`;
-    }
-
-    if (uiStyle.responseFontScale) {
-      uiStyles.responseFontScale = uiStyle.responseFontScale;
-    }
-
-    if (uiStyle.minWidth) {
-      uiStyles.minWidth = `${uiStyle.minWidth}px`;
-    }
-
-    if (uiStyle.minHeight) {
-      uiStyles.minHeight = `${uiStyle.minHeight}px`;
-    }
-
-    if (parseInt(uiStyle.minWidth, 10) < 25) {
-      uiStyles.padding = "4px 2px";
-    }
-
-    return uiStyles;
-  };
-
   useEffect(() => {
     if (window.$) {
       setNewHtml(helpers.parseTemplate(stimulus));
     }
   }, [stimulus]);
 
-  const uiStyles = getStyles();
   const testUserAnswer = {};
   if (testItem) {
     const keynameMap = {
@@ -205,15 +185,15 @@ const ClozeMathPreview = ({
       {type !== EDIT && <Instructions item={item} />}
       {(isExpressGrader || type === SHOW) && (
         <AnswerBox
-          mathAnswers={_getMathAnswers()}
-          dropdownAnswers={_getDropDownAnswers()}
-          textInputAnswers={_getTextInputAnswers()}
-          mathUnitAnswers={_getMathUintAnswers()}
+          mathAnswers={allAnswers.mathAnswers}
+          dropdownAnswers={allAnswers.dropdownAnswers}
+          textInputAnswers={allAnswers.textInputAnswers}
+          mathUnitAnswers={allAnswers.mathUnitAnswers}
+          altMathAnswers={allAnswers.altMathAnswers}
+          altDropDowns={allAnswers.altDropDowns}
+          altInputs={allAnswers.altInputs}
+          altMathUnitAnswers={allAnswers.altMathUnitAnswers}
           responseIds={responseIds}
-          altMathAnswers={_getAltMathAnswers()}
-          altDropDowns={_getAltDropDownAnswers()}
-          altInputs={_getAltInputsAnswers()}
-          altMathUnitAnswers={_getAltMathUintAnswers()}
           isPrintPreview={isPrintPreview}
         />
       )}

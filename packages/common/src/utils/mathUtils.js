@@ -1,5 +1,6 @@
 /* global $ */
-import Helpers from "../helpers";
+import Helpers, { templateHasMath } from "../helpers";
+import { getMathTemplate } from "../../../../src/client/assessment/utils/variables";
 
 const addCustomClassToMath = mathHtml => {
   if (!window.$) return mathHtml;
@@ -69,11 +70,16 @@ export const getMathHtml = latex => {
    * @see https://snapwiz.atlassian.net/browse/EV-11172
    * Katex doesn't support the below commands
    * @see https://snapwiz.atlassian.net/browse/EV-12829
-   * |--- mathQuill --|---- Katex -----|
-   * |    overarc     |   overgroup    |
-   * |  parallelogram |     text{▱}    |
-   * |    undersim    | underset{\\sim}|
-   * |---------------------------------|
+   * @see https://snapwiz.atlassian.net/browse/EV-14386
+   * |--- mathQuill ---|--------- Katex ---------|
+   * | overarc         | overgroup               |
+   * | parallelogram   | text{▱}                 |
+   * | undersim        | underset{\\sim}         |
+   * | \begin{almatrix}| \left\{\begin{array}{l} |
+   * | \end{almatrix}  | \end{array}\right.      |
+   * | \begin{armatrix}| \left.\begin{array}{r}  |
+   * | \end{armatrix}  | \end{array}\right\}     |
+   * |-------------------------------------------|
    * Also, some of the migrated/authored questions have wrong latex.
    * @see https://snapwiz.atlassian.net/browse/EV-11865
    * |--- incorrect --|--- correct ----|
@@ -109,6 +115,32 @@ export const getMathHtml = latex => {
   // in itemBank/testReview(collapsed view)
   katexString = addCustomClassToMath(katexString);
   return katexString;
+};
+
+export const getLatexValueFromMathTemplate = mathTemplate => {
+  if (!window.$) return mathTemplate;
+  const jqueryEl = $(`<p/>`).append(mathTemplate);
+  const mathEl = jqueryEl.find("span.input__math").get(0);
+  return mathEl ? mathEl.getAttribute("data-latex") : "";
+};
+
+/**
+ *
+ * @param {string} value
+ *
+ */
+export const convertToMathTemplate = (value = "") => {
+  // no value!!
+  if (!value || typeof value !== "string") return undefined;
+
+  // if value is already a math template
+  if (templateHasMath(value)) return value;
+
+  // Todo: use regex to check latex value, change latex to math template
+  if (value?.includes("\\")) return getMathTemplate(value);
+
+  // no need to convert normal value
+  return value;
 };
 
 export const replaceLatexesWithMathHtml = val => {
@@ -176,4 +208,4 @@ export const reformatMathInputLatex = latex =>
   latex
     .replace(/\\square/g, "\\square ")
     .replace(/\\min /g, "min") // avoiding \min keyword added with mathquill latex
-    .replace(/\\deg /g, "deg"); // avoiding \deg keyword added with mathquill latex
+    .replace(/\\deg /g, "deg"); // avoiding \deg keyword added with mathquill latex;

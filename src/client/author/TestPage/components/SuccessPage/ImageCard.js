@@ -1,5 +1,5 @@
 import React from "react";
-import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
+import { IconHeart, IconUser, IconUsers } from "@edulastic/icons";
 import { cardTitleColor, secondaryTextColor } from "@edulastic/colors";
 import { keyBy } from "lodash";
 import Tags from "../../../src/components/common/Tags";
@@ -113,8 +113,8 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [],
         )}
         <StatusRow>
           <TestStatusWrapper status={status} checkUser={false}>
-            {({ children, status }) => (
-              <TestStatus status={status} view="tile">
+            {({ children, _status }) => (
+              <TestStatus status={_status} view="tile">
                 {children}
               </TestStatus>
             )}
@@ -132,7 +132,7 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [],
         {status !== "draft" && (
           <>
             <ShareIcon>
-              <IconShare color={cardTitleColor} width={14} height={14} style={{ marginRight: "8px" }} />
+              <IconUsers color={cardTitleColor} width={14} height={14} style={{ marginRight: "8px" }} />
               <IconText>{usage}</IconText>
             </ShareIcon>
             <LikeIcon>

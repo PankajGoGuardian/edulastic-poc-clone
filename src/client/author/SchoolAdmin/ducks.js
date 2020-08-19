@@ -345,7 +345,7 @@ function* deleteSchoolAdminSaga({ payload }) {
     if (isFetchClassEnrollmentList) {
       yield put(receiveClassEnrollmentListAction(payload.listReq));
     }
-    notification({ type: "success", messagKey: "userSucessfullyDeactivated" });
+    notification({ type: "success", messageKey: "userSucessfullyDeactivated" });
   } catch (err) {
     Sentry.captureException(err);
     const errorMessage = "Delete SchoolAdmin is failing";

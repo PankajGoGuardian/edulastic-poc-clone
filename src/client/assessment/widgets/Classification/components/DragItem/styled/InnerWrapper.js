@@ -1,15 +1,16 @@
 import styled from "styled-components";
+import { themeColorHoverBlue } from "@edulastic/colors";
 
 export const InnerWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   cursor: pointer;
   border-radius: 5px;
   border-style: dotted;
   overflow: hidden;
   position: relative;
-  padding: 8px;
+  padding: 4px;
 
   ${({
     theme,
@@ -60,4 +61,12 @@ export const InnerWrapper = styled.div`
       padding-right: ${showIcon ? "20px" : ""};
     `;
   }}
+
+  &:hover {
+    border-color: ${themeColorHoverBlue};
+    background: ${themeColorHoverBlue};
+    & * {
+      color: white !important;
+    }
+  }
 `;

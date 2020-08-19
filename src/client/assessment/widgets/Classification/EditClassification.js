@@ -19,8 +19,6 @@ import { aws, clozeImage } from "@edulastic/constants";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
-import withPoints from "../../components/HOC/withPoints";
-
 import { EDIT } from "../../constants/constantsForQuestions";
 
 import { updateVariables } from "../../utils/variables";
@@ -41,8 +39,6 @@ import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
-
-const OptionsList = withPoints(ClassificationPreview);
 
 const Enable = {
   bottomLeft: true,
@@ -421,12 +417,8 @@ const EditClassification = ({
   };
 
   const renderOptions = () => (
-    <OptionsList
+    <ClassificationPreview
       item={item}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
@@ -535,7 +527,10 @@ const EditClassification = ({
             </FlexContainer>
           ) : (
             <Upload {...uploadProps} showUploadList={false}>
-              <CustomStyleBtn id={getFormattedAttrId(`${item?.title}-${t("component.classification.addBackImage")}`)}>
+              <CustomStyleBtn
+                width="180px"
+                id={getFormattedAttrId(`${item?.title}-${t("component.classification.addBackImage")}`)}
+              >
                 {t("component.classification.addBackImage")}
               </CustomStyleBtn>
             </Upload>
@@ -581,12 +576,13 @@ const EditClassification = ({
             item={item}
           />
 
-          <Row gutter={24} marginTop={15}>
+          <Row gutter={24} marginTop={16}>
             <Col span={24} marginBottom="0px">
               <CheckboxLabel
                 className="additional-options"
                 onChange={() => onUiChange("showDragHandle")(!showDragHandle)}
                 checked={!!showDragHandle}
+                mb="20px"
               >
                 {t("component.cloze.imageDragDrop.showdraghandle")}
               </CheckboxLabel>
@@ -594,6 +590,7 @@ const EditClassification = ({
                 className="additional-options"
                 onChange={() => handleItemChangeChange("duplicateResponses", !duplicateResponses)}
                 checked={!!duplicateResponses}
+                mb="20px"
               >
                 {t("component.cloze.imageDragDrop.duplicatedresponses")}
               </CheckboxLabel>
@@ -601,6 +598,7 @@ const EditClassification = ({
                 className="additional-options"
                 onChange={() => handleItemChangeChange("shuffleOptions", !shuffleOptions)}
                 checked={!!shuffleOptions}
+                mb="20px"
               >
                 {t("component.cloze.imageDragDrop.shuffleoptions")}
               </CheckboxLabel>
@@ -608,6 +606,7 @@ const EditClassification = ({
                 className="additional-options"
                 onChange={() => handleItemChangeChange("transparentPossibleResponses", !transparentPossibleResponses)}
                 checked={!!transparentPossibleResponses}
+                mb="20px"
               >
                 {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
               </CheckboxLabel>
@@ -615,6 +614,7 @@ const EditClassification = ({
                 className="additional-options"
                 onChange={() => handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)}
                 checked={!!transparentBackgroundImage}
+                mb="20px"
               >
                 {t("component.cloze.imageDragDrop.transparentbackgroundimage")}
               </CheckboxLabel>
@@ -639,6 +639,13 @@ const EditClassification = ({
             cleanSections={cleanSections}
             marginBottom="-50px"
             questionType={item?.title}
+            points={
+              correctTab === 0
+                ? item.validation.validResponse.score
+                : item.validation.altResponses[correctTab - 1].score
+            }
+            onChangePoints={handlePointsChange}
+            isCorrectAnsTab={correctTab === 0}
           />
         </Question>
       </Paper>

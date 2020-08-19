@@ -134,10 +134,27 @@ class NumberLinePlotContainer extends PureComponent {
       gridParams,
       graphData,
       setElementsStash,
-      disableResponse
+      setQuestionData,
+      disableResponse,
+      view
     } = this.props;
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
+
+    const adjustedHeightWidth = getAdjustedHeightAndWidth(
+      this.parentWidth,
+      this.parentHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT
+    );
+    if (view === EDIT) {
+      setQuestionData(
+        next(graphData, draft => {
+          draft.prevContSize = adjustedHeightWidth;
+        })
+      );
+    }
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -190,7 +207,10 @@ class NumberLinePlotContainer extends PureComponent {
       changePreviewTab,
       elements,
       gridParams,
-      pointParameters
+      graphData,
+      setQuestionData,
+      pointParameters,
+      view
     } = this.props;
 
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
@@ -205,6 +225,15 @@ class NumberLinePlotContainer extends PureComponent {
     if (disableResponse && prevDisableResponse !== disableResponse) {
       this.onReset();
     }
+
+    if (!isEqual(graphData.prevContSize, adjustedHeightWidth) && view === EDIT) {
+      setQuestionData(
+        next(graphData, draft => {
+          draft.prevContSize = adjustedHeightWidth;
+        })
+      );
+    }
+
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
 
@@ -409,7 +438,7 @@ class NumberLinePlotContainer extends PureComponent {
         )}
         <GraphWrapper>
           <div style={{ position: "relative" }}>
-            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} className="__prevent-page-break" />
+            <JSXBox id={this._graphId} margin={layout.margin} className="jxgbox __prevent-page-break" />
             {view === EDIT && !disableResponse && (
               <Fragment>
                 <GraphEditTools
@@ -434,6 +463,7 @@ class NumberLinePlotContainer extends PureComponent {
               disableDragging={view !== EDIT}
               adjustedHeightWidth={adjustedHeightWidth}
               layout={layout}
+              noBorder={view !== EDIT}
               bounds={`#${this._graphId}`}
               v1Dimenstions={v1Dimenstions}
             />

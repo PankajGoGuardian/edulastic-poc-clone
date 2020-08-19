@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Icon, Switch } from "antd";
+import { Icon } from "antd";
+import { EduSwitchStyled } from "@edulastic/common";
 import {
   Link,
   CloseModal,
@@ -45,7 +46,7 @@ const BottomNavigation = ({
       </Link>
       <EditResponse>
         <StyledText>EDIT RESPONSE</StyledText>
-        <Switch data-cy="editResponse" checked={editResponse} onClick={toggleEditResponse} />
+        <EduSwitchStyled width={45} data-cy="editResponse" checked={editResponse} onClick={toggleEditResponse} />
       </EditResponse>
       <CloseModal data-cy="exitbutton" onClick={hideModal}>
         <Icon type="close" width={5} height={5} />

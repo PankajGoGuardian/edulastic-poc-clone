@@ -1,24 +1,81 @@
 import { takeEvery, takeLatest, call, put, select } from "redux-saga/effects";
-import { uniq } from "lodash";
+import { uniq, keyBy } from "lodash";
 import produce from "immer";
 import { test as testConstant, roleuser } from "@edulastic/constants";
+import { createSelector } from "reselect";
 import { notification } from "@edulastic/common";
 import { createAction } from "redux-starter-kit";
 import { testItemsApi, attchmentApi, analyticsApi } from "@edulastic/api";
-import { setTestItemsAction } from "../TestPage/components/AddItems/ducks";
+import { setTestItemsAction, setApproveConfirmationOpenAction } from "../TestPage/components/AddItems/ducks";
 import {
   setTestDataAction,
   createTestAction,
   getTestEntitySelector,
   getReleaseScorePremiumSelector
 } from "../TestPage/ducks";
-import { getUserRole } from "../src/selectors/user";
+import { getUserRole, getCollectionsSelector } from "../src/selectors/user";
 import {
   APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../src/constants/actions";
+import { getSelectedTestsSelector } from "../TestList/ducks";
+
+const mapItemsByCollectionCount = (items, itemBanks) => {
+  const itemBanksById = keyBy(itemBanks, "_id");
+  const collectionCountById = {};
+  for (const item of items) {
+    const collections = item.collections?.map(cl => cl._id) || [];
+    if (collections.length) {
+      for (const cl of collections) {
+        if (collectionCountById[cl]) {
+          collectionCountById[cl]++;
+        } else {
+          collectionCountById[cl] = 1;
+        }
+      }
+    } else if (!collectionCountById.NIL) {
+      collectionCountById.NIL = 1;
+    } else {
+      collectionCountById.NIL++;
+    }
+  }
+  const result = Object.keys(collectionCountById).map(item => {
+    if (item === "NIL") {
+      return {
+        count: collectionCountById[item],
+        name: "No Collection",
+        description: "No Collection",
+        status: 1,
+        key: item
+      };
+    }
+    return {
+      count: collectionCountById[item],
+      name: itemBanksById[item]?.name,
+      description: itemBanksById[item]?.description,
+      status: itemBanksById[item]?.status,
+      key: item
+    };
+  });
+  return result || [];
+};
+
+export const itemsDataTableSelector = createSelector(
+  getTestEntitySelector,
+  getCollectionsSelector,
+  (state, itemBanks) => {
+    const testItems = state.itemGroups.flatMap(group => group.items || []);
+    return mapItemsByCollectionCount(testItems, itemBanks);
+  }
+);
+
+export const testsDataTableSelector = createSelector(
+  getSelectedTestsSelector,
+  getCollectionsSelector,
+  (selectedTests, itemBanks) => mapItemsByCollectionCount(selectedTests, itemBanks)
+);
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";
 export const CREATE_TEST_FROM_CART = "[item list] create test from cart";
@@ -128,6 +185,7 @@ export function* createTestFromCart({ payload: { testName } }) {
   const subjects = testItems.flatMap(({ subjects: _subjects = [] }) =>
     _subjects.filter(subject => subject && !Array.isArray(subject))
   );
+
   const userRole = yield select(getUserRole);
   if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
     test.testType = testConstant.type.COMMON;
@@ -191,6 +249,8 @@ export function* approveOrRejectMultipleItemSaga({ payload }) {
     } catch (e) {
       console.error(e);
       notification({ type: "success", messageKey: "failedToUpdateStatus" });
+    } finally {
+      yield put(setApproveConfirmationOpenAction(false));
     }
   }
 }

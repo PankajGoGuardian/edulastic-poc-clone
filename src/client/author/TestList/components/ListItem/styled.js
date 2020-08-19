@@ -1,4 +1,13 @@
-import { darkGrey, extraDesktopWidthMax, fadedGrey, lightGrey, red, themeColor } from "@edulastic/colors";
+import {
+  darkGrey,
+  extraDesktopWidthMax,
+  fadedGrey,
+  lightGrey,
+  red,
+  themeColor,
+  white,
+  themeColorBlue
+} from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import IconELogo from "@edulastic/icons/src/IconELogo";
 import { Col, Rate, Row } from "antd";
@@ -291,4 +300,30 @@ export const Footer = styled(Col)`
 export const DynamicIconWrapper = styled.span`
   display: inline-flex;
   margin: auto 10px;
+`;
+
+export const AddRemove = styled.label`
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  width: 40px;
+  height: 36px;
+  color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+  border: 1px solid ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+  border-radius: 5px;
+  &:hover {
+    border: 1px solid ${({ selectedToCart }) => (selectedToCart ? white : themeColorBlue)};
+  }
+  svg {
+    fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+    margin: auto;
+  }
+  &:hover,
+  &:focus {
+    color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+    border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+    svg {
+      fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+    }
+  }
 `;

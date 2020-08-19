@@ -2,7 +2,6 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { contentBucketApi, collectionsApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import i18next from "i18next";
 
@@ -64,10 +63,12 @@ export const reducer = createReducer(initialState, {
     const bucketData = state.data.map(bucket => {
       if (bucket._id === payload._id) {
         return { ...bucket, ...payload };
-      } else return bucket;
+      }
+      return bucket;
     });
 
-    (state.upserting = false), (state.data = bucketData);
+    state.upserting = false;
+    state.data = bucketData;
   },
   [UPDATE_BUCKET_ERROR]: (state, { payload }) => {
     state.upserting = false;
@@ -96,7 +97,7 @@ function* receiveBucketsSaga({ payload }) {
     yield put(receiveBucketsSuccessAction(buckets));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketsLoadErrorMsg`);
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(receiveBucketsErrorAction({ error: errorMessage }));
   }
 }
@@ -104,11 +105,11 @@ function* receiveBucketsSaga({ payload }) {
 function* updateBucketSaga({ payload }) {
   try {
     const updateBucket = yield call(contentBucketApi.updateBucket, payload);
-    notification({ type: "success", msg:i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateSuccessMsg`)});
+    notification({ type: "success", msg: i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateSuccessMsg`) });
     yield put(updateBucketSuccessAction(updateBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateErrorMsg`);
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(updateBucketErrorAction({ error: errorMessage }));
   }
 }
@@ -116,11 +117,11 @@ function* updateBucketSaga({ payload }) {
 function* createBucketSaga({ payload }) {
   try {
     const createBucket = yield call(contentBucketApi.createBucket, payload);
-    notification({ type: "success", msg:i18next.t(`${localizationPrefix}:content.buckets.bucketCreateSuccessMsg`)});
+    notification({ type: "success", msg: i18next.t(`${localizationPrefix}:content.buckets.bucketCreateSuccessMsg`) });
     yield put(createBucketSuccessAction(createBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketCreateErrorMsg`);
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(createBucketErrorAction({ error: errorMessage }));
   }
 }
@@ -129,9 +130,19 @@ function* saveItemsToBucketSaga({ payload }) {
   try {
     yield call(collectionsApi.saveItemsToBucket, payload);
     yield put(setAddCollectionModalVisibleAction(false));
-    notification({ type: "success", msg:`Selected Items are added to ${payload.collectionName} - ${payload.name}`});
+    const { contentType } = payload;
+    let contentTypeMessage = "Items";
+    if (contentType === "TEST") {
+      contentTypeMessage = "test";
+    } else if (contentType === "PLAYLIST") {
+      contentTypeMessage = "playlist";
+    }
+    notification({
+      type: "success",
+      msg: `Selected ${contentTypeMessage} are added to ${payload.collectionName} - ${payload.name}`
+    });
   } catch (e) {
-    notification({ msg:e?.message || "Failed to save item to bucket"});
+    notification({ msg: e?.message || "Failed to save item to bucket" });
   }
 }
 

@@ -12,7 +12,7 @@ import { withWindowSizes, FlexContainer, notification } from "@edulastic/common"
 import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
 import { white, greyLight1, greyThemeLight } from "@edulastic/colors";
 import { storeInLocalStorage, getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
-import { libraryFilters } from "@edulastic/constants";
+import { libraryFilters, sortOptions } from "@edulastic/constants";
 import { withNamespaces } from "react-i18next";
 import {
   ScrollBox,
@@ -30,7 +30,8 @@ import {
   StyleChangeWrapper,
   CardBox,
   StyledCountText,
-  ItemsMenu
+  ItemsMenu,
+  MobileFilterModal
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -49,7 +50,10 @@ import {
   emptyFilters,
   addTestToCartAction,
   removeTestFromCartAction,
-  approveOrRejectMultipleTestsRequestAction
+  approveOrRejectMultipleTestsRequestAction,
+  getSortFilterStateSelector,
+  initialSortState,
+  getSelectedTestsSelector
 } from "../../ducks";
 import {
   getTestsCreatingSelector,
@@ -57,7 +61,10 @@ import {
   clearCreatedItemsAction,
   getAllTagsAction
 } from "../../../TestPage/ducks";
-import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
+import {
+  clearSelectedItemsAction,
+  setApproveConfirmationOpenAction
+} from "../../../TestPage/components/AddItems/ducks";
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
@@ -106,6 +113,10 @@ import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCo
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
+import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
+import SortMenu from "../../../ItemList/components/SortMenu";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
+import ApproveConfirmModal from "../../../ItemList/components/ApproveConfirmModal";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -165,7 +176,8 @@ class TestList extends Component {
     selectedTests: [],
     isShowFilter: false,
     markedTests: [],
-    moduleModalAdd: null
+    moduleModalAdd: null,
+    openSidebar: false
   };
 
   static getDerivedStateFromProps = (props, prevState) => {
@@ -208,7 +220,8 @@ class TestList extends Component {
       history,
       interestedSubjects,
       interestedGrades,
-      interestedCurriculums: [firstCurriculum]
+      interestedCurriculums: [firstCurriculum],
+      sort: initSort = {}
     } = this.props;
     const {
       subject = interestedSubjects || [],
@@ -216,12 +229,20 @@ class TestList extends Component {
       curriculumId = firstCurriculum && firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum._id : ""
     } = getDefaultInterests();
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[testList]")) || {};
+    const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[testList]")) || {};
     const searchFilters = {
       ...testFilters,
       ...sessionFilters,
       subject,
       grades,
       curriculumId: parseInt(curriculumId, 10) || ""
+    };
+
+    const sort = {
+      ...initSort,
+      sortBy: "recency",
+      sortDir: "desc",
+      ...sessionSort
     };
 
     // propagate filter from query params to the store (test.filters)
@@ -233,7 +254,7 @@ class TestList extends Component {
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
-    this.updateFilterState(searchFilters, true);
+    this.updateFilterState(searchFilters, sort, true);
 
     if (mode === "embedded") {
       const selectedTests = [];
@@ -254,7 +275,8 @@ class TestList extends Component {
       receiveTests({
         page: 1,
         limit,
-        search: searchFilters
+        search: searchFilters,
+        sort
       });
     } else {
       if (!curriculums.length) {
@@ -264,7 +286,7 @@ class TestList extends Component {
       const limitCount = params.limit || limit;
       const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
       history.push(`/author/tests?${queryParams}`);
-      receiveTests({ page: 1, limit, search: searchFilters });
+      receiveTests({ page: 1, limit, search: searchFilters, sort });
       getAllTags({ type: "test" });
     }
 
@@ -277,7 +299,7 @@ class TestList extends Component {
     clearSelectedItems();
   }
 
-  updateFilterState = (searchState, all) => {
+  updateFilterState = (searchState, sortState, all) => {
     const { updateAllTestFilters, updateTestFilters, testFilters } = this.props;
     const search = all
       ? { ...searchState }
@@ -286,28 +308,29 @@ class TestList extends Component {
           [searchState.key]: searchState.value
         };
     sessionStorage.setItem("filters[testList]", JSON.stringify(search));
+    sessionStorage.setItem("sortBy[testList]", JSON.stringify(sortState));
     if (all) {
-      return updateAllTestFilters(search);
+      return updateAllTestFilters({ search, sort: sortState });
     }
-    updateTestFilters(search);
+    updateTestFilters({ search, sort: sortState });
   };
 
   searchTest = debounce(search => {
-    const { receiveTests, limit, history, playlistPage, playlist: { _id } = {} } = this.props;
+    const { receiveTests, limit, history, playlistPage, playlist: { _id } = {}, sort } = this.props;
     const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
-    receiveTests({ search, limit, page: 1 });
+    receiveTests({ search, limit, page: 1, sort });
   }, 500);
 
   handleSearchInputChange = tags => {
-    const { testFilters } = this.props;
+    const { testFilters, sort } = this.props;
     const newSearch = {
       ...testFilters,
       searchString: tags
     };
 
-    this.updateFilterState(newSearch, true);
+    this.updateFilterState(newSearch, sort, true);
     this.searchTest(newSearch);
   };
 
@@ -327,7 +350,8 @@ class TestList extends Component {
       updateDefaultSubject,
       testFilters,
       playlistPage,
-      playlist: { _id } = {}
+      playlist: { _id } = {},
+      sort = {}
     } = this.props;
 
     // all the fields to pass for search.
@@ -382,12 +406,12 @@ class TestList extends Component {
       ...updatedKeys,
       [name]: name === "createdAt" ? updatedKeys[name] : value
     };
-    this.updateFilterState(searchFilters, true);
+    this.updateFilterState(searchFilters, sort, true);
     // update the url to reflect the newly applied filter and get the new results.
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
-    receiveTests({ search: searchFilters, page: 1, limit });
+    receiveTests({ search: searchFilters, sort, page: 1, limit });
   };
 
   handleCreate = () => {
@@ -401,7 +425,7 @@ class TestList extends Component {
   };
 
   updateTestList = page => {
-    const { receiveTests, limit, history, testFilters, playlistPage, playlist: { _id } = {} } = this.props;
+    const { receiveTests, limit, history, testFilters, playlistPage, playlist: { _id } = {}, sort } = this.props;
     const searchFilters = {
       ...testFilters
     };
@@ -409,7 +433,7 @@ class TestList extends Component {
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
-    receiveTests({ page, limit, search: searchFilters });
+    receiveTests({ page, limit, search: searchFilters, sort });
   };
 
   handlePaginationChange = page => {
@@ -417,15 +441,15 @@ class TestList extends Component {
   };
 
   handleClearFilter = () => {
-    const { history, mode, limit, receiveTests, testFilters } = this.props;
+    const { history, mode, limit, receiveTests, testFilters, sort } = this.props;
 
     // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(testFilters, emptyFilters)) return null;
+    if (isEqual(testFilters, emptyFilters) && isEqual(sort, initialSortState)) return null;
 
-    this.updateFilterState(emptyFilters, true);
+    this.updateFilterState(emptyFilters, initialSortState, true);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
     if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
-    receiveTests({ page: 1, limit, search: emptyFilters });
+    receiveTests({ page: 1, limit, search: emptyFilters, sort: initialSortState });
   };
 
   handleStyleChange = blockstyle => {
@@ -460,7 +484,8 @@ class TestList extends Component {
       getCurriculumStandards,
       receiveTests,
       match: { params = {} },
-      testFilters
+      testFilters,
+      sort
     } = this.props;
 
     const search = {
@@ -478,7 +503,7 @@ class TestList extends Component {
       }
     }
 
-    this.updateFilterState(searchClone, true);
+    this.updateFilterState(searchClone, sort, true);
 
     const { curriculumId, grade } = searchClone;
     if (curriculumId && parsedQueryData.standardQuery.length >= 2) {
@@ -487,7 +512,8 @@ class TestList extends Component {
     receiveTests({
       page: Number(params.page),
       limit: Number(params.limit),
-      search: searchClone
+      search: searchClone,
+      sort
     });
   }
 
@@ -707,6 +733,8 @@ class TestList extends Component {
     removeTestFromCart(item);
   };
 
+  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
   renderCardContent = () => {
     const {
       loading,
@@ -746,7 +774,7 @@ class TestList extends Component {
         />
       );
     }
-    const GridCountInARow = windowWidth >= 1366 ? 4 : 3;
+    const GridCountInARow = windowWidth > 1600 ? 5 : windowWidth >= 1366 ? 4 : 3;
     const countModular = new Array(GridCountInARow - (tests.length % GridCountInARow)).fill(1);
 
     if (blockstyle === "tile") {
@@ -802,7 +830,7 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receiveTests, limit, testFilters, playlistPage, playlist: { _id } = {} } = this.props;
+    const { history, receiveTests, limit, testFilters, playlistPage, playlist: { _id } = {}, sort } = this.props;
     let updatedKeys = { ...testFilters };
 
     if (filter === filterMenuItems[0].filter) {
@@ -813,7 +841,7 @@ class TestList extends Component {
     }
 
     updatedKeys.filter = filter;
-    this.updateFilterState(updatedKeys, true);
+    this.updateFilterState(updatedKeys, sort, true);
 
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
@@ -821,7 +849,8 @@ class TestList extends Component {
     receiveTests({
       page: 1,
       limit,
-      search: updatedKeys
+      search: updatedKeys,
+      sort
     });
   };
 
@@ -845,6 +874,31 @@ class TestList extends Component {
     return num;
   };
 
+  onSelectSortOption = (value, sortDir) => {
+    const { testFilters, limit, sort, receiveTests } = this.props;
+    const updateSort = {
+      ...sort,
+      sortBy: value,
+      sortDir
+    };
+    this.updateFilterState(testFilters, updateSort, true);
+    receiveTests({
+      page: 1,
+      limit,
+      search: testFilters,
+      sort: updateSort
+    });
+  };
+
+  handleApproveTests = () => {
+    const { approveOrRejectMultipleTestsRequest, selectedTests, setApproveConfirmationOpen } = this.props;
+    if (selectedTests.length > 1) {
+      setApproveConfirmationOpen(true);
+    } else {
+      approveOrRejectMultipleTestsRequest({ status: "published" });
+    }
+  };
+
   renderExtra = () => (
     <>
       <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
@@ -856,17 +910,18 @@ class TestList extends Component {
           buttonText="Reject"
           numberChecker={this.rejectNumberChecker}
         />
-        <CartButton
-          onClick={() => {
-            const { approveOrRejectMultipleTestsRequest } = this.props;
-            approveOrRejectMultipleTestsRequest({ status: "published" });
-          }}
-          buttonText="Approve"
-          numberChecker={this.approveNumberChecker}
-        />
+        <CartButton onClick={this.handleApproveTests} buttonText="Approve" numberChecker={this.approveNumberChecker} />
       </FeaturesSwitch>
     </>
   );
+
+  toggleFilter = () => {
+    const { isShowFilter } = this.state;
+
+    this.setState({
+      isShowFilter: !isShowFilter
+    });
+  };
 
   render() {
     const {
@@ -881,7 +936,8 @@ class TestList extends Component {
       resequenceModules,
       testFilters,
       isProxyUser,
-      t
+      t,
+      sort = {}
     } = this.props;
 
     const {
@@ -894,7 +950,8 @@ class TestList extends Component {
       showRemoveModules,
       markedTests,
       moduleModalAdd,
-      testAdded
+      testAdded,
+      openSidebar
     } = this.state;
     const search = {
       ...testFilters
@@ -931,6 +988,8 @@ class TestList extends Component {
       mName: playlist?.modules[i]?.title
     }));
 
+    const renderFilterIcon = () => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
+
     return (
       <>
         <RemoveTestModal
@@ -939,32 +998,36 @@ class TestList extends Component {
           handleRemove={this.removeTestFromPlaylist}
         />
         {mode !== "embedded" && (
-          <ListHeader
-            onCreate={this.handleCreate}
-            creating={creating}
-            title={t("common.testLibrary")}
-            titleIcon={IconTestBank}
-            btnTitle="New Test"
-            renderFilter={() => (
-              <StyleChangeWrapper>
-                <IconTile
-                  data-cy="tileView"
-                  onClick={() => this.handleStyleChange("tile")}
-                  width={18}
-                  height={18}
-                  color={blockstyle === "tile" ? greyThemeLight : greyLight1}
-                />
-                <IconList
-                  data-cy="listView"
-                  onClick={() => this.handleStyleChange("horizontal")}
-                  width={18}
-                  height={18}
-                  color={blockstyle === "horizontal" ? greyThemeLight : greyLight1}
-                />
-              </StyleChangeWrapper>
-            )}
-            renderExtra={this.renderExtra}
-          />
+          <>
+            <ListHeader
+              onCreate={this.handleCreate}
+              creating={creating}
+              title={t("common.testLibrary")}
+              titleIcon={IconTestBank}
+              btnTitle="New Test"
+              renderFilter={() => (
+                <StyleChangeWrapper>
+                  <IconTile
+                    data-cy="tileView"
+                    onClick={() => this.handleStyleChange("tile")}
+                    width={18}
+                    height={18}
+                    color={blockstyle === "tile" ? greyThemeLight : greyLight1}
+                  />
+                  <IconList
+                    data-cy="listView"
+                    onClick={() => this.handleStyleChange("horizontal")}
+                    width={18}
+                    height={18}
+                    color={blockstyle === "horizontal" ? greyThemeLight : greyLight1}
+                  />
+                </StyleChangeWrapper>
+              )}
+              renderExtra={this.renderExtra}
+              toggleSidebar={this.toggleSidebar}
+            />
+            <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
+          </>
         )}
         <Container>
           <MobileFilter>
@@ -980,7 +1043,7 @@ class TestList extends Component {
               </Button>
             </FilterButton>
           </MobileFilter>
-          <Modal open={isShowFilter} onClose={this.closeSearchModal}>
+          <MobileFilterModal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestListFilters
                 search={search}
@@ -991,7 +1054,7 @@ class TestList extends Component {
                 filterMenuItems={filterMenuItems}
               />
             </SearchModalContainer>
-          </Modal>
+          </MobileFilterModal>
 
           {showManageModuleModal && (
             <Modal
@@ -1046,38 +1109,45 @@ class TestList extends Component {
           )}
 
           <FlexContainer>
-            <Filter>
-              <AffixWrapper isProxyUser={isProxyUser}>
-                <ScrollbarWrapper>
-                  <PerfectScrollbar>
-                    <ScrollBox>
-                      <InputTag
-                        placeholder="Search by skills and keywords"
-                        onSearchInputChange={this.handleSearchInputChange}
-                        size="large"
-                        value={testFilters.searchString}
-                        disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
-                      />
-                      <TestListFilters
-                        search={search}
-                        handleLabelSearch={this.handleLabelSearch}
-                        onChange={this.handleFiltersChange}
-                        clearFilter={this.handleClearFilter}
-                        searchFilterOption={this.searchFilterOption}
-                        filterMenuItems={filterMenuItems}
-                      />
-                    </ScrollBox>
-                  </PerfectScrollbar>
-                </ScrollbarWrapper>
-              </AffixWrapper>
+            <Filter isShowFilter={isShowFilter}>
+              {!isShowFilter && (
+                <AffixWrapper isProxyUser={isProxyUser}>
+                  <ScrollbarWrapper>
+                    <PerfectScrollbar>
+                      <ScrollBox>
+                        <InputTag
+                          onSearchInputChange={this.handleSearchInputChange}
+                          size="large"
+                          value={testFilters.searchString}
+                        />
+                        <TestListFilters
+                          search={search}
+                          handleLabelSearch={this.handleLabelSearch}
+                          onChange={this.handleFiltersChange}
+                          clearFilter={this.handleClearFilter}
+                          searchFilterOption={this.searchFilterOption}
+                          filterMenuItems={filterMenuItems}
+                        />
+                      </ScrollBox>
+                    </PerfectScrollbar>
+                  </ScrollbarWrapper>
+                </AffixWrapper>
+              )}
             </Filter>
-            <Main>
+            <Main isShowFilter={isShowFilter}>
+              {renderFilterIcon()}
               <ItemsMenu justifyContent="space-between">
                 <PaginationInfo>
                   <span>{count}</span> TESTS FOUND
                 </PaginationInfo>
 
                 <HeaderFilter search={search} handleCloseFilter={this.handleFiltersChange} type="test" />
+                <SortMenu
+                  options={sortOptions.testList}
+                  onSelect={this.onSelectSortOption}
+                  sortDir={sort.sortDir}
+                  sortBy={sort.sortBy}
+                />
 
                 {mode === "embedded" && (
                   <BtnActionsContainer>
@@ -1119,6 +1189,7 @@ class TestList extends Component {
             </Main>
           </FlexContainer>
           <SelectCollectionModal contentType="TEST" />
+          <ApproveConfirmModal contentType="TEST" />
         </Container>
       </>
     );
@@ -1145,7 +1216,9 @@ const enhance = compose(
       userId: get(state, "user.user._id", false),
       testFilters: getTestsFilterSelector(state),
       features: getUserFeatures(state),
-      isProxyUser: isProxyUserSelector(state)
+      isProxyUser: isProxyUserSelector(state),
+      sort: getSortFilterStateSelector(state),
+      selectedTests: getSelectedTestsSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1171,7 +1244,8 @@ const enhance = compose(
       clearAllFilters: clearTestFiltersAction,
       addTestToCart: addTestToCartAction,
       removeTestFromCart: removeTestFromCartAction,
-      approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction
+      approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
+      setApproveConfirmationOpen: setApproveConfirmationOpenAction
     }
   )
 );

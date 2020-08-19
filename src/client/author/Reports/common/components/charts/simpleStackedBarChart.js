@@ -63,7 +63,8 @@ const SimpleStackedBarChartComponent = ({
   lineYAxisLabel = "",
   isBarClickable = false,
   isPrinting,
-  printWidth
+  printWidth,
+  overflowStyle = "hidden"
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -166,7 +167,7 @@ const SimpleStackedBarChartComponent = ({
   };
 
   return (
-    <StyledStackedBarChartContainer clickable={isBarClickable}>
+    <StyledStackedBarChartContainer overflowStyle={overflowStyle} clickable={isBarClickable}>
       <a
         onClick={onResetClick}
         style={Object.keys(filter).length > 0 ? { visibility: "visible" } : { visibility: "hidden" }}
@@ -341,7 +342,7 @@ export const SimpleStackedBarChart = connect(
 
 const StyledStackedBarChartContainer = styled.div`
   padding: 10px;
-  overflow: hidden;
+  overflow: ${props => props.overflowStyle};
   position: relative;
 
   .recharts-cartesian-axis-ticks {

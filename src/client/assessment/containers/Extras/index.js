@@ -6,7 +6,6 @@ import { get } from "lodash";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -52,7 +51,7 @@ class Extras extends Component {
             <Col md={24}>
               <Label data-cy="instructor_stimulus">{t("component.options.overallDistractorRationale")}</Label>
 
-              <WidgetFRInput fontSize={fontSize}>
+              <WidgetFRInput>
                 <QuestionTextArea
                   toolbarId="instructor_stimulus"
                   toolbarSize="SM"
@@ -68,7 +67,7 @@ class Extras extends Component {
             <Col md={24}>
               <Label data-cy="sample_answer">{t("component.options.explanation")}</Label>
 
-              <WidgetFRInput fontSize={fontSize}>
+              <WidgetFRInput>
                 <QuestionTextArea
                   placeholder={t("component.options.enterSampleAnswer")}
                   toolbarId="sample_answer"
@@ -130,17 +129,5 @@ const QuestionContainer = styled.div`
     word-break: break-all;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-  span.fr-placeholder {
-    font-size: ${({ fontSize }) => `${fontSize} !important`};
-    line-height: 1.5 !important;
-  }
-
-  &:not(:first-child) {
-    margin-top: 10px;
-
-    @media (min-width: ${mediumDesktopExactWidth}) {
-      margin-top: 30px;
-    }
   }
 `;

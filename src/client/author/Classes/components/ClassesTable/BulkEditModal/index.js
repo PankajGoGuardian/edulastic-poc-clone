@@ -1,14 +1,24 @@
-import React, { useState } from "react";
-import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form, message, Col } from "antd";
-import { StyledComponents, RadioBtn, RadioGrp,notification } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
+import {
+  DatePickerStyled,
+  EduButton,
+  FieldLabel,
+  notification,
+  RadioBtn,
+  RadioGrp,
+  SelectInputStyled,
+  StyledComponents,
+  CustomModalStyled
+} from "@edulastic/common";
+import { Form, Icon, Select, Table } from "antd";
+import { debounce, uniq } from "lodash";
+import moment from "moment";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { ButtonsContainer } from "../../../../../common/styled";
 import { getUser } from "../../../../src/selectors/user";
-import moment from "moment";
-import { debounce, uniq } from "lodash";
 import { addNewTagAction, getAllTagsAction } from "../../../../TestPage/ducks";
-import { ButtonsContainer, OkButton, CancelButton, StyledModal } from "../../../../../common/styled";
 
 const { Button } = StyledComponents;
 const { Option } = Select;
@@ -38,11 +48,6 @@ function BulkEditModal({
 }) {
   const [value, setValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const radioStyle = {
-    display: "block",
-    height: "30px",
-    lineHeight: "30px"
-  };
 
   const { setFieldsValue, getFieldValue, getFieldDecorator } = form;
 
@@ -60,7 +65,7 @@ function BulkEditModal({
     }
 
     if (isInvalidEndDate) {
-      return notification({ messageKey:"startDateGreaterThanEndDate"});
+      return notification({ messageKey: "startDateGreaterThanEndDate" });
     }
 
     bulkUpdateClasses({
@@ -74,12 +79,12 @@ function BulkEditModal({
   const fetchCoursesForDistrict = debounce(searchValue => {
     const searchParams = searchValue
       ? {
-          search: {
-            name: [{ type: "cont", value: searchValue }],
-            number: [{ type: "cont", value: searchValue }],
-            operator: "or"
-          }
+        search: {
+          name: [{ type: "cont", value: searchValue }],
+          number: [{ type: "cont", value: searchValue }],
+          operator: "or"
         }
+      }
       : {};
     const data = {
       districtId,
@@ -101,7 +106,7 @@ function BulkEditModal({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
-        notification({ messageKey:"savingTagFailed"});
+        notification({ messageKey: "savingTagFailed" });
       }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
@@ -133,8 +138,8 @@ function BulkEditModal({
       case "course":
         return (
           <div>
-            <span>{t("class.components.bulkedit.chosecourse")}</span>
-            <Select
+            <FieldLabel>{t("class.components.bulkedit.chosecourse")}</FieldLabel>
+            <SelectInputStyled
               style={{ width: "100%" }}
               showSearch
               onSearch={fetchCoursesForDistrict}
@@ -147,15 +152,15 @@ function BulkEditModal({
               {coursesForDistrictList.map(course => (
                 <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </div>
         );
       case "tags":
         return (
           <div>
-            <div>{t("class.components.bulkedit.addtags")}</div>
+            <FieldLabel>{t("class.components.bulkedit.addtags")}</FieldLabel>
             {getFieldDecorator("tags")(
-              <Select
+              <SelectInputStyled
                 data-cy="tagsSelect"
                 mode="multiple"
                 style={{ marginBottom: 0, width: "100%" }}
@@ -167,27 +172,27 @@ function BulkEditModal({
                 filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
               >
-                {!!searchValue.trim() ? (
+                {searchValue.trim() ? (
                   <Select.Option key={0} value={searchValue} title={searchValue}>
                     {`${searchValue} (Create new Tag)`}
                   </Select.Option>
                 ) : (
-                  ""
-                )}
+                    ""
+                  )}
                 {allTagsData.map(({ tagName, _id }) => (
                   <Select.Option key={_id} value={_id} title={tagName}>
                     {tagName}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             )}
           </div>
         );
       case "endDate":
         return (
           <div>
-            <span>{t("class.components.bulkedit.choseenddate")}</span>
-            <DatePicker disabledDate={disabledDate} onChange={date => setValue(date.valueOf())} format="ll" />
+            <FieldLabel>{t("class.components.bulkedit.choseenddate")}</FieldLabel>
+            <DatePickerStyled disabledDate={disabledDate} onChange={date => setValue(date.valueOf())} format="ll" />
           </div>
         );
       default:
@@ -202,26 +207,23 @@ function BulkEditModal({
   });
 
   return (
-    <StyledModal
+    <CustomModalStyled
       visible={showModal}
       title={t("class.components.bulkedit.title")}
       onCancel={onCloseModal}
       maskClosable={false}
+      centered
       footer={[
         updateView ? (
-          <AntdButton key="update" onClick={handleSubmit}>
+          <EduButton key="update" onClick={handleSubmit}>
             {t("class.components.bulkedit.updateclasses")}
-          </AntdButton>
+          </EduButton>
         ) : (
-          <ButtonsContainer gutter={5}>
-            <Col span={10}>
-              <CancelButton onClick={onCloseModal}>{t("class.components.bulkedit.cancel")}</CancelButton>
-            </Col>
-            <Col span={11}>
-              <OkButton onClick={() => setBulkEditUpdateView(true)}>{t("class.components.bulkedit.proceed")}</OkButton>
-            </Col>
+          <ButtonsContainer>
+            <EduButton isGhost onClick={onCloseModal}>{t("class.components.bulkedit.cancel")}</EduButton>
+            <EduButton onClick={() => setBulkEditUpdateView(true)}>{t("class.components.bulkedit.proceed")}</EduButton>
           </ButtonsContainer>
-        )
+          )
       ]}
     >
       {updateView ? (
@@ -237,32 +239,32 @@ function BulkEditModal({
             columns={
               updateMode === "tags"
                 ? [
-                    {
-                      title: "Name",
-                      dataIndex: "_source.name"
-                    },
-                    {
-                      title: CONFIG[updateMode],
-                      dataIndex: `_source.${updateMode}`,
-                      render: tags =>
-                        tags.map((tag, i, tags) => (
-                          <span key={tag._id} style={{ margin: "3px" }}>
-                            {tag.tagName}
-                            {+i + 1 < tags.length ? ", " : ""}
-                          </span>
-                        ))
-                    }
-                  ]
+                  {
+                    title: "Name",
+                    dataIndex: "_source.name"
+                  },
+                  {
+                    title: CONFIG[updateMode],
+                    dataIndex: `_source.${updateMode}`,
+                    render: tags =>
+                      tags.map((tag, i, tags) => (
+                        <span key={tag._id} style={{ margin: "3px" }}>
+                          {tag.tagName}
+                          {+i + 1 < tags.length ? ", " : ""}
+                        </span>
+                      ))
+                  }
+                ]
                 : [
-                    {
-                      title: "Name",
-                      dataIndex: "_source.name"
-                    },
-                    {
-                      title: CONFIG[updateMode],
-                      dataIndex: `_source.${updateMode}`
-                    }
-                  ]
+                  {
+                    title: "Name",
+                    dataIndex: "_source.name"
+                  },
+                  {
+                    title: CONFIG[updateMode],
+                    dataIndex: `_source.${updateMode}`
+                  }
+                ]
             }
           />
           {renderEditableView()}
@@ -270,16 +272,17 @@ function BulkEditModal({
       ) : (
         <>
           <h4>{`You have selected ${
-            selectedClasses.length
-          } Class(es) to update, please select the bulk action required`}</h4>
+              selectedClasses.length
+              } Class(es) to update, please select the bulk action required`}
+          </h4>
           <RadioGrp onChange={evt => setBulkEditMode(evt.target.value)} value={updateMode}>
             <RadioBtn value="course">{t("class.components.bulkedit.changecourseassociation")}</RadioBtn>
             <RadioBtn value="tags">{t("class.components.bulkedit.updatetags")}</RadioBtn>
             <RadioBtn value="endDate">{t("class.components.bulkedit.updateenddate")}</RadioBtn>
           </RadioGrp>
         </>
-      )}
-    </StyledModal>
+        )}
+    </CustomModalStyled>
   );
 }
 

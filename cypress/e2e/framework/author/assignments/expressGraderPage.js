@@ -2,6 +2,9 @@ import { attemptTypes, questionTypeKey as queTypes, queColor } from "../../const
 import LiveClassboardPage from "./LiveClassboardPage";
 import StudentTestPage from "../../student/studentTestPage";
 
+const TEI_Attempt = "TEI";
+const CR_Questions = "Constructed Response";
+const skippedResponse = "-";
 export default class ExpressGraderPage extends LiveClassboardPage {
   constructor() {
     super();
@@ -188,10 +191,6 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   getQuestionTableResponseData = ({ attempt, questionTypeMap }) => {
     const questinoWiseData = {};
-    const TEI_Attempt = "TEI";
-    const CR_Questions = "Constructed Response";
-    const skippedResponse = "-";
-
     Object.keys(attempt).forEach(queNo => {
       const attemptType = attempt[queNo];
       const { queKey, attemptData, choices } = questionTypeMap[queNo];
@@ -283,9 +282,22 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.getCellforQueNum(queNum).should("have.css", "background-color", color);
   };
 
-  verifyResponseEntryByIndexOfSelectedRow = (data, questionNumber) => {
-    if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
-    else this.getCellforQueNum(questionNumber).should("have.text", data);
+  verifyResponseEntryByIndexOfSelectedRow = (data, questionNumber, queKey) => {
+    if (data === skippedResponse) this.getCellforQueNum(questionNumber).should("have.text", data);
+    else {
+    switch (queKey) {
+      case queTypes.MATH_NUMERIC:
+        this.getCellforQueNum(questionNumber)
+          .find(".katex-html")
+          .first()
+          .should("contain.text", data);
+        break;
+      default:
+        if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
+        else this.getCellforQueNum(questionNumber).should("have.text", data);
+        break;
+    }
+    }
   };
 
   verifyScoreGrid(studentName, studentAttempts, score, perfValue, questionTypeMap) {
@@ -342,7 +354,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     const questionTableData = this.getQuestionTableResponseData({ attempt, questionTypeMap });
     Object.keys(questionTypeMap).forEach(questionNumber => {
       const { studentResponse } = questionTableData[questionNumber];
-      this.verifyResponseEntryByIndexOfSelectedRow(studentResponse, questionNumber);
+      const { queKey } = questionTypeMap[questionNumber];
+      this.verifyResponseEntryByIndexOfSelectedRow(studentResponse, questionNumber, queKey.split(".")[0]);
     });
   };
 
@@ -353,26 +366,24 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.getScoreforQueNum("Q1").click();
     this.waitForStudentData();
 
-    Object.keys(studentAttempts)
-      .sort()
-      .forEach((queNum, index, item) => {
-        const attemptType = studentAttempts[queNum];
-        const { queKey, attemptData, points } = questionTypeMap[queNum];
-        console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
-        this.questionResponsePage.verifyQuestionResponseCard(
-          points,
-          queKey,
-          attemptType,
-          attemptData,
-          false,
-          studentName
-        );
+    Object.keys(studentAttempts).forEach((queNum, index, item) => {
+      const attemptType = studentAttempts[queNum];
+      const { queKey, attemptData, points } = questionTypeMap[queNum];
+      console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
+      this.questionResponsePage.verifyQuestionResponseCard(
+        points,
+        queKey,
+        attemptType,
+        attemptData,
+        false,
+        studentName
+      );
 
-        if (index < item.length - 1) {
-          if (useKeyBoardKeys) this.navigateByRightKey();
-          else this.clickOnNextQuestion();
-        }
-      });
+      if (index < item.length - 1) {
+        if (useKeyBoardKeys) this.navigateByRightKey();
+        else this.clickOnNextQuestion();
+      }
+    });
 
     Object.keys(studentAttempts)
       .sort()
@@ -453,21 +464,24 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
     this.getScoreforQueNum(queNum)
       .then(ele => {
+        this.verifyCellColorForQuestion(queNum, attemptType);
         previousScore = ele.text();
         cy.wrap(ele).click({ force: true });
         this.waitForStudentData();
-        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score);
+        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score, undefined, true);
         this.clickOnExit(true);
+        this.waitForStudentData();
         this.verifyCellColorForQuestion(queNum, attemptTypes.PARTIAL_CORRECT);
       })
       .then(() => {
         this.getScoreforQueNum(queNum)
           .should("have.text", score)
           .click({ force: true });
+        this.waitForStudentData();
         console.log("previousScore ::", previousScore);
-        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, previousScore);
+        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, previousScore, undefined, true);
         this.clickOnExit(true);
-        this.verifyCellColorForQuestion(queNum, attemptType);
+        this.verifyCellColorForQuestion(queNum, previousScore === "0" ? attemptTypes.WRONG : attemptType, true);
       });
   };
 

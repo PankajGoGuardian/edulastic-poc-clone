@@ -2,14 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import Dropzone from "react-dropzone";
-import { message } from "antd";
 
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import { Image as Img, uploadToS3, beforeUpload, FlexContainer, EduButton,notification } from "@edulastic/common";
+import { uploadToS3, beforeUpload, FlexContainer, notification } from "@edulastic/common";
 import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -19,15 +18,11 @@ import { updateVariables } from "../../../utils/variables";
 import QuestionTextArea from "../../../components/QuestionTextArea";
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
-import CustomInput from "../../../components/Input";
+import DropZoneToolbar from "../../../components/DropZoneToolbar";
 import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
 import { CustomStyleBtn } from "../../../styled/ButtonStyles";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
 import ResizableImage from "./Resizeable";
-import Dragger from "antd/lib/upload/Dragger";
 import UpdateImageButton from "../styled/UpdateImageButton";
 
 class ComposeQuestion extends Component {
@@ -81,7 +76,7 @@ class ComposeQuestion extends Component {
       setQuestionData(newItem);
     };
 
-    const handleImageToolbarChange = (prop, val) => {
+    const handleImageToolbarChange = prop => val => {
       setQuestionData(
         produce(item, draft => {
           let value = val;
@@ -157,7 +152,7 @@ class ComposeQuestion extends Component {
         getImageDimensions(imageUrl);
       } catch (e) {
         console.error("error in image upload", e);
-        notification({ msg:`${t("component.cloze.imageText.fileUploadFailed")}`});
+        notification({ msg: `${t("component.cloze.imageText.fileUploadFailed")}` });
       }
     };
 
@@ -200,81 +195,31 @@ class ComposeQuestion extends Component {
           border="border"
         />
 
-        <Row marginTop={15} type="flex" align="middle">
-          <Col span={6} style={{ display: `flex`, alignItems: `center` }}>
-            <CustomInput
-              size="large"
-              style={{ width: `90px`, marginRight: `5px` }}
-              type="number"
-              value={item?.image?.width || maxWidth}
-              onChange={val => handleImageToolbarChange("width", val)}
-              placeholder={t("component.hotspot.widthLabel")}
-            />
-            <Label marginBottom="0px">{t("component.hotspot.widthLabel")}</Label>
-          </Col>
-          <Col span={6} style={{ display: `flex`, alignItems: `center` }}>
-            <CustomInput
-              size="large"
-              style={{ width: `90px`, marginRight: `5px` }}
-              type="number"
-              value={item?.image?.height || maxHeight}
-              onChange={val => handleImageToolbarChange("height", val)}
-              placeholder={t("component.hotspot.heightLabel")}
-            />
-            <Label marginBottom="0px">{t("component.hotspot.heightLabel")}</Label>
-          </Col>
-          <Col span={12} style={{ display: `flex`, alignItems: `center` }}>
-            <CustomInput
-              size="large"
-              style={{ width: `200px`, marginRight: `5px` }}
-              type="text"
-              value={altText}
-              onChange={val => handleImageToolbarChange("altText", val)}
-              placeholder={t("component.hotspot.altTextLabel")}
-            />
-            <Label marginBottom="0px">{t("component.hotspot.altTextLabel")}</Label>
-          </Col>
-        </Row>
+        <DropZoneToolbar width={+width} height={+height} altText={altText} handleChange={handleImageToolbarChange} />
 
         {thumb ? (
           <FlexContainer className="imageContainer" flexDirection="column" marginBottom="1rem">
             {thumb}
-            <div style={{ marginRight: "auto" }}>
-              <UpdateImageButton {...uploadProps}>
-                <CustomStyleBtn
-                  id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageText.updateImageButtonText")}`)}
-                >
-                  {t("component.cloze.imageText.updateImageButtonText")}{" "}
-                </CustomStyleBtn>
-              </UpdateImageButton>
-            </div>
+            <UpdateImageButton {...uploadProps}>
+              <CustomStyleBtn
+                id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageText.updateImageButtonText")}`)}
+              >
+                {t("component.cloze.imageText.updateImageButtonText")}
+              </CustomStyleBtn>
+            </UpdateImageButton>
           </FlexContainer>
         ) : (
           <Dropzone onDrop={onDrop} className="dropzone" activeClassName="active-dropzone" multiple={false}>
             {({ getRootProps, getInputProps, isDragActive }) => (
               <div
                 id={getFormattedAttrId(`${item?.title}-dropzone-image-container`)}
-                style={{
-                  margin: "0 auto",
-                  outline: "none",
-                  border: `1px solid black`
-                }}
                 data-cy="dropzone-image-container"
                 {...getRootProps()}
                 className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}
               >
                 <input {...getInputProps()} />
 
-                <StyledDropZone
-                  style={{
-                    justifyContent: "flex-start !important",
-                    alignItems: "flex-start !important",
-                    margin: "0 auto",
-                    position: `relative`
-                  }}
-                  loading={loading}
-                  isDragActive={isDragActive}
-                />
+                <StyledDropZone loading={loading} isDragActive={isDragActive} />
               </div>
             )}
           </Dropzone>

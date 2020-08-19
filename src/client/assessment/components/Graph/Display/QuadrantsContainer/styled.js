@@ -10,6 +10,7 @@ export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
+  margin-bottom: 16px;
 `;
 
 export const PrevColor = styled.div`
@@ -96,7 +97,6 @@ export const Title = WithMathFormula(styled.div`
 
 export const JSXBoxWrapper = styled.div`
   position: relative;
-  overflow: auto;
   width: ${props => `${props.width}px`};
   flex-shrink: 0;
 `;

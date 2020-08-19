@@ -10,7 +10,6 @@ import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { cloneDeep, find, isUndefined, isArray } from "lodash";
 
 import { withTheme } from "styled-components";
-import { helpers } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { updateVariables } from "../../utils/variables";
@@ -21,14 +20,7 @@ class TemplateMarkup extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired,
-    fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
-  };
-
-  static defaultProps = {
-    fillSections: () => {},
-    cleanSections: () => {}
+    setQuestionData: PropTypes.func.isRequired
   };
 
   onChangeMarkUp = stimulus => {
@@ -44,7 +36,7 @@ class TemplateMarkup extends Component {
       const _preValidation = cloneDeep(preValidation);
       const {
         validResponse: { value },
-        altResponses: altResponses
+        altResponses
       } = cloneDeep(_preValidation);
 
       newAltValue = cloneDeep(altResponses);

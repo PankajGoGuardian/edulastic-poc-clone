@@ -28,7 +28,8 @@ const CurriculumSubHeader = ({
   toggleManageContentClick,
   shouldHidCustomizeButton,
   isAuthoringFlowReview,
-  customizeInDraft = false
+  customizeInDraft = false,
+  urlHasUseThis = false
 }) => {
   const { description, subjects = [], grades = [] } = destinationCurriculumSequence;
 
@@ -104,7 +105,8 @@ const CurriculumSubHeader = ({
 
               {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) &&
                 !isAuthoringFlowReview &&
-                !customizeInDraft && (
+                !customizeInDraft &&
+                urlHasUseThis && (
                   <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
                     View Summary
                   </StyledButton>

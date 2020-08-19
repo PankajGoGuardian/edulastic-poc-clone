@@ -39,9 +39,10 @@ import { loadAssignmentsAction } from "../../../TestPage/components/Assign/ducks
 import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
 import {
   getUserSelector,
-  getItemBucketsSelector,
+  getCollectionsToAddContent,
   isPublisherUserSelector,
-  getUserRole
+  getUserRole,
+  isOrganizationDistrictUserSelector
 } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -159,7 +160,7 @@ class Container extends PureComponent {
   };
 
   handleChangeCollection = (value, options) => {
-    const { setData, orgCollections, playlist } = this.props;
+    const { setData, playlist, collectionsToShow } = this.props;
     const data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
@@ -177,9 +178,8 @@ class Container extends PureComponent {
       });
     }
 
-    const orgCollectionIds = orgCollections.map(o => o._id);
+    const orgCollectionIds = collectionsToShow.map(o => o._id);
     const extraCollections = (playlist.collections || []).filter(c => !orgCollectionIds.includes(c._id));
-
     setData({ ...playlist, collections: [...collectionArray, ...extraCollections] });
   };
 
@@ -394,8 +394,8 @@ class Container extends PureComponent {
   };
 
   onPublishClick = () => {
-    const { playlist, isPublisherUser } = this.props;
-    if (isPublisherUser && !playlist.collections.length) {
+    const { playlist, isPublisherUser, isOrganizationDistrictUser } = this.props;
+    if ((isPublisherUser || isOrganizationDistrictUser) && !playlist.collections.length) {
       return this.setState({ showSelectCollectionsModal: true });
     }
     this.handlePublishPlaylist();
@@ -508,9 +508,10 @@ const enhance = compose(
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
-      orgCollections: getItemBucketsSelector(state),
+      collectionsToShow: getCollectionsToAddContent(state),
       isPublisherUser: isPublisherUserSelector(state),
-      useRole: getUserRole(state)
+      useRole: getUserRole(state),
+      isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state)
     }),
     {
       createPlayList: createPlaylistAction,

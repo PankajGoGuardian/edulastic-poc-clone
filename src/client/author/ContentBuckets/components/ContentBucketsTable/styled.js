@@ -131,3 +131,10 @@ export const StyledIconPencilEdit = styled(IconPencilEdit)`
   width: 13px;
   height: 13px;
 `;
+
+export const Owner = styled.div `
+  width:120px;
+  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

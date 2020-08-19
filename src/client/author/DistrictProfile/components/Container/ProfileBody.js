@@ -3,7 +3,6 @@ import {
   backgrounds,
   borders,
   desktopWidth,
-  fadedGreen,
   largeDesktopWidth,
   mobileWidthLarge,
   mobileWidthMax,
@@ -11,9 +10,10 @@ import {
   themeColor,
   title,
   white,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  themeColorBlue
 } from "@edulastic/colors";
-import { FieldLabel, MainContentWrapper, SelectInputStyled, EduButton } from "@edulastic/common";
+import { FieldLabel, MainContentWrapper, SelectInputStyled, EduButton, EduSwitchStyled } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { Form, Icon, Input, Select, Tag, Modal } from "antd";
 import produce from "immer";
@@ -23,7 +23,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
-import Switch from "antd/lib/switch";
 import { roleuser } from "@edulastic/constants";
 import {
   deleteAccountAction,
@@ -528,7 +527,7 @@ class ProfileBody extends React.Component {
       <MainContentWrapper padding="30px" flag={flag}>
         <ProfileWrapper display="flex" boxShadow="none" minHeight="max-content">
           <ProfileImgWrapper>
-            <Photo user={user} />
+            <Photo user={user} isProfile />
           </ProfileImgWrapper>
           <RightContainer>
             {user.role.toUpperCase() === "EDULASTIC-ADMIN" ? (
@@ -541,6 +540,7 @@ class ProfileBody extends React.Component {
                     {!isEditProfile && ["teacher", "district-admin", "school-admin"].includes(user.role) ? (
                       <>
                         <EditProfileButton
+                          isGhost
                           type="primary"
                           onClick={() => {
                             this.setState({ isEditProfile: true });
@@ -644,9 +644,9 @@ class ProfileBody extends React.Component {
             {user.role === roleuser.TEACHER && (
               <SchoolWrapper>
                 <SchoolLabel>My Schools</SchoolLabel>
-                <SchoolListWrapper>{this.getSchoolList()}</SchoolListWrapper>
+                <SchoolListWrapper data-cy='mySchools'>{this.getSchoolList()}</SchoolListWrapper>
                 <AddSchoolSection>
-                  <AddSchoolBtn onClick={this.handleAddSchool} type="primary">
+                  <AddSchoolBtn data-cy="addSchool" width="190px" isBlue onClick={this.handleAddSchool} type="primary">
                     Add School
                   </AddSchoolBtn>
                 </AddSchoolSection>
@@ -660,7 +660,7 @@ class ProfileBody extends React.Component {
                   {showSaveStandSetsBtn && (
                     <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
                   )}
-                  <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
+                  <SelectSetsButton width="190px" isBlue onClick={this.handleSelectStandardButton} type="primary">
                     Select your standard sets
                   </SelectSetsButton>
                 </StandardSetsButtons>
@@ -720,8 +720,7 @@ class ProfileBody extends React.Component {
                   {user.role === roleuser.TEACHER && googleClassRoomAllowed && (
                     <SwitchWrapper>
                       <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
-                      <Switch
-                        style={{ width: "30px" }}
+                      <EduSwitchStyled
                         defaultChecked={autoShareGCAssignment}
                         onChange={checked => this.onSettingChange(checked, "autoSync")}
                       />
@@ -730,8 +729,7 @@ class ProfileBody extends React.Component {
                   {showPowerTools && (
                     <SwitchWrapper style={{ justifyContent: "space-between" }}>
                       <FieldLabel>{t("common.title.powerUser")}</FieldLabel>
-                      <Switch
-                        style={{ width: "30px" }}
+                      <EduSwitchStyled
                         defaultChecked={userInfo.isPowerTeacher}
                         onChange={this.handlePowerTeacherUpdate}
                       />
@@ -860,10 +858,10 @@ const ProfileWrapper = styled(Wrapper)`
 `;
 
 const RightContainer = styled.div`
-  width: calc(100% - 370px);
+  width: calc(100% - 310px);
 
   @media (max-width: ${largeDesktopWidth}) {
-    width: calc(100% - 270px);
+    width: calc(100% - 260px);
   }
   @media (max-width: ${mobileWidthMax}) {
     width: 100%;
@@ -873,9 +871,8 @@ const RightContainer = styled.div`
 const ProfileContentWrapper = styled.div`
   width: 100%;
   background-color: ${white};
-  border: 1px solid #b6b6cc;
-  border-radius: 10px;
-  padding: 30px;
+  border-bottom: 1px solid #b6b6cc;
+  padding-bottom: 20px;
   overflow: hidden;
 `;
 
@@ -909,15 +906,17 @@ const StandardSetsButtons = styled.div`
 `;
 
 const StyledTag = styled(Tag)`
-  background-color: ${fadedGreen};
-  color: ${themeColor};
+  background-color: #b3bcc4;
+  color: #676e74;
   border: none;
   font-weight: 600;
+  font-size: 8px;
   padding: 2px 5px 2px 10px;
-  margin: 5px;
+  margin: 2px;
   white-space: normal;
+  text-transform: uppercase;
   i {
-    color: ${themeColor} !important;
+    color: #676e74 !important;
     margin-left: 10px !important;
   }
 `;
@@ -937,11 +936,10 @@ const Title = styled.h3`
 `;
 
 const ProfileImgWrapper = styled.div`
-  width: 350px;
+  width: 300px;
   height: 300px;
   position: relative;
   background-color: ${white};
-  border: 1px solid #b6b6cc;
   border-radius: 10px;
   display: flex;
   justify-content: center;
@@ -957,25 +955,27 @@ const ProfileImgWrapper = styled.div`
 `;
 
 const Details = styled.div`
-  padding: 30px 20px;
+  padding: 30px 0px 20px;
 `;
 
 const DetailRow = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px 0px 20px;
+  padding: 10px 0px;
 `;
 
 const DetailTitle = styled.span`
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
+  font-size: 10px;
+  color: #aaafb5;
   font-weight: 600;
   width: 150px;
   display: inline-block;
+  text-transform: uppercase;
 `;
 const DetailData = styled.span`
-  font-size: 14px;
-  color: grey;
+  font-size: 11px;
+  color: ${title};
+  font-weight: 600;
   display: inline-block;
   width: calc(100% - 150px);
 `;
@@ -985,20 +985,24 @@ const Label = styled.label`
 `;
 
 const ChangePasswordToggleButton = styled.div`
-  color: ${themeColor};
-  padding-left: 20px;
+  color: "#6A737F";
+  font-size: 10px;
+  text-transform: uppercase;
   cursor: pointer;
   width: fit-content;
   span {
     margin-right: 20px;
     font-weight: 600;
   }
+  svg {
+    fill: ${themeColorBlue};
+  }
 `;
 
 const FormWrapper = styled(Form)`
   width: 100%;
   text-align: left;
-  padding: 30px 20px 5px;
+  padding: 20px 0px 0px;
   display: flex;
   justify-content: space-between;
 
@@ -1065,7 +1069,7 @@ const InputItemWrapper = styled(FormItem)`
 const FormButtonWrapper = styled.div`
   text-align: center;
   float: right;
-  padding-right: 20px;
+  padding-right: 0px;
   .ant-form-item-children {
     display: flex;
   }
@@ -1073,18 +1077,17 @@ const FormButtonWrapper = styled.div`
 
 const EditProfileButton = styled(EduButton)`
   margin-left: 15px;
-  font-size: 11px;
+  font-size: 10px;
   float: right;
   font-weight: 600;
-  height: 36px;
+  height: 30px;
   padding: 0px 15px;
   i {
     font-size: 14px;
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: 40px;
-    padding: 0px 30px;
+    height: 36px;
   }
   @media (max-width: ${desktopWidth}) {
     width: 100%;
@@ -1110,7 +1113,6 @@ const SelectSetsButton = styled(EditProfileButton)`
   background: ${themeColor};
   border-color: ${themeColor};
   color: ${white};
-  padding: 0px 20px;
 `;
 
 const SaveStandardSetsBtn = styled(SelectSetsButton)`
@@ -1131,7 +1133,6 @@ const AddSchoolBtn = styled(EditProfileButton)`
   background: ${themeColor};
   border-color: ${themeColor};
   color: ${white};
-  padding: 0px 20px;
 `;
 
 const AddSchoolSection = styled.div`

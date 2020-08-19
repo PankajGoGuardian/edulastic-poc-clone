@@ -38,7 +38,7 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       key: "standard",
       dataIndex: "standard",
       fixed: "left",
-      width: 120,
+      width: 150,
       render: (data, record) => {
         const obj = {
           termId: filters.termId || termId,
@@ -79,7 +79,6 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       title: "Mastery",
       key: "masteryName",
       align: "center",
-      width: 180,
       dataIndex: "masteryName",
       render: (data, record) => {
         const obj = {
@@ -110,7 +109,6 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       title: "Assessment",
       key: "testCount",
       dataIndex: "testCount",
-      width: 180,
       align: "center",
       render: renderToolTipColumn("Assessments"),
       sorter: (a, b) => a.testCount - b.testCount
@@ -119,7 +117,6 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       title: "Total Questions",
       key: "questionCount",
       dataIndex: "questionCount",
-      width: 100,
       align: "center",
       render: renderToolTipColumn("Total Questions"),
       sorter: (a, b) => a.questionCount - b.questionCount
@@ -129,7 +126,6 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       key: "totalScore",
       dataIndex: "totalScore",
       align: "center",
-      width: 100,
       render: renderToolTipColumn("Score"),
       sorter: (a, b) => a.totalScore - b.totalScore
     },
@@ -137,7 +133,6 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       title: "Max Possible Score",
       key: "maxScore",
       dataIndex: "maxScore",
-      width: 100,
       align: "center",
       render: renderToolTipColumn("Max Possible Score"),
       sorter: (a, b) => a.maxScore - b.maxScore
@@ -146,7 +141,6 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       title: "Avg. Score(%)",
       key: "scoreFormatted",
       dataIndex: "scoreFormatted",
-      width: 130,
       align: "center",
       render: renderToolTipColumn("Avg. Score"),
       sorter: (a, b) => a.scoreFormatted.localeCompare(b.scoreFormatted)

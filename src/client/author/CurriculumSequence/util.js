@@ -67,8 +67,8 @@ export const getSummaryData = (modules, playlistMetrics, isStudent) =>
 export const getProgressData = (playlistMetrics, _id, contentId, assignments) => {
   const classAssignmentData = assignments.flatMap(a => a.class) || [];
   const data = playlistMetrics?.[_id]?.filter(x => x.testId === contentId) || [];
-  const totalScore = data.reduce((a, c) => a + parseInt(c.totalScore || 0, 10), 0);
-  const maxScore = data.reduce((a, c) => a + parseInt(c.maxScore || 0, 10), 0);
+  const totalScore = data.reduce((a, c) => a + parseFloat(c.totalScore || 0, 10), 0);
+  const maxScore = data.reduce((a, c) => a + parseFloat(c.maxScore || 0, 10), 0);
   const value = maxScore ? round((totalScore / maxScore) * 100, 0) : 0;
   const classes = assignments.reduce((a, c) => a + (c?.["class"]?.length || 0), 0);
   const tSpent = data.reduce((a, c) => a + parseInt(c.timeSpent || 0, 10), 0);

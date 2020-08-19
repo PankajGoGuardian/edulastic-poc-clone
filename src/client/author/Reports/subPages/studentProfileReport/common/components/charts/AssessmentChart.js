@@ -64,6 +64,7 @@ const AssessmentChart = ({
       filter={selectedTests}
       isBarClickable={isBarClickable}
       printWidth={printWidth}
+      overflowStyle="" // display complete tooltip
     />
   );
 };

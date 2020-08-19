@@ -41,7 +41,7 @@ import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 import { PREVIEW } from "../constants/constantsForQuestions";
 import { getUserRole } from "../../author/src/selectors/user";
 
-const { ITEM_GROUP_DELIVERY_TYPES } = testContants;
+const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants;
 
 const modifyTestDataForPreview = test =>
   produce(test, draft => {
@@ -219,7 +219,8 @@ function* loadTest({ payload }) {
       timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
       allowedTime: testActivity?.assignmentSettings?.allowedTime,
       pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
-      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad
+      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
+      releaseScore: testActivity?.testActivity?.releaseScore
     };
 
     const answerCheckByItemId = {};
@@ -456,6 +457,7 @@ function* submitTest({ payload }) {
     yield put({
       type: CLEAR_USER_WORK
     });
+    sessionStorage.removeItem("testAttemptReviewVistedId");
     if (navigator.userAgent.includes("SEB")) {
       return yield put(push("/student/seb-quit-confirm"));
     }
@@ -473,13 +475,27 @@ function* submitTest({ payload }) {
         push({ pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: { currentGroupId: groupId } })
       );
     }
+
     if (preventRouteChange) return;
-    return yield put(push("/home/grades"));
+    const test = yield select(state => state.test);
+    const isCliUser = yield select(state => state.user?.isCliUser);
+
+    if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
+      return yield put(push(`/home/grades${isCliUser ? "?cliUser=true" : ""}`));
+    }
+    return yield put(
+      push(
+        `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}${
+          isCliUser ? "?cliUser=true" : ""
+        }`
+      )
+    );
   } catch (err) {
     Sentry.captureException(err);
     const {
-      data: { message: errorMessage }
-    } = err.response;
+      data = {}
+    } = err.response || {};
+    const { message: errorMessage } = data
     if (err.status === 403) {
       if (errorMessage === "assignment already submitted") {
         return yield put(push("/home/grades"));

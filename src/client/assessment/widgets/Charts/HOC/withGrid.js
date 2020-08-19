@@ -30,7 +30,8 @@ const withGrid = WrappedComponent => {
             question={item}
             setQuestionData={setQuestionData}
             disableDragging={view !== EDIT}
-            isAbove={view === EDIT ? !barIsDragging : false}
+            noBorder={view !== EDIT}
+            isAbove={!barIsDragging}
             onDoubleClick={() => toggleBarDragging(!barIsDragging)}
           />
           {showChartTitle && (

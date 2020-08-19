@@ -1,35 +1,25 @@
 import styled from "styled-components";
 
-import {
-  white,
-  textColor,
-  fadedRed,
-  red,
-  lightGreen3,
-  greenDark4,
-  darkGrey,
-  greyThemeLight,
-  greyThemeLighter
-} from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 
 export const CheckBox = styled.div`
-  min-height: 35px;
   display: inline-flex;
   position: relative;
-  width: auto;
-  height: auto;
-  margin: 0px 2px 2px 2px;
+  width: ${props => props.width || "auto"};
+  height: ${props => props.height || "auto"};
+  min-height: ${props => props.height || "32px"};
+  min-width: ${props => props.width || "140px"};
+  margin: 0px 2px 0px 2px;
   font-weight: 700;
-  color: ${textColor};
   align-items: center;
-  border-radius: 5px;
+  border-radius: 2px;
   padding-right: 24px;
-  background: ${greyThemeLighter};
-  border: 1px solid ${greyThemeLight};
   vertical-align: middle;
+  background: ${({ theme }) => theme.checkbox.noAnswerBgColor};
+  color: ${({ theme }) => theme.checkbox.textColor};
 
   .index {
-    background: ${greyThemeLight};
+    background: ${({ theme }) => theme.checkbox.noAnswerIconColor};
   }
 
   .mq-math-mode {
@@ -37,28 +27,29 @@ export const CheckBox = styled.div`
   }
 
   &.wrong {
-    background: ${fadedRed};
+    background: ${({ theme }) => theme.checkbox.wrongBgColor};
     .index {
-      background: ${red};
+      background: ${({ theme }) => theme.checkbox.wrongIconColor};
     }
   }
 
   &.right {
-    background: ${lightGreen3};
+    background: ${({ theme }) => theme.checkbox.rightBgColor};
     .index {
-      background: ${greenDark4};
+      background: ${({ theme }) => theme.checkbox.rightIconColor};
     }
   }
 
   .index {
     min-width: 30px;
-    min-height: 35px;
     color: ${white};
     font-size: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
     align-self: stretch;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
   }
 
   .value {

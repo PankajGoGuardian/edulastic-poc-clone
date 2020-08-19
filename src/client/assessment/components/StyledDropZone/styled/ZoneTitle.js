@@ -5,7 +5,6 @@ export const ZoneTitle = styled.div`
     isComment ? theme.styledDropZone.zoneTitleCommentFontSize : theme.styledDropZone.zoneTitleFontSize};
   font-weight: ${props => props.theme.styledDropZone.zoneTitleFontWeight};
   text-transform: uppercase;
-  color: ${({ theme, altColor }) =>
-    altColor ? theme.styledDropZone.zoneTitleAltColor : theme.styledDropZone.zoneTitleColor};
-  margin-top: ${({ isComment }) => (isComment ? 12 : 0)}px;
+  color: ${({ theme }) => theme.styledDropZone.zoneTitleColor};
+  margin-top: ${({ isComment }) => (isComment ? 8 : 0)}px;
 `;

@@ -17,7 +17,6 @@ import {
   Layout,
   FontSizeOption,
   PlaceholderOption,
-  BrowserSpellcheckOption,
   MinHeightOption,
   MaxHeightOption,
   SpecialCharactersOption,
@@ -122,13 +121,8 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          <Row gutter={24}>
-            <Col md={12}>
-              <BrowserSpellcheckOption
-                onChange={val => changeItem("spellcheck", val)}
-                checked={get(item, "spellcheck", false)}
-              />
-            </Col>
+          {/* TODO: Remove "submitOverLimit (EV-15489)" if not needed */}
+          {/* <Row gutter={24}>
             <Col md={12}>
               <CheckboxLabel
                 defaultChecked={item && item.validation && item.validation.submitOverLimit}
@@ -137,7 +131,7 @@ class LayoutComponent extends Component {
                 {t("component.essayText.submitOverLimit")}
               </CheckboxLabel>
             </Col>
-          </Row>
+          </Row> */}
         </Layout>
       </Question>
     );

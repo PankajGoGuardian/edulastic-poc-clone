@@ -1,6 +1,6 @@
-//@ts-check
+// @ts-check
 import React from "react";
-import { Card, Input, Button, Layout, message } from "antd";
+import { Card, Input, Button, Layout } from "antd";
 import { notification } from "@edulastic/common";
 import styled from "styled-components";
 import { proxyUser } from "../../author/authUtils";
@@ -10,12 +10,12 @@ const ProxyUser = () => {
   const [userId, setUserId] = React.useState("");
 
   const proxy = React.useCallback(
-    (email = undefined, userId = undefined) => {
-      let data = {};
+    (_email = undefined, _userId = undefined) => {
+      const data = {};
       if (userId) {
-        data.userId = userId;
+        data.userId = _userId;
       } else if (email) {
-        data.email = email;
+        data.email = _email;
       } else {
         notification({ messageKey: "imageSizeError" });
         return;
@@ -34,7 +34,7 @@ const ProxyUser = () => {
         <Input value={userId} onChange={e => setUserId(e.target.value)} placeholder="User Id" />
         <StyledButton
           onClick={() => {
-            proxy(email, userId);
+            proxy(email?.trim(), userId?.trim());
           }}
         >
           submit
@@ -43,10 +43,12 @@ const ProxyUser = () => {
     </Layout.Content>
   );
 };
-//@ts-ignore
+
+// @ts-ignore
 const StyledButton = styled(Button)`
   margin-top: 10px;
 `;
+
 const P = styled.p`
   text-align: center;
   font-weight: bold;

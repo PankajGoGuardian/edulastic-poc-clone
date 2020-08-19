@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
 import produce from "immer";
-
+import styled from "styled-components";
 import { useDisableDragScroll } from "@edulastic/common";
 
 import HorizontalLines from "./components/HorizontalLines";
@@ -18,6 +18,7 @@ import {
 } from "./helpers";
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
+import { Line } from "./styled";
 
 const BarChart = ({
   item,
@@ -26,7 +27,7 @@ const BarChart = ({
   saveAnswer,
   gridParams,
   view,
-  correct,
+  evaluation,
   disableResponse,
   deleteMode,
   toggleBarDragging,
@@ -45,6 +46,18 @@ const BarChart = ({
 
   const [localData, setLocalData] = useState(data);
 
+  const bars = useMemo(
+    () =>
+      (localData || []).map((bar, index) => ({
+        ...bar,
+        posX: step * index + (padding + gridMargin + step * 0.2) / 2,
+        posY: convertUnitToPx(bar.y, gridParams) + 20,
+        labelVisibility: bar.labelVisibility,
+        width: step * 0.8
+      })),
+    [localData]
+  );
+
   useEffect(() => {
     if (!isEqual(data, localData)) {
       setLocalData(data);
@@ -52,12 +65,7 @@ const BarChart = ({
   }, [data]);
 
   const getPolylinePoints = () =>
-    localData
-      .map(
-        (dot, index) =>
-          `${step * index + gridMargin / 2 + padding + step / 2},${convertUnitToPx(dot.y, gridParams) + 20}`
-      )
-      .join(" ");
+    bars.map(bar => `${bar.posX + bar.width / 2},${convertUnitToPx(bar.y, gridParams) + 20}`).join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -125,58 +133,60 @@ const BarChart = ({
 
   return (
     <div className="__prevent-page-break">
-    <svg
-      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
-      width={width + margin.left + margin.right}
-      height={height + margin.top + margin.bottom}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseLeave}
-      onTouchMove={onMouseMove}
-      onTouchEnd={onMouseUp}
-      ref={targetRef}
-    >
-      <g transform={`translate(${margin.left}, ${margin.top})`}>
-        <BarsAxises
-          lines={data}
-          gridParams={gridParams}
-          displayGridlines={displayVerticalLines(showGridlines)}
-          active={active}
-        />
-
-        <HorizontalLines
-          paddingTop={20}
-          gridParams={gridParams}
-          displayGridlines={displayHorizontalLines(showGridlines)}
-        />
-
-        <Bars
-          item={item}
-          saveAnswer={i => saveAnswer(localData, i)}
-          deleteMode={deleteMode}
-          activeIndex={activeIndex}
-          onPointOver={setActive}
-          previewTab={previewTab}
-          bars={localData}
-          view={view}
-          onMouseDown={!disableResponse ? onMouseDown : () => {}}
-          gridParams={gridParams}
-          correct={correct}
-          showAnswer={showAnswer}
-        />
-
-        <ArrowPair getActivePoint={getActivePoint} />
-
-        {gridParams.displayPositionOnHover && (
-          <ValueLabel
-            getActivePoint={getActivePoint}
-            getActivePointValue={getActivePointValue}
-            getActiveFractionFormat={getActiveFractionFormat}
+      <StyledSvg
+        width={width + margin.left + margin.right}
+        height={height + margin.top + margin.bottom}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
+        onTouchMove={onMouseMove}
+        onTouchEnd={onMouseUp}
+        ref={targetRef}
+      >
+        <Line x1={24} y1={height - gridMargin + 25} x2={width} y2={height - gridMargin + 25} strokeWidth={2} />
+        <g transform={`translate(${margin.left}, ${margin.top})`}>
+          <BarsAxises
+            bars={bars}
+            gridParams={gridParams}
+            displayGridlines={displayVerticalLines(showGridlines)}
             active={active}
+            step={step}
           />
-        )}
-      </g>
-    </svg>
+
+          <HorizontalLines
+            paddingTop={20}
+            gridParams={gridParams}
+            displayGridlines={displayHorizontalLines(showGridlines)}
+          />
+
+          <Bars
+            item={item}
+            saveAnswer={i => saveAnswer(localData, i)}
+            deleteMode={deleteMode}
+            activeIndex={activeIndex}
+            onPointOver={setActive}
+            previewTab={previewTab}
+            bars={bars}
+            step={step}
+            view={view}
+            onMouseDown={!disableResponse ? onMouseDown : () => {}}
+            gridParams={gridParams}
+            evaluation={evaluation}
+            showAnswer={showAnswer}
+          />
+
+          <ArrowPair getActivePoint={getActivePoint} />
+
+          {gridParams.displayPositionOnHover && (
+            <ValueLabel
+              getActivePoint={getActivePoint}
+              getActivePointValue={getActivePointValue}
+              getActiveFractionFormat={getActiveFractionFormat}
+              active={active}
+            />
+          )}
+        </g>
+      </StyledSvg>
     </div>
   );
 };
@@ -199,10 +209,9 @@ BarChart.propTypes = {
   deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired,
+  evaluation: PropTypes.array.isRequired,
   toggleBarDragging: PropTypes.func,
-  showAnswer: PropTypes.bool.isRequired,
-  margin: PropTypes.object
+  showAnswer: PropTypes.bool.isRequired
 };
 
 BarChart.defaultProps = {
@@ -212,3 +221,9 @@ BarChart.defaultProps = {
 };
 
 export default withGrid(BarChart);
+
+const StyledSvg = styled.svg`
+  user-select: none;
+  position: relative;
+  z-index: 15;
+`;

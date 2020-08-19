@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
@@ -66,35 +65,6 @@ class ClozeDropDown extends Component {
     };
   };
 
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        const validAnswers = cloneDeep(draft.validation.validResponse.value);
-        validAnswers.map(answer => {
-          answer.value = "";
-          return answer;
-        });
-        draft.validation.altResponses.push({
-          score: 1,
-          value: validAnswers
-        });
-      })
-    );
-  };
-
-  handleRemoveAltResponses = index => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        // eslint-disable-next-line max-len
-        if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.splice(index, 1);
-        }
-      })
-    );
-  };
-
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
     setQuestionData(
@@ -141,6 +111,12 @@ class ClozeDropDown extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                <ChoicesForResponses
+                  responses={responseIds || []}
+                  item={item}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
                 <Question
                   position="unset"
                   section="main"
@@ -158,10 +134,8 @@ class ClozeDropDown extends Component {
                     item={itemForPreview}
                     stimulus={previewStimulus}
                     uiStyle={uiStyle}
-                    onAddAltResponses={this.handleAddAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
                   />
                   <CorrectAnswerOptions>
                     <CheckboxLabel
@@ -174,12 +148,6 @@ class ClozeDropDown extends Component {
                     </CheckboxLabel>
                   </CorrectAnswerOptions>
                 </Question>
-                <ChoicesForResponses
-                  responses={responseIds || []}
-                  item={item}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                />
               </div>
 
               {advancedLink}

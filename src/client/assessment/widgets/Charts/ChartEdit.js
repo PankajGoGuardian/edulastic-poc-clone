@@ -13,6 +13,7 @@ import AxisOptions from "./AxisOption";
 import { getReCalculatedPoints } from "./helpers";
 
 import ComposeQuestion from "./ComposeQuestion";
+import { AnnotationBlock } from "./AnnotationBlock";
 
 const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen }) => {
   const {
@@ -242,6 +243,14 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
         fillSections={fillSections}
         cleanSections={cleanSections}
         item={item}
+        isCorrectAnsTab={currentTab === 0}
+      />
+
+      <AnnotationBlock
+        cleanSections={cleanSections}
+        fillSections={fillSections}
+        item={item}
+        setQuestionData={setQuestionData}
       />
 
       {advancedLink}

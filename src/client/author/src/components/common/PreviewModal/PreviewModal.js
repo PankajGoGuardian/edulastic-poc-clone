@@ -27,8 +27,8 @@ import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPag
 import { getTestSelector, setTestDataAndUpdateAction, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
 import { clearAnswersAction } from "../../../actions/answers";
 import { changePreviewAction, changeViewAction } from "../../../actions/view";
-import { getCollectionsSelector, getUserFeatures, isPublisherUserSelector } from "../../../selectors/user";
-import { allowDuplicateCheck } from "../../../utils/permissionCheck";
+import { getCollectionsSelector, getUserFeatures, getWritableCollectionsSelector } from "../../../selectors/user";
+import { allowDuplicateCheck, allowContentEditCheck } from "../../../utils/permissionCheck";
 import ScoreBlock from "../ScoreBlock";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
 import {
@@ -382,21 +382,20 @@ class PreviewModal extends React.Component {
       testAssignments,
       userRole,
       deleting,
-      isPublisherUser
+      writableCollections
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField, fullModal, isRejectMode } = this.state;
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
-    const { authors = [], rows, data = {} } = item;
+    const { authors = [], rows, data = {} } = item || {};
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
     const isOwner = authors.some(author => author._id === userId);
-
-    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner || isPublisherUser;
-
+    const hasCollectionAccess = allowContentEditCheck(item?.collections, writableCollections);
+    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner;
     const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
     const isPassage = passage && passageTestItems.length;
@@ -410,7 +409,7 @@ class PreviewModal extends React.Component {
     const isDisableEdit = !(
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
-      userFeatures.isCurator
+      (hasCollectionAccess && userFeatures.isCurator)
     );
     const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
@@ -418,6 +417,7 @@ class PreviewModal extends React.Component {
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 0 }}
+        wrapClassName="preview-full-modal"
         isSmallSize={isSmallSize}
         width={isSmallSize || fullModal ? "100%" : "75%"}
         height={isSmallSize || fullModal ? "100%" : null}
@@ -427,6 +427,7 @@ class PreviewModal extends React.Component {
         footer={null}
         centered
         className="noOverFlowModal"
+        fullModal={fullModal}
       >
         {this.navigationBtns()}
         <HeadingWrapper>
@@ -457,16 +458,7 @@ class PreviewModal extends React.Component {
                 {this.isAddOrRemove ? "ADD PASSAGE TO TEST" : "REMOVE FROM TEST"}
               </EduButton>
             ) : (
-              <EduButton
-                isBlue
-                isGhost={!this.isAddOrRemove}
-                height="28px"
-                justifyContent="center"
-                onClick={() => {
-                  this.handleSelection();
-                  this.closeModal();
-                }}
-              >
+              <EduButton isBlue height="28px" justifyContent="center" onClick={this.handleSelection}>
                 {this.isAddOrRemove ? "Add To Test" : "Remove from Test"}
               </EduButton>
             )}
@@ -554,7 +546,7 @@ class PreviewModal extends React.Component {
                 )}
               <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
                 <>
-                  {item.status === "inreview" ? (
+                  {item.status === "inreview" && hasCollectionAccess ? (
                     <RejectButton
                       title="Reject"
                       isGhost
@@ -566,7 +558,7 @@ class PreviewModal extends React.Component {
                       <span>Reject</span>
                     </RejectButton>
                   ) : null}
-                  {item.status === "inreview" || item.status === "rejected" ? (
+                  {(item.status === "inreview" || item.status === "rejected") && hasCollectionAccess ? (
                     <EduButton
                       title="Approve"
                       isGhost
@@ -713,8 +705,8 @@ const enhance = compose(
         test: getTestSelector(state),
         testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state),
-        isPublisherUser: isPublisherUserSelector(state),
-        deleting: getItemDeletingSelector(state)
+        deleting: getItemDeletingSelector(state),
+        writableCollections: getWritableCollectionsSelector(state)
       };
     },
     {
@@ -749,11 +741,12 @@ const ProgressContainer = styled.div`
 
 const PreviewModalWrapper = styled(Modal)`
   height: ${({ isSmallSize }) => (isSmallSize ? "100%" : "auto")};
-  border-radius: 5px;
+  border-radius: ${({ fullModal }) => (fullModal ? "0px" : "5px")};
   background: #f7f7f7;
   top: 30px;
   padding: 0px;
   position: relative;
+  margin: ${({ fullModal }) => (fullModal ? "0px" : "20px auto")};
 
   .ant-modal-content {
     background: transparent;
@@ -832,6 +825,10 @@ export const PlusIcon = styled.div`
 
 const QuestionWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  .report {
+    flex: 0 0 100%;
+  }
 `;
 
 const ModalContentArea = styled.div`

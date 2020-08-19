@@ -19,10 +19,10 @@ const LinePlot = ({
   saveAnswer,
   gridParams,
   view,
-  correct,
   disableResponse,
   toggleBarDragging,
-  deleteMode
+  deleteMode,
+  evaluation
 }) => {
   const { width, height, margin } = gridParams;
 
@@ -120,7 +120,7 @@ const LinePlot = ({
       onTouchEnd={onMouseUp}
       ref={targetRef}
     >
-      <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
+      <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={2} />
 
       <Crosses
         item={item}
@@ -133,7 +133,7 @@ const LinePlot = ({
         view={view}
         onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
-        correct={correct}
+        evaluation={evaluation}
       />
 
       <ArrowPair getActivePoint={getActivePoint} />
@@ -162,7 +162,7 @@ LinePlot.propTypes = {
   deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired,
+  evaluation: PropTypes.object.isRequired,
   toggleBarDragging: PropTypes.func
 };
 

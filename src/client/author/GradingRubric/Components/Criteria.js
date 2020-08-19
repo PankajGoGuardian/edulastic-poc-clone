@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Icon } from "antd";
 import { v4 } from "uuid";
 import produce from "immer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClone, faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   CriteriaContainer,
   CriteriaDetails,
   AddRatingSection,
   RatingSection,
-  DuplicateCriteria,
   DeleteCriteria,
   CiteriaActionsContainer,
   CriteriaHeader,
@@ -18,18 +18,16 @@ import {
 import Rating from "./Rating";
 import TextInput from "./common/TextInput";
 import { updateRubricDataAction, getCurrentRubricDataSelector } from "../ducks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClone, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CustomStyleBtn } from "../../../assessment/styled/ButtonStyles";
 
-const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, className }) => {
+const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable }) => {
   let scrollBarRef;
   let intervalId = null;
   const generateRatingData = index => ({
     name: `Rating ${index}`,
     desc: "",
     id: v4(),
-    points: ""
+    points: 0
   });
 
   const getRatings = () =>
@@ -44,6 +42,23 @@ const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, c
       />
     ));
 
+  const scrollToRight = () => {
+    let diff =
+      scrollBarRef._container.scrollWidth - scrollBarRef._container.clientWidth - scrollBarRef._container.scrollLeft;
+    if (diff) {
+      const incrementValue = diff / 40;
+      intervalId = setInterval(() => {
+        if (diff > 0 && scrollBarRef) {
+          diff -= incrementValue;
+          if (diff <= 0)
+            scrollBarRef._container.scrollLeft =
+              scrollBarRef._container.scrollWidth - scrollBarRef._container.clientWidth;
+          else scrollBarRef._container.scrollLeft += incrementValue;
+        } else clearInterval(intervalId);
+      }, 20);
+    }
+  };
+
   useEffect(() => {
     if (intervalId) {
       clearInterval(intervalId);
@@ -52,31 +67,12 @@ const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, c
     scrollToRight();
   }, [data.ratings.length]);
 
-  useEffect(() => {
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
-      }
-    };
-  });
-
-  const scrollToRight = () => {
-    let diff =
-      scrollBarRef._container.scrollWidth - scrollBarRef._container.clientWidth - scrollBarRef._container.scrollLeft;
-    if (diff) {
-      let incrementValue = diff / 40;
-      intervalId = setInterval(() => {
-        if (diff > 0 && scrollBarRef) {
-          diff = diff - incrementValue;
-          if (diff <= 0)
-            scrollBarRef._container.scrollLeft =
-              scrollBarRef._container.scrollWidth - scrollBarRef._container.clientWidth;
-          else scrollBarRef._container.scrollLeft = scrollBarRef._container.scrollLeft + incrementValue;
-        } else clearInterval(intervalId);
-      }, 20);
+  useEffect(() => () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
     }
-  };
+  });
 
   const handleAddRating = () => {
     const clonedRubricData = produce(currentRubricData, draft => {

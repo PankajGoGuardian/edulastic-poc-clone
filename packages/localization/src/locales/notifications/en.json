@@ -11,12 +11,24 @@
     "message": "Image size should be less than 2MB",
     "description": ""
   },
+  "videoSizeError": {
+    "message": "Video size should be less than 25MB",
+    "description": ""
+  },
   "imageUploadErr": {
     "message": "image upload failed",
     "description": ""
   },
+  "videoUploadErr": {
+    "message": "Video upload failed",
+    "description": ""
+  },
   "imageLoadErr": {
     "message": "image upload failed",
+    "description": ""
+  },
+  "videoLoadErr": {
+    "message": "Video upload failed",
     "description": ""
   },
   "selectionError": {
@@ -90,6 +102,10 @@
   "inValiedCleverId": {
     "message": "Uploading failed",
     "description": "Please enter valid Clever ID"
+  },
+  "invalidClasslinkId": {
+    "message": "Uploading failed",
+    "description": "Please enter valid Classlink ID"
   },
   "userNotFound": {
     "message": "No Records Found",
@@ -411,6 +427,10 @@
     "message": "Playlist dropped successfully",
     "description": ""
   },
+  "PlaylistAssignedSuccessfully": {
+    "message": "Module successfully assigned",
+    "description": ""
+  },
   "enterValidPassword": {
     "message": "Please add a valid password.",
     "description": ""
@@ -536,7 +556,7 @@
     "description": ""
   },
   "presentationMode": {
-    "message": "  Presentation mode is ON. You can present assessment data without revealing student identity.",
+    "message": "  Presentation mode is ON. You can present assignment data without revealing student identity.",
     "description": ""
   },
   "SelectTwoOrMoreStudents": {
@@ -1076,11 +1096,11 @@
     "description": ""
   },
   "someErrorOccuredDuringProxying": {
-    "message": "some error occured during proxying",
+    "message": "Some error occured during proxying",
     "description": ""
   },
   "someErrorOccuredDuringSwicthingRole": {
-    "message": "some error occured during switching role",
+    "message": "Some error occured during switching role",
     "description": ""
   },
   "ErrorOccuredSwicthingRole": {
@@ -1721,6 +1741,10 @@
   },
   "cleverLoginFailed": {
     "message": "Clever Login failed",
+    "description": ""
+  },
+  "classlinkLoginFailed": {
+    "message": "Classlink Login failed",
     "description": ""
   },
   "failedToFetchUserData": {

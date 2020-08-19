@@ -1,4 +1,4 @@
-import { greyThemeDark2, greyThemeLight, greyThemeLighter, themeColor } from "@edulastic/colors";
+import { greyThemeDark2, greyThemeLight, greyThemeLighter, themeColor, themeColorBlue } from "@edulastic/colors";
 import { DatePicker, Input, InputNumber, Select } from "antd";
 import React from "react";
 import styled from "styled-components";
@@ -24,29 +24,47 @@ export const FieldLabel = styled.label`
 `;
 
 const inputCommonStyle = {
-  backgroundColor: greyThemeLighter,
-  border: props => (props.noBorder ? "0px" : `1px solid ${greyThemeLight} !important`),
+  backgroundColor: props => props.bg || greyThemeLighter,
+  border: props => (props.noBorder ? "0px" : `1px solid ${greyThemeLight}`),
   color: "#6a737f",
   fontSize: props => props.fontSize || "13px",
   width: props => props.width || "100%",
-  height: props => props.height || "40px",
+  height: props => props.height || "32px",
   margin: props => props.margin || "0px",
-  minHeight: props => props.height || "40px !important",
-  padding: "0 15px",
+  minHeight: props => props.height || "32px",
+  padding: props => props.padding || "0px 15px",
+  paddingRight: props => props.pr || "",
   borderRadius: "2px",
   fontWeight: "600",
   lineHeight: "1.38",
   outline: "0"
 };
 
-export const TextInputStyled = styled(props => <Input maxLength={128} {...props} />)`
+export const SearchInputStyled = styled(Input.Search)`
+  &.ant-input-search {
+    .ant-input {
+      ${inputCommonStyle};
+      ${props => props.style};
+      color: ${({ theme }) => theme.questionTextColor};
+      &:focus,
+      &:hover {
+        border: 1px solid ${themeColorBlue} !important;
+        background-color: ${greyThemeLighter};
+        box-shadow: none;
+      }
+    }
+  }
+`;
+
+export const TextInputStyled = styled(props => <Input maxLength={128} {...props} ref={props.inputRef} />)`
   &.ant-input {
+    text-align: ${props => props.align || "left"};
     ${inputCommonStyle};
     ${props => props.style};
     color: ${({ theme }) => theme.questionTextColor};
     &:focus,
     &:hover {
-      border: 1px solid ${greyThemeLight};
+      border: 1px solid ${themeColorBlue} !important;
       background-color: ${greyThemeLighter};
       box-shadow: none;
     }
@@ -59,22 +77,28 @@ export const TextInputStyled = styled(props => <Input maxLength={128} {...props}
       color: ${({ theme }) => theme.questionTextColor};
       &:focus,
       &:hover {
-        border: 1px solid ${greyThemeLight};
+        border: 1px solid ${themeColorBlue} !important;
         background-color: ${greyThemeLighter};
         box-shadow: none;
       }
     }
   }
+  &::placeholder {
+    text-align: ${props => props.placeHolderAlign};
+  }
+  &:focus::placeholder {
+    color: transparent;
+  }
 `;
 
-export const TextAreaInputStyled = styled(props => <Input.TextArea maxLength="2048" {...props} />)`
+export const TextAreaInputStyled = styled(props => <Input.TextArea maxLength="2048" {...props} ref={props.inputRef} />)`
   &.ant-input {
     ${inputCommonStyle};
     padding: 15px;
     ${props => props.style};
     &:focus,
     &:hover {
-      border: 1px solid ${greyThemeLight};
+      border: 1px solid ${themeColorBlue} !important;
       background-color: ${greyThemeLighter};
       box-shadow: none;
     }
@@ -86,13 +110,11 @@ export const NumberInputStyled = styled(InputNumber)`
     ${inputCommonStyle};
     ${props => props.style};
     &:focus,
-    &:hover {
-      border: 1px solid ${greyThemeLight};
-      background-color: ${greyThemeLighter};
+    &:hover,
+    &:active {
+      border: 1px solid ${themeColorBlue} !important;
+      background-color: ${props => props.bg || greyThemeLighter};
       box-shadow: none;
-    }
-    .ant-input-number-input {
-      height: 38px;
     }
   }
 `;
@@ -102,10 +124,11 @@ export const DatePickerStyled = styled(DatePicker)`
     ${inputCommonStyle};
     ${props => props.style};
     &:focus,
-    &:hover {
-      border: 1px solid ${greyThemeLight};
-      background-color: ${greyThemeLighter};
-      box-shadow: none;
+    &:hover,
+    &:active {
+      border: 1px solid ${themeColorBlue} !important;
+      background-color: ${props => props.bg || greyThemeLighter};
+      box-shadow: none !important;
     }
   }
   .ant-calendar-picker-icon {
@@ -117,6 +140,7 @@ export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${props => props.width || "100%"};
     margin: ${props => props.margin || "0px"};
+    min-width: ${({ minWidth }) => minWidth || ""};
     &.ant-select-disabled {
       .ant-select-selection {
         background-color: ${props => props.bg || greyThemeLighter};
@@ -125,6 +149,8 @@ export const SelectInputStyled = styled(Select)`
     }
     &.ant-select-open {
       .ant-select-selection {
+        border-color: ${themeColorBlue};
+        box-shadow: none;
         &.ant-select-selection--multiple {
           &:after {
             top: 18px;
@@ -134,34 +160,43 @@ export const SelectInputStyled = styled(Select)`
         }
       }
     }
+    &.ant-select-focused {
+      .ant-select-selection {
+        border-color: ${themeColorBlue};
+        box-shadow: none;
+      }
+    }
+    &.ant-select-enabled {
+      .ant-select-selection {
+        &:focus,
+        &:hover {
+          border: ${props => (props.noBorder ? "none" : `1px solid ${themeColorBlue}`)};
+          background-color: ${props => props.bg || greyThemeLighter};
+          box-shadow: none;
+        }
+      }
+    }
     .ant-select-selection {
       display: flex;
       align-items: center;
       justify-content: flex-start;
       background-color: ${props => props.bg || greyThemeLighter};
-      border: 1px solid ${greyThemeLight};
+      border: ${props => (props.noBorder ? "none" : `1px solid ${greyThemeLight}`)};
       color: #6a737f;
       font-size: ${props => props.fontSize || "13px"};
       width: ${props => props.width || "100%"};
       height: ${props => props.height || "100%"};
-      min-height: ${props => props.height || "40px"};
+      min-height: ${props => props.height || "32px"};
       padding: ${props => props.padding || "0px"};
       border-radius: 2px;
       font-weight: 600;
       line-height: 1.38;
       outline: 0;
-
-      &:focus,
-      &:hover {
-        border: 1px solid ${greyThemeLight};
-        background-color: ${props => props.bg || greyThemeLighter};
-        box-shadow: none;
-      }
       &.ant-select-selection--single {
         .ant-select-selection__rendered {
           width: 100%;
-          padding: 0px 30px 0px 15px;
-          line-height: ${props => props.height || "38px"};
+          padding: ${props => (props.noBorder ? "0px" : "0px 30px 0px 15px")};
+          line-height: ${props => props.height || "32px"};
           margin: 0px;
           .ant-select-selection-selected-value {
             padding: 0px;
@@ -173,10 +208,11 @@ export const SelectInputStyled = styled(Select)`
       }
       &.ant-select-selection--multiple {
         padding-right: 25px;
-       .ant-select-arrow {
-         position:absolute;
-         top:20px;
-       }
+        .ant-select-arrow {
+          font-size: ${props => props.arrowFontSize || "14px"};
+          position: absolute;
+          top: 20px;
+        }
         .ant-select-selection__rendered {
           width: 100%;
           height: auto;
@@ -227,7 +263,7 @@ export const SelectInputStyled = styled(Select)`
         }
       }
       .ant-select-arrow-icon {
-        font-size: 14px;
+        font-size: ${props => props.arrowFontSize || "14px"};
         svg {
           fill: ${themeColor};
         }

@@ -153,7 +153,7 @@ class TestItemCol extends Component {
 
     return (
       <Container
-        className={`test-item-col ${col.tabs.length ? "test-item-tab-container" : ""}`}
+        className={`test-item-col ${col?.tabs?.length ? "test-item-tab-container" : ""}`}
         value={value}
         style={style}
         width={width}

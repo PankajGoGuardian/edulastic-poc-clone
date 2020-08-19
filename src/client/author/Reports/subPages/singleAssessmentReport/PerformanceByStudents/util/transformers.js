@@ -192,7 +192,7 @@ export const getSorter = (columnType, columnKey) => {
 // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
 const getBreadCrumb = (location, pageTitle) => [
   {
-    title: "REPORTS",
+    title: "INSIGHTS",
     to: "/author/reports"
   },
   {
@@ -291,14 +291,25 @@ export const getColumns = (columns, assessmentName, role, location, pageTitle, t
   const anonymousString = t("common.anonymous");
 
   return next(filteredColumns, columnsDraft => {
-    columnsDraft[1].render = (data, record) =>
-      record.totalScore || record.totalScore === 0 ? (
-        <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
+    columnsDraft[1].render = (data, record) => {
+      const { pathname, search } = window.location;
+      return record.totalScore || record.totalScore === 0 ? (
+        <Link
+          to={{
+            pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
+              record.testActivityId
+            }`,
+            state: {
+              from: `${pathname}${search}`
+            }
+          }}
+        >
           {data || anonymousString}
         </Link>
       ) : (
         data || anonymousString
       );
+    };
 
     // column 5 defined assessmentScore
     columnsDraft[5].render = (data, record) => {

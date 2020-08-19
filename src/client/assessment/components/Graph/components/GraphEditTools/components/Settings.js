@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep, isEqual } from "lodash";
+import { cloneDeep, isEqual, isNaN } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox } from "@edulastic/common";
 import { secondaryTextColor } from "@edulastic/colors";
 
-import { Input } from "../styled/Input";
 import { Row } from "../styled/Row";
 import { Separator } from "../styled/Separator";
 import { MinMaxSeparator } from "../styled/MinMaxSeparator";
@@ -17,6 +15,7 @@ import { IconWrapper } from "../styled/IconWrapper";
 import { Label } from "../styled/Label";
 import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
 import { TextInputStyled } from "../../../../../styled/InputStyles";
+import { calcDistance } from "../../../common/utils";
 
 class Settings extends Component {
   constructor(props) {
@@ -60,6 +59,8 @@ class Settings extends Component {
       yMaxArrow,
       yMinArrow
     };
+
+    this.reg = new RegExp("^[-.0-9]+$");
   }
 
   componentDidUpdate(prevProps) {
@@ -140,7 +141,9 @@ class Settings extends Component {
       yMaxArrow,
       yMinArrow
     } = this.state;
-
+    if (isNaN(parseFloat(xMin)) || isNaN(parseFloat(xMax)) || isNaN(parseFloat(yMin)) || isNaN(parseFloat(yMax))) {
+      return;
+    }
     const newGraphData = cloneDeep(graphData);
 
     newGraphData.canvas = { ...newGraphData.canvas, xMax, xMin, yMax, yMin };
@@ -197,6 +200,39 @@ class Settings extends Component {
       return;
     }
 
+    this.timer = setTimeout(() => {
+      this.saveData();
+      clearTimeout(this.timer);
+    }, 600);
+  };
+
+  handleMinMaxChange = (name, e) => {
+    const { value } = e.target;
+    if (!this.reg.test(value) && value !== "") {
+      return;
+    }
+    const { xMin, xMax, yMin, yMax } = this.state;
+    let { xDistance, yDistance } = this.state;
+    if (name === "xMin") {
+      xDistance = calcDistance(value, xMax);
+    }
+    if (name === "xMax") {
+      xDistance = calcDistance(xMin, value);
+    }
+    if (name === "yMin") {
+      yDistance = calcDistance(value, yMax);
+    }
+    if (name === "yMax") {
+      yDistance = calcDistance(yMin, value);
+    }
+    if (isNaN(xDistance)) {
+      xDistance = 1;
+    }
+    if (isNaN(yDistance)) {
+      yDistance = 1;
+    }
+
+    this.setState({ [name]: value, xDistance, yDistance });
     this.timer = setTimeout(() => {
       this.saveData();
       clearTimeout(this.timer);
@@ -280,26 +316,26 @@ class Settings extends Component {
         </Row>
         <Row style={{ marginBottom: "20px" }}>
           <TextInputStyled
-            type="number"
+            type="text"
             width="60px"
             height="30px"
             name="xMin"
             value={xMin}
             placeholder={t("component.graphing.settingsPopup.min")}
-            onChange={e => this.handleInputChange("xMin", e)}
+            onChange={e => this.handleMinMaxChange("xMin", e)}
           />
-          <MinMaxSeparator>x</MinMaxSeparator>
+          <MinMaxSeparator>-</MinMaxSeparator>
           <TextInputStyled
-            type="number"
+            type="text"
             width="60px"
             height="30px"
             name="xMax"
             value={xMax}
             placeholder={t("component.graphing.settingsPopup.max")}
-            onChange={e => this.handleInputChange("xMax", e)}
+            onChange={e => this.handleMinMaxChange("xMax", e)}
           />
           <TextInputStyled
-            type="number"
+            type="text"
             width="92px"
             height="30px"
             margin="0px 0px 0px 18px"
@@ -330,26 +366,26 @@ class Settings extends Component {
         </Row>
         <Row>
           <TextInputStyled
-            type="number"
+            type="text"
             width="60px"
             height="30px"
             name="yMin"
             value={yMin}
             placeholder={t("component.graphing.settingsPopup.min")}
-            onChange={e => this.handleInputChange("yMin", e)}
+            onChange={e => this.handleMinMaxChange("yMin", e)}
           />
-          <MinMaxSeparator>x</MinMaxSeparator>
+          <MinMaxSeparator>-</MinMaxSeparator>
           <TextInputStyled
-            type="number"
+            type="text"
             width="60px"
             height="30px"
             name="yMax"
             value={yMax}
             placeholder={t("component.graphing.settingsPopup.max")}
-            onChange={e => this.handleInputChange("yMax", e)}
+            onChange={e => this.handleMinMaxChange("yMax", e)}
           />
           <TextInputStyled
-            type="number"
+            type="text"
             width="92px"
             height="30px"
             margin="0px 0px 0px 18px"

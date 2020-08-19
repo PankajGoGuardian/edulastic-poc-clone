@@ -1,30 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { Input, Select, Row, Col } from "antd";
+import { Select, Row } from "antd";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 
-import { Subtitle } from "../../../styled/Subtitle";
 import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { FormGroup } from "../../../containers/WidgetOptions/styled/FormGroup";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
-const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme, title }) => (
-  <Row gutter={64}>
+const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, isCorrectAnsTab = true }) => (
+  <Row gutter={24} type="flex" wrap="wrap" mb="0">
     <Col span={12}>
-      <Subtitle
-        id={getFormattedAttrId(`${title}-${t("component.shortText.selectLabel")}`)}
-        fontSize={theme.widgets.shortText.subtitleFontSize}
-        color={theme.widgets.shortText.subtitleColor}
-      >
-        {t("component.shortText.selectLabel")}
-      </Subtitle>
+      <Label>{t("component.shortText.selectLabel")}</Label>
       <SelectInputStyled
         size="large"
         value={selectValue}
         onChange={onSelectChange}
         getPopupContainer={triggerNode => triggerNode.parentNode}
+        disabled={!isCorrectAnsTab}
       >
         {options.map((item, i) => (
           <Select.Option key={i} value={item.value}>
@@ -34,14 +29,10 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
       </SelectInputStyled>
     </Col>
     <Col span={12}>
-      <Subtitle
-        id={getFormattedAttrId(`${title}-${t("component.shortText.inputLabel")}`)}
-        fontSize={theme.widgets.shortText.subtitleFontSize}
-        color={theme.widgets.shortText.subtitleColor}
-      >
-        {t("component.shortText.inputLabel")}
-      </Subtitle>
-      <TextInputStyled size="large" value={inputValue} onChange={e => onChange(e.target.value)} />
+      <Label>{t("component.shortText.inputLabel")}</Label>
+      <FormGroup center>
+        <TextInputStyled size="large" value={inputValue} onChange={e => onChange(e.target.value)} />
+      </FormGroup>
     </Col>
   </Row>
 );
@@ -52,13 +43,9 @@ CorrectAnswer.propTypes = {
   options: PropTypes.array.isRequired,
   selectValue: PropTypes.string.isRequired,
   inputValue: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired
+  t: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
+const enhance = compose(withNamespaces("assessment"));
 
 export default enhance(CorrectAnswer);

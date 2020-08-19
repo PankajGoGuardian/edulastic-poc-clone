@@ -2,7 +2,7 @@ import JXG from "jsxgraph";
 import striptags from "striptags";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import { convertNumberToFraction } from "../../../utils/helpers";
-import { CONSTANT } from "./config";
+import { CONSTANT, Colors } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
 import { Area, EditButton } from "./elements";
 import rayConfig from "./elements/Ray";
@@ -328,8 +328,8 @@ export function updateAxe(line, parameters, axe) {
   }
   if ("minArrow" in parameters || "maxArrow" in parameters) {
     line.setArrow(
-      parameters.minArrow === true ? { size: 8 } : false,
-      parameters.maxArrow === true ? { size: 8 } : false
+      parameters.minArrow === true ? { size: parameters.arrowSize || 8 } : false,
+      parameters.maxArrow === true ? { size: parameters.arrowSize || 8 } : false
     );
   }
   line.ticks[0].generateLabelText = tickLabel(axe, parameters.commaInLabel, parameters.drawZero);
@@ -421,7 +421,15 @@ export function flat2nestedConfig(config) {
   return config && config.length
     ? Object.values(
         config.reduce((acc, element) => {
-          const { id, type, subElement = false, text = null, dashed = false, customOptions = {} } = element;
+          const {
+            id,
+            type,
+            subElement = false,
+            text = null,
+            dashed = false,
+            customOptions = {},
+            dimensions = {}
+          } = element;
 
           if (type === CONSTANT.TOOLS.EQUATION) {
             acc[id] = element;
@@ -448,6 +456,9 @@ export function flat2nestedConfig(config) {
                 acc[id].pointIsVisible = element.pointIsVisible;
                 acc[id].labelIsVisible = element.labelIsVisible;
                 acc[id].baseColor = element.baseColor;
+              }
+              if (type === CONSTANT.TOOLS.DRAG_DROP) {
+                acc[id].dimensions = dimensions;
               }
             } else {
               acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
@@ -553,11 +564,10 @@ export function getAvailablePositions(board, element, isStacked) {
   return result;
 }
 
-export const getEquationFromApiLatex = apiLatex => {
+export const getEquationFromApiLatex = apiLatex =>
   // NOTE: object.apiLatex should be a string such that -
   // "[-x+y-2=0],[['line',[(0,2),(1,3)]]]" >> transforms to >> "-x+y-2=0"
-  return apiLatex.split("],[")[0].replace("[", "");
-};
+  apiLatex.split("],[")[0].replace("[", "");
 
 export function fixApiLatex(latex) {
   let splitExpr = latex.split("<=");
@@ -737,9 +747,9 @@ export function isInPolygon(testPoint, vertices) {
 export const getLabel = elements => {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-  for (var i = 0; i < alphabet.length; i++) {
-    var match = false;
-    for (var k = 0; k < elements.length; k++) {
+  for (let i = 0; i < alphabet.length; i++) {
+    let match = false;
+    for (let k = 0; k < elements.length; k++) {
       if (elements[k] == alphabet[i]) {
         match = true;
       }
@@ -835,7 +845,12 @@ export const toFractionHTML = (value, fractionsFormat) => {
 
   const space = main.length > 0 && fracs.length > 0 ? "&nbsp;" : "";
 
-  return `<span>${main}${space}${fracs}</span>`;
+  const labelStyle = Object.keys(Colors.tickLabel).reduce(
+    (acc, curr) => `${acc}${curr}:${Colors.tickLabel[curr]};`,
+    ""
+  );
+
+  return `<span style="${labelStyle}">${main}${space}${fracs}</span>`;
 };
 
 /*

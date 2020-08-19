@@ -259,7 +259,8 @@ class ClassHeader extends Component {
       userId,
       assignedById,
       windowWidth,
-      canvasAllowedInstitutions
+      canvasAllowedInstitutions,
+      isCliUser
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -273,7 +274,8 @@ class ClassHeader extends Component {
       canCloseClass,
       dueDate,
       assignedBy = {},
-      answerOnPaper
+      answerOnPaper,
+      classes = []
     } = additionalData;
     const dueOn = dueDate || endDate;
     const dueOnDate = Number.isNaN(dueOn) ? new Date(dueOn) : new Date(parseInt(dueOn, 10));
@@ -294,6 +296,7 @@ class ClassHeader extends Component {
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
 
     const isSmallDesktop = windowWidth <= parseInt(smallDesktopWidth, 10);
+    const loading = classes[0]?._id !== classId;
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -404,176 +407,190 @@ class ClassHeader extends Component {
         ))}
       </ClassDropMenu>
     );
-
     return (
-      <MainHeader>
+      <MainHeader hideSideMenu={isCliUser}>
         <TitleWrapper titleMinWidth="unset" titleMaxWidth="22rem">
-          <div>
-            {classesList.length > 1 ? (
-              <Dropdown
-                overlay={classListMenu}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-                placement="bottomLeft"
-              >
+          {loading ? (
+            "loading..."
+          ) : (
+            <div>
+              {classesList.length > 1 ? (
+                <Dropdown
+                  overlay={classListMenu}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  placement="bottomLeft"
+                >
+                  <div style={{ position: "relative" }}>
+                    <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className}>
+                      {additionalData.className}
+                    </StyledParaFirst>
+                    <DownArrow type="down" />
+                  </div>
+                </Dropdown>
+              ) : (
                 <div style={{ position: "relative" }}>
-                  <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
-                    {additionalData.className || "loading..."}
+                  <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className}>
+                    {additionalData.className}
                   </StyledParaFirst>
-                  <DownArrow type="down" />
                 </div>
-              </Dropdown>
-            ) : (
-              <div style={{ position: "relative" }}>
-                <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
-                  {additionalData.className || "loading..."}
-                </StyledParaFirst>
-              </div>
-            )}
-            <StyledParaSecond data-cy="assignmentStatusForDisplay">
-              {assignmentStatusForDisplay}
-              {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
-              <div>{!!(dueDate || endDate) && `(Due on ${moment(dueOnDate).format("MMM DD, YYYY")})`}</div>
-            </StyledParaSecond>
-          </div>
+              )}
+              <StyledParaSecond data-cy="assignmentStatusForDisplay">
+                {assignmentStatusForDisplay}
+                {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
+                <div>{!!(dueDate || endDate) && `(Due on ${moment(dueOnDate).format("MMM DD, YYYY")})`}</div>
+              </StyledParaSecond>
+            </div>
+          )}
         </TitleWrapper>
-        <HeaderMidContainer>
-          <StyledTabs>
-            <HeaderTabs
-              to={`/author/classboard/${assignmentId}/${classId}`}
-              dataCy="LiveClassBoard"
-              isActive={active === "classboard"}
-              icon={<IconDeskTopMonitor left={0} />}
-              linkLabel={t("common.liveClassBoard")}
-            />
-            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
-              <WithDisableMessage
-                disabled={hasRandomQuestions || !isItemsVisible}
-                errMessage={
-                  hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
-                }
-              >
+        {!isCliUser && (
+          <>
+            <HeaderMidContainer>
+              <StyledTabs>
                 <HeaderTabs
-                  to={`/author/expressgrader/${assignmentId}/${classId}`}
-                  disabled={!isItemsVisible || hasRandomQuestions}
-                  dataCy="Expressgrader"
-                  isActive={active === "expressgrader"}
-                  icon={<IconBookMarkButton left={0} />}
-                  linkLabel={t("common.expressGrader")}
+                  to={`/author/classboard/${assignmentId}/${classId}`}
+                  dataCy="LiveClassBoard"
+                  isActive={active === "classboard"}
+                  icon={<IconDeskTopMonitor left={0} />}
+                  linkLabel={t("common.liveClassBoard")}
                 />
-              </WithDisableMessage>
-            </FeaturesSwitch>
+                <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
+                  <WithDisableMessage
+                    disabled={hasRandomQuestions || !isItemsVisible}
+                    errMessage={
+                      hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
+                    }
+                  >
+                    <HeaderTabs
+                      to={`/author/expressgrader/${assignmentId}/${classId}`}
+                      disabled={!isItemsVisible || hasRandomQuestions}
+                      dataCy="Expressgrader"
+                      isActive={active === "expressgrader"}
+                      icon={<IconBookMarkButton left={0} />}
+                      linkLabel={t("common.expressGrader")}
+                    />
+                  </WithDisableMessage>
+                </FeaturesSwitch>
 
-            <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
-              <HeaderTabs
-                to={`/author/standardsBasedReport/${assignmentId}/${classId}`}
-                disabled={!isItemsVisible}
-                dataCy="StandardsBasedReport"
-                isActive={active === "standard_report"}
-                icon={<IconNotes left={0} />}
-                linkLabel={t("common.standardBasedReports")}
-              />
-            </WithDisableMessage>
-            {showSettingTab && (
-              <HeaderTabs
-                to={`/author/lcb/settings/${assignmentId}/${classId}`}
-                dataCy="LCBAssignmentSettings"
-                isActive={active === "settings"}
-                icon={<IconSettings left={0} />}
-                linkLabel={t("common.settings")}
-              />
-            )}
-          </StyledTabs>
-        </HeaderMidContainer>
-        <RightSideButtonWrapper>
-          {!isSmallDesktop && renderOpenClose}
-          <Dropdown
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-            overlay={actionsMenu}
-            placement="bottomRight"
-          >
-            <EduButton isBlue data-cy="headerDropDown" IconBtn>
-              <FontAwesomeIcon icon={faEllipsisV} />
-            </EduButton>
-          </Dropdown>
-          <StyledDiv>
-            <StyledPopconfirm
-              visible={visible}
-              onVisibleChange={this.handleVisibleChange}
-              onConfirm={this.confirm}
-              onCancel={this.cancel}
-              okText="Yes"
-              cancelText="No"
-            />
-            <ReleaseScoreSettingsModal
-              showReleaseGradeSettings={isShowReleaseSettingsPopup}
-              onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
-              updateReleaseScoreSettings={this.handleReleaseScore}
-              releaseScore={releaseScore}
-            />
-            <DeleteAssignmentModal
-              testName={additionalData?.testName}
-              testId={additionalData?.testId}
-              assignmentId={assignmentId}
-              classId={classId}
-              lcb
-            />
-            {isShowStudentReportCardSettingPopup && (
-              <StudentReportCardMenuModal
-                title="Student Report Card"
-                visible={isShowStudentReportCardSettingPopup}
-                onCancel={() => toggleStudentReportCardPopUp(false)}
-                groupId={classId}
-                assignmentId={assignmentId}
-              />
-            )}
-            {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
-            {isViewPassword && <ViewPasswordModal />}
-            <ConfirmationModal
-              title="Pause"
-              show={isPauseModalVisible}
-              onOk={() => this.handlePauseAssignment(!isPaused)}
-              onCancel={() => this.togglePauseModal(false)}
-              inputVal={modalInputVal}
-              onInputChange={this.handleValidateInput}
-              expectedVal="PAUSE"
-              canUndone
-              bodyText={`Are you sure you want to pause? Once paused, 
-              no student would be able to answer the test unless you
-                resume it.`}
-              okText="Yes, Pause"
-              cancelText="No, Cancel"
-            />
-            <ConfirmationModal
-              title="Close"
-              show={isCloseModalVisible}
-              onOk={this.handleCloseAssignment}
-              onCancel={() => this.toggleCloseModal(false)}
-              inputVal={modalInputVal}
-              onInputChange={this.handleValidateInput}
-              expectedVal="CLOSE"
-              bodyText={
-                <div>
-                  <StudentStatusDetails>
-                    {notStartedStudents.length ? (
-                      <p>{notStartedStudents.length} student(s) have not yet started</p>
-                    ) : (
-                      ""
-                    )}
-                    {inProgressStudents.length ? (
-                      <p>{inProgressStudents.length} student(s) have not yet submitted</p>
-                    ) : (
-                      ""
-                    )}
-                  </StudentStatusDetails>
-                  <p>Are you sure you want to close ?</p>
-                  <p>Once closed, no student would be able to answer the assessment</p>
-                </div>
-              }
-              okText="Yes, Close"
-              canUndone
-            />
-          </StyledDiv>
-        </RightSideButtonWrapper>
+                <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+                  <HeaderTabs
+                    to={`/author/standardsBasedReport/${assignmentId}/${classId}`}
+                    disabled={!isItemsVisible}
+                    dataCy="StandardsBasedReport"
+                    isActive={active === "standard_report"}
+                    icon={<IconNotes left={0} />}
+                    linkLabel={t("common.standardBasedReports")}
+                  />
+                </WithDisableMessage>
+                {showSettingTab && (
+                  <HeaderTabs
+                    to={`/author/lcb/settings/${assignmentId}/${classId}`}
+                    dataCy="LCBAssignmentSettings"
+                    isActive={active === "settings"}
+                    icon={<IconSettings left={0} />}
+                    linkLabel={t("common.settings")}
+                  />
+                )}
+              </StyledTabs>
+            </HeaderMidContainer>
+            <RightSideButtonWrapper>
+              {!isSmallDesktop && renderOpenClose}
+              <Dropdown
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                overlay={actionsMenu}
+                placement="bottomRight"
+              >
+                <EduButton isBlue data-cy="headerDropDown" IconBtn>
+                  <FontAwesomeIcon icon={faEllipsisV} />
+                </EduButton>
+              </Dropdown>
+              <StyledDiv>
+                <StyledPopconfirm
+                  visible={visible}
+                  onVisibleChange={this.handleVisibleChange}
+                  onConfirm={this.confirm}
+                  onCancel={this.cancel}
+                  okText="Yes"
+                  cancelText="No"
+                />
+                <ReleaseScoreSettingsModal
+                  showReleaseGradeSettings={isShowReleaseSettingsPopup}
+                  onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
+                  updateReleaseScoreSettings={this.handleReleaseScore}
+                  releaseScore={releaseScore}
+                />
+                <DeleteAssignmentModal
+                  testName={additionalData?.testName}
+                  testId={additionalData?.testId}
+                  assignmentId={assignmentId}
+                  classId={classId}
+                  lcb
+                />
+                {isShowStudentReportCardSettingPopup && (
+                  <StudentReportCardMenuModal
+                    title="Student Report Card"
+                    visible={isShowStudentReportCardSettingPopup}
+                    onCancel={() => toggleStudentReportCardPopUp(false)}
+                    groupId={classId}
+                    assignmentId={assignmentId}
+                  />
+                )}
+                {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
+                {isViewPassword && <ViewPasswordModal />}
+                <ConfirmationModal
+                  title="Pause"
+                  show={isPauseModalVisible}
+                  onOk={() => this.handlePauseAssignment(!isPaused)}
+                  onCancel={() => this.togglePauseModal(false)}
+                  inputVal={modalInputVal}
+                  placeHolder="Type the action"
+                  onInputChange={this.handleValidateInput}
+                  expectedVal="PAUSE"
+                  canUndone
+                  bodyText={
+                    <div>
+                      Are you sure you want to pause? 
+                      Once paused,no student would be able to answer the test 
+                      unless you resume it.
+                    </div>
+                  }
+                  okText="Yes, Pause"
+                  cancelText="No, Cancel"
+                />
+                <ConfirmationModal
+                  title="Close"
+                  show={isCloseModalVisible}
+                  onOk={this.handleCloseAssignment}
+                  onCancel={() => this.toggleCloseModal(false)}
+                  inputVal={modalInputVal}
+                  placeHolder="Type the action"
+                  onInputChange={this.handleValidateInput}
+                  expectedVal="CLOSE"
+                  bodyText={
+                    <div>
+                      <StudentStatusDetails>
+                        {notStartedStudents.length ? (
+                          <p style={{marginRight:"10px"}}>{notStartedStudents.length} student(s) have not yet started</p>
+                        ) : (
+                          ""
+                        )}
+                        {inProgressStudents.length ? (
+                          <p>{inProgressStudents.length} student(s) have not yet submitted</p>
+                        ) : (
+                          ""
+                        )}
+                      </StudentStatusDetails>
+                      <p>Are you sure you want to close ?
+                        Once closed, no student would be able to answer the assessment
+                      </p>
+                    </div>
+                  }
+                  okText="Yes, Close"
+                  canUndone
+                />
+              </StyledDiv>
+            </RightSideButtonWrapper>
+          </>
+        )}
       </MainHeader>
     );
   }

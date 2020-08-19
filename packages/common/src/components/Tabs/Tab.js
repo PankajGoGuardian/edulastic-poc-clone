@@ -33,11 +33,11 @@ const Tab = ({
         value={label}
         onChange={onChange}
       />
-      <IconPencilEdit color={themeColor} width={16} height={16} />
+      {active && <IconPencilEdit color={themeColor} width={16} height={16} />}
     </EditableTab>
   );
 
-  const closeButton = (
+  const closeButton = !active && (
     <CloseIcon IconPosition={IconPosition} className="close-icon">
       <IconClose color={active ? white : "#AAAFB5"} width={8} height={8} onClick={onClose} />
     </CloseIcon>
@@ -103,10 +103,10 @@ const Container = styled.div`
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   display: flex;
   align-items: center;
-  border: 1px solid ${greyThemeDark2};
-  background: ${({ active }) => (active ? greyThemeDark2 : white)};
-  color: ${({ active }) => (active ? white : greyThemeDark2)};
-  text-align: center;
+  justify-content: center;
+  border-bottom: ${({ active }) => `1px solid ${active ? themeColor : "transparent"}`};
+  background: ${white};
+  color: ${({ active }) => (active ? themeColor : greyThemeDark2)};
   border-radius: 0px;
   text-transform: uppercase;
   position: relative;
@@ -123,13 +123,9 @@ const Container = styled.div`
   svg {
     width: 8px;
     height: 8px;
-    fill: ${({ active }) => (active ? white : greyThemeDark2)};
     position: absolute;
     top: 10px;
     right: 5px;
-    &:hover {
-      fill: ${({ active }) => (active ? white : greyThemeDark2)};
-    }
   }
 
   @media (max-width: ${mobileWidth}) {
@@ -144,6 +140,7 @@ const Input = styled.input`
   text-align: ${({ isPassageQuestion }) => (isPassageQuestion ? "left" : "center")};
   outline: none;
   background: transparent;
+  text-align: center;
 `;
 
 const EditableTab = styled.div`

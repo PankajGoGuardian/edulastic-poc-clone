@@ -1,22 +1,25 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  TypeToConfirmModal,
+  SearchInputStyled,
+  SelectInputStyled
+} from "@edulastic/common";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, Menu, Select } from "antd";
-import { GiDominoMask } from "react-icons/gi";
+import { Col, Icon, Menu, Row, Select } from "antd";
 import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
+import { GiDominoMask } from "react-icons/gi";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
 import {
   StyledActionDropDown,
-  StyledAddFilterButton,
   StyledClassName,
-  StyledControlDiv,
-  StyledFilterDiv,
-  StyledFilterInput,
-  StyledFilterSelect
+  StyledFilterDiv
 } from "../../../../admin/Common/StyledComponents";
 import {
   FilterWrapper,
@@ -24,12 +27,13 @@ import {
   MainContainer,
   RightFilterDiv,
   StyledButton,
-  StyledPagination,
-  StyledSchoolSearch,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer
 } from "../../../../common/styled";
+import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
+import { proxyUser } from "../../../authUtils";
+import { MergeTeachersModal } from "../../../MergeUsers";
 import {
   addBulkTeacherAdminAction,
   addFilterAction,
@@ -55,15 +59,12 @@ import {
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId } from "../../../src/selectors/user";
-import { proxyUser } from "../../../authUtils";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import { getTeachersListSelector } from "../../ducks";
-import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-import { StyledTeacherTable, StyledMaskButton } from "./styled";
-import { MergeTeachersModal } from "../../../MergeUsers";
+import { StyledMaskButton, StyledTeacherTable } from "./styled";
 
 const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
 
@@ -252,20 +253,20 @@ class TeacherTable extends Component {
         u => selectedRowKeys.includes(u._id) && u._source.status !== 1
       );
       if (inactiveUsers.length) {
-        notification({messageKey:"deactivatedUserSelected"});
+        notification({ messageKey: "deactivatedUserSelected" });
       } else if (selectedRowKeys.length > 1) {
         this.setState({ showMergeTeachersModal: true });
       } else {
-        notification({ type: "info", messageKey: "selectTwoOrMoreTeachers"});
+        notification({ type: "info", messageKey: "selectTwoOrMoreTeachers" });
       }
     }
     if (e.key === "edit user") {
       if (selectedRowKeys.length == 0) {
-        notification({messageKey:"pleaseSelectUser"});
+        notification({ messageKey: "pleaseSelectUser" });
       } else if (selectedRowKeys.length == 1) {
         this.onEditTeacher(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        notification({messageKey:"pleaseSelectSingleUserToEdit"});
+        notification({ messageKey: "pleaseSelectSingleUserToEdit" });
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -274,7 +275,7 @@ class TeacherTable extends Component {
           deactivateAdminModalVisible: true
         });
       } else {
-        notification({messageKey:"pleaseSelectUserToDelete"});
+        notification({ messageKey: "pleaseSelectUserToDelete" });
       }
     } else if (e.key === "enable power tools" || e.key === "disable power tools") {
       const enableMode = e.key === "enable power tools";
@@ -291,7 +292,7 @@ class TeacherTable extends Component {
           enable: enableMode
         });
       } else {
-        notification({messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools`});
+        notification({ messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools` });
       }
     }
   };
@@ -540,7 +541,6 @@ class TeacherTable extends Component {
       search,
       districtId: userOrgId,
       role: "teacher",
-      limit: 25,
       page: currentPage,
       institutionId: location.institutionId || ""
       // uncomment after elastic search is fixed
@@ -579,18 +579,14 @@ class TeacherTable extends Component {
       selectedAdminsForDeactivate,
       showMergeTeachersModal,
       filtersData,
-      currentPage,
       refineButtonActive,
       showActive
     } = this.state;
 
     const {
       adminUsersData: result,
-      totalUsers,
       userOrgId,
       updateAdminUser,
-      pageNo,
-      setPageNo,
       teacherDetailsModalVisible,
       history,
       t
@@ -642,86 +638,101 @@ class TeacherTable extends Component {
                 filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
 
               return (
-                <StyledControlDiv key={i}>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectcolumn")}
-                    onChange={e => this.changeFilterColumn(e, i)}
-                    value={filtersColumn || undefined}
-                  >
-                    <Option value="other" disabled>
-                      {t("common.selectcolumn")}
-                    </Option>
-                    <Option value="username">Username</Option>
-                    <Option value="email">Email</Option>
-                    <Option value="status">Status</Option>
-                    <Option value="school">School</Option>
-                    {/* TO DO: Uncomment after backend is done */}
-                    {/* <Option value="institutionNames">School</Option> */}
-                  </StyledFilterSelect>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectvalue")}
-                    onChange={e => this.changeFilterValue(e, i)}
-                    value={filtersValue || undefined}
-                  >
-                    <Option value="" disabled>
-                      {t("common.selectvalue")}
-                    </Option>
-                    <Option value="eq">{t("common.equals")}</Option>
-                    {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
-                  </StyledFilterSelect>
-                  {!filterStrDD[filtersColumn] ? (
-                    <StyledFilterInput
-                      placeholder={t("common.entertext")}
-                      onChange={e => this.changeFilterText(e, i)}
-                      onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                      onBlur={e => this.onBlurFilterText(e, i)}
-                      value={filterStr || undefined}
-                      disabled={isFilterTextDisable}
-                      ref={this.filterTextInputRef[i]}
-                    />
-                  ) : (
-                    <StyledFilterSelect
-                      placeholder={filterStrDD[filtersColumn].placeholder}
-                      onChange={v => this.changeStatusValue(v, i)}
-                      value={filterStr !== "" ? filterStr : undefined}
+                <Row gutter="20" style={{ marginBottom: "5px" }} key={i}>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectcolumn")}
+                      onChange={e => this.changeFilterColumn(e, i)}
+                      value={filtersColumn || undefined}
+                      height="32px"
                     >
-                      {filterStrDD[filtersColumn].list.map(_item => (
-                        <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
-                          {_item.title}
-                        </Option>
-                      ))}
-                    </StyledFilterSelect>
-                  )}
-
-                  {i < 2 && (
-                    <StyledAddFilterButton
-                      type="primary"
-                      onClick={e => this.addFilter(e, i)}
-                      disabled={isAddFilterDisable || i < filtersData.length - 1}
+                      <Option value="other" disabled>
+                        {t("common.selectcolumn")}
+                      </Option>
+                      <Option value="username">Username</Option>
+                      <Option value="email">Email</Option>
+                      <Option value="status">Status</Option>
+                      <Option value="school">School</Option>
+                      {/* TO DO: Uncomment after backend is done */}
+                      {/* <Option value="institutionNames">School</Option> */}
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectvalue")}
+                      onChange={e => this.changeFilterValue(e, i)}
+                      value={filtersValue || undefined}
+                      height="32px"
                     >
-                      {t("common.addfilter")}
-                    </StyledAddFilterButton>
-                  )}
-                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                    <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-                      {t("common.removefilter")}
-                    </StyledAddFilterButton>
-                  )}
-                </StyledControlDiv>
+                      <Option value="" disabled>
+                        {t("common.selectvalue")}
+                      </Option>
+                      <Option value="eq">{t("common.equals")}</Option>
+                      {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    {!filterStrDD[filtersColumn] ? (
+                      <SearchInputStyled
+                        placeholder={t("common.entertext")}
+                        onChange={e => this.changeFilterText(e, i)}
+                        onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                        onBlur={e => this.onBlurFilterText(e, i)}
+                        value={filterStr || undefined}
+                        disabled={isFilterTextDisable}
+                        ref={this.filterTextInputRef[i]}
+                        height="32px"
+                      />
+                    ) : (
+                      <SelectInputStyled
+                        placeholder={filterStrDD[filtersColumn].placeholder}
+                        onChange={v => this.changeStatusValue(v, i)}
+                        value={filterStr !== "" ? filterStr : undefined}
+                        height="32px"
+                      >
+                        {filterStrDD[filtersColumn].list.map(_item => (
+                          <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
+                            {_item.title}
+                          </Option>
+                          ))}
+                      </SelectInputStyled>
+                      )}
+                  </Col>
+                  <Col span={6} style={{ display: "flex" }}>
+                    {i < 2 && (
+                      <EduButton
+                        height="32px"
+                        width="50%"
+                        type="primary"
+                        onClick={e => this.addFilter(e, i)}
+                        disabled={isAddFilterDisable || i < filtersData.length - 1}
+                      >
+                        {t("common.addfilter")}
+                      </EduButton>
+                    )}
+                    {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                      <EduButton height="32px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
+                        {t("common.removefilter")}
+                      </EduButton>
+                    )}
+                  </Col>
+                </Row>
               );
             })}
           </FilterWrapper>
-        )}
+        )
+        }
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
-            <StyledSchoolSearch
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
-            <Button type="primary" onClick={this.showInviteTeacherModal}>
+            <EduButton type="primary" onClick={this.showInviteTeacherModal}>
               {t("users.teacher.inviteteachers")}
-            </Button>
+            </EduButton>
           </LeftFilterDiv>
 
           <RightFilterDiv width={40}>
@@ -732,10 +743,13 @@ class TeacherTable extends Component {
             >
               {t("common.showcurrent")}
             </CheckboxLabel>
-            <StyledActionDropDown overlay={actionMenu}>
-              <Button>
+            <StyledActionDropDown
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+              overlay={actionMenu}
+            >
+              <EduButton isGhost>
                 {t("common.actions")} <Icon type="down" />
-              </Button>
+              </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
@@ -745,82 +759,78 @@ class TeacherTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={false}
-          />
-          <StyledPagination
-            defaultCurrent={1}
-            current={currentPage}
-            pageSize={25}
-            total={totalUsers}
-            onChange={page => this.setPageNo(page)}
-            hideOnSinglePage
-            pagination={{
-              current: pageNo,
-              total: totalUsers,
-              pageSize: 25,
-              onChange: page => setPageNo(page)
-            }}
+            pagination={{ pageSize: 25, hideOnSinglePage: true }}
           />
         </TableContainer>
-        {inviteTeacherModalVisible && (
-          <InviteMultipleTeacherModal
-            modalVisible={inviteTeacherModalVisible}
-            closeModal={this.closeInviteTeacherModal}
-            addTeachers={this.sendInvite}
-            userOrgId={userOrgId}
-            t={t}
-          />
-        )}
-        {editTeacherModaVisible && (
-          <EditTeacherModal
-            modalVisible={editTeacherModaVisible}
-            userOrgId={userOrgId}
-            data={result[editTeacherKey]}
-            editTeacher={updateAdminUser}
-            closeModal={this.closeEditTeacherModal}
-            t={t}
-          />
-        )}
-        {addTeacherModalVisible && (
-          <AddTeacherModal
-            modalVisible={addTeacherModalVisible}
-            addTeacher={this.createUser}
-            closeModal={this.closeAddUserModal}
-            userOrgId={userOrgId}
-            t={t}
-          />
-        )}
-        {deactivateAdminModalVisible && (
-          <TypeToConfirmModal
-            modalVisible={deactivateAdminModalVisible}
-            title={t("users.teacher.deactivateTeacher.title")}
-            handleOnOkClick={this.confirmDeactivate}
-            wordToBeTyped="DEACTIVATE"
-            primaryLabel={t("common.modalConfirmationText1") + t("users.teacher.deactivateTeacher.teachers")}
-            secondaryLabel={selectedAdminsForDeactivate.map(id => {
-              const { _source: { firstName, lastName } = {} } = result[id];
-              return (
-                <StyledClassName key={id}>
-                  {firstName} {lastName}
-                </StyledClassName>
-              );
-            })}
-            closeModal={() =>
-              this.setState({
-                deactivateAdminModalVisible: false
-              })
-            }
-          />
-        )}
+        {
+          inviteTeacherModalVisible && (
+            <InviteMultipleTeacherModal
+              modalVisible={inviteTeacherModalVisible}
+              closeModal={this.closeInviteTeacherModal}
+              addTeachers={this.sendInvite}
+              userOrgId={userOrgId}
+              t={t}
+            />
+          )
+        }
+        {
+          editTeacherModaVisible && (
+            <EditTeacherModal
+              modalVisible={editTeacherModaVisible}
+              userOrgId={userOrgId}
+              data={result[editTeacherKey]}
+              editTeacher={updateAdminUser}
+              closeModal={this.closeEditTeacherModal}
+              t={t}
+            />
+          )
+        }
+        {
+          addTeacherModalVisible && (
+            <AddTeacherModal
+              modalVisible={addTeacherModalVisible}
+              addTeacher={this.createUser}
+              closeModal={this.closeAddUserModal}
+              userOrgId={userOrgId}
+              t={t}
+            />
+          )
+        }
+        {
+          deactivateAdminModalVisible && (
+            <TypeToConfirmModal
+              modalVisible={deactivateAdminModalVisible}
+              title={t("users.teacher.deactivateTeacher.title")}
+              handleOnOkClick={this.confirmDeactivate}
+              wordToBeTyped="DEACTIVATE"
+              primaryLabel={t("common.modalConfirmationText1") + t("users.teacher.deactivateTeacher.teachers")}
+              secondaryLabel={selectedAdminsForDeactivate.map(id => {
+                const { _source: { firstName, lastName } = {} } = result[id];
+                return (
+                  <StyledClassName key={id}>
+                    {firstName} {lastName}
+                  </StyledClassName>
+                );
+              })}
+              closeModal={() =>
+                this.setState({
+                  deactivateAdminModalVisible: false
+                })
+              }
+            />
+          )
+        }
         {/* eslint-disabled-next-line jsx-a11y/aria-role */}
-        {teacherDetailsModalVisible && (
-          <StudentsDetailsModal
-            modalVisible={teacherDetailsModalVisible}
-            closeModal={this.closeTeachersDetailModal}
-            role="teacher"
-            title="Teacher Details"
-          />
-        )}
+        {
+          teacherDetailsModalVisible && (
+            <StudentsDetailsModal
+              modalVisible={teacherDetailsModalVisible}
+              closeModal={this.closeTeachersDetailModal}
+              role="teacher"
+              title="Teacher Details"
+            />
+          )
+        }
         <MergeTeachersModal
           visible={showMergeTeachersModal}
           userIds={selectedRowKeys}

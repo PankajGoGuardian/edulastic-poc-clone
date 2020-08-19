@@ -32,6 +32,7 @@ const { youtubeVideoDetails } = require("./const/howToAuthorVideos");
 const customTags = require("./const/customTags");
 const libraryFilters = require("./const/filters");
 const collections = require("./const/collections");
+const sortOptions = require("./const/sortOptions");
 
 module.exports = {
   question,
@@ -67,5 +68,6 @@ module.exports = {
   youtubeVideoDetails,
   customTags,
   libraryFilters,
-  collections
+  collections,
+  sortOptions
 };

@@ -1,17 +1,10 @@
 import React from "react";
 import { Row, Col, Select, Checkbox, Tooltip } from "antd";
 import styled from "styled-components";
-import {
-  greyThemeDark1,
-  lightGrey9,
-  themeColor,
-  greyThemeLight,
-  greyThemeLighter,
-  titleColor
-} from "@edulastic/colors";
+import { greyThemeDark1, themeColor, titleColor } from "@edulastic/colors";
 import { IconInfo } from "@edulastic/icons";
-import GroupsFilter from "./GroupsFilter";
 import { FlexContainer, FieldLabel, SelectInputStyled } from "@edulastic/common";
+import GroupsFilter from "./GroupsFilter";
 
 const handleModulesChange = (selected, prevFilters, updateFilters) =>
   updateFilters({
@@ -44,7 +37,7 @@ const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
       <SelectInputStyled
         showArrow
         data-cy={dataCy}
-        placeholder={`Select ${label}`}
+        placeholder={`All ${label}`}
         mode="tags"
         onChange={onChange}
         value={value}
@@ -81,7 +74,7 @@ const InsightsFilters = ({
         </ClearAll>
       </FilterHeading>
       <FilterDropdown
-        label="Module"
+        label="Modules"
         onChange={selected => handleModulesChange(selected, prevFilters, updateFilters)}
         value={prevFilters.modules}
         options={modulesData}

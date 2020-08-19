@@ -29,10 +29,12 @@ import { addLoadingComponentAction, removeLoadingComponentAction } from "../../a
 export const LOGIN = "[auth] login";
 export const GOOGLE_LOGIN = "[auth] google login";
 export const CLEVER_LOGIN = "[auth] clever login";
+export const CLASSLINK_LOGIN = "[auth] classlink login";
 export const MSO_LOGIN = "[auth] mso login";
 export const GOOGLE_SSO_LOGIN = "[auth] google sso login";
 export const CLEVER_SSO_LOGIN = "[auth] clever sso login";
 export const MSO_SSO_LOGIN = "[auth] mso sso login";
+export const CLASSLINK_SSO_LOGIN = "[auth] classlink sso login";
 export const GET_USER_DATA = "[auth] get user data from sso response";
 export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
@@ -104,15 +106,20 @@ export const FETCH_USER_FAVORITES = "[user] fetch user favorites";
 export const UPDATE_USER_FAVORITES = "[user] update user favorites";
 export const SET_USER_FAVORITES = "[user] set user favorites";
 export const ADD_CLASS_TO_USER = "[user] add class to user";
+export const ADD_COLLECTION_PERMISSION = "[user] update item bank permission";
+export const REMOVE_COLLECTION_PERMISSION = "[user] remove item bank permission";
+export const SET_CLI_USER = "[user] set cli user";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
 export const loginAction = createAction(LOGIN);
 export const googleLoginAction = createAction(GOOGLE_LOGIN);
 export const cleverLoginAction = createAction(CLEVER_LOGIN);
+export const classlinkLoginAction = createAction(CLASSLINK_LOGIN);
 export const msoLoginAction = createAction(MSO_LOGIN);
 export const googleSSOLoginAction = createAction(GOOGLE_SSO_LOGIN);
 export const cleverSSOLoginAction = createAction(CLEVER_SSO_LOGIN);
+export const classlinkSSOLoginAction = createAction(CLASSLINK_SSO_LOGIN);
 export const getUserDataAction = createAction(GET_USER_DATA);
 export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN);
 export const setUserAction = createAction(SET_USER);
@@ -152,6 +159,9 @@ export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
 export const fetchUserFailureAction = createAction(FETCH_USER_FAILURE);
 export const updatePowerTeacherAction = createAction(UPDATE_POWER_TEACHER_TOOLS_REQUEST);
 export const addClassToUserAction = createAction(ADD_CLASS_TO_USER);
+export const addItemBankPermissionAction = createAction(ADD_COLLECTION_PERMISSION);
+export const removeItemBankPermissionAction = createAction(REMOVE_COLLECTION_PERMISSION);
+export const updateCliUserAction = createAction(SET_CLI_USER);
 
 const initialState = {
   addAccount: false,
@@ -159,7 +169,8 @@ const initialState = {
   isAuthenticated: false,
   authenticating: true,
   signupStatus: 0,
-  currentChild: null
+  currentChild: null,
+  isCliUser: false
 };
 
 const setUser = (state, { payload }) => {
@@ -416,6 +427,28 @@ export default createReducer(initialState, {
   },
   [ADD_CLASS_TO_USER]: (state, { payload }) => {
     state.user.orgData.classList.push(payload);
+  },
+  [ADD_COLLECTION_PERMISSION]: (state, { payload }) => {
+    const itemBanks = get(state, "user.orgData.itemBanks", []);
+    const { itemBankId, accessLevel, status } = payload;
+    const itemBankIndex = itemBanks.findIndex(item => item._id === itemBankId);
+    if (itemBankIndex > -1) {
+      state.user.orgData.itemBanks[itemBankIndex].accessLevel = accessLevel;
+      state.user.orgData.itemBanks[itemBankIndex].status = status;
+    } else {
+      state.user.orgData.itemBanks.push({ ...payload });
+    }
+  },
+  [REMOVE_COLLECTION_PERMISSION]: (state, { payload }) => {
+    const itemBanks = get(state, "user.orgData.itemBanks", []);
+    const { itemBankId } = payload;
+    const itemBankIndex = itemBanks.findIndex(item => item._id === itemBankId);
+    if (itemBankIndex > -1) {
+      state.user.orgData.itemBanks[itemBankIndex].status = 0;
+    }
+  },
+  [SET_CLI_USER]: (state, { payload }) => {
+    state.isCliUser = payload;
   }
 });
 
@@ -584,7 +617,7 @@ function* login({ payload }) {
     const { status, data = {} } = err;
     console.error(err);
     let errorMessage = "You have entered an invalid email/username or password.";
-    if (status === 403 && data.message) {
+    if ((status === 403 || status === 412) && data.message) {
       errorMessage = data.message;
     }
     notification({ msg: errorMessage });
@@ -897,6 +930,7 @@ function* logout() {
       sessionStorage.removeItem("filters[Assignments]");
       TokenStorage.removeKID();
       TokenStorage.initKID();
+      TokenStorage.removeTokens();
       yield put({ type: "RESET" });
       yield put(push(getSignOutUrl()));
       removeSignOutUrl();
@@ -1091,13 +1125,60 @@ function* cleverSSOLogin({ payload }) {
     yield put(getUserDataAction(res));
   } catch (err) {
     const {
-      data: { message: errorMessage }
+      data = {}
     } = err.response;
+    const { message: errorMessage } = data
     Sentry.captureException(err);
     if (errorMessage === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
-      yield put(push({ pathname: getSignOutUrl(), state: { showUnauthorized: true }, hash: "#login" }));
+      yield put(push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" }));
     } else {
       notification({ msg: errorMessage || "Clever Login failed" });
+      yield put(push(getSignOutUrl()));
+    }
+    removeSignOutUrl();
+  }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
+}
+
+function* classlinkLogin({ payload }) {
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+  const params = {};
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+    params.districtId = generalSettings.orgId;
+  }
+
+  try {
+    if (payload) {
+      localStorage.setItem("thirdPartySignOnRole", payload);
+    }
+    const res = yield call(authApi.classlinkLogin, params);
+    window.location.href = res;
+  } catch (e) {
+    notification({ messageKey: "classlinkLoginFailed" });
+  }
+}
+
+function* classlinkSSOLogin({ payload }) {
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
+  }
+
+  try {
+    const res = yield call(authApi.classlinkSSOLogin, _payload);
+    yield put(getUserDataAction(res));
+  } catch (e) {
+    if (e?.response?.data?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
+      yield put(push({ pathname: getSignOutUrl(), state: { showUnauthorized: true }, hash: "#login" }));
+    } else {
+      notification({ msg: e?.data?.message || "Classlink Login failed" });
       yield put(push(getSignOutUrl()));
     }
     removeSignOutUrl();
@@ -1348,9 +1429,9 @@ function* studentSignupCheckClasscodeSaga({ payload }) {
     yield call(authApi.validateClassCode, payload.reqData);
   } catch (e) {
     if (payload.errorCallback) {
-      payload.errorCallback(e.response.data.message);
+      payload.errorCallback(e?.response?.data?.message || "Unknown Error") ;
     } else {
-      notification({ msg: e.response.data.message });
+      notification({ msg: e?.response?.data?.message || "Unknown Error"});
     }
   }
 }
@@ -1420,9 +1501,11 @@ export function* watcherSaga() {
   yield takeLatest(CHANGE_CLASS, changeClass);
   yield takeLatest(GOOGLE_LOGIN, googleLogin);
   yield takeLatest(CLEVER_LOGIN, cleverLogin);
+  yield takeLatest(CLASSLINK_LOGIN, classlinkLogin);
   yield takeLatest(MSO_LOGIN, msoLogin);
   yield takeLatest(GOOGLE_SSO_LOGIN, googleSSOLogin);
   yield takeLatest(CLEVER_SSO_LOGIN, cleverSSOLogin);
+  yield takeLatest(CLASSLINK_SSO_LOGIN, classlinkSSOLogin);
   yield takeLatest(GET_USER_DATA, getUserData);
   yield takeLatest(MSO_SSO_LOGIN, msoSSOLogin);
   yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga);

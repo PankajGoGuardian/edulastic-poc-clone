@@ -39,15 +39,8 @@ export const PlaceHolderText = styled.p`
 export const SelUserKindDiv = styled(Row)`
   font-weight: 550;
   margin-top: 20px;
-  .ant-col-11 {
-    text-transform: uppercase;
-  }
-  .ant-select {
-    width: 100%;
-  }
-  .ant-select-selection {
-    background: ${lightGrey3};
-  }
+  display: flex;
+  align-items: center;
 `;
 export const ItemDiv = styled.div`
   padding: 0.5rem;
@@ -118,14 +111,14 @@ export const SearchViewContainer = styled.div`
 
 export const AddBulkStudentsViewContainer = styled.div`
   background: ${white};
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 0rem 0rem;
 `;
 
 export const SearchTabButton = styled(Button)`
   width: 100%;
   border-radius: 2px;
   border: none;
-  height: 50px;
+  height: 40px;
   text-transform: uppercase;
   font-weight: 550;
   background: ${props => (props.searchViewVisible ? themeColor : lightGrey4)};
@@ -139,15 +132,7 @@ export const SearchTabButton = styled(Button)`
   }
 `;
 
-export const AddMultipleStudentsTabButton = styled(Button)`
-  width: 100%;
-  border-radius: 2px;
-  border: none;
-  height: 50px;
-  margin-right: 2px;
-  margin-left: 2px;
-  text-transform: uppercase;
-  font-weight: 550;
+export const AddMultipleStudentsTabButton = styled(SearchTabButton)`
   background: ${props => (props.searchViewVisible ? lightGrey4 : themeColor)};
   color: ${props => (props.searchViewVisible ? fadedBlack : white)};
   &:hover,

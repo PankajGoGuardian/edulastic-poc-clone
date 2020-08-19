@@ -1,5 +1,5 @@
-import { CheckboxLabel, RadioBtn, RadioGrp,notification } from "@edulastic/common";
-import { Form, Input, message } from "antd";
+import { CheckboxLabel, RadioBtn, RadioGrp, notification, TextInputStyled, EduButton } from "@edulastic/common";
+import { Form } from "antd";
 import { produce } from "immer";
 import { get } from "lodash";
 import PropTypes from "prop-types";
@@ -16,15 +16,7 @@ import {
   receiveSchoolPolicyAction,
   updateDistrictPolicyAction
 } from "../../ducks";
-import {
-  HelperText,
-  SaveButton,
-  StyledElementDiv,
-  StyledFormDiv,
-  StyledFormItem,
-  StyledLabel,
-  StyledRow
-} from "./styled";
+import { HelperText, StyledElementDiv, StyledFormDiv, StyledFormItem, StyledLabel, StyledRow } from "./styled";
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
@@ -264,9 +256,10 @@ class DistrictPolicyForm extends Component {
       !districtPolicyData.userNameAndPassword &&
       !districtPolicyData.office365SignOn &&
       !districtPolicyData.cleverSignOn &&
-      !districtPolicyData.googleSignOn
+      !districtPolicyData.googleSignOn &&
+      !districtPolicyData.atlasSignOn
     ) {
-      notification({ messageKey:"pleaseSelectOneOrMoreSignOnParticles"});
+      notification({ messageKey: "pleaseSelectOneOrMoreSignOnParticles" });
       return;
     }
 
@@ -286,6 +279,7 @@ class DistrictPolicyForm extends Component {
       googleSignOn: districtPolicyData.googleSignOn,
       office365SignOn: districtPolicyData.office365SignOn,
       cleverSignOn: districtPolicyData.cleverSignOn,
+      atlasSignOn: districtPolicyData.atlasSignOn,
       teacherSignUp: districtPolicyData.teacherSignUp,
       studentSignUp: districtPolicyData.studentSignUp,
       searchAndAddStudents: districtPolicyData.searchAndAddStudents || false,
@@ -359,6 +353,9 @@ class DistrictPolicyForm extends Component {
               </CheckboxLabel>
               <CheckboxLabel checked={districtPolicy.office365SignOn} onChange={e => this.change(e, "office365SignOn")}>
                 Office365 Single signon
+              </CheckboxLabel>
+              <CheckboxLabel checked={districtPolicy.atlasSignOn} onChange={e => this.change(e, "atlasSignOn")}>
+                Classlink Single signon
               </CheckboxLabel>
               <CheckboxLabel checked={districtPolicy.cleverSignOn} onChange={e => this.change(e, "cleverSignOn")}>
                 Clever instance signon
@@ -434,7 +431,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowDomainForTeacherValidate.validateStatus}
               help={allowDomainForTeacherValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedDomainForTeachers}
                 onChange={this.handleTagTeacherChange}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
@@ -451,7 +448,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowDomainForStudentValidate.validateStatus}
               help={allowDomainForStudentValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedDomainForStudents}
                 onChange={this.handleTagStudentChange}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
@@ -468,7 +465,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowDomainForSchoolValidate.validateStatus}
               help={allowDomainForSchoolValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedDomainsForDistrict}
                 onChange={this.handleTagSchoolChange}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
@@ -502,6 +499,19 @@ class DistrictPolicyForm extends Component {
           </StyledRow>
           <StyledRow>
             <StyledLabel>
+              Enforced District Sign-On
+              <br /> policy:{" "}
+            </StyledLabel>
+            <RadioGrp
+              onChange={this.enforceDistrictSignonPolicy}
+              value={districtPolicy?.enforceDistrictSignonPolicy ? "yes" : "no"}
+            >
+              <RadioBtn value="yes">Yes</RadioBtn>
+              <RadioBtn value="no">No</RadioBtn>
+            </RadioGrp>
+          </StyledRow>
+          <StyledRow>
+            <StyledLabel>
               Allowed IP for password
               <br />
               controlled assessments:
@@ -510,7 +520,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowIpForAssignmentValidate.validateStatus}
               help={allowIpForAssignmentValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedIpForAssignments}
                 onChange={this.handleInputIpAddresses}
                 placeholder="Enter allowed ip(s), example - 127.0.*.1, 187.0.*.*"
@@ -521,8 +531,8 @@ class DistrictPolicyForm extends Component {
               </HelperText>
             </StyledFormItem>
           </StyledRow>
-          <StyledRow>
-            <SaveButton onClick={this.onSave}>{saveBtnStr}</SaveButton>
+          <StyledRow type="flex" justify="center">
+            <EduButton onClick={this.onSave}>{saveBtnStr}</EduButton>
           </StyledRow>
         </Form>
       </StyledFormDiv>

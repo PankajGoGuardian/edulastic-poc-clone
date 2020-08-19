@@ -4,10 +4,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, get, findIndex } from "lodash";
+import { get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
-import uuid from "uuid/v4";
 import { WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -59,35 +58,6 @@ class ClozeText extends Component {
       itemForPreview,
       uiStyle: item.uiStyle
     };
-  };
-
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        const validAnswers = cloneDeep(draft.validation.validResponse.value);
-        validAnswers.map(answer => {
-          answer.value = "";
-          return answer;
-        });
-        draft.validation.altResponses.push({
-          score: 1,
-          id: uuid(),
-          value: validAnswers
-        });
-      })
-    );
-  };
-
-  handleRemoveAltResponses = index => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
-        }
-      })
-    );
   };
 
   handleRemoveAltResponsesMixMatch = () => {
@@ -263,8 +233,6 @@ class ClozeText extends Component {
                   stimulus={previewStimulus}
                   uiStyle={uiStyle}
                   responseIds={item.responseIds}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
                   handleRemoveAltResponsesMixMatch={this.handleRemoveAltResponsesMixMatch}
                   cleanSections={cleanSections}
                   fillSections={fillSections}
@@ -315,9 +283,6 @@ class ClozeText extends Component {
                 responseIds={item.responseIds}
                 handleIndividualTypeChange={this.handleIndividualTypeChange}
                 handleGlobalTypeChange={this.handleGlobalTypeChange}
-                outerStyle={{
-                  padding: "30px 0px"
-                }}
                 item={item}
               />
             </div>

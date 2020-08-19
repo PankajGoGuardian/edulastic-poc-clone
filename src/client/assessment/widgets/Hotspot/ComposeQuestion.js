@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
@@ -6,9 +7,10 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Image as ImageComponent } from "@edulastic/common";
+import { Image as ImageComponent, uploadToS3, beforeUpload } from "@edulastic/common";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { aws } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -16,25 +18,15 @@ import DropZoneToolbar from "../../components/DropZoneToolbar/index";
 import StyledDropZone from "../../components/StyledDropZone/index";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
-import { aws } from "@edulastic/constants";
 import { SOURCE, WIDTH, HEIGHT } from "../../constants/constantsForQuestions";
-import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 class ComposeQuestion extends Component {
   render() {
-    const {
-      item,
-      setQuestionData,
-      t,
-      loading,
-      setLoading,
-      fillSections,
-      cleanSections
-    } = this.props;
+    const { item, setQuestionData, t, loading, setLoading, fillSections, cleanSections } = this.props;
 
     const { image } = item;
-    const maxWidth = 700,
-      maxHeight = 600;
+    const maxWidth = 700;
+    const maxHeight = 600;
     const width = image ? image.width : maxWidth;
     const height = image ? image.height : maxHeight;
     const altText = image ? image.altText : "";
@@ -51,18 +43,18 @@ class ComposeQuestion extends Component {
 
     const handleImageToolbarChange = prop => val => {
       if (prop === "source") {
-        let image = new Image();
-        image.onload = () => {
+        const _image = new Image();
+        _image.onload = () => {
           setQuestionData(
             produce(item, draft => {
-              draft.image.width = image.width > 700 ? 700 : image.width;
-              draft.image.height = image.height > 600 ? 600 : image.height;
+              draft.image.width = _image.width > 700 ? 700 : _image.width;
+              draft.image.height = _image.height > 600 ? 600 : _image.height;
               draft.image.source = val;
               updateVariables(draft);
             })
           );
         };
-        image.src = val;
+        _image.src = val;
       } else {
         setQuestionData(
           produce(item, draft => {
@@ -88,24 +80,25 @@ class ComposeQuestion extends Component {
     const getImageDimensions = url => {
       const uploadedImage = new Image();
       uploadedImage.addEventListener("load", function() {
-        let height, width;
+        let _height;
+        let _width;
         if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
           const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
           const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
           if (fitWidth > maxWidth) {
-            width = maxWidth;
-            height = fitHeight;
+            _width = maxWidth;
+            _height = fitHeight;
           } else {
-            height = maxHeight;
-            width = fitWidth;
+            _height = maxHeight;
+            _width = fitWidth;
           }
         } else {
-          width = this.naturalWidth;
-          height = this.naturalHeight;
+          _width = this.naturalWidth;
+          _height = this.naturalHeight;
         }
         const obj = {};
-        obj[WIDTH] = width;
-        obj[HEIGHT] = height;
+        obj[WIDTH] = _width;
+        obj[HEIGHT] = _height;
         obj[SOURCE] = url;
         updateImage(obj);
         setLoading(false);
@@ -137,9 +130,7 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.composeQuestion")}`)}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.composeQuestion")}`)}>
           {t("component.hotspot.composeQuestion")}
         </Subtitle>
 
@@ -173,15 +164,7 @@ class ComposeQuestion extends Component {
               className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}
             >
               <input {...getInputProps()} />
-
-              <StyledDropZone
-                style={{
-                  alignItems: "none"
-                }}
-                loading={loading}
-                isDragActive={isDragActive}
-                thumb={thumb}
-              />
+              <StyledDropZone loading={loading} isDragActive={isDragActive} thumb={thumb} />
             </div>
           )}
         </Dropzone>

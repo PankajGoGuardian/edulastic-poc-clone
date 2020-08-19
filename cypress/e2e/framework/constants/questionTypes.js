@@ -1,21 +1,21 @@
 export const questionType = {
   MCQ_STD: "Multiple Choice - Standard",
   MCQ_TF: "True or False",
-  MCQ_MULTI: "Multiple Choice - Multiple Response",
+  MCQ_MULTI: "Multiple Selection",
   MCQ_BLOCK: "Multiple Choice - Block Layout",
-  CHOICE_STD: "Choice Matrix - Standard",
-  CHOICE_INLINE: "Choice Matrix - Inline",
-  CHOICE_LABEL: "Choice Matrix - Labels",
-  CLOZE_DRAG_DROP: "Cloze with Drag & Drop",
-  CLOZE_DROP_DOWN: "Cloze with Drop Down",
-  CLOZE_TEXT: "Cloze with Text",
+  CHOICE_STD: "Match Table - Standard",
+  CHOICE_INLINE: "Match Table - Inline",
+  CHOICE_LABEL: "Match Table - Labels",
+  CLOZE_DRAG_DROP: "Drag & Drop",
+  CLOZE_DROP_DOWN: "Text Drop Down",
+  CLOZE_TEXT: "Text Entry",
   IMAGE_DRAG_DROP: "Label Image with Drag & Drop",
   IMAGE_DROP_DOWN: "Label Image with Drop Down",
   IMAGE_TEXT: "Label Image with Text",
   SORT_LIST: "Sort List",
   CLASSIFICATION: "Classification",
-  MATCH_LIST: "Match List",
-  ORDERLIST: "Order List",
+  MATCH_LIST: "Match the following",
+  ORDERLIST: "Re-sequence",
   ESSAY_RICH: "Essay with Rich Text",
   ESSAY_PLAIN: "Essay with Plain Text",
   ESSAY_SHORT: "Short Text",
@@ -23,7 +23,13 @@ export const questionType = {
   PASSAGE_QUE: "Passage with Questions",
   COMBINATION_MULTIPART: "Combination Multipart",
   MATH: "Math, Text & Dropdown",
-  MATH_NUMERIC: "Numeric Entry"
+  MATH_NUMERIC: "Numeric Entry",
+  MATH_ESSAY: "Math Essay",
+  MATH_EXP_FORM: "Expression & Formula",
+  MATH_COMPL_EQN: "Complete the Equation",
+  MATH_INEQUALITY: "Equations & Inequalities",
+  MATH_MATRICES: "Matrices",
+  MATH_UNITS: "Units"
 };
 
 export const questionTypeKey = {
@@ -68,8 +74,9 @@ export const queColor = {
   PLAIN_RED: "rgb(255, 0, 0)",
   RED: "rgb(255, 0, 87)",
   RED_2: "rgb(253, 224, 233)",
-  LIGHT_RED: "rgb(252, 224, 232)",
+  LIGHT_RED: "rgb(253, 224, 233)",
   LIGHT_RED1: "rgb(250, 225, 233)",
+  LIGHT_RED2: "rgb(242, 87, 131)",
   RED_1: "rgb(221, 46, 68)",
   PLAIN_GREEN: "rgb(0, 128, 0)",
   GREEN: "rgb(23, 116, 240)",
@@ -80,20 +87,30 @@ export const queColor = {
   GREEN_5: "rgb(61, 176, 78)",
   GREEN_6: "rgb(66, 209, 132)",
   GREEN_7: "rgb(132, 205, 54)",
-  LIGHT_GREEN: "rgb(211, 254, 166)",
+  GREEN_8: "rgb(54, 210, 156)",
+  LIGHT_GREEN: "rgb(226, 252, 243)",
   LIGHT_GREEN1: "rgba(31, 227, 161, 0.118)",
   LIGHT_GREY: "rgb(211, 211, 211)",
   GREY: "rgb(74, 180, 149)",
   GREY_1: "rgb(229, 229, 229)",
   GREY_2: "rgb(248, 248, 248)",
+  GREY_3: "rgb(167, 167, 167)",
+  GREY_4: "rgb(245, 245, 245)",
   BLUE: "rgba(26, 179, 148, 0.5)",
   BLUE_1: "rgb(87, 107, 169)",
+  BLUE_2: "rgb(63, 132, 229)",
+  BLUE_3: "rgb(26, 115, 232)",
   WHITE: "rgb(255, 255, 255)",
   WHITE_1: "rgb(248, 248, 248)",
   ORANGE: "rgb(255, 165, 0)",
   ORANGE_1: "rgb(243, 147, 0)",
   ORANGE_2: "rgb(255, 233, 168)",
-  ORANGE_3: "rgb(251, 250, 224)"
+  ORANGE_3: "rgb(251, 250, 224)",
+  BLACK: "rgb(33, 46, 58)",
+  SHADING_CLEAR: "rgb(216, 219, 222)",
+  SHADING_SELECT: "rgba(216, 219, 222, 0.5)",
+  HOTSPOT_CLEAR: "rgb(0, 176, 255)",
+  HOTSPOT_SELECT: "rgb(0, 123, 179)"
 };
 
 export const questionGroup = {
@@ -115,7 +132,8 @@ export const questionGroup = {
 export const CALCULATOR = {
   BASIC: "BASIC",
   SCIENTIFIC: "SCIENTIFIC",
-  GRAPH: "GRAPHING"
+  GRAPH: "GRAPHING",
+  NONE: "NONE"
 };
 
 export const COLLECTION = {
@@ -123,6 +141,14 @@ export const COLLECTION = {
   district: "District Library",
   private: "Private Library",
   public: "Public Library"
+};
+
+export const sortOptions = {
+  relevance: "Relevance",
+  Popularity: "Popularity",
+  Recency: "Recency",
+  Name: "Name",
+  Likes: "Likes"
 };
 
 export const questionTypeMap = {

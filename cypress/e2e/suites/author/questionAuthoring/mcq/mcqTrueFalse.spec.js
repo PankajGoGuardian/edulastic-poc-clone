@@ -1,4 +1,4 @@
-/// <reference types="Cypress" />
+// / <reference types="Cypress" />
 import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage.js";
@@ -7,8 +7,7 @@ import {
   SCORING_TYPE,
   STEM,
   STYLE_TYPE,
-  FONT_SIZE,
-  ORIENTATION
+  FONT_SIZE
 } from "../../../../framework/constants/questionAuthoring";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
 import { questionType } from "../../../../framework/constants/questionTypes.js";
@@ -169,7 +168,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
  */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
 
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
@@ -201,9 +200,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
       // font select
       question.selectFontSize(FONT_SIZE.SMALL);
-
-      // orientation select
-      question.selectOrientation(ORIENTATION.HORIZONTAL);
 
       // style select
       question.selectChoicesStyle(STYLE_TYPE.BLOCK);
@@ -404,7 +400,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
  */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
 
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
@@ -435,9 +431,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
       // font select
       question.selectFontSize(FONT_SIZE.SMALL);
-
-      // orientation select
-      question.selectOrientation(ORIENTATION.HORIZONTAL);
 
       // style select
       question.selectChoicesStyle(STYLE_TYPE.BLOCK);
@@ -478,12 +471,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     it(" > [Tc_297]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
@@ -628,7 +616,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question.header.save();
     });
     it("change points and check answer", () => {
-      //set score to 2
+      // set score to 2
       question.header.edit();
 
       question.getPoints().type("{selectall}2");

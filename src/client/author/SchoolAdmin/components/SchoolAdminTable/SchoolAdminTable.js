@@ -1,23 +1,20 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, notification, TypeToConfirmModal } from "@edulastic/common";
+import { CheckboxLabel, EduButton, notification, SelectInputStyled, TypeToConfirmModal } from "@edulastic/common";
+import { SearchInputStyled } from "@edulastic/common/src/components/InputStyles";
 import { roleuser } from "@edulastic/constants";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { GiDominoMask } from "react-icons/gi";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, Menu, Select } from "antd";
+import { Col, Icon, Menu, Row, Select } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import { GiDominoMask } from "react-icons/gi";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import {
   StyledActionDropDown,
-  StyledAddFilterButton,
   StyledClassName,
-  StyledControlDiv,
-  StyledFilterDiv,
-  StyledFilterInput,
-  StyledFilterSelect
+  StyledFilterDiv
 } from "../../../../admin/Common/StyledComponents";
 import {
   FilterWrapper,
@@ -26,18 +23,17 @@ import {
   RightFilterDiv,
   StyledButton,
   StyledPagination,
-  StyledSchoolSearch,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer
 } from "../../../../common/styled";
 import { getFullNameFromAsString } from "../../../../common/utils/helpers";
-import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
 import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
+import { proxyUser } from "../../../authUtils";
+import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { proxyUser } from "../../../authUtils";
 import {
   addFilterAction,
   changeFilterColumnAction,
@@ -60,7 +56,7 @@ import {
 } from "../../ducks";
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
-import { StyledSchoolAdminTable, StyledMaskButton } from "./styled";
+import { StyledMaskButton, StyledSchoolAdminTable } from "./styled";
 
 const menuActive = { mainMenu: "Users", subMenu: "School Admin" };
 
@@ -117,8 +113,6 @@ class SchoolAdminTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {}
-
   onEditSchoolAdmin = id => {
     this.setState({
       editSchoolAdminModaVisible: true,
@@ -151,11 +145,11 @@ class SchoolAdminTable extends Component {
     const { selectedRowKeys } = this.state;
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-       notification({ messageKey:"pleaseSelectUser" });
+        notification({ messageKey: "pleaseSelectUser" });
       } else if (selectedRowKeys.length === 1) {
         this.onEditSchoolAdmin(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        notification({ messageKey:"pleaseSelectSingleUserToEdit" });
+        notification({ messageKey: "pleaseSelectSingleUserToEdit" });
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -164,7 +158,7 @@ class SchoolAdminTable extends Component {
           deactivateAdminModalVisible: true
         });
       } else {
-        notification({ messageKey:"pleaseSelectSchoolsToDelete" });
+        notification({ messageKey: "pleaseSelectSchoolsToDelete" });
       }
     } else if (e.key === "enable power tools" || e.key === "disable power tools") {
       const enableMode = e.key === "enable power tools";
@@ -181,7 +175,7 @@ class SchoolAdminTable extends Component {
           enable: enableMode
         });
       } else {
-        notification({messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools`});
+        notification({ messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools` });
       }
     }
   };
@@ -274,7 +268,7 @@ class SchoolAdminTable extends Component {
       }
       return item;
     });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
   changeStatusValue = (value, key) => {
@@ -337,7 +331,7 @@ class SchoolAdminTable extends Component {
     this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
-  addFilter = (e, key) => {
+  addFilter = () => {
     const { filtersData } = this.state;
     if (filtersData.length < 3) {
       this.setState({
@@ -356,7 +350,7 @@ class SchoolAdminTable extends Component {
   };
 
   removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
       newFiltersData.push({
@@ -445,18 +439,9 @@ class SchoolAdminTable extends Component {
       adminUsersData: result,
       totalUsers,
       schoolsData,
-      setShowActiveUsers,
-      showActiveUsers,
       updateAdminUser,
       pageNo,
       setPageNo,
-      filters,
-      changeFilterColumn,
-      changeFilterType,
-      changeFilterValue,
-      loadAdminData,
-      addFilter,
-      removeFilter,
       history,
       isProxyUser,
       t
@@ -472,7 +457,7 @@ class SchoolAdminTable extends Component {
           const next = get(b, "_source.firstName", "");
           return next.localeCompare(prev);
         },
-        render: (text, record, index) => {
+        render: (text, record) => {
           const name = getFullNameFromAsString(record._source);
           return name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
         },
@@ -569,85 +554,99 @@ class SchoolAdminTable extends Component {
                 filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
 
               return (
-                <StyledControlDiv key={i}>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectcolumn")}
-                    onChange={e => this.changeFilterColumn(e, i)}
-                    value={filtersColumn || undefined}
-                    style={{}}
-                  >
-                    <Option value="other" disabled>
-                      {t("common.selectcolumn")}
-                    </Option>
-                    <Option value="username">{t("users.schooladmin.username")}</Option>
-                    <Option value="email">{t("users.schooladmin.email")}</Option>
-                    <Option value="status">{t("users.schooladmin.status")}</Option>
-                    {/* TO DO: Uncomment after backend is done */}
-                    {/* <Option value="institutionNames">School</Option> */}
-                  </StyledFilterSelect>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectvalue")}
-                    onChange={e => this.changeFilterValue(e, i)}
-                    value={filtersValue || undefined}
-                  >
-                    <Option value="" disabled>
-                      {t("common.selectvalue")}
-                    </Option>
-                    <Option value="eq">Equals</Option>
-                    {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
-                  </StyledFilterSelect>
-                  {!filterStrDD[filtersColumn] ? (
-                    <StyledFilterInput
-                      placeholder={t("common.entertext")}
-                      onChange={e => this.changeFilterText(e, i)}
-                      onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                      onBlur={e => this.onBlurFilterText(e, i)}
-                      value={filterStr || undefined}
-                      disabled={isFilterTextDisable}
-                      ref={this.filterTextInputRef[i]}
-                    />
-                  ) : (
-                    <StyledFilterSelect
-                      placeholder={filterStrDD[filtersColumn].placeholder}
-                      onChange={v => this.changeStatusValue(v, i)}
-                      value={filterStr !== "" ? filterStr : undefined}
+                <Row gutter="20" style={{ marginBottom: "5px" }} key={i}>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectcolumn")}
+                      onChange={e => this.changeFilterColumn(e, i)}
+                      value={filtersColumn || undefined}
+                      height="32px"
                     >
-                      {filterStrDD[filtersColumn].list.map(item => (
-                        <Option key={item.title} value={item.value} disabled={item.disabled}>
-                          {item.title}
-                        </Option>
-                      ))}
-                    </StyledFilterSelect>
-                  )}
-                  {i < 2 && (
-                    <StyledAddFilterButton
-                      type="primary"
-                      onClick={e => this.addFilter(e, i)}
-                      disabled={isAddFilterDisable || i < filtersData.length - 1}
+                      <Option value="other" disabled>
+                        {t("common.selectcolumn")}
+                      </Option>
+                      <Option value="username">{t("users.schooladmin.username")}</Option>
+                      <Option value="email">{t("users.schooladmin.email")}</Option>
+                      <Option value="status">{t("users.schooladmin.status")}</Option>
+                      {/* TO DO: Uncomment after backend is done */}
+                      {/* <Option value="institutionNames">School</Option> */}
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectvalue")}
+                      onChange={e => this.changeFilterValue(e, i)}
+                      value={filtersValue || undefined}
+                      height="32px"
                     >
-                      {t("common.addfilter")}
-                    </StyledAddFilterButton>
-                  )}
-                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                    <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-                      {t("common.removefilter")}
-                    </StyledAddFilterButton>
-                  )}
-                </StyledControlDiv>
+                      <Option value="" disabled>
+                        {t("common.selectvalue")}
+                      </Option>
+                      <Option value="eq">Equals</Option>
+                      {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    {!filterStrDD[filtersColumn] ? (
+                      <SearchInputStyled
+                        placeholder={t("common.entertext")}
+                        onChange={e => this.changeFilterText(e, i)}
+                        onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                        onBlur={e => this.onBlurFilterText(e, i)}
+                        value={filterStr || undefined}
+                        disabled={isFilterTextDisable}
+                        ref={this.filterTextInputRef[i]}
+                        height="32px"
+                      />
+                    ) : (
+                      <SelectInputStyled
+                        placeholder={filterStrDD[filtersColumn].placeholder}
+                        onChange={v => this.changeStatusValue(v, i)}
+                        value={filterStr !== "" ? filterStr : undefined}
+                        height="32px"
+                      >
+                        {filterStrDD[filtersColumn].list.map(item => (
+                          <Option key={item.title} value={item.value} disabled={item.disabled}>
+                            {item.title}
+                          </Option>
+                          ))}
+                      </SelectInputStyled>
+                      )}
+                  </Col>
+                  <Col span={6} style={{ display: "flex" }}>
+                    {i < 2 && (
+                      <EduButton
+                        height="32px"
+                        width="50%"
+                        type="primary"
+                        onClick={e => this.addFilter(e, i)}
+                        disabled={isAddFilterDisable || i < filtersData.length - 1}
+                      >
+                        {t("common.addfilter")}
+                      </EduButton>
+                    )}
+                    {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                      <EduButton height="32px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
+                        {t("common.removefilter")}
+                      </EduButton>
+                    )}
+                  </Col>
+                </Row>
               );
             })}
           </FilterWrapper>
         )}
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
-            <StyledSchoolSearch
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
-            <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
+            <EduButton height="36px" type="primary" onClick={this.showCreateSchoolAdminModal}>
               {t("users.schooladmin.createschooladmin")}
-            </Button>
+            </EduButton>
           </LeftFilterDiv>
 
           <RightFilterDiv width={40}>
@@ -659,10 +658,10 @@ class SchoolAdminTable extends Component {
               {t("common.showcurrent")}
             </CheckboxLabel>
             {role === roleuser.DISTRICT_ADMIN ? (
-              <StyledActionDropDown overlay={actionMenu}>
-                <Button>
+              <StyledActionDropDown getPopupContainer={triggerNode => triggerNode.parentNode} overlay={actionMenu}>
+                <EduButton isGhost>
                   {t("common.actions")} <Icon type="down" />
-                </Button>
+                </EduButton>
               </StyledActionDropDown>
             ) : null}
           </RightFilterDiv>
@@ -783,19 +782,9 @@ SchoolAdminTable.propTypes = {
   createAdminUser: PropTypes.func.isRequired,
   updateAdminUser: PropTypes.func.isRequired,
   deleteAdminUser: PropTypes.func.isRequired,
-  setSearchName: PropTypes.func.isRequired,
   adminUsersData: PropTypes.object.isRequired,
   userOrgId: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
-  showActiveUsers: PropTypes.bool.isRequired,
   pageNo: PropTypes.number.isRequired,
-  changeFilterColumn: PropTypes.func.isRequired,
-  setPageNo: PropTypes.func.isRequired,
-  setShowActiveUsers: PropTypes.func.isRequired,
-  filters: PropTypes.object.isRequired,
-  changeFilterType: PropTypes.func.isRequired,
-  changeFilterValue: PropTypes.func.isRequired,
-  addFilter: PropTypes.func.isRequired,
-  removeFilter: PropTypes.func.isRequired,
-  setRole: PropTypes.func.isRequired
+  setPageNo: PropTypes.func.isRequired
 };

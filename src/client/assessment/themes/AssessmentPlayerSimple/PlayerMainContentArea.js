@@ -8,7 +8,7 @@ import { ScrollContext } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import TestItemPreview from "../../components/TestItemPreview";
 import PlayerFooter from "./PlayerFooter";
-
+import { ScratchpadTool } from "../../../common/components/Scratchpad";
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, MAX_MOBILE_WIDTH } from "../../constants/others";
 import { getEvaluationSelector } from "../../selectors/answers";
 import getZoomedResponsiveWidth from "../../utils/zoomedResponsiveWidth";
@@ -34,13 +34,10 @@ const PlayerContentArea = ({
   isSidebarVisible = true,
   zoomLevel,
   windowWidth,
-  activeMode,
   scratchPadMode,
-  lineColor,
-  deleteMode,
-  lineWidth,
-  fillColor,
   saveHistory,
+  saveAttachments,
+  attachments,
   history,
   evaluation,
   highlights,
@@ -66,6 +63,7 @@ const PlayerContentArea = ({
             responsiveWidth={responsiveWidth}
             className="scrollable-main-wrapper"
           >
+            {scratchPadMode && <ScratchpadTool />}
             {testItemState === "" && (
               <TestItemPreview
                 crossAction={crossAction}
@@ -77,14 +75,11 @@ const PlayerContentArea = ({
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn
                 highlights={highlights}
-                activeMode={activeMode}
                 scratchPadMode={scratchPadMode}
-                lineColor={lineColor}
-                deleteMode={deleteMode}
-                lineWidth={lineWidth}
-                fillColor={fillColor}
                 saveHistory={saveHistory}
                 history={history}
+                saveAttachments={saveAttachments}
+                attachments={attachments}
                 viewComponent="practicePlayer"
                 enableMagnifier={enableMagnifier}
                 updateScratchpadtoStore
@@ -99,14 +94,11 @@ const PlayerContentArea = ({
                 highlights={highlights}
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn
-                activeMode={activeMode}
                 scratchPadMode={scratchPadMode}
-                lineColor={lineColor}
-                deleteMode={deleteMode}
-                lineWidth={lineWidth}
-                fillColor={fillColor}
                 saveHistory={saveHistory}
                 history={history}
+                saveAttachments={saveAttachments}
+                attachments={attachments}
                 evaluation={evaluation}
                 enableMagnifier={enableMagnifier}
                 changePreviewTab={changePreview}

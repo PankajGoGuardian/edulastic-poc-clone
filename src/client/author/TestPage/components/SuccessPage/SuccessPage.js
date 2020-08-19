@@ -229,10 +229,14 @@ class SuccessPage extends React.Component {
       } else {
         // else module was assigned then show module details
         const _module = playlist.modules?.find(m => m?._id === assignedPlaylistModuleId);
-        contentData.title = _module.title;
+        contentData.title = _module?.title;
         contentData.standardIdentifiers = _module?.data?.flatMap(d => d?.standardIdentifiers);
       }
     }
+
+    const { playlistModuleId: assignedPlaylistModuleId } = history.location.state || {};
+    const _module = playlist.modules?.find(m => m?._id === assignedPlaylistModuleId);
+    const moduleTitle = _module?.title || "";
 
     return (
       <div>
@@ -245,7 +249,7 @@ class SuccessPage extends React.Component {
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
         />
-        <ListHeader title={title} renderButton={this.renderHeaderButton} />
+        <ListHeader title={(_module && _module.title) || title} renderButton={this.renderHeaderButton} />
 
         <Container>
           <SecondHeader>
@@ -268,8 +272,10 @@ class SuccessPage extends React.Component {
                   <FlexTitle>Success!</FlexTitle>
                   <FlexTextWrapper>
                     {assignment.testType === _testTypes.COMMON
-                      ? `Test ${title} has been assigned to students in ${assignment.class.length} classes/groups.`
-                      : `${title} has been assigned in ${assignmentStatus} status.`}
+                      ? `Test ${moduleTitle || title} has been assigned to students in ${
+                          assignment.class.length
+                        } classes/groups.`
+                      : `${moduleTitle || title} has been assigned in ${assignmentStatus} status.`}
                   </FlexTextWrapper>
                   {assignment.passwordPolicy === passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
                     <FlexText style={{ textAlign: "justify" }}>

@@ -10,12 +10,12 @@ class Tabs extends Component {
   static TabContainer = TabContainer;
 
   render() {
-    const { children, onChange, value, extra, style } = this.props;
+    const { children, onChange, value, extra, style, mb } = this.props;
 
     return (
       <AnswersTabContainer>
         {extra}
-        <Container style={style} data-cy="tabs">
+        <Container style={style} data-cy="tabs" mb={mb}>
           {React.Children.map(children, (child, index) => {
             if (!child) return null;
             return React.cloneElement(child, {
@@ -51,7 +51,7 @@ const Container = styled.div`
   align-items: center;
   flex-wrap: wrap;
   flex-direction: row;
-  margin-bottom: 4px;
+  margin-bottom: ${({ mb }) => mb || "4px"};
 `;
 
 const AnswersTabContainer = styled.div`

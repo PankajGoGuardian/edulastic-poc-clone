@@ -13,9 +13,9 @@ export const getItemIdSelector = createSelector(
 );
 
 export const getRows = item =>
-  item.rows.map(row => ({
+  item?.rows?.map(row => ({
     ...row,
-    widgets: row.widgets.map(widget => {
+    widgets: row?.widgets?.map(widget => {
       let referencePopulate = {
         data: null
       };

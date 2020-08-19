@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { throttle } from "lodash";
 import { themeColor, extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -17,41 +17,33 @@ class QuestionMenu extends Component {
   };
 
   handleScroll = option => {
-    this.contentWrapper.removeEventListener("scroll", this.throttledFindActiveTab);
-    const { main, advanced } = this.props;
+    window.removeEventListener("scroll", this.throttledFindActiveTab);
+    const { main, advanced, theme } = this.props;
     const options = [...main, ...advanced];
     const activeTab = options.findIndex(opt => opt.label === option.label);
-
     this.setState({ activeTab }, () => {
-      option.el.scrollIntoView({
+      const node = option.el;
+      window.scroll({
+        left: 0,
+        top: node.offsetTop - theme.HeaderHeight.xl, // 50 is the height of how to author button area
         behavior: "smooth"
       });
-      setTimeout(() => this.contentWrapper.addEventListener("scroll", this.throttledFindActiveTab), 1000);
+      setTimeout(() => window.addEventListener("scroll", this.throttledFindActiveTab), 1000);
     });
   };
 
   componentDidMount() {
     const { scrollContainer } = this.props;
     this.contentWrapper = scrollContainer?.current;
-    this.contentWrapper.addEventListener("scroll", this.throttledFindActiveTab);
+    window.addEventListener("scroll", this.throttledFindActiveTab);
   }
 
   componentWillUnmount() {
-    this.contentWrapper.removeEventListener("scroll", this.throttledFindActiveTab);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { scrollContainer } = this.props;
-
-    if (scrollContainer?.current !== nextProps.scrollContainer.current) {
-      this.contentWrapper = nextProps.scrollContainer.current;
-    }
-    this.setState({ activeTab: nextProps.activeTab });
-    this.findActiveTab();
+    window.removeEventListener("scroll", this.throttledFindActiveTab);
   }
 
   findActiveTab = () => {
-    const { main, advanced, advancedAreOpen } = this.props;
+    const { main, advanced, advancedAreOpen, theme } = this.props;
     const { activeTab } = this.state;
     let allOptions = main;
     if (advancedAreOpen) {
@@ -61,18 +53,19 @@ class QuestionMenu extends Component {
       const elm = allOptions[i].el;
       if (
         allOptions.length > activeTab &&
-        this.contentWrapper.scrollTop >= elm.offsetTop - this.contentWrapper.offsetTop + elm.scrollHeight
+        window.scrollY >= elm.offsetTop &&
+        window.scrollY < elm.offsetTop + elm.scrollHeight / 2 + theme.HeaderHeight.xl
       ) {
         this.setState({ activeTab: i + 1 });
       }
-    }
-    if (allOptions[0] && this.contentWrapper.scrollTop < allOptions[0].el.scrollHeight / 2) {
-      this.setState({ activeTab: 0 });
-    } else if (
-      allOptions.length > activeTab &&
-      this.contentWrapper.scrollHeight <= this.contentWrapper.scrollTop + this.contentWrapper.clientHeight
-    ) {
-      this.setState({ activeTab: allOptions.length - 1 });
+      if (allOptions[0] && window.scrollY + theme.HeaderHeight.xl < allOptions[0].el.scrollHeight / 2) {
+        this.setState({ activeTab: 0 });
+      } else if (
+        allOptions.length > activeTab &&
+        window.scrollHeight <= window.scrollY + this.contentWrapper.clientHeight
+      ) {
+        this.setState({ activeTab: allOptions.length - 1 });
+      }
     }
   };
 
@@ -155,7 +148,6 @@ class QuestionMenu extends Component {
 }
 
 QuestionMenu.propTypes = {
-  activeTab: PropTypes.number.isRequired,
   main: PropTypes.array,
   advanced: PropTypes.array,
   advancedAreOpen: PropTypes.bool.isRequired,
@@ -172,13 +164,13 @@ QuestionMenu.defaultProps = {
   questionTitle: ""
 };
 
-export default withWindowSizes(QuestionMenu);
+export default withTheme(withWindowSizes(QuestionMenu));
 export { default as AdvancedOptionsLink } from "./AdvancedOptionsLink";
 
 const Menu = styled.div`
   position: fixed;
   width: 230px;
-  padding: 30px 0px;
+  padding: 50px 0px 30px 0px;
   height: 100%;
 `;
 

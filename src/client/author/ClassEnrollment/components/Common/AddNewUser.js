@@ -1,21 +1,25 @@
-import React from "react";
-import { get, isEmpty } from "lodash";
-
-// components
-import { Collapse, DatePicker, Icon, Input, Select, Spin } from "antd";
-import { EduButton } from "@edulastic/common";
-import { IconUser } from "@edulastic/icons";
 import { schoolApi, userApi } from "@edulastic/api";
-import { Field, FooterDiv, Form, PanelHeader, StyledModal, Title, InputMessage } from "./styled";
+import {
+  CustomModalStyled,
+  DatePickerStyled,
+  EduButton,
+  FieldLabel,
+  SelectInputStyled,
+  TextInputStyled
+} from "@edulastic/common";
+import { IconUser } from "@edulastic/icons";
+// components
+import { Collapse, Icon, Select, Spin } from "antd";
+import { get, isEmpty } from "lodash";
+import React from "react";
 import { isEmailValid, nameValidator } from "../../../../common/utils/helpers";
-
-import keyIcon from "../../../../student/assets/key-icon.svg";
 import hashIcon from "../../../../student/assets/hashtag-icon.svg";
-import userIcon from "../../../../student/assets/user-icon.svg";
+import keyIcon from "../../../../student/assets/key-icon.svg";
 import mailIcon from "../../../../student/assets/mail-icon.svg";
+import userIcon from "../../../../student/assets/user-icon.svg";
+import { Field, FooterDiv, Form, InputMessage, PanelHeader, Title } from "./styled";
 
 const { Option } = Select;
-
 const { Panel } = Collapse;
 class AddNewUserForm extends React.Component {
   state = {
@@ -263,11 +267,10 @@ class AddNewUserForm extends React.Component {
 
     const footer = (
       <FooterDiv>
-        <EduButton height="40px" isGhost data-cy="cancel" onClick={() => closeModal()}>
+        <EduButton isGhost data-cy="cancel" onClick={() => closeModal()}>
           No, Cancel
         </EduButton>
         <EduButton
-          height="40px"
           data-cy="addUser"
           onClick={() => addNewUser(userInfo)}
           disabled={!isValidClassCode || userExistsInClass}
@@ -303,25 +306,27 @@ class AddNewUserForm extends React.Component {
     };
 
     return (
-      <StyledModal
+      <CustomModalStyled
         title={title}
         footer={footer}
         visible={showModal}
         onCancel={() => closeModal()}
         destroyOnClose
         afterClose={this.resetFormData}
+        centered
       >
         <Form>
           <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
             <Panel header={BasicDetailsHeader} key="basic">
               <Field name="code">
-                <legend>Class Code</legend>
+                <FieldLabel>Class Code</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("code", {
                     rules: [{ required: true, message: "Please enter valid class code" }],
                     initialValue: ""
                   })(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={hashIcon} alt="" />}
                       onBlur={evt => {
                         const classCodeValue = evt.target.value.trim();
@@ -338,14 +343,15 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="email">
-                <legend>Username/Email</legend>
+                <FieldLabel>Username/Email</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("email", {
                     validateTrigger: ["onBlur"],
                     rules: [{ validator: this.validateEmailValue }],
                     initialValue: ""
                   })(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       data-cy="username"
                       prefix={<img style={iconSize} src={mailIcon} alt="" />}
                       placeholder="Enter Username/email"
@@ -356,10 +362,10 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="role">
-                <legend>Role</legend>
+                <FieldLabel>Role</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("role", { initialValue: role })(
-                    <Select
+                    <SelectInputStyled
                       disabled={pathname.split("/").includes("class-enrollment")}
                       onSelect={this.onRoleChange}
                       getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -369,19 +375,20 @@ class AddNewUserForm extends React.Component {
                       </Option>
                       <Option value="student">Student</Option>
                       <Option value="teacher">Teacher</Option>
-                    </Select>
+                    </SelectInputStyled>
                   )}
                 </Form.Item>
               </Field>
               <Field name="fullName">
-                <legend>Name of user</legend>
+                <FieldLabel>Name of user</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("fullName", {
                     validateTrigger: ["onBlur"],
                     rules: [{ validator: validateName }, { max: 128, message: "Must less than 128 characters!" }],
                     initialValue: ""
                   })(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={userIcon} alt="" />}
                       placeholder="Enter the name of user"
                       disabled={isUserExists || userExistsInClass || !isValidClassCode}
@@ -390,10 +397,11 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="password">
-                <legend>Password</legend>
+                <FieldLabel>Password</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("password")(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
                       placeholder="Enter Password"
@@ -404,12 +412,13 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="confirmPassword">
-                <legend>Confirm Password</legend>
+                <FieldLabel>Confirm Password</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
                     rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
                   })(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
                       placeholder="Confirm Password"
@@ -421,7 +430,7 @@ class AddNewUserForm extends React.Component {
               </Field>
               {role === "teacher" && (
                 <Field name="institutionIds">
-                  <legend>Select School</legend>
+                  <FieldLabel>Select School</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("institutionIds", {
                       initialValue: selectedSchoolId,
@@ -432,7 +441,7 @@ class AddNewUserForm extends React.Component {
                         }
                       ]
                     })(
-                      <Select
+                      <SelectInputStyled
                         mode="multiple"
                         placeholder="Please Select schools"
                         notFoundContent={schoolsState.fetching ? <Spin size="small" /> : null}
@@ -447,7 +456,7 @@ class AddNewUserForm extends React.Component {
                             {school._source.name}
                           </Option>
                         ))}
-                      </Select>
+                      </SelectInputStyled>
                     )}
                   </Form.Item>
                 </Field>
@@ -455,99 +464,99 @@ class AddNewUserForm extends React.Component {
             </Panel>
             <Panel header={AdditionalDetailsHeader} key="additional">
               <Field name="sisId">
-                <legend>SIS ID</legend>
-                <Form.Item>{getFieldDecorator("sisId")(<Input placeholder="Enter SIS ID" disabled />)}</Form.Item>
+                <FieldLabel>SIS ID</FieldLabel>
+                <Form.Item>{getFieldDecorator("sisId")(<TextInputStyled placeholder="Enter SIS ID" disabled />)}</Form.Item>
               </Field>
               <Field name="studentNumber">
-                <legend>Student Number</legend>
+                <FieldLabel>Student Number</FieldLabel>
                 <Form.Item>
-                  {getFieldDecorator("studentNumber")(<Input placeholder="Enter Student Number" disabled />)}
+                  {getFieldDecorator("studentNumber")(<TextInputStyled placeholder="Enter Student Number" disabled />)}
                 </Form.Item>
               </Field>
               <Field name="frlStatus">
-                <legend>Free Reduced Lunch</legend>
+                <FieldLabel>Free Reduced Lunch</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("frlStatus")(
-                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                    <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
-                    </Select>
+                    </SelectInputStyled>
                   )}
                 </Form.Item>
               </Field>
               <Field name="iepStatus">
-                <legend>Individual Education Plan</legend>
+                <FieldLabel>Individual Education Plan</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("iepStatus")(
-                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                    <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
-                    </Select>
+                    </SelectInputStyled>
                   )}
                 </Form.Item>
               </Field>
               <Field name="ellStatus">
-                <legend>English Language Learner</legend>
+                <FieldLabel>English Language Learner</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("ellStatus")(
-                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                    <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
-                    </Select>
+                    </SelectInputStyled>
                   )}
                 </Form.Item>
               </Field>
               <Field name="sedStatus">
-                <legend>Special ED</legend>
+                <FieldLabel>Special ED</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("sedStatus")(
-                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                    <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
-                    </Select>
+                    </SelectInputStyled>
                   )}
                 </Form.Item>
               </Field>
               <Field name="race">
-                <legend>Race</legend>
-                <Form.Item>{getFieldDecorator("race")(<Input placeholder="Race" />)}</Form.Item>
+                <FieldLabel>Race</FieldLabel>
+                <Form.Item>{getFieldDecorator("race")(<TextInputStyled placeholder="Race" />)}</Form.Item>
               </Field>
 
               <Field name="dob" optional>
-                <legend>DOB</legend>
-                <Form.Item>{getFieldDecorator("dob")(<DatePicker format="DD MMM, YYYY" />)}</Form.Item>
+                <FieldLabel>DOB</FieldLabel>
+                <Form.Item>{getFieldDecorator("dob")(<DatePickerStyled format="DD MMM, YYYY" />)}</Form.Item>
               </Field>
               <Field name="gender">
-                <legend>Gender</legend>
+                <FieldLabel>Gender</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("gender")(
-                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                    <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="male">Male</Option>
                       <Option value="female">Female</Option>
                       <Option value="other">Other</Option>
-                    </Select>
+                    </SelectInputStyled>
                   )}
                 </Form.Item>
               </Field>
               <Field name="contactEmails">
-                <legend>Contact</legend>
-                <Form.Item>{getFieldDecorator("contactEmails")(<Input placeholder="Enter Contact" />)}</Form.Item>
+                <FieldLabel>Contact</FieldLabel>
+                <Form.Item>{getFieldDecorator("contactEmails")(<TextInputStyled placeholder="Enter Contact" />)}</Form.Item>
               </Field>
               <Field name="tts">
-                <legend>Enable Text To Speech</legend>
+                <FieldLabel>Enable Text To Speech</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("tts")(
-                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                    <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="yes">Yes</Option>
                       <Option value="no">No</Option>
-                    </Select>
+                    </SelectInputStyled>
                   )}
                 </Form.Item>
               </Field>
             </Panel>
           </Collapse>
         </Form>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

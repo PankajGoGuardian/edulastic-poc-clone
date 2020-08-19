@@ -16,7 +16,7 @@ import presentationIcon from "../../../Assignments/assets/presentation.svg";
 import { StatusLabel } from "../../../Assignments/components/TableList/styled";
 import { CustomIcon } from "../styled";
 
-const AssignmentsClasses = ({ assignmentRows, handleActionClick }) => {
+const AssignmentsClasses = ({ moduleId, contentId, assignmentRows, handleActionClick }) => {
   const data = assignmentRows?.map((assignment, index) => ({ key: index, ...assignment }));
 
   const renderTextCell = text => (
@@ -86,7 +86,9 @@ const AssignmentsClasses = ({ assignmentRows, handleActionClick }) => {
         <ActionsWrapper data-cy="PresentationIcon">
           <Tooltip placement="bottom" title="Live Class Board">
             <BtnContainer
-              onClick={e => handleActionClick(e, "classboard", assignment?.assignmentId, assignment?.classId)}
+              onClick={e =>
+                handleActionClick(e, "classboard", assignment?.assignmentId, assignment?.classId, moduleId, contentId)
+              }
             >
               <img src={presentationIcon} alt="Images" />
             </BtnContainer>
@@ -94,7 +96,16 @@ const AssignmentsClasses = ({ assignmentRows, handleActionClick }) => {
 
           <Tooltip placement="bottom" title="Express Grader">
             <BtnContainer
-              onClick={e => handleActionClick(e, "expressgrader", assignment?.assignmentId, assignment?.classId)}
+              onClick={e =>
+                handleActionClick(
+                  e,
+                  "expressgrader",
+                  assignment?.assignmentId,
+                  assignment?.classId,
+                  moduleId,
+                  contentId
+                )
+              }
             >
               <img src={additemsIcon} alt="Images" />
             </BtnContainer>
@@ -102,7 +113,16 @@ const AssignmentsClasses = ({ assignmentRows, handleActionClick }) => {
 
           <Tooltip placement="bottom" title="Reports">
             <BtnContainer
-              onClick={e => handleActionClick(e, "standardsBasedReport", assignment?.assignmentId, assignment?.classId)}
+              onClick={e =>
+                handleActionClick(
+                  e,
+                  "standardsBasedReport",
+                  assignment?.assignmentId,
+                  assignment?.classId,
+                  moduleId,
+                  contentId
+                )
+              }
             >
               <img src={piechartIcon} alt="Images" />
             </BtnContainer>

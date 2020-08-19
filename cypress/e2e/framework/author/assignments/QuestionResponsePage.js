@@ -12,7 +12,7 @@ export default class QuestionResponsePage {
 
   getQuestionMaxScore = card => this.getScoreInput(card).next();
 
-  getFeedbackArea = card => card.contains("Leave a feedback!").next();
+  getFeedbackArea = card => card.find('[data-cy="feedBackInput"]');
 
   getOverallFeedback = () => cy.get('[data-cy="overallFeedback"]');
 
@@ -32,7 +32,9 @@ export default class QuestionResponsePage {
     cy
       .get('[data-cy="studentName"]')
       .contains(studentName)
-      .closest('[data-cy="student-question-container"]');
+      .closest('[data-cy="student-question-container"]')
+      .should($ele => expect(Cypress.dom.isAttached($ele)).to.be.true);
+
   // .find('[data-cy="question-container"]');
 
   getLabels = qcard => qcard.find("label");
@@ -176,58 +178,59 @@ export default class QuestionResponsePage {
   };
 
   verifyScore = (card, points, attemptData, attemptType, questionType) => {
-    /* this.getScoreInput(card)
-      .as("scoreinputbox")
-      .should("have.value", correct ? points.toString() : "0");
- */
     const score = this.getScoreByAttempt(attemptData, points, questionType, attemptType);
+    this.verifyScoreAndPointsByCard(card, score, points);
+  };
 
+  verifyScoreAndPointsByCard = (card, score, points) => {
     this.getScoreInput(card)
       .as("scoreinputbox")
-      .should("have.value", score.toString());
-
+      .should($score => {
+        const value = Cypress.$($score).attr("value");
+        expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
+      });
     // verify max score
     cy.get("@scoreinputbox")
       .next()
       .should("have.text", points.toString());
   };
 
-  updateScoreAndFeedbackForStudent = (studentName, score, feedback) => {
+  updateScoreAndFeedbackForStudent = (studentName, score, feedback, inExpGrader = false) => {
     cy.server();
-    cy.route("PUT", "**/feedback").as("feedback");
-    cy.route("PUT", "**/response-entry-and-score").as("scoreEntry");
-    cy.route("PUT", "**/feedback").as("feedback");
+    const stringAdjust = inExpGrader ? "" : "{esc}";
+    this.getScoreInput(this.getQuestionContainerByStudent(studentName)).then($Currestscore => {
+      const currentScore = Cypress.$($Currestscore).attr("value");
+      if (!(typeof score === "undefined" || score === "" || `${score}` === currentScore)) {
+        cy.wait(1000);
+        cy.route("PUT", "**/response-entry-and-score").as("scoreEntry");
 
-    this.getQuestionContainerByStudent(studentName).as("updatecard");
-    cy.wait(500); // front end renders slow and gets old value appended in the box, hence waiting
-    this.getScoreInput(cy.get("@updatecard")).as("scoreinputbox");
-
-    if (!(typeof score === "undefined" || score === "")) {
-      cy.get("@scoreinputbox").type("{selectall}{del}", { force: score });
-      cy.get("@scoreinputbox").type(score, { force: true });
-
-      this.getFeedbackArea(cy.get("@updatecard"))
-        .click()
-        .then(() => {
-          cy.wait("@scoreEntry").then(xhr => {
-            expect(xhr.status).to.eq(200);
-          });
+        this.getScoreInput(this.getQuestionContainerByStudent(studentName)).type(
+          `{selectall}{del}${score}${stringAdjust}`,
+          { force: true }
+        );
+        inExpGrader ? cy.contains("Student Feedback!").click() : undefined;
+        cy.wait("@scoreEntry").then(xhr => {
+          expect(xhr.status, `score update ${xhr.status === 200 ? "success" : "fialed"}`).to.eq(200);
         });
 
-      cy.get("@scoreinputbox").should("have.value", score.toString());
-    }
+        this.getScoreInput(this.getQuestionContainerByStudent(studentName)).should($score => {
+          const value = Cypress.$($score).attr("value");
+          expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
+        });
+      }
+    });
 
     if (feedback) {
-      this.getFeedbackArea(cy.get("@updatecard"))
-        .clear()
-        .type(feedback);
-      cy.get("@scoreinputbox")
-        .click()
-        .then(() => {
-          cy.wait("@feedback").then(xhr => {
-            expect(xhr.status).to.eq(200);
-          });
-        });
+      cy.wait(1000);
+      cy.route("PUT", "**/feedback").as("feedback");
+      this.getFeedbackArea(this.getQuestionContainerByStudent(studentName)).type(
+        `{selectall}${feedback}${stringAdjust}`,
+        { force: true }
+      );
+      inExpGrader ? cy.contains("Student Feedback!").click() : undefined;
+      cy.wait("@feedback").then(xhr => {
+        expect(xhr.status, `feed back update ${xhr.status === 200 ? "success" : "fialed"}`).to.eq(200);
+      });
     }
   };
 
@@ -242,7 +245,7 @@ export default class QuestionResponsePage {
   verifyTotalScoreAndImprovement = (totalScore, maxScore, improvemnt) => {
     this.getTotalScore().should("have.text", `${totalScore}`);
     this.getMaxScore().should("have.text", `${maxScore}`);
-    if (improvemnt) this.getImprovement().should("have.text", `${improvemnt}`);
+    if (improvemnt) this.getImprovement().should("have.text", `${Math.sign(improvemnt) == 1 ? "+" : ""}${improvemnt}`);
     else this.getImprovement().should("not.be.visible");
   };
 
@@ -370,17 +373,17 @@ export default class QuestionResponsePage {
   verifyCorrectAnswerClozeText = (card, right) => {
     card
       .contains("Correct Answer")
-      .next()
-      .find('[class^="AnswerBox"]')
+      .siblings()
       .then(ele => {
         right.forEach((choice, i) => {
           cy.wrap(ele)
             .eq(i)
             .should("have.css", "background-color", queColor.WHITE)
             .find('[class^="IndexBox"]')
-            .should("have.css", "background-color", queColor.GREEN_6)
+            .should("have.css", "background-color", queColor.GREY_3)
             .next()
-            .should("contain.text", choice);
+            .should("contain.text", choice)
+            .and("have.css", "color", queColor.BLACK);
         });
       });
   };
@@ -397,21 +400,30 @@ export default class QuestionResponsePage {
 
           switch (attemptType) {
             case attemptTypes.RIGHT:
-              cy.get("@responseBox").should("have.css", "background-color", queColor.LIGHT_GREEN);
+              cy.get("@responseBox")
+                .should("have.css", "background-color", queColor.LIGHT_GREEN)
+                .find("svg")
+                .should("have.css", "fill", queColor.GREEN_2);
 
               break;
 
             case attemptTypes.WRONG:
-              cy.get("@responseBox").should("have.css", "background-color", queColor.LIGHT_RED);
+              cy.get("@responseBox")
+                .should("have.css", "background-color", queColor.LIGHT_RED)
+                .find("svg")
+                .should("have.css", "fill", queColor.LIGHT_RED2);
 
               break;
 
             case attemptTypes.PARTIAL_CORRECT:
-              cy.get("@responseBox").should(
+              cy.get("@responseBox")
+                .should(
                 "have.css",
                 "background-color",
                 right[i] === attempt[i] ? queColor.LIGHT_GREEN : queColor.LIGHT_RED
-              );
+                )
+                .find("svg")
+                .should("have.css", "fill", attempt[i] === right[i] ? queColor.GREEN_2 : queColor.LIGHT_RED2);
 
               break;
 
@@ -419,7 +431,7 @@ export default class QuestionResponsePage {
               break;
           }
         } else {
-          cy.get("@responseBox").should("have.css", "background-color", queColor.GREY_2);
+          cy.get("@responseBox").should("have.css", "background-color", queColor.GREY_4);
         }
       });
   };
@@ -428,15 +440,14 @@ export default class QuestionResponsePage {
   verifyCorrectAnswerClozeDropDown = (card, right) => {
     card
       .contains("Correct Answer")
-      .next()
-      .find(".response-btn ")
+      .siblings()
+      .find('[data-cy="styled-wrapped-component"]')
       .then(ele => {
         right.forEach((choice, i) => {
           cy.wrap(ele)
             .eq(i)
             .should("contain.text", choice)
-            .should("have.class", "check-answer")
-            .and("have.class", "showanswer");
+            .should("have.css", "color", queColor.BLACK);
         });
       });
   };
@@ -458,14 +469,17 @@ export default class QuestionResponsePage {
             case attemptTypes.RIGHT:
               cy.get("@responseBox")
                 // .should("have.class", "right")
-                .should("have.css", "background-color", queColor.LIGHT_GREEN);
-
+                .should("have.css", "background-color", queColor.LIGHT_GREEN)
+                .find("svg")
+                .should("have.css", "fill", queColor.GREEN_8);
               break;
 
             case attemptTypes.WRONG:
               cy.get("@responseBox")
                 // .should("have.class", "wrong")
-                .should("have.css", "background-color", queColor.LIGHT_RED);
+                .should("have.css", "background-color", queColor.LIGHT_RED)
+                .find("svg")
+                .should("have.css", "fill", queColor.LIGHT_RED2);
 
               break;
 
@@ -476,7 +490,9 @@ export default class QuestionResponsePage {
                   "have.css",
                   "background-color",
                   attempt[i] === right[i] ? queColor.LIGHT_GREEN : queColor.LIGHT_RED
-                );
+                )
+                .find("svg")
+                .should("have.css", "fill", attempt[i] === right[i] ? queColor.GREEN_8 : queColor.LIGHT_RED2);
               break;
 
             default:
@@ -486,7 +502,7 @@ export default class QuestionResponsePage {
           cy.get("@responseBox")
             // .should("not.have.class", "check-answer")
             // .and("have.class", "wrong");
-            .should("have.css", "background-color", queColor.GREY_2);
+            .should("have.css", "background-color", queColor.GREY_4);
         }
       });
   };
@@ -501,28 +517,27 @@ export default class QuestionResponsePage {
   };
 
   verifyResponseByAttemptMathNumeric = (card, attempt, attemptType, itemPreview = false) => {
-    if (attemptType !== attemptTypes.SKIP)
+    if (attemptType !== attemptTypes.SKIP) {
       cy.get("@quecard")
         .find('[class^="MathInputWrapper"]')
         .should("contain.text", attempt);
-    if (itemPreview)
       cy.get("@quecard")
         .find(`[class^="Icon"]`)
         .first()
         .find("svg")
-        .should("have.css", "fill", attemptType === attemptTypes.RIGHT ? queColor.RIGHT : queColor.RED_1);
-    else
-      cy.get("@quecard")
-        .find('[class^="MathInputWrapper"]')
-        .should(
-          "have.css",
-          "background-color",
-          attemptType === attemptTypes.RIGHT
-            ? queColor.GREEN_7
-            : attemptType === attemptTypes.WRONG
-            ? queColor.LIGHT_RED
-            : queColor.GREY_2
-        );
+        .should("have.css", "fill", attemptType === attemptTypes.RIGHT ? queColor.GREEN_8 : queColor.LIGHT_RED2);
+    }
+    cy.get("@quecard")
+      .find('[class^="MathInputWrapper"]')
+      .should(
+        "have.css",
+        "background-color",
+        attemptType === attemptTypes.RIGHT
+          ? queColor.LIGHT_GREEN
+          : attemptType === attemptTypes.WRONG
+          ? queColor.LIGHT_RED
+          : queColor.GREY_2
+      );
   };
 
   verifyResponseEssayRich = (card, attempt, attemptType) => {

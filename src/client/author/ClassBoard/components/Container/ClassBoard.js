@@ -161,11 +161,18 @@ class ClassBoard extends Component {
   }
 
   componentDidMount() {
-    const { loadTestActivity, match, studentUnselectAll } = this.props;
+    const { loadTestActivity, match, studentUnselectAll, location, isCliUser, history } = this.props;
     const { assignmentId, classId } = match.params;
+    const { search, state } = location;
     loadTestActivity(assignmentId, classId);
     studentUnselectAll();
     window.addEventListener("scroll", this.handleScroll);
+    if (isCliUser) {
+      history.push({
+        search: search ? `${search}&cliUser=true` : `?cliUser=true`,
+        state
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -307,6 +314,7 @@ class ClassBoard extends Component {
 
     if (name === "Both") {
       history.push(`/author/classboard/${assignmentId}/${classId}`);
+      setCurrentTestActivityId("");
     } else if (name === "Student") {
       history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`);
       setCurrentTestActivityId(testActivityId);
@@ -611,7 +619,8 @@ class ClassBoard extends Component {
       t,
       history,
       location,
-      loadTestActivity
+      loadTestActivity,
+      isCliUser
     } = this.props;
 
     const {
@@ -698,44 +707,59 @@ class ClassBoard extends Component {
       <div>
         {showMarkSubmittedPopup && (
           <ConfirmationModal
-            title="Mark As Submitted"
+            title="Mark as Submitted"
             show={showMarkSubmittedPopup}
             onOk={this.handleMarkSubmitted}
             onCancel={this.handleCancelMarkSubmitted}
             inputVal={modalInputVal}
+            placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="SUBMIT"
-            bodyText={`The assignment for selected student(s) will be marked as "Submitted". Once you proceed, these students will not be able to take the assignment online. If the students have answered any questions, their responses will be saved.`}
+            bodyText={
+              <div>
+                The assignment for selected student(s) will be marked as &quot;Submitted&quot;.Once you proceed, these
+                students will not be able to take the assignment online.If the students have answered any questions,
+                their responses will be saved.{" "}
+              </div>
+            }
             okText="Yes, Submit"
             canUndone
           />
         )}
         {showMarkAbsentPopup && (
           <ConfirmationModal
-            title="Absent"
+            title="Mark as Absent"
             show={showMarkAbsentPopup}
             onOk={this.handleMarkAbsent}
             onCancel={this.handleCancelMarkAbsent}
             inputVal={modalInputVal}
+            placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="ABSENT"
             bodyText={
-              "You are about to Mark the selected student(s) as Absent. Student's response if present will be deleted. Do you still want to proceed?"
+              <span>
+                You are about to Mark the selected student(s) as Absent. Student&apos;s response if present will be
+                deleted. Do you still want to proceed?
+              </span>
             }
-            okText="Yes,Absent"
+            okText="Yes, Absent"
           />
         )}
         {showRemoveStudentsPopup && (
           <ConfirmationModal
-            title="Remove"
+            title="Remove Students"
             show={showRemoveStudentsPopup}
             onOk={this.handleRemoveStudents}
             onCancel={this.handleCancelRemove}
             inputVal={modalInputVal}
+            placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="REMOVE"
             bodyText={
-              "You are about to remove the selected student(s) from this assessment. Student's responses will be deleted. Do you still want to proceed?"
+              <span>
+                You are about to remove the selected student(s) from this assessment.Student&apos;s responses will be
+                deleted. Do you still want to proceed?
+              </span>
             }
             okText="Yes, Remove"
           />
@@ -760,72 +784,79 @@ class ClassBoard extends Component {
           resetView={this.resetView}
           onStudentReportCardsClick={this.onStudentReportCardsClick}
           testActivity={testActivity}
+          isCliUser={isCliUser}
         />
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb} />
-            <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
-              <PresentationToggleSwitch groupId={classId} />
-              <BothButton
-                disabled={isLoading}
-                style={{ marginLeft: "20px" }}
-                active={selectedTab === "Both"}
-                onClick={e => this.onTabChange(e, "Both")}
-              >
-                CARD VIEW
-              </BothButton>
-              <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
-                <StudentButton
-                  disabled={!firstStudentId || !isItemsVisible || isLoading}
-                  active={selectedTab === "Student"}
-                  onClick={e => {
-                    const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
-                    setCurrentTestActivityId(_testActivityId);
-                    if (!isItemsVisible) {
-                      return;
-                    }
-                    getAllTestActivitiesForStudent({
-                      studentId: firstStudentId,
-                      assignmentId,
-                      groupId: classId
-                    });
-                    this.onTabChange(e, "Student", firstStudentId, _testActivityId);
-                  }}
+            <ClassBreadBrumb
+              breadCrumb={location?.state?.breadCrumb}
+              isCliUser={isCliUser}
+              fromUrl={location?.state?.from}
+            />
+            {!isCliUser && (
+              <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
+                <PresentationToggleSwitch groupId={classId} />
+                <BothButton
+                  disabled={isLoading}
+                  style={{ marginLeft: "20px" }}
+                  active={selectedTab === "Both"}
+                  onClick={e => this.onTabChange(e, "Both")}
                 >
-                  STUDENTS
-                </StudentButton>
-              </WithDisableMessage>
-              <WithDisableMessage
-                disabled={hasRandomQuestions || !isItemsVisible}
-                errMessage={
-                  hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
-                }
-              >
-                <QuestionButton
-                  active={selectedTab === "questionView"}
-                  disabled={!firstStudentId || !isItemsVisible || hasRandomQuestions || isLoading}
-                  onClick={() => {
-                    const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
-                    if (!firstQuestion) {
-                      console.warn("no question activities");
-                      return;
-                    }
-                    this.setState({
-                      selectedQuestion: 0,
-                      selectedQid: firstQuestion._id,
-                      itemId: firstQuestion.testItemId,
-                      selectedTab: "questionView"
-                    });
-                    loadTestActivity(assignmentId, classId);
-                    history.push(
-                      `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
-                    );
-                  }}
+                  CARD VIEW
+                </BothButton>
+                <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+                  <StudentButton
+                    disabled={!firstStudentId || !isItemsVisible || isLoading}
+                    active={selectedTab === "Student"}
+                    onClick={e => {
+                      const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
+                      setCurrentTestActivityId(_testActivityId);
+                      if (!isItemsVisible) {
+                        return;
+                      }
+                      getAllTestActivitiesForStudent({
+                        studentId: firstStudentId,
+                        assignmentId,
+                        groupId: classId
+                      });
+                      this.onTabChange(e, "Student", firstStudentId, _testActivityId);
+                    }}
+                  >
+                    STUDENTS
+                  </StudentButton>
+                </WithDisableMessage>
+                <WithDisableMessage
+                  disabled={hasRandomQuestions || !isItemsVisible}
+                  errMessage={
+                    hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
+                  }
                 >
-                  QUESTIONS
-                </QuestionButton>
-              </WithDisableMessage>
-            </StudentButtonDiv>
+                  <QuestionButton
+                    active={selectedTab === "questionView"}
+                    disabled={!firstStudentId || !isItemsVisible || hasRandomQuestions || isLoading}
+                    onClick={() => {
+                      const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
+                      if (!firstQuestion) {
+                        console.warn("no question activities");
+                        return;
+                      }
+                      this.setState({
+                        selectedQuestion: 0,
+                        selectedQid: firstQuestion._id,
+                        itemId: firstQuestion.testItemId,
+                        selectedTab: "questionView"
+                      });
+                      loadTestActivity(assignmentId, classId);
+                      history.push(
+                        `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
+                      );
+                    }}
+                  >
+                    QUESTIONS
+                  </QuestionButton>
+                </WithDisableMessage>
+              </StudentButtonDiv>
+            )}
           </StyledFlexContainer>
           {selectedTab === "Both" && (
             <React.Fragment>
@@ -1175,7 +1206,7 @@ class ClassBoard extends Component {
                         value: index,
                         disabled: x.disabled || x.scoringDisabled,
                         id: x._id,
-                        qLabel: `Question ${x.barLabel.slice(1)}`
+                        qLabel: `Question ${x?.barLabel?.slice(1)}`
                       }))
                       .filter(x => !x.disabled)
                       .map(({ value, qLabel }) => ({ value, name: qLabel }))}
@@ -1185,7 +1216,11 @@ class ClassBoard extends Component {
                       const { assignmentId: _assignmentId, classId: _classId } = match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                      history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}`);
+                      history.push(
+                        `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
+                          isCliUser ? "?cliUser=true" : ""
+                        }`
+                      );
                       this.setState({
                         selectedQuestion: value,
                         selectedQid: qid,
@@ -1227,7 +1262,8 @@ const enhance = compose(
       removedStudents: removedStudentsSelector(state),
       studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
-      isLoading: testActivtyLoadingSelector(state)
+      isLoading: testActivtyLoadingSelector(state),
+      isCliUser: get(state, "user.isCliUser", false)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

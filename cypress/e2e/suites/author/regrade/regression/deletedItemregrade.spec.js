@@ -54,6 +54,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   let attempt = [];
 
   before("Get Data Of test and its itemns", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
       itemsInTest = testData.EDIT_ASSIGNED_TEST_REGRADE.itemKeys;
@@ -154,7 +156,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       it(">verif lcb card view", () => {
         Object.keys(students).forEach((student, i) => {
           // verify total score of all students ;
-          lcb.getStudentScoreByIndex(i).should("contain.text", "4 / 4");
+          lcb.verifyScoreByStudentIndex(i, 4, 4);
           // verify question cards shows 2 questions
           lcb
             .getQuestionsByIndex(i)

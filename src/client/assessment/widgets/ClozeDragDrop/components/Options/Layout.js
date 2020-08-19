@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Select, TextField, Checkbox , notification} from "@edulastic/common";
-import { Input, message } from "antd";
+import { Select, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { isEqual, clamp } from "lodash";
 
@@ -14,8 +13,6 @@ import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { H4InnerTitle } from "../../../../styled/InnerTitle";
 
-import { Container } from "./styled/Container";
-import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../../components/Question";
 import { TextInputStyled } from "../../../../styled/InputStyles";
@@ -66,7 +63,7 @@ class Layout extends Component {
 
     const changeUiStyle = (prop, value) => {
       if (prop === "responseContainerWidth" && value < 1) {
-        notification({ messageKey:"widthShouldBeGreaterThanZero"});
+        notification({ messageKey: "widthShouldBeGreaterThanZero" });
         return null;
       }
       onChange("uiStyle", {
@@ -229,7 +226,7 @@ class Layout extends Component {
             />
           </Col>
         </Row>
-        <Row gutter={24} type={"flex"} align={"middle"}>
+        <Row gutter={24} type="flex" align="middle">
           <Col md={12}>
             <Label>{t("component.options.choiceMaxWidth")}</Label>
             <TextInputStyled

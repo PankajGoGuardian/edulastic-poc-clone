@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
-import { withTheme } from "styled-components";
+import styled from "styled-components";
 import get from "lodash/get";
 import PropTypes from "prop-types";
-import Switch from "antd/lib/switch";
 
 import {
   Stimulus,
@@ -11,7 +10,8 @@ import {
   AnswerContext,
   QuestionLabelWrapper,
   QuestionSubLabel,
-  QuestionContentWrapper
+  QuestionContentWrapper,
+  EduSwitchStyled
 } from "@edulastic/common";
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
@@ -59,7 +59,7 @@ const Display = ({
     saveAnswer(_userAnswer);
   };
   return (
-    <FlexContainer justifyContent="flex-start" alignItems="baseline" style={{ overflow: "auto" }}>
+    <FractionDisplay justifyContent="flex-start" alignItems="baseline">
       <QuestionLabelWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel} </QuestionNumberLabel>}
         {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
@@ -68,33 +68,22 @@ const Display = ({
       <QuestionContentWrapper>
         <FlexContainer justifyContent="space-between">
           <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
-            <Stimulus
-              style={{ marginTop: "14px", marginRight: "20px", width: "100%" }}
-              dangerouslySetInnerHTML={{ __html: stimulus }}
-            />
+            <StimulusContainer dangerouslySetInnerHTML={{ __html: stimulus }} />
           </FlexContainer>
           {hasAnnotations && answerContext.isAnswerModifiable && (
             <FlexContainer>
-              <span style={{ marginRight: "5px" }}>{t("component.fractionEditor.showAnnotations")}</span>
+              <AnnotationsTitle>{t("component.fractionEditor.showAnnotations")}</AnnotationsTitle>
               <SwitchWrapper>
-                <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
+                <EduSwitchStyled
+                  defaultChecked={showAnnotations}
+                  onChange={checked => toggleAnnotationsVibility(checked)}
+                />
               </SwitchWrapper>
             </FlexContainer>
           )}
         </FlexContainer>
         {/* content */}
-        <FlexContainer
-          style={{
-            overflow: "auto",
-            position: "relative",
-            minWidth: "660px",
-            minHeight: "300px",
-            padding: "0 0 1em 0"
-          }}
-          flexDirection="column"
-          justifyContent="flex-start"
-          alignItems="center"
-        >
+        <FractionContainer className="__prevent-page-break">
           <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
             {Array(count)
               .fill()
@@ -127,19 +116,21 @@ const Display = ({
                 )
               )}
           </FlexContainer>
-          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
-        </FlexContainer>
+          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging noBorder />}
+        </FractionContainer>
         {view && view !== EDIT && <Instructions item={item} />}
         {previewTab === SHOW && (
-          <CorrectAnswerBox
-            fractionProperties={fractionProperties}
-            selected={Array(get(item, "validation.validResponse.value", 1))
-              .fill()
-              .map((_, i) => i + 1)}
-          />
+          <FractionContainer className="__prevent-page-break">
+            <CorrectAnswerBox
+              fractionProperties={fractionProperties}
+              selected={Array(get(item, "validation.validResponse.value", 1))
+                .fill()
+                .map((_, i) => i + 1)}
+            />
+          </FractionContainer>
         )}
       </QuestionContentWrapper>
-    </FlexContainer>
+    </FractionDisplay>
   );
 };
 
@@ -163,4 +154,25 @@ Display.defaultProps = {
   stimulus: ""
 };
 
-export default withTheme(Display);
+export default Display;
+
+const FractionDisplay = styled(FlexContainer)`
+  overflow: auto;
+`;
+
+const StimulusContainer = styled(Stimulus)`
+  margin-top: 14px;
+  margin-right: 20px;
+  width: 100%;
+`;
+
+const AnnotationsTitle = styled.span`
+  margin-right: 5px;
+`;
+
+const FractionContainer = styled.div`
+  position: relative;
+  min-width: 660px;
+  min-height: 240px;
+  padding: 0px 0px 1rem 0px;
+`;

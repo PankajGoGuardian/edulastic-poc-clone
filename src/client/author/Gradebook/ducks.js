@@ -1,6 +1,7 @@
 import { createSlice } from "redux-starter-kit";
 import { notification } from "@edulastic/common";
 import { takeLatest, call, put, select } from "redux-saga/effects";
+import { keyBy } from "lodash";
 import { reportsApi, assignmentApi, groupApi } from "@edulastic/api";
 
 // imported selectors
@@ -64,23 +65,29 @@ export const { actions, reducer } = slice;
 // sagas
 function* fetchStudentPerformanceSaga({ payload }) {
   try {
-    const { filters, pageDetail } = payload;
+    const { filters, studentId, pageDetail } = payload;
     const { assessmentIds, classIds, grades, subjects, status, termId, testType, groupId } = filters;
-    const response = yield call(reportsApi.fetchStudentPerformance, {
-      assessmentIds: assessmentIds.join(","),
-      classIds: classIds.join(","),
-      grades: grades.join(","),
-      subjects: subjects.join(","),
+    const newPayload = {
+      studentId,
       status,
-      termId,
-      testType,
-      groupId,
       ...pageDetail
-    });
+    };
+    if (!studentId) {
+      Object.assign(newPayload, {
+        termId,
+        assessmentIds: assessmentIds.join(","),
+        classIds: classIds.join(","),
+        grades: grades.join(","),
+        subjects: subjects.join(","),
+        testType,
+        groupId
+      });
+    }
+    const response = yield call(reportsApi.fetchStudentPerformance, newPayload);
     yield put(actions.fetchStudentPerformanceCompleted(response));
   } catch (e) {
     yield put(actions.fetchStudentPerformanceCompleted({}));
-    notification({ messageKey:"failedToFetchStudentPerformanceGradeBook"});
+    notification({ messageKey: "failedToFetchStudentPerformanceGradeBook" });
   }
 }
 
@@ -94,7 +101,12 @@ function* fetchGradebookFiltersSaga() {
     // testTypes
     const testTypes = tTypes.map(({ value, text }) => ({ id: value, name: text }));
     // assessments
-    const { assignments: assessments } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
+    const { assignments, tests } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
+    const groupedTests = keyBy(tests, "_id");
+    const assessments = assignments.map(a => {
+      const testTitle = groupedTests[a.testId]?.title?.trim() || a.title;
+      return { ...a, testTitle };
+    });
     // classes & groups
     const classList = yield call(groupApi.fetchMyGroups);
     const classes = [];
@@ -113,7 +125,7 @@ function* fetchGradebookFiltersSaga() {
     yield put(actions.fetchGradebookFiltersCompleted(filtersData));
   } catch (e) {
     yield put(actions.fetchGradebookFiltersCompleted({}));
-    notification({ messageKey:"failedToFetchFiltersData"});
+    notification({ messageKey: "failedToFetchFiltersData" });
   }
 }
 

@@ -36,7 +36,8 @@ const Option = props => {
     qId,
     crossAction,
     fontSize,
-    isPrintPreview
+    isPrintPreview,
+    fromSetAnswers
   } = props;
   let className = "";
   let correctAnswers = [];
@@ -116,23 +117,23 @@ const Option = props => {
         case "number":
           return inx + 1;
         case "lower-alpha":
-          return ALPHABET[inx].toLowerCase();
+          return (ALPHABET[inx] || "").toLowerCase();
         case "upper-alpha":
         default:
-          return ALPHABET[inx].toUpperCase();
+          return (ALPHABET[inx] || "").toUpperCase();
       }
     } else if (uiStyle.type === "standard") {
       switch (uiStyle.stemNumeration) {
         case "number":
           return inx + 1;
         case "lower-alpha":
-          return ALPHABET[inx].toLowerCase();
+          return (ALPHABET[inx] || "").toLowerCase();
         case "upper-alpha":
         default:
-          return ALPHABET[inx].toUpperCase();
+          return (ALPHABET[inx] || "").toUpperCase();
       }
     } else {
-      return ALPHABET[inx].toUpperCase();
+      return (ALPHABET[inx] || "").toUpperCase();
     }
   };
 
@@ -166,9 +167,9 @@ const Option = props => {
     </StyledOptionsContainer>
   );
 
-  // const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
+  const showBorder = fromSetAnswers || uiStyle.type === "block";
+
   return (
-    // <Label width={width} smallSize={smallSize} className={className} showAnswer>
     // TODO setup label background color for each option
     <Label
       data-cy="anwer-labels"
@@ -183,6 +184,7 @@ const Option = props => {
       checkAnswer={checkAnswer}
       userSelect={!!setCrossAction}
       isPrintPreview={isPrintPreview}
+      showBorder={showBorder}
       onMouseEnter={() => {
         if (setCrossAction) {
           toggleHover(true);
@@ -206,15 +208,18 @@ const Option = props => {
 };
 
 const StyledOptionsContainer = styled.div`
+  flex: 1;
   display: flex;
   justify-content: flex-start;
+  padding: 5px 12px;
   flex-direction: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "column" : "row")};
   align-items: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "flex-start" : "center")};
+  border-radius: ${({ uiStyleType }) => (uiStyleType === "block" ? "4px" : "2px")};
 
   span.labelOnly {
-    width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "44px" : "36px")};
+    width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "37px" : "25px")};
     height: ${({ uiStyleType }) =>
-      uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "calc(100% + 2px)" : "36px"};
+      uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "calc(100% + 2px)" : "25px"};
 
     position: ${({ uiStyleType }) => (uiStyleType === "block" ? "absolute" : "")};
     left: ${({ uiStyleType }) => (uiStyleType === "block" ? "-1px" : "")};
@@ -222,7 +227,7 @@ const StyledOptionsContainer = styled.div`
 
     overflow: hidden;
     font-size: ${({ theme, uiStyleType }) =>
-      uiStyleType === "radioBelow" ? "0px" : theme.widgets.multipleChoice.labelOptionFontSize || "20px"};
+      uiStyleType === "radioBelow" ? "0px" : theme.widgets.multipleChoice.labelOptionFontSize || "13px"};
     font-weight: 600;
     color: ${props => (props.isSelected ? white : "#111111")};
     background: ${props => (props.isSelected ? themeColorBlue : white)};

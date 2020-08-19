@@ -14,6 +14,8 @@ const Options = ({ fillSections, cleanSections, advancedAreOpen, item }) => (
     cleanSections={cleanSections}
     advancedAreOpen={advancedAreOpen}
     item={item}
+    showScoringSection
+    showScoringSectionAnyRole
   >
     <LayoutComponent fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
 

@@ -21,7 +21,7 @@ import MainContainer from "../styled/mainContainer";
 import { LoaderConainer } from "./styled";
 import { getUserRole } from "../../author/src/selectors/user";
 
-const getTermId = (_classes, _classId) => _classes.find(c => c._id === _classId).termId || "";
+const getTermId = (_classes, _classId) => _classes.find(c => c._id === _classId)?.termId || "";
 
 const SkillReportContainer = ({
   flag,

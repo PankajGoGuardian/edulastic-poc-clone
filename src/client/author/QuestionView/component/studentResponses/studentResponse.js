@@ -1,16 +1,38 @@
-import React, { Fragment } from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { testActivity } from "@edulastic/constants";
 import { CircularDiv, ResponseCard, StyledFlexContainer, ResponseCardTitle } from "../../styled";
-import { getAvatarName } from '../../../ClassBoard/Transformer';
+import { getAvatarName } from "../../../ClassBoard/Transformer";
 
 const { SUBMITTED, IN_PROGRESS } = testActivity.status;
 
 const StudentResponse = ({ testActivity: _testActivity, onClick, isPresentationMode }) => {
   const showFakeUser = student => <i className={`fa fa-${student.icon}`} style={{ color: student.color }} />;
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef?.current) {
+      const MainContentWrapper = containerRef.current.parentElement;
+      const setPosition = () => {
+        if (
+          MainContentWrapper.scrollTop > 330 &&
+          !Array.from(containerRef.current.classList).includes("fixed-response-sub-header")
+        ) {
+          containerRef.current.classList.add("fixed-response-sub-header");
+        } else if (
+          MainContentWrapper.scrollTop <= 330 &&
+          Array.from(containerRef.current.classList).includes("fixed-response-sub-header")
+        ) {
+          containerRef.current.classList.remove("fixed-response-sub-header");
+        }
+      };
+      MainContentWrapper.addEventListener("scroll", setPosition);
+      return () => MainContentWrapper.removeEventListener("scroll", setPosition);
+    }
+  }, [containerRef]);
 
   return (
-    <Fragment>
+    <div ref={containerRef}>
       <StyledFlexContainer>
         <ResponseCard>
           <ResponseCardTitle>Student Responses</ResponseCardTitle>
@@ -23,7 +45,7 @@ const StudentResponse = ({ testActivity: _testActivity, onClick, isPresentationM
             ))}
         </ResponseCard>
       </StyledFlexContainer>
-    </Fragment>
+    </div>
   );
 };
 

@@ -189,9 +189,8 @@ class QuestionItem extends React.Component {
   };
 
   renderContent = (highlighted, boundingRect) => {
-    const { data, saveAnswer, viewMode, onCreateOptions, userAnswer, previewMode } = this.props;
     let { evaluation } = this.props;
-
+    const { data, saveAnswer, viewMode, onCreateOptions, userAnswer, previewMode } = this.props;
     if (!evaluation) {
       evaluation = data?.activity?.evaluation;
     }

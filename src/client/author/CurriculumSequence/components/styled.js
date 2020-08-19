@@ -13,7 +13,8 @@ import {
   white,
   extraDesktopWidthMax,
   smallDesktopWidth,
-  mobileWidthLarge
+  mobileWidthLarge,
+  themeColorBlue
 } from "@edulastic/colors";
 import { ProgressBar, MathFormulaDisplay } from "@edulastic/common";
 import { Col, Modal } from "antd";
@@ -36,6 +37,11 @@ export const AssignmentRowContainer = styled.div`
       background-color: white;
     }
   }
+`;
+
+export const Bullet = styled.li`
+  font-size: 20px;
+  margin-top: -7px;
 `;
 
 export const DragHandle = styled.div`
@@ -138,6 +144,14 @@ export const LastColumn = styled(StyledCol)`
   flex-shrink: 0;
   justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
   margin-left: ${({ ml }) => ml || ""};
+`;
+
+export const CaretUp = styled.i`
+  position: absolute;
+  top: -20px;
+  color: ${white};
+  left: 5px;
+  font-size: 30px;
 `;
 
 export const HideLinkLabel = styled(StyledLabel)`
@@ -382,11 +396,11 @@ export const AssignmentButton = styled.div`
       fill: ${({ assigned }) => (assigned ? white : themeColor)};
     }
     &:hover {
-      background-color: ${({ assigned }) => (assigned ? white : themeColor)};
-      color: ${({ assigned }) => (assigned ? themeColor : white)};
-      border-color: ${({ assigned }) => (assigned ? white : themeColor)};
+      background-color: ${({ assigned }) => (assigned ? white : themeColorBlue)};
+      color: ${({ assigned }) => (assigned ? themeColorBlue : white)};
+      border-color: ${({ assigned }) => (assigned ? white : themeColorBlue)};
       svg {
-        fill: ${({ assigned }) => (assigned ? themeColor : white)};
+        fill: ${({ assigned }) => (assigned ? themeColorBlue : white)};
       }
     }
     i {

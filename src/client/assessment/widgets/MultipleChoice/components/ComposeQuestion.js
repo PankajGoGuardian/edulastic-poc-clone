@@ -1,16 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
 import produce from "immer";
 import { FroalaEditor } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import Question from "../../../components/Question";
 
 import { Subtitle } from "../../../styled/Subtitle";
@@ -128,13 +124,4 @@ class ComposeQuestion extends Component {
   }
 }
 
-const enhance = compose(
-  withRouter,
-  withNamespaces("assessment"),
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
-
-export default enhance(ComposeQuestion);
+export default withNamespaces("assessment")(ComposeQuestion);

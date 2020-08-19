@@ -14,11 +14,11 @@ export const SYNC_SCHOOLS = "[admin] SYNC_SCHOOLS";
 export const APPLY_CLASSNAMES_SYNC = "[admin] APPLY_CLASSNAMES_SYNC";
 export const ENABLE_DISABLE_SYNC_ACTION = "[admin] ENABLE_DISABLE_SYNC_ACTION";
 export const FETCH_CURRICULUM_DATA_ACTION = "[admin] FETCH_CURRICULUM_DATA_ACTION";
-export const UPDATE_CLEVER_SUBJECT_ACTION = "[admin] UPDATE_CLEVER_SUBJECT_ACTION";
+export const UPDATE_SUBJECT_ACTION = "[admin] UPDATE_OTHER_SUBJECT_ACTION";
 export const UPDATE_EDULASTIC_SUBJECT_ACTION = "[admin] UPDATE_EDULASTIC_SUBJECT_ACTION";
 export const UPDATE_EDULASTIC_STANDARD_ACTION = "[admin] UPDATE_EDULASTIC_STANDARD_ACTION";
 export const ADD_SUBJECT_STANDARD_ROW_ACTION = "[admin] ADD_SUBJECT_STANDARD_ROW_ACTION";
-export const UPLOAD_CSV_TO_CLEVER = "[admin] uploading csv file to clever";
+export const UPLOAD_CSV = "[admin] uploading csv file";
 export const UPDATE_SUBJECT_STANDARD_MAP = "[admin] UPDATE_SUBJECT_STANDARD_MAP";
 export const FETCH_LOGS_DATA = "[admin] FETCH_LOGS_DATA";
 export const DELETE_SUBJECT_STANDARD_ROW = "[admin] DELETE_SUBJECT_STANDARD_ROW";
@@ -26,8 +26,10 @@ export const DELETE_SUBJECT_STANDARD_ROW = "[admin] DELETE_SUBJECT_STANDARD_ROW"
 export const FETCH_EXISTING_DATA_SUCCESS = "[admin] FETCH_EXISTING_DATA_SUCCESS";
 export const FETCH_CURRICULUM_DATA_SUCCESS = "[admin] FETCH_CURRICULUM_DATA_SUCCESS";
 export const LOGS_DATA_SUCCESS = "[admin] LOGS_DATA_SUCCESS";
-export const RECEIVE_MERGED_CLEVER_ID = "[admin] merge clever ids to edulastic";
+export const LOGS_DATA_FAILED = "[admin] LOGS_DATA_FAILED";
+export const RECEIVE_MERGED_ID = "[admin] merg ids to edulastic";
 export const CLOSE_MERGE_RESPONSE_TABLE = "[admin] close merge response table";
+export const CLEAR_MERGE_DATA = "[admin] clear merge data";
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API);
@@ -38,17 +40,19 @@ export const applyClassNamesSync = createAction(APPLY_CLASSNAMES_SYNC);
 export const enableDisableSyncAction = createAction(ENABLE_DISABLE_SYNC_ACTION);
 export const fetchCurriculumDataAction = createAction(FETCH_CURRICULUM_DATA_ACTION);
 export const fetchCurriculumDataSuccess = createAction(FETCH_CURRICULUM_DATA_SUCCESS);
-export const updateCleverSubjectAction = createAction(UPDATE_CLEVER_SUBJECT_ACTION);
+export const updateSubjectAction = createAction(UPDATE_SUBJECT_ACTION);
 export const updateEdulasticSubjectAction = createAction(UPDATE_EDULASTIC_SUBJECT_ACTION);
 export const updateEdulasticStandardAction = createAction(UPDATE_EDULASTIC_STANDARD_ACTION);
 export const addSubjectStandardRowAction = createAction(ADD_SUBJECT_STANDARD_ROW_ACTION);
 export const updateSubjectStdMapAction = createAction(UPDATE_SUBJECT_STANDARD_MAP);
 export const fetchLogsDataAction = createAction(FETCH_LOGS_DATA);
 export const logsDataSuccessAction = createAction(LOGS_DATA_SUCCESS);
+export const logsDataFailedAction = createAction(LOGS_DATA_FAILED);
 export const deleteSubjectStdMapAction = createAction(DELETE_SUBJECT_STANDARD_ROW);
+export const clearMergeDataAction = createAction(CLEAR_MERGE_DATA);
 
-export const uploadCSVtoCleverAction = createAction(UPLOAD_CSV_TO_CLEVER);
-export const receiveMergeCleverIdsAction = createAction(RECEIVE_MERGED_CLEVER_ID);
+export const uploadCSVAction = createAction(UPLOAD_CSV);
+export const receiveMergeIdsAction = createAction(RECEIVE_MERGED_ID);
 export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE);
 
 // REDUCERS
@@ -57,7 +61,7 @@ const initialState = {
   searchData: {},
   subStandardMapping: {
     rows: [],
-    cleverSubjectStandardMap: {},
+    subjectStandardMap: {},
     curriculum: {},
     logs: []
   },
@@ -68,11 +72,17 @@ const initialState = {
 };
 
 const fetchExistingDataReducer = createReducer(initialState, {
+  [CLEAR_MERGE_DATA]: () => initialState,
   [FETCH_EXISTING_DATA_SUCCESS]: (state, { payload }) => {
-    const cleverSubjectStandardMap = _get(payload.data, ["rosterSyncConfig", "cleverSubjectStandardMap"], {});
-    state.searchData = payload;
-    state.subStandardMapping.cleverSubjectStandardMap = cleverSubjectStandardMap;
-    state.subStandardMapping.rows = Object.keys(cleverSubjectStandardMap).map(key => ({ subject: key }));
+    const { isClasslink, ...dataPayload } = payload;
+    const subjectStandardMap = _get(
+      dataPayload.data,
+      ["rosterSyncConfig", isClasslink ? "subjectStandardMap" : "cleverSubjectStandardMap"],
+      {}
+    );
+    state.searchData = dataPayload;
+    state.subStandardMapping.subjectStandardMap = subjectStandardMap;
+    state.subStandardMapping.rows = Object.keys(subjectStandardMap).map(key => ({ subject: key }));
   },
   [FETCH_CURRICULUM_DATA_SUCCESS]: (state, { payload }) => {
     const obj = payload.result.reduce((accumulator, currentValue) => {
@@ -88,28 +98,28 @@ const fetchExistingDataReducer = createReducer(initialState, {
 
     state.subStandardMapping.curriculum = obj;
   },
-  [UPDATE_CLEVER_SUBJECT_ACTION]: (state, { payload: { index, value, prevValue } }) => {
+  [UPDATE_SUBJECT_ACTION]: (state, { payload: { index, value, prevValue } }) => {
     const {
-      subStandardMapping: { rows, cleverSubjectStandardMap }
+      subStandardMapping: { rows, subjectStandardMap }
     } = state;
     rows[index].subject = value;
-    cleverSubjectStandardMap[value] = {
+    subjectStandardMap[value] = {
       subject: "",
       standard: ""
     };
-    delete cleverSubjectStandardMap[prevValue];
+    delete subjectStandardMap[prevValue];
   },
   [UPDATE_EDULASTIC_SUBJECT_ACTION]: (state, { payload: { subject, value } }) => {
     const {
-      subStandardMapping: { cleverSubjectStandardMap }
+      subStandardMapping: { subjectStandardMap }
     } = state;
-    cleverSubjectStandardMap[subject].subject = value;
+    subjectStandardMap[subject].subject = value;
   },
   [UPDATE_EDULASTIC_STANDARD_ACTION]: (state, { payload: { subject, value } }) => {
     const {
-      subStandardMapping: { cleverSubjectStandardMap }
+      subStandardMapping: { subjectStandardMap }
     } = state;
-    cleverSubjectStandardMap[subject].standard = value;
+    subjectStandardMap[subject].standard = value;
   },
   [ADD_SUBJECT_STANDARD_ROW_ACTION]: state => {
     const {
@@ -119,15 +129,22 @@ const fetchExistingDataReducer = createReducer(initialState, {
   },
   [DELETE_SUBJECT_STANDARD_ROW]: (state, { payload: { index, subject } }) => {
     const {
-      subStandardMapping: { rows, cleverSubjectStandardMap }
+      subStandardMapping: { rows, subjectStandardMap }
     } = state;
     rows.splice(index, 1);
-    delete cleverSubjectStandardMap[subject];
+    delete subjectStandardMap[subject];
+  },
+  [FETCH_LOGS_DATA]: state => {
+    state.subStandardMapping.logsLoading = true;
   },
   [LOGS_DATA_SUCCESS]: (state, { payload }) => {
     state.subStandardMapping.logs = payload.result;
+    state.subStandardMapping.logsLoading = false;
   },
-  [RECEIVE_MERGED_CLEVER_ID]: (state, { payload: { data, mergeType } }) => {
+  [LOGS_DATA_FAILED]: state => {
+    state.subStandardMapping.logsLoading = false;
+  },
+  [RECEIVE_MERGED_ID]: (state, { payload: { data, mergeType } }) => {
     state.mergeResponse = {
       data,
       mergeType,
@@ -162,35 +179,56 @@ export const mergeResponseSelector = createSelector(
 
 // SAGAS
 const {
-  fetchExistingDataMergeClever: fetchExistingDataApi,
+  fetchExistingDataMergeClever,
+  fetchExistingDataMergeClasslink,
   applyDeltaSyncApi,
+  applyAtlasDeltaSyncApi,
   selectedSchoolSyncApi,
   completeDistrictSync,
-  fetchClassNamesSyncApi,
-  enableDisableSyncApi,
+  fetchCleverClassNamesSyncApi,
+  fetchAtlasClassNamesSyncApi,
+  enableDisableCleverSyncApi,
+  enableDisableClasslinkSyncApi,
   fetchCurriculumDataApi,
   uploadCSVtoClever,
-  updateSubjectStandardApi,
-  logsDataApi
+  uploadCSVtoAtlas,
+  updateCleverSubjectStandardApi,
+  updateAtlasSubjectStandardApi,
+  logsDataApi,
+  logsAtlasDataApi,
+  selectedAtlasSchoolSyncApi,
+  completeAtlasDistrictSync
 } = adminApi;
 
 function* fetchExistingData({ payload }) {
+  const { isClasslink } = payload;
   try {
-    const item = yield call(fetchExistingDataApi, payload);
+    let item;
+    if (isClasslink) {
+      item = yield call(fetchExistingDataMergeClasslink, payload);
+    } else {
+      item = yield call(fetchExistingDataMergeClever, payload);
+    }
     if (item.message) {
       notification({ msg: item.message });
     } else {
-      yield put(fetchExistingDataSuccess(item));
+      yield put(fetchExistingDataSuccess({ ...item, isClasslink }));
     }
   } catch (err) {
     console.error(err);
-    notification({ msg: err.message });
+    notification({ msg: err?.data?.message || err.message });
   }
 }
 
 function* fetchApplyDeltaSync({ payload }) {
+  const { isClasslink, ...data } = payload;
   try {
-    const item = yield call(applyDeltaSyncApi, payload);
+    let item;
+    if (isClasslink) {
+      item = yield call(applyAtlasDeltaSyncApi, data);
+    } else {
+      item = yield call(applyDeltaSyncApi, data);
+    }
     if (item.data) {
       notification({ type: "success", messageKey: "deltaSyncSucc" });
     }
@@ -201,11 +239,29 @@ function* fetchApplyDeltaSync({ payload }) {
 
 function* fetchSchoolsSync({ payload }) {
   let item;
+  const SYNC_SELECTED_SCHOOLS = "syncSelectedSchools";
   try {
-    if (payload.selectedSyncOption === "syncSelectedSchools") {
-      item = yield call(selectedSchoolSyncApi, payload);
+    const { selectedSyncOption, isClasslink, cleverId, atlasId, schoolIds } = payload;
+    if (isClasslink) {
+      const dataPayload = {
+        atlasId,
+        atlasSchoolIds: schoolIds
+      };
+      if (selectedSyncOption === SYNC_SELECTED_SCHOOLS) {
+        item = yield call(selectedAtlasSchoolSyncApi, dataPayload);
+      } else {
+        item = yield call(completeAtlasDistrictSync, dataPayload);
+      }
     } else {
-      item = yield call(completeDistrictSync, payload);
+      const dataPayload = {
+        cleverId,
+        schoolCleverIds: schoolIds
+      };
+      if (selectedSyncOption === SYNC_SELECTED_SCHOOLS) {
+        item = yield call(selectedSchoolSyncApi, dataPayload);
+      } else {
+        item = yield call(completeDistrictSync, dataPayload);
+      }
     }
     const {
       result: { success, message: infoMessage }
@@ -223,7 +279,12 @@ function* fetchSchoolsSync({ payload }) {
 
 function* fetchClassNamesSync({ payload }) {
   try {
-    yield call(fetchClassNamesSyncApi, payload);
+    const { isClasslink, ...dataPayload } = payload;
+    if (isClasslink) {
+      yield call(fetchAtlasClassNamesSyncApi, dataPayload);
+    } else {
+      yield call(fetchCleverClassNamesSyncApi, dataPayload);
+    }
     notification({ type: "success", messageKey: "classSyncSucc" });
   } catch (err) {
     console.error(err);
@@ -232,14 +293,27 @@ function* fetchClassNamesSync({ payload }) {
 
 function* fetchEnableDisableSync({ payload }) {
   try {
-    const { syncEnabled, districtName = "" } = payload;
-    const newPayload = omit(payload, ["districtName"]);
-    const item = yield call(enableDisableSyncApi, newPayload);
+    const { syncEnabled, districtName = "", districtId, cleverId, atlasId, isClasslink = false } = payload;
+    let item;
+    const newPayload = omit(payload, ["districtName", "cleverId", "atlasId", "isClasslink"]);
+    if (isClasslink) {
+      item = yield call(enableDisableClasslinkSyncApi, newPayload);
+    } else {
+      item = yield call(enableDisableCleverSyncApi, newPayload);
+    }
+    const searchPayload = { districtId, cleverId, atlasId, isClasslink };
     if (item.success) {
+      yield call(fetchExistingData, { payload: searchPayload });
       if (syncEnabled) {
-        notification({ type: "success", msg: `Enabled clever sync for ${districtName}` });
+        notification({
+          type: "success",
+          msg: `Enabled ${isClasslink ? "classlink" : "clever"} sync for ${districtName}`
+        });
       } else {
-        notification({ type: "success", msg: `Disabled clever sync for ${districtName}` });
+        notification({
+          type: "success",
+          msg: `Disabled ${isClasslink ? "classlink" : "clever"} sync for ${districtName}`
+        });
       }
     } else {
       notification({ msg: item.message });
@@ -258,19 +332,27 @@ function* fetchCurriculumData({ payload }) {
   }
 }
 
-function* uploadCSVtoCleverSaga({ payload }) {
+function* uploadCSVSaga({ payload }) {
   try {
-    const response = yield call(uploadCSVtoClever, payload);
+    const { isClasslink, ...dataPayload } = payload;
+    let response;
+    if (isClasslink) {
+      response = yield call(uploadCSVtoAtlas, dataPayload);
+    } else {
+      response = yield call(uploadCSVtoClever, dataPayload);
+    }
     const { status = "", message: responseMsg = "", data = [] } = response || {};
     if (status !== "success") {
       return notification({ msg: responseMsg });
     }
     notification({ type: "success", msg: responseMsg });
-    const { cleverId, districtId: cleverDistrict, mergeType } = payload;
-    yield put(receiveMergeCleverIdsAction({ data, mergeType }));
+    const { cleverId, atlasId, districtId, mergeType } = payload;
+    yield put(receiveMergeIdsAction({ data, mergeType }));
     yield put(
       searchExistingDataApi({
-        cleverDistrict,
+        isClasslink,
+        districtId,
+        atlasId,
         cleverId
       })
     );
@@ -281,7 +363,16 @@ function* uploadCSVtoCleverSaga({ payload }) {
 
 function* updateSubjectStandardSaga({ payload }) {
   try {
-    const item = yield call(updateSubjectStandardApi, payload);
+    const { isClasslink, subjectStandardMap, ...dataPayload } = payload;
+    let item;
+    if (isClasslink) {
+      item = yield call(updateAtlasSubjectStandardApi, { ...dataPayload, subjectStandardMap });
+    } else {
+      item = yield call(updateCleverSubjectStandardApi, {
+        ...dataPayload,
+        cleverSubjectStandardMap: subjectStandardMap
+      });
+    }
     if (item.data) {
       notification({ type: "success", messageKey: "subjectStandardMapping" });
     }
@@ -292,9 +383,16 @@ function* updateSubjectStandardSaga({ payload }) {
 
 function* fetchLogsData({ payload }) {
   try {
-    const item = yield call(logsDataApi, payload);
+    const { isClasslink, districtId } = payload;
+    let item;
+    if (isClasslink) {
+      item = yield call(logsAtlasDataApi, districtId);
+    } else {
+      item = yield call(logsDataApi, districtId);
+    }
     yield put(logsDataSuccessAction(item));
   } catch (err) {
+    yield put(logsDataFailedAction());
     console.error(err);
   }
 }
@@ -307,7 +405,7 @@ export function* watcherSaga() {
     yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
     yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
     yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
-    yield takeEvery(UPLOAD_CSV_TO_CLEVER, uploadCSVtoCleverSaga),
+    yield takeEvery(UPLOAD_CSV, uploadCSVSaga),
     yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
     yield takeEvery(FETCH_LOGS_DATA, fetchLogsData)
   ]);

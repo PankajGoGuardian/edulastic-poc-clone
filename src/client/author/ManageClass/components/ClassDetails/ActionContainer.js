@@ -57,7 +57,6 @@ const ActionContainer = ({
   changeTTS,
   loadStudents,
   features,
-  history,
   setSelectedStudents,
   cleverId,
   loadSchoolPolicy,
@@ -294,6 +293,11 @@ const ActionContainer = ({
     loadStudents({ classId });
   };
 
+  const handlePrintPreview = () => {
+    const selectedStudentIds = selectedStudent.map(s => s._id);
+    window.open(`/author/manageClass/${classId}/printpreview?studentIds=${selectedStudentIds.join(",")}`, "_blank");
+  };
+
   return (
     <>
       {infoModelVisible && (
@@ -363,15 +367,11 @@ const ActionContainer = ({
           )}
           {checkForAddStudent && (
             <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+              <IconPlusCircle />
               ADD MULTIPLE STUDENTS
             </EduButton>
           )}
-          <EduButton
-            height="30px"
-            isGhost
-            data-cy="printRoster"
-            onClick={() => history.push(`/author/manageClass/printPreview`)}
-          >
+          <EduButton height="30px" isGhost data-cy="printRoster" onClick={handlePrintPreview}>
             <IconPrint />
             PRINT
           </EduButton>
@@ -422,6 +422,7 @@ const ActionContainer = ({
                 )}
               </DropMenu>
             }
+            getPopupContainer={trigger => trigger.parentNode}
             placement="bottomRight"
           >
             <EduButton data-cy="actions" height="30px" isGhost>

@@ -17,7 +17,7 @@ export default class TeacherSideBar {
   clickOnPlayListLibrary = () => {
     cy.server();
     cy.route("POST", "**/playlists/search/").as("playListSearch");
-    cy.get('[data-cy="PlayList Library"]').dblclick({ force: true });
+    cy.get('[data-cy="Playlist"]').dblclick({ force: true });
     cy.wait("@playListSearch");
   };
 
@@ -32,13 +32,13 @@ export default class TeacherSideBar {
 
   clickOnReport = () =>
     cy
-      .get('[data-cy="Skill Report"]')
+      .get('[data-cy="Insights"]')
       // .click({ force: true })
       .click({ force: true });
 
   clickOnManageClass = () => {
     cy.server();
-    cy.route("GET", "**/group/mygroups").as("getGroups");
+    cy.route("GET", "**/group/mygroups?active=0").as("getGroups");
     cy.get('[data-cy="Manage Class"]')
       .click({ force: true })
       .click({ force: true });
@@ -51,8 +51,9 @@ export default class TeacherSideBar {
     cy.route("POST", "**/search/items").as("itemSearch");
     cy.route("POST", "**browse-standards").as("search-standards");
 
-    cy.get('[data-cy="Item Bank"]').dblclick({ force: true });
+    cy.get('[data-cy="Item Bank"]').click({ force: true });
     // .click({ force: true });
+    this.clickOnConfirmPopUp();
     cy.wait("@itemSearch");
   };
 
@@ -60,9 +61,9 @@ export default class TeacherSideBar {
     cy.server();
     cy.route("POST", "**/tests").as("searchTest");
     // TODO: below is temp fix and wait is not added- look for this while fixing
-    cy.route("POST", "**browse-standards").as("search-standards");
+    cy.route("POST", "**browse-standards").as("search-standards-itembank");
     cy.wait(5000); // waiting for mongo to elastic search sync delay
-    cy.get('[data-cy="Test Library"]').dblclick({ force: true });
+    cy.get('[data-cy="Test"]').dblclick({ force: true });
     cy.wait("@searchTest");
   };
 
@@ -73,6 +74,33 @@ export default class TeacherSideBar {
     if (isLoading) cy.wait("@loadPlayContent");
   };
 
+  clickOnConfirmPopUp = () => {
+    cy.get("body").then($body => {
+      if ($body.find(".ant-modal-confirm-btns").length > 0) {
+        cy.get(".ant-modal-confirm-btns > button")
+          .contains("Yes, Continue")
+          .click({ force: true });
+      }
+    });
+  };
+
+  clickOnUser = () => {
+    cy.get(`.userinfoBtn`)
+      .click({ force: true })
+      .find(".anticon")
+      .click({ force: true });
+  };
+
+  clickMyProfile = () => {
+    this.clickOnUser();
+    cy.contains("My Profile").click({ force: true });
+    cy.get("[title='My Profile']");
+  };
+
+  clickOnManageDistrict = () => {
+    cy.get('[data-cy="Manage District').dblclick({ force: true });
+    cy.get("[title='Manage District']");
+  };
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

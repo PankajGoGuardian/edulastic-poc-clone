@@ -42,6 +42,11 @@ const GradebookTable = styled(StyledTable)`
       .ant-table-body {
         overflow-x: auto !important;
       }
+      @media print {
+        .ant-table-body {
+          overflow-x: hidden !important;
+        }
+      }
     }
     .ant-table-fixed-left {
       .ant-table-thead {
@@ -59,7 +64,7 @@ const GradebookTable = styled(StyledTable)`
       }
       .ant-table-tbody {
         td {
-          padding: 10px 8px;
+          padding: 10px 0px 10px 8px;
           font-size: 11px;
           color: #434b5d;
           font-weight: 600;
@@ -179,7 +184,7 @@ const StandardsGradebookTableComponent = ({
               {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}
               {_analyseBy === "score(%)" ? "%" : ""}
             </Col>
-          )}
+            )}
         </Row>
       </div>
     );
@@ -236,8 +241,8 @@ const StandardsGradebookTableComponent = ({
               {record.compareByLabel || t("common.anonymous")}
             </Link>
           ) : (
-            record.compareByLabel
-          )
+              record.compareByLabel
+            )
       },
       {
         title: "Overall",
@@ -255,12 +260,12 @@ const StandardsGradebookTableComponent = ({
             to={{
               pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
                 record.testActivityId
-              }`,
+                }`,
               state: {
                 // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
                 breadCrumb: [
                   {
-                    title: "REPORTS",
+                    title: "INSIGHTS",
                     to: "/author/reports"
                   },
                   {
@@ -274,8 +279,8 @@ const StandardsGradebookTableComponent = ({
             {tableDdFilters.analyseBy === "score(%)"
               ? `${data}%`
               : tableDdFilters.analyseBy === "rawScore"
-              ? `${data}/${record.totalMaxScore}`
-              : data}
+                ? `${data}/${record.totalMaxScore}`
+                : data}
           </Link>
         )
       },
@@ -363,7 +368,7 @@ const StandardsGradebookTableComponent = ({
                 <ControlDropDown
                   data={dropDownFormat.analyseByDropDownData}
                   by={dropDownFormat.analyseByDropDownData[0]}
-                  prefix="Analyse By"
+                  prefix="Analyze By"
                   selectCB={tableFilterDropDownCB}
                   comData="analyseBy"
                 />

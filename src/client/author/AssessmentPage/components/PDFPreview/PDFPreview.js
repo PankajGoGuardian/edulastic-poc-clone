@@ -13,7 +13,7 @@ import { PDFPreviewWrapper, Preview, ZoomControlCotainer, PDFZoomControl } from 
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import PDFViewer from "../PDFViewer";
 
-const handleDrop = (page, cb, zoom = 1) => ({ question }, e) => {
+const handleDrop = (page, cb, annotationContainer, zoom = 1) => ({ question }, e) => {
   const {
     nativeEvent: { offsetX, offsetY }
   } = e;
@@ -22,13 +22,19 @@ const handleDrop = (page, cb, zoom = 1) => ({ question }, e) => {
   const x = zoom != 0 ? offsetX / zoom : offsetX;
   const y = zoom != 0 ? offsetY / zoom : offsetY;
 
-  cb({
-    x,
-    y,
-    page,
-    questionId: data.id,
-    qIndex: data.index
-  });
+  const { offsetWidth, offsetHeight } = annotationContainer.current;
+
+  cb(
+    {
+      x,
+      y,
+      page,
+      questionId: data.id,
+      qIndex: data.index
+    },
+    offsetWidth,
+    offsetHeight
+  );
 };
 
 const getNumberStyles = (x, y, scale) => ({
@@ -64,9 +70,9 @@ const PDFPreview = ({
   annotationToolsProperties,
   annotationsStack
 }) => {
-  const [pdfScale, scalePDF] = useState(1);
-
   const previewContainer = useRef();
+  const annotationContainer = useRef();
+  const [pdfScale, scalePDF] = useState(1);
 
   const PDFScaleUp = (scale = 0.25) => {
     const zoom = pdfScale < 3 ? pdfScale + scale : pdfScale;
@@ -126,7 +132,7 @@ const PDFPreview = ({
       <PerfectScrollbar ref={forwardedRef}>
         <Droppable
           types={["question"]}
-          onDrop={handleDrop(currentPage, onDropAnnotation, pdfScale)}
+          onDrop={handleDrop(currentPage, onDropAnnotation, annotationContainer, pdfScale)}
           style={{ top: 0, display: "block", width: "fit-content", margin: "auto" }}
         >
           {page.URL === "blank" && <Preview onClick={handleRemoveHighlight} ref={previewContainer} />}
@@ -143,7 +149,7 @@ const PDFPreview = ({
             />
           )}
 
-          <AnnotationsContainer className="annotations-container">
+          <AnnotationsContainer className="annotations-container" zoom={pdfScale} ref={annotationContainer}>
             {annotations
               .filter(item => item.toolbarMode === "question" && item.page === currentPage)
               .map(({ uuid, qIndex, x, y, questionId }) => (

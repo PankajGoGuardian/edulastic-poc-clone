@@ -75,7 +75,7 @@ const PlayerHeader = ({
         <HeaderMainMenu skin style={{ height: headerHeight }}>
           <FlexContainer style={headerStyleWidthZoom}>
             <HeaderWrapper justifyContent="space-between">
-              <MainActionWrapper alignItems="center">
+              <MainActionWrapper style={{ alignItems: "center" }}>
                 <LogoCompact isMobile={isMobile} buttons={rightButtons} />
                 {!LCBPreviewModal && (
                   <>
@@ -88,6 +88,8 @@ const PlayerHeader = ({
                       skipped={skipped}
                       dropdownStyle={dropdownStyle}
                       zoomLevel={zoomLevel}
+                      moveToNext={moveToNext}
+                      utaId={utaId}
                     />
                     <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
                       <ControlBtn.Back
@@ -103,22 +105,20 @@ const PlayerHeader = ({
                         }}
                       />
                     </Tooltip>
-                    <Tooltip placement="top" title="Next" overlayStyle={overlayStyle}>
-                      <ControlBtn.Next
-                        next
-                        skin
-                        type="primary"
-                        data-cy="next"
-                        icon={isLast ? null : "right"}
-                        onClick={e => {
-                          moveToNext();
-                          e.target.blur();
-                        }}
-                      >
-                        {isLast && <IconSend />}
-                        {isLast ? "SUBMIT" : "NEXT"}
-                      </ControlBtn.Next>
-                    </Tooltip>
+                    <ControlBtn.Next
+                      next
+                      skin
+                      type="primary"
+                      data-cy="next"
+                      icon={isLast ? null : "right"}
+                      onClick={e => {
+                        moveToNext();
+                        e.target.blur();
+                      }}
+                    >
+                      {isLast && <IconSend />}
+                      {isLast ? "SUBMIT" : "NEXT"}
+                    </ControlBtn.Next>
                   </>
                 )}
                 {!showSettingIcon && (

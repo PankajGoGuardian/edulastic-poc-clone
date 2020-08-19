@@ -3,6 +3,7 @@ import TemplateMarkupBar from "../common/templateMarkUpBar";
 import Header from "../../itemDetail/header";
 import PreviewItemPage from "../../itemDetail/previewPage";
 import CypressHelper from "../../../../util/cypressHelpers";
+
 PreviewItemPage;
 class ClozeDragDropPage {
   constructor() {
@@ -32,19 +33,28 @@ class ClozeDragDropPage {
 
   getChoiceResponseContainer = () =>
     cy
-      .get('[id="cloze-with-drag-&-drop-choices-for-responses"]')
-      .parent()
-      .next()
-      .children()
-      .find(".sortable-item-container");
+      .get('[data-cy="sortable-list-container"]')
+      .eq(0)
+      .find('[data-cy="quillSortableItem"]');
 
   getAddChoiceButton = () => cy.contains("button", "Add New Choice").should("be.visible");
+
+  deleletChoicesByindex = index => cy.get(`[data-cy="deleteprefix${index}"]`).click({ force: true });
+
+  deleteAllChoices = () => {
+    this.getChoiceResponseContainer().then($el => {
+      for (let i = $el.length - 1; i >= 0; i--) {
+        this.deleletChoicesByindex(i);
+      }
+    });
+    this.getChoiceResponseContainer().should("have.length", 0);
+  };
 
   getChoiceInputByIndex = index =>
     this.getChoiceResponseContainer()
       .eq(index)
-      .find("p")
-      .last();
+      .find('[contenteditable="true"]')
+      .click({ force: true });
 
   getEnableAutoScoring = () =>
     cy
@@ -55,11 +65,11 @@ class ClozeDragDropPage {
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
     cy.get('[data-cy="scoringType"]')
-      //.should("be.visible")
+      // .should("be.visible")
       .click({ force: true });
 
     cy.get(selectOp)
-      //.should("be.visible")
+      // .should("be.visible")
       .click({ force: true });
 
     cy.get('[data-cy="scoringType"]')
@@ -104,7 +114,7 @@ class ClozeDragDropPage {
 
   getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 
-  getPanalty = () => cy.get('[data-cy="penalty"]'); //.should("be.visible");
+  getPanalty = () => cy.get('[data-cy="penalty"]'); // .should("be.visible");
 
   getResponseItemByIndex = index => cy.get(`#response-item-${index}`);
 
@@ -134,13 +144,15 @@ class ClozeDragDropPage {
 
   getShuffleOptionCheck = () => cy.contains("span", "Shuffle Options").parent();
 
-  getAddAlternative = () => cy.get('[data-cy="alternative"]');
+  getAddAlternative = () => cy.get('[data-cy="alternate"]');
 
   getAddedAlternateTab = () => cy.contains("span", "Alternate 1");
 
   updatePoints = points => this.getPontsInput().type(`{selectall}${points}`);
 
   addAlternative = () => this.getAddAlternative().click({ force: true });
+
+  getPreviewAnswerBoxContainerByIndex = index => this.getResponseContainerByIndex(index).find('[class^="AnswerBox"]');
 
   typeQuestionText = text =>
     this.getTemplateEditor()

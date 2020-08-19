@@ -7,7 +7,10 @@ const CustomTableTooltip = props => {
   const { className, overlayClassName = "", getCellContents, columnKey, ...attrs } = props;
 
   return (
-    <Tooltip {...attrs} overlayClassName={`custom-table-tooltip ${overlayClassName} ${className}`}>
+    <Tooltip
+      {...attrs}
+      overlayClassName={`custom-table-tooltip ${overlayClassName} ${className}`}
+    >
       {getCellContents(props)}
     </Tooltip>
   );

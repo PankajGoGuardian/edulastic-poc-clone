@@ -2,12 +2,12 @@ import { FieldLabel, notification, SelectInputStyled } from "@edulastic/common";
 import { assignmentPolicyOptions, roleuser, test as testConst } from "@edulastic/constants";
 import { Col, Icon, Row, Select } from "antd";
 import produce from "immer";
-import { curry, get, groupBy, keyBy } from "lodash";
+import { curry, get, keyBy } from "lodash";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getUserRole } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
@@ -38,7 +38,6 @@ class SimpleOptions extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      studentList: [],
       _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
   }
@@ -84,30 +83,8 @@ class SimpleOptions extends React.Component {
     this.setState({ showSettings: !showSettings });
   };
 
-  onDeselect = classId => {
-    const { assignment } = this.props;
-    const removedStudents = assignment.class.find(_class => _class._id === classId)?.students || [];
-    this.setState(prevState => ({
-      studentList: prevState.studentList.filter(item => !removedStudents.includes(item))
-    }));
-  };
-
   onChange = (field, value) => {
-    const {
-      onClassFieldChange,
-      group,
-      assignment,
-      updateOptions,
-      toggleSpecificStudents,
-      isReleaseScorePremium,
-      userRole
-    } = this.props;
-    if (field === "specificStudents") {
-      if (value === false) {
-        this.setState({ studentList: [] });
-      }
-      return toggleSpecificStudents(value);
-    }
+    const { onClassFieldChange, group, assignment, updateOptions, isReleaseScorePremium, userRole } = this.props;
     if (field === "class") {
       const { classData, termId } = onClassFieldChange(value, group);
       const nextAssignment = produce(assignment, state => {
@@ -180,87 +157,100 @@ class SimpleOptions extends React.Component {
   };
 
   updateStudents = selected => {
-    const { group, students, assignment, updateOptions } = this.props;
-    const { studentList } = this.state;
-    const selectedStudents = Array.isArray(selected) ? selected : [selected];
+    const { group, assignment, updateOptions } = this.props;
+    const [groupId, studentId] = selected.split(`_`);
     const groupById = keyBy(group, "_id");
-    const studentById = keyBy(students, "_id");
-    const selectedStudentsById = [...studentList, ...selectedStudents].map(_id => studentById[_id]);
-    const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
     const classData = assignment.class.map(item => {
       const { _id } = item;
-      if (!studentsByGroupId[_id]) return item;
+      if (_id !== groupId) return item;
       return {
         _id,
         name: get(groupById, `${_id}.name`, ""),
-        assignedCount: studentsByGroupId[_id].length,
-        students: studentsByGroupId[_id].map(i => i._id),
+        assignedCount: get(item, "students.length", 0) + 1,
+        students: [...get(item, "students", []), studentId],
         grade: get(groupById, `${_id}.grades`, ""),
-        subject: get(groupById, `${_id}.subject`, ""),
-        specificStudents: true
+        subject: get(groupById, `${_id}.subject`, "")
       };
     });
-    this.setState(
-      prev => ({ studentList: [...prev.studentList, ...selectedStudents] }),
-      () => {
-        const nextAssignment = produce(assignment, state => {
-          state.class = classData;
-        });
-        updateOptions(nextAssignment);
-      }
-    );
+    const nextAssignment = produce(assignment, state => {
+      state.class = classData;
+    });
+    updateOptions(nextAssignment);
   };
 
-  selectAllStudents = selectedStudents => {
-    this.updateStudents(selectedStudents.filter(x => !x.disabled).map(x => x.value));
+  selectAllStudents = () => {
+    const { group, assignment, updateOptions, students } = this.props;
+    const studentsByGroupId = {};
+    for (const student of students) {
+      if (!studentsByGroupId[student.groupId]) {
+        studentsByGroupId[student.groupId] = [student._id];
+      } else {
+        studentsByGroupId[student.groupId].push(student._id);
+      }
+    }
+    const groupById = keyBy(group, "_id");
+    const classData = assignment.class.map(item => {
+      const { _id } = item;
+      return {
+        _id,
+        name: get(groupById, `${_id}.name`, ""),
+        assignedCount: studentsByGroupId[_id]?.length || 0,
+        students: studentsByGroupId[_id] || [],
+        grade: get(groupById, `${_id}.grades`, ""),
+        subject: get(groupById, `${_id}.subject`, ""),
+        termId: get(groupById, `${_id}.termId`, "")
+      };
+    });
+    const nextAssignment = produce(assignment, state => {
+      state.class = classData;
+    });
+    updateOptions(nextAssignment);
   };
 
   unselectAllStudents = () => {
-    this.handleRemoveAllStudents();
+    const { assignment, updateOptions, group } = this.props;
+    const groupById = keyBy(group, "_id");
+    const nextAssignment = produce(assignment, state => {
+      state.class = assignment.class.map(item => {
+        delete item.students;
+        return {
+          ...item,
+          assignedCount: groupById[item._id].studentCount
+        };
+      });
+    });
+    updateOptions(nextAssignment);
   };
 
   // Always expected student Id and class Id
-  handleRemoveStudents = (studentId, { props: { groupId } }) => {
+  handleRemoveStudents = selected => {
     const { assignment, group, updateOptions } = this.props;
+    const [groupId, studentId] = selected.split(`_`);
     const nextAssignment = produce(assignment, state => {
       state.class = assignment.class.map(item => {
         if (item._id === groupId) {
-          let specificStudents = true;
           let assignedCount = item.assignedCount - 1;
           if (assignedCount === 0) {
             assignedCount = keyBy(group, "_id")[groupId].studentCount;
-            specificStudents = false;
           }
-          return {
+          const newItem = {
             ...item,
             students: (item.students || []).filter(student => student !== studentId),
-            assignedCount,
-            specificStudents
+            assignedCount
           };
+          if (assignedCount === 0) {
+            delete newItem.students;
+          }
+          return newItem;
         }
         return item;
       });
     });
-    this.setState(prev => ({ studentList: prev.studentList.filter(item => item !== studentId) }));
-    updateOptions(nextAssignment);
-  };
-
-  handleRemoveAllStudents = () => {
-    const { assignment, updateOptions } = this.props;
-    const nextAssignment = produce(assignment, state => {
-      state.class = assignment.class.map(item => ({
-        ...item,
-        students: [],
-        assignedCount: 0,
-        specificStudents: false
-      }));
-    });
-    this.setState({ studentList: [] });
     updateOptions(nextAssignment);
   };
 
   render() {
-    const { showSettings, studentList, _releaseGradeKeys } = this.state;
+    const { showSettings, _releaseGradeKeys } = this.state;
     const {
       group,
       fetchStudents,
@@ -269,7 +259,6 @@ class SimpleOptions extends React.Component {
       assignment,
       updateOptions,
       userRole,
-      specificStudents,
       changeDateSelection,
       selectedDateOption,
       freezeSettings,
@@ -283,7 +272,7 @@ class SimpleOptions extends React.Component {
       closePolicy = selectsData.closePolicyForAdmin;
     }
     const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
-    const classIds = assignment?.class?.map(item => item._id);
+    const classIds = get(assignment, "class", []).map(item => item._id);
     const studentOfSelectedClass = getListOfActiveStudents(students, classIds);
     return (
       <OptionConationer>
@@ -291,22 +280,18 @@ class SimpleOptions extends React.Component {
           <StyledRow gutter={32}>
             <ClassSelector
               onChange={changeField("class")}
-              onDeselect={this.onDeselect}
               fetchStudents={fetchStudents}
               selectedGroups={classIds}
               group={group}
-              specificStudents={specificStudents}
             />
             <StudentSelector
-              studentNames={studentList}
+              selectedGroups={classIds}
               students={studentOfSelectedClass}
               groups={group}
               updateStudents={this.updateStudents}
               selectAllStudents={this.selectAllStudents}
               unselectAllStudents={this.unselectAllStudents}
               handleRemoveStudents={this.handleRemoveStudents}
-              onChange={this.onChange}
-              specificStudents={specificStudents}
             />
           </StyledRow>
 
@@ -364,20 +349,16 @@ class SimpleOptions extends React.Component {
               </Row>
             </Col>
           </StyledRow>
-
-          <FeaturesSwitch
-            inputFeatures="selectTestType"
-            actionOnInaccessible="hidden"
-            key="selectTestType"
-            gradeSubject={gradeSubject}
-          >
-            <TestTypeSelector
-              userRole={userRole}
-              testType={assignment.testType || testSettings.testType}
-              onAssignmentTypeChange={changeField("testType")}
-              disabled={freezeSettings}
-            />
-          </FeaturesSwitch>
+          <StyledRow gutter={32} mb="15px">
+            <Col span={12}>
+              <TestTypeSelector
+                userRole={userRole}
+                testType={assignment.testType || testSettings.testType}
+                onAssignmentTypeChange={changeField("testType")}
+                disabled={freezeSettings}
+              />
+            </Col>
+          </StyledRow>
           <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>

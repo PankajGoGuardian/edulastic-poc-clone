@@ -11,7 +11,14 @@ import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import { getFormattedCurriculumsSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
-import { getCollectionsSelector, getUserFeatures, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  getCollectionsSelector,
+  getUserFeatures,
+  getUserOrgId,
+  getUserRole,
+  isDistrictUserSelector,
+  isOrganizationDistrictSelector
+} from "../../../src/selectors/user";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import filterData from "./FilterData";
 
@@ -33,7 +40,9 @@ const TestListFilters = ({
   districtId,
   currentDistrictUsers,
   getCurrentDistrictUsers,
-  userRole
+  userRole,
+  isOrgUser,
+  isDistrictUser
 }) => {
   const [showModal, setShowModal] = useState(false);
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
@@ -80,8 +89,9 @@ const TestListFilters = ({
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
       const showStatusFilter =
-        (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
-      if (showStatusFilter && filter !== libraryFilters.SMART_FILTERS.FAVORITES) {
+        ((userFeatures.isPublisherAuthor || isOrgUser || isDistrictUser) && filter !== filterMenuItems[0].filter) ||
+        userFeatures.isCurator;
+      if (showStatusFilter) {
         filterTitles.push("Status");
       }
       filterData1 = filterData.filter(o => filterTitles.includes(o.title));
@@ -123,12 +133,16 @@ const TestListFilters = ({
     }));
 
     const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0) || !curriculumId;
-    filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     const showStatusFilter =
-      (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
-    if (!showStatusFilter || filter === libraryFilters.SMART_FILTERS.FAVORITES) {
-      filterData1 = filterData1.filter(o => o.title !== "Status");
+      ((userFeatures.isPublisherAuthor || isOrgUser || isDistrictUser) && filter !== filterMenuItems[0].filter) ||
+      userFeatures.isCurator;
+
+    let filtersTitles = [...filtersTitle];
+    if (!showStatusFilter) {
+      filtersTitles = filtersTitles.filter(f => f !== "Status");
     }
+    filterData1 = filterData.filter(o => filtersTitles.includes(o.title));
+
     if (filter === libraryFilters.SMART_FILTERS.FAVORITES) {
       return filterData1;
     }
@@ -192,7 +206,6 @@ const TestListFilters = ({
   };
   const handleApply = standardIds => {
     onChange("standardIds", standardIds);
-    setShowModal(false);
   };
 
   const handleSetShowModal = () => {
@@ -212,7 +225,7 @@ const TestListFilters = ({
 
   const handleStandardsAlert = ({ title, disabled }) => {
     if (title === "Standards" && disabled) {
-      return "Select Grades, Subject, Standard Set before selecting Standards";
+      return "Select Grades, Subject and Standard Set before selecting Standards";
     }
     return "";
   };
@@ -310,7 +323,9 @@ export default connect(
     userFeatures: getUserFeatures(state),
     districtId: getUserOrgId(state),
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    isOrgUser: isOrganizationDistrictSelector(state),
+    isDistrictUser: isDistrictUserSelector(state)
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction
@@ -358,7 +373,6 @@ const IconExpandBoxWrapper = styled.div`
   z-index: 1;
   cursor: pointer;
   &.disabled {
-    cursor: not-allowed;
     svg path {
       fill: ${grey};
     }
@@ -371,6 +385,6 @@ const SelectStyled = styled(SelectInputStyled)`
   }
 
   .ant-select-selection {
-    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")} !important;
+    cursor: pointer !important;
   }
 `;

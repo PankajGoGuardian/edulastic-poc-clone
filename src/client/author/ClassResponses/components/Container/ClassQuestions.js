@@ -60,6 +60,7 @@ function Preview({
 
   const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item;
   const scoringProps = { multipartItem, itemLevelScoring, isPassageWithQuestions };
+  const attachments = get(questionActivity, "scratchPad.attachments", null);
 
   return (
     <StyledFlexContainer
@@ -89,6 +90,7 @@ function Preview({
         showScratchpadByDefault={showScratchpadByDefault}
         viewAtStudentRes={viewAtStudentRes}
         timeSpent={timeSpent}
+        attachments={attachments}
         {...scratchpadProps}
         previouscratchPadDimensions={previouscratchPadDimensions}
         history={history}

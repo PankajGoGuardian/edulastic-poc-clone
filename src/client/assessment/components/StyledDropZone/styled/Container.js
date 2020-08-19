@@ -3,14 +3,14 @@ import { FlexContainer } from "@edulastic/common";
 import { lightBlue7 } from "@edulastic/colors";
 
 export const Container = styled(FlexContainer)`
-  height: 616px;
-  align-items: ${({ style }) => (!style ? "normal" : style.alignItems)};
-  justify-content: ${({ style }) => (!style ? "flex-start" : style.justifyContent)};
+  min-height: 200px;
   width: 100%;
+  border-radius: 2px;
   border: ${({ theme, isDragActive }) =>
     isDragActive
-      ? `2px solid ${theme.styledDropZone.containerDragActiveColor}`
-      : `1px solid ${theme.styledDropZone.containerColor}`};
+      ? `1px solid ${theme.styledDropZone.containerDragActiveColor}`
+      : `1px dashed ${theme.styledDropZone.containerBorderColor}`};
+  background: ${({ theme }) => theme.styledDropZone.containerBackground};
   &:focus {
     border: 1px solid ${lightBlue7};
   }

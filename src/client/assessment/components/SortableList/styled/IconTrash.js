@@ -2,10 +2,12 @@ import styled from "styled-components";
 import { IconTrashAlt as Icon } from "@edulastic/icons";
 
 export const IconTrash = styled(Icon)`
-  fill: #4aac8b;
+  fill: ${props => props.theme.sortableList.iconTrashColor};
   :hover {
-    fill: #ee1658;
+    fill: ${props => props.theme.sortableList.iconTrashHoverColor};
   }
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 14px;
+  cursor: pointer;
+  margin: 0px -16px 0px 16px;
 `;

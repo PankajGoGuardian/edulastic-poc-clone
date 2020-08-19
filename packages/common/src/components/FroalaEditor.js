@@ -92,7 +92,7 @@ FroalaEditor.VIDEO_PROVIDERS.push(
   }
 );
 
-FroalaEditor.VIDEO_EMBED_REGEX = /^\W*((<iframe.*><\/iframe>)|(<embed.*>))\W*$/i;
+FroalaEditor.VIDEO_EMBED_REGEX = /<iframe[^>]*?(?:\/>|>[^<]*?<\/iframe>|(<embed.*>))\W*$/i;
 
 const buttons = [
   "bold",
@@ -264,8 +264,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
         .fr {
           &-box {
             background: ${greyThemeLighter};
-            min-height: 120px;
-            border-radius: 0px;
+            min-height: 102px;
+            border-radius: 2px;
             border: 1px solid ${greyThemeLight};
             display: flex;
           }
@@ -277,7 +277,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
           &-view {
             width: 100%;
             min-height: 100%;
-            padding: 20px 23px;
+            padding: 8px 14px;
             overflow: auto;
           }
         }
@@ -290,7 +290,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
       return `
       .fr-box {
           max-width: 100%;
-          overflow: auto;
+          overflow-x: auto;
+          overflow-y: hidden;
         }
       `;
     }
@@ -302,7 +303,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
         .fr {
           &-box {
             height: ${editorHeight}px;
-            overflow: auto;
+            overflow-x: auto;
+            overflow-y: hidden;
           }
         }
       `;
@@ -426,6 +428,7 @@ const CustomEditor = ({
   border,
   centerContent,
   imageDefaultWidth,
+  videoDefaultWidth,
   placeholder,
   fontSize,
   className,
@@ -433,6 +436,7 @@ const CustomEditor = ({
   advancedAreOpen,
   customCharacters,
   editorHeight,
+  allowQuickInsert = true,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -467,7 +471,7 @@ const CustomEditor = ({
       toolbarButtonsMD,
       toolbarButtonsSM,
       toolbarButtonsXS,
-      videoInsertButtons: ["videoBack", "|", "videoByURL", "videoEmbed"],
+      videoInsertButtons: ["videoBack", "|", "videoByURL", "videoEmbed", "videoUpload"],
       videoResize: true,
       videoMove: true,
       videoDefaultAlign: "left",
@@ -505,7 +509,7 @@ const CustomEditor = ({
       htmlAllowedTags: [".*"],
       htmlAllowedAttrs: [".*"],
       htmlRemoveTags: ["script"],
-
+      quickInsertEnabled: allowQuickInsert,
       events: {
         click: function(evt) {
           const closestMathParent = evt.currentTarget.closest("span.input__math");
@@ -579,7 +583,7 @@ const CustomEditor = ({
 
           return false;
         },
-        "image.inserted": async function($img, response) {
+        "image.inserted": async function($img) {
           try {
             if (!$img[0].complete) {
               await loadImage($img[0].src);
@@ -592,11 +596,43 @@ const CustomEditor = ({
             notification({ messageKey: "imageLoadErr" });
           }
         },
+        "video.beforeUpload": function(video) {
+          if (
+            !canInsert(this.selection.element()) ||
+            !canInsert(this.selection.endElement()) ||
+            !beforeUpload(video[0], "video")
+          ) {
+            return false;
+          }
+          this.video.showProgressBar();
+          uploadToS3(video[0], aws.s3Folders.DEFAULT)
+            .then(url => {
+              const embedded = `<video class="fr-draggable" src='${url}' controls>Video is not supported on this browser.</video>`;
+              this.video.insert(embedded);
+            })
+            .catch(e => {
+              console.error(e);
+              this.popups.hideAll();
+              notification({ messageKey: "videoUploadErr" });
+            });
+          return false;
+        },
+        "video.linkError": function(link) {
+          const popup = this.popups.areVisible();
+          const layer = popup?.find(".fr-video-progress-bar-layer");
+          layer?.find(".fr-message")?.text("The video cannot be added because the address is invalid/unsupported.");
+        },
+        "video.codeError": function(code) {
+          const popup = this.popups.areVisible();
+          const layer = popup?.find(".fr-video-progress-bar-layer");
+          layer?.find(".fr-message")?.text("The video cannot be added because the embed code is invalid/unsupported.");
+        },
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
             this.edit.off();
-            this.$el.find(".input__math").css("pointer-events", "none");
-            this.$el.find("img").css("pointer-events", "none");
+            this.$el?.find(".input__math")?.css("pointer-events", "none");
+            this.$el?.find("img")?.css("pointer-events", "none");
+            this.$el?.find("video")?.css("pointer-events", "none");
           }
         },
         "toolbar.show": function() {
@@ -757,7 +793,7 @@ const CustomEditor = ({
     };
 
     // for hidden refs wait for it to be shown in the dom to set config.
-    if (toolbarContainerRef?.current?.offsetParent === null) {
+    if (EditorRef?.current?.offsetParent === null) {
       setConfigState(null);
     } else {
       setConfigState(updatedConfig);
@@ -1020,6 +1056,7 @@ CustomEditor.defaultProps = {
   additionalToolbarOptions: [],
   readOnly: false,
   imageDefaultWidth: 300,
+  videoDefaultWidth: 480,
   border: "none",
   centerContent: false,
   editorHeight: null

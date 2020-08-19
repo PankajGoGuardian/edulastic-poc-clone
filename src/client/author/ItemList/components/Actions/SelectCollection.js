@@ -5,7 +5,7 @@ import { notification } from "@edulastic/common";
 import { keyBy } from "lodash";
 import { borderGrey2 } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { getItemBucketsSelector } from "../../../src/selectors/user";
+import { getCollectionsToAddContent } from "../../../src/selectors/user";
 import {
   getIsAddCollectionModalVisibleSelector,
   setAddCollectionModalVisibleAction,
@@ -32,7 +32,7 @@ const SelectCollectionModal = ({
   const addedItems = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || []);
   const itemsKeyed = keyBy(addedItems, "_id");
   const handleAddToCollection = ({ _id, itemBankId, name, collectionName }) => {
-    let contentIds = selectedItems.map(__id => itemsKeyed[__id]?._id);
+    let contentIds = selectedItems.map(id => itemsKeyed[id]?._id);
     if (contentType === "PLAYLIST") {
       contentIds = selectedPlaylists;
     }
@@ -87,7 +87,7 @@ const SelectCollectionModal = ({
 export default connect(
   state => ({
     isAddCollectionModalVisible: getIsAddCollectionModalVisibleSelector(state),
-    buckets: getItemBucketsSelector(state),
+    buckets: getCollectionsToAddContent(state),
     selectedItems: getSelectedItemSelector(state),
     selectedTests: getSelectedTestsSelector(state),
     selectedPlaylists: getSelectedPlaylistSelector(state),

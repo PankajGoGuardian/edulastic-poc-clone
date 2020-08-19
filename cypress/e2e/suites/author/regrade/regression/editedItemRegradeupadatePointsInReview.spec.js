@@ -106,6 +106,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   let testid;
 
   before("create tests", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments("", Teacher.username);
     cy.login("teacher", Teacher.username, Teacher.password);
     testLibraryPage.createTest(testname, false).then(id => {
@@ -254,9 +256,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
 
                   it(`> verif lcb card view-`, () => {
                     cy.wait(3000);
-                    lcb
-                      .getStudentScoreByIndex(statusIndex)
-                      .should("contain.text", `${data.teacher[status][`${option}`][`${attempt}`]} / ${data.points}`);
+                    lcb.verifyScoreByStudentIndex(
+                      statusIndex,
+                      data.teacher[status][`${option}`][`${attempt}`],
+                      data.points
+                    );
 
                     lcb
                       .getQuestionsByIndex(0)
@@ -348,9 +352,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
                       it(`> verify lcb card view-`, () => {
                         lcb.clickOnCardViewTab();
                         cy.wait(3000);
-                        lcb
-                          .getStudentScoreByIndex(statusIndex)
-                          .should("contain.text", `${data.manualpoints} / ${data.points}`);
+                        lcb.verifyScoreByStudentIndex(statusIndex, data.manualpoints, data.points);
                         lcb.verifyQuestionCards(statusIndex, [attemptTypes.PARTIAL_CORRECT]);
                         barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, ["Q1"]);
                       });

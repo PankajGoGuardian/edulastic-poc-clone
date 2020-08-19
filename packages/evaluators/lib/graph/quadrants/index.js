@@ -23,6 +23,8 @@ var _constants = require("./constants");
 
 var _compareShapes = _interopRequireDefault(require("./compareShapes"));
 
+var _scoring = require("../../const/scoring");
+
 function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -32,6 +34,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+var EXACT_MATCH = _scoring.ScoringType.EXACT_MATCH,
+    PARTIAL_MATCH = _scoring.ScoringType.PARTIAL_MATCH;
 
 var evaluateApi = function evaluateApi(data) {
   return _axios["default"].post("".concat(process.env.MATH_API_URI, "evaluate"), data, {
@@ -226,20 +231,25 @@ var serialize = function serialize(shapes, lineTypes, points) {
     return shape[0] === "eqn" ? "['eqn','".concat(shape[1], "']") : "['".concat(shape[0], "',[").concat(shape[1].join(","), "]]");
   };
 
-  return "[".concat(shapes.map(getShape).join(","), "],[").concat(lineTypes.map(function (x) {
+  var serializeShapes = shapes.length ? "[".concat(shapes.map(getShape).join(","), "]") : null;
+  var serializeLineTypes = lineTypes.length ? "[".concat(lineTypes.map(function (x) {
     return "'".concat(x, "'");
-  }).join(","), "],[").concat(points.join(","), "]");
+  }).join(","), "]") : null;
+  var serializePoints = points.length ? "[".concat(points.join(","), "]") : null;
+  return [serializeShapes, serializeLineTypes, serializePoints].filter(function (el) {
+    return !!el;
+  }).join(",");
 };
 
 var buildGraphApiResponse = function buildGraphApiResponse() {
   var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var allowedShapes = [_constants.ShapeTypes.PARABOLA, _constants.ShapeTypes.PARABOLA2, _constants.ShapeTypes.EQUATION, _constants.ShapeTypes.POLYNOM, _constants.ShapeTypes.SECANT, _constants.ShapeTypes.TANGENT, _constants.ShapeTypes.LOGARITHM, _constants.ShapeTypes.EXPONENT, _constants.ShapeTypes.HYPERBOLA, _constants.ShapeTypes.ELLIPSE, _constants.ShapeTypes.CIRCLE, _constants.ShapeTypes.LINE, _constants.ShapeTypes.POLYGON, _constants.ShapeTypes.SINE, _constants.ShapeTypes.AREA];
+  var allowedShapes = [_constants.ShapeTypes.POINT, _constants.ShapeTypes.SEGMENT, _constants.ShapeTypes.RAY, _constants.ShapeTypes.VECTOR, _constants.ShapeTypes.PARABOLA, _constants.ShapeTypes.PARABOLA2, _constants.ShapeTypes.EQUATION, _constants.ShapeTypes.POLYNOM, _constants.ShapeTypes.SECANT, _constants.ShapeTypes.TANGENT, _constants.ShapeTypes.LOGARITHM, _constants.ShapeTypes.EXPONENT, _constants.ShapeTypes.HYPERBOLA, _constants.ShapeTypes.ELLIPSE, _constants.ShapeTypes.CIRCLE, _constants.ShapeTypes.LINE, _constants.ShapeTypes.POLYGON, _constants.ShapeTypes.SINE, _constants.ShapeTypes.AREA];
   var more2PointShapes = [_constants.ShapeTypes.POLYNOM, _constants.ShapeTypes.HYPERBOLA, _constants.ShapeTypes.ELLIPSE, _constants.ShapeTypes.POLYGON, _constants.ShapeTypes.PARABOLA2];
   var shapes = [];
   var lineTypes = [];
   var points = [];
   elements.forEach(function (el) {
-    if (!allowedShapes.includes(el.type)) {
+    if (el.subElement || !allowedShapes.includes(el.type)) {
       return;
     }
 
@@ -256,7 +266,9 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
 
     var shapePoints = [];
 
-    if (more2PointShapes.includes(el.type)) {
+    if (el.type === _constants.ShapeTypes.POINT) {
+      shapePoints.push("(".concat(+el.x.toFixed(4), ",").concat(+el.y.toFixed(4), ")"));
+    } else if (more2PointShapes.includes(el.type)) {
       Object.values(el.subElementsIds).forEach(function (id) {
         var point = elements.find(function (x) {
           return x.id === id;
@@ -290,7 +302,14 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
     }
 
     shapes.push([el.type, shapePoints]);
-    lineTypes.push(el.dashed ? "dashed" : "solid");
+
+    if (![_constants.ShapeTypes.POINT, _constants.ShapeTypes.RAY, _constants.ShapeTypes.VECTOR, _constants.ShapeTypes.SEGMENT].includes(el.type)) {
+      lineTypes.push(el.dashed ? "dashed" : "solid");
+
+      if (!points.length) {
+        points.push("(0,0)");
+      }
+    }
   });
   return serialize(shapes, lineTypes, points);
 };
@@ -402,14 +421,14 @@ var eqnToObject = function eqnToObject(validResponse) {
 
 var evaluator = /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(_ref2) {
-    var userResponse, validation, validResponse, altResponses, ignore_repeated_shapes, ignoreLabels, score, maxScore, evaluation, answers, result, _iterator, _step, _step$value, index, answer;
+    var userResponse, validation, validResponse, altResponses, ignore_repeated_shapes, ignoreLabels, _validation$scoringTy, scoringType, _validation$penalty, penalty, score, maxScore, evaluation, answers, result, _iterator, _step, _step$value, index, answer, anscount, rewardPoints, penaltyPoints, resultDetails, correctAns, wrongAns, partialScore;
 
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             userResponse = _ref2.userResponse, validation = _ref2.validation;
-            validResponse = validation.validResponse, altResponses = validation.altResponses, ignore_repeated_shapes = validation.ignore_repeated_shapes, ignoreLabels = validation.ignoreLabels;
+            validResponse = validation.validResponse, altResponses = validation.altResponses, ignore_repeated_shapes = validation.ignore_repeated_shapes, ignoreLabels = validation.ignoreLabels, _validation$scoringTy = validation.scoringType, scoringType = _validation$scoringTy === void 0 ? EXACT_MATCH : _validation$scoringTy, _validation$penalty = validation.penalty, penalty = _validation$penalty === void 0 ? 0 : _validation$penalty;
             score = 0;
             maxScore = 1;
             evaluation = {};
@@ -433,8 +452,8 @@ var evaluator = /*#__PURE__*/function () {
 
             _step$value = (0, _slicedToArray2["default"])(_step.value, 2), index = _step$value[0], answer = _step$value[1];
 
-            if (!userResponse.some(function (x) {
-              return x.type === _constants.ShapeTypes.AREA;
+            if (userResponse.find(function (x) {
+              return x.type === _constants.ShapeTypes.DRAG_DROP;
             })) {
               _context2.next = 19;
               break;
@@ -452,11 +471,26 @@ var evaluator = /*#__PURE__*/function () {
             result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
 
           case 20:
-            if (result.commonResult) {
-              score = Math.max(answer.score, score);
+            maxScore = Math.max(answer.score, maxScore);
+
+            if (scoringType === PARTIAL_MATCH) {
+              anscount = answer && answer.value && answer.value.length || 1;
+              rewardPoints = maxScore / anscount;
+              penaltyPoints = penalty / anscount;
+              resultDetails = result && result.details || [];
+              correctAns = resultDetails.filter(function (_ref4) {
+                var result = _ref4.result;
+                return !!result;
+              }).length;
+              wrongAns = resultDetails.length - correctAns;
+              partialScore = rewardPoints * correctAns - wrongAns * penaltyPoints;
+              score = Math.max(score, partialScore);
+            } else {
+              if (result.commonResult) {
+                score = Math.max(answer.score, score);
+              }
             }
 
-            maxScore = Math.max(answer.score, maxScore);
             evaluation[index] = result;
 
           case 23:

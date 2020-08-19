@@ -4,11 +4,12 @@ import ClassificationPage from "../../../../framework/author/itemList/questionTy
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification" type question`, () => {
   const queData = {
     group: "Classify, Match & Order",
-    queType: "Classification",
+    queType: questionType.CLASSIFICATION,
     queText: "Select the correct option?",
     template: " is the world's largest democracy",
     correctAns: "India",

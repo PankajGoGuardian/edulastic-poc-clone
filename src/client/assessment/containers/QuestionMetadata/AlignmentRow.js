@@ -155,7 +155,7 @@ const AlignmentRow = ({
       const curriculumFromStandard = data.standard.id
         ? formattedCuriculums.find(c => c.value === data.standard.id) || {}
         : {};
-      _subject = curriculumFromStandard.subject;
+      _subject = curriculumFromStandard?.subject;
     }
     createUniqGradeAndSubjects([...data.grades, ...gradesFromElo], subject);
     editAlignment(alignmentIndex, {
@@ -308,7 +308,6 @@ const AlignmentRow = ({
                 <ItemBody data-cy="gradeItem">
                   <FieldLabel>{t("component.options.grade")}</FieldLabel>
                   <SelectInputStyled
-                    showArrow
                     data-cy="gradeSelect"
                     mode="multiple"
                     showSearch
@@ -332,7 +331,6 @@ const AlignmentRow = ({
                 bg={!showIconBrowserBtn && "white"}
                 data-cy="searchStandardSelect"
                 mode="multiple"
-                showArrow
                 style={{ margin: "auto", display: "block" }}
                 placeholder={t("component.options.searchStandards")}
                 filterOption={false}

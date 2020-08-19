@@ -13,21 +13,22 @@ import { ReactComponent as TextLineIcon } from "./text-line.svg";
 import { ReactComponent as TextIcon } from "./text.svg";
 import { ReactComponent as Videoicon } from "./video-camera.svg";
 
+
 const ToolsIcons = {
-  BoxIcon,
-  CleanIcon,
-  CursorIcon,
-  EditIcon,
-  ImageIcon,
-  LayoutIcon,
-  ListIcon,
-  MessageIcon,
-  MoveIcon,
-  NextIcon,
-  PreviousIcon,
-  TextLineIcon,
-  TextIcon,
-  Videoicon
+    BoxIcon,
+    CleanIcon,
+    CursorIcon,
+    EditIcon,
+    ImageIcon,
+    LayoutIcon,
+    ListIcon,
+    MessageIcon,
+    MoveIcon,
+    NextIcon,
+    PreviousIcon,
+    TextLineIcon,
+    TextIcon,
+    Videoicon
 };
 
 export default ToolsIcons;

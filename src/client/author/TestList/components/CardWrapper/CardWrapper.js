@@ -21,7 +21,7 @@ class CardWrapper extends Component {
   };
 
   static defaultProps = {
-    owner: {},
+    owner: false,
     windowWidth: null,
     isTestAdded: false,
     blockStyle: ""

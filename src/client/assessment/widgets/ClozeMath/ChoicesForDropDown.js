@@ -83,6 +83,7 @@ class ChoicesForDropDown extends Component {
         const width = Math.min(splitWidth, 400);
         const drpdwnIndex = findIndex(draft.responseIds.dropDowns, drpdwn => drpdwn.id === dropDownId);
         const ind = findIndex(draft.responseContainers, cont => cont.id === dropDownId);
+        if (!draft.responseContainers) draft.responseContainers = [];
         if (ind === -1) {
           draft?.responseContainers?.push({
             index: draft.responseIds.dropDowns[drpdwnIndex].index,

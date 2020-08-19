@@ -167,16 +167,9 @@ export const JSXBox = styled.div`
   background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
-
-  border: 1px solid #e8e8e8;
+  border: none;
   border-radius: 0;
-  border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? `${props.margin}px` : "auto")};
-
-  div {
-    color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
-    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
-  }
 `;
 
 export const DropdownMenu = styled.ul`

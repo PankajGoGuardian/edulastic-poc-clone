@@ -124,10 +124,10 @@ const fetchAssignmentsSummary = ({ districtId = "", filters, sort }) =>
     })
     .then(result => result.data.result);
 
-const fetchAssignmentsClassList = ({ districtId, testId, testType }) =>
+const fetchAssignmentsClassList = ({ districtId, testId, testType, termId }) =>
   api
     .callApi({
-      url: `${prefix}/district/${districtId}/test/${testId}?testType=${testType}`,
+      url: `${prefix}/district/${districtId}/test/${testId}?testType=${testType}&termId=${termId}`,
       method: "get"
     })
     .then(result => result.data.result);

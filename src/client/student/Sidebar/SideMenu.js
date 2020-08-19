@@ -56,7 +56,7 @@ const menuItems = [
     path: "home/skill-mastery"
   },
   {
-    label: "Manage Class",
+    label: "My Classes",
     icon: IconManage,
     path: "home/manage"
   }
@@ -693,7 +693,15 @@ const FooterDropDown = styled.div`
           font-weight: 600;
           display: flex;
           align-items: center;
-          &:hover,
+          &:hover{
+            a {
+              color: ${white};
+            }
+            svg,
+            svg path {
+              fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            }
+          }
           &:focus {
             color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             a {

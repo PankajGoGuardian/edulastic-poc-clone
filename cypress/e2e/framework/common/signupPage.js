@@ -118,7 +118,9 @@ class SignupPage {
   // new school
 
   clickOnReqNewSchool = () => {
-    cy.get('[data-cy="reqNewSchoolBtn"]').click();
+    cy.get(`.ant-modal-footer`)
+      .find('[data-cy="reqNewSchoolBtn"]')
+      .click();
     cy.wait("@user").then(xhr => expect(xhr.status).to.eq(200));
   };
 
@@ -155,7 +157,7 @@ class SignupPage {
       .type(state);
 
   setDistrict = district => {
-    cy.get('[data-cy="Enter your district name"]')
+    cy.get('[data-cy="Enter your school district name"]')
       .click({ force: true })
       .type(district);
 

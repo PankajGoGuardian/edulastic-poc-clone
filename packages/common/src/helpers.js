@@ -117,7 +117,7 @@ const s3Folders = Object.values(aws.s3Folders);
  * upload a file to s3 using signed url
  * @param {file} file
  */
-export const uploadToS3 = async (file, folder) => {
+export const uploadToS3 = async (file, folder, progressCallback, cancelUpload) => {
   if (!file) {
     throw new Error("file is missing");
   }
@@ -146,7 +146,14 @@ export const uploadToS3 = async (file, folder) => {
 
   formData.append("file", file);
 
-  await fileApi.uploadBySignedUrl(url, formData);
+  if (!progressCallback) {
+    progressCallback = () => {};
+  }
+  if (!cancelUpload) {
+    cancelUpload = () => {};
+  }
+
+  await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload);
 
   // return CDN url for assets in production
   if (AppConfig.appEnv === "production") {
@@ -278,7 +285,7 @@ const tagMapping = {
 export const sanitizeForReview = stimulus => {
   if (!window.$) return stimulus;
   if (!stimulus || !stimulus.trim().length) return question.DEFAULT_STIMULUS;
-  const jqueryEl = $("<p>").append(stimulus);
+  const jqueryEl = $("<p>").append(sanitizeString(stimulus));
   // remove br tag also
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
@@ -318,6 +325,18 @@ export const sanitizeForReview = stimulus => {
       elem.replaceWith("[video]");
     }
   });
+
+  jqueryEl.find("iframe").each(function() {
+    const elem = $(this);
+    elem.replaceWith(["[resource]"]);
+  });
+
+  jqueryEl.find("a").each(function() {
+    const elem = $(this);
+    const textValue = elem.text();
+    elem.replaceWith(textValue);
+  });
+
   let splitJquery = jqueryEl.html();
 
   if (tagFound) {
@@ -355,16 +374,25 @@ export const removeIndexFromTemplate = tmpl => {
   return $(parsedHTML).html();
 };
 
-export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+export const allowedFileTypes = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "video/mp4",
+  "video/webm",
+  "video/ogg"
+];
 
-export const beforeUpload = file => {
+export const beforeUpload = (file, type) => {
+  const isVideoFile = type === "video";
   const isAllowedType = allowedFileTypes.includes(file.type);
   if (!isAllowedType) {
     notification({ messageKey: "imageTypeError" });
   }
-  const withinSizeLimit = file.size / 1024 / 1024 < 2;
+  const withinSizeLimit = isVideoFile ? file.size / 1024 / 1024 < 25 : file.size / 1024 / 1024 < 2;
   if (!withinSizeLimit) {
-    notification({ messageKey: "imageSizeError" });
+    notification({ messageKey: isVideoFile ? "videoSizeError" : "imageSizeError" });
   }
   return isAllowedType && withinSizeLimit;
 };
@@ -814,6 +842,6 @@ export default {
   getSelectionRect,
   toggleIntercomDisplay,
   executePromisesInSequence,
-  uuid,
-  sanitizeString
+  sanitizeString,
+  uuid
 };

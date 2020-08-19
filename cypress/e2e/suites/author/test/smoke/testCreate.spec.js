@@ -273,10 +273,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     cy.route("POST", "**api/test").as("createTest");
     testLibrary.getAnswerOnlyButton().click({ force: true });
     cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
-    testLibrary.header.verifyHeaderActionButtons();
+    testLibrary.header.verifyHeaderActionButtons(false);
     testLibrary.header.verifyHeaders(true, false, true, true, true);
     // test description
-    testLibrary.header.verifyHeaderActionButtons();
+    testLibrary.header.verifyHeaderActionButtons(false);
     if (testData.name) testLibrary.testSummary.setName(testData.name);
     if (testData.grade) {
       testData.grade.forEach(grade => {
@@ -296,7 +296,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     // verify items on review tab
     testLibrary.header.clickOnReview();
     testLibrary.header.verifyHeaders(true, false, true, true, true);
-    testLibrary.header.verifyHeaderActionButtons();
+    testLibrary.header.verifyHeaderActionButtons(false);
 
     // publish
     testLibrary.header.getPublishRegradeButton().click({ force: true });

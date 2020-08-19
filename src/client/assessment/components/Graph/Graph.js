@@ -293,9 +293,13 @@ class Graph extends Component {
     setQuestionData({ ...item, annotation: options });
   };
 
-  handleCanvasChange = options => {
+  handleCanvasChange = (canvas, uiStyle) => {
     const { setQuestionData, item } = this.props;
-    setQuestionData({ ...item, canvas: options });
+    let newItem = { ...item, canvas };
+    if (uiStyle) {
+      newItem = { ...newItem, uiStyle };
+    }
+    setQuestionData(newItem);
   };
 
   handleBgImgChange = bgImgOptions => {
@@ -401,7 +405,7 @@ class Graph extends Component {
       compact = true;
     }
 
-    const { validation, stimulus, uiStyle, graphType } = item;
+    const { validation, stimulus, uiStyle } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -442,29 +446,24 @@ class Graph extends Component {
                 />
               </Question>
 
+              <Question
+                section="main"
+                label="Annotations"
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+                advancedAreOpen
+              >
+                <Annotations question={item} setQuestionData={setQuestionData} editable />
+              </Question>
+
               {advancedLink}
 
-              {graphType !== "firstQuadrant" && graphType !== "quadrants" && graphType !== "numberLinePlot" && (
-                <Question
-                  section="main"
-                  label="Annotations"
-                  cleanSections={cleanSections}
-                  fillSections={fillSections}
-                  advancedAreOpen
-                >
-                  <Annotations question={item} setQuestionData={setQuestionData} editable />
-                </Question>
-              )}
               <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper
-            style={{ overflow: "auto" }}
-            borderRadius="0px"
-            className={compact ? "toolbar-compact graph-wrapper" : "graph-wrapper"}
-          >
+          <Wrapper borderRadius="0px" className={compact ? "toolbar-compact graph-wrapper" : "graph-wrapper"}>
             <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
               <QuestionLabelWrapper>
                 {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel> : null}
@@ -495,7 +494,15 @@ class Graph extends Component {
                 {view !== EDIT && <Instructions item={item} />}
                 {previewTab === "show" && item.canvas && item.uiStyle && (
                   <Fragment>
-                    <CorrectAnswersContainer minWidth="max-content" title={t("component.graphing.correctAnswer")}>
+                    <CorrectAnswersContainer
+                      minWidth="max-content"
+                      title={t("component.graphing.correctAnswer")}
+                      titleMargin="4px"
+                      noBackground
+                      showBorder
+                      padding="0px"
+                      margin="20px 0px"
+                    >
                       <GraphDisplay
                         disableResponse
                         graphData={item}
@@ -513,6 +520,11 @@ class Graph extends Component {
                         <CorrectAnswersContainer
                           minWidth="max-content"
                           title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                          titleMargin="4px"
+                          noBackground
+                          showBorder
+                          padding="0px"
+                          margin="20px 0px"
                         >
                           <GraphDisplay
                             disableResponse

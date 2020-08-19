@@ -29,6 +29,11 @@ const StyledTable = styled(Table)`
       .ant-table-body {
         overflow-x: auto !important;
       }
+      @media print {
+        .ant-table-body {
+          overflow-x: hidden !important;
+        }
+      }
     }
     .ant-table-fixed-left {
       .ant-table-thead {
@@ -46,7 +51,7 @@ const StyledTable = styled(Table)`
       }
       .ant-table-tbody {
         td {
-          padding: 10px 8px;
+          padding: 10px 0px 10px 8px;
           font-size: 11px;
           color: #434b5d;
           font-weight: 600;
@@ -85,7 +90,7 @@ const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, tes
               // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
               breadCrumb: [
                 {
-                  title: "REPORTS",
+                  title: "INSIGHTS",
                   to: "/author/reports"
                 },
                 {

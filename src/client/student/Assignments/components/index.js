@@ -26,7 +26,7 @@ const Wrapper = styled(Layout)`
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 
-const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, currentChild, proxyUserRole, t }) => {
+const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, currentChild, proxyUserRole, isCliUser, t }) => {
   const isParentRoleProxy = proxyUserRole === "parent";
 
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
@@ -58,7 +58,7 @@ const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, current
         description="Select the class that you want to join for the Google Meet session."
         hangoutLink={hangoutLink}
       />
-      <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
+      <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")} hideSideMenu={isCliUser}>
         <Row type="flex" align="middle">
           {!!classListWithHangouts.length && !(userRole === "parent" || isParentRoleProxy) && (
             <StyledEduButton
@@ -91,7 +91,8 @@ export default withNamespaces("header")(
       activeClasses: state.studentEnrollClassList.filteredClasses,
       loading: state.studentEnrollClassList.loading,
       currentChild: state?.user?.currentChild,
-      proxyUserRole: proxyRole(state)
+      proxyUserRole: proxyRole(state),
+      isCliUser: state?.user?.isCliUser
     }),
     {
       loadAllClasses: getEnrollClassAction,

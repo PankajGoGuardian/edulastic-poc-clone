@@ -1,6 +1,6 @@
+import { lightGrey3, themeColor, white } from "@edulastic/colors";
+import { Button, Form as AntdForm, Modal } from "antd";
 import styled from "styled-components";
-import { Modal, Button, Form as AntdForm } from "antd";
-import { lightGrey3, linkColor, lightBlue3, title, themeColor, white } from "@edulastic/colors";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content,
@@ -15,7 +15,6 @@ export const StyledModal = styled(Modal)`
 
 export const Form = styled(AntdForm)`
   background: ${white};
-  padding: 20px;
   .ant-input-affix-wrapper {
     .ant-input-prefix {
       width: 15px;
@@ -63,19 +62,10 @@ export const Field = styled.fieldset`
   width: 100%;
   padding: 0px;
 
-  legend {
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 0px;
-    border: 0px;
-    color: ${title};
+  label {
+    font-size: 11px;
   }
-
-  &:first-child {
-    margin-top: 0px;
-  }
-  .ant-calendar-picker,
-  .ant-select {
+  .ant-calendar-picker {
     width: 100%;
   }
 `;

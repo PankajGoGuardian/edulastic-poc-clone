@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { get, keyBy } from "lodash";
-import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
+import { FlexContainer, AnswerContext, helpers, CheckboxLabel } from "@edulastic/common";
 import TestItemPreview from "../../../../../../../assessment/components/TestItemPreview";
-import { PointsLabel, QuestionCheckbox } from "./styled";
+import { PointsLabel } from "./styled";
 import Actions from "../Actions";
 import { PointsInput } from "../styled";
 
@@ -72,8 +72,9 @@ const Expanded = ({
   const handleChangePoint = qid => e => {
     const questionScore = +e.target.value;
     if (!testItem.itemLevelScoring && qid) {
-      const itemScore = itemLevelScoring - points[qid] + questionScore;
-      onChangePoints(metaInfoData.id, itemScore, { ...points, [qid]: questionScore });
+      const updatedPoints = { ...points, [qid]: questionScore };
+      const itemScore = Object.values(updatedPoints).reduce((acc, curr) => curr + acc);
+      onChangePoints(metaInfoData.id, itemScore, updatedPoints);
     } else {
       onChangePoints(metaInfoData.id, questionScore);
     }
@@ -84,7 +85,7 @@ const Expanded = ({
       <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
         {isEditable && (
           <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
-            {isEditable && <QuestionCheckbox checked={selected} onChange={onSelect} />}
+            {isEditable && <CheckboxLabel checked={selected} onChange={onSelect} />}
           </FlexContainer>
         )}
         <FlexContainer>
@@ -134,65 +135,69 @@ const Expanded = ({
       </FlexContainer>
     </FlexContainer>
   ) : (
-    items.map(({ item: _item }, index) => (
-      <FlexContainer
-        data-cy={testItem._id}
-        className="expanded-rows"
-        justifyContent="space-between"
-        alignItems="flex-start"
-      >
-        <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
-          {isEditable && (
-            <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
-              {isEditable && <QuestionCheckbox checked={selected} onChange={onSelect} />}
-            </FlexContainer>
-          )}
-          <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
-            <div onClick={() => onPreview(metaInfoData.id)} style={{ width: "100%", cursor: "pointer" }}>
-              <TestItemPreview
-                style={{
-                  padding: 0,
-                  boxShadow: "none",
-                  display: "flex"
-                }}
-                cols={_item}
-                preview="show"
-                metaData={metaInfoData.id}
-                disableResponse
-                verticalDivider={get(_item, "[0].verticalDivider")}
-                scrolling={get(_item, "[0].scrolling")}
-                questions={widgetsWithResource}
-                windowWidth="100%"
-                isReviewTab
-                testItem
-              />
-            </div>
-          </AnswerContext.Provider>
-        </FlexContainer>
-        <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
-          <FlexContainer flexDirection="column" style={{ margin: 0 }}>
-            <PointsLabel>Points</PointsLabel>
-            <PointsInput
-              size="large"
-              type="number"
-              disabled={!owner || !isEditable || isScoringDisabled}
-              value={pointsProp}
-              onChange={handleChangePoint(get(_item, "[0].widgets[0].reference", null))}
-            />
+    items.map(({ item: _item }, index) => {
+      const qId = get(_item, `[0].widgets[0].reference`, null);
+      return (
+        <FlexContainer
+          data-cy={testItem._id}
+          className="expanded-rows"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
+          <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
+            {isEditable && (
+              <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
+                {isEditable && <CheckboxLabel checked={selected} onChange={onSelect} />}
+              </FlexContainer>
+            )}
+            <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
+              <div onClick={() => onPreview(metaInfoData.id)} style={{ width: "100%", cursor: "pointer" }}>
+                <TestItemPreview
+                  style={{
+                    padding: 0,
+                    boxShadow: "none",
+                    display: "flex"
+                  }}
+                  cols={_item}
+                  preview="show"
+                  metaData={metaInfoData.id}
+                  disableResponse
+                  verticalDivider={get(_item, "[0].verticalDivider")}
+                  scrolling={get(_item, "[0].scrolling")}
+                  questions={widgetsWithResource}
+                  windowWidth="100%"
+                  isReviewTab
+                  testItem
+                />
+              </div>
+            </AnswerContext.Provider>
           </FlexContainer>
-          {index === 0 && (
-            <Actions
-              style={{ marginTop: 8, width: 100 }}
-              onPreview={() => onPreview(metaInfoData.id)}
-              onCollapseExpandRow={collapsRow}
-              onDelete={onDelete}
-              isEditable={isEditable}
-              expanded
-            />
-          )}
+          <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
+            <FlexContainer flexDirection="column" style={{ margin: 0 }}>
+              <PointsLabel>Points</PointsLabel>
+              <PointsInput
+                size="large"
+                type="number"
+                min={0}
+                disabled={!owner || !isEditable || isScoringDisabled}
+                value={points[qId] || points}
+                onChange={handleChangePoint(qId)}
+              />
+            </FlexContainer>
+            {index === 0 && (
+              <Actions
+                style={{ marginTop: 8, width: 100 }}
+                onPreview={() => onPreview(metaInfoData.id)}
+                onCollapseExpandRow={collapsRow}
+                onDelete={onDelete}
+                isEditable={isEditable}
+                expanded
+              />
+            )}
+          </FlexContainer>
         </FlexContainer>
-      </FlexContainer>
-    ))
+      );
+    })
   );
 };
 

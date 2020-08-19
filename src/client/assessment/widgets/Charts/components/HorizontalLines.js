@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
-import { Line, Text, Axis } from "../styled";
+import { Line, Axis } from "../styled";
 import { convertUnitToPx, getPadding, getYAxis } from "../helpers";
 import AxisLabel from "./AxisLabel";
 
@@ -34,7 +34,7 @@ const HorizontalLines = ({ gridParams, displayGridlines, paddingTop, isLine }) =
               )}
             </g>
             {displayGridlines && yAxis.length - 1 !== index && (
-              <Line x1={padding} y1={y} x2={width} y2={y} strokeWidth={1} />
+              <Line x1={padding} y1={y} x2={width} y2={y} strokeWidth={2} />
             )}
             {yAxis.length - 1 === index && <AxisComponent x1={padding} y1={y} x2={width} y2={y} strokeWidth={2} />}
           </Fragment>

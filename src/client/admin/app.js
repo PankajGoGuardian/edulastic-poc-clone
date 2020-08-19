@@ -12,6 +12,7 @@ import CustomReportContainer from "./Components/CustomReportContainer";
 import ProxyUser from "./Components/ProxyUser";
 import ApiForm from "./Containers/ApiForm";
 import CleverSearch from "./Containers/CleverSearch";
+import ClasslinkSearch from "./Containers/ClasslinkSearch";
 import UpgradeUser from "./Containers/UpgradeUser";
 import ProfileBody from "../author/DistrictProfile/components/Container/ProfileBody";
 
@@ -27,7 +28,8 @@ function Admin({ match, history, location }) {
             <Switch>
               <Redirect exact path={match.path} to={`${match.path}/proxyUser`} />
               <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
-              <Route path={`${match.path}/search`} component={CleverSearch} />
+              <Route path={`${match.path}/search/clever`} component={CleverSearch} />
+              <Route path={`${match.path}/search/classlink`} component={ClasslinkSearch} />
               <Route path={`${match.path}/upgrade`} component={UpgradeUser} />
               <Route path={`${match.path}/apiForms`} component={ApiForm} />
               <Route path={`${match.path}/content/collections`} component={Collections} />

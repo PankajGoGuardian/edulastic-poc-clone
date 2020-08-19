@@ -17,7 +17,6 @@ export default NoDataNotification;
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100%;
   position: relative;
   min-height: 70vh;
   min-width: 400px;

@@ -47,7 +47,8 @@ function drawPoint(board, object, settings) {
 function create(board, object, settings) {
   const { fixed = false } = settings;
 
-  const { id = null, x, y, text, customOptions = {} } = object;
+  const { id = null, x, y, text, customOptions = {}, dimensions = {} } = object;
+  const { width = 110, height = 32 } = dimensions;
 
   const point = drawPoint(board, object, settings);
 
@@ -58,20 +59,34 @@ function create(board, object, settings) {
     content += deleteIconPattern.replace(/{iconId}/g, deleteIconId);
   }
 
-  content = `<div class='drag-drop-content ${
-    customOptions.isCorrect
-      ? "drag-drop-content-correct"
-      : customOptions.isCorrect === false
-      ? "drag-drop-content-incorrect"
-      : ""
-  }'>${content}${customOptions.isCorrect ? IconCorrect : customOptions.isCorrect === false ? IconClose : ""}</div>`;
+  let cssClass = "fr-box drag-drop";
+  let conentClassName = "drag-drop-content";
+  let icon = "";
+  if (customOptions.isCorrect) {
+    conentClassName += " drag-drop-content-correct";
+    cssClass += " correct";
+    icon = IconCorrect;
+  } else if (customOptions.isCorrect === false) {
+    conentClassName += " drag-drop-content-incorrect";
+    cssClass += " incorrect";
+    icon = IconClose;
+  }
 
-  const cssClass = "fr-box drag-drop";
+  conentClassName = `class="${conentClassName}"`;
+
+  const contentStyle = `style="
+    width: ${width}px;
+    height: ${height}px;
+  "`;
+
+  const triangle = "<div class='drag-drop-content-triangle'></div";
+
+  content = `<div ${contentStyle} ${conentClassName}>${content}${icon}${triangle}</div>`;
 
   const mark = board.$board.create("text", [x, y, content], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-    anchorX: "middle", // this setting cause offset flickering
-    anchorY: "top",
+    anchorX: "left", // this setting cause offset flickering
+    anchorY: "bottom",
     cssClass,
     highlightCssClass: cssClass,
     fixed
@@ -114,6 +129,7 @@ function create(board, object, settings) {
 
   newElement.type = jxgType;
   newElement.labelHTML = text;
+  newElement.dimensions = dimensions;
 
   return newElement;
 }
@@ -139,28 +155,29 @@ function removePointForDrag(board) {
 
 const getClampedCoords = (value, bounds) => clamp(value, bounds[0], bounds[1]);
 
-function getConfig(dragDrop) {
-  const bounds = dragDrop.board.getBoundingBox();
-  const p = dragDrop.parents[0];
-  const x = dragDrop.coords[p].usrCoords[1];
-  const y = dragDrop.coords[p].usrCoords[2];
+function getConfig(element) {
+  const bounds = element.board.getBoundingBox();
+  const p = element.parents[0];
+  const x = element.coords[p].usrCoords[1];
+  const y = element.coords[p].usrCoords[2];
 
   const clampedX = (bounds && getClampedCoords(x, [bounds[0], bounds[1]])) || x;
   const clampedY = (bounds && getClampedCoords(y, [bounds[3], bounds[2]])) || y;
 
   if (clampedX !== x || clampedY !== y) {
-    dragDrop.translationPoints[0].moveTo([clampedX, clampedY]);
-    dragDrop.translationPoints[1].moveTo([clampedX, clampedY]);
+    element.translationPoints[0].moveTo([clampedX, clampedY]);
+    element.translationPoints[1].moveTo([clampedX, clampedY]);
   }
-
+  const { dimensions = { height: 32, width: 110 } } = element;
   return {
-    _type: dragDrop.type,
+    _type: element.type,
     type: CONSTANT.TOOLS.DRAG_DROP,
     x: clampedX,
     y: clampedY,
-    id: dragDrop.id,
-    text: dragDrop.labelHTML,
-    label: false
+    id: element.id,
+    text: element.labelHTML,
+    label: false,
+    dimensions
   };
 }
 

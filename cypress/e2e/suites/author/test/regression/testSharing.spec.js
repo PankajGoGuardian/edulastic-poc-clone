@@ -349,7 +349,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.searchByCollection(COLLECTION.school);
         testLibrary.verifyCollectionOnTestCardbyId(test_id, COLLECTION.school.split(" ")[0].toUpperCase());
         testLibrary.clickOnTestCardById(test_id);
-        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.school);
+        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.school.split(" ")[0].toUpperCase());
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
     });
@@ -391,7 +391,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.searchByCollection(COLLECTION.district);
         testLibrary.verifyCollectionOnTestCardbyId(test_id, COLLECTION.district.split(" ")[0].toUpperCase());
         testLibrary.clickOnTestCardById(test_id);
-        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.district);
+        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.district.split(" ")[0].toUpperCase());
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
     });
@@ -419,14 +419,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         cy.login("teacher", author[email], author[pass]);
       });
 
-      before(">sharing at public level", () => {
+      it(">sharing at public level", () => {
         testLibrary.seachTestAndGotoReviewById(test_id);
         testLibrary.header.clickOnShare();
-        testLibrary.sharingEnabledPublic();
+        testLibrary.getPublicRadio().should("be.disabled");
+        /* testLibrary.sharingEnabledPublic();
         testLibrary.getPublicRadio().click({ force: true });
-        testLibrary.clickSharePop();
+        testLibrary.clickSharePop(); */
       });
-      it(`>assert share and 'View & Duplicate' permission for '${
+      /*  it(`>assert share and 'View & Duplicate' permission for '${
         dist1_school2[teacher2][name]
       }' from other district`, () => {
         cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
@@ -445,10 +446,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.public);
         testLibrary.assertTestPublishedNoEdit(test_id);
-      });
+      }); */
     });
-
-    context(">remove share for 'district'", () => {
+    /*  context(">remove share for 'district'", () => {
       before("Login", () => {
         cy.login("teacher", author[email], author[pass]);
       });
@@ -468,6 +468,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.searchByCollection(COLLECTION.public);
         testLibrary.checkforNonExistanceOfTest(test_id);
       });
-    });
+    }); */
   });
 });

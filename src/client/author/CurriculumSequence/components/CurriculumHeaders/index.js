@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { roleuser } from "@edulastic/constants";
 import { Tooltip, Modal, Dropdown, Menu } from "antd";
@@ -13,12 +15,15 @@ import {
   IconAirdrop,
   IconUseThis,
   IconTrash,
-  IconMoreVertical
+  IconMoreVertical,
+  IconDuplicate
 } from "@edulastic/icons";
 import { IconActionButton } from "../styled";
 import StudentPlayListHeader from "../../../../student/sharedComponents/Header/PlayListHeader";
 import PlaylistPageNav from "../PlaylistPageNav";
 import SwitchPlaylist from "./SwitchPlaylist";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { allowContentEditCheck } from "../../../src/utils/permissionCheck";
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
@@ -108,7 +113,10 @@ const CurriculumHeader = ({
   removePlaylistFromUse,
   customizeInDraft = false,
   publishPlaylistInDraft,
-  discardDraftPlaylist
+  discardDraftPlaylist,
+  canAllowDuplicate,
+  duplicatePlayList,
+  writableCollections
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const {
@@ -118,7 +126,7 @@ const CurriculumHeader = ({
     collections: _playlistCollections = [],
     _id
   } = destinationCurriculumSequence;
-
+  const hasCollectionAccess = allowContentEditCheck(_playlistCollections, writableCollections);
   // figure out which tab contents to render || just render default playlist
   const {
     params: { currentTab: cTab },
@@ -126,12 +134,12 @@ const CurriculumHeader = ({
   } = match;
   const currentTab = cTab || "playlist";
   const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
+  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection ?._id);
 
   const shouldHideUseThis = status === "draft";
   const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
 
-  const isPlaylistDetailsPage = window.location?.hash === "#review";
+  const isPlaylistDetailsPage = window.location ?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
 
   const switchPlaylist = (
@@ -183,7 +191,7 @@ const CurriculumHeader = ({
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
           {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
             !urlHasUseThis &&
-            destinationCurriculumSequence?._id && (
+            destinationCurriculumSequence ?._id && (
               <Tooltip placement="bottom" title="DELETE">
                 <HeaderButton
                   loading={loadingDelete}
@@ -210,13 +218,32 @@ const CurriculumHeader = ({
               </HeaderButton>
             )}
 
+          {(canAllowDuplicate || isAuthor || role === roleuser.EDULASTIC_CURATOR) && (
+            <Tooltip placement="bottom" title="CLONE">
+              <HeaderButton
+                isBlue
+                isGhost
+                data-cy="clone"
+                onClick={() =>
+                  duplicatePlayList({
+                    _id: destinationCurriculumSequence._id,
+                    title: destinationCurriculumSequence.title
+                  })
+                }
+                IconBtn
+              >
+                <IconDuplicate />
+              </HeaderButton>
+            </Tooltip>
+          )}
+
           {customizeInDraft && (
             <HeaderButton isBlue isGhost data-cy="cancel" onClick={discardDraftPlaylist}>
               CANCEL
             </HeaderButton>
           )}
 
-          {isManageContentActive && !shouldHideUseThis && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
+          {isManageContentActive && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
             <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               {isDesktop && "SAVE"}
@@ -225,16 +252,18 @@ const CurriculumHeader = ({
 
           {urlHasUseThis && isTeacher && !isPublisherUser && !customizeInDraft && (
             <>
-              <HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
+              {/* need to hide this button for now until figuring out the complete flow  */}
+              {/* {<HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
                 <IconAirdrop />
                 {isDesktop && "OPEN TO STUDENTS"}
-              </HeaderButton>
+              </HeaderButton>} */}
               <Dropdown
                 overlayStyle={{ zIndex: 999, cursor: "pointer" }}
                 overlay={mainPlaylistVerticalMenu}
                 trigger={["click"]}
+                getPopupContainer={trigger => trigger.parentNode}
               >
-                <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
+                <IconActionButton style={{ cursor: "pointer", alignSelf: "center" }} onClick={e => e.stopPropagation()}>
                   <IconMoreVertical width={5} height={14} color={themeColorBlue} />
                 </IconActionButton>
               </Dropdown>
@@ -264,12 +293,14 @@ const CurriculumHeader = ({
                 <span>USE THIS</span>
               </HeaderButton>
             )}
-          {features.isCurator && (status === "inreview" || status === "rejected") && (
+          {features.isCurator && (status === "inreview" || status === "rejected") && hasCollectionAccess && (
             <HeaderButton isBlue onClick={onApproveClick}>
               APPROVE
             </HeaderButton>
           )}
-          {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
+          {features.isCurator && status === "inreview" && hasCollectionAccess && (
+            <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>
+          )}
         </CurriculumHeaderButtons>
 
         {/* <ResolvedMobileHeaderWrapper>
@@ -288,4 +319,11 @@ const CurriculumHeader = ({
   return <Fragment />;
 };
 
-export default withRouter(CurriculumHeader);
+const enhance = compose(
+  withRouter,
+  connect(state => ({
+    writableCollections: getCollectionsSelector(state)
+  }))
+);
+
+export default enhance(CurriculumHeader);

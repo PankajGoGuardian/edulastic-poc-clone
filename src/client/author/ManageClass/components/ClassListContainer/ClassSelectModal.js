@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { upperFirst } from "lodash";
+import { upperFirst, isEmpty } from "lodash";
 
 // components
 import { Spin, Select, Input } from "antd";
@@ -65,6 +65,7 @@ const ClassSelectModal = ({
           };
         })
       );
+      setSelectedRows(classListToSync.map((c, i) => i));
     }
     if (type === "googleClassroom") {
       setClassListData(
@@ -93,7 +94,7 @@ const ClassSelectModal = ({
   }, [allowedInstitutions]);
 
   const handleClassListSync = () => {
-    const classList = classListData.filter((_, index) => selectedRows.includes(index));
+    const classList = classListData.filter((each, index) => selectedRows.includes(index) && !each.disabled);
     if (!classList?.length) {
       notification({ messageKey: "pleaseSelectAClass" });
     } else if (type === "googleClassroom" && !institutionId) {
@@ -322,6 +323,8 @@ const ClassSelectModal = ({
     </InstitutionSelectWrapper>
   );
 
+  const disableImport = isEmpty(selectedRows.filter(index => !classListData[index]?.disabled));
+
   return (
     <ClassListModal
       visible={visible}
@@ -348,7 +351,7 @@ const ClassSelectModal = ({
         <EduButton isGhost onClick={onCancel}>
           CANCEL
         </EduButton>,
-        <EduButton onClick={handleClassListSync} loading={loading}>
+        <EduButton onClick={handleClassListSync} loading={loading} disabled={disableImport}>
           IMPORT
         </EduButton>
       ]}

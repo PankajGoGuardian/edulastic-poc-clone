@@ -57,7 +57,7 @@ const columns = [
           <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
         </Tooltip>
         {row.timedAssignment && (
-          <Tooltip placement="right" title={`${row.allowedTime / (60 * 1000)} min`}>
+          <Tooltip placement="right" title={<span> Time Limit: {row.allowedTime / (60 * 1000)} min</span>}>
             <TimedTestIndicator data-cy="type" type="p">
               <TimerIcon />
             </TimedTestIndicator>
@@ -138,7 +138,8 @@ const TableList = ({
   toggleDeleteAssignmentModal,
   isLoadingAssignments,
   bulkActionStatus,
-  isHeaderAction
+  isHeaderAction,
+  history
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
@@ -286,6 +287,9 @@ const TableList = ({
         pagination={showPagination}
         rowSelection={rowSelection}
         loading={isLoadingAssignments}
+        onRow={row => ({
+          onClick: () => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)
+        })}
       />
       <ReleaseScoreSettingsModal
         showReleaseGradeSettings={showReleaseScoreModal}

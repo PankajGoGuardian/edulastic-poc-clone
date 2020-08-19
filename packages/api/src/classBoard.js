@@ -19,12 +19,12 @@ const testActivity = ({ assignmentId, classId }) =>
     })
     .then(result => result.data);
 
-const releaseScore = ({ assignmentId, classId, releaseScore, testId, filterState }) =>
+const releaseScore = ({ assignmentId, classId, releaseScore: _releaseScore, testId, filterState }) =>
   api
     .callApi({
       method: "put",
       url: `${prefix}/${assignmentId}/test/${testId}/group/${classId}/releaseScore`,
-      data: { releaseScore },
+      data: { releaseScore: _releaseScore },
       params: filterState
     })
     .then(result => result.data);
@@ -93,7 +93,7 @@ const addStudents = ({ assignmentId, classId, students, endDate }) =>
     .callApi({
       method: "put",
       url: `${prefix}/${assignmentId}/add-students`,
-      data: { _id: classId, students, specificStudents: students.length > 0, endDate }
+      data: { _id: classId, students, endDate }
     })
     .then(response => response.data.result);
 

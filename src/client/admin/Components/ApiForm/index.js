@@ -54,13 +54,17 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {} }) => {
               />
             )}
             {fields.map(field => (
-              <Field {...field} onChange={onChange} note={note}/>
+              <Field {...field} onChange={onChange} note={note} />
             ))}
             <ActionWrapper>
               <Button type="primary" htmlType="submit" onClick={onSave}>
                 Submit
               </Button>
-            {!!text && !parentField && <span className="note" style={align === "left" ? { justifyContent: "flex-start" } : {}}>{text}</span> }
+              {!!text && !parentField && (
+                <span className="note" style={align === "left" ? { justifyContent: "flex-start" } : {}}>
+                  {text}
+                </span>
+              )}
             </ActionWrapper>
           </Form>
         </FirstDiv>

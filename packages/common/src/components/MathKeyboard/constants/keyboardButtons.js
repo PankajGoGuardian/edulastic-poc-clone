@@ -24,6 +24,8 @@ import Group2211 from "../assets/keyboardButtons/2211.svg";
 import Group1004 from "../assets/keyboardButtons/1004.svg";
 import Group1005 from "../assets/keyboardButtons/1005.svg";
 import Group1015 from "../assets/keyboardButtons/1015.svg";
+import Group1016 from "../assets/keyboardButtons/1016.svg";
+import Group1017 from "../assets/keyboardButtons/1017.svg";
 import Group1008 from "../assets/keyboardButtons/1008.svg";
 import Group1009 from "../assets/keyboardButtons/1009.svg";
 import Group2256 from "../assets/keyboardButtons/2256.svg";
@@ -1319,6 +1321,60 @@ export const TAB_BUTTONS = [
         label: <CustomImage src={Group3170} width={16} height={16} role="presentation" />,
         types: ["all"],
         command: "write"
+      },
+      {
+        handler: "\\parallelogram",
+        label: <CustomImage src={Group3172} width={24} height={24} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\theta",
+        label: <CustomImage src={Group2478} width={14} height={14} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\nparallel",
+        label: <CustomImage src={Group3181} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\perp",
+        label: <CustomImage src={Group3171} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\angle",
+        label: <CustomImage src={Group2744} width={12} height={12} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\triangle",
+        label: <CustomImage src={Group3169} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\degree",
+        label: <CustomImage src={Group3173} width={8} height={8} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\parallel",
+        label: <CustomImage src={Group3163} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\text{m}\\angle",
+        label: <CustomImage src={Group6101} width={24} height={24} role="presentation" />,
+        types: ["all"],
+        command: "write"
       }
     ]
   },
@@ -1796,6 +1852,20 @@ export const TAB_BUTTONS = [
         types: ["all"],
         command: "keystroke",
         name: "shiftEnter"
+      },
+      {
+        handler: "\\almatrix",
+        label: <CustomImage src={Group1016} role="presentation" />,
+        types: ["all"],
+        command: "cmd",
+        name: "bmatrix"
+      },
+      {
+        handler: "\\armatrix",
+        label: <CustomImage src={Group1017} role="presentation" />,
+        types: ["all"],
+        command: "cmd",
+        name: "bmatrix"
       }
     ]
   },
@@ -1854,7 +1924,7 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
-        handler: "{",
+        handler: "{}",
         label: <CustomImage src={Group1023} role="presentation" />,
         types: ["all"],
         command: "cmd"

@@ -105,18 +105,20 @@ export default class SmartFilters {
       .last()
       .click({ force: true });
     cy.get('[placeholder="Name this folder"]').type(newName);
-    cy.contains("span", "Update").click();
+    cy.contains("span", "Update").click({ force: true });
+
     if (isValid) {
       cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
       this.verifyFolderVisible(newName);
       this.verifyFolderNotVisible(currentName);
     } else {
       cy.contains("The folder name is already used").should("be.visible");
-      cy.contains("span", "Cancel").click();
+      cy.contains("span", "Cancel").click({ force: true });
     }
   };
 
-  deleteFolder = (folderName, isValid = true) => {
+  // Fix test in accordance with EV-15966
+  deleteFolder = folderName => {
     cy.server();
     cy.route("DELETE", "**/user-folder/**").as("deleteFolder");
 
@@ -129,14 +131,15 @@ export default class SmartFilters {
       .first()
       .click({ force: true });
 
-    if (isValid) {
-      cy.get('[data-cy="submit"]').click();
-      cy.wait("@deleteFolder").then(xhr => expect(xhr.status).to.eq(200));
-      this.verifyFolderNotVisible(folderName);
-    } else {
-      cy.contains("Only empty folders can be deleted").should("be.visible");
-      // cy.contains("span", "Cancel").click();
-    }
+    cy.contains(
+      `${folderName} will get deleted but all tests will remain untouched. The tests can still be accessed from All Assignments.`
+    ).should("be.visible");
+
+    cy.get('[data-cy="submit"]')
+      .first()
+      .click({ force: true });
+    cy.wait("@deleteFolder").then(xhr => expect(xhr.status).to.eq(200));
+    this.verifyFolderNotVisible(folderName);
   };
 
   createNewFolder = (folderName, isValid = true) => {
@@ -166,7 +169,7 @@ export default class SmartFilters {
   moveToFolder = (folderName, isValid = true) => {
     cy.server();
     cy.route("PUT", "**/user-folder/**").as("updateFolder");
-    cy.contains("span", "Move").click();
+    cy.contains("span", "Move").click({ force: true });
 
     cy.get(".ant-modal-body")
       .find(`[title="${folderName}"]`)

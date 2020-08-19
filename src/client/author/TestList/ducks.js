@@ -9,7 +9,10 @@ import { testsApi, analyticsApi } from "@edulastic/api";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
-import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
+import {
+  UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN,
+  setApproveConfirmationOpenAction
+} from "../TestPage/components/AddItems/ducks";
 
 const { SMART_FILTERS } = libraryFilters;
 export const filterMenuItems = [
@@ -93,11 +96,17 @@ export const getSelectedTestsSelector = createSelector(
   state => state.selectedTests
 );
 
+export const getSortFilterStateSelector = createSelector(
+  stateSelector,
+  state => state.sort
+);
+
 // sagas
-function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
+function* receiveTestsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
   try {
     const { items, count } = yield call(testsApi.getAll, {
       search,
+      sort,
       page,
       limit
     });
@@ -156,7 +165,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      notification({ messageKey: "testNotAssociatedWithCollection" });
+      notification({ type: "warn", messageKey: "testNotAssociatedWithCollection" });
       return;
     }
     yield call(testsApi.updateTestStatus, payload);
@@ -204,6 +213,8 @@ function* approveOrRejectMultipleTestsSaga({ payload }) {
     } catch (error) {
       console.error(error);
       notification({ msg: error?.data?.message || `Failed to update Status` });
+    } finally {
+      yield put(setApproveConfirmationOpenAction(false));
     }
   }
 }
@@ -249,6 +260,11 @@ export const emptyFilters = {
   createdAt: ""
 };
 
+export const initialSortState = {
+  sortBy: "recency",
+  sortDir: "desc"
+};
+
 // reducer
 const initialState = {
   entities: [],
@@ -260,7 +276,8 @@ const initialState = {
   limit: 20,
   count: 0,
   loading: false,
-  selectedTests: []
+  selectedTests: [],
+  sort: { ...initialSortState }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -293,7 +310,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_ALL_TEST_FILTERS:
       return {
         ...state,
-        filters: payload
+        filters: payload.search,
+        sort: payload.sort
       };
 
     case CLEAR_TEST_FILTERS:
@@ -301,7 +319,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         filters: {
           ...emptyFilters
-        }
+        },
+        sort: { ...initialSortState }
       };
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
       return {

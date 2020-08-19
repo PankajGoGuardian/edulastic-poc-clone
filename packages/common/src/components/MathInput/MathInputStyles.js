@@ -1,12 +1,14 @@
 import styled, { css } from "styled-components";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, greyThemeLight, greyishBorder } from "@edulastic/colors";
 
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) => width || (fullWidth ? "100%" : "fit-content")};
   height: ${({ height }) => height || "auto"};
+  background: ${({ background }) => background};
 
   .input {
     position: relative;
+    height: 100%;
   }
 
   .math-keyboard-popover {
@@ -17,13 +19,12 @@ export const MathInputStyles = styled.div`
     height: 100%;
     width: 100%;
     min-width: 40px;
-    min-height: 40px;
+    min-height: 32px;
     display: inline-flex;
     position: relative;
-    border-radius: 5px;
-    background: ${props => props.theme.common.mathInputBgColor};
-    border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
-    padding: ${({ width }) => (width ? "unset" : "5px 15px")};
+    border-radius: 2px;
+    border: ${({ noBorder }) => !noBorder && `1px solid ${greyThemeLight}`};
+    padding: ${({ width, noPadding }) => (width ? "unset" : !noPadding && "5px 15px")};
     align-items: center;
     padding-right: 25px;
 
@@ -53,12 +54,21 @@ export const MathInputStyles = styled.div`
     }
 
     &.mq-focused {
-      box-shadow: none;
-      border: 0;
+      box-shadow: none !important;
+      border-color: ${greyThemeLight} !important;
+      outline: none !important;
     }
     .mq-editable-field {
-      min-width: ${({ minWidth }) => minWidth || "auto"};
-      padding: 2px;
+      min-width: ${({ minWidth }) => minWidth || "80px"};
+      min-height: ${({ minHeight }) => minHeight || "35px"};
+      border-radius: 2px;
+      padding: 5px 4px;
+      border: 1px solid ${greyThemeLight};
+      &.mq-focused {
+        box-shadow: none !important;
+        border-color: ${greyThemeLight} !important;
+        outline: none !important;
+      }
     }
 
     .mq-root-block {
@@ -91,50 +101,47 @@ export const MathInputStyles = styled.div`
   }
 
   .response-embed {
+    width: 120px;
+    height: 32px;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
     font-size: ${props => props.theme.common.mathResponseEmbedFontSize};
     font-family: ${({ theme }) => theme.defaultFontFamily};
     font-weight: ${props => props.theme.common.mathResponseEmbedCharFontWeight};
-    width: 135px;
     margin-right: 5px;
-    height: 25px;
-    line-height: 25px;
+    line-height: 32px;
 
     .response-embed__char {
-      width: 30%;
+      width: 32px;
       background: ${props => props.theme.common.mathResponseEmbedCharBgColor};
       font-weight: ${props => props.theme.common.mathResponseEmbedCharFontWeight};
-      font-size: ${({ theme }) => theme.size6}px;
       color: ${props => props.theme.common.mathResponseEmbedCharColor};
+      border: 1px solid ${greyishBorder};
+      border-right: none;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid ${props => props.theme.common.mathResponseEmbedCharBorderColor};
-      border-right: none;
-      border-radius: 5px;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
     }
 
     .response-embed__text {
-      width: 70%;
+      width: calc(100% - 32px);
       color: ${({ theme }) => theme.common.mathResponseFontColor};
       background: ${props => props.theme.common.mathResponseEmbedTextBgColor};
-      text-transform: uppercase;
+      font-size: ${props => props.theme.common.mathResponseEmbedTextFontSize};
       font-weight: ${props => props.theme.common.mathResponseEmbedTextFontWeight};
+      border: 1px solid ${greyishBorder};
+      text-transform: uppercase;
+      border-left: none;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid ${props => props.theme.common.mathResponseEmbedTextBorderColor};
-      border-left: none;
-      border-radius: 5px;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      font-size: ${({ theme }) => theme.size6}px;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
     }
   }
 
@@ -142,14 +149,6 @@ export const MathInputStyles = styled.div`
   .mq-math-mode i,
   .mq-math-mode i.mq-font {
     font-style: ${props => props.fontStyle};
-  }
-
-  .mq-math-mode .mq-matrix {
-    table {
-      td {
-        text-align: center;
-      }
-    }
   }
 
   @media (max-width: ${mobileWidth}) {

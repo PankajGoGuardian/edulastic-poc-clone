@@ -261,7 +261,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
       });
     }); */
 
-    context(">sharing at 'public level'", () => {
+    /*  context(">sharing at 'public level'", () => {
       let clonedItem1 = [];
       let clonedItem2 = [];
 
@@ -344,7 +344,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
         });
       });
     });
-
+ */
     /* https://snapwiz.atlassian.net/browse/EV-13434 
     context(">public- remove share", () => {
       before("Login", () => {

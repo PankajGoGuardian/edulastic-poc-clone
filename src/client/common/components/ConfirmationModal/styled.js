@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightBlue, lightGrey, mainTextColor, white, themeColor } from "@edulastic/colors";
+import { lightBlue, lightGrey, mainTextColor, white, themeColor, lightGrey9 } from "@edulastic/colors";
 import { Input, Col, Modal, Button } from "antd";
 
 export const LightGreenSpan = styled.span`
@@ -16,14 +16,25 @@ export const StyledInput = styled(Input)`
   margin: 0 auto;
   width: 100px;
   text-align: center;
-  width: 100%;
+  width: 70%;
   margin-top: 15px;
   background: ${lightGrey};
   padding: 20px;
+  &::placeholder {
+    text-align: left;
+    color: ${lightGrey9};
+  }
+  &:focus::placeholder {
+    color: transparent;
+  }
 `;
 
 export const StyledDiv = styled.div`
+  width: 90%;
+  text-align: left;
+  margin-top: 20px;
   margin-bottom: 5px;
+  margin-left: 45px;
 `;
 
 export const StyledClassName = styled.p`
@@ -83,7 +94,7 @@ export const ModalWrapper = styled(Modal)`
 export const InitOptions = styled.div`
   background: ${white};
   border-radius: 8px;
-  padding: 15px 80px;
+  padding: 15px 0px;
   text-align: center;
   font-weight: bold;
   ${props => props.bodyStyle}

@@ -169,14 +169,17 @@ class ChoiceMatrixStandardPage {
   }
 
   addAlternate() {
-    cy.get("body")
-      .contains("Alternative Answer")
+    cy.get("[data-cy='alternate']")
       .click();
     return this;
   }
 
   getAlternateTabs() {
     return cy.get("[data-cy=tabs]").contains("span", "Alternate");
+  }
+
+  checkAlternateTabNotVisible() {
+    cy.contains("span", "Alternate").should("not.be.visible");
   }
 
   deleteAlternate() {

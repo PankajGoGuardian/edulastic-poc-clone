@@ -9,11 +9,10 @@ import {
   white
 } from "@edulastic/colors";
 import { curriculumSequencesApi } from "@edulastic/api";
-import { ProgressBar,notification } from "@edulastic/common";
+import { ProgressBar, notification } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
-import { Button, Col, Row, Spin, Tooltip, message } from "antd";
+import { Button, Col, Row, Spin, Tooltip } from "antd";
 import { isEmpty, last, pick } from "lodash";
-import { FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -39,7 +38,7 @@ const Recommendations = ({
   dateKeys
 }) => {
   const [isVideoResourcePreviewModal, setEmbeddedVideoPreviewModal] = useState(false);
-  const handleStartPractice = ({ testId, classId, studentRecommendationId, activities }) => _ => {
+  const handleStartPractice = ({ testId, classId, studentRecommendationId, activities }) => {
     const lastActivity = last(activities) || {};
 
     if (lastActivity.status === testActivityStatus.START) {
@@ -66,7 +65,7 @@ const Recommendations = ({
       const signedRequest = await curriculumSequencesApi.getSignedRequest({ resource });
       submitLTIForm(signedRequest);
     } catch (e) {
-      notification({ messageKey:"failedToLoadResource"});
+      notification({ messageKey: "failedToLoadResource" });
     }
   };
 
@@ -81,36 +80,33 @@ const Recommendations = ({
             {dateKeys.length ? (
               <div className="item" style={{ width: "100%" }}>
                 {dateKeys.map(dateStamp => {
-                    const data = recommendationsByTime[dateStamp];
+                  const data = recommendationsByTime[dateStamp];
 
-                    return (
-                      <RowWrapper>
-                        <Date>RECOMMENDED <span dangerouslySetInnerHTML={{ __html: data[0].createdAt }} /></Date>
-                        {data.map(recommendation => {
-                          const activities = activitiesByResourceId[recommendation._id];
-                          const lastActivity = last(activities) || {};
-                          const { score, maxScore } = lastActivity;
-                          const scorePercentage = Math.round((score / maxScore) * 100);
-                          const { recommendedResource = {}, resources = [] } = recommendation;
+                  return (
+                    <RowWrapper>
+                      <Date>
+                        RECOMMENDED <span dangerouslySetInnerHTML={{ __html: data[0].createdAt }} />
+                      </Date>
+                      {data.map(recommendation => {
+                        const activities = activitiesByResourceId[recommendation._id];
+                        const lastActivity = last(activities) || {};
+                        const { score, maxScore } = lastActivity;
+                        const scorePercentage = Math.round((score / maxScore) * 100);
+                        const { recommendedResource = {}, resources = [] } = recommendation;
 
-                          return (
-                            <>
-                              <Assignment
-                                data-cy="recommendation"
-                                data-test={recommendedResource._id}
-                                key={recommendedResource._id}
-                                borderRadius="unset"
-                                boxShadow="unset"
-                              >
-                                <ModuleFocused />
-                                <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
-                                <Row
-                                  type="flex"
-                                  gutter={20}
-                                  align="flex-end"
-                                  style={{ width: "calc(100% - 25px)" }}
-                                  align="flex-end"
-                                >
+                        return (
+                          <>
+                            <Assignment
+                              data-cy="recommendation"
+                              data-test={recommendedResource._id}
+                              key={recommendedResource._id}
+                              borderRadius="unset"
+                              boxShadow="unset"
+                            >
+                              <ModuleFocused />
+                              <Bullet tags={recommendedResource?.metadata?.standardIdentifiers?.length > 0 || false} />
+                              <div style={{ width: "calc(100% - 30px)", display: "flex", flexDirection: "column" }}>
+                                <Row type="flex" gutter={20} align="flex-end">
                                   <Col span={10} align="flex-end">
                                     <ModuleDataWrapper>
                                       <ModuleDataName>
@@ -146,7 +142,7 @@ const Recommendations = ({
                                     align="flex-start"
                                     justify="flex-end"
                                   >
-                                    <span>Mastery</span>
+                                    <StyledLabel>PROFICIENCY</StyledLabel>
                                     <ProgressBar
                                       data-cy="mastery"
                                       strokeColor={getProgressColor(scorePercentage)}
@@ -190,7 +186,7 @@ const Recommendations = ({
                                         to={{
                                           pathname: `/home/class/${recommendation.groupId}/test/${
                                             recommendedResource._id
-                                            }/testActivityReport/${lastActivity._id}`,
+                                          }/testActivityReport/${lastActivity._id}`,
                                           fromRecommendations: true,
                                           playListId: match.params?.playlistId
                                         }}
@@ -200,69 +196,74 @@ const Recommendations = ({
                                     )}
                                   </StyledCol>
                                 </Row>
-                                {resources && <SubResourceView
-                                  data={{ resources }}
-                                  showLtiResource={showLtiResource}
-                                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                                />}
-                              </Assignment>
+                                <div>
+                                  {resources && (
+                                    <SubResourceView
+                                      data={{ resources }}
+                                      showLtiResource={showLtiResource}
+                                      setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                            </Assignment>
 
-                              {recommendedResource.resourceType === "TEST" && recommendedResource.resources?.length && (
-                                <ResourcesContainer>
-                                  <SubResourceView
-                                    data={{ resources }}
-                                    showResource={showLtiResource}
-                                    setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                                  />
-                                </ResourcesContainer>
-                              )}
-                            </>
-                          );
-                        })}
-                        {/* TODO will remove below description when there is a confirmation on the palylist data */}
-                        {data.description && (
-                          <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
-                            <Description>
-                              <DescriptionTitle>
-                                Adding fractions with unlock denominators - Khan academy
-                              </DescriptionTitle>
-                              <DescriptionContent>
-                                <img
-                                  src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
-                                  style={{ width: "18%" }}
-                                  alt=""
+                            {recommendedResource.resourceType === "TEST" && recommendedResource.resources?.length && (
+                              <ResourcesContainer>
+                                <SubResourceView
+                                  data={{ resources }}
+                                  showResource={showLtiResource}
+                                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                                 />
-                                <DescriptionText>{data.description}</DescriptionText>
-                              </DescriptionContent>
-                            </Description>
-                            <Description>
-                              <DescriptionTitle>
-                                Adding fractions with unlock denominators - Khan academy
-                              </DescriptionTitle>
-                              <DescriptionContent>
-                                <img
-                                  src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
-                                  style={{ width: "18%" }}
-                                  alt=""
-                                />
-                                <DescriptionText>{data.description}</DescriptionText>
-                              </DescriptionContent>
-                            </Description>
-                          </div>
-                        )}
-                      </RowWrapper>
-                    );
-                  })}
+                              </ResourcesContainer>
+                            )}
+                          </>
+                        );
+                      })}
+                      {/* TODO will remove below description when there is a confirmation on the palylist data */}
+                      {data.description && (
+                        <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+                          <Description>
+                            <DescriptionTitle>
+                              Adding fractions with unlock denominators - Khan academy
+                            </DescriptionTitle>
+                            <DescriptionContent>
+                              <img
+                                src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
+                                style={{ width: "18%" }}
+                                alt=""
+                              />
+                              <DescriptionText>{data.description}</DescriptionText>
+                            </DescriptionContent>
+                          </Description>
+                          <Description>
+                            <DescriptionTitle>
+                              Adding fractions with unlock denominators - Khan academy
+                            </DescriptionTitle>
+                            <DescriptionContent>
+                              <img
+                                src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
+                                style={{ width: "18%" }}
+                                alt=""
+                              />
+                              <DescriptionText>{data.description}</DescriptionText>
+                            </DescriptionContent>
+                          </Description>
+                        </div>
+                      )}
+                    </RowWrapper>
+                  );
+                })}
               </div>
-              ) : (
-                <NoDataNotification
-                  heading="No Recommendations"
-                  description={"You don't have any playlists recommendations."}
-                />
-                )}
+            ) : (
+              <NoDataNotification
+                heading="No Recommendations"
+                description={"You don't have any playlists recommendations."}
+              />
+            )}
           </Wrapper>
         </CurriculumSequenceWrapper>
-        )}
+      )}
       {isVideoResourcePreviewModal && (
         <EmbeddedVideoPreviewModal
           closeCallback={() => setEmbeddedVideoPreviewModal(false)}
@@ -327,6 +328,16 @@ const ModuleFocused = styled.div`
   opacity: 0;
 `;
 
+const Bullet = styled.li`
+  font-size: 20px;
+  color: ${themeColor};
+  width: 35px;
+  padding-left: 10px;
+  align-self: normal;
+  height: ${props => (props.tags ? "20px" : "38px")};
+  line-height: ${props => (props.tags ? "18px" : "36px")};
+`;
+
 const RowWrapper = styled.div`
   position: relative;
   border-bottom: 1px solid #e5e5e5;
@@ -350,7 +361,6 @@ const Assignment = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  flex-direction: column;
   background: white !important;
   &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {
     opacity: 1;

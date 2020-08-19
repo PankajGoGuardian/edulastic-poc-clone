@@ -1,7 +1,7 @@
 import React from "react";
+import { darkRed1, cardBorder, themeColor } from "@edulastic/colors/index";
 import RectangleWrapper from "../styled/RectangleWrapper";
 import Rectangle from "../styled/Rectangle";
-import { green, redDark, lightBlue, mainBlueColor } from "@edulastic/colors/index";
 
 const Rectangles = ({
   rows = 2,
@@ -21,19 +21,19 @@ const Rectangles = ({
       {Array(total)
         .fill()
         .map((_, index) => {
-          let fillColor = lightBlue;
+          let fillColor = cardBorder;
           const _selected = selected.includes(index + 1 + offset);
           if (previewTab === "edit" || previewTab === "clear") {
             // edit mode as well as clear
-            fillColor = _selected ? mainBlueColor : lightBlue;
+            fillColor = _selected ? themeColor : cardBorder;
           } else if (_selected) {
             // show answers with highlighting (correct: green, wrong: darkRed)
-            fillColor = evaluation ? (evaluation[index + 1 + offset] === true ? green : redDark) : mainBlueColor;
+            fillColor = evaluation ? (evaluation[index + 1 + offset] === true ? themeColor : darkRed1) : themeColor;
           }
           if (isExpressGrader && isAnswerModifiable && _selected) {
             // in expressGrader and edit response is on
             // override default highlighting with darkBlue color when selected
-            fillColor = mainBlueColor;
+            fillColor = themeColor;
           }
 
           return (

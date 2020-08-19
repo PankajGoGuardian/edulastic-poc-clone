@@ -1,9 +1,9 @@
+import { themeColor } from "@edulastic/colors";
+import { EduButton, TextInputStyled } from "@edulastic/common";
+import { Form } from "antd";
 import React, { Component } from "react";
-import { Button, Form } from "antd";
-import { StyledInput } from "./styled";
-import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
-import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
 import styled from "styled-components";
+import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 
 class ArchiveClassModal extends Component {
   constructor(props) {
@@ -34,13 +34,14 @@ class ArchiveClassModal extends Component {
         onOk={this.onArchiveClass}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button onClick={this.onCloseModal} ghost type="primary">
+          <EduButton onClick={this.onCloseModal} isGhost type="primary">
             {t("class.components.archiveclass.nocancel")}
-          </Button>,
-          <YesButton onClick={this.onArchiveClass} disabled={textArchive.toLowerCase() !== "archive"}>
+          </EduButton>,
+          <EduButton onClick={this.onArchiveClass} disabled={textArchive.toLowerCase() !== "archive"}>
             {t("class.components.archiveclass.yesarchive")}
-          </YesButton>
+          </EduButton>
         ]}
       >
         <ModalBody>
@@ -54,7 +55,8 @@ class ArchiveClassModal extends Component {
             {t("common.modalConfirmationText2")}
           </span>
           <FormItem>
-            <TextInput
+            <TextInputStyled
+              align="center"
               value={textArchive}
               onChange={this.onChangeInput}
               // here paste is not allowed, and user has to manually type in ARCHIVE
@@ -73,12 +75,6 @@ const LightGreenspan = styled.span`
   color: ${themeColor};
 `;
 
-const YesButton = styled(Button)`
-  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
-  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
-  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
-`;
-
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
@@ -89,16 +85,5 @@ const ModalBody = styled.div`
 const FormItem = styled(Form.Item)`
   width: 80%;
   display: inline-block;
-  margin: 10px;
-  .ant-input {
-    height: 33px;
-    background: ${backgrounds.primary};
-    border: 1px solid ${borders.secondary};
-    padding: 10px 24px;
-  }
-`;
-
-const TextInput = styled(StyledInput)`
-  text-align: center;
-  width: 100% !important;
+  margin: 10px 0px 0px;
 `;

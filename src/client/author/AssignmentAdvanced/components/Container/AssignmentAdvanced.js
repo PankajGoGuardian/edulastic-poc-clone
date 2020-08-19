@@ -76,10 +76,11 @@ class AssignmentAdvanced extends Component {
     const { districtId, testId } = match.params;
     const { loadAssignmentsClassList, loadAssignmentsSummary, assignmentsSummary } = this.props;
     const { testType = "" } = qs.parse(location.search);
+    const { termId = "" } = JSON.parse(sessionStorage.getItem("filters[Assignments]") || "{}");
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId });
     }
-    loadAssignmentsClassList({ districtId, testId, testType });
+    loadAssignmentsClassList({ districtId, testId, testType, termId });
   }
 
   handleCreate = () => {};
@@ -226,6 +227,7 @@ class AssignmentAdvanced extends Component {
 
         <ListHeader
           title={assingment.title || "Loading..."}
+          titleWidth="1120px"
           hasButton={false}
           renderExtra={() => (
             <Dropdown

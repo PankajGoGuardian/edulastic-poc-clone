@@ -9,15 +9,15 @@ import { TextInputStyled } from "../../../styled/InputStyles";
 const { Panel } = Collapse;
 
 const AnswerContainer = styled.div`
-  margin-top: 16px;
   .ant-collapse-item {
     border: 1px solid ${greyThemeLight};
-    margin-bottom: 16px;
+    margin-bottom: 4px;
 
     .ant-collapse-header {
       background-color: ${greyThemeLighter};
       color: ${greyThemeDark2};
       font-weight: 600;
+      padding: 6px 16px;
     }
 
     .ant-collapse-content {
@@ -45,7 +45,6 @@ class ClozeInputAnswer extends Component {
           bordered={false}
           expandIconPosition="right"
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
-          style={{ fontSize: "16px" }}
         >
           {answers.map(answer => {
             const response = responseContainers.find(respCont => respCont.id === answer.id);

@@ -16,8 +16,8 @@ import { reportSchema } from "../student/sharedDucks/ReportsModule/ducks";
 const FETCH_PUBLIC_TEST = "[test] fetch publicly shared test";
 const FETCH_PUBLIC_TEST_SUCCESS = "[test] success fetch publicly shared test";
 const FETCH_PUBLIC_TEST_FAILURE = "[test] failed fetch publicly shared test ";
-const FETCH_ASSIGNMENTS_DATA_BY_TEST = "[studentAssignments] fetch assignments";
-const FETCH_ASSIGNMENTS_DATA_BY_TEST_SUCCESS = "[studentAssignments] fetch assignments success";
+const FETCH_ASSIGNMENTS_DATA_BY_TEST = "[studentAssignments] fetch assignments by test";
+const FETCH_ASSIGNMENTS_DATA_BY_TEST_SUCCESS = "[studentAssignments] fetch assignments by test success";
 
 export const fetchTestAction = createAction(FETCH_PUBLIC_TEST);
 export const fetchAssignmentsByTestAction = createAction(FETCH_ASSIGNMENTS_DATA_BY_TEST);
@@ -48,8 +48,8 @@ export const getAllAssignmentsSelector = createSelector(
         clazz =>
           clazz.redirect !== true &&
           (!currentGroup || currentGroup === clazz._id) &&
-          ((classIds.includes(clazz._id) && !clazz.specificStudents) ||
-            (clazz.specificStudents && clazz.students.includes(currentUserId)))
+          ((classIds.includes(clazz._id) && !clazz?.students?.length) ||
+            (clazz?.students?.length && clazz.students.includes(currentUserId)))
       );
       return allClassess.map(clazz => ({
         ...assignment,
@@ -118,7 +118,6 @@ function* fetchAssignmentsByTest({ payload }) {
 
     // normalize reports
     const {
-      result: allReports,
       entities: { reports: reportsObj }
     } = normalize(reports, [reportSchema]);
 
@@ -130,7 +129,7 @@ function* fetchAssignmentsByTest({ payload }) {
 
     yield put({ type: FETCH_ASSIGNMENTS_DATA_BY_TEST_SUCCESS, payload: { allAssignments, assignmentObj, reportsObj } });
   } catch (e) {
-    notification({ type:"warn" , messageKey:"redirectingToStudentDshboard"});
+    notification({ type: "warn", messageKey: "redirectingToStudentDshboard" });
     yield put(push("/home/assignments"));
   }
 }

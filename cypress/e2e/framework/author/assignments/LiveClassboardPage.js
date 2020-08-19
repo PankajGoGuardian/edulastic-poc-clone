@@ -32,7 +32,7 @@ class LiveClassboardPage {
     return cy.get(selector);
   };
 
-  getAllStudentStatus = () => cy.get('[data-cy="studentStatus"]');
+  getAllStudentStatus = () => cy.get('[data-cy="studentName"]').next();
 
   getStudentStatusByIndex = index => this.getAllStudentStatus().eq(index);
 
@@ -84,24 +84,27 @@ class LiveClassboardPage {
   clickOnCardViewTab = () => {
     this.getCardViewTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.GREEN_2);
+      .should("have.css", "background-color", queColor.BLUE_2);
   };
 
   clickOnStudentsTab = () => {
     this.getStudentsTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.GREEN_2);
-    cy.contains("Leave a feedback!"); // waiting for UI to render
+      .should("have.css", "background-color", queColor.BLUE_2);
+    cy.contains("Student Feedback!"); // waiting for UI to render
   };
 
   clickonQuestionsTab = () => {
     cy.server();
     cy.route("GET", /\bitem\b.*\bgroup\b/).as("getFirstQuestion");
+    cy.route("GET", "**/test/**").as("get-test-data");
     this.getQuestionsTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.GREEN_2);
-
-    return cy.wait("@getFirstQuestion").then(xhr => xhr.response.body.result[0].testItemId);
+      .should("have.css", "background-color", queColor.BLUE_2);
+    cy.wait("@get-test-data");
+    return cy
+      .wait("@getFirstQuestion")
+      .then(xhr => xhr.response.body.result[0] && xhr.response.body.result[0].testItemId);
   };
 
   clickOnPresent = () => {
@@ -328,6 +331,8 @@ class LiveClassboardPage {
   verifyStudentCard(studentName, status, score, performance, queAttempt, email) {
     const queCards = Object.keys(queAttempt).map(queNum => queAttempt[queNum]);
     this.getCardIndex(studentName).then(index => {
+      let [totalScore, maxScore] = score.split("/").map(ele => ele.trim());
+      if ([studentSide.ABSENT, studentSide.NOT_STARTED].indexOf(status) !== -1) totalScore = `-`;
       /*  // TODO : remove log once flow is commplted
       console.log(
         "stduent stats :: ",
@@ -337,16 +342,16 @@ class LiveClassboardPage {
       this.getStudentNameByName(studentName).should("have.attr", "title", email);
       this.getAvatarNameByStudentName(studentName).should("have.attr", "title", email);
       this.verifyStudentStatusIsByIndex(index, status);
-      this.getStudentScoreByIndex(index).should("have.text", score);
+      this.verifyScoreByStudentIndex(index, totalScore, maxScore);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
-      if ([studentSide.NOT_STARTED, teacherSide.REDIRECTED, studentSide.ABSENT].indexOf(status) === -1) {
+      if ([studentSide.NOT_STARTED, studentSide.ABSENT].indexOf(status) === -1) {
         cy.server();
         cy.route("GET", "**/test-activity/**").as("test-activity");
         // this.getViewResponseByIndex(index)
         this.getViewResponseByStudentName(studentName)
           .should("be.exist")
-          .click()
+          .click({ force: true })
           .then(() => {
             cy.wait("@test-activity");
             cy.get(".ant-select-selection-selected-value")
@@ -359,13 +364,26 @@ class LiveClassboardPage {
     });
   }
 
+  // for performance on redirected student card on hover
+  verifyStudentCardRedirectedPerformance({ studentName, attempt1, attempt2, attempt3 }) {}
+
   verifyStudentStatusIsByIndex = (index, status, isManualGraded = false) => {
     if (!isManualGraded)
-      this.getStudentStatusByIndex(index).should(
-        "have.text",
-        status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status
-      );
-    else this.getStudentStatusByIndex(index).should("have.text", status);
+      this.getStudentStatusByIndex(index).should($ele => {
+        const studentStatus = Cypress.$($ele)
+          .text()
+          .toLowerCase()
+          .trim();
+        expect(studentStatus).to.eq((status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status).toLowerCase());
+      });
+    else
+      this.getStudentStatusByIndex(index).should($ele => {
+        const studentStatus = Cypress.$($ele)
+          .text()
+          .toLowerCase()
+          .trim();
+        expect(studentStatus).to.eq(status.toLowerCase());
+      });
   };
 
   verifyRedirectIcon = student => {
@@ -612,6 +630,13 @@ class LiveClassboardPage {
       });
       return studentNames;
     });
+
+  verifyScoreByStudentIndex = (index, totalScore, maxScore) =>
+    this.getStudentScoreByIndex(index).then($ele =>
+      expect($ele.text().replace(/\u00a0/g, " "), `verify student card score for student index ${index + 1}`).to.eq(
+        `${totalScore} / ${maxScore}`
+      )
+    );
 
   // *** APPHELPERS END ***
 }

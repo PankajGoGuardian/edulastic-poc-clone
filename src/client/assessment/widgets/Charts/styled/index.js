@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Text as vxText } from "@vx/text";
 
-import { themeColorLight, darkBlue, red } from "@edulastic/colors";
+import { themeColor, darkBlue, red, greyThemeDark2 } from "@edulastic/colors";
 import { IconTrash as Icon } from "@edulastic/icons";
 
 export const Line = styled.line`
@@ -12,7 +12,8 @@ export const Line = styled.line`
 `;
 
 export const Axis = styled(Line)`
-  stroke: ${themeColorLight};
+  stroke: ${themeColor};
+  stroke-width: 3px;
 `;
 
 export const Tick = styled(Line)`
@@ -31,13 +32,13 @@ export const Circle = styled.circle`
 export const Bar = styled.rect`
   cursor: pointer;
   z-index: 0;
-  stroke: ${({ color }) => color || themeColorLight};
-  fill: ${({ color }) => color || themeColorLight};
+  stroke: ${({ color }) => color || greyThemeDark2};
+  fill: ${({ color }) => color || greyThemeDark2};
   transition: fill 0.25s linear;
 `;
 
 const getRightColor = (hoverState, color, deleteMode = false) =>
-  hoverState ? (deleteMode ? red : darkBlue) : color || themeColorLight;
+  hoverState ? (deleteMode ? red : darkBlue) : color || greyThemeDark2;
 
 export const ActiveBar = styled.rect`
   cursor: pointer;
@@ -58,7 +59,7 @@ export const StrokedRect = styled.rect`
 
 export const Text = styled.text`
   user-select: none;
-  font-size: ${props => props.theme.bodyFontSize};
+  font-size: ${({ theme }) => theme.widgets.chart.axisLabelFontSize};
   font-weight: ${props => props.theme.bold};
   text-transform: uppercase;
   fill: ${props => props.theme.widgets.chart.axisLabel};
@@ -66,9 +67,8 @@ export const Text = styled.text`
 
 export const VxText = styled(vxText)`
   user-select: none;
-  font-size: ${props => props.theme.bodyFontSize};
+  font-size: ${({ theme }) => theme.widgets.chart.axisLabelFontSize};
   font-weight: ${props => props.theme.bold};
-  text-transform: uppercase;
   fill: ${props => props.theme.widgets.chart.axisLabel};
 `;
 
@@ -96,8 +96,8 @@ export const IconTrash = styled(Icon)`
 `;
 
 export const Cross = styled.path`
-  stroke: ${themeColorLight};
-  fill: ${themeColorLight};
+  stroke: ${props => props.theme.widgets.chart.stockColor};
+  fill: ${props => props.theme.widgets.chart.stockColor};
   stroke-width: 4;
 `;
 

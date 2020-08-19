@@ -307,7 +307,8 @@ class MainSetting extends Component {
       disableAnswerOnPaper,
       premium,
       districtPermissions = [],
-      isAuthorPublisher
+      isAuthorPublisher,
+      calculatorProvider
     } = this.props;
 
     const {
@@ -392,8 +393,9 @@ class MainSetting extends Component {
       { key: "enableScratchpad", value: enableScratchpad }
     ].filter(a => features[a.key]);
 
+    const checkForCalculator = premium && calculatorProvider !== "DESMOS";
     const calculatorKeysAvailable =
-      (premium && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
+      (checkForCalculator && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
       calculatorKeys;
 
     return (
@@ -420,7 +422,7 @@ class MainSetting extends Component {
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
               {!isDocBased && features.premium && (
-                <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+                <AdvancedButton data-cy="advanced-option" onClick={this.advancedHandler} show={showAdvancedOption}>
                   {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
                   <IconCaretDown color={themeColor} width={11} height={6} />
                 </AdvancedButton>
@@ -967,6 +969,7 @@ class MainSetting extends Component {
                 <PeformanceBand
                   setSettingsData={val => this.updateTestData("performanceBand")(val)}
                   performanceBand={performanceBand}
+                  disabled={!owner || !isEditable}
                 />
               </Block>
             )}
@@ -977,6 +980,7 @@ class MainSetting extends Component {
               <StandardProficiencyTable
                 standardGradingScale={standardGradingScale}
                 setSettingsData={val => this.updateTestData("standardGradingScale")(val)}
+                disabled={!owner || !isEditable}
               />
             </Block>
 
@@ -987,6 +991,7 @@ class MainSetting extends Component {
                     <Title>Student Player Skin</Title>
                     <Body smallSize={isSmallSize}>
                       <SelectInputStyled
+                        data-cy="playerSkinType"
                         value={playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
                         disabled={!owner || !isEditable}
                         onChange={this.updateTestData("playerSkinType")}
@@ -1226,6 +1231,7 @@ export default connect(
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
     districtPermissions: state?.user?.user?.orgData?.districts?.[0]?.districtPermissions,
     premium: state?.user?.user?.features?.premium,
+    calculatorProvider: state?.user?.user?.features?.calculatorProvider,
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions
       : state?.tests?.entity?.summary?.totalItems,

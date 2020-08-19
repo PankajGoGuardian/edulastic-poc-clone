@@ -6,6 +6,7 @@ import { StyledLabel, StyledTag } from "../../../Reports/common/styled";
 import { Tooltip, removeCommentsFromHtml } from "../../../../common/utils/helpers";
 import ProgressBars from "./ProgressBars";
 import {
+  CaretUp,
   IconActionButton,
   ModuleHeader,
   ModuleID,
@@ -37,7 +38,8 @@ const ModuleRowView = props => {
     editModuleMenuClick,
     deleteModuleMenuClick,
     isPlaylistDetailsPage,
-    isManageContentActive
+    isManageContentActive,
+    customizeInDraft
   } = props;
 
   const { title, data = [], description = "", moduleId, moduleGroupName } = module;
@@ -67,6 +69,7 @@ const ModuleRowView = props => {
 
   const moduleManagementMenu = (
     <Menu data-cy="moduleItemMoreMenu">
+      <CaretUp className="fa fa-caret-up" />
       {!isDesktop && <Menu.Item onClick={onClickHideShow}>{module.hidden ? "Show Module" : "Hide Module"}</Menu.Item>}
       {!isDesktop && !moduleStatus && totalAssigned && <Menu.Item onClick={onClickAssign}>Assign Module</Menu.Item>}
       <Menu.Item onClick={addModuleMenuClick}>Add Module</Menu.Item>
@@ -102,13 +105,15 @@ const ModuleRowView = props => {
     );
   }
 
-  const moreActions = !isStudent && (!isPlaylistDetailsPage || isManageContentActive) && (
-    <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
-      <IconActionButton onClick={e => e.stopPropagation()}>
-        <IconMoreVertical width={5} height={14} color={themeColor} />
-      </IconActionButton>
-    </Dropdown>
-  );
+  const moreActions = !isStudent &&
+    (!isPlaylistDetailsPage || isManageContentActive) &&
+    (hasEditAccess || customizeInDraft) && (
+      <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
+        <IconActionButton onClick={e => e.stopPropagation()}>
+          <IconMoreVertical width={5} height={14} color={themeColor} />
+        </IconActionButton>
+      </Dropdown>
+    );
 
   const moduleActions = (
     <Fragment>

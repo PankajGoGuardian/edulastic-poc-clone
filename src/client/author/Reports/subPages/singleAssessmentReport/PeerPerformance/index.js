@@ -86,17 +86,12 @@ const PeerPerformance = ({
   }, [settings]);
 
   let { compareByDropDownData } = dropDownFormat;
-  if (role === "teacher") {
-    compareByDropDownData = next(dropDownFormat.compareByDropDownData, tempCompareBy => {
-      if (role === "teacher") {
-        tempCompareBy.splice(0, 2);
-      }
-    });
-  } else {
-    compareByDropDownData = next(dropDownFormat.compareByDropDownData, tempCompareBy => {
-      tempCompareBy.splice(3, 0, { key: "group", title: "Student Group" });
-    });
-  }
+  compareByDropDownData = next(dropDownFormat.compareByDropDownData, tempCompareBy => {
+    tempCompareBy.splice(3, 0, { key: "group", title: "Student Group" });
+    if (role === "teacher") {
+      tempCompareBy.splice(0, 2);
+    }
+  });
 
   const getColumns = () =>
     columns.columns[ddfilter.analyseBy][ddfilter.compareBy === "group" ? "groupId" : ddfilter.compareBy];
@@ -159,7 +154,7 @@ const PeerPerformance = ({
                   </Col>
                   <Col className="dropdown-container" xs={24} sm={24} md={12} lg={16} xl={12}>
                     <ControlDropDown
-                      prefix="Analyse by"
+                      prefix="Analyze by"
                       by={dropDownFormat.analyseByDropDownData[0]}
                       selectCB={updateAnalyseByCB}
                       data={dropDownFormat.analyseByDropDownData}

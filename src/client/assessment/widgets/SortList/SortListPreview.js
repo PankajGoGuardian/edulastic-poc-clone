@@ -17,7 +17,7 @@ import { ChoiceDimensions } from "@edulastic/constants";
 
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { SHOW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
+import { CHECK, SHOW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 import Instructions from "../../components/Instructions";
 import DropContainer from "../../components/DropContainer";
 
@@ -55,10 +55,7 @@ const SortListPreview = ({
   disableResponse,
   changePreviewTab,
   isReviewTab,
-  isPrintPreview,
-  theme: {
-    answerBox: { borderWidth, borderStyle, borderColor }
-  }
+  isPrintPreview
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
@@ -180,6 +177,9 @@ const SortListPreview = ({
 
   const drop = ({ obj, index, flag }) => ({ obj, index, flag });
 
+  const sourceLabel = get(item, "labels.source", t("component.sortList.containerSourcePreview"));
+  const targetLabel = get(item, "labels.target", t("component.sortList.containerTargetPreview"));
+
   const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
   const orientation = get(item, "uiStyle.orientation");
   const isVertical = orientation === "vertical";
@@ -254,6 +254,8 @@ const SortListPreview = ({
     ...dragItemStyle
   };
 
+  const showPreview = previewTab === CHECK || previewTab === SHOW;
+  const isChecked = !active && showPreview && !isReviewTab;
   return (
     <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
@@ -277,7 +279,7 @@ const SortListPreview = ({
               className="sort-list-wrapper"
             >
               <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}
+                {!smallSize && <Title smallSize={smallSize}>{sourceLabel}</Title>}
                 {items.map((draggableItem, i) => (
                   <DropContainer
                     key={i}
@@ -321,7 +323,7 @@ const SortListPreview = ({
               </FlexWithMargins>
 
               <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerTargetPreview")}</Title>}
+                {!smallSize && <Title smallSize={smallSize}>{targetLabel}</Title>}
                 {selected.map((selectedItem, i) => (
                   <DropContainer
                     key={i}
@@ -330,6 +332,7 @@ const SortListPreview = ({
                     index={i}
                     flag="selected"
                     obj={selectedItem}
+                    borderNone={!!selectedItem && isChecked}
                     drop={drop}
                   >
                     <DragItem
@@ -374,7 +377,7 @@ const SortListPreview = ({
               altList={altResponseCorrectList}
               altResponses={altResponses}
               correctList={validResponse}
-              itemStyle={{ ...dragItemStyle, border: `${borderWidth} ${borderStyle} ${borderColor}` }}
+              itemStyle={{ ...dragItemStyle }}
               stemNumeration={stemNumeration}
             />
           )}

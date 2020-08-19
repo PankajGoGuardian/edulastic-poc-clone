@@ -18,6 +18,7 @@ import TestPreviewModal from "../../../Assignments/components/Container/TestPrev
 import { flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction, toggleTestLikeAction } from "../../ducks";
+import { duplicatePlaylistRequestAction } from "../../../CurriculumSequence/ducks";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import PlaylistCard from "./PlaylistCard";
 import TestItemCard from "./TestItemCard";
@@ -174,7 +175,6 @@ class Item extends Component {
       orgCollections = [],
       item,
       authorName,
-      owner: isOwner,
       isPlaylist,
       testItemId,
       windowWidth,
@@ -183,22 +183,23 @@ class Item extends Component {
       isPublisherUser,
       userRole,
       currentUserId,
-      isTestLiked
+      isTestLiked,
+      duplicatePlayList
     } = this.props;
     const { analytics = [] } = isPlaylist ? _source : item;
-    const likes = analytics?.[0]?.likes || "0";
-    const usage = analytics?.[0]?.usage || "0";
+    const likes = analytics ?.[0] ?.likes || "0";
+    const usage = analytics ?.[0] ?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
     const standardsIdentifiers = isPlaylist
-      ? flattenPlaylistStandards(_source?.modules)
+      ? flattenPlaylistStandards(_source ?.modules)
       : standards.map(_item => _item.identifier);
 
     let collectionName = "PRIVATE";
-    if (collections?.length > 0 && itemBanks.length > 0) {
+    if (collections ?.length > 0 && itemBanks.length > 0) {
       let filteredCollections = itemBanks.filter(c => collections.find(i => i._id === c._id));
       filteredCollections = uniqBy(filteredCollections, "_id");
       if (filteredCollections.length > 0) collectionName = filteredCollections.map(c => c.name).join(", ");
-    } else if (collections?.length && collections.find(o => o.name === "Edulastic Certified")) {
+    } else if (collections ?.length && collections.find(o => o.name === "Edulastic Certified")) {
       collectionName = "Edulastic Certified";
     } else if (sharedType) {
       // sharedType comes as number when "Shared with me" filter is selected
@@ -217,14 +218,15 @@ class Item extends Component {
     const showPremiumTag =
       showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
       !isPublisherUser &&
-      !(_source?.createdBy?._id === currentUserId);
-
+      !(_source ?.createdBy ?._id === currentUserId);
+    const authors = isPlaylist ? _source.authors : item.authors
+    const isOwner = (authors || []).find(x => x._id === currentUserId);
     const allowDuplicate =
-      allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
+      allowDuplicateCheck(isPlaylist ? _source.collections : collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
 
     const isDynamic =
       !isPlaylist &&
-      item.itemGroups.some(
+      item?.itemGroups?.some(
         group =>
           group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
           group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
@@ -232,6 +234,7 @@ class Item extends Component {
 
     const cardViewProps = {
       _source,
+      _id: item._id,
       status,
       collections,
       showPremiumTag,
@@ -241,7 +244,6 @@ class Item extends Component {
       authorName,
       testItemId,
       thumbnail,
-      isOwner,
       btnStyle,
       userRole,
       testId,
@@ -255,7 +257,10 @@ class Item extends Component {
       assignTest: this.assignTest,
       showPreviewModal: this.showPreviewModal,
       handleLikeTest: this.handleLikeTest,
-      likes
+      likes,
+      isTestLiked,
+      allowDuplicate,
+      duplicatePlayList
     };
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard;
@@ -309,7 +314,8 @@ const enhance = compose(
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
-      toggleTestLikeRequest: toggleTestLikeAction
+      toggleTestLikeRequest: toggleTestLikeAction,
+      duplicatePlayList: duplicatePlaylistRequestAction
     }
   )
 );

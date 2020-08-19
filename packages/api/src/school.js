@@ -66,6 +66,15 @@ const searchSchoolsByName = ({ districtId, schoolName }) =>
     })
     .then(({ data }) => data.result);
 
+const updateSchoolApprovalStatus = payload =>
+  api
+    .callApi({
+      url: `${prefix}/bulk/approval-status`,
+      method: "put",
+      data: payload
+    })
+    .then(result => result);
+
 export default {
   getSchools,
   updateSchool,
@@ -73,5 +82,6 @@ export default {
   deleteSchool,
   searchSchool,
   searchDistricts,
-  searchSchoolsByName
+  searchSchoolsByName,
+  updateSchoolApprovalStatus
 };

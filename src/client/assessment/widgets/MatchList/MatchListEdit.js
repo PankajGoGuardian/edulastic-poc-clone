@@ -7,7 +7,6 @@ import uuid from "uuid/v4";
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -21,8 +20,6 @@ import { updateVariables } from "../../utils/variables";
 
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
-
-const OptionsList = withPoints(MatchListPreview);
 
 const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
@@ -86,7 +83,9 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
           draft.validation.altResponses = [];
         }
         const value = {};
-        item.list.forEach(l => value[l.value] = null); 
+        item.list.forEach(l => {
+          value[l.value] = null;
+        });
         draft.validation.altResponses.push({
           score: 1,
           value
@@ -135,10 +134,12 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
       produce(item, draft => {
         draft.groupPossibleResponses = e.target.checked;
         const value = {};
-        item.list.forEach(l => value[l.value] = null);
-        draft.validation.validResponse.value = {...value};
+        item.list.forEach(l => {
+          value[l.value] = null;
+        });
+        draft.validation.validResponse.value = { ...value };
         draft.validation.altResponses.forEach(ite => {
-          ite.value = {...value};
+          ite.value = { ...value };
         });
       })
     );
@@ -153,12 +154,8 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
   };
 
   const renderOptions = () => (
-    <OptionsList
+    <MatchListPreview
       item={item}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       userAnswer={
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
@@ -180,7 +177,9 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
     _setQuestionData(
       produce(item, draft => {
         item.list.forEach(l => {
-          if (draft.validation.validResponse.value[l.value] === draft.possibleResponseGroups[ind].responses[index].value) {
+          if (
+            draft.validation.validResponse.value[l.value] === draft.possibleResponseGroups[ind].responses[index].value
+          ) {
             draft.validation.validResponse.value[l.value] = null;
           }
         });
@@ -292,6 +291,13 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
             fillSections={fillSections}
             cleanSections={cleanSections}
             questionType={item?.title}
+            points={
+              correctTab === 0
+                ? item.validation.validResponse.score
+                : item.validation.altResponses[correctTab - 1].score
+            }
+            isCorrectAnsTab={correctTab === 0}
+            onChangePoints={handlePointsChange}
           />
         </Question>
 

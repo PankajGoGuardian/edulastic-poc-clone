@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { cloneDeep, isNull } from "lodash";
+import { cloneDeep } from "lodash";
 import { math } from "@edulastic/constants";
 
-import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
 import MathFormulaAnswer from "./components/MathFormulaAnswer";
@@ -12,9 +11,8 @@ import { updateVariables } from "../../utils/variables";
 
 import { latexKeys } from "./constants";
 
-const { methods, fields: fieldsConst } = math;
+const { methods } = math;
 
-const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
   value: ""
@@ -23,13 +21,13 @@ const initialOption = {};
 
 class MathFormulaAnswers extends React.Component {
   state = {
-    correctTab: 0
+    currentTab: 0
   };
 
-  setCorrectTab = tabIndex => this.setState({ correctTab: tabIndex });
+  setCorrectTab = currentTab => this.setState({ currentTab });
 
   handleAddAnswer = () => {
-    const { correctTab } = this.state;
+    const { currentTab } = this.state;
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
@@ -44,11 +42,13 @@ class MathFormulaAnswers extends React.Component {
         updateVariables(draft, latexKeys);
       })
     );
-    this.setCorrectTab(correctTab + 1);
+    this.setCorrectTab(currentTab + 1);
   };
 
-  handleChangeCorrectMethod = ({ index, prop, value }) => {
+  handleChangeAnswer = ({ index, prop, value }) => {
     const { item, setQuestionData } = this.props;
+    const { currentTab } = this.state;
+
     setQuestionData(
       produce(item, draft => {
         // default mode selection
@@ -57,8 +57,10 @@ class MathFormulaAnswers extends React.Component {
           // user input (comma separated custom units)
         } else if (prop === "customUnits") {
           draft.customUnits = value; // adding new fields to testItem
-        } else {
+        } else if (currentTab === 0) {
           draft.validation.validResponse.value[index][prop] = value;
+        } else {
+          draft.validation.altResponses[currentTab - 1].value[index][prop] = value;
         }
         if (
           [
@@ -90,21 +92,16 @@ class MathFormulaAnswers extends React.Component {
     );
   };
 
-  handleChangeCorrectPoints = points => {
+  handleChangePoints = points => {
     const { item, setQuestionData } = this.props;
+    const { currentTab } = this.state;
     setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.score = points;
-        updateVariables(draft, latexKeys);
-      })
-    );
-  };
-
-  handleChangeAltPoints = (points, i) => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses[i].score = points;
+        if (currentTab === 0) {
+          draft.validation.validResponse.score = points;
+        } else {
+          draft.validation.altResponses[currentTab - 1].score = points;
+        }
         updateVariables(draft, latexKeys);
       })
     );
@@ -112,63 +109,43 @@ class MathFormulaAnswers extends React.Component {
 
   handleCloseTab = tabIndex => {
     const { item, setQuestionData } = this.props;
-    const { correctTab } = this.state;
+    const { currentTab } = this.state;
     setQuestionData(
       produce(item, draft => {
         draft.validation.altResponses.splice(tabIndex, 1);
         updateVariables(draft, latexKeys);
       })
     );
-    if (correctTab >= 1) {
-      this.setCorrectTab(correctTab - 1);
+    if (currentTab >= 1) {
+      this.setCorrectTab(currentTab - 1);
     }
   };
 
-  handleChangeAltMethod = answerIndex => ({ index, prop, value }) => {
+  handleAddMethod = () => {
     const { item, setQuestionData } = this.props;
+    const { currentTab } = this.state;
     setQuestionData(
       produce(item, draft => {
-        draft.validation.altResponses[answerIndex].value[index][prop] = value;
+        if (currentTab === 0) {
+          draft.validation.validResponse.value.push(initialMethod);
+        } else {
+          draft.validation.altResponses[currentTab - 1].value.push(initialMethod);
+        }
         updateVariables(draft, latexKeys);
       })
     );
   };
 
-  handleAddCorrectMethod = () => {
+  handleDeleteMethod = index => {
     const { item, setQuestionData } = this.props;
+    const { currentTab } = this.state;
     setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.value.push(initialMethod);
-        updateVariables(draft, latexKeys);
-      })
-    );
-  };
-
-  handleAddAltMethod = answerIndex => () => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses[answerIndex].value.push(initialMethod);
-        updateVariables(draft, latexKeys);
-      })
-    );
-  };
-
-  handleDeleteCorrectMethod = index => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation.validResponse.value.splice(index, 1);
-        updateVariables(draft, latexKeys);
-      })
-    );
-  };
-
-  handleDeleteAltMethod = answerIndex => index => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses[answerIndex].value.splice(index, 1);
+        if (currentTab === 0) {
+          draft.validation.validResponse.value.splice(index, 1);
+        } else {
+          draft.validation.altResponses[currentTab - 1].value.splice(index, 1);
+        }
         updateVariables(draft, latexKeys);
       })
     );
@@ -213,9 +190,11 @@ class MathFormulaAnswers extends React.Component {
     );
   };
 
-  handleShowDropdown = answerIndex => v => {
+  handleShowDropdown = v => {
     const { item, setQuestionData } = this.props;
-    const isAlt = !isNull(answerIndex);
+    const { currentTab } = this.state;
+    const isAlt = currentTab > 0;
+
     setQuestionData(
       produce(item, draft => {
         draft.showDropdown = v;
@@ -231,7 +210,7 @@ class MathFormulaAnswers extends React.Component {
             value.method = value.method || methods.EQUIV_SYMBOLIC;
           });
         } else {
-          draft.validation.altResponses[answerIndex].value.forEach(value => {
+          draft.validation.altResponses[currentTab - 1].value.forEach(value => {
             value.options = value.options || {};
             if (!v) {
               delete value.options.unit;
@@ -262,66 +241,50 @@ class MathFormulaAnswers extends React.Component {
     );
   };
 
+  get response() {
+    const { item } = this.props;
+    const { currentTab } = this.state;
+    if (currentTab === 0) {
+      return item.validation.validResponse;
+    }
+    return item.validation.altResponses[currentTab - 1];
+  }
+
   render() {
     const { fillSections, cleanSections, keypadOffset, view } = this.props;
     const { item, setQuestionData } = this.props;
-    const { correctTab } = this.state;
+    const { currentTab } = this.state;
+    const isCorrectAnsTab = currentTab === 0;
 
     return (
       <CorrectAnswers
         onTabChange={this.setCorrectTab}
-        correctTab={correctTab}
+        correctTab={currentTab}
         onAdd={this.handleAddAnswer}
         validation={item.validation}
         onCloseTab={this.handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
         questionType={item?.title}
+        isCorrectAnsTab={isCorrectAnsTab}
+        points={this.response.score}
+        onChangePoints={this.handleChangePoints}
       >
-        {correctTab === 0 && (
-          <MathFormulaWithPoints
-            item={item}
-            onChange={this.handleChangeCorrectMethod}
-            onChangeAllowedOptions={this.handleAllowedOptions}
-            onChangeShowDropdown={this.handleShowDropdown(null)}
-            onAdd={this.handleAddCorrectMethod}
-            onDelete={this.handleDeleteCorrectMethod}
-            answer={item.validation.validResponse.value}
-            points={item.validation.validResponse.score}
-            onChangePoints={points => this.handleChangeCorrectPoints(points)}
-            setQuestionData={setQuestionData}
-            onChangeKeypad={this.handleKeypadMode}
-            keypadOffset={keypadOffset}
-            toggleAdditional={this.toggleAdditional}
-            view={view}
-          />
-        )}
-        {item.validation.altResponses &&
-          !!item.validation.altResponses.length &&
-          item.validation.altResponses.map((alter, i) => {
-            if (i + 1 === correctTab) {
-              return (
-                <MathFormulaWithPoints
-                  key={i}
-                  item={item}
-                  onChange={this.handleChangeAltMethod(i)}
-                  onChangeAllowedOptions={this.handleAllowedOptions}
-                  onChangeShowDropdown={this.handleShowDropdown(i)}
-                  onAdd={this.handleAddAltMethod(i)}
-                  onDelete={this.handleDeleteAltMethod(i)}
-                  answer={alter.value}
-                  points={alter.score}
-                  onChangePoints={points => this.handleChangeAltPoints(points, i)}
-                  setQuestionData={setQuestionData}
-                  onChangeKeypad={this.handleKeypadMode}
-                  keypadOffset={keypadOffset}
-                  toggleAdditional={this.toggleAdditional}
-                  view={view}
-                />
-              );
-            }
-            return null;
-          })}
+        <MathFormulaAnswer
+          item={item}
+          key={`mathanswer-${currentTab}`}
+          onChangeAllowedOptions={this.handleAllowedOptions}
+          answer={this.response.value}
+          setQuestionData={setQuestionData}
+          onChangeKeypad={this.handleKeypadMode}
+          keypadOffset={keypadOffset}
+          toggleAdditional={this.toggleAdditional}
+          onChange={this.handleChangeAnswer}
+          onChangeShowDropdown={this.handleShowDropdown}
+          onAdd={this.handleAddMethod}
+          onDelete={this.handleDeleteMethod}
+          view={view}
+        />
       </CorrectAnswers>
     );
   }

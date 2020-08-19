@@ -8,7 +8,7 @@ import { getAdditionalDataSelector } from "../../ClassBoard/ducks";
 import { getUserRole } from "../../../student/Login/ducks";
 import { getUserOrgId } from "../../src/selectors/user";
 
-const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
+const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb, isCliUser, fromUrl }) => {
   if (breadCrumb) {
     return (
       <PaginationInfo xs={24} md={8}>
@@ -29,8 +29,12 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
 
   return (
     <PaginationInfo xs={24} md={8}>
-      <RecentLink to="/author/assignments">ASSIGNMENTS</RecentLink>
-      {data?.testName && (
+      <RecentLink
+        to={isCliUser ? fromUrl || `/author/reports/assessment-summary/test/${data?.testId}` : "/author/assignments"}
+      >
+        {isCliUser ? "REPORTS" : "ASSIGNMENTS"}
+      </RecentLink>
+      {!isCliUser && data?.testName && (
         <>
           &nbsp;/&nbsp;
           <Tooltip title={data.testName}>
@@ -46,11 +50,19 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
           </Tooltip>
         </>
       )}
-      {data?.className && (
+      {!isCliUser && data?.className && (
         <>
           &nbsp;/&nbsp;
           <Tooltip title={data.className}>
             <Anchor>{data.className}</Anchor>
+          </Tooltip>
+        </>
+      )}
+      {isCliUser && data?.testName && (
+        <>
+          &nbsp;/&nbsp;
+          <Tooltip title={data.testName}>
+            <Anchor>{data.testName}</Anchor>
           </Tooltip>
         </>
       )}

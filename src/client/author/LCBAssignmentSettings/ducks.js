@@ -28,6 +28,7 @@ const slice = createSlice({
       state.loading = false;
       state.assignment = payload;
       state.originalAssignment = payload;
+      state.updateSettings = {};
     },
     updateAssignmentClassSettingsError: state => {
       state.assignment = state.originalAssignment;
@@ -40,6 +41,8 @@ const slice = createSlice({
     changeAttribute: (state, { payload }) => {
       const { key, value } = payload;
       if (["startDate", "endDate", "dueDate"].includes(key)) {
+        state.assignment = state.assignment || {}
+        state.assignment.class = state.assignment.class || []
         state.assignment.class[0][key] = value.valueOf();
         state.updateSettings[key] = value.valueOf();
       } else {
@@ -102,7 +105,16 @@ function* loadAssignmentSaga({ payload }) {
      * if class level openPolicy and  closePolicy present,
      * override the top level with class level
      */
-    const { openPolicy, closePolicy, allowedTime, pauseAllowed } = data.class[0] || {};
+    const {
+      openPolicy,
+      closePolicy,
+      allowedTime,
+      pauseAllowed,
+      answerOnPaper,
+      maxAttempts,
+      maxAnswerChecks,
+      calcType
+    } = data.class[0] || {};
     if (openPolicy) {
       data.openPolicy = openPolicy;
     }
@@ -114,6 +126,18 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (typeof pauseAllowed !== "undefined") {
       data.pauseAllowed = pauseAllowed;
+    }
+    if (answerOnPaper !== undefined) {
+      data.answerOnPaper = answerOnPaper;
+    }
+    if (maxAttempts) {
+      data.maxAttempts = maxAttempts;
+    }
+    if (maxAnswerChecks !== undefined) {
+      data.maxAnswerChecks = maxAnswerChecks;
+    }
+    if (calcType) {
+      data.calcType = calcType;
     }
     yield put(slice.actions.loadAssignmentSucess(data));
   } catch (err) {
@@ -137,7 +161,10 @@ function getSettingsSelector(state) {
     calcType,
     dueDate,
     allowedTime,
-    pauseAllowed
+    pauseAllowed,
+    answerOnPaper,
+    maxAttempts,
+    maxAnswerChecks
   } = assignment;
   return omitBy(
     {
@@ -149,7 +176,10 @@ function getSettingsSelector(state) {
       calcType,
       dueDate,
       allowedTime,
-      pauseAllowed
+      pauseAllowed,
+      answerOnPaper,
+      maxAttempts,
+      maxAnswerChecks
     },
     isUndefined
   );

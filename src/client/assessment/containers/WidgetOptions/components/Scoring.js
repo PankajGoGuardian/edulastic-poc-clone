@@ -84,6 +84,9 @@ class Scoring extends Component {
       userFeatures,
       dissociateRubricFromQuestion,
       theme,
+      showScoringType,
+      extraInScoring = null,
+      isCorrectAnsTab = true,
       item = {}
     } = this.props;
     const { showGradingRubricModal, rubricActionType } = this.state;
@@ -138,6 +141,7 @@ class Scoring extends Component {
             {t("component.options.scoring")}
           </Subtitle>
         )}
+        {extraInScoring}
         {isAutoMarkBtnVisible && (
           <Row gutter={24}>
             <Col md={12}>
@@ -146,6 +150,7 @@ class Scoring extends Component {
                 checked={isAutomarkChecked}
                 onChange={e => handleChangeValidation("automarkable", e.target.checked)}
                 size="large"
+                disabled={!isCorrectAnsTab}
               >
                 {t("component.options.automarkable")}
               </CheckboxLabel>
@@ -157,6 +162,7 @@ class Scoring extends Component {
                   checked={questionData.validation.unscored}
                   onChange={e => handleChangeValidation("unscored", e.target.checked)}
                   size="large"
+                  disabled={!isCorrectAnsTab}
                 >
                   {t("component.options.unscored")}
                 </CheckboxLabel>
@@ -176,7 +182,8 @@ class Scoring extends Component {
                     data-cy="maxscore"
                     type="number"
                     value={maxScore}
-                    min={1}
+                    step={0.5}
+                    min={0}
                     onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
                     size="large"
                     style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
@@ -185,7 +192,8 @@ class Scoring extends Component {
                 </FormGroup>
               </Col>
             )}
-            {scoringTypes.length > 1 && showSelect && (
+            {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}
+            {showScoringType && scoringTypes.length > 1 && showSelect && (
               <Col md={12}>
                 <Label>{t("component.options.scoringType")}</Label>
                 <SelectInputStyled
@@ -227,6 +235,7 @@ class Scoring extends Component {
                     <TextInputStyled
                       type="number"
                       data-cy="penalty"
+                      step="0.5"
                       value={questionData.validation.penalty}
                       onChange={e => handleChangeValidation("penalty", +e.target.value)}
                       size="large"
@@ -249,6 +258,7 @@ class Scoring extends Component {
                   setIsGradingRubric(e.target.checked);
                   if (questionData.rubrics) dissociateRubricFromQuestion();
                 }}
+                disabled={!isCorrectAnsTab}
                 size="large"
               >
                 {t("component.options.gradingRubric")}
@@ -265,7 +275,11 @@ class Scoring extends Component {
                   e.target.blur();
                 }}
                 display="inline-block"
+                padding="0px 16px"
+                width="142px"
                 margin="0px 15px 0px 0px"
+                disabled={!isCorrectAnsTab}
+                ghost={!isCorrectAnsTab}
               >
                 Create New Rubric
               </CustomStyleBtn>
@@ -275,7 +289,11 @@ class Scoring extends Component {
                   e.target.blur();
                 }}
                 display="inline-block"
+                padding="0px 16px"
+                width="142px"
                 margin="0px 15px 0px 0px"
+                disabled={!isCorrectAnsTab}
+                ghost={!isCorrectAnsTab}
               >
                 Use Existing Rubric
               </CustomStyleBtn>
@@ -284,31 +302,35 @@ class Scoring extends Component {
         )}
 
         {questionData.rubrics && userFeatures.gradingrubrics && (
-          <StyledTag>
-            <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
-            <span onClick={() => dissociateRubricFromQuestion()}>
-              <Icon type="close" />
-            </span>
-          </StyledTag>
+          <RubricsContainer>
+            <StyledTag>
+              <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
+              <span onClick={() => dissociateRubricFromQuestion()}>
+                <Icon type="close" />
+              </span>
+            </StyledTag>
+          </RubricsContainer>
         )}
 
         <Row gutter={24} mb="0">
           <Col md={12}>
             <CheckboxLabel
-              data-cy=""
+              data-cy="isScoringInstructionsEnabled"
               checked={questionData?.isScoringInstructionsEnabled}
               onChange={e => handleChangeInstructions("isScoringInstructionsEnabled", e.target.checked)}
               size="large"
+              disabled={!isCorrectAnsTab}
             >
               Enable scoring instructions
             </CheckboxLabel>
           </Col>
         </Row>
-        {questionData?.isScoringInstructionsEnabled && (
+        {questionData?.isScoringInstructionsEnabled && isCorrectAnsTab && (
           <Row gutter={24}>
             <Col md={24} lg={24} xs={24}>
               <WidgetFRInput fontSize={theme?.fontSize}>
                 <QuestionTextArea
+                  data-cy="scoringInstructions"
                   border="border"
                   toolbarSize="SM"
                   toolbarId="scoringInstructions"
@@ -325,6 +347,7 @@ class Scoring extends Component {
 
         {showGradingRubricModal && (
           <GradingRubricModal
+            data-cy="GradingRubricModal"
             visible={showGradingRubricModal}
             actionType={rubricActionType}
             toggleModal={() => {
@@ -349,7 +372,9 @@ Scoring.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   noPaddingLeft: PropTypes.bool,
-  children: PropTypes.any
+  children: PropTypes.any,
+  extraInScoring: PropTypes.elementType,
+  showScoringType: PropTypes.bool
 };
 
 Scoring.defaultProps = {
@@ -359,7 +384,9 @@ Scoring.defaultProps = {
   advancedAreOpen: true,
   children: null,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  extraInScoring: null,
+  showScoringType: true
 };
 
 const enhance = compose(
@@ -381,6 +408,10 @@ const enhance = compose(
 );
 
 export default enhance(Scoring);
+
+export const RubricsContainer = styled.div`
+  margin-bottom: 20px;
+`;
 
 export const StyledTag = styled.div`
   display: inline-block;

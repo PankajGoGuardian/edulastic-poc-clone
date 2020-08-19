@@ -15,6 +15,8 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
+var _isEmpty2 = _interopRequireDefault(require("lodash/isEmpty"));
+
 var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
 
 var _maxBy2 = _interopRequireDefault(require("lodash/maxBy"));
@@ -204,7 +206,7 @@ var normalEvaluator = /*#__PURE__*/function () {
             questionScore = validAnswers[i] && validAnswers[i].score || 1;
             maxScore = Math.max(questionScore, maxScore);
 
-            if (validAnswers[i].dropdown) {
+            if (!(0, _isEmpty2["default"])(validAnswers[i].dropdown)) {
               dropDownEvaluation = (0, _clozeText["default"])({
                 userResponse: transformUserResponse(dropDowns),
                 validation: {
@@ -217,7 +219,7 @@ var normalEvaluator = /*#__PURE__*/function () {
               evaluations = _objectSpread({}, evaluations, {}, dropDownEvaluation);
             }
 
-            if (validAnswers[i].textinput) {
+            if (!(0, _isEmpty2["default"])(validAnswers[i].textinput)) {
               clozeTextEvaluation = (0, _clozeText["default"])({
                 userResponse: transformUserResponse(inputs),
                 validation: {
@@ -232,7 +234,7 @@ var normalEvaluator = /*#__PURE__*/function () {
               evaluations = _objectSpread({}, evaluations, {}, clozeTextEvaluation);
             }
 
-            if (!validAnswers[i].value) {
+            if ((0, _isEmpty2["default"])(validAnswers[i].value)) {
               _context3.next = 22;
               break;
             }
@@ -251,7 +253,7 @@ var normalEvaluator = /*#__PURE__*/function () {
             evaluations = _objectSpread({}, evaluations, {}, mathEvaluation);
 
           case 22:
-            if (!validAnswers[i].mathUnits) {
+            if ((0, _isEmpty2["default"])(validAnswers[i].mathUnits)) {
               _context3.next = 27;
               break;
             }
@@ -490,7 +492,7 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
             score = 0;
             optionCount = (0, _get2["default"])(validResponse.dropdown, ["value", "length"], 0) + (0, _get2["default"])(validResponse.mathUnits, ["value", "length"], 0) + (0, _get2["default"])(validResponse, ["value", "length"], 0) + (0, _get2["default"])(validResponse.textinput, ["value", "length"], 0); // cloze-text evaluation!
 
-            clozeTextEvaluation = validResponse.textinput && (0, _clozeText["default"])({
+            clozeTextEvaluation = !(0, _isEmpty2["default"])(validResponse.textinput) && (0, _clozeText["default"])({
               userResponse: transformUserResponse(inputs),
               validation: {
                 scoringType: _constants.evaluationType.EXACT_MATCH,
@@ -504,7 +506,7 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
               }
             }).evaluation || {}; // dropdown evaluation
 
-            dropDownEvaluation = validResponse.dropdown && (0, _clozeText["default"])({
+            dropDownEvaluation = !(0, _isEmpty2["default"])(validResponse.dropdown) && (0, _clozeText["default"])({
               userResponse: transformUserResponse(dropDowns),
               validation: {
                 scoringType: _constants.evaluationType.EXACT_MATCH,
@@ -516,7 +518,7 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
               }
             }).evaluation || {}; // math evaluations
 
-            _context6.t1 = validResponse;
+            _context6.t1 = !(0, _isEmpty2["default"])(validResponse.value);
 
             if (!_context6.t1) {
               _context6.next = 18;
@@ -547,7 +549,7 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
 
           case 21:
             mathEvaluation = _context6.t0;
-            _context6.t3 = validResponse.mathUnits;
+            _context6.t3 = !(0, _isEmpty2["default"])(validResponse.mathUnits);
 
             if (!_context6.t3) {
               _context6.next = 27;

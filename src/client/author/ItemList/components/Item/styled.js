@@ -18,15 +18,15 @@ import {
   themeColorBlue
 } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
-import { IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
-import { Tag } from "antd";
+import { IconHeart, IconId, IconUser, IconUsers } from "@edulastic/icons";
+import { Tag, Button } from "antd";
 import styled, { css } from "styled-components";
 
 const Style = css`
   background: transparent !important;
   font-family: ${props => props.theme.defaultFontFamily} !important;
   font-size: ${props => props.theme.questionTextnormalFontSize} !important;
-  color: ${props => props.theme.titleColor} !important;
+  color: ${props => props.theme.questionTextColor} !important;
   font-weight: normal !important;
   font-style: normal !important;
   text-decoration: none;
@@ -37,7 +37,22 @@ export const StimulusWrapper = styled.span`
     ${Style}
   }
 `;
-
+const ButtonStyleCss = css`
+  @media (max-width: ${tabletWidth}) {
+    &.ant-btn {
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      span {
+        display: none;
+      }
+      svg {
+        margin: 0px;
+      }
+    }
+  }
+`;
 export const Link = styled.a`
   font-size: ${props => props.theme.questionTextnormalFontSize};
   padding-right: 20px;
@@ -137,20 +152,7 @@ export const ViewButton = styled.div`
 `;
 
 const ButtonStyle = styled(EduButton)`
-  @media (max-width: ${tabletWidth}) {
-    &.ant-btn {
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      padding: 0;
-      span {
-        display: none;
-      }
-      svg {
-        margin: 0px;
-      }
-    }
-  }
+  ${ButtonStyleCss}
 `;
 
 export const AddRemoveBtn = styled(ButtonStyle)`
@@ -224,18 +226,21 @@ export const MoreInfo = styled(ButtonStyle)`
   }
 `;
 
-export const ViewButtonStyled = styled(ButtonStyle)`
-  background: ${white};
+export const ViewButtonStyled = styled(Button)`
+  ${ButtonStyleCss};
+  height: 36px;
+  background-color: ${white};
   color: ${themeColor};
   display: flex;
   align-items: center;
   padding: 0px 40px 0px 15px;
   svg {
     margin-right: 25px;
+    fill: ${themeColor};
   }
   &:hover,
   &:focus {
-    background: ${lightGrey};
+    background-color: ${lightGrey};
     color: ${themeColor};
     svg {
       fill: ${themeColor};
@@ -446,7 +451,7 @@ export const Categories = styled.div`
   }
 `;
 
-export const ShareIcon = styled(IconShare)`
+export const ShareIcon = styled(IconUsers)`
   display: flex;
   align-items: center;
   fill: ${themeColor};

@@ -13,77 +13,82 @@ import {
 } from "../../../../assessment/constants/constantsForQuestions";
 
 // Multiple Choice
-import MCStandard from "../../../src/assets/multiple-choice/standard.svg";
-import MCMultipleResponses from "../../../src/assets/multiple-choice/multiple-response.svg";
-import MCTrueFalse from "../../../src/assets/multiple-choice/true-false.svg";
-import MCBlockLayout from "../../../src/assets/multiple-choice/block-layout.svg";
-import MCMatrixStandard from "../../../src/assets/multiple-choice/matrix-standard.svg";
-import MCMatrixInline from "../../../src/assets/multiple-choice/matrix-inline.svg";
-import MCMatrixLabels from "../../../src/assets/multiple-choice/matrix-labels.svg";
+import MCStandard from "../../../src/assets/multiple-choice/standard-blue.svg";
+import MCMultipleResponses from "../../../src/assets/multiple-choice/multiple-response-blue.svg";
+import MCTrueFalse from "../../../src/assets/multiple-choice/true-false-blue.svg";
+import MCBlockLayout from "../../../src/assets/multiple-choice/block-layout-blue.svg";
+import MCMatrixStandard from "../../../src/assets/multiple-choice/matrix-standard-blue.svg";
+import MCMatrixInline from "../../../src/assets/multiple-choice/matrix-inline-blue.svg";
+import MCMatrixLabels from "../../../src/assets/multiple-choice/matrix-labels-blue.svg";
 
 // Fill In blanks
-import FBClozeDragDrop from "../../../src/assets/fill-in-blanks/cloze-drag-drop.svg";
-import FBClozeDropDown from "../../../src/assets/fill-in-blanks/cloze-dropdown.svg";
-import FBClozeText from "../../../src/assets/fill-in-blanks/cloze-text.svg";
-import FBClozeImgDragDrop from "../../../src/assets/fill-in-blanks/img-drag-drop.svg";
-import FBClozeImgDropDown from "../../../src/assets/fill-in-blanks/img-dropdown.svg";
-import FBClozeImgText from "../../../src/assets/fill-in-blanks/img-text.svg";
+import FBClozeDragDrop from "../../../src/assets/fill-in-blanks/cloze-drag-drop-blue.svg";
+import FBClozeDropDown from "../../../src/assets/fill-in-blanks/cloze-dropdown-blue.svg";
+import FBClozeText from "../../../src/assets/fill-in-blanks/cloze-text-blue.svg";
+import FBClozeImgDragDrop from "../../../src/assets/fill-in-blanks/img-drag-drop-blue.svg";
+import FBClozeImgDropDown from "../../../src/assets/fill-in-blanks/img-dropdown-blue.svg";
+import FBClozeImgText from "../../../src/assets/fill-in-blanks/img-text-blue.svg";
+import FBClozeEditingTask from "../../../src/assets/fill-in-blanks/editing-task-blue.svg";
 
 // Classy Match
-import CMClassification from "../../../src/assets/classy-match/classification.svg";
-import CMMatch from "../../../src/assets/classy-match/match.svg";
-import CMOrderList from "../../../src/assets/classy-match/order-list.svg";
-import CMSortList from "../../../src/assets/classy-match/sort-list.svg";
+import CMClassification from "../../../src/assets/classy-match/classification-blue.svg";
+import CMMatch from "../../../src/assets/classy-match/match-blue.svg";
+import CMOrderList from "../../../src/assets/classy-match/order-list-blue.svg";
+import CMSortList from "../../../src/assets/classy-match/sort-list-blue.svg";
 
 // Written Spoken
-import WSEssayRichText from "../../../src/assets/written-spoken/essay-rich-text.svg";
-import WSEssayPlainText from "../../../src/assets/written-spoken/essay-plain-text.svg";
-import WSShortText from "../../../src/assets/written-spoken/short-text.svg";
+import WSEssayRichText from "../../../src/assets/written-spoken/essay-rich-text-blue.svg";
+import WSEssayPlainText from "../../../src/assets/written-spoken/essay-plain-text-blue.svg";
+import WSShortText from "../../../src/assets/written-spoken/short-text-blue.svg";
+import WSUploadFile from "../../../src/assets/written-spoken/upload-file-blue.svg";
 // import WSAudioPlayer from '../../assets/written-spoken/audio-player.svg';
 // import WSVideoPlayer from '../../assets/written-spoken/video-player.svg';
 
 // Highlight
-import HLHightlight from "../../../src/assets/highlight/highlight-img.svg";
-import HLHotspot from "../../../src/assets/highlight/hotspot.svg";
-import HLShading from "../../../src/assets/highlight/shading.svg";
-import HLTokenHighlight from "../../../src/assets/highlight/token-highlight.svg";
+import HLHightlight from "../../../src/assets/highlight/highlight-img-blue.svg";
+import HLHotspot from "../../../src/assets/highlight/hotspot-blue.svg";
+import HLShading from "../../../src/assets/highlight/shading-blue.svg";
+import HLTokenHighlight from "../../../src/assets/highlight/token-highlight-blue.svg";
 
 // Math
-import MTFormula from "../../../src/assets/math/math-formula.svg";
-import MTFractions from "../../../src/assets/math/math-fractions.svg";
-import MTFillInBlanks from "../../../src/assets/math/math-fill-blanks.svg";
-import MTText from "../../../src/assets/math/math-text.svg";
-import MTMatrices from "../../../src/assets/math/math-matrices.svg";
-import MTUnits from "../../../src/assets/math/math-units.svg";
-import MTEssay from "../../../src/assets/math/math-essay.svg";
+import MTFormula from "../../../src/assets/math/math-formula-blue.svg";
+import MTFractions from "../../../src/assets/math/math-fractions-blue.svg";
+import MTFillInBlanks from "../../../src/assets/math/math-fill-blanks-blue.svg";
+import MTText from "../../../src/assets/math/math-text-blue.svg";
+import MTMatrices from "../../../src/assets/math/math-matrices-blue.svg";
+import MTUnits from "../../../src/assets/math/math-units-blue.svg";
+import MTEssay from "../../../src/assets/math/math-essay-blue.svg";
 // import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
-import MTCombinationClozeText from "../../../src/assets/math/math-multipart-cloze.svg";
-import MTCombinationMulti from "../../../src/assets/math/math-multipart-combination.svg";
+import MTCombinationClozeText from "../../../src/assets/math/math-multipart-cloze-blue.svg";
+import MTCombinationMulti from "../../../src/assets/math/math-multipart-combination-blue.svg";
 
 // Graphing
-import GRGraphing from "../../../src/assets/graphing/graphing.svg";
-import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant.svg";
-import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
-import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
-import GRFractionEditor from "../../../src/assets/graphing/fraction-editor.svg";
+import GRGraphing from "../../../src/assets/graphing/graphing-blue.svg";
+import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant-blue.svg";
+import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop-blue.svg";
+import GRNumberLinePlot from "../../../src/assets/graphing/line-plot-blue.svg";
+import GRFractionEditor from "../../../src/assets/graphing/fraction-editor-blue.svg";
 
 // Charts
-import LinePlot from "../../../src/assets/charts/line-plot.svg";
-import DotPlot from "../../../src/assets/charts/dot-plot.svg";
-import LinePlotNumberLine from "../../../src/assets/charts/line-plot-number-line.svg";
-import DotPlotNumberLine from "../../../src/assets/charts/dot-plot-number-line.svg";
-import Histogram from "../../../src/assets/charts/histogram.svg";
-import BarChart from "../../../src/assets/charts/bar-chart.svg";
-import LineChart from "../../../src/assets/charts/line-chart.svg";
+import LinePlotCategories from "../../../src/assets/charts/line-plot-categories-blue.svg";
+import DotPlotCategories from "../../../src/assets/charts/dot-plot-categories-blue.svg";
+import LinePlotNumberLine from "../../../src/assets/charts/line-plot-number-line-blue.svg";
+import DotPlotNumberLine from "../../../src/assets/charts/dot-plot-number-line-blue.svg";
+import Histogram from "../../../src/assets/charts/histogram-blue.svg";
+import BarChart from "../../../src/assets/charts/bar-chart-blue.svg";
+import LineChart from "../../../src/assets/charts/line-chart-blue.svg";
 
 // Video&Passages
-import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
-import SQPassage from "../../../src/assets/video-and-passages/passage01.png";
-import MQPassage from "../../../src/assets/video-and-passages/passage02.png";
-import TextResource from "../../../src/assets/video-and-passages/text.svg";
+import VPVideoPlayer from "../../../src/assets/video-and-passages/video-player-blue.svg";
+import SQPassage from "../../../src/assets/video-and-passages/passage01_blue.svg";
+import MQPassage from "../../../src/assets/video-and-passages/passage02_blue.svg";
+import TextResource from "../../../src/assets/video-and-passages/text-blue.svg";
 
 // Rulers & Calculators
-import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
+import Protractor from "../../../src/assets/rulers-calculators/protractor-blue.svg";
+
+// Others
+import CodingImage from "../../../src/assets/others/coding.svg";
 
 export const getCards = (onSelectQuestionType, isPassage = false) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math;
@@ -367,7 +372,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "charts",
-      cardImage: DotPlot,
+      cardImage: DotPlotCategories,
       data: {
         title: "Dot Plot - Categories",
         firstMount: true,
@@ -458,7 +463,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: DotPlotNumberLine,
       data: {
-        title: "Dot Plot - Number Line",
+        title: "Dot Plot",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -563,7 +568,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "charts",
-      cardImage: LinePlot,
+      cardImage: LinePlotCategories,
       data: {
         title: "Line Plot - Categories",
         firstMount: true,
@@ -654,7 +659,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: LinePlotNumberLine,
       data: {
-        title: "Line Plot - Number Line",
+        title: "Line Plot",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -761,7 +766,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "highlight",
       cardImage: HLHightlight,
       data: {
-        title: "Highlight Image",
+        title: "Drawing Response",
         image: {
           source: "",
           width: canvasDimensions.maxWidth,
@@ -847,7 +852,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "highlight",
       cardImage: HLTokenHighlight,
       data: {
-        title: "Token Highlight",
+        title: "Sentence Response",
         stimulus: "",
         template:
           '<p>Risus et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. dignissim, et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>',
@@ -881,32 +886,35 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           { id: "test1", value: "bold", active: true },
           { id: "test2", value: "italic", active: true },
           { id: "test3", value: "underline", active: true },
-          { id: "test4", value: "strike", active: false },
-          { id: "test5", value: "header", param: 1, active: false },
-          { id: "test6", value: "header", param: 2, active: false },
-          { id: "test9", value: "|", active: true },
-          { id: "test10", value: "list", param: "ordered", active: true },
-          { id: "test11", value: "list", param: "bullet", active: true },
-          // { id: "test12", value: "align", param: "center", active: false },
-          // { id: "test13", value: "align", param: "justify", active: false },
-          { id: "test14", value: "align", param: "right", active: false },
+          { id: "test4", value: "strikeThrough", active: false },
+          { id: "test5", value: "|", active: true },
+          { id: "test6", value: "h1", active: false },
+          { id: "test7", value: "h2", active: false },
+          { id: "test8", value: "subscript", active: false },
+          { id: "test9", value: "superscript", active: false },
+          { id: "test10", value: "|", active: false },
+          { id: "test11", value: "alignLeft", active: false },
+          { id: "test12", value: "alignCenter", active: false },
+          { id: "test13", value: "alignRight", active: false },
+          { id: "test14", value: "alignJustify", active: false },
           { id: "test15", value: "|", active: false },
-          { id: "test16", value: "|", active: false },
-          { id: "test17", value: "blockquote", active: false },
-          { id: "test18", value: "script", param: "sub", active: false },
-          { id: "test19", value: "script", param: "super", active: false },
-          { id: "test20", value: "|", active: false },
-          { id: "test21", value: "indent", param: "+1", active: false },
-          { id: "test22", value: "indent", param: "-1", active: false },
-          { id: "test23", value: "|", active: false },
-          { id: "test24", value: "direction", param: "rtl", active: false },
-          { id: "test26", value: "clean", active: false },
-          { id: "test27", value: "formula", active: true },
-          { id: "test28", value: "specialCharacters", active: true },
-          { id: "test29", value: "|", active: false },
-          { id: "test21", value: "image", active: false },
-          { id: "test22", value: "link", active: false },
-          { id: "test23", value: "|", active: false }
+          { id: "test16", value: "quote", active: false },
+          { id: "test17", value: "indent", active: false },
+          { id: "test18", value: "outdent", active: false },
+          { id: "test19", value: "|", active: false },
+          { id: "test20", value: "formatOL", active: true },
+          { id: "test21", value: "formatUL", active: true },
+          { id: "test22", value: "math", active: true },
+          { id: "test23", value: "specialCharacters", active: true },
+          { id: "test24", value: "|", active: false },
+          { id: "test25", value: "insertImage", active: false },
+          { id: "test26", value: "insertLink", active: false },
+          { id: "test27", value: "table", active: false },
+          { id: "test28", value: "|", active: false },
+          { id: "test29", value: "paragraphFormat", active: false },
+          { id: "test30", value: "clearFormatting", active: false },
+          { id: "test31", value: "undo", active: false },
+          { id: "test32", value: "redo", active: false }
         ],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -952,6 +960,22 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
+      type: "edit",
+      cardImage: WSUploadFile,
+      data: {
+        title: "Upload File",
+        stimulus: "",
+        type: questionType.UPLOAD_FILE,
+        files: [],
+        validation: {
+          validResponse: { score: 1 },
+          maxScore: 1
+        },
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
       type: "multiple-choice",
       cardImage: MCStandard,
       data: {
@@ -984,7 +1008,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMultipleResponses,
       data: {
-        title: "Multiple Choice - Multiple Response",
+        title: "Multiple Selection",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {
@@ -1071,6 +1095,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         type: questionType.SORT_LIST,
         stimulus: "",
+        labels: {
+          source: "source",
+          target: "target"
+        },
         uiStyle: {},
         source: ["Item A", "Item B", "Item C", "Item D"],
         validation: {
@@ -1161,7 +1189,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "classify",
       cardImage: CMMatch,
       data: {
-        title: "Match List",
+        title: "Match the following",
         firstMount: true,
         groupPossibleResponses: false,
         possibleResponseGroups: [
@@ -1206,7 +1234,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "classify",
       cardImage: CMOrderList,
       data: {
-        title: "Order List",
+        title: "Re-sequence",
         type: questionType.ORDER_LIST,
         stimulus: "Simple Question",
         list: {
@@ -1234,7 +1262,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixStandard,
       data: {
-        title: "Choice Matrix - Standard",
+        title: "Match Table - Standard",
         firstMount: true,
         type: questionType.CHOICE_MATRIX,
         stimulus: "",
@@ -1262,7 +1290,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixInline,
       data: {
-        title: "Choice Matrix - Inline",
+        title: "Match Table - Inline",
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
@@ -1289,7 +1317,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixLabels,
       data: {
-        title: "Choice Matrix - Labels",
+        title: "Match Table - Labels",
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
@@ -1318,7 +1346,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeDragDrop,
       stimulus: "",
       data: {
-        title: "Cloze with Drag & Drop",
+        title: "Drag & Drop",
         stimulus: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
         uiStyle: {
@@ -1326,7 +1354,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           wordwrap: false,
           responsecontainerindividuals: [],
           responseContainerWidth: 200
@@ -1353,7 +1381,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeDropDown,
       stimulus: "Pick the right options in the dropdown below",
       data: {
-        title: "Cloze with Drop Down",
+        title: "Text Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         stimulus: `<p>Pick the right options in the dropdown below.</p><p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
           uuids[0]
@@ -1366,7 +1394,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           wordwrap: false,
           responsecontainerindividuals: []
         },
@@ -1391,7 +1419,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeText,
       stimulus: "Fill blank boxes with the right answer.",
       data: {
-        title: "Cloze with Text",
+        title: "Text Entry",
         type: questionType.CLOZE_TEXT,
         stimulus: `<p>Fill blank boxes with the right answer.</p><p>Sample question text with <textinput responseindex="1" id=${
           uuids[0]
@@ -1400,7 +1428,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         }/></textinput>&nbsp;</p>`,
         uiStyle: {
           fontsize: "normal",
-          heightpx: 36,
+          heightpx: 32,
           placeholder: "",
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
@@ -1460,9 +1488,9 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal"
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
-          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
+          { top: 0, left: 240, width: 140, height: 32, id: uuids[0] },
+          { top: 100, left: 120, width: 140, height: 32, id: uuids[1] },
+          { top: 220, left: 200, width: 140, height: 32, id: uuids[2] }
         ],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -1496,12 +1524,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           showborder: true
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { top: 100, left: 120, width: 200, height: 40, id: uuids[1] }
+          { top: 0, left: 240, width: 140, height: 32, id: uuids[0] },
+          { top: 100, left: 120, width: 140, height: 32, id: uuids[1] }
         ],
         uiStyle: {
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           inputtype: "text",
           stemNumeration: "numerical",
           fontsize: "normal",
@@ -1550,9 +1578,9 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           showborder: true
         },
         responses: [
-          { placeholder: "", top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { placeholder: "", top: 100, left: 120, width: 200, height: 40, id: uuids[1] },
-          { placeholder: "", top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
+          { placeholder: "", top: 0, left: 240, width: 140, height: 32, id: uuids[0] },
+          { placeholder: "", top: 100, left: 120, width: 140, height: 32, id: uuids[1] },
+          { placeholder: "", top: 220, left: 200, width: 140, height: 32, id: uuids[2] }
         ],
         stimulusReviewonly: "",
         instructorStimulus: "",
@@ -1566,7 +1594,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "fill-blanks",
-      cardImage: FBClozeDropDown,
+      cardImage: FBClozeEditingTask,
       stimulus: "Pick the right options in the dropdown below",
       data: {
         title: "Editing Task",
@@ -1583,7 +1611,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           wordwrap: false,
           responsecontainerindividuals: []
         },
@@ -1866,7 +1894,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "graphing",
       cardImage: GRNumberLinePlot,
       data: {
-        title: "Number Line with Plot",
+        title: "Range Plotter",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -1987,7 +2015,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "graphing",
       cardImage: GRNumberLineDragDrop,
       data: {
-        title: "Number Line with Drag & Drop",
+        title: "Number Line",
         type: questionType.GRAPH,
         firstMount: true,
         graphType: "axisLabels",
@@ -2262,7 +2290,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 140,
+          widthpx: 80,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2341,7 +2369,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 140,
+          widthpx: 80,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2382,7 +2410,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         customKeys: ["m", "km", "cm", "mm"],
         uiStyle: {
           widthpx: 140,
-          heightpx: 36,
+          heightpx: 35,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2440,7 +2468,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           type: "floating-keyboard",
           minWidth: 140,
-          minHeight: 35
+          minHeight: 32
         },
         options: {},
         validation: {
@@ -2566,13 +2594,13 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           sectors: 7,
           selected: [1]
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
     {
       type: "other",
-      cardImage: MCBlockLayout,
+      cardImage: CodingImage,
       data: {
         title: "Coding",
         type: questionType.CODING,

@@ -1,5 +1,4 @@
 import {
-  dashBorderColor,
   desktopWidth,
   extraDesktopWidthMax,
   fadedBlack,
@@ -19,7 +18,7 @@ export const WidgetWrapper = styled.div`
 
 export const Widget = styled.div`
   position: ${({ position }) => position || "relative"};
-  padding: 0px 20px 40px;
+  padding: 15px 20px;
   ${({ overflowHandlers }) => overflowHandlers};
   display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
   ${({ visible }) =>
@@ -78,13 +77,9 @@ export const Widget = styled.div`
       }
 
       .ant-select-selection--single {
-        height: 40px;
+        height: 35px;
       }
     }
-  }
-
-  .ant-input {
-    border: 1px solid ${dashBorderColor};
   }
 
   div.main {
@@ -96,7 +91,7 @@ export const Widget = styled.div`
     padding-left: 21px;
     letter-spacing: 0.3px;
     color: ${selectColor};
-    min-height: 42px;
+    min-height: 35px;
   }
 
   .ql-container {
@@ -198,7 +193,7 @@ export const WidgetFRInput = styled.div`
       border: 1px solid ${greyThemeLight};
       font-size: ${props => props.fontSize || "13px"};
       width: 100%;
-      min-height: 40px;
+      min-height: 35px;
       padding: 0 15px;
       border-radius: 5px;
       font-weight: normal;
@@ -210,8 +205,8 @@ export const WidgetFRInput = styled.div`
     }
     &-view {
       width: 100%;
-      min-height: 40px;
-      padding: 10px 0px;
+      min-height: 35px;
+      padding: 8px 0px;
       ${props => createStandardTextStyle(props)}
     }
   }

@@ -14,7 +14,7 @@ export const Label = styled.label`
   text-transform: uppercase;
   margin-top: ${props => props.mt || "0px"};
   margin-right: ${props => props.mr || "0px"};
-  margin-bottom: ${({ marginBottom }) => marginBottom || "7px"};
+  margin-bottom: ${({ marginBottom }) => marginBottom || "6px"};
   margin-left: ${props => props.ml || "0px"};
   padding-top: ${props => (props.top ? `${props.top}px` : 0)};
   padding-bottom: ${props => (props.bottom ? `${props.bottom}px` : 0)};

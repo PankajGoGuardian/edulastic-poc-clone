@@ -8,10 +8,10 @@ import { cloneDeep } from "lodash";
 import { MathInput } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { greyThemeLighter } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { updateVariables } from "../../utils/variables";
-import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
@@ -21,7 +21,6 @@ import { latexKeys } from "./constants";
 class Template extends Component {
   render() {
     const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
-    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
 
     const handleUpdateTemplate = val => {
       setQuestionData(
@@ -60,11 +59,13 @@ class Template extends Component {
         <MathInput
           showResponse
           showDropdown
+          fullWidth
+          height="50px"
+          background={greyThemeLighter}
           symbols={item.symbols}
           numberPad={item.numberPad}
           value={item.template}
           onChangeKeypad={handleChangeKeypad}
-          style={{ ...cssStyles, width: "fit-content" }}
           onInput={latex => {
             handleUpdateTemplate(latex);
           }}

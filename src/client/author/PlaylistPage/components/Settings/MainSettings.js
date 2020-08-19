@@ -1,16 +1,16 @@
-import React from "react";
-import { Row, Col, Anchor, Switch } from "antd";
-
-import { playlists } from "@edulastic/constants";
-import styled from "styled-components";
 import { themeColor } from "@edulastic/colors";
+import { EduSwitchStyled } from "@edulastic/common";
+import { playlists } from "@edulastic/constants";
+import { Anchor, Col, Row } from "antd";
+import React from "react";
+import styled from "styled-components";
 import {
-  StyledAnchor,
-  Body,
-  Title,
   Block,
+  Body,
+  Container,
   Description,
-  Container
+  StyledAnchor,
+  Title
 } from "../../../TestPage/components/Setting/components/MainSetting/styled";
 
 const { settingCategories } = playlists;
@@ -34,9 +34,11 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
         </Col>
         <Col span={isSmallSize ? 24 : 18}>
           <StyledBlock id="user-customization" smallSize={isSmallSize}>
-            <Title>User Customization</Title>
+            <Title>
+              <span>User Customization</span>
+              <EduSwitchStyled data-cy="customization" defaultChecked={customize} onChange={handleUserCustomize} />
+            </Title>
             <Body smallSize={isSmallSize}>
-              <Switch data-cy="customization" defaultChecked={customize} onChange={handleUserCustomize} />
               <Description>
                 If set to ON, other members of the Edulastic community who want to use this playlist can customize it as
                 per their requirements i.e., add/remove test or resources in the Playlist. Note that this will not

@@ -153,6 +153,7 @@ function* createAssessmentSaga({ payload }) {
           pageNo: index + 1
         }));
     } else {
+
       const pdfLoadingTask = pdfjs.getDocument(defaultPageStructure[0].URL);
 
       const { numPages } = yield pdfLoadingTask.promise;
@@ -168,6 +169,7 @@ function* createAssessmentSaga({ payload }) {
           pageNo: index + 1
         }));
     }
+
 
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);

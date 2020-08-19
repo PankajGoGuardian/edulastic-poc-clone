@@ -117,12 +117,8 @@ const ChartPreview = ({
   }
 
   const answerData = validation ? validation.validResponse.value : [];
-  const answerCorrect = Array(answerData.length).fill(true);
 
   const altAnswerData = validation && validation.altResponses ? validation.altResponses : [];
-  const altAnswerCorrect = altAnswerData.map(ans => Array(ans.value.length).fill(true));
-
-  const correct = evaluation && evaluation.length ? evaluation : [];
 
   const saveAnswerHandler = (ans, index) => {
     changePreviewTab(CLEAR);
@@ -230,7 +226,7 @@ const ChartPreview = ({
                 disableResponse={disableResponse}
                 previewTab={previewTab}
                 saveAnswer={saveAnswerHandler}
-                correct={correct}
+                evaluation={evaluation}
                 item={item}
                 setQuestionData={setQuestionData}
                 showAnswer={previewTab === CHECK || (previewTab === SHOW && !isReviewTab)}
@@ -241,7 +237,13 @@ const ChartPreview = ({
             {view !== EDIT && <Instructions item={item} />}
 
             {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
-              <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
+              <CorrectAnswersContainer
+                title={t("component.chart.correctAnswer")}
+                noBackground
+                showBorder
+                padding="14px 45px"
+                margin="38px 0px"
+              >
                 <ChartContainer>
                   <CurrentChart
                     name={name}
@@ -252,7 +254,6 @@ const ChartPreview = ({
                     disableResponse
                     previewTab={previewTab}
                     saveAnswer={saveAnswerHandler}
-                    correct={answerCorrect}
                     item={item}
                     setQuestionData={setQuestionData}
                     showAnswer
@@ -265,7 +266,13 @@ const ChartPreview = ({
               previewTab === SHOW &&
               altAnswerData.length > 0 &&
               altAnswerData.map((ans, index) => (
-                <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
+                <CorrectAnswersContainer
+                  title={`${t("component.chart.alternateAnswer")} ${index + 1}`}
+                  noBackground
+                  showBorder
+                  padding="14px 45px 14px"
+                  margin="38px 0px"
+                >
                   <ChartContainer>
                     <CurrentChart
                       name={name}
@@ -276,7 +283,6 @@ const ChartPreview = ({
                       disableResponse
                       previewTab={previewTab}
                       saveAnswer={saveAnswerHandler}
-                      correct={altAnswerCorrect[index]}
                       item={item}
                       setQuestionData={setQuestionData}
                       showAnswer

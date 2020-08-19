@@ -23,7 +23,8 @@ import {
   upgradePartialPremiumUserAction,
   manageSubscriptionsByUserSegments,
   getManageSubscriptionByUserSegmentsData,
-  saveOrgPermissionsAction
+  saveOrgPermissionsAction,
+  getSubscriptionAction
 } from "../Upgrade/ducks";
 
 const { TabPane } = Tabs;
@@ -47,7 +48,8 @@ function UpgradeUser({
   setGradeSubjectValue,
   addGradeSubjectRow,
   deleteGradeSubjectRow,
-  saveOrgPermissions
+  saveOrgPermissions,
+  getSubscriptionAction
 }) {
   const [activeTab, setActiveTab] = useState("manageSubscriptionByDistrict");
   const onChangeTab = tabKey => setActiveTab(tabKey);
@@ -84,6 +86,7 @@ function UpgradeUser({
       </TabPane>
       <TabPane tab="Manage by User Segments" key="manageSubscriptionByUserSegments" forceRender>
         <ManageSubscriptionByUserSegments
+          getSubscriptionAction={getSubscriptionAction}
           manageUserSegmentsData={manageUserSegmentsData}
           upgradePartialPremiumUserAction={upgradePartialPremiumUserAction}
           setGradeSubjectValue={setGradeSubjectValue}
@@ -114,6 +117,7 @@ const withConnect = connect(
     bulkSchoolsSubscribeAction,
     setPartialPremiumDataAction: manageSubscriptionsByUserSegments.actions.setPartialPremiumData,
     upgradePartialPremiumUserAction,
+    getSubscriptionAction,
     updateCurrentEditableRow: manageSubscriptionsBySchool.actions.updateCurrentEditableRow,
     setEditableRowFieldValues: manageSubscriptionsBySchool.actions.setEditableRowFieldValues,
     setGradeSubjectValue: manageSubscriptionsByUserSegments.actions.setGradeSubjectValue,

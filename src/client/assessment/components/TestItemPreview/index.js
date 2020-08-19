@@ -103,7 +103,7 @@ class TestItemPreview extends Component {
   getFeedBackVisibility = ({ widgetIndex, colIndex, stackedView }) => {
     const { isDocBased, isPassageWithQuestions, isStudentReport } = this.props;
     let shouldShowFeedback;
-    let shoudlTakeDimensionsFromStore;
+    let shouldTakeDimensionsFromStore;
 
     switch (true) {
       case isDocBased || stackedView:
@@ -112,7 +112,7 @@ class TestItemPreview extends Component {
          * need to show separate feeback blocks for each question
          */
         shouldShowFeedback = true;
-        shoudlTakeDimensionsFromStore = true;
+        shouldTakeDimensionsFromStore = true;
         break;
 
       case isPassageWithQuestions:
@@ -121,12 +121,12 @@ class TestItemPreview extends Component {
          * and get dimensions from store
          */
         shouldShowFeedback = true;
-        shoudlTakeDimensionsFromStore = true;
+        shouldTakeDimensionsFromStore = true;
         break;
 
       case isStudentReport:
         shouldShowFeedback = true;
-        shoudlTakeDimensionsFromStore = false;
+        shouldTakeDimensionsFromStore = false;
         break;
 
       default:
@@ -136,11 +136,11 @@ class TestItemPreview extends Component {
          *  show only one feedback block
          */
         shouldShowFeedback = widgetIndex === 0 && colIndex === 0;
-        shoudlTakeDimensionsFromStore = false;
+        shouldTakeDimensionsFromStore = false;
         break;
     }
 
-    return [shouldShowFeedback, shoudlTakeDimensionsFromStore];
+    return [shouldShowFeedback, shouldTakeDimensionsFromStore];
   };
 
   renderFeedback = (widget, index, colIndex, stackedView) => {
@@ -158,7 +158,7 @@ class TestItemPreview extends Component {
       t
     } = this.props;
 
-    const [displayFeedback, shoudlTakeDimensionsFromStore] = this.getFeedBackVisibility({
+    const [displayFeedback, shouldTakeDimensionsFromStore] = this.getFeedBackVisibility({
       widgetIndex: index,
       colIndex,
       stackedView
@@ -176,7 +176,7 @@ class TestItemPreview extends Component {
         data={{ ...question, smallSize: true }}
         isStudentReport={isStudentReport}
         isPresentationMode={isPresentationMode}
-        shoudlTakeDimensionsFromStore={shoudlTakeDimensionsFromStore}
+        shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}
         studentId={studentId}
         studentName={studentName || t("common.anonymous")}
         itemId={itemId}
@@ -233,12 +233,7 @@ class TestItemPreview extends Component {
       LCBPreviewModal,
       isStudentReport,
       showCollapseBtn = false,
-      activeMode,
       scratchPadMode,
-      lineColor,
-      deleteMode,
-      lineWidth,
-      fillColor,
       saveHistory,
       history,
       fontFamily,
@@ -249,7 +244,7 @@ class TestItemPreview extends Component {
     const { collapseDirection } = this.state;
     let questionCount = 0;
     cols
-      .filter(item => item.widgets.length > 0)
+      .filter(item => item?.widgets?.length > 0)
       .forEach(({ widgets = [] }) => {
         questionCount += widgets.length;
       });
@@ -379,13 +374,7 @@ class TestItemPreview extends Component {
                 })}
               </div>
               {(showScratchpadByDefault || scratchPadMode) && (
-                <Scratchpad
-                  isLCBView={isLCBView}
-                  saveData={saveHistory}
-                  data={history}
-                  hideTools
-                  readOnly={hideScratchpadToolbar}
-                />
+                <Scratchpad saveData={saveHistory} data={history} hideTools readOnly={hideScratchpadToolbar} />
               )}
             </ScrollContext.Provider>
           </Container>

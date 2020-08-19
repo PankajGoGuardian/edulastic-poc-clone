@@ -12,9 +12,9 @@ export const MainToolBoxContainer = styled(FlexContainer)`
   height: 45px;
   padding: 2px;
   padding-right: 12.5px;
-  background: #24accd;
-  background-image: -webkit-linear-gradient(top, rgb(81, 189, 215), rgb(5, 161, 198));
-  border-bottom: 1px solid #51c5e2;
+  background: #6e7380;
+  background-image: -webkit-linear-gradient(top, #9a9a9a, #6a6c71);
+  border-bottom: 1px solid #6e7380;
 `;
 
 export const SubToolBoxContainer = styled(FlexContainer)`
@@ -27,8 +27,8 @@ export const SubToolBoxContainer = styled(FlexContainer)`
 
 const selectedButtonStyle = css`
   border: 0px;
-  background-color: #1c99b7;
-  background-image: -webkit-linear-gradient(top, rgb(28, 153, 183), rgb(28, 153, 183));
+  background-color: #6e7380;
+  background-image: -webkit-linear-gradient(top, #8e8f92, #616265);
   box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.2), inset 0px -1px 0px 0px rgba(255, 255, 255, 0.3);
 `;
 

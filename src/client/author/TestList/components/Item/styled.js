@@ -74,9 +74,11 @@ export const CardDescription = styled.div`
 export const TagsWrapper = styled.div`
   overflow: hidden;
   display: flex;
-  align-items: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   justify-content: flex-start;
-  height: ${props => (props.isPlaylist ? "47.52px" : "55px")};
+  height: ${props => (props.isPlaylist ? "47.52px" : props.testNameHeight > 22 ? "23px" : "45px")};
+  margin-top: 5px;
 `;
 
 export const Footer = styled.div`
@@ -150,23 +152,22 @@ export const AuthorName = styled.span`
   white-space: nowrap;
   color: ${cardTitleColor};
 `;
-export const AuthorWrapper = styled.span`
-  display: flex;
-`;
 
 export const LikeIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
+  margin-left: 15px;
+`;
+
+export const AuthorWrapper = styled.span`
+  display: flex;
 `;
 
 export const ShareIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
-  svg {
-    transform: rotate(180deg);
-  }
 `;
 
 export const EllipsisWrapper = styled.div`
@@ -300,7 +301,7 @@ Header.displayName = "CardHeader";
 
 const playlistStars = css`
   bottom: 12px;
-  left: 10px;
+  left: 15px;
 `;
 
 const testItemStars = css`
@@ -318,12 +319,13 @@ export const Stars = styled(Rate)`
 `;
 
 export const StyledLink = styled.a`
+  display: -webkit-box;
   font-size: 14px;
   font-weight: bold;
-  display: inline-block;
   width: 100%;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-decoration: none;
   color: ${themeColor};

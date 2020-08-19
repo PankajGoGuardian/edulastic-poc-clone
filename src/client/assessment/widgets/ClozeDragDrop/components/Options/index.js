@@ -18,6 +18,7 @@ const Options = ({
   item
 }) => (
   <WidgetOptions
+    showVariables
     outerStyle={outerStyle}
     fillSections={fillSections}
     cleanSections={cleanSections}

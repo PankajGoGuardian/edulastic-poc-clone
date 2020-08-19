@@ -1,41 +1,38 @@
-import { Button, Col, Icon, message, Row, Input } from "antd";
+import { CustomModalStyled, EduButton, FieldLabel, notification, TextInputStyled } from "@edulastic/common";
+import { Col, Icon, Input, Row } from "antd";
+import { IconPlusCircle } from "@edulastic/icons";
 import { get, upperFirst } from "lodash";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import styled from "styled-components";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
 import {
   createPerformanceBandAction,
   deletePerformanceBandAction,
   receivePerformanceBandAction,
-  setPerformanceBandLocalAction,
-  updatePerformanceBandAction,
-  setPerformanceBandNameAction,
-  setPerformanceBandChangesAction,
-  setEditingIndexAction,
+  setConflitAction,
   setEditableAction,
-  setConflitAction
+  setEditingIndexAction,
+  setPerformanceBandLocalAction,
+  setPerformanceBandNameAction,
+  updatePerformanceBandAction
 } from "../../ducks";
 import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
 import {
-  CreateProfile,
-  ModalInput,
+  ListItemStyled,
   PerformanceBandDiv,
+  RowStyled,
   SpinContainer,
   StyledContent,
   StyledLayout,
-  StyledSpin,
-  ListItemStyled,
-  RowStyled,
-  StyledProfileRow,
+  StyledList,
   StyledProfileCol,
-  StyledList
+  StyledProfileRow,
+  StyledSpin
 } from "./styled";
-import styled from "styled-components";
-import { EduButton ,notification } from "@edulastic/common";
 
 const title = "Manage District";
 const BlueBold = styled.b`
@@ -73,11 +70,11 @@ function ProfileRow({
 
   return (
     <ListItemStyled>
-      <ProfileModal
+      <CustomModalStyled
         title="Delete Profile"
         visible={confirmVisible}
         onCancel={() => setConfirmVisible(false)}
-        textAlign="left"
+        centered
         footer={[
           <EduButton
             isGhost
@@ -100,14 +97,21 @@ function ProfileRow({
           </EduButton>
         ]}
       >
-        <div className="content">
-          <p>
+        <Row className="content">
+          <Col span={24}>
             <BlueBold>{name}</BlueBold> will be removed permanently and can’t be used in future tests. This action can
             NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
-          </p>
-        </div>
-        <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
-      </ProfileModal>
+          </Col>
+          <Col span={24}>
+            <TextInputStyled
+              style={{ marginTop: "10px" }}
+              align="center"
+              value={deleteText}
+              onChange={e => setDeleteText(e.target.value)}
+            />
+          </Col>
+        </Row>
+      </CustomModalStyled>
       <StyledProfileRow onClick={e => setEditingIndex(_id)} type="flex">
         <Col span={12}>
           {active && !readOnly ? (
@@ -123,8 +127,8 @@ function ProfileRow({
               }}
             />
           ) : (
-            <h3>{name}</h3>
-          )}
+              <h3>{name}</h3>
+            )}
         </Col>
         <StyledProfileCol span={12}>
           {hideEdit ? null : (
@@ -169,7 +173,7 @@ function ProfileRow({
               ref={performanceBandInstance}
               performanceBandId={_id}
               dataSource={performanceBand}
-              createPerformanceband={() => {}}
+              createPerformanceband={() => { }}
               updatePerformanceBand={() => {
                 updateToServer(_id);
               }}
@@ -239,7 +243,7 @@ export function PerformanceBandAlt(props) {
         return;
       }
       if (profiles.find(p => (p.name || "").toLowerCase() === name.toLocaleLowerCase())) {
-        notification({ msg:`Profile with name "${name}" already exists. Please try with a different name`});
+        notification({ msg: `Profile with name "${name}" already exists. Please try with a different name` });
         return;
       }
       const initialObj = {
@@ -274,7 +278,7 @@ export function PerformanceBandAlt(props) {
       setConfirmVisible(false);
       setProfileName("");
     } else {
-      notification({ messageKey:"NameCantBeEmpty"});
+      notification({ messageKey: "NameCantBeEmpty" });
     }
   };
 
@@ -298,9 +302,10 @@ export function PerformanceBandAlt(props) {
 
   return (
     <PerformanceBandDiv>
-      <ProfileModal
+      <CustomModalStyled
         title="Delete Profile"
         visible={conflictModalVisible}
+        centered
         onCancel={() => {
           setConflictModalVisible(false);
           props.setConflitAction(false);
@@ -317,13 +322,13 @@ export function PerformanceBandAlt(props) {
           </EduButton>
         ]}
       >
-        <div className="content">
-          <p>
+        <Row className="content">
+          <Col span={24}>
             <BlueBold>{deleteProfileName}</BlueBold> is set as the default value for{" "}
             <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>. Please change the Test Setting before deleting.
-          </p>
-        </div>
-      </ProfileModal>
+          </Col>
+        </Row>
+      </CustomModalStyled>
 
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
@@ -335,28 +340,31 @@ export function PerformanceBandAlt(props) {
             </SpinContainer>
           ) : null}
           <Row type="flex" justify="end">
-            <ProfileModal
+            <CustomModalStyled
               destroyOnClose
               title="Create New Profile"
               visible={confirmVisible}
               onCancel={() => setConfirmVisible(false)}
-              bodyHeight="100px"
-              textAlign="left"
+              centered
               footer={[
-                <Button ghost onClick={() => setConfirmVisible(false)}>
+                <EduButton isGhost onClick={() => setConfirmVisible(false)}>
                   CANCEL
-                </Button>,
-                <Button disabled={profileName === ""} loading={loading} onClick={addProfile}>
+                </EduButton>,
+                <EduButton disabled={profileName === ""} loading={loading} onClick={addProfile}>
                   CREATE
-                </Button>
+                </EduButton>
               ]}
             >
-              <h4>NAME OF THE PROFILE</h4>
-              <ModalInput autoFocus value={profileName} onChange={e => setProfileName(e.target.value)} />
-            </ProfileModal>
-            <CreateProfile type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
-              <i>+</i> Create new Profile
-            </CreateProfile>
+              <Row>
+                <Col span={24}>
+                  <FieldLabel>NAME OF THE PROFILE</FieldLabel>
+                  <TextInputStyled autoFocus value={profileName} onChange={e => setProfileName(e.target.value)} />
+                </Col>
+              </Row>
+            </CustomModalStyled>
+            <EduButton type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
+              <IconPlusCircle width={19} height={19} /> Create new Profile
+            </EduButton>
           </Row>
           <StyledList
             dataSource={profiles}
@@ -379,7 +387,7 @@ export function PerformanceBandAlt(props) {
                 setName={setName}
                 conflict={conflict}
                 setDeleteProfileName={setDeleteProfileName}
-                savePerformance={({ _id: id, performanceBand, ...rest }) => {
+                savePerformance={({ _id: id, performanceBand }) => {
                   props.updateLocal({ id, data: performanceBand });
                 }}
               />
@@ -415,10 +423,10 @@ const enhance = compose(
       setName: setPerformanceBandNameAction,
       setEditingIndex: setEditingIndexAction,
       setEditable: setEditableAction,
-      setConflitAction: setConflitAction
+      setConflitAction
     }
   )
 );
 
-//export default enhance(PerformanceBand);
+// export default enhance(PerformanceBand);
 export default enhance(PerformanceBandAlt);

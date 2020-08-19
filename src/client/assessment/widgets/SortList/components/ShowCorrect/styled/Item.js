@@ -1,14 +1,14 @@
 import styled from "styled-components";
-import { FlexRow } from "./FlexRow";
+import { FlexContainer } from "@edulastic/common";
+import { greyishBorder } from "@edulastic/colors";
 
-export const Item = styled(FlexRow)`
-  display: grid;
-  grid-template-columns: 40px 97%;
+export const Item = styled(FlexContainer)`
   align-items: stretch;
   height: max-content;
   border-radius: 4px;
-  background-color: ${props => props.theme.widgets.sortList.correctAnswersItemBgColor};
   margin-right: 10px;
+  background-color: ${props => props.theme.widgets.sortList.correctAnswersItemBgColor};
   font-weight: ${props => props.theme.widgets.sortList.correctAnswersItemFontWeight};
+  border: 1px solid ${greyishBorder};
   margin-top: 14px;
 `;

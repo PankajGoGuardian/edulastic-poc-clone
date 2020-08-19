@@ -2,13 +2,14 @@ import React from "react";
 import { withRouter } from "react-router";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { googleSSOLoginAction, cleverSSOLoginAction, msoSSOLoginAction } from "../Login/ducks";
 import qs from "qs";
 import { get } from "lodash";
 
+import { googleSSOLoginAction, cleverSSOLoginAction, msoSSOLoginAction, classlinkSSOLoginAction } from "../Login/ducks";
+
 class SsoLogin extends React.Component {
   componentDidMount() {
-    const { location, googleSSOLogin, cleverSSOLogin, msoSSOLogin } = this.props;
+    const { location, googleSSOLogin, cleverSSOLogin, msoSSOLogin, classlinkSSOLogin } = this.props;
     const { addAccount, addAccountTo } = JSON.parse(sessionStorage.getItem("addAccountDetails") || "{}");
 
     const path = location.pathname.split("/");
@@ -24,7 +25,9 @@ class SsoLogin extends React.Component {
     } else if (path.includes("google")) {
       googleSSOLogin(payload);
     } else if (path.includes("clever")) {
-      cleverSSOLogin({ ...payload, state: qs.parse(location.search)["state"] });
+      cleverSSOLogin({ ...payload, state: qs.parse(location.search).state });
+    } else if (path.includes("atlas")) {
+      classlinkSSOLogin({ ...payload, state: JSON.parse(qs.parse(location.search).state) });
     }
   }
 
@@ -42,7 +45,8 @@ const enhance = compose(
     {
       googleSSOLogin: googleSSOLoginAction,
       cleverSSOLogin: cleverSSOLoginAction,
-      msoSSOLogin: msoSSOLoginAction
+      msoSSOLogin: msoSSOLoginAction,
+      classlinkSSOLogin: classlinkSSOLoginAction
     }
   )
 );

@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { white, greyThemeDark2, greyThemeLight } from "@edulastic/colors";
+import { white, greyThemeDark2, greyThemeLight, themeColor, themeColorHoverBlue } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const CustomStyleBtn = styled(Button)`
   &.ant-btn {
-    background: ${props => (props.ghost ? "transparent" : props.bg || greyThemeDark2)};
-    color: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
-    width: ${props => props.width || "220px"};
-    height: ${props => props.height || "40px"};
+    background: ${props => (props.ghost ? "transparent" : props.bg || themeColor)};
+    color: ${props => (props.ghost ? themeColor : props.color || white)};
+    width: ${props => props.width || "136px"};
+    height: ${props => props.height || "28px"};
     padding: ${props => props.padding || "0px 30px"};
     margin: ${props => props.margin || "15px 0px 0px"};
     border: ${props => (props.ghost ? `1px solid ${greyThemeDark2}` : "0px")} !important;
@@ -33,23 +33,23 @@ export const CustomStyleBtn = styled(Button)`
     }
 
     & svg {
-      stroke: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
-      fill: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
+      stroke: ${props => (props.ghost ? themeColor : props.color || white)};
+      fill: ${props => (props.ghost ? themeColor : props.color || white)};
       margin-right: 10px;
     }
 
     &:hover,
     &:focus,
     &:active {
-      background: ${props => (props.ghost ? "transparent" : props.bg || greyThemeDark2)};
-      color: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
+      background: ${props => (props.ghost ? "transparent" : props.bg || themeColorHoverBlue)};
+      color: ${props => (props.ghost ? themeColor : props.color || white)};
     }
   }
 `;
 
 export const AddAlternative = styled.div`
   width: 100%;
-  float: right;
+  /* float: right; */
   position: relative;
   z-index: 1;
 `;
@@ -61,14 +61,15 @@ export const AlternateAnswerLink = styled(Button)`
     border-radius: 0;
     padding: 0;
     box-shadow: none;
-    margin-left: auto;
-    min-height: 28px;
+    /* margin-left: auto; */
+    min-height: 34px;
     text-transform: uppercase;
     font-size: 11px;
     border: none;
     outline: none;
     font-weight: 600;
     display: flex;
+    align-items: center;
 
     &:hover,
     &:hover,

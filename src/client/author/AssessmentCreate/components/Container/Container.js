@@ -29,7 +29,7 @@ const breadcrumbStyle = {
 
 const testBreadcrumbs = [
   {
-    title: "TEST LIBRARY",
+    title: "TEST",
     to: "/author/tests"
   },
   {

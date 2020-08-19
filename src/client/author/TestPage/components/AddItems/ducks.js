@@ -43,6 +43,7 @@ export const CLEAR_SEARCH_FILTER_STATE = "[addItems] clear search filter state";
 export const UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN = "[addItems] update init search state on login";
 export const RESET_PAGE_STATE_ADD_ITEMS = "[addItems] reset page state";
 export const SHOW_ADD_PASSAGE_ITEM_MODAL = "[addItems] toggle show add passage item modal";
+export const SET_APPROVE_CONFIRMATION_OPEN = "[addItems] set approve confirmation modal open";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -62,10 +63,11 @@ export const receiveTestItemsError = error => ({
   }
 });
 
-export const receiveTestItemsAction = (search, page, limit) => ({
+export const receiveTestItemsAction = (search, sort, page, limit) => ({
   type: RECEIVE_TEST_ITEMS_REQUEST,
   payload: {
     search,
+    sort,
     page,
     limit
   }
@@ -116,6 +118,7 @@ export const updateInitSearchStateAction = payload => ({
 });
 
 export const resetPageStateAction = createAction(RESET_PAGE_STATE_ADD_ITEMS);
+export const setApproveConfirmationOpenAction = createAction(SET_APPROVE_CONFIRMATION_OPEN);
 
 // reducer
 
@@ -135,6 +138,11 @@ export const initalSearchState = {
   createdAt: ""
 };
 
+export const initialSortState = {
+  sortBy: "recency",
+  sortDir: "desc"
+};
+
 const initialState = {
   items: [],
   error: null,
@@ -149,7 +157,9 @@ const initialState = {
   },
   search: { ...initalSearchState },
   archivedItems: [],
-  needToSetFilter: true
+  needToSetFilter: true,
+  showApproveConfirmation: false,
+  sort: { ...initialSortState }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -200,13 +210,15 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_SEARCH_FILTER_STATE:
       return {
         ...state,
-        search: { ...payload },
+        search: { ...payload.search },
+        sort: { ...payload.sort },
         needToSetFilter: true
       };
     case CLEAR_SEARCH_FILTER_STATE:
       return {
         ...state,
         search: { ...initalSearchState },
+        sort: { ...initialSortState },
         ...(payload || {})
       };
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
@@ -280,6 +292,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           return item;
         })
       };
+    case SET_APPROVE_CONFIRMATION_OPEN:
+      return {
+        ...state,
+        showApproveConfirmation: payload
+      };
     default:
       return state;
   }
@@ -287,7 +304,7 @@ export const reducer = (state = initialState, { type, payload }) => {
 
 // saga
 
-function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
+function* receiveTestItemsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
   try {
     const currentLocation = yield select(state => state.router.location.pathname);
     yield put(push(`${currentLocation}?page=${page}`));
@@ -306,6 +323,7 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     const searchTags = tags.map(tag => allTagsKeyById[tag]?.tagName || "");
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
+      sort,
       page,
       limit
     });
@@ -392,4 +410,14 @@ export const getPassageConfirmModalStateSelector = createSelector(
 export const getSearchFilterStateSelector = createSelector(
   stateTestItemsSelector,
   state => state.search
+);
+
+export const getShowApproveConfirmationSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.showApproveConfirmation
+);
+
+export const getSortFilterStateSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.sort
 );

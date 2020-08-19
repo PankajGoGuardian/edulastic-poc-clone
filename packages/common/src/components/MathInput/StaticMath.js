@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 import { Popover } from "antd";
-import { white } from "@edulastic/colors";
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
 import AppConfig from "../../../../../app-config";
@@ -19,7 +18,7 @@ const StaticMath = ({
   restrictKeys,
   customKeys,
   alwaysShowKeyboard,
-  isPrintPreview
+  noBorder
 }) => {
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
@@ -32,7 +31,7 @@ const StaticMath = ({
     if (
       e.target.nodeName === "svg" ||
       e.target.nodeName === "path" ||
-      (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option")
+      (e.target.nodeName === "LI" && e.target.attributes[0]?.nodeValue === "option")
     ) {
       return;
     }
@@ -45,6 +44,8 @@ const StaticMath = ({
     if (!mathField || !mathField.innerFields || !mathField.innerFields.length) {
       return;
     }
+
+    if (!window.MathQuill) return;
     const MQ = window.MathQuill.getInterface(2);
 
     const goTo = fieldIndex => {
@@ -168,6 +169,7 @@ const StaticMath = ({
   });
 
   useEffect(() => {
+    if (!window.MathQuill) return;
     const MQ = window.MathQuill.getInterface(2);
     if (mathFieldRef.current) {
       try {
@@ -207,15 +209,8 @@ const StaticMath = ({
     />
   );
 
-  const mathInputFieldStyle = {
-    minWidth: style.width,
-    minHeight: style.height,
-    fontSize: style.fontSize ? style.fontSize : "inherit",
-    background: isPrintPreview ? white : style.background
-  };
-
   return (
-    <MathInputStyles minWidth={style.minWidth} ref={containerRef}>
+    <MathInputStyles noBorder={noBorder} noPadding ref={containerRef} minWidth={style.width} minHeight={style.height}>
       <Popover
         content={keypad}
         trigger="click"
@@ -225,7 +220,7 @@ const StaticMath = ({
         getPopupContainer={trigger => trigger.parentNode}
       >
         <div className="input" onBlur={onBlurInput}>
-          <div className="input__math" style={mathInputFieldStyle} data-cy="answer-math-input-style">
+          <div className="input__math" data-cy="answer-math-input-style">
             <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
           </div>
           {alwaysShowKeyboard && <div className="input__keyboard">{keypad}</div>}

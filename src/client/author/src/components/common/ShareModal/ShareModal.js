@@ -2,7 +2,7 @@ import { backgroundGrey2, fadedGrey, greenDark, themeColor, whiteSmoke, mobileWi
 import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconClose, IconShare } from "@edulastic/icons";
-import { Col, Row, Select, Spin, Typography, Modal } from "antd";
+import { Col, Row, Select, Spin, Typography, Modal, AutoComplete } from "antd";
 import { debounce, get as _get, isUndefined } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
@@ -53,6 +53,8 @@ const sharedKeysObj = {
 
 const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
 const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL"];
+
+const { Option } = AutoComplete;
 class ShareModal extends React.Component {
   constructor(props) {
     super(props);
@@ -69,7 +71,8 @@ class ShareModal extends React.Component {
       ? props.features.editPermissionOnTestSharing
       : props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)
         ? permissionKeys
-        : [permissionKeys[1]]
+        : [permissionKeys[1]],
+      showWarning: false
     };
     this.handleSearch = this.handleSearch.bind(this);
   }
@@ -105,7 +108,7 @@ class ShareModal extends React.Component {
     const testId = match.params.id;
     const isDA = userRole === roleuser.DISTRICT_ADMIN;
     if (isDA) {
-      this.setState({ sharedType: sharedKeysObj.DISTRICT, permission: "VIEW" });
+      this.setState({ permission: "VIEW" });
     }
     if (testId && testId !== "undefined")
       getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
@@ -135,7 +138,11 @@ class ShareModal extends React.Component {
 
   permissionHandler = value => {
     const { currentUser } = this.state;
-    this.setState({ permission: value, currentUser: { ...currentUser, permission: value } });
+    if (!Object.keys(currentUser).length) {
+      this.setState({ permission: value });
+    } else {
+      this.setState({ permission: value, currentUser: { ...currentUser, permission: value } });
+    }
   };
 
   searchUser = debounce(value => {
@@ -155,9 +162,9 @@ class ShareModal extends React.Component {
 
   handleSearch(value) {
     const { updateShareList } = this.props;
-    if (value.length) this.setState({ searchString: value, currentUser: {} });
-
+    this.setState({ searchString: value, currentUser: {} });
     if (value.length > 1) {
+      this.setState({ showWarning: false });
       this.searchUser(value);
     } else {
       updateShareList({ data: [] });
@@ -174,7 +181,8 @@ class ShareModal extends React.Component {
       permission
     };
     this.setState({
-      currentUser: newState
+      currentUser: newState,
+      searchString: value
     });
   };
 
@@ -212,15 +220,18 @@ class ShareModal extends React.Component {
       contentType: isPlaylist ? "PLAYLIST" : "TEST"
     };
     shareTest({ data, contentId: testId });
-    this.setState({
-      currentUser: {},
-      searchString: ""
-    });
+    // do it in a slight delay so that at the moment of blur it should not show warning
+    setTimeout(() => {
+      this.setState({
+        currentUser: {},
+        searchString: ""
+      });
+    }, 0);
   };
 
   getUserName(data) {
     const {
-      userOrgData: { districts }
+      userOrgData: { districts = [{}] }
     } = this.props;
     // share modal is not for student so we can get
     const [{ districtName = "" }] = districts;
@@ -244,7 +255,7 @@ class ShareModal extends React.Component {
   };
 
   render() {
-    const { sharedType, permission, _permissionKeys, currentUser } = this.state;
+    const { sharedType, permission, _permissionKeys, searchString, showWarning } = this.state;
     const {
       shareLabel,
       isVisible,
@@ -271,10 +282,6 @@ class ShareModal extends React.Component {
     } else {
       sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests/tab/review/id"}/${testId}`;
     }
-
-    const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
-      currentUser.email ? currentUser.email : ""
-    }`;
     const { districts = [{}], schools } = userOrgData;
     // share modal is not for student so we can get
     const [{ districtName = "" }] = districts;
@@ -348,32 +355,40 @@ class ShareModal extends React.Component {
                 ))}
               </RadioGrp>
             </RadioBtnWrapper>
-            <FlexContainer style={{ marginTop: 5 }} justifyContent="flex-start">
+            <FlexContainer style={{ marginTop: 5, position: "relative" }} justifyContent="flex-start">
               {sharedType === sharedKeysObj.INDIVIDUAL ? (
-                <IndividualSelectInputStyled
-                  showSearch
-                  placeholder="Enter names or email addresses"
-                  data-cy="name-button-pop"
-                  defaultActiveFirstOption={false}
-                  showArrow={false}
-                  filterOption={false}
-                  onSearch={this.handleSearch}
-                  onChange={this.handleChange}
-                  disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
-                  notFoundContent={fetching ? <Spin size="small" /> : null}
-                  value={userSelectedLabel}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {filteredUserList.map(item => (
-                    <Select.Option
-                      value={`${getFullNameFromAsString(item._source)}${"||"}${item._source.email}${"||"}${item._id}`}
-                      key={item._id}
-                    >
-                      {item._source.firstName} {item._source.lastName ? `${item._source.lastName} ` : ""}
-                      {`(${item._source.email})`}
-                    </Select.Option>
-                  ))}
-                </IndividualSelectInputStyled>
+                <>
+                  <AutoCompleteStyled
+                    style={{ width: "100%" }}
+                    onSearch={this.handleSearch}
+                    onSelect={this.handleChange}
+                    onBlur={() => {
+                      if (searchString.length < 2) {
+                        this.setState({ showWarning: true });
+                      }
+                    }}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    placeholder="Enter names or email addresses"
+                    data-cy="name-button-pop"
+                    disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
+                    notFoundContent={fetching ? <Spin size="small" /> : null}
+                    value={searchString}
+                    warning={showWarning}
+                  >
+                    {filteredUserList.map(item => (
+                      <Option
+                        value={`${getFullNameFromAsString(item._source)}${"||"}${item._source.email}${"||"}${item._id}`}
+                        key={item._id}
+                      >
+                        {`${item._source.firstName} ${item._source.lastName}`}
+                        {`(${item._source.email})`}
+                      </Option>
+                    ))}
+                  </AutoCompleteStyled>
+                  <p style={{ position: "absolute", left: 0, top: 45, color: "#f5222d" }}>
+                    {showWarning && "Please provide valid Username or Email id"}
+                  </p>
+                </>
               ) : (
                 <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
               )}
@@ -526,7 +541,7 @@ const PeopleBlock = styled.div`
 const DoneButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 30px;
 `;
 
 const IndividualSelectInputStyled = styled(SelectInputStyled)`
@@ -539,6 +554,32 @@ const IndividualSelectInputStyled = styled(SelectInputStyled)`
       margin-top: 5px;
       margin-right: 0px !important;
     }
+  }
+`;
+
+const AutoCompleteStyled = styled(AutoComplete)`
+  &.ant-select {
+    &:nth-child(1) {
+      margin-right: 10px;
+    }
+    @media (max-width: ${mobileWidthMax}) {
+      width: 100%;
+      margin-top: 5px;
+      margin-right: 0px !important;
+    }
+  }
+  &.ant-select-auto-complete.ant-select .ant-input {
+    height: 40px;
+    border: 1px solid #b9b9b9;
+    color: rgb(106, 115, 127);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.38;
+    ${props => {
+      if (props.warning) {
+        return "border: 1px solid #f5222d";
+      }
+    }}
   }
 `;
 

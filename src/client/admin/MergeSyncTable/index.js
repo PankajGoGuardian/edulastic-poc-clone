@@ -16,18 +16,18 @@ import {
   enableDisableSyncAction,
   getSubStandardMapping,
   fetchCurriculumDataAction,
-  updateCleverSubjectAction,
+  updateSubjectAction,
   updateEdulasticSubjectAction,
   updateEdulasticStandardAction,
   addSubjectStandardRowAction,
-  uploadCSVtoCleverAction,
+  uploadCSVAction,
   updateSubjectStdMapAction,
   fetchLogsDataAction,
   closeMergeResponseAction,
   deleteSubjectStdMapAction
 } from "./ducks";
 
-import MergeCleverIdsTable from "./MergeCleverIdsTable";
+import MergeIdsTable from "./MergeIdsTable";
 
 const Tabs = styled(AntdTabs)`
   padding: 15px;
@@ -65,22 +65,40 @@ const DistrictSpan = styled.span`
   font-size: 20px;
 `;
 
+const SyncMessage = styled.span`
+  margin-right: 10px;
+  align-self: center;
+`;
+
 const {TabPane} = Tabs;
-const SyncEnableDisable = ({ districtName, districtId, enableDisableSyncAction }) => (
+const SyncEnableDisable = ({
+  districtName,
+  districtId,
+  enableDisableSyncAction,
+  syncEnabled,
+  cleverId,
+  atlasId,
+  isClasslink
+}) => (
   <DistrictNameDiv justifyContentSpaceBetween>
     <DistrictSpan>{districtName}</DistrictSpan>
     <FlexDiv>
+      <SyncMessage>{`${isClasslink ? 'Classlink' : 'Clever'} Sync is ${syncEnabled ? 'enabled' : 'disabled'}.`}</SyncMessage>
       {SyncTypes.map(item => (
         <Button
           style={item.style}
           key={item.label}
+          disabled={syncEnabled === item.value}
           onClick={() =>
-              enableDisableSyncAction({
-                syncEnabled: item.value,
-                districtId,
-                districtName
-              })
-            }
+            enableDisableSyncAction({
+              syncEnabled: item.value,
+              districtId,
+              districtName,
+              cleverId,
+              atlasId,
+              isClasslink
+            })
+          }
         >
           {item.label}
         </Button>
@@ -89,13 +107,14 @@ const SyncEnableDisable = ({ districtName, districtId, enableDisableSyncAction }
   </DistrictNameDiv>
   );
 const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
-  ({ form: { getFieldDecorator, validateFields }, searchExistingDataApi }) => {
+  ({ form: { getFieldDecorator, validateFields }, searchExistingDataApi, isClasslink }) => {
     function searchExistingData(evt) {
       evt.preventDefault();
       validateFields((err, values) => {
         if (!err) {
           searchExistingDataApi({
-            ...values
+            ...values,
+            isClasslink
           });
         }
       });
@@ -103,7 +122,7 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
     return (
       <Form layout="inline" onSubmit={searchExistingData}>
         <Form.Item>
-          {getFieldDecorator("cleverDistrict", {
+          {getFieldDecorator("districtId", {
             rules: [
               {
                 message: "Please enter valid District ID",
@@ -113,8 +132,15 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
             initialValue: ""
           })(<Input placeholder="District Id" style={{ width: 300 }} />)}
         </Form.Item>
-        <Form.Item>
-          {getFieldDecorator("cleverId", {
+        {isClasslink ? (
+          <Form.Item>
+            {getFieldDecorator("atlasId", {
+             initialValue: ""
+            })(<Input placeholder="Classlink Id" style={{ width: 300 }} />)}
+          </Form.Item>
+        ) : (
+          <Form.Item>
+            {getFieldDecorator("cleverId", {
             rules: [
               {
                 message: "Please enter valid Clever ID",
@@ -123,7 +149,8 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
             ],
             initialValue: ""
           })(<Input placeholder="Clever Id" style={{ width: 300 }} />)}
-        </Form.Item>
+          </Form.Item>
+        )}
         <Form.Item>
           <Button icon="search" htmlType="submit">
             Search
@@ -143,56 +170,79 @@ function MergeSyncTable({
   enableDisableSyncAction,
   subStandardMapping,
   fetchCurriculumDataAction,
-  updateCleverSubjectAction,
+  updateSubjectAction,
   updateEdulasticSubjectAction,
   updateEdulasticStandardAction,
   addSubjectStandardRowAction,
-  uploadCSVtoClever,
+  uploadCSV,
   updateSubjectStdMapAction,
   fetchLogsDataAction,
   mergeResponse,
   closeMergeResponse,
-  deleteSubjectStdMapAction
+  deleteSubjectStdMapAction,
+  isClasslink
 }) {
   const { data = {} } = searchData;
 
   const {
     schools,
-    district: { name: districtName, _id: districtId, cleverId, syncEnabled = false } = {},
+    district: { name: districtName, _id: districtId, cleverId, syncEnabled = false, atlasId } = {},
     cleverCountsInfo = {},
-    edulasticCountsInfo = {}
+    edulasticCountsInfo = {},
+    atlasCountsInfo = {}
   } = data;
 
   const defaultRosterSyncConfig = {
     orgId: districtId,
     orgType: "district",
     studentMergeAttribute: "email",
-    teacherMergeAttribute: "email"
+    teacherMergeAttribute: "email",
+    studentDeltaMergeEnabled: true,
+    studentFullMergeEnabled: true,
+    teacherDeltaMergeEnabled: true,
+    teacherFullMergeEnabled: true
   };
 
   const rosterSyncConfig = data.rosterSyncConfig || defaultRosterSyncConfig;
+
+  const applyDeltaSync = (values) => {
+    if (isClasslink) {
+      applyDeltaSyncChanges({ ...values, isClasslink, atlasId});
+    } else {
+      applyDeltaSyncChanges(values);
+    }
+  }
 
   return (
     <OuterDiv>
       <H2>Merge and Initialize Sync</H2>
       <FirstDiv>
-        <MergeInitializeSyncForm searchExistingDataApi={searchExistingDataApi} />
+        <MergeInitializeSyncForm
+          searchExistingDataApi={searchExistingDataApi}
+          isClasslink={isClasslink}
+        />
       </FirstDiv>
       {searchData.data && (
         <>
           <SyncEnableDisable
             districtName={districtName}
             districtId={districtId}
+            syncEnabled={syncEnabled}
+            cleverId={cleverId}
+            atlasId={atlasId}
+            isClasslink={isClasslink}
             enableDisableSyncAction={enableDisableSyncAction}
           />
-          <Tabs type="card" defaultActiveKey="mergeCleverIds" animated>
-            <TabPane tab="Merge Clever Ids" key="mergeCleverIds">
-              <MergeCleverIdsTable
-                clvrCounts={cleverCountsInfo}
+          <Tabs type="card" defaultActiveKey="mergeIds" animated>
+            <TabPane tab={`Merge ${isClasslink ? 'Classlink' : 'Clever'} Ids`} key="mergeIds">
+              <MergeIdsTable
+                countsInfo={isClasslink ? atlasCountsInfo : cleverCountsInfo}
                 eduCounts={edulasticCountsInfo}
-                uploadCSVtoClever={uploadCSVtoClever}
+                uploadCSV={uploadCSV}
                 districtId={districtId}
                 cleverId={cleverId}
+                atlasId={atlasId}
+                isClasslink={isClasslink}
                 mergeResponse={mergeResponse}
                 closeMergeResponse={closeMergeResponse}
                 disableFields={syncEnabled}
@@ -201,7 +251,7 @@ function MergeSyncTable({
             <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
               <DeltaSync
                 rosterSyncConfig={rosterSyncConfig}
-                applyDeltaSyncChanges={applyDeltaSyncChanges}
+                applyDeltaSyncChanges={applyDeltaSync}
                 disableFields={syncEnabled}
               />
             </TabPane>
@@ -211,13 +261,14 @@ function MergeSyncTable({
                 orgType="district"
                 subStandardMapping={subStandardMapping}
                 fetchCurriculumDataAction={fetchCurriculumDataAction}
-                updateCleverSubjectAction={updateCleverSubjectAction}
+                updateSubjectAction={updateSubjectAction}
                 updateEdulasticSubjectAction={updateEdulasticSubjectAction}
                 updateEdulasticStandardAction={updateEdulasticStandardAction}
                 addSubjectStandardRowAction={addSubjectStandardRowAction}
                 updateSubjectStdMapAction={updateSubjectStdMapAction}
                 deleteSubjectStdMapAction={deleteSubjectStdMapAction}
                 disableFields={syncEnabled}
+                isClasslink={isClasslink}
               />
             </TabPane>
             <TabPane tab="Class Name Pattern" key="classNamePattern">
@@ -227,13 +278,26 @@ function MergeSyncTable({
                 applyClassNamesSync={applyClassNamesSync}
                 classNamePattern={rosterSyncConfig.classNamePattern}
                 disableFields={syncEnabled}
+                isClasslink={isClasslink}
               />
             </TabPane>
             <TabPane tab="Sync" key="sync">
-              <Sync schools={schools} cleverId={cleverId} syncSchools={syncSchools} />
+              <Sync
+                schools={schools}
+                cleverId={cleverId}
+                isClasslink={isClasslink}
+                atlasId={atlasId}
+                syncSchools={syncSchools}
+              />
             </TabPane>
             <TabPane tab="Logs" key="logs">
-              <Logs logs={subStandardMapping.logs} fetchLogsDataAction={fetchLogsDataAction} districtId={districtId} />
+              <Logs
+                logs={subStandardMapping.logs}
+                loading={subStandardMapping.logsLoading}
+                fetchLogsDataAction={fetchLogsDataAction}
+                districtId={districtId}
+                isClasslink={isClasslink}
+              />
             </TabPane>
           </Tabs>
         </>
@@ -257,11 +321,11 @@ const withConnect = connect(
     applyClassNamesSync,
     enableDisableSyncAction,
     fetchCurriculumDataAction,
-    updateCleverSubjectAction,
+    updateSubjectAction,
     updateEdulasticSubjectAction,
     updateEdulasticStandardAction,
     addSubjectStandardRowAction,
-    uploadCSVtoClever: uploadCSVtoCleverAction,
+    uploadCSV: uploadCSVAction,
     updateSubjectStdMapAction,
     fetchLogsDataAction,
     closeMergeResponse: closeMergeResponseAction,

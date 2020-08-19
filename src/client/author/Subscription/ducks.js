@@ -1,4 +1,5 @@
 import { message } from "antd";
+import moment from "moment";
 import { notification } from "@edulastic/common";
 import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, all } from "redux-saga/effects";
@@ -88,7 +89,14 @@ function* handleStripePayment({ payload }) {
       const apiPaymentResponse = yield call(paymentApi.pay, { token });
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse));
-        notification({ type: "success", msg: "Payment Successful", key: "handle-payment" });
+        const { subEndDate } = apiPaymentResponse.subscription;
+        notification({
+          type: "success",
+          msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
+            subEndDate
+          ).format("DD MMM, YYYY")}`,
+          key: "handle-payment"
+        });
         yield put(fetchUserAction({ background: true }));
       } else {
         notification({ msg: `API Response failed: ${error}`, Key: "handle-payment" });

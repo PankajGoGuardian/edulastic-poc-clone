@@ -10,6 +10,7 @@ import { getCurrentQuestionSelector } from "../../../../author/sharedDucks/quest
 
 export default WrappedComponent => {
   const hocComponent = ({ points, onChangePoints, t, title, width = "", placement = {}, ...props }) => {
+    const { item = {}, isCorrectAnsTab = false } = props;
     const itemLevelScoring = useContext(ItemLevelContext);
     return (
       <React.Fragment>
@@ -21,14 +22,15 @@ export default WrappedComponent => {
               id={getFormattedAttrId(`${title}-${t("component.correctanswers.points")}`)}
               data-cy="points"
               value={points}
-              onChange={e => {
-                if (e.target.value > 0) {
-                  onChangePoints(+e.target.value);
+              onChange={score => {
+                if (score > 0) {
+                  onChangePoints(+score);
                 }
               }}
               width={width}
               step={0.5}
               size="large"
+              max={!isCorrectAnsTab ? item?.validation?.validResponse?.score : Number.MAX_SAFE_INTEGER}
               min={0.5}
             />
           </CorrectAnswerHeader>
@@ -41,7 +43,8 @@ export default WrappedComponent => {
   hocComponent.propTypes = {
     points: PropTypes.number.isRequired,
     onChangePoints: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired
+    t: PropTypes.func.isRequired,
+    item: PropTypes.func.isRequired
   };
 
   const enhance = compose(

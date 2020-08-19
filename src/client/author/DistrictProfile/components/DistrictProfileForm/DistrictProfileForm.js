@@ -1,3 +1,4 @@
+import { roleuser } from "@edulastic/constants";
 import { Col, Form, Icon, Popover } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
@@ -5,14 +6,13 @@ import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { roleuser } from "@edulastic/constants";
-import { getUserOrgId, getUserRole, getSaSchoolsSortedSelector } from "../../../src/selectors/user";
+import { getSaSchoolsSortedSelector, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import {
   createDistrictProfileAction,
   receiveDistrictProfileAction,
+  receiveSchoolProfileAction,
   setDistrictValueAction,
-  updateDistrictProfileAction,
-  receiveSchoolProfileAction
+  updateDistrictProfileAction
 } from "../../ducks";
 import { ProfileImgWrapper, RightContainer } from "../Container/styled";
 import EditableLabel from "../EditableLabel/EditableLabel";
@@ -89,7 +89,7 @@ class DistrictProfileForm extends React.Component {
   };
 
   updateImgSrc = (imgSrc, keyName) => {
-    let districtProfile = { ...this.state.districtProfile };
+    const districtProfile = { ...this.state.districtProfile };
     if (keyName === "pageBackground") {
       districtProfile.pageBackground = imgSrc;
     } else if (keyName === "logo") {
@@ -99,15 +99,17 @@ class DistrictProfileForm extends React.Component {
   };
 
   updateProfileName = newName => {
-    let districtProfile = { ...this.state.districtProfile };
+    const districtProfile = { ...this.state.districtProfile };
     districtProfile.name = newName;
     this.setState({ editing: false, districtProfile });
   };
 
   updateProfileValue = (valueName, value) => {
-    let districtProfile = { ...this.state.districtProfile };
+    const districtProfile = { ...this.state.districtProfile };
 
-    if (valueName === "District Short Name" || valueName === "School Short Name") {
+    if (valueName === "District Name") {
+      districtProfile.name = value;
+    } else if (valueName === "District Short Name" || valueName === "School Short Name") {
       districtProfile.shortName = value;
       this.setState({ districtUrl: `${window.location.origin}/district/${value}` });
     } else if (valueName === "City") {
@@ -139,7 +141,7 @@ class DistrictProfileForm extends React.Component {
     const { popoverVisible } = this.state;
     const districtUrl = `${window.location.origin}/${role === roleuser.DISTRICT_ADMIN ? "district" : "school"}/${
       districtProfile?.shortName
-    }`;
+      }`;
 
     const isDA = role === roleuser.DISTRICT_ADMIN;
     const popoverContent = (
@@ -177,7 +179,26 @@ class DistrictProfileForm extends React.Component {
             <StyledDivMain>
               <HeaderRow type="flex" align="middle" justify="space-between">
                 <Col span={12}>
-                  <h3>{isDA ? districtProfile.name : schools.find(item => item._id === schoolId)?.name || ""}</h3>
+                  {isInputEnabled ? (
+                    <div className="hide-label">
+                      <EditableLabel
+                        value={isDA ? districtProfile.name : schools.find(item => item._id === schoolId)?.name || ""}
+                        valueName="District Name"
+                        maxLength={255}
+                        setProfileValue={this.updateProfileValue}
+                        updateEditing={this.setEditing}
+                        type="text"
+                        ref={this.childRefArr[1].component}
+                        isSpaceEnable={false}
+                        form={this.props.form}
+                        isInputEnabled={isInputEnabled}
+                      />
+                    </div>
+                  ) : (
+                      <h3>{isDA ? districtProfile.name : schools.find(item => item._id === schoolId)?.name || ""}</h3>
+                    )}
+
+
                 </Col>
                 <Col span={12} style={{ textAlign: "right" }}>
                   {this.props.districtProfile?.shortName && (
@@ -236,7 +257,7 @@ class DistrictProfileForm extends React.Component {
                     updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[2].component}
-                    isSpaceEnable={true}
+                    isSpaceEnable
                     form={this.props.form}
                     isInputEnabled={isInputEnabled}
                   />
@@ -249,7 +270,7 @@ class DistrictProfileForm extends React.Component {
                     updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[3].component}
-                    isSpaceEnable={true}
+                    isSpaceEnable
                     isInputEnabled={isInputEnabled}
                     form={this.props.form}
                   />
@@ -262,7 +283,7 @@ class DistrictProfileForm extends React.Component {
                     updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[4].component}
-                    isSpaceEnable={true}
+                    isSpaceEnable
                     isInputEnabled={isInputEnabled}
                     form={this.props.form}
                   />
@@ -278,7 +299,7 @@ class DistrictProfileForm extends React.Component {
                     updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[5].component}
-                    isSpaceEnable={true}
+                    isSpaceEnable
                     form={this.props.form}
                     isInputEnabled={isInputEnabled}
                   />

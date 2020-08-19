@@ -95,3 +95,8 @@ export const SecondHeader = styled.div`
     flex-direction: column;
   }
 `;
+
+export const TestTitle = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+`;

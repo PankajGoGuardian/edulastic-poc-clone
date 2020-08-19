@@ -12,6 +12,8 @@ import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar"
 import { AnalyticsItem, MetaTitle } from "../../../../Summary/components/Sidebar/styled";
 import { MetaTag, DokStyled } from "./styled";
 import { toggleTestLikeAction } from "../../../../../ducks";
+import TestStatusWrapper from "../../../../../../TestList/components/TestStatusWrapper/testStatusWrapper";
+import { TestStatus } from "../../../../../../TestList/components/ListItem/styled";
 
 const MetaInfo = ({
   data: { item, type, by, id, audio = {}, isPremium = false, dok, tags, analytics },
@@ -35,7 +37,7 @@ const MetaInfo = ({
         {item && item.data && <Standards item={item} search={{ curriculumId: "" }} reviewpage />}
         <Tags tags={tags} show={1} />
         {type && (
-          <FlexContainer>
+          <FlexContainer style={{ alignItems: "center" }}>
             {type.map(t => (
               <MetaTag key={t} marginLeft="0px">
                 {t}
@@ -45,6 +47,9 @@ const MetaInfo = ({
           </FlexContainer>
         )}
         <CollectionTag collectionName={item?.collectionName} />
+        <TestStatusWrapper status={item.status}>
+          {({ children, ...rest }) => <TestStatus {...rest}>{children}</TestStatus>}
+        </TestStatusWrapper>
       </FlexContainer>
       <FlexContainer justifyContent="flex-end">
         {dok && <DokStyled>{`DOK:${dok}`}</DokStyled>}

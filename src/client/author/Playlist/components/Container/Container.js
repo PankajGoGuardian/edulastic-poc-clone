@@ -10,9 +10,8 @@ import * as qs from "query-string";
 import React, { Component } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import Modal from "react-responsive-modal";
 import { compose } from "redux";
-import { libraryFilters } from "@edulastic/constants";
+import { libraryFilters, sortOptions } from "@edulastic/constants";
 import { withNamespaces } from "react-i18next";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import {
@@ -44,7 +43,8 @@ import {
   ScrollbarWrapper,
   ScrollBox,
   SearchModalContainer,
-  StyleChangeWrapper
+  StyleChangeWrapper,
+  MobileFilterModal
 } from "../../../TestList/components/Container/styled";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
 import { getAllTagsAction, getTestsCreatingSelector } from "../../../TestPage/ducks";
@@ -64,13 +64,18 @@ import {
   updateAllPlaylistSearchFilterAction,
   filterMenuItems,
   getSelectedPlaylistSelector,
-  checkPlayListAction
+  checkPlayListAction,
+  getSortFilterStateSelector,
+  initialSortState
 } from "../../ducks";
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
+import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
+import SortMenu from "../../../ItemList/components/SortMenu";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 
 function getUrlFilter(filter) {
   if (filter === "AUTHORED_BY_ME") {
@@ -113,7 +118,8 @@ class TestList extends Component {
   state = {
     standardQuery: "",
     blockStyle: "tile",
-    isShowFilter: false
+    isShowFilter: false,
+    openSidebar: false
   };
 
   getUrlToPush(page = undefined) {
@@ -143,56 +149,68 @@ class TestList extends Component {
       playListFilters,
       history,
       interestedSubjects,
-      interestedGrades
+      interestedGrades,
+      sort: initSort = {}
     } = this.props;
     const { subject = interestedSubjects || [], grades = interestedGrades || [] } = getDefaultInterests();
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[playList]")) || {};
+    const sessionSortFilters = JSON.parse(sessionStorage.getItem("sort[playList]")) || {};
     const searchFilters = {
       ...playListFilters,
       ...sessionFilters,
       grades,
       subject
     };
+
+    const sort = {
+      ...initSort,
+      sortBy: "recency",
+      sortDir: "desc",
+      ...sessionSortFilters
+    };
+
     let searchParams = qs.parse(location.search);
     searchParams = this.typeCheck(searchParams, searchFilters);
 
     if (Object.keys(searchParams).length) {
       Object.assign(searchFilters, pick(searchParams, Object.keys(playListFilters)));
     }
-    this.updateFilterState(searchFilters);
+    this.updateFilterState(searchFilters, sort);
 
     const pageFinal = parseInt(params?.page, 10) || 1;
     const urlToPush = this.getUrlToPush(pageFinal);
     history.push(urlToPush);
 
     receivePublishers();
-    receivePlaylists({ page: pageFinal, limit, search: searchFilters });
+    receivePlaylists({ page: pageFinal, limit, search: searchFilters, sort });
     getAllTags({ type: "playlist" });
     receiveRecentPlayLists();
   }
 
-  updateFilterState = searchState => {
+  updateFilterState = (searchState, sort) => {
     const { updateAllPlaylistSearchFilter } = this.props;
     sessionStorage.setItem("filters[playList]", JSON.stringify(searchState));
-    updateAllPlaylistSearchFilter(searchState);
+    sessionStorage.setItem("sort[playList]", JSON.stringify(sort));
+    updateAllPlaylistSearchFilter({ search: searchState, sort });
   };
 
   searchTest = debounce(searchState => {
-    const { receivePlaylists, limit, playListFilters } = this.props;
+    const { receivePlaylists, limit, playListFilters, sort } = this.props;
     receivePlaylists({
       page: 1,
       limit,
-      search: searchState || playListFilters
+      search: searchState || playListFilters,
+      sort
     });
   }, 500);
 
   handleSearchInputChange = tags => {
-    const { playListFilters } = this.props;
+    const { playListFilters, sort } = this.props;
     const newSearch = {
       ...playListFilters,
       searchString: tags
     };
-    this.updateFilterState(newSearch);
+    this.updateFilterState(newSearch, sort);
     this.searchTest(newSearch);
   };
 
@@ -204,7 +222,8 @@ class TestList extends Component {
       page,
       updateDefaultGrades,
       updateDefaultSubject,
-      playListFilters
+      playListFilters,
+      sort
     } = this.props;
     let updatedKeys = {};
 
@@ -229,8 +248,8 @@ class TestList extends Component {
         [name]: value ? moment(dateString, "DD/MM/YYYY").valueOf() : ""
       };
     }
-    this.updateFilterState(updatedKeys);
-    receivePlaylists({ search: updatedKeys, page: 1, limit });
+    this.updateFilterState(updatedKeys, sort);
+    receivePlaylists({ search: updatedKeys, sort, page: 1, limit });
     history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
   };
 
@@ -242,9 +261,9 @@ class TestList extends Component {
   };
 
   handlePaginationChange = page => {
-    const { receivePlaylists, limit, history, playListFilters } = this.props;
+    const { receivePlaylists, limit, history, playListFilters, sort } = this.props;
 
-    receivePlaylists({ page, limit, search: playListFilters });
+    receivePlaylists({ page, limit, search: playListFilters, sort });
     const urlToPush = this.getUrlToPush(page);
     history.push(urlToPush);
   };
@@ -264,12 +283,12 @@ class TestList extends Component {
   };
 
   resetFilter = () => {
-    const { receivePlaylists, limit, history, playListFilters } = this.props;
+    const { receivePlaylists, limit, history, playListFilters, sort } = this.props;
     // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(playListFilters, emptyFilters)) return null;
+    if (isEqual(playListFilters, emptyFilters) && isEqual(sort, initialSortState)) return null;
 
-    this.updateFilterState(emptyFilters);
-    receivePlaylists({ page: 1, limit, search: emptyFilters });
+    this.updateFilterState(emptyFilters, initialSortState);
+    receivePlaylists({ page: 1, limit, search: emptyFilters, sort: initialSortState });
     history.push(`/author/playlists`);
   };
 
@@ -346,7 +365,7 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receivePlaylists, limit, playListFilters } = this.props;
+    const { history, receivePlaylists, limit, playListFilters, sort } = this.props;
     let updatedSearch = { ...playListFilters };
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
@@ -355,25 +374,56 @@ class TestList extends Component {
       };
     }
     history.push(`/author/playlists/filter/${filterType}`);
-    this.updateFilterState({
-      ...updatedSearch,
-      filter
-    });
+    this.updateFilterState(
+      {
+        ...updatedSearch,
+        filter
+      },
+      sort
+    );
     receivePlaylists({
       page: 1,
       limit,
       search: {
         ...updatedSearch,
         filter
-      }
+      },
+      sort
+    });
+  };
+
+  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
+  onSelectSortOption = (value, sortDir) => {
+    const { playListFilters, limit, sort, receivePlaylists } = this.props;
+    const updateSort = {
+      ...sort,
+      sortBy: value,
+      sortDir
+    };
+    this.updateFilterState(playListFilters, updateSort);
+    receivePlaylists({
+      page: 1,
+      limit,
+      search: playListFilters,
+      sort: updateSort
+    });
+  };
+
+  toggleFilter = () => {
+    const { isShowFilter } = this.state;
+
+    this.setState({
+      isShowFilter: !isShowFilter
     });
   };
 
   render() {
-    const { page, limit, count, creating, playListFilters, t, isProxyUser } = this.props;
+    const { page, limit, count, creating, playListFilters, t, isProxyUser, sort = {} } = this.props;
 
-    const { blockStyle, isShowFilter } = this.state;
+    const { blockStyle, isShowFilter, openSidebar } = this.state;
     const { searchString } = playListFilters;
+    const renderFilterIcon = () => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
     return (
       <>
@@ -402,7 +452,9 @@ class TestList extends Component {
               />
             </StyleChangeWrapper>
           )}
+          toggleSidebar={this.toggleSidebar}
         />
+        <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
         <Container>
           <MobileFilter>
             <Input.Search
@@ -418,7 +470,7 @@ class TestList extends Component {
               </Button>
             </FilterButton>
           </MobileFilter>
-          <Modal open={isShowFilter} onClose={this.closeSearchModal}>
+          <MobileFilterModal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestListFilters
                 isPlaylist
@@ -431,40 +483,49 @@ class TestList extends Component {
                 filterMenuItems={filterMenuItems}
               />
             </SearchModalContainer>
-          </Modal>
+          </MobileFilterModal>
           <FlexContainer>
-            <Filter>
-              <AffixWrapper isProxyUser={isProxyUser}>
-                <ScrollbarWrapper>
-                  <PerfectScrollbar>
-                    <ScrollBox>
-                      <InputTag
-                        placeholder="Search by skill and keywords"
-                        onSearchInputChange={this.handleSearchInputChange}
-                        value={searchString}
-                        disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
-                      />
-                      <TestListFilters
-                        isPlaylist
-                        search={playListFilters}
-                        handleLabelSearch={this.handleLabelSearch}
-                        onChange={this.handleFiltersChange}
-                        clearFilter={this.handleClearFilter}
-                        searchFilterOption={this.searchFilterOption}
-                        handleStandardSearch={this.handleStandardSearch}
-                        filterMenuItems={filterMenuItems}
-                      />
-                    </ScrollBox>
-                  </PerfectScrollbar>
-                </ScrollbarWrapper>
-              </AffixWrapper>
+            <Filter isShowFilter={isShowFilter}>
+              {!isShowFilter && (
+                <AffixWrapper isProxyUser={isProxyUser}>
+                  <ScrollbarWrapper>
+                    <PerfectScrollbar>
+                      <ScrollBox>
+                        <InputTag
+                          placeholder="Search by skill and keywords"
+                          onSearchInputChange={this.handleSearchInputChange}
+                          value={searchString}
+                          disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
+                        />
+                        <TestListFilters
+                          isPlaylist
+                          search={playListFilters}
+                          handleLabelSearch={this.handleLabelSearch}
+                          onChange={this.handleFiltersChange}
+                          clearFilter={this.handleClearFilter}
+                          searchFilterOption={this.searchFilterOption}
+                          handleStandardSearch={this.handleStandardSearch}
+                          filterMenuItems={filterMenuItems}
+                        />
+                      </ScrollBox>
+                    </PerfectScrollbar>
+                  </ScrollbarWrapper>
+                </AffixWrapper>
+              )}
             </Filter>
-            <Main>
+            <Main isShowFilter={isShowFilter}>
+              {renderFilterIcon()}
               <ItemsMenu justifyContent="space-between">
                 <PaginationInfo>
                   <span>{count}</span> PLAYLISTS FOUND
                 </PaginationInfo>
                 <HeaderFilter search={playListFilters} handleCloseFilter={this.handleFiltersChange} type="playlist" />
+                <SortMenu
+                  options={sortOptions.playList}
+                  onSelect={this.onSelectSortOption}
+                  sortDir={sort.sortDir}
+                  sortBy={sort.sortBy}
+                />
                 {blockStyle === "horizontal" && <Actions type="PLAYLIST" />}
               </ItemsMenu>
               <PerfectScrollbar style={{ padding: "0 20px" }}>
@@ -508,7 +569,8 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       playListFilters: getPlalistFilterSelector(state),
       selectedPlayLists: getSelectedPlaylistSelector(state),
-      isProxyUser: isProxyUserSelector(state)
+      isProxyUser: isProxyUserSelector(state),
+      sort: getSortFilterStateSelector(state)
     }),
     {
       receivePlaylists: receivePlaylistsAction,

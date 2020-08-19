@@ -31,7 +31,9 @@ const DeleteAssignmentModal = ({
   handleUnassignAssignments,
   bulkUnassignAssignmentRequest,
   testType,
-  userRole
+  userRole,
+  deleteAssignmentFromPlaylist,
+  fromPlaylist = false
 }) => {
   const [confirmText, setConfirmText] = useState("");
   const handleUnassign = () => {
@@ -41,6 +43,9 @@ const DeleteAssignmentModal = ({
       }
       if (advancedAssignments) {
         return handleUnassignAssignments();
+      }
+      if (fromPlaylist) {
+        return deleteAssignmentFromPlaylist();
       }
 
       if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
@@ -62,6 +67,7 @@ const DeleteAssignmentModal = ({
       width="750px"
       title="Unassign"
       onCancel={() => toggleDeleteAssignmentModal(false)}
+      destroyOnClose
       footer={[
         <ModalFooter>
           <EduButton isGhost key="cancel" onClick={() => toggleDeleteAssignmentModal(false)}>
@@ -81,9 +87,9 @@ const DeleteAssignmentModal = ({
       <InitOptions className="delete-message-container">
         <div className="delete-message">
           <p>
-            Are you sure you want to unassign the assignment <b className="delete-message-test-name">{testName}</b>?
-            This action will result in permanent deletion of student responses from the assigned class
-            {!lcb ? " (es)." : "."}
+            This action will result in <span style={{ color: "#ed6a6b" }}> permanent deletion </span>of student
+            responses from the assigned class ,Are you sure that you want to unassign{" "}
+            <b className="delete-message-test-name">{testName}</b>?{!lcb ? " (es)." : "."}
           </p>
           <p>
             If you are sure, please type <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below and proceed.
@@ -94,6 +100,7 @@ const DeleteAssignmentModal = ({
             data-cy="confirmationInput"
             className="delete-confirm-input"
             type="text"
+            placeholder="Type the action"
             onChange={event => setConfirmText(event.currentTarget.value)}
           />
         </div>

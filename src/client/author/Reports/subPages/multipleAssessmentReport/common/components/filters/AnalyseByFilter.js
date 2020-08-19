@@ -9,7 +9,7 @@ const AnalyseByFilter = ({ onFilterChange, analyseBy }) => {
 
   return (
     <Row type="flex" justify="end" align="middle">
-      <ControlDropDown prefix="Analyse By" by={analyseBy} selectCB={onAnalyseByChange} data={analyseByData} />
+      <ControlDropDown prefix="Analyze By" by={analyseBy} selectCB={onAnalyseByChange} data={analyseByData} />
     </Row>
   );
 };

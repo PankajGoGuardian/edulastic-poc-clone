@@ -139,9 +139,9 @@ class AssessmentPlayerDocBased extends React.Component {
     } = this.props;
 
     const item = items[0];
-    const dropdownOptions = item.data.questions
-      .filter(q => q.type !== questionType.SECTION_LABEL)
-      .map((_, index) => index);
+    const dropdownOptions = item?.data?.questions
+      ?.filter(q => q.type !== questionType.SECTION_LABEL)
+      ?.map((_, index) => index);
     const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
     const questions = this.assessmentQuestions();
 

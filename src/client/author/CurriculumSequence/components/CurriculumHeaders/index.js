@@ -134,12 +134,12 @@ const CurriculumHeader = ({
   } = match;
   const currentTab = cTab || "playlist";
   const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
+  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection ?._id);
 
   const shouldHideUseThis = status === "draft";
   const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
 
-  const isPlaylistDetailsPage = window.location?.hash === "#review";
+  const isPlaylistDetailsPage = window.location ?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
 
   const switchPlaylist = (
@@ -192,7 +192,7 @@ const CurriculumHeader = ({
           {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
             !shouldHideUseThis &&
             !urlHasUseThis &&
-            destinationCurriculumSequence?._id && (
+            destinationCurriculumSequence ?._id && (
               <Tooltip placement="bottom" title="DELETE">
                 <HeaderButton
                   loading={loadingDelete}
@@ -253,10 +253,11 @@ const CurriculumHeader = ({
 
           {urlHasUseThis && isTeacher && !isPublisherUser && !customizeInDraft && (
             <>
-              <HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
+              {/* need to hide this button for now until figuring out the complete flow  */}
+              {/* {<HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
                 <IconAirdrop />
                 {isDesktop && "OPEN TO STUDENTS"}
-              </HeaderButton>
+              </HeaderButton>} */}
               <Dropdown
                 overlayStyle={{ zIndex: 999, cursor: "pointer" }}
                 overlay={mainPlaylistVerticalMenu}

@@ -190,11 +190,20 @@ function* updateAssignmetSaga({ payload }) {
 function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
     notification({ type: "success", messageKey: "sharedAssignmentInProgress" });
-    yield call(assignmentApi.syncWithGoogleClassroom, payload);
-    yield put({
-      type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS
-    });
-    notification({ type: "success", messageKey: "assignmentSharedWithGoggleCLassroom" });
+    const result = yield call(assignmentApi.syncWithGoogleClassroom, payload);
+    if (result?.[0].success) {
+      yield put({
+        type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS
+      });
+      notification({ type: "success", messageKey: "assignmentSharedWithGoggleCLassroom" });
+    } else {
+      const errorMessage =
+        result[0].message || "Assignment failed to share with google classroom. Please try after sometime.";
+      yield put({
+        type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
+      });
+      notification({ msg: errorMessage });
+    }
   } catch (error) {
     Sentry.captureException(error);
     const errorMessage =

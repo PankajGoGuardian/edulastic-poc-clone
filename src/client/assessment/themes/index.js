@@ -26,7 +26,10 @@ import { CHECK, CLEAR } from "../constants/constantsForQuestions";
 import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
 import { hideHintsAction } from "../actions/userInteractions";
 import UnansweredPopup from "./common/UnansweredPopup";
-import { regradedRealtimeAssignmentAction } from "../../student/sharedDucks/AssignmentModule/ducks";
+import {
+  regradedRealtimeAssignmentAction,
+  clearRegradeAssignmentAction
+} from "../../student/sharedDucks/AssignmentModule/ducks";
 import { userWorkSelector } from "../../student/sharedDucks/TestItem";
 
 const shouldAutoSave = itemRows => {
@@ -106,6 +109,7 @@ const AssessmentContainer = ({
   testId,
   userId,
   regradedAssignment,
+  clearRegradeAssignment,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -143,6 +147,7 @@ const AssessmentContainer = ({
 
   const onRegradedModalOk = () => {
     history.push(`/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`);
+    clearRegradeAssignment();
     setShowRegradedModal(false);
   };
   const saveCurrentAnswer = payload => {
@@ -598,7 +603,8 @@ const enhance = compose(
       gotoItem: gotoItemAction,
       updateTestPlayer: updateTestPlayerAction,
       hideHints: hideHintsAction,
-      regradedRealtimeAssignment: regradedRealtimeAssignmentAction
+      regradedRealtimeAssignment: regradedRealtimeAssignmentAction,
+      clearRegradeAssignment: clearRegradeAssignmentAction
     }
   )
 );

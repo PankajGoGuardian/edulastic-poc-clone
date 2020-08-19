@@ -55,11 +55,11 @@ export const ANNOTATION_TOOLS = [
     icon: <BoxIcon />,
     showColorPicker: true
   },
-  // {
-  //     key: "mask",
-  //     title: "White mask",
-  //     icon: <CleanIcon />
-  // },
+  {
+    key: "mask",
+    title: "White mask",
+    icon: <CleanIcon />
+  },
   {
     key: "highlight",
     title: "Highlight",

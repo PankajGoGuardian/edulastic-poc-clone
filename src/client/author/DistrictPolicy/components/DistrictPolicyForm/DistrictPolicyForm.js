@@ -491,13 +491,6 @@ class DistrictPolicyForm extends Component {
             </RadioGrp>
           </StyledRow>
           <StyledRow>
-            <StyledLabel>Enforced District Sign-On<br/> policy: </StyledLabel>
-            <RadioGrp onChange={this.enforceDistrictSignonPolicy} value={districtPolicy?.enforceDistrictSignonPolicy ? "yes" : "no"}>
-              <RadioBtn value="yes">Yes</RadioBtn>
-              <RadioBtn value="no">No</RadioBtn>
-            </RadioGrp>
-          </StyledRow>
-          <StyledRow>
             <StyledLabel>
               Enforced District Sign-On
               <br /> policy:{" "}

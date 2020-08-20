@@ -2,7 +2,7 @@ import { notification } from "@edulastic/common";
 import API from "./utils/API";
 
 const api = new API();
-const blankApi = new API("", " ");
+const blankApi = new API("", " ", true); // true is to enable CORS
 const prefix = "/attachments";
 
 const isValidURL = str => {

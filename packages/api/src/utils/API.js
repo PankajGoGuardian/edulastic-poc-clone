@@ -106,15 +106,18 @@ const SemverCompare = (a, b) => {
 };
 
 export default class API {
-  constructor(baseURL = config.api, defaultToken = false) {
+  constructor(baseURL = config.api, defaultToken = false, enableCors = false) {
     this.baseURL = baseURL;
-
+    const headers = {
+      "Content-Type": "application/json",
+      "client-epoch": Date.now().toString()
+    };
+    if (enableCors) {
+      headers["Access-Control-Allow-Origin"] = "*";
+    }
     this.instance = axios.create({
       baseURL: this.baseURL,
-      headers: {
-        "Content-Type": "application/json",
-        "client-epoch": Date.now().toString()
-      }
+      headers
     });
     this.instance.interceptors.request.use(_config => {
       const token = getParentsStudentToken(_config) || defaultToken || getAccessToken();

@@ -12,7 +12,7 @@ import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconMoreVertical, IconPlusCircle } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { faUsers, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "antd";
 import { get } from "lodash";
@@ -87,26 +87,27 @@ const ListHeader = ({
               {windowWidth > 768 ? (
                 renderButton()
               ) : (
-                <Dropdown
-                  overlay={renderButton()}
-                  trigger={["click"]}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                  overlayClassName="mobile-buttons-dropdown"
-                >
-                  <EduButton IconBtn isGhost isBlue onClick={e => e.preventDefault()}>
-                    <IconMoreVertical />
-                  </EduButton>
-                </Dropdown>
-              )}
+                  <Dropdown
+                    overlay={renderButton()}
+                    trigger={["click"]}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    overlayClassName="mobile-buttons-dropdown"
+                  >
+                    <EduButton IconBtn isGhost isBlue onClick={e => e.preventDefault()}>
+                      <IconMoreVertical />
+                    </EduButton>
+                  </Dropdown>
+                )}
             </>
           ) : userRole === roleuser.EDULASTIC_CURATOR ? null : (
             <div style={{ display: "flex" }}>
-              {userRole && userRole === roleuser.TEACHER && !userFeatures.isPublisherAuthor && !userFeatures.isCurator && (
+              {/* Not required for this release */}
+              {/* {userRole && userRole === roleuser.TEACHER && !userFeatures.isPublisherAuthor && !userFeatures.isCurator && (
                 <EduButton isGhost onClick={toggleSidebar} isBlue>
                   <FontAwesomeIcon icon={faUnlockAlt} aria-hidden="true" />
                   UNLOCK COLLECTION
                 </EduButton>
-              )}
+              )} */}
               {btnTitle && btnTitle.length ? null : <CartButton onClick={newTest} buttonText="New Test" />}
               {renderExtra()}
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
@@ -181,7 +182,7 @@ ListHeader.defaultProps = {
   renderExtra: () => null,
   renderFilter: () => null,
   renderFilterIcon: () => null,
-  onCreate: () => {},
+  onCreate: () => { },
   createAssignment: false,
   renderButton: null,
   isAdvancedView: false,

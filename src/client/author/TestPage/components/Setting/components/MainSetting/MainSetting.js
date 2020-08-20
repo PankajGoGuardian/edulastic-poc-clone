@@ -1,4 +1,4 @@
-import { blueBorder, green, red, themeColor, lightGrey9 } from "@edulastic/colors";
+import { blueBorder, green, red, lightGrey9 } from "@edulastic/colors";
 import {
   CheckboxLabel,
   RadioBtn,
@@ -10,7 +10,7 @@ import {
   EduSwitchStyled
 } from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
-import { IconCaretDown, IconInfo } from "@edulastic/icons";
+import { IconInfo } from "@edulastic/icons";
 import { Anchor, Col, Row, Select, Tooltip } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
@@ -31,7 +31,6 @@ import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import PeformanceBand from "./PeformanceBand";
 import StandardProficiencyTable from "./StandardProficiencyTable";
 import {
-  AdvancedButton,
   AdvancedSettings,
   Block,
   BlueText,
@@ -293,7 +292,7 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { showAdvancedOption, showPassword, _releaseGradeKeys } = this.state;
+    const { showPassword, _releaseGradeKeys } = this.state;
     const {
       history,
       windowWidth,
@@ -421,25 +420,24 @@ class MainSetting extends Component {
                     }
                     return null;
                   })}
+                {features.premium &&
+                  settingCategories
+                    .slice(-6, -4)
+                    .map(category => (
+                      <Anchor.Link
+                        key={category.id}
+                        href={`${history.location.pathname}#${category.id}`}
+                        title={category.title.toLowerCase()}
+                      />
+                    ))}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
-              {!isDocBased && features.premium && (
+              {/* {!isDocBased && features.premium && (
                 <AdvancedButton data-cy="advanced-option" onClick={this.advancedHandler} show={showAdvancedOption}>
                   {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
                   <IconCaretDown color={themeColor} width={11} height={6} />
                 </AdvancedButton>
-              )}
-              {features.premium && showAdvancedOption && (
-                <StyledAnchor affix={false} offsetTop={125}>
-                  {settingCategories.slice(-6, -4).map(category => (
-                    <Anchor.Link
-                      key={category.id}
-                      href={`${history.location.pathname}#${category.id}`}
-                      title={category.title.toLowerCase()}
-                    />
-                  ))}
-                </StyledAnchor>
-              )}
+              )} */}
             </NavigationMenu>
           </Col>
           <Col span={isSmallSize ? 24 : 18}>
@@ -986,7 +984,7 @@ class MainSetting extends Component {
               />
             </Block>
 
-            <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
+            <AdvancedSettings>
               {availableFeatures.includes("selectPlayerSkinType") && testType !== "testlet" && !isDocBased && (
                 <Block id="player-skin-type" smallSize={isSmallSize}>
                   <Row>

@@ -923,6 +923,10 @@
     "message": "User(s) has been successfully deactivated",
     "description": ""
   },
+  "userSuccessfullyUn-enrolled": {
+    "message": "User(s) enrollments has been successfully removed",
+    "description": ""
+  },
   "schoolSucessfullyDeactivated": {
     "message": "School(s) has been successfully deactivated",
     "description": ""

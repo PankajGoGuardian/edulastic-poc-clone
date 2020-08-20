@@ -46,35 +46,38 @@ const removeStudents = data =>
     data
   });
 
-const addEnrolMultiStudents = ({ classId, data }) => {
-  return api.callApi({
+const addEnrolMultiStudents = ({ classId, data }) =>
+  api.callApi({
     url: `${prefix}/${classId}/students`,
     method: "post",
     data
   });
-};
-const SearchAddEnrolMultiStudents = data => {
-  return api.callApi({
+const SearchAddEnrolMultiStudents = data =>
+  api.callApi({
     url: `${prefix}/student`,
     method: "post",
     data
   });
-};
-const fetchStudentEnrollClass = () => {
-  return api.callApi({
+const fetchStudentEnrollClass = () =>
+  api.callApi({
     url: `${prefix}/student`,
     method: "get"
   });
-};
-const fetchClassEnrollmentUsers = data => {
-  return api
+const fetchClassEnrollmentUsers = data =>
+  api
     .callApi({
       url: `search/enrollment`,
       data,
       method: "post"
     })
     .then(result => result.data);
-};
+
+const removeUsers = data =>
+  api.callApi({
+    url: `${prefix}`,
+    method: "delete",
+    data
+  });
 export default {
   fetch,
   create,
@@ -84,5 +87,6 @@ export default {
   addEnrolMultiStudents,
   SearchAddEnrolMultiStudents,
   fetchStudentEnrollClass,
-  fetchClassEnrollmentUsers
+  fetchClassEnrollmentUsers,
+  removeUsers
 };

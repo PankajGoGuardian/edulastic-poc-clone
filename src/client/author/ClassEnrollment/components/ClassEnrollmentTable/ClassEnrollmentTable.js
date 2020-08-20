@@ -30,7 +30,7 @@ import {
 import { getFullNameFromString } from "../../../../common/utils/helpers";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
-import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
+import {createAdminUserAction, deleteAdminUserAction, removeUserEnrollmentsAction} from "../../../SchoolAdmin/ducks";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { getUser, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import { AddStudentsToOtherClassModal, AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
@@ -218,14 +218,26 @@ class ClassEnrollmentTable extends React.Component {
   };
 
   confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedUserIds: userIds } = this.state;
+    const { removeUserEnrollments } = this.props;
+    const { selectedUsersInfo } = this.state;
+    const deleteGroupData = selectedUsersInfo.reduce((acc, data) => {
+      acc[data.group._id] = acc[data.group._id] ? acc[data.group._id].push(data) : [data];
+      return acc;
+    }, {});
+    const formatData = [];
+    Object.entries(deleteGroupData).forEach(([key,value]) => {
+      formatData.push({
+        groupId: key,
+        students: value.filter(o => o.role === "student").map(o => o.user._id),
+        teachers: value.filter(o => o.role === "teacher").map(o => o.user._id)
+      });
+    });
     const o = {
-      deleteReq: { userIds, role: "student" },
+      deleteReq: formatData,
       listReq: this.getSearchQuery(),
       classEnrollmentPage: true
     };
-    deleteAdminUser(o);
+    removeUserEnrollments(o);
     this.setState({
       removeStudentsModalVisible: false,
       selectedRowKeys: [],
@@ -830,6 +842,7 @@ const enhance = compose(
     {
       createAdminUser: createAdminUserAction,
       deleteAdminUser: deleteAdminUserAction,
+      removeUserEnrollments: removeUserEnrollmentsAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
       moveUsersToOtherClass: moveUsersToOtherClassAction,

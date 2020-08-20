@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
-import { userApi } from "@edulastic/api";
+import { enrollmentApi, userApi } from "@edulastic/api";
 import { keyBy, get, omit } from "lodash";
 import { notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
@@ -38,6 +38,10 @@ const ADD_BULK_TEACHER_ERROR = "[teacher] add bulk teacher error";
 
 const SET_TEACHERDETAIL_MODAL_VISIBLE = "[teacher] set teacher detail modal visible";
 
+const REMOVE_USERS_ENROLLMENTS_REQUEST = "[Admin] remove enrollment request";
+const REMOVE_USERS_ENROLLMENTS_SUCCESS = "[Admin] remove enrollment success";
+const REMOVE_USERS_ENROLLMENTS_ERROR = "[Admin] remove enrollment error";
+
 export const receiveAdminDataAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST);
 export const receiveSchoolAdminSuccessAction = createAction(RECEIVE_SCHOOLADMIN_SUCCESS);
 export const receiveSchoolAdminErrorAction = createAction(RECEIVE_SCHOOLADMIN_ERROR);
@@ -67,6 +71,10 @@ export const addBulkTeacherAdminSuccessAction = createAction(ADD_BULK_TEACHER_SU
 export const addBulkTeacherAdminErrorAction = createAction(ADD_BULK_TEACHER_ERROR);
 
 export const setTeachersDetailsModalVisibleAction = createAction(SET_TEACHERDETAIL_MODAL_VISIBLE);
+
+export const removeUserEnrollmentsAction = createAction(REMOVE_USERS_ENROLLMENTS_REQUEST);
+export const removeUserEnrollmentsSuccessAction = createAction(REMOVE_USERS_ENROLLMENTS_SUCCESS);
+export const removeUserEnrollmentsErrorAction = createAction(REMOVE_USERS_ENROLLMENTS_ERROR);
 
 // selectors
 const stateSchoolAdminSelector = state => state.schoolAdminReducer;
@@ -262,6 +270,17 @@ export const reducer = createReducer(initialState, {
         state.data.result[id] = _user;
       });
     }
+  },
+  [REMOVE_USERS_ENROLLMENTS_REQUEST]: state => {
+    state.deleting = true;
+  },
+  [REMOVE_USERS_ENROLLMENTS_SUCCESS]: (state, { payload }) => {
+    state.delete = payload;
+    state.deleting = false;
+  },
+  [REMOVE_USERS_ENROLLMENTS_ERROR]: (state, { payload }) => {
+    state.deleting = false;
+    state.deleteError = payload.error;
   }
 });
 
@@ -378,10 +397,30 @@ function* addBulkTeacherAdminSaga({ payload }) {
   }
 }
 
+function* removeUserEnrollmentsSaga({ payload }) {
+  try {
+    yield call(enrollmentApi.removeUsers, payload.deleteReq);
+    yield put(deleteSchoolAdminSuccessAction(payload.deleteReq));
+
+    // here after an update/delete/create, the new data is fetched back again
+    const isFetchClassEnrollmentList = get(payload, "classEnrollmentPage", false);
+    if (isFetchClassEnrollmentList) {
+      yield put(receiveClassEnrollmentListAction(payload.listReq));
+    }
+    notification({ type: "success", messageKey: "userSuccessfullyUn-enrolled" });
+  } catch (err) {
+    Sentry.captureException(err);
+    const errorMessage = "Error on removing user enrollments.";
+    notification({ msg: errorMessage });
+    yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }));
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_SCHOOLADMIN_REQUEST, receiveSchoolAdminSaga)]);
   yield all([yield takeEvery(UPDATE_SCHOOLADMIN_REQUEST, updateSchoolAdminSaga)]);
   yield all([yield takeEvery(CREATE_SCHOOLADMIN_REQUEST, createSchoolAdminSaga)]);
   yield all([yield takeEvery(DELETE_SCHOOLADMIN_REQUEST, deleteSchoolAdminSaga)]);
   yield all([yield takeLatest(ADD_BULK_TEACHER_REQUEST, addBulkTeacherAdminSaga)]);
+  yield all([yield takeEvery(REMOVE_USERS_ENROLLMENTS_REQUEST, removeUserEnrollmentsSaga)]);
 }

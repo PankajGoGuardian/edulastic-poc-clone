@@ -113,7 +113,7 @@ class ClozeMathAnswer extends Component {
                     clearAdditionals={clearAdditionals}
                     onAdd={onAdd}
                     onAddIndex={method.id}
-                    style={{ width, height }}
+                    style={{ minWidth: width, minHeight: height }}
                     onChangeKeypad={onChangeKeypad}
                     onChangeAllowedOptions={onChangeAllowedOptions}
                     allowNumericOnly={answer.allowNumericOnly}

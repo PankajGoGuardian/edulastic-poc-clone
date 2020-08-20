@@ -15,6 +15,5 @@ MathSpanWrapper.propTypes = {
 export default MathSpanWrapper;
 
 const MathSpan = WithMathFormula(styled.span`
-  user-select: none;
   position: relative;
 `);

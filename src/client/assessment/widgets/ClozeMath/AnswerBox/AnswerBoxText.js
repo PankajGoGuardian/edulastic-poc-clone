@@ -17,7 +17,7 @@ AnswerBoxText.propTypes = {
 export default AnswerBoxText;
 
 const Text = styled.div`
-  padding: 0 20px;
+  padding: 8px 20px;
   display: flex;
   align-items: center;
   justify-content: start;

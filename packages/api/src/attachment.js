@@ -1,8 +1,9 @@
 import { notification } from "@edulastic/common";
+import axios from "axios";
+
 import API from "./utils/API";
 
 const api = new API();
-const blankApi = new API("", " ", true); // true is to enable CORS
 const prefix = "/attachments";
 
 const isValidURL = str => {
@@ -11,14 +12,12 @@ const isValidURL = str => {
 };
 
 const loadScratchFromUrl = dataUrl =>
-  blankApi
-    .callApi({
-      url: dataUrl,
-      method: "get"
-    })
-    .catch(() => {
-      notification({ messageKey: "unableToRetrieve" });
-    });
+  axios({
+    url: dataUrl,
+    method: "get"
+  }).catch(() => {
+    notification({ messageKey: "unableToRetrieve" });
+  });
 
 const loadAttachment = attachmentId =>
   api

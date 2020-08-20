@@ -304,6 +304,12 @@ class AuthorTestItemPreview extends Component {
     const { createdBy, data = {}, maxScore, _id } = item;
     const { questions = [] } = data;
     const [firstQuestion = {}] = questions;
+    const standardIdentfiers =
+      questions
+        ?.flatMap(q => q.alignment)
+        ?.flatMap(x => x.domains)
+        ?.flatMap(d => d.standards)
+        .map(s => s.name) || [];
     const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = firstQuestion;
 
     let subCount = 0;
@@ -375,6 +381,7 @@ class AuthorTestItemPreview extends Component {
               authorDifficulty={authorDifficulty}
               bloomsTaxonomy={bloomsTaxonomy}
               tags={tags}
+              standards={standardIdentfiers}
             />
           )}
           {isPassage && colIndex === 1 && (

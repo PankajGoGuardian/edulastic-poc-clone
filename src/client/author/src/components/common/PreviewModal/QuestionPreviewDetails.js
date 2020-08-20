@@ -1,5 +1,6 @@
 import React from "react";
 import { QuestionDetails, DetailRow, FlexWrap } from "./styled";
+import Tags from "../Tags";
 
 const QuestionPreviewDetails = ({
   id,
@@ -8,7 +9,8 @@ const QuestionPreviewDetails = ({
   depthOfKnowledge,
   authorDifficulty,
   bloomsTaxonomy,
-  tags
+  tags,
+  standards
 }) => (
   <QuestionDetails>
     <FlexWrap>
@@ -45,7 +47,7 @@ const QuestionPreviewDetails = ({
       <DetailRow className="standards">
         <label>Standard: </label>
         <div>
-          <span>6.NS.10 (Indiana Mathematics) - Use reasoning involving rates and ratios to model</span>
+          <Tags tags={standards} show={7} />
         </div>
       </DetailRow>
       <DetailRow className="tags">

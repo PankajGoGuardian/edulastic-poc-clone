@@ -7,6 +7,7 @@ import queryString from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Tooltip, Spin } from "antd";
 
+import { notification } from "@edulastic/common";
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
@@ -318,14 +319,23 @@ const SingleAssessmentReportFilters = ({
   };
 
   const onSelectTest = test => {
-    const items = toggleItem(map(testIds, _test => _test.key), test.key);
-    const _testIds = processedTestIds.testIds.filter(_test => !!items.includes(_test.key));
-    setTestId(_testIds);
+    const testIdsKeys = map(testIds, _t => _t.key);
+    const items = toggleItem(testIdsKeys, test.key);
+    const _testIds = processedTestIds.testIds.filter(_t => !!items.includes(_t.key));
+    if (_testIds.length !== 0) {
+      const doNotUpdate =
+        testIds.length === _testIds.length && isEmpty(_testIds.filter(_t => !testIdsKeys.includes(_t.key)));
+      if (!doNotUpdate) {
+        setTestId(_testIds);
+      }
+    } else {
+      notification({ type: "warn", msg: `Selection cannot be empty` });
+    }
   };
 
   const onChangeTest = items => {
     if (!items.length) {
-      setTestId([]);
+      notification({ type: "warn", msg: `Selection cannot be empty` });
     }
   };
 

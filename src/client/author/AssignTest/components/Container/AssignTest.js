@@ -205,9 +205,7 @@ class AssignTest extends React.Component {
     });
 
     let termId = "";
-    if (assignment.termId) {
-      termId = assignment.termId;
-    } else if (value?.length) {
+    if (value?.length) {
       const [initialClassId] = value;
       termId = groupById[initialClassId].termId;
     }

@@ -89,7 +89,7 @@ class SimpleOptions extends React.Component {
       const { classData, termId } = onClassFieldChange(value, group);
       const nextAssignment = produce(assignment, state => {
         state.class = classData;
-        if (termId) state.termId = termId;
+        state.termId = termId;
       });
       updateOptions(nextAssignment);
       return;

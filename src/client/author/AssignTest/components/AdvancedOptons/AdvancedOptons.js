@@ -81,7 +81,7 @@ class AdvancedOptons extends React.Component {
       const { classData, termId } = onClassFieldChange(value, groups);
       const nextAssignment = produce(assignment, state => {
         state.class = classData;
-        if (termId) state.termId = termId;
+        state.termId = termId;
       });
       updateOptions(nextAssignment);
       return;

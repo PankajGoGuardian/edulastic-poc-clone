@@ -1,9 +1,12 @@
+/* eslint-disable array-callback-return */
 import JXG from "jsxgraph";
 import uuidv4 from "uuid/v4";
+import { isEmpty, keys, isArray, flatten, last, isString } from "lodash";
+import { questionType } from "@edulastic/constants";
 
-export const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-export const getLineFromExpression = (
+const getLineFromExpression = (
   expressions,
   points = [
     {
@@ -71,7 +74,7 @@ export const getLineFromExpression = (
   return [];
 };
 
-export const getPoinstFromString = (expression, labels = []) => {
+const getPoinstFromString = (expression, labels = []) => {
   const pointRegex = new RegExp("([^()]+)", "g");
 
   const getPoint = str => {
@@ -101,3 +104,221 @@ export const getPoinstFromString = (expression, labels = []) => {
   }
   return [];
 };
+
+const convertStrToArr = testletResponseIds => (testletResponseIds || "").split(",");
+
+const getSimpleTextAnswer = (testletResponseIds, testletResponses) => {
+  const data = testletResponseIds.map(id => testletResponses[testletResponseIds[id]]);
+  return last(data);
+};
+
+const generateAnswers = {
+  [questionType.CLOZE_DRAG_DROP](item, testletResponseIds, testletResponses) {
+    const { options } = item;
+    const data = testletResponseIds.map(id => {
+      const value = testletResponses[id];
+      const opIndex = ALPHABET.indexOf(value);
+      if (options[opIndex] && value) {
+        return options[opIndex].value;
+      }
+      return false;
+    });
+
+    return data;
+  },
+  [questionType.CLOZE_IMAGE_DRAG_DROP](item, testletResponseIds, testletResponses) {
+    const { responses: eduResponses = [], options } = item;
+    const data = eduResponses.map((eduRes, contIndex) => {
+      const value = testletResponses[testletResponseIds[contIndex]];
+      const opIndex = ALPHABET.indexOf(value);
+      if (value && options[opIndex]) {
+        return {
+          responseBoxID: eduRes.id,
+          value: [options[opIndex]],
+          containerIndex: contIndex
+          // rect: {}, TODO: we will check this property later.
+        };
+      }
+      return {
+        responseBoxID: eduRes.id,
+        value: [],
+        containerIndex: contIndex
+        // rect: {}, TODO: we will check this property later.
+      };
+    });
+    return data;
+  },
+  [questionType.CLOZE_IMAGE_TEXT](item, testletResponseIds, testletResponses) {
+    const { responses: options = [] } = item;
+    const data = {};
+    options.forEach((op, index) => {
+      const value = testletResponses[testletResponseIds[index]];
+      data[op.id] = value || "";
+    });
+
+    return data;
+  },
+  [questionType.GRAPH](item, testletResponseIds, testletResponses) {
+    const { testletAdditionalMetadata } = item;
+    let additionalData = null;
+    try {
+      additionalData = JSON.parse(testletAdditionalMetadata);
+    } catch (error) {
+      console.log("Invalid additional mapping data!");
+      return null;
+    }
+
+    if (isEmpty(additionalData)) {
+      return null;
+    }
+    const data = testletResponseIds.map(id => {
+      const value = testletResponses[id];
+      const { elementType, points, labels } = additionalData[id] || {};
+      if (elementType === "point") {
+        return getPoinstFromString(value, labels);
+      }
+      if (elementType === "line") {
+        return getLineFromExpression(value, points, labels);
+      }
+      return null;
+    });
+
+    return data.filter(d => !!d);
+  },
+  [questionType.EXPRESSION_MULTIPART](item, testletResponseIds, testletResponses) {
+    const { responseIds: eduResponses, options: eduOptions } = item;
+    const data = {};
+    keys(eduResponses).forEach(key => {
+      data[key] = {};
+      eduResponses[key].forEach(op => {
+        let value = testletResponses[testletResponseIds[op.index]];
+        if (key === "dropDowns" && value) {
+          const option = eduOptions[op.id];
+          const opIndex = ALPHABET.indexOf(value);
+          value = option[opIndex];
+        }
+        data[key][op.id] = { value, index: op.index };
+      });
+    });
+
+    return data;
+  },
+  [questionType.MULTIPLE_CHOICE](item, testletResponseIds, testletResponses) {
+    const { options } = item;
+    const data = testletResponseIds.map(id => {
+      const value = testletResponses[id];
+      if (isArray(value)) {
+        // multiple response
+        return value.map(v => {
+          const opIndex = ALPHABET.indexOf(v);
+          return options[opIndex]?.value;
+        });
+      }
+      // Radio type.
+      const opIndex = ALPHABET.indexOf(value);
+      return options[opIndex]?.value;
+    });
+
+    return flatten(data);
+  },
+  [questionType.CLOZE_TEXT](item, testletResponseIds, testletResponses) {
+    const { responseIds: eduResponses = [] } = item;
+    const data = eduResponses.map(eduRes => {
+      const value = testletResponses[testletResponseIds[eduRes.index]];
+      return { ...eduRes, value };
+    });
+    return data;
+  },
+  [questionType.CLOZE_DROP_DOWN](item, testletResponseIds, testletResponses) {
+    const { responseIds: eduResponses = [], options } = item;
+    const data = eduResponses.map(eduRes => {
+      const value = testletResponses[testletResponseIds[eduRes.index]];
+      const opIndex = ALPHABET.indexOf(value);
+      const optionValue = value ? options[eduRes.id][opIndex] : "";
+      return { ...eduRes, value: optionValue };
+    });
+    return data;
+  },
+  [questionType.MATH](item, testletResponseIds, testletResponses) {
+    return getSimpleTextAnswer(testletResponseIds, testletResponses);
+  },
+  [questionType.SHORT_TEXT](item, testletResponseIds, testletResponses) {
+    return getSimpleTextAnswer(testletResponseIds, testletResponses);
+  },
+  [questionType.ESSAY_PLAIN_TEXT](item, testletResponseIds, testletResponses) {
+    return getSimpleTextAnswer(testletResponseIds, testletResponses);
+  },
+  [questionType.TOKEN_HIGHLIGHT](item, testletResponseIds, testletResponses) {
+    const { templeWithTokens } = item;
+    const data = testletResponseIds
+      .map(responseId => {
+        const value = testletResponses[responseId];
+        if (isArray(value)) {
+          const selections = value.map(v => ALPHABET.indexOf(v));
+          return (templeWithTokens || []).map((el, i) => ({
+            value: el.value,
+            index: i,
+            selected: selections && selections.length ? selections.includes(i) : false
+          }));
+        }
+        if (isString(value)) {
+          const selected = ALPHABET.indexOf(value);
+          return (templeWithTokens || []).map((el, i) => ({
+            value: el.value,
+            index: i,
+            selected: selected === i
+          }));
+        }
+        return null;
+      })
+      .filter(d => !!d);
+    return last(data);
+  },
+  [questionType.CHOICE_MATRIX](item, testletResponseIds, testletResponses) {
+    const { responseIds } = item;
+    const data = {};
+    data.value = {};
+    testletResponseIds.map(responseId => {
+      let value = testletResponses[responseId];
+      if (value) {
+        value = value.split(",");
+        value.map(v => {
+          const num = v.match(/[0-9]+/);
+          const alpha = v.match(/[a-z]+/);
+          if (num && alpha) {
+            const opIndex = ALPHABET.indexOf(alpha[0]);
+            data.value[responseIds[num[0] - 1][opIndex]] = true;
+          }
+        });
+      }
+    });
+    return data;
+  }
+};
+
+/**
+ * @param   {object} item is an edualstic question
+ * @param   {object} responses is the user responses from testlet
+ * @returns {any} returns user response
+ */
+const getUserResponse = (item, responses) => {
+  if (generateAnswers[item.type]) {
+    const testletResponseIds = convertStrToArr(item.testletResponseIds);
+    const scoringIds = convertStrToArr(item.testletQuestionId);
+    if (isEmpty(testletResponseIds) || isEmpty(scoringIds)) {
+      return null;
+    }
+    let testletResponses = {};
+    scoringIds.forEach(scoringId => {
+      testletResponses = {
+        ...testletResponses,
+        ...(responses[scoringId] || {})
+      };
+    });
+
+    return generateAnswers[item.type](item, testletResponseIds, testletResponses);
+  }
+  return null;
+};
+
+export default getUserResponse;

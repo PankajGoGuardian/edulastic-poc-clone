@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -7,7 +8,7 @@ import { Spin, message, Modal, Button } from "antd";
 import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from "lodash";
 import useInterval from "@use-it/interval";
 
-import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
+import { test as testConstants, assignmentPolicyOptions, questionType } from "@edulastic/constants";
 import { AssessmentPlayerContext, useRealtimeV2 } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
 
@@ -62,6 +63,8 @@ const RealTimeV2HookWrapper = ({ userId, testId, regradedAssignment, regradedRea
   return null;
 };
 
+const { playerSkinValues } = testConstants;
+
 const AssessmentContainer = ({
   view,
   items,
@@ -89,7 +92,6 @@ const AssessmentContainer = ({
   closeTestPreviewModal,
   testletType,
   testletState,
-  testletConfig,
   testType,
   test,
   groupId,
@@ -497,11 +499,10 @@ const AssessmentContainer = ({
         {...props}
       />
     );
-  } else if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
+  } else if (playerSkinType === playerSkinValues.testlet) {
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
-        testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}
@@ -570,14 +571,12 @@ AssessmentContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
-  testletConfig: PropTypes.object,
   test: PropTypes.object
 };
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
   annotations: [],
-  testletConfig: {},
   test: {}
 };
 
@@ -592,7 +591,6 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
-      testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),
       annotations: state.test.annotations,

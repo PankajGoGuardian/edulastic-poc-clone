@@ -188,6 +188,7 @@ module.exports = {
     parcc: "parcc",
     sbac: "sbac",
     cmas: "cmas",
-    casspp: "casspp"
+    casspp: "casspp",
+    testlet: "testlet"
   }
 };

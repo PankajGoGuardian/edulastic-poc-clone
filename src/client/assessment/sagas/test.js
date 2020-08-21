@@ -385,7 +385,6 @@ function* loadTest({ payload }) {
         title: test.title,
         testType: settings.testType || test.testType,
         playerSkinType: settings.playerSkinType || test.playerSkinType,
-        testletConfig: test.testletConfig,
         annotations: test.annotations,
         docUrl: test.docUrl,
         isDocBased: test.isDocBased,

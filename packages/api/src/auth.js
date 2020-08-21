@@ -43,11 +43,12 @@ const checkUserExist = data =>
     })
     .then(result => result.data.result);
 
-const googleLogin = () =>
+const googleLogin = params =>
   api
     .callApi({
       url: `${prefix}/login-google`,
-      method: "get"
+      method: "get",
+      params
     })
     .then(result => result.data.result);
 
@@ -59,13 +60,13 @@ const cleverLogin = () =>
     })
     .then(result => result.data.result);
 
-const classlinkLogin = (params) =>
+const classlinkLogin = params =>
   api
     .callApi({
       url: `${prefix}/login-atlas`,
       method: "get",
       params,
-      paramsSerializer: params => qs.stringify(params)
+      paramsSerializer: _params => qs.stringify(_params)
     })
     .then(result => result.data.result);
 
@@ -103,7 +104,6 @@ const classlinkSSOLogin = data =>
       data
     })
     .then(result => result.data.result);
-  
 
 const msoSSOLogin = data =>
   api

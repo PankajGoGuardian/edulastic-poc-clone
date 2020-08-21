@@ -1315,7 +1315,7 @@ function* publishTestItemSaga({ payload }) {
     } else {
       yield put(changeViewAction("metadata"));
       yield put(setHighlightCollectionAction(true));
-      notification({ messageKey: "itemIsNotAssociated" });
+      notification({ type: "warn", messageKey: "itemIsNotAssociated" });
     }
   } catch (e) {
     Sentry.captureException(e);

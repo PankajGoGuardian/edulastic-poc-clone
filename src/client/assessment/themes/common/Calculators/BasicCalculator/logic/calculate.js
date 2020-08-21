@@ -21,9 +21,9 @@ export default function calculate(obj, buttonName) {
       if (two == "0") {
         alert("Divide by 0 error");
         return "0";
-      } else {
+      } 
         return (one / two).toString();
-      }
+      
     }
     throw Error(`Unknown operation '${operation}'`);
   }
@@ -82,7 +82,7 @@ export default function calculate(obj, buttonName) {
       if (obj.next.includes(".")) {
         return {};
       }
-      return { next: obj.next + "." };
+      return { next: `${obj.next  }.` };
     }
     return { next: "0." };
   }
@@ -94,9 +94,9 @@ export default function calculate(obj, buttonName) {
         next: null,
         operation: null
       };
-    } else {
+    } 
       return {};
-    }
+    
   }
 
   if (buttonName === "+/-") {

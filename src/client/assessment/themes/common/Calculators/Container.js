@@ -8,14 +8,17 @@ import { IconClose } from "@edulastic/icons";
 import { white, boxShadowDefault } from "@edulastic/colors";
 import { Spin } from "antd";
 import BasicCalculator from "./BasicCalculator";
-import AppConfig from "../../../../../app-config";
+import EduScientificCalculator from "./EduScientificCalculator";
+import CalculatorTitle from "./components/CalculatorTitle";
+import AppConfig from "../../../../../../app-config";
 
 const defaultRndPros = {
   geogebraCalculator: { x: 0, y: 0, width: 800, height: 635 },
   basicCalculator: { x: 0, y: 0, width: 350, height: 355 },
   graphingDesmos: { x: 0, y: 0, width: 600, height: 400 },
   basicDesmos: { x: 0, y: 0, width: 350, height: 500 },
-  desmosScientific: { x: 0, y: 0, width: 600, height: 500 }
+  desmosScientific: { x: 0, y: 0, width: 600, height: 500 },
+  edulasticScientific: { x: 0, y: 0, width: 500, height: 370 }
 };
 
 const geogebraParams = {
@@ -78,7 +81,7 @@ const CalculatorContainer = ({ calculateMode, changeTool, style }) => {
       Desmos.FourFunctionCalculator(desmosBasicRef.current);
     }
 
-    if (desmosScientificRef.current && ["SCIENTIFIC_DESMOS", "SCIENTIFIC_EDULASTIC"].includes(calculateMode)) {
+    if (desmosScientificRef.current && calculateMode === "SCIENTIFIC_DESMOS") {
       Desmos.ScientificCalculator(desmosScientificRef.current);
     }
 
@@ -115,17 +118,20 @@ const CalculatorContainer = ({ calculateMode, changeTool, style }) => {
         </RndWrapper>
       )}
 
-      {/* We are Displaying desmos scientific calc for Edulastic scientific as well since 
-          there is no implementation yet done for edulastic scientific
-          calculator. But once implementation for edulastic scientific is done the below condition 
-          needs to be changed to only desmos scientific */}
-      {["SCIENTIFIC_DESMOS", "SCIENTIFIC_EDULASTIC"].includes(calculateMode) && (
+      {calculateMode === "SCIENTIFIC_DESMOS" && (
         <RndWrapper default={defaultRndPros.desmosScientific} dragHandleClassName="calculator-drag-handler">
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
             <Title data-cy="SCIENTIFIC">Scientific Calculator</Title>
           </div>
           <Calculator id="demos-scientific-calculator" ref={desmosScientificRef} />
+        </RndWrapper>
+      )}
+
+      {calculateMode === "SCIENTIFIC_EDULASTIC" && (
+        <RndWrapper default={defaultRndPros.edulasticScientific} dragHandleClassName="calculator-drag-handler">
+          <CalculatorTitle onClose={handleCloseCalculator} title="Scientific Calculator" />
+          <EduScientificCalculator />
         </RndWrapper>
       )}
 
@@ -212,9 +218,15 @@ const CloseIcon = styled(IconClose)`
   margin-top: 10px;
 `;
 
-const CalculatorContainerWithResources = ({ ...props }) => (
+const CalculatorContainerWithResources = props => (
   <WithResources
-    resources={[`${AppConfig.desmosPath}/calculator.js`, `${AppConfig.geoGebraPath}/deployggb.js`]}
+    resources={[
+      `${AppConfig.desmosPath}/calculator.js`,
+      `${AppConfig.geoGebraPath}/deployggb.js`,
+      `${AppConfig.jqueryPath}/jquery.min.js`,
+      `${AppConfig.eduScientificCalcPath}/CalcSS3.js`,
+      `${AppConfig.eduScientificCalcPath}/CalcSS3.css`
+    ]}
     fallBack={<Spin />}
   >
     <CalculatorContainer {...props} />

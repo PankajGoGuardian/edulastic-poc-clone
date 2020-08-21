@@ -11,7 +11,7 @@ import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
-import { notification } from "@edulastic/common";
+import { Effects, notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import {
   loadQuestionsAction,
@@ -1581,7 +1581,7 @@ function* saveAndPublishItemSaga() {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
-    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield Effects.throttleAction(10000, UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
     yield takeEvery(UPDATE_ITEM_DOC_BASED_REQUEST, updateItemDocBasedSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
     yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),

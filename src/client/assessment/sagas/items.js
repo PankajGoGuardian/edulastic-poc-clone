@@ -114,7 +114,7 @@ function* saveUserResponse({ payload }) {
     });
 
     const testItemId = currentItem._id;
-    const _userWork = yield select(({ userWork }) => userWork.present[testItemId]);
+    const _userWork = yield select(({ userWork }) => userWork.present[testItemId] || {});
     const userInteractions = yield select(({ userInteractions: _userInteractions }) => _userInteractions[testItemId]);
     const activity = {
       answers: itemAnswers,
@@ -141,7 +141,11 @@ function* saveUserResponse({ payload }) {
     yield call(testItemActivityApi.create, activity, autoSave, pausing);
     const userId = yield select(state => state?.user?.user?._id);
     if (shouldSaveOrUpdateAttachment) {
-      const scratchpadUri = yield call(uploadToS3, _userWork.scratchpad, defaultUploadFolder);
+      const scratchpadUri = yield call(
+        uploadToS3,
+        { ..._userWork.scratchpad, name: `${userTestActivityId}_${userId}` },
+        defaultUploadFolder
+      );
       const update = {
         data: { scratchpad: scratchpadUri },
         referrerId: userTestActivityId,

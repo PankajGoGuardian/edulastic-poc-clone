@@ -306,10 +306,11 @@ class AuthorTestItemPreview extends Component {
     const [firstQuestion = {}] = questions;
     const standardIdentfiers =
       questions
-        ?.flatMap(q => q.alignment)
-        ?.flatMap(x => x.domains)
-        ?.flatMap(d => d.standards)
-        .map(s => s.name) || [];
+        ?.flatMap(q => q?.alignment)
+        ?.flatMap(x => x?.domains)
+        ?.flatMap(d => d?.standards)
+        ?.map(s => s?.name)
+        ?.filter(s => Boolean(s)) || [];
     const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = firstQuestion;
 
     let subCount = 0;

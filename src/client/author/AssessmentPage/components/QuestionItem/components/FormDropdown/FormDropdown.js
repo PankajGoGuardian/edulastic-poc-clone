@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
-import { chunk } from "lodash";
 
-import { QuestionOption, QuestionChunk } from "../../common/Form";
 import { Dropdown } from "./styled";
 
 export default class FormDropdown extends React.Component {
@@ -19,8 +17,9 @@ export default class FormDropdown extends React.Component {
   };
 
   handleChange = value => {
-    const { saveAnswer } = this.props;
+    const { saveAnswer, saveQuestionResponse } = this.props;
     saveAnswer([{ value, index: 0, id: "0" }]);
+    saveQuestionResponse()
   };
 
   renderView = () => {
@@ -55,7 +54,8 @@ export default class FormDropdown extends React.Component {
     const {
       question: { options },
       answer = [],
-      view
+      view,
+      clearHighlighted
     } = this.props;
 
     return (
@@ -64,6 +64,7 @@ export default class FormDropdown extends React.Component {
         check={["check", "show"].includes(view)}
         value={(answer[0] && answer[0].value) || ""}
         onChange={this.handleChange}
+        onBlur={clearHighlighted}
         getPopupContainer={triggerNode => triggerNode.parentNode}
       >
         {options[0].map((option, key) => (

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
+
 export default class FormEssay extends React.Component {
   static propTypes = {
     saveAnswer: PropTypes.func.isRequired,
@@ -27,6 +28,12 @@ export default class FormEssay extends React.Component {
     return <Input style={{ width: "178px" }} disabled placeholder="Essay type" />;
   };
 
+  handleBlur = () => {
+    const {clearHighlighted, saveQuestionResponse} = this.props;
+    clearHighlighted();
+    saveQuestionResponse();
+  }
+
   renderForm = () => {
     const {
       answer,
@@ -41,6 +48,7 @@ export default class FormEssay extends React.Component {
         style={{ padding: "2px 11px", resize: "none" }}
         value={answer}
         onChange={this.handleChange}
+        onBlur={this.handleBlur}
         disabled={mode === "report"}
         rows={numberOfRows} // textarea number of rows
         ref={el => highlighted && el?.focus()}

@@ -47,6 +47,12 @@ export default class FormMath extends React.Component {
     );
   };
 
+  handleBlur = () => {
+    const {clearHighlighted, saveQuestionResponse} = this.props;
+    clearHighlighted();
+    saveQuestionResponse();
+  }
+
   renderForm = mode => {
     const {
       question: { numberPad, symbols },
@@ -69,6 +75,7 @@ export default class FormMath extends React.Component {
           value={answer}
           fullWidth
           ref={el => highlighted && el?.setFocus()}
+          onBlur={this.handleBlur}
           top={boundingRect.bottom + 10}
           right={20}
           isDocbasedSection

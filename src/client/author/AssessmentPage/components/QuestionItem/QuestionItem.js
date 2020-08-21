@@ -18,6 +18,7 @@ import {
 import { IconPencilEdit, IconCheck, IconClose } from "@edulastic/icons";
 import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 import withAnswerSave from "../../../../assessment/components/HOC/withAnswerSave";
+import { saveUserResponse } from "../../../../assessment/actions/items";
 import FormChoice from "./components/FormChoice/FormChoice";
 import FormText from "./components/FormText/FormText";
 import FormDropdown from "./components/FormDropdown/FormDropdown";
@@ -190,12 +191,18 @@ class QuestionItem extends React.Component {
 
   renderContent = (highlighted, boundingRect) => {
     let { evaluation } = this.props;
-    const { data, saveAnswer, viewMode, onCreateOptions, userAnswer, previewMode } = this.props;
+    const { data, saveAnswer, viewMode, onCreateOptions, userAnswer, previewMode, saveUserResponse, groupId, qId, clearHighlighted } = this.props;
+
     if (!evaluation) {
       evaluation = data?.activity?.evaluation;
     }
+
+    const saveQuestionResponse = () => (qId >= 0 && groupId) && saveUserResponse(qId, 0, false, groupId, {pausing: false});
+
     const props = {
       saveAnswer,
+      saveQuestionResponse,
+      clearHighlighted,
       answer: userAnswer || data?.activity?.userResponse,
       question: data,
       mode: viewMode,
@@ -390,9 +397,14 @@ class QuestionItem extends React.Component {
 }
 
 export default withAnswerSave(
-  connect(state => ({
+  connect(
+  state => ({
     previousFeedback: Object.values(state?.previousQuestionActivity || {})[0],
     feedback: FeedbackByQIdSelector(state),
     reportActivity: isEmpty(state.studentReport?.testActivity) ? false : state.studentReport?.testActivity
-  }))(QuestionItem)
+  }),
+  {
+    saveUserResponse
+  }
+  )(QuestionItem)
 );

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import { Anchor, Col, Row, Select, Tooltip } from "antd";
-import { blueBorder, green, red, themeColor, lightGrey9 } from "@edulastic/colors";
+import { blueBorder, green, red, lightGrey9 } from "@edulastic/colors";
 import {
   MainContentWrapper,
   CheckboxLabel,
@@ -18,7 +18,7 @@ import {
   withWindowSizes
 } from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
-import { IconCaretDown, IconInfo } from "@edulastic/icons";
+import { IconInfo } from "@edulastic/icons";
 import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
@@ -34,7 +34,6 @@ import {
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { isPublisherUserSelector } from "../../../../../src/selectors/user";
 import {
-  AdvancedButton,
   AdvancedSettings,
   Block,
   BlueText,
@@ -313,7 +312,7 @@ class Setting extends Component {
   };
 
   render() {
-    const { showAdvancedOption, showPassword, _releaseGradeKeys } = this.state;
+    const { showPassword, _releaseGradeKeys } = this.state;
     const {
       current,
       history,
@@ -464,25 +463,22 @@ class Setting extends Component {
                       }
                       return null;
                     })}
-                </StyledAnchor>
-                {/* Hiding temporarly for deploying */}
-                {!isDocBased && features.premium && (
-                  <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
-                    {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-                    <IconCaretDown color={themeColor} width={11} height={6} />
-                  </AdvancedButton>
-                )}
-                {features.premium && showAdvancedOption && (
-                  <StyledAnchor affix={false} offsetTop={125}>
-                    {advancedSettingCategoris.map(category => (
+                  {features.premium &&
+                    advancedSettingCategoris.map(category => (
                       <Anchor.Link
                         key={category.id}
                         href={`${history.location.pathname}#${category.id}`}
                         title={category.title.toLowerCase()}
                       />
                     ))}
-                  </StyledAnchor>
-                )}
+                </StyledAnchor>
+                {/* Hiding temporarly for deploying */}
+                {/* {!isDocBased && features.premium && (
+                  <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+                    {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
+                    <IconCaretDown color={themeColor} width={11} height={6} />
+                  </AdvancedButton>
+                )} */}
               </NavigationMenu>
             </Col>
             <Col span={isSmallSize ? 24 : 18}>
@@ -1028,7 +1024,7 @@ class Setting extends Component {
                 />
               </Block>
 
-              <AdvancedSettings show={isSmallSize || showAdvancedOption}>
+              <AdvancedSettings show>
                 {availableFeatures.includes("selectPlayerSkinType") && testType !== "testlet" && !isDocBased && (
                   <Block id="player-skin-type" smallSize={isSmallSize}>
                     <Row>

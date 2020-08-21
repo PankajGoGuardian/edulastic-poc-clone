@@ -7,6 +7,7 @@ import PdfStoreAdapter from "./PdfStoreAdapter";
 
 const { UI } = PDFJSAnnotate;
 
+
 const PDFViewer = ({
   page,
   pdfScale,
@@ -65,6 +66,7 @@ const PDFViewer = ({
       case "area":
       case "highlight":
       case "strikeout":
+      case "mask":  
         UI.enableRect(type);
         UI.setColor(color || "#F00");
         break;

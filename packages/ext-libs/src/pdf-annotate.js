@@ -1869,6 +1869,7 @@ var { uploadToS3 } = require("@edulastic/common");
           switch (annotation.type) {
             case "area":
             case "highlight":
+            case "mask":
               child = (0, _renderRect2.default)(annotation);
               break;
             case "strikeout":
@@ -2222,6 +2223,13 @@ var { uploadToS3 } = require("@edulastic/common");
             })();
 
             if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+          } else if (a.type === "mask") {
+            var rect = createRect(a);
+            (0, _setAttributes2.default)(rect, {
+              fill: (0, _normalizeColor2.default)("#fff"),
+              fillOpacity: 1
+            });
+            return rect;
           } else {
             var rect = createRect(a);
             (0, _setAttributes2.default)(rect, {
@@ -2370,7 +2378,8 @@ var { uploadToS3 } = require("@edulastic/common");
           drawing: sortByLinePoint,
           textbox: sortByPoint,
           point: sortByPoint,
-          area: sortByPoint
+          area: sortByPoint,
+          mask: sortByPoint
         };
         module.exports = exports["default"];
 
@@ -3367,7 +3376,7 @@ var { uploadToS3 } = require("@edulastic/common");
             .getStoreAdapter()
             .getAnnotation(documentId, annotationId)
             .then(function(annotation) {
-              if (["area", "highlight", "point", "textbox", "video", "image"].indexOf(type) > -1) {
+              if (["area", "highlight", "point", "textbox", "video", "image", "mask"].indexOf(type) > -1) {
                 (function() {
                   var _getDelta = getDelta("x", "y");
 
@@ -3961,7 +3970,7 @@ var { uploadToS3 } = require("@edulastic/common");
          */
         function handleDocumentMousedown(e) {
           var svg = void 0;
-          if (_type !== "area" || !(svg = (0, _utils.findSVGAtPoint)(e.clientX, e.clientY))) {
+          if ((_type !== "area" && _type !== "mask") || !(svg = (0, _utils.findSVGAtPoint)(e.clientX, e.clientY))) {
             return;
           }
 
@@ -4006,7 +4015,7 @@ var { uploadToS3 } = require("@edulastic/common");
          */
         function handleDocumentMouseup(e) {
           var rects = void 0;
-          if (_type !== "area" && (rects = getSelectionRects())) {
+          if (_type !== "area" && _type !== "area" && (rects = getSelectionRects())) {
             var svg = (0, _utils.findSVGAtPoint)(rects[0].left, rects[0].top);
             saveRect(
               _type,
@@ -4020,7 +4029,7 @@ var { uploadToS3 } = require("@edulastic/common");
               }),
               _color
             );
-          } else if (_type === "area" && overlay) {
+          } else if ((_type === "area" || _type === "mask") && overlay) {
             var _svg = overlay.parentNode.querySelector("svg.annotationLayer");
             var rect = _svg.getBoundingClientRect();
             saveRect(
@@ -4119,7 +4128,7 @@ var { uploadToS3 } = require("@edulastic/common");
           }
 
           // Special treatment for area as it only supports a single rect
-          if (type === "area") {
+          if (type === "area" || type === "mask") {
             var rect = annotation.rectangles[0];
             delete annotation.rectangles;
             annotation.x = rect.x;
@@ -5589,7 +5598,7 @@ var { uploadToS3 } = require("@edulastic/common");
             .getStoreAdapter()
             .getAnnotation(documentId, annotationId)
             .then(function(annotation) {
-              if (["area", "highlight", "point", "textbox", "video", "image"].indexOf(type) > -1) {
+              if (["area", "highlight", "point", "textbox", "video", "image", "mask"].indexOf(type) > -1) {
                 (function() {
                   var _getDelta = getDelta("x", "y");
 

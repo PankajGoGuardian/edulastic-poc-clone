@@ -459,6 +459,8 @@ class AddItems extends PureComponent {
       showGroupItemsBtn = true;
     }
 
+    const itemGroupCount = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || [])?.length || 0
+
     return (
       <Container>
         {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
@@ -497,7 +499,7 @@ class AddItems extends PureComponent {
                 />
                 <FlexContainer alignItems="center" justifyContent="space-between">
                   <Selected style={{ fontSize: "12px" }}>
-                    {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
+                    {itemGroupCount} SELECTED
                   </Selected>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
                     <EduButton height="28px" isGhost data-cy="createNewItem" onClick={this.handleCreateNewItem}>

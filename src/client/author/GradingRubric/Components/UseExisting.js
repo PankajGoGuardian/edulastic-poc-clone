@@ -213,16 +213,14 @@ const UseExisting = ({
   const handleClone = rubric => {
     const clonedData = produce(rubric, draft => {
       draft.name = `Clone of ${draft.name}`;
-      draft.criteria = draft.criteria.map(criteria => {
-        return {
+      draft.criteria = draft.criteria.map(criteria => ({
           ...criteria,
           id: v4(),
           ratings: criteria.ratings.map(rating => ({
             ...rating,
             id: v4()
           }))
-        };
-      });
+        }));
     });
     setIsEditable(true);
     const { name, description, criteria } = clonedData;
@@ -268,7 +266,7 @@ const UseExisting = ({
                 <CustomStyleBtn style={btnStyle} onClick={() => handleClone(currentRubricData)}>
                   <FontAwesomeIcon icon={faClone} aria-hidden="true" /> <span>Clone</span>
                 </CustomStyleBtn>
-                {currentRubricData.createdBy._id === user._id && (
+                {currentRubricData?.createdBy?._id === user?._id && (
                   <>
                     <CustomStyleBtn style={btnStyle} onClick={() => handleEditRubric()}>
                       <FontAwesomeIcon icon={faPencilAlt} aria-hidden="true" /> <span>Edit</span>
@@ -298,7 +296,7 @@ const UseExisting = ({
                     <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
                   </CustomStyleBtn>
                 )}
-                {currentRubricData.createdBy._id === user._id && (
+                {currentRubricData?.createdBy._id === user?._id && (
                   <>
                     <CustomStyleBtn style={btnStyle} onClick={() => setShowShareModal(true)}>
                       <Icon type="share-alt" /> <span>Share</span>

@@ -43,8 +43,10 @@ const slice = createSlice({
       if (["startDate", "endDate", "dueDate"].includes(key)) {
         state.assignment = state.assignment || {}
         state.assignment.class = state.assignment.class || []
-        state.assignment.class[0][key] = value.valueOf();
-        state.updateSettings[key] = value.valueOf();
+        if(value){
+          state.assignment.class[0][key] = value.valueOf();
+          state.updateSettings[key] = value.valueOf();
+        }
       } else {
         state.assignment[key] = value;
         state.updateSettings[key] = value;

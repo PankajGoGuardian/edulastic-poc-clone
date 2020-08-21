@@ -33,7 +33,7 @@ class ClozeTextDisplay extends Component {
     this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
   }
 
-  static getDerivedStateFromProps({ stimulus }) {
+  static getDerivedStateFromProps({ stimulus = "" }) {
     return { parsedTemplate: helpers.parseTemplate(stimulus.replace(/\u200B/gi, "")) };
   }
 

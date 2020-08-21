@@ -557,7 +557,7 @@ class QuestionWrapper extends Component {
                               loadScratchPad({
                                 testActivityId: data?.activity?.testActivityId,
                                 testItemId: data?.activity?.testItemId,
-                                qActId: data.activity.qActId || data.activity._id,
+                                qActId: data?.activity?.qActId || data?.activity?._id,
                                 callback: () => showStudentWork()
                               });
                             }}

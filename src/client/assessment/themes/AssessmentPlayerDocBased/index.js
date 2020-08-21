@@ -99,7 +99,7 @@ class AssessmentPlayerDocBased extends React.Component {
 
   assessmentQuestions() {
     const { items } = this.props;
-    const itemData = items[0].data;
+    const itemData = items?.[0]?.data;
     if (isEmpty(itemData)) return;
     const questionsWithSections = itemData.questions.concat(itemData.resources);
     return sortBy(questionsWithSections, item => item.qIndex);

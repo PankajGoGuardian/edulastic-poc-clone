@@ -22,6 +22,7 @@ import { duplicatePlaylistRequestAction } from "../../../CurriculumSequence/duck
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import PlaylistCard from "./PlaylistCard";
 import TestItemCard from "./TestItemCard";
+import { isPremiumContent } from "../../../TestPage/utils";
 
 export const sharedTypeMap = {
   0: "PUBLIC",
@@ -187,19 +188,19 @@ class Item extends Component {
       duplicatePlayList
     } = this.props;
     const { analytics = [] } = isPlaylist ? _source : item;
-    const likes = analytics ?.[0] ?.likes || "0";
-    const usage = analytics ?.[0] ?.usage || "0";
+    const likes = analytics?.[0]?.likes || "0";
+    const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
     const standardsIdentifiers = isPlaylist
-      ? flattenPlaylistStandards(_source ?.modules)
+      ? flattenPlaylistStandards(_source?.modules)
       : standards.map(_item => _item.identifier);
 
     let collectionName = "PRIVATE";
-    if (collections ?.length > 0 && itemBanks.length > 0) {
+    if (collections?.length > 0 && itemBanks.length > 0) {
       let filteredCollections = itemBanks.filter(c => collections.find(i => i._id === c._id));
       filteredCollections = uniqBy(filteredCollections, "_id");
       if (filteredCollections.length > 0) collectionName = filteredCollections.map(c => c.name).join(", ");
-    } else if (collections ?.length && collections.find(o => o.name === "Edulastic Certified")) {
+    } else if (collections?.length && collections.find(o => o.name === "Edulastic Certified")) {
       collectionName = "Edulastic Certified";
     } else if (sharedType) {
       // sharedType comes as number when "Shared with me" filter is selected
@@ -216,13 +217,18 @@ class Item extends Component {
     };
 
     const showPremiumTag =
+      isPremiumContent(collections) &&
       showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
       !isPublisherUser &&
       !(_source ?.createdBy ?._id === currentUserId);
     const authors = isPlaylist ? _source.authors : item.authors
     const isOwner = (authors || []).find(x => x._id === currentUserId);
     const allowDuplicate =
-      allowDuplicateCheck(isPlaylist ? _source.collections : collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
+      allowDuplicateCheck(
+        isPlaylist ? _source.collections : collections,
+        orgCollections,
+        isPlaylist ? "playList" : "test"
+      ) || isOwner;
 
     const isDynamic =
       !isPlaylist &&

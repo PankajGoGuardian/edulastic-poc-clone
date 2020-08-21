@@ -106,7 +106,7 @@ const UploadFilePreview = ({
               mt="12px"
               hideDelete={isReadOnly}
               onDelete={deleteAttachment}
-              files={saveAttachments ? attachments : localAttachments}
+              files={attachments?.length ? attachments : localAttachments}
             />
           )}
 

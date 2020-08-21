@@ -195,7 +195,7 @@ const MatrixChoice = ({
                   previewTab={previewTab}
                   disableResponse
                   changeView={() => {}}
-                  evaluation={validResponse.value}
+                  evaluation={validResponse?.value || ''}
                   pl="20px"
                   {...restProps}
                 />

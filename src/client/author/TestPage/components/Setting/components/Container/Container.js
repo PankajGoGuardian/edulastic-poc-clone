@@ -416,7 +416,7 @@ class Setting extends Component {
       return null;
     });
 
-    const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
+    const edulastic = `${playerSkinTypes.edulastic} ${testType?.includes("assessment") ? "Test" : "Practice"}`;
     const skinTypes = {
       ...playerSkinTypes,
       edulastic

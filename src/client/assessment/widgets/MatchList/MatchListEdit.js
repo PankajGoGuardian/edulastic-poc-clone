@@ -185,7 +185,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
         });
         draft.validation.altResponses.forEach(ite => {
           item.list.forEach(l => {
-            if (ite.value[l.value] === draft.possibleResponses[ind].responses[index].value) {
+            if (ite?.value?.[l?.value] === draft?.possibleResponses?.[ind]?.responses?.[index]?.value) {
               ite.value[l.value] = null;
             }
           });

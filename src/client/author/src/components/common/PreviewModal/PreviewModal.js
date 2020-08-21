@@ -396,7 +396,7 @@ class PreviewModal extends React.Component {
     const isOwner = authors.some(author => author._id === userId);
     const hasCollectionAccess = allowContentEditCheck(item?.collections, writableCollections);
     const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner;
-    const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
+    const allRows = item && !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
     const isPassage = passage && passageTestItems.length;
     if (!!item.passageId && !!passage) {

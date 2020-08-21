@@ -66,7 +66,7 @@ export const itemsDataTableSelector = createSelector(
   getTestEntitySelector,
   getCollectionsSelector,
   (state, itemBanks) => {
-    const testItems = state.itemGroups.flatMap(group => group.items || []);
+    const testItems = state?.itemGroups?.flatMap(group => group.items || []) || [];
     return mapItemsByCollectionCount(testItems, itemBanks);
   }
 );

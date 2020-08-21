@@ -191,7 +191,7 @@ function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
     notification({ type: "success", messageKey: "sharedAssignmentInProgress" });
     const result = yield call(assignmentApi.syncWithGoogleClassroom, payload);
-    if (result?.[0].success) {
+    if (result?.[0]?.success) {
       yield put({
         type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS
       });

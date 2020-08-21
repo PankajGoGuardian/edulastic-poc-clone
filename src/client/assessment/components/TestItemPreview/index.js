@@ -253,7 +253,7 @@ class TestItemPreview extends Component {
     }
     // show collapse button only in student player or in author preview mode.
     const hasResourceTypeQuestion =
-      cols.length > 1 && cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
+      cols.length > 1 && cols.filter(a => a).flatMap(item => item.widgets).find(item => item && item.widgetType === "resource");
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
     const {
       isLCBView,

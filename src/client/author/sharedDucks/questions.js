@@ -265,7 +265,7 @@ export const getTestSelector = createSelector(
 export const getQuestionsSelectorForReview = createSelector(
   getTestSelector,
   state => {
-    const testItems = state.itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
+    const testItems = state?.itemGroups?.flatMap(itemGroup => itemGroup.items || []) || [];
     const testItemsLabeled = produce(testItems, draft => {
       markQuestionLabel(draft);
     });

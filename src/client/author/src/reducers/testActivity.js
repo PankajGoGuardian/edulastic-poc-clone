@@ -262,7 +262,7 @@ const reducer = (state = initialState, { type, payload }) => {
 
           if (entityIndex != -1) {
             const itemIndex = _st.entities[entityIndex].questionActivities.findIndex(
-              x => x._id == questionItem._id || x.testItemId === questionItem.testItemId
+              x => x._id == questionItem._id || (!x._id && x.testItemId === questionItem.testItemId)
             );
             if (itemIndex == -1) {
               _st.entities[entityIndex].questionActivities.push(questionItem);

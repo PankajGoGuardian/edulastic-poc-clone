@@ -593,6 +593,7 @@ const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
 
 const moveWidget = (state, { from, to }) =>
   produce(state, newState => {
+    // change the order of widgets
     const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
     movedWidget.tabIndex = to.tabIndex || 0;
     newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
@@ -600,6 +601,14 @@ const moveWidget = (state, { from, to }) =>
       .flatMap(x => x.widgets)
       .filter(widget => widget.widgetType === "question")
       .map(x => x.reference);
+    const { questions } = newState.item?.data;
+    if (Array.isArray(questions) && questions.length > 0) {
+      // change the order of item.data.questions
+      newState.item.data.questions = newState.qids.map(qid => {
+        return questions.find(q => q.id === qid);
+      });
+      markQuestionLabel([newState.item]); // change the question label as per new order
+    }
   });
 
 export function reducer(state = initialState, { type, payload }) {

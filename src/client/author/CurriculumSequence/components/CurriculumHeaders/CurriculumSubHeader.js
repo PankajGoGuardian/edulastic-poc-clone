@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { isNumber } from "lodash";
 import styled from "styled-components";
 import { MathFormulaDisplay, EduButton } from "@edulastic/common";
+import { removeCommentsFromHtml } from "@edulastic/common/src/helpers";
 import {
   mobileWidthLarge,
   desktopWidth,
@@ -13,7 +14,6 @@ import {
   extraDesktopWidthMax
 } from "@edulastic/colors";
 import { IconBook, IconGraduationCap } from "@edulastic/icons";
-import { removeCommentsFromHtml } from "../../../../common/utils/helpers";
 
 const CurriculumSubHeader = ({
   isStudent,

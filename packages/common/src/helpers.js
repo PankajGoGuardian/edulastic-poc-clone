@@ -172,6 +172,16 @@ function addProps() {
   $(this).replaceWith(text);
 }
 
+export const removeCommentsFromHtml = (content = "") => {
+  if (typeof content !== "string") return content;
+  return content.replace(/(<|&lt;)!--[\s\S]*?--(>|&gt;)/g, "");
+};
+
+const removeStyleTags = (content = "") => {
+  if (typeof content !== "string") return content;
+  return content.replace(/<style type\=\"text\/css\">[\s\S]*?<\/style>/g, "");
+};
+
 const sanitizeSelfClosingTags = inputString => {
   const _inputString = typeof inputString === "number" ? inputString.toString() : inputString;
 
@@ -181,9 +191,9 @@ const sanitizeSelfClosingTags = inputString => {
       .replace(/<hr>/g, "<hr/>")
       .replace(/<br(.*?)>/g, "<br/>")
       .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>")
-      .replace(/allowfullscreen="true"><\/iframe>/, "allowfullscreen=''></iframe>");
-
-  return sanitizedString;
+      .replace(/allowfullscreen="true"><\/iframe>/, "allowfullscreen=''></iframe>")
+      .replace(/<meta[\s\S]*?>/g, ""); // removes meta tag
+  return removeStyleTags(removeCommentsFromHtml(sanitizedString));
 };
 
 const replaceForJsxParser = inputString =>

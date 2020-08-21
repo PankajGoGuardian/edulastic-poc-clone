@@ -18,11 +18,6 @@ export const getWordsInURLPathName = pathname => {
   return path;
 };
 
-export const removeCommentsFromHtml = (content = "") => {
-  if (typeof content !== "string") return content;
-  return content.replace(/<!--[\s\S]*?-->/g, "");
-};
-
 export const isLoggedInForPrivateRoute = user => {
   if (user && user.isAuthenticated) {
     if (user && user.user && !user.user.role && (user.user.googleId || user.user.msoId || user.user.cleverId)) {

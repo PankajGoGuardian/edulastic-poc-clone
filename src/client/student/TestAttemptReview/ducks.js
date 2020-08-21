@@ -1,7 +1,8 @@
 import { createSelector } from "reselect";
 import { questionType } from "@edulastic/constants";
 import { get, isEmpty } from "lodash";
-import { hasValidAnswers } from "../../assessment/utils/answer";
+import { hasValidAnswers, hasUserWork } from "../../assessment/utils/answer";
+import { userWorkSelector } from "../sharedDucks/TestItem";
 
 // selectors
 export const answersSelector = state => state.answers;
@@ -12,7 +13,8 @@ export const attemptSummarySelector = createSelector(
   itemsSelector,
   answersSelector,
   bookmarksSelector,
-  (items, answers, bookmarks) => {
+  userWorkSelector,
+  (items, answers, bookmarks, userWork) => {
     const blocks = {};
     const allQids = [];
     const itemWiseQids = {};
@@ -30,7 +32,7 @@ export const attemptSummarySelector = createSelector(
         blocks[noQuestion] = 0;
         continue;
       }
-
+      const userWorkUsed = hasUserWork(item._id, userWork);
       const firstQid = questions[0].id;
       const bookmarked = bookmarks[item._id];
       /**
@@ -41,7 +43,7 @@ export const attemptSummarySelector = createSelector(
         if (bookmarked) {
           blocks[firstQid] = 2;
         } else {
-          blocks[firstQid] = attempted ? 1 : 0;
+          blocks[firstQid] = userWorkUsed || attempted ? 1 : 0;
         }
         // to ensure the order
         allQids.push(firstQid);
@@ -52,7 +54,7 @@ export const attemptSummarySelector = createSelector(
           if (bookmarked) {
             blocks[q.id] = 2;
           } else {
-            blocks[q.id] = attempted ? 1 : 0;
+            blocks[q.id] = userWorkUsed || attempted ? 1 : 0;
           }
         });
         allQids.concat(questions.map(q => q.id));

@@ -76,7 +76,7 @@ function* saveUserResponse({ payload }) {
     }
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
-    const { testActivityId: userTestActivityId, passages } = yield select(state => state.test && state.test);
+    const { testActivityId: userTestActivityId, passages, isDocBased } = yield select(state => state.test);
     const shuffledOptions = yield select(state => state.shuffledOptions);
     // passages: state.test.passages
     const currentItem = items.length && items[itemIndex];
@@ -141,11 +141,10 @@ function* saveUserResponse({ payload }) {
     yield call(testItemActivityApi.create, activity, autoSave, pausing);
     const userId = yield select(state => state?.user?.user?._id);
     if (shouldSaveOrUpdateAttachment) {
-      const scratchpadUri = yield call(
-        uploadToS3,
-        { ..._userWork.scratchpad, name: `${userTestActivityId}_${userId}` },
-        defaultUploadFolder
-      );
+      const fileData = isDocBased
+        ? { ..._userWork.scratchpad, name: `${userTestActivityId}_${userId}` }
+        : _userWork.scratchpad;
+      const scratchpadUri = yield call(uploadToS3, fileData, defaultUploadFolder);
       const update = {
         data: { scratchpad: scratchpadUri },
         referrerId: userTestActivityId,

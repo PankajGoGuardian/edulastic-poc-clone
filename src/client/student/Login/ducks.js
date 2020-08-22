@@ -964,6 +964,7 @@ function* googleLogin({ payload }) {
   try {
     let classCode = "";
     let role = "";
+    const params = {};
     if (payload) {
       if (payload.role === "teacher") {
         localStorage.setItem("thirdPartySignOnRole", payload.role);
@@ -973,6 +974,9 @@ function* googleLogin({ payload }) {
         localStorage.setItem("thirdPartySignOnClassCode", payload.classCode);
         classCode = payload.classCode;
         role = "student";
+      }
+      if (payload.prompt) {
+        params.prompt = payload.prompt;
       }
     }
 
@@ -985,7 +989,7 @@ function* googleLogin({ payload }) {
       });
     }
 
-    const res = yield call(authApi.googleLogin);
+    const res = yield call(authApi.googleLogin, params);
     window.location.href = res;
   } catch (e) {
     notification({ msg: e.response?.data?.message ? e.response.data.message : "Google Login failed" });
@@ -1010,7 +1014,12 @@ function* googleSSOLogin({ payload }) {
       }
     }
     const res = yield call(authApi.googleSSOLogin, _payload);
-    yield put(getUserDataAction(res));
+    if (res.reAuthGoogle) {
+      TokenStorage.storeInLocalStorage("payloadForUserData", JSON.stringify(res));
+      window.location.href = "/auth/google";
+    } else {
+      yield put(getUserDataAction(res));
+    }
   } catch (e) {
     notification({ msg: get(e, "response.data.message", "Google Login failed") });
 
@@ -1124,10 +1133,8 @@ function* cleverSSOLogin({ payload }) {
     const res = yield call(authApi.cleverSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (err) {
-    const {
-      data = {}
-    } = err.response;
-    const { message: errorMessage } = data
+    const { data = {} } = err.response;
+    const { message: errorMessage } = data;
     Sentry.captureException(err);
     if (errorMessage === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
       yield put(push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" }));
@@ -1175,7 +1182,10 @@ function* classlinkSSOLogin({ payload }) {
     const res = yield call(authApi.classlinkSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    if (e?.response?.data?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
+    if (
+      e?.response?.data?.message ===
+      "User not yet authorized to use Edulastic. Please contact your district administrator!"
+    ) {
       yield put(push({ pathname: getSignOutUrl(), state: { showUnauthorized: true }, hash: "#login" }));
     } else {
       notification({ msg: e?.data?.message || "Classlink Login failed" });
@@ -1429,9 +1439,9 @@ function* studentSignupCheckClasscodeSaga({ payload }) {
     yield call(authApi.validateClassCode, payload.reqData);
   } catch (e) {
     if (payload.errorCallback) {
-      payload.errorCallback(e?.response?.data?.message || "Unknown Error") ;
+      payload.errorCallback(e?.response?.data?.message || "Unknown Error");
     } else {
-      notification({ msg: e?.response?.data?.message || "Unknown Error"});
+      notification({ msg: e?.response?.data?.message || "Unknown Error" });
     }
   }
 }

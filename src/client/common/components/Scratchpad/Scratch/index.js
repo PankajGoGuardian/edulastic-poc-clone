@@ -53,14 +53,14 @@ const Scratchpad = ({
   const [zwibbler, setZwibbler] = useState();
   const [clipBoard, updateClipBoard] = useState();
   const [showMathModal, setShowMathModal] = useState(false);
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [prevItemIndex, setPrevItemIndex] = useState(null);
   const isDeleteMode = useRef();
   const zwibblerContainer = useRef();
   const zwibblerRef = useRef();
   const mathNodeRef = useRef();
   isDeleteMode.current = deleteMode;
   const hideToolBar = readOnly || hideTools;
-  const { isStudentAttempt } = useContext(AssessmentPlayerContext);
+  const { isStudentAttempt, currentItem } = useContext(AssessmentPlayerContext);
   const { isAnswerModifiable, expressGrader } = useContext(AnswerContext);
   const isLineMode = lineTypes.includes(activeMode);
 
@@ -291,16 +291,16 @@ const Scratchpad = ({
        * during student attempt (assessment player, practice player)
        * @see https://snapwiz.atlassian.net/browse/EV-17241
        */
-      if (isStudentAttempt && !initialDataLoaded) {
+      if (isStudentAttempt && prevItemIndex !== currentItem) {
         zwibbler.load(data);
-        setInitialDataLoaded(true);
+        setPrevItemIndex(currentItem);
       }
       // in readOnly mode views (lcb, express grader, etc.)
       else if (readOnly) {
         zwibbler.load(data);
       }
     }
-  }, [data, zwibbler]);
+  }, [data, zwibbler, currentItem]);
 
   useEffect(() => {
     if (expressGrader && zwibbler) {

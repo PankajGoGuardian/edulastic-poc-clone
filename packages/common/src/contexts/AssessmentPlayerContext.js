@@ -6,7 +6,8 @@ import React from "react";
  * so use this context intead of drilling props
  */
 const assessmentPlayerContext = React.createContext({
-  isStudentAttempt: false
+  isStudentAttempt: false,
+  currentItem: 0
 });
 
 export default assessmentPlayerContext;

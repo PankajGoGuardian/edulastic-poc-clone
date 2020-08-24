@@ -3,11 +3,12 @@ import API from "./utils/API";
 const api = new API();
 const prefix = "enrollment";
 
-const fetch = classId =>
+const fetch = (classId, isActiveStudents = false) =>
   api
     .callApi({
       url: `${prefix}/class/${classId}`,
-      method: "get"
+      method: "get",
+      params: { isActiveStudents }
     })
     .then(result => result.data.result);
 

@@ -350,7 +350,8 @@ function* togglePauseAssignment({ payload }) {
 
 function* fetchStudentsByClassSaga({ payload }) {
   try {
-    const { students = [] } = yield call(enrollmentApi.fetch, payload.classId);
+    const isActiveStudents = true;
+    const { students = [] } = yield call(enrollmentApi.fetch, payload.classId, isActiveStudents);
     yield put(updateClassStudentsAction(students));
   } catch (err) {
     Sentry.captureException(err);

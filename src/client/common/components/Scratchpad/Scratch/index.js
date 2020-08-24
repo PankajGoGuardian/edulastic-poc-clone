@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import isEmpty from "lodash/isEmpty";
 import { drawTools } from "@edulastic/constants";
-import { WithResources, MathModal, ScrollContext, getMathHtml, AssessmentPlayerContext } from "@edulastic/common";
+import { WithResources, MathModal, getMathHtml, AssessmentPlayerContext } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
 import ToolBox from "../Tools";
 import {
@@ -47,39 +47,20 @@ const Scratchpad = ({
   saveData,
   data,
   readOnly,
-  disableResize,
   hideTools,
   clearClicked // this is from highlight image
 }) => {
   const [zwibbler, setZwibbler] = useState();
   const [clipBoard, updateClipBoard] = useState();
   const [showMathModal, setShowMathModal] = useState(false);
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [prevItemIndex, setPrevItemIndex] = useState(null);
   const isDeleteMode = useRef();
   const zwibblerContainer = useRef();
   const zwibblerRef = useRef();
   const mathNodeRef = useRef();
   isDeleteMode.current = deleteMode;
   const hideToolBar = readOnly || hideTools;
-
-  const { getScrollElement } = useContext(ScrollContext);
-  const { isStudentAttempt } = useContext(AssessmentPlayerContext);
-
-  const scrollContainerHeight = getScrollElement()?.scrollHeight;
-  const scrollContainerWidth = getScrollElement()?.scrollWidth;
-
-  useEffect(() => {
-    if (!disableResize) {
-      const zwibblerHeight = scrollContainerHeight ? `${scrollContainerHeight}px` : "100%";
-      if (zwibblerContainer.current && zwibblerHeight) {
-        zwibblerContainer.current.style.height = zwibblerHeight;
-        if (zwibbler) {
-          zwibbler.resize();
-        }
-      }
-    }
-  }, [scrollContainerHeight, scrollContainerWidth]);
-
+  const { isStudentAttempt, currentItem } = useContext(AssessmentPlayerContext);
   const isLineMode = lineTypes.includes(activeMode);
 
   const toggleProtractor = () => {
@@ -309,16 +290,16 @@ const Scratchpad = ({
        * during student attempt (assessment player, practice player)
        * @see https://snapwiz.atlassian.net/browse/EV-17241
        */
-      if (isStudentAttempt && !initialDataLoaded) {
+      if (isStudentAttempt && prevItemIndex !== currentItem) {
         zwibbler.load(data);
-        setInitialDataLoaded(true);
+        setPrevItemIndex(currentItem);
       }
       // in readOnly mode views (lcb, express grader, etc.)
       else if (readOnly) {
         zwibbler.load(data);
       }
     }
-  }, [data, zwibbler]);
+  }, [data, zwibbler, currentItem]);
 
   return (
     <ScratchpadContainer ref={zwibblerContainer}>
@@ -371,14 +352,12 @@ Scratchpad.propTypes = {
   saveData: PropTypes.func,
   data: PropTypes.string,
   hideTools: PropTypes.bool,
-  readOnly: PropTypes.bool,
-  disableResize: PropTypes.bool
+  readOnly: PropTypes.bool
 };
 
 Scratchpad.defaultProps = {
   saveData: () => null,
   readOnly: false,
-  disableResize: false,
   hideTools: false,
   data: ""
 };

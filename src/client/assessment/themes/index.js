@@ -502,7 +502,7 @@ const AssessmentContainer = ({
   }
 
   return (
-    <AssessmentPlayerContext.Provider value={{ isStudentAttempt: true }}>
+    <AssessmentPlayerContext.Provider value={{ isStudentAttempt: true, currentItem }}>
       {showRegradedModal && (
         <Modal
           visible

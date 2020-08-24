@@ -140,6 +140,7 @@ const SecondBlock = ({
             <TextInputStyled
               data-cy="externalResponseIds"
               value={testletResponseIds}
+              maxLength={250}
               onChange={onChangeExternalData("testletResponseIds")}
             />
           </ItemBody>

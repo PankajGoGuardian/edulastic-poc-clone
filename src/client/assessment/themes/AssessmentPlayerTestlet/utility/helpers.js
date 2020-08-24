@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import JXG from "jsxgraph";
 import uuidv4 from "uuid/v4";
-import { isEmpty, keys, isArray, flatten, last, isString } from "lodash";
+import { isEmpty, keys, isArray, flatten, last, isString, compact } from "lodash";
 import { questionType } from "@edulastic/constants";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -105,10 +105,10 @@ const getPoinstFromString = (expression, labels = []) => {
   return [];
 };
 
-const convertStrToArr = testletResponseIds => (testletResponseIds || "").split(",");
+const convertStrToArr = testletResponseIds => (testletResponseIds || "").split(",").map(id => id.trim());
 
 const getSimpleTextAnswer = (testletResponseIds, testletResponses) => {
-  const data = testletResponseIds.map(id => testletResponses[testletResponseIds[id]]);
+  const data = testletResponseIds.map(id => testletResponses[id]);
   return last(data);
 };
 
@@ -156,6 +156,20 @@ const generateAnswers = {
       data[op.id] = value || "";
     });
 
+    return data;
+  },
+  [questionType.CLOZE_IMAGE_DROP_DOWN](item, testletResponseIds, testletResponses) {
+    const { responses, options } = item;
+    const data = {};
+    responses.forEach((responseBox, index) => {
+      const value = testletResponses[testletResponseIds[index]];
+      const opIndex = ALPHABET.indexOf(value);
+      if (value && options[index]) {
+        data[responseBox.id] = options[opIndex][opIndex];
+      } else {
+        data[responseBox.id] = "";
+      }
+    });
     return data;
   },
   [questionType.GRAPH](item, testletResponseIds, testletResponses) {
@@ -207,6 +221,9 @@ const generateAnswers = {
     const { options } = item;
     const data = testletResponseIds.map(id => {
       const value = testletResponses[id];
+      if (!value) {
+        return;
+      }
       if (isArray(value)) {
         // multiple response
         return value.map(v => {
@@ -219,7 +236,7 @@ const generateAnswers = {
       return options[opIndex]?.value;
     });
 
-    return flatten(data);
+    return compact(flatten(data));
   },
   [questionType.CLOZE_TEXT](item, testletResponseIds, testletResponses) {
     const { responseIds: eduResponses = [] } = item;
@@ -286,8 +303,30 @@ const generateAnswers = {
           const num = v.match(/[0-9]+/);
           const alpha = v.match(/[a-z]+/);
           if (num && alpha) {
-            const opIndex = ALPHABET.indexOf(alpha[0]);
-            data.value[responseIds[num[0] - 1][opIndex]] = true;
+            const col = ALPHABET.indexOf(alpha[0]);
+            const row = num[0] - 1;
+            if (responseIds[row] && responseIds[row][col]) {
+              data.value[responseIds[row][col]] = true;
+            }
+          }
+        });
+      }
+    });
+    return data;
+  },
+  [questionType.CLASSIFICATION](item, testletResponseIds, testletResponses) {
+    const { possibleResponses, classifications } = item;
+    const data = {};
+    testletResponseIds.forEach((responseId, index) => {
+      const value = testletResponses[responseId];
+      const classification = classifications[index];
+      if (classification) {
+        data[classification.id] = [];
+        const responses = convertStrToArr(value);
+        responses.forEach(response => {
+          const opIndex = ALPHABET.indexOf(response);
+          if (possibleResponses[opIndex] && response) {
+            data[classification.id].push(possibleResponses[opIndex].id);
           }
         });
       }

@@ -210,7 +210,8 @@ const PlayerContent = ({
 
     for (const scoringId in currentPageIds) {
       if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-        const eduQuestion = getEduQuestion(scoringId);
+        const eduQuestion = getEduQuestion(scoringId.trim());
+
         if (!eduQuestion) {
           continue;
         }

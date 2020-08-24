@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { createSelector } from "reselect";
 import uuid from "uuid/v4";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, flatten, pull, uniqBy, uniq, isEmpty, set } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, flatten, pull, uniqBy, uniq, isEmpty } from "lodash";
 import { testItemsApi, passageApi, attchmentApi } from "@edulastic/api";
 import { questionType, roleuser } from "@edulastic/constants";
 import { delay } from "redux-saga";
@@ -961,21 +961,13 @@ export function* updateItemSaga({ payload }) {
           q.variable.enabled = false;
           delete q.variable.examples;
         }
-        if (index === 0) {
-          if (data.itemLevelScoring && q.scoringDisabled) {
-            //on item level scoring item, first question removed situation.
-            q.scoringDisabled = false;
-            if (!questionType.manuallyGradableQn.includes(data.type)) {
-              set(q, "validation.validResponse.score", data.itemLevelScore);
-            }
-          }
-          return q;
-        }
+        if (index === 0) return q;
 
         q.scoringDisabled = !!itemLevelScoring;
         return q;
       });
     });
+
     data.data = {
       questions,
       resources

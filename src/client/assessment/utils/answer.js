@@ -58,3 +58,30 @@ export const hasValidAnswers = (type, answer) => {
       return !isEmpty(answer);
   }
 };
+
+/**
+ * checks if the user has used scratchpad or cross out tool for a particular item
+ * @param {string} itemId the current item id for which to check
+ * @param {object} userWork the slice of userWork.present from redux store
+ */
+export const hasUserWork = (itemId, userWork) => {
+  if (!itemId) {
+    // umm, something wrong with component, item id is empty, function should not evaluate
+    return false;
+  }
+  const currentItemWork = { ...userWork?.[itemId] };
+  /**
+   * highlight image has scratchpad saved as false,
+   * if assignment is resumed, but scratchpad was not used previously
+   */
+  if (currentItemWork.scratchpad !== undefined) {
+    const scratchpadUsed = currentItemWork.scratchpad !== false;
+    // delete the property so it does not contribute while checking isEmpty below
+    delete currentItemWork.scratchpad;
+    if (scratchpadUsed) {
+      return true;
+    }
+  }
+
+  return !isEmpty(currentItemWork);
+};

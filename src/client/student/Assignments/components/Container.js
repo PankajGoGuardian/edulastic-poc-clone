@@ -14,7 +14,8 @@ import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import {
   addRealtimeAssignmentAction,
   removeAssignmentAction,
-  rerenderAssignmentsAction
+  rerenderAssignmentsAction,
+  startServerTimerAction
 } from "../../sharedDucks/AssignmentModule/ducks";
 import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
 import { Wrapper } from "../../styled";
@@ -26,8 +27,9 @@ import {
   transformAssignmentForRedirect
 } from "../ducks";
 
-const withinThreshold = (targetDate, threshold) => {
-  const diff = new Date(targetDate) - Date.now();
+const withinThreshold = (targetDate, threshold, serverTimeStamp) => {
+  const now = serverTimeStamp || Date.now();
+  const diff = new Date(targetDate) - now;
   if (diff <= threshold) {
     return true;
   }
@@ -39,17 +41,17 @@ const withinThreshold = (targetDate, threshold) => {
  * @param {Object[]} assignments
  * @returns {boolean}
  */
-const needRealtimeDateTracking = assignments => {
+const needRealtimeDateTracking = (assignments, serverTimeStamp) => {
   const threshold = 24 * 60 * 60 * 1000; // 24 hours
   for (const assignment of assignments) {
-    if (assignment.endDate && withinThreshold(assignment.endDate, threshold)) {
+    if (assignment.endDate && withinThreshold(assignment.endDate, threshold, serverTimeStamp)) {
       return true;
     }
     for (const cls of assignment.class) {
-      if (cls.startDate && withinThreshold(cls.startDate, threshold)) {
+      if (cls.startDate && withinThreshold(cls.startDate, threshold, serverTimeStamp)) {
         return true;
       }
-      if (cls.endDate && withinThreshold(cls.endDate, threshold)) {
+      if (cls.endDate && withinThreshold(cls.endDate, threshold, serverTimeStamp)) {
         return true;
       }
     }
@@ -70,7 +72,9 @@ const Content = ({
   rerenderAssignments,
   allAssignments,
   removeAssignment,
-  currentChild
+  currentChild,
+  serverTimeStamp,
+  startServerTimer
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
@@ -97,8 +101,11 @@ const Content = ({
   });
 
   useInterval(() => {
-    if (needRealtimeDateTracking(allAssignments)) {
+    if (needRealtimeDateTracking(allAssignments, serverTimeStamp)) {
       rerenderAssignments();
+    }
+    if (!isLoading && serverTimeStamp) {
+      startServerTimer();
     }
   }, 60 * 1000);
 
@@ -141,14 +148,16 @@ export default connect(
     allClasses: getClasses(state),
     userId: get(state, "user.user._id"),
     isLoading: get(state, "studentAssignment.isLoading"),
-    currentChild: state?.user?.currentChild
+    currentChild: state?.user?.currentChild,
+    serverTimeStamp: get(state, "studentAssignment.serverTs")
   }),
   {
     fetchAssignments: fetchAssignmentsAction,
     addRealtimeAssignment: addRealtimeAssignmentAction,
     addRealtimeReport: addRealtimeReportAction,
     rerenderAssignments: rerenderAssignmentsAction,
-    removeAssignment: removeAssignmentAction
+    removeAssignment: removeAssignmentAction,
+    startServerTimer: startServerTimerAction
   }
 )(Content);
 

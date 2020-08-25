@@ -8,7 +8,8 @@ import { cloneDeep } from "lodash";
 // assignments schema
 export const assignmentSchema = new schema.Entity("assignments", {}, { idAttribute: "_id" });
 
-// types
+const addMinutes = (timeStamp, minutes) => timeStamp + minutes * 60000;
+
 export const SET_LOADING = "[studentAssignment] fetch assignments loading";
 export const SET_ASSIGNMENTS = "[studentAssignment] set assignments";
 export const ADD_ASSIGNMENT_REALTIME = "[studentAssignment] add assignment realtime";
@@ -24,6 +25,8 @@ export const REGRADE_ASSIGNMENT_REALTIME = "[studentAssessmentPlayer] regrade as
 export const UPDATE_REALTIME_ASSIGNMENT_TEST_ID = "[studentAssignments] update test id real time";
 export const SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT = "[studentAssignments] set ready for timed assignment";
 export const CLEAR_REGRADE_ASSIGNMENT = "[studentAssignments] clear regrade assignment";
+export const SET_SERVER_TS = "[studentAssignmens] set server time stamp";
+export const START_SERVER_TIMER = "[studntAssignments] start server timer";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -37,6 +40,8 @@ export const regradedRealtimeAssignmentAction = createAction(REGRADE_ASSIGNMENT_
 export const updateTestIdRealTimeAction = createAction(UPDATE_REALTIME_ASSIGNMENT_TEST_ID);
 export const setConfirmationForTimedAssessmentAction = createAction(SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT);
 export const clearRegradeAssignmentAction = createAction(CLEAR_REGRADE_ASSIGNMENT);
+export const setServerTimeStampAction = createAction(SET_SERVER_TS);
+export const startServerTimerAction = createAction(START_SERVER_TIMER);
 
 // initial State
 const initialState = {
@@ -45,7 +50,8 @@ const initialState = {
   allIds: [],
   error: {},
   isStale: false,
-  filter: "all"
+  filter: "all",
+  serverTs: null
 };
 
 // reducers
@@ -119,6 +125,14 @@ export default createReducer(initialState, {
         ...state.byId[assignmentId],
         testId: newTestId
       };
+    }
+  },
+  [SET_SERVER_TS]: (state, { payload }) => {
+    state.serverTs = payload;
+  },
+  [START_SERVER_TIMER]: state => {
+    if (state.serverTs) {
+      state.serverTs = addMinutes(state.serverTs, 1);
     }
   }
 });

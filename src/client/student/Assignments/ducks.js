@@ -16,7 +16,8 @@ import {
   setAssignmentsAction,
   setAssignmentsLoadingAction,
   setActiveAssignmentAction,
-  setConfirmationForTimedAssessmentAction
+  setConfirmationForTimedAssessmentAction,
+  setServerTimeStampAction
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
@@ -122,6 +123,7 @@ export const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;
+export const getServerTimeSelector = state => state.studentAssignment.serverTs;
 
 /**
  *
@@ -136,7 +138,7 @@ export const filterSelector = state => state.studentAssignment.filter;
  *  Close manual can display assignment by checking the startDate is less than current date and close when closed in class object is true
  *
  */
-export const isLiveAssignment = (assignment, classIds, userId) => {
+export const isLiveAssignment = (assignment, classIds, userId, serverTime) => {
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
@@ -164,18 +166,18 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
       }
       // IF MANUAL OPEN AND AUTO CLOSE
       if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE) {
-        const isLive = !currentClass.closed || currentClass.endDate > Date.now();
+        const isLive = !currentClass.closed || currentClass.endDate > serverTime;
         return isLive;
       }
       // IF MANUAL CLOSE AND AUTO OPEN
       if (assignment.openPolicy !== POLICY_AUTO_ON_DUEDATE) {
         const isLive =
-          currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
+          currentClass.startDate < serverTime && (!currentClass.closed || currentClass.closedDate > serverTime);
         return isLive;
       }
     }
   }
-  return endDate > Date.now();
+  return endDate > serverTime;
 };
 
 const statusFilter = filterType => assignment => {
@@ -190,7 +192,7 @@ const statusFilter = filterType => assignment => {
   }
 };
 
-const assignmentSortByDueDate = (groupedReports, assignment) => {
+const assignmentSortByDueDate = (groupedReports, assignment, serverTime) => {
   const reports = groupedReports[assignment._id] || [];
   const attempted = !!(reports && reports.length);
   const lastAttempt = last(reports) || {};
@@ -205,7 +207,7 @@ const assignmentSortByDueDate = (groupedReports, assignment) => {
   }
   const dueDate = assignment.dueDate || (_maxBy(assignment.class, "endDate") || {}).endDate;
 
-  const dueDateDiff = (dueDate - new Date()) / (1000 * 60 * 60 * 24);
+  const dueDateDiff = (dueDate - new Date(serverTime)) / (1000 * 60 * 60 * 24);
   const sortOrder = result * 10000 + dueDateDiff;
   return sortOrder;
 };
@@ -216,7 +218,8 @@ export const getAllAssignmentsSelector = createSelector(
   getCurrentGroup,
   getClassIds,
   getUserId,
-  (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
+  getServerTimeSelector,
+  (assignmentsObj, reportsObj, currentGroup, classIds, userId, serverTime) => {
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
@@ -244,9 +247,9 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.pauseAllowed !== undefined && !assignment.redir ? { pauseAllowed: clazz.pauseAllowed } : {})
         }));
       })
-      .filter(assignment => isLiveAssignment(assignment, classIds, userId));
+      .filter(assignment => isLiveAssignment(assignment, classIds, userId, serverTime));
 
-    return sortBy(assignments, [partial(assignmentSortByDueDate, groupedReports)]);
+    return sortBy(assignments, [assignment => assignmentSortByDueDate(groupedReports, assignment, serverTime)]);
   }
 );
 
@@ -285,10 +288,16 @@ function* fetchAssignments() {
     const groupId = yield select(getCurrentGroup);
     const userId = yield select(getCurrentUserId);
     const classIds = yield select(getClassIds);
-    const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId),
+    const reqTS = true;
+    yield put(setServerTimeStampAction(null));
+    const [{ assignments, ts }, reports] = yield all([
+      call(assignmentApi.fetchAssigned, groupId, "", reqTS),
       call(reportsApi.fetchReports, groupId)
     ]);
+    if (ts) {
+      const tsToNumber = new Date(ts).getTime();
+      yield put(setServerTimeStampAction(tsToNumber));
+    }
     // transform to handle redirect
     const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
     const assignmentsProcessed = assignments.map(transformFn);

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import isEmpty from "lodash/isEmpty";
 import { drawTools } from "@edulastic/constants";
-import { WithResources, MathModal, getMathHtml, AssessmentPlayerContext } from "@edulastic/common";
+import { WithResources, MathModal, getMathHtml, AssessmentPlayerContext, AnswerContext } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
 import ToolBox from "../Tools";
 import {
@@ -61,6 +61,7 @@ const Scratchpad = ({
   isDeleteMode.current = deleteMode;
   const hideToolBar = readOnly || hideTools;
   const { isStudentAttempt, currentItem } = useContext(AssessmentPlayerContext);
+  const { isAnswerModifiable, expressGrader } = useContext(AnswerContext);
   const isLineMode = lineTypes.includes(activeMode);
 
   const toggleProtractor = () => {
@@ -285,21 +286,29 @@ const Scratchpad = ({
 
   useEffect(() => {
     // load saved user work from backend initially
-    if (zwibbler && data) {
+    if (zwibbler) {
       /**
        * during student attempt (assessment player, practice player)
        * @see https://snapwiz.atlassian.net/browse/EV-17241
        */
-      if (isStudentAttempt && prevItemIndex !== currentItem) {
+      if (isStudentAttempt && prevItemIndex !== currentItem && data) {
         zwibbler.load(data);
         setPrevItemIndex(currentItem);
-      }
-      // in readOnly mode views (lcb, express grader, etc.)
-      else if (readOnly) {
+      } else if (isStudentAttempt && prevItemIndex !== currentItem && !data) {
+        zwibbler.newDocument();
+        setPrevItemIndex(currentItem);
+      } else if (data && readOnly) {
+        // in readOnly mode views (lcb, express grader, etc.)
         zwibbler.load(data);
       }
     }
   }, [data, zwibbler, currentItem]);
+
+  useEffect(() => {
+    if (expressGrader && zwibbler) {
+      zwibbler.setConfig("readOnly", !isAnswerModifiable);
+    }
+  }, [isAnswerModifiable, expressGrader]);
 
   return (
     <ScratchpadContainer ref={zwibblerContainer}>

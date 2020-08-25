@@ -315,7 +315,7 @@ class Container extends PureComponent {
         getDefaultTestSettings(test);
       }
     } else if (userRole === roleuser.STUDENT) {
-      if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
+      if (prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
         // this is to call redirectToStudentPage once, even if multiple props update happend
         if (!studentRedirected) {
           redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment, test);

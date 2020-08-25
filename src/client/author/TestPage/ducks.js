@@ -1457,6 +1457,12 @@ function* updateTestSaga({ payload }) {
 
 function* updateTestDocBasedSaga({ payload }) {
   try {
+    const _questions = payload?.data?.itemGroups?.[0]?.items?.[0]?.data?.questions || [];
+    const QuestionsbyId = {};
+    // rely on versionId else fallback to questionId
+    _questions.forEach(q => {
+      QuestionsbyId[q?.versionId || q.id] = q;
+    });
     const assessmentQuestions = yield select(getQuestionsArraySelector);
     const [testItem] = payload.data.itemGroups[0].items;
     delete payload.data.alreadyLiked;
@@ -1464,7 +1470,17 @@ function* updateTestDocBasedSaga({ payload }) {
     const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
 
     const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
-    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
+    const questions = assessmentQuestions
+      .filter(q => !resourceTypes.includes(q.type))
+      .map(q =>
+        QuestionsbyId[q.id]?.previousQuestionId
+          ? {
+              ...q,
+              versionId: QuestionsbyId[q.id].versionId,
+              previousQuestionId: QuestionsbyId[q.id].previousQuestionId
+            }
+          : q
+      );
     const updatedTestItem = {
       ...testItem,
       public: undefined,
@@ -1512,6 +1528,7 @@ function* updateTestDocBasedSaga({ payload }) {
       ...payload.data,
       itemGroups: [{ ...payload.data.itemGroups[0], items: [{ _id: testItemId, ...updatedItem }] }]
     };
+
     return yield call(updateTestSaga, {
       payload: { ...payload, data: newAssessment }
     });

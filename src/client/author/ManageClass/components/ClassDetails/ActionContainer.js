@@ -195,7 +195,7 @@ const ActionContainer = ({
   };
 
   const handleActionMenuClick = ({ key }) => {
-    const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1);
+    const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1 || s.status !== 1);
     switch (key) {
       case "enableSpeech":
         if (isEmpty(selectedStudent)) {

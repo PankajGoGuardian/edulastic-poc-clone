@@ -6,6 +6,7 @@ import { Table } from "antd";
 import { connect } from "react-redux";
 import { get, isInteger, floor, isEmpty } from "lodash";
 import queryString from "query-string";
+import { PrintActionWrapper } from "@edulastic/common";
 import Title from "./Title";
 import StudentCard from "./StudentCard";
 import {
@@ -19,7 +20,6 @@ import {
   Description,
   CardContainer
 } from "./styled";
-import { PrintActionWrapper } from "@edulastic/common";
 
 import { fetchStudentsByIdAction } from "../../ducks";
 
@@ -73,7 +73,7 @@ class PrintPreviewClass extends React.Component {
 
     let tableData = selectedStudent;
     if (isEmpty(tableData)) {
-      tableData = students?.filter(student => student.enrollmentStatus === 1);
+      tableData = students?.filter(student => student.enrollmentStatus === 1 && student.status === 1);
     }
 
     let pages = tableData?.length / numOfCard;
@@ -84,7 +84,7 @@ class PrintPreviewClass extends React.Component {
 
     return (
       <>
-        <PrintActionWrapper/>
+        <PrintActionWrapper />
         <PrintPreviewBack>
           <PrintPreviewContainer>
             <Title />
@@ -102,9 +102,9 @@ class PrintPreviewClass extends React.Component {
             </ParagraphDiv>
 
             <Description>
-              Please ask the student to navigate to <a href={appLoginUrl}>{appLoginUrl}</a>. The default password for all
-              students is set to the class code. Please ask the student to log in using the username below and enter the
-              password as <ClassCode>{code}</ClassCode>.
+              Please ask the student to navigate to <a href={appLoginUrl}>{appLoginUrl}</a>. The default password for
+              all students is set to the class code. Please ask the student to log in using the username below and enter
+              the password as <ClassCode>{code}</ClassCode>.
             </Description>
 
             <Table columns={columns} bordered dataSource={tableData} rowKey={rowKey} pagination={false} />

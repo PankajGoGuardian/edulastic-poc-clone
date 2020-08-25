@@ -28,7 +28,6 @@ class TestItemPreview extends Component {
     showFeedback: PropTypes.bool,
     style: PropTypes.object,
     questions: PropTypes.object.isRequired,
-    qIndex: PropTypes.number,
     student: PropTypes.object
   };
 
@@ -37,7 +36,6 @@ class TestItemPreview extends Component {
     verticalDivider: false,
     scrolling: false,
     style: { padding: 0, display: "flex" },
-    qIndex: null,
     student: {}
   };
 
@@ -224,7 +222,6 @@ class TestItemPreview extends Component {
       windowWidth,
       showFeedback,
       questions,
-      qIndex,
       student,
       metaData,
       disableResponse,
@@ -253,7 +250,11 @@ class TestItemPreview extends Component {
     }
     // show collapse button only in student player or in author preview mode.
     const hasResourceTypeQuestion =
-      cols.length > 1 && cols.filter(a => a).flatMap(item => item.widgets).find(item => item && item.widgetType === "resource");
+      cols.length > 1 &&
+      cols
+        .filter(a => a)
+        .flatMap(item => item.widgets)
+        .find(item => item && item.widgetType === "resource");
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
     const {
       isLCBView,
@@ -353,7 +354,6 @@ class TestItemPreview extends Component {
                         windowWidth={windowWidth}
                         showFeedback={showFeedback}
                         questions={questions}
-                        qIndex={qIndex}
                         student={student}
                         disableResponse={disableResponse}
                         LCBPreviewModal={LCBPreviewModal}

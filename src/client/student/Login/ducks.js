@@ -109,6 +109,7 @@ export const ADD_CLASS_TO_USER = "[user] add class to user";
 export const ADD_COLLECTION_PERMISSION = "[user] update item bank permission";
 export const REMOVE_COLLECTION_PERMISSION = "[user] remove item bank permission";
 export const SET_CLI_USER = "[user] set cli user";
+export const TOGGLE_CLASS_CODE_MODAL = "[user] toggle class code modal";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -162,6 +163,7 @@ export const addClassToUserAction = createAction(ADD_CLASS_TO_USER);
 export const addItemBankPermissionAction = createAction(ADD_COLLECTION_PERMISSION);
 export const removeItemBankPermissionAction = createAction(REMOVE_COLLECTION_PERMISSION);
 export const updateCliUserAction = createAction(SET_CLI_USER);
+export const toggleClassCodeModalAction = createAction(TOGGLE_CLASS_CODE_MODAL);
 
 const initialState = {
   addAccount: false,
@@ -170,7 +172,8 @@ const initialState = {
   authenticating: true,
   signupStatus: 0,
   currentChild: null,
-  isCliUser: false
+  isCliUser: false,
+  isClassCodeModalOpen: false
 };
 
 const setUser = (state, { payload }) => {
@@ -449,6 +452,9 @@ export default createReducer(initialState, {
   },
   [SET_CLI_USER]: (state, { payload }) => {
     state.isCliUser = payload;
+  },
+  [TOGGLE_CLASS_CODE_MODAL]: (state, { payload }) => {
+    state.isClassCodeModalOpen = payload;
   }
 });
 
@@ -543,6 +549,11 @@ export const getAddAccountUserId = createSelector(
   userId => userId
 );
 
+export const getIsClassCodeModalOpen = createSelector(
+  ["user.isClassCodeModalOpen"],
+  r => r
+);
+
 const routeSelector = state => state.router.location.pathname;
 
 function getCurrentFirebaseUser() {
@@ -570,45 +581,50 @@ function* login({ payload }) {
       _payload.addAccountTo = addAccountTo;
     }
     const result = yield call(authApi.login, _payload);
-    const user = pick(result, userPickFields);
-    yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
-    if (addAccount === true) {
-      TokenStorage.storeAccessToken(result.token, user._id, user.role, false);
+    if (result.needClassCode) {
+      yield put(toggleClassCodeModalAction(true));
     } else {
-      TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
-    }
-    TokenStorage.selectAccessToken(user._id, user.role);
-    TokenStorage.updateKID(user);
-    yield put(setUserAction(user));
-    yield put(
-      updateInitSearchStateAction({
-        grades: user?.orgData?.defaultGrades,
-        subject: user?.orgData?.defaultSubjects
-      })
-    );
-    yield put(receiveLastPlayListAction());
-    if (user.role !== roleuser.STUDENT) {
-      yield put(receiveRecentPlayListsAction());
-    }
-
-    yield call(segmentApi.analyticsIdentify, { user });
-
-    const redirectUrl = localStorage.getItem("loginRedirectUrl");
-
-    const isAuthUrl = /signup|login/gi.test(redirectUrl);
-    if (redirectUrl && !isAuthUrl) {
-      if (user.role === roleuser.STUDENT && Object.prototype.hasOwnProperty.call(localStorage, "publicUrlAccess")) {
-        const publicUrl = localStorage.getItem("publicUrlAccess");
-        localStorage.removeItem("publicUrlAccess");
-        yield put(push({ pathname: publicUrl, state: { isLoading: true } }));
+      yield put(toggleClassCodeModalAction(false));
+      const user = pick(result, userPickFields);
+      yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
+      if (addAccount === true) {
+        TokenStorage.storeAccessToken(result.token, user._id, user.role, false);
       } else {
-        localStorage.removeItem("loginRedirectUrl");
-        yield put(push(redirectUrl));
+        TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
       }
-    }
+      TokenStorage.selectAccessToken(user._id, user.role);
+      TokenStorage.updateKID(user);
+      yield put(setUserAction(user));
+      yield put(
+        updateInitSearchStateAction({
+          grades: user?.orgData?.defaultGrades,
+          subject: user?.orgData?.defaultSubjects
+        })
+      );
+      yield put(receiveLastPlayListAction());
+      if (user.role !== roleuser.STUDENT) {
+        yield put(receiveRecentPlayListsAction());
+      }
 
-    if (generalSettings) {
-      setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+      yield call(segmentApi.analyticsIdentify, { user });
+
+      const redirectUrl = localStorage.getItem("loginRedirectUrl");
+
+      const isAuthUrl = /signup|login/gi.test(redirectUrl);
+      if (redirectUrl && !isAuthUrl) {
+        if (user.role === roleuser.STUDENT && Object.prototype.hasOwnProperty.call(localStorage, "publicUrlAccess")) {
+          const publicUrl = localStorage.getItem("publicUrlAccess");
+          localStorage.removeItem("publicUrlAccess");
+          yield put(push({ pathname: publicUrl, state: { isLoading: true } }));
+        } else {
+          localStorage.removeItem("loginRedirectUrl");
+          yield put(push(redirectUrl));
+        }
+      }
+
+      if (generalSettings) {
+        setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+      }
     }
 
     // Important redirection code removed, redirect code already present in /src/client/App.js

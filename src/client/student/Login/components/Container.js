@@ -22,8 +22,17 @@ import cleverIcon from "../../assets/clever-icon.svg";
 import googleIcon from "../../assets/google-btn.svg";
 import classlinkIcon from "../../assets/classlink-icon.png";
 import icon365 from "../../assets/icons8-office-365.svg";
-import { cleverLoginAction, googleLoginAction, loginAction, msoLoginAction, classlinkLoginAction } from "../ducks";
+import {
+  cleverLoginAction,
+  googleLoginAction,
+  loginAction,
+  msoLoginAction,
+  classlinkLoginAction,
+  getIsClassCodeModalOpen,
+  toggleClassCodeModalAction
+} from "../ducks";
 import { ForgotPasswordPopup } from "./forgotPasswordPopup";
+import { ClassCodePopup } from "./classCodePopup";
 
 const FormItem = Form.Item;
 
@@ -36,21 +45,31 @@ class LoginContainer extends React.Component {
 
   state = {
     confirmDirty: false,
-    forgotPasswordVisible: false
+    forgotPasswordVisible: false,
+    classCode: ""
   };
 
   handleSubmit = e => {
     const { form, login } = this.props;
+    const { classCode } = this.state;
     e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email }) => {
       if (!err) {
-        login({
+        const payload = {
           password,
           username: trim(email)
-        });
+        };
+        if (classCode) {
+          Object.assign(payload, {
+            classCode
+          });
+        }
+        login(payload);
       }
     });
   };
+
+  handleClassCodeChange = classCode => this.setState({ classCode });
 
   handleConfirmBlur = ({ target: { value } }) => {
     let { confirmDirty } = this.state;
@@ -92,10 +111,12 @@ class LoginContainer extends React.Component {
       cleverLogin,
       classlinkLogin,
       msoLogin,
-      loadingComponents
+      loadingComponents,
+      isClassCodeModalOpen,
+      toggleClassCodeModal
     } = this.props;
 
-    const { forgotPasswordVisible } = this.state;
+    const { forgotPasswordVisible, classCode } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -253,6 +274,15 @@ class LoginContainer extends React.Component {
             onOk={this.onForgotPasswordOk}
           />
         ) : null}
+        {isClassCodeModalOpen ? (
+          <ClassCodePopup
+            visible={isClassCodeModalOpen}
+            toggleClassCodeModal={toggleClassCodeModal}
+            classCode={classCode}
+            handleClassCodeChange={this.handleClassCodeChange}
+            onOk={this.handleSubmit}
+          />
+        ) : null}
       </LoginContentWrapper>
     );
   }
@@ -264,14 +294,16 @@ const enhance = compose(
   withNamespaces("login"),
   connect(
     state => ({
-      loadingComponents: get(state, ["authorUi", "currentlyLoading"], [])
+      loadingComponents: get(state, ["authorUi", "currentlyLoading"], []),
+      isClassCodeModalOpen: getIsClassCodeModalOpen(state)
     }),
     {
       googleLogin: googleLoginAction,
       cleverLogin: cleverLoginAction,
       msoLogin: msoLoginAction,
       login: loginAction,
-      classlinkLogin: classlinkLoginAction
+      classlinkLogin: classlinkLoginAction,
+      toggleClassCodeModal: toggleClassCodeModalAction
     }
   )
 );

@@ -72,7 +72,8 @@ const AudioControls = ({
   const audioLoadResolve = url =>
     new Promise((resolve, reject) => {
       const sound = new Howl({
-        src: url
+        src: url,
+        html5: true
       });
       sound.load();
       sound.on("load", () => {

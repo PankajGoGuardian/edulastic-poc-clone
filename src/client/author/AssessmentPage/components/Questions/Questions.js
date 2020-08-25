@@ -75,13 +75,13 @@ const SortableQuestionItem = SortableElement(
   }) => (
     <div
       onClick={() => {
-          setCurrentAnnotationTool('cursor');
-          onHighlightQuestion(data.id);
-        }}
+        setCurrentAnnotationTool("cursor");
+        onHighlightQuestion(data.id);
+      }}
       onFocus={() => {
-          setCurrentAnnotationTool('cursor');
-          onHighlightQuestion(data.id);
-        }}
+        setCurrentAnnotationTool("cursor");
+        onHighlightQuestion(data.id);
+      }}
       style={{ display: "flex", marginBottom: "6px", padding: (testMode || review) && "0px 3px" }}
     >
       {!testMode && !review && <DragHandle review={review} />}
@@ -130,10 +130,10 @@ const defaultQuestionValue = {
 
 const defaultQuestionOptions = {
   [MULTIPLE_CHOICE]: [
-    { label: "A", value: 1 },
-    { label: "B", value: 2 },
-    { label: "C", value: 3 },
-    { label: "D", value: 4 }
+    { label: "A", value: uuid() },
+    { label: "B", value: uuid() },
+    { label: "C", value: uuid() },
+    { label: "D", value: uuid() }
   ],
   [CLOZE_DROP_DOWN]: {
     0: ["A", "B"]

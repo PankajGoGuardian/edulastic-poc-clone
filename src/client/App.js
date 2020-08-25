@@ -197,7 +197,6 @@ class App extends Component {
 
   render() {
     const cliBannerVisible = sessionStorage.cliBannerVisible || false;
-
     /**
      * NOTE:  this logic would be called multiple times, even after redirect
      */
@@ -218,6 +217,7 @@ class App extends Component {
       !publicPath &&
       user.authenticating &&
       TokenStorage.getAccessToken() &&
+      !location.pathname.includes("/auth/") &&
       !sessionStorage.getItem("addAccountDetails")
     ) {
       return <Loading />;

@@ -371,7 +371,7 @@ class Item extends Component {
     const { isOpenedDetails, selectedId, passageConfirmModalVisible, showSelectGroupModal } = this.state;
     const itemTypes = getQuestionType(item);
     const isPublisher = features.isCurator || features.isPublisherAuthor;
-    const staticGroups = test?.itemGroups.filter(g => g.type === ITEM_GROUP_TYPES.STATIC) || 0;
+    const staticGroups = test?.itemGroups?.filter(g => g.type === ITEM_GROUP_TYPES.STATIC) || 0;
     const groupName =
       staticGroups.length === 1
         ? "Selected"

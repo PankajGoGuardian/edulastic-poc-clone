@@ -399,7 +399,7 @@ class PreviewModal extends React.Component {
     const allRows = item && !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
     const isPassage = passage && passageTestItems.length;
-    if (!!item.passageId && !!passage) {
+    if (!!item?.passageId && !!passage) {
       allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
     }
 

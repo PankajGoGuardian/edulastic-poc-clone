@@ -498,7 +498,7 @@ export const getRegradingSelector = createSelector(
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
   ({ itemGroups }) => {
-    if (!itemGroups.length) {
+    if (!itemGroups?.length) {
       return false;
     }
     return (

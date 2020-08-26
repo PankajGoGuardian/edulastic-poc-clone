@@ -15,7 +15,7 @@ import CardTextContent from "./components/CardTextContent/cardTextContent";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
 import Launch from "../../../LaunchHangout/Launch";
 import ClassSelectModal from "../../../../../ManageClass/components/ClassListContainer/ClassSelectModal";
-
+import CanvasClassSelectModal from "../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal";
 // static data
 
 // ducks
@@ -25,15 +25,20 @@ import {
   fetchClassListAction,
   fetchCleverClassListRequestAction,
   syncClassesWithCleverAction,
-  getCleverClassListSelector
+  getCleverClassListSelector,
+  getCanvasCourseListRequestAction,
+  getCanvasSectionListRequestAction,
+  setShowCleverSyncModalAction
 } from "../../../../../ManageClass/ducks";
 import { receiveTeacherDashboardAction } from "../../../../duck";
 import {
   getGoogleAllowedInstitionPoliciesSelector,
-  getCleverSyncEnabledInstitutionPoliciesSelector,
+  getCanvasAllowedInstitutionPoliciesSelector,
   getInterestedGradesSelector,
-  getInterestedSubjectsSelector
+  getInterestedSubjectsSelector,
+  getCleverLibraryUserSelector
 } from "../../../../../src/selectors/user";
+import { getUserDetails } from "../../../../../../student/Login/ducks";
 import { getFormattedCurriculumsSelector } from "../../../../../src/selectors/dictionaries";
 
 const Card = ({ data }) => (
@@ -58,17 +63,26 @@ const MyClasses = ({
   receiveSearchCourse,
   districtId,
   googleAllowedInstitutions,
+  canvasAllowedInstitutions,
   courseList,
-  cleverSyncEnabledInstitutions,
   loadingCleverClassList,
   cleverClassList,
   getStandardsListBySubject,
   fetchCleverClassList,
   syncCleverClassList,
   defaultGrades = [],
-  defaultSubjects = []
+  defaultSubjects = [],
+  isCleverUser,
+  institutionIds,
+  canvasCourseList,
+  canvasSectionList,
+  getCanvasCourseListRequest,
+  getCanvasSectionListRequest,
+  user,
+  showCleverSyncModal,
+  setShowCleverSyncModal
 }) => {
-  const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
+  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false);
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -112,6 +126,16 @@ const MyClasses = ({
         defaultGrades={defaultGrades}
         defaultSubjects={defaultSubjects}
       />
+      <CanvasClassSelectModal
+        visible={showCanvasSyncModal}
+        onCancel={() => setShowCanvasSyncModal(false)}
+        user={user}
+        getCanvasCourseListRequest={getCanvasCourseListRequest}
+        getCanvasSectionListRequest={getCanvasSectionListRequest}
+        canvasCourseList={canvasCourseList}
+        canvasSectionList={canvasSectionList}
+        institutionId={institutionIds[0]}
+      />
       <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
         My Classes
       </TextWrapper>
@@ -123,8 +147,11 @@ const MyClasses = ({
           history={history}
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
           allowGoogleLogin={googleAllowedInstitutions.length > 0}
-          enableCleverSync={cleverSyncEnabledInstitutions.length > 0}
+          canvasAllowedInstitutions={canvasAllowedInstitutions}
+          enableCleverSync={isCleverUser}
           setShowCleverSyncModal={setShowCleverSyncModal}
+          handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
+          user={user}
         />
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
@@ -141,16 +168,22 @@ export default compose(
       classData: state.dashboardTeacher.data,
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
+      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: state.user.user?.orgData?.districtIds?.[0],
       loading: state.dashboardTeacher.loading,
+      user: getUserDetails(state),
+      institutionIds: get(state, "user.user.institutionIds", []),
+      canvasCourseList: get(state, "manageClass.canvasCourseList", []),
+      canvasSectionList: get(state, "manageClass.canvasSectionList", []),
       courseList: get(state, "coursesReducer.searchResult"),
-      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
+      isCleverUser: getCleverLibraryUserSelector(state),
       loadingCleverClassList: get(state, "manageClass.loadingCleverClassList"),
       cleverClassList: getCleverClassListSelector(state),
       getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject }),
       defaultGrades: getInterestedGradesSelector(state),
-      defaultSubjects: getInterestedSubjectsSelector(state)
+      defaultSubjects: getInterestedSubjectsSelector(state),
+      showCleverSyncModal: get(state, "manageClass.showCleverSyncModal", false)
     }),
     {
       fetchClassList: fetchClassListAction,
@@ -158,7 +191,10 @@ export default compose(
       getDictCurriculums: getDictCurriculumsAction,
       getTeacherDashboard: receiveTeacherDashboardAction,
       fetchCleverClassList: fetchCleverClassListRequestAction,
-      syncCleverClassList: syncClassesWithCleverAction
+      syncCleverClassList: syncClassesWithCleverAction,
+      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
+      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
+      setShowCleverSyncModal: setShowCleverSyncModalAction
     }
   )
 )(MyClasses);

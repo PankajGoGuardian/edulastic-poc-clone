@@ -15,10 +15,22 @@ import {
   lightFadedBlack,
   themeColorBlue
 } from "@edulastic/colors";
+import { SelectInputStyled } from "@edulastic/common";
 import { Button, Table, Select, Icon, Dropdown } from "antd";
 import { IconPlusCircle } from "@edulastic/icons";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
+export const OptionWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+export const SelectStyled = styled(SelectInputStyled)`
+  .ant-select-selection__placeholder {
+    color: ${secondaryTextColor};
+  }
+`;
 export const ClassCreateContainer = styled.div`
   width: 100%;
   justify-content: center;

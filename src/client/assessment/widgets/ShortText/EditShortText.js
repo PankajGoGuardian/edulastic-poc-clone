@@ -18,8 +18,6 @@ import Question from "../../components/Question";
 const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
-  const { matchingRule = "" } = item?.validation?.validResponse || {};
-
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
@@ -28,7 +26,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         }
         draft.validation.altResponses.push({
           score: 1,
-          matchingRule,
+          matchingRule: EXACT_MATCH,
           value: ""
         });
       })
@@ -61,14 +59,15 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
     );
   };
 
-  // The "matchingRule" must have same value for both Correct and Alternate answers
   const handleScoringTypeChange = value => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.matchingRule = value;
-        draft.validation?.altResponses?.forEach(altResp => {
-          altResp.matchingRule = value;
-        });
+        if (correctTab === 0) {
+          draft.validation.validResponse.matchingRule = value;
+        } else {
+          draft.validation.altResponses[correctTab - 1].matchingRule = value;
+        }
+
         updateVariables(draft);
       })
     );
@@ -99,11 +98,14 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         { value: EXACT_MATCH, label: t("component.shortText.exactMatch") },
         { value: CONTAINS, label: t("component.shortText.anyTextContaining") }
       ]}
-      selectValue={matchingRule}
+      selectValue={
+        correctTab === 0
+          ? item.validation.validResponse.matchingRule
+          : item.validation.altResponses[correctTab - 1].matchingRule
+      }
       inputValue={
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
-      isCorrectAnsTab={correctTab === 0}
     />
   );
 

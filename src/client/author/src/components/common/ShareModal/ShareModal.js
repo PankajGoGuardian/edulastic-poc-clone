@@ -254,21 +254,12 @@ class ShareModal extends React.Component {
     return `${data.email && data.email !== "null" ? ` (${data.email})` : ""}`;
   };
 
-  handleClose = () => {
-    const { onClose } = this.props;
-    this.setState({
-      currentUser: {},
-      searchString: "",
-      showWarning: false
-    });
-    onClose();
-  };
-
   render() {
     const { sharedType, permission, _permissionKeys, searchString, showWarning } = this.state;
     const {
       shareLabel,
       isVisible,
+      onClose,
       userList = [],
       fetching,
       sharedUsersList,
@@ -299,7 +290,7 @@ class ShareModal extends React.Component {
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
     else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
     return (
-      <SharingModal width="700px" footer={null} visible={isVisible} onCancel={this.handleClose} centered>
+      <SharingModal width="700px" footer={null} visible={isVisible} onCancel={onClose} centered>
         <ModalContainer>
           <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Share with others</h2>
           <ShareBlock>
@@ -418,7 +409,7 @@ class ShareModal extends React.Component {
             </FlexContainer>
           </PeopleBlock>
           <DoneButtonContainer>
-            <EduButton height="32px" onClick={this.handleClose} style={{ display: "inline-flex" }}>
+            <EduButton height="32px" onClick={onClose} style={{ display: "inline-flex" }}>
               Cancel
             </EduButton>
             <EduButton

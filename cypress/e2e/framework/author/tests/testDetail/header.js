@@ -35,7 +35,6 @@ export default class TestHeader {
 
   clickOnDescription = () => {
     this.getTestSummaryHeader().click({ force: true });
-    cy.get('[data-cy="testname"]').should("be.visible");
     return new TestSummayTab();
   };
 

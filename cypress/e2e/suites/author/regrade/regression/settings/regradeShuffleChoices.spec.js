@@ -118,7 +118,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
 
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.NOT_STARTED)
-          .forEach(({ email, status, attempt }) => {
+          .forEach(studentdata => {
+            const { email, status, attempt, overidden } = studentdata;
             studentTestPage.attemptAssignment(email, status, attempt, questionTypeMap);
           });
       });
@@ -142,13 +143,12 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
         regrade.applyRegrade();
       });
 
-      context(`> verify regraded shuffled choice at setting student side`, () => {
+      context(`> verify student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
-          .filter(({ status }) => status !== studentSide.SUBMITTED)
-          .forEach(({ email, overidden, status }, index) => {
-            const titleAdjust = overidden ? "" : "not ";
-            const shuffled = overidden || status === studentSide.NOT_STARTED ? "" : "not ";
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- '${shuffled}have shuffle'`, () => {
+          .filter(({ status }) => status === studentSide.IN_PROGRESS || status === studentSide.NOT_STARTED)
+          .forEach((studentdata, index) => {
+            const { email, overidden, status } = studentdata;
+            it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
               const attemptChoiceOrder = [];
               cy.login("student", email);
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1);
@@ -175,7 +175,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
           });
       });
       [attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
-        context(`> verify teacher side for ${ind === 0 ? "not " : ""}overidden assignment`, () => {
+        context("> verify teacher side for not overidden assignment", () => {
           before("> login and click on lcb by assignment id", () => {
             cy.login("teacher", teacher);
             testlibaryPage.sidebar.clickOnAssignment();
@@ -190,25 +190,37 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
           });
 
           it("> verify student centric", () => {
-            const { queKey, attemptData: aData, points } = queData;
             lcb.clickOnStudentsTab();
             studentdata.forEach((stu, ind) => {
               lcb.questionResponsePage.selectStudent(stu.name);
               lcb.questionResponsePage
                 .getLabels(lcb.questionResponsePage.getQuestionContainer(0))
                 .each(($ele, i) => cy.wrap($ele).should("contain.text", originalSequence[i]));
-              lcb.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptTypes.RIGHT, aData, true, 0);
+              lcb.questionResponsePage.verifyQuestionResponseCard(
+                queData.points,
+                queData.queKey,
+                attemptTypes.RIGHT,
+                queData.attemptData,
+                true,
+                0
+              );
             });
           });
 
           it("> verify question centric", () => {
-            const { queKey, attemptData: aData, points } = queData;
             lcb.clickonQuestionsTab();
-            studentdata.forEach(({ name }, ind) => {
+            studentdata.forEach((stu, ind) => {
               lcb.questionResponsePage
-                .getLabels(lcb.questionResponsePage.getQuestionContainerByStudent(name))
+                .getLabels(lcb.questionResponsePage.getQuestionContainerByStudent(stu.name))
                 .each(($ele, i) => cy.wrap($ele).should("contain.text", originalSequence[i]));
-              lcb.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptTypes.RIGHT, aData, 0, name);
+              lcb.questionResponsePage.verifyQuestionResponseCard(
+                queData.points,
+                queData.queKey,
+                attemptTypes.RIGHT,
+                queData.attemptData,
+                false,
+                stu.name
+              );
             });
           });
 
@@ -245,7 +257,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
             lcb.clickOnRedirectSubmit();
           });
 
-          it("> verify student,expected to have shuffle", () => {
+          it("> verify student", () => {
             const attemptChoiceOrder = [];
             cy.login("student", studentdata[0].email);
             assignmentsPage.clickOnAssigmentByTestId(versionedTest1, { isFirstAttempt: false });
@@ -303,7 +315,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
 
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.NOT_STARTED)
-          .forEach(({ email, status, attempt }) => {
+          .forEach(studentdata => {
+            const { email, status, attempt } = studentdata;
             studentTestPage.attemptAssignment(email, status, attempt, questionTypeMap);
           });
       });
@@ -327,15 +340,13 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
         regrade.applyRegrade();
       });
 
-      context(`> verify regraded shuffled choice at setting student side`, () => {
+      context(`> verify student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.SUBMITTED)
-          .forEach(({ email, overidden, status }, index) => {
-            const titleAdjust = overidden ? "" : "not ";
-            const shuffled = !overidden && status === studentSide.IN_PROGRESS ? "" : "not ";
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- '${shuffled}have shuffle'`, () => {
+          .forEach((studentdata, index) => {
+            const { email, overidden, status } = studentdata;
+            it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
               const attemptChoiceOrder = [];
-              const { queKey, attemptData } = queData;
               cy.login("student", email);
 
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2);
@@ -352,16 +363,20 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
               if (status === studentSide.NOT_STARTED)
                 studentTestPage.attemptQuestion(queData.queKey.split(".")[0], attemptTypes.RIGHT, queData.attemptData);
               else
-                studentTestPage.verifyQuestionResponseRetained(queKey.split(".")[0], attemptTypes.RIGHT, attemptData);
+                studentTestPage.verifyQuestionResponseRetained(
+                  queData.queKey.split(".")[0],
+                  attemptTypes.RIGHT,
+                  queData.attemptData
+                );
               studentTestPage.clickOnNext();
               studentTestPage.submitTest();
             });
           });
       });
       [attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
-        context(`> verify teacher side for '${ind === 0 ? "not " : ""}overidden' assignment`, () => {
+        context("> verify teacher side for not overidden assignment", () => {
           before("> login and click on lcb by assignment id", () => {
-            if (ind === 0) cy.login("teacher", teacher);
+            cy.login("teacher", teacher);
             testlibaryPage.sidebar.clickOnAssignment();
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, ind === 0 ? assignid1 : assignid2);
           });
@@ -374,25 +389,37 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
           });
 
           it("> verify student centric", () => {
-            const { queKey, attemptData: aData, points } = queData;
             lcb.clickOnStudentsTab();
-            studentdata.forEach(({ name }, ind) => {
-              lcb.questionResponsePage.selectStudent(name);
+            studentdata.forEach((stu, ind) => {
+              lcb.questionResponsePage.selectStudent(stu.name);
               lcb.questionResponsePage
                 .getLabels(lcb.questionResponsePage.getQuestionContainer(0))
                 .each(($ele, i) => cy.wrap($ele).should("contain.text", originalSequence[i]));
-              lcb.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptTypes.RIGHT, aData, true, 0);
+              lcb.questionResponsePage.verifyQuestionResponseCard(
+                queData.points,
+                queData.queKey,
+                attemptTypes.RIGHT,
+                queData.attemptData,
+                true,
+                0
+              );
             });
           });
 
           it("> verify question centric", () => {
-            const { queKey, attemptData: aData, points } = queData;
             lcb.clickonQuestionsTab();
-            studentdata.forEach(({ name }, ind) => {
+            studentdata.forEach((stu, ind) => {
               lcb.questionResponsePage
-                .getLabels(lcb.questionResponsePage.getQuestionContainerByStudent(name))
+                .getLabels(lcb.questionResponsePage.getQuestionContainerByStudent(stu.name))
                 .each(($ele, i) => cy.wrap($ele).should("contain.text", originalSequence[i]));
-              lcb.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptTypes.RIGHT, aData, 0, name);
+              lcb.questionResponsePage.verifyQuestionResponseCard(
+                queData.points,
+                queData.queKey,
+                attemptTypes.RIGHT,
+                queData.attemptData,
+                false,
+                stu.name
+              );
             });
           });
 
@@ -429,7 +456,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
             lcb.clickOnRedirectSubmit();
           });
 
-          it("> verify student, expected not to have shuffle", () => {
+          it("> verify student", () => {
             const attemptChoiceOrder = [];
             cy.login("student", studentdata[0].email);
             assignmentsPage.clickOnAssigmentByTestId(versionedTest2, { isFirstAttempt: false });

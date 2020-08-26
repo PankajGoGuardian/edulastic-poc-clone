@@ -205,7 +205,6 @@ const EssayPlainTextPreview = ({
             )}
             {!isPrintPreview && (
               <TextArea
-                data-cy="previewBoxContainer"
                 inputRef={ref => {
                   node = ref;
                 }}

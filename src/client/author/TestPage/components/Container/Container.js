@@ -557,14 +557,16 @@ class Container extends PureComponent {
         );
       case "settings":
         return (
-          <Setting
-            current={current}
-            isEditable={isEditable}
-            onShowSource={this.handleNavChange("source")}
-            sebPasswordRef={this.sebPasswordRef}
-            owner={isOwner}
-            showCancelButton={showCancelButton}
-          />
+          <Content>
+            <Setting
+              current={current}
+              isEditable={isEditable}
+              onShowSource={this.handleNavChange("source")}
+              sebPasswordRef={this.sebPasswordRef}
+              owner={isOwner}
+              showCancelButton={showCancelButton}
+            />
+          </Content>
         );
       case "worksheet":
         return (

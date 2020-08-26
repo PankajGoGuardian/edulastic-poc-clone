@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -8,7 +7,7 @@ import { Spin, message, Modal, Button } from "antd";
 import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from "lodash";
 import useInterval from "@use-it/interval";
 
-import { test as testConstants, assignmentPolicyOptions, questionType } from "@edulastic/constants";
+import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
 import { AssessmentPlayerContext, useRealtimeV2 } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
 
@@ -64,8 +63,6 @@ const RealTimeV2HookWrapper = ({ userId, testId, regradedAssignment, regradedRea
   return null;
 };
 
-const { playerSkinValues } = testConstants;
-
 const AssessmentContainer = ({
   view,
   items,
@@ -93,6 +90,7 @@ const AssessmentContainer = ({
   closeTestPreviewModal,
   testletType,
   testletState,
+  testletConfig,
   testType,
   test,
   groupId,
@@ -122,23 +120,12 @@ const AssessmentContainer = ({
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
-  const { enableSkipAlert = false } = testSettings || {};
-
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
 
   // start assessment
   useEffect(() => {
     window.localStorage.assessmentLastTime = Date.now();
   }, []);
-
-  useEffect(() => {
-    if (!loading && items.length === 0) {
-      Modal.info({
-        title: "It looks like there aren't any Items in this test.",
-        okText: "Close"
-      });
-    }
-  }, [loading]);
 
   useEffect(() => {
     lastTime.current = Date.now();
@@ -304,15 +291,13 @@ const AssessmentContainer = ({
           locState: history?.location?.state,
           callback: () => changePreview(previewTab)
         });
-      } else if (enableSkipAlert) {
+      } else {
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
           index,
           context
         });
-      } else {
-        gotoQuestion(index, true);
       }
     }
   };
@@ -334,15 +319,13 @@ const AssessmentContainer = ({
           urlToGo: `${url}/${"test-summary"}`,
           locState: { ...history?.location?.state, fromSummary: true }
         });
-      } else if (enableSkipAlert) {
+      } else {
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
           index: Number(currentItem) + 1,
           context: "next"
         });
-      } else {
-        moveToNext(null, true);
       }
     }
     if (enableMagnifier) {
@@ -476,10 +459,11 @@ const AssessmentContainer = ({
         {...props}
       />
     );
-  } else if (playerSkinType === playerSkinValues.testlet) {
+  } else if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
+        testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}
@@ -514,7 +498,7 @@ const AssessmentContainer = ({
           The assignment has been modified by Instructor. Please restart the assignment.
         </Modal>
       )}
-      {unansweredPopupSetting.show && enableSkipAlert && (
+      {unansweredPopupSetting.show && (
         <UnansweredPopup
           visible
           title=""
@@ -548,12 +532,14 @@ AssessmentContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
+  testletConfig: PropTypes.object,
   test: PropTypes.object
 };
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
   annotations: [],
+  testletConfig: {},
   test: {}
 };
 
@@ -568,6 +554,7 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
+      testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),
       annotations: state.test.annotations,

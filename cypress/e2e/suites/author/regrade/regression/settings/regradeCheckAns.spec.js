@@ -100,10 +100,10 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- check
         regrade.applyRegrade();
       });
 
-      context(`> verify regrdaded no of check ans attempts at student side`, () => {
+      context(`> verify student side`, () => {
         [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }, index) => {
-          const [titleAdjust, maxChecks] = overidden ? ["", checkAns1] : ["not ", checkAns2];
-          it(`> for student ${status} with '${titleAdjust}overidden' assignment, expected-'${maxChecks} times'`, () => {
+          it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+            const maxChecks = overidden ? checkAns1 : checkAns2;
             cy.login("student", email);
             assignmentsPage.clickOnAssignmentButton();
             for (let i = 0; i < maxChecks; i++) {
@@ -151,7 +151,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- check
 
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status === studentSide.IN_PROGRESS)
-          .forEach(({ email }) => {
+          .forEach(studentdata => {
+            const { email } = studentdata;
             cy.login("student", email);
             assignmentsPage.clickOnAssignmentButton();
             studentTestPage.clickOnExitTest();
@@ -174,10 +175,10 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- check
         regrade.applyRegrade();
       });
 
-      context(`> verify regraded no of check ans attempts at student side`, () => {
-        [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }, index) => {
-          const titleAdjust = overidden ? "" : "not ";
-          it(`> for student ${status} with '${titleAdjust}overidden' assignment,exected- '${checkAns2} times'`, () => {
+      context(`> verify student side`, () => {
+        [...attemptsdata1, ...attemptsdata2].forEach((studentdata, index) => {
+          const { email, overidden, status } = studentdata;
+          it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
             cy.login("student", email);
             assignmentsPage.clickOnAssignmentButton();
             for (let i = 0; i < checkAns2; i++) {

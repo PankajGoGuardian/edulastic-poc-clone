@@ -124,14 +124,12 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'asse
         regrade.applyRegrade();
       });
 
-      context(`> verify regraded player skin at student side`, () => {
+      context(`> verify student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.SUBMITTED)
           .forEach(({ email, overidden, status }) => {
-            const [playerSkin, titleAdjust] = overidden
-              ? [ASSESSMENT_PLAYERS.PARCC, ""]
-              : [ASSESSMENT_PLAYERS.SBAC, "not "];
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected -'${playerSkin}'`, () => {
+            it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+              const playerSkin = overidden ? ASSESSMENT_PLAYERS.PARCC : ASSESSMENT_PLAYERS.SBAC;
               cy.login("student", email);
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1);
               studentTestPage.verifyAssesmentPlayerSkin(playerSkin);
@@ -143,7 +141,6 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'asse
       [attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(`> redirect '${index === 0 ? "not " : ""}overidden' assignment`, () => {
           const { overidden, email, name } = studentdata[0];
-          const playerSkin = overidden ? ASSESSMENT_PLAYERS.PARCC : ASSESSMENT_PLAYERS.SBAC;
           /* redirecting overidden assignment should have TestNav */
           /* redirecting not overidden assignment should have SBAC */
           before("> click on lcb", () => {
@@ -158,7 +155,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'asse
             lcb.clickOnRedirectSubmit();
           });
 
-          it(`> verify student, expected-'${playerSkin}'`, () => {
+          it("> verify student", () => {
+            const playerSkin = overidden ? ASSESSMENT_PLAYERS.PARCC : ASSESSMENT_PLAYERS.SBAC;
             cy.login("student", email);
             assignmentsPage.clickOnAssigmentByTestId(versionedTest1, { isFirstAttempt: false });
             studentTestPage.verifyAssesmentPlayerSkin(playerSkin);
@@ -241,12 +239,11 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'asse
         regrade.applyRegrade();
       });
 
-      context(`> verify regraded player skin at student side`, () => {
+      context(`> verify student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.SUBMITTED)
           .forEach(({ email, overidden, status }, index) => {
-            const titleAdjust = overidden ? "" : "not ";
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- 'Edulastic'`, () => {
+            it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
               cy.login("student", email);
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2);
               studentTestPage.verifyAssesmentPlayerSkin(ASSESSMENT_PLAYERS.EDULASTIC);
@@ -271,7 +268,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'asse
             lcb.clickOnRedirectSubmit();
           });
 
-          it("> verify student, expected-'Edulastic'", () => {
+          it("> verify student", () => {
             cy.login("student", email);
             assignmentsPage.clickOnAssigmentByTestId(versionedTest2, { isFirstAttempt: false });
             studentTestPage.verifyAssesmentPlayerSkin(ASSESSMENT_PLAYERS.EDULASTIC);

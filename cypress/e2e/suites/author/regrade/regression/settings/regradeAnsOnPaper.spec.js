@@ -46,7 +46,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
   before("> create test 2 tests", () => {
     cy.login("teacher", teacher);
     // testlibaryPage.createTest().then(id => {
-    testId1 = "5f352b0c2743b80008768e3c";
+    testId1 = "5f3106d6c77d650008a633e3";
     // });
   });
 
@@ -90,7 +90,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(({ email }) => {
+              .forEach(studentdata => {
+                const { email } = studentdata;
                 cy.login("student", email);
                 assignmentsPage.clickOnAssignmentButton();
                 studentTestPage.clickOnExitTest();
@@ -118,14 +119,14 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
         regrade.applyRegrade();
       });
 
-      context(`> verify assignment status at student side`, () => {
+      context(`> verify student side`, () => {
         beforeEach("set browser date > due date", () => {
           CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
         });
-        [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }) => {
-          const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.SUBMITTED;
-          const titleAdjust = overidden ? "" : "not ";
-          it(`> for student ${status} with '${titleAdjust}overidden' assignment,expexted- ${studentStatus}`, () => {
+        [...attemptsdata1, ...attemptsdata2].forEach(studentdata => {
+          const { email, overidden, status } = studentdata;
+          it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+            const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.SUBMITTED;
             cy.login("student", email);
             assignmentsPage.sidebar.clickOnGrades();
             reportsPage.verifyStatusIs(studentStatus);
@@ -146,7 +147,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
           beforeEach("set browser date > due date", () => {
             CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
           });
-          attemptData.forEach(({ status, name }, ind) => {
+          attemptData.forEach((student, ind) => {
+            const { status, name } = student;
             const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.SUBMITTED;
             it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
               lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true);
@@ -201,7 +203,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(({ email }) => {
+              .forEach(studentdata => {
+                const { email } = studentdata;
                 cy.login("student", email);
                 assignmentsPage.clickOnAssignmentButton();
                 studentTestPage.clickOnExitTest();
@@ -229,14 +232,14 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
         regrade.applyRegrade();
       });
 
-      context(`> verify assignment status at student side`, () => {
+      context(`> verify student side`, () => {
         beforeEach("set browser date > due date", () => {
           CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
         });
-        [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }) => {
-          const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.ABSENT;
-          const titleAdjust = overidden ? "" : "not ";
-          it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- ${studentStatus}`, () => {
+        [...attemptsdata1, ...attemptsdata2].forEach(studentdata => {
+          const { email, overidden, status } = studentdata;
+          it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+            const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.ABSENT;
             cy.login("student", email);
             assignmentsPage.sidebar.clickOnGrades();
             reportsPage.verifyStatusIs(studentStatus);
@@ -255,7 +258,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
           beforeEach("set browser date > due date", () => {
             CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
           });
-          attemptData.forEach(({ status, name }, ind) => {
+          attemptData.forEach((student, ind) => {
+            const { status, name } = student;
             const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.ABSENT;
             it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
               lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true);

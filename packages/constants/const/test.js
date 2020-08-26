@@ -112,9 +112,8 @@ module.exports = {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",
     // SHOW_FONT_SIZE: "Show Font Size",
     // SHOW_ZOOM: "Show Zoom",
-    showMagnifier: "MAGNIFIER",
-    enableScratchpad: "SCRATCHPAD",
-    enableSkipAlert: "SKIP ALERT"
+    showMagnifier:"MAGNIFIER",
+    enableScratchpad:"SCRATCHPAD"
   },
   collectionDefaultFilter: [
     { text: "All Collections", value: "" },
@@ -188,7 +187,6 @@ module.exports = {
     parcc: "parcc",
     sbac: "sbac",
     cmas: "cmas",
-    casspp: "casspp",
-    testlet: "testlet"
+    casspp: "casspp"
   }
 };

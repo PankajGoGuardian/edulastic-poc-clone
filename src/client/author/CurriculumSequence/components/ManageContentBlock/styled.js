@@ -149,7 +149,6 @@ export const SearchIcon = styled(IconSearch)`
   transform: translateY(-50%);
   width: 14px;
   height: 14px;
-  cursor: pointer;
 `;
 
 export const SearchBar = styled(SelectInputStyled)`

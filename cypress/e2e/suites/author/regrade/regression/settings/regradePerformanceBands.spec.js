@@ -177,23 +177,23 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, assignmentid);
           });
 
-          it("> verify regraded performance band in lcb settings", () => {
+          it("> verify performance band in lcb settings", () => {
             const band = studentdata[0].overidden ? overiddenBand : regradedBand;
             lcb.header.clickLCBSettings();
             lcb.settings.showTestLevelSettings();
             lcb.settings.verifySelectedPerformanceBand(band);
           });
 
-          context("> verify regraded bands in pdf-reports", () => {
+          context("> verify reports", () => {
             before("> click reports in drop down", () => {
               lcb.header.clickOnLCBTab();
               lcb.header.clickStudentReportInDropDown();
               pdfReportCard.clickReportGeanerateButton();
             });
             studentdata.forEach(({ status, name, attempt }) => {
-              const band = studentdata[0].overidden ? overiddenBand : regradedBand;
-              const bands = performanceBand[band];
-              it(`> for student ${status},expected- '${bands[attempt]}'`, () => {
+              it(`> for student ${status}`, () => {
+                const band = studentdata[0].overidden ? overiddenBand : regradedBand;
+                const bands = performanceBand[band];
                 pdfReportCard.getReportContainerByStudent(name);
                 pdfReportCard.getPerformanceBand().should("have.text", bands[attempt]);
               });
@@ -298,21 +298,21 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, assignmentid);
           });
 
-          it("> verify regraded performance band in lcb settings", () => {
+          it("> verify performance band in lcb settings", () => {
             lcb.header.clickLCBSettings();
             lcb.settings.showTestLevelSettings();
             lcb.settings.verifySelectedPerformanceBand(regradedBand);
           });
 
-          context("> verify regraded bands in pdf-reports", () => {
+          context("> verify reports", () => {
             before("> click reports in drop down", () => {
               lcb.header.clickOnLCBTab();
               lcb.header.clickStudentReportInDropDown();
               pdfReportCard.clickReportGeanerateButton();
             });
             studentdata.forEach(({ status, name, attempt }) => {
-              const bands = performanceBand[regradedBand];
-              it(`> for student ${status}, expected- ${bands[attempt]}`, () => {
+              it(`> for student ${status}`, () => {
+                const bands = performanceBand[regradedBand];
                 pdfReportCard.getReportContainerByStudent(name);
                 pdfReportCard.getPerformanceBand().should("have.text", bands[attempt]);
               });

@@ -75,7 +75,6 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <SpecialCharactersOption
-                data-cy="specialCharactersOption"
                 disabled={inputType === "number"}
                 onChange={checked => {
                   if (checked) {
@@ -89,7 +88,6 @@ class LayoutComponent extends Component {
             </Col>
             <Col md={12}>
               <BrowserSpellcheckOption
-                data-cy="browserSpellCheckOption"
                 onChange={checked => _change("spellcheck", checked)}
                 checked={!!item.spellcheck}
               />

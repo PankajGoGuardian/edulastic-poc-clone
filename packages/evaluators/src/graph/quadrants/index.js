@@ -281,12 +281,13 @@ const buildGraphApiResponse = (elements = []) => {
 
     shapes.push([el.type, shapePoints]);
     if(![ShapeTypes.POINT,ShapeTypes.RAY,ShapeTypes.VECTOR,ShapeTypes.SEGMENT].includes(el.type)){
-      lineTypes.push(el.dashed ? "dashed" : "solid"); 
+      lineTypes.push(el.dashed ? "dashed" : "solid");
+      if(!points.length){
+        points.push(`(0,0)`);
+      }   
     }
   });
-  if(lineTypes.length && !points.length){
-     points.push("(0,0)");  
-  } 
+
   return serialize(shapes, lineTypes, points);
 };
 

@@ -601,7 +601,7 @@ const runMatrixPageTests = queData => {
 
       question.selectAnswerChoice(queData.forScoringAltAns);
 
-      question.getPoints().type("{selectall}7");
+      question.getPoints().type("{selectall}16");
 
       const preview = question.header.preview();
 
@@ -621,7 +621,7 @@ const runMatrixPageTests = queData => {
       preview.checkOnCheckAnswer();
       itemPreview.verifyQuestionResponseCard(queData.qShortKey, queData.attemptData, attemptTypes.ALTERNATE);
 
-      preview.checkScore("7/7");
+      preview.checkScore("16/16");
     });
   });
 };

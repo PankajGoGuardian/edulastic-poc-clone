@@ -51,6 +51,7 @@ const test = (state = initialState, { payload, type }) => {
         items: payload.items,
         testType: payload.testType,
         playerSkinType: payload.playerSkinType,
+        testletConfig: payload.testletConfig,
         passages: payload.passages,
         title: payload.title,
         annotations: payload.annotations,

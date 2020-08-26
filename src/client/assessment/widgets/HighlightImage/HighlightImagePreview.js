@@ -57,7 +57,7 @@ const HighlightImagePreview = ({
   const showDrawing = viewComponent === "editQuestion";
 
   return (
-    <React.Fragment>
+    <React.Fragment value={{ getContainer: () => containerRef.current }}>
       {showDrawing && <ScratchpadTool />}
       <PreviewContainer
         hideInternalOverflow={hideInternalOverflow || viewComponent === "authorPreviewPopup"}
@@ -65,7 +65,7 @@ const HighlightImagePreview = ({
         ref={containerRef}
         boxShadow={smallSize ? "none" : ""}
       >
-        {showDrawing && <Scratchpad clearClicked={clearClicked} hideTools />}
+        {showDrawing && <Scratchpad clearClicked={clearClicked} hideTools disableResize />}
         <FlexContainer justifyContent="flex-start" alignItems="baseline">
           <QuestionLabelWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}

@@ -1062,7 +1062,7 @@ function* approveOrRejectSinglePlaylistSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      notification({ type: "warn", messageKey: "publishPlaylistErrWithAssociated" });
+      notification({ messageKey: "publishPlaylistErrWithAssociated" });
       return;
     }
     yield call(curriculumSequencesApi.updatePlaylistStatus, payload);
@@ -1587,8 +1587,7 @@ const initialState = {
   showSumary: true,
   showRightPanel: true,
   customizeInDraft: false,
-  currentAssignmentIds: [],
-  isConfirmedCustomization: false
+  currentAssignmentIds: []
 };
 
 /**
@@ -2151,9 +2150,6 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
     state.activeRightPanel = payload;
-    if (payload === "manageContent") {
-      state.isConfirmedCustomization = true;
-    }
   },
   [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
     state.signedRequest = payload;
@@ -2178,7 +2174,6 @@ export default createReducer(initialState, {
     }
 
     state.destinationDirty = false;
-    state.isConfirmedCustomization = false;
   },
   [SET_DESTINATION_ORIGINAL]: (state, { payload }) => {
     state.originalData = payload;
@@ -2186,7 +2181,6 @@ export default createReducer(initialState, {
   [RESET_DESTINATION_FLAGS]: state => {
     state.activeRightPanel = "summary";
     state.destinationDirty = false;
-    state.isConfirmedCustomization = false;
   },
   [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {
     state.isVideoResourcePreviewModal = payload;

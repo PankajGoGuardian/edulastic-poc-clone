@@ -5,7 +5,6 @@ import { withNamespaces } from "react-i18next";
 import connect from "react-redux/es/connect/connect";
 import { ThemeProvider } from "styled-components";
 import _ from "lodash";
-import { questionType } from "@edulastic/constants";
 import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
 import { Subtitle } from "../../styled/Subtitle";
 import { themes } from "../../../theme";
@@ -75,7 +74,7 @@ const QuestionMetadata = ({
   collectionsToShow
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
-  const { id: qId, type } = questionData;
+  const { id: qId } = questionData;
 
   useEffect(() => {
     if (curriculums.length === 0) {
@@ -164,14 +163,6 @@ const QuestionMetadata = ({
     setQuestionData({ ...questionData, grades: uniqGrades, subjects: uniqSubjects });
   };
 
-  const handleChangeExternalData = key => e => {
-    const newQuestionData = {
-      ...questionData,
-      [key]: e.target.value
-    };
-    setQuestionData(newQuestionData);
-  };
-
   return (
     <ThemeProvider theme={themes.default}>
       <div>
@@ -211,7 +202,6 @@ const QuestionMetadata = ({
           addNewTag={addNewTag}
           onChangeTags={handleChangeTags}
           onQuestionDataSelect={handleQuestionDataSelect}
-          onChangeExternalData={handleChangeExternalData}
           handleCollectionsSelect={handleCollectionsSelect}
           handleRecentCollectionsSelect={handleRecentCollectionsSelect}
           collections={collections}
@@ -221,10 +211,6 @@ const QuestionMetadata = ({
           recentCollectionsList={recentCollectionsList}
           bloomsTaxonomy={questionData.bloomsTaxonomy}
           collectionsToShow={collectionsToShow}
-          testletQuestionId={questionData.testletQuestionId}
-          testletResponseIds={questionData.testletResponseIds}
-          testletAdditionalMetadata={questionData.testletAdditionalMetadata}
-          isGraphType={type === questionType.GRAPH}
         />
       </div>
     </ThemeProvider>

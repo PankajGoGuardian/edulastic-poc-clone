@@ -77,7 +77,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'mark
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach(({ name, overidden }) => {
+              .forEach(studentdata => {
+                const { name, overidden } = studentdata;
                 testlibaryPage.sidebar.clickOnDashboard();
                 testlibaryPage.sidebar.clickOnAssignment();
                 authorAssignmentPage.clickOnLCBbyTestId(testId2, overidden ? assignmentid2 : assignmentid1);
@@ -164,7 +165,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'mark
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach(({ name, overidden }) => {
+              .forEach(studentdata => {
+                const { name, overidden } = studentdata;
                 testlibaryPage.sidebar.clickOnDashboard();
                 testlibaryPage.sidebar.clickOnAssignment();
                 authorAssignmentPage.clickOnLCBbyTestId(testId3, overidden ? assignmentid2 : assignmentid1);

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select } from "antd";
 import { uniqBy } from "lodash";
-import { notification, FieldLabel, SelectInputStyled, TextInputStyled, TextAreaInputStyled } from "@edulastic/common";
+import { notification, FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
 import { Container } from "./styled/Container";
 import { ItemBody } from "./styled/ItemBody";
@@ -16,13 +16,9 @@ const SecondBlock = ({
   t,
   onChangeTags,
   onQuestionDataSelect,
-  onChangeExternalData,
   depthOfKnowledge = "",
   authorDifficulty = "",
   bloomsTaxonomy = "",
-  testletQuestionId = "",
-  testletResponseIds = "",
-  testletAdditionalMetadata = "",
   tags = [],
   allTagsData,
   addNewTag,
@@ -31,8 +27,7 @@ const SecondBlock = ({
   collections,
   highlightCollection,
   recentCollectionsList,
-  collectionsToShow,
-  isGraphType
+  collectionsToShow
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const [searchValue, setSearchValue] = useState("");
@@ -78,7 +73,7 @@ const SecondBlock = ({
   return (
     <Container padding="20px">
       <Row gutter={24}>
-        <Col md={8}>
+        <Col md={6}>
           <ItemBody>
             <FieldLabel>{t("component.options.depthOfKnowledge")}</FieldLabel>
             <SelectInputStyled
@@ -102,16 +97,8 @@ const SecondBlock = ({
               )}
             </SelectInputStyled>
           </ItemBody>
-          <ItemBody>
-            <FieldLabel>{t("component.options.externalQuestionId")}</FieldLabel>
-            <TextInputStyled
-              data-cy="externalQuestionId"
-              value={testletQuestionId}
-              onChange={onChangeExternalData("testletQuestionId")}
-            />
-          </ItemBody>
         </Col>
-        <Col md={8}>
+        <Col md={6}>
           <ItemBody>
             <FieldLabel>{t("component.options.difficultyLevel")}</FieldLabel>
             <SelectInputStyled
@@ -135,17 +122,8 @@ const SecondBlock = ({
               )}
             </SelectInputStyled>
           </ItemBody>
-          <ItemBody>
-            <FieldLabel>{t("component.options.externalResponseIds")}</FieldLabel>
-            <TextInputStyled
-              data-cy="externalResponseIds"
-              value={testletResponseIds}
-              maxLength={250}
-              onChange={onChangeExternalData("testletResponseIds")}
-            />
-          </ItemBody>
         </Col>
-        <Col md={8}>
+        <Col md={6}>
           <ItemBody>
             <FieldLabel>{t("component.options.blooomTaxonomy")}</FieldLabel>
             <SelectInputStyled
@@ -166,22 +144,10 @@ const SecondBlock = ({
               ))}
             </SelectInputStyled>
           </ItemBody>
-          {isGraphType && (
-            <ItemBody>
-              <FieldLabel>{t("component.options.additionalMetadata")}</FieldLabel>
-              <TextAreaInputStyled
-                rows={4}
-                padding="6px 15px"
-                value={testletAdditionalMetadata}
-                onChange={onChangeExternalData("testletAdditionalMetadata")}
-              />
-            </ItemBody>
-          )}
         </Col>
-      </Row>
-      <Row gutter={24}>
+
         {(collectionsToShow.length > 0 || recentCollectionsList?.length > 0) && (
-          <Col md={8}>
+          <Col md={6}>
             {collectionsToShow.length > 0 && (
               <ItemBody>
                 <FieldLabel>Collections</FieldLabel>
@@ -216,8 +182,7 @@ const SecondBlock = ({
             )}
           </Col>
         )}
-
-        <Col md={8}>
+        <Col md={6}>
           <ItemBody>
             <FieldLabel>{t("component.options.tags")}</FieldLabel>
             {searchValue.length && !searchValue.trim().length ? (

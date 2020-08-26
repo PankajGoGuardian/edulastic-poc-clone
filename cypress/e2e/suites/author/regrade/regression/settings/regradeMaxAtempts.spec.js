@@ -2,7 +2,7 @@ import FileHelper from "../../../../../framework/util/fileHelper";
 import TestLibrary from "../../../../../framework/author/tests/testLibraryPage";
 import Regrade from "../../../../../framework/author/tests/regrade/regrade";
 import { regradeOptions, studentSide } from "../../../../../framework/constants/assignmentStatus";
-import { attemptTypes, questionTypeMap } from "../../../../../framework/constants/questionTypes";
+import { attemptTypes } from "../../../../../framework/constants/questionTypes";
 import StudentTestPage from "../../../../../framework/student/studentTestPage";
 import AssignmentsPage from "../../../../../framework/student/assignmentsPage";
 import ReportsPage from "../../../../../framework/student/reportsPage";
@@ -33,13 +33,13 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'max 
     }
   };
   const attemptsdata1 = [
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class1[1], overidden: false },
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class1[2], overidden: false }
+    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class1[1] },
+    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class1[2] }
   ];
 
   const attemptsdata2 = [
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class2[1], overidden: true },
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class2[2], overidden: true }
+    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class2[1] },
+    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class2[2] }
   ];
 
   const quetypeMap = {
@@ -140,18 +140,24 @@ tests:{
         regrade.applyRegrade();
       });
 
-      context(`> verify regraded max attempts at student side`, () => {
-        [...attemptsdata1, ...attemptsdata2].forEach(({ email, status, overidden }, index) => {
-          const [attempNum, attempCount] = status === studentSide.SUBMITTED ? [2, "2"] : [1, "1"];
-          const [maxAllowedAttempts, titleAdjust] = overidden ? [3, "not "] : [2, ""];
-          it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- '${maxAllowedAttempts} times'`, () => {
-            studentTestPage.attemptAssignment(email, studentSide.SUBMITTED, attemptAfterRegrade, quetypeMap);
-            /* verify attempt count(overidden test: 2, not overridden:3 ) according to assignment status and selected regrade option */
-            reportsPage.validateStats(attempNum, `${attempCount}/${maxAllowedAttempts}`, undefined, "0");
-            if (status === studentSide.SUBMITTED && index === 1) {
-              assignmentsPage.sidebar.clickOnAssignment();
-              cy.contains("You don't have any currently assigned or completed assignments.");
-            }
+      context(`> verify student side`, () => {
+        [attemptsdata1, attemptsdata2].forEach((attemptData, index) => {
+          attemptData.forEach(attemptsdata => {
+            it(`> for student ${attemptsdata.status} with '${index === 0 ? "not " : ""}overidden' assignment`, () => {
+              const { email, status } = attemptsdata;
+              studentTestPage.attemptAssignment(email, studentSide.SUBMITTED, attemptAfterRegrade, quetypeMap);
+              /* verify attempt count(overidden test: 2, not overridden:3 ) according to assignment status and selected regrade option */
+              reportsPage.validateStats(
+                attemptsdata.status === studentSide.SUBMITTED ? 2 : 1,
+                `${attemptsdata.status === studentSide.SUBMITTED ? "2" : "1"}/${index === 0 ? 3 : 2}`,
+                undefined,
+                "0"
+              );
+              if (status === studentSide.SUBMITTED && index === 1) {
+                assignmentsPage.sidebar.clickOnAssignment();
+                cy.contains("You don't have any currently assigned or completed assignments.");
+              }
+            });
           });
         });
       });
@@ -171,28 +177,45 @@ tests:{
         });
         it("> verify student centric", () => {
           lcb.clickOnStudentsTab();
-          const { queKey, attemptData } = quetypeMap.Q1;
           attemptsdata1.forEach((stu, ind) => {
             lcb.questionResponsePage.selectStudent(stu.name);
             if (stu.status === studentSide.SUBMITTED) lcb.questionResponsePage.selectAttempt(2);
-            lcb.questionResponsePage.verifyQuestionResponseCard(2, queKey, attemptTypes.WRONG, attemptData, true, 0);
+            lcb.questionResponsePage.verifyQuestionResponseCard(
+              2,
+              quetypeMap.Q1.queKey,
+              attemptTypes.WRONG,
+              quetypeMap.Q1.attemptData,
+              true,
+              0
+            );
           });
         });
         it("> verify question centric", () => {
-          const { queKey, attemptData } = quetypeMap.Q1;
           lcb.clickonQuestionsTab();
-          attemptsdata1.forEach(({ name }, ind) => {
-            lcb.questionResponsePage.verifyQuestionResponseCard(2, queKey, attemptTypes.WRONG, attemptData, 0, name);
+          attemptsdata1.forEach((stu, ind) => {
+            lcb.questionResponsePage.verifyQuestionResponseCard(
+              2,
+              quetypeMap.Q1.queKey,
+              attemptTypes.WRONG,
+              quetypeMap.Q1.attemptData,
+              false,
+              stu.name
+            );
           });
         });
         it("> verify exress grader", () => {
-          const { queKey, attemptData } = quetypeMap.Q1;
           lcb.header.clickOnExpressGraderTab();
 
           expressGraderPage.setToggleToScore();
           attemptsdata1.forEach((stu, ind) => {
             expressGraderPage.getGridRowByStudent(stu.name);
-            expressGraderPage.verifyScoreForStudent("Q1", 2, attemptTypes.WRONG, attemptData, queKey);
+            expressGraderPage.verifyScoreForStudent(
+              "Q1",
+              2,
+              attemptTypes.WRONG,
+              quetypeMap.Q1.attemptData,
+              quetypeMap.Q1.queKey
+            );
           });
 
           expressGraderPage.setToggleToResponse();
@@ -214,13 +237,13 @@ tests:{
           lcb.clickOnRedirect();
           lcb.clickOnRedirectSubmit();
         });
-        it("> verify redirected student,", () => {
+        it("> verify student", () => {
           cy.login("student", attemptsdata2[0].email);
           assignmentsPage.clickOnAssigmentByTestId(versionedTest1, { isFirstAttempt: false });
           studentTestPage.attemptQuestion("MCQ_TF", attemptTypes.WRONG, quetypeMap.Q1.attemptData);
           studentTestPage.clickOnNext();
           studentTestPage.submitTest();
-          reportsPage.validateStats(1, `3/3`, undefined, "0");
+          reportsPage.validateStats(1, `1/3`, undefined, "0");
           assignmentsPage.sidebar.clickOnAssignment();
           cy.contains("You don't have any currently assigned or completed assignments.");
         });
@@ -295,15 +318,21 @@ tests:{
         regrade.applyRegrade();
       });
 
-      context(`> verify regraded max attempts at student side`, () => {
-        [...attemptsdata1, ...attemptsdata2].forEach(({ email, status, overidden }, index) => {
-          const [attempNum, attempCount] = status === studentSide.SUBMITTED ? [2, "2"] : [1, "1"];
-          const titleAdjust = overidden ? "not " : "";
-          it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected-'${regardedMaxAttempt} times'`, () => {
-            cy.login("student", email);
-            studentTestPage.attemptAssignment(email, studentSide.SUBMITTED, attemptAfterRegrade, quetypeMap);
-            /* verify attempt count (overidden test: 3, not overridden:3 ) according to assignment status and selected regrade option */
-            reportsPage.validateStats(attempNum, `${attempCount}/${regardedMaxAttempt}`, undefined, "0");
+      context(`> verify student side`, () => {
+        [attemptsdata1, attemptsdata2].forEach((attemptData, index) => {
+          attemptData.forEach(attemptsdata => {
+            it(`> for student ${attemptsdata.status} with '${index === 0 ? "not " : ""}overidden' assignment`, () => {
+              const { email, status } = attemptsdata;
+              cy.login("student", email);
+              studentTestPage.attemptAssignment(email, studentSide.SUBMITTED, attemptAfterRegrade, quetypeMap);
+              /* verify attempt count (overidden test: 3, not overridden:3 ) according to assignment status and selected regrade option */
+              reportsPage.validateStats(
+                status === studentSide.SUBMITTED ? 2 : 1,
+                `${status === studentSide.SUBMITTED ? "2" : "1"}/${regardedMaxAttempt}`,
+                undefined,
+                "0"
+              );
+            });
           });
         });
       });
@@ -323,29 +352,46 @@ tests:{
             });
           });
           it("> verify student centric", () => {
-            const { queKey, attemptData: aData } = quetypeMap.Q1;
             lcb.clickOnStudentsTab();
             attemptData.forEach((stu, ind) => {
               lcb.questionResponsePage.selectStudent(stu.name);
               if (stu.status === studentSide.SUBMITTED) lcb.questionResponsePage.selectAttempt(2);
-              lcb.questionResponsePage.verifyQuestionResponseCard(2, queKey, attemptTypes.WRONG, aData, true, 0);
+              lcb.questionResponsePage.verifyQuestionResponseCard(
+                2,
+                quetypeMap.Q1.queKey,
+                attemptTypes.WRONG,
+                quetypeMap.Q1.attemptData,
+                true,
+                0
+              );
             });
           });
           it("> verify question centric", () => {
-            const { queKey, attemptData: aData } = quetypeMap.Q1;
             lcb.clickonQuestionsTab();
-            attemptData.forEach(({ name }, ind) => {
-              lcb.questionResponsePage.verifyQuestionResponseCard(2, queKey, attemptTypes.WRONG, aData, 0, name);
+            attemptData.forEach((stu, ind) => {
+              lcb.questionResponsePage.verifyQuestionResponseCard(
+                2,
+                quetypeMap.Q1.queKey,
+                attemptTypes.WRONG,
+                quetypeMap.Q1.attemptData,
+                false,
+                stu.name
+              );
             });
           });
           it("> verify exress grader", () => {
-            const { queKey, attemptData: aData } = quetypeMap.Q1;
             lcb.header.clickOnExpressGraderTab();
 
             expressGraderPage.setToggleToScore();
             attemptData.forEach((stu, ind) => {
               expressGraderPage.getGridRowByStudent(stu.name);
-              expressGraderPage.verifyScoreForStudent("Q1", 2, attemptTypes.WRONG, aData, queKey);
+              expressGraderPage.verifyScoreForStudent(
+                "Q1",
+                2,
+                attemptTypes.WRONG,
+                quetypeMap.Q1.attemptData,
+                quetypeMap.Q1.queKey
+              );
             });
 
             expressGraderPage.setToggleToResponse();

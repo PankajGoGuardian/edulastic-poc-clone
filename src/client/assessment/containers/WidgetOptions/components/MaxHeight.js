@@ -7,7 +7,7 @@ import CommonInput from "./common/CommonInput";
 
 const MaxHeight = ({ t, type, ...restProps }) => (
   <Fragment>
-    <Label data-cy="maxHeightOption">{t("component.options.maxHeightPx")}</Label>
+    <Label>{t("component.options.maxHeightPx")}</Label>
     <CommonInput type={type} {...restProps} />
   </Fragment>
 );

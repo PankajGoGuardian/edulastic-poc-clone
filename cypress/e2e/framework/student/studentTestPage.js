@@ -47,8 +47,6 @@ class StudentTestPage {
 
   // @questionNumber = "Q1" ; "Q2"
   clickOnReviewQuestion = questionNumber => {
-    cy.server();
-    cy.route("GET", "**/test/**").as("gettest");
     cy.get(`[data-cy="${questionNumber}"]`).click();
     cy.wait("@gettest");
   };

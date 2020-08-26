@@ -109,7 +109,7 @@ const TestItemCard = ({
         </StyledLink>
 
         <TagsWrapper testNameHeight={height} data-cy="test-standards">
-          <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards margin="0px" trigger="hover" />
+          <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
         </TagsWrapper>
       </TestInfo>
 

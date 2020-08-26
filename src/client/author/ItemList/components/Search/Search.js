@@ -1,12 +1,6 @@
 import styled from "styled-components";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
-import {
-  questionType as questionTypes,
-  test as testsConstants,
-  roleuser,
-  libraryFilters,
-  folderTypes
-} from "@edulastic/constants";
+import { questionType as questionTypes, test as testsConstants, roleuser, libraryFilters } from "@edulastic/constants";
 import { IconExpandBox } from "@edulastic/icons";
 import { Select } from "antd";
 import PropTypes from "prop-types";
@@ -15,7 +9,6 @@ import { connect } from "react-redux";
 import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { getCollectionsSelector, getUserFeatures, getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import Folders from "../../../src/components/Folders";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import StandardsSearchModal from "./StandardsSearchModal";
@@ -131,9 +124,6 @@ const Search = ({
   };
 
   const selectedCurriculam = formattedCuriculums.find(fc => fc.value === curriculumId);
-  if (filter === SMART_FILTERS.FOLDERS) {
-    return <Folders onSelectFolder={onSearchFieldChange("folderId")} folderType={folderTypes.ITEM} />;
-  }
 
   return (
     <MainFilterItems>

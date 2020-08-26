@@ -66,7 +66,7 @@ const RightFields = ({
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
           <FieldLabel label={`${type} name`} {...restProps} fiedlName="name">
-            <TextInputStyled placeholder={`Enter the name of your ${type}`} maxLength="256" autoComplete="off" />
+            <TextInputStyled placeholder={`Enter the name of your ${type}`} maxLength="256" />
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -111,7 +111,7 @@ const RightFields = ({
         <StyledFlexContainer gutter={24}>
           <Col xs={24}>
             <FieldLabel label="Descripition" {...restProps} fiedlName="description">
-              <TextInputStyled placeholder={`Enter ${type} description`} maxLength="512" autoComplete="off" />
+              <TextInputStyled placeholder={`Enter ${type} description`} maxLength="512" />
             </FieldLabel>
           </Col>
         </StyledFlexContainer>

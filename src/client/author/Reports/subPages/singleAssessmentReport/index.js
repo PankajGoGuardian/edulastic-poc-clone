@@ -58,7 +58,6 @@ const SingleAssessmentReportContainer = props => {
   const [isCliUser, setCliUser] = useState(cliUser || queryString.parse(location.search).cliUser);
   const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS });
   const [selectedExtras, setSelectedExtras] = useState({ ...INITIAL_DD_FILTERS });
-  const [customStudentUserId, setCustomStudentUserId] = useState(queryString.parse(location.search).customStudentUserId);
 
   useEffect(() => {
     if (isCliUser) {
@@ -105,9 +104,6 @@ const SingleAssessmentReportContainer = props => {
       });
       if (isCliUser) {
         obj.cliUser = true;
-      }
-      if (customStudentUserId) {
-        obj.customStudentUserId = customStudentUserId;
       }
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`;
       history.push(path);
@@ -232,7 +228,6 @@ const SingleAssessmentReportContainer = props => {
                   settings={settings}
                   pageTitle={loc}
                   filters={ddfilter}
-                  customStudentUserId={customStudentUserId}
                 />
               )}
             />

@@ -1894,5 +1894,9 @@
   "unableToRetrieve": {
     "message": "Unable to retrieve relevant information. Please contact support.",
     "description": ""
+  },
+  "scratchpadInfoMultipart": {
+    "message": "Remember to hide the scratchpad to answer other parts of this question",
+    "description": ""
   }
 }

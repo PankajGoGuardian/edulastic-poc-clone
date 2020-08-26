@@ -9,7 +9,8 @@ import {
   fetchCleverClassListRequestAction,
   syncClassesWithCleverAction,
   getCanvasCourseListRequestAction,
-  getCanvasSectionListRequestAction
+  getCanvasSectionListRequestAction,
+  setShowCleverSyncModalAction
 } from "../../ducks";
 import { fetchGroupsAction } from "../../../sharedDucks/groups";
 import { getUserDetails } from "../../../../student/Login/ducks";
@@ -52,9 +53,10 @@ const ClassListContainer = ({
   canvasSectionList,
   institutionIds,
   bulkSyncCanvasStatus,
-  fetchGroups
+  fetchGroups,
+  showCleverSyncModal,
+  setShowCleverSyncModal
 }) => {
-  const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false);
 
   useEffect(() => {
@@ -154,13 +156,15 @@ export default connect(
     canvasCourseList: get(state, "manageClass.canvasCourseList", []),
     canvasSectionList: get(state, "manageClass.canvasSectionList", []),
     institutionIds: get(state, "user.user.institutionIds", []),
-    bulkSyncCanvasStatus: get(state, "signup.bulkSyncCanvasStatus", false)
+    bulkSyncCanvasStatus: get(state, "signup.bulkSyncCanvasStatus", false),
+    showCleverSyncModal: get(state, "manageClass.showCleverSyncModal", false)
   }),
   {
     fetchCleverClassList: fetchCleverClassListRequestAction,
     syncCleverClassList: syncClassesWithCleverAction,
     getCanvasCourseListRequest: getCanvasCourseListRequestAction,
     getCanvasSectionListRequest: getCanvasSectionListRequestAction,
-    fetchGroups: fetchGroupsAction
+    fetchGroups: fetchGroupsAction,
+    setShowCleverSyncModal: setShowCleverSyncModalAction
   }
 )(ClassListContainer);

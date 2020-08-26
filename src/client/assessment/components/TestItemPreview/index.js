@@ -287,6 +287,9 @@ class TestItemPreview extends Component {
       ? { border: isLCBView ? "1px solid #DADAE4" : "none", borderRadius: "10px" }
       : {};
 
+    const isSingleQuestionView = dataSource.flatMap(col => col.widgets).length === 1;
+    const hideScratchpadToolbar = isStudentReport || isLCBView || LCBPreviewModal || isExpressGrader;
+
     return (
       <ThemeProvider theme={{ ...themes.default }}>
         <div

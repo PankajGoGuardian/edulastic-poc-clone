@@ -1894,5 +1894,9 @@
   "unableToRetrieve": {
     "message": "Unable to retrieve relevant information. Please contact support.",
     "description": ""
+  },
+  "copiedToClipboardSuccess": {
+    "message": "Item link has been copied to the clipboard.",
+    "description": ""
   }
 }

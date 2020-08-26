@@ -3,7 +3,16 @@ import { passageApi, testItemsApi } from "@edulastic/api";
 import { red, themeColor, white, title } from "@edulastic/colors";
 import { EduButton, FlexContainer, notification, withWindowSizes } from "@edulastic/common";
 import { questionType, roleuser } from "@edulastic/constants";
-import { IconClose, IconCollapse, IconCopy, IconExpand, IconPencilEdit, IconTrash, IconClear } from "@edulastic/icons";
+import {
+  IconClose,
+  IconCollapse,
+  IconCopy,
+  IconExpand,
+  IconPencilEdit,
+  IconTrash,
+  IconClear,
+  IconShare
+} from "@edulastic/icons";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icon, Modal, Spin } from "antd";
@@ -14,6 +23,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import styled, { css } from "styled-components";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
 import { Nav } from "../../../../../assessment/themes/common";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
@@ -358,6 +368,8 @@ class PreviewModal extends React.Component {
 
   handleReject = () => this.setState({ isRejectMode: true });
 
+  handleShareItem = () => notification({ type: "success", messageKey: "copiedToClipboardSuccess" });
+
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -544,6 +556,14 @@ class PreviewModal extends React.Component {
                     {/* <span>delete</span> */}
                   </EduButton>
                 )}
+              <CopyToClipboard
+                text={`${window.location.origin}/author/items/${item._id}/item-detail`}
+                onCopy={this.handleShareItem}
+              >
+                <EduButton IconBtn isGhost width="28px" height="28px">
+                  <IconShare title="Share item" />
+                </EduButton>
+              </CopyToClipboard>
               <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
                 <>
                   {item.status === "inreview" && hasCollectionAccess ? (

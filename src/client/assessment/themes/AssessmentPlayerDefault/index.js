@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { get, keyBy } from "lodash";
+import { get, keyBy, isUndefined } from "lodash";
 import { withWindowSizes, notification } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 
@@ -33,6 +33,7 @@ import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction, saveHintUsageAction } from "../../actions/userInteractions";
 import { CLEAR } from "../../constants/constantsForQuestions";
 import { ScratchpadTool } from "../../../common/components/Scratchpad";
+import { showScratchpadInfoNotification } from "../../utils/helpers";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -97,6 +98,17 @@ class AssessmentPlayerDefault extends React.Component {
         currentToolMode.push(val);
       }
       currentToolMode = currentToolMode.filter(m => m === 3 || m === 5);
+      if (currentToolMode.includes(5)) {
+        const { items, currentItem } = this.props;
+        if (!isUndefined(currentItem) && Array.isArray(items)) {
+          if (showScratchpadInfoNotification(items[currentItem])) {
+            notification({
+              type: "info",
+              messageKey: "scratchpadInfoMultipart"
+            });
+          }
+        }
+      }
     } else {
       currentToolMode = [val];
     }

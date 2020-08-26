@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, isUndefined } from "lodash";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes, notification } from "@edulastic/common";
@@ -31,6 +31,7 @@ import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction } from "../../actions/userInteractions";
 import { CLEAR } from "../../constants/constantsForQuestions";
+import { showScratchpadInfoNotification } from "../../utils/helpers";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -88,6 +89,17 @@ class AssessmentPlayerSimple extends React.Component {
         toolsOpenStatus.splice(index, 1);
       } else {
         toolsOpenStatus.push(tool);
+      }
+      if (toolsOpenStatus.includes(5)) {
+        const { items, currentItem } = this.props;
+        if (!isUndefined(currentItem) && Array.isArray(items)) {
+          if (showScratchpadInfoNotification(items[currentItem])) {
+            notification({
+              type: "info",
+              messageKey: "scratchpadInfoMultipart"
+            });
+          }
+        }
       }
     } else {
       toolsOpenStatus = [tool];

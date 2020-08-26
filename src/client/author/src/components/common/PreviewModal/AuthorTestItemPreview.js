@@ -1,4 +1,4 @@
-import { EduButton, ScrollContext, Tabs, withWindowSizes } from "@edulastic/common";
+import { EduButton, ScrollContext, Tabs, withWindowSizes, notification } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
@@ -224,20 +224,38 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  renderLeftButtons = showScratch => {
-    const { onlySratchpad, toggleReportIssue } = this.props;
-
+  toggleScratchpad = showNotification => {
     const { isEnableScratchpad } = this.state;
+
+    if (showNotification && !isEnableScratchpad) {
+      this.setState(
+        {
+          isEnableScratchpad: !isEnableScratchpad
+        },
+        () => {
+          notification({
+            type: "info",
+            messageKey: "scratchpadInfoMultipart"
+          });
+        }
+      );
+      return null;
+    }
+    this.setState({ isEnableScratchpad: !isEnableScratchpad });
+  };
+
+  renderLeftButtons = (showScratch, showNotification) => {
+    const { onlySratchpad, toggleReportIssue } = this.props;
+    const { isEnableScratchpad } = this.state;
+
+    const scratchpadHandler = () => this.toggleScratchpad(showNotification);
+
     return (
       <>
         {showScratch && (
           <ButtonsContainer style={onlySratchpad ? { display: "none" } : {}}>
             <ButtonsWrapper justifyContent="flex-start">
-              <EduButton
-                isGhost
-                height="28px"
-                onClick={() => this.setState({ isEnableScratchpad: !isEnableScratchpad })}
-              >
+              <EduButton isGhost height="28px" onClick={scratchpadHandler}>
                 {isEnableScratchpad ? "Hide Scratchpad" : "Show Scratchpad"}
               </EduButton>
             </ButtonsWrapper>
@@ -471,12 +489,18 @@ class AuthorTestItemPreview extends Component {
 
     return cols.map((col, i) => {
       const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-      const showScratch = (col.widgets || []).some(w => w.type === questionType.HIGHLIGHT_IMAGE) || !!saveScratchpad;
+      const widgets = col.widgets || [];
+      const isHighlightImageType = w => w.type === questionType.HIGHLIGHT_IMAGE;
+      const showScratch = widgets.some(isHighlightImageType) || !!saveScratchpad;
+      const hasMultipleWidgets = widgets.length > 1;
+      const allHighLight = widgets.length > 0 && widgets.every(isHighlightImageType);
+      const showNotification = hasMultipleWidgets && !allHighLight;
+
       return (
         <Container width={!collapseDirection ? col.dimension : hideColumn ? "0px" : "100%"}>
           <ColumnContentArea>
             {i === 1 && passageNavigator}
-            {i === 0 ? this.renderLeftButtons(showScratch) : this.renderRightButtons()}
+            {i === 0 ? this.renderLeftButtons(showScratch, showNotification) : this.renderRightButtons()}
             {this.renderColumns(col, i, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData)}
           </ColumnContentArea>
           {i === 0 && cols.length > 1 && this.collapseButtons}

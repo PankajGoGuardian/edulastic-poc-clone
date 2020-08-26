@@ -1,4 +1,6 @@
 import { groupBy, difference, isEmpty } from "lodash";
+import questionType from "@edulastic/constants/const/questionType";
+
 import { FRACTION_FORMATS } from "../constants/constantsForQuestions";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -433,3 +435,26 @@ export const normalizeTouchEvent = e => {
     e.clientY = e.nativeEvent.changedTouches[0].clientY;
   }
 };
+
+/**
+ * shows the “Remember to hide the scratchpad to answer other parts of this question”
+ * message in case the item is multipart, whenever we click on show scratchpad
+ * @param {object} item the current item displayed in the player
+ * @returns flag whether to show the message or not
+ */
+export function showScratchpadInfoNotification(item) {
+  if (!item) {
+    return false;
+  }
+
+  const { multipartItem: isMultipart = false, data: { questions } = {} } = item || {};
+
+  if (isMultipart && Array.isArray(questions)) {
+    const isHighlightImageType = ques => ques.type === questionType.HIGHLIGHT_IMAGE;
+    const allHighLight = questions.length > 0 && questions.every(isHighlightImageType);
+    if (!allHighLight) {
+      return true;
+    }
+  }
+  return false;
+}

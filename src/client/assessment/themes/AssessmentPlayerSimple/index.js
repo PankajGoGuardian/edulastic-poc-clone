@@ -166,7 +166,7 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   handleChangePreview = () => {
-    const { changePreview = () => {} } = this.props;
+    const { changePreview = () => { } } = this.props;
     // change the player state to clear mode (attemptable mode)
     this.setState({ testItemState: "" }, () => changePreview(CLEAR));
   };
@@ -298,12 +298,12 @@ const enhance = compose(
       selectedTheme: state.ui.selectedTheme,
       unansweredQuestionCount: unansweredQuestionCountSelector(state),
       userAnswers: state.answers,
-      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]?._id], false),
-      scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].scratchpad`, null),
+      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps?.items[ownProps?.currentItem]?._id], false),
+      scratchPad: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}].scratchpad`, null),
       highlights: get(state, `userWork.present[${ownProps?.passage?._id}].resourceId`, null),
-      attachments: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].attachments`, null),
-      crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].crossAction`, null),
-      userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}]`, {}),
+      attachments: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}].attachments`, null),
+      crossAction: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}].crossAction`, null),
+      userWork: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}]`, {}),
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),

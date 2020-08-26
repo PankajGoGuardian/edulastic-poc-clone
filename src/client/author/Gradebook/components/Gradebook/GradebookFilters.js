@@ -23,7 +23,7 @@ const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
       optionFilterProp="children"
       getPopupContainer={triggerNode => triggerNode.parentNode}
     >
-      {options.map(data => (
+      {options && options.map(data => (
         <Select.Option key={data.id} value={data.id}>
           {data.name === "All" ? `All ${label}` : data.name}
         </Select.Option>

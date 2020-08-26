@@ -288,7 +288,7 @@ class TestItemPreview extends Component {
     if (!showStackedView && (isQuestionView || isExpressGrader)) {
       dataSource = dataSource.filter(col => (col.widgets || []).length > 0);
     }
-    const isSingleQuestionView = dataSource.flatMap(col => col.widgets).length === 1;
+    const isSingleQuestionView = dataSource?.flatMap(col => col?.widgets)?.length === 1;
     const hideScratchpadToolbar = isStudentReport || isLCBView || LCBPreviewModal || isExpressGrader;
     return (
       <ThemeProvider theme={{ ...themes.default }}>

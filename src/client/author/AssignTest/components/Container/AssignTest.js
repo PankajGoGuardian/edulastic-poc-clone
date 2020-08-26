@@ -82,7 +82,7 @@ class AssignTest extends React.Component {
         active: [1]
       },
       page: 1,
-      limit: 1000
+      limit: 4000
     });
     const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
 

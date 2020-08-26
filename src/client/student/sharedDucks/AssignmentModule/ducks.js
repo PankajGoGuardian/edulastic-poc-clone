@@ -27,6 +27,7 @@ export const SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT = "[studentAssignments] set r
 export const CLEAR_REGRADE_ASSIGNMENT = "[studentAssignments] clear regrade assignment";
 export const SET_SERVER_TS = "[studentAssignmens] set server time stamp";
 export const START_SERVER_TIMER = "[studntAssignments] start server timer";
+export const SHOW_TEST_INSTRUCTION = "[studentAssignments] show student test instruction";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -42,6 +43,7 @@ export const setConfirmationForTimedAssessmentAction = createAction(SET_CONFIRMA
 export const clearRegradeAssignmentAction = createAction(CLEAR_REGRADE_ASSIGNMENT);
 export const setServerTimeStampAction = createAction(SET_SERVER_TS);
 export const startServerTimerAction = createAction(START_SERVER_TIMER);
+export const showTestInstructionsAction = createAction(SHOW_TEST_INSTRUCTION);
 
 // initial State
 const initialState = {
@@ -51,7 +53,9 @@ const initialState = {
   error: {},
   isStale: false,
   filter: "all",
-  serverTs: null
+  serverTs: null,
+  showInstruction: false,
+  assignment: {}
 };
 
 // reducers
@@ -134,6 +138,10 @@ export default createReducer(initialState, {
     if (state.serverTs) {
       state.serverTs = addMinutes(state.serverTs, 1);
     }
+  },
+  [SHOW_TEST_INSTRUCTION]: (state, { payload }) => {
+    state.showInstruction = payload.showInstruction;
+    state.assignment = payload.assignment;
   }
 });
 

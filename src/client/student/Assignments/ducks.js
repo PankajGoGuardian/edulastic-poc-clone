@@ -17,7 +17,8 @@ import {
   setAssignmentsLoadingAction,
   setActiveAssignmentAction,
   setConfirmationForTimedAssessmentAction,
-  setServerTimeStampAction
+  setServerTimeStampAction,
+  showTestInstructionsAction
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
@@ -535,8 +536,7 @@ function* launchAssignment({ payload }) {
       const classIds = yield select(getClassIds);
       assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
       const lastActivity = _maxBy(testActivities, "createdAt");
-      const { testId, testType = "assessment", resume, timedAssignment } = assignment;
-
+      const { testId, testType = "assessment", resume, timedAssignment, hasInstruction, instruction } = assignment;
       if (lastActivity && lastActivity.status === 0) {
         yield put(
           resumeAssignmentAction({
@@ -559,6 +559,10 @@ function* launchAssignment({ payload }) {
         if (maxAttempt > testActivities.length) {
           if (!resume && timedAssignment) {
             yield put(setConfirmationForTimedAssessmentAction(assignment));
+            return;
+          }
+          if (!testActivities.length && hasInstruction && instruction) {
+            yield put(showTestInstructionsAction({ showInstruction: true, assignment }));
             return;
           }
           yield put(startAssignmentAction({ testId, assignmentId, testType, classId: groupId }));

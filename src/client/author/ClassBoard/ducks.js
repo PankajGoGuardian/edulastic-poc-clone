@@ -401,8 +401,9 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     const {
-      data: { message: errorMessage }
-    } = err.response;
+      data = {}
+    } = err.response || {};
+    const { message: errorMessage } = data;
     if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }

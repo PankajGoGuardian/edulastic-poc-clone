@@ -301,7 +301,7 @@ class Container extends React.Component {
     const showEditButton =
       authors && authors.some(x => x._id === userId) && status && status === statusConstants.PUBLISHED && !editEnable;
 
-    const hasPremiumQuestion = !!itemGroups[0].items.find(i =>
+    const hasPremiumQuestion = !!itemGroups?.[0].items?.find(i =>
       hasUserGotAccessToPremiumItem(i.collections, collections)
     );
 

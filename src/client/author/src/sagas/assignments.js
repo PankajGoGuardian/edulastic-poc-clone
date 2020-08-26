@@ -198,7 +198,7 @@ function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
       notification({ type: "success", messageKey: "assignmentSharedWithGoggleCLassroom" });
     } else {
       const errorMessage =
-        result[0].message || "Assignment failed to share with google classroom. Please try after sometime.";
+        result?.[0]?.message || "Assignment failed to share with google classroom. Please try after sometime.";
       yield put({
         type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
       });

@@ -303,6 +303,7 @@ const Scratchpad = ({
       }
     }
   }, [data, zwibbler, currentItem]);
+
   useEffect(() => {
     if (expressGrader && zwibbler) {
       zwibbler.setConfig("readOnly", !isAnswerModifiable);

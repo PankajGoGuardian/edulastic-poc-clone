@@ -60,8 +60,8 @@ const StudentsList = ({
   const empty = isEmpty(students);
   // here only students without enrollmentStatus as "0" are shown
   const filteredStudents = showCurrentStudents
-    ? students.filter(student => student.enrollmentStatus === 1)
-    : [...students];
+    ? students.filter(student => student.enrollmentStatus === 1 && student.status === 1)
+    : students;
 
   const columns = [
     {
@@ -143,9 +143,9 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       width: "20%",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
-      render: (enrollmentStatus, { enrollmentUpdatedAt }) => (
+      render: (enrollmentStatus, { enrollmentUpdatedAt, status }) => (
         <span>
-          {enrollmentStatus && enrollmentStatus == 1 ? (
+          {enrollmentStatus && enrollmentStatus === 1 && status === 1 ? (
             "Active"
           ) : (
             <NotEnrolledMessage>
@@ -161,8 +161,8 @@ const StudentsList = ({
       )
     },
     {
-      render: (_, { _id, enrollmentStatus }) =>
-        !isProxyUser && enrollmentStatus == 1 ? (
+      render: (_, { _id, enrollmentStatus, status }) =>
+        !isProxyUser && enrollmentStatus === 1 && status === 1 ? (
           <Tooltip placement="topRight" title="View as Student">
             <GiDominoMask
               onClick={() => proxyUser({ userId: _id, groupId, currentUser: { _id: cuId, role: cuRole } })}

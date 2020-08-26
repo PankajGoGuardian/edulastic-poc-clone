@@ -9,7 +9,7 @@ import { push } from "connected-react-router";
 import { getCurrentGroup, getClassIds } from "../student/Reports/ducks";
 import { getUserId } from "../student/Login/ducks";
 import { transformAssignmentForRedirect } from "../student/Assignments/ducks";
-import { assignmentSchema } from "../student/sharedDucks/AssignmentModule/ducks";
+import { assignmentSchema, setServerTimeStampAction } from "../student/sharedDucks/AssignmentModule/ducks";
 
 import { reportSchema } from "../student/sharedDucks/ReportsModule/ducks";
 
@@ -107,10 +107,16 @@ function* fetchAssignmentsByTest({ payload }) {
     const groupId = yield select(getCurrentGroup);
     const userId = yield select(getCurrentUserId);
     const classIds = yield select(getClassIds);
-    const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId, testId),
+    const reqTS = true;
+    yield put(setServerTimeStampAction(null));
+    const [{ assignments, ts }, reports] = yield all([
+      call(assignmentApi.fetchAssigned, groupId, testId, reqTS),
       call(reportsApi.fetchReports, groupId, testId)
     ]);
+    if (ts) {
+      const tsToNumber = new Date(ts).getTime();
+      yield put(setServerTimeStampAction(tsToNumber));
+    }
 
     // transform to handle redirect
     const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);

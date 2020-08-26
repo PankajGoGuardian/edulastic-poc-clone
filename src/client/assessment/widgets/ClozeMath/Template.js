@@ -353,16 +353,20 @@ class Template extends Component {
 
     const _reduceOptions = (responseIds = {}, options) => {
       const { dropDowns } = responseIds;
-      let _options = cloneDeep(options);
       if (!dropDowns) {
         return;
       }
 
-      if (!_options) {
-        _options = {};
-      }
+      const newOptions = {};
+      dropDowns.forEach(x => {
+        if (options && options[x.id]) {
+          newOptions[x.id] = options[x.id];
+        } else {
+          newOptions[x.id] = [];
+        }
+      });
 
-      return _options;
+      return newOptions;
     };
 
     const _updateTemplate = val => {

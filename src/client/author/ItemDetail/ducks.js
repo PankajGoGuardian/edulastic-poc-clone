@@ -1207,6 +1207,13 @@ function* saveTestItemSaga() {
   questions = produce(questions, () => {
     for (const [ind, q] of questions.entries()) {
       if (ind === 0) {
+        if (data.itemLevelScoring && q.scoringDisabled) {
+          //on item level scoring item, first question removed situation.
+          q.scoringDisabled = false;
+          if (!questionType.manuallyGradableQn.includes(data.type)) {
+            set(q, "validation.validResponse.score", data.itemLevelScore);
+          }
+        }
         continue;
       }
       if (data.itemLevelScoring) {

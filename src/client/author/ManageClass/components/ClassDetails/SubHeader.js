@@ -38,14 +38,10 @@ const SubHeader = ({
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
   const { exitPath } = location?.state || {};
   const typeText = type !== "class" ? "Group" : "Class";
-  const studentCount = studentsList?.filter(stu => stu.enrollmentStatus != 0)?.length;
+  const studentCount = studentsList?.filter(stu => stu.enrollmentStatus === 1 && stu.status === 1)?.length;
   const totalStudent = studentCount < 10 ? <span> 0{studentCount} </span> : studentCount;
-  const coTeachers =
-    owners ?
-    owners
-      .filter(owner => owner.id !== userId)
-      .map(owner => owner.name) : [];
-  
+  const coTeachers = owners ? owners.filter(owner => owner.id !== userId).map(owner => owner.name) : [];
+
   const teacher = coTeachers.slice(0, 1);
   const otherTeachers = coTeachers.slice(1, lastTeacher);
   const otherTeacherNames = otherTeachers.join(", ");
@@ -79,7 +75,7 @@ const SubHeader = ({
                 span={12}
               >
                 <CoTeacher>
-                  CO-TEACHER{' '}<span>{teacher}</span>
+                  CO-TEACHER <span>{teacher}</span>
                   {otherTeachers.length >= 1 ? (
                     <Tooltip title={otherTeacherNames} placement="right">
                       <PopCoTeachers>+ {otherTeachers.length}</PopCoTeachers>
@@ -94,9 +90,7 @@ const SubHeader = ({
         </CodeWrapper>
       )}
       <RightContent>
-        {active !== 1 && (
-          <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>
-        )}
+        {active !== 1 && <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>}
         {showUnarchiveModal && (
           <SimpleConfirmModal
             visible={showUnarchiveModal}

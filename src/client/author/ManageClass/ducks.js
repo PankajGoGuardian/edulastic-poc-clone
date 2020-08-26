@@ -119,6 +119,8 @@ export const UNARCHIVE_CLASS_REQUEST_FAILED = "[manageClass] unarchive class fai
 
 export const REMOVE_CLASS_SYNC_NOTIFICATION = "[manageClass] remove class sync notification";
 
+export const SET_CLEVER_SYNC_MODAL = "[manageClass] set clever sync modal";
+
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
@@ -190,6 +192,8 @@ export const setClassNotFoundErrorAction = createAction(GOOGLE_SYNC_CLASS_NOT_FO
 
 export const removeClassSyncNotificationAction = createAction(REMOVE_CLASS_SYNC_NOTIFICATION);
 
+export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL);
+
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -212,7 +216,12 @@ const initialState = {
   loadingCleverClassList: false,
   cleverClassList: [],
   classNotFoundError: false,
-  unarchivingClass: false
+  unarchivingClass: false,
+  showCleverSyncModal: false
+};
+
+const setShowCleverSyncModal = (state, { payload }) => {
+  state.showCleverSyncModal = payload;
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -447,7 +456,8 @@ export default createReducer(initialState, {
   },
   [UNARCHIVE_CLASS_REQUEST_FAILED]: state => {
     state.unarchivingClass = false;
-  }
+  },
+  [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal
 });
 
 function* fetchClassList({ payload }) {
@@ -714,7 +724,13 @@ function* fetchCleverClassListRequestSaga() {
     Sentry.captureException(err);
     console.error(err);
     yield put(fetchCleverClassListFailedAction());
-    notification({ messageKey: "failedToFetchCleverClasses" });
+    const errorMessage = err?.response?.data?.message;
+    if (err.status === 403 && errorMessage) {
+      yield put(setShowCleverSyncModalAction(false));
+      notification({ type: "warn", msg: errorMessage });
+    } else {
+      notification({ messageKey: "failedToFetchCleverClasses" });
+    }
   }
 }
 
@@ -744,7 +760,12 @@ function* syncClassListWithCleverSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.error(err);
-    notification({ messageKey: "syncWithCleverFailed" });
+    const errorMessage = err?.response?.data?.message;
+    if (err.status === 403 && errorMessage) {
+      notification({ type: "warn", msg: errorMessage });
+    } else {
+      notification({ messageKey: "syncWithCleverFailed" });
+    }
   }
 }
 

@@ -10,8 +10,7 @@ import { testActivity as testActivityConstants } from "@edulastic/constants";
 import {
   assignmentSchema,
   setAssignmentsAction,
-  setAssignmentsLoadingAction,
-  setServerTimeStampAction
+  setAssignmentsLoadingAction
 } from "../sharedDucks/AssignmentModule/ducks";
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 
@@ -40,17 +39,11 @@ function* fetchAssignments({ payload }) {
   try {
     const groupId = yield select(getCurrentGroup);
     yield put(setAssignmentsLoadingAction());
-    const reqTS = true;
-    yield put(setServerTimeStampAction(null));
-    const [{ assignments, ts }, reports] = yield all([
-      call(assignmentApi.fetchAssigned, payload, "", reqTS),
+    const [assignments, reports] = yield all([
+      call(assignmentApi.fetchAssigned, payload),
       call(reportsApi.fetchReports, groupId)
     ]);
 
-    if (ts) {
-      const tsToNumber = new Date(ts).getTime();
-      yield put(setServerTimeStampAction(tsToNumber));
-    }
     // normalize assignments
     const {
       result: allAssignments,
@@ -81,9 +74,8 @@ export function* watcherSaga() {
 const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 export const filterSelector = state => state.studentReport.filter;
-const getServerTimeSelector = state => state.studentAssignment.serverTs;
 
-const isReport = (assignment, classIds, userId, serverTime) => {
+const isReport = (assignment, classIds, userId) => {
   // either user has ran out of attempts
   // or assignments is past dueDate
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
@@ -106,7 +98,7 @@ const isReport = (assignment, classIds, userId, serverTime) => {
       if (currentClass.closed !== undefined) return currentClass.closed;
     }
   }
-  const isExpired = maxAttempts <= attempts || new Date(endDate) < new Date(serverTime);
+  const isExpired = maxAttempts <= attempts || new Date(endDate) < new Date();
   return isExpired || attempts > 0;
 };
 
@@ -130,11 +122,11 @@ const statusFilter = filterType => assignment => {
 export const getAllAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
+
   getCurrentGroup,
   getClassIds,
   currentUserId,
-  getServerTimeSelector,
-  (assignmentsObj, reportsObj, currentGroup, classIds, userId, serverTime) => {
+  (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
@@ -155,7 +147,7 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {})
         }));
       })
-      .filter(assignment => isReport(assignment, classIds, userId, serverTime));
+      .filter(assignment => isReport(assignment, classIds, userId));
 
     return assignments.sort((a, b) => {
       const a_report = a.reports.find(report => !report.archived);

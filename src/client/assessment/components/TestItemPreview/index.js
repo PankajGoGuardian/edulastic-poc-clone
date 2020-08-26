@@ -372,7 +372,7 @@ class TestItemPreview extends Component {
                   );
                 })}
               </div>
-              {(showScratchpadByDefault || scratchPadMode) && (
+              {((showScratchpadByDefault && !isStudentAttempt) || scratchPadMode) && (
                 <Scratchpad saveData={saveHistory} data={history} hideTools readOnly={readyOnlyScratchpad} />
               )}
             </ScrollContext.Provider>

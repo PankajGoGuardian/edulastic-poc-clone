@@ -80,8 +80,7 @@ const AssignmentCard = memo(
     user: { role: userRole, _id: userId },
     proxyUserRole,
     highlightMode,
-    updateTestIdRealTime,
-    serverTimeStamp
+    updateTestIdRealTime
   }) => {
     const [showAttempts, setShowAttempts] = useState(false);
     const toggleAttemptsView = () => setShowAttempts(prev => !prev);
@@ -177,7 +176,7 @@ const AssignmentCard = memo(
       maxAttempts = reports.length;
     }
     const startTest = () => {
-      if (endDate < serverTimeStamp) {
+      if (endDate < Date.now()) {
         notification({ messageKey: "testIsExpired" });
         return;
       }
@@ -267,7 +266,7 @@ const AssignmentCard = memo(
     const StartButtonContainer =
       type === "assignment"
         ? !(userRole === "parent" || isParentRoleProxy) &&
-          (safeBrowser && !(new Date(startDate) > new Date(serverTimeStamp) || !startDate) && !isSEB() ? (
+          (safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
             <SafeBrowserButton
               data-cy="start"
               testId={testId}
@@ -294,7 +293,6 @@ const AssignmentCard = memo(
               attempted={attempted}
               resume={resume}
               classId={classId}
-              serverTimeStamp={serverTimeStamp}
             />
           ))
         : showReviewButton &&
@@ -400,7 +398,6 @@ const AssignmentCard = memo(
             isPaused={isPaused}
             lastAttempt={lastAttempt}
             isDueDate={!!dueDate}
-            serverTimeStamp={serverTimeStamp}
           />
           <TimeIndicator type={type}>
             {timedAssignment && (
@@ -478,8 +475,7 @@ const enhance = compose(
   connect(
     state => ({
       user: state?.user?.user,
-      proxyUserRole: proxyRole(state),
-      serverTimeStamp: state?.studentAssignment?.serverTs
+      proxyUserRole: proxyRole(state)
     }),
     {
       startAssignment: startAssignmentAction,

@@ -19,7 +19,7 @@ const createAnswerObject = answers => {
  * @param {boolean} allowSingleLetterMistake  // is single letter mistake accepted
  * @param {boolean} ignoreCase  // ignore case of answer
  */
-const compareChoice = (answer, response, allowSingleLetterMistake = false, ignoreCase = false) => {
+const compareChoice = (answer = "", response = "", allowSingleLetterMistake = false, ignoreCase = false) => {
   const attempted = response && response.length;
   if (!attempted) return null;
 

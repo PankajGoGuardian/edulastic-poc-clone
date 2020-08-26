@@ -297,8 +297,11 @@ const Scratchpad = ({
       } else if (isStudentAttempt && prevItemIndex !== currentItem && !data) {
         zwibbler.newDocument();
         setPrevItemIndex(currentItem);
-      } else if (data && readOnly) {
-        // in readOnly mode views (lcb, express grader, etc.)
+      } else if (data && (readOnly || (expressGrader && isAnswerModifiable))) {
+        /**
+         * readonly mode views (lcb, expressGrader(edit response off), etc...)
+         * expressGrader && isAnswerModifiable (edit response on)
+         */
         zwibbler.load(data);
       }
     }

@@ -473,20 +473,33 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
               type: "mathWithUnits",
               userAnswers: mathUnits
             });
-            alt_inputs = altResponses.map(function (alt_res) {
-              return _objectSpread({
-                score: 1
-              }, alt_res.textinput);
-            });
-            alt_dropdowns = altResponses.map(function (alt_res) {
-              return _objectSpread({
-                score: 1
-              }, alt_res.dropdown);
-            });
-            altMathUnits = altResponses.map(function (alt_res) {
-              return _objectSpread({
-                score: 1
-              }, alt_res.mathUnits);
+            alt_inputs = [], alt_dropdowns = [], altMathUnits = [];
+            altResponses.forEach(function (altResp) {
+              var _ref9 = altResp || {},
+                  _ref9$textinput = _ref9.textinput,
+                  textinput = _ref9$textinput === void 0 ? {} : _ref9$textinput,
+                  _ref9$dropdown = _ref9.dropdown,
+                  dropdown = _ref9$dropdown === void 0 ? {} : _ref9$dropdown,
+                  _ref9$mathUnits = _ref9.mathUnits,
+                  mathUnits = _ref9$mathUnits === void 0 ? {} : _ref9$mathUnits;
+
+              if (!(0, _isEmpty2["default"])(textinput)) {
+                alt_inputs.push(_objectSpread({
+                  score: 1
+                }, textinput));
+              }
+
+              if (!(0, _isEmpty2["default"])(dropdown)) {
+                alt_dropdowns.push(_objectSpread({
+                  score: 1
+                }, dropdown));
+              }
+
+              if (!(0, _isEmpty2["default"])(mathUnits)) {
+                altMathUnits.push(_objectSpread({
+                  score: 1
+                }, mathUnits));
+              }
             });
             questionScore = validResponse && validResponse.score || 1;
             score = 0;
@@ -521,11 +534,11 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
             _context6.t1 = !(0, _isEmpty2["default"])(validResponse.value);
 
             if (!_context6.t1) {
-              _context6.next = 18;
+              _context6.next = 17;
               break;
             }
 
-            _context6.next = 17;
+            _context6.next = 16;
             return mixAndMatchMathEvaluator({
               userResponse: _maths,
               validation: {
@@ -534,29 +547,29 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
               }
             });
 
-          case 17:
+          case 16:
             _context6.t1 = _context6.sent;
 
-          case 18:
+          case 17:
             _context6.t0 = _context6.t1;
 
             if (_context6.t0) {
-              _context6.next = 21;
+              _context6.next = 20;
               break;
             }
 
             _context6.t0 = {};
 
-          case 21:
+          case 20:
             mathEvaluation = _context6.t0;
             _context6.t3 = !(0, _isEmpty2["default"])(validResponse.mathUnits);
 
             if (!_context6.t3) {
-              _context6.next = 27;
+              _context6.next = 26;
               break;
             }
 
-            _context6.next = 26;
+            _context6.next = 25;
             return mixAndMatchMathEvaluator({
               userResponse: _mathUnits,
               validation: {
@@ -565,20 +578,20 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
               }
             });
 
-          case 26:
+          case 25:
             _context6.t3 = _context6.sent;
 
-          case 27:
+          case 26:
             _context6.t2 = _context6.t3;
 
             if (_context6.t2) {
-              _context6.next = 30;
+              _context6.next = 29;
               break;
             }
 
             _context6.t2 = {};
 
-          case 30:
+          case 29:
             mathUnitsEvaluation = _context6.t2;
             evaluation = _objectSpread({}, dropDownEvaluation, {}, clozeTextEvaluation, {}, mathEvaluation, {}, mathUnitsEvaluation);
             correctAnswerCount = Object.values(evaluation).filter(_identity2["default"]).length;
@@ -604,7 +617,7 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
               maxScore: questionScore
             });
 
-          case 37:
+          case 36:
           case "end":
             return _context6.stop();
         }
@@ -617,10 +630,10 @@ var mixAndMatchEvaluator = /*#__PURE__*/function () {
   };
 }();
 
-var _default = function _default(_ref9) {
-  var _ref9$userResponse = _ref9.userResponse,
-      userResponse = _ref9$userResponse === void 0 ? {} : _ref9$userResponse,
-      validation = _ref9.validation;
+var _default = function _default(_ref10) {
+  var _ref10$userResponse = _ref10.userResponse,
+      userResponse = _ref10$userResponse === void 0 ? {} : _ref10$userResponse,
+      validation = _ref10.validation;
   return validation.mixAndMatch ? mixAndMatchEvaluator({
     userResponse: userResponse,
     validation: validation

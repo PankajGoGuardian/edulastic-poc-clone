@@ -79,344 +79,348 @@ function* loadTest({ payload }) {
     currentAssignmentId,
     sharedType = ""
   } = payload;
-  try {
-    // if the assessment player is loaded for showing student work
-    // we shouldn't be removing evaluation and answers from store.
-    if (!isShowStudentWork) {
-      yield put({
-        type: CLEAR_ITEM_EVALUATION
-      });
-
-      yield put({
-        type: REMOVE_PREVIOUS_ANSWERS
-      });
-    }
-    yield put({
-      type: SET_TEST_LOADING_STATUS,
-      payload: true
-    });
-    yield put({
-      type: TEST_ACTIVITY_LOADING,
-      payload: true
-    });
-    yield put(setPasswordValidateStatusAction(false));
-
-    yield put({
-      type: SET_TEST_ID,
-      payload: {
-        testId
+  if (!testActivityId || !testId) {
+    notification({ msg: "Failed loading the test. Missing required parameters." });
+  } else {
+    try {
+      // if the assessment player is loaded for showing student work
+      // we shouldn't be removing evaluation and answers from store.
+      if (!isShowStudentWork) {
+        yield put({
+          type: CLEAR_ITEM_EVALUATION
+        });
+  
+        yield put({
+          type: REMOVE_PREVIOUS_ANSWERS
+        });
       }
-    });
-
-    // for urls that doesnt have groupId, fallback
-    const groupId = groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses));
-
-    // if !preivew, need to load previous responses as well!
-    const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
-    const testRequest = !demo
-      ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
-          validation: true,
-          data: true,
-          groupId,
-          testActivityId,
-          ...(playlistId ? { playlistId } : {}),
-          ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {})
-        }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId, { sharedType });
-    const [testActivity] = yield all([getTestActivity]);
-    if (!preview) {
-      const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
-      let passwordValidated =
-        testActivity.assignmentSettings.passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary;
-      if (passwordValidated) {
-        yield put(setPasswordValidateStatusAction(true));
-      }
-
       yield put({
-        type: CHANGE_VIEW,
-        payload: {
-          view: PREVIEW
-        }
+        type: SET_TEST_LOADING_STATUS,
+        payload: true
       });
-
       yield put({
         type: TEST_ACTIVITY_LOADING,
-        payload: false
+        payload: true
       });
-      while (!passwordValidated) {
-        try {
-          const { payload: _payload } = yield take(GET_ASSIGNMENT_PASSWORD);
-          const response = yield call(assignmentApi.validateAssignmentPassword, {
-            assignmentId: testActivity.testActivity.assignmentId,
-            password: _payload,
-            groupId
-          });
-          if (response === "successful") {
-            passwordValidated = true;
-          } else if (response === "unsuccessful") {
-            yield put(setPasswordStatusAction("You have entered an invalid password"));
-          } else {
-            yield put(setPasswordStatusAction("validation failed"));
-          }
-        } catch (err) {
-          if (err?.status === 403) {
-            yield put(setPasswordStatusAction(err.response.data.message));
-          } else {
-            yield put(setPasswordStatusAction("validation failed"));
-          }
-          console.log(err);
-          Sentry.captureException(err);
-        }
-      }
-      yield put(setPasswordStatusAction(""));
-    }
-    const isAuthorReview = Object.keys(testData).length > 0;
-    let [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
-    if (test?.testItems && demo) {
-      set(test, "itemGroups[0].items", test.testItems);
-    }
-    if (
-      preview &&
-      test.itemGroups.some(
-        (group = {}) => group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT && !group.items?.length
-      )
-    ) {
-      test = yield addAutoselectGroupItems({ payload: test, preview });
-    }
-    if (preview && test.itemGroups?.some(group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM)) {
-      // for all limited random group update items as per number of delivery items count
-      test = modifyTestDataForPreview(test);
-    }
-    test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
-    if (
-      testActivity?.assignmentSettings?.questionsDelivery ===
-        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
-      testActivity.itemsToBeExcluded?.length
-    ) {
-      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
-      test.testItems = test.testItems.filter(item => !testActivity.itemsToBeExcluded.includes(item._id));
-    }
-    // eslint-disable-next-line prefer-const
-    let { testItems, passages, testType } = test;
-    const settings = {
-      // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
-      calcProvider:
-        testActivity?.testActivity?.calcType === testContants.calculatorTypes.GRAPHING ||
-        test.calcType === testContants.calculatorTypes.GRAPHING
-          ? "DESMOS"
-          : testActivity?.calculatorProvider,
-      calcType: testActivity?.assignmentSettings?.calcType || test.calcType || testContants.calculatorTypes.NONE,
-      maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
-      passwordPolicy:
-        testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
-      testType: testActivity?.assignmentSettings?.testType,
-      playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
-      showMagnifier: testActivity?.assignmentSettings?.showMagnifier,
-      endDate: testActivity?.assignmentSettings?.endDate,
-      closePolicy: testActivity?.assignmentSettings?.closePolicy,
-      timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
-      allowedTime: testActivity?.assignmentSettings?.allowedTime,
-      pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
-      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
-      releaseScore: testActivity?.testActivity?.releaseScore
-    };
-
-    const answerCheckByItemId = {};
-    (testActivity.questionActivities || []).forEach(item => {
-      answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem;
-    });
-
-    // if testActivity is present.
-    if (!preview) {
-      let allAnswers = {};
-      let allPrevAnswers = {};
-      let allEvaluation = {};
-
-      const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
-      // load bookmarks
-      const qActivitiesGroupedByTestItem = groupBy(questionActivities, "testItemId");
-      const bookmarks = {};
-      for (const _id of Object.keys(qActivitiesGroupedByTestItem)) {
-        const isBookmarked = qActivitiesGroupedByTestItem[_id].some(item => item.bookmarked);
-        bookmarks[_id] = isBookmarked;
-      }
-      yield put(loadBookmarkAction(bookmarks));
-
-      let shuffles;
-      if (activity.shuffleAnswers) {
-        [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
-        yield put(setShuffledOptions(shuffles));
-      }
+      yield put(setPasswordValidateStatusAction(false));
+  
       yield put({
-        type: SET_TEST_ACTIVITY_ID,
-        payload: { testActivityId }
-      });
-
-      let lastAttemptedQuestion = questionActivities[0] || {};
-      const previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
-
-      previousQuestionActivities.forEach(item => {
-        allPrevAnswers = {
-          ...allPrevAnswers,
-          [item.qid]: item.userResponse
-        };
-        allEvaluation = {
-          ...allEvaluation,
-          [item.qid]: item.evaluation
-        };
-      });
-
-      yield put({
-        type: ADD_ITEM_EVALUATION,
+        type: SET_TEST_ID,
         payload: {
-          ...allEvaluation
+          testId
         }
       });
-      yield put({
-        type: LOAD_PREVIOUS_ANSWERS,
-        payload: allPrevAnswers
-      });
-
-      yield put({
-        type: LOAD_PREVIOUS_RESPONSES,
-        payload: previousQActivitiesById
-      });
-
-      const testItemIds = testItems.map(i => i._id);
-      const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
-        referrerId: testActivityId
-      });
-      const scratchPadData = {};
-      attachments.forEach(attachment => {
-        scratchPadData[attachment.referrerId2] = attachment.data;
-      });
-
-      questionActivities.forEach(item => {
-        allAnswers = {
-          ...allAnswers,
-          [item.qid]: item.userResponse
-        };
-        if (item.scratchPad) {
-          scratchPadData[item.testItemId] = {
-            ...item.scratchPad,
-            ...scratchPadData[item.testItemId]
-          };
+  
+      // for urls that doesnt have groupId, fallback
+      const groupId = groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses));
+  
+      // if !preivew, need to load previous responses as well!
+      const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
+      const testRequest = !demo
+        ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
+            validation: true,
+            data: true,
+            groupId,
+            testActivityId,
+            ...(playlistId ? { playlistId } : {}),
+            ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {})
+          }) // when preview(author side) use normal non cached api
+        : call(testsApi.getPublicTest, testId, { sharedType });
+      const [testActivity] = yield all([getTestActivity]);
+      if (!preview) {
+        const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
+        let passwordValidated =
+          testActivity.assignmentSettings.passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
+          isFromSummary;
+        if (passwordValidated) {
+          yield put(setPasswordValidateStatusAction(true));
         }
-        // land on the testItems which is next to testItem that is attempted and has the highest index
-        // https://snapwiz.atlassian.net/browse/EV-7530 check the comments.
-        if (
-          testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId) &&
-          !item.skipped
-        ) {
-          lastAttemptedQuestion = item;
-        }
-      });
-
-      if (Object.keys(scratchPadData).length) {
+  
         yield put({
-          type: LOAD_SCRATCH_PAD,
-          payload: scratchPadData
-        });
-      }
-
-      const testUserWork = get(activity, "userWork");
-      if (testUserWork) {
-        yield put({
-          type: LOAD_TEST_LEVEL_USER_WORK,
-          payload: { [testActivityId]: testUserWork }
-        });
-      }
-
-      // get currentItem index;
-      let lastAttendedQuestion = 0;
-      if (lastAttemptedQuestion && lastAttemptedQuestion.testItemId) {
-        test.testItems.forEach((item, index) => {
-          if (item._id === lastAttemptedQuestion.testItemId) {
-            lastAttendedQuestion = index;
+          type: CHANGE_VIEW,
+          payload: {
+            view: PREVIEW
           }
         });
-      }
-
-      // if not the last question in the test or wasn't skipped then land on next Q
-      if (lastAttendedQuestion !== test.testItems.length - 1 && !lastAttemptedQuestion.skipped) {
-        lastAttendedQuestion++;
-      }
-
-      // load previous responses
-      yield put({
-        type: LOAD_ANSWERS,
-        payload: allAnswers
-      });
-
-      // only load from previous attempted if resuming from assignments page
-      const loadFromLast = yield select(state => state.test && state.test.resume);
-
-      // carryForward the prev locaation state in case of playlist flow
-      const prevLocationState = yield select(state => state?.router?.location?.state) || {};
-
-      // move to last attended question
-      if (loadFromLast && testType !== testContants.type.TESTLET) {
-        yield put(push({ pathname: `${lastAttendedQuestion}`, state: prevLocationState }));
+  
         yield put({
-          type: SET_RESUME_STATUS,
+          type: TEST_ACTIVITY_LOADING,
           payload: false
         });
+        while (!passwordValidated) {
+          try {
+            const { payload: _payload } = yield take(GET_ASSIGNMENT_PASSWORD);
+            const response = yield call(assignmentApi.validateAssignmentPassword, {
+              assignmentId: testActivity.testActivity.assignmentId,
+              password: _payload,
+              groupId
+            });
+            if (response === "successful") {
+              passwordValidated = true;
+            } else if (response === "unsuccessful") {
+              yield put(setPasswordStatusAction("You have entered an invalid password"));
+            } else {
+              yield put(setPasswordStatusAction("validation failed"));
+            }
+          } catch (err) {
+            if (err?.status === 403) {
+              yield put(setPasswordStatusAction(err.response.data.message));
+            } else {
+              yield put(setPasswordStatusAction("validation failed"));
+            }
+            console.log(err);
+            Sentry.captureException(err);
+          }
+        }
+        yield put(setPasswordStatusAction(""));
       }
-    }
-    if (!isShowStudentWork) markQuestionLabel(testItems);
-    let questions = getQuestions(testItems);
-    if (test.passages) {
-      const passageItems = test.passages.map(passage => passage.data || []);
-      questions = [...flatten(passageItems), ...questions];
-    }
-    yield put(loadQuestionsAction(_keyBy(questions, "id")));
-
-    // test items are put into store after shuffling questions sometimes..
-    // hence dont frigging move this, and this better stay at the end!
-
-    yield put({
-      type: LOAD_TEST_ITEMS,
-      payload: {
-        passages,
-        items: testItems,
-        title: test.title,
-        testType: settings.testType || test.testType,
-        playerSkinType: settings.playerSkinType || test.playerSkinType,
-        testletConfig: test.testletConfig,
-        annotations: test.annotations,
-        docUrl: test.docUrl,
-        isDocBased: test.isDocBased,
-        pageStructure: test.pageStructure,
-        freeFormNotes: test.freeFormNotes,
-        settings,
-        answerCheckByItemId,
-        showMagnifier: settings.showMagnifier || test.showMagnifier
+      const isAuthorReview = Object.keys(testData).length > 0;
+      let [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
+      if (test?.testItems && demo) {
+        set(test, "itemGroups[0].items", test.testItems);
       }
-    });
-    yield put(setPasswordValidateStatusAction(true));
-
-    yield put({
-      type: SET_TEST_LOADING_STATUS,
-      payload: false
-    });
-  } catch (err) {
-    console.error(err);
-    Sentry.captureException(err);
-    yield put({
-      type: SET_TEST_LOADING_ERROR,
-      payload: err
-    });
-    if (err.status === 403) {
-      if (preview) {
-        notification({ messageKey: "youCanNoLongerUse" });
-        return Modal.destroyAll();
+      if (
+        preview &&
+        test.itemGroups.some(
+          (group = {}) => group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT && !group.items?.length
+        )
+      ) {
+        test = yield addAutoselectGroupItems({ payload: test, preview });
       }
-      const userRole = yield select(getUserRole);
-      if (userRole === roleuser.STUDENT) {
-        notification({ msg: err.response.data.message || "Failed loading the test" });
-        return yield put(push("/home/assignments"));
+      if (preview && test.itemGroups?.some(group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM)) {
+        // for all limited random group update items as per number of delivery items count
+        test = modifyTestDataForPreview(test);
+      }
+      test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+      if (
+        testActivity?.assignmentSettings?.questionsDelivery ===
+          testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
+        testActivity.itemsToBeExcluded?.length
+      ) {
+        // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
+        test.testItems = test.testItems.filter(item => !testActivity.itemsToBeExcluded.includes(item._id));
+      }
+      // eslint-disable-next-line prefer-const
+      let { testItems, passages, testType } = test;
+      const settings = {
+        // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
+        calcProvider:
+          testActivity?.testActivity?.calcType === testContants.calculatorTypes.GRAPHING ||
+          test.calcType === testContants.calculatorTypes.GRAPHING
+            ? "DESMOS"
+            : testActivity?.calculatorProvider,
+        calcType: testActivity?.assignmentSettings?.calcType || test.calcType || testContants.calculatorTypes.NONE,
+        maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
+        passwordPolicy:
+          testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+        showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
+        testType: testActivity?.assignmentSettings?.testType,
+        playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
+        showMagnifier: testActivity?.assignmentSettings?.showMagnifier,
+        endDate: testActivity?.assignmentSettings?.endDate,
+        closePolicy: testActivity?.assignmentSettings?.closePolicy,
+        timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
+        allowedTime: testActivity?.assignmentSettings?.allowedTime,
+        pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
+        enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
+        releaseScore: testActivity?.testActivity?.releaseScore
+      };
+  
+      const answerCheckByItemId = {};
+      (testActivity.questionActivities || []).forEach(item => {
+        answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem;
+      });
+  
+      // if testActivity is present.
+      if (!preview) {
+        let allAnswers = {};
+        let allPrevAnswers = {};
+        let allEvaluation = {};
+  
+        const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
+        // load bookmarks
+        const qActivitiesGroupedByTestItem = groupBy(questionActivities, "testItemId");
+        const bookmarks = {};
+        for (const _id of Object.keys(qActivitiesGroupedByTestItem)) {
+          const isBookmarked = qActivitiesGroupedByTestItem[_id].some(item => item.bookmarked);
+          bookmarks[_id] = isBookmarked;
+        }
+        yield put(loadBookmarkAction(bookmarks));
+  
+        let shuffles;
+        if (activity.shuffleAnswers) {
+          [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
+          yield put(setShuffledOptions(shuffles));
+        }
+        yield put({
+          type: SET_TEST_ACTIVITY_ID,
+          payload: { testActivityId }
+        });
+  
+        let lastAttemptedQuestion = questionActivities[0] || {};
+        const previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
+  
+        previousQuestionActivities.forEach(item => {
+          allPrevAnswers = {
+            ...allPrevAnswers,
+            [item.qid]: item.userResponse
+          };
+          allEvaluation = {
+            ...allEvaluation,
+            [item.qid]: item.evaluation
+          };
+        });
+  
+        yield put({
+          type: ADD_ITEM_EVALUATION,
+          payload: {
+            ...allEvaluation
+          }
+        });
+        yield put({
+          type: LOAD_PREVIOUS_ANSWERS,
+          payload: allPrevAnswers
+        });
+  
+        yield put({
+          type: LOAD_PREVIOUS_RESPONSES,
+          payload: previousQActivitiesById
+        });
+  
+        const testItemIds = testItems.map(i => i._id);
+        const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+          referrerId: testActivityId
+        });
+        const scratchPadData = {};
+        attachments.forEach(attachment => {
+          scratchPadData[attachment.referrerId2] = attachment.data;
+        });
+  
+        questionActivities.forEach(item => {
+          allAnswers = {
+            ...allAnswers,
+            [item.qid]: item.userResponse
+          };
+          if (item.scratchPad) {
+            scratchPadData[item.testItemId] = {
+              ...item.scratchPad,
+              ...scratchPadData[item.testItemId]
+            };
+          }
+          // land on the testItems which is next to testItem that is attempted and has the highest index
+          // https://snapwiz.atlassian.net/browse/EV-7530 check the comments.
+          if (
+            testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId) &&
+            !item.skipped
+          ) {
+            lastAttemptedQuestion = item;
+          }
+        });
+  
+        if (Object.keys(scratchPadData).length) {
+          yield put({
+            type: LOAD_SCRATCH_PAD,
+            payload: scratchPadData
+          });
+        }
+  
+        const testUserWork = get(activity, "userWork");
+        if (testUserWork) {
+          yield put({
+            type: LOAD_TEST_LEVEL_USER_WORK,
+            payload: { [testActivityId]: testUserWork }
+          });
+        }
+  
+        // get currentItem index;
+        let lastAttendedQuestion = 0;
+        if (lastAttemptedQuestion && lastAttemptedQuestion.testItemId) {
+          test.testItems.forEach((item, index) => {
+            if (item._id === lastAttemptedQuestion.testItemId) {
+              lastAttendedQuestion = index;
+            }
+          });
+        }
+  
+        // if not the last question in the test or wasn't skipped then land on next Q
+        if (lastAttendedQuestion !== test.testItems.length - 1 && !lastAttemptedQuestion.skipped) {
+          lastAttendedQuestion++;
+        }
+  
+        // load previous responses
+        yield put({
+          type: LOAD_ANSWERS,
+          payload: allAnswers
+        });
+  
+        // only load from previous attempted if resuming from assignments page
+        const loadFromLast = yield select(state => state.test && state.test.resume);
+  
+        // carryForward the prev locaation state in case of playlist flow
+        const prevLocationState = yield select(state => state?.router?.location?.state) || {};
+  
+        // move to last attended question
+        if (loadFromLast && testType !== testContants.type.TESTLET) {
+          yield put(push({ pathname: `${lastAttendedQuestion}`, state: prevLocationState }));
+          yield put({
+            type: SET_RESUME_STATUS,
+            payload: false
+          });
+        }
+      }
+      if (!isShowStudentWork) markQuestionLabel(testItems);
+      let questions = getQuestions(testItems);
+      if (test.passages) {
+        const passageItems = test.passages.map(passage => passage.data || []);
+        questions = [...flatten(passageItems), ...questions];
+      }
+      yield put(loadQuestionsAction(_keyBy(questions, "id")));
+  
+      // test items are put into store after shuffling questions sometimes..
+      // hence dont frigging move this, and this better stay at the end!
+  
+      yield put({
+        type: LOAD_TEST_ITEMS,
+        payload: {
+          passages,
+          items: testItems,
+          title: test.title,
+          testType: settings.testType || test.testType,
+          playerSkinType: settings.playerSkinType || test.playerSkinType,
+          testletConfig: test.testletConfig,
+          annotations: test.annotations,
+          docUrl: test.docUrl,
+          isDocBased: test.isDocBased,
+          pageStructure: test.pageStructure,
+          freeFormNotes: test.freeFormNotes,
+          settings,
+          answerCheckByItemId,
+          showMagnifier: settings.showMagnifier || test.showMagnifier
+        }
+      });
+      yield put(setPasswordValidateStatusAction(true));
+  
+      yield put({
+        type: SET_TEST_LOADING_STATUS,
+        payload: false
+      });
+    } catch (err) {
+      console.error(err);
+      Sentry.captureException(err);
+      yield put({
+        type: SET_TEST_LOADING_ERROR,
+        payload: err
+      });
+      if (err.status === 403) {
+        if (preview) {
+          notification({ messageKey: "youCanNoLongerUse" });
+          return Modal.destroyAll();
+        }
+        const userRole = yield select(getUserRole);
+        if (userRole === roleuser.STUDENT) {
+          notification({ msg: err.response.data.message || "Failed loading the test" });
+          return yield put(push("/home/assignments"));
+        }
       }
     }
   }

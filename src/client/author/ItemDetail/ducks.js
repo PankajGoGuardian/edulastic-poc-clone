@@ -61,7 +61,6 @@ import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../s
 import { markQuestionLabel } from "./Transformer";
 import { getUserFeatures } from "../../student/Login/ducks";
 import { addLoadingComponentAction, removeLoadingComponentAction } from "../src/actions/authorUi";
-import { reSequenceQuestionsWithWidgets } from "../../common/utils/helpers";
 
 // constants
 const testItemStatusConstants = {
@@ -952,9 +951,6 @@ export function* updateItemSaga({ payload }) {
       notification({ messageKey: "CannotSaveWithoutQuestions" });
       return null;
     }
-
-    questions = reSequenceQuestionsWithWidgets(rows?.[0]?.widgets, questions);
-
     questions = produce(questions, draft => {
       draft.map((q, index) => {
         const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(q);
@@ -968,15 +964,11 @@ export function* updateItemSaga({ payload }) {
         if (index === 0) {
           if (data.itemLevelScoring && q.scoringDisabled) {
             //on item level scoring item, first question removed situation.
+            q.scoringDisabled = false;
             if (!questionType.manuallyGradableQn.includes(data.type)) {
               set(q, "validation.validResponse.score", data.itemLevelScore);
             }
           }
-          /**
-           * after shuffle we need to reset scoringDisabled to false for the first question
-           * irrespective to itemLevelScoring
-           */
-          q.scoringDisabled = false;
           return q;
         }
 
@@ -1217,15 +1209,11 @@ function* saveTestItemSaga() {
       if (ind === 0) {
         if (data.itemLevelScoring && q.scoringDisabled) {
           //on item level scoring item, first question removed situation.
+          q.scoringDisabled = false;
           if (!questionType.manuallyGradableQn.includes(data.type)) {
             set(q, "validation.validResponse.score", data.itemLevelScore);
           }
         }
-        /**
-         * after shuffle we need to reset scoringDisabled to false for the first question
-         * irrespective to itemLevelScoring
-         */
-        q.scoringDisabled = false;
         continue;
       }
       if (data.itemLevelScoring) {

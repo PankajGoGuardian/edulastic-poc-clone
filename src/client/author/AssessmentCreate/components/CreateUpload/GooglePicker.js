@@ -13,7 +13,6 @@ const GoogleChooser = ({
   viewId,
   mimeTypes,
   query,
-  developerKey,
   onChange,
   origin,
   navHidden,
@@ -22,17 +21,11 @@ const GoogleChooser = ({
   onAuthFailed,
   children
 }) => {
-  const isGoogleReady = () => {
-    return !!window.gapi;
-  };
+  const isGoogleReady = () => !!window.gapi;
 
-  const isGoogleAuthReady = () => {
-    return !!window.gapi.auth;
-  };
+  const isGoogleAuthReady = () => !!window.gapi.auth;
 
-  const isGooglePickerReady = () => {
-    return !!window.google.picker;
-  };
+  const isGooglePickerReady = () => !!window?.google?.picker;
 
   const onApiLoad = () => {
     if (isGoogleReady()) {
@@ -45,7 +38,7 @@ const GoogleChooser = ({
     window.gapi.auth.authorize(
       {
         client_id: clientId,
-        scope: scope,
+        scope,
         immediate: authImmediate
       },
       callback
@@ -56,10 +49,10 @@ const GoogleChooser = ({
     onAuthenticate(oauthToken);
 
     if (createPicker) {
-      return createPicker(google, oauthToken);
+      return createPicker(!!window.google, oauthToken);
     }
 
-    const googleViewId = google.picker.ViewId[viewId];
+    const googleViewId = !!window.google?.picker?.ViewId[viewId];
     const view = new window.google.picker.View(googleViewId);
 
     if (mimeTypes) {
@@ -116,7 +109,7 @@ const GoogleChooser = ({
 
   return (
     <WithResources resources={[GOOGLE_SDK_URL]} fallBack={<></>} onLoaded={onApiLoad}>
-      <div onClick={onChoose}>{children ? children : <button>Open google chooser</button>}</div>
+      <div onClick={onChoose}>{children || <button>Open google chooser</button>}</div>
     </WithResources>
   );
 };
@@ -124,7 +117,6 @@ const GoogleChooser = ({
 GoogleChooser.propTypes = {
   children: PropTypes.node,
   clientId: PropTypes.string.isRequired,
-  developerKey: PropTypes.string,
   scope: PropTypes.array,
   viewId: PropTypes.string,
   authImmediate: PropTypes.bool,
@@ -139,9 +131,9 @@ GoogleChooser.propTypes = {
 };
 
 GoogleChooser.defaultProps = {
-  onChange: () => {},
-  onAuthenticate: () => {},
-  onAuthFailed: () => {},
+  onChange: () => { },
+  onAuthenticate: () => { },
+  onAuthFailed: () => { },
   scope: ["https://www.googleapis.com/auth/drive.readonly"],
   viewId: "DOCS",
   authImmediate: false,

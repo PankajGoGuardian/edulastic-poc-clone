@@ -113,7 +113,7 @@ export const updateTestItemLikeCountAction = createAction(UPDATE_TEST_ITEM_LIKE_
 export function* addItemToCartSaga({ payload }) {
   const { item } = payload;
   const test = yield select(getTestEntitySelector);
-  const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+  const testItems = test?.itemGroups?.flatMap(itemGroup => itemGroup?.items || []);
   let updatedTestItems = [];
   if (testItems.some(o => o._id === item._id)) {
     updatedTestItems = produce(testItems, draft => {

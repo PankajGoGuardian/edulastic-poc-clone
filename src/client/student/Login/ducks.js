@@ -1149,7 +1149,7 @@ function* cleverSSOLogin({ payload }) {
     const res = yield call(authApi.cleverSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (err) {
-    const { data = {} } = err.response;
+    const { data = {} } = err.response || {};
     const { message: errorMessage } = data;
     Sentry.captureException(err);
     if (errorMessage === "User not yet authorized to use Edulastic. Please contact your district administrator!") {

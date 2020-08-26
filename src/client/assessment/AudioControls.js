@@ -87,8 +87,8 @@ const AudioControls = ({
   // Playing audio
   const audioPlayResolve = _howl =>
     new Promise(resolve => {
-      _howl.play();
-      _howl.once("end", () => {
+      _howl?.play();
+      _howl?.once("end", () => {
         resolve(_howl);
       });
       setCurrentHowl(_howl);
@@ -200,16 +200,16 @@ const AudioControls = ({
   const playPauseToolTip = loading
     ? "We are still processing the audio file for this question. Please return back to this question after some time."
     : currentPlayingDetails.qId === qId
-    ? "Pause"
-    : "Play";
+      ? "Pause"
+      : "Play";
   return !btnWithText ? (
     <AudioButtonsWrapper style={{ display: showAudioControls ? "none" : "block" }} className={className}>
       <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
         {currentPlayingDetails.qId === qId ? (
           <IconAudioPause color={white} className="audio-pause" />
         ) : (
-          !loading && <IconPlayFilled color={white} className="audio-play" />
-        )}
+            !loading && <IconPlayFilled color={white} className="audio-play" />
+          )}
       </ControlButtons>
       <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title="Stop">
         <IconStop color={white} className="audio-stop" />
@@ -223,21 +223,21 @@ const AudioControls = ({
             <IconAudioPause />
             PAUSE
           </>
-        ) : (
-          !loading && (
-            <>
-              <IconPlayBig />
-              PLAY
-            </>
-          )
-        )}
+          ) : (
+              !loading && (
+                <>
+                  <IconPlayBig />
+                  PLAY
+                </>
+              )
+            )}
       </AudioButton>
       <AudioButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
         <IconStopCircle />
         STOP
       </AudioButton>
     </AudioButtonsWrapper>
-  );
+    );
 };
 
 export default connect(

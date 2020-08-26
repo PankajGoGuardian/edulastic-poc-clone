@@ -42,10 +42,10 @@ function TabWrapper({
   return (
     <TabContainer
       ref={containerRef}
+      padding="0px"
       style={{
         ...testReviewStyle,
         position: "relative",
-        paddingTop: "0px",
         display: "flex",
         flexDirection: "column",
         height: fullHeight ? "100%" : "auto",

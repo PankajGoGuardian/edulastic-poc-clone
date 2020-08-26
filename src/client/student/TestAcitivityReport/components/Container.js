@@ -55,14 +55,8 @@ const ReportListContent = ({
   const hasCollapseButtons =
     itemRows?.length > 1 && itemRows.flatMap(_item => _item?.widgets)?.find(_item => _item?.widgetType === "resource");
 
-  const {
-    qType,
-    scratchPad: { scratchpad: scratchpadUsed = false, dimensions: previousDimensions = {}, attachments } = {}
-  } = questionActivity;
+  const { scratchPad: { attachments } = {} } = questionActivity;
 
-  const showScratchpadByDefault = qType === "highlightImage" && scratchpadUsed;
-  const previouscratchPadDimensions = showScratchpadByDefault ? previousDimensions : null;
-  const history = showScratchpadByDefault ? userWork : {};
   return (
     <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
@@ -86,9 +80,7 @@ const ReportListContent = ({
               viewComponent="studentReport"
               evaluation={evaluation}
               passageTestItemID={passageId}
-              previouscratchPadDimensions={previouscratchPadDimensions}
-              showScratchpadByDefault={showScratchpadByDefault}
-              history={history}
+              history={userWork}
               attachments={attachments}
               itemLevelScoring={item?.itemLevelScoring}
             />

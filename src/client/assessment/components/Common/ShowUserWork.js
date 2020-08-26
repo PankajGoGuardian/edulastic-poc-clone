@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import { EduButton } from "@edulastic/common";
 import PropTypes from "prop-types";
 
-function ShowUserWorkButton({ onClickHandler, loading = false, children, style }) {
+function ShowUserWorkButton({ onClickHandler, loading = false, children }) {
   return (
-    <EduButton style={style} type="primary" isGhost onClick={onClickHandler} loading={loading}>
+    <EduButton mr="8px" type="primary" isGhost onClick={onClickHandler} loading={loading}>
       {children}
     </EduButton>
   );
@@ -18,13 +18,11 @@ const mapStateToProps = state => ({
 ShowUserWorkButton.propTypes = {
   onClickHandler: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  style: PropTypes.object,
   children: PropTypes.object.isRequired
 };
 
 ShowUserWorkButton.defaultProps = {
-  loading: false,
-  style: {}
+  loading: false
 };
 
 export default connect(mapStateToProps)(ShowUserWorkButton);

@@ -32,7 +32,6 @@ import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction, saveHintUsageAction } from "../../actions/userInteractions";
 import { CLEAR } from "../../constants/constantsForQuestions";
-import { ScratchpadTool } from "../../../common/components/Scratchpad";
 import { showScratchpadInfoNotification } from "../../utils/helpers";
 
 class AssessmentPlayerDefault extends React.Component {
@@ -489,7 +488,6 @@ class AssessmentPlayerDefault extends React.Component {
                 className="scrollable-main-wrapper"
                 id="assessment-player-default-scroll"
               >
-                {scratchPadMode && !LCBPreviewModal && <ScratchpadTool />}
                 {testItemState === "" && (
                   <TestItemPreview
                     LCBPreviewModal={LCBPreviewModal}

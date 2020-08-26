@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider, withTheme } from "styled-components";
@@ -9,7 +8,7 @@ import { get, round } from "lodash";
 import { IconClockCircularOutline } from "@edulastic/icons";
 
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidthMax, smallDesktopWidth, borderGrey2 } from "@edulastic/colors";
+import { mobileWidthMax, smallDesktopWidth, borderGrey2, greyThemeDark2 } from "@edulastic/colors";
 import { withWindowSizes, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../../theme";
@@ -179,12 +178,13 @@ const QuestionContainer = styled.div`
 
 export const TimeSpentWrapper = styled.p`
   font-size: 19px;
-  color: grey;
+  color: ${greyThemeDark2};
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
   align-items: center;
   padding-top: 10px;
+  margin: ${({ margin }) => margin};
   &.student-report {
     position: absolute;
     top: 25px;
@@ -199,8 +199,9 @@ export const TimeSpentWrapper = styled.p`
       fill: #6a737f;
     }
   }
-  i {
-    padding-right: 15px;
+  svg {
+    margin-right: 8px;
+    fill: ${greyThemeDark2};
   }
 `;
 
@@ -546,7 +547,7 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!restProps.viewAtStudentRes && showFeedback && !isPrintPreview && (
+                  {!restProps.showScratchpadByDefault && showFeedback && !isPrintPreview && (
                     <>
                       <TimeSpentWrapper className={isStudentReport ? "student-report" : ""}>
                         {!!showStudentWork && (

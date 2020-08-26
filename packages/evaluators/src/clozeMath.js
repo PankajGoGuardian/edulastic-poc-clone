@@ -248,10 +248,21 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
 
   const _maths = filterEmptyAnswers({ type: "maths", userAnswers: maths });
   const _mathUnits = filterEmptyAnswers({ type: "mathWithUnits", userAnswers: mathUnits });
+ 
+  const alt_inputs = [],alt_dropdowns = [],altMathUnits = [];
 
-  const alt_inputs = altResponses.map(alt_res => ({ score: 1, ...alt_res.textinput }));
-  const alt_dropdowns = altResponses.map(alt_res => ({ score: 1, ...alt_res.dropdown }));
-  const altMathUnits = altResponses.map(alt_res => ({ score: 1, ...alt_res.mathUnits }));
+  altResponses.forEach(altResp=>{
+    const  {textinput={},dropdown={},mathUnits={}}  =  altResp || {};
+       if(!isEmpty(textinput)){
+         alt_inputs.push({score:1,...textinput});
+       }
+       if(!isEmpty(dropdown)){
+        alt_dropdowns.push({score:1,...dropdown});
+      }
+      if(!isEmpty(mathUnits)){
+        altMathUnits.push({score:1,...mathUnits});
+      }
+  });
 
   const questionScore = (validResponse && validResponse.score) || 1;
 

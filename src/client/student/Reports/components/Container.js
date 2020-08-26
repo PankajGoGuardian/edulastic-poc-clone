@@ -7,7 +7,6 @@ import { get } from "lodash";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { smallDesktopWidth } from "@edulastic/colors";
-import useInterval from "@use-it/interval";
 import { getCurrentGroup } from "../../Login/ducks";
 
 // actions
@@ -16,7 +15,6 @@ import { fetchAssignmentsAction, getAssignmentsSelector } from "../ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import NoDataNotification from "../../../common/components/NoDataNotification";
-import { startServerTimerAction } from "../../sharedDucks/AssignmentModule/ducks";
 
 const Content = ({
   flag,
@@ -25,19 +23,12 @@ const Content = ({
   currentGroup,
   isLoading,
   currentChild,
-  location: { state = {} },
-  serverTimeStamp,
-  startServerTimer
+  location: { state = {} }
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
   }, [currentChild, currentGroup]);
 
-  useInterval(() => {
-    if (!isLoading && serverTimeStamp) {
-      startServerTimer();
-    }
-  }, 60 * 1000);
   if (isLoading) {
     return <Spin size="large" />;
   }
@@ -71,12 +62,10 @@ const enhance = compose(
       currentGroup: getCurrentGroup(state),
       isLoading: get(state, "studentAssignment.isLoading"),
       assignments: getAssignmentsSelector(state),
-      currentChild: state?.user?.currentChild,
-      serverTimeStamp: get(state, "studentAssignment.serverTs")
+      currentChild: state?.user?.currentChild
     }),
     {
-      fetchAssignments: fetchAssignmentsAction,
-      startServerTimer: startServerTimerAction
+      fetchAssignments: fetchAssignmentsAction
     }
   )
 );

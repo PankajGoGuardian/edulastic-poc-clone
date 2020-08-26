@@ -14,8 +14,8 @@ const compareChoice = (answer, response, allowSingleLetterMistake = false, ignor
   const attempted = response && response.length;
   if (!attempted) return null;
 
-  answer = ignoreCase ? answer.trim().toLowerCase() : answer.trim();
-  response = ignoreCase ? response.trim().toLowerCase() : response.trim();
+  answer = ignoreCase ? answer?.trim()?.toLowerCase() : answer?.trim();
+  response = ignoreCase ? response?.trim()?.toLowerCase() : response?.trim();
 
   // is single letter mistake allowed?
   // if yes, then check if "levenshtein-distance" is less than 1

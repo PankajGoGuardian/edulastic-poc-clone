@@ -54,8 +54,15 @@ var evaluate = function evaluate(data) {
 exports.evaluate = evaluate;
 
 var getChecks = function getChecks(answer) {
+  var checkMap = {
+    equivSymbolic: "symbolic",
+    equivLiteral: "literal",
+    equivSyntax: "syntax"
+  };
   var values = answer.value || [];
   return values.reduce(function (valAcc, val, valIndex) {
+    var method = val.method;
+    val.method = checkMap[method] || method;
     var options = val.options || {};
     options = (0, _omitBy2["default"])(options, function (f) {
       return f === false;

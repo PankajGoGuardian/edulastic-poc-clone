@@ -23,14 +23,22 @@ export const evaluate = data =>
     });
 
 export const getChecks = answer => {
+  const checkMap  =  {
+    equivSymbolic:"symbolic",
+    equivLiteral:"literal",
+    equivSyntax:"syntax"
+  }
   const values = answer.value || [];
   return values.reduce((valAcc, val, valIndex) => {
+    const method = val.method;
+    val.method = checkMap[method] || method;
     let options = val.options || {};
     options = omitBy(options, f => f === false);
 
     const optionsKeyed = Object.keys(options);
     const optionsToFilter = ["allowedVariables", "allowNumericOnly", "unit", "argument"];
     const filteredOptions = optionsKeyed.filter(key => !optionsToFilter.includes(key));
+  
     // combine the method and options using colon
     // combine only if there are sub options
     const initialValue = filteredOptions.length > 0 ? `${val.method}:` : `${val.method}`;

@@ -174,7 +174,7 @@ const Header = ({
             data-cy="sync-options-dropdown"
             minWidth="200px"
             dropdownStyle={{ zIndex: 1000 }}
-            value="Bulk Sync Classes"
+            value="Sync Class"
           >
             {Object.keys(options).map((option, index) => {
               if (option === CLEVER) {

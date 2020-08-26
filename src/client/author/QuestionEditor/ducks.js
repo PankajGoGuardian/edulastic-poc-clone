@@ -53,7 +53,6 @@ import {
 import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../src/actions/dictionaries";
 import { getOrgDataSelector, isPublisherUserSelector } from "../src/selectors/user";
 import { getTestEntitySelector } from "../AssignTest/duck";
-import { reSequenceQuestionsWithWidgets } from "../../common/utils/helpers";
 // constants
 export const resourceTypeQuestions = {
   PASSAGE: questionType.PASSAGE,
@@ -460,7 +459,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
     let data = {
       ...itemDetail,
       data: {
-        questions: reSequenceQuestionsWithWidgets(itemDetail?.rows?.[0]?.widgets, currentQuestions),
+        questions: currentQuestions,
         resources: currentResources
       }
     };

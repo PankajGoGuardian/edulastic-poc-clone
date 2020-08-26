@@ -94,7 +94,7 @@ export const TextInputStyled = styled(props => <Input maxLength={128} {...props}
 export const TextAreaInputStyled = styled(props => <Input.TextArea maxLength="2048" {...props} ref={props.inputRef} />)`
   &.ant-input {
     ${inputCommonStyle};
-    padding: 15px;
+    padding: ${props => props.padding || "15px"};
     ${props => props.style};
     &:focus,
     &:hover {

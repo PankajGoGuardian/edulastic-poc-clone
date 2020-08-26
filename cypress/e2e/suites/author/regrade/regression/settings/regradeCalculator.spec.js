@@ -8,7 +8,7 @@ import AssignmentsPage from "../../../../../framework/student/assignmentsPage";
 import AuthorAssignmentPage from "../../../../../framework/author/assignments/AuthorAssignmentPage";
 import LiveClassboardPage from "../../../../../framework/author/assignments/LiveClassboardPage";
 
-describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calculator questions'`, () => {
+describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calculator'`, () => {
   const testlibaryPage = new TestLibrary();
   const regrade = new Regrade();
   const studentTestPage = new StudentTestPage();
@@ -53,9 +53,9 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
 
   before("> create test 2 tests", () => {
     cy.login("teacher", teacher);
-    testlibaryPage.createTest().then(id => {
-      test = id;
-    });
+    // testlibaryPage.createTest().then(id => {
+    test = "5f3a4414ad0cf300083359fe";
+    // });
   });
 
   context(`> select '${regradeOptions.settings.excludeOveridden}'`, () => {
@@ -95,8 +95,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach(studentdata => {
-                const { name, overidden } = studentdata;
+              .forEach(({ name, overidden }) => {
                 testlibaryPage.sidebar.clickOnDashboard();
                 testlibaryPage.sidebar.clickOnAssignment();
                 authorAssignmentPage.clickOnLCBbyTestId(test1, overidden ? assignid2 : assignid1);
@@ -106,8 +105,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(studentdata => {
-                const { email } = studentdata;
+              .forEach(({ email }) => {
                 cy.login("student", email);
                 assignmentsPage.clickOnAssignmentButton();
                 studentTestPage.clickOnExitTest();
@@ -135,12 +133,12 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
         regrade.applyRegrade();
       });
 
-      context(`> verify student side`, () => {
+      context(`> verify regraded calculator at student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status === studentSide.IN_PROGRESS || status === studentSide.NOT_STARTED)
-          .forEach((studentdata, index) => {
-            const { email, overidden, status } = studentdata;
-            it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+          .forEach(({ email, overidden, status }, index) => {
+            const titleAdjust = overidden ? "" : "not ";
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment, expexted-'basic'`, () => {
               cy.login("student", email);
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1);
               studentTestPage.clickOnCalcuator();
@@ -165,7 +163,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
             lcb.clickOnRedirectSubmit();
           });
 
-          it("> verify student", () => {
+          it("> verify reirected student, expected to have 'basic'", () => {
             cy.login("student", studentdata[0].email);
             assignmentsPage.clickOnAssigmentByTestId(versionedTest1, { isFirstAttempt: false });
             studentTestPage.clickOnCalcuator();
@@ -216,8 +214,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach(studentdata => {
-                const { name, overidden } = studentdata;
+              .forEach(({ name, overidden }) => {
                 testlibaryPage.sidebar.clickOnDashboard();
                 testlibaryPage.sidebar.clickOnAssignment();
                 authorAssignmentPage.clickOnLCBbyTestId(test2, overidden ? assignid2 : assignid1);
@@ -227,8 +224,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
 
             [...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(studentdata => {
-                const { email } = studentdata;
+              .forEach(({ email }) => {
                 cy.login("student", email);
                 assignmentsPage.clickOnAssignmentButton();
                 studentTestPage.clickOnExitTest();
@@ -256,14 +252,13 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
         regrade.applyRegrade();
       });
 
-      context(`> verify student side`, () => {
+      context(`> verify regraded calculator at student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.SUBMITTED)
-          .forEach((studentdata, index) => {
-            const { email, overidden, status } = studentdata;
-            it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+          .forEach(({ email, overidden, status }, index) => {
+            const titleAdjust = overidden ? "" : "not ";
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment, expexted-'no calculator'`, () => {
               cy.login("student", email);
-
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2);
               studentTestPage.assertCalcType(CALCULATOR.NONE);
               studentTestPage.clickOnExitTest();
@@ -273,7 +268,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
 
       [attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(`> redirect '${index === 0 ? "not " : ""}overidden' assignment`, () => {
-          /* redirecting overidden assignment should not have calculatord for both class students */
+          /* redirecting overidden assignment should not have calculator for both class students */
           before("> click on lcb", () => {
             cy.login("teacher", teacher);
             testlibaryPage.sidebar.clickOnAssignment();
@@ -286,7 +281,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'calc
             lcb.clickOnRedirectSubmit();
           });
 
-          it("> verify student", () => {
+          it("> verify redirect student,expected-'no calculator'", () => {
             cy.login("student", studentdata[0].email);
             assignmentsPage.clickOnAssigmentByTestId(versionedTest2, { isFirstAttempt: false });
             studentTestPage.assertCalcType(CALCULATOR.NONE);

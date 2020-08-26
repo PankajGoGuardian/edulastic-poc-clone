@@ -312,7 +312,7 @@ const Scratchpad = ({
 
   return (
     <ScratchpadContainer ref={zwibblerContainer}>
-      {!hideToolBar && <ToolBox />}
+      {(!hideToolBar || (isAnswerModifiable && expressGrader)) && <ToolBox />}
       <ZwibblerMain
         deleteMode={deleteMode}
         id="zwibbler-main"

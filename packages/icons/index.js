@@ -68,6 +68,7 @@ export { default as IconDrawResize } from "./src/IconDrawResize";
 export { default as IconReturn } from "./src/IconReturn";
 export { default as IconCopyContent } from "./src/IconCopyContent";
 export { default as IconFolder } from "./src/IconFolder";
+export { default as IconFolders } from "./src/IconFolders";
 export { default as IconFolderNew } from "./src/IconFolderNew";
 export { default as IconFolderAll } from "./src/IconFolderAll";
 export { default as IconFolderActive } from "./src/IconFolderActive";

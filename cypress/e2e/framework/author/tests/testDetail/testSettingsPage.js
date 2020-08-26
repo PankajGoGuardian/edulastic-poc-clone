@@ -38,7 +38,7 @@ export default class TestSettings {
 
   getMarkAsDoneManually = () => cy.get("#mark-as-done").find('[value="manually"]');
 
-  getStudentPlayerSkin = () => cy.get('[data-cy="playerSkinType"]');
+  getStudentPlayerskin = () => cy.get('[data-cy="playerSkinType"]');
 
   getPerformanceBandDropDown = () => cy.get('[data-cy="performance-band"]').find(".ant-select-selection");
 

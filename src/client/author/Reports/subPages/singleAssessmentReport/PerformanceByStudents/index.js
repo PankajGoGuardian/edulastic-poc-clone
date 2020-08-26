@@ -5,6 +5,9 @@ import { get } from "lodash";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Row, Col } from "antd";
+import { Redirect } from "react-router-dom";
+import qs from "qs";
+import queryString from "query-string";
 
 // components
 import { EduButton, SpinLoader, notification } from "@edulastic/common";
@@ -48,7 +51,8 @@ const PerformanceByStudents = ({
   location = { pathname: "" },
   pageTitle,
   filters,
-  t
+  t,
+  customStudentUserId
 }) => {
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
@@ -150,6 +154,26 @@ const PerformanceByStudents = ({
   };
 
   const chartData = useMemo(() => getTableData(res, filters, range), [res, filters]);
+
+  //if custom_student_user_id passed as params then
+  // it will check if student have assignment for this test
+  // then redirect to lcb student veiw
+  // or show notification
+  if (customStudentUserId && !loading) {
+    const studentData = tableData.find(d => d.studentId === customStudentUserId);
+    if (studentData) {
+      const { pathname, search } = window.location;
+      const parseSearch = queryString.parse(search);
+      delete parseSearch.customStudentUserId;
+      const { assignmentId, groupId, testActivityId } = studentData;
+      return <Redirect to={{
+          pathname: `/author/classboard/${assignmentId}/${groupId}/test-activity/${
+            testActivityId
+        }`,
+        state: { from: `${pathname}?${qs.stringify(parseSearch)}`}}
+      } />
+    }
+  }
 
   return (
     <>

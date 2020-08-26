@@ -305,12 +305,13 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
 
     if (![_constants.ShapeTypes.POINT, _constants.ShapeTypes.RAY, _constants.ShapeTypes.VECTOR, _constants.ShapeTypes.SEGMENT].includes(el.type)) {
       lineTypes.push(el.dashed ? "dashed" : "solid");
-
-      if (!points.length) {
-        points.push("(0,0)");
-      }
     }
   });
+
+  if (lineTypes.length && !points.length) {
+    points.push("(0,0)");
+  }
+
   return serialize(shapes, lineTypes, points);
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from "react";
 import Display from "./component/Display/Display";
 import CalculatorButtonPanel from "./component/CalculatorButtonPanel/CalculatorButtonPanel";

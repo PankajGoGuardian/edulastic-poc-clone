@@ -61,7 +61,7 @@ export default class TestAssignPage {
       cy.wrap(
         $ele
           // eslint-disable-next-line func-names
-          .filter(function() {
+          .filter(function () {
             return Cypress.$(this).text() === option;
           })
       ).click({ force: true });
@@ -192,7 +192,7 @@ export default class TestAssignPage {
 
   clickOnEvalByType = type => {
     this.getEvalTypesDropDown().click({ force: true });
-    cy.get(`[ data-cy=${type}]`).click({ force: true });
+    cy.get(`[data-cy = ${type}]`).click({ force: true });
   };
 
   proceedWithDuplicate = () => cy.get('[data-cy="duplicate"]').click();

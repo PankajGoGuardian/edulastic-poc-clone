@@ -5,7 +5,7 @@ import { put, takeEvery, call, all } from "redux-saga/effects";
 import { adminApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
 import { keyBy } from "lodash";
-
+import * as Sentry from "@sentry/browser";
 // ACTIONS
 const GET_DISTRICT_DATA = "[admin-upgrade] GET_DISTRICT_DATA";
 const UPGRADE_DISTRICT_SUBSCRIPTION = "[admin-upgrade] UPGRADE_DISTRICT_SUBSCRIPTION";
@@ -15,7 +15,7 @@ const SEARCH_SCHOOLS_BY_ID = "[admin-upgrade] SEARCH_SCHOOLS_BY_ID";
 const BULK_SCHOOLS_SUBSCRIBE = "[admin-upgrade] BULK_SCHOOLS_SUBSCRIBE";
 const UPGRADE_PARTIAL_PREMIUM_USER = "[admin-upgrade] UPGRADE_PARTIAL_PREMIUM_USER";
 const SAVE_ORG_PERMISSIONS = "[admin] save org permissions";
-const GET_SUBSCRIPTION = "[admin] get subscription"
+const GET_SUBSCRIPTION = "[admin] get subscription";
 
 // ACTION CREATORS
 export const getDistrictDataAction = createAction(GET_DISTRICT_DATA);
@@ -146,7 +146,7 @@ export const manageSubscriptionsByUserSegments = createSlice({
     deleteGradeSubjectRow: (state, { payload: index }) => {
       state.gradeSubject.splice(index, 1);
     },
-    setSubsciptions : (state, { payload }) => {
+    setSubsciptions: (state, { payload }) => {
       state.partialPremiumData = payload || {};
       state.gradeSubject = payload?.gradeSubject || [];
     }
@@ -296,12 +296,12 @@ function* saveOrgPermissionsSaga({ payload }) {
   }
 }
 
-
 function* getSubscriptionSaga({ payload }) {
   try {
     const subscription = yield call(getSubscription, payload);
-    yield put(manageSubscriptionsByUserSegments.actions.setSubsciptions(subscription))
+    yield put(manageSubscriptionsByUserSegments.actions.setSubsciptions(subscription));
   } catch (err) {
+    Sentry.captureException(err);
     yield call(notification, { type: "error", msg: "Failed to load subscriptions" });
   }
 }

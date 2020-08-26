@@ -1,21 +1,14 @@
-/* eslint-disable array-callback-return */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 import PropTypes from "prop-types";
-import { find, isObject, isArray, isEmpty, isString } from "lodash";
+import { find, isEmpty, isEqual } from "lodash";
 import { withRouter } from "react-router-dom";
-import { questionType } from "@edulastic/constants";
 import PlayerHeader from "./PlayerHeader";
 import ParentController from "./utility/parentController";
-import { getLineFromExpression, getPoinstFromString, ALPHABET } from "./utility/helpers";
+import getUserResponse from "./utility/helpers";
 import { MainContent, Main, OverlayDiv } from "./styled";
 import Magnifier from "../../../common/components/Magnifier";
 
 let frameController = {};
-const responseType = {
-  dropdown: "dropdown",
-  input: "input",
-  radio: "radio"
-};
 
 const PlayerContent = ({
   openExitPopup,
@@ -28,10 +21,9 @@ const PlayerContent = ({
   gotoSummary,
   testActivityId,
   testletState,
-  testletConfig = {},
+  metadata = {},
   LCBPreviewModal,
   previewPlayer,
-  location = { state: {} },
   groupId,
   saveTestletLog,
   enableMagnifier,
@@ -46,7 +38,8 @@ const PlayerContent = ({
   const [testletItems, setQuestions] = useState([]);
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
-  const { hasSubmitButton } = testletConfig;
+  const { hasSubmitButton } = metadata;
+
   const handleScrollPage = e => {
     const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".pages");
     if (page) {
@@ -163,37 +156,23 @@ const PlayerContent = ({
     }
   };
 
-  const findItemIdMap = scoringId =>
-    find(testletConfig.mapping, ({ testletItemId }) => testletItemId.includes(scoringId));
-
-  const findTestletValue = testletId => {
-    const { response: testletResponse } = frameController;
-    const allResponses = {};
-    for (const key in testletResponse) {
-      if (Object.prototype.hasOwnProperty.call(testletResponse, key) && isObject(testletResponse[key])) {
-        Object.assign(allResponses, testletResponse[key]);
-      }
+  const rerenderMagnifier = () => {
+    if (enableMagnifier) {
+      showMagnifier();
     }
-
-    return allResponses[testletId];
   };
 
-  const getCurrentQuestion = id => {
-    if (questions[id]) {
-      return questions[id];
-    }
-    return find(questions, _q => _q.previousQuestionId === id);
-  };
+  const getEduQuestion = testletItemId => find(questions, _q => (_q.testletQuestionId || "").includes(testletItemId));
 
   const saveUserResponse = () => {
     if (!LCBPreviewModal) {
       const { currentPageIds } = frameController;
       const scoringIds = Object.keys(currentPageIds);
       if (!isEmpty(scoringIds) && !previewPlayer) {
-        const currentItem = findItemIdMap(scoringIds[0]);
-        if (currentItem) {
+        const eduQuestion = getEduQuestion(scoringIds[0]);
+        if (eduQuestion) {
           const timeSpent = Date.now() - lastTime.current;
-          onSubmitAnswer(currentItem.uuid, timeSpent, groupId);
+          onSubmitAnswer(eduQuestion.id, timeSpent, groupId);
         }
       }
     }
@@ -223,249 +202,53 @@ const PlayerContent = ({
     }
   };
 
-  const mapTestletToEdu = () => {
+  const handleReponse = () => {
     if (LCBPreviewModal) {
       return;
     }
-    const { currentPageIds } = frameController;
+    const { currentPageIds, response } = frameController;
 
     for (const scoringId in currentPageIds) {
       if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-        const currentItem = findItemIdMap(scoringId);
-        if (!currentItem) {
+        const eduQuestion = getEduQuestion(scoringId.trim());
+
+        if (!eduQuestion) {
           continue;
         }
-
-        const cQuestion = getCurrentQuestion(currentItem.uuid);
-        if (!cQuestion) {
-          continue;
-        }
-        const { type: cQuestionType } = cQuestion;
-
-        let data = {};
-        if (cQuestionType === questionType.EXPRESSION_MULTIPART) {
-          const { responseIds } = cQuestion;
-          Object.keys(responseIds).map(key => {
-            data[key] = {};
-            responseIds[key].map(res => {
-              const itemIds = find(currentItem.responses, ({ uuid }) => uuid === res.id);
-              if (itemIds) {
-                let testletValue = findTestletValue(itemIds.responseId);
-                if (itemIds.type === responseType.dropdown || itemIds.type === responseType.radio) {
-                  const { options } = cQuestion;
-                  const option = options[itemIds.uuid];
-                  if (testletValue && option) {
-                    let opIndex = ALPHABET.indexOf(testletValue);
-                    if (itemIds.choices) {
-                      opIndex = itemIds.choices[testletValue];
-                    }
-                    testletValue = option[opIndex];
-                  } else {
-                    testletValue = "";
-                  }
-                }
-                data[key][itemIds.uuid] = {
-                  value: testletValue,
-                  index: res.index
-                };
-              }
-            });
-          });
-        } else if (cQuestionType === questionType.MULTIPLE_CHOICE) {
-          data = [];
-          const { options } = cQuestion;
-          currentItem.responses.map(({ responseId, values }) => {
-            const testletValue = findTestletValue(responseId);
-            if (testletValue) {
-              if (isArray(testletValue)) {
-                // here is checkbox type
-                testletValue.map(v => {
-                  const opIndex = values ? values.indexOf(v) : ALPHABET.indexOf(v);
-                  if (options[opIndex]) {
-                    data.push(options[opIndex].value);
-                  }
-                });
-              } else {
-                // here is radio type
-                const opIndex = ALPHABET.indexOf(testletValue);
-                if (options[opIndex]) {
-                  data.push(options[opIndex].value);
-                }
-              }
-            }
-          });
-        } else if (cQuestionType === questionType.CLOZE_TEXT) {
-          const { responseIds: eduItemResponses = [] } = cQuestion;
-          data = eduItemResponses.map(eduRes => {
-            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-            const testletValue = findTestletValue(responseId);
-            return { ...eduRes, value: testletValue };
-          });
-        } else if (cQuestionType === questionType.CHOICE_MATRIX) {
-          // here is grid type
-          data.value = [];
-          currentItem.responses.map(({ responseId }) => {
-            let testletValue = findTestletValue(responseId) || [];
-            if (testletValue) {
-              testletValue = testletValue.split(",");
-              data.value = Array.from({
-                length: testletValue.length
-              }).fill([]);
-              testletValue.map(v => {
-                const num = v.match(/[0-9]+/);
-                const alpha = v.match(/[a-z]+/);
-                if (num && alpha) {
-                  const opIndex = ALPHABET.indexOf(alpha[0]);
-                  const answer = [opIndex];
-                  data.value[num[0] - 1] = answer;
-                }
-              });
-            }
-          });
-        } else if (cQuestionType === questionType.CLOZE_DRAG_DROP) {
-          // here is match
-          data = [];
-          currentItem.responses.map(({ responseId }) => {
-            const testletValue = findTestletValue(responseId);
-            const { options } = cQuestion;
-            const opIndex = ALPHABET.indexOf(testletValue);
-            if (options[opIndex] && testletValue) {
-              data.push(options[opIndex].value);
-            } else {
-              data.push(false);
-            }
-          });
-        } else if (cQuestionType === questionType.CLOZE_DROP_DOWN) {
-          const { responseIds: eduItemResponses = [], options } = cQuestion;
-          data = eduItemResponses.map(eduRes => {
-            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-
-            const testletValue = findTestletValue(responseId);
-            const opIndex = ALPHABET.indexOf(testletValue);
-            const optionValue = testletValue ? options[eduRes.id][opIndex] : "";
-            return { ...eduRes, value: optionValue };
-          });
-        } else if (cQuestionType === questionType.TOKEN_HIGHLIGHT) {
-          const { templeWithTokens } = cQuestion;
-          data = [];
-          currentItem.responses.map(({ responseId }) => {
-            const testletValue = findTestletValue(responseId);
-            if (isArray(testletValue)) {
-              const selections = testletValue.map(value => ALPHABET.indexOf(value));
-              data = (templeWithTokens || []).map((el, i) => ({
-                value: el.value,
-                index: i,
-                selected: selections && selections.length ? selections.includes(i) : false
-              }));
-            } else if (isString(testletValue)) {
-              const selected = ALPHABET.indexOf(testletValue);
-              data = (templeWithTokens || []).map((el, i) => ({
-                value: el.value,
-                index: i,
-                selected: selected === i
-              }));
-            }
-          });
-        } else if (cQuestionType === questionType.ESSAY_PLAIN_TEXT || cQuestionType === questionType.SHORT_TEXT) {
-          currentItem.responses.map(({ responseId }) => {
-            data = findTestletValue(responseId);
-          });
-        } else if (cQuestionType === questionType.CLOZE_IMAGE_DRAG_DROP) {
-          const { responses: eduItemResponses = [], options } = cQuestion;
-          data = eduItemResponses.map((eduRes, contIndex) => {
-            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-            const testletValue = findTestletValue(responseId);
-            const opIndex = ALPHABET.indexOf(testletValue);
-            if (testletValue && options[opIndex]) {
-              return {
-                responseBoxID: eduRes.id,
-                value: [options[opIndex]],
-                containerIndex: contIndex
-                // rect: {}, TODO: we will check this property later.
-              };
-            }
-            return {
-              responseBoxID: eduRes.id,
-              value: [],
-              containerIndex: contIndex
-              // rect: {}, TODO: we will check this property later.
-            };
-          });
-        } else if (cQuestionType === questionType.CLOZE_IMAGE_TEXT) {
-          const { responses: eduItemResponses = [] } = cQuestion;
-          data = eduItemResponses.map(eduRes => {
-            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-            return findTestletValue(responseId) || "";
-          });
-        } else if (cQuestionType === questionType.GRAPH) {
-          currentItem.responses.map(({ responseId, elementType, points, labels }) => {
-            if (elementType === "point") {
-              const testletValue = findTestletValue(responseId);
-              data = getPoinstFromString(testletValue, labels);
-            } else if (elementType === "line") {
-              const testletValue = findTestletValue(responseId);
-              data = getLineFromExpression(testletValue, points, labels);
-            }
-          });
-        } else if (cQuestionType === questionType.MATH) {
-          currentItem.responses.map(({ responseId }) => {
-            data = findTestletValue(responseId);
-          });
-        }
-
-        if (!previewPlayer) {
-          setUserAnswer(cQuestion.id, data);
+        const data = getUserResponse(eduQuestion, response);
+        if (!previewPlayer && !isEmpty(data)) {
+          setUserAnswer(eduQuestion.id, data);
         }
       }
     }
   };
 
-  const rerenderMagnifier = () => {
-    if (enableMagnifier) {
-      showMagnifier();
+  const handleTestletState = (itemState, itemResponse) => {
+    if (!LCBPreviewModal) {
+      if (enableMagnifier) {
+        setTimeout(showMagnifier, 1000);
+      }
+      const newState = { testletState: { state: itemState, response: itemResponse } };
+      if (!isEqual(newState, testletState) && !previewPlayer) {
+        setTestUserWork({
+          [testActivityId]: newState
+        });
+      }
     }
   };
 
   useEffect(() => {
-    if (testletConfig.testletURL && frameRef.current) {
+    if (metadata.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState;
-      if (location.state) {
-        const { fromSummary, question: questionId } = location.state;
-        if (fromSummary && questionId) {
-          const questionMap = find(testletConfig.mapping, ({ uuid }) => uuid === questionId);
-          if (questionMap) {
-            initState.pageNum = questionMap.testletPageNum;
-          }
-        }
-      }
-      frameController = new ParentController(testletConfig.testletId, initState, testletState.response);
+      frameController = new ParentController(metadata.testletId, initState, testletState.response);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
-        setCurrentQuestion: val => {
-          setCurrentQuestion(val);
-        },
-        setQuestions: _questions => {
-          setQuestions(_questions);
-        },
-        unlockNext: flag => {
-          setUnlockNext(flag || LCBPreviewModal);
-        },
-        setCurrentScoring: ids => {
-          setCurrentScoring(!!Object.keys(ids).length);
-        },
-        handleReponse: mapTestletToEdu,
-        playerStateHandler: (itemState, itemResponse) => {
-          if (!LCBPreviewModal) {
-            if (enableMagnifier) {
-              setTimeout(showMagnifier, 1000);
-            }
-            if (!previewPlayer) {
-              setTestUserWork({
-                [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
-              });
-            }
-          }
-        },
+        setCurrentQuestion,
+        setQuestions,
+        setUnlockNext,
+        setCurrentScoring,
+        handleReponse,
+        handleTestletState,
         handleLog: previewPlayer ? () => null : saveTestletLog,
         submitTest: nextQuestion
       });
@@ -476,7 +259,7 @@ const PlayerContent = ({
         frameController.disconnect();
       };
     }
-  }, [testletConfig]);
+  }, [metadata]);
 
   useEffect(() => {
     window.addEventListener("resize", rerenderMagnifier);
@@ -496,15 +279,15 @@ const PlayerContent = ({
     }
   }, [currentPage]);
 
-  const zoomedContent = () => (
-    <>
+  const content = ({ fromContent }) => (
+    <Fragment>
       <PlayerHeader
         title={title}
         dropdownOptions={testletItems}
         currentPage={currentPage}
         onOpenExitPopup={openExitPopup}
         onNextQuestion={nextQuestion}
-        unlockNext={unlockNext}
+        unlockNext={unlockNext || LCBPreviewModal}
         onPrevQuestion={prevQuestion}
         previewPlayer={previewPlayer}
         enableMagnifier={enableMagnifier}
@@ -514,54 +297,32 @@ const PlayerContent = ({
         groupId={groupId}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-        <MainContent id={`${testletConfig.testletId}_magnifier`}>
+        <MainContent id={`${metadata.testletId}_magnifier`}>
           {LCBPreviewModal && currentScoring && <OverlayDiv />}
-          {testletConfig.testletURL && (
+          {metadata.testletURL && (
             <iframe
-              ref={frameRefForMagnifier}
-              id={`${testletConfig.testletId}_magnifier`}
-              src={testletConfig.testletURL}
+              ref={fromContent ? frameRef : frameRefForMagnifier}
+              id={`${metadata.testletId}_magnifier`}
+              src={metadata.testletURL}
               title="testlet player"
             />
           )}
         </MainContent>
       </Main>
-    </>
+    </Fragment>
   );
 
   return (
     <Magnifier
       enable={enableMagnifier}
-      zoomedContent={zoomedContent}
+      zoomedContent={content}
       type="testlet"
       offset={{
         top: 70,
         left: 0
       }}
     >
-      <PlayerHeader
-        title={title}
-        dropdownOptions={testletItems}
-        currentPage={currentPage}
-        onOpenExitPopup={openExitPopup}
-        onNextQuestion={nextQuestion}
-        unlockNext={unlockNext}
-        onPrevQuestion={prevQuestion}
-        previewPlayer={previewPlayer}
-        {...restProps}
-        handleMagnifier={handleMagnifier}
-        enableMagnifier={enableMagnifier}
-        hasSubmitButton={hasSubmitButton}
-        groupId={groupId}
-      />
-      <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-        <MainContent>
-          {LCBPreviewModal && currentScoring && <OverlayDiv />}
-          {testletConfig.testletURL && (
-            <iframe ref={frameRef} id={testletConfig.testletId} src={testletConfig.testletURL} title="testlet player" />
-          )}
-        </MainContent>
-      </Main>
+      {content({ fromContent: true })}
     </Magnifier>
   );
 };
@@ -578,7 +339,6 @@ PlayerContent.propTypes = {
   gotoSummary: PropTypes.func.isRequired,
   testActivityId: PropTypes.string.isRequired,
   testletState: PropTypes.object.isRequired,
-  testletConfig: PropTypes.object.isRequired,
   LCBPreviewModal: PropTypes.bool,
   previewPlayer: PropTypes.bool,
   location: PropTypes.object.isRequired,

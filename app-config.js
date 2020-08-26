@@ -1,4 +1,5 @@
 // Don't put any sensitive information
+// https://edupoc.s3.amazonaws.com/edulasticv2-development/JS/thirdpartylib/ev2-scientificcalc/CalcSS3.js
 const cdnURI = process.env.POI_APP_CDN_URI || "https://cdnedupoc.snapwiz.net/edulasticv2-development";
 const appEnv = process.env.POI_APP_ENV;
 const appStage = process.env.POI_APP_STAGE;
@@ -14,8 +15,9 @@ const ttsChoicesPath = `${cdnURI}/tts`;
 const desmosPath = `${thirdPartyLibPath}/desmos/v1.2`;
 const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0`;
 const sentryWhiteListURLRegex = appEnv === "production" ? /edulastic\.com/ : /snapwiz\.net/;
-const sentryURI = process.env.POI_APP_SENTRY_URI;
+const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`;
 
+const sentryURI = process.env.POI_APP_SENTRY_URI;
 const segmentURI = process.env.POI_APP_SEGMENT_URI || `${thirdPartyLibPath}/segmentjs/v4.2.2/analytics.js`;
 const segmentVersion = process.env.POI_APP_SEGMENT_VERSION || "4.2.2";
 const isSegmentEnabled = process.env.POI_APP_ENABLE_SEGMENT === "true";
@@ -46,5 +48,6 @@ export default {
   jqueryPath,
   ttsChoicesPath,
   thirdPartyLibPath,
-  v1RedirectDecryptSalt
+  v1RedirectDecryptSalt,
+  eduScientificCalcPath
 };

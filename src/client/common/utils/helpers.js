@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { isUndefined, last, get, isEmpty } from "lodash";
+import { isUndefined, last, get, isEmpty, keyBy } from "lodash";
 import { Tooltip as AntDTooltip, Modal } from "antd";
 import { notification } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
@@ -313,3 +313,14 @@ export const getUserConfirmation = (message, callback) =>
       style: { background: themeColor }
     }
   });
+
+/**
+ * Widgets contains the correct sequence of the Questions
+ * @param {array} widgets
+ * @param {array} questions
+ */
+export const reSequenceQuestionsWithWidgets = (widgets = [], questions = []) => {
+  const _questions = keyBy(questions, "id");
+  const reSequencedQ = widgets.map(({ reference }) => _questions[reference]).filter(x => x);
+  return reSequencedQ.length ? reSequencedQ : questions;
+};

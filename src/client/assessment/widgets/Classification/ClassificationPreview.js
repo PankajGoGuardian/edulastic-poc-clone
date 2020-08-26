@@ -93,7 +93,7 @@ const ClassificationPreview = ({
     transparentBackgroundImage = true,
     duplicateResponses,
     uiStyle: {
-      columnCount: colCount,
+      columnCount: colCount = 2,
       columnTitles: colTitles = [],
       rowCount,
       rowTitles: rowTitles = [],
@@ -115,8 +115,8 @@ const ClassificationPreview = ({
   const possibleResponses =
     editCorrectAnswers.length > 0
       ? posResp.filter(
-          ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.find(resp => resp.id === ite.id).id))
-        )
+        ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.find(resp => resp.id === ite.id).id))
+      )
       : posResp;
 
   const initialLength = (colCount || 2) * (rowCount || 1);
@@ -283,8 +283,8 @@ const ClassificationPreview = ({
     shuffleOptions
       ? shuffle(duplicateResponses ? posResponses : dragItems)
       : duplicateResponses
-      ? posResponses
-      : dragItems
+        ? posResponses
+        : dragItems
   );
 
   /**
@@ -295,9 +295,9 @@ const ClassificationPreview = ({
   const verifiedGroupDragItems = duplicateResponses
     ? possibleResponseGroups.map(group => (shuffleOptions ? shuffle(group.responses) : group.responses))
     : possibleResponseGroups.map(group => {
-        const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
-        return shuffleOptions ? shuffle(responses) : responses;
-      });
+      const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
+      return shuffleOptions ? shuffle(responses) : responses;
+    });
 
   const { maxWidth: choiceMaxWidth, minWidth: choiceMinWidth } = getMaxMinWidth(posResp, fontSize);
   const { maxWidth: colTitleMaxWidth } = getMaxMinWidth(colTitles.map(title => ({ value: title })));
@@ -474,11 +474,11 @@ const ClassificationPreview = ({
                                 renderIndex={possibleResponses.indexOf(ite)}
                                 disableResponse={disableResponse || !isAnswerModifiable}
                               />
-                            ))}
+                              ))}
                           </FlexContainer>
                         </FlexContainer>
                       </Fragment>
-                    )}
+                      )}
                   </FlexContainer>
                 </DropContainer>
               </ChoiceContainer>

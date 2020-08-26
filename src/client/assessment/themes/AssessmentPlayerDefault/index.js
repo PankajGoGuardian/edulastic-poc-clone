@@ -231,7 +231,7 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   handleChangePreview = () => {
-    const { changePreview = () => {} } = this.props;
+    const { changePreview = () => { } } = this.props;
     // change the player state to clear mode (attemptable mode)
     this.setState({ testItemState: "" }, () => changePreview(CLEAR));
   };
@@ -342,7 +342,7 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const hasCollapseButtons =
-      itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
+      itemRows?.length > 1 && itemRows?.flatMap(_item => _item?.widgets)?.find(_item => _item?.widgetType === "resource");
 
     const themeToPass = theme[selectedTheme] || theme.default;
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
@@ -369,9 +369,9 @@ class AssessmentPlayerDefault extends React.Component {
             ? "11px"
             : "11px 5px"
           : windowWidth >= LARGE_DESKTOP_WIDTH
-          ? "9px 0px"
-          : "11px 0px"
-      }`,
+            ? "9px 0px"
+            : "11px 0px"
+        }`,
       justifyContent: "space-between"
     };
 

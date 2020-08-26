@@ -206,7 +206,7 @@ const AssessmentContainer = ({
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
           const initialData = q.chart_data.data;
-          return initialData.every((d, i) => d.y === qAnswers[i].y);
+          return initialData.every((d, i) => d?.y === qAnswers?.[i]?.y);
         }
         case questionType.MATCH_LIST:
           return Object.values(qAnswers || {}).every(d => isNull(d));
@@ -437,7 +437,7 @@ const AssessmentContainer = ({
        * message might appear just during unmount.
        * in that case we need to destroy it after
        */
-      setTimeout(() => message.destroy(), 1500);
+      setTimeout(() => message?.destroy(), 1500);
     };
   }, [savingResponse]);
 

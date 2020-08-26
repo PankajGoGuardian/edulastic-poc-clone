@@ -66,7 +66,7 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
     const [ctaSubscriptionState, setCtaSubscriptionState] = useState("Apply Changes");
     const [orgPermission, setOrgPermission] = useState("");
 
-    const { _source = {}, _id: districtId, subscription = {} } = selectedDistrict;
+    const { _source = {}, _id: districtId, subscription = {} } = selectedDistrict || {};
     const { location = {} } = _source;
     const {
       subType = "free",

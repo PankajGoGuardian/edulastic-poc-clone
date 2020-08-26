@@ -252,6 +252,7 @@ const ManageContentBlock = props => {
                 onChange={onSearchChange}
                 value={searchStrings}
                 dropdownStyle={{ display: "none" }}
+                data-cy="container-search-bar"
               />
               <SearchIcon color={themeColor} onClick={() => onSearchChange(searchStrings)} />
             </SearchBoxContainer>

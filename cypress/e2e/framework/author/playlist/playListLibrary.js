@@ -1,20 +1,20 @@
+/* eslint-disable no-loop-func */
 import TeacherSideBar from "../SideBarPage";
 import SearchFilters from "../searchFiltersPage";
 import TestSummayTab from "../tests/testDetail/testSummaryTab";
 import PlayListHeader from "./playListHeader";
-import PlayListAddTest from "./playListAddTestTab";
 import PlayListReview from "./playListReview";
 import CypressHelper from "../../util/cypressHelpers";
 import PlaylistCustom from "./playListCustomizationPage";
 import PlayListAssign from "./playListAssignPage";
 
+const { _ } = Cypress;
 export default class PlayListLibrary {
   constructor() {
     this.sidebar = new TeacherSideBar();
     this.searchFilter = new SearchFilters();
     this.playListSummary = new TestSummayTab();
     this.header = new PlayListHeader();
-    this.addTestTab = new PlayListAddTest();
     this.reviewTab = new PlayListReview();
     this.playlistCustom = new PlaylistCustom();
     this.playListAssign = new PlayListAssign();
@@ -120,6 +120,7 @@ export default class PlayListLibrary {
   };
 
   createPlayList = (playListData, NoOfModules = 1) => {
+    let playlistid;
     this.sidebar.clickOnPlayListLibrary();
     this.clickOnNewPlayList();
     this.playListSummary.setName(playListData.name);
@@ -127,22 +128,22 @@ export default class PlayListLibrary {
     this.playListSummary.selectSubject(playListData.subject, true);
     if (playListData.collection) this.playListSummary.selectCollection(playListData.collection, true);
 
-    this.header.clickOnAddTests();
-    this.addTestTab.clickOnManageModule();
-
-    for (let i = 0; i < NoOfModules; i++) {
-      if (i !== 0) this.addTestTab.clickOnAddModule();
-      // TODO review and add module group name specific tests, adding group name to unblock the current flow, since its mandatory field now.
-      this.addTestTab.setModuleGroupNameByModule(i + 1, `module-group-${i + 1}`);
-      this.addTestTab.setModuleName(i + 1, `module-${i + 1}`);
-      this.addTestTab.setModuleId(i + 1, `mod${i + 1}`);
-      this.addTestTab.clickOnSaveByModule(i + 1);
+    this.header.clickOnReview(true);
+    for (let i = 1; i <= NoOfModules; i++) {
+      this.reviewTab.clickAddNewModule();
+      this.reviewTab.setModuleDetails(`module-${i}`, `m${i}`, `module-group-${i}`);
+      if (i === 1)
+        this.reviewTab.addModule(true).then(id => {
+          playlistid = id;
+        });
+      else this.reviewTab.addModule();
     }
-    return this.addTestTab.clickOnDone(true);
+    return cy.wait(1).then(() => playlistid);
   };
 
-  createPlayListWithTests = playListData => {
-    /* const playListData = {
+  createPlayListWithTests = playListData =>
+    this.createPlayList(playListData.metadata, _.keys(playListData.moduledata).length).then(id => {
+      /* const playListData = {
       metadata: {
         name: "Play List",
         grade: "Grade 10",
@@ -153,15 +154,14 @@ export default class PlayListLibrary {
         module2:[...testids]
       }
     }; */
-    return this.createPlayList(playListData.metadata, Cypress._.keys(playListData.moduledata).length).then(id => {
-      this.searchFilter.clearAll();
-      this.searchFilter.getAuthoredByMe();
-      Cypress._.values(playListData.moduledata).forEach((tests, mod) => {
-        this.addTestTab.bulkAddByModule(tests, mod + 1);
+      this.reviewTab.searchContainer.setFilters({ subject: "Mathematics" });
+      _.values(playListData.moduledata).forEach((tests, mod) => {
+        tests.forEach(test => {
+          this.reviewTab.dragTestFromSearchToModule(mod + 1, test);
+        });
       });
       return this.header.clickOnPublish().then(() => id);
     });
-  };
 
   clickDropDownByClass = text => {
     this.checkDropByClass();

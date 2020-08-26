@@ -4,11 +4,7 @@ export default class PlayListSearchContainer {
   /* GET ELEMNETS */
   getSearchContainer = () => cy.get('[data-cy="play-list-search-container"]');
 
-  getKeywords = () => cy.get('[class*="SearchByTab"]').contains("keywords");
-
-  getStandards = () => cy.get('[class*="SearchByTab"]').contains("standards");
-
-  getKeywordsSearchBar = () => cy.get('[placeholder="Search by keywords"]').should("be.visible");
+  getKeywordsSearchBar = () => cy.get('[data-cy="container-search-bar"]');
 
   getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
 
@@ -16,9 +12,19 @@ export default class PlayListSearchContainer {
 
   getFilterButton = () => cy.get('[data-cy="test-filter"]');
 
-  /* ACTIONS START*/
+  getSubjectInFilter = () => cy.get('[data-cy="test-grade"]');
 
-  getSharedWithMe = () => cy.get('[class *= "FilterContainer"]').contains("Shared with me");
+  getSharedWithMe = () => this.getSearchContainer().contains("Shared with me");
+
+  getViewTestByTestId = id => cy.get(`[data-cy="${id}"]`).find(".preview-btn");
+
+  getCloseCustomizationTab = () =>
+    cy
+      .get('[data-cy="curriculum-sequence-right-panel"]')
+      .find("svg")
+      .eq(0);
+
+  /* ACTIONS START */
 
   setGrade = grade => {
     CypressHelper.selectDropDownByAttribute("test-grade", grade);
@@ -36,36 +42,38 @@ export default class PlayListSearchContainer {
     CypressHelper.selectDropDownByAttribute("test-collection", collection);
   };
 
-  clickOnKeyword = () => this.getKeywords().click();
-
-  clickOnStandard = () => this.getStandards().click();
+  clearDropDowns = () => {
+    this.setStatus("All");
+    this.getSubjectInFilter().then($ele => {
+      if ($ele.find(".anticon-close").length > 0)
+        cy.wrap($ele)
+          .find(".anticon-close")
+          .click({ multiple: true });
+    });
+  };
 
   clickOnAuthoredbyMeFolder = () =>
-    cy
-      .get('[class *= "FilterContainer"]')
+    this.getSearchContainer()
       .contains("Authored by me")
       .click();
 
   clickOnEntireLibrary = () =>
-    cy
-      .get('[class *= "FilterContainer"]')
+    this.getSearchContainer()
       .contains("Entire Library")
       .click();
 
   clickOnSharedWithMe = () =>
-    cy
-      .get('[class *= "FilterContainer"]')
+    this.getSearchContainer()
       .contains("Shared with me")
       .click();
 
   clickOnTestFilter = () => cy.get('[data-cy="test-filter"]').click();
 
-  typeInSearchBar = text => {
-    this.routeTestSearch();
-    this.getKeywordsSearchBar()
-      .clear()
-      .type(text);
-    this.waitForTestSearch();
+  clickOnViewTestById = id => {
+    cy.server();
+    cy.route("GET", "**/test/*").as("viewTest");
+    this.getViewTestByTestId(id).click({ force: true });
+    return cy.wait("@viewTest").then(xhr => xhr.response.body.result._id);
   };
 
   verifySearchResultVisible = testId => {
@@ -76,7 +84,12 @@ export default class PlayListSearchContainer {
     this.getTestInSearchResultsById(testId).should("not.be.visible");
   };
 
-  /* ACTIONS END*/
+  closeCustomizationTab = () => {
+    this.getCloseCustomizationTab().click({ force: true });
+    cy.get('[placeholder="Search by keywords"]').should("not.exist");
+  };
+
+  /* ACTIONS END */
 
   /* APP HELPERS */
   routeTestSearch = () => {
@@ -84,9 +97,15 @@ export default class PlayListSearchContainer {
     cy.route("POST", "**/search/tests").as("search-container-tests");
   };
 
+  verifyStandardsByTestInSearch = (id, standard) =>
+    this.getTestInSearchResultsById(id)
+      .find(`[title="${standard}"]`)
+      .should("be.visible");
+
   setFilters = ({ collection, authoredByme, SharedWithMe, entireLibrary, grade, subject, status }) => {
     this.routeTestSearch();
     this.clickOnTestFilter();
+    this.clearDropDowns();
     if (collection) this.setCollection(collection);
     if (authoredByme) this.clickOnAuthoredbyMeFolder();
     if (SharedWithMe) this.clickOnSharedWithMe();

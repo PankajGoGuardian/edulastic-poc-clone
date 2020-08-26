@@ -116,7 +116,7 @@ export default class CypressHelper {
   static verifyAntMesssage = msg =>
     cy
       .get(".ant-notification-notice-message")
-      .should("contain", msg)
+      .filter((i, ele) => Cypress.$(ele).text() === msg)
       .should("be.visible")
       .then($ele => {
         $ele.detach();

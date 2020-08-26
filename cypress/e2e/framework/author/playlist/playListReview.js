@@ -1,9 +1,10 @@
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
-import DndSimulatorDataTransfer from "../../../../support/misc/dndSimulator";
+import PlayListSearchContainer from "./searchConatinerPage";
 
 export default class PlayListReview {
   constructor() {
     this.lcb = new LiveClassboardPage();
+    this.searchContainer = new PlayListSearchContainer();
   }
 
   // *** ELEMENTS START ***
@@ -21,7 +22,7 @@ export default class PlayListReview {
 
   getAssignButtonByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="AssignWholeModule"]');
 
-  getViewTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="view-test"]');
+  getViewTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).contains("span", "Preview");
 
   getModuleNameByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="module-name"]');
 
@@ -48,6 +49,40 @@ export default class PlayListReview {
 
   getShowAssignmentsByTestByMod = (mod, test) =>
     this.getTestByTestByModule(mod, test).find('[data-cy="show-assignment"]');
+
+  getModuleTittle = () => cy.get(".ant-modal-content").find('[data-cy="module-group-name"]');
+
+  getModuleName = () => cy.get(".ant-modal-content").find('[data-cy="module-name"]');
+
+  getUnitId = () => cy.get(".ant-modal-content").find('[data-cy="module-id"]');
+
+  getModuleDescription = () =>
+    cy
+      .get("#froalaToolbarContainer-module-description")
+      .next()
+      .find('[contenteditable="true"]');
+
+  getAddModule = () => cy.get("button").contains("span", "ADD");
+
+  getAddNewModule = () => cy.contains("span", "Add Module");
+
+  getManageModuleDropDown = mod => this.getModuleRowByModule(mod).find(".ant-dropdown-trigger");
+
+  getDropDownItem = () => cy.get(".ant-dropdown-menu-item").filter((i, $ele) => Cypress.dom.isVisible($ele));
+
+  getEditModule = () => this.getDropDownItem().contains("Edit Module");
+
+  getDeleteModule = () => this.getDropDownItem().contains("Delete Module");
+
+  getUpdateModule = () => cy.get("button").contains("span", "UPDATE");
+
+  getConfirmDeleteModule = () => cy.get('[data-cy="done-module"]');
+
+  getCustomizationButton = () => cy.get("button").contains("span", "Customize Content");
+
+  getPlaylistTitle = () => cy.get('[data-cy="title"]');
+
+  getModuleIdByMod = mod => this.getModuleRowByModule(mod).find('[data-cy="module-id"]');
 
   // *** ELEMENTS END ***
 
@@ -95,7 +130,7 @@ export default class PlayListReview {
   clickOnViewTestByTestByModule = (mod, test) => {
     cy.server();
     cy.route("GET", "**/test/*").as("viewTest");
-    this.getViewTestByTestByModule(mod, test).click();
+    this.getViewTestByTestByModule(mod, test).click({ force: true });
     return cy.wait("@viewTest").then(xhr => xhr.response.body.result._id);
   };
 
@@ -129,6 +164,62 @@ export default class PlayListReview {
 
   clickShowAssignmentByTestByModule = (mod, test) => this.getShowAssignmentsByTestByMod(mod, test).click();
 
+  clickAddNewModule = () => this.getAddNewModule().click();
+
+  setModuleTitle = title =>
+    this.getModuleTittle()
+      .clear()
+      .type(title);
+
+  setModuleName = name =>
+    this.getModuleName()
+      .clear()
+      .type(name);
+
+  setModuleId = id =>
+    this.getUnitId()
+      .clear()
+      .type(id);
+
+  setModuleDetails = (name, id, title) => {
+    this.setModuleTitle(title);
+    this.setModuleName(name);
+    this.setModuleId(id);
+  };
+
+  addModule = (newPlaylist = false) => {
+    let playlistId;
+    cy.server();
+    cy.route("POST", "**/playlists").as("saveNewPlayList");
+    this.getAddModule().click({ force: true });
+    if (newPlaylist)
+      cy.wait("@saveNewPlayList").then(xhr => {
+        expect(xhr.status).to.eq(200);
+        playlistId = xhr.response.body.result._id;
+        cy.saveplayListDetailToDelete(playlistId);
+      });
+    return cy.wait(1).then(() => playlistId);
+  };
+
+  clickManageModuleByModule = mod => this.getManageModuleDropDown(mod).click({ force: true });
+
+  clickEditModule = () => this.getEditModule().click({ force: true });
+
+  clickDeleteModule = () => {
+    this.getDeleteModule().click({ force: true });
+    this.getConfirmDeleteModule().click({ force: true });
+  };
+
+  clickUpdateModule = () => this.getUpdateModule().click({ force: true });
+
+  clickOpenCustomizationTab = () => {
+    cy.get("body").then(() => {
+      if (Cypress.$('[data-cy="test-filter"]').length === 0) {
+        this.getCustomizationButton().click({ force: true });
+        this.searchContainer.getKeywordsSearchBar();
+      }
+    });
+  };
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -163,12 +254,28 @@ export default class PlayListReview {
       .trigger("mouseover", { force: true })
       .should("contain", `${completed}/${total}`);
 
-  verifyPlalistGrade = grade => this.getPlaylistGrade().should("contain.text", grade);
+  verifyPlalistGrade = grade => this.getPlaylistGrade().should("contain", grade);
 
-  verifyPlalistSubject = sub => this.getPlaylistSub().should("contain.text", sub);
+  verifyPlalistSubject = sub => this.getPlaylistSub().should("contain", sub);
 
   verifyModuleCompleteTextByModule = mod =>
     this.getModuleCompleteStatusByModule(mod).should("have.text", "MODULE COMPLETED");
+
+  verifyPlaylistTitle = title => this.getPlaylistTitle().should("have.text", title);
+
+  verifyModuleNameByMod = (mod, name) => {
+    this.getModuleNameByModule(mod)
+      .should("contain", name)
+      .trigger("mouseover")
+      .then(() => {
+        cy.wait(500);
+        cy.get(".ant-tooltip-inner")
+          .filter((i, $ele) => Cypress.$($ele).text() === name)
+          .should("be.visible");
+      });
+  };
+
+  verifyModuleIdByMod = (mod, id) => this.getModuleIdByMod(mod).should("have.text", id);
 
   /*  shuffleTestByIndexByModule = (mod, sourceTest, targetTest) => {
     this.getDragHandlerByTestByModule(mod, sourceTest).as("source-container");
@@ -225,12 +332,11 @@ export default class PlayListReview {
     });
   }; */
 
-  moveTestBetweenModule = (sourcemodNumber, sourceTestNumber, targetModuleNumber) => {
+  moveTestBetweenModule = (sourcemodNumber, sourceTestNumber, targetModuleNumber, testid) => {
     this.clickExpandByModule(sourcemodNumber);
     this.clickExpandByModule(targetModuleNumber);
     this.getTestByTestByModule(sourcemodNumber, sourceTestNumber).as("source-container");
     this.getModuleRowByModule(targetModuleNumber).as("target-container");
-    this.routeSavePlaylist();
     const opts = {
       offsetX: 0,
       offsetY: 0
@@ -249,8 +355,42 @@ export default class PlayListReview {
         clientX: x + opts.offsetX,
         clientY: y + opts.offsetY
       });
-      this.waitForSave();
     });
+    this.getTestsInModuleByModule(targetModuleNumber)
+      .last()
+      .should("have.attr", "data-test", testid.toString());
+  };
+
+  dragTestFromSearchToModule = (targetmod, test) => {
+    this.clickExpandByModule(targetmod);
+    this.getModuleNameByModule(targetmod).as("target-container");
+    this.searchContainer
+      .getTestInSearchResultsById(test)
+      .first()
+      .as("source-container");
+
+    const opts = {
+      offsetX: 0,
+      offsetY: 0
+    };
+
+    cy.get("@source-container")
+      .trigger("dragstart")
+      .trigger("drag");
+
+    cy.get("@target-container").then($el => {
+      const { x, y } = $el.get(0).getBoundingClientRect();
+      cy.wrap($el.get(0)).as("target");
+      cy.get("@target").trigger("dragover");
+      cy.get("@target").trigger("drop", {
+        clientX: x + opts.offsetX,
+        clientY: y + opts.offsetY
+      });
+    });
+
+    this.getTestsInModuleByModule(targetmod)
+      .last()
+      .should("have.attr", "data-test", test.toString());
   };
 
   routeSavePlaylist = () => {

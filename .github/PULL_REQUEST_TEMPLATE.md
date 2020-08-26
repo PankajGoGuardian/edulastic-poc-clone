@@ -4,22 +4,50 @@
 
 https://snapwiz.atlassian.net/browse/ISSUE_ID
 
-### Description:
+**What kind of change does this PR introduce ?** (Bug fix, feature, docs update, description ...)
 
-<!-- Add a brief description of what needs to be done, or what was the causing the issue-->
+<!-- Answer below. `>` represents a block quote below -->
 
-### Impact: MEDIUM
+>
 
-<!-- Could be LOW, MEDIUM, HIGH, etc based on how much it can impact or break existing other features. This would be really helpful while PR -->
+---
 
-### Things to watch out for:
+**What are the modules/areas to be validated ?**(You can put _Refer to JIRA_ if already elaborated)
 
-<!-- Any particular thing to watch out for? Like a new flag, possible throwups, unexpected behaviours etc -->
+<!-- Answer below. `>` represents a block quote below -->
 
-### CHECKLIST
+>
 
-- [ ] Fixed/implemented the feature.
-- [ ] Documented the code if necessary. (as comments)
-- [ ] Tested possible scenarios.
+---
 
-#### Screenshots (if appropriate):
+**Does this PR introduce a breaking change?**(Any changes that might impact users using the app currently?)
+
+<!-- Answer below. `>` represents a block quote below -->
+
+>
+
+---
+
+**Have you tested in your local or any env ?** (if not what blocked you?)
+
+<!-- Answer below. `>` represents a block quote below -->
+
+>
+
+---
+
+**Have you added your unit tests?**
+
+<!-- Answer below. `>` represents a block quote below -->
+
+>
+
+---
+
+**Any Other information**:
+
+<!-- Answer below. `>` represents a block quote below -->
+
+>
+
+---

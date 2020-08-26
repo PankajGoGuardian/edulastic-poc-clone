@@ -69,6 +69,7 @@ export default class PlayListHeader {
     cy.server();
     cy.route("GET", "**/playlists/*").as("use-this");
     this.getUseThisButton().click({ force: true });
+    cy.get('[data-cy="insights"]');
     return cy.wait("@use-this");
   };
 

@@ -60,7 +60,7 @@ export default class PlayListLibrary {
   clickOnPlayListCardById = testId => {
     cy.server();
     cy.route("GET", "**/playlists/*").as("playListLoad");
-    this.getPlayListCardById(testId).click();
+    this.getPlayListCardById(testId).click({ force: true });
     cy.wait("@playListLoad");
   };
 

@@ -28,9 +28,9 @@ export default class PlayListReview {
 
   getStandardsContainerByTestbyModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[class^="Tags_"]');
 
-  getPresentationIconByTestByModule = (mod, test) =>
-    this.getTestByTestByModule(mod, test)
-      .next()
+  getPresentationIconByTestByModule = (mod, test, rowIndex = 0) =>
+    this.getAllAssignmentsRowsByTestByModule(mod, test)
+      .eq(rowIndex)
       .find('[ data-cy="PresentationIcon"]');
 
   getPlaylistSub = () => cy.get('[data-cy="playlist-sub"]');
@@ -84,12 +84,23 @@ export default class PlayListReview {
 
   getModuleIdByMod = mod => this.getModuleRowByModule(mod).find('[data-cy="module-id"]');
 
+  getAllAssignmentsRowsByTestByModule = (mod, test) =>
+    this.getTestByTestByModule(mod, test)
+      .next()
+      .find("tbody")
+      .find("tr");
+
+  getManageTestDropDownByTestByModule = (mod, test) =>
+    this.getTestByTestByModule(mod, test).find(".ant-dropdown-trigger");
+
+  getAssignTestInDropDown = () => this.getDropDownItem().contains("Assign Test");
+
   // *** ELEMENTS END ***
 
-  clickLcbIconByTestByIndex = (mod, test, index) => {
+  clickLcbIconByTestByIndex = (mod, test, index, rowIndex = 0) => {
     cy.server();
     cy.route("GET", "**/api/realtime/url").as("lcbLoad");
-    this.getPresentationIconByTestByModule(mod, test)
+    this.getPresentationIconByTestByModule(mod, test, rowIndex)
       .children()
       .eq(index)
       .click();
@@ -108,10 +119,17 @@ export default class PlayListReview {
       if ($container.children().length > 1) this.getModuleNameByModule(mod).click();
     });
 
-  clickOnAssignByTestByModule = (mod, test) =>
-    this.getAssignButtonByTestByModule(mod, test).then(button => {
-      this.clickAssignmentButtonByButton(button);
-    });
+  clickOnAssignByTestByModule = (mod, test, alreadyAssigned = false) => {
+    if (alreadyAssigned) {
+      this.clickManageTestDropDownByTestByModule(mod, test);
+      this.getAssignTestInDropDown().then(button => {
+        this.clickAssignmentButtonByButton(button);
+      });
+    } else
+      this.getAssignButtonByTestByModule(mod, test).then(button => {
+        this.clickAssignmentButtonByButton(button);
+      });
+  };
 
   clickOnAssignButtonByModule = mod =>
     this.getAssignButtonByModule(mod).then(button => {
@@ -220,6 +238,10 @@ export default class PlayListReview {
       }
     });
   };
+
+  clickManageTestDropDownByTestByModule = (mod, test) =>
+    this.getManageTestDropDownByTestByModule(mod, test).click({ force: true });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -249,10 +271,7 @@ export default class PlayListReview {
   verifyNoOfTestByModule = (mod, count) => this.getTestsInModuleByModule(mod).should("have.length", count);
 
   verifyModuleProgress = (completed, total) =>
-    cy
-      .get('[data-cy="moduleProgress"]')
-      .trigger("mouseover", { force: true })
-      .should("contain", `${completed}/${total}`);
+    cy.get('[data-cy="module-pogress"]').should("have.text", `${completed}/${total}Assigned`);
 
   verifyPlalistGrade = grade => this.getPlaylistGrade().should("contain", grade);
 
@@ -276,6 +295,43 @@ export default class PlayListReview {
   };
 
   verifyModuleIdByMod = (mod, id) => this.getModuleIdByMod(mod).should("have.text", id);
+
+  verifyAssignmentRowByTestByMod = (
+    mod,
+    test,
+    { className, type, teacher, status, submitted, graded },
+    rowIndex = 0
+  ) => {
+    this.getAllAssignmentsRowsByTestByModule(mod, test)
+      .eq(rowIndex)
+      .find("td")
+      .as("current-assignment-row");
+
+    if (className)
+      cy.get("@current-assignment-row")
+        .eq(0)
+        .should("have.text", className);
+    if (type)
+      cy.get("@current-assignment-row")
+        .eq(1)
+        .should("have.text", type);
+    if (teacher)
+      cy.get("@current-assignment-row")
+        .eq(2)
+        .should("have.text", teacher);
+    if (status)
+      cy.get("@current-assignment-row")
+        .eq(3)
+        .should("have.text", status);
+    if (submitted)
+      cy.get("@current-assignment-row")
+        .eq(4)
+        .should("have.text", submitted);
+    if (graded)
+      cy.get("@current-assignment-row")
+        .eq(5)
+        .should("have.text", graded);
+  };
 
   /*  shuffleTestByIndexByModule = (mod, sourceTest, targetTest) => {
     this.getDragHandlerByTestByModule(mod, sourceTest).as("source-container");

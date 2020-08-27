@@ -4,6 +4,8 @@
 
 https://snapwiz.atlassian.net/browse/ISSUE_ID
 
+---
+
 **What kind of change does this PR introduce ?** (Bug fix, feature, docs update, description ...)
 
 <!-- Answer below. `>` represents a block quote below -->
@@ -29,6 +31,14 @@ https://snapwiz.atlassian.net/browse/ISSUE_ID
 ---
 
 **Have you tested in your local or any env ?** (if not what blocked you?)
+
+<!-- Answer below. `>` represents a block quote below -->
+
+>
+
+---
+
+**Does this change need a DB patch?** (if yes, provide the reference below.)
 
 <!-- Answer below. `>` represents a block quote below -->
 

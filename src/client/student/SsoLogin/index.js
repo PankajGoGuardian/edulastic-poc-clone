@@ -48,7 +48,9 @@ class SsoLogin extends React.Component {
     } else if (path.includes("clever")) {
       cleverSSOLogin({ ...payload, state: qs.parse(location.search).state });
     } else if (path.includes("atlas")) {
-      classlinkSSOLogin({ ...payload, state: JSON.parse(qs.parse(location.search).state) });
+      const state = qs.parse(location.search)?.state;
+      if (state) payload.state = JSON.parse(state);
+      classlinkSSOLogin(payload);
     }
   }
 

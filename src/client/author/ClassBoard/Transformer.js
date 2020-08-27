@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // @ts-check
-import { keyBy, groupBy, get, values, flatten,isEmpty } from "lodash";
+import { keyBy, groupBy, get, values, flatten, isEmpty } from "lodash";
 import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
 import { getMathHtml } from "@edulastic/common";
@@ -291,7 +291,7 @@ const extractFunctions = {
           .join(",")
       : userResponse,
   [questionType.MATH]: (question, userResponse) => {
-    if(isEmpty(userResponse)){
+    if (isEmpty(userResponse)) {
       return "";
     }
     const restrictedMathTypes = ["Matrices", "Complete the Equation", "Formula Essay"];
@@ -440,7 +440,7 @@ export const transformGradeBookResponse = (
 
         const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
         const questionActivitiesKeyedByItemId =
-          (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.testItemId)) || {};
+          (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => (test.isDocBased ? x._id : x.testItemId))) || {};
 
         const questionActivities = qids.map(
           ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel, _id: qActId }, index) => {

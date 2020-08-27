@@ -24,4 +24,8 @@ export const ZwibblerMain = styled.div`
       outline: none;
     }
   }
+
+  & .zwibbler-overlay {
+    outline: none !important;
+  }
 `;

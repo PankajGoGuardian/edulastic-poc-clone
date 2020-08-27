@@ -64,7 +64,9 @@ var createAnswerObject = function createAnswerObject(answers) {
  */
 
 
-var compareChoice = function compareChoice(answer, response) {
+var compareChoice = function compareChoice() {
+  var answer = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+  var response = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
   var allowSingleLetterMistake = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var ignoreCase = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
   var attempted = response && response.length;

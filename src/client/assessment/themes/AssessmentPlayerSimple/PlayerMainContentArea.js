@@ -8,7 +8,6 @@ import { ScrollContext } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import TestItemPreview from "../../components/TestItemPreview";
 import PlayerFooter from "./PlayerFooter";
-import { ScratchpadTool } from "../../../common/components/Scratchpad";
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, MAX_MOBILE_WIDTH } from "../../constants/others";
 import { getEvaluationSelector } from "../../selectors/answers";
 import getZoomedResponsiveWidth from "../../utils/zoomedResponsiveWidth";
@@ -63,7 +62,6 @@ const PlayerContentArea = ({
             responsiveWidth={responsiveWidth}
             className="scrollable-main-wrapper"
           >
-            {scratchPadMode && <ScratchpadTool />}
             {testItemState === "" && (
               <TestItemPreview
                 crossAction={crossAction}

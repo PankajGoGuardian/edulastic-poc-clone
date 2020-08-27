@@ -121,9 +121,9 @@ class TeacherTable extends Component {
         },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
-          const prev = get(a, "_source.firstName", "");
-          const next = get(b, "_source.firstName", "");
-          return next.localeCompare(prev);
+          const prev = get(a, "_source?.firstName", "");
+          const next = get(b, "_source?.firstName", "");
+          return next?.localeCompare?.(prev);
         }
       },
       {
@@ -131,9 +131,9 @@ class TeacherTable extends Component {
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
-          const prev = get(a, "_source.email", "");
-          const next = get(b, "_source.email", "");
-          return next.localeCompare(prev);
+          const prev = get(a, "_source?.email", "");
+          const next = get(b, "_source?.email", "");
+          return next?.localeCompare?.(prev);
         }
       },
       {

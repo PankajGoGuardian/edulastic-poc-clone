@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, isUndefined } from "lodash";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes, notification } from "@edulastic/common";
@@ -31,6 +31,7 @@ import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction } from "../../actions/userInteractions";
 import { CLEAR } from "../../constants/constantsForQuestions";
+import { showScratchpadInfoNotification } from "../../utils/helpers";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -88,6 +89,17 @@ class AssessmentPlayerSimple extends React.Component {
         toolsOpenStatus.splice(index, 1);
       } else {
         toolsOpenStatus.push(tool);
+      }
+      if (toolsOpenStatus.includes(5)) {
+        const { items, currentItem } = this.props;
+        if (!isUndefined(currentItem) && Array.isArray(items)) {
+          if (showScratchpadInfoNotification(items[currentItem])) {
+            notification({
+              type: "info",
+              messageKey: "scratchpadInfoMultipart"
+            });
+          }
+        }
       }
     } else {
       toolsOpenStatus = [tool];
@@ -154,7 +166,7 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   handleChangePreview = () => {
-    const { changePreview = () => {} } = this.props;
+    const { changePreview = () => { } } = this.props;
     // change the player state to clear mode (attemptable mode)
     this.setState({ testItemState: "" }, () => changePreview(CLEAR));
   };
@@ -286,12 +298,12 @@ const enhance = compose(
       selectedTheme: state.ui.selectedTheme,
       unansweredQuestionCount: unansweredQuestionCountSelector(state),
       userAnswers: state.answers,
-      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]?._id], false),
-      scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].scratchpad`, null),
+      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps?.items[ownProps?.currentItem]?._id], false),
+      scratchPad: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}].scratchpad`, null),
       highlights: get(state, `userWork.present[${ownProps?.passage?._id}].resourceId`, null),
-      attachments: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].attachments`, null),
-      crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].crossAction`, null),
-      userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}]`, {}),
+      attachments: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}].attachments`, null),
+      crossAction: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}].crossAction`, null),
+      userWork: get(state, `userWork.present[${ownProps?.items[ownProps?.currentItem]?._id}]`, {}),
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),

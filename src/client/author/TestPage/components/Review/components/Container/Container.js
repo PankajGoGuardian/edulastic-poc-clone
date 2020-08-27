@@ -71,7 +71,7 @@ class Review extends PureComponent {
 
   static defaultProps = {
     owner: false,
-    onSaveTestId: () => {}
+    onSaveTestId: () => { }
   };
 
   secondHeaderRef = React.createRef();
@@ -436,7 +436,7 @@ class Review extends PureComponent {
 
     // when redirected from other pages, sometimes, test will only be having
     // ids in its testitems, which could create issues.
-    if (test.itemGroups[0].items && test.itemGroups[0].items.some(i => typeof i === "string")) {
+    if (test?.itemGroups?.[0]?.items && test?.itemGroups?.[0]?.items?.some(i => typeof i === "string")) {
       return <div />;
     }
 
@@ -504,7 +504,7 @@ class Review extends PureComponent {
               </div>
             </Col>
           </Row>
-        )}
+          )}
         <ReviewContentWrapper>
           <ReviewLeftContainer lg={24} xl={18}>
             <Paper padding="7px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>

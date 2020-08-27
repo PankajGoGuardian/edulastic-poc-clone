@@ -31,7 +31,7 @@ EduButton.defaultProps = {
 
 export default EduButton;
 
-const getStyle = ({ height, width, justifyContent, fontSize, IconBtn, ml, style = {} }) => {
+const getStyle = ({ height, width, justifyContent, fontSize, IconBtn, ml, mr, style = {} }) => {
   const defaultStyle = {
     display: "flex",
     "align-items": "center",
@@ -39,6 +39,7 @@ const getStyle = ({ height, width, justifyContent, fontSize, IconBtn, ml, style 
     fontSize: fontSize || "11px",
     fontWeight: "600",
     marginLeft: ml || "5px",
+    marginRight: mr || null,
     borderRadius: "4px",
     height: height || "36px",
     padding: IconBtn ? "5px" : "5px 15px",

@@ -138,7 +138,7 @@ export const uploadToS3 = async (file, folder, progressCallback, cancelUpload) =
   const { name: fileName } = fileToUpload;
   const result = await fileApi.getSignedUrl(fileName, folder);
   const formData = new FormData();
-  const { fields, url } = result;
+  const { fields = {}, url } = result;
 
   Object.keys(fields).forEach(item => {
     formData.append(item, fields[item]);
@@ -147,10 +147,10 @@ export const uploadToS3 = async (file, folder, progressCallback, cancelUpload) =
   formData.append("file", file);
 
   if (!progressCallback) {
-    progressCallback = () => {};
+    progressCallback = () => { };
   }
   if (!cancelUpload) {
-    cancelUpload = () => {};
+    cancelUpload = () => { };
   }
 
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload);
@@ -238,7 +238,7 @@ const parseTemplate = tmpl => {
 
   $(parsedHTML)
     .find(".input__math")
-    .each(function() {
+    .each(function () {
       const latex = $(this).attr("data-latex");
       $(this).replaceWith(`<mathspan lineheight={{lineHeight}} latex="${latex}" />`);
     });
@@ -258,7 +258,7 @@ export const reIndexResponses = htmlStr => {
 
   $(parsedHTML)
     .find("textinput, mathinput, mathunit, textdropdown, response, paragraphnumber")
-    .each(function(index) {
+    .each(function (index) {
       $(this)
         .find("span")
         .remove("span");
@@ -301,7 +301,7 @@ export const sanitizeForReview = stimulus => {
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
   let tagFound = false;
   tagsToRemove.forEach(tagToRemove => {
-    jqueryEl.find(tagToRemove).each(function() {
+    jqueryEl.find(tagToRemove).each(function () {
       const elem = $(this).context;
       // replace if tag is not span
       // span comes when we use italic or bold
@@ -324,7 +324,7 @@ export const sanitizeForReview = stimulus => {
   });
   // to remove any text after ...
   // Hiding video and replacing with text [video]
-  jqueryEl.find("p").each(function() {
+  jqueryEl.find("p").each(function () {
     const elem = $(this);
     const hasMath = elem.find(".input__math").length > 0;
     const text = elem.text().trim().length > 0;
@@ -336,12 +336,12 @@ export const sanitizeForReview = stimulus => {
     }
   });
 
-  jqueryEl.find("iframe").each(function() {
+  jqueryEl.find("iframe").each(function () {
     const elem = $(this);
     elem.replaceWith(["[resource]"]);
   });
 
-  jqueryEl.find("a").each(function() {
+  jqueryEl.find("a").each(function () {
     const elem = $(this);
     const textValue = elem.text();
     elem.replaceWith(textValue);
@@ -377,7 +377,7 @@ export const removeIndexFromTemplate = tmpl => {
   const parsedHTML = $("<div />").html(temp);
   $(parsedHTML)
     .find("textinput, mathinput, mathunit, textdropdown, response")
-    .each(function() {
+    .each(function () {
       $(this).removeAttr("responseindex");
       $(this).removeAttr("contenteditable");
     });
@@ -647,8 +647,8 @@ export const rgbToHexc = orig => {
   const rgb = orig.replace(/\s/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
   return rgb && rgb.length === 4
     ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(16)}`.slice(
-        -2
-      )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
+      -2
+    )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
     : orig;
 };
 
@@ -786,7 +786,7 @@ export const getImageUrl = template => {
   let url = "";
   if (window.$) {
     const jqueryEl = window.$(template);
-    jqueryEl.find("img").each(function() {
+    jqueryEl.find("img").each(function () {
       url = this.getAttribute("src");
     });
   }
@@ -796,7 +796,7 @@ export const getImageUrl = template => {
 export const getImageDimensions = url =>
   new Promise(resolve => {
     const image = new Image();
-    image.onload = function() {
+    image.onload = function () {
       resolve({ height: this.naturalHeight, width: this.naturalWidth });
     };
     image.src = url;

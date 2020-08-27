@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { get, keyBy } from "lodash";
+import { get, keyBy, isUndefined } from "lodash";
 import { withWindowSizes, notification } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 
@@ -32,7 +32,7 @@ import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction, saveHintUsageAction } from "../../actions/userInteractions";
 import { CLEAR } from "../../constants/constantsForQuestions";
-import { ScratchpadTool } from "../../../common/components/Scratchpad";
+import { showScratchpadInfoNotification } from "../../utils/helpers";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -97,6 +97,17 @@ class AssessmentPlayerDefault extends React.Component {
         currentToolMode.push(val);
       }
       currentToolMode = currentToolMode.filter(m => m === 3 || m === 5);
+      if (currentToolMode.includes(5)) {
+        const { items, currentItem } = this.props;
+        if (!isUndefined(currentItem) && Array.isArray(items)) {
+          if (showScratchpadInfoNotification(items[currentItem])) {
+            notification({
+              type: "info",
+              messageKey: "scratchpadInfoMultipart"
+            });
+          }
+        }
+      }
     } else {
       currentToolMode = [val];
     }
@@ -219,7 +230,7 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   handleChangePreview = () => {
-    const { changePreview = () => {} } = this.props;
+    const { changePreview = () => { } } = this.props;
     // change the player state to clear mode (attemptable mode)
     this.setState({ testItemState: "" }, () => changePreview(CLEAR));
   };
@@ -330,7 +341,7 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const hasCollapseButtons =
-      itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
+      itemRows?.length > 1 && itemRows?.flatMap(_item => _item?.widgets)?.find(_item => _item?.widgetType === "resource");
 
     const themeToPass = theme[selectedTheme] || theme.default;
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
@@ -357,9 +368,9 @@ class AssessmentPlayerDefault extends React.Component {
             ? "11px"
             : "11px 5px"
           : windowWidth >= LARGE_DESKTOP_WIDTH
-          ? "9px 0px"
-          : "11px 0px"
-      }`,
+            ? "9px 0px"
+            : "11px 0px"
+        }`,
       justifyContent: "space-between"
     };
 
@@ -477,7 +488,6 @@ class AssessmentPlayerDefault extends React.Component {
                 className="scrollable-main-wrapper"
                 id="assessment-player-default-scroll"
               >
-                {scratchPadMode && !LCBPreviewModal && <ScratchpadTool />}
                 {testItemState === "" && (
                   <TestItemPreview
                     LCBPreviewModal={LCBPreviewModal}

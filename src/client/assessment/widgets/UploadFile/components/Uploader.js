@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import styled from "styled-components";
-import { uploadToS3, FlexContainer, EduButton } from "@edulastic/common";
+import { uploadToS3, FlexContainer, EduButton, notification } from "@edulastic/common";
 import { aws } from "@edulastic/constants";
 
 import ProgressBar from "./ProgressBar";
@@ -83,7 +83,9 @@ const Uploader = ({ onCompleted, mt }) => {
       const filesArr = Object.keys(files)
         .map(key => {
           const { size } = files[key];
-          if (size > MAX_SIZE) {
+          // image size should be less than 5MB
+          if (size > 5 * MAX_SIZE) {
+            notification({ messageKey: "imageSizeError5MB" });
             return false;
           }
           return files[key];
@@ -110,6 +112,11 @@ const Uploader = ({ onCompleted, mt }) => {
     }
   };
 
+  // resetting value to null to detect changes more than once (for same file)
+  const resetInputValue = e => {
+    e.target.value = null;
+  };
+
   const progressArr = filesToUpload.filter(f => f.status !== "canceled");
   const disableUpload = !isEmpty(progressArr);
 
@@ -119,7 +126,14 @@ const Uploader = ({ onCompleted, mt }) => {
         UPLOAD FILE
       </EduButton>
 
-      <UploadInput multiple type="file" ref={inputRef} onChange={handleChange} accept={allowedFiles.join()} />
+      <UploadInput
+        multiple
+        type="file"
+        ref={inputRef}
+        onClick={resetInputValue}
+        onChange={handleChange}
+        accept={allowedFiles.join()}
+      />
       {!isEmpty(progressArr) && (
         <FlexContainer flexWrap="wrap" mt="26px" justifyContent="flex-start">
           {progressArr.map((f, i) => (

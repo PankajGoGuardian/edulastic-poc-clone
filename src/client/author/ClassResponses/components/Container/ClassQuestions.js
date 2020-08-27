@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -33,7 +32,6 @@ function Preview({
   isExpressGrader,
   isLCBView,
   questionActivity,
-  scratchpadProps,
   userWork,
   t
 }) {
@@ -49,14 +47,10 @@ function Preview({
   }
   const passageId = passage?._id;
   const answerContextConfig = useContext(AnswerContext);
-  const showScratchpadByDefault =
-    questionActivity && questionActivity.qType === "highlightImage" && questionActivity.scratchPad?.scratchpad === true;
+  const target = get(questionActivity, isExpressGrader || isQuestionView ? "_id" : "qActId", "");
+  const timeSpent = (get(questionActivity, "timeSpent", 0) / 1000).toFixed(1);
 
-  const viewAtStudentRes = showScratchpadByDefault;
-  const target = isExpressGrader || isQuestionView ? "_id" : "qActId";
-  const history = showScratchpadByDefault ? userWork[questionActivity[target]] : {};
-  const previouscratchPadDimensions = showScratchpadByDefault ? questionActivity.scratchPad.dimensions : null;
-  const timeSpent = showScratchpadByDefault ? (questionActivity.timeSpent / 1000).toFixed(1) : null;
+  // const previouscratchPadDimensions = showScratchpadByDefault ? questionActivity.scratchPad.dimensions : null;
 
   const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item;
   const scoringProps = { multipartItem, itemLevelScoring, isPassageWithQuestions };
@@ -87,13 +81,9 @@ function Preview({
         isQuestionView={isQuestionView}
         isExpressGrader={isExpressGrader}
         isLCBView={isLCBView}
-        showScratchpadByDefault={showScratchpadByDefault}
-        viewAtStudentRes={viewAtStudentRes}
         timeSpent={timeSpent}
         attachments={attachments}
-        {...scratchpadProps}
-        previouscratchPadDimensions={previouscratchPadDimensions}
-        history={history}
+        history={userWork[target]}
         saveHistory={() => {}}
         {...scoringProps}
         studentId={studentId}
@@ -351,7 +341,6 @@ class ClassQuestions extends Component {
       testItemsData,
       testData,
       qIndex,
-      scratchpadProps,
       testActivityId,
       isPresentationMode,
       t
@@ -395,7 +384,6 @@ class ClassQuestions extends Component {
           isExpressGrader={isExpressGrader}
           isLCBView={isLCBView}
           questionActivity={questionActivity}
-          scratchpadProps={scratchpadProps}
           userWork={userWork}
           t={t}
         />
@@ -483,8 +471,7 @@ const withConnect = connect(
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
-    userWork: get(state, ["userWork", "present"], {}),
-    scratchpadProps: state.scratchpad
+    userWork: get(state, ["userWork", "present"], {})
   }),
   {
     loadScratchPad: loadScratchPadAction,

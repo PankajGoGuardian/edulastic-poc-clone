@@ -28,15 +28,15 @@ const GroupsFilter = ({ current, options, onClick, onNewGroupClick }) => (
       />
     </Col>
     <GroupContainer Icon={props => <IconFolderAll {...props} />} name="All Students" onClick={() => onClick("")} />
-    {options.map(item => (
+    {options && options.map(item => (
       <GroupContainer
         {...item}
         Icon={props => <IconFolderDeactive {...props} />}
         isActive={current === item.id}
         onClick={() => onClick(item.id)}
       />
-      ))}
+    ))}
   </Row>
-  );
+);
 
 export default GroupsFilter;

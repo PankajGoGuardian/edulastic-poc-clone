@@ -440,8 +440,8 @@ class GraphContainer extends PureComponent {
       selectedTool: this.getDefaultTool()
     });
 
-    this._graph.setTool(tools[0]);
-    this._graph.reset();
+    this._graph?.setTool(tools?.[0]);
+    this._graph?.reset();
     this.updateValues();
   }
 
@@ -492,7 +492,7 @@ class GraphContainer extends PureComponent {
       case "delete":
         return this.onDelete();
       default:
-        return () => {};
+        return () => { };
     }
   };
 
@@ -832,7 +832,7 @@ GraphContainer.defaultProps = {
   },
   disableResponse: false,
   previewTab: CLEAR,
-  changePreviewTab: () => {},
+  changePreviewTab: () => { },
   elementsIsCorrect: false
 };
 

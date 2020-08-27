@@ -49,7 +49,7 @@ const Expanded = ({
   const items = testItem.itemLevelScoring ? [{ item }] : splitItems(item, testItem);
   let passageContent = {};
   if (testItem.passageId && items?.[0]?.item) {
-    items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
+    items[0].item = [passagesKeyed[testItem?.passageId]?.structure, ...items[0]?.item];
     passageContent = keyBy(passagesKeyed[testItem.passageId]?.data, "id");
   }
   const widgetsWithResource = { ...questions, ...keyBy(testItem?.data?.resources || [], "id"), ...passageContent };
@@ -135,7 +135,7 @@ const Expanded = ({
       </FlexContainer>
     </FlexContainer>
   ) : (
-    items.map(({ item: _item }, index) => {
+    items && items.map(({ item: _item }, index) => {
       const qId = get(_item, `[0].widgets[0].reference`, null);
       return (
         <FlexContainer
@@ -180,7 +180,7 @@ const Expanded = ({
                 type="number"
                 min={0}
                 disabled={!owner || !isEditable || isScoringDisabled}
-                value={points[qId] || points}
+                value={points?.[qId] || points}
                 onChange={handleChangePoint(qId)}
               />
             </FlexContainer>

@@ -125,7 +125,7 @@ class ClassList extends React.Component {
       queryType: "OR",
       search: searchTerms,
       page: 1,
-      limit: 1000
+      limit: 4000
     });
   };
 

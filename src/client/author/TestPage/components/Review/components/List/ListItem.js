@@ -47,7 +47,7 @@ const ListItem = ({
    */
   const items = testItem.itemLevelScoring ? [{ item }] : splitItems(item, testItem);
   if (testItem.passageId && items?.[0]?.item) {
-    items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
+    items[0].item = [passagesKeyed[testItem?.passageId]?.structure, ...items[0]?.item];
   }
 
   let points = 0;
@@ -139,51 +139,51 @@ const ListItem = ({
           </FlexContainer>
         </FlexContainer>
       ) : (
-        (items || []).map(({ item: _item }, index) => (
-          <FlexContainer className="expanded-rows" justifyContent="space-between" alignItems="flex-start">
-            <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
-              {isEditable && !collapseView && (
-                <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
-                  {isEditable && <CheckboxLabel checked={selected.includes(indx)} onChange={handleCheck} />}
-                </FlexContainer>
-              )}
-              <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
-                <TestItemPreview
-                  style={{
-                    padding: 0,
-                    boxShadow: "none",
-                    display: "flex",
-                    width: isEditable && !collapseView ? "95%" : "100%"
-                  }}
-                  cols={_item}
-                  preview="show"
-                  metaData={metaInfoData.id}
-                  disableResponse
-                  verticalDivider={get(_item, "[0].verticalDivider")}
-                  scrolling={get(_item, "[0].scrolling")}
-                  questions={allWidgets}
-                  windowWidth="100%"
-                  isReviewTab
-                  testItem
-                />
-              </AnswerContext.Provider>
-            </FlexContainer>
-            <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
-              <FlexContainer flexDirection="column" style={{ margin: 0 }}>
-                <PointsLabel>Points</PointsLabel>
-                <PointsInput
-                  size="large"
-                  type="number"
-                  disabled={!owner || !isEditable || isScoringDisabled}
-                  value={getPoint(get(_item, "[0].widgets[0].reference", null))}
-                  onChange={handleChangePoint(get(_item, "[0].widgets[0].reference", null))}
-                />
+          (items || []).map(({ item: _item }, index) => (
+            <FlexContainer className="expanded-rows" justifyContent="space-between" alignItems="flex-start">
+              <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
+                {isEditable && !collapseView && (
+                  <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
+                    {isEditable && <CheckboxLabel checked={selected.includes(indx)} onChange={handleCheck} />}
+                  </FlexContainer>
+                )}
+                <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
+                  <TestItemPreview
+                    style={{
+                      padding: 0,
+                      boxShadow: "none",
+                      display: "flex",
+                      width: isEditable && !collapseView ? "95%" : "100%"
+                    }}
+                    cols={_item}
+                    preview="show"
+                    metaData={metaInfoData.id}
+                    disableResponse
+                    verticalDivider={get(_item, "[0].verticalDivider")}
+                    scrolling={get(_item, "[0].scrolling")}
+                    questions={allWidgets}
+                    windowWidth="100%"
+                    isReviewTab
+                    testItem
+                  />
+                </AnswerContext.Provider>
               </FlexContainer>
-              {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
+              <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
+                <FlexContainer flexDirection="column" style={{ margin: 0 }}>
+                  <PointsLabel>Points</PointsLabel>
+                  <PointsInput
+                    size="large"
+                    type="number"
+                    disabled={!owner || !isEditable || isScoringDisabled}
+                    value={getPoint(get(_item, "[0].widgets[0].reference", null))}
+                    onChange={handleChangePoint(get(_item, "[0].widgets[0].reference", null))}
+                  />
+                </FlexContainer>
+                {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
+              </FlexContainer>
             </FlexContainer>
-          </FlexContainer>
-        ))
-      )}
+          ))
+        )}
       <FlexContainer style={{ margin: "20px 0" }}>
         <MetaInfoCell data={metaInfoData} itemTableView />
       </FlexContainer>

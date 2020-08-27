@@ -11,20 +11,15 @@ import {
   RENAME_FOLDER_SUCCESS,
   RENAME_FOLDER_ERROR,
   ADD_MOVE_FOLDER_SUCCESS,
-  TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
-  TOGGLE_MOVE_ITEMS_TO_FOLDER,
   SET_FOLDER,
   CLEAR_FOLDER
 } from "../constants/actions";
 
 const initialState = {
   entities: [],
-  selectedItems: [],
   error: null,
   loading: false,
   creating: false,
-  isOpenAddItemModal: false,
-  isOpenRemovalModal: false,
   entity: {}
 };
 
@@ -70,7 +65,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case ADD_MOVE_FOLDER_SUCCESS: {
       // params and result are always expected from action.
       const { result, params } = payload;
-      const { sourceFolderId } = params?.[0];
+      const { sourceFolderId } = params ?.[0];
       let currentFolderContent = [];
       // Update folder.entities to reflect the moved assignments.
       const entities = state.entities.map(entity => {
@@ -93,7 +88,6 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities,
-        isOpenAddItemModal: false,
         // entity should have the assignments for displaying inside entity.content
         entity: {
           ...state.entity,
@@ -144,18 +138,6 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: {}
-      };
-    case TOGGLE_REMOVE_ITEMS_FROM_FOLDER:
-      return {
-        ...state,
-        selectedItems: payload.items,
-        isOpenRemovalModal: payload.isOpen
-      };
-    case TOGGLE_MOVE_ITEMS_TO_FOLDER:
-      return {
-        ...state,
-        selectedItems: payload.items,
-        isOpenAddItemModal: payload.isOpen
       };
     default:
       return state;

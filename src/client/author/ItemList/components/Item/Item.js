@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic } from "@edulastic/icons";
+import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic, IconClose } from "@edulastic/icons";
 import { get } from "lodash";
 import { Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -16,8 +16,7 @@ import {
   WithResources,
   EduButton,
   notification,
-  LikeIconStyled,
-  CheckboxLabel
+  LikeIconStyled
 } from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
 
@@ -46,14 +45,15 @@ import {
   TypeCategory,
   ViewButton,
   ViewButtonStyled,
-  CheckboxWrapper,
+  AddButtonStyled,
   HeartIcon,
   ShareIcon,
   IdIcon,
   MoreInfo,
   Details,
   AddRemoveBtn,
-  AddRemoveBtnPublisher
+  AddRemoveBtnPublisher,
+  AddRemoveButton
 } from "./styled";
 import {
   setAndSavePassageItemsAction,
@@ -414,12 +414,16 @@ class Item extends Component {
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
                   {!hideAddRemove && (
-                    <CheckboxLabel
-                      ml="10px"
-                      checked={selectedToCart}
-                      onChange={this.handleToggleItemToCart(item)}
-                      onClick={e => e.stopPropagation()}
-                    />
+                    <AddRemoveButton
+                      isGhost
+                      IconBtn
+                      selectedToCart={selectedToCart}
+                      width="60px"
+                      height="36px"
+                      onClick={this.handleToggleItemToCart(item)}
+                    >
+                      {selectedToCart ? <IconClose /> : <IconPlus />}
+                    </AddRemoveButton>
                   )}
                 </ViewButton>
               ) : isPublisher ? (
@@ -493,9 +497,9 @@ class Item extends Component {
                     <IconEye />
                   </ViewButtonStyled>
                   {!hideAddRemove && (
-                    <CheckboxWrapper selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                    <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
                       {selectedToCart ? "Remove" : <IconPlus />}
-                    </CheckboxWrapper>
+                    </AddButtonStyled>
                   )}
                 </ViewButton>
               ) : (

@@ -63,7 +63,7 @@ const defineStatusBg = status => {
 };
 
 export const Container = styled.div`
-  padding: 30;
+  padding-left: 30px;
   left: 0;
   right: 0;
   height: 100%;
@@ -112,6 +112,12 @@ export const TableData = styled(EduTableStyled)`
       @media (min-width: ${mediumDesktopExactWidth}) {
         font-size: ${props => props.theme.smallFontSize};
       }
+    }
+  }
+
+  .ant-table-body .ant-table-thead > tr > th {
+    &.assignment-actions {
+      padding: 5px 0px 8px;
     }
   }
 
@@ -234,16 +240,14 @@ export const TitleCase = styled.div`
 export const ActionDiv = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   text-align: center;
   flex: 1;
-  padding-right: 15px;
 `;
 
 export const ActionsWrapper = styled.div`
   display: flex;
   justify-content: space-around;
-  padding-right: 15px;
 `;
 
 export const GreyFont = styled.div`
@@ -259,11 +263,11 @@ export const GreyFont = styled.div`
   &.class-column {
     white-space: initial;
     text-align: right;
-    padding-right: 20px;
+    /* padding-right: 20px; */
     word-break: break-word;
-    @media (min-width: ${largeDesktopWidth}) {
+    /* @media (min-width: ${largeDesktopWidth}) {
       padding-right: 50px;
-    }
+    } */
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {

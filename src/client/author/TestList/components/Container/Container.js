@@ -354,6 +354,9 @@ class TestList extends Component {
       sort = {}
     } = this.props;
 
+    if (name === "folderId") {
+      return receiveTests({ search: { ...emptyFilters, [name]: value, filter: "FOLDERS" }, sort, page: 1, limit });
+    }
     // all the fields to pass for search.
 
     let updatedKeys = {
@@ -781,18 +784,16 @@ class TestList extends Component {
       return (
         <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
           {tests.map((item, index) => (
-            <>
-              <CardWrapper
-                item={item}
-                key={index}
-                owner={item.authors && item.authors.some(x => x._id === userId)}
-                blockStyle="tile"
-                windowWidth={windowWidth}
-                history={history}
-                match={match}
-                standards={getInterestedStandards(item.summary, interestedCurriculums)}
-              />
-            </>
+            <CardWrapper
+              item={item}
+              key={index}
+              owner={item.authors && item.authors.some(x => x._id === userId)}
+              blockStyle="tile"
+              windowWidth={windowWidth}
+              history={history}
+              match={match}
+              standards={getInterestedStandards(item.summary, interestedCurriculums)}
+            />
           ))}
 
           {windowWidth > 1024 && countModular.map(index => <CardBox key={index} />)}
@@ -1173,7 +1174,7 @@ class TestList extends Component {
                 )}
                 {mode !== "embedded" && blockstyle === "horizontal" && <Actions type="TEST" />}
               </ItemsMenu>
-              <PerfectScrollbar style={{ padding: "0 20px" }}>
+              <PerfectScrollbar style={{ padding: "0 32px" }}>
                 <CardContainer type={blockstyle}>
                   {this.renderCardContent()}
                   <PaginationWrapper

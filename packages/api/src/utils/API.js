@@ -11,6 +11,17 @@ const getCurrentPath = () => {
   return `${location.pathname}${location.search}${location.hash}`;
 };
 
+const getUrlFragment = (url = "") => {
+  if (!url) return;
+
+  const parts = url
+    .replace(/(^\w+:|^)\/\//, "")
+    .split("/")
+    .slice(0, 3);
+
+  return parts.join("/");
+};
+
 const getWordsInURLPathName = pathname => {
   // When u try to change this function change the duplicate function in "src/client/common/utils/helpers.js" also
   let path = pathname;
@@ -157,9 +168,9 @@ export default class API {
         return response;
       },
       data => {
+        const reqUrl = data.response?.config?.url || "NA";
         const err = new Error(
-          `API failed while trying to fetch: ${data.response?.config?.url || "NA"}: message: ${data.response?.data
-            ?.message || "NA"}`
+          `API failed while trying to fetch: ${reqUrl}: message: ${data.response?.data?.message || "NA"}`
         );
 
         // make the response available so anyone can read it.
@@ -169,17 +180,18 @@ export default class API {
         // log in to sentry, exclude low priority status
         if (![400, 403].includes(err.status))
           Sentry.withScope(scope => {
+            const fingerPrint = getUrlFragment(reqUrl) || reqUrl;
+
             scope.setLevel("error");
             scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
             Sentry.captureException(err);
             scope.setTag("issueType", "UnexpectedErrorAPI");
-            Sentry.captureMessage(
-              JSON.stringify({
-                res: data.response?.data || {},
-                ref: data.response?.headers?.["x-server-ref"],
-                req: data.response?.config?.data
-              })
-            );
+            scope.setFingerprint(["{{default}}", fingerPrint]);
+            Sentry.setContext("api_meta", {
+              res: data.response?.data || {},
+              ref: data.response?.headers?.["x-server-ref"],
+              req: data.response?.config?.data
+            });
           });
 
         if (data && data.response && data.response.status) {

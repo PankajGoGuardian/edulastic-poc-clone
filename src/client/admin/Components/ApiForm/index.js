@@ -4,7 +4,7 @@ import { Alert, Button, Form } from "antd";
 import Field from "./Field";
 import { FirstDiv, H2, OuterDiv } from "../../Common/StyledComponents";
 
-const ApiFormsMain = ({ fields, name, handleOnSave, note = {} }) => {
+const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
   const [data, setData] = useState({});
   const [errors, setErrors] = useState([]);
   const onChange = (value, type) => {
@@ -68,6 +68,7 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {} }) => {
             </ActionWrapper>
           </Form>
         </FirstDiv>
+        {children}
       </OuterDiv>
     </FormMainWrapper>
   );

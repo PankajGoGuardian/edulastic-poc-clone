@@ -280,18 +280,5 @@ export const apiForms = [
         formatter: value => value === "enable"
       }
     ]
-  },
-  {
-    id: "create-admin",
-    name: "Create Admin for District/School",
-    fields: [
-      {
-        name: "districtId",
-        displayName: "District ID",
-        placeholder: "Enter districtId",
-        type: "string",
-        required: true
-      }
-    ]
   }
 ];

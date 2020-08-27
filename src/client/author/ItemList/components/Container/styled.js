@@ -104,7 +104,7 @@ export const SpinContainer = styled.div`
 
 export const PaginationContainer = styled.div`
   .ant-pagination {
-    padding: 20px 0px;
+    padding: 20px 55px 20px 0px;
     background: transparent;
     display: flex;
     align-items: center;

@@ -187,11 +187,9 @@ export default class API {
             Sentry.captureException(err);
             scope.setTag("issueType", "UnexpectedErrorAPI");
             scope.setFingerprint(["{{default}}", fingerPrint]);
-            Sentry.setContext("api_meta", {
-              res: data.response?.data || {},
-              ref: data.response?.headers?.["x-server-ref"],
-              req: data.response?.config?.data
-            });
+            scope.setExtra("api_res", JSON.stringify(data.response?.data || {}));
+            scope.setExtra("api_ref", data.response?.headers?.["x-server-ref"] || "--");
+            scope.setExtra("api_req", JSON.stringify(data.response?.config?.data || {}));
           });
 
         if (data && data.response && data.response.status) {

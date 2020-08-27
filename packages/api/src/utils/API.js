@@ -192,6 +192,9 @@ export default class API {
               ref: data.response?.headers?.["x-server-ref"],
               req: data.response?.config?.data
             });
+            scope.setExtra("api_res", JSON.stringify(data.response?.data || {}));
+            scope.setExtra("api_ref", data.response?.headers?.["x-server-ref"] || "--");
+            scope.setExtra("api_req", JSON.stringify(data.response?.config?.data || {}));
           });
 
         if (data && data.response && data.response.status) {

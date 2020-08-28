@@ -560,8 +560,8 @@ function getCurrentFirebaseUser() {
   return firebase.auth().currentUser?.uid || undefined;
 }
 
-function getValidRedirectRouteByRole(_url = "", user) {
-  const url = _url.trim();
+function getValidRedirectRouteByRole(_url, user) {
+  const url = (_url || "").trim();
   switch (user.role) {
     case roleuser.TEACHER:
       return url.match(/^\/author\//) ? url : "/author/dashboard";

@@ -103,7 +103,7 @@ class StudentTestPage {
 
     this.getCheckAns().click();
 
-    if (isExhausted) CypressHelper.verifyAntMesssage("Check answer limit exceeded for the item");
+    if (isExhausted) CypressHelper.verifyAntMesssage(" Check answer limit exceeded for the item.");
     else
       cy.wait("@evaluation").then(xhr =>
         expect(

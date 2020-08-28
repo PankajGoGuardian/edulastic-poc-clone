@@ -67,7 +67,11 @@ export default class TestSettings {
       .contains("Static Password")
       .click();
 
-  enterStaticPassword = pass => cy.get('[placeholder="Enter Password"]').type(pass);
+  enterStaticPassword = pass =>
+    cy
+      .get('[placeholder="Enter Password"]')
+      .should($ele => expect(Cypress.dom.isAttached($ele)).to.be.true)
+      .type(pass);
 
   clickOnDynamicPassword = () =>
     cy

@@ -560,7 +560,7 @@ function getCurrentFirebaseUser() {
   return firebase.auth().currentUser?.uid || undefined;
 }
 
-function getValidRedirectRouteByRole(_url, user) {
+function getValidRedirectRouteByRole(_url , user) {
   const url = (_url || "").trim();
   switch (user.role) {
     case roleuser.TEACHER:
@@ -576,7 +576,7 @@ function getValidRedirectRouteByRole(_url, user) {
     case roleuser.DISTRICT_ADMIN:
       if (user.permissions.includes("curator"))
         return url.match(/^\/publisher\//) || url.match(/^\/author\//) ? url : "/publisher/dashboard";
-      return url.match(/^\/author\//) ? url : "/author/dashboard";
+      return url.match(/^\/author\//) ? url : "/author/assignments";
     default:
       return url;
   }

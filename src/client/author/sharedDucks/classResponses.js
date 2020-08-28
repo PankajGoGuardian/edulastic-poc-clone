@@ -148,11 +148,15 @@ function* receiveStudentResponseSaga({ payload }) {
     /**
      * transforming questionActivities to support chart/question labels, etc.,
      */
+    const serverTimeStamp = yield select(state =>
+      get(state, "author_classboard_testActivity.additionalData.ts", Date.now())
+    );
     const transformed = transformGradeBookResponse(
       {
         ...originalData,
         testActivities: [studentResponse.testActivity],
-        testQuestionActivities: studentResponse.questionActivities
+        testQuestionActivities: studentResponse.questionActivities,
+        ts: serverTimeStamp
       },
       true
     );

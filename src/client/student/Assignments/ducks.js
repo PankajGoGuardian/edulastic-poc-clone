@@ -22,6 +22,7 @@ import {
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 import { clearOrderOfOptionsInStore } from "../../assessment/actions/assessmentPlayer";
+import { getServerTs } from "../utils";
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
@@ -143,6 +144,7 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
   const attempts = (assignment.reports && assignment.reports.length) || 0;
   const lastAttempt = last(assignment.reports) || {};
+  const serverTimeStamp = getServerTs(assignment);
   // eslint-disable-next-line
   let { endDate, class: groups = [], classId: currentGroup } = assignment;
   // when attempts over no need to check for any other condition to hide assignment from assignments page
@@ -165,18 +167,20 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
       }
       // IF MANUAL OPEN AND AUTO CLOSE
       if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE) {
-        const isLive = !currentClass.closed || currentClass.endDate > Date.now();
+        const isLive = !currentClass.closed || currentClass.endDate > serverTimeStamp;
         return isLive;
       }
       // IF MANUAL CLOSE AND AUTO OPEN
       if (assignment.openPolicy !== POLICY_AUTO_ON_DUEDATE) {
         const isLive =
-          currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
+          currentClass.startDate < serverTimeStamp &&
+          (!currentClass.closed || currentClass.closedDate > serverTimeStamp);
         return isLive;
       }
     }
   }
-  return endDate > Date.now();
+  // End date is not passed consider as live assignment
+  return endDate > serverTimeStamp;
 };
 
 const statusFilter = filterType => assignment => {
@@ -196,6 +200,7 @@ const assignmentSortByDueDate = (groupedReports, assignment) => {
   const attempted = !!(reports && reports.length);
   const lastAttempt = last(reports) || {};
   const resume = lastAttempt.status == 0;
+  const serverTimeStamp = getServerTs(assignment);
   let result = 0;
   if (resume) {
     result = 3;
@@ -205,8 +210,8 @@ const assignmentSortByDueDate = (groupedReports, assignment) => {
     result = 1;
   }
   const dueDate = assignment.dueDate || (_maxBy(assignment.class, "endDate") || {}).endDate;
-
-  const dueDateDiff = (dueDate - new Date()) / (1000 * 60 * 60 * 24);
+  // Sort assignments by server time stamp so that changes in the system time wont impact
+  const dueDateDiff = (dueDate - new Date(serverTimeStamp)) / (1000 * 60 * 60 * 24);
   const sortOrder = result * 10000 + dueDateDiff;
   return sortOrder;
 };

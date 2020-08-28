@@ -423,7 +423,9 @@ function* startAssignment({ payload }) {
     const { status, data = {} } = err;
     console.error(err);
     if (status === 403 && data.message) {
-      notification({ msg: data.message });
+      const message =
+        data.message || "Assignment is not not available at the moment. Please contact your administrator.";
+      notification({ msg: message });
     }
   }
 }

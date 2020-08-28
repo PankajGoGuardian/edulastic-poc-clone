@@ -643,7 +643,6 @@ table.quill-table td {
   border: 0;
   height: 100%;
   /* max-height: calc(100vh - 300px); */
-  overflow-y: auto;
 }
 
 .imagedragdrop_template_box.small {

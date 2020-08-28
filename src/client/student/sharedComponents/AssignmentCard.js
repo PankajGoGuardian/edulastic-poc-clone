@@ -21,7 +21,7 @@ import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
 import { Row, Col, Icon, Modal } from "antd";
 import { TokenStorage } from "@edulastic/api";
-import { maxDueDateFromClassess, getServerTs } from "../utils";
+import { maxDueDateFromClassess } from "../utils";
 
 //  components
 import AssessmentDetails from "./AssessmentDetail";
@@ -120,8 +120,6 @@ const AssignmentCard = memo(
       instruction = ""
     } = data;
 
-    const serverTimeStamp = getServerTs(data);
-
     let { endDate, startDate, open = false, close = false, isPaused = false, maxAttempts = 1, dueDate } = data;
     const topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
     useRealtimeV2(topics, {
@@ -178,8 +176,7 @@ const AssignmentCard = memo(
       maxAttempts = reports.length;
     }
     const startTest = () => {
-      // On start check if assignment is expired or not
-      if (endDate < serverTimeStamp) {
+      if (endDate < Date.now()) {
         notification({ messageKey: "testIsExpired" });
         return;
       }
@@ -269,7 +266,7 @@ const AssignmentCard = memo(
     const StartButtonContainer =
       type === "assignment"
         ? !(userRole === "parent" || isParentRoleProxy) &&
-          (safeBrowser && !(new Date(startDate) > new Date(serverTimeStamp) || !startDate) && !isSEB() ? (
+          (safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
             <SafeBrowserButton
               data-cy="start"
               testId={testId}
@@ -296,7 +293,6 @@ const AssignmentCard = memo(
               attempted={attempted}
               resume={resume}
               classId={classId}
-              serverTimeStamp={serverTimeStamp}
             />
           ))
         : showReviewButton &&
@@ -402,7 +398,6 @@ const AssignmentCard = memo(
             isPaused={isPaused}
             lastAttempt={lastAttempt}
             isDueDate={!!dueDate}
-            serverTimeStamp={serverTimeStamp}
           />
           <TimeIndicator type={type}>
             {timedAssignment && (

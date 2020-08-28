@@ -13,7 +13,6 @@ import {
   setAssignmentsLoadingAction
 } from "../sharedDucks/AssignmentModule/ducks";
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
-import { getServerTs } from "../utils";
 
 // constants
 export const getCurrentGroup = createSelectorator(["user.user.orgData.defaultClass"], r => r);
@@ -82,7 +81,6 @@ const isReport = (assignment, classIds, userId) => {
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
   const attempts = (assignment.reports && assignment.reports.length) || 0;
   let { endDate } = assignment;
-  const serverTimeStamp = getServerTs(assignment);
   const { class: groups = [], classId: currentGroup } = assignment;
   if (!endDate) {
     const currentUserGroups = groups.filter(
@@ -100,7 +98,7 @@ const isReport = (assignment, classIds, userId) => {
       if (currentClass.closed !== undefined) return currentClass.closed;
     }
   }
-  const isExpired = maxAttempts <= attempts || new Date(endDate) < new Date(serverTimeStamp);
+  const isExpired = maxAttempts <= attempts || new Date(endDate) < new Date();
   return isExpired || attempts > 0;
 };
 

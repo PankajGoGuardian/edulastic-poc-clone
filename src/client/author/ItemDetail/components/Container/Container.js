@@ -122,7 +122,7 @@ class Container extends Component {
     const newId = match.params.id;
     const { itemId, testId } = match.params;
 
-    if (oldId !== newId) {
+    if (newId && oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
     }
     // State.testAuthoring ?

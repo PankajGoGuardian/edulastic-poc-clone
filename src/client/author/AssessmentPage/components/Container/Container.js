@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin, message } from "antd";
+import { Spin } from "antd";
 import { isEmpty, get } from "lodash";
 import { white } from "@edulastic/colors";
 import { IconDescription, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
@@ -92,15 +92,13 @@ class Container extends React.Component {
     const { match, receiveTestById, getDefaultTestSettings, changeView } = this.props;
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
-    window.onbeforeunload = () => {
-      return this.beforeUnload();
-    };
+    window.onbeforeunload = () => this.beforeUnload();
     changeView(tabs.DESCRIPTION);
   }
 
   componentWillUnmount() {
     window.onbeforeunload = () => {
-      return;
+      
     };
   }
 
@@ -120,7 +118,7 @@ class Container extends React.Component {
     if (isEditable && itemGroups[0].items.length > 0 && (updated || questionsUpdated)) {
       return "";
     }
-    return;
+    
   };
 
   componentDidUpdate(prevProps) {
@@ -128,7 +126,9 @@ class Container extends React.Component {
     if (assessment._id && !prevProps.assessment._id && assessment._id !== prevProps.assessment._id) {
       const [testItem] = assessment.itemGroups[0].items;
       const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-      receiveItemDetailById(testItemId);
+      if (testItemId) {
+        receiveItemDetailById(testItemId);
+      }
     }
   }
 
@@ -314,7 +314,7 @@ class Container extends React.Component {
     return (
       <>
         <ShareModal
-          shareLabel={"TEST URL"}
+          shareLabel="TEST URL"
           isVisible={showShareModal}
           testId={testId}
           hasPremiumQuestion={hasPremiumQuestion}

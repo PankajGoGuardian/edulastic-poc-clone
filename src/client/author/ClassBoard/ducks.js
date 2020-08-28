@@ -59,6 +59,7 @@ import { getUserNameSelector } from "../src/selectors/user";
 import { getAllQids } from "../SummaryBoard/Transformer";
 import { getUserId, getUserRole } from "../../student/Login/ducks";
 import { setProgressStatusAction } from "../src/reducers/testActivity";
+import { getServerTs } from "../../student/utils";
 
 const {
   authorAssignmentConstants: {
@@ -400,9 +401,7 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     yield put(setAllTestActivitiesForStudentAction(result));
   } catch (err) {
     Sentry.captureException(err);
-    const {
-      data = {}
-    } = err.response || {};
+    const { data = {} } = err.response || {};
     const { message: errorMessage } = data;
     if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
@@ -972,4 +971,9 @@ export const getQLabelsSelector = createSelector(
     const testItemsData = get(state, "data.test.testItems", []);
     return getQuestionLabels(testItemsData);
   }
+);
+
+export const getServerTsSelector = createSelector(
+  getAdditionalDataSelector,
+  state => getServerTs(state)
 );

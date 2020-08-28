@@ -576,7 +576,6 @@ function getValidRedirectRouteByRole(_url = "", user) {
     case roleuser.DISTRICT_ADMIN:
       if (user.permissions.includes("curator"))
         return url.match(/^\/publisher\//) || url.match(/^\/author\//) ? url : "/publisher/dashboard";
-      return url.match(/^\/author\//) ? url : "/author/dashboard";
     default:
       return url;
   }

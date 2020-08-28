@@ -21,6 +21,7 @@ import {
 } from "../constants/actions";
 import { getPreviousAnswersListSelector } from "../selectors/answers";
 import { redirectPolicySelector } from "../selectors/test";
+import { getServerTs } from "../../student/utils";
 
 const defaultUploadFolder = aws.s3Folders.DEFAULT;
 
@@ -62,14 +63,18 @@ function* saveUserResponse({ payload }) {
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
     const groupId = payload.groupId || (yield select(getCurrentGroupWithAllClasses));
     // eslint-disable-next-line prefer-const
-    let { endDate, class: clazz = [] } = assignmentsByIds[assignmentId] || {};
+    const assignment = assignmentsByIds[assignmentId] || {};
+    let { endDate } = assignment;
+    const { class: clazz = [] } = assignment;
+    const serverTimeStamp = getServerTs(assignment);
     if (!endDate && clazz.length) {
       endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "endDate") || {}).endDate;
       if (!endDate) {
         endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
       }
     }
-    if (endDate && endDate < Date.now()) {
+    // Expiry date for the assignment
+    if (endDate && endDate < serverTimeStamp) {
       notification({ messageKey: "testTimeEnded" });
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       return yield put(push("/home/assignments"));

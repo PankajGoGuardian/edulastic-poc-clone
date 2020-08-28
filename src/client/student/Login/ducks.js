@@ -187,7 +187,7 @@ const setUser = (state, { payload }) => {
   const defaultSubject = TokenStorage.getFromLocalStorage("defaultSubject");
   const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
-  if (payload.role === "parent" && payload ?.children ?.length > 0) {
+  if (payload.role === "parent" && payload?.children?.length > 0) {
     state.currentChild = payload.children[0]._id;
     set(state, "user.orgData", payload.children[0].orgData);
   }
@@ -196,7 +196,7 @@ const setUser = (state, { payload }) => {
   set(state.user, "orgData.defaultClass", defaultClass);
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
-  let schools = payload ?.orgData ?.schools || [];
+  let schools = payload?.orgData?.schools || [];
   schools = schools.sort((a, b) => a.name.localeCompare(b.name));
   if (payload.role === "school-admin" && schools.length) {
     // setting first school as default on initial load
@@ -242,11 +242,11 @@ export default createReducer(initialState, {
     state.user.orgData.selectedSubject = payload;
   },
   [FETCH_USER]: (state, { payload }) => {
-    if (!payload ?.background) {
+    if (!payload?.background) {
       state.authenticating = true;
       state.isAuthenticated = false;
     }
-    if (payload ?.addAccount === "true") {
+    if (payload?.addAccount === "true") {
       state.addAccount = true;
       state.userId = payload.userId;
     }
@@ -418,7 +418,7 @@ export default createReducer(initialState, {
     state.updatingPowerTeacher = true;
   },
   [UPDATE_POWER_TEACHER_TOOLS_SUCCESS]: (state, { payload }) => {
-    if (!payload ?.usernames) {
+    if (!payload?.usernames) {
       Object.assign(state.user, {
         isPowerTeacher: !state.user.isPowerTeacher
       });
@@ -557,7 +557,7 @@ export const getIsClassCodeModalOpen = createSelector(
 const routeSelector = state => state.router.location.pathname;
 
 function getCurrentFirebaseUser() {
-  return firebase.auth().currentUser ?.uid || undefined;
+  return firebase.auth().currentUser?.uid || undefined;
 }
 
 function getValidRedirectRouteByRole(_url = "", user) {
@@ -619,8 +619,8 @@ function* login({ payload }) {
       yield put(setUserAction(user));
       yield put(
         updateInitSearchStateAction({
-          grades: user ?.orgData ?.defaultGrades,
-          subject: user ?.orgData ?.defaultSubjects
+          grades: user?.orgData?.defaultGrades,
+          subject: user?.orgData?.defaultSubjects
         })
       );
       yield put(receiveLastPlayListAction());
@@ -840,7 +840,7 @@ const getLoggedOutUrl = () => {
     const arr = [...path];
     arr.shift();
     const restOfPath = arr.join("/");
-    const [, districtLogin] = window.location.pathname ?.split("/");
+    const [, districtLogin] = window.location.pathname?.split("/");
     return `/${districtLogin || "districtLogin"}/${restOfPath}`;
   }
   if (path[0] && path[0].toLocaleLowerCase() === "school" && path[1]) {
@@ -898,8 +898,8 @@ export function* fetchUser({ payload }) {
     yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({
-        grades: user ?.orgData ?.defaultGrades,
-        subject: user ?.orgData ?.defaultSubjects
+        grades: user?.orgData?.defaultGrades,
+        subject: user?.orgData?.defaultSubjects
       })
     );
     yield put(receiveLastPlayListAction());
@@ -909,7 +909,7 @@ export function* fetchUser({ payload }) {
   } catch (error) {
     console.log("err", error, error);
     notification({ messageKey: "failedLoadingUserData" });
-    if (!(error ?.response && error ?.response ?.status === 501)) {
+    if (!(error?.response && error?.response?.status === 501)) {
       if (!window.location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
         localStorage.setItem("loginRedirectUrl", getCurrentPath());
       }
@@ -939,8 +939,8 @@ export function* fetchV1Redirect({ payload: id }) {
     yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({
-        grades: user ?.orgData ?.defaultGrades,
-        subject: user ?.orgData ?.defaultSubjects
+        grades: user?.orgData?.defaultGrades,
+        subject: user?.orgData?.defaultSubjects
       })
     );
     /**
@@ -1030,7 +1030,7 @@ function* googleLogin({ payload }) {
     const res = yield call(authApi.googleLogin, params);
     window.location.href = res;
   } catch (e) {
-    notification({ msg: e.response ?.data ?.message ? e.response.data.message : "Google Login failed" });
+    notification({ msg: e.response?.data?.message ? e.response.data.message : "Google Login failed" });
   }
 }
 
@@ -1221,12 +1221,12 @@ function* classlinkSSOLogin({ payload }) {
     yield put(getUserDataAction(res));
   } catch (e) {
     if (
-      e ?.response ?.data ?.message ===
-        "User not yet authorized to use Edulastic. Please contact your district administrator!"
+      e?.response?.data?.message ===
+      "User not yet authorized to use Edulastic. Please contact your district administrator!"
     ) {
       yield put(push({ pathname: getSignOutUrl(), state: { showUnauthorized: true }, hash: "#login" }));
     } else {
-      notification({ msg: e ?.data ?.message || "Classlink Login failed" });
+      notification({ msg: e?.data?.message || "Classlink Login failed" });
       yield put(push(getSignOutUrl()));
     }
     removeSignOutUrl();
@@ -1283,7 +1283,6 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.storeAccessToken(res.token, _user._id, _user.role, true);
     TokenStorage.selectAccessToken(_user._id, _user.role);
     yield put(signupSuccessAction(_user));
-    yield call(fetchUser); // needed to update org and other user data to local store
   } catch (e) {
     notification({ msg: get(e, "response.data.message", "Failed to update user please try again.") });
   }
@@ -1298,7 +1297,7 @@ function* requestNewPasswordSaga({ payload }) {
     });
   } catch (e) {
     console.error(e);
-    notification({ msg: e ?.response ?.data ?.message ? e.response.data.message : "Failed to request new password." });
+    notification({ msg: e?.response?.data?.message ? e.response.data.message : "Failed to request new password." });
     yield put({
       type: REQUEST_NEW_PASSWORD_FAILED
     });
@@ -1314,7 +1313,7 @@ function* resetPasswordUserSaga({ payload }) {
       yield put(push("/login"));
     }
   } catch (e) {
-    notification({ msg: e ?.response ?.data ?.message ? e.response.data.message : "Failed to user data." });
+    notification({ msg: e?.response?.data?.message ? e.response.data.message : "Failed to user data." });
     yield put(push("/login"));
   }
 }
@@ -1327,10 +1326,9 @@ function* resetPasswordRequestSaga({ payload }) {
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(signupSuccessAction(result));
-    yield call(fetchUser); // needed to update org and other user data to local store
     localStorage.removeItem("loginRedirectUrl");
   } catch (e) {
-    notification({ msg: e ?.response ?.data ?.message ? e.response.data.message : "Failed to reset password." });
+    notification({ msg: e?.response?.data?.message ? e.response.data.message : "Failed to reset password." });
     yield put({
       type: RESET_PASSWORD_FAILED
     });
@@ -1479,9 +1477,9 @@ function* studentSignupCheckClasscodeSaga({ payload }) {
     yield call(authApi.validateClassCode, payload.reqData);
   } catch (e) {
     if (payload.errorCallback) {
-      payload.errorCallback(e ?.response ?.data ?.message || "Unknown Error");
+      payload.errorCallback(e?.response?.data?.message || "Unknown Error");
     } else {
-      notification({ msg: e ?.response ?.data ?.message || "Unknown Error" });
+      notification({ msg: e?.response?.data?.message || "Unknown Error" });
     }
   }
 }
@@ -1502,7 +1500,7 @@ function* setInviteDetailsSaga({ payload }) {
     const user = pick(result, userPickFields);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
-    yield call(fetchUser); // needed to update org and other user data to local store
+
     yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result });
   } catch (e) {
     yield call(message.err, "Failed to update user details.");

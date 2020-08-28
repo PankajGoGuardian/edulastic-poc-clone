@@ -297,7 +297,11 @@ const ManageContentBlock = props => {
             <>
               <SearchByNavigationBar justify="flex-start">
                 {resourceTabs.map(tab => (
-                  <SearchByTab onClick={() => setSearchByTab(tab)} isTabActive={tab.includes(searchResourceBy)}>
+                  <SearchByTab
+                    data-cy={tab}
+                    onClick={() => setSearchByTab(tab)}
+                    isTabActive={tab.includes(searchResourceBy)}
+                  >
                     {tab}
                   </SearchByTab>
                 ))}

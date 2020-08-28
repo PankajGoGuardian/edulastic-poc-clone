@@ -95,6 +95,15 @@ export default class PlayListReview {
 
   getAssignTestInDropDown = () => this.getDropDownItem().contains("Assign Test");
 
+  getSubResourceDropContainerByTestByMod = () => cy.get('[data-cy="supporting-resource"]');
+
+  getSubResourceByTestByMod = (mod, test, resource) =>
+    this.getTestByTestByModule(mod, test)
+      .next()
+      .find(`[data-cy="${resource}"]`);
+
+  getAllSubResourceRowsByMod = mod => this.getModuleRowByModule(mod).find('[data-cy="subResourceView"]');
+
   // *** ELEMENTS END ***
 
   clickLcbIconByTestByIndex = (mod, test, index, rowIndex = 0) => {
@@ -241,6 +250,14 @@ export default class PlayListReview {
 
   clickManageTestDropDownByTestByModule = (mod, test) =>
     this.getManageTestDropDownByTestByModule(mod, test).click({ force: true });
+
+  deleteAllSubResourceRows = mod =>
+    this.getAllSubResourceRowsByMod(mod).then($ele => {
+      if ($ele.children().length > 0)
+        cy.wrap($ele)
+          .find('[data-cy="delete-resource"]')
+          .click({ multiple: true, force: true });
+    });
 
   // *** ACTIONS END ***
 
@@ -447,6 +464,19 @@ export default class PlayListReview {
     this.getTestsInModuleByModule(targetmod)
       .last()
       .should("have.attr", "data-test", test.toString());
+  };
+
+  dragResourceFromSearchToModule = (targetmod, targetTest, resource) => {
+    this.clickExpandByModule(targetmod);
+    this.searchContainer
+      .getTestInSearchResultsById(resource)
+      .first()
+      .trigger("dragstart")
+      .trigger("drag");
+
+    this.getTestByTestByModule(targetmod, targetTest).trigger("dragover");
+    this.getSubResourceDropContainerByTestByMod(targetmod, targetTest).trigger("drop");
+    this.getSubResourceByTestByMod(targetmod, targetTest, resource);
   };
 
   routeSavePlaylist = () => {

@@ -61,7 +61,12 @@ const AddResourceToPlaylist = ({
 }) => (
   <Fragment>
     {isTestType && showSupportingResource && (
-      <SubResourceDropContainer moduleIndex={moduleIndex} addSubresource={addSubresource} itemIndex={index}>
+      <SubResourceDropContainer
+        data-cy="supporting-resource"
+        moduleIndex={moduleIndex}
+        addSubresource={addSubresource}
+        itemIndex={index}
+      >
         <span>Supporting Resource</span>
       </SubResourceDropContainer>
     )}

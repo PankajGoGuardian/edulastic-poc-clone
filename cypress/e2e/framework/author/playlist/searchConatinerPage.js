@@ -1,4 +1,5 @@
 import CypressHelper from "../../util/cypressHelpers";
+import { queColor } from "../../constants/questionTypes";
 
 export default class PlayListSearchContainer {
   /* GET ELEMNETS */
@@ -23,6 +24,28 @@ export default class PlayListSearchContainer {
       .get('[data-cy="curriculum-sequence-right-panel"]')
       .find("svg")
       .eq(0);
+
+  getAddResourceDropDown = () => this.getFilterButton().next();
+
+  getDropDownItemByOption = option =>
+    cy
+      .get(".ant-dropdown-menu-item")
+      .filter((i, $ele) => Cypress.dom.isVisible($ele))
+      .contains(option);
+
+  clickOptionInDropDownByText = option => this.getDropDownItemByOption(option).click({ force: true });
+
+  getEnterTitleInAddResource = () => cy.get('[placeholder="Enter a title"]');
+
+  getEnterDescriptionInAddResource = () => cy.get('[placeholder="Enter a description"]');
+
+  getEnterURLInAddResource = () => cy.get('[placeholder="Enter a URL"]');
+
+  getAddResourceButtonInPopUp = () => cy.get('[data-cy="add-resource"]');
+
+  getResourceTab = () => cy.get('[data-cy="resources"]');
+
+  getTestTab = () => cy.get('[data-cy="tests"]');
 
   /* ACTIONS START */
 
@@ -89,12 +112,78 @@ export default class PlayListSearchContainer {
     cy.get('[placeholder="Search by keywords"]').should("not.exist");
   };
 
+  clearTextSearchBar = () => {
+    this.routeTestSearch();
+    this.getKeywordsSearchBar().then($ele => {
+      if ($ele.find(".anticon-close").length > 0) {
+        cy.wrap($ele)
+          .find(".anticon-close")
+          .click({ force: true, multiple: true });
+        this.waitForTestSearch();
+      }
+    });
+  };
+
+  typeInSearchBar = (text, clear = true) => {
+    this.routeTestSearch();
+    if (clear) this.clearTextSearchBar();
+    this.getKeywordsSearchBar()
+      .find("input")
+      .type(`${text}{enter}`, { force: true });
+    this.waitForTestSearch();
+  };
+
+  clickAddResourceButton = () => this.getAddResourceDropDown().click({ force: true });
+
+  clickAddWebSiteURLInDropDown = () => this.getAddWebSiteUrl().click({ force: true });
+
+  clickAddYouTubeVideoInDropDown = () => this.getAddYouTubeVideo().click({ force: true });
+
+  clickAddLTIResource = () => this.getAddLTIResource().click({ force: true });
+
+  setInformationInAddResourcePopUp = ({ title, desc, url }) => {
+    this.getEnterTitleInAddResource().type(title, { force: true });
+    this.getEnterDescriptionInAddResource().type(desc, { force: true });
+    this.getEnterURLInAddResource().type(url, { force: true });
+  };
+
+  clickAddResourceInPopUp = () => {
+    cy.server();
+    cy.route("POST", "**/resources").as("add-resource");
+    this.getAddResourceButtonInPopUp().click({ force: true });
+    return cy.wait("@add-resource").then(xhr => {
+      expect(xhr.status, `addinng resource ${xhr.status === 200 ? "success" : "failed"}`).to.eq(200);
+      return xhr.response.body.result._id;
+    });
+  };
+
+  clickOnTestTab = () => {
+    this.getTestTab().then($ele => {
+      if ($ele.css("color") === queColor.GREEN_2) {
+        this.routeTestSearch();
+        cy.wrap($ele).click({ force: true });
+        this.waitForTestSearch();
+      }
+    });
+  };
+
+  clickOnResourceTab = () => {
+    this.getResourceTab().then($ele => {
+      if ($ele.css("color") === queColor.GREEN_2) {
+        this.routeTestSearch();
+        cy.wrap($ele).click({ force: true });
+        this.waitForResource();
+      }
+    });
+  };
+
   /* ACTIONS END */
 
   /* APP HELPERS */
   routeTestSearch = () => {
     cy.server();
     cy.route("POST", "**/search/tests").as("search-container-tests");
+    cy.route("GET", "**/resources").as("search-container-resources");
   };
 
   verifyStandardsByTestInSearch = (id, standard) =>
@@ -104,6 +193,7 @@ export default class PlayListSearchContainer {
 
   setFilters = ({ collection, authoredByme, SharedWithMe, entireLibrary, grade, subject, status }) => {
     this.routeTestSearch();
+    this.clearTextSearchBar();
     this.clickOnTestFilter();
     this.clearDropDowns();
     if (collection) this.setCollection(collection);
@@ -118,4 +208,6 @@ export default class PlayListSearchContainer {
   };
 
   waitForTestSearch = () => cy.wait("@search-container-tests");
+
+  waitForResource = () => cy.wait("@search-container-resources");
 }

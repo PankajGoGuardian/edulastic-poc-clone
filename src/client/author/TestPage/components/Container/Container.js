@@ -859,7 +859,7 @@ class Container extends PureComponent {
     }
     const { showShareModal, isShowFilter } = this.state;
     const current = currentTab;
-    const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
+    const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased, versionId } = test;
     const hasCollectionAccess = allowContentEditCheck(test.collections, writableCollections);
     const isCurator = (hasCollectionAccess && userFeatures.isCurator) || userRole === roleuser.EDULASTIC_CURATOR;
     const isOwner = authors?.some(x => x._id === userId);
@@ -897,6 +897,7 @@ class Container extends PureComponent {
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
+          versionId={versionId}
         />
         <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
         <TestPageHeader

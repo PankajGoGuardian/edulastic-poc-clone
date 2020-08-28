@@ -35,7 +35,6 @@ const AssessmentPlayer = ({
   studentReportModal,
   currentAssignmentId,
   currentAssignmentClass,
-  sharedType,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id;
@@ -53,8 +52,7 @@ const AssessmentPlayer = ({
       groupId: groupId || currentAssignmentClass,
       isShowStudentWork,
       playlistId,
-      currentAssignmentId,
-      sharedType
+      currentAssignmentId
     });
   }, [testId]);
 

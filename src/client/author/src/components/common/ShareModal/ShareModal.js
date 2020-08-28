@@ -42,7 +42,7 @@ const shareTypes = {
   DISTRICT: "District",
   SCHOOL: "School",
   INDIVIDUAL: "Individuals",
-  "LINK SHARING": "Link Sharing"
+  LINK: "Link Sharing"
 };
 
 const sharedKeysObj = {
@@ -50,11 +50,11 @@ const sharedKeysObj = {
   DISTRICT: "DISTRICT",
   SCHOOL: "SCHOOL",
   INDIVIDUAL: "INDIVIDUAL",
-  "LINK SHARING": "LINK SHARING"
+  LINK: "LINK"
 };
 
-const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL", "LINK SHARING"];
-const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL", "LINK SHARING"];
+const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL", "LINK"];
+const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL", "LINK"];
 
 const { Option } = AutoComplete;
 class ShareModal extends React.Component {
@@ -190,7 +190,7 @@ class ShareModal extends React.Component {
 
   handleShare = () => {
     const { currentUser, sharedType, permission, searchString } = this.state;
-    const { shareTest, testId, sharedUsersList, isPlaylist } = this.props;
+    const { shareTest, testId, sharedUsersList, isPlaylist, versionId } = this.props;
     const isExisting = sharedUsersList.some(item => item._userId === currentUser._userId);
     if (!(searchString.length > 1) && !Object.keys(currentUser).length && sharedType === sharedKeysObj.INDIVIDUAL)
       return;
@@ -219,7 +219,8 @@ class ShareModal extends React.Component {
       emails,
       sharedType,
       permission,
-      contentType: isPlaylist ? "PLAYLIST" : "TEST"
+      contentType: isPlaylist ? "PLAYLIST" : "TEST",
+      versionId
     };
     shareTest({ data, contentId: testId });
     // do it in a slight delay so that at the moment of blur it should not show warning
@@ -288,7 +289,7 @@ class ShareModal extends React.Component {
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
     );
     let sharableURL = "";
-    if (sharedType === "PUBLIC" && !isPlaylist) {
+    if ([sharedKeysObj.PUBLIC, sharedKeysObj.LINK].includes(sharedType) && !isPlaylist) {
       sharableURL = `${window.location.origin}/public/view-test/${testId}`;
     } else {
       sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests/tab/review/id"}/${testId}`;
@@ -300,8 +301,12 @@ class ShareModal extends React.Component {
     let sharedTypeMessage = "The entire Edulastic Community";
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
     else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
-    else if (sharedType === "LINK SHARING")
+    else if (sharedType === "LINK")
       sharedTypeMessage = `Anyone with a link can use the Test. Invited users also find it under "Shared with Me" in the library`;
+
+    const shareTypeKeysToDisplay = (isDA ? shareTypeKeyForDa : shareTypeKeys).filter(
+      k => (isPlaylist && k !== sharedKeysObj.LINK) || !isPlaylist
+    );
     return (
       <SharingModal width="700px" footer={null} visible={isVisible} onCancel={this.handleClose} centered>
         <ModalContainer>
@@ -349,14 +354,14 @@ class ShareModal extends React.Component {
             <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
             <RadioBtnWrapper>
               <RadioGrp value={sharedType} onChange={e => this.radioHandler(e)}>
-                {(isDA ? shareTypeKeyForDa : shareTypeKeys).map(item => (
+                {shareTypeKeysToDisplay.map(item => (
                   <RadioBtn
                     value={item}
                     key={item}
                     disabled={
                       // disabling public sharing for all
                       // TODO: enable it back when needed
-                      item === shareTypeKeys[0] ||
+                      // item === shareTypeKeys[0] ||
                       (!isPublished && item !== shareTypeKeys[3]) ||
                       (item === shareTypeKeys[0] && hasPremiumQuestion) ||
                       ((features.isCurator || features.isPublisherAuthor || !hasPlaylistEditAccess) &&

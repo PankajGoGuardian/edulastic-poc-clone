@@ -42,7 +42,7 @@ import {
 
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName } from "../../Transformer";
-import { isItemVisibiltySelector, testActivtyLoadingSelector, getServerTsSelector } from "../../ducks";
+import { isItemVisibiltySelector, testActivtyLoadingSelector } from "../../ducks";
 import { formatStudentPastDueTag, maxDueDateFromClassess } from "../../../../student/utils";
 
 class DisneyCardContainer extends Component {
@@ -98,8 +98,7 @@ class DisneyCardContainer extends Component {
       detailedClasses,
       classId,
       recentAttemptsGrouped,
-      testActivities,
-      serverTimeStamp
+      testActivities
     } = this.props;
 
     const noDataNotification = () => (
@@ -141,8 +140,7 @@ class DisneyCardContainer extends Component {
         if (student.status === "notStarted") {
           status.status = "Not Started";
           status.color = red;
-          // Assessment expired and student havent attempted.
-          if (endDate < serverTimeStamp || closed) {
+          if (endDate < Date.now() || closed) {
             status.status = "Absent";
           }
         } else if (student.status === "inProgress") {
@@ -449,8 +447,7 @@ const withConnect = connect(state => ({
   testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state),
   recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {},
-  testActivities: state?.author_classboard_testActivity?.data?.testActivities || {},
-  serverTimeStamp: getServerTsSelector(state)
+  testActivities: state?.author_classboard_testActivity?.data?.testActivities || {}
 }));
 
 export default compose(

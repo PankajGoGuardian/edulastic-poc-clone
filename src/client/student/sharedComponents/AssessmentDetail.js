@@ -38,8 +38,7 @@ const AssessmentDetails = ({
   absent,
   isPaused,
   lastAttempt,
-  isDueDate,
-  serverTimeStamp
+  isDueDate
 }) => {
   const status =
     started || resume
@@ -83,7 +82,7 @@ const AssessmentDetails = ({
             <Icon type={theme.assignment.cardTimeIconType} />
             <DueDetails data-cy="date">
               {type === "assignment"
-                ? new Date(startDate) > new Date(serverTimeStamp)
+                ? new Date(startDate) > new Date()
                   ? `${t("common.opensIn")} ${formatDateAndTime(startDate)} and ${t(
                       "common.dueOn"
                     )} ${formatDateAndTime(dueDate)}`

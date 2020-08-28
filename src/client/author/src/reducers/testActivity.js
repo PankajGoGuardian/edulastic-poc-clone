@@ -174,9 +174,11 @@ const reducer = (state = initialState, { type, payload }) => {
                   itemLevelScoring: true
                 };
               });
-            const entityDataGenerated = transformGradeBookResponse({ ..._st.data, testItemsData: allItems }).find(
-              e => e.studentId === entity.studentId
-            );
+            const entityDataGenerated = transformGradeBookResponse({
+              ..._st.data,
+              testItemsData: allItems,
+              ts: _st.additionalData.ts
+            }).find(e => e.studentId === entity.studentId);
 
             _st.entities[index].questionActivities = entityDataGenerated.questionActivities;
           }
@@ -465,7 +467,8 @@ const reducer = (state = initialState, { type, payload }) => {
         // for DONE assignment student status is absent hence update status to inprogress and increase the endDate so that student status will change to not started for done assignments
         status: "IN PROGRESS",
         endDate: Date.now() + 100,
-        students: [...activeStudents, ...studentsData]
+        students: [...activeStudents, ...studentsData],
+        ts: state.additionalData.ts
       };
 
       return {

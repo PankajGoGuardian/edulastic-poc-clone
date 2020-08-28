@@ -1,10 +1,19 @@
 // @ts-check
 import uuid from "uuid/v4";
-import { configureScope } from "@sentry/browser";
+import { configureScope, captureException } from "@sentry/browser";
 import { uniq } from "lodash";
 import AppConfig from "../../../../app-config";
 
 const tokenKey = (userId, role) => `user:${userId}:role:${role}`;
+
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`).join(''));
+
+  return JSON.parse(jsonPayload);
+};
+
 
 /**
  * Sets userId, districtId, role, kid, tid to Sentry for
@@ -20,9 +29,9 @@ export const updateSentryScope = user => {
         scope.setUser({ id: _id });
         scope.setTags({
           tid: window.sessionStorage.tid,
-          districtId: districtId,
-          role: role,
-          kid: kid
+          districtId,
+          role,
+          kid
         });
       });
     } else if (window.sessionStorage.kid) {
@@ -45,6 +54,15 @@ export function storeAccessToken(token, userId, role, _default = false) {
   window.localStorage.setItem("tokens", JSON.stringify([...tokens, key]));
   if (_default) {
     window.sessionStorage.defaultTokenKey = key;
+  }
+}
+
+export function updateUserToken(token) {
+  try {
+    const { _id: userId, role } = parseJwt(token);
+    storeAccessToken(token, userId, role);
+  } catch (e) {
+    captureException(e);
   }
 }
 

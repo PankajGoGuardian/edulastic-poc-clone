@@ -27,9 +27,9 @@ import {
 const mathEvaluate = async (data, type) => {
   // getting evaluation from backend (EV-7432)
   if (type === questionType.GRAPH) {
-    const validationObj = data ?.validation;
-    const correctAnswers = validationObj ?.validResponse ?.value || [];
-    const alternateAnswers = (validationObj ?.altResponses || []).map(altResponse => altResponse.value);
+    const validationObj = data?.validation;
+    const correctAnswers = validationObj?.validResponse?.value || [];
+    const alternateAnswers = (validationObj?.altResponses || []).map(altResponse => altResponse.value);
     const allAnswers = [correctAnswers, ...alternateAnswers].filter(i => i.length);
     if (allAnswers.length === 0) {
       const error = new Error();

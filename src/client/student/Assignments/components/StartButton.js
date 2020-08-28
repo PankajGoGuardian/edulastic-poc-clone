@@ -7,10 +7,9 @@ import lockIcon from "../../assets/lock-icon.svg";
 // components
 import StartButton from "../../styled/AssignmentCardButton";
 
-const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused, assessment, serverTimeStamp }) => {
+const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused, assessment }) => {
   const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
-  // Enable start button based on server time stamp and start date
-  return new Date(startDate) > new Date(serverTimeStamp) || !startDate || isPaused ? (
+  return new Date(startDate) > new Date() || !startDate || isPaused ? (
     <NotAvailableButton disabled>
       <span>
         <img src={lockIcon} alt="" />

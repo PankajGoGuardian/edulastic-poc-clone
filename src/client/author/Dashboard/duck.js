@@ -55,8 +55,8 @@ function* receiveTeacherDashboardSaga() {
     const { classDetails } = yield call(dashboardApi.getTeacherDashboardDetails);
     yield put(receiveTeacherDashboardSuccessAction(classDetails));
   } catch (err) {
-    const errorMessage = "Teacher dahboard request is failing";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to fetch dashboard details. Please contact support.";
+    notification({ msg: errorMessage });
     yield put(receiveTeacherDashboardErrorAction({ error: errorMessage }));
   }
 }

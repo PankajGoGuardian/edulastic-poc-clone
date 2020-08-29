@@ -65,7 +65,7 @@ export const getIsScoringCompletedSelector = createSelector(
 const initialState = {
   teacherEditedScore: {},
   scratchPadLoading: false,
-  scoreMode: false,
+  scoreMode: true,
   isScoring: false
 };
 

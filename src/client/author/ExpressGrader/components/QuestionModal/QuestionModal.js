@@ -74,13 +74,13 @@ class QuestionModal extends React.Component {
       this.prevQuestion();
     }
     if (event.keyCode === 38) {
-      this.prevStudent();
+      this.prevStudent(event);
     }
     if (event.keyCode === 39) {
       this.nextQuestion();
     }
     if (event.keyCode === 40) {
-      this.nextStudent();
+      this.nextStudent(event);
     }
   };
 
@@ -95,7 +95,7 @@ class QuestionModal extends React.Component {
     hideQuestionModal();
   };
 
-  nextStudent = () => {
+  nextStudent = (event) => {
     
     const { maxStudents } = this.state;
     const { rowIndex } = this.state;
@@ -106,11 +106,12 @@ class QuestionModal extends React.Component {
         this.setState({ rowIndex: nextIndex, loaded: true });
       });
     } else {
+      event.stopPropagation();
       notification({ type: "success", messageKey:"finishedGrading"});
     }
   };
 
-  prevStudent = () => {
+  prevStudent = (event) => {
     const { rowIndex } = this.state;
     if (rowIndex !== 0) {
       this.submitResponse();
@@ -118,6 +119,8 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ rowIndex: prevIndex, loaded: true });
       });
+    } else{
+      event?.stopPropagation();
     }
   };
 
@@ -148,7 +151,7 @@ class QuestionModal extends React.Component {
       return;
     };
     const { testActivityId, testItemId: itemId } = question;
-    if(studentQuestionResponseTestActivityId && testActivityId != studentQuestionResponseTestActivityId){
+    if(studentQuestionResponseTestActivityId && (testActivityId != studentQuestionResponseTestActivityId)){
       // TODO: this situation shouldn't happen. but currently happening when switching netween students rapidly. need to fix it
       return;
     }

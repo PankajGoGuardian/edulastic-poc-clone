@@ -148,7 +148,7 @@ class QuestionModal extends React.Component {
       return;
     };
     const { testActivityId, testItemId: itemId } = question;
-    if(testActivityId != studentQuestionResponseTestActivityId){
+    if(studentQuestionResponseTestActivityId && testActivityId != studentQuestionResponseTestActivityId){
       // TODO: this situation shouldn't happen. but currently happening when switching netween students rapidly. need to fix it
       return;
     }

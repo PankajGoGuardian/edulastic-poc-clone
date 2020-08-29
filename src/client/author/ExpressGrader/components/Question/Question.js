@@ -38,7 +38,7 @@ class Question extends Component {
     const {prevStudentQuestionResponseTestActivityId,prevRecord} = prevProps;
     // inidcating inconsitent state , due to rapid switching of students. 
     // in that case , need to load the correct student response
-    const forceLoad = (prevRecord?.testActivityId == prevStudentQuestionResponseTestActivityId && studentQuestionResponseTestActivityId != record?.testActivityId );
+    const forceLoad =  prevStudentQuestionResponseTestActivityId && (prevRecord?.testActivityId == prevStudentQuestionResponseTestActivityId && studentQuestionResponseTestActivityId != record?.testActivityId );
     
     if (((!isEqual(prevProps.teacherEditedScore, this.props.teacherEditedScore))||forceLoad) && (!studentResponseLoading)) {
       const {

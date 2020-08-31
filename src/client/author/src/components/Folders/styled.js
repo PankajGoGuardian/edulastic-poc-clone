@@ -1,26 +1,22 @@
 import {
   black,
   fadedGrey,
-  mainBgColor,
   tabGrey,
   textColor,
   themeColor,
   title,
   white,
+  greyThemeDark1,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Button, CustomModalStyled } from "@edulastic/common";
 import { Menu } from "antd";
 import styled from "styled-components";
 
-export const FilterContainer = styled.div``;
-
-export const StyledBoldText = styled.p`
-  font-weight: 600;
-  font-size: 12px;
-  margin-bottom: 5px;
-  text-align: left;
-  width: 100%;
+export const FoldersListWrapper = styled.ul`
+  padding: 0px;
+  margin: 0px;
+  position: relative;
 `;
 
 export const NewFolderButton = styled(Button)`
@@ -28,8 +24,9 @@ export const NewFolderButton = styled(Button)`
   width: 100%;
   padding: 0px;
   border: none;
-  font-size: 12px;
+  font-size: 11px;
   justify-content: flex-start;
+  color: ${greyThemeDark1};
   &:hover,
   &:focus {
     border: none;
@@ -46,140 +43,17 @@ export const NewFolderButton = styled(Button)`
   }
 `;
 
-export const FolderButton = styled(NewFolderButton)`
-  min-width: 100%;
-  justify-content: flex-start;
-  margin-top: 10px;
-  color: ${({ active }) => (active ? black : textColor)};
-  background: ${({ active }) => (active ? fadedGrey : "transparent")};
-  padding: 3px 5px;
-  border-radius: 0px;
-  &:hover,
-  &:focus {
-    background: ${({ active }) => (active ? fadedGrey : "transparent")};
-  }
-  svg {
-    margin-right: 15px;
-  }
-`;
-
-export const FoldersListWrapper = styled.ul`
-  padding: 0px;
-  margin: 0px;
-`;
-
-export const FolderListItem = styled.li`
-  min-height: 30px;
-  width: 100%;
-  margin-top: 5px;
-  padding: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 2px;
-  background-color: ${({ active }) => (active ? fadedGrey : mainBgColor)};
-  color: ${({ active }) => (active ? black : title)};
-  font-weight: 600;
-  font-size: 11px;
-  user-select: none;
-  cursor: pointer;
-  &:hover {
-    svg path {
-      fill: ${themeColor};
-    }
-  }
-  svg {
-    width: 20px;
-    height: 16px;
-    path {
-      fill: ${({ active }) => (active ? themeColor : tabGrey)};
-    }
-  }
-`;
-
-export const FolderListItemTitle = styled.div`
-  width: calc(100% - 22px);
-  display: flex;
-  align-items: center;
-  svg {
-    margin-right: 15px;
-  }
-  span {
-    max-width: ${props => (props.ellipsis ? "125px" : "100%")};
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: block;
-    position: relative;
-  }
-`;
-
-export const MoreButton = styled.div`
-  min-width: 20px;
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  svg {
-    fill: ${({ active }) => (active ? black : title)};
-  }
-`;
-
-export const FolderActionButton = styled(Button)`
-  min-width: 200px;
-  border-radius: 4px;
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 20px;
-  svg {
-    margin-right: 30px;
-  }
-`;
-
-export const ModalFooterButton = styled(Button)`
-  margin-top: 0px;
-  padding: 5px 30px;
-  font-size: 11px;
-  min-width: 80px;
-  min-height: 30px;
-`;
-
-export const MoveFolderActionModal = styled(CustomModalStyled)`
-  min-width: 560px;
-  .ant-modal-body {
-    padding: 20px 0px;
-    ul {
-      li {
-        margin: 0px;
-        font-size: 14px;
-        padding: 10px 24px;
-        height: 56px;
-        display: flex;
-        align-items: center;
-        &:hover {
-          background: rgba(0, 173, 80, 0.15);
-        }
-        svg {
-          width: 32px;
-          height: 32px;
-        }
-      }
-    }
-  }
-`;
-
-export const ModalTitle = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  color: ${title};
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: 18px;
-  }
-`;
-
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
   min-width: 160px;
+`;
+
+export const CaretUp = styled.i`
+  position: absolute;
+  top: -20px;
+  color: ${white};
+  right: 5px;
+  font-size: 30px;
 `;
 
 export const MenuItems = styled(Menu.Item)`
@@ -205,14 +79,149 @@ export const MenuItems = styled(Menu.Item)`
   }
 `;
 
-export const CaretUp = styled.i`
-  position: absolute;
-  top: -20px;
-  color: ${white};
-  right: 5px;
-  font-size: 30px;
+export const FolderButton = styled(NewFolderButton)`
+  min-width: 100%;
+  justify-content: flex-start;
+  margin-top: 10px;
+  color: ${({ active }) => (active ? black : textColor)};
+  background: ${({ active }) => (active ? fadedGrey : "transparent")};
+  padding: 3px 5px;
+  border-radius: 0px;
+  &:hover,
+  &:focus {
+    background: ${({ active }) => (active ? fadedGrey : "transparent")};
+  }
+  svg {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    fill: ${({ active }) => (active ? themeColor : tabGrey)};
+  }
 `;
 
-export const ModalBody = styled.div`
-  font-size: 14px;
+export const FolderListItem = styled.li`
+  min-height: 34px;
+  width: 100%;
+  margin-top: 5px;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: ${({ active }) => (active ? themeColor : greyThemeDark1)};
+  font-weight: 600;
+  font-size: 11px;
+  user-select: none;
+  position: relative;
+  cursor: pointer;
+  &:hover {
+    svg {
+      fill: ${themeColor};
+    }
+  }
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: ${({ active }) => (active ? themeColor : tabGrey)};
+  }
+
+  border-left: ${({ leftBorder }) => leftBorder && `3px solid ${themeColor}`};
+`;
+
+export const FolderListItemTitle = styled.div`
+  width: calc(100% - 22px);
+  display: flex;
+  align-items: center;
+  svg {
+    margin: 0px 15px;
+  }
+  span {
+    max-width: ${props => (props.ellipsis ? "125px" : "100%")};
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    position: relative;
+  }
+`;
+
+export const MoreButton = styled.div`
+  min-width: 20px;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  svg {
+    fill: ${({ active }) => (active ? black : title)};
+  }
+`;
+
+export const ModalTitle = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${title};
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 18px;
+  }
+`;
+
+export const Modal = styled(CustomModalStyled)`
+  min-width: 560px;
+  .ant-modal-body {
+    padding: 20px 0px;
+    ul {
+      li {
+        margin: 0px;
+        font-size: 14px;
+        padding: 10px 24px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        &:hover {
+          background: rgba(0, 173, 80, 0.15);
+        }
+        svg {
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+  }
+`;
+
+export const FolderActionButton = styled(Button)`
+  min-width: 200px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  svg {
+    margin-right: 30px;
+  }
+`;
+
+export const StyledBoldText = styled.p`
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 5px;
+  text-align: left;
+  width: 100%;
+`;
+
+export const AddFolderButton = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 18px;
+  right: ${({ right }) => right || "24px"};
+  top: ${({ top }) => top || "8px"};
+  cursor: pointer;
+
+  & svg {
+    width: 17px;
+    height: 17px;
+    fill: ${themeColor};
+    &:hover {
+      fill: ${themeColor};
+    }
+  }
 `;

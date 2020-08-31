@@ -187,8 +187,8 @@ class TestItemPreview extends Component {
   renderFeedbacks = showStackedView => {
     const { cols } = this.props;
     const { value } = this.state;
-
-    return cols.map((col, colIndex) =>
+    let colIndex = 0;
+    return cols.map(col =>
       col.widgets
         .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
         .map((widget, i) => (
@@ -196,8 +196,8 @@ class TestItemPreview extends Component {
             {col.tabs &&
               !!col.tabs.length &&
               value === widget.tabIndex &&
-              this.renderFeedback(widget, i, colIndex, showStackedView)}
-            {col.tabs && !col.tabs.length && this.renderFeedback(widget, i, colIndex, showStackedView)}
+              this.renderFeedback(widget, i,colIndex++, showStackedView)}
+            {col.tabs && !col.tabs.length && this.renderFeedback(widget, i,colIndex++, showStackedView)}
           </React.Fragment>
         ))
     );

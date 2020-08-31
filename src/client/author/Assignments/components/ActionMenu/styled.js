@@ -26,7 +26,6 @@ export const StyledMenu = styled(Menu)`
     font-weight: 600;
     height: 31px;
     line-height: 31px;
-    font-size: 12px;
 
     @media screen and (max-width: ${mobileWidth}) {
       height: 40px;
@@ -35,6 +34,7 @@ export const StyledMenu = styled(Menu)`
 
     a {
       margin: 0;
+      font-size: 12px;
     }
 
     :hover {

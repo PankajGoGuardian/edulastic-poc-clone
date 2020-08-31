@@ -339,10 +339,3 @@ export const isDistrictUserSelector = createSelector(
   getOrgDataSelector,
   state => state?.districts?.[0]?.districtPermissions && state?.districts?.[0]?.districtPermissions.length === 0
 );
-
-export const isCoTeacherSelector = createSelector(
-  isPublisherUserSelector,
-  getUserRole,
-  (isPublisher, role) =>
-    isPublisher || role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN || role === roleuser.TEACHER
-);

@@ -129,4 +129,7 @@ export const EduTableStyled = styled(Table)`
   .ant-table-row-expand-icon {
     display: none;
   }
+  .ant-table-pagination {
+    padding-right: 55px;
+  }
 `;

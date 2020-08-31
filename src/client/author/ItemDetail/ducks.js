@@ -11,7 +11,7 @@ import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
-import { Effects, notification } from "@edulastic/common";
+import { notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import {
   loadQuestionsAction,
@@ -61,6 +61,7 @@ import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../s
 import { markQuestionLabel } from "./Transformer";
 import { getUserFeatures } from "../../student/Login/ducks";
 import { addLoadingComponentAction, removeLoadingComponentAction } from "../src/actions/authorUi";
+import { reSequenceQuestionsWithWidgets } from "../../common/utils/helpers";
 
 // constants
 const testItemStatusConstants = {
@@ -951,6 +952,9 @@ export function* updateItemSaga({ payload }) {
       notification({ messageKey: "CannotSaveWithoutQuestions" });
       return null;
     }
+
+    questions = reSequenceQuestionsWithWidgets(rows?.[0]?.widgets, questions);
+
     questions = produce(questions, draft => {
       draft.map((q, index) => {
         const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(q);
@@ -964,11 +968,15 @@ export function* updateItemSaga({ payload }) {
         if (index === 0) {
           if (data.itemLevelScoring && q.scoringDisabled) {
             //on item level scoring item, first question removed situation.
-            q.scoringDisabled = false;
             if (!questionType.manuallyGradableQn.includes(data.type)) {
               set(q, "validation.validResponse.score", data.itemLevelScore);
             }
           }
+          /**
+           * after shuffle we need to reset scoringDisabled to false for the first question
+           * irrespective to itemLevelScoring
+           */
+          q.scoringDisabled = false;
           return q;
         }
 
@@ -1209,11 +1217,15 @@ function* saveTestItemSaga() {
       if (ind === 0) {
         if (data.itemLevelScoring && q.scoringDisabled) {
           //on item level scoring item, first question removed situation.
-          q.scoringDisabled = false;
           if (!questionType.manuallyGradableQn.includes(data.type)) {
             set(q, "validation.validResponse.score", data.itemLevelScore);
           }
         }
+        /**
+         * after shuffle we need to reset scoringDisabled to false for the first question
+         * irrespective to itemLevelScoring
+         */
+        q.scoringDisabled = false;
         continue;
       }
       if (data.itemLevelScoring) {
@@ -1267,7 +1279,7 @@ function* publishTestItemSaga({ payload }) {
 
     // if alignment data is not present, set the flag to open the modal, and wait for
     // an action from the modal.
-    if (!isMultipartOrPassageType && !standardPresent) {
+    if (!isMultipartOrPassageType && !standardPresent && !saveAndPublishFlow) {
       yield put(togglePublishWarningModalAction(true));
       // action dispatched by the modal.
       const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
@@ -1330,7 +1342,7 @@ function* publishTestItemSaga({ payload }) {
     } else {
       yield put(changeViewAction("metadata"));
       yield put(setHighlightCollectionAction(true));
-      notification({ type: "warn", messageKey: "itemIsNotAssociated" });
+      notification({ messageKey: "itemIsNotAssociated" });
     }
   } catch (e) {
     Sentry.captureException(e);
@@ -1596,7 +1608,7 @@ function* saveAndPublishItemSaga() {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
-    yield Effects.throttleAction(10000, UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
     yield takeEvery(UPDATE_ITEM_DOC_BASED_REQUEST, updateItemDocBasedSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
     yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),

@@ -262,6 +262,9 @@ export const ClassListTable = styled(Table)`
       }
     }
   }
+  .ant-table-pagination {
+    padding-right: 55px;
+  }
 `;
 
 export const StyledSelect = styled(Select)`

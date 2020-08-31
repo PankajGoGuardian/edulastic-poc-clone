@@ -46,7 +46,6 @@
     "cy:merge-reports": "mochawesome-merge --reportDir cypress/reports > cypress/reports/cypress-report.json",
     "cy:merge-reports-docker": "mochawesome-merge --reportDir docker_results/json > cypress/reports/cypress-report.json",
     "cy:generate-report": "marge --no-code --cdn=true -o=cypress/reports -f=Cypress_Test_Report --ts=fullDate cypress/reports/cypress-report.json",
-    "publish-evaluators": "git subtree push --prefix packages/evaluators git@github.com:snapwiz/edu-eval.git master",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",
     "storybook": "STORYBOOK_ENABLED=1 NODE_ENV=development start-storybook -p 6006",
     "build-storybook": "build-storybook"
@@ -76,6 +75,7 @@
     "d3-array": "^2.0.3",
     "dotenv": "^8.2.0",
     "eslint-plugin-cypress": "^2.1.2",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#6103b9f469315dd288672f9257ae1e8111ca2e2d",
     "faker": "^4.1.0",
     "fetch-mock": "^7.2.5",
     "firebase": "^7.13.2",

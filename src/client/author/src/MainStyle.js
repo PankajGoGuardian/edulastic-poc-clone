@@ -189,6 +189,12 @@ export const MainContainer = styled.div`
     }
   }
 
+  .ant-table {
+    .ant-table-pagination {
+      padding-right: 55px !important; // 55px is for intercom icon on prod
+    }
+  }
+
   .ant-table-body,
   .ant-table-body-inner,
   .ant-table-fixed {

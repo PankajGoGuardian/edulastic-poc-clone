@@ -106,10 +106,10 @@ function convertBlobToFile(blob) {
   return null;
 }
 
-function convertStringToFile(str) {
+function convertStringToBlob(str) {
   const blob = new Blob([str], { type: "text/plain;charset=utf-8" });
-  const file = new File([blob], `scratchpad-${Date.now()}.text`);
-  return file;
+  blob.name = `scratchpad-${Date.now()}.text`;
+  return blob;
 }
 
 const s3Folders = Object.values(aws.s3Folders);
@@ -132,7 +132,7 @@ export const uploadToS3 = async (file, folder, progressCallback, cancelUpload) =
   if (isString(file)) {
     // this case will come from scratchpad
     // create new file with the string
-    fileToUpload = convertStringToFile(file);
+    fileToUpload = convertStringToBlob(file);
   }
 
   const { name: fileName } = fileToUpload;

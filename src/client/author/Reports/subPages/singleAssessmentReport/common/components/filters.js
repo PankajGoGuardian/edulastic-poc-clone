@@ -204,7 +204,6 @@ const SingleAssessmentReportFilters = ({
       filteredUrlTestId = processedTestIds.testIds.length ? processedTestIds.testIds[0].key : "";
     }
     if (role === "teacher") {
-      delete urlParams.schoolId;
       delete urlParams.teacherId;
     }
 

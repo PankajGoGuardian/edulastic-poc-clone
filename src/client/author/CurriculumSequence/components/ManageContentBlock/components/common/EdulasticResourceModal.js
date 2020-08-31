@@ -46,7 +46,7 @@ const EdulasticResourceModal = ({
         <EduButton isGhost width="180px" key="cancel" onClick={closeCallback}>
           {canceltext}
         </EduButton>
-        <EduButton width="180px" key="submit" onClick={submitCallback}>
+        <EduButton width="180px" key="submit" data-cy="add-resource" onClick={submitCallback}>
           {okText}
         </EduButton>
       </ModalFooter>

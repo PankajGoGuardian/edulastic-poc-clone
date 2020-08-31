@@ -91,8 +91,8 @@ const CheckedBlock = ({
    */
   const answer = isMath ? getMathTemplate(showValue) : showValue;
   const { width: textWidth } = measureText(answer, { padding: "0 0 0 11px" });
-  const avilableWidth = width - (showIndex ? 58 : 26);
-  const showPopover = textWidth > avilableWidth;
+  const availableWidth = textWidth - (showIndex ? 58 : 26);
+  const showPopover = textWidth > availableWidth;
 
   const popoverContent = isPopover => (
     <CheckBox

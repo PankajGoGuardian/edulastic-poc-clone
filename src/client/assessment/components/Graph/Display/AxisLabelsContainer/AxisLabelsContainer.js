@@ -437,9 +437,8 @@ class AxisLabelsContainer extends PureComponent {
         }
       });
     }
-
     // +20 is padding between container and choices
-    const responseBoxWidth = this.isHorizontal ? "100%" : `${this.choiceMaxWidth + 20}px`;
+    const responseBoxWidth = this.isHorizontal ? "100%" : `${this.choiceMaxWidth + 100}px`;
 
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef} style={{ width: "100%" }}>

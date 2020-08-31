@@ -538,7 +538,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
 
   // if  empty options are present
   if (item.options && hasEmptyOptions(item)) {
-    return [true, "Answer choices should not be empty"];
+    return [true, "Correct answer for answer choice cannot be empty"];
   }
   // if not yet returned with an error, then it should be a fine question!
 

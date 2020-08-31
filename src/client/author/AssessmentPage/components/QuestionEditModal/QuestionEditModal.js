@@ -167,7 +167,8 @@ export default class QuestionEditModal extends React.Component {
 const StyledBodyContainer = styled.div`
   max-height: 50vh;
   padding-bottom: 10px;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   /**
   * For devices with inner height <= 680px will get a scrollbar inside modal body

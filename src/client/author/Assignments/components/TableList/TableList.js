@@ -18,11 +18,7 @@ import ActionMenu from "../ActionMenu/ActionMenu";
 import { getItemsInFolders, getSelectedItems } from "../../../src/selectors/folder";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-import {
-  toggleRemoveItemsFolderAction,
-  toggleMoveItemsFolderAction,
-  setItemsMoveFolderAction
-} from "../../../src/actions/folder";
+import { toggleRemoveItemsFolderAction, toggleMoveItemsFolderAction } from "../../../src/actions/folder";
 
 import {
   Container,
@@ -116,13 +112,12 @@ const TableList = ({
   togglePrintModal,
   userRole,
   userClassList,
-  setItemsToFolder,
-  selectedItems,
   toggleAddItemFolderModal,
   toggleRemovalFolderModal
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
+  const [selectedItems, setLocalItems] = useState([]);
   // Show first three rows opened in every re-render
   useEffect(() => {
     setExpandedRows(["0", "1", "2"]);
@@ -325,13 +320,13 @@ const TableList = ({
   const handleSelectRow = row => e => {
     const selectedIndex = selectedItems.findIndex(r => r.itemId === row.itemId);
     if (e.target && e.target.checked && selectedIndex === -1) {
-      setItemsToFolder([...selectedItems, row]);
+      setLocalItems([...selectedItems, row]);
     } else if (e.target && selectedIndex !== -1) {
       selectedItems.splice(selectedIndex, 1);
-      setItemsToFolder([...selectedItems]);
+      setLocalItems([...selectedItems]);
     } else if (!e.target && toggleAddItemFolderModal) {
-      // this case is from action button of an item
-      setItemsToFolder([row]);
+      // this case is from action button in each item
+      setLocalItems([row]);
       toggleAddItemFolderModal({
         items: [row],
         isOpen: true
@@ -341,9 +336,9 @@ const TableList = ({
 
   const handleSelectAllRow = e => {
     if (e.target.checked) {
-      setItemsToFolder(data);
+      setLocalItems(data);
     } else {
-      setItemsToFolder([]);
+      setLocalItems([]);
     }
   };
 
@@ -612,7 +607,6 @@ const enhance = compose(
       userClassList: getGroupList(state)
     }),
     {
-      setItemsToFolder: setItemsMoveFolderAction,
       toggleRemovalFolderModal: toggleRemoveItemsFolderAction,
       toggleAddItemFolderModal: toggleMoveItemsFolderAction
     }

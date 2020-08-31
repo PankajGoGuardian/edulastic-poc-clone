@@ -38,7 +38,7 @@ export default class TestSettings {
 
   getMarkAsDoneManually = () => cy.get("#mark-as-done").find('[value="manually"]');
 
-  getStudentPlayerSkin = () => cy.get('[data-cy="playerSkinType"]');
+  getStudentPlayerskin = () => cy.get('[data-cy="playerSkinType"]');
 
   getPerformanceBandDropDown = () => cy.get('[data-cy="performance-band"]').find(".ant-select-selection");
 
@@ -67,7 +67,11 @@ export default class TestSettings {
       .contains("Static Password")
       .click();
 
-  enterStaticPassword = pass => cy.get('[placeholder="Enter Password"]').type(pass);
+  enterStaticPassword = pass =>
+    cy
+      .get('[placeholder="Enter Password"]')
+      .should($ele => expect(Cypress.dom.isAttached($ele)).to.be.true)
+      .type(pass);
 
   clickOnDynamicPassword = () =>
     cy

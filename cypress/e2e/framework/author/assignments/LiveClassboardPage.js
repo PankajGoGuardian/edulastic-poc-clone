@@ -374,7 +374,9 @@ class LiveClassboardPage {
           .text()
           .toLowerCase()
           .trim();
-        expect(studentStatus).to.eq((status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status).toLowerCase());
+        expect(studentStatus, `student status for card index ${index + 1}`).to.eq(
+          (status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status).toLowerCase()
+        );
       });
     else
       this.getStudentStatusByIndex(index).should($ele => {
@@ -382,7 +384,7 @@ class LiveClassboardPage {
           .text()
           .toLowerCase()
           .trim();
-        expect(studentStatus).to.eq(status.toLowerCase());
+        expect(studentStatus, `student status for card index ${index + 1}`).to.eq(status.toLowerCase());
       });
   };
 

@@ -11,7 +11,7 @@ import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
-import { notification } from "@edulastic/common";
+import { Effects, notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import {
   loadQuestionsAction,
@@ -1279,7 +1279,7 @@ function* publishTestItemSaga({ payload }) {
 
     // if alignment data is not present, set the flag to open the modal, and wait for
     // an action from the modal.
-    if (!isMultipartOrPassageType && !standardPresent && !saveAndPublishFlow) {
+    if (!isMultipartOrPassageType && !standardPresent) {
       yield put(togglePublishWarningModalAction(true));
       // action dispatched by the modal.
       const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
@@ -1342,7 +1342,7 @@ function* publishTestItemSaga({ payload }) {
     } else {
       yield put(changeViewAction("metadata"));
       yield put(setHighlightCollectionAction(true));
-      notification({ messageKey: "itemIsNotAssociated" });
+      notification({ type: "warn", messageKey: "itemIsNotAssociated" });
     }
   } catch (e) {
     Sentry.captureException(e);
@@ -1608,7 +1608,7 @@ function* saveAndPublishItemSaga() {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
-    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield Effects.throttleAction(10000, UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
     yield takeEvery(UPDATE_ITEM_DOC_BASED_REQUEST, updateItemDocBasedSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
     yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),

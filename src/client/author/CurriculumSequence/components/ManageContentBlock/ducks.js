@@ -125,7 +125,9 @@ export default slice;
 
 function* fetchTestsSaga() {
   try {
-    const { status, subject, grades, loadedPage, filter, collection } = yield select(state => state[sliceName]);
+    const { status, subject, grades, loadedPage, filter, collection, searchString } = yield select(
+      state => state[sliceName]
+    );
     // Add authoredBy and sources once BE is fixed
 
     const { items, count } =
@@ -137,7 +139,8 @@ function* fetchTestsSaga() {
               subject,
               grades,
               filter,
-              collections: collection === "" ? [] : [collection]
+              collections: collection === "" ? [] : [collection],
+              searchString
             },
             page: loadedPage + 1,
             limit: LIMIT

@@ -47,6 +47,8 @@ class StudentTestPage {
 
   // @questionNumber = "Q1" ; "Q2"
   clickOnReviewQuestion = questionNumber => {
+    cy.server();
+    cy.route("GET", "**/test/**").as("gettest");
     cy.get(`[data-cy="${questionNumber}"]`).click();
     cy.wait("@gettest");
   };
@@ -101,7 +103,7 @@ class StudentTestPage {
 
     this.getCheckAns().click();
 
-    if (isExhausted) CypressHelper.verifyAntMesssage("Check answer limit exceeded for the item");
+    if (isExhausted) CypressHelper.verifyAntMesssage(" Check answer limit exceeded for the item.");
     else
       cy.wait("@evaluation").then(xhr =>
         expect(

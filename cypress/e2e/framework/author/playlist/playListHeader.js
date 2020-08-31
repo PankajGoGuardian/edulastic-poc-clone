@@ -1,7 +1,7 @@
 export default class PlayListHeader {
   // *** ELEMENTS START ***
 
-  getSummaryButton = () => cy.get('[data-cy="description"]');
+  getSummaryButton = () => cy.get('[data-cy="summary"]');
 
   getReviewButton = () => cy.get('[data-cy="review"]');
 
@@ -24,22 +24,16 @@ export default class PlayListHeader {
   // *** ACTIONS START ***
   getDropPlaylist = () => cy.get('[data-cy="drop-playlist"]');
 
-  clickOnDescription = () => {
-    this.getSummaryButton.click({ force: true });
-  };
+  clickOnDescription = () => this.getSummaryButton().click({ force: true });
 
-  clickOnAddTests = () => {
-    cy.server();
-    cy.route("POST", "**/search/**").as("search");
-    this.getAddTestsButton().click({ force: true });
-    return cy.wait("@search");
-  };
-
-  clickOnReview = () => {
+  clickOnReview = (newPlaylist = false) => {
     cy.server();
     cy.route("PUT", "**/playlists/*").as("savePlayList");
+    cy.route("POST", "**/search/**").as("search");
     this.getReviewButton().click({ force: true });
-    return cy.wait("@savePlayList");
+
+    if (!newPlaylist) return cy.wait("@savePlayList");
+    else return cy.wait("@search");
   };
 
   clickOnSettings = () => {
@@ -75,6 +69,7 @@ export default class PlayListHeader {
     cy.server();
     cy.route("GET", "**/playlists/*").as("use-this");
     this.getUseThisButton().click({ force: true });
+    cy.get('[data-cy="insights"]');
     return cy.wait("@use-this");
   };
 
@@ -83,15 +78,6 @@ export default class PlayListHeader {
     cy.route("GET", "**/playlists/*").as("editPlayList");
     this.getEdit().click();
     return cy.wait("@editPlayList").then(xhr => xhr);
-  };
-
-  clickOnCustomization = () => {
-    cy.server();
-    cy.route("POST", "**/playlists/**").as("duplicatePlaylist");
-    cy.route("GET", "**/playlists/*").as("getPlayList");
-    this.getSaveButton().click();
-    cy.wait("@getPlayList");
-    return cy.wait("@duplicatePlaylist").then(xhr => xhr);
   };
 
   clickOnDropPlalist = () => {

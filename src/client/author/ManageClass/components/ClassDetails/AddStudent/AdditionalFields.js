@@ -77,7 +77,7 @@ const AdditionalFields = ({ std, stds, isEdit, showTtsField, foundUserContactEma
         <TextInputStyled placeholder="Race" />
       </Field>
       <Field label="DOB" optional {...restProps} fiedlName="dob" {...dateProps}>
-        <DatePickerStyled format="DD MMM, YYYY" />
+        <DatePickerStyled format="DD MMM, YYYY" disabledDate={current => current && current.valueOf() > Date.now()} />
       </Field>
       <Field label="Gender" {...restProps} fiedlName="gender" initialValue={gender}>
         <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>

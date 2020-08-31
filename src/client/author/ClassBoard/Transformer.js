@@ -159,11 +159,20 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
   if (!qid) {
     return qActivityMaxScore || 1;
   }
+  // TODO: Need to make it more efficient . no need to loop through all items
   for (const testItem of testItemsData) {
     const questions = get(testItem, ["data", "questions"], []);
-    const questionNeeded = questions.find(x => x.id === qid);
+    const questionIndex = questions.findIndex(x => x.id === qid);
+    const questionNeeded = questions[questionIndex];
 
     if (questionNeeded) {
+      // for item level scoring handle scores as whole instead of each questions
+      if (testItem.itemLevelScoring && questionIndex === 0) {
+        return testItem.itemLevelScore;
+      }
+      if (testItem.itemLevelScoring && questionIndex > 0) {
+        return 0;
+      }
       return getMaxScoreFromQuestion(questionNeeded);
     }
   }
@@ -452,7 +461,7 @@ export const transformGradeBookResponse = (
             const currentQuestionActivity =
               questionActivitiesIndexed[el] || questionActivitiesKeyedByItemId[testItemId];
             const questionMaxScore =
-              maxScore || getMaxScoreOfQid(_id, testItemsData, currentQuestionActivity?.maxScore);
+              maxScore || maxScore == 0 || getMaxScoreOfQid(_id, testItemsData, currentQuestionActivity?.maxScore);
 
             if (!currentQuestionActivity) {
               return {

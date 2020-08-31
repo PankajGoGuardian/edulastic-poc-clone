@@ -4,7 +4,7 @@ import { Circle, Polygon, G, Svg } from "./styledSVG";
 
 const PlayPause = ({ media, style }) => {
   const _handlePlayPause = () => {
-    media.playPause();
+    media?.playPause?.();
   };
 
   return (

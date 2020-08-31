@@ -30,7 +30,7 @@ const authorizeCanvas = async (ssoUrl, subscriptionTopic) => {
         client.on("connect", () => {
           client.subscribe(subscriptionTopic, err => {
             if (err) {
-              console.error("Error subscribing to topic: ", subscriptionTopic);
+              console.log("Error subscribing to topic: ", subscriptionTopic);
               reject(err);
               authWindow?.close();
             } else {

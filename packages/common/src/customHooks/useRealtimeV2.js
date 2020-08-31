@@ -40,7 +40,7 @@ const useRealtime = (topics, actionMap, options = {}) => {
       for (const topic of topics) {
         client.subscribe(topic, err => {
           if (err) {
-            console.error(`error subscribing to topic ${topic} `, err);
+            console.log(`error subscribing to topic ${topic} `, err);
           } else {
             console.log("connected ", topic);
           }

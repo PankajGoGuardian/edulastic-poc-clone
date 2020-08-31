@@ -8,12 +8,15 @@ import ApiFormsMain from "../Components/ApiForm";
 
 import { submit } from "../Components/ApiForm/apis";
 import CreateAdmin from "../Components/CreateAdmin";
+import ApproveOrganisation from "../Components/ApproveOrganisation";
 
 const CREATE_ADMIN = "create-admin";
+const APPROVE_SCHOOL_DISTRICT = "approve-school-district";
 
 const ApiForm = () => {
   const [id, setId] = useState();
   const [districtData, setDistrictData] = useState(null);
+  const [orgData, setOrgData] = useState(null);
 
   const handleOnChange = _id => setId(_id);
 
@@ -31,16 +34,23 @@ const ApiForm = () => {
       submit(data, option.endPoint, option.method).then(res => {
         if (res?.result) {
           if (res.result.success || res.status === 200) {
-            notification({ type: "success", msg: res?.result?.message, message: "apiFormSucc" });
+            if (option.id === APPROVE_SCHOOL_DISTRICT) {
+              setOrgData(res.result);
+            } else {
+              notification({ type: "success", msg: res?.result?.message, message: "apiFormSucc" });
+            }
           } else {
             notification({ msg: res?.result?.message, message: "apiFormErr" });
           }
+        } else if (option.id === APPROVE_SCHOOL_DISTRICT) {
+          notification({ type: "warning", msg: "Sorry, No search results found for this ID" });
         }
       });
     }
   };
 
   const clearDistrictData = () => setDistrictData(null);
+  const clearOrgData = () => setOrgData(null);
 
   const option = apiForms.find(ar => ar.id === id);
 
@@ -65,6 +75,9 @@ const ApiForm = () => {
         <ApiFormsMain fields={option.fields} name={option.name} handleOnSave={handleOnSave} note={option.note}>
           {districtData && id === CREATE_ADMIN && (
             <CreateAdmin districtData={districtData} clearDistrictData={clearDistrictData} />
+          )}
+          {orgData && id === APPROVE_SCHOOL_DISTRICT && (
+            <ApproveOrganisation orgData={orgData} clearOrgData={clearOrgData} />
           )}
         </ApiFormsMain>
       )}

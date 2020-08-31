@@ -122,7 +122,7 @@ function* evaluateAnswers({ payload }) {
     if (question) {
       const hasEmptyAnswer = hasEmptyAnswers(question);
 
-      if (hasEmptyAnswer) throw new Error("Correct answer is not set");
+      if (hasEmptyAnswer) return notification({ msg: "Correct answer is not set" });
 
       // clear previous evaluation
       yield put({

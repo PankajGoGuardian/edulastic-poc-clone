@@ -576,7 +576,7 @@ function getValidRedirectRouteByRole(_url, user) {
     case roleuser.DISTRICT_ADMIN:
       if (user.permissions.includes("curator"))
         return url.match(/^\/publisher\//) || url.match(/^\/author\//) ? url : "/publisher/dashboard";
-      return url.match(/^\/author\//) ? url : "/author/dashboard";
+      return url.match(/^\/author\//) ? url : "/author/assignments";
     default:
       return url;
   }
@@ -1284,7 +1284,6 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.storeAccessToken(res.token, _user._id, _user.role, true);
     TokenStorage.selectAccessToken(_user._id, _user.role);
     yield put(signupSuccessAction(_user));
-    yield call(fetchUser, {}); // needed to update org and other user data to local store
   } catch (e) {
     console.warn("e", e);
     notification({ msg: get(e, "response.data.message", "Failed to update user please try again.") });
@@ -1329,7 +1328,6 @@ function* resetPasswordRequestSaga({ payload }) {
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(signupSuccessAction(result));
-    yield call(fetchUser, {}); // needed to update org and other user data to local store
     localStorage.removeItem("loginRedirectUrl");
   } catch (e) {
     notification({ msg: e?.response?.data?.message ? e.response.data.message : "Failed to reset password." });
@@ -1504,7 +1502,7 @@ function* setInviteDetailsSaga({ payload }) {
     const user = pick(result, userPickFields);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
-    yield call(fetchUser, {}); // needed to update org and other user data to local store
+
     yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result });
   } catch (e) {
     yield call(message.err, "Failed to update user details.");

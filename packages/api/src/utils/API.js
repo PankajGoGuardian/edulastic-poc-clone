@@ -1,5 +1,5 @@
 import axios from "axios";
-import { storeInLocalStorage, getFromLocalStorage, updateUserToken } from "@edulastic/api/src/utils/Storage";
+import { storeInLocalStorage, getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import * as Sentry from "@sentry/browser";
 import config from "../config";
 import { getAccessToken, getTraceId, initKID, initTID } from "./Storage";
@@ -54,7 +54,7 @@ const getLoggedOutUrl = () => {
     const arr = [...path];
     arr.shift();
     const restOfPath = arr.join("/");
-    const [, districtLogin] = window.location.pathname ?.split("/");
+    const [, districtLogin] = window.location.pathname?.split("/");
     return `/${districtLogin || "districtLogin"}/${restOfPath}`;
   }
   if (pathname === "/resetpassword") {
@@ -73,14 +73,14 @@ function getParentsStudentToken(_config) {
       return false;
     }
 
-    if (["/user/me", "/logout", "/login", "/signUp", "/user/parent-code"].find(x => _config.url ?.includes(x))) {
+    if (["/user/me", "/logout", "/login", "/signUp", "/user/parent-code"].find(x => _config.url?.includes(x))) {
       return false;
     }
-    const currentUserFromRedux = window ?.getStore() ?.getState() ?.user || {};
+    const currentUserFromRedux = window?.getStore()?.getState()?.user || {};
     const { currentChild } = currentUserFromRedux;
-    const { role: userRole, children } = currentUserFromRedux ?.user || {};
-    if (userRole === "parent" && currentChild && children ?.length > 0) {
-      return children.find(child => child._id === currentChild) ?.token;
+    const { role: userRole, children } = currentUserFromRedux?.user || {};
+    if (userRole === "parent" && currentChild && children?.length > 0) {
+      return children.find(child => child._id === currentChild)?.token;
     }
   } catch (e) {
     console.warn("error parentSstudent", e);
@@ -115,8 +115,6 @@ const SemverCompare = (a, b) => {
   }
   return 0;
 };
-
-const tokenUpdateHeader = "x-token-refresh";
 
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
@@ -166,26 +164,17 @@ export default class API {
           const event = new Event("request-client-update");
           window.dispatchEvent(event);
         }
-        const updatedToken = response.headers[tokenUpdateHeader];
-        //const oldAccessToken = getAccessToken();
-        if (updatedToken) {
-          updateUserToken(updatedToken);
-          //TODO: if needed , implement responding to access token changes
-          /*if (oldAccessToken && oldAccessToken != updatedToken) {
-            window.dispatchEvent(new Event('access-token-updated'));
-          }*/
-        }
+
         return response;
       },
       data => {
         const reqUrl = data.response?.config?.url || "NA";
         const err = new Error(
-
           `API failed while trying to fetch: ${reqUrl}: message: ${data.response?.data?.message || "NA"}`
         );
 
         // make the response available so anyone can read it.
-        err.status = data.response ?.status;
+        err.status = data.response?.status;
         err.response = data.response;
 
         // log in to sentry, exclude low priority status
@@ -194,7 +183,7 @@ export default class API {
             const fingerPrint = getUrlFragment(reqUrl) || reqUrl;
 
             scope.setLevel("error");
-            scope.setTag("ref", data.response ?.headers ?.["x-server-ref"]);
+            scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
             Sentry.captureException(err);
             scope.setTag("issueType", "UnexpectedErrorAPI");
             scope.setFingerprint(["{{default}}", fingerPrint]);

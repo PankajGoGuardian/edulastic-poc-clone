@@ -44,12 +44,16 @@ function* receiveAssignmentClassList({ payload = {} }) {
     }
   } catch (error) {
     Sentry.captureException(error);
-    const errorMessage = "Receive class list failing";
+    let errorMessage = "Receive class list failing";
+    if (get(error, "status") === 400) {
+      errorMessage = "Invalid Action.";
+    }
     notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
       payload: { error: errorMessage }
     });
+    yield put(push("/author/assignments"));
   }
 }
 

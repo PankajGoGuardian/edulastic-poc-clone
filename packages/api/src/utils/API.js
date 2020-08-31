@@ -1,5 +1,5 @@
 import axios from "axios";
-import { storeInLocalStorage, getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { storeInLocalStorage, getFromLocalStorage, updateUserToken } from "@edulastic/api/src/utils/Storage";
 import * as Sentry from "@sentry/browser";
 import config from "../config";
 import { getAccessToken, getTraceId, initKID, initTID } from "./Storage";
@@ -9,6 +9,17 @@ const ASSETS_REFRESH_STAMP = "assetsRefreshDateStamp";
 const getCurrentPath = () => {
   const location = window.location;
   return `${location.pathname}${location.search}${location.hash}`;
+};
+
+const getUrlFragment = (url = "") => {
+  if (!url) return;
+
+  const parts = url
+    .replace(/(^\w+:|^)\/\//, "")
+    .split("/")
+    .slice(0, 3);
+
+  return parts.join("/");
 };
 
 const getWordsInURLPathName = pathname => {
@@ -105,6 +116,8 @@ const SemverCompare = (a, b) => {
   return 0;
 };
 
+const tokenUpdateHeader = "x-token-refresh";
+
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
     this.baseURL = baseURL;
@@ -153,13 +166,21 @@ export default class API {
           const event = new Event("request-client-update");
           window.dispatchEvent(event);
         }
-
+        const updatedToken = response.headers[tokenUpdateHeader];
+        // const oldAccessToken = getAccessToken();
+        if (updatedToken) {
+          updateUserToken(updatedToken);
+          // TODO: if needed , implement responding to access token changes
+          /* if (oldAccessToken && oldAccessToken != updatedToken) {
+            window.dispatchEvent(new Event('access-token-updated'));
+          } */
+        }
         return response;
       },
       data => {
+        const reqUrl = data.response?.config?.url || "NA";
         const err = new Error(
-          `API failed while trying to fetch: ${data.response?.config?.url || "NA"}: message: ${data.response?.data
-            ?.message || "NA"}`
+          `API failed while trying to fetch: ${reqUrl}: message: ${data.response?.data?.message || "NA"}`
         );
 
         // make the response available so anyone can read it.
@@ -169,17 +190,21 @@ export default class API {
         // log in to sentry, exclude low priority status
         if (![400, 403].includes(err.status))
           Sentry.withScope(scope => {
+            const fingerPrint = getUrlFragment(reqUrl) || reqUrl;
+
             scope.setLevel("error");
             scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
             Sentry.captureException(err);
             scope.setTag("issueType", "UnexpectedErrorAPI");
-            Sentry.captureMessage(
-              JSON.stringify({
-                res: data.response?.data || {},
-                ref: data.response?.headers?.["x-server-ref"],
-                req: data.response?.config?.data
-              })
-            );
+            scope.setFingerprint(["{{default}}", fingerPrint]);
+            scope.setContext("api_meta", {
+              res: data.response?.data || {},
+              ref: data.response?.headers?.["x-server-ref"],
+              req: data.response?.config?.data
+            });
+            scope.setExtra("api_res", JSON.stringify(data.response?.data || {}));
+            scope.setExtra("api_ref", data.response?.headers?.["x-server-ref"] || "--");
+            scope.setExtra("api_req", JSON.stringify(data.response?.config?.data || {}));
           });
 
         if (data && data.response && data.response.status) {

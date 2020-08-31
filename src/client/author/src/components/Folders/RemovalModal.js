@@ -7,8 +7,8 @@ import { getSelectedItems } from "../../selectors/folder";
 import { ModalTitle, Modal } from "./styled";
 import FolderList from "./FolderList";
 
-const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal }) => {
-  const [selected, setFolderToAdd] = useState({});
+const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal, removeItemFromCart }) => {
+  const [selected, setFolderToRemoveItems] = useState({});
 
   const handleCloseModal = () => {
     if (closeModal) {
@@ -32,6 +32,12 @@ const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal }) =>
     }
 
     removeItems({ folderId: selected._id, folderName: selected.folderName, itemsToRemove, folderType });
+
+    itemsToRemove.forEach(itemId => {
+      if (removeItemFromCart) {
+        removeItemFromCart({ _id: itemId }, false);
+      }
+    });
   };
 
   return (
@@ -49,7 +55,7 @@ const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal }) =>
         </EduButton>
       ]}
     >
-      <FolderList folderId={selected?._id} selectFolder={setFolderToAdd} />
+      <FolderList folderId={selected?._id} selectFolder={setFolderToRemoveItems} />
     </Modal>
   );
 };

@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 import { API } from "@edulastic/api";
 import { useEffect, useState } from "react";
 import mqtt from "mqtt";
@@ -39,7 +39,7 @@ const useRealtime = (topic, actionMap, options = {}) => {
       setClient(client);
       client.subscribe(topic, err => {
         if (err) {
-          console.error(`error subscribing to topic ${topic} `, err);
+          console.log(`error subscribing to topic ${topic} `, err);
         } else {
           console.log("connected ", topic);
         }

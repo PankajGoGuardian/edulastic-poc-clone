@@ -32,3 +32,8 @@ export const getItemsInFolders = createSelector(
   stateSelector,
   state => flatten(state.entities.map(f => f.content.map(c => c._id)))
 );
+
+export const getUpdatedFolderSelector = createSelector(
+  stateSelector,
+  state => state.updatedFolder
+);

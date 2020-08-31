@@ -1,12 +1,12 @@
-import { groupBy, map, find, reduce, values, round, capitalize, sumBy, orderBy, filter, keys } from "lodash";
+import { groupBy, map, reduce, values, round, capitalize, sumBy, orderBy, filter, keys } from "lodash";
 import { percentage, getProficiencyBand, testTypeHashMap } from "../../../../common/util";
 import gradesMap from "../static/json/gradesMap.json";
 
 const getCourses = classData => {
-  const groupedByCourse = groupBy(classData, "courseId");
+  const groupedByCourse = groupBy(classData.filter(c => !!c.courseId), "courseId");
 
   return map(groupedByCourse, (course, courseId) => ({
-    title: course[0].courseName,
+    title: course[0].courseName || `(Course ID: ${courseId.substring(courseId.length - 5)})`,
     key: courseId
   }));
 };
@@ -19,12 +19,10 @@ export const getStudentName = (selectedStudent, studInfo) => {
 };
 
 const getTerms = (terms = []) =>
-  map(terms, term => {
-    return {
+  map(terms, term => ({
       title: term.name,
       key: term._id
-    };
-  });
+    }));
 
 export const getFilterOptions = (classData = [], terms = []) => {
   const courseOptions = getCourses(classData);
@@ -138,9 +136,9 @@ export const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInf
         totalQuestions: 0,
         scale
       };
-    } else {
+    } 
       return null;
-    }
+    
   }).filter(standard => standard);
 
   // returning data in the ascending order of domain and standard.
@@ -177,9 +175,7 @@ export const getDomains = (metricInfo = [], scaleInfo = [], studentClassInfo = {
   return domains;
 };
 
-export const getGrades = (grades = "") => {
-  return grades
+export const getGrades = (grades = "") => grades
     .split(",")
     .map(grade => gradesMap[grade])
     .join(",");
-};

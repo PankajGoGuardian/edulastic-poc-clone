@@ -19,6 +19,7 @@ import { getGroupList, getUserRole, getCurrentTerm } from "../../../src/selector
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { FilterContainer } from "./styled";
 import Folders from "../../../src/components/Folders";
+import { setItemsMoveFolderAction } from "../../../src/actions/folder";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
@@ -77,6 +78,11 @@ class LeftFilter extends React.Component {
     }
 
     if (filterState.termId !== filters.termId) onSetFilter(filters);
+  };
+
+  deselectItemsFolder = () => {
+    const { setItemsToFolder } = this.props;
+    setItemsToFolder([]);
   };
 
   render() {
@@ -282,6 +288,7 @@ class LeftFilter extends React.Component {
 
         <Folders
           showAllItems
+          removeItemFromCart={this.deselectItemsFolder}
           isAdvancedView={isAdvancedView}
           onSelectFolder={this.handleSelectFolder}
           folderType={folderTypes.ASSIGNMENT}
@@ -318,6 +325,7 @@ export default connect(
     currentTerm: getCurrentTerm(state)
   }),
   {
+    setItemsToFolder: setItemsMoveFolderAction,
     loadAssignments: receiveAssignmentsAction,
     loadAssignmentsSummary: receiveAssignmentsSummaryAction
   }

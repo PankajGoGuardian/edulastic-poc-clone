@@ -4,6 +4,7 @@ import { keyBy, groupBy, get, values, flatten, isEmpty } from "lodash";
 import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
 import { getMathHtml } from "@edulastic/common";
+import { getServerTs } from "../../student/utils";
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -332,7 +333,8 @@ export const transformGradeBookResponse = (
     testQuestionActivities,
     passageData,
     status: assignmentStatus,
-    endDate
+    endDate,
+    ts
   },
   studentResponse
 ) => {
@@ -349,6 +351,8 @@ export const transformGradeBookResponse = (
     }
     return testItem;
   });
+
+  const serverTimeStamp = getServerTs({ ts });
 
   const testItemIds = testItemsData.map(o => o._id);
   const testItemIdsSet = new Set(testItemIds);
@@ -406,7 +410,7 @@ export const transformGradeBookResponse = (
         const fullName = `${lastName ? `${lastName}, ` : ""}${studentName ? `${studentName}` : ""}`;
         const fakeName = `${fakeFirstName} ${fakeLastName}`;
         if (!studentTestActivities[studentId]) {
-          const isAbsent = assignmentStatus === "DONE" || endDate < Date.now();
+          const isAbsent = assignmentStatus === "DONE" || endDate < serverTimeStamp;
           return {
             studentId,
             studentName: fullName,

@@ -32,7 +32,8 @@ export const evaluateItem = async (
               ? produce(validation.validation, v => {
                   set(v, "validResponse.score", itemLevelScore / questionsNum);
                 })
-              : validation.validation
+              : validation.validation,
+              questionId:id
           },
           type
         );

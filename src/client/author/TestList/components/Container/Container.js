@@ -256,6 +256,10 @@ class TestList extends Component {
 
     this.updateFilterState(searchFilters, sort, true);
 
+    if (searchFilters.filter === filterMenuItems[5].filter) {
+      searchFilters.filter = filterMenuItems[0].filter;
+    }
+
     if (mode === "embedded") {
       const selectedTests = [];
       const { modules } = playlist;
@@ -847,12 +851,15 @@ class TestList extends Component {
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
-    receiveTests({
-      page: 1,
-      limit,
-      search: updatedKeys,
-      sort
-    });
+
+    if (filterType !== "folders") {
+      receiveTests({
+        page: 1,
+        limit,
+        search: updatedKeys,
+        sort
+      });
+    }
   };
 
   rejectNumberChecker = tests => {

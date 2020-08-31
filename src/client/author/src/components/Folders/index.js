@@ -1,15 +1,15 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { themeColor } from "@edulastic/colors";
 import { IconFolders, IconPlusCircle } from "@edulastic/icons";
 import { isEmpty } from "lodash";
-import { clearFolderAction, receiveFolderAction, setFolderAction } from "../../actions/folder";
+import { receiveFolderAction, setContentsUpdatedAction } from "../../actions/folder";
 import {
-  getFolderSelector,
   getFoldersSelector,
   isOpenAddItemsModalSelector,
-  isOpenRemovalModalSelector
+  isOpenRemovalModalSelector,
+  getUpdatedFolderSelector
 } from "../../selectors/folder";
 import { FoldersListWrapper, FolderListItem, FolderListItemTitle, AddFolderButton } from "./styled";
 import FolderList from "./FolderList";
@@ -18,47 +18,52 @@ import RemovalModal from "./RemovalModal";
 import MoveModal from "./MoveModal";
 import ConfirmDelete from "./ConfirmDelete";
 
-class Folders extends React.Component {
-  state = { selectedFolder: null };
+const Folders = ({
+  folders,
+  folderType,
+  showAllItems,
+  isOpenAddModal,
+  isOpenRemovalModal,
+  updatedFolderId,
+  isActive,
+  loadFolders,
+  onSelectFolder,
+  setContentsUpdated,
+  removeItemFromCart
+}) => {
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [isOpenCreateOrUpdateModal, setIsOpenCreateOrUpdateModal] = useState(false);
+  const [isOpenConfirm, setIsOpenConfirm] = useState(false);
 
-  componentDidMount() {
-    const { loadFolders, folderType } = this.props;
-    if (loadFolders) {
-      loadFolders(folderType);
-    }
-  }
-
-  componentWillUnmount() {
-    const { clearFolder } = this.props;
-    clearFolder();
-  }
-
-  showCreateModal = () => {
-    this.setState({ isOpenCreateOrUpdateModal: true });
+  const showCreateModal = () => {
+    setIsOpenCreateOrUpdateModal(true);
   };
 
-  showRenameModal = folder => {
-    this.setState({ selectedFolder: folder, isOpenCreateOrUpdateModal: true });
+  const showRenameModal = folder => {
+    setSelectedFolder(folder);
+    setIsOpenCreateOrUpdateModal(true);
   };
 
-  hideCreateOrUpdateModal = () => {
-    this.setState({ isOpenCreateOrUpdateModal: false, selectedFolder: null });
+  const hideCreateOrUpdateModal = () => {
+    setIsOpenCreateOrUpdateModal(false);
+    setSelectedFolder(null);
   };
 
-  showDeleteConfirm = folder => {
-    this.setState({ selectedFolder: folder, isOpenConfirm: true });
+  const showDeleteConfirm = folder => {
+    setSelectedFolder(folder);
+    setIsOpenConfirm(true);
   };
 
-  hideDeleteConfirm = () => {
-    this.setState({ selectedFolder: null, isOpenConfirm: false });
+  const hideDeleteConfirm = () => {
+    setIsOpenConfirm(false);
+    setSelectedFolder(null);
   };
 
-  handleSelectFolder = folder => {
-    const { setFolder, clearFolder, onSelectFolder } = this.props;
+  const handleSelectFolder = folder => {
     if (folder) {
-      setFolder(folder);
+      setSelectedFolder(folder);
     } else {
-      clearFolder();
+      setSelectedFolder(null);
     }
 
     if (onSelectFolder) {
@@ -66,74 +71,94 @@ class Folders extends React.Component {
     }
   };
 
-  render() {
-    const { folders, folderData, isOpenAddModal, isOpenRemovalModal, folderType, showAllItems } = this.props;
-    const { selectedFolder, isOpenConfirm, isOpenCreateOrUpdateModal } = this.state;
-    const isEmptyFolders = isEmpty(folders);
-    const openCreateModal = isOpenCreateOrUpdateModal || (isOpenAddModal && isEmptyFolders);
+  useEffect(() => {
+    loadFolders(folderType);
+  }, []);
 
-    return (
-      <Fragment>
-        {openCreateModal && (
-          <AddModal folder={selectedFolder} closeModal={this.hideCreateOrUpdateModal} folderType={folderType} />
-        )}
-        {isOpenConfirm && <ConfirmDelete folder={selectedFolder} closeModal={this.hideDeleteConfirm} />}
-        {isOpenAddModal && !isEmptyFolders && <MoveModal folderType={folderType} />}
-        {isOpenRemovalModal && <RemovalModal folderType={folderType} />}
+  useEffect(() => {
+    if (!isActive) {
+      setSelectedFolder(null);
+    }
+  }, [isActive]);
 
-        {showAllItems && (
-          <FolderListItem data-cy="newFolder" leftBorder active>
-            <FolderListItemTitle ellipsis title="Folders">
-              <IconFolders color={themeColor} />
-              FOLDERS
-              <AddFolderButton onClick={this.showCreateModal}>
-                <IconPlusCircle />
-              </AddFolderButton>
-            </FolderListItemTitle>
-          </FolderListItem>
-        )}
+  useEffect(() => {
+    if (updatedFolderId) {
+      if (isActive && onSelectFolder && selectedFolder?._id === updatedFolderId) {
+        onSelectFolder(updatedFolderId);
+      }
+      setContentsUpdated(null);
+    }
+  }, [updatedFolderId]);
+
+  const isEmptyFolders = isEmpty(folders);
+  const openCreateModal = isOpenCreateOrUpdateModal || (isOpenAddModal && isEmptyFolders);
+
+  return (
+    <Fragment>
+      {openCreateModal && (
+        <AddModal folder={selectedFolder} closeModal={hideCreateOrUpdateModal} folderType={folderType} />
+      )}
+      {isOpenConfirm && <ConfirmDelete folder={selectedFolder} closeModal={hideDeleteConfirm} />}
+      {isOpenAddModal && !isEmptyFolders && (
+        <MoveModal folderType={folderType} removeItemFromCart={removeItemFromCart} />
+      )}
+      {isOpenRemovalModal && <RemovalModal folderType={folderType} removeItemFromCart={removeItemFromCart} />}
+
+      {showAllItems && (
+        <FolderListItem data-cy="newFolder" leftBorder active>
+          <FolderListItemTitle ellipsis title="Folders">
+            <IconFolders color={themeColor} />
+            FOLDERS
+            <AddFolderButton onClick={showCreateModal}>
+              <IconPlusCircle />
+            </AddFolderButton>
+          </FolderListItemTitle>
+        </FolderListItem>
+      )}
+      {isActive && (
         <FoldersListWrapper data-cy="folder-list">
           {!showAllItems && (
-            <AddFolderButton onClick={this.showCreateModal} right="6px" top="-38px">
+            <AddFolderButton onClick={showCreateModal} right="6px" top="-38px">
               <IconPlusCircle />
             </AddFolderButton>
           )}
           <FolderList
             ellipsis
             showAllItems={showAllItems}
-            folderId={folderData?._id}
-            selectFolder={this.handleSelectFolder}
-            showRenameModal={this.showRenameModal}
-            showDeleteConfirm={this.showDeleteConfirm}
+            folderId={selectedFolder?._id}
+            selectFolder={handleSelectFolder}
+            showRenameModal={showRenameModal}
+            showDeleteConfirm={showDeleteConfirm}
           />
         </FoldersListWrapper>
-      </Fragment>
-    );
-  }
-}
+      )}
+    </Fragment>
+  );
+};
 
 Folders.propTypes = {
   onSelectFolder: PropTypes.func,
   folderType: PropTypes.string,
-  showAllItems: PropTypes.bool
+  showAllItems: PropTypes.bool,
+  isActive: PropTypes.bool
 };
 
 Folders.defaultProps = {
   onSelectFolder: () => null,
   showAllItems: false,
+  isActive: true,
   folderType: "ASSIGNMENT"
 };
 
 export default connect(
   state => ({
     folders: getFoldersSelector(state),
-    folderData: getFolderSelector(state),
+    updatedFolderId: getUpdatedFolderSelector(state),
     isOpenAddModal: isOpenAddItemsModalSelector(state),
     isOpenRemovalModal: isOpenRemovalModalSelector(state)
   }),
   {
     loadFolders: receiveFolderAction,
-    setFolder: setFolderAction,
-    clearFolder: clearFolderAction
+    setContentsUpdated: setContentsUpdatedAction
   }
 )(Folders);

@@ -3,12 +3,19 @@ import { connect } from "react-redux";
 import { EduButton, notification } from "@edulastic/common";
 import { folderTypes } from "@edulastic/constants";
 import { identity, pickBy, isEmpty } from "lodash";
-import { getSelectedItems, getFolderSelector } from "../../selectors/folder";
+import { getSelectedItems, getFoldersSelector } from "../../selectors/folder";
 import { receiveAddMoveFolderAction, toggleMoveItemsFolderAction } from "../../actions/folder";
 import { ModalTitle, Modal } from "./styled";
 import FolderList from "./FolderList";
 
-const MoveModal = ({ folderType, selectedItems, addMoveToFolderRequest, closeMoveModal, folderData }) => {
+const MoveModal = ({
+  folderType,
+  selectedItems,
+  addMoveToFolderRequest,
+  removeItemFromCart,
+  closeMoveModal,
+  folders
+}) => {
   const [selected, setFolderToAdd] = useState({});
 
   const handleCancel = () => {
@@ -59,18 +66,27 @@ const MoveModal = ({ folderType, selectedItems, addMoveToFolderRequest, closeMov
       type = folderTypes.TEST;
     }
 
-    const params = selectedItems.map(row => {
-      const param = {
-        _id: row.itemId,
-        contentType: type,
-        sourceFolderId: folderData?._id,
-        assignmentsNameList: itemsNotExistInFolder,
-        folderName
-      };
-      return pickBy(param, identity);
-    });
+    const params = selectedItems
+      .filter(item => !(content || []).find(c => c._id === item.itemId))
+      .map(item => {
+        const folder = folders.find(f => !!(f.content || []).find(c => c._id === item.itemId));
+        const param = {
+          _id: item.itemId,
+          contentType: type,
+          sourceFolderId: folder?._id,
+          assignmentsNameList: itemsNotExistInFolder,
+          folderName
+        };
+        return pickBy(param, identity);
+      });
 
-    addMoveToFolderRequest({ folderId: selected._id, params });
+    addMoveToFolderRequest({ folderId: selected._id, params, folderType });
+
+    selectedItems.forEach(item => {
+      if (removeItemFromCart) {
+        removeItemFromCart({ _id: item.itemId }, false);
+      }
+    });
   };
 
   return (
@@ -95,7 +111,7 @@ const MoveModal = ({ folderType, selectedItems, addMoveToFolderRequest, closeMov
 
 export default connect(
   state => ({
-    folderData: getFolderSelector(state),
+    folders: getFoldersSelector(state),
     selectedItems: getSelectedItems(state)
   }),
   {

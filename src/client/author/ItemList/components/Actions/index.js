@@ -59,18 +59,20 @@ const Actions = ({
   };
 
   const toggleMoveFolderModal = () => {
-    if (toggleAddItemModal && !isEmpty(selectedItems)) {
+    const itemsToAddFolder = getItemsToMoveOrRemoveFromFolder();
+    if (toggleAddItemModal && !isEmpty(itemsToAddFolder)) {
       toggleAddItemModal({
-        items: getItemsToMoveOrRemoveFromFolder(),
+        items: itemsToAddFolder,
         isOpen: true
       });
     }
   };
 
   const openRemoveItemsFromFolderModal = () => {
-    if (toggleRemovalModal && !isEmpty(selectedItems)) {
+    const itemsToRemoveFolder = getItemsToMoveOrRemoveFromFolder();
+    if (toggleRemovalModal && !isEmpty(itemsToRemoveFolder)) {
       toggleRemovalModal({
-        items: getItemsToMoveOrRemoveFromFolder(),
+        items: itemsToRemoveFolder,
         isOpen: true
       });
     }

@@ -5,7 +5,6 @@ import { IconMoreVertical, IconFolderDeactive, IconPencilEdit } from "@edulastic
 import { orderBy } from "lodash";
 import { Dropdown, Icon } from "antd";
 import {
-  getFolderSelector,
   getFoldersSelector,
   getSelectedItems,
   isOpenAddItemsModalSelector,
@@ -90,7 +89,6 @@ FolderList.defaultProps = {
 export default connect(
   state => ({
     folders: getFoldersSelector(state),
-    folderData: getFolderSelector(state),
     selectedItems: getSelectedItems(state),
     isOpenAddModal: isOpenAddItemsModalSelector(state),
     isOpenRemovalModal: isOpenRemovalModalSelector(state)

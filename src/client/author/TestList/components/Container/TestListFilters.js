@@ -21,6 +21,7 @@ import {
   isOrganizationDistrictSelector
 } from "../../../src/selectors/user";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
+import { removeTestFromCartAction } from "../../ducks";
 import filterData from "./FilterData";
 
 const filtersTitle = ["Grades", "Subject", "Status"];
@@ -40,6 +41,7 @@ const TestListFilters = ({
   userFeatures,
   districtId,
   currentDistrictUsers,
+  removeTestFromCart,
   getCurrentDistrictUsers,
   userRole,
   isOrgUser,
@@ -239,7 +241,7 @@ const TestListFilters = ({
 
   return (
     <Container>
-      {showModal ? (
+      {showModal && (
         <StandardsSearchModal
           setShowModal={setShowModal}
           showModal={showModal}
@@ -247,8 +249,6 @@ const TestListFilters = ({
           handleApply={handleApply}
           selectedCurriculam={selectedCurriculam}
         />
-      ) : (
-        ""
       )}
       <FilerHeading justifyContent="space-between">
         <Title>FILTERS</Title>
@@ -308,7 +308,12 @@ const TestListFilters = ({
             </>
           );
         })}
-      {isFolderSearch && <Folders onSelectFolder={handleSelectFolder} folderType={folderTypes.TEST} />}
+      <Folders
+        onSelectFolder={handleSelectFolder}
+        folderType={folderTypes.TEST}
+        isActive={isFolderSearch}
+        removeItemFromCart={removeTestFromCart}
+      />
     </Container>
   );
 };
@@ -338,7 +343,8 @@ export default connect(
     isDistrictUser: isDistrictUserSelector(state)
   }),
   {
-    getCurrentDistrictUsers: getCurrentDistrictUsersAction
+    getCurrentDistrictUsers: getCurrentDistrictUsersAction,
+    removeTestFromCart: removeTestFromCartAction
   }
 )(TestListFilters);
 

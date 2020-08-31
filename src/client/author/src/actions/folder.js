@@ -8,6 +8,7 @@ import {
   SET_FOLDER,
   CLEAR_FOLDER,
   TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
+  SET_CONTENTS_UPDATED,
   TOGGLE_MOVE_ITEMS_TO_FOLDER,
   REMOVAL_ITEMS_FROM_FOLDER_REQUEST
 } from "../constants/actions";
@@ -63,5 +64,10 @@ export const toggleMoveItemsFolderAction = payload => ({
 
 export const removeItemsFromFolderAction = payload => ({
   type: REMOVAL_ITEMS_FROM_FOLDER_REQUEST,
+  payload
+});
+
+export const setContentsUpdatedAction = payload => ({
+  type: SET_CONTENTS_UPDATED,
   payload
 });

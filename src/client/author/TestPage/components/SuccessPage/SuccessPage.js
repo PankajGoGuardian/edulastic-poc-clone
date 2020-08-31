@@ -55,7 +55,8 @@ class SuccessPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isShareModalVisible: false
+      isShareModalVisible: false,
+      shareWithGCEnable: true
     };
   }
 
@@ -68,7 +69,9 @@ class SuccessPage extends React.Component {
       isAssignSuccess,
       fetchAssignmentById,
       isRegradeSuccess,
-      fetchAssignmentsByTestId
+      fetchAssignmentsByTestId,
+      autoShareGCAssignment,
+      history
     } = this.props;
     const { id: testId, assignmentId } = match.params;
     if (isPlaylist) {
@@ -81,6 +84,21 @@ class SuccessPage extends React.Component {
     } else if (isRegradeSuccess) {
       fetchAssignmentsByTestId({ testId, regradeAssignments: true });
     }
+    const { createdAt, googleId } = history.location ? history.location.state || {} : {};
+    if(autoShareGCAssignment && !googleId && createdAt){
+      const timeLeft = 60000 - (new Date().getTime() - createdAt);
+      if(timeLeft > 0){
+        this.toggleShareWithGC();// disable google share button
+        this.timer = setTimeout( () => {
+          this.toggleShareWithGC();
+          clearTimeout(this.timer);
+       },timeLeft) // this will enable button after 60 seconds from assignment created.
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.timer && clearTimeout(this.timer);
   }
 
   handleAssign = () => {
@@ -99,6 +117,12 @@ class SuccessPage extends React.Component {
       isShareModalVisible: !this.state.isShareModalVisible
     });
   };
+
+  toggleShareWithGC = () => {
+    this.setState({
+      shareWithGCEnable: !this.state.shareWithGCEnable
+    })
+  }
 
   renderHeaderButton = () => {
     const { isAssignSuccess, isRegradeSuccess, history, location, regradedAssignments } = this.props;
@@ -156,7 +180,7 @@ class SuccessPage extends React.Component {
       syncWithGoogleClassroomInProgress,
       history
     } = this.props;
-    const { isShareModalVisible } = this.state;
+    const { isShareModalVisible, shareWithGCEnable } = this.state;
     const { title, _id, status, grades, subjects, authors = [] } = isPlaylist ? playlist : test;
     let shareUrl = "";
     if (this.getHighPriorityShared === "Public" && !isPlaylist) {
@@ -387,7 +411,7 @@ class SuccessPage extends React.Component {
                     isGhost
                     data-cy="Share with Google Classroom"
                     onClick={this.shareWithGoogleClassroom}
-                    disabled={syncWithGoogleClassroomInProgress}
+                    disabled={syncWithGoogleClassroomInProgress || !shareWithGCEnable}
                   >
                     Google Classroom
                   </EduButton>
@@ -408,6 +432,7 @@ const enhance = compose(
       playlist: getPlaylistSelector(state),
       test: getTestSelector(state),
       userId: get(state, "user.user._id", ""),
+      autoShareGCAssignment: get(state,"user.user.orgData.autoShareGCAssignment",false),
       assignment: getCurrentAssignmentSelector(state),
       playListSharedUsersList: getPlayListSharedListSelector(state),
       testSharedUsersList: getTestSharedListSelector(state),

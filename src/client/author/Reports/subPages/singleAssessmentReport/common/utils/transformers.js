@@ -20,8 +20,8 @@ const processSchoolYear = user => {
 const processCourseIds = orgDataArr => {
   const byCourseId = groupBy(orgDataArr.filter(item => !!item.courseId), "courseId");
   const courseIdArr = Object.keys(byCourseId).map(item => ({
-    key: byCourseId[item][0].courseId,
-    title: byCourseId[item][0].courseName
+    key: item,
+    title: byCourseId[item][0].courseName || `(Course ID: ${item.substring(item.length - 5)})`
   }));
   courseIdArr.unshift({
     key: "All",

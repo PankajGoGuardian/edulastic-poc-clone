@@ -294,7 +294,9 @@ class Container extends PureComponent {
       if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
         const testItem = test.itemGroups?.[0].items?.[0] || {};
         const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-        receiveItemDetailById(testItemId);
+        if (testItemId) {
+          receiveItemDetailById(testItemId);
+        }
       }
       const { editAssigned = false } = history.location.state || {};
 

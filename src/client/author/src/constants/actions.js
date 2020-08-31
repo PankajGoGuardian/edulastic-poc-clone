@@ -287,6 +287,7 @@ export const CLEAR_FOLDER = "[folder] clear folder";
 export const SET_ITEMS_TO_ADD = "[folder] set items to move";
 export const TOGGLE_REMOVE_ITEMS_FROM_FOLDER = "[folder] open remove items from folder modal";
 export const TOGGLE_MOVE_ITEMS_TO_FOLDER = "[folder] move items to a folder";
+export const SET_CONTENTS_UPDATED = "[folder] toggle conents updated";
 // -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //
 
 // playlist

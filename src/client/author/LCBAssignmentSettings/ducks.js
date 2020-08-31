@@ -3,7 +3,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
 import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
-import { omitBy, isUndefined, isEmpty, invert, set, get } from "lodash";
+import { omitBy, isUndefined, isEmpty, invert, set, get, maxBy } from "lodash";
 import { assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
 
 const slice = createSlice({
@@ -41,9 +41,9 @@ const slice = createSlice({
     changeAttribute: (state, { payload }) => {
       const { key, value } = payload;
       if (["startDate", "endDate", "dueDate"].includes(key)) {
-        state.assignment = state.assignment || {}
-        state.assignment.class = state.assignment.class || []
-        if(value){
+        state.assignment = state.assignment || {};
+        state.assignment.class = state.assignment.class || [];
+        if (value) {
           state.assignment.class[0][key] = value.valueOf();
           state.updateSettings[key] = value.valueOf();
         }
@@ -94,7 +94,7 @@ function* loadAssignmentSaga({ payload }) {
         data.releaseScore = releaseScore;
       }
       data.class[0].status = assignmentStatusArray[statusKey];
-      data.class[0].endDate = Math.max(data.class.map(x => x.endDate));
+      data.class[0].endDate = (maxBy(data.class, "endDate") || {}).endDate;
       if (!data.class[0].startDate) {
         data.class[0].startDate = Date.now();
       }

@@ -135,18 +135,18 @@ class Contaier extends Component {
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-      let updatedSearch = { ...search };
+      const updatedSearch = { ...search, filter };
+
       if (filter === filterMenuItems[0].filter) {
-        updatedSearch = { ...updatedSearch, status: "" };
+        updatedSearch.status = "";
       }
-      this.updateFilterState(
-        {
-          ...updatedSearch,
-          filter
-        },
-        sort
-      );
-      receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
+      this.updateFilterState(updatedSearch, sort);
+
+      if (filter === filterMenuItems[4].filter) {
+        updatedSearch.filter = filterMenuItems[0].filter;
+      }
+
+      receiveItems(updatedSearch, sort, 1, limit);
     } else {
       this.updateFilterState(search, sort);
       receiveItems(search, sort, 1, limit);
@@ -192,7 +192,11 @@ class Contaier extends Component {
       },
       sort
     );
-    receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
+
+    if (filterType !== "folders") {
+      receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
+    }
+
     history.push(`/author/items/filter/${filterType}`);
   };
 

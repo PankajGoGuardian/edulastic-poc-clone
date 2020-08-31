@@ -66,7 +66,7 @@ function* receiveCreateFolderRequest({ payload }) {
 
 function* receiveAddMoveFolderRequest({ payload }) {
   try {
-    const { folderId, params = [] } = payload;
+    const { folderId, params = [], folderType } = payload;
     const assignmentNamesCount = params[0].assignmentsNameList.length || 0;
     const showNamesInMsg =
       assignmentNamesCount > 1 ? `${assignmentNamesCount} assignments were` : `${params[0].assignmentsNameList} was`;
@@ -75,8 +75,15 @@ function* receiveAddMoveFolderRequest({ payload }) {
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
     yield put({
       type: ADD_MOVE_FOLDER_SUCCESS,
-      payload: { ...result.data, params }
+      payload: { ...result.data, params, updatedFolder: folderId }
     });
+    // re-fetch folders from server
+
+    yield put({
+      type: RECEIVE_FOLDER_REQUEST,
+      payload: folderType
+    });
+
     const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
     notification({ type: "success", msg: successMsg }); // TODO:Can't be moved to message file since dynamic values wont be supported.
   } catch (error) {
@@ -145,11 +152,7 @@ function* receiveRemoveItemsFromFolder({ payload }) {
       contentType = folderTypes.TEST;
     }
 
-    yield all(
-      itemsToRemove.map(contentId =>
-        call(folderApi.removeItemFromFolder, { folderId, data: { contentId, contentType } })
-      )
-    );
+    yield call(folderApi.removeItemFromFolder, { folderId, data: { contentIds: itemsToRemove, contentType } });
 
     notification({ type: "success", msg: `Items successfully removed from "${folderName}"` });
 
@@ -158,7 +161,8 @@ function* receiveRemoveItemsFromFolder({ payload }) {
       type: TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
       payload: {
         items: [],
-        isOpen: false
+        isOpen: false,
+        updatedFolder: folderId
       }
     });
 

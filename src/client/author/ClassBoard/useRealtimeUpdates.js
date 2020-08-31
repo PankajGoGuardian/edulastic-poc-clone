@@ -39,7 +39,7 @@ const useRealtime = (topic, actionMap, options = {}) => {
       setClient(client);
       client.subscribe(topic, err => {
         if (err) {
-          console.error(`error subscribing to topic ${topic} `, err);
+          console.log(`error subscribing to topic ${topic} `, err);
         } else {
           console.log("connected ", topic);
         }

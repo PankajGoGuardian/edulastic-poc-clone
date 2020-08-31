@@ -74,13 +74,13 @@ class QuestionModal extends React.Component {
       this.prevQuestion();
     }
     if (event.keyCode === 38) {
-      this.prevStudent();
+      this.prevStudent(event);
     }
     if (event.keyCode === 39) {
       this.nextQuestion();
     }
     if (event.keyCode === 40) {
-      this.nextStudent();
+      this.nextStudent(event);
     }
   };
 
@@ -95,28 +95,32 @@ class QuestionModal extends React.Component {
     hideQuestionModal();
   };
 
-  nextStudent = () => {
-    this.submitResponse();
+  nextStudent = (event) => {
+    
     const { maxStudents } = this.state;
     const { rowIndex } = this.state;
     const nextIndex = rowIndex + 1;
     if (nextIndex !== maxStudents) {
+      this.submitResponse();
       this.setState({ loaded: false }, () => {
         this.setState({ rowIndex: nextIndex, loaded: true });
       });
     } else {
+      event.stopPropagation();
       notification({ type: "success", messageKey:"finishedGrading"});
     }
   };
 
-  prevStudent = () => {
-    this.submitResponse();
+  prevStudent = (event) => {
     const { rowIndex } = this.state;
     if (rowIndex !== 0) {
+      this.submitResponse();
       const prevIndex = rowIndex - 1;
       this.setState({ loaded: false }, () => {
         this.setState({ rowIndex: prevIndex, loaded: true });
       });
+    } else{
+      event?.stopPropagation();
     }
   };
 
@@ -140,10 +144,17 @@ class QuestionModal extends React.Component {
       allResponse,
       submitResponse,
       teacherEditedScore,
-      studentResponseLoading
+      studentResponseLoading,
+      studentQuestionResponseTestActivityId
     } = this.props;
-    if (studentResponseLoading) return;
+    if (studentResponseLoading) {
+      return;
+    };
     const { testActivityId, testItemId: itemId } = question;
+    if(studentQuestionResponseTestActivityId && (testActivityId != studentQuestionResponseTestActivityId)){
+      // TODO: this situation shouldn't happen. but currently happening when switching netween students rapidly. need to fix it
+      return;
+    }
     if (!isEmpty(_userResponse)) {
       /**
        * allResponse is empty when the questionActivity is empty.
@@ -164,11 +175,12 @@ class QuestionModal extends React.Component {
   };
 
   nextQuestion = () => {
-    this.submitResponse();
+   
     const { maxQuestions } = this.state;
     const { colIndex } = this.state;
     const nextIndex = colIndex + 1;
     if (nextIndex !== maxQuestions) {
+      this.submitResponse();
       this.setState({ loaded: false }, () => {
         this.setState({ colIndex: nextIndex, loaded: true });
       });
@@ -197,14 +209,15 @@ class QuestionModal extends React.Component {
       isPresentationMode,
       windowWidth,
       studentResponseLoading,
-      isScoringInProgress
+      isScoringInProgress,
+      studentQuestionResponseTestActivityId
+
     } = this.props;
     const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
 
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`];
     }
-
     let student = {};
     if (rowIndex !== null) {
       student = tableData[rowIndex].students;
@@ -276,7 +289,8 @@ export default connect(
     allResponse: getStudentQuestionSelector(state),
     teacherEditedScore: getTeacherEditedScoreSelector(state),
     studentResponseLoading: state.studentQuestionResponse?.loading,
-    isScoringInProgress: getIsScoringCompletedSelector(state)
+    isScoringInProgress: getIsScoringCompletedSelector(state),
+    studentQuestionResponseTestActivityId: state.studentQuestionResponse?.data?.testActivityId
   }),
   { submitResponse: submitResponseAction }
 )(QuestionModal);

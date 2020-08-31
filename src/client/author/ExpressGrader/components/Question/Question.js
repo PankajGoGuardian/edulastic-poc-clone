@@ -34,7 +34,12 @@ class Question extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.teacherEditedScore, this.props.teacherEditedScore) && !this.props.studentResponseLoading) {
+    const {studentQuestionResponseTestActivityId,record,studentResponseLoading} = this.props;
+    const {prevStudentQuestionResponseTestActivityId,prevRecord} = prevProps;
+    // inidcating inconsitent state , due to rapid switching of students. 
+    // in that case , need to load the correct student response
+    const forceLoad =  studentQuestionResponseTestActivityId && (prevRecord?.testActivityId == prevStudentQuestionResponseTestActivityId && studentQuestionResponseTestActivityId != record?.testActivityId );
+    if (((!isEqual(prevProps.teacherEditedScore, this.props.teacherEditedScore))||forceLoad) && (!studentResponseLoading)) {
       const {
         record,
         loadStudentQuestionResponses,
@@ -112,7 +117,8 @@ const enhance = compose(
       assignmentClassId: getAssignmentClassIdSelector(state),
       studentQuestion: getStudentQuestionSelector(state),
       teacherEditedScore: getTeacherEditedScoreSelector(state),
-      studentResponseLoading: state.studentQuestionResponse?.loading
+      studentResponseLoading: state.studentQuestionResponse?.loading,
+      studentQuestionResponseTestActivityId: state.studentQuestionResponse?.data?.testActivityId
     }),
     {
       loadStudentQuestionResponses: receiveStudentQuestionAction

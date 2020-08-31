@@ -5,6 +5,7 @@ import { push } from "connected-react-router";
 import { googleApi, groupApi, userApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
 import { keyBy } from "lodash";
+import * as Sentry from "@sentry/browser";
 
 const RECEIVE_CLASSLIST_REQUEST = "[class] receive list request";
 const RECEIVE_CLASSLIST_SUCCESS = "[class] receive list success";
@@ -260,8 +261,9 @@ function* receiveClassListSaga({ payload }) {
     const hits = yield call(groupApi.getGroups, payload);
     yield put(receiveClassListSuccessAction(hits));
   } catch (err) {
-    const errorMessage = "Receive Classes is failing!";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Unable to fetch current class information. Please contact support.";
+    notification({ msg: errorMessage });
     yield put(receiveClassListErrorAction({ error: errorMessage }));
   }
 }
@@ -272,8 +274,9 @@ function* updateClassSaga({ payload }) {
     yield put(updateClassSuccessAction(updateClassData));
     notification({ type: "success", messageKey: "classUpdatedSuccessfully" });
   } catch (err) {
-    const errorMessage = "Update Class is failing";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Unable to fetch update class information. Please contact support.";
+    notification({ msg: errorMessage });
     yield put(updateClassErrorAction({ error: errorMessage }));
   }
 }
@@ -284,8 +287,9 @@ function* createClassSaga({ payload }) {
     yield put(createClassSuccessAction(createClass));
     notification({ type: "success", messageKey: "classCreatedSuccessfully" });
   } catch (err) {
-    const errorMessage = "Create Class is failing";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Unable to create class. Please contact support.";
+    notification({ msg: errorMessage });
     yield put(createClassErrorAction({ error: errorMessage }));
   }
 }
@@ -297,8 +301,9 @@ function* deleteClassSaga({ payload }) {
     yield put(receiveClassListAction(payload.searchQuery));
     notification({ type: "success", messageKey: "selectedClassesArchived" });
   } catch (err) {
-    const errorMessage = "Delete Class is failing";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Unable to delete the class group. Please try again.";
+    notification({ msg: errorMessage });
     yield put(deleteClassErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -308,8 +313,9 @@ function* receiveTeachersListSaga({ payload }) {
     const { result: teachersList } = yield call(userApi.fetchUsers, payload);
     yield put(receiveTeacherListSuccessAction(teachersList));
   } catch (err) {
-    const errorMessage = "Receive Teachers is failing!";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Unable to gather teachers list. Please contact support.";
+    notification({ msg: errorMessage });
     yield put(receiveTeacherListErrorAction({ error: errorMessage }));
   }
 }
@@ -319,10 +325,11 @@ function* bulkUpdateClassesSaga({ payload }) {
     const { result } = yield call(groupApi.bulkUpdateClasses, payload.data);
     yield put(receiveClassListAction(payload.searchQuery));
     yield put(bulkUpdateClassesSuccessAction(result));
-    notification({ type: "success", msg:result.message});
+    notification({ type: "success", msg: result.message });
   } catch (err) {
-    const errorMessage = "Something went wrong. Please try again!";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Something went wrong. Please try again or contact support!";
+    notification({ msg: errorMessage });
   }
 }
 
@@ -332,12 +339,13 @@ function* archiveClassSaga({ payload }) {
   try {
     yield call(groupApi.archiveGroup, restPayload);
     const successMessage = `${groupTypeText} Archived Successfully`;
-    notification({ type: "success", msg: successMessage});
+    notification({ type: "success", msg: successMessage });
     yield put(archiveClassSuccessAction({ archiveSuccess: successMessage }));
     if (exitPath) yield put(push("/"));
     yield put(push(exitPath || "/author/manageClass"));
   } catch (err) {
-    const errorMessage = `Archive ${groupTypeText} is failing`;
+    Sentry.captureException(err);
+    const errorMessage = `Unable to archive ${groupTypeText}. Please contact support.`;
     notification({ msg: errorMessage });
     yield put(archiveClassErrorAction({ archiveError: errorMessage }));
   }
@@ -354,11 +362,12 @@ function* saveHangoutEventSaga({ payload }) {
       });
     }
     const successMessage = "Google Meet event saved successfully";
-    notification({ type: "success", msg:successMessage});
+    notification({ type: "success", msg: successMessage });
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
-    const errorMessage = "Google Meet event save is failing";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Unable to save Google Meet event. Please contact support.";
+    notification({ msg: errorMessage });
     yield put(saveHangoutEventErrorAction());
   }
 }
@@ -373,11 +382,12 @@ function* updateHangoutEventSaga({ payload }) {
       });
     }
     const successMessage = "Hangouts event updated successfully";
-    notification({ type: "success", msg: successMessage});
+    notification({ type: "success", msg: successMessage });
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
-    const errorMessage = "Hangouts event update is failing";
-    notification({ msg:errorMessage });
+    Sentry.captureException(err);
+    const errorMessage = "Unable to update Hangouts event. Please contact support.";
+    notification({ msg: errorMessage });
     yield put(saveHangoutEventErrorAction());
   }
 }

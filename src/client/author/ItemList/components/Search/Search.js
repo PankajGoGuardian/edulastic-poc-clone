@@ -20,6 +20,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import StandardsSearchModal from "./StandardsSearchModal";
 import { Container, IconWrapper, Item, ItemBody, ItemRelative, MainFilterItems } from "./styled";
+import { addItemToCartAction } from "../../ducks";
 
 const { SMART_FILTERS } = libraryFilters;
 const Search = ({
@@ -48,7 +49,8 @@ const Search = ({
   currentDistrictUsers,
   getCurrentDistrictUsers,
   userRole,
-  itemCount
+  itemCount,
+  addItemToCart
 }) => {
   const [showModal, setShowModalValue] = useState(false);
 
@@ -131,13 +133,11 @@ const Search = ({
   };
 
   const selectedCurriculam = formattedCuriculums.find(fc => fc.value === curriculumId);
-  if (filter === SMART_FILTERS.FOLDERS) {
-    return <Folders onSelectFolder={onSearchFieldChange("folderId")} folderType={folderTypes.ITEM} />;
-  }
+  const isFolderSearch = filter === SMART_FILTERS.FOLDERS;
 
   return (
     <MainFilterItems>
-      {showModal ? (
+      {showModal && (
         <StandardsSearchModal
           setShowModal={setShowModal}
           showModal={showModal}
@@ -146,243 +146,251 @@ const Search = ({
           itemCount={itemCount}
           selectedCurriculam={selectedCurriculam}
         />
-      ) : (
-        ""
       )}
-      <Container>
-        {((userFeatures.isPublisherAuthor && filter !== SMART_FILTERS.ENTIRE_LIBRARY) || userFeatures.isCurator) &&
-          filter !== SMART_FILTERS.FAVORITES &&
-          getStatusFilter()}
-        {userFeatures.isCurator && filter !== SMART_FILTERS.AUTHORED_BY_ME && filter !== SMART_FILTERS.FAVORITES && (
+
+      <Folders
+        isActive={isFolderSearch}
+        folderType={folderTypes.ITEM}
+        removeItemFromCart={addItemToCart}
+        onSelectFolder={onSearchFieldChange("folderId")}
+      />
+      {!isFolderSearch && (
+        <Container>
+          {((userFeatures.isPublisherAuthor && filter !== SMART_FILTERS.ENTIRE_LIBRARY) || userFeatures.isCurator) &&
+            filter !== SMART_FILTERS.FAVORITES &&
+            getStatusFilter()}
+          {userFeatures.isCurator && filter !== SMART_FILTERS.AUTHORED_BY_ME && filter !== SMART_FILTERS.FAVORITES && (
+            <Item>
+              <FieldLabel>Authored By</FieldLabel>
+              <ItemBody>
+                <SelectInputStyled
+                  mode="multiple"
+                  size="large"
+                  placeholder="All Authors"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  onChange={onSearchFieldChange("authoredByIds")}
+                  value={authoredByIds}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  {currentDistrictUsers?.map(el => (
+                    <Select.Option key={el._id} value={el._id}>
+                      {`${el.firstName} ${el.lastName}`}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </ItemBody>
+            </Item>
+          )}
           <Item>
-            <FieldLabel>Authored By</FieldLabel>
+            <FieldLabel>Grades</FieldLabel>
             <ItemBody>
               <SelectInputStyled
+                data-cy="selectGrades"
                 mode="multiple"
                 size="large"
-                placeholder="All Authors"
-                optionFilterProp="children"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                onChange={onSearchFieldChange("authoredByIds")}
-                value={authoredByIds}
+                placeholder="All Grades"
+                value={grades}
+                onChange={onSearchFieldChange("grades")}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
               >
-                {currentDistrictUsers?.map(el => (
-                  <Select.Option key={el._id} value={el._id}>
-                    {`${el.firstName} ${el.lastName}`}
+                {selectsData.allGrades.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
                   </Select.Option>
                 ))}
               </SelectInputStyled>
             </ItemBody>
           </Item>
-        )}
-        <Item>
-          <FieldLabel>Grades</FieldLabel>
-          <ItemBody>
-            <SelectInputStyled
-              data-cy="selectGrades"
-              mode="multiple"
-              size="large"
-              placeholder="All Grades"
-              value={grades}
-              onChange={onSearchFieldChange("grades")}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              {selectsData.allGrades.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </ItemBody>
-        </Item>
-        <Item>
-          <FieldLabel>Subject</FieldLabel>
-          <ItemBody>
-            <SelectInputStyled
-              mode="multiple"
-              data-cy="selectSubject"
-              onChange={onSearchFieldChange("subject")}
-              value={subject}
-              size="large"
-              placeholder="All Subjects"
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              {selectsData.allSubjects.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </ItemBody>
-        </Item>
-        {filter !== SMART_FILTERS.FAVORITES && (
-          <>
-            <Item>
-              <FieldLabel>Standard set</FieldLabel>
-              <ItemBody>
-                <SelectInputStyled
-                  data-cy="selectSdtSet"
-                  showSearch
-                  size="large"
-                  optionFilterProp="children"
-                  onSelect={onSearchFieldChange("curriculumId")}
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                  value={curriculumId}
-                  defaultValue=""
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  <Select.Option key="" value="">
-                    All Standard set
+          <Item>
+            <FieldLabel>Subject</FieldLabel>
+            <ItemBody>
+              <SelectInputStyled
+                mode="multiple"
+                data-cy="selectSubject"
+                onChange={onSearchFieldChange("subject")}
+                value={subject}
+                size="large"
+                placeholder="All Subjects"
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {selectsData.allSubjects.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
                   </Select.Option>
-                  {subject?.length > 0
-                    ? formattedCuriculums.map(el => (
+                ))}
+              </SelectInputStyled>
+            </ItemBody>
+          </Item>
+          {filter !== SMART_FILTERS.FAVORITES && (
+            <>
+              <Item>
+                <FieldLabel>Standard set</FieldLabel>
+                <ItemBody>
+                  <SelectInputStyled
+                    data-cy="selectSdtSet"
+                    showSearch
+                    size="large"
+                    optionFilterProp="children"
+                    onSelect={onSearchFieldChange("curriculumId")}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    value={curriculumId}
+                    defaultValue=""
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    <Select.Option key="" value="">
+                      All Standard set
+                    </Select.Option>
+                    {subject?.length &&
+                      formattedCuriculums.map(el => (
                         <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
                           {el.text}
                         </Select.Option>
-                      ))
-                    : ""}
-                </SelectInputStyled>
-              </ItemBody>
-            </Item>
-            <ItemRelative title={handleStandardsAlert()}>
-              <IconWrapper className={isStandardsDisabled && "disabled"}>
-                <IconExpandBox onClick={() => setShowModal(true)} />
-              </IconWrapper>
-              <FieldLabel>Standards</FieldLabel>
-              <ItemBody>
-                <StandardSelectStyled
-                  data-cy="selectStd"
-                  mode="multiple"
-                  size="large"
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                  placeholder="All Standards"
-                  onChange={onSearchFieldChange("standardIds")}
-                  value={standardIds}
-                  disabled={isStandardsDisabled}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {curriculumStandards.elo.map(el => (
-                    <Select.Option key={el._id} value={el._id}>
-                      {`${el.identifier}`}
-                    </Select.Option>
-                  ))}
-                </StandardSelectStyled>
-              </ItemBody>
-            </ItemRelative>
-            <Item>
-              <FieldLabel>Collections</FieldLabel>
-              <ItemBody>
-                <SelectInputStyled
-                  mode="multiple"
-                  data-cy="Collections"
-                  size="large"
-                  placeholder="All Collections"
-                  onChange={onSearchFieldChange("collections")}
-                  value={_collections}
-                  optionFilterProp="children"
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {collectionData.map(el => (
-                    <Select.Option key={el.value} value={el.value}>
-                      {el.text}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </ItemBody>
-            </Item>
-            <Item>
-              <FieldLabel>Question Type</FieldLabel>
-              <ItemBody>
-                <SelectInputStyled
-                  data-cy="selectqType"
-                  showSearch
-                  size="large"
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                  onSelect={onSearchFieldChange("questionType")}
-                  value={questionType}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {questionsType.map(el => (
-                    <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
-                      {el.text}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </ItemBody>
-            </Item>
-            <Item>
-              <FieldLabel>Depth of Knowledge</FieldLabel>
-              <ItemBody>
-                <SelectInputStyled
-                  data-cy="selectDOK"
-                  size="large"
-                  onSelect={onSearchFieldChange("depthOfKnowledge")}
-                  value={depthOfKnowledge}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {selectsData.allDepthOfKnowledge.map((el, index) => (
-                    <Select.Option key={el.value} value={el.value}>
-                      {`${index > 0 ? index : ""} ${el.text}`}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </ItemBody>
-            </Item>
-            <Item>
-              <FieldLabel>Difficulty</FieldLabel>
-              <ItemBody>
-                <SelectInputStyled
-                  data-cy="selectDifficulty"
-                  size="large"
-                  onSelect={onSearchFieldChange("authorDifficulty")}
-                  value={authorDifficulty}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {selectsData.allAuthorDifficulty.map(el => (
-                    <Select.Option key={el.value} value={el.value}>
-                      {el.text}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </ItemBody>
-            </Item>
+                      ))}
+                  </SelectInputStyled>
+                </ItemBody>
+              </Item>
+              <ItemRelative title={handleStandardsAlert()}>
+                <IconWrapper className={isStandardsDisabled && "disabled"}>
+                  <IconExpandBox onClick={() => setShowModal(true)} />
+                </IconWrapper>
+                <FieldLabel>Standards</FieldLabel>
+                <ItemBody>
+                  <StandardSelectStyled
+                    data-cy="selectStd"
+                    mode="multiple"
+                    size="large"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    placeholder="All Standards"
+                    onChange={onSearchFieldChange("standardIds")}
+                    value={standardIds}
+                    disabled={isStandardsDisabled}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    {curriculumStandards.elo.map(el => (
+                      <Select.Option key={el._id} value={el._id}>
+                        {`${el.identifier}`}
+                      </Select.Option>
+                    ))}
+                  </StandardSelectStyled>
+                </ItemBody>
+              </ItemRelative>
+              <Item>
+                <FieldLabel>Collections</FieldLabel>
+                <ItemBody>
+                  <SelectInputStyled
+                    mode="multiple"
+                    data-cy="Collections"
+                    size="large"
+                    placeholder="All Collections"
+                    onChange={onSearchFieldChange("collections")}
+                    value={_collections}
+                    optionFilterProp="children"
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    {collectionData.map(el => (
+                      <Select.Option key={el.value} value={el.value}>
+                        {el.text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </ItemBody>
+              </Item>
+              <Item>
+                <FieldLabel>Question Type</FieldLabel>
+                <ItemBody>
+                  <SelectInputStyled
+                    data-cy="selectqType"
+                    showSearch
+                    size="large"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    onSelect={onSearchFieldChange("questionType")}
+                    value={questionType}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    {questionsType.map(el => (
+                      <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                        {el.text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </ItemBody>
+              </Item>
+              <Item>
+                <FieldLabel>Depth of Knowledge</FieldLabel>
+                <ItemBody>
+                  <SelectInputStyled
+                    data-cy="selectDOK"
+                    size="large"
+                    onSelect={onSearchFieldChange("depthOfKnowledge")}
+                    value={depthOfKnowledge}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    {selectsData.allDepthOfKnowledge.map((el, index) => (
+                      <Select.Option key={el.value} value={el.value}>
+                        {`${index > 0 ? index : ""} ${el.text}`}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </ItemBody>
+              </Item>
+              <Item>
+                <FieldLabel>Difficulty</FieldLabel>
+                <ItemBody>
+                  <SelectInputStyled
+                    data-cy="selectDifficulty"
+                    size="large"
+                    onSelect={onSearchFieldChange("authorDifficulty")}
+                    value={authorDifficulty}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    {selectsData.allAuthorDifficulty.map(el => (
+                      <Select.Option key={el.value} value={el.value}>
+                        {el.text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </ItemBody>
+              </Item>
 
-            {showStatus && !isPublishers && getStatusFilter()}
+              {showStatus && !isPublishers && getStatusFilter()}
 
-            <Item>
-              <FieldLabel>Tags</FieldLabel>
-              <ItemBody>
-                <SelectInputStyled
-                  mode="multiple"
-                  data-cy="selectTags"
-                  size="large"
-                  onChange={onSearchFieldChange("tags")}
-                  value={tags}
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {allTagsData.map(el => (
-                    <Select.Option key={el._id} value={el._id}>
-                      {el.tagName}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </ItemBody>
-            </Item>
-          </>
-        )}
-      </Container>
+              <Item>
+                <FieldLabel>Tags</FieldLabel>
+                <ItemBody>
+                  <SelectInputStyled
+                    mode="multiple"
+                    data-cy="selectTags"
+                    size="large"
+                    onChange={onSearchFieldChange("tags")}
+                    value={tags}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    {allTagsData.map(el => (
+                      <Select.Option key={el._id} value={el._id}>
+                        {el.tagName}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </ItemBody>
+              </Item>
+            </>
+          )}
+        </Container>
+      )}
     </MainFilterItems>
   );
 };
@@ -403,7 +411,7 @@ export default connect(
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
     userRole: getUserRole(state)
   }),
-  { getCurrentDistrictUsers: getCurrentDistrictUsersAction }
+  { getCurrentDistrictUsers: getCurrentDistrictUsersAction, addItemToCart: addItemToCartAction }
 )(Search);
 
 const StandardSelectStyled = styled(SelectInputStyled)`

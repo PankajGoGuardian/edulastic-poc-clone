@@ -293,5 +293,31 @@ export const apiForms = [
         required: true
       }
     ]
+  },
+  {
+    id: "approve-school-district",
+    name: "Approve School/District",
+    endPoint: "school/district-School-Details",
+    method: "post",
+    fields: [
+      {
+        key: "type",
+        name: "type",
+        placeholder: "Type",
+        type: "radiogroup",
+        displayName: "Enter ID for",
+        values: ["District", "School"],
+        defaultValue: "School",
+        formatter: value => (value === "School" ? "school" : "district")
+      },
+      {
+        key: "id",
+        name: "id",
+        displayName: "ID",
+        placeholder: "Enter District/School ID",
+        type: "string",
+        required: true
+      }
+    ]
   }
 ];

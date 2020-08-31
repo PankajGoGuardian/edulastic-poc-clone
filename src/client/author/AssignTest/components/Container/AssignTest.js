@@ -114,9 +114,9 @@ class AssignTest extends React.Component {
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId);
       }
-      if (testId) {
-        fetchTestByID(testId);
-      }
+    }
+    if (testId) {
+      fetchTestByID(testId);
     }
   }
 

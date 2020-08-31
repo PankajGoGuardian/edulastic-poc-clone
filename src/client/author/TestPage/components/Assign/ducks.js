@@ -283,6 +283,8 @@ function* saveAssignment({ payload }) {
     yield put(toggleHasCommonAssignmentsPopupAction(false));
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
     const assignmentId = assignment._id;
+    const createdAt = assignment.createdAt;
+    const googleId = get(assignment, "class[0].googleId", '');
     if (!assignmentId && !payload.playlistModuleId) {
       yield put(push("/author/assignments"));
     }
@@ -311,7 +313,7 @@ function* saveAssignment({ payload }) {
         pathname: `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
           payload.playlistModuleId ? payload.playlistId : testIds[0]
         }/assign/${assignmentId}`,
-        state: { ...locationState, assignedTestId: payload.testId, playlistModuleId: payload.playlistModuleId }
+        state: { ...locationState, assignedTestId: payload.testId, playlistModuleId: payload.playlistModuleId, createdAt, googleId }
       })
     );
   } catch (err) {

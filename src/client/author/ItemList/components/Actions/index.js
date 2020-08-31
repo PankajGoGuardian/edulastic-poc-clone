@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { compose } from "redux";
+import { isEmpty } from "lodash";
 import { Menu, Dropdown } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -10,6 +11,7 @@ import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { getUserRole, isPublisherUserSelector, getCollectionsToAddContent } from "../../../src/selectors/user";
+import { toggleRemoveItemsFolderAction, toggleMoveItemsFolderAction } from "../../../src/actions/folder";
 import { createTestFromCartAction } from "../../ducks";
 import { getSelectedTestsSelector } from "../../../TestList/ducks";
 import { setAddCollectionModalVisibleAction } from "../../../ContentBuckets/ducks";
@@ -20,14 +22,13 @@ const Actions = ({
   selectedTests,
   selectedPlaylists,
   setAddCollectionModalVisible,
+  toggleAddItemModal,
+  toggleRemovalModal, // open a modal to remove items from a folder
   createTestFromCart,
   type,
   t,
   collectionsToWrite
 }) => {
-  if (!collectionsToWrite?.length) {
-    return null;
-  }
   let numberOfSelectedItems = selectedItems?.length;
   if (type === "TEST") {
     numberOfSelectedItems = selectedTests?.length;
@@ -44,19 +45,58 @@ const Actions = ({
     createTestFromCart();
   };
 
+  const getItemsToMoveOrRemoveFromFolder = () => {
+    let itemsToAdd = [];
+    // question item does not have name or title,
+    // so will pass item index for now
+    if (type === "TESTITEM") {
+      itemsToAdd = selectedItems?.map((x, i) => ({ itemId: x, name: `item ${i + 1}` }));
+    }
+    if (type === "TEST") {
+      itemsToAdd = selectedTests?.map(x => ({ itemId: x._id, name: x.title }));
+    }
+    return itemsToAdd;
+  };
+
+  const toggleMoveFolderModal = () => {
+    const itemsToAddFolder = getItemsToMoveOrRemoveFromFolder();
+    if (toggleAddItemModal && !isEmpty(itemsToAddFolder)) {
+      toggleAddItemModal({
+        items: itemsToAddFolder,
+        isOpen: true
+      });
+    }
+  };
+
+  const openRemoveItemsFromFolderModal = () => {
+    const itemsToRemoveFolder = getItemsToMoveOrRemoveFromFolder();
+    if (toggleRemovalModal && !isEmpty(itemsToRemoveFolder)) {
+      toggleRemovalModal({
+        items: itemsToRemoveFolder,
+        isOpen: true
+      });
+    }
+  };
+
   const menu = (
     <DropMenu>
-      {type === "TESTITEM" && (
+      {!isEmpty(collectionsToWrite) && type === "TESTITEM" && (
         <MenuItems onClick={handleCreateTest}>
           <span>Create a Test</span>
         </MenuItems>
       )}
-      <MenuItems onClick={() => setAddCollectionModalVisible(true)}>
-        <span>Add to Collection</span>
-      </MenuItems>
-      <MenuItems>
-        <span>Remove from Collection</span>
-      </MenuItems>
+      <MenuItems onClick={() => toggleMoveFolderModal()}>Add to Folder</MenuItems>
+      <MenuItems onClick={openRemoveItemsFromFolderModal}>Remove from Folder</MenuItems>
+      {!isEmpty(collectionsToWrite) && (
+        <MenuItems onClick={() => setAddCollectionModalVisible(true)}>
+          <span>Add to Collection</span>
+        </MenuItems>
+      )}
+      {!isEmpty(collectionsToWrite) && (
+        <MenuItems>
+          <span>Remove from Collection</span>
+        </MenuItems>
+      )}
     </DropMenu>
   );
 
@@ -93,7 +133,9 @@ const withConnect = connect(
   mapStateToProps,
   {
     setAddCollectionModalVisible: setAddCollectionModalVisibleAction,
-    createTestFromCart: createTestFromCartAction
+    createTestFromCart: createTestFromCartAction,
+    toggleRemovalModal: toggleRemoveItemsFolderAction,
+    toggleAddItemModal: toggleMoveItemsFolderAction
   }
 );
 

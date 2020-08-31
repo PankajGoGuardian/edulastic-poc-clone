@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { isEmpty, find, get } from "lodash";
+import { get, isEmpty } from "lodash";
 import { Link, withRouter } from "react-router-dom";
-import { Dropdown, Tooltip, Spin } from "antd";
+import { Dropdown, Tooltip, Spin, Menu } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test as testConstants, roleuser } from "@edulastic/constants";
 
@@ -15,8 +15,14 @@ import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 import ActionMenu from "../ActionMenu/ActionMenu";
-import { getFolderSelector } from "../../../src/selectors/folder";
+import { getItemsInFolders, getSelectedItems } from "../../../src/selectors/folder";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+
+import {
+  toggleRemoveItemsFolderAction,
+  toggleMoveItemsFolderAction,
+  setItemsMoveFolderAction
+} from "../../../src/actions/folder";
 
 import {
   Container,
@@ -44,12 +50,12 @@ import { getAssignmentTestsSelector } from "../../../src/selectors/assignments";
 import { ReactComponent as TimerIcon } from "./assets/timer.svg";
 import { canEditTest } from "../../utils";
 
-const convertTableData = (data, assignments = [], index, userId) => ({
+const convertTableData = (data, assignments = [], index, userId, itemsInFolders) => ({
   name: data.title,
   thumbnail: data.thumbnail,
   key: index.toString(),
   rowIndex: index.toString(),
-  testId: data._id,
+  itemId: data._id,
   class: assignments.length,
   assigned: "",
   status: "status",
@@ -57,6 +63,7 @@ const convertTableData = (data, assignments = [], index, userId) => ({
     .map(item => (item.submittedCount || 0) + (item.gradedCount || 0))
     .reduce((t, c) => t + c, 0) || 0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c, 0)}`,
   graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c, 0) || 0}`,
+  isInFolder: itemsInFolders.includes(data._id),
   action: "",
   classId: assignments[0]?.classId,
   currentAssignment: assignments[0],
@@ -95,13 +102,10 @@ const TableList = ({
   tests = [],
   onOpenReleaseScoreSettings,
   history,
-  renderFilter,
   t,
-  onSelectRow,
-  selectedRows,
   loading,
   toggleEditModal,
-  folderData,
+  itemsInFolders,
   showPreviewModal,
   showFilter,
   windowWidth,
@@ -111,7 +115,11 @@ const TableList = ({
   assignmentTests,
   togglePrintModal,
   userRole,
-  userClassList
+  userClassList,
+  setItemsToFolder,
+  selectedItems,
+  toggleAddItemFolderModal,
+  toggleRemovalFolderModal
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -119,14 +127,15 @@ const TableList = ({
   useEffect(() => {
     setExpandedRows(["0", "1", "2"]);
   }, []);
+
   const expandedRowRender = parentData => {
     const columns = [
       {
         title: <CheckboxLabel />,
         dataIndex: "checkbox",
-        width: "10%",
+        width: "4%",
         className: "select-row",
-        render: () => <GreyFont daya-cy={parentData.testId} style={{ display: "block" }} />
+        render: () => <GreyFont daya-cy={parentData.itemId} style={{ display: "block" }} />
       },
       {
         dataIndex: "class",
@@ -173,7 +182,7 @@ const TableList = ({
       },
       {
         dataIndex: "assigned",
-        width: "11%",
+        width: "12%",
         render: (text, row) => (
           <Tooltip title={text} placement="top">
             <GreyFont
@@ -259,10 +268,15 @@ const TableList = ({
             </Tooltip>
           </ActionsWrapper>
         )
+      },
+      {
+        dataIndex: "select-row",
+        width: "5%",
+        render: () => <GreyFont />
       }
     ];
     const expandTableList = [];
-    let filterData = assignmentsByTestId?.[parentData.testId] || [];
+    let filterData = assignmentsByTestId?.[parentData.itemId] || [];
     let getInfo;
     if (status) {
       filterData = filterData.filter(assignment => assignment.status === status);
@@ -276,7 +290,7 @@ const TableList = ({
 
     return (
       <ExpandedTable
-        data-cy={parentData.testId}
+        data-cy={parentData.itemId}
         columns={columns}
         dataSource={expandTableList}
         pagination={false}
@@ -298,6 +312,64 @@ const TableList = ({
     });
   };
 
+  const getAssignmentsByTestId = Id => (assignmentsByTestId[Id] || []).filter(item => !item.redirect);
+
+  let data = tests.map((testItem, i) =>
+    convertTableData(testItem, getAssignmentsByTestId(testItem._id), i, userId, itemsInFolders)
+  );
+
+  if (status) {
+    data = data.filter(d => getAssignmentsByTestId(d.itemId).find(assignment => assignment.status === status));
+  }
+
+  const handleSelectRow = row => e => {
+    const selectedIndex = selectedItems.findIndex(r => r.itemId === row.itemId);
+    if (e.target && e.target.checked && selectedIndex === -1) {
+      setItemsToFolder([...selectedItems, row]);
+    } else if (e.target && selectedIndex !== -1) {
+      selectedItems.splice(selectedIndex, 1);
+      setItemsToFolder([...selectedItems]);
+    } else if (!e.target && toggleAddItemFolderModal) {
+      // this case is from action button of an item
+      setItemsToFolder([row]);
+      toggleAddItemFolderModal({
+        items: [row],
+        isOpen: true
+      });
+    }
+  };
+
+  const handleSelectAllRow = e => {
+    if (e.target.checked) {
+      setItemsToFolder(data);
+    } else {
+      setItemsToFolder([]);
+    }
+  };
+
+  const toggleMoveFolderModal = () => {
+    if (toggleAddItemFolderModal) {
+      toggleAddItemFolderModal({
+        items: selectedItems,
+        isOpen: true
+      });
+    }
+  };
+
+  const handleRemoveItemsFromFolder = row => {
+    if (!isEmpty(row)) {
+      toggleRemovalFolderModal({
+        items: [row],
+        isOpen: true
+      });
+    } else if (!isEmpty(selectedItems)) {
+      toggleRemovalFolderModal({
+        items: selectedItems,
+        isOpen: true
+      });
+    }
+  };
+
   const columns = [
     {
       title: "Assignment Name",
@@ -313,7 +385,7 @@ const TableList = ({
             <div>
               <TestThumbnail src={row.thumbnail} />
             </div>
-            <AssignmentTD data-cy="assignmentName" data-test={row.testId} showFilter={showFilter}>
+            <AssignmentTD data-cy="assignmentName" data-test={row.itemId} showFilter={showFilter}>
               {text}
             </AssignmentTD>
           </FlexContainer>
@@ -379,11 +451,30 @@ const TableList = ({
       render: text => <GreyFont data-cy="testGraded"> {text} </GreyFont>
     },
     {
-      title: renderFilter(),
+      title: () => {
+        const menu = (
+          <Menu>
+            <Menu.Item onClick={() => toggleMoveFolderModal()}>Add to Folder</Menu.Item>
+            <Menu.Item onClick={() => handleRemoveItemsFromFolder()}>Remove from Folder</Menu.Item>
+          </Menu>
+        );
+        return (
+          selectedItems.length > 0 && (
+            <ActionDiv>
+              <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
+                <EduButton height="22px" width="75px" ml="0px" data-cy="actions" isBlue isGhost>
+                  ACTIONS
+                </EduButton>
+              </Dropdown>
+            </ActionDiv>
+          )
+        );
+      },
+      className: "assignment-actions",
       dataIndex: "action",
       width: "10%",
       render: (_, row) => {
-        const assignmentTest = assignmentTests.find(at => at._id === row.testId);
+        const assignmentTest = assignmentTests.find(at => at._id === row.itemId);
         return (
           <ActionDiv onClick={e => e.stopPropagation()}>
             <Dropdown
@@ -398,6 +489,8 @@ const TableList = ({
                 userId,
                 assignmentTest,
                 togglePrintModal,
+                addItemToFolder: handleSelectRow(row),
+                removeItemsFromFolder: () => handleRemoveItemsFromFolder(row),
                 canEdit: row.canEdit && !(row.hasAdminAssignments && userRole === roleuser.TEACHER),
                 userClassList,
                 canUnassign: !(row.hasAdminAssignments && userRole === roleuser.TEACHER)
@@ -406,7 +499,7 @@ const TableList = ({
               trigger={["click"]}
               getPopupContainer={trigger => trigger.parentNode}
             >
-              <EduButton height="28px" width="100%" isGhost data-cy="actions">
+              <EduButton ml="0px" height="23px" width="75px" isGhost data-cy="actions">
                 ACTIONS
               </EduButton>
             </Dropdown>
@@ -417,38 +510,35 @@ const TableList = ({
         onMouseEnter: () => enableExtend(),
         onMouseLeave: () => disableExtend()
       })
+    },
+    {
+      title: () => {
+        const isSelectedAll = selectedItems.length === data.length;
+        return (
+          <CheckboxLabel
+            size="15px"
+            indeterminate={selectedItems.length > 0 && !isSelectedAll}
+            onChange={handleSelectAllRow}
+            checked={isSelectedAll}
+            onClick={e => e.stopPropagation()}
+          />
+        );
+      },
+      dataIndex: "checked",
+      width: "5%",
+      render: (_, row) => {
+        const selected = selectedItems.find(r => r.itemId === row.itemId);
+        return (
+          <CheckboxLabel
+            size="15px"
+            checked={!!selected}
+            onChange={handleSelectRow(row)}
+            onClick={e => e.stopPropagation()}
+          />
+        );
+      }
     }
   ];
-
-  const getAssignmentsByTestId = Id => (assignmentsByTestId[Id] || []).filter(item => !item.redirect);
-
-  const rowSelection = {
-    selectedRowKeys: selectedRows.map(({ key }) => key),
-    onChange: (_, rows) => {
-      if (onSelectRow) {
-        onSelectRow(rows);
-      }
-    }
-  };
-
-  let data = tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i, userId));
-
-  if (!isEmpty(folderData)) {
-    const { content } = folderData;
-
-    const tempData = [];
-    content.forEach(({ _id }) => {
-      const temp = find(tests, ({ _id: testId }) => testId === _id);
-      if (temp) {
-        tempData.push(temp);
-      }
-    });
-    data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i, userId));
-  }
-
-  if (status) {
-    data = data.filter(d => getAssignmentsByTestId(d.testId).find(assignment => assignment.status === status));
-  }
 
   if (loading) {
     return <Spin size="large" />;
@@ -471,7 +561,6 @@ const TableList = ({
     <Container>
       <TableData
         columns={columns}
-        rowSelection={rowSelection}
         expandIconAsCell={false}
         expandIconColumnIndex={-1}
         expandedRowRender={expandedRowRender}
@@ -490,11 +579,8 @@ const TableList = ({
 TableList.propTypes = {
   assignmentsByTestId: PropTypes.object.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
-  folderData: PropTypes.object.isRequired,
-  onSelectRow: PropTypes.func,
+  itemsInFolders: PropTypes.object.isRequired,
   showPreviewModal: PropTypes.func,
-  selectedRows: PropTypes.array.isRequired,
-  renderFilter: PropTypes.func,
   history: PropTypes.object,
   tests: PropTypes.array,
   showFilter: PropTypes.bool,
@@ -504,8 +590,6 @@ TableList.propTypes = {
 
 TableList.defaultProps = {
   onOpenReleaseScoreSettings: () => {},
-  renderFilter: () => {},
-  onSelectRow: () => {},
   showPreviewModal: () => {},
   history: {},
   tests: [],
@@ -520,13 +604,18 @@ const enhance = compose(
   connect(
     state => ({
       loading: get(state, "author_assignments.loading"),
-      folderData: getFolderSelector(state),
+      itemsInFolders: getItemsInFolders(state),
+      selectedItems: getSelectedItems(state),
       userId: getUserIdSelector(state),
       assignmentTests: getAssignmentTestsSelector(state),
       userRole: getUserRole(state),
       userClassList: getGroupList(state)
     }),
-    {}
+    {
+      setItemsToFolder: setItemsMoveFolderAction,
+      toggleRemovalFolderModal: toggleRemoveItemsFolderAction,
+      toggleAddItemFolderModal: toggleMoveItemsFolderAction
+    }
   )
 );
 

@@ -23,7 +23,8 @@ export const filterMenuItems = [
 
   // These two filters are to be enabled later so, commented out
   // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" }
+  { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" },
+  { icon: "folders", filter: SMART_FILTERS.FOLDERS, path: "folders", text: "FOLDERS" }
 ];
 
 // types

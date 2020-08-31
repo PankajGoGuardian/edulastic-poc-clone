@@ -134,14 +134,14 @@ const generateAnswers = {
       if (value && options[opIndex]) {
         return {
           responseBoxID: eduRes.id,
-          value: [options[opIndex]],
+          optionIds: [options[opIndex].id],
           containerIndex: contIndex
           // rect: {}, TODO: we will check this property later.
         };
       }
       return {
         responseBoxID: eduRes.id,
-        value: [],
+        optionIds: [],
         containerIndex: contIndex
         // rect: {}, TODO: we will check this property later.
       };
@@ -332,6 +332,17 @@ const generateAnswers = {
       }
     });
     return data;
+  },
+  [questionType.HOTSPOT](item, testletResponseIds, testletResponses) {
+    // TODO: need to improve logic if the response ids are greater than 2.
+    const data = testletResponseIds.map(id => {
+      const value = testletResponses[id];
+      if (isEmpty(value)) {
+        return [];
+      }
+      return value.map(v => ALPHABET.indexOf(v));
+    });
+    return flatten(data);
   }
 };
 

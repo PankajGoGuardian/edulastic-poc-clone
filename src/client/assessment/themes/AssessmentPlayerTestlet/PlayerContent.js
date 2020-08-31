@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, Fragment } from "react";
 import PropTypes from "prop-types";
-import { find, isEmpty, isEqual } from "lodash";
+import { filter, isEmpty, isEqual } from "lodash";
 import { withRouter } from "react-router-dom";
 import PlayerHeader from "./PlayerHeader";
 import ParentController from "./utility/parentController";
@@ -162,17 +162,24 @@ const PlayerContent = ({
     }
   };
 
-  const getEduQuestion = testletItemId => find(questions, _q => (_q.testletQuestionId || "").includes(testletItemId));
+  const getEduQuestions = testletItemId =>
+    filter(questions, _q => (_q.testletQuestionId || "").includes(testletItemId));
 
   const saveUserResponse = () => {
-    if (!LCBPreviewModal) {
+    if (!LCBPreviewModal && !previewPlayer) {
       const { currentPageIds } = frameController;
-      const scoringIds = Object.keys(currentPageIds);
-      if (!isEmpty(scoringIds) && !previewPlayer) {
-        const eduQuestion = getEduQuestion(scoringIds[0]);
-        if (eduQuestion) {
-          const timeSpent = Date.now() - lastTime.current;
-          onSubmitAnswer(eduQuestion.id, timeSpent, groupId);
+      for (const scoringId in currentPageIds) {
+        if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
+          const eduQuestions = getEduQuestions(scoringId.trim());
+          if (isEmpty(eduQuestions)) {
+            continue;
+          }
+          eduQuestions.forEach(eduQuestion => {
+            if (eduQuestion) {
+              const timeSpent = Date.now() - lastTime.current;
+              onSubmitAnswer(eduQuestion.id, timeSpent, groupId);
+            }
+          });
         }
       }
     }
@@ -207,18 +214,18 @@ const PlayerContent = ({
       return;
     }
     const { currentPageIds, response } = frameController;
-
     for (const scoringId in currentPageIds) {
       if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-        const eduQuestion = getEduQuestion(scoringId.trim());
-
-        if (!eduQuestion) {
+        const eduQuestions = getEduQuestions(scoringId.trim());
+        if (isEmpty(eduQuestions)) {
           continue;
         }
-        const data = getUserResponse(eduQuestion, response);
-        if (!previewPlayer && !isEmpty(data)) {
-          setUserAnswer(eduQuestion.id, data);
-        }
+        eduQuestions.forEach(eduQuestion => {
+          const data = getUserResponse(eduQuestion, response);
+          if (!previewPlayer && !isEmpty(data)) {
+            setUserAnswer(eduQuestion.id, data);
+          }
+        });
       }
     }
   };
@@ -240,6 +247,9 @@ const PlayerContent = ({
   useEffect(() => {
     if (metadata.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState;
+
+      // initState.pageNum = 6;
+
       frameController = new ParentController(metadata.testletId, initState, testletState.response);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({

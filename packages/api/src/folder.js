@@ -3,10 +3,10 @@ import API from "./utils/API";
 const api = new API();
 const prefix = "/user-folder";
 
-const fetchFolders = () =>
+const fetchFolders = type =>
   api
     .callApi({
-      url: prefix,
+      url: `${prefix}?folderType=${type}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -40,10 +40,18 @@ const renameFolder = ({ folderId, data }) =>
     data
   });
 
+const removeItemFromFolder = ({ folderId, data }) =>
+  api.callApi({
+    url: `${prefix}/${folderId}/content-delete`,
+    method: "put",
+    data
+  });
+
 export default {
   fetchFolders,
   createFolder,
   deleteFolder,
   renameFolder,
-  addMoveContent
+  addMoveContent,
+  removeItemFromFolder
 };

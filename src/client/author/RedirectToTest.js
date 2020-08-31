@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { message, Spin } from "antd";
+import { Spin } from "antd";
 import { withRouter } from "react-router";
 import qs from "query-string";
 import { testsApi, TokenStorage } from "@edulastic/api";
+import { notification } from "@edulastic/common";
 
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -12,7 +13,7 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
 
   const handleFailed = e => {
     console.log(e);
-    message("test not found");
+    notification({ type: "info", msg: "Unable to find the associated test. Please contact support." });
     history.replace("/author/test");
   };
 

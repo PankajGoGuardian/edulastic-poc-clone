@@ -1899,6 +1899,10 @@
     "message": "Unable to retrieve relevant information. Please contact support.",
     "description": ""
   },
+  "classAlreadyExist": {
+    "message": "Class already exists in Manage Class",
+    "description": ""
+  },
   "scratchpadInfoMultipart": {
     "message": "Remember to hide the scratchpad to answer other parts of this question",
     "description": ""

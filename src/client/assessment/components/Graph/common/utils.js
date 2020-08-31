@@ -4,7 +4,7 @@ export default {
   capitalizeFirstLetter
 };
 
-export const getAdjustedHeightAndWidth = (parentWidth, layout, MIN_WIDTH) => {
+export const getAdjustedHeightAndWidth = (parentWidth, parentHeight, layout, MIN_WIDTH) => {
   const obj = { width: parentWidth, height: layout.height };
 
   if (parentWidth < layout.width) {

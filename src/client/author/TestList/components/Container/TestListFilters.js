@@ -1,6 +1,6 @@
 import { grey, themeColor, titleColor } from "@edulastic/colors";
 import { FieldLabel, FlexContainer, SelectInputStyled } from "@edulastic/common";
-import { roleuser, test as testsConstants, libraryFilters, folderTypes } from "@edulastic/constants";
+import { roleuser, test as testsConstants, libraryFilters } from "@edulastic/constants";
 import { IconExpandBox } from "@edulastic/icons";
 import { Select } from "antd";
 import PropTypes from "prop-types";
@@ -10,7 +10,6 @@ import styled from "styled-components";
 import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
-import Folders from "../../../src/components/Folders";
 import { getFormattedCurriculumsSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
   getCollectionsSelector,
@@ -21,7 +20,6 @@ import {
   isOrganizationDistrictSelector
 } from "../../../src/selectors/user";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
-import { removeTestFromCartAction } from "../../ducks";
 import filterData from "./FilterData";
 
 const filtersTitle = ["Grades", "Subject", "Status"];
@@ -41,7 +39,6 @@ const TestListFilters = ({
   userFeatures,
   districtId,
   currentDistrictUsers,
-  removeTestFromCart,
   getCurrentDistrictUsers,
   userRole,
   isOrgUser,
@@ -86,9 +83,9 @@ const TestListFilters = ({
     ];
   };
 
-  const { filter } = search;
   const getFilters = () => {
     let filterData1 = [];
+    const { filter } = search;
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
       const showStatusFilter =
@@ -232,16 +229,9 @@ const TestListFilters = ({
     }
     return "";
   };
-
-  const handleSelectFolder = folderId => {
-    onChange("folderId", folderId);
-  };
-
-  const isFolderSearch = filter === libraryFilters.SMART_FILTERS.FOLDERS;
-
   return (
     <Container>
-      {showModal && (
+      {showModal ? (
         <StandardsSearchModal
           setShowModal={setShowModal}
           showModal={showModal}
@@ -249,6 +239,8 @@ const TestListFilters = ({
           handleApply={handleApply}
           selectedCurriculam={selectedCurriculam}
         />
+      ) : (
+        ""
       )}
       <FilerHeading justifyContent="space-between">
         <Title>FILTERS</Title>
@@ -261,59 +253,52 @@ const TestListFilters = ({
         onSelect={handleLabelSearch}
         search={search}
       />
-      {!isFolderSearch &&
-        mappedfilterData.map((filterItem, index) => {
-          if (filterItem.title === "Authored By" && search.filter === "AUTHORED_BY_ME") return null;
-          return (
-            <>
-              <FilterItemWrapper key={index} title={handleStandardsAlert(filterItem)}>
-                {filterItem.isStandardSelect && (
-                  <IconExpandBoxWrapper className={filterItem.disabled && "disabled"}>
-                    <IconExpandBox onClick={handleSetShowModal} />
-                  </IconExpandBoxWrapper>
-                )}
-                <FieldLabel>{filterItem.title}</FieldLabel>
-                <SelectStyled
-                  data-cy={filterItem.title}
-                  showSearch={filterItem.showSearch}
-                  onSearch={filterItem.onSearch && filterItem.onSearch}
-                  mode={filterItem.mode}
-                  size={filterItem.size}
-                  placeholder={filterItem.placeholder}
-                  filterOption={filterItem.filterOption}
-                  optionFilterProp={filterItem.optionFilterProp}
-                  defaultValue={
-                    filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].value
-                  }
-                  value={search[filterItem.onChange]}
-                  onChange={value => onChange(filterItem.onChange, value)}
-                  disabled={filterItem.disabled}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                  margin="0px 0px 15px"
-                >
-                  {filterItem.data.map(({ value, text, disabled }, index1) => (
-                    <Select.Option value={value} key={index1} disabled={disabled}>
+      {mappedfilterData.map((filterItem, index) => {
+        if (filterItem.title === "Authored By" && search.filter === "AUTHORED_BY_ME") return null;
+        return (
+          <>
+            <FilterItemWrapper key={index} title={handleStandardsAlert(filterItem)}>
+              {filterItem.isStandardSelect && (
+                <IconExpandBoxWrapper className={filterItem.disabled && "disabled"}>
+                  <IconExpandBox onClick={handleSetShowModal} />
+                </IconExpandBoxWrapper>
+              )}
+              <FieldLabel>{filterItem.title}</FieldLabel>
+              <SelectStyled
+                data-cy={filterItem.title}
+                showSearch={filterItem.showSearch}
+                onSearch={filterItem.onSearch && filterItem.onSearch}
+                mode={filterItem.mode}
+                size={filterItem.size}
+                placeholder={filterItem.placeholder}
+                filterOption={filterItem.filterOption}
+                optionFilterProp={filterItem.optionFilterProp}
+                defaultValue={
+                  filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].value
+                }
+                value={search[filterItem.onChange]}
+                onChange={value => onChange(filterItem.onChange, value)}
+                disabled={filterItem.disabled}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                margin="0px 0px 15px"
+              >
+                {filterItem.data.map(({ value, text, disabled }, index1) => (
+                  <Select.Option value={value} key={index1} disabled={disabled}>
+                    {text}
+                  </Select.Option>
+                ))}
+                {isPublishers &&
+                  filterItem.title === "Status" &&
+                  filterItem.publisherOptions.map(({ value, text }) => (
+                    <Select.Option value={value} key={value}>
                       {text}
                     </Select.Option>
                   ))}
-                  {isPublishers &&
-                    filterItem.title === "Status" &&
-                    filterItem.publisherOptions.map(({ value, text }) => (
-                      <Select.Option value={value} key={value}>
-                        {text}
-                      </Select.Option>
-                    ))}
-                </SelectStyled>
-              </FilterItemWrapper>
-            </>
-          );
-        })}
-      <Folders
-        onSelectFolder={handleSelectFolder}
-        folderType={folderTypes.TEST}
-        isActive={isFolderSearch}
-        removeItemFromCart={removeTestFromCart}
-      />
+              </SelectStyled>
+            </FilterItemWrapper>
+          </>
+        );
+      })}
     </Container>
   );
 };
@@ -343,8 +328,7 @@ export default connect(
     isDistrictUser: isDistrictUserSelector(state)
   }),
   {
-    getCurrentDistrictUsers: getCurrentDistrictUsersAction,
-    removeTestFromCart: removeTestFromCartAction
+    getCurrentDistrictUsers: getCurrentDistrictUsersAction
   }
 )(TestListFilters);
 

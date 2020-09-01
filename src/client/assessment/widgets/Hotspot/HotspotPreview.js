@@ -62,7 +62,7 @@ const HotspotPreview = ({
   const altAnswers = (validation && validation.altResponses) || [];
 
   const getStyles = i => ({
-    fill: areaAttributes.local.find(attr => attr.area === i)
+    fill: areaAttributes?.local?.find(attr => attr.area === i)
       ? areaAttributes.local.find(attr => attr.area === i).fill
       : areaAttributes.global.fill,
     stroke: areaAttributes.local.find(attr => attr.area === i)

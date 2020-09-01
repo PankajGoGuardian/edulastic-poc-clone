@@ -577,7 +577,7 @@ class WorksheetComponent extends React.Component {
     // 350+(15 extra space) IS THE TOTAL WIDTH OF RIGHT QUESTION AREA
     const rightColumnWidth = windowWidth > 1024 ? 365 : 295;
     const pdfWidth =
-      questions.length && questions[0].isV1Migrated ? v1Width : windowWidth - rightColumnWidth - leftColumnWidth;
+      questions?.length && questions[0].isV1Migrated ? v1Width : windowWidth - rightColumnWidth - leftColumnWidth;
     const pdfHeight = questions.length && questions[0].isV1Migrated ? v1Height : undefined;
     const reportMode = viewMode && viewMode === "report";
     const editMode = viewMode === "edit";

@@ -280,7 +280,7 @@ class PreviewModal extends React.Component {
   get isAddOrRemove() {
     const { item, selectedRows } = this.props;
     if (selectedRows && selectedRows.length) {
-      return !selectedRows.includes(item._id);
+      return !selectedRows.includes(item?._id);
     }
     return true;
   }

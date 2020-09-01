@@ -368,9 +368,8 @@ function* removeStudentsSaga({ payload }) {
     yield call(notification, { type: "success", msg: "Successfully removed" });
   } catch (err) {
     Sentry.captureException(err);
-    const {
-      data: { message: errorMessage }
-    } = err.response;
+    const { data = {} } = err.response || {};
+    const { message: errorMessage } = data;
     if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }

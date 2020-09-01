@@ -146,7 +146,7 @@ class AddItems extends PureComponent {
       const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
       const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
       const selectedSubjects = test?.subjects?.filter(item => !!item);
-      const selectedGrades = test.grades.filter(item => !!item);
+      const selectedGrades = test?.grades?.filter(item => !!item);
       search = {
         ...initSearch,
         ...sessionFilters,

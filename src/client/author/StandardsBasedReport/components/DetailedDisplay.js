@@ -131,7 +131,7 @@ class DetailedDisplay extends Component {
               Student Performance
               <Icon type="close" onClick={onClose} />
             </DetailCardTitle>
-            <DetailCardSubTitle>{`Standard: ${data.identifier}`}</DetailCardSubTitle>
+            <DetailCardSubTitle>{`Standard: ${data?.identifier}`}</DetailCardSubTitle>
             <DetailCardDesc>{data.desc}</DetailCardDesc>
             <Row style={{ marginTop: "10px" }}>
               <Col span={15}>

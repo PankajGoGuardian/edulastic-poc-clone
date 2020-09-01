@@ -17,7 +17,8 @@ import {
   setAssignmentsLoadingAction,
   setActiveAssignmentAction,
   showTestInstructionsAction,
-  setConfirmationForTimedAssessmentAction
+  setConfirmationForTimedAssessmentAction,
+  setIsActivityCreatingAction
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
@@ -124,6 +125,7 @@ export const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;
+export const stateSelector = state => state.studentAssignment;
 
 /**
  *
@@ -283,6 +285,11 @@ export const assignmentsCountByFilerNameSelector = createSelector(
   }
 );
 
+export const getLoadAssignmentSelector = createSelector(
+  stateSelector,
+  state => state.loadAssignment
+);
+
 // sagas
 // fetch and load assignments and reports for the student
 function* fetchAssignments() {
@@ -347,9 +354,14 @@ function* startAssignment({ payload }) {
     // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
 
     const institutionId = yield select(getCurrentSchool);
+    const { isLoading } = yield select(getLoadAssignmentSelector);
+    if (isLoading) {
+      return;
+    }
     const groupType = "class";
     let testActivityId = null;
     if (studentRecommendation) {
+      yield put(setIsActivityCreatingAction({ assignmentId: studentRecommendation._id, isLoading: true }));
       const { _id } = yield testActivityApi.create({
         groupId: classId,
         institutionId,
@@ -359,6 +371,7 @@ function* startAssignment({ payload }) {
       });
       testActivityId = _id;
     } else if (isPlaylist && !assignmentId) {
+      yield put(setIsActivityCreatingAction({ assignmentId: isPlaylist.playlistId, isLoading: true }));
       const { _id } = yield testActivityApi.create({
         playlistModuleId: isPlaylist.moduleId,
         playlistId: isPlaylist.playlistId,
@@ -369,6 +382,7 @@ function* startAssignment({ payload }) {
       });
       testActivityId = _id;
     } else {
+      yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }));
       const { _id } = yield testActivityApi.create({
         assignmentId,
         groupId: classId,
@@ -427,6 +441,8 @@ function* startAssignment({ payload }) {
         data.message || "Assignment is not not available at the moment. Please contact your administrator.";
       notification({ msg: message });
     }
+  } finally {
+    yield put(setIsActivityCreatingAction({ assignmentId: "", isLoading: false }));
   }
 }
 

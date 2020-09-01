@@ -68,17 +68,8 @@ function* receiveAddMoveFolderRequest({ payload }) {
   try {
     const { folderId, params = [], folderType } = payload;
     const assignmentNamesCount = params[0].assignmentsNameList.length || 0;
-
-    let contentName = "assignments";
-    if (folderType === folderTypes.TEST) {
-      contentName = "tests";
-    } else if (folderType === folderTypes.ITEM) {
-      contentName = "items";
-    }
-
     const showNamesInMsg =
-      assignmentNamesCount > 1 ? `${assignmentNamesCount} ${contentName} were` : `${params[0].assignmentsNameList} was`;
-
+      assignmentNamesCount > 1 ? `${assignmentNamesCount} assignments were` : `${params[0].assignmentsNameList} was`;
     const moveFolderName = params[0].folderName;
     const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });

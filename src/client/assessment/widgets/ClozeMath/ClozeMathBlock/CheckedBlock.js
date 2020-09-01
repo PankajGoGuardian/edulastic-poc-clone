@@ -91,9 +91,8 @@ const CheckedBlock = ({
    */
   const answer = isMath ? getMathTemplate(showValue) : showValue;
   const { width: textWidth } = measureText(answer, { padding: "0 0 0 11px" });
-  const avilableWidth = width - (showIndex ? 58 : 26);
-  const showPopover = textWidth > avilableWidth;
-
+  const availableWidth = parseInt(width, 10) || 0 - (showIndex ? 58 : 26); // will show popover when availableHeight is not available or NaN
+  const showPopover = textWidth > availableWidth;
   const popoverContent = isPopover => (
     <CheckBox
       className={!isPrintPreview && checkBoxClass}
@@ -153,7 +152,7 @@ CheckedBlock.defaultProps = {
   showIndex: false,
   userAnswer: "",
   onInnerClick: () => {},
-  width: 120,
+  width: "120px",
   height: "auto"
 };
 

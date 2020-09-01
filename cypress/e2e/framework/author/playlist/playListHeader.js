@@ -19,6 +19,18 @@ export default class PlayListHeader {
 
   getEdit = () => cy.get('[data-cy="edit-playlist"]');
 
+  getClone = () => cy.get('[data-cy="clone"]');
+
+  getOKInPopUp = () => cy.get("button").contains("span", "Continue");
+
+  getRemoveFromFavoriteInDropDown = () =>
+    cy
+      .get(".ant-dropdown-menu-item")
+      .filter((i, $ele) => Cypress.dom.isVisible($ele))
+      .contains("Remove from Favorite");
+
+  getDeletePlaylist = () => cy.get('[data-cy="delete-playlist"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -67,10 +79,12 @@ export default class PlayListHeader {
 
   clickOnUseThis = () => {
     cy.server();
-    cy.route("GET", "**/playlists/*").as("use-this");
+    cy.route("POST", "**/playlists/*/use-this").as("change-my-playlist");
+    cy.route("GET", "**/user-context?name=LAST_ACCESSED_PLAYLIST").as("get-my-playlist");
     this.getUseThisButton().click({ force: true });
-    cy.get('[data-cy="insights"]');
-    return cy.wait("@use-this");
+    cy.wait("@change-my-playlist").then(xhr => expect(xhr.status).to.eq(200));
+    cy.wait("@get-my-playlist");
+    return cy.get('[data-cy="insights"]', { timeout: 20000 });
   };
 
   clickOnEdit = () => {
@@ -85,6 +99,38 @@ export default class PlayListHeader {
     cy.route("GET", "**/user-playlist-activity/*").as("getPlaylistUsers");
     this.getDropPlaylist().click();
     cy.wait("@getPlaylistUsers");
+  };
+
+  clickRemoveFromFavorite = () => {
+    cy.server();
+    cy.route("DELETE", "**/playlists/use/*").as("delete-from-fav");
+    this.getClone()
+      .next()
+      .click();
+    this.getRemoveFromFavoriteInDropDown().click({ force: true });
+    this.getOKInPopUp().click({ force: true });
+    cy.wait("@delete-from-fav");
+  };
+
+  clickOnClone = () => {
+    cy.server();
+    cy.route("POST", /duplicate/g).as("duplicate-playlist");
+    this.getClone().click({ force: true });
+    return cy.wait("@duplicate-playlist").then(xhr => {
+      cy.saveplayListDetailToDelete(xhr.response.body.result._id);
+      return cy.wait(1).then(() => xhr.response.body.result._id);
+    });
+  };
+
+  clickDeletePlaylist = id => {
+    cy.server();
+    cy.route("DELETE", "**/playlists/*").as("delete-playlist");
+    this.getDeletePlaylist().click({ force: true });
+    this.getOKInPopUp().click({ force: true });
+    cy.wait("@delete-playlist").then(xhr => {
+      expect(xhr.status, `deleting playlist ${xhr.status === 200 ? "success" : "failed"}`).to.eq(200);
+      if (id) cy.deletePlaylistEntry(id);
+    });
   };
 
   // *** ACTIONS END ***

@@ -84,6 +84,8 @@ export default class PlayListReview {
 
   getModuleIdByMod = mod => this.getModuleRowByModule(mod).find('[data-cy="module-id"]');
 
+  getModuleDescriptionByMod = mod => this.getModuleRowByModule(mod).find('[data-cy="styled-wrapped-component"]');
+
   getAllAssignmentsRowsByTestByModule = (mod, test) =>
     this.getTestByTestByModule(mod, test)
       .next()
@@ -103,6 +105,20 @@ export default class PlayListReview {
       .find(`[data-cy="${resource}"]`);
 
   getAllSubResourceRowsByMod = mod => this.getModuleRowByModule(mod).find('[data-cy="subResourceView"]');
+
+  getOpenDroppedPlaylist = () => cy.get('[data-cy="open-dropped-playlist"]');
+
+  getPlaylistCardById = id => cy.get(`[data-cy="playlist-${id}"]`);
+
+  getPreviewViewTestInDropDown = () => this.getDropDownItem().contains("Preview Test");
+
+  getAssignInDropDown = () => this.getDropDownItem().contains("Assign Test");
+
+  getViewTestDetailsInDropDown = () => this.getDropDownItem().contains("View Test Details");
+
+  getUnAssignInDropDown = () => this.getDropDownItem().contains("Unassign");
+
+  getBacktoPlaylistButtonInTestReview = () => cy.get('[data-cy="back-to-playlist"]');
 
   // *** ELEMENTS END ***
 
@@ -154,10 +170,14 @@ export default class PlayListReview {
 
   clickOnDeleteByTestByModule = (mod, test) => this.getDeleteButtonByTestByModule(mod, test).click();
 
-  clickOnViewTestByTestByModule = (mod, test) => {
+  clickOnViewTestByTestByModule = (mod, test, usingDropDown = false) => {
     cy.server();
     cy.route("GET", "**/test/*").as("viewTest");
-    this.getViewTestByTestByModule(mod, test).click({ force: true });
+    if (usingDropDown) {
+      this.clickManageTestDropDownByTestByModule(mod, test);
+      this.getPreviewViewTestInDropDown().click({ force: true });
+    } else this.getViewTestByTestByModule(mod, test).click({ force: true });
+
     return cy.wait("@viewTest").then(xhr => xhr.response.body.result._id);
   };
 
@@ -208,10 +228,13 @@ export default class PlayListReview {
       .clear()
       .type(id);
 
-  setModuleDetails = (name, id, title) => {
+  setModuleDescription = desc => this.getModuleDescription().type(desc);
+
+  setModuleDetails = (name, id, title, description) => {
     this.setModuleTitle(title);
     this.setModuleName(name);
     this.setModuleId(id);
+    if (description) this.setModuleDescription(description);
   };
 
   addModule = (newPlaylist = false) => {
@@ -258,6 +281,46 @@ export default class PlayListReview {
           .find('[data-cy="delete-resource"]')
           .click({ multiple: true, force: true });
     });
+
+  clickOpenDroppedPlaylist = () => this.getOpenDroppedPlaylist().click();
+
+  clickOnViewPlaylistById = id => {
+    cy.server();
+    cy.route("POST", "**/playlists/*/use-this").as("change-my-playlist-using-switch");
+    cy.route("GET", "**/user-context?name=LAST_ACCESSED_PLAYLIST").as("get-my-playlist-using-switch");
+    this.getPlaylistCardById(id).click({ force: true });
+    cy.wait("@change-my-playlist-using-switch").then(xhr => expect(xhr.status).to.eq(200));
+    cy.wait("@get-my-playlist-using-switch");
+    cy.contains("PROFICIENCY");
+  };
+
+  clickOnViewDetailsInDropDownByTestByMod = (mod, test) => {
+    cy.server();
+    cy.route("GET", "**/test/*").as("test-details");
+    this.clickManageTestDropDownByTestByModule(mod, test);
+    this.getViewTestDetailsInDropDown().click({ force: true });
+    cy.wait("@test-details");
+  };
+
+  clickBackToPlaylistInTestReview = () => this.getBacktoPlaylistButtonInTestReview().click({ force: true });
+
+  clickOnUnAssignInDropDownByTestByModule = (mod, test) => {
+    cy.server();
+    cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
+    this.clickManageTestDropDownByTestByModule(mod, test);
+    this.getUnAssignInDropDown().click({ force: true });
+    cy.get('[data-cy="confirmationInput"]').type("UNASSIGN", { force: true });
+    cy.get("button")
+      .contains("span", "Yes, Unassign")
+      .click({ force: true });
+    cy.wait("@deleteAssignments");
+  };
+
+  closeSwitchPlaylistWindow = () =>
+    cy
+      .get('[tabindex="-1"]')
+      .last()
+      .type("{esc}");
 
   // *** ACTIONS END ***
 
@@ -312,6 +375,14 @@ export default class PlayListReview {
   };
 
   verifyModuleIdByMod = (mod, id) => this.getModuleIdByMod(mod).should("have.text", id);
+
+  verifyModuleDescriptionByMod = (mod, desc) => this.getModuleDescriptionByMod(mod).should("have.text", desc);
+
+  verifyModuleDetailsByModule = (mod, name, id, desc) => {
+    this.verifyModuleIdByMod(mod, id);
+    this.verifyModuleDescriptionByMod(mod, desc);
+    this.verifyModuleNameByMod(mod, name);
+  };
 
   verifyAssignmentRowByTestByMod = (
     mod,
@@ -485,6 +556,9 @@ export default class PlayListReview {
   };
 
   waitForSave = () => cy.wait("@save-playlist");
+
+  verifyTestIdByTestByMod = (mod, test, id) =>
+    this.getTestByTestByModule(mod, test).should("have.attr", "data-test", id.toString());
 
   // *** APPHELPERS END ***
 }

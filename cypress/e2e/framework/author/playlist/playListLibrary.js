@@ -60,7 +60,10 @@ export default class PlayListLibrary {
   clickOnPlayListCardById = testId => {
     cy.server();
     cy.route("GET", "**/playlists/*").as("playListLoad");
-    this.getPlayListCardById(testId).click({ force: true });
+    this.getPlayListCardById(testId)
+      .find('[data-cy="test-title"]')
+      .should(ele => expect(Cypress.dom.isAttached(ele)).to.be.true)
+      .click();
     cy.wait("@playListLoad");
   };
 
@@ -72,6 +75,22 @@ export default class PlayListLibrary {
         if (button.hasClass(".ant-switch-checked")) cy.wrap(button).click();
       }
     });
+
+  clickOnCloneOnCardByPlaylistId = id => {
+    cy.server();
+    cy.route("POST", /duplicate/g).as("duplicate-playlist-in-library");
+    this.getPlayListCardById(id)
+      .find(".ant-card-head-title")
+      .trigger("mouseover");
+    cy.get("@testcard")
+      .find("button")
+      .contains("clone")
+      .click({ force: true });
+    return cy.wait("@duplicate-playlist-in-library").then(xhr => {
+      cy.saveplayListDetailToDelete(xhr.response.body.result._id);
+      return cy.wait(1).then(() => xhr.response.body.result._id);
+    });
+  };
 
   // *** ACTIONS END ***
 
@@ -100,11 +119,15 @@ export default class PlayListLibrary {
   checkforNonExistanceOfPlayList = playlistid =>
     cy.get("body").should("not.have.descendants", `[data-cy="${playlistid}"]`);
 
-  seachAndClickPlayListById = (id, draft = false) => {
+  searchPlaylistById = (id, draft = false) => {
     this.sidebar.clickOnPlayListLibrary();
     this.searchFilter.clearAll();
     if (draft) this.searchFilter.getAuthoredByMe();
     this.searchFilter.typeInSearchBox(id);
+  };
+
+  seachAndClickPlayListById = (id, draft = false) => {
+    this.searchPlaylistById(id, draft);
     this.clickOnPlayListCardById(id);
   };
 

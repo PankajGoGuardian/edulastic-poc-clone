@@ -577,3 +577,14 @@ Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
     })
     .then(() => itemIds);
 });
+
+Cypress.Commands.add("deletePlaylistEntry", playlistId => {
+  cy.readFile(`${deleteTestDataFile}`).then(dataToDelete => {
+    if (dataToDelete.playlist) {
+      const newPlaylist = dataToDelete.playlist.filter(ele => ele._id !== playlistId);
+      delete dataToDelete.playlist;
+      dataToDelete.playlist = newPlaylist;
+      cy.writeFile(`${deleteTestDataFile}`, dataToDelete);
+    }
+  });
+});

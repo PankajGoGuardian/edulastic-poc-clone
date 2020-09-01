@@ -21,6 +21,7 @@ import {
   setAssignmentFiltersAction
 } from "../../../src/actions/assignments";
 import { releaseScoreAction } from "../../../src/actions/classBoard";
+import { receiveFolderAction } from "../../../src/actions/folder";
 import TestPreviewModal from "./TestPreviewModal";
 import {
   getAssignmentsSummary,
@@ -83,7 +84,7 @@ class Assignments extends Component {
   };
 
   componentDidMount() {
-    const { loadAssignments, loadAssignmentsSummary, districtId, userRole, orgData } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, loadFolders, districtId, userRole, orgData } = this.props;
 
     const { defaultTermId, terms } = orgData;
     const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
@@ -111,6 +112,7 @@ class Assignments extends Component {
     } else {
       loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
     }
+    loadFolders();
     this.setFilterState(filters);
   }
 
@@ -297,6 +299,7 @@ class Assignments extends Component {
                             onSetFilter={this.setFilterState}
                             filterState={filterState}
                             isAdvancedView={isAdvancedView}
+                            clearSelectedRow={() => this.onSelectRow([])}
                           />
                         </PerfectScrollbar>
                       </FixedWrapper>
@@ -333,6 +336,8 @@ class Assignments extends Component {
                           tests={tests}
                           toggleEditModal={this.toggleEditModal}
                           toggleDeleteModal={this.toggleDeleteModal}
+                          onSelectRow={this.onSelectRow}
+                          selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           showPreviewModal={this.showPreviewModal}
                           showFilter={showFilter}
@@ -405,6 +410,7 @@ const enhance = compose(
     }),
     {
       loadAssignments: receiveAssignmentsAction,
+      loadFolders: receiveFolderAction,
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       loadAssignmentById: receiveAssignmentByIdAction,
       updateReleaseScoreSettings: updateReleaseScoreSettingsAction,

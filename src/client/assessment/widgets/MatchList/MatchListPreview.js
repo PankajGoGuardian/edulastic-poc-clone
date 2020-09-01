@@ -390,11 +390,8 @@ const MatchListPreview = ({
       style={{
         fontSize,
         overflowX: isPrintPreview ? "hidden" : "auto",
-        overflowY: "auto", // adding vertical scroll to fix iPad issue
         margin: "auto",
-        width: "100%",
-        // limiting assessment area to 252 = 100vh - 182px(AuthorTestItemPreview height) - 70px (padding) - 5px (extra)
-        maxHeight: "calc(100vh -  257px)"
+        width: "100%"
       }}
       padding={smallSize}
       ref={previewWrapperRef}

@@ -189,7 +189,7 @@ class TestItemPreview extends Component {
     const { value } = this.state;
     let colIndex = 0;
     return cols.map(col =>
-      col.widgets
+      (col?.widgets || [])
         .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
         .map((widget, i) => (
           <React.Fragment key={i}>
@@ -255,7 +255,7 @@ class TestItemPreview extends Component {
     } = restProps;
 
     const { collapseDirection } = this.state;
-    const widgets = (cols || []).flatMap(col => col.widgets).filter(q => q);
+    const widgets = (cols || []).flatMap(col => col?.widgets).filter(q => q);
     if (widgets.length === 0) {
       return null;
     }
@@ -280,7 +280,7 @@ class TestItemPreview extends Component {
 
     let dataSource = cols;
     if (!showStackedView && (isQuestionView || isExpressGrader)) {
-      dataSource = dataSource.filter(col => (col.widgets || []).length > 0);
+      dataSource = dataSource.filter(col => (col?.widgets || []).length > 0);
     }
 
     const borderProps = showScratchpadByDefault

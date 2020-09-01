@@ -151,12 +151,12 @@ const AudioControls = ({
 
   const handlePlayPauseAudio = () => {
     if (loading) return;
-    if (currentHowl.playing()) {
+    if (currentHowl?.playing()) {
       currentHowl.pause();
       currentHowl.isPaused = true;
       return setCurrentPlayingDetails();
     }
-    if (currentHowl.isPaused) {
+    if (currentHowl?.isPaused) {
       currentHowl.play();
       currentHowl.isPaused = false;
       return setCurrentPlayingDetails(qId);
@@ -194,7 +194,7 @@ const AudioControls = ({
   };
 
   const handleStopAudio = () => {
-    currentHowl.stop();
+    currentHowl?.stop();
     setCurrentPlayingDetails();
   };
   const playPauseToolTip = loading

@@ -556,7 +556,7 @@ const CustomEditor = ({
               }
               return;
             }
-            if (cursorEl.tagName === "SPAN" && $(cursorEl).hasClass("input__math") && $(cursorEl).attr("data-latex")) {
+            if (cursorEl && cursorEl.tagName === "SPAN" && $(cursorEl).hasClass("input__math") && $(cursorEl).attr("data-latex")) {
               cursorEl.remove();
               return;
             }

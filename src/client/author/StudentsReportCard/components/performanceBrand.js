@@ -27,7 +27,7 @@ const PerformanceBrand = (props, ref) => {
 
   //finding matching performance band wrt scored percentange from selected performance band group
   const { performanceBand } = classResponse;
-  const selectedBandsData = performanceBandsData.find(o => o._id === performanceBand._id) ||
+  const selectedBandsData = performanceBandsData.find(o => o._id === performanceBand?._id) ||
     performanceBandsData[0] || { performanceBand: [] };
   const selectedPerformanceBand =
     selectedBandsData.performanceBand.find(pb => perfomancePercentage >= pb.to && pb.from >= perfomancePercentage) ||

@@ -48,8 +48,14 @@ const MoveModal = ({
       }
     });
     if (itemsExistInFolder && itemsExistInFolder.length > 0) {
+      let contentName = "assignments";
+      if (folderType === folderTypes.TEST) {
+        contentName = "tests";
+      } else if (folderType === folderTypes.ITEM) {
+        contentName = "items";
+      }
       const showAlreadyExistMsg =
-        itemsExistInFolder.length > 1 ? `${itemsExistInFolder.length} assignments` : itemsExistInFolder;
+        itemsExistInFolder.length > 1 ? `${itemsExistInFolder.length} ${contentName}` : itemsExistInFolder;
       notification({ type: "info", msg: `${showAlreadyExistMsg} already exist in ${folderName} folder` });
     }
     if (itemsNotExistInFolder.length === 0) {

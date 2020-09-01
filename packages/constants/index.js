@@ -33,7 +33,6 @@ const customTags = require("./const/customTags");
 const libraryFilters = require("./const/filters");
 const collections = require("./const/collections");
 const sortOptions = require("./const/sortOptions");
-const folderTypes = require("./const/folderTypes");
 
 module.exports = {
   question,
@@ -70,6 +69,5 @@ module.exports = {
   customTags,
   libraryFilters,
   collections,
-  sortOptions,
-  folderTypes
+  sortOptions
 };

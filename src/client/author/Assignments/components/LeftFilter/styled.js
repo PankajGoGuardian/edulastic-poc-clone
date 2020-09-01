@@ -1,6 +1,7 @@
 import {
   black,
   fadedGrey,
+  lightGreySecondary,
   mainBgColor,
   tabGrey,
   textColor,
@@ -9,8 +10,8 @@ import {
   white,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
-import { Button, CustomModalStyled } from "@edulastic/common";
-import { Menu } from "antd";
+import { Button,CustomModalStyled } from "@edulastic/common";
+import { Menu, Modal } from "antd";
 import styled from "styled-components";
 
 export const FilterContainer = styled.div``;

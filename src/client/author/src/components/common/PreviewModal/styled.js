@@ -525,3 +525,8 @@ export const FlexWrap = styled.div`
   margin-bottom: 10px;
   width: 100%;
 `;
+
+export const ScratchpadAndWidgetWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;

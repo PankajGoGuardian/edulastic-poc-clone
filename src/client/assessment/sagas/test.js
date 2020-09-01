@@ -402,20 +402,23 @@ function* loadTest({ payload }) {
       payload: false
     });
   } catch (err) {
-    console.error(err);
     Sentry.captureException(err);
     yield put({
       type: SET_TEST_LOADING_ERROR,
       payload: err
     });
-    if (err.status === 403) {
+    if (err.status) {
       if (preview) {
         notification({ messageKey: "youCanNoLongerUse" });
         return Modal.destroyAll();
       }
       const userRole = yield select(getUserRole);
+      let messageKey = "failedLoadingTest";
+      if (err.status === 400) {
+        messageKey = "invalidAction";
+      }
       if (userRole === roleuser.STUDENT) {
-        notification({ msg: err.response.data.message || "Failed loading the test" });
+        notification({ messageKey });
         return yield put(push("/home/assignments"));
       }
     }
@@ -492,10 +495,8 @@ function* submitTest({ payload }) {
     );
   } catch (err) {
     Sentry.captureException(err);
-    const {
-      data = {}
-    } = err.response || {};
-    const { message: errorMessage } = data
+    const { data = {} } = err.response || {};
+    const { message: errorMessage } = data;
     if (err.status === 403) {
       if (errorMessage === "assignment already submitted") {
         return yield put(push("/home/grades"));

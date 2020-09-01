@@ -1902,5 +1902,17 @@
   "scratchpadInfoMultipart": {
     "message": "Remember to hide the scratchpad to answer other parts of this question",
     "description": ""
+  },
+  "failedLoadingTest": {
+    "message": "Failed to load test.",
+    "description": ""
+  },
+  "invalidAction": {
+    "message": "Invalid Action.",
+    "description": ""
+  },
+  "receiveClasslistFailing": {
+    "message": "Receive class list failing.",
+    "description": ""
   }
 }

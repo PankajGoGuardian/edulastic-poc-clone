@@ -469,6 +469,11 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
     const qid = newState.item.rows[rowIndex].widgets[widgetIndex].reference;
     newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter((w, i) => i !== widgetIndex);
 
+    newState.item.data.questions = reSequenceQuestionsWithWidgets(
+      get(newState, `item.rows.[${rowIndex}].widgets`),
+      get(newState, "item.data.questions")
+    );
+
     pull(newState.qids, qid);
   });
 
@@ -605,9 +610,10 @@ const moveWidget = (state, { from, to }) =>
     const { questions } = newState.item?.data;
     if (Array.isArray(questions) && questions.length > 0) {
       // change the order of item.data.questions
-      newState.item.data.questions = newState.qids.map(qid => {
-        return questions.find(q => q.id === qid);
-      });
+      newState.item.data.questions = reSequenceQuestionsWithWidgets(
+        get(newState, `item.rows[${to?.rowIndex}].widgets`),
+        questions
+      );
       markQuestionLabel([newState.item]); // change the question label as per new order
     }
   });
@@ -953,7 +959,9 @@ export function* updateItemSaga({ payload }) {
       return null;
     }
 
-    questions = reSequenceQuestionsWithWidgets(rows?.[0]?.widgets, questions);
+    const _widgets = rows.flatMap(({ widgets }) => widgets).filter(widget => widget.widgetType === "question");
+
+    questions = reSequenceQuestionsWithWidgets(_widgets, questions);
 
     questions = produce(questions, draft => {
       draft.map((q, index) => {

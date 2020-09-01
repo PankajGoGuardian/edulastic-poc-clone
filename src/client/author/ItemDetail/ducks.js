@@ -1034,9 +1034,17 @@ export function* updateItemSaga({ payload }) {
         return null;
       }
     }
-    // return;
+
+    /**
+     * in test flow, until test is not created, testId comes as "undefined" in string
+     * do no pass it to API as testId argument
+     * @see https://snapwiz.atlassian.net/browse/EV-18458
+     */
+    const hasValidTestId = payload.testId && payload.testId !== "undefined";
+    const testIdParam = hasValidTestId ? payload.testId : null;
+
     const [{ testId, ...item }, updatedPassage] = yield all([
-      call(testItemsApi.updateById, payload.id, data, payload.testId),
+      call(testItemsApi.updateById, payload.id, data, testIdParam),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null
     ]);
     if (isPassageWithQuestions && !isEmpty(passageData) && !updatedPassage) {

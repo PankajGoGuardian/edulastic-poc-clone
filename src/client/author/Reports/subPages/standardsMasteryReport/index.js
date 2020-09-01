@@ -170,8 +170,8 @@ const StandardsMasteryReportContainer = props => {
 
   const filterDropDownCBForPerformance = (event, selected, comData) => {
     setDdFilterForPerformance({
-      ...ddfilter,
-      [comData]: selected.key
+      ...ddfilterForPerformance,
+      [comData]: selected
     });
   };
 
@@ -190,7 +190,7 @@ const StandardsMasteryReportContainer = props => {
         <ControlDropDown
           data={item.data}
           comData={item.key}
-          by={item.data[0]}
+          by={ddfilterForPerformance[item.key]}
           selectCB={filterDropDownCBForPerformance}
         />
       </SearchField>

@@ -71,7 +71,8 @@ const StandardsPerformance = ({
     const { termId = "", domainIds = [], grades = [], subject, schoolId } = requestFilters;
     const modifiedFilter = next(ddfilter, draft => {
       Object.keys(draft).forEach(key => {
-        draft[key] = draft[key].key == "All" ? "" : draft[key].key;
+        const _keyData = typeof draft[key] === "object" ? draft[key].key : draft[key];
+        draft[key] = _keyData?.toLowerCase() === "all" ? "" : _keyData;
       });
     });
     let schoolIds = "";

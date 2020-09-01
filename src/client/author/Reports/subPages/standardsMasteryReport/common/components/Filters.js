@@ -8,7 +8,6 @@ import { Select } from "antd";
 import { SelectInputStyled } from "@edulastic/common";
 
 import { roleuser } from "@edulastic/constants";
-import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import { MultipleSelect } from "../../../../common/components/widgets/MultipleSelect";
 import { toggleItem } from "../../../../common/util";
@@ -154,10 +153,12 @@ const StandardsFilters = ({
   }, []);
 
   useEffect(() => {
-    setFilters({
-      ...filters,
-      termId: filters?.termId || standardsFilters?.filters?.termId || get(user, "orgData.defaultTermId", "")
-    });
+    if (isEmpty(standardsFilters?.filters)) {
+      setFilters({
+        ...filters,
+        termId: filters.termId || get(user, "orgData.defaultTermId", "")
+      });
+    }
   }, [standardsFilters]);
 
   const scaleInfo = get(standardsFilters, "scaleInfo", []);
@@ -179,32 +180,20 @@ const StandardsFilters = ({
 
   if (browseStandards !== prevBrowseStandards && !isEmpty(browseStandards)) {
     setPrevBrowseStandards(browseStandards);
-
     // check if domainId in url is in the array if not select the first one
-
     const urlDomainId = domains.length > 1 ? domains.slice(1) : domains;
-    // const domainIdsKeys = keyBy(search.domainIds?.split(","));
-    // let urlDomainId = domains.filter((item, index) => domainIdsKeys[item.key]);
-    // if (!urlDomainId.length) {
-    //   urlDomainId = domains.filter((item, index) => index > 0);
-    // }
-
     const _filters = {
       ...filters,
       domainIds: urlDomainId.map(item => item.key).join()
     };
-
     setFilters(_filters);
-
     const settings = {
       filters: { ..._filters },
       selectedTest: testIds
     };
-
     if (browseStandardsReceiveCount.current === 0 && standardsFilteresReceiveCount.current > 0) {
       _onGoClick(settings);
     }
-
     browseStandardsReceiveCount.current++;
   }
 
@@ -224,29 +213,47 @@ const StandardsFilters = ({
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     // allTestIds Received
-
-    const search = qs.parse(location.search.substring(1));
     setPrevStandardsFilters(standardsFilters);
-
-    // filters fetched on page load
-    const onLoadFilters = get(standardsFilters, "filters", []);
-    const onLoadTestIds = get(standardsFilters, "testIds");
-
-    // check if testIds in url are valid (present in the array)
-    const urlTestIds = onLoadTestIds || search.testIds || [];
-    const validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
-    setTestId(validTestIds);
-
-    const settings = {
-      filters: { ...filters, ...onLoadFilters },
-      selectedTest: validTestIds
-    };
-    setFilters({ ...filters, ...onLoadFilters });
-
-    if (standardsFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
-      _onGoClick(settings);
+    if (standardsFilteresReceiveCount.current === 0) {
+      const search = qs.parse(location.search.substring(1));
+      // filters fetched on page load
+      const onLoadFilters = get(standardsFilters, "filters", []);
+      const onLoadTestIds = get(standardsFilters, "testIds");
+      // check if testIds in url are valid (present in the array)
+      const urlTestIds = onLoadTestIds || search.testIds || [];
+      const validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
+      setTestId(validTestIds);
+      // checks to check if saved filters match the default
+      const shouldUpdateSchoolYear = onLoadFilters.termId && onLoadFilters.termId !== filters.termId;
+      const shouldUpdateDomains =
+        (onLoadFilters.subject && onLoadFilters.subject !== filters.subject) ||
+        (onLoadFilters.grades?.[0] && onLoadFilters.grades?.[0] !== filters.grades?.[0]);
+      // settings to fetch the page data
+      const settings = {
+        filters: { ...filters, ...onLoadFilters },
+        selectedTest: validTestIds
+      };
+      setFilters({ ...filters, ...onLoadFilters });
+      // update standards filters for mismatch of saved filters
+      if (shouldUpdateSchoolYear) {
+        const q = { termId: onLoadFilters.termId };
+        if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+          Object.assign(q, { schoolIds: get(user, "institutionIds", []).join(",") });
+        }
+        getStandardsFiltersRequest(q);
+      }
+      if (shouldUpdateDomains) {
+        const q = {
+          curriculumId: onLoadFilters.subject,
+          grades: onLoadFilters.grades
+        };
+        getStandardsBrowseStandardsRequest(q);
+      }
+      // load page data
+      if (browseStandardsReceiveCount.current > 0) {
+        _onGoClick(settings);
+      }
     }
-
     standardsFilteresReceiveCount.current++;
   }
 
@@ -258,7 +265,6 @@ const StandardsFilters = ({
       termId: selected.key
     };
     setFilters(obj);
-
     const q = {
       termId: selected.key
     };
@@ -267,26 +273,26 @@ const StandardsFilters = ({
     }
     getStandardsFiltersRequest(q);
   };
+
   const updateSubjectDropDownCB = selected => {
     const obj = {
       ...filters,
       subject: selected
     };
     setFilters(obj);
-
     const q = {
       curriculumId: selected || undefined,
       grades: obj.grades
     };
     getStandardsBrowseStandardsRequest(q);
   };
+
   const updateGradeDropDownCB = selected => {
     const obj = {
       ...filters,
       grades: [selected]
     };
     setFilters(obj);
-
     const q = {
       curriculumId: obj.subject || curriculums[0]?.key || undefined,
       grades: [selected]
@@ -304,9 +310,7 @@ const StandardsFilters = ({
 
   const updateDomainDropDownCB = selected => {
     if (selected === "All") {
-      let tempArr = domains.filter((item, index) => index > 0);
-      tempArr = tempArr.map(item => item.key);
-
+      const tempArr = domains.slice(1).map(item => item.key);
       const obj = {
         ...filters,
         domainIds: tempArr.join()
@@ -315,7 +319,7 @@ const StandardsFilters = ({
     } else {
       const obj = {
         ...filters,
-        domainIds: [selected].join()
+        domainIds: selected
       };
       setFilters(obj);
     }
@@ -345,7 +349,14 @@ const StandardsFilters = ({
   const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default)?._id || "", [scaleInfo]);
   const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
 
-  const domainIdsArray = typeof filters.domainIds === "string" ? filters.domainIds.split(",") : filters.domainIds;
+  const selectedDomain =
+    domains
+      .slice(1)
+      .map(item => item.key)
+      .join() === filters.domainIds
+      ? "All"
+      : filters.domainIds;
+
   const testNameFilter = (
     <SearchField>
       <FilterLabel>Assessment Name</FilterLabel>
@@ -374,12 +385,7 @@ const StandardsFilters = ({
   const domainFilter = (
     <SearchField>
       <FilterLabel>Domain</FilterLabel>
-      <AutocompleteDropDown
-        prefix="Domain"
-        by={(domainIdsArray.length <= 1 && domainIdsArray[0]) || domains[0]}
-        selectCB={updateDomainDropDownCB}
-        data={domains}
-      />
+      <DropdownFilters value={selectedDomain || domains[0]?.key} onChange={updateDomainDropDownCB} options={domains} />
     </SearchField>
   );
   const stdProficiencyFilter = (

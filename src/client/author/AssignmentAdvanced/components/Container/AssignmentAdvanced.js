@@ -98,7 +98,7 @@ class AssignmentAdvanced extends Component {
       <FlexContainer>
         <div>
           <StyledSpan>Filter By</StyledSpan>
-          <StyledButton type="primary" onClick={() => this.setState({ filterStatus: "" })}>
+          <StyledButton data-cy="allFilter" type="primary" onClick={() => this.setState({ filterStatus: "" })}>
             All
           </StyledButton>
         </div>
@@ -109,28 +109,28 @@ class AssignmentAdvanced extends Component {
             color={filterStatus === "NOT OPEN" ? "white" : assignmentStatusBg.NOT_OPEN}
             bgColor={filterStatus === "NOT OPEN" && assignmentStatusBg.NOT_OPEN}
           >
-            <span>{assingment.notStarted || 0}</span>Not Open
+            <span data-cy="notOpenFilter">{assingment.notStarted || 0}</span>Not Open
           </Breadcrumb>
           <Breadcrumb
             handleClick={() => this.setState({ filterStatus: "IN PROGRESS" })}
             color={filterStatus === "IN PROGRESS" ? "white" : assignmentStatusBg.IN_PROGRESS}
             bgColor={filterStatus === "IN PROGRESS" && assignmentStatusBg.IN_PROGRESS}
           >
-            <span>{assingment.inProgress || 0}</span>In Progress
+            <span data-cy="inProgressFilter">{assingment.inProgress || 0}</span>In Progress
           </Breadcrumb>
           <Breadcrumb
             handleClick={() => this.setState({ filterStatus: "IN GRADING" })}
             color={filterStatus === "IN GRADING" ? "white" : assignmentStatusBg.IN_GRADING}
             bgColor={filterStatus === "IN GRADING" && assignmentStatusBg.IN_GRADING}
           >
-            <span>{assingment.inGrading || 0}</span>In Grading
+            <span data-cy="inGradingFilter">{assingment.inGrading || 0}</span>In Grading
           </Breadcrumb>
           <Breadcrumb
             handleClick={() => this.setState({ filterStatus: "DONE" })}
             color={filterStatus === "DONE" ? "white" : assignmentStatusBg.DONE}
             bgColor={filterStatus === "DONE" && assignmentStatusBg.DONE}
           >
-            <span>{assingment.graded || 0}</span>Done
+            <span data-cy="doneFilter">{assingment.graded || 0}</span>Done
           </Breadcrumb>
         </Breadcrumbs>
       </FlexContainer>

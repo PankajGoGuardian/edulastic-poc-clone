@@ -74,6 +74,13 @@ export default class TestAssignPage {
     cy.focused().blur();
   };
 
+  selectMultipleCLasses = (classes) =>{
+    this.selectClassDropdown();
+    classes.forEach(className => {
+      this.clickOnDropDownOptionByText(className);
+    });
+  }
+
   verifyNoClassesInDropDown = className => {
     this.selectClassDropdown().type(className);
     cy.get(".ant-empty-description").should("contain", "No Data");

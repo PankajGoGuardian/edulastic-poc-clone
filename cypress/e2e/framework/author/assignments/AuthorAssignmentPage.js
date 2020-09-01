@@ -238,6 +238,23 @@ class AuthorAssignmentPage {
     return cy.get('[data-cy="studentName"]', { timeout: 30000 }).should("have.length.greaterThan", 0);
   };
 
+  clickOnLCBbyClassAndTestId = (testId,className) => {
+    this.expandTestRowsByTestId(testId);
+    cy.server();
+    cy.route("GET", "**/assignments/**").as("assignment");
+    if(className){
+      this.getAssignmentRowsTestById(testId).find(`[data-cy="class"]`).each($test =>{
+        if($test.text()==className){
+          cy.wrap($test).closest(`tr`).find('[data-cy="lcb"]')
+          .click({ force: true });
+        }
+      })
+    }
+    cy.url().should("contain", `author/classboard/`);
+    cy.wait("@assignment");
+    return cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+  };
+
   clickOnExpressGraderByTestId = (testId, assignmentid) => {
     this.expandTestRowsByTestId(testId);
     if (assignmentid)
@@ -275,6 +292,11 @@ class AuthorAssignmentPage {
     this.getOptionInDropDownByAttribute("summary-grades").click();
     // cy.wait("@load-summary");
   };
+
+  filterByTestType = (testType)=>{
+    this.smartFilter.expandFilter()
+    this.smartFilter.setTesttype(testType)
+  }
 
   clickChoosefromPlaylistButton = () => this.getChooseFromPlaylistsButton().click({ force: true });
 

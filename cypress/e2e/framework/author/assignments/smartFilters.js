@@ -5,6 +5,8 @@ export default class SmartFilters {
 
   getGrades = () => cy.get('[data-cy="grades"]');
 
+  getTestType = () => cy.get('[data-cy="filter-testType"]');
+
   getFilter = () => cy.get('[data-cy="smart-filter"]');
 
   // *** ELEMENTS END ***
@@ -60,8 +62,18 @@ export default class SmartFilters {
   };
 
   setTesttype = testType => {
-    CypressHelper.selectDropDownByAttribute("filter-testType", testType);
-    this.waitForAssignments();
+    // CypressHelper.selectDropDownByAttribute("filter-testType", testType);
+    this.getTestType().click();
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele
+          .filter(function() {
+            return Cypress.$(this).text() === testType;
+          })
+      ).click({ force: true })
+    });
+    // this.waitForAssignments();
+    cy.focused().blur();
   };
 
   setClass = classs => {

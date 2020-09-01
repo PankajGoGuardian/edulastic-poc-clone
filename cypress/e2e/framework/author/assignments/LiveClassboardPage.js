@@ -257,7 +257,9 @@ class LiveClassboardPage {
     cy.url().should("include", `/author/classboard/${assignmnetId}/${classId}`);
 
   checkClassName(className) {
-    return cy.get("[data-cy=CurrentClassName]").contains(className);
+    return cy.get("[data-cy=CurrentClassName]").then($ele =>{
+      assert.equal($ele.text(),className,"Class name does not match :")
+    });
   }
 
   checkSummaryTabIsPresent() {
@@ -312,7 +314,12 @@ class LiveClassboardPage {
       .should("be.visible");
   }
 
-  checkSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").check({ force: true });
+  checkSelectAllCheckboxOfStudent = () =>{
+
+    cy.get("[data-cy=selectAllCheckbox]").closest(`span`).then($ele=>{
+      if(!$ele.hasClass("ant-checkbox-checked")) cy.wrap($ele).click()
+    })
+  }
 
   uncheckSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").uncheck({ force: true });
 

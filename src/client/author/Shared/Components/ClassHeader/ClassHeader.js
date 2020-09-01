@@ -275,7 +275,7 @@ class ClassHeader extends Component {
       dueDate,
       assignedBy = {},
       answerOnPaper,
-      classes = []
+      classId: _classId
     } = additionalData;
     const dueOn = dueDate || endDate;
     const dueOnDate = Number.isNaN(dueOn) ? new Date(dueOn) : new Date(parseInt(dueOn, 10));
@@ -296,7 +296,7 @@ class ClassHeader extends Component {
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
 
     const isSmallDesktop = windowWidth <= parseInt(smallDesktopWidth, 10);
-    const loading = classes[0]?._id !== classId;
+    const loading = _classId !== classId;
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -457,7 +457,9 @@ class ClassHeader extends Component {
                   <WithDisableMessage
                     disabled={hasRandomQuestions || !isItemsVisible}
                     errMessage={
-                      hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
+                      hasRandomQuestions
+                        ? "This assignment has random items for every student."
+                        : t("common.testHidden")
                     }
                   >
                     <HeaderTabs
@@ -548,9 +550,8 @@ class ClassHeader extends Component {
                   canUndone
                   bodyText={
                     <div>
-                      Are you sure you want to pause? 
-                      Once paused,no student would be able to answer the test 
-                      unless you resume it.
+                      Are you sure you want to pause? Once paused,no student would be able to answer the test unless you
+                      resume it.
                     </div>
                   }
                   okText="Yes, Pause"
@@ -569,7 +570,9 @@ class ClassHeader extends Component {
                     <div>
                       <StudentStatusDetails>
                         {notStartedStudents.length ? (
-                          <p style={{marginRight:"10px"}}>{notStartedStudents.length} student(s) have not yet started</p>
+                          <p style={{ marginRight: "10px" }}>
+                            {notStartedStudents.length} student(s) have not yet started
+                          </p>
                         ) : (
                           ""
                         )}
@@ -579,8 +582,8 @@ class ClassHeader extends Component {
                           ""
                         )}
                       </StudentStatusDetails>
-                      <p>Are you sure you want to close ?
-                        Once closed, no student would be able to answer the assessment
+                      <p>
+                        Are you sure you want to close ? Once closed, no student would be able to answer the assessment
                       </p>
                     </div>
                   }

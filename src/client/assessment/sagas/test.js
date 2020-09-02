@@ -76,8 +76,7 @@ function* loadTest({ payload }) {
     groupId: groupIdFromUrl,
     isShowStudentWork = false,
     playlistId,
-    currentAssignmentId,
-    sharedType = ""
+    currentAssignmentId
   } = payload;
   try {
     // if the assessment player is loaded for showing student work
@@ -122,7 +121,7 @@ function* loadTest({ payload }) {
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {})
         }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId, { sharedType });
+      : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
       const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));

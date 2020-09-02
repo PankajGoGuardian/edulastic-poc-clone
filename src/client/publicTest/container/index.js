@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Spin } from "antd";
+import { Spin, message } from "antd";
 import { notification } from "@edulastic/common";
 import styled from "styled-components";
 import { greyLight1 } from "@edulastic/colors";
@@ -55,7 +55,7 @@ const PublicTestPage = ({
       const { role } = user;
       // fetch test to check if test archieved or not
       testsApi
-        .getPublicTest(testId)
+        .getPublicTest(testId, { sharedType: "PUBLIC" })
         .then(_test => {
           const isTestArchieved = _test.status === testConstants.statusConstants.ARCHIVED;
           const isTestInDraft = _test.status === testConstants.statusConstants.DRAFT;
@@ -86,7 +86,7 @@ const PublicTestPage = ({
         });
     } else if (!authenticating || !TokenStorage.getAccessToken()) {
       if (!test) {
-        fetchTest({ testId });
+        fetchTest({ testId, sharedType: "PUBLIC" });
       } else if (
         test?.status === testConstants.statusConstants.ARCHIVED ||
         test?.status === testConstants.statusConstants.DRAFT
@@ -133,7 +133,7 @@ const PublicTestPage = ({
 
   // if test is not public, then redirect to login page
   if (error) {
-    notification({ messageKey: "tryingToAccessPrivateTest" });
+    notification({ messageKey:"tryingToAccessPrivateTest"});
     return <Redirect to="/login" />;
   }
   if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
@@ -158,6 +158,7 @@ const PublicTestPage = ({
           testId={test?._id || testId}
           closeTestPreviewModal={() => setShowPreviewModal(false)}
           demo
+          sharedType="PUBLIC"
         />
       )}
     </StyledMainWrapper>

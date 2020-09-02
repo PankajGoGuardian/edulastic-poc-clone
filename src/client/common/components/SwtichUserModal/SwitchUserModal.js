@@ -66,7 +66,7 @@ const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userI
         })}
       </div>
     </div>
-    {userRole !== "edulastic-admin" && (
+    {userRole !== "edulastic-admin" && userRole !== "edulastic-curator" && (
       <ButtonsContainer>
         <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
           <Button isGhost>

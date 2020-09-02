@@ -360,13 +360,13 @@ class SideMenu extends Component {
                 <span>{isCollapsed ? "" : "Switch Account"} </span>
               </a>
             </Menu.Item>
-          ) : (
+          ) : userRole === roleuser.EDULASTIC_CURATOR ? (
             <Menu.Item key="4" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser /> <span>{isCollapsed ? "" : "Add Account"}</span>
               </Link>
             </Menu.Item>
-          )}
+          ) : null}
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight /> <span>{isCollapsed ? "" : "Sign Out"}</span>
@@ -390,6 +390,7 @@ class SideMenu extends Component {
           closeModal={() => this.setState({ showModal: false })}
           otherAccounts={get(switchDetails, "otherAccounts", [])}
           personId={get(switchDetails, "personId")}
+          userRole={userRole}
         />
         <SideBar
           collapsed={isCollapsed}

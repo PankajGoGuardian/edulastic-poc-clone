@@ -143,7 +143,7 @@ export const getAllAssignmentsSelector = createSelector(
         );
         return allClassess.map(clazz => ({
           ...assignment,
-          maxAttempts: clazz.maxAttempts,
+          maxAttempts: clazz.maxAttempts || assignment.maxAttempts,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`]?.filter(item => item.status !== 0) || [],
           ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {})

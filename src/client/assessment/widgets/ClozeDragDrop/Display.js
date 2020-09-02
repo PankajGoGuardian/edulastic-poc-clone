@@ -202,7 +202,7 @@ class ClozeDragDropDisplay extends Component {
       if (hasGroupResponses) {
         userSelections.forEach(userSelection => {
           if (userSelection !== null && typeof userSelection === "object") {
-            for (let i = 0; i < possibleResps[userSelection.group].options.length; i++) {
+            for (let i = 0; i < (possibleResps[userSelection?.group]?.options || []).length; i++) {
               if (possibleResps[userSelection.group].options[i].value === userSelection.data) {
                 possibleResps[userSelection.group].options.splice(i, 1);
                 break;
@@ -332,8 +332,8 @@ class ClozeDragDropDisplay extends Component {
       responsecontainerindividuals,
       globalSettings: uiStyle.globalSettings,
       maxWidth: dragItemMaxWidth,
-      onDrop: !disableResponse ? this.onDrop : () => {},
-      onDropHandler: !disableResponse ? this.onDrop : () => {},
+      onDrop: !disableResponse ? this.onDrop : () => { },
+      onDropHandler: !disableResponse ? this.onDrop : () => { },
       cAnswers: get(item, "validation.validResponse.value", []),
       isExpressGrader,
       isPrintPreview
@@ -368,7 +368,7 @@ class ClozeDragDropDisplay extends Component {
         responses={responses}
         fontSize={fontSize}
         dragHandler={dragHandler}
-        onDrop={!disableResponse ? this.onDrop : () => {}}
+        onDrop={!disableResponse ? this.onDrop : () => { }}
         containerPosition={responsecontainerposition}
         dragItemStyle={dragItemStyle}
         getHeading={t}
@@ -513,8 +513,8 @@ ClozeDragDropDisplay.propTypes = {
 
 ClozeDragDropDisplay.defaultProps = {
   options: [],
-  onChange: () => {},
-  changePreviewTab: () => {},
+  onChange: () => { },
+  changePreviewTab: () => { },
   preview: true,
   item: {},
   disableResponse: false,

@@ -1,6 +1,6 @@
-import { faClone, faMinus, faPaperPlane, faPencilAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faClone, faMinus, faPencilAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Col, Form, Icon, message, Pagination } from "antd";
+import { Col, Form, Icon, Pagination } from "antd";
 import produce from "immer";
 import { maxBy, sumBy, uniqBy, debounce } from "lodash";
 import { notification } from "@edulastic/common";
@@ -103,25 +103,25 @@ const UseExisting = ({
               if (!uniqueRatings.includes(rating.points)) uniqueRatings.push(parseFloat(rating.points));
             } else {
               isValid = false;
-              notification({ messageKey:"ratingNameCannotEmpty"});
+              notification({ messageKey: "ratingNameCannotEmpty" });
             }
             return isValid;
           });
           if (isValid && uniqueRatings.includes(NaN)) {
             isValid = false;
-            notification({ messageKey:"ratingPointMustNotBeEmpty"});
+            notification({ messageKey: "ratingPointMustNotBeEmpty" });
           }
           if (isValid && !uniqueRatings.includes(0)) {
             isValid = false;
-            notification({ messageKey:"ratingPointMustBeZero"});
+            notification({ messageKey: "ratingPointMustBeZero" });
           }
           if (isValid && !uniqueRatings.find(p => p > 0)) {
             isValid = false;
-            notification({ messageKey:"ratingPointMustBeMoreThanZero"});
+            notification({ messageKey: "ratingPointMustBeMoreThanZero" });
           }
         } else {
           isValid = false;
-          notification({ messageKey:"criteriaNameCannotBeEmpty"});
+          notification({ messageKey: "criteriaNameCannotBeEmpty" });
         }
         return isValid;
       });
@@ -129,12 +129,12 @@ const UseExisting = ({
         const uniqueCriteriaArray = uniqBy(currentRubricData.criteria, "name");
         if (uniqueCriteriaArray.length < currentRubricData.criteria.length) {
           isValid = false;
-           notification({ messageKey:"criteriaNameShouldBeUnique"});
+          notification({ messageKey: "criteriaNameShouldBeUnique" });
         }
       }
     } else {
       isValid = false;
-      notification({ messageKey:"rubricNameCannotBeEmpty"});
+      notification({ messageKey: "rubricNameCannotBeEmpty" });
     }
     return isValid;
   };
@@ -214,13 +214,13 @@ const UseExisting = ({
     const clonedData = produce(rubric, draft => {
       draft.name = `Clone of ${draft.name}`;
       draft.criteria = draft.criteria.map(criteria => ({
-          ...criteria,
-          id: v4(),
-          ratings: criteria.ratings.map(rating => ({
-            ...rating,
-            id: v4()
-          }))
-        }));
+        ...criteria,
+        id: v4(),
+        ratings: criteria.ratings.map(rating => ({
+          ...rating,
+          id: v4()
+        }))
+      }));
     });
     setIsEditable(true);
     const { name, description, criteria } = clonedData;
@@ -286,12 +286,12 @@ const UseExisting = ({
             </CustomStyleBtn>
             {currentMode === "PREVIEW" && !isEditable && (
               <>
-                {currentQuestion.rubrics?._id !== currentRubricData._id && (
+                {currentQuestion.rubrics?._id !== currentRubricData?._id && (
                   <CustomStyleBtn style={btnStyle} onClick={handleUseRubric}>
                     <Icon type="check" /> <span>Use</span>
                   </CustomStyleBtn>
                 )}
-                {currentQuestion.rubrics?._id === currentRubricData._id && (
+                {currentQuestion.rubrics?._id === currentRubricData?._id && (
                   <CustomStyleBtn style={btnStyle} onClick={() => dissociateRubricFromQuestion()}>
                     <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
                   </CustomStyleBtn>

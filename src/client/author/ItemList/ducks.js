@@ -145,8 +145,14 @@ export function* addItemToCartSaga({ payload }) {
       ? testConstant.releaseGradeLabels.WITH_RESPONSE
       : testConstant.releaseGradeLabels.DONT_RELEASE;
 
+  const extraProperties = {};
+  if (!test.testContentVisibility && roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
+    extraProperties.testContentVisibility = testConstant.testContentVisibility.ALWAYS;
+  }
+
   const updatedTest = {
     ...test,
+    ...extraProperties,
     releaseScore,
     itemGroups: [
       {

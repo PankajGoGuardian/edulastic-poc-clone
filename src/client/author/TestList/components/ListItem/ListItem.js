@@ -1,15 +1,8 @@
 import { assignmentApi } from "@edulastic/api";
 import { uniqBy } from "lodash";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
-import {
-  CheckboxLabel,
-  MathFormulaDisplay,
-  PremiumTag,
-  LikeIconStyled,
-  EduButton,
-  FlexContainer
-} from "@edulastic/common";
-import { test } from "@edulastic/constants";
+import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled, EduButton } from "@edulastic/common";
+import { roleuser, test } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconUser, IconDynamic, IconUsers, IconPlus } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col } from "antd";
@@ -19,10 +12,15 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
-import { ViewButton as ViewButtonContainer, ViewButtonStyled } from "../../../ItemList/components/Item/styled";
+import {
+  ViewButton as ViewButtonContainer,
+  ViewButtonStyled,
+  AddRemoveButton
+} from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
 import {
-  isCoTeacherSelector,
+  getUserRole,
+  isPublisherUserSelector,
   getCollectionsSelector,
   getUserId,
   getCollectionsToAddContent
@@ -162,15 +160,6 @@ class ListItem extends Component {
     });
   };
 
-  handleAddRemoveToCart = item => evt => {
-    const { onRemoveFromCart, onAddToCart } = this.props;
-    if (evt.target.checked) {
-      onAddToCart(item);
-    } else {
-      onRemoveFromCart(item);
-    }
-  };
-
   render() {
     const {
       item: {
@@ -198,8 +187,11 @@ class ListItem extends Component {
       checked,
       moduleTitle,
       selectedTests = [],
+      onRemoveFromCart,
+      onAddToCart,
       t,
-      isCoTeacher,
+      userRole,
+      isPublisherUser,
       orgCollections = [],
       currentUserId,
       isTestLiked,
@@ -219,7 +211,7 @@ class ListItem extends Component {
 
     const showPremiumTag =
       showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
-      !isCoTeacher &&
+      !isPublisherUser &&
       !(_source?.createdBy?._id === currentUserId);
 
     const isDynamic =
@@ -245,12 +237,6 @@ class ListItem extends Component {
         collectionName = sharedType;
       }
     }
-
-    const cardTitle = (
-      <Header src={thumbnailData}>
-        <Stars size="small" />
-      </Header>
-    );
 
     return (
       <>
@@ -280,16 +266,20 @@ class ListItem extends Component {
           testId={currentTestId}
           closeTestPreviewModal={this.hidePreviewModal}
         />
-        <Container>
+        <Container onClick={isPlaylist ? e => this.moveToItem(e) : mode === "embedded" ? "" : this.openModal}>
           <ContentWrapper>
             <Col span={24}>
               <Outer>
-                <FlexContainer
-                  width="100%"
-                  justifyContent="flex-start"
-                  onClick={isPlaylist ? e => this.moveToItem(e) : mode === "embedded" ? "" : this.openModal}
-                >
-                  <ListCard title={cardTitle} />
+                <div style={{ display: "flex" }}>
+                  <div>
+                    <ListCard
+                      title={
+                        <Header src={thumbnailData}>
+                          <Stars size="small" />
+                        </Header>
+                      }
+                    />
+                  </div>
 
                   <Inner>
                     <StyledLink data-cy="test-title" title={title}>
@@ -305,7 +295,8 @@ class ListItem extends Component {
                       </EllipsisWrapper>
                     </Description>
                   </Inner>
-                </FlexContainer>
+                </div>
+
                 {!isPlaylist && mode === "embedded" && (
                   <ViewButtonWrapper span={6}>
                     {!isTestAdded && mode === "embedded" && (
@@ -368,14 +359,35 @@ class ListItem extends Component {
                   </ViewButtonContainer>
                 )}
 
-                {!isPlaylist && mode !== "embedded" && isCoTeacher && (
-                  <ViewButtonContainer>
-                    <ViewButtonStyled data-cy="view" onClick={() => this.showPreviewModal(item._id)}>
-                      <IconEye /> {t("component.itemlist.preview")}
-                    </ViewButtonStyled>
-                    <CheckboxLabel ml="10px" onChange={this.handleAddRemoveToCart(item)} checked={isInCart} />
-                  </ViewButtonContainer>
-                )}
+                {!isPlaylist &&
+                  mode !== "embedded" &&
+                  (userRole === roleuser.DISTRICT_ADMIN ||
+                    userRole === roleuser.SCHOOL_ADMIN ||
+                    userRole === roleuser.TEACHER ||
+                    isPublisherUser) && (
+                    <ViewButtonContainer>
+                      <ViewButtonStyled
+                        data-cy="view"
+                        onClick={e => {
+                          e.stopPropagation();
+                          this.showPreviewModal(item._id);
+                        }}
+                      >
+                        <IconEye /> {t("component.itemlist.preview")}
+                      </ViewButtonStyled>
+                      {collectionToWrite?.length > 0 && (
+                        <AddRemoveButton
+                          onClick={e => {
+                            isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                            e.stopPropagation();
+                          }}
+                          selectedToCart={isInCart}
+                        >
+                          {isInCart ? <IconClose /> : <IconPlus />}
+                        </AddRemoveButton>
+                      )}
+                    </ViewButtonContainer>
+                  )}
               </Outer>
             </Col>
 
@@ -452,7 +464,8 @@ const enhance = compose(
     state => ({
       selectedTests: getSelectedTestsSelector(state),
       orgCollections: getCollectionsSelector(state),
-      isCoTeacher: isCoTeacherSelector(state),
+      userRole: getUserRole(state),
+      isPublisherUser: isPublisherUserSelector(state),
       currentUserId: getUserId(state),
       collectionToWrite: getCollectionsToAddContent(state)
     }),

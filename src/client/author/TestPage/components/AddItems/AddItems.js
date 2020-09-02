@@ -34,7 +34,7 @@ import {
   updateSearchFilterStateAction,
   clearFilterStateAction,
   filterMenuItems,
-  initialSearchState,
+  initalSearchState,
   getSortFilterStateSelector,
   initialSortState
 } from "./ducks";
@@ -194,7 +194,7 @@ class AddItems extends PureComponent {
   handleClearSearch = () => {
     const { clearFilterState, receiveTestItems, limit } = this.props;
     clearFilterState({ needToSetFilter: false });
-    receiveTestItems(initialSearchState, initialSortState, 1, limit);
+    receiveTestItems(initalSearchState, initialSortState, 1, limit);
     setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
   };
 

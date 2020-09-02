@@ -196,8 +196,8 @@ class TestItemPreview extends Component {
             {col.tabs &&
               !!col.tabs.length &&
               value === widget.tabIndex &&
-              this.renderFeedback(widget, i,colIndex++, showStackedView)}
-            {col.tabs && !col.tabs.length && this.renderFeedback(widget, i,colIndex++, showStackedView)}
+              this.renderFeedback(widget, i, colIndex++, showStackedView)}
+            {col.tabs && !col.tabs.length && this.renderFeedback(widget, i, colIndex++, showStackedView)}
           </React.Fragment>
         ))
     );
@@ -388,7 +388,7 @@ class TestItemPreview extends Component {
           )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
-        {((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
+        {!isStudentAttempt && ((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
           <div
             style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}
             className="__print-feedback-main-wrapper"

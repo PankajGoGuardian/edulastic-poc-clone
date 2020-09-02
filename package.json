@@ -75,7 +75,7 @@
     "d3-array": "^2.0.3",
     "dotenv": "^8.2.0",
     "eslint-plugin-cypress": "^2.1.2",
-    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#6103b9f469315dd288672f9257ae1e8111ca2e2d",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#6d7e39a8d8588d3ff32572e3e9a73af0a5199cca",
     "faker": "^4.1.0",
     "fetch-mock": "^7.2.5",
     "firebase": "^7.13.2",

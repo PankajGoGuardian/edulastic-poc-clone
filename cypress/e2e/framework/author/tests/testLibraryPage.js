@@ -568,7 +568,7 @@ export default class TestLibrary {
     cy.server();
     cy.route("GET", "**/test/*/regrade-assignments").as("load-test-review");
     cy.visit(`/author/tests/tab/review/id/${id}`);
-    cy.wait("@load-test-review");
+    cy.wait("@load-test-review", { timeout: 120000 }); // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
   };
 
   searchByCollection = collection => {

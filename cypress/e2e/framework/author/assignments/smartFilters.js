@@ -9,6 +9,8 @@ export default class SmartFilters {
 
   getFilter = () => cy.get('[data-cy="smart-filter"]');
 
+  getAllAssignment = () => cy.contains("span", "All Assignments");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -66,11 +68,10 @@ export default class SmartFilters {
     this.getTestType().click();
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
       cy.wrap(
-        $ele
-          .filter(function() {
-            return Cypress.$(this).text() === testType;
-          })
-      ).click({ force: true })
+        $ele.filter(function() {
+          return Cypress.$(this).text() === testType;
+        })
+      ).click({ force: true });
     });
     // this.waitForAssignments();
     cy.focused().blur();
@@ -99,7 +100,7 @@ export default class SmartFilters {
 
   // folders
 
-  clickOnAllAssignment = () => cy.contains("span", "ALL ASSIGNMENTS").click();
+  clickOnAllAssignment = () => this.getAllAssignment().click();
 
   clickOnFolderByName = folderName =>
     cy
@@ -157,7 +158,7 @@ export default class SmartFilters {
   createNewFolder = (folderName, isValid = true) => {
     cy.server();
     cy.route("POST", "**/user-folder").as("createFolder");
-    cy.contains("span", "NEW FOLDER").click();
+    cy.get('[data-cy="addFolderButton"]').click();
     cy.get('[placeholder="Name this folder"]').type(folderName);
     cy.contains("span", "Create").click({ force: true });
 

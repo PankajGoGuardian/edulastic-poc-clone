@@ -31,6 +31,8 @@ class StudentTestPage {
 
   getQueDropDown = () => cy.get('[data-cy="options"]').should("be.visible");
 
+  getQuestionDropDownList = () => cy.get('[data-cy="questionSelectOptions"]');
+
   getHint = () => cy.contains("hint").should("be.visible");
 
   getBookmark = () => cy.contains("bookmark").should("be.visible");
@@ -122,9 +124,9 @@ class StudentTestPage {
     this.getNext()
       .should("be.visible")
       .click();
-    if (isSkipped) {
+    /*  if (isSkipped) {
       this.clickOnSkipOnPopUp();
-    }
+    } */
     if (!onlyPreview) return cy.wait("@saved");
   };
 
@@ -778,7 +780,7 @@ class StudentTestPage {
           const currentQue = parseInt($item.attr("data-cy").split("-")[1]);
           const queToNavigate = index + 1;
           cy.wrap($ele).click({ force: true });
-          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
+          // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
           cy.wait("@saved");
         });
       }
@@ -881,7 +883,7 @@ class StudentTestPage {
     this.getQueDropDown()
       .as("question-dropdown")
       .click({ force: true });
-    this.getAllQuestionInDropDown().should("have.length", NoOfQues);
+    this.getQuestionDropDownList().should("have.length", NoOfQues);
     cy.get("@question-dropdown").click({ force: true });
   };
 
@@ -902,10 +904,10 @@ class StudentTestPage {
         const queToNavigate = index + 1;
         if (!txt.includes(`Question ${queToNavigate}/`)) {
           this.getQueDropDown().click({ force: true });
-          this.getAllQuestionInDropDown()
+          this.getQuestionDropDownList()
             .eq(index)
             .click({ force: true });
-          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
+          // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
           cy.wait("@saved");
         }
       });

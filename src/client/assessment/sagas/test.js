@@ -127,8 +127,8 @@ function* loadTest({ payload }) {
     if (!preview) {
       const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
       let passwordValidated =
-        testActivity.assignmentSettings.passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary;
+        testActivity?.assignmentSettings?.passwordPolicy ===
+          testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF || isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }

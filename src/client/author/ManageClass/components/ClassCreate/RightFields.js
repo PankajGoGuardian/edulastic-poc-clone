@@ -158,7 +158,12 @@ const RightFields = ({
                 showSearch
                 mode="multiple"
                 optionFilterProp="children"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option) =>
+                  option.props.children
+                    ?.toString()
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
                 placeholder="Select Standards"
               >
                 {!selectedSubject ? (
@@ -190,7 +195,6 @@ const RightFields = ({
                 placeholder="Select Course"
                 showSearch
                 defaultActiveFirstOption={false}
-                showArrow={false}
                 filterOption={false}
                 onSearch={handleSearch}
                 onFocus={handleFocus}

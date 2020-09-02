@@ -14,7 +14,7 @@ const PlayerSkinSelector = ({
   fullwidth = false,
   selectBackgroundWhite = false
 }) => {
-  const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
+  const edulastic = `${playerSkinTypes.edulastic} ${testType?.includes("assessment") ? "Test" : "Practice"}`;
   const types = {
     ...playerSkinTypes,
     edulastic

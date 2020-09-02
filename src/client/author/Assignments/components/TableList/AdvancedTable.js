@@ -1,9 +1,9 @@
-import { EduButton, FlexContainer } from "@edulastic/common";
+import { EduButton, FlexContainer, CheckboxLabel } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { Dropdown, Spin, Tooltip } from "antd";
+import { Dropdown, Spin, Tooltip, Menu } from "antd";
 import produce from "immer";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -13,6 +13,12 @@ import NoDataNotification from "../../../../common/components/NoDataNotification
 import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 import { getAssignmentsSummary, getAssignmentTestsSelector } from "../../../src/selectors/assignments";
 import { getUserIdSelector, getUserRole, getGroupList } from "../../../src/selectors/user";
+import {
+  toggleRemoveItemsFolderAction,
+  toggleMoveItemsFolderAction,
+  setItemsMoveFolderAction
+} from "../../../src/actions/folder";
+import { getSelectedItems } from "../../../src/selectors/folder";
 import { canEditTest } from "../../utils";
 import ActionMenu from "../ActionMenu/ActionMenu";
 import { ActionDiv, AssignmentTD, Container, TableData, TestThumbnail, TypeIcon, TypeWrapper } from "./styled";
@@ -134,7 +140,26 @@ class AdvancedTable extends Component {
         render: text => <div> {text} </div>
       },
       {
-        title: "",
+        title: () => {
+          const { selectedRows } = this.props;
+          const menu = (
+            <Menu>
+              <Menu.Item onClick={() => this.toggleMoveFolderModal()}>Add to Folder</Menu.Item>
+              <Menu.Item onClick={() => this.handleRemoveItemsFromFolder()}>Remove from Folder</Menu.Item>
+            </Menu>
+          );
+          return (
+            selectedRows.length > 0 && (
+              <ActionDiv>
+                <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
+                  <EduButton height="28px" width="100%" data-cy="actions" isBlue isGhost>
+                    ACTIONS
+                  </EduButton>
+                </Dropdown>
+              </ActionDiv>
+            )
+          );
+        },
         dataIndex: "action",
         width: "10%",
         render: (_, row) => {
@@ -168,7 +193,9 @@ class AdvancedTable extends Component {
                   assignmentTest,
                   canEdit,
                   togglePrintModal,
-                  userClassList
+                  userClassList,
+                  addItemToFolder: this.handleSelectRow(row),
+                  removeItemsFromFolder: () => this.handleRemoveItemsFromFolder(row)
                 })}
                 placement="bottomRight"
                 trigger={["click"]}
@@ -184,6 +211,27 @@ class AdvancedTable extends Component {
           onMouseEnter: this.disableRowClick,
           onMouseLeave: this.enableRowClick
         })
+      },
+      {
+        title: () => {
+          const { selectedAll, indeterminate } = this.isSelectedAll();
+          return (
+            <CheckboxLabel
+              size="15px"
+              indeterminate={indeterminate}
+              onChange={this.handleSelectAllRow}
+              checked={selectedAll}
+              onClick={e => e.stopPropagation()}
+            />
+          );
+        },
+        dataIndex: "checked",
+        width: "5%",
+        render: (_, row) => (
+          <ActionDiv onClick={e => e.stopPropagation()}>
+            <CheckboxLabel size="15px" checked={this.isSelectedRow(row)} onChange={this.handleSelectRow(row)} />
+          </ActionDiv>
+        )
       }
     ]
   };
@@ -240,18 +288,74 @@ class AdvancedTable extends Component {
     this.fetchSummary(current, newSortOrder ? { sortBy: col.dataIndex, sortOrder: newSortOrder } : {});
   };
 
-  render() {
-    const { onSelectRow, assignmentsSummary, selectedRows, totalData, loading } = this.props;
-    const { perPage, current, columns } = this.state;
+  handleSelectRow = row => e => {
+    console.clear();
+    console.log(row);
+    const { toggleAddItemFolderModal, setItemsToFolder, selectedRows } = this.props;
+    const selectedIndex = selectedRows.findIndex(r => r.itemId === row.testId);
+    if (e.target && e.target.checked && selectedIndex === -1) {
+      setItemsToFolder([...selectedRows, { itemId: row.testId, title: row.title }]);
+    } else if (e.target && selectedIndex !== -1) {
+      selectedRows.splice(selectedIndex, 1);
+      setItemsToFolder([...selectedRows]);
+    } else if (!e.target && toggleAddItemFolderModal) {
+      // this case is from action button of an item
+      setItemsToFolder([{ itemId: row.testId, title: row.title }]);
+      toggleAddItemFolderModal({
+        items: [{ itemId: row.testId, title: row.title }],
+        isOpen: true
+      });
+    }
+  };
 
-    const rowSelection = {
-      selectedRowKeys: selectedRows.map(item => `${item.testId}_${item.testType}`),
-      onChange: (_, rows) => {
-        if (onSelectRow) {
-          onSelectRow(rows);
-        }
-      }
-    };
+  handleSelectAllRow = e => {
+    const { assignmentsSummary, setItemsToFolder } = this.props;
+    if (e.target.checked) {
+      setItemsToFolder(assignmentsSummary.map(r => ({ itemId: r.testId, title: r.title })));
+    } else {
+      setItemsToFolder([]);
+    }
+  };
+
+  handleRemoveItemsFromFolder = row => {
+    const { toggleRemovalFolderModal, selectedRows } = this.props;
+    if (!isEmpty(row)) {
+      toggleRemovalFolderModal({
+        items: [{ itemId: row.testId, title: row.title }],
+        isOpen: true
+      });
+    } else if (!isEmpty(selectedRows)) {
+      toggleRemovalFolderModal({
+        items: selectedRows,
+        isOpen: true
+      });
+    }
+  };
+
+  toggleMoveFolderModal = () => {
+    const { toggleAddItemFolderModal, selectedRows } = this.props;
+    if (toggleAddItemFolderModal) {
+      toggleAddItemFolderModal({
+        items: selectedRows,
+        isOpen: true
+      });
+    }
+  };
+
+  isSelectedRow = row => {
+    const { selectedRows } = this.props;
+    return !!selectedRows.find(r => r.itemId === row.testId);
+  };
+
+  isSelectedAll = () => {
+    const { assignmentsSummary, selectedRows } = this.props;
+    const selectedAll = selectedRows.length === assignmentsSummary.length;
+    return { selectedAll, indeterminate: selectedRows.length > 0 && !selectedAll };
+  };
+
+  render() {
+    const { assignmentsSummary, totalData, loading } = this.props;
+    const { perPage, current, columns } = this.state;
 
     if (loading) {
       return <Spin size="large" />;
@@ -274,7 +378,6 @@ class AdvancedTable extends Component {
       <Container>
         <TableData
           columns={columns}
-          rowSelection={rowSelection}
           dataSource={assignmentsSummary.map(item => ({ ...item, key: `${item.testId}_${item.testType}` }))}
           onRow={row => ({
             onClick: () => this.goToAdvancedView(row)
@@ -297,14 +400,11 @@ AdvancedTable.propTypes = {
   districtId: PropTypes.string.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
   filters: PropTypes.object.isRequired,
-  onSelectRow: PropTypes.func,
-  selectedRows: PropTypes.array.isRequired,
   history: PropTypes.object
 };
 
 AdvancedTable.defaultProps = {
   onOpenReleaseScoreSettings: () => {},
-  onSelectRow: () => {},
   history: {}
 };
 
@@ -319,11 +419,15 @@ const enhance = compose(
       loading: get(state, "author_assignments.loading"),
       userId: getUserIdSelector(state),
       userRole: getUserRole(state),
+      selectedRows: getSelectedItems(state),
       assignmentTests: getAssignmentTestsSelector(state),
       userClassList: getGroupList(state)
     }),
     {
-      loadAssignmentsSummary: receiveAssignmentsSummaryAction
+      loadAssignmentsSummary: receiveAssignmentsSummaryAction,
+      setItemsToFolder: setItemsMoveFolderAction,
+      toggleRemovalFolderModal: toggleRemoveItemsFolderAction,
+      toggleAddItemFolderModal: toggleMoveItemsFolderAction
     }
   )
 );

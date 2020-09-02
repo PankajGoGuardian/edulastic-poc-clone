@@ -1,4 +1,4 @@
-import { omit, get } from "lodash";
+import { omit } from "lodash";
 
 import API from "./utils/API";
 
@@ -14,8 +14,8 @@ const getAll = data =>
       data
     })
     .then(result => {
-      const items = get(result, "data.result.hits.hits", []).map(el => ({ _id: el._id, ...el._source }));
-      const count = get(result, "data.result.hits.total", 0);
+      const items = result.data.result.hits.hits.map(el => ({ _id: el._id, ...el._source }));
+      const count = result.data.result.hits.total;
       return { items, count };
     });
 
@@ -85,11 +85,12 @@ const updateBulkTestsStatus = data =>
     })
     .then(result => result.data.result);
 
-const getPublicTest = testId =>
+const getPublicTest = (testId, params = {}) =>
   api
     .callApi({
       url: `public/test/${testId}`,
-      method: "get"
+      method: "get",
+      params
     })
     .then(result => result.data.result);
 

@@ -3,7 +3,6 @@ import { folderApi } from "@edulastic/api";
 import { get, omit } from "lodash";
 import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
-import { folderTypes } from "@edulastic/constants";
 import {
   RECEIVE_FOLDER_REQUEST,
   RECEIVE_FOLDER_SUCCESS,
@@ -19,15 +18,12 @@ import {
   DELETE_FOLDER_ERROR,
   RENAME_FOLDER_REQUEST,
   RENAME_FOLDER_SUCCESS,
-  RENAME_FOLDER_ERROR,
-  REMOVAL_ITEMS_FROM_FOLDER_REQUEST,
-  REMOVAL_ITEMS_FROM_FOLDER_ERROR,
-  TOGGLE_REMOVE_ITEMS_FROM_FOLDER
+  RENAME_FOLDER_ERROR
 } from "../constants/actions";
 
-function* receiveGetFoldersRequest({ payload }) {
+function* receiveGetFoldersRequest() {
   try {
-    const entities = yield call(folderApi.fetchFolders, payload);
+    const entities = yield call(folderApi.fetchFolders);
     yield put({
       type: RECEIVE_FOLDER_SUCCESS,
       payload: { entities }
@@ -66,29 +62,18 @@ function* receiveCreateFolderRequest({ payload }) {
 
 function* receiveAddMoveFolderRequest({ payload }) {
   try {
-    const { folderId, params = [], folderType } = payload;
+    const { folderId, params = [] } = payload;
+    const assignmentNamesCount = params[0].assignmentsNameList.length || 0;
+    const showNamesInMsg =
+      assignmentNamesCount > 1 ? `${assignmentNamesCount} assignments were` : `${params[0].assignmentsNameList} was`;
     const moveFolderName = params[0].folderName;
     const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
     yield put({
       type: ADD_MOVE_FOLDER_SUCCESS,
-      payload: { ...result.data, params, updatedFolder: folderId }
+      payload: { ...result.data, params }
     });
-    // re-fetch folders from server
-
-    yield put({
-      type: RECEIVE_FOLDER_REQUEST,
-      payload: folderType
-    });
-
-    let contentName = "assignments";
-    if (folderType === folderTypes.TEST) {
-      contentName = "tests";
-    } else if (folderType === folderTypes.ITEM) {
-      contentName = "items";
-    }
-
-    const successMsg = `${params.length} ${contentName}(s) successfully moved to ${moveFolderName}`;
+    const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
     notification({ type: "success", msg: successMsg }); // TODO:Can't be moved to message file since dynamic values wont be supported.
   } catch (error) {
     Sentry.captureException(error);
@@ -124,8 +109,8 @@ function* receiveDeleteFolderRequest({ payload }) {
 
 function* receiveRenameFolderRequest({ payload }) {
   try {
-    const { folderId, folderName, folderType } = payload;
-    const success = yield call(folderApi.renameFolder, { folderId, data: { folderName, folderType } });
+    const { folderId, folderName } = payload;
+    const success = yield call(folderApi.renameFolder, { folderId, data: { folderName } });
     const successMsg = `Folder name successfully updated to "${folderName}"`;
     notification({ type: "success", msg: successMsg });
     yield put({
@@ -143,65 +128,12 @@ function* receiveRenameFolderRequest({ payload }) {
   }
 }
 
-function* receiveRemoveItemsFromFolder({ payload }) {
-  try {
-    const { folderId, folderName, itemsToRemove, folderType } = payload;
-    /**
-     * in assignment, we save the test ids.
-     * so in case of folderType ASSIGNMENT,
-     * contentType will be TEST
-     */
-    let contentType = folderType;
-    if (contentType === folderTypes.ASSIGNMENT) {
-      contentType = folderTypes.TEST;
-    }
-
-    let contentName = "assignment";
-    if (folderType === folderTypes.TEST) {
-      contentName = "test";
-    } else if (folderType === folderTypes.ITEM) {
-      contentName = "item";
-    }
-
-    contentName = `${itemsToRemove.length} ${contentName}(s)`;
-
-    yield call(folderApi.removeItemFromFolder, { folderId, data: { contentIds: itemsToRemove, contentType } });
-
-    notification({ type: "success", msg: `${contentName} successfully removed from "${folderName}"` });
-
-    // close removal modal
-    yield put({
-      type: TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
-      payload: {
-        items: [],
-        isOpen: false,
-        updatedFolder: folderId
-      }
-    });
-
-    // re-fetch folders from server
-    yield put({
-      type: RECEIVE_FOLDER_REQUEST,
-      payload: folderType
-    });
-  } catch (error) {
-    const { folderName } = payload;
-    const errorMessage = `Remove Items from "${folderName}" failing`;
-    notification({ msg: errorMessage });
-    yield put({
-      type: REMOVAL_ITEMS_FROM_FOLDER_ERROR,
-      payload: error
-    });
-  }
-}
-
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_FOLDER_REQUEST, receiveGetFoldersRequest),
     yield takeEvery(RECEIVE_FOLDER_CREATE_REQUEST, receiveCreateFolderRequest),
     yield takeEvery(ADD_MOVE_FOLDER_REQUEST, receiveAddMoveFolderRequest),
     yield takeEvery(DELETE_FOLDER_REQUEST, receiveDeleteFolderRequest),
-    yield takeEvery(RENAME_FOLDER_REQUEST, receiveRenameFolderRequest),
-    yield takeEvery(REMOVAL_ITEMS_FROM_FOLDER_REQUEST, receiveRemoveItemsFromFolder)
+    yield takeEvery(RENAME_FOLDER_REQUEST, receiveRenameFolderRequest)
   ]);
 }

@@ -41,20 +41,18 @@ const shareTypes = {
   PUBLIC: "Everyone",
   DISTRICT: "District",
   SCHOOL: "School",
-  INDIVIDUAL: "Individuals",
-  LINK: "Link Sharing"
+  INDIVIDUAL: "Individuals"
 };
 
 const sharedKeysObj = {
   PUBLIC: "PUBLIC",
   DISTRICT: "DISTRICT",
   SCHOOL: "SCHOOL",
-  INDIVIDUAL: "INDIVIDUAL",
-  LINK: "LINK"
+  INDIVIDUAL: "INDIVIDUAL"
 };
 
-const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL", "LINK"];
-const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL", "LINK"];
+const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
+const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL"];
 
 const { Option } = AutoComplete;
 class ShareModal extends React.Component {
@@ -279,7 +277,7 @@ class ShareModal extends React.Component {
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
     );
     let sharableURL = "";
-    if ([sharedKeysObj.PUBLIC, sharedKeysObj.LINK].includes(sharedType) && !isPlaylist) {
+    if (sharedType === "PUBLIC" && !isPlaylist) {
       sharableURL = `${window.location.origin}/public/view-test/${testId}`;
     } else {
       sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests/tab/review/id"}/${testId}`;
@@ -291,12 +289,6 @@ class ShareModal extends React.Component {
     let sharedTypeMessage = "The entire Edulastic Community";
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
     else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
-    else if (sharedType === "LINK")
-      sharedTypeMessage = `Anyone with a link can use the Test. Invited users also find it under "Shared with Me" in the library`;
-
-    const shareTypeKeysToDisplay = (isDA ? shareTypeKeyForDa : shareTypeKeys).filter(
-      k => (isPlaylist && k !== sharedKeysObj.LINK) || !isPlaylist
-    );
     return (
       <SharingModal width="700px" footer={null} visible={isVisible} onCancel={onClose} centered>
         <ModalContainer>
@@ -344,7 +336,7 @@ class ShareModal extends React.Component {
             <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
             <RadioBtnWrapper>
               <RadioGrp value={sharedType} onChange={e => this.radioHandler(e)}>
-                {shareTypeKeysToDisplay.map(item => (
+                {(isDA ? shareTypeKeyForDa : shareTypeKeys).map(item => (
                   <RadioBtn
                     value={item}
                     key={item}
@@ -508,6 +500,7 @@ const ShareLabel = styled.span`
 const ShareMessageWrapper = styled.div`
   text-transform: uppercase;
   height: 35px;
+  line-height: 35px;
 `;
 
 const ShareList = styled.div`

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Menu, Icon } from "antd";
 import styled from "styled-components";
-import { IconFolders } from "@edulastic/icons";
+
 import { white, mainTextColor, smallDesktopWidth, themeColor } from "@edulastic/colors";
 
 const TestFiltersNav = ({ items, onSelect, search = {} }) => {
@@ -15,8 +15,7 @@ const TestFiltersNav = ({ items, onSelect, search = {} }) => {
     <Container onSelect={onSelect} selectedKeys={[selected]}>
       {items.map(item => (
         <Item key={item.path}>
-          {item.icon === "folders" ? <IconFolders className="anticon" /> : <Icon type={item.icon} />}
-          {item.text}
+          <Icon type={item.icon} /> {item.text}
         </Item>
       ))}
     </Container>
@@ -53,10 +52,6 @@ const Item = styled(Menu.Item)`
 
   :hover {
     color: ${themeColor};
-
-    svg {
-      fill: ${themeColor};
-    }
   }
 
   &.ant-menu-item {
@@ -81,9 +76,5 @@ const Item = styled(Menu.Item)`
     color: ${themeColor};
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
     border-radius: 0px 10px 10px 0px;
-
-    svg {
-      fill: ${themeColor};
-    }
   }
 `;

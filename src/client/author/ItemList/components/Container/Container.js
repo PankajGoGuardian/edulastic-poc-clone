@@ -42,7 +42,7 @@ import {
   getTestsItemsCountSelector,
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
-  initialSearchState,
+  initalSearchState,
   receiveTestItemsAction,
   updateSearchFilterStateAction,
   getSelectedItemSelector,
@@ -135,18 +135,18 @@ class Contaier extends Component {
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-      const updatedSearch = { ...search, filter };
-
+      let updatedSearch = { ...search };
       if (filter === filterMenuItems[0].filter) {
-        updatedSearch.status = "";
+        updatedSearch = { ...updatedSearch, status: "" };
       }
-      this.updateFilterState(updatedSearch, sort);
-
-      if (filter === filterMenuItems[4].filter) {
-        updatedSearch.filter = filterMenuItems[0].filter;
-      }
-
-      receiveItems(updatedSearch, sort, 1, limit);
+      this.updateFilterState(
+        {
+          ...updatedSearch,
+          filter
+        },
+        sort
+      );
+      receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
     } else {
       this.updateFilterState(search, sort);
       receiveItems(search, sort, 1, limit);
@@ -192,11 +192,7 @@ class Contaier extends Component {
       },
       sort
     );
-
-    if (filterType !== "folders") {
-      receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
-    }
-
+    receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
     history.push(`/author/items/filter/${filterType}`);
   };
 
@@ -204,12 +200,12 @@ class Contaier extends Component {
     const { clearFilterState, limit, receiveItems, search = {}, sort = {} } = this.props;
 
     // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(search, initialSearchState) && isEqual(sort, initialSortState)) return null;
+    if (isEqual(search, initalSearchState) && isEqual(sort, initialSortState)) return null;
 
     clearFilterState();
 
-    this.updateFilterState(initialSearchState, initialSortState);
-    receiveItems(initialSearchState, initialSortState, 1, limit);
+    this.updateFilterState(initalSearchState, initialSortState);
+    receiveItems(initalSearchState, initialSortState, 1, limit);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
   };
 
@@ -236,9 +232,6 @@ class Contaier extends Component {
       sort
     } = this.props;
     let updatedKeys = {};
-    if (fieldName === "folderId") {
-      return this.handleSearch({ ...initialSearchState, [fieldName]: value, filter: "FOLDERS" });
-    }
     if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
       setDefaultInterests({ [fieldName]: value });
     }

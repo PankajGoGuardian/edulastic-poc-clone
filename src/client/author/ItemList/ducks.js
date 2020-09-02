@@ -89,11 +89,10 @@ export const LOAD_ITEM_PREVIEW_FEEDBACK_FAILURE = "[item list] preview item feed
 export const TOGGLE_TEST_ITEM_LIKE = "[item list] toggle test item like";
 export const UPDATE_TEST_ITEM_LIKE_COUNT = "[item list] update test item like count";
 
-export const addItemToCartAction = (item, showNotification) => ({
+export const addItemToCartAction = item => ({
   type: ADD_ITEM_TO_CART,
   payload: {
-    item,
-    showNotification
+    item
   }
 });
 
@@ -112,16 +111,14 @@ export const toggleTestItemLikeAction = createAction(TOGGLE_TEST_ITEM_LIKE);
 export const updateTestItemLikeCountAction = createAction(UPDATE_TEST_ITEM_LIKE_COUNT);
 
 export function* addItemToCartSaga({ payload }) {
-  const { item, showNotification = true } = payload;
+  const { item } = payload;
   const test = yield select(getTestEntitySelector);
   const testItems = test?.itemGroups?.flatMap(itemGroup => itemGroup?.items || []);
   let updatedTestItems = [];
   if (testItems.some(o => o._id === item._id)) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.filter(x => x._id !== item._id);
-      if (showNotification) {
-        notification({ type: "success", messageKey: "itemRemovedTest" });
-      }
+      notification({ type: "success", messageKey: "itemRemovedTest" });
       /**
        * returning because no mutation happened
        */
@@ -133,9 +130,7 @@ export function* addItemToCartSaga({ payload }) {
       /**
        * not returning here because, muation happened above. that is enough
        */
-      if (showNotification) {
-        notification({ type: "success", messageKey: "itemAddedTest" });
-      }
+      notification({ type: "success", messageKey: "itemAddedTest" });
     });
   }
   const userRole = yield select(getUserRole);

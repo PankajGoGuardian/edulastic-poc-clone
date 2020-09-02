@@ -99,7 +99,7 @@ export const getInterestedSubjectsSelector = createSelector(
  */
 export const getUserOrgId = createSelector(
   stateSelector,
-  state => state?.user?.districtIds?.[0]
+  state => state.user.districtIds?.[0]
 );
 /**
  * this selector shouldn't be used for students
@@ -338,11 +338,4 @@ export const getInterestedCurriculumsByOrgType = createSelector(
 export const isDistrictUserSelector = createSelector(
   getOrgDataSelector,
   state => state?.districts?.[0]?.districtPermissions && state?.districts?.[0]?.districtPermissions.length === 0
-);
-
-export const isCoTeacherSelector = createSelector(
-  isPublisherUserSelector,
-  getUserRole,
-  (isPublisher, role) =>
-    isPublisher || role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN || role === roleuser.TEACHER
 );

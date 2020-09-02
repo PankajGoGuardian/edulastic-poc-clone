@@ -122,7 +122,7 @@ class PreviewModal extends React.Component {
       title: "Clone Passage Item",
       content: `This passage has ${
         passage.testItems.length
-      } Items associated with it. Would you like to clone complete passage or a single item?`,
+        } Items associated with it. Would you like to clone complete passage or a single item?`,
       onOk: () => {
         duplicateTestItem({
           data,
@@ -461,7 +461,7 @@ class PreviewModal extends React.Component {
               <EduButton isBlue height="28px" justifyContent="center" onClick={this.handleSelection}>
                 {this.isAddOrRemove ? "Add To Test" : "Remove from Test"}
               </EduButton>
-            )}
+              )}
             <ButtonsWrapper
               justifyContent="flex-end"
               wrap="nowrap"
@@ -515,7 +515,7 @@ class PreviewModal extends React.Component {
                 >
                   <IconPencilEdit color={themeColor} title="Edit item" />
                 </EduButton>
-              )}
+                )}
               <EduButton
                 IconBtn
                 isGhost
@@ -546,7 +546,7 @@ class PreviewModal extends React.Component {
                 )}
               <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
                 <>
-                  {item.status === "inreview" && hasCollectionAccess ? (
+                  {item && item.status === "inreview" && hasCollectionAccess ? (
                     <RejectButton
                       title="Reject"
                       isGhost
@@ -558,7 +558,7 @@ class PreviewModal extends React.Component {
                       <span>Reject</span>
                     </RejectButton>
                   ) : null}
-                  {(item.status === "inreview" || item.status === "rejected") && hasCollectionAccess ? (
+                  {item && (item.status === "inreview" || item.status === "rejected") && hasCollectionAccess ? (
                     <EduButton
                       title="Approve"
                       isGhost
@@ -622,10 +622,10 @@ class PreviewModal extends React.Component {
                   toggleReportIssue={this.toggleReportIssue}
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
-                  /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
+                    /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
                   isEditable={
-                    (isEditable && isOwner) || userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR
-                  }
+                      (isEditable && isOwner) || userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR
+                    }
                   isPassage={isPassage}
                   passageTestItems={passageTestItems}
                   handleDuplicateTestItem={this.handleDuplicateTestItem}
@@ -645,10 +645,10 @@ class PreviewModal extends React.Component {
                 {/* we may need to bring hint button back */}
                 {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
                 {showReportIssueField && (
-                  <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
-                )}
+                <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
+                  )}
               </>
-            )}
+              )}
           </QuestionWrapper>
         </ModalContentArea>
       </PreviewModalWrapper>
@@ -679,11 +679,11 @@ PreviewModal.propTypes = {
 };
 
 PreviewModal.defaultProps = {
-  checkAnswer: () => {},
-  showAnswer: () => {},
-  gotoSummary: () => {},
-  prevItem: () => {},
-  nextItem: () => {},
+  checkAnswer: () => { },
+  showAnswer: () => { },
+  gotoSummary: () => { },
+  prevItem: () => { },
+  nextItem: () => { },
   loading: false,
   isEditable: false
 };

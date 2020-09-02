@@ -329,8 +329,8 @@ class TestItemPreview extends Component {
                   const hideColumn =
                     (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
                   if (hideColumn && showCollapseButtons) return "";
-                  const isOnlyPassage = col.widgets.every(widget => widget.type === "passage");
-                  const widgetCount = col.widgets.length;
+                  const isOnlyPassage = (col?.widgets || []).every(widget => widget?.type === "passage");
+                  const widgetCount = (col?.widgets || []).length;
                   const fullHeight =
                     ((isExpressGrader || isLCBView) && (i === 0 && isOnlyPassage)) || widgetCount === 1;
                   return (

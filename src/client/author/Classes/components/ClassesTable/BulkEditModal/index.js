@@ -246,13 +246,19 @@ function BulkEditModal({
                   {
                     title: CONFIG[updateMode],
                     dataIndex: `_source.${updateMode}`,
-                    render: tags =>
-                      tags.map((tag, i, allTags) => (
-                        <span key={tag._id} style={{ margin: "3px" }}>
-                          {tag.tagName}
-                          {+i + 1 < allTags.length ? ", " : ""}
-                        </span>
-                      ))
+                    render: tags => {
+                      if (Array.isArray(tags)) {
+                        return (
+                          tags.map((tag, i, allTags) => (
+                            <span key={tag._id} style={{ margin: "3px" }}>
+                              {tag.tagName}
+                              {+i + 1 < allTags.length ? ", " : ""}
+                            </span>
+                          ))
+                        );
+                      }
+                      return null;
+                    }
                   }
                 ]
                 : [

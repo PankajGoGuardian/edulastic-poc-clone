@@ -98,9 +98,7 @@ const Folders = ({
       {openCreateModal && (
         <AddModal folder={selectedFolder} closeModal={hideCreateOrUpdateModal} folderType={folderType} />
       )}
-      {isOpenConfirm && (
-        <ConfirmDelete folder={selectedFolder} closeModal={hideDeleteConfirm} folderType={folderType} />
-      )}
+      {isOpenConfirm && <ConfirmDelete folder={selectedFolder} closeModal={hideDeleteConfirm} />}
       {isOpenAddModal && !isEmptyFolders && (
         <MoveModal folderType={folderType} removeItemFromCart={removeItemFromCart} />
       )}

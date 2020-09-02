@@ -239,6 +239,7 @@ const StandardsMasteryReportContainer = props => {
                 ddfilter={ddfilter}
                 settings={gradebookSettings}
                 standardsGradebook={standardsGradebook}
+                standardsOrgData={orgData}
               />
             );
           }}
@@ -248,7 +249,14 @@ const StandardsMasteryReportContainer = props => {
           path="/author/reports/standards-performance-summary"
           render={_props => {
             setShowHeader(true);
-            return <StandardsPerfromance {..._props} settings={gradebookSettings} ddfilter={ddfilterForPerformance} />;
+            return (
+              <StandardsPerfromance
+                {..._props}
+                settings={gradebookSettings}
+                ddfilter={ddfilterForPerformance}
+                standardsOrgData={orgData}
+              />
+            );
           }}
         />
       </ReportContaner>

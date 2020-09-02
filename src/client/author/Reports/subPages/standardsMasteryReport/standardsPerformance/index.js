@@ -32,6 +32,7 @@ import {
   getOverallMasteryScore,
   getParsedData
 } from "./utils/transformers";
+import { processClassAndGroupIds } from "../../../common/util";
 
 const { compareByData, analyseByData } = dropDownData;
 
@@ -44,10 +45,12 @@ const StandardsPerformance = ({
   settings,
   role,
   loading,
+  loadingFiltersData,
   selectedStandardProficiency,
   filters,
   ddfilter,
-  user
+  user,
+  standardsOrgData
 }) => {
   const filterData = standardsFilters || [];
   const scaleInfo = selectedStandardProficiency || [];
@@ -65,6 +68,7 @@ const StandardsPerformance = ({
   });
 
   const [selectedDomains, setSelectedDomains] = useState([]);
+  const [classIdArr, groupIdArr] = useMemo(() => processClassAndGroupIds(standardsOrgData), [standardsOrgData]);
 
   useEffect(() => {
     const { requestFilters = {} } = settings;
@@ -75,24 +79,33 @@ const StandardsPerformance = ({
         draft[key] = _keyData?.toLowerCase() === "all" ? "" : _keyData;
       });
     });
-    let schoolIds = "";
+    const q = {
+      testIds: settings.selectedTest.map(test => test.key).join(),
+      termId,
+      domainIds,
+      grades: grades.join(","),
+      subject,
+      compareBy: tableFilters.compareBy.key,
+      ...modifiedFilter,
+      schoolIds: schoolId
+    };
     if (isEmpty(schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
-      schoolIds = get(user, "institutionIds", []).join(",");
-    } else {
-      schoolIds = schoolId;
+      q.schoolIds = get(user, "institutionIds", []).join(",");
+    }
+    if (!loadingFiltersData) {
+      Object.assign(q, {
+        classList: classIdArr
+          .slice(1)
+          .map(cId => cId.key)
+          .join(),
+        groupList: groupIdArr
+          .slice(1)
+          .map(gId => gId.key)
+          .join()
+      });
     }
     if (termId) {
-      getStandardsPerformanceSummaryRequest({
-        testIds: settings.selectedTest.map(test => test.key).join(),
-        termId,
-        domainIds,
-        grades: grades.join(","),
-        subject,
-        compareBy: tableFilters.compareBy.key,
-        ...modifiedFilter,
-        schoolIds
-      });
-      getStandardsFiltersRequestAction({ termId });
+      getStandardsPerformanceSummaryRequest(q);
     }
   }, [settings, tableFilters.compareBy.key, ddfilter]);
 
@@ -114,7 +127,7 @@ const StandardsPerformance = ({
     [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]
   );
 
-  if (loading) {
+  if (loading || loadingFiltersData) {
     return <SpinLoader position="fixed" />;
   }
 
@@ -175,7 +188,8 @@ const StandardsPerformance = ({
 const enhance = connect(
   state => ({
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
-    loading: getReportsStandardsPerformanceSummaryLoader(state) || getReportsStandardsFiltersLoader(state),
+    loading: getReportsStandardsPerformanceSummaryLoader(state),
+    loadingFiltersData: getReportsStandardsFiltersLoader(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),

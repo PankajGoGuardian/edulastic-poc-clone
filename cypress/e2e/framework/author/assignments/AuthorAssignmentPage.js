@@ -252,7 +252,16 @@ class AuthorAssignmentPage {
     }
     cy.url().should("contain", `author/classboard/`);
     cy.wait("@assignment");
-    return cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+    return cy.get('[data-cy="studentName"]',{timeout: 30000}).should("have.length.greaterThan", 0);
+  };
+
+  verifyAssignmentStatusOfClass = (testId,className,status) => {
+    this.expandTestRowsByTestId(testId);
+    this.getAssignmentRowsTestById(testId).find(`[data-cy="class"]`).each($test =>{
+      if($test.text()==className){
+        cy.wrap($test).closest(`tr`).find('[data-cy="status"]').should(`have.text`,status)
+      }
+    })
   };
 
   clickOnExpressGraderByTestId = (testId, assignmentid) => {
@@ -296,6 +305,7 @@ class AuthorAssignmentPage {
   filterByTestType = (testType)=>{
     this.smartFilter.expandFilter()
     this.smartFilter.setTesttype(testType)
+    cy.get(`tbody > tr >td`,{timeout:15000})
   }
 
   clickChoosefromPlaylistButton = () => this.getChooseFromPlaylistsButton().click({ force: true });

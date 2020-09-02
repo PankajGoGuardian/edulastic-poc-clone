@@ -1,31 +1,36 @@
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
-//import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-//import StudentTestPage from "../../../../framework/student/studentTestPage";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
 import AssignmentBulkActionsPage, {filter,icons} from "../../../../framework/author/assignments/AssignmentBulkActionsPage";
-
-
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+import SidebarPage from "../../../../framework/student/sidebarPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import { grades } from "../../../../framework/constants/assignmentStatus";
-import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage"
+import ReportsPage from "../../../../framework/student/reportsPage";
+// import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+// import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
+// import StudentTestPage from "../../../../framework/student/studentTestPage";
+// import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment Actions In School Admin`, () => {
   const sideBarPage = new TeacherSideBar();
-  //const manageClass = new TeacherManageClassPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
   const lcbPage = new LiveClassboardPage();
   const testAssignPage = new TestAssignPage();
-  //const startDate = new Date();
   const bulkActionPage =new AssignmentBulkActionsPage();
-  //const testLibraryPage = new TestLibrary();
-  //const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
+  const studAssignmentPage = new AssignmentsPage();
+  const studeSideBar = new SidebarPage()
+  const reportsPage = new ReportsPage()
+  // const testLibraryPage = new TestLibrary();
+  // const startDate = new Date();
+  // const manageClass = new TeacherManageClassPage();
+  // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
   let notOpenClasses;
   let inProgressClasses;
   let inGradinClasses;
   let doneClasses;
+  let pausedClasses;
 
 
   const classData = {
@@ -49,11 +54,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
     adminPass : "automation"
   };
 
-  before(" > Login into teacher", () => {
+  /* before(" > Create test data", () => {
     cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
     cy.login("teacher", Teacher.email, Teacher.pass);
     // Create classes and create test - to be uncommented when test data needs to be created
-    /* for (let i = 1; i <= 30; i++) {
+    for (let i = 1; i <= 30; i++) {
       sideBarPage.clickOnManageClass();
       manageClass.clickOnCreateClass();
       let className = classData.className + i.toString();
@@ -77,11 +82,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
     } 
     // Create a test
     testLibraryPage.createTest().then(id => {
-      classData.testID = id */
-  }); 
+      classData.testID = id 
+  }); */
 
   context(" > UI and filter tests", () => {
-    it("> Assignment Page data", () => {
+
+    before(" > Login into teacher", () => {
+      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
+      cy.login("teacher", Teacher.email, Teacher.pass);
+
       // Assign test without opening
       notOpenClasses = []
       for(let i=1;i<=5;i++){
@@ -109,19 +118,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
         doneClasses.push(classData.className + i.toString())
       }
       assignTestAndMarkAsDone(doneClasses)
+    });
 
+    it("> Assignment Page data", () => {
       cy.login("", Teacher.adminEmail, Teacher.adminPass);
-      sideBarPage.clickOnAssignment()
+      sideBarPage.clickOnAssignment(false)
       authorAssignmentPage.filterByTestType('All')
       // ***************** bug
-      bulkActionPage.verifyAssignmentAttributesTestId(classData.testID,'Default Test Automation','20','20','12','0','0','4')
+      bulkActionPage.verifyAssignmentAttributesTestId(classData.testID,'Default Test Automation','20','150','5','5','5','5')
     });
 
     it("> Select all classes",() =>{
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
-      sideBarPage.clickOnAssignment()
-      authorAssignmentPage.filterByTestType('All')
-
       bulkActionPage.clickTestByID(classData.testID)
       bulkActionPage.selectAllClassesCheckBox()
       bulkActionPage.verifyAllClassesSelected()
@@ -175,7 +182,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
     })
 
     it("> Done filter", () => {
-      doneClasses=['Auto_class_16','Auto_class_17','Auto_class_18','Auto_class_19','Auto_class_20']
       bulkActionPage.verifyNumberofClassesInFilter(filter.DONE,doneClasses.length.toString())
       bulkActionPage.filterBy(filter.DONE)
       bulkActionPage.verifyNumberofClassesFiltered('5')
@@ -204,41 +210,118 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       bulkActionPage.clickIconByClassName(icons.REPORTS,notOpenClasses[0])
       lcbPage.checkClassName(notOpenClasses[0])
     })
-    
   });
 
-  /* context(" > Validations in Bulk assignment actions page", () => {
-    it("> ", () => {
-      testAssignPage.visitAssignPageById(classData.testID)
-      let classes = []
-      for(let i=1;i<=30;i++){
-        classes.push(classData.className + i.toString())
-      }
-      testAssignPage.selectMultipleCLasses(classes)
-      const start = new Date();
-      start.setDate(start.getDate() + 1);
-      testAssignPage.setStartDate(start)
-      testAssignPage.clickOnAssign()
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
-      sideBarPage.clickOnAssignment()
-      authorAssignmentPage.filterByTestType('All')
-      bulkActionPage.clickAssignmentByID(classData.testID)
-      bulkActionPage.selectAllClassesCheckBox()
-      cy.server(); */
-       // cy.route("GET", "**/assignments/district/**").as("bulkProcess");
-      /* bulkActionPage.clickOpenActionButton()
-      cy.wait("@bulkProcess")
-      bulkActionPage.verifyMessage("30 out of 30 classes Opened successfully.")
-    }); 
-  }); */
+  context(" > Bulk action on all classes", () => {
 
-  function assignTestWithoutOpening(classes){
-      testAssignPage.visitAssignPageById(classData.testID)
-      testAssignPage.selectMultipleCLasses(classes)
-      const start = new Date();
-      start.setDate(start.getDate() + 1);
-      testAssignPage.setStartDate(start)
-      testAssignPage.clickOnAssign(); 
+    before("Login into teacher", () => {
+      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
+      cy.login("teacher", Teacher.email, Teacher.pass);
+  
+      notOpenClasses=[]
+      for(let i=1;i<=30;i++){
+        notOpenClasses.push(classData.className + i.toString())
+      }
+      assignTestWithoutOpening(notOpenClasses)
+    });
+
+    it("> Open all assignments :", () => {
+      cy.login("", Teacher.adminEmail, Teacher.adminPass);
+      sideBarPage.clickOnAssignment(false)
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.selectAllClassesCheckBox()
+      bulkActionPage.clickOpenActionButton("30 out of 30 classes Opened successfully.")
+
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS,notOpenClasses.length.toString())
+
+      cy.login("teacher", Teacher.email, Teacher.pass);
+      sideBarPage.clickOnAssignment(false)
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS')
+
+      cy.login("student", getRandomStudent(1,30), studData.password);
+      studAssignmentPage.verifyAssignmentIsOpen(classData.testID)
+
+      cy.login("student", getRandomStudent(1,30), studData.password);
+      studAssignmentPage.verifyAssignmentIsOpen(classData.testID)
+    });
+
+    it("> Pause all assignments :", () => {
+      cy.login("", Teacher.adminEmail, Teacher.adminPass);
+      sideBarPage.clickOnAssignment(false)
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.selectAllClassesCheckBox()
+      bulkActionPage.clickPauseActionButton("30 out of 30 classes Paused successfully.")
+
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS,notOpenClasses.length.toString())
+
+      cy.login("teacher", Teacher.email, Teacher.pass);
+      sideBarPage.clickOnAssignment(false)
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS (PAUSED)')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS (PAUSED)')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS (PAUSED)')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'IN PROGRESS (PAUSED)')
+
+      cy.login("student", getRandomStudent(1,30), studData.password);
+      studAssignmentPage.verifyAssignmentIsPaused(classData.testID)
+
+      cy.login("student", getRandomStudent(1,30), studData.password);
+      studAssignmentPage.verifyAssignmentIsPaused(classData.testID)
+    });
+
+    it("> Close all assignments :", () => {
+      cy.login("", Teacher.adminEmail, Teacher.adminPass);
+      sideBarPage.clickOnAssignment(false)
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      // bulkActionPage.selectAllClassesCheckBox()
+      // bulkActionPage.clickOpenActionButton("30 out of 30 classes Opened successfully.")
+
+      bulkActionPage.selectAllClassesCheckBox()
+      bulkActionPage.clickCloseActionButton("30 out of 30 classes Closed successfully.")
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE,notOpenClasses.length.toString())
+
+      cy.login("teacher", Teacher.email, Teacher.pass);
+      sideBarPage.clickOnAssignment(false)
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'DONE')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'DONE')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'DONE')
+      authorAssignmentPage.verifyAssignmentStatusOfClass(classData.testID,getRandomClass(1,30),'DONE')
+
+      cy.login("student", getRandomStudent(1,30), studData.password);
+      studeSideBar.clickOnGrades()
+      reportsPage.getTestCardByTesyId(classData.testID)
+
+      cy.login("student", getRandomStudent(1,30), studData.password);
+      studeSideBar.clickOnGrades()
+      reportsPage.getTestCardByTesyId(classData.testID)
+    });
+
+    it("> Unassign all assignments :", () => {
+      cy.login("", Teacher.adminEmail, Teacher.adminPass);
+      sideBarPage.clickOnAssignment(false)
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.selectAllClassesCheckBox()
+      bulkActionPage.clickUnassignActionButton("30 out of 30 classes Unassigned successfully.")
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE,"0")
+      //
+    });
+
+  })
+
+
+  function assignTestWithoutOpening(classes) {
+    testAssignPage.visitAssignPageById(classData.testID);
+    testAssignPage.selectMultipleCLasses(classes);
+    const start = new Date();
+    start.setDate(start.getDate() + 1);
+    testAssignPage.setStartDate(start);
+    testAssignPage.clickOnAssign();
   }
 
   function assignOpenTest(classes){
@@ -257,6 +340,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       lcbPage.checkSelectAllCheckboxOfStudent()
       lcbPage.clickOnMarkAsSubmit()
     })
+  }
+
+  function getRandomStudent(min, max) {
+    return testAssignPage.getRandomClass(min, max) + studData.username + testAssignPage.getNumberInRange(1, 5);
+  }
+
+  function getRandomClass(min, max) {
+    return classData.className + testAssignPage.getNumberInRange(min, max);
+  }
+
+  function getNumberInRange(min,max){
+    return (Math.floor(Math.random() * (max - min) + min)).toString();
   }
 
   function assignTestAndMarkAsDone(classes){

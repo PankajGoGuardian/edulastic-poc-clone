@@ -74,6 +74,7 @@ const initialFilterState = {
 };
 class Assignments extends Component {
   state = {
+    selectedRows: [],
     filterState: {},
     isPreviewModalVisible: false,
     openEditPopup: false,
@@ -172,9 +173,7 @@ class Assignments extends Component {
 
   SwitchView = () => {
     const { toggleAssignmentView } = this.props;
-    if (toggleAssignmentView) {
-      toggleAssignmentView();
-    }
+    this.setState({ selectedRows: [] }, toggleAssignmentView);
   };
 
   renderFilter = () => {
@@ -202,6 +201,10 @@ class Assignments extends Component {
     );
   };
 
+  onSelectRow = selected => {
+    this.setState({ selectedRows: selected });
+  };
+
   onEnableEdit = () => {
     const { history } = this.props;
     const { currentTestId } = this.state;
@@ -225,6 +228,7 @@ class Assignments extends Component {
       t
     } = this.props;
     const {
+      selectedRows,
       filterState,
       isPreviewModalVisible,
       currentTestId,
@@ -287,8 +291,9 @@ class Assignments extends Component {
                   {showFilter && (
                     <LeftWrapper>
                       <FixedWrapper>
-                        <PerfectScrollbar options={{ suppressScrollX: true }}>
+                        <PerfectScrollbar option={{ suppressScrollX: true }}>
                           <LeftFilter
+                            selectedRows={selectedRows}
                             onSetFilter={this.setFilterState}
                             filterState={filterState}
                             isAdvancedView={isAdvancedView}
@@ -312,6 +317,8 @@ class Assignments extends Component {
                         <AdvancedTable
                           districtId={districtId}
                           assignmentsSummary={assignmentsSummary}
+                          onSelectRow={this.onSelectRow}
+                          selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
                           toggleEditModal={this.toggleEditModal}

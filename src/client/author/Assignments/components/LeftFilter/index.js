@@ -70,7 +70,7 @@ class LeftFilter extends React.Component {
     const filters = folderId ? { ...filterState, termId: "" } : { ...filterState, termId: currentTerm };
 
     if (isAdvancedView) {
-      loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true, folderId });
+      loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
     } else if (folderId) {
       loadAssignments({ filters, folderId });
     } else {

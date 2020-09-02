@@ -67,6 +67,18 @@ function* receiveCreateFolderRequest({ payload }) {
 function* receiveAddMoveFolderRequest({ payload }) {
   try {
     const { folderId, params = [], folderType } = payload;
+    const assignmentNamesCount = params[0].assignmentsNameList.length || 0;
+
+    let contentName = "assignments";
+    if (folderType === folderTypes.TEST) {
+      contentName = "tests";
+    } else if (folderType === folderTypes.ITEM) {
+      contentName = "items";
+    }
+
+    const showNamesInMsg =
+      assignmentNamesCount > 1 ? `${assignmentNamesCount} ${contentName} were` : `${params[0].assignmentsNameList} was`;
+
     const moveFolderName = params[0].folderName;
     const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
@@ -81,14 +93,7 @@ function* receiveAddMoveFolderRequest({ payload }) {
       payload: folderType
     });
 
-    let contentName = "assignments";
-    if (folderType === folderTypes.TEST) {
-      contentName = "tests";
-    } else if (folderType === folderTypes.ITEM) {
-      contentName = "items";
-    }
-
-    const successMsg = `${params.length} ${contentName}(s) successfully moved to ${moveFolderName}`;
+    const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
     notification({ type: "success", msg: successMsg }); // TODO:Can't be moved to message file since dynamic values wont be supported.
   } catch (error) {
     Sentry.captureException(error);
@@ -156,18 +161,9 @@ function* receiveRemoveItemsFromFolder({ payload }) {
       contentType = folderTypes.TEST;
     }
 
-    let contentName = "assignment";
-    if (folderType === folderTypes.TEST) {
-      contentName = "test";
-    } else if (folderType === folderTypes.ITEM) {
-      contentName = "item";
-    }
-
-    contentName = `${itemsToRemove.length} ${contentName}(s)`;
-
     yield call(folderApi.removeItemFromFolder, { folderId, data: { contentIds: itemsToRemove, contentType } });
 
-    notification({ type: "success", msg: `${contentName} successfully removed from "${folderName}"` });
+    notification({ type: "success", msg: `Items successfully removed from "${folderName}"` });
 
     // close removal modal
     yield put({

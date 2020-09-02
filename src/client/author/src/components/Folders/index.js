@@ -32,22 +32,21 @@ const Folders = ({
   removeItemFromCart
 }) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
-  const [isOpenCreate, setIsOpenCreate] = useState(false);
+  const [isOpenCreateOrUpdateModal, setIsOpenCreateOrUpdateModal] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [isOpenRename, setIsOpenRename] = useState(false);
 
   const showCreateModal = () => {
-    setIsOpenCreate(true);
+    setIsOpenCreateOrUpdateModal(true);
   };
 
   const showRenameModal = folder => {
     setSelectedFolder(folder);
-    setIsOpenRename(true);
+    setIsOpenCreateOrUpdateModal(true);
   };
 
   const hideCreateOrUpdateModal = () => {
-    setIsOpenCreate(false);
-    setIsOpenRename(false);
+    setIsOpenCreateOrUpdateModal(false);
+    setSelectedFolder(null);
   };
 
   const showDeleteConfirm = folder => {
@@ -92,17 +91,12 @@ const Folders = ({
   }, [updatedFolderId]);
 
   const isEmptyFolders = isEmpty(folders);
-  const openCreateModal = isOpenCreate || (isOpenAddModal && isEmptyFolders);
+  const openCreateModal = isOpenCreateOrUpdateModal || (isOpenAddModal && isEmptyFolders);
 
   return (
     <Fragment>
-      {(openCreateModal || isOpenRename) && (
-        <AddModal
-          folder={selectedFolder}
-          closeModal={hideCreateOrUpdateModal}
-          folderType={folderType}
-          isRename={isOpenRename}
-        />
+      {openCreateModal && (
+        <AddModal folder={selectedFolder} closeModal={hideCreateOrUpdateModal} folderType={folderType} />
       )}
       {isOpenConfirm && (
         <ConfirmDelete folder={selectedFolder} closeModal={hideDeleteConfirm} folderType={folderType} />

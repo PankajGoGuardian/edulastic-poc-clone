@@ -88,7 +88,7 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
               </Tooltip>
             </Row>
 
-            {grades.length ? (
+            {grades?.length ? (
               <Row type="flex" align="middle">
                 <InfoLabel xs={24} md={8} xxl={6}>
                   {t("common.grade")}

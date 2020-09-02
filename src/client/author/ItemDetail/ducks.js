@@ -607,7 +607,7 @@ const moveWidget = (state, { from, to }) =>
       .flatMap(x => x.widgets)
       .filter(widget => widget.widgetType === "question")
       .map(x => x.reference);
-    const { questions } = newState.item?.data;
+    const { questions } = newState?.item?.data || {};
     if (Array.isArray(questions) && questions.length > 0) {
       // change the order of item.data.questions
       newState.item.data.questions = reSequenceQuestionsWithWidgets(
@@ -912,7 +912,7 @@ export function* deleteItemSaga({ payload }) {
     yield put(setItemDeletingAction(false));
     console.error(e);
     if (e.status === 403) {
-      return notification({ msg: e.response.data.message });
+      return notification({ msg: e?.response?.data?.message });
     }
     notification({ messageKey: "deletingItemFailed" });
   }
@@ -1363,7 +1363,7 @@ function* publishTestItemSaga({ payload }) {
   } catch (e) {
     Sentry.captureException(e);
     console.warn("publish error", e);
-    const { message: errorMessage = "Failed to publish item" } = e.response.data;
+    const { message: errorMessage = "Failed to publish item" } = e?.response?.data || {};
     notification({ msg: errorMessage });
   }
 }

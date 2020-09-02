@@ -106,11 +106,11 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
           maxScore: isLimitedDeliveryType ? 1 : scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(
-              { ...o, isLimitedDeliveryType },
-              o.data.questions,
-              helpers.getPoints(o),
-              scoring[o._id]
-            )
+                { ...o, isLimitedDeliveryType },
+                o.data.questions,
+                helpers.getPoints(o),
+                scoring[o._id]
+              )
             : {}
         }));
       } else itemGroup.items = [];
@@ -670,15 +670,15 @@ const getDefaultScales = (state, payload) => {
     {};
   const performanceBand = isEmpty(state.entity.performanceBand)
     ? {
-      name: bandId.name,
-      _id: bandId._id
-    }
+        name: bandId.name,
+        _id: bandId._id
+      }
     : state.entity.performanceBand;
   const standardGradingScale = isEmpty(state.entity.standardGradingScale)
     ? {
-      name: standardId.name,
-      _id: standardId._id
-    }
+        name: standardId.name,
+        _id: standardId._id
+      }
     : state.entity.standardGradingScale;
   return {
     performanceBand,
@@ -1235,7 +1235,7 @@ function* receiveTestByIdSaga({ payload }) {
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
-          [entity.itemGroups[0].items[0]._id]: { scratchpad: entity.freeFormNotes || {} }
+          [entity.itemGroups?.[0]?.items?.[0]?._id]: { scratchpad: entity.freeFormNotes || {} }
         })
       );
     }
@@ -1475,10 +1475,10 @@ function* updateTestDocBasedSaga({ payload }) {
       .map(q =>
         QuestionsbyId[q.id]?.previousQuestionId
           ? {
-            ...q,
-            versionId: QuestionsbyId[q.id].versionId,
-            previousQuestionId: QuestionsbyId[q.id].previousQuestionId
-          }
+              ...q,
+              versionId: QuestionsbyId[q.id].versionId,
+              previousQuestionId: QuestionsbyId[q.id].previousQuestionId
+            }
           : q
       );
     const updatedTestItem = {
@@ -2221,14 +2221,14 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
       itemGroup.type === ITEM_GROUP_TYPES.STATIC
         ? null
         : {
-          limit: itemGroup.deliverItemsCount,
-          search: {
-            collectionId: itemGroup.collectionDetails._id,
-            standardId: itemGroup.standardDetails.standardId,
-            nInItemIds: allStaticGroupItemIds,
-            ...optionalFields
-          }
-        },
+            limit: itemGroup.deliverItemsCount,
+            search: {
+              collectionId: itemGroup.collectionDetails._id,
+              standardId: itemGroup.standardDetails.standardId,
+              nInItemIds: allStaticGroupItemIds,
+              ...optionalFields
+            }
+          },
     isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT,
     groupName: itemGroup.groupName,
     index

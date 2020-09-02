@@ -98,5 +98,5 @@ export const getMaxScoreFromCurrentItem = state => {
   if (currentItem?.itemLevelScoring) {
     return currentItem?.itemLevelScore;
   }
-  return currentItem?.data?.questions?.reduce((acc, q) => q.validation.validResponse.score + acc, 0);
+  return currentItem?.data?.questions?.reduce((acc, q) => q?.validation?.validResponse?.score + acc, 0);
 };

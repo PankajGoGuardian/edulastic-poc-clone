@@ -46,6 +46,7 @@ export const Container = styled(MainContentWrapper)`
 export const LeftWrapper = styled.div`
   min-width: 230px;
   max-width: 230px;
+  display: ${({ showFilter }) => (showFilter ? "block" : "none")};
 
   @media (max-width: ${smallDesktopWidth}) {
     position: fixed;

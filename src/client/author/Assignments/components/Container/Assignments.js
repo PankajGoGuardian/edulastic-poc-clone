@@ -284,19 +284,17 @@ class Assignments extends Component {
             <Main>
               {window.innerWidth >= tabletWidth ? (
                 <>
-                  {showFilter && (
-                    <LeftWrapper>
-                      <FixedWrapper>
-                        <PerfectScrollbar options={{ suppressScrollX: true }}>
-                          <LeftFilter
-                            onSetFilter={this.setFilterState}
-                            filterState={filterState}
-                            isAdvancedView={isAdvancedView}
-                          />
-                        </PerfectScrollbar>
-                      </FixedWrapper>
-                    </LeftWrapper>
-                  )}
+                  <LeftWrapper showFilter={showFilter}>
+                    <FixedWrapper>
+                      <PerfectScrollbar options={{ suppressScrollX: true }}>
+                        <LeftFilter
+                          onSetFilter={this.setFilterState}
+                          filterState={filterState}
+                          isAdvancedView={isAdvancedView}
+                        />
+                      </PerfectScrollbar>
+                    </FixedWrapper>
+                  </LeftWrapper>
                   <TableWrapper showFilter={showFilter}>
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
                       <IconFilter

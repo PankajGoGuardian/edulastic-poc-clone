@@ -56,6 +56,7 @@ const MoveModal = ({
       }
       const showAlreadyExistMsg =
         itemsExistInFolder.length > 1 ? `${itemsExistInFolder.length} ${contentName}` : itemsExistInFolder;
+
       notification({ type: "info", msg: `${showAlreadyExistMsg} already exist in ${folderName} folder` });
     }
     if (itemsNotExistInFolder.length === 0) {

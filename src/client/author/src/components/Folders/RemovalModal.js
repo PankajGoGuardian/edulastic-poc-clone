@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { isEmpty } from "lodash";
 import { EduButton, notification } from "@edulastic/common";
+import { folderTypes } from "@edulastic/constants";
 import { toggleRemoveItemsFolderAction, removeItemsFromFolderAction } from "../../actions/folder";
 import { getSelectedItems } from "../../selectors/folder";
 import { ModalTitle, Modal } from "./styled";
@@ -25,10 +26,24 @@ const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal, remo
     }
     const itemsToRemove = selectedItems
       .filter(ite => !isEmpty(selected.content.filter(itemInFolder => itemInFolder._id === ite.itemId)))
-      .map(x => x.itemId);
+      .map(x => ({ itemId: x.itemId, name: x.name }));
 
     if (isEmpty(itemsToRemove)) {
-      return notification({ type: "info", msg: `Items don't exist in ${selected.folderName}` });
+      let contentName = "assignment";
+      if (folderType === folderTypes.TEST) {
+        contentName = "test";
+      } else if (folderType === folderTypes.ITEM) {
+        contentName = "item";
+      }
+
+      const showNamesInMsg =
+        selectedItems.length > 1 && folderType !== folderTypes.ITEM
+          ? `${selectedItems.length} ${contentName}(s)`
+          : `${selectedItems[0].name}`;
+
+      const customMsg = `${showNamesInMsg} don't exist in ${selected.folderName}`;
+
+      return notification({ type: "info", msg: customMsg });
     }
 
     removeItems({ folderId: selected._id, folderName: selected.folderName, itemsToRemove, folderType });

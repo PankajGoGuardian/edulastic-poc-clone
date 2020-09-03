@@ -61,7 +61,7 @@ export default class TestAssignPage {
       cy.wrap(
         $ele
           // eslint-disable-next-line func-names
-          .filter(function () {
+          .filter(function() {
             return Cypress.$(this).text() === option;
           })
       ).click({ force: true });
@@ -74,12 +74,12 @@ export default class TestAssignPage {
     cy.focused().blur();
   };
 
-  selectMultipleCLasses = (classes) =>{
+  selectMultipleCLasses = classes => {
     this.selectClassDropdown();
     classes.forEach(className => {
       this.clickOnDropDownOptionByText(className);
     });
-  }
+  };
 
   verifyNoClassesInDropDown = className => {
     this.selectClassDropdown().type(className);
@@ -392,11 +392,11 @@ export default class TestAssignPage {
     cy.server();
     cy.route("POST", "**/api/group/search").as("classes");
     cy.visit(`/author/assignments/${id}`);
-    cy.wait("@classes",{ timeout: 80000 });
+    cy.wait("@classes", { timeout: 80000 });
     cy.contains("OVERRIDE TEST SETTINGS");
   };
 
-  assignTestWithoutOpening(classes,testID) {
+  assignTestWithoutOpening(classes, testID) {
     this.visitAssignPageById(testID);
     this.selectMultipleCLasses(classes);
     const start = new Date();
@@ -405,10 +405,10 @@ export default class TestAssignPage {
     this.clickOnAssign();
   }
 
-  assignOpenTest(classes,testID){
-    this.visitAssignPageById(testID)
-    this.selectMultipleCLasses(classes)
-    this.clickOnAssign(); 
+  assignOpenTest(classes, testID) {
+    this.visitAssignPageById(testID);
+    this.selectMultipleCLasses(classes);
+    this.clickOnAssign();
   }
 
   verifyTimeAssignedForTest = questionCount => this.getTimeSettingTextBox().should("have.value", `${questionCount}`);
@@ -418,7 +418,8 @@ export default class TestAssignPage {
       .scrollIntoView()
       .trigger("mouseover");
     cy.wait(500);
-    cy.get(".ant-tooltip-inner").contains(
+    cy.get(".ant-tooltip-inner").should(
+      "contains.text",
       "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
     );
   };

@@ -1,4 +1,5 @@
 import TestHeader from "./header";
+
 export default class TestSettings {
   constructor() {
     this.header = new TestHeader();
@@ -217,7 +218,8 @@ export default class TestSettings {
       .scrollIntoView()
       .trigger("mouseover");
     cy.wait(500);
-    cy.get(".ant-tooltip-inner").contains(
+    cy.get(".ant-tooltip-inner").should(
+      "contains.text",
       "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
     );
   };

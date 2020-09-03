@@ -260,7 +260,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
 
       authorAssignmentPage.smartFilter.clickOnAllAssignment();
       authorAssignmentPage.selectCheckBoxByTestName(testName);
-      authorAssignmentPage.smartFilter.moveToFolder(folders[2]);
+      authorAssignmentPage.smartFilter.moveToFolder(folders[2], testName);
       // authorAssignmentPage.selectCheckBoxByTestName(testName);
 
       // select all folder
@@ -280,10 +280,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
         .and("have.length", 4);
     });
 
+    it(`move assignment to already moved folder`, () => {
+      authorAssignmentPage.smartFilter.clickOnAllAssignment();
+      authorAssignmentPage.selectCheckBoxByTestName(testName);
+      authorAssignmentPage.smartFilter.moveToFolder(folders[2], testName, false);
+    });
+
     // Should be able to delete used folder as per - EV-15966
     it(`delete used folder`, () => {
       authorAssignmentPage.smartFilter.deleteFolder(`${folders[2]}`);
-
       // assignments should be available in all assingment
       authorAssignmentPage.smartFilter.clickOnAllAssignment();
       authorAssignmentPage

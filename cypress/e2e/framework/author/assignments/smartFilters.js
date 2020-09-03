@@ -68,13 +68,14 @@ export default class SmartFilters {
     this.getTestType().click();
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
       cy.wrap(
-        $ele
-          .filter(function() {
-            return Cypress.$(this).text() === testType;
-          })
-      ).click({ force: true }).then(()=>{
-        cy.wait("@assignment");
-      })
+        $ele.filter(function() {
+          return Cypress.$(this).text() === testType;
+        })
+      )
+        .click({ force: true })
+        .then(() => {
+          cy.wait("@assignment");
+        });
     });
     // this.waitForAssignments();
     cy.focused().blur();
@@ -174,6 +175,18 @@ export default class SmartFilters {
     }
   };
 
+  clickOnFolderAction = () => cy.get('[data-cy="assignmentActions"]').click();
+
+  clickOnAddToFolderAction = () => {
+    this.clickOnFolderAction();
+    cy.get('[data-cy="addToFolder"]').click();
+  };
+
+  clickOnRemoveFromFolderAction = () => {
+    this.clickOnFolderAction();
+    cy.get('[data-cy="addToFolder"]').click();
+  };
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -182,10 +195,10 @@ export default class SmartFilters {
 
   verifyFolderNotVisible = folderName => cy.get(`[data-cy="${folderName}"]`).should("not.be.visible");
 
-  moveToFolder = (folderName, isValid = true) => {
+  moveToFolder = (folderName, testName, isValid = true) => {
     cy.server();
     cy.route("PUT", "**/user-folder/**").as("updateFolder");
-    cy.contains("span", "Move").click({ force: true });
+    this.clickOnAddToFolderAction();
 
     cy.get(".ant-modal-body")
       .find(`[title="${folderName}"]`)
@@ -197,7 +210,7 @@ export default class SmartFilters {
 
     if (isValid) {
       cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
-      cy.contains(`successfully moved to ${folderName} folder`).should("be.visible");
+      cy.contains(`${testName} was successfully moved to ${folderName} folder`).should("be.visible");
     } else cy.contains(`Test already exist in ${folderName} folder`).should("be.visible");
   };
 

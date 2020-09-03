@@ -449,15 +449,19 @@ const TableList = ({
       title: () => {
         const menu = (
           <Menu>
-            <Menu.Item onClick={() => toggleMoveFolderModal()}>Add to Folder</Menu.Item>
-            <Menu.Item onClick={() => handleRemoveItemsFromFolder()}>Remove from Folder</Menu.Item>
+            <Menu.Item data-cy="addToFolder" onClick={() => toggleMoveFolderModal()}>
+              Add to Folder
+            </Menu.Item>
+            <Menu.Item data-cy="removeFromFolder" onClick={() => handleRemoveItemsFromFolder()}>
+              Remove from Folder
+            </Menu.Item>
           </Menu>
         );
         return (
           selectedItems.length > 0 && (
             <ActionDiv>
               <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
-                <EduButton height="22px" width="75px" ml="0px" data-cy="actions" isBlue isGhost>
+                <EduButton height="22px" width="75px" ml="0px" data-cy="assignmentActions" isBlue isGhost>
                   ACTIONS
                 </EduButton>
               </Dropdown>

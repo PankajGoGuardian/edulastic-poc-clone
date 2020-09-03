@@ -110,27 +110,27 @@ const FeedbackWrapper = ({
   );
 };
 
+/**
+ * as per https://snapwiz.atlassian.net/browse/EV-12821
+ *
+ * if its a multipart item, with item level scoring off
+ * the container dimensions for the question block is stored in store
+ * need to take the dimensions from store and set it to the feedback block
+ */
 const StyledFeedbackWrapper = styled.div`
   align-self: normal;
   padding-bottom: 10px;
-  min-width: ${({ minWidth }) => minWidth}
-    /**
-   * as per https://snapwiz.atlassian.net/browse/EV-12821
-   *
-   * if its a multipart item, with item level scoring off
-   * the container dimensions for the question block is stored in store
-   * need to take the dimensions from store and set it to the feedback block
-   */
-    ${({ shouldTakeDimensionsFromStore, dimensions }) =>
-      shouldTakeDimensionsFromStore &&
-      dimensions &&
-      `
-        position: absolute;
-        top: ${dimensions.top}px;
-        right: 0;
-        width: 100%;
-        height: ${dimensions.height ? `${dimensions.height}px` : "100%"};
-      `};
+  min-width: ${({ minWidth }) => minWidth};
+  ${({ shouldTakeDimensionsFromStore, dimensions }) =>
+    shouldTakeDimensionsFromStore &&
+    dimensions &&
+    `
+      position: absolute;
+      top: ${dimensions.top}px;
+      right: 0;
+      width: 100%;
+      height: ${dimensions.height ? `${dimensions.height}px` : "100%"};
+    `};
 `;
 
 FeedbackWrapper.propTypes = {

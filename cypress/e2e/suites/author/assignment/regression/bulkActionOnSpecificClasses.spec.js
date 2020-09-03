@@ -751,10 +751,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       })
 
       bulkActionPage.clickUnassignActionButton("15","15")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN,"0")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS,"0")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING,"0")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE,"0")
     })
 
     it("> Unassign 'paused' assignments :", () => {
@@ -831,10 +827,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       })
 
       bulkActionPage.clickUnassignActionButton("15","15")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN,"0")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS,"0")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING,"0")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE,"0")
     })
   })
 

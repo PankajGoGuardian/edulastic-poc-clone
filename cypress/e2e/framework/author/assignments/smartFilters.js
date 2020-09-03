@@ -184,7 +184,7 @@ export default class SmartFilters {
 
   clickOnRemoveFromFolderAction = () => {
     this.clickOnFolderAction();
-    cy.get('[data-cy="addToFolder"]').click();
+    cy.get('[data-cy="removeFromFolder"]').click();
   };
 
   // *** ACTIONS END ***
@@ -211,7 +211,7 @@ export default class SmartFilters {
     if (isValid) {
       cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
       cy.contains(`${testName} was successfully moved to ${folderName} folder`).should("be.visible");
-    } else cy.contains(`Test already exist in ${folderName} folder`).should("be.visible");
+    } else cy.contains(`${testName} already exist in ${folderName} folder`).should("be.visible");
   };
 
   // *** APPHELPERS END ***

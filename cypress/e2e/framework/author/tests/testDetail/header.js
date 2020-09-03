@@ -84,7 +84,7 @@ export default class TestHeader {
   clickOnPublishButton = () => {
     cy.server();
     cy.route("PUT", "**/test/**/publish").as("published");
-    cy.route("POST", "**/districts/*/users").as("share-test");
+    cy.route("POST", "**/search/tests").as("search-test-after-publish");
     this.clickRegradePublish();
     return cy.wait("@published").then(xhr => {
       expect(xhr.status).to.eq(200);
@@ -98,7 +98,7 @@ export default class TestHeader {
             .reverse()[1];
         });
       } else
-        return cy.wait("@share-test").then(
+        return cy.wait("@search-test-after-publish").then(
           () =>
             JSON.stringify(xhr.url)
               .split("/")

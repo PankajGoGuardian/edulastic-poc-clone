@@ -24,9 +24,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> playlist assigning`, () 
   let testCount;
   let length;
   const classes = ["Class-1", "Class-2"];
-  const class1_Id = "5e4d1b7a201714000788cab7";
-  const class2_Id = "5f44deaec79be400089d0618";
-  const testIds = ["5f44aa907132d70008e7ee6e", "5f44aabb0b91a40008254207"];
+  const class1_Id = "5f50a3e38fcfda0007d5ccbc";
+  const class2_Id = "5f50a442b3a21900085f6613";
+  const testIds = ["5f50ab07ec49840008a5dce3", "5f50aad39877a6000827b929"];
   const commonData = { type: "A", teacher: "teacher1 " };
   const metadata = {
     name: "Play List",
@@ -34,21 +34,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> playlist assigning`, () 
     subject: "Social Studies"
   };
   const class1Student = {
-    email: "student.playlistassign@snapwiz.com",
+    email: "student.playlist.assign@snapwiz.com",
     pass: "snapwiz"
   };
   const class2Student = {
-    email: "student2.playlistassign@snapwiz.com",
+    email: "student2.playlist.assign@snapwiz.com",
     pass: "snapwiz"
   };
 
   const teacher1 = {
-    email: "teacher1.school1.dis1@snapwiz.com",
+    email: "playlist.assign.reassign1@snapwiz.com",
     pass: "snapwiz"
   };
 
   const teacher2 = {
-    email: "teacher2.school1.dis1@snapwiz.com",
+    email: "playlist.assign.reassign2@snapwiz.com",
     pass: "snapwiz"
   };
   before(">create test", () => {
@@ -330,8 +330,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> playlist assigning`, () 
         playlistlibraryPage.getPlayListAndClickOnUseThisById(playListId);
         playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1, 1);
 
-        playlistlibraryPage.playlistlibraryPage.playListAssign.selectClass(classes[0]);
-        playlistlibraryPage.playlistlibraryPage.playListAssign.clickOnAssign();
+        playlistlibraryPage.playListAssign.selectClass(classes[0]);
+        playlistlibraryPage.playListAssign.clickOnAssign();
         playlistlibraryPage.getPlayListAndClickOnUseThisById(playListId);
       });
 

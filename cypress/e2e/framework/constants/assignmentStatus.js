@@ -7,7 +7,8 @@ export const teacherSide = {
   DONE: "DONE",
   REDIRECTED: "Redirected",
   PAUSED: "PAUSED",
-  NOT_STARTED: "NOT STARTED"
+  NOT_STARTED: "NOT STARTED",
+  IN_PROGRESS_PAUSED : "IN PROGRESS (PAUSED)"
 };
 
 export const openPolicyTypes = {

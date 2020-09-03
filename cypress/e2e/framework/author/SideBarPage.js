@@ -23,18 +23,13 @@ export default class TeacherSideBar {
     cy.wait("@playListSearch");
   };
 
-  clickOnAssignment = (force=true) => {
+  clickOnAssignment = () => {
     cy.server();
     cy.route("GET", /assignments/).as("assignment");
-    cy.get('[data-cy="Assignments"]',{timeout: 20000}).then($ele =>{
-      if(force){
-        cy.wrap($ele).click({ force: true }).click({ force: true })
-        cy.wait("@assignment");
-      }else if(!$ele.hasClass("ant-menu-item-selected")){
-        cy.wrap($ele).click({ force: true }).click({ force: true })
-        cy.wait("@assignment");
-      }
-    })
+    cy.get('[data-cy="Assignments"]')
+      .click({ force: true })
+      .click({ force: true });
+    cy.wait("@assignment");
   };
 
   clickOnReport = () =>

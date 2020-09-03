@@ -1,4 +1,3 @@
-import CypressHelper from "../../util/cypressHelpers";
 
 export const filter = {
   ALL : "allFilter",
@@ -74,11 +73,14 @@ export default class AssignmentBulkActionsPage {
   }
 
   verifyAssignmentStatusOfClass = (className,status) => {
-    this.getClassRows().each(($row) =>{
+    cy.contains(className).then($className =>{
+      cy.wrap($className).closest("tr").find(`[status]`).should(`have.text`,status)
+    })
+    /* this.getClassRows().each(($row) =>{
       if($row.find(`td`).eq(1).text() === className){
         cy.wrap($test).closest(`tr`).find('[status]').should(`have.text`,status)
       }
-    })
+    }) */
   };
 
   selectAllClassesCheckBox = (check = true) => {
@@ -121,6 +123,11 @@ export default class AssignmentBulkActionsPage {
     cy.wait(500)
   }
 
+  clickPreviousPage = () =>{
+    cy.get(`[title="Previous Page"]`).click()
+    cy.wait(500)
+  }
+
   verifyAllClassesSelected = (check = true) => {
     this.getClassRows().find(`.ant-checkbox`).each($ele => {
       if (check) {
@@ -156,51 +163,54 @@ export default class AssignmentBulkActionsPage {
     })
   };
 
-  clickOpenActionButton = (message) => {
+  clickOpenActionButton = (impactClasses, totalclasses) => {
     this.getOpenActionButton().click().then(()=>{
-      CypressHelper.verifyAntMesssage("Starting Bulk Action Request");
-      this.waitForBulkProcess(message)
+      cy.get(".ant-notification-notice-message",{timeout: 20000}).should("contain", "Starting Bulk Action Request")
+          .should("be.visible")
+      this.waitForBulkProcess(impactClasses+" out of " +totalclasses+" classes Opened successfully.")
     });
   };
 
-  clickCloseActionButton = (message) => {
+  clickCloseActionButton = (impactClasses, totalclasses) => {
     this.getCloseActionButton().click().then(()=>{
       cy.get(".ant-notification-notice-message",{timeout: 20000}).should("contain", "Starting Bulk Action Request")
           .should("be.visible")
-      this.waitForBulkProcess(message)
+      this.waitForBulkProcess(impactClasses+" out of " +totalclasses+" classes Closed successfully.")
     });
   };
 
-  clickDoneActionButton = (message) => {
+  clickDoneActionButton = (impactClasses, totalclasses) => {
     this.getDoneActionButton().click().then(()=>{
       cy.get(".ant-notification-notice-message",{timeout: 20000}).should("contain", "Starting Bulk Action Request")
           .should("be.visible")
-      this.waitForBulkProcess(message)
+      this.waitForBulkProcess(impactClasses+" out of " +totalclasses+" classes successfully updated.")
     });
   };
 
-  clickUnassignActionButton = (message) => {
+  clickUnassignActionButton = (impactClasses, totalclasses) => {
     this.getMoreActionButton().trigger('mouseover');
     cy.contains("Unassign").click({force:true})
     this.getConfirmationInput().type("UNASSIGN")
     this.getConfirmButton().click().then(()=>{
+      cy.get(".ant-notification-notice-message",{timeout: 30000}).should("contain", "Starting Bulk Action Request")
+          .should("be.visible")
+      this.waitForBulkProcess(impactClasses+" out of " +totalclasses+" classes Unassigned successfully.")
+    });
+  };
+
+  clickPauseActionButton = (impactClasses, totalclasses) => {
+    this.getPauseActionButton().click().then(()=>{
       cy.get(".ant-notification-notice-message",{timeout: 20000}).should("contain", "Starting Bulk Action Request")
           .should("be.visible")
-      this.waitForBulkProcess(message)
+      this.waitForBulkProcess(impactClasses+" out of " +totalclasses+" classes Paused successfully.")
     });
   };
 
-  clickPauseActionButton = (message) => {
-    this.getPauseActionButton().click().then(()=>{
-      CypressHelper.verifyAntMesssage("Starting Bulk Action Request");
-      this.waitForBulkProcess(message)
-    });
-  };
-
-  clickCloseActionButton = (message) => {
+  clickCloseActionButton = (impactClasses, totalclasses) => {
     this.getCloseActionButton().click().then(()=>{
-      CypressHelper.verifyAntMesssage("Starting Bulk Action Request");
-      this.waitForBulkProcess(message)
+      cy.get(".ant-notification-notice-message",{timeout: 20000}).should("contain", "Starting Bulk Action Request")
+          .should("be.visible")
+      this.waitForBulkProcess(impactClasses+" out of " +totalclasses+" classes Closed successfully.")
     });
   };
 
@@ -215,6 +225,7 @@ export default class AssignmentBulkActionsPage {
     cy.wait("@bulkProcess").then(xhr =>{
      assert.isTrue(xhr.status === 200,`Bulk process failed`);
     })
+    cy.wait(500)
   }
 
   filterBy = filterStatus =>{

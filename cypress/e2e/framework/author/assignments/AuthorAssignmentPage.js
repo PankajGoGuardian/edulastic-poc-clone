@@ -257,11 +257,14 @@ class AuthorAssignmentPage {
 
   verifyAssignmentStatusOfClass = (testId,className,status) => {
     this.expandTestRowsByTestId(testId);
-    this.getAssignmentRowsTestById(testId).find(`[data-cy="class"]`).each($test =>{
+    cy.contains(className).then($className =>{
+      cy.wrap($className).closest("tr").find(`[data-cy="status"]`).should(`have.text`,status)
+    })
+    /* this.getAssignmentRowsTestById(testId).find(`[data-cy="class"]`).each($test =>{
       if($test.text()==className){
         cy.wrap($test).closest(`tr`).find('[data-cy="status"]').should(`have.text`,status)
       }
-    })
+    }) */
   };
 
   clickOnExpressGraderByTestId = (testId, assignmentid) => {
@@ -305,7 +308,7 @@ class AuthorAssignmentPage {
   filterByTestType = (testType)=>{
     this.smartFilter.expandFilter()
     this.smartFilter.setTesttype(testType)
-    cy.get(`tbody > tr >td`,{timeout:15000})
+    //cy.get(`tbody > tr >td`,{timeout:15000})
   }
 
   clickChoosefromPlaylistButton = () => this.getChooseFromPlaylistsButton().click({ force: true });

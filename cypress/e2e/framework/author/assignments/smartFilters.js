@@ -70,7 +70,9 @@ export default class SmartFilters {
           .filter(function() {
             return Cypress.$(this).text() === testType;
           })
-      ).click({ force: true })
+      ).click({ force: true }).then(()=>{
+        cy.wait("@assignment");
+      })
     });
     // this.waitForAssignments();
     cy.focused().blur();

@@ -223,7 +223,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
       teacherSidebar.clickOnDashboard();
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.smartFilter.expandFilter();
-      cy.contains("ALL ASSIGNMENTS").then(() => {
+      authorAssignmentPage.smartFilter.getAllAssignment().then(() => {
         // delete residue folders
         if (Cypress.$(`[data-cy="${folders[1]}"]`).length > 0)
           authorAssignmentPage.smartFilter.deleteFolder(`${folders[1]}`);

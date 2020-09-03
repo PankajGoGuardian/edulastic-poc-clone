@@ -684,7 +684,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
     });
   })
 
-  context(" > Bulk unassign of assignments", () => {
+  context.only(" > Bulk unassign of assignments", () => {
 
     before("Login into teacher", () => {
       cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
@@ -694,7 +694,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       for(let i=1;i<=30;i++){
         notOpenClasses.push(classData.className + i.toString())
       }
-      testAssignPageassignTestWithoutOpening(notOpenClasses,classData.testID) 
+      testAssignPage.assignTestWithoutOpening(notOpenClasses,classData.testID) 
       cy.login("", Teacher.adminEmail, Teacher.adminPass);
     });
 

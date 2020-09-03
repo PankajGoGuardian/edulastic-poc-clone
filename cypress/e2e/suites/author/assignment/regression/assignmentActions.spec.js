@@ -61,6 +61,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
   const questionType = [];
   const attempt = [];
   const dropdownOptions = [
+    "add-to-folder",
+    "remove-from-folder",
     "assign",
     "duplicate",
     "preview",

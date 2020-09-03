@@ -214,7 +214,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
 
     it("> verify standards and tags", () => {
       const { id, standardTableData, tags } = testData[currentTestKey];
-      testLibraryPage.verifyStandardsOnTestCardById(id, _.keys(standardTableData));
+      testLibraryPage.verifyStandardsOnTestCardById(id, _.keys(standardTableData), true);
       testLibraryPage.verifyTagsOnTestCardById(id, tags);
     });
 
@@ -259,10 +259,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       testLibraryPage.verifyDescriptionOnTestCardPopUp(description);
       testLibraryPage.verifyTestCollectionOnTestCardPopUp(COLLECTION.private.split(" ")[0].toUpperCase());
     });
-    it("> verify grade and subject", () => {
-      const { testGrades, subjects } = testData[currentTestKey];
+    it("> verify grade,tags and subject", () => {
+      const { testGrades, subjects, tags } = testData[currentTestKey];
       testLibraryPage.verifyGradesOnTestCardPopUp(testGrades);
       testLibraryPage.verifySubjectsOnTestCardPopUp(subjects);
+      testLibraryPage.verifyTagsOnTestCardPopUp(tags);
     });
 
     it("> verify total items and points", () => {

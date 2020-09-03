@@ -161,7 +161,7 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
     // FOR NO END DATES TEACHER/ADMIN HAS TO MANUALLY CLOSE THE ASSIGNMENT so closed flag will be true.
     if (!endDate) {
       const startDate = currentClass.startDate || currentClass.openDate;
-      return !currentClass.closed && (startDate >= serverTimeStamp || currentClass.open);
+      return !currentClass.closed && (startDate <= serverTimeStamp || currentClass.open);
     }
   }
   // End date is not passed consider as live assignment

@@ -684,7 +684,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
     });
   })
 
-  context.only(" > Bulk unassign of assignments", () => {
+  context(" > Bulk unassign of assignments", () => {
 
     before("Login into teacher", () => {
       cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);

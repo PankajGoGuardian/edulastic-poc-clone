@@ -9,6 +9,7 @@ import Options from "./components/Options";
 // import { QuestionTitleWrapper } from "./styled/Label";
 
 const Display = ({
+  isBroadcasted,
   qIndex,
   view,
   smallSize,
@@ -27,7 +28,7 @@ const Display = ({
   fromSetAnswers,
   ...restProps
 }) => (
-  <FlexContainer alignItems="baseline" justifyContent="flex-start">
+  <FlexContainer alignItems={isBroadcasted ? 'flex-start' : "baseline"} justifyContent="flex-start">
     {!flowLayout && (
       <>
         <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start">

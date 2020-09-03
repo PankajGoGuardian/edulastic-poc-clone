@@ -6,18 +6,27 @@ import WebSocketConnection from "./hoc/WebSocketConnection";
 import App from "./components/App";
 import { contains } from "./utils";
 
+const HOST_URL = process?.env?.HOST_URL || `http://localhost:5000`;
+const EXTENTION_ID = process?.env?.EXTENTION_ID || 'eadjoeopijphkogdmabgffpiiebjdgoo';
+const isDevelopment = process?.env?.TEST_ENV === 'app';
+const customAuthToken = process?.env?.AUTH_TOKEN;
+
+console.log("Environment...",{ isDevelopment, customAuthToken:  process?.env});
+
 const getData = () => {
 
     // uncomment the below  mock data while testing app locally
 
-    return {
-      meetingID: 'rnt-jbbt-mri',
-      name: 'Prajwal',
-      fullName: 'Prajwal Venkatesh',
-      team: 'Snapwiz',
-      avatar: 'https://',
-      clientId: 'psv@gmail.com'
-    };
+    if(isDevelopment){
+      return {
+        meetingID: 'rnt-jbbt-mri',
+        name: 'Prajwal',
+        fullName: 'Prajwal Venkatesh',
+        team: 'Snapwiz',
+        avatar: '',
+        clientId: 'psv@gmail.com'
+      };
+    }
 
     const dataScript = contains("script", "ds:7");
     const userData = JSON.parse(dataScript[1].text.match(/\[[^\}]*/)[0]);
@@ -31,17 +40,7 @@ const getData = () => {
       clientId: userData[4],
       deviceId: document.querySelector("[data-initial-participant-id]").getAttribute('data-initial-participant-id').split('/')[3]
     };
-}
-
-const HOST_URL = process.env.HOST_URL || `http://localhost:5000`;
-const EXTENTION_ID = process.env.EXTENTION_ID || 'pgooajioclnllipfkmblccohmcphpnkc';
-
-// teacher
-// const TEST_AUTH = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDc2Mjk5MGU4ZThiNWI4MGEzMmZkYzciLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZDUyYWI4Y2I3ZWQxOGNkM2FlNjgyZTUiLCJpYXQiOjE1OTU5MzI1MzEsImV4cCI6MTU5ODUyNDUzMX0.dv6aNWV8totnm3QJFAn3Ly-v_P6E57DdHvFa0kThBdw";
-
-// student
-// const TEST_AUTH = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTRhNmM5YjE4MzhkNzAwMDc0MzI5NTQiLCJyb2xlIjoic3R1ZGVudCIsImRpc3RyaWN0SWQiOiI1YzlmM2Y0ZTlmY2YyZDU3ZDc0NTVmYjkiLCJpYXQiOjE1OTY0Mzg1MTIsImV4cCI6MTU5OTAzMDUxMn0.2Yf-ttyg-bA-g0AkY2B_8uboN8eU4HhmZBkopBgrXAI";
-
+};
 
 const Root = () => {
 
@@ -51,10 +50,10 @@ const Root = () => {
         const toneId = localStorage.getItem("edu-skinTone");
 
         chrome.runtime.sendMessage(EXTENTION_ID, {type: "REQUEST_AUTH_TOKEN"}, (response = {}) => {
-          if(response.authToken){
-            store.dispatch({type: "SET_AUTH_TOKEN", payload:response.authToken});
-            console.log("response.authToken",response.authToken);
-            localStorage.setItem('eduToken', response.authToken);
+          if(response.authToken || (isDevelopment && customAuthToken)){
+            store.dispatch({type: "SET_AUTH_TOKEN", payload: response.authToken || customAuthToken});
+            console.log("response.authToken",response.authToken || customAuthToken);
+            localStorage.setItem('eduToken', response.authToken || customAuthToken);
           }else{
             /**
              * Wait for auth token to be stored in chrome storage 
@@ -87,7 +86,7 @@ const Root = () => {
 
     return (
       <Provider store={store}>
-        <WebSocketConnection host={process.env.HOST_URL || HOST_URL} extension={EXTENTION_ID}>
+        <WebSocketConnection host={process?.env?.HOST_URL || HOST_URL} extension={EXTENTION_ID}>
           <App />
         </WebSocketConnection>
       </Provider>

@@ -1891,6 +1891,14 @@
     "message": "Please select user to disable power tools",
     "description": ""
   },
+  "broadcastSuccess": {
+    "message": "Broadcasted Item Successfully",
+    "description": ""
+  },
+  "broadcastError": {
+    "message": "Broadcasted Item Failed",
+    "description": ""
+  },
   "cliCustomStudentUserNotExist": {
     "message": "Custom student doesn't have test activity",
     "description": ""

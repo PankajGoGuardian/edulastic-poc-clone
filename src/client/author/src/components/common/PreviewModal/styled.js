@@ -525,3 +525,14 @@ export const FlexWrap = styled.div`
   margin-bottom: 10px;
   width: 100%;
 `;
+
+export const SelectWrapper = styled.div`
+  width: 100%;
+  margin: 20px;
+  label{
+    font-size: 16;
+    font-weight: 600;
+    margin: 6px 0;
+    display: block;
+  }
+`;

@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
-import { test as testConst } from "@edulastic/constants";
+import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { Effects, notification } from "@edulastic/common";
 import { getCurrentSchool, fetchUserAction, getUserRole, getUserId } from "../Login/ducks";
 
@@ -26,6 +26,7 @@ import { clearOrderOfOptionsInStore } from "../../assessment/actions/assessmentP
 import { getServerTs } from "../utils";
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
+const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
 // constants
 export const FILTERS = {
   ALL: "all",
@@ -128,12 +129,15 @@ export const stateSelector = state => state.studentAssignment;
 
 /**
  *
- * @param {*} assignment - assignment being looped
- * @param {*} currentGroup - group filter
- * @param {*} userId - student Id
- * This function should return true for all assignments which has to be displayed to the user(student).
- * Regardless of the policy show assignment to student until it is not closed.
- * endDate will be only missing for those assignments with manual close policy
+ * @param {*} assignment
+ * @param {*} currentGroup
+ * BOTH OPEN AND CLOSE ARE MANUAL
+ *  When both are manual endDate and startDate will not present in class object, hence use open and closed flags along with openDate and closedDate
+ * Once assignment is open no need to check for the startDate as it is opened manually by author but check for closedDate or closed variable
+ * ONLY OPEN MANUAL
+ *  In this case endDate will be present but we shouldn't display the assignment until open variable is true. Also hide when end date passed
+ * ONLY CLOSE MANUAL
+ *  Close manual can display assignment by checking the startDate is less than current date and close when closed in class object is true
  *
  */
 export const isLiveAssignment = (assignment, classIds, userId) => {
@@ -158,10 +162,23 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
     ).endDate;
     const currentClass =
       currentUserGroups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
-    // FOR NO END DATES TEACHER/ADMIN HAS TO MANUALLY CLOSE THE ASSIGNMENT so closed flag will be true.
     if (!endDate) {
-      const startDate = currentClass.startDate || currentClass.openDate;
-      return !currentClass.closed && (startDate >= serverTimeStamp || currentClass.open);
+      // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
+      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE && assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE) {
+        return !currentClass.closed;
+      }
+      // IF MANUAL OPEN AND AUTO CLOSE
+      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE) {
+        const isLive = !currentClass.closed || currentClass.endDate > serverTimeStamp;
+        return isLive;
+      }
+      // IF MANUAL CLOSE AND AUTO OPEN
+      if (assignment.openPolicy !== POLICY_AUTO_ON_DUEDATE) {
+        const isLive =
+          currentClass.startDate < serverTimeStamp &&
+          (!currentClass.closed || currentClass.closedDate > serverTimeStamp);
+        return isLive;
+      }
     }
   }
   // End date is not passed consider as live assignment
@@ -228,7 +245,7 @@ export const getAllAssignmentsSelector = createSelector(
         );
         return allClassess.map(clazz => ({
           ...assignment,
-          maxAttempts: clazz.maxAttempts || assignment.maxAttempts,
+          maxAttempts: clazz.maxAttempts,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`] || [],
           ...(clazz.allowedTime && !assignment.redir ? { allowedTime: clazz.allowedTime } : {}),

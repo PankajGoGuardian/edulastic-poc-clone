@@ -170,7 +170,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
       });
 
       [attemptsdata1, attemptsdata2].forEach(studentdata => {
-        context(`> verify lcb/reports '${studentdata[0].overidden === 0 ? "not " : ""}overidden' assignment`, () => {
+        context(`> verify lcb/reports '${studentdata[0].overidden ? "not " : ""}overidden' assignment`, () => {
           before("> click on lcb", () => {
             const assignmentid = studentdata[0].overidden ? assignmentid2 : assignmentid1;
             testlibaryPage.sidebar.clickOnAssignment();
@@ -290,7 +290,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
       });
 
       [attemptsdata1, attemptsdata2].forEach(studentdata => {
-        context(`> verify lcb/reports '${studentdata[0].overidden === 0 ? "not " : ""}overidden' assignment`, () => {
+        context(`> verify lcb/reports '${studentdata[0].overidden ? "not " : ""}overidden' assignment`, () => {
           before("> click on lcb", () => {
             // cy.login("teacher", teacher);
             const assignmentid = studentdata[0].overidden ? assignmentid2 : assignmentid1;

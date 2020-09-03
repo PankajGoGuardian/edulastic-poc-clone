@@ -1034,6 +1034,7 @@ class Setting extends Component {
                           value={
                             playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType
                           }
+                          data-cy="playerSkinType"
                           disabled={!owner || !isEditable}
                           onChange={this.updateTestData("playerSkinType")}
                           getPopupContainer={trigger => trigger.parentNode}

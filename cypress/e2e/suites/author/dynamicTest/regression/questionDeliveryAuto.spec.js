@@ -64,12 +64,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     pass: "snapwiz"
   };
   const Teacher = {
-    email: "teacher2.for.dynamic.test@snapwiz.com",
+    email: "teacher.auto.test@snapwiz.com",
     pass: "snapwiz"
   };
+
   const students = [
-    { name: "Student1", email: "student1.group.question.delivery@snapwiz.com", pass: "snapwiz" },
-    { name: "Student2", email: "student2.group.question.delivery@snapwiz.com", pass: "snapwiz" }
+    { name: "Student1", email: "student1.delivery.auto@snapwiz.com", pass: "snapwiz" },
+    { name: "Student2", email: "student2.delivery.auto@snapwiz.com", pass: "snapwiz" }
   ];
 
   const attemptByQuestion = {

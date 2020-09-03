@@ -135,10 +135,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     email: "content.editor.1@snapwiz.com",
     pass: "snapwiz"
   };
-  const Teacher = {
-    email: "teacher2.for.dynamic.test@snapwiz.com",
-    pass: "snapwiz"
-  };
 
   const groups = {
     1: { items: [] },
@@ -203,7 +199,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     });
     context(">dok", () => {
       before("login", () => {
-        cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
       before("create test", () => {
@@ -228,7 +223,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     });
     context(">difficulty", () => {
       before("login", () => {
-        cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
       before("create test", () => {
@@ -253,7 +247,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     });
     context(">tags", () => {
       before("login", () => {
-        cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
       before("create test", () => {

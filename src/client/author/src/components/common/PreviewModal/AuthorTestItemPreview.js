@@ -311,7 +311,6 @@ class AuthorTestItemPreview extends Component {
 
     // item detail preview
     if (page === "itemAuthoring") {
-      // match list preview max height is set using below value
       commonProps.style.height = showScratch ? "calc(100vh - 272px)" : "calc(100vh - 182px)";
       return commonProps;
     }

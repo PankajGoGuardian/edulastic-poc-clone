@@ -81,6 +81,10 @@ function* saveUserResponse({ payload }) {
     }
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
+    // prevent autSave if response is empty for every question in current item
+    if (autoSave && answers && Object.values(answers).every(ans => typeof ans !== "number" && isEmpty(ans))) {
+      return;
+    }
     const { testActivityId: userTestActivityId, passages, isDocBased } = yield select(state => state.test);
     const shuffledOptions = yield select(state => state.shuffledOptions);
     // passages: state.test.passages

@@ -664,7 +664,7 @@ const enhance = compose(
 
 export default enhance(MatchListPreview);
 
-const StyledCorrectAnswersContainer = styled(CorrectAnswersContainer).attrs({ minHeight: "auto" })`
+const StyledCorrectAnswersContainer = styled(CorrectAnswersContainer).attrs({ minHeight: "auto", minWidth: "200px" })`
   margin: 20px auto;
   & > h3 {
     color: ${props => props.theme.widgets.matchList.dragItemColor};

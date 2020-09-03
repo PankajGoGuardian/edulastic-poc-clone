@@ -360,7 +360,7 @@ class SideMenu extends Component {
                 <span>{isCollapsed ? "" : "Switch Account"} </span>
               </a>
             </Menu.Item>
-          ) : userRole === roleuser.EDULASTIC_CURATOR ? (
+          ) : userRole !== roleuser.EDULASTIC_CURATOR ? (
             <Menu.Item key="4" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser /> <span>{isCollapsed ? "" : "Add Account"}</span>

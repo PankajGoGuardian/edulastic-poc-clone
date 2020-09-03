@@ -68,10 +68,13 @@ export default class SmartFilters {
     this.getTestType().click();
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
       cy.wrap(
-        $ele.filter(function() {
-          return Cypress.$(this).text() === testType;
-        })
-      ).click({ force: true });
+        $ele
+          .filter(function() {
+            return Cypress.$(this).text() === testType;
+          })
+      ).click({ force: true }).then(()=>{
+        cy.wait("@assignment");
+      })
     });
     // this.waitForAssignments();
     cy.focused().blur();

@@ -259,6 +259,10 @@ class AssignmentsPage {
 
   verifyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
 
+  verifyAssignmentIsPaused = () => cy.get('[data-cy="lockAssignment"]').contains('Paused').should("exist");
+
+  verifyAssignmentIsOpen = testID => this.getAssignmentButtonByTestId(testID).should("exist");
+
   verifyTimeAvalableForTestById = (testid, time) =>
     this.getTimeAvailableForAssignmentById(testid).should("contain.text", `${time} minutes`);
 

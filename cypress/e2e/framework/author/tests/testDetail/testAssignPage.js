@@ -392,9 +392,24 @@ export default class TestAssignPage {
     cy.server();
     cy.route("POST", "**/api/group/search").as("classes");
     cy.visit(`/author/assignments/${id}`);
-    cy.wait("@classes");
+    cy.wait("@classes",{ timeout: 80000 });
     cy.contains("OVERRIDE TEST SETTINGS");
   };
+
+  assignTestWithoutOpening(classes,testID) {
+    this.visitAssignPageById(testID);
+    this.selectMultipleCLasses(classes);
+    const start = new Date();
+    start.setDate(start.getDate() + 1);
+    this.setStartDate(start);
+    this.clickOnAssign();
+  }
+
+  assignOpenTest(classes,testID){
+    this.visitAssignPageById(testID)
+    this.selectMultipleCLasses(classes)
+    this.clickOnAssign(); 
+  }
 
   verifyTimeAssignedForTest = questionCount => this.getTimeSettingTextBox().should("have.value", `${questionCount}`);
 

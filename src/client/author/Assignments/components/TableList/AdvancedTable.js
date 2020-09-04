@@ -289,20 +289,18 @@ class AdvancedTable extends Component {
   };
 
   handleSelectRow = row => e => {
-    console.clear();
-    console.log(row);
     const { toggleAddItemFolderModal, setItemsToFolder, selectedRows } = this.props;
     const selectedIndex = selectedRows.findIndex(r => r.itemId === row.testId);
     if (e.target && e.target.checked && selectedIndex === -1) {
-      setItemsToFolder([...selectedRows, { itemId: row.testId, title: row.title }]);
+      setItemsToFolder([...selectedRows, { itemId: row.testId, name: row.title }]);
     } else if (e.target && selectedIndex !== -1) {
       selectedRows.splice(selectedIndex, 1);
       setItemsToFolder([...selectedRows]);
     } else if (!e.target && toggleAddItemFolderModal) {
       // this case is from action button of an item
-      setItemsToFolder([{ itemId: row.testId, title: row.title }]);
+      setItemsToFolder([{ itemId: row.testId, name: row.title }]);
       toggleAddItemFolderModal({
-        items: [{ itemId: row.testId, title: row.title }],
+        items: [{ itemId: row.testId, name: row.title }],
         isOpen: true
       });
     }
@@ -321,7 +319,7 @@ class AdvancedTable extends Component {
     const { toggleRemovalFolderModal, selectedRows } = this.props;
     if (!isEmpty(row)) {
       toggleRemovalFolderModal({
-        items: [{ itemId: row.testId, title: row.title }],
+        items: [{ itemId: row.testId, name: row.title }],
         isOpen: true
       });
     } else if (!isEmpty(selectedRows)) {

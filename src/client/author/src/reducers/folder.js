@@ -98,6 +98,7 @@ const reducer = (state = initialState, { type, payload }) => {
         entities,
         updatedFolder,
         isOpenAddItemModal: false,
+        selectedItems: [],
         // entity should have the assignments for displaying inside entity.content
         entity: {
           ...state.entity,

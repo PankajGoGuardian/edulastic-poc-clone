@@ -21,7 +21,7 @@ const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal, remo
   };
 
   const handleRemoveItems = () => {
-    if (isEmpty(selected)) {
+    if (isEmpty(selected) || isEmpty(selectedItems)) {
       return notification({ type: "info", messageKey: "selectFolder" });
     }
     const itemsToRemove = selectedItems
@@ -50,9 +50,9 @@ const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal, remo
 
     removeItems({ folderId: selected._id, folderName: selected.folderName, itemsToRemove, folderType });
 
-    itemsToRemove.forEach(itemId => {
+    itemsToRemove.forEach(item => {
       if (removeItemFromCart) {
-        removeItemFromCart({ _id: itemId }, false);
+        removeItemFromCart({ _id: item.itemId }, false);
       }
     });
   };

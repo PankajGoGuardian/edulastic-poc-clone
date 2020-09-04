@@ -39,7 +39,9 @@ const RemovalModal = ({ selectedItems, folderType, removeItems, closeModal, remo
       const showNamesInMsg =
         selectedItems.length > 1 && folderType !== folderTypes.ITEM
           ? `${selectedItems.length} ${contentName}(s)`
-          : `${selectedItems[0].name}`;
+          : folderType !== folderTypes.ITEM
+          ? `${selectedItems[0].name}`
+          : `${contentName}(s)`;
 
       const customMsg = `${showNamesInMsg} don't exist in ${selected.folderName}`;
 

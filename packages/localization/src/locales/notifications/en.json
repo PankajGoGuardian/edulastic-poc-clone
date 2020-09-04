@@ -84,7 +84,7 @@
     "description": ""
   },
   "apiFormErr": {
-    "message": "Failed",
+    "message": "Some error occured.",
     "description": ""
   },
   "deltaSyncSucc": {

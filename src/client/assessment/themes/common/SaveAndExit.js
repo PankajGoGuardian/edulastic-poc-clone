@@ -173,18 +173,18 @@ export const SaveAndExitButton = styled(StyledButton)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     width: auto;
     &.ant-btn {
-      height: ${props => props.height || "36px"};
+      height: ${props => props.height};
     }
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     margin-left: 5px;
     width: auto;
     &.ant-btn {
-      height: ${props => props.height || "36px"};
+      height: ${props => props.height};
     }
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    height: ${props => props.height || "30px"};
+    height: ${props => props.height};
   }
 `;

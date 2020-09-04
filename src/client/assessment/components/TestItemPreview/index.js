@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { ThemeProvider, withTheme } from "styled-components";
+import { isEqual } from "lodash";
 import { white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClockCircularOutline } from "@edulastic/icons";
-
 import { withWindowSizes, ScrollContext } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { Icon } from "antd";
@@ -218,6 +218,16 @@ class TestItemPreview extends Component {
       if (previousWidth !== currentWidth || previousHeight !== currentHeight) {
         this.setState({ dimensions: { height: currentHeight, width: currentWidth } });
       }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { cols: preCols } = prevProps;
+    const { cols, isPassageWithQuestions } = this.props;
+
+    if (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions && !isEqual(cols, preCols)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ toggleCollapseMode: true, collapseDirection: "left" });
     }
   }
 

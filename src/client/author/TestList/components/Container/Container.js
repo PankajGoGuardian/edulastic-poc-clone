@@ -1118,29 +1118,27 @@ class TestList extends Component {
 
           <FlexContainer>
             <Filter isShowFilter={isShowFilter}>
-              {!isShowFilter && (
-                <AffixWrapper isProxyUser={isProxyUser}>
-                  <ScrollbarWrapper>
-                    <PerfectScrollbar>
-                      <ScrollBox>
-                        <InputTag
-                          onSearchInputChange={this.handleSearchInputChange}
-                          size="large"
-                          value={testFilters.searchString}
-                        />
-                        <TestListFilters
-                          search={search}
-                          handleLabelSearch={this.handleLabelSearch}
-                          onChange={this.handleFiltersChange}
-                          clearFilter={this.handleClearFilter}
-                          searchFilterOption={this.searchFilterOption}
-                          filterMenuItems={filterMenuItems}
-                        />
-                      </ScrollBox>
-                    </PerfectScrollbar>
-                  </ScrollbarWrapper>
-                </AffixWrapper>
-              )}
+              <AffixWrapper isProxyUser={isProxyUser}>
+                <ScrollbarWrapper isShowFilter={isShowFilter}>
+                  <PerfectScrollbar>
+                    <ScrollBox>
+                      <InputTag
+                        onSearchInputChange={this.handleSearchInputChange}
+                        size="large"
+                        value={testFilters.searchString}
+                      />
+                      <TestListFilters
+                        search={search}
+                        handleLabelSearch={this.handleLabelSearch}
+                        onChange={this.handleFiltersChange}
+                        clearFilter={this.handleClearFilter}
+                        searchFilterOption={this.searchFilterOption}
+                        filterMenuItems={filterMenuItems}
+                      />
+                    </ScrollBox>
+                  </PerfectScrollbar>
+                </ScrollbarWrapper>
+              </AffixWrapper>
             </Filter>
             <Main isShowFilter={isShowFilter}>
               {renderFilterIcon()}

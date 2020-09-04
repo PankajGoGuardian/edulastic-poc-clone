@@ -74,12 +74,15 @@ export default class SearchFilters {
     cy.route("POST", "**/search/**").as("search");
   };
 
-  waitForSearchResponse = () => cy.wait("@search").then(xhr => expect(xhr.status).to.eq(200));
+  waitForSearchResponse = () =>
+    cy.wait("@search").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      return this.closeFilterGuide();
+    });
 
   getAuthoredByMe = (setSortOptions = true, option) => {
     this.routeSearch();
     this.getFilterButtonByAttr(this.libraryTitles.authoredByMe).click();
-    this.closeFilterGuide();
     this.waitForSearchResponse();
     if (setSortOptions) {
       this.setSortButtonInDescOrder();
@@ -91,9 +94,8 @@ export default class SearchFilters {
     const dummyCharToType = Helpers.getRamdomString(2).toUpperCase();
     this.routeSearch();
     this.typeInSearchBox(dummyCharToType);
-    this.closeFilterGuide();
     cy.get('[data-cy="clearAll"]').click({ force: true });
-    cy.wait("@search").then(() => this.getSearchBar().should("not.contain", dummyCharToType));
+    this.waitForSearchResponse().then(() => this.getSearchBar().should("not.contain", dummyCharToType));
     if (setSortOptions) {
       this.setSortButtonInDescOrder();
       this.setSortOption(option);
@@ -109,14 +111,14 @@ export default class SearchFilters {
   setGrades = grades => {
     grades.forEach(grade => {
       CypressHelper.selectDropDownByAttribute("selectGrades", grade);
-      cy.wait("@search");
+      this.waitForSearchResponse();
     });
   };
 
   setCollection = collection => {
     this.routeSearch();
     CypressHelper.selectDropDownByAttribute("Collections", collection);
-    cy.wait("@search");
+    this.waitForSearchResponse();
   };
 
   scrollFiltersToTop = () =>
@@ -129,7 +131,7 @@ export default class SearchFilters {
 
   sharedWithMe = () => {
     this.getFilterButtonByAttr(this.libraryTitles.sharedWithMe).click({ force: true });
-    cy.wait("@search");
+    this.waitForSearchResponse();
   };
 
   getEntireLibrary = () => {
@@ -323,10 +325,10 @@ export default class SearchFilters {
     });
   };
 
-  closeFilterGuide = () => {
+  closeFilterGuide = () =>
     cy.get("body").then(() => {
       if (Cypress.$("._pendo-close-guide").length > 0) cy.get("._pendo-close-guide").click();
     });
-  };
+
   // *** APPHELPERS END ***
 }

@@ -35,6 +35,9 @@ export default class TeacherManageClassPage {
     cy.wait("@searchUser");
   };
 
+  getClassCode = className =>this.getClassRowByName(className)
+    .find("td > span").eq(1).invoke("text")
+
   getClassRowDetails = className =>
     this.getClassRowByName(className)
       .find("td")

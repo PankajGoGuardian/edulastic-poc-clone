@@ -33,7 +33,7 @@ import {
   unarchiveClassAction,
   getCanvasFetchingStateSelector
 } from "../../ducks";
-import { getCleverSyncEnabledInstitutionPoliciesSelector } from "../../../src/selectors/user";
+import { getCleverLibraryUserSelector } from "../../../src/selectors/user";
 
 const ClassDetails = ({
   location,
@@ -55,11 +55,11 @@ const ClassDetails = ({
   syncClassWithCanvas,
   syncClassesWithClever,
   user,
-  cleverSyncEnabledInstitutions,
   classCodeError = false,
   setClassNotFoundError,
   unarchiveClass,
-  isFetchingCanvasData
+  isFetchingCanvasData,
+  isCleverUser
 }) => {
   const { editPath, exitPath } = location?.state || {};
   const { name, type, cleverId, institutionId, districtId } = selectedClass;
@@ -73,7 +73,7 @@ const ClassDetails = ({
       {},
     [user?.orgData?.policies, institutionId]
   );
-  const enableCleverSync = cleverSyncEnabledInstitutions.find(i => i.institutionId === institutionId) && cleverId;
+  const enableCleverSync = isCleverUser && cleverId;
 
   const googleCode = React.createRef();
 
@@ -291,7 +291,7 @@ const enhance = compose(
       canvasCourseList: get(state, "manageClass.canvasCourseList", []),
       canvasSectionList: get(state, "manageClass.canvasSectionList", []),
       user: get(state, "user.user", {}),
-      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
+      isCleverUser: getCleverLibraryUserSelector(state),
       classCodeError: getClassNotFoundError(state),
       isFetchingCanvasData: getCanvasFetchingStateSelector(state)
     }),

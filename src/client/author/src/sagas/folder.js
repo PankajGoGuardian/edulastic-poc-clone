@@ -76,10 +76,11 @@ function* receiveAddMoveFolderRequest({ payload }) {
       contentName = "item";
     }
     // item does not have name to show in message
+    const list = (params?.[0]?.assignmentsNameList || []).filter(a => a);
     const showNamesInMsg =
-      params.length > 1 && folderType === folderTypes.ITEM
-        ? `${params.length} ${contentName}(s)`
-        : `${params[0].assignmentsNameList}`;
+      params.length > 1 || folderType === folderTypes.ITEM
+        ? `${params.length || "Selected"} ${contentName}(s)`
+        : `${list.length === 1 ? list[0] : "Selection"}`;
 
     const successMsg = `${showNamesInMsg} successfully moved to "${moveFolderName}"`;
 

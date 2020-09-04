@@ -43,30 +43,30 @@ const StyledDiv = styled.div`
     color: #fff;
   }
 `;
-const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userId, switchUser, userRole }) => (
-  <Modal title="Switch User" visible={showModal} onCancel={closeModal} footer={null}>
-    <div>
-      <p>Select the role you want to switch</p>
-      <div style={{ "margin-top": "16px" }}>
-        {Object.keys(roles).map(role => {
-          const users = otherAccounts.filter(acc => acc.role === role && acc._id !== userId);
-          return (
-            !!users.length &&
-            users.map(user => (
-              <StyledDiv key={`${user._id}_${user.role}`} role={role} onClick={() => switchUser(user._id, personId)}>
-                <div style={{ "font-size": "16px", "font-weight": "600" }}>
-                  <p>{roles[user.role]}</p>
-                </div>
-                <div>
-                  <p>{user.username}</p>
-                </div>
-              </StyledDiv>
-            ))
-          );
-        })}
+const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userId, switchUser }) => {
+  return (
+    <Modal title="Switch User" visible={showModal} onCancel={closeModal} footer={null}>
+      <div>
+        <p>Select the role you want to switch</p>
+        <div style={{ "margin-top": "16px" }}>
+          {Object.keys(roles).map(role => {
+            const users = otherAccounts.filter(acc => acc.role === role && acc._id !== userId);
+            return (
+              !!users.length &&
+              users.map(user => (
+                <StyledDiv key={`${user._id}_${user.role}`} role={role} onClick={() => switchUser(user._id, personId)}>
+                  <div style={{ "font-size": "16px", "font-weight": "600" }}>
+                    <p>{roles[user.role]}</p>
+                  </div>
+                  <div>
+                    <p>{user.username}</p>
+                  </div>
+                </StyledDiv>
+              ))
+            );
+          })}
+        </div>
       </div>
-    </div>
-    {userRole !== "edulastic-admin" && (
       <ButtonsContainer>
         <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
           <Button isGhost>
@@ -74,8 +74,8 @@ const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userI
           </Button>
         </Link>
       </ButtonsContainer>
-    )}
-  </Modal>
-);
+    </Modal>
+  );
+};
 
 export default SwitchUserModal;

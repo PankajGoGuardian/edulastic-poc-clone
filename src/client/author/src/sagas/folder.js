@@ -77,11 +77,11 @@ function* receiveAddMoveFolderRequest({ payload }) {
     }
     // item does not have name to show in message
     const showNamesInMsg =
-      params.length > 1 && folderType !== folderTypes.ITEM
+      params.length > 1 && folderType === folderTypes.ITEM
         ? `${params.length} ${contentName}(s)`
         : `${params[0].assignmentsNameList}`;
 
-    const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName}`;
+    const successMsg = `${showNamesInMsg} successfully moved to "${moveFolderName}"`;
 
     const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
@@ -172,7 +172,7 @@ function* receiveRemoveItemsFromFolder({ payload }) {
 
     // item does not have name to show in message
     const showNamesInMsg =
-      itemsToRemove.length > 1 && folderType !== folderTypes.ITEM
+      itemsToRemove.length > 1 || folderType === folderTypes.ITEM
         ? `${itemsToRemove.length} ${contentName}(s)`
         : `${itemsToRemove[0].name}`;
 

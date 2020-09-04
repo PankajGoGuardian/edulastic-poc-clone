@@ -10,7 +10,7 @@ import { finishTestAcitivityAction } from "../../actions/test";
 
 const AssignmentTimeEndedAlert = ({ isVisible, autoSubmitTest, theme, groupId, history, utaId }) => {
   useEffect(() => {
-    autoSubmitTest({ groupId, preventRouteChange: true, testActivityId: utaId });
+    autoSubmitTest({ groupId, preventRouteChange: true, testActivityId: utaId, autoSubmit: true });
   }, []);
 
   return (

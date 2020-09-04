@@ -40,6 +40,7 @@ import { CLEAR_ITEM_EVALUATION, CHANGE_VIEW } from "../../author/src/constants/a
 import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 import { PREVIEW } from "../constants/constantsForQuestions";
 import { getUserRole } from "../../author/src/selectors/user";
+import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants;
 
@@ -453,6 +454,10 @@ function* submitTest({ payload }) {
       return;
     }
     yield testActivityApi.submit(testActivityId, groupId);
+    // log the details on auto submit
+    if (payload.autoSubmit) {
+      checkClientTime({ testActivityId, timedTest: true });
+    }
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: "" }

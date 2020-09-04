@@ -1,10 +1,13 @@
-import React from 'react';
-import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles';
-import SVG from '@edulastic/icons/src/common/SVG';
+import React from "react";
+import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
+import SVG from "@edulastic/icons/src/common/SVG";
 
 const IconGraphMove = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.98 23.98" stroke="none" style={{ stroke: 'none' }} {...props}>
-    <path d="M5.187,17.177,0,11.99,5.187,6.8V10.8H10.8V5.187H6.8L11.99,0l5.187,5.187H13.183V10.8h5.61V6.8L23.98,11.99l-5.187,5.187V13.183h-5.61v5.61h3.994L11.99,23.98,6.8,18.793H10.8v-5.61H5.187Z"/>
+  <SVG xmlns="http://www.w3.org/2000/svg" width="15.794" height="15.794" viewBox="0 0 15.794 15.794" {...props}>
+    <path
+      d="M3.417,11.313,0,7.9,3.416,4.48V7.111H7.111V3.417H4.481L7.9,0l3.416,3.416H8.683V7.111h3.695V4.48L15.794,7.9l-3.416,3.416V8.683H8.683v3.695h2.631L7.9,15.794,4.481,12.378H7.111V8.683H3.417Z"
+      fill="#66707a"
+    />
   </SVG>
 );
 

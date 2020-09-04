@@ -99,7 +99,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
             groupItemsPage.getCountOfItemsInGroup(1).should("have.length", --itemCount);
           });
         });
-        it(">verify review tab", () => {
+        it(">verify review tab after item removal", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.testheader.clickOnSaveButton(true);
           testReviewTab.verifyNoOfItemsInGroupByNo(1, itemCount);
@@ -150,7 +150,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
             groupItemsPage.getCountOfItemsInGroup(1).should("have.length", --itemCount);
           });
         });
-        it(">verify review tab", () => {
+        it(">verify review tab after item removal", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, itemCount);
           testReviewTab.verifyItemCoutInPreview(itemCount);
@@ -373,7 +373,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           groupItemsPage.setItemCountForDeliveryByGroup(1, 3);
           groupItemsPage.clickOnSaveByGroup(1, true);
         });
-        it(">verify review tab", () => {
+        it(">verify review tab after editing dynamic group", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 3);
           testReviewTab.verifyItemCoutByGroupInPublisherPreview(3, 1, 3);
@@ -414,7 +414,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           addItemTab.clickOnGroupItem();
           groupItemsPage.createDynamicTest(1, filterForAutoselect, true);
         });
-        it(">verify review tab", () => {
+        it(">verify review tab after editing group", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 2);
           testReviewTab.verifyItemCoutByGroupInPublisherPreview(2, 1, filterForAutoselect.deliveryCount);

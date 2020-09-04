@@ -169,7 +169,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
         });
       });
 
-      [attemptsdata1, attemptsdata2].forEach(studentdata => {
+      [attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(`> verify lcb/reports '${studentdata[0].overidden ? "not " : ""}overidden' assignment`, () => {
           before("> click on lcb", () => {
             const assignmentid = studentdata[0].overidden ? assignmentid2 : assignmentid1;
@@ -177,7 +177,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, assignmentid);
           });
 
-          it("> verify regraded performance band in lcb settings", () => {
+          it(`>${index} verify regraded performance band in lcb settings `, () => {
             const band = studentdata[0].overidden ? overiddenBand : regradedBand;
             lcb.header.clickLCBSettings();
             lcb.settings.showTestLevelSettings();
@@ -193,7 +193,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
             studentdata.forEach(({ status, name, attempt }) => {
               const band = studentdata[0].overidden ? overiddenBand : regradedBand;
               const bands = performanceBand[band];
-              it(`> for student ${status},expected- '${bands[attempt]}'`, () => {
+              it(`>${name} - student ${status},expected- '${bands[attempt]}'`, () => {
                 pdfReportCard.getReportContainerByStudent(name);
                 pdfReportCard.getPerformanceBand().should("have.text", bands[attempt]);
               });
@@ -289,7 +289,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
         });
       });
 
-      [attemptsdata1, attemptsdata2].forEach(studentdata => {
+      [attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(`> verify lcb/reports '${studentdata[0].overidden ? "not " : ""}overidden' assignment`, () => {
           before("> click on lcb", () => {
             // cy.login("teacher", teacher);
@@ -298,7 +298,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, assignmentid);
           });
 
-          it("> verify regraded performance band in lcb settings", () => {
+          it(`>${index} verify regraded performance band in lcb settings`, () => {
             lcb.header.clickLCBSettings();
             lcb.settings.showTestLevelSettings();
             lcb.settings.verifySelectedPerformanceBand(regradedBand);
@@ -312,7 +312,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
             });
             studentdata.forEach(({ status, name, attempt }) => {
               const bands = performanceBand[regradedBand];
-              it(`> for student ${status}, expected- ${bands[attempt]}`, () => {
+              it(`>${name} - student ${status}, expected- ${bands[attempt]}`, () => {
                 pdfReportCard.getReportContainerByStudent(name);
                 pdfReportCard.getPerformanceBand().should("have.text", bands[attempt]);
               });

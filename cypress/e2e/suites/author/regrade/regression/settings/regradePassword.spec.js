@@ -140,8 +140,10 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'pass
 
       [...attemptsdata1, ...attemptsdata2]
         .filter(({ status }) => status !== studentSide.SUBMITTED)
-        .forEach(({ email, status, overidden }, index) => {
-          it(`> verify for ${status} student '${index === 1 ? "" : "not "}overidden' assignment`, () => {
+        .forEach(({ email, name, status, overidden }, index) => {
+          it(`>student -${name}, verify for ${status} student '${
+            index === 1 ? "" : "not "
+          }overidden' assignment`, () => {
             cy.login("student", email);
             const option =
               status === studentSide.IN_PROGRESS
@@ -243,8 +245,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'pass
 
       [...attemptsdata1, ...attemptsdata2]
         .filter(({ status }) => status !== studentSide.SUBMITTED)
-        .forEach(({ email, status, overidden }) => {
-          it(`> verify for ${status} student '${overidden ? "" : "not "}overidden' assignment`, () => {
+        .forEach(({ email, name, status, overidden }) => {
+          it(`>student -${name}, verify for ${status} student '${overidden ? "" : "not "}overidden' assignment`, () => {
             cy.login("student", email);
             const option = status === studentSide.IN_PROGRESS ? {} : { pass: staticPassword_1 };
             assignmentsPage.clickOnAssigmentByTestId(versionedTest2, option);

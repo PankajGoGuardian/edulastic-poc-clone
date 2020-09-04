@@ -300,7 +300,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playlistAssignPage.clickOnAssign();
     });
 
-    it("> verify assignments page", () => {
+    it("> verify assignments page for existing module assigned", () => {
       /* 8. verify assignments wrt test present in module no:1 */
       playlistlibraryPage.sidebar.clickOnAssignment();
       authorAssignmentPage.getAssignmentRowsTestById(testIds[2]);
@@ -314,7 +314,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playlistAssignPage.clickOnAssign();
     });
 
-    it("> verify assignments page", () => {
+    it("> verify assignments page for new module assigned", () => {
       /* 10. verify assignments wrt test present in module no:2 */
       playlistlibraryPage.sidebar.clickOnAssignment();
       authorAssignmentPage.getAssignmentRowsTestById(testIds[3]);
@@ -364,7 +364,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playlistlibraryPage.playListSummary.setName("name");
     });
 
-    it("> verify review tab", () => {
+    it("> verify review tab after playlist clone", () => {
       /* 16. verify manage content tab with test ids of original playlist */
       playlistlibraryPage.header.clickOnReview();
       testIds.slice(2).forEach((test, i) => {
@@ -387,7 +387,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playlistlibraryPage.playListSummary.setName("name");
     });
 
-    it("> verify review tab", () => {
+    it("> verify review tab after playlist clone from customization tab", () => {
       /* 18. verify manage content tab with test ids of original playlist */
       playlistlibraryPage.header.clickOnReview();
       testIds.slice(2).forEach((test, i) => {
@@ -441,7 +441,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       cy.url().should("contain", `${playlistId_2}/use-this`);
     });
 
-    it("> verify by assigning one test", () => {
+    it("> verify by assigning one test in deleted playlist", () => {
       /* 5. verify assign action by assigning one test in deleted playlist */
       playlistlibraryPage.playlistCustom.clickOnAssignByTestByModule(1, 1);
       playlistlibraryPage.playListAssign.selectClass("Class");

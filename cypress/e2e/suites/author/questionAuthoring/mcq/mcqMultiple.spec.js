@@ -844,7 +844,7 @@ describe(`${FileHelper.getSpecName(
       question.checkChoiceSelected(queData.correct[1]);
       question.getPoints().type("{selectall}3.6");
 
-      // for no rounding
+      // with rounding
       question.selectRoundingType("Round down");
       question.header.preview();
       question.selectAnswerChoice(queData.correct[0]);
@@ -860,44 +860,7 @@ describe(`${FileHelper.getSpecName(
       question.checkChoiceSelected(queData.correct[1]);
       question.getPoints().type("{selectall}3.6");
 
-      // with score rounding
-      question.selectRoundingType("None");
-      question.header.preview();
-      question.selectAnswerChoice(queData.correct[0]);
-      question.selectAnswerChoice(queData.alterate[0]);
-      preview.checkScore("1.3/3.6");
-    });
-
-    it("Verify score with rounding and penalty", () => {
-      const preview = question.header.preview();
-
-      question.header.edit();
-
-      question.checkChoiceSelected(queData.correct[0]);
-
-      question.checkChoiceSelected(queData.correct[1]);
-
-      question.getPoints().type("{selectall}3.6");
-
-      // for no rounding
-      question.selectRoundingType("Round down");
-      question.header.preview();
-      question.selectAnswerChoice(queData.correct[0]);
-      question.selectAnswerChoice(queData.alterate[0]);
-      preview.checkScore("1/3.6");
-    });
-
-    it("Verify score without rounding and penality", () => {
-      const preview = question.header.preview();
-
-      question.header.edit();
-
-      question.checkChoiceSelected(queData.correct[0]);
-
-      question.checkChoiceSelected(queData.correct[1]);
-      question.getPoints().type("{selectall}3.6");
-
-      // with score rounding
+      // with no rounding
       question.selectRoundingType("None");
       question.header.preview();
       question.selectAnswerChoice(queData.correct[0]);

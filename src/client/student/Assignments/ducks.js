@@ -7,6 +7,7 @@ import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst } from "@edulastic/constants";
 import { Effects, notification } from "@edulastic/common";
+import * as Sentry from "@sentry/browser";
 import { getCurrentSchool, fetchUserAction, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -416,12 +417,15 @@ function* startAssignment({ payload }) {
 
     // TODO:load previous responses if resume!!
   } catch (err) {
-    const { status, data = {} } = err;
-    console.error(err);
-    if (status === 403 && data.message) {
+    Sentry.captureException(err);
+    const { status, data = {}, response = {} } = err;
+    if (status === 403) {
       const message =
-        data.message || "Assignment is not not available at the moment. Please contact your administrator.";
+        data.message ||
+        response.data?.message ||
+        "Assignment is not not available at the moment. Please contact your administrator.";
       notification({ msg: message });
+      yield put(push("/home/assignments"));
     }
   } finally {
     yield put(setIsActivityCreatingAction({ assignmentId: "", isLoading: false }));

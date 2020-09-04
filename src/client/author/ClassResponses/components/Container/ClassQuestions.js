@@ -49,9 +49,7 @@ function Preview({
   const answerContextConfig = useContext(AnswerContext);
   const target = get(questionActivity, isExpressGrader || isQuestionView ? "_id" : "qActId", "");
   const timeSpent = (get(questionActivity, "timeSpent", 0) / 1000).toFixed(1);
-
   // const previouscratchPadDimensions = showScratchpadByDefault ? questionActivity.scratchPad.dimensions : null;
-
   const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item;
   const scoringProps = { multipartItem, itemLevelScoring, isPassageWithQuestions };
   const attachments = get(questionActivity, "scratchPad.attachments", null);
@@ -370,6 +368,7 @@ class ClassQuestions extends Component {
         showStudentWork = () => this.setState({ showDocBasedPlayer: true });
       }
       const questionActivity = questionActivities.find(act => act.testItemId === item._id);
+
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}

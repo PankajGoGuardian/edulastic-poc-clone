@@ -78,7 +78,9 @@ export const Container = styled.div`
   }
 `;
 
-export const ScrollbarWrapper = styled.div``;
+export const ScrollbarWrapper = styled.div`
+  display: ${({ isShowFilter }) => (isShowFilter ? "none" : "block")};
+`;
 
 export const Filter = styled.div`
   width: ${props => (props.isShowFilter ? "20px" : "250px")};

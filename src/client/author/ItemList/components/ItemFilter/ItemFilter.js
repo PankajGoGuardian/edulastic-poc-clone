@@ -22,6 +22,7 @@ const ItemFilter = ({
   search,
   onLabelSearch,
   curriculums,
+  showFilter,
   onSearchFieldChange,
   onSearchInputChange,
   curriculumStandards,
@@ -41,7 +42,7 @@ const ItemFilter = ({
   return (
     <>
       <Backdrop />
-      <Container>
+      <Container show={showFilter}>
         <CloseIcon type="close" onClick={toggleFilter} />
         <PerfectScrollbar>
           <FixedFilters>

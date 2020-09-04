@@ -440,23 +440,22 @@ class Contaier extends Component {
           toggleSidebar={this.toggleSidebar}
         />
         <Container>
-          {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
-            <ItemFilter
-              onSearchFieldChange={this.handleSearchFieldChange}
-              onSearchInputChange={this.handleSearchInputChange}
-              onSearch={this.handleSearch}
-              onClearSearch={this.handleClearSearch}
-              onLabelSearch={this.handleLabelSearch}
-              windowWidth={windowWidth}
-              search={search}
-              getCurriculumStandards={getCurriculumStandards}
-              curriculumStandards={curriculumStandards}
-              items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
-              toggleFilter={this.toggleFilter}
-              t={t}
-              itemCount={count}
-            />
-          )}
+          <ItemFilter
+            onSearchFieldChange={this.handleSearchFieldChange}
+            onSearchInputChange={this.handleSearchInputChange}
+            onSearch={this.handleSearch}
+            onClearSearch={this.handleClearSearch}
+            onLabelSearch={this.handleLabelSearch}
+            windowWidth={windowWidth}
+            search={search}
+            getCurriculumStandards={getCurriculumStandards}
+            curriculumStandards={curriculumStandards}
+            items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
+            toggleFilter={this.toggleFilter}
+            t={t}
+            itemCount={count}
+            showFilter={windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter}
+          />
           <ListItems isShowFilter={isShowFilter}>
             <Element>
               <MobileFilterIcon> {this.renderFilterIcon(isShowFilter)} </MobileFilterIcon>

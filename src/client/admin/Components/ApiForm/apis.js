@@ -22,4 +22,4 @@ export const submit = (params, endpoint, method) =>
       data: params
     })
     .then(({ data, status }) => ({ ...data, status }))
-    .catch(({ data: errorData }) => notification({ msg: errorData.message }));
+    .catch(({ data: errorData }) => notification({ msg: errorData?.message, messageKey: "apiFormErr" }));

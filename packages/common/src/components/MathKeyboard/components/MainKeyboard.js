@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
 import chunk from "lodash/chunk";
 import cloneDeep from "lodash/cloneDeep";
-import { white, darkGrey, themeColor } from "@edulastic/colors";
-import { math } from "@edulastic/constants";
+import NumberKeyboard from "./NumberKeyboard";
+import { Container, SymbolsWrapper, PrevButton, NextButton, Row, Button, Label } from "./styled";
 
-const {
-  KeyboardSize: { width: keyWidth, height: keyHeight }
-} = math;
-
-const limitRow = 3;
-const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
+const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection, numbers }) => {
   const [boards, updateBoards] = useState({});
   const [current, updateCurrent] = useState(0);
   const numOfKeys = btns.length;
@@ -19,6 +13,7 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
   useEffect(() => {
     const keybuttons = cloneDeep(btns);
     let keysPerRow = 4;
+    const limitRow = 3;
 
     if (numOfKeys > 12 && numOfKeys <= 15) {
       keysPerRow = 5;
@@ -31,12 +26,13 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
       keysPerRow = 6;
     }
 
-    if (isDocbasedSection) {
+    if (isDocbasedSection || numbers) {
       keysPerRow = 4;
     }
 
     const rows = chunk(keybuttons, keysPerRow);
     updateBoards(chunk(rows, limitRow));
+    updateCurrent(0);
   }, [btns]);
 
   const handleClick = (handler, command, numToMove) => () => {
@@ -62,11 +58,12 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
   const currentBoard = boards[current] || [];
 
   return (
-    <Wrapper>
+    <Container>
       <PrevButton onClick={onClickPrev} hidden={current <= 0} />
-      <div data-cy="virtual-keyboard-buttons">
+      {numbers && <NumberKeyboard buttons={numbers} onInput={onInput} />}
+      <SymbolsWrapper data-cy="virtual-keyboard-buttons" isVertical={!!numbers}>
         {currentBoard.map((row, rowIndex) => (
-          <Row key={rowIndex} data-cy={`button-row-${rowIndex}`}>
+          <Row key={rowIndex} data-cy={`button-row-${rowIndex}`} isVertical={!!numbers}>
             {row.map(({ label, handler, command = "cmd", numToMove }, i) => {
               let fontRate = 1;
               if (typeof label === "string" && label.length > 4) {
@@ -77,6 +74,7 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
                 <Button
                   key={i}
                   fontSizeRate={fontRate}
+                  isVertical={!!numbers}
                   onClick={handleClick(handler, command, numToMove)}
                   data-cy={`virtual-keyboard-${handler}`}
                 >
@@ -86,9 +84,9 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
             })}
           </Row>
         ))}
-      </div>
+      </SymbolsWrapper>
       <NextButton onClick={onClickNext} hidden={boards.length <= 0 || current >= boards.length - 1} />
-    </Wrapper>
+    </Container>
   );
 };
 
@@ -103,97 +101,3 @@ MainKeyboard.defaultProps = {
 };
 
 export default MainKeyboard;
-
-const Wrapper = styled.div`
-  padding: 16px 24px;
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
-  flex-direction: column;
-`;
-
-const PrevNext = styled.div`
-  top: 0px;
-  width: 22px;
-  height: 100%;
-  background: transparent;
-  position: absolute;
-  display: ${({ hidden }) => (hidden ? "none" : null)};
-  cursor: pointer;
-  &::after {
-    content: "";
-    position: absolute;
-    border: 12px solid;
-    top: 50%;
-    transform: translateY(-50%);
-    border-color: transparent;
-  }
-`;
-
-const PrevButton = styled(PrevNext)`
-  left: 0px;
-  &::after {
-    left: -7px;
-    border-right-color: ${darkGrey};
-  }
-  &:hover {
-    &::after {
-      border-right-color: ${themeColor};
-    }
-  }
-`;
-
-const NextButton = styled(PrevNext)`
-  right: 0px;
-  &::after {
-    right: -7px;
-    border-left-color: ${darkGrey};
-  }
-  &:hover {
-    &::after {
-      border-left-color: ${themeColor};
-    }
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  margin-bottom: 10px;
-  &:last-child {
-    margin-bottom: 0px;
-  }
-`;
-
-const Button = styled.div`
-  width: ${keyWidth}px;
-  height: ${keyHeight}px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #8d98a7;
-  background: ${white};
-  border-radius: 10px;
-  margin-right: 10px;
-  font-size: ${props => {
-    const fontSize = parseInt(props.theme.mathKeyboard.numFontSize, 10) * props.fontSizeRate;
-    return `${fontSize}px !important`;
-  }};
-  font-weight: ${props => props.theme.mathKeyboard.numFontWeight};
-  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.5);
-  user-select: none;
-  cursor: pointer;
-  &:last-child {
-    margin-right: 0px;
-  }
-  &:hover {
-    background: rgba(0, 0, 0, 0.08);
-  }
-  &:active {
-    box-shadow: none;
-  }
-`;
-
-const Label = styled.span`
-  white-space: nowrap;
-  line-height: 1;
-`;

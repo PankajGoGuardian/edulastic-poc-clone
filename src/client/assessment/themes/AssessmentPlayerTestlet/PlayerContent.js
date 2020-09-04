@@ -214,14 +214,20 @@ const PlayerContent = ({
       return;
     }
     const { currentPageIds, response } = frameController;
+    console.clear();
     for (const scoringId in currentPageIds) {
       if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
         const eduQuestions = getEduQuestions(scoringId.trim());
+        console.log(scoringId);
+        console.log((currentPageIds[scoringId] || []).join(","));
         if (isEmpty(eduQuestions)) {
           continue;
         }
+        console.log(response[scoringId]);
+
         eduQuestions.forEach(eduQuestion => {
           const data = getUserResponse(eduQuestion, response);
+          console.log(data);
           if (!previewPlayer && !isEmpty(data)) {
             setUserAnswer(eduQuestion.id, data);
           }
@@ -248,7 +254,7 @@ const PlayerContent = ({
     if (metadata.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState;
 
-      // initState.pageNum = 6;
+      // initState.pageNum = 23;
 
       frameController = new ParentController(metadata.testletId, initState, testletState.response);
       frameController.connect(frameRef.current.contentWindow);

@@ -49,6 +49,7 @@ import Group1058 from "../assets/keyboardButtons/1058.svg";
 import Group2357 from "../assets/keyboardButtons/2357.svg";
 import Group6105 from "../assets/keyboardButtons/6105.svg";
 import Group6106 from "../assets/keyboardButtons/6106.svg";
+import Group4065 from "../assets/keyboardButtons/4065.svg";
 
 // Operators
 import Group2737 from "../assets/keyboardButtons/2737.svg";
@@ -58,13 +59,12 @@ import Group2788 from "../assets/keyboardButtons/2788.svg";
 // trignometry
 import Group2243 from "../assets/keyboardButtons/2243.svg";
 import Group2248 from "../assets/keyboardButtons/2248.svg";
-
+import GroupPi from "../assets/keyboardButtons/pi.svg";
 // geometry
 import Group3171 from "../assets/keyboardButtons/3171.svg";
 import Group2744 from "../assets/keyboardButtons/2744.svg";
 import Group2745 from "../assets/keyboardButtons/2745.svg";
 import Group3169 from "../assets/keyboardButtons/3169.svg";
-import Group3173 from "../assets/keyboardButtons/3173.svg";
 import Group3163 from "../assets/keyboardButtons/3163.svg";
 import Group6101 from "../assets/keyboardButtons/6101.svg";
 import Group3181 from "../assets/keyboardButtons/3181.svg";
@@ -72,7 +72,6 @@ import Group3167 from "../assets/keyboardButtons/3167.svg";
 import Group3172 from "../assets/keyboardButtons/3172.svg";
 import Group3168 from "../assets/keyboardButtons/3168.svg";
 import Group1053 from "../assets/keyboardButtons/1053.svg";
-import Group3176 from "../assets/keyboardButtons/3176.svg";
 import Group6104 from "../assets/keyboardButtons/6104.svg";
 import Group6102 from "../assets/keyboardButtons/6102.svg";
 import Group6103 from "../assets/keyboardButtons/6103.svg";
@@ -85,11 +84,19 @@ import Group2478 from "../assets/keyboardButtons/2478.svg";
 import Group2252 from "../assets/keyboardButtons/2252.svg";
 import Group2254 from "../assets/keyboardButtons/2254.svg";
 import Group2738 from "../assets/keyboardButtons/2738.svg";
+import Group2739 from "../assets/keyboardButtons/2740.svg";
+import Group6199 from "../assets/keyboardButtons/6199.svg";
+import Group2475 from "../assets/keyboardButtons/2475.svg";
 
 // Basic
 import Fraction from "../assets/keyboardButtons/fraction.svg";
 import Sqrt from "../assets/keyboardButtons/sqrt.svg";
 import Group1043 from "../assets/keyboardButtons/1043.svg";
+import Equal from "../assets/keyboardButtons/2739.svg";
+import LessThan from "../assets/keyboardButtons/lt.svg";
+import GreaterThan from "../assets/keyboardButtons/gt.svg";
+// import DeleteIco from "../assets/keyboardButtons/delete.svg";
+
 // Full keypad tab icons
 import Grupo6134 from "../assets/Grupo6134.svg";
 import Grupo6135 from "../assets/Grupo6135.svg";
@@ -110,128 +117,178 @@ const OPERATORS = [
   {
     handler: "+",
     label: <CustomImage src={Group2735} width={12} height={12} role="presentation" />,
-    types: ["basic"],
+    types: ["basic", "basic_wo_number", "intermediate"],
     command: "write"
   },
   {
     handler: "-",
     label: <CustomImage src={Group2737} width={12} height={8} role="presentation" />,
-    types: ["basic"],
+    types: ["basic", "basic_wo_number", "intermediate"],
     command: "write"
   },
   {
     handler: "\\times",
     label: <CustomImage src={Group2736} width={10} height={10} role="presentation" />,
-    types: ["basic"],
+    types: ["basic", "basic_wo_number", "intermediate"],
     command: "write"
   },
   {
     handler: "\\div",
     label: <CustomImage src={Group2788} width={12} height={12} role="presentation" />,
     command: "cmd",
-    types: ["all", "basic", "intermediate"]
+    types: ["all", "basic", "basic_wo_number", "intermediate", "intermediate_wo_number"]
   }
 ];
 
 // keypad mode buttons
+
 const BASIC = [
+  {
+    handler: "=",
+    label: <CustomImage src={Equal} width={10} height={7} role="presentation" />,
+    types: ["basic", "intermediate"],
+    command: "write"
+  },
+  {
+    handler: "<",
+    label: <CustomImage src={LessThan} width={9} height={10} role="presentation" />,
+    types: ["basic", "intermediate"],
+    command: "cmd"
+  },
+  {
+    handler: ">",
+    label: <CustomImage src={GreaterThan} width={9} height={10} role="presentation" />,
+    types: ["basic", "intermediate"],
+    command: "cmd"
+  },
+  {
+    handler: "(",
+    labelcy: "(",
+    label: <CustomImage src={Group944} role="presentation" />,
+    types: ["basic", "intermediate"],
+    command: "cmd"
+  },
+  {
+    handler: "[",
+    label: <CustomImage src={Group944v2} role="presentation" />,
+    types: ["basic", "intermediate"],
+    command: "cmd",
+    name: "squareBrackets"
+  },
+  {
+    handler: "{}\\frac{}{}",
+    labelcy: "mixedFraction",
+    value: "mixedFraction",
+    label: <CustomImage src={MixedFraction} width={39} height={39} role="presentation" />,
+    types: ["basic", "intermediate"],
+    numToMove: 3,
+    command: "write"
+  },
+  {
+    handler: "^",
+    labelcy: "super",
+    label: <CustomImage src={Group942} role="presentation" width={30} height={28} />,
+    types: ["basic", "intermediate"],
+    command: "cmd"
+  },
+  {
+    handler: "|",
+    labelcy: "|",
+    label: <CustomImage src={Group993} role="presentation" width={30} height={22} />,
+    types: ["basic"],
+    command: "cmd"
+  }
+];
+
+const BASIC_WO_NUMBER = [
   {
     handler: "/",
     labelcy: "divide",
     value: "divide",
     label: <CustomImage src={Fraction} width={25} height={40} role="presentation" />,
-    types: ["basic"],
+    types: ["basic_wo_number"],
     command: "cmd"
   },
   {
     handler: "{}\\frac{}{}",
     labelcy: "mixedFraction",
     value: "mixedFraction",
-    label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
-    types: ["basic"],
+    label: <CustomImage src={MixedFraction} width={39} height={39} role="presentation" />,
+    types: ["basic_wo_number"],
     numToMove: 3,
     command: "write"
   },
   {
     handler: "\\sqrt",
     labelcy: "sqrt",
-    label: <CustomImage src={Sqrt} width={32} height={32} role="presentation" />,
-    types: ["basic"],
+    label: <CustomImage src={Sqrt} width={25} height={13} role="presentation" />,
+    types: ["basic_wo_number", "intermediate"],
     command: "cmd"
   },
   {
     handler: "\\sqrt[3]{}",
     label: <CustomImage src={Group1043} role="presentation" width={32} height={32} />,
-    types: ["basic"],
+    types: ["basic_wo_number"],
     command: "write"
   },
   {
     handler: "^",
     labelcy: "super",
-    label: <CustomImage src={Group942} role="presentation" width={25} height={25} />,
-    types: ["basic"],
+    label: <CustomImage src={Group942} role="presentation" width={30} height={28} />,
+    types: ["basic_wo_number"],
     command: "cmd"
   },
   {
     handler: "\\pi",
-    label: "π",
-    types: ["basic"],
+    label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
+    types: ["basic_wo_number"],
     command: "cmd"
   }
 ];
 
 const INTERMEDIATE = [
   {
-    handler: "≤",
-    label: "≤",
+    handler: "\\sqrt[{}]{}",
+    label: <CustomImage src={Group999} role="presentation" />,
     types: ["intermediate"],
-    command: "cmd"
+    numToMove: 2,
+    command: "write"
   },
   {
-    handler: "<",
-    label: "<",
-    types: ["intermediate"],
-    command: "cmd"
-  },
-  {
-    handler: ">",
-    label: ">",
+    handler: "\\pm",
+    label: <CustomImage src={Group2475} width={11} height={14} role="presentation" />,
     types: ["intermediate"],
     command: "cmd"
   },
   {
     handler: "≥",
-    label: "≥",
+    label: <CustomImage src={Group6199} role="presentation" width={9} height={12} />,
     types: ["intermediate"],
     command: "cmd"
   },
   {
-    handler: "\\times",
-    label: <CustomImage src={Group2736} width={10} height={10} role="presentation" />,
+    handler: "≤",
+    label: <CustomImage src={Group4065} role="presentation" width={9} height={12} />,
     types: ["intermediate"],
-    command: "write"
+    command: "cmd"
   },
   {
-    handler: "=",
-    label: "=",
+    handler: "|",
+    labelcy: "|",
+    label: <CustomImage src={Group993} role="presentation" width={30} height={22} />,
     types: ["intermediate"],
-    command: "write"
+    command: "cmd"
   },
   {
-    handler: "\\pm",
-    label: "±",
+    handler: "\\degree",
+    label: <CustomImage src={Group2739} width={8} height={8} role="presentation" />,
+    labelcy: "degree",
     types: ["intermediate"],
     command: "cmd"
   },
   {
     handler: "\\pi",
-    label: "π",
-    types: ["intermediate"],
-    command: "cmd"
-  },
-  {
-    handler: "\\log", // handler: "\\iota"
-    label: "log",
+    label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
     types: ["intermediate"],
     command: "cmd"
   },
@@ -240,36 +297,99 @@ const INTERMEDIATE = [
     label: "∞",
     types: ["intermediate"],
     command: "cmd"
+  }
+];
+
+const INTERMEDIATE_WO_NUMBER = [
+  {
+    handler: "≤",
+    label: <CustomImage src={Group4065} role="presentation" width={9} height={12} />,
+    types: ["intermediate_wo_number"],
+    command: "cmd"
   },
   {
-    handler: "°",
-    label: "º",
-    labelcy: "°",
-    types: ["intermediate"],
+    handler: "<",
+    label: <CustomImage src={LessThan} width={9} height={10} role="presentation" />,
+    types: ["intermediate_wo_number"],
+    command: "cmd"
+  },
+  {
+    handler: ">",
+    label: <CustomImage src={GreaterThan} width={9} height={10} role="presentation" />,
+    types: ["intermediate_wo_number"],
+    command: "cmd"
+  },
+  {
+    handler: "≥",
+    label: <CustomImage src={Group6199} role="presentation" width={9} height={12} />,
+    types: ["intermediate_wo_number"],
+    command: "cmd"
+  },
+  {
+    handler: "\\times",
+    label: <CustomImage src={Group2736} width={10} height={10} role="presentation" />,
+    types: ["intermediate_wo_number"],
+    command: "write"
+  },
+  {
+    handler: "=",
+    label: <CustomImage src={Equal} width={10} height={7} role="presentation" />,
+    types: ["intermediate_wo_number"],
+    command: "write"
+  },
+  {
+    handler: "\\pm",
+    label: <CustomImage src={Group2475} width={11} height={14} role="presentation" />,
+    types: ["intermediate_wo_number"],
+    command: "cmd"
+  },
+  {
+    handler: "\\pi",
+    label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
+    types: ["intermediate_wo_number"],
+    command: "cmd"
+  },
+  {
+    handler: "\\log", // handler: "\\iota"
+    label: "log",
+    types: ["intermediate_wo_number"],
+    command: "cmd"
+  },
+  {
+    handler: "\\infinity",
+    label: "∞",
+    types: ["intermediate_wo_number"],
+    command: "cmd"
+  },
+  {
+    handler: "\\degree",
+    label: <CustomImage src={Group2739} width={8} height={8} role="presentation" />,
+    labelcy: "degree",
+    types: ["intermediate_wo_number"],
     command: "cmd"
   },
   {
     handler: "(",
     label: "(",
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
     command: "write"
   },
   {
     handler: ")",
     label: ")",
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
     command: "write"
   },
   {
     handler: "[",
     label: "[",
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
     command: "write"
   },
   {
     handler: "]",
     label: "]",
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
     command: "write"
   },
   {
@@ -277,56 +397,57 @@ const INTERMEDIATE = [
     labelcy: "divide",
     value: "divide",
     label: <CustomImage src={Fraction} width={25} height={40} role="presentation" />,
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
     command: "cmd"
   },
   {
     handler: "{}\\frac{}{}",
     labelcy: "mixedFraction",
     value: "mixedFraction",
-    label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
-    types: ["intermediate"],
+    label: <CustomImage src={MixedFraction} width={39} height={39} role="presentation" />,
+    types: ["intermediate_wo_number"],
     numToMove: 3,
     command: "write"
   },
   {
     handler: "^",
     labelcy: "super",
-    label: <CustomImage src={Group942} role="presentation" width={25} height={25} />,
-    types: ["intermediate"],
+    label: <CustomImage src={Group942} role="presentation" width={30} height={28} />,
+    types: ["intermediate_wo_number"],
     command: "cmd"
   },
   {
     handler: "\\sqrt",
     labelcy: "sqrt",
-    label: <CustomImage src={Sqrt} role="presentation" />,
-    types: ["intermediate"],
+    label: <CustomImage src={Sqrt} width={25} height={13} role="presentation" />,
+    types: ["intermediate_wo_number"],
     command: "cmd"
   },
   {
     handler: "\\sqrt[{}]{}",
     label: <CustomImage src={Group999} role="presentation" />,
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
+    numToMove: 2,
     command: "write"
   },
   {
     handler: "|",
     labelcy: "|",
-    label: <CustomImage src={Group993} role="presentation" />,
-    types: ["intermediate"],
+    label: <CustomImage src={Group993} role="presentation" width={30} height={22} />,
+    types: ["intermediate_wo_number"],
     command: "cmd"
   },
   {
     handler: "(",
     labelcy: "(",
     label: <CustomImage src={Group944} role="presentation" />,
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
     command: "cmd"
   },
   {
     handler: "[",
     label: <CustomImage src={Group944v2} role="presentation" />,
-    types: ["intermediate"],
+    types: ["intermediate_wo_number"],
     command: "cmd",
     name: "squareBrackets"
   }
@@ -344,14 +465,14 @@ const ADVANCED_MATRICES = [
   {
     handler: "^",
     labelcy: "super",
-    label: <CustomImage src={Group942} role="presentation" width={25} height={25} />,
+    label: <CustomImage src={Group942} role="presentation" width={30} height={28} />,
     types: ["advanced_matrices"],
     command: "cmd"
   },
   {
     handler: "\\sqrt",
     labelcy: "sqrt",
-    label: <CustomImage src={Sqrt} width={32} height={32} role="presentation" />,
+    label: <CustomImage src={Sqrt} width={25} height={13} role="presentation" />,
     types: ["advanced_matrices"],
     command: "cmd"
   },
@@ -406,20 +527,20 @@ const ADVANCED_TRIGNOMETRY = [
   },
   {
     handler: "\\degree",
-    label: <CustomImage src={Group3173} width={8} height={8} role="presentation" />,
+    label: <CustomImage src={Group2739} width={8} height={8} role="presentation" />,
     types: ["advanced_trignometry"],
     command: "write"
   },
   {
     handler: "\\pi",
-    label: "π",
+    label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
     types: ["advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: "^",
     labelcy: "super",
-    label: <CustomImage src={Group942} role="presentation" width={25} height={25} />,
+    label: <CustomImage src={Group942} role="presentation" width={30} height={28} />,
     types: ["advanced_trignometry"],
     command: "cmd"
   },
@@ -434,14 +555,14 @@ const ADVANCED_TRIGNOMETRY = [
   {
     handler: "|",
     labelcy: "|",
-    label: <CustomImage src={Group993} role="presentation" />,
+    label: <CustomImage src={Group993} role="presentation" width={30} height={22} />,
     types: ["advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: "\\sqrt",
     labelcy: "sqrt",
-    label: <CustomImage src={Sqrt} role="presentation" />,
+    label: <CustomImage src={Sqrt} width={25} height={13} role="presentation" />,
     types: ["advanced_trignometry"],
     command: "cmd"
   },
@@ -528,7 +649,7 @@ const GEOMETRY = [
   },
   {
     handler: "\\degree",
-    label: <CustomImage src={Group3173} width={8} height={8} role="presentation" />,
+    label: <CustomImage src={Group2739} width={8} height={8} role="presentation" />,
     types: ["all", "geometry"],
     command: "write"
   },
@@ -600,7 +721,7 @@ const GEOMETRY = [
   },
   {
     handler: "\\pi",
-    label: <CustomImage src={Group3176} width={12} height={12} role="presentation" />,
+    label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
     types: ["all", "geometry"],
     command: "write"
   },
@@ -1063,7 +1184,9 @@ const UNITS_US = [
 export const KEYBOARD_BUTTONS = [
   ...OPERATORS,
   ...BASIC,
+  ...BASIC_WO_NUMBER,
   ...INTERMEDIATE,
+  ...INTERMEDIATE_WO_NUMBER,
   ...ADVANCED_MATRICES,
   ...ADVANCED_TRIGNOMETRY,
   ...GEOMETRY,
@@ -1085,7 +1208,7 @@ export const TAB_BUTTONS = [
       ...OPERATORS,
       {
         handler: "\\pm",
-        label: "±",
+        label: <CustomImage src={Group2475} width={11} height={14} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
@@ -1098,7 +1221,7 @@ export const TAB_BUTTONS = [
       {
         handler: "^",
         labelcy: "super",
-        label: <CustomImage src={Group942} role="presentation" />,
+        label: <CustomImage src={Group942} role="presentation" width={30} height={28} />,
         types: ["all"],
         command: "cmd"
       },
@@ -1120,7 +1243,7 @@ export const TAB_BUTTONS = [
         handler: "{}\\frac{}{}",
         labelcy: "mixedFraction",
         value: "mixedFraction",
-        label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
+        label: <CustomImage src={MixedFraction} width={39} height={39} role="presentation" />,
         numToMove: 3,
         types: ["all"],
         command: "write"
@@ -1128,7 +1251,7 @@ export const TAB_BUTTONS = [
       {
         handler: "\\sqrt",
         labelcy: "sqrt",
-        label: <CustomImage src={Sqrt} width={32} height={32} role="presentation" />,
+        label: <CustomImage src={Sqrt} width={25} height={13} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
@@ -1142,11 +1265,12 @@ export const TAB_BUTTONS = [
         handler: "\\sqrt[{}]{}",
         label: <CustomImage src={Group999} role="presentation" />,
         types: ["all"],
+        numToMove: 2,
         command: "write"
       },
       {
         handler: "\\pi",
-        label: "π",
+        label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
@@ -1210,25 +1334,25 @@ export const TAB_BUTTONS = [
       },
       {
         handler: ">",
-        label: ">",
+        label: <CustomImage src={GreaterThan} width={9} height={10} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
       {
         handler: "<",
-        label: "<",
+        label: <CustomImage src={LessThan} width={9} height={10} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
       {
         handler: "≥",
-        label: "≥",
+        label: <CustomImage src={Group6199} role="presentation" width={9} height={12} />,
         types: ["all"],
         command: "cmd"
       },
       {
         handler: "≤",
-        label: "≤",
+        label: <CustomImage src={Group4065} role="presentation" width={9} height={12} />,
         types: ["all"],
         command: "cmd"
       },
@@ -1360,7 +1484,7 @@ export const TAB_BUTTONS = [
       },
       {
         handler: "\\degree",
-        label: <CustomImage src={Group3173} width={8} height={8} role="presentation" />,
+        label: <CustomImage src={Group2739} width={8} height={8} role="presentation" />,
         types: ["all"],
         command: "write"
       },
@@ -1575,7 +1699,7 @@ export const TAB_BUTTONS = [
       },
       {
         handler: "\\pi",
-        label: "π",
+        label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
@@ -1932,7 +2056,7 @@ export const TAB_BUTTONS = [
       {
         handler: "|",
         labelcy: "|",
-        label: <CustomImage src={Group993} role="presentation" />,
+        label: <CustomImage src={Group993} role="presentation" width={30} height={22} />,
         types: ["all"],
         command: "cmd"
       },

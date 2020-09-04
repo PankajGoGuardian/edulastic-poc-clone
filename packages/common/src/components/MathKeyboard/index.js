@@ -38,13 +38,17 @@ class MathKeyboard extends React.PureComponent {
 
   static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS;
 
+  WITH_NUMBERS = [math.symbols[0].value, math.symbols[2].value];
+
   state = {
-    type: ""
+    type: "",
+    numberButtons: null,
+    selectOptions: [],
+    keyboardButtons: []
   };
 
   componentDidMount() {
-    const { symbols } = this.props;
-    this.setState({ type: symbols[0] });
+    this.setKeyboardButtons();
   }
 
   componentDidUpdate(prevProps) {
@@ -52,8 +56,7 @@ class MathKeyboard extends React.PureComponent {
     const { symbols: prevSymbols } = prevProps;
 
     if (symbols[0] !== prevSymbols[0]) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ type: symbols[0] });
+      this.setKeyboardButtons();
     }
   }
 
@@ -67,24 +70,9 @@ class MathKeyboard extends React.PureComponent {
     });
   };
 
-  get selectOptions() {
-    const { symbols } = this.props;
-
-    if (isObject(symbols[0])) {
-      return [
-        {
-          value: symbols[0].label,
-          label: symbols[0].label
-        },
-        ...math.symbols
-      ];
-    }
-    return math.symbols;
-  }
-
-  get keyboardButtons() {
-    const { restrictKeys, customKeys } = this.props;
-    const { type } = this.state;
+  setKeyboardButtons() {
+    const { restrictKeys, customKeys, symbols } = this.props;
+    const type = symbols[0];
 
     const isCustomMode = isObject(type);
 
@@ -108,17 +96,33 @@ class MathKeyboard extends React.PureComponent {
       ? compact(type.value.map(handler => allBtns.find(btn => btn.handler === handler)))
       : allBtns.filter(btn => btn.types.includes(type));
 
-    return restrictButtons.concat(availables);
+    let numberButtons = null;
+    if (this.WITH_NUMBERS.includes(type)) {
+      numberButtons = NUMBER_PAD_ITEMS;
+    }
+
+    let selectOptions = math.symbols;
+    if (isObject(type)) {
+      selectOptions = [
+        {
+          value: symbols[0].label,
+          label: symbols[0].label
+        },
+        ...math.symbols
+      ];
+    }
+
+    this.setState({ keyboardButtons: restrictButtons.concat(availables), type, numberButtons, selectOptions });
   }
 
   render() {
     const { onInput, showResponse, showDropdown, docBasedKeypadStyles, isDocbasedSection } = this.props;
-    const { type } = this.state;
+    const { type, keyboardButtons, numberButtons, selectOptions } = this.state;
 
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
         <KeyboardHeader
-          options={this.selectOptions}
+          options={selectOptions}
           showResponse={showResponse}
           showDropdown={showDropdown}
           onInput={onInput}
@@ -127,7 +131,12 @@ class MathKeyboard extends React.PureComponent {
         />
         {type === "qwerty" && <Keyboard isDocbasedSection={isDocbasedSection} onInput={onInput} />}
         {type !== "qwerty" && type !== "all" && (
-          <MainKeyboard isDocbasedSection={isDocbasedSection} onInput={onInput} btns={this.keyboardButtons} />
+          <MainKeyboard
+            onInput={onInput}
+            isDocbasedSection={isDocbasedSection}
+            btns={keyboardButtons}
+            numbers={numberButtons}
+          />
         )}
         {type !== "qwerty" && type === "all" && <FullKeybord isDocbasedSection={isDocbasedSection} onInput={onInput} />}
       </MathKeyboardContainer>

@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic } from "@edulastic/icons";
+import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic, IconClose } from "@edulastic/icons";
 import { get } from "lodash";
 import { Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -16,8 +16,7 @@ import {
   WithResources,
   EduButton,
   notification,
-  LikeIconStyled,
-  CheckboxLabel
+  LikeIconStyled
 } from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
 
@@ -53,6 +52,7 @@ import {
   MoreInfo,
   Details,
   AddRemoveBtn,
+  AddRemoveButton,
   AddRemoveBtnPublisher
 } from "./styled";
 import {
@@ -89,7 +89,7 @@ class Item extends Component {
 
   static defaultProps = {
     selectedToCart: false,
-    gotoSummary: () => { }
+    gotoSummary: () => {}
   };
 
   state = {
@@ -414,12 +414,16 @@ class Item extends Component {
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
                   {!hideAddRemove && (
-                    <CheckboxLabel
-                      ml="10px"
-                      checked={selectedToCart}
-                      onChange={this.handleToggleItemToCart(item)}
-                      onClick={e => e.stopPropagation()}
-                    />
+                    <AddRemoveButton
+                      isGhost
+                      IconBtn
+                      selectedToCart={selectedToCart}
+                      width="60px"
+                      height="36px"
+                      onClick={this.handleToggleItemToCart(item)}
+                    >
+                      {selectedToCart ? <IconClose /> : <IconPlus />}
+                    </AddRemoveButton>
                   )}
                 </ViewButton>
               ) : isPublisher ? (
@@ -453,7 +457,7 @@ class Item extends Component {
                     {this.isAddOrRemove ? "ADD" : "REMOVE"}
                   </AddRemoveBtn>
                 </>
-                  ))}
+              ))}
           </Question>
           <Row type="flex" align="center">
             <Detail>
@@ -512,17 +516,17 @@ class Item extends Component {
                       {this.isAddOrRemove ? "ADD" : `${groupName}`}
                       {this.isAddOrRemove ? "" : <Icon type="close" />}
                     </AddRemoveBtnPublisher>
-                    ) : (
-                      <AddRemoveBtn
-                        loading={selectedId === item._id}
-                        onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
-                        isAddOrRemove={this.isAddOrRemove}
-                      >
-                        {this.isAddOrRemove ? "ADD" : "REMOVE"}
-                      </AddRemoveBtn>
-                      )}
+                  ) : (
+                    <AddRemoveBtn
+                      loading={selectedId === item._id}
+                      onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
+                      isAddOrRemove={this.isAddOrRemove}
+                    >
+                      {this.isAddOrRemove ? "ADD" : "REMOVE"}
+                    </AddRemoveBtn>
+                  )}
                 </ViewButton>
-                ))}
+              ))}
           </Row>
           {windowWidth <= MAX_TAB_WIDTH && (
             <Details isOpenedDetails={isOpenedDetails}>

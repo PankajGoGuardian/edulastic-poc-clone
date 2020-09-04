@@ -19,7 +19,11 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
-import { ViewButton as ViewButtonContainer, ViewButtonStyled } from "../../../ItemList/components/Item/styled";
+import {
+  ViewButton as ViewButtonContainer,
+  ViewButtonStyled,
+  AddRemoveButton
+} from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
 import {
   isCoTeacherSelector,
@@ -162,12 +166,15 @@ class ListItem extends Component {
     });
   };
 
-  handleAddRemoveToCart = item => evt => {
+  handleAddRemoveToCart = (item, isInCart) => evt => {
     const { onRemoveFromCart, onAddToCart } = this.props;
-    if (evt.target.checked) {
-      onAddToCart(item);
-    } else {
+    if (evt) {
+      evt.stopPropagation();
+    }
+    if (isInCart) {
       onRemoveFromCart(item);
+    } else {
+      onAddToCart(item);
     }
   };
 
@@ -373,7 +380,9 @@ class ListItem extends Component {
                     <ViewButtonStyled data-cy="view" onClick={() => this.showPreviewModal(item._id)}>
                       <IconEye /> {t("component.itemlist.preview")}
                     </ViewButtonStyled>
-                    <CheckboxLabel ml="10px" onChange={this.handleAddRemoveToCart(item)} checked={isInCart} />
+                    <AddRemoveButton onClick={this.handleAddRemoveToCart(item, isInCart)} selectedToCart={isInCart}>
+                      {isInCart ? <IconClose /> : <IconPlus />}
+                    </AddRemoveButton>
                   </ViewButtonContainer>
                 )}
               </Outer>

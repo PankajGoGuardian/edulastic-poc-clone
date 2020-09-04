@@ -52,7 +52,7 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
       });
       resetFields();
     } catch (error) {
-      notification({ msg: error.message, message: "apiFormErr" });
+      notification({ msg: error.message, messageKey: "apiFormErr" });
     }
   };
 

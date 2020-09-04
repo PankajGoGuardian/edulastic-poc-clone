@@ -295,6 +295,31 @@ export const apiForms = [
     ]
   },
   {
+    id: "activate-deactivate-user",
+    name: "Activate/Deactivate User",
+    endPoint: "user/user-details",
+    method: "post",
+    fields: [
+      {
+        key: "activate",
+        name: "activate",
+        placeholder: "Activate/Deactivate",
+        type: "radiogroup",
+        values: ["Activate", "Deactivate"],
+        defaultValue: "Deactivate",
+        formatter: value => value === "Activate"
+      },
+      {
+        key: "username",
+        name: "username",
+        displayName: "Username",
+        placeholder: "Enter Username",
+        type: "string",
+        required: true
+      }
+    ]
+  },
+  {
     id: "approve-school-district",
     name: "Approve School/District",
     endPoint: "school/district-School-Details",

@@ -132,7 +132,8 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
-const checkUser = payload => api
+const checkUser = payload =>
+  api
     .callApi({
       url: `${prefix}/username-email/`,
       params: {
@@ -145,7 +146,8 @@ const checkUser = payload => api
     })
     .then(result => result.data.result);
 
-const SearchAddEnrolMultiStudents = (classCode, data) => api.callApi({
+const SearchAddEnrolMultiStudents = (classCode, data) =>
+  api.callApi({
     url: `${prefix}/${classCode}/class-students`,
     method: "post",
     data
@@ -173,7 +175,7 @@ const validateClassCode = classCode =>
 const validateDistrictPolicy = params =>
   api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
 
-const checkClassCode = params => api.callApi({ url: `/auth/class-code/`, params }).then(result =>result.data.data);
+const checkClassCode = params => api.callApi({ url: `/auth/class-code/`, params }).then(result => result.data.data);
 
 const requestNewPassword = params =>
   api
@@ -219,7 +221,8 @@ const resetMyPassword = data =>
     data
   });
 
-const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) => api
+const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) =>
+  api
     .callApi({
       url: `${prefix}/move-users`,
       data: {
@@ -281,12 +284,17 @@ const mergeUsers = ({ primaryUserId, userIds }) =>
     .then(result => result.data);
 
 const updatePowerTeacherTools = payload =>
-  api
-    .callApi({
-      url: `${prefix}/power-teacher`,
-      method: "post",
-      data: payload
-    })
+  api.callApi({
+    url: `${prefix}/power-teacher`,
+    method: "post",
+    data: payload
+  });
+
+const activateUser = ({ userId, activate }) =>
+  api.callApi({
+    url: `${prefix}/activate-user/${userId}/activate/${activate}`,
+    method: "put"
+  });
 
 export default {
   getUser,
@@ -320,5 +328,6 @@ export default {
   fetchUsersForMerge,
   getSwitchUser,
   mergeUsers,
-  updatePowerTeacherTools
+  updatePowerTeacherTools,
+  activateUser
 };

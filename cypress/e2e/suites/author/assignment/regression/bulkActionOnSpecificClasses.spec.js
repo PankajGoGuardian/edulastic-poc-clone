@@ -9,10 +9,9 @@ import { grades,teacherSide } from "../../../../framework/constants/assignmentSt
 import { getRandomClass,getRandomStudent } from "../../../../framework/constants/constantFunctions";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage"
 import ReportsPage from "../../../../framework/student/reportsPage";
+
 // import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 // import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
-// import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-// import StudentTestPage from "../../../../framework/student/studentTestPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment Actions In School Admin`, () => {
   const sideBarPage = new TeacherSideBar();
@@ -23,35 +22,33 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
   const studAssignmentPage = new AssignmentsPage();
   const studeSideBar = new SidebarPage()
   const reportsPage = new ReportsPage()
+  
   // const testLibraryPage = new TestLibrary();
   // const manageClass = new TeacherManageClassPage();
   // const startDate = new Date();
   // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
+  
   let notOpenClasses;
   let inProgressClasses;
-  let inGradinClasses;
-  let doneClasses;
-  let pausedClasses;
-
 
   const classData = {
     className: ["Auto_class_"],
     grade: grades.GRADE_10,
     subject: "Mathematics",
     standardSet: "Math - Common Core",
-    testID: "5f3675476f69560008838126"
+    testID: "5f524262b628db00085f6c82"
   };
 
   const studData = {
-    username: "_auto_stud_",
+    username: "_bulk_auto_",
     name: "autoStud",
     password: "snapwiz"
   };
 
   const Teacher = {
-    email: "bulkassignment@automation.com",
+    email: "bulkauto@automation.com",
     pass: "automation",
-    adminEmail : "bulkadmin@snapwiz.com",
+    adminEmail : "bulkAutoadmin@snapwiz.com",
     adminPass : "automation"
   };
 
@@ -59,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
     cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
     cy.login("teacher", Teacher.email, Teacher.pass);
     // Create classes and create test - to be uncommented when test data needs to be created
-    for (let i = 1; i <= 30; i++) {
+     for (let i = 1; i <= 30; i++) {
       sideBarPage.clickOnManageClass();
       manageClass.clickOnCreateClass();
       let className = classData.className + i.toString();
@@ -80,11 +77,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
         manageClass.fillStudentDetails(username, studName, studData.password);
         manageClass.clickOnAddUserButton();
       }
-    } 
+    }  
     // Create a test
     testLibraryPage.createTest().then(id => {
       classData.testID = id 
-  }); */
+    });
+  }) */
 
   context(" > Bulk action on assignments", () => {
 
@@ -829,5 +827,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       bulkActionPage.clickUnassignActionButton("15","15")
     })
   })
-
 });
+

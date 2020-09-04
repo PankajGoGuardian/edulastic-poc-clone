@@ -112,7 +112,7 @@ class Item extends Component {
 
   handleToggleItemToCart = item => async () => {
     const { onToggleToCart, selectedToCart, setPassageItems } = this.props;
-    if (!selectedToCart && item.passageId) {
+    if ( item.passageId) {
       const passageItems = await testItemsApi.getPassageItems(item.passageId);
       setPassageItems(passageItems);
 
@@ -337,18 +337,24 @@ class Item extends Component {
     return true;
   }
 
+  isRemovingForAuthoring(){
+    const {item, selectedItems} = this.props;
+    return selectedItems.includes(item?._id);
+  }
+
   /**
    *  TODO: find a friggin better name for the handler!
    *  handles the user response from the Passage confirmation modal.
    *  {Bool} value: user wants to select all the items?
    */
   handleResponse = value => {
-    const { setAndSavePassageItems, passageItems, page, openPreviewModal } = this.props;
+    const { setAndSavePassageItems, passageItems, page, openPreviewModal,selectedItems,item } = this.props;
+    const removing = this.isRemovingForAuthoring();
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
-      notification({ type: "success", messageKey: "itemAddedTest" });
-      return setAndSavePassageItems({ passageItems, page });
+      notification({ type: "success", messageKey: removing?"itemRemovedTest":"itemAddedTest" });
+      return setAndSavePassageItems({ passageItems, page , remove: removing});
     }
     // open the modal for selecting  testItems manually.
     openPreviewModal();
@@ -389,6 +395,7 @@ class Item extends Component {
               closeModal={() => this.setState(() => ({ passageConfirmModalVisible: false }))}
               itemsCount={passageItemsCount}
               handleResponse={this.handleResponse}
+              removing={this.isRemovingForAuthoring()}
             />
           )}
           {showSelectGroupModal && (
@@ -559,7 +566,8 @@ const enhance = compose(
       features: getUserFeatures(state),
       collections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      selectedItems: state?.testsAddItems?.selectedItems||[]
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

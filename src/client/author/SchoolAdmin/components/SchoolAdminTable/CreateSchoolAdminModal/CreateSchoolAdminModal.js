@@ -3,7 +3,7 @@ import { CheckboxLabel, CustomModalStyled, EduButton, SelectInputStyled, TextInp
 import { Col, Form, Row, Select, Spin } from "antd";
 import React from "react";
 import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
-import { nameValidator } from "../../../../../common/utils/helpers";
+import { nameValidator, validateEmail } from "../../../../../common/utils/helpers";
 
 const Option = Select.Option;
 
@@ -37,7 +37,7 @@ class CreateSchoolAdminModal extends React.Component {
         emailValidateStatus: "error",
         emailValidateMsg: "Please input Email"
       });
-    } else if (this.checkValidEmail(email)) {
+    } else if (validateEmail(email)) {
       this.setState({
         emailValidateStatus: "error",
         emailValidateMsg: "Username already exists"
@@ -65,12 +65,12 @@ class CreateSchoolAdminModal extends React.Component {
           institutionIds.push(row.institutionIds[i].key);
         }
 
-        const { email, isPowerTeacher } = this.state;
+        const { email: _email, isPowerTeacher } = this.state;
         const newUser = {
           firstName: firstName[0],
           lastName,
           password: row.password,
-          email,
+          email: _email,
           institutionIds,
           isPowerTeacher
         };
@@ -90,7 +90,7 @@ class CreateSchoolAdminModal extends React.Component {
         emailValidateMsg: "Please input Email",
         email: e.target.value
       });
-    } else if (this.checkValidEmail(e.target.value)) {
+    } else if (validateEmail(e.target.value)) {
       this.setState({
         emailValidateStatus: "success",
         emailValidateMsg: "",
@@ -104,11 +104,6 @@ class CreateSchoolAdminModal extends React.Component {
       });
     }
   };
-
-  checkValidEmail(strEmail) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(strEmail).toLowerCase());
-  }
 
   fetchSchool = async value => {
     this.setState({ schoolList: [], fetching: true });

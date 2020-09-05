@@ -160,7 +160,6 @@ class TestItemCol extends Component {
         height={fullHeight ? "100%" : "auto"}
         showStackedView={showStackedView}
         colCount={colCount}
-        isScrollable={isPassageWithQuestions}
         hasCollapseButtons={
           ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
         }

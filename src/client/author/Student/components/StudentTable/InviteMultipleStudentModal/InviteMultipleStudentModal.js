@@ -9,6 +9,8 @@ import { withNamespaces } from "react-i18next";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { validateEmail } from "../../../../../common/utils/helpers"  
+
 import { ModalFormItem } from "../AddStudentModal/styled";
 import {
   AddBulkStudentsViewContainer,
@@ -90,7 +92,7 @@ class InviteMultipleStudentModal extends Component {
     if (lines.length) {
       if (curSel === "google" || curSel === "mso") {
         for (let i = 0; i < lines.length; i++) {
-          if (!this.checkValidEmail(lines[i])) {
+          if (!validateEmail(lines[i])) {
             isValidate = false;
             break;
           }
@@ -105,11 +107,6 @@ class InviteMultipleStudentModal extends Component {
     } else if (curSel === "google" || curSel === "mso") {
       callback("Username should be in email format");
     }
-  };
-
-  checkValidEmail = strEmail => {
-    const re1 = /^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*;\s*|\s*$))*$/;
-    return re1.test(String(strEmail).toLowerCase());
   };
 
   onCloseModal = () => {

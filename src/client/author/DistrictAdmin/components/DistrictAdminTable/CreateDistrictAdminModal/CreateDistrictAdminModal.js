@@ -3,6 +3,7 @@ import { CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common
 import { Col, Form, Row } from "antd";
 import React from "react";
 import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
+import { validateEmail } from "../../../../../common/utils/helpers"  
 
 class CreateDistrictAdminModal extends React.Component {
   constructor(props) {
@@ -10,8 +11,7 @@ class CreateDistrictAdminModal extends React.Component {
     this.state = {
       emailValidateStatus: "success",
       emailValidateMsg: "",
-      email: "",
-      fetching: false
+      email: ""
     };
   }
 
@@ -32,7 +32,7 @@ class CreateDistrictAdminModal extends React.Component {
         emailValidateStatus: "error",
         emailValidateMsg: "Please input Email"
       });
-    } else if (this.checkValidEmail(email)) {
+    } else if (validateEmail(email)) {
       this.setState({
         emailValidateStatus: "error",
         emailValidateMsg: "Username already exists"
@@ -76,7 +76,7 @@ class CreateDistrictAdminModal extends React.Component {
         emailValidateMsg: "Please input Email",
         email: e.target.value
       });
-    } else if (this.checkValidEmail(e.target.value)) {
+    } else if (validateEmail(e.target.value)) {
       this.setState({
         emailValidateStatus: "success",
         emailValidateMsg: "",
@@ -90,11 +90,6 @@ class CreateDistrictAdminModal extends React.Component {
       });
     }
   };
-
-  checkValidEmail(strEmail) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(strEmail).toLowerCase());
-  }
 
   render() {
     const { modalVisible, t, form } = this.props;

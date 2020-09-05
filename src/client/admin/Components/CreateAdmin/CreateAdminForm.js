@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Col, Form, Row, Select, Spin, Input } from "antd";
-
 import { authApi, schoolApi, userApi } from "@edulastic/api";
 import { CheckboxLabel, EduButton, notification } from "@edulastic/common";
-
+import { validateEmail } from "../../../common/utils/helpers"  
 import { LeftButtonsContainer, FormItem, StyledSelect } from "./styled";
 
 const Option = Select.Option;
@@ -11,11 +10,6 @@ const Option = Select.Option;
 const INITIAL_EMAIL_VALIDATION = {
   status: "success",
   message: ""
-};
-
-const checkValidEmail = strEmail => {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(strEmail).toLowerCase());
 };
 
 const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin, districtId, onCancel, t }) => {
@@ -91,7 +85,7 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
         status: "error",
         message: "Please input Email"
       });
-    } else if (checkValidEmail(email)) {
+    } else if (validateEmail(email)) {
       setEmailValidation({
         status: "error",
         message: "Username already exists"
@@ -140,7 +134,7 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
         status: "error",
         message: "Please input Email"
       });
-    } else if (checkValidEmail(e.target.value)) {
+    } else if (validateEmail(e.target.value)) {
       setEmailValidation({
         status: "success",
         message: ""

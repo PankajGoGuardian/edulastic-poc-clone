@@ -675,29 +675,10 @@ export const removedStudentsSelector = createSelector(
   state => state.removedStudents
 );
 
-export const getEnrollmentStatus = createSelector(
-  stateTestActivitySelector,
-  state => get(state, "data.enrollmentStatus", {})
-);
-
-export const getIsShowAllStudents = createSelector(
-  stateTestActivitySelector,
-  state => get(state, "isShowAllStudents", false)
-);
-
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
   removedStudentsSelector,
-  getEnrollmentStatus,
-  getIsShowAllStudents,
-  (state, removedStudents, enrollments, showAll) =>
-    state.entities
-      .map(item => ({
-        ...item,
-        enrollmentStatus: enrollments[item.studentId],
-        isUnAssigned: removedStudents.includes(item.studentId)
-      }))
-      .filter(item => (!item.isUnAssigned && item.enrollmentStatus === 1) || showAll)
+  (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
 );
 
 export const getTestQuestionActivitiesSelector = createSelector(
@@ -733,10 +714,12 @@ export const getSortedTestActivitySelector = createSelector(
 );
 
 export const getGradeBookSelector = createSelector(
-  getTestActivitySelector,
+  stateTestActivitySelector,
+  removedStudentsSelector,
   getHasRandomQuestionselector,
   getSortedTestActivitySelector,
-  (entities, hasRandomQuest, sortedTestActivities) => {
+  (state, removedStudents, hasRandomQuest, sortedTestActivities) => {
+    const entities = state.entities.filter(item => !removedStudents.includes(item.studentId));
     if (hasRandomQuest) {
       return {
         ...getAggregateByQuestion(sortedTestActivities),
@@ -792,11 +775,6 @@ export const getMarkAsDoneEnableSelector = createSelector(
 export const getAssignmentStatusSelector = createSelector(
   stateTestActivitySelector,
   state => get(state, ["data", "status"], "")
-);
-
-export const getIsSpecificStudents = createSelector(
-  getAdditionalDataSelector,
-  state => get(state, "specificStudents", false)
 );
 
 export const getCanCloseAssignmentSelector = createSelector(

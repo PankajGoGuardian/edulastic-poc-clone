@@ -337,18 +337,3 @@ export const InfoWrapper = styled.div`
     padding-top: 20px;
   }
 `;
-
-export const SwitchBox = styled.span`
-  font-size: 10px;
-  padding-bottom: 10px;
-  margin-left: 10px;
-  .ant-switch {
-    min-width: 32px;
-    height: 16px;
-    margin: 0px 0px 0px 5px;
-    &:after {
-      width: 12px;
-      height: 12px;
-    }
-  }
-`;

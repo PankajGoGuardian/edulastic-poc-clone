@@ -125,11 +125,11 @@ export default class API {
     this.instance = axios.create({
       baseURL: this.baseURL,
       headers: {
-        "Content-Type": "application/json",
-        "client-epoch": Date.now().toString()
+        "Content-Type": "application/json"
       }
     });
     this.instance.interceptors.request.use(_config => {
+      _config["client-epoch"] = Date.now().toString();
       const token = getParentsStudentToken(_config) || defaultToken || getAccessToken();
       if (token) {
         _config.headers.Authorization = token;

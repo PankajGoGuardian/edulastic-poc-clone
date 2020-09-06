@@ -1,27 +1,30 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
 import { Icon, notification } from "antd";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import moment from "moment";
 import { white, red } from "@edulastic/colors";
 import useInterval from "@use-it/interval";
-import * as firebase from "firebase/app";
+import { db } from "@edulastic/common/src/Firebase";
 import { FireBaseService as Fbs } from "@edulastic/common";
-import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
+import AssignmentTimeEndedAlert from "./AssignmentTimeEndedAlert";
+import { updateUtaTimeAction } from "../../../student/Assignments/ducks";
 
 const getFormattedTime = currentAssignmentTime => {
   const duration = moment.duration(currentAssignmentTime);
   const h = duration.hours();
   const m = duration.minutes();
   const s = duration.seconds();
-  const time = `${h > 9 ? h : "0" + h} : ${m > 9 ? m : "0" + m} : ${s > 9 ? s : "0" + s}`;
+  const time = `${h > 9 ? h : `0${h}`} : ${m > 9 ? m : `0${m}`} : ${s > 9 ? s : `0${s}`}`;
   return time;
 };
 
 const firestoreCollectionName = "timedAssignmentUTAs";
 
 function handlePaused(history) {
-  //TODO: replace with proper text as required
+  // TODO: replace with proper text as required
   notification.open({
     message: "The assignment is paused",
     description: `The assignment can't be attempted now , since its in paused state`
@@ -29,16 +32,31 @@ function handlePaused(history) {
   history.push("/home/assignments");
 }
 
-const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transparent" }) => {
-  const uta = Fbs.useFirestoreRealtimeDocument(db => db.collection(firestoreCollectionName).doc(utaId), [utaId]);
+const TimedTestTimer = ({
+  utaId,
+  history,
+  groupId,
+  fgColor,
+  bgColor = "transparent",
+  updateUtaTimeType = null,
+  updateUtaTime,
+  isPasswordValidated
+}) => {
+  const [uta, setUtaDoc] = useState();
+  const [autoSubmitPopUp, setAutoSubmitpopUp] = useState(false);
+
+  useEffect(() => {
+    if (utaId) {
+      db.collection(firestoreCollectionName)
+        .doc(utaId)
+        .onSnapshot(_doc => setUtaDoc(_doc.data()));
+    }
+  }, []);
 
   const timerPaused = uta?.status === "paused";
-
-  const utaStartTime = useMemo(() => uta?.startTime?.toDate()?.getTime(), [uta?.startTime]);
+  const utaStartTime = useMemo(() => uta?.startTime?.toDate()?.getTime() - (uta?.delta || 0), [uta?.startTime]);
 
   const [currentAssignmentTime, setCurrentAssignmentTime] = useState(Date.now() - utaStartTime || 0);
-  // const [_lastAssignmentTime, setPreviousAssignedTime] = useState(0);
-  const autoSubmitPopUp = currentAssignmentTime < 0;
 
   useEffect(() => {
     const collection = Fbs.db.collection(firestoreCollectionName);
@@ -47,12 +65,13 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
       .get()
       .then(_doc => {
         const doc = _doc.data();
-        if (doc && doc?.status === "paused" && !doc?.byTeacher) {
-          collection
-            .doc(utaId)
-            .update({ status: "active", lastResumed: firebase.firestore.FieldValue.serverTimestamp() });
+        const pausedByStudent = doc && (doc.status === "paused" && !doc?.byTeacher);
+        const initialUtaUpdate = doc && (doc.status === "active" && updateUtaTimeType === "start");
+        const isPasswordProtected = isPasswordValidated && updateUtaTimeType === "resume";
+        if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
+          updateUtaTime({ utaId, type: updateUtaTimeType });
         } else if (doc?.status === "paused") {
-          //this shouldn't happen.
+          // this shouldn't happen.
           console.warn("this shouldn't happen. the assignment is already paused");
           handlePaused(history);
         }
@@ -75,23 +94,19 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
           return;
         }
         if (uta?.timeSpent && uta?.lastResumed) {
-          timeRemaining = uta?.allowedTime - (now - uta?.lastResumed?.toDate()?.getTime() + uta?.timeSpent);
+          timeRemaining =
+            uta?.allowedTime - (now - uta?.lastResumed?.toDate()?.getTime() - (uta?.delta || 0) + uta?.timeSpent);
         } else {
           timeRemaining = uta?.allowedTime - (now - utaStartTime);
         }
       }
-      setCurrentAssignmentTime(timeRemaining);
+      if (currentAssignmentTime < 0) {
+        setAutoSubmitpopUp(true);
+      } else {
+        setCurrentAssignmentTime(timeRemaining);
+      }
     }
   }, 1000);
-
-  // if (currentAssignmentTime === 0 || _lastAssignmentTime === currentAssignmentTime) {
-  //   return null;
-  // } else if (currentAssignmentTime > 0) {
-  //   if (_lastAssignmentTime === 0 || ((_lastAssignmentTime - currentAssignmentTime) % 1000 !== 0)) {
-  //     setPreviousAssignedTime(currentAssignmentTime);
-  //     return null;
-  //   }
-  // }
 
   return (
     <>
@@ -110,7 +125,20 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
   );
 };
 
-export default withRouter(TimedTestTimer);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      updateUtaTimeType: state.studentAssignment.updateUtaTimeType,
+      isPasswordValidated: state.test.isPasswordValidated
+    }),
+    {
+      updateUtaTime: updateUtaTimeAction
+    }
+  )
+);
+
+export default enhance(TimedTestTimer);
 
 const TimerWrapper = styled.div`
   display: flex;

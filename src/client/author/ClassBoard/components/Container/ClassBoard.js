@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper, CheckboxLabel, notification } from "@edulastic/common";
+import { MainContentWrapper, CheckboxLabel, notification, EduSwitchStyled } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,
@@ -96,8 +96,10 @@ import {
   StudentGrapContainer,
   StyledCard,
   StyledFlexContainer,
-  StickyFlex
+  StickyFlex,
+  SwitchBox
 } from "./styled";
+import { setShowAllStudentsAction } from "../../../src/reducers/testActivity";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -161,9 +163,18 @@ class ClassBoard extends Component {
   }
 
   componentDidMount() {
-    const { loadTestActivity, match, studentUnselectAll, location, isCliUser, history } = this.props;
+    const {
+      loadTestActivity,
+      match,
+      studentUnselectAll,
+      location,
+      isCliUser,
+      history,
+      setShowAllStudents
+    } = this.props;
     const { assignmentId, classId } = match.params;
     const { search, state } = location;
+    setShowAllStudents(false);
     loadTestActivity(assignmentId, classId);
     studentUnselectAll();
     window.addEventListener("scroll", this.handleScroll);
@@ -271,6 +282,11 @@ class ClassBoard extends Component {
     } else {
       studentUnselectAll();
     }
+  };
+
+  onShowUnEnrolled = () => {
+    const { setShowAllStudents, isShowAllStudents } = this.props;
+    setShowAllStudents(!isShowAllStudents);
   };
 
   onSelectCardOne = studentId => {
@@ -620,7 +636,8 @@ class ClassBoard extends Component {
       history,
       location,
       loadTestActivity,
-      isCliUser
+      isCliUser,
+      isShowAllStudents
     } = this.props;
 
     const {
@@ -878,14 +895,20 @@ class ClassBoard extends Component {
                 hasStickyHeader={hasStickyHeader}
                 className="lcb-student-sticky-bar"
               >
-                <CheckboxLabel
-                  data-cy="selectAllCheckbox"
-                  checked={unselectedStudents.length === 0}
-                  indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
-                  onChange={this.onSelectAllChange}
-                >
-                  {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
-                </CheckboxLabel>
+                <div>
+                  <CheckboxLabel
+                    data-cy="selectAllCheckbox"
+                    checked={unselectedStudents.length === 0}
+                    indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
+                    onChange={this.onSelectAllChange}
+                  >
+                    {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
+                  </CheckboxLabel>
+                  <SwitchBox>
+                    <span>SHOW ACTIVE STUDENTS</span>
+                    <EduSwitchStyled checked={!isShowAllStudents} onClick={this.onShowUnEnrolled} />
+                  </SwitchBox>
+                </div>
                 <ClassBoardFeats>
                   <RedirectButton
                     disabled={!isItemsVisible}
@@ -1263,7 +1286,8 @@ const enhance = compose(
       studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state),
-      isCliUser: get(state, "user.isCliUser", false)
+      isCliUser: get(state, "user.isCliUser", false),
+      isShowAllStudents: get(state, ["author_classboard_testActivity", "isShowAllStudents"], false)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -1279,7 +1303,8 @@ const enhance = compose(
       markAbsent: markAbsentAction,
       removeStudent: removeStudentAction,
       markSubmitted: markSubmittedAction,
-      downloadGradesResponse: downloadGradesResponseAction
+      downloadGradesResponse: downloadGradesResponseAction,
+      setShowAllStudents: setShowAllStudentsAction
     }
   )
 );

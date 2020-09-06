@@ -90,6 +90,7 @@ class DisneyCardContainer extends Component {
       endDate,
       isLoading,
       testActivityLoading,
+      enrollmentStatus,
       isItemsVisible,
       closed,
       t,
@@ -178,26 +179,13 @@ class DisneyCardContainer extends Component {
          * for differentiating archived students
          */
         const enrollMentFlag =
-          student.enrollmentStatus == 0 ? (
+          enrollmentStatus[student.studentId] == 0 ? (
             <span title="Not Enrolled">
               <ExclamationMark />
             </span>
           ) : (
             ""
           );
-        const isAcitveStudentUnassigned = student.isUnAssigned && student.enrollmentStatus === 1;
-        const unAssignedMessage = isAcitveStudentUnassigned ? (
-          <span title="Un assigned">
-            <ExclamationMark />
-          </span>
-        ) : (
-          ""
-        );
-
-        if (isAcitveStudentUnassigned) {
-          status.status = "Un Assigned";
-        }
-
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
         const pastDueTag =
@@ -280,7 +268,6 @@ class DisneyCardContainer extends Component {
                         }
                       >
                         {enrollMentFlag}
-                        {unAssignedMessage}
                         {status.status}
                       </StyledParaS>
                       {pastDueTag && (
@@ -290,10 +277,7 @@ class DisneyCardContainer extends Component {
                       )}
                     </>
                   ) : (
-                    <StyledColorParaS>
-                      {enrollMentFlag}
-                      Absent
-                    </StyledColorParaS>
+                    <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
                   )}
                 </StyledName>
                 <RightAlignedCol>

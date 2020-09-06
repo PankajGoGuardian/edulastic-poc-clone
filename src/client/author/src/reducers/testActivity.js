@@ -45,7 +45,6 @@ export const RECALCULATE_ADDITIONAL_DATA = "[gradebook] recalculate additional d
  * in student view , setting correct/wrong/partially correct/not graded filter
  */
 export const SET_STUDENT_VIEW_FILTER = "[gradebook] set studentview filter";
-export const SET_SHOW_ALL_STUDENTS = "[gradebook]] set show all students filter";
 
 export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
 export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
@@ -60,7 +59,6 @@ export const recalculateAdditionalDataAction = createAction(RECALCULATE_ADDITION
 
 export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER);
 export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS);
-export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS);
 
 const initialState = {
   entities: [],
@@ -72,8 +70,7 @@ const initialState = {
   loading: false,
   presentationMode: false,
   viewPassword: false,
-  studentViewFilter: null,
-  isShowAllStudents: false
+  studentViewFilter: null
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -510,11 +507,6 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: payload
-      };
-    case SET_SHOW_ALL_STUDENTS:
-      return {
-        ...state,
-        isShowAllStudents: payload
       };
     default:
       return state;

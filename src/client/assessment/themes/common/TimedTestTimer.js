@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Icon, notification } from "antd";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import moment from "moment";
+import { isEqual, omit } from "lodash";
 import { white, red } from "@edulastic/colors";
 import useInterval from "@use-it/interval";
 import { db } from "@edulastic/common/src/Firebase";
-import { FireBaseService as Fbs } from "@edulastic/common";
 import AssignmentTimeEndedAlert from "./AssignmentTimeEndedAlert";
 import { updateUtaTimeAction } from "../../../student/Assignments/ducks";
 
@@ -43,40 +43,46 @@ const TimedTestTimer = ({
   isPasswordValidated
 }) => {
   const [uta, setUtaDoc] = useState();
+  const [upstreamUta, setUpstreamUta] = useState();
   const [autoSubmitPopUp, setAutoSubmitpopUp] = useState(false);
+  const [currentAssignmentTime, setCurrentAssignmentTime] = useState(null);
 
   useEffect(() => {
-    if (utaId) {
-      db.collection(firestoreCollectionName)
-        .doc(utaId)
-        .onSnapshot(_doc => setUtaDoc(_doc.data()));
-    }
+    let unsubscribe = () => {};
+    unsubscribe = db
+      .collection(firestoreCollectionName)
+      .doc(utaId)
+      .onSnapshot(_doc => setUpstreamUta(_doc.data()));
+    return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const isModified = !isEqual(
+      omit(uta, ["lastResumed", "timeSpent"]),
+      omit(upstreamUta, ["lastResumed", "timeSpent"])
+    );
+
+    if (isModified) {
+      setUtaDoc(upstreamUta);
+      const pausedByStudent = upstreamUta && (upstreamUta.status === "paused" && !upstreamUta?.byTeacher);
+      const initialUtaUpdate = upstreamUta && (upstreamUta.status === "active" && updateUtaTimeType === "start");
+      const isPasswordProtected = isPasswordValidated && updateUtaTimeType === "resume";
+
+      if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
+        updateUtaTime({ utaId, type: updateUtaTimeType });
+      } else if (upstreamUta?.status === "paused") {
+        // this shouldn't happen.
+        console.warn("this shouldn't happen. the assignment is already paused");
+        handlePaused(history);
+      }
+
+      if (currentAssignmentTime === null) {
+        setCurrentAssignmentTime(upstreamUta?.allowedTime - (upstreamUta?.timeSpent || 0) || 0);
+      }
+    }
+  }, [upstreamUta, uta, updateUtaTimeType]);
 
   const timerPaused = uta?.status === "paused";
-  const utaStartTime = useMemo(() => uta?.startTime?.toDate()?.getTime() - (uta?.delta || 0), [uta?.startTime]);
-
-  const [currentAssignmentTime, setCurrentAssignmentTime] = useState(Date.now() - utaStartTime || 0);
-
-  useEffect(() => {
-    const collection = Fbs.db.collection(firestoreCollectionName);
-    collection
-      .doc(utaId)
-      .get()
-      .then(_doc => {
-        const doc = _doc.data();
-        const pausedByStudent = doc && (doc.status === "paused" && !doc?.byTeacher);
-        const initialUtaUpdate = doc && (doc.status === "active" && updateUtaTimeType === "start");
-        const isPasswordProtected = isPasswordValidated && updateUtaTimeType === "resume";
-        if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
-          updateUtaTime({ utaId, type: updateUtaTimeType });
-        } else if (doc?.status === "paused") {
-          // this shouldn't happen.
-          console.warn("this shouldn't happen. the assignment is already paused");
-          handlePaused(history);
-        }
-      });
-  }, []);
 
   useEffect(() => {
     if (timerPaused && uta?.byTeacher) {
@@ -85,28 +91,20 @@ const TimedTestTimer = ({
   }, [timerPaused]);
 
   useInterval(() => {
-    if (!timerPaused) {
-      let timeRemaining = 0;
-      const now = Date.now();
-      if (utaStartTime) {
-        if (uta && uta.lastResumed === null) {
-          setCurrentAssignmentTime(timeRemaining);
-          return;
-        }
-        if (uta?.timeSpent && uta?.lastResumed) {
-          timeRemaining =
-            uta?.allowedTime - (now - uta?.lastResumed?.toDate()?.getTime() - (uta?.delta || 0) + uta?.timeSpent);
-        } else {
-          timeRemaining = uta?.allowedTime - (now - utaStartTime);
-        }
-      }
+    if (!timerPaused && currentAssignmentTime !== null) {
       if (currentAssignmentTime < 0) {
         setAutoSubmitpopUp(true);
       } else {
-        setCurrentAssignmentTime(timeRemaining);
+        setCurrentAssignmentTime(oldTime => oldTime - 1000);
       }
     }
   }, 1000);
+
+  useInterval(() => {
+    if (utaId && currentAssignmentTime && currentAssignmentTime > 0) {
+      updateUtaTime({ utaId, type: "sync", syncOffset: uta.allowedTime - currentAssignmentTime });
+    }
+  }, 5000);
 
   return (
     <>

@@ -81,12 +81,12 @@ const updateQuestionFeedBack = ({ testActivityId, questionId, itemId, ...data })
     })
     .then(result => result.data.result);
 
-const updateUtaTime = ({ utaId, type }) =>
+const updateUtaTime = ({ utaId, type, syncOffset }) =>
   api
     .callApi({
       url: `${prefix}/uta/${utaId}`,
       method: "post",
-      data: { type }
+      data: { type, syncOffset }
     })
     .then(result => result.data.result);
 

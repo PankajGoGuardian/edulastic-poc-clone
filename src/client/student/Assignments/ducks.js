@@ -611,8 +611,8 @@ function* redirectToDashboard() {
 export function* updateUtaTimeSaga({ payload }) {
   try {
     // TODO: Add defensive checks if required
-    yield call(testActivityApi.updateUtaTime, payload);
     yield put(utaStartTimeUpdateRequired(null));
+    yield call(testActivityApi.updateUtaTime, payload);
   } catch (e) {
     console.log(e);
   }

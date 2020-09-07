@@ -111,10 +111,6 @@ const UseExisting = ({
             isValid = false;
             notification({ messageKey: "ratingPointMustNotBeEmpty" });
           }
-          if (isValid && !uniqueRatings.includes(0)) {
-            isValid = false;
-            notification({ messageKey: "ratingPointMustBeZero" });
-          }
           if (isValid && !uniqueRatings.find(p => p > 0)) {
             isValid = false;
             notification({ messageKey: "ratingPointMustBeMoreThanZero" });
@@ -228,15 +224,15 @@ const UseExisting = ({
     setCurrentMode("CLONE");
   };
 
-  const handleTableAction = (actionType, _id) => {
-    const rubric = searchedRubricList.find(rubric => rubric._id === _id);
+  const handleTableAction = (_actionType, _id) => {
+    const rubric = searchedRubricList.find(_rubric => _rubric._id === _id);
     updateRubricData(rubric);
-    if (actionType === "SHARE") setShowShareModal(true);
-    else if (actionType === "DELETE") setShowDeleteModal(true);
-    else if (actionType === "PREVIEW") {
+    if (_actionType === "SHARE") setShowShareModal(true);
+    else if (_actionType === "DELETE") setShowDeleteModal(true);
+    else if (_actionType === "PREVIEW") {
       setCurrentMode("PREVIEW");
       setIsEditable(false);
-    } else if (actionType === "CLONE") handleClone(rubric);
+    } else if (_actionType === "CLONE") handleClone(rubric);
   };
 
   const handleConfirmModalResponse = response => {

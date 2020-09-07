@@ -6,9 +6,8 @@ import { withRouter } from "react-router-dom";
 import { Spin, message, Modal, Button } from "antd";
 import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from "lodash";
 import useInterval from "@use-it/interval";
-
-import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
-import { AssessmentPlayerContext, useRealtimeV2 } from "@edulastic/common";
+import { test as testTypes, assignmentPolicyOptions, questionType, roleuser } from "@edulastic/constants";
+import { AssessmentPlayerContext, useRealtimeV2, notification } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
@@ -112,6 +111,7 @@ const AssessmentContainer = ({
   regradedAssignment,
   clearRegradeAssignment,
   setPasswordValidateStatus,
+  userRole,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -377,6 +377,14 @@ const AssessmentContainer = ({
   };
 
   const testItem = items[currentItem] || {};
+  if (items && items.length > 0 && Object.keys(testItem).length === 0) {
+    notification({
+      messageKey: "invalidAction"
+    });
+    if (userRole === roleuser.STUDENT) {
+      history.push("/home/assignments");
+    }
+  }
   let itemRows = testItem.rows;
 
   let passage = {};
@@ -572,6 +580,7 @@ const enhance = compose(
       enableMagnifier: state.testPlayer.enableMagnifier,
       regradedAssignment: get(state, "studentAssignment.regradedAssignment"),
       userId: get(state, "user.user._id"),
+      userRole: get(state, "user.user.role"),
       userWork: userWorkSelector(state)
     }),
     {

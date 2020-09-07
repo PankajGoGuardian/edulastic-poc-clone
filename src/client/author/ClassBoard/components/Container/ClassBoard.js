@@ -66,7 +66,8 @@ import {
   removedStudentsSelector,
   showScoreSelector,
   stateStudentResponseSelector,
-  testActivtyLoadingSelector
+  testActivtyLoadingSelector,
+  getActiveAssignedStudents
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -486,9 +487,13 @@ class ClassBoard extends Component {
   };
 
   handleRemoveStudents = () => {
-    const { selectedStudents, studentUnselectAll, removeStudent, match } = this.props;
+    const { selectedStudents, studentUnselectAll, removeStudent, match, activeAssignedStudents } = this.props;
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
+    const isRemoveAll = activeAssignedStudents.filter(item => !selectedStudents[item._id]).length === 0;
+    if (isRemoveAll) {
+      return notification({ type: "warn", msg: "Cannot remove all student(s) from assignment." });
+    }
     removeStudent(assignmentId, classId, selectedStudentKeys);
     studentUnselectAll();
     this.setState({ showRemoveStudentsPopup: false });
@@ -1287,7 +1292,8 @@ const enhance = compose(
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state),
       isCliUser: get(state, "user.isCliUser", false),
-      isShowAllStudents: get(state, ["author_classboard_testActivity", "isShowAllStudents"], false)
+      isShowAllStudents: get(state, ["author_classboard_testActivity", "isShowAllStudents"], false),
+      activeAssignedStudents: getActiveAssignedStudents(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

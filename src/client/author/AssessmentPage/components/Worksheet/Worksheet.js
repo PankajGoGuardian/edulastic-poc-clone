@@ -338,8 +338,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -382,8 +382,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -545,6 +545,7 @@ class WorksheetComponent extends React.Component {
       redoAnnotationsOperation,
       isAnnotationsStackEmpty = false,
       pdfAnnotations = [],
+      isEditable,
       currentPage: _currentPageInProps,
       match = {},
       groupId
@@ -577,7 +578,9 @@ class WorksheetComponent extends React.Component {
     // 350+(15 extra space) IS THE TOTAL WIDTH OF RIGHT QUESTION AREA
     const rightColumnWidth = windowWidth > 1024 ? 365 : 295;
     const pdfWidth =
-      (questions || []).length && questions[0].isV1Migrated ? v1Width : windowWidth - rightColumnWidth - leftColumnWidth;
+      (questions || []).length && questions[0].isV1Migrated
+        ? v1Width
+        : windowWidth - rightColumnWidth - leftColumnWidth;
     const pdfHeight = (questions || []).length && questions[0].isV1Migrated ? v1Height : undefined;
 
     const reportMode = viewMode && viewMode === "report";
@@ -694,6 +697,7 @@ class WorksheetComponent extends React.Component {
               questionsById={questionsById}
               answersById={answersById}
               viewMode={viewMode}
+              isEditable={isEditable}
               reportMode={reportMode}
               isToolBarVisible={isToolBarVisible}
               pdfWidth={pdfWidth - 100}
@@ -761,7 +765,7 @@ const enhance = compose(
       scratchPad: get(
         state,
         `userWork.present[${
-        ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
+          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
         }].scratchpad`,
         null
       ),

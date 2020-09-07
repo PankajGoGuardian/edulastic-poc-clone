@@ -9,7 +9,7 @@ import { compose } from "redux";
 import * as Sentry from "@sentry/browser";
 
 // components
-import { Dropdown } from "antd";
+import { Dropdown, Select } from "antd";
 
 import GoogleLogin from "react-google-login";
 import {
@@ -23,11 +23,17 @@ import {
 import IconArchive from "@edulastic/icons/src/IconArchive";
 import { canvasApi } from "@edulastic/api";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import { Institution, DropMenu, MenuItems, CaretUp } from "./styled";
+import { Institution, DropMenu, MenuItems, CaretUp, SelectStyled, OptionWrapper } from "./styled";
 
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
+
+const Option = Select.Option;
+
+const CANVAS = "canvas";
+const GOOGLE = "google";
+const CLEVER = "clever";
 
 const modalStatus = {};
 
@@ -148,49 +154,126 @@ const Header = ({
   const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false;
   const showCanvasSyncButton = showSyncButtons && allowCanvasLogin;
 
+  const options = {
+    [CLEVER]: showCleverSyncButton,
+    [GOOGLE]: showGoogleSyncButton,
+    [CANVAS]: showCanvasSyncButton
+  };
+
+  Object.keys(options).forEach(o => {
+    if (!options[o]) delete options[o];
+  });
+
+  const showDropDown = Object.values(options).filter(o => o).length > 1;
+
   return (
     <MainHeader Icon={IconManage} headingText={classDetails}>
       <div style={{ display: "flex", alignItems: "right" }}>
-        {showCleverSyncButton && (
-          <EduButton isBlue isGhost onClick={handleCleverSync}>
-            <IconClever width={18} height={18} />
-            <span>SYNC NOW WITH CLEVER</span>
-          </EduButton>
-        )}
-        {showGoogleSyncButton &&
-          (isUserGoogleLoggedIn ? (
-            <EduButton isBlue isGhost onClick={syncGCModal}>
-              <IconGoogleClassroom />
-              <span>SYNC WITH GOOGLE CLASSROOM</span>
-            </EduButton>
-          ) : (
-            <GoogleLogin
-              clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-              buttonText="Sync with Google Classroom"
-              render={renderProps => (
-                <EduButton isBlue isGhost onClick={renderProps.onClick}>
+        {showDropDown ? (
+          <SelectStyled
+            data-cy="sync-options-dropdown"
+            minWidth="200px"
+            dropdownStyle={{ zIndex: 1000 }}
+            value="Sync Class"
+          >
+            {Object.keys(options).map((option, index) => {
+              if (option === CLEVER) {
+                return (
+                  <Option key={index} data-cy={`sync-option-${index}`} onClick={handleCleverSync}>
+                    <span className="menu-label">Sync with Clever</span>
+                    <IconClever width={18} height={18} />
+                  </Option>
+                );
+              }
+              if (option === GOOGLE) {
+                if (isUserGoogleLoggedIn) {
+                  return (
+                    <Option key={index} data-cy={`sync-option-${index}`} onClick={syncGCModal}>
+                      <span className="menu-label">Sync with Google Classroom</span>
+                      <IconGoogleClassroom width={18} height={18} />
+                    </Option>
+                  );
+                }
+                return (
+                  <Option key={index} data-cy={`sync-option-${index}`}>
+                    <GoogleLogin
+                      clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                      buttonText="Sync with Google Classroom"
+                      render={renderProps => (
+                        <OptionWrapper onClick={renderProps.onClick}>
+                          <span className="menu-label">Sync with Google Classroom</span>
+                          <IconGoogleClassroom />
+                        </OptionWrapper>
+                      )}
+                      scope={scopes}
+                      onSuccess={handleLoginSuccess}
+                      onFailure={handleError}
+                      prompt="consent"
+                      responseType="code"
+                    />
+                  </Option>
+                );
+              }
+              if (option === CANVAS) {
+                return (
+                  <Option key={index} data-cy={`sync-option-${index}`} onClick={handleSyncWithCanvas}>
+                    <span className="menu-label">Sync with Canvas</span>
+                    <img
+                      alt="Canvas"
+                      src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                      width={18}
+                      height={18}
+                    />
+                  </Option>
+                );
+              }
+              return null;
+            })}
+          </SelectStyled>
+        ) : (
+          <>
+            {showCleverSyncButton && (
+              <EduButton isBlue isGhost onClick={handleCleverSync}>
+                <IconClever width={18} height={18} />
+                <span>SYNC NOW WITH CLEVER</span>
+              </EduButton>
+            )}
+            {showGoogleSyncButton &&
+              (isUserGoogleLoggedIn ? (
+                <EduButton isBlue isGhost onClick={syncGCModal}>
                   <IconGoogleClassroom />
                   <span>SYNC WITH GOOGLE CLASSROOM</span>
                 </EduButton>
-              )}
-              scope={scopes}
-              onSuccess={handleLoginSuccess}
-              onFailure={handleError}
-              prompt="consent"
-              responseType="code"
-            />
-          ))}
-        {showCanvasSyncButton && (
-          <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
-            <img
-              alt="Canvas"
-              src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
-              width={18}
-              height={18}
-              style={{ marginRight: "10px" }}
-            />
-            <span>Sync with Canvas Classroom</span>
-          </EduButton>
+              ) : (
+                <GoogleLogin
+                  clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                  buttonText="Sync with Google Classroom"
+                  render={renderProps => (
+                    <EduButton isBlue isGhost onClick={renderProps.onClick}>
+                      <IconGoogleClassroom />
+                      <span>SYNC WITH GOOGLE CLASSROOM</span>
+                    </EduButton>
+                  )}
+                  scope={scopes}
+                  onSuccess={handleLoginSuccess}
+                  onFailure={handleError}
+                  prompt="consent"
+                  responseType="code"
+                />
+              ))}
+            {showCanvasSyncButton && (
+              <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
+                <img
+                  alt="Canvas"
+                  src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                  width={18}
+                  height={18}
+                  style={{ marginRight: "10px" }}
+                />
+                <span>Sync with Canvas Classroom</span>
+              </EduButton>
+            )}
+          </>
         )}
         {active === 1 && (
           <EduButton isBlue onClick={handleActionMenuClick}>

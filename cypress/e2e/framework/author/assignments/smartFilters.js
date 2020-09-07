@@ -15,13 +15,18 @@ export default class SmartFilters {
 
   // *** ACTIONS START ***
 
-  expandFilter = () =>
+  expandFilter = () => {
+    cy.server();
+    cy.route("GET", "**/user-folder?folderType=ASSIGNMENT").as("getFolders");
     this.getFilter().then($ele => {
-      if ($ele.attr("data-test") !== "expanded")
+      if ($ele.attr("data-test") !== "expanded") {
         cy.wrap($ele)
           .click()
           .should("have.attr", "data-test", "expanded");
+        cy.wait("@getFolders");
+      }
     });
+  };
 
   collapseFilter = () =>
     this.getFilter().then($ele => {
@@ -211,7 +216,10 @@ export default class SmartFilters {
     if (isValid) {
       cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
       cy.contains(`${testName} was successfully moved to ${folderName} folder`).should("be.visible");
-    } else cy.contains(`${testName} already exist in ${folderName} folder`).should("be.visible");
+    } else {
+      cy.contains(`${testName} already exist in ${folderName} folder`).should("be.visible");
+      cy.get('[data-cy="cancel"]').click();
+    }
   };
 
   // *** APPHELPERS END ***

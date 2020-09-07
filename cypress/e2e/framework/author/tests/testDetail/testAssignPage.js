@@ -276,7 +276,7 @@ export default class TestAssignPage {
       }
       return cy.wait(1).then(() => assignmentIdObj);
     }
-    return this;
+    return cy.wait(1); // TODO : temp fix to handle .then(). To revisit and refactor as per app behaviour.
   };
 
   // OVER RIDE TEST SETTING

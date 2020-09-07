@@ -85,7 +85,7 @@ const Uploader = ({ onCompleted, mt }) => {
           const { size } = files[key];
           // image size should be less than 5MB
           if (size > 5 * MAX_SIZE) {
-            notification({ messageKey: "imageSizeError5MB" });
+            notification({ messageKey: "fileSizeError5MB" });
             return false;
           }
           return files[key];

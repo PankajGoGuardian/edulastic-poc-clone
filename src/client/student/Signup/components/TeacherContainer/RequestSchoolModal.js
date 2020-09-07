@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import styled from "styled-components";
-import { createAndJoinSchoolRequestAction, searchDistrictsRequestAction } from "../../duck";
+import { createAndJoinSchoolRequestAction, searchDistrictsRequestAction, updateUserWithSchoolLoadingSelector } from "../../duck";
 import RequestSchoolForm from "./RequestSchoolForm";
 
 class RequestSchool extends React.Component {
@@ -71,8 +71,8 @@ class RequestSchool extends React.Component {
   };
 
   render() {
-    const { isOpen, handleCancel, form, t, userInfo } = this.props;
-
+    const { isOpen, handleCancel, form, t, userInfo, createSchoolRequestPending, updateUserWithSchoolLoading } = this.props;
+    const loading = createSchoolRequestPending || updateUserWithSchoolLoading;
     const title = (
       <Title>
         <h4>{t("component.signup.teacher.requestnewschool")}</h4>
@@ -81,7 +81,7 @@ class RequestSchool extends React.Component {
     );
 
     const footer = (
-      <EduButton height="32px" data-cy="reqNewSchoolBtn" onClick={this.handleSubmit} htmlType="submit">
+      <EduButton height="32px" data-cy="reqNewSchoolBtn" onClick={this.handleSubmit} htmlType="submit" disabled={loading}>
         <span>{t("component.signup.teacher.requestnewschool")}</span>
       </EduButton>
     );
@@ -103,7 +103,9 @@ const enhance = compose(
     state => ({
       isSearching: get(state, "signup.isSearching", false),
       districts: get(state, "signup.districts", []),
-      autocompleteDistricts: get(state, "signup.autocompleteDistricts", [])
+      autocompleteDistricts: get(state, "signup.autocompleteDistricts", []),
+      updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state),
+      createSchoolRequestPending: get(state, "signup.createSchoolRequestPending", false)
     }),
     {
       searchDistrict: searchDistrictsRequestAction,

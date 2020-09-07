@@ -18,7 +18,7 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
 
   // build search query
   const query = useMemo(() => {
-    const { email, institutionIds, role: userRole, orgData } = userDetails;
+    const { institutionIds, role: userRole, orgData, _id: userId } = userDetails;
     const { districtIds } = orgData;
     const districtId = districtIds?.[0];
     const q = {
@@ -32,7 +32,7 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
       }
     };
     if (userRole === roleuser.TEACHER) {
-      q.search.teachers = [{ type: "eq", value: email }];
+      q.search.teachers = [{ type: "eq", value: userId }];
     }
     if (userRole === roleuser.SCHOOL_ADMIN) {
       q.search.institutionIds = institutionIds;
@@ -74,13 +74,13 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
   // build dropdown data
   const dropdownData = searchTerms.text
     ? [
-        <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
-          {Object.values(classList).map(item => (
-            <AutoComplete.Option key={item._id} title={item._source.name}>
-              {item._source.name}
-            </AutoComplete.Option>
+      <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
+        {Object.values(classList).map(item => (
+          <AutoComplete.Option key={item._id} title={item._source.name}>
+            {item._source.name}
+          </AutoComplete.Option>
           ))}
-        </AutoComplete.OptGroup>
+      </AutoComplete.OptGroup>
       ]
     : [];
 

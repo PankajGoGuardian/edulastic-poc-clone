@@ -81,6 +81,15 @@ const updateQuestionFeedBack = ({ testActivityId, questionId, itemId, ...data })
     })
     .then(result => result.data.result);
 
+const updateUtaTime = ({ utaId, type }) =>
+  api
+    .callApi({
+      url: `${prefix}/uta/${utaId}`,
+      method: "post",
+      data: { type }
+    })
+    .then(result => result.data.result);
+
 export default {
   create,
   submit,
@@ -90,5 +99,6 @@ export default {
   previousResponses,
   saveOverallFeedback,
   updateResponseEntryAndScore,
-  updateQuestionFeedBack
+  updateQuestionFeedBack,
+  updateUtaTime
 };

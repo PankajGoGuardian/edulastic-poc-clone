@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { ThemeProvider, withTheme } from "styled-components";
+import { isEqual } from "lodash";
 import { white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClockCircularOutline } from "@edulastic/icons";
-
 import { withWindowSizes, ScrollContext } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { Icon } from "antd";
@@ -17,6 +17,7 @@ import FeedbackWrapper from "../FeedbackWrapper";
 import { Scratchpad, ScratchpadTool } from "../../../common/components/Scratchpad";
 import { TimeSpentWrapper } from "../QuestionWrapper";
 import ShowUserWork from "../Common/ShowUserWork";
+import { IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 
 class TestItemPreview extends Component {
   static propTypes = {
@@ -41,8 +42,12 @@ class TestItemPreview extends Component {
 
   constructor(props) {
     super(props);
+    const { isPassageWithQuestions, inLCB } = props;
+    const toggleCollapseMode =
+      (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions) || (isPassageWithQuestions && inLCB);
     this.state = {
-      collapseDirection: props.isPassageWithQuestions && props.inLCB ? "left" : "",
+      toggleCollapseMode,
+      collapseDirection: toggleCollapseMode ? "left" : "",
       value: 0,
       dimensions: { height: 0, width: 0 }
     };
@@ -69,7 +74,7 @@ class TestItemPreview extends Component {
 
   setCollapseView = dir => {
     this.setState(prevState => ({
-      collapseDirection: prevState.collapseDirection ? "" : dir
+      collapseDirection: !prevState.toggleCollapseMode && prevState.collapseDirection ? "" : dir
     }));
   };
 
@@ -213,6 +218,16 @@ class TestItemPreview extends Component {
       if (previousWidth !== currentWidth || previousHeight !== currentHeight) {
         this.setState({ dimensions: { height: currentHeight, width: currentWidth } });
       }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { cols: preCols } = prevProps;
+    const { cols, isPassageWithQuestions } = this.props;
+
+    if (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions && !isEqual(cols, preCols)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ toggleCollapseMode: true, collapseDirection: "left" });
     }
   }
 

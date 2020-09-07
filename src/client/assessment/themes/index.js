@@ -12,7 +12,7 @@ import { AssessmentPlayerContext, useRealtimeV2 } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
-import { finishTestAcitivityAction } from "../actions/test";
+import { finishTestAcitivityAction, setPasswordValidateStatusAction } from "../actions/test";
 import { evaluateAnswer } from "../actions/evaluation";
 import { changePreview as changePreviewAction } from "../actions/view";
 import { getQuestionsByIdSelector } from "../selectors/questions";
@@ -111,6 +111,7 @@ const AssessmentContainer = ({
   userId,
   regradedAssignment,
   clearRegradeAssignment,
+  setPasswordValidateStatus,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -125,6 +126,7 @@ const AssessmentContainer = ({
   // start assessment
   useEffect(() => {
     window.localStorage.assessmentLastTime = Date.now();
+    return () => setPasswordValidateStatus(false);
   }, []);
 
   useEffect(() => {
@@ -581,7 +583,8 @@ const enhance = compose(
       updateTestPlayer: updateTestPlayerAction,
       hideHints: hideHintsAction,
       regradedRealtimeAssignment: regradedRealtimeAssignmentAction,
-      clearRegradeAssignment: clearRegradeAssignmentAction
+      clearRegradeAssignment: clearRegradeAssignmentAction,
+      setPasswordValidateStatus: setPasswordValidateStatusAction
     }
   )
 );

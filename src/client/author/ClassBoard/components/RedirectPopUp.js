@@ -18,6 +18,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getRedirectEndDate, getUserName } from "../utils";
 import { BodyContainer } from "./styled";
+import { getIsSpecificStudents } from "../ducks";
 
 const { redirectPolicy } = testContants;
 
@@ -64,7 +65,8 @@ const RedirectPopUp = ({
   disabledList = [],
   groupId,
   testActivity,
-  isPremiumUser
+  isPremiumUser,
+  specificStudents
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
   const [endDate, setEndDate] = useState(moment(getRedirectEndDate(additionalData, dueDate)));
@@ -184,7 +186,7 @@ const RedirectPopUp = ({
               setType(e.target.value);
             }}
           >
-            <RadioBtn data-cy="entireClass" value="entire">
+            <RadioBtn data-cy="entireClass" value="entire" disabled={specificStudents}>
               Entire Class
             </RadioBtn>
             <RadioBtn data-cy="absentStudents" value="absentStudents">
@@ -337,7 +339,8 @@ const RedirectPopUp = ({
 
 export default connect(
   state => ({
-    isPremiumUser: get(state, ["user", "user", "features", "premium"], false)
+    isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
+    specificStudents: getIsSpecificStudents(state)
   }),
   null
 )(RedirectPopUp);

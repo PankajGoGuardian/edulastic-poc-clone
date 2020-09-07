@@ -194,10 +194,6 @@ class DisneyCardContainer extends Component {
           ""
         );
 
-        if (isAcitveStudentUnassigned) {
-          status.status = "Un Assigned";
-        }
-
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
         const pastDueTag =

@@ -694,6 +694,11 @@ export const getIsShowAllStudents = createSelector(
   state => get(state, "isShowAllStudents", false)
 );
 
+export const getAllStudentsList = createSelector(
+  stateTestActivitySelector,
+  state => get(state, "data.students", [])
+);
+
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
   removedStudentsSelector,
@@ -707,6 +712,14 @@ export const getTestActivitySelector = createSelector(
         isUnAssigned: removedStudents.includes(item.studentId)
       }))
       .filter(item => (!item.isUnAssigned && item.enrollmentStatus === 1) || showAll)
+);
+
+export const getActiveAssignedStudents = createSelector(
+  getAllStudentsList,
+  removedStudentsSelector,
+  getEnrollmentStatus,
+  (students, removedStudents, enrollments) =>
+    students.filter(stud => !removedStudents.includes(stud._id) && enrollments[stud._id] == 1)
 );
 
 export const getTestQuestionActivitiesSelector = createSelector(

@@ -89,7 +89,7 @@ class Item extends Component {
 
   static defaultProps = {
     selectedToCart: false,
-    gotoSummary: () => {}
+    gotoSummary: () => { }
   };
 
   state = {
@@ -464,7 +464,7 @@ class Item extends Component {
                     {this.isAddOrRemove ? "ADD" : "REMOVE"}
                   </AddRemoveBtn>
                 </>
-              ))}
+                  ))}
           </Question>
           <Row type="flex" align="center">
             <Detail>
@@ -523,17 +523,17 @@ class Item extends Component {
                       {this.isAddOrRemove ? "ADD" : `${groupName}`}
                       {this.isAddOrRemove ? "" : <Icon type="close" />}
                     </AddRemoveBtnPublisher>
-                  ) : (
-                    <AddRemoveBtn
-                      loading={selectedId === item._id}
-                      onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
-                      isAddOrRemove={this.isAddOrRemove}
-                    >
-                      {this.isAddOrRemove ? "ADD" : "REMOVE"}
-                    </AddRemoveBtn>
-                  )}
+                    ) : (
+                      <AddRemoveBtn
+                        loading={selectedId === item._id}
+                        onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
+                        isAddOrRemove={this.isAddOrRemove}
+                      >
+                        {this.isAddOrRemove ? "ADD" : "REMOVE"}
+                      </AddRemoveBtn>
+                      )}
                 </ViewButton>
-              ))}
+                ))}
           </Row>
           {windowWidth <= MAX_TAB_WIDTH && (
             <Details isOpenedDetails={isOpenedDetails}>

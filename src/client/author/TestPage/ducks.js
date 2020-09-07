@@ -1747,7 +1747,10 @@ function* setTestDataAndUpdateSaga({ payload }) {
     const { addToTest, item } = payload;
     if (addToTest) {
       newTest = produce(newTest, draft => {
-        draft.itemGroups[currentGroupIndex].items.push(item);
+        // add only items that are already not present
+        if (!draft?.itemGroups?.[currentGroupIndex]?.items?.find(x => x._id === item._id)) {
+          draft.itemGroups[currentGroupIndex].items.push(item);
+        }
       });
     } else {
       newTest = produce(newTest, draft => {
@@ -2127,9 +2130,12 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
     }
     const testItems = yield select(getSelectedTestItemsSelector);
     newPayload.itemGroups = _test.itemGroups;
-    if(remove){
-      const passageItemIds = passageItems.map(x=> x._id);
-      newPayload.itemGroups[currentGroupIndex].items = uniqBy(testItems.filter(x=> !passageItemIds.includes(x._id)), x => x._id);
+    if (remove) {
+      const passageItemIds = passageItems.map(x => x._id);
+      newPayload.itemGroups[currentGroupIndex].items = uniqBy(
+        testItems.filter(x => !passageItemIds.includes(x._id)),
+        x => x._id
+      );
     } else {
       newPayload.itemGroups[currentGroupIndex].items = uniqBy([...testItems, ...passageItems], x => x._id);
     }

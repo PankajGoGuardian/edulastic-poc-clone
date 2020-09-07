@@ -149,7 +149,8 @@ class TestItemCol extends Component {
       : restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
       ? `calc(${col.dimension} + 280px)`
       : col.dimension || "auto";
-    const widgets = col.tabs && !!col.tabs.length && isPrintPreview ? sortBy(col.widgets, ["tabIndex"]) : col.widgets;
+    const widgets =
+      col?.tabs && !!col?.tabs?.length && isPrintPreview ? sortBy(col?.widgets, ["tabIndex"]) : col?.widgets;
 
     return (
       <Container

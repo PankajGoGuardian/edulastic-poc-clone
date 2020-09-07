@@ -91,14 +91,16 @@ export default class TestAssignPage {
     this.clickOnDropDownOptionByText(type);
   };
 
-  selectStudent = students => {
+  selectStudent = (students, selectAllStudents = false) => {
     // cy.get('[data-cy="selectStudent"]').click();
     cy.contains("label", "STUDENTS")
       .next()
       .should("not.have.class", "ant-select-disabled")
       .click();
     cy.wait(1000);
-    if (Cypress._.isArray(students)) {
+    if (selectAllStudents) {
+      this.clickOnSelectAllStudentButton();
+    } else if (Cypress._.isArray(students)) {
       students.forEach(student => {
         // this.clickOnDropDownOptionByText(student);
         cy.get(`[title="${student}"]`).click({ force: true });
@@ -113,6 +115,15 @@ export default class TestAssignPage {
   clickOnEntireClass = () => cy.get('[data-cy="radioEntireClass"]').click();
 
   clickOnSpecificStudent = () => cy.get('[data-cy="radioSpecificStudent"]').click();
+
+  clickOnSelectAllStudentButton = () => cy.get('[data-cy="selectAllButton"]').click();
+
+  clickonUnselectAllButton = () => {
+    cy.get('[data-cy="unselectAllButton"]').click();
+    cy.contains("label", "STUDENTS")
+      .next()
+      .should("not.have.class", "ant-select-selection__choice");
+  };
 
   // MAXIMUM ATTEMPTS ALLOWED
 

@@ -21,7 +21,7 @@ const PlayerContent = ({
   gotoSummary,
   testActivityId,
   testletState,
-  metadata = {},
+  testletData = {},
   LCBPreviewModal,
   previewPlayer,
   groupId,
@@ -38,7 +38,7 @@ const PlayerContent = ({
   const [testletItems, setQuestions] = useState([]);
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
-  const { hasSubmitButton } = metadata;
+  const { hasSubmitButton } = testletData;
 
   const handleScrollPage = e => {
     const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".pages");
@@ -251,12 +251,12 @@ const PlayerContent = ({
   };
 
   useEffect(() => {
-    if (metadata.testletURL && frameRef.current) {
+    if (testletData.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState;
 
       // initState.pageNum = 23;
 
-      frameController = new ParentController(metadata.testletId, initState, testletState.response);
+      frameController = new ParentController(testletData.testletId, initState, testletState.response);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion,
@@ -275,7 +275,7 @@ const PlayerContent = ({
         frameController.disconnect();
       };
     }
-  }, [metadata]);
+  }, [testletData]);
 
   useEffect(() => {
     window.addEventListener("resize", rerenderMagnifier);
@@ -313,13 +313,13 @@ const PlayerContent = ({
         groupId={groupId}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-        <MainContent id={`${metadata.testletId}_magnifier`}>
+        <MainContent id={`${testletData.testletId}_magnifier`}>
           {LCBPreviewModal && currentScoring && <OverlayDiv />}
-          {metadata.testletURL && (
+          {testletData.testletURL && (
             <iframe
               ref={fromContent ? frameRef : frameRefForMagnifier}
-              id={`${metadata.testletId}_magnifier`}
-              src={metadata.testletURL}
+              id={`${testletData.testletId}_magnifier`}
+              src={testletData.testletURL}
               title="testlet player"
             />
           )}

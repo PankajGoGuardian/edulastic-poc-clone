@@ -114,7 +114,7 @@ class AssessmentPlayerTestlet extends React.Component {
 
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
-    const { calcProvider, calcType } = settings;
+    const { calcProvider, calcType, testletData } = settings;
     const calculateMode = calcProvider && calcType !== "NONE" ? `${calcType}_${calcProvider}` : false;
 
     return (
@@ -129,6 +129,7 @@ class AssessmentPlayerTestlet extends React.Component {
             onSubmitAnswer={this.submitAnswer}
             saveTestletLog={this.saveTestletLog}
             timedAssignment={timedAssignment}
+            testletData={testletData}
           />
           {(!previewPlayer || demo) && (
             <SubmitConfirmation

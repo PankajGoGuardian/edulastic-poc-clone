@@ -198,7 +198,8 @@ function* loadTest({ payload }) {
       test.testItems = test.testItems.filter(item => !testActivity.itemsToBeExcluded.includes(item._id));
     }
     // eslint-disable-next-line prefer-const
-    let { testItems, passages, testType } = test;
+    let { testItems, passages, testType, metadata } = test;
+
     const settings = {
       // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
       calcProvider:
@@ -221,7 +222,12 @@ function* loadTest({ payload }) {
       pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
       enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
       enableSkipAlert: testActivity?.assignmentSettings?.enableSkipAlert,
-      releaseScore: testActivity?.testActivity?.releaseScore
+      releaseScore: testActivity?.testActivity?.releaseScore,
+      testletData: {
+        testletId: metadata?.testletId,
+        testletURL: metadata?.testletURL,
+        hasSubmitButton: metadata?.hasSubmitButton
+      }
     };
 
     const answerCheckByItemId = {};
@@ -492,10 +498,8 @@ function* submitTest({ payload }) {
     );
   } catch (err) {
     Sentry.captureException(err);
-    const {
-      data = {}
-    } = err.response || {};
-    const { message: errorMessage } = data
+    const { data = {} } = err.response || {};
+    const { message: errorMessage } = data;
     if (err.status === 403) {
       if (errorMessage === "assignment already submitted") {
         return yield put(push("/home/grades"));

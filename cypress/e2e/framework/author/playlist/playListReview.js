@@ -355,6 +355,18 @@ export default class PlayListReview {
 
   verifyPlalistGrade = grade => this.getPlaylistGrade().should("contain", grade);
 
+  verifyGradeWhenMultipleGrades = grade =>
+    this.getPlaylistGrade()
+      .invoke("text")
+      .then(gradesInUI => {
+        const mappedGrades = gradesInUI
+          .split("Grade ")[1]
+          .split(",")
+          .map(ele => ele.toString().trim());
+        grade = grade === "Kindergarten" ? "K" : grade.split(" ")[1];
+        expect(mappedGrades, `verifying grade in playlist review`).to.include(grade);
+      });
+
   verifyPlalistSubject = sub => this.getPlaylistSub().should("contain", sub);
 
   verifyModuleCompleteTextByModule = mod =>

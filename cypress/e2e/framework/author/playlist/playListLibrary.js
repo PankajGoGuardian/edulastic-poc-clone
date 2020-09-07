@@ -39,6 +39,14 @@ export default class PlayListLibrary {
 
   getPLaylistLibraryTitle = () => cy.get('[title="Playlist"]');
 
+  getEnterPlaylistDescription = () =>
+    cy
+      .get('[id="froalaToolbarContainer-playlist-description"]')
+      .parent()
+      .find('[contenteditable="true"]');
+
+  getDescriptionOnPlaylistCardById = id => this.getPlayListCardById(id).find('[data-cy="styled-wrapped-component"]');
+
   // *** ELEMENTS END ***
   // *** ACTIONS START ***
 
@@ -92,6 +100,8 @@ export default class PlayListLibrary {
     });
   };
 
+  setPlaylistDescription = desc => this.getEnterPlaylistDescription().type(desc, { force: true });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -143,15 +153,19 @@ export default class PlayListLibrary {
   };
 
   createPlayList = (playListData, NoOfModules = 1) => {
+    const { name, grade, subject, tags, collection, description } = playListData;
     let playlistid;
     this.sidebar.clickOnPlayListLibrary();
     this.clickOnNewPlayList();
-    this.playListSummary.setName(playListData.name);
-    this.playListSummary.selectGrade(playListData.grade, true);
-    this.playListSummary.selectSubject(playListData.subject, true);
-    if (playListData.collection) this.playListSummary.selectCollection(playListData.collection, true);
+    this.playListSummary.setName(name);
+    this.playListSummary.selectGrade(grade, true);
+    this.playListSummary.selectSubject(subject, true);
+    if (playListData.tags) this.playListSummary.addTags(tags, true);
+    if (playListData.collection) this.playListSummary.selectCollection(collection, true);
+    if (playListData.description) this.setPlaylistDescription(description);
 
     this.header.clickOnReview(true);
+    this.reviewTab.clickOpenCustomizationTab();
     for (let i = 1; i <= NoOfModules; i++) {
       this.reviewTab.clickAddNewModule();
       this.reviewTab.setModuleDetails(`module-${i}`, `m${i}`, `module-group-${i}`);
@@ -202,5 +216,7 @@ export default class PlayListLibrary {
     this.checkDropByStudent();
     CypressHelper.selectDropDownByAttribute("selectStudent", name);
   };
+
+  verifyDescriptionOnPlaylistById = (id, desc) => this.getDescriptionOnPlaylistCardById(id).should("have.text", desc);
   // *** APPHELPERS END ***
 }

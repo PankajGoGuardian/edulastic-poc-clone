@@ -41,11 +41,11 @@ export default class PlayListHeader {
   clickOnReview = (newPlaylist = false) => {
     cy.server();
     cy.route("PUT", "**/playlists/*").as("savePlayList");
-    cy.route("POST", "**/search/**").as("search");
+    cy.route("POST", "**/search/tests").as("search-test-in-container");
     this.getReviewButton().click({ force: true });
 
     if (!newPlaylist) return cy.wait("@savePlayList");
-    else return cy.wait("@search");
+    else return cy.get('[data-cy="playlist-grade"]', { timeout: 20000 });
   };
 
   clickOnSettings = () => {
@@ -63,7 +63,7 @@ export default class PlayListHeader {
     cy.wait("@publishPlaylist").then(xhr => {
       expect(xhr.status).to.eq(200);
     });
-    return cy.wait("@renderPlaylist");
+    return cy.get('[data-cy="module-name"]', { timeout: 20000 });
   };
 
   clickOnSave = () => {

@@ -63,7 +63,7 @@ import Explanation from "./Common/Explanation";
 import { EDIT } from "../constants/constantsForQuestions";
 import ShowUserWork from "./Common/ShowUserWork";
 import { playerSkinTypeSelector } from "../selectors/test";
-import { isItemVisibiltySelector } from "../../author/ClassBoard/ducks";
+import { isItemVisibiltySelector, ttsUserIdSelector } from "../../author/ClassBoard/ducks";
 import ItemInvisible from "../../author/ExpressGrader/components/Question/ItemInvisible";
 
 const QuestionContainer = styled.div`
@@ -356,6 +356,16 @@ class QuestionWrapper extends Component {
     return null;
   }
 
+  /**
+   * given a student id and a list ids which are tts users
+   * @returns {boolean} whether current student is a tts user
+   */
+  get ttsVisibilityAuthorSide() {
+    const { studentId, ttsUserIds = [], userRole, data } = this.props;
+    const key = data?.activity?.userId || studentId;
+    return userRole === "teacher" && ttsUserIds.includes(key);
+  }
+
   render() {
     const {
       noPadding,
@@ -423,12 +433,19 @@ class QuestionWrapper extends Component {
        */
       userAnswerProps.key = data.id;
     }
+
     const canShowPlayer =
-      ((showUserTTS === "yes" && userRole === "student") || (userRole === "teacher" && !!LCBPreviewModal)) &&
+      ((showUserTTS === "yes" && userRole === "student") || this.ttsVisibilityAuthorSide) &&
       data.tts &&
       data.tts.taskStatus === "COMPLETED";
 
-    const showAudioControls = userRole === "teacher" && !!LCBPreviewModal;
+    /**
+     * we need to render the tts buttons at author, if it was rendered at student side
+     * however, need to hide the visibility, and not show it in ui
+     * need to render it because scratchpad data gets displaced at LCB, EG
+     * @see https://snapwiz.atlassian.net/browse/EV-18747
+     */
+    const hideVisibility = isLCBView || isExpressGrader || (userRole === "teacher" && LCBPreviewModal);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
 
@@ -471,7 +488,7 @@ class QuestionWrapper extends Component {
           {canShowPlayer ? (
             <AudioControls
               btnWithText={playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase()}
-              showAudioControls={showAudioControls}
+              hideVisibility={hideVisibility}
               key={data.id}
               item={data}
               page={page}
@@ -675,7 +692,8 @@ const enhance = compose(
       isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
       isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
       features: getUserFeatures(state),
-      isItemsVisible: isItemVisibiltySelector(state)
+      isItemsVisible: isItemVisibiltySelector(state),
+      ttsUserIds: ttsUserIdSelector(state)
     }),
     {
       setQuestionData: setQuestionDataAction,

@@ -499,6 +499,15 @@ export const getClassResponseSelector = createSelector(
   state => state.data
 );
 
+export const ttsUserIdSelector = createSelector(
+  stateTestActivitySelector,
+  state => {
+    const { data: { students = [] } = {} } = state || {};
+    const ttsUser = student => student.tts === "yes";
+    return students.filter(ttsUser).map(student => student._id);
+  }
+);
+
 export const getHasRandomQuestionselector = createSelector(
   getClassResponseSelector,
   _test => hasRandomQuestions(_test?.itemGroups || [])

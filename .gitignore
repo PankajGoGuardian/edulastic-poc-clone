@@ -27,3 +27,4 @@ public/testlets/
 
 dist/
 src/chrome-extension/dist/
+commit-log*

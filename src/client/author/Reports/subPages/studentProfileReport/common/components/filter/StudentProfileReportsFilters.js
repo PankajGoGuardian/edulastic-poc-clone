@@ -64,14 +64,10 @@ const StudentProfileReportsFilters = ({
 
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const { terms = [] } = orgData;
-  const { termOptions = [], courseOptions = [] } = useMemo(
-    () => getFilterOptions(studentClassData, terms), 
-    [SPRFilterData, terms]
-  );
-  const coursesForTerm = useMemo(
-    () => courseOptions.filter(c => c.termId === filters.termId),
-    [courseOptions, filters.termId]
-  );
+  const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [
+    SPRFilterData,
+    terms
+  ]);
 
   const defaultTermOption = useMemo(() => find(termOptions, term => term.key === defaultTerm), [
     termOptions,
@@ -82,8 +78,8 @@ const StudentProfileReportsFilters = ({
     termOptions
   ]);
   const selectedCourse = useMemo(
-    () => find(coursesForTerm, course => course.key === urlCourseId) || coursesForTerm[0] || {},
-    [coursesForTerm]
+    () => find(courseOptions, course => course.key === urlCourseId) || courseOptions[0] || {},
+    [courseOptions]
   );
 
   const selectedGrade = useMemo(() => find(gradeOptions, g => g.key === urlGrade) || gradeOptions[0], [urlGrade]);
@@ -166,22 +162,6 @@ const StudentProfileReportsFilters = ({
     _onGoClick(settings);
   };
 
-  const handleTermChange = ({ key }) => {
-    const _coursesForTerm = courseOptions.filter(c => c.termId === key);
-    const _course = find(_coursesForTerm, c => c.key === filters.courseId) || _coursesForTerm[0] || {};
-    const obj = {
-      ...filters,
-      termId: key,
-      courseId: _course.key
-    };
-    setFilters(obj);
-    const settings = {
-      filters: obj,
-      selectedStudent: student
-    };
-    _onGoClick(settings);    
-  };
-
   return (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
@@ -191,7 +171,7 @@ const StudentProfileReportsFilters = ({
         <FilterLabel>School Year</FilterLabel>
         <ControlDropDown
           by={filters.termId}
-          selectCB={handleTermChange}
+          selectCB={value => handleFilterChange("termId", value)}
           data={termOptions}
           prefix="School Year"
           showPrefixOnSelected={false}
@@ -202,7 +182,7 @@ const StudentProfileReportsFilters = ({
         <ControlDropDown
           by={filters.courseId}
           selectCB={value => handleFilterChange("courseId", value)}
-          data={coursesForTerm}
+          data={courseOptions}
           prefix="Courses"
           showPrefixOnSelected={false}
         />

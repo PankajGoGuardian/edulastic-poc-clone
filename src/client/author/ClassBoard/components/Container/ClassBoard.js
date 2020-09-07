@@ -515,9 +515,9 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
-    const { additionalData, testActivity } = this.props;
+    const { additionalData, activeAssignedStudents } = this.props;
     // total count represents total students count in the class
-    if (additionalData.totalCount <= testActivity.length) {
+    if (additionalData.totalCount <= activeAssignedStudents.length) {
       return notification({ type: "warn", messageKey: "assessmentAlreadyAssignedToAllStudents" });
     }
 
@@ -690,7 +690,9 @@ class ClassBoard extends Component {
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded" ||
       assignmentStatus.toLowerCase() === "done";
-    const existingStudents = testActivity.map(item => item.studentId);
+    const existingStudents = testActivity
+      .filter(item => !item.isUnAssigned && item.enrollmentStatus === 1)
+      .map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
         const endDate = additionalData.closedDate || additionalData.endDate;

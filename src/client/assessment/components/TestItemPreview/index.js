@@ -392,7 +392,7 @@ class TestItemPreview extends Component {
               )}
             </ScrollContext.Provider>
           </Container>
-          {showScratchpadByDefault && isLCBView && history && (
+          {showScratchpadByDefault && (isLCBView || isExpressGrader) && history && (
             <TimeSpentWrapper margin="0px 12px 12px">
               <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
                 View at Student&apos;s resolution

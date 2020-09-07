@@ -104,7 +104,7 @@ const TimedTestTimer = ({
     if (utaId && currentAssignmentTime && currentAssignmentTime > 0) {
       updateUtaTime({ utaId, type: "sync", syncOffset: uta.allowedTime - currentAssignmentTime });
     }
-  }, 5000);
+  }, 5000 * 12); // running every minute for now.
 
   return (
     <>

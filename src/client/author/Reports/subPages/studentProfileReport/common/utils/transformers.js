@@ -3,15 +3,12 @@ import { percentage, getProficiencyBand, testTypeHashMap } from "../../../../com
 import gradesMap from "../static/json/gradesMap.json";
 
 const getCourses = classData => {
-  const groupedByCourse = groupBy(classData.filter(c => !!c.courseId), c => `${c.courseId}_${c.termId}`);
-  return Object.values(groupedByCourse).map(course => {
-    const courseId = course[0].courseId;
-    return {
-      title: course[0].courseName || `(Course ID: ${courseId.substring(courseId.length - 5)})`,
-      key: courseId,
-      termId: course[0].termId
-    };
-  });
+  const groupedByCourse = groupBy(classData.filter(c => !!c.courseId), "courseId");
+
+  return map(groupedByCourse, (course, courseId) => ({
+    title: course[0].courseName || `(Course ID: ${courseId.substring(courseId.length - 5)})`,
+    key: courseId
+  }));
 };
 
 export const getStudentName = (selectedStudent, studInfo) => {

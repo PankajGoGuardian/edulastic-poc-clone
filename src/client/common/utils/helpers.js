@@ -5,9 +5,13 @@ import { Tooltip as AntDTooltip, Modal } from "antd";
 import { notification } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
 import { signUpState, test as testConst } from "@edulastic/constants";
+import * as Sentry from "@sentry/browser";
+import { API } from "@edulastic/api";
 import { Partners } from "./static/partnerData";
 import { smallestZoomLevel } from "./static/zoom";
 import { breakpoints } from "../../student/zoomTheme";
+
+const api = new API();
 
 export const getWordsInURLPathName = pathname => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
@@ -323,6 +327,40 @@ export const reSequenceQuestionsWithWidgets = (widgets = [], questions = []) => 
   const _questions = keyBy(questions, "id");
   const reSequencedQ = widgets.map(({ reference }) => _questions[reference]).filter(x => x);
   return reSequencedQ.length ? reSequencedQ : questions;
+};
+
+/** Use this helper to invoke at places where you to need to validate client time into sentry */
+export const checkClientTime = (meta = {}) => {
+  const error = new Error("[App] CLIENT_TIME_MISMATCH");
+  // log into sentry if we see a difference at user client side
+  setTimeout(async () => {
+    try {
+      const resp = await api
+        .callApi({
+          url: `/utils/fetch-sync-time`,
+          method: "get"
+        })
+        .then(({ data }) => data);
+      if (resp.serverTimeISO) {
+        try {
+          const serverTime = new Date(resp.serverTimeISO).getTime();
+          const currentTime = new Date().getTime();
+          if (Math.abs((serverTime - currentTime) / 1000) > 10) {
+            Sentry.withScope(scope => {
+              scope.setTag("issueType", "clientTypeMismatchError");
+              scope.setExtra("message", new Date().toISOString());
+              scope.setExtras(meta);
+              Sentry.captureException(error);
+            });
+          }
+        } catch (e) {
+          Sentry.captureException(e);
+        }
+      }
+    } catch (e) {
+      Sentry.captureException(e);
+    }
+  });
 };
 
 // eslint-disable-next-line no-control-regex

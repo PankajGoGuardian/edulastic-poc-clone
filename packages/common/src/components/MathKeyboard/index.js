@@ -135,6 +135,7 @@ class MathKeyboard extends React.PureComponent {
         {type !== "qwerty" && type !== "all" && (
           <MainKeyboard
             onInput={onInput}
+            type={type}
             isDocbasedSection={isDocbasedSection}
             btns={keyboardButtons}
             numbers={numberButtons}
@@ -153,7 +154,7 @@ const MathKeyboardContainer = styled.div`
   background: ${props => props.theme.mathKeyboard.keyboardBgColor};
   /* padding: 10px; */
   min-width: 180px;
-  max-width: 400px;
+  max-width: 520px;
   width: max-content;
   ${({ docBasedKeypadStyles }) => docBasedKeypadStyles};
 `;

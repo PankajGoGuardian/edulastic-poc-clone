@@ -136,17 +136,19 @@ class Assignments extends Component {
     this.setState({ currentTestId });
   };
 
-  togglePrintModal = (currentTestId = "") => {
+  togglePrintModal = (currentTestId = "", currentAssignmentId, currentClassId) => {
     const { openPrintModal } = this.state;
-    this.setState({ openPrintModal: !openPrintModal, currentTestId });
+    this.setState({ openPrintModal: !openPrintModal, currentTestId, currentAssignmentId, currentClassId });
   };
 
   gotoPrintView = data => {
     const { type, customValue } = data;
-    const { currentTestId } = this.state;
+    const { currentTestId, currentAssignmentId, currentClassId } = this.state;
 
     window.open(
-      `/author/printAssessment/${currentTestId}?type=${type}&qs=${type === "custom" ? customValue : ""}`,
+      `/author/printAssessment/${currentTestId}?type=${type}&assignmentId=${currentAssignmentId}&groupId=${currentClassId}&qs=${
+        type === "custom" ? customValue : ""
+      }`,
       "_blank"
     );
     this.togglePrintModal();
@@ -269,6 +271,7 @@ class Assignments extends Component {
             onProceed={this.gotoPrintView}
             onCancel={this.togglePrintModal}
             currentTestId={currentTestId}
+            assignmentId={currentAssignmentId}
           />
         )}
         <ListHeader

@@ -284,7 +284,8 @@ export const Header = styled.div`
   position: relative;
   background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% auto;
+  
   &:hover {
     .showHover {
       display: flex;
@@ -294,7 +295,7 @@ export const Header = styled.div`
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: 100px;
+    height: 135px;
   }
 `;
 Header.displayName = "CardHeader";
@@ -321,6 +322,7 @@ export const Stars = styled(Rate)`
 export const StyledLink = styled.a`
   display: -webkit-box;
   font-size: 14px;
+  height: 50px;
   font-weight: bold;
   width: 100%;
   text-overflow: ellipsis;

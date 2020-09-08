@@ -19,7 +19,8 @@ import {
   setActiveAssignmentAction,
   showTestInstructionsAction,
   setConfirmationForTimedAssessmentAction,
-  setIsActivityCreatingAction
+  setIsActivityCreatingAction,
+  utaStartTimeUpdateRequired
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
@@ -45,6 +46,8 @@ export const RESUME_ASSIGNMENT = "[studentAssignments] resume assignments";
 export const BOOTSTRAP_ASSESSMENT = "[assessment] bootstrap";
 export const LAUNCH_ASSIGNMENT_FROM_LINK = "[studentAssignemnts] launch assignment from link";
 export const REDIRECT_TO_DASHBOARD = "[studentAssignments] redirect to dashboard";
+export const UPDATE_UTA_TIME = "[studentAssignments] update uta time for timed assignment";
+
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 export const startAssignmentAction = createAction(START_ASSIGNMENT);
@@ -54,6 +57,7 @@ export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 export const bootstrapAssessmentAction = createAction(BOOTSTRAP_ASSESSMENT);
 export const launchAssignmentFromLinkAction = createAction(LAUNCH_ASSIGNMENT_FROM_LINK);
 export const redirectToDashboardAction = createAction(REDIRECT_TO_DASHBOARD);
+export const updateUtaTimeAction = createAction(UPDATE_UTA_TIME);
 
 const getAssignmentClassId = (assignment, groupId, classIds) => {
   if (groupId) {
@@ -341,6 +345,14 @@ function* startAssignment({ payload }) {
     if (isLoading) {
       return;
     }
+
+    if (assignmentId) {
+      const { timedAssignment } = yield call(assignmentApi.getById, assignmentId) || {};
+      if (timedAssignment) {
+        yield put(utaStartTimeUpdateRequired("start"));
+      }
+    }
+
     const groupType = "class";
     let testActivityId = null;
     if (studentRecommendation) {
@@ -455,6 +467,11 @@ function* resumeAssignment({ payload }) {
     if (assignmentId) {
       yield put(setActiveAssignmentAction(assignmentId));
       yield put(setResumeAssignment(true));
+
+      const { timedAssignment } = yield call(assignmentApi.getById, assignmentId) || {};
+      if (timedAssignment) {
+        yield put(utaStartTimeUpdateRequired("resume"));
+      }
     }
 
     // get the class id for the assignment
@@ -591,6 +608,16 @@ function* redirectToDashboard() {
   yield put(push("/home/assignments"));
 }
 
+export function* updateUtaTimeSaga({ payload }) {
+  try {
+    // TODO: Add defensive checks if required
+    yield put(utaStartTimeUpdateRequired(null));
+    yield call(testActivityApi.updateUtaTime, payload);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // set actions watcherss
 export function* watcherSaga() {
   yield all([
@@ -599,6 +626,7 @@ export function* watcherSaga() {
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
     yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment),
-    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard)
+    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard),
+    yield takeLatest(UPDATE_UTA_TIME, updateUtaTimeSaga)
   ]);
 }

@@ -1747,7 +1747,10 @@ function* setTestDataAndUpdateSaga({ payload }) {
     const { addToTest, item } = payload;
     if (addToTest) {
       newTest = produce(newTest, draft => {
-        draft.itemGroups[currentGroupIndex].items.push(item);
+        // add only items that are already not present
+        if (!draft?.itemGroups?.[currentGroupIndex]?.items?.find(x => x._id === item._id)) {
+          draft.itemGroups[currentGroupIndex].items.push(item);
+        }
       });
     } else {
       newTest = produce(newTest, draft => {
@@ -2111,7 +2114,7 @@ function* duplicateTestSaga({ payload }) {
  * add passage items to test.
  * dispatched when user want to add all items of passage to the test.
  */
-function* setAndSavePassageItems({ payload: { passageItems, page } }) {
+function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
   try {
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
     const _test = yield select(getTestSelector);
@@ -2127,7 +2130,15 @@ function* setAndSavePassageItems({ payload: { passageItems, page } }) {
     }
     const testItems = yield select(getSelectedTestItemsSelector);
     newPayload.itemGroups = _test.itemGroups;
-    newPayload.itemGroups[currentGroupIndex].items = uniqBy([...testItems, ...passageItems], x => x._id);
+    if (remove) {
+      const passageItemIds = passageItems.map(x => x._id);
+      newPayload.itemGroups[currentGroupIndex].items = uniqBy(
+        testItems.filter(x => !passageItemIds.includes(x._id)),
+        x => x._id
+      );
+    } else {
+      newPayload.itemGroups[currentGroupIndex].items = uniqBy([...testItems, ...passageItems], x => x._id);
+    }
     const itemIds = _uniq(newPayload.itemGroups.flatMap(itemGroup => itemGroup.items || []).map(i => i._id));
     if (!_test._id && page !== "itemList") {
       yield put(createTestAction({ ..._test, ...newPayload }));

@@ -16,7 +16,7 @@ import AssessmentPlayerModal from "../../../Assignments/components/Container/Tes
 import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
-import { getDynamicVariablesSetIdForViewResponse } from "../../../ClassBoard/ducks";
+import { getDynamicVariablesSetIdForViewResponse, ttsUserIdSelector } from "../../../ClassBoard/ducks";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
@@ -341,7 +341,8 @@ class ClassQuestions extends Component {
       qIndex,
       testActivityId,
       isPresentationMode,
-      t
+      t,
+      ttsUserIds
     } = this.props;
     const testItems = this.getTestItems();
     const { expressGrader: isExpressGrader = false } = this.context;
@@ -372,6 +373,7 @@ class ClassQuestions extends Component {
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
+          ttsUserIds={ttsUserIds}
           studentName={(currentStudent || {})[isPresentationMode ? "fakeName" : "studentName"]}
           key={index}
           item={item}
@@ -470,7 +472,8 @@ const withConnect = connect(
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
-    userWork: get(state, ["userWork", "present"], {})
+    userWork: get(state, ["userWork", "present"], {}),
+    ttsUserIds: ttsUserIdSelector(state)
   }),
   {
     loadScratchPad: loadScratchPadAction,

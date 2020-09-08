@@ -26,6 +26,8 @@ export const SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT = "[studentAssignments] set r
 export const CLEAR_REGRADE_ASSIGNMENT = "[studentAssignments] clear regrade assignment";
 export const SHOW_TEST_INSTRUCTION = "[studentAssignments] show student test instruction";
 export const SET_ACTIVITY_CREATING = "[studentAssignments] set test activity creating";
+export const TOGGLE_UTA_TIME_UPDATE_REQUIRED = "[studentAssignments] toggle - uta time update required";
+
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
 export const setAssignmentsAction = createAction(SET_ASSIGNMENTS);
@@ -40,6 +42,8 @@ export const setConfirmationForTimedAssessmentAction = createAction(SET_CONFIRMA
 export const clearRegradeAssignmentAction = createAction(CLEAR_REGRADE_ASSIGNMENT);
 export const showTestInstructionsAction = createAction(SHOW_TEST_INSTRUCTION);
 export const setIsActivityCreatingAction = createAction(SET_ACTIVITY_CREATING);
+export const utaStartTimeUpdateRequired = createAction(TOGGLE_UTA_TIME_UPDATE_REQUIRED);
+
 // initial State
 const initialState = {
   isLoading: false,
@@ -53,7 +57,8 @@ const initialState = {
   loadAssignment: {
     assignmentId: "",
     isLoading: false
-  }
+  },
+  updateUtaTimeType: null
 };
 
 // reducers
@@ -136,6 +141,9 @@ export default createReducer(initialState, {
   [SET_ACTIVITY_CREATING]: (state, { payload }) => {
     state.loadAssignment.assignmentId = payload.assignmentId;
     state.loadAssignment.isLoading = payload.isLoading;
+  },
+  [TOGGLE_UTA_TIME_UPDATE_REQUIRED]: (state, { payload }) => {
+    state.updateUtaTimeType = payload;
   }
 });
 

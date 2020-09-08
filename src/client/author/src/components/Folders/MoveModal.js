@@ -109,7 +109,7 @@ const MoveModal = ({
           Cancel
         </EduButton>,
         <EduButton data-cy="submit" key="submit" color="primary" variant="create" onClick={handleMoveFolder}>
-          Move
+          Add
         </EduButton>
       ]}
     >

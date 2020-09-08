@@ -22,6 +22,14 @@ const MathFormulaDisplay = withTheme(
       display: table;
     }
 
+    table thead{
+      display: table-header-group;
+    }
+
+    table tbody{
+      display: table-row-group;
+    }
+
     table tr {
       display: table-row;
     }

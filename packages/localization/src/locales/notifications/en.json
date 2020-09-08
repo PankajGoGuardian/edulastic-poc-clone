@@ -11,8 +11,8 @@
     "message": "Image size should be less than 2MB",
     "description": ""
   },
-  "imageSizeError5MB": {
-    "message": "Image size should be less than 5MB",
+  "fileSizeError5MB": {
+    "message": "File size should be less than 5MB",
     "description": ""
   },
   "videoSizeError": {

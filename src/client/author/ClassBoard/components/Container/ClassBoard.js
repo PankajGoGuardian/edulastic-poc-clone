@@ -66,7 +66,8 @@ import {
   removedStudentsSelector,
   showScoreSelector,
   stateStudentResponseSelector,
-  testActivtyLoadingSelector
+  testActivtyLoadingSelector,
+  getActiveAssignedStudents
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -467,12 +468,16 @@ class ClassBoard extends Component {
   };
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents, testActivity, assignmentStatus } = this.props;
+    const { selectedStudents, testActivity, assignmentStatus, removedStudents } = this.props;
 
     if (assignmentStatus.toLowerCase() === "done") {
       return notification({ type: "warn", msg: "Cannot remove student(s) from a DONE assignment." });
     }
 
+    const isRemovedStudentsSelected = removedStudents.some(item => selectedStudents[item]);
+    if (isRemovedStudentsSelected) {
+      return notification({ type: "warn", msg: "Cannot remove unassigned students" });
+    }
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
       return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
@@ -486,9 +491,13 @@ class ClassBoard extends Component {
   };
 
   handleRemoveStudents = () => {
-    const { selectedStudents, studentUnselectAll, removeStudent, match } = this.props;
+    const { selectedStudents, studentUnselectAll, removeStudent, match, activeAssignedStudents } = this.props;
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
+    const isRemoveAll = activeAssignedStudents.filter(item => !selectedStudents[item._id]).length === 0;
+    if (isRemoveAll) {
+      return notification({ type: "warn", msg: "Cannot remove all student(s) from assignment." });
+    }
     removeStudent(assignmentId, classId, selectedStudentKeys);
     studentUnselectAll();
     this.setState({ showRemoveStudentsPopup: false });
@@ -515,9 +524,9 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
-    const { additionalData, testActivity } = this.props;
+    const { additionalData, activeAssignedStudents } = this.props;
     // total count represents total students count in the class
-    if (additionalData.totalCount <= testActivity.length) {
+    if (additionalData.totalCount <= activeAssignedStudents.length) {
       return notification({ type: "warn", messageKey: "assessmentAlreadyAssignedToAllStudents" });
     }
 
@@ -690,7 +699,9 @@ class ClassBoard extends Component {
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded" ||
       assignmentStatus.toLowerCase() === "done";
-    const existingStudents = testActivity.map(item => item.studentId);
+    const existingStudents = testActivity
+      .filter(item => !item.isUnAssigned && item.enrollmentStatus === 1)
+      .map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
         const endDate = additionalData.closedDate || additionalData.endDate;
@@ -1287,7 +1298,8 @@ const enhance = compose(
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state),
       isCliUser: get(state, "user.isCliUser", false),
-      isShowAllStudents: get(state, ["author_classboard_testActivity", "isShowAllStudents"], false)
+      isShowAllStudents: get(state, ["author_classboard_testActivity", "isShowAllStudents"], false),
+      activeAssignedStudents: getActiveAssignedStudents(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

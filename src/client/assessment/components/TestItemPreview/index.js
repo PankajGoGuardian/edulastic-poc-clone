@@ -310,7 +310,7 @@ class TestItemPreview extends Component {
             display: "flex",
             flexDirection: "column",
             alignSelf: !LCBPreviewModal && "stretch",
-            height: LCBPreviewModal && "100%",
+            flexGrow: 1,
             width: "100%",
             overflow: !isStudentAttempt && !isPrintPreview && "auto", // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
             background: isExpressGrader && showScratchpadByDefault ? white : null,
@@ -392,7 +392,7 @@ class TestItemPreview extends Component {
               )}
             </ScrollContext.Provider>
           </Container>
-          {showScratchpadByDefault && isLCBView && history && (
+          {showScratchpadByDefault && (isLCBView || isExpressGrader) && history && (
             <TimeSpentWrapper margin="0px 12px 12px">
               <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
                 View at Student&apos;s resolution

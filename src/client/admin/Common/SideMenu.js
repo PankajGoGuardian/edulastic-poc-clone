@@ -7,7 +7,7 @@ import {
   white
 } from "@edulastic/colors";
 import { OnDarkBgLogo } from "@edulastic/common";
-import { IconProfileHighlight, IconSignoutHighlight } from "@edulastic/icons";
+import { IconProfileHighlight, IconSignoutHighlight, IconSwitchUser } from "@edulastic/icons";
 import { Dropdown, Icon, Layout, Menu } from "antd";
 import { get } from "lodash";
 import React, { useState } from "react";
@@ -18,6 +18,9 @@ import styled from "styled-components";
 import { logoutAction } from "../../author/src/actions/auth";
 import { LogoCompact } from "./StyledComponents";
 import { toggleSideBarAction } from "../../author/src/actions/toggleMenu";
+import SwitchUserModal from "../../common/components/SwtichUserModal/SwitchUserModal";
+import { switchUser } from "../../author/authUtils";
+import { getAccountSwitchDetails } from "../../author/src/selectors/user";
 
 const { Sider } = Layout;
 
@@ -71,9 +74,12 @@ const SideMenu = ({
   lastName,
   isCollapsed,
   toggleState,
-  toggleSideBar
+  toggleSideBar,
+  userId,
+  switchDetails
 }) => {
   const [isVisible, toggleIsVisible] = useState(false);
+  const [showModal, toggleShowModal] = useState(false);
 
   const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
@@ -92,7 +98,13 @@ const SideMenu = ({
       toggleDropdown();
       toggleSideBar;
     }
+    if (key === "3") {
+      toggleShowModal(!showModal);
+      toggleIsVisible(!isVisible);
+    }
   };
+
+  const personId = get(switchDetails, "personId");
 
   const footerDropdownMenu = (
     <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
@@ -102,6 +114,14 @@ const SideMenu = ({
             <IconProfileHighlight /> {isCollapsed ? "" : "My Profile"}
           </Link>
         </Menu.Item>
+        {personId && (
+          <Menu.Item key="3" className="removeSelectedBorder">
+            <a>
+              <IconSwitchUser />
+              <span>{isCollapsed ? "" : "Switch Account"} </span>
+            </a>
+          </Menu.Item>
+        )}
         <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder" onClick={logoutBtn}>
           <a>
             <IconSignoutHighlight /> {isCollapsed ? "" : "Logout"}
@@ -190,6 +210,15 @@ const SideMenu = ({
           </Dropdown>
         </UserInfoButton>
       </MenuFooter>
+      <SwitchUserModal
+        userId={userId}
+        switchUser={switchUser}
+        showModal={showModal}
+        closeModal={() => toggleShowModal(!showModal)}
+        otherAccounts={get(switchDetails, "otherAccounts", [])}
+        personId={personId}
+        userRole={userRole}
+      />
     </Sidebar>
   );
 };
@@ -203,7 +232,8 @@ const enhance = compose(
       lastName: get(state.user, "user.lastName", ""),
       userRole: get(state.user, "user.role", ""),
       userId: get(state.user, "user._id", ""),
-      profileThumbnail: get(state.user, "user.thumbnail")
+      profileThumbnail: get(state.user, "user.thumbnail"),
+      switchDetails: getAccountSwitchDetails(state)
     }),
     { toggleSideBar: toggleSideBarAction, logoutBtn: logoutAction }
   )

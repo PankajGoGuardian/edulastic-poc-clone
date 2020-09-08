@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { Howl, Howler } from "howler";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { connect } from "react-redux";
 
 import { questionType } from "@edulastic/constants";
@@ -53,14 +53,14 @@ const AudioButton = styled(EduButton)`
 
 const AudioControls = ({
   item: questionData = {},
-  showAudioControls,
   btnWithText = false,
   audioSrc,
   qId,
   currentPlayingDetails,
   setCurrentPlayingDetails,
   className,
-  page
+  page,
+  hideVisibility
 }) => {
   const [loading, setLoading] = useState(true);
   const [stimulusHowl, setStimulusHowl] = useState({});
@@ -200,44 +200,44 @@ const AudioControls = ({
   const playPauseToolTip = loading
     ? "We are still processing the audio file for this question. Please return back to this question after some time."
     : currentPlayingDetails.qId === qId
-      ? "Pause"
-      : "Play";
+    ? "Pause"
+    : "Play";
   return !btnWithText ? (
-    <AudioButtonsWrapper style={{ display: showAudioControls ? "none" : "block" }} className={className}>
+    <AudioButtonsWrapper btnWithText={btnWithText} hideVisibility={hideVisibility} className={className}>
       <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
         {currentPlayingDetails.qId === qId ? (
           <IconAudioPause color={white} className="audio-pause" />
         ) : (
-            !loading && <IconPlayFilled color={white} className="audio-play" />
-          )}
+          !loading && <IconPlayFilled color={white} className="audio-play" />
+        )}
       </ControlButtons>
       <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title="Stop">
         <IconStop color={white} className="audio-stop" />
       </ControlButtons>
     </AudioButtonsWrapper>
   ) : (
-    <AudioButtonsWrapper style={{ display: showAudioControls ? "none" : "flex" }} className={className}>
+    <AudioButtonsWrapper btnWithText={btnWithText} hideVisibility={hideVisibility} className={className}>
       <AudioButton height="40px" onClick={handlePlayPauseAudio}>
         {currentPlayingDetails.qId === qId ? (
           <>
             <IconAudioPause />
             PAUSE
           </>
-          ) : (
-              !loading && (
-                <>
-                  <IconPlayBig />
-                  PLAY
-                </>
-              )
-            )}
+        ) : (
+          !loading && (
+            <>
+              <IconPlayBig />
+              PLAY
+            </>
+          )
+        )}
       </AudioButton>
       <AudioButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
         <IconStopCircle />
         STOP
       </AudioButton>
     </AudioButtonsWrapper>
-    );
+  );
 };
 
 export default connect(
@@ -252,4 +252,12 @@ export default connect(
 const AudioButtonsWrapper = styled.div`
   top: 0px;
   padding: 20px 20px 0;
+  ${({ btnWithText, hideVisibility }) => {
+    const visibility = hideVisibility ? "hidden" : "visible";
+    const display = btnWithText ? "flex" : "block";
+    return css`
+      display: ${display};
+      visibility: ${visibility};
+    `;
+  }}
 `;

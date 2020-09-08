@@ -18,7 +18,7 @@ const optionInfos = {
   custom: ["Enter the item numbers in the below box to print"]
 };
 
-const PrintTestModal = ({ onCancel, onProceed, currentTestId }) => {
+const PrintTestModal = ({ onCancel, onProceed, currentTestId, assignmentId }) => {
   const [option, setOption] = useState("complete");
   const [customValue, setCustomValue] = useState("");
   const [error, setError] = useState("");
@@ -26,11 +26,8 @@ const PrintTestModal = ({ onCancel, onProceed, currentTestId }) => {
 
   useEffect(() => {
     // fetching test to check if manual graded items avaiable or not
-    testsApi.getById(currentTestId).then(test => {
-      const {
-        passages,
-        itemGroups = []
-      } = test;
+    testsApi.getById(currentTestId, { assignmentId }).then(test => {
+      const { passages, itemGroups = [] } = test;
       const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
       const { questions } = getOrderedQuestionsAndAnswers(testItems, passages, "manualGraded", []);
       setHaveManualGradedQs(!!questions.length);

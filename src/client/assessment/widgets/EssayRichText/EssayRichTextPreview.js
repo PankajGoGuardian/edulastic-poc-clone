@@ -110,7 +110,7 @@ const EssayRichTextPreview = ({
           <QuestionTitleWrapper>
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
-          <EssayRichTextContainer>
+          <EssayRichTextContainer data-cy="previewBoxContainer">
             {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
               <FroalaEditorContainer>
                 <FroalaEditor

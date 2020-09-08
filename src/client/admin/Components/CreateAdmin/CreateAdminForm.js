@@ -46,7 +46,7 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
       });
       resetFields();
     } catch (error) {
-      notification({ msg: error.message, message: "apiFormErr" });
+      notification({ msg: error.message, messageKey: "apiFormErr" });
     }
   };
 
@@ -179,6 +179,7 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
               placeholder={t("users.districtadmin.createda.enterusername")}
               autocomplete="new-password"
               onChange={changeEmail}
+              value={email}
             />
           </FormItem>
         </Col>

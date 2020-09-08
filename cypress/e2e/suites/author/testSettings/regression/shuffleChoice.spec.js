@@ -43,7 +43,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       cy.contains("Share With Others");
 
       // update the settings
-      cy.visit(`author/tests/tab/settings/id/${testId}`);
+      testLibrary.visitTestById(testId);
+      testLibrary.header.clickOnSettings();
       testLibrary.header.clickOnEditButton(true);
 
       // set shuffle question to ON
@@ -69,7 +70,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
         cy.login("student", student.email, password);
         assignmentPage.clickOnAssignmentButton();
         cy.wait(1000);
-        let attemptChoiceOrder = [];
+        const attemptChoiceOrder = [];
         studentTest.getAllChoices().then($ele => {
           cy.wrap($ele).each($ch => attemptChoiceOrder.push($ch.text()));
         });

@@ -804,7 +804,7 @@ function* publishPlaylistSaga({ payload }) {
     const data = yield select(getPlaylistSelector);
     const features = yield select(getUserFeatures);
     if ((features.isCurator || features.isPublisherAuthor) && !get(data, "collections", []).length) {
-      yield call(notification, { messageKey: "publishPlaylistErrWithAssociated" });
+      yield call(notification, { type: "warn", messageKey: "publishPlaylistErrWithAssociated" });
       return;
     }
     const dataToSend = omit(data, [

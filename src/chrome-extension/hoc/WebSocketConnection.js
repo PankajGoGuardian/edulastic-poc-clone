@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import io from "socket.io-client";
 import { connect } from 'react-redux';
 import {EVENTS} from "../constants";
@@ -7,7 +7,7 @@ import { addUserDataAction, addMessageAction, addHandAction, removeMessageAction
 let socket;
 
 const destroyWSSConnection =  ({meetingID, clientId}) =>  {
-  window.addEventListener("beforeunload", async (event) => {
+  window.addEventListener("beforeunload", async (_) => {
   // wait for meet to relay call ended message
     while (document.querySelector("[data-call-ended='true']") == null) {
       await new Promise(r => setTimeout(r, 200));
@@ -22,12 +22,12 @@ const destroyWSSConnection =  ({meetingID, clientId}) =>  {
   });
 }
 
-const WebSocketConnection = ({ host, extension, children, userData = {}, user = {}, addMessage, removeMessage, addHand, updateRoomData}) => {
+const WebSocketConnection = ({ host, extension, children, userData = {}, user = {}, addMessage, removeMessage, addHand}) => {
 
     useEffect(() => {
         socket = io(host);
         window['edu-meet'] = socket;
-        socket.on( EVENTS.CONNECT, () => console.log("Socket Connection Successful..."));
+        if(process.env.TEST_ENV != 'app') socket.on( EVENTS.CONNECT, () => console.log("Socket Connection Successful..."));
         // socket.on('connect_error', err => console.log("Web Socket Connection Failed !"));
       },[host]);
 
@@ -40,7 +40,7 @@ const WebSocketConnection = ({ host, extension, children, userData = {}, user = 
                 ...userData, 
                 userId: user._id, 
                 role: user.role, 
-                classId: user?.orgData?.defaultClass
+                classId: user?.orgData?.classList[0]?._id
               }}, 
               err => {
                 if(err) console.error("Connection Failed...",err);
@@ -60,7 +60,7 @@ const WebSocketConnection = ({ host, extension, children, userData = {}, user = 
             socket.emit(EVENTS.ACTIVITY, { 
               meetingID: userData.meetingID, 
               userId: user._id,  
-              classId: user.orgData.defaultClass, 
+              classId: user?.orgData?.classList[0]?._id, 
               activity: request
             });
           }

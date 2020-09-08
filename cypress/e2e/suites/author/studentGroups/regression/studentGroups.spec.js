@@ -31,8 +31,8 @@ const students = {
     studentName: "studentGroup, student.1"
   },
   2: {
-    email: "student.0.studentgroup@snapwiz.com",
-    studentName: "studentGroup, student.0"
+    email: "student.2.studentgroup@snapwiz.com",
+    studentName: "studentGroup, student.2"
   },
   3: {
     email: "student.3.studentgroup@snapwiz.com",
@@ -76,7 +76,7 @@ const classNameEdit = "Automation Class - StudentGroup";
 const testIdForReport = "5f2410926390ea0008f47387";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () => {
-  let testId = "5f24169e2016b90008b3438b";
+  const testId = "5f2aaea53d3c30000825978e";
   const studentGroup1 = [students[1], students[2]];
   const studentGroup1Edit = [students[3], students[4]];
   const studentGroup2 = [students[3], students[4]];
@@ -87,8 +87,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
   before(() => {
     cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
     cy.login("teacher", teacher, password);
-    //testLibrary.createTest().then(_id => {
-    //testId = _id;
+    // testLibrary.createTest().then(_id => {
+    // testId = _id;
     // });
   });
 
@@ -99,7 +99,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
     });
 
     it("> select student from report and create group", () => {
-      //selecting student 1 and 2 and creating new group
+      // selecting student 1 and 2 and creating new group
       pbsReport.selectStudentByName(students[1].studentName);
       pbsReport.selectStudentByName(students[2].studentName);
       pbsReport.clickOnActionAddToGroup();
@@ -471,7 +471,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
         testLibrary.assignPage.visitAssignPageById(testId);
         testLibrary.assignPage.selectClass(groups[3].name);
         testLibrary.assignPage.selectClass(groups[4].name);
-        testLibrary.assignPage.clickOnAssign({ duplicate: false, willNotAssign: true });
+        testLibrary.assignPage.clickOnAssign({ duplicate: false, willNotAssign: true});
       });
       it("Verify no tests at Student Side", () => {
         cy.login("student", students[1].email, password);
@@ -521,7 +521,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
       sideBar.clickOnManageClass();
       manageGroup.clickOnGroupTab();
       manageGroup.clickOnGroupRowByName(groups[4].name);
-      manageClass.clickOnEditClass();
+      manageClass.clickOnEditGroup();
       manageGroup.fillGroupDetail(editGroupValues);
       manageGroup.clickOnUpdateClass();
     });
@@ -530,7 +530,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
       sideBar.clickOnManageClass();
       manageGroup.clickOnGroupTab();
       manageGroup.clickOnGroupRowByName(editGroupValues.name);
-      manageClass.clickOnEditClass();
+      manageClass.clickOnEditGroup();
       manageGroup.verifyGroupDetails(editGroupValues);
     });
   });

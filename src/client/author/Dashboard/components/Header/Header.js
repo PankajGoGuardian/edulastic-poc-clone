@@ -53,8 +53,8 @@ const HeaderSection = ({
     openLaunchHangout();
   };
 
-  const TEN_DAYS = 864000000;
-  const isAboutToExpire = subEndDate ? Date.now() + TEN_DAYS > subEndDate : false;
+  const THIRTY_DAYS = 2592000000;
+  const isAboutToExpire = subEndDate ? Date.now() + THIRTY_DAYS > subEndDate : false;
 
   const needsRenewal = (premium && isAboutToExpire) || (!premium && isSubscriptionExpired);
   const showPopup = needsRenewal || !premium;

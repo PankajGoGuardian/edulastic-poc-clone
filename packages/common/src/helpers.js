@@ -106,10 +106,10 @@ function convertBlobToFile(blob) {
   return null;
 }
 
-function convertStringToFile(str) {
+function convertStringToBlob(str) {
   const blob = new Blob([str], { type: "text/plain;charset=utf-8" });
-  const file = new File([blob], `scratchpad-${Date.now()}.text`);
-  return file;
+  blob.name = `scratchpad-${Date.now()}.text`;
+  return blob;
 }
 
 const s3Folders = Object.values(aws.s3Folders);
@@ -132,7 +132,7 @@ export const uploadToS3 = async (file, folder, progressCallback, cancelUpload) =
   if (isString(file)) {
     // this case will come from scratchpad
     // create new file with the string
-    fileToUpload = convertStringToFile(file);
+    fileToUpload = convertStringToBlob(file);
   }
 
   const { name: fileName } = fileToUpload;
@@ -147,10 +147,10 @@ export const uploadToS3 = async (file, folder, progressCallback, cancelUpload) =
   formData.append("file", file);
 
   if (!progressCallback) {
-    progressCallback = () => { };
+    progressCallback = () => {};
   }
   if (!cancelUpload) {
-    cancelUpload = () => { };
+    cancelUpload = () => {};
   }
 
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload);
@@ -238,7 +238,7 @@ const parseTemplate = tmpl => {
 
   $(parsedHTML)
     .find(".input__math")
-    .each(function () {
+    .each(function() {
       const latex = $(this).attr("data-latex");
       $(this).replaceWith(`<mathspan lineheight={{lineHeight}} latex="${latex}" />`);
     });
@@ -258,7 +258,7 @@ export const reIndexResponses = htmlStr => {
 
   $(parsedHTML)
     .find("textinput, mathinput, mathunit, textdropdown, response, paragraphnumber")
-    .each(function (index) {
+    .each(function(index) {
       $(this)
         .find("span")
         .remove("span");
@@ -300,31 +300,51 @@ export const sanitizeForReview = stimulus => {
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
   let tagFound = false;
+  let firstImageSkipped = false;
+
   tagsToRemove.forEach(tagToRemove => {
-    jqueryEl.find(tagToRemove).each(function () {
+    jqueryEl.find(tagToRemove).each(function() {
       const elem = $(this).context;
-      // replace if tag is not span
-      // span comes when we use italic or bold
-      const shouldReplace = elem.nodeName !== "SPAN"; // sanitize other tags (mainly input responses) from stimulus except span
+      const elemNodeName = elem.nodeName;
+      const isImageElement = elemNodeName === "IMG";
+
+      let shouldReplace;
+      switch (elemNodeName) {
+        case "SPAN":
+          // replace if tag is not span
+          // span comes when we use italic or bold
+          // sanitize other tags (mainly input responses) from stimulus except span
+          shouldReplace = false;
+          break;
+        case "IMG":
+          shouldReplace = firstImageSkipped;
+          break;
+        default:
+          shouldReplace = true;
+      }
+
       const latex = elem.getAttribute("data-latex");
       // sanitize span only if matrix is rendered using a span tag
       // do no sanitize if span does not have latex (in case we use bold or italic)
-      if (elem.nodeName === "SPAN" && latex && latex.includes("matrix")) {
+      if (elemNodeName === "SPAN" && latex && latex.includes("matrix")) {
         $(this).replaceWith(` [matrix] `);
       }
       if (shouldReplace) {
         if (tagMapping[tagToRemove]) {
-          $(this).replaceWith(` ${tagMapping[tagToRemove]} `);
+          $(this).replaceWith(`${tagMapping[tagToRemove]} `);
         } else {
-          $(this).replaceWith(`  [${tagToRemove}] `);
+          $(this).replaceWith(`[${tagToRemove}] `);
         }
+      }
+      if (isImageElement) {
+        firstImageSkipped = true;
       }
       tagFound = true;
     });
   });
   // to remove any text after ...
   // Hiding video and replacing with text [video]
-  jqueryEl.find("p").each(function () {
+  jqueryEl.find("p").each(function() {
     const elem = $(this);
     const hasMath = elem.find(".input__math").length > 0;
     const text = elem.text().trim().length > 0;
@@ -336,12 +356,12 @@ export const sanitizeForReview = stimulus => {
     }
   });
 
-  jqueryEl.find("iframe").each(function () {
+  jqueryEl.find("iframe").each(function() {
     const elem = $(this);
     elem.replaceWith(["[resource]"]);
   });
 
-  jqueryEl.find("a").each(function () {
+  jqueryEl.find("a").each(function() {
     const elem = $(this);
     const textValue = elem.text();
     elem.replaceWith(textValue);
@@ -377,7 +397,7 @@ export const removeIndexFromTemplate = tmpl => {
   const parsedHTML = $("<div />").html(temp);
   $(parsedHTML)
     .find("textinput, mathinput, mathunit, textdropdown, response")
-    .each(function () {
+    .each(function() {
       $(this).removeAttr("responseindex");
       $(this).removeAttr("contenteditable");
     });
@@ -647,8 +667,8 @@ export const rgbToHexc = orig => {
   const rgb = orig.replace(/\s/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
   return rgb && rgb.length === 4
     ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(16)}`.slice(
-      -2
-    )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
+        -2
+      )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
     : orig;
 };
 
@@ -786,7 +806,7 @@ export const getImageUrl = template => {
   let url = "";
   if (window.$) {
     const jqueryEl = window.$(template);
-    jqueryEl.find("img").each(function () {
+    jqueryEl.find("img").each(function() {
       url = this.getAttribute("src");
     });
   }
@@ -796,7 +816,7 @@ export const getImageUrl = template => {
 export const getImageDimensions = url =>
   new Promise(resolve => {
     const image = new Image();
-    image.onload = function () {
+    image.onload = function() {
       resolve({ height: this.naturalHeight, width: this.naturalWidth });
     };
     image.src = url;

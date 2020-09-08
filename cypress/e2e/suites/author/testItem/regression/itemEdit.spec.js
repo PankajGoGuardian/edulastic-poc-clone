@@ -25,7 +25,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
   const reportsPage = new ReportsPage();
 
   let itemIds;
-  const TEST = "EDIT_ASSIGNED_TEST_REGRADE";
+  const TEST = "default";
   let testId;
   let itemsInTest;
   let qType;
@@ -83,11 +83,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
-    before("Verify Presence of Assigned Test", () => {
+    /* before("Verify Presence of Assigned Test", () => {
       cy.login("student", Student1.email, Student1.pass);
       assignmentsPage.verifyPresenceOfTest(testId);
       cy.login("teacher", Teacher.email, Teacher.pass);
-    });
+    }); */
     it("Edit Points of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
 
@@ -148,11 +148,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
-    before("Verify Presence of Assigned Test", () => {
+    /*  before("Verify Presence of Assigned Test", () => {
       cy.login("student", Student1.email, Student1.pass);
       assignmentsPage.verifyPresenceOfTest(testId);
       cy.login("teacher", Teacher.email, Teacher.pass);
-    });
+    }); */
     it("Edit question text of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
 
@@ -218,11 +218,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
-    before("Verify Presence of Assigned Test", () => {
+    /*  before("Verify Presence of Assigned Test", () => {
       cy.login("student", Student1.email, Student1.pass);
       assignmentsPage.verifyPresenceOfTest(testId);
       cy.login("teacher", Teacher.email, Teacher.pass);
-    });
+    }); */
     it("Edit question text of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
       itemListPage.searchFilters.clearAll();

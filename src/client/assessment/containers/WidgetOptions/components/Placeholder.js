@@ -7,7 +7,7 @@ import CommonInput from "./common/CommonInput";
 
 const Placeholder = ({ t, ...restProps }) => (
   <Fragment>
-    <Label>{t("component.options.placeholder")}</Label>
+    <Label data-cy="placeholder">{t("component.options.placeholder")}</Label>
     <CommonInput {...restProps} />
   </Fragment>
 );

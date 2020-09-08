@@ -56,6 +56,7 @@ class AssignmentDragItem extends Component {
       <div className="item" style={{ width: "calc(100% - 35px)" }}>
         <Assignment
           key={moduleData.contentId}
+          data-test={moduleData.contentId}
           data-cy="moduleAssignment"
           borderRadius="unset"
           boxShadow="unset"

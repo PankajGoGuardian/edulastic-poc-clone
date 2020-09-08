@@ -892,6 +892,7 @@ class ModuleRow extends Component {
                         </DragHandle>
                         <div className="item" style={{ width: "calc(100% - 35px)" }}>
                           <Assignment
+                            data-test={moduleData.contentId}
                             data-cy="moduleAssignment"
                             key={moduleData.contentId}
                             borderRadius="unset"

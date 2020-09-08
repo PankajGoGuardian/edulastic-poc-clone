@@ -1,13 +1,13 @@
-import StudentTestPage from "../../../framework/student/studentTestPage";
-import TestAssignPage from "../../../framework/author/tests/testDetail/testAssignPage";
-import AssignmentsPage from "../../../framework/student/assignmentsPage";
-import TeacherSideBar from "../../../framework/author/SideBarPage";
-import MyProfile from "../../../framework/author/myProfilePage";
-import FileHelper from "../../../framework/util/fileHelper";
-import TeacherManageClassPage from "../../../framework/author/manageClassPage";
-import { grades } from "../../../framework/constants/assignmentStatus";
-import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
-import Helpers from "../../../framework/util/Helpers";
+import StudentTestPage from "../../../../framework/student/studentTestPage";
+import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
+import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import MyProfile from "../../../../framework/author/myProfilePage";
+import FileHelper from "../../../../framework/util/fileHelper";
+import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
+import { grades } from "../../../../framework/constants/assignmentStatus";
+import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
+import Helpers from "../../../../framework/util/Helpers";
 
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Add new school`, () => {

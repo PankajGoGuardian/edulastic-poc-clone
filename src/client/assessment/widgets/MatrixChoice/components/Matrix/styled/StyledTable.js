@@ -14,6 +14,10 @@ export const StyledTable = styled(Table)`
 
     tbody {
       border-collapse: collapse;
+      /* To fix height issue with firefox */
+      .ant-table-row-cell-break-word {
+        height: auto;
+      }
     }
 
     thead {

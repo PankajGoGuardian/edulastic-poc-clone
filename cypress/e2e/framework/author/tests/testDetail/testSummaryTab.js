@@ -32,20 +32,25 @@ export default class TestSummayTab {
     if (clear) {
       this.clearGrades();
     }
-    this.getTestGradeSelect().click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(grade)
-      .click({ force: true });
     this.getTestGradeSelect()
-      .find("input")
-      .type("{esc}", { force: true });
+      .click({ force: true })
+      .then($ele => {
+        cy.get(".ant-select-dropdown-menu-item")
+          .contains(grade)
+          .click({ force: true });
+        this.closeDropDowns($ele);
+      });
   };
 
-  setName = testname => {
+  setName = testname =>
     this.getTestName()
-      .clear()
-      .type(testname);
-  };
+      .as("text-box")
+      .invoke("attr", "value")
+      .then(val => {
+        cy.get("@text-box")
+          .type(`{backspace}`.repeat(val.length + 1))
+          .type(`{selectall}${testname}`);
+      });
 
   setDescription = description =>
     this.getTestDescription()
@@ -61,12 +66,14 @@ export default class TestSummayTab {
     if (clear) {
       this.clearSubjects();
     }
-    this.getTestSubjectSelect().click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(subject)
-      .click({ force: true });
-    this.header.clickOnDescription();
-    // cy.focused().blur();
+    this.getTestSubjectSelect()
+      .click({ force: true })
+      .then($ele => {
+        cy.get(".ant-select-dropdown-menu-item")
+          .contains(subject)
+          .click({ force: true });
+        this.closeDropDowns($ele);
+      });
   };
 
   selectCollection = (collection, clear = false) => {
@@ -75,12 +82,14 @@ export default class TestSummayTab {
         if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
       });
     }
-    this.getTestCollectionSelect().click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(collection)
-      .click({ force: true });
-    this.header.clickOnDescription();
-    // cy.focused().blur();
+    this.getTestCollectionSelect()
+      .click({ force: true })
+      .then($ele => {
+        cy.get(".ant-select-dropdown-menu-item")
+          .contains(collection)
+          .click({ force: true });
+        this.closeDropDowns($ele);
+      });
   };
 
   addTags = tags => {
@@ -113,5 +122,12 @@ export default class TestSummayTab {
       .find("li.ant-select-selection__choice")
       .should("contain", subject);
   };
+
+  closeDropDowns = textBar =>
+    cy
+      .wrap(textBar)
+      .find("input")
+      .type("{esc}", { force: true });
+
   // *** APPHELPERS END ***
 }

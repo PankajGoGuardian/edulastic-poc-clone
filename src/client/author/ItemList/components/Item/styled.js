@@ -78,7 +78,6 @@ export const Link = styled.a`
 
   img {
     display: block;
-    width: 200px;
     max-width: 100%;
   }
 `;

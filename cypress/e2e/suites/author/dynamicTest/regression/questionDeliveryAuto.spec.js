@@ -7,7 +7,11 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
-import { attemptTypes, deliverType as DELIVERY_TYPE } from "../../../../framework/constants/questionTypes";
+import {
+  attemptTypes,
+  deliverType as DELIVERY_TYPE,
+  CUSTOM_COLLECTIONS
+} from "../../../../framework/constants/questionTypes";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
 import StandardBasedReportPage from "../../../../framework/author/assignments/standardBasedReportPage";
 
@@ -21,11 +25,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const studentTestPage = new StudentTestPage();
   const sbr = new StandardBasedReportPage();
 
+  const collection = "auto collection 1";
   const testData = {
     name: "Test Item Group",
     grade: "Kindergarten",
     subject: "Math",
-    collections: "auto collection 1"
+    collections: collection
   };
 
   const filterForAutoselect1 = {
@@ -35,7 +40,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       grade: ["Kindergarten"],
       standardsToSelect: ["K.CC.A.1"]
     },
-    collection: "auto collection 1",
+    collection,
     deliveryCount: 1
   };
   const filterForAutoselect2 = {
@@ -45,7 +50,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       grade: ["Kindergarten"],
       standardsToSelect: ["K.CC.A.2"]
     },
-    collection: "auto collection 1",
+    collection,
     deliveryCount: 1
   };
 
@@ -86,14 +91,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const attempData = { right: "right", wrong: "wrong" };
 
   let groups = {};
-
+  /* auto collection 1 */
   const items = ["MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.6", "MCQ_TF.6", "MCQ_TF.6", "MCQ_TF.6"];
   const itemIds = [];
   let testID;
+  const collectionid = CUSTOM_COLLECTIONS.AUTO_COLLECTION_1;
 
   before("Login and create new items", () => {
-    cy.getAllTestsAndDelete(contEditor.email);
-    cy.getAllItemsAndDelete(contEditor.email);
+    cy.getAllTestsAndDelete(contEditor.email, contEditor.pass, undefined, { collections: [collectionid] });
+    cy.getAllItemsAndDelete(contEditor.email, contEditor.pass, undefined, { collections: [collectionid] });
     cy.login("publisher", contEditor.email, contEditor.pass);
     items.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then(id => {

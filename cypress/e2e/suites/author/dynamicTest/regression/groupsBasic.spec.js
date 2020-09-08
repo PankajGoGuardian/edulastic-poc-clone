@@ -4,6 +4,7 @@ import TestAddItemTab from "../../../../framework/author/tests/testDetail/testAd
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import GroupItemsPage from "../../../../framework/author/tests/testDetail/groupItemsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import { CUSTOM_COLLECTIONS } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const testLibraryPage = new TestLibrary();
@@ -11,19 +12,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const groupItemsPage = new GroupItemsPage();
   const testReviewTab = new TestReviewTab();
   const item = new ItemListPage();
+  const collection = "auto collection 3";
   const testData = {
     name: "Test Item Group",
     grade: "Kindergarten",
     subject: "Math",
-    collections: "auto collection 3"
+    collections: collection
   };
   const contEditor = {
     email: "content.editor.1@snapwiz.com",
     pass: "snapwiz"
   };
+  /* auto collection 3 */
   const items = ["MCQ_TF.3", "MCQ_TF.3", "MCQ_TF.3", "MCQ_TF.3"];
   let itemIds = [];
   let itemCount;
+  const collectionid = CUSTOM_COLLECTIONS.AUTO_COLLECTION_3;
 
   const filterForAutoselect = {
     standard: {
@@ -32,7 +36,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       grade: ["Kindergarten"],
       standardsToSelect: ["K.CC.A.2"]
     },
-    collection: "auto collection 3",
+    collection,
     deliveryCount: 2
   };
 
@@ -42,8 +46,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   };
 
   before("Login and create new items", () => {
-    cy.getAllTestsAndDelete(contEditor.email);
-    cy.getAllItemsAndDelete(contEditor.email);
+    cy.getAllTestsAndDelete(contEditor.email, contEditor.pass, undefined, { collections: [collectionid] });
+    cy.getAllItemsAndDelete(contEditor.email, contEditor.pass, undefined, { collections: [collectionid] });
     cy.login("publisher", contEditor.email, contEditor.pass);
     items.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then(id => {

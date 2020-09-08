@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { keys, cloneDeep } from "lodash";
+import { keys, cloneDeep, isPlainObject } from "lodash";
 import produce from "immer";
 import CorrectAnswers from "../../components/CorrectAnswers";
 import CorrectAnswer from "./CorrectAnswer";
@@ -56,7 +56,7 @@ class SetCorrectAnswers extends Component {
 
   updateResponseBoxWidth = newData => {
     let maxLength = 0;
-    const { vlaue: correctAnswers } = newData.validation.validResponse;
+    const { value: correctAnswers } = newData.validation.validResponse;
     keys(correctAnswers).forEach(id => {
       maxLength = Math.max(maxLength, correctAnswers[id] ? correctAnswers[id].length : 0);
     });
@@ -68,7 +68,9 @@ class SetCorrectAnswers extends Component {
       });
     });
     const finalWidth = 40 + maxLength * 7;
+    newData.uiStyle = isPlainObject(newData.uiStyle) ? newData.uiStyle : {};
     newData.uiStyle.width = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+
     return newData;
   };
 

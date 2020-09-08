@@ -16,7 +16,7 @@ import AssessmentPlayerModal from "../../../Assignments/components/Container/Tes
 import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
-import { getDynamicVariablesSetIdForViewResponse } from "../../../ClassBoard/ducks";
+import { getDynamicVariablesSetIdForViewResponse, ttsUserIdSelector } from "../../../ClassBoard/ducks";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
@@ -49,9 +49,7 @@ function Preview({
   const answerContextConfig = useContext(AnswerContext);
   const target = get(questionActivity, isExpressGrader || isQuestionView ? "_id" : "qActId", "");
   const timeSpent = (get(questionActivity, "timeSpent", 0) / 1000).toFixed(1);
-
   // const previouscratchPadDimensions = showScratchpadByDefault ? questionActivity.scratchPad.dimensions : null;
-
   const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item;
   const scoringProps = { multipartItem, itemLevelScoring, isPassageWithQuestions };
   const attachments = get(questionActivity, "scratchPad.attachments", null);
@@ -343,7 +341,8 @@ class ClassQuestions extends Component {
       qIndex,
       testActivityId,
       isPresentationMode,
-      t
+      t,
+      ttsUserIds
     } = this.props;
     const testItems = this.getTestItems();
     const { expressGrader: isExpressGrader = false } = this.context;
@@ -370,9 +369,11 @@ class ClassQuestions extends Component {
         showStudentWork = () => this.setState({ showDocBasedPlayer: true });
       }
       const questionActivity = questionActivities.find(act => act.testItemId === item._id);
+
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
+          ttsUserIds={ttsUserIds}
           studentName={(currentStudent || {})[isPresentationMode ? "fakeName" : "studentName"]}
           key={index}
           item={item}
@@ -471,7 +472,8 @@ const withConnect = connect(
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
-    userWork: get(state, ["userWork", "present"], {})
+    userWork: get(state, ["userWork", "present"], {}),
+    ttsUserIds: ttsUserIdSelector(state)
   }),
   {
     loadScratchPad: loadScratchPadAction,

@@ -24,9 +24,9 @@ ArrowItem.defaultProps = {
 };
 
 const ArrowFilter = ({ data, onClick, selected }) => {
-  const itemAll = data.find(d => d.id === "");
-  const items = data.filter(d => d.id !== "");
-  const allItemsCount = items.reduce((res, ele) => res + (ele.count || 0), 0);
+  const itemAll = (data || []).find(d => d.id === "");
+  const items = (data || []).filter(d => d.id !== "");
+  const allItemsCount = (items || []).reduce((res, ele) => res + (ele.count || 0), 0);
   return (
     <FlexContainer alignItems="center">
       <div>
@@ -39,17 +39,18 @@ const ArrowFilter = ({ data, onClick, selected }) => {
         )}
       </div>
       <ItemsContainer>
-        {items.map(item => (
-          <ArrowItem
-            key={item.id}
-            handleClick={() => onClick(item.id)}
-            color={selected === item.id ? "white" : item.fgColor}
-            bgColor={selected === item.id && item.fgColor}
-          >
-            <span>{item.count || 0}</span>
-            {item.name}
-          </ArrowItem>
-        ))}
+        {
+          items.map(item => (
+            <ArrowItem
+              key={item.id}
+              handleClick={() => onClick(item.id)}
+              color={selected === item.id ? "white" : item.fgColor}
+              bgColor={selected === item.id && item.fgColor}
+            >
+              <span>{item.count || 0}</span>
+              {item.name}
+            </ArrowItem>
+          ))}
       </ItemsContainer>
     </FlexContainer>
   );

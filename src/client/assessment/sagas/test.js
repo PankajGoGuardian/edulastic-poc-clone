@@ -40,6 +40,7 @@ import { CLEAR_ITEM_EVALUATION, CHANGE_VIEW } from "../../author/src/constants/a
 import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 import { PREVIEW } from "../constants/constantsForQuestions";
 import { getUserRole } from "../../author/src/selectors/user";
+import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants;
 
@@ -127,8 +128,8 @@ function* loadTest({ payload }) {
     if (!preview) {
       const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
       let passwordValidated =
-        testActivity.assignmentSettings.passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary;
+        testActivity?.assignmentSettings?.passwordPolicy ===
+          testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF || isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }
@@ -408,20 +409,23 @@ function* loadTest({ payload }) {
       payload: false
     });
   } catch (err) {
-    console.error(err);
     Sentry.captureException(err);
     yield put({
       type: SET_TEST_LOADING_ERROR,
       payload: err
     });
-    if (err.status === 403) {
+    if (err.status) {
       if (preview) {
         notification({ messageKey: "youCanNoLongerUse" });
         return Modal.destroyAll();
       }
       const userRole = yield select(getUserRole);
+      let messageKey = "failedLoadingTest";
+      if (err.status === 400) {
+        messageKey = "invalidAction";
+      }
       if (userRole === roleuser.STUDENT) {
-        notification({ msg: err.response.data.message || "Failed loading the test" });
+        notification({ messageKey });
         return yield put(push("/home/assignments"));
       }
     }
@@ -456,6 +460,10 @@ function* submitTest({ payload }) {
       return;
     }
     yield testActivityApi.submit(testActivityId, groupId);
+    // log the details on auto submit
+    if (payload.autoSubmit) {
+      checkClientTime({ testActivityId, timedTest: true });
+    }
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: "" }

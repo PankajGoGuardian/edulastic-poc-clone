@@ -145,8 +145,8 @@ class AddItems extends PureComponent {
       const isAuthoredNow = history?.location?.state?.isAuthoredNow;
       const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
       const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
-      const selectedSubjects = test?.subjects?.filter(item => !!item);
-      const selectedGrades = test.grades.filter(item => !!item);
+      const selectedSubjects = (test?.subjects || []).filter(item => !!item);
+      const selectedGrades = (test?.grades || []).filter(item => !!item);
       search = {
         ...initSearch,
         ...sessionFilters,
@@ -459,28 +459,27 @@ class AddItems extends PureComponent {
       showGroupItemsBtn = true;
     }
 
-    const itemGroupCount = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || [])?.length || 0
+    const itemGroupCount = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || [])?.length || 0;
 
     return (
       <Container>
-        {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
-          <ItemFilter
-            onSearchFieldChange={this.handleSearchFieldChange}
-            onSearchInputChange={this.handleSearchInputChange}
-            onSearch={this.handleSearch}
-            onClearSearch={this.handleClearSearch}
-            onLabelSearch={this.handleLabelSearch}
-            windowWidth={windowWidth}
-            search={search}
-            curriculums={curriculums}
-            getCurriculumStandards={getCurriculumStandards}
-            curriculumStandards={curriculumStandards}
-            items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
-            toggleFilter={toggleFilter}
-            isShowFilter={isShowFilter}
-            t={t}
-          />
-        )}
+        <ItemFilter
+          onSearchFieldChange={this.handleSearchFieldChange}
+          onSearchInputChange={this.handleSearchInputChange}
+          onSearch={this.handleSearch}
+          onClearSearch={this.handleClearSearch}
+          onLabelSearch={this.handleLabelSearch}
+          windowWidth={windowWidth}
+          search={search}
+          curriculums={curriculums}
+          getCurriculumStandards={getCurriculumStandards}
+          curriculumStandards={curriculumStandards}
+          items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
+          toggleFilter={toggleFilter}
+          isShowFilter={isShowFilter}
+          showFilter={windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter}
+          t={t}
+        />
         <ListItems isShowFilter={isShowFilter}>
           <Element>
             <MobileFilterIcon>
@@ -498,9 +497,7 @@ class AddItems extends PureComponent {
                   type="testitem"
                 />
                 <FlexContainer alignItems="center" justifyContent="space-between">
-                  <Selected style={{ fontSize: "12px" }}>
-                    {itemGroupCount} SELECTED
-                  </Selected>
+                  <Selected style={{ fontSize: "12px" }}>{itemGroupCount} SELECTED</Selected>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
                     <EduButton height="28px" isGhost data-cy="createNewItem" onClick={this.handleCreateNewItem}>
                       <IconPlusCircle color={themeColor} width={12} height={12} />

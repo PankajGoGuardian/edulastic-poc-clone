@@ -18,8 +18,9 @@ class BasicCalculator extends React.Component {
   handleClick = buttonName => {
     if (buttonName === "Delete") {
       this.setState({ total: null, next: null, operation: null });
+    } else {
+      this.setState(calculate(this.state, buttonName));
     }
-    this.setState(calculate(this.state, buttonName));
   };
 
   render() {

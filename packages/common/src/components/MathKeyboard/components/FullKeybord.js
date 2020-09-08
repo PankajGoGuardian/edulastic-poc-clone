@@ -23,7 +23,7 @@ export default FullKeybord;
 const Tabs = styled(AntTabs)`
   & .ant-tabs-nav .ant-tabs-tab {
     margin: 0px;
-    padding: 8px;
+    padding: 8px 12px;
   }
 
   & .ant-tabs-bar {
@@ -31,6 +31,6 @@ const Tabs = styled(AntTabs)`
   }
 
   & .ant-tabs-nav-scroll {
-    padding: 0px 8px;
+    padding: 0px 24px;
   }
 `;

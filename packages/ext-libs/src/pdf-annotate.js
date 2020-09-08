@@ -4973,7 +4973,7 @@ var { uploadToS3 } = require("@edulastic/common");
           var upload = document.getElementById("BtnBrowseHidden");
           var header = document.getElementById("edu-annotate-upload-label");
 
-          if (upload.files[0]) {
+          if (upload?.files?.[0]) {
             header.innerText = upload.files[0].name;
 
             uploadToS3(upload.files[0], aws.s3Folders.DEFAULT)

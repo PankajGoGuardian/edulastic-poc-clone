@@ -9,6 +9,8 @@ import {
   StyledModal,
   ModalFormItem
 } from "../../../common/styled";
+import { validateEmail } from "../../../common/utils/helpers"  
+
 
 const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, closeModal }) => {
   const [emailValidateStatus, setEmailValidateStatus] = useState("success");
@@ -27,7 +29,7 @@ const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, 
     } else if (email.length == 0) {
       setEmailValidateStatus("error");
       setEmailValidateMsg("Please input Email");
-    } else if (checkValidEmail(email)) {
+    } else if (validateEmail(email)) {
       setEmailValidateStatus("error");
       setEmailValidateMsg("Username already exists");
     } else {
@@ -60,7 +62,7 @@ const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, 
     if (e.target.value.length === 0) {
       setEmailValidateStatus("error");
       setEmailValidateMsg("Please input Email");
-    } else if (checkValidEmail(e.target.value)) {
+    } else if (validateEmail(e.target.value)) {
       setEmailValidateStatus("success");
       setEmailValidateMsg("");
     } else {
@@ -68,11 +70,6 @@ const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, 
       setEmailValidateMsg("Please input valid Email");
     }
     setEmail(e.target.value);
-  };
-
-  const checkValidEmail = strEmail => {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(strEmail).toLowerCase());
   };
 
   const { getFieldDecorator } = form;

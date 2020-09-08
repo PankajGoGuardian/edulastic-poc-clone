@@ -90,7 +90,9 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
           .split(",")
           .filter(g => g.length)
           .includes(currentFilter.grade) || currentFilter.grade === "All";
-      const checkForSchool = currentFilter.schoolId === "All" ||
+      const checkForSchool =
+        !currentFilter.schoolId ||
+        currentFilter.schoolId === "All" ||
         (item.groupType === "class" && item.schoolId === currentFilter.schoolId);
       if (
         item.groupId &&

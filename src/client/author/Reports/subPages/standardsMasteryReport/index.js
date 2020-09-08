@@ -170,8 +170,8 @@ const StandardsMasteryReportContainer = props => {
 
   const filterDropDownCBForPerformance = (event, selected, comData) => {
     setDdFilterForPerformance({
-      ...ddfilter,
-      [comData]: selected.key
+      ...ddfilterForPerformance,
+      [comData]: selected
     });
   };
 
@@ -190,7 +190,7 @@ const StandardsMasteryReportContainer = props => {
         <ControlDropDown
           data={item.data}
           comData={item.key}
-          by={item.data[0]}
+          by={ddfilterForPerformance[item.key]}
           selectCB={filterDropDownCBForPerformance}
         />
       </SearchField>
@@ -239,6 +239,7 @@ const StandardsMasteryReportContainer = props => {
                 ddfilter={ddfilter}
                 settings={gradebookSettings}
                 standardsGradebook={standardsGradebook}
+                standardsOrgData={orgData}
               />
             );
           }}
@@ -248,7 +249,14 @@ const StandardsMasteryReportContainer = props => {
           path="/author/reports/standards-performance-summary"
           render={_props => {
             setShowHeader(true);
-            return <StandardsPerfromance {..._props} settings={gradebookSettings} ddfilter={ddfilterForPerformance} />;
+            return (
+              <StandardsPerfromance
+                {..._props}
+                settings={gradebookSettings}
+                ddfilter={ddfilterForPerformance}
+                standardsOrgData={orgData}
+              />
+            );
           }}
         />
       </ReportContaner>

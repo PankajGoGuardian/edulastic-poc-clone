@@ -28,7 +28,7 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
   const { name: instructorName } = owners.find(owner => owner.id === parent.id) || owners[0] || "";
 
   const allgrades = grades && grades.join(", ").replace(/O/i, " Other ");
-  const allStandardSets = standardSets && standardSets.map(std => std.name).join(",");
+  const allStandardSets = (standardSets || []).map(std => std.name).join(",");
   const handleVisitClass = () => {
     changeClass(classItem._id);
     sessionStorage.setItem("temporaryClass", classItem._id);
@@ -88,7 +88,7 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
               </Tooltip>
             </Row>
 
-            {grades.length ? (
+            {grades?.length ? (
               <Row type="flex" align="middle">
                 <InfoLabel xs={24} md={8} xxl={6}>
                   {t("common.grade")}
@@ -116,7 +116,7 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
               </Tooltip>
             </Row>
 
-            {standardSets.length ? (
+            {(standardSets || []).length ? (
               <Row type="flex" align="middle">
                 <InfoLabel xs={24} md={8} xxl={6}>
                   {t("common.standard")}

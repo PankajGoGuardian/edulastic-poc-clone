@@ -469,6 +469,11 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
     const qid = newState.item.rows[rowIndex].widgets[widgetIndex].reference;
     newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter((w, i) => i !== widgetIndex);
 
+    newState.item.data.questions = reSequenceQuestionsWithWidgets(
+      get(newState, `item.rows.[${rowIndex}].widgets`),
+      get(newState, "item.data.questions")
+    );
+
     pull(newState.qids, qid);
   });
 
@@ -602,12 +607,13 @@ const moveWidget = (state, { from, to }) =>
       .flatMap(x => x.widgets)
       .filter(widget => widget.widgetType === "question")
       .map(x => x.reference);
-    const { questions } = newState.item?.data;
+    const { questions } = newState?.item?.data || {};
     if (Array.isArray(questions) && questions.length > 0) {
       // change the order of item.data.questions
-      newState.item.data.questions = newState.qids.map(qid => {
-        return questions.find(q => q.id === qid);
-      });
+      newState.item.data.questions = reSequenceQuestionsWithWidgets(
+        get(newState, `item.rows[${to?.rowIndex}].widgets`),
+        questions
+      );
       markQuestionLabel([newState.item]); // change the question label as per new order
     }
   });
@@ -906,7 +912,7 @@ export function* deleteItemSaga({ payload }) {
     yield put(setItemDeletingAction(false));
     console.error(e);
     if (e.status === 403) {
-      return notification({ msg: e.response.data.message });
+      return notification({ msg: e?.response?.data?.message });
     }
     notification({ messageKey: "deletingItemFailed" });
   }
@@ -953,7 +959,9 @@ export function* updateItemSaga({ payload }) {
       return null;
     }
 
-    questions = reSequenceQuestionsWithWidgets(rows?.[0]?.widgets, questions);
+    const _widgets = rows.flatMap(({ widgets }) => widgets).filter(widget => widget.widgetType === "question");
+
+    questions = reSequenceQuestionsWithWidgets(_widgets, questions);
 
     questions = produce(questions, draft => {
       draft.map((q, index) => {
@@ -1026,9 +1034,17 @@ export function* updateItemSaga({ payload }) {
         return null;
       }
     }
-    // return;
+
+    /**
+     * in test flow, until test is not created, testId comes as "undefined" in string
+     * do no pass it to API as testId argument
+     * @see https://snapwiz.atlassian.net/browse/EV-18458
+     */
+    const hasValidTestId = payload.testId && payload.testId !== "undefined";
+    const testIdParam = hasValidTestId ? payload.testId : null;
+
     const [{ testId, ...item }, updatedPassage] = yield all([
-      call(testItemsApi.updateById, payload.id, data, payload.testId),
+      call(testItemsApi.updateById, payload.id, data, testIdParam),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null
     ]);
     if (isPassageWithQuestions && !isEmpty(passageData) && !updatedPassage) {
@@ -1347,7 +1363,7 @@ function* publishTestItemSaga({ payload }) {
   } catch (e) {
     Sentry.captureException(e);
     console.warn("publish error", e);
-    const { message: errorMessage = "Failed to publish item" } = e.response.data;
+    const { message: errorMessage = "Failed to publish item" } = e?.response?.data || {};
     notification({ msg: errorMessage });
   }
 }

@@ -177,30 +177,29 @@ const StyledBodyContainer = styled.div`
   @media screen and (max-height: 680px) {
     overflow: hidden auto;
 
-    &::-webkit-scrollbar {
-      width: 5px;
-    }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
 
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  &:hover {
     &::-webkit-scrollbar-track {
-      background: transparent;
+      background: #f1f1f1;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
-
-    &:hover {
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #888;
-      }
+      background: #888;
     }
   }
 `;

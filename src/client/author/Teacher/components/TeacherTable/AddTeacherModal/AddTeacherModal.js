@@ -5,7 +5,7 @@ import { themeColor } from "@edulastic/colors";
 import { CheckboxLabel, CustomModalStyled, EduButton, SelectInputStyled, TextInputStyled } from "@edulastic/common";
 import { IconLock, IconMail, IconUser } from "@edulastic/icons";
 import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
-import { nameValidator } from "../../../../../common/utils/helpers";
+import { nameValidator, validateEmail } from "../../../../../common/utils/helpers";
 
 const Option = Select.Option;
 
@@ -56,7 +56,7 @@ class AddTeacherModal extends React.Component {
           value: emailValidate.value
         }
       });
-    } else if (this.checkValidEmail(emailValidate.value)) {
+    } else if (validateEmail(emailValidate.value)) {
       this.setState({
         emailValidate: {
           validateStatus: "error",
@@ -114,7 +114,7 @@ class AddTeacherModal extends React.Component {
           value: e.target.value
         }
       });
-    } else if (this.checkValidEmail(e.target.value)) {
+    } else if (validateEmail(e.target.value)) {
       this.setState({
         emailValidate: {
           validateStatus: "success",
@@ -132,11 +132,6 @@ class AddTeacherModal extends React.Component {
       });
     }
   };
-
-  checkValidEmail(strEmail) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(strEmail).toLowerCase());
-  }
 
   fetchSchool = async value => {
     console.log("fetching...");

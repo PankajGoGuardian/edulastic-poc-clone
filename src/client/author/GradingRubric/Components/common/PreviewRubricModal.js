@@ -39,7 +39,9 @@ const PreviewRubricModal = ({
     setObtained(response.score);
     setRubricResponse(response);
     setValidateRubricResponse(false);
-    onRubricResponseUpdate(response);
+    if (onRubricResponseUpdate) {
+      onRubricResponseUpdate(response);
+    }
   };
 
   const handleCloseRubric = () => {

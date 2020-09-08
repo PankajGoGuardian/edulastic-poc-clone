@@ -2,8 +2,8 @@ import React from "react";
 import { CustomImage } from "./keyboardButtons";
 import lefticon from "../assets/headerButtons/left.svg";
 import righticon from "../assets/headerButtons/right.svg";
-import redoicon from "../assets/headerButtons/redo.svg";
-import undoicon from "../assets/headerButtons/undo.svg";
+// import redoicon from "../assets/headerButtons/redo.svg";
+// import undoicon from "../assets/headerButtons/undo.svg";
 import deleteicon from "../assets/headerButtons/delete.svg";
 
 export const HEADER_BUTTONS = [
@@ -19,18 +19,18 @@ export const HEADER_BUTTONS = [
     types: ["all"],
     command: "cmd"
   },
-  {
-    handler: "",
-    label: <CustomImage src={undoicon} width={20} height={17} role="presentation" />,
-    types: ["all"],
-    command: "cmd"
-  },
-  {
-    handler: "",
-    label: <CustomImage src={redoicon} width={20} height={17} role="presentation" />,
-    types: ["all"],
-    command: "cmd"
-  },
+  // {
+  //   handler: "",
+  //   label: <CustomImage src={undoicon} width={20} height={17} role="presentation" />,
+  //   types: ["all"],
+  //   command: "cmd"
+  // },
+  // {
+  //   handler: "",
+  //   label: <CustomImage src={redoicon} width={20} height={17} role="presentation" />,
+  //   types: ["all"],
+  //   command: "cmd"
+  // },
   {
     handler: "Backspace",
     label: <CustomImage src={deleteicon} width={20} height={15} role="presentation" />,

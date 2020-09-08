@@ -116,7 +116,7 @@ class MathInput extends React.PureComponent {
     }
   };
 
-  sanitizeLatex = v => (v || "").replace(/&amp;/g, "&");
+  sanitizeLatex = v => (v?.toString() || "").replace(/&amp;/g, "&");
 
   handleKeypress = e => {
     const { restrictKeys, allowNumericOnly, value = "" } = this.props;

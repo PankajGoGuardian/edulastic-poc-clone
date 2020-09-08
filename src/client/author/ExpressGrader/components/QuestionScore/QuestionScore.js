@@ -8,7 +8,7 @@ class QuestionScore extends Component {
   render() {
     const { question, tableData, showQuestionModal, isTest, scoreMode = true } = this.props;
     const isQuestion = question && question.score !== undefined && question.maxScore !== undefined;
-    let { score: studentScore, graded, skipped, maxScore, responseToDisplay } = question; // score, maxScore,
+    let { score: studentScore, graded, skipped, maxScore, responseToDisplay } = question || {}; // score, maxScore,
     let answerStatus = null;
     if (studentScore === maxScore && maxScore > 0) {
       answerStatus = "correct";

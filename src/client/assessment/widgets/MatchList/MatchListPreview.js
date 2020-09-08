@@ -28,7 +28,6 @@ import DropContainer from "../../components/DropContainer";
 import Instructions from "../../components/Instructions";
 import { CHECK, SHOW, PREVIEW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 import DragItem from "./components/DragItem";
-import { ListItem } from "./styled/ListItem";
 import { Separator } from "./styled/Separator";
 import { CorTitle } from "./styled/CorTitle";
 import { AnswerItem } from "./styled/AnswerItem";
@@ -41,6 +40,7 @@ import { StyledPaperWrapper } from "../../styled/Widget";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import DragItems from "./components/DragItems";
 import { storeOrderInRedux } from "../../actions/assessmentPlayer";
+import ListItemContainer from "./components/ListItemContainer";
 
 const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW, minHeight: choiceMinHeight } = ChoiceDimensions;
 
@@ -390,11 +390,8 @@ const MatchListPreview = ({
       style={{
         fontSize,
         overflowX: isPrintPreview ? "hidden" : "auto",
-        overflowY: "auto", // adding vertical scroll to fix iPad issue
         margin: "auto",
-        width: "100%",
-        // limiting assessment area to 252 = 100vh - 182px(AuthorTestItemPreview height) - 70px (padding) - 5px (extra)
-        maxHeight: "calc(100vh -  257px)"
+        width: "100%"
       }}
       padding={smallSize}
       ref={previewWrapperRef}
@@ -412,7 +409,7 @@ const MatchListPreview = ({
           </QuestionTitleWrapper>
           <div data-cy="previewWrapper" style={wrapperStyle} className="match-list-preview-wrapper __no-flex-on-print">
             <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
-              {list.map((ite, i) => (
+              {list.map(({ value = "", label = "" }, i) => (
                 <div className="__prevent-page-break" style={{ width: "100%" }}>
                   <AnswerItem
                     key={i}
@@ -420,9 +417,7 @@ const MatchListPreview = ({
                     alignItems="center"
                     childMarginRight={smallSize ? 13 : 45}
                   >
-                    <ListItem smallSize={smallSize} style={stemColStyle}>
-                      <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite.label }} />
-                    </ListItem>
+                    <ListItemContainer key={value} smallSize={smallSize} stemColStyle={stemColStyle} label={label} />
                     <Separator smallSize={smallSize} />
                     <DropContainer
                       noBorder={!!ans[list[i].value]}
@@ -669,11 +664,7 @@ const enhance = compose(
 
 export default enhance(MatchListPreview);
 
-const StyledMathFormulaDisplay = styled(MathFormulaDisplay)`
-  color: ${props => props.theme.widgets.matchList.dragItemColor};
-`;
-
-const StyledCorrectAnswersContainer = styled(CorrectAnswersContainer).attrs({ minHeight: "auto" })`
+const StyledCorrectAnswersContainer = styled(CorrectAnswersContainer).attrs({ minHeight: "auto", minWidth: "200px" })`
   margin: 20px auto;
   & > h3 {
     color: ${props => props.theme.widgets.matchList.dragItemColor};

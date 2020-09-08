@@ -8,7 +8,7 @@ import { roleuser } from "@edulastic/constants";
 import { getInterestedCurriculumsSelector, getUser } from "../../../../src/selectors/user";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
 import { StyledCard, StyledH3 } from "../../../common/styled";
-import { getStudentAssignments } from "../../../common/util";
+import { getStudentAssignments, processClassAndGroupIds } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
   getFiltersSelector,
@@ -37,6 +37,7 @@ const StandardsGradebook = ({
   role,
   settings,
   loading,
+  loadingFiltersData,
   selectedStandardProficiency,
   filters,
   getStudentStandards,
@@ -45,7 +46,8 @@ const StandardsGradebook = ({
   location,
   pageTitle,
   ddfilter,
-  user
+  user,
+  standardsOrgData
 }) => {
   const [chartFilter, setChartFilter] = useState({});
 
@@ -57,22 +59,31 @@ const StandardsGradebook = ({
     () => getStudentAssignments(selectedStandardProficiency, studentStandardData),
     [selectedStandardProficiency, studentStandardData]
   );
+  const [classIdArr, groupIdArr] = useMemo(() => processClassAndGroupIds(standardsOrgData), [standardsOrgData]);
 
   useEffect(() => {
     if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
       const q = {
         testIds: settings.selectedTest.map(test => test.key).join(),
         ...settings.requestFilters,
-        grades: (settings.requestFilters.grades || []).join(",")
+        grades: (settings.requestFilters.grades || []).join(),
+        schoolIds: settings.requestFilters.schoolId
       };
-      const { schoolId } = settings.requestFilters;
-      let schoolIds = "";
-      if (isEmpty(schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
-        schoolIds = get(user, "institutionIds", []).join(",");
-      } else {
-        schoolIds = schoolId;
+      if (isEmpty(q.schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+        q.schoolIds = get(user, "institutionIds", []).join(",");
       }
-      q.schoolIds = schoolIds;
+      if (!loadingFiltersData) {
+        Object.assign(q, {
+          classList: classIdArr
+            .slice(1)
+            .map(cId => cId.key)
+            .join(),
+          groupList: groupIdArr
+            .slice(1)
+            .map(gId => gId.key)
+            .join()
+        });
+      }
       getStandardsGradebookRequest(q);
     }
   }, [settings]);
@@ -119,7 +130,7 @@ const StandardsGradebook = ({
 
   return (
     <div>
-      {loading ? (
+      {loading || loadingFiltersData ? (
         <SpinLoader position="fixed" />
       ) : (
         <>
@@ -175,7 +186,8 @@ const StandardsGradebook = ({
 const enhance = compose(
   connect(
     state => ({
-      loading: getReportsStandardsGradebookLoader(state) || getReportsStandardsFiltersLoader(state),
+      loading: getReportsStandardsGradebookLoader(state),
+      loadingFiltersData: getReportsStandardsFiltersLoader(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),

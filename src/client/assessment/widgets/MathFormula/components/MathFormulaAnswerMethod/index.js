@@ -154,7 +154,7 @@ const MathFormulaAnswerMethod = ({
     newSetThousandsSeparator.splice(ind, 1);
     changeOptions("setThousandsSeparator", newSetThousandsSeparator);
   };
-  const methodOptions = methodOptionsConst[method];
+  const methodOptions = methodOptionsConst && methodOptionsConst[method];
   const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
 
   const renderMethodsOptions = _methodOptions =>
@@ -566,7 +566,7 @@ const MathFormulaAnswerMethod = ({
               onChange={changeOptions}
               keypadOffset={keypadOffset}
               onChangeShowDropdown={onChangeShowDropdown}
-              unitsStyle={methodOptions.includes("notExpected")}
+              unitsStyle={methodOptions?.includes("notExpected")}
               preview={view === "preview"}
               view={view}
               keypadMode={keypadMode}
@@ -635,7 +635,7 @@ const MathFormulaAnswerMethod = ({
               </SelectInputStyled>
             </Col>
             <Col span={14}>
-              {methodOptions.includes("rule") && (
+              {methodOptions?.includes("rule") && (
                 <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />
               )}
             </Col>

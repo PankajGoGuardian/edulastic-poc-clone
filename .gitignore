@@ -27,4 +27,5 @@ public/testlets/
 
 dist/
 src/chrome-extension/dist/
+commit-log*
 src/chrome-extension/.env

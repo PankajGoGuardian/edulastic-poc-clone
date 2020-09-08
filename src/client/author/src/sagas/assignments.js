@@ -44,11 +44,12 @@ function* receiveAssignmentClassList({ payload = {} }) {
     }
   } catch (error) {
     Sentry.captureException(error);
-    let errorMessage = "Receive class list failing";
+    const errorMessage = "Receive class list failing";
+    let messageKey = "receiveClasslistFailing";
     if (get(error, "status") === 400) {
-      errorMessage = "Invalid Action.";
+      messageKey = "invalidAction";
     }
-    notification({ msg: errorMessage });
+    notification({ messageKey });
     yield put({
       type: RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
       payload: { error: errorMessage }
@@ -60,17 +61,16 @@ function* receiveAssignmentClassList({ payload = {} }) {
 function* receiveAssignmentsSummary({ payload = {} }) {
   try {
     // filtering should be false otherwise it will reset the current page to 1
-    const { districtId = "", filters = {}, sort } = payload;
+    const { districtId = "", filters = {}, sort, folderId } = payload;
     if (get(filters, "subject")) {
       set(filters, "Subject", get(filters, "subject"));
       unset(filters, "subject");
     }
     const userRole = yield select(getUserRole);
     if (userRole === "district-admin" || userRole === "school-admin") {
-      const folder = yield select(state => get(state, "folder.entity"), {});
       const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
         districtId,
-        filters: { ...pickBy(filters, identity), folderId: folder._id },
+        filters: { ...pickBy(filters, identity), folderId },
         sort
       });
       // handle zero assignments for current filter result

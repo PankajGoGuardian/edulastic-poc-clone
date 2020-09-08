@@ -135,7 +135,7 @@ const SingleAssessmentReportFilters = ({
       key: "All",
       title: "All Courses"
     };
-    const urlClassId = dropDownData.classes.find(item => item.key === search.groupId) || {
+    const urlClassId = dropDownData.classes.find(item => item.key === search.classId) || {
       key: "All",
       title: "All Classes"
     };

@@ -228,9 +228,11 @@ const removeTestFromPlaylist = (playlist, payload) => {
   let newPlaylist;
   if (moduleIndex >= 0) {
     newPlaylist = produce(playlist, draft => {
-      draft.modules[payload.moduleIndex].data = draft?.modules?.[payload.moduleIndex]?.data?.filter(
-        content => content.contentId !== payload.itemId
-      );
+      if (draft.modules[payload.moduleIndex]) {
+        draft.modules[payload.moduleIndex].data = draft?.modules?.[payload.moduleIndex]?.data?.filter(
+          content => content.contentId !== payload.itemId
+        );
+      }
     });
   } else {
     newPlaylist = produce(playlist, draft => {

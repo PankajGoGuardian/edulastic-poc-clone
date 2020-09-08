@@ -24,6 +24,7 @@ module.exports = {
     "5e0f3c5b03b7ad0924ef0ac9": "CLI TX",
     "5e0f3c5b03b7ad0924ef0ae1": "CLI World Languages Spanish",
     "5f0da8996ea7a80007cb65d8": "CLI World Languages Chinese",
-    "5f0eb316c5a0450007eaa2d9": "CLI World Languages French"
+    "5f0eb316c5a0450007eaa2d9": "CLI World Languages French",
+    "5ef23b2a588604000731e38f": "CL Mirrors and Windows"
   }
 };

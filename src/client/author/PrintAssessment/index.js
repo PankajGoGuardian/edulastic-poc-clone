@@ -15,11 +15,15 @@ import { getCollectionsSelector, getUserRole, getUserFeatures } from "../src/sel
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants;
 
-function useTestFetch(testId, type, filterQuestions) {
+function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
   const [testDetails, setTestDetails] = useState(null);
 
   useEffect(() => {
-    testsApi.getById(testId).then(test => {
+    /**
+     * need to pass `assignmentId`, `groupId` for avoiding test read permission error
+     * passing `data` , `validation` to include testItems contents for rendering
+     */
+    testsApi.getByIdMinimal(testId, { assignmentId, data: true, validation: true, groupId }).then(test => {
       const {
         passages,
         itemGroups = [],
@@ -50,10 +54,10 @@ function useTestFetch(testId, type, filterQuestions) {
 const PrintAssessment = ({ match, userRole, features, location }) => {
   const containerRef = useRef(null);
   const query = queryString.parse(location.search);
-  const { type, qs } = query;
+  const { type, qs, assignmentId, groupId } = query;
   const filterQuestions = type === "custom" ? formatQuestionLists(qs) : [];
   const { testId } = match.params;
-  const test = useTestFetch(testId, type, filterQuestions);
+  const test = useTestFetch(testId, type, filterQuestions, assignmentId, groupId);
 
   if (!test) {
     return <div> Loading... </div>;
@@ -104,9 +108,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
             })}
             {!!test.answers.length && features.premium && (
               <StyledAnswerWrapper>
-                <StyledAnswerText>
-                  Answer Key of {test.title}
-                </StyledAnswerText>
+                <StyledAnswerText>Answer Key of {test.title}</StyledAnswerText>
                 {test.answers.map(answer => (
                   <AnswerContainer>
                     {answer.qLabel}.

@@ -515,7 +515,7 @@ class WorksheetComponent extends React.Component {
     });
   };
 
-  clearHighlighted = () => this.setState({highlightedQuestion: null});
+  clearHighlighted = () => this.setState({ highlightedQuestion: null });
 
   render() {
     const {
@@ -545,6 +545,7 @@ class WorksheetComponent extends React.Component {
       redoAnnotationsOperation,
       isAnnotationsStackEmpty = false,
       pdfAnnotations = [],
+      isEditable,
       currentPage: _currentPageInProps,
       match = {},
       groupId
@@ -560,8 +561,8 @@ class WorksheetComponent extends React.Component {
       isToolBarVisible,
       currentPage: _currentPageInState
     } = this.state;
-    
-    const {qid} = match.params || {};
+
+    const { qid } = match.params || {};
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState;
     const { width: v1Width, height: v1Height } = response.v1DocBased;
     let { answersById } = this.props;
@@ -577,8 +578,11 @@ class WorksheetComponent extends React.Component {
     // 350+(15 extra space) IS THE TOTAL WIDTH OF RIGHT QUESTION AREA
     const rightColumnWidth = windowWidth > 1024 ? 365 : 295;
     const pdfWidth =
-      questions.length && questions[0].isV1Migrated ? v1Width : windowWidth - rightColumnWidth - leftColumnWidth;
-    const pdfHeight = questions.length && questions[0].isV1Migrated ? v1Height : undefined;
+      (questions || []).length && questions[0].isV1Migrated
+        ? v1Width
+        : windowWidth - rightColumnWidth - leftColumnWidth;
+    const pdfHeight = (questions || []).length && questions[0].isV1Migrated ? v1Height : undefined;
+
     const reportMode = viewMode && viewMode === "report";
     const editMode = viewMode === "edit";
 
@@ -693,6 +697,7 @@ class WorksheetComponent extends React.Component {
               questionsById={questionsById}
               answersById={answersById}
               viewMode={viewMode}
+              isEditable={isEditable}
               reportMode={reportMode}
               isToolBarVisible={isToolBarVisible}
               pdfWidth={pdfWidth - 100}

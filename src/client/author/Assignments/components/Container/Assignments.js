@@ -74,7 +74,6 @@ const initialFilterState = {
 };
 class Assignments extends Component {
   state = {
-    selectedRows: [],
     filterState: {},
     isPreviewModalVisible: false,
     openEditPopup: false,
@@ -137,17 +136,19 @@ class Assignments extends Component {
     this.setState({ currentTestId });
   };
 
-  togglePrintModal = (currentTestId = "") => {
+  togglePrintModal = (currentTestId = "", currentAssignmentId, currentClassId) => {
     const { openPrintModal } = this.state;
-    this.setState({ openPrintModal: !openPrintModal, currentTestId });
+    this.setState({ openPrintModal: !openPrintModal, currentTestId, currentAssignmentId, currentClassId });
   };
 
   gotoPrintView = data => {
     const { type, customValue } = data;
-    const { currentTestId } = this.state;
+    const { currentTestId, currentAssignmentId, currentClassId } = this.state;
 
     window.open(
-      `/author/printAssessment/${currentTestId}?type=${type}&qs=${type === "custom" ? customValue : ""}`,
+      `/author/printAssessment/${currentTestId}?type=${type}&assignmentId=${currentAssignmentId}&groupId=${currentClassId}&qs=${
+        type === "custom" ? customValue : ""
+      }`,
       "_blank"
     );
     this.togglePrintModal();
@@ -173,7 +174,9 @@ class Assignments extends Component {
 
   SwitchView = () => {
     const { toggleAssignmentView } = this.props;
-    this.setState({ selectedRows: [] }, toggleAssignmentView);
+    if (toggleAssignmentView) {
+      toggleAssignmentView();
+    }
   };
 
   renderFilter = () => {
@@ -201,10 +204,6 @@ class Assignments extends Component {
     );
   };
 
-  onSelectRow = selected => {
-    this.setState({ selectedRows: selected });
-  };
-
   onEnableEdit = () => {
     const { history } = this.props;
     const { currentTestId } = this.state;
@@ -228,7 +227,6 @@ class Assignments extends Component {
       t
     } = this.props;
     const {
-      selectedRows,
       filterState,
       isPreviewModalVisible,
       currentTestId,
@@ -273,6 +271,7 @@ class Assignments extends Component {
             onProceed={this.gotoPrintView}
             onCancel={this.togglePrintModal}
             currentTestId={currentTestId}
+            assignmentId={currentAssignmentId}
           />
         )}
         <ListHeader
@@ -288,20 +287,17 @@ class Assignments extends Component {
             <Main>
               {window.innerWidth >= tabletWidth ? (
                 <>
-                  {showFilter && (
-                    <LeftWrapper>
-                      <FixedWrapper>
-                        <PerfectScrollbar option={{ suppressScrollX: true }}>
-                          <LeftFilter
-                            selectedRows={selectedRows}
-                            onSetFilter={this.setFilterState}
-                            filterState={filterState}
-                            isAdvancedView={isAdvancedView}
-                          />
-                        </PerfectScrollbar>
-                      </FixedWrapper>
-                    </LeftWrapper>
-                  )}
+                  <LeftWrapper showFilter={showFilter}>
+                    <FixedWrapper>
+                      <PerfectScrollbar options={{ suppressScrollX: true }}>
+                        <LeftFilter
+                          onSetFilter={this.setFilterState}
+                          filterState={filterState}
+                          isAdvancedView={isAdvancedView}
+                        />
+                      </PerfectScrollbar>
+                    </FixedWrapper>
+                  </LeftWrapper>
                   <TableWrapper showFilter={showFilter}>
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
                       <IconFilter
@@ -317,8 +313,6 @@ class Assignments extends Component {
                         <AdvancedTable
                           districtId={districtId}
                           assignmentsSummary={assignmentsSummary}
-                          onSelectRow={this.onSelectRow}
-                          selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
                           toggleEditModal={this.toggleEditModal}

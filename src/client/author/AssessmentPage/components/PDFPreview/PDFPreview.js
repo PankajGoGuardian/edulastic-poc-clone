@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useLayoutEffect, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -68,7 +67,8 @@ const PDFPreview = ({
   currentAnnotationTool,
   setCurrentAnnotationTool,
   annotationToolsProperties,
-  annotationsStack
+  annotationsStack,
+  isEditable
 }) => {
   const previewContainer = useRef();
   const annotationContainer = useRef();
@@ -149,7 +149,12 @@ const PDFPreview = ({
             />
           )}
 
-          <AnnotationsContainer className="annotations-container" zoom={pdfScale} ref={annotationContainer}>
+          <AnnotationsContainer
+            className="annotations-container"
+            zoom={pdfScale}
+            ref={annotationContainer}
+            enableDrag={viewMode === "edit" && isEditable && !testMode}
+          >
             {annotations
               .filter(item => item.toolbarMode === "question" && item.page === currentPage)
               .map(({ uuid, qIndex, x, y, questionId }) => (
@@ -201,7 +206,7 @@ const AnnotationsContainer = Styled.div`
   top: 0;
   position: absolute;
   transform-origin: left top;
-  pointer-events: none;
+  pointer-events: ${({ enableDrag }) => (enableDrag ? "" : "none")} ;
   transform: scale(${props => props.zoom || 1});
 `;
 

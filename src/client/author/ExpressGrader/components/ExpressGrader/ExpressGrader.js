@@ -76,12 +76,8 @@ class ExpressGrader extends Component {
   }
 
   componentWillUnmount() {
-    const { clearEgAnswers, disableScoreMode } = this.props;
+    const { clearEgAnswers } = this.props;
     clearEgAnswers();
-    /**
-     * by default, score mode should be disabled
-     */
-    disableScoreMode();
   }
 
   static getDerivedStateFromProps(props) {

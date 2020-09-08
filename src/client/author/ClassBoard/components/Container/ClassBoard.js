@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper, CheckboxLabel, notification } from "@edulastic/common";
+import { MainContentWrapper, CheckboxLabel, notification, EduSwitchStyled } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,
@@ -66,7 +66,8 @@ import {
   removedStudentsSelector,
   showScoreSelector,
   stateStudentResponseSelector,
-  testActivtyLoadingSelector
+  testActivtyLoadingSelector,
+  getActiveAssignedStudents
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -96,8 +97,10 @@ import {
   StudentGrapContainer,
   StyledCard,
   StyledFlexContainer,
-  StickyFlex
+  StickyFlex,
+  SwitchBox
 } from "./styled";
+import { setShowAllStudentsAction } from "../../../src/reducers/testActivity";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -161,9 +164,18 @@ class ClassBoard extends Component {
   }
 
   componentDidMount() {
-    const { loadTestActivity, match, studentUnselectAll, location, isCliUser, history } = this.props;
+    const {
+      loadTestActivity,
+      match,
+      studentUnselectAll,
+      location,
+      isCliUser,
+      history,
+      setShowAllStudents
+    } = this.props;
     const { assignmentId, classId } = match.params;
     const { search, state } = location;
+    setShowAllStudents(false);
     loadTestActivity(assignmentId, classId);
     studentUnselectAll();
     window.addEventListener("scroll", this.handleScroll);
@@ -271,6 +283,11 @@ class ClassBoard extends Component {
     } else {
       studentUnselectAll();
     }
+  };
+
+  onShowUnEnrolled = () => {
+    const { setShowAllStudents, isShowAllStudents } = this.props;
+    setShowAllStudents(!isShowAllStudents);
   };
 
   onSelectCardOne = studentId => {
@@ -451,12 +468,16 @@ class ClassBoard extends Component {
   };
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents, testActivity, assignmentStatus } = this.props;
+    const { selectedStudents, testActivity, assignmentStatus, removedStudents } = this.props;
 
     if (assignmentStatus.toLowerCase() === "done") {
       return notification({ type: "warn", msg: "Cannot remove student(s) from a DONE assignment." });
     }
 
+    const isRemovedStudentsSelected = removedStudents.some(item => selectedStudents[item]);
+    if (isRemovedStudentsSelected) {
+      return notification({ type: "warn", msg: "Cannot remove unassigned students" });
+    }
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
       return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
@@ -470,9 +491,13 @@ class ClassBoard extends Component {
   };
 
   handleRemoveStudents = () => {
-    const { selectedStudents, studentUnselectAll, removeStudent, match } = this.props;
+    const { selectedStudents, studentUnselectAll, removeStudent, match, activeAssignedStudents } = this.props;
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
+    const isRemoveAll = activeAssignedStudents.filter(item => !selectedStudents[item._id]).length === 0;
+    if (isRemoveAll) {
+      return notification({ type: "warn", msg: "Cannot remove all student(s) from assignment." });
+    }
     removeStudent(assignmentId, classId, selectedStudentKeys);
     studentUnselectAll();
     this.setState({ showRemoveStudentsPopup: false });
@@ -499,9 +524,9 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
-    const { additionalData, testActivity } = this.props;
+    const { additionalData, activeAssignedStudents } = this.props;
     // total count represents total students count in the class
-    if (additionalData.totalCount <= testActivity.length) {
+    if (additionalData.totalCount <= activeAssignedStudents.length) {
       return notification({ type: "warn", messageKey: "assessmentAlreadyAssignedToAllStudents" });
     }
 
@@ -620,7 +645,8 @@ class ClassBoard extends Component {
       history,
       location,
       loadTestActivity,
-      isCliUser
+      isCliUser,
+      isShowAllStudents
     } = this.props;
 
     const {
@@ -673,7 +699,9 @@ class ClassBoard extends Component {
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded" ||
       assignmentStatus.toLowerCase() === "done";
-    const existingStudents = testActivity.map(item => item.studentId);
+    const existingStudents = testActivity
+      .filter(item => !item.isUnAssigned && item.enrollmentStatus === 1)
+      .map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
         const endDate = additionalData.closedDate || additionalData.endDate;
@@ -878,14 +906,20 @@ class ClassBoard extends Component {
                 hasStickyHeader={hasStickyHeader}
                 className="lcb-student-sticky-bar"
               >
-                <CheckboxLabel
-                  data-cy="selectAllCheckbox"
-                  checked={unselectedStudents.length === 0}
-                  indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
-                  onChange={this.onSelectAllChange}
-                >
-                  {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
-                </CheckboxLabel>
+                <div>
+                  <CheckboxLabel
+                    data-cy="selectAllCheckbox"
+                    checked={unselectedStudents.length === 0}
+                    indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
+                    onChange={this.onSelectAllChange}
+                  >
+                    {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
+                  </CheckboxLabel>
+                  <SwitchBox>
+                    <span>SHOW ACTIVE STUDENTS</span>
+                    <EduSwitchStyled checked={!isShowAllStudents} onClick={this.onShowUnEnrolled} />
+                  </SwitchBox>
+                </div>
                 <ClassBoardFeats>
                   <RedirectButton
                     disabled={!isItemsVisible}
@@ -1263,7 +1297,9 @@ const enhance = compose(
       studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state),
-      isCliUser: get(state, "user.isCliUser", false)
+      isCliUser: get(state, "user.isCliUser", false),
+      isShowAllStudents: get(state, ["author_classboard_testActivity", "isShowAllStudents"], false),
+      activeAssignedStudents: getActiveAssignedStudents(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -1279,7 +1315,8 @@ const enhance = compose(
       markAbsent: markAbsentAction,
       removeStudent: removeStudentAction,
       markSubmitted: markSubmittedAction,
-      downloadGradesResponse: downloadGradesResponseAction
+      downloadGradesResponse: downloadGradesResponseAction,
+      setShowAllStudents: setShowAllStudentsAction
     }
   )
 );

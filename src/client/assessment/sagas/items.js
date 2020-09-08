@@ -3,7 +3,7 @@ import { push } from "connected-react-router";
 import * as Sentry from "@sentry/browser";
 import { uploadToS3, notification } from "@edulastic/common";
 import { maxBy, isEmpty } from "lodash";
-import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
+import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi, testActivityApi } from "@edulastic/api";
 import { assignmentPolicyOptions, aws } from "@edulastic/constants";
 
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -22,6 +22,7 @@ import {
 import { getPreviousAnswersListSelector } from "../selectors/answers";
 import { redirectPolicySelector } from "../selectors/test";
 import { getServerTs } from "../../student/utils";
+import { utaStartTimeUpdateRequired } from "../../student/sharedDucks/AssignmentModule/ducks";
 
 const defaultUploadFolder = aws.s3Folders.DEFAULT;
 
@@ -67,6 +68,16 @@ function* saveUserResponse({ payload }) {
     let { endDate } = assignment;
     const { class: clazz = [] } = assignment;
     const serverTimeStamp = getServerTs(assignment);
+
+    const timedAssignment = yield select(state => state.test?.settings?.timedAssignment);
+    if (pausing && timedAssignment) {
+      const utaId = yield select(state => state.test.testActivityId);
+      if (utaId) {
+        yield call(testActivityApi.updateUtaTime, { utaId, type: "pausing" });
+        yield put(utaStartTimeUpdateRequired(null));
+      }
+    }
+
     if (!endDate && clazz.length) {
       endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "endDate") || {}).endDate;
       if (!endDate) {
@@ -81,6 +92,10 @@ function* saveUserResponse({ payload }) {
     }
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
+    // prevent autSave if response is empty for every question in current item
+    if (autoSave && answers && Object.values(answers).every(ans => typeof ans !== "number" && isEmpty(ans))) {
+      return;
+    }
     const { testActivityId: userTestActivityId, passages, isDocBased } = yield select(state => state.test);
     const shuffledOptions = yield select(state => state.shuffledOptions);
     // passages: state.test.passages

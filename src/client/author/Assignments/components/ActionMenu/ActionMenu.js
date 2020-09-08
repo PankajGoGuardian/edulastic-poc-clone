@@ -39,6 +39,7 @@ const ActionMenu = ({
   const assignmentDetails = getAssignmentDetails();
   const currentTestId = assignmentDetails.testId;
   const currentAssignmentId = assignmentDetails._id;
+  const currentClassId = assignmentDetails.classId;
   const shouldSendAssignmentId =
     assignmentTest?.testType === test.type.COMMON || !assignmentTest?.authors?.find(a => a._id === userId);
 
@@ -79,7 +80,7 @@ const ActionMenu = ({
     if (!isAdmin && (assignmentVisibility.includes(HIDDEN) || assignmentVisibility.includes(GRADING))) {
       return notification({ type: "warn", messageKey: "viewItemsRestriccedByAdmin" });
     }
-    togglePrintModal(currentTestId);
+    togglePrintModal(currentTestId, currentAssignmentId, currentClassId);
   };
 
   // owner of the assignment

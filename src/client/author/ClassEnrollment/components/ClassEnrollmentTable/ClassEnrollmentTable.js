@@ -221,7 +221,7 @@ class ClassEnrollmentTable extends React.Component {
     const { removeUserEnrollments } = this.props;
     const { selectedUsersInfo } = this.state;
     const deleteGroupData = selectedUsersInfo.reduce((acc, data) => {
-      acc[data.group._id] = acc[data.group._id] ? acc[data.group._id].push(data) : [data];
+      acc[data.group._id] = acc[data.group._id] && Array.isArray(acc[data.group._id]) ? acc[data.group._id].push(data) : [data];
       return acc;
     }, {});
     const formatData = [];

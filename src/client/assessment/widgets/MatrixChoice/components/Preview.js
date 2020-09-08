@@ -29,9 +29,9 @@ const Preview = ({
       changeView(CLEAR);
     }
 
-    const { responseIds= [] } = item;
-    const rowIds = responseIds[rowIndex];
-    const responseId = rowIds[columnIndex];
+    const { responseIds = [] } = item || {};
+    const rowIds = responseIds?.[rowIndex];
+    const responseId = rowIds?.[columnIndex];
     newAnswer.value[responseId] = checked;
 
     if (!item.multipleResponses) {

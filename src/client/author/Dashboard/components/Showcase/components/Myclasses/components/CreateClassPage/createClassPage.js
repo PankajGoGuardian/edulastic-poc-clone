@@ -1,17 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { CreateCardBox, CreateClassDiv, SyncClassDiv } from "./styled";
-import { EduButton } from "@edulastic/common";
+import { EduButton, notification } from "@edulastic/common";
 import GoogleLogin from "react-google-login";
+import { canvasApi } from "@edulastic/api";
+import * as Sentry from "@sentry/browser";
 import { IconPlusCircle, IconGoogleClassroom, IconClever } from "@edulastic/icons";
 import styled from "styled-components";
+
+import { CreateCardBox, SyncClassDiv } from "./styled";
 import { scopes } from "../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage";
+import authorizeCanvas from "../../../../../../../../common/utils/CanavsAuthorizationModule";
+
 const CreateClassPage = ({
   allowGoogleLogin,
+  canvasAllowedInstitutions,
   isUserGoogleLoggedIn,
   fetchClassList,
   enableCleverSync,
   setShowCleverSyncModal,
+  handleCanvasBulkSync,
+  user,
   history
 }) => {
   const handleLoginSucess = data => {
@@ -24,26 +31,55 @@ const CreateClassPage = ({
   };
 
   const CreateNewClass = () => {
-    history.push('/author/manageClass/createClass')
-  }
+    history.push("/author/manageClass/createClass");
+  };
+
+  const handleSyncWithCanvas = async () => {
+    try {
+      const result = await canvasApi.getCanvasAuthURI(canvasAllowedInstitutions?.[0]?.institutionId);
+      if (!result.userAuthenticated) {
+        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username || user.email || ""}`;
+        authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
+          .then(res => {
+            handleCanvasBulkSync(res);
+          })
+          .catch(err => {
+            console.error("Error while authorizing", err);
+            Sentry.captureException(err);
+            notification({ messageKey: "errorOccuredWhileAuthorizing" });
+          });
+      } else {
+        handleCanvasBulkSync();
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      notification(
+        err.status === 403 && err.response.data?.message
+          ? {
+              msg: err.response.data?.message
+            }
+          : { messageKey: "errorWhileGettingAuthUri" }
+      );
+    }
+  };
+
+  const enableCanvasSync = canvasAllowedInstitutions.length > 0;
 
   return (
     <CreateCardBox>
-      <EduButton style={{width:"207px"}} isBlue onClick={CreateNewClass}>
+      <EduButton style={{ width: "207px" }} isBlue onClick={CreateNewClass}>
         <IconPlusCircle width={20} height={20} />
         <p>Create new class</p>
       </EduButton>
+      {(allowGoogleLogin || enableCleverSync || enableCanvasSync) && <StyledP>OR</StyledP>}
       {allowGoogleLogin !== false && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
           render={renderProps => (
-            <>
-              <StyledP>OR</StyledP>
-              <SyncClassDiv onClick={renderProps.onClick}>
-                <IconGoogleClassroom />
-                <p>Sync With Google Classroom</p>
-              </SyncClassDiv>
-            </>
+            <SyncClassDiv onClick={renderProps.onClick}>
+              <IconGoogleClassroom />
+              <p>Sync With Google Classroom</p>
+            </SyncClassDiv>
           )}
           scope={scopes}
           onSuccess={handleLoginSucess}
@@ -53,13 +89,21 @@ const CreateClassPage = ({
         />
       )}
       {enableCleverSync && (
-        <>
-          <StyledP>OR</StyledP>
-          <SyncClassDiv onClick={() => setShowCleverSyncModal(true)}>
-            <IconClever />
-            <p>Sync Class Roster from Clever</p>
-          </SyncClassDiv>
-        </>
+        <SyncClassDiv onClick={() => setShowCleverSyncModal(true)}>
+          <IconClever />
+          <p>Sync Class Roster from Clever</p>
+        </SyncClassDiv>
+      )}
+      {enableCanvasSync && (
+        <SyncClassDiv onClick={handleSyncWithCanvas}>
+          <img
+            alt="Canvas"
+            src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+            width={18}
+            height={18}
+          />
+          <p>Sync with Canvas</p>
+        </SyncClassDiv>
       )}
     </CreateCardBox>
   );

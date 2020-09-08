@@ -17,6 +17,7 @@ import Modal from "react-responsive-modal";
 import styled from "styled-components";
 
 export const Container = styled.div`
+  display: ${({ show }) => (show ? "block" : "none")};
   background: ${lightGreySecondary};
   width: 300px;
   height: calc(100vh - 110px);

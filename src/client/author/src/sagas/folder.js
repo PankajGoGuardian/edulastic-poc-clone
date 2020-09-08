@@ -67,10 +67,23 @@ function* receiveCreateFolderRequest({ payload }) {
 function* receiveAddMoveFolderRequest({ payload }) {
   try {
     const { folderId, params = [], folderType } = payload;
-    const assignmentNamesCount = params[0].assignmentsNameList.length || 0;
-    const showNamesInMsg =
-      assignmentNamesCount > 1 ? `${assignmentNamesCount} assignments were` : `${params[0].assignmentsNameList} was`;
     const moveFolderName = params[0].folderName;
+
+    let contentName = "assignment";
+    if (folderType === folderTypes.TEST) {
+      contentName = "test";
+    } else if (folderType === folderTypes.ITEM) {
+      contentName = "item";
+    }
+    // item does not have name to show in message
+    const list = (params?.[0]?.assignmentsNameList || []).filter(a => a);
+    const showNamesInMsg =
+      params.length > 1 || folderType === folderTypes.ITEM
+        ? `${params.length || "Selected"} ${contentName}(s)`
+        : `${list.length === 1 ? list[0] : "Selection"}`;
+
+    const successMsg = `${showNamesInMsg} successfully moved to "${moveFolderName}"`;
+
     const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
     yield put({
@@ -84,7 +97,6 @@ function* receiveAddMoveFolderRequest({ payload }) {
       payload: folderType
     });
 
-    const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
     notification({ type: "success", msg: successMsg }); // TODO:Can't be moved to message file since dynamic values wont be supported.
   } catch (error) {
     Sentry.captureException(error);
@@ -152,9 +164,27 @@ function* receiveRemoveItemsFromFolder({ payload }) {
       contentType = folderTypes.TEST;
     }
 
-    yield call(folderApi.removeItemFromFolder, { folderId, data: { contentIds: itemsToRemove, contentType } });
+    let contentName = "assignment";
+    if (folderType === folderTypes.TEST) {
+      contentName = "test";
+    } else if (folderType === folderTypes.ITEM) {
+      contentName = "item";
+    }
 
-    notification({ type: "success", msg: `Items successfully removed from "${folderName}"` });
+    // item does not have name to show in message
+    const showNamesInMsg =
+      itemsToRemove.length > 1 || folderType === folderTypes.ITEM
+        ? `${itemsToRemove.length} ${contentName}(s)`
+        : `${itemsToRemove[0].name}`;
+
+    const successMsg = `${showNamesInMsg} successfully removed from "${folderName}"`;
+
+    yield call(folderApi.removeItemFromFolder, {
+      folderId,
+      data: { contentIds: itemsToRemove.map(x => x.itemId), contentType }
+    });
+
+    notification({ type: "success", msg: successMsg });
 
     // close removal modal
     yield put({

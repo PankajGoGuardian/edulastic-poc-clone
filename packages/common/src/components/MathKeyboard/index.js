@@ -7,7 +7,7 @@ import { KEYBOARD_BUTTONS, TAB_BUTTONS } from "./constants/keyboardButtons";
 import { NUMBER_PAD_ITEMS } from "./constants/numberPadItems";
 
 import KeyboardHeader from "./components/KeyboardHeader";
-import HeaderKeyboard from "./components/HeaderKeyboard";
+// import HeaderKeyboard from "./components/HeaderKeyboard";
 import MainKeyboard from "./components/MainKeyboard";
 import FullKeybord from "./components/FullKeybord";
 import Keyboard from "../Keyboard";
@@ -130,11 +130,12 @@ class MathKeyboard extends React.PureComponent {
           method={type}
           onChangeKeypad={this.handleGroupSelect}
         />
-        {type !== "qwerty" && window.isMobileDevice && <HeaderKeyboard onInput={onInput} />}
+        {/* {type !== "qwerty" && window.isMobileDevice && <HeaderKeyboard onInput={onInput} />} */}
         {type === "qwerty" && <Keyboard isDocbasedSection={isDocbasedSection} onInput={onInput} />}
         {type !== "qwerty" && type !== "all" && (
           <MainKeyboard
             onInput={onInput}
+            type={type}
             isDocbasedSection={isDocbasedSection}
             btns={keyboardButtons}
             numbers={numberButtons}
@@ -153,7 +154,7 @@ const MathKeyboardContainer = styled.div`
   background: ${props => props.theme.mathKeyboard.keyboardBgColor};
   /* padding: 10px; */
   min-width: 180px;
-  max-width: 400px;
+  max-width: 520px;
   width: max-content;
   ${({ docBasedKeypadStyles }) => docBasedKeypadStyles};
 `;

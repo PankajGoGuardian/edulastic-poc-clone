@@ -50,7 +50,13 @@ export const ResponseFrequencyTable = ({
     return "";
   };
 
-  columns[4].sorter = (a, b) => a.corr_cnt || 0 - b.corr_cnt || 0;
+  columns[4].sorter = (a, b) => {
+    const aSum = (a.corr_cnt || 0) + (a.incorr_cnt || 0) + (a.skip_cnt || 0) + (a.part_cnt || 0);
+    const bSum = (b.corr_cnt || 0) + (b.incorr_cnt || 0) + (b.skip_cnt || 0) + (b.part_cnt || 0);
+    const aCorrectP = ((a.corr_cnt / aSum) * 100).toFixed(0);
+    const bCorrectP = ((b.corr_cnt / bSum) * 100).toFixed(0);
+    return (aCorrectP || 0) - (bCorrectP || 0);
+  };
   columns[4].render = (data, record) => {
     const tooltipText = rec => () => {
       const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = rec;

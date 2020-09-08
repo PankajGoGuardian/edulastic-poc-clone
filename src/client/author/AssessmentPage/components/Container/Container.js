@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import { withRouter } from "react-router";
 import { compose } from "redux";
@@ -8,7 +7,7 @@ import { Spin } from "antd";
 import { isEmpty, get } from "lodash";
 import { white } from "@edulastic/colors";
 import { IconDescription, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
-import { test } from "@edulastic/constants";
+import { test as testConstants } from "@edulastic/constants";
 import { withWindowSizes, notification } from "@edulastic/common";
 import {
   receiveTestByIdAction,
@@ -35,7 +34,7 @@ import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
-const { statusConstants, passwordPolicy: passwordPolicyValues } = test;
+const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants;
 
 const tabs = {
   DESCRIPTION: "description",
@@ -97,9 +96,7 @@ class Container extends React.Component {
   }
 
   componentWillUnmount() {
-    window.onbeforeunload = () => {
-      
-    };
+    window.onbeforeunload = () => {};
   }
 
   beforeUnload = () => {
@@ -118,7 +115,6 @@ class Container extends React.Component {
     if (isEditable && itemGroups[0].items.length > 0 && (updated || questionsUpdated)) {
       return "";
     }
-    
   };
 
   componentDidUpdate(prevProps) {
@@ -137,15 +133,15 @@ class Container extends React.Component {
       changeView,
       currentTab,
       assessment: { title },
-      changePreviewAction
+      changePreview
     } = this.props;
 
     if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
       changeView(tab);
-      changePreviewAction("clear");
+      changePreview("clear");
     } else if (currentTab !== tabs.DESCRIPTION) {
       changeView(tab);
-      changePreviewAction("clear");
+      changePreview("clear");
     } else {
       notification({ messageKey: "pleaseEnterName" });
     }
@@ -183,7 +179,7 @@ class Container extends React.Component {
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
       if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
-        notification({ messageKey:"enterValidPassword"});
+        notification({ messageKey: "enterValidPassword" });
         return false;
       }
     }
@@ -191,7 +187,7 @@ class Container extends React.Component {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
         this.sebPasswordRef.current.input.focus();
       }
-      notification({ messageKey:"enterValidPassword"});
+      notification({ messageKey: "enterValidPassword" });
       return false;
     }
 
@@ -256,7 +252,8 @@ class Container extends React.Component {
       questions,
       questionsById,
       pageStructure,
-      freeFormNotes
+      freeFormNotes,
+      isEditable
     };
 
     switch (currentTab) {
@@ -377,7 +374,7 @@ const enhance = compose(
       getDefaultTestSettings: getDefaultTestSettingsAction,
       updateDocBasedTest: updateDocBasedTestAction,
       changeView: changeViewAction,
-      changePreviewAction,
+      changePreview: changePreviewAction,
       publishTest: publishTestAction
     }
   )

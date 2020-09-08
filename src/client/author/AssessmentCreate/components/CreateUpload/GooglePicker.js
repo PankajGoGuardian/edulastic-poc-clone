@@ -49,10 +49,10 @@ const GoogleChooser = ({
     onAuthenticate(oauthToken);
 
     if (createPicker) {
-      return createPicker(!!window.google, oauthToken);
+      return createPicker(window.google, oauthToken);
     }
 
-    const googleViewId = !!window.google?.picker?.ViewId[viewId];
+    const googleViewId = window.google?.picker?.ViewId?.[viewId];
     const view = new window.google.picker.View(googleViewId);
 
     if (mimeTypes) {
@@ -134,7 +134,7 @@ GoogleChooser.defaultProps = {
   onChange: () => { },
   onAuthenticate: () => { },
   onAuthFailed: () => { },
-  scope: ["https://www.googleapis.com/auth/drive.readonly"],
+  scope: "https://www.googleapis.com/auth/drive.readonly",
   viewId: "DOCS",
   authImmediate: false,
   multiselect: false,

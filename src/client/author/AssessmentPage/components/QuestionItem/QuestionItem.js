@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
@@ -18,7 +17,7 @@ import {
 import { IconPencilEdit, IconCheck, IconClose } from "@edulastic/icons";
 import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 import withAnswerSave from "../../../../assessment/components/HOC/withAnswerSave";
-import { saveUserResponse } from "../../../../assessment/actions/items";
+import { saveUserResponse as saveUserResponseAction } from "../../../../assessment/actions/items";
 import FormChoice from "./components/FormChoice/FormChoice";
 import FormText from "./components/FormText/FormText";
 import FormDropdown from "./components/FormDropdown/FormDropdown";
@@ -191,13 +190,25 @@ class QuestionItem extends React.Component {
 
   renderContent = (highlighted, boundingRect) => {
     let { evaluation } = this.props;
-    const { data, saveAnswer, viewMode, onCreateOptions, userAnswer, previewMode, saveUserResponse, groupId, qId, clearHighlighted } = this.props;
+    const {
+      data,
+      saveAnswer,
+      viewMode,
+      onCreateOptions,
+      userAnswer,
+      previewMode,
+      saveUserResponse,
+      groupId,
+      qId,
+      clearHighlighted
+    } = this.props;
 
     if (!evaluation) {
       evaluation = data?.activity?.evaluation;
     }
 
-    const saveQuestionResponse = () => (qId >= 0 && groupId) && saveUserResponse(qId, 0, false, groupId, {pausing: false});
+    const saveQuestionResponse = () =>
+      qId >= 0 && groupId && saveUserResponse(qId, 0, false, groupId, { pausing: false });
 
     const props = {
       saveAnswer,
@@ -294,9 +305,10 @@ class QuestionItem extends React.Component {
   renderScore = qId => {
     const { feedback = {}, previousFeedback = [], data } = this.props;
     const maxScore = get(data, "validation.validResponse.score", 0);
-    const { score, feedback: teacherComments, graded, skipped } =
+    const { feedback: teacherComments, graded, skipped } =
       previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || data.activity || {};
-
+    const score =
+      previousFeedback.find(pf => pf.qid === qId)?.score || feedback[qId]?.score || data.activity?.score || 0;
     return (
       <>
         <DetailsContainer>
@@ -398,13 +410,13 @@ class QuestionItem extends React.Component {
 
 export default withAnswerSave(
   connect(
-  state => ({
-    previousFeedback: Object.values(state?.previousQuestionActivity || {})[0],
-    feedback: FeedbackByQIdSelector(state),
-    reportActivity: isEmpty(state.studentReport?.testActivity) ? false : state.studentReport?.testActivity
-  }),
-  {
-    saveUserResponse
-  }
+    state => ({
+      previousFeedback: Object.values(state?.previousQuestionActivity || {})[0],
+      feedback: FeedbackByQIdSelector(state),
+      reportActivity: isEmpty(state.studentReport?.testActivity) ? false : state.studentReport?.testActivity
+    }),
+    {
+      saveUserResponse: saveUserResponseAction
+    }
   )(QuestionItem)
 );

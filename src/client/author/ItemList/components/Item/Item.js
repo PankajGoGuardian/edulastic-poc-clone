@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic } from "@edulastic/icons";
+import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic, IconClose } from "@edulastic/icons";
 import { get } from "lodash";
 import { Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -16,8 +16,7 @@ import {
   WithResources,
   EduButton,
   notification,
-  LikeIconStyled,
-  CheckboxLabel
+  LikeIconStyled
 } from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
 
@@ -55,6 +54,7 @@ import {
   MoreInfo,
   Details,
   AddRemoveBtn,
+  AddRemoveButton,
   AddRemoveBtnPublisher
 } from "./styled";
 import {
@@ -91,7 +91,7 @@ class Item extends Component {
 
   static defaultProps = {
     selectedToCart: false,
-    gotoSummary: () => {}
+    gotoSummary: () => { }
   };
 
   state = {
@@ -114,7 +114,7 @@ class Item extends Component {
 
   handleToggleItemToCart = item => async () => {
     const { onToggleToCart, selectedToCart, setPassageItems } = this.props;
-    if (!selectedToCart && item.passageId) {
+    if ( item.passageId) {
       const passageItems = await testItemsApi.getPassageItems(item.passageId);
       setPassageItems(passageItems);
 
@@ -293,9 +293,9 @@ class Item extends Component {
       test: { itemGroups },
       setCurrentGroupIndex
     } = this.props;
-    const staticGroups = itemGroups.filter(g => g.type === ITEM_GROUP_TYPES.STATIC);
+    const staticGroups = (itemGroups || []).filter(g => g.type === ITEM_GROUP_TYPES.STATIC);
     if (isAdd) {
-      if (staticGroups.length === 1) {
+      if (staticGroups?.length === 1) {
         const index = itemGroups.findIndex(g => g.groupName === staticGroups[0].groupName);
         if (
           itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
@@ -338,9 +338,14 @@ class Item extends Component {
   get isAddOrRemove() {
     const { item, selectedRows } = this.props;
     if (selectedRows && selectedRows.length) {
-      return !selectedRows.includes(item._id);
+      return !selectedRows.includes(item?._id);
     }
     return true;
+  }
+
+  isRemovingForAuthoring(){
+    const {item, selectedItems} = this.props;
+    return selectedItems.includes(item?._id);
   }
 
   /**
@@ -349,12 +354,13 @@ class Item extends Component {
    *  {Bool} value: user wants to select all the items?
    */
   handleResponse = value => {
-    const { setAndSavePassageItems, passageItems, page, openPreviewModal } = this.props;
+    const { setAndSavePassageItems, passageItems, page, openPreviewModal,selectedItems,item } = this.props;
+    const removing = this.isRemovingForAuthoring();
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
-      notification({ type: "success", messageKey: "itemAddedTest" });
-      return setAndSavePassageItems({ passageItems, page });
+      notification({ type: "success", messageKey: removing?"itemRemovedTest":"itemAddedTest" });
+      return setAndSavePassageItems({ passageItems, page , remove: removing});
     }
     // open the modal for selecting  testItems manually.
     openPreviewModal();
@@ -395,6 +401,7 @@ class Item extends Component {
               closeModal={() => this.setState(() => ({ passageConfirmModalVisible: false }))}
               itemsCount={passageItemsCount}
               handleResponse={this.handleResponse}
+              removing={this.isRemovingForAuthoring()}
             />
           )}
           {showSelectGroupModal && (
@@ -420,12 +427,16 @@ class Item extends Component {
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
                   {!hideAddRemove && (
-                    <CheckboxLabel
-                      ml="10px"
-                      checked={selectedToCart}
-                      onChange={this.handleToggleItemToCart(item)}
-                      onClick={e => e.stopPropagation()}
-                    />
+                    <AddRemoveButton
+                      isGhost
+                      IconBtn
+                      selectedToCart={selectedToCart}
+                      width="60px"
+                      height="36px"
+                      onClick={this.handleToggleItemToCart(item)}
+                    >
+                      {selectedToCart ? <IconClose /> : <IconPlus />}
+                    </AddRemoveButton>
                   )}
                 </ViewButton>
               ) : isPublisher ? (
@@ -459,7 +470,7 @@ class Item extends Component {
                     {this.isAddOrRemove ? "ADD" : "REMOVE"}
                   </AddRemoveBtn>
                 </>
-              ))}
+                  ))}
           </Question>
           <Row type="flex" align="center">
             <Detail>
@@ -518,17 +529,17 @@ class Item extends Component {
                       {this.isAddOrRemove ? "ADD" : `${groupName}`}
                       {this.isAddOrRemove ? "" : <Icon type="close" />}
                     </AddRemoveBtnPublisher>
-                  ) : (
-                    <AddRemoveBtn
-                      loading={selectedId === item._id}
-                      onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
-                      isAddOrRemove={this.isAddOrRemove}
-                    >
-                      {this.isAddOrRemove ? "ADD" : "REMOVE"}
-                    </AddRemoveBtn>
-                  )}
+                    ) : (
+                      <AddRemoveBtn
+                        loading={selectedId === item._id}
+                        onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
+                        isAddOrRemove={this.isAddOrRemove}
+                      >
+                        {this.isAddOrRemove ? "ADD" : "REMOVE"}
+                      </AddRemoveBtn>
+                      )}
                 </ViewButton>
-              ))}
+                ))}
           </Row>
           {windowWidth <= MAX_TAB_WIDTH && (
             <Details isOpenedDetails={isOpenedDetails}>
@@ -561,7 +572,8 @@ const enhance = compose(
       features: getUserFeatures(state),
       collections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      selectedItems: state?.testsAddItems?.selectedItems||[]
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

@@ -526,6 +526,11 @@ export const FlexWrap = styled.div`
   width: 100%;
 `;
 
+export const ScratchpadAndWidgetWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 export const SelectWrapper = styled.div`
   width: 100%;
   margin: 20px;

@@ -18,8 +18,8 @@ import Header from "./Header";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import {
   getGoogleAllowedInstitionPoliciesSelector,
-  getCleverSyncEnabledInstitutionPoliciesSelector,
-  getCanvasAllowedInstitutionPoliciesSelector
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getCleverLibraryUserSelector
 } from "../../../src/selectors/user";
 
 const { allGrades, allSubjects } = selectsData;
@@ -39,9 +39,9 @@ const ClassList = ({
   isUserGoogleLoggedIn,
   googleAllowedInstitutions,
   setShowCleverSyncModal,
-  cleverSyncEnabledInstitutions,
   canvasAllowedInstitution,
-  handleCanvasBulkSync
+  handleCanvasBulkSync,
+  isCleverUser
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
@@ -210,7 +210,7 @@ const ClassList = ({
         canvasAllowedInstitution={canvasAllowedInstitution}
         fetchGoogleClassList={fetchClassList}
         setShowCleverSyncModal={setShowCleverSyncModal}
-        enableCleverSync={cleverSyncEnabledInstitutions.length > 0}
+        enableCleverSync={isCleverUser}
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
       />
@@ -283,8 +283,8 @@ const enhance = compose(
       user: getUserDetails(state),
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
-      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
-      canvasAllowedInstitution: getCanvasAllowedInstitutionPoliciesSelector(state)
+      canvasAllowedInstitution: getCanvasAllowedInstitutionPoliciesSelector(state),
+      isCleverUser: getCleverLibraryUserSelector(state)
     }),
     {
       fetchClassList: fetchClassListAction,

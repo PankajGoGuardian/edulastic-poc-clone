@@ -5,8 +5,9 @@ import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
-import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
+import { test as testConst } from "@edulastic/constants";
 import { Effects, notification } from "@edulastic/common";
+import * as Sentry from "@sentry/browser";
 import { getCurrentSchool, fetchUserAction, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -17,7 +18,9 @@ import {
   setAssignmentsLoadingAction,
   setActiveAssignmentAction,
   showTestInstructionsAction,
-  setConfirmationForTimedAssessmentAction
+  setConfirmationForTimedAssessmentAction,
+  setIsActivityCreatingAction,
+  utaStartTimeUpdateRequired
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
@@ -25,7 +28,6 @@ import { clearOrderOfOptionsInStore } from "../../assessment/actions/assessmentP
 import { getServerTs } from "../utils";
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
-const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
 // constants
 export const FILTERS = {
   ALL: "all",
@@ -44,6 +46,8 @@ export const RESUME_ASSIGNMENT = "[studentAssignments] resume assignments";
 export const BOOTSTRAP_ASSESSMENT = "[assessment] bootstrap";
 export const LAUNCH_ASSIGNMENT_FROM_LINK = "[studentAssignemnts] launch assignment from link";
 export const REDIRECT_TO_DASHBOARD = "[studentAssignments] redirect to dashboard";
+export const UPDATE_UTA_TIME = "[studentAssignments] update uta time for timed assignment";
+
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 export const startAssignmentAction = createAction(START_ASSIGNMENT);
@@ -53,6 +57,7 @@ export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 export const bootstrapAssessmentAction = createAction(BOOTSTRAP_ASSESSMENT);
 export const launchAssignmentFromLinkAction = createAction(LAUNCH_ASSIGNMENT_FROM_LINK);
 export const redirectToDashboardAction = createAction(REDIRECT_TO_DASHBOARD);
+export const updateUtaTimeAction = createAction(UPDATE_UTA_TIME);
 
 const getAssignmentClassId = (assignment, groupId, classIds) => {
   if (groupId) {
@@ -124,18 +129,16 @@ export const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;
+export const stateSelector = state => state.studentAssignment;
 
 /**
  *
- * @param {*} assignment
- * @param {*} currentGroup
- * BOTH OPEN AND CLOSE ARE MANUAL
- *  When both are manual endDate and startDate will not present in class object, hence use open and closed flags along with openDate and closedDate
- * Once assignment is open no need to check for the startDate as it is opened manually by author but check for closedDate or closed variable
- * ONLY OPEN MANUAL
- *  In this case endDate will be present but we shouldn't display the assignment until open variable is true. Also hide when end date passed
- * ONLY CLOSE MANUAL
- *  Close manual can display assignment by checking the startDate is less than current date and close when closed in class object is true
+ * @param {*} assignment - assignment being looped
+ * @param {*} currentGroup - group filter
+ * @param {*} userId - student Id
+ * This function should return true for all assignments which has to be displayed to the user(student).
+ * Regardless of the policy show assignment to student until it is not closed.
+ * endDate will be only missing for those assignments with manual close policy
  *
  */
 export const isLiveAssignment = (assignment, classIds, userId) => {
@@ -160,23 +163,9 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
     ).endDate;
     const currentClass =
       currentUserGroups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
+    // FOR NO END DATES TEACHER/ADMIN HAS TO MANUALLY CLOSE THE ASSIGNMENT so closed flag will be true.
     if (!endDate) {
-      // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
-      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE && assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE) {
-        return !currentClass.closed;
-      }
-      // IF MANUAL OPEN AND AUTO CLOSE
-      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE) {
-        const isLive = !currentClass.closed || currentClass.endDate > serverTimeStamp;
-        return isLive;
-      }
-      // IF MANUAL CLOSE AND AUTO OPEN
-      if (assignment.openPolicy !== POLICY_AUTO_ON_DUEDATE) {
-        const isLive =
-          currentClass.startDate < serverTimeStamp &&
-          (!currentClass.closed || currentClass.closedDate > serverTimeStamp);
-        return isLive;
-      }
+      return !currentClass.closed;
     }
   }
   // End date is not passed consider as live assignment
@@ -243,7 +232,7 @@ export const getAllAssignmentsSelector = createSelector(
         );
         return allClassess.map(clazz => ({
           ...assignment,
-          maxAttempts: clazz.maxAttempts,
+          maxAttempts: clazz.maxAttempts || assignment.maxAttempts,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`] || [],
           ...(clazz.allowedTime && !assignment.redir ? { allowedTime: clazz.allowedTime } : {}),
@@ -281,6 +270,11 @@ export const assignmentsCountByFilerNameSelector = createSelector(
       IN_PROGRESS
     };
   }
+);
+
+export const getLoadAssignmentSelector = createSelector(
+  stateSelector,
+  state => state.loadAssignment
 );
 
 // sagas
@@ -347,9 +341,22 @@ function* startAssignment({ payload }) {
     // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
 
     const institutionId = yield select(getCurrentSchool);
+    const { isLoading } = yield select(getLoadAssignmentSelector);
+    if (isLoading) {
+      return;
+    }
+
+    if (assignmentId) {
+      const { timedAssignment } = yield call(assignmentApi.getById, assignmentId) || {};
+      if (timedAssignment) {
+        yield put(utaStartTimeUpdateRequired("start"));
+      }
+    }
+
     const groupType = "class";
     let testActivityId = null;
     if (studentRecommendation) {
+      yield put(setIsActivityCreatingAction({ assignmentId: studentRecommendation._id, isLoading: true }));
       const { _id } = yield testActivityApi.create({
         groupId: classId,
         institutionId,
@@ -359,6 +366,7 @@ function* startAssignment({ payload }) {
       });
       testActivityId = _id;
     } else if (isPlaylist && !assignmentId) {
+      yield put(setIsActivityCreatingAction({ assignmentId: isPlaylist.playlistId, isLoading: true }));
       const { _id } = yield testActivityApi.create({
         playlistModuleId: isPlaylist.moduleId,
         playlistId: isPlaylist.playlistId,
@@ -369,6 +377,7 @@ function* startAssignment({ payload }) {
       });
       testActivityId = _id;
     } else {
+      yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }));
       const { _id } = yield testActivityApi.create({
         assignmentId,
         groupId: classId,
@@ -420,13 +429,18 @@ function* startAssignment({ payload }) {
 
     // TODO:load previous responses if resume!!
   } catch (err) {
-    const { status, data = {} } = err;
-    console.error(err);
-    if (status === 403 && data.message) {
+    Sentry.captureException(err);
+    const { status, data = {}, response = {} } = err;
+    if (status === 403) {
       const message =
-        data.message || "Assignment is not not available at the moment. Please contact your administrator.";
+        data.message ||
+        response.data?.message ||
+        "Assignment is not not available at the moment. Please contact your administrator.";
       notification({ msg: message });
+      yield put(push("/home/assignments"));
     }
+  } finally {
+    yield put(setIsActivityCreatingAction({ assignmentId: "", isLoading: false }));
   }
 }
 
@@ -453,6 +467,11 @@ function* resumeAssignment({ payload }) {
     if (assignmentId) {
       yield put(setActiveAssignmentAction(assignmentId));
       yield put(setResumeAssignment(true));
+
+      const { timedAssignment } = yield call(assignmentApi.getById, assignmentId) || {};
+      if (timedAssignment) {
+        yield put(utaStartTimeUpdateRequired("resume"));
+      }
     }
 
     // get the class id for the assignment
@@ -589,6 +608,16 @@ function* redirectToDashboard() {
   yield put(push("/home/assignments"));
 }
 
+export function* updateUtaTimeSaga({ payload }) {
+  try {
+    // TODO: Add defensive checks if required
+    yield put(utaStartTimeUpdateRequired(null));
+    yield call(testActivityApi.updateUtaTime, payload);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // set actions watcherss
 export function* watcherSaga() {
   yield all([
@@ -597,6 +626,7 @@ export function* watcherSaga() {
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
     yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment),
-    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard)
+    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard),
+    yield takeLatest(UPDATE_UTA_TIME, updateUtaTimeSaga)
   ]);
 }

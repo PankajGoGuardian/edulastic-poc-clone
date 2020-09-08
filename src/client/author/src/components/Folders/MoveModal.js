@@ -48,8 +48,17 @@ const MoveModal = ({
       }
     });
     if (itemsExistInFolder && itemsExistInFolder.length > 0) {
+      let contentName = "assignment";
+      if (folderType === folderTypes.TEST) {
+        contentName = "test";
+      } else if (folderType === folderTypes.ITEM) {
+        contentName = "item";
+      }
       const showAlreadyExistMsg =
-        itemsExistInFolder.length > 1 ? `${itemsExistInFolder.length} assignments` : itemsExistInFolder;
+        itemsExistInFolder.length > 1 || folderType === folderTypes.ITEM
+          ? `${itemsExistInFolder.length} ${contentName}(s)`
+          : itemsExistInFolder;
+
       notification({ type: "info", msg: `${showAlreadyExistMsg} already exist in ${folderName} folder` });
     }
     if (itemsNotExistInFolder.length === 0) {
@@ -100,7 +109,7 @@ const MoveModal = ({
           Cancel
         </EduButton>,
         <EduButton data-cy="submit" key="submit" color="primary" variant="create" onClick={handleMoveFolder}>
-          Move
+          Add
         </EduButton>
       ]}
     >

@@ -21,9 +21,9 @@ const { TextArea } = Input;
 
 const adaptiveRound = x => (x && x.endsWith ? (x.endsWith(".") ? x : round(x, 2)) : round(x, 2));
 
-function ScoreInputFocusEffectComponent({ scoreInputRef, responseLoading }) {
+function ScoreInputFocusEffectComponent({ scoreInputRef, responseLoading, feedbackInputHasFocus }) {
   useEffect(() => {
-    if (scoreInputRef.current && !responseLoading) {
+    if (scoreInputRef.current && !responseLoading && !feedbackInputHasFocus) {
       scoreInputRef.current.focus();
     }
   }, [responseLoading]);
@@ -42,7 +42,7 @@ class FeedbackRight extends Component {
       maxScore = props?.widget?.validation?.validResponse?.score || 0;
     }
 
-    this.state = { score, maxScore, showPreviewRubric: false, showFeedbackSaveBtn: false };
+    this.state = { score, maxScore, showPreviewRubric: false, showFeedbackSaveBtn: false, feedbackInputHasFocus: false };
 
     this.scoreInput = React.createRef();
   }
@@ -258,6 +258,10 @@ class FeedbackRight extends Component {
       });
   };
 
+  focusFeedbackInput = () => this.setState({ feedbackInputHasFocus: true });
+
+  blurFeedbackInput = () => this.setState({ feedbackInputHasFocus: false });
+
   render() {
     const {
       studentName,
@@ -271,7 +275,7 @@ class FeedbackRight extends Component {
       disabled,
       isPracticeQuestion
     } = this.props;
-    const { score, maxScore, feedback, showPreviewRubric, changed, showFeedbackSaveBtn } = this.state;
+    const { score, maxScore, feedback, showPreviewRubric, changed, showFeedbackSaveBtn, feedbackInputHasFocus } = this.state;
     let rubricMaxScore = 0;
     if (rubricDetails) rubricMaxScore = sumBy(rubricDetails.criteria, c => maxBy(c.ratings, "points").points);
     const { rubricFeedback } = activity || {};
@@ -318,7 +322,11 @@ class FeedbackRight extends Component {
     return (
       <StyledCardTwo bordered={isStudentName} disabled={disabled} showCollapseBtn={showCollapseBtn} title={title}>
         {expressGrader && (
-          <ScoreInputFocusEffectComponent scoreInputRef={this.scoreInput} responseLoading={studentResponseLoading} />
+          <ScoreInputFocusEffectComponent
+            scoreInputRef={this.scoreInput}
+            feedbackInputHasFocus={feedbackInputHasFocus}
+            responseLoading={studentResponseLoading}
+          />
         )}
         <StyledDivSec>
           <ScoreInputWrapper>
@@ -352,6 +360,8 @@ class FeedbackRight extends Component {
               data-cy="feedBackInput"
               onChange={this.onChangeFeedback}
               value={feedback}
+              onFocus={this.focusFeedbackInput}
+              onBlur={this.blurFeedbackInput}
               disabled={!activity || isPresentationMode}
               onKeyDown={this.onKeyDownFeedback}
               autoSize

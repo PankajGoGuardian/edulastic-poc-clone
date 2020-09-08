@@ -16,12 +16,24 @@ import {
   white,
   greyThemeDark4
 } from "@edulastic/colors";
-import { Paper, EduTableStyled } from "@edulastic/common";
+import { Paper, EduTableStyled, SelectInputStyled } from "@edulastic/common";
 import { IconManage } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
 import { Button, Divider, Icon, Menu, Modal, Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
+
+export const OptionWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+export const SelectStyled = styled(SelectInputStyled)`
+  .ant-select-selection__placeholder {
+    color: ${secondaryTextColor};
+  }
+`;
 
 export const TableWrapper = styled.div`
   background: ${white};

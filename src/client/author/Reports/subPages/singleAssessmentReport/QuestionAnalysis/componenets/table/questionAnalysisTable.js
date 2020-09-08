@@ -75,7 +75,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
 
     return (
       <CustomTableTooltip
-        printData={record[compareByType][index].avgPerformance}
+        printData={record?.[compareByType]?.[index]?.avgPerformance}
         placement="top"
         title={tooltipText(compareByType, record, index)}
         getCellContents={getCellContents}

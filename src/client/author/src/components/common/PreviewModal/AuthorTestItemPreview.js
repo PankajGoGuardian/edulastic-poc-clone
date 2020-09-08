@@ -32,7 +32,8 @@ import {
   MobileRightSide,
   PassageNavigation,
   WidgetContainer,
-  ReportIssueBtn
+  ReportIssueBtn,
+  ScratchpadAndWidgetWrapper
 } from "./styled";
 import QuestionPreviewDetails from "./QuestionPreviewDetails";
 import { ScratchpadTool, Scratchpad } from "../../../../../common/components/Scratchpad";
@@ -310,7 +311,6 @@ class AuthorTestItemPreview extends Component {
 
     // item detail preview
     if (page === "itemAuthoring") {
-      // match list preview max height is set using below value
       commonProps.style.height = showScratch ? "calc(100vh - 272px)" : "calc(100vh - 182px)";
       return commonProps;
     }
@@ -363,35 +363,38 @@ class AuthorTestItemPreview extends Component {
         )}
         {showScratch && isEnableScratchpad && <ScratchpadTool />}
         <WidgetContainer alignItems="flex-start" {...this.getScrollContainerProps(showScratch)}>
-          {showScratch && isEnableScratchpad && (
-            <Scratchpad hideTools saveData={saveScratchpad} data={scratchpadData} />
-          )}
-          {col?.widgets?.map((widget, i) => (
-            <React.Fragment key={i}>
-              {col.tabs &&
-                !!col.tabs.length &&
-                value === widget.tabIndex &&
-                this.renderTabContent({
-                  widget,
-                  flowLayout: col.flowLayout,
-                  widgetIndex: i,
-                  colIndex,
-                  sectionQue,
-                  subCount: subCount++,
-                  resourceCount
-                })}
-              {((col.tabs && !col.tabs.length) || !col.tabs) &&
-                this.renderTabContent({
-                  widget,
-                  flowLayout: col.flowLayout,
-                  widgetIndex: i,
-                  colIndex,
-                  sectionQue,
-                  subCount: subCount++,
-                  resourceCount
-                })}
-            </React.Fragment>
-          ))}
+          <ScratchpadAndWidgetWrapper>
+            {showScratch && isEnableScratchpad && (
+              <Scratchpad hideTools saveData={saveScratchpad} data={scratchpadData} />
+            )}
+
+            {col?.widgets?.map((widget, i) => (
+              <React.Fragment key={i}>
+                {col.tabs &&
+                  !!col.tabs.length &&
+                  value === widget.tabIndex &&
+                  this.renderTabContent({
+                    widget,
+                    flowLayout: col.flowLayout,
+                    widgetIndex: i,
+                    colIndex,
+                    sectionQue,
+                    subCount: subCount++,
+                    resourceCount
+                  })}
+                {((col.tabs && !col.tabs.length) || !col.tabs) &&
+                  this.renderTabContent({
+                    widget,
+                    flowLayout: col.flowLayout,
+                    widgetIndex: i,
+                    colIndex,
+                    sectionQue,
+                    subCount: subCount++,
+                    resourceCount
+                  })}
+              </React.Fragment>
+            ))}
+          </ScratchpadAndWidgetWrapper>
           {!isPassage && (
             <QuestionPreviewDetails
               id={_id}

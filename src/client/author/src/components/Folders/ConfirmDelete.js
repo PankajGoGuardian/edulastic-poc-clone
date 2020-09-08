@@ -3,13 +3,18 @@ import { connect } from "react-redux";
 import { CustomModalStyled, EduButton } from "@edulastic/common";
 import { receiveDeleteFolderAction } from "../../actions/folder";
 
-const ConfirmDeleteFolder = ({ folder, closeModal, deleteFolder }) => {
+const ConfirmDeleteFolder = ({ folder, folderType, closeModal, deleteFolder }) => {
   const handleProceed = () => {
     if (deleteFolder) {
       deleteFolder({ folderId: folder._id, delFolderName: folder.folderName });
     }
     closeModal();
   };
+
+  let conentName = "tests";
+  if (folderType === "ITEM") {
+    conentName = "items";
+  }
 
   return (
     <CustomModalStyled
@@ -28,8 +33,8 @@ const ConfirmDeleteFolder = ({ folder, closeModal, deleteFolder }) => {
       <p style={{ textAlign: "center" }}>
         {folder && (
           <>
-            <b>{folder?.folderName}</b> will get deleted but all tests will remain untouched. The tests can still be
-            accessed from All Assignments.
+            <b>{folder?.folderName}</b> will get deleted but all {conentName} will remain untouched. The {conentName}{" "}
+            can still be accessed from {folderType === "ASSIGNMENT" ? "All Assignments" : "Entire Library"}.
           </>
         )}
       </p>

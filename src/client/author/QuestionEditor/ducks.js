@@ -457,10 +457,14 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
       q => currentQuestionIds.includes(q.id) && values(resourceTypeQuestions).includes(q.type)
     );
 
+    const _widgets = itemDetail?.rows
+      ?.flatMap(({ widgets }) => widgets)
+      ?.filter(widget => widget.widgetType === "question");
+
     let data = {
       ...itemDetail,
       data: {
-        questions: reSequenceQuestionsWithWidgets(itemDetail?.rows?.[0]?.widgets, currentQuestions),
+        questions: reSequenceQuestionsWithWidgets(_widgets, currentQuestions),
         resources: currentResources
       }
     };

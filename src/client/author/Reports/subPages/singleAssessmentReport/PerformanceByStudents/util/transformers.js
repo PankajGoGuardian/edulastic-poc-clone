@@ -92,7 +92,7 @@ export const getFormattedName = name => {
 };
 
 export const normaliseTableData = (rawData, data) => {
-  const { bandInfo = {}, metaInfo = [], schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
+  const { bandInfo = [], metaInfo = [], schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
 
   const classes = groupBy(studentMetricInfo, "groupId");
 

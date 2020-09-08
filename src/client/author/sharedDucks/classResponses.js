@@ -4,7 +4,8 @@ import { classResponseApi, testActivityApi, attchmentApi as attachmentApi } from
 import { questionType } from "@edulastic/constants";
 import { createAction } from "redux-starter-kit";
 import { notification } from "@edulastic/common";
-import { get, isEmpty } from "lodash";
+import { get, isEmpty, groupBy, isPlainObject } from "lodash";
+
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
@@ -34,6 +35,7 @@ import { setTeacherEditedScore } from "../ExpressGrader/ducks";
 import { setCurrentTestActivityIdAction } from "../src/actions/classBoard";
 import { hasRandomQuestions } from "../ClassBoard/utils";
 import { LOAD_SCRATCH_PAD, SAVE_USER_WORK } from "../../assessment/constants/actions";
+
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
 
@@ -62,6 +64,7 @@ function* receiveClassResponseSaga({ payload }) {
 function* loadAttachmentsFromServer(filter) {
   try {
     const { referrerId, referrerId2, uqaId } = filter;
+    // TODO
     // perf optimisation
     // call the api only if data is not present in the store
     const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId, referrerId2 });
@@ -106,13 +109,38 @@ function* loadPassagesForItems({ testActivityId, passages }) {
   );
 }
 
+function getScratchpadUsedItemsFromActivities(actGroups = {}) {
+  const items = [];
+  Object.keys(actGroups).forEach(key => {
+    const activities = actGroups[key];
+    let showScratchByDefault;
+    let scratchUsed;
+    for (const activity of activities) {
+      if (activity.qType === questionType.HIGHLIGHT_IMAGE) {
+        showScratchByDefault = true;
+      }
+      if (activity?.scratchPad?.scratchpad === true) {
+        scratchUsed = true;
+      }
+      if (scratchUsed && showScratchByDefault) {
+        break;
+      }
+    }
+    if (scratchUsed && showScratchByDefault) {
+      items.push({ utaId: activities[0].testActivityId, uqaId: activities[0]._id, testItemId: key });
+    }
+  });
+  return items;
+}
+
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
     const { questionActivities = [] } = studentResponse;
-    const scratchpadUsedItems = questionActivities
-      .filter(activity => activity.qType === "highlightImage" && activity?.scratchPad?.scratchpad === true)
-      .map(activity => ({ uqaId: activity._id, testItemId: activity.testItemId }));
+
+    // student view LCB
+    const actGroups = groupBy(questionActivities, "testItemId");
+    const scratchpadUsedItems = getScratchpadUsedItemsFromActivities(actGroups);
 
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
@@ -259,6 +287,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
 
 function* receiveStudentQuestionSaga({ payload }) {
   try {
+    // express grader
     let feedbackResponse;
     if (payload.testItemId) {
       feedbackResponse = yield call(classResponseApi.receiveStudentItemQuestionResponse, payload);
@@ -271,16 +300,28 @@ function* receiveStudentQuestionSaga({ payload }) {
     }
 
     if (feedbackResponse) {
-      const { qType, scratchPad, testItemId, _id: uqaId, testActivityId } = feedbackResponse;
-      const userWork = yield select(state => state.userWork?.present || {});
-
-      if (userWork[uqaId] === undefined) {
+      const scratchpadUsedItems = [];
+      if (Array.isArray(feedbackResponse)) {
+        // multipart item
+        const scratchpadUsed = obj => obj?.scratchPad?.scratchpad === true;
+        const idObjMapper = obj => {
+          const { _id: uqaId, testItemId, testActivityId } = obj;
+          return { uqaId, testItemId, testActivityId };
+        };
+        const [item] = feedbackResponse.filter(scratchpadUsed).map(idObjMapper);
+        scratchpadUsedItems.push(item);
+      } else if (isPlainObject(feedbackResponse)) {
+        // item having single question
+        const { qType, scratchPad, _id: uqaId, testItemId, testActivityId } = feedbackResponse;
         if (qType === questionType.HIGHLIGHT_IMAGE && scratchPad.scratchpad === true) {
-          yield fork(getAttachmentsForItems, {
-            testActivityId,
-            testItemsIdArray: [{ uqaId, testItemId }]
-          });
+          scratchpadUsedItems.push({ uqaId, testItemId, testActivityId });
         }
+      }
+      if (scratchpadUsedItems.length > 0) {
+        yield fork(getAttachmentsForItems, {
+          testActivityId: scratchpadUsedItems[0].testActivityId,
+          testItemsIdArray: scratchpadUsedItems
+        });
       }
     }
 
@@ -310,6 +351,7 @@ function* receiveStudentQuestionSaga({ payload }) {
 }
 
 function* receiveClassQuestionSaga({ payload }) {
+  // question view LCB
   try {
     let feedbackResponse;
     if (payload.testItemId || payload.itemId) {
@@ -317,16 +359,19 @@ function* receiveClassQuestionSaga({ payload }) {
     } else {
       feedbackResponse = yield call(classResponseApi.questionClassQuestionResponse, payload);
     }
-    const scratchpadUsedItems = feedbackResponse
-      .filter(activity => activity.qType === "highlightImage" && activity?.scratchPad?.scratchpad === true)
-      .map(activity => ({
-        uqaId: activity._id,
-        testItemId: activity.testItemId,
-        testActivityId: activity.testActivityId
-      }));
+
+    let scratchpadUsedItems = [];
+    const actGroupByUser = groupBy(feedbackResponse, "userId");
+
+    Object.keys(actGroupByUser).forEach(key => {
+      const groupByItem = groupBy(actGroupByUser[key], "testItemId");
+      const curritems = getScratchpadUsedItemsFromActivities(groupByItem);
+      scratchpadUsedItems = scratchpadUsedItems.concat(curritems);
+    });
+
     for (const item of scratchpadUsedItems) {
       yield fork(getAttachmentsForItems, {
-        testActivityId: item.testActivityId,
+        testActivityId: item.utaId,
         testItemsIdArray: [item]
       });
     }

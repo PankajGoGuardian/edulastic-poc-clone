@@ -280,13 +280,13 @@ class PreviewModal extends React.Component {
       notification({ messageKey: "enterValidPassword" });
       return;
     }
-    if (!keys.includes(item._id)) {
-      keys[keys.length] = item._id;
+    if (!keys.includes(item?._id)) {
+      keys[keys.length] = item?._id;
       setDataAndSave({ addToTest: true, item });
       notification({ type: "success", messageKey: "itemAddedTest" });
     } else {
-      keys = keys.filter(key => key !== item._id);
-      setDataAndSave({ addToTest: false, item: { _id: item._id } });
+      keys = (keys || []).filter(key => key !== item?._id);
+      setDataAndSave({ addToTest: false, item: { _id: item?._id } });
       notification({ type: "success", messageKey: "itemRemovedTest" });
     }
     setTestItems(keys);
@@ -295,7 +295,7 @@ class PreviewModal extends React.Component {
   get isAddOrRemove() {
     const { item, selectedRows } = this.props;
     if (selectedRows && selectedRows.length) {
-      return !selectedRows.includes(item._id);
+      return !selectedRows.includes(item?._id);
     }
     return true;
   }
@@ -578,7 +578,7 @@ class PreviewModal extends React.Component {
                 )}
               <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
                 <>
-                  {item.status === "inreview" && hasCollectionAccess ? (
+                  {item && item.status === "inreview" && hasCollectionAccess ? (
                     <RejectButton
                       title="Reject"
                       isGhost
@@ -590,7 +590,7 @@ class PreviewModal extends React.Component {
                       <span>Reject</span>
                     </RejectButton>
                   ) : null}
-                  {(item.status === "inreview" || item.status === "rejected") && hasCollectionAccess ? (
+                  {item && (item.status === "inreview" || item.status === "rejected") && hasCollectionAccess ? (
                     <EduButton
                       title="Approve"
                       isGhost

@@ -194,7 +194,7 @@ class TestItemPreview extends Component {
     const { value } = this.state;
     let colIndex = 0;
     return cols.map(col =>
-      col.widgets
+      (col?.widgets || [])
         .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
         .map((widget, i) => (
           <React.Fragment key={i}>
@@ -270,7 +270,7 @@ class TestItemPreview extends Component {
     } = restProps;
 
     const { collapseDirection } = this.state;
-    const widgets = (cols || []).flatMap(col => col.widgets).filter(q => q);
+    const widgets = (cols || []).flatMap(col => col?.widgets).filter(q => q);
     if (widgets.length === 0) {
       return null;
     }
@@ -295,7 +295,7 @@ class TestItemPreview extends Component {
 
     let dataSource = cols;
     if (!showStackedView && (isQuestionView || isExpressGrader)) {
-      dataSource = dataSource.filter(col => (col.widgets || []).length > 0);
+      dataSource = dataSource.filter(col => (col?.widgets || []).length > 0);
     }
 
     const borderProps = showScratchpadByDefault
@@ -310,7 +310,7 @@ class TestItemPreview extends Component {
             display: "flex",
             flexDirection: "column",
             alignSelf: !LCBPreviewModal && "stretch",
-            height: LCBPreviewModal && "100%",
+            flexGrow: 1,
             width: "100%",
             overflow: !isStudentAttempt && !isPrintPreview && "auto", // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
             background: isExpressGrader && showScratchpadByDefault ? white : null,
@@ -344,8 +344,8 @@ class TestItemPreview extends Component {
                   const hideColumn =
                     (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
                   if (hideColumn && showCollapseButtons) return "";
-                  const isOnlyPassage = col.widgets.every(widget => widget.type === "passage");
-                  const widgetCount = col.widgets.length;
+                  const isOnlyPassage = (col?.widgets || []).every(widget => widget?.type === "passage");
+                  const widgetCount = (col?.widgets || []).length;
                   const fullHeight =
                     ((isExpressGrader || isLCBView) && (i === 0 && isOnlyPassage)) || widgetCount === 1;
                   return (
@@ -392,7 +392,7 @@ class TestItemPreview extends Component {
               )}
             </ScrollContext.Provider>
           </Container>
-          {showScratchpadByDefault && isLCBView && history && (
+          {showScratchpadByDefault && (isLCBView || isExpressGrader) && history && (
             <TimeSpentWrapper margin="0px 12px 12px">
               <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
                 View at Student&apos;s resolution
@@ -403,7 +403,7 @@ class TestItemPreview extends Component {
           )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
-        {((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
+        {!isStudentAttempt && ((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
           <div
             style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}
             className="__print-feedback-main-wrapper"

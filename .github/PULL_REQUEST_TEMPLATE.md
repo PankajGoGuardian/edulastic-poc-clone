@@ -46,6 +46,14 @@ https://snapwiz.atlassian.net/browse/ISSUE_ID
 
 ---
 
+**Are there other PRs that should be merged before this?** (if yes, provide the reference below.)
+
+<!-- Answer below. `>` represents a block quote below -->
+
+>
+
+---
+
 **Have you added your unit tests?**
 
 <!-- Answer below. `>` represents a block quote below -->

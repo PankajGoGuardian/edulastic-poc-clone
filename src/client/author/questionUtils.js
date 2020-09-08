@@ -1,5 +1,5 @@
 import { questionType, question, customTags, math } from "@edulastic/constants";
-import { get, isString, isEmpty, keys, isArray } from "lodash";
+import { get, isString, isEmpty, keys } from "lodash";
 import striptags from "striptags";
 import { templateHasImage } from "@edulastic/common";
 import { displayStyles } from "../assessment/widgets/ClozeEditingTask/constants";
@@ -320,20 +320,6 @@ const itemHasIncompleteFields = item => {
   return [false];
 };
 
-/**
- *
- * @param {*} numberOfEmptyAnswers
- * @param {*} currentIndex position of empty answer
- */
-const clozeDropDownEmptyAnsMessage = (numberOfEmptyAnswers = 0, currentIndex = undefined) => {
-  if (numberOfEmptyAnswers > 1) {
-    return "Correct/Alternate Answer(s) for the question cannot be empty";
-  }
-  return `Correct/Alternate Answer for Text Dropdown ${
-    currentIndex !== undefined ? currentIndex + 1 : ""
-  } cannot be empty`;
-};
-
 const answerValidator = {
   generalValidator(answers) {
     const hasEmpty = answers.some(answer => isEmpty(answer.value) || answer.value.some(ans => isEmpty(ans)));
@@ -369,18 +355,8 @@ const answerValidator = {
     return hasEmpty;
   },
   [questionType.CLOZE_DROP_DOWN](answers) {
-    const emptyResponses = [];
     const hasEmpty = answers.some(answer => isEmpty(answer.value) || answer.value.some(ans => isEmpty(ans.value)));
-
-    if (hasEmpty) {
-      answers?.forEach(({ value = [] }) => {
-        value.forEach((ans, index) => {
-          if (isEmpty(ans.value)) emptyResponses.push(index);
-        });
-      });
-    }
-
-    return [hasEmpty, clozeDropDownEmptyAnsMessage(emptyResponses.length, emptyResponses[emptyResponses.length - 1])];
+    return hasEmpty;
   },
   [questionType.CLOZE_IMAGE_DROP_DOWN](answers) {
     const hasEmpty = answers.some(
@@ -511,6 +487,34 @@ export const hasEmptyAnswers = item => {
 };
 
 /**
+ *
+ * @param {*} numberOfEmptyAnswers
+ * @param {*} currentIndex position of empty answer
+ */
+const clozeDropDownEmptyAnsMessage = (numberOfEmptyAnswers = 0, currentIndex = undefined) => {
+  if (numberOfEmptyAnswers > 1) {
+    return "Correct/Alternate Answer(s) for the question cannot be empty";
+  }
+  return `Correct/Alternate Answer for Text Dropdown ${
+    currentIndex !== undefined ? currentIndex + 1 : ""
+  } cannot be empty`;
+};
+
+const emptyCorrectAnswerErrMsg = {
+  [questionType.CLOZE_DROP_DOWN](answers) {
+    const emptyResponses = [];
+    answers?.forEach(({ value = [] }) => {
+      value.forEach((ans, index) => {
+        if (isEmpty(ans.value)) {
+          emptyResponses.push(index);
+        }
+      });
+    });
+
+    return clozeDropDownEmptyAnsMessage(emptyResponses.length, emptyResponses[emptyResponses.length - 1]);
+  }
+};
+/**
  * does question have enough data !?
  *  This is only the begnning. This func is going to grow to handle
  *  the idiosyncraices of  multiple questions types.
@@ -558,16 +562,17 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
     }
   }
 
-  // check for empty correct answers
-  const questionHasEmptyAnswers = hasEmptyAnswers(item);
-
-  if (isArray(questionHasEmptyAnswers)) {
-    // contains flag and message in Array
-    return questionHasEmptyAnswers;
-  }
-
-  if (questionHasEmptyAnswers) {
-    return [true, "Correct/Alternate answers should be set"];
+  if (!questionType.manuallyGradableQn.includes(item.type)) {
+    const questionHasEmptyAnswers = hasEmptyAnswers(item);
+    if (questionHasEmptyAnswers) {
+      let defaultErrorMessage = "Correct/Alternate answers should be set";
+      const getEmptyCorrectAnswerErrMsg = emptyCorrectAnswerErrMsg[item.type];
+      if (typeof getEmptyCorrectAnswerErrMsg === "function") {
+        const correctAnswers = [item?.validation?.validResponse, ...(item?.validation?.altResponses || [])];
+        defaultErrorMessage = getEmptyCorrectAnswerErrMsg(correctAnswers);
+      }
+      return [true, defaultErrorMessage]; // [true, msg]
+    }
   }
 
   return [false];

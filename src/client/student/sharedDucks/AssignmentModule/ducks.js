@@ -25,6 +25,9 @@ export const UPDATE_REALTIME_ASSIGNMENT_TEST_ID = "[studentAssignments] update t
 export const SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT = "[studentAssignments] set ready for timed assignment";
 export const CLEAR_REGRADE_ASSIGNMENT = "[studentAssignments] clear regrade assignment";
 export const SHOW_TEST_INSTRUCTION = "[studentAssignments] show student test instruction";
+export const SET_ACTIVITY_CREATING = "[studentAssignments] set test activity creating";
+export const TOGGLE_UTA_TIME_UPDATE_REQUIRED = "[studentAssignments] toggle - uta time update required";
+
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
 export const setAssignmentsAction = createAction(SET_ASSIGNMENTS);
@@ -38,6 +41,9 @@ export const updateTestIdRealTimeAction = createAction(UPDATE_REALTIME_ASSIGNMEN
 export const setConfirmationForTimedAssessmentAction = createAction(SET_CONFIRMATION_FOR_TIMED_ASSIGNMENT);
 export const clearRegradeAssignmentAction = createAction(CLEAR_REGRADE_ASSIGNMENT);
 export const showTestInstructionsAction = createAction(SHOW_TEST_INSTRUCTION);
+export const setIsActivityCreatingAction = createAction(SET_ACTIVITY_CREATING);
+export const utaStartTimeUpdateRequired = createAction(TOGGLE_UTA_TIME_UPDATE_REQUIRED);
+
 // initial State
 const initialState = {
   isLoading: false,
@@ -47,7 +53,12 @@ const initialState = {
   isStale: false,
   filter: "all",
   showInstruction: false,
-  assignment: {}
+  assignment: {},
+  loadAssignment: {
+    assignmentId: "",
+    isLoading: false
+  },
+  updateUtaTimeType: null
 };
 
 // reducers
@@ -126,6 +137,13 @@ export default createReducer(initialState, {
   [SHOW_TEST_INSTRUCTION]: (state, { payload }) => {
     state.showInstruction = payload.showInstruction;
     state.assignment = payload.assignment;
+  },
+  [SET_ACTIVITY_CREATING]: (state, { payload }) => {
+    state.loadAssignment.assignmentId = payload.assignmentId;
+    state.loadAssignment.isLoading = payload.isLoading;
+  },
+  [TOGGLE_UTA_TIME_UPDATE_REQUIRED]: (state, { payload }) => {
+    state.updateUtaTimeType = payload;
   }
 });
 

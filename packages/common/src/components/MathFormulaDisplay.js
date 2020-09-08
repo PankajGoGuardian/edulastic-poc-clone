@@ -34,7 +34,7 @@ const MathFormulaDisplay = withTheme(
       display: table-row;
     }
 
-    table td {
+    table td,th {
       display: table-cell;
     }
 

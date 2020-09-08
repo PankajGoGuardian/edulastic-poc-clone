@@ -17,10 +17,13 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
     () =>
       Object.keys(data).reduce((acc, key) => {
         const field = fields.find(f => f.name === key);
-        if (data[key] && field && field.formatter) {
-          acc[key] = field.formatter(data[key]);
-        } else {
-          acc[key] = data[key];
+        // assures only fields from selected category goes in API request
+        if (field) {
+          if (data[key] && field.formatter) {
+            acc[key] = field.formatter(data[key]);
+          } else {
+            acc[key] = data[key];
+          }
         }
         return { ...acc };
       }, {}),

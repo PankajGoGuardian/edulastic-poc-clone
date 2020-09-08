@@ -305,9 +305,10 @@ class QuestionItem extends React.Component {
   renderScore = qId => {
     const { feedback = {}, previousFeedback = [], data } = this.props;
     const maxScore = get(data, "validation.validResponse.score", 0);
-    const { score, feedback: teacherComments, graded, skipped } =
+    const { feedback: teacherComments, graded, skipped } =
       previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || data.activity || {};
-
+    const score =
+      previousFeedback.find(pf => pf.qid === qId)?.score || feedback[qId]?.score || data.activity?.score || 0;
     return (
       <>
         <DetailsContainer>

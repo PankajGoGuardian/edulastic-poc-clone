@@ -11,6 +11,9 @@ import { Partners } from "./static/partnerData";
 import { smallestZoomLevel } from "./static/zoom";
 import { breakpoints } from "../../student/zoomTheme";
 
+// eslint-disable-next-line no-control-regex
+const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+
 const api = new API();
 
 export const getWordsInURLPathName = pathname => {
@@ -121,19 +124,16 @@ export const isDistrictPolicyAvailable = (isSignupUsingDaURL, districtPolicy) =>
   isSignupUsingDaURL && typeof districtPolicy === "object";
 
 export const isEmailValid = (rule, value, callback, checks, message) => {
-  const emailRegExp = new RegExp(
-    "^[_A-Za-z0-9-'\\+]+(\\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\\-\\.]+)*(\\.[A-Za-z]{1,25})$"
-  );
   const userNameRegExp = new RegExp(`^[A-Za-z0-9._ \\-\\+\\'\\"]+$`);
 
   let flag = false;
 
   if (checks === "email") {
-    flag = emailRegExp.test(value.trim());
+    flag = emailRegex.test(value.trim());
   } else if (checks === "username") {
     flag = userNameRegExp.test(value.trim());
   } else if (checks === "both" || !checks) {
-    flag = emailRegExp.test(value.trim()) || userNameRegExp.test(value.trim());
+    flag = emailRegex.test(value.trim()) || userNameRegExp.test(value.trim());
   }
 
   if (flag) {
@@ -329,6 +329,8 @@ export const reSequenceQuestionsWithWidgets = (widgets = [], questions = []) => 
   return reSequencedQ.length ? reSequencedQ : questions;
 };
 
+export const validateEmail = (email = "") => emailRegex.test(String(email).toLowerCase());
+
 /** Use this helper to invoke at places where you to need to validate client time into sentry */
 export const checkClientTime = (meta = {}) => {
   const error = new Error("[App] CLIENT_TIME_MISMATCH");
@@ -362,8 +364,3 @@ export const checkClientTime = (meta = {}) => {
     }
   });
 };
-
-// eslint-disable-next-line no-control-regex
-const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-
-export const validateEmail = (email = '') => emailRegex.test(String(email).toLowerCase());

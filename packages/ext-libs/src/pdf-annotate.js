@@ -1,7 +1,6 @@
 var pdfjsViewer = require("pdfjs-dist/web/pdf_viewer.js"); // pdfjs-dist - v2.1.266
 var { aws } = require("@edulastic/constants");
 var { uploadToS3 } = require("@edulastic/common");
-const { themeColor } = require("@edulastic/colors");
 (function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === "object" && typeof module === "object") module.exports = factory();
   else if (typeof define === "function" && define.amd) define([], factory);
@@ -2144,10 +2143,9 @@ const { themeColor } = require("@edulastic/colors");
         }
 
         var SIZE = 25;
-        var commentSvg = `<svg class="svg-icon" id="comment" width="25" height="25">
-          <rect id="svg_2" height="25.34537" width="25.31416" y="-0.17269" x="-0.15708" stroke-width="0" stroke="#EFA12C" fill="#EFA12C"/>
-          <path stroke="#8c8888" id="svg_1" stroke-width="0.5" fill="#ffffff" d="m5.96968,15.58726a7.20087,7.20087 0 0 1 -0.30932,-0.76781l-0.01549,0a7.2261,7.2261 0 0 1 6.53852,-9.5306l0,0a7.21843,7.21843 0 1 1 0.34661,14.42916a7.14054,7.14054 0 0 1 -3.07121,-0.69102c-3.76223,0.74368 -3.46937,0.69102 -3.55492,0.69102a0.61863,0.61863 0 0 1 -0.60656,-0.74037l0.67237,-3.39039z"/>
-        </svg>`;
+        var commentSvg = `<svg class="svg-icon" id="comment" viewBox="0 0 20 20" width="25" height="25">
+            <path d="M17.211,3.39H2.788c-0.22,0-0.4,0.18-0.4,0.4v9.614c0,0.221,0.181,0.402,0.4,0.402h3.206v2.402c0,0.363,0.429,0.533,0.683,0.285l2.72-2.688h7.814c0.221,0,0.401-0.182,0.401-0.402V3.79C17.612,3.569,17.432,3.39,17.211,3.39M16.811,13.004H9.232c-0.106,0-0.206,0.043-0.282,0.117L6.795,15.25v-1.846c0-0.219-0.18-0.4-0.401-0.4H3.189V4.19h13.622V13.004z"></path>
+            </svg>`;
 
         function renderPoint(a) {
           var div = document.createElement("div");
@@ -2156,7 +2154,7 @@ const { themeColor } = require("@edulastic/colors");
           div.firstChild.setAttribute("x", a.x);
           div.firstChild.setAttribute("y", a.y);
           div.firstChild.setAttribute("stroke-width", 1);
-          div.firstChild.setAttribute("stroke", "#ff0");
+          div.firstChild.setAttribute("stroke", "#4e95f3");
 
           div.setAttribute("width", 100);
           div.setAttribute("height", 100);
@@ -4665,17 +4663,9 @@ const { themeColor } = require("@edulastic/colors");
           return obj && obj.__esModule ? obj : { default: obj };
         }
         var SIZE = 25;
-        var videoSvg = `<svg class="svg-icon" id="video" width="25" height="25">
-          <rect stroke="#000000" id="svg_7" height="25.34268" width="25.18643" y="-0.21763" x="-0.10918" stroke-opacity="0" stroke-width="null" fill="#E53F61"/>          
-          <g stroke="null" id="svg_6">
-            <g stroke="null" id="svg_1">
-            <path stroke="null" d="m5.50557,7.04802l10.04806,0a1.00547,1.00547 0 0 1 0.9133,1.08089l0,8.64959a1.00547,1.00547 0 0 1 -0.9133,1.08089l-10.04806,0a1.00547,1.00547 0 0 1 -0.9133,-1.08089l0,-8.64959a1.00547,1.00547 0 0 1 0.9133,-1.08089z" fill="#ffffff" id="svg_2"/>
-            </g>
-            <g stroke="null" id="svg_3">
-            <path stroke="null" d="m15.38739,9.69493l4.20289,-2.43409a0.47342,0.47342 0 0 1 0.53039,0.03351a0.68708,0.68708 0 0 1 0.25807,0.55301l0,9.21685a0.68708,0.68708 0 0 1 -0.26058,0.55553a0.48515,0.48515 0 0 1 -0.2874,0.09636a0.4776,0.4776 0 0 1 -0.24718,-0.06954l-4.20289,-2.52375l0.0067,-5.42789z" fill="#ffffff" id="svg_4"/>
-            </g>
-          </g>          
-      </svg>`;
+        var videoSvg = `<svg class="svg-icon" id="video" viewBox="0 0 20 20" width="25" height="25">
+            <path d="M17.919,4.633l-3.833,2.48V6.371c0-1-0.815-1.815-1.816-1.815H3.191c-1.001,0-1.816,0.814-1.816,1.815v7.261c0,1.001,0.815,1.815,1.816,1.815h9.079c1.001,0,1.816-0.814,1.816-1.815v-0.739l3.833,2.478c0.428,0.226,0.706-0.157,0.706-0.377V5.01C18.625,4.787,18.374,4.378,17.919,4.633 M13.178,13.632c0,0.501-0.406,0.907-0.908,0.907H3.191c-0.501,0-0.908-0.406-0.908-0.907V6.371c0-0.501,0.407-0.907,0.908-0.907h9.079c0.502,0,0.908,0.406,0.908,0.907V13.632zM17.717,14.158l-3.631-2.348V8.193l3.631-2.348V14.158z"></path>
+            </svg>`;
 
         function renderPoint(a) {
           var div = document.createElement("div");
@@ -4684,7 +4674,7 @@ const { themeColor } = require("@edulastic/colors");
           div.firstChild.setAttribute("x", a.x);
           div.firstChild.setAttribute("y", a.y);
           div.firstChild.setAttribute("stroke-width", 1);
-          div.firstChild.setAttribute("stroke", "green");
+          div.firstChild.setAttribute("stroke", "#4e95f3");
 
           return div.firstChild;
         }
@@ -4877,17 +4867,9 @@ const { themeColor } = require("@edulastic/colors");
           return obj && obj.__esModule ? obj : { default: obj };
         }
         var SIZE = 25;
-        var imageSvg = `<svg class="svg-icon" id="image" width="25" height="25">
-          <rect id="svg_6" height="25.20663" width="25.24921" y="-0.05995" x="-0.12507" stroke-opacity="0" stroke-width="null" stroke="#000000" fill="#1AB395"/>
-          <g stroke="null" id="svg_7">
-          <g stroke="null" id="svg_2">
-            <path stroke="null" id="svg_3" fill="#ffffff" d="m18.80868,6.76499l-12.61736,0a1.72059,1.72059 0 0 0 -1.72059,1.72059l0,8.02884a1.72059,1.72059 0 0 0 1.72059,1.72059l12.61736,0a1.72059,1.72059 0 0 0 1.72059,-1.72059l0,-8.02884a1.72059,1.72059 0 0 0 -1.72059,-1.72059zm0.57324,6.645l-3.60912,-3.60912a0.57324,0.57324 0 0 0 -0.8106,0l-4.75647,4.75561l-1.88511,-1.88511a0.57324,0.57324 0 0 0 -0.8106,0l-1.88511,1.88511l0,-6.0709a0.57324,0.57324 0 0 1 0.57324,-0.57324l12.61051,0a0.57324,0.57324 0 0 1 0.57324,0.57324l0,4.92441z"/>
-          </g>
-          <g stroke="null" id="svg_4">
-            <circle stroke="null" id="svg_5" fill="#ffffff" r="1.72059" cy="10.77941" cx="9.6325"/>
-          </g>
-          </g>
-        </svg>`;
+        var imageSvg = `<svg class="svg-icon" id="image" viewBox="0 0 20 20" width="25" height="25">
+            <path d="M18.555,15.354V4.592c0-0.248-0.202-0.451-0.45-0.451H1.888c-0.248,0-0.451,0.203-0.451,0.451v10.808c0,0.559,0.751,0.451,0.451,0.451h16.217h0.005C18.793,15.851,18.478,14.814,18.555,15.354 M2.8,14.949l4.944-6.464l4.144,5.419c0.003,0.003,0.003,0.003,0.003,0.005l0.797,1.04H2.8z M13.822,14.949l-1.006-1.317l1.689-2.218l2.688,3.535H13.822z M17.654,14.064l-2.791-3.666c-0.181-0.237-0.535-0.237-0.716,0l-1.899,2.493l-4.146-5.42c-0.18-0.237-0.536-0.237-0.716,0l-5.047,6.598V5.042h15.316V14.064z M12.474,6.393c-0.869,0-1.577,0.707-1.577,1.576s0.708,1.576,1.577,1.576s1.577-0.707,1.577-1.576S13.343,6.393,12.474,6.393 M12.474,8.645c-0.371,0-0.676-0.304-0.676-0.676s0.305-0.676,0.676-0.676c0.372,0,0.676,0.304,0.676,0.676S12.846,8.645,12.474,8.645"></path>
+            </svg>`;
 
         function renderPoint(a) {
           var div = document.createElement("div");
@@ -4896,7 +4878,7 @@ const { themeColor } = require("@edulastic/colors");
           div.firstChild.setAttribute("x", a.x);
           div.firstChild.setAttribute("y", a.y);
           div.firstChild.setAttribute("stroke-width", 1);
-          div.firstChild.setAttribute("stroke", "red");
+          div.firstChild.setAttribute("stroke", "#4e95f3");
 
           return div.firstChild;
         }

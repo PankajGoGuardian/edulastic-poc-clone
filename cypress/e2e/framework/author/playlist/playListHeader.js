@@ -84,7 +84,7 @@ export default class PlayListHeader {
     this.getUseThisButton().click({ force: true });
     cy.wait("@change-my-playlist").then(xhr => expect(xhr.status).to.eq(200));
     cy.wait("@get-my-playlist");
-    return cy.get('[data-cy="insights"]', { timeout: 20000 });
+    return cy.get('[data-cy="open-dropped-playlist"]', { timeout: 20000 });
   };
 
   clickOnEdit = () => {

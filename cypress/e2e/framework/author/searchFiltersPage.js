@@ -32,7 +32,8 @@ export default class SearchFilters {
       sharedWithMe: "Shared with me",
       coAuthor: "I am a Co-Author",
       floders: "FOLDERS",
-      myFavorites: "My Favorites"
+      myFavorites: "My Favorites",
+      prevUsed: "Previously Used"
     };
   }
 
@@ -105,6 +106,12 @@ export default class SearchFilters {
   clickOnGetCoAuthor = () => {
     this.routeSearch();
     this.getFilterButtonByAttr(this.libraryTitles.coAuthor).click({ force: true });
+    this.waitForSearchResponse();
+  };
+
+  clickOnPreviouslyUsed = () => {
+    this.routeSearch();
+    this.getFilterButtonByAttr(this.libraryTitles.prevUsed).click({ force: true });
     this.waitForSearchResponse();
   };
 

@@ -40,12 +40,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> playlist library / sear
       description: "this is playlist-3"
     }
   ];
+  const usedPlaylists = [metadata[0].existingPlaylistId];
 
   before("create playlists", () => {
     cy.login("teacher", teacher);
     metadata.forEach((data, i) => {
       playlistlibraryPage.createPlayListWithTests({ metadata: data, moduledata }).then(id => {
         metadata[i].newPlaylistId = id;
+        if (!i) {
+          /* to verify prev used playlist */
+          usedPlaylists.push(id);
+          playlistlibraryPage.header.clickOnUseThis();
+        }
         playlistlibraryPage.sidebar.clickOnItemBank();
       });
     });
@@ -168,6 +174,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> playlist library / sear
     });
 
     context("> search using filters", () => {
+      // TODO: check if wait for search xhr and cy commands execute in parallel
       it("> using 'grades'", () => {
         metadata.slice(1).forEach(({ grade, existingPlaylistId, newPlaylistId }) => {
           const standards = { grade: [grade] };
@@ -270,6 +277,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> playlist library / sear
           testlibraryPage.getTestIdOfCardInCurrentPageByIndex(getNumberInRange(0, $ele.length)).then(id => {
             playlistlibraryPage.clickOnPlayListCardById(id);
             playlistlibraryPage.reviewTab.verifyGradeWhenMultipleGrades(randomGrade);
+            /* to verify prev used playlist */
+            playlistlibraryPage.header.clickOnUseThis();
+            usedPlaylists.push(id);
           });
         });
       });
@@ -299,6 +309,28 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> playlist library / sear
           });
         });
       });
+    });
+  });
+
+  context("> previously used playlists", () => {
+    before("> navigate to previously used playlist", () => {
+      playlistlibraryPage.sidebar.clickOnDashboard();
+      playlistlibraryPage.sidebar.clickOnPlayListLibrary();
+
+      playlistlibraryPage.searchFilter.clearAll();
+      playlistlibraryPage.searchFilter.clickOnPreviouslyUsed();
+    });
+
+    it("> existing playlist", () => {
+      playlistlibraryPage.getPlayListCardById(usedPlaylists[0]).should("be.visible");
+    });
+
+    it("> new playlist", () => {
+      playlistlibraryPage.getPlayListCardById(usedPlaylists[1]).should("be.visible");
+    });
+
+    it("> playlist from entire library", () => {
+      playlistlibraryPage.getPlayListCardById(usedPlaylists[2]).should("be.visible");
     });
   });
 });

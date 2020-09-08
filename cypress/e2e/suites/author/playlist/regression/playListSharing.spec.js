@@ -59,9 +59,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>play list sharing`, () =
         cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
         playlistlibraryPage.sidebar.clickOnPlayListLibrary();
         playlistlibraryPage.searchFilter.clearAll();
-        playlistlibraryPage.searchFilter.sharedWithMe();
 
-        playlistlibraryPage.searchFilter.typeInSearchBox(playlistid);
+        playlistlibraryPage.searchFilter.clickOnGetCoAuthor();
+        playlistlibraryPage.getPlayListCardById(playlistid).should("be.visible");
+
+        playlistlibraryPage.searchFilter.sharedWithMe();
+        playlistlibraryPage.getPlayListCardById(playlistid).should("be.visible");
+
         playlistlibraryPage.clickOnPlayListCardById(playlistid);
         playlistlibraryPage.verifyEditPermission(playlistid);
       });
@@ -140,10 +144,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>play list sharing`, () =
       it(">assert the shared playlist 'by non owner 2'", () => {
         cy.login("teacher", dist1_school1[teacher3][email], dist1_school1[teacher2][pass]);
         playlistlibraryPage.sidebar.clickOnPlayListLibrary();
-        playlistlibraryPage.searchFilter.clearAll();
 
+        playlistlibraryPage.searchFilter.clearAll();
         playlistlibraryPage.searchFilter.sharedWithMe();
+
         playlistlibraryPage.searchFilter.typeInSearchBox(playlistid);
+        playlistlibraryPage.getPlayListCardById(playlistid).should("be.visible");
+
+        playlistlibraryPage.searchFilter.clickOnGetCoAuthor();
+        playlistlibraryPage.getPlayListCardById(playlistid).should("be.visible");
 
         playlistlibraryPage.clickOnPlayListCardById(playlistid);
         playlistlibraryPage.verifyEditPermission(playlistid);

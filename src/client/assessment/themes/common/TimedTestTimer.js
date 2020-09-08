@@ -78,6 +78,12 @@ const TimedTestTimer = ({
 
       if (currentAssignmentTime === null) {
         setCurrentAssignmentTime(upstreamUta?.allowedTime - (upstreamUta?.timeSpent || 0) || 0);
+      } else if (upstreamUta.allowedTime && uta.allowedTime && upstreamUta.allowedTime !== uta.allowedTime) {
+        // If teacher updated time in LCB : sync the timeSpent and reflect changes in UI
+        setCurrentAssignmentTime(_currentTime => {
+          updateUtaTime({ utaId, type: "sync", syncOffset: uta.allowedTime - _currentTime });
+          return upstreamUta?.allowedTime - (uta?.allowedTime - _currentTime) || 0;
+        });
       }
     }
   }, [upstreamUta, uta, updateUtaTimeType]);

@@ -468,12 +468,16 @@ class ClassBoard extends Component {
   };
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents, testActivity, assignmentStatus } = this.props;
+    const { selectedStudents, testActivity, assignmentStatus, removedStudents } = this.props;
 
     if (assignmentStatus.toLowerCase() === "done") {
       return notification({ type: "warn", msg: "Cannot remove student(s) from a DONE assignment." });
     }
 
+    const isRemovedStudentsSelected = removedStudents.some(item => selectedStudents[item]);
+    if (isRemovedStudentsSelected) {
+      return notification({ type: "warn", msg: "Cannot remove unassigned students" });
+    }
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
       return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });

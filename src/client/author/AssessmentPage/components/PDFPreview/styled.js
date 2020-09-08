@@ -1,9 +1,6 @@
 import styled from "styled-components";
+
 import { white, mediumDesktopExactWidth, extraDesktopWidthMax, themeColor } from "@edulastic/colors";
-import EditIcon from "../PDFAnnotationTools/static/cursor-pencil.svg";
-import ImageIcon from "../PDFAnnotationTools/static/cursor-image.svg";
-import MessageIcon from "../PDFAnnotationTools/static/cursor-comment.svg";
-import VideoIcon from "../PDFAnnotationTools/static/cursor-video.svg";
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
@@ -16,7 +13,7 @@ export const PDFPreviewWrapper = styled.div`
   transition: padding 0.2s ease-in;
   height: ${props =>
     `calc(100vh - ${
-      props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
+    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
     }px) - 43px`};
   .scrollbar-container {
     border-radius: 5px;
@@ -24,41 +21,15 @@ export const PDFPreviewWrapper = styled.div`
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props =>
-      `calc(100vh - ${
-        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
-      }px) - 43px`};
+    `calc(100vh - ${
+    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
+    }px) - 43px`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props =>
-      `calc(100vh - ${
-        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
-      }px) - 43px`};
-  }
-
-  .drag-tool-selected * {
-    cursor: move !important;
-  }
-  .draw-tool-selected * {
-    cursor: url(${EditIcon}) 0 15, auto !important;
-  }
-  .video-tool-selected * {
-    cursor: url(${VideoIcon}) 12 10, auto !important;
-  }
-  .image-tool-selected * {
-    cursor: url(${ImageIcon}) 12 10, auto !important;
-  }
-  .point-tool-selected * {
-    cursor: url(${MessageIcon}) 12 10, auto !important;
-  }
-
-  .area-tool-selected *,
-  .mask-tool-selected * {
-    cursor: crosshair !important;
-  }
-  .highlight-tool-selected *,
-  .strikeout-tool-selected *,
-  .text-tool-selected * {
-    cursor: text !important;
+    `calc(100vh - ${
+    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
+    }px) - 43px`};
   }
 `;
 

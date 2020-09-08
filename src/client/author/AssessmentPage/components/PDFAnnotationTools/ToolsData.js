@@ -15,8 +15,7 @@ const {
   PreviousIcon,
   TextLineIcon,
   TextIcon,
-  Videoicon,
-  HighlightIcon
+  Videoicon
 } = ToolsIcons;
 
 export const ANNOTATION_TOOLS = [
@@ -64,7 +63,7 @@ export const ANNOTATION_TOOLS = [
   {
     key: "highlight",
     title: "Highlight",
-    icon: <HighlightIcon />,
+    icon: <CleanIcon />,
     showColorPicker: true
   },
   {

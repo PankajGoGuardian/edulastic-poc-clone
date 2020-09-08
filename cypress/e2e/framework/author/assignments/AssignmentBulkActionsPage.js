@@ -221,10 +221,10 @@ export default class AssignmentBulkActionsPage {
     .should("be.visible")
     .then($ele => {
       $ele.detach();
+      cy.wait("@bulkProcess").then(xhr =>{
+        assert.isTrue(xhr.status === 200,`Bulk process failed`);
+       })
     });
-    cy.wait("@bulkProcess").then(xhr =>{
-     assert.isTrue(xhr.status === 200,`Bulk process failed`);
-    })
     cy.wait(500)
   }
 

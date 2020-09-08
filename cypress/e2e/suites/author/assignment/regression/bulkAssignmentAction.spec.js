@@ -4,6 +4,7 @@ import AssignmentBulkActionsPage, {filter,icons} from "../../../../framework/aut
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import SidebarPage from "../../../../framework/student/sidebarPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import { getRandomClass,getRandomStudent } from "../../../../framework/constants/constantFunctions";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import { grades,teacherSide } from "../../../../framework/constants/assignmentStatus";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage"
@@ -330,8 +331,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       bulkActionPage.clickTestByID(classData.testID)
       bulkActionPage.selectAllClassesCheckBox()
       bulkActionPage.clickUnassignActionButton("30","30")
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE,"0")
-      //
+
+      cy.login("student", getRandomStudent(classData.className,studData.username,1,30), studData.password);
+      studAssignmentPage.verifyAbsenceOfTest(classData.testID)
+
+      cy.login("student", getRandomStudent(classData.className,studData.username,1,30), studData.password);
+      studAssignmentPage.verifyAbsenceOfTest(classData.testID)
     });
   })
 });

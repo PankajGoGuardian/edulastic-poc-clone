@@ -249,7 +249,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       })
       bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index)=>{
-        if(index>9 && index<15) bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.IN_PROGRESS_PAUSED)
+        if(index>9 && index<15) bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.IN_GRADING)
       })
     });
 
@@ -278,7 +278,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       })
       bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index)=>{
-        if(index>9 && index<15) bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.IN_PROGRESS_PAUSED)
+        if(index>9 && index<15) bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.IN_GRADING)
       })
     })
 
@@ -714,10 +714,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
       bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING,"0")
       bulkActionPage.verifyNumberofClassesInFilter(filter.DONE,"0")
 
-      cy.login("student", getRandomStudent(classData.className,studData.username,0,15), studData.password);
+      cy.login("student", getRandomStudent(classData.className,studData.username,1,15), studData.password);
       studAssignmentPage.verifyAbsenceOfTest(classData.testID)
 
-      cy.login("student", getRandomStudent(classData.className,studData.username,0,15), studData.password);
+      cy.login("student", getRandomStudent(classData.className,studData.username,1,15), studData.password);
       studAssignmentPage.verifyAbsenceOfTest(classData.testID)
 
     });

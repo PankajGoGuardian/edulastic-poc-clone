@@ -15,17 +15,21 @@ import CardTextContent from "./components/CardTextContent/cardTextContent";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
 import Launch from "../../../LaunchHangout/Launch";
 import ClassSelectModal from "../../../../../ManageClass/components/ClassListContainer/ClassSelectModal";
+import CanvasClassSelectModal from "../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal";
 
 // static data
 
 // ducks
 import { getDictCurriculumsAction } from "../../../../../src/actions/dictionaries";
 import { receiveSearchCourseAction } from "../../../../../Courses/ducks";
+import { getUserDetails } from "../../../../../../student/Login/ducks";
 import {
   fetchClassListAction,
   fetchCleverClassListRequestAction,
   syncClassesWithCleverAction,
-  getCleverClassListSelector
+  getCleverClassListSelector,
+  getCanvasCourseListRequestAction,
+  getCanvasSectionListRequestAction
 } from "../../../../../ManageClass/ducks";
 import { receiveTeacherDashboardAction } from "../../../../duck";
 import {
@@ -66,9 +70,16 @@ const MyClasses = ({
   fetchCleverClassList,
   syncCleverClassList,
   defaultGrades = [],
+  user,
+  institutionIds,
+  canvasSectionList,
+  getCanvasCourseListRequest,
+  canvasCourseList,
+  getCanvasSectionListRequest,
   defaultSubjects = []
 }) => {
   const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
+  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false);
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -112,6 +123,17 @@ const MyClasses = ({
         defaultGrades={defaultGrades}
         defaultSubjects={defaultSubjects}
       />
+      <CanvasClassSelectModal
+        fromDashboard
+        visible={showCanvasSyncModal}
+        onCancel={() => setShowCanvasSyncModal(false)}
+        user={user}
+        getCanvasCourseListRequest={getCanvasCourseListRequest}
+        getCanvasSectionListRequest={getCanvasSectionListRequest}
+        canvasCourseList={canvasCourseList}
+        canvasSectionList={canvasSectionList}
+        institutionId={institutionIds[0]}
+      />
       <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
         My Classes
       </TextWrapper>
@@ -125,6 +147,8 @@ const MyClasses = ({
           allowGoogleLogin={googleAllowedInstitutions.length > 0}
           enableCleverSync={cleverSyncEnabledInstitutions.length > 0}
           setShowCleverSyncModal={setShowCleverSyncModal}
+          handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
+          user={user}
         />
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
@@ -140,6 +164,9 @@ export default compose(
     state => ({
       classData: state.dashboardTeacher.data,
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
+      canvasCourseList: get(state, "manageClass.canvasCourseList", []),
+      canvasSectionList: get(state, "manageClass.canvasSectionList", []),
+      institutionIds: get(state, "user.user.institutionIds", []),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: state.user.user?.orgData?.districtIds?.[0],
@@ -150,6 +177,7 @@ export default compose(
       cleverClassList: getCleverClassListSelector(state),
       getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject }),
       defaultGrades: getInterestedGradesSelector(state),
+      user: getUserDetails(state),
       defaultSubjects: getInterestedSubjectsSelector(state)
     }),
     {
@@ -157,7 +185,9 @@ export default compose(
       receiveSearchCourse: receiveSearchCourseAction,
       getDictCurriculums: getDictCurriculumsAction,
       getTeacherDashboard: receiveTeacherDashboardAction,
+      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       fetchCleverClassList: fetchCleverClassListRequestAction,
+      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       syncCleverClassList: syncClassesWithCleverAction
     }
   )

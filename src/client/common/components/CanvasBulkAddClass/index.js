@@ -13,6 +13,7 @@ import { setSignUpStatusAction, signupSuccessAction } from "../../../student/Log
 import { bulkSyncCanvasClassAction, joinSchoolFailedAction } from "../../../student/Signup/duck";
 import { getCanvasAllowedInstitutionPoliciesSelector } from "../../../author/src/selectors/user";
 import { StyledSelect } from "../../../author/ManageClass/components/ClassListContainer/styled";
+import { receiveTeacherDashboardAction } from "../../../author/Dashboard/duck";
 import {
   Button,
   ButtonContainer,
@@ -43,6 +44,8 @@ const CanvasBulkAddClass = ({
   joinSchoolFailed,
   fromManageClass,
   canvasAllowedInstitutions,
+  receiveTeacherDashboard,
+  fromDashboard,
   onCancel = () => {}
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -170,6 +173,10 @@ const CanvasBulkAddClass = ({
 
   const handleClose = () => {
     setShowModal(false);
+    if (fromDashboard) {
+      receiveTeacherDashboard();
+    }
+
     if (fromManageClass) {
       return onCancel();
     }
@@ -412,6 +419,7 @@ export default connect(
     bulkSyncCanvasClass: bulkSyncCanvasClassAction,
     signupSuccess: signupSuccessAction,
     setSignUpStatus: setSignUpStatusAction,
-    joinSchoolFailed: joinSchoolFailedAction
+    joinSchoolFailed: joinSchoolFailedAction,
+    receiveTeacherDashboard: receiveTeacherDashboardAction
   }
 )(CanvasBulkAddClass);

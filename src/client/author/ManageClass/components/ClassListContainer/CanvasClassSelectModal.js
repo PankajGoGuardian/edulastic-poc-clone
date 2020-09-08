@@ -11,10 +11,12 @@ const CanvasClassSelectModal = ({
   getCanvasSectionListRequest,
   canvasCourseList,
   canvasSectionList,
-  institutionId
+  institutionId,
+  fromDashboard
 }) => (
   <StyledModal visible={visible} onCancel={onCancel} centered footer={null} title={null}>
     <CanvasBulkAddClass
+      fromDashboard={fromDashboard}
       fromManageClass
       user={user}
       getCanvasCourseListRequest={getCanvasCourseListRequest}

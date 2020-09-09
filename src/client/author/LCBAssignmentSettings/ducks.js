@@ -96,7 +96,7 @@ function* loadAssignmentSaga({ payload }) {
       data.class[0].status = assignmentStatusArray[statusKey];
       data.class[0].endDate = (maxBy(data.class, "endDate") || {}).endDate;
       if (!data.class[0].startDate) {
-        data.class[0].startDate = Date.now();
+        data.class[0].startDate = data?.class?.[0]?.openDate || Date.now();
       }
       if (!data.class[0].endDate) {
         const newEndDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);

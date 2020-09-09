@@ -9,7 +9,7 @@ import { all, call, put, takeEvery, select, takeLatest } from "redux-saga/effect
 import { replace, push } from "connected-react-router";
 import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } from "../../ducks";
 import { formatAssignment } from "./utils";
-import { getUserNameSelector } from "../../../src/selectors/user";
+import { getUserNameSelector, getUserId } from "../../../src/selectors/user";
 import { getPlaylistEntitySelector } from "../../../PlaylistPage/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
@@ -239,6 +239,12 @@ function* saveAssignment({ payload }) {
       }
       return rest;
     });
+    const userId = yield select(getUserId);
+    const isAuthor = test.authors?.some(author => author._id === userId);
+    if (test.freezeSettings && !isAuthor) {
+      delete payload.performanceBand;
+      delete payload.standardGradingScale;
+    }
     const data = testIds.map(testId =>
       omit(
         {
@@ -284,7 +290,7 @@ function* saveAssignment({ payload }) {
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
     const assignmentId = assignment._id;
     const createdAt = assignment.createdAt;
-    const googleId = get(assignment, "class[0].googleId", '');
+    const googleId = get(assignment, "class[0].googleId", "");
     if (!assignmentId && !payload.playlistModuleId) {
       yield put(push("/author/assignments"));
     }
@@ -313,7 +319,13 @@ function* saveAssignment({ payload }) {
         pathname: `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
           payload.playlistModuleId ? payload.playlistId : testIds[0]
         }/assign/${assignmentId}`,
-        state: { ...locationState, assignedTestId: payload.testId, playlistModuleId: payload.playlistModuleId, createdAt, googleId }
+        state: {
+          ...locationState,
+          assignedTestId: payload.testId,
+          playlistModuleId: payload.playlistModuleId,
+          createdAt,
+          googleId
+        }
       })
     );
   } catch (err) {
@@ -332,7 +344,8 @@ function* saveAssignment({ payload }) {
       yield put(updateAssingnmentSettingsAction({ class: [] }));
       return notification({ msg: "No classes found after removing the duplicates. Select one or more to assign." });
     }
-    notification({ msg: err.statusText });
+    const errorMessage = err.response?.data?.message || "Something went wrong";
+    notification({ msg: errorMessage });
   }
 }
 

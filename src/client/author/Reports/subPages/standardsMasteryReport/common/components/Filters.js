@@ -105,10 +105,10 @@ const StandardsFilters = ({
     return _curriculums;
   }, [interestedCurriculums]);
 
-  useEffect(() => {
+  // get initial filters from url and orgData
+  const getInitialFilters = () => {
     const search = qs.parse(location.search.substring(1));
-    const defaultTermId =
-      filters?.termId || standardsFilters?.filters?.termId || get(user, "orgData.defaultTermId", "");
+    const defaultTermId = filters?.termId || get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find(item => item.key === search.termId) ||
       schoolYear.find(item => item.key === defaultTermId) ||
@@ -125,41 +125,34 @@ const StandardsFilters = ({
         (preSelected && filtersDropDownData.grades.find(x => x.title === "Grade 7")) || filtersDropDownData.grades[0]
       ];
     }
-
-    setFilters({
+    return {
       ...filters,
       termId: urlSchoolYear.key,
       subject: urlSubject.key,
       grades: urlGrade.map(item => item.key)
-    });
+    };
+  };
 
+  useEffect(() => {
+    const _filters = getInitialFilters();
+    setFilters(_filters);
+    // fetch standards the first time report filters are loaded
     if (browseStandards !== prevBrowseStandards) {
       const q = {
-        curriculumId: urlSubject.key || undefined,
-        grades: urlGrade.map(item => item.key)
+        curriculumId: _filters.subject || undefined,
+        grades: _filters.grades
       };
       getStandardsBrowseStandardsRequest(q);
     }
-
-    if (prevStandardsFilters !== standardsFilters) {
-      const _q = {
-        termId: urlSchoolYear.key
-      };
-      if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
-        Object.assign(_q, { schoolIds: get(user, "institutionIds", []).join(",") });
-      }
-      getStandardsFiltersRequest(_q);
+    // fetch filters data each time report filters are loaded
+    const _q = {
+      termId: _filters.termId
+    };
+    if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+      Object.assign(_q, { schoolIds: get(user, "institutionIds", []).join(",") });
     }
+    getStandardsFiltersRequest(_q);
   }, []);
-
-  useEffect(() => {
-    if (isEmpty(standardsFilters?.filters)) {
-      setFilters({
-        ...filters,
-        termId: filters.termId || get(user, "orgData.defaultTermId", "")
-      });
-    }
-  }, [standardsFilters]);
 
   const scaleInfo = get(standardsFilters, "scaleInfo", []);
 

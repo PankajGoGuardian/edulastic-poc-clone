@@ -154,7 +154,8 @@ class ShareModal extends React.Component {
       type: sharedType,
       search: {
         role: ["teacher", "school-admin", "district-admin"],
-        searchString: value
+        searchString: value,
+        status: 1
       }
     };
     getUsers(searchBody);

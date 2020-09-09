@@ -530,7 +530,7 @@ class WorksheetComponent extends React.Component {
       fileInfo,
       pageStructure,
       windowWidth,
-      test: { isDocBased },
+      test: { isDocBased, _id: assessmentId },
       testMode = false,
       studentWorkAnswersById,
       studentWork,
@@ -585,6 +585,12 @@ class WorksheetComponent extends React.Component {
 
     const reportMode = viewMode && viewMode === "report";
     const editMode = viewMode === "edit";
+
+    const assesmentMetadata = {
+      assessmentId,
+      isAddPdf,
+      merge: true
+    };
 
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -646,6 +652,7 @@ class WorksheetComponent extends React.Component {
               isAddPdf={isAddPdf}
               cancelUpload={this.cancelUpload}
               uploadToDrive={uploadToDrive}
+              assesmentMetadata={assesmentMetadata}
             />
           </Modal>
 

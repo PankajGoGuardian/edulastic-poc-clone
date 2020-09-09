@@ -11,7 +11,15 @@ import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
 import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
 import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
 
-const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, uploadToDrive }) => {
+const CreateUpload = ({
+  creating,
+  percent,
+  fileInfo,
+  onUpload,
+  cancelUpload,
+  uploadToDrive,
+  assesmentMetadata = {}
+}) => {
   const onCancel = () => {
     if (cancelUpload) {
       cancelUpload("Cancelled by user");
@@ -31,7 +39,14 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
         notification({ messageKey: "selectedDocumentIsTooBigToUpload" });
         return;
       }
-      uploadToDrive({ id, token: window.gapi.auth.getToken().access_token, name, size, mimeType });
+      uploadToDrive({
+        id,
+        token: window.gapi.auth.getToken().access_token,
+        name,
+        size,
+        mimeType,
+        ...assesmentMetadata
+      });
     }
   };
 

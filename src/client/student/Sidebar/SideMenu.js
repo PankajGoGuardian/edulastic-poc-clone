@@ -29,6 +29,7 @@ import {
   mediumDesktopExactWidth,
   greyThemeLighter,
   smallDesktopWidth,
+  themeColorBlue,
   mobileWidthLarge
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
@@ -649,13 +650,14 @@ const UserType = styled.div`
 `;
 
 const FooterDropDown = styled.div`
-   position: relative;
+  position: relative;
   opacity: ${props => (props.isVisible ? "1" : "0")};
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
     overflow: hidden;
     max-width: 100%;
+
     .ant-menu-item:not(.ant-menu-item-selected) svg {
       fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
       &:hover,
@@ -684,17 +686,17 @@ const FooterDropDown = styled.div`
         padding: 5px 16px;
         height: 50px;
         background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
-        /* &:hover,
-        &:focus {
-          background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
-        } */
+        &:hover {
+          background-color: ${themeColorBlue};
+          color: ${white};
+        }
         a {
           color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
           font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
           display: flex;
           align-items: center;
-          &:hover{
+          &:hover {
             a {
               color: ${white};
             }

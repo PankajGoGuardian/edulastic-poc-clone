@@ -125,7 +125,11 @@ const Author = ({
         <StyledLayout isProxyUser={isProxyUser}>
           <MainContainer isPrintPreview={isPrintPreview || isCliUser}>
             <Spin spinning={districtProfileLoading} />
-            <SidebarCompnent isPrintPreview={isPrintPreview || isCliUser} isProxyUser={isProxyUser} />
+            <SidebarCompnent
+              isPrintPreview={isPrintPreview || isCliUser}
+              isProxyUser={isProxyUser}
+              style={{ display: isCliUser && "none" }}
+            />
             <Wrapper>
               <ErrorHandler disablePage={isDisablePageInMobile(history.location.pathname)}>
                 <Suspense fallback={<Progress />}>

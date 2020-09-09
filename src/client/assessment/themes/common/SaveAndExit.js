@@ -1,7 +1,8 @@
 import { extraDesktopWidthMax, mediumDesktopExactWidth, smallDesktopWidth } from "@edulastic/colors";
-import { FireBaseService as Fbs, FlexContainer, EduButton } from "@edulastic/common";
+import { EduButton, FireBaseService as Fbs, FlexContainer } from "@edulastic/common";
 import { IconAccessibility, IconCircleLogout, IconSend } from "@edulastic/icons";
 import { Button } from "antd";
+import { get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -26,7 +27,8 @@ const SaveAndExit = ({
   pauseAllowed = true,
   utaId,
   groupId,
-  timedAssignment
+  timedAssignment,
+  isCliUser
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId);
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;
@@ -38,8 +40,8 @@ const SaveAndExit = ({
           <IconAccessibility />
         </StyledButton>
       )}
-
-      {showPause &&
+      {!isCliUser &&
+        showPause &&
         (previewPlayer ? (
           <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
             <IconCircleLogout />
@@ -77,7 +79,8 @@ SaveAndExit.defaultProps = {
 
 export default connect(
   state => ({
-    pauseAllowed: state.test?.settings?.pauseAllowed
+    pauseAllowed: state.test?.settings?.pauseAllowed,
+    isCliUser: get(state, "user.isCliUser", false)
   }),
   {
     setSettingsModalVisibility: setSettingsModalVisibilityAction

@@ -117,7 +117,7 @@ class Contaier extends Component {
     const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[itemList]")) || {};
     const sort = {
       ...initSort,
-      sortBy: "recency",
+      sortBy: "popularity",
       sortDir: "desc",
       ...sessionSort
     };
@@ -174,7 +174,7 @@ class Contaier extends Component {
   };
 
   handleLabelSearch = e => {
-    const { limit, receiveItems, history, search, sort } = this.props;
+    const { limit, receiveItems, history, search } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -185,6 +185,11 @@ class Contaier extends Component {
         status: ""
       };
     }
+    const sortByRecency = ["by-me", "shared"].includes(filterType);
+    const sort = {
+      sortBy: sortByRecency ? "recency" : "popularity",
+      sortDir: "desc"
+    };
     this.updateFilterState(
       {
         ...updatedSearch,

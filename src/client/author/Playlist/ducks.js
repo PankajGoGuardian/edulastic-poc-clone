@@ -136,7 +136,7 @@ export const emptyFilters = {
 };
 
 export const initialSortState = {
-  sortBy: "recency",
+  sortBy: "popularity",
   sortDir: "desc"
 };
 

@@ -164,7 +164,7 @@ class TestList extends Component {
 
     const sort = {
       ...initSort,
-      sortBy: "recency",
+      sortBy: "popularity",
       sortDir: "desc",
       ...sessionSortFilters
     };
@@ -365,7 +365,7 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receivePlaylists, limit, playListFilters, sort } = this.props;
+    const { history, receivePlaylists, limit, playListFilters } = this.props;
     let updatedSearch = { ...playListFilters };
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
@@ -373,6 +373,11 @@ class TestList extends Component {
         status: ""
       };
     }
+    const sortByRecency = ["by-me", "shared", "co-author"].includes(filterType);
+    const sort = {
+      sortBy: sortByRecency ? "recency" : "popularity",
+      sortDir: "desc"
+    };
     history.push(`/author/playlists/filter/${filterType}`);
     this.updateFilterState(
       {

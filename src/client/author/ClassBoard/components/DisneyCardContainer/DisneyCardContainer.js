@@ -342,7 +342,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {score(currentTestActivity.status || student.status)}&nbsp;/ {student.maxScore || 0}
+                        {score(currentTestActivity.status || student.status)}&nbsp;/ {round(student.maxScore, 2) || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>
@@ -387,7 +387,7 @@ class DisneyCardContainer extends Component {
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
                           {student.status === "redirected" && (
                             <AttemptDiv>
-                              <CenteredStyledParaSS>-&nbsp;/ {student.maxScore || 0}</CenteredStyledParaSS>
+                              <CenteredStyledParaSS>-&nbsp;/ {round(student.maxScore, 2) || 0}</CenteredStyledParaSS>
                               <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
                                 Not Started
                               </StyledParaSS>
@@ -408,7 +408,7 @@ class DisneyCardContainer extends Component {
                             }
                           >
                             <CenteredStyledParaSS>
-                              {score(currentTestActivity.status)}&nbsp;/ {student.maxScore || 0}
+                              {score(currentTestActivity.status)}&nbsp;/ {round(student.maxScore, 2) || 0}
                             </CenteredStyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
@@ -424,7 +424,7 @@ class DisneyCardContainer extends Component {
                               onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
                             >
                               <CenteredStyledParaSS>
-                                {score(attempt.status, attempt.score)}&nbsp;/ {attempt.maxScore || 0}
+                                {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}
                               </CenteredStyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
@@ -503,5 +503,11 @@ const RecentAttemptsContainer = styled.div`
   }
   ${StyledCard}:hover & {
     opacity: 1;
+  }
+  ${CenteredStyledParaSS} {
+    /**
+     * to accomodate 2 digits scores & maxScore
+     */
+    font-size: 12px;
   }
 `;

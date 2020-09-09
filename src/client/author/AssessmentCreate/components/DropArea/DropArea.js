@@ -6,7 +6,16 @@ import FlexWrapper from "../../../AssignmentCreate/common/FlexWrapper";
 import CreateUpload from "../CreateUpload/CreateUpload";
 import CreateBlank from "../CreateBlank/CreateBlank";
 
-const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelUpload, uploadToDrive }) => {
+const DropArea = ({
+  onUpload,
+  onCreateBlank,
+  loading,
+  percent,
+  fileInfo,
+  cancelUpload,
+  uploadToDrive,
+  assesmentMetadata = {}
+}) => {
   const [isDragging, setIsDragging] = useState(false);
 
   return (
@@ -37,6 +46,7 @@ const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelU
           cancelUpload={cancelUpload}
           onUpload={onUpload}
           uploadToDrive={uploadToDrive}
+          assesmentMetadata={assesmentMetadata}
         />
         <CreateBlank onCreate={onCreateBlank} loading={loading} />
       </FlexWrapper>

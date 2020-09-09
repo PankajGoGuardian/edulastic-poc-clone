@@ -153,7 +153,6 @@ function* createAssessmentSaga({ payload }) {
           pageNo: index + 1
         }));
     } else {
-
       const pdfLoadingTask = pdfjs.getDocument(defaultPageStructure[0].URL);
 
       const { numPages } = yield pdfLoadingTask.promise;
@@ -169,7 +168,6 @@ function* createAssessmentSaga({ payload }) {
           pageNo: index + 1
         }));
     }
-
 
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
@@ -290,13 +288,20 @@ function* createAssessmentSaga({ payload }) {
   }
 }
 
-function* uploadToDriveSaga({ payload }) {
+function* uploadToDriveSaga({ payload = {} }) {
   try {
     // TODO call the new api and create test
-    const { token, id, name, size, mimeType } = payload;
+    const { token, id, name, size, mimeType, assessmentId, isAddPdf, merge } = payload;
     const res = yield call(fileApi.uploadFromDrive, { token, id, name, folderName: "doc_based", size, mimeType });
     const fileURI = res.Location;
-    yield put(createAssessmentRequestAction({ fileURI }));
+    yield put(
+      createAssessmentRequestAction({
+        fileURI,
+        assessmentId,
+        isAddPdf,
+        merge
+      })
+    );
   } catch (err) {
     notification({ messageKey: "uploadFailed" });
   }

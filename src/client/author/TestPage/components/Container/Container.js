@@ -498,7 +498,8 @@ class Container extends PureComponent {
       questions,
       freeFormNotes,
       questionsById,
-      pageStructure
+      pageStructure,
+      isEditable
     };
 
     switch (current) {

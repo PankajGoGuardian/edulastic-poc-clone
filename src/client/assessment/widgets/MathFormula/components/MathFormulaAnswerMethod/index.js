@@ -71,7 +71,7 @@ const MathFormulaAnswerMethod = ({
   unitsDropdown, // this is for Math with unit
   isClozeMathWithUnit = false,
   t,
-  docBasedQType
+  isDocbasedSection
 }) => {
   /**
    * Setting _allowNumericOnly when the value is not set (null) and method is equivSymbolic
@@ -525,7 +525,7 @@ const MathFormulaAnswerMethod = ({
         {!methodOptions?.includes("notExpected") && (
           <Col span={24}>
             <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
-            <MathInputWrapper docBasedQType={docBasedQType}>
+            <MathInputWrapper>
               {(!item.templateDisplay || !item.template) && (
                 <MathInput
                   {...mathInputProps}
@@ -534,7 +534,7 @@ const MathFormulaAnswerMethod = ({
                   showDropdown
                   value={isClozeMath && useTemplate ? template : value}
                   onInput={handleChangeMathInput}
-                  docBasedQType={docBasedQType}
+                  isDocbasedSection={isDocbasedSection}
                 />
               )}
               {((item.template && item.templateDisplay) || useTemplate) && (
@@ -544,7 +544,6 @@ const MathFormulaAnswerMethod = ({
                   latex={studentTemplate}
                   innerValues={innerValues}
                   onInput={handleChangeStaticMathInput}
-                  docBasedQType={docBasedQType}
                 />
               )}
               {/* when dropdown is selected */}

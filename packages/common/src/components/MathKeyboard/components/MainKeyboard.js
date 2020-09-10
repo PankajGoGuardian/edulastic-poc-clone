@@ -5,7 +5,7 @@ import cloneDeep from "lodash/cloneDeep";
 import NumberKeyboard from "./NumberKeyboard";
 import { Container, SymbolsWrapper, PrevButton, NextButton, Row, Button, Label } from "./styled";
 
-const MainKeyboard = ({ type, btns, onInput, fullKeybord, isDocbasedSection, numbers }) => {
+const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
   const [boards, updateBoards] = useState({});
   const [current, updateCurrent] = useState(0);
   const numOfKeys = btns.length;
@@ -26,7 +26,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, isDocbasedSection, num
       keysPerRow = 8;
     }
 
-    if (isDocbasedSection || numbers) {
+    if (numbers) {
       keysPerRow = 4;
     }
 

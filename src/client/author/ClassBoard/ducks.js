@@ -936,6 +936,21 @@ export const getTestItemsOrderSelector = createSelector(
     }, {})
 );
 
+export const getIsShowUnAssignSelector = createSelector(
+  getAssignedBySelector,
+  getUserRole,
+  testActivtyLoadingSelector,
+  (assignedBy, role, isLoading) => {
+    if (isLoading) {
+      return false;
+    }
+    if (roleuser.DA_SA_ROLE_ARRAY.includes(assignedBy.role)) {
+      return role !== roleuser.TEACHER;
+    }
+    return true;
+  }
+);
+
 export const getAssignmentClassIdSelector = createSelector(
   stateTestActivitySelector,
   ({ classId, assignmentId }) => ({ classId, assignmentId })

@@ -4,11 +4,12 @@ import uuidv4 from "uuid/v4";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
 
 const ENV = Cypress.env("ENVIRONMENT") || "local";
+const AGENT = Cypress.env("AGENT") ? `-${Cypress.env("AGENT")}` : "";
 const BASE_URL = Cypress.config("API_URL");
 
 const { _ } = Cypress;
 const fixtureFolderPath = "cypress/fixtures";
-const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}.json`;
+const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}${AGENT}.json`;
 const daCredential = { username: "da.automation@snapwiz.com", password: "automation" };
 const NO_ITEMS_TO_DELETE = 50;
 
@@ -335,8 +336,9 @@ Cypress.Commands.add("deleteTestData", () => {
 
 Cypress.Commands.add("createTestDataFile", () => {
   cy.task("readFileContent", deleteTestDataFile).then(fileContent => {
-    let testData = fileContent !== null ? JSON.parse(fileContent) : {};
-    cy.writeFile(deleteTestDataFile, testData);
+    if (fileContent === null) {
+      cy.writeFile(deleteTestDataFile, {});
+    }
   });
 });
 

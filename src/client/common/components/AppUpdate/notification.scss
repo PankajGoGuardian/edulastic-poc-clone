@@ -1,0 +1,20 @@
+.notification {
+  &.ant-notification-notice {
+    background-color: #2f4151;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+  }
+  .ant-notification-notice-with-icon .ant-notification-notice-message,
+  .ant-notification-notice-description {
+    color: white;
+    margin-left: 0px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .ant-notification-close-icon {
+    color: white;
+    margin-top: 6px;
+  }
+  .ant-notification-notice-icon-error {
+    display: none;
+  }
+}

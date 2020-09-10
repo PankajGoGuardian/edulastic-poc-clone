@@ -4,14 +4,14 @@ import { Provider } from "react-redux";
 import i18n, { I18nextProvider } from "@edulastic/localization";
 import { ConnectedRouter } from "connected-react-router";
 import smoothscroll from "smoothscroll-polyfill";
-import keyboardEventKeyPolyfill from 'keyboardevent-key-polyfill';
+import keyboardEventKeyPolyfill from "keyboardevent-key-polyfill";
 // will import all features.. optimize.!
 import "core-js/features/array";
 import "core-js/features/object";
 import "font-awesome/css/font-awesome.css";
 import "antd/dist/antd.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
-import {init as SentryInit } from "@sentry/browser";
+import { init as SentryInit } from "@sentry/browser";
 import "./index.css";
 import { updateSentryScope } from "@edulastic/api/src/utils/Storage";
 import App from "./App";
@@ -20,15 +20,14 @@ import AppConfig from "../../app-config";
 import { isMobileDevice, isIOS } from "./platform";
 
 if (AppConfig.sentryURI) {
-  SentryInit(
-    {
-      whitelistUrls: [AppConfig.sentryWhiteListURLRegex],
-      dsn: AppConfig.sentryURI,
-      release: AppConfig.appVersion,
-      environment: AppConfig.appStage,
-      maxValueLength: 600 // defaults to 250 chars, we will need more info recorded.
-    }
-  );
+  SentryInit({
+    whitelistUrls: [AppConfig.sentryWhiteListURLRegex],
+    dsn: AppConfig.sentryURI,
+    release: AppConfig.appVersion,
+    environment: AppConfig.appStage,
+    maxValueLength: 600, // defaults to 250 chars, we will need more info recorded.
+    ignoreErrors: AppConfig.sentryIgnoreErrors
+  });
   updateSentryScope();
 }
 
@@ -47,8 +46,9 @@ keyboardEventKeyPolyfill.polyfill();
 smoothscroll.polyfill();
 
 if (AppConfig.isSegmentEnabled) {
-  !(function() {
-    const analytics = (window.analytics = window.analytics || []);
+  !(() => {
+    window.analytics = window.analytics || [];
+    const { analytics } = window;
     if (!analytics.initialize)
       if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice.");
       else {
@@ -72,8 +72,8 @@ if (AppConfig.isSegmentEnabled) {
           "on"
         ];
         analytics.factory = function(t) {
-          return function() {
-            const e = Array.prototype.slice.call(arguments);
+          return function(...args) {
+            const e = Array.prototype.slice.call(args);
             e.unshift(t);
             analytics.push(e);
             return analytics;

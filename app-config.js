@@ -29,7 +29,11 @@ export const firebaseConfig = {
   authDomain: process.env.POI_APP_FIREBASE_AUTH_DOMAIN /* || "ev2-dev-88215.firebaseapp.com" */,
   projectId: process.env.POI_APP_FIREBASE_PROJECT_ID /* || "ev2-dev-88215" */
 };
+
+const sentryIgnoreErrors = ["ResizeObserver loop limit exceeded"];
+
 export default {
+  sentryIgnoreErrors,
   appStage,
   appVersion,
   sentryURI,

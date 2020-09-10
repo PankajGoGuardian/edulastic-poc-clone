@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { themeColor,greyDarken,boxShadowColor  } from "@edulastic/colors";
+import { themeColor, greyDarken, boxShadowColor } from "@edulastic/colors";
 import { SMALL_DESKTOP_WIDTH } from "../../../constants/others";
 
 export const Container = styled.div`
   display: ${props => (props.width > SMALL_DESKTOP_WIDTH ? "flex" : "block")};
   position: relative;
   justify-content: ${props => (props.isCollapsed ? "space-between" : "initial")};
+  flex-grow: 1;
   overflow: ${({ isStudentAttempt }) => !isStudentAttempt && `auto`};
   /* dont give overflow: auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598 */
   width: 100%;
@@ -20,13 +21,13 @@ export const Divider = styled.div`
   z-index: 1;
   > div {
     position: absolute;
-    background-color: #FFFFFF ;
+    background-color: #ffffff;
     box-shadow: 0px 2px 7px ${boxShadowColor};
     border-radius: 5px;
-    width:70px;
-    top:4px;
+    width: 70px;
+    top: 4px;
     display: flex;
-    justify-content:center;
+    justify-content: center;
     align-items: center;
     left: ${props =>
       props.collapseDirection === "left" ? "auto" : props.collapseDirection === "right" ? "-30px" : "-25px"};
@@ -38,7 +39,7 @@ export const Divider = styled.div`
 export const CollapseBtn = styled.i`
   cursor: pointer;
   font-size: 12px;
-  height:27px;
+  height: 27px;
   padding: 5px 8px;
   color: ${themeColor};
   ${props => {
@@ -69,8 +70,8 @@ export const CollapseBtn = styled.i`
   }}
 `;
 
-export const Dividerlines=styled.span`
-color:${greyDarken};
-transform: scaley(1.5);
-text-align:center;
+export const Dividerlines = styled.span`
+  color: ${greyDarken};
+  transform: scaley(1.5);
+  text-align: center;
 `;

@@ -91,16 +91,15 @@ class MathInput extends React.PureComponent {
     }
 
     const keyboardPosition = this.getKeyboardPosition();
-
     this.setState(
       { mathField, keyboardPosition, hideKeyboardByDefault: window.isMobileDevice || isDocbasedSection },
       () => {
-        const { hideKeyboardByDefault } = this.state;
+        // const { hideKeyboardByDefault } = this.state;
         const textarea = mathField.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
-        if (!hideKeyboardByDefault) {
-          textarea.setAttribute("readonly", "readonly");
-        }
+        // if (!hideKeyboardByDefault) {
+        //   textarea.setAttribute("readonly", "readonly");
+        // }
         textarea.addEventListener("keyup", this.handleChangeField);
         textarea.addEventListener("keypress", this.handleKeypress);
         textarea.addEventListener("keydown", this.handleTabKey, false);

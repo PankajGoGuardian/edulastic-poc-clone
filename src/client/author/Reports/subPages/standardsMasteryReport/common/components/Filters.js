@@ -12,7 +12,12 @@ import { ControlDropDown } from "../../../../common/components/widgets/controlDr
 import { MultipleSelect } from "../../../../common/components/widgets/MultipleSelect";
 import { toggleItem } from "../../../../common/util";
 
-import { getUserRole, getUser, getInterestedCurriculumsSelector } from "../../../../../src/selectors/user";
+import {
+  getUserRole,
+  getUser,
+  getInterestedCurriculumsSelector,
+  getInterestedGradesSelector
+} from "../../../../../src/selectors/user";
 
 import {
   getFiltersSelector,
@@ -69,6 +74,7 @@ const StandardsFilters = ({
   browseStandards,
   user,
   interestedCurriculums,
+  interestedGrades,
   getStandardsBrowseStandardsRequest,
   getStandardsFiltersRequest,
   setFilters,
@@ -84,7 +90,6 @@ const StandardsFilters = ({
   loc: _loc,
   role
 }) => {
-  const preSelected = user?.districtId === "5ebbbb3b03b7ad0924d19c46";
   const browseStandardsReceiveCount = useRef(0);
   const standardsFilteresReceiveCount = useRef(0);
 
@@ -115,15 +120,11 @@ const StandardsFilters = ({
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
     const urlSubject =
       curriculums.find(item => item.key === search.subject) ||
-      (preSelected && curriculums.find(x => x.title === "Math - Common Core")) ||
       (curriculums[0] ? curriculums[0] : { key: "", title: "" });
-
-    const gradesKeys = keyBy(search.grades);
+    const gradesKeys = keyBy(search.grades || interestedGrades);
     let urlGrade = filtersDropDownData.grades.filter(item => gradesKeys[item.key]);
     if (!urlGrade.length) {
-      urlGrade = [
-        (preSelected && filtersDropDownData.grades.find(x => x.title === "Grade 7")) || filtersDropDownData.grades[0]
-      ];
+      urlGrade = [filtersDropDownData.grades[0]];
     }
     return {
       ...filters,
@@ -180,13 +181,6 @@ const StandardsFilters = ({
       domainIds: urlDomainId.map(item => item.key).join()
     };
     setFilters(_filters);
-    const settings = {
-      filters: { ..._filters },
-      selectedTest: testIds
-    };
-    if (browseStandardsReceiveCount.current === 0 && standardsFilteresReceiveCount.current > 0) {
-      _onGoClick(settings);
-    }
     browseStandardsReceiveCount.current++;
   }
 
@@ -454,6 +448,7 @@ const enhance = compose(
       role: getUserRole(state),
       user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
+      interestedGrades: getInterestedGradesSelector(state),
       prevBrowseStandards: getPrevBrowseStandardsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state)
     }),

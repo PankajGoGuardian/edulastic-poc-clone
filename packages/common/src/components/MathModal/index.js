@@ -53,7 +53,7 @@ const MathModal = ({
       className="math-modal"
       maskClosable={false}
       onCancel={() => onClose()}
-      width={width || "405px"}
+      width={width || "auto"}
       wrapProps={{
         style: { overflow: "auto", display: show ? "block" : "none" }
       }}

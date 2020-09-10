@@ -2,10 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
 
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, MathInput } from "@edulastic/common";
 import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
-import { MathAnswer } from "./styled";
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -48,18 +47,17 @@ export default class FormMath extends React.Component {
   };
 
   handleBlur = () => {
-    const {clearHighlighted, saveQuestionResponse} = this.props;
+    const { clearHighlighted, saveQuestionResponse } = this.props;
     clearHighlighted();
     saveQuestionResponse();
-  }
+  };
 
   renderForm = mode => {
     const {
       question: { numberPad, symbols },
       answer,
       view,
-      highlighted,
-      boundingRect = {}
+      highlighted
     } = this.props;
 
     if (mode === "report") {
@@ -67,7 +65,7 @@ export default class FormMath extends React.Component {
     }
     return (
       <ThemeProvider theme={themes.default}>
-        <MathAnswer
+        <MathInput
           onInput={this.handleChange}
           numberPad={numberPad}
           symbols={symbols}
@@ -76,8 +74,6 @@ export default class FormMath extends React.Component {
           fullWidth
           ref={el => highlighted && el?.setFocus()}
           onBlur={this.handleBlur}
-          top={boundingRect.bottom + 10}
-          right={20}
           isDocbasedSection
         />
       </ThemeProvider>

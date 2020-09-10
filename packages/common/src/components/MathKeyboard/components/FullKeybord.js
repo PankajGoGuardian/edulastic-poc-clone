@@ -8,11 +8,11 @@ const { TabPane } = AntTabs;
 
 const tabLabel = (label, name) => <Tooltip title={name}>{label}</Tooltip>;
 
-const FullKeybord = ({ onInput, isDocbasedSection }) => (
+const FullKeybord = ({ onInput }) => (
   <Tabs>
     {TAB_BUTTONS.map(({ label, name, key, buttons }) => (
       <TabPane tab={tabLabel(label, name)} key={key}>
-        <MainKeyboard isDocbasedSection={isDocbasedSection} onInput={onInput} btns={buttons} fullKeybord />
+        <MainKeyboard onInput={onInput} btns={buttons} fullKeybord />
       </TabPane>
     ))}
   </Tabs>

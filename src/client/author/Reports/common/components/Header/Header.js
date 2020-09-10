@@ -11,7 +11,6 @@ import HeaderNavigation from "./HeaderNavigation";
 
 const CustomizedHeaderWrapper = ({
   windowWidth,
-  onShareClickCB,
   onPrintClickCB,
   onDownloadCSVClickCB,
   navigationItems = [],
@@ -32,7 +31,9 @@ const CustomizedHeaderWrapper = ({
 
   let filterNavigationItems = navigationItems;
   if (isCliUser) {
-    filterNavigationItems = navigationItems.filter(item => item.key !== "peer-performance");
+    filterNavigationItems = navigationItems.filter(
+      item => item.key !== "peer-performance" && item.key !== "response-frequency"
+    );
   }
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter(ite => ite.key === activeNavigationKey)
@@ -40,15 +41,15 @@ const CustomizedHeaderWrapper = ({
 
   const ActionButtonWrapper = isSmallDesktop ? Menu : Fragment;
   const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
-  
+
   const navMenu = isSmallDesktop
     ? filterNavigationItems
-      .filter(ite => ite.key !== activeNavigationKey)
-      .map(ite => (
-        <ActionButton key={ite.key}>
-          <Link to={ite.location}>{ite.title}</Link>
-        </ActionButton>
-      ))
+        .filter(ite => ite.key !== activeNavigationKey)
+        .map(ite => (
+          <ActionButton key={ite.key}>
+            <Link to={ite.location}>{ite.title}</Link>
+          </ActionButton>
+        ))
     : null;
 
   const actionRightButtons = (
@@ -100,7 +101,7 @@ const CustomizedHeaderWrapper = ({
           </FeaturesSwitch>
         ) : (
           <HeaderNavigation navigationItems={availableNavItems} activeItemKey={activeNavigationKey} />
-          )
+        )
       ) : null}
       <StyledCol>
         {!isSmallDesktop && actionRightButtons}

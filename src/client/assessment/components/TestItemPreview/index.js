@@ -312,7 +312,6 @@ class TestItemPreview extends Component {
             alignSelf: !LCBPreviewModal && "stretch",
             flexGrow: 1,
             width: "100%",
-            height: "100%",
             overflow: !isStudentAttempt && !isPrintPreview && "auto", // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
             background: isExpressGrader && showScratchpadByDefault ? white : null,
             "margin-bottom": showScratchpadByDefault && "10px"

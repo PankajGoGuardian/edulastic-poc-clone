@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
@@ -24,6 +25,7 @@ import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
 import { WorksheetWrapper, PDFAnnotationToolsWrapper } from "./styled";
+// import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 
 import { loadQuestionsAction } from "../../../sharedDucks/questions";
 

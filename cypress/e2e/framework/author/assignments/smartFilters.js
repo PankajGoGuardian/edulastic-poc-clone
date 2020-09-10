@@ -23,7 +23,7 @@ export default class SmartFilters {
         cy.wrap($ele)
           .click()
           .should("have.attr", "data-test", "expanded");
-        cy.wait("@getFolders");
+        // cy.wait("@getFolders");
       }
     });
   };
@@ -210,12 +210,11 @@ export default class SmartFilters {
       .click({ force: true });
 
     cy.get(".ant-modal")
-      .contains("span", "Move")
+      .contains("span", "Add")
       .click({ force: true });
-
     if (isValid) {
       cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
-      cy.contains(`${testName} was successfully moved to ${folderName} folder`).should("be.visible");
+      cy.contains(`${testName} successfully moved to "${folderName}"`).should("be.visible");
     } else {
       cy.contains(`${testName} already exist in ${folderName} folder`).should("be.visible");
       cy.get('[data-cy="cancel"]').click();

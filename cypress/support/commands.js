@@ -182,9 +182,11 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
       cy.wait("@teacherDashboard");
       cy.wait("@searchCourse");
       break;
+
     case "student":
-      cy.wait(`@testActivity${login_index}`, { timeout: 45000 });
+      cy.wait(`@testActivity${login_index}`, { timeout: 120000 });
       break;
+
     case "publisher":
     case "curator":
       cy.wait("@curatorDash");

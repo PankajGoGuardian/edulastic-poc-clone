@@ -334,7 +334,10 @@ export default class SearchFilters {
 
   closeFilterGuide = () =>
     cy.get("body").then(() => {
-      if (Cypress.$("._pendo-close-guide").length > 0) cy.get("._pendo-close-guide").click();
+      if (Cypress.$("._pendo-close-guide").length > 0)
+        cy.get("._pendo-close-guide")
+          .should($ele => expect(Cypress.dom.isAttached($ele)).to.be.true)
+          .click();
     });
 
   // *** APPHELPERS END ***

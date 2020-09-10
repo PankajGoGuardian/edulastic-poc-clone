@@ -395,6 +395,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> verify teacher express
     before(() => {
       lcb.header.clickOnExpressGraderTab();
       expressg.clickOnResetSwitch();
+      expressg.setToggleToResponse();
     });
 
     context(" > verify updating responses and color", () => {

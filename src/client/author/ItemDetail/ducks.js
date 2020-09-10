@@ -757,7 +757,8 @@ export function reducer(state = initialState, { type, payload }) {
           ...state.item,
           multipartItem: true,
           isPassageWithQuestions: true,
-          canAddMultipleItems: !!payload.canAddMultipleItems
+          canAddMultipleItems: !!payload.canAddMultipleItems,
+          itemLevelScoring:false
         }
       };
     case ADD_PASSAGE: {

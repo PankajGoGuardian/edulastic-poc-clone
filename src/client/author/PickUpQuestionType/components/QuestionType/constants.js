@@ -2137,7 +2137,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       },
       onSelectQuestionType
     },
-    {
+  /**   {
       type: "read",
       cardImage: MQPassage,
       isPassageType: true,
@@ -2152,6 +2152,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       list: ["Item A", "Item B"],
       onSelectQuestionType
     },
+    */
     {
       type: "instruction",
       cardImage: VPVideoPlayer,

@@ -155,12 +155,12 @@ const PerformanceByStudents = ({
 
   const chartData = useMemo(() => getTableData(res, filters, range), [res, filters]);
 
-  //if custom_student_user_id passed as params then
+  // if custom_student_user_id passed as params then
   // it will check if student have assignment for this test
   // then redirect to lcb student veiw
   // or show notification
   if (customStudentUserId && !loading) {
-    const studentData = tableData.find(d => d.studentId === customStudentUserId);
+    const studentData = tableData.find(d => d.externalId === customStudentUserId);
     if (studentData) {
       const { pathname, search } = window.location;
       const parseSearch = queryString.parse(search);

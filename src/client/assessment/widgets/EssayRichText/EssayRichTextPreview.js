@@ -249,7 +249,7 @@ export default enhance(EssayRichTextPreview);
 
 const EssayRichTextContainer = styled.div`
   width: 100%;
-  border-radius: 0 0 4px 4px;
+  border-radius: 4px;
   position: relative;
   border-right: 1px solid ${lightGrey12};
   border-bottom: 1px solid ${lightGrey12};
@@ -268,7 +268,7 @@ const FroalaEditorContainer = styled.div`
     border-radius: 4px 4px 0 0 !important;
     background-color: ${white};
     border: 1px solid ${lightGrey12} !important;
-    margin: 0px -1px -1px -1px !important; /* Align with parent component*/
+    margin: 0px -1px 0px -1px !important; /* Align with parent component*/
   }
   .second-toolbar {
     display: none;

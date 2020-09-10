@@ -16,7 +16,7 @@ import IconOutdent from "./outdent";
 import IconDirectionRtl from "./directionrtl";
 import IconFormula from "./formula";
 import IconImage from "./image";
-import IconTable from "./table";
+import IconTable from "./insertTable";
 import IconRedo from "./redo";
 import IconUndo from "./undo";
 import IconStrike from "./strike";
@@ -51,7 +51,7 @@ export default {
   specialCharacters: IconSpecialCharacter,
   insertImage: IconImage,
   insertLink: IconLink,
-  table: IconTable,
+  insertTable: IconTable,
   undo: IconUndo,
   redo: IconRedo
 };

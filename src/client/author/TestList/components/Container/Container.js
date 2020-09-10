@@ -796,7 +796,7 @@ class TestList extends Component {
               windowWidth={windowWidth}
               history={history}
               match={match}
-              standards={getInterestedStandards(item.summary, interestedCurriculums)}
+              standards={getInterestedStandards(item.alignment, interestedCurriculums)}
             />
           ))}
 
@@ -819,7 +819,7 @@ class TestList extends Component {
             removeTestFromPlaylist={this.handleRemoveTest}
             isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
             addTestToPlaylist={this.handleAddTests}
-            standards={getInterestedStandards(item.summary, interestedCurriculums)}
+            standards={getInterestedStandards(item.alignment, interestedCurriculums)}
             moduleTitle={moduleTitleMap[item._id]}
             checked={markedTestsList.includes(item._id)}
             handleCheckboxAction={this.handleCheckboxAction}

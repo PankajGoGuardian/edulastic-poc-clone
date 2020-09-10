@@ -118,8 +118,8 @@ export const getQuestionType = item => {
     return questions.length > 1
       ? [PASSAGE.toUpperCase(), "MULTIPART"]
       : questionTitle
-      ? [PASSAGE.toUpperCase(), questionTitle]
-      : [PASSAGE.toUpperCase()];
+        ? [PASSAGE.toUpperCase(), questionTitle]
+        : [PASSAGE.toUpperCase()];
   }
   if (questions.length > 1 || resources.length) {
     return ["MULTIPART"];
@@ -133,30 +133,29 @@ export const getQuestionType = item => {
  * @param curriculumId is the current filter used
  */
 
-export const getInterestedStandards = (summary, interestedCurriculums) => {
-  let allStandards = summary?.standards || [];
-  if (summary?.groupSummary?.length) {
-    allStandards = uniqBy(summary.groupSummary.flatMap(item => item.standards || []), "identifier");
-  }
-
-  if (!allStandards?.length) return [];
-  const curriculumId = getFromLocalStorage("defaultCurriculumIdSelected") || "";
-  // removing all multiStandard mappings
-  const authorStandards = allStandards.filter(item => !item.isEquivalentStandard && item.curriculumId);
-
-  // pick standards matching with interested curriculums
-  let interestedStandards = authorStandards.filter(standard =>
-    interestedCurriculums.some(interested => interested._id === standard.curriculumId)
-  );
-
-  // pick standards based on search if interested standards is empty
-  if (!interestedStandards.length) {
-    interestedStandards = authorStandards.filter(standard => standard.curriculumId === curriculumId);
-    // use the authored standards if still the interested alignments is empty
+export const getInterestedStandards = (alignment, interestedCurriculums = []) => { 
+  let interestedStandards;
+  if(!Array.isArray(alignment)){
+    let allStandards = alignment?.standards || [];
+    if (alignment?.groupSummary?.length) {
+      allStandards = uniqBy(alignment.groupSummary.flatMap(item => item.standards || []), "identifier");
+    }
+    if (!allStandards?.length) return [];
+    const authorStandards = allStandards.filter(item => !item.isEquivalentStandard && item.curriculumId);
+    // pick standards matching with interested curriculums
+    interestedStandards = authorStandards.filter(standard =>
+      interestedCurriculums.some(interested => interested._id === standard.curriculumId)
+    );
     if (!interestedStandards.length) {
       interestedStandards = authorStandards;
     }
-  }
+ }else{  //Multistandard mapping equivalent standard  to show
+    const allStandards = uniqBy(alignment.flatMap(({domains}) => domains.flatMap(({curriculumId, standards}) => standards.map(({name:identifier, id}) => ({identifier, id, curriculumId})))),"identifier");
+    const curriculumIds = interestedCurriculums.map(({_id}) => _id);
+    interestedStandards = allStandards.filter(interested =>
+      curriculumIds.includes(interested.curriculumId)
+    );
+ }
   return interestedStandards;
 };
 

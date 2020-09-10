@@ -17,7 +17,7 @@ import {
   AuthorWrapper,
   IconText,
   ButtonWrapper,
-  // TagsWrapper,
+  TagsWrapper,
   PlaylistId,
   StatusRow,
   Qcount,
@@ -26,7 +26,7 @@ import {
   CollectionNameWrapper,
   DynamicIconWrapper
 } from "./styled";
-// import Tags from "../../../src/components/common/Tags";
+import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -44,7 +44,7 @@ const TestItemCard = ({
   testId,
   collections,
   showPremiumTag,
-  // standardsIdentifiers,
+  standardsIdentifiers,
   title,
   collectionName,
   isDocBased,
@@ -107,11 +107,9 @@ const TestItemCard = ({
         <StyledLink ref={ref} data-cy="test-title" title={title}>
           {title}
         </StyledLink>
-
-        {/* hiding the standards temporarily as per CR, will get back to it later */}
-        {/* <TagsWrapper testNameHeight={height} data-cy="test-standards">
+        <TagsWrapper testNameHeight={height} data-cy="test-standards">
           <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
-        </TagsWrapper> */}
+        </TagsWrapper> 
       </TestInfo>
 
       <MidRow>

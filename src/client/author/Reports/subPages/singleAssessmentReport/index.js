@@ -58,9 +58,6 @@ const SingleAssessmentReportContainer = props => {
   const [isCliUser, setCliUser] = useState(cliUser || queryString.parse(location.search).cliUser);
   const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS });
   const [selectedExtras, setSelectedExtras] = useState({ ...INITIAL_DD_FILTERS });
-  const [customStudentUserId, setCustomStudentUserId] = useState(
-    queryString.parse(location.search).customStudentUserId
-  );
 
   useEffect(() => {
     if (isCliUser) {
@@ -69,7 +66,7 @@ const SingleAssessmentReportContainer = props => {
     return () => {
       console.log("Single Assessment Reports Component Unmount");
       resetAllReports();
-    };
+    }
   }, []);
 
   useEffect(() => {
@@ -98,7 +95,7 @@ const SingleAssessmentReportContainer = props => {
   useEffect(() => {
     if (settings.selectedTest.key) {
       const arr = Object.keys(settings.requestFilters);
-
+      
       const obj = {};
       // eslint-disable-next-line array-callback-return
       arr.map(item => {
@@ -108,18 +105,11 @@ const SingleAssessmentReportContainer = props => {
       if (isCliUser) {
         obj.cliUser = true;
       }
-      if (customStudentUserId) {
-        obj.customStudentUserId = customStudentUserId;
-      }
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`;
       history.push(path);
     }
 
-    const navigationItems = computeChartNavigationLinks(
-      settings.selectedTest,
-      settings.requestFilters,
-      settings.cliUser
-    );
+    const navigationItems = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters, settings.cliUser);
     updateNavigation(navigationItems);
   }, [settings]);
 
@@ -161,18 +151,21 @@ const SingleAssessmentReportContainer = props => {
   const locList = ["peer-performance", "performance-by-standards", "performance-by-students"];
   const extraFilters = locList.includes(loc)
     ? extraFilterData[loc].map(item => (
-        <SearchField key={item.key}>
-          <FilterLabel>{item.title}</FilterLabel>
-          <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
-        </SearchField>
-      ))
+      <SearchField key={item.key}>
+        <FilterLabel>{item.title}</FilterLabel>
+        <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
+      </SearchField>
+    ))
     : [];
 
   return (
     <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
       <>
         {firstLoad && <Spin size="large" />}
-        <FlexContainer alignItems="flex-start" display={firstLoad ? "none" : "flex"}>
+        <FlexContainer
+          alignItems="flex-start"
+          display={firstLoad ? "none" : "flex"}
+        >
           <SingleAssessmentReportFilters
             onGoClick={onGoClick}
             loc={loc}
@@ -194,11 +187,9 @@ const SingleAssessmentReportContainer = props => {
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
           />
-          {!isCliUser && (
-            <FilterButton showFilter={showFilter} onClick={toggleFilter}>
-              <IconFilter />
-            </FilterButton>
-          )}
+          {!isCliUser && <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+            <IconFilter />
+          </FilterButton>}
           <ReportContaner showFilter={showFilter}>
             <Route
               exact
@@ -237,7 +228,6 @@ const SingleAssessmentReportContainer = props => {
                   settings={settings}
                   pageTitle={loc}
                   filters={ddfilter}
-                  customStudentUserId={customStudentUserId}
                 />
               )}
             />

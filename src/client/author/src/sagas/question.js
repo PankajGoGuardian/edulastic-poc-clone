@@ -100,13 +100,18 @@ function* saveQuestionSaga() {
       const currentRouteState = yield select(state => get(state, "router.location.state", {}));
       const stateToFollow =
         currentRouteState.testAuthoring === false ? { testAuthoring: false, testId: currentRouteState.testId } : {};
+      const {isTestFlow,previousTestId,regradeFlow} = yield select(state => state.router?.location?.state||{});
+
       yield call(history.push, {
-        pathname: `/author/items/${itemDetail._id}/item-detail`,
+        pathname: (isTestFlow && currentRouteState.testId)? `/author/tests/${currentRouteState.testId}/editItem/${item?._id}`: `/author/items/${itemDetail._id}/item-detail`,
         state: {
           backText: "Back to item bank",
           backUrl: "/author/items",
           itemDetail: false,
-          ...stateToFollow
+          ...stateToFollow,
+          isTestFlow,
+          previousTestId,
+          regradeFlow
         }
       });
     }

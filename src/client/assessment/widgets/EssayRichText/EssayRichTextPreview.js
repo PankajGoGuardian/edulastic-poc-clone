@@ -114,6 +114,8 @@ const EssayRichTextPreview = ({
             {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
               <FroalaEditorContainer>
                 <FroalaEditor
+                  toolbarId={`essay-rich-text-${item.id}`}
+                  data-cy={`essay-rich-text-${item.id}`}
                   backgroundColor={
                     item.maxWord < wordCount
                       ? theme.widgets.essayRichText.quillLimitedBgColor
@@ -132,6 +134,7 @@ const EssayRichTextPreview = ({
                   buttons={toolbarButtons}
                   customCharacters={characters}
                   placeholder={item?.placeholder}
+                  toolbarSize="STD"
                 />
               </FroalaEditorContainer>
             )}
@@ -141,9 +144,10 @@ const EssayRichTextPreview = ({
                 justifyContent="flex-start"
                 style={{
                   minHeight: "150px",
-                  borderRadius: "10px",
-                  border: "1px solid",
-                  paddingLeft: "6px"
+                  borderRadius: "4px 4px 0 0",
+                  border: `1px solid ${lightGrey12}`,
+                  padding: "6px",
+                  margin: "-1px" // Parent component has borders
                 }}
               >
                 <MathFormulaDisplay
@@ -247,7 +251,9 @@ const EssayRichTextContainer = styled.div`
   width: 100%;
   border-radius: 4px;
   position: relative;
-  border: 1px solid ${lightGrey12};
+  border-right: 1px solid ${lightGrey12};
+  border-bottom: 1px solid ${lightGrey12};
+  border-left: 1px solid ${lightGrey12};
 `;
 
 const FroalaEditorContainer = styled.div`
@@ -258,10 +264,11 @@ const FroalaEditorContainer = styled.div`
   .fr-box.fr-basic .fr-element {
     font-size: ${props => props.theme.fontSize};
   }
-  .fr-toolbar {
-    border-radius: 4px 4px 0 0;
+  .fr-toolbar.fr-top {
+    border-radius: 4px 4px 0 0 !important;
     background-color: ${white};
-    border-bottom: 1px solid ${lightGrey12};
+    border: 1px solid ${lightGrey12} !important;
+    margin: 0px -1px 0px -1px !important; /* Align with parent component*/
   }
   .second-toolbar {
     display: none;
@@ -274,6 +281,7 @@ const FroalaEditorContainer = styled.div`
 
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.theme.widgets.essayRichText.textInputBgColor};
+    border: none !important;
   }
 
   .fr-toolbar .fr-command.fr-btn svg path {

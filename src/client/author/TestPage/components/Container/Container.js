@@ -498,7 +498,8 @@ class Container extends PureComponent {
       questions,
       freeFormNotes,
       questionsById,
-      pageStructure
+      pageStructure,
+      isEditable
     };
 
     switch (current) {
@@ -800,8 +801,7 @@ class Container extends PureComponent {
     const { history, test, setEditEnable } = this.props;
     const duplicateTest = await assignmentApi.duplicateAssignment({
       _id: test._id,
-      title: test.title,
-      isInEditAndRegrade: test.isUsed
+      title: test.title
     });
     history.push(`/author/tests/${duplicateTest._id}`);
     setEditEnable(true);

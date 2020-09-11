@@ -309,7 +309,9 @@ function* receiveStudentQuestionSaga({ payload }) {
           return { uqaId, testItemId, testActivityId };
         };
         const [item] = feedbackResponse.filter(scratchpadUsed).map(idObjMapper);
-        scratchpadUsedItems.push(item);
+        if (item) {
+          scratchpadUsedItems.push(item);
+        }
       } else if (isPlainObject(feedbackResponse)) {
         // item having single question
         const { qType, scratchPad, _id: uqaId, testItemId, testActivityId } = feedbackResponse;

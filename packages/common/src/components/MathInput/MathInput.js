@@ -1,19 +1,16 @@
-import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
+import { MathKeyboard, reformatMathInputLatex, offset } from "@edulastic/common";
 import { math } from "@edulastic/constants";
-import { Popover } from "antd";
 import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
-import styled from "styled-components";
-import { MathInputStyles } from "./MathInputStyles";
+import { MathInputStyles, DraggableKeyboard, EmptyDiv, KeyboardIcon } from "./MathInputStyles";
 
 const { EMBED_RESPONSE } = math;
 
 class MathInput extends React.PureComponent {
   state = {
     mathField: null,
-    mathFieldFocus: false,
-    nativeKeyboard: !window.isMobileDevice
+    mathFieldFocus: false
   };
 
   containerRef = React.createRef();
@@ -67,7 +64,7 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { defaultFocus, value } = this.props;
+    const { defaultFocus, value, isDocbasedSection } = this.props;
     if (!window.MathQuill) return;
 
     const MQ = window.MathQuill.getInterface(2);
@@ -93,13 +90,15 @@ class MathInput extends React.PureComponent {
       mathField.focus();
     }
 
+    const keyboardPosition = this.getKeyboardPosition();
+
     this.setState(
-      () => ({ mathField }),
+      { mathField, keyboardPosition, hideKeyboardByDefault: window.isMobileDevice || isDocbasedSection },
       () => {
-        const { nativeKeyboard } = this.state;
+        const { hideKeyboardByDefault } = this.state;
         const textarea = mathField.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
-        if (!nativeKeyboard) {
+        if (!hideKeyboardByDefault) {
           textarea.setAttribute("readonly", "readonly");
         }
         textarea.addEventListener("keyup", this.handleChangeField);
@@ -108,6 +107,27 @@ class MathInput extends React.PureComponent {
         document.addEventListener("click", this.handleClick, false);
       }
     );
+  }
+
+  getKeyboardPosition() {
+    const { symbols } = this.props;
+    const { top, left, height: inputH } = offset(this.containerRef.current) || { left: 0, top: 0 };
+    const { width, height: keyboardH } = math.symbols.find(x => x.value === symbols[0]) || { width: 0, height: 0 };
+
+    let x = window.innerWidth - left - width;
+    if (x > 0) {
+      x = 0;
+    }
+
+    let y = window.innerHeight - top - keyboardH - inputH;
+    if (y < 0) {
+      // 8 is margin between math keyboard and math input
+      y = -keyboardH - 8;
+    } else {
+      y = inputH + 8;
+    }
+
+    return { x, y };
   }
 
   handleTabKey = e => {
@@ -225,26 +245,35 @@ class MathInput extends React.PureComponent {
   };
 
   onClickMathField = () => {
-    const { mathFieldFocus } = this.state;
-    if (!mathFieldFocus) {
+    const { hideKeyboardByDefault } = this.state;
+    if (!hideKeyboardByDefault) {
       this.setState({ mathFieldFocus: true }, this.focus);
     }
   };
 
   focus = () => {
+    const { onFocus, onInnerFieldClick } = this.props;
     const { mathField } = this.state;
-    if (mathField) mathField.focus();
+    if (mathField) {
+      mathField.focus();
+    }
+    if (onFocus) {
+      onFocus(true);
+    }
+    if (onInnerFieldClick) {
+      onInnerFieldClick();
+    }
   };
 
-  toggleNativeKeyBoard = () => {
+  toggleHideKeyboard = () => {
     this.setState(
       state => ({
-        nativeKeyboard: !state.nativeKeyboard
+        hideKeyboardByDefault: !state.hideKeyboardByDefault
       }),
       () => {
-        const { nativeKeyboard } = this.state;
+        const { hideKeyboardByDefault } = this.state;
         const textarea = this.mQuill.el().querySelector(".mq-textarea textarea");
-        if (nativeKeyboard) {
+        if (hideKeyboardByDefault) {
           textarea.removeAttribute("readonly");
           textarea.focus();
         } else {
@@ -264,7 +293,6 @@ class MathInput extends React.PureComponent {
       showResponse,
       showDropdown,
       style,
-      onFocus,
       onKeyDown,
       onKeyUp,
       symbols,
@@ -275,42 +303,14 @@ class MathInput extends React.PureComponent {
       className,
       restrictKeys,
       customKeys,
-      hideKeypad,
-      onInnerFieldClick,
-      isDocbasedSection = false,
-      docBasedQType
+      isDocbasedSection = false
     } = this.props;
 
-    const { mathFieldFocus: showKeyboard, nativeKeyboard } = this.state;
-    let mathKeyboardVisible = true;
-    if (!window.isMobileDevice && showKeyboard) {
-      mathKeyboardVisible = true;
-    } else if (window.isMobileDevice) {
-      if (!showKeyboard) {
-        mathKeyboardVisible = false;
-      } else if (nativeKeyboard) {
-        mathKeyboardVisible = false;
-      }
-    } else {
-      mathKeyboardVisible = false;
-    }
+    const { mathFieldFocus, hideKeyboardByDefault, keyboardPosition } = this.state;
+    const visibleKeypad = !alwaysHideKeyboard && !alwaysShowKeyboard && mathFieldFocus && !hideKeyboardByDefault;
 
-    const keypad = (
-      <MathKeyboard
-        symbols={symbols}
-        numberPad={numberPad}
-        hideKeypad={hideKeypad}
-        restrictKeys={restrictKeys}
-        customKeys={customKeys}
-        showResponse={showResponse}
-        showDropdown={showDropdown}
-        onChangeKeypad={onChangeKeypad}
-        onInput={(key, command, numToMove) => this.onInput(key, command, numToMove)}
-        docBasedKeypadStyles={isDocbasedSection && `right: 30px; width:100%;`}
-        isDocbasedSection={isDocbasedSection}
-      />
-    );
-    const visibleKeypad = !alwaysHideKeyboard && !alwaysShowKeyboard && mathKeyboardVisible;
+    const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : DraggableKeyboard;
+
     return (
       <MathInputStyles
         fullWidth={fullWidth}
@@ -320,75 +320,53 @@ class MathInput extends React.PureComponent {
         height={height}
         background={background}
         fontSize={style.fontSize}
-        isDocbasedSection={isDocbasedSection}
         ref={this.containerRef}
         onKeyUp={onKeyUp}
-        docBasedQType={docBasedQType}
       >
-        <Popover
-          content={keypad}
-          trigger="click"
-          placement="bottomLeft"
-          visible={visibleKeypad}
-          overlayClassName="math-keyboard-popover"
-          getPopupContainer={trigger => trigger.parentNode}
-        >
+        <div className="input" onClick={this.onClickMathField}>
           <div
-            onFocus={() => {
-              onFocus(true);
-              this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+            onKeyDown={onKeyDown}
+            className="input__math answer-math-input-field"
+            style={{
+              ...style,
+              minHeight: style.height,
+              fontSize: style.fontSize ? style.fontSize : "inherit"
             }}
-            className="input"
-            onClick={this.onClickMathField}
+            data-cy="answer-math-input-field"
           >
-            <div
-              onKeyDown={onKeyDown}
-              className="input__math answer-math-input-field"
-              style={{
-                ...style,
-                minHeight: style.height,
-                fontSize: style.fontSize ? style.fontSize : "inherit"
-              }}
-              data-cy="answer-math-input-field"
-            >
-              <span className="input__math__field" ref={this.mathFieldRef} />
+            <span className="input__math__field" ref={this.mathFieldRef} />
 
-              {window.isMobileDevice && (
-                <KeyboardIcon
-                  onClick={this.toggleNativeKeyBoard}
-                  className={nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
-                  aria-hidden="true"
-                />
-              )}
-            </div>
-            {alwaysShowKeyboard && (
-              <div className="input__keyboard">
-                <MathKeyboard
-                  symbols={symbols}
-                  numberPad={numberPad}
-                  hideKeypad={hideKeypad}
-                  restrictKeys={restrictKeys}
-                  customKeys={customKeys}
-                  showResponse={showResponse}
-                  showDropdown={showDropdown}
-                  onChangeKeypad={onChangeKeypad}
-                  onInput={(key, command) => this.onInput(key, command)}
-                />
-              </div>
+            {(window.isMobileDevice || isDocbasedSection) && (
+              <KeyboardIcon
+                onClick={this.toggleHideKeyboard}
+                className={hideKeyboardByDefault ? "fa fa-calculator" : "fa fa-keyboard-o"}
+                aria-hidden="true"
+              />
             )}
           </div>
-        </Popover>
+        </div>
+        {(visibleKeypad || alwaysShowKeyboard) && (
+          <MathKeyboardWrapper
+            className="input__keyboard"
+            default={keyboardPosition}
+            disableDragging={!(window.isMobileDevice || isDocbasedSection) || alwaysShowKeyboard}
+          >
+            <MathKeyboard
+              symbols={symbols}
+              numberPad={numberPad}
+              restrictKeys={restrictKeys}
+              customKeys={customKeys}
+              showResponse={showResponse}
+              showDropdown={showDropdown}
+              onChangeKeypad={onChangeKeypad}
+              onInput={(key, command, numToMove) => this.onInput(key, command, numToMove)}
+            />
+          </MathKeyboardWrapper>
+        )}
       </MathInputStyles>
     );
   }
 }
-
-const KeyboardIcon = styled.i`
-  position: relative;
-  display: inline-block;
-  margin-left: -32px;
-  padding: 8px;
-`;
 
 MathInput.propTypes = {
   alwaysShowKeyboard: PropTypes.bool,
@@ -410,8 +388,7 @@ MathInput.propTypes = {
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
   allowNumericOnly: PropTypes.bool,
-  customKeys: PropTypes.array,
-  hideKeypad: PropTypes.bool
+  customKeys: PropTypes.array
 };
 
 MathInput.defaultProps = {
@@ -420,7 +397,6 @@ MathInput.defaultProps = {
   defaultFocus: false,
   value: "",
   allowNumericOnly: false,
-  hideKeypad: false,
   showDropdown: false,
   showResponse: false,
   style: {},

@@ -3,7 +3,7 @@
 /* global $ */
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import styled, { withTheme } from "styled-components";
+import styled, { withTheme, css } from "styled-components";
 import { cloneDeep, debounce, isEmpty } from "lodash";
 import { message } from "antd";
 import { notification, sanitizeString } from "@edulastic/common";
@@ -228,8 +228,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
 })`
   position: relative;
   width: 100%;
-  display: flex;
-  align-items: center;
+  display: block;
   font-size: ${props => props.fontSize || props.theme.fontSize};
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
@@ -312,12 +311,16 @@ const BackgroundStyleWrapper = styled.div.attrs({
   }}
 `;
 
-export const ToolbarContainer = styled.div`
+const toolbarInlineStyle = css`
   position: absolute;
-  z-index: 1000;
   left: 0px;
   right: 0px;
   bottom: 100%;
+  z-index: 1000;
+`;
+
+export const ToolbarContainer = styled.div`
+  ${({ toolbarInline }) => toolbarInline && toolbarInlineStyle}
   .fr-toolbar .fr-command.fr-btn {
     margin: 0 2px !important;
   }
@@ -556,7 +559,12 @@ const CustomEditor = ({
               }
               return;
             }
-            if (cursorEl && cursorEl.tagName === "SPAN" && $(cursorEl).hasClass("input__math") && $(cursorEl).attr("data-latex")) {
+            if (
+              cursorEl &&
+              cursorEl.tagName === "SPAN" &&
+              $(cursorEl).hasClass("input__math") &&
+              $(cursorEl).attr("data-latex")
+            ) {
               cursorEl.remove();
               return;
             }
@@ -1011,6 +1019,7 @@ const CustomEditor = ({
             id={`froalaToolbarContainer-${toolbarId}`}
             ref={toolbarContainerRef}
             toolbarId={toolbarId}
+            toolbarInline={initialConfig.toolbarInline}
           />
         )}
 

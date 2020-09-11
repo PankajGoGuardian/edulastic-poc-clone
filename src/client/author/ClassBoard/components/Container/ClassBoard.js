@@ -427,8 +427,9 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
-    const selectedSubmittedStudents = selectedStudentKeys.filter(
-      item => mapTestActivityByStudId[item].status === "submitted" || mapTestActivityByStudId[item].status === "graded"
+    const selectedSubmittedStudents = (selectedStudentKeys || []).filter(
+      item =>
+        mapTestActivityByStudId?.[item]?.status === "submitted" || mapTestActivityByStudId?.[item]?.status === "graded"
     );
     if (selectedSubmittedStudents.length) {
       return notification({
@@ -453,9 +454,10 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudentToMarkAbsent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
-    const selectedNotStartedStudents = selectedStudentKeys.filter(
+    const selectedNotStartedStudents = (selectedStudentKeys || []).filter(
       item =>
-        mapTestActivityByStudId[item].status === "notStarted" || mapTestActivityByStudId[item].status === "redirected"
+        mapTestActivityByStudId?.[item]?.status === "notStarted" ||
+        mapTestActivityByStudId?.[item]?.status === "redirected"
     );
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
@@ -575,7 +577,7 @@ class ClassBoard extends Component {
     const isPrintable =
       selectedStudentsKeys.length &&
       !selectedStudentsKeys.some(
-        item => studentsMap[item].status === "notStarted" || studentsMap[item].status === "inProgress"
+        item => studentsMap?.[item]?.status === "notStarted" || studentsMap?.[item]?.status === "inProgress"
       );
 
     if (isPrintable && selectedStudentsKeys.length) {

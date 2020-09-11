@@ -279,13 +279,13 @@ export const PremiumLabel = styled.div`
 `;
 
 export const Header = styled.div`
-  height: ${({ isPlaylist }) => (isPlaylist ? "99px" : "83px")};
+  height: ${({ isPlaylist }) => (isPlaylist ? "99px" : "135px")};
   padding: 10px 15px;
   position: relative;
   background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
   background-repeat: no-repeat;
   background-size: 100% auto;
-  
+
   &:hover {
     .showHover {
       display: flex;
@@ -295,7 +295,7 @@ export const Header = styled.div`
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: 135px;
+    height: ${({ isPlaylist }) => (isPlaylist ? "100px" : "135px")};
   }
 `;
 Header.displayName = "CardHeader";

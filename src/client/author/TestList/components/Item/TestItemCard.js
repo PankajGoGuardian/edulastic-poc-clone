@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { IconHeart, IconUser, IconDynamic, IconUsers } from "@edulastic/icons";
 import { cardTitleColor, themeColor, darkGrey } from "@edulastic/colors";
+// eslint-disable-next-line no-unused-vars
 import { PremiumLabel, EduButton, LikeIconStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import {
@@ -17,7 +18,7 @@ import {
   AuthorWrapper,
   IconText,
   ButtonWrapper,
-  // TagsWrapper,
+  TagsWrapper,
   PlaylistId,
   StatusRow,
   Qcount,
@@ -26,7 +27,7 @@ import {
   CollectionNameWrapper,
   DynamicIconWrapper
 } from "./styled";
-// import Tags from "../../../src/components/common/Tags";
+import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -43,8 +44,8 @@ const TestItemCard = ({
   showPreviewModal,
   testId,
   collections,
-  showPremiumTag,
-  // standardsIdentifiers,
+  // showPremiumTag,
+  standardsIdentifiers,
   title,
   collectionName,
   isDocBased,
@@ -99,7 +100,8 @@ const TestItemCard = ({
           </ButtonWrapper>
           {collections.find(o => o.name === "Edulastic Certified") &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
-          {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>}
+          {/* hiding premium tag temporarily as per CR */}
+          {/* {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>} */}
         </Header>
       }
     >
@@ -107,11 +109,9 @@ const TestItemCard = ({
         <StyledLink ref={ref} data-cy="test-title" title={title}>
           {title}
         </StyledLink>
-
-        {/* hiding the standards temporarily as per CR, will get back to it later */}
-        {/* <TagsWrapper testNameHeight={height} data-cy="test-standards">
+        <TagsWrapper testNameHeight={height} data-cy="test-standards">
           <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
-        </TagsWrapper> */}
+        </TagsWrapper>
       </TestInfo>
 
       <MidRow>

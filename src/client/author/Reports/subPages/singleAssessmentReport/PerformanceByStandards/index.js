@@ -72,7 +72,10 @@ const PerformanceByStandards = ({
   const reportWithFilteredSkills = useMemo(
     () =>
       next(report, draftReport => {
-        draftReport.skillInfo = filterArr(draftReport.skillInfo, skill => skill.curriculumId === standardId);
+        draftReport.skillInfo = filterArr(
+          draftReport.skillInfo,
+          skill => String(skill.curriculumId) === String(standardId)
+        );
         draftReport.scaleInfo = scaleInfo;
       }),
     [report, standardId, scaleInfo]

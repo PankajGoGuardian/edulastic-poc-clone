@@ -179,13 +179,18 @@ class AddItems extends PureComponent {
   };
 
   handleLabelSearch = e => {
-    const { limit, receiveTestItems, search, sort } = this.props;
+    const { limit, receiveTestItems, search } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
     const searchState = {
       ...search,
       filter
+    };
+    const sortByRecency = ["by-me", "shared"].includes(filterType);
+    const sort = {
+      sortBy: sortByRecency ? "recency" : "popularity",
+      sortDir: "desc"
     };
     this.updateFilterState(searchState, sort);
     receiveTestItems(searchState, sort, 1, limit);

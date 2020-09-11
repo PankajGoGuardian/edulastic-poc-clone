@@ -13,7 +13,7 @@ import { QuestionFormWrapper, FormGroup, Points } from "../../common/QuestionFor
 
 const { methods } = math;
 
-const QuestionMath = ({ onUpdate, question, docBasedQType }) => {
+const QuestionMath = ({ onUpdate, question }) => {
   const toggleAdditional = val => {
     onUpdate({ showAdditional: val });
   };
@@ -104,7 +104,7 @@ const QuestionMath = ({ onUpdate, question, docBasedQType }) => {
             index={0}
             toggleAdditional={toggleAdditional}
             style={{ width: "250px" }}
-            docBasedQType={docBasedQType}
+            isDocbasedSection
             {...value}
           />
         </FormGroup>

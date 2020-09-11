@@ -116,7 +116,7 @@ export function* addItemToCartSaga({ payload }) {
   const test = yield select(getTestEntitySelector);
   const testItems = test?.itemGroups?.flatMap(itemGroup => itemGroup?.items || []);
   let updatedTestItems = [];
-  if (testItems.some(o => o._id === item._id)) {
+  if ((testItems || []).some(o => o?._id === item?._id)) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.filter(x => x._id !== item._id);
       if (showNotification) {

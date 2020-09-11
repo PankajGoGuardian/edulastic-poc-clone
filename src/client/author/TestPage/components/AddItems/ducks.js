@@ -140,7 +140,7 @@ export const initialSearchState = {
 };
 
 export const initialSortState = {
-  sortBy: "recency",
+  sortBy: "popularity",
   sortDir: "desc"
 };
 

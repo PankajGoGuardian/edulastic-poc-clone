@@ -32,7 +32,8 @@ import {
   isItemVisibiltySelector,
   notStartedStudentsSelector,
   showPasswordButonSelector,
-  showScoreSelector
+  showScoreSelector,
+  getIsShowUnAssignSelector
 } from "../../../ClassBoard/ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
 import {
@@ -260,9 +261,9 @@ class ClassHeader extends Component {
       assignedById,
       windowWidth,
       canvasAllowedInstitutions,
-      isCliUser
+      isCliUser,
+      isShowUnAssign
     } = this.props;
-
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
     const {
       endDate,
@@ -357,9 +358,11 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        <MenuItems data-cy="unAssign" key="key4" onClick={() => toggleDeleteAssignmentModal(true)}>
-          Unassign
-        </MenuItems>
+        {isShowUnAssign && (
+          <MenuItems data-cy="unAssign" key="key4" onClick={() => toggleDeleteAssignmentModal(true)}>
+            Unassign
+          </MenuItems>
+        )}
         {/* TODO temp hiding for UAT */}
         {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
           Generate Bubble Sheet
@@ -633,7 +636,8 @@ const enhance = compose(
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(state),
       assignedById: state?.author_classboard_testActivity?.additionalData?.assignedBy?._id,
-      userId: state?.user?.user?._id
+      userId: state?.user?.user?._id,
+      isShowUnAssign: getIsShowUnAssignSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

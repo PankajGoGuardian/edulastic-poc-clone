@@ -1,18 +1,16 @@
-import styled, { css } from "styled-components";
-import { mobileWidth, greyThemeLight, greyishBorder } from "@edulastic/colors";
+import styled from "styled-components";
+import { mobileWidth, greyThemeLight, greyishBorder, boxShadowDefault } from "@edulastic/colors";
+import { Rnd } from "react-rnd";
 
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) => width || (fullWidth ? "100%" : "fit-content")};
   height: ${({ height }) => height || "auto"};
   background: ${({ background }) => background};
+  position: relative;
 
   .input {
     position: relative;
     height: 100%;
-  }
-
-  .math-keyboard-popover {
-    top: ${props => props.docBasedQType == "math" && "40px !important"};
   }
 
   .input__math {
@@ -96,10 +94,6 @@ export const MathInputStyles = styled.div`
     z-index: 999;
   }
 
-  .input__keyboard {
-    margin-top: 10px;
-  }
-
   .response-embed {
     width: 120px;
     height: 32px;
@@ -157,15 +151,23 @@ export const MathInputStyles = styled.div`
       flex-direction: column;
     }
   }
+`;
 
-  ${({ isDocbasedSection }) =>
-    isDocbasedSection &&
-    css`
-      .math-keyboard-popover {
-        animation: none;
-        max-width: 100%;
-      }
-    `}
+export const DraggableKeyboard = styled(Rnd).attrs(props => ({
+  disableDragging: props.disableDragging,
+  enableResizing: false
+}))`
+  box-shadow: ${boxShadowDefault};
+  position: ${({ disableDragging }) => !disableDragging && "fixed !important"};
+  z-index: 100;
+`;
+
+export const EmptyDiv = styled.div``;
+
+export const KeyboardIcon = styled.i`
+  padding: 8px;
+  right: 0px;
+  position: absolute;
 `;
 
 export default MathInputStyles;

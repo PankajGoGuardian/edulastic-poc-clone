@@ -32,6 +32,8 @@ const SubscriptionHeader = ({
           type="primary"
           isBlue
           style={{ marginLeft: "5px", backgroundColor: darkOrange1, border: "none" }}
+          // disabling Renew Subscription for everyone
+          disabled
           data-cy="manageClass"
         >
           <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { IconHeart, IconUser, IconDynamic, IconUsers } from "@edulastic/icons";
 import { cardTitleColor, themeColor, darkGrey } from "@edulastic/colors";
+// eslint-disable-next-line no-unused-vars
 import { PremiumLabel, EduButton, LikeIconStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import {
@@ -43,7 +44,7 @@ const TestItemCard = ({
   showPreviewModal,
   testId,
   collections,
-  showPremiumTag,
+  // showPremiumTag,
   standardsIdentifiers,
   title,
   collectionName,
@@ -99,7 +100,8 @@ const TestItemCard = ({
           </ButtonWrapper>
           {collections.find(o => o.name === "Edulastic Certified") &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
-          {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>}
+          {/* hiding premium tag temporarily as per CR */}
+          {/* {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>} */}
         </Header>
       }
     >
@@ -109,7 +111,7 @@ const TestItemCard = ({
         </StyledLink>
         <TagsWrapper testNameHeight={height} data-cy="test-standards">
           <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
-        </TagsWrapper> 
+        </TagsWrapper>
       </TestInfo>
 
       <MidRow>

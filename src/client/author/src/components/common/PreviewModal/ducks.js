@@ -7,7 +7,7 @@ import { testItemsApi, passageApi, groupApi } from "@edulastic/api";
 import { notification, MeetFirebase } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import { meetBroadcast } from "@edulastic/common/src/MeetFirebase";
-import { updateTestAndNavigateAction } from "../../../../TestPage/ducks";
+import { updateTestAndNavigateAction, receiveTestByIdAction } from "../../../../TestPage/ducks";
 import { toggleBroadcastSummaryAction } from "../../../../SchoolAdmin/ducks";
 
 export const SET_QUESTIONS_IN_PASSAGE = "[testItemPreview] set questions to passage";
@@ -87,6 +87,7 @@ export function reducer(state = initialState, { type, payload }) {
 
 function* duplicateItemRequestSaga({ payload }) {
   try {
+    notification({type:"info",msg:"Cloning items...", duration:3});
     const { data, testId, test, isTest, regradeFlow, duplicateWholePassage, currentItem } = payload;
     const { passage } = payload;
     const itemId = data.id;
@@ -97,8 +98,15 @@ function* duplicateItemRequestSaga({ payload }) {
       // To duplicate passage we require passageId and testItemsIds
       const duplicatedPassage = yield call(passageApi.duplicate, {
         passageId: passage?._id,
-        testItemIds: testItemsToDuplicate
+        testItemIds: testItemsToDuplicate,
+        testId
       });
+      if(duplicateWholePassage && testId){
+        yield put(receiveTestByIdAction(testId,true));
+        notification({ msg:`${testItemsToDuplicate.length} items added to test`, type:"success" });
+        return;
+      }
+      
       // using first item to show when redirected to itemDetails page
       duplicatedItem._id = duplicatedPassage?.testItems?.[0];
     } else {

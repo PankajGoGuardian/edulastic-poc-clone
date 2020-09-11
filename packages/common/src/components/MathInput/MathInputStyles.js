@@ -159,7 +159,7 @@ export const DraggableKeyboard = styled(Rnd).attrs(props => ({
 }))`
   box-shadow: ${boxShadowDefault};
   position: ${({ disableDragging }) => !disableDragging && "fixed !important"};
-  z-index: 100;
+  z-index: 1100;
 `;
 
 export const EmptyDiv = styled.div``;

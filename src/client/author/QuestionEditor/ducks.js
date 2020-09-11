@@ -552,16 +552,21 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
       // from test flow or else save and continue.
       const isFinalSave = yield select(state => state.router.location.isFinalSave);
       if ((item.multipartItem || !!item.passageId || item.isPassageWithQuestions) && !isFinalSave) {
-        const {_isTestFlow,previousTestId,regradeFlow} = yield select(state => state.router?.location?.state||{});
+        const { isTestFlow: _isTestFlow, previousTestId, regradeFlow } = yield select(
+          state => state.router?.location?.state || {}
+        );
         yield put(
           push({
-            pathname: (_isTestFlow && tId)? `/author/tests/${tId}/editItem/${item?._id}`: `/author/items/${item._id}/item-detail/test/${tId}`,
+            pathname:
+              _isTestFlow && tId
+                ? `/author/tests/${tId}/editItem/${item?._id}`
+                : `/author/items/${item._id}/item-detail/test/${tId}`,
             state: {
               backText: "Back to item bank",
               backUrl: "/author/items",
               itemDetail: false,
               isFinalSave: true,
-              isTestFlow:_isTestFlow,
+              isTestFlow: isTestFlow || _isTestFlow,
               previousTestId,
               regradeFlow
             }
@@ -596,19 +601,24 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
     }
     const stateToFollow =
       locationState.testAuthoring === false ? { testAuthoring: false, testId: locationState.testId } : {};
-    const {isTestFlow,previousTestId,regradeFlow} = yield select(state => state.router?.location?.state||{});
+
+    const { previousTestId, regradeFlow, isTestFlow: _isTestFlow } = yield select(
+      state => state.router?.location?.state || {}
+    );
+    console.warn("ss2", { previousTestId, regradeFlow, isTestFlow, _isTestFlow });
     if (itemDetail) {
       yield put(
         push({
-          pathname: (isTestFlow && tId)? `/author/tests/${tId}/editItem/${item?._id}`: `/author/items/${item._id}/item-detail`,
+          pathname:
+            isTestFlow && tId ? `/author/tests/${tId}/editItem/${item?._id}` : `/author/items/${item._id}/item-detail`,
           state: {
             backText: "Back to item bank",
             backUrl: "/author/items",
             itemDetail: false,
             ...stateToFollow,
-            isTestFlow,
             previousTestId,
-            regradeFlow
+            regradeFlow,
+            isTestFlow: isTestFlow || _isTestFlow
           }
         })
       );
@@ -796,6 +806,7 @@ function* loadQuestionSaga({ payload }) {
     const pathname = yield select(state => state.router.location.pathname);
     const locationState = yield select(state => state.router.location?.state || {});
     yield put(changeCurrentQuestionAction(data.reference));
+    console.warn("pathname", pathname);
     if (pathname.includes("tests")) {
       yield put(
         push({

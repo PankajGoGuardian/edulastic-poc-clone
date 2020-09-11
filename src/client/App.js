@@ -30,7 +30,7 @@ import Kid from "./kid/app";
 import NotificationListener from "./HangoutVideoCallNotification";
 import BulkActionNotificationListener from "./author/AssignmentAdvanced/components/BulkAssignmentActionNotification";
 import ClassSyncNotification from "./author/Classes/components/ClassSyncNotification";
-import AppUpdateModal from "./common/components/AppUpdateModal";
+import AppUpdate from "./common/components/AppUpdate";
 import { logoutAction } from "./author/src/actions/auth";
 import RealTimeCollectionWatch from "./RealTimeCollectionWatch";
 
@@ -181,20 +181,6 @@ class App extends Component {
     });
   }
 
-  handleOk = () => {
-    // below is set in src/utils/API.js
-    this.setState(
-      {
-        showAppUpdate: false
-      },
-      () => {
-        setTimeout(() => {
-          window.location.reload(true);
-        }, 100);
-      }
-    );
-  };
-
   render() {
     const cliBannerVisible = sessionStorage.cliBannerVisible || false;
     /**
@@ -319,12 +305,13 @@ class App extends Component {
       _userRole = "Content Author";
     }
     // signup routes hidden till org reference is not done
+
     const { showAppUpdate, canShowCliBanner } = this.state;
     return (
       <div>
         {shouldWatch && <RealTimeCollectionWatch />}
         {userRole && <CheckRoutePatternsEffectContainer role={userRole} location={location} history={history} />}
-        <AppUpdateModal visible={showAppUpdate} onRefresh={this.handleOk} />
+        <AppUpdate visible={showAppUpdate} />
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>

@@ -1,9 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Draggable } from "react-drag-and-drop";
 import { connect } from "react-redux";
 import { isArray, isUndefined, isNull, isEmpty, isObject, get, round } from "lodash";
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, DragDrop } from "@edulastic/common";
 import { releaseGradeLabels } from "@edulastic/constants/const/test";
 
 import {
@@ -37,6 +36,8 @@ import {
   ButtonWrapper,
   DetailAlternateContainer
 } from "./styled";
+
+const { DragItem } = DragDrop;
 
 class QuestionItem extends React.Component {
   static propTypes = {
@@ -370,24 +371,17 @@ class QuestionItem extends React.Component {
         pdfPreview={pdfPreview}
       >
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
-          <Draggable
-            type="question"
-            data={JSON.stringify({ id, index: questionIndex })}
-            onDragStart={this.handleDragStart}
-            onDragEnd={this.handleDragEnd}
-            enabled={!review && !testMode}
-          >
+          <DragItem data={{ id, index: questionIndex }} disabled={review || testMode}>
             <QuestionNumber
               viewMode={viewMode === "edit"}
               dragging={dragging}
               highlighted={highlighted}
               pdfPreview={pdfPreview}
               zoom={zoom}
-              // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
             >
               {questionIndex}
             </QuestionNumber>
-          </Draggable>
+          </DragItem>
           {!annotations && (
             <QuestionForm review={review} ref={this.qFormRef}>
               {this.renderContent(highlighted, this.qFormRef?.current?.getBoundingClientRect())}

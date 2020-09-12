@@ -8,12 +8,12 @@ const getStyles = isDragging => ({
   opacity: isDragging ? 0 : 1
 });
 
-const DragItem = ({ data, size, children, ...rest }) => {
+const DragItem = ({ data, size, children, disabled, ...rest }) => {
   const { isAnswerModifiable } = useContext(AnswerContext);
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: "item", data, size, preview: children },
     canDrag() {
-      return isAnswerModifiable;
+      return isAnswerModifiable && !disabled;
     },
     collect: monitor => ({
       isDragging: monitor.isDragging()

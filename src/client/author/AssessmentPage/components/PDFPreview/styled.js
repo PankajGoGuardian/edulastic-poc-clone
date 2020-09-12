@@ -1,6 +1,9 @@
 import styled from "styled-components";
+import { DragDrop } from "@edulastic/common";
 
 import { white, mediumDesktopExactWidth, themeColor } from "@edulastic/colors";
+
+const { DropContainer } = DragDrop;
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
@@ -66,4 +69,13 @@ export const AnnotationsContainer = styled.div`
   top: 0;
   position: absolute;
   pointer-events: ${({ enableDrag }) => (enableDrag ? "" : "none")};
+`;
+
+export const Droppable = styled(DropContainer)`
+  top: 0;
+  display: block;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+  position: relative;
 `;

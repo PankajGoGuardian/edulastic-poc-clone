@@ -9,33 +9,27 @@ export const WorksheetWrapper = styled.div`
   padding-top: ${({ editMode }) => editMode && "40px"};
   background: #f3f3f4;
   height: ${props =>
-    `calc(100vh - 65px - ${
-    (props.testMode
-      ? `${70 + props.extraPaddingTop}`
+    `calc(100vh - 65px - ${(props.testMode
+      ? `${30 + props.extraPaddingTop}`
       : props.reportMode
-        ? props.theme.HeaderHeight.xs + 41 + props.extraPaddingTop
-        : props.theme.HeaderHeight.xs + props.extraPaddingTop) || 0
-    }px)`};
+      ? props.theme.HeaderHeight.xs + 41 + props.extraPaddingTop
+      : props.theme.HeaderHeight.xs + props.extraPaddingTop) || 0}px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props =>
-    `calc(100vh - 65px  - ${
-    (props.testMode
-      ? `${70 + props.extraPaddingTop}`
-      : props.reportMode
+      `calc(100vh - 65px  - ${(props.testMode
+        ? `${30 + props.extraPaddingTop}`
+        : props.reportMode
         ? props.theme.HeaderHeight.md + 41 + props.extraPaddingTop
-        : props.theme.HeaderHeight.md + props.extraPaddingTop) || 0
-    }px)`};
+        : props.theme.HeaderHeight.md + props.extraPaddingTop) || 0}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props =>
-    `calc(100vh - 65px - ${
-    (props.testMode
-      ? `${70 + props.extraPaddingTop}`
-      : props.reportMode
+      `calc(100vh - 65px - ${(props.testMode
+        ? `${30 + props.extraPaddingTop}`
+        : props.reportMode
         ? props.theme.HeaderHeight.xl + 41 + props.extraPaddingTop
-        : props.theme.HeaderHeight.xl + props.extraPaddingTop) || 0
-    }px)`};
+        : props.theme.HeaderHeight.xl + props.extraPaddingTop) || 0}px)`};
   }
 `;
 
@@ -74,6 +68,40 @@ export const PDFAnnotationToolsWrapper = styled.div`
   background: ${white};
   position: absolute;
   z-index: 1;
-  border: 1px solid #D8D8D8;
+  border: 1px solid #d8d8d8;
   box-shadow: 0px 2px 2px #f0f0f0;
+`;
+
+export const PDFViewerContainer = styled.div`
+  display: flex;
+  width: ${({ width }) => width}px;
+  overflow-x: auto;
+  padding: 0px 15px;
+
+  .pdfViewer .canvasWrapper {
+    overflow: hidden;
+  }
+
+  .pdfViewer.removePageBorders .page {
+    margin: auto;
+    border: none;
+  }
+
+  .pdfViewer.singlePageView {
+    display: inline-block;
+  }
+
+  .pdfViewer.singlePageView .page {
+    margin: 0;
+    border: none;
+  }
+
+  .pdfViewer .page canvas {
+    margin: 0;
+    display: block;
+  }
+
+  .pdfViewer .page canvas[hidden] {
+    display: none;
+  }
 `;

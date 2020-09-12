@@ -2422,45 +2422,6 @@ div[class*="_pendo"] button {
   cursor: pointer;
 }
 
-.pdfViewer .canvasWrapper {
-  overflow: hidden;
-}
-
-.pdfViewer .page {
-  direction: ltr;
-  width: 816px;
-  height: 1056px;
-  margin: 1px auto -8px auto;
-  position: relative;
-  overflow: visible;
-  border: 9px solid transparent;
-  background-clip: content-box;
-  background-color: white;
-}
-
-.pdfViewer.removePageBorders .page {
-  margin: 0px auto 10px auto;
-  border: none;
-}
-
-.pdfViewer.singlePageView {
-  display: inline-block;
-}
-
-.pdfViewer.singlePageView .page {
-  margin: 0;
-  border: none;
-}
-
-.pdfViewer .page canvas {
-  margin: 0;
-  display: block;
-}
-
-.pdfViewer .page canvas[hidden] {
-  display: none;
-}
-
 .ant-spin-text {
   color: #1ab394;
 }

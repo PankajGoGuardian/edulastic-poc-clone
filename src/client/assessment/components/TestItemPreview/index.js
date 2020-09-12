@@ -106,11 +106,17 @@ class TestItemPreview extends Component {
   };
 
   getFeedBackVisibility = ({ widgetIndex, colIndex, stackedView }) => {
-    const { isDocBased, isPassageWithQuestions, isStudentReport } = this.props;
+    const { isDocBased, isPassageWithQuestions, isStudentReport, viewComponent } = this.props;
+    const isStudentAttempt = ["studentPlayer", "practicePlayer"].includes(viewComponent);
     let shouldShowFeedback;
     let shouldTakeDimensionsFromStore;
 
     switch (true) {
+      case isStudentAttempt:
+        shouldShowFeedback = true;
+        shouldTakeDimensionsFromStore = false;
+        break;
+
       case isDocBased || stackedView:
         /**
          * stacked view
@@ -403,7 +409,7 @@ class TestItemPreview extends Component {
           )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
-        {!isStudentAttempt && ((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
+        {((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
           <div
             style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}
             className="__print-feedback-main-wrapper"

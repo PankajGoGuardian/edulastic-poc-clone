@@ -25,14 +25,14 @@ export default class FormEssay extends React.Component {
     } = this.props;
     if (!validation) return this.renderForm();
 
-    return <Input style={{ width: "178px" }} disabled placeholder="Essay type" />;
+    return <Input style={{ width: "150px" }} disabled placeholder="Essay type" />;
   };
 
   handleBlur = () => {
-    const {clearHighlighted, saveQuestionResponse} = this.props;
+    const { clearHighlighted, saveQuestionResponse } = this.props;
     clearHighlighted();
     saveQuestionResponse();
-  }
+  };
 
   renderForm = () => {
     const {

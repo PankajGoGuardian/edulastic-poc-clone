@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import { findDOMNode } from "react-dom";
 import { withRouter } from "react-router-dom";
@@ -82,7 +81,13 @@ const SortableQuestionItem = SortableElement(
         setCurrentAnnotationTool("cursor");
         onHighlightQuestion(data.id);
       }}
-      style={{ display: "flex", marginBottom: "6px", padding: (testMode || review) && "0px 3px" }}
+      style={{
+        display: "flex",
+        marginBottom: "6px",
+        paddingRight: (testMode || review) && 12,
+        paddingLeft: (testMode || review) && 4,
+        paddingTop: questionIndex === 1 && 6
+      }}
     >
       {!testMode && !review && <DragHandle review={review} />}
       <QuestionItem
@@ -512,6 +517,7 @@ class Questions extends React.Component {
                     key={question.id}
                     section={question}
                     viewMode={viewMode}
+                    questionIndex={questionIndex[i]}
                     onUpdate={this.handleUpdateSection}
                     onDelete={this.handleDeleteQuestion(question.id)}
                   />

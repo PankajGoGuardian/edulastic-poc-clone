@@ -7,10 +7,12 @@ import PdfStoreAdapter from "./PdfStoreAdapter";
 
 const { UI } = PDFJSAnnotate;
 
-
 const PDFViewer = ({
   page,
   pdfScale,
+  docLoading,
+  setDocLoading,
+  setOriginalDimensions,
   currentAnnotationTool,
   annotationToolsProperties,
   annotationsStack,
@@ -20,10 +22,7 @@ const PDFViewer = ({
   const { pageNo, URL, rotate } = page;
   const pageNumber = URL === BLANK_URL ? 1 : pageNo;
   const viewerRef = useRef(null);
-  const containerRef = useRef(null);
-
   const [pdfDocument, setPdfDocument] = useState(null);
-  const [docLoading, setDocLoading] = useState(true);
 
   const clearAllTools = () => {
     UI.disableUpdate();
@@ -66,7 +65,7 @@ const PDFViewer = ({
       case "area":
       case "highlight":
       case "strikeout":
-      case "mask":  
+      case "mask":
         UI.enableRect(type);
         UI.setColor(color || "#F00");
         break;
@@ -81,6 +80,23 @@ const PDFViewer = ({
     }
   };
 
+  const loadPdf = () => {
+    if (!docLoading) {
+      setDocLoading(true);
+    }
+    const loadingTask = pdfjsLib.getDocument(URL);
+    loadingTask.promise
+      .then(_pdfDocument => {
+        _pdfDocument.getPage(currentPage).then(_page => {
+          const viewport = _page.getViewport({ scale: 1 });
+          setOriginalDimensions({ width: viewport.width, height: viewport.height });
+          setPdfDocument(_pdfDocument);
+          setDocLoading(false);
+        });
+      })
+      .catch(err => console.error(`Error: ${err}`));
+  };
+
   useEffect(() => {
     clearAllTools();
     if (!authoringMode) {
@@ -92,16 +108,8 @@ const PDFViewer = ({
 
   useEffect(() => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js";
-
     if (!pdfDocument) {
-      if (!docLoading) setDocLoading(true);
-      const loadingTask = pdfjsLib.getDocument(URL);
-      loadingTask.promise
-        .then(_pdfDocument => {
-          setPdfDocument(_pdfDocument);
-          setDocLoading(false);
-        })
-        .catch(err => console.error(`Error: ${err}`));
+      loadPdf();
     }
     PDFJSAnnotate.setStoreAdapter(PdfStoreAdapter);
   }, []);
@@ -112,14 +120,7 @@ const PDFViewer = ({
      * then load doc based on incomming URL
      */
     if (pdfDocument && URL !== pdfDocument?._transport?._params?.url) {
-      if (!docLoading) setDocLoading(true);
-      const loadingTask = pdfjsLib.getDocument(URL);
-      loadingTask.promise
-        .then(_pdfDocument => {
-          setPdfDocument(_pdfDocument);
-          setDocLoading(false);
-        })
-        .catch(err => console.error(`Error: ${err}`));
+      loadPdf();
     }
   }, [currentPage]);
   useEffect(() => {
@@ -147,11 +148,7 @@ const PDFViewer = ({
     );
   }
 
-  return (
-    <div id="content-wrapper" ref={containerRef}>
-      <div id="viewer" className="pdfViewer" ref={viewerRef} />
-    </div>
-  );
+  return <div id="viewer" className="pdfViewer" ref={viewerRef} />;
 };
 
 export default PDFViewer;

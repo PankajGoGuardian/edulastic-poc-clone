@@ -20,9 +20,14 @@ const getBorder = ({ selected, checked, correct }) =>
   selected ? (checked ? (correct ? green : red) : themeColor) : greyishDarker1;
 
 export const QuestionChunk = styled.div`
-  min-width: 180px;
+  min-width: 150px;
   &:not(:last-child) {
     margin-bottom: 5px;
+  }
+
+  .ant-radio-wrapper {
+    margin-right: 0px;
+    margin-left: 0px !important;
   }
 
   @media (max-width: ${smallDesktopWidth}) {
@@ -58,8 +63,7 @@ export const QuestionOption = styled.span`
 export const QuestionText = styled.p`
   margin: 0;
   font-size: 14px;
-  padding: 10px 0;
-  width: ${({ check }) => (check ? "210px" : "178px")};
+  width: ${({ check }) => (check ? "210px" : "150px")};
   border: 1px solid ${inputBorder};
   border-radius: 4px;
   padding: 4px 11px;

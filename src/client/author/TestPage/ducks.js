@@ -1420,6 +1420,9 @@ function* updateTestSaga({ payload }) {
 
     const testData = omit(payload.data, testFieldsToOmit);
     const entity = yield call(testsApi.update, { ...payload, data: testData });
+    if (isEmpty(entity)) {
+      return;
+    }
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     const userRole = yield select(getUserRole);

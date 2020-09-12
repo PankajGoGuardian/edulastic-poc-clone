@@ -70,6 +70,9 @@ const TimedTestTimer = ({
 
       if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
         updateUtaTime({ utaId, type: updateUtaTimeType });
+      } else if (!uta.startTime) {
+        // in case somehow missed to set startTime in firebase uta document
+        updateUtaTime({ utaId, type: "start" });
       } else if (upstreamUta?.status === "paused") {
         // this shouldn't happen.
         console.warn("this shouldn't happen. the assignment is already paused");

@@ -40,7 +40,7 @@ import { CLEAR_ITEM_EVALUATION, CHANGE_VIEW } from "../../author/src/constants/a
 import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 import { PREVIEW } from "../constants/constantsForQuestions";
 import { getUserRole } from "../../author/src/selectors/user";
-import { checkClientTime } from "../../common/utils/helpers";
+// import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants;
 
@@ -448,16 +448,17 @@ function* submitTest({ payload }) {
     });
     const [classId, preventRouteChange] =
       typeof payload === "string" ? [payload] : [payload.groupId, payload.preventRouteChange];
-    const testActivityId = yield select(state => state.test && state.test.testActivityId) || payload.testActivityId;
+    const testActivityInState = yield select(state => state.test && state.test.testActivityId);
+    const testActivityId = payload.testActivityId || testActivityInState;
     const groupId = classId || (yield select(getCurrentGroupWithAllClasses));
     if (testActivityId === "test") {
       return;
     }
     yield testActivityApi.submit(testActivityId, groupId);
     // log the details on auto submit
-    if (payload.autoSubmit) {
-      checkClientTime({ testActivityId, timedTest: true });
-    }
+    // if (payload.autoSubmit) {
+    //   checkClientTime({ testActivityId, timedTest: true });
+    // }
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: "" }

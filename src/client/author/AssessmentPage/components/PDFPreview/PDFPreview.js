@@ -1,46 +1,31 @@
 import React, { useLayoutEffect, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Droppable } from "react-drag-and-drop";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { withRouter } from "react-router";
 import { round } from "lodash";
+import { DragDrop } from "@edulastic/common";
 import { IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
 import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
-import { PDFPreviewWrapper, Preview, ZoomControlCotainer, PDFZoomControl, AnnotationsContainer } from "./styled";
+import {
+  PDFPreviewWrapper,
+  Preview,
+  Droppable,
+  ZoomControlCotainer,
+  PDFZoomControl,
+  AnnotationsContainer
+} from "./styled";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import PDFViewer from "../PDFViewer";
-
-const handleDrop = (page, cb, annotationContainer, zoom = 1) => ({ question }, e) => {
-  const {
-    nativeEvent: { offsetX, offsetY }
-  } = e;
-  const data = JSON.parse(question);
-
-  const x = zoom != 0 ? offsetX / zoom : offsetX;
-  const y = zoom != 0 ? offsetY / zoom : offsetY;
-
-  const { offsetWidth, offsetHeight } = annotationContainer.current;
-
-  cb(
-    {
-      x,
-      y,
-      page,
-      questionId: data.id,
-      qIndex: data.index
-    },
-    offsetWidth,
-    offsetHeight
-  );
-};
 
 const getNumberStyles = (x, y, scale) => ({
   position: "absolute",
   top: `${y * scale}px`,
   left: `${x * scale}px`
 });
+
+const { DragPreview } = DragDrop;
 
 const PDFPreview = ({
   page,
@@ -123,13 +108,24 @@ const PDFPreview = ({
   };
 
   const calculateInitScale = viewport => {
-    console.clear();
     const containerWidth = previewContainer?.current?.clientWidth || viewport.width;
     scalePDF(round((containerWidth - 40) / viewport.width, 1));
     if (forwardedRef.current) {
       setTimeout(() => {
         forwardedRef.current.updateScroll();
       }, 10);
+    }
+  };
+
+  const handleDropQuestion = ({ data, itemOffset }) => {
+    if (annotationContainer.current) {
+      const containerRect = annotationContainer.current.getBoundingClientRect();
+      let x = itemOffset.x - containerRect.x;
+      let y = itemOffset.y - containerRect.y;
+      x = round(x / pdfScale, 2);
+      y = round(y / pdfScale, 2);
+
+      onDropAnnotation({ x, y, page: currentPage, questionId: data.id, qIndex: data.index });
     }
   };
 
@@ -144,11 +140,7 @@ const PDFPreview = ({
       ref={previewContainer}
     >
       <PerfectScrollbar ref={forwardedRef} option={{ wheelSpeed: 0.6 }}>
-        <Droppable
-          types={["question"]}
-          onDrop={handleDrop(currentPage, onDropAnnotation, annotationContainer, pdfScale)}
-          style={{ top: 0, display: "block", width: "fit-content", height: "fit-content", margin: "auto" }}
-        >
+        <Droppable drop={handleDropQuestion}>
           {page.URL === "blank" && <Preview onClick={handleRemoveHighlight} />}
 
           {page.URL !== "blank" && (
@@ -218,6 +210,7 @@ const PDFPreview = ({
           </ZoomControlCotainer>
         ) : null}
       </PerfectScrollbar>
+      <DragPreview />
     </PDFPreviewWrapper>
   );
 };

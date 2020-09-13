@@ -368,7 +368,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         authorAssignmentPage.getStatus().should("have.length", assignCountForClass1);
       });
     });
-    it("Verify Assigned", () => {
+    it("Verify Assignment- not present in student login", () => {
       cy.login("student", Student4Class1Class3.email, Student4Class1Class3.pass);
       assignmentsPage.verifyAbsenceOfTest(OriginalTestId);
     });
@@ -387,7 +387,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         authorAssignmentPage.getStatus().should("have.length", assignCountForClass1 + assignCountForClass3);
       });
     });
-    it("Verify Assigned", () => {
+    it("Verify Assignment- present in student login ", () => {
       cy.login("student", Student4Class1Class3.email, Student4Class1Class3.pass);
       assignmentsPage.verifyPresenceOfTest(OriginalTestId);
       assignmentsPage

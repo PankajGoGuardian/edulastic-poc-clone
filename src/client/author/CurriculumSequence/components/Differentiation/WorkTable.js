@@ -20,6 +20,23 @@ import { ResouceIcon } from "../ResourceItem/index";
 import Tags from "../../../src/components/common/Tags";
 import { SubResourceView } from "../PlaylistResourceRow";
 
+function getTableData(data) {
+  const addedData = [];
+  const recommendedData = [];
+
+  data.forEach(each => {
+    if (each.status === "ADDED") {
+      addedData.push(each);
+    } else if (each.status === "RECOMMENDED") {
+      if (recommendedData.length < 5) {
+        recommendedData.push(each);
+      }
+    }
+  });
+
+  return [...addedData, ...recommendedData];
+}
+
 function ContentDropContainer({ children, ...props }) {
   const [{ isOver }, dropRef] = useDrop({
     accept: "item",
@@ -453,6 +470,8 @@ const InnerWorkTable = ({
       userCountComponent(count)
     );
 
+  const tableData = useMemo(() => getTableData(data), [data]);
+
   return (
     <TableContainer h1ighlighted={isOver} data-cy={`table-${type}`}>
       <TableHeader>
@@ -477,7 +496,7 @@ const InnerWorkTable = ({
         <StyledTable
           columns={columns}
           rowSelection={rowSelection}
-          dataSource={data}
+          dataSource={tableData}
           pagination={false}
           loading={isFetchingWork}
           onRow={(record, rowIndex) => ({

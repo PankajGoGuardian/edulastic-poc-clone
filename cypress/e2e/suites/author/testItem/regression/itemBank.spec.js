@@ -208,8 +208,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
         });
 
         it("> standards and dok", () => {
+          itemlist.getHiddenStandards(filter.id);
           filter.standards.standard.forEach((std, ind) => {
-            if (ind > 0) itemlist.getHiddenStandards(filter.id);
             itemlist.verifyContentById(filter.id, std);
           });
           itemlist.verifydokByItemId(filter.id, filter.dok);

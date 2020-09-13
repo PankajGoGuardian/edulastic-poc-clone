@@ -38,11 +38,15 @@ class ItemListPage {
       .find(`[class="Tags"]`)
       .last();
 
-  getHiddenStandards = id =>
-    this.getItemContainerInlistById(id)
-      .find(".ant-dropdown-trigger")
-      .trigger("mouseover")
-      .then(() => cy.wait(1000));
+  getHiddenStandards = id => {
+    this.getItemContainerInlistById(id).then($ele => {
+      if (Cypress.$($ele).find(".hidden-tags").length > 0)
+        cy.wrap($ele)
+          .find(".hidden-tags")
+          .click({ force: true })
+          .then(() => cy.wait(500));
+    });
+  };
 
   getAllItemsInListContainer = () => cy.get(".fr-view");
 
@@ -50,9 +54,9 @@ class ItemListPage {
 
   getAuthorById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-1"]');
 
-  getItemIdById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-2"]');
+  getItemIdById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-3"]');
 
-  getItemDOKIById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-0"]');
+  getItemDOKIById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-2"]');
 
   getAddButtonById = id =>
     this.getViewItemById(id)
@@ -248,7 +252,7 @@ class ItemListPage {
     let qType;
     switch (key) {
       case queTypes.MULTIPLE_CHOICE_MULTIPLE:
-        qType = "Multiple choice - multiple response";
+        qType = "Multiple Choice";
         break;
       case queTypes.ESSAY_RICH:
         qType = "Essay with rich text";
@@ -273,7 +277,7 @@ class ItemListPage {
         qType = "Multiple Choice";
         break;
       case queTypes.ESSAY_RICH:
-        qType = "Essay Rich Text";
+        qType = "Essay";
         break;
       case queTypes.CLOZE_DROP_DOWN:
         qType = "Cloze Drop Down";

@@ -21,15 +21,15 @@ const SubscriptionsBlock = () => (
     </FlexContainer>
     <FlexContainer width="100%" padding="15px 10px">
       <IconItem>
-        <i class="fa fa-random" aria-hidden="true" />
+        <i className="fa fa-random" aria-hidden="true" />
         <p>Shuffle Questions & Choices</p>
       </IconItem>
       <IconItem>
-        <i class="fa fa-eye-slash" aria-hidden="true" />
+        <i className="fa fa-eye-slash" aria-hidden="true" />
         <p> Hide Answers</p>
       </IconItem>
       <IconItem>
-        <i class="fa fa-th-large" aria-hidden="true" />
+        <i className="fa fa-th-large" aria-hidden="true" />
         <p> Rubric Grading</p>
       </IconItem>
       <IconItem>

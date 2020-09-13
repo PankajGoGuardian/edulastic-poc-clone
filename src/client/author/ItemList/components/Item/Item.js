@@ -23,8 +23,10 @@ import { testItemsApi } from "@edulastic/api";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 import {
   getTestItemAuthorName,
+  getTestItemCollectionName,
   getQuestionType,
   getTestItemAuthorIcon,
+  getTestItemCollectionIcon,
   showPremiumLabelOnContent
 } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
@@ -167,8 +169,12 @@ class Item extends Component {
         text: (questions.find(_item => _item.depthOfKnowledge) || {}).depthOfKnowledge
       },
       {
-        name: getTestItemAuthorIcon(item, collections),
-        text: getTestItemAuthorName(item, collections)
+        name: getTestItemAuthorIcon(),
+        text: getTestItemAuthorName(item)
+      },
+      {
+        name: getTestItemCollectionIcon(item, collections),
+        text: getTestItemCollectionName(item, collections)
       },
       {
         name: <IdIcon />,

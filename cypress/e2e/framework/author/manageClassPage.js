@@ -35,6 +35,9 @@ export default class TeacherManageClassPage {
     cy.wait("@searchUser");
   };
 
+  getClassCode = className =>this.getClassRowByName(className)
+    .find("td > span").eq(1).invoke("text")
+
   getClassRowDetails = className =>
     this.getClassRowByName(className)
       .find("td")
@@ -63,6 +66,8 @@ export default class TeacherManageClassPage {
   getDropDownInHeader = () => cy.get('[data-cy="headerDropDown"]');
 
   getEditClassInDropDown = () => cy.get("li").contains("Edit Class");
+
+  getEditGroupInDropDown = () => cy.get("li").contains("Edit Group");
 
   getArchiveClassInDropDown = () => cy.get("li").contains("Archive Class");
 
@@ -102,6 +107,11 @@ export default class TeacherManageClassPage {
     this.getEditClassInDropDown().click({ force: true });
   };
 
+  clickOnEditGroup = () => {
+    this.clickHeaderDropDown();
+    this.getEditGroupInDropDown().click({ force: true });
+  };
+
   clickOnUpdateClass = () => {
     cy.server();
     cy.route("PUT", "**/group/**").as("updateClass");
@@ -115,7 +125,7 @@ export default class TeacherManageClassPage {
 
   clickonRemoveStudentButton = () => this.removeStudentButton().click({ force: true });
 
-  clickOnRemoveStudentPopupTextbox = () => cy.get('[class *= "ant-input styled"]').click();
+  clickOnRemoveStudentPopupTextbox = () => cy.get('.ant-input').click();
 
   clickOnRemoveButtonInPopUp = () => cy.contains("span", "Yes, Remove Student(s)").click({ force: true });
 

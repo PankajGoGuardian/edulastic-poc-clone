@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Tooltip, Collapse } from "antd";
 import moment from "moment";
 import { withWindowSizes, EduButton } from "@edulastic/common";
-import { smallDesktopWidth, themeColor } from "@edulastic/colors";
+import { smallDesktopWidth, themeColor, white, themeColorBlue } from "@edulastic/colors";
 import { changeClassAction } from "../../Login/ducks";
 
 const ClassCard = ({ t, classItem, history, changeClass, key }) => {
@@ -217,8 +217,12 @@ const ClassStatus = styled(Col)`
     color: ${props =>
       props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardActiveStatusTextColor};
     font-size: ${props => props.theme.classCard.cardActiveStatusTextSize};
+    &:hover {
+      background: ${themeColorBlue};
+      color: ${white};
+      border-color: ${themeColorBlue};
+    }
   }
-
   @media (max-width: ${smallDesktopWidth}) {
     height: 28px;
     span {

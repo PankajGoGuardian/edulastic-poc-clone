@@ -5,19 +5,28 @@ export default class SmartFilters {
 
   getGrades = () => cy.get('[data-cy="grades"]');
 
+  getTestType = () => cy.get('[data-cy="filter-testType"]');
+
   getFilter = () => cy.get('[data-cy="smart-filter"]');
+
+  getAllAssignment = () => cy.contains("span", "All Assignments");
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  expandFilter = () =>
+  expandFilter = () => {
+    cy.server();
+    cy.route("GET", "**/user-folder?folderType=ASSIGNMENT").as("getFolders");
     this.getFilter().then($ele => {
-      if ($ele.attr("data-test") !== "expanded")
+      if ($ele.attr("data-test") !== "expanded") {
         cy.wrap($ele)
           .click()
           .should("have.attr", "data-test", "expanded");
+        // cy.wait("@getFolders");
+      }
     });
+  };
 
   collapseFilter = () =>
     this.getFilter().then($ele => {
@@ -60,8 +69,21 @@ export default class SmartFilters {
   };
 
   setTesttype = testType => {
-    CypressHelper.selectDropDownByAttribute("filter-testType", testType);
-    this.waitForAssignments();
+    // CypressHelper.selectDropDownByAttribute("filter-testType", testType);
+    this.getTestType().click();
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele.filter(function() {
+          return Cypress.$(this).text() === testType;
+        })
+      )
+        .click({ force: true })
+        .then(() => {
+          cy.wait("@assignment");
+        });
+    });
+    // this.waitForAssignments();
+    cy.focused().blur();
   };
 
   setClass = classs => {
@@ -87,7 +109,7 @@ export default class SmartFilters {
 
   // folders
 
-  clickOnAllAssignment = () => cy.contains("span", "ALL ASSIGNMENTS").click();
+  clickOnAllAssignment = () => this.getAllAssignment().click();
 
   clickOnFolderByName = folderName =>
     cy
@@ -145,7 +167,7 @@ export default class SmartFilters {
   createNewFolder = (folderName, isValid = true) => {
     cy.server();
     cy.route("POST", "**/user-folder").as("createFolder");
-    cy.contains("span", "NEW FOLDER").click();
+    cy.get('[data-cy="addFolderButton"]').click();
     cy.get('[placeholder="Name this folder"]').type(folderName);
     cy.contains("span", "Create").click({ force: true });
 
@@ -158,6 +180,18 @@ export default class SmartFilters {
     }
   };
 
+  clickOnFolderAction = () => cy.get('[data-cy="assignmentActions"]').click();
+
+  clickOnAddToFolderAction = () => {
+    this.clickOnFolderAction();
+    cy.get('[data-cy="addToFolder"]').click();
+  };
+
+  clickOnRemoveFromFolderAction = () => {
+    this.clickOnFolderAction();
+    cy.get('[data-cy="removeFromFolder"]').click();
+  };
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -166,23 +200,25 @@ export default class SmartFilters {
 
   verifyFolderNotVisible = folderName => cy.get(`[data-cy="${folderName}"]`).should("not.be.visible");
 
-  moveToFolder = (folderName, isValid = true) => {
+  moveToFolder = (folderName, testName, isValid = true) => {
     cy.server();
     cy.route("PUT", "**/user-folder/**").as("updateFolder");
-    cy.contains("span", "Move").click({ force: true });
+    this.clickOnAddToFolderAction();
 
     cy.get(".ant-modal-body")
       .find(`[title="${folderName}"]`)
       .click({ force: true });
 
     cy.get(".ant-modal")
-      .contains("span", "Move")
+      .contains("span", "Add")
       .click({ force: true });
-
     if (isValid) {
       cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
-      cy.contains(`successfully moved to ${folderName} folder`).should("be.visible");
-    } else cy.contains(`Test already exist in ${folderName} folder`).should("be.visible");
+      cy.contains(`${testName} successfully moved to "${folderName}"`).should("be.visible");
+    } else {
+      cy.contains(`${testName} already exist in ${folderName} folder`).should("be.visible");
+      cy.get('[data-cy="cancel"]').click();
+    }
   };
 
   // *** APPHELPERS END ***

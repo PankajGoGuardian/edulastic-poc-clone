@@ -14,7 +14,7 @@ class LoginPage {
   fillLoginForm = (email, password) => {
     this.getEmail()
       .clear()
-      .type(email);
+      .type(email, { timeout: 20000 });
     this.getPassword()
       .clear()
       .type(password);

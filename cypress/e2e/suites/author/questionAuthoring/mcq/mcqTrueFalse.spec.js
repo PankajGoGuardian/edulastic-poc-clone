@@ -1,16 +1,9 @@
-// / <reference types="Cypress" />
-import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
-import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
-import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage.js";
+import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
+import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
 import FileHelper from "../../../../framework/util/fileHelper";
-import {
-  SCORING_TYPE,
-  STEM,
-  STYLE_TYPE,
-  FONT_SIZE
-} from "../../../../framework/constants/questionAuthoring";
-import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
-import { questionType } from "../../../../framework/constants/questionTypes.js";
+import { SCORING_TYPE, STEM, STYLE_TYPE, FONT_SIZE } from "../../../../framework/constants/questionAuthoring";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false" type question`, () => {
   const queData = {
@@ -26,9 +19,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
   };
   const question = new MCQTrueFalsePage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
   const text = "testtext";
-  const formates = question.formates;
 
   before(() => {
     cy.login();
@@ -48,42 +39,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .clear()
         .type(queData.queText)
         .should("contain", queData.queText);
-
-      /*  // add formatting
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      formates.forEach(formate => {
-        const text = queData.formattext;
-        const { sel, tag } = formate;
-
-        question
-          .getQuestionEditor()
-          .find("p")
-          .makeSelection();
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .contains(tag, text)
-          .should("have.length", 1);
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .find(tag)
-          .should("not.be.exist");
-      }); */
     });
 
     it(" > [Tc_285]:test => Multiple choices options", () => {
@@ -134,65 +89,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .find("input")
           .should("be.checked");
       });
-
-      // alternate
-      question.addAlternate();
-
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
-
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
     });
 
     it(" > [Tc_287]:test => Advanced Options", () => {
       question.clickOnAdvancedOptions();
-
-      // scoring
-      // question.getMaxScore().verifyNumInput(1);
-
-      /* question
-        .getEnableAutoScoring()
-        .click()
-        .then($el => {
-          cy.wrap($el).should("have.class", "ant-checkbox-checked");
-
-          question
-            .getCheckAnswerCheckbox()
-            .click()
-            .should("have.class", "ant-checkbox-checked")
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
- */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question.getPanalty().verifyNumInput(0.5);
-
-      // question.getCheckAnsAttempt().verifyNumInput(1);
-
-      // question.getMinScore().verifyNumInput(1);
 
       question
         .getUnscore()
         .click()
         .then($el2 => {
           cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-
-          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
         .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
-      // });
-
-      /* question
-        .getEnableAutoScoring()
-        .click()
-        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
     it(" > [Tc_288]:test => Display", () => {
@@ -234,7 +149,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
     it(" > [Tc_289]:test => Save question", () => {
       editItem.header.save();
-      // cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
@@ -254,7 +168,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
   });
 
   context(" > User edit the question.", () => {
-    const queData = {
+    const queDataEdited = {
       group: "Multiple Choice",
       queType: "True or false",
       queText: "editedWhich is following option is true :",
@@ -278,44 +192,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question
         .getQuestionEditor()
         .clear()
-        .type(queData.queText)
-        .should("contain", queData.queText);
-
-      /* // add formatting
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      formates.forEach(formate => {
-        const text = queData.formattext;
-        const { sel, tag } = formate;
-
-        question
-          .getQuestionEditor()
-          .find("p")
-          .makeSelection();
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .contains(tag, text)
-          .should("have.length", 1);
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .find(tag)
-          .should("not.be.exist");
-      }); */
+        .type(queDataEdited.queText)
+        .should("contain", queDataEdited.queText);
     });
 
     it(" > [Tc_292]:test => Multiple choices options", () => {
@@ -343,7 +221,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .should("have.length", 0);
 
       // add new
-      const { choices } = queData;
+      const { choices } = queDataEdited;
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
@@ -366,64 +244,23 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .find("input")
           .should("be.checked");
       });
-
-      // alternate
-      question.addAlternate();
-
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
     });
 
     it(" > [Tc_294]:test => Advanced Options", () => {
-      // question.clickOnAdvancedOptions();
-
-      // scoring
-      // question.getMaxScore().verifyNumInput(1);
-
-      /*
-      question
-        // .getEnableAutoScoring()
-        .click()
-        .then($el => {
-          cy.wrap($el).should("have.class", "ant-checkbox-checked");
-
-           question
-            .getCheckAnswerCheckbox()
-            .click()
-            .should("have.class", "ant-checkbox-checked")
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
- */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question.getPanalty().verifyNumInput(0.5);
-
-      // question.getCheckAnsAttempt().verifyNumInput(1);
-
-      // question.getMinScore().verifyNumInput(1);
-
       question
         .getUnscore()
         .click()
         .then($el2 => {
           cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
         .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
-      // });
-
-      /* question
-        .getEnableAutoScoring()
-        .click()
-        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
     it(" > [Tc_295]:test => Display", () => {
@@ -481,14 +318,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
       preview.header.edit();
     });
-
-    /*  it(" > [Tc_298]:test => Delete question from item", () => {
-      editItem
-        .getDelButton()
-        .should("have.length", 1)
-        .click()
-        .should("have.length", 0);
-    }); */
   });
 
   context(" > [sanity]:test => Create question using different options and validate solution block", () => {

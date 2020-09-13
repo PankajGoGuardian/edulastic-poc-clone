@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -6,12 +7,13 @@ import { withRouter } from "react-router-dom";
 import { Spin, message, Modal, Button } from "antd";
 import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from "lodash";
 import useInterval from "@use-it/interval";
-import { test as testTypes, assignmentPolicyOptions, questionType, roleuser } from "@edulastic/constants";
-import { AssessmentPlayerContext, useRealtimeV2, notification } from "@edulastic/common";
+
+import { test as testConstants, assignmentPolicyOptions, questionType } from "@edulastic/constants";
+import { AssessmentPlayerContext, useRealtimeV2 } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
-import { finishTestAcitivityAction, setPasswordValidateStatusAction } from "../actions/test";
+import { finishTestAcitivityAction } from "../actions/test";
 import { evaluateAnswer } from "../actions/evaluation";
 import { changePreview as changePreviewAction } from "../actions/view";
 import { getQuestionsByIdSelector } from "../selectors/questions";
@@ -62,6 +64,8 @@ const RealTimeV2HookWrapper = ({ userId, testId, regradedAssignment, regradedRea
   return null;
 };
 
+const { playerSkinValues } = testConstants;
+
 const AssessmentContainer = ({
   view,
   items,
@@ -89,7 +93,6 @@ const AssessmentContainer = ({
   closeTestPreviewModal,
   testletType,
   testletState,
-  testletConfig,
   testType,
   test,
   groupId,
@@ -110,8 +113,6 @@ const AssessmentContainer = ({
   userId,
   regradedAssignment,
   clearRegradeAssignment,
-  setPasswordValidateStatus,
-  userRole,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -121,13 +122,23 @@ const AssessmentContainer = ({
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
+  const { enableSkipAlert = false } = testSettings || {};
+
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
 
   // start assessment
   useEffect(() => {
     window.localStorage.assessmentLastTime = Date.now();
-    return () => setPasswordValidateStatus(false);
   }, []);
+
+  useEffect(() => {
+    if (!loading && items.length === 0) {
+      Modal.info({
+        title: "It looks like there aren't any Items in this test.",
+        okText: "Close"
+      });
+    }
+  }, [loading]);
 
   useEffect(() => {
     lastTime.current = Date.now();
@@ -293,13 +304,15 @@ const AssessmentContainer = ({
           locState: history?.location?.state,
           callback: () => changePreview(previewTab)
         });
-      } else {
+      } else if (enableSkipAlert) {
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
           index,
           context
         });
+      } else {
+        gotoQuestion(index, true);
       }
     }
   };
@@ -321,13 +334,15 @@ const AssessmentContainer = ({
           urlToGo: `${url}/${"test-summary"}`,
           locState: { ...history?.location?.state, fromSummary: true }
         });
-      } else {
+      } else if (enableSkipAlert) {
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
           index: Number(currentItem) + 1,
           context: "next"
         });
+      } else {
+        moveToNext(null, true);
       }
     }
     if (enableMagnifier) {
@@ -377,14 +392,6 @@ const AssessmentContainer = ({
   };
 
   const testItem = items[currentItem] || {};
-  if (items && items.length > 0 && Object.keys(testItem).length === 0) {
-    notification({
-      messageKey: "invalidAction"
-    });
-    if (userRole === roleuser.STUDENT) {
-      history.push("/home/assignments");
-    }
-  }
   let itemRows = testItem.rows;
 
   let passage = {};
@@ -469,11 +476,10 @@ const AssessmentContainer = ({
         {...props}
       />
     );
-  } else if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
+  } else if (playerSkinType === playerSkinValues.testlet) {
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
-        testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}
@@ -508,7 +514,7 @@ const AssessmentContainer = ({
           The assignment has been modified by Instructor. Please restart the assignment.
         </Modal>
       )}
-      {unansweredPopupSetting.show && (
+      {unansweredPopupSetting.show && enableSkipAlert && (
         <UnansweredPopup
           visible
           title=""
@@ -542,14 +548,12 @@ AssessmentContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
-  testletConfig: PropTypes.object,
   test: PropTypes.object
 };
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
   annotations: [],
-  testletConfig: {},
   test: {}
 };
 
@@ -564,7 +568,6 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
-      testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),
       annotations: state.test.annotations,
@@ -580,7 +583,6 @@ const enhance = compose(
       enableMagnifier: state.testPlayer.enableMagnifier,
       regradedAssignment: get(state, "studentAssignment.regradedAssignment"),
       userId: get(state, "user.user._id"),
-      userRole: get(state, "user.user.role"),
       userWork: userWorkSelector(state)
     }),
     {
@@ -592,8 +594,7 @@ const enhance = compose(
       updateTestPlayer: updateTestPlayerAction,
       hideHints: hideHintsAction,
       regradedRealtimeAssignment: regradedRealtimeAssignmentAction,
-      clearRegradeAssignment: clearRegradeAssignmentAction,
-      setPasswordValidateStatus: setPasswordValidateStatusAction
+      clearRegradeAssignment: clearRegradeAssignmentAction
     }
   )
 );

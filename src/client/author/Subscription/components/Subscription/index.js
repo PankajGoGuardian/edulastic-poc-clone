@@ -184,8 +184,8 @@ const Subscription = props => {
 
   const isSubscribed = subType === "premium" || subType === "enterprise" || isSuccess;
 
-  const TEN_DAYS = 864000000;
-  const isAboutToExpire = subEndDate ? ((Date.now() + TEN_DAYS) > subEndDate) : false;
+  const THIRTY_DAYS = 2592000000;
+  const isAboutToExpire = subEndDate ? ((Date.now() + THIRTY_DAYS) > subEndDate) : false;
 
   const showRenewalOptions = (isPremiumAccount && isAboutToExpire) || (!isPremiumAccount && isSubscriptionExpired);
   const showUpgradeOptions = !isSubscribed;

@@ -54,11 +54,13 @@ export default class FormMath extends React.Component {
 
   renderForm = mode => {
     const {
-      question: { numberPad, symbols },
+      question: { numberPad, symbols, allowedVariables = "", allowNumericOnly = false},
       answer,
       view,
-      highlighted
+      highlighted,
     } = this.props;
+    
+    const restrictKeys = allowedVariables.split(",").map(val=> val.trim());
 
     if (mode === "report") {
       return <QuestionText>{answer}</QuestionText>;
@@ -75,6 +77,8 @@ export default class FormMath extends React.Component {
           ref={el => highlighted && el?.setFocus()}
           onBlur={this.handleBlur}
           isDocbasedSection
+          restrictKeys={restrictKeys}
+          allowNumericOnly={allowNumericOnly}
         />
       </ThemeProvider>
     );

@@ -1,35 +1,21 @@
 import styled from "styled-components";
+import { DragDrop } from "@edulastic/common";
 
-import { white, mediumDesktopExactWidth, extraDesktopWidthMax, themeColor } from "@edulastic/colors";
+import { white, mediumDesktopExactWidth, themeColor } from "@edulastic/colors";
+
+const { DropContainer } = DragDrop;
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
-  padding-top: ${props => (props.reportMode ? "0px" : "30px")};
+  padding-top: ${props => (props.reportMode ? "0px" : "15px")};
   padding-right: 0px;
-  padding-left: ${props => (props.minimized ? "54px" : "0px")};
+  padding-left: 0px;
   padding-bottom: ${props => (props.testMode ? "15px" : props.review ? "60px" : "15px")};
   overflow-y: auto;
   width: 100%;
   transition: padding 0.2s ease-in;
-  height: ${props =>
-    `calc(100vh - ${
-    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
-    }px) - 43px`};
   .scrollbar-container {
     border-radius: 5px;
-  }
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props =>
-    `calc(100vh - ${
-    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
-    }px) - 43px`};
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props =>
-    `calc(100vh - ${
-    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
-    }px) - 43px`};
   }
 `;
 
@@ -47,16 +33,23 @@ export const Preview = styled.div`
 export const ZoomControlCotainer = styled.div`
   position: fixed;
   bottom: 70px;
-  margin-left: 15px;
+  margin-left: -12px;
   display: flex;
   flex-direction: column;
+
+  svg {
+    fill: ${white};
+    &:hover {
+      fill: ${white};
+    }
+  }
 `;
 
 export const PDFZoomControl = styled.div`
   background: ${themeColor};
-  width: 40px;
-  height: 40px;
-  font-size: 35px;
+  width: 30px;
+  height: 30px;
+  font-size: 28px;
   font-weight: bolder;
   border-radius: 50%;
   color: ${white};
@@ -67,4 +60,22 @@ export const PDFZoomControl = styled.div`
   cursor: pointer;
   user-select: none;
   margin-bottom: 5px;
+`;
+
+export const AnnotationsContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+  pointer-events: ${({ enableDrag }) => (enableDrag ? "" : "none")};
+`;
+
+export const Droppable = styled(DropContainer)`
+  top: 0;
+  display: block;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+  position: relative;
 `;

@@ -1,29 +1,24 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
+import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  min-width: 350px;
-  max-width: 350px;
-  padding: ${props =>
-    props.reportMode ? "0px 15px 15px" : props.review && !props.testMode ? "30px 15px 50px" : "30px 0 30px 15px"};
+  min-width: 300px;
+  max-width: 300px;
+  padding: ${props => (props.reportMode ? "0px 15px 15px" : "8px 0px")};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow-y: auto;
-  height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xs}px - 43px)`};
+  height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xs + 43}px)`};
 
-  @media (max-width: ${smallDesktopWidth}) {
-    min-width: 300px;
-    max-width: 300px;
-  }
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.md}px - 43px) `};
+    height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.md + 43}px) `};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xl}px) - 43px`};
+    height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xl + 43}px)`};
   }
 `;
 
@@ -31,9 +26,9 @@ export const QuestionWidgetWrapper = styled.div`
   height: 100%;
   max-height: ${props =>
     `calc(100vh - ${
-    props.testMode
-      ? "0"
-      : props.reportMode
+      props.testMode
+        ? "0"
+        : props.reportMode
         ? props.theme.HeaderHeight.xs + 60
         : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)
     }px)`};
@@ -42,23 +37,23 @@ export const QuestionWidgetWrapper = styled.div`
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     max-height: ${props =>
-    `calc(100vh - ${
-    props.testMode
-      ? "0"
-      : props.reportMode
-        ? props.theme.HeaderHeight.md + 60
-        : props.theme.HeaderHeight.md + (props.review ? 90 : 185)
-    }px)`};
+      `calc(100vh - ${
+        props.testMode
+          ? "0"
+          : props.reportMode
+          ? props.theme.HeaderHeight.md + 60
+          : props.theme.HeaderHeight.md + (props.review ? 90 : 185)
+      }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     max-height: ${props =>
-    `calc(100vh - ${
-    props.testMode
-      ? "0"
-      : props.reportMode
-        ? props.theme.HeaderHeight.xl + 60
-        : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)
-    }px)`};
+      `calc(100vh - ${
+        props.testMode
+          ? "0"
+          : props.reportMode
+          ? props.theme.HeaderHeight.xl + 60
+          : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)
+      }px)`};
   }
 `;
 

@@ -90,6 +90,7 @@ const CustomDragLayer = ({ showPoint }) => {
     const containerRight = horizontalScrollEl.offsetWidth + containerLeft - 60;
     const xOffset = get(currentOffset, "x", null);
     const scrollByHorizontal = xOffset < containerLeft ? -10 : 10;
+
     if (
       !horizontalInterval.current &&
       scrollByHorizontal &&

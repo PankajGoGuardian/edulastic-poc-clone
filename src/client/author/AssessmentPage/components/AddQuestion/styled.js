@@ -5,9 +5,9 @@ import { white, themeColor, sectionBorder, smallDesktopWidth } from "@edulastic/
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
-  width: 320px;
-  bottom: 0;
-  padding: 15px 0;
+  width: 300px;
+  bottom: 0px;
+  padding-bottom: 15px;
 
   @media (max-width: ${smallDesktopWidth}) {
     width: 270px;
@@ -28,7 +28,7 @@ export const QuestionTypes = styled.div`
   justify-content: space-between;
   flex-direction: row;
   &:last-child {
-    margin-top: 20px;
+    margin-top: 12px;
   }
 `;
 

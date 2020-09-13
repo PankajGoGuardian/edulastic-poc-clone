@@ -6,7 +6,7 @@ import { get } from "lodash";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
-import { updateTestAndNavigateAction } from "../../../../TestPage/ducks";
+import { updateTestAndNavigateAction, receiveTestByIdAction } from "../../../../TestPage/ducks";
 
 export const SET_QUESTIONS_IN_PASSAGE = "[testItemPreview] set questions to passage";
 export const ADD_PASSAGE = "[testItemPreview] add passage to item";
@@ -81,6 +81,7 @@ export function reducer(state = initialState, { type, payload }) {
 
 function* duplicateItemRequestSaga({ payload }) {
   try {
+    notification({ type: "info", msg: "Cloning items...", duration: 3 });
     const { data, testId, test, isTest, regradeFlow, duplicateWholePassage, currentItem } = payload;
     const { passage } = payload;
     const itemId = data.id;
@@ -91,8 +92,15 @@ function* duplicateItemRequestSaga({ payload }) {
       // To duplicate passage we require passageId and testItemsIds
       const duplicatedPassage = yield call(passageApi.duplicate, {
         passageId: passage?._id,
-        testItemIds: testItemsToDuplicate
+        testItemIds: testItemsToDuplicate,
+        testId
       });
+      if (duplicateWholePassage && testId) {
+        yield put(receiveTestByIdAction(testId, true));
+        notification({ msg: `${testItemsToDuplicate.length} items added to test`, type: "success" });
+        return;
+      }
+
       // using first item to show when redirected to itemDetails page
       duplicatedItem._id = duplicatedPassage?.testItems?.[0];
     } else {

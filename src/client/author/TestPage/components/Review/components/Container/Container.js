@@ -71,7 +71,7 @@ class Review extends PureComponent {
 
   static defaultProps = {
     owner: false,
-    onSaveTestId: () => { }
+    onSaveTestId: () => {}
   };
 
   secondHeaderRef = React.createRef();
@@ -440,7 +440,8 @@ class Review extends PureComponent {
       return <div />;
     }
 
-    const selected = test?.itemGroups?.flatMap(itemGroup => itemGroup?.items || [])
+    const selected = test?.itemGroups
+      ?.flatMap(itemGroup => itemGroup?.items || [])
       .reduce((acc, element, i) => {
         if (element.selected) {
           acc.push(i);
@@ -459,8 +460,8 @@ class Review extends PureComponent {
     ];
 
     const isSmallSize = windowWidth > 993 ? 1 : 0;
-    const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
-    const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
+    const grades = _uniq([...(test.grades || []), ...itemsSubjectAndGrade.grades]);
+    const subjects = _uniq([...(test.subjects || []), ...itemsSubjectAndGrade.subjects]);
     const collections = get(test, "collections", []);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
@@ -477,33 +478,33 @@ class Review extends PureComponent {
             </Col>
           </Row>
         ) : (
-            <Row>
-              <Col lg={24} xl={owner && isEditable ? 24 : 18}>
-                <div ref={this.secondHeaderRef}>
-                  <SecondHeader>
-                    <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
-                    <HeaderBar
-                      onSelectAll={this.handleSelectAll}
-                      itemTotal={testItems.length}
-                      selectedItems={selected}
-                      onRemoveSelected={this.handleRemoveSelected}
-                      onCollapse={this.handleCollapse}
-                      onMoveTo={this.handleMoveTo}
-                      owner={owner}
-                      isEditable={isEditable}
-                      windowWidth={windowWidth}
-                      setCollapse={isCollapse}
-                      toggleSummary={this.toggleSummary}
-                      isShowSummary={isShowSummary}
-                      onShowTestPreview={this.showTestPreviewModal}
-                      hasStickyHeader={hasStickyHeader}
-                      itemGroups={test.itemGroups}
-                    />
-                  </SecondHeader>
-                </div>
-              </Col>
-            </Row>
-          )}
+          <Row>
+            <Col lg={24} xl={owner && isEditable ? 24 : 18}>
+              <div ref={this.secondHeaderRef}>
+                <SecondHeader>
+                  <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
+                  <HeaderBar
+                    onSelectAll={this.handleSelectAll}
+                    itemTotal={testItems.length}
+                    selectedItems={selected}
+                    onRemoveSelected={this.handleRemoveSelected}
+                    onCollapse={this.handleCollapse}
+                    onMoveTo={this.handleMoveTo}
+                    owner={owner}
+                    isEditable={isEditable}
+                    windowWidth={windowWidth}
+                    setCollapse={isCollapse}
+                    toggleSummary={this.toggleSummary}
+                    isShowSummary={isShowSummary}
+                    onShowTestPreview={this.showTestPreviewModal}
+                    hasStickyHeader={hasStickyHeader}
+                    itemGroups={test.itemGroups}
+                  />
+                </SecondHeader>
+              </div>
+            </Col>
+          </Row>
+        )}
         <ReviewContentWrapper>
           <ReviewLeftContainer lg={24} xl={18}>
             <Paper padding="7px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>

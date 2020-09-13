@@ -9,11 +9,12 @@ import {
   themeColor,
   sectionBorder,
   greyScoreCardTitleColor,
-  smallDesktopWidth
+  smallDesktopWidth,
+  greyThemeDark4
 } from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
-  width: ${({ review, annotations }) => (annotations ? "70px" : review ? "100%" : "270px")};
+  width: ${({ review, annotations }) => (annotations ? "auto" : review ? "100%" : "265px")};
   padding: ${({ pdfPreview }) => !pdfPreview && "10px"};
   background: ${({ pdfPreview }) => (pdfPreview ? "transparent" : white)};
   border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};
@@ -34,21 +35,22 @@ export const AnswerForm = styled.div`
 `;
 
 export const QuestionNumber = styled.span`
-  display: inline-block;
-  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: ${({ zoom = 1 }) => 18 * zoom}px;
   font-weight: bold;
   color: ${({ dragging }) => (dragging ? "#aaafb8" : "white")};
   background: ${({ dragging }) => (dragging ? "transparent" : "#aaafb8")};
   border: 2px ${({ dragging }) => (dragging ? "dashed" : "solid")} #aaafb8;
   border-radius: 4px;
-  width: 32px;
-  height: 32px;
+  width: ${({ zoom = 1 }) => 32 * zoom}px;
+  height: ${({ zoom = 1 }) => 32 * zoom}px;
   line-height: 30px;
   text-align: center;
   transition: all 300ms;
   cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
   box-shadow: ${({ highlighted, pdfPreview }) => pdfPreview && highlighted && `0 0 10px 0 ${themeColor}`};
-  transform: scale(${({ zoom }) => zoom || 1});
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 16px;
@@ -84,10 +86,8 @@ export const EditButton = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0px;
   margin-left: 5px;
   position: relative;
-  right: 6px;
 
   @media (max-width: ${smallDesktopWidth}) {
     position: absolute;
@@ -98,24 +98,37 @@ export const EditButton = styled.span`
 export const ButtonWrapper = styled.span`
   background: ${({ inverse }) => (inverse ? "transparent" : white)};
   font-weight: 600;
-  margin-right: 5px;
-  border-radius:4px;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
   text-align: center;
   cursor: pointer;
+  position: relative;
 
   svg {
-    fill: ${themeColor};
-    width: 13px;
-    height: 13px;
     cursor: pointer;
-    &:hover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    &.edit {
+      width: 13px;
+      height: 13px;
       fill: ${themeColor};
+      &:hover {
+        fill: ${themeColor};
+      }
+    }
+    &.delete {
+      width: 10px;
+      height: 10px;
+      fill: ${greyThemeDark4};
+      &:hover {
+        fill: ${greyThemeDark4};
+      }
     }
   }
-}
 `;
 
 export const AnswerIndicator = styled.span`

@@ -1,42 +1,19 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey, backgrounds } from "@edulastic/colors";
+import { extraDesktopWidthMax, borders, tabGrey, backgrounds } from "@edulastic/colors";
 
 export const ThumbnailsWrapper = styled.div`
   position: relative;
   overflow-y: auto;
-  padding: ${props => (props.testMode || props.reportMode ? "30px 25px" : "30px 25px 50px")};
+  padding: ${props => (props.testMode || props.reportMode ? "0px 0px 16px 16px" : "16px 0px 50px 16px")};
   background: ${backgrounds.primary};
-  min-width: 180px;
-  max-width: 180px;
-  height: ${props =>
-    `calc(100vh - ${
-    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
-    }px) - 43px`};
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props =>
-    `calc(100vh - ${
-    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
-    }px) - 43px`};
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props =>
-    `calc(100vh - ${
-    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
-    }px) - 43px`};
-    min-width: 200px;
-    max-width: 200px;
-  }
+  min-width: 155px;
+  max-width: 155px;
 `;
 
 export const ThumbnailsList = styled.div`
-  width: 125px;
+  width: 135px;
   margin-bottom: 20px;
-
-  @media (min-width: ${extraDesktopWidthMax}) {
-    width: 145px;
-  }
 `;
 
 export const ReuploadButtonWrapper = styled.div`

@@ -23,7 +23,7 @@ import {
 import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
-import { WorksheetWrapper, PDFAnnotationToolsWrapper } from "./styled";
+import { WorksheetWrapper, PDFAnnotationToolsWrapper, PDFViewerContainer } from "./styled";
 
 import { loadQuestionsAction } from "../../../sharedDucks/questions";
 
@@ -113,7 +113,7 @@ class WorksheetComponent extends React.Component {
     uploadModal: false,
     isAddPdf: false,
     deleteConfirmation: false,
-    minimized: false,
+    minimized: true,
     isToolBarVisible: true
   };
 
@@ -157,10 +157,13 @@ class WorksheetComponent extends React.Component {
   };
 
   handleChangePage = nextPage => {
-    this.setState({ currentPage: nextPage });
-    const { onPageChange } = this.props;
-    if (onPageChange) {
-      onPageChange(nextPage);
+    const { pageStructure } = this.props;
+    if (nextPage >= 0 && nextPage < pageStructure.length) {
+      this.setState({ currentPage: nextPage });
+      const { onPageChange } = this.props;
+      if (onPageChange) {
+        onPageChange(nextPage);
+      }
     }
   };
 
@@ -570,11 +573,9 @@ class WorksheetComponent extends React.Component {
 
     const selectedPage = pageStructure[currentPage] || defaultPage;
 
-    // LEFT THUMBNAILS AREA 200+(15 extra space) IS THE THUMBNAILS AREA
     // WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
-    const leftColumnWidth = minimized ? 0 : windowWidth > 1024 ? 215 : 195;
-    // 350+(15 extra space) IS THE TOTAL WIDTH OF RIGHT QUESTION AREA
-    const rightColumnWidth = windowWidth > 1024 ? 365 : 295;
+    const leftColumnWidth = minimized ? 0 : 180;
+    const rightColumnWidth = 300;
     const pdfWidth =
       (questions || []).length && questions[0].isV1Migrated
         ? v1Width
@@ -682,20 +683,13 @@ class WorksheetComponent extends React.Component {
             />
           )}
 
-          <div
-            style={{
-              position: "relative",
-              display: "flex",
-              width: `${pdfWidth}px`,
-              overflowX: "auto",
-              paddingLeft: `${!minimized && (testMode || viewMode === "edit") ? "60px" : "20px"}`
-            }}
-          >
+          <PDFViewerContainer width={pdfWidth}>
             <PDFPreview
               page={selectedPage}
               currentPage={currentPage + 1}
               annotations={annotations}
               onDragStart={this.onDragStart}
+              toggleMinimized={this.toggleMinimized}
               onDropAnnotation={this.handleAddAnnotation}
               onHighlightQuestion={this.handleHighlightQuestion}
               questions={questions}
@@ -718,7 +712,7 @@ class WorksheetComponent extends React.Component {
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
             />
-          </div>
+          </PDFViewerContainer>
 
           <Questions
             noCheck={noCheck}

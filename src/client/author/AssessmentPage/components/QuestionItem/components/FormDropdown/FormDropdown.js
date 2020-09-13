@@ -19,7 +19,7 @@ export default class FormDropdown extends React.Component {
   handleChange = value => {
     const { saveAnswer, saveQuestionResponse } = this.props;
     saveAnswer([{ value, index: 0, id: "0" }]);
-    saveQuestionResponse()
+    saveQuestionResponse();
   };
 
   renderView = () => {
@@ -38,7 +38,7 @@ export default class FormDropdown extends React.Component {
         value={(value[0] && value[0].value) || ""}
         check={["check", "show"].includes(view)}
         onChange={this.handleChange}
-        style={{ width: "178px" }}
+        style={{ width: "150px" }}
         disabled
       >
         {options[0].map((option, key) => (

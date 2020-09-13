@@ -28,7 +28,8 @@ import {
   getUserIdSelector,
   getUserRole,
   isPublisherUserSelector,
-  getWritableCollectionsSelector
+  getWritableCollectionsSelector,
+  getInterestedCurriculumsSelector
 } from "../../../src/selectors/user";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 import {
@@ -69,6 +70,7 @@ import {
   DynamicIconWrapper
 } from "./styled";
 import { allowContentEditCheck } from "../../../src/utils/permissionCheck";
+import {getInterestedStandards} from "../../../dataUtils"
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -133,6 +135,7 @@ class ViewModal extends React.Component {
       handleLikeTest,
       isTestLiked,
       collectionName,
+      interestedCurriculums,
       writableCollections
     } = this.props;
     const {
@@ -145,6 +148,7 @@ class ViewModal extends React.Component {
       analytics = [],
       itemGroups = [],
       summary = {},
+      alignment=[],
       permission,
       _source,
       authors,
@@ -194,6 +198,7 @@ class ViewModal extends React.Component {
       isEdulasticCurator;
 
     const hasCollectionAccess = allowContentEditCheck(_collections, writableCollections);
+    const interestedStandards = getInterestedStandards(summary,alignment,interestedCurriculums);
     const contanier = (
       <>
         <ModalTitle>
@@ -438,7 +443,7 @@ class ViewModal extends React.Component {
               {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
               {summary?.groupSummary?.length > 1 || itemGroups?.[0]?.type === "AUTOSELECT" ? (
                 summary?.groupSummary?.map((group, i) => {
-                  const standards = group?.standards?.filter(x => !x.isEquivalentStandard)?.map(x => x.identifier);
+                  const standards = interestedStandards?.map(x => x.identifier);
                   return (
                     <>
                       <GroupName>{itemGroups[i]?.groupName}</GroupName>
@@ -462,7 +467,7 @@ class ViewModal extends React.Component {
                     <ListHeaderCell>POINTS</ListHeaderCell>
                   </ListHeader>
                   {!!summary?.standards?.length &&
-                    summary.standards.map(
+                    interestedStandards.map(
                       data =>
                         !data.isEquivalentStandard && (
                           <ListRow data-cy={data.identifier}>
@@ -508,6 +513,7 @@ export default connect(
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),
     isPublisherUser: isPublisherUserSelector(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
     writableCollections: getWritableCollectionsSelector(state)
   }),
   {}

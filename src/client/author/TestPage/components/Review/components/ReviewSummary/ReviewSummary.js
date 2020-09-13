@@ -11,6 +11,7 @@ import {
   getTestEntitySelector,
   getTestSummarySelector
 } from "../../../../ducks";
+import {getEquivalentStandards} from "../../../../../TestList/ducks";
 import { Photo, selectsData } from "../../../common";
 import {
   Container,
@@ -45,6 +46,7 @@ const ReviewSummary = ({
   windowWidth,
   test: { itemGroups, metadata },
   summary,
+  alignment=[],
   hasRandomQuestions,
   isPublishers,
   collectionsToShow
@@ -58,6 +60,7 @@ const ReviewSummary = ({
   ]);
 
   const skillIdentifiers = (metadata?.skillIdentifiers || []).join(",");
+  const interestedStandards = getInterestedStandards(summary,alignment,interestedCurriculums);
   return (
     <Container>
       <FlexBoxOne>
@@ -131,9 +134,7 @@ const ReviewSummary = ({
       <FlexBoxThree>
         {isPublishers &&
           summary?.groupSummary?.map((group, i) => {
-            const standards = group?.standards
-              ?.filter(item => !item.isEquivalentStandard)
-              ?.map(item => item.identifier);
+            const standards = interestedStandards.map(({identifier})=> identifier);
             return (
               <>
                 <MainLabel>{itemGroups[i]?.groupName}</MainLabel>
@@ -172,7 +173,7 @@ const ReviewSummary = ({
             <TableHeaderCol span={6}>Points</TableHeaderCol>
           </Row>
           {summary &&
-            getInterestedStandards(summary, interestedCurriculums).map(
+            interestedStandards.map(
               data =>
                 !data.isEquivalentStandard && (
                   <TableBodyRow key={data.key}>
@@ -231,6 +232,7 @@ export default connect(
     test: getTestEntitySelector(state),
     hasRandomQuestions: hasRandomQuestionsSelector(state),
     summary: getTestSummarySelector(state),
+    alignment: getEquivalentStandards(state),
     collectionsToShow: getCollectionsToAddContent(state)
   }),
   null

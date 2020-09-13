@@ -552,23 +552,15 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
       // from test flow or else save and continue.
       const isFinalSave = yield select(state => state.router.location.isFinalSave);
       if ((item.multipartItem || !!item.passageId || item.isPassageWithQuestions) && !isFinalSave) {
-        const { isTestFlow: _isTestFlow, previousTestId, regradeFlow } = yield select(
-          state => state.router?.location?.state || {}
-        );
         yield put(
           push({
-            pathname:
-              _isTestFlow && tId
-                ? `/author/tests/${tId}/editItem/${item?._id}`
-                : `/author/items/${item._id}/item-detail/test/${tId}`,
+            pathname: `/author/items/${item._id}/item-detail/test/${tId}`,
             state: {
               backText: "Back to item bank",
               backUrl: "/author/items",
               itemDetail: false,
               isFinalSave: true,
-              isTestFlow: isTestFlow || _isTestFlow,
-              previousTestId,
-              regradeFlow
+              isTestFlow
             }
           })
         );
@@ -601,23 +593,15 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
     }
     const stateToFollow =
       locationState.testAuthoring === false ? { testAuthoring: false, testId: locationState.testId } : {};
-    const { previousTestId, regradeFlow, isTestFlow: _isTestFlow } = yield select(
-      state => state.router?.location?.state || {}
-    );
-    
     if (itemDetail) {
       yield put(
         push({
-          pathname:
-            isTestFlow && tId ? `/author/tests/${tId}/editItem/${item?._id}` : `/author/items/${item._id}/item-detail`,
+          pathname: `/author/items/${item._id}/item-detail`,
           state: {
             backText: "Back to item bank",
             backUrl: "/author/items",
             itemDetail: false,
-            ...stateToFollow,
-            previousTestId,
-            regradeFlow,
-            isTestFlow: isTestFlow 
+            ...stateToFollow
           }
         })
       );

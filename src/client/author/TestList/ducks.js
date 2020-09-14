@@ -127,7 +127,7 @@ function* receiveTestsSaga({ payload: { search = {}, sort = {}, page = 1, limit 
       })
     );
   } catch (err) {
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Unable to retrieve test info. Please contact support.";
     notification({ messageKey: "receiveTestFailing" });
     yield put(receiveTestErrorAction({ error: errorMessage }));
   }

@@ -52,7 +52,7 @@ function* receiveClassResponseSaga({ payload }) {
       payload: classResponse
     });
   } catch (err) {
-    const errorMessage = "Receive class response is failing";
+    const errorMessage = "Unable to retrieve class information. Please contact support.";
     notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_CLASS_RESPONSE_ERROR,
@@ -212,7 +212,7 @@ function* receiveStudentResponseSaga({ payload }) {
     });
   } catch (err) {
     console.log("err is", err);
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Unable to retrieve student response. Please contact support.";
     notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_ERROR,
@@ -237,7 +237,7 @@ function* receiveClassStudentResponseSaga({ payload }) {
       payload: classStudentResponse
     });
   } catch (err) {
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Unable to retrieve class student response. Please contact support.";
     notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_CLASSSTUDENT_RESPONSE_ERROR,
@@ -276,7 +276,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
     notification({ type: "success", messageKey: "feedbackSuccessfullyUpdate" });
   } catch (err) {
     console.error(err);
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Unable to retrieve feedback response. Please contact support.";
     notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_ERROR,
@@ -343,7 +343,7 @@ function* receiveStudentQuestionSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = "Receive answer is failing";
+    const errorMessage = "Unable to retrieve student response. Please contact support.";
     notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_STUDENT_QUESTION_ERROR,
@@ -388,7 +388,7 @@ function* receiveClassQuestionSaga({ payload }) {
       payload: feedbackResponse
     });
   } catch (err) {
-    const errorMessage = "Receive answers is failing";
+    const errorMessage = "Unable to retrieve the class question info. Please contact support.";
     notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_CLASS_QUESTION_ERROR,

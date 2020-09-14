@@ -331,7 +331,7 @@ function* receiveTestItemsSaga({ payload: { search = {}, sort = {}, page = 1, li
     yield put(receiveTestItemsSuccess(items, count, page, limit));
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Receive items is failing";
+    const errorMessage = "Unable to retrieve test items. Please contact support.";
     notification({ messageKey: "receiveItemFailing" });
     yield put(receiveTestItemsError(errorMessage));
   }

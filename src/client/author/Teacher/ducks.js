@@ -37,7 +37,7 @@ export const deleteTeacherErrorAction = createAction(DELETE_TEACHER_ERROR);
 export const setSearchNameAction = createAction(SET_TEACHER_SEARCHNAME);
 export const setFiltersAction = createAction(SET_TEACHER_SETFILTERS);
 
-//selectors
+// selectors
 const stateTeacherSelector = state => state.teacherReducer;
 export const getTeachersListSelector = createSelector(
   stateTeacherSelector,
@@ -46,7 +46,7 @@ export const getTeachersListSelector = createSelector(
       let searchByNameData = [];
       if (state.searchName.length > 0) {
         searchByNameData = state.data.filter(row => {
-          let name = row.firstName + " " + row.lastName;
+          const name = `${row.firstName  } ${  row.lastName}`;
           if (name === state.searchName) return row;
         });
       } else {
@@ -64,7 +64,7 @@ export const getTeachersListSelector = createSelector(
       const filterSource = searchByNameData.filter(row => {
         if (state.filtersText === "") {
           return row;
-        } else {
+        } 
           if (state.filtersValue === "eq") {
             const equalKeys = possibleFilterKey.filter(key => {
               if (row[key] === state.filtersText) return row;
@@ -78,12 +78,12 @@ export const getTeachersListSelector = createSelector(
             });
             if (equalKeys.length > 0) return row;
           }
-        }
+        
       });
       return filterSource;
-    } else {
+    } 
       return state.data;
-    }
+    
   }
 );
 
@@ -144,7 +144,7 @@ export const reducer = createReducer(initialState, {
           ...payload
         };
         return { ...teacher, ...newData };
-      } else return teacher;
+      } return teacher;
     });
 
     (state.update = payload), (state.updating = false), (state.data = teachersList);
@@ -209,7 +209,7 @@ function* receiveTeachersListSaga({ payload }) {
     const { result: teachersList } = yield call(userApi.fetchUsers, payload);
     yield put(receiveTeachersListSuccessAction(teachersList));
   } catch (err) {
-    const errorMessage = "Receive Teachers is failing!";
+    const errorMessage = "Unable to retrieve user info. Please contact support.";
     notification({msg:errorMessage});
     yield put(receiveTeachersListErrorAction({ error: errorMessage }));
   }
@@ -221,7 +221,7 @@ function* updateTeacherSaga({ payload }) {
     notification({ type: "success", messageKey:"teacherUpdatedSuccessfully"});
     yield put(updateTeacherSuccessAction(updateTeacherdData));
   } catch (err) {
-    const errorMessage = "Update Teacher is failing";
+    const errorMessage = "Unable to update user information. Please contact support.";
     notification({msg:errorMessage});
     yield put(updateTeacherErrorAction({ error: errorMessage }));
   }
@@ -232,7 +232,7 @@ function* createTeacherSaga({ payload }) {
     const createTeacher = yield call(userApi.createUser, payload);
     yield put(createTeacherSuccessAction(createTeacher));
   } catch (err) {
-    const errorMessage = "Create Teacher is failing";
+    const errorMessage = "Unable to create user. Please contact support.";
     notification({msg:errorMessage});
     yield put(createTeacherErrorAction({ error: errorMessage }));
   }
@@ -247,7 +247,7 @@ function* deleteTeacherSaga({ payload }) {
 
     yield put(deleteTeacherSuccessAction(payload));
   } catch (err) {
-    const errorMessage = "Delete Teacher is failing";
+    const errorMessage = "Unable to remove the user. Please contact support.";
     notification({msg:errorMessage});
     yield put(deleteTeacherErrorAction({ deleteError: errorMessage }));
   }

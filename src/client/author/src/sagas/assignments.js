@@ -89,7 +89,7 @@ function* receiveAssignmentsSummary({ payload = {} }) {
     }
   } catch (error) {
     Sentry.captureException(error);
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Unable to retrive assignment summary. Please contact support.";
     notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
@@ -111,7 +111,7 @@ function* receiveAssignmentsSaga({ payload = {} }) {
     }
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Unable to retrieve assignment info. Please contact support.";
     notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_ASSIGNMENTS_ERROR,
@@ -181,7 +181,7 @@ function* updateAssignmetSaga({ payload }) {
     notification({ type: "success", msg: successMessage });
   } catch (e) {
     Sentry.captureException(e);
-    const errorMessage = "Update release score settings is failing";
+    const errorMessage = "Unable to update release score settings. Please contact support.";
     yield put({
       type: TOGGLE_RELEASE_GRADE_SETTINGS,
       payload: false

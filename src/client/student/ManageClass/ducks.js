@@ -114,8 +114,8 @@ function* joinClass({ payload }) {
       notification({ type: "success", msg:successMsg});
     }
   } catch (error) {
-    const msg = get(error, "data.message", "Join class is failing.");
-    notification({ msg:msg});
+    const msg = get(error, "data.message", "Unable to join class. Please contact support.");
+    notification({ msg });
     yield put(joinClassFailAction(error));
   }
 }

@@ -15,13 +15,14 @@ import {
   IconPrint,
   IconRemove,
   IconVolumeUp,
-  IconEclipse
+  IconEclipse,
+  IconInfo
 } from "@edulastic/icons";
 import { EduButton, notification } from "@edulastic/common";
 
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import ResetPwd from "./ResetPwd/ResetPwd";
-import { AddStudentDivider, ButtonsWrapper, CaretUp, DropMenu, MenuItems } from "./styled";
+import { AddStudentDivider, ButtonsWrapper, CaretUp, DropMenu, MenuItems, CleverInfoBox } from "./styled";
 import AddStudentModal from "./AddStudent/AddStudentModal";
 import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
@@ -358,6 +359,11 @@ const ActionContainer = ({
       )}
 
       <AddStudentDivider>
+        {cleverId && (
+          <CleverInfoBox>
+            <IconInfo /> This is a Clever Synced class.
+          </CleverInfoBox>
+        )}
         <ButtonsWrapper>
           {checkForAddStudent && (
             <EduButton height="30px" isGhost data-cy="addStudent" onClick={() => toggleModal("add")}>

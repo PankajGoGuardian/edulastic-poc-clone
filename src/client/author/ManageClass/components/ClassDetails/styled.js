@@ -14,7 +14,8 @@ import {
   greyDarken,
   mainTextColor,
   white,
-  greyThemeDark4
+  greyThemeDark4,
+  themeColorBlue
 } from "@edulastic/colors";
 import { Paper, EduTableStyled, SelectInputStyled } from "@edulastic/common";
 import { IconManage } from "@edulastic/icons";
@@ -329,6 +330,22 @@ export const AddStudentDivider = styled.div`
   align-items: center;
   margin: 15px 0px;
   justify-content: flex-end;
+`;
+
+export const CleverInfoBox = styled.div`
+  font-size: 14px;
+  background: #dddddd;
+  padding: 5px 20px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  svg {
+    margin-right: 10px;
+    path {
+      fill: ${themeColorBlue};
+    }
+  }
 `;
 
 export const LeftWrapper = styled.div`

@@ -28,6 +28,7 @@ const allFilters = [
 const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList, collectionsList, allTagsData }) => {
   const containerRef = useRef(null);
   const { curriculumId, standardIds = [], collections = [], tags = [], filter } = search;
+  const isFolderSearch = filter === libraryFilters.SMART_FILTERS.FOLDERS;
   const filtersTagToBeShown = filter === libraryFilters.SMART_FILTERS.FAVORITES ? gradeAndSubjectFilters : allFilters;
   const curriculum = curriculumById[curriculumId];
   const selectedStandards = useMemo(() => standardsList.elo.filter(s => standardIds.includes(s._id)), [
@@ -156,7 +157,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
     );
   };
 
-  return <FiltersWrapper ref={containerRef}>{getFilters()}</FiltersWrapper>;
+  return <FiltersWrapper ref={containerRef}>{!isFolderSearch && getFilters()}</FiltersWrapper>;
 };
 
 export default connect((state, ownProps) => ({

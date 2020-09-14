@@ -290,7 +290,8 @@ class TestItemPreview extends Component {
 
     const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal;
     const showScratchpadByDefault = widgets.some(x => x.type === questionType.HIGHLIGHT_IMAGE);
-    const showScratchToolBar = (scratchPadMode && !LCBPreviewModal) || (!disableResponse && isExpressGrader);
+    const showScratchToolBar =
+      (scratchPadMode && !LCBPreviewModal) || (!disableResponse && isExpressGrader && showScratchpadByDefault);
 
     let showStackedView = false;
     if (isLCBView && !isQuestionView && !isPassageWithQuestions) {

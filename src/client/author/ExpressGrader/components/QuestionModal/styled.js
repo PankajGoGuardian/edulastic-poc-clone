@@ -19,6 +19,7 @@ export const ModalWrapper = styled(Modal)`
 
 export const QuestionWrapperStyled = styled.div`
   overflow-y: auto;
+  height: 100%;
 `;
 
 export const BottomNavigationWrapper = styled.div`

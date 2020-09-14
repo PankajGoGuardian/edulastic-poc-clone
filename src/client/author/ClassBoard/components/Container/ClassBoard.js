@@ -674,7 +674,7 @@ class ClassBoard extends Component {
       ((studentResponse &&
         studentResponse.questionActivities &&
         studentResponse.questionActivities.reduce((acc, qa) => {
-          acc += qa.timeSpent;
+          acc += qa.timeSpent || 0;
           return acc;
         }, 0)) ||
         0) / 1000

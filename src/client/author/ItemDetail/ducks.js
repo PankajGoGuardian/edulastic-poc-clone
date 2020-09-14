@@ -874,7 +874,7 @@ function* receiveItemSaga({ payload }) {
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (err) {
     Sentry.captureException(err);
-    let msg = "Receive item by id is failing";
+    let msg = "Unable to retrieve the item. Please contact support.";
     if (err.status === 404) {
       msg = "Item not found";
       yield put(push("/author/items"));
@@ -1148,7 +1148,7 @@ export function* updateItemSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.error(err);
-    const errorMessage = "Item save is failing";
+    const errorMessage = "Unable to save the item. Please contact support.";
     notification({ msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
@@ -1198,7 +1198,7 @@ export function* updateItemDocBasedSaga({ payload }) {
     return { testId, ...item };
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Item save is failing";
+    const errorMessage = "Unable to save the item. Please contact support.";
     notification({ msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,

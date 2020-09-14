@@ -192,7 +192,7 @@
     "description": ""
   },
   "getPlaylistErr": {
-    "message": "Receive playlist by id is failing",
+    "message": "Unable to retrieve the playlist info. Please contact support.",
     "description": ""
   },
   "nameShouldNotEmpty": {
@@ -220,7 +220,7 @@
     "description": ""
   },
   "updatePlaylistErr": {
-    "message": "Update playlist is failing",
+    "message": "Unable to update the playlist. Please contact support.",
     "description": ""
   },
   "updatePlaylistErrViewOnlyAccess": {
@@ -256,11 +256,11 @@
     "description": ""
   },
   "getSharedUsersErr": {
-    "message": "receive share with users list is failing",
+    "message": "Unable to retrieve shared users list. Please contact support.",
     "description": ""
   },
   "deleteSharedUserErr": {
-    "message": "delete shared user is failing",
+    "message": "Unable to remove shared user. Please contact support.",
     "description": ""
   },
   "curriculumMakeApiErr": {
@@ -300,23 +300,23 @@
     "description": ""
   },
   "playlistUpdateFailed": {
-    "message": "Playlist Update Failed.",
+    "message": "Unable to process playlist update. Please contact support.",
     "description": ""
   },
   "dropPlaylistErr": {
-    "message": "DropPlaylist is failing.",
+    "message": "Unable to process playlist drop. Please contact support.",
     "description": ""
   },
   "fetchClassErr": {
-    "message": "Fetching Class/Student List is Failing...",
+    "message": "Unable to retrieve Class/Student List. Please contact support.",
     "description": ""
   },
   "fetchPlaylistErr": {
-    "message": "Fetching playlist metrics is failing...",
+    "message": "Unable to retrieve playlist metrics. Please contact support.",
     "description": ""
   },
   "fetchPlaylistInsightsErr": {
-    "message": "Fetching playlist insights is failing...",
+    "message": "Unable to retrieve playlist insights. Please contact support",
     "description": ""
   },
   "cancelPlaylistCustomizationErr": {
@@ -328,7 +328,7 @@
     "description": ""
   },
   "noTestId": {
-    "message": "Fetching playlist insights is failing...",
+    "message": "Unable to retrieve playlist insights. Please contact support.",
     "description": ""
   },
   "movingTestErr": {
@@ -356,7 +356,7 @@
     "description": ""
   },
   "saveQuestionFailing": {
-    "message": "Save question is failing",
+    "message": "Unable to save the question. Please contact support.",
     "description": ""
   },
   "pleaseEnterName": {
@@ -364,11 +364,11 @@
     "description": ""
   },
   "receiveItemFailing": {
-    "message": "Receive items is failing",
+    "message": "Unable to retrieve the item. Please contact support.",
     "description": ""
   },
   "receiveTestFailing": {
-    "message": "Receive tests is failing",
+    "message": "Unable to retrieve the test info. Please contact support.",
     "description": ""
   },
   "itemAddedTest": {
@@ -1528,7 +1528,7 @@
     "description": ""
   },
   "createUserIsFailing": {
-    "message": "Create User is failing",
+    "message": "Unable to create the user. Please contact support.",
     "description": ""
   },
   "pleaseSelectAClass": {

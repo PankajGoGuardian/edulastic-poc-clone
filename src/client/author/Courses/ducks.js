@@ -169,8 +169,7 @@ export const reducer = createReducer(initialState, {
           isFitFiltered = false;
           break;
         }
-      } else {
-        if (
+      } else if (
           payload[keys[i]]
             .toString()
             .toLowerCase()
@@ -179,7 +178,6 @@ export const reducer = createReducer(initialState, {
           isFitFiltered = false;
           break;
         }
-      }
     }
 
     const { sortField, order } = state.courseSearchData;
@@ -301,7 +299,7 @@ function* receiveCourseListSaga({ payload }) {
     const course = yield call(courseApi.searchCourse, payload);
     yield put(receiveCourseListSuccessAction(course));
   } catch (err) {
-    const errorMessage = "Receive Course is failing!";
+    const errorMessage = "Unable to retrieve course list. Please contact support.";
     notification({ msg:errorMessage});
     yield put(receiveCourseListErrorAction({ error: errorMessage }));
   }
@@ -313,7 +311,7 @@ function* updateCourseSaga({ payload }) {
     yield put(updateCourseSuccessAction(updateCourse.course));
     notification({ type: "success", messageKey:"courseUpdatedSuccessfully"});
   } catch (err) {
-    const errorMessage = "Update Course is failing";
+    const errorMessage = "Unable to update course. Please contact support.";
     notification({ msg:errorMessage});
     yield put(updateCourseErrorAction({ error: errorMessage }));
   }
@@ -329,7 +327,7 @@ function* createCourseSaga({ payload }) {
       yield put(createCourseErrorAction({ error: errorMessage }));
     }
   } catch (err) {
-    const errorMessage = "Create Course is failing";
+    const errorMessage = "Unable to create course. Please contact support.";
     notification({ msg:errorMessage});
     yield put(createCourseErrorAction({ error: errorMessage }));
   }
@@ -341,7 +339,7 @@ function* deactivateCourseSaga({ payload }) {
     yield put(deactivateCourseSuccessAction(payload));
     notification({ type: "success", messageKey:"courseDeactivated"});
   } catch (err) {
-    const errorMessage = "Deactivate course is failing";
+    const errorMessage = "Unable to deactivate course. Please contact support.";
     notification({ msg:errorMessage});
     yield put(deactivateCourseErrorAction({ deleteError: errorMessage }));
   }
@@ -351,7 +349,7 @@ function* uploadCourseCSVSaga({ payload }) {
     const uploadCSV = yield call(courseApi.uploadcCSV, payload);
     yield put(uploadCSVSuccessAction(uploadCSV));
   } catch (err) {
-    const errorMessage = "CSV uploading is failing";
+    const errorMessage = "Unable to process CSV upload. Please contact support.";
     notification({ msg:errorMessage});
     yield put(deactivateCourseErrorAction({ deleteError: errorMessage }));
   }
@@ -365,7 +363,7 @@ function* receiveSearchCourseSaga({ payload }) {
       payload: get(course, "result", [])
     });
   } catch (error) {
-    const errorMessage = "Receive Course is failing!";
+    const errorMessage = "Unable to retrieve course. Please contact support.";
     notification({ msg:errorMessage});
     yield put({
       type: SEARCH_COURSE_ERROR,

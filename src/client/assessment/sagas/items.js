@@ -39,7 +39,7 @@ function* receiveItemSaga({ payload }) {
     console.error(err);
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: "Receive item by id is failing" }
+      payload: { error: "Unable to retrieve the item. Please contact support." }
     });
   }
 }

@@ -170,7 +170,7 @@ function* receivePerformanceBandSaga({ payload }) {
     performanceBand.sort((el1, el2) => (el1._id > el2._id ? -1 : 1));
     yield put(receivePerformanceBandSuccessAction(performanceBand));
   } catch (err) {
-    const errorMessage = "Receive PerformanceBand is failing";
+    const errorMessage = "Unable to retrieve performance band. Please contact support.";
     notification({ msg: errorMessage });
     yield put(receivePerformanceBandErrorAction({ error: errorMessage }));
   }
@@ -192,7 +192,7 @@ function* updatePerformanceBandSaga({ payload: _id }) {
     // yield put(receivePerformanceBandAction());
   } catch (err) {
     console.error(err);
-    const errorMessage = "Update PerformanceBand is failing";
+    const errorMessage = "Unable to update performance band. Please contact support.";
     notification({ msg: errorMessage });
     yield put(updatePerformanceBandErrorAction({ error: errorMessage }));
   }
@@ -205,7 +205,7 @@ function* createPerformanceBandSaga({ payload }) {
     yield put(receivePerformanceBandAction());
     yield put(setEditingIndexAction(createPerformanceBand._id));
   } catch (err) {
-    const errorMessage = "Create PerformanceBand is failing";
+    const errorMessage = "Unable to create performance band. Please contact support.";
     notification({ msg: errorMessage });
     yield put(createPerformanceBandErrorAction({ error: errorMessage }));
   }
@@ -224,7 +224,7 @@ function* deletePerformanceBandSaga({ payload }) {
     if (err.status === 409) {
       yield put(deletePerformanceBandErrorAction({ type: err.response.data["0"] }));
     } else {
-      const errorMessage = "Deleting PerformanceBand is failing";
+      const errorMessage = "Unable to delete performance band. Please contact support.";
       notification({ msg: errorMessage });
       yield put(createPerformanceBandErrorAction({ error: errorMessage }));
     }

@@ -121,7 +121,7 @@ function* createAssessmentSaga({ payload }) {
       );
     }
   } catch (error) {
-    const errorMessage = error.message || "Upload PDF is failing";
+    const errorMessage = error.message || "Unable to process PDF upload. Please contact support.";
     notification({ msg: errorMessage });
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
@@ -131,7 +131,7 @@ function* createAssessmentSaga({ payload }) {
       testItem = yield call(testItemsApi.create, defaultTestItem);
     }
   } catch (error) {
-    const errorMessage = "Create test item is failing";
+    const errorMessage = "Unable to create test item. Please contact support.";
     notification({ msg: errorMessage });
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
@@ -281,7 +281,7 @@ function* createAssessmentSaga({ payload }) {
     if (error.code === 1) {
       errorMessage = "Password protected PDF files are not supported";
     } else {
-      errorMessage = "Create assessment is failing";
+      errorMessage = "Unable to create assessment. Please contact support.";
     }
     notification({ msg: errorMessage });
     yield put(createAssessmentErrorAction({ error: errorMessage }));

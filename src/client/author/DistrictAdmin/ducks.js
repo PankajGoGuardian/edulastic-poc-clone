@@ -37,7 +37,7 @@ export const deleteDistrictAdminErrorAction = createAction(DELETE_DISTRICTADMIN_
 export const setSearchNameAction = createAction(SET_DISTRICTADMIN_SEARCHNAME);
 export const setFiltersAction = createAction(SET_DISTRICTADMIN_SETFILTERS);
 
-//selectors
+// selectors
 const stateDistrictAdminSelector = state => state.districtAdminReducer;
 export const getDistrictAdminSelector = createSelector(
   stateDistrictAdminSelector,
@@ -46,7 +46,7 @@ export const getDistrictAdminSelector = createSelector(
       let searchByNameData = [];
       if (state.searchName.length > 0) {
         searchByNameData = state.data.filter(row => {
-          let name = row.firstName + " " + row.lastName;
+          const name = `${row.firstName  } ${  row.lastName}`;
           if (name === state.searchName) return row;
         });
       } else {
@@ -64,7 +64,7 @@ export const getDistrictAdminSelector = createSelector(
       const filterSource = searchByNameData.filter(row => {
         if (state.filtersText === "") {
           return row;
-        } else {
+        } 
           if (state.filtersValue === "eq") {
             const equalKeys = possibleFilterKey.filter(key => {
               if (row[key] === state.filtersText) return row;
@@ -76,12 +76,12 @@ export const getDistrictAdminSelector = createSelector(
             });
             if (equalKeys.length > 0) return row;
           }
-        }
+        
       });
       return filterSource;
-    } else {
+    } 
       return state.data;
-    }
+    
   }
 );
 
@@ -144,7 +144,7 @@ export const reducer = createReducer(initialState, {
           ...payload
         };
         return { ...districtAdmin, ...newData };
-      } else return districtAdmin;
+      } return districtAdmin;
     });
 
     (state.update = payload), (state.updating = false), (state.data = districtAdminData);
@@ -209,7 +209,7 @@ function* receiveDistrictAdminSaga({ payload }) {
     const { result: districtAdmin } = yield call(userApi.fetchUsers, payload);
     yield put(receiveDistrictAdminSuccessAction(districtAdmin));
   } catch (err) {
-    const errorMessage = "Receive DistrictAdmins is failing!";
+    const errorMessage = "Unable to retrieve District Admin info. Please contact support.";
     notification({ msg:errorMessage});
     yield put(receiveDistrictAdminErrorAction({ error: errorMessage }));
   }
@@ -221,7 +221,7 @@ function* updateDistrictAdminSaga({ payload }) {
     notification({ type: "success", messageKey:"districtAdminUpdated"});
     yield put(updateDistrictAdminSuccessAction(updateDistrictAdmin));
   } catch (err) {
-    const errorMessage = "Update DistrictAdmin is failing";
+    const errorMessage = "Unable to update District Admin. Please contact support.";
     notification({ msg:errorMessage});
     yield put(updateDistrictAdminErrorAction({ error: errorMessage }));
   }
@@ -232,7 +232,7 @@ function* createDistrictAdminSaga({ payload }) {
     const createDistrictAdmin = yield call(userApi.createUser, payload);
     yield put(createDistrictAdminSuccessAction(createDistrictAdmin));
   } catch (err) {
-    const errorMessage = "Create DistrictAdmin is failing";
+    const errorMessage = "Unable to create District Admin. Please contact support.";
     notification({ msg:errorMessage});
     yield put(createDistrictAdminErrorAction({ error: errorMessage }));
   }
@@ -246,7 +246,7 @@ function* deleteDistrictAdminSaga({ payload }) {
     notification({ type: "success", msg:result});
     yield put(deleteDistrictAdminSuccessAction(payload));
   } catch (err) {
-    const errorMessage = "Delete DistrictAdmin is failing";
+    const errorMessage = "Unable to delete District Admin. Please contact support.";
     notification({ msg:errorMessage});
     yield put(deleteDistrictAdminErrorAction({ deleteError: errorMessage }));
   }

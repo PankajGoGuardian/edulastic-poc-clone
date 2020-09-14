@@ -62,7 +62,7 @@ const PerformanceByStandards = ({
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
-  const [standardId, setStandardId] = useState(0);
+  const [standardId, setStandardId] = useState("");
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
 
@@ -170,7 +170,7 @@ const PerformanceByStandards = ({
   const testName = getTitleByTestId(testId);
   const assignmentInfo = `${testName}`;
 
-  const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
+  const selectedStandardId = standardsDropdownData.find(s => `${s.key}` === `${standardId}`);
 
   const selectedItems = isViewByStandards ? selectedStandards : selectedDomains;
 

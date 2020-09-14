@@ -1,6 +1,6 @@
 import { greyThemeLighter, themeColorBlue } from "@edulastic/colors";
 import { isObject } from "lodash";
-import styled, { css } from "styled-components";
+import styled, { css, withTheme } from "styled-components";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import { useDrop } from "react-dnd";
@@ -94,7 +94,7 @@ DropContainer.defaultProps = {
   className: ""
 };
 
-export default DropContainer;
+export default withTheme(DropContainer);
 
 const hoverStyle = css`
   &:hover {
@@ -103,6 +103,7 @@ const hoverStyle = css`
 `;
 
 const Container = styled.div`
+  font-size: ${({theme})=> theme.fontSize};
   border: ${({ noBorder }) => !noBorder && "2px dashed"};
   border-radius: 2px;
   border-color: ${({ borderColor }) => borderColor};

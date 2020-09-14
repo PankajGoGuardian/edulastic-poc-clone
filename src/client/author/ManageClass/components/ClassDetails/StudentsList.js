@@ -38,7 +38,6 @@ const StudentsList = ({
   groupList,
   selectedClass,
   updating,
-  allowGoogleLogin,
   allowCanvasLogin,
   isProxyUser
 }) => {
@@ -95,26 +94,6 @@ const StudentsList = ({
       ),
       width: 150
     },
-    /* ...(allowGoogleLogin
-      ? [
-          {
-            title: "Google User",
-            dataIndex: "lastSigninSSO",
-            align: "center",
-            defaultSortOrder: "descend",
-            render: (lastSigninSSO, { openIdProvider }) => (
-              <span>
-                {[lastSigninSSO, openIdProvider].includes("google") ? (
-                  <IconCorrect />
-                ) : (
-                  <IconClose color="#ff99bb" width="10px" height="10px" />
-                )}
-              </span>
-            ),
-            width: 150
-          }
-        ]
-      : []), */
 
     ...(allowCanvasLogin
       ? [

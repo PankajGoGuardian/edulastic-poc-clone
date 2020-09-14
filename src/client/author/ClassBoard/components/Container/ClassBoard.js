@@ -67,7 +67,8 @@ import {
   showScoreSelector,
   stateStudentResponseSelector,
   testActivtyLoadingSelector,
-  getActiveAssignedStudents
+  getActiveAssignedStudents,
+  getDisableMarkAsAbsentSelector
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -630,7 +631,6 @@ class ClassBoard extends Component {
       testQuestionActivities,
       qActivityByStudent,
       isPresentationMode,
-      assignmentStatus,
       currentTestActivityId,
       allTestActivitiesForStudent,
       setCurrentTestActivityId,
@@ -641,6 +641,7 @@ class ClassBoard extends Component {
       isItemsVisible,
       studentViewFilter,
       disableMarkSubmitted,
+      disableMarkAbsent,
       hasRandomQuestions,
       isLoading,
       t,
@@ -691,16 +692,7 @@ class ClassBoard extends Component {
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
     const firstQuestionEntities = get(testActivity, [0, "questionActivities"], []);
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
-    /**
-     *  set disableMarkAbsent if the assignment is not-open AND assignment startDate is ahead of current time
-     *  OR student has submitted the assignment
-     *  OR the assignment is closed/marked-as-done/passed-due-date
-     */
-    const disableMarkAbsent =
-      (assignmentStatus.toLowerCase() == "not open" &&
-        ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
-      assignmentStatus.toLowerCase() === "graded" ||
-      assignmentStatus.toLowerCase() === "done";
+
     const existingStudents = testActivity
       .filter(item => !item.isUnAssigned && item.enrollmentStatus === 1)
       .map(item => item.studentId);
@@ -1291,6 +1283,7 @@ const enhance = compose(
       currentTestActivityId: getCurrentTestActivityIdSelector(state),
       allTestActivitiesForStudent: getAllTestActivitiesForStudentSelector(state),
       disableMarkSubmitted: getDisableMarkAsSubmittedSelector(state),
+      disableMarkAbsent: getDisableMarkAsAbsentSelector(state),
       assignmentStatus: getAssignmentStatusSelector(state),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),

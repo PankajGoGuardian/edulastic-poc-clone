@@ -848,9 +848,28 @@ export const getCanOpenAssignmentSelector = createSelector(
     )
 );
 
-export const getDisableMarkAsSubmittedSelector = createSelector(
+export const getAssignmentStatusLowerCased = createSelector(
   getAssignmentStatusSelector,
-  status => ["graded", "done", "in grading", "not open"].includes(status.toLowerCase())
+  status => status.toLowerCase()
+);
+
+export const getDisableMarkAsSubmittedSelector = createSelector(
+  getAssignmentStatusLowerCased,
+  status => ["graded", "done", "not open"].includes(status)
+);
+
+/**
+ *  set disableMarkAbsent if the assignment is not-open AND assignment startDate is ahead of current time
+ *  OR student has submitted the assignment
+ *  OR the assignment is closed/marked-as-done/passed-due-date
+ */
+export const getDisableMarkAsAbsentSelector = createSelector(
+  getAdditionalDataSelector,
+  getAssignmentStatusLowerCased,
+  (additionalData, status) =>
+    (status === "not open" &&
+      ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
+    ["graded", "done"].includes(status)
 );
 
 export const getAssignedBySelector = createSelector(

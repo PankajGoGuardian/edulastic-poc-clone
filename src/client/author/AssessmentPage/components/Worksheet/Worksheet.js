@@ -274,16 +274,18 @@ class WorksheetComponent extends React.Component {
       }
       newFreeFormNotes[parsedItem] = freeFormNotes[item];
     });
+
+    // NOTE: pageNumber uses 0 based indexing, while annotations.$.page uses 1 based indexing
     const updatedAnnotations = annotations
       // eslint-disable-next-line array-callback-return
       .map(x => {
-        if (x.page === pageNumber) {
+        if (x.page === pageNumber + 1) {
           return null;
         }
-        if (x.page < pageNumber) {
+        if (x.page < pageNumber + 1) {
           return x;
         }
-        if (x.page > pageNumber) {
+        if (x.page > pageNumber + 1) {
           return { ...x, page: x.page - 1 };
         }
       })

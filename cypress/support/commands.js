@@ -181,6 +181,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
     case "teacher":
       cy.wait("@teacherDashboard");
       cy.wait("@searchCourse");
+      cy.get('[data-cy="Item Bank"]', { timeout: 120000 });
       break;
 
     case "student":

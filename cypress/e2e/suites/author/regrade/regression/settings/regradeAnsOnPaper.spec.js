@@ -1,13 +1,12 @@
 import FileHelper from "../../../../../framework/util/fileHelper";
 import TestLibrary from "../../../../../framework/author/tests/testLibraryPage";
 import Regrade from "../../../../../framework/author/tests/regrade/regrade";
-import { regradeOptions, studentSide } from "../../../../../framework/constants/assignmentStatus";
+import { regradeOptions, studentSide, teacherSide } from "../../../../../framework/constants/assignmentStatus";
 import StudentTestPage from "../../../../../framework/student/studentTestPage";
 import AssignmentsPage from "../../../../../framework/student/assignmentsPage";
 import AuthorAssignmentPage from "../../../../../framework/author/assignments/AuthorAssignmentPage";
 import LiveClassboardPage from "../../../../../framework/author/assignments/LiveClassboardPage";
 import ReportsPage from "../../../../../framework/student/reportsPage";
-import CypressHelper from "../../../../../framework/util/cypressHelpers";
 
 describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answer On Paper'`, () => {
   const testlibaryPage = new TestLibrary();
@@ -66,8 +65,6 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
     }
     */
     before("> assign without/with overiding", () => {
-      date = new Date();
-      date.setDate(date.getDate() + 1);
       cy.deleteAllAssignments("", teacher);
       testlibaryPage.searchAndClickTestCardById(testId1);
       testlibaryPage.clickOnDuplicate();
@@ -76,13 +73,11 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
 
         testlibaryPage.clickOnAssign();
         testlibaryPage.assignPage.selectClass(classes[0]);
-        testlibaryPage.assignPage.setEndDate(date);
         testlibaryPage.assignPage.clickOnAssign().then(assignObj => {
           assignmentId1 = assignObj[testId2];
 
           testlibaryPage.assignPage.visitAssignPageById(testId2);
           testlibaryPage.assignPage.selectClass(classes[1]);
-          testlibaryPage.assignPage.setEndDate(date);
           testlibaryPage.assignPage.showOverRideSetting();
           testlibaryPage.assignPage.selectAnswerOnPaper();
           testlibaryPage.assignPage.clickOnAssign().then(assignObj => {
@@ -118,10 +113,33 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
         regrade.applyRegrade();
       });
 
-      context(`> verify assignment status at student side`, () => {
-        beforeEach("set browser date > due date", () => {
-          CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
+      [attemptsdata1, attemptsdata2].forEach((attemptData, ind) => {
+        /* verify status of all students from both class */
+        context(`> verify teacher side for '${ind === 0 ? "" : "not "}overiden' test`, () => {
+          before("> login click on lcb by assignment id", () => {
+            testlibaryPage.sidebar.clickOnAssignment();
+            authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, ind === 0 ? assignmentId1 : assignmentId2);
+            lcb.header.clickOnClose(true, false);
+
+            testlibaryPage.sidebar.clickOnDashboard();
+            testlibaryPage.sidebar.clickOnAssignment();
+            authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, ind === 0 ? assignmentId1 : assignmentId2);
+          });
+
+          it(`> verify overall assignment staus in lcb, expected- ${teacherSide.IN_GRADING} `, () => {
+            lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
+          });
+
+          attemptData.forEach(({ status, name }, ind) => {
+            const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.SUBMITTED;
+            it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
+              lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true);
+            });
+          });
         });
+      });
+
+      context(`> verify assignment status at student side`, () => {
         [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }) => {
           const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.SUBMITTED;
           const titleAdjust = overidden ? "" : "not ";
@@ -129,28 +147,6 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
             cy.login("student", email);
             assignmentsPage.sidebar.clickOnGrades();
             reportsPage.verifyStatusIs(studentStatus);
-          });
-        });
-      });
-
-      [attemptsdata1, attemptsdata2].forEach((attemptData, ind) => {
-        /* verify status of all students from both class */
-        context(`> verify teacher side for '${ind === 0 ? "" : "not "}overiden' test`, () => {
-          before("> login click on lcb by assignment id", () => {
-            CypressHelper.setCustomBrowserDate({ dateToForward: 2 }).then(() => {
-              if (ind === 0) cy.login("teacher", teacher);
-              testlibaryPage.sidebar.clickOnAssignment();
-              authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, ind === 0 ? assignmentId1 : assignmentId2);
-            });
-          });
-          beforeEach("set browser date > due date", () => {
-            CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
-          });
-          attemptData.forEach(({ status, name }, ind) => {
-            const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.SUBMITTED;
-            it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
-              lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true);
-            });
           });
         });
       });
@@ -172,8 +168,6 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
     }
     */
     before("> assign without/with overiding", () => {
-      date = new Date();
-      date.setDate(date.getDate() + 1);
       cy.login("teacher", teacher);
       cy.deleteAllAssignments("", teacher);
       testlibaryPage.searchAndClickTestCardById(testId1);
@@ -187,13 +181,11 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
 
         testlibaryPage.clickOnAssign();
         testlibaryPage.assignPage.selectClass(classes[0]);
-        testlibaryPage.assignPage.setEndDate(date);
         testlibaryPage.assignPage.clickOnAssign().then(assignObj => {
           assignmentId1 = assignObj[testId3];
 
           testlibaryPage.assignPage.visitAssignPageById(testId3);
           testlibaryPage.assignPage.selectClass(classes[1]);
-          testlibaryPage.assignPage.setEndDate(date);
           testlibaryPage.assignPage.showOverRideSetting();
           testlibaryPage.assignPage.deselectAnsweOnPaper();
           testlibaryPage.assignPage.clickOnAssign().then(assignObj => {
@@ -229,10 +221,34 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
         regrade.applyRegrade();
       });
 
-      context(`> verify assignment status at student side`, () => {
-        beforeEach("set browser date > due date", () => {
-          CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
+      [attemptsdata1, attemptsdata2].forEach((attemptData, ind) => {
+        /* verify status of all students from both class */
+        context(`> verify teacher side for '${ind === 0 ? "" : "not "}overiden' test`, () => {
+          before("> login click on lcb by assignment id", () => {
+            //  cy.login("teacher", teacher);
+            testlibaryPage.sidebar.clickOnAssignment();
+            authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, ind === 0 ? assignmentId1 : assignmentId2);
+            lcb.header.clickOnClose(true, false);
+
+            testlibaryPage.sidebar.clickOnDashboard();
+            testlibaryPage.sidebar.clickOnAssignment();
+            authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, ind === 0 ? assignmentId1 : assignmentId2);
+          });
+
+          it(`> verify overall assignment staus in lcb, expected- ${teacherSide.DONE} `, () => {
+            lcb.header.verifyAssignmentStatus(teacherSide.DONE);
+          });
+
+          attemptData.forEach(({ status, name }, ind) => {
+            const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.ABSENT;
+            it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
+              lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true);
+            });
+          });
         });
+      });
+
+      context(`> verify assignment status at student side`, () => {
         [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }) => {
           const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.ABSENT;
           const titleAdjust = overidden ? "" : "not ";
@@ -240,26 +256,6 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
             cy.login("student", email);
             assignmentsPage.sidebar.clickOnGrades();
             reportsPage.verifyStatusIs(studentStatus);
-          });
-        });
-      });
-
-      [attemptsdata1, attemptsdata2].forEach((attemptData, ind) => {
-        /* verify status of all students from both class */
-        context(`> verify teacher side for '${ind === 0 ? "" : "not "}overiden' test`, () => {
-          before("> login click on lcb by assignment id", () => {
-            cy.login("teacher", teacher);
-            testlibaryPage.sidebar.clickOnAssignment();
-            authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, ind === 0 ? assignmentId1 : assignmentId2);
-          });
-          beforeEach("set browser date > due date", () => {
-            CypressHelper.setCustomBrowserDate({ dateToForward: 2 });
-          });
-          attemptData.forEach(({ status, name }, ind) => {
-            const studentStatus = status === studentSide.IN_PROGRESS ? studentSide.GRADED : studentSide.ABSENT;
-            it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
-              lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true);
-            });
           });
         });
       });

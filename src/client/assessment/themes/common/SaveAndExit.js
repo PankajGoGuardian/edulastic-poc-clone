@@ -2,11 +2,11 @@ import { extraDesktopWidthMax, mediumDesktopExactWidth, smallDesktopWidth } from
 import { EduButton, FireBaseService as Fbs, FlexContainer } from "@edulastic/common";
 import { IconAccessibility, IconCircleLogout, IconSend } from "@edulastic/icons";
 import { Button } from "antd";
-import { get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { get } from "lodash";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 import TimedTestTimer from "./TimedTestTimer";
 
@@ -28,6 +28,7 @@ const SaveAndExit = ({
   utaId,
   groupId,
   timedAssignment,
+  isCliUserPreview,
   isCliUser
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId);
@@ -40,17 +41,24 @@ const SaveAndExit = ({
           <IconAccessibility />
         </StyledButton>
       )}
-      {!isCliUser &&
-        showPause &&
+      {showPause &&
         (previewPlayer ? (
-          <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
-            <IconCircleLogout />
-            EXIT
-          </SaveAndExitButton>
+          <>
+            {!isCliUserPreview && (
+              <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
+                <IconCircleLogout />
+                EXIT
+              </SaveAndExitButton>
+            )}
+          </>
         ) : (
-          <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
-            <IconCircleLogout />
-          </SaveAndExitButton>
+          <>
+            {!isCliUser && (
+              <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
+                <IconCircleLogout />
+              </SaveAndExitButton>
+            )}
+          </>
         ))}
       {onSubmit && (
         <EduButton isGhost onClick={onSubmit}>

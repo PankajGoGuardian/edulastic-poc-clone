@@ -1,5 +1,8 @@
-import React from "react";
 import { IconSend } from "@edulastic/icons";
+import queryString from "query-string";
+import React from "react";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
 import { Tooltip } from "../../../common/utils/helpers";
 import {
   ControlBtn,
@@ -56,8 +59,12 @@ const PlayerHeader = ({
   enableMagnifier,
   timedAssignment,
   utaId,
-  groupId
+  groupId,
+  location
 }) => {
+  const query = queryString.parse(location.search);
+  const { cliUser } = query;
+
   const rightButtons = (
     <SaveAndExit
       timedAssignment={timedAssignment}
@@ -66,6 +73,7 @@ const PlayerHeader = ({
       previewPlayer={previewPlayer}
       showZoomBtn
       finishTest={finishTest}
+      isCliUserPreview={cliUser}
     />
   );
 
@@ -176,4 +184,6 @@ const PlayerHeader = ({
   );
 };
 
-export default PlayerHeader;
+const enhance = compose(withRouter);
+
+export default enhance(PlayerHeader);

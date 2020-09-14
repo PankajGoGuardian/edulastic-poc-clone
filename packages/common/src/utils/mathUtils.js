@@ -186,12 +186,10 @@ export const replaceMathHtmlWithLatexes = val => {
 
 export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
   const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
-
-  studentTemplate = escapeRegExp(studentTemplate || "").replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)");
-  // To fix issue with exponent value 2^{responseBox}
-  studentTemplate = studentTemplate.replace(/\\{\(\.\*\)\\}/g, "(.*)");
-
-  const regexTemplate = new RegExp(studentTemplate, "g");
+  const regexTemplate = new RegExp(
+    escapeRegExp(studentTemplate || "").replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
+    "g"
+  );
 
   if (userAnswer && userAnswer.length > 0) {
     const userInnerValues = regexTemplate.exec(userAnswer);

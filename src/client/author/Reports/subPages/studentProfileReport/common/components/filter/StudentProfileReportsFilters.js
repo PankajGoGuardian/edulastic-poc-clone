@@ -64,14 +64,14 @@ const StudentProfileReportsFilters = ({
 
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const { terms = [] } = orgData;
-  const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [
-    SPRFilterData,
-    terms
-  ]);
-  const coursesForTerm = useMemo(() => courseOptions.filter(c => c.termId === filters.termId), [
-    courseOptions,
-    filters.termId
-  ]);
+  const { termOptions = [], courseOptions = [] } = useMemo(
+    () => getFilterOptions(studentClassData, terms), 
+    [SPRFilterData, terms]
+  );
+  const coursesForTerm = useMemo(
+    () => courseOptions.filter(c => c.termId === filters.termId),
+    [courseOptions, filters.termId]
+  );
 
   const defaultTermOption = useMemo(() => find(termOptions, term => term.key === defaultTerm), [
     termOptions,
@@ -160,7 +160,7 @@ const StudentProfileReportsFilters = ({
     };
     setFilters(obj);
     const settings = {
-      filters: pickBy(obj, f => f !== "All" && !isEmpty(f)),
+      filters: obj,
       selectedStudent: student
     };
     _onGoClick(settings);
@@ -179,7 +179,7 @@ const StudentProfileReportsFilters = ({
       filters: obj,
       selectedStudent: student
     };
-    _onGoClick(settings);
+    _onGoClick(settings);    
   };
 
   return (

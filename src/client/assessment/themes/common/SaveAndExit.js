@@ -29,6 +29,7 @@ const SaveAndExit = ({
   utaId,
   groupId,
   timedAssignment,
+  isCliUserPreview,
   isCliUser,
   LCBPreviewModal,
   hideData,
@@ -52,17 +53,24 @@ const SaveAndExit = ({
           <IconAccessibility />
         </StyledButton>
       )}
-      {!isCliUser &&
-        showPause &&
+      {showPause &&
         (previewPlayer ? (
-          <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
-            <IconCircleLogout />
-            EXIT
-          </SaveAndExitButton>
+          <>
+            {!isCliUserPreview && (
+              <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
+                <IconCircleLogout />
+                EXIT
+              </SaveAndExitButton>
+            )}
+          </>
         ) : (
-          <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
-            <IconCircleLogout />
-          </SaveAndExitButton>
+          <>
+            {!isCliUser && (
+              <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
+                <IconCircleLogout />
+              </SaveAndExitButton>
+            )}
+          </>
         ))}
       {onSubmit && (
         <EduButton isGhost onClick={onSubmit}>

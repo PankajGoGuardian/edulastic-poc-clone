@@ -71,7 +71,7 @@ class Review extends PureComponent {
 
   static defaultProps = {
     owner: false,
-    onSaveTestId: () => { }
+    onSaveTestId: () => {}
   };
 
   secondHeaderRef = React.createRef();
@@ -440,7 +440,8 @@ class Review extends PureComponent {
       return <div />;
     }
 
-    const selected = test?.itemGroups?.flatMap(itemGroup => itemGroup?.items || [])
+    const selected = test?.itemGroups
+      ?.flatMap(itemGroup => itemGroup?.items || [])
       .reduce((acc, element, i) => {
         if (element.selected) {
           acc.push(i);
@@ -459,8 +460,8 @@ class Review extends PureComponent {
     ];
 
     const isSmallSize = windowWidth > 993 ? 1 : 0;
-    const grades = _uniq([...(test.grades||[]), ...itemsSubjectAndGrade.grades]);
-    const subjects = _uniq([...(test.subjects||[]), ...itemsSubjectAndGrade.subjects]);
+    const grades = _uniq([...(test.grades || []), ...itemsSubjectAndGrade.grades]);
+    const subjects = _uniq([...(test.subjects || []), ...itemsSubjectAndGrade.subjects]);
     const collections = get(test, "collections", []);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
@@ -503,7 +504,7 @@ class Review extends PureComponent {
               </div>
             </Col>
           </Row>
-          )}
+        )}
         <ReviewContentWrapper>
           <ReviewLeftContainer lg={24} xl={18}>
             <Paper padding="7px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>

@@ -84,7 +84,10 @@ const HeaderSection = ({
               onClick={() => setvisible(true)}
               visible={visible}
             >
-              {needsRenewal ? (
+              {needsRenewal ?
+                null
+                /*
+                removing renew subscription for everyone
                 <EduButton
                   type="primary"
                   isBlue
@@ -94,7 +97,8 @@ const HeaderSection = ({
                   <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
                   <span>RENEW SUBSCRIPTION</span>
                 </EduButton>
-              ) : (
+                */
+              : (
                 <EduButton isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
                   UNLOCK MORE FEATURES

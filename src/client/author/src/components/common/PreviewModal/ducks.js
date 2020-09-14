@@ -3,12 +3,10 @@ import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { get } from "lodash";
-import { testItemsApi, passageApi, groupApi } from "@edulastic/api";
-import { notification, MeetFirebase } from "@edulastic/common";
+import { testItemsApi, passageApi } from "@edulastic/api";
+import { notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
-import { meetBroadcast } from "@edulastic/common/src/MeetFirebase";
 import { updateTestAndNavigateAction, receiveTestByIdAction } from "../../../../TestPage/ducks";
-import { toggleBroadcastSummaryAction } from "../../../../SchoolAdmin/ducks";
 
 export const SET_QUESTIONS_IN_PASSAGE = "[testItemPreview] set questions to passage";
 export const ADD_PASSAGE = "[testItemPreview] add passage to item";
@@ -16,15 +14,11 @@ export const SET_ITEM_PREVIEW_DATA = "[testItemPreview] set data";
 export const CLEAR_ITEM_PREVIEW = "[testItemPreview] clear item preview";
 export const DUPLICATE_TESTITEM_PREVIEW_REQUEST = "[testItemPreview] duplicate request";
 
-export const BROADCAST_QUESTION = '[extension] broadcast question';
-
 export const setQuestionsForPassageAction = createAction(SET_QUESTIONS_IN_PASSAGE);
 export const addPassageAction = createAction(ADD_PASSAGE);
 export const clearPreviewAction = createAction(CLEAR_ITEM_PREVIEW);
 export const setPrevewItemAction = createAction(SET_ITEM_PREVIEW_DATA);
 export const duplicateTestItemPreviewRequestAction = createAction(DUPLICATE_TESTITEM_PREVIEW_REQUEST);
-
-export const broadcastQuestionAction = createAction(BROADCAST_QUESTION);
 
 export const stateSelector = state => state.testItemPreview;
 export const getPassageSelector = createSelector(
@@ -87,7 +81,7 @@ export function reducer(state = initialState, { type, payload }) {
 
 function* duplicateItemRequestSaga({ payload }) {
   try {
-    notification({type:"info",msg:"Cloning items...", duration:3});
+    notification({ type: "info", msg: "Cloning items...", duration: 3 });
     const { data, testId, test, isTest, regradeFlow, duplicateWholePassage, currentItem } = payload;
     const { passage } = payload;
     const itemId = data.id;
@@ -101,12 +95,12 @@ function* duplicateItemRequestSaga({ payload }) {
         testItemIds: testItemsToDuplicate,
         testId
       });
-      if(duplicateWholePassage && testId){
-        yield put(receiveTestByIdAction(testId,true));
-        notification({ msg:`${testItemsToDuplicate.length} items added to test`, type:"success" });
+      if (duplicateWholePassage && testId) {
+        yield put(receiveTestByIdAction(testId, true));
+        notification({ msg: `${testItemsToDuplicate.length} items added to test`, type: "success" });
         return;
       }
-      
+
       // using first item to show when redirected to itemDetails page
       duplicatedItem._id = duplicatedPassage?.testItems?.[0];
     } else {
@@ -143,35 +137,6 @@ function* duplicateItemRequestSaga({ payload }) {
   }
 }
 
-function* broadcastQuestion({payload}){
-  try {
-    const { meetingID, item, classId } = payload;
-
-    if(!meetingID || !item || !classId) throw new Error('Insuficient Payload Data...');
-
-    const districtId = yield select(state => state?.user?.user?.orgData?.districtIds?.[0]);
-    if(!districtId) throw new Error('DistrictId could not be retrieved');
-
-    const students = yield call(groupApi.fetchStudentsByGroupId, {districtId, groupIds: [classId]}) ||  [];
-    
-    yield all(
-      students
-      .filter(({studentId}) => studentId)
-      .map(({studentId}) => call(meetBroadcast, {meetingID, classId, userId: studentId, questionItem: item }))
-    );
-
-    yield put(toggleBroadcastSummaryAction(true));
-    notification({ type:"success", messageKey: "broadcastSuccess" });
-  } catch (e) {
-    Sentry.captureException(e);
-    console.error("Broadcast error - ", e);
-    notification({ messageKey: "broadcastError" });
-  }
-}
-
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(DUPLICATE_TESTITEM_PREVIEW_REQUEST, duplicateItemRequestSaga),
-    yield takeEvery(BROADCAST_QUESTION, broadcastQuestion)
-  ]);
+  yield all([yield takeEvery(DUPLICATE_TESTITEM_PREVIEW_REQUEST, duplicateItemRequestSaga)]);
 }

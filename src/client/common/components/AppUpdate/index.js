@@ -11,13 +11,13 @@ const AppUpdate = ({ visible }) => {
 
   const btn = (
     <span style={{ whiteSpace: "nowrap" }}>
-      A New update is available &nbsp;<a onClick={() => handleOk()}>Refresh</a>
+      A new update is available &nbsp;<a onClick={() => handleOk()}>Refresh</a>
     </span>
   );
 
   useEffect(() => {
     if (visible) {
-      notification({ msg: btn, placement: "bottomRight", duration: 0, className: "notification" });
+      notification({ msg: btn, bottom: 100, placement: "bottomRight", duration: 0, className: "notification" });
     }
   }, [visible]);
 

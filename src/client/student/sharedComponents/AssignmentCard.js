@@ -127,7 +127,10 @@ const AssignmentCard = memo(
     useRealtimeV2(topics, {
       regradedAssignment: payload => updateTestIdRealTime({ assignmentId, ...payload })
     });
-    const currentClassList = clazz.filter(cl => cl._id === classId);
+    const currentClassList = clazz.filter(
+      cl => (cl._id === classId && !cl.students?.length) || (cl.students?.length && cl.students?.includes(userId))
+    );
+
     if (!startDate || !endDate) {
       const maxCurrentClass =
         currentClassList && currentClassList.length > 0
@@ -179,7 +182,7 @@ const AssignmentCard = memo(
     }
     const startTest = () => {
       // On start check if assignment is expired or not
-      if (endDate < serverTimeStamp) {
+      if (endDate && serverTimeStamp > endDate) {
         notification({ messageKey: "testIsExpired" });
         return;
       }

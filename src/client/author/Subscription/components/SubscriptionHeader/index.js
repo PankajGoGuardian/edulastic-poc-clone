@@ -26,6 +26,8 @@ const SubscriptionHeader = ({
         <EduButton isBlue width="215px" onClick={openPaymentServiceModal}>
           UPGRADE NOW FOR $100/YEAR
         </EduButton>
+      /*
+      removing renew subscription for everyone
       ) : showRenewalOptions ? (
         <EduButton
           onClick={openPaymentServiceModal}
@@ -37,6 +39,7 @@ const SubscriptionHeader = ({
           <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           <span>RENEW SUBSCRIPTION</span>
         </EduButton>
+      */
       ) : null}
     </ActionBtnWrapper>
   </MainHeader>

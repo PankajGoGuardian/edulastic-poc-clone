@@ -601,7 +601,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
     }
     const stateToFollow =
       locationState.testAuthoring === false ? { testAuthoring: false, testId: locationState.testId } : {};
-
     const { previousTestId, regradeFlow, isTestFlow: _isTestFlow } = yield select(
       state => state.router?.location?.state || {}
     );

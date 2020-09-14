@@ -95,7 +95,7 @@ const StudentsList = ({
       ),
       width: 150
     },
-    ...(allowGoogleLogin
+    /* ...(allowGoogleLogin
       ? [
           {
             title: "Google User",
@@ -114,7 +114,7 @@ const StudentsList = ({
             width: 150
           }
         ]
-      : []),
+      : []), */
 
     ...(allowCanvasLogin
       ? [

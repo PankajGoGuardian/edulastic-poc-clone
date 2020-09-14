@@ -16,6 +16,7 @@ import {
   testStatusBackgroundColor as backgroundColor,
   testStatusTextColor as textColor
 } from "../../../src/constants/colors";
+import { StyledLink } from "../Item/styled";
 
 export const Container = styled.div`
   display: flex;
@@ -38,7 +39,7 @@ export const ListCard = styled(Card)`
 
 export const Inner = styled.div`
   padding: 0px 0px 0px 25px;
-  width: auto;
+  width: 100%;
   display: inline-block;
   vertical-align: middle;
 `;
@@ -162,22 +163,8 @@ export const Stars = styled(Rate)`
   }
 `;
 
-export const StyledLink = styled.a`
-  width: 100%;
-  font-size: 14px;
-  font-weight: bold;
-  text-decoration: none;
-  color: ${themeColor};
-  cursor: pointer;
-  text-align: justify;
-
-  :hover {
-    color: ${themeColor};
-  }
-
-  @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: 16px;
-  }
+export const StyledLinkExt = styled(StyledLink)`
+  padding-right: 15px;
 `;
 
 export const ItemInformation = styled(Col)`

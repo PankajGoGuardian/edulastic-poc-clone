@@ -6,7 +6,7 @@ import styled, { ThemeProvider, css } from "styled-components";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Row, Col, Button, Spin } from "antd";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { get } from "lodash";
 import { IconSend } from "@edulastic/icons";
 import { test as testTypes } from "@edulastic/constants";
@@ -84,8 +84,18 @@ class SummaryTest extends Component {
   };
 
   render() {
-    const { questionList: questionsAndOrder, t, test, finishTest, savingResponse, testLoading } = this.props;
-    const { isDocBased, items } = test;
+    const {
+      questionList: questionsAndOrder,
+      t,
+      test,
+      finishTest,
+      savingResponse,
+      testLoading,
+      isCliUser,
+      match
+    } = this.props;
+    const { groupId } = match.params;
+    const { isDocBased, items, testId, testActivityId, title } = test;
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased;
     const { blocks: questionList, itemWiseQids = [] } = questionsAndOrder;
     const itemIds = Object.keys(itemWiseQids);
@@ -191,9 +201,23 @@ class SummaryTest extends Component {
             </MainContent>
             <Footer>
               <ShortDescription>{t("common.nextStep")}</ShortDescription>
-              <SubmitButton type="primary" onClick={finishTest} loading={savingResponse}>
-                <IconSend /> <span>{t("default:SUBMIT")}</span>
-              </SubmitButton>
+              {isCliUser ? (
+                <Link
+                  to={{
+                    pathname: `/home/class/${groupId}/test/${testId}/testActivityReport/${testActivityId}`,
+                    testActivityId,
+                    title
+                  }}
+                >
+                  <SubmitButton type="primary" loading={savingResponse}>
+                    <IconSend /> <span>{t("default:SUBMIT")}</span>
+                  </SubmitButton>
+                </Link>
+              ) : (
+                <SubmitButton type="primary" onClick={finishTest} loading={savingResponse}>
+                  <IconSend /> <span>{t("default:SUBMIT")}</span>
+                </SubmitButton>
+              )}
             </Footer>
           </Container>
         </AssignmentContentWrapperSummary>
@@ -227,7 +251,8 @@ const enhance = compose(
       assignmentId: get(state, "author_classboard_testActivity.assignmentId", ""),
       classId: get(state, "author_classboard_testActivity.classId", ""),
       savingResponse: state?.test?.savingResponse,
-      testLoading: testLoadingSelector(state)
+      testLoading: testLoadingSelector(state),
+      isCliUser: get(state, "user.isCliUser", false)
     }),
     {
       loadTest: loadTestAction

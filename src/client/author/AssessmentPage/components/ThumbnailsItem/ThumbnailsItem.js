@@ -21,49 +21,49 @@ const createContextMenu = ({
   setConfirmRotate,
   setDeleteConfirmation
 }) => (
-    <Menu>
-      <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
-      <Menu.Divider />
-      <Menu.Item onClick={onMoveUp} disabled={index === 0}>
-        Move Up
+  <Menu>
+    <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
+    <Menu.Divider />
+    <Menu.Item onClick={onMoveUp} disabled={index === 0}>
+      Move Up
     </Menu.Item>
-      <Menu.Item onClick={onMoveDown} disabled={index === total - 1}>
-        Move Down
+    <Menu.Item onClick={onMoveDown} disabled={index === total - 1}>
+      Move Down
     </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        onClick={
-          hasAnnotations
-            ? () => {
+    <Menu.Divider />
+    <Menu.Item
+      onClick={
+        hasAnnotations
+          ? () => {
               setConfirmRotate(true);
               setRotateDirection("clockwise");
             }
-            : onRotate("clockwise")
-        }
-      >
-        Rotate clockwise
+          : onRotate("clockwise")
+      }
+    >
+      Rotate clockwise
     </Menu.Item>
-      <Menu.Item
-        onClick={
-          hasAnnotations
-            ? () => {
+    <Menu.Item
+      onClick={
+        hasAnnotations
+          ? () => {
               setConfirmRotate(true);
               setRotateDirection("counterclockwise");
             }
-            : onRotate("counterclockwise")
-        }
-      >
-        Rotate counterclockwise
+          : onRotate("counterclockwise")
+      }
+    >
+      Rotate counterclockwise
     </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        disabled={disableDelete}
-        onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}
-      >
-        Delete
+    <Menu.Divider />
+    <Menu.Item
+      disabled={disableDelete}
+      onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}
+    >
+      Delete
     </Menu.Item>
-    </Menu>
-  );
+  </Menu>
+);
 
 const ThumbnailsItem = ({
   page,
@@ -114,9 +114,8 @@ const ThumbnailsItem = ({
         }}
         onCancel={() => setConfirmRotate(false)}
       >
-        {
-          "These pages contain one or more questions or annotations. Rotating the page may result this content positioned incorrectly."
-        }
+        These pages contain one or more questions or annotations. Rotating the page may result this content positioned
+        incorrectly.
       </Modal>
       <Dropdown
         overlayClassName="pdfContextMenuDocBased"
@@ -154,8 +153,9 @@ ThumbnailsItem.propTypes = {
   onRotate: PropTypes.func.isRequired
 };
 
-ThumbnailsItem.defaulProps = {
-  rotate: 0
+ThumbnailsItem.defaultProps = {
+  rotate: 0,
+  url: false
 };
 
 export default ThumbnailsItem;

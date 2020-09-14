@@ -655,33 +655,31 @@ class WorksheetComponent extends React.Component {
             />
           </Modal>
 
-          {!minimized && (
-            <Thumbnails
-              annotations={annotations}
-              list={pageStructure}
-              currentPage={currentPage}
-              onReupload={this.handleReupload}
-              onAddPdf={this.handleAddPdf}
-              onPageChange={this.handleChangePage}
-              onAddBlankPage={this.handleAppendBlankPage}
-              onDeletePage={this.handleDeletePage}
-              setDeleteConfirmation={this.setDeleteConfirmation}
-              onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
-              onMovePageUp={this.handleMovePageUp}
-              onMovePageDown={this.handleMovePageDown}
-              onInsertBlankPage={this.handleInsertBlankPage}
-              onRotate={this.handleRotate}
-              viewMode={viewMode}
-              review={review}
-              testMode={testMode}
-              reportMode={reportMode}
-              isToolBarVisible={isToolBarVisible}
-              toggleToolBarVisiblity={this.toggleToolBarVisiblity}
-              noCheck={noCheck}
-              minimized={minimized}
-              toggleMinimized={this.toggleMinimized}
-            />
-          )}
+          <Thumbnails
+            annotations={annotations}
+            list={pageStructure}
+            currentPage={currentPage}
+            onReupload={this.handleReupload}
+            onAddPdf={this.handleAddPdf}
+            onPageChange={this.handleChangePage}
+            onAddBlankPage={this.handleAppendBlankPage}
+            onDeletePage={this.handleDeletePage}
+            setDeleteConfirmation={this.setDeleteConfirmation}
+            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+            onMovePageUp={this.handleMovePageUp}
+            onMovePageDown={this.handleMovePageDown}
+            onInsertBlankPage={this.handleInsertBlankPage}
+            onRotate={this.handleRotate}
+            viewMode={viewMode}
+            review={review}
+            testMode={testMode}
+            reportMode={reportMode}
+            isToolBarVisible={isToolBarVisible}
+            toggleToolBarVisiblity={this.toggleToolBarVisiblity}
+            noCheck={noCheck}
+            minimized={minimized}
+            toggleMinimized={this.toggleMinimized}
+          />
 
           <PDFViewerContainer width={pdfWidth}>
             <PDFPreview

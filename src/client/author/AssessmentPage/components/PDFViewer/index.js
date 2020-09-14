@@ -87,12 +87,15 @@ const PDFViewer = ({
     const loadingTask = pdfjsLib.getDocument(URL);
     loadingTask.promise
       .then(_pdfDocument => {
-        _pdfDocument.getPage(currentPage).then(_page => {
-          const viewport = _page.getViewport({ scale: 1 });
-          setOriginalDimensions({ width: viewport.width, height: viewport.height });
-          setPdfDocument(_pdfDocument);
-          setDocLoading(false);
-        });
+        _pdfDocument
+          .getPage(pageNumber)
+          .then(_page => {
+            const viewport = _page.getViewport({ scale: 1 });
+            setOriginalDimensions({ width: viewport.width, height: viewport.height });
+            setPdfDocument(_pdfDocument);
+            setDocLoading(false);
+          })
+          .catch(err => console.error(`Error on page ${pageNumber}: ${err}`));
       })
       .catch(err => console.error(`Error: ${err}`));
   };

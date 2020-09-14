@@ -1,25 +1,58 @@
+/* eslint-disable react/require-default-props */
 import React from "react";
 import PropTypes from "prop-types";
+import { DragSource } from "react-dnd";
 import styled from "styled-components";
-import { DragDrop } from "@edulastic/common";
+import { isMobileDevice } from "@edulastic/common";
+import DragPreview from "./DragPreview";
+
 import Item from "./Item";
 
-const { DragItem } = DragDrop;
+function collectSource(connector, monitor) {
+  return {
+    connectDragSource: connector.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+}
+
+const specSource = {
+  beginDrag(props) {
+    return { item: props.item };
+  },
+
+  endDrag(props, monitor) {
+    if (!monitor.didDrop()) {
+      return;
+    }
+
+    const { fromColumnId } = props;
+    const itemCurrent = monitor.getItem();
+
+    const itemTo = monitor.getDropResult();
+
+    props.onDrop(itemCurrent, itemTo, props.from, fromColumnId);
+  },
+  canDrag(props) {
+    return props.disableResponse !== true;
+  }
+};
 
 const DragItemContainer = ({
+  connectDragSource,
   item,
+  isDragging,
   valid,
   preview,
   renderIndex,
   isTransparent,
   dragHandle,
+  isResetOffset,
   disableDrag,
   multiRow,
-  from,
-  fromColumnId,
   ...rest
 }) => {
   const itemProps = {
+    isDragging,
     isTransparent,
     valid,
     preview,
@@ -28,25 +61,30 @@ const DragItemContainer = ({
     item,
     ...rest
   };
-  const itemTo = {
-    item,
-    from,
-    fromColumnId
-  };
-
   return (
     <MainWrapper>
       {disableDrag && <Item {...itemProps} showIndex />}
       {!disableDrag && (
-        <DragItem data={itemTo} className="drag-item" data-cy={`drag-drop-item-${renderIndex}`}>
-          <Item {...itemProps} />
-        </DragItem>
+        <>
+          {isMobileDevice() && (
+            <DragPreview isDragging={isDragging} isResetOffset={isResetOffset}>
+              <Item {...itemProps} isDragging={false} />
+            </DragPreview>
+          )}
+          {item &&
+            connectDragSource(
+              <div className="drag-item" data-cy={`drag-drop-item-${renderIndex}`}>
+                <Item {...itemProps} />
+              </div>
+            )}
+        </>
       )}
     </MainWrapper>
   );
 };
 
 DragItemContainer.propTypes = {
+  connectDragSource: PropTypes.func.isRequired,
   item: PropTypes.string.isRequired,
   isDragging: PropTypes.bool.isRequired,
   preview: PropTypes.bool.isRequired,
@@ -55,6 +93,7 @@ DragItemContainer.propTypes = {
   dragHandle: PropTypes.bool,
   valid: PropTypes.bool,
   disableDrag: PropTypes.bool,
+  isResetOffset: PropTypes.bool,
   width: PropTypes.number,
   maxWidth: PropTypes.number.isRequired,
   minWidth: PropTypes.number.isRequired,
@@ -63,11 +102,8 @@ DragItemContainer.propTypes = {
 };
 
 DragItemContainer.defaultProps = {
-  disableDrag: false,
-  isTransparent: false,
-  dragHandle: false,
-  valid: false,
-  width: null
+  isResetOffset: false,
+  disableDrag: false
 };
 
 const MainWrapper = styled.div`
@@ -76,4 +112,4 @@ const MainWrapper = styled.div`
   transform: translate3d(0px, 0px, 0px);
 `;
 
-export default DragItemContainer;
+export default DragSource("item", specSource, collectSource)(DragItemContainer);

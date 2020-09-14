@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 import { get } from "lodash";
 import { CenteredText, MathFormulaDisplay, QuestionContext } from "@edulastic/common";
-import { lightGrey12 } from "@edulastic/colors";
 import produce from "immer";
+import DropContainer from "../../../components/DropContainer";
 import DragItem from "./DragItem";
-import { DropContainer, ColumnHeader, ColumnLabel } from "../styled/Column";
+import { ColumnHeader, ColumnLabel } from "../styled/Column";
 import { Rnd } from "../styled/RndWrapper";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
@@ -15,6 +16,7 @@ const TableRow = ({
   colCount,
   rowTitles,
   colTitles,
+  drop,
   answers,
   preview,
   onDrop,
@@ -23,8 +25,10 @@ const TableRow = ({
   isTransparent,
   isBackgroundImageTransparent,
   height,
+  theme,
   isResizable,
   item,
+  disableResponse,
   isReviewTab,
   view,
   setQuestionData,
@@ -53,8 +57,18 @@ const TableRow = ({
     }
   };
 
-  const onDropHandler = (flag, columnId) => ({ data }) => {
-    onDrop(data, { columnId, flag });
+  const styles = {
+    columnContainerStyle: {
+      display: "flex",
+      flexWrap: "wrap",
+      minHeight: height,
+      width: "100%",
+      height: "100%",
+      overflow: "hidden",
+      borderRadius: 4,
+      backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor,
+      flex: 1
+    }
   };
 
   const cols = [];
@@ -130,10 +144,15 @@ const TableRow = ({
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index] || "" }} />
         </ColumnHeader>
         <DropContainer
-          height={height}
-          borderColor={lightGrey12}
-          isTransparent={isBackgroundImageTransparent}
-          drop={onDropHandler("column", item.classifications?.[index]?.id || "")}
+          style={{
+            ...styles.columnContainerStyle,
+            justifyContent: "center",
+            position: "relative"
+          }}
+          drop={drop}
+          index={index}
+          flag="column"
+          columnId={item.classifications?.[index]?.id || ""}
         >
           {hasAnswer &&
             answers[column.id]?.map((responseId, answerIndex) => {
@@ -141,15 +160,18 @@ const TableRow = ({
               const valid = get(evaluation, [column.id, responseId], undefined);
               return (
                 <DragItem
-                  key={answerIndex}
                   isTransparent={isTransparent}
                   dragHandle={dragHandle}
                   valid={isReviewTab ? true : valid}
                   preview={preview}
+                  key={answerIndex}
+                  onDrop={onDrop}
+                  item={(resp && resp.value) || ""}
+                  disableResponse={disableResponse}
+                  isResetOffset
                   noPadding
                   {...dragItemSize}
                   from="column"
-                  item={(resp && resp.value) || ""}
                   fromColumnId={column.id}
                 />
               );
@@ -174,6 +196,7 @@ TableRow.propTypes = {
   rowTitles: PropTypes.array.isRequired,
   isTransparent: PropTypes.any.isRequired,
   isBackgroundImageTransparent: PropTypes.any.isRequired,
+  drop: PropTypes.func.isRequired,
   answers: PropTypes.array.isRequired,
   preview: PropTypes.bool.isRequired,
   setQuestionData: PropTypes.func.isRequired,
@@ -181,6 +204,7 @@ TableRow.propTypes = {
   evaluation: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   isReviewTab: PropTypes.bool.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
   isResizable: PropTypes.bool.isRequired,
   item: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
@@ -192,4 +216,4 @@ TableRow.defaultProps = {
   rowHeader: null
 };
 
-export default TableRow;
+export default withTheme(TableRow);

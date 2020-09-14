@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from "react";
-import { lightGrey12 } from "@edulastic/colors";
-import { CenteredText, DragDrop } from "@edulastic/common";
-import styled from "styled-components";
+import { CenteredText } from "@edulastic/common";
+import { withTheme } from "styled-components";
 import { get, groupBy } from "lodash";
 import { Table, TH, TD, TR } from "../styled/TableLayout";
 
+import DropContainer from "../../../components/DropContainer";
 import DragItem from "./DragItem";
 
 const TableLayout = ({
@@ -12,11 +13,13 @@ const TableLayout = ({
   rowTitles,
   colCount,
   colTitles,
+  theme,
   dragHandle,
   isBackgroundImageTransparent,
   isTransparent,
   height,
   answers,
+  drop,
   item,
   isReviewTab,
   evaluation,
@@ -31,14 +34,21 @@ const TableLayout = ({
   const classificationsGrouped = groupBy(classifications, obj => obj.rowIndex);
 
   let validIndex = -1;
+  const styles = {
+    columnContainerStyle: {
+      display: "flex",
+      flexWrap: "wrap",
+      minHeight: height,
+      minWidth,
+      width: "100%",
+      height: "100%",
+      backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
+    }
+  };
   const responses = item.groupPossibleResponses
     ? item.possibleResponseGroups.flatMap(group => group.responses)
     : item.possibleResponses;
   const columnTitles = [];
-
-  const onDropHandler = (flag, columnId) => ({ data }) => {
-    onDrop(data, { columnId, flag });
-  };
 
   for (let index = 0; index < colCount; index++) {
     columnTitles.push(
@@ -63,9 +73,26 @@ const TableLayout = ({
       const hasAnswer = Array.isArray(answers[column.id]) && answers[column.id].length > 0;
       arr.push(
         <TD>
-          <DropContainer drop={onDropHandler("column", column.id)} index={validIndex} borderColor={lightGrey12}>
-            <ColumnContainer height={height} width={minWidth} isTransparent={isBackgroundImageTransparent}>
+          <DropContainer
+            drop={drop}
+            index={validIndex}
+            columnId={column.id}
+            flag="column"
+            style={{
+              display: "flex",
+              borderRadius: 4
+            }}
+          >
+            <div
+              style={{
+                ...styles.columnContainerStyle,
+                justifyContent: "flex-start",
+                position: "relative",
+                flexDirection: "column"
+              }}
+            >
               {hasAnswer &&
+                // eslint-disable-next-line no-loop-func
                 answers[column.id].map((responseId, answerIndex) => {
                   const resp = responses.find(res => res.id === responseId);
                   const valid = get(evaluation, [column.id, responseId], undefined);
@@ -76,6 +103,7 @@ const TableLayout = ({
                       valid={isReviewTab ? true : valid}
                       preview={preview}
                       key={answerIndex}
+                      onDrop={onDrop}
                       item={(resp && resp.value) || ""}
                       disableResponse={disableResponse}
                       {...dragItemSize}
@@ -85,7 +113,7 @@ const TableLayout = ({
                     />
                   );
                 })}
-            </ColumnContainer>
+            </div>
           </DropContainer>
         </TD>
       );
@@ -106,23 +134,4 @@ const TableLayout = ({
   );
 };
 
-export default TableLayout;
-
-const DropContainer = styled(DragDrop.DropContainer)`
-  display: flex;
-  border-radius: 4px;
-`;
-
-const ColumnContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  position: relative;
-  flex-direction: column;
-  min-height: ${({ height }) => height};
-  min-width: ${({ width }) => width};
-  width: 100%;
-  height: 100%;
-  background-color: ${({ isTransparent, theme }) =>
-    isTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor};
-`;
+export default withTheme(TableLayout);

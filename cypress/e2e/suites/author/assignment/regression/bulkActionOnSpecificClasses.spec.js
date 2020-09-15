@@ -274,7 +274,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
 
       bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index)=>{
-        if(index<10) bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.IN_PROGRESS_PAUSED)
+        if(index<10) bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.IN_GRADING)
       })
       bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index)=>{

@@ -153,13 +153,13 @@ export default class AssignmentBulkActionsPage {
 
   verifyAssignmentAttributesTestId = (testId, testName, classes, totalStudents, notStarted, inProgress, submitted,graded) => {
     this.getTestByID(testId).find(`td`).then($ele=>{
-      if (testName) expect($ele.eq(1).text().trim(),'verify testing name').to.eq(testName);
-      if (classes) expect($ele.eq(3).text().trim(),'verify testing number of classes ').to.eq(classes);
-      if (totalStudents) expect($ele.eq(4).text().trim(),'verify number of students').to.eq(totalStudents);
-      if (notStarted) expect($ele.eq(5).text().trim(),'verify not started').to.eq(notStarted);
-      if (inProgress) expect($ele.eq(6).text().trim(),'verify inProgress').to.eq(inProgress);
-      if (submitted) expect($ele.eq(7).text().trim(),'verify submitted').to.eq(submitted);
-      if (graded) expect($ele.eq(8).text().trim(),'verify graded').to.eq(graded);
+      if (testName) expect($ele.eq(0).text().trim(),'verify testing name').to.eq(testName);
+      if (classes) expect($ele.eq(2).text().trim(),'verify testing number of classes ').to.eq(classes);
+      if (totalStudents) expect($ele.eq(3).text().trim(),'verify number of students').to.eq(totalStudents);
+      if (notStarted) expect($ele.eq(4).text().trim(),'verify not started').to.eq(notStarted);
+      if (inProgress) expect($ele.eq(5).text().trim(),'verify inProgress').to.eq(inProgress);
+      if (submitted) expect($ele.eq(6).text().trim(),'verify submitted').to.eq(submitted);
+      if (graded) expect($ele.eq(7).text().trim(),'verify graded').to.eq(graded);
     })
   };
 

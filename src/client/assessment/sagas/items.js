@@ -1,7 +1,7 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import * as Sentry from "@sentry/browser";
-import { uploadToS3, notification } from "@edulastic/common";
+import { uploadToS3, notification, Effects } from "@edulastic/common";
 import { maxBy, isEmpty } from "lodash";
 import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi, testActivityApi } from "@edulastic/api";
 import { assignmentPolicyOptions, aws } from "@edulastic/constants";
@@ -256,7 +256,7 @@ function* loadUserResponse({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield takeLatest(SAVE_USER_RESPONSE, saveUserResponse),
+    yield Effects.throttleAction(5000, SAVE_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse)
   ]);
 }

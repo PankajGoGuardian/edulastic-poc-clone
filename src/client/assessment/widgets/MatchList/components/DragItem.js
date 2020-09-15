@@ -1,48 +1,13 @@
-import React, { useRef, useEffect, useState } from "react";
-import { DragSource } from "react-dnd";
+import React, { Fragment, useRef, useEffect, useState } from "react";
 import { Popover } from "antd";
-import { MathFormulaDisplay, isMobileDevice, measureText } from "@edulastic/common";
+import { MathFormulaDisplay, measureText, DragDrop } from "@edulastic/common";
 import { Index } from "../styled/Index";
 import { IconClose } from "../styled/IconClose";
 import { IconCheck } from "../styled/IconCheck";
 import { Wrapper } from "../styled/Wrapper";
-import { CLEAR } from "../../../constants/constantsForQuestions";
-import DragPreview from "../../../components/SourceDragPreview";
-
-function collectSource(connector, monitor) {
-  return {
-    connectDragSource: connector.dragSource(),
-    isDragging: monitor.isDragging()
-  };
-}
-
-const specSource = {
-  beginDrag(props) {
-    if (props.previewTab !== CLEAR && typeof props.changePreviewTab === "function") {
-      props.changePreviewTab();
-    }
-    return { item: props.item, sourceFlag: props.flag, sourceIndex: props.renderIndex };
-  },
-
-  endDrag(props, monitor) {
-    if (!monitor.didDrop()) {
-      return;
-    }
-    const itemCurrent = monitor.getItem();
-
-    const itemTo = monitor.getDropResult();
-
-    props.onDrop(itemCurrent, itemTo, true);
-  },
-  canDrag(props) {
-    return props.disableResponse !== true;
-  }
-};
 
 const DragItem = ({
-  connectDragSource,
   item,
-  isDragging,
   flag,
   correct,
   preview,
@@ -51,9 +16,7 @@ const DragItem = ({
   displayIndex,
   getStyles,
   width,
-  centerContent,
-  isPrintPreview,
-  ...restProps
+  centerContent
 }) => {
   const currentActiveItem = useRef(null);
 
@@ -115,16 +78,8 @@ const DragItem = ({
     <div
       className="drag-drop-item-match-list"
       data-cy={`drag-drop-item-${renderIndex}`}
-      style={{
-        ...getStyles({ isDragging, flag, _preview: preview, correct, width })
-      }}
+      style={getStyles({ flag, _preview: preview, correct, width })}
     >
-      {isMobileDevice() && (
-        <DragPreview isDragging={isDragging} {...restProps}>
-          {itemView}
-        </DragPreview>
-      )}
-
       {correct !== undefined && preview && showAnswer && (
         <Index preview={preview} correct={correct}>
           {displayIndex}
@@ -140,16 +95,28 @@ const DragItem = ({
     </div>
   );
 
+  const dragItemProps = item
+    ? {
+        data: {
+          item,
+          sourceFlag: flag,
+          sourceIndex: renderIndex
+        },
+        flag
+      }
+    : {};
+
+  const DragItemCont = item ? DragDrop.DragItem : Fragment;
+
   return (
-    item &&
-    connectDragSource(
+    <DragItemCont {...dragItemProps}>
       <div className="__prevent-page-break" ref={currentActiveItem} style={{ maxWidth: "100%" }}>
-        <Popover visible={showPopover && !!isActive && !isDragging} content={getContent}>
+        <Popover visible={showPopover && !!isActive} content={getContent}>
           {getContent}
         </Popover>
       </div>
-    )
+    </DragItemCont>
   );
 };
 
-export default DragSource("item", specSource, collectSource)(DragItem);
+export default DragItem;

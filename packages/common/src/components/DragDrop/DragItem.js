@@ -5,7 +5,7 @@ import { AnswerContext } from "@edulastic/common";
 import { getEmptyImage } from "react-dnd-html5-backend";
 
 const getStyles = isDragging => ({
-  opacity: isDragging ? 0 : 1
+  opacity: isDragging ? 0.2 : 1
 });
 
 const DragItem = ({ data, size, children, disabled, ...rest }) => {

@@ -36,6 +36,7 @@ const DeleteAssignmentModal = ({
   fromPlaylist = false
 }) => {
   const [confirmText, setConfirmText] = useState("");
+  const [unassignConfirmation, setUnassignConfirmation] = useState(false);
   const handleUnassign = () => {
     if (confirmText.toLocaleLowerCase() === "unassign") {
       if (lcb) {
@@ -62,50 +63,83 @@ const DeleteAssignmentModal = ({
   };
 
   return (
-    <CustomModalStyled
-      visible={toggleDeleteAssignmentModalState}
-      width="750px"
-      title="Unassign Complete Class"
-      onCancel={() => toggleDeleteAssignmentModal(false)}
-      destroyOnClose
-      footer={[
-        <ModalFooter>
-          <EduButton isGhost key="cancel" onClick={() => toggleDeleteAssignmentModal(false)}>
-            No, Cancel
-          </EduButton>
-          <EduButton
-            data-cy="submitConfirm"
-            key="delete"
-            disabled={confirmText.toLocaleLowerCase() !== "unassign"}
-            onClick={handleUnassign}
-          >
-            Yes, Unassign
-          </EduButton>
-        </ModalFooter>
-      ]}
-    >
-      <InitOptions className="delete-message-container">
-        <div className="delete-message">
-          <p>
-            This action will result in <span style={{ color: "#ed6a6b" }}> permanent deletion </span>of student
-            responses from the assigned class ,Are you sure that you want to unassign{" "}
-            <b className="delete-message-test-name">{testName}</b>?{!lcb ? " (es)." : "."}
-          </p>
-          <p>
-            If you are sure, please type <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below and proceed.
+    <>
+      <CustomModalStyled
+        visible={toggleDeleteAssignmentModalState}
+        width="750px"
+        title="Unassign Complete Class"
+        onCancel={() => toggleDeleteAssignmentModal(false)}
+        destroyOnClose
+        footer={[
+          <ModalFooter>
+            <EduButton isGhost key="cancel" onClick={() => toggleDeleteAssignmentModal(false)}>
+              No, Cancel
+            </EduButton>
+            <EduButton
+              data-cy="submitConfirm"
+              key="delete"
+              disabled={confirmText.toLocaleLowerCase() !== "unassign"}
+              onClick={() => {
+                toggleDeleteAssignmentModal(false);
+                setUnassignConfirmation(true);
+              }}
+            >
+              Yes, Unassign
+            </EduButton>
+          </ModalFooter>
+        ]}
+      >
+        <InitOptions className="delete-message-container">
+          <div className="delete-message">
+            <p>
+              This action will result in <span style={{ color: "#ed6a6b" }}> permanent deletion </span>of student
+              responses from the assigned class ,Are you sure that you want to unassign{" "}
+              <b className="delete-message-test-name">{testName}</b>?{!lcb ? " (es)." : "."}
+            </p>
+            <p>
+              If you are sure, please type <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below and
+              proceed.
+            </p>
+          </div>
+          <div className="delete-confirm-contaner">
+            <StyledInput
+              data-cy="confirmationInput"
+              className="delete-confirm-input"
+              type="text"
+              placeholder="Type the action"
+              onChange={event => setConfirmText(event.currentTarget.value)}
+            />
+          </div>
+        </InitOptions>
+      </CustomModalStyled>
+      <CustomModalStyled
+        visible={unassignConfirmation}
+        title="Alert"
+        onCancel={() => setUnassignConfirmation(false)}
+        destroyOnClose
+        footer={[
+          <ModalFooter>
+            <EduButton isGhost key="cancel" onClick={() => setUnassignConfirmation(false)}>
+              No, Cancel
+            </EduButton>
+            <EduButton
+              data-cy="submitConfirm"
+              key="delete"
+              disabled={confirmText.toLocaleLowerCase() !== "unassign"}
+              onClick={handleUnassign}
+            >
+              Yes, Unassign
+            </EduButton>
+          </ModalFooter>
+        ]}
+      >
+        <div>
+          <p style={{ color: "red" }}>
+            This action will delete the data for the entire class for this assignment. Do you want to continue?
           </p>
         </div>
-        <div className="delete-confirm-contaner">
-          <StyledInput
-            data-cy="confirmationInput"
-            className="delete-confirm-input"
-            type="text"
-            placeholder="Type the action"
-            onChange={event => setConfirmText(event.currentTarget.value)}
-          />
-        </div>
-      </InitOptions>
-    </CustomModalStyled>
+      </CustomModalStyled>
+    </>
   );
 };
 

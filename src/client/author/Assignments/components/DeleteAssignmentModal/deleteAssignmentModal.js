@@ -65,7 +65,7 @@ const DeleteAssignmentModal = ({
     <CustomModalStyled
       visible={toggleDeleteAssignmentModalState}
       width="750px"
-      title="Unassign"
+      title="Unassign Complete Class"
       onCancel={() => toggleDeleteAssignmentModal(false)}
       destroyOnClose
       footer={[

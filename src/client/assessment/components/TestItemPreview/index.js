@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { ThemeProvider, withTheme } from "styled-components";
-import { isEqual } from "lodash";
+import { get, isEqual } from "lodash";
 import { white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClockCircularOutline } from "@edulastic/icons";
@@ -310,6 +310,12 @@ class TestItemPreview extends Component {
       ? { border: isLCBView ? "1px solid #DADAE4" : "none", borderRadius: "10px" }
       : {};
 
+    const shouldHideScratchpad = isLCBView && !!hasResourceTypeQuestion;
+    const scratchpadHeight = get(scratchpadDimensions, "height", null);
+    if (scratchpadHeight && !isStudentAttempt && isLCBView && isSingleQuestionView && style) {
+      style.height = scratchpadHeight + 20;
+    }
+
     return (
       <ThemeProvider theme={{ ...themes.default }}>
         <div
@@ -331,7 +337,6 @@ class TestItemPreview extends Component {
             width={windowWidth}
             style={{
               ...style,
-              height: !isStudentAttempt && "auto",
               padding: 0
             }}
             isStudentAttempt={isStudentAttempt}
@@ -395,7 +400,7 @@ class TestItemPreview extends Component {
                   );
                 })}
               </div>
-              {((showScratchpadByDefault && !isStudentAttempt) || scratchPadMode) && (
+              {((showScratchpadByDefault && !isStudentAttempt) || scratchPadMode) && !shouldHideScratchpad && (
                 <Scratchpad
                   saveData={saveHistory}
                   data={history}
@@ -409,7 +414,7 @@ class TestItemPreview extends Component {
           {showScratchpadByDefault && (isLCBView || isExpressGrader) && history && (
             <TimeSpentWrapper margin="0px 12px 12px">
               <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
-                View at Student&apos;s resolution
+                Show student work
               </ShowUserWork>
               <IconClockCircularOutline />
               {timeSpent}s

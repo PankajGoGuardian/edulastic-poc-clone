@@ -183,9 +183,13 @@ const ClassDetails = ({
             title="Enter Google Classroom Code"
             footer={
               <ButtonWrapper>
-                <EduButton height="32px" isGhost onClick={() => setDisabled(false)}>
-                  CHANGE CLASSROOM
-                </EduButton>
+                <div>
+                  {selectedClass && selectedClass.googleCode && (
+                    <EduButton height="32px" isGhost onClick={() => setDisabled(false)}>
+                      CHANGE CLASSROOM
+                    </EduButton>
+                  )}
+                </div>
                 <div style={{ display: "flex" }}>
                   <EduButton height="32px" isGhost onClick={closeGoogleSyncModal}>
                     CANCEL
@@ -197,7 +201,11 @@ const ClassDetails = ({
               </ButtonWrapper>
             }
           >
-            <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
+            <Input
+              defaultValue={selectedClass.googleCode}
+              ref={googleCode}
+              disabled={selectedClass && selectedClass.googleCode && disabled}
+            />
             {classCodeError && (
               <div style={{ "margin-top": "10px", color: red }}>Enter a valid Google Classroom Code</div>
             )}

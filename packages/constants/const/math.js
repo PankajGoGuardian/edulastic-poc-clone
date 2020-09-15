@@ -46,16 +46,16 @@ const mathInputTypes = {
 const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", label: "Units (SI)" }];
 
 const symbols = [
-  { value: "basic", label: "Basic", width: 400, height: 320 },
-  { value: "basic_wo_number", label: "Basic w/o Numbers", width: 280, height: 250 },
-  { value: "intermediate", label: "Intermediate", width: 520, height: 270 },
-  { value: "intermediate_wo_number", label: "Intermediate w/o Numbers", width: 400, height: 250 },
-  { value: "advanced_matrices", label: "Matrices", width: 300, height: 190 },
-  { value: "advanced_trignometry", label: "Trignometry", width: 400, height: 250 },
-  { value: "geometry", label: "Geometry", width: 400, height: 250 },
-  { value: "units_si", label: "Units (SI)", width: 400, height: 250 },
-  { value: "units_us", label: "Units (US)", width: 400, height: 250 },
-  { value: "all", label: "Full", width: 520, height: 190 }
+  { value: "basic", label: "Basic", width: 400, height: 322 },
+  { value: "basic_wo_number", label: "Basic w/o Numbers", width: 280, height: 252 },
+  { value: "intermediate", label: "Intermediate", width: 520, height: 322 },
+  { value: "intermediate_wo_number", label: "Intermediate w/o Numbers", width: 400, height: 252 },
+  { value: "advanced_matrices", label: "Matrices", width: 280, height: 192 },
+  { value: "advanced_trignometry", label: "Trignometry", width: 400, height: 252 },
+  { value: "geometry", label: "Geometry", width: 400, height: 252 },
+  { value: "units_si", label: "Units (SI)", width: 400, height: 252 },
+  { value: "units_us", label: "Units (US)", width: 400, height: 252 },
+  { value: "all", label: "Full", width: 522, height: 301 }
 ];
 
 const symbolsAll = [

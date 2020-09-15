@@ -20,9 +20,9 @@ const TestActivitySubHeader = ({ title, isDocBased, location, isCliUser }) => {
     <Container isDocBased={isDocBased}>
       <BreadcrumbContainer>{!isCliUser && <Breadcrumb data={breadcrumbData} />}</BreadcrumbContainer>
       {!isDocBased && (
-        <QuestionSelectDesktop>
+        <Col>
           <QuestionSelect />
-        </QuestionSelectDesktop>
+        </Col>
       )}
     </Container>
   );
@@ -41,12 +41,6 @@ TestActivitySubHeader.defaultProps = {
 const Container = styled.div`
   padding: ${props => (props.isDocBased ? "10px 25px" : "0px")};
   display: flex;
-`;
-
-const QuestionSelectDesktop = styled(Col)`
-  @media (max-width: 768px) {
-    display: none;
-  }
 `;
 
 const BreadcrumbContainer = styled.div`

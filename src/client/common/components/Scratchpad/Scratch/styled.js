@@ -22,6 +22,7 @@ export const ZwibblerMain = styled.div`
     &:focus {
       outline: none;
     }
+    touch-action: ${({ readOnly }) => readOnly && `unset !important`};
   }
 
   & .zwibbler-overlay {

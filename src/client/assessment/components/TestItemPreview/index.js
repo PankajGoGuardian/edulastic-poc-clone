@@ -254,6 +254,7 @@ class TestItemPreview extends Component {
       isStudentReport,
       showCollapseBtn = false,
       scratchPadMode,
+      scratchpadDimensions,
       saveHistory,
       history,
       fontFamily,
@@ -395,7 +396,13 @@ class TestItemPreview extends Component {
                 })}
               </div>
               {((showScratchpadByDefault && !isStudentAttempt) || scratchPadMode) && (
-                <Scratchpad saveData={saveHistory} data={history} hideTools readOnly={readyOnlyScratchpad} />
+                <Scratchpad
+                  saveData={saveHistory}
+                  data={history}
+                  hideTools
+                  readOnly={readyOnlyScratchpad}
+                  dimensions={scratchpadDimensions}
+                />
               )}
             </ScrollContext.Provider>
           </Container>

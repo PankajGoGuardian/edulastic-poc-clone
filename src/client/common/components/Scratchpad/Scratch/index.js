@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
 import { drawTools } from "@edulastic/constants";
 import { WithResources, MathModal, getMathHtml, AssessmentPlayerContext, AnswerContext } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
@@ -46,6 +47,7 @@ const Scratchpad = ({
   updateEditMode,
   saveData,
   data,
+  dimensions,
   readOnly,
   hideTools,
   clearClicked // this is from highlight image
@@ -63,6 +65,9 @@ const Scratchpad = ({
   const { isStudentAttempt, currentItem } = useContext(AssessmentPlayerContext);
   const { isAnswerModifiable, expressGrader } = useContext(AnswerContext);
   const isLineMode = lineTypes.includes(activeMode);
+
+  const height = get(dimensions, "height", null);
+  const width = get(dimensions, "width", null);
 
   const toggleProtractor = () => {
     zwibbler.begin();
@@ -270,6 +275,12 @@ const Scratchpad = ({
         });
       });
       setZwibbler(newZwibbler);
+      if (!readOnly) {
+        updateScratchpad({
+          width: zwibblerRef.current.clientWidth,
+          height: zwibblerRef.current.clientHeight
+        });
+      }
     }
     return () => {
       setZwibbler(null);
@@ -312,6 +323,11 @@ const Scratchpad = ({
     }
   }, [isAnswerModifiable, expressGrader]);
 
+  useEffect(() => {
+    if (zwibbler) {
+      zwibbler.resize();
+    }
+  }, [width, height]);
   return (
     <ScratchpadContainer ref={zwibblerContainer}>
       {!hideToolBar && <ToolBox />}
@@ -322,6 +338,8 @@ const Scratchpad = ({
         onClick={onClickHandler}
         hideToolBar={hideToolBar}
         readOnly={readOnly}
+        height={height}
+        width={width}
       />
       <MathModal
         value=""

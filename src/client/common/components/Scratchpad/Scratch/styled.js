@@ -9,11 +9,10 @@ export const ScratchpadContainer = styled.div`
 `;
 
 export const ZwibblerMain = styled.div`
-  width: 100%;
-  border: 1px solid;
-  height: ${({ hideToolBar }) => (hideToolBar ? "100%" : "calc(100% - 90px)")};
+  width: ${({ width }) => (width ? `${width}px` : "100%")};
+  height: ${({ height, hideToolBar }) => (height ? `${height}px` : hideToolBar ? "100%" : "calc(100% - 90px)")};
   border-color: ${({ deleteMode }) => (deleteMode ? darkRed : "#cfcfcf")};
-  border: ${({ readOnly }) => readOnly && "0px"};
+  border: ${({ readOnly }) => (readOnly ? "0px" : "1px solid")};
 
   &:focus {
     outline: none;

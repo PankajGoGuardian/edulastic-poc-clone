@@ -394,6 +394,7 @@ class TestItemPreview extends Component {
                         isStudentReport={isStudentReport}
                         itemLevelScoring={itemLevelScoring}
                         showScratchpadByDefault={showScratchpadByDefault}
+                        isStudentAttempt={isStudentAttempt}
                       />
                       {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                     </>

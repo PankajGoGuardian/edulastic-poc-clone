@@ -71,6 +71,8 @@ class TestItemCol extends Component {
       itemLevelScoring,
       isStudentReport,
       isPassageWithQuestions,
+      isLCBView,
+      isStudentAttempt,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
@@ -86,6 +88,19 @@ class TestItemCol extends Component {
     }
 
     const displayFeedback = true;
+    let minHeight = null;
+    if (
+      multiple &&
+      widget.widgetType === "question" &&
+      (isLCBView || showStackedView || isDocBased || isStudentAttempt)
+    ) {
+      // we shows multiple feedback in multiple question type
+      // when scoring type is question level.
+      // feedback wrapper is required minHeight 320 at least
+      minHeight = "320px";
+    }
+
+    // question false undefined false undefined undefined true true
     return (
       <TabContainer
         updatePositionToStore={
@@ -95,7 +110,7 @@ class TestItemCol extends Component {
         questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
-        minHeight={(showStackedView || isDocBased) && widget.widgetType === "question" && "458px"}
+        minHeight={minHeight}
         itemIndex={itemIndex}
       >
         <QuestionWrapper

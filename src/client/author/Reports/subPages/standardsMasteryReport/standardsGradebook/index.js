@@ -130,7 +130,7 @@ const StandardsGradebook = ({
 
   return (
     <div>
-      {loading || loadingFiltersData ? (
+      {loading ? (
         <SpinLoader position="fixed" />
       ) : (
         <>

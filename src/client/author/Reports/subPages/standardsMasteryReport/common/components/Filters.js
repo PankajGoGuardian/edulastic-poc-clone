@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get, isEmpty, keyBy, uniqBy } from "lodash";
 import qs from "qs";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Select } from "antd";
+import { Select, Spin } from "antd";
 import { SelectInputStyled } from "@edulastic/common";
 
 import { roleuser } from "@edulastic/constants";
@@ -31,7 +31,8 @@ import {
   getPrevBrowseStandardsSelector,
   getPrevStandardsFiltersSelector,
   setPrevBrowseStandardsAction,
-  setPrevStandardsFiltersAction
+  setPrevStandardsFiltersAction,
+  getReportsStandardsFiltersLoader
 } from "../filterDataDucks";
 
 import filtersDropDownData from "../static/json/filtersDropDownData.json";
@@ -68,6 +69,7 @@ const DropdownFilters = ({ dataCy, onChange, value = "", options = [] }) => (
 );
 
 const StandardsFilters = ({
+  loading,
   filters,
   testIds,
   standardsFilters,
@@ -77,9 +79,10 @@ const StandardsFilters = ({
   interestedGrades,
   getStandardsBrowseStandardsRequest,
   getStandardsFiltersRequest,
-  setFilters,
-  setTestId,
+  setFilters: _setFilters,
+  setTestId: _setTestId,
   onGoClick: _onGoClick,
+  setShowApply,
   location,
   style,
   setPrevBrowseStandards,
@@ -88,7 +91,8 @@ const StandardsFilters = ({
   prevStandardsFilters,
   extraFilter,
   loc: _loc,
-  role
+  role,
+  showApply
 }) => {
   const browseStandardsReceiveCount = useRef(0);
   const standardsFilteresReceiveCount = useRef(0);
@@ -136,7 +140,7 @@ const StandardsFilters = ({
 
   useEffect(() => {
     const _filters = getInitialFilters();
-    setFilters(_filters);
+    _setFilters(_filters);
     // fetch standards the first time report filters are loaded
     if (browseStandards !== prevBrowseStandards) {
       const q = {
@@ -154,6 +158,15 @@ const StandardsFilters = ({
     }
     getStandardsFiltersRequest(_q);
   }, []);
+
+  useEffect(() => {
+    if (isEmpty(standardsFilters?.filters)) {
+      _setFilters({
+        ...filters,
+        termId: filters.termId || get(user, "orgData.defaultTermId", "")
+      });
+    }
+  }, [standardsFilters]);
 
   const scaleInfo = get(standardsFilters, "scaleInfo", []);
 
@@ -180,7 +193,7 @@ const StandardsFilters = ({
       ...filters,
       domainIds: urlDomainId.map(item => item.key).join()
     };
-    setFilters(_filters);
+    _setFilters(_filters);
     browseStandardsReceiveCount.current++;
   }
 
@@ -209,7 +222,7 @@ const StandardsFilters = ({
       // check if testIds in url are valid (present in the array)
       const urlTestIds = onLoadTestIds || search.testIds || [];
       const validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
-      setTestId(validTestIds);
+      _setTestId(validTestIds);
       // checks to check if saved filters match the default
       const shouldUpdateSchoolYear = onLoadFilters.termId && onLoadFilters.termId !== filters.termId;
       const shouldUpdateDomains =
@@ -220,7 +233,7 @@ const StandardsFilters = ({
         filters: { ...filters, ...onLoadFilters },
         selectedTest: validTestIds
       };
-      setFilters({ ...filters, ...onLoadFilters });
+      _setFilters({ ...filters, ...onLoadFilters });
       // update standards filters for mismatch of saved filters
       if (shouldUpdateSchoolYear) {
         const q = { termId: onLoadFilters.termId };
@@ -245,6 +258,24 @@ const StandardsFilters = ({
   }
 
   // -----|-----|-----|-----| EVENT HANDLERS BEGIN |-----|-----|-----|----- //
+  const onGoClick = () => {
+    const settings = {
+      filters: { ...filters },
+      selectedTest: testIds
+    };
+    setShowApply(false);
+    _onGoClick(settings);
+  };
+
+  const setFilters = _filters => {
+    setShowApply(true);
+    _setFilters(_filters);
+  };
+
+  const setTestId = _testId => {
+    setShowApply(true);
+    _setTestId(_testId);
+  };
 
   const updateSchoolYearDropDownCB = selected => {
     const obj = {
@@ -323,14 +354,6 @@ const StandardsFilters = ({
     }
   };
 
-  const onGoClick = () => {
-    const settings = {
-      filters: { ...filters },
-      selectedTest: testIds
-    };
-    _onGoClick(settings);
-  };
-
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
 
   const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default)?._id || "", [scaleInfo]);
@@ -398,11 +421,15 @@ const StandardsFilters = ({
   } else {
     withTestName.push(testNameFilter, domainFilter, stdProficiencyFilter);
   }
-  return (
+  return loading ? (
+    <StyledFilterWrapper style={style}>
+      <Spin />
+    </StyledFilterWrapper>
+  ) : (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+        {showApply && <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>}
       </GoButtonWrapper>
       <PerfectScrollbar>
         <SearchField>
@@ -441,6 +468,7 @@ const StandardsFilters = ({
 const enhance = compose(
   connect(
     state => ({
+      loading: getReportsStandardsFiltersLoader(state),
       browseStandards: getReportsStandardsBrowseStandards(state),
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),

@@ -51,7 +51,8 @@ const StandardsMasteryReportContainer = props => {
     showFilter,
     standardsFilters,
     filters,
-    interestedCurriculums
+    interestedCurriculums,
+    showApply
   } = props;
 
   const firstRender = useRef(true);
@@ -107,22 +108,8 @@ const StandardsMasteryReportContainer = props => {
     updateNavigation(!premium ? [computedChartNavigatorLinks[1]] : computedChartNavigatorLinks);
   }, [gradebookSettings]);
 
-  const onStandardsGradebookGoClick = _settings => {
-    const obj = {};
-    const arr = Object.keys(_settings.filters);
-    arr.map(item => {
-      if (_settings.filters[item] === "All") {
-        obj[item] = "";
-      } else {
-        obj[item] = _settings.filters[item];
-      }
-    });
-
-    setSMRSettings({
-      ...gradebookSettings,
-      selectedTest: _settings.selectedTest,
-      requestFilters: { ...obj }
-    });
+  const setShowApply = status => {
+    onRefineResultsCB(null, status, "applyButton");
   };
 
   const toggleFilter = e => {
@@ -141,6 +128,7 @@ const StandardsMasteryReportContainer = props => {
     iepStatus: "all",
     race: "all"
   });
+  const [tempDdfilter, setTempDdFilter] = useState({ ...ddfilter });
 
   let filterDropDownData = dropDownFormat.filterDropDownData;
   filterDropDownData = useMemo(() => {
@@ -160,19 +148,43 @@ const StandardsMasteryReportContainer = props => {
     role
   ]);
   const [ddfilterForPerformance, setDdFilterForPerformance] = useState(filterInitState);
+  const [tempDdfilterForPerformance, setTempDdFilterForPerformance] = useState(filterInitState);
 
   const filterDropDownCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
+    setShowApply(true);
+    setTempDdFilter({
+      ...tempDdfilter,
       [comData]: selected.key
     });
   };
 
   const filterDropDownCBForPerformance = (event, selected, comData) => {
-    setDdFilterForPerformance({
-      ...ddfilterForPerformance,
+    setShowApply(true);
+    setTempDdFilterForPerformance({
+      ...tempDdfilterForPerformance,
       [comData]: selected
     });
+  };
+
+  const onStandardsGradebookGoClick = _settings => {
+    const obj = {};
+    const arr = Object.keys(_settings.filters);
+    arr.map(item => {
+      if (_settings.filters[item] === "All") {
+        obj[item] = "";
+      } else {
+        obj[item] = _settings.filters[item];
+      }
+    });
+
+    setSMRSettings({
+      ...gradebookSettings,
+      selectedTest: _settings.selectedTest,
+      requestFilters: { ...obj }
+    });
+
+    setDdFilterForPerformance({ ...tempDdfilterForPerformance });
+    setDdFilter({ ...tempDdfilter });
   };
 
   let extraFilters = [];
@@ -220,6 +232,8 @@ const StandardsMasteryReportContainer = props => {
         location={location}
         match={match}
         style={showFilter ? { display: "block" } : { display: "none" }}
+        showApply={showApply}
+        setShowApply={setShowApply}
         extraFilter={extraFilters}
       />
       <FilterButton showFilter={showFilter} onClick={toggleFilter}>

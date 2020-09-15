@@ -127,7 +127,7 @@ const StandardsPerformance = ({
     [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]
   );
 
-  if (loading || loadingFiltersData) {
+  if (loading) {
     return <SpinLoader position="fixed" />;
   }
 

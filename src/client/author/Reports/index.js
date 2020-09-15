@@ -154,14 +154,14 @@ const Container = props => {
         />
       )}
       <MainContentWrapper>
-        {
-          !isCliUser && <SubHeader
+        {!isCliUser && (
+          <SubHeader
             breadcrumbsData={headerSettings.breadcrumbData}
             onRefineResultsCB={headerSettings.onRefineResultsCB}
             showFilter={expandFilter}
             title={headerSettings.title}
           />
-        }
+        )}
         {reportType === "custom-reports" ? (
           <Route
             exact
@@ -229,6 +229,7 @@ const Container = props => {
               {..._props}
               premium={props.premium}
               showFilter={expandFilter}
+              showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
               updateNavigation={setNavigationItems}

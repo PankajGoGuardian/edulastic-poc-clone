@@ -56,7 +56,8 @@ const PlayerHeader = ({
   enableMagnifier,
   timedAssignment,
   utaId,
-  groupId
+  groupId,
+  studentReportModal
 }) => {
   const rightButtons = (
     <SaveAndExit
@@ -66,6 +67,8 @@ const PlayerHeader = ({
       previewPlayer={previewPlayer}
       showZoomBtn
       finishTest={finishTest}
+      LCBPreviewModal={LCBPreviewModal}
+      studentReportModal={studentReportModal}
     />
   );
 

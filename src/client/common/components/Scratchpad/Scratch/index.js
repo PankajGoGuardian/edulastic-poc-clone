@@ -50,7 +50,8 @@ const Scratchpad = ({
   dimensions,
   readOnly,
   hideTools,
-  clearClicked // this is from highlight image
+  clearClicked, // this is from highlight image,
+  hideData
 }) => {
   const [zwibbler, setZwibbler] = useState();
   const [clipBoard, updateClipBoard] = useState();
@@ -340,6 +341,7 @@ const Scratchpad = ({
         readOnly={readOnly}
         height={height}
         width={width}
+        hideData={hideData}
       />
       <MathModal
         value=""
@@ -365,7 +367,8 @@ const EnhancedComponent = compose(
       fontColor: state.scratchpad.fontColor,
       activeMode: state.scratchpad.activeMode,
       deleteMode: state.scratchpad.deleteMode,
-      editMode: state.scratchpad.editMode
+      editMode: state.scratchpad.editMode,
+      hideData: state.scratchpad.hideData
     }),
     {
       toggleButtons: toggleButtonsAction,

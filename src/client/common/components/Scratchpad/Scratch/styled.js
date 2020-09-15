@@ -22,6 +22,7 @@ export const ZwibblerMain = styled.div`
     &:focus {
       outline: none;
     }
+    visibility: ${({ hideData }) => (hideData ? "hidden" : "visible")};
     touch-action: ${({ readOnly }) => readOnly && `unset !important`};
   }
 

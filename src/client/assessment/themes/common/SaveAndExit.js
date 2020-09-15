@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { toggleScratchpadVisbilityAction } from "../../../common/components/Scratchpad/duck";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 import TimedTestTimer from "./TimedTestTimer";
 
@@ -28,13 +29,24 @@ const SaveAndExit = ({
   utaId,
   groupId,
   timedAssignment,
-  isCliUser
+  isCliUser,
+  LCBPreviewModal,
+  hideData,
+  toggleScratchpadVisibility,
+  studentReportModal
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId);
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;
+  const currentVisibilityState = hideData ? "show" : "hide";
+
   return (
     <FlexContainer marginLeft="30px" alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
+      {LCBPreviewModal && !studentReportModal && (
+        <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
+          {currentVisibilityState} student work
+        </ScratchpadVisibilityToggler>
+      )}
       {showZoomBtn && (
         <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
           <IconAccessibility />
@@ -80,10 +92,12 @@ SaveAndExit.defaultProps = {
 export default connect(
   state => ({
     pauseAllowed: state.test?.settings?.pauseAllowed,
-    isCliUser: get(state, "user.isCliUser", false)
+    isCliUser: get(state, "user.isCliUser", false),
+    hideData: state?.scratchpad?.hideData
   }),
   {
-    setSettingsModalVisibility: setSettingsModalVisibilityAction
+    setSettingsModalVisibility: setSettingsModalVisibilityAction,
+    toggleScratchpadVisibility: toggleScratchpadVisbilityAction
   }
 )(SaveAndExit);
 
@@ -190,4 +204,9 @@ export const SaveAndExitButton = styled(StyledButton)`
   @media (max-width: ${smallDesktopWidth}) {
     height: ${props => props.height};
   }
+`;
+
+const ScratchpadVisibilityToggler = styled(SaveAndExitButton)`
+  width: auto !important;
+  text-transform: uppercase;
 `;

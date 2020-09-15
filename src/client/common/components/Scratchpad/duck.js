@@ -5,12 +5,14 @@ const RESET_SCRATCHPAD = "[scratchpad] reset scratchpad data";
 const SET_SELECTED_NODES = "[scratchpad] set selected nodes";
 const TOGGLE_BUTTONS = "[scratchpad] toggle buttons";
 const UPDATE_EDIT_MODE = "[scratchpad] update scratchpad edit mode";
+const TOGGLE_SCRATCHPAD_DATA_VISIBILITY = "[scratchpad] toggle scratchpad data visibility";
 
 export const updateScratchpadAction = createAction(UPDATE_SCRATCHPAD);
 export const resetScratchPadDataAction = createAction(RESET_SCRATCHPAD);
 export const setSelectedNodesAction = createAction(SET_SELECTED_NODES);
 export const toggleButtonsAction = createAction(TOGGLE_BUTTONS);
 export const updateEditModeAction = createAction(UPDATE_EDIT_MODE);
+export const toggleScratchpadVisbilityAction = createAction(TOGGLE_SCRATCHPAD_DATA_VISIBILITY);
 
 const initialState = {
   fillColor: "#ff0000",
@@ -22,7 +24,8 @@ const initialState = {
   activeMode: "",
   deleteMode: false,
   editMode: "",
-  selectedNodes: []
+  selectedNodes: [],
+  hideData: false
 };
 
 export function scratchpad(state = initialState, { type, payload }) {
@@ -41,6 +44,11 @@ export function scratchpad(state = initialState, { type, payload }) {
       };
     case RESET_SCRATCHPAD:
       return initialState;
+    case TOGGLE_SCRATCHPAD_DATA_VISIBILITY:
+      return {
+        ...state,
+        hideData: !state.hideData
+      };
     default:
       return state;
   }

@@ -62,15 +62,16 @@ const ClassificationPreview = ({
 
   const { isAnswerModifiable } = useContext(AnswerContext);
 
-  const direction = getDirection(listPosition, disableResponse);
-  const justification = getJustification(listPosition);
+  const direction = getDirection(listPosition);
+  const justifyContent = getJustification(listPosition);
+  const flexDirection =
+    (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction;
   const styles = {
     wrapperStyle: {
       display: "flex",
-      flexDirection:
-        (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
       width: "100%",
-      justifyContent: justification
+      flexDirection,
+      justifyContent
     },
     dragItemsContainerStyle: {
       display: "flex",
@@ -115,8 +116,8 @@ const ClassificationPreview = ({
   const possibleResponses =
     editCorrectAnswers.length > 0
       ? posResp.filter(
-        ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.find(resp => resp.id === ite.id).id))
-      )
+          ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.find(resp => resp.id === ite.id).id))
+        )
       : posResp;
 
   const initialLength = (colCount || 2) * (rowCount || 1);
@@ -283,8 +284,8 @@ const ClassificationPreview = ({
     shuffleOptions
       ? shuffle(duplicateResponses ? posResponses : dragItems)
       : duplicateResponses
-        ? posResponses
-        : dragItems
+      ? posResponses
+      : dragItems
   );
 
   /**
@@ -295,9 +296,9 @@ const ClassificationPreview = ({
   const verifiedGroupDragItems = duplicateResponses
     ? possibleResponseGroups.map(group => (shuffleOptions ? shuffle(group.responses) : group.responses))
     : possibleResponseGroups.map(group => {
-      const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
-      return shuffleOptions ? shuffle(responses) : responses;
-    });
+        const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
+        return shuffleOptions ? shuffle(responses) : responses;
+      });
 
   const { maxWidth: choiceMaxWidth, minWidth: choiceMinWidth } = getMaxMinWidth(posResp, fontSize);
   const { maxWidth: colTitleMaxWidth } = getMaxMinWidth(colTitles.map(title => ({ value: title })));
@@ -395,7 +396,7 @@ const ClassificationPreview = ({
         <div
           style={{
             overflow: "auto",
-            width: isPrintPreview && !isVertical && "100%"
+            width: "100%" // fixes issue with skipped, teacher feedback (testActivityReport)
           }}
         >
           {!smallSize && view === PREVIEW && (
@@ -474,11 +475,11 @@ const ClassificationPreview = ({
                                 renderIndex={possibleResponses.indexOf(ite)}
                                 disableResponse={disableResponse || !isAnswerModifiable}
                               />
-                              ))}
+                            ))}
                           </FlexContainer>
                         </FlexContainer>
                       </Fragment>
-                      )}
+                    )}
                   </FlexContainer>
                 </DropContainer>
               </ChoiceContainer>

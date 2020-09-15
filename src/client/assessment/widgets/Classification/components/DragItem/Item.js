@@ -15,7 +15,6 @@ import { InnerWrapper } from "./styled/InnerWrapper";
 import TriggerStyle from "./TriggerStyle";
 
 const Item = ({
-  isDragging,
   isTransparent,
   valid,
   preview,
@@ -45,7 +44,6 @@ const Item = ({
     }
     return (
       <InnerWrapper
-        dragging={isDragging}
         valid={valid}
         preview={preview}
         transparent={isTransparent}
@@ -72,7 +70,7 @@ const Item = ({
   const content = getContent();
   const popoverContent = getContent(true);
 
-  if (showPopover && !isDragging) {
+  if (showPopover) {
     return (
       <Popover placement="bottomLeft" content={popoverContent}>
         {content}
@@ -88,7 +86,6 @@ Item.propTypes = {
   dragHandle: PropTypes.bool.isRequired,
   item: PropTypes.string.isRequired,
   isTransparent: PropTypes.bool.isRequired,
-  isDragging: PropTypes.bool.isRequired,
   maxWidth: PropTypes.number.isRequired,
   minWidth: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,

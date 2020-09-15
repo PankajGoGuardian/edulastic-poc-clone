@@ -47,6 +47,7 @@ const CustomDragLayer = ({ showPoint }) => {
     isDragging: monitor.isDragging()
   }));
 
+  const itemDimensions = get(item, "dimensions", { width: 0, height: 0 });
   // ------------- vertical drag scroll start -----------------
   const { scrollWindowInsteadContainer, getScrollElement = () => null } = useContext(ScrollContext);
   const scrollEl = getScrollElement();
@@ -58,7 +59,7 @@ const CustomDragLayer = ({ showPoint }) => {
 
   if (scrollEl) {
     const containerTop = scrollEl.offsetTop + 20;
-    const containerBottom = scrollEl.offsetTop + scrollEl.offsetHeight - 50; // window.innerHeight - 50;
+    const containerBottom = scrollEl.offsetTop + scrollEl.offsetHeight - itemDimensions.height - 50; // window.innerHeight - 50;
     const yOffset = get(currentOffset, "y", null);
     const scrollByVertical = yOffset < containerTop ? -10 : 10;
     const target = scrollWindowInsteadContainer ? window : scrollEl;
@@ -86,10 +87,11 @@ const CustomDragLayer = ({ showPoint }) => {
   const horizontalScrollEl = horizontalScrollContext.getScrollElement();
 
   if (horizontalScrollEl) {
-    const containerLeft = horizontalScrollEl.offsetLeft + 40;
-    const containerRight = horizontalScrollEl.offsetWidth + containerLeft - 60;
+    const containerLeft = horizontalScrollEl.offsetLeft;
+    const containerRight = horizontalScrollEl.offsetWidth + containerLeft - itemDimensions.width;
     const xOffset = get(currentOffset, "x", null);
     const scrollByHorizontal = xOffset < containerLeft ? -10 : 10;
+
     if (
       !horizontalInterval.current &&
       scrollByHorizontal &&

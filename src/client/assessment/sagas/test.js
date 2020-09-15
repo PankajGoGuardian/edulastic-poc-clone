@@ -460,7 +460,7 @@ function* submitTest({ payload }) {
     if (testActivityId === "test") {
       return;
     }
-    yield testActivityApi.submit(testActivityId, groupId);
+    yield call(testActivityApi.submit, testActivityId, groupId);
     // log the details on auto submit
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });

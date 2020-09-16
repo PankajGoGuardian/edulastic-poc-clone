@@ -758,7 +758,7 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true,
           isPassageWithQuestions: true,
           canAddMultipleItems: !!payload.canAddMultipleItems,
-          itemLevelScoring:false
+          itemLevelScoring: false
         }
       };
     case ADD_PASSAGE: {
@@ -1071,13 +1071,13 @@ export function* updateItemSaga({ payload }) {
     }
     const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
-      const {isTestFlow,previousTestId} = yield select(state => get(state, "router.location.state"), {});
+      const { isTestFlow, previousTestId } = yield select(state => get(state, "router.location.state", {}));
       yield put(
         replace(
           payload.testId
             ? `/author/items/${item._id}/item-detail/test/${payload.testId}`
             : `/author/items/${item._id}/item-detail`,
-            {isTestFlow,previousTestId}
+          { isTestFlow, previousTestId }
         )
       );
     }

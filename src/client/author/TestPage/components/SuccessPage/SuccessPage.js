@@ -6,6 +6,7 @@ import { Divider } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
+import moment from "moment";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -50,6 +51,7 @@ import { getAssignmentsSelector, fetchAssignmentsAction } from "../Assign/ducks"
 const { statusConstants, passwordPolicy, type: _testTypes } = test;
 
 const sharedWithPriorityOrder = ["Public", "District", "School"];
+const AUTOMATICALLY_ON_START_DATE = "Automatically on Start Date";
 
 class SuccessPage extends React.Component {
   constructor(props) {
@@ -262,6 +264,8 @@ class SuccessPage extends React.Component {
     const _module = playlist.modules?.find(m => m?._id === assignedPlaylistModuleId);
     const moduleTitle = _module?.title || "";
 
+    const {openPolicy} = assignment;
+
     return (
       <div>
         <ShareModal
@@ -318,7 +322,12 @@ class SuccessPage extends React.Component {
                     </FlexText>
                   ) : (
                     <FlexText>
-                      <FlexText>Your students can begin work on this assessment right away.</FlexText>
+                      <FlexText>
+                        {`Your students can begin work on this assessment ${openPolicy === AUTOMATICALLY_ON_START_DATE ?
+                        assignmentStatus === "In-Progress" ? "right away" :
+                        `on ${currentClass?.startDate ? moment(currentClass.startDate).format("Do MMM, YYYY (hh:mm A)") : "assigned date and time"}` :
+                        "once it is opened by you from Live Class Board"}.`}
+                      </FlexText>
                       You can monitor student progress and responses by clicking on the &nbsp;
                       <span onClick={this.handleAssign} style={{ color: themeColor, cursor: "pointer" }}>
                         Go to Live Class Board

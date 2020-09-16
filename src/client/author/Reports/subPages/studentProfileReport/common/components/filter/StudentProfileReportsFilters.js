@@ -160,7 +160,7 @@ const StudentProfileReportsFilters = ({
     };
     setFilters(obj);
     const settings = {
-      filters: pickBy(obj, f => f !== "All" && !isEmpty(f)),
+      filters: obj,
       selectedStudent: student
     };
     _onGoClick(settings);

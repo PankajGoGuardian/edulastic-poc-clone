@@ -21,9 +21,7 @@ const AssignmentTimeEndedAlert = ({
 }) => {
   useEffect(() => {
     const { qid } = match.params || {};
-    const lastTime = window.localStorage.assessmentLastTime || Date.now();
-    const timeSpent = Date.now() - lastTime;
-    saveItemResponse(qid, timeSpent, false, groupId, { pausing: false });
+    saveItemResponse(qid, 0, false, groupId, { pausing: false });
     autoSubmitTest({ groupId, preventRouteChange: true, testActivityId: utaId, autoSubmit: true });
   }, []);
 

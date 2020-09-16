@@ -290,11 +290,11 @@ class MathInput extends React.PureComponent {
         const { hideKeyboardByDefault } = this.state;
         const textarea = this.mQuill.el().querySelector(".mq-textarea textarea");
         if (hideKeyboardByDefault) {
-          // textarea.removeAttribute("readonly");
+          textarea.removeAttribute("readonly");
           textarea.focus();
         } else {
           textarea.blur();
-          // textarea.setAttribute("readonly", "readonly");
+          textarea.setAttribute("readonly", "readonly");
           this.setState({ mathFieldFocus: true });
         }
       }
@@ -366,9 +366,6 @@ class MathInput extends React.PureComponent {
             className="input__keyboard"
             default={keyboardPosition}
             disableDragging={!(window.isMobileDevice || isDocbasedSection) || alwaysShowKeyboard}
-            ref={c => {
-              this.rnd = c;
-            }}
           >
             <MathKeyboard
               symbols={symbols}

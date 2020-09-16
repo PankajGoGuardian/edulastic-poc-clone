@@ -108,23 +108,6 @@ class MathInput extends React.PureComponent {
     );
   }
 
-  setKeyboardPosition(keyboardPosition) {
-    this.setState({ keyboardPosition });
-    this?.rnd?.updatePosition(keyboardPosition);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { symbols: oldSymbols } = prevProps;
-    const { symbols: newSymbols, isDocbasedSection = false } = this.props;
-    const { mathFieldFocus: oldMathFieldFocus } = prevState;
-    const { mathFieldFocus: newMathFieldFocus } = this.state;
-
-    if ((oldMathFieldFocus !== newMathFieldFocus || oldSymbols?.[0] !== newSymbols?.[0]) && !isDocbasedSection) {
-      const keyboardPosition = this.getKeyboardPosition();
-      this.setKeyboardPosition(keyboardPosition);
-    }
-  }
-
   getKeyboardPosition() {
     const { symbols } = this.props;
     const { top, left, height: inputH } = offset(this.containerRef.current) || { left: 0, top: 0 };

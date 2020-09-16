@@ -438,7 +438,7 @@ const AssessmentContainer = ({
 
   useEffect(() => {
     if (savingResponse) {
-      message.loading("submitting response", 0);
+      message.loading("Submitting the response", 0);
     } else {
       message.destroy();
     }

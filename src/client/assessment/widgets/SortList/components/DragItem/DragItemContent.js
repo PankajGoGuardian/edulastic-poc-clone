@@ -55,6 +55,7 @@ export const DragItemContent = ({
       checkStyle={checkStyle}
       correct={correct}
       style={style}
+      active={active}
       isPrintPreview={isPrintPreview}
     >
       {!showPreview && (

@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from "react";
 import { useDragLayer } from "react-dnd";
 import styled from "styled-components";
-import { get } from "lodash";
+import { get, isUndefined } from "lodash";
 import { ScrollContext, HorizontalScrollContext } from "@edulastic/common";
 
 const layerStyles = {
@@ -15,7 +15,7 @@ const layerStyles = {
   height: "100%"
 };
 
-const getItemStyles = (initialOffset, currentOffset) => {
+const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
   if (!initialOffset || !currentOffset) {
     return {
       display: "none"
@@ -27,8 +27,36 @@ const getItemStyles = (initialOffset, currentOffset) => {
     transform,
     WebkitTransform: transform,
     background: "white",
-    width: "max-content"
+    ...itemDimensions
   };
+};
+
+const getContainerTop = element => {
+  if (isUndefined(element.offsetTop)) {
+    return 70;
+  }
+  return element.offsetTop;
+};
+
+const getContainerBottom = element => {
+  if (isUndefined(element.offsetTop)) {
+    return window.innerHeight;
+  }
+  return element.offsetTop + element.offsetHeight;
+};
+
+const getContainerLeft = element => {
+  if (isUndefined(element.offsetLeft)) {
+    return 70;
+  }
+  return element.offsetLeft;
+};
+
+const getContainerRight = element => {
+  if (isUndefined(element.offsetLeft)) {
+    return window.innerWidth;
+  }
+  return element.offsetWidth + element.offsetLeft;
 };
 
 /**
@@ -49,20 +77,17 @@ const CustomDragLayer = ({ showPoint }) => {
 
   const itemDimensions = get(item, "dimensions", { width: 0, height: 0 });
   // ------------- vertical drag scroll start -----------------
-  const { scrollWindowInsteadContainer, getScrollElement = () => null } = useContext(ScrollContext);
+  const { getScrollElement } = useContext(ScrollContext);
   const scrollEl = getScrollElement();
-  /**
-   * in edit mode we need to scroll on the window
-   * using scrollBy on the container does not make the page scroll in edit mode
-   * @see https://snapwiz.atlassian.net/browse/EV-17407
-   */
 
   if (scrollEl) {
-    const containerTop = scrollEl.offsetTop + 20;
-    const containerBottom = scrollEl.offsetTop + scrollEl.offsetHeight - itemDimensions.height - 50; // window.innerHeight - 50;
+    const top = getContainerTop(scrollEl);
+    const bottom = getContainerBottom(scrollEl);
+    const containerTop = top;
+    const containerBottom = bottom - itemDimensions.height - 50; // window.innerHeight - 50;
     const yOffset = get(currentOffset, "y", null);
     const scrollByVertical = yOffset < containerTop ? -10 : 10;
-    const target = scrollWindowInsteadContainer ? window : scrollEl;
+
     if (
       !verticalInterval.current &&
       scrollByVertical &&
@@ -70,7 +95,7 @@ const CustomDragLayer = ({ showPoint }) => {
       (yOffset < containerTop || yOffset > containerBottom)
     ) {
       verticalInterval.current = setInterval(() => {
-        target.scrollBy({
+        scrollEl.scrollBy({
           top: scrollByVertical,
           behavior: "smooth"
         });
@@ -87,8 +112,8 @@ const CustomDragLayer = ({ showPoint }) => {
   const horizontalScrollEl = horizontalScrollContext.getScrollElement();
 
   if (horizontalScrollEl) {
-    const containerLeft = horizontalScrollEl.offsetLeft;
-    const containerRight = horizontalScrollEl.offsetWidth + containerLeft - itemDimensions.width;
+    const containerLeft = getContainerLeft(horizontalScrollEl);
+    const containerRight = getContainerRight(horizontalScrollEl) - itemDimensions.width;
     const xOffset = get(currentOffset, "x", null);
     const scrollByHorizontal = xOffset < containerLeft ? -10 : 10;
 
@@ -119,7 +144,7 @@ const CustomDragLayer = ({ showPoint }) => {
    * please have a look at useDrag section of dragItem
    */
   const preview = get(item, "preview");
-  const style = getItemStyles(initialOffset, currentOffset);
+  const style = getItemStyles(initialOffset, currentOffset, itemDimensions);
 
   return (
     <div style={layerStyles}>

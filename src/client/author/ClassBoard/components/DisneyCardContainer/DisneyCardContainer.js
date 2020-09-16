@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
 import styled from "styled-components";
-import { themeColorLighter, yellow, red, themeColor } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
@@ -41,7 +41,7 @@ import {
 } from "./styled";
 
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
-import { getAvatarName } from "../../Transformer";
+import { getAvatarName, getStudentCardStatus } from "../../Transformer";
 import { isItemVisibiltySelector, testActivtyLoadingSelector, getServerTsSelector } from "../../ducks";
 import { formatStudentPastDueTag, maxDueDateFromClassess } from "../../../../student/utils";
 
@@ -122,41 +122,11 @@ class DisneyCardContainer extends Component {
        * 2. move this sort of tranforming code somewhere else
        */
       testActivity.map((student, index) => {
-        const status = {
-          color: "",
-          status: ""
-        };
+        const status = getStudentCardStatus(student, endDate, serverTimeStamp, closed);
 
-        let hasUsedScratchPad = false;
-        student?.questionActivities.every(questionActivity => {
-          // check if this breaks after we find a true value.
-          if (questionActivity?.scratchPad?.scratchpad === true) {
-            hasUsedScratchPad = true;
-            return false;
-          }
-          return true;
-        });
-
-        if (student.status === "notStarted") {
-          status.status = "Not Started";
-          status.color = red;
-          // Assessment expired and student havent attempted.
-          if (endDate < serverTimeStamp || closed) {
-            status.status = "Absent";
-          }
-        } else if (student.status === "inProgress") {
-          status.status = "In Progress";
-          status.color = yellow;
-        } else if (student.status === "submitted") {
-          status.status = student?.graded === "GRADED" ? "Graded" : student.status;
-          status.color = themeColorLighter;
-        } else if (student.status === "redirected") {
-          status.status = "Redirected";
-          status.color = themeColorLighter;
-        } else if (student.status === "absent") {
-          status.status = "Absent";
-          status.color = red;
-        }
+        const hasUsedScratchPad = student?.questionActivities.some(
+          questionActivity => questionActivity?.scratchPad?.scratchpad === true
+        );
 
         const score = (_status, attemptScore) => {
           /* for redirected, old attempts status will show in numbers like START = 0, SUBMITTED = 1, ABSENT = 2 */

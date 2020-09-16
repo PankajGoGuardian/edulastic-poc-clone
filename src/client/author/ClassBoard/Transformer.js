@@ -4,6 +4,7 @@ import { keyBy, groupBy, get, values, flatten, isEmpty } from "lodash";
 import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
 import { getMathHtml } from "@edulastic/common";
+import { red, yellow, themeColorLighter } from "@edulastic/colors";
 import { getServerTs } from "../../student/utils";
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -430,6 +431,7 @@ export const transformGradeBookResponse = (
             color: fakeFirstName,
             present: !isAbsent,
             status: isAbsent ? "absent" : "notStarted",
+            UTASTATUS: testActivityStatus.NOT_STARTED,
             maxScore: testMaxScore,
             questionActivities: emptyQuestionActivities.map(qact => ({
               ...qact,
@@ -554,6 +556,7 @@ export const transformGradeBookResponse = (
           icon,
           color: fakeFirstName,
           status: testActivity.redirect && !studentResponse ? "redirected" : displayStatus,
+          UTASTATUS: testActivity.status,
           present,
           check: false,
           graded,
@@ -568,4 +571,48 @@ export const transformGradeBookResponse = (
       }
     )
     .filter(x => x);
+};
+
+export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, closed) => {
+  const status = {};
+  const { NOT_STARTED, START, SUBMITTED, ABSENT, UN_ENROLLED, UN_ASSIGNED } = testActivityStatus;
+  if (student.status === "redirected") {
+    status.status = "Redirected";
+    status.color = themeColorLighter;
+    return status;
+  }
+  switch (student.UTASTATUS) {
+    case NOT_STARTED:
+      status.status = "Not Started";
+      status.color = red;
+      // Assessment expired and student havent attempted.
+      if (endDate < serverTimeStamp || closed) {
+        status.status = "Absent";
+      }
+      break;
+    case START:
+      status.status = "In Progress";
+      status.color = yellow;
+      break;
+    case SUBMITTED:
+      status.status = student?.graded === "GRADED" ? "Graded" : student.status;
+      status.color = themeColorLighter;
+      break;
+    case ABSENT:
+      status.status = "Absent";
+      status.color = red;
+      break;
+    case UN_ASSIGNED:
+      status.status = "Un Assigned";
+      status.color = red;
+      break;
+    case UN_ENROLLED:
+      status.status = "Not Enrolled";
+      status.color = red;
+      break;
+    default:
+      status.status = "Not Started";
+      status.color = red;
+  }
+  return status;
 };

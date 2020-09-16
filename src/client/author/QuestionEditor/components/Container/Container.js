@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { get, debounce } from "lodash";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -11,7 +12,8 @@ import {
   EduButton,
   getFormattedAttrId,
   ItemLevelContext as HideScoringBlackContext,
-  CustomPrompt
+  CustomPrompt,
+  ScrollContext
 } from "@edulastic/common";
 import styled from "styled-components";
 import { IconClose } from "@edulastic/icons";
@@ -484,43 +486,45 @@ class Container extends Component {
             return "There are unsaved changes. Are you sure you want to leave?";
           }}
         />
-        {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(question, null, 4)}
-          </SourceModal>
-        )}
-        <ItemHeader title={question.title} reference={itemId}>
-          {this.header()}
-        </ItemHeader>
-
-        <BreadCrumbBar className={showStickyHeader ? "sticky-header" : ""}>
-          <Col xs={{ span: 8 }} lg={{ span: 12 }}>
-            {windowWidth > desktopWidth.replace("px", "") ? (
-              <SecondHeadBar breadcrumb={this.breadcrumb} />
-            ) : (
-              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-            )}
-          </Col>
-          {view !== "preview" && view !== "auditTrail" && (
-            <Col span={12}>
-              <EduButton
-                isGhost
-                height="30px"
-                id={getFormattedAttrId(`${question?.title}-how-to-author`)}
-                style={{ float: "right" }}
-              >
-                How to author
-              </EduButton>
-            </Col>
+        <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
+          {showModal && (
+            <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+              {JSON.stringify(question, null, 4)}
+            </SourceModal>
           )}
-          <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-            <div>{view === "preview" && this.renderButtons()}</div>
-          </RightActionButtons>
-        </BreadCrumbBar>
-        <QuestionContentWrapper data-cy="question-editor-container" ref={this.scrollContainer}>
-          {this.renderQuestion()}
-        </QuestionContentWrapper>
-        <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
+          <ItemHeader title={question.title} reference={itemId}>
+            {this.header()}
+          </ItemHeader>
+
+          <BreadCrumbBar className={showStickyHeader ? "sticky-header" : ""}>
+            <Col xs={{ span: 8 }} lg={{ span: 12 }}>
+              {windowWidth > desktopWidth.replace("px", "") ? (
+                <SecondHeadBar breadcrumb={this.breadcrumb} />
+              ) : (
+                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              )}
+            </Col>
+            {view !== "preview" && view !== "auditTrail" && (
+              <Col span={12}>
+                <EduButton
+                  isGhost
+                  height="30px"
+                  id={getFormattedAttrId(`${question?.title}-how-to-author`)}
+                  style={{ float: "right" }}
+                >
+                  How to author
+                </EduButton>
+              </Col>
+            )}
+            <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
+              <div>{view === "preview" && this.renderButtons()}</div>
+            </RightActionButtons>
+          </BreadCrumbBar>
+          <QuestionContentWrapper data-cy="question-editor-container" ref={this.scrollContainer}>
+            {this.renderQuestion()}
+          </QuestionContentWrapper>
+          <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
+        </ScrollContext.Provider>
       </EditorContainer>
     );
   }

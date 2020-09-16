@@ -674,7 +674,7 @@ class Display extends Component {
     return (
       <div style={{ fontSize }}>
         <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.displayWrapperRef.current }}>
-          <StyledDisplayContainer ref={this.displayWrapperRef}>
+          <StyledDisplayContainer>
             <FlexContainer justifyContent="flex-start" alignItems="baseline">
               <QuestionLabelWrapper>
                 {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -685,7 +685,7 @@ class Display extends Component {
                   <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
                 </QuestionTitleWrapper>
                 {responseposition === "top" && (
-                  <div style={containerStyle}>
+                  <div style={containerStyle} ref={this.displayWrapperRef}>
                     <StyledContainer>
                       <RelativeContainer>{responseBoxLayout}</RelativeContainer>
                     </StyledContainer>
@@ -693,7 +693,7 @@ class Display extends Component {
                   </div>
                 )}
                 {responseposition === "bottom" && (
-                  <div style={containerStyle}>
+                  <div style={containerStyle} ref={this.displayWrapperRef}>
                     <StyledContainer>
                       <RelativeContainer>{templateBoxLayout}</RelativeContainer>
                     </StyledContainer>
@@ -701,7 +701,7 @@ class Display extends Component {
                   </div>
                 )}
                 {responseposition === "left" && (
-                  <LeftContainer style={containerStyle}>
+                  <LeftContainer style={containerStyle} ref={this.displayWrapperRef}>
                     <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
                       <RelativeContainer>{responseBoxLayout}</RelativeContainer>
                     </LeftResponseContainer>
@@ -714,7 +714,7 @@ class Display extends Component {
                   </LeftContainer>
                 )}
                 {responseposition === "right" && (
-                  <RightContainer smallSize={smallSize} style={containerStyle}>
+                  <RightContainer smallSize={smallSize} style={containerStyle} ref={this.displayWrapperRef}>
                     <RightTemplateContainer
                       smallSize={smallSize}
                       studentReport={isPrintMode ? true : studentReport}

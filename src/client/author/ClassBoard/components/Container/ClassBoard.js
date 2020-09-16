@@ -12,6 +12,7 @@ import {
   IconRemove
 } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
+import { testActivityStatus } from "@edulastic/constants";
 import { Dropdown, Select } from "antd";
 import { get, isEmpty, keyBy, round } from "lodash";
 import moment from "moment";
@@ -455,11 +456,15 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudentToMarkAbsent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
-    const selectedNotStartedStudents = (selectedStudentKeys || []).filter(
-      item =>
-        mapTestActivityByStudId?.[item]?.status === "notStarted" ||
-        mapTestActivityByStudId?.[item]?.status === "redirected"
-    );
+    const selectedNotStartedStudents = (selectedStudentKeys || []).filter(studentId => {
+      const { status, UTASTATUS } = mapTestActivityByStudId?.[studentId] || {};
+      return (
+        status === "notStarted" ||
+        status === "redirected" ||
+        UTASTATUS === testActivityStatus.UN_ASSIGNED ||
+        UTASTATUS === testActivityStatus.UN_ENROLLED
+      );
+    });
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
       return notification({

@@ -431,7 +431,7 @@ export const transformGradeBookResponse = (
             color: fakeFirstName,
             present: !isAbsent,
             status: isAbsent ? "absent" : "notStarted",
-            UTASTATUS: testActivityStatus.NOT_STARTED,
+            UTASTATUS: isAbsent ? testActivityStatus.ABSENT : testActivityStatus.NOT_STARTED,
             maxScore: testMaxScore,
             questionActivities: emptyQuestionActivities.map(qact => ({
               ...qact,
@@ -603,7 +603,7 @@ export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, clo
       status.color = red;
       break;
     case UN_ASSIGNED:
-      status.status = "Un Assigned";
+      status.status = "Unassigned";
       status.color = red;
       break;
     case UN_ENROLLED:

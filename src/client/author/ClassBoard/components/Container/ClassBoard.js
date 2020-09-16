@@ -1218,6 +1218,7 @@ class ClassBoard extends Component {
                 studentItems={testActivity}
                 selectedStudent={selectedStudentId}
                 isPresentationMode={isPresentationMode}
+                isCliUser={isCliUser}
               />
             </React.Fragment>
           )}

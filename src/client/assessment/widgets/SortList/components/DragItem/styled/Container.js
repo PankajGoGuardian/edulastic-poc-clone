@@ -6,12 +6,14 @@ export const Container = styled.div`
   display: flex;
   align-items: stretch;
   cursor: pointer;
-  background: ${({ checkStyle, correct, theme, isPrintPreview }) => {
+  background: ${({ checkStyle, correct, theme, isPrintPreview, active }) => {
     if (isPrintPreview) return white;
     return checkStyle
       ? correct
         ? `${theme.widgets.sortList.dragItemCorrectTextBgColor}`
         : `${theme.widgets.sortList.dragItemIncorrectTextBgColor}`
-      : theme.widgets.sortList.dragItemContainerBgColor;
+      : active
+      ? theme.widgets.sortList.dragItemActiveBgColor
+      : theme.widgets.sortList.dragItemBgColor;
   }};
 `;

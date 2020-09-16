@@ -681,7 +681,7 @@ export const classStudentsSelector = createSelector(
 );
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,
-  state => state.removedStudents
+  state => get(state, "removedStudents", [])
 );
 
 export const getEnrollmentStatus = createSelector(

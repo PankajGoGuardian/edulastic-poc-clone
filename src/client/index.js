@@ -25,7 +25,7 @@ if (AppConfig.sentryURI) {
     whitelistUrls: [AppConfig.sentryWhiteListURLRegex],
     dsn: AppConfig.sentryURI,
     release: AppConfig.appVersion,
-    environment: AppConfig.appStage,
+    environment: AppConfig.appStage || "development",
     maxValueLength: 600, // defaults to 250 chars, we will need more info recorded.
     ignoreErrors: AppConfig.sentryIgnoreErrors,
     integrations: [new Integrations.BrowserTracing()],

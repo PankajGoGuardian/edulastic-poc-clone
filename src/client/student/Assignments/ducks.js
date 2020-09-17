@@ -96,7 +96,7 @@ export const getRedirect = (
       ((x.students.length > 0 && x.students.includes(userId)) || (!x.students.length && x._id === groupId))
   );
 
-  assignment.class = assignment.class.map(c => {
+  assignment.class = (assignment?.class || []).map(c => {
     if (!c.redirect) {
       const redirectGroups = redirects.filter(r => r._id === c._id) || [];
       let classMaxAttempts = (c.maxAttempts || assignment.maxAttempts || 1) + redirectGroups.length;

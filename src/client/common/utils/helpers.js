@@ -189,6 +189,8 @@ export const setSignOutUrl = url => {
 
 export const getSignOutUrl = () => sessionStorage.getItem("signOutUrl") || "/login";
 
+export const getStartedUrl = () => "/getStarted";
+
 export const removeSignOutUrl = () => sessionStorage.removeItem("signOutUrl");
 
 export const validateQuestionsForDocBased = questions => {

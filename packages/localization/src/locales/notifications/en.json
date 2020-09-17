@@ -1914,5 +1914,9 @@
   "receiveClasslistFailing": {
     "message": "Receive class list failing.",
     "description": ""
+  },
+  "signInUserNotFound": {
+    "message": "It seems you are new to Edulastic! Please select your role.",
+    "description": ""
   }
 }

@@ -6,7 +6,7 @@ const MainWrapper = styled.section`
   text-align: left;
   border-radius: 4px;
   max-width: 100%;
-  overflow: ${({ hasCollapseButtons }) => (hasCollapseButtons ? "hidden" : "auto")};
+  overflow: auto;
   display: flex;
   flex-direction: column;
 

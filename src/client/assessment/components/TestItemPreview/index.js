@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -207,11 +208,16 @@ class TestItemPreview extends Component {
 
   componentDidUpdate(prevProps) {
     const { cols: preCols } = prevProps;
-    const { cols, isPassageWithQuestions } = this.props;
-
-    if (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions && !isEqual(cols, preCols)) {
-      // eslint-disable-next-line react/no-did-update-set-state
+    const { cols, isPassageWithQuestions, scratchPadMode, isLCBView } = this.props;
+    if (
+      !scratchPadMode &&
+      isPassageWithQuestions &&
+      window.innerWidth < IPAD_LANDSCAPE_WIDTH &&
+      (!isEqual(cols, preCols) || scratchPadMode !== prevProps.scratchPadMode)
+    ) {
       this.setState({ toggleCollapseMode: true, collapseDirection: "left" });
+    } else if (scratchPadMode !== prevProps.scratchPadMode && scratchPadMode && !isLCBView) {
+      this.setState({ collapseDirection: "" });
     }
   }
 

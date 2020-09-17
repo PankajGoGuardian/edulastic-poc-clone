@@ -130,7 +130,6 @@ const borderStyle = css`
 export const JSXBoxWrapper = styled.div`
   position: relative;
   overflow: ${({ showBorder }) => (showBorder ? "hidden" : "auto")};
-  width: ${props => `${props.width + 5}px`};
   ${borderStyle}
 `;
 
@@ -212,7 +211,7 @@ export const JSXBox = styled.div`
 export const JSXBoxWithDropValues = styled.div`
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
 `;
 

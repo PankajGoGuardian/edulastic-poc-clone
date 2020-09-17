@@ -82,8 +82,8 @@ export const getRedirect = (
   groupId,
   userId,
   classIds,
-  reportsGroupedByClassIdentifier,
-  groupedReportsByAssignmentId
+  reportsGroupedByClassIdentifier = {},
+  groupedReportsByAssignmentId = {}
 ) => {
   /**
    * @type {Object[]}
@@ -125,9 +125,9 @@ export const transformAssignmentForRedirect = (
   groupId,
   userId,
   classIds,
-  reportsGroupedByClassIdentifier,
-  groupedReportsByAssignmentId,
-  assignment
+  reportsGroupedByClassIdentifier = {},
+  groupedReportsByAssignmentId = {},
+  assignment = {}
 ) => {
   const redirect = getRedirect(
     assignment,
@@ -590,7 +590,16 @@ function* launchAssignment({ payload }) {
       ]);
       const userId = yield select(getCurrentUserId);
       const classIds = yield select(getClassIds);
-      assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
+      const reportsGroupedByClassIdentifier = groupBy(testActivities, "assignmentClassIdentifier");
+      const groupedReportsByAssignmentId = groupBy(testActivities, item => `${item.assignmentId}_${item.groupId}`);
+      assignment = transformAssignmentForRedirect(
+        groupId,
+        userId,
+        classIds,
+        reportsGroupedByClassIdentifier,
+        groupedReportsByAssignmentId,
+        assignment
+      );
       const lastActivity = _maxBy(testActivities, "createdAt");
       const { testId, testType = "assessment", resume, timedAssignment, hasInstruction, instruction } = assignment;
       if (lastActivity && lastActivity.status === 0) {

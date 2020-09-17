@@ -48,6 +48,7 @@ const ControlButtons = styled(Button)`
 
 const AudioButton = styled(EduButton)`
   position: relative;
+  z-index: 998;
 `;
 
 const AudioControls = ({

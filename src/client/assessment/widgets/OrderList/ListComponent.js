@@ -23,7 +23,7 @@ const convertArrToObj = arr => arr.reduce((acc, curr) => ({ ...acc, [curr.id]: c
 
 class ListComponent extends Component {
   render() {
-    const { item, t, setQuestionData, fillSections, cleanSections, getContainer } = this.props;
+    const { item, t, setQuestionData, fillSections, cleanSections } = this.props;
 
     const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
     const list = get(item, "list", {});
@@ -86,7 +86,7 @@ class ListComponent extends Component {
       );
     };
 
-    if (!item || !getContainer()) return null;
+    if (!item) return null;
 
     return (
       <Question
@@ -111,7 +111,7 @@ class ListComponent extends Component {
           onChange={handleQuestionsChange}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          getContainer={getContainer}
+          useWindowAsScrollContainer
         />
       </Question>
     );
@@ -122,7 +122,6 @@ ListComponent.propTypes = {
   t: PropTypes.func.isRequired,
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
-  getContainer: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };

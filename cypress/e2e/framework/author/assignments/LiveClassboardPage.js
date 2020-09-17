@@ -96,7 +96,7 @@ class LiveClassboardPage {
   getAttemptNoOnContainerByIndexByStudentName = (stuName, ind) =>
     this.getAttemptContainerByIndexByStudentName(stuName, ind)
       .find("p")
-      .eq(0);
+      .eq(2);
 
   // *** ELEMENTS END ***
 

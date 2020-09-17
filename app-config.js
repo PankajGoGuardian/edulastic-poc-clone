@@ -17,7 +17,7 @@ const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0`;
 const sentryWhiteListURLRegex = appEnv === "production" ? /edulastic\.com/ : /snapwiz\.net/;
 const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`;
 
-const sentryURI = process.env.POI_APP_SENTRY_URI;
+const sentryURI = process.env.POI_APP_SENTRY_DSN || process.env.POI_APP_SENTRY_URI;
 const segmentURI = process.env.POI_APP_SEGMENT_URI || `${thirdPartyLibPath}/segmentjs/v4.2.2/analytics.js`;
 const segmentVersion = process.env.POI_APP_SEGMENT_VERSION || "4.2.2";
 const isSegmentEnabled = process.env.POI_APP_ENABLE_SEGMENT === "true";

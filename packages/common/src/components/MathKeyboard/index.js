@@ -39,7 +39,7 @@ class MathKeyboard extends React.PureComponent {
 
   static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS;
 
-  WITH_NUMBERS = [math.symbols[0].value, math.symbols[2].value];
+  WITH_NUMBERS = [math.symbols[0].value, math.symbols[2].value, math.symbols[9].value];
 
   state = {
     type: "",
@@ -135,7 +135,7 @@ class MathKeyboard extends React.PureComponent {
         {type !== "qwerty" && type !== "all" && (
           <MainKeyboard onInput={onInput} type={type} btns={keyboardButtons} numbers={numberButtons} />
         )}
-        {type !== "qwerty" && type === "all" && <FullKeybord onInput={onInput} />}
+        {type !== "qwerty" && type === "all" && <FullKeybord onInput={onInput} numbers={numberButtons} />}
       </MathKeyboardContainer>
     );
   }

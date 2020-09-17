@@ -584,7 +584,7 @@ class PlacementContainer extends PureComponent {
           )}
           <div className="__prevent-page-break">
             <JSXBoxWithDropValues className={dragDropBoundsClassName}>
-              <JSXBoxWrapper width={+layout.width} showBorder={hasAnnotation}>
+              <JSXBoxWrapper showBorder={hasAnnotation}>
                 {annotation && annotation.labelTop && (
                   <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
                 )}
@@ -606,24 +606,25 @@ class PlacementContainer extends PureComponent {
                       margin={margin}
                       showBorder={!hasAnnotation}
                       isPrintPreview={isPrintPreview}
+                      style={{ width: layout.width, height: layout.height }}
                     />
                   </DropContainer>
                 </div>
-                {!disableResponse && (
-                  <DragDropValues
-                    values={this.getDragDropValues()}
-                    width={valueDimensions.width}
-                    valueHeight={valueDimensions.height}
-                    layoutWidth={+layout.width}
-                  />
-                )}
-                <AnnotationRnd
-                  noBorder={view !== EDIT}
-                  question={graphData}
-                  setQuestionData={setQuestionData}
-                  disableDragging={view !== EDIT}
-                />
               </JSXBoxWrapper>
+              {!disableResponse && (
+                <DragDropValues
+                  values={this.getDragDropValues()}
+                  width={valueDimensions.width}
+                  valueHeight={valueDimensions.height}
+                  layoutWidth={+layout.width}
+                />
+              )}
+              <AnnotationRnd
+                noBorder={view !== EDIT}
+                question={graphData}
+                setQuestionData={setQuestionData}
+                disableDragging={view !== EDIT}
+              />
             </JSXBoxWithDropValues>
           </div>
           <DragPreview showPoint={showPoint} />

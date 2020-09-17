@@ -51,7 +51,8 @@ const sanitizeLatex = latex => {
     .replace(/\\end{almatrix}/g, "\\end{array}\\right.")
     .replace(/\\begin{armatrix}/g, "\\left.\\begin{array}{r}")
     .replace(/\\end{armatrix}/g, "\\end{array}\\right\\}")
-    .replace(/\\begin{array}{}\\end{array}/g, "");
+    .replace(/\\begin{array}{}\\end{array}/g, "")
+    .replace(/\\hbox{--}/g,"–");
 
   if (_latex.substr(-1) === "\\") {
     _latex = _latex.slice(0, -1);

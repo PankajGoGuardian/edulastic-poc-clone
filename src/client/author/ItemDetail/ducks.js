@@ -900,7 +900,7 @@ export function* deleteItemSaga({ payload }) {
     if (isItemPrevew) return;
 
     if (isTestFlow) {
-      yield put(push(`/author/items/${redirectId}/item-detail/test/${testId}`));
+      yield put(push(`/author/tests/${testId}/editItem/${redirectId}`));
       return;
     }
     if (redirectId) {
@@ -1075,9 +1075,9 @@ export function* updateItemSaga({ payload }) {
       yield put(
         replace(
           payload.testId
-            ? `/author/items/${item._id}/item-detail/test/${payload.testId}`
+            ? `/author/tests/${payload.testId}/editItem/${item._id}`
             : `/author/items/${item._id}/item-detail`,
-          { isTestFlow, previousTestId }
+          { isTestFlow, previousTestId }s
         )
       );
     }

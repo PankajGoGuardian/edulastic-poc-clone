@@ -558,7 +558,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
         yield put(
           push({
             pathname:
-              _isTestFlow && tId
+              (_isTestFlow||isTestFlow) && tId
                 ? `/author/tests/${tId}/editItem/${item?._id}`
                 : `/author/items/${item._id}/item-detail/test/${tId}`,
             state: {

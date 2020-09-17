@@ -77,6 +77,27 @@ class LiveClassboardPage {
 
   getPresentToggleSwitch = () => cy.get("[data-cy=studentnQuestionTab]").find('[class^="PresentationToggleSwitch"]');
 
+  getAllAttemptContainersByStudentName = stuName =>
+    this.getStudentCardByStudentName(stuName).find('[data-cy="attempt-container"]');
+
+  getAttemptContainerByIndexByStudentName = (stuName, ind) =>
+    this.getAllAttemptContainersByStudentName(stuName).eq(ind);
+
+  getScoreOnAttemptContainerByIndexByStudentName = (stuName, ind) =>
+    this.getAttemptContainerByIndexByStudentName(stuName, ind)
+      .find("p")
+      .eq(0);
+
+  getPerfOnAttemptContainerByIndexByStudentName = (stuName, ind) =>
+    this.getAttemptContainerByIndexByStudentName(stuName, ind)
+      .find("p")
+      .eq(1);
+
+  getAttemptNoOnContainerByIndexByStudentName = (stuName, ind) =>
+    this.getAttemptContainerByIndexByStudentName(stuName, ind)
+      .find("p")
+      .eq(0);
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -257,8 +278,8 @@ class LiveClassboardPage {
     cy.url().should("include", `/author/classboard/${assignmnetId}/${classId}`);
 
   checkClassName(className) {
-    return cy.get("[data-cy=CurrentClassName]").then($ele =>{
-      assert.equal($ele.text(),className,"Class name does not match :")
+    return cy.get("[data-cy=CurrentClassName]").then($ele => {
+      assert.equal($ele.text(), className, "Class name does not match :");
     });
   }
 
@@ -314,14 +335,21 @@ class LiveClassboardPage {
       .should("be.visible");
   }
 
-  checkSelectAllCheckboxOfStudent = () =>{
-
-    cy.get("[data-cy=selectAllCheckbox]").closest(`span`).then($ele=>{
-      if(!$ele.hasClass("ant-checkbox-checked")) cy.wrap($ele).click()
-    })
-  }
+  checkSelectAllCheckboxOfStudent = () => {
+    cy.get("[data-cy=selectAllCheckbox]")
+      .closest(`span`)
+      .then($ele => {
+        if (!$ele.hasClass("ant-checkbox-checked")) cy.wrap($ele).click();
+      });
+  };
 
   uncheckSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").uncheck({ force: true });
+
+  clickAttemptContainerByIndexByName = (stuName, ind) => {
+    this.getAttemptContainerByIndexByStudentName(stuName, ind).click();
+    /* avoiding route for test activity */
+    cy.contains("Student Feedback!", { timeout: 60000 }).should("be.visible");
+  };
 
   checkStudentResponseIsDisplayed = () =>
     cy
@@ -339,7 +367,10 @@ class LiveClassboardPage {
     const queCards = Object.keys(queAttempt).map(queNum => queAttempt[queNum]);
     this.getCardIndex(studentName).then(index => {
       let [totalScore, maxScore] = score.split("/").map(ele => ele.trim());
-      if ([studentSide.ABSENT, studentSide.NOT_STARTED].indexOf(status) !== -1) totalScore = `-`;
+      if ([studentSide.ABSENT, studentSide.NOT_STARTED, teacherSide.REDIRECTED].indexOf(status) !== -1) {
+        totalScore = `-`;
+        performance = "0%";
+      }
       /*  // TODO : remove log once flow is commplted
       console.log(
         "stduent stats :: ",
@@ -645,6 +676,30 @@ class LiveClassboardPage {
       expect($ele.text().replace(/\u00a0/g, " "), `verify student card score for student index ${index + 1}`).to.eq(
         `${totalScore} / ${maxScore}`
       )
+    );
+
+  showMulipleAttemptsByStuName = stuName => {
+    this.getStudentCardByStudentName(stuName)
+      .find('[data-cy="questions"]')
+      .parent()
+      .then($heading => cy.wrap($heading).trigger("mouseover", "top", { force: true }))
+      .then(() => cy.wait(1000));
+  };
+
+  verifyStudentPerfAndIndexOnAttemptContainer = (stuName, attempIndex, per) => {
+    this.getPerfOnAttemptContainerByIndexByStudentName(stuName, attempIndex).should("have.text", per);
+    this.getAttemptNoOnContainerByIndexByStudentName(stuName, attempIndex).should(
+      "have.text",
+      `Attempt ${attempIndex + 1}`
+    );
+  };
+
+  verifyStudentScoreOnAttemptContainer = (stuName, attempIndex, score) =>
+    this.getScoreOnAttemptContainerByIndexByStudentName(stuName, attempIndex).then($ele =>
+      expect(
+        $ele.text().replace(/\u00a0/g, " "),
+        `verify student card score for student(${stuName}), for container index ${attempIndex + 1}`
+      ).to.eq(`${score}`)
     );
 
   // *** APPHELPERS END ***

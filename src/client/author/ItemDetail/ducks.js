@@ -1077,7 +1077,7 @@ export function* updateItemSaga({ payload }) {
           payload.testId
             ? `/author/tests/${payload.testId}/editItem/${item._id}`
             : `/author/items/${item._id}/item-detail`,
-          { isTestFlow, previousTestId }s
+          { isTestFlow, previousTestId }
         )
       );
     }

@@ -541,9 +541,11 @@ class Container extends Component {
         state: { resetView: false, testAuthoring: false, testId: state.testId }
       });
     }
+    const {regradeFlow,previousTestId,fadeSidebar} = state || {};
     history.push({
-      pathname: isTestFlow ? `/author/items/${_id}/item-detail/test/${testId}` : `/author/items/${_id}/item-detail`,
-      state: { resetView: false }
+      // `/author/tests/${tId}/editItem/${item?._id}`
+      pathname: isTestFlow ? `/author/tests/${testId}/editItem/${_id}` : `/author/items/${_id}/item-detail`,
+      state: { isTestFlow,previousTestId,fadeSidebar}
     });
   };
 

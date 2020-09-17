@@ -391,19 +391,6 @@ export const transformGradeBookResponse = (
 
   const studentTestActivities = keyBy(testActivities, "userId");
   const testActivityQuestionActivities = groupBy(testQuestionActivities, "userId");
-  // testActivityQuestionActivities = mapValues(testActivityQuestionActivities, v => keyBy(v, "qid"));
-
-  // for students who hasn't even started the test
-  const emptyQuestionActivities = qids.map(x => ({
-    _id: x.id,
-    weight: x.weight,
-    notStarted: true,
-    disabled: x.disabled,
-    testItemId: x.testItemId,
-    qids: x.qids,
-    qLabel: x.qLabel,
-    barLabel: x.barLabel
-  }));
 
   return studentNames
     .map(
@@ -417,29 +404,12 @@ export const transformGradeBookResponse = (
         fakeLastName,
         icon
       }) => {
+        const testActivity = studentTestActivities[studentId];
+        if (!testActivity) {
+          return false;
+        }
         const fullName = `${lastName ? `${lastName}, ` : ""}${studentName ? `${studentName}` : ""}`;
         const fakeName = `${fakeFirstName} ${fakeLastName}`;
-        if (!studentTestActivities[studentId]) {
-          const isAbsent = assignmentStatus === "DONE" || endDate < serverTimeStamp;
-          return {
-            studentId,
-            studentName: fullName,
-            userName,
-            email,
-            fakeName,
-            icon,
-            color: fakeFirstName,
-            present: !isAbsent,
-            status: isAbsent ? "absent" : "notStarted",
-            UTASTATUS: isAbsent ? testActivityStatus.ABSENT : testActivityStatus.NOT_STARTED,
-            maxScore: testMaxScore,
-            questionActivities: emptyQuestionActivities.map(qact => ({
-              ...qact,
-              userId: studentId
-            }))
-          };
-        }
-        const testActivity = studentTestActivities[studentId];
 
         // TODO: for now always present
         const present = true;
@@ -557,6 +527,8 @@ export const transformGradeBookResponse = (
           color: fakeFirstName,
           status: testActivity.redirect && !studentResponse ? "redirected" : displayStatus,
           UTASTATUS: testActivity.status,
+          isEnrolled: testActivity.isEnrolled,
+          isAssigned: testActivity.isAssigned,
           present,
           check: false,
           graded,
@@ -575,13 +547,27 @@ export const transformGradeBookResponse = (
 
 export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, closed) => {
   const status = {};
-  const { NOT_STARTED, START, SUBMITTED, ABSENT, UN_ENROLLED, UN_ASSIGNED } = testActivityStatus;
+  const { NOT_STARTED, START, SUBMITTED, ABSENT } = testActivityStatus;
+  const { UTASTATUS, isEnrolled, isAssigned } = student;
   if (student.status === "redirected") {
     status.status = "Redirected";
     status.color = themeColorLighter;
     return status;
   }
-  switch (student.UTASTATUS) {
+
+  if (isEnrolled === false) {
+    status.status = "Not Enrolled";
+    status.color = red;
+    return status;
+  }
+
+  if (isAssigned === false) {
+    status.status = "Unassigned";
+    status.color = red;
+    return status;
+  }
+
+  switch (UTASTATUS) {
     case NOT_STARTED:
       status.status = "Not Started";
       status.color = red;
@@ -600,14 +586,6 @@ export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, clo
       break;
     case ABSENT:
       status.status = "Absent";
-      status.color = red;
-      break;
-    case UN_ASSIGNED:
-      status.status = "Unassigned";
-      status.color = red;
-      break;
-    case UN_ENROLLED:
-      status.status = "Not Enrolled";
       status.color = red;
       break;
     default:

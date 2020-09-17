@@ -148,14 +148,14 @@ class DisneyCardContainer extends Component {
          * for differentiating archived students
          */
         const enrollMentFlag =
-          student.enrollmentStatus == 0 ? (
+          student.isEnrolled === false ? (
             <span title="Not Enrolled">
               <ExclamationMark />
             </span>
           ) : (
             ""
           );
-        const isAcitveStudentUnassigned = student.isUnAssigned && student.enrollmentStatus === 1;
+        const isAcitveStudentUnassigned = student.isAssigned === false && student.enrollmentStatus === 1;
         const unAssignedMessage = isAcitveStudentUnassigned ? (
           <span title="Un assigned">
             <ExclamationMark />

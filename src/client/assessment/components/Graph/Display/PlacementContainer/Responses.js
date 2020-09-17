@@ -13,11 +13,11 @@ export function Responses({ values, width, valueHeight }) {
   const widths = dimensions.map(obj => Math.max(obj.scrollWidth, width));
 
   return (
-    <FlexContainer flexWrap="wrap" justifyContent="flex-start">
+    <FlexContainer flexWrap="wrap" justifyContent="flex-start" alignItems="flex-start">
       {values.map((value, i) => {
         const size = { width: widths[i], height: heights[i] };
         return (
-          <DragItem id={`response-item-${i}`} key={value.id} data={value} size={size}>
+          <DragItem id={`response-item-${i}`} key={value.id} data={value}>
             <DragItemInner {...size}>
               <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
             </DragItemInner>

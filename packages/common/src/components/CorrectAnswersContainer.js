@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -8,6 +9,7 @@ import { Subtitle } from "@edulastic/common";
 const CorrectAnswersContainer = ({
   title,
   children,
+  imageStyle,
   maxWidth,
   className,
   style = {},
@@ -25,6 +27,7 @@ const CorrectAnswersContainer = ({
       maxWidth={maxWidth}
       minWidth={minWidth}
       minHeight={minHeight}
+      imageStyle={imageStyle}
       style={style}
       noBackground={noBackground}
       showBorder={showBorder}
@@ -39,11 +42,13 @@ const CorrectAnswersContainer = ({
 
 CorrectAnswersContainer.propTypes = {
   title: PropTypes.string.isRequired,
-  children: PropTypes.any
+  children: PropTypes.any,
+  imageStyle: PropTypes.object
 };
 
 CorrectAnswersContainer.defaultProps = {
-  children: null
+  children: null,
+  imageStyle: {}
 };
 
 export default CorrectAnswersContainer;
@@ -59,5 +64,16 @@ const Container = styled.div`
   min-width: ${({ minWidth }) => minWidth || "650px"};
   border: ${({ showBorder }) => showBorder && "1px solid #d6d6d6"};
   border-radius: 4px;
+
   width: 100%;
+  img {
+    ${({ imageStyle }) =>
+      imageStyle
+        ? `
+        z-index: 1;
+        position: relative;
+      `
+        : null}
+    ${({ imageStyle }) => imageStyle}
+  }
 `;

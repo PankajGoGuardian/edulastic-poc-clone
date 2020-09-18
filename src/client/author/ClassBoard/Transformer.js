@@ -516,7 +516,8 @@ export const transformGradeBookResponse = (
         // Redirect and submit. qid="...xyz", !qids
         // on attempt qids=[...]
         const isValidQuestionActivity = (x = {}) => (x.qids && x.qids.length && x.testActivityId) || x.qid;
-
+        // has own property  then pick it or else default to true
+        const { isEnrolled = true, isAssigned = true } = testActivity;
         return {
           studentId,
           studentName: fullName,
@@ -527,8 +528,8 @@ export const transformGradeBookResponse = (
           color: fakeFirstName,
           status: testActivity.redirect && !studentResponse ? "redirected" : displayStatus,
           UTASTATUS: testActivity.status,
-          isEnrolled: testActivity.isEnrolled,
-          isAssigned: testActivity.isAssigned,
+          isEnrolled,
+          isAssigned,
           present,
           check: false,
           graded,

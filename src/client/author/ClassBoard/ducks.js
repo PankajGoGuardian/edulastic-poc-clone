@@ -716,8 +716,17 @@ export const getTestActivitySelector = createSelector(
       .filter(item => (!item.isUnAssigned && item.enrollmentStatus === 1) || showAll)
 );
 
-export const getActiveAssignedStudents = createSelector(
+export const getLCBStudentsList = createSelector(
   getAllStudentsList,
+  getTestActivitySelector,
+  (students, entities) => {
+    const testActivitiesByUserId = keyBy(entities, "studentId");
+    return students.filter(s => !!testActivitiesByUserId[s._id]);
+  }
+);
+
+export const getActiveAssignedStudents = createSelector(
+  getLCBStudentsList,
   removedStudentsSelector,
   getEnrollmentStatus,
   (students, removedStudents, enrollments) =>

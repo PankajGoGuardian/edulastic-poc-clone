@@ -69,7 +69,8 @@ import {
   stateStudentResponseSelector,
   testActivtyLoadingSelector,
   getActiveAssignedStudents,
-  getDisableMarkAsAbsentSelector
+  getDisableMarkAsAbsentSelector,
+  getLCBStudentsList
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -1275,7 +1276,7 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
-      allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
+      allStudents: getLCBStudentsList(state),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
       studentResponse: getStudentResponseSelector(state),
       qActivityByStudent: stateStudentResponseSelector(state),

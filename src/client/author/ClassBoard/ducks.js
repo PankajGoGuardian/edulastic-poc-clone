@@ -959,15 +959,7 @@ export const getIsShowUnAssignSelector = createSelector(
   getAssignedBySelector,
   getUserRole,
   testActivtyLoadingSelector,
-  (assignedBy, role, isLoading) => {
-    if (isLoading) {
-      return false;
-    }
-    if (roleuser.DA_SA_ROLE_ARRAY.includes(assignedBy.role)) {
-      return role !== roleuser.TEACHER;
-    }
-    return true;
-  }
+  (assignedBy, role, isLoading) => !isLoading && assignedBy.role === role
 );
 
 export const getAssignmentClassIdSelector = createSelector(

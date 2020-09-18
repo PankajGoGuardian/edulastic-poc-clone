@@ -18,7 +18,11 @@ export const getStandardWisePerformance = (testActivities, std) => {
     for (const qid of std.qIds) {
       const questionActs = questionActivitiesByQid[qid] || [];
       for (const qAct of questionActs) {
-        if (qAct.scoringDisabled || qAct.disabled||(!qAct.maxScore)||(!qAct.score && qAct.score !== 0)) {
+        /**
+         * if qAct.qActId not present means, then its a generated uqa from frontend.
+         *  we shouldn't consider those , since reports not considering it 
+         */
+        if (qAct.scoringDisabled || qAct.disabled || (!qAct.maxScore)||(!qAct.score && qAct.score !== 0)||(!qAct.qActId)) {
           continue;
         }
         const { studentId } = qAct;
@@ -54,7 +58,11 @@ export const getStandardWisePerformanceDetail = (testActivities, std, isPresenta
   for (const qid of std.qIds) {
     const questionActs = questionActivitiesByQid[qid] || [];
     for (const qAct of questionActs) {
-      if (qAct.disabled || qAct.scoringDisabled || qAct.maxScore == 0|| (!qAct.maxScore)) {
+       /**
+         * if qAct.qActId not present means, then its a generated uqa from frontend.
+         *  we shouldn't consider those , since reports not considering it 
+         */
+      if (qAct.disabled || qAct.scoringDisabled || qAct.maxScore == 0||(!qAct.qActId)) {
         continue;
       }
       const { studentId } = qAct;

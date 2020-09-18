@@ -16,6 +16,9 @@ const slice = createSlice({
     loadAssignment: state => {
       state.loading = true;
     },
+    stopLoading: state => {
+      state.loading = false;
+    },
     updateAssignmentClassSettings: state => {
       state.loading = true;
     },

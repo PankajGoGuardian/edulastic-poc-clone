@@ -12,6 +12,7 @@ import {
   SET_IS_PAUSED,
   SET_CURRENT_TESTACTIVITY,
   UPDATE_REMOVED_STUDENTS_LIST,
+  UPDATE_STUDENTS_LIST,
   UPDATE_CLASS_STUDENTS_LIST,
   SET_STUDENTS_GRADEBOOK,
   SET_ALL_TESTACTIVITIES_FOR_STUDENT,
@@ -432,6 +433,11 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: updatedStudents
       };
     }
+    case UPDATE_STUDENTS_LIST:
+      return {
+        ...state,
+        removedStudents: [...state.removedStudents, ...payload]
+      };
     case UPDATE_CLASS_STUDENTS_LIST:
       return {
         ...state,

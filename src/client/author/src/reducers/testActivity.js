@@ -417,6 +417,7 @@ const reducer = (state = initialState, { type, payload }) => {
           return {
             ...item,
             status: "submitted",
+            UTASTATUS: updatedActivity.status,
             graded: updatedActivity.gradedAll ? "GRADED" : "IN GRADING",
             score: updatedActivity.score,
             testActivityId: updatedActivity._id,

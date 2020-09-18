@@ -315,6 +315,7 @@ function* markAbsentSaga({ payload }) {
 function* markAsSubmittedSaga({ payload }) {
   try {
     const response = yield call(classBoardApi.markSubmitted, payload);
+    console.log(response, "===r");
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(notification, { type: "success", msg: "Successfully marked as submitted" });
   } catch (err) {

@@ -677,7 +677,7 @@ class GraphDisplay extends Component {
     return (
       <Fragment>
         {graphIsValid ? (
-          <div className="__prevent-page-break">
+          <div className="__prevent-page-break" style={{ width: "100%" }}>
             {/* zoomLevel change css transform: scale() style,
                 after changing this style you need to do full reinit of component with jsxgraph object */}
             {zl === 1 && (

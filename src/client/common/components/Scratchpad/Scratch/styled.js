@@ -8,6 +8,7 @@ export const ScratchpadContainer = styled.div`
   /* froalar z-index is 998 */
   /* @see https://snapwiz.atlassian.net/browse/EV-19269 */
   z-index: 1000;
+  display: ${({ hideData }) => (hideData ? "none" : "block")};
 `;
 
 export const ZwibblerMain = styled.div`
@@ -24,7 +25,6 @@ export const ZwibblerMain = styled.div`
     &:focus {
       outline: none;
     }
-    visibility: ${({ hideData }) => (hideData ? "hidden" : "visible")};
     touch-action: ${({ readOnly }) => readOnly && `unset !important`};
   }
 

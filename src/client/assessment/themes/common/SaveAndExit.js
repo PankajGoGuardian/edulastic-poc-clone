@@ -33,8 +33,7 @@ const SaveAndExit = ({
   isCliUser,
   LCBPreviewModal,
   hideData,
-  toggleScratchpadVisibility,
-  studentReportModal
+  toggleScratchpadVisibility
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId);
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;
@@ -43,7 +42,7 @@ const SaveAndExit = ({
   return (
     <FlexContainer marginLeft="30px" alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
-      {LCBPreviewModal && !studentReportModal && (
+      {LCBPreviewModal && (
         <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
           {currentVisibilityState} student work
         </ScratchpadVisibilityToggler>

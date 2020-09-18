@@ -60,7 +60,6 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
-  studentReportModal,
   location
 }) => {
   const query = queryString.parse(location.search);
@@ -76,7 +75,6 @@ const PlayerHeader = ({
       finishTest={finishTest}
       isCliUserPreview={cliUser}
       LCBPreviewModal={LCBPreviewModal}
-      studentReportModal={studentReportModal}
     />
   );
 

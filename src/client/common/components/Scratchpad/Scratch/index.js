@@ -329,8 +329,9 @@ const Scratchpad = ({
       zwibbler.resize();
     }
   }, [width, height]);
+
   return (
-    <ScratchpadContainer ref={zwibblerContainer}>
+    <ScratchpadContainer ref={zwibblerContainer} hideData={hideData}>
       {!hideToolBar && <ToolBox />}
       <ZwibblerMain
         deleteMode={deleteMode}
@@ -341,7 +342,6 @@ const Scratchpad = ({
         readOnly={readOnly}
         height={height}
         width={width}
-        hideData={hideData}
       />
       <MathModal
         value=""

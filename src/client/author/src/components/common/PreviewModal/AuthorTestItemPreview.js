@@ -1,6 +1,5 @@
 import { EduButton, ScrollContext, Tabs, withWindowSizes, notification } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
-import { IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Pagination } from "antd";
@@ -11,6 +10,7 @@ import { ThemeProvider } from "styled-components";
 
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
+import Divider from "../../../../../assessment/components/TestItemPreview/Divider";
 import { themes } from "../../../../../theme";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import {
@@ -23,10 +23,8 @@ import PreviewModalWithRejectNote from "./PreviewModalWithRejectNote";
 import {
   ButtonsContainer,
   ButtonsWrapper,
-  CollapseBtn,
   ColumnContentArea,
   Container,
-  Divider,
   IconArrow,
   MobileLeftSide,
   MobileRightSide,
@@ -441,23 +439,7 @@ class AuthorTestItemPreview extends Component {
 
   get collapseButtons() {
     const { collapseDirection } = this.state;
-    return (
-      <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
-        <div className="button-wrapper">
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
-            <IconChevronLeft />
-          </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} mid>
-            <div className="vertical-line first" />
-            <div className="vertical-line second" />
-            <div className="vertical-line third" />
-          </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
-            <IconGraphRightArrow />
-          </CollapseBtn>
-        </div>
-      </Divider>
-    );
+    return <Divider collapseDirection={collapseDirection} setCollapseView={this.setCollapseView} />;
   }
 
   getSectionQue = cols => {

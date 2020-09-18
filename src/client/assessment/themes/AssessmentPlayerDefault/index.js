@@ -280,8 +280,7 @@ class AssessmentPlayerDefault extends React.Component {
       showHints,
       timedAssignment = false,
       groupId,
-      utaId,
-      studentReportModal
+      utaId
     } = this.props;
     const {
       testItemState,
@@ -436,7 +435,6 @@ class AssessmentPlayerDefault extends React.Component {
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}
-            studentReportModal={studentReportModal}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"

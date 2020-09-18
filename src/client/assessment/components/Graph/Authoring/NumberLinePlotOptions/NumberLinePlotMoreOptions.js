@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import Extras from "../../../../containers/Extras";
 import { Subtitle } from "../../../../styled/Subtitle";
@@ -9,10 +10,9 @@ import { ScoreSettings } from "..";
 import Tools from "../../common/Tools";
 import DisplayOptions from "./DisplayOption";
 import Question from "../../../Question";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class NumberLinePlotMoreOptions extends Component {
-  allControls = ["undo", "redo", "clear", "trash"];
+  allControls = ["undo", "redo", "clear", "delete"];
 
   scoringTypes = [
     { label: "Exact match", value: "exactMatch" },

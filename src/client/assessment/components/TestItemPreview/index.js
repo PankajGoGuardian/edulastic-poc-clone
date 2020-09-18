@@ -11,6 +11,7 @@ import { withWindowSizes } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { Icon } from "antd";
 
+import { connect } from "react-redux";
 import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn, Dividerlines } from "./styled/Container";
@@ -266,6 +267,7 @@ class TestItemPreview extends Component {
       fontFamily,
       theme,
       t,
+      isCliUser,
       ...restProps
     } = this.props;
     const {
@@ -427,12 +429,16 @@ class TestItemPreview extends Component {
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
-          <div
-            style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}
-            className="__print-feedback-main-wrapper"
-          >
-            {this.renderFeedbacks(showStackedView)}
-          </div>
+          <>
+            {!isCliUser && (
+              <div
+                style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}
+                className="__print-feedback-main-wrapper"
+              >
+                {this.renderFeedbacks(showStackedView)}
+              </div>
+            )}
+          </>
         )}
       </ThemeProvider>
     );
@@ -442,7 +448,10 @@ class TestItemPreview extends Component {
 const enhance = compose(
   withWindowSizes,
   withTheme,
-  withNamespaces("student")
+  withNamespaces("student"),
+  connect(state => ({
+    isCliUser: get(state, "user.isCliUser", false)
+  }))
 );
 
 export default enhance(TestItemPreview);

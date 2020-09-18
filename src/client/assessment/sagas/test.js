@@ -40,6 +40,7 @@ import { CLEAR_ITEM_EVALUATION, CHANGE_VIEW } from "../../author/src/constants/a
 import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 import { PREVIEW } from "../constants/constantsForQuestions";
 import { getUserRole } from "../../author/src/selectors/user";
+import { setActiveAssignmentAction } from "../../student/sharedDucks/AssignmentModule/ducks";
 // import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants;
@@ -126,6 +127,15 @@ function* loadTest({ payload }) {
       : call(testsApi.getPublicTest, testId, { sharedType });
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
+      /**
+       * src/client/assessment/sagas/items.js:saveUserResponse
+       * requires current assignment id in store (studentAssignment.current)
+       */
+      const { assignmentId } = testActivity?.testActivity || {};
+      if (assignmentId) {
+        yield put(setActiveAssignmentAction(assignmentId));
+      }
+
       const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===

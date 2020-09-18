@@ -24,6 +24,10 @@ import { redirectPolicySelector } from "../selectors/test";
 import { getServerTs } from "../../student/utils";
 import { utaStartTimeUpdateRequired } from "../../student/sharedDucks/AssignmentModule/ducks";
 
+const { POLICY_CLOSE_MANUALLY_BY_ADMIN, POLICY_CLOSE_MANUALLY_IN_CLASS } = assignmentPolicyOptions;
+
+const manuallyClosePolicies = [POLICY_CLOSE_MANUALLY_IN_CLASS, POLICY_CLOSE_MANUALLY_BY_ADMIN];
+
 const defaultUploadFolder = aws.s3Folders.DEFAULT;
 
 function* receiveItemSaga({ payload }) {
@@ -66,6 +70,7 @@ function* saveUserResponse({ payload }) {
     // eslint-disable-next-line prefer-const
     const assignment = assignmentsByIds[assignmentId] || {};
     let { endDate } = assignment;
+    const { closePolicy } = assignment;
     const { class: clazz = [] } = assignment;
     const serverTimeStamp = getServerTs(assignment);
 
@@ -84,8 +89,12 @@ function* saveUserResponse({ payload }) {
         endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
       }
     }
-    // Expiry date for the assignment
-    if (endDate && endDate < serverTimeStamp) {
+    /**
+     * Expiry date for the assignment
+     * for manuallyClosePolicies Expiry date check is not required
+     */
+
+    if (!manuallyClosePolicies.includes(closePolicy) && endDate && endDate < serverTimeStamp) {
       notification({ messageKey: "testTimeEnded" });
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       return yield put(push("/home/assignments"));

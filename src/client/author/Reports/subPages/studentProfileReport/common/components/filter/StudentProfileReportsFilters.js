@@ -229,7 +229,12 @@ const StudentProfileReportsFilters = ({
       </SearchField>
       <SearchField>
         <FilterLabel>Class</FilterLabel>
-        <ClassAutoComplete selectedClass={selectedClass} selectCB={setSelectedClass} />
+        <ClassAutoComplete
+          grade={filters.grade !== "All" && filters.grade}
+          subject={filters.subject !== "All" && filters.subject}
+          selectedClass={selectedClass}
+          selectCB={setSelectedClass}
+        />
       </SearchField>
       <SearchField>
         <FilterLabel>Student</FilterLabel>

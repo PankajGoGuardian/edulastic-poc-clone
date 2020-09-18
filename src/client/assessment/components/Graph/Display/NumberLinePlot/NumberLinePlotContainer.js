@@ -114,13 +114,19 @@ class NumberLinePlotContainer extends PureComponent {
   }
 
   get parentWidth() {
-    // -2 done to make room for the border when width is an integer but the actual width is slightly less
-    return (this.numberLinePlotRef?.current?.clientWidth || 2) - 2;
+    return this.numberLinePlotRef?.current?.clientWidth || 2;
   }
 
   get parentHeight() {
-    // -2 done to make room for the border when width is an integer but the actual width is slightly less
-    return (this.numberLinePlotRef?.current?.clientHeight || 2) - 2;
+    return this.numberLinePlotRef?.current?.clientHeight || 2;
+  }
+
+  getAdjustedHeightAndWidth() {
+    const { layout, graphData, view } = this.props;
+    if (view === EDIT) {
+      return getAdjustedHeightAndWidth(this.parentWidth, this.parentHeight, layout, this.MIN_WIDTH, this.MIN_HEIGHT);
+    }
+    return graphData.prevContSize || layout;
   }
 
   componentDidMount() {
@@ -141,13 +147,8 @@ class NumberLinePlotContainer extends PureComponent {
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
-    const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.parentWidth,
-      this.parentHeight,
-      layout,
-      this.MIN_WIDTH,
-      this.MIN_HEIGHT
-    );
+    const adjustedHeightWidth = this.getAdjustedHeightAndWidth();
+
     if (view === EDIT) {
       setQuestionData(
         next(graphData, draft => {
@@ -189,6 +190,8 @@ class NumberLinePlotContainer extends PureComponent {
 
       this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
 
+      this._graph.resizeContainer(adjustedHeightWidth.width, adjustedHeightWidth.height);
+
       this.setElementsToGraph();
     }
 
@@ -213,13 +216,7 @@ class NumberLinePlotContainer extends PureComponent {
       view
     } = this.props;
 
-    const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.parentWidth,
-      this.parentHeight,
-      layout,
-      this.MIN_WIDTH,
-      this.MIN_HEIGHT
-    );
+    const adjustedHeightWidth = this.getAdjustedHeightAndWidth();
 
     const { disableResponse: prevDisableResponse } = prevProps;
     if (disableResponse && prevDisableResponse !== disableResponse) {
@@ -398,13 +395,7 @@ class NumberLinePlotContainer extends PureComponent {
       isV1Migrated
     } = graphData;
 
-    const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.parentWidth,
-      this.parentHeight,
-      layout,
-      this.MIN_WIDTH,
-      this.MIN_HEIGHT
-    );
+    const adjustedHeightWidth = this.getAdjustedHeightAndWidth();
 
     const _layout = {
       ...layout,

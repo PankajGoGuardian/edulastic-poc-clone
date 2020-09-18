@@ -59,14 +59,18 @@ const FractionEditor = props => {
             cleanSections={cleanSections}
             item={item}
           />
+          { /** 
           <Question
             section="main"
             label={t("common.options.annotations")}
             fillSections={fillSections}
             cleanSections={cleanSections}
           >
-            <Annotations question={item} setQuestionData={setQuestionData} editable />
+          <Annotations question={item} setQuestionData={setQuestionData} editable /> 
+           
           </Question>
+          */ 
+          }
           {advancedLink}
           <ExtraSection fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
         </ContentArea>

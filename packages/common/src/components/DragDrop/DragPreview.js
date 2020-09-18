@@ -75,6 +75,10 @@ const CustomDragLayer = ({ showPoint }) => {
     isDragging: monitor.isDragging()
   }));
 
+  if (!item || !isDragging) {
+    return null;
+  }
+
   const itemDimensions = get(item, "dimensions", { width: 0, height: 0 });
   // ------------- vertical drag scroll start -----------------
   const { getScrollElement } = useContext(ScrollContext);
@@ -134,10 +138,6 @@ const CustomDragLayer = ({ showPoint }) => {
     }
   }
   // ------------- horizontal drag scroll end ------------------
-
-  if (!isDragging) {
-    return null;
-  }
 
   /**
    * prview is React element from dragItem.

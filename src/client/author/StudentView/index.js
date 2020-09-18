@@ -132,7 +132,8 @@ class StudentViewContainer extends Component {
       selectedStudent,
       isPresentationMode,
       testItemsOrder,
-      filter
+      filter,
+      isCliUser
     } = this.props;
 
     const { loading, showFeedbackPopup, showTestletPlayer, hasStickyHeader } = this.state;
@@ -237,23 +238,25 @@ class StudentViewContainer extends Component {
               </StyledStudentTabButton>
             )}
           </StudentButtonWrapper>
-          <GiveOverallFeedBackButton
-            data-cy="overallFeedback"
-            onClick={() => this.handleShowFeedbackPopup(true)}
-            active
-          >
-            <IconFeedback color={white} />
-            {initFeedbackValue.length ? (
-              <Tooltip title={feedbackButtonToolTip} placement={hasStickyHeader ? "bottom" : "top"}>
-                <span>
-                  {`${initFeedbackValue.slice(0, 30)}
-                    ${initFeedbackValue.length > 30 ? "....." : ""}`}
-                </span>
-              </Tooltip>
-            ) : (
+          {!isCliUser && (
+            <GiveOverallFeedBackButton
+              data-cy="overallFeedback"
+              onClick={() => this.handleShowFeedbackPopup(true)}
+              active
+            >
+              <IconFeedback color={white} />
+              {initFeedbackValue.length ? (
+                <Tooltip title={feedbackButtonToolTip} placement={hasStickyHeader ? "bottom" : "top"}>
+                  <span>
+                    {`${initFeedbackValue.slice(0, 30)}
+                      ${initFeedbackValue.length > 30 ? "....." : ""}`}
+                  </span>
+                </Tooltip>
+              ) : (
                 "GIVE OVERALL FEEDBACK"
               )}
-          </GiveOverallFeedBackButton>
+            </GiveOverallFeedBackButton>
+          )}
         </StyledFlexContainer>
 
         <div ref={this.questionsContainerRef}>

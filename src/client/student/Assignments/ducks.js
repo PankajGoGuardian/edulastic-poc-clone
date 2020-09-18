@@ -103,8 +103,11 @@ export const getRedirect = (
       const reports = groupedReportsByAssignmentId[`${assignment._id}_${c._id}`] || [];
       if (classMaxAttempts <= reports.length) {
         const latestRedirect = _maxBy(redirectGroups, "redirectedDate");
-        if ((reportsGroupedByClassIdentifier[(latestRedirect?.identifier)] || []).length === 0) {
-          classMaxAttempts = reports.length + 1;
+        if (latestRedirect) {
+          const reportsByClassIdentifier = reportsGroupedByClassIdentifier[latestRedirect.identifier];
+          if (reportsByClassIdentifier && reportsByClassIdentifier.length === 0) {
+            classMaxAttempts = reports.length + 1;
+          }
         }
       }
       c.maxAttempts = classMaxAttempts;

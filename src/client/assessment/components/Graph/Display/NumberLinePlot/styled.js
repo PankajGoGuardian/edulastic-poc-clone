@@ -167,7 +167,7 @@ export const JSXBox = styled.div`
   background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
-  border: none;
+  border: 1px solid #e8e8e8;
   border-radius: 0;
   margin: ${props => (props.margin ? `${props.margin}px` : "auto")};
 `;

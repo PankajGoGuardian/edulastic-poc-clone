@@ -114,7 +114,7 @@ const PerformanceByStandards = ({
 
   const setSelectedData = ({ defaultStandardId }) => {
     const _defaultStandardId =
-      standardsDropdownData.find(s => `${s.key}` === `${defaultStandardId}`) || standardsDropdownData?.[0]?.key || "";
+      standardsDropdownData.find(s => `${s.key}` === `${defaultStandardId}`)?.key || standardsDropdownData?.[0]?.key || "";
     setStandardId(_defaultStandardId);
     setSelectedStandards([]);
     setSelectedDomains([]);

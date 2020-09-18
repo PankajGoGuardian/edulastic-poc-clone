@@ -550,7 +550,7 @@ export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, clo
   const status = {};
   const { NOT_STARTED, START, SUBMITTED, ABSENT } = testActivityStatus;
   const { UTASTATUS, isEnrolled, isAssigned } = student;
-  if (student.redirected) {
+  if (student.redirected && UTASTATUS === NOT_STARTED) {
     status.status = "Redirected";
     status.color = themeColorLighter;
     return status;

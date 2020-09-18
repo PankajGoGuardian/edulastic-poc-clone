@@ -472,8 +472,8 @@ const reducer = (state = initialState, { type, payload }) => {
         email: student.email,
         ...fakeData[index]
       }));
-
-      const activeStudents = state.data.students.filter(item => !state.removedStudents.includes(item.studentId));
+      const removedStudents = state.entities.filter(item => item.isAssigned === false).map(item => item.studentId);
+      const activeStudents = state.data.students.filter(item => !removedStudents.includes(item.studentId));
       const dataToTransform = {
         ...state.data,
         // for DONE assignment student status is absent hence update status to inprogress and increase the endDate so that student status will change to not started for done assignments
@@ -485,8 +485,6 @@ const reducer = (state = initialState, { type, payload }) => {
 
       return {
         ...state,
-        // update if removed students are added again
-        removedStudents: state.removedStudents.filter(item => !payload.includes(item)),
         data: {
           ...state.data,
           status: state.data.status === "DONE" ? "IN PROGRESS" : state.data.status,

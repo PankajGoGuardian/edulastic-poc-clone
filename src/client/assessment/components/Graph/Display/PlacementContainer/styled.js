@@ -130,7 +130,7 @@ const borderStyle = css`
 export const JSXBoxWrapper = styled.div`
   position: relative;
   overflow: ${({ showBorder }) => (showBorder ? "hidden" : "auto")};
-  ${borderStyle}
+  padding: ${props => (props.padding ? props.padding : 0)}px;
 `;
 
 export const JSXBox = styled.div`
@@ -139,7 +139,6 @@ export const JSXBox = styled.div`
   background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
-  margin: ${props => (props.margin ? props.margin : 0)}px;
   ${borderStyle}
 
   .fr-box {

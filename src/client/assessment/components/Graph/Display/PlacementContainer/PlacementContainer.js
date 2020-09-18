@@ -584,7 +584,7 @@ class PlacementContainer extends PureComponent {
           )}
           <div className="__prevent-page-break">
             <JSXBoxWithDropValues className={dragDropBoundsClassName}>
-              <JSXBoxWrapper showBorder={hasAnnotation}>
+              <JSXBoxWrapper showBorder={hasAnnotation} padding={margin}>
                 {annotation && annotation.labelTop && (
                   <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
                 )}
@@ -603,8 +603,7 @@ class PlacementContainer extends PureComponent {
                       data-cy="jxgbox"
                       id={this._graphId}
                       className="jxgbox"
-                      margin={margin}
-                      showBorder={!hasAnnotation}
+                      showBorder={hasAnnotation}
                       isPrintPreview={isPrintPreview}
                       style={{ width: layout.width, height: layout.height }}
                     />

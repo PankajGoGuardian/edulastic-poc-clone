@@ -20,7 +20,7 @@ class LCBtestSettings extends TestAssignPage {
 
   showTestLevelSettings = () => {
     if (Cypress.$('[data-cy="exit-allowed"]').length === 0) {
-      this.getShowTestLevelSettings().click();
+      this.getShowTestLevelSettings().click({ force: true });
     }
   };
 

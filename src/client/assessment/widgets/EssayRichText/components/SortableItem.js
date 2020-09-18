@@ -38,7 +38,7 @@ const SortableItem = SortableElement(({ item, i, handleActiveChange }) => {
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
-      <OptionBlock onClick={onClickHandler} className="option-block">
+      <OptionBlock onClick={onClickHandler} className="option-block" data-cy={optionKey}>
         <FormatOptionIcon />
       </OptionBlock>
       <DragHandle />

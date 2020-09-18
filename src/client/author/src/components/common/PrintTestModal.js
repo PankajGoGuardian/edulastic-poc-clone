@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Radio, Modal, Input, Alert } from "antd";
 import { EduButton, FlexContainer } from "@edulastic/common";
-import { greyThemeDark1, greyishBorder, lightGreySecondary } from "@edulastic/colors";
+import { greyThemeDark1, greyishBorder, lightGreySecondary, themeColorBlue } from "@edulastic/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { testsApi } from "@edulastic/api";
@@ -170,6 +170,10 @@ const StyledInput = styled(Input)`
   border: 1px solid ${greyishBorder};
   background: ${lightGreySecondary};
   border-radius: 0;
+  &:focus,
+  &:hover {
+    border: 1px solid ${themeColorBlue};
+  }
 `;
 
 const Info = styled.div`

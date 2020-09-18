@@ -568,7 +568,7 @@ export default class TestLibrary {
     cy.server();
     cy.route("GET", "**/test/*/regrade-assignments").as("load-test-review");
     cy.visit(`/author/tests/tab/review/id/${id}`);
-    cy.wait("@load-test-review");
+    cy.wait("@load-test-review", { timeout: 120000 }); // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
   };
 
   searchByCollection = collection => {
@@ -597,13 +597,13 @@ export default class TestLibrary {
 
   verifyDescriptionOnTestCardById = (id, desc) => this.getDescriptionOnTestCardById(id).should("have.text", desc);
 
-  verifyStandardsOnTestCardById = (id, standards) => {
+  verifyStandardsOnTestCardById = (id, standards, listview = false) => {
     this.getStandardsByTestId(id).then($ele => {
-      if ($ele.find(".ant-dropdown-trigger").length > 0)
+      if ($ele.find(".hidden-tags").length > 0)
         cy.wrap($ele)
-          .find(".ant-dropdown-trigger")
+          .find(".hidden-tags")
           .last()
-          .trigger("mouseover")
+          .trigger(`${listview ? "click" : "mouseover"}`)
           .then(() => cy.wait(500));
     });
     standards.forEach(sta =>
@@ -615,11 +615,11 @@ export default class TestLibrary {
 
   verifyTagsOnTestCardById = (id, tags) => {
     this.getStandardsByTestId(id).then($ele => {
-      if ($ele.find(".ant-dropdown-trigger").length > 0)
+      if ($ele.find(".hidden-tags").length > 0)
         cy.wrap($ele)
-          .find(".ant-dropdown-trigger")
+          .find(".hidden-tags")
           .first()
-          .trigger("mouseover")
+          .click({ force: true })
           .then(() => cy.wait(500));
     });
     tags.forEach(sta =>
@@ -631,10 +631,10 @@ export default class TestLibrary {
 
   verifyGradesOnTestCardPopUp = grades => {
     this.getGradesOnTestCardPopUp().then($ele => {
-      if ($ele.find(".ant-dropdown-trigger").length > 0)
+      if ($ele.find(".hidden-tags").length > 0)
         cy.wrap($ele)
-          .find(".ant-dropdown-trigger")
-          .trigger("mouseover")
+          .find(".hidden-tags")
+          .click({ force: true })
           .then(() => cy.wait(500));
     });
     grades.forEach(grade => {
@@ -646,16 +646,31 @@ export default class TestLibrary {
 
   verifySubjectsOnTestCardPopUp = subjects =>
     this.getTestSubjectsOnTestCardPopUp().then($ele => {
-      if ($ele.find(".ant-dropdown-trigger").length > 0)
+      if ($ele.find(".hidden-tags").length > 0)
         cy.wrap($ele)
-          .find(".ant-dropdown-trigger")
-          .trigger("mouseover")
+          .find(".hidden-tags")
+          .click({ force: true })
           .then(() => cy.wait(500));
 
       subjects.forEach(sub => {
         this.getTestSubjectsOnTestCardPopUp()
           .find("span")
           .contains(sub);
+      });
+    });
+
+  verifyTagsOnTestCardPopUp = tags =>
+    this.getTestTagsOnTestCardPopUp().then($ele => {
+      if ($ele.find(".hidden-tags").length > 0)
+        cy.wrap($ele)
+          .find(".hidden-tags")
+          .click({ force: true })
+          .then(() => cy.wait(500));
+
+      tags.forEach(tag => {
+        this.getTestSubjectsOnTestCardPopUp()
+          .find("span")
+          .contains(tag);
       });
     });
 

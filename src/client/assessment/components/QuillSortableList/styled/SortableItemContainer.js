@@ -43,7 +43,7 @@ export const SortableItemContainer = styled.div.attrs({
       styleType === "list" || styleType === "inline" ? "none" : `1px solid ${greyThemeLight}`};
 
     .froala-wrapper {
-      padding: 5px 0px;
+      padding: 8px 0px;
       width: calc(100% - 65px); /* 65px is the combined width of hamburger and delete icons  */
     }
   }

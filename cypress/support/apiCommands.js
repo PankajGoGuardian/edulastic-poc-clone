@@ -4,11 +4,12 @@ import uuidv4 from "uuid/v4";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
 
 const ENV = Cypress.env("ENVIRONMENT") || "local";
+const AGENT = Cypress.env("AGENT") ? `-${Cypress.env("AGENT")}` : "";
 const BASE_URL = Cypress.config("API_URL");
 
 const { _ } = Cypress;
 const fixtureFolderPath = "cypress/fixtures";
-const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}.json`;
+const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}${AGENT}.json`;
 const daCredential = { username: "da.automation@snapwiz.com", password: "automation" };
 const NO_ITEMS_TO_DELETE = 50;
 
@@ -335,8 +336,9 @@ Cypress.Commands.add("deleteTestData", () => {
 
 Cypress.Commands.add("createTestDataFile", () => {
   cy.task("readFileContent", deleteTestDataFile).then(fileContent => {
-    let testData = fileContent !== null ? JSON.parse(fileContent) : {};
-    cy.writeFile(deleteTestDataFile, testData);
+    if (fileContent === null) {
+      cy.writeFile(deleteTestDataFile, {});
+    }
   });
 });
 
@@ -468,9 +470,9 @@ Cypress.Commands.add("saveSchoolToDelete", schoolJson => {
   }
 });
 
-Cypress.Commands.add("getAllTestsAndDelete", (publisher, password = "snapwiz", testsToExclude = []) => {
+Cypress.Commands.add("getAllTestsAndDelete", (publisher, password = "snapwiz", testsToExclude = [], filters = {}) => {
   cy.setToken(publisher, password).then(() => {
-    cy.getAllOwnTests().then(testIds => {
+    cy.getAllOwnTests(filters).then(testIds => {
       // console.log("all tests - authored by me : ", testIds);
       testIds.forEach(testObj => {
         if (!testsToExclude.includes(testObj._id)) cy.deleteTest(testObj);
@@ -479,9 +481,9 @@ Cypress.Commands.add("getAllTestsAndDelete", (publisher, password = "snapwiz", t
   });
 });
 
-Cypress.Commands.add("getAllItemsAndDelete", (publisher, password = "snapwiz", itemsToExclude = []) => {
+Cypress.Commands.add("getAllItemsAndDelete", (publisher, password = "snapwiz", itemsToExclude = [], filters = {}) => {
   cy.setToken(publisher, password).then(() => {
-    cy.getAllOwnItems().then(itemIds => {
+    cy.getAllOwnItems(filters).then(itemIds => {
       // console.log("all items - authored by me : ", itemIds);
       itemIds.forEach(itemObj => {
         if (!itemsToExclude.includes(itemObj._id)) cy.deleteItem(itemObj);
@@ -490,8 +492,12 @@ Cypress.Commands.add("getAllItemsAndDelete", (publisher, password = "snapwiz", i
   });
 });
 
-Cypress.Commands.add("getAllOwnTests", (access_token = getAccessToken()) => {
-  let testIds = [];
+Cypress.Commands.add("getAllOwnTests", (filters = {}, access_token = getAccessToken()) => {
+  const testIds = [];
+  /* filters:{
+    collections:[collection_1_id,collection_2_id....]
+  } */
+  const { collections = [] } = filters;
   return cy
     .request({
       url: `${BASE_URL}/search/tests`,
@@ -501,7 +507,7 @@ Cypress.Commands.add("getAllOwnTests", (access_token = getAccessToken()) => {
           questionType: "",
           depthOfKnowledge: "",
           authorDifficulty: "",
-          collections: [],
+          collections,
           curriculumId: "",
           status: "",
           standardIds: [],
@@ -532,8 +538,12 @@ Cypress.Commands.add("getAllOwnTests", (access_token = getAccessToken()) => {
     .then(() => testIds);
 });
 
-Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
-  let itemIds = [];
+Cypress.Commands.add("getAllOwnItems", (filters = {}, access_token = getAccessToken()) => {
+  const itemIds = [];
+  /* filters:{
+    collections:[collection_1_id,collection_2_id....]
+  } */
+  const { collections = [] } = filters;
   return cy
     .request({
       url: `${BASE_URL}/search/items`,
@@ -546,7 +556,7 @@ Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
           questionType: "",
           depthOfKnowledge: "",
           authorDifficulty: "",
-          collections: [],
+          collections,
           status: "",
           grades: [],
           tags: [],
@@ -576,4 +586,15 @@ Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
       });
     })
     .then(() => itemIds);
+});
+
+Cypress.Commands.add("deletePlaylistEntry", playlistId => {
+  cy.readFile(`${deleteTestDataFile}`).then(dataToDelete => {
+    if (dataToDelete.playlist) {
+      const newPlaylist = dataToDelete.playlist.filter(ele => ele._id !== playlistId);
+      delete dataToDelete.playlist;
+      dataToDelete.playlist = newPlaylist;
+      cy.writeFile(`${deleteTestDataFile}`, dataToDelete);
+    }
+  });
 });

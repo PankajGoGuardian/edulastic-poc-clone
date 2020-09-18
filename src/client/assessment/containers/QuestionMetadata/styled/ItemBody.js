@@ -19,9 +19,7 @@ export const ItemBody = styled.div`
 
   .ant-select-selection,
   .ant-input {
-    min-height: 40px;
     background: ${props => props.theme.questionMetadata.antSelectSelectionBgColor};
-    padding-top: 4px;
   }
 
   .ant-select-selection {

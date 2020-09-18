@@ -107,7 +107,10 @@ function* saveQuestionSaga() {
           backText: "Back to item bank",
           backUrl: "/author/items",
           itemDetail: false,
-          ...stateToFollow
+          ...stateToFollow,
+          isTestFlow,
+          previousTestId,
+          regradeFlow
         }
       });
     }

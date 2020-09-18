@@ -7,6 +7,7 @@ import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview"
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import MetadataPage from "../../../../framework/author/itemList/itemDetail/metadataPage";
 import { DIFFICULTY, DOK } from "../../../../framework/constants/questionAuthoring";
+import { CUSTOM_COLLECTIONS } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, () => {
   const testLibraryPage = new TestLibrary();
@@ -22,7 +23,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     name: "Test Item Group",
     grade: "Kindergarten",
     subject: "Math",
-    collections: "auto collection 1"
+    collections: commomonCollection
   };
 
   const commonStandardForAutoselect_1 = {
@@ -135,23 +136,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     email: "content.editor.1@snapwiz.com",
     pass: "snapwiz"
   };
-  const Teacher = {
-    email: "teacher2.for.dynamic.test@snapwiz.com",
-    pass: "snapwiz"
-  };
 
   const groups = {
     1: { items: [] },
     2: { items: [] },
     3: { items: [] }
   };
-
+  /* auto collection 2 */
   const itemsToCreate = ["MCQ_TF.7", "MCQ_TF.8", "MCQ_TF.9"];
   const itemIds = [];
+  const collectionid = CUSTOM_COLLECTIONS.AUTO_COLLECTION_2;
 
   before("Login and create new items", () => {
-    cy.getAllTestsAndDelete(contEditor.email);
-    cy.getAllItemsAndDelete(contEditor.email);
+    cy.getAllTestsAndDelete(contEditor.email, contEditor.pass, undefined, { collections: [collectionid] });
+    cy.getAllItemsAndDelete(contEditor.email, contEditor.pass, undefined, { collections: [collectionid] });
     cy.login("publisher", contEditor.email, contEditor.pass);
     itemsToCreate.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then(id => {
@@ -203,7 +201,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     });
     context(">dok", () => {
       before("login", () => {
-        cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
       before("create test", () => {
@@ -228,7 +225,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     });
     context(">difficulty", () => {
       before("login", () => {
-        cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
       before("create test", () => {
@@ -253,7 +249,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
     });
     context(">tags", () => {
       before("login", () => {
-        cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
       before("create test", () => {

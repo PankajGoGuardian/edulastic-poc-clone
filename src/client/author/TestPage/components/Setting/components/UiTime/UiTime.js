@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Radio, Select } from "antd";
 import styled from "styled-components";
 import { CommonText, RowWrapper, ContentWrapper } from "./styled";
-import { ActivityInput, Title, InputTitle, Body, Block, RadioWrapper, RadioGroup } from "../MainSetting/styled";
+import { ActivityInput, Title, InputTitle, Body, Block, RadioWrapper, RadioGroup } from "../Container/styled";
 
 const renderBodyContent = () => {
   const content = [

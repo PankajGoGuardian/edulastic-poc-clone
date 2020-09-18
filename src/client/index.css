@@ -1996,15 +1996,15 @@ span.token.active-word {
 .ant-radio-input:focus + .ant-radio-inner,
 .ant-radio-wrapper:hover .ant-radio-inner,
 .ant-radio:hover .ant-radio-inner {
-  border-color: #1ab394;
+  border-color: rgba(63, 132, 229, 1);
 }
 
 .ant-radio-checked .ant-radio-inner {
-  border-color: #1ab394;
+  border-color: rgba(63, 132, 229, 1);
 }
 
 .ant-radio-checked .ant-radio-inner::after {
-  background-color: #1ab394;
+  background-color: rgba(63, 132, 229, 1);
 }
 
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),

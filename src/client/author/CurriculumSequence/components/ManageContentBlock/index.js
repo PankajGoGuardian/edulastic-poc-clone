@@ -252,8 +252,9 @@ const ManageContentBlock = props => {
                 onChange={onSearchChange}
                 value={searchStrings}
                 dropdownStyle={{ display: "none" }}
+                data-cy="container-search-bar"
               />
-              <SearchIcon color={themeColor} />
+              <SearchIcon color={themeColor} onClick={() => onSearchChange(searchStrings)} />
             </SearchBoxContainer>
             <ActionButton data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
               <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
@@ -296,7 +297,11 @@ const ManageContentBlock = props => {
             <>
               <SearchByNavigationBar justify="flex-start">
                 {resourceTabs.map(tab => (
-                  <SearchByTab onClick={() => setSearchByTab(tab)} isTabActive={tab.includes(searchResourceBy)}>
+                  <SearchByTab
+                    data-cy={tab}
+                    onClick={() => setSearchByTab(tab)}
+                    isTabActive={tab.includes(searchResourceBy)}
+                  >
                     {tab}
                   </SearchByTab>
                 ))}

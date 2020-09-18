@@ -37,6 +37,7 @@ const ADD_BULK_TEACHER_SUCCESS = "[teacher] add bulk teacher success";
 const ADD_BULK_TEACHER_ERROR = "[teacher] add bulk teacher error";
 
 const SET_TEACHERDETAIL_MODAL_VISIBLE = "[teacher] set teacher detail modal visible";
+const TOGGLE_BROADCAST_SUMMARY = "[broadcast] toggle broadcast summary";
 
 const REMOVE_USERS_ENROLLMENTS_REQUEST = "[Admin] remove enrollment request";
 const REMOVE_USERS_ENROLLMENTS_SUCCESS = "[Admin] remove enrollment success";
@@ -71,6 +72,8 @@ export const addBulkTeacherAdminSuccessAction = createAction(ADD_BULK_TEACHER_SU
 export const addBulkTeacherAdminErrorAction = createAction(ADD_BULK_TEACHER_ERROR);
 
 export const setTeachersDetailsModalVisibleAction = createAction(SET_TEACHERDETAIL_MODAL_VISIBLE);
+
+export const toggleBroadcastSummaryAction = createAction(TOGGLE_BROADCAST_SUMMARY);
 
 export const removeUserEnrollmentsAction = createAction(REMOVE_USERS_ENROLLMENTS_REQUEST);
 export const removeUserEnrollmentsSuccessAction = createAction(REMOVE_USERS_ENROLLMENTS_SUCCESS);
@@ -121,21 +124,11 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
-  // searchName: "",
-  // filtersColumn: "",
-  // filtersValue: "",
-  // filtersText: "",
   showActiveUsers: true,
   pageNo: 1,
   bulkTeacherData: [],
-  teacherDetailsModalVisible: false
-  // filters: {
-  //   other: {
-  //     type: "",
-  //     value: ""
-  //   }
-  // },
-  // role: ""
+  teacherDetailsModalVisible: false,
+  showBroadcastSummary: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -270,6 +263,10 @@ export const reducer = createReducer(initialState, {
         state.data.result[id] = _user;
       });
     }
+  },
+
+  [TOGGLE_BROADCAST_SUMMARY]: (state, { payload }) => {
+    state.showBroadcastSummary = payload;
   },
   [REMOVE_USERS_ENROLLMENTS_REQUEST]: state => {
     state.deleting = true;

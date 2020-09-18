@@ -758,7 +758,7 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true,
           isPassageWithQuestions: true,
           canAddMultipleItems: !!payload.canAddMultipleItems,
-          itemLevelScoring: false
+          itemLevelScoring:false
         }
       };
     case ADD_PASSAGE: {
@@ -874,7 +874,7 @@ function* receiveItemSaga({ payload }) {
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (err) {
     Sentry.captureException(err);
-    let msg = "Unable to retrieve the item. Please contact support.";
+    let msg = "Receive item by id is failing";
     if (err.status === 404) {
       msg = "Item not found";
       yield put(push("/author/items"));
@@ -900,7 +900,7 @@ export function* deleteItemSaga({ payload }) {
     if (isItemPrevew) return;
 
     if (isTestFlow) {
-      yield put(push(`/author/tests/${testId}/editItem/${redirectId}`));
+      yield put(push(`/author/items/${redirectId}/item-detail/test/${testId}`));
       return;
     }
     if (redirectId) {
@@ -1071,13 +1071,13 @@ export function* updateItemSaga({ payload }) {
     }
     const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
-      const { isTestFlow, previousTestId } = yield select(state => get(state, "router.location.state", {}));
+      const {isTestFlow,previousTestId} = yield select(state => get(state, "router.location.state"), {});
       yield put(
         replace(
           payload.testId
-            ? `/author/tests/${payload.testId}/editItem/${item._id}`
+            ? `/author/items/${item._id}/item-detail/test/${payload.testId}`
             : `/author/items/${item._id}/item-detail`,
-          { isTestFlow, previousTestId }
+            {isTestFlow,previousTestId}
         )
       );
     }
@@ -1150,7 +1150,7 @@ export function* updateItemSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.error(err);
-    const errorMessage = "Unable to save the item. Please contact support.";
+    const errorMessage = "Item save is failing";
     notification({ msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
@@ -1200,7 +1200,7 @@ export function* updateItemDocBasedSaga({ payload }) {
     return { testId, ...item };
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Unable to save the item. Please contact support.";
+    const errorMessage = "Item save is failing";
     notification({ msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,

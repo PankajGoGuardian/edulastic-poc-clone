@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Tabs } from "antd";
-import { get } from "lodash";
+import { get, isEqual } from "lodash";
 import moment from "moment";
 import { themeColor } from "@edulastic/colors";
 import { IconPencilEdit } from "@edulastic/icons";
+import { roleuser } from "@edulastic/constants";
 import { ContentBucketTable } from "./ContentBucketsTable";
 import {
   PermissionTableContainer,
@@ -28,8 +29,7 @@ import {
   deletePermissionRequestAction
 } from "../../ducks";
 import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
-import { roleuser } from "@edulastic/constants";
-import { isEqual } from "lodash";
+
 import { caluculateOffset } from "../../util";
 
 const { TabPane } = Tabs;
@@ -58,10 +58,19 @@ const PermissionsTable = ({
 
   useEffect(() => {
     if (permissionTableRef) {
-      const tableMaxHeight = window.innerHeight - caluculateOffset(permissionTableRef._container) - 40;
-      setTableMaxHeight(tableMaxHeight);
+      const reCalTableMaxHeight = window.innerHeight - caluculateOffset(permissionTableRef._container) - 40;
+      setTableMaxHeight(reCalTableMaxHeight);
     }
   }, [permissionTableRef?._container?.offsetTop]);
+
+  const handleEditPermission = permission => {
+    setSelectedPermission(permission);
+    setPermissionModalVisibility(true);
+  };
+
+  const handleDeactivatePermission = id => {
+    deletePermissionRequest({ bankId: selectedCollection.bankId, id });
+  };
 
   const columns = [
     {
@@ -79,7 +88,21 @@ const PermissionsTable = ({
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (_, record) => record.role.join(" / ")
+      render: (_, record) => {
+        let { role } = record;
+        const { permissions: userPermissions, orgType } = record;
+        // for orgType = USER,
+        // if user of type teacher have permission of 'author', then it will show 'Author'
+        // and for 'curator' it will show 'content approvar'
+        if (orgType === "USER") {
+          if (role.includes(roleuser.TEACHER) && userPermissions?.includes("author")) {
+            role = role.map(r => (r === roleuser.TEACHER ? "Author" : r));
+          } else if (role.includes(roleuser.DISTRICT_ADMIN) && userPermissions?.includes("curator")) {
+            role = role.map(r => (r === roleuser.DISTRICT_ADMIN ? "Content Approvar" : r));
+          }
+        }
+        return role.join(" / ");
+      }
     },
     {
       title: "Start",
@@ -118,7 +141,7 @@ const PermissionsTable = ({
                 <IconPencilEdit color={themeColor} />
               </span>
               <DeletePermissionButton onClick={() => handleDeactivatePermission(record._id)}>
-                <i class="fa fa-trash-o" aria-hidden="true" />
+                <i className="fa fa-trash-o" aria-hidden="true" />
               </DeletePermissionButton>
             </div>
           );
@@ -126,15 +149,6 @@ const PermissionsTable = ({
       }
     }
   ];
-
-  const handleEditPermission = permission => {
-    setSelectedPermission(permission);
-    setPermissionModalVisibility(true);
-  };
-
-  const handleDeactivatePermission = id => {
-    deletePermissionRequest({ bankId: selectedCollection.bankId, id });
-  };
 
   const handlePermissionModalResponse = response => {
     setPermissionModalVisibility(false);

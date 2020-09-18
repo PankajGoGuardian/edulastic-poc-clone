@@ -175,7 +175,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         itemListPage.searchFilters.typeInSearchBox(itemIds[0]);
         itemListPage.clickOnViewItemById(itemIds[0], questText[0]);
         itemPreview.clickOnEditItemOnPreview();
-        mcqTrueFalsePage.getPoints().should("have.value", points[0].toString());
+        mcqTrueFalsePage.getPoints().should("have.value", `${points[0]}.0`);
         editItemPage.header.save(true);
         editItemPage.header.clickOnPublishItem();
       });
@@ -214,7 +214,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         itemListPage.searchFilters.typeInSearchBox(itemIds[itemsInTest.length]);
         itemListPage.clickOnViewItemById(itemIds[itemsInTest.length], questText[0]);
         itemPreview.clickOnEditItemOnPreview();
-        mcqTrueFalsePage.getPoints().should("have.value", points[0].toString());
+        mcqTrueFalsePage.getPoints().should("have.value", `${points[0]}.0`);
         editItemPage.header.save(true);
         editItemPage.header.clickOnPublishItem();
         itemListPage.sidebar.clickOnTestLibrary();

@@ -34,7 +34,7 @@ const App = ({authToken, updateUser, updateClassData}) => {
                 if(students) updateClassData({classId,students});
             })();
         }
-    }, [authToken])
+    }, [authToken]);
 
     return (
       <MainContainer>

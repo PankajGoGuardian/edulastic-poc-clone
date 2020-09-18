@@ -9,7 +9,6 @@ import LiveClassboardPage from "../../../../framework/author/assignments/LiveCla
 import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 const { TEST_SETTING } = require("../../../../../fixtures/testAuthoring");
-const questionData = require("../../../../../fixtures/questionAuthoring");
 
 const { _ } = Cypress;
 
@@ -54,7 +53,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
     sub: "SUBMITTED",
     graded: "GRADED"
   };
-  const { start, retake, review } = assignmentButtonsText;
+  const { start } = assignmentButtonsText;
 
   const className = "Automation Class - shuffleQuestions teacher.1";
   const teacher = "teacher.1.shufflequestions@snapwiz.com";
@@ -70,7 +69,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       cy.contains("Share With Others");
 
       // update the settings
-      cy.visit(`author/tests/tab/settings/id/${testId}`);
+      testLibrary.visitTestById(testId);
+      testLibrary.header.clickOnSettings();
       testLibrary.header.clickOnEditButton(true);
 
       // set shuffle question to ON
@@ -88,10 +88,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
   });
 
   context(` > shuffle questions on`, () => {
-    let originalSequence = itemKeys;
-    let student1Sequence = [];
-    let student2Sequence = [];
-    let student3Sequence = [];
+    const originalSequence = itemKeys;
+    const student1Sequence = [];
+    const student2Sequence = [];
+    const student3Sequence = [];
 
     beforeEach(() => studentTest.clickOnExitTest());
 
@@ -100,7 +100,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, start);
       assignmentPage.clickOnAssignmentButton();
 
-      Object.keys(itemKeys).forEach(que => {
+      Object.keys(itemKeys).forEach(() => {
         cy.wait(1000);
         studentTest.getQuestionText().then(queText => student1Sequence.push(queText.text()));
         studentTest.clickOnNext(false, true);
@@ -117,7 +117,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, start);
       assignmentPage.clickOnAssignmentButton();
 
-      Object.keys(itemKeys).forEach(que => {
+      Object.keys(itemKeys).forEach(() => {
         cy.wait(1000);
         studentTest.getQuestionText().then(queText => student2Sequence.push(queText.text()));
         studentTest.clickOnNext(false, true);
@@ -136,7 +136,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, start);
       assignmentPage.clickOnAssignmentButton();
 
-      Object.keys(itemKeys).forEach(que => {
+      Object.keys(itemKeys).forEach(() => {
         cy.wait(1000);
         studentTest.getQuestionText().then(queText => student3Sequence.push(queText.text()));
         studentTest.clickOnNext(false, true);

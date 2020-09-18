@@ -276,6 +276,7 @@ const Gradebook = ({
                 <GradebookStatusColors />
                 {/* NOTE: When status filter is set for Gradebook, assignment pagination is dependent on student pagination */}
                 <Pagination
+                  style={{ paddingRight: "55px", marginTop: "-5px" }}
                   current={pagination.studentPage}
                   pageSize={pagination.studentPageSize}
                   onChange={studentPage =>

@@ -386,7 +386,7 @@ class DisneyCardContainer extends Component {
                         </StyledFlexDiv>
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
                           {student.status === "redirected" && (
-                            <AttemptDiv>
+                            <AttemptDiv data-cy="attempt-container">
                               <CenteredStyledParaSS>-&nbsp;/ {round(student.maxScore, 2) || 0}</CenteredStyledParaSS>
                               <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
                                 Not Started
@@ -398,25 +398,21 @@ class DisneyCardContainer extends Component {
                           )}
                           <AttemptDiv
                             className="attempt-container"
-                            onClick={e => {
-                              e.stopPropagation();
+                            data-cy="attempt-container"
+                            onClick={e =>
                               viewResponses(
                                 e,
                                 student.studentId,
                                 student.testActivityId,
                                 (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
-                              );
-                            }}
+                              )
+                            }
                           >
                             <CenteredStyledParaSS>
-                              {score(currentTestActivity.status, currentTestActivity.score)}&nbsp;/{" "}
-                              {round(student.maxScore, 2) || 0}
+                              {score(currentTestActivity.status)}&nbsp;/ {round(student.maxScore, 2) || 0}
                             </CenteredStyledParaSS>
                             <StyledParaSSS>
-                              {student.score > 0
-                                ? round((currentTestActivity.score / currentTestActivity.maxScore) * 100, 2)
-                                : 0}
-                              %
+                              {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                             </StyledParaSSS>
                             <p style={{ fontSize: "12px" }}>
                               Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
@@ -425,11 +421,9 @@ class DisneyCardContainer extends Component {
                           {recentAttemptsGrouped?.[student.studentId].map(attempt => (
                             <AttemptDiv
                               className="attempt-container"
+                              data-cy="attempt-container"
                               key={attempt._id || attempt.id}
-                              onClick={e => {
-                                e.stopPropagation();
-                                viewResponses(e, attempt.userId, attempt._id, attempt.number);
-                              }}
+                              onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
                             >
                               <CenteredStyledParaSS>
                                 {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}

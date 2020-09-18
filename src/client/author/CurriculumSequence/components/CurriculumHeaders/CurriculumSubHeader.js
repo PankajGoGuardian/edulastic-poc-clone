@@ -77,7 +77,7 @@ const CurriculumSubHeader = ({
           <SubHeaderTitleContainer>
             <ModuleProgres>
               <SubHeaderTitle>Module progress</SubHeaderTitle>
-              <SubHeaderModuleProgressContainer>
+              <SubHeaderModuleProgressContainer data-cy="module-pogress">
                 <div>
                   <span className="assigned">{`${assigned}/${summaryData?.length || 0}`}</span>
                   <span className="assigned-label">Assigned</span>

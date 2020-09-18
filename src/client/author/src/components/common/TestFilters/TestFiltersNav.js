@@ -14,7 +14,7 @@ const TestFiltersNav = ({ items, onSelect, search = {} }) => {
   return (
     <Container onSelect={onSelect} selectedKeys={[selected]}>
       {items.map(item => (
-        <Item key={item.path}>
+        <Item data-cy={item.text} key={item.path}>
           {item.icon === "folders" ? <IconFolders className="anticon" /> : <Icon type={item.icon} />}
           {item.text}
         </Item>

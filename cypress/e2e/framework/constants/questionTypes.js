@@ -197,3 +197,10 @@ export const questionTypeMap = {
   "Rulers & Calculators": ["Protractor"],
   Other: []
 };
+
+export const CUSTOM_COLLECTIONS = {
+  AUTO_COLLECTION_1: "5e2af3ea1794ac07ba1c1021",
+  AUTO_COLLECTION_2: "5e2af3f41794ac07ba1c1022",
+  AUTO_COLLECTION_3: "5e2af3fe1794ac07ba1c1023",
+  AUTO_COLLECTION_4: "5e2af40a1794ac07ba1c1024"
+};

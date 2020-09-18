@@ -12,7 +12,7 @@ export const WrapperContainer = styled.div`
 
 export const MainTray = styled.div`
     display: flex;
-    height: 60px;
+    height: 50px;
     background-color: #fff;
     border-radius: 0 0 8px;
     overflow: hidden;
@@ -23,14 +23,14 @@ export const TeacherTrayButton = styled.button`
   width: 60px;
   display: flex;
   align-items: center;
-  margin: 10px;
+  margin: 0 5px;
   justify-content: center;
   border-radius: 100px;
   cursor: pointer;
   border: none;
   outline: none;
 
-    svg > path{
+    svg , path{
         fill: ${({active}) => active && '#3F85E5 !important'};
     }
 

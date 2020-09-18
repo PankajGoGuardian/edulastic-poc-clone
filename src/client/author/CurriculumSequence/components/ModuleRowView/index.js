@@ -3,7 +3,7 @@ import { Dropdown, Icon, Menu, Col } from "antd";
 import { IconMoreVertical, IconVerified } from "@edulastic/icons";
 import { lightGrey5, themeColor, themeColorLighter } from "@edulastic/colors";
 import { removeCommentsFromHtml } from "@edulastic/common/src/helpers";
-import { StyledLabel, StyledTag } from "../../../Reports/common/styled";
+import { StyledLabel, StyledTag, MenuStyled } from "../../../Reports/common/styled";
 import { Tooltip } from "../../../../common/utils/helpers";
 
 import ProgressBars from "./ProgressBars";
@@ -70,14 +70,14 @@ const ModuleRowView = props => {
   };
 
   const moduleManagementMenu = (
-    <Menu data-cy="moduleItemMoreMenu">
+    <MenuStyled data-cy="moduleItemMoreMenu">
       <CaretUp className="fa fa-caret-up" />
       {!isDesktop && <Menu.Item onClick={onClickHideShow}>{module.hidden ? "Show Module" : "Hide Module"}</Menu.Item>}
       {!isDesktop && !moduleStatus && totalAssigned && <Menu.Item onClick={onClickAssign}>Assign Module</Menu.Item>}
       <Menu.Item onClick={addModuleMenuClick}>Add Module</Menu.Item>
       <Menu.Item onClick={editModuleMenuClick}>Edit Module</Menu.Item>
       <Menu.Item onClick={deleteModuleMenuClick}>Delete Module</Menu.Item>
-    </Menu>
+    </MenuStyled>
   );
 
   const hideLink = !hideEditOptions && hasEditAccess && !isStudent && !moduleStatus && (
@@ -101,7 +101,7 @@ const ModuleRowView = props => {
     );
   } else if (!isStudent && !hideEditOptions) {
     moduleCompleteOrAssign = (
-      <StyledTag bgColor={themeColor} onClick={onClickAssign} style={moduleInlineStyle}>
+      <StyledTag data-cy="AssignWholeModule" bgColor={themeColor} onClick={onClickAssign} style={moduleInlineStyle}>
         {totalAssigned ? "ASSIGN MODULE" : "NO ASSIGNMENTS"}
       </StyledTag>
     );
@@ -133,7 +133,7 @@ const ModuleRowView = props => {
 
   return (
     <ModuleHeader>
-      <ModuleID>
+      <ModuleID data-cy="module-id">
         <span>{moduleId || moduleIndex + 1}</span>
       </ModuleID>
       <ModuleHeaderData>

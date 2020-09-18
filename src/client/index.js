@@ -29,7 +29,7 @@ if (AppConfig.sentryURI) {
     maxValueLength: 600, // defaults to 250 chars, we will need more info recorded.
     ignoreErrors: AppConfig.sentryIgnoreErrors,
     integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 0.3 // we sample only 30% of the data from clients.
+    tracesSampleRate: 0.1 // we sample only 10% of the data from clients.
   });
   updateSentryScope();
 }

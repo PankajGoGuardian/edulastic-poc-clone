@@ -457,13 +457,8 @@ class ClassBoard extends Component {
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = (selectedStudentKeys || []).filter(studentId => {
-      const { status, UTASTATUS } = mapTestActivityByStudId?.[studentId] || {};
-      return (
-        status === "notStarted" ||
-        status === "redirected" ||
-        UTASTATUS === testActivityStatus.UN_ASSIGNED ||
-        UTASTATUS === testActivityStatus.UN_ENROLLED
-      );
+      const { UTASTATUS } = mapTestActivityByStudId?.[studentId] || {};
+      return UTASTATUS === testActivityStatus.NOT_STARTED;
     });
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;

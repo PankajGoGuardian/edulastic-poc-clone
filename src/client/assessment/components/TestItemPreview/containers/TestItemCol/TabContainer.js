@@ -8,6 +8,8 @@ function TabWrapper({
   testReviewStyle,
   fullHeight,
   children,
+  showBorder,
+  marginTop,
   updatePositionToStore,
   questionId,
   updatePosition,
@@ -39,16 +41,20 @@ function TabWrapper({
     }
   }, [containerRef.current, heightOfContainer]); // change whenever, ref or the height of container changes
 
+  const borderProps = showBorder ? { border: "1px solid #DADAE4", borderRadius: "10px" } : {};
+
   return (
     <TabContainer
       ref={containerRef}
       padding="0px"
       style={{
         ...testReviewStyle,
+        ...borderProps,
         position: "relative",
         display: "flex",
         flexDirection: "column",
         height: fullHeight ? "100%" : "auto",
+        marginTop,
         minHeight
       }}
       className="question-tab-container"

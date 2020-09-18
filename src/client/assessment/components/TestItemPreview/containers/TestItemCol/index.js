@@ -53,7 +53,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout, itemIndex, showStackedView) => {
+  renderTabContent = (widget, flowLayout, itemIndex, showStackedView, lengthOfwidgets) => {
     const {
       preview,
       LCBPreviewModal,
@@ -72,6 +72,7 @@ class TestItemCol extends Component {
       isStudentReport,
       isPassageWithQuestions,
       isLCBView,
+      showScratchpadByDefault,
       isStudentAttempt,
       ...restProps
     } = this.props;
@@ -112,6 +113,8 @@ class TestItemCol extends Component {
         testReviewStyle={testReviewStyle}
         minHeight={minHeight}
         itemIndex={itemIndex}
+        marginTop={itemIndex > 0 && lengthOfwidgets > 1 ? 20 : ""}
+        showBorder={!showScratchpadByDefault && isLCBView}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== "resource"}
@@ -136,6 +139,7 @@ class TestItemCol extends Component {
           calculatedHeight={showStackedView || fullHeight ? "100%" : "auto"}
           fullMode
           {...restProps}
+          showScratchpadByDefault={showScratchpadByDefault}
           style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
           tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />

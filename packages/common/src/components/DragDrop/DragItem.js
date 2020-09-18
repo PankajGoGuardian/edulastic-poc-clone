@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useRef } from "react";
+import React, { useEffect, useContext, useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import { useDrag } from "react-dnd";
 import { AnswerContext } from "@edulastic/common";
@@ -11,8 +11,6 @@ const getStyles = isDragging => ({
 const DragItem = ({ data, children, disabled, ...rest }) => {
   const { isAnswerModifiable } = useContext(AnswerContext);
   const [itemSize, setItemSize] = useState();
-  const itemRef = useRef();
-
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: "item", data, dimensions: itemSize, preview: children },
     canDrag() {
@@ -23,19 +21,22 @@ const DragItem = ({ data, children, disabled, ...rest }) => {
     })
   });
 
-  useEffect(() => {
-    setItemSize({ width: itemRef?.current.clientWidth, height: itemRef?.current.clientHeight });
-  }, [itemRef?.current?.clientWidth, itemRef?.current?.clientHeight]);
+  const attach = useCallback(
+    element => {
+      if (element) {
+        setItemSize({ width: element.clientWidth, height: element.clientHeight });
+        drag(element);
+      }
+    },
+    [drag]
+  );
 
   useEffect(() => {
-    if (itemRef.current) {
-      drag(itemRef.current);
-      preview(getEmptyImage(), { captureDraggingState: true });
-    }
+    preview(getEmptyImage(), { captureDraggingState: true });
   }, []);
 
   return (
-    <div data-cy="drag-item" ref={itemRef} style={getStyles(isDragging)} {...rest}>
+    <div data-cy="drag-item" ref={attach} style={getStyles(isDragging)} {...rest}>
       {children}
     </div>
   );

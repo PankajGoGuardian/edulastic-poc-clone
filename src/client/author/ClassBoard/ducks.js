@@ -13,7 +13,6 @@ import {
   updateOpenAssignmentsAction,
   updateStudentActivityAction,
   setIsPausedAction,
-  updateRemovedStudentsAction,
   updateClassStudentsAction,
   setStudentsGradeBookAction,
   setAllTestActivitiesForStudentAction,
@@ -363,8 +362,7 @@ function* fetchStudentsByClassSaga({ payload }) {
 
 function* removeStudentsSaga({ payload }) {
   try {
-    const { students } = yield call(classBoardApi.removeStudents, payload);
-    yield put(updateRemovedStudentsAction(students));
+    yield call(classBoardApi.removeStudents, payload);
     yield call(notification, { type: "success", msg: "Successfully removed" });
   } catch (err) {
     Sentry.captureException(err);

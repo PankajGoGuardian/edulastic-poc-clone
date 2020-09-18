@@ -9,7 +9,6 @@ import {
   RECEIVE_GRADEBOOK_REQUEST,
   RECEIVE_TESTACTIVITY_REQUEST,
   UPDATE_RELEASE_SCORE,
-  SET_SHOW_SCORE,
   RECEIVE_STUDENT_QUESTION_REQUEST,
   RECEIVE_CLASS_QUESTION_REQUEST,
   SET_MARK_AS_DONE,
@@ -25,10 +24,8 @@ import {
   DOWNLOAD_GRADES_RESPONSES,
   TOGGLE_PAUSE_ASSIGNMENT,
   SET_IS_PAUSED,
-  UPDATE_STUDENT_ACTIVITY,
   UPDATE_REMOVED_STUDENTS_LIST,
   REMOVE_STUDENTS,
-  UPDATE_STUDENTS_LIST,
   SET_CURRENT_TESTACTIVITY,
   GET_ALL_TESTACTIVITIES_FOR_STUDENT,
   SET_ALL_TESTACTIVITIES_FOR_STUDENT,
@@ -141,11 +138,6 @@ export const removeStudentAction = (assignmentId, classId, students) => ({
 export const addStudentsAction = (assignmentId, classId, students, endDate) => ({
   type: ADD_STUDENTS,
   payload: { assignmentId, classId, students, endDate }
-});
-
-export const updateRemovedStudentsAction = payload => ({
-  type: UPDATE_STUDENTS_LIST,
-  payload
 });
 
 export const setStudentsGradeBookAction = payload => ({

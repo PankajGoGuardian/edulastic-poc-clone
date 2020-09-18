@@ -437,7 +437,15 @@ const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_STUDENTS_LIST:
       return {
         ...state,
-        removedStudents: [...state.removedStudents, ...payload]
+        entities: state.entities.map(item => {
+          if (payload.includes(item.studentId)) {
+            return {
+              ...item,
+              isAssigned: false
+            };
+          }
+          return item;
+        })
       };
     case UPDATE_CLASS_STUDENTS_LIST:
       return {

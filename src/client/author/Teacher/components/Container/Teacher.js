@@ -36,7 +36,7 @@ class Teacher extends Component {
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
             {showSpin && (
-              <SpinContainer blur>
+              <SpinContainer>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
@@ -50,10 +50,10 @@ class Teacher extends Component {
 
 const enhance = compose(
   connect(state => ({
-    loading: get(state, ["schoolAdminReducer", "loading"], false),
-    updating: get(state, ["schoolAdminReducer", "updating"], false),
-    creating: get(state, ["schoolAdminReducer", "creating"], false),
-    deleting: get(state, ["schoolAdminReducer", "deleting"], false),
+    loading: get(state, ["teacherReducer", "loading"], false),
+    updating: get(state, ["teacherReducer", "updating"], false),
+    creating: get(state, ["teacherReducer", "creating"], false),
+    deleting: get(state, ["teacherReducer", "deleting"], false),
     routeKey: get(state, ["router", "location", "key"])
   }))
 );

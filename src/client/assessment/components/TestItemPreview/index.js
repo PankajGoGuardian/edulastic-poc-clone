@@ -9,17 +9,17 @@ import { withNamespaces } from "@edulastic/localization";
 import { IconClockCircularOutline } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
-import { Icon } from "antd";
 
 import { connect } from "react-redux";
 import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
-import { Container, Divider, CollapseBtn, Dividerlines } from "./styled/Container";
+import { Container } from "./styled/Container";
 import FeedbackWrapper from "../FeedbackWrapper";
 import { Scratchpad, ScratchpadTool } from "../../../common/components/Scratchpad";
 import { TimeSpentWrapper } from "../QuestionWrapper";
 import ShowUserWork from "../Common/ShowUserWork";
 import { IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
+import Divider from "./Divider";
 
 class TestItemPreview extends Component {
   static propTypes = {
@@ -82,29 +82,7 @@ class TestItemPreview extends Component {
 
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state;
-    return (
-      <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
-        <div>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.setCollapseView("left")}
-            left
-            className="left-collapse-btn"
-          >
-            <Icon type="left" />
-          </CollapseBtn>
-          <Dividerlines>III</Dividerlines>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.setCollapseView("right")}
-            right
-            className="right-collapse-btn"
-          >
-            <Icon type="right" />
-          </CollapseBtn>
-        </div>
-      </Divider>
-    );
+    return <Divider collapseDirection={collapseDirection} setCollapseView={this.setCollapseView} />;
   };
 
   getFeedBackVisibility = ({ widgetIndex, colIndex, stackedView }) => {

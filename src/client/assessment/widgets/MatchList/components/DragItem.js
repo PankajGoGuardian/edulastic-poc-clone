@@ -50,11 +50,9 @@ const DragItem = ({
       currentRef.removeEventListener("mouseenter", handleOnHover);
       currentRef.removeEventListener("mouseleave", handleOnHover);
       currentRef.removeEventListener("mousedown", handleOnHover);
-      // Do not add touch events here;
-      // draggin item does not work on iPad
-      // currentRef.removeEventListener("touchstart", handleOnHover);
-      // currentRef.removeEventListener("touchmove", handleOnHover);
-      // currentRef.removeEventListener("touchend", handleOnHover);
+      currentRef.removeEventListener("touchstart", handleOnHover);
+      currentRef.removeEventListener("touchmove", handleOnHover);
+      currentRef.removeEventListener("touchend", handleOnHover);
     },
     []
   );
@@ -71,11 +69,9 @@ const DragItem = ({
     currentRef.addEventListener("mouseenter", handleOnHover);
     currentRef.addEventListener("mouseleave", handleOnHover);
     currentRef.addEventListener("mousedown", handleOnHover);
-    // Do not add touch events here;
-    // draggin item does not work on iPad
-    // currentRef.addEventListener("touchstart", handleOnHover);
-    // currentRef.addEventListener("touchmove", handleOnHover);
-    // currentRef.addEventListener("touchend", handleOnHover);
+    currentRef.addEventListener("touchstart", handleOnHover);
+    currentRef.addEventListener("touchmove", handleOnHover);
+    currentRef.addEventListener("touchend", handleOnHover);
   }, [showPopover]);
 
   const getContent = (

@@ -257,7 +257,6 @@ export const SpinContainer = styled.div`
   left: 0;
   top: 0;
   z-index: 999;
-  background-color: ${props => (props.blur ? "rgb(255, 255, 255, 0.7)" : "transparent")};
 `;
 
 export const StyledSpin = styled(Spin)`

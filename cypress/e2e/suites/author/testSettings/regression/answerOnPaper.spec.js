@@ -78,7 +78,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
 
       liveClassBoardPage.clickOnCardViewTab();
       liveClassBoardPage.getStudentPerformanceByIndex(0).should("have.text", `100%`);
-      liveClassBoardPage.getStudentScoreByIndex(0).should("have.text", `4 / 4`);
+      liveClassBoardPage.verifyScoreByStudentIndex(0, 4, 4);
     });
   });
 });

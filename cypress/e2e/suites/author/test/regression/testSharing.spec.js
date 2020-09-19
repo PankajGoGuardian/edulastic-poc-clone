@@ -31,7 +31,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
   const dist2_school1 = dist2[school1];
   author = dist1_school1[teacher1];
   let test_id;
-  // Using SAME test in both contexts
+  // Using different test in both contexts
 
   context(`>test sharing 'individually'`, () => {
     before("Login As Author And Creat Test without publishing", () => {

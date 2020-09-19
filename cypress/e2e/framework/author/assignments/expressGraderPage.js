@@ -285,18 +285,18 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   verifyResponseEntryByIndexOfSelectedRow = (data, questionNumber, queKey) => {
     if (data === skippedResponse) this.getCellforQueNum(questionNumber).should("have.text", data);
     else {
-    switch (queKey) {
-      case queTypes.MATH_NUMERIC:
-        this.getCellforQueNum(questionNumber)
-          .find(".katex-html")
-          .first()
-          .should("contain.text", data);
-        break;
-      default:
-        if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
-        else this.getCellforQueNum(questionNumber).should("have.text", data);
-        break;
-    }
+      switch (queKey) {
+        case queTypes.MATH_NUMERIC:
+          this.getCellforQueNum(questionNumber)
+            .find(".katex-html")
+            .first()
+            .should("contain.text", data);
+          break;
+        default:
+          if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
+          else this.getCellforQueNum(questionNumber).should("have.text", data);
+          break;
+      }
     }
   };
 

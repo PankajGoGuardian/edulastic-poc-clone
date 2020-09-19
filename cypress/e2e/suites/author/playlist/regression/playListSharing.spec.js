@@ -13,7 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>play list sharing`, () =
 
   let playlistid;
   const testToCreate = ["search_1", "search_1"];
-  const originalTestIds = ["5e7cb56a4c9cae0007fb983a", "5e7cb5364c9cae0007fb9838"];
+  const originalTestIds = ["5f44aa907132d70008e7ee6e", "5f44aabb0b91a40008254207"];
   const playlistdata = {
     metadata: { name: "Play List for sharing", grade: "Grade 10", subject: "Math" },
     moduledata: {}

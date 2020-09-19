@@ -211,7 +211,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_SEARCH_FILTER_STATE:
       return {
         ...state,
-        search: { ...payload.search },
+        search: payload.search,
         sort: { ...payload.sort },
         needToSetFilter: true
       };

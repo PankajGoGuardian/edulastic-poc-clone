@@ -162,6 +162,7 @@ const reducer = (state = initialState, { type, payload }) => {
           }
           _st.entities[index].testActivityId = entity.testActivityId;
           _st.entities[index].status = "inProgress";
+          _st.entities[index].UTASTATUS = 0;
           _st.entities[index].score = 0;
           const isAutoselectItems = _st.entities[index].questionActivities.some(a => !a._id);
           if (isAutoselectItems) {

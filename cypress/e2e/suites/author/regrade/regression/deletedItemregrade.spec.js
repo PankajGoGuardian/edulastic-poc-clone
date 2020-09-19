@@ -17,12 +17,12 @@ import { releaseGradeTypes } from "../../../../framework/constants/assignmentSta
 const students = {
   Student1: {
     name: "Student1",
-    email: "student1.for.regrade@snapwiz.com",
+    email: "stu1.for.regrade@snapwiz.com",
     pass: "snapwiz"
   },
   Student2: {
     name: "Student2",
-    email: "student2.for.regrade@snapwiz.com",
+    email: "stu2.for.regrade@snapwiz.com",
     pass: "snapwiz"
   }
 };
@@ -41,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   const expressGrader = new ExpressGraderPage();
   const reportsPage = new ReportsPage();
   const Teacher = {
-    email: "teacher.for.regrade@snapwiz.com",
+    email: "tea.del.item.regrade@snapwiz.com",
     pass: "snapwiz"
   };
   const { Student1, Student2 } = students;
@@ -54,8 +54,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   let attempt = [];
 
   before("Get Data Of test and its itemns", () => {
-    cy.getAllTestsAndDelete(Teacher.username);
-    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
       itemsInTest = testData.EDIT_ASSIGNED_TEST_REGRADE.itemKeys;

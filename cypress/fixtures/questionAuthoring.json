@@ -328,7 +328,10 @@
         }
       ],
       "meta": {
-        "collections": "auto collection 2 - auto collection 2 Bucket"
+        "collections": "auto collection 2 - auto collection 2 Bucket",
+        "dok": "Recall",
+        "tags": ["ABC"],
+        "difficulty": "Easy"
       }
     },
     "8": {
@@ -345,7 +348,10 @@
         }
       ],
       "meta": {
-        "collections": "auto collection 2 - auto collection 2 Bucket"
+        "collections": "auto collection 2 - auto collection 2 Bucket",
+        "dok": "Skill/Concept",
+        "tags": ["PQR"],
+        "difficulty": "Medium"
       }
     },
     "9": {
@@ -362,7 +368,10 @@
         }
       ],
       "meta": {
-        "collections": "auto collection 2 - auto collection 2 Bucket"
+        "collections": "auto collection 2 - auto collection 2 Bucket",
+        "dok": "Extended Thinking",
+        "tags": ["XYZ"],
+        "difficulty": "Hard"
       }
     },
     "10": {

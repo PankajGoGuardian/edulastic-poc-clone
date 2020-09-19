@@ -228,7 +228,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'Answ
             //  cy.login("teacher", teacher);
             testlibaryPage.sidebar.clickOnAssignment();
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, ind === 0 ? assignmentId1 : assignmentId2);
-            lcb.header.clickOnClose(true, false);
+            lcb.header.clickOnClose();
 
             testlibaryPage.sidebar.clickOnDashboard();
             testlibaryPage.sidebar.clickOnAssignment();

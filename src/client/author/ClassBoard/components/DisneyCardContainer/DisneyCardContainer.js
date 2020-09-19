@@ -130,7 +130,7 @@ class DisneyCardContainer extends Component {
 
         const score = (_status, attemptScore) => {
           /* for redirected, old attempts status will show in numbers like START = 0, SUBMITTED = 1, ABSENT = 2 */
-          if (_status === "absent" || _status === 2 || _status === "notStarted") {
+          if (_status === 3) {
             return <span style={{ marginTop: "-3px" }}>-</span>;
           }
           if (attemptScore >= 0) {
@@ -174,7 +174,7 @@ class DisneyCardContainer extends Component {
                 endDate: student.endDate
               })
             : null;
-        const responseLink = student.testActivityId && status.status !== "Absent" && (
+        const responseLink = student.testActivityId && status.status !== "Absent" && student.UTASTATUS !== 3 && (
           <PagInfo
             data-cy="viewResponse"
             disabled={!isItemsVisible}
@@ -312,7 +312,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {score(currentTestActivity.status || student.status)}&nbsp;/ {round(student.maxScore, 2) || 0}
+                        {score(student.UTASTATUS)}&nbsp;/ {round(student.maxScore, 2) || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>

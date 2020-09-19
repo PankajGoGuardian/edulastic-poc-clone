@@ -38,14 +38,14 @@ export const QuestionNumber = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: ${({ zoom = 1 }) => 18 * zoom}px;
+  font-size: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 12 : 18) * zoom}px;
   font-weight: bold;
   color: ${({ dragging }) => (dragging ? "#aaafb8" : "white")};
   background: ${({ dragging }) => (dragging ? "transparent" : "#aaafb8")};
   border: 2px ${({ dragging }) => (dragging ? "dashed" : "solid")} #aaafb8;
   border-radius: 4px;
-  width: ${({ zoom = 1 }) => 32 * zoom}px;
-  height: ${({ zoom = 1 }) => 32 * zoom}px;
+  width: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 16 : 32) * zoom}px;
+  height: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 18 : 32) * zoom}px;
   line-height: 30px;
   text-align: center;
   transition: all 300ms;

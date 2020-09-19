@@ -33,7 +33,7 @@ class DistrictAdmin extends Component {
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer blur>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
@@ -47,10 +47,10 @@ class DistrictAdmin extends Component {
 
 const enhance = compose(
   connect(state => ({
-    loading: get(state, ["districtAdminReducer", "loading"], false),
-    updating: get(state, ["districtAdminReducer", "updating"], false),
-    creating: get(state, ["districtAdminReducer", "creating"], false),
-    deleting: get(state, ["districtAdminReducer", "deleting"], false),
+    loading: get(state, ["schoolAdminReducer", "loading"], false),
+    updating: get(state, ["schoolAdminReducer", "updating"], false),
+    creating: get(state, ["schoolAdminReducer", "creating"], false),
+    deleting: get(state, ["schoolAdminReducer", "deleting"], false),
     routeKey: get(state, ["router", "location", "key"])
   }))
 );

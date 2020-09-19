@@ -299,6 +299,8 @@ const ActionContainer = ({
     window.open(`/author/manageClass/${classId}/printpreview?studentIds=${selectedStudentIds.join(",")}`, "_blank");
   };
 
+  const atlasId = selectedClass.atlasId;
+
   return (
     <>
       {infoModelVisible && (
@@ -364,6 +366,12 @@ const ActionContainer = ({
             <IconInfo /> This is a Clever Synced class.
           </CleverInfoBox>
         )}
+        {atlasId && (
+          <CleverInfoBox>
+            <IconInfo /> This is a Classlink Synced class.
+          </CleverInfoBox>
+        )}
+
         <ButtonsWrapper>
           {checkForAddStudent && (
             <EduButton height="30px" isGhost data-cy="addStudent" onClick={() => toggleModal("add")}>

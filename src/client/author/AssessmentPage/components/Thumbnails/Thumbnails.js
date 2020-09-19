@@ -19,6 +19,7 @@ const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf
 
 const Thumbnails = ({
   list,
+  minimized,
   onPageChange,
   annotations,
   onReupload,
@@ -40,7 +41,7 @@ const Thumbnails = ({
 }) => {
   const onChangePage = page => () => onPageChange(page);
   return (
-    <ThumbnailsWrapper reportMode={reportMode} testMode={testMode} review={review}>
+    <ThumbnailsWrapper reportMode={reportMode} testMode={testMode} review={review} minimized={minimized}>
       <PerfectScrollbar>
         <ThumbnailsList>
           {list.map((item, key) => (

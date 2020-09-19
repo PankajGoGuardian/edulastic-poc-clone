@@ -81,7 +81,7 @@ import LineChart from "../../../src/assets/charts/line-chart-blue.svg";
 // Video&Passages
 import VPVideoPlayer from "../../../src/assets/video-and-passages/video-player-blue.svg";
 import SQPassage from "../../../src/assets/video-and-passages/passage01_blue.svg";
-import MQPassage from "../../../src/assets/video-and-passages/passage02_blue.svg";
+// import MQPassage from "../../../src/assets/video-and-passages/passage02_blue.svg";
 import TextResource from "../../../src/assets/video-and-passages/text-blue.svg";
 
 // Rulers & Calculators
@@ -502,7 +502,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           stackResponses: false,
           stackResponsesSpacing: 30,
           renderingBase: "min-value-based",
-          specificPoints: ""
+          specificPoints: "",
+          lineStrokeColor: "#878A91",
+          tickColors: {
+            strokeColor: "#878A91"
+          }
         },
         uiStyle: {
           gridVisible: false,
@@ -539,7 +543,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           pointFace: "circle",
           pointSize: 6,
           pointStrokeWidth: 4,
-          maxPointsCount: 12
+          maxPointsCount: 12,
+          showGrid: true
         },
         backgroundImage: {
           src: "",
@@ -698,7 +703,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           stackResponses: false,
           stackResponsesSpacing: 30,
           renderingBase: "min-value-based",
-          specificPoints: ""
+          specificPoints: "",
+          lineStrokeColor: "#878A91",
+          tickColors: {
+            strokeColor: "#878A91"
+          }
         },
         uiStyle: {
           gridVisible: false,
@@ -735,7 +744,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           pointFace: "cross",
           pointSize: 6,
           pointStrokeWidth: 4,
-          maxPointsCount: 12
+          maxPointsCount: 12,
+          showGrid: true
         },
         backgroundImage: {
           src: "",
@@ -2137,7 +2147,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       },
       onSelectQuestionType
     },
-  /**   {
+    /**   {
       type: "read",
       cardImage: MQPassage,
       isPassageType: true,

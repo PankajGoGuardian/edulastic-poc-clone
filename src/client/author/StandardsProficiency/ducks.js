@@ -180,7 +180,7 @@ function* receiveStandardsProficiencySaga({ payload }) {
     standardsProficiency.sort((el1, el2) => (el1._id > el2._id ? -1 : 1));
     yield put(receiveStandardsProficiencySuccessAction(standardsProficiency));
   } catch (err) {
-    const errorMessage = "Receive StandardsProficiency is failing";
+    const errorMessage = "Unable to retrieve standards proficiency for the user. Please contact support.";
     notification({ msg: errorMessage });
     yield put(receiveStandardsProficiencyErrorAction({ error: errorMessage }));
   }
@@ -191,7 +191,7 @@ function* updateStandardsProficiencySaga({ payload }) {
     const updateStandardsProficiency = yield call(settingsApi.updateStandardsProficiency, payload);
     yield put(updateStandardsProficiencySuccessAction(updateStandardsProficiency));
   } catch (err) {
-    const errorMessage = "Update StandardsProficiency is failing";
+    const errorMessage = "Unable to update standards proficiency for the user. Please contact support.";
     notification({ msg: errorMessage });
     yield put(updateStandardsProficiencyErrorAction({ error: errorMessage }));
   }
@@ -207,7 +207,7 @@ function* createStandardsProficiencySaga({ payload }) {
     yield put(setEditingIndexAction(0));
   } catch (err) {
     console.error(err);
-    const errorMessage = "Update StandardsProficiency is failing";
+    const errorMessage = "Unable to update standards proficiency for the user. Please contact support.";
     notification({ msg: errorMessage });
     yield put(updateStandardsProficiencyErrorAction({ error: errorMessage }));
   }

@@ -141,7 +141,7 @@ function* receiveTermeSaga({ payload }) {
     const term = yield call(settingsApi.getTerm, payload);
     yield put(receiveTermSuccessAction(term));
   } catch (err) {
-    const errorMessage = "Receive Term is failing";
+    const errorMessage = "Unable to retrieve term info. Please contact support.";
     notification({msg:errorMessage});
     yield put(receiveTermErrorAction({ error: errorMessage }));
   }
@@ -151,9 +151,9 @@ function* createTermSaga({ payload }) {
   try {
     const createTerm = yield call(settingsApi.createTerm, { body: payload.body });
     const key = payload.key;
-    yield put(createTermSuccessAction({ data: createTerm, key: key }));
+    yield put(createTermSuccessAction({ data: createTerm, key }));
   } catch (err) {
-    const errorMessage = "Create Term is failing";
+    const errorMessage = "Unable to create the term. Please contact support.";
     notification({msg:errorMessage});
     yield put(createTermErrorAction({ error: errorMessage }));
   }
@@ -164,7 +164,7 @@ function* updateTermSaga({ payload }) {
     const updateTerm = yield call(settingsApi.updateTerm, payload);
     yield put(updateTermSuccessAction(updateTerm));
   } catch (err) {
-    const errorMessage = "Update Term is failing";
+    const errorMessage = "Unable to update term. Please contact support.";
     notification({msg:errorMessage});
     yield put(updateTermErrorAction({ error: errorMessage }));
   }
@@ -172,10 +172,10 @@ function* updateTermSaga({ payload }) {
 
 function* deleteTermSaga({ payload }) {
   try {
-    const deleteTerm = yield call(settingsApi.deleteTerm, payload);
+    yield call(settingsApi.deleteTerm, payload);
     yield put(deleteTermSuccessAction(payload.body.termId));
   } catch (err) {
-    const errorMessage = "Delete Term is failing";
+    const errorMessage = "Unable to remove term. Please contact support.";
     notification({msg:errorMessage});
     yield put(deleteTermErrorAction({ deleteError: errorMessage }));
   }

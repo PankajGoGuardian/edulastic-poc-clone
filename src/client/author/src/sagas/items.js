@@ -25,7 +25,7 @@ export function* receiveItemsSaga({ payload }) {
   } catch (err) {
     console.error(err);
     Sentry.captureException(err);
-    const errorMessage = "Receive items is failing";
+    const errorMessage = "Unable to retrieve the items. Please contact support.";
     notification({ messageKey: "receiveItemFailing" });
     yield put({
       type: RECEIVE_ITEMS_ERROR,
@@ -45,7 +45,7 @@ export function* receiveItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     Sentry.captureException(err);
-    const errorMessage = "Receive item by id is failing";
+    const errorMessage = "Unable to retrieve the item. Please contact support.";
     notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_ITEM_ERROR,

@@ -286,6 +286,7 @@ class Board {
         this.creatingHandler = NumberlineVector.onHandler;
         return;
       case CONSTANT.TOOLS.TRASH:
+      case CONSTANT.TOOLS.DELETE:
         this.creatingHandler = () => {};
         return;
       default:
@@ -367,7 +368,7 @@ class Board {
         return;
       }
 
-      if (this.currentTool === CONSTANT.TOOLS.TRASH) {
+      if (this.currentTool === CONSTANT.TOOLS.TRASH || this.currentTool === CONSTANT.TOOLS.DELETE) {
         if (this.removeObjectsUnderMouse(event)) {
           Area.updateShadingsForAreaPoints(this, this.elements);
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);

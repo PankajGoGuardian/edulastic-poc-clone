@@ -131,7 +131,7 @@ function* receiveDistrictPolicySaga({ payload }) {
     const districtPolicy = yield call(settingsApi.getDistrictPolicy, payload);
     yield put(receiveDistrictPolicySuccessAction({ ...districtPolicy, schoolLevel }));
   } catch (err) {
-    const errorMessage = "Receive District Policy is failing";
+    const errorMessage = "Unable to retrieve District policy. Please contact support.";
     notification({ msg: errorMessage });
 
     yield put(receiveDistrictPolicyErrorAction({ error: errorMessage }));
@@ -144,7 +144,7 @@ function* updateDictrictPolicySaga({ payload }) {
     notification({ type: "success", messageKey: "SavedSuccessfully" });
     yield put(updateDistrictPolicySuccessAction({ ...updateDistrictPolicy }));
   } catch (err) {
-    const errorMessage = "Update District Policy is failing";
+    const errorMessage = "Unable to update District policy. Please contact support.";
     notification({ msg: errorMessage });
     yield put(updateDistrictPolicyErrorAction({ error: errorMessage }));
   }
@@ -155,7 +155,7 @@ function* createDictrictPolicySaga({ payload }) {
     const createDistrictPolicy = yield call(settingsApi.createDistrictPolicy, payload);
     yield put(createDistrictPolicySuccessAction(createDistrictPolicy));
   } catch (err) {
-    const errorMessage = "Create District Policy is failing";
+    const errorMessage = "Unable to create District policy. Please contact support.";
     notification({ msg: errorMessage });
     yield put(createDistrictPolicyErrorAction({ error: errorMessage }));
   }

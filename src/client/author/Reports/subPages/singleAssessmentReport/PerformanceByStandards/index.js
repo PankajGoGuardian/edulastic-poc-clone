@@ -62,7 +62,7 @@ const PerformanceByStandards = ({
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
-  const [standardId, setStandardId] = useState(0);
+  const [standardId, setStandardId] = useState("");
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
 
@@ -80,6 +80,14 @@ const PerformanceByStandards = ({
       }),
     [report, standardId, scaleInfo]
   );
+
+  const standardsDropdownData = useMemo(() => {
+    const { standardsMap } = reportWithFilteredSkills;
+    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: +item, name: standardsMap[item] }));
+    let intersected = intersectionBy(standardsMapArr, interestedCurriculums, "_id");
+    intersected = intersected.map(item => ({ key: item._id, title: item.name }));
+    return intersected || [];
+  }, [report]);
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
     if (o.allowedRoles) {
@@ -105,7 +113,11 @@ const PerformanceByStandards = ({
   }, [settings]);
 
   const setSelectedData = ({ defaultStandardId }) => {
-    setStandardId(defaultStandardId);
+    const _defaultStandardId =
+      standardsDropdownData.find(s => `${s.key}` === `${defaultStandardId}`)?.key ||
+      standardsDropdownData?.[0]?.key ||
+      "";
+    setStandardId(_defaultStandardId);
     setSelectedStandards([]);
     setSelectedDomains([]);
   };
@@ -152,14 +164,6 @@ const PerformanceByStandards = ({
     setStandardId(selected.key);
   };
 
-  const standardsDropdownData = useMemo(() => {
-    const { standardsMap } = reportWithFilteredSkills;
-    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: +item, name: standardsMap[item] }));
-    let intersected = intersectionBy(standardsMapArr, interestedCurriculums, "_id");
-    intersected = intersected.map(item => ({ key: item._id, title: item.name }));
-    return intersected || [];
-  }, [report]);
-
   if (loading) {
     return <SpinLoader position="fixed" />;
   }
@@ -170,7 +174,7 @@ const PerformanceByStandards = ({
   const testName = getTitleByTestId(testId);
   const assignmentInfo = `${testName}`;
 
-  const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
+  const selectedStandardId = standardsDropdownData.find(s => `${s.key}` === `${standardId}`);
 
   const selectedItems = isViewByStandards ? selectedStandards : selectedDomains;
 

@@ -1,14 +1,14 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Select } from "antd";
-import { themeColor, smallDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
+import { themeColor, tabletWidth } from "@edulastic/colors";
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { getCurrentItemSelector, getItemCountSelector, setCurrentItemAction } from "../../sharedDucks/TestItem";
-import Nav from "../../../assessment/themes/common/Nav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { getCurrentItemSelector, getItemCountSelector, setCurrentItemAction } from "../../sharedDucks/TestItem";
+import Nav from "../../../assessment/themes/common/Nav";
 
 const { Option } = Select;
 
@@ -65,9 +65,6 @@ const QuestionListWrapper = styled.div`
 
   .ant-select {
     width: 145px;
-    @media (max-width: 768px) {
-      height: 40px;
-    }
   }
   .ant-select-selection {
     display: flex;
@@ -99,13 +96,11 @@ const QuestionListWrapper = styled.div`
 
 const PreviousBtn = styled(Nav.BackArrow)`
   left: 80px;
+  @media screen and (max-width: ${tabletWidth}) {
+    left: 4px;
+  }
 `;
 
 const NextBtn = styled(Nav.NextArrow)`
-  @media screen and (min-width: ${smallDesktopWidth}) {
-    right: 10px;
-  }
-  @media screen and (min-width: ${mediumDesktopExactWidth}) {
-    right: 0px;
-  }
+  right: 10px;
 `;

@@ -360,7 +360,7 @@ class ClassHeader extends Component {
         </MenuItems>
         {isShowUnAssign && (
           <MenuItems data-cy="unAssign" key="key4" onClick={() => toggleDeleteAssignmentModal(true)}>
-            Unassign
+            Unassign Complete Class
           </MenuItems>
         )}
         {/* TODO temp hiding for UAT */}

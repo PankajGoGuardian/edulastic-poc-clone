@@ -471,11 +471,11 @@
   "content": {
     "buckets": {
       "createBuckets": "Create bucket",
-      "bucketsLoadErrorMsg": "Receive Buckets is failing!",
+      "bucketsLoadErrorMsg": "Unable to retrieve bucket info. Please contact support.",
       "bucketUpdateSuccessMsg": "Bucket updated successfully",
-      "bucketUpdateErrorMsg": "Update Bucket is failing",
+      "bucketUpdateErrorMsg": "Unable to process bucket info update. Please contact support.",
       "bucketCreateSuccessMsg": "Bucket created successfully",
-      "bucketCreateErrorMsg": "Create Bucket is failing",
+      "bucketCreateErrorMsg": "Unable to create bucket info. Please contact support.",
       "tableHeader": {
         "name": "name",
         "collectionName": "Collection name",

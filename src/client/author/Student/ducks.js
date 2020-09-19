@@ -301,7 +301,7 @@ function* receiveStudentsListSaga({ payload }) {
     const { result: studentsList } = yield call(userApi.fetchUsers, payload);
     yield put(receiveStudentsListSuccessAction(studentsList));
   } catch (err) {
-    const errorMessage = "Receive Students is failing!";
+    const errorMessage = "Unable to retrieve students info. Please contact support.";
     notification({ msg:errorMessage});
     yield put(receiveStudentsListErrorAction({ error: errorMessage }));
   }
@@ -313,7 +313,7 @@ function* updateStudentSaga({ payload }) {
     notification({ type: "success", messageKey:"studentUpdatedSuccessfully"});
     yield put(updateStudentSuccessAction(updateStudentData));
   } catch (err) {
-    const errorMessage = "Update Student is failing";
+    const errorMessage = "Unable to update student info. Please contact support.";
     notification({ msg:errorMessage});
     yield put(updateStudentErrorAction({ error: errorMessage }));
   }
@@ -324,7 +324,7 @@ function* createStudentSaga({ payload }) {
     const createStudent = yield call(userApi.createUser, payload);
     yield put(createStudentSuccessAction(createStudent));
   } catch (err) {
-    const errorMessage = "Create Student is failing";
+    const errorMessage = "Unable to create the student. Please contact support.";
     notification({ msg:errorMessage});
     yield put(createStudentErrorAction({ error: errorMessage }));
   }
@@ -338,7 +338,7 @@ function* deleteStudentSaga({ payload }) {
     notification({ messageKey: "studentRemovedSuccessfully" });
     yield put(deleteStudentSuccessAction(payload));
   } catch (err) {
-    const errorMessage = "Delete Student is failing";
+    const errorMessage = "Unable to remove the student. Please contact support.";
     notification({ msg:errorMessage});
     yield put(deleteStudentErrorAction({ deleteError: errorMessage }));
   }
@@ -352,7 +352,7 @@ function* addMultiStudentSaga({ payload }) {
     // and fetch the fresh data
     yield put(receiveAdminDataAction(payload.listReq));
   } catch (err) {
-    const errorMessage = "Adding Multi Students is failing";
+    const errorMessage = "Unable to add students. Please contact support.";
     notification({ msg:errorMessage});
     yield put(addMultiStudentsErrorAction({ error: errorMessage }));
   }
@@ -389,7 +389,7 @@ function* moveUsersToOtherClassSaga({ payload }) {
     if (!result.status) yield put(addStudentsToOtherClassSuccess(result));
     else  notification({ msg:result.status});
   } catch (err) {
-    const errorMessage = "Move Users is failing";
+    const errorMessage = "Unable to move user into target class. Please contact support.";
     notification({ msg:errorMessage});
     yield put(addMultiStudentsErrorAction({ error: errorMessage }));
   }

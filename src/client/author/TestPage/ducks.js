@@ -1289,7 +1289,7 @@ function* receiveTestByIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.log({ err });
-    const errorMessage = "Receive test by id is failing";
+    const errorMessage = "Unable to retrieve test info. Please contact support.";
     if (err.status === 403) {
       yield put(push("/author/tests"));
       notification({ messageKey: "curriculumMakeApiErr" });
@@ -1451,7 +1451,7 @@ function* updateTestSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.log({ err });
-    const errorMessage = err?.data?.message || "Update test is failing";
+    const errorMessage = err?.data?.message || "Unable to update the test. Please contact support.";
     notification({ msg: errorMessage });
     yield put(updateTestErrorAction(errorMessage));
     yield put(setTestsLoadingAction(false));
@@ -1537,7 +1537,7 @@ function* updateTestDocBasedSaga({ payload }) {
     });
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = err?.data?.message || "Update test is failing";
+    const errorMessage = err?.data?.message || "Unable to update the test. Please contact support.";
     notification({ msg: errorMessage });
     yield put(updateTestErrorAction(errorMessage));
   }
@@ -1555,7 +1555,7 @@ function* updateRegradeDataSaga({ payload }) {
       data: { message: errorMessage }
     } = err.response;
     Sentry.captureException(err);
-    notification({ msg: errorMessage || "Update test is failing" });
+    notification({ msg: errorMessage || "Unable to publish & regrade. Please contact support." });
   } finally {
     yield put(setRegradingStateAction(false));
   }
@@ -1714,7 +1714,7 @@ function* receiveSharedWithListSaga({ payload }) {
     yield put(updateSharedWithListAction(coAuthors));
   } catch (e) {
     Sentry.captureException(e);
-    const errorMessage = "receive share with users list is failing";
+    const errorMessage = "Unable to retrieve shared list. Please contact support.";
     notification({ msg: errorMessage });
   }
 }
@@ -1730,7 +1730,7 @@ function* deleteSharedUserSaga({ payload }) {
     );
   } catch (e) {
     Sentry.captureException(e);
-    const errorMessage = "delete shared user is failing";
+    const errorMessage = "Unable to remove the user. Please contact support.";
     notification({ msg: errorMessage });
   }
 }
@@ -1884,7 +1884,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
     } = err.response;
     Sentry.captureException(err);
 
-    notification({ msg: errorMessage || "Auto Save of Test is failing" });
+    notification({ msg: errorMessage || "Unable to save test. Please contact support." });
   }
 }
 

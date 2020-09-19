@@ -77,7 +77,14 @@ const getAssignmentClassId = (assignment, groupId, classIds) => {
  * @param {string} userId
  * @param {string[]} classIds
  */
-export const getRedirect = (assignment, groupId, userId, classIds) => {
+export const getRedirect = (
+  assignment,
+  groupId,
+  userId,
+  classIds,
+  reportsGroupedByClassIdentifier = {},
+  groupedReportsByAssignmentId = {}
+) => {
   /**
    * @type {Object[]}
    */
@@ -89,11 +96,21 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
       ((x.students.length > 0 && x.students.includes(userId)) || (!x.students.length && x._id === groupId))
   );
 
-  assignment.class = assignment.class.map(c => {
+  assignment.class = (assignment?.class || []).map(c => {
     if (!c.redirect) {
       const redirectGroups = redirects.filter(r => r._id === c._id) || [];
-      const classMaxAttempts = c.maxAttempts || assignment.maxAttempts || 1;
-      c.maxAttempts = classMaxAttempts + redirectGroups.length;
+      let classMaxAttempts = (c.maxAttempts || assignment.maxAttempts || 1) + redirectGroups.length;
+      const reports = groupedReportsByAssignmentId[`${assignment._id}_${c._id}`] || [];
+      if (classMaxAttempts <= reports.length) {
+        const latestRedirect = _maxBy(redirectGroups, "redirectedDate");
+        if (latestRedirect) {
+          const reportsByClassIdentifier = reportsGroupedByClassIdentifier[latestRedirect.identifier];
+          if (reportsByClassIdentifier && reportsByClassIdentifier.length === 0) {
+            classMaxAttempts = reports.length + 1;
+          }
+        }
+      }
+      c.maxAttempts = classMaxAttempts;
     }
     return c;
   });
@@ -107,8 +124,22 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
   return { dueDate, allowedTime, pauseAllowed };
 };
 
-export const transformAssignmentForRedirect = (groupId, userId, classIds, assignment) => {
-  const redirect = getRedirect(assignment, groupId, userId, classIds);
+export const transformAssignmentForRedirect = (
+  groupId,
+  userId,
+  classIds,
+  reportsGroupedByClassIdentifier = {},
+  groupedReportsByAssignmentId = {},
+  assignment = {}
+) => {
+  const redirect = getRedirect(
+    assignment,
+    groupId,
+    userId,
+    classIds,
+    reportsGroupedByClassIdentifier,
+    groupedReportsByAssignmentId
+  );
   if (!redirect) {
     return assignment;
   }
@@ -151,7 +182,7 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   // eslint-disable-next-line
   let { endDate, class: groups = [], classId: currentGroup } = assignment;
   // when attempts over no need to check for any other condition to hide assignment from assignments page
-  if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2)) return false;
+  if (maxAttempts <= attempts && lastAttempt.status !== 0) return false;
   if (!endDate) {
     const currentUserGroups = groups.filter(
       clazz =>
@@ -289,8 +320,19 @@ function* fetchAssignments() {
       call(assignmentApi.fetchAssigned, groupId),
       call(reportsApi.fetchReports, groupId)
     ]);
+
+    const reportsGroupedByClassIdentifier = groupBy(reports, "assignmentClassIdentifier");
+    const groupedReportsByAssignmentId = groupBy(reports, item => `${item.assignmentId}_${item.groupId}`);
+
     // transform to handle redirect
-    const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
+    const transformFn = partial(
+      transformAssignmentForRedirect,
+      groupId,
+      userId,
+      classIds,
+      reportsGroupedByClassIdentifier,
+      groupedReportsByAssignmentId
+    );
     const assignmentsProcessed = assignments.map(transformFn);
 
     // normalize reports
@@ -551,7 +593,16 @@ function* launchAssignment({ payload }) {
       ]);
       const userId = yield select(getCurrentUserId);
       const classIds = yield select(getClassIds);
-      assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
+      const reportsGroupedByClassIdentifier = groupBy(testActivities, "assignmentClassIdentifier");
+      const groupedReportsByAssignmentId = groupBy(testActivities, item => `${item.assignmentId}_${item.groupId}`);
+      assignment = transformAssignmentForRedirect(
+        groupId,
+        userId,
+        classIds,
+        reportsGroupedByClassIdentifier,
+        groupedReportsByAssignmentId,
+        assignment
+      );
       const lastActivity = _maxBy(testActivities, "createdAt");
       const { testId, testType = "assessment", resume, timedAssignment, hasInstruction, instruction } = assignment;
       if (lastActivity && lastActivity.status === 0) {

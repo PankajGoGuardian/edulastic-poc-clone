@@ -1,6 +1,6 @@
-import { greyThemeLighter, themeColorBlue } from "@edulastic/colors";
+import { greyThemeLighter, themeColorBlue, lightGrey12 } from "@edulastic/colors";
 import { isObject } from "lodash";
-import styled, { css } from "styled-components";
+import styled, { css, withTheme } from "styled-components";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import { useDrop } from "react-dnd";
@@ -26,10 +26,11 @@ const DropContainer = ({
       if (typeof drop === "function") {
         const itemPos = monitor.getClientOffset();
         const itemOffset = monitor.getSourceClientOffset();
-        const { data, size } = item;
+        const { data, dimensions } = item;
+
         let itemRect = {};
-        if (isObject(size) && isObject(itemPos)) {
-          itemRect = { ...item.size, ...itemPos };
+        if (isObject(dimensions) && isObject(itemPos)) {
+          itemRect = { ...dimensions, ...itemPos };
         }
         drop({ data, itemRect, itemOffset }, index);
       }
@@ -82,7 +83,8 @@ DropContainer.propTypes = {
   style: PropTypes.object,
   isOver: PropTypes.bool,
   index: PropTypes.number,
-  className: PropTypes.string
+  className: PropTypes.string,
+  borderColor: PropTypes.string
 };
 
 DropContainer.defaultProps = {
@@ -91,10 +93,11 @@ DropContainer.defaultProps = {
   drop: () => null,
   style: {},
   index: null,
-  className: ""
+  className: "",
+  borderColor: lightGrey12
 };
 
-export default DropContainer;
+export default withTheme(DropContainer);
 
 const hoverStyle = css`
   &:hover {
@@ -103,6 +106,7 @@ const hoverStyle = css`
 `;
 
 const Container = styled.div`
+  font-size: ${({ theme }) => theme.fontSize};
   border: ${({ noBorder }) => !noBorder && "2px dashed"};
   border-radius: 2px;
   border-color: ${({ borderColor }) => borderColor};

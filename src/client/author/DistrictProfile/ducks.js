@@ -19,9 +19,7 @@ const SET_DISTRICT_PROFILE_VALUE = "[districtProfile] set data value";
 const SET_IMAGE_LOADING_STATUS = "[districtProfile] set image uploading status";
 
 export const receiveDistrictProfileAction = createAction(RECEIVE_DISTRICT_PROFILE_REQUEST);
-export const receiveSchoolProfileAction = schoolId => {
-  return receiveDistrictProfileAction({ orgType: "institution", orgId: schoolId });
-};
+export const receiveSchoolProfileAction = schoolId => receiveDistrictProfileAction({ orgType: "institution", orgId: schoolId });
 export const receiveDistrictProfileSuccessAction = createAction(RECEIVE_DISTRICT_PROFILE_SUCCESS);
 export const receiveDistrictProfileErrorAction = createAction(RECEIVE_DISTRICT_PROFILE_ERROR);
 export const updateDistrictProfileAction = createAction(UPDATE_DISTRICT_PROFILE_REQUEST);
@@ -92,7 +90,7 @@ function* receiveDistrictProfileSaga({ payload }) {
     const districtProfile = yield call(settingsApi.getDistrictProfile, payload);
     yield put(receiveDistrictProfileSuccessAction(districtProfile));
   } catch (err) {
-    const errorMessage = "Receive District Profile is failing";
+    const errorMessage = "Unable to retrieve District profile. Please contact support.";
     notification({ msg:errorMessage});
     yield put(receiveDistrictProfileErrorAction({ error: errorMessage }));
   }
@@ -104,7 +102,7 @@ function* updateDictrictProfileSaga({ payload }) {
     yield put(updateDistrictProfileSuccessAction(updateDistrictProfile));
     notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
-    const errorMessage = "Update District Profile is failing";
+    const errorMessage = "Unable to update District profile. Please contact support.s";
     notification({ msg:errorMessage});
     yield put(updateDistrictProfileErrorAction({ error: errorMessage }));
   }
@@ -116,7 +114,7 @@ function* createDictrictProfileSaga({ payload }) {
     yield put(createDistrictProfileSuccessAction(createdDistrictProfile));
     notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
-    const errorMessage = "Update District Profile is failing";
+    const errorMessage = "Unable to create District profile. Please contact support.";
     notification({ msg:errorMessage});
     yield put(createDistrictProfileErrorAction({ error: errorMessage }));
   }

@@ -95,7 +95,7 @@ const staticFields = [
     dataIndex: "totalAssigned"
   },
   {
-    title: "Graded",
+    title: "Submitted",
     width: 90,
     dataIndex: "totalGraded"
   },

@@ -45,6 +45,13 @@ function drawPoint(board, object, settings) {
 }
 
 function create(board, object, settings) {
+  // causing crash issue otherwise
+  if (!object.x) {
+    object.x = 0;
+  }
+  if (!object.y) {
+    object.y = 0;
+  }
   const { fixed = false } = settings;
 
   const { id = null, x, y, text, customOptions = {}, dimensions = {} } = object;

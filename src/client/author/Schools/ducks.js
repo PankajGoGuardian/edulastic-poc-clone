@@ -238,7 +238,7 @@ function* receiveSchoolsSaga({ payload }) {
     const schools = yield call(schoolApi.getSchools, payload);
     yield put(receiveSchoolsSuccessAction(schools));
   } catch (err) {
-    const errorMessage = "Receive Schools is failing!";
+    const errorMessage = "Unable to retrieve school info. Please contact support.";
     notification({ msg: errorMessage });
     yield put(receiveSchoolsErrorAction({ error: errorMessage }));
   }
@@ -249,7 +249,7 @@ function* updateSchoolsSaga({ payload }) {
     const updateSchool = yield call(schoolApi.updateSchool, payload);
     yield put(updateSchoolsSuccessAction(updateSchool));
   } catch (err) {
-    const errorMessage = "Update School is failing";
+    const errorMessage = "Unable to update school settings. Please contact support.";
     notification({ msg: errorMessage });
     yield put(updateSchoolsErrorAction({ error: errorMessage }));
   }
@@ -266,7 +266,7 @@ function* createSchoolsSaga({ payload }) {
       })
     );
   } catch (err) {
-    const errorMessage = "Create School is failing";
+    const errorMessage = "Unable to create the school info. Please contact support.";
     notification({ msg: errorMessage });
     yield put(createSchoolsErrorAction({ error: errorMessage }));
   }
@@ -279,7 +279,7 @@ function* deleteSchoolsSaga({ payload }) {
     notification({ type: "success", messageKey: "schoolSucessfullyDeactivated" });
     yield put(deleteSchoolsSuccessAction(payload.schoolIds));
   } catch (err) {
-    const errorMessage = "Delete School is failing";
+    const errorMessage = "Unable to remove the school. Please contact support.";
     notification({ msg: errorMessage });
     yield put(deleteSchoolsErrorAction({ deleteError: errorMessage }));
   }

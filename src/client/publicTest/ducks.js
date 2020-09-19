@@ -112,8 +112,18 @@ function* fetchAssignmentsByTest({ payload }) {
       call(reportsApi.fetchReports, groupId, testId)
     ]);
 
+    const reportsGroupedByClassIdentifier = groupBy(reports, "assignmentClassIdentifier");
+    const groupedReportsByAssignmentId = groupBy(reports, item => `${item.assignmentId}_${item.groupId}`);
+
     // transform to handle redirect
-    const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
+    const transformFn = partial(
+      transformAssignmentForRedirect,
+      groupId,
+      userId,
+      classIds,
+      reportsGroupedByClassIdentifier,
+      groupedReportsByAssignmentId
+    );
     const assignmentsProcessed = assignments.map(transformFn);
 
     // normalize reports

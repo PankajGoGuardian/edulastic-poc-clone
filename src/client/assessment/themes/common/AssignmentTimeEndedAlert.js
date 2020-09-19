@@ -7,9 +7,23 @@ import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import { Button } from "antd";
 import { finishTestAcitivityAction } from "../../actions/test";
+import { saveUserResponse } from "../../actions/items";
 
-const AssignmentTimeEndedAlert = ({ isVisible, autoSubmitTest, theme, groupId, history, utaId }) => {
+const AssignmentTimeEndedAlert = ({
+  isVisible,
+  autoSubmitTest,
+  theme,
+  groupId,
+  history,
+  utaId,
+  match,
+  saveItemResponse
+}) => {
   useEffect(() => {
+    const { qid } = match.params || {};
+    const lastTime = window.localStorage.assessmentLastTime || Date.now();
+    const timeSpent = Date.now() - lastTime;
+    saveItemResponse(qid, timeSpent, false, groupId, { pausing: false });
     autoSubmitTest({ groupId, preventRouteChange: true, testActivityId: utaId, autoSubmit: true });
   }, []);
 
@@ -43,7 +57,10 @@ const AssignmentTimeEndedAlert = ({ isVisible, autoSubmitTest, theme, groupId, h
 
 AssignmentTimeEndedAlert.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  autoSubmitTest: PropTypes.func.isRequired,
+  groupId: PropTypes.string.isRequired,
+  utaId: PropTypes.string.isRequired,
+  saveItemResponse: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -52,6 +69,7 @@ const enhance = compose(
   connect(
     null,
     {
+      saveItemResponse: saveUserResponse,
       autoSubmitTest: finishTestAcitivityAction
     }
   )

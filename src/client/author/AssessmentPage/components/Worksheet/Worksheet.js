@@ -274,16 +274,18 @@ class WorksheetComponent extends React.Component {
       }
       newFreeFormNotes[parsedItem] = freeFormNotes[item];
     });
+
+    // NOTE: pageNumber uses 0 based indexing, while annotations.$.page uses 1 based indexing
     const updatedAnnotations = annotations
       // eslint-disable-next-line array-callback-return
       .map(x => {
-        if (x.page === pageNumber) {
+        if (x.page === pageNumber + 1) {
           return null;
         }
-        if (x.page < pageNumber) {
+        if (x.page < pageNumber + 1) {
           return x;
         }
-        if (x.page > pageNumber) {
+        if (x.page > pageNumber + 1) {
           return { ...x, page: x.page - 1 };
         }
       })
@@ -655,33 +657,31 @@ class WorksheetComponent extends React.Component {
             />
           </Modal>
 
-          {!minimized && (
-            <Thumbnails
-              annotations={annotations}
-              list={pageStructure}
-              currentPage={currentPage}
-              onReupload={this.handleReupload}
-              onAddPdf={this.handleAddPdf}
-              onPageChange={this.handleChangePage}
-              onAddBlankPage={this.handleAppendBlankPage}
-              onDeletePage={this.handleDeletePage}
-              setDeleteConfirmation={this.setDeleteConfirmation}
-              onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
-              onMovePageUp={this.handleMovePageUp}
-              onMovePageDown={this.handleMovePageDown}
-              onInsertBlankPage={this.handleInsertBlankPage}
-              onRotate={this.handleRotate}
-              viewMode={viewMode}
-              review={review}
-              testMode={testMode}
-              reportMode={reportMode}
-              isToolBarVisible={isToolBarVisible}
-              toggleToolBarVisiblity={this.toggleToolBarVisiblity}
-              noCheck={noCheck}
-              minimized={minimized}
-              toggleMinimized={this.toggleMinimized}
-            />
-          )}
+          <Thumbnails
+            annotations={annotations}
+            list={pageStructure}
+            currentPage={currentPage}
+            onReupload={this.handleReupload}
+            onAddPdf={this.handleAddPdf}
+            onPageChange={this.handleChangePage}
+            onAddBlankPage={this.handleAppendBlankPage}
+            onDeletePage={this.handleDeletePage}
+            setDeleteConfirmation={this.setDeleteConfirmation}
+            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+            onMovePageUp={this.handleMovePageUp}
+            onMovePageDown={this.handleMovePageDown}
+            onInsertBlankPage={this.handleInsertBlankPage}
+            onRotate={this.handleRotate}
+            viewMode={viewMode}
+            review={review}
+            testMode={testMode}
+            reportMode={reportMode}
+            isToolBarVisible={isToolBarVisible}
+            toggleToolBarVisiblity={this.toggleToolBarVisiblity}
+            noCheck={noCheck}
+            minimized={minimized}
+            toggleMinimized={this.toggleMinimized}
+          />
 
           <PDFViewerContainer width={pdfWidth}>
             <PDFPreview

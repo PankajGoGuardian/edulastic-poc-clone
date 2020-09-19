@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import { Button, Select } from "antd";
-import { white, secondaryTextColor } from "@edulastic/colors";
+import { white, secondaryTextColor, smallDesktopWidth } from "@edulastic/colors";
 import icons from "./assets/images/icons.png";
 
 export const ToolBoxContainer = styled(FlexContainer)`
@@ -156,4 +156,18 @@ export const DrawingToolsContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
+`;
+
+export const TogglerWrapper = styled.div`
+  display: ${({ isTeacher }) => (isTeacher ? "flex" : "none")};
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: ${white};
+  text-transform: uppercase;
+  cursor: pointer;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    display: none;
+  }
 `;

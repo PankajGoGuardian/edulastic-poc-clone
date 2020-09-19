@@ -15,7 +15,8 @@ import {
   getDistrictSignOutUrl,
   setSignOutUrl,
   getSignOutUrl,
-  removeSignOutUrl
+  removeSignOutUrl,
+  getStartedUrl
 } from "../../common/utils/helpers";
 import { userPickFields } from "../../common/utils/static/user";
 import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
@@ -1059,10 +1060,15 @@ function* googleSSOLogin({ payload }) {
       yield put(getUserDataAction(res));
     }
   } catch (e) {
-    notification({ msg: get(e, "response.data.message", "Google Login failed") });
-
-    yield put(push(getSignOutUrl()));
-    removeSignOutUrl();
+    const errorMessage = get(e, "response.data.message", "Google Login failed");
+    if (errorMessage === "signInUserNotFound") {
+      yield put(push(getStartedUrl()));
+      notification({ type: "warn", messageKey: "signInUserNotFound" });
+    } else {
+      notification({ msg: errorMessage });
+      yield put(push(getSignOutUrl()));
+      removeSignOutUrl();
+    }
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");
@@ -1128,10 +1134,15 @@ function* msoSSOLogin({ payload }) {
     const res = yield call(authApi.msoSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    notification({ msg: get(e, "response.data.message", "MSO Login failed") });
-
-    yield put(push(getSignOutUrl()));
-    removeSignOutUrl();
+    const errorMessage = get(e, "response.data.message", "MSO Login failed");
+    if (errorMessage === "signInUserNotFound") {
+      yield put(push(getStartedUrl()));
+      notification({ type: "warn", messageKey: "signInUserNotFound" });
+    } else {
+      notification({ msg: errorMessage });
+      yield put(push(getSignOutUrl()));
+      removeSignOutUrl();
+    }
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");

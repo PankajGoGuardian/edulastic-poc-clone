@@ -40,7 +40,9 @@ const onHandler = board => {
       labelShowMax,
       labelShowMin,
       minorTicks,
-      labelsFrequency
+      labelsFrequency,
+      strokeColor,
+      tickColors = {}
     },
     canvas: { xMin, xMax, yMax },
     layout: { linePosition, width }
@@ -61,11 +63,12 @@ const onHandler = board => {
     "axis",
     [[isVertical ? calcY : x1, isVertical ? x1 : calcY], [isVertical ? calcY : x2, isVertical ? x2 : calcY]],
     {
+      ...Colors.numberline,
+      strokeColor,
       straightFirst: false,
       straightLast: false,
       firstArrow: leftArrow === true ? { size: 8 } : false,
-      lastArrow: rightArrow === true ? { size: 8 } : false,
-      ...Colors.numberline
+      lastArrow: rightArrow === true ? { size: 8 } : false
     }
   );
 
@@ -135,6 +138,7 @@ const onHandler = board => {
     const minors = createMinorTicks(minorTicks, ticks.sort((a, b) => a - b));
     board.$board.create("ticks", [newAxis, minors], {
       ...Colors.minorTick,
+      ...tickColors,
       majorHeight: 10,
       visible: showTicks
     });
@@ -247,6 +251,7 @@ const onHandler = board => {
 
   board.$board.create("ticks", [newAxis, ticks], {
     ...Colors.majorTick,
+    ...tickColors,
     visible: true,
     anchor: "middle",
     insertTicks: false,

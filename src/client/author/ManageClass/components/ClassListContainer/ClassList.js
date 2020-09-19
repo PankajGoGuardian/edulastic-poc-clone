@@ -15,7 +15,6 @@ import { fetchClassListAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
 import { getUserDetails } from "../../../../student/Login/ducks";
 import Header from "./Header";
-import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import {
   getGoogleAllowedInstitionPoliciesSelector,
   getCanvasAllowedInstitutionPoliciesSelector,
@@ -35,7 +34,6 @@ const ClassList = ({
   location,
   user,
   fetchClassList,
-  setAssignmentFilters,
   isUserGoogleLoggedIn,
   googleAllowedInstitutions,
   setShowCleverSyncModal,
@@ -65,18 +63,6 @@ const ClassList = ({
     setClassGroups(groups);
   }, [currentTab]);
 
-  // get assignments related to class
-  const getAssignmentsByClass = classId => event => {
-    event.stopPropagation();
-    const filter = {
-      classId,
-      testType: "",
-      termId: ""
-    };
-    history.push("/author/assignments");
-    setAssignmentFilters(filter);
-  };
-
   const columns = [
     {
       title: currentTab === "class" ? "Class Name" : "Group Name",
@@ -100,7 +86,7 @@ const ClassList = ({
           {classcode}
         </Tooltip>
       ),
-      width: 150
+      width: 200
     },
     {
       title: "Grades",
@@ -136,13 +122,13 @@ const ClassList = ({
             {subject.text}
           </Tooltip>
         );
-      },
-      width: 150
+      }
     },
     {
       title: "Tag",
       dataIndex: "tags",
       sortDirections: ["descend", "ascend"],
+      align: "left",
       sorter: (a, b) => {
         const prevTags = findTags(a);
         const nextTags = findTags(b);
@@ -155,8 +141,7 @@ const ClassList = ({
             <Tags>{tags || "--"}</Tags>
           </Tooltip>
         );
-      },
-      width: 80
+      }
     },
     {
       title: "Students",
@@ -166,17 +151,6 @@ const ClassList = ({
       render: (studentCount = 0) => (
         <Tooltip title={studentCount} placement="bottom">
           {studentCount}
-        </Tooltip>
-      )
-    },
-    {
-      title: "Assignments",
-      dataIndex: "assignmentCount",
-      sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => Number(a.assignmentCount) - Number(b.assignmentCount),
-      render: (assignmentCount = 0, record) => (
-        <Tooltip onClick={getAssignmentsByClass(record?._id)} title={assignmentCount} placement="bottom">
-          {assignmentCount}
         </Tooltip>
       )
     }
@@ -287,8 +261,7 @@ const enhance = compose(
       isCleverUser: getCleverLibraryUserSelector(state)
     }),
     {
-      fetchClassList: fetchClassListAction,
-      setAssignmentFilters: setAssignmentFiltersAction
+      fetchClassList: fetchClassListAction
     }
   )
 );

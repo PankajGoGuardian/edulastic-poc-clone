@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
 import { drawTools } from "@edulastic/constants";
 import { WithResources, MathModal, getMathHtml, AssessmentPlayerContext, AnswerContext } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
@@ -46,9 +47,11 @@ const Scratchpad = ({
   updateEditMode,
   saveData,
   data,
+  dimensions,
   readOnly,
   hideTools,
-  clearClicked // this is from highlight image
+  clearClicked, // this is from highlight image,
+  hideData
 }) => {
   const [zwibbler, setZwibbler] = useState();
   const [clipBoard, updateClipBoard] = useState();
@@ -63,6 +66,9 @@ const Scratchpad = ({
   const { isStudentAttempt, currentItem } = useContext(AssessmentPlayerContext);
   const { isAnswerModifiable, expressGrader } = useContext(AnswerContext);
   const isLineMode = lineTypes.includes(activeMode);
+
+  const height = get(dimensions, "height", null);
+  const width = get(dimensions, "width", null);
 
   const toggleProtractor = () => {
     zwibbler.begin();
@@ -270,6 +276,12 @@ const Scratchpad = ({
         });
       });
       setZwibbler(newZwibbler);
+      if (!readOnly) {
+        updateScratchpad({
+          width: zwibblerRef.current.clientWidth,
+          height: zwibblerRef.current.clientHeight
+        });
+      }
     }
     return () => {
       setZwibbler(null);
@@ -312,8 +324,14 @@ const Scratchpad = ({
     }
   }, [isAnswerModifiable, expressGrader]);
 
+  useEffect(() => {
+    if (zwibbler) {
+      zwibbler.resize();
+    }
+  }, [width, height]);
+
   return (
-    <ScratchpadContainer ref={zwibblerContainer}>
+    <ScratchpadContainer ref={zwibblerContainer} hideData={hideData}>
       {!hideToolBar && <ToolBox />}
       <ZwibblerMain
         deleteMode={deleteMode}
@@ -322,6 +340,8 @@ const Scratchpad = ({
         onClick={onClickHandler}
         hideToolBar={hideToolBar}
         readOnly={readOnly}
+        height={height}
+        width={width}
       />
       <MathModal
         value=""
@@ -347,7 +367,8 @@ const EnhancedComponent = compose(
       fontColor: state.scratchpad.fontColor,
       activeMode: state.scratchpad.activeMode,
       deleteMode: state.scratchpad.deleteMode,
-      editMode: state.scratchpad.editMode
+      editMode: state.scratchpad.editMode,
+      hideData: state.scratchpad.hideData
     }),
     {
       toggleButtons: toggleButtonsAction,

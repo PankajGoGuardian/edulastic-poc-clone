@@ -487,8 +487,10 @@ class GraphDisplay extends Component {
         specificPoints: numberlineAxis && numberlineAxis.specificPoints,
         fractionsFormat: numberlineAxis && numberlineAxis.fractionsFormat,
         minorTicks: numberlineAxis && parseFloat(numberlineAxis.minorTicks),
+        tickColors: (numberlineAxis && numberlineAxis.tickColors) || { strokeColor: "#878A91" },
         showLabels: numberlineAxis && numberlineAxis.showLabels,
         labelShowMax: numberlineAxis && numberlineAxis.labelShowMax,
+        strokeColor: (numberlineAxis && numberlineAxis.lineStrokeColor) || "#878A91",
         labelShowMin: numberlineAxis && numberlineAxis.labelShowMin
       },
       layout: {
@@ -501,7 +503,7 @@ class GraphDisplay extends Component {
         linePosition: numberlineAxis.stackResponses ? 75 : parseInt(uiStyle.linePosition, 10),
         yDistance: safeParseFloat(uiStyle.yDistance),
         pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10),
-        maxPointsCount: parseInt(uiStyle.maxPointsCount, 10) || 12
+        maxPointsCount: parseInt(uiStyle.maxPointsCount, 10) || 11
       },
       pointParameters: {
         snapToGrid: true,
@@ -538,7 +540,7 @@ class GraphDisplay extends Component {
       gridParams: {
         gridY: safeParseFloat(uiStyle.yDistance),
         gridX: safeParseFloat(uiStyle.xDistance),
-        showGrid: uiStyle.showGrid
+        showGrid: uiStyle.showGrid ? uiStyle.showGrid : true
       },
       evaluation,
       tools: toolbar ? toolbar.tools : [],

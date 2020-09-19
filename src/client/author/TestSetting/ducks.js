@@ -90,7 +90,7 @@ function* receiveTestSettingeSaga({ payload }) {
     const testSetting = yield call(settingsApi.getTestSetting, payload);
     yield put(receiveTestSettingSuccessAction(testSetting));
   } catch (err) {
-    const errorMessage = "Receive Test Setting is failing";
+    const errorMessage = "Unable to retrieve test settings. Please contact support.";
     notification({ msg:errorMessage });
     yield put(receiveTestSettingErrorAction({ error: errorMessage }));
   }
@@ -102,7 +102,7 @@ function* updateTestSettingSaga({ payload }) {
     yield put(updateTestSettingSuccessAction(updateTestSetting));
     notification({ type: "success", messageKey:"testSettingsSaved"});
   } catch (err) {
-    const errorMessage = "Update Test Setting is failing";
+    const errorMessage = "Unable to update test settings. Please contact support.";
     notification({ msg:errorMessage });
     yield put(updateTestSettingErrorAction({ error: errorMessage }));
   }
@@ -114,7 +114,7 @@ function* createTestSettingSaga({ payload }) {
     yield put(createTestSettingSuccessAction(createTestSetting));
     notification({ type: "success", messageKey:"testSettingsSaved"});
   } catch (err) {
-    const errorMessage = "Create Test Setting is failing";
+    const errorMessage = "Unable to save test settings. Please contact support.";
     notification({ msg:errorMessage });
     yield put(createTestSettingErrorAction({ error: errorMessage }));
   }

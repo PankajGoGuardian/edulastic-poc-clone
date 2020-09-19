@@ -60,7 +60,7 @@ export default class FormMath extends React.Component {
       highlighted,
     } = this.props;
     
-    const restrictKeys = allowedVariables.split(",").map(val=> val.trim());
+    const restrictKeys = allowedVariables.split(",").map(val=> val.trim()).filter(av => !!av);
 
     if (mode === "report") {
       return <QuestionText>{answer}</QuestionText>;

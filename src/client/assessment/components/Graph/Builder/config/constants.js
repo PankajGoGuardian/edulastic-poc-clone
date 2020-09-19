@@ -29,7 +29,7 @@ export const TOOLS = {
   RAY_LEFT_DIRECTION_RIGHT_HOLLOW: "ray_left_direction_right_hollow",
   RAY_RIGHT_DIRECTION_LEFT_HOLLOW: "ray_right_direction_left_hollow",
   TRASH: "trash",
-
+  DELETE: "delete",
   EQUATION: "equation",
   AREA: "area",
   DASHED: "dashed",

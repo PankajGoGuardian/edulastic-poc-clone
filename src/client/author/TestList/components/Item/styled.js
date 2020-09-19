@@ -171,14 +171,23 @@ export const ShareIcon = styled.div`
 `;
 
 export const EllipsisWrapper = styled.div`
-  max-height: 100%;
-  min-height: 18px;
+  max-height: 15px;
+  min-height: 15px;
+  padding-right: 15px;
   position: relative;
   overflow: hidden;
   text-align: ${props => (props.view === "list" ? "justify" : "center")};
-  text-overflow: hidden;
+
+  /* ellipsis start */
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  cursor: pointer;
+  /* ellipsis end*/
+
   &:before {
-    content: "...";
     position: absolute;
     right: 0;
     bottom: 0;
@@ -189,9 +198,9 @@ export const EllipsisWrapper = styled.div`
     content: "";
     position: absolute;
     right: 0;
-    width: 1em;
-    height: 1em;
-    margin-top: 0.2em;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.2rem;
     background: white;
   }
 `;
@@ -319,10 +328,11 @@ export const Stars = styled(Rate)`
   ${({ isPlaylist }) => (isPlaylist ? playlistStars : testItemStars)}
 `;
 
+// Also Used in List view
 export const StyledLink = styled.a`
   display: -webkit-box;
   font-size: 14px;
-  height: 50px;
+  height: 44px;
   font-weight: bold;
   width: 100%;
   text-overflow: ellipsis;
@@ -339,6 +349,7 @@ export const StyledLink = styled.a`
 
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 16px;
+    height: 50px;
   }
 `;
 

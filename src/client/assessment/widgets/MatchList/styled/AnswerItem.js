@@ -6,6 +6,7 @@ export const AnswerItem = styled(FlexContainer)`
   margin-bottom: 8px;
   .__prevent-page-break {
     width: 100%;
+    height: 100%;
   }
 `;
 

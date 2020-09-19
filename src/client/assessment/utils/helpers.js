@@ -227,22 +227,19 @@ export const getSpellCheckAttributes = (isSpellCheck = false) => ({
   autoCapitalize: isSpellCheck
 });
 
-/**
- * when disabledResponse is true choice container is hidden
- * so we don't require to give direction for ResponseContainer (default will work)
+/* align with getJustification
  * @param {string} pos
- * @param {boolean} disabledResponse
  */
-export const getDirection = (pos, disabledResponse = false) => {
+export const getDirection = pos => {
   switch (pos) {
     case "bottom":
       return "column";
     case "top":
-      return disabledResponse ? "column" : "column-reverse";
+      return "column-reverse";
     case "right":
       return "row";
     case "left":
-      return disabledResponse ? "row" : "row-reverse";
+      return "row-reverse";
     default:
       return "column";
   }

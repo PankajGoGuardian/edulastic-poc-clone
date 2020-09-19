@@ -1036,7 +1036,7 @@ export function* updateItemSaga({ payload }) {
       }
     }
 
-    /**
+    /*
      * in test flow, until test is not created, testId comes as "undefined" in string
      * do no pass it to API as testId argument
      * @see https://snapwiz.atlassian.net/browse/EV-18458
@@ -1507,10 +1507,18 @@ function* savePassage({ payload }) {
     });
     yield put(updatePassageStructureAction(modifiedPassage));
 
+    /*
+     * in test flow, until test is not created, testId comes as "undefined" in string
+     * do no pass it to API as testId argument
+     * @see https://snapwiz.atlassian.net/browse/EV-19517
+     */
+    const hasValidTestId = payload.testId && payload.testId !== "undefined";
+    const testIdParam = hasValidTestId ? payload.testId : null;
+
     // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),
-      currentItem._id !== "new" ? call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId) : null
+      currentItem._id !== "new" ? call(testItemsApi.updateById, currentItem._id, currentItem, testIdParam) : null
     ]);
 
     // if there is new, replace it with current Item's id.
@@ -1525,7 +1533,7 @@ function* savePassage({ payload }) {
   } catch (e) {
     Sentry.captureException(e);
     console.log("error: ", e);
-    notification({ msg: "errorSavingPassing" });
+    notification({ messageKey: "errorSavingPassage" });
   }
 }
 

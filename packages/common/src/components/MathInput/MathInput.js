@@ -345,11 +345,7 @@ class MathInput extends React.PureComponent {
           </div>
         </div>
         {(visibleKeypad || alwaysShowKeyboard) && (
-          <MathKeyboardWrapper
-            className="input__keyboard"
-            default={keyboardPosition}
-            disableDragging={!(window.isMobileDevice || isDocbasedSection) || alwaysShowKeyboard}
-          >
+          <MathKeyboardWrapper className="input__keyboard" default={keyboardPosition}>
             <MathKeyboard
               symbols={symbols}
               numberPad={numberPad}

@@ -15,7 +15,6 @@ import {
   setIsPausedAction,
   updateRemovedStudentsAction,
   updateClassStudentsAction,
-  setStudentsGradeBookAction,
   setAllTestActivitiesForStudentAction,
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
@@ -380,8 +379,7 @@ function* removeStudentsSaga({ payload }) {
 
 function* addStudentsSaga({ payload }) {
   try {
-    const { students = [] } = yield call(classBoardApi.addStudents, payload);
-    yield put(setStudentsGradeBookAction(students));
+    yield call(classBoardApi.addStudents, payload);
     yield call(notification, { type: "success", msg: "Successfully added" });
   } catch (err) {
     Sentry.captureException(err);

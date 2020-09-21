@@ -7,7 +7,7 @@ import { Menu, Dropdown } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton, Label, FlexContainer, notification } from "@edulastic/common";
-import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
+import { white, mainTextColor, title, themeColorBlue } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { getUserRole, isPublisherUserSelector, getCollectionsToAddContent } from "../../../src/selectors/user";
@@ -174,6 +174,6 @@ const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
   }
 `;

@@ -204,7 +204,8 @@ class Item extends Component {
     if (getAllTTS.length) {
       const ttsSuccess = getAllTTS.filter(_item => _item.taskStatus !== "COMPLETED").length === 0;
       const ttsStatusSuccess = {
-        name: ttsSuccess ? <IconVolumeUp /> : <IconNoVolume />
+        name: ttsSuccess ? <IconVolumeUp /> : <IconNoVolume />,
+        text:" "
       };
       details.push(ttsStatusSuccess);
     }
@@ -212,7 +213,7 @@ class Item extends Component {
     if (!isPublisherUser && showPremiumLabelOnContent(item.collections, collections)) {
       details.unshift({ name: <PremiumTag />, type: "premium" });
     }
-
+  
     return details.map(
       (detail, index) =>
         (detail.text || detail.type === "premium") &&

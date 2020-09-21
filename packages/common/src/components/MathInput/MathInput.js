@@ -139,6 +139,21 @@ class MathInput extends React.PureComponent {
 
   handleKeypress = e => {
     const { restrictKeys, allowNumericOnly, value = "" } = this.props;
+    const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g);
+
+    if (!isEmpty(restrictKeys)) {
+      const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
+      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+      if (allowNumericOnly || !(isSpecialChar || isArrowOrShift)) {
+        const isValidKey = restrictKeys.includes(e.key) || !isNonNumericKey;
+        if (!isValidKey) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+      return;
+    }
+
     if (allowNumericOnly) {
       const isDynamicVar = value && value[value.length - 1] === "@";
       if (isDynamicVar) {
@@ -149,21 +164,9 @@ class MathInput extends React.PureComponent {
         return;
       }
 
-      if (e.key && !e.key.match(/[0-9+-.%^@/]/g)) {
+      if (isNonNumericKey) {
         e.preventDefault();
         e.stopPropagation();
-      }
-    }
-
-    if (!isEmpty(restrictKeys)) {
-      const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
-      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
-      if (!(isSpecialChar || isArrowOrShift) && !isEmpty(restrictKeys)) {
-        const isValidKey = restrictKeys.includes(e.key);
-        if (!isValidKey) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
       }
     }
   };
@@ -397,11 +400,11 @@ MathInput.defaultProps = {
   style: {},
   customKeys: [],
   restrictKeys: [],
-  onInnerFieldClick: () => {},
-  onFocus: () => {},
-  onBlur: () => {},
-  onKeyDown: () => {},
-  onChangeKeypad: () => {},
+  onInnerFieldClick: () => { },
+  onFocus: () => { },
+  onBlur: () => { },
+  onKeyDown: () => { },
+  onChangeKeypad: () => { },
   fullWidth: false,
   className: ""
 };

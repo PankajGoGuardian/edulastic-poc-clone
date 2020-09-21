@@ -411,7 +411,7 @@
     "message": "Subject field cannot be empty",
     "description": ""
   },
-  "noQuestions":{
+  "noQuestions": {
     "message": "Test has only instructions. Test must have question to be published",
     "description": ""
   },

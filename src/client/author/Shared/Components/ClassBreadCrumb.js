@@ -8,7 +8,7 @@ import { getAdditionalDataSelector } from "../../ClassBoard/ducks";
 import { getUserRole } from "../../../student/Login/ducks";
 import { getUserOrgId } from "../../src/selectors/user";
 
-const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb, isCliUser, fromUrl }) => {
+const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb, isCliUser }) => {
   if (breadCrumb) {
     return (
       <PaginationInfo xs={24} md={8}>
@@ -28,45 +28,37 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb, isCliUser, fr
   }
 
   return (
-    <PaginationInfo xs={24} md={8}>
-      <RecentLink
-        to={isCliUser ? fromUrl || `/author/reports/assessment-summary/test/${data?.testId}` : "/author/assignments"}
-      >
-        {isCliUser ? "REPORTS" : "ASSIGNMENTS"}
-      </RecentLink>
-      {!isCliUser && data?.testName && (
-        <>
-          &nbsp;/&nbsp;
-          <Tooltip title={data.testName}>
-            <AnchorLink
-              to={
-                userRole === "teacher"
-                  ? "/author/assignments"
-                  : `/author/assignments/${districtId}/${data.testId}?testType=${data.testType}`
-              }
-            >
-              {data.testName}
-            </AnchorLink>
-          </Tooltip>
-        </>
+    <>
+      {!isCliUser && (
+        <PaginationInfo xs={24} md={8}>
+          <RecentLink to="/author/assignments">ASSIGNMENTS</RecentLink>
+          {data?.testName && (
+            <>
+              &nbsp;/&nbsp;
+              <Tooltip title={data.testName}>
+                <AnchorLink
+                  to={
+                    userRole === "teacher"
+                      ? "/author/assignments"
+                      : `/author/assignments/${districtId}/${data.testId}?testType=${data.testType}`
+                  }
+                >
+                  {data.testName}
+                </AnchorLink>
+              </Tooltip>
+            </>
+          )}
+          {data?.className && (
+            <>
+              &nbsp;/&nbsp;
+              <Tooltip title={data.className}>
+                <Anchor>{data.className}</Anchor>
+              </Tooltip>
+            </>
+          )}
+        </PaginationInfo>
       )}
-      {!isCliUser && data?.className && (
-        <>
-          &nbsp;/&nbsp;
-          <Tooltip title={data.className}>
-            <Anchor>{data.className}</Anchor>
-          </Tooltip>
-        </>
-      )}
-      {isCliUser && data?.testName && (
-        <>
-          &nbsp;/&nbsp;
-          <Tooltip title={data.testName}>
-            <Anchor>{data.testName}</Anchor>
-          </Tooltip>
-        </>
-      )}
-    </PaginationInfo>
+    </>
   );
 };
 

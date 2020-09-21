@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { Button } from "antd";
 import { AnswerContext } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
+import Work from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
 import {
@@ -14,8 +15,9 @@ import {
   questionActivityFromFeedbackSelector,
   userWorkFromQuestionActivitySelector
 } from "../../sharedDucks/TestItem";
+import { getTestEntitySelector } from "../../../author/TestPage/ducks";
 import TestPreviewModal from "../../../author/Assignments/components/Container/TestPreviewModal";
-import { getQuestionsSelector } from "../../../author/sharedDucks/questions";
+import { getQuestionsArraySelector, getQuestionsSelector } from "../../../author/sharedDucks/questions";
 import { getEvaluationSelector } from "../../../assessment/selectors/answers";
 
 const { releaseGradeLabels } = testConstants;
@@ -23,19 +25,35 @@ const { releaseGradeLabels } = testConstants;
 const ReportListContent = ({
   item = {},
   flag,
+  test,
   testActivityById,
   hasUserWork,
   passages = [],
   questions,
+  questionsById,
   evaluation,
   questionActivity,
   userWork
 }) => {
+  const { isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
+  if (isDocBased) {
+    const props = {
+      docUrl,
+      annotations,
+      questions,
+      freeFormNotes,
+      questionsById,
+      pageStructure
+    };
+
+    return <Work key="review" review {...props} viewMode="report" />;
+  }
+
   const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
   const resources = keyBy(get(item, "data.resources", []), "id");
 
-  let allWidgets = { ...questions, ...resources };
+  let allWidgets = { ...questionsById, ...resources };
   let itemRows = get(item, "rows", []);
   let passage = {};
   if (item.passageId && passages.length) {
@@ -110,7 +128,9 @@ const ReportListContent = ({
 export default connect(
   state => ({
     item: getItemSelector(state),
-    questions: getQuestionsSelector(state),
+    test: getTestEntitySelector(state),
+    questions: getQuestionsArraySelector(state),
+    questionsById: getQuestionsSelector(state),
     passages: state.studentReport.passages,
     hasUserWork: itemHasUserWorkSelector(state),
     testActivityById: get(state, `[studentReport][testActivity]`, {}),

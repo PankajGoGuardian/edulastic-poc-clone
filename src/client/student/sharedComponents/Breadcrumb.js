@@ -13,7 +13,11 @@ const BreadCrumb = props => {
           data.map((breadCrumb, index) => (
             <Breadcrumb.Item key={`bread${index}`}>
               {index === 0 && <Icon key={index} type="left" />}
-              {index !== data.length - 1 ? <Link to={breadCrumb.to}>{breadCrumb.title}</Link> : breadCrumb.title}
+              {index !== data.length - 1 && breadCrumb.to ? (
+                <Link to={breadCrumb.to}>{breadCrumb.title}</Link>
+              ) : (
+                breadCrumb.title
+              )}
             </Breadcrumb.Item>
           ))}
       </Breadcrumb>

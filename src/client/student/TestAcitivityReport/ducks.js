@@ -187,7 +187,7 @@ export const setTestFeedbackAction = data => ({
   }
 });
 
-const initialState = null;
+const initialState = [];
 export default createReducer(initialState, {
   [SET_FEEDBACK]: (_, { payload }) => payload
 });

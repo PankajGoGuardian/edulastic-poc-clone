@@ -7,19 +7,24 @@ import { withRouter } from "react-router";
 import Breadcrumb from "../../sharedComponents/Breadcrumb";
 import QuestionSelect from "./QuestionSelect";
 
-const TestActivitySubHeader = ({ title, isDocBased, location, isCliUser }) => {
+const TestActivitySubHeader = ({ title, questionLabel, isDocBased, location, isCliUser, hideQuestionSelect }) => {
   const { fromRecommendations, playListId } = location;
-  const breadcrumbData = fromRecommendations
+  let breadcrumbData = fromRecommendations
     ? [
         { title: "My Playlist", to: `/home/playlist/${playListId}` },
         { title: "Recommendation", to: `/home/playlist/${playListId}/recommendations` },
         { title }
       ]
     : [{ title: "GRADES", to: "/home/grades" }, { title }];
+
+  if (questionLabel) {
+    breadcrumbData = [...breadcrumbData, { title: questionLabel }];
+  }
+
   return (
     <Container isDocBased={isDocBased}>
       <BreadcrumbContainer>{!isCliUser && <Breadcrumb data={breadcrumbData} />}</BreadcrumbContainer>
-      {!isDocBased && (
+      {!isDocBased && !hideQuestionSelect && (
         <Col>
           <QuestionSelect />
         </Col>
@@ -31,11 +36,13 @@ const TestActivitySubHeader = ({ title, isDocBased, location, isCliUser }) => {
 export default withRouter(TestActivitySubHeader);
 
 TestActivitySubHeader.propTypes = {
-  title: PropTypes.string
+  title: PropTypes.string,
+  hideQuestionSelect: PropTypes.bool
 };
 
 TestActivitySubHeader.defaultProps = {
-  title: "Test"
+  title: "Test",
+  hideQuestionSelect: false
 };
 
 const Container = styled.div`

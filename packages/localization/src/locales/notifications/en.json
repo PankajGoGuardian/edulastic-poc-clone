@@ -531,6 +531,10 @@
     "message": "The class has been paused for this assessment.Please resume to continue with redirect.",
     "description": ""
   },
+  "youCantRedirectRemoved": {
+    "message": "You can't redirect for the removed student(s).",
+    "description": ""
+  },
   "pleaseSelectYourPreferedStartDate": {
     "message": " Please select your prefered start date",
     "description": ""

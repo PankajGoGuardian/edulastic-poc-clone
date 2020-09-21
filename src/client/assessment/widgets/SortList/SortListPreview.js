@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import PropTypes from "prop-types";
 import { isEqual, get } from "lodash";
 import produce from "immer";
@@ -10,7 +10,9 @@ import {
   AnswerContext,
   QuestionSubLabel,
   QuestionContentWrapper,
-  QuestionLabelWrapper
+  QuestionLabelWrapper,
+  HorizontalScrollContext,
+  DragDrop
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
@@ -19,7 +21,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { CHECK, SHOW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 import Instructions from "../../components/Instructions";
-import DropContainer from "../../components/DropContainer";
+// import DropContainer from "../../components/DropContainer";
 
 import ShowCorrect from "./components/ShowCorrect";
 import DragItem from "./components/DragItem";
@@ -57,6 +59,7 @@ const SortListPreview = ({
   isReviewTab,
   isPrintPreview
 }) => {
+  const previewRef = useRef();
   const answerContextConfig = useContext(AnswerContext);
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
   let previewTab = _previewTab;
@@ -96,20 +99,6 @@ const SortListPreview = ({
     setSelected(getSelectedFromUserAnswer());
     setActive("");
   }, [source, userAnswer]);
-
-  const onDrop = (itemCurrent, itemTo, flag) => {
-    const { items: newItems, selected: newSelected } = produce({ items, selected }, draft => {
-      let tmp = [];
-
-      [tmp] = draft[flag].splice(itemCurrent.index, 1, draft[itemTo.flag][itemTo.index]);
-      draft[itemTo.flag][itemTo.index] = tmp;
-    });
-
-    setItems(newItems);
-    setSelected(newSelected);
-
-    saveAnswer(newSelected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
-  };
 
   const setActiveItem = activeItem => {
     if (previewTab === CLEAR) {
@@ -175,7 +164,7 @@ const SortListPreview = ({
     }
   };
 
-  const drop = ({ obj, index, flag }) => ({ obj, index, flag });
+  // const drop = ({ obj, index, flag }) => ({ obj, index, flag });
 
   const sourceLabel = get(item, "labels.source", t("component.sortList.containerSourcePreview"));
   const targetLabel = get(item, "labels.target", t("component.sortList.containerTargetPreview"));
@@ -217,14 +206,14 @@ const SortListPreview = ({
     fontSize,
     padding: smallSize,
     boxShadow: smallSize ? "none" : "",
-    position: "relative"
+    position: "relative",
+    overflow: isPrintPreview ? "" : "auto"
   };
 
   const contentStyle = {
     minWidth: 580,
     maxWidth: isPrintPreview ? "100%" : 980,
-    margin: "auto",
-    overflow: isPrintPreview ? "" : "auto"
+    margin: "auto"
   };
 
   const wrapperStyles = {
@@ -256,134 +245,143 @@ const SortListPreview = ({
 
   const showPreview = previewTab === CHECK || previewTab === SHOW;
   const isChecked = !active && showPreview && !isReviewTab;
+
+  const onDropHandler = (flag, index) => ({ data }) => {
+    const { items: newItems, selected: newSelected } = produce({ items, selected }, draft => {
+      let tmp = [];
+
+      [tmp] = draft[data.flag].splice(data.index, 1, draft[flag][index]);
+      draft[flag][index] = tmp;
+    });
+
+    setItems(newItems);
+    setSelected(newSelected);
+
+    saveAnswer(newSelected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
+  };
+
   return (
-    <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle}>
-      <FlexContainer justifyContent="flex-start" alignItems="baseline">
-        <QuestionLabelWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
-        </QuestionLabelWrapper>
+    <HorizontalScrollContext.Provider value={{ getScrollElement: () => previewRef.current }}>
+      <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle} ref={previewRef}>
+        <FlexContainer justifyContent="flex-start" alignItems="baseline">
+          <QuestionLabelWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
-          <QuestionTitleWrapper>
-            {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
-          </QuestionTitleWrapper>
+          <QuestionContentWrapper>
+            <QuestionTitleWrapper>
+              {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+            </QuestionTitleWrapper>
 
-          <Container style={contentStyle}>
-            <FlexContainer
-              data-cy="sortListComponent"
-              flexDirection={flexDirection}
-              alignItems="stretch"
-              style={wrapperStyles}
-              flexWrap="nowrap"
-              className="sort-list-wrapper"
-            >
-              <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && <Title smallSize={smallSize}>{sourceLabel}</Title>}
-                {items.map((draggableItem, i) => (
-                  <DropContainer
-                    key={i}
-                    noBorder={!!draggableItem}
-                    style={sourceItemStyle}
-                    index={i}
-                    flag="items"
-                    obj={draggableItem}
-                    drop={drop}
-                  >
-                    <DragItem
-                      index={i}
-                      smallSize={smallSize}
-                      active={isEqual(active, draggableItem)}
-                      onClick={setActiveItem}
-                      items={selected}
-                      flag="items"
-                      onDrop={onDrop}
-                      obj={draggableItem}
-                      style={dragItemStyle}
-                      disableResponse={disableResponse || !isAnswerModifiable}
-                      stemNumeration={stemNumeration}
-                      isPrintPreview={isPrintPreview}
-                    />
-                  </DropContainer>
-                ))}
-              </FullWidthContainer>
+            <Container style={contentStyle}>
+              <FlexContainer
+                data-cy="sortListComponent"
+                flexDirection={flexDirection}
+                alignItems="stretch"
+                style={wrapperStyles}
+                flexWrap="nowrap"
+                className="sort-list-wrapper"
+              >
+                <FullWidthContainer isVertical={isVertical}>
+                  {!smallSize && <Title smallSize={smallSize}>{sourceLabel}</Title>}
+                  {items.map((draggableItem, i) => (
+                    <DragDrop.DropContainer
+                      key={i}
+                      noBorder={!!draggableItem}
+                      style={{ ...sourceItemStyle, border: !!draggableItem && "2px solid" }}
+                      drop={onDropHandler("items", i)}
+                    >
+                      <DragItem
+                        index={i}
+                        smallSize={smallSize}
+                        active={isEqual(active, draggableItem)}
+                        onClick={setActiveItem}
+                        items={selected}
+                        flag="items"
+                        obj={draggableItem}
+                        style={dragItemStyle}
+                        disableResponse={disableResponse || !isAnswerModifiable}
+                        stemNumeration={stemNumeration}
+                        isPrintPreview={isPrintPreview}
+                      />
+                    </DragDrop.DropContainer>
+                  ))}
+                </FullWidthContainer>
 
-              <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection} flexWrap="nowrap">
-                {isVertical ? (
-                  <>
-                    <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-                    <IconDown smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-                  </>
-                ) : (
-                  <>
-                    <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-                    <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-                  </>
-                )}
-              </FlexWithMargins>
+                <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection} flexWrap="nowrap">
+                  {isVertical ? (
+                    <>
+                      <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+                      <IconDown smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+                    </>
+                  ) : (
+                    <>
+                      <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+                      <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+                    </>
+                  )}
+                </FlexWithMargins>
 
-              <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && <Title smallSize={smallSize}>{targetLabel}</Title>}
-                {selected.map((selectedItem, i) => (
-                  <DropContainer
-                    key={i}
-                    noBorder={!!selectedItem}
-                    style={targetItemStyle}
-                    index={i}
-                    flag="selected"
-                    obj={selectedItem}
-                    borderNone={!!selectedItem && isChecked}
-                    drop={drop}
-                  >
-                    <DragItem
-                      index={i}
-                      correct={altRespCorrect.includes(selectedItem) || isReviewTab === true}
-                      smallSize={smallSize}
-                      previewTab={previewTab}
-                      flag="selected"
-                      active={isEqual(active, selectedItem)}
-                      onClick={setActiveItem}
-                      onDrop={onDrop}
-                      items={items}
-                      style={dragItemStyle}
-                      obj={
-                        userAnswer.length !== 0
-                          ? selectedItem
-                          : isReviewTab === true
-                          ? validResponseCorrectList[i]
-                          : null
-                      }
-                      isReviewTab={isReviewTab}
-                      disableResponse={disableResponse || !isAnswerModifiable}
-                      changePreviewTab={changePreviewTab}
-                      stemNumeration={stemNumeration}
-                      isPrintPreview={isPrintPreview}
-                    />
-                  </DropContainer>
-                ))}
-              </FullWidthContainer>
+                <FullWidthContainer isVertical={isVertical}>
+                  {!smallSize && <Title smallSize={smallSize}>{targetLabel}</Title>}
+                  {selected.map((selectedItem, i) => (
+                    <DragDrop.DropContainer
+                      key={i}
+                      noBorder={!!selectedItem && isChecked}
+                      style={{ ...targetItemStyle, border: !!selectedItem && !isChecked && "2px solid" }}
+                      drop={onDropHandler("selected", i)}
+                    >
+                      <DragItem
+                        index={i}
+                        correct={altRespCorrect.includes(selectedItem) || isReviewTab === true}
+                        smallSize={smallSize}
+                        previewTab={previewTab}
+                        flag="selected"
+                        active={isEqual(active, selectedItem)}
+                        onClick={setActiveItem}
+                        items={items}
+                        style={dragItemStyle}
+                        obj={
+                          userAnswer.length !== 0
+                            ? selectedItem
+                            : isReviewTab === true
+                            ? validResponseCorrectList[i]
+                            : null
+                        }
+                        isReviewTab={isReviewTab}
+                        disableResponse={disableResponse || !isAnswerModifiable}
+                        changePreviewTab={changePreviewTab}
+                        stemNumeration={stemNumeration}
+                        isPrintPreview={isPrintPreview}
+                      />
+                    </DragDrop.DropContainer>
+                  ))}
+                </FullWidthContainer>
 
-              <FlexCol smallSize={smallSize}>
-                <IconUp smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Up") : () => {}} />
-                <IconDown smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Down") : () => {}} />
-              </FlexCol>
-            </FlexContainer>
-          </Container>
-          {view && view !== EDIT && <Instructions item={item} />}
-          {(previewTab === SHOW || isReviewTab) && (
-            <ShowCorrect
-              source={source}
-              list={validResponseCorrectList}
-              altList={altResponseCorrectList}
-              altResponses={altResponses}
-              correctList={validResponse}
-              itemStyle={{ ...dragItemStyle }}
-              stemNumeration={stemNumeration}
-            />
-          )}
-        </QuestionContentWrapper>
-      </FlexContainer>
-    </StyledPaperWrapper>
+                <FlexCol smallSize={smallSize}>
+                  <IconUp smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Up") : () => {}} />
+                  <IconDown smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Down") : () => {}} />
+                </FlexCol>
+              </FlexContainer>
+            </Container>
+            {view && view !== EDIT && <Instructions item={item} />}
+            {(previewTab === SHOW || isReviewTab) && (
+              <ShowCorrect
+                source={source}
+                list={validResponseCorrectList}
+                altList={altResponseCorrectList}
+                altResponses={altResponses}
+                correctList={validResponse}
+                itemStyle={{ ...dragItemStyle }}
+                stemNumeration={stemNumeration}
+              />
+            )}
+          </QuestionContentWrapper>
+        </FlexContainer>
+        <DragDrop.DragPreview />
+      </StyledPaperWrapper>
+    </HorizontalScrollContext.Provider>
   );
 };
 

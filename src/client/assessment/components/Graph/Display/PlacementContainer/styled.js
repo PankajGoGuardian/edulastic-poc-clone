@@ -130,8 +130,7 @@ const borderStyle = css`
 export const JSXBoxWrapper = styled.div`
   position: relative;
   overflow: ${({ showBorder }) => (showBorder ? "hidden" : "auto")};
-  width: ${props => `${props.width + 5}px`};
-  ${borderStyle}
+  padding: ${props => (props.padding ? props.padding : 0)}px;
 `;
 
 export const JSXBox = styled.div`
@@ -140,7 +139,6 @@ export const JSXBox = styled.div`
   background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
-  margin: ${props => (props.margin ? props.margin : 0)}px;
   ${borderStyle}
 
   .fr-box {
@@ -212,7 +210,7 @@ export const JSXBox = styled.div`
 export const JSXBoxWithDropValues = styled.div`
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
 `;
 

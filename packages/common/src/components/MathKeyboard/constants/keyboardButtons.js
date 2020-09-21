@@ -1206,12 +1206,7 @@ export const TAB_BUTTONS = [
     key: "GENERAL",
     buttons: [
       ...OPERATORS,
-      {
-        handler: "\\pm",
-        label: <CustomImage src={Group2475} width={11} height={14} role="presentation" />,
-        types: ["all"],
-        command: "cmd"
-      },
+      ...INTERMEDIATE,
       {
         handler: "%",
         label: "%",
@@ -1228,14 +1223,6 @@ export const TAB_BUTTONS = [
       {
         handler: "_",
         label: <CustomImage src={Group943} width={25} height={40} role="presentation" />,
-        types: ["all"],
-        command: "cmd"
-      },
-      {
-        handler: "/",
-        labelcy: "divide",
-        value: "divide",
-        label: <CustomImage src={Fraction} width={25} height={40} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
@@ -1262,17 +1249,10 @@ export const TAB_BUTTONS = [
         command: "write"
       },
       {
-        handler: "\\sqrt[{}]{}",
-        label: <CustomImage src={Group999} role="presentation" />,
+        handler: "\\log\\left({}\\right)", // handler: "\\iota"
+        label: "log",
         types: ["all"],
-        numToMove: 2,
         command: "write"
-      },
-      {
-        handler: "\\pi",
-        label: <CustomImage src={GroupPi} width={13} height={11} role="presentation" />,
-        types: ["all"],
-        command: "cmd"
       },
       {
         handler: "e",

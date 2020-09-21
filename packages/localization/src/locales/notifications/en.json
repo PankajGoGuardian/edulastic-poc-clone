@@ -411,6 +411,10 @@
     "message": "Subject field cannot be empty",
     "description": ""
   },
+  "noQuestions": {
+    "message": "Test has only instructions. Test must have question to be published",
+    "description": ""
+  },
   "teacherRemovedSuccessfully": {
     "message": " Teacher removed successfully",
     "description": ""
@@ -525,6 +529,10 @@
   },
   "classPausedContinueWithRedirect": {
     "message": "The class has been paused for this assessment.Please resume to continue with redirect.",
+    "description": ""
+  },
+  "youCantRedirectRemoved": {
+    "message": "You can't redirect for the removed student(s).",
     "description": ""
   },
   "pleaseSelectYourPreferedStartDate": {
@@ -1415,7 +1423,7 @@
     "message": " Item is not associated with any collection.",
     "description": ""
   },
-  "errorSavingPassing": {
+  "errorSavingPassage": {
     "message": " error saving passage",
     "description": ""
   },
@@ -1913,6 +1921,10 @@
   },
   "receiveClasslistFailing": {
     "message": "Receive class list failing.",
+    "description": ""
+  },
+  "signInUserNotFound": {
+    "message": "It seems you are new to Edulastic! Please select your role.",
     "description": ""
   }
 }

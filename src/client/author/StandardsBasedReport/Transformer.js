@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 import { groupBy } from "lodash";
 import memoizeOne from "memoize-one";
 
@@ -13,12 +13,16 @@ export const getStandardWisePerformance = (testActivities, std) => {
   );
 
   const questionActivitiesByQid = groupBy(questionActivities, "_id");
-  let performanceStudentWise = {};
+  const performanceStudentWise = {};
   if (std && std.qIds) {
-    for (let qid of std.qIds) {
+    for (const qid of std.qIds) {
       const questionActs = questionActivitiesByQid[qid] || [];
-      for (let qAct of questionActs) {
-        if (qAct.scoringDisabled || qAct.disabled) {
+      for (const qAct of questionActs) {
+        /**
+         * if qAct.qActId not present means, then its a generated uqa from frontend.
+         *  we shouldn't consider those , since reports not considering it 
+         */
+        if (qAct.scoringDisabled || qAct.disabled || (!qAct.maxScore)||(!qAct.score && qAct.score !== 0)||(!qAct.qActId)) {
           continue;
         }
         const { studentId } = qAct;
@@ -50,23 +54,27 @@ export const getStandardWisePerformanceDetail = (testActivities, std, isPresenta
   );
 
   const questionActivitiesByQid = groupBy(questionActivities, "_id");
-  let performanceStudentWise = {};
-  for (let qid of std.qIds) {
+  const performanceStudentWise = {};
+  for (const qid of std.qIds) {
     const questionActs = questionActivitiesByQid[qid] || [];
-    for (let qAct of questionActs) {
-      if (qAct.disabled || qAct.scoringDisabled || qAct.maxScore == 0) {
+    for (const qAct of questionActs) {
+       /**
+         * if qAct.qActId not present means, then its a generated uqa from frontend.
+         *  we shouldn't consider those , since reports not considering it 
+         */
+      if (qAct.disabled || qAct.scoringDisabled || qAct.maxScore == 0||(!qAct.qActId)) {
         continue;
       }
       const { studentId } = qAct;
       if (!performanceStudentWise[studentId]) {
         performanceStudentWise[studentId] = {
-          score: qAct.score,
+          score: qAct.score||0,
           maxScore: qAct.maxScore,
           studentName: isPresentationMode ? qAct.fakeName : qAct.studentName,
           count: 1
         };
       } else {
-        performanceStudentWise[studentId].score += qAct.score;
+        performanceStudentWise[studentId].score += qAct.score||0;
         performanceStudentWise[studentId].maxScore += qAct.maxScore;
         performanceStudentWise[studentId].count += 1;
       }

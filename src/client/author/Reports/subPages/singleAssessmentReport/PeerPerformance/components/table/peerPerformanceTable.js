@@ -65,7 +65,7 @@ export const PeerPerformanceTable = ({
               <Col className="custom-table-tooltip-value">{rec.graded + rec.absent}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="custom-table-tooltip-key">Graded: </Col>
+              <Col className="custom-table-tooltip-key">Submitted: </Col>
               <Col className="custom-table-tooltip-value">{rec.graded}</Col>
             </Row>
             <Row type="flex" justify="start">

@@ -1,5 +1,8 @@
 .notification {
   &.ant-notification-notice {
+    position: absolute;
+    right: 2px;
+    bottom: 60px;
     background-color: #2f4151;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
   }

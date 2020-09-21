@@ -31,6 +31,7 @@ import {
 } from "../../student/sharedDucks/AssignmentModule/ducks";
 import { userWorkSelector } from "../../student/sharedDucks/TestItem";
 import { hasUserWork } from "../utils/answer";
+import { fetchAssignmentsAction } from "../../student/Reports/ducks";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -112,6 +113,9 @@ const AssessmentContainer = ({
   clearRegradeAssignment,
   setPasswordValidateStatus,
   userRole,
+  assignmentById,
+  currentAssignment,
+  fetchAssignments,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -125,6 +129,15 @@ const AssessmentContainer = ({
 
   // start assessment
   useEffect(() => {
+    /**
+     * src/client/assessment/sagas/items.js:saveUserResponse
+     * requires current assignment id in store (studentAssignment.current)
+     * TODO: Use studentAssignment.assignment to store current assignment data
+     */
+    if (!assignmentById[currentAssignment]) {
+      fetchAssignments();
+    }
+
     window.localStorage.assessmentLastTime = Date.now();
     return () => setPasswordValidateStatus(false);
   }, []);
@@ -438,7 +451,7 @@ const AssessmentContainer = ({
 
   useEffect(() => {
     if (savingResponse) {
-      message.loading("submitting response", 0);
+      message.loading("Submitting the response", 0);
     } else {
       message.destroy();
     }
@@ -543,14 +556,19 @@ AssessmentContainer.propTypes = {
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
   testletConfig: PropTypes.object,
-  test: PropTypes.object
+  test: PropTypes.object,
+  assignmentById: PropTypes.object,
+  currentAssignment: PropTypes.string,
+  fetchAssignments: PropTypes.func.isRequired
 };
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
   annotations: [],
   testletConfig: {},
-  test: {}
+  test: {},
+  assignmentById: {},
+  currentAssignment: ""
 };
 
 const enhance = compose(
@@ -581,7 +599,9 @@ const enhance = compose(
       regradedAssignment: get(state, "studentAssignment.regradedAssignment"),
       userId: get(state, "user.user._id"),
       userRole: get(state, "user.user.role"),
-      userWork: userWorkSelector(state)
+      userWork: userWorkSelector(state),
+      assignmentById: get(state, "studentAssignment.byId"),
+      currentAssignment: get(state, "studentAssignment.current")
     }),
     {
       saveUserResponse,
@@ -593,7 +613,8 @@ const enhance = compose(
       hideHints: hideHintsAction,
       regradedRealtimeAssignment: regradedRealtimeAssignmentAction,
       clearRegradeAssignment: clearRegradeAssignmentAction,
-      setPasswordValidateStatus: setPasswordValidateStatusAction
+      setPasswordValidateStatus: setPasswordValidateStatusAction,
+      fetchAssignments: fetchAssignmentsAction
     }
   )
 );

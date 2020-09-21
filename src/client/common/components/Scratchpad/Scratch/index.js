@@ -50,7 +50,8 @@ const Scratchpad = ({
   dimensions,
   readOnly,
   hideTools,
-  clearClicked // this is from highlight image
+  clearClicked, // this is from highlight image,
+  hideData
 }) => {
   const [zwibbler, setZwibbler] = useState();
   const [clipBoard, updateClipBoard] = useState();
@@ -328,8 +329,9 @@ const Scratchpad = ({
       zwibbler.resize();
     }
   }, [width, height]);
+
   return (
-    <ScratchpadContainer ref={zwibblerContainer}>
+    <ScratchpadContainer ref={zwibblerContainer} hideData={hideData}>
       {!hideToolBar && <ToolBox />}
       <ZwibblerMain
         deleteMode={deleteMode}
@@ -365,7 +367,8 @@ const EnhancedComponent = compose(
       fontColor: state.scratchpad.fontColor,
       activeMode: state.scratchpad.activeMode,
       deleteMode: state.scratchpad.deleteMode,
-      editMode: state.scratchpad.editMode
+      editMode: state.scratchpad.editMode,
+      hideData: state.scratchpad.hideData
     }),
     {
       toggleButtons: toggleButtonsAction,

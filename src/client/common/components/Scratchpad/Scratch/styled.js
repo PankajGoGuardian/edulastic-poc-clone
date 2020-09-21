@@ -5,7 +5,10 @@ export const ScratchpadContainer = styled.div`
   position: absolute;
   height: 100%;
   width: 100%;
-  z-index: 500;
+  /* froalar z-index is 998 */
+  /* @see https://snapwiz.atlassian.net/browse/EV-19269 */
+  z-index: 1000;
+  display: ${({ hideData }) => (hideData ? "none" : "block")};
 `;
 
 export const ZwibblerMain = styled.div`

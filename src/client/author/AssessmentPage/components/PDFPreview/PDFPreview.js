@@ -190,7 +190,7 @@ const PDFPreview = ({
                       viewMode={viewMode}
                       annotations
                       pdfPreview
-                      zoom={pdfScale >= 2 ? 2 : pdfScale}
+                      zoom={pdfScale}
                     />
                   </div>
                 ))}

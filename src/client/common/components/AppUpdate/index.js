@@ -17,7 +17,7 @@ const AppUpdate = ({ visible }) => {
 
   useEffect(() => {
     if (visible) {
-      notification({ msg: btn, bottom: 100, placement: "bottomRight", duration: 0, className: "notification" });
+      notification({ msg: btn, placement: "bottomRight", duration: 0, className: "notification" });
     }
   }, [visible]);
 

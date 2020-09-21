@@ -21,10 +21,10 @@
   fill: red;
 }
 
-.drag-drop img.fr-dii {
+/* .drag-drop img.fr-dii {
   max-height: 40px;
   max-width: 120px;
-}
+} */
 
 .drag-drop .drag-drop-content {
   display: flex;

@@ -353,9 +353,21 @@ class ClassBoard extends Component {
   };
 
   handleRedirect = () => {
-    const { selectedStudents, testActivity, enrollmentStatus, additionalData = {}, assignmentStatus } = this.props;
+    const {
+      selectedStudents,
+      testActivity,
+      enrollmentStatus,
+      additionalData = {},
+      assignmentStatus,
+      removedStudents
+    } = this.props;
+
     if (additionalData.isPaused && assignmentStatus !== "DONE" && additionalData.endDate > Date.now()) {
       return notification({ type: "info", messageKey: "classPausedContinueWithRedirect" });
+    }
+
+    if (removedStudents.some(rs => selectedStudents[rs])) {
+      return notification({ type: "warn", messageKey: "youCantRedirectRemoved" });
     }
 
     const notStartedStudents = testActivity.filter(
@@ -1211,6 +1223,7 @@ class ClassBoard extends Component {
                 studentItems={testActivity}
                 selectedStudent={selectedStudentId}
                 isPresentationMode={isPresentationMode}
+                isCliUser={isCliUser}
               />
             </React.Fragment>
           )}

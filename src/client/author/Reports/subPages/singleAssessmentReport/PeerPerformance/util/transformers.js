@@ -1,4 +1,4 @@
-import { groupBy, minBy, cloneDeep, countBy } from "lodash";
+import { groupBy, minBy, cloneDeep, countBy, uniq } from "lodash";
 import {testActivityStatus} from "@edulastic/constants"
 import { getHSLFromRange1 } from "../../../../common/util";
 import {transformMetricForStudentGroups} from "../../common/utils/transformers";
@@ -69,11 +69,13 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
     const avgStudentScorePercent = !isNaN(avgStudentScorePercentUnrounded)
       ? Math.round(avgStudentScorePercentUnrounded)
       : 0;
-    const { schoolName, teacherName, groupName: className } = groupedData[data][0];
+    const { teacherName, groupName: className } = groupedData[data][0];
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
     let absent = statusCounts[testActivityStatus.ABSENT] || 0;
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
+    const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
+
     item = {
       ...item,
       avgStudentScorePercentUnrounded,
@@ -116,10 +118,12 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     avgStudentScoreUnrounded = !isNaN(avgStudentScoreUnrounded) ? avgStudentScoreUnrounded : 0;
 
     const avgStudentScore = !isNaN(avgStudentScoreUnrounded) ? Number(avgStudentScoreUnrounded.toFixed(2)) : 0;
-    const { maxScore, schoolName, teacherName, groupName: className } = groupedData[data][0];
+    const { maxScore, teacherName, groupName: className } = groupedData[data][0];
     let absent = statusCounts[testActivityStatus.ABSENT] || 0;
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
+    const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
+
     item = {
       ...item,
       maxScore,
@@ -175,11 +179,13 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
     const belowStandardPercentage = -Math.round((item.belowStandard / (item.total || 1)) * 100);
     const aboveStandardPercentage = Math.round((item.aboveStandard / (item.total || 1)) * 100);
 
-    const { schoolName, teacherName, groupName: className } = groupedData[data][0];
+    const { teacherName, groupName: className } = groupedData[data][0];
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
     let absent = statusCounts[testActivityStatus.ABSENT] || 0;
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
+    const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
+
     item = {
       ...item,
       aboveStandardPercentage,
@@ -237,8 +243,6 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       { ...proficiencies, total: 0 }
     );
 
-    const { schoolName, teacherName, groupName: className } = groupedData[data][0];
-
     const proficiencyPercentages = {};
 
     bandInfoAsc.map((o, index) => {
@@ -252,10 +256,13 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       proficiencyPercentages[`fill_${  index}`] = getHSLFromRange1(fill);
     });
 
+    const { teacherName, groupName: className } = groupedData[data][0];
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
     let absent = statusCounts[testActivityStatus.ABSENT] || 0;
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
+    const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
+
     item = {
       ...item,
       ...proficiencyPercentages,

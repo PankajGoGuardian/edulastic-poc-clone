@@ -87,6 +87,7 @@ const OrderList = ({
   cleanSections,
   disableResponse,
   t,
+  viewComponent,
   changePreviewTab,
   advancedLink,
   isReviewTab,
@@ -165,7 +166,7 @@ const OrderList = ({
 
   // providing props width with value 230px same as min-width provided in PointsInput
   // fixes the issue with PointsInput taking full width
-  const renderOptions = view === EDIT && scrollContainer && (
+  const renderOptions = view === EDIT && (
     <OptionsContainer styleType={styleType}>
       <QuillSortableList
         item={item}
@@ -182,9 +183,9 @@ const OrderList = ({
         columns={columns}
         styleType={styleType}
         lockToContainerEdges
+        useWindowAsScrollContainer
         lockOffset={["10%", "10%"]}
         lockAxis={uiStyle.type === "inline" ? "x" : "y"}
-        getContainer={styleType !== "inline" ? () => scrollContainer : null}
         canDelete={false}
         className="orderlist-set-correct-answer"
       />
@@ -242,6 +243,13 @@ const OrderList = ({
 
   const evaluationForCheckAnswer = evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
 
+  const useWindowAsScrollContainer = viewComponent === "editQuestion";
+  const autoScrollProps = useWindowAsScrollContainer
+    ? { useWindowAsScrollContainer }
+    : {
+        getContainer: () => scrollContainer
+      };
+
   const previewProps = {
     smallSize,
     listStyle: { fontSize },
@@ -257,8 +265,8 @@ const OrderList = ({
     lockOffset: ["10%", "10%"],
     lockAxis: uiStyle.type === "inline" ? "x" : "y",
     options: itemForPreview.list || {},
-    getContainer: uiStyle.type === "inline" && scrollContainer ? null : () => scrollContainer,
-    isPrintPreview
+    isPrintPreview,
+    ...autoScrollProps
   };
   // ------------------ Item Preivew End ------------------ //
 
@@ -267,12 +275,7 @@ const OrderList = ({
       {view === EDIT && (
         <ContentArea columns={columns}>
           <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
-          <ListComponent
-            getContainer={() => scrollContainer}
-            item={item}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
+          <ListComponent item={item} fillSections={fillSections} cleanSections={cleanSections} />
           <Question
             section="main"
             label={t("component.orderlist.setcorrectanswers")}

@@ -53,7 +53,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout, itemIndex, showStackedView) => {
+  renderTabContent = (widget, flowLayout, itemIndex, showStackedView, lengthOfwidgets) => {
     const {
       preview,
       LCBPreviewModal,
@@ -71,6 +71,9 @@ class TestItemCol extends Component {
       itemLevelScoring,
       isStudentReport,
       isPassageWithQuestions,
+      isLCBView,
+      showScratchpadByDefault,
+      isStudentAttempt,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
@@ -86,6 +89,19 @@ class TestItemCol extends Component {
     }
 
     const displayFeedback = true;
+    let minHeight = null;
+    if (
+      multiple &&
+      widget.widgetType === "question" &&
+      (isLCBView || showStackedView || isDocBased || isStudentAttempt)
+    ) {
+      // we shows multiple feedback in multiple question type
+      // when scoring type is question level.
+      // feedback wrapper is required minHeight 320 at least
+      minHeight = "320px";
+    }
+
+    // question false undefined false undefined undefined true true
     return (
       <TabContainer
         updatePositionToStore={
@@ -95,8 +111,10 @@ class TestItemCol extends Component {
         questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
-        minHeight={(showStackedView || isDocBased) && widget.widgetType === "question" && "458px"}
+        minHeight={minHeight}
         itemIndex={itemIndex}
+        marginTop={itemIndex > 0 && lengthOfwidgets > 1 ? 20 : ""}
+        showBorder={!showScratchpadByDefault && isLCBView}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== "resource"}
@@ -121,6 +139,7 @@ class TestItemCol extends Component {
           calculatedHeight={showStackedView || fullHeight ? "100%" : "auto"}
           fullMode
           {...restProps}
+          showScratchpadByDefault={showScratchpadByDefault}
           style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
           tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />

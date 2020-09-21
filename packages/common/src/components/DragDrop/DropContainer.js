@@ -26,10 +26,11 @@ const DropContainer = ({
       if (typeof drop === "function") {
         const itemPos = monitor.getClientOffset();
         const itemOffset = monitor.getSourceClientOffset();
-        const { data, size } = item;
+        const { data, dimensions } = item;
+
         let itemRect = {};
-        if (isObject(size) && isObject(itemPos)) {
-          itemRect = { ...item.size, ...itemPos };
+        if (isObject(dimensions) && isObject(itemPos)) {
+          itemRect = { ...dimensions, ...itemPos };
         }
         drop({ data, itemRect, itemOffset }, index);
       }

@@ -81,6 +81,14 @@ const PerformanceByStandards = ({
     [report, standardId, scaleInfo]
   );
 
+  const standardsDropdownData = useMemo(() => {
+    const { standardsMap } = reportWithFilteredSkills;
+    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: +item, name: standardsMap[item] }));
+    let intersected = intersectionBy(standardsMapArr, interestedCurriculums, "_id");
+    intersected = intersected.map(item => ({ key: item._id, title: item.name }));
+    return intersected || [];
+  }, [report]);
+
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
     if (o.allowedRoles) {
       return o.allowedRoles.includes(role);
@@ -105,7 +113,11 @@ const PerformanceByStandards = ({
   }, [settings]);
 
   const setSelectedData = ({ defaultStandardId }) => {
-    setStandardId(defaultStandardId);
+    const _defaultStandardId =
+      standardsDropdownData.find(s => `${s.key}` === `${defaultStandardId}`)?.key ||
+      standardsDropdownData?.[0]?.key ||
+      "";
+    setStandardId(_defaultStandardId);
     setSelectedStandards([]);
     setSelectedDomains([]);
   };
@@ -151,14 +163,6 @@ const PerformanceByStandards = ({
   const handleStandardIdChange = selected => {
     setStandardId(selected.key);
   };
-
-  const standardsDropdownData = useMemo(() => {
-    const { standardsMap } = reportWithFilteredSkills;
-    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: +item, name: standardsMap[item] }));
-    let intersected = intersectionBy(standardsMapArr, interestedCurriculums, "_id");
-    intersected = intersected.map(item => ({ key: item._id, title: item.name }));
-    return intersected || [];
-  }, [report]);
 
   if (loading) {
     return <SpinLoader position="fixed" />;

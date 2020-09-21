@@ -1,9 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+
 import { FlexContainer } from "@edulastic/common";
 import { drawTools } from "@edulastic/constants";
+
 import { StyledButton } from "../styled";
 import { rightControls } from "../constants/controls";
+import HideShowDataController from "./ToggleScratchpadDataButton";
 
 const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
   const onClickHandler = mode => () => {
@@ -12,6 +15,7 @@ const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
 
   return (
     <FlexContainer>
+      <HideShowDataController />
       {rightControls.map(btn => (
         <StyledButton
           key={btn.mode}

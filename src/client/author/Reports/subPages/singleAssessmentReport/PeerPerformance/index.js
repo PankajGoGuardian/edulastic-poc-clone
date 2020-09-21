@@ -1,7 +1,7 @@
 import { SpinLoader } from "@edulastic/common";
 import { Col, Row } from "antd";
 import next from "immer";
-import { get, isEmpty, keyBy } from "lodash";
+import { get, isEmpty, groupBy, uniqBy, uniq } from "lodash";
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
@@ -23,24 +23,26 @@ import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsP
 import columns from "./static/json/tableColumns.json";
 import { idToName, parseData } from "./util/transformers";
 
-const denormalizeData = res => {
-  const hMap = keyBy(res.metaInfo, "groupId");
-
+const denormalizeData = (res, compareBy) => {
   if (res && !isEmpty(res.metricInfo)) {
-    const filteredArr = res.metricInfo.filter(data => {
-      if (hMap[data.groupId]) return true;
-      return false;
+    const hMap = groupBy(res.metaInfo, "groupId");
+    const filteredArr = res.metricInfo.filter(data => !isEmpty(hMap[data.groupId]));
+    // create duplicates for metric data if compareBy = (schoolId, teacherId)
+    const denormArr = filteredArr.flatMap(data => {
+      // default metaData for teachers
+      let metaArr = [{
+        ...hMap[data.groupId][0],
+        teacherName: uniq(hMap[data.groupId].map(o => o.teacherName).filter(txt => txt)).join(", ")
+      }];
+      // metaData for DA / SA when grouped by school / teacher
+      if (compareBy === "schoolId" || compareBy === "teacherId") {
+        metaArr = uniqBy(hMap[data.groupId], o => o[compareBy]);
+      }
+      const gender = data.gender.toLowerCase() === "m" ? "Male" : data.gender.toLowerCase() === "f" ? "Female" : data.gender;
+      return metaArr.map(mData => ({ ...mData, ...data, gender }));
     });
-
-    const denormArr = filteredArr.map(data => ({
-      ...hMap[data.groupId],
-      ...data,
-      gender: data.gender.toLowerCase() === "m" ? "Male" : data.gender.toLowerCase() === "f" ? "Female" : data.gender
-    }));
-
     return denormArr;
   }
-
   return [];
 };
 
@@ -98,12 +100,13 @@ const PeerPerformance = ({
 
   const res = { ...peerPerformance, bandInfo };
 
-  const denormData = useMemo(() => denormalizeData(res), [res]);
-
-  const parsedData = useMemo(() => ({ data: parseData(res, denormData, ddfilter), columns: getColumns() }), [
-    ddfilter,
-    res
-  ]);
+  const parsedData = useMemo(
+    () => {
+      const denormData = denormalizeData(res, ddfilter.compareBy);
+      return { data: parseData(res, denormData, ddfilter), columns: getColumns() };
+    },
+    [res, ddfilter]
+  );
 
   const updateAnalyseByCB = (event, selected) => {
     setDdFilter({

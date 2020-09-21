@@ -70,6 +70,7 @@ const ClassificationPreview = ({
     (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction;
   const styles = {
     wrapperStyle: {
+      display:"flex",
       flexDirection,
       justifyContent
     }

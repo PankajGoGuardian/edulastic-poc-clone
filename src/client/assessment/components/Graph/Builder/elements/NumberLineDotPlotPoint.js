@@ -2,32 +2,33 @@ import { getClosestTick, calcNumberlinePosition } from "../utils";
 import { Colors, CONSTANT } from "../config";
 import { defaultPointParameters } from "../settings";
 
-const getPointCount = (board, y) => {
+const getPointCount = (board, y, isDelete) => {
   const {
-    layout: { maxPointsCount }
+    layout: { yDistance }
   } = board.numberlineSettings;
   const axisY = calcNumberlinePosition(board);
-  const [, yMax, ,] = board.$board.getBoundingBox();
 
-  const step = (yMax - axisY) / maxPointsCount;
-
-  let count = (y - axisY) / step - 0.5;
+  let count = (y - axisY) / yDistance;
   count = Math.round(count);
-  return Math.max(0, count);
+
+  if (isDelete && count === 1) {
+    return 0;
+  }
+
+  return Math.max(1, count);
 };
 
 const getPointYs = (board, point2) => {
   const {
-    layout: { maxPointsCount }
+    layout: { maxPointsCount, yDistance }
   } = board.numberlineSettings;
   const axisY = calcNumberlinePosition(board);
-  const [, yMax, ,] = board.$board.getBoundingBox();
-
-  const step = (yMax - axisY) / maxPointsCount;
 
   const pointYs = [];
-  for (let i = 0; i < point2; i++) {
-    pointYs.push(axisY + step * (i + 1));
+  const adjustPointCount = point2 > maxPointsCount ? maxPointsCount : point2;
+
+  for (let i = 0; i < adjustPointCount; i++) {
+    pointYs.push(axisY + yDistance * (i + 1));
   }
   return pointYs;
 };
@@ -58,11 +59,11 @@ const drawPoint = (board, point1, point2, colors = null) => {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Colors.gray[CONSTANT.TOOLS.POINT],
     highlightStrokeColor: () =>
-      board.currentTool === CONSTANT.TOOLS.TRASH
+      board.currentTool === CONSTANT.TOOLS.TRASH || board.currentTool === CONSTANT.TOOLS.DELETE
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightStrokeColor
         : Colors.gray[CONSTANT.TOOLS.POINT].highlightStrokeColor,
     highlightFillColor: () =>
-      board.currentTool === CONSTANT.TOOLS.TRASH
+      board.currentTool === CONSTANT.TOOLS.TRASH || board.currentTool === CONSTANT.TOOLS.DELETE
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightFillColor
         : Colors.gray[CONSTANT.TOOLS.POINT].highlightFillColor,
     ...colors,
@@ -124,7 +125,7 @@ const removeElementUnderMouse = (board, elementsUnderMouse) => {
 
   const point1 = point.X();
   const y = point.Y();
-  const point2 = getPointCount(board, y - y * 0.01);
+  const point2 = getPointCount(board, y - y * 0.01, true);
   const newPoint = drawPoint(board, point1, point2);
 
   if (newPoint) {

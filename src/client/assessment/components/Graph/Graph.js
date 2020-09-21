@@ -28,7 +28,7 @@ import AxisSmallSize from "./components/AxisSmallSize";
 import { AxisSegments, GraphAxisLabels, GraphQuadrants, NumberLinePlot } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
-import { QuestionTitleWrapper } from "./common/styled_components";
+import { GraphContainer, QuestionTitleWrapper } from "./common/styled_components";
 import Annotations from "../Annotations/Annotations";
 
 import Question from "../Question";
@@ -412,7 +412,7 @@ class Graph extends Component {
     const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
     return (
-      <React.Fragment>
+      <GraphContainer>
         {view === "edit" && (
           <React.Fragment>
             <ContentArea>
@@ -568,7 +568,7 @@ class Graph extends Component {
             )}
           </React.Fragment>
         )}
-      </React.Fragment>
+      </GraphContainer>
     );
   }
 }

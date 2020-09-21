@@ -84,7 +84,7 @@ const Content = ({
   ];
 
   const transformAssignment = payload => {
-    addRealtimeAssignment(transformAssignmentForRedirect(currentGroup, userId, allClasses, payload));
+    addRealtimeAssignment(transformAssignmentForRedirect(currentGroup, userId, allClasses, {}, {}, payload));
   };
 
   useRealtimeV2(topics, {

@@ -26,7 +26,12 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       keysPerRow = 8;
     }
 
-    if (numbers) {
+    if (fullKeybord && numbers) {
+      keysPerRow = 4;
+      limitRow = 5;
+    }
+
+    if (!fullKeybord && numbers) {
       keysPerRow = 4;
     }
 
@@ -37,7 +42,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
     const rows = chunk(keybuttons, keysPerRow);
     updateBoards(chunk(rows, limitRow));
     updateCurrent(0);
-  }, [btns]);
+  }, [btns, numbers]);
 
   const handleClick = (handler, command, numToMove) => () => {
     if (handler && command) {

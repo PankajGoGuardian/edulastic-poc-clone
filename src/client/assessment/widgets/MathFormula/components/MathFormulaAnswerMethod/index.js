@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { produce } from "immer";
@@ -77,11 +77,17 @@ const MathFormulaAnswerMethod = ({
    * Setting _allowNumericOnly when the value is not set (null) and method is equivSymbolic
    * _allowNumericOnly is set to true when question type is Numeric Entry
    */
-  const _allowNumericOnly =
-    (method === methodsConst.EQUIV_SYMBOLIC &&
-      allowNumericOnly === null &&
-      item.title === questionTitle.NUMERIC_ENTRY) ||
-    allowNumericOnly;
+ 
+
+   
+    useEffect(()=>{
+      if(method === methodsConst.EQUIV_SYMBOLIC &&
+        allowNumericOnly === null &&
+        item.title === questionTitle.NUMERIC_ENTRY){
+          onChangeAllowedOptions("allowNumericOnly", true);
+        }
+ 
+    },[method])
 
   const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {
     let flag = false;
@@ -342,7 +348,7 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={{ allowNumericOnly: _allowNumericOnly }}
+              options={{ allowNumericOnly}}
               onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
@@ -498,7 +504,7 @@ const MathFormulaAnswerMethod = ({
     hideKeypad: item.showDropdown,
     symbols: isShowDropdown ? ["basic"] : item.symbols,
     restrictKeys: isShowDropdown ? [] : restrictKeys,
-    allowNumericOnly: _allowNumericOnly,
+    allowNumericOnly,
     customKeys: isShowDropdown ? [] : customKeys,
     showResponse: useTemplate,
     numberPad: item.numberPad,

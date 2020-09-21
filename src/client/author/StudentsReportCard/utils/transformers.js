@@ -111,9 +111,9 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
       const { isPassageWithQuestions, itemLevelScoring, multipartItem } = item;
       const questions = item.data.questions || [];
 
-      //for question type isPassageWithQuestions or multipartItem, and itemLevelScoring, then all questions response needs to show in one row
+      //for itemLevelScoring, all questions response needs to show in one row
       // so, converted to one row
-      if ((isPassageWithQuestions || multipartItem) && itemLevelScoring) {
+      if (itemLevelScoring) {
         const data = questions.reduce(
           (acc, q) => {
             const qActivity = qActivityById[q.id];

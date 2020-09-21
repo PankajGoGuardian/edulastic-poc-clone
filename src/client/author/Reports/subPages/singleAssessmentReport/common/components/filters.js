@@ -275,93 +275,10 @@ const SingleAssessmentReportFilters = ({
     return `${splitted.join("/")}/`;
   };
 
-  const updateSchoolYearDropDownCB = selected => {
+  const updateFilterDropdownCB = (selected, keyName) => {
     const _filters = {
       ...filters,
-      termId: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-  };
-
-  const updateSubjectDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      subject: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-    setShowApply(true);
-  };
-
-  const updateGradeDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      grade: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-  };
-  const updateCourseDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      courseId: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-  };
-  const updateClassesDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      classId: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-  };
-  const updateGroupsDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      groupId: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-  };
-  const updateSchoolsDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      schoolId: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-  };
-  const updateTeachersDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      teacherId: selected.key
-    };
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
-    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getSARFilterDataRequest(q);
-    setFilters(_filters);
-  };
-  const updateAssessmentTypeDropDownCB = selected => {
-    const _filters = {
-      ...filters,
-      assessmentType: selected.key
+      [keyName]: selected.key
     };
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
@@ -409,7 +326,7 @@ const SingleAssessmentReportFilters = ({
           <FilterLabel>School Year</FilterLabel>
           <ControlDropDown
             by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
+            selectCB={e => updateFilterDropdownCB(e, "termId")}
             data={dropDownData.schoolYear}
             prefix="School Year"
             showPrefixOnSelected={false}
@@ -421,7 +338,7 @@ const SingleAssessmentReportFilters = ({
             prefix="Grade"
             className="custom-1-scrollbar"
             by={filters.grade}
-            selectCB={updateGradeDropDownCB}
+            selectCB={e => updateFilterDropdownCB(e, "grade")}
             data={staticDropDownData.grades}
           />
         </SearchField>
@@ -429,7 +346,7 @@ const SingleAssessmentReportFilters = ({
           <FilterLabel>Subject</FilterLabel>
           <ControlDropDown
             by={filters.subject}
-            selectCB={updateSubjectDropDownCB}
+            selectCB={e => updateFilterDropdownCB(e, "subject")}
             data={staticDropDownData.subjects}
             prefix="Subject"
             showPrefixOnSelected={false}
@@ -442,7 +359,7 @@ const SingleAssessmentReportFilters = ({
               <AutocompleteDropDown
                 prefix="School"
                 by={filters.schoolId}
-                selectCB={updateSchoolsDropDownCB}
+                selectCB={e => updateFilterDropdownCB(e, "schoolId")}
                 data={dropDownData.schools}
               />
             </SearchField>
@@ -451,7 +368,7 @@ const SingleAssessmentReportFilters = ({
               <AutocompleteDropDown
                 prefix="Teacher"
                 by={filters.teacherId}
-                selectCB={updateTeachersDropDownCB}
+                selectCB={e => updateFilterDropdownCB(e, "teacherId")}
                 data={dropDownData.teachers}
               />
             </SearchField>
@@ -462,7 +379,7 @@ const SingleAssessmentReportFilters = ({
           <AutocompleteDropDown
             prefix="Assessment Type"
             by={filters.assessmentType}
-            selectCB={updateAssessmentTypeDropDownCB}
+            selectCB={e => updateFilterDropdownCB(e, "assessmentType")}
             data={staticDropDownData.assessmentType}
           />
         </SearchField>
@@ -505,7 +422,7 @@ const SingleAssessmentReportFilters = ({
           <AutocompleteDropDown
             prefix="Course"
             by={filters.courseId}
-            selectCB={updateCourseDropDownCB}
+            selectCB={e => updateFilterDropdownCB(e, "courseId")}
             data={dropDownData.courses}
           />
         </SearchField>
@@ -514,7 +431,7 @@ const SingleAssessmentReportFilters = ({
           <AutocompleteDropDown
             prefix="Class"
             by={filters.classId}
-            selectCB={updateClassesDropDownCB}
+            selectCB={e => updateFilterDropdownCB(e, "classId")}
             data={dropDownData.classes}
             dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
           />
@@ -524,7 +441,7 @@ const SingleAssessmentReportFilters = ({
           <AutocompleteDropDown
             prefix="Group"
             by={filters.groupId}
-            selectCB={updateGroupsDropDownCB}
+            selectCB={e => updateFilterDropdownCB(e, "groupId")}
             data={dropDownData.groups}
             dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
           />

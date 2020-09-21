@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { toggleScratchpadVisbilityAction } from "../../../common/components/Scratchpad/duck";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 import TimedTestTimer from "./TimedTestTimer";
 
@@ -28,29 +29,47 @@ const SaveAndExit = ({
   utaId,
   groupId,
   timedAssignment,
-  isCliUser
+  isCliUserPreview,
+  isCliUser,
+  LCBPreviewModal,
+  hideData,
+  toggleScratchpadVisibility
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId);
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;
+  const currentVisibilityState = hideData ? "show" : "hide";
+
   return (
     <FlexContainer marginLeft="30px" alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
+      {LCBPreviewModal && (
+        <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
+          {currentVisibilityState} student work
+        </ScratchpadVisibilityToggler>
+      )}
       {showZoomBtn && (
         <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
           <IconAccessibility />
         </StyledButton>
       )}
-      {!isCliUser &&
-        showPause &&
+      {showPause &&
         (previewPlayer ? (
-          <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
-            <IconCircleLogout />
-            EXIT
-          </SaveAndExitButton>
+          <>
+            {!isCliUserPreview && (
+              <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
+                <IconCircleLogout />
+                EXIT
+              </SaveAndExitButton>
+            )}
+          </>
         ) : (
-          <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
-            <IconCircleLogout />
-          </SaveAndExitButton>
+          <>
+            {!isCliUser && (
+              <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
+                <IconCircleLogout />
+              </SaveAndExitButton>
+            )}
+          </>
         ))}
       {onSubmit && (
         <EduButton isGhost onClick={onSubmit}>
@@ -80,10 +99,12 @@ SaveAndExit.defaultProps = {
 export default connect(
   state => ({
     pauseAllowed: state.test?.settings?.pauseAllowed,
-    isCliUser: get(state, "user.isCliUser", false)
+    isCliUser: get(state, "user.isCliUser", false),
+    hideData: state?.scratchpad?.hideData
   }),
   {
-    setSettingsModalVisibility: setSettingsModalVisibilityAction
+    setSettingsModalVisibility: setSettingsModalVisibilityAction,
+    toggleScratchpadVisibility: toggleScratchpadVisbilityAction
   }
 )(SaveAndExit);
 
@@ -190,4 +211,9 @@ export const SaveAndExitButton = styled(StyledButton)`
   @media (max-width: ${smallDesktopWidth}) {
     height: ${props => props.height};
   }
+`;
+
+const ScratchpadVisibilityToggler = styled(SaveAndExitButton)`
+  width: auto !important;
+  text-transform: uppercase;
 `;

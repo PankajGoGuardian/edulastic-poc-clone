@@ -261,7 +261,8 @@ class AssignmentAdvanced extends Component {
         <Container>
           <StyledFlexContainer justifyContent="space-between">
             <PaginationInfo>
-              &lt; <AnchorLink to="/author/assignments">Assignments</AnchorLink> / <Anchor>{assingment.title}</Anchor>
+              &lt;&nbsp;<AnchorLink to="/author/assignments">Assignments&nbsp;</AnchorLink>/&nbsp;
+              <Anchor>{assingment.title}</Anchor>
             </PaginationInfo>
             {this.renderBreadcrumbs(assingment, history)}
           </StyledFlexContainer>

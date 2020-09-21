@@ -106,7 +106,7 @@ const Actions = ({
         <span>{numberOfSelectedItems || 0} </span>
         {t("component.item.itemCount")}
       </Label>
-      <Dropdown overlay={menu} placement="bottomCenter">
+      <Dropdown overlay={menu} placement="bottomCenter" getPopupContainer={triggerNode => triggerNode.parentNode}>
         <EduButton height="30px" width="145px" isGhost>
           {t("component.item.actions")}
         </EduButton>

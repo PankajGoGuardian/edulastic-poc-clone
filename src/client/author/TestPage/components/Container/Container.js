@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, lazy, Suspense } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -6,9 +6,9 @@ import { Spin } from "antd";
 import { withRouter, Prompt } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
-import { withWindowSizes, notification } from "@edulastic/common";
+import { withWindowSizes, notification, Progress } from "@edulastic/common";
 import { test as testContants, roleuser } from "@edulastic/constants";
-import { testsApi, assignmentApi } from "@edulastic/api";
+import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 import { getAllAssignmentsSelector, fetchAssignmentsByTestAction } from "../../../../publicTest/ducks";
 
@@ -80,6 +80,8 @@ import { hasUserGotAccessToPremiumItem, setDefaultInterests } from "../../../dat
 import { getCurrentGroup, getClassIds } from "../../../../student/Reports/ducks";
 import { redirectToStudentPage } from "../../../../publicTest/utils";
 import { startAssignmentAction, resumeAssignmentAction } from "../../../../student/Assignments/ducks";
+
+const ItemCloneModal = lazy(() => import("../ItemCloneConfirmationModal"));
 
 const { getDefaultImage } = testsApi;
 const {
@@ -165,7 +167,8 @@ class Container extends PureComponent {
     isShowFilter: true,
     showCancelButton: false,
     testLoaded: false,
-    disableAlert: false
+    disableAlert: false,
+    showCloneModal: false
   };
 
   gotoTab = tab => {
@@ -805,15 +808,14 @@ class Container extends PureComponent {
     }
   };
 
-  handleDuplicateTest = async e => {
-    e && e.stopPropagation();
-    const { history, test, setEditEnable } = this.props;
-    const duplicateTest = await assignmentApi.duplicateAssignment({
-      _id: test._id,
-      title: test.title
-    });
-    history.push(`/author/tests/${duplicateTest._id}`);
-    setEditEnable(true);
+  showCloneModal = () => {
+    this.setState({ showCloneModal: true });
+  };
+
+  handleDuplicateTest = cloneItems => {
+    const { test, duplicateTest } = this.props;
+    duplicateTest({ _id: test._id, title: test.title, redirectToNewTest: true, cloneItems });
+    this.setState({ showCloneModal: false });
   };
 
   renderModal = () => {
@@ -846,6 +848,10 @@ class Container extends PureComponent {
     this.setState({ disableAlert: payload });
   };
 
+  handleCloneModalVisibility = visibility => {
+    this.setState({ showCloneModal: visibility });
+  };
+
   render() {
     const {
       creating,
@@ -868,7 +874,7 @@ class Container extends PureComponent {
     if (userRole === roleuser.STUDENT) {
       return null;
     }
-    const { showShareModal, isShowFilter } = this.state;
+    const { showShareModal, isShowFilter, showCloneModal } = this.state;
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
     const hasCollectionAccess = allowContentEditCheck(test.collections, writableCollections);
@@ -935,7 +941,7 @@ class Container extends PureComponent {
           isShowFilter={isShowFilter}
           isTestLoading={isTestLoading}
           showDuplicateButton={showDuplicateButton}
-          handleDuplicateTest={this.handleDuplicateTest}
+          handleDuplicateTest={this.showCloneModal}
           showCancelButton={showCancelButton}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           validateTest={this.validateTest}
@@ -943,6 +949,13 @@ class Container extends PureComponent {
           hasCollectionAccess={hasCollectionAccess}
         />
         {this.renderContent()}
+        <Suspense fallback={() => <Progress />}>
+          <ItemCloneModal
+            handleDuplicateTest={this.handleDuplicateTest}
+            visible={showCloneModal}
+            toggleVisibility={this.handleCloneModalVisibility}
+          />
+        </Suspense>
       </>
     );
   }

@@ -9,7 +9,7 @@ import {
   tabletWidth,
   testTypeColor,
   lightGrey4,
-  themeColor
+  themeColorBlue
 } from "@edulastic/colors";
 
 const { assignmentStatusBg } = authorAssignment;
@@ -204,7 +204,7 @@ export const MoreOption = styled.div`
   align-items: center;
   & :hover {
     color: ${white};
-    background: ${themeColor};
+    background: ${themeColorBlue};
   }
 `;
 

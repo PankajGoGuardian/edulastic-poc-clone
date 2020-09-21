@@ -38,8 +38,8 @@ import {
   getItemDetailSelectorForPreview,
   getPassageSelector,
   setPrevewItemAction,
-  setQuestionsForPassageAction,
-  broadcastQuestionAction
+  setQuestionsForPassageAction
+  // broadcastQuestionAction
 } from "./ducks";
 import ReportIssue from "./ReportIssue";
 import { ButtonsWrapper, RejectButton } from "./styled";
@@ -762,8 +762,8 @@ const enhance = compose(
       updateTestAndNavigate: updateTestAndNavigateAction,
       duplicateTestItem: duplicateTestItemPreviewRequestAction,
       deleteItem: deleteItemAction,
-      approveOrRejectSingleItem: approveOrRejectSingleItemAction,
-      broadcastQuestion: broadcastQuestionAction
+      approveOrRejectSingleItem: approveOrRejectSingleItemAction
+      // broadcastQuestion: broadcastQuestionAction
     }
   )
 );

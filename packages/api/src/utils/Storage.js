@@ -190,20 +190,3 @@ export function addPlaylistIdToDeleted(id) {
 export function getDeletedPlaylistIds() {
   return JSON.parse(getFromSessionStorage("deletedPlaylists") || "[]");
 }
-
-export const removeSessionFilterSettings = () => {
-  const libraryTypes = ["itemList", "testList", "playList"];
-  for (const libraryType of libraryTypes) {
-    sessionStorage.removeItem(`filters[${libraryType}-authoredByMe]`);
-    sessionStorage.removeItem(`filters[${libraryType}-sharedWithMe]`);
-    sessionStorage.removeItem(`filters[${libraryType}-favorites]`);
-    sessionStorage.removeItem(`filters[${libraryType}-coAuthor]`);
-    sessionStorage.removeItem(`filters[${libraryType}-previouslyUsed]`);
-  }
-};
-
-export const clearAndRetainFromLocalStorage = () => {
-  const entireLibraryFilterCache = localStorage.getItem("filters[entireLibrary]");
-  localStorage.clear();
-  localStorage.setItem("filters[entireLibrary]", entireLibraryFilterCache);
-};

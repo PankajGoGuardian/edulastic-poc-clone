@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
+import { assignmentApi } from "@edulastic/api";
 import { test } from "@edulastic/constants";
 import {
   getOrgDataSelector,
@@ -22,7 +23,6 @@ import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import PlaylistCard from "./PlaylistCard";
 import TestItemCard from "./TestItemCard";
 import { isPremiumContent } from "../../../TestPage/utils";
-import { duplicateTestRequestAction } from "../../../TestPage/ducks";
 
 export const sharedTypeMap = {
   0: "PUBLIC",
@@ -79,12 +79,11 @@ class Item extends Component {
     }
   };
 
-  duplicate = cloneOption => {
-    const { item, duplicateTest } = this.props;
-    const { _id, title } = item || {};
-    if (_id && title) {
-      duplicateTest({ _id, title, redirectToNewTest: true, cloneItems: cloneOption });
-    }
+  duplicate = async e => {
+    e && e.stopPropagation();
+    const { history, item } = this.props;
+    const duplicateTest = await assignmentApi.duplicateAssignment(item);
+    history.push(`/author/tests/${duplicateTest._id}`);
   };
 
   onDelete = async e => {
@@ -221,8 +220,8 @@ class Item extends Component {
       isPremiumContent(collections) &&
       showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
       !isPublisherUser &&
-      !(_source?.createdBy?._id === currentUserId);
-    const authors = isPlaylist ? _source.authors : item.authors;
+      !(_source ?.createdBy ?._id === currentUserId);
+    const authors = isPlaylist ? _source.authors : item.authors
     const isOwner = (authors || []).find(x => x._id === currentUserId);
     const allowDuplicate =
       allowDuplicateCheck(
@@ -322,8 +321,7 @@ const enhance = compose(
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
-      duplicatePlayList: duplicatePlaylistRequestAction,
-      duplicateTest: duplicateTestRequestAction
+      duplicatePlayList: duplicatePlaylistRequestAction
     }
   )
 );

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce, get, has, pickBy, identity, pick, isEqual, isEmpty } from "lodash";
+import { debounce, get, has, pickBy, identity, pick, isEqual } from "lodash";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -99,13 +99,7 @@ import {
   getDefaultSubjectSelector,
   getUserFeatures
 } from "../../../src/selectors/user";
-import {
-  getInterestedStandards,
-  getDefaultInterests,
-  setDefaultInterests,
-  getLibraryFilterSettings,
-  setLibraryFiltersSettings
-} from "../../../dataUtils";
+import { getInterestedStandards, getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
@@ -131,8 +125,6 @@ import ApproveConfirmModal from "../../../ItemList/components/ApproveConfirmModa
 const setBlockstyleInSession = blockstyle => {
   sessionStorage.setItem("testLibraryBlockstyle", blockstyle);
 };
-
-const { SMART_FILTERS, testSearchFields } = libraryFilters;
 
 class TestList extends Component {
   static propTypes = {
@@ -210,6 +202,7 @@ class TestList extends Component {
 
   componentDidMount() {
     const {
+      receiveTests,
       curriculums,
       getCurriculums,
       page,
@@ -235,19 +228,15 @@ class TestList extends Component {
       grades = interestedGrades || [],
       curriculumId = firstCurriculum && firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum._id : ""
     } = getDefaultInterests();
-    let searchParams = qs.parse(location.search);
-    const { filter = SMART_FILTERS.ENTIRE_LIBRARY } = searchParams;
-    let searchFilters = this.getFilterSettings(filter);
+    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[testList]")) || {};
     const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[testList]")) || {};
-
-    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
-      searchFilters = {
-        ...searchFilters,
-        subject: isEmpty(searchFilters.subject) ? subject : searchFilters.subject,
-        grades: isEmpty(searchFilters.grades) ? grades : searchFilters.grades,
-        curriculumId: !searchFilters.curriculumId ? parseInt(curriculumId, 10) || "" : searchFilters.curriculumId
-      };
-    }
+    const searchFilters = {
+      ...testFilters,
+      ...sessionFilters,
+      subject,
+      grades,
+      curriculumId: parseInt(curriculumId, 10) || ""
+    };
 
     const sort = {
       ...initSort,
@@ -257,6 +246,7 @@ class TestList extends Component {
     };
 
     // propagate filter from query params to the store (test.filters)
+    let searchParams = qs.parse(location.search);
     searchParams = this.typeCheck(searchParams, searchFilters);
     if (Object.keys(searchParams).length) {
       searchParams.curriculumId = Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
@@ -264,10 +254,10 @@ class TestList extends Component {
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
-    this.setFilterSettings(searchFilters, sort);
+    this.updateFilterState(searchFilters, sort, true);
 
-    if (searchFilters.filter === SMART_FILTERS.FOLDERS) {
-      searchFilters.filter = SMART_FILTERS.ENTIRE_LIBRARY;
+    if (searchFilters.filter === filterMenuItems[5].filter) {
+      searchFilters.filter = filterMenuItems[0].filter;
     }
 
     if (mode === "embedded") {
@@ -286,7 +276,7 @@ class TestList extends Component {
         blockstyle: "horizontal"
       });
       setBlockstyleInSession("horizontal");
-      this.fetchTestList({
+      receiveTests({
         page: 1,
         limit,
         search: searchFilters,
@@ -300,7 +290,7 @@ class TestList extends Component {
       const limitCount = params.limit || limit;
       const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
       history.push(`/author/tests?${queryParams}`);
-      this.fetchTestList({ page: 1, limit, search: searchFilters, sort });
+      receiveTests({ page: 1, limit, search: searchFilters, sort });
       getAllTags({ type: "test" });
     }
 
@@ -313,32 +303,28 @@ class TestList extends Component {
     clearSelectedItems();
   }
 
-  getFilterSettings = filterType => {
-    let filterSettings = getLibraryFilterSettings(filterType, "testList");
-    if (!filterSettings) {
-      filterSettings = { ...emptyFilters, filter: filterType };
+  updateFilterState = (searchState, sortState, all) => {
+    const { updateAllTestFilters, updateTestFilters, testFilters } = this.props;
+    const search = all
+      ? { ...searchState }
+      : {
+          ...testFilters,
+          [searchState.key]: searchState.value
+        };
+    sessionStorage.setItem("filters[testList]", JSON.stringify(search));
+    sessionStorage.setItem("sortBy[testList]", JSON.stringify(sortState));
+    if (all) {
+      return updateAllTestFilters({ search, sort: sortState });
     }
-    return filterSettings;
-  };
-
-  setFilterSettings = (filterSettings, sort) => {
-    const { updateAllTestFilters } = this.props;
-    updateAllTestFilters({ search: filterSettings, sort });
-    setLibraryFiltersSettings(filterSettings, sort, "testList");
-  };
-
-  fetchTestList = data => {
-    const { receiveTests } = this.props;
-    const search = pick(data.search, testSearchFields);
-    receiveTests({ ...data, search });
+    updateTestFilters({ search, sort: sortState });
   };
 
   searchTest = debounce(search => {
-    const { limit, history, playlistPage, playlist: { _id } = {}, sort } = this.props;
+    const { receiveTests, limit, history, playlistPage, playlist: { _id } = {}, sort } = this.props;
     const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
-    this.fetchTestList({ search, limit, page: 1, sort });
+    receiveTests({ search, limit, page: 1, sort });
   }, 500);
 
   handleSearchInputChange = tags => {
@@ -348,7 +334,7 @@ class TestList extends Component {
       searchString: tags
     };
 
-    this.setFilterSettings(newSearch, sort);
+    this.updateFilterState(newSearch, sort, true);
     this.searchTest(newSearch);
   };
 
@@ -359,6 +345,7 @@ class TestList extends Component {
    */
   handleFiltersChange = (name, value, dateString) => {
     const {
+      receiveTests,
       clearDictStandards,
       history,
       limit,
@@ -372,12 +359,7 @@ class TestList extends Component {
     } = this.props;
 
     if (name === "folderId") {
-      return this.fetchTestList({
-        search: { ...emptyFilters, [name]: value, filter: "FOLDERS" },
-        sort,
-        page: 1,
-        limit
-      });
+      return receiveTests({ search: { ...emptyFilters, [name]: value, filter: "FOLDERS" }, sort, page: 1, limit });
     }
     // all the fields to pass for search.
 
@@ -431,12 +413,12 @@ class TestList extends Component {
       ...updatedKeys,
       [name]: name === "createdAt" ? updatedKeys[name] : value
     };
-    this.setFilterSettings(searchFilters, sort);
+    this.updateFilterState(searchFilters, sort, true);
     // update the url to reflect the newly applied filter and get the new results.
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
-    this.fetchTestList({ search: searchFilters, sort, page: 1, limit });
+    receiveTests({ search: searchFilters, sort, page: 1, limit });
   };
 
   handleCreate = () => {
@@ -450,7 +432,7 @@ class TestList extends Component {
   };
 
   updateTestList = page => {
-    const { limit, history, testFilters, playlistPage, playlist: { _id } = {}, sort } = this.props;
+    const { receiveTests, limit, history, testFilters, playlistPage, playlist: { _id } = {}, sort } = this.props;
     const searchFilters = {
       ...testFilters
     };
@@ -458,7 +440,7 @@ class TestList extends Component {
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
-    this.fetchTestList({ page, limit, search: searchFilters, sort });
+    receiveTests({ page, limit, search: searchFilters, sort });
   };
 
   handlePaginationChange = page => {
@@ -466,19 +448,15 @@ class TestList extends Component {
   };
 
   handleClearFilter = () => {
-    const { history, mode, limit, testFilters, sort } = this.props;
+    const { history, mode, limit, receiveTests, testFilters, sort } = this.props;
 
     // If current filter and initial filter is equal don't need to reset again
     if (isEqual(testFilters, emptyFilters) && isEqual(sort, initialSortState)) return null;
-    const { filter = SMART_FILTERS.ENTIRE_LIBRARY } = testFilters;
-    const updatedFilters = {
-      ...emptyFilters,
-      filter
-    };
-    this.setFilterSettings(updatedFilters, initialSortState);
+
+    this.updateFilterState(emptyFilters, initialSortState, true);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
-    if (mode !== "embedded") history.push(`/author/tests?filter=${filter}&limit=${limit}&page=1`);
-    this.fetchTestList({ page: 1, limit, search: updatedFilters, sort: initialSortState });
+    if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
+    receiveTests({ page: 1, limit, search: emptyFilters, sort: initialSortState });
   };
 
   handleStyleChange = blockstyle => {
@@ -511,6 +489,7 @@ class TestList extends Component {
   setFilterParams(parsedQueryData) {
     const {
       getCurriculumStandards,
+      receiveTests,
       match: { params = {} },
       testFilters,
       sort
@@ -531,13 +510,13 @@ class TestList extends Component {
       }
     }
 
-    this.setFilterSettings(searchClone, sort);
+    this.updateFilterState(searchClone, sort, true);
 
     const { curriculumId, grade } = searchClone;
     if (curriculumId && parsedQueryData.standardQuery.length >= 2) {
       getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery);
     }
-    this.fetchTestList({
+    receiveTests({
       page: Number(params.page),
       limit: Number(params.limit),
       search: searchClone,
@@ -817,7 +796,7 @@ class TestList extends Component {
               windowWidth={windowWidth}
               history={history}
               match={match}
-              standards={getInterestedStandards(item.summary, item.alignment, interestedCurriculums)}
+              standards={getInterestedStandards(item.summary,item.alignment, interestedCurriculums)}
             />
           ))}
 
@@ -840,7 +819,7 @@ class TestList extends Component {
             removeTestFromPlaylist={this.handleRemoveTest}
             isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
             addTestToPlaylist={this.handleAddTests}
-            standards={getInterestedStandards(item.summary, item.alignment, interestedCurriculums)}
+            standards={getInterestedStandards(item.summary,item.alignment, interestedCurriculums)}
             moduleTitle={moduleTitleMap[item._id]}
             checked={markedTestsList.includes(item._id)}
             handleCheckboxAction={this.handleCheckboxAction}
@@ -856,10 +835,10 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, limit, playlistPage, playlist: { _id } = {} } = this.props;
-    let updatedKeys = this.getFilterSettings(filter);
+    const { history, receiveTests, limit, testFilters, playlistPage, playlist: { _id } = {} } = this.props;
+    let updatedKeys = { ...testFilters };
 
-    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
+    if (filter === filterMenuItems[0].filter) {
       updatedKeys = {
         ...updatedKeys,
         status: ""
@@ -870,15 +849,15 @@ class TestList extends Component {
       sortBy: sortByRecency ? "recency" : "popularity",
       sortDir: "desc"
     };
-
-    this.setFilterSettings(updatedKeys, sort);
+    updatedKeys.filter = filter;
+    this.updateFilterState(updatedKeys, sort, true);
 
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
 
     if (filterType !== "folders") {
-      this.fetchTestList({
+      receiveTests({
         page: 1,
         limit,
         search: updatedKeys,
@@ -908,14 +887,14 @@ class TestList extends Component {
   };
 
   onSelectSortOption = (value, sortDir) => {
-    const { testFilters, limit, sort } = this.props;
+    const { testFilters, limit, sort, receiveTests } = this.props;
     const updateSort = {
       ...sort,
       sortBy: value,
       sortDir
     };
-    this.setFilterSettings(testFilters, updateSort);
-    this.fetchTestList({
+    this.updateFilterState(testFilters, updateSort, true);
+    receiveTests({
       page: 1,
       limit,
       search: testFilters,
@@ -986,7 +965,9 @@ class TestList extends Component {
       testAdded,
       openSidebar
     } = this.state;
-    const search = pick(testFilters, testSearchFields);
+    const search = {
+      ...testFilters
+    };
 
     let modulesList = [];
     if (playlist) {

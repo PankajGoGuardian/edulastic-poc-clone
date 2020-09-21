@@ -1,11 +1,11 @@
 import React from "react";
 import { get, keyBy, uniqBy, uniq, memoize } from "lodash";
-import { questionType as questionTypes, libraryFilters } from "@edulastic/constants";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { questionType as questionTypes } from "@edulastic/constants";
 import { UserIcon } from "./ItemList/components/Item/styled";
 import { EdulasticVerified } from "./TestList/components/ListItem/styled";
 
 const { PASSAGE } = questionTypes;
-const { SMART_FILTERS } = libraryFilters;
 
 export const hasUserGotAccessToPremiumItem = (itemCollections = [], orgCollections = [], returnFlag = true) => {
   const itemCollectionsMap = keyBy(itemCollections, o => o._id);
@@ -118,8 +118,8 @@ export const getQuestionType = item => {
     return questions.length > 1
       ? [PASSAGE.toUpperCase(), "MULTIPART"]
       : questionTitle
-      ? [PASSAGE.toUpperCase(), questionTitle]
-      : [PASSAGE.toUpperCase()];
+        ? [PASSAGE.toUpperCase(), questionTitle]
+        : [PASSAGE.toUpperCase()];
   }
   if (questions.length > 1 || resources.length) {
     return ["MULTIPART"];
@@ -134,8 +134,9 @@ export const getQuestionType = item => {
  */
 
 export const getInterestedStandards = (summary, alignment = [], interestedCurriculums = []) => {
+
   let interestedStandards;
-  const allStandards = summary?.standards || [];
+  let allStandards = summary?.standards || [];
 
   if (!allStandards?.length) return [];
   const authorStandards = allStandards.filter(item => !item.isEquivalentStandard && item.curriculumId);
@@ -144,32 +145,22 @@ export const getInterestedStandards = (summary, alignment = [], interestedCurric
   // pick standards matching with interested curriculums
   interestedStandards = authorStandards.filter(standard => curriculumIds.includes(standard.curriculumId));
 
+
   // If authored standards don't match, pick from multi standard mapping
   if (!interestedStandards.length && alignment.length) {
-    const equivalentStandards = uniqBy(
-      alignment
-        .filter(({ isEquivalentStandard }) => !!isEquivalentStandard)
-        .flatMap(({ domains }) =>
-          domains.flatMap(({ curriculumId, standards }) =>
-            standards.map(({ name: identifier, key: id }) => ({ identifier, id, curriculumId }))
-          )
-        ),
-      "identifier"
-    );
-    const standardData = Object.values(
-      authorStandards.reduce((acc, item) => {
-        const standard = acc[item.curriculumId];
-        if (standard) {
-          standard.totalPoints += item.totalPoints;
-          standard.totalQuestions += item.totalQuestions;
-        } else {
-          acc[item.curriculumId] = { ...item };
-        }
-        return acc;
-      }, {})
-    );
+    const equivalentStandards = uniqBy(alignment.filter(({ isEquivalentStandard }) => !!isEquivalentStandard).flatMap(({ domains }) => domains.flatMap(({ curriculumId, standards }) => standards.map(({ name: identifier, key: id }) => ({ identifier, id, curriculumId })))), "identifier");
+    const standardData = Object.values(authorStandards.reduce((acc, item) => {
+      const standard = acc[item.curriculumId];
+      if (standard) {
+        standard.totalPoints += item.totalPoints;
+        standard.totalQuestions += item.totalQuestions;
+      } else {
+        acc[item.curriculumId] = { ...item };
+      }
+      return acc;
+    }, {}));
 
-    standardData.forEach(standard => {
+    standardData.forEach((standard) => {
       const equivStandard = equivalentStandards.find(eqSt => curriculumIds.includes(eqSt.curriculumId));
       if (equivStandard) {
         interestedStandards.push({
@@ -180,8 +171,8 @@ export const getInterestedStandards = (summary, alignment = [], interestedCurric
     });
   }
   // if equivalent standards are not available
-  if (!(interestedStandards.length || alignment.length)) {
-    interestedStandards = authorStandards;
+  if(!(interestedStandards.length || alignment.length)){
+       interestedStandards = authorStandards;
   }
 
   return interestedStandards;
@@ -203,63 +194,6 @@ export const setDefaultInterests = newInterest => {
 };
 
 export const getDefaultInterests = () => JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
-
-export const getLibraryFilterSettings = (filterType, libraryType) => {
-  let filterSettings = null;
-  switch (filterType) {
-    case SMART_FILTERS.ENTIRE_LIBRARY:
-      filterSettings = localStorage.getItem(`filters[entireLibrary]`);
-      break;
-    case SMART_FILTERS.AUTHORED_BY_ME:
-      filterSettings = sessionStorage.getItem(`filters[${libraryType}-authoredByMe]`);
-      break;
-    case SMART_FILTERS.SHARED_WITH_ME:
-      filterSettings = sessionStorage.getItem(`filters[${libraryType}-sharedWithMe]`);
-      break;
-    case SMART_FILTERS.FAVORITES:
-      filterSettings = sessionStorage.getItem(`filters[${libraryType}-favorites]`);
-      break;
-    case SMART_FILTERS.CO_AUTHOR:
-      filterSettings = sessionStorage.getItem(`filters[${libraryType}-coAuthor]`);
-      break;
-    case SMART_FILTERS.PREVIOUSLY_USED:
-      filterSettings = sessionStorage.getItem(`filters[${libraryType}-previouslyUsed]`);
-      break;
-    // no default
-  }
-  filterSettings = JSON.parse(filterSettings);
-  return filterSettings;
-};
-
-export const setLibraryFiltersSettings = (filterSettings, sort, libraryType) => {
-  const filterType = filterSettings.filter;
-  const filterSettingsToSet = JSON.stringify(filterSettings);
-  switch (filterType) {
-    case SMART_FILTERS.ENTIRE_LIBRARY:
-      localStorage.setItem("filters[entireLibrary]", filterSettingsToSet);
-      break;
-    case SMART_FILTERS.AUTHORED_BY_ME:
-      sessionStorage.setItem(`filters[${libraryType}-authoredByMe]`, filterSettingsToSet);
-      break;
-    case SMART_FILTERS.SHARED_WITH_ME:
-      sessionStorage.setItem(`filters[${libraryType}-sharedWithMe]`, filterSettingsToSet);
-      break;
-    case SMART_FILTERS.FAVORITES:
-      sessionStorage.setItem(`filters[${libraryType}-favorites]`, filterSettingsToSet);
-      break;
-    case SMART_FILTERS.CO_AUTHOR:
-      sessionStorage.setItem(`filters[${libraryType}-coAuthor]`, filterSettingsToSet);
-      break;
-    case SMART_FILTERS.PREVIOUSLY_USED:
-      sessionStorage.setItem(`filters[${libraryType}-previouslyUsed]`, filterSettingsToSet);
-      break;
-    // no default
-  }
-
-  if (sort) {
-    sessionStorage.setItem(`sortBy[${libraryType}]`, JSON.stringify(sort));
-  }
-};
 
 export const sortTestItemQuestions = testItems => {
   for (const [, item] of testItems.entries()) {

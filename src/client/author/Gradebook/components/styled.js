@@ -344,6 +344,9 @@ export const StyledTable = styled(Table)`
               font-size: 12px;
               font-weight: 600;
               color: ${greyThemeDark1};
+              a:hover {
+                color: ${themeColorBlue};
+              }
               @media (min-width: ${extraDesktopWidthMax}) {
                 font-size: 14px;
               }

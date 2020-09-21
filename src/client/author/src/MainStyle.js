@@ -153,8 +153,8 @@ export const MainContainer = styled.div`
         }
         &:hover,
         &:focus {
-          background: ${props => props.theme.themeColor};
-          border-color: ${props => props.theme.themeColor};
+          background: ${themeColorBlue};
+          border-color: ${themeColorBlue};
           a {
             color: white;
           }

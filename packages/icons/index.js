@@ -250,3 +250,6 @@ export { default as IconMother } from "./src/IconMother";
 export { default as IconWrench } from "./src/IconWrench";
 export { default as IconEduLogo } from "./src/IconEduLogo";
 export { default as IconUsers } from "./src/IconUsers";
+export { default as IconPresentation } from "./src/IconPresentation";
+export { default as IconAddItem } from "./src/IconAddItem";
+export { default as IconPieChartIcon } from "./src/IconPieChartIcon";

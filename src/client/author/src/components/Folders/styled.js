@@ -7,7 +7,8 @@ import {
   title,
   white,
   greyThemeDark1,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  themeColorBlue
 } from "@edulastic/colors";
 import { Button, CustomModalStyled } from "@edulastic/common";
 import { Menu } from "antd";
@@ -70,7 +71,7 @@ export const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
     svg,
     i {
       fill: ${white};
@@ -114,6 +115,7 @@ export const FolderListItem = styled.li`
   position: relative;
   cursor: pointer;
   &:hover {
+    color: ${themeColorBlue};
     svg {
       fill: ${themeColor};
     }

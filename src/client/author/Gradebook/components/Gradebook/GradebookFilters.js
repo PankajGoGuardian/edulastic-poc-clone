@@ -6,7 +6,7 @@ import { Row, Col, Select } from "antd";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 
 // constants
-import { themeColor, titleColor } from "@edulastic/colors";
+import { themeColor, titleColor, themeColorBlue } from "@edulastic/colors";
 import GroupsFilter from "./GroupsFilter";
 
 const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
@@ -23,11 +23,12 @@ const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
       optionFilterProp="children"
       getPopupContainer={triggerNode => triggerNode.parentNode}
     >
-      {options && options.map(data => (
-        <Select.Option key={data.id} value={data.id}>
-          {data.name === "All" ? `All ${label}` : data.name}
-        </Select.Option>
-      ))}
+      {options &&
+        options.map(data => (
+          <Select.Option key={data.id} value={data.id}>
+            {data.name === "All" ? `All ${label}` : data.name}
+          </Select.Option>
+        ))}
     </SelectInputStyled>
   </Col>
 );
@@ -110,4 +111,7 @@ const StyledSpan = styled.span`
   font-size: ${props => (props.onClick ? "12px" : "13px")};
   font-weight: 600;
   cursor: ${props => (props.onClick ? "pointer" : "default")};
+  &:hover {
+    color: ${themeColorBlue};
+  }
 `;

@@ -1876,6 +1876,14 @@ span.token.active-word {
   min-height: 1vh !important;
 }
 
+.katex .hdashline,
+.katex .hline,
+.katex .mfrac .frac-line,
+.katex .overline .overline-line,
+.katex .underline .underline-line {
+  border-bottom-width: thin !important;
+}
+
 .katex-display {
   display: inline !important;
   margin: auto 0px !important;

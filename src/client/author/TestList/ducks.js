@@ -66,7 +66,6 @@ export const updateLikeCountAction = createAction(UPDATE_LIKE_COUNT);
 // selectors
 export const stateSelector = state => state.testList;
 
-
 export const getTestsSelector = createSelector(
   stateSelector,
   state => state.entities
@@ -103,10 +102,8 @@ export const getSortFilterStateSelector = createSelector(
   state => state.sort
 );
 
-
-
-export const getEquivalentStandards = ({tests,testList}) => testList?.entities.find(({_id})=> _id === tests.entity._id)?.alignment || [];
-
+export const getEquivalentStandards = ({ tests, testList }) =>
+  testList?.entities.find(({ _id }) => _id === tests.entity._id)?.alignment || [];
 
 // sagas
 function* receiveTestsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {

@@ -398,20 +398,25 @@ class DisneyCardContainer extends Component {
                           )}
                           <AttemptDiv
                             className="attempt-container"
-                            onClick={e =>
+                            onClick={e => {
+                              e.stopPropagation();
                               viewResponses(
                                 e,
                                 student.studentId,
                                 student.testActivityId,
                                 (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
-                              )
-                            }
+                              );
+                            }}
                           >
                             <CenteredStyledParaSS>
-                              {score(currentTestActivity.status)}&nbsp;/ {round(student.maxScore, 2) || 0}
+                              {score(currentTestActivity.status, currentTestActivity.score)}&nbsp;/{" "}
+                              {round(student.maxScore, 2) || 0}
                             </CenteredStyledParaSS>
                             <StyledParaSSS>
-                              {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
+                              {student.score > 0
+                                ? round((currentTestActivity.score / currentTestActivity.maxScore) * 100, 2)
+                                : 0}
+                              %
                             </StyledParaSSS>
                             <p style={{ fontSize: "12px" }}>
                               Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
@@ -421,7 +426,10 @@ class DisneyCardContainer extends Component {
                             <AttemptDiv
                               className="attempt-container"
                               key={attempt._id || attempt.id}
-                              onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
+                              onClick={e => {
+                                e.stopPropagation();
+                                viewResponses(e, attempt.userId, attempt._id, attempt.number);
+                              }}
                             >
                               <CenteredStyledParaSS>
                                 {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}

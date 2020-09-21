@@ -25,6 +25,10 @@ import { updateInitSearchStateAction } from "../../author/TestPage/components/Ad
 import { JOIN_CLASS_REQUEST_SUCCESS } from "../ManageClass/ducks";
 import "firebase/auth";
 import { addLoadingComponentAction, removeLoadingComponentAction } from "../../author/src/actions/authorUi";
+import {
+  removeSessionFilterSettings,
+  clearAndRetainFromLocalStorage
+} from "../../../../packages/api/src/utils/Storage";
 
 // types
 export const LOGIN = "[auth] login";
@@ -962,11 +966,12 @@ function* logout() {
       window.close();
     } else {
       yield call(segmentApi.unloadIntercom, { user });
-      localStorage.clear();
+      clearAndRetainFromLocalStorage();
       sessionStorage.removeItem("cliBannerShown");
       sessionStorage.removeItem("cliBannerVisible");
       sessionStorage.removeItem("addAccountDetails");
       sessionStorage.removeItem("filters[Assignments]");
+      removeSessionFilterSettings();
       TokenStorage.removeKID();
       TokenStorage.initKID();
       TokenStorage.removeTokens();

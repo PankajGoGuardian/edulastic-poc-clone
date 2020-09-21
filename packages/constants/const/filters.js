@@ -8,4 +8,46 @@ const SMART_FILTERS = {
   FOLDERS: "FOLDERS"
 };
 
-module.exports = { SMART_FILTERS };
+const testSearchFields = [
+  "createdAt",
+  "authoredByIds",
+  "searchString",
+  "tags",
+  "grades",
+  "subject",
+  "curriculumId",
+  "domainIds",
+  "standardIds",
+  "questionType",
+  "depthOfKnowledge",
+  "authorDifficulty",
+  "filter",
+  "collections",
+  "status",
+  "_ids",
+  "folderId"
+];
+
+const itemSearchFields = [
+  "createdAt",
+  "createdById",
+  "searchString",
+  "ownedByIds",
+  "authoredByIds",
+  "subject",
+  "curriculumId",
+  "standardIds",
+  "skillIdentifiers",
+  "questionType",
+  "depthOfKnowledge",
+  "authorDifficulty",
+  "grades",
+  "tags",
+  "filter",
+  "collections",
+  "status",
+  "_ids",
+  "folderId"
+];
+
+module.exports = { SMART_FILTERS, testSearchFields, itemSearchFields };

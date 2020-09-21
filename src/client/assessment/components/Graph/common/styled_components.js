@@ -13,6 +13,12 @@ import {
 import { TextField } from "@edulastic/common";
 import { StyledPaperWrapper } from "../../../styled/Widget";
 
+export const GraphContainer = styled.div`
+  & .__prevent-page-break {
+    width: 100%;
+  }
+`;
+
 const createStandardTextSet = element => styled(element)`
   font-size: ${({ theme }) => theme?.common?.smallFontSize || "12px"};
 

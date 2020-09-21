@@ -64,9 +64,9 @@ const onHandler = board => {
     [[isVertical ? calcY : x1, isVertical ? x1 : calcY], [isVertical ? calcY : x2, isVertical ? x2 : calcY]],
     {
       ...Colors.numberline,
-      strokeColor,
       straightFirst: false,
       straightLast: false,
+      strokeColor: strokeColor || Colors.numberline.strokeColor,
       firstArrow: leftArrow === true ? { size: 8 } : false,
       lastArrow: rightArrow === true ? { size: 8 } : false
     }

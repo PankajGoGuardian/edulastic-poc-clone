@@ -113,11 +113,11 @@ class AxisLabelsContainer extends PureComponent {
 
   // -2 done to make room for the border when width is an integer but the actual width is slightly less
   get parentHeight() {
-    return this.axisLabelsContainerRef?.current?.clientHeight - 2 || 0;
+    return this.axisLabelsContainerRef?.current?.clientHeight || 0;
   }
 
   get parentWidth() {
-    return this.axisLabelsContainerRef?.current?.clientWidth - 2 || 0;
+    return this.axisLabelsContainerRef?.current?.clientWidth || 0;
   }
 
   get isHorizontal() {

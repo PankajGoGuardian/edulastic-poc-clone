@@ -2,7 +2,14 @@ import axios from "axios";
 import { storeInLocalStorage, getFromLocalStorage, updateUserToken } from "@edulastic/api/src/utils/Storage";
 import * as Sentry from "@sentry/browser";
 import config from "../config";
-import { getAccessToken, getTraceId, initKID, initTID } from "./Storage";
+import {
+  getAccessToken,
+  getTraceId,
+  initKID,
+  initTID,
+  removeSessionFilterSettings,
+  clearAndRetainFromLocalStorage
+} from "./Storage";
 
 const ASSETS_REFRESH_STAMP = "assetsRefreshDateStamp";
 
@@ -214,7 +221,8 @@ export default class API {
             });
             // Needs proper fixing, patching it to fix infinite reload
             const loginRedirectUrl = localStorage.getItem("loginRedirectUrl");
-            localStorage.clear();
+            clearAndRetainFromLocalStorage();
+            removeSessionFilterSettings();
             localStorage.setItem("loginRedirectUrl", loginRedirectUrl);
             if (!window.location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
               localStorage.setItem("loginRedirectUrl", getCurrentPath());

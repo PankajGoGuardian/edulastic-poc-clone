@@ -3,7 +3,7 @@ import { greyLight1, greyThemeLight } from "@edulastic/colors";
 import { FlexContainer, withWindowSizes } from "@edulastic/common";
 import { IconList, IconPlaylist2, IconTile } from "@edulastic/icons";
 import { Button, Input, Row, Spin } from "antd";
-import { debounce, get, pick, isEqual } from "lodash";
+import { debounce, get, pick, isEqual, isEmpty } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import * as qs from "query-string";
@@ -70,7 +70,12 @@ import {
 } from "../../ducks";
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
-import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
+import {
+  getDefaultInterests,
+  setDefaultInterests,
+  getLibraryFilterSettings,
+  setLibraryFiltersSettings
+} from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
 import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
@@ -92,6 +97,9 @@ function getUrlFilter(filter) {
   }
   return "";
 }
+
+const { SMART_FILTERS } = libraryFilters;
+
 class TestList extends Component {
   static propTypes = {
     playlists: PropTypes.array.isRequired,
@@ -139,7 +147,6 @@ class TestList extends Component {
 
   componentDidMount() {
     const {
-      receivePlaylists,
       receivePublishers,
       receiveRecentPlayLists,
       limit,
@@ -153,15 +160,18 @@ class TestList extends Component {
       sort: initSort = {}
     } = this.props;
     const { subject = interestedSubjects || [], grades = interestedGrades || [] } = getDefaultInterests();
-    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[playList]")) || {};
+    let searchParams = qs.parse(location.search);
+    const { filter = SMART_FILTERS.ENTIRE_LIBRARY } = searchParams;
+    let searchFilters = this.getFilterSettings(filter);
     const sessionSortFilters = JSON.parse(sessionStorage.getItem("sort[playList]")) || {};
-    const searchFilters = {
-      ...playListFilters,
-      ...sessionFilters,
-      grades,
-      subject
-    };
 
+    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
+      searchFilters = {
+        ...searchFilters,
+        subject: isEmpty(searchFilters.subject) ? subject : searchFilters.subject,
+        grades: isEmpty(searchFilters.grades) ? grades : searchFilters.grades
+      };
+    }
     const sort = {
       ...initSort,
       sortBy: "popularity",
@@ -169,34 +179,46 @@ class TestList extends Component {
       ...sessionSortFilters
     };
 
-    let searchParams = qs.parse(location.search);
     searchParams = this.typeCheck(searchParams, searchFilters);
 
     if (Object.keys(searchParams).length) {
       Object.assign(searchFilters, pick(searchParams, Object.keys(playListFilters)));
     }
-    this.updateFilterState(searchFilters, sort);
+    this.setFilterSettings(searchFilters, sort);
 
     const pageFinal = parseInt(params?.page, 10) || 1;
     const urlToPush = this.getUrlToPush(pageFinal);
     history.push(urlToPush);
 
     receivePublishers();
-    receivePlaylists({ page: pageFinal, limit, search: searchFilters, sort });
+    this.fetchPlaylists({ page: pageFinal, limit, search: searchFilters, sort });
     getAllTags({ type: "playlist" });
     receiveRecentPlayLists();
   }
 
-  updateFilterState = (searchState, sort) => {
+  getFilterSettings = filterType => {
+    let filterSettings = getLibraryFilterSettings(filterType, "playList");
+    if (!filterSettings) {
+      filterSettings = { ...emptyFilters, filter: filterType };
+    }
+    return filterSettings;
+  };
+
+  setFilterSettings = (filterSettings, sort) => {
     const { updateAllPlaylistSearchFilter } = this.props;
-    sessionStorage.setItem("filters[playList]", JSON.stringify(searchState));
-    sessionStorage.setItem("sort[playList]", JSON.stringify(sort));
-    updateAllPlaylistSearchFilter({ search: searchState, sort });
+    updateAllPlaylistSearchFilter({ search: filterSettings, sort });
+    setLibraryFiltersSettings(filterSettings, sort, "playList");
+  };
+
+  fetchPlaylists = data => {
+    const { receivePlaylists } = this.props;
+    const search = pick(data.search, Object.keys(emptyFilters));
+    receivePlaylists({ ...data, search });
   };
 
   searchTest = debounce(searchState => {
-    const { receivePlaylists, limit, playListFilters, sort } = this.props;
-    receivePlaylists({
+    const { limit, playListFilters, sort } = this.props;
+    this.fetchPlaylists({
       page: 1,
       limit,
       search: searchState || playListFilters,
@@ -210,21 +232,12 @@ class TestList extends Component {
       ...playListFilters,
       searchString: tags
     };
-    this.updateFilterState(newSearch, sort);
+    this.setFilterSettings(newSearch, sort);
     this.searchTest(newSearch);
   };
 
   handleFiltersChange = (name, value, dateString) => {
-    const {
-      receivePlaylists,
-      history,
-      limit,
-      page,
-      updateDefaultGrades,
-      updateDefaultSubject,
-      playListFilters,
-      sort
-    } = this.props;
+    const { history, limit, page, updateDefaultGrades, updateDefaultSubject, playListFilters, sort } = this.props;
     let updatedKeys = {};
 
     updatedKeys = {
@@ -248,8 +261,8 @@ class TestList extends Component {
         [name]: value ? moment(dateString, "DD/MM/YYYY").valueOf() : ""
       };
     }
-    this.updateFilterState(updatedKeys, sort);
-    receivePlaylists({ search: updatedKeys, sort, page: 1, limit });
+    this.setFilterSettings(updatedKeys, sort);
+    this.fetchPlaylists({ search: updatedKeys, sort, page: 1, limit });
     history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
   };
 
@@ -261,9 +274,9 @@ class TestList extends Component {
   };
 
   handlePaginationChange = page => {
-    const { receivePlaylists, limit, history, playListFilters, sort } = this.props;
+    const { limit, history, playListFilters, sort } = this.props;
 
-    receivePlaylists({ page, limit, search: playListFilters, sort });
+    this.fetchPlaylists({ page, limit, search: playListFilters, sort });
     const urlToPush = this.getUrlToPush(page);
     history.push(urlToPush);
   };
@@ -283,12 +296,16 @@ class TestList extends Component {
   };
 
   resetFilter = () => {
-    const { receivePlaylists, limit, history, playListFilters, sort } = this.props;
+    const { limit, history, playListFilters, sort } = this.props;
     // If current filter and initial filter is equal don't need to reset again
     if (isEqual(playListFilters, emptyFilters) && isEqual(sort, initialSortState)) return null;
-
-    this.updateFilterState(emptyFilters, initialSortState);
-    receivePlaylists({ page: 1, limit, search: emptyFilters, sort: initialSortState });
+    const { filter } = playListFilters;
+    const updatedFilters = {
+      ...emptyFilters,
+      filter
+    };
+    this.setFilterSettings(updatedFilters, initialSortState);
+    this.fetchPlaylists({ page: 1, limit, search: updatedFilters, sort: initialSortState });
     history.push(`/author/playlists`);
   };
 
@@ -365,9 +382,9 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receivePlaylists, limit, playListFilters } = this.props;
-    let updatedSearch = { ...playListFilters };
-    if (filter === filterMenuItems[0].filter) {
+    const { history, limit } = this.props;
+    let updatedSearch = this.getFilterSettings(filter);
+    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
       updatedSearch = {
         ...updatedSearch,
         status: ""
@@ -379,20 +396,11 @@ class TestList extends Component {
       sortDir: "desc"
     };
     history.push(`/author/playlists/filter/${filterType}`);
-    this.updateFilterState(
-      {
-        ...updatedSearch,
-        filter
-      },
-      sort
-    );
-    receivePlaylists({
+    this.setFilterSettings(updatedSearch, sort);
+    this.fetchPlaylists({
       page: 1,
       limit,
-      search: {
-        ...updatedSearch,
-        filter
-      },
+      search: updatedSearch,
       sort
     });
   };
@@ -400,14 +408,14 @@ class TestList extends Component {
   toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
 
   onSelectSortOption = (value, sortDir) => {
-    const { playListFilters, limit, sort, receivePlaylists } = this.props;
+    const { playListFilters, limit, sort } = this.props;
     const updateSort = {
       ...sort,
       sortBy: value,
       sortDir
     };
-    this.updateFilterState(playListFilters, updateSort);
-    receivePlaylists({
+    this.setFilterSettings(playListFilters, updateSort);
+    this.fetchPlaylists({
       page: 1,
       limit,
       search: playListFilters,
@@ -424,10 +432,12 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating, playListFilters, t, isProxyUser, sort = {} } = this.props;
-
+    const { page, limit, count, creating, t, isProxyUser, sort = {} } = this.props;
+    let { playListFilters } = this.props;
+    playListFilters = pick(playListFilters, Object.keys(emptyFilters));
     const { blockStyle, isShowFilter, openSidebar } = this.state;
     const { searchString } = playListFilters;
+
     const renderFilterIcon = () => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
     return (
@@ -467,7 +477,7 @@ class TestList extends Component {
               onChange={this.handleSearchInputChange}
               size="large"
               value={searchString}
-              disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
+              disabled={playListFilters.filter === SMART_FILTERS.FAVORITES}
             />
             <FilterButton>
               <Button data-cy="filter" onClick={() => this.showFilterHandler()}>
@@ -500,7 +510,7 @@ class TestList extends Component {
                           placeholder="Search by skill and keywords"
                           onSearchInputChange={this.handleSearchInputChange}
                           value={searchString}
-                          disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
+                          disabled={playListFilters.filter === SMART_FILTERS.FAVORITES}
                         />
                         <TestListFilters
                           isPlaylist

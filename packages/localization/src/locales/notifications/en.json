@@ -411,6 +411,10 @@
     "message": "Subject field cannot be empty",
     "description": ""
   },
+  "noQuestions":{
+    "message": "Test has only instructions. Test must have question to be published",
+    "description": ""
+  },
   "teacherRemovedSuccessfully": {
     "message": " Teacher removed successfully",
     "description": ""

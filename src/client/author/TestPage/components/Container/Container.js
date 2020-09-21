@@ -726,7 +726,8 @@ class Container extends PureComponent {
       }
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
-    for (const itemGroup in test.itemGroups) {
+    let itemGroupWithQuestionsCount = 0;
+    for (const itemGroup of test.itemGroups) {
       if (
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         itemGroup.items.some(item => item.itemLevelScoring === false)
@@ -734,8 +735,14 @@ class Container extends PureComponent {
         notification({ msg: `${itemGroup.name} contains items with question level scoring.` });
         return false;
       }
+      if(itemGroup.items.some(item => item.data.questions.length > 0)){
+        itemGroupWithQuestionsCount++;
+      }
     }
-
+    if(!itemGroupWithQuestionsCount){
+      notification({ messageKey: `noQuestions`});
+      return false;
+    }
     return true;
   };
 

@@ -2092,23 +2092,8 @@ function* duplicateTestSaga({ payload }) {
   yield put(setTestsLoadingAction(true));
   const { onRegrade = false } = payload;
   try {
-    const {
-      _id,
-      title,
-      currentTab,
-      isInEditAndRegrade = false,
-      redirectToNewTest = false,
-      cloneItems = false
-    } = payload;
-    const queryParams = { _id, title, isInEditAndRegrade, cloneItems };
-    const data = yield call(assignmentApi.duplicateAssignment, queryParams);
-    if (redirectToNewTest) {
-      // cloning from test review page or test library (non-regrade flow)
-      yield put(push(`/author/tests/${data._id}`));
-      yield put(setEditEnableAction(true));
-      yield put(setTestsLoadingAction(false));
-      return;
-    }
+    const { _id, title, currentTab, isInEditAndRegrade = false } = payload;
+    const data = yield call(assignmentApi.duplicateAssignment, { _id, title, isInEditAndRegrade });
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`));
     yield put(setTestsLoadingAction(false));
     yield put(receiveTestByIdAction(data._id, true));

@@ -1,9 +1,9 @@
 import { withWindowSizes } from "@edulastic/common";
 import { IconItemLibrary } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { roleuser, sortOptions, libraryFilters } from "@edulastic/constants";
+import { roleuser, sortOptions } from "@edulastic/constants";
 import { Pagination, Spin } from "antd";
-import { debounce, omit, isEqual, isEmpty, pick } from "lodash";
+import { debounce, omit, isEqual } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -74,18 +74,11 @@ import {
   PaginationContainer,
   ScrollbarContainer
 } from "./styled";
-import {
-  setDefaultInterests,
-  getDefaultInterests,
-  getLibraryFilterSettings,
-  setLibraryFiltersSettings
-} from "../../../dataUtils";
+import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../HeaderFilter";
 import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 import ApproveConfirmModal from "../ApproveConfirmModal";
 import SortMenu from "../SortMenu";
-
-const { SMART_FILTERS, itemSearchFields } = libraryFilters;
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -104,6 +97,7 @@ class Contaier extends Component {
       limit,
       setDefaultTestData,
       clearSelectedItems,
+      search: initSearch,
       getAllTags,
       history,
       interestedSubjects,
@@ -116,14 +110,10 @@ class Contaier extends Component {
       grades = interestedGrades || [],
       curriculumId = firstCurriculum && firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum._id : ""
     } = getDefaultInterests();
-    const { params = {} } = match;
-    const getMatchingObj = filterMenuItems.find(item => item.path === params.filterType) || {};
-    let { filter = SMART_FILTERS.ENTIRE_LIBRARY } = getMatchingObj;
     const isAuthoredNow = history?.location?.state?.isAuthoredNow;
-    if (isAuthoredNow) {
-      filter = SMART_FILTERS.AUTHORED_BY_ME;
-    }
-    let search = this.getFilterSettings(filter);
+    const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
+    const { params = {} } = match;
+    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
     const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[itemList]")) || {};
     const sort = {
       ...initSort,
@@ -131,33 +121,36 @@ class Contaier extends Component {
       sortDir: "desc",
       ...sessionSort
     };
-
-    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
-      search = {
-        ...search,
-        subject: isEmpty(search.subject) ? subject : search.subject,
-        grades: isEmpty(search.grades) ? grades : search.grades,
-        curriculumId: !search.curriculumId ? parseInt(curriculumId, 10) || "" : search.curriculumId
-      };
-    }
-
+    const search = {
+      ...initSearch,
+      ...sessionFilters,
+      ...applyAuthoredFilter,
+      subject,
+      grades,
+      curriculumId: parseInt(curriculumId, 10) || ""
+    };
     setDefaultTestData();
     clearSelectedItems();
     getAllTags({ type: "testitem" });
+    if (params.filterType) {
+      const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
+      const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+      const updatedSearch = { ...search, filter };
 
-    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
-      search.status = "";
+      if (filter === filterMenuItems[0].filter) {
+        updatedSearch.status = "";
+      }
+      this.updateFilterState(updatedSearch, sort);
+
+      if (filter === filterMenuItems[4].filter) {
+        updatedSearch.filter = filterMenuItems[0].filter;
+      }
+
+      receiveItems(updatedSearch, sort, 1, limit);
+    } else {
+      this.updateFilterState(search, sort);
+      receiveItems(search, sort, 1, limit);
     }
-
-    if (filter === SMART_FILTERS.FOLDERS) {
-      search.filter = SMART_FILTERS.ENTIRE_LIBRARY;
-    }
-
-    const updatedSearch = pick(search, itemSearchFields);
-
-    this.setFilterSettings(updatedSearch, sort);
-    receiveItems(updatedSearch, sort, 1, limit);
-
     if (curriculums.length === 0) {
       getCurriculums();
     }
@@ -166,36 +159,27 @@ class Contaier extends Component {
     }
   }
 
-  getFilterSettings = filterType => {
-    let filterSettings = getLibraryFilterSettings(filterType, "itemList");
-    if (!filterSettings) {
-      filterSettings = { ...initialSearchState, filter: filterType };
-    }
-    return filterSettings;
-  };
-
-  setFilterSettings = (filterSettings, sort) => {
+  updateFilterState = (newSearch, sort = {}) => {
     const { updateSearchFilterState } = this.props;
-    updateSearchFilterState({ search: filterSettings, sort });
-    setLibraryFiltersSettings(filterSettings, sort, "itemList");
+    updateSearchFilterState({ search: newSearch, sort });
+    sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
+    sessionStorage.setItem("sortBy[itemList]", JSON.stringify(sort));
   };
 
   handleSearch = searchState => {
     const { limit, receiveItems, userFeatures, search: propSearch, sort } = this.props;
     let search = searchState || propSearch;
-    search = pick(search, itemSearchFields);
     if (!userFeatures.isCurator) search = omit(search, "authoredByIds");
     receiveItems(search, sort, 1, limit);
   };
 
   handleLabelSearch = e => {
-    const { limit, receiveItems, history } = this.props;
+    const { limit, receiveItems, history, search } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-    const { filter = SMART_FILTERS.ENTIRE_LIBRARY } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    let updatedSearch = this.getFilterSettings(filter);
-    updatedSearch = pick(updatedSearch, itemSearchFields);
-    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
+    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+    let updatedSearch = { ...search };
+    if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
         ...updatedSearch,
         status: ""
@@ -206,10 +190,16 @@ class Contaier extends Component {
       sortBy: sortByRecency ? "recency" : "popularity",
       sortDir: "desc"
     };
+    this.updateFilterState(
+      {
+        ...updatedSearch,
+        filter
+      },
+      sort
+    );
 
-    this.setFilterSettings(updatedSearch, sort);
     if (filterType !== "folders") {
-      receiveItems(updatedSearch, sort, 1, limit);
+      receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
     }
 
     history.push(`/author/items/filter/${filterType}`);
@@ -220,15 +210,11 @@ class Contaier extends Component {
 
     // If current filter and initial filter is equal don't need to reset again
     if (isEqual(search, initialSearchState) && isEqual(sort, initialSortState)) return null;
-    const { filter } = search;
-    const filterSettings = {
-      ...initialSearchState,
-      filter
-    };
-    clearFilterState({ search: filterSettings });
 
-    this.setFilterSettings(filterSettings, initialSortState);
-    receiveItems(filterSettings, initialSortState, 1, limit);
+    clearFilterState();
+
+    this.updateFilterState(initialSearchState, initialSortState);
+    receiveItems(initialSearchState, initialSortState, 1, limit);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
   };
 
@@ -240,7 +226,7 @@ class Contaier extends Component {
       curriculumId: value,
       standardIds: []
     };
-    this.setFilterSettings(updatedSearchValue, sort);
+    this.updateFilterState(updatedSearchValue, sort);
     this.handleSearch(updatedSearchValue);
     getCurriculumStandards(value, search.grades, "");
   };
@@ -296,7 +282,7 @@ class Contaier extends Component {
       storeInLocalStorage("defaultGrades", value);
     }
 
-    this.setFilterSettings(updatedKeys, sort);
+    this.updateFilterState(updatedKeys, sort);
     this.handleSearch(updatedKeys);
   };
 
@@ -309,7 +295,7 @@ class Contaier extends Component {
       searchString: tags
     };
 
-    this.setFilterSettings(updatedKeys, sort);
+    this.updateFilterState(updatedKeys, sort);
     this.searchDebounce();
   };
 
@@ -331,8 +317,7 @@ class Contaier extends Component {
   handlePaginationChange = page => {
     const { search, sort } = this.props;
     const { receiveItems, limit } = this.props;
-    const updatedSearch = pick(search, itemSearchFields);
-    receiveItems(updatedSearch, sort, page, limit);
+    receiveItems(search, sort, page, limit);
   };
 
   renderPagination = () => {
@@ -391,9 +376,8 @@ class Contaier extends Component {
       sortBy: value,
       sortDir
     };
-    const updateSearch = pick(search, itemSearchFields);
-    this.setFilterSettings(updateSearch, updateSort);
-    receiveItems(updateSearch, updateSort, 1, limit);
+    this.updateFilterState(search, updateSort);
+    receiveItems(search, updateSort, 1, limit);
   };
 
   handleApproveItems = () => {
@@ -438,11 +422,11 @@ class Contaier extends Component {
       curriculumStandards,
       loading,
       count,
+      search,
       userRole,
       sort = {}
     } = this.props;
-    let { search } = this.props;
-    search = pick(search, itemSearchFields);
+
     const { isShowFilter, openSidebar } = this.state;
     return (
       <div>

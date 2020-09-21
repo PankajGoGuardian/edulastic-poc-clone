@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { debounce, uniq, get, isEmpty, pick, isEqual } from "lodash";
+import { debounce, uniq, get } from "lodash";
 import { Pagination, Spin } from "antd";
 import Qs from "query-string";
-import { roleuser, sortOptions, libraryFilters } from "@edulastic/constants";
+import { roleuser, sortOptions } from "@edulastic/constants";
 import { withWindowSizes, FlexContainer, notification, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
@@ -67,17 +67,10 @@ import {
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import Item from "../../../ItemList/components/Item/Item";
 import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
-import {
-  getDefaultInterests,
-  setDefaultInterests,
-  getLibraryFilterSettings,
-  setLibraryFiltersSettings
-} from "../../../dataUtils";
+import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import PreviewModal from "../../../src/components/common/PreviewModal";
 import SortMenu from "../../../ItemList/components/SortMenu";
-
-const { SMART_FILTERS, itemSearchFields } = libraryFilters;
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -124,6 +117,7 @@ class AddItems extends PureComponent {
       test,
       curriculums,
       getAllTags,
+      search: initSearch,
       history,
       interestedSubjects,
       interestedGrades,
@@ -144,30 +138,25 @@ class AddItems extends PureComponent {
 
     if (needToSetFilter) {
       const {
-        subject = interestedSubjects || [],
+        subject = interestedSubjects?.[0] || "",
         grades = interestedGrades || [],
         curriculumId = firstCurriculum?.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
       } = getDefaultInterests();
-      let filter = SMART_FILTERS.ENTIRE_LIBRARY;
       const isAuthoredNow = history?.location?.state?.isAuthoredNow;
-      if (isAuthoredNow) {
-        filter = SMART_FILTERS.AUTHORED_BY_ME;
-      }
+      const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
+      const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
+      const selectedSubjects = (test?.subjects || []).filter(item => !!item);
+      const selectedGrades = (test?.grades || []).filter(item => !!item);
+      search = {
+        ...initSearch,
+        ...sessionFilters,
+        ...applyAuthoredFilter,
+        subject: selectedSubjects[0] || subject,
+        grades: uniq([...selectedGrades, ...grades]),
+        curriculumId: parseInt(curriculumId, 10) || ""
+      };
 
-      search = this.getFilterSettings(filter);
-
-      if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
-        const selectedSubjects = (test?.subjects || []).filter(item => !!item);
-        const selectedGrades = (test?.grades || []).filter(item => !!item);
-        search = {
-          ...search,
-          subject: isEmpty(search.subject) ? uniq([...selectedSubjects, ...subject]) : search.subject,
-          grades: isEmpty(search.grades) ? uniq([...selectedGrades, ...grades]) : search.grades,
-          curriculumId: !search.curriculumId ? parseInt(curriculumId, 10) || "" : search.curriculumId
-        };
-      }
-      search = pick(search, itemSearchFields);
-      this.setFilterSettings(search, sort);
+      this.updateFilterState(search, sort);
     }
     if (!curriculums.length) getCurriculums();
     getAllTags({ type: "testitem" });
@@ -177,60 +166,39 @@ class AddItems extends PureComponent {
     }
   }
 
-  getFilterSettings = filterType => {
-    let filterSettings = getLibraryFilterSettings(filterType, "itemList");
-    if (!filterSettings) {
-      filterSettings = { ...initialSearchState, filter: filterType };
-    }
-    return filterSettings;
-  };
-
-  setFilterSettings = (filterSettings, sort) => {
+  updateFilterState = (newSearch, sort) => {
     const { updateSearchFilterState } = this.props;
-    updateSearchFilterState({ search: filterSettings, sort });
-    setLibraryFiltersSettings(filterSettings, sort, "itemList");
+    updateSearchFilterState({ search: newSearch, sort });
+    sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
+    sessionStorage.setItem("sortBy[itemList]", JSON.stringify(sort));
   };
 
   handleSearch = searchState => {
     const { receiveTestItems, limit, search, sort } = this.props;
-    const searchSettings = pick(searchState || search, itemSearchFields);
-    receiveTestItems(searchSettings, sort, 1, limit);
+    receiveTestItems(searchState || search, sort, 1, limit);
   };
 
   handleLabelSearch = e => {
-    const { limit, receiveTestItems } = this.props;
+    const { limit, receiveTestItems, search } = this.props;
     const { key: filterType } = e;
-    const getMatchingObj = filterMenuItems.find(item => item.path === filterType) || {};
-    const { filter = SMART_FILTERS.ENTIRE_LIBRARY } = getMatchingObj;
-    let updatedSearch = this.getFilterSettings(filter);
-    updatedSearch = pick(updatedSearch, itemSearchFields);
-    if (filter === SMART_FILTERS.ENTIRE_LIBRARY) {
-      updatedSearch = {
-        ...updatedSearch,
-        status: ""
-      };
-    }
+    const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
+    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+    const searchState = {
+      ...search,
+      filter
+    };
     const sortByRecency = ["by-me", "shared"].includes(filterType);
     const sort = {
       sortBy: sortByRecency ? "recency" : "popularity",
       sortDir: "desc"
     };
-    this.setFilterSettings(updatedSearch, sort);
-    receiveTestItems(updatedSearch, sort, 1, limit);
+    this.updateFilterState(searchState, sort);
+    receiveTestItems(searchState, sort, 1, limit);
   };
 
   handleClearSearch = () => {
-    const { clearFilterState, receiveTestItems, limit, search = {}, sort = {} } = this.props;
-    // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(search, initialSearchState) && isEqual(sort, initialSortState)) return null;
-    const { filter } = search;
-    const filterSettings = {
-      ...initialSearchState,
-      filter
-    };
-    clearFilterState({ search: filterSettings });
-
-    this.setFilterSettings(filterSettings, initialSortState);
+    const { clearFilterState, receiveTestItems, limit } = this.props;
+    clearFilterState({ needToSetFilter: false });
     receiveTestItems(initialSearchState, initialSortState, 1, limit);
     setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
   };
@@ -290,7 +258,7 @@ class AddItems extends PureComponent {
       curriculumId: value,
       standardIds: []
     };
-    this.setFilterSettings(updatedSearchValue, sort);
+    this.updateFilterState(updatedSearchValue, sort);
     this.handleSearch(updatedSearchValue);
     getCurriculumStandards(value, search.grades, "");
   };
@@ -319,7 +287,7 @@ class AddItems extends PureComponent {
         [fieldName]: value
       };
     }
-    this.setFilterSettings(updatedKeys, sort);
+    this.updateFilterState(updatedKeys, sort);
     this.handleSearch(updatedKeys);
   };
 
@@ -331,7 +299,7 @@ class AddItems extends PureComponent {
       ...search,
       searchString: tags
     };
-    this.setFilterSettings(updatedKeys, sort);
+    this.updateFilterState(updatedKeys, sort);
     this.searchDebounce(updatedKeys);
   };
 
@@ -451,9 +419,8 @@ class AddItems extends PureComponent {
       sortBy: value,
       sortDir
     };
-    const updateSearch = pick(search, itemSearchFields);
-    this.setFilterSettings(updateSearch, updateSort);
-    receiveTestItems(updateSearch, updateSort, 1, limit);
+    this.updateFilterState(search, updateSort);
+    receiveTestItems(search, updateSort, 1, limit);
   };
 
   get selectedItem() {
@@ -483,13 +450,12 @@ class AddItems extends PureComponent {
       test,
       toggleFilter,
       isShowFilter,
+      search,
       features,
       gotoGroupItems,
       userRole,
       sort = {}
     } = this.props;
-    let { search } = this.props;
-    search = pick(search, itemSearchFields);
 
     const { isCurator, isPublisherAuthor } = features;
     let showGroupItemsBtn = false;

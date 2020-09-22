@@ -359,6 +359,7 @@ function* fetchAssignments() {
  */
 function* startAssignment({ payload }) {
   try {
+    console.warn('====== Assignment Begins ======', payload)
     yield put(setConfirmationForTimedAssessmentAction(null));
     const { assignmentId, testId, testType, classId, isPlaylist = false, studentRecommendation } = payload;
     if (!isPlaylist && !studentRecommendation) {
@@ -473,6 +474,7 @@ function* startAssignment({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     const { status, data = {}, response = {} } = err;
+    console.error('====== Assignment Failed ======', err, status, data, response)
     if (status === 403) {
       const message =
         data.message ||

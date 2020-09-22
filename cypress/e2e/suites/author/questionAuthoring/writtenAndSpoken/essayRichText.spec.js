@@ -43,7 +43,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
     "specialCharacters",
     "insertImage",
     "insertLink",
-    "table",
+    "insertTable",
     "paragraphFormat",
     "clearFormatting",
     "undo",
@@ -234,27 +234,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
     });
 
     context(" > [essay_rich_s6] => Preview -Verify Default toolbar options", () => {
-      it(" > Preview- Verify visibility of default  toolbars including separator", () => {
-        const defaultOptions = ["bold", "italic", "underline", "formatOL", "formatUL", "math", "specialCharacters"];
+      it(" > Preview- Verify visibility of default  toolbars", () => {
+        const defaultOptions = ["bold", "italic", "underline", "strikeThrough","subscript","superscript", "insertImage","insertLink","insertTable","alignRight","alignJustify","indent","outdent","paragraphFormat", "math", "specialCharacters","undo","redo"];
         question.header.preview();
         defaultOptions.forEach(value => {
           question.getToolBarOptionInPreview(value).should("exist");
         });
-        // Verify separator visibility
-        question.verifySeparatorVisibilityAfter(defaultOptions[2]);
       });
 
-      it(" > Preview - Verify more text option visibility by selecting more than 10 options", () => {
-        const additionalOptionsToBeSelected = ["strikeThrough", "h1", "h2", "insertImage", "insertLink"];
+      it(" > Verify separator visibility", () => {
+        // Verify separator visibility
         question.header.edit();
-        question.clickOnAdvancedOptions();
-        additionalOptionsToBeSelected.forEach(value => {
-          console.log(value);
-          question.selectToolBarOptionInEditMode(value);
-        });
+        question.getToolBarOptionInEditMode("div").eq(0).click();
         question.header.preview();
-        question.getToolBarOptionInPreview("moreText").should("be.visible");
-      });
+        question.verifySeparatorVisibilityAfter("strikeThrough");
+      })
     });
 
     context(" > [essay_rich_s7] => Verify Toolbar Options", () => {
@@ -455,10 +449,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
       });
 
       it("verify table options", () => {
-        question.selectToolBarOptionInEditMode("table");
+        question.selectToolBarOptionInEditMode("insertTable");
         question.header.preview();
         question
-          .getToolBarOptionInPreview("table")
+          .getToolBarOptionInPreview("insertTable")
           .click()
           .then(() => {
             question.addTableWithCells("2", "2");

@@ -119,8 +119,7 @@ class EssayRichTextPage {
   };
 
   addTableWithCells = (row, column) => {
-    cy.get('[data-cmd="tableInsert"]')
-      .find(`[data-row="${row}"][data-col="${column}"]`)
+    cy.get(`[data-row="${row}"][data-col="${column}"]`)
       .click();
   };
 

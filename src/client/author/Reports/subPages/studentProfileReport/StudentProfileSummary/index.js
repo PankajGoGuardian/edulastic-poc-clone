@@ -119,7 +119,8 @@ const StudentProfileSummary = ({
     !studentProfileSummaryData ||
     isEmpty(asessmentMetricInfo) ||
     isEmpty(metricInfo) ||
-    isEmpty(skillInfo)
+    isEmpty(skillInfo) ||
+    isEmpty(studInfo)
   ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>;
   }
@@ -145,7 +146,7 @@ const StudentProfileSummary = ({
             <span>NAME</span>
             <p>{studentName || anonymousString}</p>
             <span>GRADE</span>
-            <p>{getGrades(studentInformation.grades)}</p>
+            <p>{getGrades(studInfo)}</p>
             <span>SCHOOL</span>
             <p>{studentClassInfo.schoolName || "N/A"}</p>
             <span>SUBJECT</span>

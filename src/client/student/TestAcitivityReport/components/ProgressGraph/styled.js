@@ -149,3 +149,30 @@ export const ChartNavButton = styled(EduButton)`
     display: none;
   }
 `;
+
+export const MessageBox = styled.div`
+  background: #f8f8f8;
+  margin-left: 20px;
+  margin-top: 55px;
+  padding: 30px;
+  position: relative;
+  width: 550px;
+  height: 100px;
+  border-radius: 4px;
+
+  &:after {
+    content: "";
+    top: 40px;
+    left: -24px;
+    position: absolute;
+    border-style: solid;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+    border-right-color: #f8f8f8;
+    border-top-width: 10px;
+    border-right-width: 12px;
+    border-left-width: 12px;
+    border-bottom-width: 10px;
+  }
+`;

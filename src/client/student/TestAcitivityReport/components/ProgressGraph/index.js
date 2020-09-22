@@ -5,17 +5,17 @@ import { connect } from "react-redux";
 import BarGraph from "./BarGraph";
 import OverallFeedback from "../OverallFeedback";
 
-import { GraphContainer, ProgressBarContainer, BarGraphContainer, GraphTitle, Progress } from "./styled";
+import { GraphContainer, ProgressBarContainer, BarGraphContainer, GraphTitle, Progress, MessageBox } from "./styled";
 import { getTestFeedbackSelector, getItemsSelector } from "../../../sharedDucks/TestItem";
 
-const ProgressGraph = ({ testActivity, questionActivities, testItems, setCurrentItem }) => {
+const ProgressGraph = ({ testActivity, questionActivities, testItems, setCurrentItem, isCliUser }) => {
   const { score, maxScore } = testActivity;
   const scorePercentage = round(score / maxScore, 2) * 100 || 0;
 
   return (
     <Fragment>
       <GraphContainer padding="20px" justifyContent="flex-start">
-        <ProgressBarContainer>
+        <ProgressBarContainer style={{ textAlign: "center" }}>
           <GraphTitle>Performance Summary</GraphTitle>
           <Progress
             className="getProgress"
@@ -31,10 +31,17 @@ const ProgressGraph = ({ testActivity, questionActivities, testItems, setCurrent
             format={percent => `${percent}%`}
           />
         </ProgressBarContainer>
-        <BarGraphContainer>
-          <GraphTitle>Performance by Questions</GraphTitle>
-          <BarGraph questionActivities={questionActivities} setCurrentItem={setCurrentItem} testItems={testItems} />
-        </BarGraphContainer>
+        {isCliUser ? (
+          <MessageBox>
+            Thanks for helping your teacher get a better picture of what you know and what you need to get ready to
+            learn
+          </MessageBox>
+        ) : (
+          <BarGraphContainer>
+            <GraphTitle>Performance by Questions</GraphTitle>
+            <BarGraph questionActivities={questionActivities} setCurrentItem={setCurrentItem} testItems={testItems} />
+          </BarGraphContainer>
+        )}
       </GraphContainer>
 
       <OverallFeedback />

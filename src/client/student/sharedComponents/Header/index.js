@@ -20,8 +20,8 @@ const Header = ({
   showAllClassesOption = true,
   titleIcon,
   showExit = false,
-  showContinue,
-  continueReview,
+  showReviewResponses,
+  reviewResponses,
   history,
   ...rest
 }) => (
@@ -31,12 +31,12 @@ const Header = ({
     {showActiveClass && (
       <ShowActiveClass t={t} classList={classList} setClassList={setClassList} setShowClass={setShowClass} />
     )}
-    {showContinue && (
-      <EduButton onClick={continueReview} isBlue>
-        Continue
+    {showReviewResponses && (
+      <EduButton onClick={reviewResponses} isBlue>
+        Review Responses
       </EduButton>
     )}
-    {showExit && !showContinue && (
+    {showExit && !showReviewResponses && (
       <EduButton
         onClick={() => {
           history.push("/home/grades");

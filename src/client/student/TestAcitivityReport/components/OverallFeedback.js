@@ -2,19 +2,16 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Tooltip } from "antd";
+import { get } from "lodash";
 import { FlexContainer } from "@edulastic/common";
 import { IconCheck } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
-import { get } from "lodash";
 import { getClasses } from "../../Login/ducks";
 
 const OverallFeedback = ({ testActivity, classList = [] }) => {
   const { feedback, groupId, score, maxScore } = testActivity;
-  if (!feedback) {
-    return null;
-  }
-  const { teacherId } = feedback;
-  const classOwner = classList.find(({ _id }) => _id === groupId)?.owners?.find(x => x._id === teacherId);
+  const overallFeedbackText = get(feedback, "text", "No feedback provided");
+  const classOwner = classList.find(({ _id }) => _id === groupId)?.owners?.[0];
 
   const getUserName = type => {
     let userInitials = "";
@@ -53,16 +50,18 @@ const OverallFeedback = ({ testActivity, classList = [] }) => {
           </ScoreWrapper>
 
           <Feedback>
-            <FeedbackGiven data-cy="feedback">{feedback && feedback.text}</FeedbackGiven>
+            <FeedbackGiven data-cy="feedback">{overallFeedbackText}</FeedbackGiven>
           </Feedback>
         </FeedbackContainer>
-        <Tooltip placement="top" title={getUserName("fullName")}>
-          {classOwner.thumbnail ? (
-            <UserImg src={classOwner.thumbnail} />
-          ) : (
-            <UserInitials>{getUserName("initials")}</UserInitials>
-          )}
-        </Tooltip>
+        {classOwner && (
+          <Tooltip placement="top" title={getUserName("fullName")}>
+            {classOwner.thumbnail ? (
+              <UserImg src={classOwner.thumbnail} />
+            ) : (
+              <UserInitials>{getUserName("initials")}</UserInitials>
+            )}
+          </Tooltip>
+        )}
       </FlexContainer>
     </FeedbackWrapper>
   );
@@ -100,6 +99,7 @@ const FeedbackContainer = styled.div`
   margin-right: 8px;
   padding: 26px 21px;
   position: relative;
+  width: 100%;
 
   &::after {
     content: "";

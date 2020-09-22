@@ -1,4 +1,4 @@
-import { MainContentWrapper } from "@edulastic/common";
+import { MainContentWrapper, EduButton, FlexContainer } from "@edulastic/common";
 import { IconReport } from "@edulastic/icons";
 import { Spin } from "antd";
 import { get } from "lodash";
@@ -49,7 +49,7 @@ const ReportListContainer = ({
     }
   };
 
-  const continueReview = () => {
+  const reviewResponses = () => {
     setCurrentItem(0);
     setShowGraph(false);
   };
@@ -87,7 +87,7 @@ const ReportListContainer = ({
     return <Spin />;
   }
 
-  const showContinue = continueBtns.includes(releaseScore) && showGraph;
+  const showReviewResponses = continueBtns.includes(releaseScore) && showGraph;
 
   return (
     <MainContainer flag={flag}>
@@ -97,8 +97,8 @@ const ReportListContainer = ({
         titleText={test?.title || ""}
         history={history}
         showExit={!isCliUser}
-        showContinue={showContinue}
-        continueReview={continueReview}
+        showReviewResponses={showReviewResponses}
+        reviewResponses={reviewResponses}
         hideSideMenu={isCliUser}
       />
       <MainContentWrapper padding={isDocBased ? "0px" : "20px 30px"}>
@@ -110,6 +110,13 @@ const ReportListContainer = ({
           hideQuestionSelect={showGraph}
         />
         {showGraph && <ProgressGraph setCurrentItem={setCurrentItemFromGraph} />}
+        {showGraph && (
+          <FlexContainer>
+            <EduButton onClick={reviewResponses} isBlue>
+              Review Responses
+            </EduButton>
+          </FlexContainer>
+        )}
         {!showGraph && <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />}
       </MainContentWrapper>
     </MainContainer>

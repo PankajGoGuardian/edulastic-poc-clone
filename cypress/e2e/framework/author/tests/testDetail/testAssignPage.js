@@ -61,7 +61,7 @@ export default class TestAssignPage {
       cy.wrap(
         $ele
           // eslint-disable-next-line func-names
-          .filter(function() {
+          .filter(function () {
             return Cypress.$(this).text() === option;
           })
       ).click({ force: true });

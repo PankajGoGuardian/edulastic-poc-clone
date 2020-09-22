@@ -39,6 +39,11 @@ class ReportsPage {
 
   getAttemptsByTestId = id => this.getTestCardByTesyId(id).find('[data-cy="attemptClick"]');
 
+  getQUestionInStudentReportPage = () =>
+    cy.get(".recharts-layer").eq(0).
+      find("tspan")
+      .contains("Q1");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -148,6 +153,7 @@ class ReportsPage {
 
   verifyAllQuetionCard = (studentName, studentAttempts, questionTypeMap, releasePolicy) => {
     const correctAns = releasePolicy === releaseGradeTypes.WITH_ANSWERS;
+    this.getQUestionInStudentReportPage().click();
     Object.keys(studentAttempts).forEach(queNum => {
       const attemptType = studentAttempts[queNum];
       this.selectQuestion(queNum);
@@ -194,10 +200,10 @@ class ReportsPage {
       attemptType === attemptTypes.RIGHT
         ? right
         : attemptType === attemptTypes.WRONG
-        ? wrong
-        : attemptType === attemptTypes.PARTIAL_CORRECT
-        ? partialCorrect
-        : undefined;
+          ? wrong
+          : attemptType === attemptTypes.PARTIAL_CORRECT
+            ? partialCorrect
+            : undefined;
 
     const questionType = queTypeKey.split(".")[0];
     if (points) this.verifyScore(points, attemptData, attemptType, questionType);

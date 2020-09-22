@@ -69,9 +69,7 @@ export default class SmartFilters {
   };
 
   setTesttype = testType => {
-    // CypressHelper.selectDropDownByAttribute("filter-testType", testType);
-    cy.server();
-    cy.route("GET", /assignments/g).as("filter-assigments");
+    this.routeAPI()
     this.getTestType().click();
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
       cy.wrap(
@@ -82,10 +80,9 @@ export default class SmartFilters {
         .click({ force: true })
         .then(() => {
           //cy.get(`tbody > tr >td`,{timeout:15000})
-          cy.wait("@filter-assigments");
+          this.waitForAssignments();
         });
     });
-    // this.waitForAssignments();
     cy.focused().blur();
   };
 

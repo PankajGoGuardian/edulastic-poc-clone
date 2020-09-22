@@ -68,6 +68,12 @@ class ReportsPage {
     cy.get('[data-cy="questionNumber"]');
   };
 
+  verifyReviewPaused = () => {
+    this.getReviewButton()
+      .contains("PAUSED")
+      .should("exist");
+  };
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

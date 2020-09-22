@@ -309,7 +309,26 @@ class AuthorAssignmentPage {
 
   filterByTestType = testType => {
     this.smartFilter.expandFilter();
-    this.smartFilter.setTesttype(testType);
+    this.setTesttype(testType);
+  };
+
+  setTesttype = testType => {
+    cy.server();
+    cy.route("GET", /assignments/g).as("filter-assigments");
+    this.smartFilter.getTestType().click();
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele.filter(function() {
+          return Cypress.$(this).text() === testType;
+        })
+      )
+        .click({ force: true })
+        .then(() => {
+          // cy.get(`tbody > tr >td`,{timeout:15000})
+          cy.wait("@filter-assigments");
+        });
+    });
+    cy.focused().blur();
   };
 
   clickChoosefromPlaylistButton = () => this.getChooseFromPlaylistsButton().click({ force: true });

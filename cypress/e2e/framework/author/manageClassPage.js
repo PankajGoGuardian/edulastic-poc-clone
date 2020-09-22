@@ -35,8 +35,11 @@ export default class TeacherManageClassPage {
     cy.wait("@searchUser");
   };
 
-  getClassCode = className =>this.getClassRowByName(className)
-    .find("td > span").eq(1).invoke("text")
+  getClassCode = className =>
+    this.getClassRowByName(className)
+      .find("td > span")
+      .eq(1)
+      .invoke("text");
 
   getClassRowDetails = className =>
     this.getClassRowByName(className)
@@ -73,7 +76,7 @@ export default class TeacherManageClassPage {
 
   getunArchiveButton = () => cy.get("span").contains("UNARCHIVE");
 
-  getSchoolDropDown = () => cy.get(`#institutionId`)
+  getSchoolDropDown = () => cy.get(`#institutionId`);
 
   // *** ELEMENTS END ***
 
@@ -125,7 +128,7 @@ export default class TeacherManageClassPage {
 
   clickonRemoveStudentButton = () => this.removeStudentButton().click({ force: true });
 
-  clickOnRemoveStudentPopupTextbox = () => cy.get('.ant-input').click();
+  clickOnRemoveStudentPopupTextbox = () => cy.get(".ant-input").click();
 
   clickOnRemoveButtonInPopUp = () => cy.contains("span", "Yes, Remove Student(s)").click({ force: true });
 
@@ -232,16 +235,20 @@ export default class TeacherManageClassPage {
   // class list
   // adding students
 
-  verifyIfSchoolPresent = (schoolName) => {
-    this.getSchoolDropDown().click()
-    cy.get("li").contains(schoolName).should('be.visible')
-    this.getSchoolDropDown().click()
-  }
+  verifyIfSchoolPresent = schoolName => {
+    this.getSchoolDropDown().click();
+    cy.get("li")
+      .contains(schoolName)
+      .should("be.visible");
+    this.getSchoolDropDown().click();
+  };
 
-  selectSchool = (schoolName) => {
-    this.getSchoolDropDown().click()
-    cy.get("li").contains(schoolName).click();
-  }
+  selectSchool = schoolName => {
+    this.getSchoolDropDown().click();
+    cy.get("li")
+      .contains(schoolName)
+      .click();
+  };
 
   clickOnAddStudents = () => cy.get('[data-cy="addMultiStu"]').click();
 
@@ -446,33 +453,37 @@ export default class TeacherManageClassPage {
 
   unArchieveClassByName(className, success = true) {
     cy.route("POST", "**/search/users").as("searchUser");
-    this.clickOnClassRowByName(className)
-    cy.wait("@searchUser")
-    this.clickUnArchive(success)
+    this.clickOnClassRowByName(className);
+    cy.wait("@searchUser");
+    this.clickUnArchive(success);
   }
 
   clickUnArchive(success = true) {
     cy.route("POST", "**/unarchive").as("unarchive");
     this.getunArchiveButton().click({ force: true });
-    cy.get(`.ant-modal-body >`).contains("span", "Unarchive").click({ force: true })
+    cy.get(`.ant-modal-body >`)
+      .contains("span", "Unarchive")
+      .click({ force: true });
     if (success) {
-      cy.wait("@unarchive").then((xhr) => {
-        expect(xhr.status).to.eq(200)
-      })
+      cy.wait("@unarchive").then(xhr => {
+        expect(xhr.status).to.eq(200);
+      });
     } else {
-      cy.wait("@unarchive").then((xhr) => {
-        expect(xhr.status, "Expected to join the school before unarchiving class").to.eq(403)
-        expect(xhr.responseBody.message).to.have.string("Class is not part of the current school.")
-      })
+      cy.wait("@unarchive").then(xhr => {
+        expect(xhr.status, "Expected to join the school before unarchiving class").to.eq(403);
+        expect(xhr.responseBody.message).to.have.string("Class is not part of the current school.");
+      });
     }
   }
 
-  goToLastPage() {
+  goToLastPage = () => {
     cy.get("body").then($body => {
       if ($body.find(".ant-table-pagination > li").length > 0) {
-        cy.get('[title="Next Page"]').prev().click()
+        cy.get('[title="Next Page"]')
+          .prev()
+          .click();
       }
-    })
-  }
+    });
+  };
   // *** APPHELPERS END ***
 }

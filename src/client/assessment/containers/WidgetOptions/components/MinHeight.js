@@ -7,7 +7,7 @@ import CommonInput from "./common/CommonInput";
 
 const MinHeight = ({ t, type, ...restProps }) => (
   <Fragment>
-    <Label>{t("component.options.minHeightPx")}</Label>
+    <Label data-cy="minHeightOption">{t("component.options.minHeightPx")}</Label>
     <CommonInput type={type} {...restProps} />
   </Fragment>
 );

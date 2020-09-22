@@ -365,6 +365,7 @@ class DisneyCardContainer extends Component {
                           </AttemptDiv>
                         )}
                         <AttemptDiv
+                          data-cy="attempt-container"
                           className="attempt-container"
                           onClick={e => {
                             e.stopPropagation();

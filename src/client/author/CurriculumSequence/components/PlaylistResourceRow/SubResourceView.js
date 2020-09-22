@@ -49,11 +49,11 @@ export const SubResourceView = ({
         </ModuleDataName>
       )}
       {itemData?.resources?.map(data => (
-        <ResourceWrapper onClick={viewResource(data)} showBorder={isManageContentActive}>
+        <ResourceWrapper data-cy={data.contentId} onClick={viewResource(data)} showBorder={isManageContentActive}>
           <ResouceIcon type={data.contentType} isAdded />
           <Title>{data.contentTitle}</Title>
           {mode === "embedded" && !isStudent && !disabled && (
-            <InlineDelete title="Delete" onClick={deleteSubResource(data)}>
+            <InlineDelete data-cy="delete-resource" title="Delete" onClick={deleteSubResource(data)}>
               <IconClose />
             </InlineDelete>
           )}

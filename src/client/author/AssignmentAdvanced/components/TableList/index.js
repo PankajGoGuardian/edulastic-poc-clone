@@ -106,17 +106,17 @@ const columns = [
       <ActionsWrapper data-cy="PresentationIcon">
         <Tooltip placement="bottom" title="Live Class Board">
           <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
-            <Icon src={presentationIcon} alt="Images" />
+            <Icon data-cy="lcb" src={presentationIcon} alt="Images" />
           </Link>
         </Tooltip>
         <Tooltip placement="bottom" title="Express Grader">
           <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
-            <Icon src={additemsIcon} alt="Images" />
+            <Icon data-cy="expressGrader" src={additemsIcon} alt="Images" />
           </Link>
         </Tooltip>
         <Tooltip placement="bottom" title="Reports">
           <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-            <Icon src={piechartIcon} alt="Images" />
+            <Icon data-cy="reports" src={piechartIcon} alt="Images" />
           </Link>
         </Tooltip>
       </ActionsWrapper>
@@ -248,20 +248,44 @@ const TableList = ({
   const renderBulkActions = () => (
     <BulkActionsWrapper>
       <div>
-        <span>{selectedRows.length}</span>
+        <span data-cy="totalSelected">{selectedRows.length}</span>
         <span>Class(es) Selected</span>
       </div>
       <BulkActionsButtonContainer>
-        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("open")}>
+        <EduButton
+          data-cy="openButton"
+          height="30px"
+          isGhost
+          btnType="primary"
+          onClick={() => handleBulkAction("open")}
+        >
           Open
         </EduButton>
-        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("pause")}>
+        <EduButton
+          data-cy="pauseButton"
+          height="30px"
+          isGhost
+          btnType="primary"
+          onClick={() => handleBulkAction("pause")}
+        >
           Pause
         </EduButton>
-        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("close")}>
+        <EduButton
+          data-cy="closeButton"
+          height="30px"
+          isGhost
+          btnType="primary"
+          onClick={() => handleBulkAction("close")}
+        >
           Close
         </EduButton>
-        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("markAsDone")}>
+        <EduButton
+          data-cy="doneButton"
+          height="30px"
+          isGhost
+          btnType="primary"
+          onClick={() => handleBulkAction("markAsDone")}
+        >
           Mark as Done
         </EduButton>
         <Dropdown
@@ -270,7 +294,7 @@ const TableList = ({
           trigger={["hover"]}
           getPopupContainer={triggerNode => triggerNode.parentNode}
         >
-          <EduButton height="30px" isGhost btnType="primary">
+          <EduButton data-cy="moreButton" height="30px" isGhost btnType="primary">
             <IconMoreHorizontal /> More
           </EduButton>
         </Dropdown>

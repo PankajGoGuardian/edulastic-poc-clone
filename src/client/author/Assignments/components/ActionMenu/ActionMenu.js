@@ -94,7 +94,7 @@ const ActionMenu = ({
   return (
     <Container>
       <StyledMenu>
-        <Menu.Item data-cy="assign" key="add-to-folder" onClick={addItemToFolder}>
+        <Menu.Item data-cy="add-to-folder" key="add-to-folder" onClick={addItemToFolder}>
           Add to Folder
         </Menu.Item>
         <Menu.Item data-cy="remove-from-folder" key="remove-from-folder" onClick={removeItemsFromFolder}>

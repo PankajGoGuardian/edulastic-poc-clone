@@ -11,7 +11,7 @@ const Character = ({ characters, onSelect }) => (
     trigger="click"
     content={<CharacterMap characters={characters} onSelect={onSelect} style={{ zIndex: 1000 }} />}
   >
-    <ToolbarItem>á</ToolbarItem>
+    <ToolbarItem data-cy="questionSpecialCharacter">á</ToolbarItem>
   </Popover>
 );
 

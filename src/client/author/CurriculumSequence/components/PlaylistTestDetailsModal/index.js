@@ -44,7 +44,7 @@ const PlaylistTestDetailsModal = ({
       destroyOnClose
     >
       <SubHeader>
-        <BreadCrumb onClick={onClose}>
+        <BreadCrumb data-cy="back-to-playlist" onClick={onClose}>
           <i className="fa fa-angle-left" aria-hidden="true">
             &nbsp;
           </i>{" "}

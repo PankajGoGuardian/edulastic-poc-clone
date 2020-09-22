@@ -62,6 +62,7 @@ class LayoutComponent extends Component {
           <Row gutter={24} type="flex" align="middle">
             <Col md={12}>
               <SpecialCharactersOption
+                data-cy="specialCharactersOption"
                 onChange={checked => {
                   if (checked) {
                     changeItem("characterMap", []);

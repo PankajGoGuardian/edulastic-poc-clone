@@ -36,7 +36,7 @@ const WordLimitAndCount = ({ onChange, selectValue, inputValue, t }) => {
       <Row gutter={24} type="flex" align="bottom">
         <Col span={12}>
           <Label>{t("component.essayText.wordsLimitTitle")}</Label>
-          <SelectInputStyled value={selectValue} onChange={onChangeShowWordLimit}>
+          <SelectInputStyled data-cy="wordLimitOptions" value={selectValue} onChange={onChangeShowWordLimit}>
             {options.map(({ label, value }, i) => (
               <Option key={i} value={value}>
                 {label}
@@ -46,7 +46,7 @@ const WordLimitAndCount = ({ onChange, selectValue, inputValue, t }) => {
         </Col>
         <Col span={12}>
           <Label>{t("component.essayText.wordsLimitTitle")}</Label>
-          <NumberInputStyled value={inputValue} onChange={onChangeMaxWord} />
+          <NumberInputStyled data-cy="wordLimitInput" value={inputValue} onChange={onChangeMaxWord} />
         </Col>
       </Row>
     </Fragment>

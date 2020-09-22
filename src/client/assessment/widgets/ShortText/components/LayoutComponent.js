@@ -88,6 +88,7 @@ class LayoutComponent extends Component {
             </Col>
             <Col md={12}>
               <BrowserSpellcheckOption
+                data-cy="browserSpellCheckOption"
                 onChange={checked => _change("spellcheck", checked)}
                 checked={!!item.spellcheck}
               />

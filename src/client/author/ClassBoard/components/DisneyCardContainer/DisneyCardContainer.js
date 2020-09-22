@@ -80,7 +80,7 @@ class DisneyCardContainer extends Component {
   }
 
   render() {
-    const { testActivity } = this.state;
+    const { testActivity, hoverActiveStudentActive } = this.state;
     const {
       selectedStudents,
       studentSelect,
@@ -468,7 +468,7 @@ const RecentAttemptsContainer = styled.div`
   box-sizing: border-box;
   padding-right: 20px;
   background: #fff;
-  opacity: 1;
+  opacity: 0;
   transition: opacity 0.7s;
   .attempt-container {
     :hover {
@@ -477,7 +477,6 @@ const RecentAttemptsContainer = styled.div`
       box-shadow: 8px 4px 10px rgba(0, 0, 0, 0.1);
     }
   }
-
   ${CenteredStyledParaSS} {
     /**
      * to accomodate 2 digits scores & maxScore

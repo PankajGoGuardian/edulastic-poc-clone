@@ -847,7 +847,7 @@ export const getCanCloseAssignmentSelector = createSelector(
   getUserRole,
   getAssignmentStatusSelector,
   (additionalData, currentClass, userRole, status) =>
-    additionalData?.canCloseClass.includes(currentClass) &&
+    additionalData?.canCloseClass?.includes(currentClass) &&
     status !== "DONE" &&
     status !== "NOT OPEN" &&
     !(

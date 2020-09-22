@@ -9,7 +9,6 @@ import useInterval from "@use-it/interval";
 import { test as testTypes, assignmentPolicyOptions, questionType, roleuser } from "@edulastic/constants";
 import { AssessmentPlayerContext, useRealtimeV2, notification } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
-import { TokenStorage } from "@edulastic/api";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
 import { finishTestAcitivityAction, setPasswordValidateStatusAction } from "../actions/test";
@@ -63,8 +62,6 @@ const RealTimeV2HookWrapper = ({ userId, testId, regradedAssignment, regradedRea
   });
   return null;
 };
-
-const isSEB = () => window.navigator.userAgent.includes("SEB");
 
 const AssessmentContainer = ({
   view,
@@ -129,23 +126,6 @@ const AssessmentContainer = ({
   const isFirst = () => currentItem === 0;
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
-
-  const assignmentObj = assignmentById[currentAssignment];
-  useEffect(() => {
-    if (assignmentObj) {
-      if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
-        const token = TokenStorage.getAccessToken();
-        const sebUrl = `${process.env.POI_APP_API_URI.replace(
-          "http",
-          "seb"
-        )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentObj._id}/testActivity/${
-          restProps.utaId
-        }/token/${token}/settings.seb?classId=${groupId}`;
-        history.push("/home/assignments");
-        window.location.href = sebUrl;
-      }
-    }
-  }, [assignmentObj, restProps.utaId]);
 
   // start assessment
   useEffect(() => {

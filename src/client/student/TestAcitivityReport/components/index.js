@@ -110,7 +110,7 @@ const ReportListContainer = ({
           hideQuestionSelect={showGraph}
         />
         {showGraph && <ProgressGraph isCliUser={isCliUser} setCurrentItem={setCurrentItemFromGraph} />}
-        {showGraph && (
+        {showGraph && !isCliUser && (
           <FlexContainer>
             <EduButton onClick={reviewResponses} isBlue>
               Review Responses

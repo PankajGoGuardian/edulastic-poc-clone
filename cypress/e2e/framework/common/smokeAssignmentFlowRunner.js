@@ -247,6 +247,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
         sidebarPage.clickOnGrades();
         report.validateStats("1", "1/1", score, perfValue);
         report.clickOnReviewButtonButton();
+        report.getQUestionInStudentReportPage().click();
         Object.keys(updatedAttempt).forEach(queNum => {
           const attemptType = updatedAttempt[queNum];
           report.selectQuestion(queNum);

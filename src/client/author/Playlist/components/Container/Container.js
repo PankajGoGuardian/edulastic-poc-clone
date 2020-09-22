@@ -497,7 +497,7 @@ class TestList extends Component {
                     <PerfectScrollbar>
                       <ScrollBox>
                         <InputTag
-                          placeholder="Search by skill and keywords"
+                          placeholder="Search by skills and keywords"
                           onSearchInputChange={this.handleSearchInputChange}
                           value={searchString}
                           disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}

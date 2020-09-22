@@ -101,7 +101,7 @@ const ModuleRowView = props => {
     );
   } else if (!isStudent && !hideEditOptions) {
     moduleCompleteOrAssign = (
-      <StyledTag bgColor={themeColor} onClick={onClickAssign} style={moduleInlineStyle}>
+      <StyledTag data-cy="AssignWholeModule" bgColor={themeColor} onClick={onClickAssign} style={moduleInlineStyle}>
         {totalAssigned ? "ASSIGN MODULE" : "NO ASSIGNMENTS"}
       </StyledTag>
     );
@@ -133,7 +133,7 @@ const ModuleRowView = props => {
 
   return (
     <ModuleHeader>
-      <ModuleID>
+      <ModuleID data-cy="module-id">
         <span>{moduleId || moduleIndex + 1}</span>
       </ModuleID>
       <ModuleHeaderData>

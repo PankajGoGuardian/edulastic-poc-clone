@@ -385,7 +385,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
                       {student.status === "redirected" && (
-                      <AttemptDiv>
+                      <AttemptDiv data-cy="attempt-container">
                         <CenteredStyledParaSS>-&nbsp;/ {round(student.maxScore, 2) || 0}</CenteredStyledParaSS>
                         <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
                           Not Started
@@ -396,6 +396,7 @@ class DisneyCardContainer extends Component {
                       </AttemptDiv>
                           )}
                       <AttemptDiv
+                        data-cy="attempt-container"
                         className="attempt-container"
                         onClick={e => {
                               e.stopPropagation();
@@ -423,6 +424,7 @@ class DisneyCardContainer extends Component {
                       </AttemptDiv>
                       {recentAttemptsGrouped?.[student.studentId].map(attempt => (
                         <AttemptDiv
+                          data-cy="attempt-container"
                           className="attempt-container"
                           key={attempt._id || attempt.id}
                           onClick={e => {

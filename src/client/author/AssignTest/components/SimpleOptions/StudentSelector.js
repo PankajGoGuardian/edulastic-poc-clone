@@ -86,6 +86,7 @@ const StudentsSelector = ({
                         <SelectAll className="disabled">Select all</SelectAll>
                       ) : (
                         <SelectAll
+                          data-cy="selectAllButton"
                           onClick={() => {
                             setSelectedValues(allIds);
                             selectAllStudents();
@@ -98,6 +99,7 @@ const StudentsSelector = ({
                         <UnselectAll className="disabled">Unselect all</UnselectAll>
                       ) : (
                         <UnselectAll
+                          data-cy="unselectAllButton"
                           onClick={() => {
                             setSelectedValues([]);
                             unselectAllStudents();

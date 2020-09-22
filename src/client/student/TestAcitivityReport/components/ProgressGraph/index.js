@@ -4,7 +4,6 @@ import { round, get } from "lodash";
 import { connect } from "react-redux";
 import BarGraph from "./BarGraph";
 import OverallFeedback from "../OverallFeedback";
-
 import { GraphContainer, ProgressBarContainer, BarGraphContainer, GraphTitle, Progress, MessageBox } from "./styled";
 import { getTestFeedbackSelector, getItemsSelector } from "../../../sharedDucks/TestItem";
 
@@ -14,7 +13,7 @@ const ProgressGraph = ({ testActivity, questionActivities, testItems, setCurrent
 
   return (
     <Fragment>
-      <GraphContainer padding="20px" justifyContent="flex-start">
+      <GraphContainer padding="20px" justifyContent="flex-start" isCliUser={isCliUser}>
         <ProgressBarContainer style={{ textAlign: "center" }}>
           <GraphTitle>Performance Summary</GraphTitle>
           <Progress
@@ -43,8 +42,7 @@ const ProgressGraph = ({ testActivity, questionActivities, testItems, setCurrent
           </BarGraphContainer>
         )}
       </GraphContainer>
-
-      <OverallFeedback />
+      {!isCliUser && <OverallFeedback />}
     </Fragment>
   );
 };

@@ -137,7 +137,11 @@ const StudentProfileReportsFilters = ({
     };
     const _student = { ...student };
     setFilters(_filters);
-    _onGoClick({ filters: _filters, selectedStudent: _student });
+    // load page data
+    _onGoClick({
+      filters: pickBy(_filters, f => f !== "All" && !isEmpty(f)),
+      selectedStudent: _student
+    });
   }
 
   const onStudentSelect = item => {
@@ -176,7 +180,7 @@ const StudentProfileReportsFilters = ({
     };
     setFilters(obj);
     const settings = {
-      filters: obj,
+      filters: pickBy(obj, f => f !== "All" && !isEmpty(f)),
       selectedStudent: student
     };
     _onGoClick(settings);
@@ -229,7 +233,12 @@ const StudentProfileReportsFilters = ({
       </SearchField>
       <SearchField>
         <FilterLabel>Class</FilterLabel>
-        <ClassAutoComplete selectedClass={selectedClass} selectCB={setSelectedClass} />
+        <ClassAutoComplete
+          grade={filters.grade !== "All" && filters.grade}
+          subject={filters.subject !== "All" && filters.subject}
+          selectedClass={selectedClass}
+          selectCB={setSelectedClass}
+        />
       </SearchField>
       <SearchField>
         <FilterLabel>Student</FilterLabel>

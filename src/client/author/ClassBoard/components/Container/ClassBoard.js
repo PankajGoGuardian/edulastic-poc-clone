@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper, CheckboxLabel, notification, EduSwitchStyled } from "@edulastic/common";
+import { MainContentWrapper, CheckboxLabel, notification, EduSwitchStyled, LCBScrollContext } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,
@@ -109,7 +109,7 @@ class ClassBoard extends Component {
     this.changeStateTrue = this.changeStateTrue.bind(this);
     this.changeStateFalse = this.changeStateFalse.bind(this);
     this.onSelectAllChange = this.onSelectAllChange.bind(this);
-
+    this.MainContentWrapperRef = React.createRef();
     let _selectedTab = "Both";
     let questionId = null;
     if (props.location.pathname.includes("question-activity")) {
@@ -820,14 +820,15 @@ class ClassBoard extends Component {
           testActivity={testActivity}
           isCliUser={isCliUser}
         />
-        <MainContentWrapper>
-          <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb
-              breadCrumb={location?.state?.breadCrumb}
-              isCliUser={isCliUser}
-              fromUrl={location?.state?.from}
-            />
-            {!isCliUser && (
+        <MainContentWrapper ref={this.MainContentWrapperRef}>
+          <LCBScrollContext.Provider value={this.MainContentWrapperRef}>
+            <StyledFlexContainer justifyContent="space-between">
+              <ClassBreadBrumb
+                breadCrumb={location?.state?.breadCrumb}
+                isCliUser={isCliUser}
+                fromUrl={location?.state?.from}
+              />
+              {!isCliUser && (
               <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
                 <PresentationToggleSwitch groupId={classId} />
                 <BothButton
@@ -891,8 +892,8 @@ class ClassBoard extends Component {
                 </WithDisableMessage>
               </StudentButtonDiv>
             )}
-          </StyledFlexContainer>
-          {selectedTab === "Both" && (
+            </StyledFlexContainer>
+            {selectedTab === "Both" && (
             <React.Fragment>
               <GraphContainer>
                 <StyledCard bordered={false}>
@@ -1079,7 +1080,7 @@ class ClassBoard extends Component {
             </React.Fragment>
           )}
 
-          {selectedTab === "Student" && selectedStudentId && !isEmpty(testActivity) && !isEmpty(classResponse) && (
+            {selectedTab === "Student" && selectedStudentId && !isEmpty(testActivity) && !isEmpty(classResponse) && (
             <React.Fragment>
               <StudentGrapContainer>
                 <StyledCard bordered={false} paddingTop={15}>
@@ -1226,7 +1227,7 @@ class ClassBoard extends Component {
               />
             </React.Fragment>
           )}
-          {selectedTab === "questionView" &&
+            {selectedTab === "questionView" &&
             !isEmpty(testActivity) &&
             !isEmpty(classResponse) &&
             (selectedQuestion || selectedQuestion === 0) && (
@@ -1272,6 +1273,7 @@ class ClassBoard extends Component {
                 </QuestionContainer>
               </React.Fragment>
             )}
+          </LCBScrollContext.Provider>
         </MainContentWrapper>
       </div>
     );

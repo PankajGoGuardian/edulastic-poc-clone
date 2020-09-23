@@ -80,7 +80,7 @@ function* loadTestActivityReport({ payload }) {
       type: REMOVE_ANSWERS
     });
     const [test, reports] = yield all([
-      call(testsApi.getByIdMinimal, testId, { data: true, testActivityId, groupId }),
+      call(testsApi.getByIdMinimal, testId, { data: true, isReport: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
     const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);

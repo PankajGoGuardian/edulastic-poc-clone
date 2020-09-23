@@ -48,8 +48,14 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
   const toggleFeedbackView = () => {
     setFeedbackView(!feedbackView);
   };
+  const isResponseVisible =
+    redirectPolicy === assignmentPolicyOptions.showPreviousAttemptOptions.STUDENT_RESPONSE_AND_FEEDBACK;
   useEffect(() => {
-    setFeedbackView(false);
+    if (isResponseVisible) {
+      setFeedbackView(true);
+    } else {
+      setFeedbackView(false);
+    }
   }, [itemId]);
 
   const iconHeight = feedbackView ? 12 : 40;
@@ -63,8 +69,7 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
             answerIcon: <IconCorrect height={iconHeight} width={iconHeight} color={yellow} />
           }
       : { answer: "Incorrect", answerIcon: <IconWrong height={iconHeight2} width={iconHeight2} color={red} /> };
-  const isResponseVisible =
-    redirectPolicy === assignmentPolicyOptions.showPreviousAttemptOptions.STUDENT_RESPONSE_AND_FEEDBACK;
+
   const props = { correct, answerIcon, answer, isResponseVisible, prevScore, prevMaxScore, prevFeedback };
   const currentUserAnswer = userAnswers?.[itemId];
   if (!isEmpty(currentUserAnswer)) {

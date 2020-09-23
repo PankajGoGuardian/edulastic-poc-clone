@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import * as Sentry from "@sentry/browser";
+import { firestore } from "firebase";
 import { Icon, notification } from "antd";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
@@ -20,6 +22,8 @@ const getFormattedTime = currentAssignmentTime => {
   const time = `${h > 9 ? h : `0${h}`} : ${m > 9 ? m : `0${m}`} : ${s > 9 ? s : `0${s}`}`;
   return time;
 };
+
+const SYNC_INTERVAL = 30000;
 
 const firestoreCollectionName = "timedAssignmentUTAs";
 
@@ -46,6 +50,7 @@ const TimedTestTimer = ({
   const [upstreamUta, setUpstreamUta] = useState();
   const [autoSubmitPopUp, setAutoSubmitpopUp] = useState(false);
   const [currentAssignmentTime, setCurrentAssignmentTime] = useState(null);
+  const docRef = useRef(db.collection(firestoreCollectionName).doc(utaId));
 
   useEffect(() => {
     let unsubscribe = () => {};
@@ -110,10 +115,31 @@ const TimedTestTimer = ({
   }, 1000);
 
   useInterval(() => {
-    if (utaId && currentAssignmentTime && currentAssignmentTime > 0) {
-      updateUtaTime({ utaId, type: "sync", syncOffset: uta.allowedTime - currentAssignmentTime });
+    if (docRef && utaId && currentAssignmentTime && currentAssignmentTime > 0) {
+      if (docRef.current) {
+        docRef.current.get().then(snapshot => {
+          const { timeSpent = 0 } = snapshot.data();
+          const _syncOffset = uta.allowedTime - currentAssignmentTime || 0;
+          docRef.current.update({
+            lastResumed: firestore.FieldValue.serverTimestamp(),
+            timeSpent: Math.max(timeSpent, _syncOffset)
+          });
+        });
+      } else {
+        Sentry.captureException(
+          new Error(
+            `[Timed Assignment] Missing Doc Ref at time ${currentAssignmentTime}ms on uta ${utaId} and group ${groupId}`
+          )
+        );
+      }
+    } else if (currentAssignmentTime > 0) {
+      Sentry.captureException(
+        new Error(
+          `[Timed Assignment] Unable to Sync time ${currentAssignmentTime} on uta ${utaId} and group ${groupId}`
+        )
+      );
     }
-  }, 5000 * 12); // running every minute for now.
+  }, SYNC_INTERVAL);
 
   return (
     <>

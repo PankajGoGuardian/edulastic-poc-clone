@@ -517,20 +517,31 @@ class ClassBoard extends Component {
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length) {
+      return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
+    }
     const unEnrolledStudents = (selectedStudentKeys || []).filter(
       item => mapTestActivityByStudId?.[item]?.isEnrolled === false
     );
+
     if (unEnrolledStudents.length) {
       return notification({
         type: "warn",
         msg: `You can not remove unerolled students`
       });
     }
-    if (!selectedStudentKeys.length) {
-      return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
-    }
+
     const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
-    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    const isAnyBodyInProgress = selectedStudentsEntity.some(item => item.UTASTATUS === testActivityStatus.START);
+    if (isAnyBodyInProgress) {
+      return notification({
+        type: "warn",
+        msg: `In progress students can not be removed`
+      });
+    }
+    const isAnyBodyGraded = selectedStudentsEntity.some(
+      item => item.UTASTATUS === testActivityStatus.SUBMITTED && item.graded
+    );
     if (isAnyBodyGraded) {
       return notification({ type: "warn", messageKey: "youWillNotAbleToRemove" });
     }

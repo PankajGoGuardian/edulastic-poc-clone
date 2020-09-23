@@ -459,10 +459,17 @@ function* submitTest({ payload }) {
     const [classId, preventRouteChange] =
       typeof payload === "string" ? [payload] : [payload.groupId, payload.preventRouteChange];
     const testActivityInState = yield select(state => state.test && state.test.testActivityId);
-    const testActivityId = payload.testActivityId || testActivityInState;
+    let testActivityId = payload.testActivityId || testActivityInState;
     const groupId = classId || (yield select(getCurrentGroupWithAllClasses));
-    if (testActivityId === "test") {
-      return;
+
+    // if no testActivityId, check in location
+    const urlFragments = window.location.href.split("/").slice(-3);
+    if (!testActivityId && urlFragments[0] === "uta") {
+      testActivityId = urlFragments[1];
+    }
+
+    if (testActivityId === "test" || !testActivityId) {
+      throw new Error("Unable to submit the test.");
     }
     yield testActivityApi.submit(testActivityId, groupId);
     // log the details on auto submit
@@ -522,8 +529,8 @@ function* submitTest({ payload }) {
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId: "" }
       });
-      notification({ msg: err.response.data });
     }
+    notification({ msg: errorMessage || err.message || "Something went wrong!" });
   } finally {
     yield put({
       type: SET_SAVE_USER_RESPONSE,

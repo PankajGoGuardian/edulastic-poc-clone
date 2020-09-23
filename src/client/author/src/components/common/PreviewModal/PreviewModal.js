@@ -358,6 +358,14 @@ class PreviewModal extends React.Component {
 
   handleReject = () => this.setState({ isRejectMode: true });
 
+  get navigationButtonVisibile() {
+    const { item, page } = this.props;
+    if (page === "review") {
+      return true;
+    }
+    return !item?.isPassageWithQuestions;
+  }
+
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -429,7 +437,7 @@ class PreviewModal extends React.Component {
         className="noOverFlowModal"
         fullModal={fullModal}
       >
-        {!item?.isPassageWithQuestions && this.navigationBtns()}
+        {this.navigationButtonVisibile && this.navigationBtns()}
         <HeadingWrapper>
           <Title>Preview</Title>
           <FlexContainer justifyContent="flex-end" width="100%">

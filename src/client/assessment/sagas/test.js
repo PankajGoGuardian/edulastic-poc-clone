@@ -1,7 +1,7 @@
 import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal } from "antd";
-import { notification } from "@edulastic/common";
+import { notification, Effects } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from "lodash";
@@ -542,7 +542,7 @@ function* submitTest({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
-    yield takeEvery(FINISH_TEST, submitTest),
+    yield Effects.throttleAction(3000, FINISH_TEST, submitTest),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses)
   ]);
 }

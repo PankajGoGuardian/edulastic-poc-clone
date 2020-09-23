@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Document, Page } from "react-pdf";
+import { Page } from "react-pdf";
 import { Dropdown, Menu, Modal } from "antd";
 
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from "./styled";
@@ -125,11 +125,7 @@ const ThumbnailsItem = ({
       >
         <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
           <PagePreview rotate={rotate}>
-            {url && (
-              <Document file={url} renderMode="canvas">
-                <Page pageNumber={pageNumber} renderTextLayer={false} />
-              </Document>
-            )}
+            <Page pageNumber={pageNumber} renderTextLayer={false} />
           </PagePreview>
           <PageNumber active={current === index}>{index + 1}</PageNumber>
         </ThumbnailsItemWrapper>

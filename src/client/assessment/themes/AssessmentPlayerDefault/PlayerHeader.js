@@ -64,7 +64,6 @@ const PlayerHeader = ({
 }) => {
   const query = queryString.parse(location.search);
   const { cliUser } = query;
-  const hideSubmitBtn = cliUser && previewPlayer && isLast;
 
   const rightButtons = (
     <SaveAndExit
@@ -115,22 +114,20 @@ const PlayerHeader = ({
                         }}
                       />
                     </Tooltip>
-                    {!hideSubmitBtn && (
-                      <ControlBtn.Next
-                        next
-                        skin
-                        type="primary"
-                        data-cy="next"
-                        icon={isLast ? null : "right"}
-                        onClick={e => {
-                          moveToNext();
-                          e.target.blur();
-                        }}
-                      >
-                        {isLast && <IconSend />}
-                        {isLast ? "SUBMIT" : "NEXT"}
-                      </ControlBtn.Next>
-                    )}
+                    <ControlBtn.Next
+                      next
+                      skin
+                      type="primary"
+                      data-cy="next"
+                      icon={isLast ? null : "right"}
+                      onClick={e => {
+                        moveToNext();
+                        e.target.blur();
+                      }}
+                    >
+                      {isLast && <IconSend />}
+                      {isLast ? "SUBMIT" : "NEXT"}
+                    </ControlBtn.Next>
                   </>
                 )}
                 {!showSettingIcon && (

@@ -24,6 +24,7 @@ export const TabContainer = styled.div`
 export const AddButtonContainer = styled(FlexContainer)`
   margin-bottom: 0;
   margin-top: 25px;
+  flex-wrap: wrap;
 `;
 
 export const AddPassageBtnContainer = styled.div`

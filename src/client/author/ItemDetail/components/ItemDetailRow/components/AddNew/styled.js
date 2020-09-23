@@ -1,4 +1,4 @@
-import { secondaryTextColor, dashBorderColor, cardBg } from "@edulastic/colors";
+import { dashBorderColor, themeColorHoverBlue, themeColor, white, tabletWidth } from "@edulastic/colors";
 
 import { Button } from "antd";
 import styled from "styled-components";
@@ -6,9 +6,9 @@ import styled from "styled-components";
 export const Container = styled.div`
   svg {
     margin: 0px 10px;
-    fill: ${secondaryTextColor};
+    fill: ${white};
     &:hover {
-      fill: ${secondaryTextColor};
+      fill: ${white};
     }
   }
   button.ant-btn {
@@ -26,11 +26,16 @@ export const AddNewButton = styled(Button)`
   padding: 10px 25px;
   height: auto;
   border-radius: 8px;
-  background-color: ${cardBg};
-  color: ${secondaryTextColor};
+  background-color: ${themeColor};
+  color: ${white};
   font-size: 13px;
+  margin: 4px 5px;
   &:hover {
-    color: ${secondaryTextColor};
+    color: ${white};
+    background-color: ${themeColorHoverBlue};
+  }
+  @media (max-width: ${tabletWidth}) {
+    padding: 5px 15px;
   }
 `;
 

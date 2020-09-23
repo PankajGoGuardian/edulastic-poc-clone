@@ -12,6 +12,7 @@ import { IconClose, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icon
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination } from "antd";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
+import { themeColor } from "@edulastic/colors";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -54,7 +55,8 @@ import {
   BackLink,
   ContentWrapper,
   PassageNavigation,
-  AddRemoveButtonWrapper
+  AddRemoveButtonWrapper,
+  TestItemCount
 } from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
@@ -541,11 +543,11 @@ class Container extends Component {
         state: { resetView: false, testAuthoring: false, testId: state.testId }
       });
     }
-    const {regradeFlow,previousTestId,fadeSidebar} = state || {};
+    const { previousTestId, fadeSidebar } = state || {};
     history.push({
       // `/author/tests/${tId}/editItem/${item?._id}`
       pathname: isTestFlow ? `/author/tests/${testId}/editItem/${_id}` : `/author/items/${_id}/item-detail`,
-      state: { isTestFlow,previousTestId,fadeSidebar}
+      state: { isTestFlow, previousTestId, fadeSidebar }
     });
   };
 
@@ -585,6 +587,11 @@ class Container extends Component {
       : !!get(rows, [0, "tabs", "length"], 0);
     const collapseLeft = collapseDirection === "left";
     const collapseRight = collapseDirection === "right";
+
+    const passageTestItems = get(passage, "testItems", []);
+    const widgetLength = get(rows, [0, "widgets"], []).length;
+    const showAddItemButton = (!!widgetLength || passageTestItems.length > 1) && view === EDIT;
+
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.editModeContainerRef.current }}>
@@ -629,6 +636,8 @@ class Container extends Component {
                   isCollapsed={!!collapseDirection}
                   useTabsLeft={useTabsLeft}
                   passageNavigator={passageWithQuestions && this.passageNavigator}
+                  addItemToPassage={this.addItemToPassage}
+                  showAddItemButton={showAddItemButton}
                 />
               </>
             ))}
@@ -683,29 +692,39 @@ class Container extends Component {
       item.canAddMultipleItems &&
       passage &&
       view !== "metadata" && (
-        <PassageNavigation>
+        <Col>
           {passageTestItems.length > 1 && (
-            <>
-              <span className="pagination-title">PASSAGE ITEMS </span>
-              <Pagination
-                total={passageTestItems.length}
-                pageSize={1}
-                defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
-                onChange={this.goToItem}
-              />
-            </>
+            <Row>
+              <TestItemCount className="pagination-title">{passageTestItems.length} ITEMS</TestItemCount>
+            </Row>
           )}
-          {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
-            <AddRemoveButtonWrapper>
-              <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
-                - ITEM
-              </Button>
-              <Button disabled={itemDeleting} onClick={this.addItemToPassage}>
-                + ITEM
-              </Button>
-            </AddRemoveButtonWrapper>
-          )}
-        </PassageNavigation>
+          <Row>
+            <PassageNavigation>
+              {passageTestItems.length > 1 && (
+                <>
+                  <Pagination
+                    total={passageTestItems.length}
+                    pageSize={1}
+                    defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
+                    onChange={this.goToItem}
+                  />
+                </>
+              )}
+              {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
+                <AddRemoveButtonWrapper>
+                  <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
+                    <span className="fa fa-minus-circle" style={{ color: themeColor }} />
+                    &nbsp;ITEM
+                  </Button>
+                  <Button disabled={itemDeleting} onClick={this.addItemToPassage}>
+                    <span className="fa fa-plus-circle" style={{ color: themeColor }} />
+                    &nbsp;ITEM
+                  </Button>
+                </AddRemoveButtonWrapper>
+              )}
+            </PassageNavigation>
+          </Row>
+        </Col>
       )
     );
   }

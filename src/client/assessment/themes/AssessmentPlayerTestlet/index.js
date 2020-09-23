@@ -138,13 +138,7 @@ class AssessmentPlayerTestlet extends React.Component {
               finishTest={this.finishTest}
             />
           )}
-          {currentTool === 1 && (
-            <CalculatorContainer
-              changeTool={this.changeTool}
-              calculateMode={calculateMode}
-              style={{ zIndex: 10, height: "100%", width: "100%", left: 0 }}
-            />
-          )}
+          {currentTool === 1 && <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} />}
         </Container>
       </ThemeProvider>
     );

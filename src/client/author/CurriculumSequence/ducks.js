@@ -1070,7 +1070,7 @@ function* approveOrRejectSinglePlaylistSaga({ payload }) {
     notification({ type: "success", messageKey: "playlistUpdated" });
   } catch (error) {
     console.error(error);
-    notification({ messageKey: "playlistUpdateFailed" });
+    notification({ type: "error", messageKey: "playlistUpdateFailed" });
   }
 }
 
@@ -1115,7 +1115,7 @@ function* dropPlaylist({ payload }) {
     const result = yield call(groupApi.dropPlaylist, payload);
     return result;
   } catch (error) {
-    notification({ messageKey: "dropPlaylistErr" });
+    notification({ type: "error", messageKey: "dropPlaylistErr" });
     console.error(error);
   }
 }
@@ -1134,7 +1134,7 @@ function* fetchPlaylistAccessList({ payload }) {
       }
     }
   } catch (error) {
-    notification({ messageKey: "fetchClassErr" });
+    notification({ type: "error", messageKey: "fetchClassErr" });
     console.error(error);
   }
 }
@@ -1150,7 +1150,7 @@ function* fetchPlaylistMetricsSaga({ payload }) {
       yield put(updatePlaylistMetrics(result));
     }
   } catch (error) {
-    notification({ messageKey: "fetchPlaylistErr" });
+    notification({ type: "error", messageKey: "fetchPlaylistErr" });
     console.error(error);
   }
 }
@@ -1167,7 +1167,7 @@ function* fetchPlaylistInsightsSaga({ payload }) {
     }
   } catch (error) {
     yield put(onErrorPlaylistInsightsAction(error));
-    notification({ messageKey: "fetchPlaylistInsightsErr" });
+    notification({ type: "error", messageKey: "fetchPlaylistInsightsErr" });
     console.error(error);
   }
 }
@@ -1781,7 +1781,7 @@ const createAssignmentReducer = (state, { payload }) => {
 const setSelectedItemsForAssignReducer = (state, { payload }) => {
   // we pass null when we deliberatly cancel the selected item without any user feedback
   if (!payload && payload !== null) {
-    notification({ type: "info", messageKey: "noTestId" });
+    notification({ type: "error", messageKey: "noTestId" });
     state.selectedItemsForAssign.pop();
   } else if (payload === null) {
     state.selectedItemsForAssign = [];

@@ -33,9 +33,13 @@ const defaultConf = {
 const notification = options => {
   const { messageKey, msg, ...restOptions } = options;
   // get messages from localization
-  const translatedMessage =
-    msg || i18n.t(`notifications:${messageKey}.message`) || "Something went wrong! Please contact support.";
+  let translatedMessage =
+    msg || i18n.t(`notifications:${messageKey}.message`) || "Something went wrong! ";
   const translatedDescription = msg ? "" : i18n.t(`notifications:${messageKey}.description`);
+
+  if(restOptions.type === "error") {
+    translatedMessage = `${translatedMessage} Please contact Edulastic support.`;
+  }
 
   const config = {
     ...defaultConf,
@@ -44,6 +48,7 @@ const notification = options => {
     description: translatedDescription || ""
   };
 
+  
   const { type, description, showButton, buttonLink, buttonText, ...rest } = config;
 
   const handlClickActionButton = () => {};

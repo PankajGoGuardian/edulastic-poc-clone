@@ -291,8 +291,8 @@ function* receiveSchoolAdminSaga({ payload }) {
     yield put(receiveSchoolAdminSuccessAction(data));
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Unable to fetch admin info. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to fetch admin info.";
+    notification({ type: "error", msg: errorMessage });
     yield put(receiveSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -307,7 +307,7 @@ function* updateSchoolAdminSaga({ payload }) {
       data: { message: errorMessage }
     } = err.response;
     Sentry.captureException(err);
-    notification({ msg: errorMessage || "Unable to update the user. Please contact support." });
+    notification({ type: "error", msg: errorMessage || "Unable to update the user." });
     yield put(updateSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -348,8 +348,8 @@ function* createSchoolAdminSaga({ payload }) {
     notification({ type: "success", msg });
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = err.response.data.message || "Unable to create the user. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = err.response.data.message || "Unable to create the user.";
+    notification({ type: "error", msg: errorMessage });
     yield put(createSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -367,8 +367,8 @@ function* deleteSchoolAdminSaga({ payload }) {
     notification({ type: "success", messageKey: "userSucessfullyDeactivated" });
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Unable to delete school admin. Please contact support.s";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to delete school admin.";
+    notification({ type: "error", msg: errorMessage });
     yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -391,8 +391,8 @@ function* addBulkTeacherAdminSaga({ payload }) {
     yield put(addBulkTeacherAdminSuccessAction({ res, _bulkTeachers }));
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Unable to add teachers in bulk. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to add teachers in bulk.";
+    notification({ type: "error", msg: errorMessage });
     yield put(addBulkTeacherAdminErrorAction({ bulkAddError: errorMessage }));
   }
 }

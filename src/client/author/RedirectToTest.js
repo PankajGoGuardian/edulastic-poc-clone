@@ -13,7 +13,7 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
 
   const handleFailed = e => {
     console.log(e);
-    notification({ type: "info", msg: "Unable to find the associated test. Please contact support." });
+    notification({ type: "error", msg: "Unable to find the associated test." });
     history.replace("/author/test");
   };
 

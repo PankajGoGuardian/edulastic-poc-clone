@@ -90,8 +90,8 @@ function* receiveDistrictProfileSaga({ payload }) {
     const districtProfile = yield call(settingsApi.getDistrictProfile, payload);
     yield put(receiveDistrictProfileSuccessAction(districtProfile));
   } catch (err) {
-    const errorMessage = "Unable to retrieve District profile. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to retrieve District profile.";
+    notification({ type: "error", msg:errorMessage});
     yield put(receiveDistrictProfileErrorAction({ error: errorMessage }));
   }
 }
@@ -102,8 +102,8 @@ function* updateDictrictProfileSaga({ payload }) {
     yield put(updateDistrictProfileSuccessAction(updateDistrictProfile));
     notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
-    const errorMessage = "Unable to update District profile. Please contact support.s";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to update District profile.";
+    notification({ type: "error", msg:errorMessage});
     yield put(updateDistrictProfileErrorAction({ error: errorMessage }));
   }
 }
@@ -114,8 +114,8 @@ function* createDictrictProfileSaga({ payload }) {
     yield put(createDistrictProfileSuccessAction(createdDistrictProfile));
     notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
-    const errorMessage = "Unable to create District profile. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to create District profile.";
+    notification({ type: "error", msg:errorMessage});
     yield put(createDistrictProfileErrorAction({ error: errorMessage }));
   }
 }

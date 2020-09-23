@@ -209,8 +209,8 @@ function* receiveTeachersListSaga({ payload }) {
     const { result: teachersList } = yield call(userApi.fetchUsers, payload);
     yield put(receiveTeachersListSuccessAction(teachersList));
   } catch (err) {
-    const errorMessage = "Unable to retrieve user info. Please contact support.";
-    notification({msg:errorMessage});
+    const errorMessage = "Unable to retrieve user info.";
+    notification({type: "error", msg:errorMessage});
     yield put(receiveTeachersListErrorAction({ error: errorMessage }));
   }
 }
@@ -221,8 +221,8 @@ function* updateTeacherSaga({ payload }) {
     notification({ type: "success", messageKey:"teacherUpdatedSuccessfully"});
     yield put(updateTeacherSuccessAction(updateTeacherdData));
   } catch (err) {
-    const errorMessage = "Unable to update user information. Please contact support.";
-    notification({msg:errorMessage});
+    const errorMessage = "Unable to update user information.";
+    notification({type: "error", msg:errorMessage});
     yield put(updateTeacherErrorAction({ error: errorMessage }));
   }
 }
@@ -232,8 +232,8 @@ function* createTeacherSaga({ payload }) {
     const createTeacher = yield call(userApi.createUser, payload);
     yield put(createTeacherSuccessAction(createTeacher));
   } catch (err) {
-    const errorMessage = "Unable to create user. Please contact support.";
-    notification({msg:errorMessage});
+    const errorMessage = "Unable to create user.";
+    notification({type: "error", msg:errorMessage});
     yield put(createTeacherErrorAction({ error: errorMessage }));
   }
 }
@@ -247,8 +247,8 @@ function* deleteTeacherSaga({ payload }) {
 
     yield put(deleteTeacherSuccessAction(payload));
   } catch (err) {
-    const errorMessage = "Unable to remove the user. Please contact support.";
-    notification({msg:errorMessage});
+    const errorMessage = "Unable to remove the user.";
+    notification({type: "error", msg:errorMessage});
     yield put(deleteTeacherErrorAction({ deleteError: errorMessage }));
   }
 }

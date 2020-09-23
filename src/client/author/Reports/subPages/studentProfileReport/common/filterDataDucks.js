@@ -213,8 +213,8 @@ function* receiveStudentsListSaga({ payload }) {
       payload: { studentList: get(result, "data.result", []) }
     });
   } catch (err) {
-    const msg = "Unable to fetch students list. Please contact support.";
-    notification({ msg });
+    const msg = "Unable to fetch students list.";
+    notification({ type: "error", msg });
     yield put({
       type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR,
       payload: { error: msg }

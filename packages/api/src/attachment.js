@@ -16,7 +16,7 @@ const loadScratchFromUrl = dataUrl =>
     url: dataUrl,
     method: "get"
   }).catch(() => {
-    notification({ messageKey: "unableToRetrieve" });
+    notification({ type: "error", messageKey: "unableToRetrieve" });
   });
 
 const loadAttachment = attachmentId =>

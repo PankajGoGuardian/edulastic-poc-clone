@@ -389,14 +389,13 @@ const answerValidator = {
     return hasEmpty;
   },
   [questionType.CLASSIFICATION](answers) {
-    const isEmptyArray = arr => arr.length === 0;
     const values = answers.map(ans => ans.value);
-    // At least one column should have correct answer
+    // all drop column area can not be empty at the same time.
     const hasEmpty =
       !values.length ||
       values.some(val => {
         const responseIdArrays = Object.values(val);
-        return responseIdArrays.length ? responseIdArrays.every(isEmptyArray) : true;
+        return responseIdArrays.length ? responseIdArrays.some(responses => isEmpty(responses)) : true;
       });
     return hasEmpty;
   },

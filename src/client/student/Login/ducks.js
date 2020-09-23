@@ -629,6 +629,13 @@ function* login({ payload }) {
         yield put(receiveRecentPlayListsAction());
       }
 
+      if (user.role == roleuser.TEACHER && user?.orgData?.districtIds?.length > 1) {
+        Sentry.withScope(scope => {
+          scope.setExtra("userId", user._id);
+          Sentry.captureException(new Error("Logged in teacher is a part of multiple districts."));
+        });
+      }
+
       yield call(segmentApi.analyticsIdentify, { user });
 
       const redirectUrl = yield call(getValidRedirectRouteByRole, localStorage.getItem("loginRedirectUrl"), user);
@@ -906,6 +913,12 @@ export function* fetchUser({ payload }) {
     yield put(receiveLastPlayListAction());
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction());
+    }
+    if (user.role == roleuser.TEACHER && user?.orgData?.districtIds?.length > 1) {
+      Sentry.withScope(scope => {
+        scope.setExtra("userId", user._id);
+        Sentry.captureException(new Error("Logged in teacher is a part of multiple districts."));
+      });
     }
   } catch (error) {
     console.log("err", error, error);

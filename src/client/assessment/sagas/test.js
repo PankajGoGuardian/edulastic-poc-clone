@@ -82,6 +82,11 @@ function* loadTest({ payload }) {
     sharedType = ""
   } = payload;
   try {
+    if (!preview && !testActivityId) {
+      // we don't have a testActivityId for non-preview, lets throw error to short circuit
+      throw new Error("Unable to load the test. Please contact Edulastic Support");
+    }
+
     // if the assessment player is loaded for showing student work
     // we shouldn't be removing evaluation and answers from store.
     if (!isShowStudentWork) {
@@ -125,7 +130,8 @@ function* loadTest({ payload }) {
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {})
         }) // when preview(author side) use normal non cached api
       : call(testsApi.getPublicTest, testId, { sharedType });
-    const [testActivity] = yield all([getTestActivity]);
+    const _response = yield all([getTestActivity]);
+    const testActivity = _response?.[0] || {};
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
@@ -418,20 +424,23 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_ERROR,
       payload: err
     });
+
+    if (preview) {
+      notification({ messageKey: "youCanNoLongerUse" });
+      return Modal.destroyAll();
+    }
+
+    let messageKey = "failedLoadingTest";
+    const userRole = yield select(getUserRole);
+
     if (err.status) {
-      if (preview) {
-        notification({ messageKey: "youCanNoLongerUse" });
-        return Modal.destroyAll();
-      }
-      const userRole = yield select(getUserRole);
-      let messageKey = "failedLoadingTest";
       if (err.status === 400) {
         messageKey = "invalidAction";
       }
-      if (userRole === roleuser.STUDENT) {
-        notification({ messageKey });
-        return yield put(push("/home/assignments"));
-      }
+    }
+    if (userRole === roleuser.STUDENT) {
+      notification({ messageKey });
+      return yield put(push("/home/assignments"));
     }
   }
 }

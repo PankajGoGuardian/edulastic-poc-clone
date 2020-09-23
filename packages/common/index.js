@@ -109,7 +109,8 @@ export {
 // contexts
 export { default as AnswerContext } from "./src/contexts/AnswerContext";
 export { default as ScratchPadContext } from "./src/contexts/ScratchPadContext";
-export { default as ScrollContext } from "./src/contexts/ScrollContext";
+export { default as ScrollContext } from "./src/contexts/ScrollContext"
+export { default as LCBScrollContext } from "./src/contexts/LCBScrollContext";
 export { default as HorizontalScrollContext } from "./src/contexts/HorizontalScrollContext";
 export { default as RefContext } from "./src/contexts/RefContext";
 export { default as ItemLevelContext } from "./src/contexts/ItemLevelContext";

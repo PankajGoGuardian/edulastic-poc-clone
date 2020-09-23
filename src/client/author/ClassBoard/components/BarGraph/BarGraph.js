@@ -17,7 +17,7 @@ import {
 } from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import memoizeOne from "memoize-one";
-import { scrollTo, Legends, LegendContainer,notification } from "@edulastic/common";
+import { scrollTo, Legends, LegendContainer,notification, LCBScrollContext } from "@edulastic/common";
 import { MainDiv, StyledCustomTooltip, OnScreenNotification } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
 import { getAggregateByQuestion, getItemSummary, getHasRandomQuestionselector } from "../../ducks";
@@ -64,7 +64,7 @@ const bars = {
 /**
  * @param {string} qid
  */
-const _scrollTo = qid => {
+const _scrollTo = (qid,el) => {
   /**
    * when lcb-student-sticky-bar is made sticky padding 10px is added, before there is no padding
    * 2 because the position of sticky bar changes when it is made sticky,
@@ -73,7 +73,8 @@ const _scrollTo = qid => {
    */
   scrollTo(
     document.querySelector(`.question-container-id-${qid}`),
-    (document.querySelector(".lcb-student-sticky-bar")?.offsetHeight + 10) * 2 || 0
+    (document.querySelector(".lcb-student-sticky-bar")?.offsetHeight + 10) * 2 || 0,
+    el
   );
 };
 const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion);
@@ -92,6 +93,8 @@ const RectangleBar = ({ fill, x, y, width, height, dataKey, ...rest }) => {
 
 class BarGraph extends Component {
   isMobile = () => window.innerWidth < 480;
+
+  static contextType = LCBScrollContext;
 
   constructor(props) {
     super(props);
@@ -279,7 +282,7 @@ class BarGraph extends Component {
     }
     if (studentview) {
       const { qid } = data;
-      return _scrollTo(qid);
+      return _scrollTo(qid, this.context.current);
     }
     if (hasRandomQuestions) {
       return notification({ messageKey: "theQuestionForStudentsDynamicallySelectedAsResult" });

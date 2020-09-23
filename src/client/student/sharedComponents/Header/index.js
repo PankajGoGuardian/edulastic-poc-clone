@@ -22,7 +22,7 @@ const Header = ({
   showExit = false,
   showReviewResponses,
   reviewResponses,
-  history,
+  onExit,
   ...rest
 }) => (
   <MainHeader Icon={titleIcon} headingText={titleText} headingSubContent={titleSubContent} {...rest}>
@@ -36,15 +36,7 @@ const Header = ({
         Review Responses
       </EduButton>
     )}
-    {showExit && !showReviewResponses && (
-      <EduButton
-        onClick={() => {
-          history.push("/home/grades");
-        }}
-      >
-        EXIT
-      </EduButton>
-    )}
+    {showExit && !showReviewResponses && <EduButton onClick={onExit}>EXIT</EduButton>}
   </MainHeader>
 );
 
@@ -52,7 +44,14 @@ Header.propTypes = {
   t: PropTypes.func.isRequired,
   titleText: PropTypes.string.isRequired,
   classSelect: PropTypes.bool.isRequired,
-  showActiveClass: PropTypes.bool.isRequired
+  showActiveClass: PropTypes.bool.isRequired,
+  onExit: PropTypes.func,
+  reviewResponses: PropTypes.func
+};
+
+Header.defaultProps = {
+  onExit: () => null,
+  reviewResponses: () => null
 };
 
 const enhance = compose(

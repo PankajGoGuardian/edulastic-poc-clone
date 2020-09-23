@@ -5,6 +5,7 @@ import evaluationSaga from "./evaluation";
 import viewSaga from "./view";
 import assessmentSaga from "./assessment";
 import testUserWorkSaga from "./testUserWork";
+import { previewTestsSaga } from "../sharedDucks/previewTest";
 
 const assessmentSagas = [
   questionSaga(),
@@ -13,7 +14,8 @@ const assessmentSagas = [
   evaluationSaga(),
   viewSaga(),
   assessmentSaga(),
-  testUserWorkSaga()
+  testUserWorkSaga(),
+  previewTestsSaga()
 ];
 
 export default assessmentSagas;

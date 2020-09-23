@@ -70,7 +70,8 @@ import {
   testActivtyLoadingSelector,
   getActiveAssignedStudents,
   getDisableMarkAsAbsentSelector,
-  getLCBStudentsList
+  getLCBStudentsList,
+  getEnrollmentStatus
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -707,7 +708,7 @@ class ClassBoard extends Component {
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
 
     const existingStudents = testActivity
-      .filter(item => !item.isUnAssigned && item.enrollmentStatus === 1)
+      .filter(item => item.isAssigned && item.enrollmentStatus === 1)
       .map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
@@ -1299,7 +1300,7 @@ const enhance = compose(
       disableMarkSubmitted: getDisableMarkAsSubmittedSelector(state),
       disableMarkAbsent: getDisableMarkAsAbsentSelector(state),
       assignmentStatus: getAssignmentStatusSelector(state),
-      enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
+      enrollmentStatus: getEnrollmentStatus(state),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isItemsVisible: isItemVisibiltySelector(state),
       removedStudents: removedStudentsSelector(state),

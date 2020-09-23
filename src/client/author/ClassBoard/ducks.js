@@ -686,9 +686,20 @@ export const removedStudentsSelector = createSelector(
       .map(({ studentId }) => studentId)
 );
 
-export const getEnrollmentStatus = createSelector(
+export const getAllActivities = createSelector(
   stateTestActivitySelector,
-  state => get(state, "data.enrollmentStatus", {})
+  state => state.entities
+);
+
+export const getEnrollmentStatus = createSelector(
+  getAllActivities,
+  entities => {
+    const enrollmentStatus = {};
+    for (const entity of entities) {
+      enrollmentStatus[entity.studentId] = entity.isEnrolled ? 1 : 0;
+    }
+    return enrollmentStatus;
+  }
 );
 
 export const getIsShowAllStudents = createSelector(
@@ -702,17 +713,16 @@ export const getAllStudentsList = createSelector(
 );
 
 export const getTestActivitySelector = createSelector(
-  stateTestActivitySelector,
+  getAllActivities,
   getEnrollmentStatus,
   getIsShowAllStudents,
-  (state, enrollments, showAll) =>
-    state.entities
+  (entities, enrollments, showAll) =>
+    entities
       .map(item => ({
         ...item,
-        enrollmentStatus: enrollments[item.studentId],
-        isUnAssigned: !item.isAssigned
+        enrollmentStatus: enrollments[item.studentId]
       }))
-      .filter(item => (!item.isUnAssigned && item.enrollmentStatus === 1) || showAll)
+      .filter(item => (item.isAssigned && item.isEnrolled) || showAll)
 );
 
 export const getLCBStudentsList = createSelector(

@@ -443,6 +443,16 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
+    const inActiveStudentsSelected = (selectedStudentKeys || []).filter(
+      item =>
+        mapTestActivityByStudId?.[item]?.isAssigned === false || mapTestActivityByStudId?.[item]?.isEnrolled === false
+    );
+    if (inActiveStudentsSelected.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not mark removed or unerolled students as submit`
+      });
+    }
     const selectedSubmittedStudents = (selectedStudentKeys || []).filter(
       item =>
         mapTestActivityByStudId?.[item]?.status === "submitted" || mapTestActivityByStudId?.[item]?.status === "graded"
@@ -470,6 +480,16 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudentToMarkAbsent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
+    const inActiveStudentsSelected = (selectedStudentKeys || []).filter(
+      item =>
+        mapTestActivityByStudId?.[item]?.isAssigned === false || mapTestActivityByStudId?.[item]?.isEnrolled === false
+    );
+    if (inActiveStudentsSelected.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not mark removed or unerolled students as absent`
+      });
+    }
     const selectedNotStartedStudents = (selectedStudentKeys || []).filter(studentId => {
       const { UTASTATUS } = mapTestActivityByStudId?.[studentId] || {};
       return UTASTATUS === testActivityStatus.NOT_STARTED;
@@ -495,7 +515,17 @@ class ClassBoard extends Component {
     if (isRemovedStudentsSelected) {
       return notification({ type: "warn", msg: "Cannot remove unassigned students" });
     }
+    const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedStudentKeys = Object.keys(selectedStudents);
+    const unEnrolledStudents = (selectedStudentKeys || []).filter(
+      item => mapTestActivityByStudId?.[item]?.isEnrolled === false
+    );
+    if (unEnrolledStudents.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not remove unerolled students`
+      });
+    }
     if (!selectedStudentKeys.length) {
       return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
     }

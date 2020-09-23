@@ -532,7 +532,7 @@
     "description": ""
   },
   "youCantRedirectRemoved": {
-    "message": "You can't redirect for the removed student(s).",
+    "message": "Please use the Add Students option in More menu to add the student to the assignment.",
     "description": ""
   },
   "pleaseSelectYourPreferedStartDate": {

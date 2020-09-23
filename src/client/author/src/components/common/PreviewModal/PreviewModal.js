@@ -429,7 +429,7 @@ class PreviewModal extends React.Component {
         className="noOverFlowModal"
         fullModal={fullModal}
       >
-        {this.navigationBtns()}
+        {!item?.isPassageWithQuestions && this.navigationBtns()}
         <HeadingWrapper>
           <Title>Preview</Title>
           <FlexContainer justifyContent="flex-end" width="100%">

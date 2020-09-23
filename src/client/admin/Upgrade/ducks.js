@@ -302,7 +302,7 @@ function* getSubscriptionSaga({ payload }) {
     const subscription = yield call(getSubscription, payload);
     yield put(manageSubscriptionsByUserSegments.actions.setSubsciptions(subscription))
   } catch (err) {
-    yield call(notification, { type: "error", msg: "Failed to load subscriptions" });
+    yield call(notification, { type: "error", msg: "Failed to load subscriptions." });
   }
 }
 

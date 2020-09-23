@@ -327,8 +327,8 @@ function* receiveQuestionSaga({ payload }) {
       payload: { entity }
     });
   } catch (err) {
-    const errorMessage = "Unable to fetch question info. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to fetch question info.";
+    notification({ type: "error", msg: errorMessage });
     yield put({
       type: RECEIVE_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -624,11 +624,11 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = "Unable to save the question. Please contact support.";
+    const errorMessage = "Unable to save the question.";
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false));
     }
-    notification({ messageKey: "saveQuestionFailing" });
+    notification({ type: "error", messageKey: "saveQuestionFailing" });
     yield put({
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -838,8 +838,8 @@ function* loadQuestionSaga({ payload }) {
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (e) {
     Sentry.captureException(e);
-    const errorMessage = "Unable to load the question. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to load the question.";
+    notification({ type: "error", msg: errorMessage });
   }
 }
 

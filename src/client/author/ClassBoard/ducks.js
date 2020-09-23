@@ -78,8 +78,8 @@ function* receiveGradeBookSaga({ payload }) {
       payload: { entities }
     });
   } catch (err) {
-    const msg = "Unable to retrieve gradebook activity. Please contact support.";
-    notification({ messageKey: "receiveTestFailing" });
+    const msg = "Unable to retrieve gradebook activity.";
+    notification({ type: "error", messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_GRADEBOOK_ERROR,
       payload: { error: msg }
@@ -182,8 +182,8 @@ export function* receiveTestActivitySaga({ payload }) {
     });
   } catch (err) {
     console.log("err is", err);
-    const msg = "Unable to retrieve test activity. Please contact support.";
-    notification({ messageKey: "receiveTestFailing" });
+    const msg = "Unable to retrieve test activity.";
+    notification({ type: "error", messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_TESTACTIVITY_ERROR,
       payload: { error: msg }

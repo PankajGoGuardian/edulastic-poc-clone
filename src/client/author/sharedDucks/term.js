@@ -23,8 +23,8 @@ function* receiveTermSaga({ payload }) {
       payload: term
     });
   } catch (err) {
-    const errorMessage = "Unable to retrieve the term info. Please contact support.";
-    notification({msg:errorMessage});
+    const errorMessage = "Unable to retrieve the term info.";
+    notification({type: "error", msg:errorMessage});
     yield put({
       type: RECEIVE_TERM_ERROR,
       payload: { error: errorMessage }
@@ -43,8 +43,8 @@ function* createTermSaga({ payload }) {
       payload: { data: createTerm, key }
     });
   } catch (err) {
-    const errorMessage = "Unable to create the term. Please contact support.";
-    notification({msg:errorMessage});
+    const errorMessage = "Unable to create the term.";
+    notification({type: "error", msg:errorMessage});
     yield put({
       type: CREATE_TERM_ERROR,
       payload: { createError: errorMessage }
@@ -62,8 +62,8 @@ function* updateTermSaga({ payload }) {
       payload: updateTerm
     });
   } catch (err) {
-    const errorMessage = "Unable to update the term. Please contact support.";
-    notification({msg:errorMessage});
+    const errorMessage = "Unable to update the term.";
+    notification({type: "error", msg:errorMessage});
     yield put({
       type: UPDATE_TERM_ERROR,
       payload: { updateError: errorMessage }

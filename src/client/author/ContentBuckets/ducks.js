@@ -97,7 +97,7 @@ function* receiveBucketsSaga({ payload }) {
     yield put(receiveBucketsSuccessAction(buckets));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketsLoadErrorMsg`);
-    notification({ msg: errorMessage });
+    notification({ type: "error", msg: errorMessage });
     yield put(receiveBucketsErrorAction({ error: errorMessage }));
   }
 }
@@ -109,7 +109,7 @@ function* updateBucketSaga({ payload }) {
     yield put(updateBucketSuccessAction(updateBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateErrorMsg`);
-    notification({ msg: errorMessage });
+    notification({ type: "error", msg: errorMessage });
     yield put(updateBucketErrorAction({ error: errorMessage }));
   }
 }
@@ -121,7 +121,7 @@ function* createBucketSaga({ payload }) {
     yield put(createBucketSuccessAction(createBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketCreateErrorMsg`);
-    notification({ msg: errorMessage });
+    notification({ type: "error", msg: errorMessage });
     yield put(createBucketErrorAction({ error: errorMessage }));
   }
 }

@@ -209,8 +209,8 @@ function* receiveDistrictAdminSaga({ payload }) {
     const { result: districtAdmin } = yield call(userApi.fetchUsers, payload);
     yield put(receiveDistrictAdminSuccessAction(districtAdmin));
   } catch (err) {
-    const errorMessage = "Unable to retrieve District Admin info. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to retrieve District Admin info.";
+    notification({ type: "error", msg:errorMessage});
     yield put(receiveDistrictAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -221,8 +221,8 @@ function* updateDistrictAdminSaga({ payload }) {
     notification({ type: "success", messageKey:"districtAdminUpdated"});
     yield put(updateDistrictAdminSuccessAction(updateDistrictAdmin));
   } catch (err) {
-    const errorMessage = "Unable to update District Admin. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to update District Admin.";
+    notification({ type: "error", msg:errorMessage});
     yield put(updateDistrictAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -232,8 +232,8 @@ function* createDistrictAdminSaga({ payload }) {
     const createDistrictAdmin = yield call(userApi.createUser, payload);
     yield put(createDistrictAdminSuccessAction(createDistrictAdmin));
   } catch (err) {
-    const errorMessage = "Unable to create District Admin. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to create District Admin.";
+    notification({ type: "error", msg:errorMessage});
     yield put(createDistrictAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -246,8 +246,8 @@ function* deleteDistrictAdminSaga({ payload }) {
     notification({ type: "success", msg:result});
     yield put(deleteDistrictAdminSuccessAction(payload));
   } catch (err) {
-    const errorMessage = "Unable to delete District Admin. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to delete District Admin.";
+    notification({ type: "error", msg:errorMessage});
     yield put(deleteDistrictAdminErrorAction({ deleteError: errorMessage }));
   }
 }

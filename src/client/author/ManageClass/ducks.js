@@ -579,7 +579,7 @@ function* changeUserTTSRequest({ payload }) {
     notification({ type: "success", msg });
   } catch (error) {
     Sentry.captureException(error);
-    notification({ messageKey: "errorOccurredWhileEnablingOrDisablingTextToSpeech" });
+    notification({ type: "error", messageKey: "errorOccurredWhileEnablingOrDisablingTextToSpeech" });
   }
 }
 

@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import { Progress as AntProgress } from "antd";
 import { FlexContainer, LegendContainer, EduButton } from "@edulastic/common";
-import { white, mobileWidth, mobileWidthLarge, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import {
+  white,
+  mobileWidth,
+  mobileWidthLarge,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+  title
+} from "@edulastic/colors";
 import { CustomTooltip } from "./CustomTooltip";
 
 export const GraphContainer = styled(FlexContainer)`
@@ -174,5 +181,27 @@ export const MessageBox = styled.div`
     border-right-width: 12px;
     border-left-width: 12px;
     border-bottom-width: 10px;
+  }
+`;
+
+export const Info = styled.div`
+  width: 100%;
+  margin-top: 25px;
+  text-align: left;
+`;
+
+export const InfoRow = styled.div`
+  label {
+    width: 100px;
+    font-size: 12px;
+    display: inline-block;
+    color: #aaaaaa;
+    font-weight: 600;
+  }
+  span {
+    font-size: 13px;
+    display: inline-block;
+    color: ${title};
+    font-weight: 600;
   }
 `;

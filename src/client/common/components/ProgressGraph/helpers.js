@@ -55,6 +55,7 @@ export const convertData = questionActivities => {
       const { _id, testItemId, score, maxScore, graded, qLabel, timeSpent, pendingEvaluation } = activity;
       let { notStarted, skipped } = activity;
       let skippedx = false;
+
       const questionActivity = {
         qid: _id,
         index,

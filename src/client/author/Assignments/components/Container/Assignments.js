@@ -262,6 +262,7 @@ class Assignments extends Component {
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
           error={error}
+          showStudentPerformance
           closeTestPreviewModal={this.hidePreviewModal}
           currentAssignmentId={currentAssignmentId}
           currentAssignmentClass={currentAssignmentClass}

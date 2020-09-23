@@ -580,6 +580,7 @@ class Review extends PureComponent {
           isModalVisible={isTestPreviewModalVisible}
           testId={currentTestId}
           test={test}
+          showStudentPerformance
           closeTestPreviewModal={this.hidePreviewModal}
         />
       </MainContentWrapper>

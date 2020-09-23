@@ -26,6 +26,7 @@ const AssessmentPlayer = ({
   test,
   LCBPreviewModal,
   closeTestPreviewModal,
+  submitPreviewTest,
   isShowStudentWork = false,
   showTools,
   startAssessment,
@@ -112,6 +113,7 @@ const AssessmentPlayer = ({
     return (
       <ThemeContainer
         closeTestPreviewModal={closeTestPreviewModal}
+        submitPreviewTest={submitPreviewTest}
         LCBPreviewModal={LCBPreviewModal}
         test={test}
         defaultAP

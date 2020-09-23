@@ -5,7 +5,7 @@ import { get } from "lodash";
 import PropTypes from "prop-types";
 import { test as testConstants } from "@edulastic/constants";
 import styled from "styled-components";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -14,13 +14,20 @@ import { getQuestionsArraySelector, getQuestionsSelector } from "../../../author
 import { getTestEntitySelector } from "../../../author/TestPage/ducks";
 // components
 import TestAcivityHeader from "../../sharedComponents/Header";
-import { getCurrentItemSelector, setCurrentItemAction } from "../../sharedDucks/TestItem";
+
+import {
+  getCurrentItemSelector,
+  setCurrentItemAction,
+  getItemsSelector,
+  getTestFeedbackSelector
+} from "../../sharedDucks/TestItem";
 import MainContainer from "../../styled/mainContainer";
 // actions
 import { loadTestActivityReportAction } from "../ducks";
 import ReportListContent from "./Container";
 import TestActivitySubHeader from "./SubHeader";
-import ProgressGraph from "./ProgressGraph";
+import ProgressGraph from "../../../common/components/ProgressGraph";
+import OverallFeedback from "./OverallFeedback";
 
 const { releaseGradeLabels } = testConstants;
 const continueBtns = [releaseGradeLabels.WITH_ANSWERS, releaseGradeLabels.WITH_RESPONSE];
@@ -36,7 +43,10 @@ const ReportListContainer = ({
   testFeedback,
   clearUserWork,
   history,
-  isCliUser
+  isCliUser,
+  testItems,
+  testActivity,
+  questionActivities
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
   const [showGraph, setShowGraph] = useState(true);
@@ -57,6 +67,10 @@ const ReportListContainer = ({
   const showSummaryView = () => {
     setCurrentItem(0);
     setShowGraph(true);
+  };
+
+  const handleExit = () => {
+    history.push("/home/grades");
   };
 
   useEffect(() => {
@@ -95,7 +109,7 @@ const ReportListContainer = ({
         isDocBased={isDocBased}
         titleIcon={IconReport}
         titleText={test?.title || ""}
-        history={history}
+        onExit={handleExit}
         showExit={!isCliUser}
         showReviewResponses={showReviewResponses}
         reviewResponses={reviewResponses}
@@ -109,8 +123,18 @@ const ReportListContainer = ({
           isCliUser={isCliUser}
           hideQuestionSelect={showGraph}
         />
-        {showGraph && <ProgressGraph isCliUser={isCliUser} setCurrentItem={setCurrentItemFromGraph} />}
         {showGraph && !isCliUser && (
+          <Fragment>
+            <ProgressGraph
+              onClickBar={setCurrentItemFromGraph}
+              testActivity={testActivity}
+              questionActivities={questionActivities}
+              testItems={testItems}
+            />
+            <OverallFeedback />
+          </Fragment>
+        )}
+        {showGraph && (
           <FlexContainer>
             <EduButton onClick={reviewResponses} isBlue>
               Review Responses
@@ -134,7 +158,10 @@ const enhance = compose(
       questions: getQuestionsArraySelector(state),
       questionsById: getQuestionsSelector(state),
       testTitle: get(state, ["tests", "entity", "title"], ""),
-      isCliUser: get(state, "user.isCliUser", false)
+      isCliUser: get(state, "user.isCliUser", false),
+      testItems: getItemsSelector(state),
+      questionActivities: getTestFeedbackSelector(state),
+      testActivity: get(state, `[studentReport][testActivity]`, {})
     }),
     {
       setCurrentItem: setCurrentItemAction,

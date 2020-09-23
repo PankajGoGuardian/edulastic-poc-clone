@@ -31,6 +31,7 @@ import {
   regradedRealtimeAssignmentAction,
   clearRegradeAssignmentAction
 } from "../../student/sharedDucks/AssignmentModule/ducks";
+import { evaluateCurrentAnswersForPreviewAction } from "../sharedDucks/previewTest";
 import { userWorkSelector } from "../../student/sharedDucks/TestItem";
 import { hasUserWork } from "../utils/answer";
 
@@ -91,6 +92,7 @@ const AssessmentContainer = ({
   preview,
   LCBPreviewModal,
   closeTestPreviewModal,
+  submitPreviewTest,
   testletType,
   testletState,
   testType,
@@ -113,6 +115,7 @@ const AssessmentContainer = ({
   userId,
   regradedAssignment,
   clearRegradeAssignment,
+  evaluateForPreview,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -141,8 +144,6 @@ const AssessmentContainer = ({
   }, [loading]);
 
   useEffect(() => {
-    lastTime.current = Date.now();
-    window.localStorage.assessmentLastTime = lastTime.current;
     setCurrentItem(Number(qid));
     if (enableMagnifier) {
       updateTestPlayer({ enableMagnifier: false });
@@ -150,6 +151,8 @@ const AssessmentContainer = ({
   }, [qid]);
 
   useEffect(() => {
+    lastTime.current = Date.now();
+    window.localStorage.assessmentLastTime = lastTime.current;
     gotoItem(currentItem);
   }, [currentItem]);
 
@@ -295,6 +298,8 @@ const AssessmentContainer = ({
     if (preview) {
       hideHints();
       setCurrentItem(index);
+      const timeSpent = Date.now() - lastTime.current;
+      evaluateForPreview({ currentItem, timeSpent });
     } else {
       const unansweredQs = getUnAnsweredQuestions();
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length || index < currentItem) {
@@ -322,14 +327,15 @@ const AssessmentContainer = ({
       gotoQuestion(Number(currentItem) + 1, needsToProceed, "next");
     }
 
+    const timeSpent = Date.now() - lastTime.current;
+
     if (isLast() && preview && !demo) {
-      closeTestPreviewModal();
+      evaluateForPreview({ currentItem, timeSpent, callback: submitPreviewTest });
     }
 
     if ((isLast() || value === "SUBMIT") && !preview) {
       const unansweredQs = getUnAnsweredQuestions();
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
-        const timeSpent = Date.now() - lastTime.current;
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
           urlToGo: `${url}/${"test-summary"}`,
           locState: { ...history?.location?.state, fromSummary: true }
@@ -594,7 +600,8 @@ const enhance = compose(
       updateTestPlayer: updateTestPlayerAction,
       hideHints: hideHintsAction,
       regradedRealtimeAssignment: regradedRealtimeAssignmentAction,
-      clearRegradeAssignment: clearRegradeAssignmentAction
+      clearRegradeAssignment: clearRegradeAssignmentAction,
+      evaluateForPreview: evaluateCurrentAnswersForPreviewAction
     }
   )
 );

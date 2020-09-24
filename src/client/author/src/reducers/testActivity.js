@@ -1,5 +1,5 @@
 import { createAction } from "redux-starter-kit";
-import { uniqBy, keyBy, cloneDeep } from "lodash";
+import { uniqBy, keyBy, cloneDeep,values } from "lodash";
 import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
@@ -19,7 +19,8 @@ import {
   UPDATE_SUBMITTED_STUDENTS,
   TOGGLE_VIEW_PASSWORD_MODAL,
   UPDATE_PASSWORD_DETAILS,
-  RECEIVE_STUDENT_RESPONSE_SUCCESS
+  RECEIVE_STUDENT_RESPONSE_SUCCESS,
+  RESPONSE_ENTRY_SCORE_SUCCESS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid, getResponseTobeDisplayed } from "../../ClassBoard/Transformer";
 import { createFakeData } from "../../ClassBoard/utils";
@@ -122,6 +123,20 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         allTestActivitiesForStudent: payload
       };
+    case RESPONSE_ENTRY_SCORE_SUCCESS:
+      return produce(state,_st => {
+        const userId = payload?.testActivity?.userId;
+        const testActivityId = payload?.testActivity?._id;
+        const attempt = _st.data.recentTestActivitiesGrouped[userId].find(x => x._id === testActivityId);
+        if(attempt){
+          if(payload.testActivity?.score){
+            attempt.score = payload.testActivity?.score;
+          }
+          if(payload.testActivity?.maxScore){
+            attempt.maxScore = payload.testActivity?.maxScore;
+          }
+        }
+      });
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD: {
       const entity = payload;
       nextState = produce(state, _st => {
@@ -495,7 +510,7 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities: state.entities.map(entity => {
-          if (payload.testActivity.userId === entity.studentId) {
+          if (payload.testActivity.userId === entity.studentId && entity.testActivityId === payload.testActivity._id) {
             return {
               ...entity,
               graded: payload?.testActivity?.graded || entity.graded,

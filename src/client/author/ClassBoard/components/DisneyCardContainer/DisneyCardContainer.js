@@ -80,7 +80,7 @@ class DisneyCardContainer extends Component {
   }
 
   render() {
-    const { testActivity, hoverActiveStudentActive } = this.state;
+    const { testActivity } = this.state;
     const {
       selectedStudents,
       studentSelect,
@@ -126,7 +126,6 @@ class DisneyCardContainer extends Component {
           color: "",
           status: ""
         };
-
         let hasUsedScratchPad = false;
         student?.questionActivities.every(questionActivity => {
           // check if this breaks after we find a true value.
@@ -164,9 +163,9 @@ class DisneyCardContainer extends Component {
             return <span style={{ marginTop: "-3px" }}>-</span>;
           }
           if (attemptScore >= 0) {
-            return <span>{round(attemptScore) || 0}</span>;
+            return <span>{round(attemptScore,2) || 0}</span>;
           }
-          return <span>{round(student.score || student._score, 2) || 0}</span>;
+          return <span>{round(student.score, 2) || 0}</span>;
         };
 
         const currentTestActivity = testActivities?.find(attempt => student.studentId == attempt.userId) || {};
@@ -407,14 +406,14 @@ class DisneyCardContainer extends Component {
                                 (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
                               );
                             }}
-                          >
-                            <CenteredStyledParaSS>
-                              {score(currentTestActivity.status, currentTestActivity.score)}&nbsp;/{" "}
-                              {round(student.maxScore, 2) || 0}
-                            </CenteredStyledParaSS>
-                            <StyledParaSSS>
-                              {student.score > 0
-                                ? round((currentTestActivity.score / currentTestActivity.maxScore) * 100, 2)
+                      >
+                        <CenteredStyledParaSS>
+                          {score(currentTestActivity.status, student.score)}&nbsp;/{" "}
+                          {round(student.maxScore, 2) || 0}
+                        </CenteredStyledParaSS>
+                        <StyledParaSSS>
+                          {student.score > 0
+                                ? round((student.score / student.maxScore) * 100, 2)
                                 : 0}
                           %
                         </StyledParaSSS>
@@ -431,20 +430,20 @@ class DisneyCardContainer extends Component {
                                 e.stopPropagation();
                                 viewResponses(e, attempt.userId, attempt._id, attempt.number);
                               }}
-                            >
-                              <CenteredStyledParaSS>
-                                {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}
-                              </CenteredStyledParaSS>
-                              <StyledParaSSS>
-                                {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
-                              </StyledParaSSS>
-                              <p style={{ fontSize: "12px" }}>Attempt {attempt.number}</p>
-                            </AttemptDiv>
+                        >
+                          <CenteredStyledParaSS>
+                            {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}
+                          </CenteredStyledParaSS>
+                          <StyledParaSSS>
+                            {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
+                          </StyledParaSSS>
+                          <p style={{ fontSize: "12px" }}>Attempt {attempt.number}</p>
+                        </AttemptDiv>
                           ))}
-                        </StyledFlexDiv>
-                      </PerfomanceSection>
-                    </PaginationInfoS>
-                  </RecentAttemptsContainer>
+                    </StyledFlexDiv>
+                  </PerfomanceSection>
+                </PaginationInfoS>
+              </RecentAttemptsContainer>
                 )}
             </WithDisableMessage>
           </StyledCard>
@@ -501,7 +500,7 @@ const RecentAttemptsContainer = styled.div`
   box-sizing: border-box;
   padding-right: 20px;
   background: #fff;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.7s;
   .attempt-container {
     :hover {
@@ -510,9 +509,7 @@ const RecentAttemptsContainer = styled.div`
       box-shadow: 8px 4px 10px rgba(0, 0, 0, 0.1);
     }
   }
-  ${StyledCard}:hover & {
-    opacity: 1;
-  }
+ 
   ${CenteredStyledParaSS} {
     /**
      * to accomodate 2 digits scores & maxScore

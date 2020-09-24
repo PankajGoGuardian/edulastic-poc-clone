@@ -686,13 +686,11 @@ class LiveClassboardPage {
       .then(() => cy.wait(1000));
   };
 
-  verifyStudentPerfAndIndexOnAttemptContainer = (stuName, attempIndex, per) => {
+  verifyStudentPerfOnAttemptContainer = (stuName, attempIndex, per) =>
     this.getPerfOnAttemptContainerByIndexByStudentName(stuName, attempIndex).should("have.text", per);
-    this.getAttemptNoOnContainerByIndexByStudentName(stuName, attempIndex).should(
-      "have.text",
-      `Attempt ${attempIndex + 1}`
-    );
-  };
+
+  verifyAttemptNumberOnAttemptContainer = (stuName, attempIndex, cardIndex) =>
+    this.getAttemptNoOnContainerByIndexByStudentName(stuName, cardIndex).should("have.text", `Attempt ${attempIndex}`);
 
   verifyStudentScoreOnAttemptContainer = (stuName, attempIndex, score) =>
     this.getScoreOnAttemptContainerByIndexByStudentName(stuName, attempIndex).then($ele =>

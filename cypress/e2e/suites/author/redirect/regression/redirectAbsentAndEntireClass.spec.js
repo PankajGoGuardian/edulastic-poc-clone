@@ -129,7 +129,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.clickOnCardViewTab();
         lcb.showMulipleAttemptsByStuName(stuName);
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score);
-        lcb.verifyStudentPerfAndIndexOnAttemptContainer(stuName, i, attempt.perf);
+        lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf);
+        lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i);
       });
     });
 

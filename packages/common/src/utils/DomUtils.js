@@ -17,7 +17,10 @@ const isSmoothScrollSupported = "scrollBehavior" in document.documentElement.sty
 /**
  * @param {Element} el
  */
-export function scrollTo(el, subtractScroll = 0,scrollEl =window) {
+export function scrollTo(el, subtractScroll = 0,scrollEl) {
+  if(!scrollEl){
+    scrollEl = window;
+  }
   const { top = 0 } = offset(el,scrollEl) || {};
   if (isSmoothScrollSupported) {
     // behavior:auto|smooth|initial|inherit

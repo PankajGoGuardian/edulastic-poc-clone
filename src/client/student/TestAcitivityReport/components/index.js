@@ -50,7 +50,8 @@ const ReportListContainer = ({
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
   const [showGraph, setShowGraph] = useState(true);
-  const { isDocBased, releaseScore } = test;
+  const { isDocBased } = test;
+  const { releaseScore } = testActivity;
 
   const setCurrentItemFromGraph = qIndex => {
     if (continueBtns.includes(releaseScore)) {

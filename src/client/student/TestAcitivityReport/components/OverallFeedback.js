@@ -38,7 +38,7 @@ const OverallFeedback = ({ testActivity, classList = [] }) => {
 
   return (
     <FeedbackWrapper>
-      <FeedbackText>Teacher Feedback</FeedbackText>
+      <FeedbackText>Score &amp; Teacher Feedback</FeedbackText>
       <FlexContainer justifyContent="flex-start" padding="0px" alignItems="flex-start">
         <FeedbackContainer>
           <IconCheckWrapper>

@@ -4,6 +4,7 @@ import { keyBy, groupBy, get, values, flatten, isEmpty } from "lodash";
 import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
 import { getMathHtml } from "@edulastic/common";
+import { red, yellow, themeColorLighter } from "@edulastic/colors";
 import { getServerTs } from "../../student/utils";
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -390,8 +391,6 @@ export const transformGradeBookResponse = (
 
   const studentTestActivities = keyBy(testActivities, "userId");
   const testActivityQuestionActivities = groupBy(testQuestionActivities, "userId");
-  // testActivityQuestionActivities = mapValues(testActivityQuestionActivities, v => keyBy(v, "qid"));
-
   // for students who hasn't even started the test
   const emptyQuestionActivities = qids.map(x => ({
     _id: x.id,
@@ -401,9 +400,9 @@ export const transformGradeBookResponse = (
     testItemId: x.testItemId,
     qids: x.qids,
     qLabel: x.qLabel,
-    barLabel: x.barLabel
+    barLabel: x.barLabel,
+    scoringDisabled: true
   }));
-
   return studentNames
     .map(
       ({
@@ -416,28 +415,12 @@ export const transformGradeBookResponse = (
         fakeLastName,
         icon
       }) => {
+        const testActivity = studentTestActivities[studentId];
+        if (!testActivity) {
+          return false;
+        }
         const fullName = `${lastName ? `${lastName}, ` : ""}${studentName ? `${studentName}` : ""}`;
         const fakeName = `${fakeFirstName} ${fakeLastName}`;
-        if (!studentTestActivities[studentId]) {
-          const isAbsent = assignmentStatus === "DONE" || endDate < serverTimeStamp;
-          return {
-            studentId,
-            studentName: fullName,
-            userName,
-            email,
-            fakeName,
-            icon,
-            color: fakeFirstName,
-            present: !isAbsent,
-            status: isAbsent ? "absent" : "notStarted",
-            maxScore: testMaxScore,
-            questionActivities: emptyQuestionActivities.map(qact => ({
-              ...qact,
-              userId: studentId
-            }))
-          };
-        }
-        const testActivity = studentTestActivities[studentId];
 
         // TODO: for now always present
         const present = true;
@@ -544,7 +527,8 @@ export const transformGradeBookResponse = (
         // Redirect and submit. qid="...xyz", !qids
         // on attempt qids=[...]
         const isValidQuestionActivity = (x = {}) => (x.qids && x.qids.length && x.testActivityId) || x.qid;
-
+        // has own property  then pick it or else default to true
+        const { isEnrolled = true, isAssigned = true } = testActivity;
         return {
           studentId,
           studentName: fullName,
@@ -554,6 +538,9 @@ export const transformGradeBookResponse = (
           icon,
           color: fakeFirstName,
           status: testActivity.redirect && !studentResponse ? "redirected" : displayStatus,
+          UTASTATUS: testActivity.status,
+          isEnrolled,
+          isAssigned,
           present,
           check: false,
           graded,
@@ -562,10 +549,66 @@ export const transformGradeBookResponse = (
           testActivityId,
           number,
           redirected: redirected || redirect,
-          questionActivities: questionActivities.filter(x => isValidQuestionActivity(x)),
+          questionActivities:
+            testActivity.status === testActivityStatus.NOT_STARTED
+              ? emptyQuestionActivities.map(qact => ({
+                  ...qact,
+                  userId: studentId
+                }))
+              : questionActivities.filter(x => isValidQuestionActivity(x)),
           endDate: testActivity.endDate
         };
       }
     )
     .filter(x => x);
+};
+
+export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, closed) => {
+  const status = {};
+  const { NOT_STARTED, START, SUBMITTED, ABSENT } = testActivityStatus;
+  const { UTASTATUS, isEnrolled, isAssigned } = student;
+  if (student.redirected && UTASTATUS === NOT_STARTED) {
+    status.status = "Redirected";
+    status.color = themeColorLighter;
+    return status;
+  }
+
+  if (isEnrolled === false) {
+    status.status = "Not Enrolled";
+    status.color = red;
+    return status;
+  }
+
+  if (isAssigned === false) {
+    status.status = "Unassigned";
+    status.color = red;
+    return status;
+  }
+
+  switch (UTASTATUS) {
+    case NOT_STARTED:
+      status.status = "Not Started";
+      status.color = red;
+      // Assessment expired and student havent attempted.
+      if (endDate < serverTimeStamp || closed) {
+        status.status = "Absent";
+      }
+      break;
+    case START:
+      status.status = "In Progress";
+      status.color = yellow;
+      break;
+    case SUBMITTED:
+      status.status = student?.graded === "GRADED" ? "Graded" : student.status;
+      status.color = themeColorLighter;
+      break;
+    case ABSENT:
+      status.status = "Absent";
+      status.color = red;
+      break;
+    default:
+      status.status = "Not Started";
+      status.color = red;
+  }
+  return status;
 };

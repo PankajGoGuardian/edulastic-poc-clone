@@ -1,4 +1,5 @@
 import { groupBy, minBy, cloneDeep, countBy, uniq } from "lodash";
+import {testActivityStatus} from "@edulastic/constants"
 import { getHSLFromRange1 } from "../../../../common/util";
 import {transformMetricForStudentGroups} from "../../common/utils/transformers";
 
@@ -70,6 +71,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       : 0;
     const { teacherName, groupName: className } = groupedData[data][0];
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
+    let absent = statusCounts[testActivityStatus.ABSENT] || 0;
+    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
+    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
     const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
 
     item = {
@@ -79,8 +83,8 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       correct: avgStudentScorePercent,
       incorrect: Math.round(100 - avgStudentScorePercent),
       districtAvg: Math.round(rawData.districtAvgPerf),
-      absent: statusCounts[2] || 0,
-      graded: statusCounts[1] || 0,
+      absent,
+      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
       schoolName,
       teacherName,
       className,
@@ -114,7 +118,10 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     avgStudentScoreUnrounded = !isNaN(avgStudentScoreUnrounded) ? avgStudentScoreUnrounded : 0;
 
     const avgStudentScore = !isNaN(avgStudentScoreUnrounded) ? Number(avgStudentScoreUnrounded.toFixed(2)) : 0;
-    const { teacherName, groupName: className, maxScore } = groupedData[data][0];
+    const { maxScore, teacherName, groupName: className } = groupedData[data][0];
+    let absent = statusCounts[testActivityStatus.ABSENT] || 0;
+    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
+    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
     const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
 
     item = {
@@ -125,8 +132,8 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       correct: avgStudentScore,
       incorrect: Number((maxScore - avgStudentScore).toFixed(2)),
       districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent: statusCounts[2] || 0,
-      graded: statusCounts[1] || 0,
+      absent,
+      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
       schoolName,
       teacherName,
       className,
@@ -174,6 +181,9 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
 
     const { teacherName, groupName: className } = groupedData[data][0];
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
+    let absent = statusCounts[testActivityStatus.ABSENT] || 0;
+    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
+    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
     const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
 
     item = {
@@ -181,8 +191,8 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
       aboveStandardPercentage,
       belowStandardPercentage,
       districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent: statusCounts[2] || 0,
-      graded: statusCounts[1] || 0,
+      absent,
+      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
       schoolName,
       teacherName,
       className,
@@ -248,14 +258,17 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
 
     const { teacherName, groupName: className } = groupedData[data][0];
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
+    let absent = statusCounts[testActivityStatus.ABSENT] || 0;
+    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0;
+    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0;
     const schoolName = uniq(groupedData[data].map(o => o.schoolName).filter(txt => txt)).join(", ");
 
     item = {
       ...item,
       ...proficiencyPercentages,
       districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent: statusCounts[2] || 0,
-      graded: statusCounts[1] || 0,
+      absent,
+      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
       schoolName,
       teacherName,
       className,

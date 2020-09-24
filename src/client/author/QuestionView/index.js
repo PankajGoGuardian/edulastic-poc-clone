@@ -8,6 +8,7 @@ import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { scrollTo, AnswerContext, Legends, LegendContainer, LCBScrollContext } from "@edulastic/common";
+import { testActivityStatus } from "@edulastic/constants";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
 import { StyledFlexContainer, StyledCard, TooltipContainer } from "./styled";
@@ -22,8 +23,8 @@ import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelec
 /**
  * @param {string} studentId
  */
-const _scrollTo = (studentId,el) => {
-  scrollTo(document.querySelector(`.student-question-container-id-${studentId}`),160, el);
+const _scrollTo = (studentId, el) => {
+  scrollTo(document.querySelector(`.student-question-container-id-${studentId}`), 160, el);
 };
 
 const green = "#5eb500";
@@ -49,7 +50,6 @@ CustomTooltip.defaultProps = {
 };
 
 class QuestionViewContainer extends Component {
-
   static contextType = LCBScrollContext;
 
   static getDerivedStateFromProps(nextProps, preState) {
@@ -80,7 +80,7 @@ class QuestionViewContainer extends Component {
   };
 
   onClickChart = data => {
-    _scrollTo(data.id,this.context.current);
+    _scrollTo(data.id, this.context.current);
   };
 
   render() {
@@ -175,7 +175,6 @@ class QuestionViewContainer extends Component {
     if (isMobile) {
       data = data.slice(0, 2);
     }
-    
 
     return (
       <React.Fragment>
@@ -197,7 +196,7 @@ class QuestionViewContainer extends Component {
                     _scrollTo(id, this.context.current);
                   }}
                 />
-                
+
                 <YAxis
                   dataKey="attempts"
                   yAxisId={0}
@@ -289,7 +288,11 @@ class QuestionViewContainer extends Component {
         {testActivity &&
           !loading &&
           testActivity.map((student, index) => {
-            if (!student.testActivityId || student.status === "absent") {
+            if (
+              !student.testActivityId ||
+              student.status === "absent" ||
+              student.UTASTATUS === testActivityStatus.NOT_STARTED
+            ) {
               return null;
             }
             const qActivities = classQuestion.filter(({ userId }) => userId === student.studentId);
@@ -328,8 +331,7 @@ const enhance = compose(
   )
 );
 
-
-const QuestionViewContainerConnected =  enhance(QuestionViewContainer);
+const QuestionViewContainerConnected = enhance(QuestionViewContainer);
 export default QuestionViewContainerConnected;
 
 QuestionViewContainer.propTypes = {

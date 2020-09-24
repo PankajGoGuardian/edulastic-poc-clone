@@ -222,6 +222,28 @@ class TestItemPreview extends Component {
     }
   }
 
+  get defaultScratchpadVisibility() {
+    const {
+      cols,
+      viewComponent,
+      isExpressGrader,
+      history: scratchpadData,
+      disableResponse: isAnswerModifiable
+    } = this.props;
+    const widgets = (cols || []).flatMap(col => col?.widgets).filter(_ => _);
+    const showScratchpadByDefault = widgets.some(x => x.type === questionType.HIGHLIGHT_IMAGE);
+    const isStudentAttempt = ["studentPlayer", "practicePlayer"].includes(viewComponent);
+    if (showScratchpadByDefault && !isStudentAttempt) {
+      if (isExpressGrader && !isAnswerModifiable) {
+        // return true even if no data, it will create a fresh one to draw
+        return true;
+      }
+      // return true only if there is scratchpad data
+      return !!scratchpadData;
+    }
+    return false;
+  }
+
   render() {
     const {
       cols,
@@ -385,7 +407,7 @@ class TestItemPreview extends Component {
                 );
               })}
             </div>
-            {((showScratchpadByDefault && !isStudentAttempt) || scratchPadMode) && !shouldHideScratchpad && (
+            {(this.defaultScratchpadVisibility || scratchPadMode) && !shouldHideScratchpad && (
               <Scratchpad
                 saveData={saveHistory}
                 data={history}

@@ -391,7 +391,18 @@ export const transformGradeBookResponse = (
 
   const studentTestActivities = keyBy(testActivities, "userId");
   const testActivityQuestionActivities = groupBy(testQuestionActivities, "userId");
-
+  // for students who hasn't even started the test
+  const emptyQuestionActivities = qids.map(x => ({
+    _id: x.id,
+    weight: x.weight,
+    notStarted: true,
+    disabled: x.disabled,
+    testItemId: x.testItemId,
+    qids: x.qids,
+    qLabel: x.qLabel,
+    barLabel: x.barLabel,
+    scoringDisabled: true
+  }));
   return studentNames
     .map(
       ({
@@ -538,7 +549,13 @@ export const transformGradeBookResponse = (
           testActivityId,
           number,
           redirected: redirected || redirect,
-          questionActivities: questionActivities.filter(x => isValidQuestionActivity(x)),
+          questionActivities:
+            testActivity.status === testActivityStatus.NOT_STARTED
+              ? emptyQuestionActivities.map(qact => ({
+                  ...qact,
+                  userId: studentId
+                }))
+              : questionActivities.filter(x => isValidQuestionActivity(x)),
           endDate: testActivity.endDate
         };
       }

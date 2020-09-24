@@ -2,6 +2,9 @@ export function offset(el,scrollElement) {
   if (!el) {
     return;
   }
+  if(!scrollElement){
+    scrollElement = window;
+  }
   const rect = el.getBoundingClientRect();
   let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
   let scrollTop = window.pageYOffset || document.documentElement.scrollTop;

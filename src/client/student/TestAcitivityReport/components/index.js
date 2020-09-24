@@ -136,8 +136,8 @@ const ReportListContainer = ({
           </Fragment>
         )}
         {showGraph && (
-          <FlexContainer>
-            <EduButton onClick={reviewResponses} isBlue>
+          <FlexContainer mt="16px">
+            <EduButton onClick={reviewResponses} isBlue isGhost>
               Review Responses
             </EduButton>
           </FlexContainer>

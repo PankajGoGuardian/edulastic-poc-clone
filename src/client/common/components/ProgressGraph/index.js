@@ -15,7 +15,7 @@ import {
   Info
 } from "./styled";
 
-const ProgressGraph = ({ testActivity, questionActivities, testItems, onClickBar, isCliUser }) => {
+const ProgressGraph = ({ testActivity, questionActivities, testItems, onClickBar, isGreyBar, isCliUser }) => {
   const { score, maxScore } = testActivity;
   const scorePercentage = round(score / maxScore, 2) * 100 || 0;
 
@@ -70,7 +70,12 @@ const ProgressGraph = ({ testActivity, questionActivities, testItems, onClickBar
       ) : (
         <BarGraphContainer>
           <GraphTitle>Performance by Questions</GraphTitle>
-          <BarGraph questionActivities={questionActivities} onClickBar={onClickBar} testItems={testItems} />
+          <BarGraph
+            questionActivities={questionActivities}
+            onClickBar={onClickBar}
+            testItems={testItems}
+            isGreyBar={isGreyBar}
+          />
         </BarGraphContainer>
       )}
     </GraphContainer>
@@ -81,11 +86,13 @@ ProgressGraph.propTypes = {
   testItems: PropTypes.object.isRequired,
   testActivity: PropTypes.object.isRequired,
   questionActivities: PropTypes.array.isRequired,
-  onClickBar: PropTypes.func
+  onClickBar: PropTypes.func,
+  isGreyBar: PropTypes.bool
 };
 
 ProgressGraph.defaultProps = {
-  onClickBar: () => {}
+  onClickBar: () => {},
+  isGreyBar: false
 };
 
 export default ProgressGraph;

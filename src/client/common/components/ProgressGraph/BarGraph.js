@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { ticks } from "d3-array";
 import { Legends } from "@edulastic/common";
-import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { white, dropZoneTitleColor, secondaryTextColor, themeColor } from "@edulastic/colors";
 import CustomBar from "./CustomBar";
-import { BarGraphWrapper, BarLegendContainer, ChartNavButton, StyledCustomTooltip } from "./styled";
+import { BarGraphWrapper, BarLegendContainer, ChartNavButton } from "./styled";
 import { NUMBER_OF_BARS, bars, convertData } from "./helpers";
 
 const BarGraph = ({ questionActivities, testItems, onClickBar }) => {
@@ -114,8 +114,6 @@ const BarGraph = ({ questionActivities, testItems, onClickBar }) => {
             type="monotone"
             dot={{ stroke: themeColor, strokeWidth: 6, fill: white }}
           />
-
-          <Tooltip content={<StyledCustomTooltip />} cursor={false} />
         </ComposedChart>
       </ResponsiveContainer>
     </BarGraphWrapper>

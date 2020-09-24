@@ -302,7 +302,6 @@ class FeedbackRight extends Component {
 
     let _score = adaptiveRound(score || 0);
     if (
-      isPracticeQuestion ||
       (activity &&
         activity.graded === false &&
         (activity.score === 0 || isUndefined(activity.score)) &&
@@ -314,9 +313,11 @@ class FeedbackRight extends Component {
     }
 
     let _maxScore = rubricMaxScore || maxScore;
-    if (isPracticeQuestion) {
-      _maxScore = "";
-    }
+
+    // TODO: uncomment when practice question scoring is implemented (EV-12869)
+    // if (isPracticeQuestion) {
+    //   _maxScore = "";
+    // }
 
     const { studentResponseLoading, expressGrader } = this.context;
     return (

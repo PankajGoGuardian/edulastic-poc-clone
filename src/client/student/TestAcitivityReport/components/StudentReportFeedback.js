@@ -15,14 +15,13 @@ const StudentFeedback = ({
   qId,
   qLabel,
   itemMaxScore,
-  isPracticeQuestion,
   isStudentReport,
   classList = []
 }) => {
   const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true, groupId } = question[qId] || {};
 
   let _score = skipped ? 0 : parseFloat(score.toFixed(2));
-  if (!graded || isPracticeQuestion) {
+  if (!graded) {
     _score = "";
   }
 
@@ -66,7 +65,6 @@ const StudentFeedback = ({
     return userInitials;
   };
 
-  const _maxScore = isPracticeQuestion ? "" : maxScore;
   return (
     <FeedbackWrapper isStudentReport={isStudentReport}>
       <FeedbackText isStudentReport={isStudentReport}>
@@ -79,7 +77,7 @@ const StudentFeedback = ({
           </IconCheckWrapper>
           <ScoreWrapper>
             <Score data-cy="score">{_score}</Score>
-            <Total data-cy="maxscore">{_maxScore}</Total>
+            <Total data-cy="maxscore">{maxScore}</Total>
           </ScoreWrapper>
           <Feedback>
             <FeedbackGiven data-cy="feedback">{feedback && feedback.text}</FeedbackGiven>

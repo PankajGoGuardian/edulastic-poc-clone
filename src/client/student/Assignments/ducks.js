@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
-import { test as testConst } from "@edulastic/constants";
+import { test as testConst, testActivityStatus } from "@edulastic/constants";
 import { Effects, notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import { getCurrentSchool, fetchUserAction, getUserRole, getUserId } from "../Login/ducks";
@@ -157,7 +157,24 @@ export const transformAssignmentForRedirect = (
 
 // selectors
 export const assignmentsSelector = state => state.studentAssignment.byId;
-const reportsSelector = state => state.studentReport.byId;
+const reportsById = state => state.studentReport.byId;
+
+const reportsSelector = createSelector(
+  reportsById,
+  reports => {
+    const filteredReports = {};
+    if (!Object.keys(reports).length) {
+      return filteredReports;
+    }
+    for (const r in reports) {
+      if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
+        continue;
+      }
+      filteredReports[r] = reports[r];
+    }
+    return filteredReports;
+  }
+);
 
 export const filterSelector = state => state.studentAssignment.filter;
 export const stateSelector = state => state.studentAssignment;

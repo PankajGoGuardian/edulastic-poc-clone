@@ -15,7 +15,6 @@ import {
   setIsPausedAction,
   updateRemovedStudentsAction,
   updateClassStudentsAction,
-  setStudentsGradeBookAction,
   setAllTestActivitiesForStudentAction,
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
@@ -315,6 +314,7 @@ function* markAbsentSaga({ payload }) {
 function* markAsSubmittedSaga({ payload }) {
   try {
     const response = yield call(classBoardApi.markSubmitted, payload);
+    console.log(response, "===r");
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(notification, { type: "success", msg: "Successfully marked as submitted" });
   } catch (err) {
@@ -379,8 +379,7 @@ function* removeStudentsSaga({ payload }) {
 
 function* addStudentsSaga({ payload }) {
   try {
-    const { students = [] } = yield call(classBoardApi.addStudents, payload);
-    yield put(setStudentsGradeBookAction(students));
+    yield call(classBoardApi.addStudents, payload);
     yield call(notification, { type: "success", msg: "Successfully added" });
   } catch (err) {
     Sentry.captureException(err);
@@ -681,12 +680,26 @@ export const classStudentsSelector = createSelector(
 );
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,
-  state => state.removedStudents
+  state =>
+    get(state, "entities", [])
+      .filter(item => item.isAssigned === false)
+      .map(({ studentId }) => studentId)
+);
+
+export const getAllActivities = createSelector(
+  stateTestActivitySelector,
+  state => state.entities
 );
 
 export const getEnrollmentStatus = createSelector(
-  stateTestActivitySelector,
-  state => get(state, "data.enrollmentStatus", {})
+  getAllActivities,
+  entities => {
+    const enrollmentStatus = {};
+    for (const entity of entities) {
+      enrollmentStatus[entity.studentId] = entity.isEnrolled ? 1 : 0;
+    }
+    return enrollmentStatus;
+  }
 );
 
 export const getIsShowAllStudents = createSelector(
@@ -700,22 +713,29 @@ export const getAllStudentsList = createSelector(
 );
 
 export const getTestActivitySelector = createSelector(
-  stateTestActivitySelector,
-  removedStudentsSelector,
+  getAllActivities,
   getEnrollmentStatus,
   getIsShowAllStudents,
-  (state, removedStudents, enrollments, showAll) =>
-    state.entities
+  (entities, enrollments, showAll) =>
+    entities
       .map(item => ({
         ...item,
-        enrollmentStatus: enrollments[item.studentId],
-        isUnAssigned: removedStudents.includes(item.studentId)
+        enrollmentStatus: enrollments[item.studentId]
       }))
-      .filter(item => (!item.isUnAssigned && item.enrollmentStatus === 1) || showAll)
+      .filter(item => (item.isAssigned && item.isEnrolled) || showAll)
+);
+
+export const getLCBStudentsList = createSelector(
+  getAllStudentsList,
+  getTestActivitySelector,
+  (students, entities) => {
+    const testActivitiesByUserId = keyBy(entities, "studentId");
+    return students.filter(s => !!testActivitiesByUserId[s._id]);
+  }
 );
 
 export const getActiveAssignedStudents = createSelector(
-  getAllStudentsList,
+  getLCBStudentsList,
   removedStudentsSelector,
   getEnrollmentStatus,
   (students, removedStudents, enrollments) =>

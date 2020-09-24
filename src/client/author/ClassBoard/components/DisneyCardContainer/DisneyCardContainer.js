@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
 import styled from "styled-components";
-import { themeColorLighter, yellow, red, themeColor } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
@@ -41,7 +41,7 @@ import {
 } from "./styled";
 
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
-import { getAvatarName } from "../../Transformer";
+import { getAvatarName, getStudentCardStatus } from "../../Transformer";
 import { isItemVisibiltySelector, testActivtyLoadingSelector, getServerTsSelector } from "../../ducks";
 import { formatStudentPastDueTag, maxDueDateFromClassess } from "../../../../student/utils";
 
@@ -122,44 +122,15 @@ class DisneyCardContainer extends Component {
        * 2. move this sort of tranforming code somewhere else
        */
       testActivity.map((student, index) => {
-        const status = {
-          color: "",
-          status: ""
-        };
-        let hasUsedScratchPad = false;
-        student?.questionActivities.every(questionActivity => {
-          // check if this breaks after we find a true value.
-          if (questionActivity?.scratchPad?.scratchpad === true) {
-            hasUsedScratchPad = true;
-            return false;
-          }
-          return true;
-        });
+        const status = getStudentCardStatus(student, endDate, serverTimeStamp, closed);
 
-        if (student.status === "notStarted") {
-          status.status = "Not Started";
-          status.color = red;
-          // Assessment expired and student havent attempted.
-          if (endDate < serverTimeStamp || closed) {
-            status.status = "Absent";
-          }
-        } else if (student.status === "inProgress") {
-          status.status = "In Progress";
-          status.color = yellow;
-        } else if (student.status === "submitted") {
-          status.status = student?.graded === "GRADED" ? "Graded" : student.status;
-          status.color = themeColorLighter;
-        } else if (student.status === "redirected") {
-          status.status = "Redirected";
-          status.color = themeColorLighter;
-        } else if (student.status === "absent") {
-          status.status = "Absent";
-          status.color = red;
-        }
+        const hasUsedScratchPad = student?.questionActivities.some(
+          questionActivity => questionActivity?.scratchPad?.scratchpad === true
+        );
 
         const score = (_status, attemptScore) => {
           /* for redirected, old attempts status will show in numbers like START = 0, SUBMITTED = 1, ABSENT = 2 */
-          if (_status === "absent" || _status === 2 || _status === "notStarted") {
+          if (_status === 3) {
             return <span style={{ marginTop: "-3px" }}>-</span>;
           }
           if (attemptScore >= 0) {
@@ -177,16 +148,16 @@ class DisneyCardContainer extends Component {
          * for differentiating archived students
          */
         const enrollMentFlag =
-          student.enrollmentStatus == 0 ? (
+          student.isEnrolled === false ? (
             <span title="Not Enrolled">
               <ExclamationMark />
             </span>
           ) : (
             ""
           );
-        const isAcitveStudentUnassigned = student.isUnAssigned && student.enrollmentStatus === 1;
+        const isAcitveStudentUnassigned = student.isAssigned === false && student.isEnrolled;
         const unAssignedMessage = isAcitveStudentUnassigned ? (
-          <span title="Un assigned">
+          <span title="Unassigned">
             <ExclamationMark />
           </span>
         ) : (
@@ -203,7 +174,7 @@ class DisneyCardContainer extends Component {
                 endDate: student.endDate
               })
             : null;
-        const responseLink = student.testActivityId && status.status !== "Absent" && (
+        const responseLink = student.testActivityId && status.status !== "Absent" && student.UTASTATUS !== 3 && (
           <PagInfo
             data-cy="viewResponse"
             disabled={!isItemsVisible}
@@ -221,7 +192,6 @@ class DisneyCardContainer extends Component {
             key={index}
             isClickEnable={canShowResponse}
             onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
-            onMouseLeave={() => this.setState({ hoverActiveStudentActive: null })}
           >
             <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
               <PaginationInfoF>
@@ -327,7 +297,7 @@ class DisneyCardContainer extends Component {
                   </Row>
                 </RightAlignedCol>
               </PaginationInfoF>
-              <div onMouseEnter={() => this.setState({ hoverActiveStudentActive: student.studentId })}>
+              <div>
                 <PaginationInfoS>
                   <PerfomanceSection>
                     <StyledFlexDiv>
@@ -341,7 +311,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {score(currentTestActivity.status || student.status)}&nbsp;/ {round(student.maxScore, 2) || 0}
+                        {score(student.UTASTATUS)}&nbsp;/ {round(student.maxScore, 2) || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>
@@ -375,76 +345,75 @@ class DisneyCardContainer extends Component {
                 </PaginationInfoT>
               </div>
               {(recentAttemptsGrouped?.[student.studentId]?.length > 0 || student.status === "redirected") && (
-              <RecentAttemptsContainer>
-                <PaginationInfoS>
-                  <PerfomanceSection>
-                    <StyledFlexDiv>
-                      <StyledParaFF>Performance</StyledParaFF>
-                      <StyledParaFF>{responseLink}</StyledParaFF>
-                    </StyledFlexDiv>
-                    <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
-                      {student.status === "redirected" && (
-                      <AttemptDiv data-cy="attempt-container">
-                        <CenteredStyledParaSS>-&nbsp;/ {round(student.maxScore, 2) || 0}</CenteredStyledParaSS>
-                        <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
-                          Not Started
-                        </StyledParaSS>
-                        <p style={{ fontSize: "12px" }}>
-                          Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 2}
-                        </p>
-                      </AttemptDiv>
-                          )}
-                      <AttemptDiv
-                        data-cy="attempt-container"
-                        className="attempt-container"
-                        onClick={e => {
-                              e.stopPropagation();
-                              viewResponses(
-                                e,
-                                student.studentId,
-                                student.testActivityId,
-                                (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
-                              );
-                            }}
-                      >
-                        <CenteredStyledParaSS>
-                          {score(currentTestActivity.status, student.score)}&nbsp;/{" "}
-                          {round(student.maxScore, 2) || 0}
-                        </CenteredStyledParaSS>
-                        <StyledParaSSS>
-                          {student.score > 0
-                                ? round((student.score / student.maxScore) * 100, 2)
-                                : 0}
-                          %
-                        </StyledParaSSS>
-                        <p style={{ fontSize: "12px" }}>
-                          Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
-                        </p>
-                      </AttemptDiv>
-                      {recentAttemptsGrouped?.[student.studentId].map(attempt => (
+                <RecentAttemptsContainer>
+                  <PaginationInfoS>
+                    <PerfomanceSection>
+                      <StyledFlexDiv>
+                        <StyledParaFF>Performance</StyledParaFF>
+                        <StyledParaFF>{responseLink}</StyledParaFF>
+                      </StyledFlexDiv>
+                      <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
+                        {student.status === "redirected" && (
+                          <AttemptDiv>
+                            <CenteredStyledParaSS>-&nbsp;/ {round(student.maxScore, 2) || 0}</CenteredStyledParaSS>
+                            <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
+                              Not Started
+                            </StyledParaSS>
+                            <p style={{ fontSize: "12px" }}>
+                              Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 2}
+                            </p>
+                          </AttemptDiv>
+                        )}
                         <AttemptDiv
                           data-cy="attempt-container"
                           className="attempt-container"
-                          key={attempt._id || attempt.id}
                           onClick={e => {
-                                e.stopPropagation();
-                                viewResponses(e, attempt.userId, attempt._id, attempt.number);
-                              }}
+                            e.stopPropagation();
+                            viewResponses(
+                              e,
+                              student.studentId,
+                              student.testActivityId,
+                              (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
+                            );
+                          }}
                         >
                           <CenteredStyledParaSS>
-                            {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}
+                            {score(currentTestActivity.status, currentTestActivity.score)}&nbsp;/{" "}
+                            {round(student.maxScore, 2) || 0}
                           </CenteredStyledParaSS>
                           <StyledParaSSS>
-                            {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
+                            {student.score > 0
+                              ? round((currentTestActivity.score / currentTestActivity.maxScore) * 100, 2)
+                              : 0}
+                            %
                           </StyledParaSSS>
-                          <p style={{ fontSize: "12px" }}>Attempt {attempt.number}</p>
+                          <p style={{ fontSize: "12px" }}>
+                            Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
+                          </p>
                         </AttemptDiv>
-                          ))}
-                    </StyledFlexDiv>
-                  </PerfomanceSection>
-                </PaginationInfoS>
-              </RecentAttemptsContainer>
-                )}
+                        {recentAttemptsGrouped?.[student.studentId].map(attempt => (
+                          <AttemptDiv
+                            className="attempt-container"
+                            key={attempt._id || attempt.id}
+                            onClick={e => {
+                              e.stopPropagation();
+                              viewResponses(e, attempt.userId, attempt._id, attempt.number);
+                            }}
+                          >
+                            <CenteredStyledParaSS>
+                              {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}
+                            </CenteredStyledParaSS>
+                            <StyledParaSSS>
+                              {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
+                            </StyledParaSSS>
+                            <p style={{ fontSize: "12px" }}>Attempt {attempt.number}</p>
+                          </AttemptDiv>
+                        ))}
+                      </StyledFlexDiv>
+                    </PerfomanceSection>
+                  </PaginationInfoS>
+                </RecentAttemptsContainer>
+              )}
             </WithDisableMessage>
           </StyledCard>
         );
@@ -509,7 +478,7 @@ const RecentAttemptsContainer = styled.div`
       box-shadow: 8px 4px 10px rgba(0, 0, 0, 0.1);
     }
   }
- 
+
   ${CenteredStyledParaSS} {
     /**
      * to accomodate 2 digits scores & maxScore

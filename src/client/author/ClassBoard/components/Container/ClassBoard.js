@@ -12,6 +12,7 @@ import {
   IconRemove
 } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
+import { testActivityStatus } from "@edulastic/constants";
 import { Dropdown, Select } from "antd";
 import { get, isEmpty, keyBy, round } from "lodash";
 import moment from "moment";
@@ -68,7 +69,9 @@ import {
   stateStudentResponseSelector,
   testActivtyLoadingSelector,
   getActiveAssignedStudents,
-  getDisableMarkAsAbsentSelector
+  getDisableMarkAsAbsentSelector,
+  getLCBStudentsList,
+  getEnrollmentStatus
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -440,6 +443,16 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
+    const inActiveStudentsSelected = (selectedStudentKeys || []).filter(
+      item =>
+        mapTestActivityByStudId?.[item]?.isAssigned === false || mapTestActivityByStudId?.[item]?.isEnrolled === false
+    );
+    if (inActiveStudentsSelected.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not mark removed or unerolled students as submit`
+      });
+    }
     const selectedSubmittedStudents = (selectedStudentKeys || []).filter(
       item =>
         mapTestActivityByStudId?.[item]?.status === "submitted" || mapTestActivityByStudId?.[item]?.status === "graded"
@@ -467,11 +480,20 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudentToMarkAbsent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
-    const selectedNotStartedStudents = (selectedStudentKeys || []).filter(
+    const inActiveStudentsSelected = (selectedStudentKeys || []).filter(
       item =>
-        mapTestActivityByStudId?.[item]?.status === "notStarted" ||
-        mapTestActivityByStudId?.[item]?.status === "redirected"
+        mapTestActivityByStudId?.[item]?.isAssigned === false || mapTestActivityByStudId?.[item]?.isEnrolled === false
     );
+    if (inActiveStudentsSelected.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not mark removed or unerolled students as absent`
+      });
+    }
+    const selectedNotStartedStudents = (selectedStudentKeys || []).filter(studentId => {
+      const { UTASTATUS } = mapTestActivityByStudId?.[studentId] || {};
+      return UTASTATUS === testActivityStatus.NOT_STARTED;
+    });
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
       return notification({
@@ -493,12 +515,33 @@ class ClassBoard extends Component {
     if (isRemovedStudentsSelected) {
       return notification({ type: "warn", msg: "Cannot remove unassigned students" });
     }
+    const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
       return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
     }
+    const unEnrolledStudents = (selectedStudentKeys || []).filter(
+      item => mapTestActivityByStudId?.[item]?.isEnrolled === false
+    );
+
+    if (unEnrolledStudents.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not remove unerolled students`
+      });
+    }
+
     const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
-    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    const isAnyBodyInProgress = selectedStudentsEntity.some(item => item.UTASTATUS === testActivityStatus.START);
+    if (isAnyBodyInProgress) {
+      return notification({
+        type: "warn",
+        msg: `In progress students can not be removed`
+      });
+    }
+    const isAnyBodyGraded = selectedStudentsEntity.some(
+      item => item.UTASTATUS === testActivityStatus.SUBMITTED && item.graded
+    );
     if (isAnyBodyGraded) {
       return notification({ type: "warn", messageKey: "youWillNotAbleToRemove" });
     }
@@ -706,7 +749,7 @@ class ClassBoard extends Component {
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
 
     const existingStudents = testActivity
-      .filter(item => !item.isUnAssigned && item.enrollmentStatus === 1)
+      .filter(item => item.isAssigned && item.enrollmentStatus === 1)
       .map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
@@ -1290,7 +1333,7 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
-      allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
+      allStudents: getLCBStudentsList(state),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
       studentResponse: getStudentResponseSelector(state),
       qActivityByStudent: stateStudentResponseSelector(state),
@@ -1300,7 +1343,7 @@ const enhance = compose(
       disableMarkSubmitted: getDisableMarkAsSubmittedSelector(state),
       disableMarkAbsent: getDisableMarkAsAbsentSelector(state),
       assignmentStatus: getAssignmentStatusSelector(state),
-      enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
+      enrollmentStatus: getEnrollmentStatus(state),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isItemsVisible: isItemVisibiltySelector(state),
       removedStudents: removedStudentsSelector(state),

@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, put, call, all, fork } from "redux-saga/effects";
-import { keyBy as _keyBy, isEmpty } from "lodash";
+import { keyBy as _keyBy, isEmpty, orderBy } from "lodash";
 import { reportsApi, testsApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { setTestItemsAction, SET_CURRENT_ITEM } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
@@ -18,10 +18,12 @@ import { loadQuestionsAction } from "../../author/sharedDucks/questions";
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
 export const SET_FEEDBACK = "[studentItems] set feedback";
+export const SET_TEST_ACTIVITIES = "[studentReports] set test all testActivities report";
 
 // actions
 export const loadTestActivityReportAction = createAction(LOAD_TEST_ACTIVITY_REPORT);
 export const setFeedbackReportAction = createAction(SET_FEEDBACK);
+export const setTestActivitiesAction = createAction(SET_TEST_ACTIVITIES);
 
 function* loadAttachmentsFromServer({ referrerId, referrerId2, qActId }) {
   try {
@@ -73,15 +75,17 @@ function* loadTestActivityReport({ payload }) {
   try {
     const { testActivityId, groupId, testId } = payload;
     yield put(setFeedbackReportAction(null));
+    yield put(setTestActivitiesAction([]));
     if (!testActivityId) {
       throw new Error("invalid data");
     }
     yield put({
       type: REMOVE_ANSWERS
     });
-    const [test, reports] = yield all([
+    const [test, reports, activities] = yield all([
       call(testsApi.getByIdMinimal, testId, { data: true, testActivityId, groupId }),
-      call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
+      call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
+      call(reportsApi.fetchReports, groupId, testId)
     ]);
     const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
     markQuestionLabel(testItems);
@@ -124,6 +128,14 @@ function* loadTestActivityReport({ payload }) {
     yield put(setFeedbackReportAction(reports.questionActivities));
     yield put(setTestItemsAction(_testItems));
     yield put(setPassagesDataAction(test.passages || []));
+
+    let testActivities = (activities || []).map(x => ({
+      activiyId: x._id,
+      createdAt: x.createdAt,
+      startDate: x.startDate
+    }));
+    testActivities = orderBy(testActivities, ["startDate"], ["asc"]);
+    yield put(setTestActivitiesAction(testActivities));
 
     const userWork = {};
     let allAnswers = {};
@@ -193,3 +205,7 @@ export default createReducer(initialState, {
 });
 
 export const getfeedbackSelector = state => state.testFeedback;
+
+export const testActivitiesReducer = createReducer([], {
+  [SET_TEST_ACTIVITIES]: (_, { payload }) => payload
+});

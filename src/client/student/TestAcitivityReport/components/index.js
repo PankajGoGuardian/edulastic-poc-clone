@@ -45,6 +45,7 @@ const ReportListContainer = ({
   history,
   isCliUser,
   testItems,
+  attempts,
   testActivity,
   questionActivities
 }) => {
@@ -84,7 +85,7 @@ const ReportListContainer = ({
     return () => {
       clearUserWork();
     };
-  }, []);
+  }, [match]);
 
   useEffect(() => {
     if (!testFeedback) {
@@ -115,6 +116,7 @@ const ReportListContainer = ({
         showReviewResponses={showReviewResponses}
         reviewResponses={reviewResponses}
         hideSideMenu={isCliUser}
+        attempts={attempts}
       />
       <MainContentWrapper padding={isDocBased ? "0px" : "20px 30px"}>
         <TestActivitySubHeader
@@ -162,7 +164,8 @@ const enhance = compose(
       isCliUser: get(state, "user.isCliUser", false),
       testItems: getItemsSelector(state),
       questionActivities: getTestFeedbackSelector(state),
-      testActivity: get(state, `[studentReport][testActivity]`, {})
+      testActivity: get(state, `[studentReport][testActivity]`, {}),
+      attempts: get(state, `testActivities`, [])
     }),
     {
       setCurrentItem: setCurrentItemAction,

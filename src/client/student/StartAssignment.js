@@ -32,7 +32,7 @@ const StartAssignment = ({
   useEffect(() => {
     if (timedAssignment) {
       const { assignmentId, groupId } = match.params;
-      const { pauseAllowed, allowedTime, testId, testType = "assessment" } = timedAssignment;
+      const { pauseAllowed, allowedTime, testId, testType = "assessment", safeBrowser } = timedAssignment;
       const content = pauseAllowed ? (
         <p>
           {" "}
@@ -62,11 +62,11 @@ const StartAssignment = ({
         content,
         onOk: () => {
           console.warn("==Initiating assignment==", { testId, assignmentId, testType, groupId });
-          startAssignment({ testId, assignmentId, testType, classId: groupId });
+          startAssignment({ testId, assignmentId, testType, classId: groupId,safeBrowser });
           console.warn("==Initiated assignment successfully==");
           Modal.destroyAll();
         },
-        onCancel: () => {
+        onCancel: () => {;
           redirectToDashboard();
           Modal.destroyAll();
         },
@@ -87,8 +87,8 @@ const StartAssignment = ({
 
   const continueToTest = () => {
     const { assignmentId, groupId } = match.params;
-    const { testId, testType = "assessment" } = assignment;
-    startAssignment({ testId, assignmentId, testType, classId: groupId });
+    const { testId, testType = "assessment", safeBrowser } = assignment;
+    startAssignment({ testId, assignmentId, testType, classId: groupId,safeBrowser });
     setShowTestInstruction({ showInstruction: false, assignment: {} });
   };
 

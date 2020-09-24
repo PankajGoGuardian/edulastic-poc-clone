@@ -132,7 +132,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.clickOnCardViewTab();
         lcb.showMulipleAttemptsByStuName(stuName);
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score);
-        lcb.verifyStudentPerfAndIndexOnAttemptContainer(stuName, i, attempt.perf);
+        lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf);
+        lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i);
       });
     });
 
@@ -191,7 +192,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.verifyStudentCard(stuName, studentSide.GRADED, attempt2.score, attempt2.perf, attempt2.attempt, email);
     });
 
-    /*
+    /* 
        TODO : commented below due to cypress limitation: https://github.com/cypress-io/cypress/issues/10#issuecomment-118114716
     [0, 1].forEach(i => {
       it(`> hover and verify navigations to responses, attempt-${!i ? 2 : 1}`, () => {
@@ -210,7 +211,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.clickOnCardViewTab();
         lcb.showMulipleAttemptsByStuName(stuName);
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score);
-        lcb.verifyStudentPerfAndIndexOnAttemptContainer(stuName, i, attempt.perf);
+        lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf);
+        lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i);
       });
     });
 

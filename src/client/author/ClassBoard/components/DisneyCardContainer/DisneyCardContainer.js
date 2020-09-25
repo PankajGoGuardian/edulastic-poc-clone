@@ -42,8 +42,16 @@ import {
 
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName, getStudentCardStatus } from "../../Transformer";
-import { isItemVisibiltySelector, testActivtyLoadingSelector, getServerTsSelector } from "../../ducks";
+import {
+  isItemVisibiltySelector,
+  testActivtyLoadingSelector,
+  getServerTsSelector,
+  getShowRefreshMessage,
+  getBulckAssignedCount,
+  getBulkAssignedCountProcessedCount
+} from "../../ducks";
 import { formatStudentPastDueTag, maxDueDateFromClassess } from "../../../../student/utils";
+import { receiveTestActivitydAction } from "../../../src/actions/classBoard";
 
 class DisneyCardContainer extends Component {
   static propTypes = {
@@ -98,17 +106,29 @@ class DisneyCardContainer extends Component {
       classId,
       recentAttemptsGrouped,
       testActivities,
-      serverTimeStamp
+      serverTimeStamp,
+      showRefreshMessage,
+      bulkAssignedCount,
+      bulkAssignedCountProcessed,
+      loadTestActivity,
+      assignmentId
     } = this.props;
-
     const noDataNotification = () => (
-      <NoDataWrapper height="300px" margin="20px auto">
-        <NoDataBox width="300px" height="200px" descSize="14px">
-          <img src={NoDataIcon} svgWidth="40px" alt="noData" />
-          <h4>No Data</h4>
-          <p>Students have not yet been assigned</p>
-        </NoDataBox>
-      </NoDataWrapper>
+      <>
+        {showRefreshMessage && (
+          <Refresh>
+            {bulkAssignedCount - bulkAssignedCountProcessed} out of {bulkAssignedCount} assignments are being processed.
+            Click <span onClick={() => loadTestActivity(assignmentId, classId)}>here</span> to refresh
+          </Refresh>
+        )}
+        <NoDataWrapper height="300px" margin="20px auto">
+          <NoDataBox width="300px" height="200px" descSize="14px">
+            <img src={NoDataIcon} svgWidth="40px" alt="noData" />
+            <h4>No Data</h4>
+            <p>Students have not yet been assigned</p>
+          </NoDataBox>
+        </NoDataWrapper>
+      </>
     );
 
     const showLoader = () => <Spin size="small" />;
@@ -134,7 +154,7 @@ class DisneyCardContainer extends Component {
             return <span style={{ marginTop: "-3px" }}>-</span>;
           }
           if (attemptScore >= 0) {
-            return <span>{round(attemptScore,2) || 0}</span>;
+            return <span>{round(attemptScore, 2) || 0}</span>;
           }
           return <span>{round(student.score, 2) || 0}</span>;
         };
@@ -433,14 +453,22 @@ class DisneyCardContainer extends Component {
   }
 }
 
-const withConnect = connect(state => ({
-  isLoading: get(state, "classResponse.loading"),
-  testActivityLoading: testActivtyLoadingSelector(state),
-  isItemsVisible: isItemVisibiltySelector(state),
-  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {},
-  testActivities: state?.author_classboard_testActivity?.data?.testActivities || {},
-  serverTimeStamp: getServerTsSelector(state)
-}));
+const withConnect = connect(
+  state => ({
+    isLoading: get(state, "classResponse.loading"),
+    testActivityLoading: testActivtyLoadingSelector(state),
+    isItemsVisible: isItemVisibiltySelector(state),
+    recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {},
+    testActivities: state?.author_classboard_testActivity?.data?.testActivities || {},
+    serverTimeStamp: getServerTsSelector(state),
+    showRefreshMessage: getShowRefreshMessage(state),
+    bulkAssignedCount: getBulckAssignedCount(state),
+    bulkAssignedCountProcessed: getBulkAssignedCountProcessedCount(state)
+  }),
+  {
+    loadTestActivity: receiveTestActivitydAction
+  }
+);
 
 export default compose(
   withNamespaces("classBoard"),
@@ -484,5 +512,20 @@ const RecentAttemptsContainer = styled.div`
      * to accomodate 2 digits scores & maxScore
      */
     font-size: 12px;
+  }
+`;
+
+const Refresh = styled.div`
+  width: 100%;
+  text-align: center;
+  background: #f3f3f3;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 5px;
+  span {
+    color: #3f84e5;
+    font-weight: bold;
+    font-style: italic;
+    cursor: pointer;
   }
 `;

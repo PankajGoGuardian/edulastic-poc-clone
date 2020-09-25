@@ -1067,3 +1067,29 @@ export const getServerTsSelector = createSelector(
   getAdditionalDataSelector,
   state => getServerTs(state)
 );
+
+export const getBulckAssignedCount = createSelector(
+  getAdditionalDataSelector,
+  state => state?.bulkAssignedCount || 0
+);
+
+export const getBulkAssignedCountProcessedCount = createSelector(
+  getAdditionalDataSelector,
+  state => state?.bulkAssignedCountProcessed || 0
+);
+
+export const getShowRefreshMessage = createSelector(
+  getBulckAssignedCount,
+  getBulkAssignedCountProcessedCount,
+  getAssignedBySelector,
+  getUserRole,
+  (bulkAssignedCountProcessed, bulkAssignedCount, assignedBy, role) => {
+    if (role === roleuser.TEACHER) {
+      return false;
+    }
+    if (assignedBy.role !== roleuser.TEACHER) {
+      return bulkAssignedCountProcessed > bulkAssignedCount;
+    }
+    return false;
+  }
+);

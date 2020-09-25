@@ -133,7 +133,12 @@ class QuestionViewContainer extends Component {
 
     if (!isEmpty(testActivity)) {
       data = testActivity
-        .filter(student => (student.status != "notStarted" || student.redirect) && student.status != "absent")
+        .filter(
+          student =>
+            (student.status != "notStarted" || student.redirect) &&
+            student.status != "absent" &&
+            student.UTASTATUS !== testActivityStatus.NOT_STARTED
+        )
         .map(st => {
           const name = isPresentationMode ? st.fakeName : st.studentName || t("common.anonymous");
           const stData = {

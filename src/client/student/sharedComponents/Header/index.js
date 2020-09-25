@@ -1,5 +1,5 @@
 import { smallDesktopWidth, tabletWidth } from "@edulastic/colors";
-import { MainHeader, EduButton } from "@edulastic/common";
+import { MainHeader, EduButton, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import React, { memo } from "react";
@@ -7,12 +7,14 @@ import { compose } from "redux";
 import styled from "styled-components";
 import ClassSelect, { StudentSlectCommon } from "../ClassSelector";
 import ShowActiveClass from "../ShowActiveClasses";
+import AttemptSelect from "./AttemptSelect";
 
 const Header = ({
   t,
   titleText,
   titleSubContent,
   classList,
+  attempts,
   classSelect,
   showActiveClass,
   setClassList,
@@ -20,7 +22,9 @@ const Header = ({
   showAllClassesOption = true,
   titleIcon,
   showExit = false,
-  history,
+  showReviewResponses,
+  reviewResponses,
+  onExit,
   ...rest
 }) => (
   <MainHeader Icon={titleIcon} headingText={titleText} headingSubContent={titleSubContent} {...rest}>
@@ -29,15 +33,17 @@ const Header = ({
     {showActiveClass && (
       <ShowActiveClass t={t} classList={classList} setClassList={setClassList} setShowClass={setShowClass} />
     )}
-    {showExit && (
-      <EduButton
-        onClick={() => {
-          history.push("/home/grades");
-        }}
-      >
-        EXIT
-      </EduButton>
+    {(attempts.length > 1 || showReviewResponses) && (
+      <FlexContainer>
+        {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
+        {showReviewResponses && (
+          <EduButton onClick={reviewResponses} isBlue>
+            Review Responses
+          </EduButton>
+        )}
+      </FlexContainer>
     )}
+    {showExit && !showReviewResponses && <EduButton onClick={onExit}>EXIT</EduButton>}
   </MainHeader>
 );
 
@@ -45,7 +51,16 @@ Header.propTypes = {
   t: PropTypes.func.isRequired,
   titleText: PropTypes.string.isRequired,
   classSelect: PropTypes.bool.isRequired,
-  showActiveClass: PropTypes.bool.isRequired
+  showActiveClass: PropTypes.bool.isRequired,
+  onExit: PropTypes.func,
+  reviewResponses: PropTypes.func,
+  attempts: PropTypes.array
+};
+
+Header.defaultProps = {
+  onExit: () => null,
+  reviewResponses: () => null,
+  attempts: []
 };
 
 const enhance = compose(

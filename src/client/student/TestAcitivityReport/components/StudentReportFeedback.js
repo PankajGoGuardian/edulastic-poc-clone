@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Tooltip } from "antd";
+import { get } from "lodash";
 import { IconCheck } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
@@ -16,6 +17,7 @@ const StudentFeedback = ({
   qLabel,
   itemMaxScore,
   isStudentReport,
+  isPracticeQuestion,
   classList = []
 }) => {
   const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true, groupId } = question[qId] || {};
@@ -65,6 +67,9 @@ const StudentFeedback = ({
     return userInitials;
   };
 
+  const _maxScore = isPracticeQuestion ? "" : maxScore;
+  const feedbackTextByTeacher = get(feedback, "text", "No feedback provided");
+
   return (
     <FeedbackWrapper isStudentReport={isStudentReport}>
       <FeedbackText isStudentReport={isStudentReport}>
@@ -77,10 +82,10 @@ const StudentFeedback = ({
           </IconCheckWrapper>
           <ScoreWrapper>
             <Score data-cy="score">{_score}</Score>
-            <Total data-cy="maxscore">{maxScore}</Total>
+            <Total data-cy="maxscore">{_maxScore}</Total>
           </ScoreWrapper>
           <Feedback>
-            <FeedbackGiven data-cy="feedback">{feedback && feedback.text}</FeedbackGiven>
+            <FeedbackGiven data-cy="feedback">{feedbackTextByTeacher}</FeedbackGiven>
           </Feedback>
         </FeedbackContainer>
 
@@ -147,6 +152,7 @@ const FeedbackContainer = styled.div`
   margin-right: 8px;
   padding: 26px 21px;
   position: relative;
+  width: 100%;
 
   &::after {
     content: "";

@@ -218,6 +218,7 @@ class AssignmentAdvanced extends Component {
           isModalVisible={isPreviewModalVisible}
           testId={testId}
           error={error}
+          showStudentPerformance
           closeTestPreviewModal={() => this.toggleTestPreviewModal(false)}
         />
 

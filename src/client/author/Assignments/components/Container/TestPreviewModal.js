@@ -1,9 +1,11 @@
-/* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
+import TestActivityPreview from "./TestActivityPreview";
+import { finishedPreviewTestAction } from "../../../../assessment/sharedDucks/previewTest";
 
 const TestPreviewModal = ({
   isModalVisible,
@@ -18,13 +20,30 @@ const TestPreviewModal = ({
   studentReportModal,
   currentAssignmentId,
   currentAssignmentClass,
+  showStudentPerformance,
+  finishedPreviewTest,
   ...restProps
 }) => {
+  const [showStudentPerformancePreview, setShowStudentPerformancePreview] = useState(false);
   useEffect(() => {
     if (error) {
       closeTestPreviewModal();
     }
   }, [error]);
+
+  const handleCloseModal = () => {
+    closeTestPreviewModal();
+    finishedPreviewTest();
+    setShowStudentPerformancePreview(false);
+  };
+
+  const submitPreviewTest = () => {
+    if (showStudentPerformance) {
+      setShowStudentPerformancePreview(true);
+    } else {
+      handleCloseModal();
+    }
+  };
 
   return (
     <StyledModal
@@ -40,20 +59,24 @@ const TestPreviewModal = ({
       closable={false}
       centered
     >
-      <AssessmentPlayer
-        closeTestPreviewModal={closeTestPreviewModal}
-        LCBPreviewModal={LCBPreviewModal}
-        testId={testId}
-        test={test}
-        passages={passages}
-        preview
-        showTools={!isStudentReport}
-        isShowStudentWork={isShowStudentWork}
-        studentReportModal={studentReportModal}
-        currentAssignmentId={currentAssignmentId}
-        currentAssignmentClass={currentAssignmentClass}
-        {...restProps}
-      />
+      {showStudentPerformancePreview && <TestActivityPreview onClose={handleCloseModal} />}
+      {!showStudentPerformancePreview && (
+        <AssessmentPlayer
+          closeTestPreviewModal={handleCloseModal}
+          submitPreviewTest={submitPreviewTest}
+          LCBPreviewModal={LCBPreviewModal}
+          testId={testId}
+          test={test}
+          passages={passages}
+          preview
+          showTools={!isStudentReport}
+          isShowStudentWork={isShowStudentWork}
+          studentReportModal={studentReportModal}
+          currentAssignmentId={currentAssignmentId}
+          currentAssignmentClass={currentAssignmentClass}
+          {...restProps}
+        />
+      )}
     </StyledModal>
   );
 };
@@ -71,7 +94,14 @@ TestPreviewModal.defaultProps = {
   LCBPreviewModal: false
 };
 
-export default TestPreviewModal;
+const enhanced = connect(
+  null,
+  {
+    finishedPreviewTest: finishedPreviewTestAction
+  }
+);
+
+export default enhanced(TestPreviewModal);
 
 const StyledModal = styled(Modal)`
   .ant-modal-header {

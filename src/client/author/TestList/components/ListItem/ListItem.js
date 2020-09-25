@@ -285,6 +285,7 @@ class ListItem extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
+          showStudentPerformance
           closeTestPreviewModal={this.hidePreviewModal}
         />
         <Container>

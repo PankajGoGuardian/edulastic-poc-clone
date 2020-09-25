@@ -220,8 +220,8 @@ class Item extends Component {
       isPremiumContent(collections) &&
       showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
       !isPublisherUser &&
-      !(_source ?.createdBy ?._id === currentUserId);
-    const authors = isPlaylist ? _source.authors : item.authors
+      !(_source?.createdBy?._id === currentUserId);
+    const authors = isPlaylist ? _source.authors : item.authors;
     const isOwner = (authors || []).find(x => x._id === currentUserId);
     const allowDuplicate =
       allowDuplicateCheck(
@@ -297,6 +297,7 @@ class Item extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
+          showStudentPerformance
           closeTestPreviewModal={this.hidePreviewModal}
         />
         {isDeleteModalOpen ? (

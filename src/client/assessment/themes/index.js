@@ -29,6 +29,7 @@ import {
   regradedRealtimeAssignmentAction,
   clearRegradeAssignmentAction
 } from "../../student/sharedDucks/AssignmentModule/ducks";
+import { evaluateCurrentAnswersForPreviewAction } from "../sharedDucks/previewTest";
 import { userWorkSelector } from "../../student/sharedDucks/TestItem";
 import { hasUserWork } from "../utils/answer";
 import { fetchAssignmentsAction } from "../../student/Reports/ducks";
@@ -88,6 +89,7 @@ const AssessmentContainer = ({
   preview,
   LCBPreviewModal,
   closeTestPreviewModal,
+  submitPreviewTest,
   testletType,
   testletState,
   testletConfig,
@@ -116,6 +118,7 @@ const AssessmentContainer = ({
   assignmentById,
   currentAssignment,
   fetchAssignments,
+  evaluateForPreview,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -143,8 +146,15 @@ const AssessmentContainer = ({
   }, []);
 
   useEffect(() => {
-    lastTime.current = Date.now();
-    window.localStorage.assessmentLastTime = lastTime.current;
+    if (!loading && items.length === 0) {
+      Modal.info({
+        title: "It looks like there aren't any Items in this test.",
+        okText: "Close"
+      });
+    }
+  }, [loading]);
+
+  useEffect(() => {
     setCurrentItem(Number(qid));
     if (enableMagnifier) {
       updateTestPlayer({ enableMagnifier: false });
@@ -152,6 +162,8 @@ const AssessmentContainer = ({
   }, [qid]);
 
   useEffect(() => {
+    lastTime.current = Date.now();
+    window.localStorage.assessmentLastTime = lastTime.current;
     gotoItem(currentItem);
   }, [currentItem]);
 
@@ -297,6 +309,8 @@ const AssessmentContainer = ({
     if (preview) {
       hideHints();
       setCurrentItem(index);
+      const timeSpent = Date.now() - lastTime.current;
+      evaluateForPreview({ currentItem, timeSpent });
     } else {
       const unansweredQs = getUnAnsweredQuestions();
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length || index < currentItem) {
@@ -322,14 +336,15 @@ const AssessmentContainer = ({
       gotoQuestion(Number(currentItem) + 1, needsToProceed, "next");
     }
 
+    const timeSpent = Date.now() - lastTime.current;
+
     if (isLast() && preview && !demo) {
-      closeTestPreviewModal();
+      evaluateForPreview({ currentItem, timeSpent, callback: submitPreviewTest });
     }
 
     if ((isLast() || value === "SUBMIT") && !preview) {
       const unansweredQs = getUnAnsweredQuestions();
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
-        const timeSpent = Date.now() - lastTime.current;
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
           urlToGo: `${url}/${"test-summary"}`,
           locState: { ...history?.location?.state, fromSummary: true }
@@ -614,7 +629,8 @@ const enhance = compose(
       regradedRealtimeAssignment: regradedRealtimeAssignmentAction,
       clearRegradeAssignment: clearRegradeAssignmentAction,
       setPasswordValidateStatus: setPasswordValidateStatusAction,
-      fetchAssignments: fetchAssignmentsAction
+      fetchAssignments: fetchAssignmentsAction,
+      evaluateForPreview: evaluateCurrentAnswersForPreviewAction
     }
   )
 );

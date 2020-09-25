@@ -1,3 +1,4 @@
+import CypressHelper, { unassignCommonActions } from "../../util/cypressHelpers";
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
 import PlayListSearchContainer from "./searchConatinerPage";
 
@@ -309,11 +310,7 @@ export default class PlayListReview {
     cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
     this.clickManageTestDropDownByTestByModule(mod, test);
     this.getUnAssignInDropDown().click({ force: true });
-    cy.get('[data-cy="confirmationInput"]').type("UNASSIGN", { force: true });
-    cy.get("button")
-      .contains("span", "Yes, Unassign")
-      .click({ force: true });
-    cy.wait("@deleteAssignments");
+    unassignCommonActions();
   };
 
   closeSwitchPlaylistWindow = () =>

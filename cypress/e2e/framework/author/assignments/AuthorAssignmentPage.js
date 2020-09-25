@@ -1,3 +1,4 @@
+import { unassignCommonActions } from "../../util/cypressHelpers";
 import SmartFilters from "./smartFilters";
 
 class AuthorAssignmentPage {
@@ -168,13 +169,7 @@ class AuthorAssignmentPage {
     cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
     this.clickOnActions();
     this.getOptionInDropDownByAttribute("delete-Assignment").click({ force: true });
-    cy.get(".ant-modal-content")
-      .find("input")
-      .type("UNASSIGN", { force: true });
-    cy.get(".ant-modal-content")
-      .find('[ data-cy="submitConfirm"]')
-      .click({ force: true });
-    cy.wait("@deleteAssignments");
+    unassignCommonActions();
   };
 
   clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });

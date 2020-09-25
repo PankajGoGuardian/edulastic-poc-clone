@@ -306,8 +306,6 @@ export default class PlayListReview {
   clickBackToPlaylistInTestReview = () => this.getBacktoPlaylistButtonInTestReview().click({ force: true });
 
   clickOnUnAssignInDropDownByTestByModule = (mod, test) => {
-    cy.server();
-    cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
     this.clickManageTestDropDownByTestByModule(mod, test);
     this.getUnAssignInDropDown().click({ force: true });
     unassignCommonActions();

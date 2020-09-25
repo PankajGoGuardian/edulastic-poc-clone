@@ -140,7 +140,7 @@ const PDFPreview = ({
       ref={previewContainer}
     >
       <PerfectScrollbar ref={forwardedRef} option={{ wheelSpeed: 0.6 }}>
-        <Droppable drop={handleDropQuestion} noBorder={docLoading}>
+        <Droppable drop={handleDropQuestion}>
           {page.URL === "blank" && <Preview onClick={handleRemoveHighlight} />}
 
           {page.URL !== "blank" && (

@@ -121,4 +121,10 @@ export default class CypressHelper {
       .then($ele => {
         $ele.detach();
       });
+
+  static removeAllAntMessages = () =>
+    cy.get("body").then(() => {
+      if (Cypress.$(".ant-notification-notice-message").length) Cypress.$(".ant-notification-notice-message").detach();
+      cy.get(".ant-notification-notice-message").should("have.length", 0);
+    });
 }

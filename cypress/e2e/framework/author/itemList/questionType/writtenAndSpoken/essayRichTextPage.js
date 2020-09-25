@@ -119,8 +119,7 @@ class EssayRichTextPage {
   };
 
   addTableWithCells = (row, column) => {
-    cy.get(`[data-row="${row}"][data-col="${column}"]`)
-      .click();
+    cy.get(`[data-row="${row}"][data-col="${column}"]`).click();
   };
 
   getInsertLinkInputWithIndex = index => cy.get("[class^=fr-link-attr]").eq(index);
@@ -130,7 +129,18 @@ class EssayRichTextPage {
     this.getInsertLinkInputWithIndex(1).type(text);
     cy.get('[data-cmd="linkInsert"]').click();
   };
+
   // ACTION STARTS
+
+  setPoints = points => this.getScoreInput().type(`{selectall}${points}`);
+
+  clickOnAdvancedOptions = () => {
+    cy.get('[class^="AdvancedOptionsLink"]').then(ele => {
+      if (ele.siblings().length === 3) cy.wrap(ele).click();
+    });
+    return this;
+  };
+
   createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
     const item = new EditItemPage();
 
@@ -144,6 +154,7 @@ class EssayRichTextPage {
         this.getQuestionEditor().type(text);
       }
       if (setAns.points) {
+        this.clickOnAdvancedOptions();
         this.setPoints(setAns.points);
       }
     });

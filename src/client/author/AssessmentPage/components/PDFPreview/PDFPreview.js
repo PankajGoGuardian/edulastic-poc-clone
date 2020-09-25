@@ -165,7 +165,7 @@ const PDFPreview = ({
               enableDrag={viewMode === "edit" && isEditable && !testMode}
             >
               {annotations
-                .filter(item => item.toolbarMode === "question" && item.page === currentPage)
+                .filter(item => item.toolbarMode === "question" && item.page === page.pageNo)
                 .map(({ uuid, qIndex, x, y, questionId }) => (
                   <div
                     key={uuid}

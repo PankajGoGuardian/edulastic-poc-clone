@@ -1,4 +1,4 @@
-import CypressHelper, { unassignCommonActions } from "../../util/cypressHelpers";
+import { unassignCommonActions } from "../../util/cypressHelpers";
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
 import PlayListSearchContainer from "./searchConatinerPage";
 

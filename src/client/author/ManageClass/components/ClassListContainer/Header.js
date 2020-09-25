@@ -35,6 +35,9 @@ const Header = ({
   user,
   handleCanvasBulkSync
 }) => {
+  const { orgData } = user;
+  const { isCleverDistrict } = orgData;
+
   const handleLoginSucess = data => {
     fetchGoogleClassList({ data });
   };
@@ -179,7 +182,7 @@ const Header = ({
                 <span>SYNC NOW WITH CLEVER</span>
               </EduButton>
             )}
-            {googleAllowedInstitutions.length > 0 && (
+            {googleAllowedInstitutions?.length > 0 && !isCleverDistrict && (
               <GoogleLogin
                 clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                 buttonText="Sync with Google Classroom"
@@ -196,7 +199,7 @@ const Header = ({
                 responseType="code"
               />
             )}
-            {canvasAllowedInstitution.length > 0 && (
+            {canvasAllowedInstitution?.length > 0 && !isCleverDistrict && (
               <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
                 <img
                   alt="Canvas"

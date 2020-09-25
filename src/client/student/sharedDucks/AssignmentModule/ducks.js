@@ -118,16 +118,14 @@ export default createReducer(initialState, {
     delete state.regradedAssignment;
   },
   [UPDATE_REALTIME_ASSIGNMENT_TEST_ID]: (state, { payload }) => {
-    const { newTestId, oldTestId, assignmentId } = payload;
-    if (
-      state.byId[assignmentId] &&
-      state.byId[assignmentId].testId !== newTestId &&
-      state.byId[assignmentId].testId === oldTestId
-    ) {
-      state.byId[assignmentId] = {
-        ...state.byId[assignmentId],
-        testId: newTestId
-      };
+    const { newTestId, oldTestId, assignmentIds } = payload;
+    for (const _id of assignmentIds) {
+      if (state.byId[_id] && state.byId[_id].testId !== newTestId && state.byId[_id].testId === oldTestId) {
+        state.byId[_id] = {
+          ...state.byId[_id],
+          testId: newTestId
+        };
+      }
     }
   },
   [SHOW_TEST_INSTRUCTION]: (state, { payload }) => {

@@ -6,7 +6,7 @@ import { Layout, Spin } from "antd";
 import { get } from "lodash";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { smallDesktopWidth } from "@edulastic/colors";
+import { useRealtimeV2 } from "@edulastic/common";
 import { getCurrentGroup } from "../../Login/ducks";
 
 // actions
@@ -15,6 +15,8 @@ import { fetchAssignmentsAction, getAssignmentsSelector } from "../ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import NoDataNotification from "../../../common/components/NoDataNotification";
+import { assignmentIdsByTestIdSelector } from "../../Assignments/ducks";
+import { updateTestIdRealTimeAction } from "../../sharedDucks/AssignmentModule/ducks";
 
 const Content = ({
   flag,
@@ -23,12 +25,23 @@ const Content = ({
   currentGroup,
   isLoading,
   currentChild,
-  location: { state = {} }
+  location: { state = {} },
+  assignmentIdsByTestId,
+  updateTestIdRealTime
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
   }, [currentChild, currentGroup]);
+  const topics = Object.keys(assignmentIdsByTestId).map(item => `student_assessment:test:${item}`);
 
+  useRealtimeV2(topics, {
+    regradedAssignment: payload => {
+      const assignmentIds = assignmentIdsByTestId[payload.oldTestId];
+      if (assignmentIds && assignmentIds.length) {
+        return updateTestIdRealTime({ assignmentIds, ...payload });
+      }
+    }
+  });
   if (isLoading) {
     return <Spin size="large" />;
   }
@@ -62,10 +75,12 @@ const enhance = compose(
       currentGroup: getCurrentGroup(state),
       isLoading: get(state, "studentAssignment.isLoading"),
       assignments: getAssignmentsSelector(state),
-      currentChild: state?.user?.currentChild
+      currentChild: state?.user?.currentChild,
+      assignmentIdsByTestId: assignmentIdsByTestIdSelector(state)
     }),
     {
-      fetchAssignments: fetchAssignmentsAction
+      fetchAssignments: fetchAssignmentsAction,
+      updateTestIdRealTime: updateTestIdRealTimeAction
     }
   )
 );

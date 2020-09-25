@@ -176,6 +176,24 @@ const reportsSelector = createSelector(
   }
 );
 
+export const assignmentIdsByTestIdSelector = createSelector(
+  assignmentsSelector,
+  assignments => {
+    const assignmentsByTestId = {};
+    for (const i in assignments) {
+      const { testId, _id } = assignments[i];
+      if (_id && testId) {
+        if (!assignmentsByTestId[testId]) {
+          assignmentsByTestId[testId] = [_id];
+        } else {
+          assignmentsByTestId[testId].push(_id);
+        }
+      }
+    }
+    return assignmentsByTestId;
+  }
+);
+
 export const filterSelector = state => state.studentAssignment.filter;
 export const stateSelector = state => state.studentAssignment;
 
@@ -376,7 +394,7 @@ function* fetchAssignments() {
  */
 function* startAssignment({ payload }) {
   try {
-    console.warn('====== Assignment Begins ======', payload)
+    console.warn("====== Assignment Begins ======", payload);
     yield put(setConfirmationForTimedAssessmentAction(null));
     const { assignmentId, testId, testType, classId, isPlaylist = false, studentRecommendation } = payload;
     if (!isPlaylist && !studentRecommendation) {
@@ -491,7 +509,7 @@ function* startAssignment({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     const { status, data = {}, response = {} } = err;
-    console.error('====== Assignment Failed ======', err, status, data, response)
+    console.error("====== Assignment Failed ======", err, status, data, response);
     if (status === 403) {
       const message =
         data.message ||

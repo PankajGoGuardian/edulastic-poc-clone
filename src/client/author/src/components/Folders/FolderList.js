@@ -54,7 +54,7 @@ const FolderList = ({
             </FolderListItemTitle>
             {ellipsis && (
               <Dropdown overlay={menu(folder)} trigger={["click"]} placement="bottomRight">
-                <MoreButton data-cy="moreButton" active={isActive}>
+                <MoreButton data-cy="folder-option" active={isActive}>
                   <IconMoreVertical />
                 </MoreButton>
               </Dropdown>

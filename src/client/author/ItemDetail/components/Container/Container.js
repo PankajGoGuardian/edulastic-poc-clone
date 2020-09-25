@@ -12,6 +12,7 @@ import { IconClose, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icon
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination } from "antd";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
+import questionTitle from "@edulastic/constants/const/questionTitle";
 import { themeColor } from "@edulastic/colors";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
@@ -828,7 +829,7 @@ class Container extends Component {
           )}
           <ItemHeader
             showIcon
-            title={t("header:common.itemDetail")}
+            title={item.isPassageWithQuestions ? questionTitle.PASSAGE_WITH_QUESTIONS : t("header:common.itemDetail")}
             reference={match.params._id}
             windowWidth={windowWidth}
             toggleSideBar={toggleSideBar}

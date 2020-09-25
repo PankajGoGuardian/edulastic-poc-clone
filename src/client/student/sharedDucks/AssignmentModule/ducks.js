@@ -74,12 +74,8 @@ const setConfirmationForTimedAssessment = (state, { payload }) => {
 
 // load assignments to store
 const setAssignments = (state, { payload }) => {
-  if (payload.assignmentObj) {
-    state.byId = payload.assignmentObj;
-  }
-  if (payload.allAssignments) {
-    state.allIds = payload.allAssignments;
-  }
+  state.byId = payload.assignmentObj || {};
+  state.allIds = payload.allAssignments || [];
   state.isLoading = false;
 };
 

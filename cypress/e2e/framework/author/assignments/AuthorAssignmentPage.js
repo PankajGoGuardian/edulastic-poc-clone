@@ -165,8 +165,6 @@ class AuthorAssignmentPage {
   };
 
   clickOnUnassign = () => {
-    cy.server();
-    cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
     this.clickOnActions();
     this.getOptionInDropDownByAttribute("delete-Assignment").click({ force: true });
     unassignCommonActions();

@@ -74,8 +74,6 @@ export default class LCBHeader {
   };
 
   clickOnUnassign = () => {
-    cy.server();
-    cy.route("DELETE", "**/assignments/**").as("unassign");
     this.getDropDown().click({ force: true });
     cy.get('[data-cy="unAssign"]').click({ force: true });
     unassignCommonActions();

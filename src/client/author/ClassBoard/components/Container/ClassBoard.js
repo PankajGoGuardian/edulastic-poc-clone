@@ -747,6 +747,7 @@ class ClassBoard extends Component {
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
     const firstQuestionEntities = get(testActivity, [0, "questionActivities"], []);
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
+    const nobodyStarted = testActivity.every(activity => activity.UTASTATUS === testActivityStatus.NOT_STARTED);
 
     const existingStudents = testActivity
       .filter(item => item.isAssigned && item.enrollmentStatus === 1)
@@ -884,7 +885,7 @@ class ClassBoard extends Component {
                   </BothButton>
                   <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
                     <StudentButton
-                      disabled={!firstStudentId || !isItemsVisible || isLoading}
+                      disabled={nobodyStarted || !isItemsVisible || isLoading}
                       active={selectedTab === "Student"}
                       onClick={e => {
                         const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
@@ -913,7 +914,7 @@ class ClassBoard extends Component {
                   >
                     <QuestionButton
                       active={selectedTab === "questionView"}
-                      disabled={!firstStudentId || !isItemsVisible || hasRandomQuestions || isLoading}
+                      disabled={nobodyStarted || !isItemsVisible || hasRandomQuestions || isLoading}
                       onClick={() => {
                         const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
                         if (!firstQuestion) {

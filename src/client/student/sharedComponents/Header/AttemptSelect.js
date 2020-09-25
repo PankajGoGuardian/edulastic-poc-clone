@@ -2,7 +2,6 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { find } from "lodash";
 import { SelectInputStyled } from "@edulastic/common";
-import { formatDateAndTime } from "../../utils";
 
 const { Option } = SelectInputStyled;
 
@@ -16,9 +15,9 @@ const AttemptSelect = ({ attempts, history, match }) => {
 
   return (
     <SelectInputStyled width="190px" defaultValue={currentAttempt.activiyId} onChange={handleSelectAttempt}>
-      {attempts.map(attempt => (
+      {attempts.map((attempt, index) => (
         <Option key={attempt.activiyId} value={attempt.activiyId}>
-          <span data-cy="date">{formatDateAndTime(attempt.createdAt)}</span>
+          <span data-cy="date">Attempt {index + 1}</span>
         </Option>
       ))}
     </SelectInputStyled>

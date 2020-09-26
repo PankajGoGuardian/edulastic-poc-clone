@@ -265,7 +265,7 @@ function* loadUserResponse({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield Effects.throttleAction(5000, SAVE_USER_RESPONSE, saveUserResponse),
+    yield Effects.throttleAction(8000, SAVE_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse)
   ]);
 }

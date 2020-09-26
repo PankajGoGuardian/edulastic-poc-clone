@@ -1,4 +1,4 @@
-import { unassignCommonActions } from "../../util/cypressHelpers";
+import CypressHelper from "../../util/cypressHelpers";
 import SmartFilters from "./smartFilters";
 
 class AuthorAssignmentPage {
@@ -167,7 +167,7 @@ class AuthorAssignmentPage {
   clickOnUnassign = () => {
     this.clickOnActions();
     this.getOptionInDropDownByAttribute("delete-Assignment").click({ force: true });
-    unassignCommonActions();
+    CypressHelper.unassignCommonActions();
   };
 
   clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });

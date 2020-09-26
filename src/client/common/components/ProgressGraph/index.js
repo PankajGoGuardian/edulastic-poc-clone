@@ -82,7 +82,7 @@ const ProgressGraph = ({ testActivity, questionActivities, testItems, onClickBar
 };
 
 ProgressGraph.propTypes = {
-  testItems: PropTypes.object.isRequired,
+  testItems: PropTypes.array.isRequired,
   testActivity: PropTypes.object.isRequired,
   questionActivities: PropTypes.array.isRequired,
   onClickBar: PropTypes.func,

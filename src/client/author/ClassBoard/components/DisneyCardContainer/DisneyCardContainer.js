@@ -105,7 +105,6 @@ class DisneyCardContainer extends Component {
       detailedClasses,
       classId,
       recentAttemptsGrouped,
-      testActivities,
       serverTimeStamp,
       showRefreshMessage,
       bulkAssignedCount,
@@ -158,8 +157,6 @@ class DisneyCardContainer extends Component {
           }
           return <span>{round(student.score, 2) || 0}</span>;
         };
-
-        const currentTestActivity = testActivities?.find(attempt => student.studentId == attempt.userId) || {};
 
         const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
 
@@ -398,14 +395,10 @@ class DisneyCardContainer extends Component {
                           }}
                         >
                           <CenteredStyledParaSS>
-                            {score(currentTestActivity.status, currentTestActivity.score)}&nbsp;/{" "}
-                            {round(student.maxScore, 2) || 0}
+                            {score(student.status, student.score)}&nbsp;/ {round(student.maxScore, 2) || 0}
                           </CenteredStyledParaSS>
                           <StyledParaSSS>
-                            {student.score > 0
-                              ? round((currentTestActivity.score / currentTestActivity.maxScore) * 100, 2)
-                              : 0}
-                            %
+                            {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                           </StyledParaSSS>
                           <p style={{ fontSize: "12px" }}>
                             Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}

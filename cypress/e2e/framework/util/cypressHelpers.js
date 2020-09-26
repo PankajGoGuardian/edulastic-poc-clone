@@ -127,4 +127,23 @@ export default class CypressHelper {
       if (Cypress.$(".ant-notification-notice-message").length) Cypress.$(".ant-notification-notice-message").detach();
       cy.get(".ant-notification-notice-message").should("have.length", 0);
     });
+
+  static unassignCommonActions = () => {
+    cy.server();
+    cy.route("DELETE", /assignments/g).as("unassign");
+
+    cy.get('[data-cy="confirmationInput"]').type("UNASSIGN", { force: true });
+    cy.get('[data-cy="submitConfirm"]').click({ force: true });
+
+    cy.contains(
+      "This action will delete the data for the entire class for this assignment. Do you want to continue?"
+    ).should("be.visible");
+    cy.wait(1000);
+
+    cy.get('[data-cy="submitConfirm"]')
+      .should("have.length", 1)
+      .click({ force: true });
+
+    cy.wait("@unassign").then(xhr => assert(xhr.status === 200, `verify unassign request ${xhr.status}`));
+  };
 }

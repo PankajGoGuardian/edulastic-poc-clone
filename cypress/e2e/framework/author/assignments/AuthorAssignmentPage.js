@@ -1,5 +1,5 @@
 import SmartFilters from "./smartFilters";
-
+import CypressHelper from "../../util/cypressHelpers";
 class AuthorAssignmentPage {
   constructor() {
     this.smartFilter = new SmartFilters();
@@ -164,17 +164,9 @@ class AuthorAssignmentPage {
   };
 
   clickOnUnassign = () => {
-    cy.server();
-    cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
     this.clickOnActions();
     this.getOptionInDropDownByAttribute("delete-Assignment").click({ force: true });
-    cy.get(".ant-modal-content")
-      .find("input")
-      .type("UNASSIGN", { force: true });
-    cy.get(".ant-modal-content")
-      .find('[ data-cy="submitConfirm"]')
-      .click({ force: true });
-    cy.wait("@deleteAssignments");
+    CypressHelper.unassignCommonActions();
   };
 
   clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });

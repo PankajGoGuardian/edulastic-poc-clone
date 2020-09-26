@@ -17,7 +17,7 @@ import {
 
 const ProgressGraph = ({ testActivity, questionActivities, testItems, onClickBar, isGreyBar, isCliUser }) => {
   const { score, maxScore, endDate } = testActivity;
-  const scorePercentage = round(score / maxScore, 2) * 100 || 0;
+  const scorePercentage = round((score / maxScore) * 100, 2) || 0;
   const totalTimeSpent = (questionActivities || []).reduce((total, current) => {
     total += current.timeSpent;
     return total;

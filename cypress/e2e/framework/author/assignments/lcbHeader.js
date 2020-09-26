@@ -1,4 +1,4 @@
-import { unassignCommonActions } from "../../util/cypressHelpers";
+import CypressHelper from "../../util/cypressHelpers";
 
 export default class LCBHeader {
   // *** ELEMENTS START ***
@@ -76,7 +76,7 @@ export default class LCBHeader {
   clickOnUnassign = () => {
     this.getDropDown().click({ force: true });
     cy.get('[data-cy="unAssign"]').click({ force: true });
-    unassignCommonActions();
+    CypressHelper.unassignCommonActions();
   };
 
   clickOnMarkAsDone = () => {

@@ -1,4 +1,4 @@
-import { unassignCommonActions } from "../../util/cypressHelpers";
+import CypressHelper from "../../util/cypressHelpers";
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
 import PlayListSearchContainer from "./searchConatinerPage";
 
@@ -308,7 +308,7 @@ export default class PlayListReview {
   clickOnUnAssignInDropDownByTestByModule = (mod, test) => {
     this.clickManageTestDropDownByTestByModule(mod, test);
     this.getUnAssignInDropDown().click({ force: true });
-    unassignCommonActions();
+    CypressHelper.unassignCommonActions();
   };
 
   closeSwitchPlaylistWindow = () =>

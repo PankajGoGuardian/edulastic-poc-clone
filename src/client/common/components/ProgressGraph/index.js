@@ -43,9 +43,9 @@ const ProgressGraph = ({
   const timeSpent = h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
 
   return (
-    <GraphContainer padding="20px" justifyContent="flex-start">
+    <GraphContainer padding="20px" justifyContent="flex-start" isCliUser={isCliUser}>
       {!dontRelease && (
-        <ProgressBarContainer>
+        <ProgressBarContainer style={{ textAlign: isCliUser ? "center" : "" }}>
           <GraphTitle>Performance Summary</GraphTitle>
           <Progress
             className="getProgress"
@@ -60,16 +60,18 @@ const ProgressGraph = ({
             }}
             format={percent => `${percent}%`}
           />
-          <Info>
-            <InfoRow>
-              <label>TIME (MIN)</label>
-              <span>{timeSpent}</span>
-            </InfoRow>
-            <InfoRow>
-              <label>SUBMITTED ON</label>
-              <span>{submittedOn}</span>
-            </InfoRow>
-          </Info>
+          {isCliUser && (
+            <Info>
+              <InfoRow>
+                <label>TIME (MIN)</label>
+                <span>{timeSpent}</span>
+              </InfoRow>
+              <InfoRow>
+                <label>SUBMITTED ON</label>
+                <span>{submittedOn}</span>
+              </InfoRow>
+            </Info>
+          )}
         </ProgressBarContainer>
       )}
       {isCliUser ? (

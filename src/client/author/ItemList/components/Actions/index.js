@@ -85,12 +85,8 @@ const Actions = ({
           <span>Create a Test</span>
         </MenuItems>
       )}
-      <MenuItems data-cy="add-to-folder" onClick={() => toggleMoveFolderModal()}>
-        Add to Folder
-      </MenuItems>
-      <MenuItems data-cy="remove-from-folder" onClick={openRemoveItemsFromFolderModal}>
-        Remove from Folder
-      </MenuItems>
+      <MenuItems onClick={() => toggleMoveFolderModal()}>Add to Folder</MenuItems>
+      <MenuItems onClick={openRemoveItemsFromFolderModal}>Remove from Folder</MenuItems>
       {!isEmpty(collectionsToWrite) && (
         <MenuItems onClick={() => setAddCollectionModalVisible(true)}>
           <span>Add to Collection</span>
@@ -111,7 +107,7 @@ const Actions = ({
         {t("component.item.itemCount")}
       </Label>
       <Dropdown overlay={menu} placement="bottomCenter" getPopupContainer={triggerNode => triggerNode.parentNode}>
-        <EduButton data-cy="assignmentActions" height="30px" width="145px" isGhost>
+        <EduButton height="30px" width="145px" isGhost>
           {t("component.item.actions")}
         </EduButton>
       </Dropdown>

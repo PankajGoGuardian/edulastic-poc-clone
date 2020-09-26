@@ -17,7 +17,7 @@ import {
   themeColorBlue
 } from "@edulastic/colors";
 import { ProgressBar, MathFormulaDisplay } from "@edulastic/common";
-import { Col, Modal, Menu } from "antd";
+import { Col, Modal } from "antd";
 import styled, { css } from "styled-components";
 import { StyledLabel } from "../../Reports/common/styled";
 
@@ -547,16 +547,4 @@ export const ModuleWrapper = styled.div`
     border: none;
     box-shadow: none;
   }
-`;
-
-export const MenuStyled = styled(Menu)`
-.ant-dropdown-menu-item-active {
-    :hover {
-      background: ${themeColorBlue};
-      color: ${white};
-      a {
-        color: ${white};
-      }
-    }
-  
 `;

@@ -2,12 +2,12 @@ import React, { useMemo, useState } from "react";
 import { ticks } from "d3-array";
 import { Legends } from "@edulastic/common";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { white, dropZoneTitleColor, secondaryTextColor, themeColor, greyThemeLight } from "@edulastic/colors";
+import { white, dropZoneTitleColor, secondaryTextColor, themeColor } from "@edulastic/colors";
 import CustomBar from "./CustomBar";
 import { BarGraphWrapper, BarLegendContainer, ChartNavButton } from "./styled";
 import { NUMBER_OF_BARS, bars, convertData } from "./helpers";
 
-const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
+const BarGraph = ({ questionActivities, testItems, onClickBar }) => {
   const [page, setPage] = useState(0);
   const [maxAttemps, maxTimeSpent, data] = useMemo(() => convertData(questionActivities), [questionActivities]);
   const renderData = data.slice(page * NUMBER_OF_BARS, page * NUMBER_OF_BARS + NUMBER_OF_BARS);
@@ -31,8 +31,6 @@ const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
       setPage(page + 1);
     }
   };
-
-  const optionalBarColor = useMemo(() => (isGreyBar ? { fill: greyThemeLight } : {}), [isGreyBar]);
 
   return (
     <BarGraphWrapper>
@@ -102,23 +100,20 @@ const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
           {Object.keys(bars).map(key => (
             <Bar
               {...bars[key]}
-              {...optionalBarColor}
               key={bars[key].dataKey}
               shape={<CustomBar dataKey={bars[key].dataKey} />}
               onClick={handleClick}
             />
           ))}
 
-          {!isGreyBar && (
-            <Line
-              yAxisId="right"
-              dataKey="timeSpent"
-              stroke={themeColor}
-              strokeWidth="3"
-              type="monotone"
-              dot={{ stroke: themeColor, strokeWidth: 6, fill: white }}
-            />
-          )}
+          <Line
+            yAxisId="right"
+            dataKey="timeSpent"
+            stroke={themeColor}
+            strokeWidth="3"
+            type="monotone"
+            dot={{ stroke: themeColor, strokeWidth: 6, fill: white }}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </BarGraphWrapper>

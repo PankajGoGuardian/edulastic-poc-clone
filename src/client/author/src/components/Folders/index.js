@@ -113,7 +113,7 @@ const Folders = ({
       {isOpenRemovalModal && <RemovalModal folderType={folderType} removeItemFromCart={removeItemFromCart} />}
 
       {showAllItems && (
-        <FolderListItem data-cy="FOLDERS" leftBorder active>
+        <FolderListItem data-cy="newFolder" leftBorder active>
           <FolderListItemTitle ellipsis title="Folders">
             <IconFolders color={themeColor} />
             FOLDERS
@@ -126,7 +126,7 @@ const Folders = ({
       {isActive && (
         <FoldersListWrapper data-cy="folder-list">
           {!showAllItems && (
-            <AddFolderButton data-cy="addFolderButton" onClick={showCreateModal} right="6px" top="-38px">
+            <AddFolderButton onClick={showCreateModal} right="6px" top="-38px">
               <IconPlusCircle />
             </AddFolderButton>
           )}

@@ -20,6 +20,7 @@ const Attempt = ({
   type,
   activityReview,
   releaseScore,
+  showReviewButton,
   releaseGradeLabels,
   classId,
   testTitle,
@@ -60,24 +61,26 @@ const Attempt = ({
               </Tooltip>
             </FeedbackWrapper>
           )}
-          {type === "reports" && activityReview ? (
+          {type === "reports" && activityReview && showReviewButton ? (
             <AnswerAndScoreReview sm={btnWrapperSize}>
               <ReviewBtn to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}>
                 <span data-cy="review">REVIEW</span>
               </ReviewBtn>
             </AnswerAndScoreReview>
           ) : (
-            type !== "reports" && <EmptyScoreBox />
+            (showReviewButton || type !== "reports") && <EmptyScoreBox />
           )}
         </RowData>
-        <OverallFeedbackModal
-          isVisible={isOverallFeedback}
-          closeCallback={() => setOverallFeedback(false)}
-          testTitle={testTitle}
-          feedbackText={feedback?.text}
-          authorName={assignedBy.name}
-          url={assignedBy.url}
-        />
+        {
+          <OverallFeedbackModal
+            isVisible={isOverallFeedback}
+            closeCallback={() => setOverallFeedback(false)}
+            testTitle={testTitle}
+            feedbackText={feedback?.text}
+            authorName={assignedBy.name}
+            url={assignedBy.url}
+          />
+        }
       </AttemptsData>
     </>
   );

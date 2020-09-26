@@ -7,13 +7,14 @@ import { COLLECTION, questionTypeKey } from "../../../../framework/constants/que
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
   const itemlist = new ItemListPage();
   const itemKeys = ["ESSAY_RICH.1", "ESSAY_RICH.2", "ESSAY_RICH.3", "ESSAY_RICH.4", "ESSAY_RICH.5", "MCQ_MULTI.6"];
-  const user = "teacher2.item.filters@snapwiz.com";
+  const user = "teacher.item.filters@snapwiz.com";
   const mathCommonCore = "Math - Common Core";
   const standard_1 = "K.CC.A.1";
   const standard_2 = "K.CC.A.2";
   const filterAttr = Cypress._.values(itemlist.searchFilters.itemBankFilterAttrs);
 
-  const filters = [
+  let queType;
+  let filters = [
     {
       standards: {
         subject: "Mathematics",
@@ -24,7 +25,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 3"],
-      id: "5f69c8639a8a8e0008fa2e3f",
+      id: "5ef9e96a7a986800076ade20",
       queType: "ESSAY_RICH"
     },
     {
@@ -37,7 +38,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Extended Thinking",
       difficulty: "Hard",
       tags: ["item tag 1"],
-      id: "5f69c88f9a88640007cc6957",
+      id: "5ef9e98e75d5e70008726fdc",
       queType: "ESSAY_RICH"
     },
     {
@@ -50,7 +51,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Strategic Thinking",
       difficulty: "Easy",
       tags: ["item tag 1"],
-      id: "5f69c8c529207d00077e4d7f",
+      id: "5ef9e9baf25c6f0007d4d20f",
       queType: "ESSAY_RICH"
     },
     {
@@ -63,17 +64,44 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 2"],
-      id: "5f69c915be36ce00073fdb7e",
+      id: "5ef9e9f4f25c6f0007d4d215",
       queType: "ESSAY_RICH"
+    },
+    {
+      standards: {
+        subject: "Mathematics",
+        standardSet: "Math - Common Core",
+        standard: ["4.G.A.2", "4.G.A.1"],
+        grade: ["Grade 4"]
+      },
+      dok: "Skill/Concept",
+      difficulty: "Hard",
+      tags: ["item tag 1"],
+      id: "5ef9ea37cc70540007dd41a7",
+      queType: "ESSAY_RICH"
+    },
+    {
+      standards: {
+        subject: "ELA",
+        standardSet: "ELA - Common Core",
+        standard: ["CCRA.L.1", "CCRA.L.2"],
+        grade: ["Grade 2"]
+      },
+      dok: "Skill/Concept",
+      difficulty: "Easy",
+      tags: ["item tag 2"],
+      id: "5ef9ea99c0931b00085c59f9",
+      queType: "MCQ_MULTI"
     }
   ];
-  before("> create items and hard code them", () => {
+  before("> create items", () => {
     cy.login("teacher", user);
+    itemlist.sidebar.clickOnDashboard();
     itemlist.sidebar.clickOnItemBank();
-    cy.getAllTestsAndDelete(user);
-    cy.getAllItemsAndDelete(user, "snapwiz", filters.map(obj => obj.id));
-    /*  filters = [];
-    itemKeys.slice(0, 4).forEach((item, index) => {
+    /*  cy.getAllTestsAndDelete(user);
+    cy.getAllItemsAndDelete(user);
+    filters = [];
+    itemKeys.forEach((item, index) => {
       itemlist.createItem(item, index + 1).then(id => {
         const filtersObj = {};
         cy.fixture("questionAuthoring").then(questionData => {
@@ -101,26 +129,90 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
     cy.writeFile("temp.json", filters);
   }); */
 
-  before("> create new items", () => {
-    itemKeys.slice(4).forEach((item, index) => {
-      itemlist.createItem(item, index + 5).then(id => {
-        const filtersObj = {};
-        cy.fixture("questionAuthoring").then(questionData => {
-          const itemProps = questionData[`${item.split(".")[0]}`][`${item.split(".")[1]}`];
+  context("> total questions, search, collapse/expand filters", () => {
+    it("> total questions in authored by me", () => {
+      itemlist.sidebar.clickOnDashboard();
+      itemlist.sidebar.clickOnItemBank();
+      itemlist.searchFilters.clearAll();
+      itemlist.searchFilters.getAuthoredByMe();
+      itemlist.verifyNoOfQuestionsInUI(itemKeys.length);
+      itemlist.verifyNoOfItemsInContainer(itemKeys.length);
+    });
+    it("> total questions in entire library vs total page count", () => {
+      itemlist.searchFilters.clearAll();
+      itemlist.verifyTotalPagesAndTotalQuestions();
+    });
 
-          filtersObj.standards = {};
-          filtersObj.standards.subject = itemProps.standards[0].subject;
-          filtersObj.standards.standardSet = itemProps.standards[0].standardSet;
-          filtersObj.standards.standard = itemProps.standards[0].standard;
-          filtersObj.standards.grade = [itemProps.standards[0].grade];
-          if (itemProps.meta) {
-            if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok;
-            if (itemProps.meta.difficulty) filtersObj.difficulty = itemProps.meta.difficulty;
-            if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags;
-          }
-          filtersObj.id = id;
-          filtersObj.queType = item.split(".")[0];
-          filters.push(filtersObj);
+    it("> expand and collapse filters", () => {
+      itemlist.searchFilters.collapseFilters();
+      cy.wait(1000);
+      itemlist.searchFilters.expandFilters();
+    });
+  });
+
+  context("> paginations", () => {
+    beforeEach("> clear filters", () => {
+      itemlist.searchFilters.clearAll();
+    });
+    it("> jump to next 5 pages and previous 5 pages", () => {
+      itemlist.searchFilters.clickButtonInPaginationByPageNo("Next 5 Pages");
+      itemlist.searchFilters.verfifyActivePageIs(6);
+
+      itemlist.searchFilters.clickButtonInPaginationByPageNo("Next 5 Pages");
+      itemlist.searchFilters.verfifyActivePageIs(11);
+
+      itemlist.searchFilters.clickButtonInPaginationByPageNo("Previous 5 Pages");
+      itemlist.searchFilters.verfifyActivePageIs(6);
+    });
+
+    it("> go to random page", () => {
+      itemlist.searchFilters.clickButtonInPaginationByPageNo(5);
+      itemlist.searchFilters.verfifyActivePageIs(5);
+
+      itemlist.searchFilters.clickButtonInPaginationByPageNo(3);
+      itemlist.searchFilters.verfifyActivePageIs(3);
+    });
+
+    it("> go to next page and previous page", () => {
+      itemlist.searchFilters.clickButtonInPaginationByPageNo("Next Page");
+      itemlist.searchFilters.verfifyActivePageIs(2);
+
+      itemlist.searchFilters.clickButtonInPaginationByPageNo("Previous Page");
+      itemlist.searchFilters.verfifyActivePageIs(1);
+    });
+
+    it("> go to last page", () => {
+      itemlist.searchFilters.getTotalPagesInPagination().then(pages => {
+        itemlist.searchFilters.clickJumpToLastPage();
+        itemlist.searchFilters.verfifyActivePageIs(pages);
+      });
+    });
+  });
+
+  context(`> ques type, standards, author and item id on item cards in 'authored by me'`, () => {
+    [filters[1], filters[5], filters[2]].forEach((filter, index) => {
+      context(`> for filter${index + 1}`, () => {
+        before("> set filter", () => {
+          queType = filter.queType;
+          itemlist.searchFilters.clearAll();
+          itemlist.searchFilters.getAuthoredByMe();
+          filter.queType = itemlist.mapQueTypeKeyToUITextInDropDown(filter.queType);
+          itemlist.searchFilters.setFilters(filter);
+        });
+
+        it("> quetype, author and item id", () => {
+          filter.queType = queType;
+          itemlist.verifyQuestionTypeById(filter.id, filter.queType);
+          itemlist.verifyAuthorById(filter.id, "Teacher");
+          itemlist.verifyItemIdById(filter.id);
+        });
+
+        it("> standards and dok", () => {
+          itemlist.getHiddenStandards(filter.id);
+          filter.standards.standard.forEach((std, ind) => {
+            itemlist.verifyContentById(filter.id, std);
+          });
+          itemlist.verifydokByItemId(filter.id, filter.dok);
         });
       });
     });

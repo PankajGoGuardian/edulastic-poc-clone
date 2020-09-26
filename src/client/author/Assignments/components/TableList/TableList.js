@@ -446,10 +446,10 @@ const TableList = ({
       title: () => {
         const menu = (
           <Menu>
-            <Menu.Item data-cy="add-to-folder" onClick={() => toggleMoveFolderModal()}>
+            <Menu.Item data-cy="addToFolder" onClick={() => toggleMoveFolderModal()}>
               Add to Folder
             </Menu.Item>
-            <Menu.Item data-cy="remove-from-folder" onClick={() => handleRemoveItemsFromFolder()}>
+            <Menu.Item data-cy="removeFromFolder" onClick={() => handleRemoveItemsFromFolder()}>
               Remove from Folder
             </Menu.Item>
           </Menu>

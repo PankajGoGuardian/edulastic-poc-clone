@@ -56,7 +56,7 @@ class ItemListPage {
 
   getItemIdById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-3"]');
 
-  getItemDOKIById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-0"]');
+  getItemDOKIById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-2"]');
 
   getAddButtonById = id =>
     this.getViewItemById(id)
@@ -258,10 +258,10 @@ class ItemListPage {
         qType = "Essay with rich text";
         break;
       case queTypes.CLOZE_DROP_DOWN:
-        qType = "Text Drop Down";
+        qType = "Cloze with Drop Down";
         break;
       case queTypes.CLOZE_DRAG_DROP:
-        qType = "Drag & Drop";
+        qType = "Cloze with Drag & Drop";
         break;
       default:
         assert.fail(1, 2, "failed to match que type key in question card");
@@ -280,10 +280,10 @@ class ItemListPage {
         qType = "Essay";
         break;
       case queTypes.CLOZE_DROP_DOWN:
-        qType = "Text Drop Down";
+        qType = "Cloze Drop Down";
         break;
       case queTypes.CLOZE_DRAG_DROP:
-        qType = "Drag & Drop";
+        qType = "Cloze Drag Drop";
         break;
       default:
         assert.fail(1, 2, "failed to match que type key in question drop down");

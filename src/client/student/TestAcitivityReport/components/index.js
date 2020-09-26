@@ -31,7 +31,6 @@ import OverallFeedback from "./OverallFeedback";
 
 const { releaseGradeLabels } = testConstants;
 const continueBtns = [releaseGradeLabels.WITH_ANSWERS, releaseGradeLabels.WITH_RESPONSE];
-const greyBars = [releaseGradeLabels.DONT_RELEASE, releaseGradeLabels.SCORE_ONLY];
 
 const ReportListContainer = ({
   flag,
@@ -134,7 +133,6 @@ const ReportListContainer = ({
               testActivity={testActivity}
               questionActivities={questionActivities}
               testItems={testItems}
-              isGreyBar={greyBars.includes(releaseScore)}
             />
             <OverallFeedback />
           </Fragment>

@@ -3,6 +3,7 @@ import { DOK } from "../constants/questionAuthoring";
 import Helpers from "../util/Helpers";
 import { sortOptions } from "../constants/questionTypes";
 
+const { dom, $ } = Cypress;
 export default class SearchFilters {
   // *** ELEMENTS START ***
   constructor() {
@@ -174,7 +175,7 @@ export default class SearchFilters {
 
   clearMultipleSelectionDropDown = attr => {
     cy.get(`[data-cy="${attr}"]`).then($ele => {
-      if (Cypress.$($ele).find(".anticon-close").length > 0)
+      if ($($ele).find(".anticon-close").length > 0)
         cy.wrap($ele)
           .find(".anticon-close")
           .each(element => {
@@ -182,7 +183,7 @@ export default class SearchFilters {
             this.waitForSearchResponse();
           });
 
-      cy.wrap(Cypress.$($ele))
+      cy.wrap($ele)
         .find(".ant-select-selection__choice__content")
         .should("have.length", 0);
     });
@@ -215,6 +216,7 @@ export default class SearchFilters {
         this.waitForSearchResponse();
       }
     });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -311,14 +313,14 @@ export default class SearchFilters {
 
   expandFilters = () =>
     this.getFilterButton().then($elem => {
-      if (Cypress.$('[data-cy="clearAll"]').length === 0) cy.wrap($elem).click({ force: true });
+      if (dom.isHidden($('[data-cy="clearAll"]'))) cy.wrap($elem).click({ force: true });
       cy.get('[data-cy="clearAll"]').should("be.visible");
     });
 
   collapseFilters = () =>
     this.getFilterButton().then($elem => {
-      if (Cypress.$('[data-cy="clearAll"]').length === 1) cy.wrap($elem).click({ force: true });
-      cy.get('[data-cy="clearAll"]').should("not.exist");
+      if (dom.isVisible($('[data-cy="clearAll"]'))) cy.wrap($elem).click({ force: true });
+      cy.get('[data-cy="clearAll"]').should("not.be.visible");
     });
 
   verfifyActivePageIs = pageNo =>
@@ -328,17 +330,16 @@ export default class SearchFilters {
     this.getSortDropdown().click({ force: true });
     cy.wait(300);
     cy.get(".ant-dropdown-menu-item").then($ele => {
-      cy.wrap($ele.filter((i, ele) => Cypress.$(ele).text() === option)).click({ force: true });
+      cy.wrap($ele.filter((i, ele) => $(ele).text() === option)).click({ force: true });
     });
   };
 
   closeFilterGuide = () =>
     cy.get("body").then(() => {
-      if (Cypress.$("._pendo-close-guide").length > 0)
+      if ($("._pendo-close-guide").length > 0)
         cy.get("._pendo-close-guide")
-          .should($ele => expect(Cypress.dom.isAttached($ele)).to.be.true)
+          .should($ele => expect(dom.isAttached($ele)).to.be.true)
           .click();
     });
-
   // *** APPHELPERS END ***
 }

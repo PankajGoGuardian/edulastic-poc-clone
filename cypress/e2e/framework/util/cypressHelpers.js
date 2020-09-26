@@ -146,4 +146,5 @@ export function unassignCommonActions() {
     .click({ force: true });
 
   cy.wait("@unassign").then(xhr => assert(xhr.status === 200, `verify unassign request ${xhr.status}`));
+
 }

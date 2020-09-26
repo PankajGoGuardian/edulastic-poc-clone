@@ -11,7 +11,6 @@ import { Layout, Menu as AntMenu, Row, Icon as AntIcon, Dropdown } from "antd";
 import {
   IconLogoCompact,
   IconClockDashboard,
-  IconBarChart,
   IconReport,
   IconManage,
   IconQuestion,
@@ -519,7 +518,7 @@ const Menu = styled(AntMenu)`
         border: none;
         background-color: ${themeColor};
         &:hover {
-          background-color: #fff;
+          background-color: ${themeColorBlue};
           svg {
             fill: ${themeColor};
           }

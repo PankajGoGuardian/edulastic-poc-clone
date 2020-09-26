@@ -18,7 +18,7 @@ import { test as testConstants } from "@edulastic/constants";
 
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { first, maxBy } from "lodash";
+import { first, maxBy, isNaN } from "lodash";
 import { Row, Col, Icon, Modal } from "antd";
 import { TokenStorage } from "@edulastic/api";
 import { maxDueDateFromClassess, getServerTs } from "../utils";
@@ -163,7 +163,7 @@ const AssignmentCard = memo(
       dueDate = maxDueDateFromClassess(currentClassList, userId);
     }
 
-    const lastAttempt = maxBy(reports, o => parseInt(o.startDate)) || {};
+    const lastAttempt = maxBy(reports, o => parseInt(o.startDate, 10)) || {};
     // if last test attempt was not *submitted*, user should be able to resume it.
     const resume = lastAttempt.status == 0;
     const absent = lastAttempt.status == 2;
@@ -177,7 +177,7 @@ const AssignmentCard = memo(
     const scorePercentage = (score / maxScore) * 100 || 0;
     const arrow = showAttempts ? "\u2191" : "\u2193";
     // To handle regrade reduce max attempt settings.
-    if (maxAttempts < reports.length && !window.isNaN(maxAttempts)) {
+    if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
       maxAttempts = reports.length;
     }
     const startTest = () => {
@@ -267,55 +267,53 @@ const AssignmentCard = memo(
       releaseScore = data.releaseScore;
     }
     const isParentRoleProxy = proxyUserRole === "parent";
-    const showReviewButton =
-      releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
+
     const StartButtonContainer =
-      type === "assignment"
-        ? !(userRole === "parent" || isParentRoleProxy) &&
-          (safeBrowser && !(new Date(startDate) > new Date(serverTimeStamp) || !startDate) && !isSEB() ? (
-            <SafeBrowserButton
-              data-cy="start"
-              testId={testId}
-              testType={testType}
-              testActivityId={lastAttempt._id}
-              assignmentId={assignmentId}
-              btnName={t("common.startAssignment")}
-              startDate={startDate}
-              t={t}
-              startTest={startTest}
-              attempted={attempted}
-              resume={resume}
-              classId={classId}
-            />
-          ) : (
-            <StartButton
-              assessment
-              data-cy="start"
-              safeBrowser={safeBrowser}
-              startDate={startDate}
-              t={t}
-              isPaused={isPaused}
-              startTest={checkRetakeOrStart}
-              attempted={attempted}
-              resume={resume}
-              classId={classId}
-              serverTimeStamp={serverTimeStamp}
-            />
-          ))
-        : showReviewButton &&
-          !absent && (
-            <ReviewButton
-              data-cy="review"
-              testId={testId}
-              isPaused={isPaused}
-              testActivityId={lastAttempt._id}
-              title={test.title}
-              activityReview={activityReview}
-              t={t}
-              attempted={attempted}
-              classId={classId}
-            />
-          );
+      type === "assignment" ? (
+        !(userRole === "parent" || isParentRoleProxy) &&
+        (safeBrowser && !(new Date(startDate) > new Date(serverTimeStamp) || !startDate) && !isSEB() ? (
+          <SafeBrowserButton
+            data-cy="start"
+            testId={testId}
+            testType={testType}
+            testActivityId={lastAttempt._id}
+            assignmentId={assignmentId}
+            btnName={t("common.startAssignment")}
+            startDate={startDate}
+            t={t}
+            startTest={startTest}
+            attempted={attempted}
+            resume={resume}
+            classId={classId}
+          />
+        ) : (
+          <StartButton
+            assessment
+            data-cy="start"
+            safeBrowser={safeBrowser}
+            startDate={startDate}
+            t={t}
+            isPaused={isPaused}
+            startTest={checkRetakeOrStart}
+            attempted={attempted}
+            resume={resume}
+            classId={classId}
+            serverTimeStamp={serverTimeStamp}
+          />
+        ))
+      ) : !absent ? (
+        <ReviewButton
+          data-cy="review"
+          testId={testId}
+          isPaused={isPaused}
+          testActivityId={lastAttempt._id}
+          title={test.title}
+          activityReview={activityReview}
+          t={t}
+          attempted={attempted}
+          classId={classId}
+        />
+      ) : null;
 
     const isValidAttempt = attempted;
 
@@ -462,7 +460,6 @@ const AssignmentCard = memo(
                   activityReview={activityReview}
                   type={type}
                   releaseScore={releaseScore}
-                  showReviewButton={showReviewButton}
                   releaseGradeLabels={releaseGradeLabels}
                   classId={attempt.groupId}
                   testTitle={title}

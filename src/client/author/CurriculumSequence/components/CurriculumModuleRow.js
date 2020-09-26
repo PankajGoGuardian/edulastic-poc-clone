@@ -56,7 +56,8 @@ import {
   ModuleWrapper,
   HideLinkLabel,
   CaretUp,
-  Bullet
+  Bullet,
+  MenuStyled
 } from "./styled";
 
 const { releaseGradeLabels } = testConstants;
@@ -595,7 +596,7 @@ class ModuleRow extends Component {
                     : {};
 
                   const moreMenu = (
-                    <Menu data-cy="assessmentItemMoreMenu">
+                    <MenuStyled data-cy="assessmentItemMoreMenu">
                       <CaretUp className="fa fa-caret-up" />
                       {!isStudent && (
                         <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
@@ -632,7 +633,7 @@ class ModuleRow extends Component {
                         >
                           Remove
                         </Menu.Item> */}
-                    </Menu>
+                    </MenuStyled>
                   );
 
                   const showHideAssessmentButton = hasEditAccess &&

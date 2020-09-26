@@ -94,7 +94,7 @@ const ClassSelectModal = ({
   }, [allowedInstitutions]);
 
   const handleClassListSync = () => {
-    const classList = classListData.filter((each, index) => selectedRows.includes(index) && !each.disabled);
+    const classList = classListData.filter((each, index) => selectedRows.includes(index));
     if (!classList?.length) {
       notification({ messageKey: "pleaseSelectAClass" });
     } else if (type === "googleClassroom" && !institutionId) {

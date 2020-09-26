@@ -1,5 +1,6 @@
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
 import PlayListSearchContainer from "./searchConatinerPage";
+import CypressHelper from "../../util/cypressHelpers";
 
 export default class PlayListReview {
   constructor() {
@@ -305,15 +306,9 @@ export default class PlayListReview {
   clickBackToPlaylistInTestReview = () => this.getBacktoPlaylistButtonInTestReview().click({ force: true });
 
   clickOnUnAssignInDropDownByTestByModule = (mod, test) => {
-    cy.server();
-    cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
     this.clickManageTestDropDownByTestByModule(mod, test);
     this.getUnAssignInDropDown().click({ force: true });
-    cy.get('[data-cy="confirmationInput"]').type("UNASSIGN", { force: true });
-    cy.get("button")
-      .contains("span", "Yes, Unassign")
-      .click({ force: true });
-    cy.wait("@deleteAssignments");
+    CypressHelper.unassignCommonActions();
   };
 
   closeSwitchPlaylistWindow = () =>

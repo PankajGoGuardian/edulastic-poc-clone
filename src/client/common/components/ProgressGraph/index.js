@@ -16,16 +16,15 @@ import {
 } from "./styled";
 
 const ProgressGraph = ({ testActivity, questionActivities, testItems, onClickBar, isGreyBar, isCliUser }) => {
-  const { score, maxScore } = testActivity;
+  const { score, maxScore, endDate } = testActivity;
   const scorePercentage = round(score / maxScore, 2) * 100 || 0;
-
   const totalTimeSpent = (questionActivities || []).reduce((total, current) => {
     total += current.timeSpent;
     return total;
   }, 0);
 
   const duration = moment.duration(totalTimeSpent);
-  const submittedOn = moment(testActivity.updatedAt).format("MMM D YYYY / H:mm");
+  const submittedOn = moment(endDate).format("MMM D YYYY / H:mm");
   const h = Math.floor(duration.asHours());
   let m = duration.minutes();
   const s = duration.seconds();

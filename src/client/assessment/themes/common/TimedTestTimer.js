@@ -12,7 +12,21 @@ import { white, red } from "@edulastic/colors";
 import useInterval from "@use-it/interval";
 import { db } from "@edulastic/common/src/Firebase";
 import AssignmentTimeEndedAlert from "./AssignmentTimeEndedAlert";
-import { updateUtaTimeAction } from "../../../student/Assignments/ducks";
+import { utaStartTimeUpdateRequired } from "../../../student/sharedDucks/AssignmentModule/ducks";
+
+export const TIME_UPDATE_TYPE = {
+  START: 'start',
+  RESUME: 'resume'
+}
+
+const UTA_STATUS = {
+  ACTIVE: 'active',
+  PAUSED: 'paused'
+}
+
+const TIMER_INTERVAL = 1000;
+const SYNC_INTERVAL = 30000;
+const CAUTION_TIME = 120000;
 
 const getFormattedTime = currentAssignmentTime => {
   const duration = moment.duration(currentAssignmentTime);
@@ -22,8 +36,6 @@ const getFormattedTime = currentAssignmentTime => {
   const time = `${h > 9 ? h : `0${h}`} : ${m > 9 ? m : `0${m}`} : ${s > 9 ? s : `0${s}`}`;
   return time;
 };
-
-const SYNC_INTERVAL = 30000;
 
 const firestoreCollectionName = "timedAssignmentUTAs";
 
@@ -43,7 +55,7 @@ const TimedTestTimer = ({
   fgColor,
   bgColor = "transparent",
   updateUtaTimeType = null,
-  updateUtaTime,
+  resetUpdateUtaType,
   isPasswordValidated
 }) => {
   const [uta, setUtaDoc] = useState();
@@ -53,7 +65,7 @@ const TimedTestTimer = ({
   const docRef = useRef(db.collection(firestoreCollectionName).doc(utaId));
 
   useEffect(() => {
-    let unsubscribe = () => {};
+    let unsubscribe = () => { };
     unsubscribe = db
       .collection(firestoreCollectionName)
       .doc(utaId)
@@ -69,18 +81,26 @@ const TimedTestTimer = ({
 
     if (isModified) {
       setUtaDoc(upstreamUta);
-      const pausedByStudent = upstreamUta && (upstreamUta.status === "paused" && !upstreamUta?.byTeacher);
-      const initialUtaUpdate = upstreamUta && (upstreamUta.status === "active" && updateUtaTimeType === "start");
-      const isPasswordProtected = isPasswordValidated && updateUtaTimeType === "resume";
-
+      const pausedByStudent = upstreamUta && (upstreamUta.status === UTA_STATUS.PAUSED && !upstreamUta?.byTeacher);
+      const initialUtaUpdate = upstreamUta && (upstreamUta.status === UTA_STATUS.ACTIVE && updateUtaTimeType === TIME_UPDATE_TYPE.START);
+      const isPasswordProtected = isPasswordValidated && updateUtaTimeType === TIME_UPDATE_TYPE.RESUME;
+      const timeStamp = firestore.FieldValue.serverTimestamp();
       if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
-        updateUtaTime({ utaId, type: updateUtaTimeType });
-      } else if (uta && !uta.startTime) {
-        // in case somehow missed to set startTime in firebase uta document
-        updateUtaTime({ utaId, type: "start" });
-      } else if (upstreamUta?.status === "paused") {
+        let data = { startTime: timeStamp };
+        if (updateUtaTimeType === TIME_UPDATE_TYPE.RESUME) {
+          const timeStampType = !uta || uta?.startTime
+          ? { lastResumed: timeStamp }
+          : { startTime: timeStamp };
+          data = {
+            ...timeStampType,
+            status: UTA_STATUS.ACTIVE
+          };
+        }
+        resetUpdateUtaType(null);
+        docRef.current.update(data);
+      }else if  (upstreamUta?.status === UTA_STATUS.PAUSED) {
         // this shouldn't happen.
-        console.warn("this shouldn't happen. the assignment is already paused");
+        console.warn("This shouldn't happen. the assignment is already paused");
         handlePaused(history);
       }
 
@@ -89,14 +109,21 @@ const TimedTestTimer = ({
       } else if (upstreamUta.allowedTime && uta.allowedTime && upstreamUta.allowedTime !== uta.allowedTime) {
         // If teacher updated time in LCB : sync the timeSpent and reflect changes in UI
         setCurrentAssignmentTime(_currentTime => {
-          updateUtaTime({ utaId, type: "sync", syncOffset: uta.allowedTime - _currentTime });
+          docRef.current.get().then(snapshot => {
+            const { timeSpent = 0 } = snapshot.data();
+            const _syncOffset = uta.allowedTime - currentAssignmentTime || 0;
+            docRef.current.update({
+              lastResumed: firestore.FieldValue.serverTimestamp(),
+              timeSpent: Math.max(timeSpent, _syncOffset)
+            });
+          });
           return upstreamUta?.allowedTime - (uta?.allowedTime - _currentTime) || 0;
         });
       }
     }
   }, [upstreamUta, uta, updateUtaTimeType]);
 
-  const timerPaused = uta?.status === "paused";
+  const timerPaused = uta?.status === UTA_STATUS.PAUSED;
 
   useEffect(() => {
     if (timerPaused && uta?.byTeacher) {
@@ -109,10 +136,10 @@ const TimedTestTimer = ({
       if (currentAssignmentTime < 0) {
         setAutoSubmitpopUp(true);
       } else {
-        setCurrentAssignmentTime(oldTime => oldTime - 1000);
+        setCurrentAssignmentTime(oldTime => oldTime - TIMER_INTERVAL);
       }
     }
-  }, 1000);
+  }, TIMER_INTERVAL);
 
   useInterval(() => {
     if (docRef && utaId && currentAssignmentTime && currentAssignmentTime > 0) {
@@ -144,9 +171,9 @@ const TimedTestTimer = ({
   return (
     <>
       {uta && currentAssignmentTime !== 0 && (
-        <TimerWrapper isDanger={currentAssignmentTime <= 120000} fgColor={fgColor} bgColor={bgColor}>
+        <TimerWrapper isDanger={currentAssignmentTime <= CAUTION_TIME} fgColor={fgColor} bgColor={bgColor}>
           <Icon type="clock-circle" />
-          <Label isDanger={currentAssignmentTime <= 120000} fgColor={fgColor}>
+          <Label isDanger={currentAssignmentTime <= CAUTION_TIME} fgColor={fgColor}>
             {getFormattedTime(currentAssignmentTime < 0 ? 0 : currentAssignmentTime)}
           </Label>
         </TimerWrapper>
@@ -166,7 +193,7 @@ const enhance = compose(
       isPasswordValidated: state.test.isPasswordValidated
     }),
     {
-      updateUtaTime: updateUtaTimeAction
+      resetUpdateUtaType: utaStartTimeUpdateRequired
     }
   )
 );

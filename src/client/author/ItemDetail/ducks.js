@@ -899,14 +899,8 @@ export function* deleteItemSaga({ payload }) {
     notification({ type: "success", messageKey: "itemDeletedSuccessfully" });
     if (isItemPrevew) return;
 
-    // Note: testId could be "undefined" (string value)
-    if (testId && isTestFlow) {
-      if (redirectId) {
-        yield put(push(`/author/tests/${testId}/editItem/${redirectId}`));
-      } else {
-        // when test no test item to redirect, back ot description
-        yield put(push(`/author/tests/create/description`));
-      }
+    if (isTestFlow) {
+      yield put(push(`/author/tests/${testId}/editItem/${redirectId}`));
       return;
     }
     if (redirectId) {

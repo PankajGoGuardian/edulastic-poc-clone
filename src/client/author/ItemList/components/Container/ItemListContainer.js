@@ -12,7 +12,6 @@ import { getUserId, getInterestedCurriculumsSelector, getUserRole } from "../../
 import { previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
 import PreviewModal from "../../../src/components/common/PreviewModal";
 import { resetItemScoreAction } from "../../../src/ItemScore/ducks";
-import { setPrevewItemAction } from "../../../src/components/common/PreviewModal/ducks";
 
 const ItemListContainer = ({
   items,
@@ -27,8 +26,7 @@ const ItemListContainer = ({
   interestedCurriculums,
   search,
   userRole,
-  resetScore,
-  setPrevewItem
+  resetScore
 }) => {
   if (!items.length) {
     return (
@@ -81,8 +79,6 @@ const ItemListContainer = ({
       if (index !== -1) {
         resetScore(); // we should reset the score block, or it retains old data
         updateIndexForPreview(index);
-        const testItem = get(items, `[${index}]`, null);
-        setPrevewItem(testItem); // setting testPreviewItem
       }
     }
   };
@@ -145,8 +141,7 @@ export default compose(
       addItemToCart: addItemToCartAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
-      resetScore: resetItemScoreAction,
-      setPrevewItem: setPrevewItemAction
+      resetScore: resetItemScoreAction
     }
   )
 )(ItemListContainer);

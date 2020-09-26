@@ -1,4 +1,4 @@
-import { isEmpty, get } from "lodash";
+import { isEmpty } from "lodash";
 import { incorrect, yellow1, linkColor1, themeColorLighter, darkBlue2 } from "@edulastic/colors";
 
 export const NUMBER_OF_BARS = 10;
@@ -41,7 +41,7 @@ export const bars = {
   }
 };
 
-export const convertData = (questionActivities, testItems) => {
+export const convertData = questionActivities => {
   let maxAttemps = 0;
   let maxTimeSpent = 0;
   let data = [];
@@ -49,17 +49,10 @@ export const convertData = (questionActivities, testItems) => {
     return [maxAttemps, maxTimeSpent, data];
   }
 
-  const testItemsById = testItems.reduce((acc, curr) => {
-    acc[curr._id] = curr;
-    return acc;
-  }, {});
-
   data = questionActivities
     .filter(x => !x.disabled)
     .map((activity, index) => {
-      const { _id, testItemId, graded, score, qLabel, timeSpent, pendingEvaluation } = activity;
-      const maxScore = get(testItemsById[testItemId], "maxScore", activity.maxScore);
-
+      const { _id, testItemId, score, maxScore, graded, qLabel, timeSpent, pendingEvaluation } = activity;
       let { notStarted, skipped } = activity;
       let skippedx = false;
 

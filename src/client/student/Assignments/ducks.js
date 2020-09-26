@@ -642,8 +642,8 @@ function* launchAssignment({ payload }) {
           const test = yield call(testsApi.getByIdMinimal, testId);
           maxAttempt = test.maxAttempts;
         }
-
-        if (maxAttempt > testActivities.length) {
+        const attempts = testActivities.filter(el => [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(el.status))
+        if (maxAttempt > attempts.length && lastActivity.status === testActivityStatus.NOT_STARTED) {
           if (!resume && timedAssignment) {
             yield put(setConfirmationForTimedAssessmentAction(assignment));
             return;

@@ -139,7 +139,7 @@ const ReportListContainer = ({
             <OverallFeedback />
           </Fragment>
         )}
-        {showGraph && (
+        {showReviewResponses && (
           <FlexContainer mt="16px">
             <EduButton onClick={reviewResponses} isBlue isGhost>
               Review Responses

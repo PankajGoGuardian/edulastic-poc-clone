@@ -1,6 +1,7 @@
 import { createAction } from "redux-starter-kit";
 import { keyBy, cloneDeep } from "lodash";
 import { produce } from "immer";
+import { testActivityStatus } from "@edulastic/constants";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
@@ -122,15 +123,15 @@ const reducer = (state = initialState, { type, payload }) => {
         allTestActivitiesForStudent: payload
       };
     case RESPONSE_ENTRY_SCORE_SUCCESS:
-      return produce(state,_st => {
+      return produce(state, _st => {
         const userId = payload?.testActivity?.userId;
         const testActivityId = payload?.testActivity?._id;
         const attempt = _st.data.recentTestActivitiesGrouped[userId].find(x => x._id === testActivityId);
-        if(attempt){
-          if(payload.testActivity?.score){
+        if (attempt) {
+          if (payload.testActivity?.score) {
             attempt.score = payload.testActivity?.score;
           }
-          if(payload.testActivity?.maxScore){
+          if (payload.testActivity?.maxScore) {
             attempt.maxScore = payload.testActivity?.maxScore;
           }
         }
@@ -414,7 +415,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_REMOVED_STUDENTS_LIST: {
       const updatedStudents = state.entities.map(item => {
         if (payload.includes(item.studentId)) {
-          return { ...item, status: "absent" };
+          return { ...item, status: "absent", UTASTATUS: testActivityStatus.ABSENT };
         }
         return item;
       });

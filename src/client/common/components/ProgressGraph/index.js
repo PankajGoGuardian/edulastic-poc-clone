@@ -15,15 +15,7 @@ import {
   Info
 } from "./styled";
 
-const ProgressGraph = ({
-  testActivity,
-  questionActivities,
-  testItems,
-  onClickBar,
-  isGreyBar,
-  isCliUser,
-  dontRelease = false
-}) => {
+const ProgressGraph = ({ testActivity, questionActivities, testItems, onClickBar, isGreyBar, isCliUser }) => {
   const { score, maxScore, endDate } = testActivity;
   const scorePercentage = round((score / maxScore) * 100, 2) || 0;
   const totalTimeSpent = (questionActivities || []).reduce((total, current) => {
@@ -43,37 +35,33 @@ const ProgressGraph = ({
   const timeSpent = h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
 
   return (
-    <GraphContainer padding="20px" justifyContent="flex-start" isCliUser={isCliUser}>
-      {!dontRelease && (
-        <ProgressBarContainer style={{ textAlign: isCliUser ? "center" : "" }}>
-          <GraphTitle>Performance Summary</GraphTitle>
-          <Progress
-            className="getProgress"
-            strokeLinecap="square"
-            type="circle"
-            percent={scorePercentage}
-            width={140}
-            strokeWidth={8}
-            strokeColor={{
-              "0%": "#8DB8F3",
-              "100%": "#2B7FF0"
-            }}
-            format={percent => `${percent}%`}
-          />
-          {isCliUser && (
-            <Info>
-              <InfoRow>
-                <label>TIME (MIN)</label>
-                <span>{timeSpent}</span>
-              </InfoRow>
-              <InfoRow>
-                <label>SUBMITTED ON</label>
-                <span>{submittedOn}</span>
-              </InfoRow>
-            </Info>
-          )}
-        </ProgressBarContainer>
-      )}
+    <GraphContainer padding="20px" justifyContent="flex-start">
+      <ProgressBarContainer>
+        <GraphTitle>Performance Summary</GraphTitle>
+        <Progress
+          className="getProgress"
+          strokeLinecap="square"
+          type="circle"
+          percent={scorePercentage}
+          width={140}
+          strokeWidth={8}
+          strokeColor={{
+            "0%": "#8DB8F3",
+            "100%": "#2B7FF0"
+          }}
+          format={percent => `${percent}%`}
+        />
+        <Info>
+          <InfoRow>
+            <label>TIME (MIN)</label>
+            <span>{timeSpent}</span>
+          </InfoRow>
+          <InfoRow>
+            <label>SUBMITTED ON</label>
+            <span>{submittedOn}</span>
+          </InfoRow>
+        </Info>
+      </ProgressBarContainer>
       {isCliUser ? (
         <MessageBox>
           Thanks for helping your teacher get a better picture of what you know and what you need to get ready to learn

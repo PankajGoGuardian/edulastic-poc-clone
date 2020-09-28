@@ -14,7 +14,7 @@ import { CustomTooltip } from "./CustomTooltip";
 export const GraphContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 20px;
-  border-bottom: ${props => (props.isCliUser ? "none" : "1px solid #dadae4")};
+  border-bottom: 1px solid #dadae4;
 
   @media (max-width: ${mobileWidthLarge}) {
     flex-direction: column;
@@ -159,7 +159,7 @@ export const ChartNavButton = styled(EduButton)`
 
 export const MessageBox = styled.div`
   background: #f8f8f8;
-  margin-left: 50px;
+  margin-left: 20px;
   margin-top: 55px;
   padding: 30px;
   position: relative;

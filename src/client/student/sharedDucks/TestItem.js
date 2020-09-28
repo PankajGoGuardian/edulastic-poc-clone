@@ -1,7 +1,6 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { keyBy, get } from "lodash";
-import { releaseGradeLabels } from "@edulastic/constants/const/test";
+import { keyBy } from "lodash";
 
 // types
 export const SET_TEST_ITEM = "[studentTestItem] set test item";
@@ -49,25 +48,10 @@ export const getItemsSelector = state => state[module].items;
 export const getTestFeedbackSelector = state => state.testFeedback;
 export const userWorkSelector = state => state.userWork.present;
 
-const studentReport = state => state.studentReport;
-
 export const getItemSelector = createSelector(
   getItemsSelector,
   getCurrentItemSelector,
   (items, current) => items[current]
-);
-
-export const getFeedbackTransformedSelector = createSelector(
-  getTestFeedbackSelector,
-  studentReport,
-  (questionActivities, report) => {
-    const releaseScore = get(report, "testActivity.releaseScore", "");
-    if (releaseScore === releaseGradeLabels.DONT_RELEASE && questionActivities && questionActivities.length) {
-      // mock the uqa score and maxscore so that it will create a graph
-      return questionActivities.map(uqa => ({ ...uqa, score: 0, maxScore: 1 }));
-    }
-    return questionActivities;
-  }
 );
 
 // check if a particular has scratchPad data associated.

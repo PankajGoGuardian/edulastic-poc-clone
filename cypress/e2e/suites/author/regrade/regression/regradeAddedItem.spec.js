@@ -142,11 +142,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} test editing with applyin
   let testid;
   let title;
 
-  before(">set variables", () => {
-    addedItemRegradeOptions.forEach(() => {
-      assignedtestids.push([]);
-      versionedtestids.push([]);
-    });
+  addedItemRegradeOptions.forEach(() => {
+    assignedtestids.push([]);
+    versionedtestids.push([]);
   });
 
   before(">create test", () => {

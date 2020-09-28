@@ -109,6 +109,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   let testid;
   let updatedAttempt;
 
+  regrade_Options.forEach(() => {
+    assignedtestids.push([]);
+    versionedtestids.push([]);
+  });
+
   before("create tests", () => {
     cy.getAllTestsAndDelete(Teacher.username);
     cy.getAllItemsAndDelete(Teacher.username);
@@ -125,11 +130,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   });
   describe(`> regrade 'edited item' by 'updating correct ans at item level'`, () => {
     before("> duplicate, assign and attempt the test", () => {
-      regrade_Options.forEach(() => {
-        assignedtestids.push([]);
-        versionedtestids.push([]);
-      });
-
       regrade_Options.forEach((regOption, ind) => {
         attemptType.forEach(attType => {
           testLibraryPage.searchAndClickTestCardById(testid);

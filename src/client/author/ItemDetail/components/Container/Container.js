@@ -291,7 +291,10 @@ class Container extends Component {
   };
 
   handleAddToPassage = (type, tabIndex) => {
-    const { isTestFlow, match, addWidgetToPassage } = this.props;
+    const { isTestFlow, match, addWidgetToPassage, item } = this.props;
+
+    // Checking if current item allows multiple items
+    const { canAddMultipleItems } = item;
     /**
      * there are two possibilites for getting item id during test flow
      * route 1: "/author/tests/:testId/createItem/:itemId"
@@ -304,7 +307,8 @@ class Container extends Component {
       itemId: isTestFlow && match?.params?.itemId ? match.params.itemId : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex
+      tabIndex,
+      canAddMultipleItems: !!canAddMultipleItems
     });
   };
 
@@ -690,7 +694,8 @@ class Container extends Component {
     const widgetLength = get(rows, [0, "widgets"], []).length;
 
     return (
-      item.canAddMultipleItems &&
+      // isPassageWithQuestions fallback condition to show/hide pagination
+      (item.canAddMultipleItems || item.isPassageWithQuestions) &&
       passage &&
       view !== "metadata" && (
         <Col>

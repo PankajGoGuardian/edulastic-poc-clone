@@ -1448,13 +1448,15 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const { backUrl, tabIndex, canAddMultipleItems } = yield select(state => get(state, "router.location.state"), {});
+    const { backUrl, tabIndex, canAddMultipleItems, isPassageWithQuestions } = yield select(
+      state => get(state, "router.location.state"),
+      {}
+    );
     const pathname = yield select(state => get(state, "router.location.pathname"), {});
-
     yield put({
       type: UPDATE_ITEM_TO_PASSAGE_TYPE,
       payload: {
-        canAddMultipleItems
+        canAddMultipleItems: canAddMultipleItems || isPassageWithQuestions
       }
     });
 
@@ -1539,7 +1541,7 @@ function* savePassage({ payload }) {
 
 function* addWidgetToPassage({ payload }) {
   try {
-    const { isTestFlow = false, itemId, testId, type, tabIndex = 0 } = payload;
+    const { isTestFlow = false, itemId, testId, type, tabIndex = 0, canAddMultipleItems } = payload;
 
     const widget =
       type === "video"
@@ -1578,7 +1580,8 @@ function* addWidgetToPassage({ payload }) {
         state: {
           isPassageWithQuestions: true,
           backUrl,
-          tabIndex
+          tabIndex,
+          canAddMultipleItems: !!canAddMultipleItems // location state prop getting used by savePassage saga
         }
       })
     );

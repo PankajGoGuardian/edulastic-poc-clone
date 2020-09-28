@@ -129,7 +129,7 @@ const ReportListContainer = ({
           isCliUser={isCliUser}
           hideQuestionSelect={showGraph}
         />
-        {showGraph && (
+        {showGraph && !isCliUser && (
           <Fragment>
             <ProgressGraph
               onClickBar={setCurrentItemFromGraph}
@@ -138,12 +138,11 @@ const ReportListContainer = ({
               testItems={testItems}
               isGreyBar={greyBars.includes(releaseScore)}
               dontRelease={dontRelease}
-              isCliUser={isCliUser}
             />
-            {!isCliUser && <OverallFeedback />}
+            <OverallFeedback />
           </Fragment>
         )}
-        {showReviewResponses && !dontRelease && !isCliUser && (
+        {showReviewResponses && !dontRelease && (
           <FlexContainer mt="16px">
             <EduButton onClick={reviewResponses} isBlue isGhost>
               Review Responses

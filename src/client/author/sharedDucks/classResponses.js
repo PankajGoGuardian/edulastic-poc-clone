@@ -34,7 +34,7 @@ import { markQuestionLabel, transformGradeBookResponse } from "../ClassBoard/Tra
 import { setTeacherEditedScore } from "../ExpressGrader/ducks";
 import { setCurrentTestActivityIdAction } from "../src/actions/classBoard";
 import { hasRandomQuestions } from "../ClassBoard/utils";
-import { LOAD_SCRATCH_PAD, SAVE_USER_WORK } from "../../assessment/constants/actions";
+import { SAVE_USER_WORK } from "../../assessment/constants/actions";
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
@@ -146,6 +146,7 @@ function* receiveStudentResponseSaga({ payload }) {
       testActivityId: payload.testActivityId,
       testItemsIdArray: scratchpadUsedItems
     });
+
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
     const passages = get(originalData, "test.passages", []);
 
@@ -201,7 +202,7 @@ function* receiveStudentResponseSaga({ payload }) {
     });
     if (Object.keys(userWork).length > 0) {
       yield put({
-        type: LOAD_SCRATCH_PAD,
+        type: SAVE_USER_WORK,
         payload: userWork
       });
     }

@@ -61,7 +61,7 @@ const ItemDetailContainer = ({
       setRedirectTestAction(testId);
     }
     if (itemId && itemId !== "new") {
-      getItem(itemId, { data: true, validation: true });
+      getItem(itemId, { data: true, validation: true, testId });
     }
   }, [itemId]);
 

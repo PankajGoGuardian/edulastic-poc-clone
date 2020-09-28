@@ -56,12 +56,13 @@ const updateById = (id, item, testId) => {
     .then(result => result.data.result);
 };
 
-const create = data =>
+const create = (data, params = {}) =>
   api
     .callApi({
       url: prefix,
       method: "post",
-      data
+      data,
+      params
     })
     .then(result => result.data.result);
 
@@ -131,7 +132,8 @@ const getByV1Id = id =>
     })
     .then(result => result.data.result);
 
-const deleteById = id => api.callApi({ url: `${prefix}/${id}`, method: "delete" }).then(result => result.data);
+const deleteById = (id, params) =>
+  api.callApi({ url: `${prefix}/${id}`, method: "delete", params }).then(result => result.data);
 
 const getPassageItems = id =>
   api

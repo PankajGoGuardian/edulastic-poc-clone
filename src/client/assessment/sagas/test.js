@@ -515,22 +515,16 @@ function* submitTest({ payload }) {
     const test = yield select(state => state.test);
     const isCliUser = yield select(state => state.user?.isCliUser);
 
-    if (isCliUser) {
-      yield put(
-        push(
-          `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}${
-            isCliUser ? "?cliUser=true" : ""
-          }`
-        )
-      );
-      return;
-    }
-
     if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
-      return yield put(push(`/home/grades`));
+      return yield put(push(`/home/grades${isCliUser ? "?cliUser=true" : ""}`));
     }
-
-    return yield put(push(`/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`));
+    return yield put(
+      push(
+        `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}${
+          isCliUser ? "?cliUser=true" : ""
+        }`
+      )
+    );
   } catch (err) {
     Sentry.captureException(err);
     const { data = {} } = err.response || {};

@@ -6,6 +6,7 @@ import { get, round } from "lodash";
 import { FlexContainer } from "@edulastic/common";
 import { IconCheck } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
+import { releaseGradeLabels } from "@edulastic/constants/const/test";
 import { getClasses } from "../../Login/ducks";
 
 const OverallFeedback = ({ testActivity, classList = [] }) => {
@@ -35,6 +36,16 @@ const OverallFeedback = ({ testActivity, classList = [] }) => {
     }
     return userInitials;
   };
+
+  if (testActivity.releaseScore === releaseGradeLabels.DONT_RELEASE) {
+    return (
+      <FeedbackWrapper>
+        <NotifyRelease>
+          Your responses are being reviewed by your teacher. Grades and feedback will be released shortly.
+        </NotifyRelease>
+      </FeedbackWrapper>
+    );
+  }
 
   return (
     <FeedbackWrapper>
@@ -185,4 +196,13 @@ const UserInitials = styled(UserImg)`
   font-size: 18px;
   font-weight: 700;
   background: #dddddd;
+`;
+
+const NotifyRelease = styled.p`
+  font-size: 22px;
+  text-align: center;
+  padding: 100px;
+  display: block;
+  margin: auto;
+  width: 80%;
 `;

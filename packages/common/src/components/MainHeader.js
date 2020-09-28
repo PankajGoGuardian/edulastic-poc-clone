@@ -74,7 +74,7 @@ const HeaderWrapper = styled.div`
     left: ${({ hideSideMenu }) => (hideSideMenu ? "0" : "70px")};
     z-index: 999;
   }
-  @media (max-width: ${tabletWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     .fixed-header {
       left: 0;
     }

@@ -94,7 +94,7 @@ const ClassSelectModal = ({
   }, [allowedInstitutions]);
 
   const handleClassListSync = () => {
-    const classList = classListData.filter((each, index) => selectedRows.includes(index) && !each.disabled);
+    const classList = classListData.filter((each, index) => selectedRows.includes(index));
     if (!classList?.length) {
       notification({ messageKey: "pleaseSelectAClass" });
     } else if (type === "googleClassroom" && !institutionId) {
@@ -322,7 +322,7 @@ const ClassSelectModal = ({
     </InstitutionSelectWrapper>
   );
 
-  const disableImport = isEmpty(selectedRows.filter(index => !classListData[index]?.disabled));
+  const disableImport = isEmpty(selectedRows);
 
   return (
     <ClassListModal
@@ -351,7 +351,7 @@ const ClassSelectModal = ({
           CANCEL
         </EduButton>,
         <EduButton onClick={handleClassListSync} loading={loading} disabled={disableImport}>
-          IMPORT
+          Sync
         </EduButton>
       ]}
     >

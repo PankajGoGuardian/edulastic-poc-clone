@@ -37,7 +37,7 @@ const Header = ({
       <FlexContainer>
         {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
         {showReviewResponses && (
-          <EduButton onClick={reviewResponses} isBlue>
+          <EduButton data-cy="view-response-in-header" onClick={reviewResponses} isBlue>
             Review Responses
           </EduButton>
         )}

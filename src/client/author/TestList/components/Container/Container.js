@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce, get, has, pickBy, identity, pick, isEqual } from "lodash";
+import { debounce, get, has, pickBy, identity, pick, isEqual, omit } from "lodash";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -359,7 +359,9 @@ class TestList extends Component {
     } = this.props;
 
     if (name === "folderId") {
-      return receiveTests({ search: { ...emptyFilters, [name]: value, filter: "FOLDERS" }, sort, page: 1, limit });
+      const searchfilterWithFolder = { ...emptyFilters, [name]: value, filter: "FOLDERS" };
+      this.updateFilterState(searchfilterWithFolder, sort, true);
+      return receiveTests({ search: searchfilterWithFolder, sort, page: 1, limit });
     }
     // all the fields to pass for search.
 
@@ -796,7 +798,7 @@ class TestList extends Component {
               windowWidth={windowWidth}
               history={history}
               match={match}
-              standards={getInterestedStandards(item.summary,item.alignment, interestedCurriculums)}
+              standards={getInterestedStandards(item.summary, item.alignment, interestedCurriculums)}
             />
           ))}
 
@@ -819,7 +821,7 @@ class TestList extends Component {
             removeTestFromPlaylist={this.handleRemoveTest}
             isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
             addTestToPlaylist={this.handleAddTests}
-            standards={getInterestedStandards(item.summary,item.alignment, interestedCurriculums)}
+            standards={getInterestedStandards(item.summary, item.alignment, interestedCurriculums)}
             moduleTitle={moduleTitleMap[item._id]}
             checked={markedTestsList.includes(item._id)}
             handleCheckboxAction={this.handleCheckboxAction}
@@ -836,7 +838,7 @@ class TestList extends Component {
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
     const { history, receiveTests, limit, testFilters, playlistPage, playlist: { _id } = {} } = this.props;
-    let updatedKeys = { ...testFilters };
+    let updatedKeys = omit(testFilters, ["folderId"]);
 
     if (filter === filterMenuItems[0].filter) {
       updatedKeys = {

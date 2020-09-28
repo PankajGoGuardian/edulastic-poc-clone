@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Tooltip } from "antd";
-import { get } from "lodash";
+import { get, round } from "lodash";
 import { FlexContainer } from "@edulastic/common";
 import { IconCheck } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
@@ -56,8 +56,8 @@ const OverallFeedback = ({ testActivity, classList = [] }) => {
             <IconCheck />
           </IconCheckWrapper>
           <ScoreWrapper>
-            <Score data-cy="score">{score}</Score>
-            <Total data-cy="maxscore">{maxScore}</Total>
+            <Score data-cy="score">{round(score, 2)}</Score>
+            <Total data-cy="maxscore">{round(maxScore, 2)}</Total>
           </ScoreWrapper>
 
           <Feedback>

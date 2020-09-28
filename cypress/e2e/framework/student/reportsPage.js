@@ -40,8 +40,10 @@ class ReportsPage {
   getAttemptsByTestId = id => this.getTestCardByTesyId(id).find('[data-cy="attemptClick"]');
 
   getQUestionInStudentReportPage = () =>
-    cy.get(".recharts-layer").eq(0).
-      find("tspan")
+    cy
+      .get(".recharts-layer")
+      .eq(0)
+      .find("tspan")
       .contains("Q1");
 
   // *** ELEMENTS END ***
@@ -49,12 +51,11 @@ class ReportsPage {
   // *** ACTIONS START ***
 
   clickOnReviewButtonButton() {
-    cy.server();
-    cy.route("GET", "**/test-activity/**").as("testactivity");
     this.getReviewButton()
       .should("be.visible")
       .click({ force: true });
-    cy.wait("@testactivity");
+    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 }).click({ force: true });
+    cy.get('[data-cy="questionNumber"]', { timeout: 60000 });
   }
 
   selectQuestion = queNum => {
@@ -70,7 +71,10 @@ class ReportsPage {
     this.getTestCardByTesyId(id)
       .find('[data-cy="reviewButton"]')
       .click({ force: true });
-    cy.get('[data-cy="questionNumber"]');
+
+    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 });
+
+    cy.get('[data-cy="questionNumber"]', { timeout: 60000 });
   };
 
   verifyReviewPaused = () => {
@@ -153,7 +157,6 @@ class ReportsPage {
 
   verifyAllQuetionCard = (studentName, studentAttempts, questionTypeMap, releasePolicy) => {
     const correctAns = releasePolicy === releaseGradeTypes.WITH_ANSWERS;
-    this.getQUestionInStudentReportPage().click();
     Object.keys(studentAttempts).forEach(queNum => {
       const attemptType = studentAttempts[queNum];
       this.selectQuestion(queNum);
@@ -200,10 +203,10 @@ class ReportsPage {
       attemptType === attemptTypes.RIGHT
         ? right
         : attemptType === attemptTypes.WRONG
-          ? wrong
-          : attemptType === attemptTypes.PARTIAL_CORRECT
-            ? partialCorrect
-            : undefined;
+        ? wrong
+        : attemptType === attemptTypes.PARTIAL_CORRECT
+        ? partialCorrect
+        : undefined;
 
     const questionType = queTypeKey.split(".")[0];
     if (points) this.verifyScore(points, attemptData, attemptType, questionType);

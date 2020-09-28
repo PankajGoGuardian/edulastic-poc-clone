@@ -322,7 +322,7 @@ const ClassSelectModal = ({
     </InstitutionSelectWrapper>
   );
 
-  const disableImport = isEmpty(selectedRows);
+  const disableImport = isEmpty(selectedRows.filter(index => !classListData[index]?.disabled));
 
   return (
     <ClassListModal
@@ -351,7 +351,7 @@ const ClassSelectModal = ({
           CANCEL
         </EduButton>,
         <EduButton onClick={handleClassListSync} loading={loading} disabled={disableImport}>
-          Sync
+          IMPORT
         </EduButton>
       ]}
     >

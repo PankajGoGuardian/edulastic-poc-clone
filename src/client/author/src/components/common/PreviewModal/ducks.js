@@ -21,20 +21,9 @@ export const setPrevewItemAction = createAction(SET_ITEM_PREVIEW_DATA);
 export const duplicateTestItemPreviewRequestAction = createAction(DUPLICATE_TESTITEM_PREVIEW_REQUEST);
 
 export const stateSelector = state => state.testItemPreview;
-export const archivedItemsSelector = state => get(state, "testsAddItems.archivedItems", []);
-
 export const getPassageSelector = createSelector(
   stateSelector,
-  archivedItemsSelector,
-  (state, archivedItems) => {
-    const { passage = {} } = state;
-    // Filtering archived testItems from passage testItems after deletion
-    if (passage) {
-      passage.testItems = (passage?.testItems || []).filter(id => !archivedItems.includes(id));
-      return passage;
-    }
-    return null;
-  }
+  state => state.passage
 );
 
 export const getItemDetailSelectorForPreview = (state, id, page) => {

@@ -19,7 +19,7 @@ import {
   getCurrentItemSelector,
   setCurrentItemAction,
   getItemsSelector,
-  getTestFeedbackSelector
+  getFeedbackTransformedSelector
 } from "../../sharedDucks/TestItem";
 import MainContainer from "../../styled/mainContainer";
 // actions
@@ -106,6 +106,8 @@ const ReportListContainer = ({
 
   const showReviewResponses = continueBtns.includes(releaseScore) && showGraph;
 
+  const dontRelease = releaseScore === releaseGradeLabels.DONT_RELEASE;
+
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader
@@ -127,7 +129,7 @@ const ReportListContainer = ({
           isCliUser={isCliUser}
           hideQuestionSelect={showGraph}
         />
-        {showGraph && !isCliUser && (
+        {showGraph && (
           <Fragment>
             <ProgressGraph
               onClickBar={setCurrentItemFromGraph}
@@ -135,11 +137,13 @@ const ReportListContainer = ({
               questionActivities={questionActivities}
               testItems={testItems}
               isGreyBar={greyBars.includes(releaseScore)}
+              dontRelease={dontRelease}
+              isCliUser={isCliUser}
             />
-            <OverallFeedback />
+            {!isCliUser && <OverallFeedback />}
           </Fragment>
         )}
-        {showGraph && (
+        {showReviewResponses && !dontRelease && !isCliUser && (
           <FlexContainer mt="16px">
             <EduButton onClick={reviewResponses} isBlue isGhost>
               Review Responses
@@ -165,7 +169,7 @@ const enhance = compose(
       testTitle: get(state, ["tests", "entity", "title"], ""),
       isCliUser: get(state, "user.isCliUser", false),
       testItems: getItemsSelector(state),
-      questionActivities: getTestFeedbackSelector(state),
+      questionActivities: getFeedbackTransformedSelector(state),
       testActivity: get(state, `[studentReport][testActivity]`, {}),
       attempts: get(state, `testActivities`, [])
     }),

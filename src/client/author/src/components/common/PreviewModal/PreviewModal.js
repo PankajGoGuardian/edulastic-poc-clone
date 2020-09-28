@@ -33,7 +33,6 @@ import ScoreBlock from "../ScoreBlock";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
 import {
   addPassageAction,
-  archivedItemsSelector,
   clearPreviewAction,
   duplicateTestItemPreviewRequestAction,
   getItemDetailSelectorForPreview,
@@ -82,27 +81,10 @@ class PreviewModal extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      item: newItem,
-      archivedItems: oldArchivedItems,
-      updateCurrentItemFromPassagePagination,
-      passage,
-      clearPreview
-    } = this.props;
-    const { item: oldItem, archivedItems: newArchivedItems } = prevProps;
+    const { item: newItem } = this.props;
+    const { item: oldItem } = prevProps;
     if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
       this.loadPassage(newItem.passageId);
-    }
-    /** Watching changes in "testsAddItems.archivedItems"
-     * and updating testItemPreview for passages
-     * */
-    if (oldArchivedItems?.length !== newArchivedItems?.length) {
-      const { testItems = [] } = passage || {};
-      if (testItems.length) {
-        updateCurrentItemFromPassagePagination(testItems[0]);
-      } else {
-        clearPreview();
-      }
     }
   }
 
@@ -732,8 +714,7 @@ const enhance = compose(
         testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state),
         deleting: getItemDeletingSelector(state),
-        writableCollections: getWritableCollectionsSelector(state),
-        archivedItems: archivedItemsSelector(state)
+        writableCollections: getWritableCollectionsSelector(state)
       };
     },
     {

@@ -5,7 +5,8 @@ import { ErrorHandler } from "@edulastic/common";
 import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
-import { mobileWidthLarge } from "@edulastic/colors";
+import { tabletWidth } from "@edulastic/colors";
+import { userApi } from "@edulastic/api";
 import queryString from "query-string";
 // import { getZoomedTheme } from "./zoomTheme";
 import Sidebar from "./Sidebar/SideMenu";
@@ -79,17 +80,14 @@ const StudentApp = ({ match, selectedTheme, isProxyUser, location, updateCliUser
   );
 };
 
-export default connect(
-  ({ ui, user }) => ({
-    selectedTheme: ui.selectedTheme,
-    zoomLevel: ui.zoomLevel,
-    isProxyUser: isProxyUserSelector({ user }),
-    isCliUser: user?.isCliUser
-  }),
-  {
-    updateCliUser: updateCliUserAction
-  }
-)(StudentApp);
+export default connect(({ ui, user }) => ({
+  selectedTheme: ui.selectedTheme,
+  zoomLevel: ui.zoomLevel,
+  isProxyUser: isProxyUserSelector({ user }),
+  isCliUser: user?.isCliUser
+}), {
+  updateCliUser: updateCliUserAction
+})(StudentApp);
 
 StudentApp.propTypes = {
   match: PropTypes.object.isRequired,
@@ -97,7 +95,7 @@ StudentApp.propTypes = {
 };
 
 const MainContainer = addThemeBackgroundColor(styled.div`
-  padding-left: ${({ isCliUser }) => (isCliUser ? "0" : "70px")};
+  padding-left: ${({ isCliUser }) => isCliUser ? "0" : "70px"};
   width: 100%;
 
   /* &.zoom1 {
@@ -124,7 +122,7 @@ const MainContainer = addThemeBackgroundColor(styled.div`
     zoom: 200%;
   } */
 
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${tabletWidth}) {
     padding-left: 0px;
   }
 `);

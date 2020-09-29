@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { RefContext } from "@edulastic/common";
+import { RefContext, sanitizeString } from "@edulastic/common";
 
 import { WithResources } from "./withResources";
 import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
@@ -31,6 +31,10 @@ export const withMathFormula = WrappedComponent => {
       }
     }, [dangerouslySetInnerHTML, loaded]);
 
+    let htmlStr = newInnerHtml;
+    if (theme.isV1Migrated) {
+      htmlStr = sanitizeString(htmlStr);
+    }
 
     return (
       <WithResources
@@ -49,7 +53,7 @@ export const withMathFormula = WrappedComponent => {
           ref={contextConfig?.forwardedRef}
           className={elemClassName}
           data-cy="styled-wrapped-component"
-          dangerouslySetInnerHTML={{ __html: newInnerHtml }}
+          dangerouslySetInnerHTML={{ __html: htmlStr }}
           style={{ ...style, color: color || theme.questionTextColor, fontSize: fontSize || theme.fontSize }}
         />
       </WithResources>

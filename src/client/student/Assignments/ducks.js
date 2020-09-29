@@ -277,10 +277,8 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
-    const classIdentifiers = values(assignmentsObj).flatMap(item => item.class.map(item => item.identifier));
-    const reports = values(reportsObj).filter(item => classIdentifiers.includes(item.assignmentClassIdentifier));
     // group reports by assignmentsID
-    const groupedReports = groupBy(reports, item => `${item.assignmentId}_${item.groupId}`);
+    const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
         // no redirected classes and no class filter or class ID match the filter and student belongs to the class
@@ -661,9 +659,7 @@ function* launchAssignment({ payload }) {
           const test = yield call(testsApi.getByIdMinimal, testId);
           maxAttempt = test.maxAttempts;
         }
-        const attempts = testActivities.filter(el =>
-          [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(el.status)
-        );
+        const attempts = testActivities.filter(el => [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(el.status))
         if (maxAttempt > attempts.length && lastActivity.status === testActivityStatus.NOT_STARTED) {
           if (!resume && timedAssignment) {
             yield put(setConfirmationForTimedAssessmentAction(assignment));

@@ -1,4 +1,4 @@
-import { isEmpty, get } from "lodash";
+import { isEmpty, get, keyBy } from "lodash";
 import { incorrect, yellow1, linkColor1, themeColorLighter, darkBlue2 } from "@edulastic/colors";
 
 export const NUMBER_OF_BARS = 10;
@@ -45,32 +45,27 @@ export const convertData = (questionActivities, testItems) => {
   let maxAttemps = 0;
   let maxTimeSpent = 0;
   let data = [];
+
   if (isEmpty(questionActivities)) {
     return [maxAttemps, maxTimeSpent, data];
   }
 
-  const testItemsById = testItems.reduce((acc, curr) => {
-    acc[curr._id] = curr;
-    return acc;
-  }, {});
+  const activitiesByQid = keyBy(questionActivities, "qid");
 
-  data = questionActivities
-    .filter(x => !x.disabled)
-    .map((activity, index) => {
-      const { _id, testItemId, graded, score, qLabel, timeSpent, pendingEvaluation } = activity;
-      const maxScore = get(testItemsById[testItemId], "maxScore", activity.maxScore);
-
-      let { notStarted, skipped } = activity;
-      let skippedx = false;
-
+  data = testItems
+    .reduce((acc, curr) => [...acc, ...get(curr, "data.questions", [])], [])
+    .filter(x => !x.scoringDisabled)
+    .map((question, index) => {
+      const { barLabel } = question;
       const questionActivity = {
-        qid: _id,
         index,
-        name: qLabel,
+        qid: question.id,
+        name: barLabel,
         totalAttemps: 0,
         correctAttemps: 0,
         partialAttempts: 0,
         incorrectAttemps: 0,
+        notStarted: true,
         itemLevelScoring: false,
         itemId: null,
         avgTimeSpent: 0,
@@ -79,6 +74,14 @@ export const convertData = (questionActivities, testItems) => {
         timeSpent: 0,
         manualGradedNum: 0
       };
+
+      const activity = activitiesByQid[question.id];
+      if (isEmpty(activity)) {
+        return questionActivity;
+      }
+      const { testItemId, graded, score, maxScore, timeSpent, pendingEvaluation } = activity;
+      let { notStarted, skipped } = activity;
+      let skippedx = false;
 
       if (testItemId) {
         questionActivity.itemLevelScoring = true;
@@ -97,6 +100,7 @@ export const convertData = (questionActivities, testItems) => {
         questionActivity.skippedNum += 1;
         skippedx = true;
       }
+
       if (score > 0) {
         skipped = false;
       }

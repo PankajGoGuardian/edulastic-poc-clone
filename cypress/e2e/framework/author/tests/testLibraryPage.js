@@ -283,11 +283,14 @@ export default class TestLibrary {
     cy.wait(1000);
   };
 
-  clickOnDuplicate = () => {
+  clickOnDuplicate = (saveToDelete = true) => {
     cy.route("POST", "**/test/**").as("duplicateTest");
     cy.route("GET", "**/test/*/assignments").as("getTest");
     cy.contains("CLONE").click({ force: true });
-    cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
+    cy.wait("@duplicateTest").then(xhr => {
+      expect(xhr.status, `test clone ${xhr.status === 200 ? "passed" : "failed"}`).to.eq(200);
+      if (saveToDelete) this.saveTestId(xhr);
+    });
     // cy.wait("@getTest");
   };
 
@@ -506,7 +509,7 @@ export default class TestLibrary {
       .should("be.eq", testId);
   };
 
-  publishedToDraftAssigned = () => {
+  publishedToDraftAssigned = (saveToDelete = true) => {
     cy.server();
     cy.route("PUT", "**/test/**").as("newVersion");
     cy.route("GET", "**/api/test/**").as("testdrafted");
@@ -527,7 +530,9 @@ export default class TestLibrary {
       .should("contain", "/old/")
       .then(() => cy.get('[data-cy-item-index="0"]'))
       .then(() => {
-        this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id));
+        this.getVersionedTestID().then(id => {
+          if (saveToDelete) cy.saveTestDetailToDelete(id);
+        });
       });
   };
 

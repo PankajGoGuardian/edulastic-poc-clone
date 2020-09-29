@@ -7,7 +7,7 @@ const { Option } = SelectInputStyled;
 
 const AttemptSelect = ({ attempts, history, match }) => {
   const { classId, testId, id } = match.params;
-  const currentAttempt = find(attempts, x => x.activiyId === id);
+  const currentAttempt = find(attempts, x => x.activiyId === id) || {};
 
   const handleSelectAttempt = activiyId => {
     history.push(`/home/class/${classId}/test/${testId}/testActivityReport/${activiyId}`);

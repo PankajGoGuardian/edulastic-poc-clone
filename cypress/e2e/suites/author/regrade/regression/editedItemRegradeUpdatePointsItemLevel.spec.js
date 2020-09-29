@@ -130,7 +130,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
       regrade_Options.forEach((regOption, ind) => {
         attemptType.forEach(attType => {
           testLibraryPage.searchAndClickTestCardById(testid);
-          testLibraryPage.clickOnDuplicate();
+          testLibraryPage.clickOnDuplicate_1();
           testLibraryPage.testSummary.setName(`${regOption}-${attType}`);
           testLibraryPage.header.clickOnPublishButton().then(id => {
             assignedtestids[ind].push(id);
@@ -169,7 +169,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
         before("> edit test and apply regrade", () => {
           assignedtestids[optionsIndex].forEach(id => {
             testLibraryPage.visitTestById(id);
-            testLibraryPage.publishedToDraftAssigned();
+            testLibraryPage.publishedToDraftAssigned_1();
             testLibraryPage.getVersionedTestID().then(versionedtest => {
               versionedtestids[optionsIndex].push(versionedtest);
             });

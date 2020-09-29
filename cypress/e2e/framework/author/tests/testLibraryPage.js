@@ -291,6 +291,14 @@ export default class TestLibrary {
     // cy.wait("@getTest");
   };
 
+  clickOnDuplicate_1 = () => {
+    cy.route("POST", "**/test/**").as("duplicateTest");
+    cy.route("GET", "**/test/*/assignments").as("getTest");
+    cy.contains("CLONE").click({ force: true });
+    cy.wait("@duplicateTest"); // .then(xhr => this.saveTestId(xhr));
+    // cy.wait("@getTest");
+  };
+
   clickOnTestCardById = testId => {
     this.getTestCardById(testId)
       // .contains("TOTAL ITEMS")
@@ -529,6 +537,28 @@ export default class TestLibrary {
       .then(() => {
         this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id));
       });
+  };
+
+  publishedToDraftAssigned_1 = () => {
+    cy.server();
+    cy.route("PUT", "**/test/**").as("newVersion");
+    cy.route("GET", "**/api/test/**").as("testdrafted");
+    this.getEditButton()
+      .should("exist")
+      .click()
+      .then(() => {
+        // pop up that comes up when we try to edit a published test
+        this.getProceedButton().click({ force: true });
+        cy.wait("@newVersion").then(() => {
+          cy.wait("@testdrafted").then(xhr => {
+            assert(xhr.status === 200, "Test versioned");
+          });
+        });
+      });
+    return cy
+      .url()
+      .should("contain", "/old/")
+      .then(() => cy.get('[data-cy-item-index="0"]'));
   };
 
   createNewTestAndFillDetails = testData => {

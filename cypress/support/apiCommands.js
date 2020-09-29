@@ -2,6 +2,7 @@
 
 import uuidv4 from "uuid/v4";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
+import FileHelper from "../e2e/framework/util/fileHelper";
 
 const ENV = Cypress.env("ENVIRONMENT") || "local";
 const AGENT = Cypress.env("AGENT") ? `-${Cypress.env("AGENT")}` : "";
@@ -238,7 +239,11 @@ Cypress.Commands.add("deleteTestData", () => {
     const failedToDeleteTests = [];
     const failedToDeleteItems = [];
 
-    if (fileContent !== null) {
+    if (
+      fileContent !== null ||
+      !FileHelper.getSpecName(Cypress.spec.name).includes("editedItem") ||
+      !FileHelper.getSpecName(Cypress.spec.name).includes("regradeAddedItem")
+    ) {
       testData = JSON.parse(fileContent);
       console.log("testDataJson in deleteTestData", testData);
 

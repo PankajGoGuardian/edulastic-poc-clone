@@ -5,6 +5,7 @@ import { keyBy, groupBy, sortBy } from "lodash";
 import PropTypes from "prop-types";
 import React, { useState, useMemo, useEffect } from "react";
 import { SelectStudentColumn, HeaderButtonsWrapper, SelectAll, UnselectAll, SelectTextInline } from "./styled";
+import { getFormattedName } from "../../../../author/Gradebook/transformers";
 
 const StudentsSelector = ({
   students = [],
@@ -29,8 +30,8 @@ const StudentsSelector = ({
   const studentsGroupedByGroupId = useMemo(() => groupBy(students, "groupId"), [students]);
   const SelectedStudents = Object.keys(studentsGroupedByGroupId).flatMap(groupId => {
     const groupName = groupKeyed[groupId].name;
-    const studentRows = (studentsGroupedByGroupId[groupId] || []).map(({ _id, firstName, lastName }) => {
-      const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
+    const studentRows = (studentsGroupedByGroupId[groupId] || []).map(({ _id, firstName, lastName, middleName }) => {
+      const fullName = getFormattedName(firstName, middleName, lastName);
       return {
         title: fullName || "Anonymous",
         key: `${groupId}_${_id}`,

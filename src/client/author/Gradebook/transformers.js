@@ -68,10 +68,15 @@ export const TEST_TYPE_COLOR = {
   "common assessment": "#FF9100"
 };
 
-export const getFormattedName = (...names) => {
-  const nameArr = names.filter(n => n?.trim()).map(n => capitalize(n));
-  const lName = nameArr.splice(nameArr.length - 1)[0];
-  return nameArr.length ? `${lName}, ${nameArr.join(" ")}` : lName;
+export const getFormattedName = (firstName = "", middleName = "", lastName = "") => {
+  if (!firstName || (firstName && firstName === "Anonymous")) {
+    return "Anonymous";
+  }
+  const fullName = lastName ? `${capitalize(lastName)}, ` : "";
+  if (middleName) {
+    return `${fullName}${capitalize(firstName)} ${capitalize(middleName)}`;
+  }
+  return `${fullName}${capitalize(firstName)}`;
 };
 
 export const getUniqAssessments = (assessments = []) => {
@@ -170,7 +175,7 @@ const getPaginatedStudentData = (studentData, assessmentsData, pagination) => {
   const assignmentsCount = studentAssessments.length;
   const curatedData = studentAssessments.slice(assignmentPos, assignmentPos + assignmentPageSize);
   return { curatedData, assessmentsData, assignmentsCount, studentsCount: 1 };
-}
+};
 
 // function to get paginated data when test-activity status filter is set
 const getPaginatedData = (curatedData, assessmentsData, pagination) => {
@@ -278,10 +283,10 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
   if (urlHasStudent) {
     // calculate overall countByStatus
     const countByStatus = {};
-    STATUS_LIST.map(({id}) => {
+    STATUS_LIST.map(({ id }) => {
       countByStatus[id] = 0;
       curatedData.forEach(d => {
-        countByStatus[id] += (d.countByStatus[id] || 0);
+        countByStatus[id] += d.countByStatus[id] || 0;
       });
     });
     return { ...getPaginatedStudentData(curatedData, assessmentsData, pagination), countByStatus };

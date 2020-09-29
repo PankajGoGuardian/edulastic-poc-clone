@@ -7,6 +7,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { changeChildAction, changeClassAction, getCurrentGroup } from "../Login/ducks";
+import { getFormattedName } from "../../author/Gradebook/transformers";
 
 const ClassSelector = ({ t, classList, currentGroup, changeClass, allClasses, showAllClassesOption }) => {
   const [isShown, setShown] = useState(false);
@@ -111,7 +112,7 @@ function StudentSelect({ changeChild, childs, currentChild }) {
       >
         {childs.map(cl => (
           <Select.Option key={cl._id} value={cl._id}>
-            {cl.name}
+            {getFormattedName(cl.firstName, cl.middleName, cl.lastName)}
           </Select.Option>
         ))}
       </Select>

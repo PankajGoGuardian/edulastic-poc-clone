@@ -121,8 +121,8 @@ export const getQuestionType = item => {
     return questions.length > 1
       ? [PASSAGE.toUpperCase(), "MULTIPART"]
       : questionTitle
-        ? [PASSAGE.toUpperCase(), questionTitle]
-        : [PASSAGE.toUpperCase()];
+      ? [PASSAGE.toUpperCase(), questionTitle]
+      : [PASSAGE.toUpperCase()];
   }
   if (questions.length > 1 || resources.length) {
     return ["MULTIPART"];
@@ -137,7 +137,6 @@ export const getQuestionType = item => {
  */
 
 export const getInterestedStandards = (summary, alignment = [], interestedCurriculums = []) => {
-
   let interestedStandards;
   let allStandards = summary?.standards || [];
 
@@ -148,22 +147,32 @@ export const getInterestedStandards = (summary, alignment = [], interestedCurric
   // pick standards matching with interested curriculums
   interestedStandards = authorStandards.filter(standard => curriculumIds.includes(standard.curriculumId));
 
-
   // If authored standards don't match, pick from multi standard mapping
   if (!interestedStandards.length && alignment.length) {
-    const equivalentStandards = uniqBy(alignment.filter(({ isEquivalentStandard }) => !!isEquivalentStandard).flatMap(({ domains }) => domains.flatMap(({ curriculumId, standards }) => standards.map(({ name: identifier, key: id }) => ({ identifier, id, curriculumId })))), "identifier");
-    const standardData = Object.values(authorStandards.reduce((acc, item) => {
-      const standard = acc[item.curriculumId];
-      if (standard) {
-        standard.totalPoints += item.totalPoints;
-        standard.totalQuestions += item.totalQuestions;
-      } else {
-        acc[item.curriculumId] = { ...item };
-      }
-      return acc;
-    }, {}));
+    const equivalentStandards = uniqBy(
+      alignment
+        .filter(({ isEquivalentStandard }) => !!isEquivalentStandard)
+        .flatMap(({ domains }) =>
+          domains.flatMap(({ curriculumId, standards }) =>
+            standards.map(({ name: identifier, key: id }) => ({ identifier, id, curriculumId }))
+          )
+        ),
+      "identifier"
+    );
+    const standardData = Object.values(
+      authorStandards.reduce((acc, item) => {
+        const standard = acc[item.curriculumId];
+        if (standard) {
+          standard.totalPoints += item.totalPoints;
+          standard.totalQuestions += item.totalQuestions;
+        } else {
+          acc[item.curriculumId] = { ...item };
+        }
+        return acc;
+      }, {})
+    );
 
-    standardData.forEach((standard) => {
+    standardData.forEach(standard => {
       const equivStandard = equivalentStandards.find(eqSt => curriculumIds.includes(eqSt.curriculumId));
       if (equivStandard) {
         interestedStandards.push({
@@ -174,8 +183,8 @@ export const getInterestedStandards = (summary, alignment = [], interestedCurric
     });
   }
   // if equivalent standards are not available
-  if(!(interestedStandards.length || alignment.length)){
-       interestedStandards = authorStandards;
+  if (!(interestedStandards.length || alignment.length)) {
+    interestedStandards = authorStandards;
   }
 
   return interestedStandards;

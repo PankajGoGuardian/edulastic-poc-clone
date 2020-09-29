@@ -5,6 +5,7 @@ import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
 import { getMathHtml } from "@edulastic/common";
 import { getServerTs } from "../../student/utils";
+import { getFormattedName } from "../Gradebook/transformers";
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -408,7 +409,8 @@ export const transformGradeBookResponse = (
     .map(
       ({
         _id: studentId,
-        firstName: studentName,
+        firstName,
+        middleName,
         lastName,
         email,
         username: userName,
@@ -416,7 +418,7 @@ export const transformGradeBookResponse = (
         fakeLastName,
         icon
       }) => {
-        const fullName = `${lastName ? `${lastName}, ` : ""}${studentName ? `${studentName}` : ""}`;
+        const fullName = getFormattedName(firstName, middleName, lastName);
         const fakeName = `${fakeFirstName} ${fakeLastName}`;
         if (!studentTestActivities[studentId]) {
           const isAbsent = assignmentStatus === "DONE" || endDate < serverTimeStamp;

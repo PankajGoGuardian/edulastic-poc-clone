@@ -26,6 +26,7 @@ import { proxyUser } from "../../../authUtils";
 import { selectStudentAction } from "../../ducks";
 import { getUserFeatures, isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
 import { getUserId, getUserRole, getGroupList } from "../../../src/selectors/user";
+import { getFormattedName } from "../../../Gradebook/transformers";
 
 const StudentsList = ({
   cuId,
@@ -70,9 +71,9 @@ const StudentsList = ({
       width: "20%",
       align: "left",
       sorter: (a, b) => (b.lastName || "").localeCompare(a.lastName || ""),
-      render: (_, { firstName, lastName }) => (
+      render: (_, { firstName, middleName, lastName }) => (
         <span>
-          {`${lastName ? `${lastName}, ` : ""}${firstName === "Anonymous" || firstName === "" ? "-" : firstName}`}
+          {firstName === "Anonymous" || firstName === "" ? "-" : getFormattedName(firstName, middleName, lastName)}
         </span>
       )
     },

@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import produce from "immer";
-import { FlexContainer, ScrollContext } from "@edulastic/common";
+import { FlexContainer } from "@edulastic/common";
 import { CorrectAnswerOptions } from "../../../../styled/CorrectAnswerOptions";
 import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
 import { Label } from "../../../../styled/WidgetOptions/Label";
@@ -53,8 +53,6 @@ const AnswerOptions = ({ t, setQuestionData, item }) => {
   const dStyle = displayStyle.type || displayStyles.TOGGLE;
   const subOp = displayStyle.option ? displayStyle.option : isDragDropStyle ? subOptions.EMPTY : subOptions.DASHED_LINE;
 
-  const { getScrollElement } = useContext(ScrollContext);
-
   return (
     <CorrectAnswerOptions alignItems="center">
       <CheckboxLabel
@@ -67,7 +65,7 @@ const AnswerOptions = ({ t, setQuestionData, item }) => {
       </CheckboxLabel>
 
       <FlexContainer alignItems="center">
-        <Select width="160px" onSelect={onChangeDisplayStyle} value={dStyle} getPopupContainer={getScrollElement}>
+        <Select width="160px" onSelect={onChangeDisplayStyle} value={dStyle}>
           {displayStyleOptions.map((op, index) => (
             <Option value={op.value} key={index}>
               {op.label}

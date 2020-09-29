@@ -1043,9 +1043,11 @@ export function* updateItemSaga({ payload }) {
      */
     const hasValidTestId = payload.testId && payload.testId !== "undefined";
     const testIdParam = hasValidTestId ? payload.testId : null;
-    if (testIdParam) {
+
+    if (!isEmpty(passageData) && testIdParam) {
       passageData.testId = testIdParam;
     }
+
     const [{ testId, ...item }, updatedPassage] = yield all([
       call(testItemsApi.updateById, payload.id, data, testIdParam),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null

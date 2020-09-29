@@ -126,7 +126,7 @@ class Container extends Component {
     const { itemId, testId } = match.params;
 
     if (newId && oldId !== newId) {
-      getItemDetailById(newId, { data: true, validation: true, ...(testId && { testId }) });
+      getItemDetailById(newId, { data: true, validation: true });
     }
     // State.testAuthoring ?
     // For all test with no edit permission in some cases user can clone item and save it in their own library.
@@ -534,13 +534,14 @@ class Container extends Component {
 
   goToItem = page => {
     const {
+      passage,
       history,
       match,
       isTestFlow,
       location: { state }
     } = this.props;
     const { testId } = match.params;
-    const _id = this.passageItems[page - 1];
+    const _id = passage.testItems[page - 1];
     if (state?.testAuthoring === false) {
       return history.push({
         pathname: `/author/items/${_id}/item-detail`,
@@ -687,17 +688,10 @@ class Container extends Component {
     ];
   }
 
-  get passageItems() {
-    const { passage } = this.props;
-    const passageTestItems = get(passage, "testItems", []);
-
-    return passageTestItems;
-  }
-
   get passageNavigator() {
-    const { item, passage, rows, view, itemDeleting } = this.props;
+    const { item, passage, view, rows, itemDeleting } = this.props;
+    const passageTestItems = get(passage, "testItems", []);
     const widgetLength = get(rows, [0, "widgets"], []).length;
-    const passageTestItems = this.passageItems;
 
     return (
       // isPassageWithQuestions fallback condition to show/hide pagination

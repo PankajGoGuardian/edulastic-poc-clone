@@ -224,6 +224,7 @@ export const TOGGLE_TEST_LIKE = "[test] toggle test like";
 export const UPDATE_TEST_LIKE_COUNT = "[test] update test like count";
 export const UPDATE_TEST_ITEM_LIKE_COUNT = "[test] update test review item like count";
 export const RESET_UPDATED_TEST_STATE = "[test] reset test updated state";
+
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);

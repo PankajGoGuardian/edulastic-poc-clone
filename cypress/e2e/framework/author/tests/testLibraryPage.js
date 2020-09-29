@@ -289,7 +289,7 @@ export default class TestLibrary {
     cy.contains("CLONE").click({ force: true });
     cy.wait("@duplicateTest").then(xhr => {
       expect(xhr.status, `test clone ${xhr.status === 200 ? "passed" : "failed"}`).to.eq(200);
-      if (saveToDelete) this.saveTestId(xhr);
+      // if (saveToDelete) this.saveTestId(xhr);
     });
     // cy.wait("@getTest");
   };
@@ -531,7 +531,7 @@ export default class TestLibrary {
       .then(() => cy.get('[data-cy-item-index="0"]'))
       .then(() => {
         this.getVersionedTestID().then(id => {
-          if (saveToDelete) cy.saveTestDetailToDelete(id);
+          //  if (saveToDelete) cy.saveTestDetailToDelete(id);
         });
       });
   };

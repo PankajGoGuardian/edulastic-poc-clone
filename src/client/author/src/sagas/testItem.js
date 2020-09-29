@@ -64,9 +64,10 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
 
     yield put(resetDictAlignmentsAction());
 
-    // if its a being added from passage, create new.
+    // if its a being added from passage, create new
     if (newPassageItem) {
-      item = yield call(testItemsApi.create, data);
+      const params = { ...(testId && { testId }) };
+      item = yield call(testItemsApi.create, data, params);
     }
 
     yield put({

@@ -10,7 +10,7 @@ import { isProxyUser as isProxyUserSelector } from "../../../Login/ducks";
 const Header = ({ userInfo, logout, isProxyUser }) => {
   const [isVisible, setVisible] = useState(false);
   const { firstName, middleName, lastName, role } = userInfo;
-  const userName = `${firstName} ${middleName || "b"} ${lastName || "c"}`;
+  const userName = `${firstName} ${middleName || ""} ${lastName || ""}`;
 
   const menu = (
     <Menu>

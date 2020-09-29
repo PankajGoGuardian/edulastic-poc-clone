@@ -19,7 +19,7 @@ const Header = ({ user }) => {
   };
   const userInfo = get(user, "user", {});
   const { firstName, lastName, middleName, role } = userInfo;
-  const userName = `${firstName} ${middleName || "b"} ${lastName || "c"}`;
+  const userName = `${firstName} ${middleName || ""} ${lastName || ""}`;
 
   const getInitials = () => {
     if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
@@ -60,11 +60,9 @@ const Header = ({ user }) => {
   );
 };
 
-export default connect(
-  state => ({
-    user: state.user
-  })
-)(Header);
+export default connect(state => ({
+  user: state.user
+}))(Header);
 
 const HeaderWrapper = styled(Row)`
   padding: 16px 24px;

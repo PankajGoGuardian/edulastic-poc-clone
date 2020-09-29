@@ -295,7 +295,7 @@ const tagMapping = {
 export const sanitizeForReview = stimulus => {
   if (!window.$) return stimulus;
   if (!stimulus || !stimulus.trim().length) return question.DEFAULT_STIMULUS;
-  const jqueryEl = $("<p>").append(sanitizeString(stimulus));
+  const jqueryEl = $("<p>").append(stimulus);
   // remove br tag also
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import styled, { withTheme, css } from "styled-components";
 import { cloneDeep, debounce, isEmpty } from "lodash";
 import { message } from "antd";
-import { notification, sanitizeString } from "@edulastic/common";
+import { notification } from "@edulastic/common";
 import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
@@ -983,12 +983,8 @@ const CustomEditor = ({
     if (prevValue === value) {
       return;
     }
-    let htmlStr = value;
-    if (theme.isV1Migrated) {
-      htmlStr = sanitizeString(value);
-    }
-    setPrevValue(htmlStr);
-    setContent(replaceLatexesWithMathHtml(htmlStr));
+    setPrevValue(value);
+    setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
   return (

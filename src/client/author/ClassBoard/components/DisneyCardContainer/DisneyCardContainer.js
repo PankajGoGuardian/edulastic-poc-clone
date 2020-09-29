@@ -141,7 +141,8 @@ class DisneyCardContainer extends Component {
        * 2. move this sort of tranforming code somewhere else
        */
       testActivity.map((student, index) => {
-        const status = getStudentCardStatus(student, endDate, serverTimeStamp, closed);
+        const recentAttempts = recentAttemptsGrouped[student.studentId];
+        const status = getStudentCardStatus(student, endDate, serverTimeStamp, closed,recentAttempts);
 
         const hasUsedScratchPad = student?.questionActivities.some(
           questionActivity => questionActivity?.scratchPad?.scratchpad === true
@@ -361,7 +362,7 @@ class DisneyCardContainer extends Component {
                     })}
                 </PaginationInfoT>
               </div>
-              {(recentAttemptsGrouped?.[student.studentId]?.length > 0 || student.status === "redirected") && (
+              {(recentAttempts?.length > 0 || student.status === "redirected") && (
                 <RecentAttemptsContainer>
                   <PaginationInfoS>
                     <PerfomanceSection>
@@ -377,7 +378,7 @@ class DisneyCardContainer extends Component {
                               Not Started
                             </StyledParaSS>
                             <p style={{ fontSize: "12px" }}>
-                              Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 2}
+                              Attempt {(recentAttempts?.[0]?.number || 0) + 2}
                             </p>
                           </AttemptDiv>
                         )}
@@ -390,7 +391,7 @@ class DisneyCardContainer extends Component {
                               e,
                               student.studentId,
                               student.testActivityId,
-                              (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
+                              (recentAttempts?.[0]?.number || 0) + 1
                             );
                           }}
                         >
@@ -401,7 +402,7 @@ class DisneyCardContainer extends Component {
                             {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                           </StyledParaSSS>
                           <p style={{ fontSize: "12px" }}>
-                            Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
+                            Attempt {(recentAttempts?.[0]?.number || 0) + 1}
                           </p>
                         </AttemptDiv>
                         {recentAttemptsGrouped?.[student.studentId].map(attempt => (

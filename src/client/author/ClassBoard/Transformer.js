@@ -563,7 +563,7 @@ export const transformGradeBookResponse = (
     .filter(x => x);
 };
 
-export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, closed) => {
+export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, closed,recentAttempts) => {
   const status = {};
   const { NOT_STARTED, START, SUBMITTED, ABSENT } = testActivityStatus;
   const { UTASTATUS, isEnrolled, isAssigned } = student;
@@ -609,6 +609,11 @@ export const getStudentCardStatus = (student = {}, endDate, serverTimeStamp, clo
     default:
       status.status = "Not Started";
       status.color = red;
+  }
+  if(status.status === "Absent" && recentAttempts && recentAttempts.some(item=>item.status == 1)){
+    const gradedAttempt = recentAttempts.some(item=>item.graded === "GRADED");
+    status.color = themeColorLighter;
+    status.status = gradedAttempt? "Graded":"submitted";
   }
   return status;
 };

@@ -18,7 +18,7 @@ import { test as testConstants } from "@edulastic/constants";
 
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { first, maxBy, isNaN } from "lodash";
+import { first, maxBy, isNaN, sortBy } from "lodash";
 import { Row, Col, Icon, Modal } from "antd";
 import { TokenStorage } from "@edulastic/api";
 import { maxDueDateFromClassess, getServerTs } from "../utils";
@@ -157,8 +157,12 @@ const AssignmentCard = memo(
       dueDate = maxDueDateFromClassess(currentClassList, userId);
     }
 
-    const lastAttempt = maxBy(reports, o => parseInt(o.startDate, 10)) || {};
-    // if last test attempt was not *submitted*, user should be able to resume it.
+    let lastAttempt = maxBy(reports, o => parseInt(o.startDate, 10)) || {};
+    //we should show the status as graded even though the last attempt is absent and there are absent attempts
+    if(type === "reports" && lastAttempt.status === 2 && reports.length > 1 && reports.some(item=>item.status === 1)){
+      lastAttempt = sortBy(reports,"startDate").find(r=>r.status === 1);
+    }  
+     // if last test attempt was not *submitted*, user should be able to resume it.
     const resume = lastAttempt.status == 0;
     const absent = lastAttempt.status == 2;
     const graded =

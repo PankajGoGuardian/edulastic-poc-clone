@@ -248,7 +248,7 @@ class DistrictAdminTable extends Component {
   };
 
   handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadFilteredList);
+    this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
   };
 
   onSearchFilter = (value, event, i) => {
@@ -448,6 +448,7 @@ class DistrictAdminTable extends Component {
       userOrgId,
       updateAdminUser,
       history,
+      pageNo,
       t
     } = this.props;
 
@@ -590,9 +591,8 @@ class DistrictAdminTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={{ pageSize: 25, hideOnSinglePage: true }}
+            pagination={false}
           />
-          {/* use below pagination when API is paginated
           <StyledPagination
             defaultCurrent={1}
             current={currentPage}
@@ -600,7 +600,7 @@ class DistrictAdminTable extends Component {
             total={totalUsers}
             onChange={page => this.setPageNo(page)}
             hideOnSinglePage
-          /> */}
+          />
         </TableContainer>
         {createDistrictAdminModalVisible && (
           <CreateDistrictAdminModal

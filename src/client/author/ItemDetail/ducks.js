@@ -893,7 +893,8 @@ export function* deleteItemSaga({ payload }) {
   try {
     yield put(setItemDeletingAction(true));
     const { id, redirectId, isTestFlow, testId, isItemPrevew = false } = payload;
-    yield call(testItemsApi.deleteById, id, { ...(testId && { testId }) });
+    const hasValidTestId = testId && testId !== "undefined";
+    yield call(testItemsApi.deleteById, id, { ...(hasValidTestId && { testId }) });
     yield put(setItemDeletingAction(false));
     yield put(deleteItemSuccesAction(id));
     notification({ type: "success", messageKey: "itemDeletedSuccessfully" });

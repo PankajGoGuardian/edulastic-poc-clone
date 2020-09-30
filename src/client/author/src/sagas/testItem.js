@@ -66,7 +66,8 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
 
     // if its a being added from passage, create new
     if (newPassageItem) {
-      const params = { ...(testId && { testId }) };
+      const hasValidTestId = testId && testId !== "undefined";
+      const params = { ...(hasValidTestId && { testId }) };
       item = yield call(testItemsApi.create, data, params);
     }
 

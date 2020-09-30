@@ -300,7 +300,7 @@ class SideMenu extends Component {
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
     const isCollapsed = isSidebarCollapsed;
-    const isMobile = windowWidth < parseFloat(tabletWidth);
+    const isMobile = windowWidth <= parseFloat(tabletWidth);
     const defaultSelectedMenu = this.MenuItems.findIndex(menuItem => {
       if (menuItem.customSelection && menuItem.condtition && locationState?.[menuItem.condtition]) {
         return true;
@@ -653,7 +653,7 @@ const SideBar = styled(Layout.Sider)`
   .ant-select {
     width: 125px;
   }
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${tabletWidth}) {
     &.ant-layout-sider-collapsed {
       min-width: 0px !important;
       max-width: 0px !important;
@@ -720,7 +720,7 @@ const ToggleSidemenu = styled.div`
     fill: ${themeColor};
   }
 
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${tabletWidth}) {
     display: none;
   }
 `;
@@ -1107,7 +1107,7 @@ const UserInfoButton = styled.div`
     color: ${white};
   }
 
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${tabletWidth}) {
     &.active {
       opacity: 0;
       pointer-events: none;

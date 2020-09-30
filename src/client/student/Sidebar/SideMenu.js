@@ -11,6 +11,7 @@ import { Layout, Menu as AntMenu, Row, Icon as AntIcon, Dropdown } from "antd";
 import {
   IconLogoCompact,
   IconClockDashboard,
+  IconBarChart,
   IconReport,
   IconManage,
   IconQuestion,
@@ -176,7 +177,7 @@ class SideMenu extends Component {
     const page = currentPath.split("/").filter(item => !!item)[1];
     const isReports = currentPath.split("/").includes("testActivityReport");
     const menuIndex = getIndex(page, menuItems, isReports);
-    const isMobile = windowWidth < parseFloat(tabletWidth);
+    const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
       <FooterDropDown
         data-cy="footer-dropdown"
@@ -414,7 +415,7 @@ const SideBar = styled(Layout.Sider)`
     width: 125px;
   }
 
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${tabletWidth}) {
     &.ant-layout-sider-collapsed {
       min-width: 0px !important;
       max-width: 0px !important;
@@ -477,7 +478,7 @@ const ToggleSidemenu = styled.div`
     width: 12px;
     fill: ${themeColor};
   }
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${tabletWidth}) {
     display: none;
   }
 `;
@@ -820,7 +821,7 @@ const UserInfoButton = styled.div`
     color: ${white};
   }
 
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${tabletWidth}) {
     &.active {
       opacity: 0;
       pointer-events: none;

@@ -2,7 +2,7 @@ export function offset(el, scrollElement) {
   if (!el) {
     return;
   }
-  if (!scrollElement) {
+  if(!scrollElement){
     scrollElement = window;
   }
   const rect = el.getBoundingClientRect();
@@ -12,7 +12,7 @@ export function offset(el, scrollElement) {
     scrollTop = scrollElement.scrollTop;
     scrollLeft = scrollElement.scrollLeft;
   }
-  return { top: rect.top + scrollTop, left: rect.left + scrollLeft, height: rect.height, width: rect.width };
+  return { top: rect.top + scrollTop, left: rect.left + scrollLeft, height: rect.height, width: rect.height };
 }
 
 const isSmoothScrollSupported = "scrollBehavior" in document.documentElement.style;

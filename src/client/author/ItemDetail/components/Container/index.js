@@ -62,7 +62,7 @@ const ItemDetailContainer = ({
     }
     if (itemId && itemId !== "new") {
       const hasValidTestId = testId && testId !== "undefined";
-      getItem(itemId, { data: true, validation: true, testId, ...(hasValidTestId && { testId }) });
+      getItem(itemId, { data: true, validation: true, ...(hasValidTestId && { testId }) });
     }
   }, [itemId]);
 

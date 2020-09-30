@@ -21,13 +21,13 @@
         "width": 70
       },
       {
-        "title": "#Submitted",
+        "title": "#Submitted & Graded",
         "dataIndex": "studentsGraded",
         "key": "studentsGraded",
         "width": 70
       },
       {
-        "title": "#Absent",
+        "title": "#Not Started, In Progress & Absent",
         "dataIndex": "studentsAbsent",
         "key": "studentsAbsent",
         "width": 70
@@ -100,13 +100,13 @@
         "width": 70
       },
       {
-        "title": "#Submitted",
+        "title": "#Submitted & Graded",
         "dataIndex": "studentsGraded",
         "key": "studentsGraded",
         "width": 70
       },
       {
-        "title": "#Absent",
+        "title": "#Not Started, In Progress & Absent",
         "dataIndex": "studentsAbsent",
         "key": "studentsAbsent",
         "width": 70
@@ -181,13 +181,13 @@
         "width": 70
       },
       {
-        "title": "#Submitted",
+        "title": "#Submitted & Graded",
         "dataIndex": "studentsGraded",
         "key": "studentsGraded",
         "width": 70
       },
       {
-        "title": "#Absent",
+        "title": "#Not Started, In Progress & Absent",
         "dataIndex": "studentsAbsent",
         "key": "studentsAbsent",
         "width": 70

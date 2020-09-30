@@ -84,9 +84,9 @@ export const Stats = props => {
       </StyledInnerRow>
       <StyledInnerRow gutter={15} type="flex" justify="start" className="average-stats">
         <StatItem fontSize="14px" heading="Students Assigned" value={state.studentsAssigned} />
-        <StatItem fontSize="14px" heading="Students Submitted" value={state.studentsGraded} />
+        <StatItem fontSize="14px" heading="Students Submitted & Graded" value={state.studentsGraded} />
         {/* added extra white space for responsiveness */}
-        <StatItem fontSize="14px" heading="Students  Absent" value={state.studentsAbsent} />
+        <StatItem fontSize="14px" heading="Students Not Started, In Progress & Absent" value={state.studentsAbsent} />
       </StyledInnerRow>
     </StyledRow>
   );

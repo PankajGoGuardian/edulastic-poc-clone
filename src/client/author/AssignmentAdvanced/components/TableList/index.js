@@ -241,7 +241,8 @@ const TableList = ({
       <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>Release Score</MoreOption>
       <MoreOption onClick={() => handleBulkAction("downloadGrades")}>Download Grades</MoreOption>
       <MoreOption onClick={() => handleBulkAction("downloadResponses")}>Download Responses</MoreOption>
-      <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>Unassign</MoreOption>
+      {/** Hiding Unassign option for now, plase uncomment it to get it back */}
+      {/* <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>Unassign</MoreOption> */}
     </MoreOptionsContainer>
   );
 

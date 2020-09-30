@@ -177,7 +177,8 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {(isAssignmentOwner || isCoAuthor || isAdmin) && canUnassign && (
+        {/**Hiding Unassign option for now, please uncomment it to get it back*/}
+        {/* {(isAssignmentOwner || isCoAuthor || isAdmin) && canUnassign && (
           <Menu.Item
             data-cy="delete-Assignment"
             key="delete-Assignment"
@@ -189,7 +190,7 @@ const ActionMenu = ({
               Unassign
             </StyledLink>
           </Menu.Item>
-        )}
+        )} */}
       </StyledMenu>
     </Container>
   );

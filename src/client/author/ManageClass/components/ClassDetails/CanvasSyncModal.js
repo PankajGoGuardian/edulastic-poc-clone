@@ -93,7 +93,7 @@ const CanvasSyncModal = ({
       ? [
           // eslint-disable-next-line react/jsx-indent
           <Button disabled={syncClassLoading} onClick={() => setIsDisabled(false)}>
-            Change deatils
+            Change Details
           </Button>
         ]
       : []),

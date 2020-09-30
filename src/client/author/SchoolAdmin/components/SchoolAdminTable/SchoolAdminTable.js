@@ -240,7 +240,7 @@ class SchoolAdminTable extends Component {
   };
 
   handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadFilteredList);
+    this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
   };
 
   onSearchFilter = (value, event, i) => {
@@ -672,9 +672,8 @@ class SchoolAdminTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={columns}
-            pagination={{ pageSize: 25, hideOnSinglePage: true }}
+            pagination={false}
           />
-          {/* use below pagination when API is paginated
           <StyledPagination
             defaultCurrent={1}
             current={currentPage}
@@ -682,13 +681,7 @@ class SchoolAdminTable extends Component {
             total={totalUsers}
             onChange={page => this.setPageNo(page)}
             hideOnSinglePage
-            pagination={{
-              current: pageNo,
-              total: totalUsers,
-              pageSize: 25,
-              onChange: page => setPageNo(page)
-            }}
-          /> */}
+          />
         </TableContainer>
         {createSchoolAdminModalVisible && (
           <CreateSchoolAdminModal

@@ -8,23 +8,25 @@ import { MathInputStyles, DraggableKeyboard, EmptyDiv, KeyboardIcon } from "./Ma
 const { EMBED_RESPONSE } = math;
 
 class MathInput extends React.PureComponent {
-  state = {
-    mathField: null,
-    mathFieldFocus: false
-  };
-
-  containerRef = React.createRef();
-
-  mathFieldRef = React.createRef();
+  constructor() {
+    super();
+    this.state = {
+      mathField: null,
+      mathFieldFocus: false
+    };
+    this.draggable = null;
+    this.inputRect = React.createRef({});
+    this.containerRef = React.createRef();
+    this.mathFieldRef = React.createRef();
+  }
 
   componentWillUnmount() {
     // make sure you remove the listener when the component is destroyed
     document.removeEventListener("click", this.handleClick, false);
     document.removeEventListener("click", this.handleChangeField, false);
-    this.setState({ mathFieldFocus: false });
   }
 
-  handleClick = e => {
+  handleClick = (e) => {
     const { onFocus } = this.props;
     const { mathFieldFocus } = this.state;
     let shouldHideKeyboard = true;
@@ -52,11 +54,11 @@ class MathInput extends React.PureComponent {
       mathFieldFocus
     ) {
       onFocus(false);
-      this.setState({ mathFieldFocus: false }, this.handleBlur);
+      this.setState({ mathFieldFocus: false, isDragged: false }, this.handleBlur);
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { mathField } = this.state;
     if (mathField && mathField.latex() !== nextProps.value) {
       mathField.latex(this.sanitizeLatex(nextProps.value));
@@ -110,34 +112,34 @@ class MathInput extends React.PureComponent {
 
   getKeyboardPosition() {
     const { symbols } = this.props;
-    const { top, left, height: inputH } = offset(this.containerRef.current) || { left: 0, top: 0 };
-    const { width, height: keyboardH } = math.symbols.find(x => x.value === symbols[0]) || { width: 0, height: 0 };
+    const inputRect = offset(this.containerRef.current) || { left: 0, top: 0 };
+    const { width, height: keyboardH } = math.symbols.find((x) => x.value === symbols[0]) || { width: 0, height: 0 };
 
-    let x = window.innerWidth - left - width;
+    let x = window.innerWidth - inputRect.left - width;
     if (x > 0) {
       x = 0;
     }
 
-    let y = window.innerHeight - top - keyboardH - inputH;
+    let y = window.innerHeight - inputRect.top - keyboardH - inputRect.height;
     if (y < 0) {
       // 8 is margin between math keyboard and math input
       y = -keyboardH - 8;
     } else {
-      y = inputH + 8;
+      y = inputRect.height + 8;
     }
-
+    this.inputRect.current = inputRect;
     return { x, y };
   }
 
-  handleTabKey = e => {
+  handleTabKey = (e) => {
     if (e?.keyCode === 9) {
-      this.setState({ mathFieldFocus: false });
+      this.setState({ mathFieldFocus: false, isDragged: false });
     }
   };
 
-  sanitizeLatex = v => (v?.toString() || "").replace(/&amp;/g, "&");
+  sanitizeLatex = (v) => (v?.toString() || "").replace(/&amp;/g, "&");
 
-  handleKeypress = e => {
+  handleKeypress = (e) => {
     const { restrictKeys, allowNumericOnly, value = "" } = this.props;
     const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g);
 
@@ -178,10 +180,39 @@ class MathInput extends React.PureComponent {
     }
   };
 
+  updateKeyboardPosition = () => {
+    const { alwaysShowKeyboard } = this.props;
+    const { isDragged } = this.state;
+    if (this.draggable && this.containerRef.current && !alwaysShowKeyboard && !isDragged) {
+      const prevInputRect = this.inputRect.current;
+      const inputRect = offset(this.containerRef.current);
+      let y_diff = 0;
+      if (prevInputRect.top !== inputRect.top) {
+        y_diff = inputRect.top - prevInputRect.top;
+      }
+      if (prevInputRect.height !== inputRect.height) {
+        y_diff += inputRect.height - prevInputRect.height;
+      }
+      let x_diff = 0;
+      if (prevInputRect.left !== inputRect.left) {
+        x_diff = inputRect.left - prevInputRect.left;
+      }
+      if (x_diff !== 0 || y_diff !== 0) {
+        const currentPos = this.draggable.getDraggablePosition();
+        const updatedPos = {
+          x: currentPos.x + x_diff,
+          y: currentPos.y + y_diff
+        };
+        this.draggable.updatePosition(updatedPos);
+        this.inputRect.current = inputRect;
+      }
+    }
+  };
+
   handleChangeField = () => {
     const { onInput: saveAnswer } = this.props;
     const { mathField } = this.state;
-
+    this.updateKeyboardPosition();
     const text = reformatMathInputLatex(mathField.latex());
     saveAnswer(text.replace(/\\square/g, "\\square "));
   };
@@ -248,8 +279,9 @@ class MathInput extends React.PureComponent {
 
   onClickMathField = () => {
     const { hideKeyboardByDefault } = this.state;
+    const keyboardPosition = this.getKeyboardPosition();
     if (!hideKeyboardByDefault) {
-      this.setState({ mathFieldFocus: true }, this.focus);
+      this.setState({ mathFieldFocus: true, keyboardPosition }, this.focus);
     }
   };
 
@@ -269,7 +301,7 @@ class MathInput extends React.PureComponent {
 
   toggleHideKeyboard = () => {
     this.setState(
-      state => ({
+      (state) => ({
         hideKeyboardByDefault: !state.hideKeyboardByDefault
       }),
       () => {
@@ -280,11 +312,19 @@ class MathInput extends React.PureComponent {
           textarea.focus();
         } else {
           textarea.blur();
+          const keyboardPosition = this.getKeyboardPosition();
           // textarea.setAttribute("readonly", "readonly");
-          this.setState({ mathFieldFocus: true });
+          this.setState({ mathFieldFocus: true, keyboardPosition });
         }
       }
     );
+  };
+
+  setDragged = () => {
+    const { isDragged } = this.state;
+    if (!isDragged) {
+      this.setState({ isDragged: true });
+    }
   };
 
   render() {
@@ -332,6 +372,7 @@ class MathInput extends React.PureComponent {
             style={{
               ...style,
               minHeight: style.height,
+              height: "auto",
               fontSize: style.fontSize ? style.fontSize : "inherit"
             }}
             data-cy="answer-math-input-field"
@@ -348,7 +389,14 @@ class MathInput extends React.PureComponent {
           </div>
         </div>
         {(visibleKeypad || alwaysShowKeyboard) && (
-          <MathKeyboardWrapper className="input__keyboard" default={keyboardPosition}>
+          <MathKeyboardWrapper
+            className="input__keyboard"
+            default={keyboardPosition}
+            onDrag={this.setDragged}
+            ref={(el) => {
+              this.draggable = el;
+            }}
+          >
             <MathKeyboard
               symbols={symbols}
               numberPad={numberPad}
@@ -400,11 +448,11 @@ MathInput.defaultProps = {
   style: {},
   customKeys: [],
   restrictKeys: [],
-  onInnerFieldClick: () => { },
-  onFocus: () => { },
-  onBlur: () => { },
-  onKeyDown: () => { },
-  onChangeKeypad: () => { },
+  onInnerFieldClick: () => {},
+  onFocus: () => {},
+  onBlur: () => {},
+  onKeyDown: () => {},
+  onChangeKeypad: () => {},
   fullWidth: false,
   className: ""
 };

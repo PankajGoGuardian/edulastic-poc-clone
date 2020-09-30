@@ -132,7 +132,7 @@ const getByV1Id = id =>
     })
     .then(result => result.data.result);
 
-const deleteById = (id, params) =>
+const deleteById = (id, params = {}) =>
   api.callApi({ url: `${prefix}/${id}`, method: "delete", params }).then(result => result.data);
 
 const getPassageItems = id =>

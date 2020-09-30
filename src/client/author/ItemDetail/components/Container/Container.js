@@ -126,7 +126,8 @@ class Container extends Component {
     const { itemId, testId } = match.params;
 
     if (newId && oldId !== newId) {
-      getItemDetailById(newId, { data: true, validation: true, ...(testId && { testId }) });
+      const hasValidTestId = testId && testId !== "undefined";
+      getItemDetailById(newId, { data: true, validation: true, ...(hasValidTestId && { testId }) });
     }
     // State.testAuthoring ?
     // For all test with no edit permission in some cases user can clone item and save it in their own library.

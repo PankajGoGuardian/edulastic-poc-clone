@@ -28,8 +28,8 @@ function* receiveCurriculumsSaga() {
   } catch (err) {
     console.error(err);
     Sentry.captureException(err);
-    const errorMessage = "Unable to retrive curriculums. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrive curriculums.";
+    notification({ type: "error", msg: errorMessage });
     yield put({
       type: RECEIVE_DICT_CURRICULUMS_ERROR,
       payload: { error: errorMessage }
@@ -54,8 +54,8 @@ function* receiveStandardsSaga({ payload }) {
   } catch (err) {
     console.error(err);
     Sentry.captureException(err);
-    const errorMessage = "Unable to retrieve standards. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrieve standards.";
+    notification({ type: "error", msg: errorMessage });
     yield put({
       type: RECEIVE_DICT_STANDARDS_ERROR,
       payload: { error: errorMessage }

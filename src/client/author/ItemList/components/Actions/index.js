@@ -7,7 +7,7 @@ import { Menu, Dropdown } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton, Label, FlexContainer, notification } from "@edulastic/common";
-import { white, mainTextColor, title, themeColorBlue } from "@edulastic/colors";
+import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { getUserRole, isPublisherUserSelector, getCollectionsToAddContent } from "../../../src/selectors/user";
@@ -110,7 +110,7 @@ const Actions = ({
         <span>{numberOfSelectedItems || 0} </span>
         {t("component.item.itemCount")}
       </Label>
-      <Dropdown overlay={menu} placement="bottomCenter" getPopupContainer={triggerNode => triggerNode.parentNode}>
+      <Dropdown overlay={menu} placement="bottomCenter">
         <EduButton data-cy="assignmentActions" height="30px" width="145px" isGhost>
           {t("component.item.actions")}
         </EduButton>
@@ -178,6 +178,6 @@ const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColorBlue};
+    background-color: ${themeColor};
   }
 `;

@@ -54,13 +54,17 @@ export default class FormMath extends React.Component {
 
   renderForm = mode => {
     const {
-      question: { numberPad, symbols, allowedVariables = "", allowNumericOnly = false},
+      question: { numberPad, symbols, allowedVariables = "", allowNumericOnly = false },
       answer,
       view,
-      highlighted,
+      highlighted
     } = this.props;
-    
-    const restrictKeys = allowedVariables.split(",").map(val=> val.trim()).filter(av => !!av);
+
+    const restrictKeys =
+      (allowedVariables || "")
+        .split(",")
+        .map(val => val.trim())
+        .filter(av => !!av) || [];
 
     if (mode === "report") {
       return <QuestionText>{answer}</QuestionText>;

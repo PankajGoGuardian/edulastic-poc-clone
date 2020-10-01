@@ -1,4 +1,4 @@
-import { OnWhiteBgLogo, notification } from "@edulastic/common";
+import { OnWhiteBgLogo, notification, EduButton } from "@edulastic/common";
 import { IconCanvasBook } from "@edulastic/icons";
 import { Select } from "antd";
 import { get, groupBy } from "lodash";
@@ -12,7 +12,7 @@ import selectsData from "../../../author/TestPage/components/common/selectsData"
 import { setSignUpStatusAction, signupSuccessAction } from "../../../student/Login/ducks";
 import { bulkSyncCanvasClassAction, joinSchoolFailedAction } from "../../../student/Signup/duck";
 import { getCanvasAllowedInstitutionPoliciesSelector } from "../../../author/src/selectors/user";
-import { StyledSelect } from "../../../author/ManageClass/components/ClassListContainer/styled";
+import { ModalClassListTable, StyledSelect } from "../../../author/ManageClass/components/ClassListContainer/styled";
 import {
   Button,
   ButtonContainer,
@@ -90,20 +90,21 @@ const CanvasBulkAddClass = ({
           const thumbnail = getThumbnail();
           return {
             districtId: user?.districtIds?.[0],
-            grades: [],
+            grades: s.grades || [],
             institutionId: institution,
             name: s.name,
             owners: [user._id],
             parent: { id: user._id },
-            standardSets: [],
-            subject: "",
-            courseId: "",
+            standardSets: s.standardSets || [],
+            subject: s.subject || "",
+            courseId: s.courseId || "",
             thumbnail,
             type: "class",
             canvasCode: course.id,
             canvasCourseName: course.name,
             canvasCourseSectionCode: s.id,
             canvasCourseSectionName: s.name,
+            groupId: s.groupId || "",
             ...(s.alreadySynced ? { alreadySynced: true } : {})
           };
         });
@@ -112,9 +113,7 @@ const CanvasBulkAddClass = ({
       setClasses(allClasses);
 
       // setting all the table rows as checked by default
-      const allClassKeys = allClasses
-        .filter(c => !c.alreadySynced)
-        .map(c => `${c.canvasCode}_${c.canvasCourseSectionCode}`);
+      const allClassKeys = allClasses.map(c => `${c.canvasCode}_${c.canvasCourseSectionCode}`);
       setSelectedRows(allClassKeys);
 
       setIsLoading(false);
@@ -162,7 +161,10 @@ const CanvasBulkAddClass = ({
     let selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
 
     // setting default grades as Other (O) if grade is not selected by the user.
-    selectedClasses = selectedClasses.map(c => ({ ...c, grades: c.grades.length > 0 ? c.grades : ["O"] }));
+    selectedClasses = selectedClasses.map(c => {
+      delete c.alreadySynced;
+      return { ...c, grades: c.grades.length > 0 ? c.grades : ["O"] };
+    });
 
     bulkSyncCanvasClass({ bulkSyncData: selectedClasses });
     setShowModal(true);
@@ -358,7 +360,7 @@ const CanvasBulkAddClass = ({
           </StyledSelect>
         </div>
       )}
-      <CanvasClassTable
+      <ModalClassListTable
         rowKey={record => `${record.canvasCode}_${record.canvasCourseSectionCode}`}
         columns={columns}
         dataSource={classes}
@@ -367,15 +369,20 @@ const CanvasBulkAddClass = ({
         bordered
         loading={isFetchingCanvasData || isLoading}
       />
-      <ButtonContainer justifyContent={fromManageClass ? "space-around" : "space-between"}>
+      <ButtonContainer justifyContent={fromManageClass ? "center" : "space-between"}>
         {fromManageClass ? (
-          <Button onClick={handleFinish}>Sync</Button>
+          [
+            <EduButton isGhost onClick={handleClose} style={{ "margin-right": "25px" }}>
+              CANCEL
+            </EduButton>,
+            <EduButton onClick={handleFinish}>SYNC</EduButton>
+          ]
         ) : (
           <>
             <Button onClick={handleGoBack} back>
-              Back
+              BACK
             </Button>
-            <Button onClick={handleFinish}>Finish</Button>
+            <Button onClick={handleFinish}>FINISH</Button>
           </>
         )}
       </ButtonContainer>

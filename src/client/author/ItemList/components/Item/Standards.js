@@ -27,10 +27,6 @@ const Standards = ({ item, interestedCurriculums, search }) => {
       // pick alignments based on search if interested alignments is empty
       if (!interestedAlignments.length) {
         interestedAlignments = authorAlignments.filter(alignment => alignment.curriculumId === curriculumId);
-        // use the authored alignments if still the interested alignments is empty
-        if (!interestedAlignments.length) {
-          interestedAlignments = authorAlignments;
-        }
       }
       interestedAlignments.map(el => (el.domains && el.domains.length ? domains.push(...el.domains) : null));
     });

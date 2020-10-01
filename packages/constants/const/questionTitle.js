@@ -3,6 +3,7 @@ const questionTitle = {
   MCQ_TRUE_OR_FALSE: "True or False",
   EXPRESSION_AND_FORMULA: "Expression & Formula",
   EQUATION_AND_INEQUALITIES: "Equations & Inequalities",
-  NUMERIC_ENTRY: "Numeric Entry"
+  NUMERIC_ENTRY: "Numeric Entry",
+  PASSAGE_WITH_QUESTIONS: "Passage with Questions"
 };
 module.exports = questionTitle;

@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
-import { Popover } from "antd";
-import { MathInputStyles } from "./MathInputStyles";
+import { math } from "@edulastic/constants";
+import { MathKeyboard, reformatMathInputLatex, offset } from "@edulastic/common";
+import { MathInputStyles, DraggableKeyboard, EmptyDiv } from "./MathInputStyles";
+
 import { WithResources } from "../../HOC/withResources";
 import AppConfig from "../../../../../app-config";
 
@@ -23,6 +24,7 @@ const StaticMath = ({
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const [keyboardPosition, setKeyboardPosition] = useState({});
 
   const containerRef = useRef(null);
   const mathFieldRef = useRef(null);
@@ -87,7 +89,28 @@ const StaticMath = ({
     return reformatMathInputLatex(mathField.latex());
   };
 
+  const getKeyboardPosition = el => {
+    const { top, left, height: inputH } = offset(el) || { left: 0, top: 0 };
+    const { width, height: keyboardH } = math.symbols.find(x => x.value === symbols[0]) || { width: 0, height: 0 };
+
+    let x = window.innerWidth - left - width;
+    if (x > 0) {
+      x = 0;
+    }
+
+    let y = window.innerHeight - top - (keyboardH - 50) - inputH;
+    if (y < 0) {
+      // 8 is margin between math keyboard and math input
+      y = -(keyboardH - 50) - 8;
+    } else {
+      y = inputH + 8;
+    }
+
+    return { x, y };
+  };
+
   const onFocus = newInnerField => {
+    setKeyboardPosition(getKeyboardPosition(newInnerField.el()));
     setCurrentInnerField(newInnerField);
     onInnerFieldClick(newInnerField);
     setShowKeyboard(true);
@@ -197,35 +220,28 @@ const StaticMath = ({
     setInnerFieldValues(innerValues);
   }, [innerValues]);
 
-  const keypad = (
-    <MathKeyboard
-      symbols={symbols}
-      numberPad={numberPad}
-      restrictKeys={restrictKeys}
-      customKeys={customKeys}
-      showResponse={false}
-      onClose={onKeyboardClose}
-      onInput={onInputKeyboard}
-    />
-  );
+  const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : DraggableKeyboard;
 
   return (
     <MathInputStyles noBorder={noBorder} noPadding ref={containerRef} minWidth={style.width} minHeight={style.height}>
-      <Popover
-        content={keypad}
-        trigger="click"
-        placement="bottomLeft"
-        visible={showKeyboard && !alwaysShowKeyboard}
-        overlayClassName="math-keyboard-popover"
-        getPopupContainer={trigger => trigger.parentNode}
-      >
-        <div className="input" onBlur={onBlurInput}>
-          <div className="input__math" data-cy="answer-math-input-style">
-            <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
-          </div>
-          {alwaysShowKeyboard && <div className="input__keyboard">{keypad}</div>}
+      <div className="input" onBlur={onBlurInput}>
+        <div className="input__math" data-cy="answer-math-input-style">
+          <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
         </div>
-      </Popover>
+        {(showKeyboard || alwaysShowKeyboard) && (
+          <MathKeyboardWrapper className="input__keyboard" default={keyboardPosition}>
+            <MathKeyboard
+              symbols={symbols}
+              numberPad={numberPad}
+              restrictKeys={restrictKeys}
+              customKeys={customKeys}
+              showResponse={false}
+              onClose={onKeyboardClose}
+              onInput={onInputKeyboard}
+            />
+          </MathKeyboardWrapper>
+        )}
+      </div>
     </MathInputStyles>
   );
 };

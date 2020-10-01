@@ -3,7 +3,7 @@ import {
   greyThemeLighter,
   mainBgColor,
   secondaryTextColor,
-  tabletWidth,
+  mobileWidthLarge,
   themeColor,
   title,
   themeColorBlue,
@@ -23,7 +23,7 @@ export const MainContainer = styled.div`
   }};
   width: 100%;
 
-  @media (max-width: ${tabletWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     padding-left: 0px;
   }
 

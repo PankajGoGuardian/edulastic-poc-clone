@@ -224,7 +224,6 @@ export const TOGGLE_TEST_LIKE = "[test] toggle test like";
 export const UPDATE_TEST_LIKE_COUNT = "[test] update test like count";
 export const UPDATE_TEST_ITEM_LIKE_COUNT = "[test] update test review item like count";
 export const RESET_UPDATED_TEST_STATE = "[test] reset test updated state";
-
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -1289,10 +1288,10 @@ function* receiveTestByIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.log({ err });
-    const errorMessage = "Unable to retrieve test info. Please contact support.";
+    const errorMessage = "Unable to retrieve test info.";
     if (err.status === 403) {
       yield put(push("/author/tests"));
-      notification({ messageKey: "curriculumMakeApiErr" });
+      notification({ type: "error", messageKey: "curriculumMakeApiErr" });
     } else {
       notification({ msg: errorMessage });
     }
@@ -1451,8 +1450,8 @@ function* updateTestSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.log({ err });
-    const errorMessage = err?.data?.message || "Unable to update the test. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = err?.data?.message || "Unable to update the test.";
+    notification({ type: "error", msg: errorMessage });
     yield put(updateTestErrorAction(errorMessage));
     yield put(setTestsLoadingAction(false));
   }
@@ -1537,8 +1536,8 @@ function* updateTestDocBasedSaga({ payload }) {
     });
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = err?.data?.message || "Unable to update the test. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = err?.data?.message || "Unable to update the test.";
+    notification({ type: "error", msg: errorMessage });
     yield put(updateTestErrorAction(errorMessage));
   }
 }
@@ -1555,7 +1554,7 @@ function* updateRegradeDataSaga({ payload }) {
       data: { message: errorMessage }
     } = err.response;
     Sentry.captureException(err);
-    notification({ msg: errorMessage || "Unable to publish & regrade. Please contact support." });
+    notification({ type: "error", msg: errorMessage || "Unable to publish & regrade." });
   } finally {
     yield put(setRegradingStateAction(false));
   }
@@ -1714,8 +1713,8 @@ function* receiveSharedWithListSaga({ payload }) {
     yield put(updateSharedWithListAction(coAuthors));
   } catch (e) {
     Sentry.captureException(e);
-    const errorMessage = "Unable to retrieve shared list. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrieve shared list.";
+    notification({ type: "error", msg: errorMessage });
   }
 }
 
@@ -1730,8 +1729,8 @@ function* deleteSharedUserSaga({ payload }) {
     );
   } catch (e) {
     Sentry.captureException(e);
-    const errorMessage = "Unable to remove the user. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to remove the user.";
+    notification({ type: "error", msg: errorMessage });
   }
 }
 
@@ -1884,7 +1883,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
     } = err.response;
     Sentry.captureException(err);
 
-    notification({ msg: errorMessage || "Unable to save test. Please contact support." });
+    notification({ type: "error", msg: errorMessage || "Unable to save test." });
   }
 }
 

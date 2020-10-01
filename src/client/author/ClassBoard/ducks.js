@@ -15,7 +15,6 @@ import {
   setIsPausedAction,
   updateRemovedStudentsAction,
   updateClassStudentsAction,
-  setStudentsGradeBookAction,
   setAllTestActivitiesForStudentAction,
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
@@ -78,8 +77,8 @@ function* receiveGradeBookSaga({ payload }) {
       payload: { entities }
     });
   } catch (err) {
-    const msg = "Unable to retrieve gradebook activity. Please contact support.";
-    notification({ messageKey: "receiveTestFailing" });
+    const msg = "Unable to retrieve gradebook activity.";
+    notification({ type: "error", messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_GRADEBOOK_ERROR,
       payload: { error: msg }
@@ -182,8 +181,8 @@ export function* receiveTestActivitySaga({ payload }) {
     });
   } catch (err) {
     console.log("err is", err);
-    const msg = "Unable to retrieve test activity. Please contact support.";
-    notification({ messageKey: "receiveTestFailing" });
+    const msg = "Unable to retrieve test activity.";
+    notification({ type: "error", messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_TESTACTIVITY_ERROR,
       payload: { error: msg }
@@ -315,6 +314,7 @@ function* markAbsentSaga({ payload }) {
 function* markAsSubmittedSaga({ payload }) {
   try {
     const response = yield call(classBoardApi.markSubmitted, payload);
+    console.log(response, "===r");
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(notification, { type: "success", msg: "Successfully marked as submitted" });
   } catch (err) {
@@ -379,8 +379,7 @@ function* removeStudentsSaga({ payload }) {
 
 function* addStudentsSaga({ payload }) {
   try {
-    const { students = [] } = yield call(classBoardApi.addStudents, payload);
-    yield put(setStudentsGradeBookAction(students));
+    yield call(classBoardApi.addStudents, payload);
     yield call(notification, { type: "success", msg: "Successfully added" });
   } catch (err) {
     Sentry.captureException(err);
@@ -681,12 +680,26 @@ export const classStudentsSelector = createSelector(
 );
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,
-  state => state.removedStudents
+  state =>
+    get(state, "entities", [])
+      .filter(item => item.isAssigned === false)
+      .map(({ studentId }) => studentId)
+);
+
+export const getAllActivities = createSelector(
+  stateTestActivitySelector,
+  state => state.entities
 );
 
 export const getEnrollmentStatus = createSelector(
-  stateTestActivitySelector,
-  state => get(state, "data.enrollmentStatus", {})
+  getAllActivities,
+  entities => {
+    const enrollmentStatus = {};
+    for (const entity of entities) {
+      enrollmentStatus[entity.studentId] = entity.isEnrolled ? 1 : 0;
+    }
+    return enrollmentStatus;
+  }
 );
 
 export const getIsShowAllStudents = createSelector(
@@ -700,22 +713,29 @@ export const getAllStudentsList = createSelector(
 );
 
 export const getTestActivitySelector = createSelector(
-  stateTestActivitySelector,
-  removedStudentsSelector,
+  getAllActivities,
   getEnrollmentStatus,
   getIsShowAllStudents,
-  (state, removedStudents, enrollments, showAll) =>
-    state.entities
+  (entities, enrollments, showAll) =>
+    entities
       .map(item => ({
         ...item,
-        enrollmentStatus: enrollments[item.studentId],
-        isUnAssigned: removedStudents.includes(item.studentId)
+        enrollmentStatus: enrollments[item.studentId]
       }))
-      .filter(item => (!item.isUnAssigned && item.enrollmentStatus === 1) || showAll)
+      .filter(item => (item.isAssigned && item.isEnrolled) || showAll)
+);
+
+export const getLCBStudentsList = createSelector(
+  getAllStudentsList,
+  getTestActivitySelector,
+  (students, entities) => {
+    const testActivitiesByUserId = keyBy(entities, "studentId");
+    return students.filter(s => !!testActivitiesByUserId[s._id]);
+  }
 );
 
 export const getActiveAssignedStudents = createSelector(
-  getAllStudentsList,
+  getLCBStudentsList,
   removedStudentsSelector,
   getEnrollmentStatus,
   (students, removedStudents, enrollments) =>
@@ -827,7 +847,7 @@ export const getCanCloseAssignmentSelector = createSelector(
   getUserRole,
   getAssignmentStatusSelector,
   (additionalData, currentClass, userRole, status) =>
-    additionalData?.canCloseClass.includes(currentClass) &&
+    additionalData?.canCloseClass?.includes(currentClass) &&
     status !== "DONE" &&
     status !== "NOT OPEN" &&
     !(
@@ -959,15 +979,7 @@ export const getIsShowUnAssignSelector = createSelector(
   getAssignedBySelector,
   getUserRole,
   testActivtyLoadingSelector,
-  (assignedBy, role, isLoading) => {
-    if (isLoading) {
-      return false;
-    }
-    if (roleuser.DA_SA_ROLE_ARRAY.includes(assignedBy.role)) {
-      return role !== roleuser.TEACHER;
-    }
-    return true;
-  }
+  (assignedBy, role, isLoading) => !isLoading && assignedBy.role === role
 );
 
 export const getAssignmentClassIdSelector = createSelector(
@@ -1054,4 +1066,30 @@ export const getQLabelsSelector = createSelector(
 export const getServerTsSelector = createSelector(
   getAdditionalDataSelector,
   state => getServerTs(state)
+);
+
+export const getBulckAssignedCount = createSelector(
+  getAdditionalDataSelector,
+  state => state?.bulkAssignedCount || 0
+);
+
+export const getBulkAssignedCountProcessedCount = createSelector(
+  getAdditionalDataSelector,
+  state => state?.bulkAssignedCountProcessed || 0
+);
+
+export const getShowRefreshMessage = createSelector(
+  getBulckAssignedCount,
+  getBulkAssignedCountProcessedCount,
+  getAssignedBySelector,
+  getUserRole,
+  (bulkAssignedCountProcessed, bulkAssignedCount, assignedBy, role) => {
+    if (role === roleuser.TEACHER) {
+      return false;
+    }
+    if (assignedBy.role !== roleuser.TEACHER) {
+      return bulkAssignedCountProcessed > bulkAssignedCount;
+    }
+    return false;
+  }
 );

@@ -122,10 +122,18 @@ export const curateFiltersData = (filtersData, filters) => {
 // curate percentScore, status & lastActivityDAte for testActivity
 const getCuratedTestActivity = taGroup => {
   const curatedGroup = taGroup.map(ta => {
-    const { status, graded, startDate, endDate, score = 0, maxScore = 1, redirect } = ta;
+    const { status, graded, startDate, endDate, score = 0, maxScore = 1, redirect, isAssigned, isEnrolled } = ta;
     const laDate = endDate || startDate || 0;
     if (status === testActivityStatus.START) {
       return { laDate, status: "START", score, maxScore, redirect };
+    }
+    if(isAssigned === true && isEnrolled === true && status === testActivityStatus.NOT_STARTED) {
+      return {
+        laDate,
+        status: "NOT STARTED",
+        percentScore: " ",
+        redirect
+      }
     }
     if (status === testActivityStatus.SUBMITTED) {
       return {
@@ -143,7 +151,7 @@ const getCuratedTestActivity = taGroup => {
     return null;
   });
   // if last attempted ta is redirected, show a ta with status "NOT STARTED"
-  if (curatedGroup[0].redirect) {
+  if (curatedGroup[0] && curatedGroup[0].redirect) {
     return {
       laDate: curatedGroup[0].laDate,
       status: "NOT STARTED",
@@ -161,16 +169,14 @@ const getPaginatedStudentData = (studentData, assessmentsData, pagination) => {
   const assignmentPos = (assignmentPage - 1) * assignmentPageSize;
   // re-curate to combine student assessments from multiple classes
   const assMap = keyBy(assessmentsData, "id");
-  const studentAssessments = flatMap(studentData, d => {
-    return Object.entries(d.assessments).map(([aId, aData]) => ({
+  const studentAssessments = flatMap(studentData, d => Object.entries(d.assessments).map(([aId, aData]) => ({
       ...assMap[aId],
       endDate: assMap[aId]?.class?.find(c => c.endDate && c._id === d.classId)?.endDate,
       ...aData,
       archived: aData.archived || [],
       classId: d.classId,
       key: `${aId}_${d.classId}`
-    }));
-  });
+    })));
   // paginate re-curated student assessments
   const assignmentsCount = studentAssessments.length;
   const curatedData = studentAssessments.slice(assignmentPos, assignmentPos + assignmentPageSize);
@@ -236,8 +242,8 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
               assignmentId: a._id,
               testType: a.testType,
               laDate: 0,
-              status: "NOT STARTED",
-              percentScore: " "
+              status: "UN ASSIGNED",
+              percentScore: "-"
             };
           }
         });

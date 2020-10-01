@@ -11,7 +11,6 @@ import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, Button } from "antd";
 
-import { response } from "@edulastic/constants";
 import {
   setTestDataAction,
   setCurrentAnnotationToolAction,
@@ -567,7 +566,6 @@ class WorksheetComponent extends React.Component {
 
     const { qid } = match.params || {};
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState;
-    const { width: v1Width, height: v1Height } = response.v1DocBased;
     let { answersById } = this.props;
     if (studentWorkAnswersById) {
       answersById = studentWorkAnswersById;
@@ -578,11 +576,8 @@ class WorksheetComponent extends React.Component {
     // WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
     const leftColumnWidth = minimized ? 0 : 180;
     const rightColumnWidth = 300;
-    const pdfWidth =
-      (questions || []).length && questions[0].isV1Migrated
-        ? v1Width
-        : windowWidth - rightColumnWidth - leftColumnWidth;
-    const pdfHeight = (questions || []).length && questions[0].isV1Migrated ? v1Height : undefined;
+    const pdfWidth = windowWidth - rightColumnWidth - leftColumnWidth;
+    
 
     const reportMode = viewMode && viewMode === "report";
     const editMode = viewMode === "edit";
@@ -700,7 +695,6 @@ class WorksheetComponent extends React.Component {
               reportMode={reportMode}
               isToolBarVisible={isToolBarVisible}
               pdfWidth={pdfWidth - 100}
-              pdfHeight={pdfHeight}
               minimized={minimized}
               pageChange={this.handleChangePage}
               testMode={testMode}

@@ -108,12 +108,12 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
 
   const questionTableData = testItemsData
     .map(item => {
-      const { isPassageWithQuestions, itemLevelScoring, multipartItem } = item;
+      const { isPassageWithQuestions, itemLevelScoring, multipartItem,itemLevelScore } = item;
       const questions = item.data.questions || [];
 
-      //for question type isPassageWithQuestions or multipartItem, and itemLevelScoring, then all questions response needs to show in one row
+      //for itemLevelScoring, all questions response needs to show in one row
       // so, converted to one row
-      if ((isPassageWithQuestions || multipartItem) && itemLevelScoring) {
+      if (itemLevelScoring) {
         const data = questions.reduce(
           (acc, q) => {
             const qActivity = qActivityById[q.id];
@@ -131,13 +131,13 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
           { yourAnswer: [], correctAnswer: [], score: 0, maxScore: 0 }
         );
 
-        totalScore += questions[0]?.itemScore || 0;
+        totalScore += itemLevelScore || 0;
         obtainedScore += data.score;
 
         return {
           ...(questions[0] || {}),
           ...data,
-          maxScore: questions[0]?.itemScore || 0,
+          maxScore: itemLevelScore || 0,
           questionNumber: `${questions[0]?.barLabel?.substr(1)}`
         };
       }

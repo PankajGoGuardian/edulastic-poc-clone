@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Color from "color";
 
 const getItemBackground = (alpha, hoverBg = false) => ({
   active,
@@ -24,9 +23,7 @@ const getItemBackground = (alpha, hoverBg = false) => ({
     return theme.widgets.shading.incorrectLiBgColor;
   }
   if (isCheckLocked || isShowLocked || isSimplyActive) {
-    return Color(theme.widgets.shading.lockedLiBgColor)
-      .alpha(alpha)
-      .string();
+    return theme.widgets.shading.lockedLiBgColor;
   }
   return hoverBg ? theme.widgets.shading.liBgHoverColor : theme.widgets.shading.liBgColor;
 };

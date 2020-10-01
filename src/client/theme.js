@@ -1095,7 +1095,7 @@ export const defaultTheme = {
       correctLiBorderColor: "#35D19B",
       incorrectLiBgColor: "#FDE0E8",
       incorrectLiBorderColor: "#F25783",
-      lockedLiBgColor: liColor,
+      lockedLiBgColor: "magenta",
       liBgColor: liColor,
       liBgHoverColor: "transparent"
     },

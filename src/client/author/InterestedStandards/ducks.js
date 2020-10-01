@@ -97,8 +97,8 @@ function* receiveInterestedStandardsSaga({ payload }) {
     const interestedStandards = yield call(settingsApi.getInterestedStandards, payload);
     yield put(receiveInterestedStandardsSuccessAction(interestedStandards));
   } catch (err) {
-    const errorMessage = "Unable to retrieve the Interested Standards. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to retrieve the Interested Standards.";
+    notification({ type: "error", msg:errorMessage});
     yield put(receiveInterestedStandardsErrorAction({ error: errorMessage }));
   }
 }
@@ -126,8 +126,8 @@ function* updateInterestedStandardsSaga({ payload }) {
     notification({ type: "success", messageKey:"intrestedStandardSavedSuccessfully"});
   } catch (err) {
     console.log(err);
-    const errorMessage = "Unable to update the Interested Standards. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to update the Interested Standards.";
+    notification({ type: "error", msg:errorMessage});
     yield put(updateInterestedStandardsErrorAction({ error: errorMessage }));
   }
 }
@@ -139,8 +139,8 @@ function* saveInterestedStandardsSaga({ payload }) {
     notification({ type: "success", messageKey:"intrestedStandardSavedSuccessfully"});
 
   } catch (err) {
-    const errorMessage = "Unable to save the Interested Standards. Please contact support.";
-    notification({ msg:errorMessage});
+    const errorMessage = "Unable to save the Interested Standards.";
+    notification({ type: "error", msg:errorMessage});
     yield put(saveInterestedStandardsErrorAction({ error: errorMessage }));
   }
 }

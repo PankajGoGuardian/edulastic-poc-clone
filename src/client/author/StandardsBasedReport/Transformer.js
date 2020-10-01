@@ -3,28 +3,36 @@ import { groupBy } from "lodash";
 import memoizeOne from "memoize-one";
 
 export const getStandardWisePerformance = (testActivities, std) => {
-  // In this PR #5187 filtering by "submitted" was removed, instead may be we should filter out absent
-  // const submittedTestActivities = testActivities.filter(x => x.status !== "absent");
-  // const questionActivities = submittedTestActivities.flatMap(({ studentId, questionActivities }) =>
-
+  const performanceStudentWise = {};
+  // filter out absent test activities
   const interestedTestActivities = testActivities.filter(x => x.status === "submitted" || x.status === "inProgress");
-  const questionActivities = interestedTestActivities.flatMap(({ studentId, questionActivities }) =>
+  const _questionActivities = interestedTestActivities.flatMap(({ studentId, questionActivities }) =>
     questionActivities.map(x => ({ ...x, studentId }))
   );
 
-  const questionActivitiesByQid = groupBy(questionActivities, "_id");
-  const performanceStudentWise = {};
   if (std && std.qIds) {
+    /**
+     * if qAct.qActId not present, then its a generated uqa from frontend.
+     * we shouldn't consider those, since reports aren't considering it
+     */
+    let filteredQuestionActivities = _questionActivities.filter(
+      qAct =>
+        !(qAct.scoringDisabled || qAct.disabled || !qAct.maxScore || (!qAct.score && qAct.score !== 0) || !qAct.qActId)
+    );
+    // check if any of the filtered question activities match the qIds from standard
+    const checkForStdQids = filteredQuestionActivities.some(qAct => std.qIds.includes(qAct._id));
+    // if the above check fails, flatMap qIds from filtered questionActivities
+    if (!checkForStdQids) {
+      filteredQuestionActivities = filteredQuestionActivities.flatMap(qAct =>
+        qAct.qids ? qAct.qids.map(qid => ({ ...qAct, qids: [qid], _id: qid })) : qAct
+      );
+    }
+
+    const questionActivitiesByQid = groupBy(filteredQuestionActivities, "_id");
+
     for (const qid of std.qIds) {
       const questionActs = questionActivitiesByQid[qid] || [];
       for (const qAct of questionActs) {
-        /**
-         * if qAct.qActId not present means, then its a generated uqa from frontend.
-         *  we shouldn't consider those , since reports not considering it 
-         */
-        if (qAct.scoringDisabled || qAct.disabled || (!qAct.maxScore)||(!qAct.score && qAct.score !== 0)||(!qAct.qActId)) {
-          continue;
-        }
         const { studentId } = qAct;
         if (!performanceStudentWise[studentId]) {
           performanceStudentWise[studentId] = { score: qAct.score, maxScore: qAct.maxScore, count: 1 };
@@ -41,40 +49,49 @@ export const getStandardWisePerformance = (testActivities, std) => {
     const { score, maxScore } = performanceStudentWise[key];
     performanceStudentWise[key] = maxScore ? score / maxScore : 0;
   }
-
   return performanceStudentWise;
 };
 
 export const getStandardWisePerformanceDetail = (testActivities, std, isPresentationMode = false) => {
-  // may be filter out absent const submittedTestActivities = testActivities.filter(x => x.status !== "absent");
+  const performanceStudentWise = {};
+  // filter out absent test activities
   const interestedTestActivities = testActivities.filter(x => x.status === "submitted" || x.status === "inProgress");
-  const questionActivities = interestedTestActivities.flatMap(
+  const _questionActivities = interestedTestActivities.flatMap(
     ({ studentId, studentName, fakeName, questionActivities }) =>
       questionActivities.map(x => ({ ...x, studentId, studentName, fakeName }))
   );
 
-  const questionActivitiesByQid = groupBy(questionActivities, "_id");
-  const performanceStudentWise = {};
+  /**
+   * if qAct.qActId not present, then its a generated uqa from frontend
+   * we shouldn't consider those, since reports aren't considering it
+   */
+  let filteredQuestionActivities = _questionActivities.filter(
+    qAct => !(qAct.scoringDisabled || qAct.disabled || qAct.maxScore == 0 || !qAct.qActId)
+  );
+  // check if any of the filtered question activities match the qIds from standard
+  const checkForStdQids = filteredQuestionActivities.some(qAct => std.qIds.includes(qAct._id));
+  // if the above check fails, flatMap qIds from filtered questionActivities
+  if (!checkForStdQids) {
+    filteredQuestionActivities = filteredQuestionActivities.flatMap(qAct =>
+      qAct.qids ? qAct.qids.map(qid => ({ ...qAct, qids: [qid], _id: qid })) : qAct
+    );
+  }
+
+  const questionActivitiesByQid = groupBy(filteredQuestionActivities, "_id");
+
   for (const qid of std.qIds) {
     const questionActs = questionActivitiesByQid[qid] || [];
     for (const qAct of questionActs) {
-       /**
-         * if qAct.qActId not present means, then its a generated uqa from frontend.
-         *  we shouldn't consider those , since reports not considering it 
-         */
-      if (qAct.disabled || qAct.scoringDisabled || qAct.maxScore == 0||(!qAct.qActId)) {
-        continue;
-      }
       const { studentId } = qAct;
       if (!performanceStudentWise[studentId]) {
         performanceStudentWise[studentId] = {
-          score: qAct.score||0,
+          score: qAct.score || 0,
           maxScore: qAct.maxScore,
           studentName: isPresentationMode ? qAct.fakeName : qAct.studentName,
           count: 1
         };
       } else {
-        performanceStudentWise[studentId].score += qAct.score||0;
+        performanceStudentWise[studentId].score += qAct.score || 0;
         performanceStudentWise[studentId].maxScore += qAct.maxScore;
         performanceStudentWise[studentId].count += 1;
       }
@@ -82,5 +99,6 @@ export const getStandardWisePerformanceDetail = (testActivities, std, isPresenta
   }
   return performanceStudentWise;
 };
+
 export const getStandardWisePerformanceDetailMemoized = memoizeOne(getStandardWisePerformanceDetail);
 export const getStandardWisePerformanceMemoized = memoizeOne(getStandardWisePerformance);

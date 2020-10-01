@@ -61,7 +61,9 @@ const StartAssignment = ({
         title: "Do you want to Continue ?",
         content,
         onOk: () => {
+          console.warn("==Initiating assignment==", { testId, assignmentId, testType, groupId });
           startAssignment({ testId, assignmentId, testType, classId: groupId });
+          console.warn("==Initiated assignment successfully==");
           Modal.destroyAll();
         },
         onCancel: () => {

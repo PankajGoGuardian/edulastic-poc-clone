@@ -719,7 +719,7 @@ function* receivePlaylistByIdSaga({ payload }) {
     }
     yield put(receivePlaylistByIdSuccess(entity));
   } catch (err) {
-    yield call(notification, { messageKey: "getPlaylistErr" });
+    yield call(notification, { type: "error", messageKey: "getPlaylistErr" });
     yield put(receivePlaylistByIdError("getPlaylistErr"));
   }
 }
@@ -855,7 +855,7 @@ function* receiveSharedWithListSaga({ payload }) {
     }));
     yield put(updateSharedWithListAction(coAuthors));
   } catch (e) {
-    yield call(notification, { messageKey: "getSharedUsersErr" });
+    yield call(notification, { type: "error", messageKey: "getSharedUsersErr" });
   }
 }
 
@@ -864,7 +864,7 @@ function* deleteSharedUserSaga({ payload }) {
     yield call(contentSharingApi.deleteSharedUser, payload);
     yield put(receiveSharedWithListAction(payload.testId));
   } catch (e) {
-    yield call(notification, { messageKey: "deleteSharedUserErr" });
+    yield call(notification, { type: "error", messageKey: "deleteSharedUserErr" });
   }
 }
 

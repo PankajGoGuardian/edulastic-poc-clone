@@ -610,7 +610,7 @@ class QuestionWrapper extends Component {
                       isStudentReport={isStudentReport}
                     />
                   )}
-                  {(isGrade || isLCBView || isExpressGrader || restProps.previewTab === "show") && (
+                  {(isLCBView || isExpressGrader || restProps.previewTab === "show") && (
                     <Explanation isStudentReport={isStudentReport} question={data} isGrade={isGrade} />
                   )}
                 </StyledFlexContainer>

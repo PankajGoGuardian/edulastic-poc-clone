@@ -29,6 +29,7 @@ import {
   StyledButton,
   StyledTableButton,
   SubHeaderWrapper,
+  StyledPagination,
   TableContainer
 } from "../../../../common/styled";
 import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
@@ -383,7 +384,7 @@ class TeacherTable extends Component {
 
   onChangeSearch = event => this.setState({ searchByName: event.currentTarget.value });
 
-  handleSearchName = value => this.setState({ searchByName: value }, this.loadFilteredList);
+  handleSearchName = value => this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
 
   onSearchFilter = (value, event, i) => {
     const { filtersData } = this.state;
@@ -542,6 +543,7 @@ class TeacherTable extends Component {
       districtId: userOrgId,
       role: "teacher",
       page: currentPage,
+      limit: 25,
       institutionId: location.institutionId || ""
       // uncomment after elastic search is fixed
       // sortField,
@@ -580,7 +582,8 @@ class TeacherTable extends Component {
       showMergeTeachersModal,
       filtersData,
       refineButtonActive,
-      showActive
+      showActive,
+      currentPage
     } = this.state;
 
     const {
@@ -589,6 +592,8 @@ class TeacherTable extends Component {
       updateAdminUser,
       teacherDetailsModalVisible,
       history,
+      pageNo,
+      totalUsers,
       t
     } = this.props;
     const rowSelection = {
@@ -759,7 +764,15 @@ class TeacherTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={{ pageSize: 25, hideOnSinglePage: true }}
+            pagination={false}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={totalUsers}
+            onChange={page => this.setPageNo(page)}
+            hideOnSinglePage
           />
         </TableContainer>
         {

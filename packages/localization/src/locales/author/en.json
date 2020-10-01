@@ -115,8 +115,9 @@
       "itemDetail": "Item Detail",
       "backToItemList": "Back to Item Bank",
       "backText": "Back to Item Detail",
-      "addNew": "ANOTHER PART",
-      "addFirstPart": "FIRST PART"
+      "addNew": "ADD PART (b)/(c) TO THIS ITEM",
+      "addFirstPart": "ADD FIRST PART TO THIS ITEM",
+      "addNewItemToPassage": "ADD A NEW ITEM TO PASSAGE"
     },
     "itemdetail": {
       "backText": "Back to Item Detail",

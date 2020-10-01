@@ -1,6 +1,7 @@
 import { createAction } from "redux-starter-kit";
-import { uniqBy, keyBy, cloneDeep } from "lodash";
+import { keyBy, cloneDeep } from "lodash";
 import { produce } from "immer";
+import { testActivityStatus } from "@edulastic/constants";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
@@ -14,15 +15,14 @@ import {
   UPDATE_REMOVED_STUDENTS_LIST,
   UPDATE_STUDENTS_LIST,
   UPDATE_CLASS_STUDENTS_LIST,
-  SET_STUDENTS_GRADEBOOK,
   SET_ALL_TESTACTIVITIES_FOR_STUDENT,
   UPDATE_SUBMITTED_STUDENTS,
   TOGGLE_VIEW_PASSWORD_MODAL,
   UPDATE_PASSWORD_DETAILS,
-  RECEIVE_STUDENT_RESPONSE_SUCCESS
+  RECEIVE_STUDENT_RESPONSE_SUCCESS,
+  RESPONSE_ENTRY_SCORE_SUCCESS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid, getResponseTobeDisplayed } from "../../ClassBoard/Transformer";
-import { createFakeData } from "../../ClassBoard/utils";
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT = "[gradebook] realtime test activity submit";
@@ -122,6 +122,20 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         allTestActivitiesForStudent: payload
       };
+    case RESPONSE_ENTRY_SCORE_SUCCESS:
+      return produce(state, _st => {
+        const userId = payload?.testActivity?.userId;
+        const testActivityId = payload?.testActivity?._id;
+        const attempt = _st.data.recentTestActivitiesGrouped[userId].find(x => x._id === testActivityId);
+        if (attempt) {
+          if (payload.testActivity?.score) {
+            attempt.score = payload.testActivity?.score;
+          }
+          if (payload.testActivity?.maxScore) {
+            attempt.maxScore = payload.testActivity?.maxScore;
+          }
+        }
+      });
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD: {
       const entity = payload;
       nextState = produce(state, _st => {
@@ -164,6 +178,7 @@ const reducer = (state = initialState, { type, payload }) => {
           }
           _st.entities[index].testActivityId = entity.testActivityId;
           _st.entities[index].status = "inProgress";
+          _st.entities[index].UTASTATUS = 0;
           _st.entities[index].score = 0;
           const isAutoselectItems = _st.entities[index].questionActivities.some(a => !a._id);
           if (isAutoselectItems) {
@@ -400,7 +415,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_REMOVED_STUDENTS_LIST: {
       const updatedStudents = state.entities.map(item => {
         if (payload.includes(item.studentId)) {
-          return { ...item, status: "absent" };
+          return { ...item, status: "absent", UTASTATUS: testActivityStatus.ABSENT };
         }
         return item;
       });
@@ -417,6 +432,7 @@ const reducer = (state = initialState, { type, payload }) => {
           return {
             ...item,
             status: "submitted",
+            UTASTATUS: updatedActivity.status,
             graded: updatedActivity.gradedAll ? "GRADED" : "IN GRADING",
             score: updatedActivity.score,
             testActivityId: updatedActivity._id,
@@ -436,7 +452,15 @@ const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_STUDENTS_LIST:
       return {
         ...state,
-        removedStudents: [...state.removedStudents, ...payload]
+        entities: state.entities.map(item => {
+          if (payload.includes(item.studentId)) {
+            return {
+              ...item,
+              isAssigned: false
+            };
+          }
+          return item;
+        })
       };
     case UPDATE_CLASS_STUDENTS_LIST:
       return {
@@ -448,54 +472,11 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         studentViewFilter: payload
       };
-    case SET_STUDENTS_GRADEBOOK: {
-      // take out newly added students from class students
-      const pickClassStudentsObj = state.classStudents.filter(item => payload.includes(item._id));
-
-      // create presenttation data  for new students
-      const fakeData = createFakeData(pickClassStudentsObj.length);
-
-      // map students data as per test activity api students object structure
-      const studentsData = pickClassStudentsObj.map((student, index) => ({
-        _id: student._id,
-        firstName: student.firstName,
-        lastName: student.lastName,
-        email: student.email,
-        ...fakeData[index]
-      }));
-
-      const activeStudents = state.data.students.filter(item => !state.removedStudents.includes(item.studentId));
-      const dataToTransform = {
-        ...state.data,
-        // for DONE assignment student status is absent hence update status to inprogress and increase the endDate so that student status will change to not started for done assignments
-        status: "IN PROGRESS",
-        endDate: Date.now() + 100,
-        students: [...activeStudents, ...studentsData],
-        ts: state.additionalData.ts
-      };
-
-      return {
-        ...state,
-        // update if removed students are added again
-        removedStudents: state.removedStudents.filter(item => !payload.includes(item)),
-        data: {
-          ...state.data,
-          status: state.data.status === "DONE" ? "IN PROGRESS" : state.data.status,
-          // merge newly added student to gradebook entity and student object
-          students: [...activeStudents, ...studentsData]
-        },
-        entities: uniqBy(transformGradeBookResponse(dataToTransform), "studentId"),
-        additionalData: {
-          ...state.additionalData,
-          endDate: state.data.status === "DONE" ? Date.now() + 100 : state.additionalData.endDate
-        }
-      };
-    }
     case RECEIVE_STUDENT_RESPONSE_SUCCESS:
       return {
         ...state,
         entities: state.entities.map(entity => {
-          if (payload.testActivity.userId === entity.studentId) {
+          if (payload.testActivity.userId === entity.studentId && entity.testActivityId === payload.testActivity._id) {
             return {
               ...entity,
               graded: payload?.testActivity?.graded || entity.graded,

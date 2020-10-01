@@ -62,8 +62,8 @@ function* receiveClassEnrollmentListSaga({ payload }) {
     // const activeUsers = result.filter(o => o.status === "1" || o.status == 1);
     yield put(receiveClassEnrollmentListSuccessAction({ result, total }));
   } catch (err) {
-    const errorMessage = "Unable to retrieve class enrollments. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrieve class enrollments.";
+    notification({ type: "error", msg: errorMessage });
     yield put(receiveClassEnrollmentListErrorAction({ error: errorMessage }));
   }
 }

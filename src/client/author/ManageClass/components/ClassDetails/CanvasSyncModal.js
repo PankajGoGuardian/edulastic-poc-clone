@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Select, Spin } from "antd";
 import { EduButton, notification } from "@edulastic/common";
 import styled from "styled-components";
-import { backgroundGrey2, green, themeColorTagsBg } from "@edulastic/colors";
+import { backgroundGrey2, black, green, themeColorTagsBg } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 const CanvasSyncModal = ({
@@ -25,6 +25,16 @@ const CanvasSyncModal = ({
   const [section, setSection] = useState(canvasCourseSectionCode);
   const [idDisabled, setIsDisabled] = useState(!!canvasCode && !!canvasCourseSectionCode);
 
+  // filter already synced canvas sections
+  const activeCanvasClassSectionCode = user?.orgData?.classList
+    .filter(
+      o =>
+        o.active === 1 && o.canvasCourseSectionCode && `${o._id}` !== `${groupId}` && `${o.canvasCode}` === `${course}`
+    )
+    .map(o => `${o.canvasCourseSectionCode}`);
+  canvasSectionList = canvasSectionList.filter(
+    o => !activeCanvasClassSectionCode.includes(`${o.id}`) && `${o.course_id}` === `${course}`
+  );
   const isSyncDisabled = isFetchingCanvasData || !canvasCourseList?.length || !canvasSectionList?.length;
 
   useEffect(() => {
@@ -45,7 +55,9 @@ const CanvasSyncModal = ({
   }, [canvasCourseList]);
 
   useEffect(() => {
-    if (!section && canvasSectionList.length) setSection(canvasSectionList[0].id);
+    if (!section) {
+      setSection(canvasSectionList?.[0]?.id || undefined);
+    }
   }, [canvasSectionList]);
 
   const handleSync = () => {
@@ -81,7 +93,7 @@ const CanvasSyncModal = ({
       ? [
           // eslint-disable-next-line react/jsx-indent
           <Button disabled={syncClassLoading} onClick={() => setIsDisabled(false)}>
-            Change deatils
+            Change Details
           </Button>
         ]
       : []),
@@ -100,7 +112,7 @@ const CanvasSyncModal = ({
         <label>Course</label>
         <Select
           placeholder="Select a Course"
-          value={+course}
+          value={+course || undefined}
           onChange={handleCourseChange}
           getPopupContainer={triggerNode => triggerNode.parentNode}
           disabled={idDisabled}
@@ -116,12 +128,19 @@ const CanvasSyncModal = ({
         <label>Section</label>
         <Select
           placeholder="Select a Section"
-          value={+section}
+          value={+section || undefined}
           onChange={value => {
             setSection(value);
           }}
           getPopupContainer={triggerNode => triggerNode.parentNode}
           disabled={idDisabled}
+          notFoundContent={
+            activeCanvasClassSectionCode?.length ? (
+              <div style={{ color: black }}>No new Canvas Section available to sync</div>
+            ) : (
+              undefined
+            )
+          }
         >
           {canvasSectionList.map(s => (
             <Select.Option key={s.id} value={+s.id}>

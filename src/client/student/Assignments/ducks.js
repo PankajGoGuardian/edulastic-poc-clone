@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
-import { test as testConst } from "@edulastic/constants";
+import { test as testConst, testActivityStatus } from "@edulastic/constants";
 import { Effects, notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import { getCurrentSchool, fetchUserAction, getUserRole, getUserId } from "../Login/ducks";
@@ -26,6 +26,7 @@ import {
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 import { clearOrderOfOptionsInStore } from "../../assessment/actions/assessmentPlayer";
 import { getServerTs } from "../utils";
+import { TIME_UPDATE_TYPE } from "../../assessment/themes/common/TimedTestTimer";
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
 // constants
@@ -46,7 +47,6 @@ export const RESUME_ASSIGNMENT = "[studentAssignments] resume assignments";
 export const BOOTSTRAP_ASSESSMENT = "[assessment] bootstrap";
 export const LAUNCH_ASSIGNMENT_FROM_LINK = "[studentAssignemnts] launch assignment from link";
 export const REDIRECT_TO_DASHBOARD = "[studentAssignments] redirect to dashboard";
-export const UPDATE_UTA_TIME = "[studentAssignments] update uta time for timed assignment";
 
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
@@ -57,7 +57,6 @@ export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 export const bootstrapAssessmentAction = createAction(BOOTSTRAP_ASSESSMENT);
 export const launchAssignmentFromLinkAction = createAction(LAUNCH_ASSIGNMENT_FROM_LINK);
 export const redirectToDashboardAction = createAction(REDIRECT_TO_DASHBOARD);
-export const updateUtaTimeAction = createAction(UPDATE_UTA_TIME);
 
 const getAssignmentClassId = (assignment, groupId, classIds) => {
   if (groupId) {
@@ -157,7 +156,42 @@ export const transformAssignmentForRedirect = (
 
 // selectors
 export const assignmentsSelector = state => state.studentAssignment.byId;
-const reportsSelector = state => state.studentReport.byId;
+const reportsById = state => state.studentReport.byId;
+
+const reportsSelector = createSelector(
+  reportsById,
+  reports => {
+    const filteredReports = {};
+    if (!Object.keys(reports).length) {
+      return filteredReports;
+    }
+    for (const r in reports) {
+      if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
+        continue;
+      }
+      filteredReports[r] = reports[r];
+    }
+    return filteredReports;
+  }
+);
+
+export const assignmentIdsByTestIdSelector = createSelector(
+  assignmentsSelector,
+  assignments => {
+    const assignmentsByTestId = {};
+    for (const i in assignments) {
+      const { testId, _id } = assignments[i];
+      if (_id && testId) {
+        if (!assignmentsByTestId[testId]) {
+          assignmentsByTestId[testId] = [_id];
+        } else {
+          assignmentsByTestId[testId].push(_id);
+        }
+      }
+    }
+    return assignmentsByTestId;
+  }
+);
 
 export const filterSelector = state => state.studentAssignment.filter;
 export const stateSelector = state => state.studentAssignment;
@@ -243,8 +277,10 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
+    const classIdentifiers = values(assignmentsObj).flatMap(item => item.class.map(item => item.identifier));
+    const reports = values(reportsObj).filter(item => classIdentifiers.includes(item.assignmentClassIdentifier));
     // group reports by assignmentsID
-    const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
+    const groupedReports = groupBy(reports, item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
         // no redirected classes and no class filter or class ID match the filter and student belongs to the class
@@ -359,6 +395,7 @@ function* fetchAssignments() {
  */
 function* startAssignment({ payload }) {
   try {
+    console.warn("====== Assignment Begins ======", payload);
     yield put(setConfirmationForTimedAssessmentAction(null));
     const { assignmentId, testId, testType, classId, isPlaylist = false, studentRecommendation } = payload;
     if (!isPlaylist && !studentRecommendation) {
@@ -391,7 +428,7 @@ function* startAssignment({ payload }) {
     if (assignmentId) {
       const { timedAssignment } = yield call(assignmentApi.getById, assignmentId) || {};
       if (timedAssignment) {
-        yield put(utaStartTimeUpdateRequired("start"));
+        yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START));
       }
     }
 
@@ -473,6 +510,7 @@ function* startAssignment({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     const { status, data = {}, response = {} } = err;
+    console.error("====== Assignment Failed ======", err, status, data, response);
     if (status === 403) {
       const message =
         data.message ||
@@ -512,7 +550,7 @@ function* resumeAssignment({ payload }) {
 
       const { timedAssignment } = yield call(assignmentApi.getById, assignmentId) || {};
       if (timedAssignment) {
-        yield put(utaStartTimeUpdateRequired("resume"));
+        yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.RESUME));
       }
     }
 
@@ -623,8 +661,10 @@ function* launchAssignment({ payload }) {
           const test = yield call(testsApi.getByIdMinimal, testId);
           maxAttempt = test.maxAttempts;
         }
-
-        if (maxAttempt > testActivities.length) {
+        const attempts = testActivities.filter(el =>
+          [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(el.status)
+        );
+        if (maxAttempt > attempts.length && lastActivity.status === testActivityStatus.NOT_STARTED) {
           if (!resume && timedAssignment) {
             yield put(setConfirmationForTimedAssessmentAction(assignment));
             return;
@@ -659,16 +699,6 @@ function* redirectToDashboard() {
   yield put(push("/home/assignments"));
 }
 
-export function* updateUtaTimeSaga({ payload }) {
-  try {
-    // TODO: Add defensive checks if required
-    yield put(utaStartTimeUpdateRequired(null));
-    yield call(testActivityApi.updateUtaTime, payload);
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 // set actions watcherss
 export function* watcherSaga() {
   yield all([
@@ -677,7 +707,6 @@ export function* watcherSaga() {
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
     yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment),
-    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard),
-    yield takeLatest(UPDATE_UTA_TIME, updateUtaTimeSaga)
+    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard)
   ]);
 }

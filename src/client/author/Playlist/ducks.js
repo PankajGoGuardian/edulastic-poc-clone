@@ -57,8 +57,8 @@ function* receivePublishersSaga() {
     const result = yield call(curriculumSequencesApi.searchDistinctPublishers);
     yield put(receivePublishersSuccessAction(result));
   } catch (err) {
-    const errorMessage = "Unable to retreive publishers info. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retreive publishers info.";
+    notification({ type: "error", msg: errorMessage });
   }
 }
 
@@ -86,8 +86,8 @@ function* receivePlaylistsSaga({ payload: { search = {}, sort = {}, page = 1, li
       })
     );
   } catch (err) {
-    const errorMessage = "Unable to retrieve playlist info. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrieve playlist info.";
+    notification({ type: "error", msg: errorMessage });
     yield put(receivePlaylistErrorAction({ error: errorMessage }));
     console.warn(err);
   }
@@ -99,8 +99,8 @@ export function* receiveLastPlayListSaga() {
     yield put(updateLastPlayListAction(result || {}));
     return result;
   } catch (err) {
-    const errorMessage = "Unable to retrieve the last playlist. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrieve the last playlist.";
+    notification({ type: "error", msg: errorMessage });
   }
 }
 
@@ -109,8 +109,8 @@ function* receiveRecentPlayListsSaga() {
     const result = yield call(userContextApi.getRecentPlayLists);
     yield put(updateRecentPlayListsAction(result ? result.value : []));
   } catch (err) {
-    const errorMessage = "Unable to retrieve recent playlist. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrieve recent playlist.";
+    notification({ type: "error", msg: errorMessage });
   }
 }
 

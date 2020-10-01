@@ -53,7 +53,7 @@ export const SubResourceView = ({
           <ResouceIcon type={data.contentType} isAdded />
           <Title>{data.contentTitle}</Title>
           {mode === "embedded" && !isStudent && !disabled && (
-            <InlineDelete title="Delete" data-cy="delete-resource" onClick={deleteSubResource(data)}>
+            <InlineDelete data-cy="delete-resource" title="Delete" onClick={deleteSubResource(data)}>
               <IconClose />
             </InlineDelete>
           )}

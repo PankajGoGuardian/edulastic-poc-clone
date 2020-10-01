@@ -367,6 +367,7 @@ const TestPageHeader = ({
           headingSubContent={headingSubContent}
           flexDirection="column"
           alignItems="flex-start"
+          titleMaxWidth="250px"
         >
           <TestPageNav
             onChange={onChangeNav}

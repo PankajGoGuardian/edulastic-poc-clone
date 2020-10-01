@@ -649,7 +649,7 @@ function* submitTest({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
-    yield Effects.throttleAction(3000, FINISH_TEST, submitTest),
+    yield Effects.throttleAction(10000, FINISH_TEST, submitTest),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
   ])
 }

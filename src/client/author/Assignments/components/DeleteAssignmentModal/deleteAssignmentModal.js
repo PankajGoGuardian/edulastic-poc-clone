@@ -77,7 +77,7 @@ const DeleteAssignmentModal = ({
     <CustomModalStyled
       visible={toggleDeleteAssignmentModalState}
       width="750px"
-      title="Unassign Complete Class"
+      title="Unassign ALL Students"
       onCancel={onCancel}
       destroyOnClose
       footer={[
@@ -106,9 +106,8 @@ const DeleteAssignmentModal = ({
         <InitOptions className="delete-message-container">
           <div className="delete-message">
             <p>
-              This action will result in <span style={{ color: "#ed6a6b" }}> permanent deletion </span>of student
-              responses from the assigned class ,Are you sure that you want to unassign{" "}
-              <b className="delete-message-test-name">{testName}</b>?{!lcb ? " (es)." : "."}
+              This action will result in <span style={{ color: "#ed6a6b" }}> PERMANENT DELETION </span>
+              of ALL student responses in <b className="delete-message-test-name">{testName}</b>.
             </p>
             <p>
               If you are sure, please type <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below and

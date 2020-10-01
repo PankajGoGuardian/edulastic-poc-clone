@@ -107,6 +107,8 @@ export const filterSelector = (state) => state.studentReport.filter
 const isReport = (assignment, classIds, userId) => {
   // either user has ran out of attempts
   // or assignments is past dueDate
+  const lastAttempt = last(assignment.reports) || {}
+  assignment.reports = assignment.reports.filter((r) => r.status !== 0)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1
   const attempts = (assignment.reports && assignment.reports.length) || 0
   let { endDate } = assignment
@@ -138,7 +140,11 @@ const isReport = (assignment, classIds, userId) => {
     }
   }
   // End date is passed but dont show in report if UTA status is in progress
-  return attempts > 0 || (serverTimeStamp > endDate && lastAttempt.status !== testActivityStatus.START);
+  return (
+    attempts > 0 ||
+    (serverTimeStamp > endDate &&
+      lastAttempt.status !== testActivityStatus.START)
+  )
 }
 
 const statusFilter = (filterType) => (assignment) => {
@@ -197,10 +203,7 @@ export const getAllAssignmentsSelector = createSelector(
           ...assignment,
           maxAttempts: clazz.maxAttempts || assignment.maxAttempts,
           classId: clazz._id,
-          reports:
-            groupedReports[`${assignment._id}_${clazz._id}`]?.filter(
-              (item) => item.status !== 0
-            ) || [],
+          reports: groupedReports[`${assignment._id}_${clazz._id}`] || [],
           ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {}),
         }))
       })

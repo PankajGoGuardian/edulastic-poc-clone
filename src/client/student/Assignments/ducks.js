@@ -1,6 +1,6 @@
 import {
   createAction,
-  createSelector as createSelectorator
+  createSelector as createSelectorator,
 } from 'redux-starter-kit'
 import { takeLatest, put, call, all, select } from 'redux-saga/effects'
 import { values, groupBy, last, partial, maxBy as _maxBy, sortBy } from 'lodash'
@@ -11,7 +11,7 @@ import {
   assignmentApi,
   reportsApi,
   testActivityApi,
-  testsApi
+  testsApi,
 } from '@edulastic/api'
 import { test as testConst, testActivityStatus } from '@edulastic/constants'
 import { Effects, notification } from '@edulastic/common'
@@ -20,7 +20,7 @@ import {
   getCurrentSchool,
   fetchUserAction,
   getUserRole,
-  getUserId
+  getUserId,
 } from '../Login/ducks'
 
 import { getCurrentGroup, getClassIds } from '../Reports/ducks'
@@ -33,12 +33,12 @@ import {
   showTestInstructionsAction,
   setConfirmationForTimedAssessmentAction,
   setIsActivityCreatingAction,
-  utaStartTimeUpdateRequired
+  utaStartTimeUpdateRequired,
 } from '../sharedDucks/AssignmentModule/ducks'
 
 import {
   setReportsAction,
-  reportSchema
+  reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
 import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentPlayer'
 import { getServerTs } from '../utils'
@@ -49,10 +49,10 @@ const { COMMON, ASSESSMENT, TESTLET } = testConst.type
 export const FILTERS = {
   ALL: 'all',
   NOT_STARTED: 'notStarted',
-  IN_PROGRESS: 'inProgress'
+  IN_PROGRESS: 'inProgress',
 }
 
-export const getCurrentUserId = createSelectorator(['user.user._id'], r => r)
+export const getCurrentUserId = createSelectorator(['user.user._id'], (r) => r)
 
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments'
@@ -86,7 +86,7 @@ const getAssignmentClassId = (assignment, groupId, classIds) => {
     acc.add(cur._id)
     return acc
   }, new Set())
-  return classIds.find(x => assignmentClassIds.has(x))
+  return classIds.find((x) => assignmentClassIds.has(x))
 }
 
 /**
@@ -110,15 +110,15 @@ export const getRedirect = (
   const classes = assignment?.class || []
   groupId = getAssignmentClassId(assignment, groupId, classIds)
   const redirects = classes.filter(
-    x =>
+    (x) =>
       x.redirect &&
       ((x.students.length > 0 && x.students.includes(userId)) ||
         (!x.students.length && x._id === groupId))
   )
 
-  assignment.class = (assignment?.class || []).map(c => {
+  assignment.class = (assignment?.class || []).map((c) => {
     if (!c.redirect) {
-      const redirectGroups = redirects.filter(r => r._id === c._id) || []
+      const redirectGroups = redirects.filter((r) => r._id === c._id) || []
       let classMaxAttempts =
         (c.maxAttempts || assignment.maxAttempts || 1) + redirectGroups.length
       const reports =
@@ -145,7 +145,7 @@ export const getRedirect = (
     return false
   }
 
-  const dueDate = Math.max(...redirects.map(x => x.endDate))
+  const dueDate = Math.max(...redirects.map((x) => x.endDate))
   const { allowedTime, pauseAllowed } = redirects[redirects.length - 1]
   return { dueDate, allowedTime, pauseAllowed }
 }
@@ -179,35 +179,33 @@ export const transformAssignmentForRedirect = (
     ...(redirect.allowedTime ? { allowedTime: redirect.allowedTime } : {}),
     ...(redirect.pauseAllowed !== undefined
       ? { pauseAllowed: redirect.pauseAllowed }
-      : {})
+      : {}),
   }
 }
 
 // selectors
-export const assignmentsSelector = state => state.studentAssignment.byId
-const reportsById = state => state.studentReport.byId
+export const assignmentsSelector = (state) => state.studentAssignment.byId
+const reportsById = (state) => state.studentReport.byId
 
-const reportsSelector = createSelector(
-  reportsById,
-  reports => {
-    const filteredReports = {}
-    if (!Object.keys(reports).length) {
-      return filteredReports
-    }
-    for (const r in reports) {
-      if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
-        continue
-      }
-      filteredReports[r] = reports[r]
-    }
+const reportsSelector = createSelector(reportsById, (reports) => {
+  const filteredReports = {}
+  if (!Object.keys(reports).length) {
     return filteredReports
   }
-)
+  for (const r in reports) {
+    if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
+      continue
+    }
+    filteredReports[r] = reports[r]
+  }
+  return filteredReports
+})
 
 export const assignmentIdsByTestIdSelector = createSelector(
   assignmentsSelector,
-  assignments => {
+  (assignments) => {
     const assignmentsByTestId = {}
+    // eslint-disable-next-line guard-for-in
     for (const i in assignments) {
       const { testId, _id } = assignments[i]
       if (_id && testId) {
@@ -222,8 +220,8 @@ export const assignmentIdsByTestIdSelector = createSelector(
   }
 )
 
-export const filterSelector = state => state.studentAssignment.filter
-export const stateSelector = state => state.studentAssignment
+export const filterSelector = (state) => state.studentAssignment.filter
+export const stateSelector = (state) => state.studentAssignment
 
 /**
  *
@@ -240,7 +238,7 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   // and end Dtae should be greateer than current one :)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1
   const attempts = (assignment.reports && assignment.reports.length) || 0
-  const lastAttempt = _maxBy(assignment.reports, 'startDate') || {}
+  const lastAttempt = _maxBy(assignment.reports, 'createdAt') || {}
   const serverTimeStamp = getServerTs(assignment)
   // eslint-disable-next-line
   let { endDate, class: groups = [], classId: currentGroup } = assignment
@@ -248,23 +246,23 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   if (maxAttempts <= attempts && lastAttempt.status !== 0) return false
   if (!endDate) {
     const currentUserGroups = groups.filter(
-      clazz =>
+      (clazz) =>
         (classIds.includes(clazz._id) && !clazz.students.length) ||
         (clazz.students.length && clazz.students.includes(userId))
     )
     endDate = (
       _maxBy(
-        currentUserGroups.filter(cl =>
+        currentUserGroups.filter((cl) =>
           currentGroup ? cl._id === currentGroup : true
         ) || [],
         'endDate'
       ) || {}
     ).endDate
     const currentClass =
-      currentUserGroups.find(cl =>
+      currentUserGroups.find((cl) =>
         currentGroup
           ? cl._id === currentGroup
-          : classIds.find(x => x === cl._id)
+          : classIds.find((x) => x === cl._id)
       ) || {}
     // FOR NO END DATES TEACHER/ADMIN HAS TO MANUALLY CLOSE THE ASSIGNMENT so closed flag will be true.
     if (!endDate) {
@@ -278,7 +276,7 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   return true
 }
 
-const statusFilter = filterType => assignment => {
+const statusFilter = (filterType) => (assignment) => {
   const attempts = (assignment.reports && assignment.reports.length) || 0
   switch (filterType) {
     case FILTERS.NOT_STARTED:
@@ -320,19 +318,19 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
-    const classIdentifiers = values(assignmentsObj).flatMap(item =>
-      item.class.map(item => item.identifier)
+    const classIdentifiers = values(assignmentsObj).flatMap((item) =>
+      item.class.map((i) => i.identifier)
     )
-    const reports = values(reportsObj).filter(item =>
+    const reports = values(reportsObj).filter((item) =>
       classIdentifiers.includes(item.assignmentClassIdentifier)
     )
     // group reports by assignmentsID
     const groupedReports = groupBy(
       reports,
-      item => `${item.assignmentId}_${item.groupId}`
+      (item) => `${item.assignmentId}_${item.groupId}`
     )
     const assignments = values(assignmentsObj)
-      .flatMap(assignment => {
+      .flatMap((assignment) => {
         // no redirected classes and no class filter or class ID match the filter and student belongs to the class
         /**
          * And also if assigned to specific students
@@ -341,13 +339,13 @@ export const getAllAssignmentsSelector = createSelector(
          * in the students array of the class
          */
         const allClassess = assignment.class.filter(
-          clazz =>
+          (clazz) =>
             clazz.redirect !== true &&
             (!currentGroup || currentGroup === clazz._id) &&
             ((classIds.includes(clazz._id) && !clazz.students.length) ||
               (clazz.students.length && clazz.students.includes(userId)))
         )
-        return allClassess.map(clazz => ({
+        return allClassess.map((clazz) => ({
           ...assignment,
           maxAttempts: clazz.maxAttempts || assignment.maxAttempts,
           classId: clazz._id,
@@ -357,13 +355,13 @@ export const getAllAssignmentsSelector = createSelector(
             : {}),
           ...(clazz.pauseAllowed !== undefined && !assignment.redir
             ? { pauseAllowed: clazz.pauseAllowed }
-            : {})
+            : {}),
         }))
       })
-      .filter(assignment => isLiveAssignment(assignment, classIds, userId))
+      .filter((assignment) => isLiveAssignment(assignment, classIds, userId))
 
     return sortBy(assignments, [
-      partial(assignmentSortByDueDate, groupedReports)
+      partial(assignmentSortByDueDate, groupedReports),
     ])
   }
 )
@@ -376,10 +374,10 @@ export const getAssignmentsSelector = createSelector(
 
 export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
-  assignments => {
+  (assignments) => {
     let IN_PROGRESS = 0
     let NOT_STARTED = 0
-    assignments.forEach(assignment => {
+    assignments.forEach((assignment) => {
       const attempts = (assignment.reports && assignment.reports.length) || 0
       if (attempts === 0) {
         NOT_STARTED++
@@ -390,14 +388,14 @@ export const assignmentsCountByFilerNameSelector = createSelector(
     return {
       ALL: assignments.length,
       NOT_STARTED,
-      IN_PROGRESS
+      IN_PROGRESS,
     }
   }
 )
 
 export const getLoadAssignmentSelector = createSelector(
   stateSelector,
-  state => state.loadAssignment
+  (state) => state.loadAssignment
 )
 
 // sagas
@@ -410,7 +408,7 @@ function* fetchAssignments() {
     const classIds = yield select(getClassIds)
     const [assignments, reports] = yield all([
       call(assignmentApi.fetchAssigned, groupId),
-      call(reportsApi.fetchReports, groupId)
+      call(reportsApi.fetchReports, groupId),
     ])
 
     const reportsGroupedByClassIdentifier = groupBy(
@@ -419,7 +417,7 @@ function* fetchAssignments() {
     )
     const groupedReportsByAssignmentId = groupBy(
       reports,
-      item => `${item.assignmentId}_${item.groupId}`
+      (item) => `${item.assignmentId}_${item.groupId}`
     )
 
     // transform to handle redirect
@@ -436,14 +434,14 @@ function* fetchAssignments() {
     // normalize reports
     const {
       result: allReports,
-      entities: { reports: reportsObj }
+      entities: { reports: reportsObj },
     } = normalize(reports, [reportSchema])
 
     yield put(setReportsAction({ allReports, reportsObj }))
     // normalize assignments
     const {
       result: allAssignments,
-      entities: { assignments: assignmentObj }
+      entities: { assignments: assignmentObj },
     } = normalize(assignmentsProcessed, [assignmentSchema])
 
     yield put(setAssignmentsAction({ allAssignments, assignmentObj }))
@@ -465,7 +463,7 @@ function* startAssignment({ payload }) {
       testType,
       classId,
       isPlaylist = false,
-      studentRecommendation
+      studentRecommendation,
     } = payload
     if (!isPlaylist && !studentRecommendation) {
       if (!assignmentId || !testId) throw new Error('insufficient data')
@@ -510,7 +508,7 @@ function* startAssignment({ payload }) {
       yield put(
         setIsActivityCreatingAction({
           assignmentId: studentRecommendation._id,
-          isLoading: true
+          isLoading: true,
         })
       )
       const { _id } = yield testActivityApi.create({
@@ -518,14 +516,14 @@ function* startAssignment({ payload }) {
         institutionId,
         groupType,
         testId,
-        studentRecommendationId: studentRecommendation._id
+        studentRecommendationId: studentRecommendation._id,
       })
       testActivityId = _id
     } else if (isPlaylist && !assignmentId) {
       yield put(
         setIsActivityCreatingAction({
           assignmentId: isPlaylist.playlistId,
-          isLoading: true
+          isLoading: true,
         })
       )
       const { _id } = yield testActivityApi.create({
@@ -534,7 +532,7 @@ function* startAssignment({ payload }) {
         groupId: classId,
         institutionId,
         groupType,
-        testId
+        testId,
       })
       testActivityId = _id
     } else {
@@ -544,7 +542,7 @@ function* startAssignment({ payload }) {
         groupId: classId,
         institutionId,
         groupType,
-        testId
+        testId,
       })
       testActivityId = _id
     }
@@ -559,8 +557,8 @@ function* startAssignment({ payload }) {
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistRecommendationsFlow: true,
-              playlistId: studentRecommendation.playlistId
-            }
+              playlistId: studentRecommendation.playlistId,
+            },
           })
         )
       } else if (isPlaylist) {
@@ -571,8 +569,8 @@ function* startAssignment({ payload }) {
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
-              playlistId: isPlaylist.playlistId
-            }
+              playlistId: isPlaylist.playlistId,
+            },
           })
         )
       } else {
@@ -630,7 +628,7 @@ function* resumeAssignment({ payload }) {
       testType,
       classId,
       isPlaylist,
-      studentRecommendation
+      studentRecommendation,
     } = payload
 
     if (!isPlaylist && !studentRecommendation) {
@@ -672,8 +670,8 @@ function* resumeAssignment({ payload }) {
           pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
           state: {
             playlistRecommendationsFlow: true,
-            playlistId: studentRecommendation.playlistId
-          }
+            playlistId: studentRecommendation.playlistId,
+          },
         })
       )
     } else if (testType !== TESTLET) {
@@ -685,8 +683,8 @@ function* resumeAssignment({ payload }) {
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
-              playlistId: isPlaylist.playlistId
-            }
+              playlistId: isPlaylist.playlistId,
+            },
           })
         )
       } else {
@@ -725,7 +723,7 @@ function* bootstrapAssesment({ payload }) {
           assignmentId,
           testActivityId,
           testId,
-          classId
+          classId,
         })
       )
     } else {
@@ -747,7 +745,7 @@ function* launchAssignment({ payload }) {
       // eslint-disable-next-line
       let [assignment, testActivities] = yield Promise.all([
         assignmentApi.getById(assignmentId),
-        assignmentApi.fetchTestActivities(assignmentId, groupId)
+        assignmentApi.fetchTestActivities(assignmentId, groupId),
       ])
       const userId = yield select(getCurrentUserId)
       const classIds = yield select(getClassIds)
@@ -757,7 +755,7 @@ function* launchAssignment({ payload }) {
       )
       const groupedReportsByAssignmentId = groupBy(
         testActivities,
-        item => `${item.assignmentId}_${item.groupId}`
+        (item) => `${item.assignmentId}_${item.groupId}`
       )
       assignment = transformAssignmentForRedirect(
         groupId,
@@ -774,7 +772,7 @@ function* launchAssignment({ payload }) {
         resume,
         timedAssignment,
         hasInstruction,
-        instruction
+        instruction,
       } = assignment
       if (lastActivity && lastActivity.status === 0) {
         yield put(
@@ -783,7 +781,7 @@ function* launchAssignment({ payload }) {
             testType,
             assignmentId,
             testActivityId: lastActivity._id,
-            classId: groupId
+            classId: groupId,
           })
         )
       } else {
@@ -794,7 +792,7 @@ function* launchAssignment({ payload }) {
           const test = yield call(testsApi.getByIdMinimal, testId)
           maxAttempt = test.maxAttempts
         }
-        const attempts = testActivities.filter(el =>
+        const attempts = testActivities.filter((el) =>
           [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
             el.status
           )
@@ -818,17 +816,15 @@ function* launchAssignment({ payload }) {
               testId,
               assignmentId,
               testType,
-              classId: groupId
+              classId: groupId,
             })
           )
         } else {
-          const isCliUser = yield select(state => state.user?.isCliUser)
+          const isCliUser = yield select((state) => state.user?.isCliUser)
           if (isCliUser) {
             yield put(
               push(
-                `/home/class/${groupId}/test/${testId}/testActivityReport/${
-                  lastActivity._id
-                }?cliUser=true`
+                `/home/class/${groupId}/test/${testId}/testActivityReport/${lastActivity._id}?cliUser=true`
               )
             )
           } else {
@@ -858,6 +854,6 @@ export function* watcherSaga() {
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
     yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment),
-    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard)
+    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard),
   ])
 }

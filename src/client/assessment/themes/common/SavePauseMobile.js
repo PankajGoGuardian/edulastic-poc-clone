@@ -1,22 +1,22 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Button, Icon } from "antd";
-import Profile from "../../../student/assets/Profile.png";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Button, Icon } from 'antd'
+import Profile from '../../../student/assets/Profile.png'
 
 const SavePauseMobile = ({ openSavePauseModal, isVisible }) => (
   <SavePauseMobileButton onClick={openSavePauseModal}>
     <img src={Profile} alt="Profile" />
-    <Icon type={isVisible ? "caret-up" : "caret-down"} />
+    <Icon type={isVisible ? 'caret-up' : 'caret-down'} />
   </SavePauseMobileButton>
-);
+)
 
 SavePauseMobile.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  openSavePauseModal: PropTypes.func.isRequired
-};
+  openSavePauseModal: PropTypes.func.isRequired,
+}
 
-export default SavePauseMobile;
+export default SavePauseMobile
 
 const SavePauseMobileButton = styled(Button)`
   height: 40px;
@@ -37,4 +37,4 @@ const SavePauseMobileButton = styled(Button)`
     height: 30px;
     float: left;
   }
-`;
+`

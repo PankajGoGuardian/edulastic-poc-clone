@@ -1,20 +1,20 @@
-import React, { Fragment } from "react";
-import { Input } from "antd";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import PropTypes from "prop-types";
-import { withTheme } from "styled-components";
+import React, { Fragment } from 'react'
+import { Input } from 'antd'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import PropTypes from 'prop-types'
+import { withTheme } from 'styled-components'
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer } from '@edulastic/common'
 
-import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
-import { Subtitle } from "../../../styled/Subtitle";
-import withAddButton from "../../../components/HOC/withAddButton";
-import QuillSortableList from "../../../components/QuillSortableList";
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from '@edulastic/constants/const/imageConstants'
+import { Subtitle } from '../../../styled/Subtitle'
+import withAddButton from '../../../components/HOC/withAddButton'
+import QuillSortableList from '../../../components/QuillSortableList'
 
-import { IconTrash } from "../styled/IconTrash";
-import { TextInputStyled } from "../../../styled/InputStyles";
+import { IconTrash } from '../styled/IconTrash'
+import { TextInputStyled } from '../../../styled/InputStyles'
 
-const List = withAddButton(QuillSortableList);
+const List = withAddButton(QuillSortableList)
 
 const Group = ({
   item,
@@ -30,15 +30,21 @@ const Group = ({
   onRemoveInner,
   text,
   prefix,
-  theme
+  theme,
 }) => (
-  <Fragment>
+  <>
     <div data-cy="group-choices" style={{ marginBottom: 30 }}>
-      <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
+      <FlexContainer
+        alignItems="baseline"
+        justifyContent="space-between"
+        style={{ width: '100%' }}
+      >
         <Subtitle
           id={getFormattedAttrId(`${item?.title}-${groupHeadText}${index + 1}`)}
           margin="20px 0px 0px"
-        >{`${groupHeadText}${index + 1}`}</Subtitle>
+        >
+          {`${groupHeadText}${index + 1}`}
+        </Subtitle>
         <IconTrash onClick={onRemove(index)} />
       </FlexContainer>
       <Subtitle
@@ -49,11 +55,15 @@ const Group = ({
         {headText}
       </Subtitle>
       <div style={{ marginBottom: 20 }}>
-        <TextInputStyled size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
+        <TextInputStyled
+          size="large"
+          value={item.title}
+          onChange={(e) => onTitleChange(index, e.target.value)}
+        />
       </div>
       <List
         prefix={prefix}
-        items={item.responses.map(i => i.label)}
+        items={item.responses.map((i) => i.label)}
         onAdd={onAddInner(index)}
         firstFocus={firstFocus}
         onSortEnd={onSortEnd(index)}
@@ -64,8 +74,8 @@ const Group = ({
         imageDefaultWidth={IMAGE_RESPONSE_DEFAULT_WIDTH}
       />
     </div>
-  </Fragment>
-);
+  </>
+)
 
 Group.propTypes = {
   item: PropTypes.object.isRequired,
@@ -81,7 +91,7 @@ Group.propTypes = {
   groupHeadText: PropTypes.string.isRequired,
   onRemoveInner: PropTypes.func.isRequired,
   prefix: PropTypes.string.isRequired,
-  theme: PropTypes.object.isRequired
-};
+  theme: PropTypes.object.isRequired,
+}
 
-export default withTheme(Group);
+export default withTheme(Group)

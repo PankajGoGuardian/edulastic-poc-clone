@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { white, green, draftColor } from "@edulastic/colors";
+import { white, green, draftColor } from '@edulastic/colors'
 
 export const Status = styled.span`
   display: inline-block;
@@ -15,7 +15,7 @@ export const Status = styled.span`
   text-align: center;
   padding-top: 3px;
   margin-top: 4px;
-`;
+`
 
 export const SaveWrapper = styled.div`
   .ant-btn {
@@ -32,4 +32,4 @@ export const SaveWrapper = styled.div`
       fill: ${white};
     }
   }
-`;
+`

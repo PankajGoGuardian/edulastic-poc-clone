@@ -1,39 +1,39 @@
-import styled from "styled-components";
-import { black } from "@edulastic/colors";
+import styled from 'styled-components'
+import { black } from '@edulastic/colors'
 
-const getPosition = position => {
+const getPosition = (position) => {
   switch (position) {
-    case "top":
+    case 'top':
       return `
         top: -13px;
         left: 0;
         right: 0;
         transform: rotate(90deg);
-      `;
-    case "bottom":
+      `
+    case 'bottom':
       return `
         bottom: -13px;
         left: 0;
         right: 0;
         transform: rotate(-90deg);
-      `;
-    case "left":
+      `
+    case 'left':
       return `
         left: -10px;
         top: 0;
         bottom: 0;
-      `;
-    case "right":
+      `
+    case 'right':
       return `
         right: -10px;
         top: 0;
         bottom: 0;
         transform: rotate(180deg);
-      `;
+      `
     default:
-      return null;
+      return null
   }
-};
+}
 
 const Pointer = styled.div`
   position: absolute;
@@ -45,10 +45,10 @@ const Pointer = styled.div`
   border-right: 8px solid ${black};
   transition: border linear 0.1s;
 
-  ${props => getPosition(props.position)}
+  ${(props) => getPosition(props.position)}
 
   :after {
-    content: "";
+    content: '';
     position: absolute;
     width: 10px;
     height: 10px;
@@ -59,6 +59,6 @@ const Pointer = styled.div`
     bottom: 0;
     margin: auto;
   }
-`;
+`
 
-export default Pointer;
+export default Pointer

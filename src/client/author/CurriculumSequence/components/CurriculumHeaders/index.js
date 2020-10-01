@@ -1,12 +1,18 @@
-import React, { Fragment, useState } from "react";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { roleuser } from "@edulastic/constants";
-import { Tooltip, Modal, Dropdown, Menu } from "antd";
-import { FlexContainer, EduButton, MainHeader } from "@edulastic/common";
-import { smallDesktopWidth, extraDesktopWidthMax, tabletWidth, themeColor, themeColorBlue } from "@edulastic/colors";
+import React, { Fragment, useState } from 'react'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { roleuser } from '@edulastic/constants'
+import { Tooltip, Modal, Dropdown, Menu } from 'antd'
+import { FlexContainer, EduButton, MainHeader } from '@edulastic/common'
+import {
+  smallDesktopWidth,
+  extraDesktopWidthMax,
+  tabletWidth,
+  themeColor,
+  themeColorBlue,
+} from '@edulastic/colors'
 import {
   IconPencilEdit,
   IconPlaylist,
@@ -16,24 +22,24 @@ import {
   IconUseThis,
   IconTrash,
   IconMoreVertical,
-  IconDuplicate
-} from "@edulastic/icons";
-import { IconActionButton } from "../styled";
-import StudentPlayListHeader from "../../../../student/sharedComponents/Header/PlayListHeader";
-import PlaylistPageNav from "../PlaylistPageNav";
-import SwitchPlaylist from "./SwitchPlaylist";
-import { getCollectionsSelector } from "../../../src/selectors/user";
-import { allowContentEditCheck } from "../../../src/utils/permissionCheck";
+  IconDuplicate,
+} from '@edulastic/icons'
+import { IconActionButton } from '../styled'
+import StudentPlayListHeader from '../../../../student/sharedComponents/Header/PlayListHeader'
+import PlaylistPageNav from '../PlaylistPageNav'
+import SwitchPlaylist from './SwitchPlaylist'
+import { getCollectionsSelector } from '../../../src/selectors/user'
+import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
-`;
+`
 
 const HeaderButton = styled(EduButton)`
   text-transform: uppercase;
   @media (max-width: ${extraDesktopWidthMax}) {
     height: 38px;
-    ${({ IconBtn }) => IconBtn && "width: 38px;"};
+    ${({ IconBtn }) => IconBtn && 'width: 38px;'};
   }
   @media (max-width: ${smallDesktopWidth}) {
     height: 30px;
@@ -42,7 +48,7 @@ const HeaderButton = styled(EduButton)`
       display: none;
     }
   }
-`;
+`
 /**
  *
  * @param {string} id
@@ -51,36 +57,36 @@ const HeaderButton = styled(EduButton)`
  */
 function handleConfirmForDeletePlaylist(id, title, deletePlaylist) {
   Modal.confirm({
-    title: "Do you want to delete ?",
+    title: 'Do you want to delete ?',
     content: `Are you sure you want to Delete the Playlist "${title}"?`,
     onOk: () => {
-      deletePlaylist(id);
-      Modal.destroyAll();
+      deletePlaylist(id)
+      Modal.destroyAll()
     },
-    okText: "Continue",
+    okText: 'Continue',
     centered: true,
     width: 500,
     okButtonProps: {
-      style: { background: themeColor, outline: "none" }
-    }
-  });
+      style: { background: themeColor, outline: 'none' },
+    },
+  })
 }
 
 function handleConfirmForRemovePlaylistFromFavourite(id, title, removeFromUse) {
   Modal.confirm({
-    title: "Do you want to remove ?",
+    title: 'Do you want to remove ?',
     content: `"${title}" playlist will be removed from My Playlist and it can be found in Playlist Library. Are you sure you want to proceed?`,
     onOk: () => {
-      removeFromUse && removeFromUse(id);
-      Modal.destroyAll();
+      removeFromUse && removeFromUse(id)
+      Modal.destroyAll()
     },
-    okText: "Continue",
+    okText: 'Continue',
     centered: true,
     width: 500,
     okButtonProps: {
-      style: { background: themeColor, outline: "none" }
-    }
-  });
+      style: { background: themeColor, outline: 'none' },
+    },
+  })
 }
 
 const CurriculumHeader = ({
@@ -116,31 +122,44 @@ const CurriculumHeader = ({
   discardDraftPlaylist,
   canAllowDuplicate,
   duplicatePlayList,
-  writableCollections
+  writableCollections,
 }) => {
-  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false)
   const {
     isAuthor = false,
     status,
     title,
     collections: _playlistCollections = [],
-    _id
-  } = destinationCurriculumSequence;
-  const hasCollectionAccess = allowContentEditCheck(_playlistCollections, writableCollections);
+    _id,
+  } = destinationCurriculumSequence
+  const hasCollectionAccess = allowContentEditCheck(
+    _playlistCollections,
+    writableCollections
+  )
   // figure out which tab contents to render || just render default playlist
   const {
     params: { currentTab: cTab },
-    url
-  } = match;
-  const currentTab = cTab || "playlist";
-  const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection ?._id);
+    url,
+  } = match
+  const currentTab = cTab || 'playlist'
+  const sparkCollection =
+    collections.find(
+      (c) => c.name === 'Spark Math' && c.owner === 'Edulastic Corp'
+    ) || {}
+  const isSparkMathPlaylist = _playlistCollections.some(
+    (item) => item._id === sparkCollection?._id
+  )
 
-  const shouldHideUseThis = status === "draft";
-  const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
+  const shouldHideUseThis = status === 'draft'
+  const showUseThisButton =
+    status !== 'draft' && !urlHasUseThis && !isPublisherUser
 
-  const isPlaylistDetailsPage = window.location ?.hash === "#review";
-  const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
+  const isPlaylistDetailsPage = window.location?.hash === '#review'
+  const shouldShowEdit =
+    url.includes('playlists') &&
+    isPlaylistDetailsPage &&
+    status === 'draft' &&
+    !urlHasUseThis
 
   const switchPlaylist = (
     <SwitchPlaylist
@@ -148,34 +167,42 @@ const CurriculumHeader = ({
       showUseThisNotification={showUseThisNotification}
       onClickHandler={handleGuidePopup}
     />
-  );
+  )
 
   if (isStudent) {
-    return <StudentPlayListHeader headingSubContent={switchPlaylist} />;
+    return <StudentPlayListHeader headingSubContent={switchPlaylist} />
   }
 
   const savePlaylist = () => {
     if (customizeInDraft) {
-      publishPlaylistInDraft();
-      return;
+      publishPlaylistInDraft()
+      return
     }
-    updateDestinationPlaylist({ showNotification: true });
-  };
-  const isMobile = windowWidth < parseInt(tabletWidth, 10);
+    updateDestinationPlaylist({ showNotification: true })
+  }
+  const isMobile = windowWidth < parseInt(tabletWidth, 10)
 
   const mainPlaylistVerticalMenu = (
     <Menu>
-      <Menu.Item onClick={() => handleConfirmForRemovePlaylistFromFavourite(_id, title, removePlaylistFromUse)}>
+      <Menu.Item
+        onClick={() =>
+          handleConfirmForRemovePlaylistFromFavourite(
+            _id,
+            title,
+            removePlaylistFromUse
+          )
+        }
+      >
         Remove from Favorite
       </Menu.Item>
     </Menu>
-  );
+  )
 
-  if (mode !== "embedded") {
+  if (mode !== 'embedded') {
     return (
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
-        headingText={loading ? "Untitled Playlist" : title}
+        headingText={loading ? 'Untitled Playlist' : title}
         titleMaxWidth="22rem"
         justify="space-between"
         headingSubContent={urlHasUseThis && !isPublisherUser && switchPlaylist}
@@ -188,10 +215,12 @@ const CurriculumHeader = ({
           />
         )}
 
-        <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
-          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
+        <CurriculumHeaderButtons marginLeft={urlHasUseThis ? 'unset' : 'auto'}>
+          {(shouldShowEdit ||
+            isAuthor ||
+            role === roleuser.EDULASTIC_CURATOR) &&
             !urlHasUseThis &&
-            destinationCurriculumSequence ?._id && (
+            destinationCurriculumSequence?._id && (
               <Tooltip placement="bottom" title="DELETE">
                 <HeaderButton
                   loading={loadingDelete}
@@ -200,25 +229,36 @@ const CurriculumHeader = ({
                   data-cy="delete-playlist"
                   IconBtn={!shouldHideUseThis}
                   onClick={() => {
-                    setLoadingDelete();
-                    handleConfirmForDeletePlaylist(_id, title, deletePlaylist);
+                    setLoadingDelete()
+                    handleConfirmForDeletePlaylist(_id, title, deletePlaylist)
                   }}
                 >
                   <IconTrash />
-                  {shouldHideUseThis && "DELETE"}
+                  {shouldHideUseThis && 'DELETE'}
                 </HeaderButton>
               </Tooltip>
             )}
 
-          {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
+          {(showUseThisButton ||
+            shouldShowEdit ||
+            urlHasUseThis ||
+            features.isCurator) &&
             !customizeInDraft &&
             role !== roleuser.EDULASTIC_CURATOR && (
-              <HeaderButton isBlue isGhost data-cy="share" onClick={onShareClick} IconBtn>
+              <HeaderButton
+                isBlue
+                isGhost
+                data-cy="share"
+                onClick={onShareClick}
+                IconBtn
+              >
                 <IconShare />
               </HeaderButton>
             )}
 
-          {(canAllowDuplicate || isAuthor || role === roleuser.EDULASTIC_CURATOR) && (
+          {(canAllowDuplicate ||
+            isAuthor ||
+            role === roleuser.EDULASTIC_CURATOR) && (
             <Tooltip placement="bottom" title="CLONE">
               <HeaderButton
                 isBlue
@@ -227,7 +267,7 @@ const CurriculumHeader = ({
                 onClick={() =>
                   duplicatePlayList({
                     _id: destinationCurriculumSequence._id,
-                    title: destinationCurriculumSequence.title
+                    title: destinationCurriculumSequence.title,
                   })
                 }
                 IconBtn
@@ -238,17 +278,29 @@ const CurriculumHeader = ({
           )}
 
           {customizeInDraft && (
-            <HeaderButton isBlue isGhost data-cy="cancel" onClick={discardDraftPlaylist}>
+            <HeaderButton
+              isBlue
+              isGhost
+              data-cy="cancel"
+              onClick={discardDraftPlaylist}
+            >
               CANCEL
             </HeaderButton>
           )}
 
-          {isManageContentActive && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
-            <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
-              <IconSave />
-              {isDesktop && "SAVE"}
-            </HeaderButton>
-          )}
+          {isManageContentActive &&
+            (!showUseThisButton || customizeInDraft) &&
+            !shouldShowEdit && (
+              <HeaderButton
+                isBlue
+                data-cy="save"
+                onClick={savePlaylist}
+                IconBtn={!isDesktop}
+              >
+                <IconSave />
+                {isDesktop && 'SAVE'}
+              </HeaderButton>
+            )}
 
           {urlHasUseThis && isTeacher && !isPublisherUser && !customizeInDraft && (
             <>
@@ -258,49 +310,68 @@ const CurriculumHeader = ({
                 {isDesktop && "OPEN TO STUDENTS"}
               </HeaderButton>} */}
               <Dropdown
-                overlayStyle={{ zIndex: 999, cursor: "pointer" }}
+                overlayStyle={{ zIndex: 999, cursor: 'pointer' }}
                 overlay={mainPlaylistVerticalMenu}
-                trigger={["click"]}
-                getPopupContainer={trigger => trigger.parentNode}
+                trigger={['click']}
+                getPopupContainer={(trigger) => trigger.parentNode}
               >
-                <IconActionButton style={{ cursor: "pointer", alignSelf: "center" }} onClick={e => e.stopPropagation()}>
-                  <IconMoreVertical width={5} height={14} color={themeColorBlue} />
+                <IconActionButton
+                  style={{ cursor: 'pointer', alignSelf: 'center' }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <IconMoreVertical
+                    width={5}
+                    height={14}
+                    color={themeColorBlue}
+                  />
                 </IconActionButton>
               </Dropdown>
             </>
           )}
 
-          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
-            <Tooltip placement="bottom" title="EDIT">
-              <HeaderButton
-                isBlue
-                isGhost
-                data-cy="edit-playlist"
-                onClick={handleEditClick}
-                IconBtn={!shouldHideUseThis}
-              >
-                <IconPencilEdit />
-                {shouldHideUseThis && <span>EDIT</span>}
-              </HeaderButton>
-            </Tooltip>
-          )}
+          {(shouldShowEdit ||
+            isAuthor ||
+            role === roleuser.EDULASTIC_CURATOR) &&
+            !urlHasUseThis && (
+              <Tooltip placement="bottom" title="EDIT">
+                <HeaderButton
+                  isBlue
+                  isGhost
+                  data-cy="edit-playlist"
+                  onClick={handleEditClick}
+                  IconBtn={!shouldHideUseThis}
+                >
+                  <IconPencilEdit />
+                  {shouldHideUseThis && <span>EDIT</span>}
+                </HeaderButton>
+              </Tooltip>
+            )}
           {(shouldShowEdit || showUseThisButton) &&
             !customizeInDraft &&
             !shouldHideUseThis &&
             role !== roleuser.EDULASTIC_CURATOR && (
-              <HeaderButton isBlue data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
+              <HeaderButton
+                isBlue
+                data-cy="use-this"
+                onClick={handleUseThisClick}
+                IconBtn={!isDesktop}
+              >
                 <IconUseThis />
                 <span>USE THIS</span>
               </HeaderButton>
             )}
-          {features.isCurator && (status === "inreview" || status === "rejected") && hasCollectionAccess && (
-            <HeaderButton isBlue onClick={onApproveClick}>
-              APPROVE
-            </HeaderButton>
-          )}
-          {features.isCurator && status === "inreview" && hasCollectionAccess && (
-            <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>
-          )}
+          {features.isCurator &&
+            (status === 'inreview' || status === 'rejected') &&
+            hasCollectionAccess && (
+              <HeaderButton isBlue onClick={onApproveClick}>
+                APPROVE
+              </HeaderButton>
+            )}
+          {features.isCurator &&
+            status === 'inreview' &&
+            hasCollectionAccess && (
+              <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>
+            )}
         </CurriculumHeaderButtons>
 
         {/* <ResolvedMobileHeaderWrapper>
@@ -313,17 +384,17 @@ const CurriculumHeader = ({
           )}
         </ResolvedMobileHeaderWrapper> */}
       </MainHeader>
-    );
+    )
   }
 
-  return <Fragment />;
-};
+  return <></>
+}
 
 const enhance = compose(
   withRouter,
-  connect(state => ({
-    writableCollections: getCollectionsSelector(state)
+  connect((state) => ({
+    writableCollections: getCollectionsSelector(state),
   }))
-);
+)
 
-export default enhance(CurriculumHeader);
+export default enhance(CurriculumHeader)

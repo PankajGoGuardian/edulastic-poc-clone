@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const Blank = styled.div`
   flex: 1;
@@ -6,6 +6,6 @@ const Blank = styled.div`
   @media (max-width: 768px) {
     display: none;
   }
-`;
+`
 
-export default Blank;
+export default Blank

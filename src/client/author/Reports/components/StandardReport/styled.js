@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import { Card, TextInputStyled } from "@edulastic/common";
-import { Drawer } from "antd";
+import styled from 'styled-components'
+import { Card, TextInputStyled } from '@edulastic/common'
+import { Drawer } from 'antd'
 
 export const StandardReportWrapper = styled.div`
   position: relative;
-`;
+`
 
 export const StyledCard = styled(Card)`
   box-shadow: none;
@@ -20,22 +20,22 @@ export const StyledCard = styled(Card)`
     padding-top: 0px;
     border-top: 0px;
   }
-`;
+`
 
 export const StyledContainer = styled.div`
   padding: 0px;
   display: flex;
   ${({ premium }) => !premium && `padding-top: 15px;`}
-`;
+`
 
-export const ReportCardsWrapper = styled.div``;
+export const ReportCardsWrapper = styled.div``
 
 export const SearchBoxContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 30px 0px;
-`;
+`
 
 export const StyledInput = styled(TextInputStyled)`
   max-width: 650px;
@@ -62,7 +62,7 @@ export const StyledInput = styled(TextInputStyled)`
   & .ant-input:not(:first-child) {
     padding-left: 60px;
   }
-`;
+`
 
 export const StyledLink = styled.div`
   margin-top: 16px;
@@ -72,7 +72,7 @@ export const StyledLink = styled.div`
   text-transform: uppercase;
   font-size: 10px;
   cursor: pointer;
-`;
+`
 
 export const PossibleInsights = styled(Drawer)`
   & .ant-drawer-content-wrapper {
@@ -82,7 +82,7 @@ export const PossibleInsights = styled(Drawer)`
   & .ant-drawer-body {
     padding: 28px;
   }
-`;
+`
 
 export const InsightsTitle = styled.div`
   display: flex;
@@ -102,7 +102,7 @@ export const InsightsTitle = styled.div`
     fill: #434b5d;
     cursor: pointer;
   }
-`;
+`
 
 export const InsightsItem = styled.div`
   display: flex;
@@ -118,7 +118,7 @@ export const InsightsItem = styled.div`
     font-weight: 600;
     color: #434b5d;
   }
-`;
+`
 
 export const InsightsItemIndex = styled.div`
   letter-spacing: 0px;
@@ -126,4 +126,4 @@ export const InsightsItemIndex = styled.div`
   font-size: 18px;
   font-weight: bold;
   margin-right: 20px;
-`;
+`

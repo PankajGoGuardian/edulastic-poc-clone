@@ -1,6 +1,10 @@
-import styled from "styled-components";
-import { Input } from "antd";
-import { lightGreySecondary, secondaryTextColor, largeDesktopWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Input } from 'antd'
+import {
+  lightGreySecondary,
+  secondaryTextColor,
+  largeDesktopWidth,
+} from '@edulastic/colors'
 
 export const PointsInput = styled(Input)`
   width: 100px;
@@ -17,4 +21,4 @@ export const PointsInput = styled(Input)`
     padding: 10px;
     width: 80px;
   }
-`;
+`

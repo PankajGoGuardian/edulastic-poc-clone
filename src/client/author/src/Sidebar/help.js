@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { IconQuestion, IconCaretDown } from "@edulastic/icons";
-import Profile from "../assets/Profile.png";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { IconQuestion, IconCaretDown } from '@edulastic/icons'
+import Profile from '../assets/Profile.png'
 
 const Help = ({ flag }) => (
   <HelpWrapper>
@@ -27,48 +27,48 @@ const Help = ({ flag }) => (
       <SelectIcon flag={flag} />
     </UserProfile>
   </HelpWrapper>
-);
+)
 
-export default React.memo(Help);
+export default React.memo(Help)
 
 Help.propTypes = {
-  flag: PropTypes.bool.isRequired
-};
+  flag: PropTypes.bool.isRequired,
+}
 
 const ProfileWrapper = styled.div`
   width: 47px;
-`;
+`
 const ProfileImg = styled.img`
   width: 100%;
   height: 40px;
-`;
+`
 const SelectIcon = styled(IconCaretDown)`
   margin-left: auto;
   fill: #fff;
   width: 11px;
   height: 16px;
-  display: ${props => (props.flag ? "none" : "block")};
-`;
+  display: ${(props) => (props.flag ? 'none' : 'block')};
+`
 const ProfileDetail = styled.div`
   padding-left: 0.5rem;
-  display: ${props => (props.flag ? "none" : "block")};
+  display: ${(props) => (props.flag ? 'none' : 'block')};
   & p {
     margin: 0rem;
     padding-bottom: 0.2rem;
     font-weight: 600;
   }
-`;
+`
 
 const P = styled.p`
-  color: ${props => props.color};
-  font-size: ${props => props.font};
-`;
+  color: ${(props) => props.color};
+  font-size: ${(props) => props.font};
+`
 
 const HelpWrapper = styled.div`
   margin-left: 1.5rem;
   margin-right: 1.5rem;
   margin-top: auto;
-`;
+`
 const HelpCenter = styled.div`
   padding: 0.5rem 0.5rem;
   border-radius: 2rem;
@@ -85,29 +85,29 @@ const HelpCenter = styled.div`
       fill: #fff;
     }
   }
-`;
+`
 
 const UserProfile = HelpCenter.extend`
   background: #1fe3a1;
   position: relative;
   display: flex;
   align-items: center;
-`;
+`
 
 const HelpIconWrapper = styled.span`
   padding-right: 1rem;
   padding-left: 0.5rem;
-`;
+`
 
 const HelpIcon = styled(IconQuestion)`
   fill: #1fe3a1;
   width: 25px;
   height: 22px;
-`;
+`
 
 const HelpText = styled.span`
   color: #7a7a7a;
   font-size: 0.9rem;
   font-weight: 600;
-  display: ${props => (props.flag ? "none" : "block")};
-`;
+  display: ${(props) => (props.flag ? 'none' : 'block')};
+`

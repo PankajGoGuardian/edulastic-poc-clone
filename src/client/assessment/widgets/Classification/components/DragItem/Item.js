@@ -1,18 +1,18 @@
-import React, { useContext } from "react";
-import PropTypes from "prop-types";
-import { measureText, QuestionContext } from "@edulastic/common";
-import { templateHasMath } from "@edulastic/common/src/helpers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowsAlt } from "@fortawesome/free-solid-svg-icons";
-import { Popover } from "antd";
+import React, { useContext } from 'react'
+import PropTypes from 'prop-types'
+import { measureText, QuestionContext } from '@edulastic/common'
+import { templateHasMath } from '@edulastic/common/src/helpers'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons'
+import { Popover } from 'antd'
 
-import { IconBox } from "./styled/IconBox";
-import { IconCheck } from "./styled/IconCheck";
-import { IconClose } from "./styled/IconClose";
-import { AnswerBox } from "./styled/AnswerBox";
-import { InnerWrapper } from "./styled/InnerWrapper";
+import { IconBox } from './styled/IconBox'
+import { IconCheck } from './styled/IconCheck'
+import { IconClose } from './styled/IconClose'
+import { AnswerBox } from './styled/AnswerBox'
+import { InnerWrapper } from './styled/InnerWrapper'
 
-import TriggerStyle from "./TriggerStyle";
+import TriggerStyle from './TriggerStyle'
 
 const Item = ({
   isTransparent,
@@ -25,22 +25,22 @@ const Item = ({
   minWidth,
   minHeight,
   maxHeight,
-  isPrintPreview
+  isPrintPreview,
 }) => {
-  const { questionId } = useContext(QuestionContext);
+  const { questionId } = useContext(QuestionContext)
 
-  const showIcon = preview && valid !== undefined;
-  let showPopover = false;
+  const showIcon = preview && valid !== undefined
+  let showPopover = false
   if (templateHasMath(item)) {
-    const { scrollWidth } = measureText(item);
-    const widthOverflow = scrollWidth > maxWidth - 16;
-    showPopover = widthOverflow;
+    const { scrollWidth } = measureText(item)
+    const widthOverflow = scrollWidth > maxWidth - 16
+    showPopover = widthOverflow
   }
-  const getContent = inPopover => {
-    const answerBoxStyle = {};
+  const getContent = (inPopover) => {
+    const answerBoxStyle = {}
     if (showPopover && !inPopover) {
-      answerBoxStyle.maxWidth = maxWidth - 60;
-      answerBoxStyle.overflow = "hidden";
+      answerBoxStyle.maxWidth = maxWidth - 60
+      answerBoxStyle.overflow = 'hidden'
     }
     return (
       <InnerWrapper
@@ -55,30 +55,38 @@ const Item = ({
         maxHeight={inPopover ? null : maxHeight}
         isPrintPreview={isPrintPreview}
       >
-        {dragHandle && <FontAwesomeIcon icon={faArrowsAlt} style={{ fontSize: 12 }} />}
+        {dragHandle && (
+          <FontAwesomeIcon icon={faArrowsAlt} style={{ fontSize: 12 }} />
+        )}
         <AnswerBox
           style={answerBoxStyle}
           checked={preview && valid !== undefined}
           dangerouslySetInnerHTML={{ __html: item }}
         />
-        <TriggerStyle questionId={`classification-cols-container-${questionId}`} />
-        {showIcon && <IconBox checked={showIcon}>{valid ? <IconCheck /> : <IconClose />}</IconBox>}
+        <TriggerStyle
+          questionId={`classification-cols-container-${questionId}`}
+        />
+        {showIcon && (
+          <IconBox checked={showIcon}>
+            {valid ? <IconCheck /> : <IconClose />}
+          </IconBox>
+        )}
       </InnerWrapper>
-    );
-  };
+    )
+  }
 
-  const content = getContent();
-  const popoverContent = getContent(true);
+  const content = getContent()
+  const popoverContent = getContent(true)
 
   if (showPopover) {
     return (
       <Popover placement="bottomLeft" content={popoverContent}>
         {content}
       </Popover>
-    );
+    )
   }
-  return content;
-};
+  return content
+}
 
 Item.propTypes = {
   valid: PropTypes.bool.isRequired,
@@ -90,11 +98,11 @@ Item.propTypes = {
   minWidth: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
-  width: PropTypes.number
-};
+  width: PropTypes.number,
+}
 
 Item.defaultProps = {
-  width: null
-};
+  width: null,
+}
 
-export default Item;
+export default Item

@@ -1,148 +1,152 @@
 /* eslint-disable array-callback-return */
-import React, { useState, useRef } from "react";
-import { AutoComplete, Input, Icon, Empty } from "antd";
-import styled from "styled-components";
+import React, { useState, useRef } from 'react'
+import { AutoComplete, Input, Icon, Empty } from 'antd'
+import styled from 'styled-components'
 
-import { black, lightGreySecondary, themeColor } from "@edulastic/colors";
-import { useInternalEffect } from "../../hooks/useInternalEffect";
+import { black, lightGreySecondary, themeColor } from '@edulastic/colors'
+import { useInternalEffect } from '../../hooks/useInternalEffect'
 
-import { StyledAutocompleteDropDownContainer } from "../../styled";
+import { StyledAutocompleteDropDownContainer } from '../../styled'
 
-const Option = AutoComplete.Option;
-const OptGroup = AutoComplete.OptGroup;
+const Option = AutoComplete.Option
+const OptGroup = AutoComplete.OptGroup
 
 const AutocompleteDropDown = ({
   className,
-  containerClassName = "",
-  prefix = "",
-  by = { key: "", title: "" },
+  containerClassName = '',
+  prefix = '',
+  by = { key: '', title: '' },
   selectCB,
   data = [],
   dropdownMenuIcon,
   comData,
-  iconType = "down",
-  iconActiveType = "up"
+  iconType = 'down',
+  iconActiveType = 'up',
 }) => {
-  const [dropDownData, setDropDownData] = useState(data);
-  const [selected, setSelected] = useState(by);
-  const [text, setText] = useState(by.title);
-  const [isActive, setActive] = useState(false);
-  const autoRef = useRef(null);
-  const textChangeStatusRef = useRef(false);
+  const [dropDownData, setDropDownData] = useState(data)
+  const [selected, setSelected] = useState(by)
+  const [text, setText] = useState(by.title)
+  const [isActive, setActive] = useState(false)
+  const autoRef = useRef(null)
+  const textChangeStatusRef = useRef(false)
 
   useInternalEffect(() => {
-    let item = null;
+    let item = null
     if (data.length) {
-      item = data.find(_item => {
+      item = data.find((_item) => {
         if (_item.key === selected.key) {
-          return true;
+          return true
         }
-      });
+      })
       if (!item) {
-        item = data[0];
+        item = data[0]
       }
     } else {
-      item = { key: "", title: "" };
+      item = { key: '', title: '' }
     }
 
-    setSelected(item);
-    setText(item.title);
-    setDropDownData(data);
-  }, [data]);
+    setSelected(item)
+    setText(item.title)
+    setDropDownData(data)
+  }, [data])
 
   useInternalEffect(() => {
-    let item = data.find(_item => {
-      if (typeof by === "string" && _item.key === by) {
-        return true;
+    let item = data.find((_item) => {
+      if (typeof by === 'string' && _item.key === by) {
+        return true
       }
-      if (typeof by === "object" && _item.key === by.key) {
-        return true;
+      if (typeof by === 'object' && _item.key === by.key) {
+        return true
       }
-    });
+    })
 
     if (!item && data.length) {
-      item = data[0];
+      item = data[0]
     } else if (!item && !data.length) {
-      item = { key: "", title: "" };
+      item = { key: '', title: '' }
     }
 
-    setSelected(item);
-    setText(item.title);
-  }, [by]);
+    setSelected(item)
+    setText(item.title)
+  }, [by])
 
-  const buildDropDownData = datum => {
+  const buildDropDownData = (datum) => {
     const arr = [
-      <OptGroup key="group" label={prefix || ""}>
-        {datum.map(item => {
-          const isSelected = selected.key === item.key;
-          const _className = isSelected ? "ant-select-dropdown-menu-item-active" : null;
+      <OptGroup key="group" label={prefix || ''}>
+        {datum.map((item) => {
+          const isSelected = selected.key === item.key
+          const _className = isSelected
+            ? 'ant-select-dropdown-menu-item-active'
+            : null
           return (
             <Option key={item.key} title={item.title} className={_className}>
               {dropdownMenuIcon || item.dropdownMenuIcon}
               {item.title}
             </Option>
-          );
+          )
         })}
-      </OptGroup>
-    ];
-    return arr;
-  };
+      </OptGroup>,
+    ]
+    return arr
+  }
 
-  const onSearch = value => {
+  const onSearch = (value) => {
     if (value.length > 2) {
-      const regExp = new RegExp(`${value}`, "i");
-      const searchedData = data.filter(item => {
+      const regExp = new RegExp(`${value}`, 'i')
+      const searchedData = data.filter((item) => {
         if (regExp.test(item.title)) {
-          return true;
+          return true
         }
-        return false;
-      });
-      setDropDownData(searchedData);
+        return false
+      })
+      setDropDownData(searchedData)
     } else if (data.length !== dropDownData.length) {
-      setDropDownData(data);
+      setDropDownData(data)
     }
-    setText(value);
-    textChangeStatusRef.current = true;
-  };
+    setText(value)
+    textChangeStatusRef.current = true
+  }
 
-  const onBlur = key => {
-    const item = data.find(o => o.key === key);
+  const onBlur = (key) => {
+    const item = data.find((o) => o.key === key)
     if (!item) {
-      setText(selected.title);
+      setText(selected.title)
     }
-    setActive(false);
+    setActive(false)
 
-    textChangeStatusRef.current = false;
-  };
+    textChangeStatusRef.current = false
+  }
 
   const onSelect = (key, item) => {
-    const obj = { key, title: item.props.title };
-    setSelected(obj);
-    selectCB(obj, comData);
-    setActive(false);
+    const obj = { key, title: item.props.title }
+    setSelected(obj)
+    selectCB(obj, comData)
+    setActive(false)
 
-    textChangeStatusRef.current = false;
-  };
+    textChangeStatusRef.current = false
+  }
 
   const onChange = () => {
     if (textChangeStatusRef.current !== true) {
-      autoRef.current.blur();
+      autoRef.current.blur()
     }
-  };
+  }
 
   const onFocus = () => {
-    setText("");
-    setDropDownData(data);
-    setActive(true);
-    textChangeStatusRef.current = true;
-  };
+    setText('')
+    setDropDownData(data)
+    setActive(true)
+    textChangeStatusRef.current = true
+  }
 
-  const dataSource = buildDropDownData(dropDownData);
+  const dataSource = buildDropDownData(dropDownData)
 
-  const title = selected.title || prefix;
+  const title = selected.title || prefix
 
   return (
-    <StyledAutocompleteDropDownContainer className={`${containerClassName} autocomplete-dropdown`}>
+    <StyledAutocompleteDropDownContainer
+      className={`${containerClassName} autocomplete-dropdown`}
+    >
       <AutoComplete
         dataSource={dataSource}
         dropdownClassName={className}
@@ -154,17 +158,24 @@ const AutocompleteDropDown = ({
         onChange={onChange}
         value={text}
         ref={autoRef}
-        notFoundContent={<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ textAlign: "left", margin: "10px 0" }} />}
+        notFoundContent={
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            style={{ textAlign: 'left', margin: '10px 0' }}
+          />
+        }
       >
         <Input
           title={title}
-          suffix={<Icon type={isActive ? iconActiveType : iconType} className="" />}
+          suffix={
+            <Icon type={isActive ? iconActiveType : iconType} className="" />
+          }
           placeholder={selected.title}
         />
       </AutoComplete>
     </StyledAutocompleteDropDownContainer>
-  );
-};
+  )
+}
 
 const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
   .ant-input {
@@ -215,6 +226,6 @@ const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
   .ant-select-dropdown-menu-item {
     font-size: 11px;
   }
-`;
+`
 
-export { StyledAutocompleteDropDown as AutocompleteDropDown };
+export { StyledAutocompleteDropDown as AutocompleteDropDown }

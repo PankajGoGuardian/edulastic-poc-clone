@@ -1,63 +1,81 @@
-import React, { useMemo } from "react";
-import { groupBy } from "lodash";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import { Row, Col } from "antd";
-import styled from "styled-components";
-import { StyledCustomChartTooltip } from "../../../AssessmentSummary/components/styled";
+import React, { useMemo } from 'react'
+import { groupBy } from 'lodash'
+import { PieChart, Pie, Cell, Tooltip } from 'recharts'
+import { Row, Col } from 'antd'
+import styled from 'styled-components'
+import { StyledCustomChartTooltip } from '../../../AssessmentSummary/components/styled'
 
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, innerRadius, percent }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+const RADIAN = Math.PI / 180
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  outerRadius,
+  innerRadius,
+  percent,
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+  const x = cx + radius * Math.cos(-midAngle * RADIAN)
+  const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
   return (
-    <text x={x} y={y} fill="black" textAnchor={x > cx ? "start" : "end"} dominantBaseline="central">
+    <text
+      x={x}
+      y={y}
+      fill="black"
+      textAnchor={x > cx ? 'start' : 'end'}
+      dominantBaseline="central"
+    >
       {`${(percent * 100).toFixed(0)}%`}
     </text>
-  );
-};
+  )
+}
 
-const getTooltipJSX = payload => {
+const getTooltipJSX = (payload) => {
   if (payload && payload.length) {
-    const { name, value, payload: item } = payload[0];
+    const { name, value, payload: item } = payload[0]
     return (
       <div>
         <Row type="flex" justify="start">
           <Col className="tooltip-key">{name} : </Col>
-          <Col className="tooltip-value">{`${((value / item.sum) * 100).toFixed(0)}%`}</Col>
+          <Col className="tooltip-value">
+            {`${((value / item.sum) * 100).toFixed(0)}%`}
+          </Col>
         </Row>
       </div>
-    );
+    )
   }
-  return false;
-};
+  return false
+}
 
 const StudentPerformancePie = ({ data, bands, onSelect }) => {
   if (!bands) {
-    return null;
+    return null
   }
 
   const bandData = useMemo(() => {
-    const groupByBand = groupBy(data, "proficiencyBand");
+    const groupByBand = groupBy(data, 'proficiencyBand')
     return bands
-      .map(band => ({
+      .map((band) => ({
         name: band.name,
         value: groupByBand[band.name]?.length || 0,
-        sum: data.length
+        sum: data.length,
       }))
-      .filter(d => d.value);
-  }, [data, bands]);
+      .filter((d) => d.value)
+  }, [data, bands])
 
   const handleOnSelect = ({ name }) => {
-    const selected = { key: name, title: name };
-    onSelect(null, selected);
-  };
+    const selected = { key: name, title: name }
+    onSelect(null, selected)
+  }
 
   return (
     <StyledChartWrapper>
       <PieChart width={400} height={400}>
-        <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
+        <Tooltip
+          cursor={false}
+          content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />}
+        />
         <Pie
           name="name"
           data={bandData}
@@ -86,19 +104,19 @@ const StudentPerformancePie = ({ data, bands, onSelect }) => {
         ))}
       </StyledChartInfo>
     </StyledChartWrapper>
-  );
-};
+  )
+}
 
 const StyledChartInfo = styled.div`
   display: flex;
   flex-direction: column;
-`;
+`
 
 const Bar = styled.div`
   width: 30px;
   height: 30px;
   background: ${({ fill }) => fill};
-`;
+`
 
 const StyledChartInfoItem = styled.div`
   display: flex;
@@ -107,13 +125,13 @@ const StyledChartInfoItem = styled.div`
   span {
     margin-left: 3px;
   }
-`;
+`
 
 const StyledChartWrapper = styled.div`
   width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
+`
 
-export default StudentPerformancePie;
+export default StudentPerformancePie

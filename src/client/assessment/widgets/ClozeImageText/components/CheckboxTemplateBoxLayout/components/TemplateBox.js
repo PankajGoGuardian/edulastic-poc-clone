@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const TemplateBox = ({ children, maxHeight, maxWidth, margin }) => (
   <div
@@ -7,15 +7,15 @@ const TemplateBox = ({ children, maxHeight, maxWidth, margin }) => (
     style={{
       maxHeight: !maxHeight ? null : maxHeight,
       maxWidth: !maxWidth ? null : maxWidth,
-      margin: !margin ? null : margin
+      margin: !margin ? null : margin,
     }}
   >
     {children}
   </div>
-);
+)
 
 TemplateBox.propTypes = {
-  children: PropTypes.any.isRequired
-};
+  children: PropTypes.any.isRequired,
+}
 
-export default TemplateBox;
+export default TemplateBox

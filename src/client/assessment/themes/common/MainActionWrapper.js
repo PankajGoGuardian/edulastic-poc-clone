@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 // import FlexContainer from "./FlexContainer";
-import { FlexContainer } from "@edulastic/common";
-import { MAX_MOBILE_WIDTH } from "../../constants/others";
+import { FlexContainer } from '@edulastic/common'
+import { MAX_MOBILE_WIDTH } from '../../constants/others'
 
 const MainActionWrapper = styled(FlexContainer)`
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
@@ -9,6 +9,6 @@ const MainActionWrapper = styled(FlexContainer)`
     width: 100%;
     justify-content: space-between;
   }
-`;
+`
 
-export default MainActionWrapper;
+export default MainActionWrapper

@@ -1,17 +1,20 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { get, isEmpty } from "lodash";
+import React, { useMemo, useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { get, isEmpty } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon } from "antd";
-import { roleuser } from "@edulastic/constants";
+import { AutoComplete, Input, Icon } from 'antd'
+import { roleuser } from '@edulastic/constants'
 
 // ducks
-import { getUser } from "../../../../../../src/selectors/user";
-import { receiveClassListAction, getClassListSelector } from "../../../../../../Classes/ducks";
+import { getUser } from '../../../../../../src/selectors/user'
+import {
+  receiveClassListAction,
+  getClassListSelector,
+} from '../../../../../../Classes/ducks'
 
-const DEFAULT_SEARCH_TERMS = { text: "", selectedText: "", selectedKey: "" };
+const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const ClassAutoComplete = ({
   userDetails,
@@ -21,87 +24,87 @@ const ClassAutoComplete = ({
   grade,
   subject,
   selectedClass,
-  selectCB
+  selectCB,
 }) => {
-  const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS);
+  const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
 
   // build search query
   const query = useMemo(() => {
-    const { institutionIds, role: userRole, orgData, _id: userId } = userDetails;
-    const { districtIds } = orgData;
-    const districtId = districtIds?.[0];
+    const { institutionIds, role: userRole, orgData, _id: userId } = userDetails
+    const { districtIds } = orgData
+    const districtId = districtIds?.[0]
     const q = {
       limit: 25,
       page: 1,
       districtId,
       search: {
         name: searchTerms.text,
-        type: ["class"]
-      }
-    };
+        type: ['class'],
+      },
+    }
     if (userRole === roleuser.TEACHER) {
-      q.search.teachers = [{ type: "eq", value: userId }];
+      q.search.teachers = [{ type: 'eq', value: userId }]
     }
     if (userRole === roleuser.SCHOOL_ADMIN) {
-      q.search.institutionIds = institutionIds;
+      q.search.institutionIds = institutionIds
     }
     if (grade) {
-      q.search.grades = [`${grade}`];
+      q.search.grades = [`${grade}`]
     }
     if (subject) {
-      q.search.subjects = [subject];
+      q.search.subjects = [subject]
     }
-    return q;
-  }, [searchTerms.text]);
+    return q
+  }, [searchTerms.text])
 
   // handle autocomplete actions
-  const onSearch = value => {
-    setSearchTerms({ ...searchTerms, text: value });
-  };
-  const onSelect = key => {
-    const value = classList[key]._source.name;
-    setSearchTerms({ text: value, selectedText: value, selectedKey: key });
-    selectCB({ key, title: value });
-  };
+  const onSearch = (value) => {
+    setSearchTerms({ ...searchTerms, text: value })
+  }
+  const onSelect = (key) => {
+    const value = classList[key]._source.name
+    setSearchTerms({ text: value, selectedText: value, selectedKey: key })
+    selectCB({ key, title: value })
+  }
   const onBlur = () => {
-    if (searchTerms.text === "" && searchTerms.selectedText !== "") {
-      setSearchTerms(DEFAULT_SEARCH_TERMS);
-      selectCB({ key: "", title: "" });
+    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+      selectCB({ key: '', title: '' })
     } else {
-      setSearchTerms({ ...searchTerms, text: searchTerms.selectedText });
+      setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
-  };
+  }
 
   // effects
   useEffect(() => {
     if (!isEmpty(selectedClass)) {
-      const { key, title } = selectedClass;
-      setSearchTerms({ text: title, selectedText: title, selectedKey: key });
+      const { key, title } = selectedClass
+      setSearchTerms({ text: title, selectedText: title, selectedKey: key })
     }
-  }, []);
+  }, [])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
-      loadClassList(query);
+      loadClassList(query)
     }
-  }, [searchTerms]);
+  }, [searchTerms])
 
   // build dropdown data
   const dropdownData = searchTerms.text
     ? [
         <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
-          {Object.values(classList).map(item => (
+          {Object.values(classList).map((item) => (
             <AutoComplete.Option key={item._id} title={item._source.name}>
               {item._source.name}
             </AutoComplete.Option>
           ))}
-        </AutoComplete.OptGroup>
+        </AutoComplete.OptGroup>,
       ]
-    : [];
+    : []
 
   return (
     <AutoCompleteContainer>
       <AutoComplete
-        getPopupContainer={trigger => trigger.parentNode}
+        getPopupContainer={(trigger) => trigger.parentNode}
         placeholder="All Classes"
         value={searchTerms.text}
         onSearch={onSearch}
@@ -109,22 +112,22 @@ const ClassAutoComplete = ({
         onSelect={onSelect}
         onBlur={onBlur}
       >
-        <Input suffix={<Icon type={loading ? "loading" : "search"} />} />
+        <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
       </AutoComplete>
     </AutoCompleteContainer>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     userDetails: getUser(state),
     classList: getClassListSelector(state),
-    loading: get(state, ["classesReducer", "loading"], false)
+    loading: get(state, ['classesReducer', 'loading'], false),
   }),
   {
-    loadClassList: receiveClassListAction
+    loadClassList: receiveClassListAction,
   }
-)(ClassAutoComplete);
+)(ClassAutoComplete)
 
 const AutoCompleteContainer = styled.div`
   .ant-select-auto-complete {
@@ -133,4 +136,4 @@ const AutoCompleteContainer = styled.div`
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
   }
-`;
+`

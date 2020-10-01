@@ -1,31 +1,49 @@
-import React from "react";
-import styled from "styled-components";
-import { FlexContainer, FontPicker, hexToRGB } from "@edulastic/common";
-import ColorPicker from "./ColorPicker";
-import { Sprite, StyledSelect } from "../../styled";
+import React from 'react'
+import styled from 'styled-components'
+import { FlexContainer, FontPicker, hexToRGB } from '@edulastic/common'
+import ColorPicker from './ColorPicker'
+import { Sprite, StyledSelect } from '../../styled'
 
-const { Option } = StyledSelect;
+const { Option } = StyledSelect
 
-const FontOption = ({ fontSize, fontFamily, fontColor, onChangeOption, hideFontFamily }) => {
-  const onChangeFontFamilyHandler = value => {
-    onChangeOption("fontFamily", value);
-  };
+const FontOption = ({
+  fontSize,
+  fontFamily,
+  fontColor,
+  onChangeOption,
+  hideFontFamily,
+}) => {
+  const onChangeFontFamilyHandler = (value) => {
+    onChangeOption('fontFamily', value)
+  }
 
-  const onChangeFontSizeHandler = size => {
-    onChangeOption("fontSize", size);
-  };
+  const onChangeFontSizeHandler = (size) => {
+    onChangeOption('fontSize', size)
+  }
 
-  const onChangeFontColorHandler = value => {
-    onChangeOption("fontColor", hexToRGB(value.color, (value.alpha ? value.alpha : 1) / 100));
-  };
+  const onChangeFontColorHandler = (value) => {
+    onChangeOption(
+      'fontColor',
+      hexToRGB(value.color, (value.alpha ? value.alpha : 1) / 100)
+    )
+  }
 
   return (
     <FlexContainer id="font-options" marginLeft="14px" alignItems="center">
       <Sprite pos={-692} width={16} />
       {!hideFontFamily && (
-        <StyledFontPicker hideLabel onChange={onChangeFontFamilyHandler} currentFont={fontFamily} placeholder="----" />
+        <StyledFontPicker
+          hideLabel
+          onChange={onChangeFontFamilyHandler}
+          currentFont={fontFamily}
+          placeholder="----"
+        />
       )}
-      <StyledSelect width={34} defaultValue={fontSize} onChange={onChangeFontSizeHandler}>
+      <StyledSelect
+        width={34}
+        defaultValue={fontSize}
+        onChange={onChangeFontSizeHandler}
+      >
         <Option value={8}>8</Option>
         <Option value={10}>10</Option>
         <Option value={12}>12</Option>
@@ -36,10 +54,10 @@ const FontOption = ({ fontSize, fontFamily, fontColor, onChangeOption, hideFontF
       </StyledSelect>
       <ColorPicker color={fontColor} onChangeColor={onChangeFontColorHandler} />
     </FlexContainer>
-  );
-};
+  )
+}
 
-export default FontOption;
+export default FontOption
 
 const StyledFontPicker = styled(FontPicker)`
   margin-bottom: 0px;
@@ -49,4 +67,4 @@ const StyledFontPicker = styled(FontPicker)`
   font-size: 0.92rem;
   border-radius: 2px;
   border: 1px solid #757575;
-`;
+`

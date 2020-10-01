@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { Table } from "antd";
-import { connect } from "react-redux";
-import { get, isInteger, floor, isEmpty } from "lodash";
-import queryString from "query-string";
-import { PrintActionWrapper } from "@edulastic/common";
-import Title from "./Title";
-import StudentCard from "./StudentCard";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { Table } from 'antd'
+import { connect } from 'react-redux'
+import { get, isInteger, floor, isEmpty } from 'lodash'
+import queryString from 'query-string'
+import { PrintActionWrapper } from '@edulastic/common'
+import Title from './Title'
+import StudentCard from './StudentCard'
 import {
   PrintPreviewBack,
   PrintPreviewContainer,
@@ -18,69 +18,74 @@ import {
   ClassName,
   ClassCode,
   Description,
-  CardContainer
-} from "./styled";
+  CardContainer,
+} from './styled'
 
-import { fetchStudentsByIdAction } from "../../ducks";
+import { fetchStudentsByIdAction } from '../../ducks'
 
 const columns = [
   {
-    title: "First Name",
-    dataIndex: "firstName",
-    width: "25%"
+    title: 'First Name',
+    dataIndex: 'firstName',
+    width: '25%',
   },
   {
-    title: "Last Name",
-    dataIndex: "lastName",
-    width: "25%"
+    title: 'Last Name',
+    dataIndex: 'lastName',
+    width: '25%',
   },
   {
-    title: "User Name",
-    dataIndex: "email",
-    width: "50%"
-  }
-];
+    title: 'User Name',
+    dataIndex: 'email',
+    width: '50%',
+  },
+]
 
-const numOfCard = 6;
+const numOfCard = 6
 
-const rowKey = ({ _id }) => _id;
+const rowKey = ({ _id }) => _id
 
 class PrintPreviewClass extends React.Component {
   static propTypes = {
     selctedClass: PropTypes.object.isRequired,
-    students: PropTypes.array.isRequired
-  };
+    students: PropTypes.array.isRequired,
+  }
 
   componentDidMount() {
-    const { match, loadStudents } = this.props;
-    const { classId } = match.params;
-    loadStudents({ classId });
+    const { match, loadStudents } = this.props
+    const { classId } = match.params
+    loadStudents({ classId })
   }
 
   render() {
-    const appLoginUrl = `${window.location.origin}/login`;
-    const { selctedClass, students, location, user } = this.props;
-    const query = queryString.parse(location.search);
-    const { studentIds } = query;
-    const selectedStudent = studentIds && students ? students.filter(s => studentIds.includes(s._id)) : [];
-    const { code, name: className, owners = [] } = selctedClass;
-    let teacherName = owners[0]?.name;
+    const appLoginUrl = `${window.location.origin}/login`
+    const { selctedClass, students, location, user } = this.props
+    const query = queryString.parse(location.search)
+    const { studentIds } = query
+    const selectedStudent =
+      studentIds && students
+        ? students.filter((s) => studentIds.includes(s._id))
+        : []
+    const { code, name: className, owners = [] } = selctedClass
+    let teacherName = owners[0]?.name
 
     if (!teacherName && owners[0]?.id === user._id) {
-      const { firstName, lastName } = user;
-      teacherName = [firstName, lastName].filter(n => n).join(" ");
+      const { firstName, lastName } = user
+      teacherName = [firstName, lastName].filter((n) => n).join(' ')
     }
 
-    let tableData = selectedStudent;
+    let tableData = selectedStudent
     if (isEmpty(tableData)) {
-      tableData = students?.filter(student => student.enrollmentStatus === 1 && student.status === 1);
+      tableData = students?.filter(
+        (student) => student.enrollmentStatus === 1 && student.status === 1
+      )
     }
 
-    let pages = tableData?.length / numOfCard;
+    let pages = tableData?.length / numOfCard
     if (!isInteger(pages)) {
-      pages = floor(pages + 1);
+      pages = floor(pages + 1)
     }
-    pages = [...Array(pages).keys()];
+    pages = [...Array(pages).keys()]
 
     return (
       <>
@@ -94,7 +99,8 @@ class PrintPreviewClass extends React.Component {
 
             <ParagraphDiv>
               <ClassInfo>
-                <BoldText>Class Name: </BoldText> <ClassName>{className}</ClassName>
+                <BoldText>Class Name: </BoldText>{' '}
+                <ClassName>{className}</ClassName>
               </ClassInfo>
               <ClassInfo>
                 <BoldText>Class Code: </BoldText> <ClassCode>{code}</ClassCode>
@@ -102,12 +108,20 @@ class PrintPreviewClass extends React.Component {
             </ParagraphDiv>
 
             <Description>
-              Please ask the student to navigate to <a href={appLoginUrl}>{appLoginUrl}</a>. The default password for
-              all students is set to the class code. Please ask the student to log in using the username below and enter
-              the password as <ClassCode>{code}</ClassCode>.
+              Please ask the student to navigate to{' '}
+              <a href={appLoginUrl}>{appLoginUrl}</a>. The default password for
+              all students is set to the class code. Please ask the student to
+              log in using the username below and enter the password as{' '}
+              <ClassCode>{code}</ClassCode>.
             </Description>
 
-            <Table columns={columns} bordered dataSource={tableData} rowKey={rowKey} pagination={false} />
+            <Table
+              columns={columns}
+              bordered
+              dataSource={tableData}
+              rowKey={rowKey}
+              pagination={false}
+            />
           </PrintPreviewContainer>
 
           {pages.map((p, i) => (
@@ -117,27 +131,32 @@ class PrintPreviewClass extends React.Component {
                   tableData
                     .slice(i * numOfCard, i * numOfCard + numOfCard)
                     .map((student, index) => (
-                      <StudentCard student={student} key={index} code={code} appLoginUrl={appLoginUrl} />
+                      <StudentCard
+                        student={student}
+                        key={index}
+                        code={code}
+                        appLoginUrl={appLoginUrl}
+                      />
                     ))}
               </CardContainer>
             </PrintPreviewContainer>
           ))}
         </PrintPreviewBack>
       </>
-    );
+    )
   }
 }
 
 export default compose(
   withRouter,
   connect(
-    state => ({
-      students: get(state, "manageClass.studentsList", []),
-      selctedClass: get(state, "manageClass.entity"),
-      user: get(state, "user.user")
+    (state) => ({
+      students: get(state, 'manageClass.studentsList', []),
+      selctedClass: get(state, 'manageClass.entity'),
+      user: get(state, 'user.user'),
     }),
     {
-      loadStudents: fetchStudentsByIdAction
+      loadStudents: fetchStudentsByIdAction,
     }
   )
-)(PrintPreviewClass);
+)(PrintPreviewClass)

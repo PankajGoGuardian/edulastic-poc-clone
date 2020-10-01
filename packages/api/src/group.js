@@ -1,137 +1,137 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/group";
+const api = new API()
+const prefix = '/group'
 
 const fetchMyGroups = () =>
   api
     .callApi({
       url: `${prefix}/mygroups`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const fetchMyArchiveGroups = () =>
   api
     .callApi({
       url: `${prefix}/mygroups?active=0`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getGroups = body =>
+const getGroups = (body) =>
   api
     .callApi({
       url: `${prefix}/search`,
-      method: "post",
-      data: body
+      method: 'post',
+      data: body,
     })
-    .then(({ data: { result } }) => result.data.hits);
+    .then(({ data: { result } }) => result.data.hits)
 
 const editGroup = ({ groupId, body }) =>
   api
     .callApi({
       url: `${prefix}/${groupId}`,
-      method: "put",
-      data: body
+      method: 'put',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createGroup = body =>
+const createGroup = (body) =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "post",
-      data: body
+      method: 'post',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const deleteGroup = data =>
+const deleteGroup = (data) =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "delete",
-      data
+      method: 'delete',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const addCoTeacher = data =>
+const addCoTeacher = (data) =>
   api
     .callApi({
       url: `${prefix}/co-teacher`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const bulkUpdateClasses = data =>
+const bulkUpdateClasses = (data) =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
 const archiveGroup = ({ _id, districtId }) => {
   return api.callApi({
     url: `${prefix}/${_id}?districtId=${districtId}`,
-    method: "delete"
-  });
-};
+    method: 'delete',
+  })
+}
 
-const fetchStudentsByGroupId = data =>
+const fetchStudentsByGroupId = (data) =>
   api
     .callApi({
       url: `/search/student`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const dropPlaylist = data =>
+const dropPlaylist = (data) =>
   api
     .callApi({
       url: `/user-playlist-activity/`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const fetchPlaylistAccess = playlistId =>
+const fetchPlaylistAccess = (playlistId) =>
   api
     .callApi({
       url: `/user-playlist-activity/${playlistId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const saveHangoutEvent = data =>
+const saveHangoutEvent = (data) =>
   api
     .callApi({
       url: `${prefix}/hangout`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const updateHangoutEvent = data =>
+const updateHangoutEvent = (data) =>
   api
     .callApi({
       url: `${prefix}/hangout`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const unarchiveClass = data =>
+const unarchiveClass = (data) =>
   api
     .callApi({
       url: `${prefix}/unarchive`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
   fetchMyGroups,
@@ -148,5 +148,5 @@ export default {
   fetchPlaylistAccess,
   saveHangoutEvent,
   updateHangoutEvent,
-  unarchiveClass
-};
+  unarchiveClass,
+}

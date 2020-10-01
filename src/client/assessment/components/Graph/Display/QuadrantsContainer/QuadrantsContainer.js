@@ -1,25 +1,33 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { cloneDeep, isEqual, sortBy } from "lodash";
-import produce from "immer";
+import React, { Fragment, PureComponent } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { cloneDeep, isEqual, sortBy } from 'lodash'
+import produce from 'immer'
 
-import { WithResources } from "@edulastic/common";
-import { greyThemeDark3, darkGrey2 } from "@edulastic/colors";
+import { WithResources } from '@edulastic/common'
+import { greyThemeDark3, darkGrey2 } from '@edulastic/colors'
 
-import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
-import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import {
+  CHECK,
+  CLEAR,
+  EDIT,
+  SHOW,
+} from '../../../../constants/constantsForQuestions'
+import {
+  setElementsStashAction,
+  setStashIndexAction,
+} from '../../../../actions/graphTools'
 
-import { makeBorder } from "../../Builder";
-import { CONSTANT } from "../../Builder/config";
+import { makeBorder } from '../../Builder'
+import { CONSTANT } from '../../Builder/config'
 import {
   defaultGraphParameters,
   defaultPointParameters,
   defaultAxesParameters,
-  defaultGridParameters
-} from "../../Builder/settings";
+  defaultGridParameters,
+} from '../../Builder/settings'
 
-import AnnotationRnd from "../../../Annotations/AnnotationRnd";
+import AnnotationRnd from '../../../Annotations/AnnotationRnd'
 
 import {
   GraphWrapper,
@@ -31,193 +39,206 @@ import {
   Title,
   JSXBoxWrapper,
   JSXBoxWithDrawingObjectsWrapper,
-  StyledToolsContainer
-} from "./styled";
-import Tools from "../../common/Tools";
-import GraphEditTools from "../../components/GraphEditTools";
-import DrawingObjects from "./DrawingObjects";
-import { ElementSettingsMenu } from "./ElementSettingsMenu";
-import AppConfig from "../../../../../../../app-config";
+  StyledToolsContainer,
+} from './styled'
+import Tools from '../../common/Tools'
+import GraphEditTools from '../../components/GraphEditTools'
+import DrawingObjects from './DrawingObjects'
+import { ElementSettingsMenu } from './ElementSettingsMenu'
+import AppConfig from '../../../../../../../app-config'
 
-const trueColor = "#1fe3a1";
-const errorColor = "#ee1658";
-const defaultColor = "#434B5D";
-const bgColor = greyThemeDark3;
+const trueColor = '#1fe3a1'
+const errorColor = '#ee1658'
+const defaultColor = '#434B5D'
+const bgColor = greyThemeDark3
 
 // TODO: Add support for user-based colorMap to replace these defaults
 
-const colorMap = type => {
+const colorMap = (type) => {
   switch (type) {
-    case "point":
-      return "#005ce6"; // dark blue
-    case "xaxis":
-    case "yaxis":
-      return "#434B5D";
-    case "dashed":
-      return darkGrey2; // dark bluish grey
-    case "area":
-      return "#cc7537"; // light brown
+    case 'point':
+      return '#005ce6' // dark blue
+    case 'xaxis':
+    case 'yaxis':
+      return '#434B5D'
+    case 'dashed':
+      return darkGrey2 // dark bluish grey
+    case 'area':
+      return '#cc7537' // light brown
     default:
-      return defaultColor;
+      return defaultColor
   }
-};
+}
 
 const getColoredElems = (elements, compareResult) => {
-  if (compareResult && compareResult.details && compareResult.details.length > 0) {
-    let newElems = cloneDeep(elements);
-    const subElems = [];
+  if (
+    compareResult &&
+    compareResult.details &&
+    compareResult.details.length > 0
+  ) {
+    let newElems = cloneDeep(elements)
+    const subElems = []
 
-    newElems = newElems.map(el => {
+    newElems = newElems.map((el) => {
       if (!el.subElement) {
-        const detail = compareResult.details.find(det => det.id === el.id);
-        let newEl = {};
-        let result = false;
+        const detail = compareResult.details.find((det) => det.id === el.id)
+        let newEl = {}
+        let result = false
 
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: trueColor
-          };
-          result = true;
+            priorityColor: trueColor,
+          }
+          result = true
         } else {
           newEl = {
             ...el,
-            priorityColor: errorColor
-          };
+            priorityColor: errorColor,
+          }
         }
 
         if (el.subElementsIds) {
-          Object.values(el.subElementsIds).forEach(val => {
+          Object.values(el.subElementsIds).forEach((val) => {
             subElems.push({
               id: val,
-              result
-            });
-          });
+              result,
+            })
+          })
         }
-        return newEl;
+        return newEl
       }
-      return el;
-    });
+      return el
+    })
 
-    newElems = newElems.map(el => {
+    newElems = newElems.map((el) => {
       if (el.subElement) {
-        const detail = subElems.find(det => det.id === el.id);
-        let newEl = {};
+        const detail = subElems.find((det) => det.id === el.id)
+        let newEl = {}
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: trueColor
-          };
+            priorityColor: trueColor,
+          }
         } else {
           newEl = {
             ...el,
-            priorityColor: errorColor
-          };
+            priorityColor: errorColor,
+          }
         }
-        return newEl;
+        return newEl
       }
-      return el;
-    });
-    return newElems;
+      return el
+    })
+    return newElems
   }
-  return elements;
-};
+  return elements
+}
 
-const getCorrectAnswer = answerArr => {
+const getCorrectAnswer = (answerArr) => {
   if (Array.isArray(answerArr)) {
-    return answerArr.map(el => ({
+    return answerArr.map((el) => ({
       ...el,
-      priorityColor: trueColor
-    }));
+      priorityColor: trueColor,
+    }))
   }
-  return answerArr;
-};
+  return answerArr
+}
 
-const getCompareResult = evaluation => {
+const getCompareResult = (evaluation) => {
   if (!evaluation) {
-    return null;
+    return null
   }
 
-  let compareResult = null;
+  let compareResult = null
 
-  Object.keys(evaluation).forEach(key => {
+  Object.keys(evaluation).forEach((key) => {
     if (compareResult) {
-      return;
+      return
     }
     if (evaluation[key].commonResult) {
-      compareResult = evaluation[key];
+      compareResult = evaluation[key]
     }
-  });
+  })
 
   if (compareResult) {
-    return compareResult;
+    return compareResult
   }
 
-  return evaluation[0];
-};
+  return evaluation[0]
+}
 
 class GraphContainer extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this._graphId = `jxgbox${Math.random()
-      .toString(36)
-      .replace(".", "")}`;
-    this._graph = null;
+    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graph = null
 
     this.state = {
       selectedTool: this.getDefaultTool(),
       selectedDrawingObject: null,
       elementSettingsAreOpened: false,
       elementId: null,
-      resourcesLoaded: false
-    };
+      resourcesLoaded: false,
+    }
 
-    this.onSelectTool = this.onSelectTool.bind(this);
-    this.onReset = this.onReset.bind(this);
-    this.updateValues = this.updateValues.bind(this);
+    this.onSelectTool = this.onSelectTool.bind(this)
+    this.onReset = this.onReset.bind(this)
+    this.updateValues = this.updateValues.bind(this)
   }
 
   getDefaultTool() {
-    const { toolbar } = this.props;
-    const { tools } = toolbar;
-    return tools?.[0];
+    const { toolbar } = this.props
+    const { tools } = toolbar
+    return tools?.[0]
   }
 
-  handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
+  handleElementSettingsMenuOpen = (elementId) =>
+    this.setState({ elementSettingsAreOpened: true, elementId })
 
-  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility, color, notSave = false) => {
-    this.setState({ elementSettingsAreOpened: false });
+  handleElementSettingsMenuClose = (
+    labelText,
+    labelVisibility,
+    pointVisibility,
+    color,
+    notSave = false
+  ) => {
+    this.setState({ elementSettingsAreOpened: false })
 
     if (notSave) {
-      return;
+      return
     }
 
-    const { setValue, setElementsStash } = this.props;
-    const { elementId } = this.state;
-    const config = this._graph.getConfig();
-    const updateElement = config.filter(element => element.id === elementId)[0];
+    const { setValue, setElementsStash } = this.props
+    const { elementId } = this.state
+    const config = this._graph.getConfig()
+    const updateElement = config.filter(
+      (element) => element.id === elementId
+    )[0]
 
     if (updateElement) {
-      updateElement.label = labelText;
-      updateElement.pointIsVisible = pointVisibility;
-      updateElement.labelIsVisible = labelVisibility;
-      updateElement.baseColor = color;
+      updateElement.label = labelText
+      updateElement.pointIsVisible = pointVisibility
+      updateElement.labelIsVisible = labelVisibility
+      updateElement.baseColor = color
 
       if (updateElement.subElementsIds) {
-        Object.values(updateElement.subElementsIds).forEach(subElementId => {
-          const subElement = config.filter(element => element.id === subElementId)[0];
-          subElement.baseColor = color;
-        });
+        Object.values(updateElement.subElementsIds).forEach((subElementId) => {
+          const subElement = config.filter(
+            (element) => element.id === subElementId
+          )[0]
+          subElement.baseColor = color
+        })
       }
 
-      setValue(config);
-      setElementsStash(config, this.getStashId());
+      setValue(config)
+      setElementsStash(config, this.getStashId())
     }
-  };
+  }
 
   setDefaultToolState() {
-    this.setState({ selectedTool: this.getDefaultTool() });
+    this.setState({ selectedTool: this.getDefaultTool() })
   }
 
   componentDidMount() {
@@ -234,11 +255,11 @@ class GraphContainer extends PureComponent {
       setElementsStash,
       graphData,
       disableResponse,
-      view
-    } = this.props;
+      view,
+    } = this.props
 
-    const { tools } = toolbar;
-    const { resourcesLoaded } = this.state;
+    const { tools } = toolbar
+    const { resourcesLoaded } = this.state
 
     // we should create a graph with whole settings for the first time.
     // @see https://snapwiz.atlassian.net/browse/EV-17315
@@ -247,49 +268,49 @@ class GraphContainer extends PureComponent {
       gridParameters: gridParams,
       axesParameters: {
         x: xAxesParameters,
-        y: yAxesParameters
-      }
-    };
+        y: yAxesParameters,
+      },
+    }
 
-    this._graph = makeBorder(this._graphId, graphData.graphType, settings);
+    this._graph = makeBorder(this._graphId, graphData.graphType, settings)
 
     if (this._graph) {
       if (!this.drawingObjectsAreVisible) {
-        this._graph.setTool(tools[0]);
+        this._graph.setTool(tools[0])
       }
 
-      this._graph.createEditButton(this.handleElementSettingsMenuOpen);
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.createEditButton(this.handleElementSettingsMenuOpen)
+      this._graph.setDisableResponse(disableResponse)
 
       if (view === EDIT && !disableResponse) {
-        this._graph.setEditButtonStatus(false);
+        this._graph.setEditButtonStatus(false)
       } else {
-        this._graph.setEditButtonStatus(true);
+        this._graph.setEditButtonStatus(true)
       }
 
-      this._graph.resizeContainer(layout.width, layout.height);
+      this._graph.resizeContainer(layout.width, layout.height)
 
       this._graph.setPointParameters({
         ...defaultPointParameters(),
-        ...pointParameters
-      });
+        ...pointParameters,
+      })
 
-      this.setPriorityColors();
+      this.setPriorityColors()
 
-      this._graph.setBgImage(bgImgOptions);
+      this._graph.setBgImage(bgImgOptions)
       if (resourcesLoaded) {
-        const bgShapeValues = backgroundShapes.values.map(el => ({
+        const bgShapeValues = backgroundShapes.values.map((el) => ({
           ...el,
-          priorityColor: bgColor
-        }));
-        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
+          priorityColor: bgColor,
+        }))
+        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
       }
 
-      this.setElementsToGraph();
+      this.setElementsToGraph()
     }
 
-    this.setGraphUpdateEventHandler();
-    setElementsStash(this._graph.getConfig(), this.getStashId());
+    this.setGraphUpdateEventHandler()
+    setElementsStash(this._graph.getConfig(), this.getStashId())
   }
 
   componentDidUpdate(prevProps) {
@@ -307,44 +328,44 @@ class GraphContainer extends PureComponent {
       previewTab,
       changePreviewTab,
       elements,
-      view
-    } = this.props;
+      view,
+    } = this.props
 
-    const { tools } = toolbar;
-    const { resourcesLoaded } = this.state;
+    const { tools } = toolbar
+    const { resourcesLoaded } = this.state
 
-    let refreshElements = false;
+    let refreshElements = false
 
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
-      this.setDefaultToolState();
-      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT);
+      this.setDefaultToolState()
+      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT)
     }
 
     if (this._graph) {
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.setDisableResponse(disableResponse)
 
       if (view === EDIT && !disableResponse) {
-        this._graph.setEditButtonStatus(false);
+        this._graph.setEditButtonStatus(false)
       } else {
-        this._graph.setEditButtonStatus(true);
+        this._graph.setEditButtonStatus(true)
       }
 
       if (!isEqual(canvas, prevProps.canvas)) {
         this._graph.setGraphParameters({
           ...defaultGraphParameters(),
-          ...canvas
-        });
-        refreshElements = true;
+          ...canvas,
+        })
+        refreshElements = true
       }
 
       if (!isEqual(pointParameters, prevProps.pointParameters)) {
         this._graph.setPointParameters({
           ...defaultPointParameters(),
-          ...pointParameters
-        });
+          ...pointParameters,
+        })
       }
 
-      this.setPriorityColors();
+      this.setPriorityColors()
 
       if (
         !isEqual(xAxesParameters, prevProps.xAxesParameters) ||
@@ -353,311 +374,346 @@ class GraphContainer extends PureComponent {
         this._graph.setAxesParameters({
           x: {
             ...defaultAxesParameters(),
-            ...xAxesParameters
+            ...xAxesParameters,
           },
           y: {
             ...defaultAxesParameters(),
-            ...yAxesParameters
-          }
-        });
+            ...yAxesParameters,
+          },
+        })
       }
 
       if (!isEqual(layout, prevProps.layout)) {
-        this._graph.resizeContainer(layout.width, layout.height);
+        this._graph.resizeContainer(layout.width, layout.height)
       }
 
       if (!isEqual(gridParams, prevProps.gridParams)) {
         this._graph.setGridParameters({
           ...defaultGridParameters(),
-          ...gridParams
-        });
+          ...gridParams,
+        })
       }
 
       if (!isEqual(bgImgOptions, prevProps.bgImgOptions)) {
-        this._graph.removeBgImage();
-        this._graph.setBgImage(bgImgOptions);
+        this._graph.removeBgImage()
+        this._graph.setBgImage(bgImgOptions)
       }
 
       if (
-        JSON.stringify(backgroundShapes.values) !== JSON.stringify(prevProps.backgroundShapes.values) ||
+        JSON.stringify(backgroundShapes.values) !==
+          JSON.stringify(prevProps.backgroundShapes.values) ||
         backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints
       ) {
-        this._graph.resetBg();
+        this._graph.resetBg()
         if (resourcesLoaded) {
-          const bgShapeValues = backgroundShapes.values.map(el => ({
+          const bgShapeValues = backgroundShapes.values.map((el) => ({
             ...el,
-            priorityColor: bgColor
-          }));
-          this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
+            priorityColor: bgColor,
+          }))
+          this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
         }
       }
 
-      this.setElementsToGraph(prevProps, refreshElements);
+      this.setElementsToGraph(prevProps, refreshElements)
     }
 
-    if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
-      changePreviewTab(CLEAR);
+    if (
+      (previewTab === CHECK || previewTab === SHOW) &&
+      !isEqual(elements, prevProps.elements)
+    ) {
+      changePreviewTab(CLEAR)
     }
   }
 
   // Note: Manipulating the data inside the props is considered safe here
   // as there is no change being made to the props value (a reference) in this case
   setPriorityColors() {
-    const { bgShapes, toolbar, elements, xAxesParameters, yAxesParameters } = this.props;
-    const { drawingPrompt } = toolbar;
-    if (bgShapes || drawingPrompt === "byTools") {
-      let prev = colorMap();
-      elements.forEach(el => {
+    const {
+      bgShapes,
+      toolbar,
+      elements,
+      xAxesParameters,
+      yAxesParameters,
+    } = this.props
+    const { drawingPrompt } = toolbar
+    if (bgShapes || drawingPrompt === 'byTools') {
+      let prev = colorMap()
+      elements.forEach((el) => {
         if (el.subElement && prev) {
-          el.priorityColor = prev;
+          el.priorityColor = prev
         } else {
-          el.priorityColor = colorMap(el.dashed ? "dashed" : el.type);
-          prev = el.priorityColor;
+          el.priorityColor = colorMap(el.dashed ? 'dashed' : el.type)
+          prev = el.priorityColor
         }
-      });
-      xAxesParameters.strokeColor = colorMap("xaxis");
-      yAxesParameters.strokeColor = colorMap("yaxis");
+      })
+      xAxesParameters.strokeColor = colorMap('xaxis')
+      yAxesParameters.strokeColor = colorMap('yaxis')
     } else {
-      elements.forEach(el => {
-        el.priorityColor = null;
-      });
-      xAxesParameters.strokeColor = defaultColor;
-      yAxesParameters.strokeColor = defaultColor;
-      this._graph.setPriorityColor(null);
+      elements.forEach((el) => {
+        el.priorityColor = null
+      })
+      xAxesParameters.strokeColor = defaultColor
+      yAxesParameters.strokeColor = defaultColor
+      this._graph.setPriorityColor(null)
     }
   }
 
   onSelectTool(name) {
-    this.setState({ selectedTool: name });
-    this._graph.setTool(name);
+    this.setState({ selectedTool: name })
+    this._graph.setTool(name)
   }
 
   onReset() {
-    const { toolbar } = this.props;
-    const { tools } = toolbar;
+    const { toolbar } = this.props
+    const { tools } = toolbar
 
     this.setState({
-      selectedTool: this.getDefaultTool()
-    });
+      selectedTool: this.getDefaultTool(),
+    })
 
-    this._graph?.setTool(tools?.[0]);
-    this._graph?.reset();
-    this.updateValues();
+    this._graph?.setTool(tools?.[0])
+    this._graph?.reset()
+    this.updateValues()
   }
 
   onUndo = () => {
     if (this._graph.cleanToolTempPoints()) {
-      return;
+      return
     }
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] - 1]);
-      setStashIndex(stashIndex[id] - 1, id);
+      setValue(stash[id][stashIndex[id] - 1])
+      setStashIndex(stashIndex[id] - 1, id)
     }
-  };
+  }
 
   onRedo() {
     if (this._graph.cleanToolTempPoints()) {
-      return;
+      return
     }
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] + 1]);
-      setStashIndex(stashIndex[id] + 1, id);
+      setValue(stash[id][stashIndex[id] + 1])
+      setStashIndex(stashIndex[id] + 1, id)
     }
   }
 
   onDelete() {
-    this.selectDrawingObject(null);
-    this.setState({ selectedTool: "delete" });
-    this._graph.setTool("trash");
+    this.selectDrawingObject(null)
+    this.setState({ selectedTool: 'delete' })
+    this._graph.setTool('trash')
   }
 
   getStashId() {
-    const { graphData, altAnswerId, view, bgShapes } = this.props;
-    const type = bgShapes ? "bgShapes" : altAnswerId || view;
-    return `${graphData.id}_${type}`;
+    const { graphData, altAnswerId, view, bgShapes } = this.props
+    const type = bgShapes ? 'bgShapes' : altAnswerId || view
+    return `${graphData.id}_${type}`
   }
 
-  onSelectControl = control => {
+  onSelectControl = (control) => {
     switch (control) {
-      case "undo":
-        return this.onUndo();
-      case "redo":
-        return this.onRedo();
-      case "reset":
-        return this.onReset();
-      case "delete":
-        return this.onDelete();
+      case 'undo':
+        return this.onUndo()
+      case 'redo':
+        return this.onRedo()
+      case 'reset':
+        return this.onReset()
+      case 'delete':
+        return this.onDelete()
       default:
-        return () => { };
+        return () => {}
     }
-  };
+  }
 
   updateValues() {
-    const conf = this._graph.getConfig();
-    const { setValue, setElementsStash } = this.props;
+    const conf = this._graph.getConfig()
+    const { setValue, setElementsStash } = this.props
 
-    setValue(conf);
-    setElementsStash(conf, this.getStashId());
+    setValue(conf)
+    setElementsStash(conf, this.getStashId())
   }
 
   graphUpdateHandler = () => {
-    this.updateValues();
-    this.selectDrawingObject(null);
-  };
+    this.updateValues()
+    this.selectDrawingObject(null)
+  }
 
   setGraphUpdateEventHandler = () => {
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_UPDATE, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
-  };
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_MOVE,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_NEW,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_UPDATE,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_DELETE,
+      this.graphUpdateHandler
+    )
+  }
 
   setElementsToGraph = (prevProps = {}, refreshElements = false) => {
-    const { resourcesLoaded } = this.state;
+    const { resourcesLoaded } = this.state
     if (!resourcesLoaded) {
-      return;
+      return
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, toolbar } = this.props;
-    const { drawingPrompt } = toolbar;
+    const {
+      elements,
+      evaluation,
+      disableResponse,
+      elementsIsCorrect,
+      previewTab,
+      toolbar,
+    } = this.props
+    const { drawingPrompt } = toolbar
 
     // correct answers blocks
     if (elementsIsCorrect) {
-      this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements));
-      return;
+      this._graph.resetAnswers()
+      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements))
+      return
     }
 
     if (disableResponse) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
-      this._graph.reset();
-      this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult)
+      this._graph.reset()
+      this._graph.resetAnswers()
+      this._graph.loadAnswersFromConfig(coloredElements)
+      return
     }
 
     if (previewTab === CHECK || previewTab === SHOW) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
-      this._graph.reset();
-      this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult)
+      this._graph.reset()
+      this._graph.resetAnswers()
+      this._graph.loadFromConfig(coloredElements)
+      return
     }
 
     if (
       refreshElements ||
       !isEqual(sortBy(elements), sortBy(this._graph.getConfig())) ||
-      (prevProps.toolbar && prevProps.toolbar.drawingPrompt !== drawingPrompt) ||
-      (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
+      (prevProps.toolbar &&
+        prevProps.toolbar.drawingPrompt !== drawingPrompt) ||
+      (previewTab === CLEAR &&
+        (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
-      this._graph.reset();
-      this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements);
+      this._graph.reset()
+      this._graph.resetAnswers()
+      this._graph.loadFromConfig(elements)
     }
-  };
+  }
 
-  setEquations = equations => {
-    const { setValue, setElementsStash, elements } = this.props;
-    let newElements = cloneDeep(elements);
-    newElements = newElements.filter(el => el.type !== CONSTANT.TOOLS.EQUATION);
-    newElements.push(...equations);
-    setValue(newElements);
-    setElementsStash(newElements, this.getStashId());
-  };
+  setEquations = (equations) => {
+    const { setValue, setElementsStash, elements } = this.props
+    let newElements = cloneDeep(elements)
+    newElements = newElements.filter(
+      (el) => el.type !== CONSTANT.TOOLS.EQUATION
+    )
+    newElements.push(...equations)
+    setValue(newElements)
+    setElementsStash(newElements, this.getStashId())
+  }
 
   allTools = [
-    "point",
-    "line",
-    "ray",
-    "segment",
-    "vector",
-    "circle",
-    "ellipse",
-    "sine",
-    "tangent",
-    "secant",
-    "exponent",
-    "logarithm",
-    "polynom",
-    "hyperbola",
-    "polygon",
-    "parabola",
-    "parabola2",
-    "area",
-    "dashed"
-  ];
+    'point',
+    'line',
+    'ray',
+    'segment',
+    'vector',
+    'circle',
+    'ellipse',
+    'sine',
+    'tangent',
+    'secant',
+    'exponent',
+    'logarithm',
+    'polynom',
+    'hyperbola',
+    'polygon',
+    'parabola',
+    'parabola2',
+    'area',
+    'dashed',
+  ]
 
-  allControls = ["undo", "redo", "reset", "delete"];
+  allControls = ['undo', 'redo', 'reset', 'delete']
 
   get drawingObjectsAreVisible() {
-    const { view, toolbar } = this.props;
-    const { drawingPrompt } = toolbar;
-    return view !== EDIT && drawingPrompt === "byObjects";
+    const { view, toolbar } = this.props
+    const { drawingPrompt } = toolbar
+    return view !== EDIT && drawingPrompt === 'byObjects'
   }
 
   get getDrawingObjects() {
-    const { toolbar = {}, elements } = this.props;
-    const { drawingObjects = [] } = toolbar;
-    const { selectedDrawingObject } = this.state;
+    const { toolbar = {}, elements } = this.props
+    const { drawingObjects = [] } = toolbar
+    const { selectedDrawingObject } = this.state
 
-    return drawingObjects.map(item => ({
+    return drawingObjects.map((item) => ({
       ...item,
-      disabled: elements.findIndex(el => el.id === item.id) > -1,
-      selected: !!(selectedDrawingObject && selectedDrawingObject.id === item.id)
-    }));
+      disabled: elements.findIndex((el) => el.id === item.id) > -1,
+      selected: !!(
+        selectedDrawingObject && selectedDrawingObject.id === item.id
+      ),
+    }))
   }
 
   get hasFillArea() {
     const {
-      toolbar: { tools = [] }
-    } = this.props;
-    return tools.includes("area");
+      toolbar: { tools = [] },
+    } = this.props
+    return tools.includes('area')
   }
 
   get includeDashed() {
     const {
-      toolbar: { includeDashed }
-    } = this.props;
-    return includeDashed;
+      toolbar: { includeDashed },
+    } = this.props
+    return includeDashed
   }
 
-  selectDrawingObject = drawingObject => {
-    this.setState({ selectedDrawingObject: drawingObject });
-    this._graph.setDrawingObject(drawingObject);
-  };
+  selectDrawingObject = (drawingObject) => {
+    this.setState({ selectedDrawingObject: drawingObject })
+    this._graph.setDrawingObject(drawingObject)
+  }
 
   resourcesOnLoaded = () => {
-    const { backgroundShapes } = this.props;
-    const { resourcesLoaded } = this.state;
+    const { backgroundShapes } = this.props
+    const { resourcesLoaded } = this.state
     if (resourcesLoaded) {
-      return;
+      return
     }
-    this.setState({ resourcesLoaded: true });
+    this.setState({ resourcesLoaded: true })
 
-    const bgShapeValues = backgroundShapes.values.map(el => ({
+    const bgShapeValues = backgroundShapes.values.map((el) => ({
       ...el,
-      priorityColor: bgColor
-    }));
-    this._graph.resetBg();
-    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
-    this.setElementsToGraph();
-  };
+      priorityColor: bgColor,
+    }))
+    this._graph.resetBg()
+    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
+    this.setElementsToGraph()
+  }
 
-  setTools = tools => {
-    const { graphData, setQuestionData } = this.props;
+  setTools = (tools) => {
+    const { graphData, setQuestionData } = this.props
 
     setQuestionData(
-      produce(graphData, draft => {
-        draft.toolbar.tools = tools;
+      produce(graphData, (draft) => {
+        draft.toolbar.tools = tools
       })
-    );
-  };
+    )
+  }
 
   render() {
     const {
@@ -672,31 +728,54 @@ class GraphContainer extends PureComponent {
       advancedElementSettings,
       graphData,
       setQuestionData,
-      isPrintPreview
-    } = this.props;
-    const { tools, drawingPrompt } = toolbar;
-    const { selectedTool, elementSettingsAreOpened, elementId, selectedDrawingObject } = this.state;
+      isPrintPreview,
+    } = this.props
+    const { tools, drawingPrompt } = toolbar
+    const {
+      selectedTool,
+      elementSettingsAreOpened,
+      elementId,
+      selectedDrawingObject,
+    } = this.state
     const hasAnnotation =
-      annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
+      annotation &&
+      (annotation.labelTop ||
+        annotation.labelLeft ||
+        annotation.labelRight ||
+        annotation.labelBottom)
 
-    const equations = elements && elements.length ? elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION) : [];
+    const equations =
+      elements && elements.length
+        ? elements.filter((el) => el.type === CONSTANT.TOOLS.EQUATION)
+        : []
 
     return (
-      <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
+      <div data-cy="axis-quadrants-container" style={{ width: '100%' }}>
         <WithResources
-          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
+          resources={[
+            `${AppConfig.jqueryPath}/jquery.min.js`,
+            `${AppConfig.katexPath}/katex.min.js`,
+          ]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >
           <span />
         </WithResources>
         <GraphWrapper>
-          {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
+          {annotation && annotation.title && (
+            <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />
+          )}
           {!disableResponse && !isPrintPreview && (
             <StyledToolsContainer>
               <Tools
                 canEditTools={view === EDIT && !bgShapes}
-                tools={bgShapes ? this.allTools : this.drawingObjectsAreVisible ? [] : tools}
+                tools={
+                  bgShapes
+                    ? this.allTools
+                    : this.drawingObjectsAreVisible
+                    ? []
+                    : tools
+                }
                 setTools={this.setTools}
                 controls={bgShapes ? this.allControls : controls}
                 selected={[selectedTool]}
@@ -718,16 +797,24 @@ class GraphContainer extends PureComponent {
             )}
             <JSXBoxWrapper>
               {annotation && annotation.labelTop && (
-                <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
+                <LabelTop
+                  dangerouslySetInnerHTML={{ __html: annotation.labelTop }}
+                />
               )}
               {annotation && annotation.labelRight && (
-                <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
+                <LabelRight
+                  dangerouslySetInnerHTML={{ __html: annotation.labelRight }}
+                />
               )}
               {annotation && annotation.labelLeft && (
-                <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
+                <LabelLeft
+                  dangerouslySetInnerHTML={{ __html: annotation.labelLeft }}
+                />
               )}
               {annotation && annotation.labelBottom && (
-                <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
+                <LabelBottom
+                  dangerouslySetInnerHTML={{ __html: annotation.labelBottom }}
+                />
               )}
               <JSXBox
                 data-cy="jxgbox"
@@ -736,7 +823,7 @@ class GraphContainer extends PureComponent {
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
               {view === EDIT && !bgShapes && !disableResponse && (
-                <Fragment>
+                <>
                   <GraphEditTools
                     side="left"
                     graphData={graphData}
@@ -745,8 +832,12 @@ class GraphContainer extends PureComponent {
                     setEquations={this.setEquations}
                     layout={layout}
                     margin={{
-                      top: layout.margin ? layout.margin : hasAnnotation ? 20 : 0,
-                      left: hasAnnotation ? 20 : 0
+                      top: layout.margin
+                        ? layout.margin
+                        : hasAnnotation
+                        ? 20
+                        : 0,
+                      left: hasAnnotation ? 20 : 0,
                     }}
                   />
                   <GraphEditTools
@@ -757,11 +848,15 @@ class GraphContainer extends PureComponent {
                     setEquations={this.setEquations}
                     layout={layout}
                     margin={{
-                      top: layout.margin ? layout.margin : hasAnnotation ? 20 : 0,
-                      left: hasAnnotation ? 20 : 0
+                      top: layout.margin
+                        ? layout.margin
+                        : hasAnnotation
+                        ? 20
+                        : 0,
+                      left: hasAnnotation ? 20 : 0,
                     }}
                   />
-                </Fragment>
+                </>
               )}
               <AnnotationRnd
                 noBorder={view !== EDIT}
@@ -771,9 +866,17 @@ class GraphContainer extends PureComponent {
               />
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu
-                  showColorPicker={drawingPrompt === "byObjects" && view === "edit" && !bgShapes}
+                  showColorPicker={
+                    drawingPrompt === 'byObjects' &&
+                    view === 'edit' &&
+                    !bgShapes
+                  }
                   advancedElementSettings={advancedElementSettings}
-                  element={this._graph.getConfig().filter(element => element.id === elementId)[0]}
+                  element={
+                    this._graph
+                      .getConfig()
+                      .filter((element) => element.id === elementId)[0]
+                  }
                   handleClose={this.handleElementSettingsMenuClose}
                 />
               )}
@@ -781,7 +884,7 @@ class GraphContainer extends PureComponent {
           </JSXBoxWithDrawingObjectsWrapper>
         </GraphWrapper>
       </div>
-    );
+    )
   }
 }
 
@@ -813,8 +916,8 @@ GraphContainer.propTypes = {
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
-  advancedElementSettings: PropTypes.bool
-};
+  advancedElementSettings: PropTypes.bool,
+}
 
 GraphContainer.defaultProps = {
   backgroundShapes: { values: [], showPoints: true },
@@ -827,22 +930,22 @@ GraphContainer.defaultProps = {
   altAnswerId: null,
   toolbar: {
     tools: [],
-    drawingPrompt: "byTools",
-    drawingObjects: []
+    drawingPrompt: 'byTools',
+    drawingObjects: [],
   },
   disableResponse: false,
   previewTab: CLEAR,
-  changePreviewTab: () => { },
-  elementsIsCorrect: false
-};
+  changePreviewTab: () => {},
+  elementsIsCorrect: false,
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex
+    stashIndex: state.graphTools.stashIndex,
   }),
   {
     setElementsStash: setElementsStashAction,
-    setStashIndex: setStashIndexAction
+    setStashIndex: setStashIndexAction,
   }
-)(GraphContainer);
+)(GraphContainer)

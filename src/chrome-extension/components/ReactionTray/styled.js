@@ -1,22 +1,21 @@
-import styled from "styled-components";
-
+import styled from 'styled-components'
 
 export const WrapperContainer = styled.div`
-    max-width: 380px;
-    width: auto;
-    display: flex;
-    flex-direction: column;
-    background: white;
-    border-radius: 0 0 8px;
-`;
+  max-width: 380px;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 0 0 8px;
+`
 
 export const MainTray = styled.div`
-    display: flex;
-    height: 60px;
-    background-color: #fff;
-    border-radius: 0 0 8px;
-    overflow: hidden;
-`;
+  display: flex;
+  height: 60px;
+  background-color: #fff;
+  border-radius: 0 0 8px;
+  overflow: hidden;
+`
 
 export const TeacherTrayButton = styled.button`
   background: white;
@@ -30,27 +29,27 @@ export const TeacherTrayButton = styled.button`
   border: none;
   outline: none;
 
-    svg > path{
-        fill: ${({active}) => active && '#3F85E5 !important'};
-    }
-
-  h3{
-  user-select: none;
+  svg > path {
+    fill: ${({ active }) => active && '#3F85E5 !important'};
   }
 
-  &:focus{
-      background: #f9f9ff;
+  h3 {
+    user-select: none;
   }
-`;
+
+  &:focus {
+    background: #f9f9ff;
+  }
+`
 
 export const LoginBtn = styled.div`
-    width: 80px;
-    padding-right: 10px;
-    a {
-        font-family: Arial, Helvetica, sans-serif;
-        color: #3F85E5;
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: 600;
-    }
-`;
+  width: 80px;
+  padding-right: 10px;
+  a {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #3f85e5;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+  }
+`

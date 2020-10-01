@@ -1,30 +1,38 @@
-import styled from "styled-components";
-import { Table } from "antd";
-import { mobileWidth, desktopWidth, mainTextColor, smallDesktopWidth } from "@edulastic/colors";
-import { fonts } from "@edulastic/constants";
+import styled from 'styled-components'
+import { Table } from 'antd'
+import {
+  mobileWidth,
+  desktopWidth,
+  mainTextColor,
+  smallDesktopWidth,
+} from '@edulastic/colors'
+import { fonts } from '@edulastic/constants'
 
 export const StyledTable = styled(Table)`
   .ant-table table {
-    max-width: ${props => props.maxWidth && `${props.maxWidth}px !important`};
-    width: ${props => (props.maxWidth ? "auto" : "100%")};
-    font-size: ${props => props.theme.fontSize};
+    max-width: ${(props) => props.maxWidth && `${props.maxWidth}px !important`};
+    width: ${(props) => (props.maxWidth ? 'auto' : '100%')};
+    font-size: ${(props) => props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
-    border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
-    background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
+    border: 1px solid
+      ${(props) => props.theme.widgets.matrixChoice.styledTableBorderColor};
+    background: ${(props) =>
+      props.theme.widgets.matrixChoice.styledTableThBgColor};
 
     tbody {
       border-collapse: collapse;
     }
 
     thead {
-      display: ${props => !props.showHead && "none"};
+      display: ${(props) => !props.showHead && 'none'};
 
       tr:not(:last-child) > th[colspan] {
-        display: ${({ hasOptionRow, isTable }) => (!hasOptionRow && isTable ? "none" : null)};
+        display: ${({ hasOptionRow, isTable }) =>
+          !hasOptionRow && isTable ? 'none' : null};
       }
 
       tr:last-child {
-        display: ${({ isTable }) => (!isTable ? "none" : null)};
+        display: ${({ isTable }) => (!isTable ? 'none' : null)};
       }
     }
 
@@ -36,22 +44,27 @@ export const StyledTable = styled(Table)`
       th {
         text-align: center;
         padding: 0;
-        background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
+        background: ${(props) =>
+          props.theme.widgets.matrixChoice.styledTableThBgColor};
         border-width: 1px;
         border-style: solid;
-        border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
-        border-left: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border-color: ${(props) =>
+          props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border-left: 1px solid
+          ${(props) => props.theme.widgets.matrixChoice.styledTableBorderColor};
       }
       td {
         height: 1px;
         padding: 0;
         text-align: center;
-        border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border: 1px solid
+          ${(props) => props.theme.widgets.matrixChoice.styledTableBorderColor};
         border-width: 1px;
         border-style: solid;
-        border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
-        border-bottom: ${props => !props.horizontalLines && 0};
-        border-top: ${props => !props.horizontalLines && 0};
+        border-color: ${(props) =>
+          props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border-bottom: ${(props) => !props.horizontalLines && 0};
+        border-top: ${(props) => !props.horizontalLines && 0};
         color: ${mainTextColor};
         min-width: 110px;
         height: 32px;
@@ -69,13 +82,15 @@ export const StyledTable = styled(Table)`
 
     tr:last-child {
       td {
-        border-bottom: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border-bottom: 1px solid
+          ${(props) => props.theme.widgets.matrixChoice.styledTableBorderColor};
       }
     }
 
     tr:first-child {
       td {
-        border-top: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border-top: 1px solid
+          ${(props) => props.theme.widgets.matrixChoice.styledTableBorderColor};
       }
     }
 
@@ -100,4 +115,4 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`

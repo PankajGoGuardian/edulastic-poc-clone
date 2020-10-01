@@ -1,32 +1,35 @@
-import { createAction } from "redux-starter-kit";
+import { createAction } from 'redux-starter-kit'
 
-const UPDATE_SCRATCHPAD = "[scratchpad] update scratchpad data";
-const RESET_SCRATCHPAD = "[scratchpad] reset scratchpad data";
-const SET_SELECTED_NODES = "[scratchpad] set selected nodes";
-const TOGGLE_BUTTONS = "[scratchpad] toggle buttons";
-const UPDATE_EDIT_MODE = "[scratchpad] update scratchpad edit mode";
-const TOGGLE_SCRATCHPAD_DATA_VISIBILITY = "[scratchpad] toggle scratchpad data visibility";
+const UPDATE_SCRATCHPAD = '[scratchpad] update scratchpad data'
+const RESET_SCRATCHPAD = '[scratchpad] reset scratchpad data'
+const SET_SELECTED_NODES = '[scratchpad] set selected nodes'
+const TOGGLE_BUTTONS = '[scratchpad] toggle buttons'
+const UPDATE_EDIT_MODE = '[scratchpad] update scratchpad edit mode'
+const TOGGLE_SCRATCHPAD_DATA_VISIBILITY =
+  '[scratchpad] toggle scratchpad data visibility'
 
-export const updateScratchpadAction = createAction(UPDATE_SCRATCHPAD);
-export const resetScratchPadDataAction = createAction(RESET_SCRATCHPAD);
-export const setSelectedNodesAction = createAction(SET_SELECTED_NODES);
-export const toggleButtonsAction = createAction(TOGGLE_BUTTONS);
-export const updateEditModeAction = createAction(UPDATE_EDIT_MODE);
-export const toggleScratchpadVisbilityAction = createAction(TOGGLE_SCRATCHPAD_DATA_VISIBILITY);
+export const updateScratchpadAction = createAction(UPDATE_SCRATCHPAD)
+export const resetScratchPadDataAction = createAction(RESET_SCRATCHPAD)
+export const setSelectedNodesAction = createAction(SET_SELECTED_NODES)
+export const toggleButtonsAction = createAction(TOGGLE_BUTTONS)
+export const updateEditModeAction = createAction(UPDATE_EDIT_MODE)
+export const toggleScratchpadVisbilityAction = createAction(
+  TOGGLE_SCRATCHPAD_DATA_VISIBILITY
+)
 
 const initialState = {
-  fillColor: "#ff0000",
+  fillColor: '#ff0000',
   lineWidth: 6,
-  lineColor: "#ff0000",
+  lineColor: '#ff0000',
   fontSize: 20,
-  fontFamily: "Open Sans",
-  fontColor: "#000000",
-  activeMode: "",
+  fontFamily: 'Open Sans',
+  fontColor: '#000000',
+  activeMode: '',
   deleteMode: false,
-  editMode: "",
+  editMode: '',
   selectedNodes: [],
-  hideData: false
-};
+  hideData: false,
+}
 
 export function scratchpad(state = initialState, { type, payload }) {
   switch (type) {
@@ -35,21 +38,21 @@ export function scratchpad(state = initialState, { type, payload }) {
     case UPDATE_SCRATCHPAD:
       return {
         ...state,
-        ...payload
-      };
+        ...payload,
+      }
     case SET_SELECTED_NODES:
       return {
         ...state,
-        selectedNodes: payload
-      };
+        selectedNodes: payload,
+      }
     case RESET_SCRATCHPAD:
-      return initialState;
+      return initialState
     case TOGGLE_SCRATCHPAD_DATA_VISIBILITY:
       return {
         ...state,
-        hideData: !state.hideData
-      };
+        hideData: !state.hideData,
+      }
     default:
-      return state;
+      return state
   }
 }

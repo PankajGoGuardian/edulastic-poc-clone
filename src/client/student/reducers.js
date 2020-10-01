@@ -1,14 +1,16 @@
-import ui from "./Sidebar/ducks";
-import skillReport from "./SkillReport/ducks";
-import { studentAssignmentReducer } from "./sharedDucks/AssignmentModule";
-import { studentReportReducer } from "./sharedDucks/ReportsModule";
-import { studentEnrollClassReducer } from "./ManageClass";
-import testItem from "./sharedDucks/TestItem";
-import testFeedback, { testActivitiesReducer } from "./TestAcitivityReport/ducks";
+import ui from './Sidebar/ducks'
+import skillReport from './SkillReport/ducks'
+import { studentAssignmentReducer } from './sharedDucks/AssignmentModule'
+import { studentReportReducer } from './sharedDucks/ReportsModule'
+import { studentEnrollClassReducer } from './ManageClass'
+import testItem from './sharedDucks/TestItem'
+import testFeedback, {
+  testActivitiesReducer,
+} from './TestAcitivityReport/ducks'
 
-import user from "./Login/ducks";
-import signup from "./Signup/duck";
-import { slice as studentPlaylistSlice } from "./StudentPlaylist/ducks";
+import user from './Login/ducks'
+import signup from './Signup/duck'
+import { slice as studentPlaylistSlice } from './StudentPlaylist/ducks'
 
 const studentReducer = {
   ui,
@@ -21,7 +23,7 @@ const studentReducer = {
   studentTestItems: testItem,
   studentEnrollClassList: studentEnrollClassReducer,
   signup,
-  studentPlaylist: studentPlaylistSlice.reducer
-};
+  studentPlaylist: studentPlaylistSlice.reducer,
+}
 
-export default studentReducer;
+export default studentReducer

@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react'
 
-import { FlexContainer } from "@edulastic/common";
-import { ThemeProvider } from "styled-components";
-import Wrapper from "./Wrapper";
-import Title from "./Title";
-import Text from "./Text";
+import { FlexContainer } from '@edulastic/common'
+import { ThemeProvider } from 'styled-components'
+import Wrapper from './Wrapper'
+import Title from './Title'
+import Text from './Text'
 
 const Hints = ({ questions = [] }) => {
   /**
@@ -34,29 +34,29 @@ const Hints = ({ questions = [] }) => {
   const validHints = questions.reduce((acc, question) => {
     if (question.hints) {
       // handling cases when hints are undefined
-      acc += question.hints.filter(hint => hint.label.length > 0).length;
+      acc += question.hints.filter((hint) => hint.label.length > 0).length
     }
-    return acc;
-  }, 0);
-  if (!validHints) return <Wrapper>No Hints</Wrapper>;
+    return acc
+  }, 0)
+  if (!validHints) return <Wrapper>No Hints</Wrapper>
   return (
     <ThemeProvider theme={{ isV1Migrated: questions[0]?.isV1Migrated }}>
       <Wrapper margin="10px" className="fr-view">
         <Title>Hints</Title>
-        {questions.map(question => {
+        {questions.map((question) => {
           return question.hints ? (
             <FlexContainer justifyContent="flex-start" marginBottom="1rem">
-              {question.hints.map(hint => (
+              {question.hints.map((hint) => (
                 <Text dangerouslySetInnerHTML={{ __html: hint.label }} />
               ))}
             </FlexContainer>
           ) : (
-            ""
-          );
+            ''
+          )
         })}
       </Wrapper>
     </ThemeProvider>
-  );
-};
+  )
+}
 
-export default Hints;
+export default Hints

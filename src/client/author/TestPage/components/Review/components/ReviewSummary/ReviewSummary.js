@@ -1,18 +1,21 @@
-import { FieldLabel, FlexContainer, SelectInputStyled } from "@edulastic/common";
-import { Row, Select, Input } from "antd";
-import PropTypes from "prop-types";
-import React, { useMemo } from "react";
-import { connect } from "react-redux";
-import { getInterestedStandards } from "../../../../../dataUtils";
-import Tags from "../../../../../src/components/common/Tags";
-import { getInterestedCurriculumsSelector, getCollectionsToAddContent } from "../../../../../src/selectors/user";
+import { FieldLabel, FlexContainer, SelectInputStyled } from '@edulastic/common'
+import { Row, Select, Input } from 'antd'
+import PropTypes from 'prop-types'
+import React, { useMemo } from 'react'
+import { connect } from 'react-redux'
+import { getInterestedStandards } from '../../../../../dataUtils'
+import Tags from '../../../../../src/components/common/Tags'
+import {
+  getInterestedCurriculumsSelector,
+  getCollectionsToAddContent,
+} from '../../../../../src/selectors/user'
 import {
   getDisableAnswerOnPaperSelector as hasRandomQuestionsSelector,
   getTestEntitySelector,
-  getTestSummarySelector
-} from "../../../../ducks";
-import {getEquivalentStandards} from "../../../../../TestList/ducks";
-import { Photo, selectsData } from "../../../common";
+  getTestSummarySelector,
+} from '../../../../ducks'
+import { getEquivalentStandards } from '../../../../../TestList/ducks'
+import { Photo, selectsData } from '../../../common'
 import {
   Container,
   FlexBoxFour,
@@ -27,8 +30,8 @@ import {
   SummaryInfoTitle,
   TableBodyCol,
   TableBodyRow,
-  TableHeaderCol
-} from "./styled";
+  TableHeaderCol,
+} from './styled'
 
 const ReviewSummary = ({
   isEditable = false,
@@ -46,25 +49,36 @@ const ReviewSummary = ({
   windowWidth,
   test: { itemGroups, metadata },
   summary,
-  alignment=[],
+  alignment = [],
   hasRandomQuestions,
   isPublishers,
-  collectionsToShow
+  collectionsToShow,
 }) => {
-  const questionsCount = summary?.totalItems || 0;
-  const totalPoints = summary?.totalPoints || 0;
+  const questionsCount = summary?.totalItems || 0
+  const totalPoints = summary?.totalPoints || 0
 
-  const filteredCollections = useMemo(() => collections.filter(c => collectionsToShow.some(o => o._id === c._id)), [
-    collections,
-    collectionsToShow
-  ]);
+  const filteredCollections = useMemo(
+    () =>
+      collections.filter((c) => collectionsToShow.some((o) => o._id === c._id)),
+    [collections, collectionsToShow]
+  )
 
-  const skillIdentifiers = (metadata?.skillIdentifiers || []).join(",");
-  const interestedStandards = getInterestedStandards(summary,alignment,interestedCurriculums);
+  const skillIdentifiers = (metadata?.skillIdentifiers || []).join(',')
+  const interestedStandards = getInterestedStandards(
+    summary,
+    alignment,
+    interestedCurriculums
+  )
   return (
     <Container>
       <FlexBoxOne>
-        <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} isEditable={isEditable} height={120} />
+        <Photo
+          url={thumbnail}
+          onChangeField={onChangeField}
+          owner={owner}
+          isEditable={isEditable}
+          height={120}
+        />
       </FlexBoxOne>
       <FlexBoxTwo>
         <InnerFlex>
@@ -117,12 +131,14 @@ const ReviewSummary = ({
             size="medium"
             disabled={!owner || !isEditable}
             placeholder="Please select"
-            value={filteredCollections.flatMap(c => c.bucketIds)}
+            value={filteredCollections.flatMap((c) => c.bucketIds)}
             onChange={(value, options) => onChangeCollection(value, options)}
-            filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().includes(input.toLowerCase())
+            }
             margin="0px 0px 15px"
           >
-            {collectionsToShow?.map(o => (
+            {collectionsToShow?.map((o) => (
               <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                 {`${o.collectionName} - ${o.name}`}
               </Select.Option>
@@ -134,33 +150,56 @@ const ReviewSummary = ({
       <FlexBoxThree>
         {isPublishers &&
           summary?.groupSummary?.map((group, i) => {
-            const standards = interestedStandards.map(({identifier})=> identifier);
+            const standards = interestedStandards.map(
+              ({ identifier }) => identifier
+            )
             return (
               <>
                 <MainLabel>{itemGroups[i]?.groupName}</MainLabel>
-                <FlexContainer flexWrap={windowWidth < 1200 && "wrap"} justifyContent="space-between">
-                  <SummaryInfoContainer style={{ borderRadius: 0, width: "50%" }}>
-                    <SummaryInfoNumber data-cy={`item-${itemGroups[i]?.groupName}`}>
+                <FlexContainer
+                  flexWrap={windowWidth < 1200 && 'wrap'}
+                  justifyContent="space-between"
+                >
+                  <SummaryInfoContainer
+                    style={{ borderRadius: 0, width: '50%' }}
+                  >
+                    <SummaryInfoNumber
+                      data-cy={`item-${itemGroups[i]?.groupName}`}
+                    >
                       {group.totalItems}
                     </SummaryInfoNumber>
                     <SummaryInfoTitle>Items</SummaryInfoTitle>
                   </SummaryInfoContainer>
-                  <SummaryInfoContainer style={{ borderRadius: 0, width: "50%", padding: "2px 0" }}>
-                    <Tags tags={standards} key="standards" show={1} isStandards />
+                  <SummaryInfoContainer
+                    style={{ borderRadius: 0, width: '50%', padding: '2px 0' }}
+                  >
+                    <Tags
+                      tags={standards}
+                      key="standards"
+                      show={1}
+                      isStandards
+                    />
                   </SummaryInfoContainer>
                 </FlexContainer>
               </>
-            );
+            )
           })}
 
         <MainLabel>Summary</MainLabel>
-        <FlexContainer flexWrap={windowWidth < 1200 && "wrap"} justifyContent="space-between">
+        <FlexContainer
+          flexWrap={windowWidth < 1200 && 'wrap'}
+          justifyContent="space-between"
+        >
           <SummaryInfoContainer>
-            <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
+            <SummaryInfoNumber data-cy="question">
+              {questionsCount}
+            </SummaryInfoNumber>
             <SummaryInfoTitle>Items</SummaryInfoTitle>
           </SummaryInfoContainer>
           <SummaryInfoContainer>
-            <SummaryInfoNumber data-cy="points">{totalPoints}</SummaryInfoNumber>
+            <SummaryInfoNumber data-cy="points">
+              {totalPoints}
+            </SummaryInfoNumber>
             <SummaryInfoTitle>Points</SummaryInfoTitle>
           </SummaryInfoContainer>
         </FlexContainer>
@@ -174,7 +213,7 @@ const ReviewSummary = ({
           </Row>
           {summary &&
             interestedStandards.map(
-              data =>
+              (data) =>
                 !data.isEquivalentStandard && (
                   <TableBodyRow key={data.key}>
                     <TableBodyCol span={12}>
@@ -190,20 +229,24 @@ const ReviewSummary = ({
               <TableBodyCol span={12}>
                 <Standard>NO STANDARD</Standard>
               </TableBodyCol>
-              <TableBodyCol span={6}>{summary.noStandards.totalQuestions}</TableBodyCol>
-              <TableBodyCol span={6}>{summary.noStandards.totalPoints}</TableBodyCol>
+              <TableBodyCol span={6}>
+                {summary.noStandards.totalQuestions}
+              </TableBodyCol>
+              <TableBodyCol span={6}>
+                {summary.noStandards.totalPoints}
+              </TableBodyCol>
             </TableBodyRow>
           )}
         </FlexBoxFour>
       )}
       <Input
-        style={{ display: "none" }}
+        style={{ display: 'none' }}
         defaultValue={skillIdentifiers}
-        onChange={e => onChangeSkillIdentifiers(e.currentTarget.value)}
+        onChange={(e) => onChangeSkillIdentifiers(e.currentTarget.value)}
       />
     </Container>
-  );
-};
+  )
+}
 
 ReviewSummary.propTypes = {
   totalPoints: PropTypes.number.isRequired,
@@ -215,25 +258,25 @@ ReviewSummary.propTypes = {
   owner: PropTypes.bool,
   isEditable: PropTypes.bool,
   onChangeField: PropTypes.func,
-  subjects: PropTypes.array.isRequired
-};
+  subjects: PropTypes.array.isRequired,
+}
 
 ReviewSummary.defaultProps = {
-  thumbnail: "",
+  thumbnail: '',
   summary: {},
   owner: false,
   isEditable: false,
-  onChangeField: () => {}
-};
+  onChangeField: () => {},
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     test: getTestEntitySelector(state),
     hasRandomQuestions: hasRandomQuestionsSelector(state),
     summary: getTestSummarySelector(state),
     alignment: getEquivalentStandards(state),
-    collectionsToShow: getCollectionsToAddContent(state)
+    collectionsToShow: getCollectionsToAddContent(state),
   }),
   null
-)(ReviewSummary);
+)(ReviewSummary)

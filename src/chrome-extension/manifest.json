@@ -9,7 +9,12 @@
       "js": ["content.js"]
     }
   ],
-  "web_accessible_resources": ["content.js", "bundle.js", "*.bundle.js", "img/*"],
+  "web_accessible_resources": [
+    "content.js",
+    "bundle.js",
+    "*.bundle.js",
+    "img/*"
+  ],
   "background": {
     "scripts": ["background.js"]
   },

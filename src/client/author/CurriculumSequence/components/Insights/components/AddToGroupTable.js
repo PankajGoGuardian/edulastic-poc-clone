@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { Row, Col, Table, Menu, Dropdown, Button, Checkbox, Icon } from "antd";
-import { map, round } from "lodash";
-import { IconBarChart } from "@edulastic/icons";
-import { themeColor, greyThemeDark1 } from "@edulastic/colors";
-import TrendArrow from "../assets/TrendArrow";
-import { calcArrowPosition } from "../transformers";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { Row, Col, Table, Menu, Dropdown, Button, Checkbox, Icon } from 'antd'
+import { map, round } from 'lodash'
+import { IconBarChart } from '@edulastic/icons'
+import { themeColor, greyThemeDark1 } from '@edulastic/colors'
+import TrendArrow from '../assets/TrendArrow'
+import { calcArrowPosition } from '../transformers'
 // import { getCommonGroups } from "../transformers";
 // TODO: iff. transformer to fetch the checked groups is required
 // else remove the entire logic for checkedGroups
 
 const handleAddGroupChange = (groupId, checkedGroups, selectedStudents) => {
   /* TODO: fire an api request */
-};
+}
 
 const getMenuItems = (groups, onChange, checkedGroups) => (
   <Menu>
@@ -28,7 +28,7 @@ const getMenuItems = (groups, onChange, checkedGroups) => (
       </Menu.Item>
     ))}
   </Menu>
-);
+)
 
 const GroupsDropdown = ({ groups, onChange, checkedGroups }) => (
   <DropdownContainer>
@@ -38,46 +38,52 @@ const GroupsDropdown = ({ groups, onChange, checkedGroups }) => (
       </StyledButton>
     </Dropdown>
   </DropdownContainer>
-);
+)
 
 /* TODO: Revert the temporary changes by referring to EV-12639 */
 
 const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
   {
     // title: "SELECT ALL",
-    title: "Student(s)",
-    key: "fullName",
-    dataIndex: "fullName"
+    title: 'Student(s)',
+    key: 'fullName',
+    dataIndex: 'fullName',
   },
   {
     // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChange} checkedGroups={checkedGroups} />,
-    title: "Performance",
+    title: 'Performance',
     colSpan: 2,
-    align: "left",
-    key: "percentScore",
-    dataIndex: "percentScore",
-    render: (data, record) => `${round(data * 100)}%`
+    align: 'left',
+    key: 'percentScore',
+    dataIndex: 'percentScore',
+    render: (data, record) => `${round(data * 100)}%`,
   },
   {
-    title: "TrendAngle",
+    title: 'TrendAngle',
     colSpan: 0,
-    key: "trendAngle",
-    dataIndex: "trendAngle",
+    key: 'trendAngle',
+    dataIndex: 'trendAngle',
     render: (data, record) => {
-      const [cx, cy] = calcArrowPosition(data);
+      const [cx, cy] = calcArrowPosition(data)
       return (
         record.isHighlighted && (
           <svg height="26px" width="26px">
             {record.hasTrend ? (
-              <TrendArrow cx={cx} cy={cy} trendAngle={data} color={record.color} transformOrigin="center" />
+              <TrendArrow
+                cx={cx}
+                cy={cy}
+                trendAngle={data}
+                color={record.color}
+                transformOrigin="center"
+              />
             ) : (
               <circle cx="50%" cy="calc(50% + 1px)" r={3} fill={record.color} />
             )}
           </svg>
         )
-      );
-    }
-  } //,
+      )
+    },
+  }, // ,
   // {
   //   title: "Reports",
   //   colSpan: 0,
@@ -90,24 +96,26 @@ const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
   //     </Link>
   //   )
   // }
-];
+]
 
 const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
-  const [selectedRowKeys, onSelectChange] = useState([]);
-  const checkedStudents = studData.filter((item, index) => selectedRowKeys.includes(index + 1));
-  const checkedGroups = []; /* getCommonGroups(checkedStudents) */
+  const [selectedRowKeys, onSelectChange] = useState([])
+  const checkedStudents = studData.filter((item, index) =>
+    selectedRowKeys.includes(index + 1)
+  )
+  const checkedGroups = [] /* getCommonGroups(checkedStudents) */
   const rowSelection = {
     selectedRowKeys,
-    onChange: onSelectChange
-  };
+    onChange: onSelectChange,
+  }
 
   // merge studData with highlighted
-  studData.forEach(item => {
+  studData.forEach((item) => {
     if (highlighted.ids?.includes(item.studentId)) {
-      item.isHighlighted = true;
-      item.color = highlighted.color;
+      item.isHighlighted = true
+      item.color = highlighted.color
     }
-  });
+  })
 
   /* TODO: Revert the temporary changes by referring to EV-12639 */
 
@@ -115,21 +123,25 @@ const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
     <Col span={24}>
       <StyledTable
         // rowSelection={rowSelection}
-        columns={getColumns(groupsData, groupId => handleAddGroupChange(groupId, checkedStudents), checkedGroups)}
+        columns={getColumns(
+          groupsData,
+          (groupId) => handleAddGroupChange(groupId, checkedStudents),
+          checkedGroups
+        )}
         dataSource={studData}
         pagination={false}
       />
     </Col>
-  );
-};
+  )
+}
 
-export default AddToGroupTable;
+export default AddToGroupTable
 
 const DropdownContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-`;
+`
 
 const StyledButton = styled(Button)`
   min-width: 100%;
@@ -148,7 +160,7 @@ const StyledButton = styled(Button)`
   &:focus {
     color: ${themeColor};
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-body {
@@ -209,22 +221,22 @@ export const StyledTable = styled(Table)`
             text-overflow: ellipsis;
           }
         }
-        ${props => {
-          let styledRows = "";
+        ${(props) => {
+          let styledRows = ''
           props.dataSource.map((item, index) => {
             if (item.isHighlighted) {
               styledRows += `
                 tr:nth-child(${index + 1}) {
                   td {
-                    background-color: ${"#e4f7e6"};
+                    background-color: ${'#e4f7e6'};
                   }
                 }
-              `;
+              `
             }
-          });
-          return styledRows;
+          })
+          return styledRows
         }}
       }
     }
   }
-`;
+`

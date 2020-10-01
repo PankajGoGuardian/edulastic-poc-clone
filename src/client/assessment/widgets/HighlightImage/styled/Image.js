@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Image = styled.img`
   position: absolute;
@@ -6,4 +6,4 @@ export const Image = styled.img`
   left: ${({ x }) => `${x || 0}px`};
   width: ${({ width }) => `${width}px`};
   height: ${({ height }) => `${height}px`};
-`;
+`

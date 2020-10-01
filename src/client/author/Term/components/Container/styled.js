@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import { Layout, Spin } from "antd";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Layout, Spin } from 'antd'
+import { mediumDesktopExactWidth } from '@edulastic/colors'
 
-const { Content } = Layout;
+const { Content } = Layout
 
 export const TermDiv = styled.div`
   display: flex;
   flex-direction: row;
-`;
+`
 
 export const StyledContent = styled(Content)`
   width: 100%;
@@ -16,7 +16,7 @@ export const StyledContent = styled(Content)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     padding: 126px 30px 30px;
   }
-`;
+`
 
 export const StyledLayout = styled(Layout)`
   position: relative;
@@ -26,9 +26,9 @@ export const StyledLayout = styled(Layout)`
   background: #fff;
   display: flex;
   flex-direction: column;
-  pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}
+  pointer-events: ${(props) => (props.loading === 'true' ? 'none' : 'auto')}
   min-height: 90vh;
-`;
+`
 
 export const SpinContainer = styled.div`
   position: absolute;
@@ -37,11 +37,11 @@ export const SpinContainer = styled.div`
   left: 0;
   top: 0;
   z-index: 999;
-`;
+`
 
 export const StyledSpin = styled(Spin)`
   position: absolute;
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
-`;
+`

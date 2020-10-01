@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { extraDesktopWidthMax } from "@edulastic/colors";
-import { StyledTable as Table } from "../../../../common/styled";
-import { FilterDropDownWithDropDown } from "../../../../common/components/widgets/filterDropDownWithDropDown";
+import styled from 'styled-components'
+import { extraDesktopWidthMax } from '@edulastic/colors'
+import { StyledTable as Table } from '../../../../common/styled'
+import { FilterDropDownWithDropDown } from '../../../../common/components/widgets/filterDropDownWithDropDown'
 
 export const UpperContainer = styled.div`
   .dropdown-container {
@@ -10,14 +10,16 @@ export const UpperContainer = styled.div`
     justify-content: flex-end;
     flex-wrap: wrap;
   }
-`;
+`
 
-export const TableContainer = styled.div``;
+export const TableContainer = styled.div``
 
-export const StyledFilterDropDownWithDropDown = styled(FilterDropDownWithDropDown)`
+export const StyledFilterDropDownWithDropDown = styled(
+  FilterDropDownWithDropDown
+)`
   button {
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -79,7 +81,7 @@ export const StyledTable = styled(Table)`
       tbody {
         tr {
           td {
-            &:nth-last-child(-n + ${props => props.colouredCellsNo}) {
+            &:nth-last-child(-n + ${(props) => props.colouredCellsNo}) {
               padding: 0px;
               div {
                 height: 100%;
@@ -92,4 +94,4 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`

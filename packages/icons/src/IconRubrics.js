@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconRubrics = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.448 22.876" {...props}>
+const IconRubrics = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 23.448 22.876"
+    {...props}
+  >
     <g transform="translate(-13.728 -20.165)">
       <path
         d="M22.186,315.669a1.168,1.168,0,0,0-1.652,0l-1.906,1.906-1.906-1.906a1.168,1.168,0,0,0-1.651,1.652l1.906,1.907-1.906,1.906a1.168,1.168,0,1,0,1.651,1.652l1.906-1.907,1.906,1.907a1.168,1.168,0,0,0,1.652-1.652l-1.907-1.906,1.907-1.907A1.168,1.168,0,0,0,22.186,315.669Z"
@@ -20,6 +24,6 @@ const IconRubrics = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconRubrics);
+export default withIconStyles(IconRubrics)

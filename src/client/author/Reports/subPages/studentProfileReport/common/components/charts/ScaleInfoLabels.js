@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import { textColor } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { textColor } from '@edulastic/colors'
 
 const ScaleInfoLabels = ({ scaleInfo = [] }) => (
   <StyledDiv>
-    {scaleInfo.map(item => (
+    {scaleInfo.map((item) => (
       <StyledDiv2>
         <StyledColorSpan color={item.color} />
         <StyledLabel>{item.masteryName}</StyledLabel>
@@ -14,37 +14,37 @@ const ScaleInfoLabels = ({ scaleInfo = [] }) => (
       </StyledDiv2>
     ))}
   </StyledDiv>
-);
+)
 
-export default ScaleInfoLabels;
+export default ScaleInfoLabels
 
 const StyledLabel = styled.span`
   display: inline-block;
   padding-left: 8px;
   padding-right: 8px;
-  margin-left: ${props => props.leftMargin || "0px"};
-  text-align: ${props => props.alignment || "left"};
-  font: ${props => props.weight || ""} 13px/26px Open Sans;
+  margin-left: ${(props) => props.leftMargin || '0px'};
+  text-align: ${(props) => props.alignment || 'left'};
+  font: ${(props) => props.weight || ''} 13px/26px Open Sans;
   letter-spacing: 0;
   color: ${textColor};
-`;
+`
 
 const StyledColorSpan = styled.span`
   display: inline-block;
   width: 12px;
   height: 12px;
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
 
   @media print {
     background-color: ${({ color }) => color};
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
   }
-`;
+`
 
 const StyledDiv = styled.div`
   text-align: center;
-`;
+`
 
 const StyledDiv2 = styled.div`
   margin-left: 20px;
@@ -52,4 +52,4 @@ const StyledDiv2 = styled.div`
   display: inline-flex;
   align-items: baseline;
   width: 230px;
-`;
+`

@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import { IconMatrixDot } from "@edulastic/icons";
-import { mobileWidthLarge, greyThemeDark4 } from "@edulastic/colors";
+import styled from 'styled-components'
+import { IconMatrixDot } from '@edulastic/icons'
+import { mobileWidthLarge, greyThemeDark4 } from '@edulastic/colors'
 
 export const MenuIcon = styled(IconMatrixDot).attrs({
-  color: greyThemeDark4
+  color: greyThemeDark4,
 })`
   display: none;
   width: 18px;
@@ -14,4 +14,4 @@ export const MenuIcon = styled(IconMatrixDot).attrs({
     position: absolute;
     left: 12px;
   }
-`;
+`

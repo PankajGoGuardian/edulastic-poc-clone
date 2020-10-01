@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconOrdered = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="14.851" height="14.98" viewBox="0 0 14.851 14.98" {...props}>
+const IconOrdered = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="14.851"
+    height="14.98"
+    viewBox="0 0 14.851 14.98"
+    {...props}
+  >
     <g transform="translate(-0.209 -5.461)">
       <path
         d="M32.573,12.41h9.342a.316.316,0,0,0,.315-.315v-1.62a.316.316,0,0,0-.315-.315H32.573a.316.316,0,0,0-.315.315v1.62A.315.315,0,0,0,32.573,12.41Z"
@@ -31,6 +37,6 @@ const IconOrdered = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconOrdered);
+export default withIconStyles(IconOrdered)

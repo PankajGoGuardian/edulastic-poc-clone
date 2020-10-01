@@ -1,265 +1,270 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/setting";
+const api = new API()
+const prefix = '/setting'
 
 // District Profile
 const getDistrictProfile = ({ orgId, orgType }) =>
   api
     .callApi({
       url: `${prefix}/general/${orgId}?orgType=${orgType}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const updateDistrictProfile = data =>
+const updateDistrictProfile = (data) =>
   api
     .callApi({
       url: `${prefix}/general/`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createDistrictProfile = data =>
+const createDistrictProfile = (data) =>
   api
     .callApi({
       url: `${prefix}/general/`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getOrgDetailsByShortNameAndOrgType = params =>
+const getOrgDetailsByShortNameAndOrgType = (params) =>
   api
     .callApi({
       url: `/auth/setting/org-data/`,
-      params: params
+      params,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 // term apis
 const getTerm = ({ orgId }) =>
   api
     .callApi({
       url: `${prefix}/term?districtId=${orgId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const createTerm = ({ body }) =>
   api
     .callApi({
       url: `${prefix}/term/`,
-      method: "post",
-      data: body
+      method: 'post',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const updateTerm = ({ body }) =>
   api
     .callApi({
       url: `${prefix}/term/`,
-      method: "put",
-      data: body
+      method: 'put',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const deleteTerm = ({ body }) =>
   api
     .callApi({
       url: `${prefix}/term/${body.termId}?districtId=${body.orgId}`,
-      method: "delete",
-      data: body
+      method: 'delete',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 // Test Setting Apis
-const getTestSetting = ({ orgId, orgType = "district" }) =>
+const getTestSetting = ({ orgId, orgType = 'district' }) =>
   api
     .callApi({
       url: `${prefix}/test/${orgId}?orgType=${orgType}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const updateTestSetting = data =>
+const updateTestSetting = (data) =>
   api
     .callApi({
       url: `${prefix}/test`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createTestSetting = data =>
+const createTestSetting = (data) =>
   api
     .callApi({
       url: `${prefix}/test`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 // District Policy
-const getDistrictPolicy = ({ orgId, orgType = "district" }) =>
+const getDistrictPolicy = ({ orgId, orgType = 'district' }) =>
   api
     .callApi({
       url: `${prefix}/district-policy/${orgId}?orgType=${orgType}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const updateDistrictPolicy = data =>
+const updateDistrictPolicy = (data) =>
   api
     .callApi({
       url: `${prefix}/district-policy/`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createDistrictPolicy = data =>
+const createDistrictPolicy = (data) =>
   api
     .callApi({
       url: `${prefix}/district-policy/`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 // standards proficiency
 const getStandardsProficiency = ({ orgId }) =>
   api
     .callApi({
       url: `${prefix}/standards-proficiency/${orgId}?orgType=district`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createStandardsProficiency = data =>
+const createStandardsProficiency = (data) =>
   api
     .callApi({
       url: `${prefix}/standards-proficiency/`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const updateStandardsProficiency = ({ _id, ...data }) =>
   api
     .callApi({
       url: `${prefix}/standards-proficiency/${_id}`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const deleteStandardsProficiency = (_id, districtId) =>
   api
     .callApi({
       url: `${prefix}/standards-proficiency/${_id}`,
-      params: { districtId: districtId },
-      method: "delete"
+      params: { districtId },
+      method: 'delete',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 // PerformanceBand
 const getPerformanceBand = ({ orgId }) =>
   api
     .callApi({
       url: `${prefix}/performance-band/${orgId}?orgType=district`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createPerformanceBand = data =>
+const createPerformanceBand = (data) =>
   api
     .callApi({
       url: `${prefix}/performance-band/`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const updatePerformanceBand = ({ _id, ...data }) =>
   api
     .callApi({
       url: `${prefix}/performance-band/${_id}`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const deletePerformanceBand = (_id, districtId) =>
   api
     .callApi({
       url: `${prefix}/performance-band/${_id}`,
-      params: { districtId: districtId },
-      method: "delete"
+      params: { districtId },
+      method: 'delete',
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 // interested standards
-const getInterestedStandards = ({ orgId, orgType = "district" }) =>
+const getInterestedStandards = ({ orgId, orgType = 'district' }) =>
   api
     .callApi({
       url: `${prefix}/interested-standards/${orgId}?orgType=${orgType}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const saveInterestedStandards = body =>
+const saveInterestedStandards = (body) =>
   api
     .callApi({
       url: `${prefix}/interested-standards/`,
-      method: "post",
-      data: body
+      method: 'post',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const updateInterestedStandards = body =>
+const updateInterestedStandards = (body) =>
   api
     .callApi({
       url: `${prefix}/interested-standards/`,
-      method: "put",
-      data: body
+      method: 'put',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getExternalTools = ({ orgId, orgType = "district" }) =>
+const getExternalTools = ({ orgId, orgType = 'district' }) =>
   api
     .callApi({
       url: `${prefix}/general/${orgId}/external-tools?orgType=${orgType}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result?.externalTools || []);
+    .then((result) => result.data.result?.externalTools || [])
 
-const createExternalTools = ({ orgId, orgType = "district", body }) =>
+const createExternalTools = ({ orgId, orgType = 'district', body }) =>
   api
     .callApi({
       url: `${prefix}/general/${orgId}/external-tools?orgType=${orgType}`,
-      method: "post",
-      data: body
+      method: 'post',
+      data: body,
     })
-    .then(result => result.data.result.externalTools);
+    .then((result) => result.data.result.externalTools)
 
-const updateExternalTools = ({ orgId, orgType = "district", externalToolId, body }) =>
+const updateExternalTools = ({
+  orgId,
+  orgType = 'district',
+  externalToolId,
+  body,
+}) =>
   api
     .callApi({
       url: `${prefix}/general/${orgId}/external-tools/${externalToolId}?orgType=${orgType}`,
-      method: "put",
-      data: body
+      method: 'put',
+      data: body,
     })
-    .then(result => result.data.result.externalTools);
+    .then((result) => result.data.result.externalTools)
 
-const deleteExternalTools = ({ orgId, orgType = "district", externalToolId }) =>
+const deleteExternalTools = ({ orgId, orgType = 'district', externalToolId }) =>
   api
     .callApi({
       url: `${prefix}/general/${orgId}/external-tools/${externalToolId}?orgType=${orgType}`,
-      method: "delete"
+      method: 'delete',
     })
-    .then(result => result.data.result.externalTools);
+    .then((result) => result.data.result.externalTools)
 
 export default {
   getDistrictProfile,
@@ -290,5 +295,5 @@ export default {
   getExternalTools,
   createExternalTools,
   updateExternalTools,
-  deleteExternalTools
-};
+  deleteExternalTools,
+}

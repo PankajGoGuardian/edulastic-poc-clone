@@ -1,11 +1,16 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Stimulus, QuestionNumberLabel, FlexContainer, QuestionSubLabel } from "@edulastic/common";
-import Instructions from "../../../../components/Instructions";
-import { EDIT } from "../../../../constants/constantsForQuestions";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import {
+  Stimulus,
+  QuestionNumberLabel,
+  FlexContainer,
+  QuestionSubLabel,
+} from '@edulastic/common'
+import Instructions from '../../../../components/Instructions'
+import { EDIT } from '../../../../constants/constantsForQuestions'
 
-import Options from "./components/Options";
+import Options from './components/Options'
 // import { QuestionTitleWrapper } from "./styled/Label";
 
 const Display = ({
@@ -30,9 +35,16 @@ const Display = ({
   <FlexContainer alignItems="baseline" justifyContent="flex-start">
     {!flowLayout && (
       <>
-        <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start">
+        <FlexContainer
+          justifyContent="flex-start"
+          flexDirection="column"
+          alignItems="flex-start"
+        >
           {showQuestionNumber && (
-            <QuestionNumberLabel fontSize={fontSize} className="__print-space-reduce-qlabel">
+            <QuestionNumberLabel
+              fontSize={fontSize}
+              className="__print-space-reduce-qlabel"
+            >
               {qLabel}
             </QuestionNumberLabel>
           )}
@@ -69,7 +81,7 @@ const Display = ({
       </>
     )}
   </FlexContainer>
-);
+)
 
 Display.propTypes = {
   options: PropTypes.array,
@@ -92,8 +104,8 @@ Display.propTypes = {
   multipleResponses: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool,
-  qSubLabel: PropTypes.string
-};
+  qSubLabel: PropTypes.string,
+}
 
 Display.defaultProps = {
   options: [],
@@ -103,26 +115,26 @@ Display.defaultProps = {
   validation: {},
   userSelections: [],
   smallSize: false,
-  instructorStimulus: "",
+  instructorStimulus: '',
   uiStyle: {
-    type: "standard",
-    fontsize: "normal",
+    type: 'standard',
+    fontsize: 'normal',
     columns: 1,
-    orientation: "horizontal",
-    choiceLabel: "number"
+    orientation: 'horizontal',
+    choiceLabel: 'number',
   },
   showQuestionNumber: false,
   flowLayout: false,
-  styleType: "default",
+  styleType: 'default',
   multipleResponses: false,
-  qSubLabel: ""
-};
+  qSubLabel: '',
+}
 
 const StyledStimulus = styled(Stimulus)`
   margin-bottom: 25px;
   word-break: break-word;
   overflow: hidden;
-  font-size: ${props => props.fontSize};
+  font-size: ${(props) => props.fontSize};
 
   img {
     padding: 0px;
@@ -131,6 +143,6 @@ const StyledStimulus = styled(Stimulus)`
   p {
     padding-top: 2px;
   }
-`;
+`
 
-export default Display;
+export default Display

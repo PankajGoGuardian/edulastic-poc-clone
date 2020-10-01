@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from "react";
-import styled from "styled-components";
-import { white, title, themeColorLighter } from "@edulastic/colors";
-import { sumBy, maxBy } from "lodash";
-import { notification } from "@edulastic/common";
-import PreviewRubricTable from "./PreviewRubricTable";
-import { ModalBody } from "./ConfirmModal";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import React, { useState, useMemo } from 'react'
+import styled from 'styled-components'
+import { white, title, themeColorLighter } from '@edulastic/colors'
+import { sumBy, maxBy } from 'lodash'
+import { notification } from '@edulastic/common'
+import PreviewRubricTable from './PreviewRubricTable'
+import { ModalBody } from './ConfirmModal'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const PreviewRubricModal = ({
   visible,
@@ -14,49 +14,57 @@ const PreviewRubricModal = ({
   currentRubricData,
   maxScore,
   rubricFeedback,
-  shouldValidate = true
+  shouldValidate = true,
 }) => {
-  const [obtained, setObtained] = useState(0);
-  const [rubricResponse, setRubricResponse] = useState({});
-  const [validateRubricResponse, setValidateRubricResponse] = useState(false);
+  const [obtained, setObtained] = useState(0)
+  const [rubricResponse, setRubricResponse] = useState({})
+  const [validateRubricResponse, setValidateRubricResponse] = useState(false)
 
-  let localMaxScore = 0;
+  let localMaxScore = 0
 
   if (!maxScore)
-    localMaxScore = useMemo(() => sumBy(currentRubricData.criteria, c => maxBy(c.ratings, "points").points), [
-      currentRubricData.criteria
-    ]);
+    localMaxScore = useMemo(
+      () =>
+        sumBy(
+          currentRubricData.criteria,
+          (c) => maxBy(c.ratings, 'points').points
+        ),
+      [currentRubricData.criteria]
+    )
   const Title = [
     <HeaderWrapper>
       <span>{currentRubricData.name}</span>
       <span>
-        <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;<span>{maxScore || localMaxScore}</span>
+        <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;
+        <span>{maxScore || localMaxScore}</span>
       </span>
-    </HeaderWrapper>
-  ];
+    </HeaderWrapper>,
+  ]
 
-  const handleChange = response => {
-    setObtained(response.score);
-    setRubricResponse(response);
-    setValidateRubricResponse(false);
+  const handleChange = (response) => {
+    setObtained(response.score)
+    setRubricResponse(response)
+    setValidateRubricResponse(false)
     if (onRubricResponseUpdate) {
-      onRubricResponseUpdate(response);
+      onRubricResponseUpdate(response)
     }
-  };
+  }
 
   const handleCloseRubric = () => {
-    const rubricFeedbackLength = Object.keys(rubricResponse.rubricFeedback || {}).length;
+    const rubricFeedbackLength = Object.keys(
+      rubricResponse.rubricFeedback || {}
+    ).length
     if (rubricFeedbackLength === 0 || !shouldValidate) {
-      setValidateRubricResponse(false);
-      toggleModal(null);
+      setValidateRubricResponse(false)
+      toggleModal(null)
     } else if (rubricFeedbackLength === currentRubricData.criteria.length) {
-      setValidateRubricResponse(false);
-      toggleModal(rubricResponse);
+      setValidateRubricResponse(false)
+      toggleModal(rubricResponse)
     } else {
-      notification({ messageKey: "pleaseSelectRatingFromEachCriteria" });
-      setValidateRubricResponse(true);
+      notification({ messageKey: 'pleaseSelectRatingFromEachCriteria' })
+      setValidateRubricResponse(true)
     }
-  };
+  }
 
   return (
     <StyledModal
@@ -77,10 +85,10 @@ const PreviewRubricModal = ({
         />
       </StyledModalBody>
     </StyledModal>
-  );
-};
+  )
+}
 
-export default PreviewRubricModal;
+export default PreviewRubricModal
 
 const StyledModal = styled(ConfirmationModal)`
   max-width: 80%;
@@ -103,17 +111,17 @@ const StyledModal = styled(ConfirmationModal)`
       box-shadow: none;
     }
   }
-`;
+`
 
 const StyledModalBody = styled(ModalBody)`
   align-items: start;
-`;
+`
 
 const HeaderWrapper = styled.div`
   > span:first-child {
     color: ${title};
     font-size: 25px;
-    font-weight: ${props => props.theme.bold};
+    font-weight: ${(props) => props.theme.bold};
     width: 80%;
     display: inline-block;
     line-height: 30px;
@@ -126,12 +134,12 @@ const HeaderWrapper = styled.div`
 
     > span:first-child {
       color: ${themeColorLighter};
-      font-weight: ${props => props.theme.bold};
+      font-weight: ${(props) => props.theme.bold};
     }
 
     > span:last-child {
       color: ${title};
-      font-weight: ${props => props.theme.bold};
+      font-weight: ${(props) => props.theme.bold};
     }
   }
-`;
+`

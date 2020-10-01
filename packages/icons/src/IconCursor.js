@@ -1,11 +1,15 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React from 'react'
 
-import withIconStyles from './HOC/withIconStyles';
-import SVG from './common/SVG';
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconCursor = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.446 15.669" {...props}>
+const IconCursor = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 10.446 15.669"
+    {...props}
+  >
     <g id="cursor" transform="translate(-85.328)">
       <g id="Group_16" data-name="Group 16" transform="translate(85.328)">
         <path
@@ -18,6 +22,6 @@ const IconCursor = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconCursor);
+export default withIconStyles(IconCursor)

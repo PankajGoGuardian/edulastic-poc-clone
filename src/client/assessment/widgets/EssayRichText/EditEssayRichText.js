@@ -1,23 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { compose } from "redux";
-import { connect } from "react-redux";
+import React from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 
-import { Row, Col } from "antd";
+import { Row, Col } from 'antd'
 
-import { withNamespaces } from "@edulastic/localization";
-import { updateVariables } from "../../utils/variables";
+import { withNamespaces } from '@edulastic/localization'
+import { updateVariables } from '../../utils/variables'
 
-import { BrowserSpellcheckOption } from "../../containers/WidgetOptions/components";
-import WordLimitAndCount from "../../components/WordLimitAndCount";
-import { ContentArea } from "../../styled/ContentArea";
-import Question from "../../components/Question";
+import { BrowserSpellcheckOption } from '../../containers/WidgetOptions/components'
+import WordLimitAndCount from '../../components/WordLimitAndCount'
+import { ContentArea } from '../../styled/ContentArea'
+import Question from '../../components/Question'
 
-import ComposeQuestion from "./ComposeQuestion";
-import Options from "./Options";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import ComposeQuestion from './ComposeQuestion'
+import Options from './Options'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 const EditEssayRichText = ({
   item,
@@ -26,16 +26,16 @@ const EditEssayRichText = ({
   fillSections,
   cleanSections,
   advancedLink,
-  advancedAreOpen
+  advancedAreOpen,
 }) => {
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft[prop] = uiStyle
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   return (
     <ContentArea>
@@ -48,7 +48,7 @@ const EditEssayRichText = ({
 
       <Question
         section="main"
-        label={t("component.essayText.wordsLimitTitle")}
+        label={t('component.essayText.wordsLimitTitle')}
         fillSections={fillSections}
         cleanSections={cleanSections}
         item={item}
@@ -67,15 +67,17 @@ const EditEssayRichText = ({
             <CheckboxLabel
               data-cy="showWordCount"
               defaultChecked={item.showWordCount}
-              onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
+              onChange={(e) =>
+                handleItemChangeChange('showWordCount', e.target.checked)
+              }
             >
-              {t("component.essayText.showWordCheckbox")}
+              {t('component.essayText.showWordCheckbox')}
             </CheckboxLabel>
           </Col>
           <Col md={12}>
             <BrowserSpellcheckOption
               data-cy="browserSpellCheckOption"
-              onChange={val => handleItemChangeChange("spellcheck", val)}
+              onChange={(val) => handleItemChangeChange('spellcheck', val)}
               checked={!!item.spellcheck}
             />
           </Col>
@@ -92,8 +94,8 @@ const EditEssayRichText = ({
         advancedAreOpen={advancedAreOpen}
       />
     </ContentArea>
-  );
-};
+  )
+}
 
 EditEssayRichText.propTypes = {
   item: PropTypes.object.isRequired,
@@ -102,22 +104,19 @@ EditEssayRichText.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 EditEssayRichText.defaultProps = {
   advancedAreOpen: false,
   advancedLink: null,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
-  connect(
-    ({ user }) => ({ user }),
-    { setQuestionData: setQuestionDataAction }
-  )
-);
+  withNamespaces('assessment'),
+  connect(({ user }) => ({ user }), { setQuestionData: setQuestionDataAction })
+)
 
-export default enhance(EditEssayRichText);
+export default enhance(EditEssayRichText)

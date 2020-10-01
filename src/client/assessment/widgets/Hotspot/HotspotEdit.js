@@ -1,24 +1,24 @@
-import "rc-color-picker/assets/index.css";
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withTheme } from "styled-components";
-import produce from "immer";
+import 'rc-color-picker/assets/index.css'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withTheme } from 'styled-components'
+import produce from 'immer'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { updateVariables } from "../../utils/variables";
+import { updateVariables } from '../../utils/variables'
 
-import CorrectAnswers from "../../components/CorrectAnswers";
-import { ContentArea } from "../../styled/ContentArea";
-import { EDIT } from "../../constants/constantsForQuestions";
-import HotspotPreview from "./HotspotPreview";
-import ComposeQuestion from "./ComposeQuestion";
-import AreasBlockTitle from "./AreasBlockTitle";
-import AttributesTitle from "./AttributesTitle";
-import Options from "./components/Options";
-import Question from "../../components/Question";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import CorrectAnswers from '../../components/CorrectAnswers'
+import { ContentArea } from '../../styled/ContentArea'
+import { EDIT } from '../../constants/constantsForQuestions'
+import HotspotPreview from './HotspotPreview'
+import ComposeQuestion from './ComposeQuestion'
+import AreasBlockTitle from './AreasBlockTitle'
+import AttributesTitle from './AttributesTitle'
+import Options from './components/Options'
+import Question from '../../components/Question'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 const HotspotEdit = ({
   item,
@@ -28,106 +28,111 @@ const HotspotEdit = ({
   advancedLink,
   advancedAreOpen,
   fillSections,
-  cleanSections
+  cleanSections,
 }) => {
-  const { areaAttributes, multipleResponses, validation } = item;
+  const { areaAttributes, multipleResponses, validation } = item
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  const getAreaIndexes = arr => {
-    const newIndexes = [];
+  const getAreaIndexes = (arr) => {
+    const newIndexes = []
 
     if (arr.length > 0) {
-      arr.forEach(attr => {
-        newIndexes.push(attr.area);
-      });
+      arr.forEach((attr) => {
+        newIndexes.push(attr.area)
+      })
     }
 
-    return newIndexes;
-  };
+    return newIndexes
+  }
 
-  const [customizeTab, setCustomizeTab] = useState(0);
-  const [correctTab, setCorrectTab] = useState(0);
-  const [selectedIndexes, setSelectedIndexes] = useState(getAreaIndexes(areaAttributes.local));
-  const response = correctTab === 0 ? validation.validResponse : validation.altResponses;
+  const [customizeTab, setCustomizeTab] = useState(0)
+  const [correctTab, setCorrectTab] = useState(0)
+  const [selectedIndexes, setSelectedIndexes] = useState(
+    getAreaIndexes(areaAttributes.local)
+  )
+  const response =
+    correctTab === 0 ? validation.validResponse : validation.altResponses
 
-  const handleCloseTab = tabIndex => {
+  const handleCloseTab = (tabIndex) => {
     setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses.splice(tabIndex, 1);
+      produce(item, (draft) => {
+        draft.validation.altResponses.splice(tabIndex, 1)
 
-        setCorrectTab(0);
-        updateVariables(draft);
+        setCorrectTab(0)
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   const handleResponseMode = () => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (multipleResponses) {
-          draft.validation.validResponse.value.splice(1);
-          draft.validation.altResponses.forEach(alt => {
-            alt.value.splice(1);
-          });
+          draft.validation.validResponse.value.splice(1)
+          draft.validation.altResponses.forEach((alt) => {
+            alt.value.splice(1)
+          })
         }
 
-        draft.multipleResponses = !multipleResponses;
-        updateVariables(draft);
+        draft.multipleResponses = !multipleResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   const handleAddAnswer = () => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (!draft.validation.altResponses) {
-          draft.validation.altResponses = [];
+          draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
           score: 1,
-          value: []
-        });
-        updateVariables(draft);
+          value: [],
+        })
+        updateVariables(draft)
       })
-    );
-    setCorrectTab(item.validation.altResponses.length + 1);
-  };
+    )
+    setCorrectTab(item.validation.altResponses.length + 1)
+  }
 
-  const handlePointsChange = val => {
+  const handlePointsChange = (val) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (correctTab === 0) {
-          draft.validation.validResponse.score = val;
+          draft.validation.validResponse.score = val
         } else {
-          draft.validation.altResponses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val
         }
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  const handleAnswerChange = ans => {
+  const handleAnswerChange = (ans) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (correctTab === 0) {
-          draft.validation.validResponse.value = ans;
+          draft.validation.validResponse.value = ans
         } else {
-          draft.validation.altResponses[correctTab - 1].value = ans;
+          draft.validation.altResponses[correctTab - 1].value = ans
         }
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   const renderOptions = (
     <HotspotPreview
       item={item}
       saveAnswer={handleAnswerChange}
-      userAnswer={correctTab === 0 ? response.value : response[correctTab - 1].value}
+      userAnswer={
+        correctTab === 0 ? response.value : response[correctTab - 1].value
+      }
       view={EDIT}
     />
-  );
+  )
 
   return (
     <ContentArea>
@@ -140,7 +145,11 @@ const HotspotEdit = ({
         cleanSections={cleanSections}
       />
 
-      <AreasBlockTitle item={item} fillSections={fillSections} cleanSections={cleanSections} />
+      <AreasBlockTitle
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
       <AttributesTitle
         item={item}
@@ -156,7 +165,7 @@ const HotspotEdit = ({
 
       <Question
         section="main"
-        label={t("component.hotspot.correctAnswer")}
+        label={t('component.hotspot.correctAnswer')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
@@ -171,11 +180,17 @@ const HotspotEdit = ({
           cleanSections={cleanSections}
           questionType={item?.title}
           onChangePoints={handlePointsChange}
-          points={correctTab === 0 ? response.score : response[correctTab - 1].score}
+          points={
+            correctTab === 0 ? response.score : response[correctTab - 1].score
+          }
           isCorrectAnsTab={correctTab === 0}
         />
-        <CheckboxLabel mt="15px" onChange={handleResponseMode} defaultChecked={multipleResponses}>
-          {t("component.hotspot.multipleResponses")}
+        <CheckboxLabel
+          mt="15px"
+          onChange={handleResponseMode}
+          defaultChecked={multipleResponses}
+        >
+          {t('component.hotspot.multipleResponses')}
         </CheckboxLabel>
       </Question>
 
@@ -188,8 +203,8 @@ const HotspotEdit = ({
         item={item}
       />
     </ContentArea>
-  );
-};
+  )
+}
 
 HotspotEdit.propTypes = {
   item: PropTypes.object.isRequired,
@@ -199,19 +214,16 @@ HotspotEdit.propTypes = {
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedLink: PropTypes.any
-};
+  advancedLink: PropTypes.any,
+}
 
 HotspotEdit.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  advancedLink: null
-};
+  advancedLink: null,
+}
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
+const enhance = compose(withNamespaces('assessment'), withTheme)
 
-export default enhance(HotspotEdit);
+export default enhance(HotspotEdit)

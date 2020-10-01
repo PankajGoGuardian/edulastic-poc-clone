@@ -1,7 +1,7 @@
-import React from "react";
-import SkinToneSelector from "./SkinToneSelector";
-import { EMOJI } from "../../constants";
-import { Dropdown } from "./styled";
+import React from 'react'
+import SkinToneSelector from './SkinToneSelector'
+import { EMOJI } from '../../constants'
+import { Dropdown } from './styled'
 
 const Reaction = ({ emoji, label }) => (
   <div classNameName="dropdown-outer" role="button">
@@ -9,13 +9,12 @@ const Reaction = ({ emoji, label }) => (
       {EMOJI[emoji]}
     </div>
   </div>
-    );
+)
 
 const SettingsDropdown = () => (
   <Dropdown>
     <SkinToneSelector />
   </Dropdown>
-    );
+)
 
-export default SettingsDropdown;
-
+export default SettingsDropdown

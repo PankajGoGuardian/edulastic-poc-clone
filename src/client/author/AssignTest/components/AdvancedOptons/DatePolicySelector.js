@@ -1,14 +1,14 @@
-import { test as testConst, roleuser } from "@edulastic/constants";
-import { Col, Select } from "antd";
-import * as moment from "moment";
-import React from "react";
-import { connect } from "react-redux";
-import { getUserRole } from "../../../src/selectors/user";
-import selectsData from "../../../TestPage/components/common/selectsData";
-import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
-import PlayerSkinSelector from "../SimpleOptions/PlayerSkinSelector";
-import { Label, StyledDatePicker, StyledRow, StyledSelect } from "./styled";
-import { getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
+import { test as testConst, roleuser } from '@edulastic/constants'
+import { Col, Select } from 'antd'
+import * as moment from 'moment'
+import React from 'react'
+import { connect } from 'react-redux'
+import { getUserRole } from '../../../src/selectors/user'
+import selectsData from '../../../TestPage/components/common/selectsData'
+import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
+import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
+import { Label, StyledDatePicker, StyledRow, StyledSelect } from './styled'
+import { getIsOverrideFreezeSelector } from '../../../TestPage/ducks'
 
 const DatePolicySelector = ({
   startDate,
@@ -20,47 +20,54 @@ const DatePolicySelector = ({
   testType,
   passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
   playerSkinType,
-  freezeSettings
+  freezeSettings,
 }) => {
-  const disabledStartDate = _startDate => {
+  const disabledStartDate = (_startDate) => {
     if (!_startDate || !endDate) {
-      return false;
+      return false
     }
-    return _startDate.valueOf() < Date.now();
-  };
+    return _startDate.valueOf() < Date.now()
+  }
 
-  const disabledEndDate = _endDate => {
+  const disabledEndDate = (_endDate) => {
     if (!_endDate || !startDate) {
-      return false;
+      return false
     }
-    return _endDate.valueOf() < startDate.valueOf() || _endDate.valueOf() < Date.now();
-  };
+    return (
+      _endDate.valueOf() < startDate.valueOf() ||
+      _endDate.valueOf() < Date.now()
+    )
+  }
 
-  let openPolicy = selectsData.openPolicy;
-  let closePolicy = selectsData.closePolicy;
-  const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
+  let openPolicy = selectsData.openPolicy
+  let closePolicy = selectsData.closePolicy
+  const isAdmin =
+    userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
   if (isAdmin) {
-    openPolicy = selectsData.openPolicyForAdmin;
-    closePolicy = selectsData.closePolicyForAdmin;
+    openPolicy = selectsData.openPolicyForAdmin
+    closePolicy = selectsData.closePolicyForAdmin
   }
 
   return (
-    <React.Fragment>
+    <>
       <StyledRow gutter={24}>
         <Col xs={24} md={12} lg={6}>
           <Label>Open Date</Label>
           <StyledDatePicker
             allowClear={false}
             data-cy="startDate"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             size="large"
             disabledDate={disabledStartDate}
             showTime={{ use12Hours: true }}
             format="YYYY-MM-DD hh:mm:ss a"
             value={moment(startDate)}
             placeholder="Open Date"
-            onChange={changeField("startDate")}
-            disabled={passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
+            onChange={changeField('startDate')}
+            disabled={
+              passwordPolicy ===
+              testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+            }
           />
         </Col>
         <Col xs={24} md={12} lg={6}>
@@ -68,7 +75,7 @@ const DatePolicySelector = ({
           <StyledDatePicker
             allowClear={false}
             data-cy="closeDate"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             size="large"
             disabledDate={disabledEndDate}
             showTime={{ use12Hours: true }}
@@ -76,7 +83,7 @@ const DatePolicySelector = ({
             value={moment(endDate)}
             placeholder="Close Date"
             showToday={false}
-            onChange={changeField("endDate")}
+            onChange={changeField('endDate')}
           />
         </Col>
         <Col xs={24} md={12} lg={6}>
@@ -86,8 +93,11 @@ const DatePolicySelector = ({
             placeholder="Please select"
             cache="false"
             value={selectedOpenPolicy}
-            onChange={changeField("openPolicy")}
-            disabled={passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
+            onChange={changeField('openPolicy')}
+            disabled={
+              passwordPolicy ===
+              testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+            }
           >
             {openPolicy.map(({ value, text }, index) => (
               <Select.Option key={index} value={value} data-cy="open">
@@ -103,7 +113,7 @@ const DatePolicySelector = ({
             placeholder="Please select"
             cache="false"
             value={selectedClosePolicy}
-            onChange={changeField("closePolicy")}
+            onChange={changeField('closePolicy')}
           >
             {closePolicy.map(({ value, text }, index) => (
               <Select.Option data-cy="class" key={index} value={value}>
@@ -120,7 +130,7 @@ const DatePolicySelector = ({
             isAdvanceView
             userRole={userRole}
             testType={testType}
-            onAssignmentTypeChange={changeField("testType")}
+            onAssignmentTypeChange={changeField('testType')}
             disabled={freezeSettings}
           />
         </Col>
@@ -131,16 +141,16 @@ const DatePolicySelector = ({
             testType={testType}
             userRole={userRole}
             playerSkinType={playerSkinType}
-            onAssignmentTypeChange={changeField("playerSkinType")}
+            onAssignmentTypeChange={changeField('playerSkinType')}
             disabled={freezeSettings}
           />
         </Col>
       </StyledRow>
-    </React.Fragment>
-  );
-};
+    </>
+  )
+}
 
-export default connect(state => ({
+export default connect((state) => ({
   userRole: getUserRole(state),
-  freezeSettings: getIsOverrideFreezeSelector(state)
-}))(DatePolicySelector);
+  freezeSettings: getIsOverrideFreezeSelector(state),
+}))(DatePolicySelector)

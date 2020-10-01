@@ -1,6 +1,6 @@
-import { greyThemeDark1 } from "@edulastic/colors";
-import styled from "styled-components";
-import { Item } from "../../../styled/Item";
+import { greyThemeDark1 } from '@edulastic/colors'
+import styled from 'styled-components'
+import { Item } from '../../../styled/Item'
 
 export const ToolbarItem = styled(Item)`
   height: 100%;
@@ -9,9 +9,11 @@ export const ToolbarItem = styled(Item)`
 
   &:hover {
     cursor: pointer;
-    background: ${props => props.theme.widgets.essayPlainText.toolbarItemBgHoverColor};
+    background: ${(props) =>
+      props.theme.widgets.essayPlainText.toolbarItemBgHoverColor};
   }
   &:active {
-    background: ${props => props.theme.widgets.essayPlainText.toolbarItemBgActiveColor};
+    background: ${(props) =>
+      props.theme.widgets.essayPlainText.toolbarItemBgActiveColor};
   }
-`;
+`

@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { message } from "antd";
-import { get, groupBy, isEmpty, last } from "lodash";
-import { ticks } from "d3-array";
-import { connect } from "react-redux";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { message } from 'antd'
+import { get, groupBy, isEmpty, last } from 'lodash'
+import { ticks } from 'd3-array'
+import { connect } from 'react-redux'
 import {
   white,
   dropZoneTitleColor,
@@ -13,58 +13,82 @@ import {
   themeColor,
   linkColor1,
   themeColorLighter,
-  darkBlue2
-} from "@edulastic/colors";
-import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
-import memoizeOne from "memoize-one";
-import { scrollTo, Legends, LegendContainer,notification, LCBScrollContext } from "@edulastic/common";
-import { MainDiv, StyledCustomTooltip, OnScreenNotification } from "./styled";
-import { StyledChartNavButton } from "../../../Reports/common/styled";
-import { getAggregateByQuestion, getItemSummary, getHasRandomQuestionselector } from "../../ducks";
-import { MAX_XGA_WIDTH, NORMAL_MONITOR_WIDTH, LARGE_DESKTOP_WIDTH, MAX_TAB_WIDTH } from "../../../src/constants/others";
+  darkBlue2,
+} from '@edulastic/colors'
+import {
+  ComposedChart,
+  Bar,
+  Line,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Rectangle,
+  Tooltip,
+} from 'recharts'
+import memoizeOne from 'memoize-one'
+import {
+  scrollTo,
+  Legends,
+  LegendContainer,
+  notification,
+  LCBScrollContext,
+} from '@edulastic/common'
+import { MainDiv, StyledCustomTooltip, OnScreenNotification } from './styled'
+import { StyledChartNavButton } from '../../../Reports/common/styled'
+import {
+  getAggregateByQuestion,
+  getItemSummary,
+  getHasRandomQuestionselector,
+} from '../../ducks'
+import {
+  MAX_XGA_WIDTH,
+  NORMAL_MONITOR_WIDTH,
+  LARGE_DESKTOP_WIDTH,
+  MAX_TAB_WIDTH,
+} from '../../../src/constants/others'
 
 const bars = {
   correctAttemps: {
-    className: "correctAttemps",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "correctAttemps",
-    fill: themeColorLighter
+    className: 'correctAttemps',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'correctAttemps',
+    fill: themeColorLighter,
   },
   incorrectAttemps: {
-    className: "incorrectAttemps",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "incorrectAttemps",
-    fill: incorrect
+    className: 'incorrectAttemps',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'incorrectAttemps',
+    fill: incorrect,
   },
   partialAttempts: {
-    className: "partialAttempts",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "partialAttempts",
-    fill: yellow1
+    className: 'partialAttempts',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'partialAttempts',
+    fill: yellow1,
   },
   skippedNum: {
-    className: "skippedNum",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "skippedNum",
-    fill: linkColor1
+    className: 'skippedNum',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'skippedNum',
+    fill: linkColor1,
   },
   manualGradedNum: {
-    className: "manualGradedNum",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "manualGradedNum",
-    fill: darkBlue2
-  }
-};
+    className: 'manualGradedNum',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'manualGradedNum',
+    fill: darkBlue2,
+  },
+}
 
 /**
  * @param {string} qid
  */
-const _scrollTo = (qid,el) => {
+const _scrollTo = (qid, el) => {
   /**
    * when lcb-student-sticky-bar is made sticky padding 10px is added, before there is no padding
    * 2 because the position of sticky bar changes when it is made sticky,
@@ -73,48 +97,64 @@ const _scrollTo = (qid,el) => {
    */
   scrollTo(
     document.querySelector(`.question-container-id-${qid}`),
-    (document.querySelector(".lcb-student-sticky-bar")?.offsetHeight + 10) * 2 || 0,
+    (document.querySelector('.lcb-student-sticky-bar')?.offsetHeight + 10) *
+      2 || 0,
     el
-  );
-};
-const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion);
+  )
+}
+const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion)
 
 const RectangleBar = ({ fill, x, y, width, height, dataKey, ...rest }) => {
-  let radius = [5, 5, 0, 0];
+  let radius = [5, 5, 0, 0]
   const availableBars = Object.keys(bars)
-    .map(key => (rest[key] !== 0 ? key : false))
-    .filter(em => em);
+    .map((key) => (rest[key] !== 0 ? key : false))
+    .filter((em) => em)
 
   if (dataKey !== last(availableBars)) {
-    radius = null;
+    radius = null
   }
-  return <Rectangle x={x} y={y} width={width} height={height} fill={fill} radius={radius} />;
-};
+  return (
+    <Rectangle
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      fill={fill}
+      radius={radius}
+    />
+  )
+}
 
 class BarGraph extends Component {
-  isMobile = () => window.innerWidth < 480;
+  isMobile = () => window.innerWidth < 480
 
-  static contextType = LCBScrollContext;
+  static contextType = LCBScrollContext
 
   constructor(props) {
-    super(props);
-    let page = props.pageSize || 20;
-    const windowWidth = window.innerWidth;
+    super(props)
+    let page = props.pageSize || 20
+    const windowWidth = window.innerWidth
     if (this.isMobile()) {
-      page = 5;
+      page = 5
     } else if (windowWidth >= LARGE_DESKTOP_WIDTH) {
-      page = 20;
-    } else if (windowWidth >= NORMAL_MONITOR_WIDTH && windowWidth < LARGE_DESKTOP_WIDTH) {
-      page = 15;
-    } else if (windowWidth >= MAX_XGA_WIDTH && windowWidth < NORMAL_MONITOR_WIDTH) {
-      page = 10;
+      page = 20
+    } else if (
+      windowWidth >= NORMAL_MONITOR_WIDTH &&
+      windowWidth < LARGE_DESKTOP_WIDTH
+    ) {
+      page = 15
+    } else if (
+      windowWidth >= MAX_XGA_WIDTH &&
+      windowWidth < NORMAL_MONITOR_WIDTH
+    ) {
+      page = 10
     } else if (windowWidth >= MAX_TAB_WIDTH && windowWidth < MAX_XGA_WIDTH) {
-      page = 7;
+      page = 7
     } else {
       /**
        * unknown small resolutions
        */
-      page = 5;
+      page = 5
     }
 
     // README: When I was fixing the chart, I found no use case of "children". It was
@@ -128,59 +168,75 @@ class BarGraph extends Component {
       maxTimeSpent: 0,
       pagination: {
         startIndex: 0,
-        endIndex: page - 1
-      }
-    };
+        endIndex: page - 1,
+      },
+    }
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { gradebook, studentview, studentViewFilter, studentId, testActivity, studentResponse } = props;
-    let { itemsSummary } = gradebook;
+    const {
+      gradebook,
+      studentview,
+      studentViewFilter,
+      studentId,
+      testActivity,
+      studentResponse,
+    } = props
+    let { itemsSummary } = gradebook
     if (studentview && studentId) {
-      const filtered = _getAggregateByQuestion(testActivity, studentId);
-      const selectedTestActivityId = testActivity.find(x => x.studentId === studentId)?.testActivityId;
+      const filtered = _getAggregateByQuestion(testActivity, studentId)
+      const selectedTestActivityId = testActivity.find(
+        (x) => x.studentId === studentId
+      )?.testActivityId
       if (filtered) {
-        if (isEmpty(studentResponse) || selectedTestActivityId === studentResponse?.testActivity?._id) {
+        if (
+          isEmpty(studentResponse) ||
+          selectedTestActivityId === studentResponse?.testActivity?._id
+        ) {
           // eslint-disable-next-line prefer-destructuring
-          itemsSummary = filtered.itemsSummary;
+          itemsSummary = filtered.itemsSummary
         } else {
-          itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);
+          itemsSummary = getItemSummary(
+            [studentResponse],
+            filtered.questionsOrder,
+            itemsSummary
+          )
         }
 
         if (studentViewFilter) {
-          itemsSummary = itemsSummary.filter(x => {
-            if (studentViewFilter === "correct" && x.correctNum > 0) {
-              return true;
+          itemsSummary = itemsSummary.filter((x) => {
+            if (studentViewFilter === 'correct' && x.correctNum > 0) {
+              return true
             }
-            if (studentViewFilter === "wrong" && x.wrongNum > 0) {
-              return true;
+            if (studentViewFilter === 'wrong' && x.wrongNum > 0) {
+              return true
             }
-            if (studentViewFilter === "partial" && x.partialNum > 0) {
-              return true;
+            if (studentViewFilter === 'partial' && x.partialNum > 0) {
+              return true
             }
-            if (studentViewFilter === "skipped" && x.skippedNum > 0) {
-              return true;
+            if (studentViewFilter === 'skipped' && x.skippedNum > 0) {
+              return true
             }
-            if (studentViewFilter === "notGraded" && x.manualGradedNum > 0) {
-              return true;
+            if (studentViewFilter === 'notGraded' && x.manualGradedNum > 0) {
+              return true
             }
-            return false;
-          });
+            return false
+          })
         }
       }
     }
 
-    let chartData = [];
+    let chartData = []
 
-    let maxAttemps = 0;
-    let maxTimeSpent = 0;
+    let maxAttemps = 0
+    let maxTimeSpent = 0
     if (itemsSummary.length) {
-      chartData = itemsSummary.map(item => {
+      chartData = itemsSummary.map((item) => {
         if (item.attemptsNum > maxAttemps) {
-          maxAttemps = item.attemptsNum;
+          maxAttemps = item.attemptsNum
         }
         if (item.avgTimeSpent > maxTimeSpent) {
-          maxTimeSpent = item.avgTimeSpent;
+          maxTimeSpent = item.avgTimeSpent
         }
         return {
           name: item.barLabel,
@@ -193,13 +249,13 @@ class BarGraph extends Component {
           itemLevelScoring: item.itemLevelScoring,
           skippedNum: item.skippedNum,
           itemId: item.itemId,
-          qid: item._id
-        };
-      });
+          qid: item._id,
+        }
+      })
     }
 
     if (chartData.length !== state.chartData.length) {
-      const renderData = chartData.slice(0, state.page);
+      const renderData = chartData.slice(0, state.page)
       return {
         page: state.page,
         chartData,
@@ -208,11 +264,14 @@ class BarGraph extends Component {
         maxTimeSpent,
         pagination: {
           startIndex: 0,
-          endIndex: state.page - 1
-        }
-      };
+          endIndex: state.page - 1,
+        },
+      }
     }
-    const renderData = chartData.slice(state.pagination.startIndex, state.pagination.startIndex + state.page);
+    const renderData = chartData.slice(
+      state.pagination.startIndex,
+      state.pagination.startIndex + state.page
+    )
     return {
       page: state.page,
       chartData,
@@ -221,92 +280,109 @@ class BarGraph extends Component {
       maxTimeSpent,
       pagination: {
         startIndex: state.pagination.startIndex,
-        endIndex: state.pagination.startIndex + state.page - 1
-      }
-    };
+        endIndex: state.pagination.startIndex + state.page - 1,
+      },
+    }
   }
 
   scrollLeft = () => {
-    const { pagination, page } = this.state;
-    let diff;
+    const { pagination, page } = this.state
+    let diff
     if (pagination.startIndex > 0) {
       if (pagination.startIndex >= page) {
-        diff = page;
+        diff = page
       } else {
-        diff = pagination.startIndex;
+        diff = pagination.startIndex
       }
-      this.setState(state => ({
+      this.setState((state) => ({
         ...state,
         pagination: {
           startIndex: state.pagination.startIndex - diff,
-          endIndex: state.pagination.endIndex - diff
-        }
-      }));
+          endIndex: state.pagination.endIndex - diff,
+        },
+      }))
     }
-  };
+  }
 
   scrollRight = () => {
-    const { pagination, page, chartData } = this.state;
-    let diff;
+    const { pagination, page, chartData } = this.state
+    let diff
     if (pagination.endIndex < chartData.length - 1) {
       if (chartData.length - 1 - pagination.endIndex >= page) {
-        diff = page;
+        diff = page
       } else {
-        diff = chartData.length - 1 - pagination.endIndex;
+        diff = chartData.length - 1 - pagination.endIndex
       }
 
-      this.setState(state => ({
+      this.setState((state) => ({
         ...state,
         pagination: {
           startIndex: state.pagination.startIndex + diff,
-          endIndex: state.pagination.endIndex + diff
-        }
-      }));
+          endIndex: state.pagination.endIndex + diff,
+        },
+      }))
     }
-  };
+  }
 
   static propTypes = {
     // gradebook: PropTypes.object.isRequired,
     onClickHandler: PropTypes.func.isRequired,
-    children: PropTypes.node
-  };
+    children: PropTypes.node,
+  }
 
   static defaultProps = {
-    children: null
-  };
+    children: null,
+  }
 
   handleClick = (data, index) => {
-    const { isLoading, studentview, onClickHandler, hasRandomQuestions } = this.props;
+    const {
+      isLoading,
+      studentview,
+      onClickHandler,
+      hasRandomQuestions,
+    } = this.props
     if (isLoading) {
-      return;
+      return
     }
     if (studentview) {
-      const { qid } = data;
-      return _scrollTo(qid, this.context.current);
+      const { qid } = data
+      return _scrollTo(qid, this.context.current)
     }
     if (hasRandomQuestions) {
-      return notification({ messageKey: "theQuestionForStudentsDynamicallySelectedAsResult" });
+      return notification({
+        messageKey: 'theQuestionForStudentsDynamicallySelectedAsResult',
+      })
     }
     if (onClickHandler) {
-      onClickHandler(data, index);
+      onClickHandler(data, index)
     }
-  };
+  }
 
   calcTimeSpent(testItem) {
-    const { studentResponse, studentview } = this.props;
-    let timeSpent = testItem.avgTimeSpent || 0;
+    const { studentResponse, studentview } = this.props
+    let timeSpent = testItem.avgTimeSpent || 0
     if (studentview) {
-      const getStudentActivity = get(studentResponse, "data.questionActivities", []);
-      const groupActivityByQId = groupBy(getStudentActivity, "qid") || {};
-      const [timeSpentByItemId = {}] = groupActivityByQId[testItem._id] || [];
-      timeSpent = timeSpentByItemId.timeSpent || 0;
+      const getStudentActivity = get(
+        studentResponse,
+        'data.questionActivities',
+        []
+      )
+      const groupActivityByQId = groupBy(getStudentActivity, 'qid') || {}
+      const [timeSpentByItemId = {}] = groupActivityByQId[testItem._id] || []
+      timeSpent = timeSpentByItemId.timeSpent || 0
     }
-    return timeSpent;
+    return timeSpent
   }
 
   render() {
-    const { children, hasRandomQuestions, isBoth } = this.props;
-    const { pagination, chartData, renderData, maxAttemps, maxTimeSpent } = this.state;
+    const { children, hasRandomQuestions, isBoth } = this.props
+    const {
+      pagination,
+      chartData,
+      renderData,
+      maxAttemps,
+      maxTimeSpent,
+    } = this.state
     return (
       <MainDiv className="studentBarChart">
         {children}
@@ -318,7 +394,7 @@ class BarGraph extends Component {
           className="navigator navigator-left"
           onClick={this.scrollLeft}
           style={{
-            visibility: pagination.startIndex === 0 ? "hidden" : "visible"
+            visibility: pagination.startIndex === 0 ? 'hidden' : 'visible',
           }}
         />
         <StyledChartNavButton
@@ -330,19 +406,25 @@ class BarGraph extends Component {
           className="navigator navigator-right"
           onClick={this.scrollRight}
           style={{
-            visibility: chartData.length <= pagination.endIndex + 1 ? "hidden" : "visible"
+            visibility:
+              chartData.length <= pagination.endIndex + 1
+                ? 'hidden'
+                : 'visible',
           }}
         />
         {isBoth && (
-          <LegendContainer style={{ marginBottom: "-18px", paddingLeft: "80px" }}>
+          <LegendContainer
+            style={{ marginBottom: '-18px', paddingLeft: '80px' }}
+          >
             <Legends />
           </LegendContainer>
         )}
         <ResponsiveContainer width="99%" height={240}>
           {hasRandomQuestions && isBoth ? (
             <OnScreenNotification>
-              The questions for each student have been dynamically selected and as a result, question based comparison
-              is unavailable for this assignment.
+              The questions for each student have been dynamically selected and
+              as a result, question based comparison is unavailable for this
+              assignment.
             </OnScreenNotification>
           ) : chartData.length === 0 ? (
             <OnScreenNotification> No Question found </OnScreenNotification>
@@ -352,11 +434,15 @@ class BarGraph extends Component {
                 dataKey="name"
                 tickSize={0}
                 dy={8}
-                tick={{ fontSize: "10px", strokeWidth: 2, fill: secondaryTextColor }}
+                tick={{
+                  fontSize: '10px',
+                  strokeWidth: 2,
+                  fill: secondaryTextColor,
+                }}
                 padding={{ left: 20, right: 20 }}
                 cursor="pointer"
                 onClick={({ index }) => {
-                  this.handleClick(renderData[index], index);
+                  this.handleClick(renderData[index], index)
                 }}
               />
               <YAxis
@@ -364,30 +450,33 @@ class BarGraph extends Component {
                 yAxisId="left"
                 allowDecimals={false}
                 label={{
-                  value: "ATTEMPTS",
+                  value: 'ATTEMPTS',
                   dx: -10,
                   angle: -90,
                   fill: dropZoneTitleColor,
-                  fontSize: "10px"
+                  fontSize: '10px',
                 }}
               />
               <YAxis
                 yAxisId="right"
-                domain={[0, maxTimeSpent + Math.ceil((10 / 100) * maxTimeSpent)]}
+                domain={[
+                  0,
+                  maxTimeSpent + Math.ceil((10 / 100) * maxTimeSpent),
+                ]}
                 allowDecimals={false}
                 label={{
-                  value: "AVG TIME (SECONDS)",
+                  value: 'AVG TIME (SECONDS)',
                   angle: -90,
                   dx: 20,
                   fill: dropZoneTitleColor,
-                  fontSize: "10px"
+                  fontSize: '10px',
                 }}
                 orientation="right"
                 ticks={ticks(0, maxTimeSpent + 10000, 10)}
-                tickFormatter={val => Math.round(val / 1000)}
+                tickFormatter={(val) => Math.round(val / 1000)}
               />
 
-              {Object.keys(bars).map(key => (
+              {Object.keys(bars).map((key) => (
                 <Bar
                   {...bars[key]}
                   key={bars[key].dataKey}
@@ -410,13 +499,13 @@ class BarGraph extends Component {
           )}
         </ResponsiveContainer>
       </MainDiv>
-    );
+    )
   }
 }
 
 export default connect(
-  state => ({
-    hasRandomQuestions: getHasRandomQuestionselector(state)
+  (state) => ({
+    hasRandomQuestions: getHasRandomQuestionselector(state),
   }),
   null
-)(BarGraph);
+)(BarGraph)

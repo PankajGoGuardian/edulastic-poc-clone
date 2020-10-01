@@ -1,58 +1,58 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/canvas";
+const api = new API()
+const prefix = '/canvas'
 
-const getCanvasAuthURI = institutionId =>
+const getCanvasAuthURI = (institutionId) =>
   api
     .callApi({
       url: `${prefix}/sso-details?institutionId=${institutionId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const fetchCourseList = institutionId =>
+const fetchCourseList = (institutionId) =>
   api
     .callApi({
       url: `${prefix}/course-list?institutionId=${institutionId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const fetchCourseSectionList = ({ allCourseIds, institutionId }) =>
   api
     .callApi({
       url: `${prefix}/course-section-list?courseIds=${allCourseIds.toString()}&institutionId=${institutionId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const bulkSync = data =>
+const bulkSync = (data) =>
   api
     .callApi({
       url: `${prefix}/sync-all-classes`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const canvasSync = data =>
+const canvasSync = (data) =>
   api
     .callApi({
       url: `${prefix}/start-canvas-sync`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const canvasGradesSync = data =>
+const canvasGradesSync = (data) =>
   api
     .callApi({
       url: `${prefix}/sync-grades-manually`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
   getCanvasAuthURI,
@@ -60,5 +60,5 @@ export default {
   fetchCourseSectionList,
   bulkSync,
   canvasSync,
-  canvasGradesSync
-};
+  canvasGradesSync,
+}

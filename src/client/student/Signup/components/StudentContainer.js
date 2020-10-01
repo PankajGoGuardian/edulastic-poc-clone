@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Col, Form, Input, message } from "antd";
-import { Link, Redirect } from "react-router-dom";
-import { compose } from "redux";
-import { trim, isEmpty } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
-import { connect } from "react-redux";
-import { withWindowSizes, OnDarkBgLogo, notification } from "@edulastic/common";
-import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
-import { themeColor, white } from "@edulastic/colors";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Col, Form, Input, message } from 'antd'
+import { Link, Redirect } from 'react-router-dom'
+import { compose } from 'redux'
+import { trim, isEmpty } from 'lodash'
+import { withNamespaces } from '@edulastic/localization'
+import { connect } from 'react-redux'
+import { withWindowSizes, OnDarkBgLogo, notification } from '@edulastic/common'
+import { IconLock, IconHash, IconUser, IconMail } from '@edulastic/icons'
+import { themeColor, white } from '@edulastic/colors'
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -29,9 +29,14 @@ import {
   AlreadyhaveAccount,
   MobileViewLinks,
   DesktopVieLinks,
-  DesktopViewCopyright
-} from "../styled";
-import { signupAction, googleLoginAction, msoLoginAction, studentSignupCheckClasscodeAction } from "../../Login/ducks";
+  DesktopViewCopyright,
+} from '../styled'
+import {
+  signupAction,
+  googleLoginAction,
+  msoLoginAction,
+  studentSignupCheckClasscodeAction,
+} from '../../Login/ducks'
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -41,164 +46,171 @@ import {
   getDistrictLoginUrl,
   getDistrictTeacherSignupUrl,
   isDistrictPolicyAllowed,
-  isEmailValid
-} from "../../../common/utils/helpers";
-import { Partners } from "../../../common/utils/static/partnerData";
+  isEmailValid,
+} from '../../../common/utils/helpers'
+import { Partners } from '../../../common/utils/static/partnerData'
 
-import studentBg from "../../assets/bg-student.png";
-import googleIcon from "../../assets/google-btn.svg";
-import icon365 from "../../assets/icons8-office-365.svg";
-import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../author/src/constants/others";
-import PasswordPopup from "./PasswordPopup";
+import studentBg from '../../assets/bg-student.png'
+import googleIcon from '../../assets/google-btn.svg'
+import icon365 from '../../assets/icons8-office-365.svg'
+import {
+  MAX_TAB_WIDTH,
+  LARGE_DESKTOP_WIDTH,
+} from '../../../author/src/constants/others'
+import PasswordPopup from './PasswordPopup'
 
-const FormItem = Form.Item;
-const GOOGLE = "google";
-const OFFICE = "office";
+const FormItem = Form.Item
+const GOOGLE = 'google'
+const OFFICE = 'office'
 const formItemLayout = {
   labelCol: {
-    xs: { span: 24 }
+    xs: { span: 24 },
   },
   wrapperCol: {
-    xs: { span: 24 }
-  }
-};
+    xs: { span: 24 },
+  },
+}
 class StudentSignup extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     signup: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired
-  };
+    t: PropTypes.func.isRequired,
+  }
 
   state = {
     confirmDirty: false,
-    method: "",
+    method: '',
     signupError: {},
     showModal: false,
-    proceedBtnDisabled: true
-  };
+    proceedBtnDisabled: true,
+  }
 
   closeModal = () => {
     this.setState({
-      showModal: false
-    });
-  };
+      showModal: false,
+    })
+  }
 
-  handleSubmit = e => {
-    const { form, signup, t, districtPolicy } = this.props;
-    const { method, password: passwordForExistingUser } = this.state;
-    e && e.preventDefault();
-    form.validateFieldsAndScroll((err, { password, email, name, classCode }) => {
-      if (!err) {
-        if (method === GOOGLE) {
-          const { googleLoginAction } = this.props;
-          googleLoginAction({ role: "student", classCode });
-        } else if (method === OFFICE) {
-          const { msoLoginAction } = this.props;
-          msoLoginAction({ role: "student", classCode });
-        } else {
-          signup({
-            passwordForExistingUser,
-            password,
-            email,
-            name,
-            role: "student",
-            classCode,
-            policyViolation: t("common.policyviolation"),
-            districtId: districtPolicy ? districtPolicy.orgId : undefined,
-            errorCallback: this.errorCallback
-          });
+  handleSubmit = (e) => {
+    const { form, signup, t, districtPolicy } = this.props
+    const { method, password: passwordForExistingUser } = this.state
+    e && e.preventDefault()
+    form.validateFieldsAndScroll(
+      (err, { password, email, name, classCode }) => {
+        if (!err) {
+          if (method === GOOGLE) {
+            const { googleLoginAction } = this.props
+            googleLoginAction({ role: 'student', classCode })
+          } else if (method === OFFICE) {
+            const { msoLoginAction } = this.props
+            msoLoginAction({ role: 'student', classCode })
+          } else {
+            signup({
+              passwordForExistingUser,
+              password,
+              email,
+              name,
+              role: 'student',
+              classCode,
+              policyViolation: t('common.policyviolation'),
+              districtId: districtPolicy ? districtPolicy.orgId : undefined,
+              errorCallback: this.errorCallback,
+            })
+          }
         }
       }
-    });
-  };
+    )
+  }
 
   handleConfirmBlur = ({ target: { value } }) => {
-    let { confirmDirty } = this.state;
-    confirmDirty = confirmDirty || !!value;
-    this.setState({ confirmDirty });
-  };
+    let { confirmDirty } = this.state
+    confirmDirty = confirmDirty || !!value
+    this.setState({ confirmDirty })
+  }
 
-  signupMethod = key => () => {
+  signupMethod = (key) => () => {
     this.setState({
-      method: key
-    });
-  };
+      method: key,
+    })
+  }
 
   onChangeEmail = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       ...state,
       signupError: {
         ...state.signupError,
-        usernameOrEmail: ""
-      }
-    }));
-  };
+        usernameOrEmail: '',
+      },
+    }))
+  }
 
   onChangeClassCode = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       ...state,
       signupError: {
         ...state.signupError,
-        classCode: ""
-      }
-    }));
-  };
+        classCode: '',
+      },
+    }))
+  }
 
-  onBlurClassCode = event => {
-    const { studentSignupCheckClasscodeAction, districtPolicy } = this.props;
+  onBlurClassCode = (event) => {
+    const { studentSignupCheckClasscodeAction, districtPolicy } = this.props
     if (event.currentTarget.value) {
       studentSignupCheckClasscodeAction({
         reqData: {
           classCode: event.currentTarget.value,
-          role: "student",
-          signOnMethod: "userNameAndPassword",
-          districtId: districtPolicy ? districtPolicy.orgId : undefined
+          role: 'student',
+          signOnMethod: 'userNameAndPassword',
+          districtId: districtPolicy ? districtPolicy.orgId : undefined,
         },
-        errorCallback: this.errorCallback
-      });
+        errorCallback: this.errorCallback,
+      })
     }
-  };
+  }
 
-  errorCallback = error => {
-    if (error === "Username/Email already exists. Please sign in to your account.") {
-      this.setState(state => ({
+  errorCallback = (error) => {
+    if (
+      error === 'Username/Email already exists. Please sign in to your account.'
+    ) {
+      this.setState((state) => ({
         ...state,
         signupError: {
           ...state.signupError,
-          usernameOrEmail: "error"
-        }
-      }));
-    } else if (error === "Please provide a valid class code.") {
-      this.setState(state => ({
+          usernameOrEmail: 'error',
+        },
+      }))
+    } else if (error === 'Please provide a valid class code.') {
+      this.setState((state) => ({
         ...state,
         signupError: {
           ...state.signupError,
-          classCode: "Please provide a valid class code."
-        }
-      }));
+          classCode: 'Please provide a valid class code.',
+        },
+      }))
     } else if ((error || {}).askPassword) {
       if (error.passwordMatch === false) {
-        notification({ messageKey: "passwordIsIncorrect" });
+        notification({ messageKey: 'passwordIsIncorrect' })
       }
       this.setState({
         showModal: true,
-        existingUser: error
-      });
+        existingUser: error,
+      })
     } else {
-      notification({ msg: error });
+      notification({ msg: error })
     }
-  };
+  }
 
-  onPasswordChange = password => {
+  onPasswordChange = (password) => {
     this.setState({
       proceedBtnDisabled: isEmpty(password),
-      password
-    });
-  };
+      password,
+    })
+  }
 
   onClickProceed = () => {
-    this.handleSubmit();
-  };
+    this.handleSubmit()
+  }
 
   renderGeneralFormFields = () => {
     const {
@@ -206,42 +218,49 @@ class StudentSignup extends React.Component {
       t,
       isSignupUsingDaURL,
       orgShortName,
-      orgType
-    } = this.props;
+      orgType,
+    } = this.props
 
-    const partnerKey = getPartnerKeyFromUrl(location.pathname);
-    const partner = Partners[partnerKey];
+    const partnerKey = getPartnerKeyFromUrl(location.pathname)
+    const partner = Partners[partnerKey]
 
-    const classCodeError = this.state.signupError.classCode || getFieldError("classCode");
+    const classCodeError =
+      this.state.signupError.classCode || getFieldError('classCode')
     const usernameEmailError =
       (this.state.signupError.usernameOrEmail && (
         <span>
-          Username/Email already exists. Please{" "}
-          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
+          Username/Email already exists. Please{' '}
+          <Link
+            to={
+              isSignupUsingDaURL
+                ? getDistrictLoginUrl(orgShortName, orgType)
+                : getPartnerLoginUrl(partner)
+            }
+          >
             sign in
-          </Link>{" "}
+          </Link>{' '}
           to your account.
         </span>
       )) ||
-      getFieldError("email");
+      getFieldError('email')
 
     return (
       <>
         <FormItem
           {...formItemLayout}
-          label={t("component.signup.student.signupclasslabel")}
-          validateStatus={classCodeError ? "error" : "success"}
+          label={t('component.signup.student.signupclasslabel')}
+          validateStatus={classCodeError ? 'error' : 'success'}
           help={classCodeError}
         >
-          {getFieldDecorator("classCode", {
+          {getFieldDecorator('classCode', {
             validateFirst: true,
-            initialValue: "",
+            initialValue: '',
             rules: [
               {
                 required: true,
-                message: t("component.signup.student.validclasscode")
-              }
-            ]
+                message: t('component.signup.student.validclasscode'),
+              },
+            ],
           })(
             <Input
               prefix={<IconHash color={themeColor} />}
@@ -252,42 +271,57 @@ class StudentSignup extends React.Component {
             />
           )}
         </FormItem>
-        <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
-          {getFieldDecorator("name", {
+        <FormItem
+          {...formItemLayout}
+          label={t('component.signup.signupnamelabel')}
+        >
+          {getFieldDecorator('name', {
             rules: [
               {
                 required: true,
-                message: t("component.signup.student.validinputname")
-              }
-            ]
-          })(<Input data-cy="name" prefix={<IconUser color={themeColor} />} placeholder="Name" />)}
+                message: t('component.signup.student.validinputname'),
+              },
+            ],
+          })(
+            <Input
+              data-cy="name"
+              prefix={<IconUser color={themeColor} />}
+              placeholder="Name"
+            />
+          )}
         </FormItem>
         <FormItem
           {...formItemLayout}
-          validateStatus={usernameEmailError ? "error" : "success"}
+          validateStatus={usernameEmailError ? 'error' : 'success'}
           help={usernameEmailError}
-          label={t("component.signup.student.signupidlabel")}
+          label={t('component.signup.student.signupidlabel')}
         >
-          {getFieldDecorator("email", {
+          {getFieldDecorator('email', {
             validateFirst: true,
-            initialValue: "",
+            initialValue: '',
             rules: [
               {
-                transform: value => trim(value)
+                transform: (value) => trim(value),
               },
               {
                 required: true,
-                message: t("common.validation.emptyemailid")
+                message: t('common.validation.emptyemailid'),
               },
               {
-                type: "string",
-                message: t("common.validation.validemail")
+                type: 'string',
+                message: t('common.validation.validemail'),
               },
               {
                 validator: (rule, value, callback) =>
-                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
-              }
-            ]
+                  isEmailValid(
+                    rule,
+                    value,
+                    callback,
+                    'both',
+                    t('common.validation.validemail')
+                  ),
+              },
+            ],
           })(
             <Input
               data-cy="email"
@@ -297,66 +331,97 @@ class StudentSignup extends React.Component {
             />
           )}
         </FormItem>
-        <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
-          {getFieldDecorator("password", {
+        <FormItem
+          {...formItemLayout}
+          label={t('component.signup.signuppasswordlabel')}
+        >
+          {getFieldDecorator('password', {
             rules: [
               {
                 required: true,
-                message: t("common.validation.emptypassword")
-              }
-            ]
+                message: t('common.validation.emptypassword'),
+              },
+            ],
           })(
-            <Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" placeholder="Password" />
+            <Input
+              data-cy="password"
+              prefix={<IconLock color={themeColor} />}
+              type="password"
+              placeholder="Password"
+            />
           )}
         </FormItem>
       </>
-    );
-  };
+    )
+  }
 
   renderFormHeader = () => {
-    const { t, isSignupUsingDaURL, districtPolicy } = this.props;
+    const { t, isSignupUsingDaURL, districtPolicy } = this.props
     return (
       <FormHead>
         <h3 align="center">
-          <b>{t("component.signup.signupboxheading")}</b>
+          <b>{t('component.signup.signupboxheading')}</b>
         </h3>
-        {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") || !isSignupUsingDaURL ? (
-          <ThirdPartyLoginBtn onClick={this.signupMethod(GOOGLE)} span={20} offset={2}>
-            <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
+        {isDistrictPolicyAllowed(
+          isSignupUsingDaURL,
+          districtPolicy,
+          'googleSignOn'
+        ) || !isSignupUsingDaURL ? (
+          <ThirdPartyLoginBtn
+            onClick={this.signupMethod(GOOGLE)}
+            span={20}
+            offset={2}
+          >
+            <img src={googleIcon} alt="" />{' '}
+            {t('component.signup.googlesignupbtn')}
           </ThirdPartyLoginBtn>
         ) : null}
-        {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") || !isSignupUsingDaURL ? (
-          <ThirdPartyLoginBtn onClick={this.signupMethod(OFFICE)} span={20} offset={2}>
-            <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
+        {isDistrictPolicyAllowed(
+          isSignupUsingDaURL,
+          districtPolicy,
+          'office365SignOn'
+        ) || !isSignupUsingDaURL ? (
+          <ThirdPartyLoginBtn
+            onClick={this.signupMethod(OFFICE)}
+            span={20}
+            offset={2}
+          >
+            <img src={icon365} alt="" />{' '}
+            {t('component.signup.office365signupbtn')}
           </ThirdPartyLoginBtn>
         ) : null}
         <InfoBox span={20} offset={2}>
           <InfoIcon span={3}>
             <IconLock color={white} />
           </InfoIcon>
-          <Col span={21}>{t("component.signup.infotext")}</Col>
+          <Col span={21}>{t('component.signup.infotext')}</Col>
         </InfoBox>
       </FormHead>
-    );
-  };
+    )
+  }
 
   renderGoogleORMSOForm = () => {
     const {
       form: { getFieldDecorator, getFieldError },
-      t
-    } = this.props;
+      t,
+    } = this.props
 
-    const classCodeError = this.state.signupError.classCode || getFieldError("classCode");
+    const classCodeError =
+      this.state.signupError.classCode || getFieldError('classCode')
 
     return (
-      <FormItem {...formItemLayout} validateStatus={classCodeError ? "error" : "success"} help={classCodeError}>
-        {getFieldDecorator("classCode", {
+      <FormItem
+        {...formItemLayout}
+        validateStatus={classCodeError ? 'error' : 'success'}
+        help={classCodeError}
+      >
+        {getFieldDecorator('classCode', {
           rules: [
             {
               required: true,
-              message: t("component.signup.student.validclasscode")
-            }
-          ]
+              message: t('component.signup.student.validclasscode'),
+            },
+          ],
         })(
           <Input
             prefix={<IconHash color={themeColor} />}
@@ -365,22 +430,35 @@ class StudentSignup extends React.Component {
             onChange={this.onChangeClassCode}
             onBlur={this.onBlurClassCode}
           />
-        )}{" "}
+        )}{' '}
       </FormItem>
-    );
-  };
+    )
+  }
 
   render() {
-    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType, windowWidth } = this.props;
+    const {
+      t,
+      isSignupUsingDaURL,
+      generalSettings,
+      districtPolicy,
+      orgShortName,
+      orgType,
+      windowWidth,
+    } = this.props
 
-    const { method } = this.state;
-    const partnerKey = getPartnerKeyFromUrl(location.pathname);
-    const partner = Partners[partnerKey];
+    const { method } = this.state
+    const partnerKey = getPartnerKeyFromUrl(location.pathname)
+    const partner = Partners[partnerKey]
 
     const isUserNameAndPasswordAllowed =
-      (isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") || !isSignupUsingDaURL) &&
+      (isDistrictPolicyAllowed(
+        isSignupUsingDaURL,
+        districtPolicy,
+        'userNameAndPassword'
+      ) ||
+        !isSignupUsingDaURL) &&
       method !== GOOGLE &&
-      method !== OFFICE;
+      method !== OFFICE
     return (
       <div>
         <PasswordPopup
@@ -391,14 +469,16 @@ class StudentSignup extends React.Component {
           onChange={this.onPasswordChange}
           onClickProceed={this.onClickProceed}
         />
-        {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
+        {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
+          <Redirect exact to="/login" />
+        ) : null}
         <RegistrationWrapper
           image={
             generalSettings && isSignupUsingDaURL
               ? generalSettings.pageBackground
               : isSignupUsingDaURL
-              ? ""
-              : partner.keyName === "login"
+              ? ''
+              : partner.keyName === 'login'
               ? studentBg
               : partner.background
           }
@@ -408,9 +488,17 @@ class StudentSignup extends React.Component {
               <OnDarkBgLogo height="30px" />
             </Col>
             <Col span={12} align="right">
-              <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
-              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
-                {t("common.signinbtn")}
+              <AlreadyhaveAccount>
+                {t('component.signup.alreadyhaveanaccount')}
+              </AlreadyhaveAccount>
+              <Link
+                to={
+                  isSignupUsingDaURL
+                    ? getDistrictLoginUrl(orgShortName, orgType)
+                    : getPartnerLoginUrl(partner)
+                }
+              >
+                {t('common.signinbtn')}
               </Link>
             </Col>
           </RegistrationHeader>
@@ -419,62 +507,90 @@ class StudentSignup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
-                    {t("common.edulastictext")}
+                    {t('common.edulastictext')}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
-                    {t("component.signup.student.forstudent")}
+                    {t('component.signup.student.forstudent')}
                   </h1>
                   <DesktopVieLinks>
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'teacherSignUp'
+                    ) || !isSignupUsingDaURL ? (
                       <LinkDiv>
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictTeacherSignupUrl(orgShortName, orgType)
+                              ? getDistrictTeacherSignupUrl(
+                                  orgShortName,
+                                  orgType
+                                )
                               : getPartnerTeacherSignupUrl(partner)
                           }
                         >
-                          {t("component.signup.signupasteacher")}
+                          {t('component.signup.signupasteacher')}
                         </Link>
                       </LinkDiv>
                     ) : null}
 
                     {!isSignupUsingDaURL ? (
                       <LinkDiv>
-                        <Link to={getPartnerDASignupUrl(partner)}>{t("component.signup.signupasadmin")}</Link>
+                        <Link to={getPartnerDASignupUrl(partner)}>
+                          {t('component.signup.signupasadmin')}
+                        </Link>
                       </LinkDiv>
                     ) : null}
                   </DesktopVieLinks>
                 </BannerText>
-                {windowWidth >= MAX_TAB_WIDTH && method !== GOOGLE && method !== OFFICE && (
-                  <DesktopViewCopyright>
-                    <Col span={24}>{t("common.copyright")}</Col>
-                  </DesktopViewCopyright>
-                )}
+                {windowWidth >= MAX_TAB_WIDTH &&
+                  method !== GOOGLE &&
+                  method !== OFFICE && (
+                    <DesktopViewCopyright>
+                      <Col span={24}>{t('common.copyright')}</Col>
+                    </DesktopViewCopyright>
+                  )}
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
-                    {method !== GOOGLE && method !== OFFICE && this.renderFormHeader()}
+                    {method !== GOOGLE &&
+                      method !== OFFICE &&
+                      this.renderFormHeader()}
                     <FormBody>
                       <Col span={20} offset={2}>
                         <h5 align="center">
-                          {isUserNameAndPasswordAllowed ? t("component.signup.formboxheading") : null}
-                          {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
+                          {isUserNameAndPasswordAllowed
+                            ? t('component.signup.formboxheading')
+                            : null}
+                          {(method === GOOGLE || method === OFFICE) &&
+                            t('component.signup.formboxheadinggoole')}
                         </h5>
                         {(method === GOOGLE || method === OFFICE) && (
-                          <Description>{t("component.signup.codeFieldDesc")}</Description>
+                          <Description>
+                            {t('component.signup.codeFieldDesc')}
+                          </Description>
                         )}
                         <Form onSubmit={this.handleSubmit}>
-                          {isUserNameAndPasswordAllowed ? this.renderGeneralFormFields() : null}
-                          {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
+                          {isUserNameAndPasswordAllowed
+                            ? this.renderGeneralFormFields()
+                            : null}
+                          {(method === GOOGLE || method === OFFICE) &&
+                            this.renderGoogleORMSOForm()}
                           <FormItem>
                             {isUserNameAndPasswordAllowed ? (
-                              <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                                {t("component.signup.student.signupstudentbtn")}
+                              <RegisterButton
+                                data-cy="signup"
+                                type="primary"
+                                htmlType="submit"
+                              >
+                                {t('component.signup.student.signupstudentbtn')}
                               </RegisterButton>
                             ) : null}
                             {(method === GOOGLE || method === OFFICE) && (
-                              <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                                {t("component.signup.student.signupentercode")}
+                              <RegisterButton
+                                data-cy="signup"
+                                type="primary"
+                                htmlType="submit"
+                              >
+                                {t('component.signup.student.signupentercode')}
                               </RegisterButton>
                             )}
                           </FormItem>
@@ -485,24 +601,32 @@ class StudentSignup extends React.Component {
                 </Col>
                 <MobileViewLinks>
                   <BannerText>
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'teacherSignUp'
+                    ) || !isSignupUsingDaURL ? (
                       <LinkDiv>
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictTeacherSignupUrl(orgShortName, orgType)
+                              ? getDistrictTeacherSignupUrl(
+                                  orgShortName,
+                                  orgType
+                                )
                               : getPartnerTeacherSignupUrl(partner)
                           }
                         >
-                          {t("component.signup.signupasteacher")}
+                          {t('component.signup.signupasteacher')}
                         </Link>
                       </LinkDiv>
                     ) : null}
 
                     {!isSignupUsingDaURL ? (
                       <LinkDiv>
-                        <Link to={getPartnerDASignupUrl(partner)}>{t("component.signup.signupasadmin")}</Link>
+                        <Link to={getPartnerDASignupUrl(partner)}>
+                          {t('component.signup.signupasadmin')}
+                        </Link>
                       </LinkDiv>
                     ) : null}
                   </BannerText>
@@ -513,31 +637,30 @@ class StudentSignup extends React.Component {
           <CircleDiv size={64} right={118} top={320} />
           <CircleDiv size={40} right={210} top={432} />
           <CircleDiv size={32} right={72} top={500} />
-          {(windowWidth < MAX_TAB_WIDTH || method === GOOGLE || method === OFFICE) && (
+          {(windowWidth < MAX_TAB_WIDTH ||
+            method === GOOGLE ||
+            method === OFFICE) && (
             <Copyright sigunpmethod={method}>
-              <Col span={24}>{t("common.copyright")}</Col>
+              <Col span={24}>{t('common.copyright')}</Col>
             </Copyright>
           )}
         </RegistrationWrapper>
       </div>
-    );
+    )
   }
 }
 
-const SignupForm = Form.create()(StudentSignup);
+const SignupForm = Form.create()(StudentSignup)
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   withWindowSizes,
-  connect(
-    state => ({}),
-    {
-      signup: signupAction,
-      googleLoginAction,
-      msoLoginAction,
-      studentSignupCheckClasscodeAction
-    }
-  )
-);
+  connect((state) => ({}), {
+    signup: signupAction,
+    googleLoginAction,
+    msoLoginAction,
+    studentSignupCheckClasscodeAction,
+  })
+)
 
-export default enhance(SignupForm);
+export default enhance(SignupForm)

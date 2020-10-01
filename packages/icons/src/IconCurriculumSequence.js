@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconCurriculumSequence = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.006 23.682" {...props}>
+const IconCurriculumSequence = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 19.006 23.682"
+    {...props}
+  >
     <g transform="translate(-0.25 0.25)">
       <path
         d="M13.656.151A.49.49,0,0,0,13.307,0H2.946A2.452,2.452,0,0,0,.5,2.441v18.3a2.452,2.452,0,0,0,2.446,2.441H16.56a2.452,2.452,0,0,0,2.446-2.441V5.851a.5.5,0,0,0-.143-.341Zm.138,1.543,3.561,3.663H14.281a.481.481,0,0,1-.486-.476ZM16.56,22.207H2.946a1.477,1.477,0,0,1-1.472-1.467V2.441A1.477,1.477,0,0,1,2.946.974h9.875v3.9a1.456,1.456,0,0,0,1.458,1.455h3.753v14.41a1.477,1.477,0,0,1-1.472,1.467Zm0,0"
@@ -27,6 +31,6 @@ const IconCurriculumSequence = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconCurriculumSequence);
+export default withIconStyles(IconCurriculumSequence)

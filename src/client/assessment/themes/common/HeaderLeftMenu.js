@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components'
 
 const MobileLeftMenu = css`
   width: auto;
@@ -6,7 +6,7 @@ const MobileLeftMenu = css`
   position: absolute;
   left: 10px;
   top: 5px;
-`;
+`
 const HeaderLeftMenu = styled.div`
   text-align: left;
   height: 60px;
@@ -16,8 +16,8 @@ const HeaderLeftMenu = styled.div`
 
   @media (max-width: 768px) {
     width: 100%;
-    ${props => props.skinb === "true" && MobileLeftMenu}
+    ${(props) => props.skinb === 'true' && MobileLeftMenu}
   }
-`;
+`
 
-export default HeaderLeftMenu;
+export default HeaderLeftMenu

@@ -1,12 +1,15 @@
-import React from "react";
-import { round } from "lodash";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { extraDesktopWidthMax } from "@edulastic/colors";
-import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
-import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
-import { StyledTable as Table, StyledCell } from "../../../../../../common/styled";
-import CsvTable from "../../../../../../common/components/tables/CsvTable";
+import React from 'react'
+import { round } from 'lodash'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { extraDesktopWidthMax } from '@edulastic/colors'
+import TableTooltipRow from '../../../../../../common/components/tooltip/TableTooltipRow'
+import { CustomTableTooltip } from '../../../../../../common/components/customTableTooltip'
+import {
+  StyledTable as Table,
+  StyledCell,
+} from '../../../../../../common/styled'
+import CsvTable from '../../../../../../common/components/tables/CsvTable'
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -55,29 +58,32 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 const getCol = (text, backgroundColor) => (
   <StyledCell justify="center" style={{ backgroundColor }}>
     {text}
   </StyledCell>
-);
+)
 
 const renderToolTipColumn = (value, record) => {
   const toolTipText = () => (
     <div>
       <TableTooltipRow title="Domain : " value={record.name} />
-      <TableTooltipRow title="Subject : " value={record.standardSet || "N/A"} />
-      <TableTooltipRow title="Domain description : " value={record.description} />
+      <TableTooltipRow title="Subject : " value={record.standardSet || 'N/A'} />
+      <TableTooltipRow
+        title="Domain description : "
+        value={record.description}
+      />
       <TableTooltipRow
         title="Standards Mastered : "
         value={`${record.masteredCount} out of ${record.standards.length}`}
       />
       <TableTooltipRow title="Assessments# : " value={record.assessmentCount} />
     </div>
-  );
+  )
 
-  const { color = "#cccccc" } = record.scale;
+  const { color = '#cccccc' } = record.scale
 
   return (
     <CustomTableTooltip
@@ -85,41 +91,46 @@ const renderToolTipColumn = (value, record) => {
       title={toolTipText()}
       getCellContents={() => getCol(`${round(value)}%`, color)}
     />
-  );
-};
+  )
+}
 
 const columns = [
   {
-    title: "Domain",
-    key: "name",
-    dataIndex: "name",
-    fixed: "left",
-    width: 90
+    title: 'Domain',
+    key: 'name',
+    dataIndex: 'name',
+    fixed: 'left',
+    width: 90,
   },
   {
-    title: "Domain Description",
-    key: "description",
-    dataIndex: "description",
-    width: "calc(33% - 30px)"
+    title: 'Domain Description',
+    key: 'description',
+    dataIndex: 'description',
+    width: 'calc(33% - 30px)',
   },
   {
-    title: "Mastered Standards",
-    key: "masteredCount",
-    dataIndex: "masteredCount",
-    width: "calc(33% - 30px)",
-    render: (masteredCount, record) => `${masteredCount} out of ${record.standards.length}`
+    title: 'Mastered Standards',
+    key: 'masteredCount',
+    dataIndex: 'masteredCount',
+    width: 'calc(33% - 30px)',
+    render: (masteredCount, record) =>
+      `${masteredCount} out of ${record.standards.length}`,
   },
   {
-    title: "Avg. Score(%)",
-    key: "score",
-    dataIndex: "score",
-    width: "calc(33% - 30px)",
+    title: 'Avg. Score(%)',
+    key: 'score',
+    dataIndex: 'score',
+    width: 'calc(33% - 30px)',
     sorter: (a, b) => a.score - b.score,
-    render: renderToolTipColumn
-  }
-];
+    render: renderToolTipColumn,
+  },
+]
 
-const StandardMasteryDetailsTable = ({ data, isCsvDownloading, onCsvConvert }) => (
+const StandardMasteryDetailsTable = ({
+  data,
+  isCsvDownloading,
+  onCsvConvert,
+}) => (
   <CsvTable
     tableToRender={StyledTable}
     onCsvConvert={onCsvConvert}
@@ -127,21 +138,21 @@ const StandardMasteryDetailsTable = ({ data, isCsvDownloading, onCsvConvert }) =
     dataSource={data}
     columns={columns}
     colouredCellsNo={1}
-    scroll={{ x: "100%" }}
+    scroll={{ x: '100%' }}
     rightAligned={2}
   />
-);
+)
 
 StandardMasteryDetailsTable.propTypes = {
   data: PropTypes.array,
   onCsvConvert: PropTypes.func,
-  isCsvDownloading: PropTypes.bool
-};
+  isCsvDownloading: PropTypes.bool,
+}
 
 StandardMasteryDetailsTable.defaultProps = {
   data: [],
   onCsvConvert: () => {},
-  isCsvDownloading: false
-};
+  isCsvDownloading: false,
+}
 
-export default StandardMasteryDetailsTable;
+export default StandardMasteryDetailsTable

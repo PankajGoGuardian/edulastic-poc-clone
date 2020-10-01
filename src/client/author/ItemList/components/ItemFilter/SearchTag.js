@@ -1,22 +1,27 @@
-import React from "react";
-import styled from "styled-components";
-import { SelectInputStyled } from "@edulastic/common";
+import React from 'react'
+import styled from 'styled-components'
+import { SelectInputStyled } from '@edulastic/common'
 
-const InputTag = ({ onSearchInputChange, value = [], placeholder, disabled = false }) => (
+const InputTag = ({
+  onSearchInputChange,
+  value = [],
+  placeholder,
+  disabled = false,
+}) => (
   <Container>
     <SelectInputStyled
       mode="tags"
-      placeholder={placeholder || "Search by skills and keywords"}
+      placeholder={placeholder || 'Search by skills and keywords'}
       onChange={onSearchInputChange}
-      style={{ width: "100%", minHeight: "40px" }}
+      style={{ width: '100%', minHeight: '40px' }}
       value={value}
-      getPopupContainer={triggerNode => triggerNode.parentNode}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
       disabled={disabled}
     />
   </Container>
-);
+)
 
-export default InputTag;
+export default InputTag
 
 const Container = styled.div`
   background: white;
@@ -41,4 +46,4 @@ const Container = styled.div`
   .ant-select-selection__rendered {
     margin-top: 4px;
   }
-`;
+`

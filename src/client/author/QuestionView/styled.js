@@ -1,7 +1,12 @@
-import styled from "styled-components";
-import { mobileWidthMax, mobileWidth, themeColor, themeColorTagsBg } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
-import { Card } from "antd";
+import styled from 'styled-components'
+import {
+  mobileWidthMax,
+  mobileWidth,
+  themeColor,
+  themeColorTagsBg,
+} from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
+import { Card } from 'antd'
 
 export const PaginationInfo = styled.div`
   font-weight: bold;
@@ -10,11 +15,11 @@ export const PaginationInfo = styled.div`
   display: inline-block;
   margin-left: 30px;
   color: #1890ffd9;
-`;
+`
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin: 0px;
-`;
+`
 
 export const LabelContainer = styled.div`
   display: flex;
@@ -22,7 +27,7 @@ export const LabelContainer = styled.div`
   border-bottom: 1.4px solid #f7f7f7;
   padding-bottom: 15px;
   margin-bottom: 15px;
-`;
+`
 
 export const StyledCard = styled(Card)`
   width: 100%;
@@ -36,7 +41,7 @@ export const StyledCard = styled(Card)`
   .recharts-rectangle {
     cursor: pointer;
   }
-`;
+`
 
 export const StyledTitle = styled.p`
   font-size: 16px;
@@ -45,7 +50,7 @@ export const StyledTitle = styled.p`
   font-weight: 600;
   padding-left: 62px;
   margin-bottom: 20px;
-`;
+`
 
 export const ResponseCard = styled(Card)`
   width: 100%;
@@ -65,7 +70,7 @@ export const ResponseCard = styled(Card)`
       padding: 7px 20px;
     }
   }
-`;
+`
 
 export const ResponseCardTitle = styled.span`
   color: #7c848e;
@@ -73,7 +78,7 @@ export const ResponseCardTitle = styled.span`
   font-weight: 600;
   line-height: 15px;
   margin-right: 35px;
-`;
+`
 
 export const CircularDiv = styled.div`
   background-color: ${themeColorTagsBg};
@@ -91,7 +96,7 @@ export const CircularDiv = styled.div`
   &:last-child {
     margin-right: 0px;
   }
-`;
+`
 
 export const Content = styled.div`
   display: flex;
@@ -103,7 +108,7 @@ export const Content = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin: 50px 25px;
   }
-`;
+`
 
 export const FeedBackCard = styled(Card)`
   margin: 0px 20px 0px 20px;
@@ -112,13 +117,13 @@ export const FeedBackCard = styled(Card)`
   height: 550px;
   border-radius: 10px;
   border: 1px solid #dadae4;
-`;
+`
 
 export const OptionDiv = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 15px;
-`;
+`
 
 export const TooltipContainer = styled(Card)`
   border: 1px solid #dadae4;
@@ -136,4 +141,4 @@ export const TooltipContainer = styled(Card)`
   .ant-card-body {
     padding: 15px 16px;
   }
-`;
+`

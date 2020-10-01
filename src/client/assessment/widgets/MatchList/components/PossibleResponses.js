@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
-import styled from "styled-components";
-import { FlexContainer, Subtitle, DragDrop } from "@edulastic/common";
-import { StyledCorrectAnswersContainer } from "../styled/StyledCorrectAnswersContainer";
-import DragItem from "./DragItem";
-import DragItems from "./DragItems";
-import { GroupsSeparator } from "../styled/GroupsSeparator";
+import React, { Fragment } from 'react'
+import styled from 'styled-components'
+import { FlexContainer, Subtitle, DragDrop } from '@edulastic/common'
+import { StyledCorrectAnswersContainer } from '../styled/StyledCorrectAnswersContainer'
+import DragItem from './DragItem'
+import DragItems from './DragItems'
+import { GroupsSeparator } from '../styled/GroupsSeparator'
 
 const PossibleResponses = ({
   t,
@@ -21,25 +21,30 @@ const PossibleResponses = ({
   isAnswerModifiable,
   changePreviewTab,
   shuffleOptions,
-  previewTab
+  previewTab,
 }) => {
   const choicesBoxStyle = {
-    width: isPrintPreview ? "100%" : horizontallyAligned ? null : 750,
-    maxWidth: horizontallyAligned ? dragItemMaxWidth : null
-  };
+    width: isPrintPreview ? '100%' : horizontallyAligned ? null : 750,
+    maxWidth: horizontallyAligned ? dragItemMaxWidth : null,
+  }
 
   const onDropHandler = ({ data }) => {
-    onDrop(data, { flag: "dragItems" });
-  };
+    onDrop(data, { flag: 'dragItems' })
+  }
 
   return (
     <StyledCorrectAnswersContainer
       className="__prevent-page-break"
       style={choicesBoxStyle}
-      title={t("component.matchList.dragItemsTitle")}
+      title={t('component.matchList.dragItemsTitle')}
     >
       <StyledDropContainer drop={onDropHandler} noBorder>
-        <FlexContainer alignItems="stretch" justifyContent="flext-start" flexWrap="wrap" width="100%">
+        <FlexContainer
+          alignItems="stretch"
+          justifyContent="flext-start"
+          flexWrap="wrap"
+          width="100%"
+        >
           {groupPossibleResponses ? (
             possibleResponseGroups.map((i, index) => (
               <Fragment key={index}>
@@ -55,18 +60,22 @@ const PossibleResponses = ({
                     width="100%"
                     justifyContent="center"
                     flexWrap="wrap"
-                    display={horizontallyAligned ? "inline-flex" : "flex"}
-                    flexDirection={horizontallyAligned ? "column" : "row"}
+                    display={horizontallyAligned ? 'inline-flex' : 'flex'}
+                    flexDirection={horizontallyAligned ? 'column' : 'row'}
                   >
                     {groupedPossibleResponses[index]?.map(
                       (ite, ind) =>
-                        dragItems.find(_item => _item.value === ite.value) && ( // Here we should shuffle in place
+                        dragItems.find(
+                          (_item) => _item.value === ite.value
+                        ) && ( // Here we should shuffle in place
                           <DragItem
                             flag="dragItems"
                             key={ind}
                             item={ite}
                             getStyles={getStyles}
-                            disableResponse={disableResponse || !isAnswerModifiable}
+                            disableResponse={
+                              disableResponse || !isAnswerModifiable
+                            }
                           />
                         )
                     )}
@@ -78,15 +87,20 @@ const PossibleResponses = ({
               </Fragment>
             ))
           ) : (
-            <Fragment>
-              <FlexContainer flexDirection="column" alignItems="center" justifyContent="flex-start" maxWidth="100%">
+            <>
+              <FlexContainer
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="flex-start"
+                maxWidth="100%"
+              >
                 <FlexContainer
                   maxWidth="100%"
                   flexWrap="wrap"
                   justifyContent="center"
-                  display={horizontallyAligned ? "inline-flex" : "flex"}
-                  flexDirection={horizontallyAligned ? "column" : "row"}
-                  alignItems={horizontallyAligned ? "baseline" : "center"}
+                  display={horizontallyAligned ? 'inline-flex' : 'flex'}
+                  flexDirection={horizontallyAligned ? 'column' : 'row'}
+                  alignItems={horizontallyAligned ? 'baseline' : 'center'}
                 >
                   <DragItems
                     dragItems={dragItems}
@@ -98,19 +112,19 @@ const PossibleResponses = ({
                   />
                 </FlexContainer>
               </FlexContainer>
-            </Fragment>
+            </>
           )}
         </FlexContainer>
       </StyledDropContainer>
     </StyledCorrectAnswersContainer>
-  );
-};
+  )
+}
 
-export default PossibleResponses;
+export default PossibleResponses
 
 const StyledSubTitle = styled(Subtitle)`
   color: ${({ theme }) => theme.widgets.matchList.previewSubtitleColor};
-`;
+`
 
 const StyledDropContainer = styled(DragDrop.DropContainer)`
   display: flex;
@@ -120,4 +134,4 @@ const StyledDropContainer = styled(DragDrop.DropContainer)`
   padding-left: 20px;
   border-radius: 4px;
   min-height: 50px;
-`;
+`

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Separator = styled.div`
   max-width: ${({ smallSize }) => (smallSize ? 22 : 46)}px;
@@ -14,26 +14,26 @@ export const Separator = styled.div`
         : theme.widgets.matchList.separatorBorderColor};
 
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     right: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     top: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     width: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
     height: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
-    background: ${props => props.theme.widgets.matchList.separatorBgColor};
+    background: ${(props) => props.theme.widgets.matchList.separatorBgColor};
     display: block;
     border-radius: 50%;
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     left: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     top: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     width: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
     height: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
-    background: ${props => props.theme.widgets.matchList.separatorBgColor};
+    background: ${(props) => props.theme.widgets.matchList.separatorBgColor};
     display: block;
     border-radius: 50%;
   }
-`;
+`

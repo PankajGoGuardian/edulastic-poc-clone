@@ -1,21 +1,27 @@
-import React from "react";
-import PropTypes from "prop-types";
-import next from "immer";
-import { indexOf, includes } from "lodash";
-import { toggleItem } from "../../../../../common/util";
+import React from 'react'
+import PropTypes from 'prop-types'
+import next from 'immer'
+import { indexOf, includes } from 'lodash'
+import { toggleItem } from '../../../../../common/util'
 
-import ScoreChart from "./ScoreChart";
-import BandChart from "./BandChart";
+import ScoreChart from './ScoreChart'
+import BandChart from './BandChart'
 
-const ProgressChart = ({ data, analyseBy, selectedItems, setSelectedItems, bandInfo }) => {
-  const handleToggleSelectedBars = item => {
-    const newSelectedTests = toggleItem(selectedItems, item.uniqId);
-    setSelectedItems(newSelectedTests);
-  };
+const ProgressChart = ({
+  data,
+  analyseBy,
+  selectedItems,
+  setSelectedItems,
+  bandInfo,
+}) => {
+  const handleToggleSelectedBars = (item) => {
+    const newSelectedTests = toggleItem(selectedItems, item.uniqId)
+    setSelectedItems(newSelectedTests)
+  }
 
-  const onResetClick = () => setSelectedItems([]);
+  const onResetClick = () => setSelectedItems([])
 
-  const barToRender = includes(["score", "rawScore"], analyseBy) ? (
+  const barToRender = includes(['score', 'rawScore'], analyseBy) ? (
     <ScoreChart
       data={data}
       analyseBy={analyseBy}
@@ -32,25 +38,25 @@ const ProgressChart = ({ data, analyseBy, selectedItems, setSelectedItems, bandI
       selectedTests={selectedItems}
       onResetClickCB={onResetClick}
     />
-  );
+  )
 
-  return barToRender;
-};
+  return barToRender
+}
 
 ProgressChart.propTypes = {
   data: PropTypes.array,
   analyseBy: PropTypes.string,
   selectedItems: PropTypes.array,
   setSelectedItems: PropTypes.func,
-  bandInfo: PropTypes.array
-};
+  bandInfo: PropTypes.array,
+}
 
 ProgressChart.defaultProps = {
   data: [],
-  analyseBy: "score",
+  analyseBy: 'score',
   selectedItems: [],
   setSelectedItems: () => {},
-  bandInfo: []
-};
+  bandInfo: [],
+}
 
-export default ProgressChart;
+export default ProgressChart

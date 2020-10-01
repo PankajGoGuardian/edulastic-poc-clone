@@ -1,8 +1,8 @@
-import React, { useRef, useLayoutEffect } from "react";
-import { connect } from "react-redux";
+import React, { useRef, useLayoutEffect } from 'react'
+import { connect } from 'react-redux'
 
-import { TabContainer } from "@edulastic/common";
-import { updatePosition as updatePositionAction } from "../../../../../author/src/reducers/feedback";
+import { TabContainer } from '@edulastic/common'
+import { updatePosition as updatePositionAction } from '../../../../../author/src/reducers/feedback'
 
 function TabWrapper({
   testReviewStyle,
@@ -13,11 +13,11 @@ function TabWrapper({
   updatePositionToStore,
   questionId,
   updatePosition,
-  minHeight
+  minHeight,
 }) {
-  const containerRef = useRef(null);
+  const containerRef = useRef(null)
 
-  const heightOfContainer = containerRef.current?.clientHeight;
+  const heightOfContainer = containerRef.current?.clientHeight
 
   /**
    * as of https://snapwiz.atlassian.net/browse/EV-12821
@@ -35,13 +35,15 @@ function TabWrapper({
 
   useLayoutEffect(() => {
     if (containerRef.current && updatePositionToStore) {
-      const top = containerRef.current.offsetTop;
-      const height = containerRef.current.clientHeight;
-      updatePosition({ id: questionId, dimensions: { top, height } });
+      const top = containerRef.current.offsetTop
+      const height = containerRef.current.clientHeight
+      updatePosition({ id: questionId, dimensions: { top, height } })
     }
-  }, [containerRef.current, heightOfContainer]); // change whenever, ref or the height of container changes
+  }, [containerRef.current, heightOfContainer]) // change whenever, ref or the height of container changes
 
-  const borderProps = showBorder ? { border: "1px solid #DADAE4", borderRadius: "10px" } : {};
+  const borderProps = showBorder
+    ? { border: '1px solid #DADAE4', borderRadius: '10px' }
+    : {}
 
   return (
     <TabContainer
@@ -50,27 +52,24 @@ function TabWrapper({
       style={{
         ...testReviewStyle,
         ...borderProps,
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        height: fullHeight ? "100%" : "auto",
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        height: fullHeight ? '100%' : 'auto',
         marginTop,
-        minHeight
+        minHeight,
       }}
       className="question-tab-container"
     >
       {children}
     </TabContainer>
-  );
+  )
 }
 
 const mapDispatchToProps = {
-  updatePosition: updatePositionAction
-};
+  updatePosition: updatePositionAction,
+}
 
-const enhance = connect(
-  null,
-  mapDispatchToProps
-)(TabWrapper);
+const enhance = connect(null, mapDispatchToProps)(TabWrapper)
 
-export default enhance;
+export default enhance

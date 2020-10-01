@@ -1,9 +1,13 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const TextEmpty = styled.div`
   resize: none;
   width: ${({ showDragHandle, smallSize }) =>
-    showDragHandle ? (smallSize ? "calc(100% - 30px)" : "calc(100% - 50px)") : "100%"};
+    showDragHandle
+      ? smallSize
+        ? 'calc(100% - 30px)'
+        : 'calc(100% - 50px)'
+      : '100%'};
   border-radius: 4px;
   min-height: ${({ smallSize }) => (smallSize ? 31 : 56)}px;
   display: flex;
@@ -14,4 +18,4 @@ export const TextEmpty = styled.div`
     smallSize
       ? theme.widgets.sortList.dragItemTextEmptySmallFontSize
       : theme.widgets.sortList.dragItemTextEmptyFontSize};
-`;
+`

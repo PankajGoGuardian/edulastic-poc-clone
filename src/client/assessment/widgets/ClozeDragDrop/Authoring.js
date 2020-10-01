@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { arrayMove } from "react-sortable-hoc";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import "react-quill/dist/quill.snow.css";
-import { withTheme } from "styled-components";
-import produce from "immer";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { arrayMove } from 'react-sortable-hoc'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import 'react-quill/dist/quill.snow.css'
+import { withTheme } from 'styled-components'
+import produce from 'immer'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { updateVariables } from "../../utils/variables";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { updateVariables } from '../../utils/variables'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
 // import ComposeQuestion from "./ComposeQuestion";
-import TemplateMarkup from "./TemplateMarkup";
-import GroupResponses from "./GroupRespones";
-import Question from "../../components/Question";
+import TemplateMarkup from './TemplateMarkup'
+import GroupResponses from './GroupRespones'
+import Question from '../../components/Question'
 
 class Authoring extends Component {
   static propTypes = {
@@ -25,45 +25,45 @@ class Authoring extends Component {
     setQuestionData: PropTypes.func.isRequired,
     theme: PropTypes.object.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
-  };
+    cleanSections: PropTypes.func,
+  }
 
   static defaultProps = {
     fillSections: () => {},
-    cleanSections: () => {}
-  };
+    cleanSections: () => {},
+  }
 
-  onChangeQuestion = stimulus => {
-    const { item, setQuestionData } = this.props;
+  onChangeQuestion = (stimulus) => {
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.stimulus = stimulus;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.stimulus = stimulus
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.options = arrayMove(draft.options, oldIndex, newIndex);
+      produce(item, (draft) => {
+        draft.options = arrayMove(draft.options, oldIndex, newIndex)
       })
-    );
-  };
+    )
+  }
 
-  remove = index => {
-    const { item, setQuestionData } = this.props;
+  remove = (index) => {
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.options.splice(index, 1);
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.options.splice(index, 1)
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   render() {
-    const { item, theme, fillSections, cleanSections, t } = this.props;
+    const { item, theme, fillSections, cleanSections, t } = this.props
 
     return (
       <div>
@@ -71,34 +71,40 @@ class Authoring extends Component {
         <Question
           position="unset"
           section="main"
-          label={t("component.cloze.dragDrop.composequestion")}
+          label={t('component.cloze.dragDrop.composequestion')}
           fillSections={fillSections}
           cleanSections={cleanSections}
         >
-          <TemplateMarkup item={item} fillSections={fillSections} cleanSections={cleanSections} />
+          <TemplateMarkup
+            item={item}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
         </Question>
         <Question
           position="unset"
           section="main"
-          label={t("component.cloze.dragDrop.choicesforresponse")}
+          label={t('component.cloze.dragDrop.choicesforresponse')}
           fillSections={fillSections}
           cleanSections={cleanSections}
         >
-          <GroupResponses item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
+          <GroupResponses
+            item={item}
+            theme={theme}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
         </Question>
       </div>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
+  connect(null, { setQuestionData: setQuestionDataAction })
+)
 
-export default enhance(Authoring);
+export default enhance(Authoring)

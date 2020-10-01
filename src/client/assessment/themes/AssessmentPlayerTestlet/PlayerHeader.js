@@ -1,11 +1,22 @@
-import { IconGraphRightArrow, IconLogout } from "@edulastic/icons";
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import Logo from "../../assets/ets-log.png";
-import { FlexContainer, HeaderLeftMenu, HeaderMainMenu, MobileMainMenu as Mobile } from "../common";
-import ProgressContainer from "./ProgressContainer";
-import { ContainerRight, FlexDisplay, HeaderPracticePlayer, PlayerTitle, ActionButton } from "./styled";
-import Tools from "./Tools";
+import { IconGraphRightArrow, IconLogout } from '@edulastic/icons'
+import PropTypes from 'prop-types'
+import React, { Fragment } from 'react'
+import Logo from '../../assets/ets-log.png'
+import {
+  FlexContainer,
+  HeaderLeftMenu,
+  HeaderMainMenu,
+  MobileMainMenu as Mobile,
+} from '../common'
+import ProgressContainer from './ProgressContainer'
+import {
+  ContainerRight,
+  FlexDisplay,
+  HeaderPracticePlayer,
+  PlayerTitle,
+  ActionButton,
+} from './styled'
+import Tools from './Tools'
 
 const PlayerHeader = ({
   title,
@@ -20,30 +31,31 @@ const PlayerHeader = ({
   handleMagnifier,
   enableMagnifier,
   previewPlayer,
-  hasSubmitButton
+  hasSubmitButton,
 }) => {
-  let buttonText = "Next";
-  let showButton = true;
-  const disableButton = !unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length;
+  let buttonText = 'Next'
+  let showButton = true
+  const disableButton =
+    !unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length
   if (currentPage <= 1) {
-    buttonText = "Start";
-    showButton = false;
+    buttonText = 'Start'
+    showButton = false
   }
   if (currentPage >= dropdownOptions?.length && hasSubmitButton) {
-    buttonText = "Submit";
-    showButton = false;
+    buttonText = 'Submit'
+    showButton = false
   }
   if (previewPlayer && currentPage >= dropdownOptions?.length) {
-    showButton = false;
+    showButton = false
   }
 
-  const onClickHandler = e => {
-    e.target.blur();
-    onNextQuestion();
-  };
+  const onClickHandler = (e) => {
+    e.target.blur()
+    onNextQuestion()
+  }
 
   return (
-    <Fragment>
+    <>
       <HeaderPracticePlayer>
         <HeaderLeftMenu skinb="true">
           <img src={Logo} alt="ETS" />
@@ -58,11 +70,18 @@ const PlayerHeader = ({
               handleMagnifier={handleMagnifier}
               enableMagnifier={enableMagnifier}
             />
-            <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
+            <ProgressContainer
+              questions={dropdownOptions}
+              current={currentPage}
+              desktop="true"
+            />
             <ContainerRight>
               <FlexDisplay>
                 {showButton && (
-                  <ActionButton onClick={onClickHandler} disabled={disableButton}>
+                  <ActionButton
+                    onClick={onClickHandler}
+                    disabled={disableButton}
+                  >
                     <span>{buttonText}</span>
                     <IconGraphRightArrow />
                   </ActionButton>
@@ -74,13 +93,16 @@ const PlayerHeader = ({
             </ContainerRight>
           </FlexContainer>
           <Mobile>
-            <ProgressContainer questions={dropdownOptions} current={currentPage + 1} />
+            <ProgressContainer
+              questions={dropdownOptions}
+              current={currentPage + 1}
+            />
           </Mobile>
         </HeaderMainMenu>
       </HeaderPracticePlayer>
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 PlayerHeader.propTypes = {
   title: PropTypes.string.isRequired,
@@ -91,13 +113,14 @@ PlayerHeader.propTypes = {
   unlockNext: PropTypes.bool,
   onOpenExitPopup: PropTypes.func.isRequired,
   changeTool: PropTypes.func.isRequired,
-  calculateMode: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired
-};
+  calculateMode: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+    .isRequired,
+}
 
 PlayerHeader.defaultProps = {
   unlockNext: false,
   dropdownOptions: [],
-  currentPage: 0
-};
+  currentPage: 0,
+}
 
-export default PlayerHeader;
+export default PlayerHeader

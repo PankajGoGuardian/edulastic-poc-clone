@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { SortableHandle } from "react-sortable-hoc";
-import { DragIcon, DragLine } from "../styled/SortableItemContainer";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { SortableHandle } from 'react-sortable-hoc'
+import { DragIcon, DragLine } from '../styled/SortableItemContainer'
 
 const DragHandle = SortableHandle(() => (
   <DragIcon>
@@ -9,10 +9,10 @@ const DragHandle = SortableHandle(() => (
     <DragLine />
     <DragLine />
   </DragIcon>
-));
+))
 
 DragHandle.propTypes = {
-  index: PropTypes.string
-};
+  index: PropTypes.string,
+}
 
-export default DragHandle;
+export default DragHandle

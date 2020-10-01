@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { themeColor, black, lightGrey6 } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { themeColor, black, lightGrey6 } from '@edulastic/colors'
 
 export const TLOList = styled.div`
   max-height: 40vh;
@@ -30,11 +30,11 @@ export const TLOList = styled.div`
       color: ${lightGrey6};
     }
   }
-`;
+`
 
 export const TLOListItem = ({ title, description, onClick, active }) => (
-  <div onClick={onClick} className={`tlo-list-item ${active && "active"}`}>
+  <div onClick={onClick} className={`tlo-list-item ${active && 'active'}`}>
     <div className="tlo-item-title">{title}</div>
     <div className="tlo-description">{description}</div>
   </div>
-);
+)

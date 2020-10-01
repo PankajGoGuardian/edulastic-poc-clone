@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Button } from "antd";
+import styled from 'styled-components'
+import { Button } from 'antd'
 
 export const ItemsContainer = styled.div`
   display: flex;
@@ -7,7 +7,7 @@ export const ItemsContainer = styled.div`
     margin-right: 10px;
     font-size: 20px;
   }
-`;
+`
 
 export const StyledButton = styled(Button)`
   width: 130px;
@@ -20,14 +20,14 @@ export const StyledButton = styled(Button)`
   font-size: 10px;
   border-radius: 4px 0px 0px 4px;
   text-transform: uppercase;
-`;
+`
 
 export const StyledSpan = styled.span`
   text-transform: uppercase;
   font-size: 13px;
   font-weight: 600;
   margin-right: 20px;
-`;
+`
 
 export const ItemContainer = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ export const ItemContainer = styled.div`
   &:last-child {
     margin-right: 0px;
   }
-`;
+`
 
 export const Mid = styled.div`
   background-color: ${({ bgColor }) => bgColor};
@@ -50,7 +50,7 @@ export const Mid = styled.div`
   justify-content: center;
   text-transform: uppercase;
   border: 1px solid ${({ color, bgColor }) => bgColor || color};
-`;
+`
 
 export const After = styled.div`
   width: 0;
@@ -62,7 +62,7 @@ export const After = styled.div`
   transform: rotate(90deg);
   left: -10px;
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     top: 2px;
     left: -19px;
@@ -70,9 +70,9 @@ export const After = styled.div`
     height: 0;
     border-left: 19px solid transparent;
     border-right: 19px solid transparent;
-    border-bottom: 15px solid ${({ bgColor }) => bgColor || "#f3f3f3"};
+    border-bottom: 15px solid ${({ bgColor }) => bgColor || '#f3f3f3'};
   }
-`;
+`
 
 export const Before = styled.div`
   width: 0;
@@ -80,4 +80,4 @@ export const Before = styled.div`
   border-top: 17px solid ${({ color }) => color};
   border-bottom: 17px solid ${({ color }) => color};
   border-left: 14px solid ${({ color }) => color};
-`;
+`

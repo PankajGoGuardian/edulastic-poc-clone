@@ -1,7 +1,12 @@
-import styled from "styled-components";
-import { Button } from "antd";
+import styled from 'styled-components'
+import { Button } from 'antd'
 
-import { white, themeColor, sectionBorder, smallDesktopWidth } from "@edulastic/colors";
+import {
+  white,
+  themeColor,
+  sectionBorder,
+  smallDesktopWidth,
+} from '@edulastic/colors'
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
@@ -12,7 +17,7 @@ export const AddQuestionWrapper = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     width: 270px;
   }
-`;
+`
 
 export const ContentWrapper = styled.div`
   padding: 15px;
@@ -21,7 +26,7 @@ export const ContentWrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
   border: 1px solid ${sectionBorder};
-`;
+`
 
 export const QuestionTypes = styled.div`
   display: flex;
@@ -30,7 +35,7 @@ export const QuestionTypes = styled.div`
   &:last-child {
     margin-top: 12px;
   }
-`;
+`
 
 export const AddQuestionIcon = styled.span`
   display: flex;
@@ -57,7 +62,7 @@ export const AddQuestionIcon = styled.span`
     width: 35px;
     height: 35px;
   }
-`;
+`
 
 export const AddButton = styled(Button)`
   border-radius: 5px;
@@ -68,4 +73,4 @@ export const AddButton = styled(Button)`
   font-size: 11px;
   text-transform: uppercase;
   font-weight: 600;
-`;
+`

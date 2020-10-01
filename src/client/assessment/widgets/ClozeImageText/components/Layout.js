@@ -1,27 +1,30 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { get, keys, isNaN, isObject } from "lodash";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withNamespaces } from "react-i18next";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { get, keys, isNaN, isObject } from 'lodash'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withNamespaces } from 'react-i18next'
 
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import SpecialCharacters from "../../../containers/WidgetOptions/components/SpecialCharacters";
-import Container from "./Container";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
-import { Block } from "../../../styled/WidgetOptions/Block";
-import { Subtitle } from "../../../styled/Subtitle";
-import Question from "../../../components/Question";
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import SpecialCharacters from '../../../containers/WidgetOptions/components/SpecialCharacters'
+import Container from './Container'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import { Block } from '../../../styled/WidgetOptions/Block'
+import { Subtitle } from '../../../styled/Subtitle'
+import Question from '../../../components/Question'
 import {
   FontSizeOption,
   StemNumerationOption,
   BrowserSpellcheckOption,
-  MultipleLineOption
-} from "../../../containers/WidgetOptions/components";
-import { changeItemAction } from "../../../../author/src/actions/question";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
+  MultipleLineOption,
+} from '../../../containers/WidgetOptions/components'
+import { changeItemAction } from '../../../../author/src/actions/question'
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector,
+} from '../../../../author/QuestionEditor/ducks'
 
 class Layout extends Component {
   render() {
@@ -33,75 +36,83 @@ class Layout extends Component {
       advancedAreOpen,
       fillSections,
       cleanSections,
-      responses
-    } = this.props;
+      responses,
+    } = this.props
 
     const changeUiStyle = (prop, value) => {
       setQuestionData(
-        produce(item, draft => {
+        produce(item, (draft) => {
           if (!draft.uiStyle) {
-            draft.uiStyle = {};
+            draft.uiStyle = {}
           }
 
-          if (prop === "inputtype" && value === "number") {
+          if (prop === 'inputtype' && value === 'number') {
             if (isObject(draft.validation.validResponse.value)) {
-              keys(draft.validation.validResponse.value).forEach(key => {
-                const val = draft.validation.validResponse.value[key];
-                draft.validation.validResponse.value[key] = isNaN(+val) ? "" : val;
-              });
+              keys(draft.validation.validResponse.value).forEach((key) => {
+                const val = draft.validation.validResponse.value[key]
+                draft.validation.validResponse.value[key] = isNaN(+val)
+                  ? ''
+                  : val
+              })
             }
 
             if (Array.isArray(draft.validation.altResponses)) {
-              draft.validation.altResponses = draft.validation.altResponses.map(res => {
-                if (isObject(res.value)) {
-                  keys(res.value).forEach(key => {
-                    const alt = res.value[key];
-                    res.value[key] = isNaN(+alt) ? "" : alt;
-                  });
+              draft.validation.altResponses = draft.validation.altResponses.map(
+                (res) => {
+                  if (isObject(res.value)) {
+                    keys(res.value).forEach((key) => {
+                      const alt = res.value[key]
+                      res.value[key] = isNaN(+alt) ? '' : alt
+                    })
+                  }
+                  return res
                 }
-                return res;
-              });
+              )
             }
           }
 
-          draft.uiStyle[prop] = value;
+          draft.uiStyle[prop] = value
         })
-      );
-    };
+      )
+    }
 
     const changeStyle = (prop, value) => {
       setQuestionData(
-        produce(item, draft => {
-          draft[prop] = draft[prop] || [];
-          draft[prop] = value;
+        produce(item, (draft) => {
+          draft[prop] = draft[prop] || []
+          draft[prop] = value
         })
-      );
-    };
+      )
+    }
 
     return (
-      <React.Fragment>
+      <>
         <Question
           section="advanced"
-          label={t("component.options.display")}
+          label={t('component.options.display')}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}
         >
           <Block style={{ paddingTop: 0 }}>
-            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
-              {t("component.options.display")}
+            <Subtitle
+              id={getFormattedAttrId(
+                `${item?.title}-${t('component.options.display')}`
+              )}
+            >
+              {t('component.options.display')}
             </Subtitle>
             <Row gutter={24}>
               <Col md={12}>
                 <MultipleLineOption
-                  checked={get(item, "multiple_line", false)}
-                  onChange={val => changeItem("multiple_line", val)}
+                  checked={get(item, 'multiple_line', false)}
+                  onChange={(val) => changeItem('multiple_line', val)}
                 />
               </Col>
               <Col md={12}>
                 <BrowserSpellcheckOption
-                  checked={get(item, "browserspellcheck", false)}
-                  onChange={val => changeItem("browserspellcheck", val)}
+                  checked={get(item, 'browserspellcheck', false)}
+                  onChange={(val) => changeItem('browserspellcheck', val)}
                 />
               </Col>
             </Row>
@@ -109,14 +120,20 @@ class Layout extends Component {
             <Row gutter={24}>
               <Col md={12}>
                 <StemNumerationOption
-                  onChange={val => changeUiStyle("validationStemNumeration", val)}
-                  value={get(item, "uiStyle.validationStemNumeration", "numerical")}
+                  onChange={(val) =>
+                    changeUiStyle('validationStemNumeration', val)
+                  }
+                  value={get(
+                    item,
+                    'uiStyle.validationStemNumeration',
+                    'numerical'
+                  )}
                 />
               </Col>
               <Col md={12}>
                 <FontSizeOption
-                  onChange={val => changeUiStyle("fontsize", val)}
-                  value={get(item, "uiStyle.fontsize", "normal")}
+                  onChange={(val) => changeUiStyle('fontsize', val)}
+                  value={get(item, 'uiStyle.fontsize', 'normal')}
                 />
               </Col>
             </Row>
@@ -125,12 +142,12 @@ class Layout extends Component {
               onChange={changeUiStyle}
               changeStyle={changeStyle}
               t={t}
-              uiStyle={get(item, "uiStyle", {})}
+              uiStyle={get(item, 'uiStyle', {})}
             />
           </Block>
         </Question>
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
@@ -142,27 +159,27 @@ Layout.propTypes = {
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  responses: PropTypes.array
-};
+  responses: PropTypes.array,
+}
 
 Layout.defaultProps = {
   advancedAreOpen: false,
   responses: [],
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
-    state => ({
-      item: getQuestionDataSelector(state)
+    (state) => ({
+      item: getQuestionDataSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
-      changeItem: changeItemAction
+      changeItem: changeItemAction,
     }
   )
-);
+)
 
-export default enhance(Layout);
+export default enhance(Layout)

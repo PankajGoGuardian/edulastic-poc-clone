@@ -1,2 +1,2 @@
-export { watcherSaga as StudentPlaylistSaga } from "./ducks";
-export { default as StudentPlaylist } from "./components/PlaylistsContainer";
+export { watcherSaga as StudentPlaylistSaga } from './ducks'
+export { default as StudentPlaylist } from './components/PlaylistsContainer'

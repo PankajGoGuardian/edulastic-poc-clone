@@ -1,55 +1,78 @@
-import { extraDesktopWidthMax, green, largeDesktopWidth, mobileWidthMax, themeColorBlue } from "@edulastic/colors";
-import { IconFilterClass } from "@edulastic/icons";
-import { Select } from "antd";
-import { isEmpty } from "lodash";
-import PropTypes from "prop-types";
-import React, { Fragment, useEffect, useState } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { changeChildAction, changeClassAction, getCurrentGroup } from "../Login/ducks";
+import {
+  extraDesktopWidthMax,
+  green,
+  largeDesktopWidth,
+  mobileWidthMax,
+  themeColorBlue,
+} from '@edulastic/colors'
+import { IconFilterClass } from '@edulastic/icons'
+import { Select } from 'antd'
+import { isEmpty } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Fragment, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import {
+  changeChildAction,
+  changeClassAction,
+  getCurrentGroup,
+} from '../Login/ducks'
 
-const ClassSelector = ({ t, classList, currentGroup, changeClass, allClasses, showAllClassesOption }) => {
-  const [isShown, setShown] = useState(false);
+const ClassSelector = ({
+  t,
+  classList,
+  currentGroup,
+  changeClass,
+  allClasses,
+  showAllClassesOption,
+}) => {
+  const [isShown, setShown] = useState(false)
   useEffect(() => {
     if (!showAllClassesOption) {
       /* For skill report we are not showing "All options", so when we route to the skill-report 
        page we pick the first class id by default and exit out of useEffect */
-      if (!currentGroup && classList.length) changeClass(classList[0]?._id);
+      if (!currentGroup && classList.length) changeClass(classList[0]?._id)
     } else {
-      if (currentGroup === "" && classList.length === 1) {
+      if (currentGroup === '' && classList.length === 1) {
         // all classes. but really only one classes available
-        changeClass(classList[0]._id);
+        changeClass(classList[0]._id)
       }
-      if (currentGroup !== "") {
+      if (currentGroup !== '') {
         // not all classes
 
-        const currentGroupInList = classList.find(x => x._id === currentGroup);
+        const currentGroupInList = classList.find((x) => x._id === currentGroup)
         if (!currentGroupInList) {
           // currently selected class is not in the list. so selecting first available class
           if (classList.length > 0 && !sessionStorage.temporaryClass) {
-            changeClass(classList[0]._id);
+            changeClass(classList[0]._id)
           }
         }
       }
     }
-  }, [classList, currentGroup, showAllClassesOption]);
-  const temporaryClassId = sessionStorage.getItem("temporaryClass");
-  const tempClass = allClasses.find(clazz => clazz._id === temporaryClassId) || {};
+  }, [classList, currentGroup, showAllClassesOption])
+  const temporaryClassId = sessionStorage.getItem('temporaryClass')
+  const tempClass =
+    allClasses.find((clazz) => clazz._id === temporaryClassId) || {}
   const currentClass =
-    classList.length === 0 && currentGroup && isEmpty(tempClass) && allClasses.find(c => c._id === currentGroup);
+    classList.length === 0 &&
+    currentGroup &&
+    isEmpty(tempClass) &&
+    allClasses.find((c) => c._id === currentGroup)
 
   return (
-    <Fragment>
+    <>
       <AssignmentMobileButton onClick={() => setShown(!isShown)}>
         <IconFilterClass />
       </AssignmentMobileButton>
       <AssignmentSelectClass id="class-dropdown-wrapper" isShown={isShown}>
-        <ClassLabel>{t("common.classLabel")}</ClassLabel>
+        <ClassLabel>{t('common.classLabel')}</ClassLabel>
         <Select
           value={currentGroup}
-          getPopupContainer={() => document.getElementById("class-dropdown-wrapper")}
-          onChange={value => {
-            changeClass(value);
+          getPopupContainer={() =>
+            document.getElementById('class-dropdown-wrapper')
+          }
+          onChange={(value) => {
+            changeClass(value)
           }}
         >
           {classList.length > 1 && showAllClassesOption && (
@@ -64,7 +87,7 @@ const ClassSelector = ({ t, classList, currentGroup, changeClass, allClasses, sh
             </Select.Option>
           )}
           {classList.map(
-            cl =>
+            (cl) =>
               temporaryClassId !== cl._id && (
                 <Select.Option key={cl._id} value={cl._id}>
                   {cl.name}
@@ -78,61 +101,62 @@ const ClassSelector = ({ t, classList, currentGroup, changeClass, allClasses, sh
           )}
         </Select>
       </AssignmentSelectClass>
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 ClassSelector.propTypes = {
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
-const stateToProps = state => ({
+const stateToProps = (state) => ({
   currentGroup: getCurrentGroup(state),
-  allClasses: state.studentEnrollClassList.allClasses
-});
-export default connect(
-  stateToProps,
-  { changeClass: changeClassAction }
-)(ClassSelector);
+  allClasses: state.studentEnrollClassList.allClasses,
+})
+export default connect(stateToProps, { changeClass: changeClassAction })(
+  ClassSelector
+)
 
 function StudentSelect({ changeChild, childs, currentChild }) {
   if ((childs || []).length <= 1) {
-    return null;
+    return null
   }
   return (
     <AssignmentSelectClass id="class-dropdown-wrapper">
       <ClassLabel>student</ClassLabel>
       <Select
         value={currentChild}
-        getPopupContainer={() => document.getElementById("class-dropdown-wrapper")}
-        onChange={value => {
-          changeChild(value);
+        getPopupContainer={() =>
+          document.getElementById('class-dropdown-wrapper')
+        }
+        onChange={(value) => {
+          changeChild(value)
         }}
       >
-        {childs.map(cl => (
+        {childs.map((cl) => (
           <Select.Option key={cl._id} value={cl._id}>
             {cl.name}
           </Select.Option>
         ))}
       </Select>
     </AssignmentSelectClass>
-  );
+  )
 }
 
 export const StudentSlectCommon = connect(
-  state => ({
+  (state) => ({
     childs: state?.user?.user?.children,
-    currentChild: state?.user?.currentChild
+    currentChild: state?.user?.currentChild,
   }),
   {
-    changeChild: changeChildAction
+    changeChild: changeChildAction,
   }
-)(StudentSelect);
+)(StudentSelect)
 
 const ClassLabel = styled.span`
   display: flex;
-  font-size: ${props => props.theme.header.headerClassTitleFontSize};
-  color: ${props => props.theme.header.headerClassTitleColor};
+  font-size: ${(props) => props.theme.header.headerClassTitleFontSize};
+  color: ${(props) => props.theme.header.headerClassTitleColor};
   font-weight: 600;
   margin-right: 30px;
   align-items: center;
@@ -146,7 +170,7 @@ const ClassLabel = styled.span`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
-`;
+`
 
 const AssignmentSelectClass = styled.div`
   display: flex;
@@ -168,26 +192,29 @@ const AssignmentSelectClass = styled.div`
   }
 
   .ant-select-selection {
-    background-color: ${props => props.theme.headerDropdownBgColor};
+    background-color: ${(props) => props.theme.headerDropdownBgColor};
     color: ${themeColorBlue};
-    font-size: ${props => props.theme.classNameFontSize};
+    font-size: ${(props) => props.theme.classNameFontSize};
     border-color: ${themeColorBlue};
     box-shadow: none !important;
     font-weight: 600;
   }
 
   .ant-select-dropdown-menu-item {
-    background-color: ${props => props.theme.headerDropdownItemBgColor};
-    color: ${props => props.theme.headerDropdownTextColor};
-    font-size: ${props => props.theme.classNameFontSize};
+    background-color: ${(props) => props.theme.headerDropdownItemBgColor};
+    color: ${(props) => props.theme.headerDropdownTextColor};
+    font-size: ${(props) => props.theme.classNameFontSize};
     &.ant-select-dropdown-menu-item-selected {
-      background-color: ${props => props.theme.headerDropdownItemBgSelectedColor};
-      color: ${props => props.theme.headerDropdownItemTextSelectedColor};
+      background-color: ${(props) =>
+        props.theme.headerDropdownItemBgSelectedColor};
+      color: ${(props) => props.theme.headerDropdownItemTextSelectedColor};
     }
 
     &:hover {
-      background-color: ${props => props.theme.headerDropdownItemBgHoverColor} !important;
-      color: ${props => props.theme.headerDropdownItemTextHoverColor} !important;
+      background-color: ${(props) =>
+        props.theme.headerDropdownItemBgHoverColor} !important;
+      color: ${(props) =>
+        props.theme.headerDropdownItemTextHoverColor} !important;
     }
   }
 
@@ -196,7 +223,7 @@ const AssignmentSelectClass = styled.div`
     align-items: center;
     display: flex !important;
     padding-left: 15px;
-    font-size: ${props => props.theme.classNameFontSize};
+    font-size: ${(props) => props.theme.classNameFontSize};
 
     @media (max-width: ${largeDesktopWidth}) {
       padding-left: 2px;
@@ -205,7 +232,7 @@ const AssignmentSelectClass = styled.div`
   }
   .anticon-down {
     svg {
-      fill: ${props => props.theme.headerDropdownTextColor};
+      fill: ${(props) => props.theme.headerDropdownTextColor};
     }
   }
 
@@ -220,7 +247,7 @@ const AssignmentSelectClass = styled.div`
     background: #fff;
     padding-top: 10px;
     opacity: ${({ isShown }) => (isShown ? 1 : 0)};
-    pointer-events: ${({ isShown }) => (isShown ? "all" : "none")};
+    pointer-events: ${({ isShown }) => (isShown ? 'all' : 'none')};
 
     .ant-select {
       height: 40px;
@@ -236,7 +263,7 @@ const AssignmentSelectClass = styled.div`
       background: #f8f8f8;
     }
   }
-`;
+`
 
 const AssignmentMobileButton = styled.div`
   display: none;
@@ -255,4 +282,4 @@ const AssignmentMobileButton = styled.div`
       fill: ${green};
     }
   }
-`;
+`

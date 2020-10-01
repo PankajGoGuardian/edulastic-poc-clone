@@ -1,58 +1,62 @@
 /* eslint-disable lines-between-class-members */
-import TestLibrary from "../testLibraryPage";
+import TestLibrary from '../testLibraryPage'
 
 export default class Regrade {
   constructor() {
-    this.testLibrary = new TestLibrary();
+    this.testLibrary = new TestLibrary()
   }
 
   // *** ELEMENTS START ***
-  getCancelRegrade = () => cy.get('[data-cy="cancelRegrade"]');
+  getCancelRegrade = () => cy.get('[data-cy="cancelRegrade"]')
 
-  getRadioByValue = value => cy.get(`[data-cy="${value}"]`);
+  getRadioByValue = (value) => cy.get(`[data-cy="${value}"]`)
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   regradeSelection = (regrade, EditFromAssgntsPage = false) => {
-    cy.server();
-    cy.route("PUT", "**/api/test/*").as("published");
-    cy.route("GET", "**/assignments").as("assignments");
-    cy.contains("There are some ongoing assignments linked to the").as("regradeSelect");
+    cy.server()
+    cy.route('PUT', '**/api/test/*').as('published')
+    cy.route('GET', '**/assignments').as('assignments')
+    cy.contains('There are some ongoing assignments linked to the').as(
+      'regradeSelect'
+    )
     if (!regrade) {
-      cy.get("@regradeSelect")
+      cy.get('@regradeSelect')
         .next()
-        .find("button")
+        .find('button')
         .eq(0)
-        .click({ force: true });
-      if (EditFromAssgntsPage) cy.wait("@published").then(xhr => this.testLibrary.saveTestId(xhr));
-      else cy.wait("@published");
-      cy.wait("@published");
+        .click({ force: true })
+      if (EditFromAssgntsPage)
+        cy.wait('@published').then((xhr) => this.testLibrary.saveTestId(xhr))
+      else cy.wait('@published')
+      cy.wait('@published')
     } else {
-      cy.get("@regradeSelect")
+      cy.get('@regradeSelect')
         .next()
-        .find("button")
+        .find('button')
         .eq(1)
-        .click({ force: true });
-      if (EditFromAssgntsPage) cy.wait("@published").then(xhr => this.testLibrary.saveTestId(xhr));
-      cy.wait("@assignments");
+        .click({ force: true })
+      if (EditFromAssgntsPage)
+        cy.wait('@published').then((xhr) => this.testLibrary.saveTestId(xhr))
+      cy.wait('@assignments')
     }
-  };
+  }
 
   applyRegrade = () => {
-    cy.server();
-    cy.route("POST", "**/assignments/regrade").as("regrade");
-    cy.get("[data-cy='applyRegrade']").click({ force: true });
-    cy.wait("@regrade").then(xhr => expect(xhr.status).to.eq(200));
-    cy.contains("Success!");
-  };
+    cy.server()
+    cy.route('POST', '**/assignments/regrade').as('regrade')
+    cy.get("[data-cy='applyRegrade']").click({ force: true })
+    cy.wait('@regrade').then((xhr) => expect(xhr.status).to.eq(200))
+    cy.contains('Success!')
+  }
 
   canclelRegrade = () => {
-    this.getCancelRegrade().click();
-    cy.contains("Share With Others");
-  };
+    this.getCancelRegrade().click()
+    cy.contains('Share With Others')
+  }
 
-  checkRadioByValue = value => this.getRadioByValue(value).click();
+  checkRadioByValue = (value) => this.getRadioByValue(value).click()
 
   // *** ACTIONS END ***
 

@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Tag, Popover } from "antd";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { Tag, Popover } from 'antd'
 
 import {
   darkBlue,
@@ -11,8 +11,8 @@ import {
   white,
   grey,
   lightGreen6,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
 
 const Tags = ({
   tags = [],
@@ -26,26 +26,37 @@ const Tags = ({
   showTitle = false,
   isGrayTags,
   isCustomTags,
-  flexWrap
+  flexWrap,
 }) => {
-  if (!tags.length) return null;
+  if (!tags.length) return null
 
-  const visibleTags = tags.slice(0, show);
-  const hiddenTags = tags.slice(show);
-  const className = isGrayTags ? "gray-tags" : isCustomTags ? "custom-tags" : "";
+  const visibleTags = tags.slice(0, show)
+  const hiddenTags = tags.slice(show)
+  const className = isGrayTags ? 'gray-tags' : isCustomTags ? 'custom-tags' : ''
 
   const popup = (
     <PopupContainer className="tag-wrapper">
       {hiddenTags.map((tag, i) => (
-        <Label className={className} popupContainer style={labelStyle} key={i} type={type}>
-          {isStandards || typeof tag === "string" ? tag : tag.tagName}
+        <Label
+          className={className}
+          popupContainer
+          style={labelStyle}
+          key={i}
+          type={type}
+        >
+          {isStandards || typeof tag === 'string' ? tag : tag.tagName}
         </Label>
       ))}
     </PopupContainer>
-  );
+  )
 
   return (
-    <Labels completed={completed} isPlaylist={isPlaylist} margin={margin} flexWrap={flexWrap}>
+    <Labels
+      completed={completed}
+      isPlaylist={isPlaylist}
+      margin={margin}
+      flexWrap={flexWrap}
+    >
       {visibleTags.map((tag, i) => (
         <Label
           className={className}
@@ -54,70 +65,74 @@ const Tags = ({
           type={type}
           {...(showTitle ? { title: tag?.tagName || tag } : {})}
         >
-          {isStandards || typeof tag === "string" ? tag : tag.tagName}
+          {isStandards || typeof tag === 'string' ? tag : tag.tagName}
         </Label>
       ))}
       {hiddenTags && !!hiddenTags.length && (
         <Popover
           placement="bottomLeft"
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           content={popup}
           trigger="click"
         >
-          <Label className={`${className} hidden-tags`} style={labelStyle} type={type}>
+          <Label
+            className={`${className} hidden-tags`}
+            style={labelStyle}
+            type={type}
+          >
             <span>{hiddenTags.length} +</span>
           </Label>
         </Popover>
       )}
     </Labels>
-  );
-};
+  )
+}
 
 Tags.propTypes = {
   tags: PropTypes.array.isRequired,
   labelStyle: PropTypes.object,
   type: PropTypes.string,
-  show: PropTypes.number
-};
+  show: PropTypes.number,
+}
 
 Tags.defaultProps = {
   labelStyle: {},
-  type: "primary", // primary, secondary
-  show: 2
-};
+  type: 'primary', // primary, secondary
+  show: 2,
+}
 
-export default Tags;
+export default Tags
 
-const getLabelStyle = type => {
+const getLabelStyle = (type) => {
   switch (type) {
-    case "secondary":
+    case 'secondary':
       return `
         color: ${greenDark};
         background: ${lightGreen};
-      `;
-    case "primary":
+      `
+    case 'primary':
       return `
       color: ${greenDark};
       background: ${lightGreen6};
-    `;
+    `
     default:
       return `
       color: ${darkBlue};
       background: ${lightBlue};
-    `;
+    `
   }
-};
+}
 
 const Labels = styled.div`
   display: flex;
-  flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
-  align-items: ${({ isPlaylist }) => isPlaylist && "flex-start"};
-  justify-content: ${({ isPlaylist }) => isPlaylist && "flex-start"};
-  width: ${({ isPlaylist }) => isPlaylist && "auto"};
+  flex-wrap: ${({ flexWrap }) => flexWrap || 'wrap'};
+  align-items: ${({ isPlaylist }) => isPlaylist && 'flex-start'};
+  justify-content: ${({ isPlaylist }) => isPlaylist && 'flex-start'};
+  width: ${({ isPlaylist }) => isPlaylist && 'auto'};
   margin: ${({ margin, completed, isPlaylist }) =>
-    margin || `4px 0px 4px ${isPlaylist ? (completed ? "8px" : "56px") : 0}`};
+    margin || `4px 0px 4px ${isPlaylist ? (completed ? '8px' : '56px') : 0}`};
   max-width: 100%;
-`;
+`
 
 const PopupContainer = styled.div`
   display: flex;
@@ -135,7 +150,7 @@ const PopupContainer = styled.div`
       max-width: 100%;
     }
   }
-`;
+`
 
 const Label = styled(Tag)`
   position: relative;
@@ -144,10 +159,10 @@ const Label = styled(Tag)`
   padding: 2px 12px;
   font-size: 8px;
   font-weight: 700;
-  ${props => getLabelStyle(props.type)};
+  ${(props) => getLabelStyle(props.type)};
   border: none;
   line-height: 16px;
-  margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : "3px")} 0;
+  margin: 0 3px ${({ popupContainer }) => (popupContainer ? '6px' : '3px')} 0;
   height: 20px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -181,4 +196,4 @@ const Label = styled(Tag)`
     height: 24px;
     padding: 4px 12px;
   }
-`;
+`

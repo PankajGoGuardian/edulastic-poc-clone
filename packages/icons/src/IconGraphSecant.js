@@ -1,9 +1,13 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconGraphSecant = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.338 25.054" {...props}>
+const IconGraphSecant = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24.338 25.054"
+    {...props}
+  >
     <g transform="translate(6.987 -2.325) rotate(30)">
       <path
         d="M14.988,0,0,14.988"
@@ -26,6 +30,6 @@ const IconGraphSecant = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconGraphSecant);
+export default withIconStyles(IconGraphSecant)

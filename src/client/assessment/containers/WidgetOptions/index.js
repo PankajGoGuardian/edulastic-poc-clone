@@ -1,14 +1,14 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
+import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
 
-import { evaluationType } from "@edulastic/constants";
-import { withNamespaces } from "@edulastic/localization";
+import { evaluationType } from '@edulastic/constants'
+import { withNamespaces } from '@edulastic/localization'
 
-import Scoring from "./components/Scoring";
-import Variables from "./components/Variables";
-import Question from "../../components/Question";
+import Scoring from './components/Scoring'
+import Variables from './components/Variables'
+import Question from '../../components/Question'
 
-const types = [evaluationType.exactMatch, evaluationType.partialMatch];
+const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
 class WidgetOptions extends Component {
   static propTypes = {
@@ -23,8 +23,8 @@ class WidgetOptions extends Component {
     renderExtra: PropTypes.any,
     showScoringSection: PropTypes.bool,
     extraInScoring: PropTypes.elementType,
-    showScoringType: PropTypes.bool
-  };
+    showScoringType: PropTypes.bool,
+  }
 
   static defaultProps = {
     scoringTypes: types,
@@ -37,8 +37,8 @@ class WidgetOptions extends Component {
     showSelect: true,
     showScoringSection: false,
     extraInScoring: null,
-    showScoringType: true
-  };
+    showScoringType: true,
+  }
 
   render() {
     const {
@@ -56,15 +56,15 @@ class WidgetOptions extends Component {
       showScoringSectionAnyRole,
       showScoringType,
       extraInScoring, // extraInScoring (Component required inside scoring section)
-      isCorrectAnsTab
-    } = this.props;
+      isCorrectAnsTab,
+    } = this.props
 
     return (
-      <Fragment>
+      <>
         {renderExtra}
         {(showScoring || showScoringSection) && (
           <Question
-            section={showScoringSection ? "main" : "advanced"} // Show scoring section in main/advanced section based on flag
+            section={showScoringSection ? 'main' : 'advanced'} // Show scoring section in main/advanced section based on flag
             label="Scoring"
             fillSections={fillSections}
             cleanSections={cleanSections}
@@ -93,9 +93,9 @@ class WidgetOptions extends Component {
           />
         )}
         {children}
-      </Fragment>
-    );
+      </>
+    )
   }
 }
 
-export default withNamespaces("assessment")(WidgetOptions);
+export default withNamespaces('assessment')(WidgetOptions)

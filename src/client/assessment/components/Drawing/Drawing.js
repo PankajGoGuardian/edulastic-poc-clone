@@ -1,20 +1,20 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import DrawingPreview from "./DrawingPreview";
-import DrawingEdit from "./DrawingEdit";
-import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import DrawingPreview from './DrawingPreview'
+import DrawingEdit from './DrawingEdit'
+import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
-const Drawing = props => {
-  const { view } = props;
+const Drawing = (props) => {
+  const { view } = props
   return (
-    <Fragment>
+    <>
       {view === PREVIEW && <DrawingPreview {...props} />}
       {view === EDIT && <DrawingEdit {...props} />}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 Drawing.propTypes = {
   view: PropTypes.string.isRequired,
@@ -24,8 +24,8 @@ Drawing.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
-};
+  evaluation: PropTypes.any,
+}
 
 Drawing.defaultProps = {
   previewTab: CLEAR,
@@ -33,10 +33,9 @@ Drawing.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
-};
+  evaluation: '',
+}
 
-export default connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(Drawing);
+export default connect(null, { setQuestionData: setQuestionDataAction })(
+  Drawing
+)

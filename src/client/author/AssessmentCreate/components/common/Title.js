@@ -1,5 +1,5 @@
-import { white, mediumDesktopExactWidth } from "@edulastic/colors";
-import styled from "styled-components";
+import { white, mediumDesktopExactWidth } from '@edulastic/colors'
+import styled from 'styled-components'
 
 const Title = styled.h2`
   font-size: 18px;
@@ -15,6 +15,6 @@ const Title = styled.h2`
   @media screen and (min-width: ${mediumDesktopExactWidth}) {
     font-size: 22px;
   }
-`;
+`
 
-export default Title;
+export default Title

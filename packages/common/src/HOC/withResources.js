@@ -10,63 +10,63 @@
  *  Ummm... prolly this code belongs to "mines of Moria"! 👻
  */
 // @ts-check
-import React, { useState, useEffect } from "react";
-import load from "loadjs";
+import React, { useState, useEffect } from 'react'
+import load from 'loadjs'
 
-const NAMESPACE = "edulaticV2LoadedResources";
-const LOADING_RESOURCES = "edulasticV2LoadingResources";
+const NAMESPACE = 'edulaticV2LoadedResources'
+const LOADING_RESOURCES = 'edulasticV2LoadingResources'
 
 // map for keeping track of loaded resources
-window[NAMESPACE] = {};
-window[LOADING_RESOURCES] = {};
+window[NAMESPACE] = {}
+window[LOADING_RESOURCES] = {}
 
 /**
  *
  * @param {string|string[]} resources
  */
-const getResourcesNotLoaded = resources => {
-  const allResources = Array.isArray(resources) ? resources : [resources];
+const getResourcesNotLoaded = (resources) => {
+  const allResources = Array.isArray(resources) ? resources : [resources]
 
   // return resources that aren't loaded yet
-  return allResources.filter(x => x && !window[NAMESPACE][x]);
-};
+  return allResources.filter((x) => x && !window[NAMESPACE][x])
+}
 
 /**
  * return a promise, that will be resolved when the resource is loaded.
  * @param {string[]} resources
  */
 const loadResources = (resources = []) => {
-  if (!resources.length) return Promise.resolve();
+  if (!resources.length) return Promise.resolve()
 
-  resources.forEach(resource => {
-    window[LOADING_RESOURCES][resource] = true;
-  });
+  resources.forEach((resource) => {
+    window[LOADING_RESOURCES][resource] = true
+  })
 
   const returnPromise = load(resources, {
     returnPromise: true,
     async: true,
     numRetries: 1,
     success: () => {
-      resources.forEach(resource => {
-        window[LOADING_RESOURCES][resource] = false;
+      resources.forEach((resource) => {
+        window[LOADING_RESOURCES][resource] = false
         // flag the resource as already loaded!
-        window[NAMESPACE][resource] = true;
-      });
+        window[NAMESPACE][resource] = true
+      })
     },
-    error: pathsNotFound => {
+    error: (pathsNotFound) => {
       // replace them from the global context as never loaded and see if next render will invoke them,
       // we already retried once.
-      pathsNotFound.forEach(resource => {
-        window[LOADING_RESOURCES][resource] = false;
-        window[NAMESPACE][resource] = false;
-      });
+      pathsNotFound.forEach((resource) => {
+        window[LOADING_RESOURCES][resource] = false
+        window[NAMESPACE][resource] = false
+      })
 
-      throw new Error(`Some resources could not be loaded ${pathsNotFound}`);
-    }
-  });
+      throw new Error(`Some resources could not be loaded ${pathsNotFound}`)
+    },
+  })
 
-  return returnPromise;
-};
+  return returnPromise
+}
 
 /**
  * Hook to leverage external script dependencies into your component
@@ -75,35 +75,35 @@ const loadResources = (resources = []) => {
  * @param {Function=} onLoaded callback to use post resources being loaded.
  */
 export const useResources = (criticalResources, resources, onLoaded) => {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false)
 
-  const targetCriticalResources = getResourcesNotLoaded(criticalResources);
-  const targetResources = getResourcesNotLoaded(resources);
+  const targetCriticalResources = getResourcesNotLoaded(criticalResources)
+  const targetResources = getResourcesNotLoaded(resources)
 
   useEffect(() => {
     const handleOnLoad = () => {
-      if (onLoaded) onLoaded();
-      setLoaded(true);
-    };
+      if (onLoaded) onLoaded()
+      setLoaded(true)
+    }
 
     if (!targetCriticalResources.length && !targetResources.length) {
       // if both are empty, then the fragments are loaded already
-      handleOnLoad();
+      handleOnLoad()
     } else {
       // first resolve the critical resources, if specified
       loadResources(targetCriticalResources)
         .then(() => loadResources(targetResources)) // then remaining resources
         .then(() => {
-          handleOnLoad();
+          handleOnLoad()
         })
-        .catch(error => {
-          console.error(error);
-        });
+        .catch((error) => {
+          console.error(error)
+        })
     }
-  }, []); // treat it like componentDidMount
+  }, []) // treat it like componentDidMount
 
-  return loaded;
-};
+  return loaded
+}
 
 /**
  * HOC to leverage external script dependencies by wrapping your component
@@ -111,21 +111,27 @@ export const useResources = (criticalResources, resources, onLoaded) => {
  */
 export function WithResourcesHOC({ criticalResources, resources, fallBack }) {
   return function resourceLoaded(WrappedComponent) {
-    return props => {
-      const loaded = useResources(criticalResources, resources);
+    return (props) => {
+      const loaded = useResources(criticalResources, resources)
 
       if (!loaded) {
-        return fallBack;
+        return fallBack
       }
-      return <WrappedComponent {...props} />;
-    };
-  };
+      return <WrappedComponent {...props} />
+    }
+  }
 }
 
-export function WithResources({ criticalResources, resources, fallBack, children, onLoaded }) {
-  const loaded = useResources(criticalResources, resources, onLoaded);
+export function WithResources({
+  criticalResources,
+  resources,
+  fallBack,
+  children,
+  onLoaded,
+}) {
+  const loaded = useResources(criticalResources, resources, onLoaded)
   if (!loaded) {
-    return fallBack;
+    return fallBack
   }
-  return children;
+  return children
 }

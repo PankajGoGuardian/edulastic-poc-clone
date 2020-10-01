@@ -1,51 +1,51 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/user-folder";
+const api = new API()
+const prefix = '/user-folder'
 
-const fetchFolders = type =>
+const fetchFolders = (type) =>
   api
     .callApi({
       url: `${prefix}?folderType=${type}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createFolder = data =>
+const createFolder = (data) =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const deleteFolder = folderId =>
+const deleteFolder = (folderId) =>
   api.callApi({
     url: `${prefix}/${folderId}`,
-    method: "delete"
-  });
+    method: 'delete',
+  })
 
 const addMoveContent = ({ folderId, data }) =>
   api.callApi({
     url: `${prefix}/${folderId}/content`,
-    method: "put",
-    data
-  });
+    method: 'put',
+    data,
+  })
 
 const renameFolder = ({ folderId, data }) =>
   api.callApi({
     url: `${prefix}/${folderId}`,
-    method: "put",
-    data
-  });
+    method: 'put',
+    data,
+  })
 
 const removeItemFromFolder = ({ folderId, data }) =>
   api.callApi({
     url: `${prefix}/${folderId}/content-delete`,
-    method: "put",
-    data
-  });
+    method: 'put',
+    data,
+  })
 
 export default {
   fetchFolders,
@@ -53,5 +53,5 @@ export default {
   deleteFolder,
   renameFolder,
   addMoveContent,
-  removeItemFromFolder
-};
+  removeItemFromFolder,
+}

@@ -1,8 +1,8 @@
-import GraphingNumberLineStandardPage from "./graphingNumberLineStdPage";
+import GraphingNumberLineStandardPage from './graphingNumberLineStdPage'
 
 class GraphingNumberLinePlotPage extends GraphingNumberLineStandardPage {
   constructor() {
-    super();
+    super()
   }
 }
-export default GraphingNumberLinePlotPage;
+export default GraphingNumberLinePlotPage

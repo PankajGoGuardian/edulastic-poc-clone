@@ -1,14 +1,14 @@
-import React, { Fragment } from "react";
-import { Button, Cascader, Input, Modal } from "antd";
-import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
+import React, { Fragment } from 'react'
+import { Button, Cascader, Input, Modal } from 'antd'
+import styled from 'styled-components'
+import { desktopWidth } from '@edulastic/colors'
 
-import AddEditModuleModal from "./AddEditModuleModal";
-import AddUnitModalBody from "./AddUnitModalBody";
-import ChangePlaylistModal from "./ChangePlaylistModal";
-import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
-import EmbeddedVideoPreviewModal from "../ManageContentBlock/components/EmbeddedVideoPreviewModal";
-import DropPlaylistModal from "./DropPlaylistModal";
+import AddEditModuleModal from './AddEditModuleModal'
+import AddUnitModalBody from './AddUnitModalBody'
+import ChangePlaylistModal from './ChangePlaylistModal'
+import RemoveTestModal from '../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal'
+import EmbeddedVideoPreviewModal from '../ManageContentBlock/components/EmbeddedVideoPreviewModal'
+import DropPlaylistModal from './DropPlaylistModal'
 
 const CurriculumSequenceModals = ({
   isDesktop,
@@ -40,9 +40,9 @@ const CurriculumSequenceModals = ({
   dropPlaylistModalVisible,
   isVideoResourcePreviewModal,
   closeDropPlaylistModal,
-  setEmbeddedVideoPreviewModal
+  setEmbeddedVideoPreviewModal,
 }) => (
-  <Fragment>
+  <>
     <RemoveTestModal
       isVisible={showConfirmRemoveModal}
       onClose={onCloseConfirmRemoveModal}
@@ -64,7 +64,9 @@ const CurriculumSequenceModals = ({
       onOk={handleAddUnit}
       onCancel={handleAddUnit}
       footer={null}
-      style={isDesktop ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
+      style={
+        isDesktop ? { minWidth: '640px', padding: '20px' } : { padding: '20px' }
+      }
     >
       <AddUnitModalBody
         destinationCurriculumSequence={destinationCurriculumSequence}
@@ -93,7 +95,9 @@ const CurriculumSequenceModals = ({
       onOk={handleAddCustomContent}
       onCancel={handleAddCustomContent}
       footer={null}
-      style={isDesktop ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
+      style={
+        isDesktop ? { minWidth: '640px', padding: '20px' } : { padding: '20px' }
+      }
     >
       <ModalBody>
         <ModalLabelWrapper>
@@ -102,27 +106,40 @@ const CurriculumSequenceModals = ({
         </ModalLabelWrapper>
         <ModalInputWrapper>
           <Input.Group compact>
-            <Cascader defaultValue={["Lesson"]} options={options2} />
+            <Cascader defaultValue={['Lesson']} options={options2} />
           </Input.Group>
           <Input.Group compact>
-            <Cascader defaultValue={["Unit Name"]} options={options1} />
+            <Cascader defaultValue={['Unit Name']} options={options1} />
           </Input.Group>
         </ModalInputWrapper>
         <label>Reference #</label>
         <Input />
       </ModalBody>
       <ModalFooter>
-        <Button type="primary" ghost key="back" onClick={handleAddCustomContent}>
+        <Button
+          type="primary"
+          ghost
+          key="back"
+          onClick={handleAddCustomContent}
+        >
           CANCEL
         </Button>
-        <Button data-cy="save" key="submit" type="primary" onClick={handleAddCustomContent}>
+        <Button
+          data-cy="save"
+          key="submit"
+          type="primary"
+          onClick={handleAddCustomContent}
+        >
           SAVE
         </Button>
       </ModalFooter>
     </Modal>
 
     {dropPlaylistModalVisible && (
-      <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={closeDropPlaylistModal} />
+      <DropPlaylistModal
+        visible={dropPlaylistModalVisible}
+        closeModal={closeDropPlaylistModal}
+      />
     )}
     {isVideoResourcePreviewModal && (
       <EmbeddedVideoPreviewModal
@@ -130,10 +147,10 @@ const CurriculumSequenceModals = ({
         isVisible={isVideoResourcePreviewModal}
       />
     )}
-  </Fragment>
-);
+  </>
+)
 
-export default CurriculumSequenceModals;
+export default CurriculumSequenceModals
 
 const ModalBody = styled.div`
   display: flex;
@@ -149,7 +166,7 @@ const ModalBody = styled.div`
     font-weight: 600;
     margin-bottom: 10px;
   }
-`;
+`
 
 const ModalLabelWrapper = styled.div`
   display: flex;
@@ -157,7 +174,7 @@ const ModalLabelWrapper = styled.div`
   label {
     width: 48%;
   }
-`;
+`
 
 const ModalInputWrapper = styled.div`
   display: flex;
@@ -166,7 +183,7 @@ const ModalInputWrapper = styled.div`
   .ant-cascader-picker {
     width: 100%;
   }
-`;
+`
 
 const ModalFooter = styled.div`
   display: flex;
@@ -185,4 +202,4 @@ const ModalFooter = styled.div`
       padding-right: 0px;
     }
   }
-`;
+`

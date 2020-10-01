@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconBullet = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="15.061" height="13.045" viewBox="0 0 15.061 13.045" {...props}>
+const IconBullet = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="15.061"
+    height="13.045"
+    viewBox="0 0 15.061 13.045"
+    {...props}
+  >
     <g transform="translate(0 -6.388)">
       <g transform="translate(0 6.388)">
         <circle cx="1.72" cy="1.72" r="1.72" transform="translate(0 0)" />
@@ -26,6 +32,6 @@ const IconBullet = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconBullet);
+export default withIconStyles(IconBullet)

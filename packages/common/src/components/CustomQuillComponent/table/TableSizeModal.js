@@ -1,25 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { InputNumber, Modal, Row, Col, Divider } from "antd";
+import React, { useState, useEffect, useRef } from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { InputNumber, Modal, Row, Col, Divider } from 'antd'
 
 const Label = styled.label`
   color: #314659;
   font-weight: 500;
   font-size: 14px;
   margin-top: 2px;
-`;
+`
 
 const TableSizeModal = ({ rows, cols, show, onSave, onClose }) => {
-  const rowsInputRef = useRef(null);
-  const [rowsVal, setRowsVal] = useState(rows);
-  const [colsVal, setColsVal] = useState(cols);
+  const rowsInputRef = useRef(null)
+  const [rowsVal, setRowsVal] = useState(rows)
+  const [colsVal, setColsVal] = useState(cols)
 
   useEffect(() => {
     if (show && rowsInputRef.current) {
-      rowsInputRef.current.focus();
+      rowsInputRef.current.focus()
     }
-  }, [show]);
+  }, [show])
 
   return (
     <Modal
@@ -40,7 +40,7 @@ const TableSizeModal = ({ rows, cols, show, onSave, onClose }) => {
             max={30}
             data-cy="table-size-modal-rows"
             value={rowsVal}
-            onChange={val => setRowsVal(val)}
+            onChange={(val) => setRowsVal(val)}
             autoFocus
           />
         </Col>
@@ -56,28 +56,28 @@ const TableSizeModal = ({ rows, cols, show, onSave, onClose }) => {
             max={10}
             data-cy="table-size-modal-cols"
             value={colsVal}
-            onChange={val => setColsVal(val)}
+            onChange={(val) => setColsVal(val)}
           />
         </Col>
       </Row>
     </Modal>
-  );
-};
+  )
+}
 
 TableSizeModal.propTypes = {
   show: PropTypes.bool,
   rows: PropTypes.number,
   cols: PropTypes.number,
   onSave: PropTypes.func,
-  onClose: PropTypes.func
-};
+  onClose: PropTypes.func,
+}
 
 TableSizeModal.defaultProps = {
   show: false,
   rows: 3,
   cols: 2,
   onSave: () => {},
-  onClose: () => {}
-};
+  onClose: () => {},
+}
 
-export default TableSizeModal;
+export default TableSizeModal

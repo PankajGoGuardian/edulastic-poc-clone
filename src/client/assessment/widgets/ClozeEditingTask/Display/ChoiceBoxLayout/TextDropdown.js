@@ -1,15 +1,23 @@
-import React, { useContext } from "react";
-import styled from "styled-components";
-import { Select as AntSelect } from "antd";
-import { lightBlue1 } from "@edulastic/colors";
-import { MathSpan, ScrollContext } from "@edulastic/common";
-import { subOptions } from "../../constants";
+import React, { useContext } from 'react'
+import styled from 'styled-components'
+import { Select as AntSelect } from 'antd'
+import { lightBlue1 } from '@edulastic/colors'
+import { MathSpan, ScrollContext } from '@edulastic/common'
+import { subOptions } from '../../constants'
 
-const { Option } = AntSelect;
+const { Option } = AntSelect
 
-const TextDropdown = ({ styles, options, placeholder, userAnswer, disableResponse, onChange, displayStyleOption }) => {
-  const isDahsline = subOptions.DASHED_LINE === displayStyleOption;
-  const { getScrollElement } = useContext(ScrollContext);
+const TextDropdown = ({
+  styles,
+  options,
+  placeholder,
+  userAnswer,
+  disableResponse,
+  onChange,
+  displayStyleOption,
+}) => {
+  const isDahsline = subOptions.DASHED_LINE === displayStyleOption
+  const { getScrollElement } = useContext(ScrollContext)
   return (
     <SelectWrapper style={{ ...styles, minWidth: styles.minWidthpx }}>
       <Select
@@ -27,16 +35,16 @@ const TextDropdown = ({ styles, options, placeholder, userAnswer, disableRespons
         ))}
       </Select>
     </SelectWrapper>
-  );
-};
+  )
+}
 
-export default TextDropdown;
+export default TextDropdown
 
 const SelectWrapper = styled.div`
   position: relative;
   display: inline-flex;
   vertical-align: bottom;
-`;
+`
 
 const Select = styled(AntSelect)`
   width: 100%;
@@ -44,7 +52,8 @@ const Select = styled(AntSelect)`
 
   & .ant-select-selection {
     border: 0px;
-    ${({ isDahsline }) => (isDahsline ? "border-bottom: 2px dashed;" : `background: ${lightBlue1}`)};
+    ${({ isDahsline }) =>
+      isDahsline ? 'border-bottom: 2px dashed;' : `background: ${lightBlue1}`};
     border-radius: 0px;
   }
 
@@ -57,4 +66,4 @@ const Select = styled(AntSelect)`
   & .ant-select-arrow {
     display: none;
   }
-`;
+`

@@ -1,13 +1,22 @@
-import { greyThemeLight, greyThemeLighter, mediumDesktopExactWidth } from "@edulastic/colors";
-import styled from "styled-components";
+import {
+  greyThemeLight,
+  greyThemeLighter,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const SortableItemContainer = styled.div.attrs({
-  className: "sortable-item-container"
+  className: 'sortable-item-container',
 })`
-  width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
-  font-size: ${props => props.fontSize || "14px"};
+  width: ${(props) =>
+    props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2}%;
+  font-size: ${(props) => props.fontSize || '14px'};
   margin: ${({ styleType }) =>
-    styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 10px 0" : "0 0 4px 0"};
+    styleType === 'list'
+      ? '0 0 5px 0'
+      : styleType === 'inline'
+      ? '0 5px 10px 0'
+      : '0 0 4px 0'};
   display: inline-flex;
   flex-direction: column;
   border-radius: 4px;
@@ -18,7 +27,7 @@ export const SortableItemContainer = styled.div.attrs({
   }
 
   .ql-container {
-    font-size: ${props => props.fontSize || "14px"};
+    font-size: ${(props) => props.fontSize || '14px'};
   }
 
   &:hover {
@@ -40,16 +49,20 @@ export const SortableItemContainer = styled.div.attrs({
     min-height: 34px;
     max-width: 100%;
     border: ${({ styleType }) =>
-      styleType === "list" || styleType === "inline" ? "none" : `1px solid ${greyThemeLight}`};
+      styleType === 'list' || styleType === 'inline'
+        ? 'none'
+        : `1px solid ${greyThemeLight}`};
 
     .froala-wrapper {
       padding: 5px 0px;
-      width: calc(100% - 65px); /* 65px is the combined width of hamburger and delete icons  */
+      width: calc(
+        100% - 65px
+      ); /* 65px is the combined width of hamburger and delete icons  */
     }
   }
   & div.main i.fa-align-justify {
-    color: ${props => props.theme.sortableList.dragIconColor};
-    font-size: ${props => props.theme.sortableList.dragIconFontSize};
+    color: ${(props) => props.theme.sortableList.dragIconColor};
+    font-size: ${(props) => props.theme.sortableList.dragIconFontSize};
     padding: 12px 15px;
   }
   .ql-editor {
@@ -60,14 +73,14 @@ export const SortableItemContainer = styled.div.attrs({
   input {
     border-color: transparent;
   }
-`;
+`
 
 export const DragIcon = styled.div`
   padding: 0px 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
+`
 
 export const DragLine = styled.div`
   width: 16px;
@@ -77,11 +90,11 @@ export const DragLine = styled.div`
   &:not(:last-child) {
     margin-bottom: 2.8px;
   }
-`;
+`
 
 export const SortableListContainer = styled.div`
   font-size: 13px;
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 14px;
   }
-`;
+`

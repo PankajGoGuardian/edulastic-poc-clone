@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { FlexContainer, EduButton } from "@edulastic/common";
+import styled from 'styled-components'
+import { FlexContainer, EduButton } from '@edulastic/common'
 
 import {
   themeColor,
@@ -9,15 +9,15 @@ import {
   publishedColor,
   desktopWidth,
   mobileWidthLarge,
-  tabletWidth
-} from "@edulastic/colors";
-import { IconShare } from "@edulastic/icons";
+  tabletWidth,
+} from '@edulastic/colors'
+import { IconShare } from '@edulastic/icons'
 
-import { Status } from "../../../AssessmentPage/components/Header/styled";
+import { Status } from '../../../AssessmentPage/components/Header/styled'
 
 export const RightFlexContainer = styled(FlexContainer)`
   /* flex-basis: 30%; */
-`;
+`
 
 export const AssignButton = styled(EduButton)`
   width: 110px;
@@ -25,7 +25,7 @@ export const AssignButton = styled(EduButton)`
   @media (max-width: ${desktopWidth}) {
     width: auto;
   }
-`;
+`
 
 export const SaveBtn = styled(EduButton)`
   width: 80px;
@@ -33,13 +33,13 @@ export const SaveBtn = styled(EduButton)`
   @media screen and (max-width: ${mobileWidthLarge}) {
     width: auto;
   }
-`;
+`
 
 export const ShareIcon = styled(IconShare)`
   width: 16px;
   height: 16px;
   fill: ${themeColor};
-`;
+`
 
 export const MenuIconWrapper = styled.div`
   display: flex;
@@ -47,7 +47,7 @@ export const MenuIconWrapper = styled.div`
   align-items: center;
   flex-basis: 50%;
   margin: 0px;
-`;
+`
 
 export const RightWrapper = styled(FlexContainer)`
   flex-basis: 50%;
@@ -57,12 +57,12 @@ export const RightWrapper = styled(FlexContainer)`
   @media (max-width: ${tabletWidth}) {
     flex-basis: auto;
   }
-`;
+`
 
 export const TestStatus = styled(Status)`
   margin-top: 0;
-  color: ${props => (props.mode === "embedded" ? white : textColor)};
-  background: ${props => (props.mode === "embedded" ? textColor : white)};
+  color: ${(props) => (props.mode === 'embedded' ? white : textColor)};
+  background: ${(props) => (props.mode === 'embedded' ? textColor : white)};
   font-weight: 600;
   margin-left: 0px;
   &.draft {
@@ -73,7 +73,7 @@ export const TestStatus = styled(Status)`
     background: ${publishedColor};
     color: white;
   }
-`;
+`
 
 export const MobileHeaderFilterIcon = styled.div`
   display: none;
@@ -101,4 +101,4 @@ export const MobileHeaderFilterIcon = styled.div`
   @media (max-width: ${desktopWidth}) {
     display: block;
   }
-`;
+`

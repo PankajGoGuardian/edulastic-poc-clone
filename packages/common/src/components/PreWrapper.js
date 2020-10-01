@@ -1,12 +1,13 @@
-import styled from "styled-components";
-import { title } from "@edulastic/colors";
+import styled from 'styled-components'
+import { title } from '@edulastic/colors'
 
 const PreWrapper = styled.pre`
-  font-family: "Open Sans", "Droid Sans", Arial, sans-serif;
+  font-family: 'Open Sans', 'Droid Sans', Arial, sans-serif;
   white-space: pre-wrap;
 
   .template_box {
-    padding: ${props => (props.view === "preview" ? props.padding : "15px")} !important;
+    padding: ${(props) =>
+      props.view === 'preview' ? props.padding : '15px'} !important;
     .jsx-parser {
       & p,
       & span:not(.index) {
@@ -14,8 +15,8 @@ const PreWrapper = styled.pre`
       }
     }
   }
-`;
+`
 
-PreWrapper.displayName = "PreWrapper";
+PreWrapper.displayName = 'PreWrapper'
 
-export default PreWrapper;
+export default PreWrapper

@@ -1,14 +1,18 @@
-import React from "react";
-import { EduButton, notification } from "@edulastic/common";
-import GoogleLogin from "react-google-login";
-import { canvasApi } from "@edulastic/api";
-import * as Sentry from "@sentry/browser";
-import { IconPlusCircle, IconGoogleClassroom, IconClever } from "@edulastic/icons";
-import styled from "styled-components";
+import React from 'react'
+import { EduButton, notification } from '@edulastic/common'
+import GoogleLogin from 'react-google-login'
+import { canvasApi } from '@edulastic/api'
+import * as Sentry from '@sentry/browser'
+import {
+  IconPlusCircle,
+  IconGoogleClassroom,
+  IconClever,
+} from '@edulastic/icons'
+import styled from 'styled-components'
 
-import { CreateCardBox, SyncClassDiv } from "./styled";
-import { scopes } from "../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage";
-import authorizeCanvas from "../../../../../../../../common/utils/CanavsAuthorizationModule";
+import { CreateCardBox, SyncClassDiv } from './styled'
+import { scopes } from '../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage'
+import authorizeCanvas from '../../../../../../../../common/utils/CanavsAuthorizationModule'
 
 const CreateClassPage = ({
   allowGoogleLogin,
@@ -19,66 +23,71 @@ const CreateClassPage = ({
   setShowCleverSyncModal,
   handleCanvasBulkSync,
   user,
-  history
+  history,
 }) => {
-  const { orgData } = user;
-  const { isCleverDistrict } = orgData;
+  const { orgData } = user
+  const { isCleverDistrict } = orgData
 
-  const handleLoginSucess = data => {
-    fetchClassList({ data });
-    history.push("/author/manageClass");
-  };
+  const handleLoginSucess = (data) => {
+    fetchClassList({ data })
+    history.push('/author/manageClass')
+  }
 
-  const handleError = err => {
-    console.log("error", err);
-  };
+  const handleError = (err) => {
+    console.log('error', err)
+  }
 
   const CreateNewClass = () => {
-    history.push("/author/manageClass/createClass");
-  };
+    history.push('/author/manageClass/createClass')
+  }
 
   const handleSyncWithCanvas = async () => {
     try {
-      const result = await canvasApi.getCanvasAuthURI(canvasAllowedInstitutions?.[0]?.institutionId);
+      const result = await canvasApi.getCanvasAuthURI(
+        canvasAllowedInstitutions?.[0]?.institutionId
+      )
       if (!result.userAuthenticated) {
-        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username || user.email || ""}`;
+        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${
+          user.username || user.email || ''
+        }`
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
-          .then(res => {
-            handleCanvasBulkSync(res);
+          .then((res) => {
+            handleCanvasBulkSync(res)
           })
-          .catch(err => {
-            console.error("Error while authorizing", err);
-            Sentry.captureException(err);
-            notification({ messageKey: "errorOccuredWhileAuthorizing" });
-          });
+          .catch((err) => {
+            console.error('Error while authorizing', err)
+            Sentry.captureException(err)
+            notification({ messageKey: 'errorOccuredWhileAuthorizing' })
+          })
       } else {
-        handleCanvasBulkSync();
+        handleCanvasBulkSync()
       }
     } catch (err) {
-      Sentry.captureException(err);
+      Sentry.captureException(err)
       notification(
         err.status === 403 && err.response.data?.message
           ? {
-              msg: err.response.data?.message
+              msg: err.response.data?.message,
             }
-          : { messageKey: "errorWhileGettingAuthUri" }
-      );
+          : { messageKey: 'errorWhileGettingAuthUri' }
+      )
     }
-  };
+  }
 
-  const enableCanvasSync = canvasAllowedInstitutions.length > 0;
+  const enableCanvasSync = canvasAllowedInstitutions.length > 0
 
   return (
     <CreateCardBox>
-      <EduButton style={{ width: "207px" }} isBlue onClick={CreateNewClass}>
+      <EduButton style={{ width: '207px' }} isBlue onClick={CreateNewClass}>
         <IconPlusCircle width={20} height={20} />
         <p>Create new class</p>
       </EduButton>
-      {(allowGoogleLogin || enableCleverSync || enableCanvasSync) && !isCleverDistrict && <StyledP>OR</StyledP>}
+      {(allowGoogleLogin || enableCleverSync || enableCanvasSync) &&
+        !isCleverDistrict && <StyledP>OR</StyledP>}
       {allowGoogleLogin !== false && !isCleverDistrict && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-          render={renderProps => (
+          render={(renderProps) => (
             <SyncClassDiv onClick={renderProps.onClick}>
               <IconGoogleClassroom />
               <p>Sync With Google Classroom</p>
@@ -87,7 +96,7 @@ const CreateClassPage = ({
           scope={scopes}
           onSuccess={handleLoginSucess}
           onFailure={handleError}
-          prompt={isUserGoogleLoggedIn ? "" : "consent"}
+          prompt={isUserGoogleLoggedIn ? '' : 'consent'}
           responseType="code"
         />
       )}
@@ -109,10 +118,10 @@ const CreateClassPage = ({
         </SyncClassDiv>
       )}
     </CreateCardBox>
-  );
-};
-export default CreateClassPage;
+  )
+}
+export default CreateClassPage
 
 const StyledP = styled.p`
   color: #9196a2;
-`;
+`

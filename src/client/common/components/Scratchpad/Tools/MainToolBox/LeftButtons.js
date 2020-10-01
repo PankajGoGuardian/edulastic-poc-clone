@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FlexContainer } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { FlexContainer } from '@edulastic/common'
 
-import { StyledButton } from "../styled";
-import { leftControls } from "../constants/controls";
+import { StyledButton } from '../styled'
+import { leftControls } from '../constants/controls'
 
 const LeftButtons = ({ onChangeTool, activeMode }) => {
-  const onClickHandler = mode => () => {
-    onChangeTool(mode);
-  };
+  const onClickHandler = (mode) => () => {
+    onChangeTool(mode)
+  }
 
   return (
     <FlexContainer>
@@ -24,17 +24,17 @@ const LeftButtons = ({ onChangeTool, activeMode }) => {
         </StyledButton>
       ))}
     </FlexContainer>
-  );
-};
+  )
+}
 
 LeftButtons.propTypes = {
   onChangeTool: PropTypes.func,
-  activeMode: PropTypes.string
-};
+  activeMode: PropTypes.string,
+}
 
 LeftButtons.defaultProps = {
   onChangeTool: () => null,
-  activeMode: ""
-};
+  activeMode: '',
+}
 
-export default LeftButtons;
+export default LeftButtons

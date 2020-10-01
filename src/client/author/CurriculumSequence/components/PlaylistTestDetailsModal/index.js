@@ -1,16 +1,23 @@
-import React, { useEffect } from "react";
-import { themeColor } from "@edulastic/colors";
-import { Spin } from "antd";
-import { IconEye, IconClose } from "@edulastic/icons";
-import { connect } from "react-redux";
+import React, { useEffect } from 'react'
+import { themeColor } from '@edulastic/colors'
+import { Spin } from 'antd'
+import { IconEye, IconClose } from '@edulastic/icons'
+import { connect } from 'react-redux'
 import {
   receiveTestByIdAction,
   getTestSelector,
   getTestItemsRowsSelector,
-  getTestsLoadingSelector
-} from "../../../TestPage/ducks";
-import Review from "../../../TestPage/components/Review";
-import { ModalWrapper, Wrapper, SubHeader, BreadCrumb, ActionsWrapper, ActionBtn } from "./styled";
+  getTestsLoadingSelector,
+} from '../../../TestPage/ducks'
+import Review from '../../../TestPage/components/Review'
+import {
+  ModalWrapper,
+  Wrapper,
+  SubHeader,
+  BreadCrumb,
+  ActionsWrapper,
+  ActionBtn,
+} from './styled'
 
 const PlaylistTestDetailsModal = ({
   onClose,
@@ -18,20 +25,20 @@ const PlaylistTestDetailsModal = ({
   receiveTestById,
   test = {},
   rows = [],
-  userId = "",
+  userId = '',
   viewAsStudent,
   isTestLoading,
-  playlistId
+  playlistId,
 }) => {
   useEffect(() => {
-    receiveTestById(currentTestId, true, false, true, playlistId);
-  }, []);
+    receiveTestById(currentTestId, true, false, true, playlistId)
+  }, [])
 
   const defaultPropsForReview = {
     onChangeGrade: () => {},
     onChangeSubjects: () => {},
-    onChangeCollection: () => {}
-  };
+    onChangeCollection: () => {},
+  }
 
   return (
     <ModalWrapper
@@ -47,12 +54,13 @@ const PlaylistTestDetailsModal = ({
         <BreadCrumb data-cy="back-to-playlist" onClick={onClose}>
           <i className="fa fa-angle-left" aria-hidden="true">
             &nbsp;
-          </i>{" "}
+          </i>{' '}
           back to playlist
         </BreadCrumb>
         <ActionsWrapper>
           <ActionBtn onClick={() => viewAsStudent(currentTestId)}>
-            <IconEye color={themeColor} width={16} height={16} /> view as student
+            <IconEye color={themeColor} width={16} height={16} /> view as
+            student
           </ActionBtn>
           <ActionBtn onClick={onClose}>
             <IconClose color={themeColor} width={16} height={16} /> close
@@ -67,7 +75,7 @@ const PlaylistTestDetailsModal = ({
           <Review
             test={test}
             rows={rows}
-            owner={test?.authors?.some(x => x._id === userId)}
+            owner={test?.authors?.some((x) => x._id === userId)}
             isEditable={false}
             current="review"
             showCancelButton
@@ -77,17 +85,17 @@ const PlaylistTestDetailsModal = ({
         )}
       </Wrapper>
     </ModalWrapper>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     test: getTestSelector(state),
     rows: getTestItemsRowsSelector(state),
     isTestLoading: getTestsLoadingSelector(state),
-    userId: state?.user?.user?._id
+    userId: state?.user?.user?._id,
   }),
   {
-    receiveTestById: receiveTestByIdAction
+    receiveTestById: receiveTestByIdAction,
   }
-)(PlaylistTestDetailsModal);
+)(PlaylistTestDetailsModal)

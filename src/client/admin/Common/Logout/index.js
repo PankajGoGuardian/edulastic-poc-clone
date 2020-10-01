@@ -1,7 +1,7 @@
-import React from "react";
-import { Button } from "antd";
-import styled from "styled-components";
-import { IconLogout } from "@edulastic/icons";
+import React from 'react'
+import { Button } from 'antd'
+import styled from 'styled-components'
+import { IconLogout } from '@edulastic/icons'
 
 const LogoutButton = styled(Button)`
   position: fixed;
@@ -12,7 +12,7 @@ const LogoutButton = styled(Button)`
   span {
     margin-left: 5px;
   }
-`;
+`
 
 export default function Logout({ logoutAction }) {
   return (
@@ -20,5 +20,5 @@ export default function Logout({ logoutAction }) {
       <IconLogout />
       <span>Log out</span>
     </LogoutButton>
-  );
+  )
 }

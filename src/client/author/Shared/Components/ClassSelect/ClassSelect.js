@@ -1,14 +1,20 @@
-import React from "react";
-import { Select } from "antd";
-import { FlexContainer } from "@edulastic/common";
-import { Container, StyledSelect, StyledClassID } from "./styled";
+import React from 'react'
+import { Select } from 'antd'
+import { FlexContainer } from '@edulastic/common'
+import { Container, StyledSelect, StyledClassID } from './styled'
 
 // eslint-disable-next-line react/prop-types
-const ClassSelect = ({ classname, selected, handleChange, classid = "", justifyContent }) => {
+const ClassSelect = ({
+  classname,
+  selected,
+  handleChange,
+  classid = '',
+  justifyContent,
+}) => {
   if (classname.length === 0) {
-    return null;
+    return null
   }
-  const selectedValue = selected < classname.length ? selected : 0;
+  const selectedValue = selected < classname.length ? selected : 0
   return (
     <FlexContainer justifyContent={justifyContent}>
       <Container>
@@ -22,14 +28,19 @@ const ClassSelect = ({ classname, selected, handleChange, classid = "", justifyC
         </StyledSelect>
       </Container>
     </FlexContainer>
-  );
-};
+  )
+}
 
-export const GenSelect = ({ classname: nameValues, selected, handleChange, justifyContent }) => {
+export const GenSelect = ({
+  classname: nameValues,
+  selected,
+  handleChange,
+  justifyContent,
+}) => {
   if (nameValues.length === 0) {
-    return null;
+    return null
   }
-  const selectedValue = selected;
+  const selectedValue = selected
   return (
     <FlexContainer justifyContent={justifyContent}>
       <Container>
@@ -43,7 +54,7 @@ export const GenSelect = ({ classname: nameValues, selected, handleChange, justi
         </StyledSelect>
       </Container>
     </FlexContainer>
-  );
-};
+  )
+}
 
-export default ClassSelect;
+export default ClassSelect

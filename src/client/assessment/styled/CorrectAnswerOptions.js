@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CorrectAnswerOptions = styled.div`
   display: flex;
@@ -19,4 +19,4 @@ export const CorrectAnswerOptions = styled.div`
   .ant-checkbox-wrapper + .ant-checkbox-wrapper {
     margin-left: 0px;
   }
-`;
+`

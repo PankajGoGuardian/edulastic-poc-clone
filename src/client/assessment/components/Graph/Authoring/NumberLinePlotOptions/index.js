@@ -1,6 +1,6 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import NumberLinePlotMoreOptions from "./NumberLinePlotMoreOptions";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import NumberLinePlotMoreOptions from './NumberLinePlotMoreOptions'
 
 const NumberLinePlotOptions = ({
   setCanvas,
@@ -11,43 +11,43 @@ const NumberLinePlotOptions = ({
   graphData,
   setValidation,
   setControls,
-  advancedAreOpen
+  advancedAreOpen,
 }) => {
   const fontSizeList = [
     {
-      id: "small",
-      label: "Small",
+      id: 'small',
+      label: 'Small',
       value: 10,
-      selected: false
+      selected: false,
     },
     {
-      id: "normal",
-      label: "Normal",
+      id: 'normal',
+      label: 'Normal',
       value: 12,
-      selected: true
+      selected: true,
     },
     {
-      id: "large",
-      label: "Large",
+      id: 'large',
+      label: 'Large',
       value: 16,
-      selected: false
+      selected: false,
     },
     {
-      id: "extra_large",
-      label: "Extra large",
+      id: 'extra_large',
+      label: 'Extra large',
       value: 20,
-      selected: false
+      selected: false,
     },
     {
-      id: "huge",
-      label: "Huge",
+      id: 'huge',
+      label: 'Huge',
       value: 24,
-      selected: false
-    }
-  ];
+      selected: false,
+    },
+  ]
 
   return (
-    <Fragment>
+    <>
       <NumberLinePlotMoreOptions
         setCanvas={setCanvas}
         setOptions={setOptions}
@@ -60,9 +60,9 @@ const NumberLinePlotOptions = ({
         graphData={graphData}
         advancedAreOpen={advancedAreOpen}
       />
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 NumberLinePlotOptions.propTypes = {
   cleanSections: PropTypes.func.isRequired,
@@ -73,11 +73,11 @@ NumberLinePlotOptions.propTypes = {
   graphData: PropTypes.object.isRequired,
   setValidation: PropTypes.func.isRequired,
   setControls: PropTypes.func.isRequired,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 NumberLinePlotOptions.defaultProps = {
-  advancedAreOpen: false
-};
+  advancedAreOpen: false,
+}
 
-export default NumberLinePlotOptions;
+export default NumberLinePlotOptions

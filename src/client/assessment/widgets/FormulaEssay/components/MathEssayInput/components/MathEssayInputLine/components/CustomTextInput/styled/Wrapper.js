@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   .ql-editor {
-    font-size: ${props => props.fontSize};
+    font-size: ${(props) => props.fontSize};
   }
-`;
+`

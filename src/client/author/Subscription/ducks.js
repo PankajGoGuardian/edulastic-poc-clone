@@ -1,136 +1,173 @@
-import { message } from "antd";
-import moment from "moment";
-import { notification } from "@edulastic/common";
-import { createSlice } from "redux-starter-kit";
-import { takeEvery, call, put, all } from "redux-saga/effects";
-import { subscriptionApi, paymentApi } from "@edulastic/api";
-import * as Sentry from "@sentry/browser";
-import { fetchUserAction } from "../../student/Login/ducks";
+import { message } from 'antd'
+import moment from 'moment'
+import { notification } from '@edulastic/common'
+import { createSlice } from 'redux-starter-kit'
+import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { subscriptionApi, paymentApi } from '@edulastic/api'
+import * as Sentry from '@sentry/browser'
+import { fetchUserAction } from '../../student/Login/ducks'
 
 const slice = createSlice({
-  name: "subscription",
+  name: 'subscription',
   initialState: {
     isSubscriptionExpired: false,
     verificationPending: false,
     subscriptionData: {},
-    error: ""
+    error: '',
   },
   reducers: {
-    fetchUserSubscriptionStatus: state => {
-      state.verificationPending = true;
+    fetchUserSubscriptionStatus: (state) => {
+      state.verificationPending = true
     },
-    disablePending: state => {
-      state.verificationPending = false;
+    disablePending: (state) => {
+      state.verificationPending = false
     },
     updateUserSubscriptionStatus: (state, { payload }) => {
-      state.verificationPending = false;
-      state.subscriptionData = payload.data;
-      state.error = payload.error;
+      state.verificationPending = false
+      state.subscriptionData = payload.data
+      state.error = payload.error
     },
-    upgradeLicenseKeyPending: state => {
-      state.verificationPending = true;
+    upgradeLicenseKeyPending: (state) => {
+      state.verificationPending = true
     },
     upgradeLicenseKeySuccess: (state, { payload }) => {
-      state.verificationPending = false;
-      state.subscriptionData = payload;
-      state.error = "";
+      state.verificationPending = false
+      state.subscriptionData = payload
+      state.error = ''
     },
     upgradeLicenseKeyFailure: (state, { payload }) => {
-      state.verificationPending = false;
-      state.subscriptionData = {};
-      state.error = payload;
+      state.verificationPending = false
+      state.subscriptionData = {}
+      state.error = payload
     },
-    stripePaymentAction: state => {
-      state.verificationPending = true;
+    stripePaymentAction: (state) => {
+      state.verificationPending = true
     },
     stripePaymentSuccess: (state, { payload }) => {
-      state.verificationPending = false;
-      state.subscriptionData = payload;
-      state.error = "";
+      state.verificationPending = false
+      state.subscriptionData = payload
+      state.error = ''
     },
     stripePaymentFailure: (state, { payload }) => {
-      state.verificationPending = false;
-      state.subscriptionData = {};
-      state.error = payload;
+      state.verificationPending = false
+      state.subscriptionData = {}
+      state.error = payload
     },
-    updateUserSubscriptionExpired: state => {
-      state.isSubscriptionExpired = true;
-      state.verificationPending = false;
-      state.subscriptionData = {};
-      state.error = "";
-    }
-  }
-});
+    updateUserSubscriptionExpired: (state) => {
+      state.isSubscriptionExpired = true
+      state.verificationPending = false
+      state.subscriptionData = {}
+      state.error = ''
+    },
+  },
+})
 
-export { slice };
+export { slice }
 
 function* upgradeUserLicense({ payload }) {
   try {
-    yield call(message.loading, { content: "Verifying License...", key: "verify-license" });
-    const apiUpgradeUserResponse = yield call(subscriptionApi.upgradeUsingLicenseKey, payload);
+    yield call(message.loading, {
+      content: 'Verifying License...',
+      key: 'verify-license',
+    })
+    const apiUpgradeUserResponse = yield call(
+      subscriptionApi.upgradeUsingLicenseKey,
+      payload
+    )
     if (apiUpgradeUserResponse.success) {
-      yield put(slice.actions.upgradeLicenseKeySuccess(apiUpgradeUserResponse));
-      notification({ type: "success", msg: { content: "Verified!", key: "verify-license" } });
-      yield put(fetchUserAction({ background: true }));
+      yield put(slice.actions.upgradeLicenseKeySuccess(apiUpgradeUserResponse))
+      notification({
+        type: 'success',
+        msg: { content: 'Verified!', key: 'verify-license' },
+      })
+      yield put(fetchUserAction({ background: true }))
     }
   } catch (err) {
-    yield put(slice.actions.upgradeLicenseKeyFailure(err?.data?.message));
-    notification({ messageKey: "theLisenceKeyEnteredIEitherUseOrNotValid", Key: "verify-license" });
-    console.error("ERROR WHILE VERIFYING USER LICENSE KEY : ", err);
+    yield put(slice.actions.upgradeLicenseKeyFailure(err?.data?.message))
+    notification({
+      messageKey: 'theLisenceKeyEnteredIEitherUseOrNotValid',
+      Key: 'verify-license',
+    })
+    console.error('ERROR WHILE VERIFYING USER LICENSE KEY : ', err)
   }
 }
 
 function* handleStripePayment({ payload }) {
   try {
-    const { stripe, data } = payload;
-    yield call(message.loading, { content: "Processing Payment, please wait", key: "verify-license" });
-    const { token, error } = yield stripe.createToken(data);
+    const { stripe, data } = payload
+    yield call(message.loading, {
+      content: 'Processing Payment, please wait',
+      key: 'verify-license',
+    })
+    const { token, error } = yield stripe.createToken(data)
     if (token) {
-      const apiPaymentResponse = yield call(paymentApi.pay, { token });
+      const apiPaymentResponse = yield call(paymentApi.pay, { token })
       if (apiPaymentResponse.success) {
-        yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse));
-        const { subEndDate } = apiPaymentResponse.subscription;
+        yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
+        const { subEndDate } = apiPaymentResponse.subscription
         notification({
-          type: "success",
+          type: 'success',
           msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
             subEndDate
-          ).format("DD MMM, YYYY")}`,
-          key: "handle-payment"
-        });
-        yield put(fetchUserAction({ background: true }));
+          ).format('DD MMM, YYYY')}`,
+          key: 'handle-payment',
+        })
+        yield put(fetchUserAction({ background: true }))
       } else {
-        notification({ msg: `API Response failed: ${error}`, Key: "handle-payment" });
-        console.error("API Response failed");
+        notification({
+          msg: `API Response failed: ${error}`,
+          Key: 'handle-payment',
+        })
+        console.error('API Response failed')
       }
     } else {
-      notification({ msg: `Creating token failed : ${error.message}`, Key: "handle-payment" });
-      yield put(slice.actions.disablePending());
-      console.error("ERROR WHILE PROCESSING PAYMENT [Create Token] : ", error);
+      notification({
+        msg: `Creating token failed : ${error.message}`,
+        Key: 'handle-payment',
+      })
+      yield put(slice.actions.disablePending())
+      console.error('ERROR WHILE PROCESSING PAYMENT [Create Token] : ', error)
     }
   } catch (err) {
-    yield put(slice.actions.stripePaymentFailure(err?.data?.message));
-    notification({ msg: `Payment Failed : ${err?.data?.message}`, Key: "handle-payment" });
-    console.error("ERROR WHILE PROCESSING PAYMENT : ", err);
-    Sentry.captureException(err);
+    yield put(slice.actions.stripePaymentFailure(err?.data?.message))
+    notification({
+      msg: `Payment Failed : ${err?.data?.message}`,
+      Key: 'handle-payment',
+    })
+    console.error('ERROR WHILE PROCESSING PAYMENT : ', err)
+    Sentry.captureException(err)
   }
 }
 
 function* fetchUserSubscription() {
   try {
-    const apiUserSubscriptionStatus = yield call(subscriptionApi.subscriptionStatus);
+    const apiUserSubscriptionStatus = yield call(
+      subscriptionApi.subscriptionStatus
+    )
     if (apiUserSubscriptionStatus?.result === -1) {
-      yield put(slice.actions.updateUserSubscriptionExpired());
-      return;
+      yield put(slice.actions.updateUserSubscriptionExpired())
+      return
     }
     if (apiUserSubscriptionStatus.result) {
-      const data = { success: true, subscription: apiUserSubscriptionStatus.result };
+      const data = {
+        success: true,
+        subscription: apiUserSubscriptionStatus.result,
+      }
 
-      yield put(slice.actions.updateUserSubscriptionStatus({ data, error: "" }));
-    } else yield put(slice.actions.updateUserSubscriptionStatus({ data: {}, error: apiUserSubscriptionStatus.result }));
+      yield put(slice.actions.updateUserSubscriptionStatus({ data, error: '' }))
+    } else
+      yield put(
+        slice.actions.updateUserSubscriptionStatus({
+          data: {},
+          error: apiUserSubscriptionStatus.result,
+        })
+      )
   } catch (err) {
-    yield put(slice.actions.updateUserSubscriptionStatus({ data: {}, error: err }));
-    console.error("ERROR WHILE FETCHING USER SUBSCRIPTION : ", err);
-    Sentry.captureException(err);
+    yield put(
+      slice.actions.updateUserSubscriptionStatus({ data: {}, error: err })
+    )
+    console.error('ERROR WHILE FETCHING USER SUBSCRIPTION : ', err)
+    Sentry.captureException(err)
   }
 }
 
@@ -138,6 +175,9 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
     yield takeEvery(slice.actions.stripePaymentAction, handleStripePayment),
-    yield takeEvery(slice.actions.fetchUserSubscriptionStatus, fetchUserSubscription)
-  ]);
+    yield takeEvery(
+      slice.actions.fetchUserSubscriptionStatus,
+      fetchUserSubscription
+    ),
+  ])
 }

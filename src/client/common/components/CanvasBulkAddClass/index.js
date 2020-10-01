@@ -1,18 +1,27 @@
-import { OnWhiteBgLogo, notification, EduButton } from "@edulastic/common";
-import { IconCanvasBook } from "@edulastic/icons";
-import { Select } from "antd";
-import { get, groupBy } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { receiveSearchCourseAction } from "../../../author/Courses/ducks";
-import { getThumbnail } from "../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade";
-import { getDictCurriculumsAction } from "../../../author/src/actions/dictionaries";
-import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
-import selectsData from "../../../author/TestPage/components/common/selectsData";
-import { setSignUpStatusAction, signupSuccessAction } from "../../../student/Login/ducks";
-import { bulkSyncCanvasClassAction, joinSchoolFailedAction } from "../../../student/Signup/duck";
-import { getCanvasAllowedInstitutionPoliciesSelector } from "../../../author/src/selectors/user";
-import { ModalClassListTable, StyledSelect } from "../../../author/ManageClass/components/ClassListContainer/styled";
+import { OnWhiteBgLogo, notification, EduButton } from '@edulastic/common'
+import { IconCanvasBook } from '@edulastic/icons'
+import { Select } from 'antd'
+import { get, groupBy } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import { receiveSearchCourseAction } from '../../../author/Courses/ducks'
+import { getThumbnail } from '../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade'
+import { getDictCurriculumsAction } from '../../../author/src/actions/dictionaries'
+import { getFormattedCurriculumsSelector } from '../../../author/src/selectors/dictionaries'
+import selectsData from '../../../author/TestPage/components/common/selectsData'
+import {
+  setSignUpStatusAction,
+  signupSuccessAction,
+} from '../../../student/Login/ducks'
+import {
+  bulkSyncCanvasClassAction,
+  joinSchoolFailedAction,
+} from '../../../student/Signup/duck'
+import { getCanvasAllowedInstitutionPoliciesSelector } from '../../../author/src/selectors/user'
+import {
+  ModalClassListTable,
+  StyledSelect,
+} from '../../../author/ManageClass/components/ClassListContainer/styled'
 import {
   Button,
   ButtonContainer,
@@ -21,8 +30,8 @@ import {
   Container,
   HeadingWrapper,
   LogoWrapper,
-  StyledModal
-} from "./styled";
+  StyledModal,
+} from './styled'
 
 const CanvasBulkAddClass = ({
   receiveSearchCourse,
@@ -43,82 +52,86 @@ const CanvasBulkAddClass = ({
   joinSchoolFailed,
   fromManageClass,
   canvasAllowedInstitutions,
-  onCancel = () => {}
+  onCancel = () => {},
 }) => {
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [classes, setClasses] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [institution, setInstitution] = useState();
+  const [selectedRows, setSelectedRows] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [classes, setClasses] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [institution, setInstitution] = useState()
 
   useEffect(() => {
-    getDictCurriculums();
-    receiveSearchCourse({ districtId: user?.districtIds?.[0], active: 1 });
+    getDictCurriculums()
+    receiveSearchCourse({ districtId: user?.districtIds?.[0], active: 1 })
     if (!fromManageClass) {
-      setInstitution(institutionId);
+      setInstitution(institutionId)
     } else {
-      setInstitution(canvasAllowedInstitutions[0].institutionId);
+      setInstitution(canvasAllowedInstitutions[0].institutionId)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (institution) {
-      getCanvasCourseListRequest(institution);
+      getCanvasCourseListRequest(institution)
     }
-  }, [institution]);
+  }, [institution])
 
   useEffect(() => {
     if (canvasCourseList.length && institution) {
-      const allCourseIds = canvasCourseList.map(c => c.id);
-      getCanvasSectionListRequest({ allCourseIds, institutionId: institution });
+      const allCourseIds = canvasCourseList.map((c) => c.id)
+      getCanvasSectionListRequest({ allCourseIds, institutionId: institution })
     }
-  }, [canvasCourseList]);
+  }, [canvasCourseList])
 
   useEffect(() => {
-    if (bulkSyncCanvasStatus === "INPROGRESS") setShowModal(true);
-    else if (bulkSyncCanvasStatus === "FAILED") setShowModal(false);
-  }, [bulkSyncCanvasStatus]);
+    if (bulkSyncCanvasStatus === 'INPROGRESS') setShowModal(true)
+    else if (bulkSyncCanvasStatus === 'FAILED') setShowModal(false)
+  }, [bulkSyncCanvasStatus])
 
   useEffect(() => {
     if (canvasCourseList.length && canvasSectionList.length) {
-      setIsLoading(true);
-      const sectionsGroupedByCourseId = groupBy(canvasSectionList, "course_id");
-      const allClasses = Object.keys(sectionsGroupedByCourseId).flatMap(courseId => {
-        const sectionList = sectionsGroupedByCourseId[courseId];
-        const course = canvasCourseList.find(c => +c.id === +courseId);
-        const sectionClasses = sectionList.map(s => {
-          const thumbnail = getThumbnail();
-          return {
-            districtId: user?.districtIds?.[0],
-            grades: s.grades || [],
-            institutionId: institution,
-            name: s.name,
-            owners: [user._id],
-            parent: { id: user._id },
-            standardSets: s.standardSets || [],
-            subject: s.subject || "",
-            courseId: s.courseId || "",
-            thumbnail,
-            type: "class",
-            canvasCode: course.id,
-            canvasCourseName: course.name,
-            canvasCourseSectionCode: s.id,
-            canvasCourseSectionName: s.name,
-            groupId: s.groupId || "",
-            ...(s.alreadySynced ? { alreadySynced: true } : {})
-          };
-        });
-        return sectionClasses;
-      });
-      setClasses(allClasses);
+      setIsLoading(true)
+      const sectionsGroupedByCourseId = groupBy(canvasSectionList, 'course_id')
+      const allClasses = Object.keys(sectionsGroupedByCourseId).flatMap(
+        (courseId) => {
+          const sectionList = sectionsGroupedByCourseId[courseId]
+          const course = canvasCourseList.find((c) => +c.id === +courseId)
+          const sectionClasses = sectionList.map((s) => {
+            const thumbnail = getThumbnail()
+            return {
+              districtId: user?.districtIds?.[0],
+              grades: s.grades || [],
+              institutionId: institution,
+              name: s.name,
+              owners: [user._id],
+              parent: { id: user._id },
+              standardSets: s.standardSets || [],
+              subject: s.subject || '',
+              courseId: s.courseId || '',
+              thumbnail,
+              type: 'class',
+              canvasCode: course.id,
+              canvasCourseName: course.name,
+              canvasCourseSectionCode: s.id,
+              canvasCourseSectionName: s.name,
+              groupId: s.groupId || '',
+              ...(s.alreadySynced ? { alreadySynced: true } : {}),
+            }
+          })
+          return sectionClasses
+        }
+      )
+      setClasses(allClasses)
 
       // setting all the table rows as checked by default
-      const allClassKeys = allClasses.map(c => `${c.canvasCode}_${c.canvasCourseSectionCode}`);
-      setSelectedRows(allClassKeys);
+      const allClassKeys = allClasses.map(
+        (c) => `${c.canvasCode}_${c.canvasCourseSectionCode}`
+      )
+      setSelectedRows(allClassKeys)
 
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [canvasCourseList, canvasSectionList]);
+  }, [canvasCourseList, canvasSectionList])
 
   const handleChange = (index, key, value) => {
     const updatedclasses = classes.map((clazz, i) => {
@@ -126,120 +139,127 @@ const CanvasBulkAddClass = ({
         return {
           ...clazz,
           [key]: value,
-          ...(key === "subject" ? { standardSets: [] } : {})
-        };
+          ...(key === 'subject' ? { standardSets: [] } : {}),
+        }
       }
-      return clazz;
-    });
-    setClasses(updatedclasses);
-  };
+      return clazz
+    })
+    setClasses(updatedclasses)
+  }
 
   const handleStandardsChange = (index, key, value, options) => {
-    const standardSets = options.map(option => ({
+    const standardSets = options.map((option) => ({
       id: option.props.value,
-      name: option.props.children
-    }));
-    handleChange(index, "standardSets", standardSets);
-  };
+      name: option.props.children,
+    }))
+    handleChange(index, 'standardSets', standardSets)
+  }
 
   const rowSelection = {
     selectedRowKeys: selectedRows,
-    onChange: rows => {
-      setSelectedRows(rows);
+    onChange: (rows) => {
+      setSelectedRows(rows)
     },
-    getCheckboxProps: record => ({
+    getCheckboxProps: (record) => ({
       name: record.name,
-      disabled: !!record.alreadySynced
-    })
-  };
+      disabled: !!record.alreadySynced,
+    }),
+  }
 
   const handleFinish = () => {
     if (!selectedRows.length) {
-      notification({ messageKey: "pleaseSelectAtleastOneCanvasCourseSectionToSync" });
-      return;
+      notification({
+        messageKey: 'pleaseSelectAtleastOneCanvasCourseSectionToSync',
+      })
+      return
     }
-    let selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
+    let selectedClasses = classes.filter((c) =>
+      selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`)
+    )
 
     // setting default grades as Other (O) if grade is not selected by the user.
-    selectedClasses = selectedClasses.map(c => {
-      delete c.alreadySynced;
-      return { ...c, grades: c.grades.length > 0 ? c.grades : ["O"] };
-    });
+    selectedClasses = selectedClasses.map((c) => {
+      delete c.alreadySynced
+      return { ...c, grades: c.grades.length > 0 ? c.grades : ['O'] }
+    })
 
-    bulkSyncCanvasClass({ bulkSyncData: selectedClasses });
-    setShowModal(true);
-  };
+    bulkSyncCanvasClass({ bulkSyncData: selectedClasses })
+    setShowModal(true)
+  }
 
   const handleClose = () => {
-    setShowModal(false);
+    setShowModal(false)
     if (fromManageClass) {
-      return onCancel();
+      return onCancel()
     }
-    const { currentSignUpState, ...rest } = user;
-    signupSuccess(rest);
-  };
+    const { currentSignUpState, ...rest } = user
+    signupSuccess(rest)
+  }
 
   const handleGoBack = () => {
-    setSignUpStatus(1);
-    joinSchoolFailed({});
-  };
+    setSignUpStatus(1)
+    joinSchoolFailed({})
+  }
 
-  const activeCourseList = useMemo(() => courseList.filter(c => +c.active === 1), [courseList]);
+  const activeCourseList = useMemo(
+    () => courseList.filter((c) => +c.active === 1),
+    [courseList]
+  )
 
   const columns = [
     {
       title: <b>CANVAS CLASS SECTION</b>,
-      dataIndex: "name",
-      key: "name",
+      dataIndex: 'name',
+      key: 'name',
       render: (text, record) => (
         <ClassNameWrapper>
           <p>{`Course: ${record.canvasCourseName}`}</p>
           <p>{`Section: ${record.canvasCourseSectionName}`}</p>
         </ClassNameWrapper>
-      )
+      ),
     },
     {
       title: <b>GRADE</b>,
-      dataIndex: "grades",
-      width: "250px",
-      key: "grades",
+      dataIndex: 'grades',
+      width: '250px',
+      key: 'grades',
       render: (_, row, index) => (
         <Select
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           value={row.grades || []}
           mode="multiple"
           placeholder="Select Grades"
-          onChange={val => handleChange(index, "grades", val)}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          onChange={(val) => handleChange(index, 'grades', val)}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={!!row.alreadySynced}
         >
-          {selectsData.allGrades.map(allGrade => (
+          {selectsData.allGrades.map((allGrade) => (
             <Select.Option value={allGrade.value} key={allGrade.value}>
               {allGrade.text}
             </Select.Option>
           ))}
         </Select>
-      )
+      ),
     },
     {
       title: <b>SUBJECT</b>,
-      key: "subject",
-      width: "15%",
-      dataIndex: "subject",
-      align: "center",
+      key: 'subject',
+      width: '15%',
+      dataIndex: 'subject',
+      align: 'center',
       render: (_, row, ind) => (
         <Select
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           value={row.subject || undefined}
           placeholder="Select Subject"
-          onChange={val => {
-            handleChange(ind, "subject", val);
+          onChange={(val) => {
+            handleChange(ind, 'subject', val)
           }}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={!!row.alreadySynced}
         >
           {selectsData.allSubjects.map(
-            allSubject =>
+            (allSubject) =>
               allSubject.value && (
                 <Select.Option value={allSubject.value} key={allSubject.value}>
                   {allSubject.text}
@@ -247,76 +267,96 @@ const CanvasBulkAddClass = ({
               )
           )}
         </Select>
-      )
+      ),
     },
     {
       title: <b>STANDARDS</b>,
-      key: "standardSets",
-      width: "20%",
-      dataIndex: "standardSets",
-      align: "center",
+      key: 'standardSets',
+      width: '20%',
+      dataIndex: 'standardSets',
+      align: 'center',
       render: (_, row, ind) => {
-        const standardsList = getFormattedCurriculumsSelector(state, { subject: row.subject });
+        const standardsList = getFormattedCurriculumsSelector(state, {
+          subject: row.subject,
+        })
         return (
           <Select
             showSearch
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             filterOption={(input, option) => {
-              if (option.props.children && typeof option.props.children === "string")
-                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              if (
+                option.props.children &&
+                typeof option.props.children === 'string'
+              )
+                return (
+                  option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                )
 
-              return false;
+              return false
             }}
             mode="multiple"
-            value={row.standardSets.map(s => s.id) || []}
+            value={row.standardSets.map((s) => s.id) || []}
             placeholder="Select Standards"
             onChange={(val, options) => {
-              handleStandardsChange(ind, "standardSets", val, options);
+              handleStandardsChange(ind, 'standardSets', val, options)
             }}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
             disabled={!!row.alreadySynced}
           >
-            {standardsList.map(standard => (
-              <Select.Option value={standard.value} key={standard.value} disabled={standard.disabled}>
+            {standardsList.map((standard) => (
+              <Select.Option
+                value={standard.value}
+                key={standard.value}
+                disabled={standard.disabled}
+              >
                 {standard.text}
               </Select.Option>
             ))}
           </Select>
-        );
-      }
+        )
+      },
     },
     {
       title: <b>COURSE</b>,
-      key: "course",
-      width: "20%",
-      dataIndex: "course",
-      align: "center",
+      key: 'course',
+      width: '20%',
+      dataIndex: 'course',
+      align: 'center',
       render: (_, row, ind) => (
         <Select
           showSearch
           filterOption={(input, option) => {
-            if (option.props.children && typeof option.props.children === "string")
-              return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+            if (
+              option.props.children &&
+              typeof option.props.children === 'string'
+            )
+              return (
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              )
 
-            return false;
+            return false
           }}
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           value={row.courseId || undefined}
           placeholder="Select Course"
-          onChange={val => handleChange(ind, "courseId", val)}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          onChange={(val) => handleChange(ind, 'courseId', val)}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={!!row.alreadySynced}
         >
           {activeCourseList &&
-            activeCourseList.map(course => (
+            activeCourseList.map((course) => (
               <Select.Option value={course._id} key={course._id}>
                 {course.name}institution
               </Select.Option>
             ))}
         </Select>
-      )
-    }
-  ];
+      ),
+    },
+  ]
 
   return (
     <Container fromManageClass={fromManageClass}>
@@ -331,37 +371,49 @@ const CanvasBulkAddClass = ({
       </HeadingWrapper>
       <div>
         <p>
-          Following classes are imported from your canvas account. Please select Course to create class in Edulastic.
+          Following classes are imported from your canvas account. Please select
+          Course to create class in Edulastic.
         </p>
       </div>
       {canvasAllowedInstitutions.length > 1 && (
         <div>
           <label>
-            We found the account is linked to multiple Institutions. Please select the one for synced
-            classes.&nbsp;&nbsp;
+            We found the account is linked to multiple Institutions. Please
+            select the one for synced classes.&nbsp;&nbsp;
           </label>
           <StyledSelect
             width="170px"
             showSearch
             filterOption={(input, option) => {
-              if (option.props.children && typeof option.props.children === "string")
-                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              if (
+                option.props.children &&
+                typeof option.props.children === 'string'
+              )
+                return (
+                  option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                )
 
-              return false;
+              return false
             }}
             placeholder="Select Institution"
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
             value={institution}
-            onChange={value => setInstitution(value)}
+            onChange={(value) => setInstitution(value)}
           >
-            {canvasAllowedInstitutions.map(i => (
-              <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
+            {canvasAllowedInstitutions.map((i) => (
+              <Select.Option key={i.institutionId}>
+                {i.institutionName}
+              </Select.Option>
             ))}
           </StyledSelect>
         </div>
       )}
       <ModalClassListTable
-        rowKey={record => `${record.canvasCode}_${record.canvasCourseSectionCode}`}
+        rowKey={(record) =>
+          `${record.canvasCode}_${record.canvasCourseSectionCode}`
+        }
         columns={columns}
         dataSource={classes}
         rowSelection={rowSelection}
@@ -369,13 +421,19 @@ const CanvasBulkAddClass = ({
         bordered
         loading={isFetchingCanvasData || isLoading}
       />
-      <ButtonContainer justifyContent={fromManageClass ? "center" : "space-between"}>
+      <ButtonContainer
+        justifyContent={fromManageClass ? 'center' : 'space-between'}
+      >
         {fromManageClass ? (
           [
-            <EduButton isGhost onClick={handleClose} style={{ "margin-right": "25px" }}>
+            <EduButton
+              isGhost
+              onClick={handleClose}
+              style={{ 'margin-right': '25px' }}
+            >
               CANCEL
             </EduButton>,
-            <EduButton onClick={handleFinish}>SYNC</EduButton>
+            <EduButton onClick={handleFinish}>SYNC</EduButton>,
           ]
         ) : (
           <>
@@ -388,30 +446,36 @@ const CanvasBulkAddClass = ({
       </ButtonContainer>
       {showModal && (
         <StyledModal
-          title={bulkSyncCanvasStatus === "SUCCESS" ? <h4>Success</h4> : null}
+          title={bulkSyncCanvasStatus === 'SUCCESS' ? <h4>Success</h4> : null}
           visible={showModal}
-          footer={bulkSyncCanvasStatus === "SUCCESS" ? [<Button onClick={handleClose}>Close</Button>] : null}
+          footer={
+            bulkSyncCanvasStatus === 'SUCCESS'
+              ? [<Button onClick={handleClose}>Close</Button>]
+              : null
+          }
           centered
           maskClosable={false}
         >
           <h4>
-            {bulkSyncCanvasStatus === "INPROGRESS"
-              ? "Syncing with Canvas Course..."
-              : "Class successfully synced with Canvas Course."}
+            {bulkSyncCanvasStatus === 'INPROGRESS'
+              ? 'Syncing with Canvas Course...'
+              : 'Class successfully synced with Canvas Course.'}
           </h4>
         </StyledModal>
       )}
     </Container>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     state,
-    courseList: get(state, "coursesReducer.searchResult"),
-    bulkSyncCanvasStatus: get(state, "signup.bulkSyncCanvasStatus", false),
-    isFetchingCanvasData: get(state, "manageClass.isFetchingCanvasData", false),
-    canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(state)
+    courseList: get(state, 'coursesReducer.searchResult'),
+    bulkSyncCanvasStatus: get(state, 'signup.bulkSyncCanvasStatus', false),
+    isFetchingCanvasData: get(state, 'manageClass.isFetchingCanvasData', false),
+    canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
+      state
+    ),
   }),
   {
     getDictCurriculums: getDictCurriculumsAction,
@@ -419,6 +483,6 @@ export default connect(
     bulkSyncCanvasClass: bulkSyncCanvasClassAction,
     signupSuccess: signupSuccessAction,
     setSignUpStatus: setSignUpStatusAction,
-    joinSchoolFailed: joinSchoolFailedAction
+    joinSchoolFailed: joinSchoolFailedAction,
   }
-)(CanvasBulkAddClass);
+)(CanvasBulkAddClass)

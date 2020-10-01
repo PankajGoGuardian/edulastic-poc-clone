@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const LinkBtn = styled.a`
   font-size: 12px;
@@ -10,6 +10,6 @@ const LinkBtn = styled.a`
   text-align: left;
   color: #4aac8b;
   cursor: pointer;
-`;
+`
 
-export default LinkBtn;
+export default LinkBtn

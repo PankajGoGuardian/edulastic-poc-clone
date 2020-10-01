@@ -1,37 +1,42 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { FlexContainer, EduButton } from "@edulastic/common";
-import { IconClockCircularOutline, IconEconomic, IconMother, IconWrench } from "@edulastic/icons";
-import subScriptionPng from "../../common/static/img/subscription.png";
-import { BoxHeading } from "../../common/components/boxHeading";
+import React from 'react'
+import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+import { FlexContainer, EduButton } from '@edulastic/common'
+import {
+  IconClockCircularOutline,
+  IconEconomic,
+  IconMother,
+  IconWrench,
+} from '@edulastic/icons'
+import subScriptionPng from '../../common/static/img/subscription.png'
+import { BoxHeading } from '../../common/components/boxHeading'
 
 const links = [
   {
-    key: "realTimeData",
-    title: "Real-time data to inform instruction",
-    location: "/author/reports/",
-    Icon: IconClockCircularOutline
+    key: 'realTimeData',
+    title: 'Real-time data to inform instruction',
+    location: '/author/reports/',
+    Icon: IconClockCircularOutline,
   },
   {
-    key: "growthAndStandards",
-    title: "Growth and standards mastery by demographic subgroup",
-    location: "/author/reports/",
-    Icon: IconEconomic
+    key: 'growthAndStandards',
+    title: 'Growth and standards mastery by demographic subgroup',
+    location: '/author/reports/',
+    Icon: IconEconomic,
   },
   {
-    key: "studentView",
-    title: "Holistic student view for parents",
-    location: "/author/reports/",
-    Icon: IconMother
+    key: 'studentView',
+    title: 'Holistic student view for parents',
+    location: '/author/reports/',
+    Icon: IconMother,
   },
   {
-    key: "performanceBands",
-    title: "Customized performance bands",
-    location: "/author/reports/",
-    Icon: IconWrench
-  }
-];
+    key: 'performanceBands',
+    title: 'Customized performance bands',
+    location: '/author/reports/',
+    Icon: IconWrench,
+  },
+]
 
 export const SubscriptionReport = ({ premium }) => (
   <FlexContainer flexDirection="column">
@@ -61,18 +66,18 @@ export const SubscriptionReport = ({ premium }) => (
       </UpgradeBtn>
     </FlexContainer>
   </FlexContainer>
-);
+)
 
 const MarketImage = styled.img`
   width: 100%;
   height: auto;
-`;
+`
 
 const LinksWrapper = styled.ul`
   padding: 0px;
   margin: 0px;
   list-style: none;
-`;
+`
 
 const Item = styled.li`
   width: 100%;
@@ -91,11 +96,11 @@ const Item = styled.li`
     margin-right: 10px;
     fill: #434b5d;
   }
-`;
+`
 
 const UpgradeBtn = styled(EduButton)`
   height: 38px;
   width: 100%;
   margin-top: 12px;
   margin-left: 0px;
-`;
+`

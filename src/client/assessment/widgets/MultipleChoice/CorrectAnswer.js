@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import Display from "./components/Display";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import Display from './components/Display'
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -11,24 +11,32 @@ class CorrectAnswer extends Component {
     multipleResponses: PropTypes.bool.isRequired,
     uiStyle: PropTypes.object.isRequired,
     fontSize: PropTypes.any.isRequired,
-    styleType: PropTypes.string.isRequired
-  };
+    styleType: PropTypes.string.isRequired,
+  }
 
-  handleMultiSelect = answerId => {
-    const { onUpdateValidationValue, multipleResponses, response } = this.props;
-    let newUserSelection = response.value;
+  handleMultiSelect = (answerId) => {
+    const { onUpdateValidationValue, multipleResponses, response } = this.props
+    let newUserSelection = response.value
 
     newUserSelection = newUserSelection.includes(answerId)
-      ? newUserSelection.filter(item => item !== answerId)
+      ? newUserSelection.filter((item) => item !== answerId)
       : multipleResponses
       ? [...newUserSelection, answerId]
-      : [answerId];
+      : [answerId]
 
-    onUpdateValidationValue(newUserSelection);
-  };
+    onUpdateValidationValue(newUserSelection)
+  }
 
   render() {
-    const { options, stimulus, response, uiStyle, styleType, multipleResponses, fontSize } = this.props;
+    const {
+      options,
+      stimulus,
+      response,
+      uiStyle,
+      styleType,
+      multipleResponses,
+      fontSize,
+    } = this.props
     return (
       <Display
         preview
@@ -43,8 +51,8 @@ class CorrectAnswer extends Component {
         multipleResponses={multipleResponses}
         fontSize={fontSize}
       />
-    );
+    )
   }
 }
 
-export default CorrectAnswer;
+export default CorrectAnswer

@@ -1,38 +1,56 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
-import { IconClose, IconCheck } from "@edulastic/icons";
-import { red, green } from "@edulastic/colors";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
+import { IconClose, IconCheck } from '@edulastic/icons'
+import { red, green } from '@edulastic/colors'
 
-import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
+import {
+  EDIT,
+  CLEAR,
+  CHECK,
+  SHOW,
+} from '../../../constants/constantsForQuestions'
 
-import { Circle, Cross } from "../styled";
+import { Circle, Cross } from '../styled'
 
-const Points = ({ item, points, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, evaluation }) => {
-  const { pointStyle } = gridParams;
+const Points = ({
+  item,
+  points,
+  onPointOver,
+  onMouseDown,
+  activeIndex,
+  view,
+  gridParams,
+  previewTab,
+  evaluation,
+}) => {
+  const { pointStyle } = gridParams
 
-  const { chart_data = {} } = item;
-  const { data = [] } = chart_data;
+  const { chart_data = {} } = item
+  const { data = [] } = chart_data
 
-  const handleMouseAction = value => () => {
+  const handleMouseAction = (value) => () => {
     if (activeIndex === null) {
-      onPointOver(value);
+      onPointOver(value)
     }
-  };
+  }
 
-  const getCrossD = (x, y) => `M ${x - 6},${y - 6} L ${x + 7},${y + 7} M ${x + 7},${y - 6} L ${x - 6},${y + 7}`;
+  const getCrossD = (x, y) =>
+    `M ${x - 6},${y - 6} L ${x + 7},${y + 7} M ${x + 7},${y - 6} L ${x - 6},${
+      y + 7
+    }`
 
   const renderValidationIcons = (x, y, index) => (
     <g transform={`translate(${x - 6},${y - 24})`}>
       {evaluation[index] && <IconCheck color={green} width={12} height={12} />}
       {!evaluation[index] && <IconClose color={red} width={12} height={12} />}
     </g>
-  );
+  )
 
-  const isRenderIcons = !isEmpty(evaluation);
+  const isRenderIcons = !isEmpty(evaluation)
 
   return (
-    <Fragment>
+    <>
       {points.map(
         ({ posX, posY }, index) =>
           ((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
@@ -40,7 +58,7 @@ const Points = ({ item, points, onPointOver, onMouseDown, activeIndex, view, gri
               {(previewTab === SHOW || previewTab === CHECK) &&
                 isRenderIcons &&
                 renderValidationIcons(posX, posY, index)}
-              {pointStyle === "cross" ? (
+              {pointStyle === 'cross' ? (
                 <Cross
                   key={`cross-${index}`}
                   d={getCrossD(posX, posY)}
@@ -66,9 +84,9 @@ const Points = ({ item, points, onPointOver, onMouseDown, activeIndex, view, gri
             </Fragment>
           )
       )}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 Points.propTypes = {
   item: PropTypes.object.isRequired,
@@ -84,14 +102,14 @@ Points.propTypes = {
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
     snapTo: PropTypes.number,
-    pointStyle: PropTypes.string
+    pointStyle: PropTypes.string,
   }).isRequired,
   evaluation: PropTypes.object.isRequired,
-  previewTab: PropTypes.string
-};
+  previewTab: PropTypes.string,
+}
 
 Points.defaultProps = {
-  previewTab: CLEAR
-};
+  previewTab: CLEAR,
+}
 
-export default Points;
+export default Points

@@ -1,10 +1,15 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconCalculator = props => (
-  <SVG data-cy="calculator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.501 19.493" {...props}>
+const IconCalculator = (props) => (
+  <SVG
+    data-cy="calculator"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 19.501 19.493"
+    {...props}
+  >
     <g id="calculator" transform="translate(0 -.099)">
       <g id="Group_18" data-name="Group 18" transform="translate(0 .099)">
         <g id="Group_17" data-name="Group 17">
@@ -28,14 +33,28 @@ const IconCalculator = props => (
           />
         </g>
       </g>
-      <g id="Group_22" data-name="Group 22" transform="translate(12.345 12.665)">
+      <g
+        id="Group_22"
+        data-name="Group 22"
+        transform="translate(12.345 12.665)"
+      >
         <g id="Group_21" data-name="Group 21">
-          <path id="Rectangle_47" d="M0 0h3.961v1.143H0z" className="cls-1" data-name="Rectangle 47" />
+          <path
+            id="Rectangle_47"
+            d="M0 0h3.961v1.143H0z"
+            className="cls-1"
+            data-name="Rectangle 47"
+          />
         </g>
       </g>
       <g id="Group_24" data-name="Group 24" transform="translate(12.345 14.57)">
         <g id="Group_23" data-name="Group 23">
-          <path id="Rectangle_48" d="M0 0h3.961v1.143H0z" className="cls-1" data-name="Rectangle 48" />
+          <path
+            id="Rectangle_48"
+            d="M0 0h3.961v1.143H0z"
+            className="cls-1"
+            data-name="Rectangle 48"
+          />
         </g>
       </g>
       <g id="Group_26" data-name="Group 26" transform="translate(3.081 12.209)">
@@ -51,11 +70,16 @@ const IconCalculator = props => (
       </g>
       <g id="Group_28" data-name="Group 28" transform="translate(3.14 4.672)">
         <g id="Group_27" data-name="Group 27">
-          <path id="Rectangle_49" d="M0 0h3.961v1.143H0z" className="cls-1" data-name="Rectangle 49" />
+          <path
+            id="Rectangle_49"
+            d="M0 0h3.961v1.143H0z"
+            className="cls-1"
+            data-name="Rectangle 49"
+          />
         </g>
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconCalculator);
+export default withIconStyles(IconCalculator)

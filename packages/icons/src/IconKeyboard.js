@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconKeyboard = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30.867 21.607" {...props}>
+const IconKeyboard = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 30.867 21.607"
+    {...props}
+  >
     <g transform="translate(0 0.001)">
       <g transform="translate(0 0)">
         <path
@@ -14,6 +18,6 @@ const IconKeyboard = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconKeyboard);
+export default withIconStyles(IconKeyboard)

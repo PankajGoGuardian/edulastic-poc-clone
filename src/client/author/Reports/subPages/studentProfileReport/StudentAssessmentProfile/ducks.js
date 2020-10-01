@@ -1,20 +1,24 @@
-import { takeLatest, call, put, all } from "redux-saga/effects";
-import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
-import  {notification} from "@edulastic/common";
-import { createAction, createReducer } from "redux-starter-kit";
+import { takeLatest, call, put, all } from 'redux-saga/effects'
+import { createSelector } from 'reselect'
+import { reportsApi } from '@edulastic/api'
+import { message } from 'antd'
+import { notification } from '@edulastic/common'
+import { createAction, createReducer } from 'redux-starter-kit'
 
-import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
-const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST = "[reports] get reports student assessment profile request";
+const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST =
+  '[reports] get reports student assessment profile request'
 const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_SUCCESS =
-  "[reports] get reports student assessment profile success";
-const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR = "[reports] get reports student assessment profile error";
+  '[reports] get reports student assessment profile success'
+const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR =
+  '[reports] get reports student assessment profile error'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const getStudentAssessmentProfileRequestAction = createAction(GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST);
+export const getStudentAssessmentProfileRequestAction = createAction(
+  GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST
+)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -22,17 +26,18 @@ export const getStudentAssessmentProfileRequestAction = createAction(GET_REPORTS
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reportStudentAssessmentProfileReducer;
+export const stateSelector = (state) =>
+  state.reportReducer.reportStudentAssessmentProfileReducer
 
 export const getReportsStudentAssessmentProfile = createSelector(
   stateSelector,
-  state => state.studentAssessmentProfile
-);
+  (state) => state.studentAssessmentProfile
+)
 
 export const getReportsStudentAssessmentProfileLoader = createSelector(
   stateSelector,
-  state => state.loading
-);
+  (state) => state.loading
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -42,23 +47,32 @@ export const getReportsStudentAssessmentProfileLoader = createSelector(
 
 const initialState = {
   studentAssessmentProfile: {},
-  loading: false
-};
+  loading: false,
+}
 
-export const reportStudentAssessmentProfileReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST]: (state, { payload }) => {
-    state.loading = true;
-  },
-  [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false;
-    state.studentAssessmentProfile = payload.studentAssessmentProfile;
-  },
-  [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false;
-    state.error = payload.error;
+export const reportStudentAssessmentProfileReducer = createReducer(
+  initialState,
+  {
+    [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+    [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST]: (state, { payload }) => {
+      state.loading = true
+    },
+    [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_SUCCESS]: (
+      state,
+      { payload }
+    ) => {
+      state.loading = false
+      state.studentAssessmentProfile = payload.studentAssessmentProfile
+    },
+    [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR]: (
+      state,
+      { payload }
+    ) => {
+      state.loading = false
+      state.error = payload.error
+    },
   }
-});
+)
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
@@ -68,27 +82,33 @@ export const reportStudentAssessmentProfileReducer = createReducer(initialState,
 
 function* getReportsStudentAssessmentProfileRequest({ payload }) {
   try {
-    const studentAssessmentProfile = yield call(reportsApi.fetchStudentAssessmentProfileReport, payload);
+    const studentAssessmentProfile = yield call(
+      reportsApi.fetchStudentAssessmentProfileReport,
+      payload
+    )
 
     yield put({
       type: GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_SUCCESS,
-      payload: { studentAssessmentProfile }
-    });
+      payload: { studentAssessmentProfile },
+    })
   } catch (error) {
-    console.log("err", error.stack);
-    let msg = "Failed to fetch student assessment profile Please try again...";
-    notification({msg:msg});
+    console.log('err', error.stack)
+    const msg = 'Failed to fetch student assessment profile Please try again...'
+    notification({ msg })
     yield put({
       type: GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR,
-      payload: { error: msg }
-    });
+      payload: { error: msg },
+    })
   }
 }
 
 export function* reportStudentAssessmentProfileSaga() {
   yield all([
-    yield takeLatest(GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST, getReportsStudentAssessmentProfileRequest)
-  ]);
+    yield takeLatest(
+      GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST,
+      getReportsStudentAssessmentProfileRequest
+    ),
+  ])
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

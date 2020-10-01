@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconBarChart = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.918 21.125" {...props}>
+const IconBarChart = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 23.918 21.125"
+    {...props}
+  >
     <g transform="translate(0)">
       <g transform="translate(0 0)">
         <g transform="translate(0 6.906)">
@@ -34,6 +38,6 @@ const IconBarChart = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconBarChart);
+export default withIconStyles(IconBarChart)

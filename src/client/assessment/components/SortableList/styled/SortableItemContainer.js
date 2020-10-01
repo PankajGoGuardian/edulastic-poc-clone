@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const SortableItemContainer = styled.div`
   width: 100%;
@@ -39,4 +39,4 @@ export const SortableItemContainer = styled.div`
     border: none;
     padding: 0 10px;
   }
-`;
+`

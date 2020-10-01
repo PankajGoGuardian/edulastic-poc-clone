@@ -1,8 +1,8 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { isUndefined, mapValues, cloneDeep, orderBy } from "lodash";
-import { withTheme } from "styled-components";
-import JsxParser from "react-jsx-parser";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { isUndefined, mapValues, cloneDeep, orderBy } from 'lodash'
+import { withTheme } from 'styled-components'
+import JsxParser from 'react-jsx-parser'
 
 import {
   helpers,
@@ -12,92 +12,92 @@ import {
   FlexContainer,
   QuestionLabelWrapper,
   QuestionContentWrapper,
-  QuestionSubLabel
-} from "@edulastic/common";
+  QuestionSubLabel,
+} from '@edulastic/common'
 
-import ChoiceBoxLayout from "./ChoiceBoxLayout";
-import CorrectAnswerBoxLayout from "./CorrectAnswerBoxLayout";
-import CheckboxTemplateBoxLayout from "./CheckboxTemplateBoxLayout";
-import DragDropValues from "./ChoiceBoxLayout/DragDrop/DragDropValues";
+import ChoiceBoxLayout from './ChoiceBoxLayout'
+import CorrectAnswerBoxLayout from './CorrectAnswerBoxLayout'
+import CheckboxTemplateBoxLayout from './CheckboxTemplateBoxLayout'
+import DragDropValues from './ChoiceBoxLayout/DragDrop/DragDropValues'
 
-import DisplayOptions from "../../ClozeImageDropDown/QuestionOptions";
-import { getFontSize } from "../../../utils/helpers";
-import { withCheckAnswerButton } from "../../../components/HOC/withCheckAnswerButton";
-import MathSpanWrapper from "../../../components/MathSpanWrapper";
-import Instructions from "../../../components/Instructions";
-import { ContentWrapper } from "../styled/ContentWrapper";
-import { QuestionTitleWrapper } from "../styled/QuestionTitleWrapper";
-import { EDIT } from "../../../constants/constantsForQuestions";
-import { displayStyles } from "../constants";
+import DisplayOptions from '../../ClozeImageDropDown/QuestionOptions'
+import { getFontSize } from '../../../utils/helpers'
+import { withCheckAnswerButton } from '../../../components/HOC/withCheckAnswerButton'
+import MathSpanWrapper from '../../../components/MathSpanWrapper'
+import Instructions from '../../../components/Instructions'
+import { ContentWrapper } from '../styled/ContentWrapper'
+import { QuestionTitleWrapper } from '../styled/QuestionTitleWrapper'
+import { EDIT } from '../../../constants/constantsForQuestions'
+import { displayStyles } from '../constants'
 
-const { DragPreview } = DragDrop;
+const { DragPreview } = DragDrop
 class EditingTypeDisplay extends Component {
   state = {
-    parsedTemplate: ""
-  };
+    parsedTemplate: '',
+  }
 
   static getDerivedStateFromProps({ stimulus }) {
-    return { parsedTemplate: helpers.parseTemplate(stimulus) };
+    return { parsedTemplate: helpers.parseTemplate(stimulus) }
   }
 
   componentDidMount() {
-    const { stimulus } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
+    const { stimulus } = this.props
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) })
   }
 
   selectChange = (value, index, id) => {
-    const { onChange: changeAnswers, userSelections } = this.props;
-    const newAnswers = cloneDeep(userSelections);
-    newAnswers[id] = value;
-    changeAnswers(newAnswers);
-  };
+    const { onChange: changeAnswers, userSelections } = this.props
+    const newAnswers = cloneDeep(userSelections)
+    newAnswers[id] = value
+    changeAnswers(newAnswers)
+  }
 
-  shuffle = arr => {
+  shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
-    return arr;
-  };
+    return arr
+  }
 
-  shuffleGroup = data =>
+  shuffleGroup = (data) =>
     mapValues(data, (value, key) => {
       if (!isUndefined(value)) {
-        data[key] = this.shuffle(value);
+        data[key] = this.shuffle(value)
       }
-      data[key] = value;
-      return data[key];
-    });
+      data[key] = value
+      return data[key]
+    })
 
   getBtnStyle = () => {
-    const { uiStyle } = this.props;
+    const { uiStyle } = this.props
     const btnStyle = {
-      width: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      height: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto"
-    };
+      width: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
+      height: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 'auto',
+    }
 
-    return { btnStyle };
-  };
+    return { btnStyle }
+  }
 
   get evaluation() {
-    const { item, evaluation } = this.props;
+    const { item, evaluation } = this.props
 
-    return item?.activity?.evaluation || evaluation;
+    return item?.activity?.evaluation || evaluation
   }
 
   get userSelections() {
-    const { item, userSelections } = this.props;
-    return item?.activity?.userResponse || userSelections;
+    const { item, userSelections } = this.props
+    return item?.activity?.userResponse || userSelections
   }
 
   get hasAltAnswers() {
-    const { item } = this.props;
-    return item?.validation?.altResponses?.length;
+    const { item } = this.props
+    return item?.validation?.altResponses?.length
   }
 
   get checkedAnswers() {
-    const { showAnswer, checkAnswer, isPrint, isPrintPreview } = this.props;
-    return showAnswer || checkAnswer || isPrint || isPrintPreview;
+    const { showAnswer, checkAnswer, isPrint, isPrintPreview } = this.props
+    return showAnswer || checkAnswer || isPrint || isPrintPreview
   }
 
   render() {
@@ -119,19 +119,19 @@ class EditingTypeDisplay extends Component {
       changePreviewTab,
       view,
       isPrint,
-      isPrintPreview
-    } = this.props;
+      isPrintPreview,
+    } = this.props
 
-    const { parsedTemplate } = this.state;
-    const { shuffleOptions, responseIds, displayStyle } = item;
-    let responses = cloneDeep(options);
+    const { parsedTemplate } = this.state
+    const { shuffleOptions, responseIds, displayStyle } = item
+    let responses = cloneDeep(options)
     if (preview && shuffleOptions) {
-      responses = this.shuffleGroup(responses);
+      responses = this.shuffleGroup(responses)
     }
     // Layout Options
-    const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize, true);
-    const { stemNumeration } = uiStyle;
-    const { btnStyle } = this.getBtnStyle();
+    const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize, true)
+    const { stemNumeration } = uiStyle
+    const { btnStyle } = this.getBtnStyle()
 
     const resProps = {
       item,
@@ -147,17 +147,19 @@ class EditingTypeDisplay extends Component {
       previewTab,
       changePreviewTab,
       userSelections: this.userSelections,
-      evaluation: this.evaluation
-    };
+      evaluation: this.evaluation,
+    }
 
-    const displayOptions = orderBy(responseIds, ["index"]).map(option => options[option.id]);
+    const displayOptions = orderBy(responseIds, ['index']).map(
+      (option) => options[option.id]
+    )
 
     const dragDropValues = displayStyle?.type === displayStyles.DRAG_DROP && (
-      <div style={{ width: "100%", marginTop: 8 }}>
+      <div style={{ width: '100%', marginTop: 8 }}>
         <DragDropValues choices={displayOptions} />
         <DragPreview />
       </div>
-    );
+    )
 
     const questionContent = (
       <ContentWrapper view={view} fontSize={fontSize}>
@@ -165,38 +167,60 @@ class EditingTypeDisplay extends Component {
           disableKeyGeneration
           bindings={{ resProps }}
           components={{
-            response: this.checkedAnswers ? CheckboxTemplateBoxLayout : ChoiceBoxLayout,
-            mathspan: MathSpanWrapper
+            response: this.checkedAnswers
+              ? CheckboxTemplateBoxLayout
+              : ChoiceBoxLayout,
+            mathspan: MathSpanWrapper,
           }}
           jsx={parsedTemplate}
         />
       </ContentWrapper>
-    );
+    )
 
     return (
-      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+      <FlexContainer
+        justifyContent="flex-start"
+        alignItems="baseline"
+        width="100%"
+      >
         <QuestionLabelWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          {showQuestionNumber && (
+            <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+          )}
+          {item.qSubLabel && (
+            <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+          )}
         </QuestionLabelWrapper>
 
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
             {!!question && (
-              <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+              <Stimulus
+                qIndex={qIndex}
+                smallSize={smallSize}
+                dangerouslySetInnerHTML={{ __html: question }}
+              />
             )}
             {!question && questionContent}
           </QuestionTitleWrapper>
           {question && questionContent}
           {dragDropValues}
-          {(isPrint || isPrintPreview) && <DisplayOptions options={displayOptions} style={{ marginTop: "50px" }} />}
+          {(isPrint || isPrintPreview) && (
+            <DisplayOptions
+              options={displayOptions}
+              style={{ marginTop: '50px' }}
+            />
+          )}
           {view !== EDIT && <Instructions item={item} />}
           {(showAnswer || isExpressGrader) && (
-            <React.Fragment>
+            <>
               <CorrectAnswerBoxLayout
                 fontSize={fontSize}
                 groupResponses={options}
-                userAnswers={item.validation.validResponse && item.validation.validResponse.value}
+                userAnswers={
+                  item.validation.validResponse &&
+                  item.validation.validResponse.value
+                }
                 responseIds={item.responseIds}
                 stemNumeration={stemNumeration}
               />
@@ -209,11 +233,11 @@ class EditingTypeDisplay extends Component {
                   stemNumeration={stemNumeration}
                 />
               ) : null}
-            </React.Fragment>
+            </>
           )}
         </QuestionContentWrapper>
       </FlexContainer>
-    );
+    )
   }
 }
 
@@ -239,8 +263,8 @@ EditingTypeDisplay.propTypes = {
   isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object,
-  view: PropTypes.string.isRequired
-};
+  view: PropTypes.string.isRequired,
+}
 
 EditingTypeDisplay.defaultProps = {
   options: {},
@@ -252,21 +276,21 @@ EditingTypeDisplay.defaultProps = {
   checkAnswer: false,
   userSelections: {},
   isPrint: false,
-  stimulus: "",
+  stimulus: '',
   disableResponse: false,
   smallSize: false,
   uiStyle: {
-    fontsize: "normal",
-    stemNumeration: "numerical",
+    fontsize: 'normal',
+    stemNumeration: 'numerical',
     widthpx: 0,
     heightpx: 0,
     placeholder: null,
-    responsecontainerindividuals: []
+    responsecontainerindividuals: [],
   },
   showQuestionNumber: false,
   isReviewTab: false,
   isExpressGrader: false,
-  qIndex: null
-};
+  qIndex: null,
+}
 
-export default withTheme(withCheckAnswerButton(EditingTypeDisplay));
+export default withTheme(withCheckAnswerButton(EditingTypeDisplay))

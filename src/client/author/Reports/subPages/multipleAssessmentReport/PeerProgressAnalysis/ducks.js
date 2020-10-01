@@ -1,20 +1,25 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
-import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
-import { notification } from "@edulastic/common";
-import { createAction, createReducer } from "redux-starter-kit";
+import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { createSelector } from 'reselect'
+import { reportsApi } from '@edulastic/api'
+import { message } from 'antd'
+import { notification } from '@edulastic/common'
+import { createAction, createReducer } from 'redux-starter-kit'
 
-import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
-import { getClassAndGroupIds } from "../common/utils/transformers";
+import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { getClassAndGroupIds } from '../common/utils/transformers'
 
-const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST = "[reports] get reports peer progress analysis request";
-const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS = "[reports] get reports peer progress analysis success";
-const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR = "[reports] get reports peer progress analysis error";
+const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST =
+  '[reports] get reports peer progress analysis request'
+const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS =
+  '[reports] get reports peer progress analysis success'
+const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR =
+  '[reports] get reports peer progress analysis error'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const getPeerProgressAnalysisRequestAction = createAction(GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST);
+export const getPeerProgressAnalysisRequestAction = createAction(
+  GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST
+)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -22,17 +27,18 @@ export const getPeerProgressAnalysisRequestAction = createAction(GET_REPORTS_PEE
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reportPeerProgressAnalysisReducer;
+export const stateSelector = (state) =>
+  state.reportReducer.reportPeerProgressAnalysisReducer
 
 export const getReportsPeerProgressAnalysis = createSelector(
   stateSelector,
-  state => state.peerProgressAnalysis
-);
+  (state) => state.peerProgressAnalysis
+)
 
 export const getReportsPeerProgressAnalysisLoader = createSelector(
   stateSelector,
-  state => state.loading
-);
+  (state) => state.loading
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -42,23 +48,26 @@ export const getReportsPeerProgressAnalysisLoader = createSelector(
 
 const initialState = {
   peerProgressAnalysis: {},
-  loading: true
-};
+  loading: true,
+}
 
 export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST]: (state, { payload }) => {
-    state.loading = true;
+    state.loading = true
   },
-  [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false;
-    state.peerProgressAnalysis = payload.peerProgressAnalysis;
+  [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS]: (
+    state,
+    { payload }
+  ) => {
+    state.loading = false
+    state.peerProgressAnalysis = payload.peerProgressAnalysis
   },
   [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false;
-    state.error = payload.error;
-  }
-});
+    state.loading = false
+    state.error = payload.error
+  },
+})
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
@@ -68,30 +77,38 @@ export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
 
 function* getReportsPeerProgressAnalysisRequest({ payload }) {
   try {
-    const { classIds, groupIds } = getClassAndGroupIds(payload);
-    const peerProgressAnalysis = yield call(reportsApi.fetchPeerProgressAnalysisReport, {
-      ...payload,
-      classIds,
-      groupIds
-    });
+    const { classIds, groupIds } = getClassAndGroupIds(payload)
+    const peerProgressAnalysis = yield call(
+      reportsApi.fetchPeerProgressAnalysisReport,
+      {
+        ...payload,
+        classIds,
+        groupIds,
+      }
+    )
 
     yield put({
       type: GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS,
-      payload: { peerProgressAnalysis }
-    });
+      payload: { peerProgressAnalysis },
+    })
   } catch (error) {
-    console.log("err", error.stack);
-    let msg = "Failed to fetch peer progress analysis Please try again...";
-    notification({msg:msg});
+    console.log('err', error.stack)
+    const msg = 'Failed to fetch peer progress analysis Please try again...'
+    notification({ msg })
     yield put({
       type: GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR,
-      payload: { error: msg }
-    });
+      payload: { error: msg },
+    })
   }
 }
 
 export function* reportPeerProgressAnalysisSaga() {
-  yield all([yield takeEvery(GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST, getReportsPeerProgressAnalysisRequest)]);
+  yield all([
+    yield takeEvery(
+      GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST,
+      getReportsPeerProgressAnalysisRequest
+    ),
+  ])
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

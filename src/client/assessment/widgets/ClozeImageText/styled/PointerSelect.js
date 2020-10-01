@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Select } from "antd";
+import styled from 'styled-components'
+import { Select } from 'antd'
 
 export const PointerSelect = styled(Select)`
   width: 100px;
@@ -10,4 +10,4 @@ export const PointerSelect = styled(Select)`
   display: flex;
   align-items: flex-end;
   cursor: pointer;
-`;
+`

@@ -4,64 +4,68 @@ import {
   mobileWidthLarge,
   tabletWidth,
   themeColor,
-  white
-} from "@edulastic/colors";
-import { OnDarkBgLogo } from "@edulastic/common";
-import { IconProfileHighlight, IconSignoutHighlight, IconSwitchUser } from "@edulastic/icons";
-import { Dropdown, Icon, Layout, Menu } from "antd";
-import { get } from "lodash";
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
-import { compose } from "redux";
-import styled from "styled-components";
-import { logoutAction } from "../../author/src/actions/auth";
-import { LogoCompact } from "./StyledComponents";
-import { toggleSideBarAction } from "../../author/src/actions/toggleMenu";
-import SwitchUserModal from "../../common/components/SwtichUserModal/SwitchUserModal";
-import { switchUser } from "../../author/authUtils";
-import { getAccountSwitchDetails } from "../../author/src/selectors/user";
+  white,
+} from '@edulastic/colors'
+import { OnDarkBgLogo } from '@edulastic/common'
+import {
+  IconProfileHighlight,
+  IconSignoutHighlight,
+  IconSwitchUser,
+} from '@edulastic/icons'
+import { Dropdown, Icon, Layout, Menu } from 'antd'
+import { get } from 'lodash'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { logoutAction } from '../../author/src/actions/auth'
+import { LogoCompact } from './StyledComponents'
+import { toggleSideBarAction } from '../../author/src/actions/toggleMenu'
+import SwitchUserModal from '../../common/components/SwtichUserModal/SwitchUserModal'
+import { switchUser } from '../../author/authUtils'
+import { getAccountSwitchDetails } from '../../author/src/selectors/user'
 
-const { Sider } = Layout;
+const { Sider } = Layout
 
 const siderMenuData = [
   {
-    icon: "pie-chart",
-    label: "Proxy",
-    href: "/admin/proxyUser"
+    icon: 'pie-chart',
+    label: 'Proxy',
+    href: '/admin/proxyUser',
   },
   {
-    icon: "team",
-    label: "Clever Search",
-    href: "/admin/search/clever"
+    icon: 'team',
+    label: 'Clever Search',
+    href: '/admin/search/clever',
   },
   {
-    icon: "team",
-    label: "Classlink Search",
-    href: "/admin/search/classlink"
+    icon: 'team',
+    label: 'Classlink Search',
+    href: '/admin/search/classlink',
   },
   {
-    icon: "team",
-    label: "Upgrade Plan",
-    href: "/admin/upgrade"
+    icon: 'team',
+    label: 'Upgrade Plan',
+    href: '/admin/upgrade',
   },
 
   {
-    icon: "team",
-    label: "Api Forms",
-    href: "/admin/apiForms"
+    icon: 'team',
+    label: 'Api Forms',
+    href: '/admin/apiForms',
   },
   {
-    icon: "team",
-    label: "Content",
-    href: "/admin/content/collections"
+    icon: 'team',
+    label: 'Content',
+    href: '/admin/content/collections',
   },
   {
-    icon: "team",
-    label: "Custom Report",
-    href: "/admin/customReport"
-  }
-];
+    icon: 'team',
+    label: 'Custom Report',
+    href: '/admin/customReport',
+  },
+]
 
 const SideMenu = ({
   history,
@@ -76,60 +80,71 @@ const SideMenu = ({
   toggleState,
   toggleSideBar,
   userId,
-  switchDetails
+  switchDetails,
 }) => {
-  const [isVisible, toggleIsVisible] = useState(false);
-  const [showModal, toggleShowModal] = useState(false);
+  const [isVisible, toggleIsVisible] = useState(false)
+  const [showModal, toggleShowModal] = useState(false)
 
-  const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
+  const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${
+    lastName || ``
+  }`
 
   const toggleDropdown = () => {
-    toggleIsVisible(!isVisible);
-  };
+    toggleIsVisible(!isVisible)
+  }
 
   const getInitials = () => {
-    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
-    if (firstName) return `${firstName.substr(0, 2)}`;
-    if (lastName) return `${lastName.substr(0, 2)}`;
-  };
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`
+    if (firstName) return `${firstName.substr(0, 2)}`
+    if (lastName) return `${lastName.substr(0, 2)}`
+  }
 
   const onClickFooterDropDownMenu = ({ key }) => {
-    if (key === "1") {
-      toggleDropdown();
-      toggleSideBar;
+    if (key === '1') {
+      toggleDropdown()
+      toggleSideBar
     }
-    if (key === "3") {
-      toggleShowModal(!showModal);
-      toggleIsVisible(!isVisible);
+    if (key === '3') {
+      toggleShowModal(!showModal)
+      toggleIsVisible(!isVisible)
     }
-  };
+  }
 
-  const personId = get(switchDetails, "personId");
+  const personId = get(switchDetails, 'personId')
 
   const footerDropdownMenu = (
-    <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
-      <Menu onClick={onClickFooterDropDownMenu} style={{ height: "auto" }}>
+    <FooterDropDown
+      data-cy="footer-dropdown"
+      isVisible={isVisible}
+      isCollapsed={isCollapsed}
+    >
+      <Menu onClick={onClickFooterDropDownMenu} style={{ height: 'auto' }}>
         <Menu.Item key="1" className="removeSelectedBorder">
           <Link to="/admin/profile">
-            <IconProfileHighlight /> {isCollapsed ? "" : "My Profile"}
+            <IconProfileHighlight /> {isCollapsed ? '' : 'My Profile'}
           </Link>
         </Menu.Item>
         {personId && (
           <Menu.Item key="3" className="removeSelectedBorder">
             <a>
               <IconSwitchUser />
-              <span>{isCollapsed ? "" : "Switch Account"} </span>
+              <span>{isCollapsed ? '' : 'Switch Account'} </span>
             </a>
           </Menu.Item>
         )}
-        <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder" onClick={logoutBtn}>
+        <Menu.Item
+          data-cy="signout"
+          key="0"
+          className="removeSelectedBorder"
+          onClick={logoutBtn}
+        >
           <a>
-            <IconSignoutHighlight /> {isCollapsed ? "" : "Logout"}
+            <IconSignoutHighlight /> {isCollapsed ? '' : 'Logout'}
           </a>
         </Menu.Item>
       </Menu>
     </FooterDropDown>
-  );
+  )
 
   return (
     <Sidebar
@@ -141,24 +156,32 @@ const SideMenu = ({
       collapsed={isCollapsed}
       role="navigation"
     >
-      <ToggleSidemenu onClick={() => toggleState(val => !val)}>
-        <Icon type={isCollapsed ? "right" : "left"} />
+      <ToggleSidemenu onClick={() => toggleState((val) => !val)}>
+        <Icon type={isCollapsed ? 'right' : 'left'} />
       </ToggleSidemenu>
       <LogoWrapper
-        onClick={() => toggleState(val => !val)}
+        onClick={() => toggleState((val) => !val)}
         className="logoWrapper"
-        aria-label={`${isCollapsed ? "Open" : "Close"} sidebar`}
+        aria-label={`${isCollapsed ? 'Open' : 'Close'} sidebar`}
       >
-        {isCollapsed ? <LogoCompact margin="0px" /> : <OnDarkBgLogo height="26px" />}
+        {isCollapsed ? (
+          <LogoCompact margin="0px" />
+        ) : (
+          <OnDarkBgLogo height="26px" />
+        )}
       </LogoWrapper>
 
-      <Menu className="main-menu" defaultSelectedKeys={[location.pathname]} mode="inline">
-        {siderMenuData.map(item => (
+      <Menu
+        className="main-menu"
+        defaultSelectedKeys={[location.pathname]}
+        mode="inline"
+      >
+        {siderMenuData.map((item) => (
           <Menu.Item
             onClick={() => {
-              toggleState(false);
+              toggleState(false)
               if (item.href) {
-                history.push(item.href);
+                history.push(item.href)
               }
             }}
             key={item.href}
@@ -172,22 +195,22 @@ const SideMenu = ({
         <UserInfoButton
           isVisible={isVisible}
           isCollapsed={isCollapsed}
-          className={`userinfoBtn ${isCollapsed ? "active" : ""}`}
+          className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
         >
           <Dropdown
             onClick={toggleDropdown}
             overlayStyle={{
-              position: "fixed",
-              minWidth: isCollapsed ? "50px" : "220px",
-              maxWidth: isCollapsed ? "50px" : "0px"
+              position: 'fixed',
+              minWidth: isCollapsed ? '50px' : '220px',
+              maxWidth: isCollapsed ? '50px' : '0px',
             }}
             className="footerDropdown"
             overlay={footerDropdownMenu}
-            trigger={["click"]}
+            trigger={['click']}
             placement="topCenter"
             isVisible={isVisible}
             onVisibleChange={toggleDropdown}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             <div>
               {profileThumbnail ? (
@@ -195,15 +218,20 @@ const SideMenu = ({
               ) : (
                 <PseudoDiv isCollapsed={isCollapsed}>{getInitials()}</PseudoDiv>
               )}
-              <div style={{ width: "100px", display: !isCollapsed ? "block" : "none" }}>
-                <UserName>{userName || "Anonymous"}</UserName>
+              <div
+                style={{
+                  width: '100px',
+                  display: !isCollapsed ? 'block' : 'none',
+                }}
+              >
+                <UserName>{userName || 'Anonymous'}</UserName>
                 <UserType isVisible={isVisible}>{userRole}</UserType>
               </div>
               {!isCollapsed && (
                 <IconDropdown
-                  style={{ fontSize: 15, pointerEvents: "none" }}
+                  style={{ fontSize: 15, pointerEvents: 'none' }}
                   className="drop-caret"
-                  type={isCollapsed ? "caret-up" : "caret-down"}
+                  type={isCollapsed ? 'caret-up' : 'caret-down'}
                 />
               )}
             </div>
@@ -215,31 +243,31 @@ const SideMenu = ({
         switchUser={switchUser}
         showModal={showModal}
         closeModal={() => toggleShowModal(!showModal)}
-        otherAccounts={get(switchDetails, "otherAccounts", [])}
+        otherAccounts={get(switchDetails, 'otherAccounts', [])}
         personId={personId}
         userRole={userRole}
       />
     </Sidebar>
-  );
-};
+  )
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
-      firstName: get(state.user, "user.firstName", ""),
-      middleName: get(state.user, "user.middleName", ""),
-      lastName: get(state.user, "user.lastName", ""),
-      userRole: get(state.user, "user.role", ""),
-      userId: get(state.user, "user._id", ""),
-      profileThumbnail: get(state.user, "user.thumbnail"),
-      switchDetails: getAccountSwitchDetails(state)
+    (state) => ({
+      firstName: get(state.user, 'user.firstName', ''),
+      middleName: get(state.user, 'user.middleName', ''),
+      lastName: get(state.user, 'user.lastName', ''),
+      userRole: get(state.user, 'user.role', ''),
+      userId: get(state.user, 'user._id', ''),
+      profileThumbnail: get(state.user, 'user.thumbnail'),
+      switchDetails: getAccountSwitchDetails(state),
     }),
     { toggleSideBar: toggleSideBarAction, logoutBtn: logoutAction }
   )
-);
+)
 
-export default enhance(SideMenu);
+export default enhance(SideMenu)
 
 const ToggleSidemenu = styled.div`
   position: absolute;
@@ -263,7 +291,7 @@ const ToggleSidemenu = styled.div`
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
-`;
+`
 
 const LogoWrapper = styled.div`
   height: ${({ theme }) => theme.HeaderHeight.xl}px;
@@ -271,7 +299,7 @@ const LogoWrapper = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 0px 25px;
-`;
+`
 
 const Sidebar = styled(Sider)`
   &.admin-sidebar {
@@ -293,24 +321,24 @@ const Sidebar = styled(Sider)`
     padding: 8px 0px 0px;
     &:not(.ant-menu-horizontal) {
       .ant-menu-item {
-        color: ${props => props.theme.sideMenu.menuItemLinkColor};
+        color: ${(props) => props.theme.sideMenu.menuItemLinkColor};
         i {
-          margin-right: ${props => (props.isCollapsed ? "0px" : "1.5rem")};
+          margin-right: ${(props) => (props.isCollapsed ? '0px' : '1.5rem')};
         }
         svg {
           position: relative;
           z-index: 5;
-          fill: ${props => props.theme.sideMenu.menuItemLinkColor};
+          fill: ${(props) => props.theme.sideMenu.menuItemLinkColor};
           width: 18px;
           height: 22px;
         }
       }
       .ant-menu-item-selected {
-        color: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
+        color: ${(props) => props.theme.sideMenu.menuSelectedItemLinkColor};
         background-color: transparent;
 
         svg {
-          fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
+          fill: ${(props) => props.theme.sideMenu.menuSelectedItemLinkColor};
         }
 
         &:before {
@@ -322,9 +350,9 @@ const Sidebar = styled(Sider)`
     .ant-menu-item:not(.ant-menu-item-selected) {
       &:hover {
         svg {
-          fill: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
+          fill: ${(props) => props.theme.sideMenu.menuItemLinkHoverColor};
         }
-        color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
+        color: ${(props) => props.theme.sideMenu.menuItemLinkHoverColor};
       }
     }
 
@@ -333,14 +361,14 @@ const Sidebar = styled(Sider)`
       background: transparent;
 
       &:before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         bottom: 0;
         left: 14px;
         right: 14px;
         border-radius: 4px;
-        background: ${props => props.theme.sideMenu.menuSelectedItemBgColor};
+        background: ${(props) => props.theme.sideMenu.menuSelectedItemBgColor};
         z-index: -1;
         opacity: 0;
         pointer-events: none;
@@ -441,26 +469,27 @@ const Sidebar = styled(Sider)`
       }
     }
   }
-`;
+`
 
 const UserName = styled.div`
-  font-size: ${props => props.theme.sideMenu.userInfoNameFontSize};
-  color: ${props => props.theme.sideMenu.userInfoNameTextColor};
+  font-size: ${(props) => props.theme.sideMenu.userInfoNameFontSize};
+  color: ${(props) => props.theme.sideMenu.userInfoNameTextColor};
   text-transform: capitalize;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`;
+`
 
 const UserType = styled.div`
   font-size: 12px;
-  color: ${props => (props.isVisible ? white : props.theme.sideMenu.userInfoRoleTextColor)};
+  color: ${(props) =>
+    props.isVisible ? white : props.theme.sideMenu.userInfoRoleTextColor};
   width: 96%;
-`;
+`
 
 const FooterDropDown = styled.div`
   position: relative;
-  opacity: ${props => (props.isVisible ? "1" : "0")};
+  opacity: ${(props) => (props.isVisible ? '1' : '0')};
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
@@ -468,10 +497,11 @@ const FooterDropDown = styled.div`
     max-width: 100%;
     border: none;
     .ant-menu-item:not(.ant-menu-item-selected) svg {
-      fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+      fill: ${(props) => props.theme.sideMenu.userInfoDropdownItemTextColor};
       &:hover,
       &:focus {
-        fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+        fill: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
       }
     }
     &.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
@@ -492,9 +522,10 @@ const FooterDropDown = styled.div`
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
-      margin-top: ${props => (props.isCollapsed ? "0" : "10px")};
-      margin-left: ${props => (props.isCollapsed ? "0" : "8px")};
-      box-shadow: ${props => (props.isCollapsed ? "0 -3px 5px 0 rgba(0,0,0,0.07)" : "none")};
+      margin-top: ${(props) => (props.isCollapsed ? '0' : '10px')};
+      margin-left: ${(props) => (props.isCollapsed ? '0' : '8px')};
+      box-shadow: ${(props) =>
+        props.isCollapsed ? '0 -3px 5px 0 rgba(0,0,0,0.07)' : 'none'};
 
       li {
         &.ant-menu-item {
@@ -517,26 +548,33 @@ const FooterDropDown = styled.div`
         margin-bottom: 0 !important;
         padding: 5px 16px;
         height: 50px;
-        background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
+        background: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemBgColor};
         /* &:hover,
         &:focus {
-          background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
+          background: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
         } */
         a {
-          color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
-          font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
+          color: ${(props) =>
+            props.theme.sideMenu.userInfoDropdownItemTextColor};
+          font-size: ${(props) =>
+            props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
           display: flex;
           align-items: center;
           &:hover,
           &:focus {
-            color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            color: ${(props) =>
+              props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             a {
-              color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+              color: ${(props) =>
+                props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             }
             svg,
             svg path {
-              fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+              fill: ${(props) =>
+                props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             }
           }
           svg {
@@ -549,7 +587,7 @@ const FooterDropDown = styled.div`
       }
     }
   }
-`;
+`
 
 const MenuFooter = styled.div`
   position: absolute;
@@ -558,17 +596,18 @@ const MenuFooter = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-`;
+`
 
 const UserImg = styled.div`
   width: 50px;
   height: 50px;
-  background: url(${props => props.src});
+  background: url(${(props) => props.src});
   background-position: center center;
   background-size: cover;
   border-radius: 50%;
-  margin: ${({ isCollapsed }) => (isCollapsed ? "0px auto" : "10px 10px 15px 20px")};
-`;
+  margin: ${({ isCollapsed }) =>
+    isCollapsed ? '0px auto' : '10px 10px 15px 20px'};
+`
 
 const UserInfoButton = styled.div`
   cursor: pointer;
@@ -590,8 +629,8 @@ const UserInfoButton = styled.div`
     left: 0px !important;
     top: unset !important;
     bottom: 80px !important;
-    min-width: ${props => (props.isCollapsed ? "70px" : "220px")} !important;
-    max-width: ${props => (props.isCollapsed ? "70px" : "220px")} !important;
+    min-width: ${(props) => (props.isCollapsed ? '70px' : '220px')} !important;
+    max-width: ${(props) => (props.isCollapsed ? '70px' : '220px')} !important;
     @media (max-width: ${mobileWidthLarge}) {
       bottom: 75px !important;
     }
@@ -601,7 +640,11 @@ const UserInfoButton = styled.div`
     width: 100%;
     height: 80px;
     background-color: ${({ theme, isCollapsed, isVisible }) =>
-      isCollapsed ? "" : isVisible ? theme.sideMenu.userInfoButtonBgHoverColor : theme.sideMenu.userInfoButtonBgColor};
+      isCollapsed
+        ? ''
+        : isVisible
+        ? theme.sideMenu.userInfoButtonBgHoverColor
+        : theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
     position: relative;
@@ -622,7 +665,7 @@ const UserInfoButton = styled.div`
       background: transparent;
     }
   }
-`;
+`
 
 const PseudoDiv = styled.div`
   width: 50px;
@@ -635,13 +678,14 @@ const PseudoDiv = styled.div`
   line-height: 50px;
   text-align: center;
   text-transform: uppercase;
-  margin: ${({ isCollapsed }) => (isCollapsed ? "0px auto" : "10px 10px 15px 20px")};
-`;
+  margin: ${({ isCollapsed }) =>
+    isCollapsed ? '0px auto' : '10px 10px 15px 20px'};
+`
 
 const IconDropdown = styled(Icon)`
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
   position: absolute;
-  color: ${props => props.theme.sideMenu.dropdownIconColor};
-`;
+  color: ${(props) => props.theme.sideMenu.dropdownIconColor};
+`

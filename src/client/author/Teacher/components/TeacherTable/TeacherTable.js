@@ -1,26 +1,26 @@
-import { themeColor } from "@edulastic/colors";
+import { themeColor } from '@edulastic/colors'
 import {
   CheckboxLabel,
   EduButton,
   notification,
   TypeToConfirmModal,
   SearchInputStyled,
-  SelectInputStyled
-} from "@edulastic/common";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Icon, Menu, Row, Select } from "antd";
-import { get, isEmpty } from "lodash";
-import React, { Component } from "react";
-import { GiDominoMask } from "react-icons/gi";
-import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
-import { compose } from "redux";
+  SelectInputStyled,
+} from '@edulastic/common'
+import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Icon, Menu, Row, Select } from 'antd'
+import { get, isEmpty } from 'lodash'
+import React, { Component } from 'react'
+import { GiDominoMask } from 'react-icons/gi'
+import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import {
   StyledActionDropDown,
   StyledClassName,
-  StyledFilterDiv
-} from "../../../../admin/Common/StyledComponents";
+  StyledFilterDiv,
+} from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
   LeftFilterDiv,
@@ -30,11 +30,14 @@ import {
   StyledTableButton,
   SubHeaderWrapper,
   StyledPagination,
-  TableContainer
-} from "../../../../common/styled";
-import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
-import { proxyUser } from "../../../authUtils";
-import { MergeTeachersModal } from "../../../MergeUsers";
+  TableContainer,
+} from '../../../../common/styled'
+import {
+  isProxyUser as isProxyUserSelector,
+  updatePowerTeacherAction,
+} from '../../../../student/Login/ducks'
+import { proxyUser } from '../../../authUtils'
+import { MergeTeachersModal } from '../../../MergeUsers'
 import {
   addBulkTeacherAdminAction,
   addFilterAction,
@@ -55,518 +58,560 @@ import {
   setSearchNameAction,
   setShowActiveUsersAction,
   setTeachersDetailsModalVisibleAction,
-  updateAdminUserAction
-} from "../../../SchoolAdmin/ducks";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
-import { getUserOrgId } from "../../../src/selectors/user";
-import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
-import { getTeachersListSelector } from "../../ducks";
-import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
-import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
-import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-import { StyledMaskButton, StyledTeacherTable } from "./styled";
+  updateAdminUserAction,
+} from '../../../SchoolAdmin/ducks'
+import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
+import { getUserOrgId } from '../../../src/selectors/user'
+import StudentsDetailsModal from '../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal'
+import { getTeachersListSelector } from '../../ducks'
+import AddTeacherModal from './AddTeacherModal/AddTeacherModal'
+import EditTeacherModal from './EditTeacherModal/EditTeacherModal'
+import InviteMultipleTeacherModal from './InviteMultipleTeacherModal/InviteMultipleTeacherModal'
+import { StyledMaskButton, StyledTeacherTable } from './styled'
 
-const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
+const menuActive = { mainMenu: 'Users', subMenu: 'Teacher' }
 
-const { Option } = Select;
+const { Option } = Select
 
 const filterStrDD = {
   status: {
     list: [
-      { title: "Select a value", value: undefined, disabled: true },
-      { title: "Active", value: 1, disabled: false },
-      { title: "Inactive", value: 0, disabled: false }
+      { title: 'Select a value', value: undefined, disabled: true },
+      { title: 'Active', value: 1, disabled: false },
+      { title: 'Inactive', value: 0, disabled: false },
     ],
-    placeholder: "Select a value"
-  }
-};
+    placeholder: 'Select a value',
+  },
+}
 
 class TeacherTable extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       selectedRowKeys: [],
       addTeacherModalVisible: false,
       editTeacherModaVisible: false,
       inviteTeacherModalVisible: false,
-      editTeacherKey: "",
+      editTeacherKey: '',
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
       showMergeTeachersModal: false,
       showActive: true,
-      searchByName: "",
+      searchByName: '',
       filtersData: [
         {
-          filtersColumn: "",
-          filtersValue: "",
-          filterStr: "",
-          filterAdded: false
-        }
+          filtersColumn: '',
+          filtersValue: '',
+          filterStr: '',
+          filterAdded: false,
+        },
       ],
       currentPage: 1,
-      refineButtonActive: false
-    };
-    const { t, isProxyUser } = this.props;
+      refineButtonActive: false,
+    }
+    const { t, isProxyUser } = this.props
     this.columns = [
       {
-        title: t("users.teacher.name"),
+        title: t('users.teacher.name'),
         render: (_, { _source }) => {
-          const firstName = get(_source, "firstName", "");
-          const lastName = get(_source, "lastName", "");
+          const firstName = get(_source, 'firstName', '')
+          const lastName = get(_source, 'lastName', '')
           return (
             <span>
-              {firstName === "Anonymous" || isEmpty(firstName) ? "-" : firstName} {lastName}
+              {firstName === 'Anonymous' || isEmpty(firstName)
+                ? '-'
+                : firstName}{' '}
+              {lastName}
             </span>
-          );
+          )
         },
-        sortDirections: ["descend", "ascend"],
+        sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, "_source?.firstName", "");
-          const next = get(b, "_source?.firstName", "");
-          return next?.localeCompare?.(prev);
-        }
+          const prev = get(a, '_source?.firstName', '')
+          const next = get(b, '_source?.firstName', '')
+          return next?.localeCompare?.(prev)
+        },
       },
       {
-        title: t("users.teacher.username"),
-        dataIndex: "_source.email",
-        sortDirections: ["descend", "ascend"],
+        title: t('users.teacher.username'),
+        dataIndex: '_source.email',
+        sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, "_source?.email", "");
-          const next = get(b, "_source?.email", "");
-          return next?.localeCompare?.(prev);
-        }
+          const prev = get(a, '_source?.email', '')
+          const next = get(b, '_source?.email', '')
+          return next?.localeCompare?.(prev)
+        },
       },
       {
-        title: t("users.teacher.sso"),
-        dataIndex: "_source.lastSigninSSO",
-        render: (sso = "N/A") => sso
+        title: t('users.teacher.sso'),
+        dataIndex: '_source.lastSigninSSO',
+        render: (sso = 'N/A') => sso,
       },
       {
-        title: t("users.teacher.school"),
-        dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name).join(", "),
-        width: 200
+        title: t('users.teacher.school'),
+        dataIndex: '_source.institutionDetails',
+        render: (schools = []) =>
+          schools.map((school) => school.name).join(', '),
+        width: 200,
       },
       {
-        title: t("users.teacher.classes"),
-        dataIndex: "classCount",
-        align: "center",
+        title: t('users.teacher.classes'),
+        dataIndex: 'classCount',
+        align: 'center',
         render: (classCount, record) => {
-          const username = get(record, "_source.username", "");
+          const username = get(record, '_source.username', '')
           return (
             <Link
               to={{
-                pathname: "/author/class-enrollment",
+                pathname: '/author/class-enrollment',
                 state: {
-                  filtersColumn: "username",
-                  filtersValue: "eq",
+                  filtersColumn: 'username',
+                  filtersValue: 'eq',
                   filterStr: username,
-                  filterAdded: true
-                }
+                  filterAdded: true,
+                },
               }}
             >
               {classCount}
             </Link>
-          );
-        }
+          )
+        },
       },
       {
-        dataIndex: "_id",
+        dataIndex: '_id',
         render: (id, { _source }) => {
-          const firstName = get(_source, "firstName", "");
-          const lastName = get(_source, "lastName", "");
-          const status = get(_source, "status", "");
+          const firstName = get(_source, 'firstName', '')
+          const lastName = get(_source, 'lastName', '')
+          const status = get(_source, 'status', '')
           const fullName =
-            firstName === "Anonymous" || (isEmpty(firstName) && isEmpty(lastName))
-              ? "Teacher"
-              : `${firstName} ${lastName}`;
+            firstName === 'Anonymous' ||
+            (isEmpty(firstName) && isEmpty(lastName))
+              ? 'Teacher'
+              : `${firstName} ${lastName}`
           return (
-            <div style={{ whiteSpace: "nowrap" }}>
+            <div style={{ whiteSpace: 'nowrap' }}>
               <>
                 {status === 1 && !isProxyUser ? (
-                  <StyledMaskButton onClick={() => this.onProxyTeacher(id)} title={`Act as ${fullName}`}>
+                  <StyledMaskButton
+                    onClick={() => this.onProxyTeacher(id)}
+                    title={`Act as ${fullName}`}
+                  >
                     <GiDominoMask />
                   </StyledMaskButton>
                 ) : null}
-                <StyledTableButton onClick={() => this.onEditTeacher(id)} title="Edit">
+                <StyledTableButton
+                  onClick={() => this.onEditTeacher(id)}
+                  title="Edit"
+                >
                   <IconPencilEdit color={themeColor} />
                 </StyledTableButton>
-                <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
+                <StyledTableButton
+                  onClick={() => this.handleDeactivateAdmin(id)}
+                  title="Deactivate"
+                >
                   <IconTrash color={themeColor} />
                 </StyledTableButton>
               </>
             </div>
-          );
-        }
-      }
-    ];
+          )
+        },
+      },
+    ]
 
-    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
+    this.filterTextInputRef = [
+      React.createRef(),
+      React.createRef(),
+      React.createRef(),
+    ]
   }
 
   componentDidMount() {
-    const { dataPassedWithRoute } = this.props;
+    const { dataPassedWithRoute } = this.props
     if (!isEmpty(dataPassedWithRoute)) {
-      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+      this.setState(
+        { filtersData: [{ ...dataPassedWithRoute }] },
+        this.loadFilteredList
+      )
     } else {
-      this.loadFilteredList();
+      this.loadFilteredList()
     }
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps;
+    const { adminUsersData: result } = nextProps
     return {
-      selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
-    };
+      selectedRowKeys: state.selectedRowKeys.filter(
+        (rowKey) => !!result[rowKey]
+      ),
+    }
   }
 
-  onProxyTeacher = id => {
-    proxyUser({ userId: id });
-  };
+  onProxyTeacher = (id) => {
+    proxyUser({ userId: id })
+  }
 
-  onEditTeacher = key => {
+  onEditTeacher = (key) => {
     this.setState({
       editTeacherModaVisible: true,
-      editTeacherKey: key
-    });
-  };
+      editTeacherKey: key,
+    })
+  }
 
-  handleDeactivateAdmin = id => {
+  handleDeactivateAdmin = (id) => {
     this.setState({
       selectedAdminsForDeactivate: [id],
-      deactivateAdminModalVisible: true
-    });
-  };
+      deactivateAdminModalVisible: true,
+    })
+  }
 
-  onSelectChange = selectedRowKeys => {
-    this.setState({ selectedRowKeys });
-  };
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys })
+  }
 
-  changeActionMode = e => {
-    const { selectedRowKeys } = this.state;
-    const { adminUsersData, updatePowerTeacher } = this.props;
-    if (e.key === "add teacher") {
-      this.setState({ addTeacherModalVisible: true });
+  changeActionMode = (e) => {
+    const { selectedRowKeys } = this.state
+    const { adminUsersData, updatePowerTeacher } = this.props
+    if (e.key === 'add teacher') {
+      this.setState({ addTeacherModalVisible: true })
     }
-    if (e.key === "merge user") {
+    if (e.key === 'merge user') {
       const inactiveUsers = Object.values(adminUsersData).filter(
-        u => selectedRowKeys.includes(u._id) && u._source.status !== 1
-      );
+        (u) => selectedRowKeys.includes(u._id) && u._source.status !== 1
+      )
       if (inactiveUsers.length) {
-        notification({ messageKey: "deactivatedUserSelected" });
+        notification({ messageKey: 'deactivatedUserSelected' })
       } else if (selectedRowKeys.length > 1) {
-        this.setState({ showMergeTeachersModal: true });
+        this.setState({ showMergeTeachersModal: true })
       } else {
-        notification({ type: "info", messageKey: "selectTwoOrMoreTeachers" });
+        notification({ type: 'info', messageKey: 'selectTwoOrMoreTeachers' })
       }
     }
-    if (e.key === "edit user") {
+    if (e.key === 'edit user') {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey: "pleaseSelectUser" });
+        notification({ messageKey: 'pleaseSelectUser' })
       } else if (selectedRowKeys.length == 1) {
-        this.onEditTeacher(selectedRowKeys[0]);
+        this.onEditTeacher(selectedRowKeys[0])
       } else if (selectedRowKeys.length > 1) {
-        notification({ messageKey: "pleaseSelectSingleUserToEdit" });
+        notification({ messageKey: 'pleaseSelectSingleUserToEdit' })
       }
-    } else if (e.key === "deactivate user") {
+    } else if (e.key === 'deactivate user') {
       if (selectedRowKeys.length > 0) {
         this.setState({
           selectedAdminsForDeactivate: selectedRowKeys,
-          deactivateAdminModalVisible: true
-        });
+          deactivateAdminModalVisible: true,
+        })
       } else {
-        notification({ messageKey: "pleaseSelectUserToDelete" });
+        notification({ messageKey: 'pleaseSelectUserToDelete' })
       }
-    } else if (e.key === "enable power tools" || e.key === "disable power tools") {
-      const enableMode = e.key === "enable power tools";
+    } else if (
+      e.key === 'enable power tools' ||
+      e.key === 'disable power tools'
+    ) {
+      const enableMode = e.key === 'enable power tools'
       if (selectedRowKeys.length > 0) {
-        const selectedUsersEmailOrUsernames = selectedRowKeys.map(id => {
-          const user = adminUsersData[id]?._source;
-          if (user) {
-            return user.email || user.username;
-          }
-          return null;
-        }).filter(u => !!u);
+        const selectedUsersEmailOrUsernames = selectedRowKeys
+          .map((id) => {
+            const user = adminUsersData[id]?._source
+            if (user) {
+              return user.email || user.username
+            }
+            return null
+          })
+          .filter((u) => !!u)
         updatePowerTeacher({
           usernames: selectedUsersEmailOrUsernames,
-          enable: enableMode
-        });
+          enable: enableMode,
+        })
       } else {
-        notification({ messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools` });
+        notification({
+          messageKey: `pleaseSelectUserTo${
+            enableMode ? 'Enable' : 'Disable'
+          }PowerTools`,
+        })
       }
     }
-  };
+  }
 
   closeEditTeacherModal = () => {
     this.setState({
-      editTeacherModaVisible: false
-    });
-  };
+      editTeacherModaVisible: false,
+    })
+  }
 
   showInviteTeacherModal = () => {
     this.setState({
-      inviteTeacherModalVisible: true
-    });
-  };
+      inviteTeacherModalVisible: true,
+    })
+  }
 
   closeInviteTeacherModal = () => {
     this.setState({
-      inviteTeacherModalVisible: false
-    });
-  };
+      inviteTeacherModalVisible: false,
+    })
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
 
-  sendInvite = obj => {
-    const { addTeachers } = this.props;
+  sendInvite = (obj) => {
+    const { addTeachers } = this.props
     const o = {
       addReq: obj,
-      listReq: this.getSearchQuery()
-    };
-    addTeachers(o);
-  };
+      listReq: this.getSearchQuery(),
+    }
+    addTeachers(o)
+  }
 
-  createUser = createReq => {
-    const { userOrgId, createAdminUser } = this.props;
-    createReq.role = "teacher";
-    createReq.districtId = userOrgId;
+  createUser = (createReq) => {
+    const { userOrgId, createAdminUser } = this.props
+    createReq.role = 'teacher'
+    createReq.districtId = userOrgId
 
     const o = {
       createReq,
-      listReq: this.getSearchQuery()
-    };
+      listReq: this.getSearchQuery(),
+    }
 
-    createAdminUser(o);
-    this.setState({ addTeacherModalVisible: false });
-  };
+    createAdminUser(o)
+    this.setState({ addTeacherModalVisible: false })
+  }
 
   closeAddUserModal = () => {
     this.setState({
-      addTeacherModalVisible: false
-    });
-  };
+      addTeacherModalVisible: false,
+    })
+  }
 
   onCloseMergeTeachersModal = () => {
-    this.setState({ showMergeTeachersModal: false });
-  };
+    this.setState({ showMergeTeachersModal: false })
+  }
 
   onSubmitMergeTeachersModal = () => {
-    this.handleSearchName(" ");
-    this.onCloseMergeTeachersModal();
-  };
+    this.handleSearchName(' ')
+    this.onCloseMergeTeachersModal()
+  }
 
   confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedAdminsForDeactivate } = this.state;
+    const { deleteAdminUser } = this.props
+    const { selectedAdminsForDeactivate } = this.state
 
     const o = {
-      deleteReq: { userIds: selectedAdminsForDeactivate, role: "teacher" },
-      listReq: this.getSearchQuery()
-    };
+      deleteReq: { userIds: selectedAdminsForDeactivate, role: 'teacher' },
+      listReq: this.getSearchQuery(),
+    }
 
-    deleteAdminUser(o);
+    deleteAdminUser(o)
     this.setState({
-      deactivateAdminModalVisible: false
-    });
-  };
+      deactivateAdminModalVisible: false,
+    })
+  }
 
-  setPageNo = page => this.setState({ currentPage: page }, this.loadFilteredList);
+  setPageNo = (page) =>
+    this.setState({ currentPage: page }, this.loadFilteredList)
 
   _onRefineResultsCB = () => {
-    const { refineButtonActive } = this.state;
-    this.setState({ refineButtonActive: !refineButtonActive });
-  };
+    const { refineButtonActive } = this.state
+    this.setState({ refineButtonActive: !refineButtonActive })
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
 
-  onChangeSearch = event => this.setState({ searchByName: event.currentTarget.value });
+  onChangeSearch = (event) =>
+    this.setState({ searchByName: event.currentTarget.value })
 
-  handleSearchName = value => this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
+  handleSearchName = (value) =>
+    this.setState(
+      { searchByName: value, currentPage: 1 },
+      this.loadFilteredList
+    )
 
   onSearchFilter = (value, event, i) => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     const _filtersData = filtersData.map((item, index) => {
       if (index === i) {
         return {
           ...item,
-          filterAdded: !!value
-        };
+          filterAdded: !!value,
+        }
       }
-      return item;
-    });
+      return item
+    })
 
     // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
-  };
+    this.setState({ filtersData: _filtersData }, () =>
+      this.filterTextInputRef[i].current.blur()
+    )
+  }
 
   onBlurFilterText = (event, key) => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterAdded: !!event.target.value
-        };
+          filterAdded: !!event.target.value,
+        }
       }
-      return item;
-    });
-    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList)
+  }
 
   changeStatusValue = (value, key) => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== ""
-        };
+          filterAdded: value !== '',
+        }
       }
-      return item;
-    });
+      return item
+    })
 
-    this.setState({ filtersData: _filtersData }, () => this.loadFilteredList(key));
-  };
+    this.setState({ filtersData: _filtersData }, () =>
+      this.loadFilteredList(key)
+    )
+  }
 
   changeFilterText = (e, key) => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterStr: e.target.value
-        };
+          filterStr: e.target.value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData })
+  }
 
   changeFilterColumn = (value, key) => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     const _filtersData = filtersData.map((item, index) => {
       if (key === index) {
         const _item = {
           ...item,
-          filtersColumn: value
-        };
-        if (value === "status") _item.filtersValue = "eq";
-        return _item;
+          filtersColumn: value,
+        }
+        if (value === 'status') _item.filtersValue = 'eq'
+        return _item
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
   changeFilterValue = (value, key) => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filtersValue: value
-        };
+          filtersValue: value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
-  onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
-  };
+  onChangeShowActive = (e) => {
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList)
+  }
 
   addFilter = () => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     if (filtersData.length < 3) {
       this.setState({
         filtersData: [
           ...filtersData,
           {
-            filtersColumn: "",
-            filtersValue: "",
-            filterStr: "",
-            prevFilterStr: "",
-            filterAdded: false
-          }
-        ]
-      });
+            filtersColumn: '',
+            filtersValue: '',
+            filterStr: '',
+            prevFilterStr: '',
+            filterAdded: false,
+          },
+        ],
+      })
     }
-  };
+  }
 
   removeFilter = (e, key) => {
-    const { filtersData } = this.state;
-    let newFiltersData = [];
+    const { filtersData } = this.state
+    let newFiltersData = []
     if (filtersData.length === 1) {
       newFiltersData.push({
         filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
+        filtersColumn: '',
+        filtersValue: '',
+        filterStr: '',
+      })
     } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
+      newFiltersData = filtersData.filter((item, index) => index != key)
     }
-    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
-  };
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList)
+  }
 
   getSearchQuery = () => {
-    const { userOrgId, location = {} } = this.props;
-    const { filtersData, searchByName, currentPage } = this.state;
-    let { showActive } = this.state;
-    const search = {};
+    const { userOrgId, location = {} } = this.props
+    const { filtersData, searchByName, currentPage } = this.state
+    let { showActive } = this.state
+    const search = {}
     for (const [, item] of filtersData.entries()) {
-      const { filtersColumn, filtersValue, filterStr } = item;
-      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
-        if (filtersColumn === "status") {
-          showActive = filterStr;
-          continue;
+      const { filtersColumn, filtersValue, filterStr } = item
+      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+        if (filtersColumn === 'status') {
+          showActive = filterStr
+          continue
         }
         if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
         } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+          search[filtersColumn].push({ type: filtersValue, value: filterStr })
         }
       }
     }
 
     if (searchByName) {
-      search.name = searchByName;
+      search.name = searchByName
     }
 
     const queryObj = {
       search,
       districtId: userOrgId,
-      role: "teacher",
+      role: 'teacher',
       page: currentPage,
       limit: 25,
-      institutionId: location.institutionId || ""
+      institutionId: location.institutionId || '',
       // uncomment after elastic search is fixed
       // sortField,
       // order
-    };
+    }
 
-    queryObj.status = 0;
+    queryObj.status = 0
 
     if (showActive) {
-      queryObj.status = 1;
+      queryObj.status = 1
     }
-    return queryObj;
-  };
+    return queryObj
+  }
 
   loadFilteredList = () => {
-    const { loadAdminData } = this.props;
-    loadAdminData(this.getSearchQuery());
-  };
+    const { loadAdminData } = this.props
+    loadAdminData(this.getSearchQuery())
+  }
 
   closeTeachersDetailModal = () => {
-    const { setTeachersDetailsModalVisible } = this.props;
-    setTeachersDetailsModalVisible(false);
-  };
+    const { setTeachersDetailsModalVisible } = this.props
+    setTeachersDetailsModalVisible(false)
+  }
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -583,8 +628,8 @@ class TeacherTable extends Component {
       filtersData,
       refineButtonActive,
       showActive,
-      currentPage
-    } = this.state;
+      currentPage,
+    } = this.state
 
     const {
       adminUsersData: result,
@@ -594,42 +639,53 @@ class TeacherTable extends Component {
       history,
       pageNo,
       totalUsers,
-      t
-    } = this.props;
+      t,
+    } = this.props
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.onSelectChange
-    };
+      onChange: this.onSelectChange,
+    }
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="add teacher">{t("users.teacher.addteacher")}</Menu.Item>
-        <Menu.Item key="edit user">{t("users.teacher.updateuser")}</Menu.Item>
+        <Menu.Item key="add teacher">{t('users.teacher.addteacher')}</Menu.Item>
+        <Menu.Item key="edit user">{t('users.teacher.updateuser')}</Menu.Item>
         {/* TODO: Enable merge user when required */}
         {/* <Menu.Item key="merge user">{t("users.teacher.mergeuser")}</Menu.Item> */}
-        <Menu.Item key="deactivate user">{t("users.teacher.deactivateuser")}</Menu.Item>
-        <Menu.Item key="enable power tools">{t("users.teacher.enablePowerTools")}</Menu.Item>
-        <Menu.Item key="disable power tools">{t("users.teacher.disablePowerTools")}</Menu.Item>
+        <Menu.Item key="deactivate user">
+          {t('users.teacher.deactivateuser')}
+        </Menu.Item>
+        <Menu.Item key="enable power tools">
+          {t('users.teacher.enablePowerTools')}
+        </Menu.Item>
+        <Menu.Item key="disable power tools">
+          {t('users.teacher.disablePowerTools')}
+        </Menu.Item>
       </Menu>
-    );
+    )
     const breadcrumbData = [
       {
-        title: "MANAGE DISTRICT",
-        to: "/author/districtprofile"
+        title: 'MANAGE DISTRICT',
+        to: '/author/districtprofile',
       },
       {
-        title: "USERS",
-        to: ""
-      }
-    ];
+        title: 'USERS',
+        to: '',
+      },
+    ]
 
     return (
       <MainContainer>
         <SubHeaderWrapper>
-          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            {t("common.refineresults")}
-            <Icon type={refineButtonActive ? "up" : "down"} />
+          <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+          <StyledButton
+            type="default"
+            shape="round"
+            icon="filter"
+            onClick={this._onRefineResultsCB}
+          >
+            {t('common.refineresults')}
+            <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
         <AdminSubHeader active={menuActive} history={history} />
@@ -637,22 +693,31 @@ class TeacherTable extends Component {
         {refineButtonActive && (
           <FilterWrapper>
             {filtersData.map((item, i) => {
-              const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
-              const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+              const {
+                filtersColumn,
+                filtersValue,
+                filterStr,
+                filterAdded,
+              } = item
+              const isFilterTextDisable =
+                filtersColumn === '' || filtersValue === ''
               const isAddFilterDisable =
-                filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+                filtersColumn === '' ||
+                filtersValue === '' ||
+                filterStr === '' ||
+                !filterAdded
 
               return (
-                <Row gutter="20" style={{ marginBottom: "5px" }} key={i}>
+                <Row gutter="20" style={{ marginBottom: '5px' }} key={i}>
                   <Col span={6}>
                     <SelectInputStyled
-                      placeholder={t("common.selectcolumn")}
-                      onChange={e => this.changeFilterColumn(e, i)}
+                      placeholder={t('common.selectcolumn')}
+                      onChange={(e) => this.changeFilterColumn(e, i)}
                       value={filtersColumn || undefined}
                       height="32px"
                     >
                       <Option value="other" disabled>
-                        {t("common.selectcolumn")}
+                        {t('common.selectcolumn')}
                       </Option>
                       <Option value="username">Username</Option>
                       <Option value="email">Email</Option>
@@ -664,25 +729,27 @@ class TeacherTable extends Component {
                   </Col>
                   <Col span={6}>
                     <SelectInputStyled
-                      placeholder={t("common.selectvalue")}
-                      onChange={e => this.changeFilterValue(e, i)}
+                      placeholder={t('common.selectvalue')}
+                      onChange={(e) => this.changeFilterValue(e, i)}
                       value={filtersValue || undefined}
                       height="32px"
                     >
                       <Option value="" disabled>
-                        {t("common.selectvalue")}
+                        {t('common.selectvalue')}
                       </Option>
-                      <Option value="eq">{t("common.equals")}</Option>
-                      {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
+                      <Option value="eq">{t('common.equals')}</Option>
+                      {!filterStrDD[filtersColumn] ? (
+                        <Option value="cont">{t('common.contains')}</Option>
+                      ) : null}
                     </SelectInputStyled>
                   </Col>
                   <Col span={6}>
                     {!filterStrDD[filtersColumn] ? (
                       <SearchInputStyled
-                        placeholder={t("common.entertext")}
-                        onChange={e => this.changeFilterText(e, i)}
+                        placeholder={t('common.entertext')}
+                        onChange={(e) => this.changeFilterText(e, i)}
                         onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                        onBlur={e => this.onBlurFilterText(e, i)}
+                        onBlur={(e) => this.onBlurFilterText(e, i)}
                         value={filterStr || undefined}
                         disabled={isFilterTextDisable}
                         ref={this.filterTextInputRef[i]}
@@ -691,52 +758,64 @@ class TeacherTable extends Component {
                     ) : (
                       <SelectInputStyled
                         placeholder={filterStrDD[filtersColumn].placeholder}
-                        onChange={v => this.changeStatusValue(v, i)}
-                        value={filterStr !== "" ? filterStr : undefined}
+                        onChange={(v) => this.changeStatusValue(v, i)}
+                        value={filterStr !== '' ? filterStr : undefined}
                         height="32px"
                       >
-                        {filterStrDD[filtersColumn].list.map(_item => (
-                          <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
+                        {filterStrDD[filtersColumn].list.map((_item) => (
+                          <Option
+                            key={_item.title}
+                            value={_item.value}
+                            disabled={_item.disabled}
+                          >
                             {_item.title}
                           </Option>
-                          ))}
+                        ))}
                       </SelectInputStyled>
-                      )}
+                    )}
                   </Col>
-                  <Col span={6} style={{ display: "flex" }}>
+                  <Col span={6} style={{ display: 'flex' }}>
                     {i < 2 && (
                       <EduButton
                         height="32px"
                         width="50%"
                         type="primary"
-                        onClick={e => this.addFilter(e, i)}
-                        disabled={isAddFilterDisable || i < filtersData.length - 1}
+                        onClick={(e) => this.addFilter(e, i)}
+                        disabled={
+                          isAddFilterDisable || i < filtersData.length - 1
+                        }
                       >
-                        {t("common.addfilter")}
+                        {t('common.addfilter')}
                       </EduButton>
                     )}
-                    {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                      <EduButton height="32px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
-                        {t("common.removefilter")}
+                    {((filtersData.length === 1 &&
+                      filtersData[0].filterAdded) ||
+                      filtersData.length > 1) && (
+                      <EduButton
+                        height="32px"
+                        width="50%"
+                        type="primary"
+                        onClick={(e) => this.removeFilter(e, i)}
+                      >
+                        {t('common.removefilter')}
                       </EduButton>
                     )}
                   </Col>
                 </Row>
-              );
+              )
             })}
           </FilterWrapper>
-        )
-        }
+        )}
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
             <SearchInputStyled
-              placeholder={t("common.searchbyname")}
+              placeholder={t('common.searchbyname')}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
             />
             <EduButton type="primary" onClick={this.showInviteTeacherModal}>
-              {t("users.teacher.inviteteachers")}
+              {t('users.teacher.inviteteachers')}
             </EduButton>
           </LeftFilterDiv>
 
@@ -744,23 +823,25 @@ class TeacherTable extends Component {
             <CheckboxLabel
               checked={showActive}
               onChange={this.onChangeShowActive}
-              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+              disabled={
+                !!filtersData.find((item) => item.filtersColumn === 'status')
+              }
             >
-              {t("common.showcurrent")}
+              {t('common.showcurrent')}
             </CheckboxLabel>
             <StyledActionDropDown
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               overlay={actionMenu}
             >
               <EduButton isGhost>
-                {t("common.actions")} <Icon type="down" />
+                {t('common.actions')} <Icon type="down" />
               </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
         <TableContainer>
           <StyledTeacherTable
-            rowKey={record => record._id}
+            rowKey={(record) => record._id}
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
@@ -771,79 +852,72 @@ class TeacherTable extends Component {
             current={currentPage}
             pageSize={25}
             total={totalUsers}
-            onChange={page => this.setPageNo(page)}
+            onChange={(page) => this.setPageNo(page)}
             hideOnSinglePage
           />
         </TableContainer>
-        {
-          inviteTeacherModalVisible && (
-            <InviteMultipleTeacherModal
-              modalVisible={inviteTeacherModalVisible}
-              closeModal={this.closeInviteTeacherModal}
-              addTeachers={this.sendInvite}
-              userOrgId={userOrgId}
-              t={t}
-            />
-          )
-        }
-        {
-          editTeacherModaVisible && (
-            <EditTeacherModal
-              modalVisible={editTeacherModaVisible}
-              userOrgId={userOrgId}
-              data={result[editTeacherKey]}
-              editTeacher={updateAdminUser}
-              closeModal={this.closeEditTeacherModal}
-              t={t}
-            />
-          )
-        }
-        {
-          addTeacherModalVisible && (
-            <AddTeacherModal
-              modalVisible={addTeacherModalVisible}
-              addTeacher={this.createUser}
-              closeModal={this.closeAddUserModal}
-              userOrgId={userOrgId}
-              t={t}
-            />
-          )
-        }
-        {
-          deactivateAdminModalVisible && (
-            <TypeToConfirmModal
-              modalVisible={deactivateAdminModalVisible}
-              title={t("users.teacher.deactivateTeacher.title")}
-              handleOnOkClick={this.confirmDeactivate}
-              wordToBeTyped="DEACTIVATE"
-              primaryLabel={t("common.modalConfirmationText1") + t("users.teacher.deactivateTeacher.teachers")}
-              secondaryLabel={selectedAdminsForDeactivate.map(id => {
-                const { _source: { firstName, lastName } = {} } = result[id];
-                return (
-                  <StyledClassName key={id}>
-                    {firstName} {lastName}
-                  </StyledClassName>
-                );
-              })}
-              closeModal={() =>
-                this.setState({
-                  deactivateAdminModalVisible: false
-                })
-              }
-            />
-          )
-        }
+        {inviteTeacherModalVisible && (
+          <InviteMultipleTeacherModal
+            modalVisible={inviteTeacherModalVisible}
+            closeModal={this.closeInviteTeacherModal}
+            addTeachers={this.sendInvite}
+            userOrgId={userOrgId}
+            t={t}
+          />
+        )}
+        {editTeacherModaVisible && (
+          <EditTeacherModal
+            modalVisible={editTeacherModaVisible}
+            userOrgId={userOrgId}
+            data={result[editTeacherKey]}
+            editTeacher={updateAdminUser}
+            closeModal={this.closeEditTeacherModal}
+            t={t}
+          />
+        )}
+        {addTeacherModalVisible && (
+          <AddTeacherModal
+            modalVisible={addTeacherModalVisible}
+            addTeacher={this.createUser}
+            closeModal={this.closeAddUserModal}
+            userOrgId={userOrgId}
+            t={t}
+          />
+        )}
+        {deactivateAdminModalVisible && (
+          <TypeToConfirmModal
+            modalVisible={deactivateAdminModalVisible}
+            title={t('users.teacher.deactivateTeacher.title')}
+            handleOnOkClick={this.confirmDeactivate}
+            wordToBeTyped="DEACTIVATE"
+            primaryLabel={
+              t('common.modalConfirmationText1') +
+              t('users.teacher.deactivateTeacher.teachers')
+            }
+            secondaryLabel={selectedAdminsForDeactivate.map((id) => {
+              const { _source: { firstName, lastName } = {} } = result[id]
+              return (
+                <StyledClassName key={id}>
+                  {firstName} {lastName}
+                </StyledClassName>
+              )
+            })}
+            closeModal={() =>
+              this.setState({
+                deactivateAdminModalVisible: false,
+              })
+            }
+          />
+        )}
         {/* eslint-disabled-next-line jsx-a11y/aria-role */}
-        {
-          teacherDetailsModalVisible && (
-            <StudentsDetailsModal
-              modalVisible={teacherDetailsModalVisible}
-              closeModal={this.closeTeachersDetailModal}
-              role="teacher"
-              title="Teacher Details"
-            />
-          )
-        }
+        {teacherDetailsModalVisible && (
+          <StudentsDetailsModal
+            modalVisible={teacherDetailsModalVisible}
+            closeModal={this.closeTeachersDetailModal}
+            role="teacher"
+            title="Teacher Details"
+          />
+        )}
         <MergeTeachersModal
           visible={showMergeTeachersModal}
           userIds={selectedRowKeys}
@@ -851,14 +925,14 @@ class TeacherTable extends Component {
           onCancel={this.onCloseMergeTeachersModal}
         />
       </MainContainer>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("manageDistrict"),
+  withNamespaces('manageDistrict'),
   connect(
-    state => ({
+    (state) => ({
       userOrgId: getUserOrgId(state),
       teachersList: getTeachersListSelector(state),
       adminUsersData: getAdminUsersDataSelector(state),
@@ -866,8 +940,12 @@ const enhance = compose(
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
-      teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false),
-      isProxyUser: isProxyUserSelector(state)
+      teacherDetailsModalVisible: get(
+        state,
+        ['schoolAdminReducer', 'teacherDetailsModalVisible'],
+        false
+      ),
+      isProxyUser: isProxyUserSelector(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -890,12 +968,12 @@ const enhance = compose(
       addFilter: addFilterAction,
       removeFilter: removeFilterAction,
       setRole: setRoleAction,
-      updatePowerTeacher: updatePowerTeacherAction
+      updatePowerTeacher: updatePowerTeacherAction,
     }
   )
-);
+)
 
-export default enhance(withRouter(TeacherTable));
+export default enhance(withRouter(TeacherTable))
 
 // TeacherTable.propTypes = {
 //   teachersList: PropTypes.array.isRequired,

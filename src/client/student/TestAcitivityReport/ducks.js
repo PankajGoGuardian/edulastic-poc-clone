@@ -1,211 +1,251 @@
-import { createAction, createReducer } from "redux-starter-kit";
-import { takeEvery, put, call, all, fork } from "redux-saga/effects";
-import { keyBy as _keyBy, isEmpty, orderBy } from "lodash";
-import { reportsApi, testsApi, attchmentApi as attachmentApi } from "@edulastic/api";
-import { setTestItemsAction, SET_CURRENT_ITEM } from "../sharedDucks/TestItem";
-import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
+import { createAction, createReducer } from 'redux-starter-kit'
+import { takeEvery, put, call, all, fork } from 'redux-saga/effects'
+import { keyBy as _keyBy, isEmpty, orderBy } from 'lodash'
+import {
+  reportsApi,
+  testsApi,
+  attchmentApi as attachmentApi,
+} from '@edulastic/api'
+import { setTestItemsAction, SET_CURRENT_ITEM } from '../sharedDucks/TestItem'
+import {
+  setTestActivityAction,
+  setPassagesDataAction,
+} from '../sharedDucks/ReportsModule/ducks'
 import {
   ADD_ITEM_EVALUATION,
   LOAD_ANSWERS,
   LOAD_SCRATCH_PAD,
   REMOVE_ANSWERS,
-  SAVE_USER_WORK
-} from "../../assessment/constants/actions";
-import { receiveTestByIdSuccess, getQuestions } from "../../author/TestPage/ducks";
-import { markQuestionLabel } from "../../assessment/Transformer";
-import { loadQuestionsAction } from "../../author/sharedDucks/questions";
+  SAVE_USER_WORK,
+} from '../../assessment/constants/actions'
+import {
+  receiveTestByIdSuccess,
+  getQuestions,
+} from '../../author/TestPage/ducks'
+import { markQuestionLabel } from '../../assessment/Transformer'
+import { loadQuestionsAction } from '../../author/sharedDucks/questions'
 
-export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
-export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
-export const SET_FEEDBACK = "[studentItems] set feedback";
-export const SET_TEST_ACTIVITIES = "[studentReports] set test all testActivities report";
+export const LOAD_TEST_ACTIVITY_REPORT =
+  '[studentReports] load testActivity  report'
+export const SET_STUDENT_ITEMS = '[studentItems] set Student items'
+export const SET_FEEDBACK = '[studentItems] set feedback'
+export const SET_TEST_ACTIVITIES =
+  '[studentReports] set test all testActivities report'
 
 // actions
-export const loadTestActivityReportAction = createAction(LOAD_TEST_ACTIVITY_REPORT);
-export const setFeedbackReportAction = createAction(SET_FEEDBACK);
-export const setTestActivitiesAction = createAction(SET_TEST_ACTIVITIES);
+export const loadTestActivityReportAction = createAction(
+  LOAD_TEST_ACTIVITY_REPORT
+)
+export const setFeedbackReportAction = createAction(SET_FEEDBACK)
+export const setTestActivitiesAction = createAction(SET_TEST_ACTIVITIES)
 
 function* loadAttachmentsFromServer({ referrerId, referrerId2, qActId }) {
   try {
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId, referrerId2 });
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+      referrerId,
+      referrerId2,
+    })
     if (attachments.length > 0) {
-      const scratchpadData = {};
+      const scratchpadData = {}
       for (const attachment of attachments) {
-        const { data = {} } = attachment;
-        scratchpadData[qActId] = data.scratchpad;
+        const { data = {} } = attachment
+        scratchpadData[qActId] = data.scratchpad
       }
-      yield put({ type: SAVE_USER_WORK, payload: scratchpadData });
+      yield put({ type: SAVE_USER_WORK, payload: scratchpadData })
     }
   } catch (error) {
-    console.log("error from attachmentAPI", error);
+    console.log('error from attachmentAPI', error)
   }
 }
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
     testItemsIdArray.map(({ testItemId, qActId }) =>
-      call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId, qActId })
+      call(loadAttachmentsFromServer, {
+        referrerId: testActivityId,
+        referrerId2: testItemId,
+        qActId,
+      })
     )
-  );
+  )
 }
 
 function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
   try {
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId, referrerId2 });
-    const passageData = {};
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+      referrerId,
+      referrerId2,
+    })
+    const passageData = {}
     for (const attachment of attachments) {
-      const { data } = attachment;
-      passageData[referrerId2] = data;
+      const { data } = attachment
+      passageData[referrerId2] = data
     }
-    yield put({ type: SAVE_USER_WORK, payload: passageData });
+    yield put({ type: SAVE_USER_WORK, payload: passageData })
   } catch (error) {
-    console.log("error from attachmentAPI", error);
+    console.log('error from attachmentAPI', error)
   }
 }
 
 function* loadPassagesForItems({ testActivityId, passages }) {
   yield all(
-    passages.map(passage =>
-      call(loadPassageHighlightFromServer, { referrerId: testActivityId, referrerId2: passage._id })
+    passages.map((passage) =>
+      call(loadPassageHighlightFromServer, {
+        referrerId: testActivityId,
+        referrerId2: passage._id,
+      })
     )
-  );
+  )
 }
 
 function* loadTestActivityReport({ payload }) {
   try {
-    const { testActivityId, groupId, testId } = payload;
-    yield put(setFeedbackReportAction(null));
-    yield put(setTestActivitiesAction([]));
+    const { testActivityId, groupId, testId } = payload
+    yield put(setFeedbackReportAction(null))
+    yield put(setTestActivitiesAction([]))
     if (!testActivityId) {
-      throw new Error("invalid data");
+      throw new Error('invalid data')
     }
     yield put({
-      type: REMOVE_ANSWERS
-    });
+      type: REMOVE_ANSWERS,
+    })
     const [test, reports, activities] = yield all([
-      call(testsApi.getByIdMinimal, testId, { data: true, isReport: true, testActivityId, groupId }),
+      call(testsApi.getByIdMinimal, testId, {
+        data: true,
+        isReport: true,
+        testActivityId,
+        groupId,
+      }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
-      call(reportsApi.fetchReports, groupId, testId)
-    ]);
-    const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
-    markQuestionLabel(testItems);
-    const questions = getQuestions(test.itemGroups);
-    const questionsWithActivities = questions.map(question => {
+      call(reportsApi.fetchReports, groupId, testId),
+    ])
+    const testItems = test.itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
+    markQuestionLabel(testItems)
+    const questions = getQuestions(test.itemGroups)
+    const questionsWithActivities = questions.map((question) => {
       if (!question.activity) {
-        const activity = reports.questionActivities.find(qActivity => qActivity.qid === question.id);
+        const activity = reports.questionActivities.find(
+          (qActivity) => qActivity.qid === question.id
+        )
         return {
           ...question,
-          activity
-        };
+          activity,
+        }
       }
-      return question;
-    });
-    const { questionActivities = [] } = reports;
-    const { passages = [] } = test;
+      return question
+    })
+    const { questionActivities = [] } = reports
+    const { passages = [] } = test
     const scratchpadUsedItems = questionActivities.reduce((items, activity) => {
       if (activity?.scratchPad?.scratchpad === true) {
-        items.push({ testItemId: activity.testItemId, qActId: activity._id });
+        items.push({ testItemId: activity.testItemId, qActId: activity._id })
       }
-      return items;
-    }, []);
+      return items
+    }, [])
 
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
-      testItemsIdArray: scratchpadUsedItems
-    });
+      testItemsIdArray: scratchpadUsedItems,
+    })
 
     if (!isEmpty(passages)) {
       yield fork(loadPassagesForItems, {
         testActivityId,
-        passages
-      });
+        passages,
+      })
     }
-    const _testItems = testItems.filter(({ data = {} }) => data.questions.length);
+    const _testItems = testItems.filter(
+      ({ data = {} }) => data.questions.length
+    )
 
-    yield put(loadQuestionsAction(_keyBy(questionsWithActivities, "id")));
-    yield put(receiveTestByIdSuccess(test));
-    yield put(setTestActivityAction(reports.testActivity));
-    yield put(setFeedbackReportAction(reports.questionActivities));
-    yield put(setTestItemsAction(_testItems));
-    yield put(setPassagesDataAction(test.passages || []));
+    yield put(loadQuestionsAction(_keyBy(questionsWithActivities, 'id')))
+    yield put(receiveTestByIdSuccess(test))
+    yield put(setTestActivityAction(reports.testActivity))
+    yield put(setFeedbackReportAction(reports.questionActivities))
+    yield put(setTestItemsAction(_testItems))
+    yield put(setPassagesDataAction(test.passages || []))
 
-    let testActivities = (activities || []).map(x => ({
+    let testActivities = (activities || []).map((x) => ({
       activiyId: x._id,
       createdAt: x.createdAt,
-      startDate: x.startDate
-    }));
-    testActivities = orderBy(testActivities, ["startDate"], ["asc"]);
-    yield put(setTestActivitiesAction(testActivities));
+      startDate: x.startDate,
+    }))
+    testActivities = orderBy(testActivities, ['startDate'], ['asc'])
+    yield put(setTestActivitiesAction(testActivities))
 
-    const userWork = {};
-    let allAnswers = {};
+    const userWork = {}
+    let allAnswers = {}
 
-    questionActivities.forEach(item => {
+    questionActivities.forEach((item) => {
       allAnswers = {
         ...allAnswers,
-        [item.qid]: item.userResponse
-      };
-      if (item.scratchPad) {
-        const newUserWork = { ...item.scratchPad };
-        userWork[item.testItemId] = newUserWork;
+        [item.qid]: item.userResponse,
       }
-    });
+      if (item.scratchPad) {
+        const newUserWork = { ...item.scratchPad }
+        userWork[item.testItemId] = newUserWork
+      }
+    })
 
     if (Object.keys(userWork).length > 0) {
       yield put({
         type: LOAD_SCRATCH_PAD,
-        payload: userWork
-      });
+        payload: userWork,
+      })
     }
 
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
         ...questionActivities.reduce((result, item) => {
-          result[item.qid] = item.evaluation;
-          return result;
-        }, {})
-      }
-    });
+          result[item.qid] = item.evaluation
+          return result
+        }, {}),
+      },
+    })
 
     // load previous responses
     yield put({
       type: LOAD_ANSWERS,
-      payload: allAnswers
-    });
+      payload: allAnswers,
+    })
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
 }
 
 // set actions watcherss
 export function* watcherSaga() {
-  yield all([yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport)]);
+  yield all([
+    yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport),
+  ])
 }
 
 // reducer
 
-export const setCurrentItemAction = index => ({
+export const setCurrentItemAction = (index) => ({
   type: SET_CURRENT_ITEM,
   payload: {
-    data: index
-  }
-});
+    data: index,
+  },
+})
 
-export const setTestFeedbackAction = data => ({
+export const setTestFeedbackAction = (data) => ({
   type: SET_FEEDBACK,
   payload: {
-    data
-  }
-});
+    data,
+  },
+})
 
-const initialState = [];
+const initialState = []
 export default createReducer(initialState, {
-  [SET_FEEDBACK]: (_, { payload }) => payload
-});
+  [SET_FEEDBACK]: (_, { payload }) => payload,
+})
 
-export const getfeedbackSelector = state => state.testFeedback;
+export const getfeedbackSelector = (state) => state.testFeedback
 
 export const testActivitiesReducer = createReducer([], {
-  [SET_TEST_ACTIVITIES]: (_, { payload }) => payload
-});
+  [SET_TEST_ACTIVITIES]: (_, { payload }) => payload,
+})

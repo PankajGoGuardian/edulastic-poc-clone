@@ -1,178 +1,187 @@
-import MathEssayPage from "../../../../framework/author/itemList/questionType/math/mathEssayPage";
-import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
-import FileHelper from "../../../../framework/util/fileHelper";
-import EditToolBar from "../../../../framework/author/itemList/questionType/common/editToolBar";
-import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
-import { questionType } from "../../../../framework/constants/questionTypes";
+import MathEssayPage from '../../../../framework/author/itemList/questionType/math/mathEssayPage'
+import EditItemPage from '../../../../framework/author/itemList/itemDetail/editPage'
+import FileHelper from '../../../../framework/util/fileHelper'
+import EditToolBar from '../../../../framework/author/itemList/questionType/common/editToolBar'
+import PreviewItemPage from '../../../../framework/author/itemList/itemDetail/previewPage'
+import ItemListPage from '../../../../framework/author/itemList/itemListPage'
+import { questionType } from '../../../../framework/constants/questionTypes'
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" type question`, () => {
+describe(`${FileHelper.getSpecName(
+  Cypress.spec.name
+)} >> Author "Math Essay" type question`, () => {
   const queData = {
-    mockString: "10-5+8-4",
-    group: "Math",
+    mockString: '10-5+8-4',
+    group: 'Math',
     queType: questionType.MATH_ESSAY,
-    extlink: "www.testdomain.com",
-    testText: "testtext",
-    formula: "s=ar^2",
+    extlink: 'www.testdomain.com',
+    testText: 'testtext',
+    formula: 's=ar^2',
     answer: {
-      value: "1234",
-      ariaLabel: "test"
-    }
-  };
-  const question = new MathEssayPage();
-  const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
-  const { selectData } = question;
-  const editToolBar = new EditToolBar();
-  const preview = new PreviewItemPage();
-  let previewItems;
+      value: '1234',
+      ariaLabel: 'test',
+    },
+  }
+  const question = new MathEssayPage()
+  const editItem = new EditItemPage()
+  const itemList = new ItemListPage()
+  const { selectData } = question
+  const editToolBar = new EditToolBar()
+  const preview = new PreviewItemPage()
+  let previewItems
 
   before(() => {
-    cy.login();
-  });
+    cy.login()
+  })
 
-  context(" > User creates question", () => {
-    before("visit items page and select question type", () => {
-      editItem.createNewItem();
+  context(' > User creates question', () => {
+    before('visit items page and select question type', () => {
+      editItem.createNewItem()
       // create new que and select type
-      editItem.chooseQuestion(queData.group, queData.queType);
-    });
-    context(" > TC_476 => Enter question text in Compose Question text box", () => {
-      it(" > Write text in textbox", () => {
-        const { testText } = queData;
+      editItem.chooseQuestion(queData.group, queData.queType)
+    })
+    context(
+      ' > TC_476 => Enter question text in Compose Question text box',
+      () => {
+        it(' > Write text in textbox', () => {
+          const { testText } = queData
 
-        question.checkIfTextExist(testText);
-      });
+          question.checkIfTextExist(testText)
+        })
 
-      it(" > give external link", () => {
-        const { testText } = queData;
+        it(' > give external link', () => {
+          const { testText } = queData
 
-        question.checkIfTextExist(testText).type("{selectall}");
-        editToolBar.linkButton().click();
-        editToolBar.linkURL().type(queData.testText, { force: true });
-        editToolBar.insertLinkButton().click();
-        question
-          .getComposeQuestionTextBox()
-          .find("a")
-          .should("have.attr", "href")
-          .and("equal", `http://${queData.testText}`)
-          .then(href => {
-            expect(href).to.equal(`http://${queData.testText}`);
-          });
-      });
-
-      it(" > insert formula", () => {
-        const { testText } = queData;
-
-        question.checkIfTextExist(testText).clear();
-      });
-      it(" > Upload image to server", () => {
-        question.getComposeQuestionTextBox().click();
-        editToolBar.clickOnInserImage();
-        cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
-          cy.wait(5000);
-          cy.get("body").click();
+          question.checkIfTextExist(testText).type('{selectall}')
+          editToolBar.linkButton().click()
+          editToolBar.linkURL().type(queData.testText, { force: true })
+          editToolBar.insertLinkButton().click()
           question
-            .getComposeQuestionQuillComponent()
-            .find("img")
-            .should("be.visible");
-        });
-        question.getComposeQuestionTextBox().clear();
-      });
-    });
+            .getComposeQuestionTextBox()
+            .find('a')
+            .should('have.attr', 'href')
+            .and('equal', `http://${queData.testText}`)
+            .then((href) => {
+              expect(href).to.equal(`http://${queData.testText}`)
+            })
+        })
 
-    context(" > TC_477 => Enter the Text formatting options", () => {
-      beforeEach("visit edit page and remove all formatting options", () => {
-        question.moveToEdit(preview);
-      });
+        it(' > insert formula', () => {
+          const { testText } = queData
 
-      it(" > Testing If Bold selected", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.BOLD;
+          question.checkIfTextExist(testText).clear()
+        })
+        it(' > Upload image to server', () => {
+          question.getComposeQuestionTextBox().click()
+          editToolBar.clickOnInserImage()
+          cy.uploadFile('testImages/sample.jpg', 'input[type=file]').then(
+            () => {
+              cy.wait(5000)
+              cy.get('body').click()
+              question
+                .getComposeQuestionQuillComponent()
+                .find('img')
+                .should('be.visible')
+            }
+          )
+          question.getComposeQuestionTextBox().clear()
+        })
+      }
+    )
 
-        question.setFormattingOptions(option);
+    context(' > TC_477 => Enter the Text formatting options', () => {
+      beforeEach('visit edit page and remove all formatting options', () => {
+        question.moveToEdit(preview)
+      })
 
-        preview.header.preview();
-        question.setTestInput();
-        question.getTextFormattingEditorOptions(option).click();
+      it(' > Testing If Bold selected', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.BOLD
 
-        question.checkAnswerTextEditorValue(tag, testText);
-      });
-      it(" > Testing If Italic selected", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.ITALIC;
+        question.setFormattingOptions(option)
 
-        question.setFormattingOptions(option);
-        question.checkTextFormattingOption(preview, option, testText, tag);
-      });
-      it(" > Testing If Underline selected", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.UNDERLINE;
+        preview.header.preview()
+        question.setTestInput()
+        question.getTextFormattingEditorOptions(option).click()
 
-        question.setFormattingOptions(option);
-        question.checkTextFormattingOption(preview, option, testText, tag);
-      });
-      it(" > Testing If bullet list selected", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.UNORDERED_LIST;
-        const { option: EditorOption } = selectData.BULLET;
+        question.checkAnswerTextEditorValue(tag, testText)
+      })
+      it(' > Testing If Italic selected', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.ITALIC
 
-        question.setFormattingOptions(option);
-        question.moveToPreview(preview);
-        question.getAnswerTextEditorValue().clear({ force: true });
-        question.getTextFormattingEditorOptions(EditorOption).click();
-        question.getAnswerTextInput().type(testText, { force: true });
-        question.getAnswerTextEditorBulletList().type(testText, { force: true });
+        question.setFormattingOptions(option)
+        question.checkTextFormattingOption(preview, option, testText, tag)
+      })
+      it(' > Testing If Underline selected', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.UNDERLINE
 
-        question.checkDataExist(tag, testText);
-      });
+        question.setFormattingOptions(option)
+        question.checkTextFormattingOption(preview, option, testText, tag)
+      })
+      it(' > Testing If bullet list selected', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.UNORDERED_LIST
+        const { option: EditorOption } = selectData.BULLET
 
-      it(" > Testing If Superscript selected", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.ORDERED_LIST;
-        const { option: EditorOption } = selectData.ORDERED;
+        question.setFormattingOptions(option)
+        question.moveToPreview(preview)
+        question.getAnswerTextEditorValue().clear({ force: true })
+        question.getTextFormattingEditorOptions(EditorOption).click()
+        question.getAnswerTextInput().type(testText, { force: true })
+        question.getAnswerTextEditorBulletList().type(testText, { force: true })
 
-        question.setFormattingOptions(option);
-        question.moveToPreview(preview);
-        question.getTextFormattingEditorOptions(EditorOption).click();
-        question.getAnswerTextEditorOrderedList().type(testText, { force: true });
+        question.checkDataExist(tag, testText)
+      })
 
-        question.checkDataExist(tag, testText);
-      });
+      it(' > Testing If Superscript selected', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.ORDERED_LIST
+        const { option: EditorOption } = selectData.ORDERED
 
-      it(" > Testing If number list selected ", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.SUBSCRIPT;
-        const { option: EditorOption } = selectData.SUB;
+        question.setFormattingOptions(option)
+        question.moveToPreview(preview)
+        question.getTextFormattingEditorOptions(EditorOption).click()
+        question
+          .getAnswerTextEditorOrderedList()
+          .type(testText, { force: true })
 
-        question.setFormattingOptions(option);
-        question.moveToPreview(preview);
+        question.checkDataExist(tag, testText)
+      })
 
-        question.getTextFormattingEditorOptions(EditorOption).click();
-        question.checkAnswerTextEditorValue(tag, testText);
-      });
+      it(' > Testing If number list selected ', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.SUBSCRIPT
+        const { option: EditorOption } = selectData.SUB
 
-      it(" > Testing If Subscript selected", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.SUPER_SCRIPT;
-        const { option: EditorOption } = selectData.SUPER;
+        question.setFormattingOptions(option)
+        question.moveToPreview(preview)
 
-        question.setFormattingOptions(option);
-        question.moveToPreview(preview);
+        question.getTextFormattingEditorOptions(EditorOption).click()
+        question.checkAnswerTextEditorValue(tag, testText)
+      })
 
-        question.getTextFormattingEditorOptions(EditorOption).click();
-        question.checkAnswerTextEditorValue(tag, testText);
-      });
+      it(' > Testing If Subscript selected', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.SUPER_SCRIPT
+        const { option: EditorOption } = selectData.SUPER
 
-      it(" > Testing If Clear formatting is selected", () => {
-        const { testText } = queData;
-        const { option, tag } = selectData.REMOVE_FORMAT;
-        const { option: EditorOption } = selectData.CLEAN;
-        const { option: superOption } = selectData.SUPER;
-        const { option: superScriptOption } = selectData.SUPER_SCRIPT;
+        question.setFormattingOptions(option)
+        question.moveToPreview(preview)
 
-        question.setFormattingOptions(option);
-        question.getAddButton().click();
+        question.getTextFormattingEditorOptions(EditorOption).click()
+        question.checkAnswerTextEditorValue(tag, testText)
+      })
+
+      it(' > Testing If Clear formatting is selected', () => {
+        const { testText } = queData
+        const { option, tag } = selectData.REMOVE_FORMAT
+        const { option: EditorOption } = selectData.CLEAN
+        const { option: superOption } = selectData.SUPER
+        const { option: superScriptOption } = selectData.SUPER_SCRIPT
+
+        question.setFormattingOptions(option)
+        question.getAddButton().click()
         question
           .getTextFormattingOptionsSelect()
           .last()
@@ -181,37 +190,37 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
             question
               .getMethodSelectionDropdowList(superScriptOption)
               .last()
-              .click();
-          });
+              .click()
+          })
 
-        question.moveToPreview(preview);
-        question.getTextFormattingEditorOptions(superOption).click();
-        question.checkAnswerTextEditorValue(tag, testText);
+        question.moveToPreview(preview)
+        question.getTextFormattingEditorOptions(superOption).click()
+        question.checkAnswerTextEditorValue(tag, testText)
 
-        question.getTextFormattingEditorOptions(EditorOption).click();
+        question.getTextFormattingEditorOptions(EditorOption).click()
 
-        question.getAnswerTextEditorValue().type("{selectall}", { force: true });
-        question.getTextFormattingEditorOptions(EditorOption).click();
-        question.getAnswerTextEditor().contains(tag, testText);
-      });
-    });
+        question.getAnswerTextEditorValue().type('{selectall}', { force: true })
+        question.getTextFormattingEditorOptions(EditorOption).click()
+        question.getAnswerTextEditor().contains(tag, testText)
+      })
+    })
 
-    context(" > TC_413 => Preview Items", () => {
-      before("visit items page and select question type", () => {
-        editItem.createNewItem();
+    context(' > TC_413 => Preview Items', () => {
+      before('visit items page and select question type', () => {
+        editItem.createNewItem()
 
         // create new que and select type
-        editItem.chooseQuestion(queData.group, queData.queType);
-      });
-      it(" > Click on preview", () => {
-        previewItems = editItem.header.preview();
-        question.getAnswerMathInputField().click();
-        //cy.get(".keyboard").should("be.visible");
-        question.getAddedAlternateAnswer().click({ force: true });
-        question.getAnswerMathTextBtn().click();
-        question.getAnswerTextEditor().click();
-        question.getAnswerToolbarTextEditor().should("be.visible");
-      });
+        editItem.chooseQuestion(queData.group, queData.queType)
+      })
+      it(' > Click on preview', () => {
+        previewItems = editItem.header.preview()
+        question.getAnswerMathInputField().click()
+        // cy.get(".keyboard").should("be.visible");
+        question.getAddedAlternateAnswer().click({ force: true })
+        question.getAnswerMathTextBtn().click()
+        question.getAnswerTextEditor().click()
+        question.getAnswerToolbarTextEditor().should('be.visible')
+      })
 
       /*  it(" > Click on Check answer", () => {
          previewItems
@@ -234,27 +243,26 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
           });
       }); */
 
-      it(" > Click on Clear", () => {
-        const { testText } = queData;
-        question.getAnswerTextInput().type(testText, { force: true });
-        previewItems.getClear().click();
-        question.getAnswerMathInputField().then($el => expect($el[0].innerText).to.equal(""));
-      });
-    });
-
-    context(" > TC_415 => Save question", () => {
-      it(" > Click on save button", () => {
-        const { testText } = queData;
-
-        editItem.header.edit();
+      it(' > Click on Clear', () => {
+        const { testText } = queData
+        question.getAnswerTextInput().type(testText, { force: true })
+        previewItems.getClear().click()
         question
-          .getComposeQuestionTextBox()
-          .click()
-          .type(testText);
-        question.header.save();
-        cy.url().should("contain", "item-detail");
-      });
-    });
+          .getAnswerMathInputField()
+          .then(($el) => expect($el[0].innerText).to.equal(''))
+      })
+    })
+
+    context(' > TC_415 => Save question', () => {
+      it(' > Click on save button', () => {
+        const { testText } = queData
+
+        editItem.header.edit()
+        question.getComposeQuestionTextBox().click().type(testText)
+        question.header.save()
+        cy.url().should('contain', 'item-detail')
+      })
+    })
 
     /* context(" > TC_484 => delete the question after creation", () => {
       it(" > Click on delete button", () => {
@@ -262,5 +270,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.getQuestionContainer().should("not.exist");
       });
     }); */
-  });
-});
+  })
+})

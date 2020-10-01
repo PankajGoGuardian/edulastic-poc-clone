@@ -1,17 +1,17 @@
-import React from "react";
-import { Modal } from "antd";
-import PropTypes from "prop-types";
-import { youtubeVideoDetails } from "@edulastic/constants";
+import React from 'react'
+import { Modal } from 'antd'
+import PropTypes from 'prop-types'
+import { youtubeVideoDetails } from '@edulastic/constants'
 
-const IframeVideoModal = ({ visible, closeModal, questionTitle = "" }) => {
-  const videoDetails = youtubeVideoDetails[questionTitle];
+const IframeVideoModal = ({ visible, closeModal, questionTitle = '' }) => {
+  const videoDetails = youtubeVideoDetails[questionTitle]
 
   // looads component only when video details is available
-  if (!videoDetails) return null;
+  if (!videoDetails) return null
 
-  const { title = "", videoId = "", uiConfig } = videoDetails;
+  const { title = '', videoId = '', uiConfig } = videoDetails
 
-  const { width, height } = uiConfig;
+  const { width, height } = uiConfig
 
   return (
     <Modal
@@ -31,18 +31,18 @@ const IframeVideoModal = ({ visible, closeModal, questionTitle = "" }) => {
         allowFullScreen
       />
     </Modal>
-  );
-};
+  )
+}
 
 IframeVideoModal.propTypes = {
   visible: PropTypes.bool,
   closeModal: PropTypes.func.isRequired,
-  questionTitle: PropTypes.string
-};
+  questionTitle: PropTypes.string,
+}
 
 IframeVideoModal.defaultProps = {
   visible: false,
-  questionTitle: ""
-};
+  questionTitle: '',
+}
 
-export default IframeVideoModal;
+export default IframeVideoModal

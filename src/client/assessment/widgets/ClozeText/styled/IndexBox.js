@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const IndexBox = styled.div`
   width: 32px;
@@ -22,4 +22,4 @@ export const IndexBox = styled.div`
     font-size: ${theme.widgets.clozeText.indexBoxFontSize};
     font-weight: ${theme.widgets.clozeText.indexBoxFontWeight};
   `}
-`;
+`

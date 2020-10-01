@@ -3,60 +3,67 @@ export class PlayListRecommendation {
 
   constructor() {
     this.recommendedType = {
-      REVIEW: "Review",
-      PRACTICE: "Practice",
-      CHALLENGE: "Challenge"
-    };
+      REVIEW: 'Review',
+      PRACTICE: 'Practice',
+      CHALLENGE: 'Challenge',
+    }
   }
 
-  getRecommendationRowByAssignmentName = assignmentName =>
+  getRecommendationRowByAssignmentName = (assignmentName) =>
     cy
       .get('[data-cy="assignmentName"]')
       .contains(assignmentName)
-      .closest('[data-cy="recommendation"]');
+      .closest('[data-cy="recommendation"]')
 
-  getRecommendationRowById = resourceId => cy.get(`[data-test="${resourceId}"]`);
+  getRecommendationRowById = (resourceId) =>
+    cy.get(`[data-test="${resourceId}"]`)
 
-  getPracticeButtonByAssignmentName = assignmentName =>
-    this.getRecommendationRowByAssignmentName(assignmentName).find('[data-cy="practice"]');
+  getPracticeButtonByAssignmentName = (assignmentName) =>
+    this.getRecommendationRowByAssignmentName(assignmentName).find(
+      '[data-cy="practice"]'
+    )
 
-  getPracticeButtonById = resourceId => this.getRecommendationRowById(resourceId).find('[data-cy="practice"]');
+  getPracticeButtonById = (resourceId) =>
+    this.getRecommendationRowById(resourceId).find('[data-cy="practice"]')
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickOnRecommendation = () => cy.get("[data-cy=recommendations]").click();
+  clickOnRecommendation = () => cy.get('[data-cy=recommendations]').click()
 
-  clickOnPracticeById = resourceId => {
-    cy.server();
-    cy.route("POST", "**/test-activity").as("test-activity");
-    cy.route("GET", "**/test/**").as("gettest");
-    this.getPracticeButtonById(resourceId).click();
-    cy.wait("@test-activity").then(({ status }) =>
-      expect(status, "verify start recommendated practice i.e. posting test activity").to.eq(200)
-    );
-    cy.wait("@gettest");
-  };
+  clickOnPracticeById = (resourceId) => {
+    cy.server()
+    cy.route('POST', '**/test-activity').as('test-activity')
+    cy.route('GET', '**/test/**').as('gettest')
+    this.getPracticeButtonById(resourceId).click()
+    cy.wait('@test-activity').then(({ status }) =>
+      expect(
+        status,
+        'verify start recommendated practice i.e. posting test activity'
+      ).to.eq(200)
+    )
+    cy.wait('@gettest')
+  }
 
-  clickOnPracticeByAssignmentName = assignmentName => {
-    cy.server();
-    cy.route("GET", "**/test/**").as("practiceTest");
-    this.getPracticeButtonByAssignmentName(assignmentName).click();
-    return cy.wait("@practiceTest").then(xhr => {
-      expect(xhr.status).to.eq(200);
-      let itemGroupArray = xhr.response.body.result.itemGroups;
-      let testItems = [];
-      itemGroupArray.forEach(obj => {
-        const group = [];
-        obj.items.forEach(itm => {
-          group.push(itm._id);
-        });
-        testItems.push(group);
-      });
-      return testItems;
-    });
-  };
+  clickOnPracticeByAssignmentName = (assignmentName) => {
+    cy.server()
+    cy.route('GET', '**/test/**').as('practiceTest')
+    this.getPracticeButtonByAssignmentName(assignmentName).click()
+    return cy.wait('@practiceTest').then((xhr) => {
+      expect(xhr.status).to.eq(200)
+      const itemGroupArray = xhr.response.body.result.itemGroups
+      const testItems = []
+      itemGroupArray.forEach((obj) => {
+        const group = []
+        obj.items.forEach((itm) => {
+          group.push(itm._id)
+        })
+        testItems.push(group)
+      })
+      return testItems
+    })
+  }
 
   // *** ACTIONS END ***
 
@@ -71,58 +78,58 @@ export class PlayListRecommendation {
     standardIds,
     attempted = false,
     mastery,
-    score
+    score,
   }) => {
-    const masteryText = `${mastery || "0"}%`;
+    const masteryText = `${mastery || '0'}%`
     testId
-      ? this.getRecommendationRowById(testId).as("recommendedRow")
-      : this.getRecommendationRowByAssignmentName(assignmentName).as("recommendedRow");
+      ? this.getRecommendationRowById(testId).as('recommendedRow')
+      : this.getRecommendationRowByAssignmentName(assignmentName).as(
+          'recommendedRow'
+        )
 
     // title
-    cy.get("@recommendedRow")
+    cy.get('@recommendedRow')
       .find('[data-cy="assignmentName"]')
       .should(
-        "have.text",
-        testId ? assignmentName : `${this.recommendedType[type]} #${recommendationNumber} - ${assignmentName}`
-      );
+        'have.text',
+        testId
+          ? assignmentName
+          : `${this.recommendedType[type]} #${recommendationNumber} - ${assignmentName}`
+      )
 
     // work type
-    cy.get("@recommendedRow")
+    cy.get('@recommendedRow')
       .find('[data-cy="recommendationType"]')
-      .should("have.text", type);
+      .should('have.text', type)
     // standardIds
     if (!testId && standardIds) {
-      standardIds.forEach(std => {
-        cy.get("@recommendedRow")
+      standardIds.forEach((std) => {
+        cy.get('@recommendedRow')
           .find('[data-cy="assignmentName"]')
           .next()
-          .find(".ant-tag")
-          .should("contain.text", std);
-      });
+          .find('.ant-tag')
+          .should('contain.text', std)
+      })
     }
     // progress text
-    cy.get("@recommendedRow")
-      .find(".ant-progress-text")
-      .should("have.text", `${attempted ? masteryText : ""}`);
+    cy.get('@recommendedRow')
+      .find('.ant-progress-text')
+      .should('have.text', `${attempted ? masteryText : ''}`)
     // score
-    cy.get("@recommendedRow")
+    cy.get('@recommendedRow')
       .find('[data-cy="score"]')
-      .should("have.text", `${attempted ? score : "-"}`);
+      .should('have.text', `${attempted ? score : '-'}`)
     // practice button
-    cy.get("@recommendedRow")
+    cy.get('@recommendedRow')
       .find('[data-cy="practice"]')
-      .should("have.text", "START PRACTICE");
+      .should('have.text', 'START PRACTICE')
     // review button
 
     if (attempted)
-      cy.get("@recommendedRow")
-        .find('[data-cy="review"]')
-        .should("exist");
+      cy.get('@recommendedRow').find('[data-cy="review"]').should('exist')
     else
-      cy.get("@recommendedRow")
-        .find('[data-cy="review"]')
-        .should("not.exist");
-  };
+      cy.get('@recommendedRow').find('[data-cy="review"]').should('not.exist')
+  }
 
   // *** APPHELPERS END ***
 }

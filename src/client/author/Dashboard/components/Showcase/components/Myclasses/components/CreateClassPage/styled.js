@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { lightBlue, white, themeColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { lightBlue, white, themeColor } from '@edulastic/colors'
 
 export const CreateClassDiv = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ export const CreateClassDiv = styled.div`
     text-transform: uppercase;
     font-size: 12px;
   }
-`;
+`
 export const SyncClassDiv = styled.div`
   display: flex;
   justify-content: space-between;
@@ -39,7 +39,7 @@ export const SyncClassDiv = styled.div`
     width: 19.81px;
     height: 19.81px;
   }
-`;
+`
 export const CreateCardBox = styled.div`
   display: flex;
   justify-content: space-evenly;
@@ -49,4 +49,4 @@ export const CreateCardBox = styled.div`
   border-radius: 10px;
   height: 257px;
   width: 311px;
-`;
+`

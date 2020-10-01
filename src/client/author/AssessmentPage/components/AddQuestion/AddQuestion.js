@@ -1,45 +1,73 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   SHORT_TEXT,
   MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
   MATH,
   TRUE_OR_FALSE,
-  ESSAY_PLAIN_TEXT
-} from "@edulastic/constants/const/questionType";
-import { IconNewList, IconMath, IconTrueFalse, IconPencilHollow, IconTextEntry, IconDropDown } from "@edulastic/icons";
-import { Tooltip } from "../../../../common/utils/helpers";
+  ESSAY_PLAIN_TEXT,
+} from '@edulastic/constants/const/questionType'
+import {
+  IconNewList,
+  IconMath,
+  IconTrueFalse,
+  IconPencilHollow,
+  IconTextEntry,
+  IconDropDown,
+} from '@edulastic/icons'
+import { Tooltip } from '../../../../common/utils/helpers'
 
-import AddBulkModal from "../AddBulkModal/AddBulkModal";
-import { AddQuestionWrapper, AddQuestionIcon, QuestionTypes, ContentWrapper, AddButton } from "./styled";
+import AddBulkModal from '../AddBulkModal/AddBulkModal'
+import {
+  AddQuestionWrapper,
+  AddQuestionIcon,
+  QuestionTypes,
+  ContentWrapper,
+  AddButton,
+} from './styled'
 
 class AddQuestion extends React.Component {
   state = {
-    bulkModalVisible: false
-  };
+    bulkModalVisible: false,
+  }
 
   toggleBulkModal = () => {
     this.setState(({ bulkModalVisible }) => ({
-      bulkModalVisible: !bulkModalVisible
-    }));
-  };
+      bulkModalVisible: !bulkModalVisible,
+    }))
+  }
 
-  handleApply = ({ number, type, startingIndex, alignment, authorDifficulty, depthOfKnowledge }) => {
-    const { onAddQuestion, scrollToBottom } = this.props;
+  handleApply = ({
+    number,
+    type,
+    startingIndex,
+    alignment,
+    authorDifficulty,
+    depthOfKnowledge,
+  }) => {
+    const { onAddQuestion, scrollToBottom } = this.props
 
     for (let i = 0; i < number; i++) {
-      const index = startingIndex + i;
-      onAddQuestion(type, index, startingIndex, { alignment, authorDifficulty, depthOfKnowledge })();
+      const index = startingIndex + i
+      onAddQuestion(type, index, startingIndex, {
+        alignment,
+        authorDifficulty,
+        depthOfKnowledge,
+      })()
     }
 
-    this.toggleBulkModal();
-    scrollToBottom();
-  };
+    this.toggleBulkModal()
+    scrollToBottom()
+  }
 
   render() {
-    const { bulkModalVisible } = this.state;
-    const { onAddQuestion, onAddSection, minAvailableQuestionIndex } = this.props;
+    const { bulkModalVisible } = this.state
+    const {
+      onAddQuestion,
+      onAddSection,
+      minAvailableQuestionIndex,
+    } = this.props
     return (
       <AddQuestionWrapper>
         <ContentWrapper>
@@ -87,14 +115,14 @@ class AddQuestion extends React.Component {
           />
         </ContentWrapper>
       </AddQuestionWrapper>
-    );
+    )
   }
 }
 
 AddQuestion.propTypes = {
   minAvailableQuestionIndex: PropTypes.number.isRequired,
   onAddQuestion: PropTypes.func.isRequired,
-  onAddSection: PropTypes.func.isRequired
-};
+  onAddSection: PropTypes.func.isRequired,
+}
 
-export default AddQuestion;
+export default AddQuestion

@@ -1,27 +1,27 @@
-import React, { Fragment, Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import React, { Fragment, Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
-import { ContentArea } from "../../styled/ContentArea";
-import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
+import { ContentArea } from '../../styled/ContentArea'
+import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions'
 
-import ChartPreview from "./ChartPreview";
-import ChartEdit from "./ChartEdit";
+import ChartPreview from './ChartPreview'
+import ChartEdit from './ChartEdit'
 
 class Chart extends Component {
   render() {
-    const { view } = this.props;
+    const { view } = this.props
     return (
-      <Fragment>
+      <>
         {view === PREVIEW && <ChartPreview {...this.props} />}
         {view === EDIT && (
           <ContentArea>
             <ChartEdit {...this.props} />
           </ContentArea>
         )}
-      </Fragment>
-    );
+      </>
+    )
   }
 }
 
@@ -36,8 +36,8 @@ Chart.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 Chart.defaultProps = {
   previewTab: CLEAR,
@@ -48,12 +48,11 @@ Chart.defaultProps = {
   evaluation: null,
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const ChartContainer = connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(Chart);
+const ChartContainer = connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(Chart)
 
-export { ChartContainer as Chart };
+export { ChartContainer as Chart }

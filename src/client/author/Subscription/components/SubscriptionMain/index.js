@@ -1,20 +1,25 @@
-import { EduButton, MainContentWrapper } from "@edulastic/common";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { capitalize } from "lodash";
+import { EduButton, MainContentWrapper } from '@edulastic/common'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { capitalize } from 'lodash'
 
 // TODO: Update SVG imports here
-import IMG1 from "../../static/1.png";
-import IMG2 from "../../static/2.png";
-import IMG3 from "../../static/3.png";
-import IMG4 from "../../static/analysis.png";
-import IMG5 from "../../static/speaker.png";
-import IMG6 from "../../static/teamwork.png";
-import IMG7 from "../../static/sheet.png";
-import IMG8 from "../../static/list.png";
-import IMG9 from "../../static/presentation.png";
+import IMG1 from '../../static/1.png'
+import IMG2 from '../../static/2.png'
+import IMG3 from '../../static/3.png'
+import IMG4 from '../../static/analysis.png'
+import IMG5 from '../../static/speaker.png'
+import IMG6 from '../../static/teamwork.png'
+import IMG7 from '../../static/sheet.png'
+import IMG8 from '../../static/list.png'
+import IMG9 from '../../static/presentation.png'
 
-import { ActionsWrapper, Container, Description, Title } from "../styled/commonStyled";
+import {
+  ActionsWrapper,
+  Container,
+  Description,
+  Title,
+} from '../styled/commonStyled'
 import {
   AvailablePlansContainer,
   ContentWrapper,
@@ -30,19 +35,32 @@ import {
   PlansContainer,
   PlanStatus,
   StyledLink,
-  StyledParagraph
-} from "./styled";
+  StyledParagraph,
+} from './styled'
 
-const getUpgradeToTeacherPlanActions = ({ openPaymentServiceModal, openHasLicenseKeyModal, isblur }) => (
+const getUpgradeToTeacherPlanActions = ({
+  openPaymentServiceModal,
+  openHasLicenseKeyModal,
+  isblur,
+}) => (
   <ActionsWrapper>
-    <EduButton height="40px" onClick={openPaymentServiceModal} disabled={isblur}>
+    <EduButton
+      height="40px"
+      onClick={openPaymentServiceModal}
+      disabled={isblur}
+    >
       UPGRADE NOW FOR $100/YEAR
     </EduButton>
-    <EduButton isGhost height="40px" onClick={openHasLicenseKeyModal} disabled={isblur}>
+    <EduButton
+      isGhost
+      height="40px"
+      onClick={openHasLicenseKeyModal}
+      disabled={isblur}
+    >
       ALREADY HAVE A LICENSE KEY
     </EduButton>
   </ActionsWrapper>
-);
+)
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -55,7 +73,7 @@ const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
       </EduButton>
     </Link>
   </ActionsWrapper>
-);
+)
 
 const getEnterprisePlanActions = () => (
   <ActionsWrapper>
@@ -63,64 +81,68 @@ const getEnterprisePlanActions = () => (
       REQUEST A QUOTE
     </EduButton>
   </ActionsWrapper>
-);
+)
 
 const availablePlans = [
   {
     imgSrc: IMG1,
-    title: "Upgrade to Teacher Premium",
+    title: 'Upgrade to Teacher Premium',
     description:
-      "Get Additional reports, options to assist students collaborate with collegues, anti-cheating tools and more.",
-    getActionsComp: getUpgradeToTeacherPlanActions
+      'Get Additional reports, options to assist students collaborate with collegues, anti-cheating tools and more.',
+    getActionsComp: getUpgradeToTeacherPlanActions,
   },
   {
     imgSrc: IMG2,
-    title: "Upgrade Multiple Users to Premium",
+    title: 'Upgrade Multiple Users to Premium',
     description:
-      "Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.",
-    getActionsComp: getUpgradeToMultipleUsersPlanAction
+      'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
+    getActionsComp: getUpgradeToMultipleUsersPlanAction,
   },
   {
     imgSrc: IMG3,
-    title: "Edulastic Enterprise",
+    title: 'Edulastic Enterprise',
     description:
-      "Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.",
-    getActionsComp: getEnterprisePlanActions
-  }
-];
+      'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
+    getActionsComp: getEnterprisePlanActions,
+  },
+]
 
 const featuresData = [
   {
     imgSrc: IMG4,
-    title: "In-depth Reporting",
-    description: "Show student growth over time. Analyze answer distractor. See complete student mastery profile."
+    title: 'In-depth Reporting',
+    description:
+      'Show student growth over time. Analyze answer distractor. See complete student mastery profile.',
   },
   {
     imgSrc: IMG5,
-    title: "Read Aloud",
-    description: "Choose students to have questions and answer choices read to them."
+    title: 'Read Aloud',
+    description:
+      'Choose students to have questions and answer choices read to them.',
   },
   {
     imgSrc: IMG6,
-    title: "Collaboration",
-    description: "Work on assessment as a team before they're published."
+    title: 'Collaboration',
+    description: "Work on assessment as a team before they're published.",
   },
   {
     imgSrc: IMG7,
-    title: "Advanced Assessment Options",
-    description: "Shuffle question order for each student. Show student actions but hide correct answers."
+    title: 'Advanced Assessment Options',
+    description:
+      'Shuffle question order for each student. Show student actions but hide correct answers.',
   },
   {
     imgSrc: IMG8,
-    title: "Rubric Scoring",
-    description: "Create and share rubrics school or district wide."
+    title: 'Rubric Scoring',
+    description: 'Create and share rubrics school or district wide.',
   },
   {
     imgSrc: IMG9,
-    title: "Presentation Mode",
-    description: "Review answers and common mistake with the class without showing names."
-  }
-];
+    title: 'Presentation Mode',
+    description:
+      'Review answers and common mistake with the class without showing names.',
+  },
+]
 
 const PlansComponent = ({
   imgSrc,
@@ -130,7 +152,7 @@ const PlansComponent = ({
   isblur,
   openPaymentServiceModal,
   openHasLicenseKeyModal,
-  openPurchaseLicenseModal
+  openPurchaseLicenseModal,
 }) => (
   <PlansContainer isblur={isblur}>
     <ContentWrapper>
@@ -146,30 +168,30 @@ const PlansComponent = ({
       openPaymentServiceModal,
       openHasLicenseKeyModal,
       openPurchaseLicenseModal,
-      isblur
+      isblur,
     })}
   </PlansContainer>
-);
+)
 
 function formatDate(subEndDate) {
-  if (!subEndDate) return null;
-  const date = new Date(subEndDate).toString().split(" ");
-  return `${date[2]} ${date[1]}, ${date[3]}`;
+  if (!subEndDate) return null
+  const date = new Date(subEndDate).toString().split(' ')
+  return `${date[2]} ${date[1]}, ${date[3]}`
 }
 
-const SubscriptionMain = props => {
+const SubscriptionMain = (props) => {
   const {
     isSubscribed = false,
     subEndDate,
     openPaymentServiceModal,
     openHasLicenseKeyModal,
     openPurchaseLicenseModal,
-    subType
-  } = props;
+    subType,
+  } = props
 
-  const licenseExpiryDate = formatDate(subEndDate);
+  const licenseExpiryDate = formatDate(subEndDate)
 
-  const [showPlans, setShowPlans] = useState(false);
+  const [showPlans, setShowPlans] = useState(false)
 
   return (
     <>
@@ -179,8 +201,12 @@ const SubscriptionMain = props => {
             <Title padding="0 30px 0 0">Your Current Plan:</Title>
             <Description>
               {isSubscribed && subType && licenseExpiryDate
-                ? `${subType === "partial_premium" ? "Enterprise" : capitalize(subType.replace(/_/g, " "))} Version`
-                : "Free Plan"}
+                ? `${
+                    subType === 'partial_premium'
+                      ? 'Enterprise'
+                      : capitalize(subType.replace(/_/g, ' '))
+                  } Version`
+                : 'Free Plan'}
             </Description>
           </Container>
           <PlanStatus>
@@ -206,7 +232,9 @@ const SubscriptionMain = props => {
                       <img src={availablePlans[0].imgSrc} alt="" />
                     </PlanImage>
                     <PlanDetails>
-                      <Title margin="0 0 8px 0">{availablePlans[0].title}</Title>
+                      <Title margin="0 0 8px 0">
+                        {availablePlans[0].title}
+                      </Title>
                       <Description>{availablePlans[0].description}</Description>
                     </PlanDetails>
                   </ContentWrapper>
@@ -218,9 +246,13 @@ const SubscriptionMain = props => {
                   <FlexCard>
                     <InnerWrapper>
                       <Img src={featuresData[index].imgSrc} />
-                      <h3 style={{ fontWeight: 700, paddingLeft: 20 }}>{featuresData[index].title}</h3>
+                      <h3 style={{ fontWeight: 700, paddingLeft: 20 }}>
+                        {featuresData[index].title}
+                      </h3>
                     </InnerWrapper>
-                    <FeatureDescription>{featuresData[index].description}</FeatureDescription>
+                    <FeatureDescription>
+                      {featuresData[index].description}
+                    </FeatureDescription>
                   </FlexCard>
                 ))}
               </GridContainer>
@@ -228,7 +260,11 @@ const SubscriptionMain = props => {
 
             {!isSubscribed && (
               <ActionsWrapper width="460px" row>
-                <EduButton isGhost height="40px" onClick={openHasLicenseKeyModal}>
+                <EduButton
+                  isGhost
+                  height="40px"
+                  onClick={openHasLicenseKeyModal}
+                >
                   ALREADY HAVE A LICENSE KEY
                 </EduButton>
                 <EduButton height="40px" onClick={openPaymentServiceModal}>
@@ -236,12 +272,17 @@ const SubscriptionMain = props => {
                 </EduButton>
               </ActionsWrapper>
             )}
-            {subType !== "enterprise" && (
+            {subType !== 'enterprise' && (
               <StyledParagraph isSubscribed={isSubscribed}>
-                interested in buying multiple teacher premium subscriptions or upgrading to enterprise?
+                interested in buying multiple teacher premium subscriptions or
+                upgrading to enterprise?
                 {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
-                <a href="https://edulastic.com/teacher-premium/" target="_blank" rel="noopener noreferrer">
-                  {" "}
+                <a
+                  href="https://edulastic.com/teacher-premium/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {' '}
                   click here.
                 </a>
               </StyledParagraph>
@@ -264,7 +305,7 @@ const SubscriptionMain = props => {
         )}
       </MainContentWrapper>
     </>
-  );
-};
+  )
+}
 
-export default SubscriptionMain;
+export default SubscriptionMain

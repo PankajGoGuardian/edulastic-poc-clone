@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import { Tooltip } from "antd";
-import { ProgressBar } from "@edulastic/common";
+import React from 'react'
+import styled from 'styled-components'
+import { Tooltip } from 'antd'
+import { ProgressBar } from '@edulastic/common'
 import {
   desktopWidth,
   greyThemeDark1,
@@ -12,26 +12,31 @@ import {
   white,
   extraDesktopWidthMax,
   tabletWidth,
-  mobileWidthLarge
-} from "@edulastic/colors";
+  mobileWidthLarge,
+} from '@edulastic/colors'
 
-import SummaryPieChart from "./SummaryPieChart";
-import { getProgressColor } from "../../util";
+import SummaryPieChart from './SummaryPieChart'
+import { getProgressColor } from '../../util'
 
-const SummaryBlock = ({ isStudent, summaryData, urlHasUseThis, hasSummaryDataNoData }) => {
+const SummaryBlock = ({
+  isStudent,
+  summaryData,
+  urlHasUseThis,
+  hasSummaryDataNoData,
+}) => {
   const COLORS = [
-    "#11AB96",
-    "#F74565",
-    "#0078AD",
-    "#00C2FF",
-    "#B701EC",
-    "#496DDB",
-    "#8884d8",
-    "#82ca9d",
-    "#EC0149",
-    "#FFD500",
-    "#00AD50"
-  ];
+    '#11AB96',
+    '#F74565',
+    '#0078AD',
+    '#00C2FF',
+    '#B701EC',
+    '#496DDB',
+    '#8884d8',
+    '#82ca9d',
+    '#EC0149',
+    '#FFD500',
+    '#00AD50',
+  ]
 
   return (
     <SummaryBlockContainer urlHasUseThis={urlHasUseThis}>
@@ -40,14 +45,16 @@ const SummaryBlock = ({ isStudent, summaryData, urlHasUseThis, hasSummaryDataNoD
       <SummaryPieChart
         isStudent={isStudent}
         data={summaryData}
-        totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
+        totalTimeSpent={summaryData
+          ?.map((x) => x?.tSpent)
+          ?.reduce((a, c) => a + c, 0)}
         colors={COLORS}
       />
       <Hr />
       <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
       <SummaryDataRows urlHasUseThis={urlHasUseThis}>
         {summaryData?.map(
-          item =>
+          (item) =>
             ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
               <div style={{ opacity: item.hidden ? `.5` : `1` }}>
                 <Tooltip placement="left" title={item.title || item.name}>
@@ -59,22 +66,23 @@ const SummaryBlock = ({ isStudent, summaryData, urlHasUseThis, hasSummaryDataNoD
                   percent={item.value}
                   size="small"
                   color={item.value ? greyThemeDark1 : lightGrey2}
-                  format={percent => (percent ? `${percent}%` : "NO DATA")}
-                  padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
+                  format={(percent) => (percent ? `${percent}%` : 'NO DATA')}
+                  padding={hasSummaryDataNoData ? '0px 30px 0px 0px' : '0px'}
                 />
               </div>
             )
         )}
       </SummaryDataRows>
     </SummaryBlockContainer>
-  );
-};
+  )
+}
 
-export default SummaryBlock;
+export default SummaryBlock
 
 const SummaryBlockContainer = styled.div`
   width: 400px;
-  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 125px)" : "calc(100vh - 160px)")};
+  height: ${({ urlHasUseThis }) =>
+    urlHasUseThis ? 'calc(100vh - 125px)' : 'calc(100vh - 160px)'};
   background: ${white};
   padding-top: 30px;
   border-radius: 4px;
@@ -98,22 +106,23 @@ const SummaryBlockContainer = styled.div`
   }
 
   @media (min-width: ${tabletWidth}) and (max-width: ${smallDesktopWidth}) {
-    height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 105px)" : "calc(100vh - 140px)")};
+    height: ${({ urlHasUseThis }) =>
+      urlHasUseThis ? 'calc(100vh - 105px)' : 'calc(100vh - 140px)'};
   }
 
   @media (max-width: ${desktopWidth}) {
     position: fixed;
     right: 0px;
-    top: ${props => props.theme.HeaderHeight.sd}px;
+    top: ${(props) => props.theme.HeaderHeight.sd}px;
     height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
     overflow: auto;
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    top: ${props => props.theme.HeaderHeight.xs}px;
+    top: ${(props) => props.theme.HeaderHeight.xs}px;
     height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xs}px)`};
   }
-`;
+`
 
 const SummaryBlockTitle = styled.div`
   width: 100%;
@@ -125,7 +134,7 @@ const SummaryBlockTitle = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 18px;
   }
-`;
+`
 
 const SummaryBlockSubTitle = styled.div`
   width: 100%;
@@ -139,14 +148,14 @@ const SummaryBlockSubTitle = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
   }
-`;
+`
 
 const Hr = styled.div`
   width: 70%;
   border: 2px dashed transparent;
   border-bottom: 2px dashed #d2d2d2;
   margin: 20px auto;
-`;
+`
 
 const ModuleTitle = styled.p`
   font-size: 11px;
@@ -162,7 +171,7 @@ const ModuleTitle = styled.p`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 9px;
   }
-`;
+`
 
 const StyledProgressBar = styled(ProgressBar)`
   & .ant-progress-text {
@@ -170,7 +179,7 @@ const StyledProgressBar = styled(ProgressBar)`
       font-size: 9px;
     }
   }
-`;
+`
 
 const SummaryDataRows = styled.div`
   width: 80%;
@@ -203,4 +212,4 @@ const SummaryDataRows = styled.div`
       background: #888;
     }
   }
-`;
+`

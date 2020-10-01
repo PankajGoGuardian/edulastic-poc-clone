@@ -1,52 +1,71 @@
-import { tagsApi } from "@edulastic/api";
-import { SelectInputStyled,notification } from "@edulastic/common";
-import { Select } from "antd";
-import { uniq } from "lodash";
-import PropTypes from "prop-types";
-import React, { useState } from "react";
-import { FieldLabel } from "./components";
+import { tagsApi } from '@edulastic/api'
+import { SelectInputStyled, notification } from '@edulastic/common'
+import { Select } from 'antd'
+import { uniq } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { FieldLabel } from './components'
 
-const Tags = props => {
-  const { tags = [], allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;
-  const [searchValue, setSearchValue] = useState("");
-  const selectTags = async id => {
-    let newTag = {};
-    let tempSearchValue = searchValue;
+const Tags = (props) => {
+  const {
+    tags = [],
+    allTagsData,
+    addNewTag,
+    setFieldsValue,
+    getFieldValue,
+  } = props
+  const [searchValue, setSearchValue] = useState('')
+  const selectTags = async (id) => {
+    let newTag = {}
+    let tempSearchValue = searchValue
     if (id === searchValue) {
       try {
-        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
-        newTag = { _id, tagName };
-        addNewTag({ tag: newTag, tagType: "group" });
+        const { _id, tagName } = await tagsApi.create({
+          tagName: tempSearchValue,
+          tagType: 'group',
+        })
+        newTag = { _id, tagName }
+        addNewTag({ tag: newTag, tagType: 'group' })
       } catch (e) {
-        notification({ messageKey: "savingTagErr" });
+        notification({ messageKey: 'savingTagErr' })
       }
     } else {
-      newTag = allTagsData.find(tag => tag._id === id);
+      newTag = allTagsData.find((tag) => tag._id === id)
     }
-    const tagsSelected = getFieldValue("tags");
-    const newTags = uniq([...tagsSelected, newTag._id]);
-    setFieldsValue({ tags: newTags.filter(t => t !== tempSearchValue) });
-    tempSearchValue = "";
-    setSearchValue("");
-  };
+    const tagsSelected = getFieldValue('tags')
+    const newTags = uniq([...tagsSelected, newTag._id])
+    setFieldsValue({ tags: newTags.filter((t) => t !== tempSearchValue) })
+    tempSearchValue = ''
+    setSearchValue('')
+  }
 
-  const deselectTags = id => {
-    const tagsSelected = getFieldValue("tags");
-    const newTags = tagsSelected.filter(tag => tag !== id);
-    setFieldsValue({ tags: newTags });
-  };
+  const deselectTags = (id) => {
+    const tagsSelected = getFieldValue('tags')
+    const newTags = tagsSelected.filter((tag) => tag !== id)
+    setFieldsValue({ tags: newTags })
+  }
 
-  const searchTags = value => {
-    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
-      setSearchValue("");
+  const searchTags = (value) => {
+    if (
+      allTagsData.some(
+        (tag) => tag.tagName === value || tag.tagName === value.trim()
+      )
+    ) {
+      setSearchValue('')
     } else {
-      setSearchValue(value);
+      setSearchValue(value)
     }
-  };
+  }
 
   return (
     <>
-      <FieldLabel label="Tags" optional {...props} fiedlName="tags" initialValue={tags.map(tag => tag._id)}>
+      <FieldLabel
+        label="Tags"
+        optional
+        {...props}
+        fiedlName="tags"
+        initialValue={tags.map((tag) => tag._id)}
+      >
         <SelectInputStyled
           data-cy="tagsSelect"
           mode="multiple"
@@ -56,17 +75,21 @@ const Tags = props => {
           onSearch={searchTags}
           onSelect={selectTags}
           onDeselect={deselectTags}
-          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+          filterOption={(input, option) =>
+            option.props.title
+              .toLowerCase()
+              .includes(input.trim().toLowerCase())
+          }
         >
-          {!!searchValue.trim() ? (
+          {searchValue.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
               {`${searchValue} (Create new Tag)`}
             </Select.Option>
           ) : (
-            ""
+            ''
           )}
           {allTagsData.map(({ tagName, _id }) =>
-            searchValue.trim() === "" ? (
+            searchValue.trim() === '' ? (
               <Select.Option key={_id} value={_id} title={tagName}>
                 {tagName}
               </Select.Option>
@@ -75,15 +98,15 @@ const Tags = props => {
         </SelectInputStyled>
       </FieldLabel>
     </>
-  );
-};
+  )
+}
 
 Tags.propTypes = {
-  tags: PropTypes.array
-};
+  tags: PropTypes.array,
+}
 
 Tags.defaultProps = {
-  tags: []
-};
+  tags: [],
+}
 
-export default Tags;
+export default Tags

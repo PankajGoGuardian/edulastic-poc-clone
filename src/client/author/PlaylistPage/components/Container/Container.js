@@ -1,15 +1,15 @@
-import React, { PureComponent } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Spin } from "antd";
-import { withRouter } from "react-router-dom";
-import { isObject as _isObject, uniq as _uniq, get, omit } from "lodash";
-import { withWindowSizes, notification } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { themeColor, white } from "@edulastic/colors";
-import { testsApi } from "@edulastic/api";
-import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
+import React, { PureComponent } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { Spin } from 'antd'
+import { withRouter } from 'react-router-dom'
+import { isObject as _isObject, uniq as _uniq, get, omit } from 'lodash'
+import { withWindowSizes, notification } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { themeColor, white } from '@edulastic/colors'
+import { testsApi } from '@edulastic/api'
+import TestPageHeader from '../../../TestPage/components/TestPageHeader/TestPageHeader'
 import {
   createPlaylistAction,
   receivePlaylistByIdAction,
@@ -27,39 +27,39 @@ import {
   setRegradeOldIdAction,
   moveContentInPlaylistAction,
   publishPlaylistAction,
-  updateDefaultPlaylistThumbnailAction
-} from "../../ducks";
+  updateDefaultPlaylistThumbnailAction,
+} from '../../ducks'
 import {
   getSelectedItemSelector,
   clearSelectedItemsAction,
   getItemsSubjectAndGradeAction,
-  getItemsSubjectAndGradeSelector
-} from "../../../TestPage/components/AddItems/ducks";
-import { loadAssignmentsAction } from "../../../TestPage/components/Assign/ducks";
-import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
+  getItemsSubjectAndGradeSelector,
+} from '../../../TestPage/components/AddItems/ducks'
+import { loadAssignmentsAction } from '../../../TestPage/components/Assign/ducks'
+import { saveCurrentEditingTestIdAction } from '../../../ItemDetail/ducks'
 import {
   getUserSelector,
   getCollectionsToAddContent,
   isPublisherUserSelector,
   getUserRole,
-  isOrganizationDistrictUserSelector
-} from "../../../src/selectors/user";
-import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
-import ShareModal from "../../../src/components/common/ShareModal";
-import CurriculumSequence from "../../../CurriculumSequence/components/CurriculumSequence";
-import Summary from "../../../TestPage/components/Summary";
-import Setting from "../Settings";
-import { CollectionsSelectModal } from "../CollectionsSelectModal/collectionsSelectModal";
-import { setDefaultInterests } from "../../../dataUtils";
+  isOrganizationDistrictUserSelector,
+} from '../../../src/selectors/user'
+import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
+import ShareModal from '../../../src/components/common/ShareModal'
+import CurriculumSequence from '../../../CurriculumSequence/components/CurriculumSequence'
+import Summary from '../../../TestPage/components/Summary'
+import Setting from '../Settings'
+import { CollectionsSelectModal } from '../CollectionsSelectModal/collectionsSelectModal'
+import { setDefaultInterests } from '../../../dataUtils'
 
 // TODO: replace with playlistApi once api is updated
-const { getDefaultImage } = testsApi;
+const { getDefaultImage } = testsApi
 
 const statusConstants = {
-  DRAFT: "draft",
-  ARCHIVED: "archived",
-  PUBLISHED: "published"
-};
+  DRAFT: 'draft',
+  ARCHIVED: 'archived',
+  PUBLISHED: 'published',
+}
 
 class Container extends PureComponent {
   propTypes = {
@@ -73,23 +73,23 @@ class Container extends PureComponent {
     test: PropTypes.object,
     isTestLoading: PropTypes.bool.isRequired,
     clearSelectedItems: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
-  };
+    history: PropTypes.object.isRequired,
+  }
 
   static defaultProps = {
-    test: null
-  };
+    test: null,
+  }
 
   state = {
-    current: "summary",
+    current: 'summary',
     showModal: false,
     editEnable: false,
     isTextColorPickerVisible: false,
     isBackgroundColorPickerVisible: false,
     expandedModules: [],
     showShareModal: false,
-    showSelectCollectionsModal: false
-  };
+    showSelectCollectionsModal: false,
+  }
 
   componentDidMount() {
     const {
@@ -100,195 +100,215 @@ class Container extends PureComponent {
       clearSelectedItems,
       clearTestAssignments,
       editAssigned,
-      setRegradeOldId
-    } = this.props;
+      setRegradeOldId,
+    } = this.props
 
-    if (location.hash === "#review") {
-      this.handleNavChange("review")();
+    if (location.hash === '#review') {
+      this.handleNavChange('review')()
     }
 
     if (match.params.id) {
-      receiveTestById(match.params.id);
+      receiveTestById(match.params.id)
     } else {
-      clearTestAssignments([]);
-      clearSelectedItems();
-      setDefaultData();
+      clearTestAssignments([])
+      clearSelectedItems()
+      setDefaultData()
     }
 
     if (editAssigned) {
-      setRegradeOldId(match.params.id);
+      setRegradeOldId(match.params.id)
     }
   }
 
   componentDidUpdate() {
-    const { editAssigned, setRegradeOldId, match } = this.props;
+    const { editAssigned, setRegradeOldId, match } = this.props
     if (editAssigned) {
-      setRegradeOldId(match.params.id);
+      setRegradeOldId(match.params.id)
     }
   }
 
-  handleNavChange = value => () => {
-    const { playlist } = this.props;
+  handleNavChange = (value) => () => {
+    const { playlist } = this.props
     if (!playlist?.title?.trim()?.length) {
-      return notification({ type: "warn", messageKey: "empyPlaylistName" });
+      return notification({ type: 'warn', messageKey: 'empyPlaylistName' })
     }
-    if (value === "source") {
+    if (value === 'source') {
       return this.setState({
-        showModal: true
-      });
+        showModal: true,
+      })
     }
-    this.handleSave(null, true);
+    this.handleSave(null, true)
     this.setState({
-      current: value
-    });
-  };
+      current: value,
+    })
+  }
 
-  handleChangeGrade = grades => {
-    const { setData, playlist } = this.props;
-    setData({ ...playlist, grades });
-    setDefaultInterests({ grades });
-  };
+  handleChangeGrade = (grades) => {
+    const { setData, playlist } = this.props
+    setData({ ...playlist, grades })
+    setDefaultInterests({ grades })
+  }
 
-  handleChangeSubject = subjects => {
-    const { setData, playlist, updateDefaultPlaylistThumbnail } = this.props;
-    setData({ ...playlist, subjects });
+  handleChangeSubject = (subjects) => {
+    const { setData, playlist, updateDefaultPlaylistThumbnail } = this.props
+    setData({ ...playlist, subjects })
     getDefaultImage({
-      subject: subjects[0] || "Other Subjects",
-      standard: get(playlist, "modules[0].data[0].standardIdentifiers[0]", "")
-    }).then(thumbnail => updateDefaultPlaylistThumbnail(thumbnail));
-    setDefaultInterests({ subject: subjects[0] || "" });
-  };
+      subject: subjects[0] || 'Other Subjects',
+      standard: get(playlist, 'modules[0].data[0].standardIdentifiers[0]', ''),
+    }).then((thumbnail) => updateDefaultPlaylistThumbnail(thumbnail))
+    setDefaultInterests({ subject: subjects[0] || '' })
+  }
 
   handleChangeCollection = (value, options) => {
-    const { setData, playlist, collectionsToShow } = this.props;
-    const data = {};
-    options.forEach(o => {
+    const { setData, playlist, collectionsToShow } = this.props
+    const data = {}
+    options.forEach((o) => {
       if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value);
+        data[o.props._id].push(o.props.value)
       } else {
-        data[o.props._id] = [o.props.value];
+        data[o.props._id] = [o.props.value]
       }
-    });
+    })
 
-    const collectionArray = [];
+    const collectionArray = []
     for (const [key, _value] of Object.entries(data)) {
       collectionArray.push({
         _id: key,
-        bucketIds: _value
-      });
+        bucketIds: _value,
+      })
     }
 
-    const orgCollectionIds = collectionsToShow.map(o => o._id);
-    const extraCollections = (playlist.collections || []).filter(c => !orgCollectionIds.includes(c._id));
-    setData({ ...playlist, collections: [...collectionArray, ...extraCollections] });
-  };
+    const orgCollectionIds = collectionsToShow.map((o) => o._id)
+    const extraCollections = (playlist.collections || []).filter(
+      (c) => !orgCollectionIds.includes(c._id)
+    )
+    setData({
+      ...playlist,
+      collections: [...collectionArray, ...extraCollections],
+    })
+  }
 
   handleChangeColor = (type, value) => {
     this.setState({
-      [type]: value
-    });
-  };
+      [type]: value,
+    })
+  }
 
-  collapseExpandModule = moduleId => {
-    const { playlist } = this.props;
+  collapseExpandModule = (moduleId) => {
+    const { playlist } = this.props
 
-    if (!playlist) return null;
+    if (!playlist) return null
 
     const hasContent =
       playlist.modules.filter((module, index) => {
         if (index === moduleId && module.data && module.data.length > 0) {
-          return true;
+          return true
         }
-        return false;
-      }).length > 0;
+        return false
+      }).length > 0
 
-    if (!hasContent) return notification({ type: "warn", messageKey: "moduleHasNOTest" });
+    if (!hasContent)
+      return notification({ type: 'warn', messageKey: 'moduleHasNOTest' })
 
-    const { expandedModules } = this.state;
+    const { expandedModules } = this.state
     if (expandedModules.indexOf(moduleId) === -1) {
-      this.setState({ expandedModules: [...expandedModules, moduleId] });
+      this.setState({ expandedModules: [...expandedModules, moduleId] })
     } else {
-      const newExpandedModules = expandedModules.filter(id => id !== moduleId);
+      const newExpandedModules = expandedModules.filter((id) => id !== moduleId)
       this.setState({
-        expandedModules: newExpandedModules
-      });
+        expandedModules: newExpandedModules,
+      })
     }
-  };
+  }
 
   onBeginDrag = ({ fromModuleIndex, fromContentId, contentIndex }) => {
     this.setState({
       fromModuleIndex,
       fromContentId,
-      fromContentIndex: contentIndex
-    });
-  };
+      fromContentIndex: contentIndex,
+    })
+  }
 
   onDrop = (toModuleIndex, item, fromContentBlock) => {
     if (item) {
-      const { fromModuleIndex, fromContentId, fromContentIndex, expandedModules } = this.state;
-      const { moveContentInPlaylist } = this.props;
+      const {
+        fromModuleIndex,
+        fromContentId,
+        fromContentIndex,
+        expandedModules,
+      } = this.state
+      const { moveContentInPlaylist } = this.props
 
       if (fromContentBlock) {
-        moveContentInPlaylist({ toModuleIndex, testItem: item });
+        moveContentInPlaylist({ toModuleIndex, testItem: item })
       } else {
-        moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex, testItem: item });
+        moveContentInPlaylist({
+          fromContentId,
+          fromModuleIndex,
+          toModuleIndex,
+          fromContentIndex,
+          testItem: item,
+        })
       }
-      this.setState({ expandedModules: [...expandedModules, toModuleIndex], droppedItemId: item?.id });
+      this.setState({
+        expandedModules: [...expandedModules, toModuleIndex],
+        droppedItemId: item?.id,
+      })
     }
-  };
+  }
 
-  onSortEnd = prop => {
-    const { resequenceModules } = this.props;
-    resequenceModules(prop);
-  };
+  onSortEnd = (prop) => {
+    const { resequenceModules } = this.props
+    resequenceModules(prop)
+  }
 
-  handleTestsSort = prop => {
-    const { resequenceTests } = this.props;
-    resequenceTests(prop);
-  };
+  handleTestsSort = (prop) => {
+    const { resequenceTests } = this.props
+    resequenceTests(prop)
+  }
 
   handleSaveTestId = () => {
-    const { test, saveCurrentEditingTestId } = this.props;
-    saveCurrentEditingTestId(test._id);
-  };
+    const { test, saveCurrentEditingTestId } = this.props
+    saveCurrentEditingTestId(test._id)
+  }
 
   renderContent = () => {
-    const { playlist, setData, isTestLoading, history, userId } = this.props;
-    const modules = playlist.modules.map(m => {
-      const data = m.data.map(d => omit(d, ["hidden"]));
-      m.data = data;
-      return omit(m, ["hidden"]);
-    });
-    playlist.modules = modules;
-    const { authors, _id, bgColor = "", textColor = "" } = playlist;
-    const owner = (authors && authors.some(x => x._id === userId)) || !_id;
+    const { playlist, setData, isTestLoading, history, userId } = this.props
+    const modules = playlist.modules.map((m) => {
+      const data = m.data.map((d) => omit(d, ['hidden']))
+      m.data = data
+      return omit(m, ['hidden'])
+    })
+    playlist.modules = modules
+    const { authors, _id, bgColor = '', textColor = '' } = playlist
+    const owner = (authors && authors.some((x) => x._id === userId)) || !_id
     if (isTestLoading) {
-      return <Spin />;
+      return <Spin />
     }
     const {
       current,
       expandedModules,
       isTextColorPickerVisible,
       isBackgroundColorPickerVisible,
-      droppedItemId
-    } = this.state;
-    const { handleChangeColor } = this;
+      droppedItemId,
+    } = this.state
+    const { handleChangeColor } = this
     // TODO: fix this shit!!
-    const selectedTests = [];
+    const selectedTests = []
     playlist &&
       playlist.modules &&
-      playlist.modules.forEach(module => {
+      playlist.modules.forEach((module) => {
         _isObject(module) &&
-          module.data.forEach(test => {
-            test.contentId && selectedTests.push(test.contentId);
-          });
-      });
-    _uniq(selectedTests);
+          module.data.forEach((test) => {
+            test.contentId && selectedTests.push(test.contentId)
+          })
+      })
+    _uniq(selectedTests)
     switch (current) {
-      case "summary":
+      case 'summary':
         return (
           <Summary
-            onShowSource={this.handleNavChange("source")}
+            onShowSource={this.handleNavChange('source')}
             setData={setData}
             test={playlist}
             current={current}
@@ -303,8 +323,8 @@ class Container extends PureComponent {
             backgroundColor={bgColor || themeColor}
             isPlaylist
           />
-        );
-      case "review":
+        )
+      case 'review':
         return (
           <CurriculumSequence
             mode="embedded"
@@ -323,129 +343,159 @@ class Container extends PureComponent {
             fromPlaylist
             droppedItemId={droppedItemId}
           />
-        );
-      case "settings":
-        return <Setting current={current} onShowSource={this.handleNavChange("source")} />;
+        )
+      case 'settings':
+        return (
+          <Setting
+            current={current}
+            onShowSource={this.handleNavChange('source')}
+          />
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   handleSave = (_, hideNotification) => {
-    const { playlist, updatePlaylist, createPlayList } = this.props;
+    const { playlist, updatePlaylist, createPlayList } = this.props
     if (!playlist?.modules?.length) {
       /**
        * need to save only when at-least a module present
        */
-      return;
+      return
     }
 
     if (playlist._id) {
-      updatePlaylist(playlist._id, playlist, hideNotification);
+      updatePlaylist(playlist._id, playlist, hideNotification)
     } else {
-      createPlayList(playlist);
+      createPlayList(playlist)
     }
-  };
+  }
 
   onShareModalChange = () => {
-    const { showShareModal } = this.state;
+    const { showShareModal } = this.state
     this.setState({
-      showShareModal: !showShareModal
-    });
-  };
+      showShareModal: !showShareModal,
+    })
+  }
 
-  handleApplySource = source => {
-    const { setData } = this.props;
+  handleApplySource = (source) => {
+    const { setData } = this.props
     try {
-      const data = JSON.parse(source);
-      setData(data);
+      const data = JSON.parse(source)
+      setData(data)
       this.setState({
-        showModal: false
-      });
+        showModal: false,
+      })
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }
 
-  setShowModal = value => () => {
+  setShowModal = (value) => () => {
     this.setState({
-      showModal: value
-    });
-  };
+      showModal: value,
+    })
+  }
 
   handlePublishPlaylist = () => {
-    const { publishPlaylist, playlist, match } = this.props;
-    const { grades = [], subjects = [], _id, modules = [] } = playlist;
+    const { publishPlaylist, playlist, match } = this.props
+    const { grades = [], subjects = [], _id, modules = [] } = playlist
     if (!_id) {
-      notification({ messageKey: "savePlaylistBeforPublishing" });
-      return;
+      notification({ messageKey: 'savePlaylistBeforPublishing' })
+      return
     }
     if (!grades.length) {
-      notification({ messageKey: "gradeFieldEmpty" });
+      notification({ messageKey: 'gradeFieldEmpty' })
     }
     if (!subjects.length) {
-      notification({ messageKey: "subjectFieldEmpty" });
+      notification({ messageKey: 'subjectFieldEmpty' })
     }
     if (!modules.length) {
-      notification({ messageKey: "Addatleast1module" });
+      notification({ messageKey: 'Addatleast1module' })
     }
-    publishPlaylist({ _id, oldId: match.params.oldId });
-    this.setState({ editEnable: false });
-  };
+    publishPlaylist({ _id, oldId: match.params.oldId })
+    this.setState({ editEnable: false })
+  }
 
   onPublishClick = () => {
-    const { playlist, isPublisherUser, isOrganizationDistrictUser } = this.props;
-    if ((isPublisherUser || isOrganizationDistrictUser) && !playlist.collections.length) {
-      return this.setState({ showSelectCollectionsModal: true });
+    const { playlist, isPublisherUser, isOrganizationDistrictUser } = this.props
+    if (
+      (isPublisherUser || isOrganizationDistrictUser) &&
+      !playlist.collections.length
+    ) {
+      return this.setState({ showSelectCollectionsModal: true })
     }
-    this.handlePublishPlaylist();
-  };
+    this.handlePublishPlaylist()
+  }
 
   onOkCollectionsSelectModal = (status, selectedCollections) => {
-    this.setState({ showSelectCollectionsModal: false });
-    this.handlePublishPlaylist(selectedCollections);
-  };
+    this.setState({ showSelectCollectionsModal: false })
+    this.handlePublishPlaylist(selectedCollections)
+  }
 
   onCancelCollectionsSelectModal = () => {
-    this.setState({ showSelectCollectionsModal: false });
-  };
+    this.setState({ showSelectCollectionsModal: false })
+  }
 
-  onCollectionsSelectChange = selectedCollections => {
-    const { playlist, setData } = this.props;
-    setData({ ...playlist, collections: selectedCollections });
-  };
+  onCollectionsSelectChange = (selectedCollections) => {
+    const { playlist, setData } = this.props
+    setData({ ...playlist, collections: selectedCollections })
+  }
 
   onEnableEdit = () => {
-    this.setState({ editEnable: true });
-  };
+    this.setState({ editEnable: true })
+  }
 
   renderModal = () => {
-    const { test } = this.props;
-    const { showModal } = this.state;
+    const { test } = this.props
+    const { showModal } = this.state
     if (showModal) {
       return (
-        <SourceModal onClose={this.setShowModal(false)} onApply={this.handleApplySource}>
+        <SourceModal
+          onClose={this.setShowModal(false)}
+          onApply={this.handleApplySource}
+        >
           {JSON.stringify(test, null, 4)}
         </SourceModal>
-      );
+      )
     }
-  };
+  }
 
   playlistHasDraftTests = () => {
-    const { playlist = {} } = this.props;
-    const modulesData = playlist.modules?.flatMap(({ data }) => data);
-    return modulesData.some(({ status }) => status === "draft");
-  };
+    const { playlist = {} } = this.props
+    const modulesData = playlist.modules?.flatMap(({ data }) => data)
+    return modulesData.some(({ status }) => status === 'draft')
+  }
 
   render() {
-    const { creating, windowWidth, playlist, testStatus, userId, location: { state } = {}, useRole } = this.props;
-    const { showShareModal, current, editEnable, showSelectCollectionsModal } = this.state;
-    const { _id: testId, status, authors, grades, subjects, collections } = playlist || {};
+    const {
+      creating,
+      windowWidth,
+      playlist,
+      testStatus,
+      userId,
+      location: { state } = {},
+      useRole,
+    } = this.props
+    const {
+      showShareModal,
+      current,
+      editEnable,
+      showSelectCollectionsModal,
+    } = this.state
+    const { _id: testId, status, authors, grades, subjects, collections } =
+      playlist || {}
     const showPublishButton =
-      (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable || state?.editFlow;
-    const showShareButton = !!testId;
-    const owner = (authors && authors.some(x => x._id === userId)) || !testId || useRole === roleuser.EDULASTIC_CURATOR;
-    const gradeSubject = { grades, subjects };
+      (testStatus && testStatus !== statusConstants.PUBLISHED && testId) ||
+      editEnable ||
+      state?.editFlow
+    const showShareButton = !!testId
+    const owner =
+      (authors && authors.some((x) => x._id === userId)) ||
+      !testId ||
+      useRole === roleuser.EDULASTIC_CURATOR
+    const gradeSubject = { grades, subjects }
 
     return (
       <>
@@ -483,14 +533,14 @@ class Container extends PureComponent {
           editEnable={editEnable}
           onEnableEdit={this.onEnableEdit}
           owner={owner}
-          onShowSource={this.handleNavChange("source")}
+          onShowSource={this.handleNavChange('source')}
           isPlaylist
           playlistStatus={status}
           playlistHasDraftTests={this.playlistHasDraftTests}
         />
         {this.renderContent()}
       </>
-    );
+    )
   }
 }
 
@@ -498,20 +548,20 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       playlist: getPlaylistSelector(state),
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       selectedRows: getSelectedItemSelector(state),
       user: getUserSelector(state),
-      userId: get(state, "user.user._id", ""),
+      userId: get(state, 'user.user._id', ''),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
       isPublisherUser: isPublisherUserSelector(state),
       useRole: getUserRole(state),
-      isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state)
+      isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
     }),
     {
       createPlayList: createPlaylistAction,
@@ -529,9 +579,9 @@ const enhance = compose(
       resequenceTests: resequenceTestsAction,
       moveContentInPlaylist: moveContentInPlaylistAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
-      updateDefaultPlaylistThumbnail: updateDefaultPlaylistThumbnailAction
+      updateDefaultPlaylistThumbnail: updateDefaultPlaylistThumbnailAction,
     }
   )
-);
+)
 
-export default enhance(Container);
+export default enhance(Container)

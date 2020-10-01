@@ -1,6 +1,5 @@
-import styled from "styled-components";
-import { Input, Col, Table } from "antd";
-import { StyledButton } from "../../assessment/containers/WidgetOptions/styled/Buttons";
+import styled from 'styled-components'
+import { Input, Col, Table } from 'antd'
 import {
   themeColor,
   white,
@@ -18,9 +17,10 @@ import {
   boxShadowColor2,
   deleteRed2,
   inputBorder,
-  paginationBoxShadowColor
-} from "@edulastic/colors";
-import PerfectScrollbar from "react-perfect-scrollbar";
+  paginationBoxShadowColor,
+} from '@edulastic/colors'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { StyledButton } from '../../assessment/containers/WidgetOptions/styled/Buttons'
 
 export const SaveButton = styled(StyledButton)`
   width: 200px;
@@ -28,9 +28,9 @@ export const SaveButton = styled(StyledButton)`
   align-items: center;
   justify-content: center;
   i {
-    font-size: ${props => props.theme.keyboardFontSize};
+    font-size: ${(props) => props.theme.keyboardFontSize};
   }
-`;
+`
 
 export const FormContainer = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ export const FormContainer = styled.div`
   box-shadow: 0px 3px 10px ${boxShadowColor2};
   border-radius: 10px;
   padding: 22px 34px 30px;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   margin-bottom: 20px;
   > div {
     display: inline-block;
@@ -61,9 +61,9 @@ export const FormContainer = styled.div`
     .ant-form-item-label {
       line-height: 25px;
       label {
-        font-weight: ${props => props.theme.semiBold};
+        font-weight: ${(props) => props.theme.semiBold};
         color: ${title};
-        font-size: ${props => props.theme.smallFontSize};
+        font-size: ${(props) => props.theme.smallFontSize};
       }
     }
   }
@@ -73,7 +73,7 @@ export const FormContainer = styled.div`
   > div:last-child {
     width: 65%;
   }
-`;
+`
 
 export const SaveRubricButton = styled(StyledButton)`
   float: right;
@@ -83,9 +83,9 @@ export const SaveRubricButton = styled(StyledButton)`
   align-items: center;
   justify-content: center;
   i {
-    font-size: ${props => props.theme.keyboardFontSize};
+    font-size: ${(props) => props.theme.keyboardFontSize};
   }
-`;
+`
 export const CancelRubricButton = styled(SaveRubricButton)`
   background: ${white};
   color: ${themeColor};
@@ -96,13 +96,13 @@ export const CancelRubricButton = styled(SaveRubricButton)`
     background-color: ${themeColor};
     color: ${white};
   }
-`;
+`
 
 export const EditRubricContainer = styled(Col)`
   box-shadow: 0px 3px 10px ${boxShadowColor2};
   border-radius: 10px;
   h3 {
-    font-size: ${props => props.theme.titleSecondarySectionFontSize};
+    font-size: ${(props) => props.theme.titleSecondarySectionFontSize};
     span {
       color: ${white};
       cursor: pointer;
@@ -113,7 +113,7 @@ export const EditRubricContainer = styled(Col)`
       border-radius: 10px 10px 0px 0px;
     }
   }
-`;
+`
 
 export const CriteriaContainer = styled.div`
   width: 100%;
@@ -121,7 +121,7 @@ export const CriteriaContainer = styled.div`
   border-radius: 8px;
   position: relative;
   background: ${white};
-`;
+`
 
 export const CriteriaHeader = styled.div`
   background: ${white};
@@ -130,7 +130,7 @@ export const CriteriaHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-`;
+`
 
 export const CriteriaDetails = styled.div`
   width: 423px;
@@ -144,8 +144,8 @@ export const CriteriaDetails = styled.div`
       height: 40px;
       background: ${lightGreySecondary};
       text-overflow: ellipsis;
-      font-weight: ${props => props.theme.semiBold};
-      font-size: ${props => props.theme.bodyFontSize};
+      font-weight: ${(props) => props.theme.semiBold};
+      font-size: ${(props) => props.theme.bodyFontSize};
 
       &:hover,
       &:active,
@@ -159,40 +159,40 @@ export const CriteriaDetails = styled.div`
       }
     }
   }
-`;
+`
 
 export const CiteriaActionsContainer = styled.div`
   display: inline-flex;
   width: auto;
   padding: 20px 0px;
   justify-content: flex-end;
-`;
+`
 
 export const RatingWrapper = styled.div`
   position: relative;
   padding: 4px 34px 0px;
-`;
+`
 
 export const RatingSection = styled(PerfectScrollbar)`
   height: 100%;
-  margin-right: ${({ isEditable }) => (isEditable ? "235px" : "-5px")};
+  margin-right: ${({ isEditable }) => (isEditable ? '235px' : '-5px')};
   white-space: nowrap;
   overflow-x: hidden;
   padding: 0px 5px;
   margin-left: -5px;
-`;
+`
 
 export const RubricFooter = styled.div`
   padding: 20px 34px;
   background: ${white};
   border-radius: 0px 0px 10px 10px;
-`;
+`
 
 export const StyledScrollbarContainer = styled(PerfectScrollbar)`
   max-height: 350px;
   box-shadow: ${boxShadowDefault};
   border-radius: 8px;
-`;
+`
 
 export const AddRatingSection = styled.div`
   width: 223px;
@@ -227,7 +227,7 @@ export const AddRatingSection = styled.div`
       border: 1px solid ${themeColor};
       background: ${themeColor};
       color: ${white};
-      font-size: ${props => props.theme.headerTitle};
+      font-size: ${(props) => props.theme.headerTitle};
       transition: all 0.35s ease-out;
       margin-bottom: 5px;
     }
@@ -241,12 +241,14 @@ export const AddRatingSection = styled.div`
       }
     }
   }
-`;
+`
 
 export const RatingContaner = styled.div`
   width: 270px;
   border-radius: 10px;
-  margin: 2px ${({ className }) => (className === "last-rating" ? "0px" : "15px")} 20px 0px;
+  margin: 2px
+    ${({ className }) => (className === 'last-rating' ? '0px' : '15px')} 20px
+    0px;
   height: 179px;
   display: inline-block;
   box-shadow: 0px 2px 5px ${boxShadowColor2};
@@ -269,14 +271,14 @@ export const RatingContaner = styled.div`
         letter-spacing: 0.22px;
         color: ${labelGrey2};
         text-transform: uppercase;
-        font-size: ${props => props.theme.smallFontSize};
-        font-weight: ${props => props.theme.semiBold};
+        font-size: ${(props) => props.theme.smallFontSize};
+        font-weight: ${(props) => props.theme.semiBold};
         line-height: 30px;
       }
 
       .ant-input {
         height: 40px;
-        font-size: ${props => props.theme.standardFont};
+        font-size: ${(props) => props.theme.standardFont};
         text-align: center;
       }
     }
@@ -307,12 +309,12 @@ export const RatingContaner = styled.div`
       }
     }
   }
-`;
+`
 
 export const DeleteCriteria = styled.span`
   height: 40px;
   width: 45px;
-  font-size: ${props => props.theme.questionTexthugeFontSize};
+  font-size: ${(props) => props.theme.questionTexthugeFontSize};
   padding: 1px 4px;
   color: ${white};
   background-color: ${deleteRed};
@@ -323,25 +325,25 @@ export const DeleteCriteria = styled.span`
   align-items: center;
   justify-content: center;
   margin-left: 10px;
-`;
+`
 
 export const DuplicateCriteria = styled(DeleteCriteria)`
   width: 194px;
-  font-size: ${props => props.theme.commentFontSize};
+  font-size: ${(props) => props.theme.commentFontSize};
   text-transform: uppercase;
-  font-weight: ${props => props.theme.semiBold};
+  font-weight: ${(props) => props.theme.semiBold};
   color: ${themeColor};
   background-color: ${white};
   transition: all 0.4s ease-in-out;
   i {
-    font-size: ${props => props.theme.keyboardFontSize};
+    font-size: ${(props) => props.theme.keyboardFontSize};
     margin-right: 20px;
   }
   &:hover {
     color: ${white};
     background: ${themeColor};
   }
-`;
+`
 
 export const DeleteRating = styled.span`
   position: absolute;
@@ -359,11 +361,11 @@ export const DeleteRating = styled.span`
     background: ${backgroundGrey};
   }
   i {
-    font-size: ${props => props.theme.smallLinkFontSize};
+    font-size: ${(props) => props.theme.smallLinkFontSize};
   }
-`;
+`
 
-export const ExistingRubricContainer = styled(Col)``;
+export const ExistingRubricContainer = styled(Col)``
 
 export const SearchBar = styled(Input.Search)`
   margin-bottom: 20px;
@@ -378,7 +380,7 @@ export const SearchBar = styled(Input.Search)`
       color: ${placeholderGray};
     }
   }
-`;
+`
 
 export const TableActionsContainer = styled.div`
   display: inline;
@@ -386,11 +388,11 @@ export const TableActionsContainer = styled.div`
   visibility: hidden;
   span {
     margin: 0px 7px;
-    font-size: ${props => props.theme.titleSecondarySectionFontSize};
+    font-size: ${(props) => props.theme.titleSecondarySectionFontSize};
     color: ${themeColor};
     cursor: pointer;
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   box-shadow: ${boxShadowDefault};
@@ -430,7 +432,7 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const RubricDetailsContainer = styled.div`
   margin-bottom: 20px;
@@ -452,7 +454,7 @@ export const RubricDetailsContainer = styled.div`
     border-radius: 0px 0px 8px 8px;
     background: ${lightGrey3};
   }
-`;
+`
 
 export const ActionBarContainer = styled.div`
   margin-bottom: 70px;
@@ -483,15 +485,15 @@ export const ActionBarContainer = styled.div`
       align-items: center;
       justify-content: center;
       text-transform: uppercase;
-      font-size: ${props => props.theme.commentFontSize};
-      line-height: ${props => props.theme.commentFontSize};
+      font-size: ${(props) => props.theme.commentFontSize};
+      line-height: ${(props) => props.theme.commentFontSize};
       letter-spacing: 0.2px;
       border-radius: 4px;
-      font-weight: ${props => props.theme.semiBold};
+      font-weight: ${(props) => props.theme.semiBold};
       box-shadow: ${boxShadowDefault};
       transition: all 0.4s ease-in-out;
       i {
-        font-size: ${props => props.theme.questionTexthugeFontSize};
+        font-size: ${(props) => props.theme.questionTexthugeFontSize};
         margin-right: 10px;
       }
 
@@ -501,7 +503,7 @@ export const ActionBarContainer = styled.div`
       }
     }
   }
-`;
+`
 
 export const PaginationContainer = styled.div`
   width: 100%;
@@ -559,7 +561,7 @@ export const PaginationContainer = styled.div`
       }
     }
   }
-`;
+`
 
 export const RecentlyUsedContainer = styled.div`
   margin: 0px 0px 15px;
@@ -568,11 +570,11 @@ export const RecentlyUsedContainer = styled.div`
     color: ${placeholderGray};
     margin-right: 5px;
   }
-`;
+`
 
 export const TagContainer = styled.span`
   display: inline-block;
-`;
+`
 
 export const RubricsTag = styled.span`
   padding: 2px 8px;
@@ -584,4 +586,4 @@ export const RubricsTag = styled.span`
   margin-right: 10px;
   font-weight: 500;
   cursor: pointer;
-`;
+`

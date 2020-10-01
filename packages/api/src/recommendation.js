@@ -1,44 +1,44 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/recommendations";
+const api = new API()
+const prefix = '/recommendations'
 
 const fetchRecommendations = () =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getDifferentiationWork = testId =>
+const getDifferentiationWork = (testId) =>
   api
     .callApi({
       url: `${prefix}/test/${testId}/differentiation-standards`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const acceptRecommendations = data =>
+const acceptRecommendations = (data) =>
   api
     .callApi({
       url: `${prefix}/accept`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const getRecommendationsStatus = ({ assignmentId, groupId }) =>
   api
     .callApi({
       url: `${prefix}?assignmentId=${assignmentId}&groupId=${groupId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
   fetchRecommendations,
   getDifferentiationWork,
   acceptRecommendations,
-  getRecommendationsStatus
-};
+  getRecommendationsStatus,
+}

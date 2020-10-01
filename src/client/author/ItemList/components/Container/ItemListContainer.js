@@ -1,17 +1,27 @@
-import React, { memo, useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import get from "lodash/get";
-import { withRouter } from "react-router";
-import Item from "../Item/Item";
-import NoDataNotification from "../../../../common/components/NoDataNotification";
-import { getTestItemsSelector, getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
-import { addItemToCartAction } from "../../ducks";
-import { getUserId, getInterestedCurriculumsSelector, getUserRole } from "../../../src/selectors/user";
+import React, { memo, useState } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import get from 'lodash/get'
+import { withRouter } from 'react-router'
+import Item from '../Item/Item'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
+import {
+  getTestItemsSelector,
+  getSelectedItemSelector,
+} from '../../../TestPage/components/AddItems/ducks'
+import { addItemToCartAction } from '../../ducks'
+import {
+  getUserId,
+  getInterestedCurriculumsSelector,
+  getUserRole,
+} from '../../../src/selectors/user'
 
-import { previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
-import PreviewModal from "../../../src/components/common/PreviewModal";
-import { resetItemScoreAction } from "../../../src/ItemScore/ducks";
+import {
+  previewCheckAnswerAction,
+  previewShowAnswerAction,
+} from '../../../TestPage/ducks'
+import PreviewModal from '../../../src/components/common/PreviewModal'
+import { resetItemScoreAction } from '../../../src/ItemScore/ducks'
 
 const ItemListContainer = ({
   items,
@@ -26,7 +36,7 @@ const ItemListContainer = ({
   interestedCurriculums,
   search,
   userRole,
-  resetScore
+  resetScore,
 }) => {
   if (!items.length) {
     return (
@@ -36,52 +46,52 @@ const ItemListContainer = ({
           'There are currently no items available for this filter. You can create new item by clicking the "NEW ITEM" button.'
         }
       />
-    );
+    )
   }
 
-  const [indexForPreview, updateIndexForPreview] = useState(null);
+  const [indexForPreview, updateIndexForPreview] = useState(null)
 
-  const closeModal = () => updateIndexForPreview(null);
+  const closeModal = () => updateIndexForPreview(null)
 
-  const setItemIndexForPreview = index => () => updateIndexForPreview(index);
+  const setItemIndexForPreview = (index) => () => updateIndexForPreview(index)
 
   const nextItem = () => {
-    const nextItemIndex = indexForPreview + 1;
+    const nextItemIndex = indexForPreview + 1
     if (nextItemIndex > items.length - 1) {
-      return;
+      return
     }
-    updateIndexForPreview(nextItemIndex);
-  };
+    updateIndexForPreview(nextItemIndex)
+  }
 
   const prevItem = () => {
-    const prevItemIndex = indexForPreview - 1;
+    const prevItemIndex = indexForPreview - 1
     if (prevItemIndex < 0) {
-      return;
+      return
     }
-    updateIndexForPreview(prevItemIndex);
-  };
+    updateIndexForPreview(prevItemIndex)
+  }
 
-  const selectedItem = get(items, `[${indexForPreview}]`, null);
-  const owner = get(selectedItem, "authors", []).some(x => x._id === userId);
+  const selectedItem = get(items, `[${indexForPreview}]`, null)
+  const owner = get(selectedItem, 'authors', []).some((x) => x._id === userId)
 
-  const checkItemAnswer = () => checkAnswer({ ...selectedItem, isItem: true });
-  const showItemAnswer = () => showAnswer(selectedItem);
+  const checkItemAnswer = () => checkAnswer({ ...selectedItem, isItem: true })
+  const showItemAnswer = () => showAnswer(selectedItem)
 
   /**
    * Syncs the current item returned from passage API, after paginating,
    * with the local state used to show current item
    * @param {string} id item id associated with passage, that is to be displayed
    */
-  const updateCurrentItemFromPassagePagination = id => {
-    const hasSameItemId = item => item._id === id;
+  const updateCurrentItemFromPassagePagination = (id) => {
+    const hasSameItemId = (item) => item._id === id
     if (id) {
-      const index = items.findIndex(hasSameItemId);
+      const index = items.findIndex(hasSameItemId)
       if (index !== -1) {
-        resetScore(); // we should reset the score block, or it retains old data
-        updateIndexForPreview(index);
+        resetScore() // we should reset the score block, or it retains old data
+        updateIndexForPreview(index)
       }
     }
-  };
+  }
 
   return (
     <>
@@ -102,7 +112,9 @@ const ItemListContainer = ({
           onClose={closeModal}
           checkAnswer={checkItemAnswer}
           showAnswer={showItemAnswer}
-          updateCurrentItemFromPassagePagination={updateCurrentItemFromPassagePagination}
+          updateCurrentItemFromPassagePagination={
+            updateCurrentItemFromPassagePagination
+          }
         />
       )}
       {items.map((item, index) => (
@@ -113,7 +125,9 @@ const ItemListContainer = ({
           userId={userId}
           windowWidth={windowWidth}
           onToggleToCart={addItemToCart}
-          selectedToCart={selectedCartItems ? selectedCartItems.includes(item._id) : false}
+          selectedToCart={
+            selectedCartItems ? selectedCartItems.includes(item._id) : false
+          }
           interestedCurriculums={interestedCurriculums}
           openPreviewModal={setItemIndexForPreview(index)}
           checkAnswer={checkAnswer}
@@ -123,25 +137,25 @@ const ItemListContainer = ({
         />
       ))}
     </>
-  );
-};
+  )
+}
 
 export default compose(
   memo,
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       items: getTestItemsSelector(state),
       selectedCartItems: getSelectedItemSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       userId: getUserId(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
     }),
     {
       addItemToCart: addItemToCartAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
-      resetScore: resetItemScoreAction
+      resetScore: resetItemScoreAction,
     }
   )
-)(ItemListContainer);
+)(ItemListContainer)

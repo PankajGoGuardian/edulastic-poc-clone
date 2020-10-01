@@ -1,143 +1,151 @@
-import { getClosestTick, calcNumberlinePosition } from "../utils";
-import { Colors, CONSTANT } from "../config";
-import { defaultPointParameters } from "../settings";
+import { getClosestTick, calcNumberlinePosition } from '../utils'
+import { Colors, CONSTANT } from '../config'
+import { defaultPointParameters } from '../settings'
 
 const getPointCount = (board, y, isDelete) => {
   const {
-    layout: { yDistance }
-  } = board.numberlineSettings;
-  const axisY = calcNumberlinePosition(board);
+    layout: { yDistance },
+  } = board.numberlineSettings
+  const axisY = calcNumberlinePosition(board)
 
-  let count = (y - axisY) / yDistance;
-  count = Math.round(count);
+  let count = (y - axisY) / yDistance
+  count = Math.round(count)
 
   if (isDelete && count === 1) {
-    return 0;
+    return 0
   }
 
-  return Math.max(1, count);
-};
+  return Math.max(1, count)
+}
 
 const getPointYs = (board, point2) => {
   const {
-    layout: { maxPointsCount, yDistance }
-  } = board.numberlineSettings;
-  const axisY = calcNumberlinePosition(board);
+    layout: { maxPointsCount, yDistance },
+  } = board.numberlineSettings
+  const axisY = calcNumberlinePosition(board)
 
-  const pointYs = [];
-  const adjustPointCount = point2 > maxPointsCount ? maxPointsCount : point2;
+  const pointYs = []
+  const adjustPointCount = point2 > maxPointsCount ? maxPointsCount : point2
 
   for (let i = 0; i < adjustPointCount; i++) {
-    pointYs.push(axisY + yDistance * (i + 1));
+    pointYs.push(axisY + yDistance * (i + 1))
   }
-  return pointYs;
-};
+  return pointYs
+}
 
 const removeDuplicatePoints = (board, x) => {
   const pointsGroup = board.elements.find(
-    el =>
+    (el) =>
       el.segmentType === CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT &&
       el.ancestors &&
       el.ancestors.length > 0 &&
       el.ancestors[0].X() === x
-  );
+  )
 
   if (!pointsGroup) {
-    return false;
+    return false
   }
 
-  board.elements = board.elements.filter(el => el.id !== pointsGroup.id);
-  board.removeObject(pointsGroup);
+  board.elements = board.elements.filter((el) => el.id !== pointsGroup.id)
+  board.removeObject(pointsGroup)
 
-  return true;
-};
+  return true
+}
 
 const drawPoint = (board, point1, point2, colors = null) => {
-  const removeResult = removeDuplicatePoints(board, point1);
+  const removeResult = removeDuplicatePoints(board, point1)
 
   const pointOptions = {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Colors.gray[CONSTANT.TOOLS.POINT],
     highlightStrokeColor: () =>
-      board.currentTool === CONSTANT.TOOLS.TRASH || board.currentTool === CONSTANT.TOOLS.DELETE
+      board.currentTool === CONSTANT.TOOLS.TRASH ||
+      board.currentTool === CONSTANT.TOOLS.DELETE
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightStrokeColor
         : Colors.gray[CONSTANT.TOOLS.POINT].highlightStrokeColor,
     highlightFillColor: () =>
-      board.currentTool === CONSTANT.TOOLS.TRASH || board.currentTool === CONSTANT.TOOLS.DELETE
+      board.currentTool === CONSTANT.TOOLS.TRASH ||
+      board.currentTool === CONSTANT.TOOLS.DELETE
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightFillColor
         : Colors.gray[CONSTANT.TOOLS.POINT].highlightFillColor,
     ...colors,
     fixed: true,
     snapToGrid: false,
     size: 5,
-    strokeWidth: 2
-  };
-
-  const pointYs = getPointYs(board, point2);
-  if (pointYs.length === 0) {
-    if (removeResult) {
-      board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_UPDATE);
-    }
-    return null;
+    strokeWidth: 2,
   }
 
-  const points = pointYs.map(pointY => board.$board.create("point", [point1, pointY], pointOptions));
-  const newElement = board.$board.create("group", points);
-  newElement.ancestors = points;
-  newElement.segmentType = CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT;
+  const pointYs = getPointYs(board, point2)
+  if (pointYs.length === 0) {
+    if (removeResult) {
+      board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_UPDATE)
+    }
+    return null
+  }
 
-  return newElement;
-};
+  const points = pointYs.map((pointY) =>
+    board.$board.create('point', [point1, pointY], pointOptions)
+  )
+  const newElement = board.$board.create('group', points)
+  newElement.ancestors = points
+  newElement.segmentType = CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT
 
-const render = (board, element) => drawPoint(board, element.point1, element.point2, element.colors);
+  return newElement
+}
+
+const render = (board, element) =>
+  drawPoint(board, element.point1, element.point2, element.colors)
 
 const onHandler = (board, coord) => {
-  const [, x, y] = board.getCoords(coord).usrCoords;
-  const point1 = getClosestTick(x, board.numberlineAxis);
-  const point2 = getPointCount(board, y);
+  const [, x, y] = board.getCoords(coord).usrCoords
+  const point1 = getClosestTick(x, board.numberlineAxis)
+  const point2 = getPointCount(board, y)
 
-  return drawPoint(board, point1, point2);
-};
+  return drawPoint(board, point1, point2)
+}
 
-const getConfig = segment => ({
+const getConfig = (segment) => ({
   id: segment.id,
   type: segment.segmentType,
   point1: segment.ancestors[0].X(),
-  point2: segment.ancestors.length
-});
+  point2: segment.ancestors.length,
+})
 
 const removeElementUnderMouse = (board, elementsUnderMouse) => {
-  const point = elementsUnderMouse.find(em => em.elType === "point");
+  const point = elementsUnderMouse.find((em) => em.elType === 'point')
   if (!point) {
-    return false;
+    return false
   }
 
   const pointsGroup = board.elements.find(
-    el => el.ancestors && el.ancestors.length > 0 && el.ancestors.find(p => p.id === point.id)
-  );
+    (el) =>
+      el.ancestors &&
+      el.ancestors.length > 0 &&
+      el.ancestors.find((p) => p.id === point.id)
+  )
 
   if (!pointsGroup) {
-    return false;
+    return false
   }
 
-  board.elements = board.elements.filter(el => el.id !== pointsGroup.id);
-  board.removeObject(pointsGroup);
+  board.elements = board.elements.filter((el) => el.id !== pointsGroup.id)
+  board.removeObject(pointsGroup)
 
-  const point1 = point.X();
-  const y = point.Y();
-  const point2 = getPointCount(board, y - y * 0.01, true);
-  const newPoint = drawPoint(board, point1, point2);
+  const point1 = point.X()
+  const y = point.Y()
+  const point2 = getPointCount(board, y - y * 0.01, true)
+  const newPoint = drawPoint(board, point1, point2)
 
   if (newPoint) {
-    board.elements.push(newPoint);
+    board.elements.push(newPoint)
   }
 
-  return true;
-};
+  return true
+}
 
 export default {
   onHandler,
   getConfig,
   render,
-  removeElementUnderMouse
-};
+  removeElementUnderMouse,
+}

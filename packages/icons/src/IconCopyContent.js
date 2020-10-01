@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-import withIconStyles from './HOC/withIconStyles';
-import SVG from './common/SVG';
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconCopyContent = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.842 19.461" {...props}>
+const IconCopyContent = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 16.842 19.461"
+    {...props}
+  >
     <g transform="translate(-38.125 0.125)">
       <g transform="translate(38.25)">
         <path
@@ -15,6 +19,6 @@ const IconCopyContent = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconCopyContent);
+export default withIconStyles(IconCopyContent)

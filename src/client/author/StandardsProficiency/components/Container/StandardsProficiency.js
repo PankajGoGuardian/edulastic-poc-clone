@@ -1,14 +1,24 @@
-import { EduButton, notification, CustomModalStyled, FieldLabel, TextInputStyled } from "@edulastic/common";
-import { Col, Icon, Input, Row } from "antd";
-import { get, upperFirst } from "lodash";
-import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { IconPlusCircle } from "@edulastic/icons";
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  EduButton,
+  notification,
+  CustomModalStyled,
+  FieldLabel,
+  TextInputStyled,
+} from '@edulastic/common'
+import { Col, Icon, Input, Row } from 'antd'
+import { get, upperFirst } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useEffect, useRef, useState } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { IconPlusCircle } from '@edulastic/icons'
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
+import {
+  getUserId,
+  getUserOrgId,
+  getUserRole,
+} from '../../../src/selectors/user'
 import {
   createStandardsProficiencyAction,
   deleteStandardsProficiencyAction,
@@ -17,9 +27,9 @@ import {
   setEditingIndexAction,
   setStandardsProficiencyProfileNameAction,
   updateStandardsProficiencyAction,
-  setConflitAction
-} from "../../ducks";
-import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
+  setConflitAction,
+} from '../../ducks'
+import StandardsProficiencyTable from '../StandardsProficiencyTable/StandardsProficiencyTable'
 import {
   ListItemStyled,
   RowStyled,
@@ -30,55 +40,55 @@ import {
   StyledList,
   StyledProfileCol,
   StyledProfileRow,
-  StyledSpin
-} from "./styled";
+  StyledSpin,
+} from './styled'
 
 const BlueBold = styled.b`
   color: #1774f0;
-`;
-const title = "Manage District";
+`
+const title = 'Manage District'
 
 const defaultData = {
   calcAttribute: 5,
-  calcType: "MOVING_AVERAGE",
+  calcType: 'MOVING_AVERAGE',
   decay: 30,
   noOfAssessments: 5,
   scale: [
     {
       score: 4,
-      shortName: "E",
+      shortName: 'E',
       threshold: 90,
-      masteryLevel: "Exceeds Mastery",
-      color: "#F39300"
+      masteryLevel: 'Exceeds Mastery',
+      color: '#F39300',
     },
     {
       score: 3,
-      shortName: "M",
+      shortName: 'M',
       threshold: 80,
-      masteryLevel: "Mastered",
-      color: "#3DB04E"
+      masteryLevel: 'Mastered',
+      color: '#3DB04E',
     },
     {
       score: 2,
-      shortName: "A",
+      shortName: 'A',
       threshold: 70,
-      masteryLevel: "Almost Mastered",
-      color: "#EBDD54"
+      masteryLevel: 'Almost Mastered',
+      color: '#EBDD54',
     },
     {
       score: 1,
-      shortName: "N",
+      shortName: 'N',
       threshold: 0,
-      masteryLevel: "Not Mastered",
-      color: "#B22222"
-    }
-  ]
-};
+      masteryLevel: 'Not Mastered',
+      color: '#B22222',
+    },
+  ],
+}
 
 function ProfileRow(props) {
-  const [confirmVisible, setConfirmVisible] = useState(false);
-  const [deleteText, setDeleteText] = useState("");
-  const proficiencyTableInstance = useRef();
+  const [confirmVisible, setConfirmVisible] = useState(false)
+  const [deleteText, setDeleteText] = useState('')
+  const proficiencyTableInstance = useRef()
   const {
     _id,
     index,
@@ -91,15 +101,15 @@ function ProfileRow(props) {
     decay,
     noOfAssessments,
     setDeleteProficiencyName,
-    conflict
-  } = props;
-  const profileName = get(props, "profile.name", "");
+    conflict,
+  } = props
+  const profileName = get(props, 'profile.name', '')
 
   useEffect(() => {
     if (conflict) {
-      setConfirmVisible(false);
+      setConfirmVisible(false)
     }
-  }, [conflict]);
+  }, [conflict])
 
   return (
     <ListItemStyled>
@@ -113,50 +123,52 @@ function ProfileRow(props) {
             NO, CANCEL
           </EduButton>,
           <EduButton
-            disabled={deleteText.toUpperCase() != "DELETE"}
+            disabled={deleteText.toUpperCase() != 'DELETE'}
             loading={props.loading}
             onClick={() => {
-              deleteRow(_id);
-              setDeleteProficiencyName(profileName);
+              deleteRow(_id)
+              setDeleteProficiencyName(profileName)
             }}
           >
             YES, DELETE
-          </EduButton>
+          </EduButton>,
         ]}
       >
         <Row className="content">
           <Col span={24}>
-            <BlueBold>{props.profile.name}</BlueBold> will be removed permanently and can’t be used in future tests.
-            This action can NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
+            <BlueBold>{props.profile.name}</BlueBold> will be removed
+            permanently and can’t be used in future tests. This action can NOT
+            be undone. If you are sure, please type <BlueBold>DELETE</BlueBold>{' '}
+            in the space below.
           </Col>
           <Col span={24}>
             <TextInputStyled
-              style={{ marginTop: "10px" }}
+              style={{ marginTop: '10px' }}
               align="center"
               autoFocus
               value={deleteText}
-              onChange={e => setDeleteText(e.target.value)}
+              onChange={(e) => setDeleteText(e.target.value)}
             />
           </Col>
         </Row>
       </CustomModalStyled>
 
-      <StyledProfileRow onClick={e => setEditing(index)} type="flex">
+      <StyledProfileRow onClick={(e) => setEditing(index)} type="flex">
         <Col span={12}>
           {active && !readOnly ? (
             <Input
               value={profileName}
-              onClick={e => e.stopPropagation()}
-              onChange={e => {
-                setName({ _id, name: e.target.value });
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => {
+                setName({ _id, name: e.target.value })
                 if (proficiencyTableInstance.current) {
-                  proficiencyTableInstance.current.setChanged(true);
+                  proficiencyTableInstance.current.setChanged(true)
                 }
               }}
             />
           ) : (
-              profileName
-            )}
+            profileName
+          )}
         </Col>
         <StyledProfileCol span={12}>
           {props.hideEdit ? null : (
@@ -164,36 +176,36 @@ function ProfileRow(props) {
               type="edit"
               theme="filled"
               title="edit"
-              onClick={e => {
-                e.stopPropagation();
-                props.setEditable({ index, value: true });
+              onClick={(e) => {
+                e.stopPropagation()
+                props.setEditable({ index, value: true })
               }}
             />
           )}
           <Icon
             type="copy"
-            onClick={e => {
-              e.stopPropagation();
-              onDuplicate();
+            onClick={(e) => {
+              e.stopPropagation()
+              onDuplicate()
             }}
           />
           {props.hideEdit ? null : (
             <Icon
               type="delete"
               theme="filled"
-              onClick={e => {
-                e.stopPropagation();
-                setConfirmVisible(true);
+              onClick={(e) => {
+                e.stopPropagation()
+                setConfirmVisible(true)
               }}
             />
           )}
           {
             <Icon
-              type={active ? "up" : "down"}
+              type={active ? 'up' : 'down'}
               theme="outlined"
-              onClick={e => {
-                e.stopPropagation();
-                setEditing(index);
+              onClick={(e) => {
+                e.stopPropagation()
+                setEditing(index)
               }}
             />
           }
@@ -206,7 +218,7 @@ function ProfileRow(props) {
             <StandardsProficiencyTable
               wrappedComponentRef={proficiencyTableInstance}
               readOnly={readOnly}
-              name={get(props, "profile.name", "Untitled")}
+              name={get(props, 'profile.name', 'Untitled')}
               index={index}
               _id={_id}
               decay={decay}
@@ -216,7 +228,7 @@ function ProfileRow(props) {
         </RowStyled>
       )}
     </ListItemStyled>
-  );
+  )
 }
 
 function StandardsProficiency(props) {
@@ -234,73 +246,89 @@ function StandardsProficiency(props) {
     setEditable,
     editable,
     conflict,
-    error
-  } = props;
-  const showSpin = loading || updating || creating;
-  const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
+    error,
+  } = props
+  const showSpin = loading || updating || creating
+  const menuActive = { mainMenu: 'Settings', subMenu: 'Standards Proficiency' }
 
-  const [confirmVisible, setConfirmVisible] = useState(false);
-  const [profileName, setProfileName] = useState("");
-  const [conflictModalVisible, setConflictModalVisible] = useState(false);
-  const [deleteProficiencyName, setDeleteProficiencyName] = useState("");
+  const [confirmVisible, setConfirmVisible] = useState(false)
+  const [profileName, setProfileName] = useState('')
+  const [conflictModalVisible, setConflictModalVisible] = useState(false)
+  const [deleteProficiencyName, setDeleteProficiencyName] = useState('')
 
   useEffect(() => {
-    setConflictModalVisible(conflict);
-  }, [conflict]);
+    setConflictModalVisible(conflict)
+  }, [conflict])
 
   const handleProfileLimit = () => {
-    const canCreateProfile = props.profiles.filter(x => x.createdBy?._id === props.userId).length <= 10;
+    const canCreateProfile =
+      props.profiles.filter((x) => x.createdBy?._id === props.userId).length <=
+      10
     if (!canCreateProfile) {
-      notification({ messageKey: "maximumTenProfilesPerUser" });
-      return false;
+      notification({ messageKey: 'maximumTenProfilesPerUser' })
+      return false
     }
-    return true;
-  };
+    return true
+  }
 
   const createStandardProficiency = () => {
-    const name = profileName;
-    if (name === "") {
-      notification({ messageKey: "nameCannotBeEmpty" });
+    const name = profileName
+    if (name === '') {
+      notification({ messageKey: 'nameCannotBeEmpty' })
     } else if (name) {
       // needed for unicode aware length
       if ([...name].length > 150) {
-        notification({ messageKey: "maximumLengthForProifleName150" });
-        return;
+        notification({ messageKey: 'maximumLengthForProifleName150' })
+        return
       }
 
-      if (props.profiles.find(p => (p.name || "").toLowerCase() === name.toLowerCase())) {
-        notification({ msg: `Profile with name "${name}" already exists. Please try with a different name` });
-        return;
+      if (
+        props.profiles.find(
+          (p) => (p.name || '').toLowerCase() === name.toLowerCase()
+        )
+      ) {
+        notification({
+          msg: `Profile with name "${name}" already exists. Please try with a different name`,
+        })
+        return
       }
-      create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });
-      setConfirmVisible(false);
-      setProfileName("");
+      create({ ...defaultData, name, orgId: props.orgId, orgType: 'district' })
+      setConfirmVisible(false)
+      setProfileName('')
     }
-  };
+  }
 
   const duplicateProfile = ({ _id, name }) => {
     if (!handleProfileLimit()) {
-      return;
+      return
     }
-    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, v1OrgId, ...profile } =
-      props.profiles.find(x => x._id === _id) || {};
-    let lastVersion = 0;
+    const {
+      _id: profileId,
+      createdBy,
+      institutionIds,
+      createdAt,
+      updatedAt,
+      __v,
+      v1OrgId,
+      ...profile
+    } = props.profiles.find((x) => x._id === _id) || {}
+    let lastVersion = 0
     if (/#[0-9]*$/.test(name)) {
-      lastVersion = parseInt(name.split("#").slice(-1)[0] || 0);
+      lastVersion = parseInt(name.split('#').slice(-1)[0] || 0)
     }
     create({
       noOfAssessments: 5,
       ...profile,
-      name: `${name.replace(/#[0-9]*$/, "")}#${lastVersion + 1}`,
+      name: `${name.replace(/#[0-9]*$/, '')}#${lastVersion + 1}`,
       orgId: props.orgId,
-      orgType: "district",
-      scale: profile.scale.map(({ key, ...x }) => ({ ...x }))
-    });
-  };
+      orgType: 'district',
+      scale: profile.scale.map(({ key, ...x }) => ({ ...x })),
+    })
+  }
 
   useEffect(() => {
-    list();
-  }, []);
+    list()
+  }, [])
 
   return (
     <StandardsProficiencyDiv>
@@ -309,31 +337,32 @@ function StandardsProficiency(props) {
         visible={conflictModalVisible}
         centered
         onCancel={() => {
-          setConflictModalVisible(false);
-          props.setConflitAction(false);
+          setConflictModalVisible(false)
+          props.setConflitAction(false)
         }}
         footer={[
           <EduButton
             isGhost
             onClick={() => {
-              props.setConflitAction(false);
-              setConflictModalVisible(false);
+              props.setConflitAction(false)
+              setConflictModalVisible(false)
             }}
           >
             OK
-          </EduButton>
+          </EduButton>,
         ]}
       >
         <Row className="content">
           <Col span={24}>
-            <BlueBold>{deleteProficiencyName}</BlueBold> is set as the default value for{" "}
-            <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>. Please change the Test Setting before deleting.
+            <BlueBold>{deleteProficiencyName}</BlueBold> is set as the default
+            value for <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>.
+            Please change the Test Setting before deleting.
           </Col>
         </Row>
       </CustomModalStyled>
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
-        <StyledLayout loading={showSpin ? "true" : "false"}>
+        <StyledLayout loading={showSpin ? 'true' : 'false'}>
           <AdminSubHeader active={menuActive} history={history} />
           {showSpin && (
             <SpinContainer>
@@ -352,19 +381,31 @@ function StandardsProficiency(props) {
                 <EduButton isGhost onClick={() => setConfirmVisible(false)}>
                   CANCEL
                 </EduButton>,
-                <EduButton disabled={profileName === ""} loading={loading} onClick={() => createStandardProficiency()}>
+                <EduButton
+                  disabled={profileName === ''}
+                  loading={loading}
+                  onClick={() => createStandardProficiency()}
+                >
                   CREATE
-                </EduButton>
+                </EduButton>,
               ]}
             >
               <Row>
                 <Col span={24}>
-                  <FieldLabel>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</FieldLabel>
-                  <TextInputStyled value={profileName} onChange={e => setProfileName(e.target.value)} />
+                  <FieldLabel>
+                    PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY
+                  </FieldLabel>
+                  <TextInputStyled
+                    value={profileName}
+                    onChange={(e) => setProfileName(e.target.value)}
+                  />
                 </Col>
               </Row>
             </CustomModalStyled>
-            <EduButton type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
+            <EduButton
+              type="primary"
+              onClick={() => handleProfileLimit() && setConfirmVisible(true)}
+            >
               <IconPlusCircle width={19} height={19} /> Create new Profile
             </EduButton>
           </Row>
@@ -375,8 +416,15 @@ function StandardsProficiency(props) {
             rowKey="_id"
             renderItem={(profile, index) => (
               <ProfileRow
-                readOnly={(props.role === "school-admin" && get(profile, "createdBy._id") != props.userId) || !editable}
-                hideEdit={props.role === "school-admin" && get(profile, "createdBy._id") != props.userId}
+                readOnly={
+                  (props.role === 'school-admin' &&
+                    get(profile, 'createdBy._id') != props.userId) ||
+                  !editable
+                }
+                hideEdit={
+                  props.role === 'school-admin' &&
+                  get(profile, 'createdBy._id') != props.userId
+                }
                 setEditable={setEditable}
                 onDuplicate={() => duplicateProfile(profile)}
                 setName={setName}
@@ -387,32 +435,32 @@ function StandardsProficiency(props) {
                 active={index === editingIndex}
                 deleteRow={remove}
                 loading={showSpin}
-                decay={get(profile, "decay", "")}
+                decay={get(profile, 'decay', '')}
                 setDeleteProficiencyName={setDeleteProficiencyName}
                 conflict={conflict}
-                noOfAssessments={get(profile, "noOfAssessments", "")}
+                noOfAssessments={get(profile, 'noOfAssessments', '')}
               />
             )}
           />
         </StyledLayout>
       </StyledContent>
     </StandardsProficiencyDiv>
-  );
+  )
 }
 
 const enhance = connect(
-  state => ({
-    loading: get(state, ["standardsProficiencyReducer", "loading"], false),
-    updating: get(state, ["standardsProficiencyReducer", "updating"], false),
-    creating: get(state, ["standardsProficiencyReducer", "creating"], false),
-    profiles: get(state, ["standardsProficiencyReducer", "data"], []),
+  (state) => ({
+    loading: get(state, ['standardsProficiencyReducer', 'loading'], false),
+    updating: get(state, ['standardsProficiencyReducer', 'updating'], false),
+    creating: get(state, ['standardsProficiencyReducer', 'creating'], false),
+    profiles: get(state, ['standardsProficiencyReducer', 'data'], []),
     editable: state?.standardsProficiencyReducer?.editable,
     orgId: getUserOrgId(state),
     role: getUserRole(state),
     userId: getUserId(state),
-    editingIndex: get(state, "standardsProficiencyReducer.editingIndex"),
-    conflict: get(state, ["standardsProficiencyReducer", "conflict"], false),
-    error: get(state, ["standardsProficiencyReducer", "error"], {})
+    editingIndex: get(state, 'standardsProficiencyReducer.editingIndex'),
+    conflict: get(state, ['standardsProficiencyReducer', 'conflict'], false),
+    error: get(state, ['standardsProficiencyReducer', 'error'], {}),
   }),
   {
     create: createStandardsProficiencyAction,
@@ -422,15 +470,15 @@ const enhance = connect(
     setEditingIndex: setEditingIndexAction,
     setName: setStandardsProficiencyProfileNameAction,
     setEditable: setEDitableAction,
-    setConflitAction
+    setConflitAction,
   }
-);
+)
 
-export default enhance(StandardsProficiency);
+export default enhance(StandardsProficiency)
 
 StandardsProficiency.propTypes = {
   loading: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
   creating: PropTypes.bool.isRequired,
-  profiles: PropTypes.array.isRequired
-};
+  profiles: PropTypes.array.isRequired,
+}

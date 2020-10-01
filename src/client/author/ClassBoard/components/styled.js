@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const BodyContainer = styled.div`
   width: 100%;
@@ -6,4 +6,4 @@ export const BodyContainer = styled.div`
   .ant-row {
     margin-bottom: 15px;
   }
-`;
+`

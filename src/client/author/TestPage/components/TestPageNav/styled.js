@@ -1,5 +1,10 @@
-import styled from "styled-components";
-import { white, desktopWidth, greyThemeDark2, mediumDesktopExactWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import {
+  white,
+  desktopWidth,
+  greyThemeDark2,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
@@ -16,7 +21,7 @@ export const Container = styled.div`
     justify-content: space-between;
     overflow: auto;
   }
-`;
+`
 
 export const Link = styled.div`
   cursor: pointer;
@@ -28,8 +33,8 @@ export const Link = styled.div`
   box-shadow: none;
   align-items: center;
   justify-content: center;
-  background: ${props => (props.active === "true" ? "#b3bcc4" : "#f2f3f2")};
-  color: ${props => (props.active === "true" ? white : greyThemeDark2)};
+  background: ${(props) => (props.active === 'true' ? '#b3bcc4' : '#f2f3f2')};
+  color: ${(props) => (props.active === 'true' ? white : greyThemeDark2)};
   white-space: nowrap;
   border-radius: 5px;
   margin: 0 3px;
@@ -41,7 +46,8 @@ export const Link = styled.div`
   }
 
   svg {
-    fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
+    fill: ${(props) =>
+      props.active === 'true' ? white : 'rgba(255,255,255,0.7)'};
     margin-right: 15px;
     display: none;
   }
@@ -49,7 +55,8 @@ export const Link = styled.div`
     border-bottom: none;
 
     svg {
-      fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
+      fill: ${(props) =>
+        props.active === 'true' ? white : 'rgba(255,255,255,0.7)'};
     }
   }
 
@@ -69,4 +76,4 @@ export const Link = styled.div`
       margin-right: 0px;
     }
   }
-`;
+`

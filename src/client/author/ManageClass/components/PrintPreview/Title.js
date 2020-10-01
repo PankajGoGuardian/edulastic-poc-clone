@@ -1,13 +1,13 @@
-import React from "react";
-import { StyledTitle, Color } from "./styled";
+import React from 'react'
+import { StyledTitle, Color } from './styled'
 
-const Title = props => (
+const Title = (props) => (
   <StyledTitle {...props}>
     <b>
       <Color>Edu</Color>
     </b>
     lastic
   </StyledTitle>
-);
+)
 
-export default Title;
+export default Title

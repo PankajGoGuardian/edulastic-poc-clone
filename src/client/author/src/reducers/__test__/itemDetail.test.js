@@ -1,4 +1,4 @@
-import itemDetailReducer from "../itemDetail";
+import itemDetailReducer from '../itemDetail'
 
 import {
   RECEIVE_ITEM_DETAIL_REQUEST,
@@ -13,41 +13,41 @@ import {
   DELETE_ITEM_DETAIL_WIDGET,
   UPDATE_TAB_TITLE,
   USE_TABS,
-  MOVE_WIDGET
-} from "../../constants/actions";
+  MOVE_WIDGET,
+} from '../../constants/actions'
 
-describe("item detail", () => {
+describe('item detail', () => {
   const initialState = {
     item: {
       rows: [
         {
           widgets: [],
-          dimension: "100%",
-          tabs: []
-        }
-      ]
+          dimension: '100%',
+          tabs: [],
+        },
+      ],
     },
     error: null,
     loading: false,
     updating: false,
     updateError: null,
-    dragging: false
-  };
+    dragging: false,
+  }
 
-  it("should return the initial state", () => {
-    expect(itemDetailReducer(initialState, {})).toMatchSnapshot();
-  });
+  it('should return the initial state', () => {
+    expect(itemDetailReducer(initialState, {})).toMatchSnapshot()
+  })
 
-  it("should return the receive item detail request state", () => {
+  it('should return the receive item detail request state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: RECEIVE_ITEM_DETAIL_SUCCESS,
-        payload: {}
+        payload: {},
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the receive item detail success state", () => {
+  it('should return the receive item detail success state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -56,46 +56,46 @@ describe("item detail", () => {
             rows: [
               {
                 tabs: [],
-                dimension: "100%",
+                dimension: '100%',
                 widgets: [
                   {
-                    widgetType: "question",
-                    type: "multipleChoice",
-                    title: "Multiple choice",
-                    reference: "5c0f0c9ed8c7f4453f5bb51f",
-                    tabIndex: 0
-                  }
-                ]
-              }
+                    widgetType: 'question',
+                    type: 'multipleChoice',
+                    title: 'Multiple choice',
+                    reference: '5c0f0c9ed8c7f4453f5bb51f',
+                    tabIndex: 0,
+                  },
+                ],
+              },
             ],
-            columns: []
-          }
-        }
+            columns: [],
+          },
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the receive item detail error state", () => {
+  it('should return the receive item detail error state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: RECEIVE_ITEM_DETAIL_ERROR,
         payload: {
-          error: "receive item detail error"
-        }
+          error: 'receive item detail error',
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the update item detail request state", () => {
+  it('should return the update item detail request state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: UPDATE_ITEM_DETAIL_REQUEST,
-        payload: {}
+        payload: {},
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the update item detail success state", () => {
+  it('should return the update item detail success state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: UPDATE_ITEM_DETAIL_SUCCESS,
@@ -104,37 +104,37 @@ describe("item detail", () => {
             rows: [
               {
                 tabs: [],
-                dimension: "100%",
+                dimension: '100%',
                 widgets: [
                   {
-                    widgetType: "question",
-                    type: "multipleChoice",
-                    title: "Multiple choice",
-                    reference: "5c0f0c9ed8c7f4453f5bb51f",
-                    tabIndex: 0
-                  }
-                ]
-              }
+                    widgetType: 'question',
+                    type: 'multipleChoice',
+                    title: 'Multiple choice',
+                    reference: '5c0f0c9ed8c7f4453f5bb51f',
+                    tabIndex: 0,
+                  },
+                ],
+              },
             ],
-            columns: []
-          }
-        }
+            columns: [],
+          },
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the update item detail error state", () => {
+  it('should return the update item detail error state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: UPDATE_ITEM_DETAIL_ERROR,
         payload: {
-          error: "update item detail error"
-        }
+          error: 'update item detail error',
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the set item detail data state", () => {
+  it('should return the set item detail data state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: SET_ITEM_DETAIL_DATA,
@@ -143,94 +143,94 @@ describe("item detail", () => {
             rows: [
               {
                 tabs: [],
-                dimension: "100%",
+                dimension: '100%',
                 widgets: [
                   {
-                    widgetType: "question",
-                    type: "multipleChoice",
-                    title: "Multiple choice",
-                    reference: "5c0f0c9ed8c7f4453f5bb51f",
-                    tabIndex: 0
-                  }
-                ]
-              }
+                    widgetType: 'question',
+                    type: 'multipleChoice',
+                    title: 'Multiple choice',
+                    reference: '5c0f0c9ed8c7f4453f5bb51f',
+                    tabIndex: 0,
+                  },
+                ],
+              },
             ],
-            columns: []
-          }
-        }
+            columns: [],
+          },
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the update item detail dimension state", () => {
+  it('should return the update item detail dimension state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: UPDATE_ITEM_DETAIL_DIMENSION,
         payload: {
           left: 10,
-          right: 20
-        }
+          right: 20,
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the set dragging state", () => {
+  it('should return the set dragging state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: SET_DRAGGING,
         payload: {
-          dragging: 5
-        }
+          dragging: 5,
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the delete item detail widget state", () => {
+  it('should return the delete item detail widget state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: DELETE_ITEM_DETAIL_WIDGET,
         payload: {
           rowIndex: 0,
-          widgetIndex: 5
-        }
+          widgetIndex: 5,
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the delete item detail widget state", () => {
+  it('should return the delete item detail widget state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: UPDATE_TAB_TITLE,
         payload: {
           rowIndex: 0,
           tabIndex: 2,
-          value: "tab1"
-        }
+          value: 'tab1',
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the use tabs state", () => {
+  it('should return the use tabs state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: USE_TABS,
         payload: {
           rowIndex: 3,
-          isUseTabs: true
-        }
+          isUseTabs: true,
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the move widget state", () => {
+  it('should return the move widget state', () => {
     expect(
       itemDetailReducer(initialState, {
         type: MOVE_WIDGET,
         payload: {
           from: 0,
-          to: 1
-        }
+          to: 1,
+        },
       })
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})

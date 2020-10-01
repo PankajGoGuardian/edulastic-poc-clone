@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { StyledTable } from "../../../../common/styled";
+import styled from 'styled-components'
+import { StyledTable } from '../../../../common/styled'
 
 export const StyledDistrictAdminTable = styled(StyledTable)`
   .ant-table-tbody > tr > td {
@@ -8,4 +8,4 @@ export const StyledDistrictAdminTable = styled(StyledTable)`
   .ant-table-thead > tr > th.ant-table-selection-column {
     text-align: start;
   }
-`;
+`

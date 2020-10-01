@@ -1,16 +1,16 @@
-import React, { useRef, useEffect } from "react";
-import styled from "styled-components";
+import React, { useRef, useEffect } from 'react'
+import styled from 'styled-components'
 
 const EduScientificCalculator = () => {
-  const calcRef = useRef();
+  const calcRef = useRef()
   useEffect(() => {
-    console.clear();
+    console.clear()
     if (window.jQuery && calcRef.current) {
-      $(calcRef.current).showCalculator();
-      $(calcRef.current).showCalculator.resetCalc();
-      $(calcRef.current).showCalculator.initiateListeners();
+      $(calcRef.current).showCalculator()
+      $(calcRef.current).showCalculator.resetCalc()
+      $(calcRef.current).showCalculator.initiateListeners()
     }
-  }, []);
+  }, [])
 
   return (
     <Container className="calc-main" ref={calcRef}>
@@ -186,13 +186,13 @@ const EduScientificCalculator = () => {
         </div>
       </div>
     </Container>
-  );
-};
+  )
+}
 
-export default EduScientificCalculator;
+export default EduScientificCalculator
 
 const Container = styled.div`
   .calc-right .calc-eq {
     right: 8px;
   }
-`;
+`

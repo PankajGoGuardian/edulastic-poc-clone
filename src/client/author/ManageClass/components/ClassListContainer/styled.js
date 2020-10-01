@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components'
 import {
   white,
   themeColor,
@@ -13,24 +13,24 @@ import {
   greyThemeDark1,
   darkGrey2,
   lightFadedBlack,
-  themeColorBlue
-} from "@edulastic/colors";
-import { SelectInputStyled } from "@edulastic/common";
-import { Button, Table, Select, Icon, Dropdown } from "antd";
-import { IconPlusCircle } from "@edulastic/icons";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+  themeColorBlue,
+} from '@edulastic/colors'
+import { SelectInputStyled } from '@edulastic/common'
+import { Button, Table, Select, Icon, Dropdown } from 'antd'
+import { IconPlusCircle } from '@edulastic/icons'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 export const OptionWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-`;
+`
 export const SelectStyled = styled(SelectInputStyled)`
   .ant-select-selection__placeholder {
     color: ${secondaryTextColor};
   }
-`;
+`
 export const ClassCreateContainer = styled.div`
   width: 100%;
   justify-content: center;
@@ -38,7 +38,7 @@ export const ClassCreateContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 70vh;
-`;
+`
 export const ButtonsContainer = styled.div`
   display: flex;
   margin: 0.8rem;
@@ -48,30 +48,30 @@ export const ButtonsContainer = styled.div`
     align-items: center;
     margin: 0.5rem;
   }
-`;
+`
 
 export const IconEdit = styled(Icon)`
   color: ${themeColor};
   margin-left: 0.3rem;
   cursor: pointer;
-`;
+`
 export const IconQuestion = styled(Icon)`
   color: ${themeColor};
   padding: 0.2rem;
   font-size: 20px;
-`;
+`
 export const SyncClassDiv = styled.div`
   display: flex;
   justify-content: space-between;
   color: ${themeColor};
   font-size: 15px;
   cursor: pointer;
-`;
+`
 export const SyncImg = styled.img`
   width: 30px;
   height: 30px;
   border-radius: 50%;
-`;
+`
 export const ThemeButton = styled(Button)`
   display: flex;
   align-items: center;
@@ -84,7 +84,7 @@ export const ThemeButton = styled(Button)`
   height: 45px;
   text-transform: uppercase;
   white-space: nowrap;
-  font-style: "Open Sans,SemiBold";
+  font-style: 'Open Sans,SemiBold';
   &:hover,
   &:focus {
     background-color: ${white};
@@ -101,13 +101,13 @@ export const ThemeButton = styled(Button)`
     width: 250px;
     margin-bottom: 10px;
   }
-`;
+`
 
 export const CreateIcon = styled(IconPlusCircle)`
   margin-right: 10px;
   width: 20px;
   height: 20px;
-`;
+`
 
 const ShareButtonStyle = css`
   font-weight: 600;
@@ -119,7 +119,7 @@ const ShareButtonStyle = css`
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: 40px;
   }
-`;
+`
 export const CreateClassButton = styled(Button)`
   ${ShareButtonStyle}
   padding: 5px 20px;
@@ -133,7 +133,7 @@ export const CreateClassButton = styled(Button)`
     background: ${themeColor};
     color: ${white};
   }
-`;
+`
 
 const ResponsiveButton = styled(Button)`
   height: 36px;
@@ -146,12 +146,12 @@ const ResponsiveButton = styled(Button)`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: 45px;
   }
-`;
+`
 
 export const ClassStatusButton = styled(ResponsiveButton)`
   width: 180px;
   height: 36px;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   padding: 0px 20px;
   display: flex;
   align-items: center;
@@ -160,7 +160,7 @@ export const ClassStatusButton = styled(ResponsiveButton)`
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 export const SyncButtons = styled(ResponsiveButton)`
   ${ShareButtonStyle}
@@ -169,26 +169,27 @@ export const SyncButtons = styled(ResponsiveButton)`
   background-color: ${white};
   margin-right: 15px;
   font-size: 11px;
-  display:flex;
-  align-items:center;
-  justify:space-between;
-  &:hover, &:focus {
+  display: flex;
+  align-items: center;
+  justify: space-between;
+  &:hover,
+  &:focus {
     color: ${themeColor};
   }
   & > p {
     margin-left: 8px;
   }
-`;
+`
 
 export const ButtonsWrapper = styled.div`
   display: flex;
   align-items: right;
-`;
+`
 // main content
 
 export const TableWrapper = styled.div`
   background: ${white};
-`;
+`
 
 // class select
 
@@ -203,7 +204,7 @@ export const ClassSelect = styled.div`
       color: ${themeColorBlue};
     }
   }
-`;
+`
 
 export const ClassListTable = styled(Table)`
   margin-top: 20px;
@@ -251,7 +252,7 @@ export const ClassListTable = styled(Table)`
         font-family: Open Sans, SemiBold;
         letter-spacing: 0.26px;
         color: ${secondaryTextColor};
-        font-size: ${props => props.theme.manageClass.manageClassTdFontSize};
+        font-size: ${(props) => props.theme.manageClass.manageClassTdFontSize};
         cursor: pointer;
         border-bottom: 15px solid white;
         & > td {
@@ -277,10 +278,10 @@ export const ClassListTable = styled(Table)`
   .ant-table-pagination {
     padding-right: 55px;
   }
-`;
+`
 
 export const StyledSelect = styled(Select)`
-  width: ${props => props.width || "100%"};
+  width: ${(props) => props.width || '100%'};
   .ant-select-selection {
     border-radius: 2px;
     border: 1px solid ${borderGrey};
@@ -290,9 +291,9 @@ export const StyledSelect = styled(Select)`
       background: ${themeColor}33;
       border-radius: 5px;
       color: ${themeColor};
-      font-weight: ${props => props.theme.semiBold};
+      font-weight: ${(props) => props.theme.semiBold};
       text-transform: uppercase;
-      font-size: ${props => props.theme.tagFontSize};
+      font-size: ${(props) => props.theme.tagFontSize};
       border: none;
       border-radius: 2px;
       i {
@@ -300,36 +301,37 @@ export const StyledSelect = styled(Select)`
       }
     }
   }
-`;
+`
 
 export const BannerDiv = styled.div`
   display: flex;
   width: 100%;
   margin-bottom: 10px;
   padding: 15px 15px;
-  background-color: ${props => (props.syncClassLoading ? "#F5EE8B" : "#D3FEA6")};
-  color: ${props => (props.syncClassLoading ? "#B5AA08" : "#77B833")};
+  background-color: ${(props) =>
+    props.syncClassLoading ? '#F5EE8B' : '#D3FEA6'};
+  color: ${(props) => (props.syncClassLoading ? '#B5AA08' : '#77B833')};
   justify-content: center;
   border-radius: 10px;
-`;
+`
 
 export const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;
-`;
+`
 
 export const Tags = styled.p`
   max-width: 120px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 export const SubHeader = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-`;
+`
 
 export const ClassListModal = styled(ConfirmationModal)`
   min-width: 85%;
@@ -379,7 +381,7 @@ export const ClassListModal = styled(ConfirmationModal)`
         width: 200px;
         height: 40px;
         border-radius: 4px;
-        font-size: ${props => props.theme.linkFontSize};
+        font-size: ${(props) => props.theme.linkFontSize};
       }
     }
   }
@@ -387,7 +389,7 @@ export const ClassListModal = styled(ConfirmationModal)`
   @media (max-width: ${smallDesktopWidth}) {
     min-width: 90%;
   }
-`;
+`
 
 export const ModalClassListTable = styled(Table)`
   width: 100%;
@@ -406,7 +408,7 @@ export const ModalClassListTable = styled(Table)`
                 padding: 5px 10px 25px 10px;
                 .ant-table-column-title {
                   white-space: nowrap;
-                  font-size: ${props => props.theme.smallFontSize};
+                  font-size: ${(props) => props.theme.smallFontSize};
                 }
               }
             }
@@ -455,7 +457,7 @@ export const ModalClassListTable = styled(Table)`
             .ant-table-thead {
               th {
                 .ant-table-column-title {
-                  font-size: ${props => props.theme.linkFontSize};
+                  font-size: ${(props) => props.theme.linkFontSize};
                 }
               }
             }
@@ -475,21 +477,21 @@ export const ModalClassListTable = styled(Table)`
           }
           .ant-input,
           .ant-select-selection {
-            font-size: ${props => props.theme.linkFontSize};
+            font-size: ${(props) => props.theme.linkFontSize};
             .ant-select-selection__choice {
-              font-weight: ${props => props.theme.semiBold};
-              font-size: ${props => props.theme.tagFontSize};
+              font-weight: ${(props) => props.theme.semiBold};
+              font-size: ${(props) => props.theme.tagFontSize};
             }
           }
         }
       }
     }
   }
-`;
+`
 
 export const ClassStatusDropdown = styled(Dropdown)`
   height: 30px;
-`;
+`
 
 export const InstitutionSelectWrapper = styled.div`
   margin-top: 10px;
@@ -503,4 +505,4 @@ export const InstitutionSelectWrapper = styled.div`
       font-size: unset !important;
     }
   }
-`;
+`

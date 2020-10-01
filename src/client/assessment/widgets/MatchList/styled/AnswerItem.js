@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { FlexContainer } from "@edulastic/common";
+import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
 
 export const AnswerItem = styled(FlexContainer)`
   width: 100%;
@@ -8,6 +8,6 @@ export const AnswerItem = styled(FlexContainer)`
     width: 100%;
     height: 100%;
   }
-`;
+`
 
-AnswerItem.displayName = "AnswerItem";
+AnswerItem.displayName = 'AnswerItem'

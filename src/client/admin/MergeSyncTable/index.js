@@ -1,11 +1,17 @@
-import React from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import { Button, Tabs as AntdTabs, Form, Input } from "antd";
-import { FirstDiv, FlexDiv, H2, OuterDiv } from "../Common/StyledComponents";
-import { DeltaSync, ClassNamePattern, Sync, SubjectStandard, Logs } from "./Tabs";
-import { CLEVER_DISTRICT_ID_REGEX } from "../Data";
+import React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { Button, Tabs as AntdTabs, Form, Input } from 'antd'
+import { FirstDiv, FlexDiv, H2, OuterDiv } from '../Common/StyledComponents'
+import {
+  DeltaSync,
+  ClassNamePattern,
+  Sync,
+  SubjectStandard,
+  Logs,
+} from './Tabs'
+import { CLEVER_DISTRICT_ID_REGEX } from '../Data'
 import {
   searchExistingDataApi,
   getSearchData,
@@ -24,53 +30,53 @@ import {
   updateSubjectStdMapAction,
   fetchLogsDataAction,
   closeMergeResponseAction,
-  deleteSubjectStdMapAction
-} from "./ducks";
+  deleteSubjectStdMapAction,
+} from './ducks'
 
-import MergeIdsTable from "./MergeIdsTable";
+import MergeIdsTable from './MergeIdsTable'
 
 const Tabs = styled(AntdTabs)`
   padding: 15px;
-`;
+`
 
 const SyncTypes = [
   {
-    label: "Enable Sync",
+    label: 'Enable Sync',
     value: true,
     style: {
-      background: "#E38A25",
-      color: "#fff",
-      marginRight: "15px"
-    }
+      background: '#E38A25',
+      color: '#fff',
+      marginRight: '15px',
+    },
   },
   {
-    label: "Disable Sync",
+    label: 'Disable Sync',
     value: false,
     style: {
-      background: "#f3f3f4",
-      marginRight: "15px"
-    }
-  }
-];
+      background: '#f3f3f4',
+      marginRight: '15px',
+    },
+  },
+]
 
 const DistrictNameDiv = styled(FlexDiv)`
   padding: 15px;
   align-items: center;
   background: #bdbfc1;
   justify-content: space-between;
-`;
+`
 
 const DistrictSpan = styled.span`
   font-weight: bolder;
   font-size: 20px;
-`;
+`
 
 const SyncMessage = styled.span`
   margin-right: 10px;
   align-self: center;
-`;
+`
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs
 const SyncEnableDisable = ({
   districtName,
   districtId,
@@ -78,13 +84,17 @@ const SyncEnableDisable = ({
   syncEnabled,
   cleverId,
   atlasId,
-  isClasslink
+  isClasslink,
 }) => (
   <DistrictNameDiv justifyContentSpaceBetween>
     <DistrictSpan>{districtName}</DistrictSpan>
     <FlexDiv>
-      <SyncMessage>{`${isClasslink ? 'Classlink' : 'Clever'} Sync is ${syncEnabled ? 'enabled' : 'disabled'}.`}</SyncMessage>
-      {SyncTypes.map(item => (
+      <SyncMessage>
+        {`${isClasslink ? 'Classlink' : 'Clever'} Sync is ${
+          syncEnabled ? 'enabled' : 'disabled'
+        }.`}
+      </SyncMessage>
+      {SyncTypes.map((item) => (
         <Button
           style={item.style}
           key={item.label}
@@ -96,59 +106,63 @@ const SyncEnableDisable = ({
               districtName,
               cleverId,
               atlasId,
-              isClasslink
+              isClasslink,
             })
           }
         >
           {item.label}
         </Button>
-        ))}
+      ))}
     </FlexDiv>
   </DistrictNameDiv>
-  );
-const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
-  ({ form: { getFieldDecorator, validateFields }, searchExistingDataApi, isClasslink }) => {
+)
+const MergeInitializeSyncForm = Form.create({ name: 'mergeInitiateSyncForm' })(
+  ({
+    form: { getFieldDecorator, validateFields },
+    searchExistingDataApi,
+    isClasslink,
+  }) => {
     function searchExistingData(evt) {
-      evt.preventDefault();
+      evt.preventDefault()
       validateFields((err, values) => {
         if (!err) {
           searchExistingDataApi({
             ...values,
-            isClasslink
-          });
+            isClasslink,
+          })
         }
-      });
+      })
     }
     return (
       <Form layout="inline" onSubmit={searchExistingData}>
         <Form.Item>
-          {getFieldDecorator("districtId", {
+          {getFieldDecorator('districtId', {
             rules: [
               {
-                message: "Please enter valid District ID",
-                pattern: CLEVER_DISTRICT_ID_REGEX
-              }
+                message: 'Please enter valid District ID',
+                pattern: CLEVER_DISTRICT_ID_REGEX,
+              },
             ],
-            initialValue: ""
+            initialValue: '',
           })(<Input placeholder="District Id" style={{ width: 300 }} />)}
         </Form.Item>
         {isClasslink ? (
           <Form.Item>
-            {getFieldDecorator("atlasId", {
-             initialValue: ""
+            {getFieldDecorator('atlasId', {
+              initialValue: '',
             })(<Input placeholder="Classlink Id" style={{ width: 300 }} />)}
           </Form.Item>
         ) : (
           <Form.Item>
-            {getFieldDecorator("cleverId", {
-            rules: [
-              {
-                message: "Please enter valid Clever ID",
-                pattern: CLEVER_DISTRICT_ID_REGEX
-              }
-            ],
-            initialValue: ""
-          })(<Input placeholder="Clever Id" style={{ width: 300 }} />)}
+            {getFieldDecorator('cleverId', {
+              rules: [
+                {
+                  message: 'Please enter valid Clever ID',
+                  pattern: CLEVER_DISTRICT_ID_REGEX,
+                },
+              ],
+              initialValue: '',
+            })(<Input placeholder="Clever Id" style={{ width: 300 }} />)}
           </Form.Item>
         )}
         <Form.Item>
@@ -157,9 +171,9 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
           </Button>
         </Form.Item>
       </Form>
-    );
+    )
   }
-);
+)
 
 function MergeSyncTable({
   searchExistingDataApi,
@@ -180,36 +194,42 @@ function MergeSyncTable({
   mergeResponse,
   closeMergeResponse,
   deleteSubjectStdMapAction,
-  isClasslink
+  isClasslink,
 }) {
-  const { data = {} } = searchData;
+  const { data = {} } = searchData
 
   const {
     schools,
-    district: { name: districtName, _id: districtId, cleverId, syncEnabled = false, atlasId } = {},
+    district: {
+      name: districtName,
+      _id: districtId,
+      cleverId,
+      syncEnabled = false,
+      atlasId,
+    } = {},
     cleverCountsInfo = {},
     edulasticCountsInfo = {},
-    atlasCountsInfo = {}
-  } = data;
+    atlasCountsInfo = {},
+  } = data
 
   const defaultRosterSyncConfig = {
     orgId: districtId,
-    orgType: "district",
-    studentMergeAttribute: "email",
-    teacherMergeAttribute: "email",
+    orgType: 'district',
+    studentMergeAttribute: 'email',
+    teacherMergeAttribute: 'email',
     studentDeltaMergeEnabled: true,
     studentFullMergeEnabled: true,
     teacherDeltaMergeEnabled: true,
-    teacherFullMergeEnabled: true
-  };
+    teacherFullMergeEnabled: true,
+  }
 
-  const rosterSyncConfig = data.rosterSyncConfig || defaultRosterSyncConfig;
+  const rosterSyncConfig = data.rosterSyncConfig || defaultRosterSyncConfig
 
   const applyDeltaSync = (values) => {
     if (isClasslink) {
-      applyDeltaSyncChanges({ ...values, isClasslink, atlasId});
+      applyDeltaSyncChanges({ ...values, isClasslink, atlasId })
     } else {
-      applyDeltaSyncChanges(values);
+      applyDeltaSyncChanges(values)
     }
   }
 
@@ -234,7 +254,10 @@ function MergeSyncTable({
             enableDisableSyncAction={enableDisableSyncAction}
           />
           <Tabs type="card" defaultActiveKey="mergeIds" animated>
-            <TabPane tab={`Merge ${isClasslink ? 'Classlink' : 'Clever'} Ids`} key="mergeIds">
+            <TabPane
+              tab={`Merge ${isClasslink ? 'Classlink' : 'Clever'} Ids`}
+              key="mergeIds"
+            >
               <MergeIdsTable
                 countsInfo={isClasslink ? atlasCountsInfo : cleverCountsInfo}
                 eduCounts={edulasticCountsInfo}
@@ -255,7 +278,11 @@ function MergeSyncTable({
                 disableFields={syncEnabled}
               />
             </TabPane>
-            <TabPane tab="Subject Standard Mapping" key="subjectStdMapping" forceRender>
+            <TabPane
+              tab="Subject Standard Mapping"
+              key="subjectStdMapping"
+              forceRender
+            >
               <SubjectStandard
                 orgId={districtId}
                 orgType="district"
@@ -303,34 +330,31 @@ function MergeSyncTable({
         </>
       )}
     </OuterDiv>
-  );
+  )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   searchData: getSearchData(state),
   subStandardMapping: getSubStandardMapping(state),
-  mergeResponse: mergeResponseSelector(state)
-});
+  mergeResponse: mergeResponseSelector(state),
+})
 
-const withConnect = connect(
-  mapStateToProps,
-  {
-    searchExistingDataApi,
-    applyDeltaSyncChanges,
-    syncSchools,
-    applyClassNamesSync,
-    enableDisableSyncAction,
-    fetchCurriculumDataAction,
-    updateSubjectAction,
-    updateEdulasticSubjectAction,
-    updateEdulasticStandardAction,
-    addSubjectStandardRowAction,
-    uploadCSV: uploadCSVAction,
-    updateSubjectStdMapAction,
-    fetchLogsDataAction,
-    closeMergeResponse: closeMergeResponseAction,
-    deleteSubjectStdMapAction
-  }
-);
+const withConnect = connect(mapStateToProps, {
+  searchExistingDataApi,
+  applyDeltaSyncChanges,
+  syncSchools,
+  applyClassNamesSync,
+  enableDisableSyncAction,
+  fetchCurriculumDataAction,
+  updateSubjectAction,
+  updateEdulasticSubjectAction,
+  updateEdulasticStandardAction,
+  addSubjectStandardRowAction,
+  uploadCSV: uploadCSVAction,
+  updateSubjectStdMapAction,
+  fetchLogsDataAction,
+  closeMergeResponse: closeMergeResponseAction,
+  deleteSubjectStdMapAction,
+})
 
-export default compose(withConnect)(MergeSyncTable);
+export default compose(withConnect)(MergeSyncTable)

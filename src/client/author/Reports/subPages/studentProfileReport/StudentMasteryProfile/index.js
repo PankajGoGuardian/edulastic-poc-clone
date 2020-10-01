@@ -1,56 +1,69 @@
-import { secondaryTextColor, themeColor, themeColorLighter } from "@edulastic/colors";
-import { SpinLoader, FlexContainer } from "@edulastic/common";
-import { IconCollapse2 } from "@edulastic/icons";
-import { Avatar, Button } from "antd";
-import { filter, get, isEmpty } from "lodash";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
-import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
-import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import { StyledCard, NoDataContainer } from "../../../common/styled";
-import { downloadCSV, getStudentAssignments, toggleItem } from "../../../common/util";
-import { getCsvDownloadingState } from "../../../ducks";
-import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
+import {
+  secondaryTextColor,
+  themeColor,
+  themeColorLighter,
+} from '@edulastic/colors'
+import { SpinLoader, FlexContainer } from '@edulastic/common'
+import { IconCollapse2 } from '@edulastic/icons'
+import { Avatar, Button } from 'antd'
+import { filter, get, isEmpty } from 'lodash'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
+import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
+import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
+import { StyledCard, NoDataContainer } from '../../../common/styled'
+import {
+  downloadCSV,
+  getStudentAssignments,
+  toggleItem,
+} from '../../../common/util'
+import { getCsvDownloadingState } from '../../../ducks'
+import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
 import {
   getFiltersSelector,
   getReportsSPRFilterData,
   getSelectedStandardProficiency,
-  getStudentSelector
-} from "../common/filterDataDucks";
-import { useGetStudentMasteryData } from "../common/hooks";
-import { getGrades, getStudentName } from "../common/utils/transformers";
-import StudentPerformanceSummary from "./common/components/table/StudentPerformanceSummary";
-import { getDomainOptions } from "./common/utils/transformers";
+  getStudentSelector,
+} from '../common/filterDataDucks'
+import { useGetStudentMasteryData } from '../common/hooks'
+import { getGrades, getStudentName } from '../common/utils/transformers'
+import StudentPerformanceSummary from './common/components/table/StudentPerformanceSummary'
+import { getDomainOptions } from './common/utils/transformers'
 import {
   getReportsStudentMasteryProfile,
   getReportsStudentMasteryProfileLoader,
   getStudentMasteryProfileRequestAction,
   getStudentStandardData,
   getStudentStandardLoader,
-  getStudentStandardsAction
-} from "./ducks";
+  getStudentStandardsAction,
+} from './ducks'
 
 const usefilterRecords = (records, domain) =>
   // Note: record.domainId could be integer or string
-  useMemo(() => filter(records, record => domain === "All" || String(record.domainId) === String(domain)), [
-    records,
-    domain
-  ]);
-const getTooltip = payload => {
+  useMemo(
+    () =>
+      filter(
+        records,
+        (record) =>
+          domain === 'All' || String(record.domainId) === String(domain)
+      ),
+    [records, domain]
+  )
+const getTooltip = (payload) => {
   if (payload && payload.length) {
-    const { masteryName = "", percentage = 0 } = payload[0].payload;
+    const { masteryName = '', percentage = 0 } = payload[0].payload
     return (
       <div>
         <BarTooltipRow title={`${masteryName} : `} value={`${percentage}%`} />
       </div>
-    );
+    )
   }
-  return false;
-};
+  return false
+}
 
 const StudentMasteryProfile = ({
   settings,
@@ -65,77 +78,96 @@ const StudentMasteryProfile = ({
   studentStandardData,
   selectedStudent,
   loadingStudentStandard,
-  t
+  t,
 }) => {
-  const { metricInfo = [], studInfo = [], skillInfo = [] } = get(studentMasteryProfile, "data.result", {});
-  const scaleInfo = selectedStandardProficiency;
+  const { metricInfo = [], studInfo = [], skillInfo = [] } = get(
+    studentMasteryProfile,
+    'data.result',
+    {}
+  )
+  const scaleInfo = selectedStandardProficiency
 
-  const studentClassData = SPRFilterData?.data?.result?.studentClassData || [];
-  const studentClassInformation = studentClassData[0] || {};
+  const studentClassData = SPRFilterData?.data?.result?.studentClassData || []
+  const studentClassInformation = studentClassData[0] || {}
 
-  const [selectedDomain, setSelectedDomain] = useState({ key: "All", title: "All" });
-  const [selectedMastery, setSelectedMastery] = useState([]);
-  const [expandRows, setExpandRows] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState({
+    key: 'All',
+    title: 'All',
+  })
+  const [selectedMastery, setSelectedMastery] = useState([])
+  const [expandRows, setExpandRows] = useState(false)
 
-  const studentAssignmentsData = useMemo(() => getStudentAssignments(scaleInfo, studentStandardData), [
-    scaleInfo,
-    studentStandardData
-  ]);
+  const studentAssignmentsData = useMemo(
+    () => getStudentAssignments(scaleInfo, studentStandardData),
+    [scaleInfo, studentStandardData]
+  )
 
-  const [studentStandards, studentDomains] = useGetStudentMasteryData(metricInfo, skillInfo, scaleInfo);
+  const [studentStandards, studentDomains] = useGetStudentMasteryData(
+    metricInfo,
+    skillInfo,
+    scaleInfo
+  )
 
-  const filteredStandards = usefilterRecords(studentStandards, selectedDomain.key);
-  const filteredDomains = usefilterRecords(studentDomains, selectedDomain.key);
-  const domainOptions = getDomainOptions(studentDomains);
+  const filteredStandards = usefilterRecords(
+    studentStandards,
+    selectedDomain.key
+  )
+  const filteredDomains = usefilterRecords(studentDomains, selectedDomain.key)
+  const domainOptions = getDomainOptions(studentDomains)
 
-  const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(false);
-  const [clickedStandard, setClickedStandard] = useState(undefined);
+  const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(
+    false
+  )
+  const [clickedStandard, setClickedStandard] = useState(undefined)
 
   useEffect(() => {
-    const { selectedStudent: _selectedStudent, requestFilters } = settings;
+    const { selectedStudent: _selectedStudent, requestFilters } = settings
     if (_selectedStudent.key && requestFilters.termId) {
       getStudentMasteryProfileRequest({
         ...requestFilters,
-        studentId: _selectedStudent.key
-      });
+        studentId: _selectedStudent.key,
+      })
     }
-  }, [settings]);
+  }, [settings])
 
   useEffect(() => {
-    setSelectedMastery([]);
-  }, [selectedDomain.key]);
+    setSelectedMastery([])
+  }, [selectedDomain.key])
 
-  const onDomainSelect = (_, selected) => setSelectedDomain(selected);
-  const onSectionClick = item => setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel));
+  const onDomainSelect = (_, selected) => setSelectedDomain(selected)
+  const onSectionClick = (item) =>
+    setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel))
 
   if (loading) {
-    return <SpinLoader position="fixed" />;
+    return <SpinLoader position="fixed" />
   }
 
-  const studentInformation = studInfo[0] || {};
-  const studentName = getStudentName(selectedStudent, studentInformation);
+  const studentInformation = studInfo[0] || {}
+  const studentName = getStudentName(selectedStudent, studentInformation)
 
-  const anonymousString = t("common.anonymous");
+  const anonymousString = t('common.anonymous')
 
-  const onCsvConvert = data =>
+  const onCsvConvert = (data) =>
     downloadCSV(
-      `Standard Performance Details-${studentName || anonymousString}-${studentInformation.subject}.csv`,
+      `Standard Performance Details-${studentName || anonymousString}-${
+        studentInformation.subject
+      }.csv`,
       data
-    );
+    )
 
   const handleOnClickStandard = (params, standard) => {
-    getStudentStandards(params);
-    setClickedStandard(standard);
-    setStudentAssignmentModal(true);
-  };
+    getStudentStandards(params)
+    setClickedStandard(standard)
+    setStudentAssignmentModal(true)
+  }
 
   const closeStudentAssignmentModal = () => {
-    setStudentAssignmentModal(false);
-    setClickedStandard(undefined);
-  };
+    setStudentAssignmentModal(false)
+    setClickedStandard(undefined)
+  }
 
   if (isEmpty(studInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>;
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   return (
@@ -189,7 +221,9 @@ const StudentMasteryProfile = ({
           </DropdownContainer>
           <StyledButton onClick={() => setExpandRows(!expandRows)}>
             <IconCollapse2 color={themeColor} width={12} height={12} />
-            <span className="button-label">{expandRows ? "COLLAPSE" : "EXPAND"} ROWS</span>
+            <span className="button-label">
+              {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
+            </span>
           </StyledButton>
         </FilterRow>
         <StudentPerformanceSummary
@@ -202,10 +236,10 @@ const StudentMasteryProfile = ({
             selectedMastery,
             handleOnClickStandard,
             filters,
-            termId: settings.requestFilters.termId
+            termId: settings.requestFilters.termId,
           }}
           expandAllRows={expandRows}
-          setExpandAllRows={flag => setExpandRows(flag)}
+          setExpandAllRows={(flag) => setExpandRows(flag)}
         />
       </ReStyledCard>
 
@@ -220,11 +254,11 @@ const StudentMasteryProfile = ({
         />
       )}
     </>
-  );
-};
+  )
+}
 
 const withConnect = connect(
-  state => ({
+  (state) => ({
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
     SPRFilterData: getReportsSPRFilterData(state),
     loading: getReportsStudentMasteryProfileLoader(state),
@@ -233,31 +267,31 @@ const withConnect = connect(
     filters: getFiltersSelector(state),
     studentStandardData: getStudentStandardData(state),
     selectedStudent: getStudentSelector(state),
-    loadingStudentStandard: getStudentStandardLoader(state)
+    loadingStudentStandard: getStudentStandardLoader(state),
   }),
   {
     getStudentMasteryProfileRequest: getStudentMasteryProfileRequestAction,
-    getStudentStandards: getStudentStandardsAction
+    getStudentStandards: getStudentStandardsAction,
   }
-);
+)
 
 export default compose(
   withConnect,
-  withNamespaces("student")
-)(StudentMasteryProfile);
+  withNamespaces('student')
+)(StudentMasteryProfile)
 
 const StyledAatar = styled(Avatar)`
   @media print {
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
   }
-`;
+`
 
 const FilterRow = styled(FlexContainer)`
   @media print {
     display: none;
   }
-`;
+`
 
 const ReStyledCard = styled(StyledCard)`
   margin: 0px;
@@ -266,21 +300,21 @@ const ReStyledCard = styled(StyledCard)`
   max-width: ${({ maxW }) => maxW};
   flex: ${({ flex }) => flex};
   margin-left: ${({ ml }) => ml};
-`;
+`
 
 const StyledP = styled.p`
-  margin-top: ${props => props.marginTop || "10px"};
+  margin-top: ${(props) => props.marginTop || '10px'};
   margin-left: 20px;
   margin-right: 20px;
-`;
+`
 
 const StyledText = styled.span`
   text-align: left;
   letter-spacing: 0.24px;
   font: 13px/18px Open Sans;
-  font-weight: ${props => props.weight || 600};
+  font-weight: ${(props) => props.weight || 600};
   color: ${secondaryTextColor};
-`;
+`
 
 const StyledName = styled.span`
   padding-top: 20px;
@@ -288,7 +322,7 @@ const StyledName = styled.span`
   text-align: left;
   letter-spacing: 0.33px;
   font: Bold 18px/24px Open Sans;
-`;
+`
 
 const DropdownContainer = styled.div`
   .control-dropdown {
@@ -296,7 +330,7 @@ const DropdownContainer = styled.div`
       width: 100%;
     }
   }
-`;
+`
 
 const StyledButton = styled(Button)`
   float: right;
@@ -318,4 +352,4 @@ const StyledButton = styled(Button)`
   .button-label {
     padding: 0px 20px;
   }
-`;
+`

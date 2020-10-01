@@ -1,5 +1,11 @@
-import { boxShadowDefault, textColor, desktopWidth, mobileWidth, themeColor } from "@edulastic/colors";
-import styled from "styled-components";
+import {
+  boxShadowDefault,
+  textColor,
+  desktopWidth,
+  mobileWidth,
+  themeColor,
+} from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const FilterButtonContainer = styled.div`
   display: none;
@@ -55,4 +61,4 @@ export const FilterButtonContainer = styled.div`
       width: 45px;
     }
   }
-`;
+`

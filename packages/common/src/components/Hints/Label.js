@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { white, themeColor } from "@edulastic/colors";
+import { white, themeColor } from '@edulastic/colors'
 
 export default styled.div`
   width: 40px;
@@ -13,4 +13,4 @@ export default styled.div`
   justify-content: center;
   font-weight: 700;
   padding: 5px 0;
-`;
+`

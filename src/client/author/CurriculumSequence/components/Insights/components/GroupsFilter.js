@@ -1,14 +1,24 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Row, Col, Tooltip } from "antd";
-import styled from "styled-components";
-import { getUserRole } from "../../../../src/selectors/user";
+import React from 'react'
+import { connect } from 'react-redux'
+import { Row, Col, Tooltip } from 'antd'
+import styled from 'styled-components'
 
-import { greyThemeDark1, fadedGrey, themeColor } from "@edulastic/colors";
-import { IconFolderAll, IconFolderDeactive, IconFolderNew } from "@edulastic/icons";
+import { greyThemeDark1, fadedGrey, themeColor } from '@edulastic/colors'
+import {
+  IconFolderAll,
+  IconFolderDeactive,
+  IconFolderNew,
+} from '@edulastic/icons'
+import { getUserRole } from '../../../../src/selectors/user'
 
 const GroupContainer = ({ id, name, Icon, onClickAction, isActive }) => (
-  <StyledCol key={`group_filter_${id}`} span={24} padding="9px 18px" onClick={onClickAction} isActive={isActive}>
+  <StyledCol
+    key={`group_filter_${id}`}
+    span={24}
+    padding="9px 18px"
+    onClick={onClickAction}
+    isActive={isActive}
+  >
     <Icon />
     <StyledSpan fontStyle="11px/15px" padding="0 0 0 20px">
       <Tooltip placement="right" title={name}>
@@ -16,7 +26,7 @@ const GroupContainer = ({ id, name, Icon, onClickAction, isActive }) => (
       </Tooltip>
     </StyledSpan>
   </StyledCol>
-);
+)
 
 const GroupsFilter = ({ current, options, onClickAction, userRole }) => {
   return (
@@ -26,55 +36,55 @@ const GroupsFilter = ({ current, options, onClickAction, userRole }) => {
           Groups
         </StyledSpan>
       </Col>
-      {!["district-admin", "school-admin"].find(x => x === userRole) && (
+      {!['district-admin', 'school-admin'].find((x) => x === userRole) && (
         <GroupContainer
-          Icon={props => <IconFolderAll {...props} />}
+          Icon={(props) => <IconFolderAll {...props} />}
           name="All Students"
           onClickAction={() => onClickAction([])}
         />
       )}
-      {options.map(item => (
+      {options.map((item) => (
         <GroupContainer
           {...item}
-          Icon={props => <IconFolderDeactive {...props} />}
+          Icon={(props) => <IconFolderDeactive {...props} />}
           isActive={current[0] && current[0].id === item.id}
           onClickAction={() => onClickAction([item])}
         />
       ))}
     </StyledRow>
-  );
-};
+  )
+}
 
-const enhance = connect(state => ({
-  userRole: getUserRole(state)
-}));
+const enhance = connect((state) => ({
+  userRole: getUserRole(state),
+}))
 
-export default enhance(GroupsFilter);
+export default enhance(GroupsFilter)
 
 const StyledRow = styled(Row)`
   width: 100%;
-`;
+`
 
 const StyledCol = styled(Col)`
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: ${props => props.padding};
+  padding: ${(props) => props.padding};
   svg {
     path {
-      fill: ${props => props.isActive && themeColor};
+      fill: ${(props) => props.isActive && themeColor};
     }
   }
   &:hover,
   &:focus {
     background: ${fadedGrey};
   }
-`;
+`
 
 const StyledSpan = styled.span`
-  font: ${props => props.fontStyle} Open Sans;
-  font-weight: ${props => props.weight || 600};
-  padding: ${props => props.padding};
+  font: ${(props) => props.fontStyle} Open Sans;
+  font-weight: ${(props) => props.weight || 600};
+  padding: ${(props) => props.padding};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -82,4 +92,4 @@ const StyledSpan = styled.span`
   max-width: 80%;
   text-transform: uppercase;
   color: ${greyThemeDark1};
-`;
+`

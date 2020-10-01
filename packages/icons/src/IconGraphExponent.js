@@ -1,8 +1,8 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconGraphExponent = props => (
+const IconGraphExponent = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.35 15.736" {...props}>
     <g transform="translate(-23.06 0.927)">
       <path
@@ -17,6 +17,6 @@ const IconGraphExponent = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconGraphExponent);
+export default withIconStyles(IconGraphExponent)

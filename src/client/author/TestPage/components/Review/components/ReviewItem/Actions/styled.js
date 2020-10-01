@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 
 export const Container = styled.div`
   display: flex;
   justify-content: space-evenly;
-`;
+`
 
 export const ActionButton = styled(EduButton)`
   width: 30px;
@@ -18,4 +18,4 @@ export const ActionButton = styled(EduButton)`
     fill: ${themeColor};
     margin: 0px;
   }
-`;
+`

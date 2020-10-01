@@ -1,42 +1,42 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { size, isEmpty } from "lodash";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { size, isEmpty } from 'lodash'
 
-import { MainContentWrapper } from "@edulastic/common";
-import HooksContainer from "../ClassBoard/components/HooksContainer/HooksContainer";
-import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
-import PresentationToggleSwitch from "../Shared/Components/PresentationToggleSwitch";
-import TableDisplay from "./components/TableDisplay";
-import { receiveTestActivitydAction } from "../src/actions/classBoard";
+import { MainContentWrapper } from '@edulastic/common'
+import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
+import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
+import PresentationToggleSwitch from '../Shared/Components/PresentationToggleSwitch'
+import TableDisplay from './components/TableDisplay'
+import { receiveTestActivitydAction } from '../src/actions/classBoard'
 import {
   getTestActivitySelector,
   getAdditionalDataSelector,
   getQIdsSelector,
-  getQLabelsSelector
-} from "../ClassBoard/ducks";
-import { StyledFlexContainer, DivWrapper } from "./components/styled";
-import ClassBreadBrumb from "../Shared/Components/ClassBreadCrumb";
+  getQLabelsSelector,
+} from '../ClassBoard/ducks'
+import { StyledFlexContainer, DivWrapper } from './components/styled'
+import ClassBreadBrumb from '../Shared/Components/ClassBreadCrumb'
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
-    const { loadTestActivity, match, testActivity, additionalData } = this.props;
+    const { loadTestActivity, match, testActivity, additionalData } = this.props
     if (!size(testActivity) && isEmpty(additionalData)) {
-      const { assignmentId, classId } = match.params;
-      loadTestActivity(assignmentId, classId);
+      const { assignmentId, classId } = match.params
+      loadTestActivity(assignmentId, classId)
     }
   }
 
-  getTestActivity = data => {
-    let id = null;
-    data.forEach(item => {
+  getTestActivity = (data) => {
+    let id = null
+    data.forEach((item) => {
       if (item.testActivityId) {
-        id = item.testActivityId;
+        id = item.testActivityId
       }
-    });
-    return id;
-  };
+    })
+    return id
+  }
 
   render() {
     const {
@@ -44,15 +44,15 @@ class StandardsBasedReport extends Component {
       additionalData,
       creating,
       match: {
-        params: { assignmentId, classId }
+        params: { assignmentId, classId },
       },
       labels,
-      testQIds
-    } = this.props;
-    const testActivityId = this.getTestActivity(testActivity);
+      testQIds,
+    } = this.props
+    const testActivityId = this.getTestActivity(testActivity)
 
     return (
-      <React.Fragment>
+      <>
         <ClassHeader
           classId={classId}
           active="standard_report"
@@ -78,26 +78,26 @@ class StandardsBasedReport extends Component {
             />
           </DivWrapper>
         </MainContentWrapper>
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
 const enhance = compose(
   connect(
-    state => ({
+    (state) => ({
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       testQIds: getQIdsSelector(state),
-      labels: getQLabelsSelector(state)
+      labels: getQLabelsSelector(state),
     }),
     {
-      loadTestActivity: receiveTestActivitydAction
+      loadTestActivity: receiveTestActivitydAction,
     }
   )
-);
+)
 
-export default enhance(StandardsBasedReport);
+export default enhance(StandardsBasedReport)
 
 StandardsBasedReport.propTypes = {
   /* eslint-disable react/require-default-props */
@@ -105,9 +105,9 @@ StandardsBasedReport.propTypes = {
   testActivity: PropTypes.array,
   additionalData: PropTypes.object,
   loadTestActivity: PropTypes.func,
-  creating: PropTypes.object
-};
+  creating: PropTypes.object,
+}
 
 StandardsBasedReport.defaultProps = {
-  additionalData: {}
-};
+  additionalData: {},
+}

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { white, greyishBorder } from "@edulastic/colors";
+import styled from 'styled-components'
+import { white, greyishBorder } from '@edulastic/colors'
 
 export const AnswersWrapper = styled.div`
   padding-left: 20px;
@@ -32,4 +32,4 @@ export const AnswersWrapper = styled.div`
       padding-left: 8px;
     }
   }
-`;
+`

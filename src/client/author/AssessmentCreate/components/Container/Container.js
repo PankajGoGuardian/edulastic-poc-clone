@@ -1,52 +1,55 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { withRouter } from "react-router";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Spin, message } from "antd";
-import { debounce } from "lodash";
-import qs from "query-string";
-import { MainHeader, MainContentWrapper,notification } from "@edulastic/common";
+import React from 'react'
+import { withRouter } from 'react-router'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { Spin, message } from 'antd'
+import { debounce } from 'lodash'
+import qs from 'query-string'
+import { MainHeader, MainContentWrapper, notification } from '@edulastic/common'
 
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import CreationOptions from "../CreationOptions/CreationOptions";
-import DropArea from "../DropArea/DropArea";
-import { receiveTestByIdAction, getTestsLoadingSelector } from "../../../TestPage/ducks";
+import { withNamespaces } from 'react-i18next'
+import Breadcrumb from '../../../src/components/Breadcrumb'
+import CreationOptions from '../CreationOptions/CreationOptions'
+import DropArea from '../DropArea/DropArea'
+import {
+  receiveTestByIdAction,
+  getTestsLoadingSelector,
+} from '../../../TestPage/ducks'
 import {
   createAssessmentRequestAction,
   getAssessmentCreatingSelector,
   percentageUploadedSelector,
   fileInfoSelector,
   setPercentUploadedAction,
-  uploadToDriveAction
-} from "../../ducks";
-import { withNamespaces } from "react-i18next";
+  uploadToDriveAction,
+} from '../../ducks'
 
 const breadcrumbStyle = {
-  position: "static"
-};
+  position: 'static',
+}
 
 const testBreadcrumbs = [
   {
-    title: "TEST",
-    to: "/author/tests"
+    title: 'TEST',
+    to: '/author/tests',
   },
   {
-    title: "Author Test",
-    to: "/author/tests/select"
-  }
-];
+    title: 'Author Test',
+    to: '/author/tests/select',
+  },
+]
 
 const snapquizBreadcrumb = {
-  title: "Snapquiz",
-  to: ""
-};
+  title: 'Snapquiz',
+  to: '',
+}
 const creationMethods = {
-  SCRATCH: "scratch",
-  LIBRARY: "library",
-  PDF: "pdf"
-};
+  SCRATCH: 'scratch',
+  LIBRARY: 'library',
+  PDF: 'pdf',
+}
 
 class Container extends React.Component {
   static propTypes = {
@@ -54,69 +57,71 @@ class Container extends React.Component {
     receiveTestById: PropTypes.func.isRequired,
     creating: PropTypes.bool.isRequired,
     location: PropTypes.func.isRequired,
-    assessmentLoading: PropTypes.bool.isRequired
-  };
+    assessmentLoading: PropTypes.bool.isRequired,
+  }
 
   state = {
-    method: undefined
-  };
+    method: undefined,
+  }
 
-  cancelUpload;
+  cancelUpload
 
   componentDidMount() {
-    const { location, receiveTestById } = this.props;
-    const { assessmentId } = qs.parse(location.search);
+    const { location, receiveTestById } = this.props
+    const { assessmentId } = qs.parse(location.search)
 
     if (assessmentId) {
-      receiveTestById(assessmentId);
-      this.handleSetMethod(creationMethods.PDF)();
+      receiveTestById(assessmentId)
+      this.handleSetMethod(creationMethods.PDF)()
     }
   }
 
-  handleSetMethod = method => () => {
-    this.setState({ method });
-  };
+  handleSetMethod = (method) => () => {
+    this.setState({ method })
+  }
 
-  handleUploadProgress = progressEvent => {
-    const { setPercentUploaded } = this.props;
-    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-    setPercentUploaded(percentCompleted);
-  };
+  handleUploadProgress = (progressEvent) => {
+    const { setPercentUploaded } = this.props
+    const percentCompleted = Math.round(
+      (progressEvent.loaded * 100) / progressEvent.total
+    )
+    setPercentUploaded(percentCompleted)
+  }
 
-  setCancelFn = _cancelFn => {
-    this.cancelUpload = _cancelFn;
-  };
+  setCancelFn = (_cancelFn) => {
+    this.cancelUpload = _cancelFn
+  }
 
   handleUploadPDF = debounce(({ file }) => {
-    const { location, createAssessment, isAddPdf = false } = this.props;
-    const { assessmentId } = qs.parse(location.search);
-    if (file.type !== "application/pdf") {
-      return notification({ messageKey:"fileFormatNotSupported"});
+    const { location, createAssessment, isAddPdf = false } = this.props
+    const { assessmentId } = qs.parse(location.search)
+    if (file.type !== 'application/pdf') {
+      return notification({ messageKey: 'fileFormatNotSupported' })
     }
     if (file.size / 1024000 > 15) {
-      return notification({ messageKey:"fileSizeExceeds"});
+      return notification({ messageKey: 'fileSizeExceeds' })
     }
     createAssessment({
       file,
       assessmentId,
       progressCallback: this.handleUploadProgress,
       isAddPdf,
-      cancelUpload: this.setCancelFn
-    });
-  }, 1000);
+      cancelUpload: this.setCancelFn,
+    })
+  }, 1000)
 
-  handleCreateBlankAssessment = event => {
-    event.stopPropagation();
+  handleCreateBlankAssessment = (event) => {
+    event.stopPropagation()
 
-    const { location, createAssessment, isAddPdf } = this.props;
-    const { assessmentId } = qs.parse(location.search);
+    const { location, createAssessment, isAddPdf } = this.props
+    const { assessmentId } = qs.parse(location.search)
 
-    createAssessment({ assessmentId, isAddPdf });
-  };
+    createAssessment({ assessmentId, isAddPdf })
+  }
 
   render() {
-    let { method } = this.state;
-    const newBreadcrumb = [...testBreadcrumbs];
+    let { method } = this.state
+    const newBreadcrumb = [...testBreadcrumbs]
     const {
       creating,
       location,
@@ -125,14 +130,18 @@ class Container extends React.Component {
       fileInfo,
       isAddPdf,
       uploadToDrive,
-      t
-    } = this.props;
-    if (location && location.pathname && location.pathname.includes("snapquiz")) {
-      method = creationMethods.PDF;
-      newBreadcrumb.push(snapquizBreadcrumb);
+      t,
+    } = this.props
+    if (
+      location &&
+      location.pathname &&
+      location.pathname.includes('snapquiz')
+    ) {
+      method = creationMethods.PDF
+      newBreadcrumb.push(snapquizBreadcrumb)
     }
     if (assessmentLoading) {
-      return <Spin />;
+      return <Spin />
     }
 
     return (
@@ -140,16 +149,16 @@ class Container extends React.Component {
         {creating && (
           <div
             style={{
-              height: "calc(100vh - 96px)",
-              position: "absolute",
-              width: "calc(100vw - 100px)",
-              top: "96px",
-              zIndex: "1",
-              backgroundColor: "transparent"
+              height: 'calc(100vh - 96px)',
+              position: 'absolute',
+              width: 'calc(100vw - 100px)',
+              top: '96px',
+              zIndex: '1',
+              backgroundColor: 'transparent',
             }}
           />
         )}
-        <MainHeader headingText={t("common.newTest")} />
+        <MainHeader headingText={t('common.newTest')} />
         <MainContentWrapper>
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
           {!method && <CreationOptions />}
@@ -167,27 +176,27 @@ class Container extends React.Component {
           )}
         </MainContentWrapper>
       </>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withRouter,
-  withNamespaces("header"),
+  withNamespaces('header'),
   connect(
-    state => ({
+    (state) => ({
       creating: getAssessmentCreatingSelector(state),
       assessmentLoading: getTestsLoadingSelector(state),
       percentageUploaded: percentageUploadedSelector(state),
-      fileInfo: fileInfoSelector(state)
+      fileInfo: fileInfoSelector(state),
     }),
     {
       createAssessment: createAssessmentRequestAction,
       receiveTestById: receiveTestByIdAction,
       setPercentUploaded: setPercentUploadedAction,
-      uploadToDrive: uploadToDriveAction
+      uploadToDrive: uploadToDriveAction,
     }
   )
-);
+)
 
-export default enhance(Container);
+export default enhance(Container)

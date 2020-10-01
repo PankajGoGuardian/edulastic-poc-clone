@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Row } from "antd";
-import { mobileWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Row } from 'antd'
+import { mobileWidth } from '@edulastic/colors'
 
 export const StyledRow = styled(Row)`
   margin: 0 0 27px 0;
@@ -24,4 +24,4 @@ export const StyledRow = styled(Row)`
       }
     }
   }
-`;
+`

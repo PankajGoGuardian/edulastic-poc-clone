@@ -1,29 +1,29 @@
-import React, { Component } from "react";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { sumBy, round, size, isEmpty } from "lodash";
-import { connect } from "react-redux";
-import moment from "moment";
-import { withWindowSizes } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { IconCircleCheck, IconArrowCircleUp } from "@edulastic/icons";
+import React, { Component } from 'react'
+import { compose } from 'redux'
+import PropTypes from 'prop-types'
+import { sumBy, round, size, isEmpty } from 'lodash'
+import { connect } from 'react-redux'
+import moment from 'moment'
+import { withWindowSizes } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { IconCircleCheck, IconArrowCircleUp } from '@edulastic/icons'
 // ducks
 import {
   getTestActivitySelector,
   getAdditionalDataSelector,
-  getTestQuestionActivitiesSelector
-} from "../../../ClassBoard/ducks";
+  getTestQuestionActivitiesSelector,
+} from '../../../ClassBoard/ducks'
 
 // actions
-import { receiveTestActivitydAction } from "../../../src/actions/classBoard";
+import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
 // components
-import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
-import HooksContainer from "../HooksContainer/HooksContainer";
+import ClassHeader from '../../../Shared/Components/ClassHeader/ClassHeader'
+import HooksContainer from '../HooksContainer/HooksContainer'
 // icon images
-import NightIcon from "../../assets/night.svg";
-import MistakesMarkIcon from "../../assets/mistakes-mark.svg";
-import ArrowDownIcon from "../../assets/arrow-down.svg";
-import GraduateStudentIcon from "../../assets/graduate-student-avatar.svg";
+import NightIcon from '../../assets/night.svg'
+import MistakesMarkIcon from '../../assets/mistakes-mark.svg'
+import ArrowDownIcon from '../../assets/arrow-down.svg'
+import GraduateStudentIcon from '../../assets/graduate-student-avatar.svg'
 // styled wrappers
 import {
   Anchor,
@@ -50,95 +50,113 @@ import {
   ListItemValue,
   MistakesListItem,
   MistakesTitle,
-  MistakesValue
-} from "./styled";
+  MistakesValue,
+} from './styled'
 
 class SummaryBoard extends Component {
   componentDidMount() {
-    const { loadTestActivity, match, testActivity, additionalData } = this.props;
+    const { loadTestActivity, match, testActivity, additionalData } = this.props
     if (!size(testActivity) && isEmpty(additionalData)) {
-      const { assignmentId, classId } = match.params;
-      loadTestActivity(assignmentId, classId);
+      const { assignmentId, classId } = match.params
+      loadTestActivity(assignmentId, classId)
     }
   }
 
-  getTestActivity = data => {
-    let id = null;
-    data.forEach(item => {
+  getTestActivity = (data) => {
+    let id = null
+    data.forEach((item) => {
       if (item.testActivityId) {
-        id = item.testActivityId;
+        id = item.testActivityId
       }
-    });
-    return id;
-  };
+    })
+    return id
+  }
 
-  getAverageScore = students => {
+  getAverageScore = (students) => {
     if (!students.length) {
-      return 0;
+      return 0
     }
-    const totalScore = sumBy(students, student => student.scorePercent);
-    const avgScore = totalScore / students.length;
-    return round(avgScore, 2);
-  };
+    const totalScore = sumBy(students, (student) => student.scorePercent)
+    const avgScore = totalScore / students.length
+    return round(avgScore, 2)
+  }
 
   getAverageTimeSpent = () => {
-    const { testQuestionActivities = [], testActivity } = this.props;
-    const totalSpentTime = sumBy(testQuestionActivities, student => student.timeSpent);
-    const avgTimeSpent = totalSpentTime / testActivity.length || 0;
-    return moment.utc(avgTimeSpent).format("HH:mm");
-  };
+    const { testQuestionActivities = [], testActivity } = this.props
+    const totalSpentTime = sumBy(
+      testQuestionActivities,
+      (student) => student.timeSpent
+    )
+    const avgTimeSpent = totalSpentTime / testActivity.length || 0
+    return moment.utc(avgTimeSpent).format('HH:mm')
+  }
 
   getMostCommonMistakes = () => {
-    const { testQuestionActivities } = this.props;
+    const { testQuestionActivities } = this.props
 
     const uniqueTestQuestionActivities = [
-      ...new Set(testQuestionActivities.map(testQuestionActivity => testQuestionActivity.qid))
-    ];
+      ...new Set(
+        testQuestionActivities.map(
+          (testQuestionActivity) => testQuestionActivity.qid
+        )
+      ),
+    ]
 
-    const hasWrongAnswersItems = uniqueTestQuestionActivities.map(qid => {
+    const hasWrongAnswersItems = uniqueTestQuestionActivities.map((qid) => {
       const testActivities = testQuestionActivities.filter(
-        testQuestionActivity => testQuestionActivity.qid === qid && !testQuestionActivity.skipped
-      );
+        (testQuestionActivity) =>
+          testQuestionActivity.qid === qid && !testQuestionActivity.skipped
+      )
 
-      const wrongAnswers = testActivities.filter(testQuestionActivity => !testQuestionActivity.correct);
+      const wrongAnswers = testActivities.filter(
+        (testQuestionActivity) => !testQuestionActivity.correct
+      )
 
       return {
         qid,
         wrong: wrongAnswers.length,
-        attempted: testActivities.length
-      };
-    });
+        attempted: testActivities.length,
+      }
+    })
 
-    hasWrongAnswersItems.sort((a, b) => b.wrong - a.wrong);
-    return hasWrongAnswersItems.slice(0, 2);
-  };
+    hasWrongAnswersItems.sort((a, b) => b.wrong - a.wrong)
+    return hasWrongAnswersItems.slice(0, 2)
+  }
 
   getLowestPerformers = () => {
-    const { testActivity: studentItems } = this.props;
-    const submittedStudents = studentItems.filter(student => student.status === "submitted");
+    const { testActivity: studentItems } = this.props
+    const submittedStudents = studentItems.filter(
+      (student) => student.status === 'submitted'
+    )
 
-    submittedStudents.map(student => {
-      const scorePercent = ((student.score || 0) / (student.maxScore || 1)) * 100;
-      student.scorePercent = scorePercent;
-      return student;
-    });
+    submittedStudents.map((student) => {
+      const scorePercent =
+        ((student.score || 0) / (student.maxScore || 1)) * 100
+      student.scorePercent = scorePercent
+      return student
+    })
 
-    submittedStudents.sort((a, b) => a.score - b.score);
-    return submittedStudents;
-  };
+    submittedStudents.sort((a, b) => a.score - b.score)
+    return submittedStudents
+  }
 
   getSubmmitedStudents = () => {
-    const { testActivity: student } = this.props;
-    const submitted = student.filter(st => st.status === "submitted");
-    return `${submitted.length} / ${student.length}`;
-  };
+    const { testActivity: student } = this.props
+    const submitted = student.filter((st) => st.status === 'submitted')
+    return `${submitted.length} / ${student.length}`
+  }
 
   render() {
-    const { testActivity, creating, match, additionalData = { classes: [] } } = this.props;
-    const { assignmentId, classId } = match.params;
-    const testActivityId = this.getTestActivity(testActivity);
-    const commonMistakes = this.getMostCommonMistakes();
-    const lowestPerformers = this.getLowestPerformers();
+    const {
+      testActivity,
+      creating,
+      match,
+      additionalData = { classes: [] },
+    } = this.props
+    const { assignmentId, classId } = match.params
+    const testActivityId = this.getTestActivity(testActivity)
+    const commonMistakes = this.getMostCommonMistakes()
+    const lowestPerformers = this.getLowestPerformers()
 
     return (
       <div>
@@ -156,8 +174,12 @@ class SummaryBoard extends Component {
 
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
-            &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-            <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
+            &lt;{' '}
+            <AnchorLink to="/author/assignments">
+              RECENTS ASSIGNMENTS
+            </AnchorLink>{' '}
+            / <Anchor>{additionalData.testName}</Anchor> /{' '}
+            <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
         </StyledFlexContainer>
 
@@ -181,7 +203,9 @@ class SummaryBoard extends Component {
                 </SubInfoRow>
                 <SubInfoRow>
                   <ValueTitle>Percent</ValueTitle>
-                  <InfoValue>{this.getAverageScore(lowestPerformers)}</InfoValue>
+                  <InfoValue>
+                    {this.getAverageScore(lowestPerformers)}
+                  </InfoValue>
                 </SubInfoRow>
               </StyledSummaryCard>
             </InfoRow>
@@ -204,7 +228,9 @@ class SummaryBoard extends Component {
                 <ListContainer>
                   {commonMistakes.map((cm, index) => (
                     <MistakesListItem key={index}>
-                      <MistakesTitle>{`Q${index + 1} (N-RN.${index + 1})`}</MistakesTitle>
+                      <MistakesTitle>
+                        {`Q${index + 1} (N-RN.${index + 1})`}
+                      </MistakesTitle>
                       <MistakesValue>
                         {cm.wrong}
                         <img src={GraduateStudentIcon} alt="Student" />
@@ -225,7 +251,9 @@ class SummaryBoard extends Component {
                 {lowestPerformers.slice(0, 5).map((lp, index) => (
                   <ListItem key={index}>
                     <ListItemTitle>{lp.studentName}</ListItemTitle>
-                    <ListItemValue>{Math.round(lp.scorePercent * 100) / 100}%</ListItemValue>
+                    <ListItemValue>
+                      {Math.round(lp.scorePercent * 100) / 100}%
+                    </ListItemValue>
                   </ListItem>
                 ))}
               </ListContainer>
@@ -239,35 +267,37 @@ class SummaryBoard extends Component {
               <ActionDescriptionWrapper>
                 <ActionTitle>Differentiation</ActionTitle>
                 <ActionDescription>
-                  {"Recommendations for each student"}
-                  {" are based on their performance on this assessment."}
+                  {'Recommendations for each student'}
+                  {' are based on their performance on this assessment.'}
                 </ActionDescription>
               </ActionDescriptionWrapper>
-              <ViewRecommendationsBtn>VIEW RECOMMENDATIONS</ViewRecommendationsBtn>
+              <ViewRecommendationsBtn>
+                VIEW RECOMMENDATIONS
+              </ViewRecommendationsBtn>
             </ActionContainer>
           </StyledCard>
         </StyledFlexContainer>
       </div>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces("summary"),
+  withNamespaces('summary'),
   connect(
-    state => ({
+    (state) => ({
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
-      testQuestionActivities: getTestQuestionActivitiesSelector(state)
+      testQuestionActivities: getTestQuestionActivitiesSelector(state),
     }),
     {
-      loadTestActivity: receiveTestActivitydAction
+      loadTestActivity: receiveTestActivitydAction,
     }
   )
-);
+)
 
-export default enhance(SummaryBoard);
+export default enhance(SummaryBoard)
 
 /* eslint-disable react/require-default-props */
 SummaryBoard.propTypes = {
@@ -276,5 +306,5 @@ SummaryBoard.propTypes = {
   loadTestActivity: PropTypes.func,
   creating: PropTypes.object,
   testActivity: PropTypes.array,
-  testQuestionActivities: PropTypes.array
-};
+  testQuestionActivities: PropTypes.array,
+}

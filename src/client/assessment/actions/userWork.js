@@ -1,16 +1,20 @@
-import { SAVE_USER_WORK, LOAD_SCRATCH_PAD, CLEAR_USER_WORK } from "../constants/actions";
+import {
+  SAVE_USER_WORK,
+  LOAD_SCRATCH_PAD,
+  CLEAR_USER_WORK,
+} from '../constants/actions'
 
-export const saveUserWorkAction = payload => ({
+export const saveUserWorkAction = (payload) => ({
   type: SAVE_USER_WORK,
-  payload
-});
+  payload,
+})
 
-export const loadScratchPadAction = payload => ({
+export const loadScratchPadAction = (payload) => ({
   type: LOAD_SCRATCH_PAD,
-  payload
-});
+  payload,
+})
 
-export const clearUserWorkAction = payload => ({
+export const clearUserWorkAction = (payload) => ({
   type: CLEAR_USER_WORK,
-  payload
-});
+  payload,
+})

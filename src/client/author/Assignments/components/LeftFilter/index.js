@@ -1,63 +1,74 @@
-import { lightGrey10 } from "@edulastic/colors";
-import { FieldLabel, SelectInputStyled } from "@edulastic/common";
-import { IconGroup, IconClass } from "@edulastic/icons";
-import { roleuser, folderTypes } from "@edulastic/constants";
-import { faArchive } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Select } from "antd";
-import { get, identity, pickBy } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { receiveAssignmentsAction, receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
+import { lightGrey10 } from '@edulastic/colors'
+import { FieldLabel, SelectInputStyled } from '@edulastic/common'
+import { IconGroup, IconClass } from '@edulastic/icons'
+import { roleuser, folderTypes } from '@edulastic/constants'
+import { faArchive } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Select } from 'antd'
+import { get, identity, pickBy } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import {
+  receiveAssignmentsAction,
+  receiveAssignmentsSummaryAction,
+} from '../../../src/actions/assignments'
 import {
   getDistrictIdSelector,
   getAssignmentTeacherList,
-  getAssignmentTestList
-} from "../../../src/selectors/assignments";
-import { getGroupList, getUserRole, getCurrentTerm } from "../../../src/selectors/user";
-import selectsData from "../../../TestPage/components/common/selectsData";
-import { FilterContainer } from "./styled";
-import Folders from "../../../src/components/Folders";
-import { setItemsMoveFolderAction } from "../../../src/actions/folder";
+  getAssignmentTestList,
+} from '../../../src/selectors/assignments'
+import {
+  getGroupList,
+  getUserRole,
+  getCurrentTerm,
+} from '../../../src/selectors/user'
+import selectsData from '../../../TestPage/components/common/selectsData'
+import { FilterContainer } from './styled'
+import Folders from '../../../src/components/Folders'
+import { setItemsMoveFolderAction } from '../../../src/actions/folder'
 
-const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
+const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData
 
 const AssignmentStatus = {
-  NOT_OPEN: "NOT OPEN",
-  IN_PROGRESS: "IN PROGRESS",
-  IN_GRADING: "IN GRADING",
-  DONE: "DONE"
-};
+  NOT_OPEN: 'NOT OPEN',
+  IN_PROGRESS: 'IN PROGRESS',
+  IN_GRADING: 'IN GRADING',
+  DONE: 'DONE',
+}
 
 class LeftFilter extends React.Component {
-  handleChange = key => value => {
+  handleChange = (key) => (value) => {
     const {
       loadAssignments,
       onSetFilter,
       filterState,
       isAdvancedView,
       districtId,
-      loadAssignmentsSummary
-    } = this.props;
-    let filters = { ...filterState, [key]: value };
+      loadAssignmentsSummary,
+    } = this.props
+    let filters = { ...filterState, [key]: value }
 
     if (!isAdvancedView) {
-      loadAssignments({ filters });
+      loadAssignments({ filters })
     } else {
-      if (!["testId", "assignedBy"].includes(key)) {
-        filters = { ...filters, pageNo: 1, assignedBy: "", testId: "" };
-      } else if (key !== "testId") {
-        filters = { ...filters, pageNo: 1, testId: "" };
+      if (!['testId', 'assignedBy'].includes(key)) {
+        filters = { ...filters, pageNo: 1, assignedBy: '', testId: '' }
+      } else if (key !== 'testId') {
+        filters = { ...filters, pageNo: 1, testId: '' }
       } else {
-        filters = { ...filters, pageNo: 1 };
+        filters = { ...filters, pageNo: 1 }
       }
-      loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
+      loadAssignmentsSummary({
+        districtId,
+        filters: pickBy(filters, identity),
+        filtering: true,
+      })
     }
-    onSetFilter(filters);
-  };
+    onSetFilter(filters)
+  }
 
-  handleSelectFolder = async folderId => {
+  handleSelectFolder = async (folderId) => {
     const {
       filterState,
       districtId,
@@ -65,33 +76,60 @@ class LeftFilter extends React.Component {
       loadAssignments,
       isAdvancedView,
       onSetFilter,
-      currentTerm
-    } = this.props;
-    const filters = folderId ? { ...filterState, termId: "" } : { ...filterState, termId: currentTerm };
+      currentTerm,
+    } = this.props
+    const filters = folderId
+      ? { ...filterState, termId: '' }
+      : { ...filterState, termId: currentTerm }
 
     if (isAdvancedView) {
-      loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true, folderId });
+      loadAssignmentsSummary({
+        districtId,
+        filters: pickBy(filters, identity),
+        filtering: true,
+        folderId,
+      })
     } else if (folderId) {
-      loadAssignments({ filters, folderId });
+      loadAssignments({ filters, folderId })
     } else {
-      loadAssignments({ filters });
+      loadAssignments({ filters })
     }
 
-    if (filterState.termId !== filters.termId) onSetFilter(filters);
-  };
+    if (filterState.termId !== filters.termId) onSetFilter(filters)
+  }
 
   deselectItemsFolder = () => {
-    const { setItemsToFolder } = this.props;
-    setItemsToFolder([]);
-  };
+    const { setItemsToFolder } = this.props
+    setItemsToFolder([])
+  }
 
   render() {
-    const { termsData, filterState, userRole, classList, teacherList, assignmentTestList, isAdvancedView } = this.props;
-    const { subject, grades, termId, testType, classId, status, testId, assignedBy } = filterState;
-    const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
-    const classListByTerm = classList.filter(item => item.termId === termId || !termId);
-    const classListActive = classListByTerm.filter(item => item.active === 1);
-    const classListArchive = classListByTerm.filter(item => item.active === 0);
+    const {
+      termsData,
+      filterState,
+      userRole,
+      classList,
+      teacherList,
+      assignmentTestList,
+      isAdvancedView,
+    } = this.props
+    const {
+      subject,
+      grades,
+      termId,
+      testType,
+      classId,
+      status,
+      testId,
+      assignedBy,
+    } = filterState
+    const roleBasedTestType =
+      userRole === 'teacher' ? testTypes : AdminTestTypes
+    const classListByTerm = classList.filter(
+      (item) => item.termId === termId || !termId
+    )
+    const classListActive = classListByTerm.filter((item) => item.active === 1)
+    const classListArchive = classListByTerm.filter((item) => item.active === 0)
 
     return (
       <FilterContainer>
@@ -102,8 +140,8 @@ class LeftFilter extends React.Component {
           mode="multiple"
           placeholder="All grades"
           value={grades}
-          onChange={this.handleChange("grades")}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          onChange={this.handleChange('grades')}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           margin="0px 0px 15px"
         >
           {allGrades.map(
@@ -122,8 +160,8 @@ class LeftFilter extends React.Component {
           mode="default"
           placeholder="All subjects"
           value={subject}
-          onChange={this.handleChange("subject")}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          onChange={this.handleChange('subject')}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           margin="0px 0px 15px"
         >
           <Select.Option key="all" value="">
@@ -142,8 +180,8 @@ class LeftFilter extends React.Component {
           mode="default"
           placeholder="All years"
           value={termId}
-          onChange={this.handleChange("termId")}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          onChange={this.handleChange('termId')}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           margin="0px 0px 15px"
         >
           <Select.Option key="all" value="">
@@ -162,8 +200,8 @@ class LeftFilter extends React.Component {
           mode="default"
           placeholder="All"
           value={testType}
-          onChange={this.handleChange("testType")}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          onChange={this.handleChange('testType')}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           margin="0px 0px 15px"
         >
           {roleBasedTestType.map(({ value, text }, index) => (
@@ -182,9 +220,13 @@ class LeftFilter extends React.Component {
               showSearch
               placeholder="All Teacher(s)"
               value={assignedBy}
-              onChange={this.handleChange("assignedBy")}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onChange={this.handleChange('assignedBy')}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
               margin="0px 0px 15px"
             >
               <Select.Option key="" value="">
@@ -203,9 +245,13 @@ class LeftFilter extends React.Component {
               showSearch
               placeholder="All Tests"
               value={testId}
-              onChange={this.handleChange("testId")}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onChange={this.handleChange('testId')}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
               margin="0px 0px 15px"
             >
               <Select.Option key={0} value="">
@@ -220,7 +266,7 @@ class LeftFilter extends React.Component {
           </>
         )}
 
-        {userRole === "teacher" && (
+        {userRole === 'teacher' && (
           <>
             <FieldLabel>Class</FieldLabel>
             <SelectInputStyled
@@ -230,30 +276,50 @@ class LeftFilter extends React.Component {
               mode="default"
               placeholder="All"
               value={classId}
-              onChange={this.handleChange("classId")}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              onChange={this.handleChange('classId')}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               margin="0px 0px 15px"
             >
               <Select.Option key="all" value="">
                 All classes
               </Select.Option>
-              {classListActive.map(item => (
+              {classListActive.map((item) => (
                 <Select.Option key={item._id} value={item._id}>
-                  {item.type === "custom" ? (
-                    <IconGroup width={20} height={19} margin="0 10px -5px 0px" color={lightGrey10} />
+                  {item.type === 'custom' ? (
+                    <IconGroup
+                      width={20}
+                      height={19}
+                      margin="0 10px -5px 0px"
+                      color={lightGrey10}
+                    />
                   ) : (
-                    <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
+                    <IconClass
+                      width={13}
+                      height={14}
+                      margin="0 10px 0 0px"
+                      color={lightGrey10}
+                    />
                   )}
                   {item.name}
                 </Select.Option>
               ))}
-              {classListArchive.map(item => (
+              {classListArchive.map((item) => (
                 <Select.Option key={item._id} value={item._id}>
-                  <span style={{ marginRight: "15px" }}>
-                    {item.type === "custom" ? (
-                      <IconGroup width={20} height={19} margin="0 10px -5px 0px" color={lightGrey10} />
+                  <span style={{ marginRight: '15px' }}>
+                    {item.type === 'custom' ? (
+                      <IconGroup
+                        width={20}
+                        height={19}
+                        margin="0 10px -5px 0px"
+                        color={lightGrey10}
+                      />
                     ) : (
-                      <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
+                      <IconClass
+                        width={13}
+                        height={14}
+                        margin="0 10px 0 0px"
+                        color={lightGrey10}
+                      />
                     )}
                     {item.name}
                   </span>
@@ -270,14 +336,14 @@ class LeftFilter extends React.Component {
               mode="default"
               placeholder="Select status"
               value={status}
-              onChange={this.handleChange("status")}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              onChange={this.handleChange('status')}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               margin="0px 0px 15px"
             >
               <Select.Option key="all" value="">
                 Select Status
               </Select.Option>
-              {Object.keys(AssignmentStatus).map(_status => (
+              {Object.keys(AssignmentStatus).map((_status) => (
                 <Select.Option key={_status} value={AssignmentStatus[_status]}>
                   {AssignmentStatus[_status]}
                 </Select.Option>
@@ -294,7 +360,7 @@ class LeftFilter extends React.Component {
           folderType={folderTypes.ASSIGNMENT}
         />
       </FilterContainer>
-    );
+    )
   }
 }
 
@@ -305,28 +371,28 @@ LeftFilter.propTypes = {
   onSetFilter: PropTypes.func.isRequired,
   termsData: PropTypes.array,
   isAdvancedView: PropTypes.bool,
-  filterState: PropTypes.object
-};
+  filterState: PropTypes.object,
+}
 
 LeftFilter.defaultProps = {
   filterState: {},
   termsData: [],
-  isAdvancedView: false
-};
+  isAdvancedView: false,
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     districtId: getDistrictIdSelector(state),
-    termsData: get(state, "user.user.orgData.terms", []),
+    termsData: get(state, 'user.user.orgData.terms', []),
     userRole: getUserRole(state),
     classList: getGroupList(state),
     teacherList: getAssignmentTeacherList(state),
     assignmentTestList: getAssignmentTestList(state),
-    currentTerm: getCurrentTerm(state)
+    currentTerm: getCurrentTerm(state),
   }),
   {
     setItemsToFolder: setItemsMoveFolderAction,
     loadAssignments: receiveAssignmentsAction,
-    loadAssignmentsSummary: receiveAssignmentsSummaryAction
+    loadAssignmentsSummary: receiveAssignmentsSummaryAction,
   }
-)(LeftFilter);
+)(LeftFilter)

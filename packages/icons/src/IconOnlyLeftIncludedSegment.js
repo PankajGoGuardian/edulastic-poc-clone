@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconOnlyLeftIncludedSegment = props => (
+const IconOnlyLeftIncludedSegment = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 14" {...props}>
     <g transform="translate(454.76 1499) rotate(180)">
       <g transform="translate(394.76 1485)" fill="none" strokeWidth="2">
@@ -14,6 +14,6 @@ const IconOnlyLeftIncludedSegment = props => (
       <line x2="33" transform="translate(408.26 1492.5)" strokeWidth="2" />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconOnlyLeftIncludedSegment);
+export default withIconStyles(IconOnlyLeftIncludedSegment)

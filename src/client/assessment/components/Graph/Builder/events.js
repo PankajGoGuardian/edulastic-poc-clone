@@ -1,21 +1,21 @@
-export default function() {
-  const events = {};
+export default function () {
+  const events = {}
   return {
     on(name, handler) {
-      let handlers = events[name];
+      let handlers = events[name]
       if (!!handlers === false) {
-        const arr = [];
-        handlers = arr;
-        events[name] = arr;
+        const arr = []
+        handlers = arr
+        events[name] = arr
       }
-      handlers.push(handler);
+      handlers.push(handler)
     },
     emit(name, data) {
-      const handlers = events[name];
+      const handlers = events[name]
       if (!!handlers === false) {
-        return;
+        return
       }
-      handlers.forEach(handler => handler(data));
-    }
-  };
+      handlers.forEach((handler) => handler(data))
+    },
+  }
 }

@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Select } from "antd";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Select } from 'antd'
 
-import { withNamespaces } from "@edulastic/localization";
-import { math } from "@edulastic/constants";
-import { SelectInputStyled } from "../../../../../styled/InputStyles";
-import { Row } from "../../../../../styled/WidgetOptions/Row";
-import { Col } from "../../../../../styled/WidgetOptions/Col";
-import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
+import { withNamespaces } from '@edulastic/localization'
+import { math } from '@edulastic/constants'
+import { SelectInputStyled } from '../../../../../styled/InputStyles'
+import { Row } from '../../../../../styled/WidgetOptions/Row'
+import { Col } from '../../../../../styled/WidgetOptions/Col'
+import { CheckboxLabel } from '../../../../../styled/CheckboxWithLabel'
 
 const DecimalSeparatorPure = ({ options, onChange, t }) => {
   const decimalSeparators = [
-    { value: math.decimalSeparators.DOT, label: t("component.math.dot") },
-    { value: math.decimalSeparators.COMMA, label: t("component.math.comma") }
-  ];
-  const [allowDecimalSeparator, setAllowDecimalSeparator] = useState(false);
+    { value: math.decimalSeparators.DOT, label: t('component.math.dot') },
+    { value: math.decimalSeparators.COMMA, label: t('component.math.comma') },
+  ]
+  const [allowDecimalSeparator, setAllowDecimalSeparator] = useState(false)
 
   useEffect(() => {
     if (options.setDecimalSeparator) {
-      setAllowDecimalSeparator(true);
+      setAllowDecimalSeparator(true)
     }
-  }, [options.setDecimalSeparator]);
+  }, [options.setDecimalSeparator])
 
   return (
     <Col span={12}>
@@ -29,16 +29,16 @@ const DecimalSeparatorPure = ({ options, onChange, t }) => {
           <CheckboxLabel
             data-cy="answer-allow-decimal-separator"
             checked={allowDecimalSeparator}
-            onChange={e => {
-              setAllowDecimalSeparator(e.target.checked);
+            onChange={(e) => {
+              setAllowDecimalSeparator(e.target.checked)
               if (!e.target.checked) {
-                onChange("setDecimalSeparator", null);
+                onChange('setDecimalSeparator', null)
               } else {
-                onChange("setDecimalSeparator", ["."]);
+                onChange('setDecimalSeparator', ['.'])
               }
             }}
           >
-            {t("component.math.setDecimalSeparator")}
+            {t('component.math.setDecimalSeparator')}
           </CheckboxLabel>
         </Col>
 
@@ -47,12 +47,16 @@ const DecimalSeparatorPure = ({ options, onChange, t }) => {
             <SelectInputStyled
               size="large"
               value={options.setDecimalSeparator || decimalSeparators[0].value}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-              onChange={val => onChange("setDecimalSeparator", val)}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              onChange={(val) => onChange('setDecimalSeparator', val)}
               data-cy="answer-set-decimal-separator-dropdown"
             >
               {decimalSeparators.map(({ value: val, label }) => (
-                <Select.Option data-cy={`answer-set-decimal-separator-dropdown-list-${label}`} key={val} value={val}>
+                <Select.Option
+                  data-cy={`answer-set-decimal-separator-dropdown-list-${label}`}
+                  key={val}
+                  value={val}
+                >
                   {label}
                 </Select.Option>
               ))}
@@ -61,15 +65,17 @@ const DecimalSeparatorPure = ({ options, onChange, t }) => {
         )}
       </Row>
     </Col>
-  );
-};
+  )
+}
 
 DecimalSeparatorPure.propTypes = {
   options: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
-DecimalSeparatorPure.defaultProps = {};
+DecimalSeparatorPure.defaultProps = {}
 
-export const DecimalSeparator = withNamespaces("assessment")(DecimalSeparatorPure);
+export const DecimalSeparator = withNamespaces('assessment')(
+  DecimalSeparatorPure
+)

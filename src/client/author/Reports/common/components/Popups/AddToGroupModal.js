@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import * as Sentry from "@sentry/browser";
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import * as Sentry from '@sentry/browser'
 
 // components
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Row, Col, Spin, Select } from "antd";
-import { IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
-import { SelectInputStyled, EduButton, withWindowSizes, notification, CustomModalStyled } from "@edulastic/common";
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { Row, Col, Spin, Select } from 'antd'
+import { IconPlusCircle, IconCorrect, IconCarets } from '@edulastic/icons'
+import {
+  SelectInputStyled,
+  EduButton,
+  withWindowSizes,
+  notification,
+  CustomModalStyled,
+} from '@edulastic/common'
 
 // api, ducks, helpers
-import { enrollmentApi } from "@edulastic/api";
+import { enrollmentApi } from '@edulastic/api'
 import {
   backgrounds,
   borderGrey4,
@@ -23,45 +29,60 @@ import {
   lightBlue2,
   white,
   largeDesktopWidth,
-  tabletWidth
-} from "@edulastic/colors";
-import { fetchGroupsAction, getGroupsSelector, groupsLoadingSelector } from "../../../../sharedDucks/groups";
-import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollment/ducks";
+  tabletWidth,
+} from '@edulastic/colors'
+import {
+  fetchGroupsAction,
+  getGroupsSelector,
+  groupsLoadingSelector,
+} from '../../../../sharedDucks/groups'
+import { requestEnrolExistingUserToClassAction } from '../../../../ClassEnrollment/ducks'
 
-const getParentUrl = urlList => {
+const getParentUrl = (urlList) => {
   // urlList[2] decides the origin of the createClass route
   switch (urlList[2]) {
-    case "reports":
+    case 'reports':
       // equivalent to /author/reports/<report-type>
-      return urlList.slice(0, 4).join("/");
-    case "manageClass":
-    case "gradebook":
-    case "groups":
-    case "class-enrollment":
-      return `/author/${urlList[2]}`;
+      return urlList.slice(0, 4).join('/')
+    case 'manageClass':
+    case 'gradebook':
+    case 'groups':
+    case 'class-enrollment':
+      return `/author/${urlList[2]}`
     default:
-      return "/author/manageClass";
+      return '/author/manageClass'
   }
-};
+}
 
 const ScrollElement = ({ item, onClick, ticked }) => (
-  <div data-cy={`${item.lastName}, ${item.firstName}`} className="scrollbar-element" onClick={() => onClick(item._id)}>
+  <div
+    data-cy={`${item.lastName}, ${item.firstName}`}
+    className="scrollbar-element"
+    onClick={() => onClick(item._id)}
+  >
     <div className="scrollbar-select">
-      <StyledDiv color={darkGrey2} spacing="0.26px" fontStyle="14px/19px Open Sans">
-        {item.firstName || ""} {item.lastName || ""}
+      <StyledDiv
+        color={darkGrey2}
+        spacing="0.26px"
+        fontStyle="14px/19px Open Sans"
+      >
+        {item.firstName || ''} {item.lastName || ''}
       </StyledDiv>
       <StyledDiv color={lightGrey5} spacing="0.2px">
-        {item.username || ""}
+        {item.username || ''}
       </StyledDiv>
     </div>
-    <IconCorrect data-cy={`isSelected-${ticked}`} color={ticked ? themeColor : white} />
+    <IconCorrect
+      data-cy={`isSelected-${ticked}`}
+      color={ticked ? themeColor : white}
+    />
   </div>
-);
+)
 
 const AddToGroupModal = ({
   visible,
   onCancel,
-  groupType = "custom",
+  groupType = 'custom',
   checkedStudents,
   loading,
   fetchGroups,
@@ -69,118 +90,154 @@ const AddToGroupModal = ({
   enrollStudentsToGroup,
   match,
   history,
-  windowWidth
+  windowWidth,
 }) => {
-  const groupTypeText = groupType === "custom" ? "group" : "class";
-  const [studentList, setStudentList] = useState([]);
-  const [studentsToAdd, setStudentsToAdd] = useState([]);
-  const [studentsToRemove, setStudentsToRemove] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState({});
+  const groupTypeText = groupType === 'custom' ? 'group' : 'class'
+  const [studentList, setStudentList] = useState([])
+  const [studentsToAdd, setStudentsToAdd] = useState([])
+  const [studentsToRemove, setStudentsToRemove] = useState([])
+  const [selectedGroup, setSelectedGroup] = useState({})
 
   useEffect(() => {
-    fetchGroups();
-  }, []);
+    fetchGroups()
+  }, [])
 
   useEffect(() => {
     if (visible && selectedGroup.key) {
-      (async () => {
-        const { students } = await enrollmentApi.fetch(selectedGroup.key);
-        setStudentList(students.filter(s => s.enrollmentStatus));
-      })();
+      ;(async () => {
+        const { students } = await enrollmentApi.fetch(selectedGroup.key)
+        setStudentList(students.filter((s) => s.enrollmentStatus))
+      })()
     }
-  }, [selectedGroup, visible]);
+  }, [selectedGroup, visible])
 
   useEffect(() => {
     if (visible) {
-      const sIds = studentList.map(s => s._id);
-      setStudentsToAdd(checkedStudents.filter(c => !sIds.includes(c._id)).map(c => c._id));
+      const sIds = studentList.map((s) => s._id)
+      setStudentsToAdd(
+        checkedStudents.filter((c) => !sIds.includes(c._id)).map((c) => c._id)
+      )
     }
-  }, [checkedStudents, studentList, visible]);
+  }, [checkedStudents, studentList, visible])
 
   const studentLeftList = checkedStudents
-    .filter(c => !studentList.find(s => s._id === c._id))
-    .map(item => (
+    .filter((c) => !studentList.find((s) => s._id === c._id))
+    .map((item) => (
       <ScrollElement
         key={`sal-${item._id}`}
         item={item}
         ticked={studentsToAdd.includes(item._id)}
-        onClick={sId => {
+        onClick={(sId) => {
           setStudentsToAdd(
-            studentsToAdd.includes(sId) ? studentsToAdd.filter(id => id !== sId) : [...studentsToAdd, sId]
-          );
+            studentsToAdd.includes(sId)
+              ? studentsToAdd.filter((id) => id !== sId)
+              : [...studentsToAdd, sId]
+          )
         }}
       />
-    ));
+    ))
 
-  const studentRightList = studentList.map(item => (
+  const studentRightList = studentList.map((item) => (
     <ScrollElement
       key={`srl-${item._id}`}
       item={item}
       ticked={!studentsToRemove.includes(item._id)}
-      onClick={sId => {
+      onClick={(sId) => {
         setStudentsToRemove(
-          studentsToRemove.includes(sId) ? studentsToRemove.filter(id => id !== sId) : [...studentsToRemove, sId]
-        );
+          studentsToRemove.includes(sId)
+            ? studentsToRemove.filter((id) => id !== sId)
+            : [...studentsToRemove, sId]
+        )
       }}
     />
-  ));
+  ))
 
   const handleOnSubmit = async () => {
-    const group = groupList.find(g => selectedGroup.key === g._id);
-    const { code: classCode, districtId, name } = group;
+    const group = groupList.find((g) => selectedGroup.key === g._id)
+    const { code: classCode, districtId, name } = group
     // add students
     if (studentsToAdd.length) {
-      enrollStudentsToGroup({ classCode, districtId, studentIds: studentsToAdd, type: groupType, name });
-      setStudentsToAdd([]);
+      enrollStudentsToGroup({
+        classCode,
+        districtId,
+        studentIds: studentsToAdd,
+        type: groupType,
+        name,
+      })
+      setStudentsToAdd([])
     }
     // remove students
     if (studentsToRemove.length) {
       try {
-        await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
-        notification({ type: "success", msg: `Students removed from ${groupTypeText} ${name} successfully` });
+        await enrollmentApi.removeStudents({
+          classCode,
+          districtId,
+          studentIds: studentsToRemove,
+        })
+        notification({
+          type: 'success',
+          msg: `Students removed from ${groupTypeText} ${name} successfully`,
+        })
       } catch (err) {
         const {
-          data: { message: errorMessage }
-        } = err.response;
-        Sentry.captureException(err);
-        notification({ msg: errorMessage });
+          data: { message: errorMessage },
+        } = err.response
+        Sentry.captureException(err)
+        notification({ msg: errorMessage })
       }
-      setStudentsToRemove([]);
+      setStudentsToRemove([])
     }
     // notify when right section is all ticked and left section is all unticked or empty
-    if (checkedStudents.length && !studentsToAdd.length && !studentsToRemove.length) {
+    if (
+      checkedStudents.length &&
+      !studentsToAdd.length &&
+      !studentsToRemove.length
+    ) {
       if (studentLeftList.length) {
         // if left section has all students unticked
-        notification({ type: "warn", msg: `Select one or more students to add to or remove from ${groupTypeText}` });
+        notification({
+          type: 'warn',
+          msg: `Select one or more students to add to or remove from ${groupTypeText}`,
+        })
       } else {
         // if left side is empty
-        notification({ type: "info", msg: `Selected students are already enrolled to ${groupTypeText} ${name}` });
-        onCancel();
+        notification({
+          type: 'info',
+          msg: `Selected students are already enrolled to ${groupTypeText} ${name}`,
+        })
+        onCancel()
       }
     } else {
       // close modal
-      onCancel();
+      onCancel()
     }
-  };
+  }
 
   const handleAddNew = () => {
     if (checkedStudents.length) {
-      const parentUrl = getParentUrl(match.url.split("/"));
+      const parentUrl = getParentUrl(match.url.split('/'))
       history.push({
         pathname: `${parentUrl}/createClass/`,
-        state: { type: groupTypeText, studentIds: checkedStudents.map(s => s._id), exitPath: match.url }
-      });
+        state: {
+          type: groupTypeText,
+          studentIds: checkedStudents.map((s) => s._id),
+          exitPath: match.url,
+        },
+      })
     } else {
-      notification({ type: "warn", msg: `Select one or more students to add to ${groupTypeText}` });
+      notification({
+        type: 'warn',
+        msg: `Select one or more students to add to ${groupTypeText}`,
+      })
     }
-  };
+  }
 
-  const filteredGroups = (groupList || []).filter(g => g.type === groupType);
+  const filteredGroups = (groupList || []).filter((g) => g.type === groupType)
 
   // input styles
-  const tabletWidthNum = tabletWidth.match(/[0-9]+/)[0];
-  const selectorWidth = windowWidth > tabletWidthNum ? "326px" : "260px";
-  const addNewButtonWidth = windowWidth > tabletWidthNum ? "192px" : "150px";
+  const tabletWidthNum = tabletWidth.match(/[0-9]+/)[0]
+  const selectorWidth = windowWidth > tabletWidthNum ? '326px' : '260px'
+  const addNewButtonWidth = windowWidth > tabletWidthNum ? '192px' : '150px'
 
   return (
     <StyledModal
@@ -188,13 +245,23 @@ const AddToGroupModal = ({
       visible={visible}
       footer={[
         <StyledCol span={24}>
-          <EduButton data-cy="cancelGroup" width="200px" isGhost onClick={onCancel}>
+          <EduButton
+            data-cy="cancelGroup"
+            width="200px"
+            isGhost
+            onClick={onCancel}
+          >
             Cancel
           </EduButton>
-          <EduButton data-cy="createGroup" width="200px" onClick={handleOnSubmit} disabled={!selectedGroup.key}>
+          <EduButton
+            data-cy="createGroup"
+            width="200px"
+            onClick={handleOnSubmit}
+            disabled={!selectedGroup.key}
+          >
             Update Group Membership
           </EduButton>
-        </StyledCol>
+        </StyledCol>,
       ]}
       onCancel={onCancel}
       centered
@@ -266,7 +333,7 @@ const AddToGroupModal = ({
               height="40px"
               width={addNewButtonWidth}
               onClick={handleAddNew}
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: '10px' }}
               isGhost
             >
               <IconPlusCircle width={20} height={20} />
@@ -278,7 +345,9 @@ const AddToGroupModal = ({
             <div>
               <StyledDiv> SELECTED STUDENTS </StyledDiv>
               <ScrollbarContainer data-cy="students-left">
-                <PerfectScrollbar>{studentLeftList || <div />}</PerfectScrollbar>
+                <PerfectScrollbar>
+                  {studentLeftList || <div />}
+                </PerfectScrollbar>
               </ScrollbarContainer>
             </div>
             <Row>
@@ -288,30 +357,32 @@ const AddToGroupModal = ({
             <div>
               <StyledDiv> STUDENTS ALREADY IN GROUP </StyledDiv>
               <ScrollbarContainer data-cy="students-right">
-                <PerfectScrollbar>{studentRightList || <div />}</PerfectScrollbar>
+                <PerfectScrollbar>
+                  {studentRightList || <div />}
+                </PerfectScrollbar>
               </ScrollbarContainer>
             </div>
           </StyledCol>
         </Row>
       )}
     </StyledModal>
-  );
-};
+  )
+}
 
 export default compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       groupList: getGroupsSelector(state),
-      loading: groupsLoadingSelector(state)
+      loading: groupsLoadingSelector(state),
     }),
     {
       fetchGroups: fetchGroupsAction,
-      enrollStudentsToGroup: requestEnrolExistingUserToClassAction
+      enrollStudentsToGroup: requestEnrolExistingUserToClassAction,
     }
   )
-)(AddToGroupModal);
+)(AddToGroupModal)
 
 const StyledModal = styled(CustomModalStyled)`
   min-width: 960px;
@@ -332,17 +403,17 @@ const StyledModal = styled(CustomModalStyled)`
   @media (max-width: ${tabletWidth}) {
     min-width: 600px;
   }
-`;
+`
 
 const StyledCol = styled(Col)`
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justify || "center"};
-  margin-bottom: ${props => props.marginBottom};
+  justify-content: ${(props) => props.justify || 'center'};
+  margin-bottom: ${(props) => props.marginBottom};
   svg {
     cursor: pointer;
   }
-`;
+`
 
 const StyledDiv = styled.div`
   display: inline;
@@ -350,12 +421,12 @@ const StyledDiv = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font: ${props => props.fontStyle || "11px/14px Open Sans"};
-  font-weight: ${props => props.fontWeight || 600};
-  color: ${props => props.color || greyThemeDark1};
-  width: ${props => props.width || "auto"};
-  spacing: ${props => props.spacing || "0px"};
-`;
+  font: ${(props) => props.fontStyle || '11px/14px Open Sans'};
+  font-weight: ${(props) => props.fontWeight || 600};
+  color: ${(props) => props.color || greyThemeDark1};
+  width: ${(props) => props.width || 'auto'};
+  spacing: ${(props) => props.spacing || '0px'};
+`
 
 const StyledEduButton = styled(EduButton)`
   span {
@@ -375,7 +446,7 @@ const StyledEduButton = styled(EduButton)`
       fill: ${themeColor};
     }
   }
-`;
+`
 
 const ScrollbarContainer = styled.div`
   padding: 20px 0;
@@ -427,16 +498,16 @@ const ScrollbarContainer = styled.div`
   @media (max-width: ${tabletWidth}) {
     padding: 15px 0;
   }
-`;
+`
 
 const IconLeft = styled(IconCarets.IconCaretLeft)`
   color: ${themeColor};
   margin: -1px;
   font-size: 12px;
-`;
+`
 
 const IconRight = styled(IconCarets.IconCaretRight)`
   color: ${themeColor};
   margin: -2px;
   font-size: 12px;
-`;
+`

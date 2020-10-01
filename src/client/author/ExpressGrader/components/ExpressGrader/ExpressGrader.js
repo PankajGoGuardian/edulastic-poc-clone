@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { isEmpty, size, get } from "lodash";
-import memoizeOne from "memoize-one";
-import styled from "styled-components";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { isEmpty, size, get } from 'lodash'
+import memoizeOne from 'memoize-one'
+import styled from 'styled-components'
 
 // contants
-import { mobileWidthLarge } from "@edulastic/colors";
+import { mobileWidthLarge } from '@edulastic/colors'
 
 // components
 import {
@@ -16,112 +16,121 @@ import {
   WithResources,
   FlexContainer,
   toggleIntercomDisplay,
-  EduSwitchStyled
-} from "@edulastic/common";
-import AppConfig from "../../../../../../app-config";
-import ScoreTable from "../ScoreTable/ScoreTable";
-import ScoreCard from "../ScoreCard/ScoreCard";
-import QuestionModal from "../QuestionModal/QuestionModal";
-import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
-import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import HooksContainer from "../../../ClassBoard/components/HooksContainer/HooksContainer";
-import { StyledFlexContainer } from "./styled";
-import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
-import ExpressGraderScoreColors from "../ExpressGraderScoreColors";
+  EduSwitchStyled,
+} from '@edulastic/common'
+import AppConfig from '../../../../../../app-config'
+import ScoreTable from '../ScoreTable/ScoreTable'
+import ScoreCard from '../ScoreCard/ScoreCard'
+import QuestionModal from '../QuestionModal/QuestionModal'
+import ClassHeader from '../../../Shared/Components/ClassHeader/ClassHeader'
+import PresentationToggleSwitch from '../../../Shared/Components/PresentationToggleSwitch'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import HooksContainer from '../../../ClassBoard/components/HooksContainer/HooksContainer'
+import { StyledFlexContainer } from './styled'
+import ClassBreadBrumb from '../../../Shared/Components/ClassBreadCrumb'
+import ExpressGraderScoreColors from '../ExpressGraderScoreColors'
 
 // actions
-import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
-import { clearAnswersAction } from "../../../src/actions/answers";
+import {
+  receiveTestActivitydAction,
+  clearFeedbackResponseAction,
+} from '../../../src/actions/classBoard'
+import { clearAnswersAction } from '../../../src/actions/answers'
 
 // ducks
-import { getSortedTestActivitySelector, getAdditionalDataSelector } from "../../../ClassBoard/ducks";
-import { toggleScoreModeAction, disableScoreModeAction } from "../../ducks";
-import { getFeedbackResponseSelector } from "../../../src/selectors/feedback";
+import {
+  getSortedTestActivitySelector,
+  getAdditionalDataSelector,
+} from '../../../ClassBoard/ducks'
+import { toggleScoreModeAction, disableScoreModeAction } from '../../ducks'
+import { getFeedbackResponseSelector } from '../../../src/selectors/feedback'
 
 /**
  *
  * @param {Object[]} activities
  */
-const testActivitiesTransform = activities =>
+const testActivitiesTransform = (activities) =>
   activities
     .map((x, index) => ({ ...x, qIndex: index }))
-    .filter(x => !x.disabled)
-    .map(x => ({ ...x, qids: (x.qids || []).map((id, index) => index + (x.qIndex + 1)) }));
+    .filter((x) => !x.disabled)
+    .map((x) => ({
+      ...x,
+      qids: (x.qids || []).map((id, index) => index + (x.qIndex + 1)),
+    }))
 
-const transform = testActivities =>
-  testActivities.map(x => ({
+const transform = (testActivities) =>
+  testActivities.map((x) => ({
     ...x,
-    questionActivities: testActivitiesTransform(x.questionActivities)
-  }));
+    questionActivities: testActivitiesTransform(x.questionActivities),
+  }))
 
-const transformMemoized = memoizeOne(transform);
+const transformMemoized = memoizeOne(transform)
 
 class ExpressGrader extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       record: null,
       tableData: null,
-      isVisibleModal: false
-    };
+      isVisibleModal: false,
+    }
   }
 
   componentDidMount() {
-    const { loadTestActivity, match, testActivity, additionalData } = this.props;
+    const { loadTestActivity, match, testActivity, additionalData } = this.props
     if (!size(testActivity) && isEmpty(additionalData)) {
-      const { assignmentId, classId } = match.params;
-      loadTestActivity(assignmentId, classId);
+      const { assignmentId, classId } = match.params
+      loadTestActivity(assignmentId, classId)
     }
   }
 
   componentWillUnmount() {
-    const { clearEgAnswers } = this.props;
-    clearEgAnswers();
+    const { clearEgAnswers } = this.props
+    clearEgAnswers()
   }
 
   static getDerivedStateFromProps(props) {
-    const { changedFeedback } = props;
-    const newState = { changedFeedback: !isEmpty(changedFeedback) };
-    return newState;
+    const { changedFeedback } = props
+    const newState = { changedFeedback: !isEmpty(changedFeedback) }
+    return newState
   }
 
   handleCreate = () => {
-    const { history, match } = this.props;
-    history.push(`${match.url}/create`);
-  };
+    const { history, match } = this.props
+    history.push(`${match.url}/create`)
+  }
 
   showQuestionModal = (record, tableData) => {
-    toggleIntercomDisplay();
+    toggleIntercomDisplay()
     this.setState({
       record,
       tableData,
-      isVisibleModal: true
-    });
-  };
+      isVisibleModal: true,
+    })
+  }
 
   hideQuestionModal = () => {
-    toggleIntercomDisplay();
-    const { changedFeedback } = this.state;
+    toggleIntercomDisplay()
+    const { changedFeedback } = this.state
     if (changedFeedback) {
       const {
         clearFeedbackResponse,
         loadTestActivity,
         match: {
-          params: { assignmentId, classId }
-        }
-      } = this.props;
+          params: { assignmentId, classId },
+        },
+      } = this.props
 
-      loadTestActivity(assignmentId, classId);
-      clearFeedbackResponse();
+      loadTestActivity(assignmentId, classId)
+      clearFeedbackResponse()
     }
     this.setState({
       isVisibleModal: false,
-      record: null
-    });
-  };
+      record: null,
+    })
+  }
 
-  isMobile = () => window.innerWidth < 768;
+  isMobile = () => window.innerWidth < 768
 
   render() {
     const {
@@ -131,14 +140,18 @@ class ExpressGrader extends Component {
       isPresentationMode,
       windowWidth,
       toggleScoreMode,
-      scoreMode
-    } = this.props;
-    const { isVisibleModal, record, tableData } = this.state;
-    const { assignmentId, classId, testActivityId } = match.params;
-    const isMobile = this.isMobile();
-    const testActivity = transformMemoized(_testActivity);
+      scoreMode,
+    } = this.props
+    const { isVisibleModal, record, tableData } = this.state
+    const { assignmentId, classId, testActivityId } = match.params
+    const isMobile = this.isMobile()
+    const testActivity = transformMemoized(_testActivity)
     return (
-      <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
+      <FeaturesSwitch
+        inputFeatures="expressGrader"
+        actionOnInaccessible="hidden"
+        groupId={classId}
+      >
         <div>
           <HooksContainer assignmentId={assignmentId} classId={classId} />
           <ClassHeader
@@ -152,7 +165,10 @@ class ExpressGrader extends Component {
           />
           <MainContentWrapper padding="20px 30px 0px 30px">
             <WithResources
-              resources={[`${AppConfig.katexPath}/katex.min.css`, `${AppConfig.katexPath}/katex.min.js`]}
+              resources={[
+                `${AppConfig.katexPath}/katex.min.css`,
+                `${AppConfig.katexPath}/katex.min.js`,
+              ]}
               fallBack={<span />}
             >
               <StyledFlexContainer justifyContent="space-between">
@@ -160,8 +176,12 @@ class ExpressGrader extends Component {
 
                 <FlexContainer justifyContent="space-between">
                   <SwitchBox>
-                    RESPONSE{" "}
-                    <EduSwitchStyled data-cy="response-toggle" checked={scoreMode} onChange={() => toggleScoreMode()} />{" "}
+                    RESPONSE{' '}
+                    <EduSwitchStyled
+                      data-cy="response-toggle"
+                      checked={scoreMode}
+                      onChange={() => toggleScoreMode()}
+                    />{' '}
                     SCORE
                   </SwitchBox>
                   <PresentationToggleSwitch groupId={classId} />
@@ -180,7 +200,9 @@ class ExpressGrader extends Component {
                 </>
               )}
 
-              {isMobile && <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />}
+              {isMobile && (
+                <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />
+              )}
 
               {isVisibleModal && (
                 <QuestionModal
@@ -199,31 +221,35 @@ class ExpressGrader extends Component {
           </MainContentWrapper>
         </div>
       </FeaturesSwitch>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       testActivity: getSortedTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       changedFeedback: getFeedbackResponseSelector(state),
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      scoreMode: state?.expressGraderReducer?.scoreMode
+      isPresentationMode: get(
+        state,
+        ['author_classboard_testActivity', 'presentationMode'],
+        false
+      ),
+      scoreMode: state?.expressGraderReducer?.scoreMode,
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
       clearFeedbackResponse: clearFeedbackResponseAction,
       clearEgAnswers: clearAnswersAction,
       toggleScoreMode: toggleScoreModeAction,
-      disableScoreMode: disableScoreModeAction
+      disableScoreMode: disableScoreModeAction,
     }
   )
-);
+)
 
-export default enhance(ExpressGrader);
+export default enhance(ExpressGrader)
 
 ExpressGrader.propTypes = {
   history: PropTypes.object,
@@ -232,8 +258,8 @@ ExpressGrader.propTypes = {
   additionalData: PropTypes.object,
   loadTestActivity: PropTypes.func,
   clearFeedbackResponse: PropTypes.func,
-  isPresentationMode: PropTypes.bool
-};
+  isPresentationMode: PropTypes.bool,
+}
 
 ExpressGrader.defaultProps = {
   history: {},
@@ -242,8 +268,8 @@ ExpressGrader.defaultProps = {
   additionalData: {},
   loadTestActivity: () => {},
   clearFeedbackResponse: () => {},
-  isPresentationMode: false
-};
+  isPresentationMode: false,
+}
 
 const SwitchBox = styled.span`
   font-size: 11px;
@@ -264,4 +290,4 @@ const SwitchBox = styled.span`
   @media (max-width: ${mobileWidthLarge}) {
     display: none;
   }
-`;
+`

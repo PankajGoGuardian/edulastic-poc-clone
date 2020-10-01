@@ -1,17 +1,17 @@
-import styled from "styled-components";
-import { Checkbox, Collapse } from "antd";
-import { title, themeColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Checkbox, Collapse } from 'antd'
+import { title, themeColor } from '@edulastic/colors'
 
 export const DragCrad = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 export const DragHandler = styled.div`
   width: 30px;
   cursor: move;
   text-align: center;
-`;
+`
 
 export const ReviewItemWrapper = styled.div`
   padding: 16px;
@@ -22,12 +22,12 @@ export const ReviewItemWrapper = styled.div`
   &:first-child {
     border-top: 1px solid #e8e8e8;
   }
-`;
+`
 
 export const QuestionCheckbox = styled(Checkbox)`
   display: block;
   margin-top: 10px;
-`;
+`
 
 export const GroupCollapse = styled(Collapse)`
   &.ant-collapse {
@@ -75,7 +75,7 @@ export const GroupCollapse = styled(Collapse)`
       }
     }
   }
-`;
+`
 
 export const InfoDiv = styled.div`
   display: flex;
@@ -83,22 +83,22 @@ export const InfoDiv = styled.div`
   align-items: center;
   line-height: 16px;
   padding: 0px 10px;
-`;
+`
 
 export const Text = styled.div`
   font-size: 9px;
   text-transform: uppercase;
   color: ${title};
   font-weight: 600;
-`;
+`
 
 export const Count = styled.div`
   font-size: 16px;
   font-weight: bold;
   color: ${title};
-`;
+`
 
-export const QuestionIndex = styled.div``;
+export const QuestionIndex = styled.div``
 
 export const StyledSpinnerContainer = styled.div`
   padding: 10px;
@@ -108,4 +108,4 @@ export const StyledSpinnerContainer = styled.div`
     left: unset;
     transform: unset;
   }
-`;
+`

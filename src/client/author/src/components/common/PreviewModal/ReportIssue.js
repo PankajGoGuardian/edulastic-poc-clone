@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
-import { FroalaEditor } from "@edulastic/common";
+import { FroalaEditor } from '@edulastic/common'
 
-import { ReportIssueContainer, ReportHeader, CloseButton, TextAreaSendButton } from "./styled";
-import { reportContentErrorAction } from "../../../../TestPage/components/AddItems/ducks";
-import { submitReviewFeedbackAction } from "../../../../ItemList/ducks";
-import { getUserRole } from "../../../../../student/Login/ducks";
+import {
+  ReportIssueContainer,
+  ReportHeader,
+  CloseButton,
+  TextAreaSendButton,
+} from './styled'
+import { reportContentErrorAction } from '../../../../TestPage/components/AddItems/ducks'
+import { submitReviewFeedbackAction } from '../../../../ItemList/ducks'
+import { getUserRole } from '../../../../../student/Login/ducks'
 
 const ReportIssue = ({
   item,
@@ -18,56 +23,56 @@ const ReportIssue = ({
   toggleModal,
   confirmationResponse,
   userRole,
-  submitReviewFeedback
+  submitReviewFeedback,
 }) => {
-  const [reportedComment, setReportComment] = useState("");
+  const [reportedComment, setReportComment] = useState('')
 
-  const setCommentValue = comment => {
-    setReportComment(comment);
-  };
+  const setCommentValue = (comment) => {
+    setReportComment(comment)
+  }
 
   const clearComment = () => {
-    setReportComment("");
-  };
+    setReportComment('')
+  }
 
   const reportError = () => {
     if (reportedComment) {
       reportTestItemError({
         contentId: item._id,
-        contentType: "testitem",
-        comments: reportedComment
-      });
+        contentType: 'testitem',
+        comments: reportedComment,
+      })
       submitReviewFeedback({
-        status: "content error",
+        status: 'content error',
         data: {
-          type: "testItem",
-          referrerType: "TestItemContent",
+          type: 'testItem',
+          referrerType: 'TestItemContent',
           referrerId: item._id,
           data: {
-            note: reportedComment
+            note: reportedComment,
           },
-          status: "content error"
-        }
-      });
-      setTimeout(toggleReportIssue(), 1000);
+          status: 'content error',
+        },
+      })
+      setTimeout(toggleReportIssue(), 1000)
     }
-  };
+  }
 
   const checkForConfirmation = () => {
-    if (toggleModal && userRole === "student") {
-      toggleModal(true);
+    if (toggleModal && userRole === 'student') {
+      toggleModal(true)
     } else {
-      reportError();
+      reportError()
     }
-  };
+  }
 
   useEffect(() => {
-    if (visible === false) clearComment();
-  }, [visible]);
+    if (visible === false) clearComment()
+  }, [visible])
 
   useEffect(() => {
-    if (confirmationResponse) reportError();
-  }, [confirmationResponse]);
+    if (confirmationResponse) reportError()
+  }, [confirmationResponse])
 
   return (
     <ReportIssueContainer className="report">
@@ -79,8 +84,8 @@ const ReportIssue = ({
         <CloseButton
           icon="close"
           onClick={() => {
-            clearComment();
-            toggleReportIssue();
+            clearComment()
+            toggleReportIssue()
           }}
         />
       </ReportHeader>
@@ -95,19 +100,22 @@ const ReportIssue = ({
         data-cy="report-content-issue-input"
       />
 
-      <TextAreaSendButton disabled={!reportedComment} onClick={checkForConfirmation}>
+      <TextAreaSendButton
+        disabled={!reportedComment}
+        onClick={checkForConfirmation}
+      >
         Send
       </TextAreaSendButton>
     </ReportIssueContainer>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
-    userRole: getUserRole(state)
+  (state) => ({
+    userRole: getUserRole(state),
   }),
   {
     reportTestItemError: reportContentErrorAction,
-    submitReviewFeedback: submitReviewFeedbackAction
+    submitReviewFeedback: submitReviewFeedbackAction,
   }
-)(ReportIssue);
+)(ReportIssue)

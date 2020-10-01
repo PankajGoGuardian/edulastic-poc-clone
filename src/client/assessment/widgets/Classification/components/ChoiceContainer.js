@@ -1,54 +1,59 @@
 /* eslint-disable react/prop-types */
-import React, { useRef, useLayoutEffect, useState } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React, { useRef, useLayoutEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-import { lightGrey1, mobileWidthLarge } from "@edulastic/colors";
-import { Subtitle } from "@edulastic/common";
+import { lightGrey1, mobileWidthLarge } from '@edulastic/colors'
+import { Subtitle } from '@edulastic/common'
 
 const ChoiceContainer = ({ title, children, direction, choiceWidth }) => {
-  const ContainerRef = useRef(null);
+  const ContainerRef = useRef(null)
 
-  const [containerHeight, setContainerHeight] = useState(140);
+  const [containerHeight, setContainerHeight] = useState(140)
 
   useLayoutEffect(() => {
     setTimeout(() => {
       if (ContainerRef.current) {
-        const { height } = ContainerRef.current.getBoundingClientRect();
-        setContainerHeight(height);
+        const { height } = ContainerRef.current.getBoundingClientRect()
+        setContainerHeight(height)
       }
-    });
-  }, [ContainerRef.current]);
+    })
+  }, [ContainerRef.current])
 
   return (
-    <Container minHeight={containerHeight} direction={direction} choiceWidth={choiceWidth} ref={ContainerRef}>
+    <Container
+      minHeight={containerHeight}
+      direction={direction}
+      choiceWidth={choiceWidth}
+      ref={ContainerRef}
+    >
       {title && <Subtitle direction={direction}>{title}</Subtitle>}
       {children}
     </Container>
-  );
-};
+  )
+}
 
 ChoiceContainer.propTypes = {
   title: PropTypes.string.isRequired,
   choiceWidth: PropTypes.number.isRequired,
   children: PropTypes.any,
-  direction: PropTypes.string
-};
+  direction: PropTypes.string,
+}
 
 ChoiceContainer.defaultProps = {
   children: null,
-  direction: ""
-};
+  direction: '',
+}
 
-export default ChoiceContainer;
+export default ChoiceContainer
 
 const Container = styled.div`
   padding: 22px 12px;
-  min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : "140px")};
+  min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : '140px')};
   background-color: ${lightGrey1};
 
   ${({ direction, choiceWidth }) => {
-    if (direction === "row") {
+    if (direction === 'row') {
       return `
         margin-left: 16px;
         max-width: ${choiceWidth}px;
@@ -57,9 +62,9 @@ const Container = styled.div`
           flex-direction: column;
           align-items: stretch;
         }
-      `;
+      `
     }
-    if (direction === "row-reverse") {
+    if (direction === 'row-reverse') {
       return `
         margin-right: 16px;
         max-width: ${choiceWidth}px;
@@ -68,7 +73,7 @@ const Container = styled.div`
           flex-direction: column;
           align-items: stretch;
         }
-      `;
+      `
     }
     return `
       width: max-content;
@@ -79,7 +84,7 @@ const Container = styled.div`
         flex-wrap: wrap;
         justify-content: flex-start;
       }
-    `;
+    `
   }};
 
   & .choice-items-wrapper {
@@ -89,4 +94,4 @@ const Container = styled.div`
       max-width: 400px;
     }
   }
-`;
+`

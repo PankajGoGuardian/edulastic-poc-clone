@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import OptionPDF from "../OptionPDF/OptionPDF";
-import OptionScratch from "../OptionScratch/OptionScratch";
-import BodyWrapper from "../../../AssignmentCreate/common/BodyWrapper";
-import FlexWrapper from "../../../AssignmentCreate/common/FlexWrapper";
-import OptionQti from "../OptionQTI/OptionQTI";
-import { QTI_DISTRICTS } from "../../../../config";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import OptionPDF from '../OptionPDF/OptionPDF'
+import OptionScratch from '../OptionScratch/OptionScratch'
+import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
+import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
+import OptionQti from '../OptionQTI/OptionQTI'
+import { QTI_DISTRICTS } from '../../../../config'
 
 const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
   <BodyWrapper>
@@ -18,17 +18,17 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
       {isShowQTI && <OptionQti />}
     </FlexWrapper>
   </BodyWrapper>
-);
+)
 
 CreationOptions.propTypes = {
-  onUploadPDF: PropTypes.func.isRequired
-};
+  onUploadPDF: PropTypes.func.isRequired,
+}
 
 const enhance = compose(
   withRouter,
-  connect(state => ({
-    isShowQTI: QTI_DISTRICTS.includes(state?.user?.user?.districtIds[0])
+  connect((state) => ({
+    isShowQTI: QTI_DISTRICTS.includes(state?.user?.user?.districtIds[0]),
   }))
-);
+)
 
-export default enhance(CreationOptions);
+export default enhance(CreationOptions)

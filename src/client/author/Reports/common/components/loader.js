@@ -1,7 +1,7 @@
-import React from "react";
-import { Row, Col } from "antd";
-import styled from "styled-components";
-import { StyledCard } from "../styled";
+import React from 'react'
+import { Row, Col } from 'antd'
+import styled from 'styled-components'
+import { StyledCard } from '../styled'
 
 const Placeholder = ({ style }) => {
   return (
@@ -11,8 +11,8 @@ const Placeholder = ({ style }) => {
         <div className="placeholder-content" />
       </StyledCard>
     </PlaceholderCard>
-  );
-};
+  )
+}
 
 const PlaceholderCard = styled(Col)`
   flex: 1;
@@ -50,6 +50,6 @@ const PlaceholderCard = styled(Col)`
       }
     }
   }
-`;
+`
 
-export { Placeholder };
+export { Placeholder }

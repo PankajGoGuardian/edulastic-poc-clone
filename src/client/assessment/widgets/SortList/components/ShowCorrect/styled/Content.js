@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { WithMathFormula } from "@edulastic/common";
-import { FlexRow } from "./FlexRow";
+import styled from 'styled-components'
+import { WithMathFormula } from '@edulastic/common'
+import { FlexRow } from './FlexRow'
 
 export const Content = WithMathFormula(styled(FlexRow)`
   align-items: center;
@@ -11,4 +11,4 @@ export const Content = WithMathFormula(styled(FlexRow)`
     max-width: 400px !important;
     height: auto;
   }
-`);
+`)

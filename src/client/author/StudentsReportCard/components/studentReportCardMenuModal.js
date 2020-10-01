@@ -1,32 +1,46 @@
-import { greyScoreCardTitleColor, secondaryTextColor } from "@edulastic/colors";
-import { CheckboxLabel, CustomModalStyled, EduButton } from "@edulastic/common";
-import React, { useState } from "react";
-import styled from "styled-components";
+import { greyScoreCardTitleColor, secondaryTextColor } from '@edulastic/colors'
+import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
+import React, { useState } from 'react'
+import styled from 'styled-components'
 
-const StudentReportCardMenuModal = props => {
-  const { className, visible, title, onOk, onCancel, assignmentId, groupId } = props;
+const StudentReportCardMenuModal = (props) => {
+  const {
+    className,
+    visible,
+    title,
+    onOk,
+    onCancel,
+    assignmentId,
+    groupId,
+  } = props
   const [state, setState] = useState({
     performanceBand: true,
     questionPerformance: true,
     studentResponse: true,
     correctAnswer: true,
     standardsPerformance: true,
-    masteryStatus: true
-  });
+    masteryStatus: true,
+  })
 
-  const onCheckBoxClick = event => {
-    const { name, checked } = event.currentTarget;
-    setState(state => ({
+  const onCheckBoxClick = (event) => {
+    const { name, checked } = event.currentTarget
+    setState((state) => ({
       ...state,
-      [name]: checked
-    }));
-  };
+      [name]: checked,
+    }))
+  }
 
-  const selectedOptions = Object.keys(state).filter(k => state[k]);
+  const selectedOptions = Object.keys(state).filter((k) => state[k])
 
   const footer = (
     <>
-      <EduButton width="150px" isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
+      <EduButton
+        width="150px"
+        isGhost
+        data-cy="CANCEL"
+        height="40px"
+        onClick={onCancel}
+      >
         CANCEL
       </EduButton>
       <a
@@ -34,14 +48,19 @@ const StudentReportCardMenuModal = props => {
         href={`/author/students-report-card/${assignmentId}/${groupId}?options=${selectedOptions}`}
         target="_blank"
         rel="noopener noreferrer"
-        style={{ marginLeft: "15px" }}
+        style={{ marginLeft: '15px' }}
       >
-        <EduButton width="150px" height="40px" data-cy="PRINT" onClick={onCancel}>
+        <EduButton
+          width="150px"
+          height="40px"
+          data-cy="PRINT"
+          onClick={onCancel}
+        >
           GENERATE
         </EduButton>
       </a>
     </>
-  );
+  )
   return (
     <CustomModalStyled
       centered
@@ -56,8 +75,9 @@ const StudentReportCardMenuModal = props => {
     >
       <div>
         <p>
-          Print report card for all students that can be shared with their parentes. Only those students who are in
-          "Graded" status would be included.
+          Print report card for all students that can be shared with their
+          parentes. Only those students who are in "Graded" status would be
+          included.
         </p>
         <p>Select information you would like to print in the report card.</p>
         <div className="form-groups">
@@ -133,8 +153,8 @@ const StudentReportCardMenuModal = props => {
         </div>
       </div>
     </CustomModalStyled>
-  );
-};
+  )
+}
 
 const StyledStudentReportCardMenuModal = styled(StudentReportCardMenuModal)`
   .form-groups {
@@ -157,6 +177,6 @@ const StyledStudentReportCardMenuModal = styled(StudentReportCardMenuModal)`
       }
     }
   }
-`;
+`
 
-export { StyledStudentReportCardMenuModal as StudentReportCardMenuModal };
+export { StyledStudentReportCardMenuModal as StudentReportCardMenuModal }

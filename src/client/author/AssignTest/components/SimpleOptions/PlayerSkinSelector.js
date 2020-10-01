@@ -1,9 +1,15 @@
-import { test } from "@edulastic/constants";
-import { Col, Select } from "antd";
-import React from "react";
-import { ColLabel, Label, StyledRow, StyledRowSelect, StyledSelect } from "./styled";
+import { test } from '@edulastic/constants'
+import { Col, Select } from 'antd'
+import React from 'react'
+import {
+  ColLabel,
+  Label,
+  StyledRow,
+  StyledRowSelect,
+  StyledSelect,
+} from './styled'
 
-const { playerSkinTypes } = test;
+const { playerSkinTypes } = test
 
 const PlayerSkinSelector = ({
   playerSkinType = playerSkinTypes.edulastic,
@@ -12,29 +18,35 @@ const PlayerSkinSelector = ({
   isAdvanceView,
   disabled = false,
   fullwidth = false,
-  selectBackgroundWhite = false
+  selectBackgroundWhite = false,
 }) => {
-  const edulastic = `${playerSkinTypes.edulastic} ${testType?.includes("assessment") ? "Test" : "Practice"}`;
+  const edulastic = `${playerSkinTypes.edulastic} ${
+    testType?.includes('assessment') ? 'Test' : 'Practice'
+  }`
   const types = {
     ...playerSkinTypes,
-    edulastic
-  };
+    edulastic,
+  }
 
   const SelectOption = (
     <StyledSelect
       data-cy="playerSkinType"
       onChange={onAssignmentTypeChange}
-      value={playerSkinType.toLowerCase() === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
+      value={
+        playerSkinType.toLowerCase() === playerSkinTypes.edulastic.toLowerCase()
+          ? edulastic
+          : playerSkinType
+      }
       disabled={disabled}
       isBackgroundWhite={selectBackgroundWhite}
     >
-      {Object.keys(types).map(key => (
+      {Object.keys(types).map((key) => (
         <Select.Option key={key} value={key}>
           {types[key]}
         </Select.Option>
       ))}
     </StyledSelect>
-  );
+  )
 
   return fullwidth ? (
     <StyledRowSelect gutter={16}>
@@ -44,7 +56,7 @@ const PlayerSkinSelector = ({
       <Col span={12}>{SelectOption}</Col>
     </StyledRowSelect>
   ) : (
-    <React.Fragment>
+    <>
       <StyledRow gutter={48}>
         {!isAdvanceView && (
           <ColLabel span={24}>
@@ -53,8 +65,8 @@ const PlayerSkinSelector = ({
         )}
         <Col span={24}>{SelectOption}</Col>
       </StyledRow>
-    </React.Fragment>
-  );
-};
+    </>
+  )
+}
 
-export default PlayerSkinSelector;
+export default PlayerSkinSelector

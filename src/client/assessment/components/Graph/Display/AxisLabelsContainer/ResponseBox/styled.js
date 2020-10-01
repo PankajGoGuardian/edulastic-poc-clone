@@ -1,15 +1,16 @@
-import styled from "styled-components";
-import { Rnd } from "react-rnd";
-import { themeColorHoverBlue } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Rnd } from 'react-rnd'
+import { themeColorHoverBlue } from '@edulastic/colors'
 
 export const Container = styled.div`
   width: ${({ width }) => width};
-  text-align: ${({ isHorizontal }) => (isHorizontal ? "" : "center")};
-  margin-top: ${({ isHorizontal }) => (isHorizontal ? "24px" : "")};
-  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
+  text-align: ${({ isHorizontal }) => (isHorizontal ? '' : 'center')};
+  margin-top: ${({ isHorizontal }) => (isHorizontal ? '24px' : '')};
+  background-color: ${(props) =>
+    props.theme.widgets.axisLabels.responseBoxBgColor};
   padding: 15px 25px 25px;
   border-radius: 4px;
-`;
+`
 
 export const Title = styled.div`
   margin: 0 auto 12px 0px;
@@ -17,7 +18,7 @@ export const Title = styled.div`
   font-weight: ${({ theme }) => theme.bold};
   font-size: ${({ theme }) => theme.smallFontSize};
   line-height: ${({ theme }) => theme.headerLineHeight};
-`;
+`
 
 export const MarkContainer = styled.div`
   margin: auto 0;
@@ -47,17 +48,17 @@ export const MarkContainer = styled.div`
     display: flex;
     align-items: center;
   }
-`;
+`
 
 export const DraggableOptionsContainer = styled.div`
   min-height: 50px;
   width: 100%;
   position: relative;
-`;
+`
 
 export const StyledRnd = styled(Rnd).attrs({
   disableDragging: false,
-  enableResizing: false
+  enableResizing: false,
 })`
   z-index: 10;
   &:hover {
@@ -67,4 +68,4 @@ export const StyledRnd = styled(Rnd).attrs({
       color: white !important;
     }
   }
-`;
+`

@@ -1,9 +1,9 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { isNumber } from "lodash";
-import styled from "styled-components";
-import { MathFormulaDisplay, EduButton } from "@edulastic/common";
-import { removeCommentsFromHtml } from "@edulastic/common/src/helpers";
+import React from 'react'
+import { withRouter } from 'react-router-dom'
+import { isNumber } from 'lodash'
+import styled from 'styled-components'
+import { MathFormulaDisplay, EduButton } from '@edulastic/common'
+import { removeCommentsFromHtml } from '@edulastic/common/src/helpers'
 import {
   mobileWidthLarge,
   desktopWidth,
@@ -11,9 +11,9 @@ import {
   smallDesktopWidth,
   tabletWidth,
   titleColor,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
-import { IconBook, IconGraduationCap } from "@edulastic/icons";
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
+import { IconBook, IconGraduationCap } from '@edulastic/icons'
 
 const CurriculumSubHeader = ({
   isStudent,
@@ -29,47 +29,57 @@ const CurriculumSubHeader = ({
   shouldHidCustomizeButton,
   isAuthoringFlowReview,
   customizeInDraft = false,
-  urlHasUseThis = false
+  urlHasUseThis = false,
 }) => {
-  const { description, subjects = [], grades = [] } = destinationCurriculumSequence;
+  const {
+    description,
+    subjects = [],
+    grades = [],
+  } = destinationCurriculumSequence
 
   const subHeaderIcon1 = !!grades.length && (
     <SubHeaderInfoCard data-cy="playlist-grade">
       <GraduationCapIcon color="grey" />
-      <SubHeaderInfoCardText>Grade {grades.join(", ")}</SubHeaderInfoCardText>
+      <SubHeaderInfoCardText>Grade {grades.join(', ')}</SubHeaderInfoCardText>
     </SubHeaderInfoCard>
-  );
+  )
 
   const subHeaderIcon2 = !!subjects.length && (
     <SubHeaderInfoCard data-cy="playlist-sub">
       <BookIcon color="grey" />
-      <SubHeaderInfoCardText>{subjects.filter(item => !!item).join(", ")}</SubHeaderInfoCardText>
+      <SubHeaderInfoCardText>
+        {subjects.filter((item) => !!item).join(', ')}
+      </SubHeaderInfoCardText>
     </SubHeaderInfoCard>
-  );
+  )
 
-  if (isStudent && !!dateKeys.length && destinationCurriculumSequence?.isSparkMath) {
+  if (
+    isStudent &&
+    !!dateKeys.length &&
+    destinationCurriculumSequence?.isSparkMath
+  ) {
     return (
       <SubTopBar>
         <SubTopBarContainer
           style={{
-            background: "#2f4151",
-            padding: "10px 20px",
-            color: "#fff",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            fontSize: "12px"
+            background: '#2f4151',
+            padding: '10px 20px',
+            color: '#fff',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            fontSize: '12px',
           }}
         >
           <div>NEW RECOMMENDATIONS SINCE LAST LOGIN.</div>
-          <div style={{ cursor: "pointer" }} onClick={handleCheckout}>
+          <div style={{ cursor: 'pointer' }} onClick={handleCheckout}>
             CHECK IT OUT &gt;&gt;
           </div>
         </SubTopBarContainer>
       </SubTopBar>
-    );
+    )
   }
 
-  const assigned = summaryData?.filter(d => isNumber(d.classes))?.length || 0;
+  const assigned = summaryData?.filter((d) => isNumber(d.classes))?.length || 0
   return (
     <SubTopBar>
       <SubTopBarContainer active={isContentExpanded}>
@@ -79,17 +89,27 @@ const CurriculumSubHeader = ({
               <SubHeaderTitle>Module progress</SubHeaderTitle>
               <SubHeaderModuleProgressContainer data-cy="module-pogress">
                 <div>
-                  <span className="assigned">{`${assigned}/${summaryData?.length || 0}`}</span>
+                  <span className="assigned">
+                    {`${assigned}/${summaryData?.length || 0}`}
+                  </span>
                   <span className="assigned-label">Assigned</span>
                 </div>
                 <SubHeaderModuleProgressTagContainer>
-                  {summaryData?.map(d =>
-                    !isNumber(d.classes) ? <SquareColorDivGray key={d.index} /> : <SquareColorDivGreen key={d.index} />
+                  {summaryData?.map((d) =>
+                    !isNumber(d.classes) ? (
+                      <SquareColorDivGray key={d.index} />
+                    ) : (
+                      <SquareColorDivGreen key={d.index} />
+                    )
                   )}
                 </SubHeaderModuleProgressTagContainer>
               </SubHeaderModuleProgressContainer>
             </ModuleProgres>
-            <SubHeaderDescription dangerouslySetInnerHTML={{ __html: removeCommentsFromHtml(description) }} />
+            <SubHeaderDescription
+              dangerouslySetInnerHTML={{
+                __html: removeCommentsFromHtml(description),
+              }}
+            />
           </SubHeaderTitleContainer>
           <RightColumn>
             <SubHeaderInfoCardWrapper>
@@ -97,17 +117,28 @@ const CurriculumSubHeader = ({
               {subHeaderIcon2}
             </SubHeaderInfoCardWrapper>
             <ButtonWrapper>
-              {(!isManageContentActive || !showRightPanel) && enableCustomize && !shouldHidCustomizeButton && (
-                <CustomizeButton isGhost isBlue onClick={toggleManageContentClick("manageContent")}>
-                  Customize Content
-                </CustomizeButton>
-              )}
+              {(!isManageContentActive || !showRightPanel) &&
+                enableCustomize &&
+                !shouldHidCustomizeButton && (
+                  <CustomizeButton
+                    isGhost
+                    isBlue
+                    onClick={toggleManageContentClick('manageContent')}
+                  >
+                    Customize Content
+                  </CustomizeButton>
+                )}
 
-              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) &&
+              {(isManageContentActive ||
+                !showRightPanel ||
+                (!enableCustomize && isStudent)) &&
                 !isAuthoringFlowReview &&
                 !customizeInDraft &&
                 urlHasUseThis && (
-                  <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
+                  <StyledButton
+                    isGhost
+                    onClick={toggleManageContentClick('summary')}
+                  >
                     View Summary
                   </StyledButton>
                 )}
@@ -116,22 +147,22 @@ const CurriculumSubHeader = ({
         </CurriculumSubHeaderRow>
       </SubTopBarContainer>
     </SubTopBar>
-  );
-};
+  )
+}
 
-export default withRouter(CurriculumSubHeader);
+export default withRouter(CurriculumSubHeader)
 
 const SubTopBar = styled.div`
-  width: ${props => (props.active ? "60%" : "100%")};
+  width: ${(props) => (props.active ? '60%' : '100%')};
   padding: 0px;
   margin: auto;
   position: relative;
   @media only screen and (min-width: 1800px) {
-    width: ${props => (props.active ? "60%" : "100%")};
-    margin-left: ${props => (props.active ? "" : "auto")};
-    margin-right: ${props => (props.active ? "" : "auto")};
+    width: ${(props) => (props.active ? '60%' : '100%')};
+    margin-left: ${(props) => (props.active ? '' : 'auto')};
+    margin-right: ${(props) => (props.active ? '' : 'auto')};
   }
-`;
+`
 
 const SubTopBarContainer = styled.div`
   background: white;
@@ -142,10 +173,10 @@ const SubTopBarContainer = styled.div`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  margin-left: ${props => (props.active ? "" : "auto")};
-  margin-right: ${props => (props.active ? "" : "auto")};
+  margin-left: ${(props) => (props.active ? '' : 'auto')};
+  margin-right: ${(props) => (props.active ? '' : 'auto')};
   border-radius: 5px;
-  border: 1px solid #DADAE4;
+  border: 1px solid #dadae4;
 
   @media only screen and (max-width: 1366px) {
     flex-direction: column;
@@ -153,9 +184,9 @@ const SubTopBarContainer = styled.div`
     margin-right: auto;
   }
   @media only screen and (max-width: 1750px) and (min-width: 1367px) {
-    /* flex-direction: ${props => (props.active ? "column" : "row")};
-    justify-self: ${props => (props.active ? "flex-start" : "")};
-    margin-right: ${props => (props.active ? "auto" : "")}; */
+    /* flex-direction: ${(props) => (props.active ? 'column' : 'row')};
+    justify-self: ${(props) => (props.active ? 'flex-start' : '')};
+    margin-right: ${(props) => (props.active ? 'auto' : '')}; */
   }
   @media only screen and (max-width: 480px) {
     padding-left: 20px;
@@ -164,7 +195,7 @@ const SubTopBarContainer = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     padding: 15px;
   }
-`;
+`
 
 const SquareColorDiv = styled.div`
   display: inline-block;
@@ -172,29 +203,29 @@ const SquareColorDiv = styled.div`
   width: 35px;
   height: 8px;
   margin: 1px 2px 0px 0px;
-`;
+`
 
 export const SquareColorDivGreen = styled(SquareColorDiv)`
   background-color: #5eb500;
-`;
+`
 
 export const SquareColorDivGray = styled(SquareColorDiv)`
   background-color: #c5c5c5;
-`;
+`
 
-SubTopBarContainer.displayName = "SubTopBarContainer";
+SubTopBarContainer.displayName = 'SubTopBarContainer'
 
 const CurriculumSubHeaderRow = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${props => props.marginBottom || "0px"};
+  margin-bottom: ${(props) => props.marginBottom || '0px'};
 
   @media (max-width: ${mobileWidthLarge}) {
     flex-direction: column;
   }
-`;
+`
 
 const SubHeaderTitleContainer = styled.div`
   min-width: 200px;
@@ -207,7 +238,7 @@ const SubHeaderTitleContainer = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
   }
-`;
+`
 
 const SubHeaderTitle = styled.div`
   color: #8e9aa4;
@@ -221,7 +252,7 @@ const SubHeaderTitle = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     font-size: 12px;
   }
-`;
+`
 
 const SubHeaderModuleProgressContainer = styled.div`
   margin-bottom: 12px;
@@ -256,7 +287,7 @@ const SubHeaderModuleProgressContainer = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     margin-bottom: 0px;
   }
-`;
+`
 
 const ModuleProgres = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
@@ -265,13 +296,13 @@ const ModuleProgres = styled.div`
     align-items: center;
     margin-bottom: 18px;
   }
-`;
+`
 
 const SubHeaderModuleProgressTagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-`;
+`
 
 const SubHeaderDescription = styled(MathFormulaDisplay)`
   color: ${lightGrey6};
@@ -285,7 +316,7 @@ const SubHeaderDescription = styled(MathFormulaDisplay)`
   @media (max-width: ${mobileWidthLarge}) {
     margin-bottom: 18px;
   }
-`;
+`
 
 const RightColumn = styled.div`
   display: flex;
@@ -307,7 +338,7 @@ const RightColumn = styled.div`
     max-width: 100%;
     align-items: stretch;
   }
-`;
+`
 
 const SubHeaderInfoCardWrapper = styled.div`
   display: flex;
@@ -321,7 +352,7 @@ const SubHeaderInfoCardWrapper = styled.div`
     justify-content: space-around;
     margin-bottom: 18px;
   }
-`;
+`
 
 const ButtonWrapper = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
@@ -332,10 +363,10 @@ const ButtonWrapper = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     flex-direction: column;
   }
-`;
+`
 
 const StyledButton = styled(EduButton)`
-  margin: ${props => props.margin || "0px"};
+  margin: ${(props) => props.margin || '0px'};
   margin-left: 30px;
   margin-right: 8px;
   user-select: none;
@@ -362,7 +393,7 @@ const StyledButton = styled(EduButton)`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 9px;
     width: 128px;
-    height: ${props => props.height || "32px"};
+    height: ${(props) => props.height || '32px'};
     font-weight: 600;
   }
 
@@ -392,13 +423,13 @@ const StyledButton = styled(EduButton)`
     }
     width: 100%;
   }
-`;
+`
 
 const CustomizeButton = styled(StyledButton)`
   @media (max-width: ${mobileWidthLarge}) {
     display: none;
   }
-`;
+`
 
 const SubHeaderInfoCard = styled.div`
   display: flex;
@@ -424,14 +455,14 @@ const SubHeaderInfoCard = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     margin-bottom: 0px;
   }
-`;
+`
 
 const GraduationCapIcon = styled(IconGraduationCap)`
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 18px;
     height: 13px;
   }
-`;
+`
 
 const SubHeaderInfoCardText = styled.div`
   font-weight: 600;
@@ -443,11 +474,11 @@ const SubHeaderInfoCardText = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font: Bold 9px/13px Open Sans;
   }
-`;
+`
 
 const BookIcon = styled(IconBook)`
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 12px;
     height: 15px;
   }
-`;
+`

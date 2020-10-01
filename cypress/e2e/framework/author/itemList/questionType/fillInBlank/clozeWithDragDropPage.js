@@ -1,167 +1,175 @@
-import EditToolBar from "../common/editToolBar";
-import TemplateMarkupBar from "../common/templateMarkUpBar";
-import Header from "../../itemDetail/header";
-import PreviewItemPage from "../../itemDetail/previewPage";
-import CypressHelper from "../../../../util/cypressHelpers";
+import EditToolBar from '../common/editToolBar'
+import TemplateMarkupBar from '../common/templateMarkUpBar'
+import Header from '../../itemDetail/header'
+import PreviewItemPage from '../../itemDetail/previewPage'
+import CypressHelper from '../../../../util/cypressHelpers'
 
-PreviewItemPage;
+PreviewItemPage
 class ClozeDragDropPage {
   constructor() {
-    this.editToolBar = new EditToolBar();
-    this.header = new Header();
-    this.templateMarkupBar = new TemplateMarkupBar();
-    this.previewItemPage = new PreviewItemPage();
-    this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
-    this.roundingType = { "Round down": "roundDown", None: "none" };
+    this.editToolBar = new EditToolBar()
+    this.header = new Header()
+    this.templateMarkupBar = new TemplateMarkupBar()
+    this.previewItemPage = new PreviewItemPage()
+    this.scoringTypeOption = {
+      'Exact match': 'exactMatch',
+      'Partial match': 'partialMatch',
+    }
+    this.roundingType = { 'Round down': 'roundDown', None: 'none' }
   }
 
   // template content
-  getTemplateEditor = () => cy.get(".fr-element").eq(0);
+  getTemplateEditor = () => cy.get('.fr-element').eq(0)
 
-  getGroupResponsesCheckbox = () => cy.get('[data-cy="drag-drop-aria-check"]');
+  getGroupResponsesCheckbox = () => cy.get('[data-cy="drag-drop-aria-check"]')
 
   clickOnAdvancedOptions = () => {
-    cy.get('[class^="AdvancedOptionsLink"]').then(ele => {
-      if (ele.siblings().length === 3) cy.wrap(ele).click();
-    });
-    return this;
-  };
+    cy.get('[class^="AdvancedOptionsLink"]').then((ele) => {
+      if (ele.siblings().length === 3) cy.wrap(ele).click()
+    })
+    return this
+  }
 
-  getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
+  getMaxScore = () => cy.get('[data-cy="maxscore"]').should('be.visible')
 
-  getAddedGroupTitle = () => cy.contains("legend", "Group");
+  getAddedGroupTitle = () => cy.contains('legend', 'Group')
 
   getChoiceResponseContainer = () =>
     cy
       .get('[data-cy="sortable-list-container"]')
       .eq(0)
-      .find('[data-cy="quillSortableItem"]');
+      .find('[data-cy="quillSortableItem"]')
 
-  getAddChoiceButton = () => cy.contains("button", "Add New Choice").should("be.visible");
+  getAddChoiceButton = () =>
+    cy.contains('button', 'Add New Choice').should('be.visible')
 
-  deleletChoicesByindex = index => cy.get(`[data-cy="deleteprefix${index}"]`).click({ force: true });
+  deleletChoicesByindex = (index) =>
+    cy.get(`[data-cy="deleteprefix${index}"]`).click({ force: true })
 
   deleteAllChoices = () => {
-    this.getChoiceResponseContainer().then($el => {
+    this.getChoiceResponseContainer().then(($el) => {
       for (let i = $el.length - 1; i >= 0; i--) {
-        this.deleletChoicesByindex(i);
+        this.deleletChoicesByindex(i)
       }
-    });
-    this.getChoiceResponseContainer().should("have.length", 0);
-  };
+    })
+    this.getChoiceResponseContainer().should('have.length', 0)
+  }
 
-  getChoiceInputByIndex = index =>
+  getChoiceInputByIndex = (index) =>
     this.getChoiceResponseContainer()
       .eq(index)
       .find('[contenteditable="true"]')
-      .click({ force: true });
+      .click({ force: true })
 
   getEnableAutoScoring = () =>
-    cy
-      .contains("Enable auto scoring")
-      .parent()
-      .find("input");
+    cy.contains('Enable auto scoring').parent().find('input')
 
   selectScoringType(option) {
-    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
+    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`
     cy.get('[data-cy="scoringType"]')
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
     cy.get(selectOp)
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
     cy.get('[data-cy="scoringType"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   selectRoundingType(option) {
-    const selectOp = `[data-cy="${this.roundingType[option]}"]`;
-    cy.get('[data-cy="rounding"]')
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.roundingType[option]}"]`
+    cy.get('[data-cy="rounding"]').should('be.visible').click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).should('be.visible').click()
 
     cy.get('[data-cy="rounding"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   setAnswerToResponseBox = (expectedValue, responseIndex, itemIndex) => {
     this.getResponseItemByIndex(itemIndex)
       .customDragDrop(`#drop-container-${responseIndex}`)
       .then(() => {
-        this.getResponseContainerByIndex(responseIndex).contains("div", expectedValue);
-      });
+        this.getResponseContainerByIndex(responseIndex).contains(
+          'div',
+          expectedValue
+        )
+      })
 
-    return this;
-  };
+    return this
+  }
 
-  checkExpectedScore = expectedScore =>
-    cy
-      .get("body")
-      .children()
-      .should("contain", `Score ${expectedScore}`);
+  checkExpectedScore = (expectedScore) =>
+    cy.get('body').children().should('contain', `Score ${expectedScore}`)
 
-  getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
+  getMinScore = () => cy.get('[data-cy=minscore]').should('be.visible')
 
-  getPanalty = () => cy.get('[data-cy="penalty"]'); // .should("be.visible");
+  getPanalty = () => cy.get('[data-cy="penalty"]') // .should("be.visible");
 
-  getResponseItemByIndex = index => cy.get(`#response-item-${index}`);
+  getResponseItemByIndex = (index) => cy.get(`#response-item-${index}`)
 
   verifyShuffledChoices = (choices, shuffled = true) => {
-    const arrayOfchoices = [];
+    const arrayOfchoices = []
     for (let i = 0; i < choices.length; i++) {
       this.getResponseItemByIndex(i)
-        .invoke("text")
-        .then(txt => {
-          arrayOfchoices.push(txt);
-        });
+        .invoke('text')
+        .then((txt) => {
+          arrayOfchoices.push(txt)
+        })
     }
     cy.wait(1).then(() => {
-      console.log(arrayOfchoices, choices);
-      if (shuffled) CypressHelper.checkObjectInEquality(choices, arrayOfchoices, "choices are shuffled");
-      else CypressHelper.checkObjectEquality(choices, arrayOfchoices, "choices are not shuffled");
-    });
-  };
+      console.log(arrayOfchoices, choices)
+      if (shuffled)
+        CypressHelper.checkObjectInEquality(
+          choices,
+          arrayOfchoices,
+          'choices are shuffled'
+        )
+      else
+        CypressHelper.checkObjectEquality(
+          choices,
+          arrayOfchoices,
+          'choices are not shuffled'
+        )
+    })
+  }
 
-  getResponseContainerByIndex = itemIndex => cy.get(`#drop-container-${itemIndex}`);
+  getResponseContainerByIndex = (itemIndex) =>
+    cy.get(`#drop-container-${itemIndex}`)
 
-  getPontsInput = () => cy.get('[data-cy="points"]');
+  getPontsInput = () => cy.get('[data-cy="points"]')
 
-  getDuplicatedResposneCheck = () => cy.contains("span", "Duplicated responses").parent();
+  getDuplicatedResposneCheck = () =>
+    cy.contains('span', 'Duplicated responses').parent()
 
-  getDraghandleCheck = () => cy.contains("span", "Show Drag Handle").parent();
+  getDraghandleCheck = () => cy.contains('span', 'Show Drag Handle').parent()
 
-  getShuffleOptionCheck = () => cy.contains("span", "Shuffle Options").parent();
+  getShuffleOptionCheck = () => cy.contains('span', 'Shuffle Options').parent()
 
-  getAddAlternative = () => cy.get('[data-cy="alternate"]');
+  getAddAlternative = () => cy.get('[data-cy="alternate"]')
 
-  getAddedAlternateTab = () => cy.contains("span", "Alternate 1");
+  getAddedAlternateTab = () => cy.contains('span', 'Alternate 1')
 
-  updatePoints = points => this.getPontsInput().type(`{selectall}${points}`);
+  updatePoints = (points) => this.getPontsInput().type(`{selectall}${points}`)
 
-  addAlternative = () => this.getAddAlternative().click({ force: true });
+  addAlternative = () => this.getAddAlternative().click({ force: true })
 
-  getPreviewAnswerBoxContainerByIndex = index => this.getResponseContainerByIndex(index).find('[class^="AnswerBox"]');
+  getPreviewAnswerBoxContainerByIndex = (index) =>
+    this.getResponseContainerByIndex(index).find('[class^="AnswerBox"]')
 
-  typeQuestionText = text =>
-    this.getTemplateEditor()
-      .clear()
-      .type(text);
+  typeQuestionText = (text) => this.getTemplateEditor().clear().type(text)
 
-  updatePenalty = penalty => {
-    this.getPanalty().type(`{selectall}${penalty}`);
-  };
+  updatePenalty = (penalty) => {
+    this.getPanalty().type(`{selectall}${penalty}`)
+  }
 }
 
-export default ClozeDragDropPage;
+export default ClozeDragDropPage

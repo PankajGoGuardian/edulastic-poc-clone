@@ -1,5 +1,5 @@
-import { Radio, Switch } from "antd";
-import styled from "styled-components";
+import { Radio, Switch } from 'antd'
+import styled from 'styled-components'
 
 import {
   mobileWidth,
@@ -9,15 +9,23 @@ import {
   smallDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  themeColorBlue
-} from "@edulastic/colors";
-import { FlexContainer, Card, Button, MainContentWrapper } from "@edulastic/common";
+  themeColorBlue,
+} from '@edulastic/colors'
+import {
+  FlexContainer,
+  Card,
+  Button,
+  MainContentWrapper,
+} from '@edulastic/common'
 
 export const Container = styled(MainContentWrapper)`
   overflow: auto;
 
   .scrollbar-container {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`}; // 60px is margin from top and bottom.
+    height: ${(props) =>
+      `calc(100vh - ${
+        props.theme.HeaderHeight.xs + 60
+      }px)`}; // 60px is margin from top and bottom.
     width: 100%;
     padding-right: 30px;
     padding-left: 2px;
@@ -25,12 +33,14 @@ export const Container = styled(MainContentWrapper)`
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     .scrollbar-container {
-      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
+      height: ${(props) =>
+        `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
     }
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     .scrollbar-container {
-      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
+      height: ${(props) =>
+        `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
     }
   }
   @media (max-width: ${tabletWidth}) {
@@ -41,12 +51,12 @@ export const Container = styled(MainContentWrapper)`
   @media (max-width: ${mobileWidth}) {
     padding: 20px 26px 45px 26px;
   }
-`;
+`
 
 export const LeftWrapper = styled.div`
   min-width: 230px;
   max-width: 230px;
-  display: ${({ showFilter }) => (showFilter ? "block" : "none")};
+  display: ${({ showFilter }) => (showFilter ? 'block' : 'none')};
 
   @media (max-width: ${smallDesktopWidth}) {
     position: fixed;
@@ -62,12 +72,12 @@ export const LeftWrapper = styled.div`
   @media (max-width: ${tabletWidth}) {
     left: 0px;
   }
-`;
+`
 
 export const FixedWrapper = styled.div`
   width: 230px;
   position: fixed;
-`;
+`
 
 export const PaginationInfo = styled.span`
   font-weight: 600;
@@ -79,16 +89,16 @@ export const PaginationInfo = styled.span`
   @media (max-width: 770px) {
     display: none;
   }
-`;
+`
 
 export const Main = styled.div`
   flex: 1;
   width: 100%;
   display: flex;
   position: relative;
-`;
+`
 
-export const DRadio = styled(Radio)``;
+export const DRadio = styled(Radio)``
 
 export const StyledCard = styled(Card)`
   overflow-x: auto;
@@ -97,14 +107,14 @@ export const StyledCard = styled(Card)`
   .ant-card-body {
     padding: 0px 0px 60px;
   }
-`;
+`
 
 export const FullFlexContainer = styled(FlexContainer)`
   @media (max-width: 770px) {
     width: 100%;
   }
   justify-content: flex-end;
-`;
+`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   @media (max-width: ${tabletWidth}) {
@@ -125,7 +135,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
     flex-direction: row-reverse;
     width: 100%;
   }
-`;
+`
 
 export const ViewSwitch = styled(Switch)`
   width: 35px;
@@ -137,7 +147,7 @@ export const ViewSwitch = styled(Switch)`
   &:after {
     background-color: ${themeColor};
   }
-`;
+`
 
 export const TestButton = styled(Button)`
   height: 45px;
@@ -146,18 +156,18 @@ export const TestButton = styled(Button)`
   border-radius: 3px;
   margin-left: 25px;
   background: ${white};
-`;
+`
 
 export const SwitchWrapper = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 export const SwitchLabel = styled.div`
   font-size: 10px;
   font-weight: 600;
   color: ${white};
-`;
+`
 
 export const FilterButton = styled(Button)`
   min-width: 35px;
@@ -170,25 +180,26 @@ export const FilterButton = styled(Button)`
   margin-top: 8px;
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  background: ${props => (props.showFilter ? themeColorBlue : white)} !important;
+  background: ${(props) =>
+    props.showFilter ? themeColorBlue : white} !important;
   border: 1px solid ${themeColorBlue} !important;
   &:focus,
   &:hover {
     outline: unset;
-    color: ${props => (props.isShowFilter ? white : themeColorBlue)};
+    color: ${(props) => (props.isShowFilter ? white : themeColorBlue)};
   }
 
   svg {
-    fill: ${props => (props.showFilter ? white : themeColorBlue)} !important;
+    fill: ${(props) => (props.showFilter ? white : themeColorBlue)} !important;
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    margin-left: ${props => (props.showFilter ? "180px" : "-20px")};
-    margin-top: ${props => (props.showFilter ? "-25px" : "34px")};
+    margin-left: ${(props) => (props.showFilter ? '180px' : '-20px')};
+    margin-top: ${(props) => (props.showFilter ? '-25px' : '34px')};
   }
-`;
+`
 
 export const TableWrapper = styled.div`
   position: relative;
   width: 100%;
-`;
+`

@@ -1,27 +1,34 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
 
 import {
   MainWrapper,
   StyledContent,
   StyledLayout,
   SpinContainer,
-  StyledSpin
-} from "../../../../admin/Common/StyledComponents";
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 
-import SchoolAdminTable from "../SchoolAdminTable/SchoolAdminTable";
+import SchoolAdminTable from '../SchoolAdminTable/SchoolAdminTable'
 
-const title = "Manage District";
-const menuActive = { mainMenu: "Users", subMenu: "School Admin" };
+const title = 'Manage District'
+const menuActive = { mainMenu: 'Users', subMenu: 'School Admin' }
 
 class SchoolAdmin extends Component {
   render() {
-    const { loading, updating, creating, deleting, history, routeKey } = this.props;
-    const showSpin = loading || updating || creating || deleting;
+    const {
+      loading,
+      updating,
+      creating,
+      deleting,
+      history,
+      routeKey,
+    } = this.props
+    const showSpin = loading || updating || creating || deleting
     // issue : click on current active tab , doesn't re-renders page, because there is no state/route change //
     // --------------------------------- implemented solution -------------------------------------------------//
     // since route key changes everytime even if we are routing from one url to itself,
@@ -31,7 +38,7 @@ class SchoolAdmin extends Component {
       <MainWrapper key={routeKey}>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
-          <StyledLayout loading={showSpin ? "true" : "false"}>
+          <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
               <SpinContainer blur>
                 <StyledSpin size="large" />
@@ -41,25 +48,25 @@ class SchoolAdmin extends Component {
           </StyledLayout>
         </StyledContent>
       </MainWrapper>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  connect(state => ({
-    loading: get(state, ["schoolAdminReducer", "loading"], false),
-    updating: get(state, ["schoolAdminReducer", "updating"], false),
-    creating: get(state, ["schoolAdminReducer", "creating"], false),
-    deleting: get(state, ["schoolAdminReducer", "deleting"], false),
-    routeKey: get(state, ["router", "location", "key"])
+  connect((state) => ({
+    loading: get(state, ['schoolAdminReducer', 'loading'], false),
+    updating: get(state, ['schoolAdminReducer', 'updating'], false),
+    creating: get(state, ['schoolAdminReducer', 'creating'], false),
+    deleting: get(state, ['schoolAdminReducer', 'deleting'], false),
+    routeKey: get(state, ['router', 'location', 'key']),
   }))
-);
+)
 
-export default enhance(SchoolAdmin);
+export default enhance(SchoolAdmin)
 
 SchoolAdmin.propTypes = {
   loading: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
   creating: PropTypes.bool.isRequired,
-  deleting: PropTypes.bool.isRequired
-};
+  deleting: PropTypes.bool.isRequired,
+}

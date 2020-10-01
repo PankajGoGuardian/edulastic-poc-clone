@@ -1,7 +1,15 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy, isEqual } from "lodash";
-import { withTheme } from "styled-components";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import {
+  cloneDeep,
+  flattenDeep,
+  get,
+  maxBy,
+  minBy,
+  uniqBy,
+  isEqual,
+} from 'lodash'
+import { withTheme } from 'styled-components'
 import {
   Stimulus,
   QuestionNumberLabel,
@@ -11,26 +19,26 @@ import {
   FlexContainer,
   QuestionLabelWrapper,
   QuestionContentWrapper,
-  QuestionSubLabel
-} from "@edulastic/common";
-import { clozeImage, ChoiceDimensions } from "@edulastic/constants";
+  QuestionSubLabel,
+} from '@edulastic/common'
+import { clozeImage, ChoiceDimensions } from '@edulastic/constants'
 
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import ResponseContainers from "./components/ResponseContainers";
-import ResponseBoxLayout from "./components/ResponseBoxLayout";
-import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
-import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
-import SnapItemContainers from "./components/SnapItemContainers";
+import { QuestionTitleWrapper } from './styled/QustionNumber'
+import ResponseContainers from './components/ResponseContainers'
+import ResponseBoxLayout from './components/ResponseBoxLayout'
+import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout'
+import CorrectAnswerBoxLayout from './components/CorrectAnswerBox'
+import SnapItemContainers from './components/SnapItemContainers'
 
-import { getFontSize } from "../../utils/helpers";
-import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
-import { RelativeContainer } from "../../styled/RelativeContainer";
-import { StyledPreviewImage } from "./styled/StyledPreviewImage";
-import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
-import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
-import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
-import Instructions from "../../components/Instructions";
-import { EDIT } from "../../constants/constantsForQuestions";
+import { getFontSize } from '../../utils/helpers'
+import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton'
+import { RelativeContainer } from '../../styled/RelativeContainer'
+import { StyledPreviewImage } from './styled/StyledPreviewImage'
+import { StyledPreviewTemplateBox } from './styled/StyledPreviewTemplateBox'
+import { StyledPreviewContainer } from './styled/StyledPreviewContainer'
+import AnnotationRnd from '../../components/Annotations/AnnotationRnd'
+import Instructions from '../../components/Instructions'
+import { EDIT } from '../../constants/constantsForQuestions'
 
 import {
   StyledContainer,
@@ -40,177 +48,207 @@ import {
   RightContainer,
   RightTemplateContainer,
   RightResponseContainer,
-  StyledDisplayContainer
-} from "./styled/layout";
+  StyledDisplayContainer,
+} from './styled/layout'
 
-const { DragPreview } = DragDrop;
-const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
+const { DragPreview } = DragDrop
+const {
+  maxWidth: choiceDefaultMaxW,
+  minWidth: choiceDefaultMinW,
+} = ChoiceDimensions
 
 const isColliding = (responseContainer, answer) => {
-  const { height, width, left: responseLeft, top: responseTop } = responseContainer;
+  const {
+    height,
+    width,
+    left: responseLeft,
+    top: responseTop,
+  } = responseContainer
   const responseRect = {
     left: responseLeft,
     top: responseTop,
     width: parseInt(width, 10),
-    height: parseInt(height, 10)
-  };
+    height: parseInt(height, 10),
+  }
   const answerRect = {
     top: answer.rect.top,
     left: answer.rect.left,
     width: answer.rect.width,
-    height: answer.rect.height
-  };
+    height: answer.rect.height,
+  }
 
-  const responseDistanceFromTop = responseRect.top + responseRect.height;
-  const responseDistanceFromLeft = responseRect.left + responseRect.width;
+  const responseDistanceFromTop = responseRect.top + responseRect.height
+  const responseDistanceFromLeft = responseRect.left + responseRect.width
 
-  const answerDistanceFromTop = answerRect.top + answerRect.height;
-  const answerDistanceFromTeft = answerRect.left + answerRect.width;
+  const answerDistanceFromTop = answerRect.top + answerRect.height
+  const answerDistanceFromTeft = answerRect.left + answerRect.width
 
   const notColliding =
     responseDistanceFromTop < answerRect.top ||
     responseRect.top > answerDistanceFromTop ||
     responseDistanceFromLeft < answerRect.left ||
-    responseRect.left > answerDistanceFromTeft;
+    responseRect.left > answerDistanceFromTeft
 
   // return whether it is colliding
-  return !notColliding;
-};
+  return !notColliding
+}
 
 const findClosestResponseBoxIndex = (containers, answer) => {
-  const crosspoints = [];
+  const crosspoints = []
   for (const container of containers) {
-    let { left } = answer;
+    let { left } = answer
     if (container.left > answer.left) {
-      left = answer.left + answer.width;
+      left = answer.left + answer.width
     }
 
-    let { top } = answer;
+    let { top } = answer
     if (container.top > answer.top) {
-      top = answer.top + answer.height;
+      top = answer.top + answer.height
     }
 
-    crosspoints.push({ left, top, index: container.containerIndex });
+    crosspoints.push({ left, top, index: container.containerIndex })
   }
 
-  const shouldSeleted = minBy(crosspoints, point => point.left);
+  const shouldSeleted = minBy(crosspoints, (point) => point.left)
 
-  return shouldSeleted.index;
-};
+  return shouldSeleted.index
+}
 
 const getInitialResponses = ({ options, userSelections, configureOptions }) => {
-  const { duplicatedResponses: isDuplicated } = configureOptions;
-  let possibleResps = [];
-  possibleResps = cloneDeep(options);
-  userSelections = flattenDeep(userSelections);
+  const { duplicatedResponses: isDuplicated } = configureOptions
+  let possibleResps = []
+  possibleResps = cloneDeep(options)
+  userSelections = flattenDeep(userSelections)
 
   if (!isDuplicated) {
     // remove all the options that are chosen from the available options
-    const _userSelections = userSelections.reduce((acc, opts) => acc.concat(opts?.optionIds || []), []);
-    possibleResps = possibleResps.filter(resp => _userSelections.indexOf(resp.id) === -1);
+    const _userSelections = userSelections.reduce(
+      (acc, opts) => acc.concat(opts?.optionIds || []),
+      []
+    )
+    possibleResps = possibleResps.filter(
+      (resp) => _userSelections.indexOf(resp.id) === -1
+    )
   }
 
-  return possibleResps;
-};
+  return possibleResps
+}
 
 const getPossibleResps = (snapItems, possibleResps) => {
-  possibleResps = cloneDeep(possibleResps);
-  snapItems = flattenDeep(snapItems);
+  possibleResps = cloneDeep(possibleResps)
+  snapItems = flattenDeep(snapItems)
   for (let j = 0; j < snapItems.length; j += 1) {
     for (let i = 0; i < possibleResps.length; i += 1) {
       if (snapItems[j].answer === possibleResps[i]) {
-        possibleResps.splice(i, 1);
-        break;
+        possibleResps.splice(i, 1)
+        break
       }
     }
   }
-  return possibleResps;
-};
+  return possibleResps
+}
 
 class Display extends Component {
-  previewContainerRef = React.createRef();
+  previewContainerRef = React.createRef()
 
-  displayWrapperRef = React.createRef();
+  displayWrapperRef = React.createRef()
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState !== undefined) {
       const {
-        item: { isSnapFitValues }
-      } = nextProps;
-      let possibleResponses = getInitialResponses(nextProps);
-      if (nextProps.previewTab === "check" || !isSnapFitValues) {
-        possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
+        item: { isSnapFitValues },
+      } = nextProps
+      let possibleResponses = getInitialResponses(nextProps)
+      if (nextProps.previewTab === 'check' || !isSnapFitValues) {
+        possibleResponses = getPossibleResps(
+          nextProps.snapItems,
+          possibleResponses
+        )
       }
       if (
         isEqual(prevState?.possibleResponses, possibleResponses) &&
         isEqual(prevState?.userAnswers, nextProps?.userSelections)
       ) {
-        return null;
+        return null
       }
       return {
-        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : [],
-        possibleResponses
-      };
+        userAnswers:
+          nextProps.userSelections && nextProps.userSelections.length
+            ? [...nextProps.userSelections]
+            : [],
+        possibleResponses,
+      }
     }
   }
 
-  getAnswerRect = itemRect => {
-    const containerRect = this.previewContainerRef.current.getBoundingClientRect();
-    let top = itemRect.y - containerRect.top;
-    let left = itemRect.x - containerRect.left;
-    top = top < 0 ? 0 : top;
-    left = left < 0 ? 0 : left;
+  getAnswerRect = (itemRect) => {
+    const containerRect = this.previewContainerRef.current.getBoundingClientRect()
+    let top = itemRect.y - containerRect.top
+    let left = itemRect.x - containerRect.left
+    top = top < 0 ? 0 : top
+    left = left < 0 ? 0 : left
 
-    const diffW = left + itemRect.width - containerRect.width;
-    const diffH = top + itemRect.height - containerRect.height;
+    const diffW = left + itemRect.width - containerRect.width
+    const diffH = top + itemRect.height - containerRect.height
 
-    left = diffW > 0 ? left - diffW : left;
-    top = diffH > 0 ? top - diffH : top;
+    left = diffW > 0 ? left - diffW : left
+    top = diffH > 0 ? top - diffH : top
 
-    return { ...itemRect, top, left };
-  };
+    return { ...itemRect, top, left }
+  }
 
-  onDropForSnapFit = (sourceData, fromContainerIndex, fromRespIndex, itemRect) => {
+  onDropForSnapFit = (
+    sourceData,
+    fromContainerIndex,
+    fromRespIndex,
+    itemRect
+  ) => {
     if (!this.previewContainerRef.current || !itemRect.x || !itemRect.y) {
-      return;
+      return
     }
-    const { responseContainers, onChange, maxRespCount } = this.props;
-    const { userAnswers, possibleResponses } = this.state;
+    const { responseContainers, onChange, maxRespCount } = this.props
+    const { userAnswers, possibleResponses } = this.state
 
-    let newAnswers = cloneDeep(userAnswers);
-    const newResponses = cloneDeep(possibleResponses);
+    let newAnswers = cloneDeep(userAnswers)
+    const newResponses = cloneDeep(possibleResponses)
 
-    const answerRect = this.getAnswerRect(itemRect);
+    const answerRect = this.getAnswerRect(itemRect)
     // const data = Array.isArray(sourceData) ? sourceData : [sourceData];
-    const data = [sourceData.id];
+    const data = [sourceData.id]
 
     if (fromContainerIndex !== fromRespIndex) {
-      newAnswers.push({ optionIds: data, rect: answerRect });
-      newResponses.splice(fromRespIndex, 1);
-    } else if (typeof fromContainerIndex === "number") {
-      newAnswers[fromContainerIndex].rect = answerRect;
+      newAnswers.push({ optionIds: data, rect: answerRect })
+      newResponses.splice(fromRespIndex, 1)
+    } else if (typeof fromContainerIndex === 'number') {
+      newAnswers[fromContainerIndex].rect = answerRect
     } else {
-      newAnswers[fromRespIndex].rect = answerRect;
+      newAnswers[fromRespIndex].rect = answerRect
     }
 
     for (let i = 0; i < newAnswers.length; i++) {
-      const overlaps = [];
+      const overlaps = []
       if (newAnswers[i]) {
         for (let j = 0; j < responseContainers.length; j++) {
-          if (newAnswers[i] && isColliding(responseContainers[j], newAnswers[i])) {
-            overlaps.push({ ...responseContainers[j], containerIndex: j });
+          if (
+            newAnswers[i] &&
+            isColliding(responseContainers[j], newAnswers[i])
+          ) {
+            overlaps.push({ ...responseContainers[j], containerIndex: j })
           }
         }
         if (overlaps[0]) {
-          let { containerIndex } = overlaps[0];
+          let { containerIndex } = overlaps[0]
           if (overlaps.length > 1) {
-            containerIndex = findClosestResponseBoxIndex(overlaps, newAnswers[i].rect);
+            containerIndex = findClosestResponseBoxIndex(
+              overlaps,
+              newAnswers[i].rect
+            )
           }
-          newAnswers[i].responseBoxID = responseContainers[containerIndex].id;
-          newAnswers[i].containerIndex = containerIndex;
+          newAnswers[i].responseBoxID = responseContainers[containerIndex].id
+          newAnswers[i].containerIndex = containerIndex
         } else {
-          newAnswers[i].responseBoxID = null;
-          newAnswers[i].containerIndex = null;
+          newAnswers[i].responseBoxID = null
+          newAnswers[i].containerIndex = null
         }
       }
     }
@@ -219,68 +257,92 @@ class Display extends Component {
       if (newAnswers[i] && newAnswers[i].responseBoxID) {
         const duplicated = newAnswers.filter(
           // eslint-disable-next-line no-loop-func
-          res => res && res.responseBoxID === newAnswers[i].responseBoxID
-        );
+          (res) => res && res.responseBoxID === newAnswers[i].responseBoxID
+        )
         if (duplicated.length > 1) {
-          newAnswers[i].optionIds = data;
+          newAnswers[i].optionIds = data
         }
       }
-      if (maxRespCount && newAnswers[i] && newAnswers[i]?.optionIds.length > maxRespCount) {
+      if (
+        maxRespCount &&
+        newAnswers[i] &&
+        newAnswers[i]?.optionIds.length > maxRespCount
+      ) {
         // will remove the first added response in the container, back to possible responses
-        const firstAdded = newAnswers[i].optionIds?.shift();
+        const firstAdded = newAnswers[i].optionIds?.shift()
         if (firstAdded) {
-          newResponses.push(firstAdded);
+          newResponses.push(firstAdded)
         }
       }
     }
-    const _arr1 = newAnswers.filter(res => res && !res.responseBoxID);
-    const _arr2 = uniqBy(newAnswers.filter(res => res && res.responseBoxID), "responseBoxID");
-    newAnswers = [];
+    const _arr1 = newAnswers.filter((res) => res && !res.responseBoxID)
+    const _arr2 = uniqBy(
+      newAnswers.filter((res) => res && res.responseBoxID),
+      'responseBoxID'
+    )
+    newAnswers = []
     for (let i = 0; i < responseContainers.length; i++) {
-      const userResponse = _arr2.find(res => res.responseBoxID === responseContainers[i].id);
+      const userResponse = _arr2.find(
+        (res) => res.responseBoxID === responseContainers[i].id
+      )
       if (userResponse) {
-        newAnswers[i] = userResponse;
+        newAnswers[i] = userResponse
       } else {
-        newAnswers[i] = _arr1.pop();
+        newAnswers[i] = _arr1.pop()
       }
     }
 
-    onChange(newAnswers);
-    this.setState({ possibleResponses: newResponses });
+    onChange(newAnswers)
+    this.setState({ possibleResponses: newResponses })
 
-    const { changePreview, changePreviewTab, previewTab } = this.props;
-    if (previewTab !== "clear") {
+    const { changePreview, changePreviewTab, previewTab } = this.props
+    if (previewTab !== 'clear') {
       if (changePreview) {
-        changePreview("clear");
+        changePreview('clear')
       }
-      changePreviewTab("clear");
+      changePreviewTab('clear')
     }
-  };
+  }
 
   onDrop = ({ data: sourceData, itemRect }, index) => {
-    const { option, fromContainerIndex, fromRespIndex } = sourceData;
-    const { maxRespCount, onChange, item, preview, responseContainers } = this.props;
-    const { userAnswers } = this.state;
-    const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
+    const { option, fromContainerIndex, fromRespIndex } = sourceData
+    const {
+      maxRespCount,
+      onChange,
+      item,
+      preview,
+      responseContainers,
+    } = this.props
+    const { userAnswers } = this.state
+    const isSnapFitValues = get(item, 'responseLayout.isSnapFitValues', false)
     if (!isSnapFitValues && preview) {
-      return this.onDropForSnapFit(option, fromContainerIndex, fromRespIndex, itemRect);
+      return this.onDropForSnapFit(
+        option,
+        fromContainerIndex,
+        fromRespIndex,
+        itemRect
+      )
     }
 
     if (fromContainerIndex === index) {
-      return;
+      return
     }
 
-    const newAnswers = cloneDeep(userAnswers);
+    const newAnswers = cloneDeep(userAnswers)
     // const data = Array.isArray(option) ? option : [option.id];
-    const data = [option.id];
+    const data = [option.id]
 
     if (index !== null) {
       newAnswers[index] = {
-        responseBoxID: responseContainers[index] && responseContainers[index].id,
-        optionIds: [...(newAnswers[index] ? newAnswers[index].optionIds || [] : []), ...data],
+        responseBoxID:
+          responseContainers[index] && responseContainers[index].id,
+        optionIds: [
+          ...(newAnswers[index] ? newAnswers[index].optionIds || [] : []),
+          ...data,
+        ],
         containerIndex: index,
-        rect: this.getAnswerRect(itemRect)
-      };
+        rect: this.getAnswerRect(itemRect),
+      }
       /**
        * if the number of responses dropped, is greater than max limit
        * we need to remove the first added response
@@ -288,102 +350,106 @@ class Display extends Component {
        */
       if (maxRespCount && newAnswers[index]?.optionIds.length > maxRespCount) {
         // will remove the first added response in the container, back to possible responses
-        newAnswers[index].optionIds.shift();
+        newAnswers[index].optionIds.shift()
       }
 
       /**
        * if response was dropped from another response
        * we need to filter out the id which was present in that response bpx. (option.id)
        */
-      if (typeof fromContainerIndex === "number") {
+      if (typeof fromContainerIndex === 'number') {
         newAnswers[fromContainerIndex] = {
-          responseBoxID: responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
+          responseBoxID:
+            responseContainers[fromContainerIndex] &&
+            responseContainers[fromContainerIndex].id,
           // value: newAnswers[fromContainerIndex].value.filter((_, i) => i !== fromRespIndex),
-          optionIds: newAnswers[fromContainerIndex].optionIds.filter(id => id !== option.id),
-          containerIndex: index || fromContainerIndex
-        };
+          optionIds: newAnswers[fromContainerIndex].optionIds.filter(
+            (id) => id !== option.id
+          ),
+          containerIndex: index || fromContainerIndex,
+        }
       }
     } else {
-      newAnswers[fromContainerIndex] = {};
+      newAnswers[fromContainerIndex] = {}
     }
 
-    onChange(newAnswers);
+    onChange(newAnswers)
 
-    const { changePreview, changePreviewTab, previewTab } = this.props;
-    if (previewTab !== "clear") {
+    const { changePreview, changePreviewTab, previewTab } = this.props
+    if (previewTab !== 'clear') {
       if (changePreview) {
-        changePreview("clear");
+        changePreview('clear')
       }
-      changePreviewTab("clear");
+      changePreviewTab('clear')
     }
-  };
+  }
 
-  shuffle = arr => {
+  shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
-    return arr;
-  };
+    return arr
+  }
 
-  shuffleGroup = data =>
-    data.map(arr => {
-      arr.options = this.shuffle(arr.options);
-      return arr;
-    });
+  shuffleGroup = (data) =>
+    data.map((arr) => {
+      arr.options = this.shuffle(arr.options)
+      return arr
+    })
 
   getCalculatedHeight = (maxHeight, canvasHeight) => {
-    const calculatedHeight = canvasHeight > maxHeight ? canvasHeight : maxHeight;
+    const calculatedHeight = canvasHeight > maxHeight ? canvasHeight : maxHeight
 
-    return calculatedHeight;
-  };
+    return calculatedHeight
+  }
 
   getResponseBoxMaxValues = () => {
-    const { responseContainers } = this.props;
+    const { responseContainers } = this.props
 
     if (responseContainers.length > 0) {
-      const maxTop = maxBy(responseContainers, res => res.top);
-      const maxLeft = maxBy(responseContainers, res => res.left);
+      const maxTop = maxBy(responseContainers, (res) => res.top)
+      const maxLeft = maxBy(responseContainers, (res) => res.left)
       return {
         responseBoxMaxTop: maxTop.top + maxTop.height,
-        responseBoxMaxLeft: maxLeft.left + maxLeft.width
-      };
+        responseBoxMaxLeft: maxLeft.left + maxLeft.width,
+      }
     }
 
-    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
-  };
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 }
+  }
 
   getMaxWidthOfChoices() {
-    const { options = [] } = this.props;
-    const { userAnswers, possibleResponses } = this.state;
+    const { options = [] } = this.props
+    const { userAnswers, possibleResponses } = this.state
     const userResponses = userAnswers
       .map((ans = {}) => {
         // get the value using the id and mapping it over the object
-        const { optionIds = [] } = ans || {}; // answers can be null explicitly, default values wont work
-        const allOptions = optionIds.map(id => {
-          const option = options.find(_option => _option.id === id);
+        const { optionIds = [] } = ans || {} // answers can be null explicitly, default values wont work
+        const allOptions = optionIds.map((id) => {
+          const option = options.find((_option) => _option.id === id)
           if (option) {
-            return option.value || "";
+            return option.value || ''
           }
-          return "";
-        });
-        return allOptions.join(" ");
+          return ''
+        })
+        return allOptions.join(' ')
       })
-      .reduce((acc, arr) => acc.concat(arr), []);
-    const possibleResps = possibleResponses.map(resp => resp.value || "");
-    const allResponses = userResponses.concat(possibleResps);
-    const widthArr = allResponses.map(option => measureText(option || ""));
-    const maxWidth = maxBy(widthArr, obj => obj?.width);
-    return maxWidth?.width;
+      .reduce((acc, arr) => acc.concat(arr), [])
+    const possibleResps = possibleResponses.map((resp) => resp.value || '')
+    const allResponses = userResponses.concat(possibleResps)
+    const widthArr = allResponses.map((option) => measureText(option || ''))
+    const maxWidth = maxBy(widthArr, (obj) => obj?.width)
+    return maxWidth?.width
   }
 
   get mapIdAndValue() {
-    const idValueMap = {};
-    const { options = [] } = this.props;
-    options.forEach(option => {
-      idValueMap[option.id] = option.value;
-    });
-    return idValueMap;
+    const idValueMap = {}
+    const { options = [] } = this.props
+    options.forEach((option) => {
+      idValueMap[option.id] = option.value
+    })
+    return idValueMap
   }
 
   render() {
@@ -415,80 +481,106 @@ class Display extends Component {
       getHeading,
       isPrint = false,
       isPrintPreview = false,
-      view
-    } = this.props;
-    const isPrintMode = isPrint || isPrintPreview;
-    const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers, possibleResponses } = this.state;
-    const transparentBackground = get(item, "responseLayout.transparentbackground", false);
-    const showDropItemBorder = get(item, "responseLayout.showborder", false);
-    const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
-    const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
+      view,
+    } = this.props
+    const isPrintMode = isPrint || isPrintPreview
+    const isWrapText = get(item, 'responseLayout.isWrapText', false)
+    const { userAnswers, possibleResponses } = this.state
+    const transparentBackground = get(
+      item,
+      'responseLayout.transparentbackground',
+      false
+    )
+    const showDropItemBorder = get(item, 'responseLayout.showborder', false)
+    const isSnapFitValues = get(item, 'responseLayout.isSnapFitValues', false)
+    const {
+      showDraghandle: dragHandler,
+      shuffleOptions,
+      transparentResponses,
+    } = configureOptions
     // let responses = cloneDeep(possibleResponses);
     // if (preview && shuffleOptions) {
     //   responses = this.shuffle(possibleResponses);
     // }
     // Layout Options
-    const fontSize = getFontSize(uiStyle.fontsize);
-    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
+    const fontSize = getFontSize(uiStyle.fontsize)
+    const {
+      heightpx,
+      wordwrap,
+      responsecontainerposition,
+      responsecontainerindividuals,
+      stemNumeration,
+    } = uiStyle
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? `${uiStyle.widthpx}px` : null,
       heightpx: heightpx !== 0 ? `${heightpx}px` : null,
-      whiteSpace: wordwrap ? "inherit" : "nowrap"
-    };
+      whiteSpace: wordwrap ? 'inherit' : 'nowrap',
+    }
 
     const dragItemStyle = {
-      border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-      margin: "0 0 0 3px", // EV-8287
-      display: "flex",
-      alignItems: "center",
-      width: "100%",
-      height: "100%",
-      whiteSpace: isWrapText ? "normal" : "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis"
-    };
+      border: `${
+        showBorder
+          ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`
+          : null
+      }`,
+      margin: '0 0 0 3px', // EV-8287
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+      whiteSpace: isWrapText ? 'normal' : 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    }
 
-    const { maxHeight, maxWidth } = clozeImage;
-    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
-    const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
-    const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
-    let canvasHeight = imageHeight + (imageOptions.y || 0);
-    let canvasWidth = imageWidth + +(imageOptions.x || 0);
+    const { maxHeight, maxWidth } = clozeImage
+    const {
+      imageWidth: imgWidth,
+      imageHeight: imgHeight,
+      imageOriginalWidth,
+      imageOriginalHeight,
+    } = item
+    const imageWidth = imgWidth || imageOriginalWidth || maxWidth
+    const imageHeight = imgHeight || imageOriginalHeight || maxHeight
+    let canvasHeight = imageHeight + (imageOptions.y || 0)
+    let canvasWidth = imageWidth + +(imageOptions.x || 0)
 
-    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+    const {
+      responseBoxMaxTop,
+      responseBoxMaxLeft,
+    } = this.getResponseBoxMaxValues()
 
     if (canvasHeight < responseBoxMaxTop) {
-      canvasHeight = responseBoxMaxTop + 20;
+      canvasHeight = responseBoxMaxTop + 20
     }
 
     if (canvasWidth < responseBoxMaxLeft) {
-      canvasWidth = responseBoxMaxLeft;
+      canvasWidth = responseBoxMaxLeft
     }
 
     const renderAnnotations = () => (
-      <div style={{ position: "relative" }}>
+      <div style={{ position: 'relative' }}>
         <AnnotationRnd
           data-cy="annotation"
           style={{
-            backgroundColor: "transparent",
-            boxShadow: "none",
-            border: preview ? null : "1px solid lightgray"
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            border: preview ? null : '1px solid lightgray',
           }}
           question={item}
           setQuestionData={setQuestionData}
         />
       </div>
-    );
+    )
 
     const renderImage = () =>
       isPrintMode ? (
-        <img src={imageUrl} alt={imageAlterText} style={{ width: "100%" }} />
+        <img src={imageUrl} alt={imageAlterText} style={{ width: '100%' }} />
       ) : (
         <StyledPreviewImage
           data-cy="imageInpreviewContainer"
-          imageSrc={imageUrl || ""}
+          imageSrc={imageUrl || ''}
           width={imageWidth}
           height={imageHeight}
           alt={imageAlterText}
@@ -496,50 +588,67 @@ class Display extends Component {
           maxWidth={maxWidth}
           preview={preview}
           style={{
-            position: "absolute",
+            position: 'absolute',
             top: imageOptions.y || 0,
-            left: imageOptions.x || 0
+            left: imageOptions.x || 0,
           }}
         />
-      );
+      )
 
     const maxResponseOffsetTop = responseContainers.reduce((max, resp) => {
-      max = Math.max(max, resp.top + parseInt(resp.height, 10));
-      return max;
-    }, -1);
-    const annotations = item.annotations || [];
+      max = Math.max(max, resp.top + parseInt(resp.height, 10))
+      return max
+    }, -1)
+    const annotations = item.annotations || []
     const maxAnnotationsOffsetTop = annotations.reduce((max, ann) => {
-      max = Math.max(ann.position.y + parseInt(ann.size.height, 10), max);
-      return max;
-    }, 0);
-    const imageOffsetY = get(item, "imageOptions.y", 0);
+      max = Math.max(ann.position.y + parseInt(ann.size.height, 10), max)
+      return max
+    }, 0)
+    const imageOffsetY = get(item, 'imageOptions.y', 0)
     // eslint-disable-next-line max-len
-    const computedHeight = Math.max(maxResponseOffsetTop, maxAnnotationsOffsetTop, imageHeight + imageOffsetY);
+    const computedHeight = Math.max(
+      maxResponseOffsetTop,
+      maxAnnotationsOffsetTop,
+      imageHeight + imageOffsetY
+    )
 
-    const choiceMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
-    const choiceMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
-    const choiceWidth = this.getMaxWidthOfChoices();
+    const choiceMinWidth = get(
+      item,
+      'uiStyle.choiceMinWidth',
+      choiceDefaultMinW
+    )
+    const choiceMaxWidth = get(
+      item,
+      'uiStyle.choiceMaxWidth',
+      choiceDefaultMaxW
+    )
+    const choiceWidth = this.getMaxWidthOfChoices()
 
     const choiceStyle = {
       minWidth: choiceMinWidth,
       maxWidth: choiceMaxWidth,
       width: (choiceWidth > choiceMaxWidth ? choiceMaxWidth : choiceWidth) + 40,
-      widthpx: (choiceWidth > choiceMaxWidth ? choiceMaxWidth : choiceWidth) + 40,
+      widthpx:
+        (choiceWidth > choiceMaxWidth ? choiceMaxWidth : choiceWidth) + 40,
       heightpx,
-      overflow: "hidden"
-    };
+      overflow: 'hidden',
+    }
 
-    const responseposition = smallSize ? "right" : responsecontainerposition;
+    const responseposition = smallSize ? 'right' : responsecontainerposition
 
-    const responseBoxWidth = choiceMaxWidth;
-    const idValueMap = this.mapIdAndValue;
+    const responseBoxWidth = choiceMaxWidth
+    const idValueMap = this.mapIdAndValue
 
     const containerStyle = {
       minWidth: choiceMaxWidth,
-      maxWidth: !isPrintMode && (responseposition === "left" || responseposition === "right" ? 1050 : 750),
-      flexDirection: isPrintMode ? "column" : "row",
-      width: isPrintMode && "100%"
-    };
+      maxWidth:
+        !isPrintMode &&
+        (responseposition === 'left' || responseposition === 'right'
+          ? 1050
+          : 750),
+      flexDirection: isPrintMode ? 'column' : 'row',
+      width: isPrintMode && '100%',
+    }
 
     const renderSnapItems = () =>
       !isSnapFitValues &&
@@ -556,19 +665,20 @@ class Display extends Component {
           choiceStyle={choiceStyle}
           options={options}
         />
-      );
+      )
 
-    const previewContainerWidth = canvasWidth > maxWidth ? canvasWidth : maxWidth;
+    const previewContainerWidth =
+      canvasWidth > maxWidth ? canvasWidth : maxWidth
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         smallSize={smallSize}
         fontSize={fontSize}
-        height={isPrintMode ? "" : computedHeight}
+        height={isPrintMode ? '' : computedHeight}
         maxWidth="100%"
       >
         <StyledPreviewContainer
           smallSize={smallSize}
-          width={isPrintMode ? "" : previewContainerWidth}
+          width={isPrintMode ? '' : previewContainerWidth}
           data-cy="preview-contaniner"
           ref={this.previewContainerRef}
         >
@@ -597,13 +707,18 @@ class Display extends Component {
           {renderSnapItems()}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
-    );
+    )
 
     const checkboxTemplateBoxLayout = (
-      <StyledPreviewTemplateBox fontSize={fontSize} height={isPrintMode ? "" : computedHeight}>
+      <StyledPreviewTemplateBox
+        fontSize={fontSize}
+        height={isPrintMode ? '' : computedHeight}
+      >
         <StyledPreviewContainer
-          width={isPrintMode ? "" : previewContainerWidth}
-          height={isPrintMode ? "" : this.getCalculatedHeight(maxHeight, canvasHeight)}
+          width={isPrintMode ? '' : previewContainerWidth}
+          height={
+            isPrintMode ? '' : this.getCalculatedHeight(maxHeight, canvasHeight)
+          }
           ref={this.previewContainerRef}
         >
           <CheckboxTemplateBoxLayout
@@ -633,8 +748,11 @@ class Display extends Component {
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
-    );
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    )
+    const templateBoxLayout =
+      showAnswer || checkAnswer
+        ? checkboxTemplateBoxLayout
+        : previewTemplateBoxLayout
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
@@ -651,11 +769,13 @@ class Display extends Component {
         isPrintMode={isPrintMode}
         {...choiceStyle}
       />
-    );
+    )
 
-    const validAnswers = get(item, "validation.validResponse.value", []);
-    const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
-    const allAnswers = [validAnswers, ...altAnswers];
+    const validAnswers = get(item, 'validation.validResponse.value', [])
+    const altAnswers = get(item, 'validation.altResponses', []).map((alt) =>
+      get(alt, 'value', []).map((res) => res)
+    )
+    const allAnswers = [validAnswers, ...altAnswers]
 
     const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
       <CorrectAnswerBoxLayout
@@ -666,25 +786,35 @@ class Display extends Component {
         stemNumeration={stemNumeration}
         idValueMap={idValueMap}
       />
-    ));
+    ))
 
-    const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout;
-    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
+    const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout
+    const answerBox =
+      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />
 
     return (
       <div style={{ fontSize }}>
-        <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.displayWrapperRef.current }}>
+        <HorizontalScrollContext.Provider
+          value={{ getScrollElement: () => this.displayWrapperRef.current }}
+        >
           <StyledDisplayContainer ref={this.displayWrapperRef}>
             <FlexContainer justifyContent="flex-start" alignItems="baseline">
               <QuestionLabelWrapper>
-                {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-                {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+                {showQuestionNumber && (
+                  <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+                )}
+                {item.qSubLabel && (
+                  <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+                )}
               </QuestionLabelWrapper>
               <QuestionContentWrapper>
                 <QuestionTitleWrapper>
-                  <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+                  <Stimulus
+                    smallSize={smallSize}
+                    dangerouslySetInnerHTML={{ __html: question }}
+                  />
                 </QuestionTitleWrapper>
-                {responseposition === "top" && (
+                {responseposition === 'top' && (
                   <div style={containerStyle}>
                     <StyledContainer>
                       <RelativeContainer>{responseBoxLayout}</RelativeContainer>
@@ -692,7 +822,7 @@ class Display extends Component {
                     <StyledContainer>{templateBoxLayout}</StyledContainer>
                   </div>
                 )}
-                {responseposition === "bottom" && (
+                {responseposition === 'bottom' && (
                   <div style={containerStyle}>
                     <StyledContainer>
                       <RelativeContainer>{templateBoxLayout}</RelativeContainer>
@@ -700,9 +830,12 @@ class Display extends Component {
                     <StyledContainer>{responseBoxLayout}</StyledContainer>
                   </div>
                 )}
-                {responseposition === "left" && (
+                {responseposition === 'left' && (
                   <LeftContainer style={containerStyle}>
-                    <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
+                    <LeftResponseContainer
+                      width={responseBoxWidth || null}
+                      isReviewTab={isReviewTab}
+                    >
                       <RelativeContainer>{responseBoxLayout}</RelativeContainer>
                     </LeftResponseContainer>
                     <LeftTemplateContainer
@@ -713,7 +846,7 @@ class Display extends Component {
                     </LeftTemplateContainer>
                   </LeftContainer>
                 )}
-                {responseposition === "right" && (
+                {responseposition === 'right' && (
                   <RightContainer smallSize={smallSize} style={containerStyle}>
                     <RightTemplateContainer
                       smallSize={smallSize}
@@ -740,7 +873,7 @@ class Display extends Component {
           </StyledDisplayContainer>
         </HorizontalScrollContext.Provider>
       </div>
-    );
+    )
   }
 }
 
@@ -774,8 +907,8 @@ Display.propTypes = {
   showBorder: PropTypes.bool,
   isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
-  previewTab: PropTypes.string.isRequired
-};
+  previewTab: PropTypes.string.isRequired,
+}
 
 Display.defaultProps = {
   options: [],
@@ -791,31 +924,31 @@ Display.defaultProps = {
   responseContainers: [],
   showDashedBorder: false,
   smallSize: false,
-  backgroundColor: "#fff",
+  backgroundColor: '#fff',
   imageUrl: undefined,
-  imageAlterText: "",
+  imageAlterText: '',
   maxRespCount: 1,
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,
     shuffleOptions: false,
-    transparentResponses: false
+    transparentResponses: false,
   },
   uiStyle: {
-    responsecontainerposition: "bottom",
-    fontsize: "normal",
-    stemNumeration: "numerical",
+    responsecontainerposition: 'bottom',
+    fontsize: 'normal',
+    stemNumeration: 'numerical',
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
-    responsecontainerindividuals: []
+    responsecontainerindividuals: [],
   },
   imageOptions: {},
   showBorder: false,
   showQuestionNumber: false,
   item: {},
   isExpressGrader: false,
-  isReviewTab: false
-};
+  isReviewTab: false,
+}
 
-export default withTheme(withCheckAnswerButton(Display));
+export default withTheme(withCheckAnswerButton(Display))

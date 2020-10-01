@@ -1,7 +1,7 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { ItemLevelContext } from "@edulastic/common";
-import Display from "./Display";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { ItemLevelContext } from '@edulastic/common'
+import Display from './Display'
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -21,21 +21,21 @@ class CorrectAnswer extends Component {
     imageWidth: PropTypes.number.isRequired,
     item: PropTypes.object.isRequired,
     imageHeight: PropTypes.number,
-    imageOptions: PropTypes.object
-  };
+    imageOptions: PropTypes.object,
+  }
 
-  static contextType = ItemLevelContext;
+  static contextType = ItemLevelContext
 
   static defaultProps = {
     imagescale: false,
     imageHeight: 0,
-    imageOptions: {}
-  };
+    imageOptions: {},
+  }
 
-  handleMultiSelect = answers => {
-    const { onUpdateValidationValue } = this.props;
-    onUpdateValidationValue(answers);
-  };
+  handleMultiSelect = (answers) => {
+    const { onUpdateValidationValue } = this.props
+    onUpdateValidationValue(answers)
+  }
 
   render() {
     const {
@@ -54,8 +54,8 @@ class CorrectAnswer extends Component {
       maxRespCount,
       imageHeight,
       imageOptions,
-      item = {}
-    } = this.props;
+      item = {},
+    } = this.props
     return (
       <Display
         preview
@@ -79,8 +79,8 @@ class CorrectAnswer extends Component {
         onChange={this.handleMultiSelect}
         imageOptions={imageOptions}
       />
-    );
+    )
   }
 }
 
-export default CorrectAnswer;
+export default CorrectAnswer

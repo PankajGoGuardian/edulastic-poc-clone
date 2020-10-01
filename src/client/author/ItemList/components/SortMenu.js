@@ -1,21 +1,22 @@
-import React from "react";
-import styled from "styled-components";
-import { Menu, Dropdown, Button, message, Tooltip } from "antd";
-import { IconDownEmptyArrow, IconArrowLeft } from "@edulastic/icons";
-import { FlexContainer } from "@edulastic/common";
+import React from 'react'
+import styled from 'styled-components'
+import { Menu, Dropdown, Button, message, Tooltip } from 'antd'
+import { IconDownEmptyArrow, IconArrowLeft } from '@edulastic/icons'
+import { FlexContainer } from '@edulastic/common'
 
 const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
-  const sortBy2 = options.find(i => i.value === sortBy);
-  const handleMenuClick = e => onSelect(e.key, sortDir);
-  const onSort = () => onSelect(sortBy2.value, sortDir === "desc" ? "asc" : "desc");
+  const sortBy2 = options.find((i) => i.value === sortBy)
+  const handleMenuClick = (e) => onSelect(e.key, sortDir)
+  const onSort = () =>
+    onSelect(sortBy2.value, sortDir === 'desc' ? 'asc' : 'desc')
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      {options.map(option => (
+      {options.map((option) => (
         <Menu.Item key={option.value}>{option.text}</Menu.Item>
       ))}
     </Menu>
-  );
+  )
   return (
     <FlexContainer>
       <StyledLabel data-cy="sort-button" onClick={onSort}>
@@ -27,12 +28,13 @@ const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
         </Button>
       </StyledDropdown>
     </FlexContainer>
-  );
-};
+  )
+}
 
 const StyledSortIcon = styled(IconArrowLeft)`
-  transform: ${({ dir }) => (dir === "desc" ? "rotate(-90deg)" : "rotate(90deg)")};
-`;
+  transform: ${({ dir }) =>
+    dir === 'desc' ? 'rotate(-90deg)' : 'rotate(90deg)'};
+`
 
 const StyledLabel = styled.span`
   min-width: 75px;
@@ -46,7 +48,7 @@ const StyledLabel = styled.span`
     fill: gray;
     height: 10px;
   }
-`;
+`
 
 const StyledDropdown = styled(Dropdown)`
   display: flex;
@@ -56,6 +58,6 @@ const StyledDropdown = styled(Dropdown)`
   span {
     margin-right: 10px;
   }
-`;
+`
 
-export default SortMenu;
+export default SortMenu

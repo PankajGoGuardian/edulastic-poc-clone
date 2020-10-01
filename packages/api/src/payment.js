@@ -1,16 +1,16 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const BASE_URL = "/payment";
-const pay = data =>
+const api = new API()
+const BASE_URL = '/payment'
+const pay = (data) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${BASE_URL}/teacher`,
-      data
+      data,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 export default {
-  pay
-};
+  pay,
+}

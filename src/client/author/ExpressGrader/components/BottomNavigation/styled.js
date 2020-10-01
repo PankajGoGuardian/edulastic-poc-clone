@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button } from "antd";
-import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Button } from 'antd'
+import { smallDesktopWidth, themeColor, white } from '@edulastic/colors'
 
 export const NavigationWrapper = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ export const NavigationWrapper = styled.div`
   justify-content: space-between;
   padding: 0 15px;
   svg {
-    fill: ${props => props.theme.iconColor};
+    fill: ${(props) => props.theme.iconColor};
   }
 
   @media (max-width: ${smallDesktopWidth}) {
@@ -18,7 +18,7 @@ export const NavigationWrapper = styled.div`
       height: 17px;
     }
   }
-`;
+`
 
 export const LinksWrapper = styled.div`
   display: flex;
@@ -34,7 +34,7 @@ export const LinksWrapper = styled.div`
       height: 12px;
     }
   }
-`;
+`
 
 export const Link = styled.div`
   display: flex;
@@ -48,10 +48,10 @@ export const Link = styled.div`
       margin-left: 0px;
     }
   }
-`;
+`
 
 export const CloseModal = styled(Button)`
-  font-size: ${props => props.theme.linkFontSize};
+  font-size: ${(props) => props.theme.linkFontSize};
   width: 80px;
   height: 32px;
   font-weight: 600;
@@ -85,24 +85,24 @@ export const CloseModal = styled(Button)`
       margin-left: 0px;
     }
   }
-`;
+`
 
 export const StyledText = styled.span`
   margin: 0 5px;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   font-weight: 600;
   user-select: none;
 
   @media (max-width: ${smallDesktopWidth}) {
-    font-size: ${props => props.theme.linkFontSize};
+    font-size: ${(props) => props.theme.linkFontSize};
     margin: 0 10px;
   }
-`;
+`
 
 export const CloseModalText = styled.span`
-  font-size: ${props => props.theme.linkFontSize};
+  font-size: ${(props) => props.theme.linkFontSize};
   margin-left: 15px;
-`;
+`
 
 export const StyledTextInfo = styled.span`
   display: flex;
@@ -114,7 +114,7 @@ export const StyledTextInfo = styled.span`
     width: 100%;
     margin-bottom: 20px;
   }
-`;
+`
 
 export const EditResponse = styled.div`
   display: flex;
@@ -131,4 +131,4 @@ export const EditResponse = styled.div`
       }
     }
   }
-`;
+`

@@ -1,14 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 
-import WidgetOptions from "../../../containers/WidgetOptions";
+import WidgetOptions from '../../../containers/WidgetOptions'
 
-import Extras from "../../../containers/Extras";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
+import Extras from '../../../containers/Extras'
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector,
+} from '../../../../author/QuestionEditor/ducks'
 
-import LayoutComponent from "./LayoutComponent";
+import LayoutComponent from './LayoutComponent'
 
 const Options = ({
   item,
@@ -18,7 +21,7 @@ const Options = ({
   showScoringSection,
   extraInScoring,
   showScoringType,
-  isCorrectAnsTab
+  isCorrectAnsTab,
 }) => (
   <WidgetOptions
     fillSections={fillSections}
@@ -36,12 +39,16 @@ const Options = ({
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
     />
-    <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+    <Extras
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+      advancedAreOpen={advancedAreOpen}
+    >
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
   </WidgetOptions>
-);
+)
 
 Options.propTypes = {
   item: PropTypes.object.isRequired,
@@ -50,8 +57,8 @@ Options.propTypes = {
   advancedAreOpen: PropTypes.bool,
   showScoringSection: PropTypes.bool,
   extraInScoring: PropTypes.elementType,
-  showScoringType: PropTypes.bool
-};
+  showScoringType: PropTypes.bool,
+}
 
 Options.defaultProps = {
   fillSections: () => {},
@@ -59,18 +66,18 @@ Options.defaultProps = {
   advancedAreOpen: false,
   showScoringSection: false,
   extraInScoring: null,
-  showScoringType: true
-};
+  showScoringType: true,
+}
 
 const enhance = compose(
   connect(
-    state => ({
-      item: getQuestionDataSelector(state)
+    (state) => ({
+      item: getQuestionDataSelector(state),
     }),
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
     }
   )
-);
+)
 
-export default enhance(Options);
+export default enhance(Options)

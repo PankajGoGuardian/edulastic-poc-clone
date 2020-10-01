@@ -1,26 +1,34 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { debounce, uniq, get } from "lodash";
-import { Pagination, Spin } from "antd";
-import Qs from "query-string";
-import { roleuser, sortOptions } from "@edulastic/constants";
-import { withWindowSizes, FlexContainer, notification, EduButton } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import { ItemsPagination, Selected } from "./styled";
-import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { debounce, uniq, get } from 'lodash'
+import { Pagination, Spin } from 'antd'
+import Qs from 'query-string'
+import { roleuser, sortOptions } from '@edulastic/constants'
+import {
+  withWindowSizes,
+  FlexContainer,
+  notification,
+  EduButton,
+} from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
+import { themeColor } from '@edulastic/colors'
+import { ItemsPagination, Selected } from './styled'
+import {
+  getCurriculumsListSelector,
+  getStandardsListSelector,
+} from '../../../src/selectors/dictionaries'
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
   clearDictAlignmentAction,
-  getDictStandardsForCurriculumAction
-} from "../../../src/actions/dictionaries";
-import { createTestItemAction } from "../../../src/actions/testItem";
-import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
+  getDictStandardsForCurriculumAction,
+} from '../../../src/actions/dictionaries'
+import { createTestItemAction } from '../../../src/actions/testItem'
+import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import {
   getTestItemsLoadingSelector,
   getTestItemsSelector,
@@ -36,17 +44,17 @@ import {
   filterMenuItems,
   initialSearchState,
   getSortFilterStateSelector,
-  initialSortState
-} from "./ducks";
+  initialSortState,
+} from './ducks'
 import {
   setAndSavePassageItemsAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
   setTestDataAndUpdateAction,
   getAllTagsAction,
-  setCurrentGroupIndexAction
-} from "../../ducks";
-import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
+  setCurrentGroupIndexAction,
+} from '../../ducks'
+import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter'
 import {
   Container,
   ListItems,
@@ -54,23 +62,26 @@ import {
   PaginationContainer,
   ContentWrapper,
   ScrollbarContainer,
-  MobileFilterIcon
-} from "../../../ItemList/components/Container/styled";
-import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
+  MobileFilterIcon,
+} from '../../../ItemList/components/Container/styled'
+import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
 import {
   getInterestedCurriculumsSelector,
   getUserId,
   getUserFeatures,
   getInterestedGradesSelector,
-  getInterestedSubjectsSelector
-} from "../../../src/selectors/user";
-import NoDataNotification from "../../../../common/components/NoDataNotification";
-import Item from "../../../ItemList/components/Item/Item";
-import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
-import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
-import HeaderFilter from "../../../ItemList/components/HeaderFilter";
-import PreviewModal from "../../../src/components/common/PreviewModal";
-import SortMenu from "../../../ItemList/components/SortMenu";
+  getInterestedSubjectsSelector,
+} from '../../../src/selectors/user'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
+import Item from '../../../ItemList/components/Item/Item'
+import {
+  PaginationInfo,
+  ItemsMenu,
+} from '../../../TestList/components/Container/styled'
+import { getDefaultInterests, setDefaultInterests } from '../../../dataUtils'
+import HeaderFilter from '../../../ItemList/components/HeaderFilter'
+import PreviewModal from '../../../src/components/common/PreviewModal'
+import SortMenu from '../../../ItemList/components/SortMenu'
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -87,7 +98,7 @@ class AddItems extends PureComponent {
         _id: PropTypes.string.isRequired,
         curriculum: PropTypes.string.isRequired,
         grades: PropTypes.array.isRequired,
-        subject: PropTypes.string.isRequired
+        subject: PropTypes.string.isRequired,
       })
     ).isRequired,
     getCurriculums: PropTypes.func.isRequired,
@@ -97,16 +108,16 @@ class AddItems extends PureComponent {
     onSaveTestId: PropTypes.func.isRequired,
     createTestItem: PropTypes.func.isRequired,
     gotoSummary: PropTypes.func.isRequired,
-    needToSetFilter: PropTypes.bool
-  };
+    needToSetFilter: PropTypes.bool,
+  }
 
   static defaultProps = {
-    needToSetFilter: false
-  };
+    needToSetFilter: false,
+  }
 
   state = {
-    itemIndexForPreview: null
-  };
+    itemIndexForPreview: null,
+  }
 
   componentDidMount() {
     const {
@@ -124,84 +135,97 @@ class AddItems extends PureComponent {
       interestedCurriculums: [firstCurriculum],
       pageNumber,
       needToSetFilter,
-      sort: initSort
-    } = this.props;
-    const query = Qs.parse(window.location.search);
-    let search = {};
-    const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[itemList]")) || {};
+      sort: initSort,
+    } = this.props
+    const query = Qs.parse(window.location.search)
+    let search = {}
+    const sessionSort =
+      JSON.parse(sessionStorage.getItem('sortBy[itemList]')) || {}
     const sort = {
       ...initSort,
-      sortBy: "popularity",
-      sortDir: "desc",
-      ...sessionSort
-    };
+      sortBy: 'popularity',
+      sortDir: 'desc',
+      ...sessionSort,
+    }
 
     if (needToSetFilter) {
       const {
-        subject = interestedSubjects?.[0] || "",
+        subject = interestedSubjects?.[0] || '',
         grades = interestedGrades || [],
-        curriculumId = firstCurriculum?.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
-      } = getDefaultInterests();
-      const isAuthoredNow = history?.location?.state?.isAuthoredNow;
-      const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
-      const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
-      const selectedSubjects = (test?.subjects || []).filter(item => !!item);
-      const selectedGrades = (test?.grades || []).filter(item => !!item);
+        curriculumId = firstCurriculum?.subject === interestedSubjects?.[0]
+          ? firstCurriculum?._id
+          : '',
+      } = getDefaultInterests()
+      const isAuthoredNow = history?.location?.state?.isAuthoredNow
+      const applyAuthoredFilter = isAuthoredNow
+        ? { filter: 'AUTHORED_BY_ME' }
+        : {}
+      const sessionFilters =
+        JSON.parse(sessionStorage.getItem('filters[itemList]')) || {}
+      const selectedSubjects = (test?.subjects || []).filter((item) => !!item)
+      const selectedGrades = (test?.grades || []).filter((item) => !!item)
       search = {
         ...initSearch,
         ...sessionFilters,
         ...applyAuthoredFilter,
         subject: selectedSubjects[0] || subject,
         grades: uniq([...selectedGrades, ...grades]),
-        curriculumId: parseInt(curriculumId, 10) || ""
-      };
+        curriculumId: parseInt(curriculumId, 10) || '',
+      }
 
-      this.updateFilterState(search, sort);
+      this.updateFilterState(search, sort)
     }
-    if (!curriculums.length) getCurriculums();
-    getAllTags({ type: "testitem" });
-    receiveTestItems(search, sort, parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1, limit);
+    if (!curriculums.length) getCurriculums()
+    getAllTags({ type: 'testitem' })
+    receiveTestItems(
+      search,
+      sort,
+      parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1,
+      limit
+    )
     if (search.curriculumId) {
-      getCurriculumStandards(search.curriculumId, search.grades, "");
+      getCurriculumStandards(search.curriculumId, search.grades, '')
     }
   }
 
   updateFilterState = (newSearch, sort) => {
-    const { updateSearchFilterState } = this.props;
-    updateSearchFilterState({ search: newSearch, sort });
-    sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
-    sessionStorage.setItem("sortBy[itemList]", JSON.stringify(sort));
-  };
+    const { updateSearchFilterState } = this.props
+    updateSearchFilterState({ search: newSearch, sort })
+    sessionStorage.setItem('filters[itemList]', JSON.stringify(newSearch))
+    sessionStorage.setItem('sortBy[itemList]', JSON.stringify(sort))
+  }
 
-  handleSearch = searchState => {
-    const { receiveTestItems, limit, search, sort } = this.props;
-    receiveTestItems(searchState || search, sort, 1, limit);
-  };
+  handleSearch = (searchState) => {
+    const { receiveTestItems, limit, search, sort } = this.props
+    receiveTestItems(searchState || search, sort, 1, limit)
+  }
 
-  handleLabelSearch = e => {
-    const { limit, receiveTestItems, search } = this.props;
-    const { key: filterType } = e;
-    const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+  handleLabelSearch = (e) => {
+    const { limit, receiveTestItems, search } = this.props
+    const { key: filterType } = e
+    const getMatchingObj = filterMenuItems.filter(
+      (item) => item.path === filterType
+    )
+    const { filter = '' } = (getMatchingObj.length && getMatchingObj[0]) || {}
     const searchState = {
       ...search,
-      filter
-    };
-    const sortByRecency = ["by-me", "shared"].includes(filterType);
+      filter,
+    }
+    const sortByRecency = ['by-me', 'shared'].includes(filterType)
     const sort = {
-      sortBy: sortByRecency ? "recency" : "popularity",
-      sortDir: "desc"
-    };
-    this.updateFilterState(searchState, sort);
-    receiveTestItems(searchState, sort, 1, limit);
-  };
+      sortBy: sortByRecency ? 'recency' : 'popularity',
+      sortDir: 'desc',
+    }
+    this.updateFilterState(searchState, sort)
+    receiveTestItems(searchState, sort, 1, limit)
+  }
 
   handleClearSearch = () => {
-    const { clearFilterState, receiveTestItems, limit } = this.props;
-    clearFilterState({ needToSetFilter: false });
-    receiveTestItems(initialSearchState, initialSortState, 1, limit);
-    setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
-  };
+    const { clearFilterState, receiveTestItems, limit } = this.props
+    clearFilterState({ needToSetFilter: false })
+    receiveTestItems(initialSearchState, initialSortState, 1, limit)
+    setDefaultInterests({ subject: '', grades: [], curriculumId: '' })
+  }
 
   handleCreateNewItem = () => {
     const {
@@ -210,101 +234,110 @@ class AddItems extends PureComponent {
       test: { _id: testId, title },
       clearDictAlignment,
       handleSaveTest,
-      updated
-    } = this.props;
+      updated,
+    } = this.props
     if (!title) {
-      notification({ messageKey: "nameShouldNotEmpty" });
+      notification({ messageKey: 'nameShouldNotEmpty' })
     }
 
     if (updated && testId) {
-      handleSaveTest();
+      handleSaveTest()
     }
     const defaultWidgets = {
       rows: [
         {
           tabs: [],
-          dimension: "100%",
+          dimension: '100%',
           widgets: [],
           flowLayout: false,
-          content: ""
-        }
-      ]
-    };
-    clearDictAlignment();
-    onSaveTestId();
-    createTestItem(defaultWidgets, true, testId, false, title);
-  };
+          content: '',
+        },
+      ],
+    }
+    clearDictAlignment()
+    onSaveTestId()
+    createTestItem(defaultWidgets, true, testId, false, title)
+  }
 
-  handleDuplicateItem = duplicateTestItemId => {
+  handleDuplicateItem = (duplicateTestItemId) => {
     const {
       onSaveTestId,
       test: { title, _id: testId },
       clearDictAlignment,
-      history
-    } = this.props;
+      history,
+    } = this.props
     if (!title) {
-      notification({ messageKey: "nameShouldNotEmpty" });
+      notification({ messageKey: 'nameShouldNotEmpty' })
     }
-    clearDictAlignment();
-    onSaveTestId();
-    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`);
-  };
+    clearDictAlignment()
+    onSaveTestId()
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`)
+  }
 
-  handleSearchFieldChangeCurriculumId = value => {
-    const { clearDictStandards, getCurriculumStandards, search, sort } = this.props;
-    clearDictStandards();
+  handleSearchFieldChangeCurriculumId = (value) => {
+    const {
+      clearDictStandards,
+      getCurriculumStandards,
+      search,
+      sort,
+    } = this.props
+    clearDictStandards()
     const updatedSearchValue = {
       ...search,
       curriculumId: value,
-      standardIds: []
-    };
-    this.updateFilterState(updatedSearchValue, sort);
-    this.handleSearch(updatedSearchValue);
-    getCurriculumStandards(value, search.grades, "");
-  };
+      standardIds: [],
+    }
+    this.updateFilterState(updatedSearchValue, sort)
+    this.handleSearch(updatedSearchValue)
+    getCurriculumStandards(value, search.grades, '')
+  }
 
-  handleSearchFieldChange = fieldName => value => {
-    const { search, clearDictStandards, sort } = this.props;
-    let updatedKeys = {};
-    if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
-      setDefaultInterests({ [fieldName]: value });
+  handleSearchFieldChange = (fieldName) => (value) => {
+    const { search, clearDictStandards, sort } = this.props
+    let updatedKeys = {}
+    if (
+      fieldName === 'grades' ||
+      fieldName === 'subject' ||
+      fieldName === 'curriculumId'
+    ) {
+      setDefaultInterests({ [fieldName]: value })
     }
-    if (fieldName === "curriculumId") {
-      this.handleSearchFieldChangeCurriculumId(value);
-      return;
+    if (fieldName === 'curriculumId') {
+      this.handleSearchFieldChangeCurriculumId(value)
+      return
     }
-    if (fieldName === "subject") {
-      clearDictStandards();
+    if (fieldName === 'subject') {
+      clearDictStandards()
       updatedKeys = {
         ...search,
         [fieldName]: value,
-        curriculumId: "",
-        standardIds: []
-      };
+        curriculumId: '',
+        standardIds: [],
+      }
     } else {
       updatedKeys = {
         ...search,
-        [fieldName]: value
-      };
+        [fieldName]: value,
+      }
     }
-    this.updateFilterState(updatedKeys, sort);
-    this.handleSearch(updatedKeys);
-  };
+    this.updateFilterState(updatedKeys, sort)
+    this.handleSearch(updatedKeys)
+  }
 
-  searchDebounce = debounce(this.handleSearch, 500);
+  searchDebounce = debounce(this.handleSearch, 500)
 
-  handleSearchInputChange = tags => {
-    const { search, sort } = this.props;
+  handleSearchInputChange = (tags) => {
+    const { search, sort } = this.props
     const updatedKeys = {
       ...search,
-      searchString: tags
-    };
-    this.updateFilterState(updatedKeys, sort);
-    this.searchDebounce(updatedKeys);
-  };
+      searchString: tags,
+    }
+    this.updateFilterState(updatedKeys, sort)
+    this.searchDebounce(updatedKeys)
+  }
 
   renderPagination = () => {
-    const { windowWidth, count, page } = this.props;
+    const { windowWidth, count, page } = this.props
     return (
       <ItemsPagination>
         <Pagination
@@ -315,13 +348,13 @@ class AddItems extends PureComponent {
           current={page}
         />
       </ItemsPagination>
-    );
-  };
+    )
+  }
 
-  handlePaginationChange = page => {
-    const { search, receiveTestItems, limit, sort } = this.props;
-    receiveTestItems(search, sort, page, limit);
-  };
+  handlePaginationChange = (page) => {
+    const { search, receiveTestItems, limit, sort } = this.props
+    receiveTestItems(search, sort, page, limit)
+  }
 
   renderItems = () => {
     const {
@@ -339,8 +372,8 @@ class AddItems extends PureComponent {
       gotoSummary,
       search,
       setCurrentGroupIndex,
-      current
-    } = this.props;
+      current,
+    } = this.props
     if (items.length < 1) {
       return (
         <NoDataNotification
@@ -348,7 +381,7 @@ class AddItems extends PureComponent {
           description='There are currently no items available for this filter. 
           You can create new item by clicking the "CREATE NEW ITEM" button.'
         />
-      );
+      )
     }
     return items.map((item, index) => (
       <Item
@@ -372,70 +405,70 @@ class AddItems extends PureComponent {
         openPreviewModal={this.openPreviewModal(index)}
         setCurrentGroupIndex={setCurrentGroupIndex}
       />
-    ));
-  };
+    ))
+  }
 
-  openPreviewModal = itemIndex => () => {
-    this.setState({ itemIndexForPreview: itemIndex });
-  };
+  openPreviewModal = (itemIndex) => () => {
+    this.setState({ itemIndexForPreview: itemIndex })
+  }
 
   closePreviewModal = () => {
-    this.setState({ itemIndexForPreview: null });
-  };
+    this.setState({ itemIndexForPreview: null })
+  }
 
   checkItemAnswer = () => {
-    const { checkAnswer } = this.props;
-    checkAnswer({ ...this.selectedItem, isItem: true });
-  };
+    const { checkAnswer } = this.props
+    checkAnswer({ ...this.selectedItem, isItem: true })
+  }
 
   showItemAnswer = () => {
-    const { showAnswer } = this.props;
-    showAnswer(this.selectedItem);
-  };
+    const { showAnswer } = this.props
+    showAnswer(this.selectedItem)
+  }
 
   prevItem = () => {
-    const { itemIndexForPreview } = this.state;
-    const prevItemIndex = itemIndexForPreview - 1;
+    const { itemIndexForPreview } = this.state
+    const prevItemIndex = itemIndexForPreview - 1
     if (prevItemIndex < 0) {
-      return;
+      return
     }
-    this.setState({ itemIndexForPreview: prevItemIndex });
-  };
+    this.setState({ itemIndexForPreview: prevItemIndex })
+  }
 
   nextItem = () => {
-    const { items } = this.props;
-    const { itemIndexForPreview } = this.state;
-    const nextItemIndex = itemIndexForPreview + 1;
+    const { items } = this.props
+    const { itemIndexForPreview } = this.state
+    const nextItemIndex = itemIndexForPreview + 1
     if (nextItemIndex > items.length - 1) {
-      return;
+      return
     }
-    this.setState({ itemIndexForPreview: nextItemIndex });
-  };
+    this.setState({ itemIndexForPreview: nextItemIndex })
+  }
 
   onSelectSortOption = (value, sortDir) => {
-    const { search, limit, sort, receiveTestItems } = this.props;
+    const { search, limit, sort, receiveTestItems } = this.props
     const updateSort = {
       ...sort,
       sortBy: value,
-      sortDir
-    };
-    this.updateFilterState(search, updateSort);
-    receiveTestItems(search, updateSort, 1, limit);
-  };
+      sortDir,
+    }
+    this.updateFilterState(search, updateSort)
+    receiveTestItems(search, updateSort, 1, limit)
+  }
 
   get selectedItem() {
-    const { items } = this.props;
-    const { itemIndexForPreview } = this.state;
-    const item = get(items, `[${itemIndexForPreview}]`, false);
+    const { items } = this.props
+    const { itemIndexForPreview } = this.state
+    const item = get(items, `[${itemIndexForPreview}]`, false)
     if (!item) {
-      return item;
+      return item
     }
-    return { ...item, isItem: true, id: item._id };
+    return { ...item, isItem: true, id: item._id }
   }
 
   get owner() {
-    const { userId } = this.props;
-    return get(this.selectedItem, "authors", []).some(x => x._id === userId);
+    const { userId } = this.props
+    return get(this.selectedItem, 'authors', []).some((x) => x._id === userId)
   }
 
   render() {
@@ -454,17 +487,19 @@ class AddItems extends PureComponent {
       features,
       gotoGroupItems,
       userRole,
-      sort = {}
-    } = this.props;
+      sort = {},
+    } = this.props
 
-    const { isCurator, isPublisherAuthor } = features;
-    let showGroupItemsBtn = false;
+    const { isCurator, isPublisherAuthor } = features
+    let showGroupItemsBtn = false
 
     if (isCurator || isPublisherAuthor) {
-      showGroupItemsBtn = true;
+      showGroupItemsBtn = true
     }
 
-    const itemGroupCount = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || [])?.length || 0;
+    const itemGroupCount =
+      test?.itemGroups?.flatMap((itemGroup) => itemGroup.items || [])?.length ||
+      0
 
     return (
       <Container>
@@ -479,16 +514,25 @@ class AddItems extends PureComponent {
           curriculums={curriculums}
           getCurriculumStandards={getCurriculumStandards}
           curriculumStandards={curriculumStandards}
-          items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
+          items={
+            userRole === roleuser.EDULASTIC_CURATOR
+              ? [filterMenuItems[0]]
+              : filterMenuItems
+          }
           toggleFilter={toggleFilter}
           isShowFilter={isShowFilter}
-          showFilter={windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter}
+          showFilter={
+            windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter
+          }
           t={t}
         />
         <ListItems isShowFilter={isShowFilter}>
           <Element>
             <MobileFilterIcon>
-              <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
+              <FilterToggleBtn
+                isShowFilter={isShowFilter}
+                toggleFilter={toggleFilter}
+              />
             </MobileFilterIcon>
             <ContentWrapper borderRadius="0px" padding="0px">
               {loading && <Spin size="large" />}
@@ -498,20 +542,45 @@ class AddItems extends PureComponent {
                 </PaginationInfo>
                 <HeaderFilter
                   search={search}
-                  handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
+                  handleCloseFilter={(type, value) =>
+                    this.handleSearchFieldChange(type)(value)
+                  }
                   type="testitem"
                 />
-                <FlexContainer alignItems="center" justifyContent="space-between">
-                  <Selected style={{ fontSize: "12px" }}>{itemGroupCount} SELECTED</Selected>
+                <FlexContainer
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Selected style={{ fontSize: '12px' }}>
+                    {itemGroupCount} SELECTED
+                  </Selected>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
-                    <EduButton height="28px" isGhost data-cy="createNewItem" onClick={this.handleCreateNewItem}>
-                      <IconPlusCircle color={themeColor} width={12} height={12} />
+                    <EduButton
+                      height="28px"
+                      isGhost
+                      data-cy="createNewItem"
+                      onClick={this.handleCreateNewItem}
+                    >
+                      <IconPlusCircle
+                        color={themeColor}
+                        width={12}
+                        height={12}
+                      />
                       <span>Create new Item</span>
                     </EduButton>
                   )}
                   {showGroupItemsBtn && (
-                    <EduButton height="28px" isGhost data-cy="groupItem" onClick={gotoGroupItems}>
-                      <IconItemGroup color={themeColor} width={12} height={12} />
+                    <EduButton
+                      height="28px"
+                      isGhost
+                      data-cy="groupItem"
+                      onClick={gotoGroupItems}
+                    >
+                      <IconItemGroup
+                        color={themeColor}
+                        width={12}
+                        height={12}
+                      />
                       <span>Group Items</span>
                     </EduButton>
                   )}
@@ -527,7 +596,11 @@ class AddItems extends PureComponent {
               {!loading && (
                 <ScrollbarContainer>
                   {this.renderItems()}
-                  {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
+                  {count > 10 && (
+                    <PaginationContainer>
+                      {this.renderPagination()}
+                    </PaginationContainer>
+                  )}
                 </ScrollbarContainer>
               )}
 
@@ -553,16 +626,16 @@ class AddItems extends PureComponent {
           </Element>
         </ListItems>
       </Container>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces("author"),
+  withNamespaces('author'),
   connect(
-    state => ({
+    (state) => ({
       items: getTestItemsSelector(state),
       loading: getTestItemsLoadingSelector(state),
       page: getTestsItemsPageSelector(state),
@@ -580,7 +653,7 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       pageNumber: state?.testsAddItems?.page,
-      needToSetFilter: state?.testsAddItems?.needToSetFilter
+      needToSetFilter: state?.testsAddItems?.needToSetFilter,
     }),
     {
       receiveTestItems: receiveTestItemsAction,
@@ -597,9 +670,9 @@ const enhance = compose(
       setTestItems: setTestItemsAction,
       updateSearchFilterState: updateSearchFilterStateAction,
       clearFilterState: clearFilterStateAction,
-      setCurrentGroupIndex: setCurrentGroupIndexAction
+      setCurrentGroupIndex: setCurrentGroupIndexAction,
     }
   )
-);
+)
 
-export default enhance(AddItems);
+export default enhance(AddItems)

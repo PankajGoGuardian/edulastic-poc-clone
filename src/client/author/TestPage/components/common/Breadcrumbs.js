@@ -1,36 +1,37 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 
-import { themeColor } from "@edulastic/colors";
-import { navButtonsTest } from "../TestPageHeader/TestPageHeader";
+import { themeColor } from '@edulastic/colors'
+import { navButtonsTest } from '../TestPageHeader/TestPageHeader'
 
-const getCurrentText = current => {
-  const currentItem = navButtonsTest.find(btn => btn.value === current);
+const getCurrentText = (current) => {
+  const currentItem = navButtonsTest.find((btn) => btn.value === current)
   if (currentItem) {
-    return currentItem.text;
+    return currentItem.text
   }
 
-  return "";
-};
+  return ''
+}
 
 const Breadcrumbs = ({ current, style }) => (
   <Title style={style}>
-    {"<"} <BackLink to="/author/tests">Test Library</BackLink> / {getCurrentText(current)}
+    {'<'} <BackLink to="/author/tests">Test Library</BackLink> /{' '}
+    {getCurrentText(current)}
   </Title>
-);
+)
 
 Breadcrumbs.propTypes = {
   current: PropTypes.string.isRequired,
-  style: PropTypes.object
-};
+  style: PropTypes.object,
+}
 
 Breadcrumbs.defaultProps = {
-  style: {}
-};
+  style: {},
+}
 
-export default Breadcrumbs;
+export default Breadcrumbs
 
 const Title = styled.div`
   font-size: 13px;
@@ -38,11 +39,11 @@ const Title = styled.div`
   color: ${themeColor};
   text-transform: uppercase;
   margin-bottom: 25px;
-`;
+`
 
 const BackLink = styled(Link)`
   color: ${themeColor};
   :hover {
     color: ${themeColor};
   }
-`;
+`

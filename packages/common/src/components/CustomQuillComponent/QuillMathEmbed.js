@@ -1,42 +1,42 @@
-import { Quill } from "react-quill";
+import { Quill } from 'react-quill'
 
 // embed extension
-const Embed = Quill.import("blots/block/embed");
+const Embed = Quill.import('blots/block/embed')
 
 class MathInputCmp extends Embed {
   static create() {
-    const node = super.create();
-    node.setAttribute("contenteditable", false);
-    node.innerHTML = '&nbsp;<span class="input__math__field"></span>&nbsp;';
-    return node;
+    const node = super.create()
+    node.setAttribute('contenteditable', false)
+    node.innerHTML = '&nbsp;<span class="input__math__field"></span>&nbsp;'
+    return node
   }
 
   static value(domNode) {
-    return domNode.getAttribute("data-latex");
+    return domNode.getAttribute('data-latex')
   }
 
   constructor(domNode, value) {
-    super(domNode, value);
+    super(domNode, value)
     let mathField = {
-      latex: () => {}
-    };
+      latex: () => {},
+    }
     if (window.MathQuill) {
-      const MQ = window.MathQuill.getInterface(2);
-      mathField = MQ.StaticMath(domNode.childNodes[1]);
-      mathField.latex(value);
+      const MQ = window.MathQuill.getInterface(2)
+      mathField = MQ.StaticMath(domNode.childNodes[1])
+      mathField.latex(value)
     }
     this.state = {
-      mathField
-    };
+      mathField,
+    }
   }
 
   value() {
-    return this.state.mathField.latex();
+    return this.state.mathField.latex()
   }
 }
 
-MathInputCmp.blotName = "MathInput";
-MathInputCmp.tagName = "span";
-MathInputCmp.className = "input__math";
+MathInputCmp.blotName = 'MathInput'
+MathInputCmp.tagName = 'span'
+MathInputCmp.className = 'input__math'
 
-export default MathInputCmp;
+export default MathInputCmp

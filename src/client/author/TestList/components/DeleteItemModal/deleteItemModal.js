@@ -1,22 +1,27 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { Button, Radio, Row } from "antd";
-import styled from "styled-components";
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { Button, Radio, Row } from 'antd'
+import styled from 'styled-components'
 
+import { EduButton } from '@edulastic/common'
 import {
   ModalWrapper,
   InitOptions,
   StyledButton,
   StyledInput,
   ModalFooter,
-  LightGreenSpan
-} from "../../../../common/components/ConfirmationModal/styled.js";
+  LightGreenSpan,
+} from '../../../../common/components/ConfirmationModal/styled.js'
 
-import { deleteTestRequestAction } from "../../ducks";
-import { EduButton } from "@edulastic/common";
+import { deleteTestRequestAction } from '../../ducks'
 
-const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId }) => {
-  const [confirmText, setConfirmText] = useState("");
+const DeleteItemModal = ({
+  isVisible,
+  onCancel,
+  deleteTestRequestAction,
+  testId,
+}) => {
+  const [confirmText, setConfirmText] = useState('')
 
   return (
     <StyledModal
@@ -31,36 +36,37 @@ const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId 
           </EduButton>
           <EduButton
             key="delete"
-            disabled={confirmText.toLocaleLowerCase() !== "delete"}
+            disabled={confirmText.toLocaleLowerCase() !== 'delete'}
             onClick={() => {
-              if (confirmText.toLocaleLowerCase() === "delete") {
-                deleteTestRequestAction(testId);
+              if (confirmText.toLocaleLowerCase() === 'delete') {
+                deleteTestRequestAction(testId)
               }
             }}
           >
             Yes, Delete
           </EduButton>
-        </ModalFooter>
+        </ModalFooter>,
       ]}
     >
       <InitOptions className="delete-message-container">
         <div className="delete-message">
           <p>Are you sure you want to delete this test?</p>
           <p>
-            If yes type <LightGreenSpan>DELETE</LightGreenSpan> in the space given below and proceed.
+            If yes type <LightGreenSpan>DELETE</LightGreenSpan> in the space
+            given below and proceed.
           </p>
         </div>
         <div className="delete-confirm-contaner">
           <StyledInput
             className="delete-confirm-input"
             type="text"
-            onChange={event => setConfirmText(event.currentTarget.value)}
+            onChange={(event) => setConfirmText(event.currentTarget.value)}
           />
         </div>
       </InitOptions>
     </StyledModal>
-  );
-};
+  )
+}
 
 const StyledModal = styled(ModalWrapper)`
   .ant-modal-content {
@@ -81,13 +87,10 @@ const StyledModal = styled(ModalWrapper)`
       }
     }
   }
-`;
+`
 
-const ConnectedDeleteItemModal = connect(
-  null,
-  {
-    deleteTestRequestAction
-  }
-)(DeleteItemModal);
+const ConnectedDeleteItemModal = connect(null, {
+  deleteTestRequestAction,
+})(DeleteItemModal)
 
-export { ConnectedDeleteItemModal as DeleteItemModal };
+export { ConnectedDeleteItemModal as DeleteItemModal }

@@ -1,97 +1,97 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { get } from "lodash";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { get } from 'lodash'
 
-import { withNamespaces } from "@edulastic/localization";
-import CorrectAnswers from "../../../../components/CorrectAnswers";
-import Question from "../../../../components/Question";
-import CorrectAnswer from "./CorrectAnswer";
-import AnswerOptions from "./AnswerOptions";
+import { withNamespaces } from '@edulastic/localization'
+import CorrectAnswers from '../../../../components/CorrectAnswers'
+import Question from '../../../../components/Question'
+import CorrectAnswer from './CorrectAnswer'
+import AnswerOptions from './AnswerOptions'
 
 class SetCorrectAnswers extends Component {
   state = {
-    currentTab: 0
-  };
+    currentTab: 0,
+  }
 
-  handleTabChange = currentTab => {
-    this.setState({ currentTab });
-  };
+  handleTabChange = (currentTab) => {
+    this.setState({ currentTab })
+  }
 
   handleAddAltResponses = () => {
-    const { item, setQuestionData, validation } = this.props;
-    this.handleTabChange(validation.altResponses.length + 1);
+    const { item, setQuestionData, validation } = this.props
+    this.handleTabChange(validation.altResponses.length + 1)
 
-    const validAnswers = get(item, "validation.validResponse.value", {});
+    const validAnswers = get(item, 'validation.validResponse.value', {})
 
     // storing alternate anwer based on valid answer
-    const alternateAnswers = {};
-    Object.keys(validAnswers).forEach(key => {
-      alternateAnswers[key] = "";
-    });
+    const alternateAnswers = {}
+    Object.keys(validAnswers).forEach((key) => {
+      alternateAnswers[key] = ''
+    })
 
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         draft.validation.altResponses.push({
           score: 1,
-          value: alternateAnswers
-        });
+          value: alternateAnswers,
+        })
       })
-    );
-  };
+    )
+  }
 
-  handleRemoveAltResponses = deletedTabIndex => {
-    const { setQuestionData, item } = this.props;
-    this.handleTabChange(0);
+  handleRemoveAltResponses = (deletedTabIndex) => {
+    const { setQuestionData, item } = this.props
+    this.handleTabChange(0)
     setQuestionData(
-      produce(item, draft => {
-        if (get(draft, "validation.altResponses", null)) {
-          draft.validation.altResponses.splice(deletedTabIndex, 1);
+      produce(item, (draft) => {
+        if (get(draft, 'validation.altResponses', null)) {
+          draft.validation.altResponses.splice(deletedTabIndex, 1)
         }
       })
-    );
-  };
+    )
+  }
 
-  updateScore = score => {
+  updateScore = (score) => {
     if (!(score > 0)) {
-      return;
+      return
     }
-    const points = parseFloat(score, 10);
-    const { item, setQuestionData } = this.props;
-    const { currentTab } = this.state;
+    const points = parseFloat(score, 10)
+    const { item, setQuestionData } = this.props
+    const { currentTab } = this.state
 
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.score = points;
+          draft.validation.validResponse.score = points
         } else if (currentTab > 0) {
-          draft.validation.altResponses[currentTab - 1].score = points;
+          draft.validation.altResponses[currentTab - 1].score = points
         }
       })
-    );
-  };
+    )
+  }
 
-  updateAnswers = answers => {
-    const { item, setQuestionData } = this.props;
-    const { currentTab } = this.state;
+  updateAnswers = (answers) => {
+    const { item, setQuestionData } = this.props
+    const { currentTab } = this.state
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.value = answers;
+          draft.validation.validResponse.value = answers
         } else if (currentTab > 0) {
-          draft.validation.altResponses[currentTab - 1].value = answers;
+          draft.validation.altResponses[currentTab - 1].value = answers
         }
       })
-    );
-  };
+    )
+  }
 
   get response() {
-    const { validation } = this.props;
-    const { currentTab } = this.state;
+    const { validation } = this.props
+    const { currentTab } = this.state
     if (currentTab === 0) {
-      return validation.validResponse;
+      return validation.validResponse
     }
-    return validation.altResponses[currentTab - 1];
+    return validation.altResponses[currentTab - 1]
   }
 
   render() {
@@ -104,15 +104,15 @@ class SetCorrectAnswers extends Component {
       hasGroupResponses,
       fillSections,
       cleanSections,
-      setQuestionData
-    } = this.props;
-    const { currentTab } = this.state;
+      setQuestionData,
+    } = this.props
+    const { currentTab } = this.state
 
     return (
       <Question
         position="unset"
         section="main"
-        label={t("component.correctanswers.setcorrectanswers")}
+        label={t('component.correctanswers.setcorrectanswers')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
@@ -141,7 +141,7 @@ class SetCorrectAnswers extends Component {
         </CorrectAnswers>
         <AnswerOptions t={t} setQuestionData={setQuestionData} item={item} />
       </Question>
-    );
+    )
   }
 }
 
@@ -155,22 +155,22 @@ SetCorrectAnswers.propTypes = {
   options: PropTypes.array,
   hasGroupResponses: PropTypes.bool,
   item: PropTypes.object.isRequired,
-  uiStyle: PropTypes.object
-};
+  uiStyle: PropTypes.object,
+}
 
 SetCorrectAnswers.defaultProps = {
-  stimulus: "",
+  stimulus: '',
   options: [],
   validation: {},
   hasGroupResponses: false,
   uiStyle: {
-    responsecontainerposition: "bottom",
-    fontsize: "normal",
-    stemNumeration: "",
+    responsecontainerposition: 'bottom',
+    fontsize: 'normal',
+    stemNumeration: '',
     widthpx: 0,
     heightpx: 0,
-    placeholder: ""
-  }
-};
+    placeholder: '',
+  },
+}
 
-export default withNamespaces("assessment")(SetCorrectAnswers);
+export default withNamespaces('assessment')(SetCorrectAnswers)

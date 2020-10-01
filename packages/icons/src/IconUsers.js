@@ -1,9 +1,13 @@
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconUsers = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.174 16.005" {...props}>
+const IconUsers = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 12.174 16.005"
+    {...props}
+  >
     <g transform="translate(0 -38.84)">
       <g transform="translate(0 45.627)">
         <g transform="translate(0 0)">
@@ -61,6 +65,6 @@ const IconUsers = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconUsers);
+export default withIconStyles(IconUsers)

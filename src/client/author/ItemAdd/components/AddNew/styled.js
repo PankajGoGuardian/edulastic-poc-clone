@@ -1,5 +1,5 @@
-import { secondaryTextColor, green } from "@edulastic/colors";
-import styled from "styled-components";
+import { secondaryTextColor, green } from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const PlusWrapper = styled.div`
   width: 50%;
@@ -17,10 +17,10 @@ export const PlusWrapper = styled.div`
   &:hover svg {
     fill: ${green};
   }
-`;
+`
 
 export const Text = styled.span`
   font-size: 20px;
   font-weight: 700;
   color: ${secondaryTextColor};
-`;
+`

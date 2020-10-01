@@ -1,9 +1,9 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
-import Display from "./Display";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { getQuestionDataSelector } from '../../../author/QuestionEditor/ducks'
+import Display from './Display'
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -20,13 +20,13 @@ class CorrectAnswer extends Component {
     backgroundColor: PropTypes.string.isRequired,
     imageAlterText: PropTypes.string.isRequired,
     imageWidth: PropTypes.number.isRequired,
-    item: PropTypes.object.isRequired
-  };
+    item: PropTypes.object.isRequired,
+  }
 
-  onChangeAnswers = answers => {
-    const { onUpdateValidationValue } = this.props;
-    onUpdateValidationValue(answers);
-  };
+  onChangeAnswers = (answers) => {
+    const { onUpdateValidationValue } = this.props
+    onUpdateValidationValue(answers)
+  }
 
   render() {
     const {
@@ -42,8 +42,8 @@ class CorrectAnswer extends Component {
       showDashedBorder,
       backgroundColor,
       maxRespCount,
-      item
-    } = this.props;
+      item,
+    } = this.props
 
     return (
       <Display
@@ -66,14 +66,14 @@ class CorrectAnswer extends Component {
         onChange={this.onChangeAnswers}
         imageOptions={item.imageOptions}
       />
-    );
+    )
   }
 }
 
 const enhance = compose(
-  connect(state => ({
-    item: getQuestionDataSelector(state)
+  connect((state) => ({
+    item: getQuestionDataSelector(state),
   }))
-);
+)
 
-export default enhance(CorrectAnswer);
+export default enhance(CorrectAnswer)

@@ -1,23 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { white, themeColor, textColor } from "@edulastic/colors";
-import SettingsBarIcon from "./SettingsBarIcon";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { white, themeColor, textColor } from '@edulastic/colors'
+import SettingsBarIcon from './SettingsBarIcon'
 
 const SettingsBarItem = ({ item, onSelect, selected }) => (
   <Container selected={selected} onClick={onSelect}>
     <SettingsBarIcon active={selected} type={item.value} />
     <Text>{item.text}</Text>
   </Container>
-);
+)
 
 SettingsBarItem.propTypes = {
   item: PropTypes.object.isRequired,
   onSelect: PropTypes.func.isRequired,
-  selected: PropTypes.bool.isRequired
-};
+  selected: PropTypes.bool.isRequired,
+}
 
-export default SettingsBarItem;
+export default SettingsBarItem
 
 const Container = styled.div`
   background: ${({ selected }) => (selected ? themeColor : white)};
@@ -32,8 +32,8 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   color: ${({ selected }) => (selected ? white : textColor)};
-`;
+`
 
 const Text = styled.div`
   margin-top: 10px;
-`;
+`

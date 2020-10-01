@@ -1,14 +1,17 @@
-import React from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Tooltip } from "antd";
-import { get } from "lodash";
-import { IconCheck } from "@edulastic/icons";
-import { white } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
-import { FeedbackByQIdSelector, getMaxScoreFromCurrentItem } from "../../sharedDucks/TestItem";
-import { getClasses } from "../../Login/ducks";
+import React from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Tooltip } from 'antd'
+import { get } from 'lodash'
+import { IconCheck } from '@edulastic/icons'
+import { white } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
+import {
+  FeedbackByQIdSelector,
+  getMaxScoreFromCurrentItem,
+} from '../../sharedDucks/TestItem'
+import { getClasses } from '../../Login/ducks'
 
 // TODO user  response to show in UI
 const StudentFeedback = ({
@@ -18,64 +21,75 @@ const StudentFeedback = ({
   itemMaxScore,
   isStudentReport,
   isPracticeQuestion,
-  classList = []
+  classList = [],
 }) => {
-  const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped, groupId } = question[qId] || { skipped: true };
+  const {
+    score = 0,
+    maxScore = itemMaxScore,
+    feedback,
+    graded,
+    skipped,
+    groupId,
+  } = question[qId] || { skipped: true }
 
-  let _score = skipped ? 0 : parseFloat(score.toFixed(2));
+  let _score = skipped ? 0 : parseFloat(score.toFixed(2))
   if (!graded) {
-    _score = "";
+    _score = ''
   }
 
   const feedbackTeacher = {
-    thumbnail: "",
-    firstName: "",
-    lastName: ""
-  };
+    thumbnail: '',
+    firstName: '',
+    lastName: '',
+  }
   if (feedback) {
-    feedbackTeacher.thumbnail = feedback?.thumbnail;
-    const [firstName, lastName] = feedback?.teacherName.split(" ");
-    feedbackTeacher.firstName = firstName;
-    feedbackTeacher.lastName = lastName || "";
+    feedbackTeacher.thumbnail = feedback?.thumbnail
+    const [firstName, lastName] = feedback?.teacherName.split(' ')
+    feedbackTeacher.firstName = firstName
+    feedbackTeacher.lastName = lastName || ''
   } else {
-    const classOwner = classList.find(({ _id }) => _id === groupId)?.owners?.[0];
-    feedbackTeacher.thumbnail = classOwner?.thumbnail;
-    feedbackTeacher.firstName = classOwner?.firstName;
-    feedbackTeacher.lastName = classOwner?.lastName || "";
+    const classOwner = classList.find(({ _id }) => _id === groupId)?.owners?.[0]
+    feedbackTeacher.thumbnail = classOwner?.thumbnail
+    feedbackTeacher.firstName = classOwner?.firstName
+    feedbackTeacher.lastName = classOwner?.lastName || ''
   }
 
-  const getUserName = type => {
-    let userInitials = "";
-    const { firstName = "", lastName = "" } = feedbackTeacher;
-    if (type === "initials") {
+  const getUserName = (type) => {
+    let userInitials = ''
+    const { firstName = '', lastName = '' } = feedbackTeacher
+    if (type === 'initials') {
       if (firstName) {
-        userInitials += firstName[0].toLocaleUpperCase();
+        userInitials += firstName[0].toLocaleUpperCase()
       }
       if (lastName) {
-        userInitials += lastName[0].toLocaleUpperCase();
+        userInitials += lastName[0].toLocaleUpperCase()
       }
     } else {
       if (firstName) {
-        userInitials += firstName;
+        userInitials += firstName
       }
 
       if (lastName) {
-        userInitials += " ";
-        userInitials += lastName;
+        userInitials += ' '
+        userInitials += lastName
       }
     }
-    return userInitials;
-  };
+    return userInitials
+  }
 
-  const _maxScore = isPracticeQuestion ? "" : maxScore;
-  const feedbackTextByTeacher = get(feedback, "text", "No feedback provided");
+  const _maxScore = isPracticeQuestion ? '' : maxScore
+  const feedbackTextByTeacher = get(feedback, 'text', 'No feedback provided')
 
   return (
     <FeedbackWrapper isStudentReport={isStudentReport}>
       <FeedbackText isStudentReport={isStudentReport}>
         <QuestionText>{qLabel}</QuestionText> - Teacher Feedback
       </FeedbackText>
-      <FlexContainer justifyContent="flex-start" padding={isStudentReport ? "0px" : "0 1rem"} alignItems="flex-start">
+      <FlexContainer
+        justifyContent="flex-start"
+        padding={isStudentReport ? '0px' : '0 1rem'}
+        alignItems="flex-start"
+      >
         <FeedbackContainer>
           <IconCheckWrapper>
             <IconCheck />
@@ -85,64 +99,66 @@ const StudentFeedback = ({
             <Total data-cy="maxscore">{_maxScore}</Total>
           </ScoreWrapper>
           <Feedback>
-            <FeedbackGiven data-cy="feedback">{feedbackTextByTeacher}</FeedbackGiven>
+            <FeedbackGiven data-cy="feedback">
+              {feedbackTextByTeacher}
+            </FeedbackGiven>
           </Feedback>
         </FeedbackContainer>
 
-        <Tooltip placement="top" title={getUserName("fullName")}>
+        <Tooltip placement="top" title={getUserName('fullName')}>
           {feedbackTeacher.thumbnail ? (
             <UserImg src={feedbackTeacher.thumbnail} />
           ) : (
-            <UserInitials>{getUserName("initials")}</UserInitials>
+            <UserInitials>{getUserName('initials')}</UserInitials>
           )}
         </Tooltip>
       </FlexContainer>
     </FeedbackWrapper>
-  );
-};
+  )
+}
 
 StudentFeedback.propTypes = {
   question: PropTypes.object.isRequired,
   qId: PropTypes.number.isRequired,
-  qLabel: PropTypes.string.isRequired
-};
+  qLabel: PropTypes.string.isRequired,
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     question: FeedbackByQIdSelector(state),
     itemMaxScore: getMaxScoreFromCurrentItem(state),
-    classList: getClasses(state)
+    classList: getClasses(state),
   }),
   null
-)(StudentFeedback);
+)(StudentFeedback)
 
 const FeedbackWrapper = styled.div`
-  margin-top: ${props => (props.isStudentReport ? "20px" : "55px")};
-  padding: ${props => (props.isStudentReport ? "0px 20px" : "0px")};
+  margin-top: ${(props) => (props.isStudentReport ? '20px' : '55px')};
+  padding: ${(props) => (props.isStudentReport ? '0px 20px' : '0px')};
   width: 100%;
   border-radius: 0.5rem;
-`;
+`
 
 const Total = styled.div`
   font-weight: 600;
   font-size: 30px;
   text-align: center;
   color: #434b5d;
-`;
+`
 
 const Score = styled(Total)`
   border-bottom: 0.2rem solid #434b5d;
-`;
+`
 
 const Feedback = styled.div`
   flex: 1;
-`;
+`
 
 const ScoreWrapper = styled.div`
   max-width: 80px;
   min-width: 65px;
   padding: 0px 12px;
-`;
+`
 
 const FeedbackContainer = styled.div`
   display: flex;
@@ -155,7 +171,7 @@ const FeedbackContainer = styled.div`
   width: 100%;
 
   &::after {
-    content: "";
+    content: '';
     top: 32px;
     right: -24px;
     position: absolute;
@@ -169,7 +185,7 @@ const FeedbackContainer = styled.div`
     border-left-width: 12px;
     border-bottom-width: 24px;
   }
-`;
+`
 
 const IconCheckWrapper = styled.div`
   width: 32px;
@@ -186,22 +202,22 @@ const IconCheckWrapper = styled.div`
   & svg {
     fill: ${white};
   }
-`;
+`
 
 const FeedbackText = styled.div`
   color: #434b5d;
   font-weight: 700;
   font-size: 16px;
   padding-bottom: 1.5rem;
-  padding-left: ${props => (props.isStudentReport ? "0px" : "11px")};
+  padding-left: ${(props) => (props.isStudentReport ? '0px' : '11px')};
   border-bottom: 0.05rem solid #f2f2f2;
-`;
+`
 
 const QuestionText = styled.span`
   font-weight: 700;
   font-size: 16px;
   color: #4aac8b;
-`;
+`
 
 const FeedbackGiven = styled.div`
   max-height: 400px;
@@ -210,20 +226,20 @@ const FeedbackGiven = styled.div`
   padding: 0px 0px 0px 16px;
   color: #878282;
   font-size: 0.8rem;
-`;
+`
 
 const UserImg = styled.div`
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  background: url(${props => props.src});
+  background: url(${(props) => props.src});
   background-position: center center;
   background-size: cover;
   border-radius: 50%;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   margin-top: 50px;
   margin-left: 16px;
-`;
+`
 
 const UserInitials = styled(UserImg)`
   display: flex;
@@ -232,4 +248,4 @@ const UserInitials = styled(UserImg)`
   font-size: 18px;
   font-weight: 700;
   background: #dddddd;
-`;
+`

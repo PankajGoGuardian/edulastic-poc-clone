@@ -1,10 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconWrench = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="14.017" height="14.018" viewBox="0 0 14.017 14.018" {...props}>
+const IconWrench = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="14.017"
+    height="14.018"
+    viewBox="0 0 14.017 14.018"
+    {...props}
+  >
     <g transform="translate(-0.009)">
       <g transform="translate(0.009)">
         <g transform="translate(0)">
@@ -22,6 +28,6 @@ const IconWrench = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconWrench);
+export default withIconStyles(IconWrench)

@@ -1,14 +1,14 @@
-import React, { useRef, useEffect } from "react";
-import PropTypes from "prop-types";
-import { find, isUndefined } from "lodash";
-import { Popover } from "antd";
-import { measureText } from "@edulastic/common";
+import React, { useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { find, isUndefined } from 'lodash'
+import { Popover } from 'antd'
+import { measureText } from '@edulastic/common'
 
-import { IconWrapper } from "./styled/IconWrapper";
-import { RightIcon } from "./styled/RightIcon";
-import { WrongIcon } from "./styled/WrongIcon";
-import { CheckBox } from "./styled/CheckBox";
-import { getMathTemplate } from "../../../utils/variables";
+import { IconWrapper } from './styled/IconWrapper'
+import { RightIcon } from './styled/RightIcon'
+import { WrongIcon } from './styled/WrongIcon'
+import { CheckBox } from './styled/CheckBox'
+import { getMathTemplate } from '../../../utils/variables'
 
 /**
  *
@@ -21,35 +21,35 @@ import { getMathTemplate } from "../../../utils/variables";
 function combineUnitAndValue(userAnswer, isMath, unit) {
   return userAnswer && userAnswer.value
     ? isMath
-      ? userAnswer.value.search("=") === -1
+      ? userAnswer.value.search('=') === -1
         ? `${userAnswer.value}\\ ${unit}`
         : userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
       : userAnswer.value
-    : userAnswer?.unit || "";
+    : userAnswer?.unit || ''
 }
 
 const CheckBoxedMathBox = ({ value, style }) => {
-  const filedRef = useRef();
+  const filedRef = useRef()
   const replaceWithMathQuill = () => {
     if (!window.MathQuill || !filedRef.current) {
-      return;
+      return
     }
-    const MQ = window.MathQuill.getInterface(2);
-    const mQuill = MQ.StaticMath(filedRef.current);
-    mQuill.latex(value || "");
-  };
+    const MQ = window.MathQuill.getInterface(2)
+    const mQuill = MQ.StaticMath(filedRef.current)
+    mQuill.latex(value || '')
+  }
 
   useEffect(() => {
-    replaceWithMathQuill();
-  }, [value]);
+    replaceWithMathQuill()
+  }, [value])
 
-  return <span className="value" ref={filedRef} style={style} />;
-};
+  return <span className="value" ref={filedRef} style={style} />
+}
 
 CheckBoxedMathBox.propTypes = {
   value: PropTypes.string.isRequired,
-  style: PropTypes.object.isRequired
-};
+  style: PropTypes.object.isRequired,
+}
 
 const CheckedBlock = ({
   item,
@@ -62,39 +62,45 @@ const CheckedBlock = ({
   height,
   onInnerClick,
   showIndex,
-  isPrintPreview = false
+  isPrintPreview = false,
 }) => {
-  const { responseIds } = item;
-  const { index } = find(responseIds[type], res => res.id === id);
-  let { unit = "" } = userAnswer || {};
+  const { responseIds } = item
+  const { index } = find(responseIds[type], (res) => res.id === id)
+  let { unit = '' } = userAnswer || {}
   /**
    * certain keys already have the \text{} format, like \text{ft}^{2}
    * wrap inside \text{} only if its not already beginning with \text{
    * @see https://snapwiz.atlassian.net/browse/EV-15169
    */
-  const unitWrappedInTextFormat = unit.match(/^\\text{/);
-  if ((unit.search("f") !== -1 || unit.search(/\s/g) !== -1) && !unitWrappedInTextFormat) {
-    unit = `\\text{${unit}}`;
+  const unitWrappedInTextFormat = unit.match(/^\\text{/)
+  if (
+    (unit.search('f') !== -1 || unit.search(/\s/g) !== -1) &&
+    !unitWrappedInTextFormat
+  ) {
+    unit = `\\text{${unit}}`
   }
-  let checkBoxClass = "";
+  let checkBoxClass = ''
 
   if (userAnswer && evaluation[id] !== undefined) {
-    checkBoxClass = evaluation[id] ? "right" : "wrong";
+    checkBoxClass = evaluation[id] ? 'right' : 'wrong'
   }
 
-  const showValue = combineUnitAndValue(userAnswer, isMath, unit);
+  const showValue = combineUnitAndValue(userAnswer, isMath, unit)
 
   /**
    * if its math or math with units, need to convert the latex string to actual math template
    * passing latex string to the function would give incorrect dimensions
    * as latex might have extra special characters for rendering math
    */
-  const answer = isMath ? getMathTemplate(showValue) : showValue;
+  const answer = isMath ? getMathTemplate(showValue) : showValue
 
-  const { width: textWidth } = measureText(answer, { padding: "0 0 0 11px", fontSize: "16px" });
-  const availableWidth = (parseInt(width, 10) || 0) - (showIndex ? 58 : 26); // will show popover when availableHeight is not available or NaN
-  const showPopover = textWidth > availableWidth;
-  const popoverContent = isPopover => (
+  const { width: textWidth } = measureText(answer, {
+    padding: '0 0 0 11px',
+    fontSize: '16px',
+  })
+  const availableWidth = (parseInt(width, 10) || 0) - (showIndex ? 58 : 26) // will show popover when availableHeight is not available or NaN
+  const showPopover = textWidth > availableWidth
+  const popoverContent = (isPopover) => (
     <CheckBox
       className={!isPrintPreview && checkBoxClass}
       key={`input_${index}`}
@@ -103,23 +109,31 @@ const CheckedBlock = ({
       height={height}
     >
       {showIndex && (
-        <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+        <span
+          className="index"
+          style={{ alignSelf: 'stretch', height: 'auto' }}
+        >
           {index + 1}
         </span>
       )}
       <span
         className="value"
-        style={{ alignItems: "center", fontWeight: "normal", textAlign: "left", paddingLeft: "11px" }}
+        style={{
+          alignItems: 'center',
+          fontWeight: 'normal',
+          textAlign: 'left',
+          paddingLeft: '11px',
+        }}
       >
         {isMath ? (
           <CheckBoxedMathBox
             value={showValue}
             style={{
               height: !isPopover && height,
-              minWidth: "unset",
-              display: "flex",
-              alignItems: "center",
-              textAlign: "left"
+              minWidth: 'unset',
+              display: 'flex',
+              alignItems: 'center',
+              textAlign: 'left',
             }}
           />
         ) : (
@@ -127,13 +141,19 @@ const CheckedBlock = ({
         )}
       </span>
       {userAnswer && !isUndefined(evaluation[id]) && (
-        <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
+        <IconWrapper>
+          {checkBoxClass === 'right' ? <RightIcon /> : <WrongIcon />}
+        </IconWrapper>
       )}
     </CheckBox>
-  );
+  )
 
-  return showPopover ? <Popover content={popoverContent(true)}>{popoverContent()}</Popover> : popoverContent();
-};
+  return showPopover ? (
+    <Popover content={popoverContent(true)}>{popoverContent()}</Popover>
+  ) : (
+    popoverContent()
+  )
+}
 
 CheckedBlock.propTypes = {
   evaluation: PropTypes.array.isRequired,
@@ -145,16 +165,16 @@ CheckedBlock.propTypes = {
   isMath: PropTypes.bool,
   onInnerClick: PropTypes.func,
   width: PropTypes.string,
-  height: PropTypes.string
-};
+  height: PropTypes.string,
+}
 
 CheckedBlock.defaultProps = {
   isMath: false,
   showIndex: false,
-  userAnswer: "",
+  userAnswer: '',
   onInnerClick: () => {},
-  width: "120px",
-  height: "auto"
-};
+  width: '120px',
+  height: 'auto',
+}
 
-export default CheckedBlock;
+export default CheckedBlock

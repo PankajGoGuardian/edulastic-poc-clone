@@ -1,9 +1,13 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconGraphPolynom = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.288 14.605" {...props}>
+const IconGraphPolynom = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 47.288 14.605"
+    {...props}
+  >
     <g transform="translate(-6.1 -0.164)">
       <path
         d="M1.842,0,1.41-1.113H1.351A3.3,3.3,0,0,1,.19-.128,3.752,3.752,0,0,1-1.366.146,2.517,2.517,0,0,1-3.223-.527,2.588,2.588,0,0,1-3.9-2.446a2.161,2.161,0,0,1,.912-1.923,5.284,5.284,0,0,1,2.75-.685L1.183-5.1v-.359A1.114,1.114,0,0,0-.092-6.7,5.808,5.808,0,0,0-2.4-6.108l-.74-1.509A6.657,6.657,0,0,1,0-8.357a3.9,3.9,0,0,1,2.527.718A2.653,2.653,0,0,1,3.4-5.457V0ZM1.183-3.794l-.864.029a2.768,2.768,0,0,0-1.45.352,1.1,1.1,0,0,0-.476.981q0,.945,1.084.945A1.717,1.717,0,0,0,.718-1.934,1.569,1.569,0,0,0,1.183-3.12Z"
@@ -37,6 +41,6 @@ const IconGraphPolynom = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconGraphPolynom);
+export default withIconStyles(IconGraphPolynom)

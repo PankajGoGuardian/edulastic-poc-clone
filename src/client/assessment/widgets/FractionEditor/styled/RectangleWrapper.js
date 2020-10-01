@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { white } from "@edulastic/colors/index";
+import styled from 'styled-components'
+import { white } from '@edulastic/colors/index'
 
 export default styled.div`
   display: grid;
@@ -11,4 +11,4 @@ export default styled.div`
   border-bottom: 2px solid ${white};
   margin-bottom: 1em;
   margin-right: 10px;
-`;
+`

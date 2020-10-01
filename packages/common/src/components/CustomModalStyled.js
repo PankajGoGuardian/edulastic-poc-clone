@@ -1,15 +1,22 @@
-import React from "react";
-import styled from "styled-components";
-import { Modal } from "antd";
-import { title, mediumDesktopExactWidth, white, titleColor } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { Modal } from 'antd'
+import {
+  title,
+  mediumDesktopExactWidth,
+  white,
+  titleColor,
+} from '@edulastic/colors'
 
-const CustomModalStyled = ({ children, ...props }) => <StyledModal {...props}>{children}</StyledModal>;
+const CustomModalStyled = ({ children, ...props }) => (
+  <StyledModal {...props}>{children}</StyledModal>
+)
 
-export default CustomModalStyled;
+export default CustomModalStyled
 
 const StyledModal = styled(Modal)`
-  min-width: ${props => (props.modalWidth ? props.modalWidth : "600px")};
-  top: ${props => (props.top ? props.top : "100px")};
+  min-width: ${(props) => (props.modalWidth ? props.modalWidth : '600px')};
+  top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
     background: ${white};
     padding: 25px;
@@ -36,7 +43,7 @@ const StyledModal = styled(Modal)`
       }
     }
     .ant-modal-body {
-      display: ${props => (props.centerContent ? "flex" : "block")};
+      display: ${(props) => (props.centerContent ? 'flex' : 'block')};
       align-items: center;
       background: transparent;
       padding: 25px 0px;
@@ -62,4 +69,4 @@ const StyledModal = styled(Modal)`
       padding: 0px;
     }
   }
-`;
+`

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { white, sectionBorder } from "@edulastic/colors";
+import styled from 'styled-components'
+import { white, sectionBorder } from '@edulastic/colors'
 
 export const CorrectAnswerHeader = styled.div`
   width: 100%;
@@ -11,4 +11,4 @@ export const CorrectAnswerHeader = styled.div`
   align-items: center;
   border-radius: 3px;
   margin-bottom: 1rem;
-`;
+`

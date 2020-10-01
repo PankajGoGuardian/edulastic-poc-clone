@@ -1,29 +1,40 @@
 /* eslint-disable react/prop-types */
-import { smallDesktopWidth } from "@edulastic/colors";
-import { IconBookmark, IconCheck } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import React from "react";
-import { compose } from "redux";
-import styled from "styled-components";
-import { Tooltip } from "../../../common/utils/helpers";
+import { smallDesktopWidth } from '@edulastic/colors'
+import { IconBookmark, IconCheck } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { Tooltip } from '../../../common/utils/helpers'
 
-const TestButton = ({ t, checkAnswer, settings, answerChecksUsedForItem, toggleBookmark, isBookmarked = false }) => (
+const TestButton = ({
+  t,
+  checkAnswer,
+  settings,
+  answerChecksUsedForItem,
+  toggleBookmark,
+  isBookmarked = false,
+}) => (
   <Container>
     <Tooltip placement="top" title="Bookmark">
       <StyledButton onClick={toggleBookmark} active={isBookmarked}>
         <StyledIconBookmark />
-        <span>{t("common.test.bookmark")}</span>
+        <span>{t('common.test.bookmark')}</span>
       </StyledButton>
     </Tooltip>
     {settings.maxAnswerChecks > 0 && (
       <Tooltip
         placement="top"
-        title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : "Check Answer"}
+        title={
+          answerChecksUsedForItem >= settings.maxAnswerChecks
+            ? 'Usage limit exceeded'
+            : 'Check Answer'
+        }
       >
         <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
           <StyledIconCheck />
-          <span> {t("common.test.checkanswer")}</span>
+          <span> {t('common.test.checkanswer')}</span>
         </StyledButton>
       </Tooltip>
     )}
@@ -37,20 +48,20 @@ const TestButton = ({ t, checkAnswer, settings, answerChecksUsedForItem, toggleB
         </Tooltip>
       ) : null} */}
   </Container>
-);
+)
 
 TestButton.propTypes = {
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
-const enhance = compose(withNamespaces("student"));
+const enhance = compose(withNamespaces('student'))
 
-export default enhance(TestButton);
+export default enhance(TestButton)
 
 const Container = styled.div`
   margin-left: 5px;
   display: flex;
-`;
+`
 
 const StyledButton = styled.div`
   margin-right: 5px;
@@ -62,12 +73,18 @@ const StyledButton = styled.div`
   border-radius: 4px;
   border: 1px solid;
   cursor: pointer;
-  font-weight:600;
+  font-weight: 600;
   ${({ theme, active }) => `
     height: ${theme.default.headerLeftButtonHeight};
     font-size: ${theme.default.headerButtonFontSize};
-    color: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
-    background: ${active ? theme.default.headerLeftButtonBgHoverColor : "transparent"};
+    color: ${
+      active
+        ? theme.header.headerButtonHoverColor
+        : theme.header.headerButtonColor
+    };
+    background: ${
+      active ? theme.default.headerLeftButtonBgHoverColor : 'transparent'
+    };
     border-color: ${theme.default.headerButtonBorderColor};
     
     &:hover,
@@ -82,7 +99,11 @@ const StyledButton = styled.div`
     }
     svg {
       margin-right: 10px;
-      fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
+      fill: ${
+        active
+          ? theme.header.headerButtonHoverColor
+          : theme.header.headerButtonColor
+      };
       &:hover {
         fill: ${theme.header.headerButtonHoverColor};
       }
@@ -97,17 +118,17 @@ const StyledButton = styled.div`
       margin-right: 0px;
     }
   }
-`;
+`
 
 const StyledIconCheck = styled(IconCheck)`
   ${({ theme }) => `
     width: ${theme.default.headerCheckIconWidth};
     height: ${theme.default.headerCheckIconHeight};
   `}
-`;
+`
 const StyledIconBookmark = styled(IconBookmark)`
   ${({ theme }) => `
     width: ${theme.default.headerBookmarkIconWidth};
     height: ${theme.default.headerBookmarkIconHeight};
   `}
-`;
+`

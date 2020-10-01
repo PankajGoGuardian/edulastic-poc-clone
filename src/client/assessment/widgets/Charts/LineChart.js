@@ -1,46 +1,49 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { isEqual } from "lodash";
-import produce from "immer";
-import { themeColor } from "@edulastic/colors";
+import React, { useState, useEffect, useRef, useMemo } from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { isEqual } from 'lodash'
+import produce from 'immer'
+import { themeColor } from '@edulastic/colors'
 
-import HorizontalLines from "./components/HorizontalLines";
-import VerticalLines from "./components/VerticalLines";
-import Points from "./components/Points";
-import ArrowPair from "./components/ArrowPair";
-import ValueLabel from "./components/ValueLabel";
-import withGrid from "./HOC/withGrid";
+import HorizontalLines from './components/HorizontalLines'
+import VerticalLines from './components/VerticalLines'
+import Points from './components/Points'
+import ArrowPair from './components/ArrowPair'
+import ValueLabel from './components/ValueLabel'
+import withGrid from './HOC/withGrid'
 import {
   convertPxToUnit,
   convertUnitToPx,
   displayHorizontalLines,
   displayVerticalLines,
-  getGridVariables
-} from "./helpers";
+  getGridVariables,
+} from './helpers'
 
 function normalizeTouchEvent(e) {
   if (e?.nativeEvent?.changedTouches?.length) {
     // e.preventDefault();
     // e.clientX = e.nativeEvent.changedTouches[0].clientX;
     // e.clientY = e.nativeEvent.changedTouches[0].clientY;
-    e.pageX = e.nativeEvent.changedTouches[0].pageX;
-    e.pageY = e.nativeEvent.changedTouches[0].pageY;
+    e.pageX = e.nativeEvent.changedTouches[0].pageX
+    e.pageY = e.nativeEvent.changedTouches[0].pageY
   }
 }
 
 function useDisableDragScroll() {
-  const targetRef = useRef();
+  const targetRef = useRef()
 
   useEffect(() => {
-    const preventDefault = e => {
-      e.preventDefault();
-    };
-    targetRef.current.addEventListener("touchmove", preventDefault, { passive: false });
-    return () => targetRef.current.removeEventListener("touchmove", preventDefault);
-  }, []);
+    const preventDefault = (e) => {
+      e.preventDefault()
+    }
+    targetRef.current.addEventListener('touchmove', preventDefault, {
+      passive: false,
+    })
+    return () =>
+      targetRef.current.removeEventListener('touchmove', preventDefault)
+  }, [])
 
-  return targetRef;
+  return targetRef
 }
 
 const LineChart = ({
@@ -54,94 +57,99 @@ const LineChart = ({
   disableResponse,
   toggleBarDragging,
   deleteMode,
-  margin = { top: 0, right: 0, left: 0, bottom: 50 }
+  margin = { top: 0, right: 0, left: 0, bottom: 50 },
 }) => {
-  const { width, height, showGridlines, margin: gridMargin } = gridParams;
-  const { padding, step } = getGridVariables(data, gridParams);
+  const { width, height, showGridlines, margin: gridMargin } = gridParams
+  const { padding, step } = getGridVariables(data, gridParams)
 
-  const [active, setActive] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [cursorY, setCursorY] = useState(null);
-  const [initY, setInitY] = useState(null);
+  const [active, setActive] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMouseDown, setIsMouseDown] = useState(false)
+  const [cursorY, setCursorY] = useState(null)
+  const [initY, setInitY] = useState(null)
 
-  const [localData, setLocalData] = useState(data);
+  const [localData, setLocalData] = useState(data)
 
-  const paddingTop = 20;
+  const paddingTop = 20
   const points = useMemo(
     () =>
       (localData || []).map((dot, index) => ({
         ...dot,
         posY: convertUnitToPx(dot.y, gridParams) + paddingTop,
         posX: step * index + (padding + gridMargin) / 2,
-        labelVisibility: data[index].labelVisibility
+        labelVisibility: data[index].labelVisibility,
       })),
     [localData]
-  );
+  )
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
-      setLocalData(data);
+      setLocalData(data)
     }
-  }, [data]);
+  }, [data])
 
   const getPolylinePoints = () =>
-    points.map(dot => `${dot.posX},${convertUnitToPx(dot.y, gridParams) + paddingTop}`).join(" ");
+    points
+      .map(
+        (dot) =>
+          `${dot.posX},${convertUnitToPx(dot.y, gridParams) + paddingTop}`
+      )
+      .join(' ')
 
-  const getActivePoint = index =>
+  const getActivePoint = (index) =>
     active !== null
-      ? +getPolylinePoints()
-          .split(" ")
-          [active].split(",")[index]
-      : null;
+      ? +getPolylinePoints().split(' ')[active].split(',')[index]
+      : null
 
-  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+  const getActivePointValue = () =>
+    active !== null ? localData[active].y : null
 
-  const getActiveFractionFormat = () => (active !== null ? localData[active].labelFractionFormat : "Decimal");
+  const getActiveFractionFormat = () =>
+    active !== null ? localData[active].labelFractionFormat : 'Decimal'
 
   const save = () => {
     if (cursorY === null) {
-      return;
+      return
     }
-    setCursorY(null);
-    setActiveIndex(null);
-    setInitY(null);
-    setActive(null);
-    setIsMouseDown(false);
-    toggleBarDragging(false);
-    saveAnswer(localData, active);
-  };
+    setCursorY(null)
+    setActiveIndex(null)
+    setInitY(null)
+    setActive(null)
+    setIsMouseDown(false)
+    toggleBarDragging(false)
+    saveAnswer(localData, active)
+  }
 
-  const onMouseMove = e => {
-    normalizeTouchEvent(e);
+  const onMouseMove = (e) => {
+    normalizeTouchEvent(e)
     if (isMouseDown && cursorY && !deleteMode) {
-      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
+      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
       setLocalData(
-        produce(localData, newLocalData => {
-          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
+        produce(localData, (newLocalData) => {
+          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams)
         })
-      );
+      )
     }
-  };
+  }
 
-  const onMouseDown = index => e => {
-    normalizeTouchEvent(e);
-    setCursorY(e.pageY);
-    setActiveIndex(index);
-    setInitY(localData[index].y);
-    setIsMouseDown(true);
-    toggleBarDragging(true);
-  };
+  const onMouseDown = (index) => (e) => {
+    normalizeTouchEvent(e)
+    setCursorY(e.pageY)
+    setActiveIndex(index)
+    setInitY(localData[index].y)
+    setIsMouseDown(true)
+    toggleBarDragging(true)
+  }
 
   const onMouseUp = () => {
-    save();
-  };
+    save()
+  }
 
   const onMouseLeave = () => {
-    save();
-  };
+    save()
+  }
 
-  const targetRef = useDisableDragScroll();
+  const targetRef = useDisableDragScroll()
 
   return (
     <StyledSvg
@@ -169,7 +177,11 @@ const LineChart = ({
           isLine
         />
 
-        <StyledPolyline points={getPolylinePoints()} strokeWidth={3} fill="none" />
+        <StyledPolyline
+          points={getPolylinePoints()}
+          strokeWidth={3}
+          fill="none"
+        />
 
         <ArrowPair getActivePoint={getActivePoint} />
 
@@ -195,8 +207,8 @@ const LineChart = ({
         />
       </g>
     </StyledSvg>
-  );
-};
+  )
+}
 
 LineChart.propTypes = {
   item: PropTypes.object.isRequired,
@@ -211,30 +223,30 @@ LineChart.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number,
     pointStyle: PropTypes.string,
-    showGridlines: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
+    showGridlines: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   }).isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   evaluation: PropTypes.object.isRequired,
-  toggleBarDragging: PropTypes.func
-};
+  toggleBarDragging: PropTypes.func,
+}
 
 LineChart.defaultProps = {
   disableResponse: false,
   deleteMode: false,
-  toggleBarDragging: () => {}
-};
+  toggleBarDragging: () => {},
+}
 
-export default withGrid(LineChart);
+export default withGrid(LineChart)
 
 const StyledPolyline = styled.polyline`
   stroke: ${themeColor};
-`;
+`
 
 const StyledSvg = styled.svg`
   user-select: none;
   position: relative;
   z-index: 15;
-`;
+`

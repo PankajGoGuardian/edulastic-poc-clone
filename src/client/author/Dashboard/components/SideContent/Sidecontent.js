@@ -1,13 +1,13 @@
-import { themeColor, white } from "@edulastic/colors";
-import { OnWhiteBgLogo, CustomModalStyled } from "@edulastic/common";
-import { IconPlayFilled } from "@edulastic/icons";
-import { Col, Icon, Row } from "antd";
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
-import videoImg from "../../assets/images/videoImage.png";
-import { LinkWrapper, TextWrapper } from "../styledComponents";
+import { themeColor, white } from '@edulastic/colors'
+import { OnWhiteBgLogo, CustomModalStyled } from '@edulastic/common'
+import { IconPlayFilled } from '@edulastic/icons'
+import { Col, Icon, Row } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { isProxyUser as isProxyUserSelector } from '../../../../student/Login/ducks'
+import videoImg from '../../assets/images/videoImage.png'
+import { LinkWrapper, TextWrapper } from '../styledComponents'
 import {
   ColWrapper,
   ContentWrapper,
@@ -20,11 +20,11 @@ import {
   SliderButton,
   VideoOverlay,
   VideoPlayer,
-  VideoSection
-} from "./styled";
+  VideoSection,
+} from './styled'
 
-const Qbank = props => {
-  const { bg, title, svg, color, num, subtext } = props;
+const Qbank = (props) => {
+  const { bg, title, svg, color, num, subtext } = props
 
   return (
     <Row type="flex" align="middle">
@@ -38,60 +38,70 @@ const Qbank = props => {
           {num} K
         </TextWrapper>
         <TextWrapper size="11px" rfs="11px" fw="bold" color={color}>
-          {subtext || "QUESTIONS"}
+          {subtext || 'QUESTIONS'}
         </TextWrapper>
       </ColWrapper>
     </Row>
-  );
-};
+  )
+}
 
 const EduPublicTitle = (
   <EduPublic>
-    <OnWhiteBgLogo height={35} style={{ paddingBottom: "10px" }} />
+    <OnWhiteBgLogo height={35} style={{ paddingBottom: '10px' }} />
     <span>PUBLIC BANK</span>
   </EduPublic>
-);
+)
 
 const EduCertifyTitle = (
   <EduCertify>
-    <OnWhiteBgLogo height={35} style={{ paddingBottom: "10px" }} />
+    <OnWhiteBgLogo height={35} style={{ paddingBottom: '10px' }} />
     <span>CERTIFIED</span>
   </EduCertify>
-);
+)
 
 const QuestionBanks = () => (
   <>
     <Qbank title={EduPublicTitle} num="230" color="#5EB500" bg="#F8F8F8" />
     <Hdivider />
-    <Qbank title={EduCertifyTitle} num="61.4" subtext="ITEMS" color="#FFFFFF" bg="#5EB500" />
+    <Qbank
+      title={EduCertifyTitle}
+      num="61.4"
+      subtext="ITEMS"
+      color="#FFFFFF"
+      bg="#5EB500"
+    />
     {/* <Hdivider />
     <Qbank title="PROGRESS BANK" num="40.8" color="#FFFFFF" bg="#FFA200" />
     <Hdivider /> */}
   </>
-);
+)
 
-const SideContent = props => {
-  const [isVideoModalVisible, setVideoModalVisible] = useState(false);
-  const [showSideContent, toggleSideContent] = useState(props.open);
+const SideContent = (props) => {
+  const [isVideoModalVisible, setVideoModalVisible] = useState(false)
+  const [showSideContent, toggleSideContent] = useState(props.open)
 
   useEffect(() => {
-    toggleSideContent(props.open);
-  }, [props.open]);
+    toggleSideContent(props.open)
+  }, [props.open])
 
   const handleSliderClick = () => {
-    const { onClick } = props;
-    toggleSideContent(!showSideContent);
+    const { onClick } = props
+    toggleSideContent(!showSideContent)
     if (onClick) {
-      onClick();
+      onClick()
     }
-  };
+  }
 
-  const { isProxyUser, showSliderBtn = true } = props;
+  const { isProxyUser, showSliderBtn = true } = props
 
   return (
-    <SideContentContainer show={showSideContent} isProxyUser={isProxyUser} showSliderBtn={showSliderBtn}>
+    <SideContentContainer
+      show={showSideContent}
+      isProxyUser={isProxyUser}
+      showSliderBtn={showSliderBtn}
+    >
       <SliderButton onClick={handleSliderClick}>
-        <Icon type={showSideContent ? "right" : "left"} />
+        <Icon type={showSideContent ? 'right' : 'left'} />
       </SliderButton>
       <SideContentWrapper show={showSideContent}>
         <TextWrapper fw="600" mb="5px" color="#5EB500">
@@ -132,7 +142,8 @@ const SideContent = props => {
                 Build assessments in minutes
               </TextWrapper>
               <TextWrapper size="14px" rfs="13px" color="#848993">
-                Search, review and assess using content from any of the following question banks:
+                Search, review and assess using content from any of the
+                following question banks:
               </TextWrapper>
             </ContentWrapper>
             <ScrollbarContainer>
@@ -149,8 +160,8 @@ const SideContent = props => {
         </Row>
       </SideContentWrapper>
     </SideContentContainer>
-  );
-};
-export default connect(state => ({
-  isProxyUser: isProxyUserSelector(state)
-}))(SideContent);
+  )
+}
+export default connect((state) => ({
+  isProxyUser: isProxyUserSelector(state),
+}))(SideContent)

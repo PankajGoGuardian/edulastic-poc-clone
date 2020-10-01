@@ -1,7 +1,7 @@
-const ASSIGNEDDATE = 'startDate';
-const DUEDATE = 'endDate';
+const ASSIGNEDDATE = 'startDate'
+const DUEDATE = 'endDate'
 
 module.exports = {
-    ASSIGNEDDATE,
-    DUEDATE
-};
+  ASSIGNEDDATE,
+  DUEDATE,
+}

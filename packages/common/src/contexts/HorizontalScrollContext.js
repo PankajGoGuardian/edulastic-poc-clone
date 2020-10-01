@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 const HorizontalScrollContext = React.createContext({
-  getScrollElement: () => window
-});
+  getScrollElement: () => window,
+})
 
-export default HorizontalScrollContext;
+export default HorizontalScrollContext

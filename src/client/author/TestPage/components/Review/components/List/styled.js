@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Button, Input, Checkbox } from "antd";
+import styled from 'styled-components'
+import { Button, Input, Checkbox } from 'antd'
 import {
   grey,
   themeColor,
@@ -7,8 +7,8 @@ import {
   secondaryTextColor,
   white,
   smallDesktopWidth,
-  largeDesktopWidth
-} from "@edulastic/colors";
+  largeDesktopWidth,
+} from '@edulastic/colors'
 
 export const TestItemWrapper = styled.div`
   border-bottom: 1px solid ${grey};
@@ -22,7 +22,7 @@ export const TestItemWrapper = styled.div`
   .expanded-rows {
     .question-wrapper {
       padding: 0px 25px 25px;
-      & [class*="QuestionContentWrapper"] {
+      & [class*='QuestionContentWrapper'] {
         width: calc(100% - 50px); /* 50px is width of question label */
       }
 
@@ -31,7 +31,7 @@ export const TestItemWrapper = styled.div`
       }
     }
   }
-`;
+`
 
 export const PreviewButton = styled(Button)`
   width: 100px;
@@ -54,7 +54,7 @@ export const PreviewButton = styled(Button)`
   @media (max-width: ${largeDesktopWidth}) {
     width: 80px;
   }
-`;
+`
 
 export const PointsLabel = styled.label`
   font-size: 12px;
@@ -63,7 +63,7 @@ export const PointsLabel = styled.label`
   text-align: center;
   margin-right: 0;
   margin-bottom: 8px;
-`;
+`
 
 export const PointsInput = styled(Input)`
   width: 100px;
@@ -80,7 +80,7 @@ export const PointsInput = styled(Input)`
     padding: 10px;
     width: 80px;
   }
-`;
+`
 
 export const QuestionIndex = styled.span`
   display: block;
@@ -89,7 +89,7 @@ export const QuestionIndex = styled.span`
   font-weight: 600;
   color: ${secondaryTextColor};
   cursor: grab;
-`;
+`
 
 export const QuestionCheckbox = styled(Checkbox)`
   display: block;
@@ -99,4 +99,4 @@ export const QuestionCheckbox = styled(Checkbox)`
     width: 18px;
     height: 18px;
   }
-`;
+`

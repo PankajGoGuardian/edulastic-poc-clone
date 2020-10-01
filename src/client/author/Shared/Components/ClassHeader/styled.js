@@ -6,14 +6,14 @@ import {
   mobileWidthMax,
   tabletWidth,
   themeColor,
-  white
-} from "@edulastic/colors";
-import { Button, Icon, Menu, Popconfirm, Switch } from "antd";
-import styled, { css } from "styled-components";
-import { themes } from "../../../../theme";
-import { StyledTable as Table } from "../../../Reports/common/styled";
+  white,
+} from '@edulastic/colors'
+import { Button, Icon, Menu, Popconfirm, Switch } from 'antd'
+import styled, { css } from 'styled-components'
+import { themes } from '../../../../theme'
+import { StyledTable as Table } from '../../../Reports/common/styled'
 
-const classBoardTheme = themes.default.classboard;
+const classBoardTheme = themes.default.classboard
 
 export const RightSideButtonWrapper = styled.div`
   display: flex;
@@ -21,25 +21,28 @@ export const RightSideButtonWrapper = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     order: 2;
   }
-`;
+`
 
 export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: ${props => props.theme.header.headerBgColor};
-  height: ${props => props.theme.HeaderHeight.xs}px;
+  background-color: ${(props) => props.theme.header.headerBgColor};
+  height: ${(props) => props.theme.HeaderHeight.xs}px;
   z-index: 1;
   padding: 0px 30px;
   &:hover {
-    background-color: darken(${props => props.theme.header.headerBgColor}, 10%);
+    background-color: darken(
+      ${(props) => props.theme.header.headerBgColor},
+      10%
+    );
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.theme.HeaderHeight.md}px;
+    height: ${(props) => props.theme.HeaderHeight.md}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => props.theme.HeaderHeight.xl}px;
+    height: ${(props) => props.theme.HeaderHeight.xl}px;
   }
   @media (max-width: ${mobileWidthMax}) {
     height: auto;
@@ -47,7 +50,7 @@ export const Container = styled.div`
     flex-wrap: wrap;
     border-radius: 0px;
   }
-`;
+`
 
 export const StyledTitle = styled.h1`
   color: ${white};
@@ -68,7 +71,7 @@ export const StyledTitle = styled.h1`
     margin: 5px 0;
     order: 1;
   }
-`;
+`
 
 export const StyledParaFirst = styled.p`
   max-width: 22rem;
@@ -76,13 +79,13 @@ export const StyledParaFirst = styled.p`
   overflow: hidden;
   white-space: nowrap;
   padding-right: 20px;
-  font-size: ${props => props.theme.reviewPageHeaderFontSize};
+  font-size: ${(props) => props.theme.reviewPageHeaderFontSize};
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.headerTitle};
+    font-size: ${(props) => props.theme.headerTitle};
     max-width: 400px;
   }
-`;
+`
 
 export const DownArrow = styled(Icon)`
   position: absolute;
@@ -90,7 +93,7 @@ export const DownArrow = styled(Icon)`
   top: 7px;
   right: 5px;
   color: ${themeColor};
-`;
+`
 
 export const StyledParaSecond = styled.p`
   font-size: 10px;
@@ -108,7 +111,7 @@ export const StyledParaSecond = styled.p`
       margin-left: 0px;
     }
   }
-`;
+`
 
 export const StyledParaThird = styled.p`
   font-size: 0.83em;
@@ -117,13 +120,13 @@ export const StyledParaThird = styled.p`
   margin-right: 30px;
   color: ${white};
   font-weight: bold;
-`;
+`
 
-export const StyledPopconfirm = styled(Popconfirm)``;
+export const StyledPopconfirm = styled(Popconfirm)``
 
 export const StyledSwitch = styled(Switch)`
   background-color: ${classBoardTheme.SwitchColor};
-`;
+`
 
 export const StyledDiv = styled.div`
   @media (max-width: ${mobileWidth}) {
@@ -131,12 +134,12 @@ export const StyledDiv = styled.div`
     right: 5px;
     top: 5px;
   }
-`;
+`
 
 export const Img = styled.img`
   width: 27px;
   height: 27px;
-`;
+`
 
 export const StyledButton = styled.button`
   width: 31px;
@@ -153,14 +156,14 @@ export const StyledButton = styled.button`
   :focus {
     outline: none;
   }
-`;
+`
 
 export const MenuWrapper = styled.div`
   top: 46px;
   position: absolute;
   min-width: 90px;
   right: 10px;
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-body {
@@ -188,7 +191,7 @@ export const StyledTable = styled(Table)`
   .ant-pagination {
     display: none;
   }
-`;
+`
 
 export const PresentModeSwitch = styled(Switch)`
   border-radius: 4px;
@@ -216,7 +219,7 @@ export const PresentModeSwitch = styled(Switch)`
       margin-left: 6px;
     }
   }
-`;
+`
 
 const commonButtonsCSS = css`
   color: ${themeColor};
@@ -226,16 +229,16 @@ const commonButtonsCSS = css`
   &:focus {
     color: ${themeColor};
   }
-`;
+`
 export const HeaderMenuIcon = styled(Button)`
   ${commonButtonsCSS}
   width: 45px;
-`;
+`
 
 export const OpenCloseWrapper = styled.div`
   white-space: nowrap;
   display: flex;
-`;
+`
 
 export const OpenCloseButton = styled(Button)`
   ${commonButtonsCSS}
@@ -247,7 +250,7 @@ export const OpenCloseButton = styled(Button)`
     font-size: 12px;
     margin-right: 5px;
   }
-`;
+`
 
 export const MenuItems = styled(Menu.Item)`
   font-size: 12px;
@@ -259,7 +262,7 @@ export const MenuItems = styled(Menu.Item)`
       color: ${white};
     }
   }
-`;
+`
 
 export const CaretUp = styled.i`
   position: absolute;
@@ -267,12 +270,12 @@ export const CaretUp = styled.i`
   color: ${white};
   right: 12px;
   font-size: 30px;
-`;
+`
 
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
   min-width: 175px;
-`;
+`
 
 export const ClassDropMenu = styled(DropMenu)`
   margin-top: 0px;
@@ -294,7 +297,7 @@ export const ClassDropMenu = styled(DropMenu)`
       background: ${themeColor};
     }
   }
-`;
+`
 
 export const StudentStatusDetails = styled.div`
   display: flex;
@@ -306,7 +309,7 @@ export const StudentStatusDetails = styled.div`
     border-radius: 5px;
     font-size: 12px;
     color: #8f8f8f;
-    text-align:center;
+    text-align: center;
     text-transform: uppercase;
   }
-`;
+`

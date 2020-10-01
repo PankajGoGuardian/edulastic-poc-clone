@@ -1,22 +1,28 @@
-import { SpinLoader } from "@edulastic/common";
-import { get, isEmpty } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { NoDataContainer, StyledCard, StyledH3 } from "../../../common/styled";
-import { downloadCSV, toggleItem } from "../../../common/util";
-import { getCsvDownloadingState } from "../../../ducks";
-import AssessmentChart from "../common/components/charts/AssessmentChart";
-import { getBandInfoSelected, getReportsSPRFilterData } from "../common/filterDataDucks";
-import { augementAssessmentChartData, getStudentName } from "../common/utils/transformers";
-import AssessmentTable from "./common/components/table/AssessmentTable";
-import { getData } from "./common/utils/transformers";
+import { SpinLoader } from '@edulastic/common'
+import { get, isEmpty } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
+import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import { downloadCSV, toggleItem } from '../../../common/util'
+import { getCsvDownloadingState } from '../../../ducks'
+import AssessmentChart from '../common/components/charts/AssessmentChart'
+import {
+  getBandInfoSelected,
+  getReportsSPRFilterData,
+} from '../common/filterDataDucks'
+import {
+  augementAssessmentChartData,
+  getStudentName,
+} from '../common/utils/transformers'
+import AssessmentTable from './common/components/table/AssessmentTable'
+import { getData } from './common/utils/transformers'
 import {
   getReportsStudentAssessmentProfile,
   getReportsStudentAssessmentProfileLoader,
-  getStudentAssessmentProfileRequestAction
-} from "./ducks";
+  getStudentAssessmentProfileRequestAction,
+} from './ducks'
 
 const StudentAssessmentProfile = ({
   match,
@@ -30,42 +36,56 @@ const StudentAssessmentProfile = ({
   location,
   pageTitle,
   history,
-  t
+  t,
 }) => {
-  const { selectedStudent } = settings;
-  const anonymousString = t("common.anonymous");
+  const { selectedStudent } = settings
+  const anonymousString = t('common.anonymous')
 
-  const studentClassData = SPRFilterData?.data?.result?.studentClassData || [];
+  const studentClassData = SPRFilterData?.data?.result?.studentClassData || []
 
-  const [selectedTests, setSelectedTests] = useState([]);
+  const [selectedTests, setSelectedTests] = useState([])
 
-  const rawData = get(studentAssessmentProfile, "data.result", {});
+  const rawData = get(studentAssessmentProfile, 'data.result', {})
 
   const [chartData, tableData] = useMemo(() => {
-    const chartData = augementAssessmentChartData(rawData.metricInfo, bandInfo, studentClassData);
-    const tableData = getData(rawData, chartData, bandInfo);
-    return [chartData, tableData];
-  }, [rawData, bandInfo]);
+    const chartData = augementAssessmentChartData(
+      rawData.metricInfo,
+      bandInfo,
+      studentClassData
+    )
+    const tableData = getData(rawData, chartData, bandInfo)
+    return [chartData, tableData]
+  }, [rawData, bandInfo])
 
   useEffect(() => {
-    const { selectedStudent, requestFilters } = settings;
+    const { selectedStudent, requestFilters } = settings
     if (selectedStudent.key && requestFilters.termId) {
       getStudentAssessmentProfileRequestAction({
         ...requestFilters,
-        studentId: selectedStudent.key
-      });
+        studentId: selectedStudent.key,
+      })
     }
-  }, [settings]);
+  }, [settings])
 
-  const { districtAvg = [], groupAvg = [], metricInfo = [], schoolAvg = [] } = rawData;
-  const studentInformation = studentClassData[0] || {};
-  const studentName = getStudentName(selectedStudent, studentInformation);
+  const {
+    districtAvg = [],
+    groupAvg = [],
+    metricInfo = [],
+    schoolAvg = [],
+  } = rawData
+  const studentInformation = studentClassData[0] || {}
+  const studentName = getStudentName(selectedStudent, studentInformation)
 
-  const onTestSelect = (item, record) => setSelectedTests(toggleItem(selectedTests, item.uniqId));
-  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${studentName || anonymousString}.csv`, data);
+  const onTestSelect = (item, record) =>
+    setSelectedTests(toggleItem(selectedTests, item.uniqId))
+  const onCsvConvert = (data) =>
+    downloadCSV(
+      `Assessment Performance Report-${studentName || anonymousString}.csv`,
+      data
+    )
 
   if (loading) {
-    return <SpinLoader position="fixed" />;
+    return <SpinLoader position="fixed" />
   }
 
   if (
@@ -76,15 +96,17 @@ const StudentAssessmentProfile = ({
     isEmpty(metricInfo) ||
     isEmpty(schoolAvg)
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>;
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   return (
     <>
       <StyledCard>
-        <StyledH3>Assessment Performance Details of {studentName || anonymousString}</StyledH3>
+        <StyledH3>
+          Assessment Performance Details of {studentName || anonymousString}
+        </StyledH3>
         <p>
-          <b>Subject : {studentInformation.standardSet || "N/A"}</b>
+          <b>Subject : {studentInformation.standardSet || 'N/A'}</b>
         </p>
         <AssessmentChart
           data={chartData}
@@ -106,23 +128,23 @@ const StudentAssessmentProfile = ({
         />
       </StyledCard>
     </>
-  );
-};
+  )
+}
 
 const withConnect = connect(
-  state => ({
+  (state) => ({
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state)
+    bandInfoSelected: getBandInfoSelected(state),
   }),
   {
-    getStudentAssessmentProfileRequestAction
+    getStudentAssessmentProfileRequestAction,
   }
-);
+)
 
 export default compose(
   withConnect,
-  withNamespaces("student")
-)(StudentAssessmentProfile);
+  withNamespaces('student')
+)(StudentAssessmentProfile)

@@ -1,13 +1,13 @@
-import { EduButton } from "@edulastic/common";
-import { IconUpload } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import React from "react";
-import { withRouter } from "react-router";
-import CardComponent from "../../../AssignmentCreate/common/CardComponent";
-import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
-import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
-import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
+import { EduButton } from '@edulastic/common'
+import { IconUpload } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { withRouter } from 'react-router'
+import CardComponent from '../../../AssignmentCreate/common/CardComponent'
+import IconWrapper from '../../../AssignmentCreate/common/IconWrapper'
+import TextWrapper from '../../../AssignmentCreate/common/TextWrapper'
+import TitleWrapper from '../../../AssignmentCreate/common/TitleWrapper'
 
 const OptionQti = ({ t, history: { push } }) => {
   //   const customRequest = ({ file, onSuccess }) => {
@@ -42,32 +42,32 @@ const OptionQti = ({ t, history: { push } }) => {
   //   };
 
   const changeRoute = () => {
-    push("/author/import-test");
-  };
+    push('/author/import-test')
+  }
 
   return (
     <CardComponent ml="25px">
       <IconWrapper>
-        <IconUpload style={{ height: "43px", width: "34px" }} />
+        <IconUpload style={{ height: '43px', width: '34px' }} />
       </IconWrapper>
-      <TitleWrapper>{t("qtiimport.card.title")}</TitleWrapper>
-      <TextWrapper> {t("qtiimport.card.desctription")} </TextWrapper>
+      <TitleWrapper>{t('qtiimport.card.title')}</TitleWrapper>
+      <TextWrapper> {t('qtiimport.card.desctription')} </TextWrapper>
       <EduButton isGhost width="234px" onClick={changeRoute}>
-        <span>{t("qtiimport.card.buttontext")}</span>
+        <span>{t('qtiimport.card.buttontext')}</span>
       </EduButton>
     </CardComponent>
-  );
-};
+  )
+}
 
 OptionQti.propTypes = {
   t: PropTypes.func.isRequired,
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }).isRequired
-};
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+}
 
 OptionQti.defaultPropTypes = {
-  t: () => {}
-};
+  t: () => {},
+}
 
-export default withNamespaces("qtiimport")(withRouter(OptionQti));
+export default withNamespaces('qtiimport')(withRouter(OptionQti))

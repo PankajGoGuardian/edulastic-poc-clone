@@ -1,18 +1,18 @@
-import React from "react";
-import styled from "styled-components";
-import { Spin } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import { Spin } from 'antd'
 
 const SpinLoader = ({ position, height }) => (
   <SpinWrapper position={position} height={height}>
     <Spin />
   </SpinWrapper>
-);
+)
 
-export default SpinLoader;
+export default SpinLoader
 
 const SpinWrapper = styled.div`
-  position: ${props => props.position || "absolute"};
-  height: ${props => props.height || "100%"};
+  position: ${(props) => props.position || 'absolute'};
+  height: ${(props) => props.height || '100%'};
   left: 0;
   right: 0;
   top: 0;
@@ -26,4 +26,4 @@ const SpinWrapper = styled.div`
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
   }
-`;
+`

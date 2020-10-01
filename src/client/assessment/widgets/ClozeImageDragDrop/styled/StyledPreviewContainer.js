@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const StyledPreviewContainer = styled.div`
   position: relative;
@@ -7,4 +7,4 @@ export const StyledPreviewContainer = styled.div`
   margin: auto;
   width: ${({ width }) => width}px;
   height: 100%;
-`;
+`

@@ -1,25 +1,25 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { arrayMove } from "react-sortable-hoc";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import produce from "immer";
-import "react-quill/dist/quill.snow.css";
-import { withTheme } from "styled-components";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { arrayMove } from 'react-sortable-hoc'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import produce from 'immer'
+import 'react-quill/dist/quill.snow.css'
+import { withTheme } from 'styled-components'
 
-import { withNamespaces } from "@edulastic/localization";
-import { PaddingDiv } from "@edulastic/common";
+import { withNamespaces } from '@edulastic/localization'
+import { PaddingDiv } from '@edulastic/common'
 
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { updateVariables } from "../../utils/variables";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { updateVariables } from '../../utils/variables'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
-import { Subtitle } from "../../styled/Subtitle";
-import { CustomStyleBtn } from "../../styled/ButtonStyles";
-import SortableList from "../../components/SortableList/index";
-import { defaultOptions } from "../../constants/constantsForQuestions";
-import Question from "../../components/Question";
+import { Subtitle } from '../../styled/Subtitle'
+import { CustomStyleBtn } from '../../styled/ButtonStyles'
+import SortableList from '../../components/SortableList/index'
+import { defaultOptions } from '../../constants/constantsForQuestions'
+import Question from '../../components/Question'
 
 class Response extends Component {
   static propTypes = {
@@ -28,99 +28,112 @@ class Response extends Component {
     options: PropTypes.array.isRequired,
     setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
-  };
+    cleanSections: PropTypes.func,
+  }
 
   static defaultProps = {
     fillSections: () => {},
-    cleanSections: () => {}
-  };
+    cleanSections: () => {},
+  }
 
-  onChangeQuestion = stimulus => {
-    const { item, setQuestionData } = this.props;
+  onChangeQuestion = (stimulus) => {
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.stimulus = stimulus;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.stimulus = stimulus
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   onSortEnd = (index, { oldIndex, newIndex }) => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.options[index] = arrayMove(draft.options[index], oldIndex, newIndex);
+      produce(item, (draft) => {
+        draft.options[index] = arrayMove(
+          draft.options[index],
+          oldIndex,
+          newIndex
+        )
       })
-    );
-  };
+    )
+  }
 
   remove = (index, itemIndex) => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        const oldOptionValue = draft.options[index][itemIndex];
-        draft.options[index].splice(itemIndex, 1);
+      produce(item, (draft) => {
+        const oldOptionValue = draft.options[index][itemIndex]
+        draft.options[index].splice(itemIndex, 1)
         if (oldOptionValue === draft.validation.validResponse.value[index]) {
-          draft.validation.validResponse.value.splice(index, 1, "");
+          draft.validation.validResponse.value.splice(index, 1, '')
         }
-        draft.validation.altResponses = draft.validation.altResponses.map(resp => {
-          if (oldOptionValue === resp[index]) {
-            resp.value.splice(index, 1, "");
+        draft.validation.altResponses = draft.validation.altResponses.map(
+          (resp) => {
+            if (oldOptionValue === resp[index]) {
+              resp.value.splice(index, 1, '')
+            }
+            return resp
           }
-          return resp;
-        });
-        updateVariables(draft);
+        )
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   editOptions = (index, itemIndex, e) => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        if (draft.options[index] === undefined) draft.options[index] = [];
-        const oldOptionValue = draft.options[index][itemIndex];
-        draft.options[index][itemIndex] = e.target.value;
-        let maxLength = 0;
-        draft.options.forEach(option => {
-          option.forEach(opt => {
-            maxLength = Math.max(maxLength, opt ? opt.length : 0);
-          });
-        });
-        const finalWidth = 40 + maxLength * 7;
+      produce(item, (draft) => {
+        if (draft.options[index] === undefined) draft.options[index] = []
+        const oldOptionValue = draft.options[index][itemIndex]
+        draft.options[index][itemIndex] = e.target.value
+        let maxLength = 0
+        draft.options.forEach((option) => {
+          option.forEach((opt) => {
+            maxLength = Math.max(maxLength, opt ? opt.length : 0)
+          })
+        })
+        const finalWidth = 40 + maxLength * 7
         if (!draft.uiStyle) {
-          draft.uiStyle = { widthpx: 140 };
+          draft.uiStyle = { widthpx: 140 }
         }
-        draft.uiStyle.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+        draft.uiStyle.widthpx =
+          finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth
         if (draft.validation.validResponse.value[index] === oldOptionValue) {
-          draft.validation.validResponse.value.splice(index, 1, e.target.value);
+          draft.validation.validResponse.value.splice(index, 1, e.target.value)
         }
-        draft.validation.altResponses = draft.validation.altResponses.map(resp => {
-          if (resp.value[index] === oldOptionValue) {
-            resp.value.splice(index, 1, e.target.value);
+        draft.validation.altResponses = draft.validation.altResponses.map(
+          (resp) => {
+            if (resp.value[index] === oldOptionValue) {
+              resp.value.splice(index, 1, e.target.value)
+            }
+            return resp
           }
-          return resp;
-        });
-        updateVariables(draft);
+        )
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  addNewChoiceBtn = index => {
-    const { item, setQuestionData, t } = this.props;
+  addNewChoiceBtn = (index) => {
+    const { item, setQuestionData, t } = this.props
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (draft.options[index] === undefined) {
-          draft.options[index] = [];
+          draft.options[index] = []
         }
-        draft.options[index].push(`${t("component.cloze.imageDropDown.newChoice")} ${draft.options[index].length + 1}`);
+        draft.options[index].push(
+          `${t('component.cloze.imageDropDown.newChoice')} ${
+            draft.options[index].length + 1
+          }`
+        )
       })
-    );
-  };
+    )
+  }
 
   render() {
-    const { t, fillSections, cleanSections, options, item } = this.props;
+    const { t, fillSections, cleanSections, options, item } = this.props
 
     return (
       <Question
@@ -131,38 +144,45 @@ class Response extends Component {
         cleanSections={cleanSections}
       >
         {options.map((option, index) => (
-          <PaddingDiv top={index > 0 ? "30" : "0"} data-cy={`choice-response-container_${index}`}>
+          <PaddingDiv
+            top={index > 0 ? '30' : '0'}
+            data-cy={`choice-response-container_${index}`}
+          >
             <Subtitle
-              id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDropDown.response")} ${index + 1}`)}
+              id={getFormattedAttrId(
+                `${item?.title}-${t(
+                  'component.cloze.imageDropDown.response'
+                )} ${index + 1}`
+              )}
             >
-              {t("component.cloze.imageDropDown.response")} {index + 1}
+              {t('component.cloze.imageDropDown.response')} {index + 1}
             </Subtitle>
             <SortableList
               items={option || []}
-              onSortEnd={params => this.onSortEnd(index, params)}
+              onSortEnd={(params) => this.onSortEnd(index, params)}
               defaultOptions={defaultOptions}
               useDragHandle
-              onRemove={itemIndex => this.remove(index, itemIndex)}
+              onRemove={(itemIndex) => this.remove(index, itemIndex)}
               onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
             />
-            <CustomStyleBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
-              {t("component.cloze.imageDropDown.addnewchoice")}
+            <CustomStyleBtn
+              data-cy={`add-new-ch-res-${index}`}
+              onClick={() => this.addNewChoiceBtn(index)}
+            >
+              {t('component.cloze.imageDropDown.addnewchoice')}
             </CustomStyleBtn>
           </PaddingDiv>
         ))}
       </Question>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
+  connect(null, { setQuestionData: setQuestionDataAction })
+)
 
-export default enhance(Response);
+export default enhance(Response)

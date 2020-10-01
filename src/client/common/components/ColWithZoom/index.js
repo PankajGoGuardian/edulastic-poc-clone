@@ -1,22 +1,30 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Col } from "antd";
+import React from 'react'
+import { connect } from 'react-redux'
+import { Col } from 'antd'
 
-const ColWithZoom = ({ theme, children, layout = {}, zoomLevel, ...restProps }) => {
-  let newProps = { ...restProps };
+const ColWithZoom = ({
+  theme,
+  children,
+  layout = {},
+  zoomLevel,
+  ...restProps
+}) => {
+  let newProps = { ...restProps }
 
-  if (zoomLevel !== "xs" && layout[zoomLevel]) {
+  if (zoomLevel !== 'xs' && layout[zoomLevel]) {
     newProps = {
       ...newProps,
       lg: layout[zoomLevel],
       md: layout[zoomLevel],
       xs: layout[zoomLevel],
       sm: layout[zoomLevel],
-      xxl: layout[zoomLevel]
-    };
+      xxl: layout[zoomLevel],
+    }
   }
 
-  return <Col {...newProps}>{children}</Col>;
-};
+  return <Col {...newProps}>{children}</Col>
+}
 
-export default connect(state => ({ zoomLevel: state.ui.zoomLevel }))(ColWithZoom);
+export default connect((state) => ({ zoomLevel: state.ui.zoomLevel }))(
+  ColWithZoom
+)

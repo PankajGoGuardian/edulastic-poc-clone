@@ -1,23 +1,26 @@
 /* eslint-disable no-use-before-define */
-import { curriculumSequencesApi } from "@edulastic/api";
-import { themeColor, white } from "@edulastic/colors";
-import { FlexContainer, notification } from "@edulastic/common";
-import { test as testsConstants } from "@edulastic/constants";
-import { IconFilter, IconPlus } from "@edulastic/icons";
-import { Dropdown, Empty, Menu, Spin } from "antd";
-import { pick, uniq } from "lodash";
-import React, { useCallback, useEffect, useState } from "react";
-import { connect } from "react-redux";
-import AssessmentPlayer from "../../../../assessment";
-import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
-import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from "../../ducks";
-import { submitLTIForm } from "../CurriculumModuleRow";
-import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
-import ResourceItem from "../ResourceItem";
-import WebsiteResourceModal from "./components/WebsiteResourceModal";
-import ExternalVideoLink from "./components/ExternalVideoLink";
-import LTIResourceModal from "./components/LTIResourceModal";
-import slice from "./ducks";
+import { curriculumSequencesApi } from '@edulastic/api'
+import { themeColor, white } from '@edulastic/colors'
+import { FlexContainer, notification } from '@edulastic/common'
+import { test as testsConstants } from '@edulastic/constants'
+import { IconFilter, IconPlus } from '@edulastic/icons'
+import { Dropdown, Empty, Menu, Spin } from 'antd'
+import { pick, uniq } from 'lodash'
+import React, { useCallback, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import AssessmentPlayer from '../../../../assessment'
+import {
+  getCurrentDistrictUsersAction,
+  getCurrentDistrictUsersSelector,
+} from '../../../../student/Login/ducks'
+import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../ducks'
+import { submitLTIForm } from '../CurriculumModuleRow'
+import PlaylistTestBoxFilter from '../PlaylistTestBoxFilter'
+import ResourceItem from '../ResourceItem'
+import WebsiteResourceModal from './components/WebsiteResourceModal'
+import ExternalVideoLink from './components/ExternalVideoLink'
+import LTIResourceModal from './components/LTIResourceModal'
+import slice from './ducks'
 import {
   ActionButton,
   LoaderWrapper,
@@ -30,31 +33,37 @@ import {
   SearchBoxContainer,
   SearchIcon,
   SearchByNavigationBar,
-  SearchByTab
-} from "./styled";
+  SearchByTab,
+} from './styled'
 
-const resourceTabs = ["tests", "resources"];
-const sourceList = ["everything", "learnzillion", "khan academy", "ck12", "grade"];
+const resourceTabs = ['tests', 'resources']
+const sourceList = [
+  'everything',
+  'learnzillion',
+  'khan academy',
+  'ck12',
+  'grade',
+]
 
 const observeElement = (fetchTests, tests) =>
   useCallback(
-    node => {
+    (node) => {
       if (observer) {
-        observer.disconnect();
+        observer.disconnect()
       }
-      const observer = new IntersectionObserver(entries => {
+      const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          fetchTests();
+          fetchTests()
         }
-      });
+      })
       if (node) {
-        observer.observe(node);
+        observer.observe(node)
       }
     },
     [tests]
-  );
+  )
 
-const ManageContentBlock = props => {
+const ManageContentBlock = (props) => {
   const {
     isLoading,
     loadedPage,
@@ -79,13 +88,13 @@ const ManageContentBlock = props => {
     searchStrings,
     setTestSearchAction,
     testsInPlaylist = [],
-    selectedTestForPreview = "",
+    selectedTestForPreview = '',
     testPreviewModalVisible = false,
     showPreviewModal,
     closePreviewModal,
     subjectsFromCurriculumSequence,
     gradesFromCurriculumSequence,
-    collectionFromCurriculumSequence = "",
+    collectionFromCurriculumSequence = '',
     collections = [],
     currentDistrictUsers,
     districtId,
@@ -99,114 +108,159 @@ const ManageContentBlock = props => {
     addResource,
     resources = [],
     setEmbeddedVideoPreviewModal,
-    isDifferentiationTab = false
-  } = props;
+    isDifferentiationTab = false,
+  } = props
 
-  const lastResourceItemRef = observeElement(fetchTests, tests);
+  const lastResourceItemRef = observeElement(fetchTests, tests)
 
-  const [searchBy] = useState("keywords");
+  const [searchBy] = useState('keywords')
   // const [searchResourceBy] = useState("all");
-  const [isShowFilter, setShowFilter] = useState(false);
-  const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(false);
-  const [isExternalVideoResourceModal, setExternalVideoResourceModal] = useState(false);
-  const [isLTIResourceModal, setLTIResourceModal] = useState(false);
+  const [isShowFilter, setShowFilter] = useState(false)
+  const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(
+    false
+  )
+  const [
+    isExternalVideoResourceModal,
+    setExternalVideoResourceModal,
+  ] = useState(false)
+  const [isLTIResourceModal, setLTIResourceModal] = useState(false)
 
   useEffect(() => {
     setDefaults({
       subject: subjectsFromCurriculumSequence,
       grades: gradesFromCurriculumSequence,
-      collection: collectionFromCurriculumSequence
-    });
-    !isLoading && fetchTests();
-    fetchExternalToolProvidersAction({ districtId });
+      collection: collectionFromCurriculumSequence,
+    })
+    !isLoading && fetchTests()
+    fetchExternalToolProvidersAction({ districtId })
     // remove this condition once BE is fixed
-    if (userFeatures.isCurator && !currentDistrictUsers) getCurrentDistrictUsers(districtId);
-    return () => setSearchByTab("tests");
-  }, []);
+    if (userFeatures.isCurator && !currentDistrictUsers)
+      getCurrentDistrictUsers(districtId)
+    return () => setSearchByTab('tests')
+  }, [])
 
   const onChange = ({ key }) => {
     switch (key) {
-      case "1":
-        setWebsiteUrlResourceModal(true);
-        break;
-      case "2":
-        setExternalVideoResourceModal(true);
-        break;
-      case "3":
-        setLTIResourceModal(true);
-        break;
+      case '1':
+        setWebsiteUrlResourceModal(true)
+        break
+      case '2':
+        setExternalVideoResourceModal(true)
+        break
+      case '3':
+        setLTIResourceModal(true)
+        break
       default:
-        break;
+        break
     }
-  };
+  }
 
   const toggleTestFilter = () => {
     if (isShowFilter) {
-      resetAndFetchTests();
+      resetAndFetchTests()
     }
-    setShowFilter(x => !x);
-  };
+    setShowFilter((x) => !x)
+  }
 
-  const onSearchChange = list => setTestSearchAction(list);
+  const onSearchChange = (list) => setTestSearchAction(list)
 
-  const enhanceTextWeight = text => <span style={{ fontWeight: 600 }}>{text}</span>;
+  const enhanceTextWeight = (text) => (
+    <span style={{ fontWeight: 600 }}>{text}</span>
+  )
 
   const menu = (
     <Menu onClick={onChange}>
-      <Menu.Item key="1">{enhanceTextWeight("Website URL")}</Menu.Item>
-      <Menu.Item key="2">{enhanceTextWeight("Youtube")}</Menu.Item>
-      <Menu.Item key="3">{enhanceTextWeight("External LTI Resource")}</Menu.Item>
+      <Menu.Item key="1">{enhanceTextWeight('Website URL')}</Menu.Item>
+      <Menu.Item key="2">{enhanceTextWeight('Youtube')}</Menu.Item>
+      <Menu.Item key="3">
+        {enhanceTextWeight('External LTI Resource')}
+      </Menu.Item>
     </Menu>
-  );
+  )
 
   const onSourceChange = ({ checked, value }) =>
-    setSourcesAction(checked ? sources?.concat(value) : sources?.filter(x => x !== value) || []);
-  let fetchCall;
+    setSourcesAction(
+      checked
+        ? sources?.concat(value)
+        : sources?.filter((x) => x !== value) || []
+    )
+  let fetchCall
 
   if (tests.length > 10) {
-    fetchCall = tests.length - 7;
+    fetchCall = tests.length - 7
   }
 
-  const showResource = async resource => {
-    resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
+  const showResource = async (resource) => {
+    resource =
+      resource &&
+      pick(resource, [
+        'toolProvider',
+        'url',
+        'customParams',
+        'consumerKey',
+        'sharedSecret',
+      ])
     try {
-      const signedRequest = await curriculumSequencesApi.getSignedRequest({ resource });
-      submitLTIForm(signedRequest);
+      const signedRequest = await curriculumSequencesApi.getSignedRequest({
+        resource,
+      })
+      submitLTIForm(signedRequest)
     } catch (e) {
-      notification({ messageKey: "failedToLoadResource" });
+      notification({ messageKey: 'failedToLoadResource' })
     }
-  };
+  }
 
   const previewResource = (type, data) => {
-    if (type === "lti_resource") showResource(data);
-    if (type === "website_resource") window.open(data.url, "_blank");
-    if (type === "video_resource") setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.url });
-  };
+    if (type === 'lti_resource') showResource(data)
+    if (type === 'website_resource') window.open(data.url, '_blank')
+    if (type === 'video_resource')
+      setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.url })
+  }
 
   const renderList = () => {
-    const listToRender = [];
-    if (searchResourceBy === "resources") {
-      resources.forEach(({ _id, contentType, contentTitle, contentDescription, data, contentUrl }, idx) => {
-        listToRender.push(
-          <ResourceItem
-            type={contentType}
-            id={_id}
-            contentTitle={contentTitle}
-            contentDescription={contentDescription}
-            contentUrl={contentUrl}
-            key={`resource-${idx}`}
-            data={data}
-            isAdded={testsInPlaylist.includes(_id)}
-            previewTest={() => previewResource(contentType, { url: contentUrl, contentTitle, ...data })}
-          />
-        );
-      });
+    const listToRender = []
+    if (searchResourceBy === 'resources') {
+      resources.forEach(
+        (
+          {
+            _id,
+            contentType,
+            contentTitle,
+            contentDescription,
+            data,
+            contentUrl,
+          },
+          idx
+        ) => {
+          listToRender.push(
+            <ResourceItem
+              type={contentType}
+              id={_id}
+              contentTitle={contentTitle}
+              contentDescription={contentDescription}
+              contentUrl={contentUrl}
+              key={`resource-${idx}`}
+              data={data}
+              isAdded={testsInPlaylist.includes(_id)}
+              previewTest={() =>
+                previewResource(contentType, {
+                  url: contentUrl,
+                  contentTitle,
+                  ...data,
+                })
+              }
+            />
+          )
+        }
+      )
     }
-    if (searchResourceBy === "tests") {
+    if (searchResourceBy === 'tests') {
       if (tests.length) {
         tests.forEach((test, idx) => {
           if (idx === fetchCall) {
-            listToRender.push(<div style={{ height: "1px" }} ref={lastResourceItemRef} />);
+            listToRender.push(
+              <div style={{ height: '1px' }} ref={lastResourceItemRef} />
+            )
           }
           listToRender.push(
             <ResourceItem
@@ -220,14 +274,16 @@ const ManageContentBlock = props => {
               status={test?.status}
               testType={test?.testType}
             />
-          );
-        });
+          )
+        })
       }
     }
-    if (listToRender.length) return listToRender;
+    if (listToRender.length) return listToRender
 
-    return <Empty style={{ margin: "auto" }} image={Empty.PRESENTED_IMAGE_SIMPLE} />;
-  };
+    return (
+      <Empty style={{ margin: 'auto' }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+    )
+  }
 
   return (
     <ManageContentOuterWrapper>
@@ -247,17 +303,25 @@ const ManageContentBlock = props => {
               <SearchBar
                 type="search"
                 mode="tags"
-                tokenSeparators={[","]}
+                tokenSeparators={[',']}
                 placeholder={`Search by ${searchBy}`}
                 onChange={onSearchChange}
                 value={searchStrings}
-                dropdownStyle={{ display: "none" }}
+                dropdownStyle={{ display: 'none' }}
                 data-cy="container-search-bar"
               />
               <SearchIcon color={themeColor} />
             </SearchBoxContainer>
-            <ActionButton data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
-              <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
+            <ActionButton
+              data-cy="test-filter"
+              onClick={toggleTestFilter}
+              isActive={isShowFilter}
+            >
+              <IconFilter
+                color={isShowFilter ? white : themeColor}
+                width={20}
+                height={20}
+              />
             </ActionButton>
             <Dropdown overlay={menu} placement="bottomRight">
               <ActionButton>
@@ -271,10 +335,12 @@ const ManageContentBlock = props => {
               authoredList={[]} // Send authors data
               collectionsList={uniq(
                 [
-                  ...testsConstants.collectionDefaultFilter?.filter(c => c?.value),
-                  ...collections.map(o => ({ value: o?._id, text: o?.name }))
+                  ...testsConstants.collectionDefaultFilter?.filter(
+                    (c) => c?.value
+                  ),
+                  ...collections.map((o) => ({ value: o?._id, text: o?.name })),
                 ],
-                "value"
+                'value'
               )}
               sourceList={sourceList}
               filter={filter}
@@ -285,18 +351,18 @@ const ManageContentBlock = props => {
               collection={collection}
               sources={sources}
               urlHasUseThis={urlHasUseThis}
-              onFilterChange={prop => setFilterAction(prop)}
-              onStatusChange={prop => setStatusAction(prop)}
-              onAuthoredChange={prop => setAuthoredAction(prop)}
-              onGradesChange={prop => setGradesAction(prop)}
-              onSubjectChange={prop => setSubjectAction(prop)}
-              onCollectionChange={prop => setCollectionAction(prop)}
+              onFilterChange={(prop) => setFilterAction(prop)}
+              onStatusChange={(prop) => setStatusAction(prop)}
+              onAuthoredChange={(prop) => setAuthoredAction(prop)}
+              onGradesChange={(prop) => setGradesAction(prop)}
+              onSubjectChange={(prop) => setSubjectAction(prop)}
+              onCollectionChange={(prop) => setCollectionAction(prop)}
               onSourceChange={onSourceChange}
             />
           ) : (
             <>
               <SearchByNavigationBar justify="flex-start">
-                {resourceTabs.map(tab => (
+                {resourceTabs.map((tab) => (
                   <SearchByTab
                     data-cy={tab}
                     onClick={() => setSearchByTab(tab)}
@@ -308,7 +374,10 @@ const ManageContentBlock = props => {
               </SearchByNavigationBar>
 
               <br />
-              <ResourceDataList urlHasUseThis={urlHasUseThis} isDifferentiationTab={isDifferentiationTab}>
+              <ResourceDataList
+                urlHasUseThis={urlHasUseThis}
+                isDifferentiationTab={isDifferentiationTab}
+              >
                 {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
                 {isLoading && loadedPage !== 0 && (
                   <LoaderWrapper>
@@ -337,7 +406,11 @@ const ManageContentBlock = props => {
           height="100%"
           destroyOnClose
         >
-          <AssessmentPlayer testId={selectedTestForPreview} preview closeTestPreviewModal={closePreviewModal} />
+          <AssessmentPlayer
+            testId={selectedTestForPreview}
+            preview
+            closeTestPreviewModal={closePreviewModal}
+          />
         </ModalWrapper>
       </div>
 
@@ -366,11 +439,11 @@ const ManageContentBlock = props => {
         />
       )}
     </ManageContentOuterWrapper>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     isLoading: state.playlistTestBox?.isLoading,
     loadedPage: state.playlistTestBox?.loadedPage,
     filter: state.playlistTestBox?.filter,
@@ -390,7 +463,7 @@ export default connect(
     districtId: state?.user?.user?.orgData?.districtIds?.[0],
     userFeatures: state?.user?.user?.features,
     searchResourceBy: state.playlistTestBox?.searchResourceBy,
-    resources: state.playlistTestBox?.resources
+    resources: state.playlistTestBox?.resources,
   }),
   {
     setFilterAction: slice.actions?.setFilterAction,
@@ -407,9 +480,10 @@ export default connect(
     showPreviewModal: slice.actions?.showTestPreviewModal,
     closePreviewModal: slice.actions?.closeTestPreviewModal,
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,
-    fetchExternalToolProvidersAction: slice.actions?.fetchExternalToolProvidersAction,
+    fetchExternalToolProvidersAction:
+      slice.actions?.fetchExternalToolProvidersAction,
     setSearchByTab: slice.actions?.setSearchByTab,
     addResource: slice.actions?.addResource,
-    setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction
+    setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
   }
-)(ManageContentBlock);
+)(ManageContentBlock)

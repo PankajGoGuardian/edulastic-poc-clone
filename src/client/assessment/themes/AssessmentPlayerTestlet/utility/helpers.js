@@ -1,103 +1,103 @@
-import JXG from "jsxgraph";
-import uuidv4 from "uuid/v4";
+import JXG from 'jsxgraph'
+import uuidv4 from 'uuid/v4'
 
-export const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+export const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
 export const getLineFromExpression = (
   expressions,
   points = [
     {
       p0: 1,
-      p1: 6
-    }
+      p1: 6,
+    },
   ],
   labels = []
 ) => {
   const getLines = (expression, index = 0) => {
     if (!expression) {
-      return [];
+      return []
     }
 
     const getPoint = (x, y, label = false) => ({
       _type: JXG.OBJECT_TYPE_POINT,
-      type: "point",
+      type: 'point',
       x,
       y,
       id: uuidv4(),
       label,
-      subElement: true
-    });
+      subElement: true,
+    })
 
     const getPoints = (x, label) => {
-      if (expression === "x=1") {
-        return getPoint(1, x, label);
+      if (expression === 'x=1') {
+        return getPoint(1, x, label)
       }
-      const _expression = expression.replace(new RegExp("x", "g"), x);
+      const _expression = expression.replace(new RegExp('x', 'g'), x)
       try {
         // eslint-disable-next-line no-eval
-        const y = eval(_expression);
-        return getPoint(x, y, label);
+        const y = eval(_expression)
+        return getPoint(x, y, label)
       } catch (err) {
-        return {};
+        return {}
       }
-    };
+    }
 
     const getLine = (p1, p2) => ({
-      type: "line",
+      type: 'line',
       _type: JXG.OBJECT_TYPE_LINE,
       id: uuidv4(),
       label: labels[index] || false,
       subElementsIds: {
         startPoint: p1.id,
-        endPoint: p2.id
-      }
-    });
-    const point1 = getPoints(points[index]?.p0);
-    const point2 = getPoints(points[index]?.p1);
-    const line = getLine(point1, point2);
-    return [line, point1, point2];
-  };
+        endPoint: p2.id,
+      },
+    })
+    const point1 = getPoints(points[index]?.p0)
+    const point2 = getPoints(points[index]?.p1)
+    const line = getLine(point1, point2)
+    return [line, point1, point2]
+  }
 
-  if (typeof expressions === "string") {
-    return getLines(expressions);
+  if (typeof expressions === 'string') {
+    return getLines(expressions)
   }
 
   if (Array.isArray(expressions)) {
     return expressions.reduce((lines, expression, lineIdex) => {
-      const line = getLines(expression, lineIdex);
-      return [...lines, ...line];
-    }, []);
+      const line = getLines(expression, lineIdex)
+      return [...lines, ...line]
+    }, [])
   }
-  return [];
-};
+  return []
+}
 
 export const getPoinstFromString = (expression, labels = []) => {
-  const pointRegex = new RegExp("([^()]+)", "g");
+  const pointRegex = new RegExp('([^()]+)', 'g')
 
-  const getPoint = str => {
+  const getPoint = (str) => {
     if (!str) {
-      return [];
+      return []
     }
     return (str.match(pointRegex) || []).map((point, pointIndex) => {
-      const coords = point.split(",");
+      const coords = point.split(',')
       return {
         _type: JXG.OBJECT_TYPE_POINT,
         id: uuidv4(),
         label: labels[pointIndex] || false,
-        type: "point",
+        type: 'point',
         x: parseFloat(coords[0]),
-        y: parseFloat(coords[1])
-      };
-    });
-  };
-  if (typeof expression === "string") {
-    return getPoint(expression);
+        y: parseFloat(coords[1]),
+      }
+    })
+  }
+  if (typeof expression === 'string') {
+    return getPoint(expression)
   }
   if (Array.isArray(expression)) {
     return expression.reduce((points, exp) => {
-      const point = getPoint(exp);
-      return [...points, ...point];
-    }, []);
+      const point = getPoint(exp)
+      return [...points, ...point]
+    }, [])
   }
-  return [];
-};
+  return []
+}

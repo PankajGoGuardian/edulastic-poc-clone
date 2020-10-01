@@ -1,5 +1,5 @@
-import React from "react";
-import { FlexContainer } from "@edulastic/common";
+import React from 'react'
+import { FlexContainer } from '@edulastic/common'
 
 const QuestionContentWrapper = ({ children }) => (
   <FlexContainer
@@ -11,6 +11,6 @@ const QuestionContentWrapper = ({ children }) => (
   >
     {children}
   </FlexContainer>
-);
+)
 
-export default QuestionContentWrapper;
+export default QuestionContentWrapper

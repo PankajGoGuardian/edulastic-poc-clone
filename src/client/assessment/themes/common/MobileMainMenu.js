@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const MobileMainMenu = styled.div`
   display: none;
@@ -6,6 +6,6 @@ const MobileMainMenu = styled.div`
   @media (max-width: 768px) {
     display: block;
   }
-`;
+`
 
-export default MobileMainMenu;
+export default MobileMainMenu

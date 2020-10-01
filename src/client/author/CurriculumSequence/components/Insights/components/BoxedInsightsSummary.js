@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { Row, Col, Card, Avatar } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import { Row, Col, Card, Avatar } from 'antd'
 
 import {
   white,
@@ -10,23 +10,23 @@ import {
   themeColorLighter,
   darkOrange,
   fadedRed,
-  darkRed
-} from "@edulastic/colors";
+  darkRed,
+} from '@edulastic/colors'
 
 const colorMap = {
   Exceeding: {
     color: themeColorLighter,
-    backgroundColor: fadedGreen
+    backgroundColor: fadedGreen,
   },
   Meeting: {
     color: darkOrange,
-    backgroundColor: "#fde6ce"
+    backgroundColor: '#fde6ce',
   },
-  "At Risk": {
+  'At Risk': {
     color: darkRed,
-    backgroundColor: fadedRed
-  }
-};
+    backgroundColor: fadedRed,
+  },
+}
 
 const BoxedInsightsSummary = ({ data }) => {
   return (
@@ -34,7 +34,12 @@ const BoxedInsightsSummary = ({ data }) => {
       {data.map(({ label, count }) => (
         <StyledCard>
           <Row type="flex" justify="center" align="middle">
-            <StyledCol span={24} justify="space-between" align="center" margin="0 0 0 -5px">
+            <StyledCol
+              span={24}
+              justify="space-between"
+              align="center"
+              margin="0 0 0 -5px"
+            >
               <Avatar size={35} style={colorMap[label]}>
                 {label[0]}
               </Avatar>
@@ -47,19 +52,19 @@ const BoxedInsightsSummary = ({ data }) => {
         </StyledCard>
       ))}
     </StyledCol>
-  );
-};
+  )
+}
 
-export default BoxedInsightsSummary;
+export default BoxedInsightsSummary
 
 const StyledCol = styled(Col)`
   display: flex;
-  align-items: ${props => props.align};
-  justify-content: ${props => props.justify || "center"};
-  margin: ${props => props.margin};
+  align-items: ${(props) => props.align};
+  justify-content: ${(props) => props.justify || 'center'};
+  margin: ${(props) => props.margin};
   font: Bold 14px/19px Open Sans;
   color: ${greyThemeDark1};
-`;
+`
 
 const StyledCard = styled(Card)`
   height: 118px;
@@ -69,9 +74,9 @@ const StyledCard = styled(Card)`
   border-radius: 10px;
   border: 1px solid ${lightGrey8};
   opacity: 1;
-`;
+`
 
 const StyledSpan = styled.span`
   font: Bold 24px/33px Open Sans;
-  color: ${props => props.color};
-`;
+  color: ${(props) => props.color};
+`

@@ -14,18 +14,19 @@ import {
   extraDesktopWidthMax,
   smallDesktopWidth,
   mobileWidthLarge,
-  themeColorBlue
-} from "@edulastic/colors";
-import { ProgressBar, MathFormulaDisplay } from "@edulastic/common";
-import { Col, Modal } from "antd";
-import styled, { css } from "styled-components";
-import { StyledLabel } from "../../Reports/common/styled";
+  themeColorBlue,
+} from '@edulastic/colors'
+import { ProgressBar, MathFormulaDisplay } from '@edulastic/common'
+import { Col, Modal } from 'antd'
+import styled, { css } from 'styled-components'
+import { StyledLabel } from '../../Reports/common/styled'
 
 export const AssignmentRowContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: stretch;
-  ${({ highlightMode }) => highlightMode && `div { animation: inHighlight 5s; }`};
+  ${({ highlightMode }) =>
+    highlightMode && `div { animation: inHighlight 5s; }`};
   @keyframes inHighlight {
     0% {
       background-color: white;
@@ -37,12 +38,12 @@ export const AssignmentRowContainer = styled.div`
       background-color: white;
     }
   }
-`;
+`
 
 export const Bullet = styled.li`
   font-size: 20px;
   margin-top: -7px;
-`;
+`
 
 export const DragHandle = styled.div`
   color: ${themeColor};
@@ -58,7 +59,7 @@ export const DragHandle = styled.div`
   &:active {
     cursor: grabbing;
   }
-`;
+`
 
 export const ModalWrapper = styled(Modal)`
   top: 0px;
@@ -82,16 +83,17 @@ export const ModalWrapper = styled(Modal)`
       }
     }
   }
-`;
+`
 
 export const StyledCol = styled(Col)`
   display: flex;
-  align-items: ${props => props.align || "center"};
-  justify-content: ${props => props.justify || "flex-start"};
-  padding-right: ${({ paddingRight }) => (paddingRight ? `${paddingRight} !important` : "")};
+  align-items: ${(props) => props.align || 'center'};
+  justify-content: ${(props) => props.justify || 'flex-start'};
+  padding-right: ${({ paddingRight }) =>
+    paddingRight ? `${paddingRight} !important` : ''};
   width: ${({ width }) => width};
   margin-left: ${({ marginLeft }) => marginLeft};
-`;
+`
 
 export const InfoColumnsMobile = styled(StyledCol)`
   width: 100%;
@@ -106,13 +108,13 @@ export const InfoColumnsMobile = styled(StyledCol)`
     width: 100%;
     flex-wrap: wrap;
   }
-`;
+`
 
 export const InfoColumnsDesktop = styled.div`
   display: flex;
   align-items: center;
   margin-left: auto;
-`;
+`
 
 export const StyledProgressBar = styled(ProgressBar)`
   & .ant-progress-text {
@@ -120,7 +122,7 @@ export const StyledProgressBar = styled(ProgressBar)`
       font-size: 10px;
     }
   }
-`;
+`
 
 export const IconActionButton = styled.div`
   width: 22px;
@@ -136,15 +138,15 @@ export const IconActionButton = styled.div`
     position: relative;
     right: 0px;
   }
-`;
+`
 
 export const LastColumn = styled(StyledCol)`
-  width: ${({ width }) => width || "180px"};
+  width: ${({ width }) => width || '180px'};
   margin-left: 15px;
   flex-shrink: 0;
-  justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
-  margin-left: ${({ ml }) => ml || ""};
-`;
+  justify-content: ${({ justifyContent }) => justifyContent || 'space-between'};
+  margin-left: ${({ ml }) => ml || ''};
+`
 
 export const CaretUp = styled.i`
   position: absolute;
@@ -152,7 +154,7 @@ export const CaretUp = styled.i`
   color: ${white};
   left: 5px;
   font-size: 30px;
-`;
+`
 
 export const HideLinkLabel = styled(StyledLabel)`
   width: 80px;
@@ -168,7 +170,7 @@ export const HideLinkLabel = styled(StyledLabel)`
     white-space: normal;
     text-align: center;
   }
-`;
+`
 
 export const ProficiencyColumn = styled(Col)`
   width: 130px;
@@ -180,16 +182,16 @@ export const ProficiencyColumn = styled(Col)`
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
     margin-bottom: 14px;
-    margin-top: ${({ isAssessment }) => (isAssessment ? "8px" : "16px")};
+    margin-top: ${({ isAssessment }) => (isAssessment ? '8px' : '16px')};
   }
-`;
+`
 
 export const InfoColumnLabel = styled(StyledLabel)`
-  display: ${({ isAssessment }) => (isAssessment ? "none" : "")};
+  display: ${({ isAssessment }) => (isAssessment ? 'none' : '')};
   @media (max-width: ${mobileWidthLarge}) {
     display: flex;
   }
-`;
+`
 
 export const SubmittedColumn = styled(Col)`
   width: 100px;
@@ -201,7 +203,7 @@ export const SubmittedColumn = styled(Col)`
   @media (max-width: ${mobileWidthLarge}) {
     width: calc(50% - 30px);
   }
-`;
+`
 
 export const TimeColumn = styled(Col)`
   width: 85px;
@@ -211,7 +213,7 @@ export const TimeColumn = styled(Col)`
   @media (max-width: ${mobileWidthLarge}) {
     width: calc(50% - 30px);
   }
-`;
+`
 
 export const ClassesColumn = styled(Col)`
   width: 90px;
@@ -223,7 +225,7 @@ export const ClassesColumn = styled(Col)`
   @media (max-width: ${mobileWidthLarge}) {
     width: calc(50% - 30px);
   }
-`;
+`
 
 export const ScoreColumn = styled(ClassesColumn)`
   width: 90px;
@@ -235,7 +237,7 @@ export const ScoreColumn = styled(ClassesColumn)`
   @media (max-width: ${mobileWidthLarge}) {
     width: calc(50% - 30px);
   }
-`;
+`
 
 export const ModuleHeader = styled.div`
   display: flex;
@@ -247,7 +249,7 @@ export const ModuleHeader = styled.div`
   @media (max-width: ${desktopWidth}) {
     align-items: flex-start;
   }
-`;
+`
 
 export const ModuleHeaderData = styled.div`
   display: flex;
@@ -259,10 +261,10 @@ export const ModuleHeaderData = styled.div`
     flex-direction: column;
     align-items: stretch;
   }
-`;
+`
 
 export const ModuleID = styled.div`
-  margin-right: ${props => props.marginRight || "10px"};
+  margin-right: ${(props) => props.marginRight || '10px'};
   max-width: 60px;
   color: ${white};
   background: ${greenDark6};
@@ -283,62 +285,62 @@ export const ModuleID = styled.div`
     width: 25px;
     height: 25px;
   }
-`;
+`
 
 export const ellipsisCss = css`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 export const ModuleTitle = styled.div`
-align-items: left;
-color: ${darkGrey2};
-font-size: 18px;
-font-weight: 600;
-${ellipsisCss}
+  align-items: left;
+  color: ${darkGrey2};
+  font-size: 18px;
+  font-weight: 600;
+  ${ellipsisCss}
 
-@media (max-width: ${extraDesktopWidthMax}) {
-  font-size: 14px;
-}
-`;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 14px;
+  }
+`
 
 export const ModuleDescription = styled(MathFormulaDisplay)`
-color: ${lightGrey6};
-font-size: ${props => props.fontSize || "12px"};
-line-height: ${props => props.lineHeight || "17px"};
-font-weight: ${props => props.fontWeight || "normal"};
-letter-spacing: 0.2px;
-max-width: 100%;
-padding-right: 8px;
-${({ collapsed }) => (collapsed ? ellipsisCss : "white-space: normal;")}
+  color: ${lightGrey6};
+  font-size: ${(props) => props.fontSize || '12px'};
+  line-height: ${(props) => props.lineHeight || '17px'};
+  font-weight: ${(props) => props.fontWeight || 'normal'};
+  letter-spacing: 0.2px;
+  max-width: 100%;
+  padding-right: 8px;
+  ${({ collapsed }) => (collapsed ? ellipsisCss : 'white-space: normal;')}
 
-@media (max-width: ${extraDesktopWidthMax}) {
-  font-size: 12px;
-}
-`;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 12px;
+  }
+`
 
 export const EllipsisContainer = styled.div`
-color: ${lightGrey6};
-font-size: ${props => props.fontSize || "12px"};
-line-height: ${props => props.lineHeight || "17px"};
-font-weight: ${props => props.fontWeight || "normal"};
-letter-spacing: 0.2px;
-max-width: 95%;
-${ellipsisCss}
+  color: ${lightGrey6};
+  font-size: ${(props) => props.fontSize || '12px'};
+  line-height: ${(props) => props.lineHeight || '17px'};
+  font-weight: ${(props) => props.fontWeight || 'normal'};
+  letter-spacing: 0.2px;
+  max-width: 95%;
+  ${ellipsisCss}
 
-@media (max-width: ${extraDesktopWidthMax}) {
-  font-size: 12px;
-}
-`;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 12px;
+  }
+`
 
 export const CustomIcon = styled.span`
   cursor: pointer;
-  margin-right: ${props => props.marginRight || 0}px;
-  margin-left: ${props => props.marginLeft || 0}px;
+  margin-right: ${(props) => props.marginRight || 0}px;
+  margin-left: ${(props) => props.marginLeft || 0}px;
   font-size: 16px;
-  align-self: ${props => props.align || "flex-start"};
-`;
+  align-self: ${(props) => props.align || 'flex-start'};
+`
 
 export const AssignmentIconsHolder = styled.div`
   display: flex;
@@ -347,7 +349,7 @@ export const AssignmentIconsHolder = styled.div`
     margin-left: 0;
     justify-items: flex-start;
   }
-`;
+`
 
 export const ModuleFocused = styled.div`
   border-left: 3px solid ${greenDark};
@@ -359,7 +361,7 @@ export const ModuleFocused = styled.div`
   padding: 0;
   top: 0;
   opacity: 0;
-`;
+`
 
 export const ModuleAssignedUnit = styled.div`
   margin-right: auto;
@@ -371,14 +373,14 @@ export const ModuleAssignedUnit = styled.div`
   @media only screen and (max-width: ${tabletWidth}) and (min-width: ${mobileWidth}) {
     right: -25px;
   }
-`;
+`
 
 export const ModuleTitleWrapper = styled.div`
   display: flex;
   @media only screen and (max-width: ${tabletWidth}) {
     width: 80%;
   }
-`;
+`
 
 export const AssignmentButton = styled.div`
   min-width: 118px;
@@ -396,7 +398,8 @@ export const AssignmentButton = styled.div`
       fill: ${({ assigned }) => (assigned ? white : themeColor)};
     }
     &:hover {
-      background-color: ${({ assigned }) => (assigned ? white : themeColorBlue)};
+      background-color: ${({ assigned }) =>
+        assigned ? white : themeColorBlue};
       color: ${({ assigned }) => (assigned ? themeColorBlue : white)};
       border-color: ${({ assigned }) => (assigned ? white : themeColorBlue)};
       svg {
@@ -418,72 +421,72 @@ export const AssignmentButton = styled.div`
       font-weight: 600;
     }
   }
-`;
+`
 
 export const AssignmentContent = styled.div`
   flex-direction: row;
   display: flex;
-  min-width: ${props => (!props.expanded ? "30%" : "65%")};
+  min-width: ${(props) => (!props.expanded ? '30%' : '65%')};
   @media only screen and (max-width: ${mobileWidth}) {
     width: 80%;
   }
-`;
+`
 
 export const ModuleTitlePrefix = styled.div`
   font-weight: 600;
   font-size: 16px;
   margin-left: 10px;
-`;
+`
 
 export const ModuleDataWrapper = styled.div`
   display: ${({ display }) => `inline-${display}`};
-`;
+`
 
 export const ModuleDataName = styled.div`
   display: inline-flex;
-  width: ${({ isReview }) => (isReview ? "auto" : "100%")};
+  width: ${({ isReview }) => (isReview ? 'auto' : '100%')};
   letter-spacing: 0;
   color: ${darkGrey2};
   font: 14px/19px Open Sans;
-  cursor: ${({ isReview }) => isReview && "pointer"};
-  margin-right: ${({ isResource }) => (isResource ? "8px" : "")};
+  cursor: ${({ isReview }) => isReview && 'pointer'};
+  margin-right: ${({ isResource }) => (isResource ? '8px' : '')};
   span {
     font-weight: 600;
   }
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
-`;
+`
 
 export const EllipticSpan = styled.span`
-  width: ${props => props.width || "100%"};
-  padding: ${props => props.padding};
+  width: ${(props) => props.width || '100%'};
+  padding: ${(props) => props.padding};
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   @media only screen and (max-width: ${tabletWidth}) {
-    min-width: ${props => props.md || props.width};
-    max-width: ${props => props.md || props.width};
+    min-width: ${(props) => props.md || props.width};
+    max-width: ${(props) => props.md || props.width};
   }
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
   @media only screen and (max-width: ${extraDesktopWidth}) {
-    min-width: ${props => props.lg || props.width};
-    max-width: ${props => props.lg || props.width};
+    min-width: ${(props) => props.lg || props.width};
+    max-width: ${(props) => props.lg || props.width};
   }
   @media only screen and (min-width: ${extraDesktopWidth}) {
-    min-width: ${props => props.xl || props.width};
-    max-width: ${props => props.xl || props.width};
+    min-width: ${(props) => props.xl || props.width};
+    max-width: ${(props) => props.xl || props.width};
   }
-`;
+`
 
 export const AssignmentIcon = styled.span`
   cursor: pointer;
   margin-left: 12px;
-  margin-right: ${props => props.marginRight || "0px"};
+  margin-right: ${(props) => props.marginRight || '0px'};
   width: 15px;
-`;
+`
 
 export const Assignment = styled.div`
   padding: 10px 0px;
@@ -491,7 +494,12 @@ export const Assignment = styled.div`
   align-items: flex-start;
   position: relative;
   background: white !important;
-  &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {
+  &:active
+    ${ModuleFocused},
+    &:focus
+    ${ModuleFocused},
+    &:hover
+    ${ModuleFocused} {
     opacity: 1;
   }
 
@@ -499,8 +507,8 @@ export const Assignment = styled.div`
     flex-direction: column;
     padding-left: 8px;
   }
-`;
-Assignment.displayName = "Assignment";
+`
+Assignment.displayName = 'Assignment'
 
 export const AssignmentInnerWrapper = styled.div`
   display: flex;
@@ -520,16 +528,16 @@ export const AssignmentInnerWrapper = styled.div`
     margin-left: auto;
     align-items: flex-start;
   }
-`;
-AssignmentInnerWrapper.displayName = "AssignmentInnerWrapper";
+`
+AssignmentInnerWrapper.displayName = 'AssignmentInnerWrapper'
 
 export const ModuleWrapper = styled.div`
   cursor: pointer;
   & {
     padding-top: 0px;
-    padding-bottom: ${props => (props.collapsed ? "0px" : "20px")};
+    padding-bottom: ${(props) => (props.collapsed ? '0px' : '20px')};
     padding-left: 0px;
-    padding-right: ${props => (props.padding ? "20px" : "0px")};
+    padding-right: ${(props) => (props.padding ? '20px' : '0px')};
     border-bottom: 1px solid ${borderGrey4};
   }
 
@@ -547,4 +555,4 @@ export const ModuleWrapper = styled.div`
     border: none;
     box-shadow: none;
   }
-`;
+`

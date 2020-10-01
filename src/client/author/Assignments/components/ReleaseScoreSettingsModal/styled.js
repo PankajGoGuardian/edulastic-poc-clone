@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import styled from 'styled-components'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 export const ReleaseGradesModal = styled(ConfirmationModal)`
   .ant-modal-content {
@@ -10,14 +10,14 @@ export const ReleaseGradesModal = styled(ConfirmationModal)`
       }
     }
   }
-`;
+`
 
 export const Info = styled.div`
   display: flex;
   font-weight: bold;
   margin-top: 12px;
-`;
+`
 
 export const InfoText = styled.span`
   margin-left: 22px;
-`;
+`

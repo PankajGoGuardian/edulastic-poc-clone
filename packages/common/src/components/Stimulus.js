@@ -1,8 +1,8 @@
-import styled, { withTheme } from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
-import { fonts } from "@edulastic/constants";
+import styled, { withTheme } from 'styled-components'
+import { desktopWidth } from '@edulastic/colors'
+import { fonts } from '@edulastic/constants'
 
-import { withMathFormula } from "../HOC/withMathFormula";
+import { withMathFormula } from '../HOC/withMathFormula'
 
 const Stimulus = withTheme(
   withMathFormula(styled.div`
@@ -11,12 +11,13 @@ const Stimulus = withTheme(
       max-height: unset !important;
     }
     word-break: break-word;
-    font-size: ${props => props.fontSize};
+    font-size: ${(props) => props.fontSize};
     font-weight: ${fonts.previewFontWeight};
-    user-select: ${props => (props.userSelect ? "text !important" : "none")};
+    user-select: ${(props) => (props.userSelect ? 'text !important' : 'none')};
 
     & * {
-      user-select: ${props => (props.userSelect ? "text !important" : "none")};
+      user-select: ${(props) =>
+        props.userSelect ? 'text !important' : 'none'};
       -webkit-touch-callout: none;
     }
 
@@ -56,6 +57,6 @@ const Stimulus = withTheme(
       }
     }
   `)
-);
+)
 
-export default Stimulus;
+export default Stimulus

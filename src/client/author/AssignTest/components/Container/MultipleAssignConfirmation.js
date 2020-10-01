@@ -1,14 +1,14 @@
-import { EduButton } from "@edulastic/common";
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { EduButton } from '@edulastic/common'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import {
   getHasDuplicateAssignmentsSelector,
   saveAssignmentAction,
-  toggleHasDuplicateAssignmentPopupAction
-} from "../../../TestPage/components/Assign/ducks";
-import { getPlaylistSelector, getTestSelector } from "../../../TestPage/ducks";
-import { Paragraph } from "./styled";
+  toggleHasDuplicateAssignmentPopupAction,
+} from '../../../TestPage/components/Assign/ducks'
+import { getPlaylistSelector, getTestSelector } from '../../../TestPage/ducks'
+import { Paragraph } from './styled'
 
 const MultipleAssignConfirmation = ({
   hasDuplicateAssignments,
@@ -16,33 +16,50 @@ const MultipleAssignConfirmation = ({
   entity,
   saveAssignment,
   assignment,
-  moduleTitle
+  moduleTitle,
 }) => {
-  const [saving, setSavingState] = useState(false);
+  const [saving, setSavingState] = useState(false)
 
   const onProceed = () => {
-    setSavingState(true);
+    setSavingState(true)
     // allowCommonStudents has to be true for the second time as we have to avoid
-    saveAssignment({ ...assignment, allowCommonStudents: true, allowDuplicates: true });
-  };
+    saveAssignment({
+      ...assignment,
+      allowCommonStudents: true,
+      allowDuplicates: true,
+    })
+  }
 
   const onRemoveDuplicates = () => {
-    setSavingState(true);
-    saveAssignment({ ...assignment, allowCommonStudents: true, removeDuplicates: true });
-  };
+    setSavingState(true)
+    saveAssignment({
+      ...assignment,
+      allowCommonStudents: true,
+      removeDuplicates: true,
+    })
+  }
 
   const onCancel = () => {
-    toggleHasDuplicateAssignmentPopup(false);
-  };
+    toggleHasDuplicateAssignmentPopup(false)
+  }
 
   const Footer = [
-    <EduButton isGhost data-cy="duplicate" onClick={onProceed} disabled={saving}>
+    <EduButton
+      isGhost
+      data-cy="duplicate"
+      onClick={onProceed}
+      disabled={saving}
+    >
       Proceed with duplicate
     </EduButton>,
-    <EduButton disabled={saving} data-cy="noDuplicate" onClick={onRemoveDuplicates}>
+    <EduButton
+      disabled={saving}
+      data-cy="noDuplicate"
+      onClick={onRemoveDuplicates}
+    >
       Remove duplicates
-    </EduButton>
-  ];
+    </EduButton>,
+  ]
 
   return (
     <ConfirmationModal
@@ -56,21 +73,26 @@ const MultipleAssignConfirmation = ({
       afterClose={() => setSavingState(false)}
     >
       <Paragraph>
-        <b>{moduleTitle || entity.title}</b> has already been assigned to one or more of the selected students. Those students will receive a
-        duplicate copy of this assessment.
+        <b>{moduleTitle || entity.title}</b> has already been assigned to one or
+        more of the selected students. Those students will receive a duplicate
+        copy of this assessment.
       </Paragraph>
-      <Paragraph>Please select if the student(s) should receive a duplicate assessment.</Paragraph>
+      <Paragraph>
+        Please select if the student(s) should receive a duplicate assessment.
+      </Paragraph>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
 export default connect(
   (state, ownProps) => ({
     hasDuplicateAssignments: getHasDuplicateAssignmentsSelector(state),
-    entity: ownProps.isPlaylist ? getPlaylistSelector(state) : getTestSelector(state)
+    entity: ownProps.isPlaylist
+      ? getPlaylistSelector(state)
+      : getTestSelector(state),
   }),
   {
     saveAssignment: saveAssignmentAction,
-    toggleHasDuplicateAssignmentPopup: toggleHasDuplicateAssignmentPopupAction
+    toggleHasDuplicateAssignmentPopup: toggleHasDuplicateAssignmentPopupAction,
   }
-)(MultipleAssignConfirmation);
+)(MultipleAssignConfirmation)

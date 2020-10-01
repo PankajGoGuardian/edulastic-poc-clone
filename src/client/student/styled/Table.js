@@ -1,7 +1,11 @@
-import { Table } from "antd";
-import styled from "styled-components";
+import { Table } from 'antd'
+import styled from 'styled-components'
 
-import { extraDesktopWidth, largeDesktopWidth, tabletWidth } from "@edulastic/colors";
+import {
+  extraDesktopWidth,
+  largeDesktopWidth,
+  tabletWidth,
+} from '@edulastic/colors'
 
 const StyledTable = styled(Table)`
   .ant-table table {
@@ -26,9 +30,9 @@ const StyledTable = styled(Table)`
       background: transparent;
 
       > th {
-        background: ${props => props.theme.skillReport.tableHeaderBgColor};
+        background: ${(props) => props.theme.skillReport.tableHeaderBgColor};
         font-weight: 700;
-        color: ${props => props.theme.skillReport.tableHeaderTextColor};
+        color: ${(props) => props.theme.skillReport.tableHeaderTextColor};
         text-transform: uppercase;
         border: 0;
         font-size: 10px;
@@ -51,8 +55,12 @@ const StyledTable = styled(Table)`
           margin-left: 5px;
         }
 
-        .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up,
-        .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down {
+        .ant-table-column-sorter
+          .ant-table-column-sorter-inner
+          .ant-table-column-sorter-up,
+        .ant-table-column-sorter
+          .ant-table-column-sorter-inner
+          .ant-table-column-sorter-down {
           font-size: 8px;
         }
 
@@ -60,7 +68,7 @@ const StyledTable = styled(Table)`
           font-size: 11px;
         }
         @media (min-width: ${extraDesktopWidth}) {
-          font-size: ${props => props.theme.skillReport.tableHeaderTextSize};
+          font-size: ${(props) => props.theme.skillReport.tableHeaderTextSize};
           padding: 0 26px 15px;
         }
         @media screen and (max-width: ${tabletWidth}) {
@@ -77,11 +85,12 @@ const StyledTable = styled(Table)`
   }
 
   .ant-table-row {
-    font-size: ${props => props.theme.skillReport.tableDataFontSize};
+    font-size: ${(props) => props.theme.skillReport.tableDataFontSize};
 
     td {
-      background: ${props => props.theme.skillReport.tableDataBgColor} !important;
-      color: ${props => props.theme.skillReport.tableDataTextColor};
+      background: ${(props) =>
+        props.theme.skillReport.tableDataBgColor} !important;
+      color: ${(props) => props.theme.skillReport.tableDataTextColor};
       border: 0;
       padding: 13px 26px;
       font-size: 11px;
@@ -97,6 +106,6 @@ const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
-export default StyledTable;
+export default StyledTable

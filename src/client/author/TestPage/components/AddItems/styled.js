@@ -1,7 +1,14 @@
-import styled from "styled-components";
-import { desktopWidth, mobileWidth, secondaryTextColor, tabletWidth, white, themeColor } from "@edulastic/colors";
-import { Select } from "antd/lib/index";
-import { EduButton, FlexContainer, Paper } from "@edulastic/common";
+import styled from 'styled-components'
+import {
+  desktopWidth,
+  mobileWidth,
+  secondaryTextColor,
+  tabletWidth,
+  white,
+  themeColor,
+} from '@edulastic/colors'
+import { Select } from 'antd/lib/index'
+import { EduButton, FlexContainer, Paper } from '@edulastic/common'
 
 export const Container = styled.div`
   width: 100%;
@@ -12,18 +19,18 @@ export const Container = styled.div`
     padding-bottom: 40px;
     padding-left: 0px;
   }
-`;
+`
 
 export const TopMenu = styled.div`
   margin: 0 45px 0px 45px;
-`;
+`
 
 export const QuestionsFound = styled.span`
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   color: ${secondaryTextColor};
-`;
+`
 
 export const ItemsMenu = styled(FlexContainer)`
   background: ${white};
@@ -34,7 +41,7 @@ export const ItemsMenu = styled(FlexContainer)`
   @media screen and (max-width: 993px) {
     padding: 8px 15px;
   }
-`;
+`
 
 export const MainList = styled.div`
   display: flex;
@@ -42,7 +49,7 @@ export const MainList = styled.div`
   @media (max-width: ${desktopWidth}) {
     display: block;
   }
-`;
+`
 
 export const ListItems = styled.div`
   flex: 1;
@@ -68,11 +75,11 @@ export const ListItems = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin: 21px 26px 0px 26px;
   }
-`;
+`
 
 export const ItemsTableContainer = styled.div`
   background: ${white};
-`;
+`
 
 export const StyledButton = styled(EduButton)`
   height: 30px;
@@ -99,11 +106,11 @@ export const StyledButton = styled(EduButton)`
   :last-child {
     margin-right: 0;
   }
-`;
+`
 
 export const BtnActionsContainer = styled.div`
   display: flex;
-`;
+`
 
 export const StyledSelect = styled(Select)`
   height: 32px;
@@ -131,18 +138,18 @@ export const StyledSelect = styled(Select)`
       fill: ${themeColor};
     }
   }
-`;
+`
 
 export const ItemsPagination = styled(FlexContainer)`
   justify-content: flex-end;
   padding: 20px 0px;
-`;
+`
 
 export const ListWrapper = styled(Paper)`
   @media screen and (max-width: 480px) {
     padding: 0;
   }
-`;
+`
 export const Selected = styled.span`
   white-space: nowrap;
-`;
+`

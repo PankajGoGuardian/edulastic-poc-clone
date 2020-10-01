@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconIndentOut = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="10.726" height="11.701" viewBox="0 0 10.726 11.701" {...props}>
+const IconIndentOut = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="10.726"
+    height="11.701"
+    viewBox="0 0 10.726 11.701"
+    {...props}
+  >
     <g transform="translate(0 -54.817)">
       <g transform="translate(0 54.817)">
         <path
@@ -29,6 +35,6 @@ const IconIndentOut = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconIndentOut);
+export default withIconStyles(IconIndentOut)

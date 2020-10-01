@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Rect = styled.rect`
   z-index: 5;
@@ -11,4 +11,4 @@ export const Rect = styled.rect`
   stroke-linecap: round;
   stroke-linejoin: round;
   fill-opacity: 1;
-`;
+`

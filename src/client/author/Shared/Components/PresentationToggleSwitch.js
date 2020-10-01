@@ -1,38 +1,51 @@
-import React from "react";
-import { notification } from "@edulastic/common";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import styled from "styled-components";
-import { mobileWidthLarge, themeColor, white } from "@edulastic/colors";
-import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
-import { togglePresentationModeAction } from "../../src/actions/testActivity";
+import React from 'react'
+import { notification } from '@edulastic/common'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
+import styled from 'styled-components'
+import { mobileWidthLarge, themeColor, white } from '@edulastic/colors'
+import FeaturesSwitch from '../../../features/components/FeaturesSwitch'
+import { togglePresentationModeAction } from '../../src/actions/testActivity'
 
-const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, groupId }) => {
+const PresentationToggleSwitch = ({
+  isPresentationMode,
+  togglePresentationMode,
+  groupId,
+}) => {
   const toggleCurrentMode = () => {
-    togglePresentationMode();
-    if (!isPresentationMode) notification({ type: "info", messageKey: "presentationMode" });
-  };
+    togglePresentationMode()
+    if (!isPresentationMode)
+      notification({ type: 'info', messageKey: 'presentationMode' })
+  }
 
   const title = !isPresentationMode
-    ? "Presentation Mode will anonymize the names of students"
-    : " Disable Presentation Mode";
+    ? 'Presentation Mode will anonymize the names of students'
+    : ' Disable Presentation Mode'
   return (
-    <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden" groupId={groupId}>
+    <FeaturesSwitch
+      inputFeatures="presentationMode"
+      actionOnInaccessible="hidden"
+      groupId={groupId}
+    >
       <StyledButton title={title} onClick={toggleCurrentMode}>
-        {isPresentationMode ? "RESET" : "PRESENT"}{" "}
+        {isPresentationMode ? 'RESET' : 'PRESENT'}{' '}
       </StyledButton>
     </FeaturesSwitch>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
-    isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+  (state) => ({
+    isPresentationMode: get(
+      state,
+      ['author_classboard_testActivity', 'presentationMode'],
+      false
+    ),
   }),
   {
-    togglePresentationMode: togglePresentationModeAction
+    togglePresentationMode: togglePresentationModeAction,
   }
-)(PresentationToggleSwitch);
+)(PresentationToggleSwitch)
 
 const StyledButton = styled.div`
   display: flex;
@@ -54,4 +67,4 @@ const StyledButton = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     display: none;
   }
-`;
+`

@@ -1,66 +1,66 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Input, Radio } from "antd";
-import { isUndefined } from "lodash";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Input, Radio } from 'antd'
+import { isUndefined } from 'lodash'
 
-import { QuestionOption, QuestionChunk } from "../../common/Form";
+import { QuestionOption, QuestionChunk } from '../../common/Form'
 
 export default class FormChoice extends React.Component {
   static propTypes = {
     saveAnswer: PropTypes.func.isRequired,
-    mode: PropTypes.oneOf(["edit", "review", "report"]).isRequired,
+    mode: PropTypes.oneOf(['edit', 'review', 'report']).isRequired,
     question: PropTypes.object.isRequired,
     onCreateOptions: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-    answer: PropTypes.array
-  };
+    answer: PropTypes.array,
+  }
 
   static defaultProps = {
     evaluation: undefined,
-    answer: []
-  };
+    answer: [],
+  }
 
-  handleSelect = nextValue => () => {
+  handleSelect = (nextValue) => () => {
     const {
       question: { multipleResponses },
       answer,
-      saveQuestionResponse
-    } = this.props;
+      saveQuestionResponse,
+    } = this.props
 
     if (!multipleResponses) {
-      this.saveValue([nextValue]);
-      saveQuestionResponse();
-      return;
+      this.saveValue([nextValue])
+      saveQuestionResponse()
+      return
     }
 
-    const valueIndex = answer.findIndex(v => v === nextValue);
-    const toggledValue = [...answer];
+    const valueIndex = answer.findIndex((v) => v === nextValue)
+    const toggledValue = [...answer]
 
     if (valueIndex > -1) {
-      toggledValue.splice(valueIndex, 1);
+      toggledValue.splice(valueIndex, 1)
     } else {
-      toggledValue.push(nextValue);
-      toggledValue.sort();
+      toggledValue.push(nextValue)
+      toggledValue.sort()
     }
 
-    this.saveValue(toggledValue);
-    saveQuestionResponse();
-  };
+    this.saveValue(toggledValue)
+    saveQuestionResponse()
+  }
 
-  saveValue = currentValue => {
-    const { saveAnswer } = this.props;
-    saveAnswer(currentValue);
-  };
+  saveValue = (currentValue) => {
+    const { saveAnswer } = this.props
+    saveAnswer(currentValue)
+  }
 
   renderRadioForm = (chosenValue, handleChange = () => {}) => {
     const {
-      question: { options }
-    } = this.props;
+      question: { options },
+    } = this.props
 
     const radioStyle = {
-      marginLeft: "2px",
-      paddingLeft: "2px"
-    };
+      marginLeft: '2px',
+      paddingLeft: '2px',
+    }
 
     return (
       <QuestionChunk>
@@ -73,8 +73,8 @@ export default class FormChoice extends React.Component {
           </Radio>
         </Radio.Group>
       </QuestionChunk>
-    );
-  };
+    )
+  }
 
   renderView = () => {
     const {
@@ -82,53 +82,57 @@ export default class FormChoice extends React.Component {
         options,
         multipleResponses,
         validation: {
-          validResponse: { value }
-        }
+          validResponse: { value },
+        },
       },
-      isTrueOrFalse
-    } = this.props;
+      isTrueOrFalse,
+    } = this.props
 
-    if (isTrueOrFalse) return this.renderRadioForm(value);
+    if (isTrueOrFalse) return this.renderRadioForm(value)
 
-    if (!options.length) return this.renderOptionsCreateForm();
+    if (!options.length) return this.renderOptionsCreateForm()
 
     return (
       <QuestionChunk>
         {options.map(({ label, value: v }, key) => (
-          <QuestionOption key={label + key} selected={value.includes(v)} multipleResponses={multipleResponses}>
+          <QuestionOption
+            key={label + key}
+            selected={value.includes(v)}
+            multipleResponses={multipleResponses}
+          >
             {label}
           </QuestionOption>
         ))}
       </QuestionChunk>
-    );
-  };
+    )
+  }
 
-  renderForm = mode => {
+  renderForm = (mode) => {
     const {
       question: { options, multipleResponses },
       evaluation,
       view,
       answer,
-      isTrueOrFalse
-    } = this.props;
+      isTrueOrFalse,
+    } = this.props
 
-    const onChangeHandler = e => this.handleSelect(e.target.value)();
+    const onChangeHandler = (e) => this.handleSelect(e.target.value)()
 
-    if (isTrueOrFalse) return this.renderRadioForm(answer, onChangeHandler);
+    if (isTrueOrFalse) return this.renderRadioForm(answer, onChangeHandler)
 
-    const getCorrect = value => {
+    const getCorrect = (value) => {
       if (!multipleResponses) {
-        return answer.includes(value) && evaluation[0];
+        return answer.includes(value) && evaluation[0]
       }
 
-      const valueIndex = answer.findIndex(item => item === value);
+      const valueIndex = answer.findIndex((item) => item === value)
 
       if (valueIndex > -1) {
-        return evaluation[valueIndex];
+        return evaluation[valueIndex]
       }
 
-      return false;
-    };
+      return false
+    }
 
     return (
       <QuestionChunk>
@@ -138,8 +142,8 @@ export default class FormChoice extends React.Component {
             key={`form-${label}-${key}`}
             selected={answer.includes(value)}
             correct={evaluation && getCorrect(value)}
-            checked={!isUndefined(evaluation) && view !== "clear"}
-            onClick={mode === "report" ? "" : this.handleSelect(value)}
+            checked={!isUndefined(evaluation) && view !== 'clear'}
+            onClick={mode === 'report' ? '' : this.handleSelect(value)}
             review
             multipleResponses={multipleResponses}
           >
@@ -147,29 +151,29 @@ export default class FormChoice extends React.Component {
           </QuestionOption>
         ))}
       </QuestionChunk>
-    );
-  };
+    )
+  }
 
   renderOptionsCreateForm = () => {
     const {
       question: { id, type },
-      onCreateOptions
-    } = this.props;
+      onCreateOptions,
+    } = this.props
 
-    return <Input size="large" onPressEnter={onCreateOptions(id, type)} />;
-  };
+    return <Input size="large" onPressEnter={onCreateOptions(id, type)} />
+  }
 
   render() {
-    const { mode } = this.props;
+    const { mode } = this.props
 
     switch (mode) {
-      case "edit":
-        return this.renderView();
-      case "review":
-      case "report":
-        return this.renderForm(mode);
+      case 'edit':
+        return this.renderView()
+      case 'review':
+      case 'report':
+        return this.renderForm(mode)
       default:
-        return null;
+        return null
     }
   }
 }

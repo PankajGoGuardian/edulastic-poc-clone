@@ -1,20 +1,20 @@
-import React from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { notification } from "@edulastic/common";
-import { keyBy } from "lodash";
-import { borderGrey2 } from "@edulastic/colors";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { getCollectionsToAddContent } from "../../../src/selectors/user";
+import React from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { notification } from '@edulastic/common'
+import { keyBy } from 'lodash'
+import { borderGrey2 } from '@edulastic/colors'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { getCollectionsToAddContent } from '../../../src/selectors/user'
 import {
   getIsAddCollectionModalVisibleSelector,
   setAddCollectionModalVisibleAction,
-  saveItemsToBucketAction
-} from "../../../ContentBuckets/ducks";
-import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
-import { getSelectedTestsSelector } from "../../../TestList/ducks";
-import { getTestEntitySelector } from "../../../TestPage/ducks";
-import { getSelectedPlaylistSelector } from "../../../Playlist/ducks";
+  saveItemsToBucketAction,
+} from '../../../ContentBuckets/ducks'
+import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
+import { getSelectedTestsSelector } from '../../../TestList/ducks'
+import { getTestEntitySelector } from '../../../TestPage/ducks'
+import { getSelectedPlaylistSelector } from '../../../Playlist/ducks'
 
 const SelectCollectionModal = ({
   isAddCollectionModalVisible,
@@ -25,23 +25,25 @@ const SelectCollectionModal = ({
   selectedItems,
   selectedTests,
   selectedPlaylists,
-  test
+  test,
 }) => {
-  const handleCancel = () => setAddCollectionModalVisible(false);
+  const handleCancel = () => setAddCollectionModalVisible(false)
 
-  const addedItems = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || []);
-  const itemsKeyed = keyBy(addedItems, "_id");
+  const addedItems = test?.itemGroups?.flatMap(
+    (itemGroup) => itemGroup.items || []
+  )
+  const itemsKeyed = keyBy(addedItems, '_id')
   const handleAddToCollection = ({ _id, itemBankId, name, collectionName }) => {
-    let contentIds = selectedItems.map(id => itemsKeyed[id]?._id);
-    if (contentType === "PLAYLIST") {
-      contentIds = selectedPlaylists;
+    let contentIds = selectedItems.map((id) => itemsKeyed[id]?._id)
+    if (contentType === 'PLAYLIST') {
+      contentIds = selectedPlaylists
     }
-    if (contentType === "TEST") {
-      contentIds = selectedTests.map(item => item._id);
+    if (contentType === 'TEST') {
+      contentIds = selectedTests.map((item) => item._id)
     }
     if (!contentIds.length) {
-      notification({ messageKey: "addAtleastOneItemToTest" });
-      return handleCancel();
+      notification({ messageKey: 'addAtleastOneItemToTest' })
+      return handleCancel()
     }
     saveItemsToBucket({
       _id,
@@ -49,9 +51,9 @@ const SelectCollectionModal = ({
       contentIds,
       itemBankId,
       name,
-      collectionName
-    });
-  };
+      collectionName,
+    })
+  }
   return (
     <StyledModal
       title="Select Collection"
@@ -63,7 +65,7 @@ const SelectCollectionModal = ({
       destroyOnClose
     >
       <BodyStyled>
-        {buckets.map(bucket => (
+        {buckets.map((bucket) => (
           <ModuleContainer
             key={bucket.bucketId}
             onClick={() =>
@@ -71,7 +73,7 @@ const SelectCollectionModal = ({
                 _id: bucket.bucketId,
                 name: bucket.name,
                 itemBankId: bucket._id,
-                collectionName: bucket.collectionName
+                collectionName: bucket.collectionName,
               })
             }
           >
@@ -81,23 +83,23 @@ const SelectCollectionModal = ({
         ))}
       </BodyStyled>
     </StyledModal>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     isAddCollectionModalVisible: getIsAddCollectionModalVisibleSelector(state),
     buckets: getCollectionsToAddContent(state),
     selectedItems: getSelectedItemSelector(state),
     selectedTests: getSelectedTestsSelector(state),
     selectedPlaylists: getSelectedPlaylistSelector(state),
-    test: getTestEntitySelector(state)
+    test: getTestEntitySelector(state),
   }),
   {
     setAddCollectionModalVisible: setAddCollectionModalVisibleAction,
-    saveItemsToBucket: saveItemsToBucketAction
+    saveItemsToBucket: saveItemsToBucketAction,
   }
-)(SelectCollectionModal);
+)(SelectCollectionModal)
 
 const StyledModal = styled(ConfirmationModal)`
   .ant-modal-content {
@@ -108,7 +110,7 @@ const StyledModal = styled(ConfirmationModal)`
       min-height: 80px;
     }
   }
-`;
+`
 
 const ModuleContainer = styled.div`
   background: #fff;
@@ -120,15 +122,15 @@ const ModuleContainer = styled.div`
   &:hover {
     background: #f8f8f8;
   }
-`;
+`
 
 const BodyStyled = styled.div`
   text-align: left;
   width: 100%;
-`;
+`
 
 const ModuleLabel = styled.span`
   color: ${borderGrey2};
-`;
+`
 
-const ModuleName = styled.span``;
+const ModuleName = styled.span``

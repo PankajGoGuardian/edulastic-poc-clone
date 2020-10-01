@@ -1,4 +1,4 @@
-import { sum, reduce } from "lodash";
+import { sum, reduce } from 'lodash'
 
 const defs = (
   <defs>
@@ -36,30 +36,50 @@ const defs = (
       <stop offset="100%" stopColor="#AB2EFE80" stopOpacity={1} />
     </linearGradient>
   </defs>
-);
+)
 
-export const getCollectionsList = collections => {
+export const getCollectionsList = (collections) => {
   const defaultValue = {
     draft: 0,
     published: 0,
-    issues: 0
-  };
-  return collections?.map(collection => {
-    const { PlayLists = defaultValue, TestItems = defaultValue, Tests = defaultValue } = collection.metrics;
-    const itemBankTotal = sum(Object.values(TestItems));
-    const testTotal = sum(Object.values(Tests));
-    const playlistTotal = sum(Object.values(PlayLists));
-    const totalIssues = reduce(collection?.metrics, (result, value) => result + value?.issues, 0);
+    issues: 0,
+  }
+  return collections?.map((collection) => {
+    const {
+      PlayLists = defaultValue,
+      TestItems = defaultValue,
+      Tests = defaultValue,
+    } = collection.metrics
+    const itemBankTotal = sum(Object.values(TestItems))
+    const testTotal = sum(Object.values(Tests))
+    const playlistTotal = sum(Object.values(PlayLists))
+    const totalIssues = reduce(
+      collection?.metrics,
+      (result, value) => result + value?.issues,
+      0
+    )
     const chartData = [
-      { name: "itembank", value: itemBankTotal, fill: "url('#publisherDashboardItembankIconColor')" },
-      { name: "tests", value: testTotal, fill: "url('#publisherDashboardTestsIconColor')" },
-      { name: "playlist", value: playlistTotal, fill: "url('#publisherDashboardPlaylistIconColor')" }
-    ];
+      {
+        name: 'itembank',
+        value: itemBankTotal,
+        fill: "url('#publisherDashboardItembankIconColor')",
+      },
+      {
+        name: 'tests',
+        value: testTotal,
+        fill: "url('#publisherDashboardTestsIconColor')",
+      },
+      {
+        name: 'playlist',
+        value: playlistTotal,
+        fill: "url('#publisherDashboardPlaylistIconColor')",
+      },
+    ]
     return {
       ...collection,
       totalIssues,
       chartData,
-      defs
-    };
-  });
-};
+      defs,
+    }
+  })
+}

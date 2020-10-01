@@ -1,6 +1,6 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { cloneDeep, get } from "lodash";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { cloneDeep, get } from 'lodash'
 
 import {
   Stimulus,
@@ -9,19 +9,25 @@ import {
   FlexContainer,
   QuestionLabelWrapper,
   QuestionSubLabel,
-  QuestionContentWrapper
-} from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+  QuestionContentWrapper,
+} from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { PREVIEW, CLEAR, CHECK, SHOW, EDIT } from "../../constants/constantsForQuestions";
-import Instructions from "../../components/Instructions";
-import BlockContainer from "./styled/BlockContainer";
-import { Svg } from "./styled/Svg";
-import { Polygon } from "./styled/Polygon";
-import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { ImageContainer } from "./styled/ImageContainer";
-import { StyledPaperWrapper } from "../../styled/Widget";
+import {
+  PREVIEW,
+  CLEAR,
+  CHECK,
+  SHOW,
+  EDIT,
+} from '../../constants/constantsForQuestions'
+import Instructions from '../../components/Instructions'
+import BlockContainer from './styled/BlockContainer'
+import { Svg } from './styled/Svg'
+import { Polygon } from './styled/Polygon'
+import { getFontSize } from '../../utils/helpers'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { ImageContainer } from './styled/ImageContainer'
+import { StyledPaperWrapper } from '../../styled/Widget'
 
 const HotspotPreview = ({
   view,
@@ -34,53 +40,78 @@ const HotspotPreview = ({
   disableResponse,
   t,
   evaluation,
-  changePreviewTab
+  changePreviewTab,
 }) => {
-  const { areas, areaAttributes, image, validation, multipleResponses, previewAreas } = item;
-  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
-  const maxWidth = get(item, "max_width", 900);
+  const {
+    areas,
+    areaAttributes,
+    image,
+    validation,
+    multipleResponses,
+    previewAreas,
+  } = item
+  const fontSize = getFontSize(get(item, 'uiStyle.fontsize'))
+  const maxWidth = get(item, 'max_width', 900)
 
-  const width = image ? image.width : 900;
-  const height = image ? image.height : 470;
-  const source = image ? image.source : "";
+  const width = image ? image.width : 900
+  const height = image ? image.height : 470
+  const source = image ? image.source : ''
 
-  const handleClick = i => () => {
-    const newAnswer = cloneDeep(userAnswer);
+  const handleClick = (i) => () => {
+    const newAnswer = cloneDeep(userAnswer)
     if (newAnswer.includes(i)) {
-      newAnswer.splice(newAnswer.indexOf(i), 1);
+      newAnswer.splice(newAnswer.indexOf(i), 1)
     } else {
-      newAnswer.push(i);
+      newAnswer.push(i)
     }
-    saveAnswer(multipleResponses ? (newAnswer.length > 0 ? newAnswer : userAnswer) : [i]);
+    saveAnswer(
+      multipleResponses ? (newAnswer.length > 0 ? newAnswer : userAnswer) : [i]
+    )
 
     if (previewTab === CHECK || previewTab === SHOW) {
-      changePreviewTab(CLEAR);
+      changePreviewTab(CLEAR)
     }
-  };
+  }
 
-  const validAnswer = validation && validation.validResponse && validation.validResponse.value;
-  const altAnswers = (validation && validation.altResponses) || [];
+  const validAnswer =
+    validation && validation.validResponse && validation.validResponse.value
+  const altAnswers = (validation && validation.altResponses) || []
 
-  const getStyles = i => ({
-    fill: areaAttributes?.local?.find(attr => attr.area === i)
-      ? areaAttributes.local.find(attr => attr.area === i).fill
+  const getStyles = (i) => ({
+    fill: areaAttributes?.local?.find((attr) => attr.area === i)
+      ? areaAttributes.local.find((attr) => attr.area === i).fill
       : areaAttributes.global.fill,
-    stroke: areaAttributes.local.find(attr => attr.area === i)
-      ? areaAttributes.local.find(attr => attr.area === i).stroke
-      : areaAttributes.global.stroke
-  });
+    stroke: areaAttributes.local.find((attr) => attr.area === i)
+      ? areaAttributes.local.find((attr) => attr.area === i).stroke
+      : areaAttributes.global.stroke,
+  })
 
   return (
-    <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+    <StyledPaperWrapper
+      style={{ fontSize }}
+      padding={smallSize}
+      boxShadow={smallSize ? 'none' : ''}
+    >
+      <FlexContainer
+        justifyContent="flex-start"
+        alignItems="baseline"
+        width="100%"
+      >
         <QuestionLabelWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          {showQuestionNumber && (
+            <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+          )}
+          {item.qSubLabel && (
+            <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+          )}
         </QuestionLabelWrapper>
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
             {view === PREVIEW && !smallSize && (
-              <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+              <Stimulus
+                data-cy="stimulus"
+                dangerouslySetInnerHTML={{ __html: item.stimulus }}
+              />
             )}
           </QuestionTitleWrapper>
 
@@ -91,7 +122,13 @@ const HotspotPreview = ({
             height={+height}
             justifyContent="center"
           >
-            <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
+            <ImageContainer
+              src={source}
+              width={+width}
+              height={+height}
+              left={0}
+              top={0}
+            />
             <Svg data-cy="answer-container" width={+width} height={+height}>
               {areas &&
                 areas.map((area, i) => (
@@ -99,19 +136,23 @@ const HotspotPreview = ({
                     key={i}
                     showAnswer={previewTab !== CLEAR && userAnswer.includes(i)}
                     onClick={!disableResponse ? handleClick(i) : () => {}}
-                    points={area.map(point => `${point.x},${point.y}`).join(" ")}
+                    points={area
+                      .map((point) => `${point.x},${point.y}`)
+                      .join(' ')}
                     selected={userAnswer.includes(i)}
-                    correct={evaluation[userAnswer.findIndex(val => i === val)]}
+                    correct={
+                      evaluation[userAnswer.findIndex((val) => i === val)]
+                    }
                     {...getStyles(i)}
                   />
                 ))}
             </Svg>
           </BlockContainer>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === "show" && !smallSize && (
-            <Fragment>
+          {previewTab === 'show' && !smallSize && (
+            <>
               <CorrectAnswersContainer
-                title={t("component.graphing.correctAnswer")}
+                title={t('component.graphing.correctAnswer')}
                 padding="15px 25px 20px"
                 minHeight="auto"
                 titleMargin="0px 0px 12px"
@@ -124,15 +165,27 @@ const HotspotPreview = ({
                   justifyContent="center"
                   ml="20px"
                 >
-                  <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
-                  <Svg data-cy="answer-container" width={+width} height={+height}>
+                  <ImageContainer
+                    src={source}
+                    width={+width}
+                    height={+height}
+                    left={0}
+                    top={0}
+                  />
+                  <Svg
+                    data-cy="answer-container"
+                    width={+width}
+                    height={+height}
+                  >
                     {areas &&
                       areas.map((area, i) => (
                         <Polygon
                           key={i}
                           showAnswer={validAnswer.includes(i)}
                           onClick={() => {}}
-                          points={area.map(point => `${point.x},${point.y}`).join(" ")}
+                          points={area
+                            .map((point) => `${point.x},${point.y}`)
+                            .join(' ')}
                           selected={validAnswer.includes(i)}
                           correct
                           {...getStyles(i)}
@@ -144,7 +197,9 @@ const HotspotPreview = ({
               {altAnswers &&
                 altAnswers.map((altAnswer, i) => (
                   <CorrectAnswersContainer
-                    title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                    title={`${t('component.graphing.alternateAnswer')} ${
+                      i + 1
+                    }`}
                     padding="15px 25px 20px"
                     minHeight="auto"
                     titleMargin="0px 0px 12px"
@@ -157,15 +212,27 @@ const HotspotPreview = ({
                       justifyContent="center"
                       ml="20px"
                     >
-                      <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
-                      <Svg data-cy="answer-container" width={+width} height={+height}>
+                      <ImageContainer
+                        src={source}
+                        width={+width}
+                        height={+height}
+                        left={0}
+                        top={0}
+                      />
+                      <Svg
+                        data-cy="answer-container"
+                        width={+width}
+                        height={+height}
+                      >
                         {areas &&
                           areas.map((area, altIndex) => (
                             <Polygon
                               key={i}
                               showAnswer={altAnswer.value.includes(altIndex)}
                               onClick={() => {}}
-                              points={area.map(point => `${point.x},${point.y}`).join(" ")}
+                              points={area
+                                .map((point) => `${point.x},${point.y}`)
+                                .join(' ')}
                               selected={altAnswer.value.includes(altIndex)}
                               correct
                               {...getStyles(altIndex)}
@@ -175,17 +242,25 @@ const HotspotPreview = ({
                     </BlockContainer>
                   </CorrectAnswersContainer>
                 ))}
-            </Fragment>
+            </>
           )}
           {smallSize && (
             <BlockContainer width={320} height={170} justifyContent="center">
-              <ImageContainer src={source} width={320} height={170} left={0} top={0} />
+              <ImageContainer
+                src={source}
+                width={320}
+                height={170}
+                left={0}
+                top={0}
+              />
               <Svg data-cy="answer-container" width={320} height={170}>
                 {previewAreas.map((areaPreviewPoints, i) => (
                   <Polygon
                     key={i}
                     onClick={handleClick(i)}
-                    points={areaPreviewPoints.map(point => `${point.x},${point.y}`).join(" ")}
+                    points={areaPreviewPoints
+                      .map((point) => `${point.x},${point.y}`)
+                      .join(' ')}
                     fill={areaAttributes.global.fill}
                     stroke={areaAttributes.global.stroke}
                   />
@@ -196,8 +271,8 @@ const HotspotPreview = ({
         </QuestionContentWrapper>
       </FlexContainer>
     </StyledPaperWrapper>
-  );
-};
+  )
+}
 
 HotspotPreview.propTypes = {
   smallSize: PropTypes.bool,
@@ -210,8 +285,8 @@ HotspotPreview.propTypes = {
   disableResponse: PropTypes.bool,
   evaluation: PropTypes.array,
   changePreviewTab: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
 HotspotPreview.defaultProps = {
   previewTab: CLEAR,
@@ -219,7 +294,7 @@ HotspotPreview.defaultProps = {
   userAnswer: [],
   showQuestionNumber: false,
   disableResponse: false,
-  evaluation: []
-};
+  evaluation: [],
+}
 
-export default withNamespaces("assessment")(HotspotPreview);
+export default withNamespaces('assessment')(HotspotPreview)

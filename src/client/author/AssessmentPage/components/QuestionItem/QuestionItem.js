@@ -1,9 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { isArray, isUndefined, isNull, isEmpty, isObject, get, round } from "lodash";
-import { MathSpan, DragDrop } from "@edulastic/common";
-import { releaseGradeLabels } from "@edulastic/constants/const/test";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import {
+  isArray,
+  isUndefined,
+  isNull,
+  isEmpty,
+  isObject,
+  get,
+  round,
+} from 'lodash'
+import { MathSpan, DragDrop } from '@edulastic/common'
+import { releaseGradeLabels } from '@edulastic/constants/const/test'
 
 import {
   SHORT_TEXT,
@@ -11,17 +19,17 @@ import {
   CLOZE_DROP_DOWN,
   MATH,
   TRUE_OR_FALSE,
-  ESSAY_PLAIN_TEXT
-} from "@edulastic/constants/const/questionType";
-import { IconPencilEdit, IconCheck, IconClose } from "@edulastic/icons";
-import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
-import withAnswerSave from "../../../../assessment/components/HOC/withAnswerSave";
-import { saveUserResponse as saveUserResponseAction } from "../../../../assessment/actions/items";
-import FormChoice from "./components/FormChoice/FormChoice";
-import FormText from "./components/FormText/FormText";
-import FormDropdown from "./components/FormDropdown/FormDropdown";
-import FormMath from "./components/FormMath/FormMath";
-import FormEssay from "./components/FormEssay/FormEssay";
+  ESSAY_PLAIN_TEXT,
+} from '@edulastic/constants/const/questionType'
+import { IconPencilEdit, IconCheck, IconClose } from '@edulastic/icons'
+import { FeedbackByQIdSelector } from '../../../../student/sharedDucks/TestItem'
+import withAnswerSave from '../../../../assessment/components/HOC/withAnswerSave'
+import { saveUserResponse as saveUserResponseAction } from '../../../../assessment/actions/items'
+import FormChoice from './components/FormChoice/FormChoice'
+import FormText from './components/FormText/FormText'
+import FormDropdown from './components/FormDropdown/FormDropdown'
+import FormMath from './components/FormMath/FormMath'
+import FormEssay from './components/FormEssay/FormEssay'
 import {
   QuestionItemWrapper,
   QuestionNumber,
@@ -34,10 +42,10 @@ import {
   DetailContents,
   DetailContentsAlternate,
   ButtonWrapper,
-  DetailAlternateContainer
-} from "./styled";
+  DetailAlternateContainer,
+} from './styled'
 
-const { DragItem } = DragDrop;
+const { DragItem } = DragDrop
 
 class QuestionItem extends React.Component {
   static propTypes = {
@@ -52,133 +60,144 @@ class QuestionItem extends React.Component {
     previewMode: PropTypes.string.isRequired,
     viewMode: PropTypes.string.isRequired,
     highlighted: PropTypes.bool.isRequired,
-    answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
-  };
+    answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  }
 
   static defaultProps = {
     evaluation: undefined,
     userAnswer: undefined,
-    answer: undefined
-  };
+    answer: undefined,
+  }
 
   state = {
-    dragging: false
-  };
+    dragging: false,
+  }
 
-  itemRef = React.createRef();
+  itemRef = React.createRef()
 
-  qFormRef = React.createRef();
+  qFormRef = React.createRef()
 
   componentDidUpdate(prevProps) {
-    const { highlighted } = this.props;
-    const { highlighted: prevHighlighted } = prevProps;
-    if (highlighted && highlighted !== prevHighlighted && this.itemRef.current) {
-      this.itemRef.current.scrollIntoView({ behavior: "smooth" });
+    const { highlighted } = this.props
+    const { highlighted: prevHighlighted } = prevProps
+    if (
+      highlighted &&
+      highlighted !== prevHighlighted &&
+      this.itemRef.current
+    ) {
+      this.itemRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
   handleDragStart = () => {
-    const { onDragStart } = this.props;
-    this.setState({ dragging: true });
+    const { onDragStart } = this.props
+    this.setState({ dragging: true })
     if (onDragStart) {
-      onDragStart();
+      onDragStart()
     }
-  };
+  }
 
   handleDragEnd = () => {
-    const { setCurrentAnnotationTool } = this.props;
-    if (setCurrentAnnotationTool) setCurrentAnnotationTool("cursor");
-    this.setState({ dragging: false });
-  };
+    const { setCurrentAnnotationTool } = this.props
+    if (setCurrentAnnotationTool) setCurrentAnnotationTool('cursor')
+    this.setState({ dragging: false })
+  }
 
   renderMultipleChoiceAnswer = (value, options) => {
     const labels = value.reduce((result, current) => {
-      const option = options.find(o => o.value === current);
+      const option = options.find((o) => o.value === current)
 
-      if (!option) return result;
+      if (!option) return result
 
-      return [...result, option.label];
-    }, []);
+      return [...result, option.label]
+    }, [])
 
-    return labels.join(", ");
-  };
+    return labels.join(', ')
+  }
 
-  renderShortTextAnswer = value => value;
+  renderShortTextAnswer = (value) => value
 
-  renderDropDownAnswer = value => value?.[0]?.value && value[0].value;
+  renderDropDownAnswer = (value) => value?.[0]?.value && value[0].value
 
-  renderMathAnswer = value => (
+  renderMathAnswer = (value) => (
     <MathSpan
-      dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${value?.[0]?.value}"></span>` }}
+      dangerouslySetInnerHTML={{
+        __html: `<span class="input__math" data-latex="${value?.[0]?.value}"></span>`,
+      }}
     />
-  );
+  )
 
   renderCorrectAnswer = () => {
     const {
       data: {
         type,
         validation: {
-          validResponse: { value }
+          validResponse: { value },
         },
-        options
+        options,
       },
       evaluation,
-      previewMode
-    } = this.props;
+      previewMode,
+    } = this.props
 
     let allCorrect = isObject(evaluation)
-      ? !isEmpty(evaluation) && isArray(evaluation) && evaluation.filter(v => !isNull(v)).every(v => v)
-      : evaluation;
+      ? !isEmpty(evaluation) &&
+        isArray(evaluation) &&
+        evaluation.filter((v) => !isNull(v)).every((v) => v)
+      : evaluation
 
     if (type === CLOZE_DROP_DOWN) {
-      allCorrect = evaluation && evaluation["0"];
+      allCorrect = evaluation && evaluation['0']
     }
 
     if (type === ESSAY_PLAIN_TEXT) {
-      return null;
+      return null
     }
 
     /**
      * if the preview is not in show answer mode and answer is correct ,
      * no need to show correct answer
      */
-    if (previewMode !== "show" && allCorrect) {
-      return null;
+    if (previewMode !== 'show' && allCorrect) {
+      return null
     }
 
-    let answerRenderer;
+    let answerRenderer
 
     switch (type) {
       case MULTIPLE_CHOICE:
       case TRUE_OR_FALSE:
-        answerRenderer = this.renderMultipleChoiceAnswer;
-        break;
+        answerRenderer = this.renderMultipleChoiceAnswer
+        break
       case SHORT_TEXT:
-        answerRenderer = this.renderShortTextAnswer;
-        break;
+        answerRenderer = this.renderShortTextAnswer
+        break
       case CLOZE_DROP_DOWN:
-        answerRenderer = this.renderDropDownAnswer;
-        break;
+        answerRenderer = this.renderDropDownAnswer
+        break
       case MATH:
-        answerRenderer = this.renderMathAnswer;
-        break;
+        answerRenderer = this.renderMathAnswer
+        break
       default:
-        answerRenderer = () => {};
+        answerRenderer = () => {}
     }
 
-    const alternateResponses = this.props?.data?.validation?.altResponses || [];
-    let alternateResponsesDisplay = null;
+    const alternateResponses = this.props?.data?.validation?.altResponses || []
+    let alternateResponsesDisplay = null
     if (alternateResponses.length > 0) {
       alternateResponsesDisplay = (
         <DetailAlternateContainer>
           <DetailTitle>Alternate Answers:</DetailTitle>
           {alternateResponses.map((res, i) => (
             <DetailContentsAlternate>
-              {answerRenderer(res.value + (i === alternateResponses.length - 1 ? "" : ","), options)}
+              {answerRenderer(
+                res.value + (i === alternateResponses.length - 1 ? '' : ','),
+                options
+              )}
             </DetailContentsAlternate>
           ))}
         </DetailAlternateContainer>
-      );
+      )
     }
     return (
       <DetailsContainer>
@@ -186,11 +205,11 @@ class QuestionItem extends React.Component {
         <DetailContents>{answerRenderer(value, options)}</DetailContents>
         {alternateResponsesDisplay}
       </DetailsContainer>
-    );
-  };
+    )
+  }
 
   renderContent = (highlighted, boundingRect) => {
-    let { evaluation } = this.props;
+    let { evaluation } = this.props
     const {
       data,
       saveAnswer,
@@ -201,15 +220,17 @@ class QuestionItem extends React.Component {
       saveUserResponse,
       groupId,
       qId,
-      clearHighlighted
-    } = this.props;
+      clearHighlighted,
+    } = this.props
 
     if (!evaluation) {
-      evaluation = data?.activity?.evaluation;
+      evaluation = data?.activity?.evaluation
     }
 
     const saveQuestionResponse = () =>
-      qId >= 0 && groupId && saveUserResponse(qId, 0, false, groupId, { pausing: false });
+      qId >= 0 &&
+      groupId &&
+      saveUserResponse(qId, 0, false, groupId, { pausing: false })
 
     const props = {
       saveAnswer,
@@ -220,35 +241,42 @@ class QuestionItem extends React.Component {
       mode: viewMode,
       view: previewMode,
       highlighted,
-      boundingRect
-    };
+      boundingRect,
+    }
     switch (data.type) {
       case MULTIPLE_CHOICE:
         return (
           <FormChoice
-            isTrueOrFalse={data.subType === "trueOrFalse"}
+            isTrueOrFalse={data.subType === 'trueOrFalse'}
             onCreateOptions={onCreateOptions}
             evaluation={evaluation}
             {...props}
           />
-        );
+        )
       case SHORT_TEXT:
-        return <FormText onCreateAnswer={onCreateOptions} {...props} />;
+        return <FormText onCreateAnswer={onCreateOptions} {...props} />
       case CLOZE_DROP_DOWN:
-        return <FormDropdown {...props} />;
+        return <FormDropdown {...props} />
       case MATH:
-        return <FormMath {...props} />;
+        return <FormMath {...props} />
       case ESSAY_PLAIN_TEXT:
-        return <FormEssay {...props} />;
+        return <FormEssay {...props} />
       case TRUE_OR_FALSE:
-        return <FormChoice isTrueOrFalse onCreateOptions={onCreateOptions} evaluation={evaluation} {...props} />;
+        return (
+          <FormChoice
+            isTrueOrFalse
+            onCreateOptions={onCreateOptions}
+            evaluation={evaluation}
+            {...props}
+          />
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   renderEditButton = () => {
-    const { onOpenEdit, onDelete } = this.props;
+    const { onOpenEdit, onDelete } = this.props
     return (
       <EditButton>
         <ButtonWrapper>
@@ -258,40 +286,48 @@ class QuestionItem extends React.Component {
           <IconClose title="Delete" className="delete" />
         </ButtonWrapper>
       </EditButton>
-    );
-  };
+    )
+  }
 
-  getIndicatorFromEvaluation = evaluation => {
+  getIndicatorFromEvaluation = (evaluation) => {
     if (!isEmpty(evaluation)) {
       if (isArray(evaluation)) {
-        return evaluation.every(value => value);
+        return evaluation.every((value) => value)
       }
-      return Object.values(evaluation).every(value => value);
+      return Object.values(evaluation).every((value) => value)
     }
-    return false;
-  };
+    return false
+  }
 
-  renderAnswerIndicator = type => {
-    let { evaluation } = this.props;
+  renderAnswerIndicator = (type) => {
+    let { evaluation } = this.props
     if (!evaluation) {
-      evaluation = this.props?.data?.activity?.evaluation;
+      evaluation = this.props?.data?.activity?.evaluation
     }
     if (isUndefined(evaluation) || type === ESSAY_PLAIN_TEXT) {
-      return null;
+      return null
     }
 
-    let correct = isObject(evaluation) ? this.getIndicatorFromEvaluation(evaluation) : evaluation;
+    let correct = isObject(evaluation)
+      ? this.getIndicatorFromEvaluation(evaluation)
+      : evaluation
 
     if (type === CLOZE_DROP_DOWN) {
-      correct = evaluation && evaluation["0"];
+      correct = evaluation && evaluation['0']
     }
-    return <AnswerIndicator correct={correct}>{correct ? <IconCheck /> : <IconClose />}</AnswerIndicator>;
-  };
+    return (
+      <AnswerIndicator correct={correct}>
+        {correct ? <IconCheck /> : <IconClose />}
+      </AnswerIndicator>
+    )
+  }
 
-  renderComments = qId => {
-    const { feedback = {} } = this.props;
+  renderComments = (qId) => {
+    const { feedback = {} } = this.props
     const { feedback: teacherComments } =
-      this.props?.previousFeedback?.find(pf => pf.qid === qId) || feedback[qId] || {};
+      this.props?.previousFeedback?.find((pf) => pf.qid === qId) ||
+      feedback[qId] ||
+      {}
 
     return (
       !!teacherComments?.text && (
@@ -300,21 +336,32 @@ class QuestionItem extends React.Component {
           <DetailContents>{teacherComments.text}</DetailContents>
         </DetailsContainer>
       )
-    );
-  };
+    )
+  }
 
-  renderScore = qId => {
-    const { feedback = {}, previousFeedback = [], data } = this.props;
-    const maxScore = get(data, "validation.validResponse.score", 0);
+  renderScore = (qId) => {
+    const { feedback = {}, previousFeedback = [], data } = this.props
+    const maxScore = get(data, 'validation.validResponse.score', 0)
     const { feedback: teacherComments, graded, skipped } =
-      previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || data.activity || {};
+      previousFeedback.find((pf) => pf.qid === qId) ||
+      feedback[qId] ||
+      data.activity ||
+      {}
     const score =
-      previousFeedback.find(pf => pf.qid === qId)?.score || feedback[qId]?.score || data.activity?.score || 0;
+      previousFeedback.find((pf) => pf.qid === qId)?.score ||
+      feedback[qId]?.score ||
+      data.activity?.score ||
+      0
     return (
       <>
         <DetailsContainer>
           <DetailTitle>Score:</DetailTitle>
-          <DetailContents>{`${graded ? round(score, 2) : skipped ? 0 : " "}/${round(maxScore, 2)}`}</DetailContents>
+          <DetailContents>
+            {`${graded ? round(score, 2) : skipped ? 0 : ' '}/${round(
+              maxScore,
+              2
+            )}`}
+          </DetailContents>
         </DetailsContainer>
         {!!teacherComments?.text && (
           <DetailsContainer>
@@ -323,13 +370,13 @@ class QuestionItem extends React.Component {
           </DetailsContainer>
         )}
       </>
-    );
-  };
+    )
+  }
 
   render() {
-    const { dragging } = this.state;
+    const { dragging } = this.state
     if (!this.props?.data?.id) {
-      return null;
+      return null
     }
     const {
       data: { id, type } = {},
@@ -345,20 +392,26 @@ class QuestionItem extends React.Component {
       pdfPreview,
       annotations,
       reportActivity,
-      zoom
-    } = this.props;
+      zoom,
+    } = this.props
 
     const check =
-      viewMode === "report" || previewTab === "check" || typeof previousFeedback?.[0]?.score !== "undefined";
+      viewMode === 'report' ||
+      previewTab === 'check' ||
+      typeof previousFeedback?.[0]?.score !== 'undefined'
     const canShowAnswer = () => {
       if (reportActivity) {
         if (reportActivity?.releaseScore === releaseGradeLabels.WITH_ANSWERS) {
-          return true;
+          return true
         }
-      } else if (!pdfPreview && review && (previewMode === "show" || viewMode === "report")) {
-        return true;
+      } else if (
+        !pdfPreview &&
+        review &&
+        (previewMode === 'show' || viewMode === 'report')
+      ) {
+        return true
       }
-    };
+    }
 
     return (
       <QuestionItemWrapper
@@ -370,10 +423,15 @@ class QuestionItem extends React.Component {
         annotations={annotations}
         pdfPreview={pdfPreview}
       >
-        <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
-          <DragItem data={{ id, index: questionIndex }} disabled={review || testMode}>
+        <AnswerForm
+          style={{ justifyContent: review ? 'flex-start' : 'space-between' }}
+        >
+          <DragItem
+            data={{ id, index: questionIndex }}
+            disabled={review || testMode}
+          >
             <QuestionNumber
-              viewMode={viewMode === "edit"}
+              viewMode={viewMode === 'edit'}
               dragging={dragging}
               highlighted={highlighted}
               pdfPreview={pdfPreview}
@@ -384,33 +442,39 @@ class QuestionItem extends React.Component {
           </DragItem>
           {!annotations && (
             <QuestionForm review={review} ref={this.qFormRef}>
-              {this.renderContent(highlighted, this.qFormRef?.current?.getBoundingClientRect())}
+              {this.renderContent(
+                highlighted,
+                this.qFormRef?.current?.getBoundingClientRect()
+              )}
             </QuestionForm>
           )}
 
           {!review && !pdfPreview && !testMode && this.renderEditButton()}
           {review &&
             !annotations &&
-            (previewMode !== "clear" || check) &&
-            typeof answer !== "undefined" &&
+            (previewMode !== 'clear' || check) &&
+            typeof answer !== 'undefined' &&
             this.renderAnswerIndicator(type)}
         </AnswerForm>
         {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
-        {!pdfPreview && (check ? this.renderScore(id) : this.renderComments(id))}
+        {!pdfPreview &&
+          (check ? this.renderScore(id) : this.renderComments(id))}
       </QuestionItemWrapper>
-    );
+    )
   }
 }
 
 export default withAnswerSave(
   connect(
-    state => ({
+    (state) => ({
       previousFeedback: Object.values(state?.previousQuestionActivity || {})[0],
       feedback: FeedbackByQIdSelector(state),
-      reportActivity: isEmpty(state.studentReport?.testActivity) ? false : state.studentReport?.testActivity
+      reportActivity: isEmpty(state.studentReport?.testActivity)
+        ? false
+        : state.studentReport?.testActivity,
     }),
     {
-      saveUserResponse: saveUserResponseAction
+      saveUserResponse: saveUserResponseAction,
     }
   )(QuestionItem)
-);
+)

@@ -1,33 +1,33 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import produce from "immer";
-import { v4 } from "uuid";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import produce from 'immer'
+import { v4 } from 'uuid'
 
-import { withNamespaces } from "@edulastic/localization";
-import { Button, FroalaEditor } from "@edulastic/common";
-import { IconTrash } from "@edulastic/icons";
-import { red, secondaryTextColor, white } from "@edulastic/colors";
-import { FroalaInput } from "./styled";
+import { withNamespaces } from '@edulastic/localization'
+import { Button, FroalaEditor } from '@edulastic/common'
+import { IconTrash } from '@edulastic/icons'
+import { red, secondaryTextColor, white } from '@edulastic/colors'
+import { FroalaInput } from './styled'
 
 class Annotations extends Component {
   state = {
-    newAnnotation: ""
-  };
+    newAnnotation: '',
+  }
 
   handleAddAnnotation = () => {
-    const { newAnnotation } = this.state;
-    const { item, setQuestionData } = this.props;
+    const { newAnnotation } = this.state
+    const { item, setQuestionData } = this.props
 
     if (!newAnnotation) {
-      return;
+      return
     }
-    this.setState({ newAnnotation: "" });
+    this.setState({ newAnnotation: '' })
 
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (!draft.annotations) {
-          draft.annotations = [];
+          draft.annotations = []
         }
         draft.annotations.push({
           id: v4(),
@@ -35,60 +35,63 @@ class Annotations extends Component {
           position: { x: draft.annotations.length * 50, y: 0 },
           size: {
             width: 120,
-            height: 80
-          }
-        });
+            height: 80,
+          },
+        })
       })
-    );
-  };
+    )
+  }
 
-  handleDeleteAnnotation = index => () => {
-    const { item, setQuestionData } = this.props;
+  handleDeleteAnnotation = (index) => () => {
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.annotations.splice(index, 1);
+      produce(item, (draft) => {
+        draft.annotations.splice(index, 1)
       })
-    );
-  };
+    )
+  }
 
   handleInput = (value, index = null) => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
 
     if (index === null) {
-      this.setState({ newAnnotation: value });
+      this.setState({ newAnnotation: value })
     } else if (item.annotations && item.annotations[index]) {
       setQuestionData(
-        produce(item, draft => {
-          draft.annotations[index].value = value;
+        produce(item, (draft) => {
+          draft.annotations[index].value = value
         })
-      );
+      )
     }
-  };
+  }
 
   render() {
-    const { t, item } = this.props;
-    const { newAnnotation } = this.state;
-    const { annotations = [] } = item;
+    const { t, item } = this.props
+    const { newAnnotation } = this.state
+    const { annotations = [] } = item
     const btnStyles = {
-      height: "40px",
-      minWidth: "40px",
-      maxWidth: "40px",
-      marginLeft: "5px",
-      borderRadius: "4px",
-      padding: "5px"
-    };
+      height: '40px',
+      minWidth: '40px',
+      maxWidth: '40px',
+      marginLeft: '5px',
+      borderRadius: '4px',
+      padding: '5px',
+    }
 
     return (
       <Container>
         {annotations.map((an, index) => (
-          <Wrapper key={`annotation-wrapper-${index}`} style={{ marginBottom: "7px" }}>
-            <FroalaInput style={{ width: "205px" }}>
+          <Wrapper
+            key={`annotation-wrapper-${index}`}
+            style={{ marginBottom: '7px' }}
+          >
+            <FroalaInput style={{ width: '205px' }}>
               <FroalaEditor
                 value={an.value}
-                onChange={val => this.handleInput(val, index)}
+                onChange={(val) => this.handleInput(val, index)}
                 toolbarInline
                 toolbarVisibleWithoutSelection
-                config={{ placeholder: "" }}
+                config={{ placeholder: '' }}
               />
             </FroalaInput>
             <Button
@@ -101,46 +104,46 @@ class Annotations extends Component {
           </Wrapper>
         ))}
         <Wrapper key="annotation-wrapper-add">
-          <FroalaInput style={{ width: "160px" }}>
+          <FroalaInput style={{ width: '160px' }}>
             <FroalaEditor
               value={newAnnotation}
-              onChange={val => this.handleInput(val)}
-              style={{ height: "40px", width: "160px" }}
+              onChange={(val) => this.handleInput(val)}
+              style={{ height: '40px', width: '160px' }}
               toolbarInline
               toolbarVisibleWithoutSelection
-              config={{ placeholder: "" }}
+              config={{ placeholder: '' }}
             />
           </FroalaInput>
           <Button
             key="an-add"
-            style={{ ...btnStyles, minWidth: "85px", maxWidth: "85px" }}
+            style={{ ...btnStyles, minWidth: '85px', maxWidth: '85px' }}
             onClick={this.handleAddAnnotation}
             color="primary"
           >
-            {t("component.graphing.settingsPopup.addText")}
+            {t('component.graphing.settingsPopup.addText')}
           </Button>
         </Wrapper>
       </Container>
-    );
+    )
   }
 }
 
 Annotations.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
-};
+  item: PropTypes.object.isRequired,
+}
 
-export default withNamespaces("assessment")(Annotations);
+export default withNamespaces('assessment')(Annotations)
 
 const Container = styled.div`
   padding: 12px 17px;
   color: ${secondaryTextColor};
-`;
+`
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-`;
+`

@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React, { useContext, useState } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 import {
   Stimulus,
@@ -11,15 +11,15 @@ import {
   AnswerContext,
   QuestionSubLabel,
   QuestionLabelWrapper,
-  QuestionContentWrapper
-} from "@edulastic/common";
-import { isEmpty } from "lodash";
-import { white, lightGrey12, greyThemeDark4 } from "@edulastic/colors";
-import Instructions from "../../../components/Instructions";
-import { QuestionTitleWrapper } from "../styled/QustionNumber";
-import { StyledPaperWrapper } from "../../../styled/Widget";
-import FilesView from "./FilesView";
-import Uploader from "./Uploader";
+  QuestionContentWrapper,
+} from '@edulastic/common'
+import { isEmpty } from 'lodash'
+import { white, lightGrey12, greyThemeDark4 } from '@edulastic/colors'
+import Instructions from '../../../components/Instructions'
+import { QuestionTitleWrapper } from '../styled/QustionNumber'
+import { StyledPaperWrapper } from '../../../styled/Widget'
+import FilesView from './FilesView'
+import Uploader from './Uploader'
 
 const UploadFilePreview = ({
   saveAnswer,
@@ -29,40 +29,44 @@ const UploadFilePreview = ({
   disableResponse,
   showQuestionNumber,
   saveAttachments,
-  attachments
+  attachments,
 }) => {
-  const answerContextConfig = useContext(AnswerContext);
-  const [localAttachments, setLocalAttachment] = useState([]);
-  const handleTextChange = comment => {
-    saveAnswer(comment);
-  };
+  const answerContextConfig = useContext(AnswerContext)
+  const [localAttachments, setLocalAttachment] = useState([])
+  const handleTextChange = (comment) => {
+    saveAnswer(comment)
+  }
 
-  const uploadFinished = files => {
+  const uploadFinished = (files) => {
     if (saveAttachments) {
-      saveAttachments([...(attachments || []), ...files]);
+      saveAttachments([...(attachments || []), ...files])
     } else {
-      setLocalAttachment([...(localAttachments || []), ...files]);
+      setLocalAttachment([...(localAttachments || []), ...files])
     }
-  };
+  }
 
-  const deleteAttachment = index => {
+  const deleteAttachment = (index) => {
     if (saveAttachments) {
-      saveAttachments((attachments || []).filter((_, i) => i !== index));
+      saveAttachments((attachments || []).filter((_, i) => i !== index))
     } else {
-      setLocalAttachment((localAttachments || []).filter((_, i) => i !== index));
+      setLocalAttachment((localAttachments || []).filter((_, i) => i !== index))
     }
-  };
+  }
 
   // if answerContextConfig comes from LCB/EG pages
-  const isReadOnly = !answerContextConfig.isAnswerModifiable || disableResponse;
-  const text = Array.isArray(userAnswer) ? "" : userAnswer || "";
+  const isReadOnly = !answerContextConfig.isAnswerModifiable || disableResponse
+  const text = Array.isArray(userAnswer) ? '' : userAnswer || ''
 
   return (
-    <StyledPaperWrapper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
         <QuestionLabelWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          {showQuestionNumber && (
+            <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+          )}
+          {item.qSubLabel && (
+            <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+          )}
         </QuestionLabelWrapper>
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
@@ -91,13 +95,15 @@ const UploadFilePreview = ({
             <FlexContainer alignItems="flex-start" justifyContent="flex-start">
               <MathFormulaDisplay
                 dangerouslySetInnerHTML={{
-                  __html: text || ""
+                  __html: text || '',
                 }}
               />
             </FlexContainer>
           )}
 
-          {!isReadOnly && <Uploader onCompleted={uploadFinished} mt="26px" item={item} />}
+          {!isReadOnly && (
+            <Uploader onCompleted={uploadFinished} mt="26px" item={item} />
+          )}
 
           <SubTitle>Attachments</SubTitle>
           {(!isEmpty(attachments) || !isEmpty(localAttachments)) && (
@@ -114,23 +120,23 @@ const UploadFilePreview = ({
         </QuestionContentWrapper>
       </FlexContainer>
     </StyledPaperWrapper>
-  );
-};
+  )
+}
 
 UploadFilePreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
-  showQuestionNumber: PropTypes.bool
-};
+  showQuestionNumber: PropTypes.bool,
+}
 
 UploadFilePreview.defaultProps = {
   smallSize: false,
-  showQuestionNumber: false
-};
+  showQuestionNumber: false,
+}
 
-export default UploadFilePreview;
+export default UploadFilePreview
 
 const FroalaEditorContainer = styled.div`
   width: 100%;
@@ -143,7 +149,7 @@ const FroalaEditorContainer = styled.div`
     border: 1px solid ${lightGrey12};
   }
   .fr-box.fr-basic .fr-element {
-    font-size: ${props => props.theme.fontSize};
+    font-size: ${(props) => props.theme.fontSize};
   }
   .fr-toolbar {
     border-radius: 4px 4px 0 0;
@@ -157,21 +163,22 @@ const FroalaEditorContainer = styled.div`
 
   .fr-box .fr-counter,
   .fr-box.fr-basic .fr-element {
-    color: ${props => props.theme.widgets.essayRichText.toolbarColor};
+    color: ${(props) => props.theme.widgets.essayRichText.toolbarColor};
   }
 
   .fr-box.fr-basic .fr-wrapper {
-    background: ${props => props.theme.widgets.essayRichText.textInputBgColor};
+    background: ${(props) =>
+      props.theme.widgets.essayRichText.textInputBgColor};
   }
 
   .fr-toolbar .fr-command.fr-btn svg path {
-    fill: ${props => props.theme.widgets.essayRichText.toolbarColor};
+    fill: ${(props) => props.theme.widgets.essayRichText.toolbarColor};
   }
-`;
+`
 
 const SubTitle = styled.div`
   margin-top: 28px;
   font-size: 13px;
   font-weight: 600;
   color: ${greyThemeDark4};
-`;
+`

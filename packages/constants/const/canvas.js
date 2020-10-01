@@ -1,1 +1,1 @@
-module.exports = { maxWidth: 900, maxHeight: 470 };
+module.exports = { maxWidth: 900, maxHeight: 470 }

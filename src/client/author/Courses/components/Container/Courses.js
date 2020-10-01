@@ -1,34 +1,41 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
 
 import {
   MainWrapper,
   StyledContent,
   StyledLayout,
   SpinContainer,
-  StyledSpin
-} from "../../../../admin/Common/StyledComponents";
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
 
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 
-import CoursesTable from "../CoursesTable/CoursesTable";
+import CoursesTable from '../CoursesTable/CoursesTable'
 
-const title = "Manage District";
-const menuActive = { mainMenu: "Courses", subMenu: "" };
+const title = 'Manage District'
+const menuActive = { mainMenu: 'Courses', subMenu: '' }
 
 class Courses extends Component {
   render() {
-    const { loading, updating, deleting, creating, uploadingCSV, history } = this.props;
-    const showSpin = loading || updating || deleting || creating || uploadingCSV;
+    const {
+      loading,
+      updating,
+      deleting,
+      creating,
+      uploadingCSV,
+      history,
+    } = this.props
+    const showSpin = loading || updating || deleting || creating || uploadingCSV
 
     return (
       <MainWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
-          <StyledLayout loading={showSpin ? "true" : "false"}>
+          <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />
@@ -38,25 +45,25 @@ class Courses extends Component {
           </StyledLayout>
         </StyledContent>
       </MainWrapper>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  connect(state => ({
-    loading: get(state, ["coursesReducer", "loading"], false),
-    updating: get(state, ["coursesReducer", "updating"], false),
-    creating: get(state, ["coursesReducer", "creating"], false),
-    deleting: get(state, ["coursesReducer", "deleting"], false),
-    uploadingCSV: get(state, ["coursesReducer", "uploadingCSV"], false)
+  connect((state) => ({
+    loading: get(state, ['coursesReducer', 'loading'], false),
+    updating: get(state, ['coursesReducer', 'updating'], false),
+    creating: get(state, ['coursesReducer', 'creating'], false),
+    deleting: get(state, ['coursesReducer', 'deleting'], false),
+    uploadingCSV: get(state, ['coursesReducer', 'uploadingCSV'], false),
   }))
-);
+)
 
-export default enhance(Courses);
+export default enhance(Courses)
 
 Courses.propTypes = {
   creating: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
-  deleting: PropTypes.bool.isRequired
-};
+  deleting: PropTypes.bool.isRequired,
+}

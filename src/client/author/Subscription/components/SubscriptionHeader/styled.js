@@ -1,11 +1,11 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import {
   themeColor,
   white,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
-import { Button } from "antd";
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
+import { Button } from 'antd'
 
 export const Title = styled.h1`
   color: white;
@@ -13,7 +13,7 @@ export const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
-`;
+`
 
 export const HeaderWrapper = styled.div`
   background: ${({ theme }) => theme.headerBgColor || themeColor};
@@ -30,13 +30,13 @@ export const HeaderWrapper = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${({ theme }) => theme.HeaderHeight.xl}px;
   }
-`;
+`
 
 export const ActionBtnWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
+`
 
 export const HeaderActionBtn = styled(Button)`
   width: ${({ width }) => width};
@@ -56,4 +56,4 @@ export const HeaderActionBtn = styled(Button)`
     color: ${white};
     border-color: ${themeColor};
   }
-`;
+`

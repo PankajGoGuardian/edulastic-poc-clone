@@ -1,9 +1,13 @@
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconFeedback = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.357 18.251" {...props}>
+const IconFeedback = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 16.357 18.251"
+    {...props}
+  >
     <g transform="translate(-26.57)">
       <g transform="translate(26.57)">
         <g transform="translate(0)">
@@ -31,6 +35,6 @@ const IconFeedback = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconFeedback);
+export default withIconStyles(IconFeedback)

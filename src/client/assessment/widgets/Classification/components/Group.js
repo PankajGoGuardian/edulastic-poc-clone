@@ -1,20 +1,20 @@
-import React, { Fragment } from "react";
-import { Input } from "antd";
-import PropTypes from "prop-types";
-import { withTheme } from "styled-components";
+import React, { Fragment } from 'react'
+import { Input } from 'antd'
+import PropTypes from 'prop-types'
+import { withTheme } from 'styled-components'
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer } from '@edulastic/common'
 
-import { Subtitle } from "../../../styled/Subtitle";
-import withAddButton from "../../../components/HOC/withAddButton";
-import QuillSortableList from "../../../components/QuillSortableList";
+import { Subtitle } from '../../../styled/Subtitle'
+import withAddButton from '../../../components/HOC/withAddButton'
+import QuillSortableList from '../../../components/QuillSortableList'
 
-import { IconTrash } from "../styled/IconTrash";
-import { TextInputStyled } from "../../../styled/InputStyles";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
+import { IconTrash } from '../styled/IconTrash'
+import { TextInputStyled } from '../../../styled/InputStyles'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
 
-const List = withAddButton(QuillSortableList);
+const List = withAddButton(QuillSortableList)
 
 const Group = ({
   item,
@@ -29,11 +29,17 @@ const Group = ({
   onRemoveInner,
   firstFocus,
   prefix,
-  theme
+  theme,
 }) => (
-  <Fragment>
-    <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
-      <Subtitle margin="20px 0px 0px">{`${groupHeadText}${index + 1}`}</Subtitle>
+  <>
+    <FlexContainer
+      alignItems="baseline"
+      justifyContent="space-between"
+      style={{ width: '100%' }}
+    >
+      <Subtitle margin="20px 0px 0px">
+        {`${groupHeadText}${index + 1}`}
+      </Subtitle>
       <IconTrash onClick={onRemove(index)} />
     </FlexContainer>
     <Subtitle
@@ -45,7 +51,11 @@ const Group = ({
     </Subtitle>
     <Row gutter={24}>
       <Col span={24}>
-        <TextInputStyled size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
+        <TextInputStyled
+          size="large"
+          value={item.title}
+          onChange={(e) => onTitleChange(index, e.target.value)}
+        />
       </Col>
       <Col span={24} data-cy="group-choices">
         <List
@@ -61,8 +71,8 @@ const Group = ({
         />
       </Col>
     </Row>
-  </Fragment>
-);
+  </>
+)
 
 Group.propTypes = {
   item: PropTypes.object.isRequired,
@@ -77,7 +87,7 @@ Group.propTypes = {
   groupHeadText: PropTypes.string.isRequired,
   onRemoveInner: PropTypes.func.isRequired,
   prefix: PropTypes.string.isRequired,
-  theme: PropTypes.object.isRequired
-};
+  theme: PropTypes.object.isRequired,
+}
 
-export default withTheme(Group);
+export default withTheme(Group)

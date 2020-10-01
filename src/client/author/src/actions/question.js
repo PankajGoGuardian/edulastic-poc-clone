@@ -5,68 +5,68 @@ import {
   SET_QUESTION_ALIGNMENT_ADD_ROW,
   SET_QUESTION_ALIGNMENT_REMOVE_ROW,
   SET_QUESTION,
-  LOAD_QUESTION
-} from "../constants/actions";
+  LOAD_QUESTION,
+} from '../constants/actions'
 import {
   UPDATE_QUESTION,
   SET_FIRST_MOUNT,
   CHANGE_ITEM,
   CHANGE_ITEM_UI_STYLE,
-  CHANGE_LABEL
-} from "../../sharedDucks/questions";
+  CHANGE_LABEL,
+} from '../../sharedDucks/questions'
 
-export const receiveQuestionByIdAction = id => ({
+export const receiveQuestionByIdAction = (id) => ({
   type: RECEIVE_QUESTION_REQUEST,
   payload: {
-    id
-  }
-});
+    id,
+  },
+})
 
 export const saveQuestionAction = () => ({
-  type: SAVE_QUESTION_REQUEST
-});
+  type: SAVE_QUESTION_REQUEST,
+})
 
-export const changeLabelAction = value => ({
+export const changeLabelAction = (value) => ({
   type: CHANGE_LABEL,
-  payload: value
-});
+  payload: value,
+})
 
-export const setQuestionDataAction = question => ({
+export const setQuestionDataAction = (question) => ({
   type: UPDATE_QUESTION,
-  payload: question
-});
+  payload: question,
+})
 
 export const changeItemAction = (prop, value) => ({
   type: CHANGE_ITEM,
-  payload: { prop, value }
-});
+  payload: { prop, value },
+})
 
 export const changeUIStyleAction = (prop, value) => ({
   type: CHANGE_ITEM_UI_STYLE,
-  payload: { prop, value }
-});
+  payload: { prop, value },
+})
 
-export const setFirstMountAction = id => ({
+export const setFirstMountAction = (id) => ({
   type: SET_FIRST_MOUNT,
-  id
-});
+  id,
+})
 
-export const setQuestionAlignmentAddRowAction = alignmentRow => ({
+export const setQuestionAlignmentAddRowAction = (alignmentRow) => ({
   type: SET_QUESTION_ALIGNMENT_ADD_ROW,
-  payload: { alignmentRow }
-});
+  payload: { alignmentRow },
+})
 
-export const setQuestionAlignmentRemoveRowAction = index => ({
+export const setQuestionAlignmentRemoveRowAction = (index) => ({
   type: SET_QUESTION_ALIGNMENT_REMOVE_ROW,
-  payload: { index }
-});
+  payload: { index },
+})
 
-export const setQuestionAction = data => ({
+export const setQuestionAction = (data) => ({
   type: SET_QUESTION,
-  payload: { data }
-});
+  payload: { data },
+})
 
 export const loadQuestionAction = (data, rowIndex) => ({
   type: LOAD_QUESTION,
-  payload: { data, rowIndex }
-});
+  payload: { data, rowIndex },
+})

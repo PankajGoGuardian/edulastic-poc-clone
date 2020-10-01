@@ -1,11 +1,11 @@
-import React from "react";
-import { Form, Icon, Radio, Button, message, Row } from "antd";
-import { EduButton, notification, RadioBtn } from "@edulastic/common";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
+import React from 'react'
+import { Form, Icon, Radio, Button, message, Row } from 'antd'
+import { EduButton, notification, RadioBtn } from '@edulastic/common'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
 
-import StandardsProficiencyEditableCell from "./StandardsProficiencyEditableCell/StandardsProficiencyEditableCell";
+import StandardsProficiencyEditableCell from './StandardsProficiencyEditableCell/StandardsProficiencyEditableCell'
 
 import {
   StyledTableContainer,
@@ -26,9 +26,9 @@ import {
   StyledLabel,
   StyledScoreDiv,
   InputOption,
-  RadioWrap
-} from "./styled";
-import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
+  RadioWrap,
+} from './styled'
+import { ScoreColorSpan } from './StandardsProficiencyEditableCell/styled'
 
 import {
   updateStandardsProficiencyAction,
@@ -36,186 +36,208 @@ import {
   setScaleDataAction,
   setCalcTypeAction,
   setDecayingAttrValueAction,
-  setMovingAttrValueAction
-} from "../../ducks";
+  setMovingAttrValueAction,
+} from '../../ducks'
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId } from '../../../src/selectors/user'
 
-const EditableContext = React.createContext();
+const EditableContext = React.createContext()
 
 class StandardsProficiencyTable extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      editingKey: "",
+      editingKey: '',
       isAdding: false,
-      isChangeState: false
-    };
+      isChangeState: false,
+    }
   }
 
-  setChanged = v => this.setState({ isChangeState: v });
+  setChanged = (v) => this.setState({ isChangeState: v })
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       data: nextProps.standardsProficiency,
       calcType: nextProps.calcType,
       calcDecayingAttr: nextProps.calcDecayingAttr,
-      calcMovingAvrAttr: nextProps.calcMovingAvrAttr
-    };
+      calcMovingAvrAttr: nextProps.calcMovingAvrAttr,
+    }
   }
 
-  isEditing = record => record.key === this.state.editingKey;
+  isEditing = (record) => record.key === this.state.editingKey
 
-  cancel = key => {
-    if (this.state.isAdding) this.handleDelete(key);
-    this.setState({ editingKey: "", isAdding: false });
-  };
+  cancel = (key) => {
+    if (this.state.isAdding) this.handleDelete(key)
+    this.setState({ editingKey: '', isAdding: false })
+  }
 
   save = (form, key) => {
     form.validateFields((error, row) => {
       if (error) {
-        return;
+        return
       }
-      const newData = [...this.state.data];
-      const index = newData.findIndex(item => key === item.key);
+      const newData = [...this.state.data]
+      const index = newData.findIndex((item) => key === item.key)
       if (index > -1) {
-        const item = newData[index];
+        const item = newData[index]
         newData.splice(index, 1, {
           ...item,
-          ...row
-        });
+          ...row,
+        })
       } else {
-        newData.push(row);
+        newData.push(row)
       }
-      this.setState({ editingKey: "", isAdding: false, isChangeState: true });
-      this.props.setScaleData({ data: newData, _id: this.props._id });
-    });
-  };
+      this.setState({ editingKey: '', isAdding: false, isChangeState: true })
+      this.props.setScaleData({ data: newData, _id: this.props._id })
+    })
+  }
 
-  edit = key => {
-    this.setState({ editingKey: key });
-  };
+  edit = (key) => {
+    this.setState({ editingKey: key })
+  }
 
   handleAdd = () => {
-    const { data, editingKey } = this.state;
+    const { data, editingKey } = this.state
     if (data.length >= 5) {
-      notification({ messageKey: "maximumFiveLevels" });
-      return;
+      notification({ messageKey: 'maximumFiveLevels' })
+      return
     }
 
-    if (editingKey !== "") return;
+    if (editingKey !== '') return
 
     const newData = {
       key: data[data.length - 1].key + 1,
       score: 1,
-      masteryLevel: "Proficiency 1",
-      shortName: "P1",
+      masteryLevel: 'Proficiency 1',
+      shortName: 'P1',
       threshold: 0,
-      color: "#a1c3ea"
-    };
+      color: '#a1c3ea',
+    }
 
-    data.map(row => {
-      row.score += 1;
-    });
+    data.map((row) => {
+      row.score += 1
+    })
 
-    data[data.length - 1].threshold = data[data.length - 2].threshold > 10 ? data[data.length - 2].threshold - 10 : 0;
+    data[data.length - 1].threshold =
+      data[data.length - 2].threshold > 10
+        ? data[data.length - 2].threshold - 10
+        : 0
 
     this.setState({
       editingKey: data.length,
       isChangeState: true,
-      isAdding: true
-    });
-    this.props.setScaleData({ data: [...data, newData], _id: this.props._id });
-  };
+      isAdding: true,
+    })
+    this.props.setScaleData({ data: [...data, newData], _id: this.props._id })
+  }
 
-  handleDelete = key => {
-    const data = [...this.state.data];
+  handleDelete = (key) => {
+    const data = [...this.state.data]
     if (data.length <= 3) {
-      notification({ messageKey: "minimumThreeLevel" });
-      return;
+      notification({ messageKey: 'minimumThreeLevel' })
+      return
     }
-    const newData = data.filter(item => item.key !== key);
+    const newData = data.filter((item) => item.key !== key)
     newData.map((row, nIndex) => {
-      row.score = newData.length - nIndex;
-      if (newData.length - 1 == nIndex) row.threshold = 0;
-    });
+      row.score = newData.length - nIndex
+      if (newData.length - 1 == nIndex) row.threshold = 0
+    })
 
-    this.setState({ isChangeState: true });
-    this.props.setScaleData({ data: newData, _id: this.props._id });
-  };
+    this.setState({ isChangeState: true })
+    this.props.setScaleData({ data: newData, _id: this.props._id })
+  }
 
-  changeCalcType = e => {
-    this.setState({ isChangeState: true });
-    this.props.setCalcType({ data: e.target.value, _id: this.props._id });
-  };
+  changeCalcType = (e) => {
+    this.setState({ isChangeState: true })
+    this.props.setCalcType({ data: e.target.value, _id: this.props._id })
+  }
 
-  saveScale = e => {
-    if (this.state.isAdding) return;
-    const dataSource = [];
-    const { data, calcType } = this.state;
-    const { standardsProficiencyID, userOrgId } = this.props;
+  saveScale = (e) => {
+    if (this.state.isAdding) return
+    const dataSource = []
+    const { data, calcType } = this.state
+    const { standardsProficiencyID, userOrgId } = this.props
 
-    data.map(row => {
+    data.map((row) => {
       dataSource.push({
         score: row.score,
         masteryLevel: row.masteryLevel,
         shortName: row.shortName,
         threshold: row.threshold,
-        color: row.color
-      });
-    });
+        color: row.color,
+      })
+    })
 
     const updateData = {
       orgId: userOrgId,
       scale: dataSource,
       calcType,
-      orgType: "district"
-    };
-    if (calcType === "DECAYING_AVERAGE") {
-      const calcDecayingAttr = this.state.calcDecayingAttr || this.props.decay;
+      orgType: 'district',
+    }
+    if (calcType === 'DECAYING_AVERAGE') {
+      const calcDecayingAttr = this.state.calcDecayingAttr || this.props.decay
       if (!calcDecayingAttr && calcDecayingAttr !== 0) {
-        return notification({ messageKey: "DecayError" });
+        return notification({ messageKey: 'DecayError' })
       }
-      updateData.calcAttribute = calcDecayingAttr;
-      updateData.decay = calcDecayingAttr;
-    } else if (calcType === "MOVING_AVERAGE") {
-      const { calcMovingAvrAttr } = this.state;
-      updateData.calcAttribute = calcMovingAvrAttr || this.props.noOfAssessments;
-      updateData.noOfAssessments = calcMovingAvrAttr || this.props.noOfAssessments;
+      updateData.calcAttribute = calcDecayingAttr
+      updateData.decay = calcDecayingAttr
+    } else if (calcType === 'MOVING_AVERAGE') {
+      const { calcMovingAvrAttr } = this.state
+      updateData.calcAttribute = calcMovingAvrAttr || this.props.noOfAssessments
+      updateData.noOfAssessments =
+        calcMovingAvrAttr || this.props.noOfAssessments
     } else {
-      updateData.calcAttribute = 0;
+      updateData.calcAttribute = 0
     }
 
-    this.setState({ isChangeState: false });
-    if (standardsProficiencyID.length == 0) this.props.createStandardProficiency(updateData);
-    else this.props.updateStandardsProficiency({ ...updateData, _id: this.props._id, name: this.props.name });
-  };
+    this.setState({ isChangeState: false })
+    if (standardsProficiencyID.length == 0)
+      this.props.createStandardProficiency(updateData)
+    else
+      this.props.updateStandardsProficiency({
+        ...updateData,
+        _id: this.props._id,
+        name: this.props.name,
+      })
+  }
 
   onChangeCalcAttr = (e, keyName) => {
-    const { value } = e.target;
-    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
-    if ((!Number.isNaN(value) && reg.test(value)) || value === "" || value === "-") {
-      if (keyName === "DECAYING_AVERAGE") this.props.setDecayingAttrValue({ data: value, _id: this.props._id });
-      else if (keyName === "MOVING_AVERAGE") this.props.setMovingAttrValue({ data: value, _id: this.props._id });
-      this.setState({ isChangeState: true });
+    const { value } = e.target
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/
+    if (
+      (!Number.isNaN(value) && reg.test(value)) ||
+      value === '' ||
+      value === '-'
+    ) {
+      if (keyName === 'DECAYING_AVERAGE')
+        this.props.setDecayingAttrValue({ data: value, _id: this.props._id })
+      else if (keyName === 'MOVING_AVERAGE')
+        this.props.setMovingAttrValue({ data: value, _id: this.props._id })
+      this.setState({ isChangeState: true })
     }
-  };
+  }
 
   render() {
-    const { isChangeState, calcType, calcDecayingAttr, calcMovingAvrAttr, data } = this.state;
-    const { standardsProficiencyID } = this.props;
+    const {
+      isChangeState,
+      calcType,
+      calcDecayingAttr,
+      calcMovingAvrAttr,
+      data,
+    } = this.state
+    const { standardsProficiencyID } = this.props
 
     const components = {
       body: {
-        cell: StandardsProficiencyEditableCell
-      }
-    };
+        cell: StandardsProficiencyEditableCell,
+      },
+    }
     this.columns = [
       {
-        title: "Score",
-        dataIndex: "color",
-        width: "15%",
+        title: 'Score',
+        dataIndex: 'color',
+        width: '15%',
         editable: true,
         render: (text, record) => (
           <StyledScoreDiv>
@@ -223,26 +245,26 @@ class StandardsProficiencyTable extends React.Component {
             <Icon type="down" />
             {record.score}
           </StyledScoreDiv>
-        )
+        ),
       },
       {
-        title: "Mastery Level",
-        dataIndex: "masteryLevel",
-        width: "20%",
-        editable: true
-      },
-      {
-        title: "Short Name",
-        dataIndex: "shortName",
-        width: "25%",
-        editable: true
-      },
-      {
-        title: "Performance Threshold",
-        dataIndex: "threshold",
-        width: "25%",
+        title: 'Mastery Level',
+        dataIndex: 'masteryLevel',
+        width: '20%',
         editable: true,
-        render: text => <React.Fragment>{text}%</React.Fragment>
+      },
+      {
+        title: 'Short Name',
+        dataIndex: 'shortName',
+        width: '25%',
+        editable: true,
+      },
+      {
+        title: 'Performance Threshold',
+        dataIndex: 'threshold',
+        width: '25%',
+        editable: true,
+        render: (text) => <>{text}%</>,
       },
       {
         title: this.props.readOnly ? null : (
@@ -250,17 +272,21 @@ class StandardsProficiencyTable extends React.Component {
             ADD LEVEL
           </StyledAddButton>
         ),
-        dataIndex: "operation",
+        dataIndex: 'operation',
         render: (text, record) => {
-          const { editingKey } = this.state;
-          const editable = this.isEditing(record);
+          const { editingKey } = this.state
+          const editable = this.isEditing(record)
           return (
             <div>
               {editable ? (
                 <span>
                   <EditableContext.Consumer>
-                    {form => (
-                      <a href="javascript:;" onClick={() => this.save(form, record.key)} style={{ marginRight: 8 }}>
+                    {(form) => (
+                      <a
+                        href="javascript:;"
+                        onClick={() => this.save(form, record.key)}
+                        style={{ marginRight: 8 }}
+                      >
                         Save
                       </a>
                     )}
@@ -268,42 +294,46 @@ class StandardsProficiencyTable extends React.Component {
                   <a onClick={() => this.cancel(record.key)}>Cancel</a>
                 </span>
               ) : this.props.readOnly ? null : (
-                <React.Fragment>
-                  <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)} title="Edit">
+                <>
+                  <StyledButton
+                    disabled={editingKey !== ''}
+                    onClick={() => this.edit(record.key)}
+                    title="Edit"
+                  >
                     <Icon type="edit" theme="twoTone" />
                   </StyledButton>
                   <StyledButton
-                    disabled={editingKey !== ""}
+                    disabled={editingKey !== ''}
                     onClick={() => this.handleDelete(record.key)}
                     title="Delete"
                   >
                     <Icon type="delete" theme="twoTone" />
                   </StyledButton>
-                </React.Fragment>
+                </>
               )}
             </div>
-          );
-        }
-      }
-    ];
+          )
+        },
+      },
+    ]
 
-    const columns = this.columns.map(col => {
+    const columns = this.columns.map((col) => {
       if (!col.editable) {
-        return col;
+        return col
       }
       return {
         ...col,
-        onCell: record => ({
+        onCell: (record) => ({
           record,
           inputType: col.dataIndex,
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
           context: EditableContext,
-          dataSource: data
-        })
-      };
-    });
+          dataSource: data,
+        }),
+      }
+    })
 
     return (
       <StyledTableContainer>
@@ -318,8 +348,14 @@ class StandardsProficiencyTable extends React.Component {
           </InfoDiv>
           {this.props.readOnly ? null : (
             <SaveButtonDiv>
-              {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
-              <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
+              {isChangeState && (
+                <SaveAlert>You have unsaved changes.</SaveAlert>
+              )}
+              <Button
+                type="primary"
+                onClick={this.saveScale}
+                disabled={!isChangeState}
+              >
                 Save
               </Button>
             </SaveButtonDiv>
@@ -338,9 +374,17 @@ class StandardsProficiencyTable extends React.Component {
         <StyledMasterDiv>
           <StyledH3>Mastery Calculation Method</StyledH3>
           <StyledUl>
-            <li>Select calculation method to determine the student's mastery</li>
-            <li>Standards based scores persist across classes(they do NOT reset automatically)</li>
-            <li>Mastery score is rounded up when the calculated score is at/above mid point between two levels</li>
+            <li>
+              Select calculation method to determine the student's mastery
+            </li>
+            <li>
+              Standards based scores persist across classes(they do NOT reset
+              automatically)
+            </li>
+            <li>
+              Mastery score is rounded up when the calculated score is at/above
+              mid point between two levels
+            </li>
           </StyledUl>
           <StyledRadioGroup
             disabled={this.props.readOnly}
@@ -367,18 +411,22 @@ class StandardsProficiencyTable extends React.Component {
               <RadioWrap xs={24} md={12} lg={8}>
                 <StyledAverageRadioDiv direction="column">
                   <RadioBtn value="DECAYING_AVERAGE">Decaying Average</RadioBtn>
-                  <InputOption margin={calcType === "DECAYING_AVERAGE" ? "5px" : "0px"}>
-                    {calcType === "DECAYING_AVERAGE" && (
-                      <React.Fragment>
+                  <InputOption
+                    margin={calcType === 'DECAYING_AVERAGE' ? '5px' : '0px'}
+                  >
+                    {calcType === 'DECAYING_AVERAGE' && (
+                      <>
                         <StyledLabel>Decay %</StyledLabel>
                         <StyledAverageInput
                           disabled={this.props.readOnly}
                           placeholder={this.props.decay}
                           value={calcDecayingAttr}
                           maxLength={2}
-                          onChange={e => this.onChangeCalcAttr(e, "DECAYING_AVERAGE")}
+                          onChange={(e) =>
+                            this.onChangeCalcAttr(e, 'DECAYING_AVERAGE')
+                          }
                         />
-                      </React.Fragment>
+                      </>
                     )}
                   </InputOption>
                 </StyledAverageRadioDiv>
@@ -386,17 +434,21 @@ class StandardsProficiencyTable extends React.Component {
               <RadioWrap xs={24} md={12} lg={8}>
                 <StyledAverageRadioDiv direction="column">
                   <RadioBtn value="MOVING_AVERAGE">Moving Average</RadioBtn>
-                  <InputOption margin={calcType === "MOVING_AVERAGE" ? "5px" : "0px"}>
-                    {calcType === "MOVING_AVERAGE" && (
-                      <React.Fragment>
+                  <InputOption
+                    margin={calcType === 'MOVING_AVERAGE' ? '5px' : '0px'}
+                  >
+                    {calcType === 'MOVING_AVERAGE' && (
+                      <>
                         <StyledLabel>No of Assesments</StyledLabel>
                         <StyledAverageInput
                           disabled={this.props.readOnly}
                           placeholder={this.props.noOfAssessments}
                           value={calcMovingAvrAttr}
-                          onChange={e => this.onChangeCalcAttr(e, "MOVING_AVERAGE")}
+                          onChange={(e) =>
+                            this.onChangeCalcAttr(e, 'MOVING_AVERAGE')
+                          }
                         />
-                      </React.Fragment>
+                      </>
                     )}
                   </InputOption>
                 </StyledAverageRadioDiv>
@@ -405,36 +457,62 @@ class StandardsProficiencyTable extends React.Component {
           </StyledRadioGroup>
         </StyledMasterDiv>
       </StyledTableContainer>
-    );
+    )
   }
 }
-const EditableStandardsProficiencyTable = Form.create()(StandardsProficiencyTable);
+const EditableStandardsProficiencyTable = Form.create()(
+  StandardsProficiencyTable
+)
 
 const enhance = compose(
   connect(
     (state, ownProps) => {
-      const calcType = get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcType"], "");
+      const calcType = get(
+        state,
+        ['standardsProficiencyReducer', 'data', ownProps.index, 'calcType'],
+        ''
+      )
       const calcDecayingAttr = get(
         state,
-        ["standardsProficiencyReducer", "data", ownProps.index, "calcDecayingAttr"],
-        ""
-      );
+        [
+          'standardsProficiencyReducer',
+          'data',
+          ownProps.index,
+          'calcDecayingAttr',
+        ],
+        ''
+      )
       const calcMovingAvrAttr = get(
         state,
-        ["standardsProficiencyReducer", "data", ownProps.index, "calcMovingAvrAttr"],
-        ""
-      );
+        [
+          'standardsProficiencyReducer',
+          'data',
+          ownProps.index,
+          'calcMovingAvrAttr',
+        ],
+        ''
+      )
       return {
-        standardsProficiency: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "scale"], []),
+        standardsProficiency: get(
+          state,
+          ['standardsProficiencyReducer', 'data', ownProps.index, 'scale'],
+          []
+        ),
         userOrgId: getUserOrgId(state),
         calcType,
         /**
          * NOTE: pay attention here
          */
-        calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcDecayingAttr : "",
-        calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcMovingAvrAttr : "",
-        standardsProficiencyID: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "_id"], "")
-      };
+        calcDecayingAttr:
+          calcType === 'DECAYING_AVERAGE' ? calcDecayingAttr : '',
+        calcMovingAvrAttr:
+          calcType === 'MOVING_AVERAGE' ? calcMovingAvrAttr : '',
+        standardsProficiencyID: get(
+          state,
+          ['standardsProficiencyReducer', 'data', ownProps.index, '_id'],
+          ''
+        ),
+      }
     },
     {
       updateStandardsProficiency: updateStandardsProficiencyAction,
@@ -442,9 +520,9 @@ const enhance = compose(
       setScaleData: setScaleDataAction,
       setCalcType: setCalcTypeAction,
       setDecayingAttrValue: setDecayingAttrValueAction,
-      setMovingAttrValue: setMovingAttrValueAction
+      setMovingAttrValue: setMovingAttrValueAction,
     }
   )
-);
+)
 
-export default enhance(EditableStandardsProficiencyTable);
+export default enhance(EditableStandardsProficiencyTable)

@@ -1,44 +1,53 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Menu, Icon } from "antd";
-import styled from "styled-components";
-import { IconFolders } from "@edulastic/icons";
-import { white, mainTextColor, smallDesktopWidth, themeColor } from "@edulastic/colors";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Menu, Icon } from 'antd'
+import styled from 'styled-components'
+import { IconFolders } from '@edulastic/icons'
+import {
+  white,
+  mainTextColor,
+  smallDesktopWidth,
+  themeColor,
+} from '@edulastic/colors'
 
 const TestFiltersNav = ({ items, onSelect, search = {} }) => {
-  let selected = items[0].path;
+  let selected = items[0].path
   if (search.filter) {
-    const getCurrent = items.find(item => item.filter === search.filter) || {};
-    selected = getCurrent?.path;
+    const getCurrent = items.find((item) => item.filter === search.filter) || {}
+    selected = getCurrent?.path
   }
   return (
     <Container onSelect={onSelect} selectedKeys={[selected]}>
-      {items.map(item => (
+      {items.map((item) => (
         <Item data-cy={item.text} key={item.path}>
-          {item.icon === "folders" ? <IconFolders className="anticon" /> : <Icon type={item.icon} />}
+          {item.icon === 'folders' ? (
+            <IconFolders className="anticon" />
+          ) : (
+            <Icon type={item.icon} />
+          )}
           {item.text}
         </Item>
       ))}
     </Container>
-  );
-};
+  )
+}
 
 TestFiltersNav.propTypes = {
   items: PropTypes.array.isRequired,
-  onSelect: PropTypes.func
-};
+  onSelect: PropTypes.func,
+}
 
 TestFiltersNav.defaultProps = {
-  onSelect: () => {}
-};
+  onSelect: () => {},
+}
 
-export default TestFiltersNav;
+export default TestFiltersNav
 
 const Container = styled(Menu)`
   border-right: none;
   background: transparent;
   margin-bottom: 5px;
-`;
+`
 
 const Item = styled(Menu.Item)`
   color: ${mainTextColor};
@@ -86,4 +95,4 @@ const Item = styled(Menu.Item)`
       fill: ${themeColor};
     }
   }
-`;
+`

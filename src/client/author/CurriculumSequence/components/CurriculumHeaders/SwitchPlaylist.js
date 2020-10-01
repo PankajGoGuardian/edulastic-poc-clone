@@ -1,53 +1,63 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { Popover } from "antd";
-import { connect } from "react-redux";
-import { extraDesktopWidthMax, mobileWidthLarge, themeColorBlue } from "@edulastic/colors";
-import { IconTile } from "@edulastic/icons";
-import { FlexContainer } from "@edulastic/common";
-import { toggleShowUseThisNotificationAction } from "../../ducks";
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { Popover } from 'antd'
+import { connect } from 'react-redux'
+import {
+  extraDesktopWidthMax,
+  mobileWidthLarge,
+  themeColorBlue,
+} from '@edulastic/colors'
+import { IconTile } from '@edulastic/icons'
+import { FlexContainer } from '@edulastic/common'
+import { toggleShowUseThisNotificationAction } from '../../ducks'
 
 const SwitchPlaylist = ({
   onClickHandler,
   showUseThisNotification,
   toggleShowUseThisNotification,
-  playlistsToSwitch
+  playlistsToSwitch,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const popoverContent = <span>You can switch between playlists using this.</span>;
-  const isShowSwitcher = (playlistsToSwitch?.length || 0) > 1;
+  const [isOpen, setIsOpen] = useState(false)
+  const popoverContent = (
+    <span>You can switch between playlists using this.</span>
+  )
+  const isShowSwitcher = (playlistsToSwitch?.length || 0) > 1
 
   const showNotificationInSideMenu = () => {
-    setIsOpen(false);
+    setIsOpen(false)
     if (toggleShowUseThisNotification) {
-      toggleShowUseThisNotification(true);
+      toggleShowUseThisNotification(true)
       setTimeout(() => {
-        toggleShowUseThisNotification(false);
-      }, 4000);
+        toggleShowUseThisNotification(false)
+      }, 4000)
     }
-  };
+  }
 
   useEffect(() => {
     if (showUseThisNotification && isShowSwitcher) {
       if (isShowSwitcher) {
-        setIsOpen(showUseThisNotification);
-        setTimeout(showNotificationInSideMenu, 4000);
+        setIsOpen(showUseThisNotification)
+        setTimeout(showNotificationInSideMenu, 4000)
       } else {
-        showNotificationInSideMenu();
+        showNotificationInSideMenu()
       }
     }
-  }, [showUseThisNotification]);
+  }, [showUseThisNotification])
 
   if (!isShowSwitcher) {
-    return "";
+    return ''
   }
 
   return (
-    <Popover content={popoverContent} overlayClassName="antd-notify-custom-popover" visible={isOpen}>
+    <Popover
+      content={popoverContent}
+      overlayClassName="antd-notify-custom-popover"
+      visible={isOpen}
+    >
       <FlexContainer onClick={onClickHandler} marginLeft="4px">
         <IconTile
           data-cy="open-dropped-playlist"
-          style={{ cursor: "pointer" }}
+          style={{ cursor: 'pointer' }}
           width={18}
           height={18}
           color={themeColorBlue}
@@ -55,13 +65,12 @@ const SwitchPlaylist = ({
         <SwitchLable>SWITCH</SwitchLable>
       </FlexContainer>
     </Popover>
-  );
-};
+  )
+}
 
-export default connect(
-  null,
-  { toggleShowUseThisNotification: toggleShowUseThisNotificationAction }
-)(SwitchPlaylist);
+export default connect(null, {
+  toggleShowUseThisNotification: toggleShowUseThisNotificationAction,
+})(SwitchPlaylist)
 
 const SwitchLable = styled.div`
   font-size: 12px;
@@ -78,4 +87,4 @@ const SwitchLable = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     font-size: 11px;
   }
-`;
+`

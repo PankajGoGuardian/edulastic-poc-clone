@@ -1,216 +1,253 @@
-import { backgroundGrey2, fadedGrey, greenDark, themeColor, whiteSmoke, mobileWidthMax } from "@edulastic/colors";
-import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled, notification } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { IconClose, IconShare } from "@edulastic/icons";
-import { Col, Row, Select, Spin, Typography, Modal, AutoComplete } from "antd";
-import { debounce, get as _get, isUndefined } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import styled from "styled-components";
-import { getFullNameFromAsString } from "../../../../../common/utils/helpers";
-import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
-import { getUserFeatures } from "../../../../../student/Login/ducks";
+import {
+  backgroundGrey2,
+  fadedGrey,
+  greenDark,
+  themeColor,
+  whiteSmoke,
+  mobileWidthMax,
+} from '@edulastic/colors'
+import {
+  EduButton,
+  FlexContainer,
+  RadioBtn,
+  RadioGrp,
+  SelectInputStyled,
+  notification,
+} from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { IconClose, IconShare } from '@edulastic/icons'
+import { Col, Row, Select, Spin, Typography, Modal, AutoComplete } from 'antd'
+import { debounce, get as _get, isUndefined } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { getFullNameFromAsString } from '../../../../../common/utils/helpers'
+import { isFeatureAccessible } from '../../../../../features/components/FeaturesSwitch'
+import { getUserFeatures } from '../../../../../student/Login/ducks'
 import {
   fetchUsersListAction,
   getFetchingSelector,
   getUsersListSelector,
-  updateUsersListAction
-} from "../../../../sharedDucks/userDetails";
+  updateUsersListAction,
+} from '../../../../sharedDucks/userDetails'
 import {
   deleteSharedUserAction,
   getUserListSelector,
   receiveSharedWithListAction,
-  sendTestShareAction
-} from "../../../../TestPage/ducks";
-import { getOrgDataSelector, getUserRole } from "../../../selectors/user";
-import { RadioInputWrapper } from "../RadioInput";
+  sendTestShareAction,
+} from '../../../../TestPage/ducks'
+import { getOrgDataSelector, getUserRole } from '../../../selectors/user'
+import { RadioInputWrapper } from '../RadioInput'
 
-const { Paragraph } = Typography;
+const { Paragraph } = Typography
 
 const permissions = {
-  EDIT: "Can Edit, Add/Remove Items",
-  VIEW: "Can View & Duplicate"
-};
+  EDIT: 'Can Edit, Add/Remove Items',
+  VIEW: 'Can View & Duplicate',
+}
 
-const permissionKeys = ["EDIT", "VIEW"];
+const permissionKeys = ['EDIT', 'VIEW']
 
 const shareTypes = {
-  PUBLIC: "Everyone",
-  DISTRICT: "District",
-  SCHOOL: "School",
-  INDIVIDUAL: "Individuals"
-};
+  PUBLIC: 'Everyone',
+  DISTRICT: 'District',
+  SCHOOL: 'School',
+  INDIVIDUAL: 'Individuals',
+}
 
 const sharedKeysObj = {
-  PUBLIC: "PUBLIC",
-  DISTRICT: "DISTRICT",
-  SCHOOL: "SCHOOL",
-  INDIVIDUAL: "INDIVIDUAL"
-};
+  PUBLIC: 'PUBLIC',
+  DISTRICT: 'DISTRICT',
+  SCHOOL: 'SCHOOL',
+  INDIVIDUAL: 'INDIVIDUAL',
+}
 
-const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
-const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL"];
+const shareTypeKeys = ['PUBLIC', 'DISTRICT', 'SCHOOL', 'INDIVIDUAL']
+const shareTypeKeyForDa = ['PUBLIC', 'DISTRICT', 'INDIVIDUAL']
 
-const { Option } = AutoComplete;
+const { Option } = AutoComplete
 class ShareModal extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       sharedType: sharedKeysObj.INDIVIDUAL,
-      searchString: "",
+      searchString: '',
       currentUser: {},
-      permission: (isUndefined(props.hasPlaylistEditAccess)
-      ? props.features.editPermissionOnTestSharing
-      : props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)
-        ? "EDIT"
-        : "VIEW",
-      _permissionKeys: (isUndefined(props.hasPlaylistEditAccess)
-      ? props.features.editPermissionOnTestSharing
-      : props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)
+      permission: (
+        isUndefined(props.hasPlaylistEditAccess)
+          ? props.features.editPermissionOnTestSharing
+          : props.features.editPermissionOnTestSharing &&
+            props.hasPlaylistEditAccess
+      )
+        ? 'EDIT'
+        : 'VIEW',
+      _permissionKeys: (
+        isUndefined(props.hasPlaylistEditAccess)
+          ? props.features.editPermissionOnTestSharing
+          : props.features.editPermissionOnTestSharing &&
+            props.hasPlaylistEditAccess
+      )
         ? permissionKeys
         : [permissionKeys[1]],
-      showWarning: false
-    };
-    this.handleSearch = this.handleSearch.bind(this);
+      showWarning: false,
+    }
+    this.handleSearch = this.handleSearch.bind(this)
   }
 
   static getDerivedStateFromProps(nextProps) {
-    const { features, gradeSubject } = nextProps;
-    const { grades, subjects } = gradeSubject || {};
+    const { features, gradeSubject } = nextProps
+    const { grades, subjects } = gradeSubject || {}
     if (
       features.editPermissionOnTestSharing === false &&
       grades &&
       subjects &&
       isFeatureAccessible({
         features,
-        inputFeatures: "editPermissionOnTestSharing",
-        gradeSubject
+        inputFeatures: 'editPermissionOnTestSharing',
+        gradeSubject,
       })
     ) {
       return {
-        permission: "EDIT",
-        _permissionKeys: permissionKeys
-      };
+        permission: 'EDIT',
+        _permissionKeys: permissionKeys,
+      }
     }
     if (!features.editPermissionOnTestSharing) {
       return {
-        permission: "VIEW",
-        _permissionKeys: [permissionKeys[1]]
-      };
+        permission: 'VIEW',
+        _permissionKeys: [permissionKeys[1]],
+      }
     }
   }
 
   componentDidMount() {
-    const { getSharedUsers, match, isPlaylist, userRole } = this.props;
-    const testId = match.params.id;
-    const isDA = userRole === roleuser.DISTRICT_ADMIN;
+    const { getSharedUsers, match, isPlaylist, userRole } = this.props
+    const testId = match.params.id
+    const isDA = userRole === roleuser.DISTRICT_ADMIN
     if (isDA) {
-      this.setState({ permission: "VIEW" });
+      this.setState({ permission: 'VIEW' })
     }
-    if (testId && testId !== "undefined")
-      getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
+    if (testId && testId !== 'undefined')
+      getSharedUsers({
+        contentId: testId,
+        contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
+      })
   }
 
-  radioHandler = e => {
-    this.setState({ sharedType: e.target.value });
-    const { hasPlaylistEditAccess } = this.props;
+  radioHandler = (e) => {
+    this.setState({ sharedType: e.target.value })
+    const { hasPlaylistEditAccess } = this.props
     if (e.target.value !== sharedKeysObj.INDIVIDUAL || !hasPlaylistEditAccess) {
       this.setState({
-        permission: "VIEW"
-      });
+        permission: 'VIEW',
+      })
     } else {
       this.setState({
-        permission: "EDIT"
-      });
+        permission: 'EDIT',
+      })
     }
-  };
+  }
 
-  removeHandler = data => {
-    const { deleteShared, testId, isPlaylist } = this.props;
-    const { sharedId, _userId: sharedWith } = data;
-    const contentType = isPlaylist ? "PLAYLIST" : "TEST";
+  removeHandler = (data) => {
+    const { deleteShared, testId, isPlaylist } = this.props
+    const { sharedId, _userId: sharedWith } = data
+    const contentType = isPlaylist ? 'PLAYLIST' : 'TEST'
 
-    deleteShared({ contentId: testId, sharedId, sharedWith, contentType });
-  };
+    deleteShared({ contentId: testId, sharedId, sharedWith, contentType })
+  }
 
-  permissionHandler = value => {
-    const { currentUser } = this.state;
+  permissionHandler = (value) => {
+    const { currentUser } = this.state
     if (!Object.keys(currentUser).length) {
-      this.setState({ permission: value });
+      this.setState({ permission: value })
     } else {
-      this.setState({ permission: value, currentUser: { ...currentUser, permission: value } });
+      this.setState({
+        permission: value,
+        currentUser: { ...currentUser, permission: value },
+      })
     }
-  };
+  }
 
-  searchUser = debounce(value => {
-    const { sharedType } = this.state;
-    const { getUsers } = this.props;
+  searchUser = debounce((value) => {
+    const { sharedType } = this.state
+    const { getUsers } = this.props
     const searchBody = {
       limit: 10,
       page: 1,
       type: sharedType,
       search: {
-        role: ["teacher", "school-admin", "district-admin"],
+        role: ['teacher', 'school-admin', 'district-admin'],
         searchString: value,
-        status: 1
-      }
-    };
-    getUsers(searchBody);
-  }, 500);
+        status: 1,
+      },
+    }
+    getUsers(searchBody)
+  }, 500)
 
   handleSearch(value) {
-    const { updateShareList } = this.props;
-    this.setState({ searchString: value, currentUser: {} });
+    const { updateShareList } = this.props
+    this.setState({ searchString: value, currentUser: {} })
     if (value.length > 1) {
-      this.setState({ showWarning: false });
-      this.searchUser(value);
+      this.setState({ showWarning: false })
+      this.searchUser(value)
     } else {
-      updateShareList({ data: [] });
+      updateShareList({ data: [] })
     }
   }
 
-  handleChange = value => {
-    const { permission } = this.state;
-    const [userName, email, _userId] = value.split("||");
+  handleChange = (value) => {
+    const { permission } = this.state
+    const [userName, email, _userId] = value.split('||')
     const newState = {
       userName,
       email,
       _userId,
-      permission
-    };
+      permission,
+    }
     this.setState({
       currentUser: newState,
-      searchString: value
-    });
-  };
+      searchString: value,
+    })
+  }
 
   handleShare = () => {
-    const { currentUser, sharedType, permission, searchString } = this.state;
-    const { shareTest, testId, sharedUsersList, isPlaylist } = this.props;
-    const isExisting = sharedUsersList.some(item => item._userId === currentUser._userId);
-    if (!(searchString.length > 1) && !Object.keys(currentUser).length && sharedType === sharedKeysObj.INDIVIDUAL)
-      return;
-    let person = {};
-    let emails = [];
+    const { currentUser, sharedType, permission, searchString } = this.state
+    const { shareTest, testId, sharedUsersList, isPlaylist } = this.props
+    const isExisting = sharedUsersList.some(
+      (item) => item._userId === currentUser._userId
+    )
+    if (
+      !(searchString.length > 1) &&
+      !Object.keys(currentUser).length &&
+      sharedType === sharedKeysObj.INDIVIDUAL
+    )
+      return
+    let person = {}
+    let emails = []
     if (sharedType === sharedKeysObj.INDIVIDUAL) {
       if (Object.keys(currentUser).length === 0) {
-        if (!searchString.length) return notification({ messageKey: "pleaseSelectAnyUser" });
-        emails = searchString.split(",");
+        if (!searchString.length)
+          return notification({ messageKey: 'pleaseSelectAnyUser' })
+        emails = searchString.split(',')
       } else if (isExisting) {
-        notification({ messageKey: "userHasPermission" });
-        return;
+        notification({ messageKey: 'userHasPermission' })
+        return
       } else {
-        const { _userId, userName, email } = currentUser;
-        person = { sharedWith: [{ _id: _userId, name: userName, email }] };
+        const { _userId, userName, email } = currentUser
+        person = { sharedWith: [{ _id: _userId, name: userName, email }] }
       }
     } else {
-      const isTypeExisting = sharedUsersList.some(item => item.userName === shareTypes[sharedType]);
+      const isTypeExisting = sharedUsersList.some(
+        (item) => item.userName === shareTypes[sharedType]
+      )
       if (isTypeExisting) {
-        notification({ msg: `You have shared with ${shareTypes[sharedType]} try other option` });
-        return;
+        notification({
+          msg: `You have shared with ${shareTypes[sharedType]} try other option`,
+        })
+        return
       }
     }
     const data = {
@@ -218,45 +255,51 @@ class ShareModal extends React.Component {
       emails,
       sharedType,
       permission,
-      contentType: isPlaylist ? "PLAYLIST" : "TEST"
-    };
-    shareTest({ data, contentId: testId });
+      contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
+    }
+    shareTest({ data, contentId: testId })
     // do it in a slight delay so that at the moment of blur it should not show warning
     setTimeout(() => {
       this.setState({
         currentUser: {},
-        searchString: ""
-      });
-    }, 0);
-  };
+        searchString: '',
+      })
+    }, 0)
+  }
 
   getUserName(data) {
     const {
-      userOrgData: { districts = [{}] }
-    } = this.props;
+      userOrgData: { districts = [{}] },
+    } = this.props
     // share modal is not for student so we can get
-    const [{ districtName = "" }] = districts;
-    if (data.sharedType === "PUBLIC") {
-      return "EVERYONE";
+    const [{ districtName = '' }] = districts
+    if (data.sharedType === 'PUBLIC') {
+      return 'EVERYONE'
     }
-    if (data.sharedType === "DISTRICT") {
-      return districtName;
+    if (data.sharedType === 'DISTRICT') {
+      return districtName
     }
-    return `${data.userName && data.userName !== "null" ? data.userName : ""}`;
+    return `${data.userName && data.userName !== 'null' ? data.userName : ''}`
   }
 
-  getEmail = data => {
-    if (data.sharedType === "PUBLIC") {
-      return "";
+  getEmail = (data) => {
+    if (data.sharedType === 'PUBLIC') {
+      return ''
     }
-    if (data.sharedType === "DISTRICT") {
-      return "";
+    if (data.sharedType === 'DISTRICT') {
+      return ''
     }
-    return `${data.email && data.email !== "null" ? ` (${data.email})` : ""}`;
-  };
+    return `${data.email && data.email !== 'null' ? ` (${data.email})` : ''}`
+  }
 
   render() {
-    const { sharedType, permission, _permissionKeys, searchString, showWarning } = this.state;
+    const {
+      sharedType,
+      permission,
+      _permissionKeys,
+      searchString,
+      showWarning,
+    } = this.state
     const {
       shareLabel,
       isVisible,
@@ -272,30 +315,44 @@ class ShareModal extends React.Component {
       userOrgData,
       features,
       userRole,
-      hasPlaylistEditAccess = true
-    } = this.props;
+      hasPlaylistEditAccess = true,
+    } = this.props
     const filteredUserList = userList.filter(
-      user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
-    );
-    let sharableURL = "";
-    if (sharedType === "PUBLIC" && !isPlaylist) {
-      sharableURL = `${window.location.origin}/public/view-test/${testId}`;
+      (user) =>
+        sharedUsersList.every((people) => user._id !== people._userId) &&
+        user._id !== currentUserId
+    )
+    let sharableURL = ''
+    if (sharedType === 'PUBLIC' && !isPlaylist) {
+      sharableURL = `${window.location.origin}/public/view-test/${testId}`
     } else {
-      sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests/tab/review/id"}/${testId}`;
+      sharableURL = `${window.location.origin}/author/${
+        isPlaylist ? 'playlists' : 'tests/tab/review/id'
+      }/${testId}`
     }
-    const { districts = [{}], schools } = userOrgData;
+    const { districts = [{}], schools } = userOrgData
     // share modal is not for student so we can get
-    const [{ districtName = "" }] = districts;
-    const isDA = userRole === roleuser.DISTRICT_ADMIN;
-    let sharedTypeMessage = "The entire Edulastic Community";
-    if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
-    else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
+    const [{ districtName = '' }] = districts
+    const isDA = userRole === roleuser.DISTRICT_ADMIN
+    let sharedTypeMessage = 'The entire Edulastic Community'
+    if (sharedType === 'DISTRICT')
+      sharedTypeMessage = `Anyone in ${districtName}`
+    else if (sharedType === 'SCHOOL')
+      sharedTypeMessage = `Anyone in ${schools.map((s) => s.name).join(', ')}`
     return (
-      <SharingModal width="700px" footer={null} visible={isVisible} onCancel={onClose} centered>
+      <SharingModal
+        width="700px"
+        footer={null}
+        visible={isVisible}
+        onCancel={onClose}
+        centered
+      >
         <ModalContainer>
-          <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Share with others</h2>
+          <h2 style={{ fontWeight: 'bold', fontSize: 20 }}>
+            Share with others
+          </h2>
           <ShareBlock>
-            <ShareLabel>{shareLabel || "TEST URL"}</ShareLabel>
+            <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
             <FlexContainer>
               <TitleCopy copyable={{ text: sharableURL }}>
                 <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
@@ -310,8 +367,8 @@ class ShareModal extends React.Component {
                       key={index}
                       style={{
                         paddingBottom: 5,
-                        display: "flex",
-                        alignItems: "center"
+                        display: 'flex',
+                        alignItems: 'center',
                       }}
                     >
                       <Col span={12}>
@@ -319,11 +376,19 @@ class ShareModal extends React.Component {
                         <span>{this.getEmail(data)}</span>
                       </Col>
                       <Col span={11}>
-                        <span>{data.permission === "EDIT" && "Can Edit, Add/Remove Items"}</span>
-                        <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>
+                        <span>
+                          {data.permission === 'EDIT' &&
+                            'Can Edit, Add/Remove Items'}
+                        </span>
+                        <span>
+                          {data.permission === 'VIEW' && 'Can View & Duplicate'}
+                        </span>
                       </Col>
                       <Col span={1}>
-                        <a data-cy="share-button-close" onClick={() => this.removeHandler(data)}>
+                        <a
+                          data-cy="share-button-close"
+                          onClick={() => this.removeHandler(data)}
+                        >
                           <CloseIcon />
                         </a>
                       </Col>
@@ -336,8 +401,11 @@ class ShareModal extends React.Component {
           <PeopleBlock>
             <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
             <RadioBtnWrapper>
-              <RadioGrp value={sharedType} onChange={e => this.radioHandler(e)}>
-                {(isDA ? shareTypeKeyForDa : shareTypeKeys).map(item => (
+              <RadioGrp
+                value={sharedType}
+                onChange={(e) => this.radioHandler(e)}
+              >
+                {(isDA ? shareTypeKeyForDa : shareTypeKeys).map((item) => (
                   <RadioBtn
                     value={item}
                     key={item}
@@ -347,8 +415,10 @@ class ShareModal extends React.Component {
                       item === shareTypeKeys[0] ||
                       (!isPublished && item !== shareTypeKeys[3]) ||
                       (item === shareTypeKeys[0] && hasPremiumQuestion) ||
-                      ((features.isCurator || features.isPublisherAuthor || !hasPlaylistEditAccess) &&
-                        item === "PUBLIC")
+                      ((features.isCurator ||
+                        features.isPublisherAuthor ||
+                        !hasPlaylistEditAccess) &&
+                        item === 'PUBLIC')
                     }
                   >
                     {shareTypes[item]}
@@ -356,19 +426,22 @@ class ShareModal extends React.Component {
                 ))}
               </RadioGrp>
             </RadioBtnWrapper>
-            <FlexContainer style={{ marginTop: 5, position: "relative" }} justifyContent="flex-start">
+            <FlexContainer
+              style={{ marginTop: 5, position: 'relative' }}
+              justifyContent="flex-start"
+            >
               {sharedType === sharedKeysObj.INDIVIDUAL ? (
                 <>
                   <AutoCompleteStyled
-                    style={{ width: "100%" }}
+                    style={{ width: '100%' }}
                     onSearch={this.handleSearch}
                     onSelect={this.handleChange}
                     onBlur={() => {
                       if (searchString.length < 2) {
-                        this.setState({ showWarning: true });
+                        this.setState({ showWarning: true })
                       }
                     }}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     placeholder="Enter names or email addresses"
                     data-cy="name-button-pop"
                     disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
@@ -376,9 +449,11 @@ class ShareModal extends React.Component {
                     value={searchString}
                     warning={showWarning}
                   >
-                    {filteredUserList.map(item => (
+                    {filteredUserList.map((item) => (
                       <Option
-                        value={`${getFullNameFromAsString(item._source)}${"||"}${item._source.email}${"||"}${item._id}`}
+                        value={`${getFullNameFromAsString(
+                          item._source
+                        )}${'||'}${item._source.email}${'||'}${item._id}`}
                         key={item._id}
                       >
                         {`${item._source.firstName} ${item._source.lastName}`}
@@ -386,22 +461,33 @@ class ShareModal extends React.Component {
                       </Option>
                     ))}
                   </AutoCompleteStyled>
-                  <p style={{ position: "absolute", left: 0, top: 45, color: "#f5222d" }}>
-                    {showWarning && "Please provide valid Username or Email id"}
+                  <p
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 45,
+                      color: '#f5222d',
+                    }}
+                  >
+                    {showWarning && 'Please provide valid Username or Email id'}
                   </p>
                 </>
               ) : (
                 <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
               )}
               <IndividualSelectInputStyled
-                style={sharedType === sharedKeysObj.INDIVIDUAL ? { marginLeft: "0px" } : { display: "none" }}
+                style={
+                  sharedType === sharedKeysObj.INDIVIDUAL
+                    ? { marginLeft: '0px' }
+                    : { display: 'none' }
+                }
                 onChange={this.permissionHandler}
                 data-cy="permission-button-pop"
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 value={permission}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
-                {_permissionKeys.map(item => (
+                {_permissionKeys.map((item) => (
                   <Select.Option value={item} key={permissions[item]}>
                     {permissions[item]}
                   </Select.Option>
@@ -410,14 +496,18 @@ class ShareModal extends React.Component {
             </FlexContainer>
           </PeopleBlock>
           <DoneButtonContainer>
-            <EduButton height="32px" onClick={onClose} style={{ display: "inline-flex" }}>
+            <EduButton
+              height="32px"
+              onClick={onClose}
+              style={{ display: 'inline-flex' }}
+            >
               Cancel
             </EduButton>
             <EduButton
               height="32px"
               data-cy="share-button-pop"
               onClick={this.handleShare}
-              style={{ display: "inline-flex" }}
+              style={{ display: 'inline-flex' }}
             >
               <IconShare />
               SHARE
@@ -425,7 +515,7 @@ class ShareModal extends React.Component {
           </DoneButtonContainer>
         </ModalContainer>
       </SharingModal>
-    );
+    )
   }
 }
 
@@ -434,38 +524,38 @@ ShareModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPlaylist: PropTypes.bool,
   hasPremiumQuestion: PropTypes.bool,
-  isPublished: PropTypes.bool
-};
+  isPublished: PropTypes.bool,
+}
 
 ShareModal.defaultProps = {
   isPlaylist: false,
   hasPremiumQuestion: false,
-  isPublished: false
-};
+  isPublished: false,
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       userList: getUsersListSelector(state),
       fetching: getFetchingSelector(state),
       sharedUsersList: getUserListSelector(state),
-      currentUserId: _get(state, "user.user._id", ""),
+      currentUserId: _get(state, 'user.user._id', ''),
       features: getUserFeatures(state),
       userOrgData: getOrgDataSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
     }),
     {
       getUsers: fetchUsersListAction,
       updateShareList: updateUsersListAction,
       shareTest: sendTestShareAction,
       getSharedUsers: receiveSharedWithListAction,
-      deleteShared: deleteSharedUserAction
+      deleteShared: deleteSharedUserAction,
     }
   )
-);
+)
 
-export default enhance(ShareModal);
+export default enhance(ShareModal)
 
 const SharingModal = styled(Modal)`
   .ant-modal-content {
@@ -474,7 +564,7 @@ const SharingModal = styled(Modal)`
   .ant-modal-body {
     padding: 30px;
   }
-`;
+`
 
 const ModalContainer = styled.div`
   .anticon-down {
@@ -482,7 +572,7 @@ const ModalContainer = styled.div`
       fill: ${themeColor};
     }
   }
-`;
+`
 
 const ShareBlock = styled.div`
   display: flex;
@@ -490,19 +580,19 @@ const ShareBlock = styled.div`
   margin-top: 40px;
   padding-bottom: 25px;
   border-bottom: 1px solid ${fadedGrey};
-`;
+`
 
 const ShareLabel = styled.span`
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 10px;
-`;
+`
 
 const ShareMessageWrapper = styled.div`
   text-transform: uppercase;
   height: 35px;
   line-height: 35px;
-`;
+`
 
 const ShareList = styled.div`
   padding: 10px 20px;
@@ -520,14 +610,14 @@ const ShareList = styled.div`
     text-transform: none;
     font-weight: normal;
   }
-`;
+`
 
 const ShareListTitle = styled.div`
   margin-top: 10px;
   text-transform: uppercase;
   font-size: 13px;
-  font-weight: ${props => props.theme.semiBold};
-`;
+  font-weight: ${(props) => props.theme.semiBold};
+`
 
 const PeopleBlock = styled.div`
   margin-top: 25px;
@@ -537,13 +627,13 @@ const PeopleBlock = styled.div`
   .ant-radio {
     margin-right: 5px;
   }
-`;
+`
 
 const DoneButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 30px;
-`;
+`
 
 const IndividualSelectInputStyled = styled(SelectInputStyled)`
   &.ant-select {
@@ -556,7 +646,7 @@ const IndividualSelectInputStyled = styled(SelectInputStyled)`
       margin-right: 0px !important;
     }
   }
-`;
+`
 
 const AutoCompleteStyled = styled(AutoComplete)`
   &.ant-select {
@@ -576,35 +666,35 @@ const AutoCompleteStyled = styled(AutoComplete)`
     font-size: 13px;
     font-weight: 600;
     line-height: 1.38;
-    ${props => {
+    ${(props) => {
       if (props.warning) {
-        return "border: 1px solid #f5222d";
+        return 'border: 1px solid #f5222d'
       }
     }}
   }
-`;
+`
 
 const RadioBtnWrapper = styled(RadioInputWrapper)`
   font-weight: 600;
   margin: 10px 0px;
-`;
+`
 const PeopleLabel = styled.span`
   font-size: 13;
   font-weight: 600;
-`;
+`
 const CloseIcon = styled(IconClose)`
   width: 11px;
   height: 16px;
   margin-top: 4px;
   fill: ${greenDark};
-`;
+`
 
 export const ShareUrlDiv = styled.div`
   display: flex;
   color: ${themeColor};
   font-weight: 600;
   align-items: center;
-`;
+`
 
 export const TitleCopy = styled(Paragraph)`
   div:first-child {
@@ -635,7 +725,7 @@ export const TitleCopy = styled(Paragraph)`
     display: flex;
     align-items: center;
     &:after {
-      content: "COPY";
+      content: 'COPY';
       font-size: 12px;
       color: ${themeColor};
       margin-left: 3px;
@@ -646,4 +736,4 @@ export const TitleCopy = styled(Paragraph)`
     height: 20px;
     color: ${themeColor};
   }
-`;
+`

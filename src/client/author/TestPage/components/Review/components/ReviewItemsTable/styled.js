@@ -1,5 +1,5 @@
-import { Table } from "antd";
-import styled from "styled-components";
+import { Table } from 'antd'
+import styled from 'styled-components'
 
 export const ReviewTableWrapper = styled(Table)`
   .ant-table-body > table {
@@ -9,4 +9,4 @@ export const ReviewTableWrapper = styled(Table)`
       max-width: 100%;
     }
   }
-`;
+`

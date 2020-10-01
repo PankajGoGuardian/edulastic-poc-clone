@@ -1,24 +1,24 @@
-const questionTitle = require("./questionTitle");
+const questionTitle = require('./questionTitle')
 
-const { MCQ_STANDARD, MCQ_TRUE_OR_FALSE } = questionTitle;
+const { MCQ_STANDARD, MCQ_TRUE_OR_FALSE } = questionTitle
 // 16:9
 
 const uiConfig = {
-  width: "720px",
-  height: "405px"
-};
+  width: '720px',
+  height: '405px',
+}
 
 const youtubeVideoDetails = {
   [MCQ_STANDARD]: {
     title: `Authoring ${MCQ_STANDARD} question`,
-    videoId: "owu5hFwREg4",
-    uiConfig
+    videoId: 'owu5hFwREg4',
+    uiConfig,
   },
   [MCQ_TRUE_OR_FALSE]: {
     title: `Authoring ${MCQ_TRUE_OR_FALSE} question`,
-    videoId: "-uY8CLh2DJk",
-    uiConfig
-  }
-};
+    videoId: '-uY8CLh2DJk',
+    uiConfig,
+  },
+}
 
-module.exports = { youtubeVideoDetails, uiConfig };
+module.exports = { youtubeVideoDetails, uiConfig }

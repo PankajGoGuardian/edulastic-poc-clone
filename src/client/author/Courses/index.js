@@ -1,2 +1,2 @@
-export { watcherSaga as coursesSaga, reducer as coursesReducer } from "./ducks";
-export { default } from "./components/Container/Courses";
+export { watcherSaga as coursesSaga, reducer as coursesReducer } from './ducks'
+export { default } from './components/Container/Courses'

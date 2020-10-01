@@ -1,81 +1,92 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import BreadCrumb from "../src/components/Breadcrumb";
-import { fetchAssignmentsAction } from "../TestPage/components/Assign/ducks";
-import { setRegradeSettingsDataAction, getRegradingSelector } from "../TestPage/ducks";
-import Header from "./Header";
-import MainContent from "./MainContent";
-import { SecondHeader } from "./styled";
+import React, { Fragment, useEffect, useState } from 'react'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
+import BreadCrumb from '../src/components/Breadcrumb'
+import { fetchAssignmentsAction } from '../TestPage/components/Assign/ducks'
+import {
+  setRegradeSettingsDataAction,
+  getRegradingSelector,
+} from '../TestPage/ducks'
+import Header from './Header'
+import MainContent from './MainContent'
+import { SecondHeader } from './styled'
 
-const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, districtId, history, isRegrading }) => {
-  const { oldTestId, newTestId } = match.params;
-  const { state: _locationState } = history.location;
+const Regrade = ({
+  title,
+  getAssignmentsByTestId,
+  match,
+  setRegradeSettings,
+  districtId,
+  history,
+  isRegrading,
+}) => {
+  const { oldTestId, newTestId } = match.params
+  const { state: _locationState } = history.location
   const settings = {
     newTestId,
     oldTestId,
     assignmentList: [],
     districtId,
-    applyChangesChoice: "ALL",
+    applyChangesChoice: 'ALL',
     options: {
-      removedQuestion: "DISCARD",
-      addedQuestion: "SKIP",
-      testSettings: "EXCLUDE",
-      editedQuestion: "SKIP"
-    }
-  };
-  const [regradeSettings, regradeSettingsChange] = useState(settings);
+      removedQuestion: 'DISCARD',
+      addedQuestion: 'SKIP',
+      testSettings: 'EXCLUDE',
+      editedQuestion: 'SKIP',
+    },
+  }
+  const [regradeSettings, regradeSettingsChange] = useState(settings)
 
   useEffect(() => {
-    getAssignmentsByTestId({ testId: oldTestId, regradeAssignments: true });
-  }, []);
+    getAssignmentsByTestId({ testId: oldTestId, regradeAssignments: true })
+  }, [])
 
   const onUpdateSettings = (key, value) => {
     const newState = {
       ...regradeSettings,
       options: {
         ...regradeSettings.options,
-        [key]: value
-      }
-    };
-    regradeSettingsChange(newState);
-  };
+        [key]: value,
+      },
+    }
+    regradeSettingsChange(newState)
+  }
 
   const onApplySettings = () => {
-    setRegradeSettings(regradeSettings);
-  };
+    setRegradeSettings(regradeSettings)
+  }
 
   const onCancelRegrade = () => {
     history.push({
       pathname: `/author/tests/tab/review/id/${newTestId}`,
-      state: _locationState
-    });
-  };
+      state: _locationState,
+    })
+  }
   const userFlowUrl = _locationState?.editAssigned
     ? {
-        title: "Assignments",
-        to: "/author/assignments"
+        title: 'Assignments',
+        to: '/author/assignments',
       }
     : {
-        title: "Tests",
-        to: "/author/tests"
-      };
+        title: 'Tests',
+        to: '/author/tests',
+      }
 
-  const breadcrumbData = [userFlowUrl];
+  const breadcrumbData = [userFlowUrl]
   if (!_locationState?.isRedirected) {
     breadcrumbData.push({
       title,
       to: `/author/tests/tab/review/id/${newTestId}`,
-      state: _locationState
-    });
+      state: _locationState,
+    })
   }
   breadcrumbData.push({
-    title: "Regrade",
-    to: ""
-  });
+    title: 'Regrade',
+    to: '',
+  })
   return (
-    <Fragment>
+    <>
       <Header
         onApplySettings={onApplySettings}
         onCancelRegrade={onCancelRegrade}
@@ -83,23 +94,30 @@ const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, dis
         isRegrading={isRegrading}
       />
       <SecondHeader>
-        <BreadCrumb data={breadcrumbData} style={{ position: "unset" }} />
+        <BreadCrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </SecondHeader>
-      <MainContent regradeSettings={regradeSettings} onUpdateSettings={onUpdateSettings} />
-    </Fragment>
-  );
-};
+      <MainContent
+        regradeSettings={regradeSettings}
+        onUpdateSettings={onUpdateSettings}
+      />
+    </>
+  )
+}
 
 export default withRouter(
   connect(
-    state => ({
-      title: get(state, ["authorTestAssignments", "assignments", 0, "title"], ""),
-      districtId: get(state, ["user", "user", "orgData", "districtIds", 0]),
-      isRegrading: getRegradingSelector(state)
+    (state) => ({
+      title: get(
+        state,
+        ['authorTestAssignments', 'assignments', 0, 'title'],
+        ''
+      ),
+      districtId: get(state, ['user', 'user', 'orgData', 'districtIds', 0]),
+      isRegrading: getRegradingSelector(state),
     }),
     {
       getAssignmentsByTestId: fetchAssignmentsAction,
-      setRegradeSettings: setRegradeSettingsDataAction
+      setRegradeSettings: setRegradeSettingsDataAction,
     }
   )(Regrade)
-);
+)

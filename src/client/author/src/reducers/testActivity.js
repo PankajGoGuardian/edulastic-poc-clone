@@ -1,7 +1,7 @@
-import { createAction } from "redux-starter-kit";
-import { keyBy, cloneDeep } from "lodash";
-import { produce } from "immer";
-import { testActivityStatus } from "@edulastic/constants";
+import { createAction } from 'redux-starter-kit'
+import { keyBy, cloneDeep } from 'lodash'
+import { produce } from 'immer'
+import { testActivityStatus } from '@edulastic/constants'
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
@@ -20,67 +20,100 @@ import {
   TOGGLE_VIEW_PASSWORD_MODAL,
   UPDATE_PASSWORD_DETAILS,
   RECEIVE_STUDENT_RESPONSE_SUCCESS,
-  RESPONSE_ENTRY_SCORE_SUCCESS
-} from "../constants/actions";
-import { transformGradeBookResponse, getMaxScoreOfQid, getResponseTobeDisplayed } from "../../ClassBoard/Transformer";
+  RESPONSE_ENTRY_SCORE_SUCCESS,
+} from '../constants/actions'
+import {
+  transformGradeBookResponse,
+  getMaxScoreOfQid,
+  getResponseTobeDisplayed,
+} from '../../ClassBoard/Transformer'
 
-export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
-export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT = "[gradebook] realtime test activity submit";
-export const GRADEBOOK_TEST_ITEM_ADD = "[gradebook] test item add";
+export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD =
+  '[gradebook] realtime test activity add'
+export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT =
+  '[gradebook] realtime test activity submit'
+export const GRADEBOOK_TEST_ITEM_ADD = '[gradebook] test item add'
 
-export const REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE = "[gradebook] realtime test question remove";
-export const REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE = "[gradebook] realtime test question add max score";
-export const REALTIME_GRADEBOOK_REDIRECT = "[gradebook] realtime assignment redirect";
+export const REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE =
+  '[gradebook] realtime test question remove'
+export const REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE =
+  '[gradebook] realtime test question add max score'
+export const REALTIME_GRADEBOOK_REDIRECT =
+  '[gradebook] realtime assignment redirect'
 
-export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT = "[gradebook] realtime close assignment";
-export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT = "[gradebook] realtime gradebook update assignment";
-export const SET_PROGRESS_STATUS = "[gradebook] set progress status";
+export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT =
+  '[gradebook] realtime close assignment'
+export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT =
+  '[gradebook] realtime gradebook update assignment'
+export const SET_PROGRESS_STATUS = '[gradebook] set progress status'
 /**
  * force rerendering the components that depends on
  * additional data thus checking
  * due date / open date to recalculate the status of the assignment
  */
-export const RECALCULATE_ADDITIONAL_DATA = "[gradebook] recalculate additional data";
+export const RECALCULATE_ADDITIONAL_DATA =
+  '[gradebook] recalculate additional data'
 /**
  * in student view , setting correct/wrong/partially correct/not graded filter
  */
-export const SET_STUDENT_VIEW_FILTER = "[gradebook] set studentview filter";
-export const SET_SHOW_ALL_STUDENTS = "[gradebook]] set show all students filter";
+export const SET_STUDENT_VIEW_FILTER = '[gradebook] set studentview filter'
+export const SET_SHOW_ALL_STUDENTS = '[gradebook]] set show all students filter'
 
-export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
-export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
-export const gradebookTestItemAddAction = createAction(GRADEBOOK_TEST_ITEM_ADD);
-export const realtimeGradebookQuestionsRemoveAction = createAction(REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE);
-export const realtimeGradebookQuestionAddMaxScoreAction = createAction(REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE);
+export const realtimeGradebookActivityAddAction = createAction(
+  REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD
+)
+export const realtimeGradebookActivitySubmitAction = createAction(
+  REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT
+)
+export const gradebookTestItemAddAction = createAction(GRADEBOOK_TEST_ITEM_ADD)
+export const realtimeGradebookQuestionsRemoveAction = createAction(
+  REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE
+)
+export const realtimeGradebookQuestionAddMaxScoreAction = createAction(
+  REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE
+)
 
-export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_REDIRECT);
-export const realtimeGradebookCloseAction = createAction(REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT);
-export const realtimeUpdateAssignmentAction = createAction(REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT);
-export const recalculateAdditionalDataAction = createAction(RECALCULATE_ADDITIONAL_DATA);
+export const realtimeGradebookRedirectAction = createAction(
+  REALTIME_GRADEBOOK_REDIRECT
+)
+export const realtimeGradebookCloseAction = createAction(
+  REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT
+)
+export const realtimeUpdateAssignmentAction = createAction(
+  REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT
+)
+export const recalculateAdditionalDataAction = createAction(
+  RECALCULATE_ADDITIONAL_DATA
+)
 
-export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER);
-export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS);
-export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS);
+export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER)
+export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS)
+export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS)
 
 const initialState = {
   entities: [],
   removedStudents: [],
   classStudents: [],
-  currentTestActivityId: "",
+  currentTestActivityId: '',
   allTestActivitiesForStudent: [],
   error: null,
   loading: false,
   presentationMode: false,
   viewPassword: false,
   studentViewFilter: null,
-  isShowAllStudents: false
-};
+  isShowAllStudents: false,
+}
 
 const reducer = (state = initialState, { type, payload }) => {
-  let nextState;
+  let nextState
   switch (type) {
     case RECEIVE_TESTACTIVITY_REQUEST:
-      return { ...state, loading: true, assignmentId: payload.assignmentId, classId: payload.classId };
+      return {
+        ...state,
+        loading: true,
+        assignmentId: payload.assignmentId,
+        classId: payload.classId,
+      }
     case RECEIVE_TESTACTIVITY_SUCCESS:
       return {
         ...state,
@@ -88,20 +121,23 @@ const reducer = (state = initialState, { type, payload }) => {
         data: payload.gradebookData,
         entities: payload.entities,
         additionalData: payload.additionalData,
-        removedStudents: payload.gradebookData.exStudents
-      };
+        removedStudents: payload.gradebookData.exStudents,
+      }
 
     case RECALCULATE_ADDITIONAL_DATA:
       return {
         ...state,
-        entities: state.entities.map(x => {
-          if (x.status != "notStarted") {
-            return x;
+        entities: state.entities.map((x) => {
+          if (x.status != 'notStarted') {
+            return x
           }
-          if (state?.data?.status === "DONE" || state?.additionalData?.endDate < Date.now()) {
-            return { ...x, status: "absent", present: false };
+          if (
+            state?.data?.status === 'DONE' ||
+            state?.additionalData?.endDate < Date.now()
+          ) {
+            return { ...x, status: 'absent', present: false }
           }
-          return x;
+          return x
         }),
         /**
          * justified use of cloneDeep because,
@@ -109,63 +145,80 @@ const reducer = (state = initialState, { type, payload }) => {
          * that depends on the additional data
          * to recheck the assignment start date / due date
          */
-        additionalData: cloneDeep(state.additionalData)
-      };
+        additionalData: cloneDeep(state.additionalData),
+      }
     case SET_CURRENT_TESTACTIVITY:
       return {
         ...state,
-        currentTestActivityId: payload
-      };
+        currentTestActivityId: payload,
+      }
 
     case SET_ALL_TESTACTIVITIES_FOR_STUDENT:
       return {
         ...state,
-        allTestActivitiesForStudent: payload
-      };
+        allTestActivitiesForStudent: payload,
+      }
     case RESPONSE_ENTRY_SCORE_SUCCESS:
-      return produce(state, _st => {
-        const userId = payload?.testActivity?.userId;
-        const testActivityId = payload?.testActivity?._id;
-        const attempt = _st.data.recentTestActivitiesGrouped[userId].find(x => x._id === testActivityId);
+      return produce(state, (_st) => {
+        const userId = payload?.testActivity?.userId
+        const testActivityId = payload?.testActivity?._id
+        const attempt = _st.data.recentTestActivitiesGrouped[userId].find(
+          (x) => x._id === testActivityId
+        )
         if (attempt) {
           if (payload.testActivity?.score) {
-            attempt.score = payload.testActivity?.score;
+            attempt.score = payload.testActivity?.score
           }
           if (payload.testActivity?.maxScore) {
-            attempt.maxScore = payload.testActivity?.maxScore;
+            attempt.maxScore = payload.testActivity?.maxScore
           }
         }
-      });
+      })
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD: {
-      const entity = payload;
-      nextState = produce(state, _st => {
-        if (!state.allTestActivitiesForStudent.includes(entity.testActivityId)) {
-          _st.allTestActivitiesForStudent.push(entity.testActivityId);
+      const entity = payload
+      nextState = produce(state, (_st) => {
+        if (
+          !state.allTestActivitiesForStudent.includes(entity.testActivityId)
+        ) {
+          _st.allTestActivitiesForStudent.push(entity.testActivityId)
         }
 
-        const index = _st.entities.findIndex(x => x.studentId === entity.studentId);
+        const index = _st.entities.findIndex(
+          (x) => x.studentId === entity.studentId
+        )
         if (index != -1) {
           if (_st.entities[index].testActivityId) {
-            _st.currentTestActivityId = _st.entities[index].testActivityId;
+            _st.currentTestActivityId = _st.entities[index].testActivityId
           }
-          if (_st.entities[index].testActivityId != entity.testActivityId && _st.entities[index].testActivityId) {
+          if (
+            _st.entities[index].testActivityId != entity.testActivityId &&
+            _st.entities[index].testActivityId
+          ) {
             // a new attempt being added through realtime
             // handling for showing recent attempts
-            const { studentId } = entity;
-            const { score, _score, maxScore, number, testActivityId } = _st.entities[index];
+            const { studentId } = entity
+            const {
+              score,
+              _score,
+              maxScore,
+              number,
+              testActivityId,
+            } = _st.entities[index]
             const oldAttempt = {
               _id: testActivityId,
               score: score || _score || 0,
               maxScore,
-              number: number || 1
-            };
-            _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId] || [];
-            _st.data.recentTestActivitiesGrouped[studentId].unshift(oldAttempt);
-            _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId].slice(
-              0,
-              2
-            );
-            _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(x => ({
+              number: number || 1,
+            }
+            _st.data.recentTestActivitiesGrouped[studentId] =
+              _st.data.recentTestActivitiesGrouped[studentId] || []
+            _st.data.recentTestActivitiesGrouped[studentId].unshift(oldAttempt)
+            _st.data.recentTestActivitiesGrouped[
+              studentId
+            ] = _st.data.recentTestActivitiesGrouped[studentId].slice(0, 2)
+            _st.entities[index].questionActivities = _st.entities[
+              index
+            ].questionActivities.map((x) => ({
               _id: x._id,
               weight: x.weight,
               notStarted: true,
@@ -173,128 +226,177 @@ const reducer = (state = initialState, { type, payload }) => {
               testItemId: x.testItemId,
               qids: x.qids,
               qLabel: x.qLabel,
-              barLabel: x.barLabel
-            }));
+              barLabel: x.barLabel,
+            }))
           }
-          _st.entities[index].testActivityId = entity.testActivityId;
-          _st.entities[index].status = "inProgress";
-          _st.entities[index].UTASTATUS = 0;
-          _st.entities[index].score = 0;
-          const isAutoselectItems = _st.entities[index].questionActivities.some(a => !a._id);
+          _st.entities[index].testActivityId = entity.testActivityId
+          _st.entities[index].status = 'inProgress'
+          _st.entities[index].UTASTATUS = 0
+          _st.entities[index].score = 0
+          const isAutoselectItems = _st.entities[index].questionActivities.some(
+            (a) => !a._id
+          )
           if (isAutoselectItems) {
             const allItems = entity.itemsToDeliverInGroup
-              .flatMap(g => g.items)
-              .map(id => {
-                const item = state.data.testItemsData.find(ti => ti._id === id);
-                if (item) return item;
+              .flatMap((g) => g.items)
+              .map((id) => {
+                const item = state.data.testItemsData.find(
+                  (ti) => ti._id === id
+                )
+                if (item) return item
                 return {
                   _id: id,
-                  itemLevelScoring: true
-                };
-              });
+                  itemLevelScoring: true,
+                }
+              })
             const entityDataGenerated = transformGradeBookResponse({
               ..._st.data,
               testItemsData: allItems,
-              ts: _st.additionalData.ts
-            }).find(e => e.studentId === entity.studentId);
+              ts: _st.additionalData.ts,
+            }).find((e) => e.studentId === entity.studentId)
 
-            _st.entities[index].questionActivities = entityDataGenerated.questionActivities;
+            _st.entities[index].questionActivities =
+              entityDataGenerated.questionActivities
           }
         } else {
-          console.warn(`can't find any testactivity for studentId ${entity.studentId}`);
+          console.warn(
+            `can't find any testactivity for studentId ${entity.studentId}`
+          )
         }
-      });
-      return nextState;
+      })
+      return nextState
     }
     case REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT:
-      return produce(state, _state => {
-        const { status, ...otherProps } = payload;
+      return produce(state, (_state) => {
+        const { status, ...otherProps } = payload
         if (status) {
-          if (_state.data.status === "NOT OPEN" && status === "IN PROGRESS") {
-            _state.additionalData.canCloseClass = [_state.additionalData.classId];
+          if (_state.data.status === 'NOT OPEN' && status === 'IN PROGRESS') {
+            _state.additionalData.canCloseClass = [
+              _state.additionalData.classId,
+            ]
           }
-          _state.data.status = status;
+          _state.data.status = status
         }
-        Object.assign(_state.additionalData, otherProps);
-        _state.entities = state.entities.map(x => {
-          if (x.status != "notStarted") {
-            return x;
+        Object.assign(_state.additionalData, otherProps)
+        _state.entities = state.entities.map((x) => {
+          if (x.status != 'notStarted') {
+            return x
           }
-          if (_state?.data?.status === "DONE" || _state?.additionalData?.endDate < Date.now()) {
-            return { ...x, status: "absent", present: false };
+          if (
+            _state?.data?.status === 'DONE' ||
+            _state?.additionalData?.endDate < Date.now()
+          ) {
+            return { ...x, status: 'absent', present: false }
           }
-          return x;
-        });
-      });
+          return x
+        })
+      })
 
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT:
-      nextState = produce(state, _st => {
-        const { testActivityId, graded } = payload;
-        const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
+      nextState = produce(state, (_st) => {
+        const { testActivityId, graded } = payload
+        const entityIndex = _st.entities.findIndex(
+          (x) => x.testActivityId === testActivityId
+        )
         if (entityIndex != -1) {
-          _st.entities[entityIndex].status = "submitted";
-          _st.entities[entityIndex].graded = graded;
+          _st.entities[entityIndex].status = 'submitted'
+          _st.entities[entityIndex].graded = graded
           for (const qAct of _st.entities[entityIndex].questionActivities) {
             if (qAct.notStarted) {
-              qAct.skipped = true;
-              qAct.notStarted = undefined;
-              qAct.score = 0;
+              qAct.skipped = true
+              qAct.notStarted = undefined
+              qAct.score = 0
             }
           }
         }
-      });
-      return nextState;
+      })
+      return nextState
 
     case REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE:
-      nextState = produce(state, _st => {
+      nextState = produce(state, (_st) => {
         /**
          * @type string[]
          */
-        const questionIds = payload;
-        const questionIdsMaxScore = {};
+        const questionIds = payload
+        const questionIdsMaxScore = {}
         for (const qid of questionIds) {
-          questionIdsMaxScore[qid] = getMaxScoreOfQid(qid, _st.data.testItemsData);
+          questionIdsMaxScore[qid] = getMaxScoreOfQid(
+            qid,
+            _st.data.testItemsData
+          )
         }
         for (const _entity of _st.entities) {
-          const matchingQids = _entity.questionActivities.filter(x => questionIds.includes(x._id));
-          _entity.maxScore -= matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
-          _entity.questionActivities = _entity.questionActivities.filter(x => !questionIds.includes(x._id));
+          const matchingQids = _entity.questionActivities.filter((x) =>
+            questionIds.includes(x._id)
+          )
+          _entity.maxScore -= matchingQids.reduce(
+            (prev, qid) => prev + (questionIdsMaxScore[qid] || 0),
+            0
+          )
+          _entity.questionActivities = _entity.questionActivities.filter(
+            (x) => !questionIds.includes(x._id)
+          )
         }
-      });
-      return nextState;
+      })
+      return nextState
     case REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE:
-      nextState = produce(state, _st => {
-        const questionIdsMaxScore = {};
+      nextState = produce(state, (_st) => {
+        const questionIdsMaxScore = {}
         for (const { qid, maxScore } of payload) {
-          questionIdsMaxScore[qid] = maxScore;
+          questionIdsMaxScore[qid] = maxScore
         }
-        const questionIds = payload.map(x => x.qid);
+        const questionIds = payload.map((x) => x.qid)
         for (const _entity of _st.entities) {
-          const matchingQids = _entity.questionActivities.filter(x => questionIds.includes(x._id));
-          _entity.maxScore += matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
+          const matchingQids = _entity.questionActivities.filter((x) =>
+            questionIds.includes(x._id)
+          )
+          _entity.maxScore += matchingQids.reduce(
+            (prev, qid) => prev + (questionIdsMaxScore[qid] || 0),
+            0
+          )
         }
-      });
-      return nextState;
+      })
+      return nextState
     case GRADEBOOK_TEST_ITEM_ADD:
-      nextState = produce(state, _st => {
-        for (const { testActivityId, score, maxScore, ...questionItem } of payload) {
-          const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
+      nextState = produce(state, (_st) => {
+        for (const {
+          testActivityId,
+          score,
+          maxScore,
+          ...questionItem
+        } of payload) {
+          const entityIndex = _st.entities.findIndex(
+            (x) => x.testActivityId === testActivityId
+          )
 
           if (entityIndex != -1) {
-            const itemIndex = _st.entities[entityIndex].questionActivities.findIndex(
-              x => x._id == questionItem._id || (!x._id && x.testItemId === questionItem.testItemId)
-            );
+            const itemIndex = _st.entities[
+              entityIndex
+            ].questionActivities.findIndex(
+              (x) =>
+                x._id == questionItem._id ||
+                (!x._id && x.testItemId === questionItem.testItemId)
+            )
             if (itemIndex == -1) {
-              _st.entities[entityIndex].questionActivities.push(questionItem);
+              _st.entities[entityIndex].questionActivities.push(questionItem)
             } else if (!maxScore && (score || score === 0)) {
-              delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
-              const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
-              _st.entities[entityIndex].questionActivities[itemIndex] = { ...oldQAct, ...questionItem, score };
+              delete _st.entities[entityIndex].questionActivities[itemIndex]
+                .notStarted
+              const oldQAct =
+                _st.entities[entityIndex].questionActivities[itemIndex]
+              _st.entities[entityIndex].questionActivities[itemIndex] = {
+                ...oldQAct,
+                ...questionItem,
+                score,
+              }
             } else {
-              delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
-              const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
+              delete _st.entities[entityIndex].questionActivities[itemIndex]
+                .notStarted
+              const oldQAct =
+                _st.entities[entityIndex].questionActivities[itemIndex]
               if (oldQAct.timeSpent) {
-                questionItem.timeSpent = (questionItem.timeSpent || 0) + oldQAct.timeSpent;
+                questionItem.timeSpent =
+                  (questionItem.timeSpent || 0) + oldQAct.timeSpent
               }
               _st.entities[entityIndex].questionActivities[itemIndex] = {
                 ...oldQAct,
@@ -305,201 +407,220 @@ const reducer = (state = initialState, { type, payload }) => {
                   _st.data.testItemsDataKeyed[questionItem.testItemId],
                   questionItem.userResponse,
                   questionItem._id
-                )
-              };
+                ),
+              }
             }
             if (score || score === 0) {
-              _st.entities[entityIndex].score = _st.entities[entityIndex].questionActivities.reduce(
-                (acc, x) => acc + (x.score || 0),
-                0
-              );
+              _st.entities[entityIndex].score = _st.entities[
+                entityIndex
+              ].questionActivities.reduce((acc, x) => acc + (x.score || 0), 0)
             }
           } else {
-            console.warn(`can't find any testactivity for testActivityId ${testActivityId}`);
+            console.warn(
+              `can't find any testactivity for testActivityId ${testActivityId}`
+            )
           }
         }
-      });
-      return nextState;
+      })
+      return nextState
     case REALTIME_GRADEBOOK_REDIRECT: {
-      const { students } = payload;
-      nextState = produce(state, _st => {
+      const { students } = payload
+      nextState = produce(state, (_st) => {
         if (students.length > 0) {
           const studentIndexes = students
-            .map(studentId => _st.entities.findIndex(x => x.studentId === studentId))
-            .filter(x => x > -1);
+            .map((studentId) =>
+              _st.entities.findIndex((x) => x.studentId === studentId)
+            )
+            .filter((x) => x > -1)
           for (const index of studentIndexes) {
-            _st.entities[index].status = "redirected";
-            _st.entities[index].redirected = true;
+            _st.entities[index].status = 'redirected'
+            _st.entities[index].redirected = true
           }
         }
-      });
-      return nextState;
+      })
+      return nextState
     }
     case RECEIVE_TESTACTIVITY_ERROR:
-      return { ...state, loading: false, error: payload.error };
+      return { ...state, loading: false, error: payload.error }
 
     case UPDATE_ASSIGNMENT_STATUS:
       return {
         ...state,
         data: {
           ...state.data,
-          status: payload
-        }
-      };
+          status: payload,
+        },
+      }
     case TOGGLE_PRESENTATION_MODE:
       return {
         ...state,
-        presentationMode: !state.presentationMode
-      };
+        presentationMode: !state.presentationMode,
+      }
     case TOGGLE_VIEW_PASSWORD_MODAL:
       return {
         ...state,
-        viewPassword: !state.viewPassword
-      };
+        viewPassword: !state.viewPassword,
+      }
     case UPDATE_PASSWORD_DETAILS: {
       const {
         assignmentPassword = state?.additionalData?.assignmentPassword,
         passwordExpireTime = state?.additionalData?.passwordExpireTime,
-        passwordExpireIn = state?.additionalData?.passwordExpireIn
-      } = payload;
+        passwordExpireIn = state?.additionalData?.passwordExpireIn,
+      } = payload
       return {
         ...state,
         additionalData: {
           ...state.additionalData,
           assignmentPassword,
           passwordExpireTime,
-          passwordExpireIn
-        }
-      };
+          passwordExpireIn,
+        },
+      }
     }
     case UPDATE_OPEN_ASSIGNMENTS:
       return {
         ...state,
         data: {
           ...state.data,
-          status: "IN PROGRESS"
+          status: 'IN PROGRESS',
         },
         additionalData: {
           ...state.additionalData,
-          canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId),
-          open: true
-        }
-      };
+          canOpenClass: state.additionalData.canOpenClass.filter(
+            (item) => item !== payload.classId
+          ),
+          open: true,
+        },
+      }
 
     case SET_IS_PAUSED:
       return {
         ...state,
         additionalData: {
           ...state.additionalData,
-          isPaused: payload
-        }
-      };
+          isPaused: payload,
+        },
+      }
     case UPDATE_CLOSE_ASSIGNMENTS:
       return {
         ...state,
         additionalData: {
           ...state.additionalData,
-          canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId),
+          canCloseClass: state.additionalData.canCloseClass.filter(
+            (item) => item !== payload.classId
+          ),
           // closed: true,
-          classesCanBeMarked: [...state.additionalData.classesCanBeMarked, payload.classId]
-        }
-      };
+          classesCanBeMarked: [
+            ...state.additionalData.classesCanBeMarked,
+            payload.classId,
+          ],
+        },
+      }
     case REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT:
       return {
         ...state,
         additionalData: {
           ...state.additionalData,
-          closed: true
-        }
-      };
+          closed: true,
+        },
+      }
     case UPDATE_REMOVED_STUDENTS_LIST: {
-      const updatedStudents = state.entities.map(item => {
+      const updatedStudents = state.entities.map((item) => {
         if (payload.includes(item.studentId)) {
-          return { ...item, status: "absent", UTASTATUS: testActivityStatus.ABSENT };
+          return {
+            ...item,
+            status: 'absent',
+            UTASTATUS: testActivityStatus.ABSENT,
+          }
         }
-        return item;
-      });
+        return item
+      })
       return {
         ...state,
-        entities: updatedStudents
-      };
+        entities: updatedStudents,
+      }
     }
     case UPDATE_SUBMITTED_STUDENTS: {
-      const updatedActivityByUserId = keyBy(payload, "userId");
-      const updatedStudents = state.entities.map(item => {
-        const updatedActivity = updatedActivityByUserId[item.studentId];
+      const updatedActivityByUserId = keyBy(payload, 'userId')
+      const updatedStudents = state.entities.map((item) => {
+        const updatedActivity = updatedActivityByUserId[item.studentId]
         if (updatedActivity) {
           return {
             ...item,
-            status: "submitted",
+            status: 'submitted',
             UTASTATUS: updatedActivity.status,
-            graded: updatedActivity.gradedAll ? "GRADED" : "IN GRADING",
+            graded: updatedActivity.gradedAll ? 'GRADED' : 'IN GRADING',
             score: updatedActivity.score,
             testActivityId: updatedActivity._id,
-            questionActivities: item.questionActivities.map(qAct => ({
+            questionActivities: item.questionActivities.map((qAct) => ({
               ...qAct,
-              ...(qAct.notStarted ? { skipped: true, score: 0, notStarted: undefined } : {})
-            }))
-          };
+              ...(qAct.notStarted
+                ? { skipped: true, score: 0, notStarted: undefined }
+                : {}),
+            })),
+          }
         }
-        return item;
-      });
+        return item
+      })
       return {
         ...state,
-        entities: updatedStudents
-      };
+        entities: updatedStudents,
+      }
     }
     case UPDATE_STUDENTS_LIST:
       return {
         ...state,
-        entities: state.entities.map(item => {
+        entities: state.entities.map((item) => {
           if (payload.includes(item.studentId)) {
             return {
               ...item,
-              isAssigned: false
-            };
+              isAssigned: false,
+            }
           }
-          return item;
-        })
-      };
+          return item
+        }),
+      }
     case UPDATE_CLASS_STUDENTS_LIST:
       return {
         ...state,
-        classStudents: payload
-      };
+        classStudents: payload,
+      }
     case SET_STUDENT_VIEW_FILTER:
       return {
         ...state,
-        studentViewFilter: payload
-      };
+        studentViewFilter: payload,
+      }
     case RECEIVE_STUDENT_RESPONSE_SUCCESS:
       return {
         ...state,
-        entities: state.entities.map(entity => {
-          if (payload.testActivity.userId === entity.studentId && entity.testActivityId === payload.testActivity._id) {
+        entities: state.entities.map((entity) => {
+          if (
+            payload.testActivity.userId === entity.studentId &&
+            entity.testActivityId === payload.testActivity._id
+          ) {
             return {
               ...entity,
               graded: payload?.testActivity?.graded || entity.graded,
               score: payload?.testActivity?.score || entity.score,
-              questionActivities: payload.questionActivities
-            };
+              questionActivities: payload.questionActivities,
+            }
           }
-          return entity;
-        })
-      };
+          return entity
+        }),
+      }
     case SET_PROGRESS_STATUS:
       return {
         ...state,
-        loading: payload
-      };
+        loading: payload,
+      }
     case SET_SHOW_ALL_STUDENTS:
       return {
         ...state,
-        isShowAllStudents: payload
-      };
+        isShowAllStudents: payload,
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

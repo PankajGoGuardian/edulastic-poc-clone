@@ -1,6 +1,6 @@
-import { Card, Checkbox, Button, Menu, Col } from "antd";
-import styled from "styled-components";
-import { FlexContainer } from "@edulastic/common";
+import { Card, Checkbox, Button, Menu, Col } from 'antd'
+import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
 import {
   mobileWidth,
   mobileWidthLarge,
@@ -17,12 +17,12 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   themeColorHoverBlue,
-  themeColorBlue
-} from "@edulastic/colors";
-import { themes } from "../../../../theme";
-import { FixedHeaderStyle } from "../../../StudentView/styled";
+  themeColorBlue,
+} from '@edulastic/colors'
+import { themes } from '../../../../theme'
+import { FixedHeaderStyle } from '../../../StudentView/styled'
 
-const classBoardTheme = themes.default.classboard;
+const classBoardTheme = themes.default.classboard
 
 export const CheckContainer = styled.span`
   font-weight: bold;
@@ -34,20 +34,20 @@ export const CheckContainer = styled.span`
   .ant-checkbox-wrapper:hover .ant-checkbox-inner,
   .ant-checkbox:hover .ant-checkbox-inner,
   .ant-checkbox-input:focus + .ant-checkbox-inner {
-    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
+    border-color: ${(props) => props.theme.checkbox.checkboxCheckedColor};
   }
   .ant-checkbox-checked .ant-checkbox-inner {
-    background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
+    background-color: ${(props) => props.theme.checkbox.checkboxCheckedColor};
+    border-color: ${(props) => props.theme.checkbox.checkboxCheckedColor};
   }
   .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-    background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
+    background-color: ${(props) => props.theme.checkbox.checkboxCheckedColor};
   }
-`;
+`
 
 export const ButtonGroup = styled.div`
   display: inline-block;
-`;
+`
 
 export const CardDetailsContainer = styled.div`
   width: 100%;
@@ -56,13 +56,13 @@ export const CardDetailsContainer = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     padding: 20px;
   }
-`;
+`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
-  margin-bottom: ${({ marginBottom }) => marginBottom || "15px"};
-  padding-right: ${({ paddingRight }) => paddingRight || "0px"};
-`;
+  margin-bottom: ${({ marginBottom }) => marginBottom || '15px'};
+  padding-right: ${({ paddingRight }) => paddingRight || '0px'};
+`
 
 export const StickyFlex = styled(FlexContainer)`
   width: 100%;
@@ -70,18 +70,18 @@ export const StickyFlex = styled(FlexContainer)`
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
-  ${props => props.hasStickyHeader && FixedHeaderStyle}
-`;
+  ${(props) => props.hasStickyHeader && FixedHeaderStyle}
+`
 
 export const GraphContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 20px;
-`;
+`
 
 export const StudentGrapContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 20px;
-`;
+`
 
 export const StyledCard = styled(Card)`
   width: 100%;
@@ -96,7 +96,7 @@ export const StyledCard = styled(Card)`
       padding: 15px;
     }
   }
-`;
+`
 
 export const StudentButtonDiv = styled(Col)`
   display: flex;
@@ -109,7 +109,7 @@ export const StudentButtonDiv = styled(Col)`
   @media (max-width: ${mobileWidth}) {
     margin: auto;
   }
-`;
+`
 
 const StyledTabButton = styled.a`
   height: 28px;
@@ -139,22 +139,22 @@ const StyledTabButton = styled.a`
     text-align: center;
     margin: 0 !important;
   }
-`;
+`
 
 export const BothButton = styled(StyledTabButton)`
   border-radius: 4px 0px 0px 4px;
-`;
+`
 
 export const StudentButton = styled(StyledTabButton)`
   border-radius: 0px;
   margin: 0px;
   border-right: none;
   border-left: none;
-`;
+`
 
 export const QuestionButton = styled(StyledTabButton)`
   border-radius: 0px 4px 4px 0px;
-`;
+`
 
 export const RedirectButton = styled(StyledTabButton)`
   border-radius: 0;
@@ -197,12 +197,12 @@ export const RedirectButton = styled(StyledTabButton)`
       display: none;
     }
   }
-`;
+`
 
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
   width: 190px;
-`;
+`
 
 export const MenuItems = styled(Menu.Item)`
   display: flex;
@@ -232,7 +232,7 @@ export const MenuItems = styled(Menu.Item)`
     color: ${white};
     background-color: ${themeColor};
   }
-`;
+`
 
 export const CaretUp = styled.i`
   position: absolute;
@@ -240,13 +240,13 @@ export const CaretUp = styled.i`
   color: ${white};
   right: 12px;
   font-size: 30px;
-`;
+`
 
 export const ButtonIconWrap = styled.span`
   display: block;
   left: 10px;
   position: absolute;
-`;
+`
 
 export const BarDiv = styled.div`
   width: 1px;
@@ -254,27 +254,27 @@ export const BarDiv = styled.div`
   background-color: ${classBoardTheme.headerBarbgcolor};
   display: inline-block;
   margin-bottom: -6px;
-`;
+`
 
 export const StyledCheckbox = styled(Checkbox)`
   font-size: 0.7em;
-  color: ${props => props.theme.checkbox.checkboxLabelColor};
-`;
+  color: ${(props) => props.theme.checkbox.checkboxLabelColor};
+`
 
 export const SpaceDiv = styled.div`
   display: inline-block;
   width: 20px;
-`;
+`
 
 export const ButtonSpace = styled.div`
   display: inline-block;
   width: 13px;
-`;
+`
 
 export const ClassBoardFeats = styled.div`
   display: flex;
   border-radius: 4px;
-`;
+`
 
 export const StyledButton = styled(Button)`
   font-size: 0.7em;
@@ -285,7 +285,7 @@ export const StyledButton = styled(Button)`
   color: ${classBoardTheme.headerButtonColor};
   border: 1px solid #00b0ff;
   font-weight: bold;
-`;
+`
 
 export const StyledAnc = styled(Button)`
   cursor: grab;
@@ -302,31 +302,36 @@ export const StyledAnc = styled(Button)`
     border: none;
     outline: none;
   }
-`;
+`
 
 export const ScoreHeader = styled.div`
   font-size: 11px;
   margin-bottom: 5px;
   color: ${cardTitleColor};
   font-weight: 800;
-`;
+`
 
 export const ScoreChangeWrapper = styled.div`
-  color: ${props => (props.scoreChange > 0 ? green : props.scoreChange < 0 ? red : cardTitleColor)};
+  color: ${(props) =>
+    props.scoreChange > 0
+      ? green
+      : props.scoreChange < 0
+      ? red
+      : cardTitleColor};
   font-size: 30px;
   font-weight: 800;
-`;
+`
 
 export const ScoreWrapper = styled.div`
   font-size: 30px;
   color: ${black};
-`;
+`
 
 export const GraphWrapper = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
-`;
+`
 
 export const InfoWrapper = styled.div`
   min-width: 205px;
@@ -336,7 +341,7 @@ export const InfoWrapper = styled.div`
     align-items: center;
     padding-top: 20px;
   }
-`;
+`
 
 export const SwitchBox = styled.span`
   font-size: 10px;
@@ -351,4 +356,4 @@ export const SwitchBox = styled.span`
       height: 12px;
     }
   }
-`;
+`

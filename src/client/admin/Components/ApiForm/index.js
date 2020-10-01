@@ -1,62 +1,64 @@
-import React, { useState, useMemo } from "react";
-import styled from "styled-components";
-import { Alert, Button, Form } from "antd";
-import Field from "./Field";
-import { FirstDiv, H2, OuterDiv } from "../../Common/StyledComponents";
+import React, { useState, useMemo } from 'react'
+import styled from 'styled-components'
+import { Alert, Button, Form } from 'antd'
+import Field from './Field'
+import { FirstDiv, H2, OuterDiv } from '../../Common/StyledComponents'
 
 const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
-  const [data, setData] = useState({});
-  const [errors, setErrors] = useState([]);
+  const [data, setData] = useState({})
+  const [errors, setErrors] = useState([])
   const onChange = (value, type) => {
-    setData({ ...data, [type]: value });
-  };
+    setData({ ...data, [type]: value })
+  }
 
-  const onCloseError = () => setErrors([]);
+  const onCloseError = () => setErrors([])
 
   const formatData = useMemo(
     () =>
       Object.keys(data).reduce((acc, key) => {
-        const field = fields.find(f => f.name === key);
+        const field = fields.find((f) => f.name === key)
         // assures only fields from selected category goes in API request
         if (field) {
           if (data[key] && field.formatter) {
-            acc[key] = field.formatter(data[key]);
+            acc[key] = field.formatter(data[key])
           } else {
-            acc[key] = data[key];
+            acc[key] = data[key]
           }
         }
-        return { ...acc };
+        return { ...acc }
       }, {}),
     [data]
-  );
+  )
 
   const onSave = () => {
-    const requiredFields = fields.filter(f => f.required);
-    const errorFields = requiredFields.filter(rf => !data[rf.name]).map(f => f.displayName || f.name);
+    const requiredFields = fields.filter((f) => f.required)
+    const errorFields = requiredFields
+      .filter((rf) => !data[rf.name])
+      .map((f) => f.displayName || f.name)
     if (errorFields.length) {
-      return setErrors(errorFields);
+      return setErrors(errorFields)
     }
-    onCloseError();
-    handleOnSave(formatData);
-  };
+    onCloseError()
+    handleOnSave(formatData)
+  }
 
-  const { text, align, parentField } = note;
+  const { text, align, parentField } = note
 
   return (
     <FormMainWrapper>
       <OuterDiv>
         <H2>{name}</H2>
         <FirstDiv>
-          <Form style={{ width: "100%" }}>
+          <Form style={{ width: '100%' }}>
             {!!errors.length && (
               <Alert
-                message={`${errors.join(", ")} fields are required`}
+                message={`${errors.join(', ')} fields are required`}
                 type="error"
                 closable
                 onClose={onCloseError}
               />
             )}
-            {fields.map(field => (
+            {fields.map((field) => (
               <Field {...field} onChange={onChange} note={note} />
             ))}
             <ActionWrapper>
@@ -64,7 +66,12 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
                 Submit
               </Button>
               {!!text && !parentField && (
-                <span className="note" style={align === "left" ? { justifyContent: "flex-start" } : {}}>
+                <span
+                  className="note"
+                  style={
+                    align === 'left' ? { justifyContent: 'flex-start' } : {}
+                  }
+                >
                   {text}
                 </span>
               )}
@@ -74,20 +81,20 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
         {children}
       </OuterDiv>
     </FormMainWrapper>
-  );
-};
+  )
+}
 
 const FormMainWrapper = styled.div`
   .note {
     color: red;
     font-size: 16px;
   }
-`;
+`
 
 const ActionWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
+`
 
-export default ApiFormsMain;
+export default ApiFormsMain

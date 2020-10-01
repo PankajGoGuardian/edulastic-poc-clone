@@ -1,42 +1,57 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { withNamespaces } from "@edulastic/localization";
-import Question from "../../../components/Question";
-import { Subtitle } from "../../../styled/Subtitle";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import CodeEditor from "./CodeEditor";
-import CodeEvaluatedResponse from "./CodeEvaluatedResponse";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { withNamespaces } from '@edulastic/localization'
+import Question from '../../../components/Question'
+import { Subtitle } from '../../../styled/Subtitle'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import CodeEditor from './CodeEditor'
+import CodeEvaluatedResponse from './CodeEvaluatedResponse'
 
-const QuestionSolution = ({ fillSections, cleanSections, item, setQuestionData, t }) => (
+const QuestionSolution = ({
+  fillSections,
+  cleanSections,
+  item,
+  setQuestionData,
+  t,
+}) => (
   <Question
     dataCy="codingstub"
     section="main"
-    label={t("component.coding.codeSolution")}
+    label={t('component.coding.codeSolution')}
     fillSections={fillSections}
     cleanSections={cleanSections}
   >
-    <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeSolution")}`)} showIcon>
-      {t("component.coding.codeSolution")}
+    <Subtitle
+      id={getFormattedAttrId(
+        `${item?.title}-${t('component.coding.codeSolution')}`
+      )}
+      showIcon
+    >
+      {t('component.coding.codeSolution')}
     </Subtitle>
     <Row>
-      <CodeEditor type="solutions" item={item} setQuestionData={setQuestionData} />
+      <CodeEditor
+        type="solutions"
+        item={item}
+        setQuestionData={setQuestionData}
+      />
       <CodeEvaluatedResponse dataSource={[]} />
     </Row>
   </Question>
-);
+)
 
 QuestionSolution.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   item: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
 QuestionSolution.defaultProps = {
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-export default withNamespaces("assessment")(QuestionSolution);
+export default withNamespaces('assessment')(QuestionSolution)

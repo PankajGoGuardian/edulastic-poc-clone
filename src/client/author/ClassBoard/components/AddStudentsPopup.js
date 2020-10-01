@@ -4,17 +4,20 @@ import {
   notification,
   CustomModalStyled,
   DatePickerStyled,
-  SelectInputStyled
-} from "@edulastic/common";
-import { assignmentPolicyOptions } from "@edulastic/constants";
-import { Row, Select } from "antd";
-import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { addStudentsAction, fetchClassStudentsAction } from "../../src/actions/classBoard";
-import { classStudentsSelector } from "../ducks";
-import { getUserName } from "../utils";
-import { BodyContainer } from "./styled";
+  SelectInputStyled,
+} from '@edulastic/common'
+import { assignmentPolicyOptions } from '@edulastic/constants'
+import { Row, Select } from 'antd'
+import moment from 'moment'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import {
+  addStudentsAction,
+  fetchClassStudentsAction,
+} from '../../src/actions/classBoard'
+import { classStudentsSelector } from '../ducks'
+import { getUserName } from '../utils'
+import { BodyContainer } from './styled'
 
 const AddStudentsPopup = ({
   groupId,
@@ -25,33 +28,34 @@ const AddStudentsPopup = ({
   disabledList,
   fetchGroupMembers,
   studentsList,
-  addStudents
+  addStudents,
 }) => {
-  const [selectedStudents, setSelectedStudent] = useState([]);
-  const [endDate, setEndDate] = useState(moment().add(1, "day"));
+  const [selectedStudents, setSelectedStudent] = useState([])
+  const [endDate, setEndDate] = useState(moment().add(1, 'day'))
   useEffect(() => {
-    fetchGroupMembers({ classId: groupId });
-  }, []);
+    fetchGroupMembers({ classId: groupId })
+  }, [])
 
-  const disabledEndDate = endDate => {
+  const disabledEndDate = (endDate) => {
     if (!endDate) {
-      return false;
+      return false
     }
-    return endDate < moment().startOf("day");
-  };
+    return endDate < moment().startOf('day')
+  }
 
   const submitAction = () => {
-    if (!selectedStudents.length) notification({ type: "warn", messageKey: "selectAtleastOneStudent" });
+    if (!selectedStudents.length)
+      notification({ type: 'warn', messageKey: 'selectAtleastOneStudent' })
     if (endDate < moment()) {
-      return notification({ messageKey: "SelectFutureEndDate" });
+      return notification({ messageKey: 'SelectFutureEndDate' })
     }
     if (closePolicy === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
-      addStudents(assignmentId, groupId, selectedStudents, endDate.valueOf());
+      addStudents(assignmentId, groupId, selectedStudents, endDate.valueOf())
     } else {
-      addStudents(assignmentId, groupId, selectedStudents);
+      addStudents(assignmentId, groupId, selectedStudents)
     }
-    closePopup();
-  };
+    closePopup()
+  }
 
   return (
     <CustomModalStyled
@@ -65,7 +69,7 @@ const AddStudentsPopup = ({
         </EduButton>,
         <EduButton data-cy="addButton" key="submit" onClick={submitAction}>
           ADD
-        </EduButton>
+        </EduButton>,
       ]}
     >
       <BodyContainer>
@@ -75,15 +79,17 @@ const AddStudentsPopup = ({
             data-cy="selectStudents"
             showSearch
             optionFilterProp="children"
-            filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            filterOption={(input, option) =>
+              option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             mode="multiple"
-            onChange={value => setSelectedStudent(value)}
+            onChange={(value) => setSelectedStudent(value)}
             placeholder="Select the students"
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             {studentsList.map(
-              x =>
-                x.enrollmentStatus !== "0" &&
+              (x) =>
+                x.enrollmentStatus !== '0' &&
                 x.status !== 0 && (
                   <Select.Option
                     key={x._id}
@@ -102,31 +108,33 @@ const AddStudentsPopup = ({
           <DatePickerStyled
             allowClear={false}
             disabledDate={disabledEndDate}
-            disabled={closePolicy !== assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE}
-            style={{ width: "100%", cursor: "pointer" }}
+            disabled={
+              closePolicy !== assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
+            }
+            style={{ width: '100%', cursor: 'pointer' }}
             value={endDate}
             showTime
             showToday={false}
-            onChange={v => {
+            onChange={(v) => {
               if (!v) {
-                setEndDate(moment().add(1, "day"));
+                setEndDate(moment().add(1, 'day'))
               } else {
-                setEndDate(v);
+                setEndDate(v)
               }
             }}
           />
         </Row>
       </BodyContainer>
     </CustomModalStyled>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
-    studentsList: classStudentsSelector(state)
+  (state) => ({
+    studentsList: classStudentsSelector(state),
   }),
   {
     fetchGroupMembers: fetchClassStudentsAction,
-    addStudents: addStudentsAction
+    addStudents: addStudentsAction,
   }
-)(AddStudentsPopup);
+)(AddStudentsPopup)

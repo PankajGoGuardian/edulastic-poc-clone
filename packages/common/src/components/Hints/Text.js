@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { white } from "@edulastic/colors";
-import { withMathFormula } from "../../HOC/withMathFormula";
+import { white } from '@edulastic/colors'
+import { withMathFormula } from '../../HOC/withMathFormula'
 
 const Text = styled.div`
   padding: 0 20px;
@@ -17,6 +17,6 @@ const Text = styled.div`
   img {
     max-width: 100%;
   }
-`;
+`
 
-export default withMathFormula(Text);
+export default withMathFormula(Text)

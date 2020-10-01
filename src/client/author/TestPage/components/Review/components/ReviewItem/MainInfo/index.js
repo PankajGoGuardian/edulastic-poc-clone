@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import { helpers, WithMathFormula, FlexContainer } from "@edulastic/common";
-import { Stimulus } from "./styled";
-import { PointsInput } from "../styled";
-import Actions from "../Actions";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { helpers, WithMathFormula, FlexContainer } from '@edulastic/common'
+import { Stimulus } from './styled'
+import { PointsInput } from '../styled'
+import Actions from '../Actions'
 
 class MainInfo extends React.Component {
   render() {
@@ -17,18 +17,22 @@ class MainInfo extends React.Component {
       onChangePoints,
       expandRow,
       onDelete,
-      isScoringDisabled = false
-    } = this.props;
-    const newHtml = helpers.sanitizeForReview(data.stimulus) || "";
+      isScoringDisabled = false,
+    } = this.props
+    const newHtml = helpers.sanitizeForReview(data.stimulus) || ''
     return (
-      <FlexContainer data-cy-item-index={index} data-cy={data.id} style={{ justifyContent: "space-between" }}>
+      <FlexContainer
+        data-cy-item-index={index}
+        data-cy={data.id}
+        style={{ justifyContent: 'space-between' }}
+      >
         <Stimulus
           dangerouslySetInnerHTML={{ __html: newHtml }}
           onClick={() => handlePreview(data.id)}
-          style={{ position: "relative" }}
+          style={{ position: 'relative' }}
         />
         <FlexContainer
-          style={{ width: "200px" }}
+          style={{ width: '200px' }}
           flexDirection="column"
           alignItems="flex-end"
           justifyContent="flex-end"
@@ -45,18 +49,18 @@ class MainInfo extends React.Component {
               type="number"
               disabled={!owner || !isEditable || isScoringDisabled}
               value={data.points}
-              onChange={e => onChangePoints(data.id, +e.target.value)}
+              onChange={(e) => onChangePoints(data.id, +e.target.value)}
             />
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-    );
+    )
   }
 }
 
 MainInfo.propTypes = {
   data: PropTypes.object.isRequired,
-  handlePreview: PropTypes.func.isRequired
-};
+  handlePreview: PropTypes.func.isRequired,
+}
 
-export default WithMathFormula(withRouter(MainInfo));
+export default WithMathFormula(withRouter(MainInfo))

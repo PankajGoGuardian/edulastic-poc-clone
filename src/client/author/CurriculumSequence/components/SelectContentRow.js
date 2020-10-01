@@ -1,13 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Menu } from "antd";
-import { mobileWidth, lightBlue, white } from "@edulastic/colors";
-import { toggleCheckedUnitItemAction, addContentToCurriculumSequenceAction, createAssignmentNowAction } from "../ducks";
-import AssignmentDragItem from "./AssignmentDragItem";
-import triangleIcon from "../assets/triangle.svg";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Menu } from 'antd'
+import { mobileWidth, lightBlue, white } from '@edulastic/colors'
+import {
+  toggleCheckedUnitItemAction,
+  addContentToCurriculumSequenceAction,
+  createAssignmentNowAction,
+} from '../ducks'
+import AssignmentDragItem from './AssignmentDragItem'
+import triangleIcon from '../assets/triangle.svg'
 
 /**
  * @typedef {object} Props
@@ -30,36 +34,40 @@ class ModuleRow extends Component {
   // NOTE: temporary
   state = {
     unitExpanded: false,
-    selectedContent: null
-  };
+    selectedContent: null,
+  }
 
-  handleChecked = id => {
+  handleChecked = (id) => {
     // console.log("handleChecked", id);
-  };
+  }
 
   handleUnitExpandCollapse = () => {
-    this.setState(prevState => ({ unitExpanded: !prevState.unitExpanded }));
-  };
+    this.setState((prevState) => ({ unitExpanded: !prevState.unitExpanded }))
+  }
 
-  handleAddContentMouseOver = moduleData => {
-    this.setState({ selectedContent: moduleData });
-  };
+  handleAddContentMouseOver = (moduleData) => {
+    this.setState({ selectedContent: moduleData })
+  }
 
-  handleAddContentClick = toUnit => {
-    const { addContentToCurriculumSequence } = this.props;
-    const { selectedContent } = { ...this.state };
-    addContentToCurriculumSequence(selectedContent, toUnit);
-  };
+  handleAddContentClick = (toUnit) => {
+    const { addContentToCurriculumSequence } = this.props
+    const { selectedContent } = { ...this.state }
+    addContentToCurriculumSequence(selectedContent, toUnit)
+  }
 
   handleAddContentNowClick = () => {
-    const { createAssignmentNow } = this.props;
-    const { selectedContent } = { ...this.state };
-    createAssignmentNow(selectedContent);
-  };
+    const { createAssignmentNow } = this.props
+    const { selectedContent } = { ...this.state }
+    createAssignmentNow(selectedContent)
+  }
 
   render() {
-    const { handleAddContentClick, handleAddContentMouseOver, handleAddContentNowClick } = this;
-    const { unitExpanded } = this.state;
+    const {
+      handleAddContentClick,
+      handleAddContentMouseOver,
+      handleAddContentNowClick,
+    } = this
+    const { unitExpanded } = this.state
     const {
       collapsed,
       destinationCurriculum,
@@ -67,22 +75,28 @@ class ModuleRow extends Component {
       module,
       toggleCheckedUnitItem,
       checkedUnitItems,
-      onBeginDrag
-    } = this.props;
-    const { data, title } = module;
+      onBeginDrag,
+    } = this.props
+    const { data, title } = module
 
     const menu = (
       <Menu data-cy="addContentMenu">
-        {destinationCurriculum.modules.map(moduleItem => (
-          <Menu.Item data-cy="addContentMenuItem" onClick={() => handleAddContentClick(moduleItem)}>
+        {destinationCurriculum.modules.map((moduleItem) => (
+          <Menu.Item
+            data-cy="addContentMenuItem"
+            onClick={() => handleAddContentClick(moduleItem)}
+          >
             <span>{moduleItem.title}</span>
           </Menu.Item>
         ))}
-        <Menu.Item data-cy="addContentMenuItemAssignNow" onClick={handleAddContentNowClick}>
+        <Menu.Item
+          data-cy="addContentMenuItemAssignNow"
+          onClick={handleAddContentNowClick}
+        >
           <span>Assign Now</span>
         </Menu.Item>
       </Menu>
-    );
+    )
 
     return (
       <ModuleWrapper key={`sc-${module.id}`}>
@@ -118,7 +132,7 @@ class ModuleRow extends Component {
           </Module>
         </Container>
       </ModuleWrapper>
-    );
+    )
   }
 }
 
@@ -131,8 +145,8 @@ ModuleRow.propTypes = {
   toggleCheckedUnitItem: PropTypes.func.isRequired,
   checkedUnitItems: PropTypes.array.isRequired,
   onBeginDrag: PropTypes.func.isRequired,
-  createAssignmentNow: PropTypes.func.isRequired
-};
+  createAssignmentNow: PropTypes.func.isRequired,
+}
 
 const AssignmentIcon = styled.span`
   border-radius: 4px;
@@ -140,8 +154,8 @@ const AssignmentIcon = styled.span`
   justify-self: flex-end;
   min-width: 19px;
   cursor: pointer;
-`;
-AssignmentIcon.displayName = "AssignmentIcon";
+`
+AssignmentIcon.displayName = 'AssignmentIcon'
 
 const UnitIcon = styled.span`
   border-radius: 4px;
@@ -150,10 +164,10 @@ const UnitIcon = styled.span`
   display: flex;
   justify-content: center;
   transition: 0.3s transform;
-  transform: ${({ rotated }) => (rotated ? "rotate(-90deg)" : "rotate(0deg)")};
+  transform: ${({ rotated }) => (rotated ? 'rotate(-90deg)' : 'rotate(0deg)')};
   cursor: pointer;
-`;
-UnitIcon.displayName = "UnitIcon";
+`
+UnitIcon.displayName = 'UnitIcon'
 
 const Row = styled.div`
   background: ${white};
@@ -162,7 +176,7 @@ const Row = styled.div`
   padding-left: 20px;
   padding-right: 10px;
   box-shadow: none;
-`;
+`
 
 const Container = styled.div`
   width: 100%;
@@ -173,25 +187,25 @@ const Container = styled.div`
   height: 100%;
 
   @media (max-width: ${mobileWidth}) {
-    margin-right: ${props => !props.value && "20px !important"};
-    margin-left: ${props => props.value && "20px !important"};
+    margin-right: ${(props) => !props.value && '20px !important'};
+    margin-left: ${(props) => props.value && '20px !important'};
   }
-`;
-Container.displayName = "SelectContentRowModuleContainer";
+`
+Container.displayName = 'SelectContentRowModuleContainer'
 
 const Module = styled.div`
   font-size: 13px;
   font-weight: 600;
   border-top: 1px solid ${lightBlue};
-`;
-Module.displayName = "SelectContentRowModule";
+`
+Module.displayName = 'SelectContentRowModule'
 
 const ModuleHeader = styled(Row)`
   box-shadow: none;
   display: flex;
   padding-top: 10px;
   padding-bottom: 10px;
-`;
+`
 
 const ModuleWrapper = styled.div`
   & {
@@ -215,27 +229,27 @@ const ModuleWrapper = styled.div`
     border: none;
     box-shadow: none;
   }
-`;
+`
 // TODO: make it consistent with other components
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   toggleCheckedUnitItem(id) {
-    dispatch(toggleCheckedUnitItemAction(id));
+    dispatch(toggleCheckedUnitItemAction(id))
   },
   addContentToCurriculumSequence(contentToAdd, toUnit) {
-    dispatch(addContentToCurriculumSequenceAction({ contentToAdd, toUnit }));
+    dispatch(addContentToCurriculumSequenceAction({ contentToAdd, toUnit }))
   },
   createAssignmentNow(contentToAdd) {
-    dispatch(createAssignmentNowAction(contentToAdd));
-  }
-});
+    dispatch(createAssignmentNowAction(contentToAdd))
+  },
+})
 
 const enhance = compose(
   connect(
     ({ curriculumSequence }) => ({
-      checkedUnitItems: curriculumSequence.checkedUnitItems
+      checkedUnitItems: curriculumSequence.checkedUnitItems,
     }),
     mapDispatchToProps
   )
-);
+)
 
-export default enhance(ModuleRow);
+export default enhance(ModuleRow)

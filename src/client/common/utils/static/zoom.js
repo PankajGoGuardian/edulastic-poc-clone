@@ -1,1 +1,1 @@
-export const smallestZoomLevel = "xs";
+export const smallestZoomLevel = 'xs'

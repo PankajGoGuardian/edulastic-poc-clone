@@ -1,14 +1,17 @@
-import { EduButton } from "@edulastic/common";
-import { PropTypes } from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { Container, ItemsAmount } from "../../../ItemList/components/CartButton/styled";
-import { getSelectedTestsSelector } from "../../ducks";
+import { EduButton } from '@edulastic/common'
+import { PropTypes } from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import {
+  Container,
+  ItemsAmount,
+} from '../../../ItemList/components/CartButton/styled'
+import { getSelectedTestsSelector } from '../../ducks'
 
 const CartButton = ({ selectedTests, onClick, buttonText, numberChecker }) => {
-  let numberOfSelectedTests = selectedTests && selectedTests.length;
+  let numberOfSelectedTests = selectedTests && selectedTests.length
   if (numberOfSelectedTests && numberChecker) {
-    numberOfSelectedTests = numberChecker(selectedTests);
+    numberOfSelectedTests = numberChecker(selectedTests)
   }
   return (
     <Container onClick={onClick} disabled={!numberOfSelectedTests}>
@@ -17,17 +20,17 @@ const CartButton = ({ selectedTests, onClick, buttonText, numberChecker }) => {
         <ItemsAmount>{numberOfSelectedTests}</ItemsAmount>
       </EduButton>
     </Container>
-  );
-};
+  )
+}
 
 CartButton.propTypes = {
   selectedTests: PropTypes.number.isRequired,
-  onClick: PropTypes.func.isRequired
-};
+  onClick: PropTypes.func.isRequired,
+}
 
 export default connect(
-  state => ({
-    selectedTests: getSelectedTestsSelector(state)
+  (state) => ({
+    selectedTests: getSelectedTestsSelector(state),
   }),
   null
-)(CartButton);
+)(CartButton)

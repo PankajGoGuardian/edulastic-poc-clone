@@ -5,13 +5,13 @@ import {
   greenDark,
   lightGreySecondary,
   secondaryTextColor,
-  smallDesktopWidth
-} from "@edulastic/colors";
-import { Paper } from "@edulastic/common";
-import { Col, Row } from "antd";
-import styled from "styled-components";
-import { SummarySelect } from "../../../Summary/common/SummaryForm";
-import { MainTitle } from "../../../Summary/components/Sidebar/styled";
+  smallDesktopWidth,
+} from '@edulastic/colors'
+import { Paper } from '@edulastic/common'
+import { Col, Row } from 'antd'
+import styled from 'styled-components'
+import { SummarySelect } from '../../../Summary/common/SummaryForm'
+import { MainTitle } from '../../../Summary/components/Sidebar/styled'
 
 export const Container = styled(Paper)`
   padding: 15px 0px;
@@ -21,29 +21,29 @@ export const Container = styled(Paper)`
     justify-content: space-between;
     align-items: flex-start;
   }
-`;
+`
 
 export const FlexBoxOne = styled.div`
   @media (max-width: 1199px) {
     flex-basis: calc(20% - 10px);
   }
-`;
+`
 export const FlexBoxTwo = styled.div`
   @media (max-width: 1199px) {
     flex-basis: calc(30% - 10px);
     padding-top: 25px;
   }
-`;
+`
 export const FlexBoxThree = styled.div`
   @media (max-width: 1199px) {
     flex-basis: calc(20% - 10px);
   }
-`;
+`
 export const FlexBoxFour = styled.div`
   @media (max-width: 1199px) {
     flex-basis: calc(30% - 10px);
   }
-`;
+`
 
 export const InnerFlex = styled.div`
   @media (max-width: 1199px) {
@@ -51,17 +51,17 @@ export const InnerFlex = styled.div`
     align-items: center;
     margin-bottom: 5px;
   }
-`;
+`
 
 export const MainLabel = styled(MainTitle)`
   @media (max-width: 1199px) {
     font-size: 11px;
-    margin-bottom: ${props => props.marginBottom || "8px"};
-    flex-basis: ${props => props.width || ""};
+    margin-bottom: ${(props) => props.marginBottom || '8px'};
+    flex-basis: ${(props) => props.width || ''};
   }
-`;
+`
 
-export const SummarySelectBox = styled(SummarySelect)``;
+export const SummarySelectBox = styled(SummarySelect)``
 
 export const SummaryInfoContainer = styled.div`
   padding: 5px 10px;
@@ -81,32 +81,32 @@ export const SummaryInfoContainer = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     padding: 5px;
   }
-`;
+`
 
 export const SummaryInfoNumber = styled.span`
-  font-size: ${props => props.theme.titleSecondarySectionFontSize};
+  font-size: ${(props) => props.theme.titleSecondarySectionFontSize};
   font-weight: 600;
   color: ${secondaryTextColor};
   float: left;
 
   @media (min-width: ${extraDesktopWidth}) {
-    font-size: ${props => props.theme.subtitleFontSize};
+    font-size: ${(props) => props.theme.subtitleFontSize};
   }
   @media (max-width: ${smallDesktopWidth}) {
-    font-size: ${props => props.theme.standardFont};
+    font-size: ${(props) => props.theme.standardFont};
   }
-`;
+`
 
 export const SummaryInfoTitle = styled.span`
   display: inline-block;
-  font-size: ${props => props.theme.smallLinkFontSize};
+  font-size: ${(props) => props.theme.smallLinkFontSize};
   font-weight: 600;
   color: ${secondaryTextColor};
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
   }
-`;
+`
 
 export const TableHeaderCol = styled(Col)`
   text-align: center;
@@ -119,7 +119,7 @@ export const TableHeaderCol = styled(Col)`
   @media (max-width: 1199px) {
     padding: 2px 0px 7px;
   }
-`;
+`
 
 export const TableBodyRow = styled(Row)`
   background: ${lightGreySecondary};
@@ -130,7 +130,7 @@ export const TableBodyRow = styled(Row)`
       margin-bottom: 5px;
     }
   }
-`;
+`
 
 export const TableBodyCol = styled(Col)`
   font-size: 14px;
@@ -145,7 +145,7 @@ export const TableBodyCol = styled(Col)`
   @media (max-width: 1199px) {
     padding: 3px 0;
   }
-`;
+`
 
 export const Standard = styled.span`
   display: inline-block;
@@ -161,4 +161,4 @@ export const Standard = styled.span`
   @media (max-width: 1199px) {
     padding: 4px 20px;
   }
-`;
+`

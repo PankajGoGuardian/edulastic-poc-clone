@@ -1,40 +1,43 @@
-import { keyBy as _keyBy, shuffle as _shuffle } from "lodash";
+import { keyBy as _keyBy, shuffle as _shuffle } from 'lodash'
 
 const shuffleOptions = (questions = [], qActivitiesById = {}) => {
-  const optionsOrder = {};
+  const optionsOrder = {}
 
-  const modifiedQuestions = questions.map(question => {
-    if (question.type === "multipleChoice") {
-      let { shuffledOptions } = qActivitiesById[question.id] || {};
+  const modifiedQuestions = questions.map((question) => {
+    if (question.type === 'multipleChoice') {
+      let { shuffledOptions } = qActivitiesById[question.id] || {}
 
       if (!shuffledOptions) {
-        shuffledOptions = _shuffle(question.options.map(item => item.value));
+        shuffledOptions = _shuffle(question.options.map((item) => item.value))
       }
-      optionsOrder[question.id] = shuffledOptions;
-      const optionByValue = _keyBy(question.options, "value");
-      question.options = shuffledOptions.map(id => optionByValue[id]);
+      optionsOrder[question.id] = shuffledOptions
+      const optionByValue = _keyBy(question.options, 'value')
+      question.options = shuffledOptions.map((id) => optionByValue[id])
     }
 
-    return question;
-  });
+    return question
+  })
 
-  return [modifiedQuestions, optionsOrder];
-};
+  return [modifiedQuestions, optionsOrder]
+}
 
 export const ShuffleChoices = (testItems, questionActivities) => {
-  const qActivitiesById = _keyBy(questionActivities, "qid");
-  let shuffles = {};
-  testItems.forEach(item => {
-    let optionsOrder;
-    [item.data.questions, optionsOrder] = shuffleOptions(item.data.questions, qActivitiesById);
+  const qActivitiesById = _keyBy(questionActivities, 'qid')
+  let shuffles = {}
+  testItems.forEach((item) => {
+    let optionsOrder
+    ;[item.data.questions, optionsOrder] = shuffleOptions(
+      item.data.questions,
+      qActivitiesById
+    )
     shuffles = {
       ...shuffles,
-      ...optionsOrder
-    };
-  });
+      ...optionsOrder,
+    }
+  })
 
-  return [testItems, shuffles];
-};
+  return [testItems, shuffles]
+}
 
 /**
  * input
@@ -61,11 +64,11 @@ export const ShuffleChoices = (testItems, questionActivities) => {
 
 //  TODO :  need to remove the object if the hint is cleared
 
-export const showHintButton = questions =>
+export const showHintButton = (questions) =>
   questions.reduce((acc, question) => {
     if (question.hints) {
       // handling cases when hints are undefined
-      acc += question.hints.filter(hint => hint.label.length > 0).length;
+      acc += question.hints.filter((hint) => hint.label.length > 0).length
     }
-    return acc;
-  }, 0);
+    return acc
+  }, 0)

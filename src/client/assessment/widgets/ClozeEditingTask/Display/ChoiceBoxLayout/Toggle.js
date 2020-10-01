@@ -1,31 +1,47 @@
-import React from "react";
-import styled from "styled-components";
-import fineIndex from "lodash/findIndex";
-import { MathFormulaDisplay } from "@edulastic/common";
-import { greyThemeLight, greyThemeDark1, lightBlue1 } from "@edulastic/colors";
-import { RadioLabel, RadioLabelGroup } from "../../../../styled/RadioWithLabel";
-import { subOptions } from "../../constants";
+import React from 'react'
+import styled from 'styled-components'
+import fineIndex from 'lodash/findIndex'
+import { MathFormulaDisplay } from '@edulastic/common'
+import { greyThemeLight, greyThemeDark1, lightBlue1 } from '@edulastic/colors'
+import { RadioLabel, RadioLabelGroup } from '../../../../styled/RadioWithLabel'
+import { subOptions } from '../../constants'
 
-const Toggle = ({ styles, options, userAnswer, disableResponse, onChange, displayStyleOption }) => {
-  const answer = userAnswer;
-  const answeredIndex = fineIndex(options, op => op === answer);
-  const isDashedline = subOptions.DASHED_LINE === displayStyleOption;
-  const handleChange = ({ target: { value: opIndex } }) => onChange(options[opIndex]);
+const Toggle = ({
+  styles,
+  options,
+  userAnswer,
+  disableResponse,
+  onChange,
+  displayStyleOption,
+}) => {
+  const answer = userAnswer
+  const answeredIndex = fineIndex(options, (op) => op === answer)
+  const isDashedline = subOptions.DASHED_LINE === displayStyleOption
+  const handleChange = ({ target: { value: opIndex } }) =>
+    onChange(options[opIndex])
   return (
     <ToggleWrapper>
       <AnswerBox isDashedline={isDashedline} style={styles}>
-        <AnswerCont dangerouslySetInnerHTML={{ __html: answer }} isHighlight={!isDashedline} />
+        <AnswerCont
+          dangerouslySetInnerHTML={{ __html: answer }}
+          isHighlight={!isDashedline}
+        />
       </AnswerBox>
-      <RadioGroup value={answeredIndex} disabled={disableResponse} onChange={handleChange} isDashedline={isDashedline}>
+      <RadioGroup
+        value={answeredIndex}
+        disabled={disableResponse}
+        onChange={handleChange}
+        isDashedline={isDashedline}
+      >
         {options.map((_, opIndex) => (
           <Radio value={opIndex} key={opIndex} />
         ))}
       </RadioGroup>
     </ToggleWrapper>
-  );
-};
+  )
+}
 
-export default Toggle;
+export default Toggle
 
 const ToggleWrapper = styled.div`
   position: relative;
@@ -34,12 +50,12 @@ const ToggleWrapper = styled.div`
   align-items: center;
   justify-content: center;
   vertical-align: bottom;
-`;
+`
 
 const RadioGroup = styled(RadioLabelGroup)`
   position: absolute;
   font-size: 8px;
-  bottom: ${({ isDashedline }) => (isDashedline ? "-14px" : "-4px")};
+  bottom: ${({ isDashedline }) => (isDashedline ? '-14px' : '-4px')};
   &.ant-radio-group {
     .ant-radio-wrapper {
       .ant-radio {
@@ -72,22 +88,22 @@ const RadioGroup = styled(RadioLabelGroup)`
   & .ant-radio-wrapper {
     font-size: 8px;
   }
-`;
+`
 
 const Radio = styled(RadioLabel)`
   &:last-child {
     margin-right: 0px;
   }
-`;
+`
 
 const AnswerBox = styled.div`
   padding: 8px 10px;
   display: inline-block;
   vertical-align: middle;
   line-height: 1.2;
-  ${({ isDashedline }) => (isDashedline ? "border-bottom: 2px dashed;" : "")}
-`;
+  ${({ isDashedline }) => (isDashedline ? 'border-bottom: 2px dashed;' : '')}
+`
 
 const AnswerCont = styled(MathFormulaDisplay)`
-  ${({ isHighlight }) => (isHighlight ? `background: ${lightBlue1}` : "")}
-`;
+  ${({ isHighlight }) => (isHighlight ? `background: ${lightBlue1}` : '')}
+`

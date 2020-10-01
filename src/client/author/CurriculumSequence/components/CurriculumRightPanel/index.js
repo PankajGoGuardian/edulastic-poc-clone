@@ -1,10 +1,14 @@
-import React, { Fragment } from "react";
-import styled from "styled-components";
-import { IconClose } from "@edulastic/icons";
-import { desktopWidth, mobileWidthLarge, secondaryTextColor } from "@edulastic/colors";
+import React, { Fragment } from 'react'
+import styled from 'styled-components'
+import { IconClose } from '@edulastic/icons'
+import {
+  desktopWidth,
+  mobileWidthLarge,
+  secondaryTextColor,
+} from '@edulastic/colors'
 
-import ManageContentBlock from "../ManageContentBlock";
-import SummaryBlock from "./SummaryBlock";
+import ManageContentBlock from '../ManageContentBlock'
+import SummaryBlock from './SummaryBlock'
 
 const CurriculumRightPanel = ({
   showRightPanel,
@@ -16,25 +20,35 @@ const CurriculumRightPanel = ({
   isManageContentActive,
   isNotStudentOrParent,
   destinationCurriculumSequence,
-  shouldHidCustomizeButton
+  shouldHidCustomizeButton,
 }) => {
   if (!showRightPanel || !activeRightPanel) {
-    return <Fragment />;
+    return <></>
   }
 
-  const { subjects, grades = [], collections } = destinationCurriculumSequence;
-  const testsInPlaylist = destinationCurriculumSequence?.modules?.flatMap(m => m?.data?.map(d => d?.contentId)) || [];
-  const hasSummaryDataNoData = summaryData?.filter(item => (item.hidden ? !item.value && !isStudent : !item.value))
-    .length;
+  const { subjects, grades = [], collections } = destinationCurriculumSequence
+  const testsInPlaylist =
+    destinationCurriculumSequence?.modules?.flatMap((m) =>
+      m?.data?.map((d) => d?.contentId)
+    ) || []
+  const hasSummaryDataNoData = summaryData?.filter((item) =>
+    item.hidden ? !item.value && !isStudent : !item.value
+  ).length
 
   const showManageContent =
-    ((isNotStudentOrParent && isManageContentActive && !urlHasUseThis && !shouldHidCustomizeButton) ||
+    ((isNotStudentOrParent &&
+      isManageContentActive &&
+      !urlHasUseThis &&
+      !shouldHidCustomizeButton) ||
       (urlHasUseThis && isManageContentActive)) &&
-    !isStudent;
-  const showSummaryBlock = !isManageContentActive || isStudent;
+    !isStudent
+  const showSummaryBlock = !isManageContentActive || isStudent
 
   return (
-    <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative", height: "calc(100vh - 160px)" }}>
+    <div
+      data-cy="curriculum-sequence-right-panel"
+      style={{ position: 'relative', height: 'calc(100vh - 160px)' }}
+    >
       {(showManageContent || showSummaryBlock) && (
         <HideRightPanel onClick={hideRightpanel}>
           <IconClose />
@@ -58,10 +72,10 @@ const CurriculumRightPanel = ({
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CurriculumRightPanel;
+export default CurriculumRightPanel
 
 export const HideRightPanel = styled.div`
   position: absolute;
@@ -78,10 +92,10 @@ export const HideRightPanel = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     position: fixed;
-    top: ${props => props.theme.HeaderHeight.sd + 18}px;
+    top: ${(props) => props.theme.HeaderHeight.sd + 18}px;
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    top: ${props => props.theme.HeaderHeight.xs + 18}px;
+    top: ${(props) => props.theme.HeaderHeight.xs + 18}px;
   }
-`;
+`

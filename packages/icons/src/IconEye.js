@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconEye = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.396 11.087" {...props}>
+const IconEye = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 17.396 11.087"
+    {...props}
+  >
     <g transform="translate(0 0)">
       <g transform="translate(0 0)">
         <path
@@ -22,6 +26,6 @@ const IconEye = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconEye);
+export default withIconStyles(IconEye)

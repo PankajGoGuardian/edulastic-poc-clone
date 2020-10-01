@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button } from "@edulastic/common";
-import { themeColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Button } from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
 
 export const AlterBtn = styled(Button)`
   background: transparent;
@@ -10,4 +10,4 @@ export const AlterBtn = styled(Button)`
   margin-left: auto;
   min-height: 28px;
   color: ${themeColor};
-`;
+`

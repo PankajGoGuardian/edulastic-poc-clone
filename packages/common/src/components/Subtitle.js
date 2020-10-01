@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const Subtitle = styled.h3`
   font-weight: 600;
@@ -9,16 +9,16 @@ const Subtitle = styled.h3`
   padding-right: 8px;
   text-transform: uppercase;
   text-align: ${({ direction }) => {
-    if (direction === "row" || direction === "row-reverse") {
-      return "center";
+    if (direction === 'row' || direction === 'row-reverse') {
+      return 'center'
     }
-    return "left";
+    return 'left'
   }};
   background: #f6f6f6;
   padding: 11px 19px;
   border: 4px;
   width: max-content;
-  margin: ${({ margin }) => margin || "0px"};
-`;
+  margin: ${({ margin }) => margin || '0px'};
+`
 
-export default Subtitle;
+export default Subtitle

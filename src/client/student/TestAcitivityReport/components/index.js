@@ -1,37 +1,46 @@
-import { MainContentWrapper, EduButton, FlexContainer } from "@edulastic/common";
-import { IconReport } from "@edulastic/icons";
-import { Spin } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import { test as testConstants } from "@edulastic/constants";
-import styled from "styled-components";
-import React, { useEffect, useState, Fragment } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { clearUserWorkAction } from "../../../assessment/actions/userWork";
-import { getQuestionsArraySelector, getQuestionsSelector } from "../../../author/sharedDucks/questions";
-import { getTestEntitySelector } from "../../../author/TestPage/ducks";
+import { MainContentWrapper, EduButton, FlexContainer } from '@edulastic/common'
+import { IconReport } from '@edulastic/icons'
+import { Spin } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import { test as testConstants } from '@edulastic/constants'
+import styled from 'styled-components'
+import React, { useEffect, useState, Fragment } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { clearUserWorkAction } from '../../../assessment/actions/userWork'
+import {
+  getQuestionsArraySelector,
+  getQuestionsSelector,
+} from '../../../author/sharedDucks/questions'
+import { getTestEntitySelector } from '../../../author/TestPage/ducks'
 // components
-import TestAcivityHeader from "../../sharedComponents/Header";
+import TestAcivityHeader from '../../sharedComponents/Header'
 
 import {
   getCurrentItemSelector,
   setCurrentItemAction,
   getItemsSelector,
-  getFeedbackTransformedSelector
-} from "../../sharedDucks/TestItem";
-import MainContainer from "../../styled/mainContainer";
+  getFeedbackTransformedSelector,
+} from '../../sharedDucks/TestItem'
+import MainContainer from '../../styled/mainContainer'
 // actions
-import { loadTestActivityReportAction } from "../ducks";
-import ReportListContent from "./Container";
-import TestActivitySubHeader from "./SubHeader";
-import ProgressGraph from "../../../common/components/ProgressGraph";
-import OverallFeedback from "./OverallFeedback";
+import { loadTestActivityReportAction } from '../ducks'
+import ReportListContent from './Container'
+import TestActivitySubHeader from './SubHeader'
+import ProgressGraph from '../../../common/components/ProgressGraph'
+import OverallFeedback from './OverallFeedback'
 
-const { releaseGradeLabels } = testConstants;
-const continueBtns = [releaseGradeLabels.WITH_ANSWERS, releaseGradeLabels.WITH_RESPONSE];
-const greyBars = [releaseGradeLabels.DONT_RELEASE, releaseGradeLabels.SCORE_ONLY];
+const { releaseGradeLabels } = testConstants
+const continueBtns = [
+  releaseGradeLabels.WITH_ANSWERS,
+  releaseGradeLabels.WITH_RESPONSE,
+]
+const greyBars = [
+  releaseGradeLabels.DONT_RELEASE,
+  releaseGradeLabels.SCORE_ONLY,
+]
 
 const ReportListContainer = ({
   flag,
@@ -48,72 +57,76 @@ const ReportListContainer = ({
   testItems,
   attempts,
   testActivity,
-  questionActivities
+  questionActivities,
 }) => {
-  const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
-  const [showGraph, setShowGraph] = useState(true);
-  const { isDocBased } = test;
-  const { releaseScore } = testActivity;
+  const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
+  const [showGraph, setShowGraph] = useState(true)
+  const { isDocBased } = test
+  const { releaseScore } = testActivity
 
-  const setCurrentItemFromGraph = qIndex => {
+  const setCurrentItemFromGraph = (qIndex) => {
     if (continueBtns.includes(releaseScore)) {
-      setCurrentItem(qIndex);
-      setShowGraph(false);
+      setCurrentItem(qIndex)
+      setShowGraph(false)
     }
-  };
+  }
 
   const reviewResponses = () => {
-    setCurrentItem(0);
-    setShowGraph(false);
-  };
+    setCurrentItem(0)
+    setShowGraph(false)
+  }
 
   const showSummaryView = () => {
-    setCurrentItem(0);
-    setShowGraph(true);
-  };
+    setCurrentItem(0)
+    setShowGraph(true)
+  }
 
   const handleExit = () => {
-    history.push("/home/grades");
-  };
+    history.push('/home/grades')
+  }
 
   useEffect(() => {
     loadTestActivityReport({
       testId: match.params.testId,
       testActivityId: match.params.id,
-      groupId: match.params.classId
-    });
-    setCurrentItem(0);
+      groupId: match.params.classId,
+    })
+    setCurrentItem(0)
     return () => {
-      clearUserWork();
-    };
-  }, [match]);
+      clearUserWork()
+    }
+  }, [match])
 
   useEffect(() => {
     if (!testFeedback) {
-      return;
+      return
     }
 
     if (!showGraph) {
-      setAssignmentItemTitle(<AssignmentItemTitleView onClick={showSummaryView}>{testTitle}</AssignmentItemTitleView>);
+      setAssignmentItemTitle(
+        <AssignmentItemTitleView onClick={showSummaryView}>
+          {testTitle}
+        </AssignmentItemTitleView>
+      )
     } else {
-      setAssignmentItemTitle(testTitle);
+      setAssignmentItemTitle(testTitle)
     }
-  }, [testFeedback, showGraph]);
+  }, [testFeedback, showGraph])
 
   if (!testFeedback) {
-    return <Spin />;
+    return <Spin />
   }
 
-  const showReviewResponses = continueBtns.includes(releaseScore) && showGraph;
+  const showReviewResponses = continueBtns.includes(releaseScore) && showGraph
 
-  const dontRelease = releaseScore === releaseGradeLabels.DONT_RELEASE;
+  const dontRelease = releaseScore === releaseGradeLabels.DONT_RELEASE
 
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader
         isDocBased={isDocBased}
         titleIcon={IconReport}
-        titleText={test?.title || ""}
+        titleText={test?.title || ''}
         onExit={handleExit}
         showExit={!isCliUser}
         showReviewResponses={showReviewResponses}
@@ -121,7 +134,7 @@ const ReportListContainer = ({
         hideSideMenu={isCliUser}
         attempts={attempts}
       />
-      <MainContentWrapper padding={isDocBased ? "0px" : "20px 30px"}>
+      <MainContentWrapper padding={isDocBased ? '0px' : '20px 30px'}>
         <TestActivitySubHeader
           title={assignmentItemTitle}
           questionLabel={showGraph ? null : `Q${currentItem + 1}`}
@@ -130,7 +143,7 @@ const ReportListContainer = ({
           hideQuestionSelect={showGraph}
         />
         {showGraph && (
-          <Fragment>
+          <>
             <ProgressGraph
               onClickBar={setCurrentItemFromGraph}
               testActivity={testActivity}
@@ -141,7 +154,7 @@ const ReportListContainer = ({
               isCliUser={isCliUser}
             />
             {!isCliUser && <OverallFeedback />}
-          </Fragment>
+          </>
         )}
         {showReviewResponses && !dontRelease && !isCliUser && (
           <FlexContainer mt="16px">
@@ -150,45 +163,50 @@ const ReportListContainer = ({
             </EduButton>
           </FlexContainer>
         )}
-        {!showGraph && <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />}
+        {!showGraph && (
+          <ReportListContent
+            title={assignmentItemTitle}
+            reportId={match.params.id}
+          />
+        )}
       </MainContentWrapper>
     </MainContainer>
-  );
-};
+  )
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       flag: state.ui.flag,
       test: getTestEntitySelector(state),
       currentItem: getCurrentItemSelector(state),
-      testFeedback: get(state, "testFeedback", null),
+      testFeedback: get(state, 'testFeedback', null),
       questions: getQuestionsArraySelector(state),
       questionsById: getQuestionsSelector(state),
-      testTitle: get(state, ["tests", "entity", "title"], ""),
-      isCliUser: get(state, "user.isCliUser", false),
+      testTitle: get(state, ['tests', 'entity', 'title'], ''),
+      isCliUser: get(state, 'user.isCliUser', false),
       testItems: getItemsSelector(state),
       questionActivities: getFeedbackTransformedSelector(state),
       testActivity: get(state, `[studentReport][testActivity]`, {}),
-      attempts: get(state, `testActivities`, [])
+      attempts: get(state, `testActivities`, []),
     }),
     {
       setCurrentItem: setCurrentItemAction,
       loadTestActivityReport: loadTestActivityReportAction,
-      clearUserWork: clearUserWorkAction
+      clearUserWork: clearUserWorkAction,
     }
   )
-);
+)
 
-export default enhance(ReportListContainer);
+export default enhance(ReportListContainer)
 
 ReportListContainer.propTypes = {
   flag: PropTypes.bool.isRequired,
   testFeedback: PropTypes.array.isRequired,
-  clearUserWork: PropTypes.func.isRequired
-};
+  clearUserWork: PropTypes.func.isRequired,
+}
 
 const AssignmentItemTitleView = styled.span`
   cursor: pointer;
-`;
+`

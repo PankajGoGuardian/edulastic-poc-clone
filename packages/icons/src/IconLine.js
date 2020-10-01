@@ -1,10 +1,14 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
-import { themeColor } from "@edulastic/colors";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
+import { themeColor } from '@edulastic/colors'
 
-const IconLine = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.365 16.944" {...props}>
+const IconLine = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 19.365 16.944"
+    {...props}
+  >
     <g transform="translate(-0.001 0)">
       <g transform="translate(0 12.91)" strokeWidth="1">
         <circle cx="2.017" cy="2.017" r="2.017" stroke="none" />
@@ -20,9 +24,15 @@ const IconLine = props => (
           stroke="none"
         />
       </g>
-      <line y1="13" x2="15" transform="translate(2.5 1.605)" stroke={props.color || themeColor} strokeWidth="2" />
+      <line
+        y1="13"
+        x2="15"
+        transform="translate(2.5 1.605)"
+        stroke={props.color || themeColor}
+        strokeWidth="2"
+      />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconLine);
+export default withIconStyles(IconLine)

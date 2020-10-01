@@ -1,6 +1,6 @@
-import React from "react";
-import { QuestionDetails, DetailRow, FlexWrap } from "./styled";
-import Tags from "../Tags";
+import React from 'react'
+import { QuestionDetails, DetailRow, FlexWrap } from './styled'
+import Tags from '../Tags'
 
 const QuestionPreviewDetails = ({
   id,
@@ -10,36 +10,36 @@ const QuestionPreviewDetails = ({
   authorDifficulty,
   bloomsTaxonomy,
   tags,
-  standards
+  standards,
 }) => (
   <QuestionDetails>
     <FlexWrap>
       <DetailRow font={11}>
         <label>ID: </label>
-        <span>{id?.length > 6 ? id.substr(id.length - 6) : id || "--"}</span>
+        <span>{id?.length > 6 ? id.substr(id.length - 6) : id || '--'}</span>
       </DetailRow>
       <DetailRow>
         <label>Owner: </label>
-        <span>{createdBy.name || "--"}</span>
+        <span>{createdBy.name || '--'}</span>
       </DetailRow>
       <DetailRow font={11}>
         <label>Points: </label>
-        <span>{maxScore || "--"}</span>
+        <span>{maxScore || '--'}</span>
       </DetailRow>
     </FlexWrap>
 
     <FlexWrap border="none" justify="flex-start">
       <DetailRow direction="column">
         <label>Depth of Knowledge</label>
-        <span>{depthOfKnowledge || "--"}</span>
+        <span>{depthOfKnowledge || '--'}</span>
       </DetailRow>
       <DetailRow direction="column">
         <label>Difficulty Level</label>
-        <span>{authorDifficulty || "--"}</span>
+        <span>{authorDifficulty || '--'}</span>
       </DetailRow>
       <DetailRow direction="column">
         <label>Bloom’s Taxonomy</label>
-        <span>{bloomsTaxonomy || "--"}</span>
+        <span>{bloomsTaxonomy || '--'}</span>
       </DetailRow>
     </FlexWrap>
 
@@ -52,10 +52,15 @@ const QuestionPreviewDetails = ({
       </DetailRow>
       <DetailRow className="tags">
         <label>Tags: </label>
-        <div>{(tags && tags.length && tags.map(tag => <span>{tag.tagName}</span>)) || "--"}</div>
+        <div>
+          {(tags &&
+            tags.length &&
+            tags.map((tag) => <span>{tag.tagName}</span>)) ||
+            '--'}
+        </div>
       </DetailRow>
     </FlexWrap>
   </QuestionDetails>
-);
+)
 
-export default QuestionPreviewDetails;
+export default QuestionPreviewDetails

@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CorrectAnswersContainer = styled.div`
   position: relative;
   padding-top: 0px;
-`;
+`

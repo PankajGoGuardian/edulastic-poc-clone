@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { TextInputStyled } from "../../styled/InputStyles";
+import { TextInputStyled } from '../../styled/InputStyles'
 
 const CustomInput = ({ size, style, type, value, placeholder, onChange }) => {
-  const handleInputChange = event => onChange(event.target.value);
+  const handleInputChange = (event) => onChange(event.target.value)
   // eslint-disable-next-line max-len
   return (
     <TextInputStyled
@@ -15,8 +15,8 @@ const CustomInput = ({ size, style, type, value, placeholder, onChange }) => {
       onChange={handleInputChange}
       placeholder={placeholder}
     />
-  );
-};
+  )
+}
 
 CustomInput.propTypes = {
   size: PropTypes.string,
@@ -24,14 +24,14 @@ CustomInput.propTypes = {
   value: PropTypes.number.isRequired,
   placeholder: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  style: PropTypes.object
-};
+  style: PropTypes.object,
+}
 
 CustomInput.defaultProps = {
-  size: "default",
-  type: "text",
-  placeholder: "",
-  style: {}
-};
+  size: 'default',
+  type: 'text',
+  placeholder: '',
+  style: {},
+}
 
-export default CustomInput;
+export default CustomInput

@@ -1,8 +1,8 @@
-import React from "react";
-import { SortableContainer } from "react-sortable-hoc";
+import React from 'react'
+import { SortableContainer } from 'react-sortable-hoc'
 
-import { QlFormats } from "../styled/QlFormats";
-import SortableItem from "./SortableItem";
+import { QlFormats } from '../styled/QlFormats'
+import SortableItem from './SortableItem'
 
 const SortableList = SortableContainer(({ items, handleActiveChange }) => (
   <QlFormats>
@@ -17,6 +17,6 @@ const SortableList = SortableContainer(({ items, handleActiveChange }) => (
       />
     ))}
   </QlFormats>
-));
+))
 
-export default SortableList;
+export default SortableList

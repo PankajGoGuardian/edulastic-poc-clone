@@ -1,21 +1,29 @@
-import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, EduButton, notification, TypeToConfirmModal } from "@edulastic/common";
-import { SearchInputStyled, SelectInputStyled } from "@edulastic/common/src/components/InputStyles";
-import { roleuser } from "@edulastic/constants";
-import { IconTrash } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Icon, Menu, Row, Select } from "antd";
-import { get, identity, isEmpty, pickBy, uniqBy, unset } from "lodash";
-import moment from "moment";
-import React from "react";
-import { connect } from "react-redux";
-import withRouter from "react-router/withRouter";
-import { compose } from "redux";
+import { themeColor } from '@edulastic/colors'
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  TypeToConfirmModal,
+} from '@edulastic/common'
+import {
+  SearchInputStyled,
+  SelectInputStyled,
+} from '@edulastic/common/src/components/InputStyles'
+import { roleuser } from '@edulastic/constants'
+import { IconTrash } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Icon, Menu, Row, Select } from 'antd'
+import { get, identity, isEmpty, pickBy, uniqBy, unset } from 'lodash'
+import moment from 'moment'
+import React from 'react'
+import { connect } from 'react-redux'
+import withRouter from 'react-router/withRouter'
+import { compose } from 'redux'
 import {
   StyledActionDropDown,
   StyledClassName,
-  StyledFilterDiv
-} from "../../../../admin/Common/StyledComponents";
+  StyledFilterDiv,
+} from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
   LeftFilterDiv,
@@ -25,44 +33,51 @@ import {
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
-  TableContainer
-} from "../../../../common/styled";
-import { getFullNameFromString } from "../../../../common/utils/helpers";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
-import {createAdminUserAction, deleteAdminUserAction, removeUserEnrollmentsAction} from "../../../SchoolAdmin/ducks";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import { getUser, getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { AddStudentsToOtherClassModal, AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
+  TableContainer,
+} from '../../../../common/styled'
+import { getFullNameFromString } from '../../../../common/utils/helpers'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import AddToGroupModal from '../../../Reports/common/components/Popups/AddToGroupModal'
+import {
+  createAdminUserAction,
+  deleteAdminUserAction,
+  removeUserEnrollmentsAction,
+} from '../../../SchoolAdmin/ducks'
+import Breadcrumb from '../../../src/components/Breadcrumb'
+import { getUser, getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import {
+  AddStudentsToOtherClassModal,
+  AddStudentsToOtherClassModal as MoveUsersToOtherClassModal,
+} from '../../../Student/components/StudentTable/AddStudentToOtherClass'
 import {
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction,
   getAddStudentsToOtherClassSelector,
   getValidatedClassDetails,
-  moveUsersToOtherClassAction
-} from "../../../Student/ducks";
+  moveUsersToOtherClassAction,
+} from '../../../Student/ducks'
 import {
   getClassEnrollmentUsersCountSelector,
   getClassEnrollmentUsersSelector,
-  requestEnrolExistingUserToClassAction
-} from "../../ducks";
-import { AddNewUserModal } from "../Common/AddNewUser";
-import { StyledTable } from "./styled";
+  requestEnrolExistingUserToClassAction,
+} from '../../ducks'
+import { AddNewUserModal } from '../Common/AddNewUser'
+import { StyledTable } from './styled'
 
-const { Option } = Select;
+const { Option } = Select
 
 class ClassEnrollmentTable extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       selectedRowKeys: [],
       filtersData: [
         {
-          filtersColumn: "",
-          filtersValue: "",
-          filterStr: "",
-          filterAdded: false
-        }
+          filtersColumn: '',
+          filtersValue: '',
+          filterStr: '',
+          filterAdded: false,
+        },
       ],
       currentPage: 1,
       addUserFormModalVisible: false,
@@ -73,236 +88,250 @@ class ClassEnrollmentTable extends React.Component {
       moveUsersModalVisible: false,
       refineButtonActive: false,
       showAddToGroupModal: false,
-      showActive: true
-    };
+      showActive: true,
+    }
   }
 
   componentDidMount() {
-    const { dataPassedWithRoute } = this.props;
+    const { dataPassedWithRoute } = this.props
     if (!isEmpty(dataPassedWithRoute)) {
-      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadClassEnrollmentList);
+      this.setState(
+        { filtersData: [{ ...dataPassedWithRoute }] },
+        this.loadClassEnrollmentList
+      )
     } else {
-      this.loadClassEnrollmentList();
+      this.loadClassEnrollmentList()
     }
   }
 
   renderUserNames() {
-    const { selectedUsersInfo } = this.state;
-    return selectedUsersInfo.map(item => {
-      const username = get(item, "user.username");
-      const id = get(item, "user._id");
-      return <StyledClassName key={id}>{username}</StyledClassName>;
-    });
+    const { selectedUsersInfo } = this.state
+    return selectedUsersInfo.map((item) => {
+      const username = get(item, 'user.username')
+      const id = get(item, 'user._id')
+      return <StyledClassName key={id}>{username}</StyledClassName>
+    })
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
-    const { classEnrollmentData } = this.props;
-    const selectedUserIds = selectedRows.map(item => item.id);
-    const selectedUsersInfo = classEnrollmentData.filter(data => {
-      const code = get(data, "group.code");
-      const userId = get(data, "user._id");
-      const recordMatch = selectedRows.find(r => r.code === code && r.id === userId);
-      if (recordMatch) return true;
-    });
-    this.setState({ selectedRowKeys, selectedUserIds, selectedUsersInfo });
-  };
+    const { classEnrollmentData } = this.props
+    const selectedUserIds = selectedRows.map((item) => item.id)
+    const selectedUsersInfo = classEnrollmentData.filter((data) => {
+      const code = get(data, 'group.code')
+      const userId = get(data, 'user._id')
+      const recordMatch = selectedRows.find(
+        (r) => r.code === code && r.id === userId
+      )
+      if (recordMatch) return true
+    })
+    this.setState({ selectedRowKeys, selectedUserIds, selectedUsersInfo })
+  }
 
-  changeActionMode = e => {
-    const { selectedRowKeys, selectedUsersInfo } = this.state;
-    const isInstructor = selectedUsersInfo.some(user => user.role === "teacher");
-    const areUsersOfDifferentClasses = uniqBy(selectedUsersInfo, "group.code").length > 1;
-    if (e.key === "remove students") {
+  changeActionMode = (e) => {
+    const { selectedRowKeys, selectedUsersInfo } = this.state
+    const isInstructor = selectedUsersInfo.some(
+      (user) => user.role === 'teacher'
+    )
+    const areUsersOfDifferentClasses =
+      uniqBy(selectedUsersInfo, 'group.code').length > 1
+    if (e.key === 'remove students') {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey: "selectOneOrMoreStudentToRemoved" });
+        notification({ messageKey: 'selectOneOrMoreStudentToRemoved' })
       } else if (selectedRowKeys.length > 0) {
         if (isInstructor) {
-          notification({ messageKey: "selectOnlyStudents" });
+          notification({ messageKey: 'selectOnlyStudents' })
         } else {
           this.setState({
-            removeStudentsModalVisible: true
-          });
+            removeStudentsModalVisible: true,
+          })
         }
       }
-    } else if (e.key === "move users") {
+    } else if (e.key === 'move users') {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey: "youHaveNotSelectedAnyUsers" });
+        notification({ messageKey: 'youHaveNotSelectedAnyUsers' })
       } else if (areUsersOfDifferentClasses) {
-        notification({ messageKey: "youCanOnlyMoveUsersOfSameClass" });
+        notification({ messageKey: 'youCanOnlyMoveUsersOfSameClass' })
       } else if (selectedRowKeys.length >= 1) {
-        this.setState({ moveUsersModalVisible: true });
+        this.setState({ moveUsersModalVisible: true })
       }
-    } else if (e.key === "add students to other class") {
+    } else if (e.key === 'add students to other class') {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey: "selectOneOrMoreStudentAdd" });
+        notification({ messageKey: 'selectOneOrMoreStudentAdd' })
       } else if (selectedRowKeys.length > 0) {
         if (isInstructor) {
-          notification({ messageKey: "onlyStudentsCanBeAdded" });
-
+          notification({ messageKey: 'onlyStudentsCanBeAdded' })
         } else {
-          this.setState({ addStudentsModalVisible: true });
+          this.setState({ addStudentsModalVisible: true })
         }
       }
-    } else if (e.key === "add to student group") {
+    } else if (e.key === 'add to student group') {
       if (selectedRowKeys.length < 1) {
-        notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
+        notification({ messageKey: 'selectOneOrMoreStudentsForGroup' })
       } else {
-        this.setState({ showAddToGroupModal: true });
+        this.setState({ showAddToGroupModal: true })
       }
     }
-  };
+  }
 
-  saveFormRef = node => {
-    this.formRef = node;
-  };
+  saveFormRef = (node) => {
+    this.formRef = node
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
   addNewUser = (userInfo = {}) => {
     // user info will be empty if user does not exists
-    const { requestEnrolExistingUserToClass } = this.props;
+    const { requestEnrolExistingUserToClass } = this.props
     if (userInfo._id) {
       const {
-        getValidatedClass: { groupInfo }
-      } = this.props;
+        getValidatedClass: { groupInfo },
+      } = this.props
       const student = {
         classCode: groupInfo?.code,
         studentIds: [userInfo._id],
-        districtId: groupInfo?.districtId
-      };
-      requestEnrolExistingUserToClass(student);
-      this.onCloseAddNewUserModal();
-      return null;
+        districtId: groupInfo?.districtId,
+      }
+      requestEnrolExistingUserToClass(student)
+      this.onCloseAddNewUserModal()
+      return null
     }
 
     if (this.formRef) {
-      const { userOrgId: districtId, createAdminUser } = this.props;
-      const { form } = this.formRef.props;
+      const { userOrgId: districtId, createAdminUser } = this.props
+      const { form } = this.formRef.props
       form.validateFields((err, values) => {
         if (!err) {
-          const { fullName, role } = values;
-          const name = getFullNameFromString(fullName);
-          values.firstName = name.firstName;
-          values.middleName = name.middleName;
-          values.lastName = name.lastName;
+          const { fullName, role } = values
+          const name = getFullNameFromString(fullName)
+          values.firstName = name.firstName
+          values.middleName = name.middleName
+          values.lastName = name.lastName
 
-          const contactEmails = get(values, "contactEmails");
+          const contactEmails = get(values, 'contactEmails')
 
-          if (role === "teacher") {
-            const institutionIds = [];
+          if (role === 'teacher') {
+            const institutionIds = []
             for (let i = 0; i < values.institutionIds.length; i++) {
-              institutionIds.push(values.institutionIds[i].key);
+              institutionIds.push(values.institutionIds[i].key)
             }
           }
 
           if (contactEmails) {
-            values.contactEmails = [contactEmails];
+            values.contactEmails = [contactEmails]
           }
           if (values.dob) {
-            values.dob = moment(values.dob).format("x");
+            values.dob = moment(values.dob).format('x')
           }
-          unset(values, ["confirmPassword"]);
-          unset(values, ["fullName"]);
+          unset(values, ['confirmPassword'])
+          unset(values, ['fullName'])
           const o = {
             createReq: pickBy(values, identity),
             listReq: {
               districtId,
               limit: 25,
-              page: 1
+              page: 1,
             },
-            classEnrollmentPage: true
-          };
-          createAdminUser(o);
-          this.onCloseAddNewUserModal();
+            classEnrollmentPage: true,
+          }
+          createAdminUser(o)
+          this.onCloseAddNewUserModal()
         }
-      });
+      })
     }
-  };
+  }
 
   confirmDeactivate = () => {
-    const { removeUserEnrollments } = this.props;
-    const { selectedUsersInfo } = this.state;
+    const { removeUserEnrollments } = this.props
+    const { selectedUsersInfo } = this.state
     const deleteGroupData = selectedUsersInfo.reduce((acc, data) => {
-      acc[data.group._id] = acc[data.group._id] && Array.isArray(acc[data.group._id]) ? acc[data.group._id].push(data) : [data];
-      return acc;
-    }, {});
-    const formatData = [];
-    Object.entries(deleteGroupData).forEach(([key,value]) => {
+      acc[data.group._id] =
+        acc[data.group._id] && Array.isArray(acc[data.group._id])
+          ? acc[data.group._id].push(data)
+          : [data]
+      return acc
+    }, {})
+    const formatData = []
+    Object.entries(deleteGroupData).forEach(([key, value]) => {
       formatData.push({
         groupId: key,
-        students: value.filter(o => o.role === "student").map(o => o.user._id),
-        teachers: value.filter(o => o.role === "teacher").map(o => o.user._id)
-      });
-    });
+        students: value
+          .filter((o) => o.role === 'student')
+          .map((o) => o.user._id),
+        teachers: value
+          .filter((o) => o.role === 'teacher')
+          .map((o) => o.user._id),
+      })
+    })
     const o = {
       deleteReq: formatData,
       listReq: this.getSearchQuery(),
-      classEnrollmentPage: true
-    };
-    removeUserEnrollments(o);
+      classEnrollmentPage: true,
+    }
+    removeUserEnrollments(o)
     this.setState({
       removeStudentsModalVisible: false,
       selectedRowKeys: [],
       selectedUserIds: [],
-      selectedUsersInfo: []
-    });
-  };
+      selectedUsersInfo: [],
+    })
+  }
 
   onCancelRemoveStudentsModal = () => {
     this.setState({
       removeStudentsModalVisible: false,
       selectedRowKeys: [],
       selectedUserIds: [],
-      selectedUsersInfo: []
-    });
-  };
+      selectedUsersInfo: [],
+    })
+  }
 
   onCloseAddNewUserModal = () => {
-    const { resetClassDetails } = this.props;
-    resetClassDetails();
+    const { resetClassDetails } = this.props
+    resetClassDetails()
     this.setState({
-      addUserFormModalVisible: false
-    });
-  };
+      addUserFormModalVisible: false,
+    })
+  }
 
   onOpenaddNewUserModal = () => {
     this.setState({
-      addUserFormModalVisible: true
-    });
-  };
+      addUserFormModalVisible: true,
+    })
+  }
 
   onCloseAddStudentsToOtherClassModal = () => {
-    const { resetClassDetails } = this.props;
-    this.setState({ addStudentsModalVisible: false });
-    resetClassDetails();
-  };
+    const { resetClassDetails } = this.props
+    this.setState({ addStudentsModalVisible: false })
+    resetClassDetails()
+  }
 
   onCloseMoveUsersToOtherClassModal = () => {
-    const { resetClassDetails } = this.props;
-    this.setState({ moveUsersModalVisible: false });
-    resetClassDetails();
-  };
+    const { resetClassDetails } = this.props
+    this.setState({ moveUsersModalVisible: false })
+    resetClassDetails()
+  }
 
-  handleDeactivateUser = record => {
-    const { id, role, code } = record;
-    const { classEnrollmentData } = this.props;
-    const selectedUsersInfo = classEnrollmentData.filter(data => {
-      const _classCode = get(data, "group.code");
-      const userId = get(data, "user._id");
-      return _classCode === code && userId === id;
-    });
-    if (role === "teacher") {
-      notification({ messageKey: "pleaseSelectOnlyStudent" });
+  handleDeactivateUser = (record) => {
+    const { id, role, code } = record
+    const { classEnrollmentData } = this.props
+    const selectedUsersInfo = classEnrollmentData.filter((data) => {
+      const _classCode = get(data, 'group.code')
+      const userId = get(data, 'user._id')
+      return _classCode === code && userId === id
+    })
+    if (role === 'teacher') {
+      notification({ messageKey: 'pleaseSelectOnlyStudent' })
     } else {
       this.setState({
         selectedUserIds: [id],
         selectedUsersInfo,
-        removeStudentsModalVisible: true
-      });
+        removeStudentsModalVisible: true,
+      })
     }
-  };
+  }
 
-  setPageNo = page => {
-    this.setState({ currentPage: page }, this.loadClassEnrollmentList);
-  };
+  setPageNo = (page) => {
+    this.setState({ currentPage: page }, this.loadClassEnrollmentList)
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
@@ -312,29 +341,29 @@ class ClassEnrollmentTable extends React.Component {
       if (key === index) {
         const _item = {
           ...item,
-          filtersColumn: value
-        };
-        if (value === "role") _item.filtersValue = "eq";
-        return _item;
+          filtersColumn: value,
+        }
+        if (value === 'role') _item.filtersValue = 'eq'
+        return _item
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData })
+  }
 
   changeFilterValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filtersValue: value
-        };
+          filtersValue: value,
+        }
       }
-      return item;
-    });
+      return item
+    })
 
-    this.setState({ filtersData: _filtersData });
-  };
+    this.setState({ filtersData: _filtersData })
+  }
 
   changeRoleValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
@@ -342,145 +371,158 @@ class ClassEnrollmentTable extends React.Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== ""
-        };
+          filterAdded: value !== '',
+        }
       }
-      return item;
-    });
+      return item
+    })
 
-    this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList);
-  };
+    this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList)
+  }
 
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterStr: e.target.value
-        };
+          filterStr: e.target.value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData })
+  }
 
   addFilter = () => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     if (filtersData.length < 3) {
-      this.setState(state => ({
+      this.setState((state) => ({
         filtersData: [
           ...state.filtersData,
           {
-            filtersColumn: "",
-            filtersValue: "",
-            filterStr: "",
-            filterAdded: false
-          }
-        ]
-      }));
+            filtersColumn: '',
+            filtersValue: '',
+            filterStr: '',
+            filterAdded: false,
+          },
+        ],
+      }))
     }
-  };
+  }
 
   removeFilter = (e, key) => {
-    const { filtersData } = this.state;
-    let newFiltersData;
+    const { filtersData } = this.state
+    let newFiltersData
     if (filtersData.length === 1) {
       newFiltersData = [
         {
           filterAdded: false,
-          filtersColumn: "",
-          filtersValue: "",
-          filterStr: ""
-        }
-      ];
+          filtersColumn: '',
+          filtersValue: '',
+          filterStr: '',
+        },
+      ]
     } else {
-      newFiltersData = filtersData.filter((item, index) => index !== key);
+      newFiltersData = filtersData.filter((item, index) => index !== key)
     }
-    this.setState({ filtersData: newFiltersData }, this.loadClassEnrollmentList);
-  };
+    this.setState({ filtersData: newFiltersData }, this.loadClassEnrollmentList)
+  }
 
   loadClassEnrollmentList = () => {
-    const { receiveClassEnrollmentList } = this.props;
-    receiveClassEnrollmentList(this.getSearchQuery());
-  };
+    const { receiveClassEnrollmentList } = this.props
+    receiveClassEnrollmentList(this.getSearchQuery())
+  }
 
   getSearchQuery = () => {
-    const { userOrgId: districtId, userDetails } = this.props;
-    const { filtersData = [], searchByName, currentPage, showActive = true } = this.state;
+    const { userOrgId: districtId, userDetails } = this.props
+    const {
+      filtersData = [],
+      searchByName,
+      currentPage,
+      showActive = true,
+    } = this.state
 
-    const { role = "" } = filtersData?.[0] || {};
+    const { role = '' } = filtersData?.[0] || {}
 
-    const search = {};
+    const search = {}
     for (const [index, item] of filtersData.entries()) {
-      const { filtersColumn, filtersValue, filterStr } = item;
-      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+      const { filtersColumn, filtersValue, filterStr } = item
+      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
         if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
         } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+          search[filtersColumn].push({ type: filtersValue, value: filterStr })
         }
       }
     }
 
-    const filtersColumnWithRole = filtersData.some(({ filtersColumn }) => filtersColumn === "role");
+    const filtersColumnWithRole = filtersData.some(
+      ({ filtersColumn }) => filtersColumn === 'role'
+    )
 
     // location.state.role
     if (!filtersColumnWithRole && role) {
       search.role = [
         {
-          type: "eq",
-          value: role
-        }
-      ];
+          type: 'eq',
+          value: role,
+        },
+      ]
     }
 
     if (searchByName) {
-      search.name = [{ type: "cont", value: searchByName }];
+      search.name = [{ type: 'cont', value: searchByName }]
     }
     const data = {
       search,
       districtId,
       limit: 25,
-      page: currentPage
+      page: currentPage,
       // uncomment after elastic search is fixed
       // sortField,
       // order
-    };
-    if (showActive) Object.assign(data, { status: 1 });
-    if (userDetails) {
-      Object.assign(data, { institutionIds: userDetails.institutionIds });
     }
-    return data;
-  };
+    if (showActive) Object.assign(data, { status: 1 })
+    if (userDetails) {
+      Object.assign(data, { institutionIds: userDetails.institutionIds })
+    }
+    return data
+  }
 
   onBlurFilterText = (event, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterAdded: !!event.target.value
-        };
+          filterAdded: !!event.target.value,
+        }
       }
-      return item;
-    });
-    this.setState(() => ({ filtersData: _filtersData }), this.loadClassEnrollmentList);
-  };
+      return item
+    })
+    this.setState(
+      () => ({ filtersData: _filtersData }),
+      this.loadClassEnrollmentList
+    )
+  }
 
-  onChangeSearch = event => {
-    this.setState({ searchByName: event.currentTarget.value });
-  };
+  onChangeSearch = (event) => {
+    this.setState({ searchByName: event.currentTarget.value })
+  }
 
-  handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadClassEnrollmentList);
-  };
+  handleSearchName = (value) => {
+    this.setState({ searchByName: value }, this.loadClassEnrollmentList)
+  }
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive });
-  };
+    this.setState({ refineButtonActive: !this.state.refineButtonActive })
+  }
 
-  onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked }, this.loadClassEnrollmentList);
-  };
+  onChangeShowActive = (e) => {
+    this.setState(
+      { showActive: e.target.checked },
+      this.loadClassEnrollmentList
+    )
+  }
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -497,8 +539,8 @@ class ClassEnrollmentTable extends React.Component {
       currentPage,
       refineButtonActive,
       showAddToGroupModal,
-      showActive
-    } = this.state;
+      showActive,
+    } = this.state
     const {
       fetchClassDetailsUsingCode,
       validatedClassDetails,
@@ -512,141 +554,168 @@ class ClassEnrollmentTable extends React.Component {
       userRole,
       t,
       location,
-      enableStudentGroups
-    } = this.props;
+      enableStudentGroups,
+    } = this.props
 
-    const tableDataSource = classEnrollmentData.map(item => {
-      const key = `${get(item, "user._id")} ${get(item, "group.code", "")}`;
-      const id = get(item, "user._id");
-      const role = get(item, "role", "");
-      const code = get(item, "group.code", "");
-      const name = get(item, "group.name", "");
-      const firstName = get(item, "user.firstName", "");
-      const middleName = get(item, "user.middleName", "");
-      const lastName = get(item, "user.lastName", "");
-      const username = get(item, "user.username", "");
+    const tableDataSource = classEnrollmentData.map((item) => {
+      const key = `${get(item, 'user._id')} ${get(item, 'group.code', '')}`
+      const id = get(item, 'user._id')
+      const role = get(item, 'role', '')
+      const code = get(item, 'group.code', '')
+      const name = get(item, 'group.name', '')
+      const firstName = get(item, 'user.firstName', '')
+      const middleName = get(item, 'user.middleName', '')
+      const lastName = get(item, 'user.lastName', '')
+      const username = get(item, 'user.username', '')
       const obj = {
         key,
         id,
         role,
         code,
         name,
-        fullName: [firstName, middleName, lastName].join(" "),
-        username
-      };
-      return obj;
-    });
+        fullName: [firstName, middleName, lastName].join(' '),
+        username,
+      }
+      return obj
+    })
 
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.onSelectChange
-    };
+      onChange: this.onSelectChange,
+    }
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="remove students">{t("classenrollment.removestudents")}</Menu.Item>
-        <Menu.Item key="move users">{t("classenrollment.moveusers")}</Menu.Item>
-        <Menu.Item key="add students to other class">{t("classenrollment.addstdstoanotherclass")}</Menu.Item>
-        {enableStudentGroups && <Menu.Item key="add to student group">{t("classenrollment.addToStudentGroup")}</Menu.Item>}
+        <Menu.Item key="remove students">
+          {t('classenrollment.removestudents')}
+        </Menu.Item>
+        <Menu.Item key="move users">{t('classenrollment.moveusers')}</Menu.Item>
+        <Menu.Item key="add students to other class">
+          {t('classenrollment.addstdstoanotherclass')}
+        </Menu.Item>
+        {enableStudentGroups && (
+          <Menu.Item key="add to student group">
+            {t('classenrollment.addToStudentGroup')}
+          </Menu.Item>
+        )}
       </Menu>
-    );
+    )
 
     const columnsData = [
       {
-        title: t("classenrollment.classname"),
-        dataIndex: "name",
+        title: t('classenrollment.classname'),
+        dataIndex: 'name',
         sorter: (a, b) => a.name.localeCompare(b.name),
-        width: 200
+        width: 200,
       },
       {
-        title: t("classenrollment.classcode"),
-        dataIndex: "code",
+        title: t('classenrollment.classcode'),
+        dataIndex: 'code',
         sorter: (a, b) => a.code.localeCompare(b.code),
-        width: 200
+        width: 200,
       },
       {
-        title: t("classenrollment.fullname"),
-        dataIndex: "fullName",
+        title: t('classenrollment.fullname'),
+        dataIndex: 'fullName',
         sorter: (a, b) => a.fullName.localeCompare(b.fullName),
-        width: 200
+        width: 200,
       },
       {
-        title: t("classenrollment.username"),
-        dataIndex: "username",
+        title: t('classenrollment.username'),
+        dataIndex: 'username',
         sorter: (a, b) => a.username.localeCompare(b.username),
-        width: 200
+        width: 200,
       },
       {
-        title: t("classenrollment.role"),
-        dataIndex: "role",
+        title: t('classenrollment.role'),
+        dataIndex: 'role',
         sorter: (a, b) => a.role.localeCompare(b.role),
-        width: 200
+        width: 200,
       },
       {
-        dataIndex: "id",
+        dataIndex: 'id',
         render: (_, record) => (
-          <StyledTableButton key={record.key} onClick={() => this.handleDeactivateUser(record)} title="Deactivate">
+          <StyledTableButton
+            key={record.key}
+            onClick={() => this.handleDeactivateUser(record)}
+            title="Deactivate"
+          >
             <IconTrash color={themeColor} />
           </StyledTableButton>
         ),
-        textWrap: "word-break",
-        width: 100
-      }
-    ];
+        textWrap: 'word-break',
+        width: 100,
+      },
+    ]
 
     const breadcrumbData = [
       {
-        title: userRole === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
-        to: userRole === roleuser.SCHOOL_ADMIN ? "/author/class-enrollment" : "/author/districtprofile"
+        title:
+          userRole === roleuser.SCHOOL_ADMIN
+            ? 'MANAGE SCHOOL'
+            : 'MANAGE DISTRICT',
+        to:
+          userRole === roleuser.SCHOOL_ADMIN
+            ? '/author/class-enrollment'
+            : '/author/districtprofile',
       },
       {
-        title: "CLASS ENROLLMENT",
-        to: ""
-      }
-    ];
+        title: 'CLASS ENROLLMENT',
+        to: '',
+      },
+    ]
 
-    const roleFilterOptions = ["Teacher", "Student"];
-    const SearchRows = [];
+    const roleFilterOptions = ['Teacher', 'Student']
+    const SearchRows = []
     for (let i = 0; i < filtersData.length; i++) {
-      const { filtersColumn, filtersValue, filterStr, filterAdded } = filtersData[i];
-      const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
-      const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+      const {
+        filtersColumn,
+        filtersValue,
+        filterStr,
+        filterAdded,
+      } = filtersData[i]
+      const isFilterTextDisable = filtersColumn === '' || filtersValue === ''
+      const isAddFilterDisable =
+        filtersColumn === '' ||
+        filtersValue === '' ||
+        filterStr === '' ||
+        !filterAdded
 
-      const optValues = [];
-      if (filtersColumn === "role") {
-        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
+      const optValues = []
+      if (filtersColumn === 'role') {
+        optValues.push(<Option value="eq">{t('common.equals')}</Option>)
       } else {
         optValues.push(
           <Option value="" disabled>
-            {t("common.selectvalue")}
+            {t('common.selectvalue')}
           </Option>
-        );
-        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
-        optValues.push(<Option value="cont">{t("common.contains")}</Option>);
+        )
+        optValues.push(<Option value="eq">{t('common.equals')}</Option>)
+        optValues.push(<Option value="cont">{t('common.contains')}</Option>)
       }
 
       SearchRows.push(
         <Row gutter={20}>
           <Col span={6}>
             <SelectInputStyled
-              placeholder={t("common.selectcolumn")}
-              onChange={e => this.changeFilterColumn(e, i)}
+              placeholder={t('common.selectcolumn')}
+              onChange={(e) => this.changeFilterColumn(e, i)}
               value={filtersColumn}
               height="32px"
             >
               <Option value="" disabled>
-                {t("common.selectcolumn")}
+                {t('common.selectcolumn')}
               </Option>
-              <Option value="code">{t("classenrollment.classcode")}</Option>
-              <Option value="fullName">{t("classenrollment.fullname")}</Option>
-              <Option value="username">{t("classenrollment.username")}</Option>
-              <Option value="role">{t("classenrollment.role")}</Option>
+              <Option value="code">{t('classenrollment.classcode')}</Option>
+              <Option value="fullName">{t('classenrollment.fullname')}</Option>
+              <Option value="username">{t('classenrollment.username')}</Option>
+              <Option value="role">{t('classenrollment.role')}</Option>
             </SelectInputStyled>
           </Col>
           <Col span={6}>
             <SelectInputStyled
-              placeholder={t("common.selectvalue")}
-              onChange={e => this.changeFilterValue(e, i)}
+              placeholder={t('common.selectvalue')}
+              onChange={(e) => this.changeFilterValue(e, i)}
               value={filtersValue}
               height="32px"
             >
@@ -654,15 +723,15 @@ class ClassEnrollmentTable extends React.Component {
             </SelectInputStyled>
           </Col>
           <Col span={6}>
-            {filtersColumn === "role" ? (
+            {filtersColumn === 'role' ? (
               <SelectInputStyled
-                placeholder={t("common.selectvalue")}
-                onChange={v => this.changeRoleValue(v, i)}
+                placeholder={t('common.selectvalue')}
+                onChange={(v) => this.changeRoleValue(v, i)}
                 disabled={isFilterTextDisable}
                 value={filterStr}
                 height="32px"
               >
-                {roleFilterOptions.map(item => (
+                {roleFilterOptions.map((item) => (
                   <Option key={item} value={item.toLowerCase()}>
                     {item}
                   </Option>
@@ -670,44 +739,55 @@ class ClassEnrollmentTable extends React.Component {
               </SelectInputStyled>
             ) : (
               <SearchInputStyled
-                placeholder={t("common.entertext")}
-                onChange={e => this.changeFilterText(e, i)}
-                onBlur={e => this.onBlurFilterText(e, i)}
+                placeholder={t('common.entertext')}
+                onChange={(e) => this.changeFilterText(e, i)}
+                onBlur={(e) => this.onBlurFilterText(e, i)}
                 disabled={isFilterTextDisable}
                 value={filterStr}
                 height="32px"
               />
-              )}
+            )}
           </Col>
-          <Col span={6} style={{ display: "flex" }}>
+          <Col span={6} style={{ display: 'flex' }}>
             {i < 2 && (
               <EduButton
                 type="primary"
-                onClick={e => this.addFilter(e, i)}
+                onClick={(e) => this.addFilter(e, i)}
                 disabled={isAddFilterDisable || i < filtersData.length - 1}
                 height="32px"
                 width="50%"
               >
-                {t("common.addfilter")}
+                {t('common.addfilter')}
               </EduButton>
             )}
-            {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-              <EduButton height="36px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
-                {t("common.removefilter")}
+            {((filtersData.length === 1 && filtersData[0].filterAdded) ||
+              filtersData.length > 1) && (
+              <EduButton
+                height="36px"
+                width="50%"
+                type="primary"
+                onClick={(e) => this.removeFilter(e, i)}
+              >
+                {t('common.removefilter')}
               </EduButton>
             )}
           </Col>
         </Row>
-      );
+      )
     }
 
     return (
       <MainContainer>
         <SubHeaderWrapper>
-          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            {t("common.refineresults")}
-            <Icon type={refineButtonActive ? "up" : "down"} />
+          <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+          <StyledButton
+            type="default"
+            shape="round"
+            icon="filter"
+            onClick={this._onRefineResultsCB}
+          >
+            {t('common.refineresults')}
+            <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
 
@@ -716,23 +796,29 @@ class ClassEnrollmentTable extends React.Component {
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
             <SearchInputStyled
-              placeholder={t("common.searchbyname")}
+              placeholder={t('common.searchbyname')}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
             />
             <EduButton type="primary" onClick={this.onOpenaddNewUserModal}>
-              {t("classenrollment.addnewuser")}
+              {t('classenrollment.addnewuser')}
             </EduButton>
           </LeftFilterDiv>
 
           <RightFilterDiv width={50}>
-            <CheckboxLabel defaultChecked={showActive} onChange={this.onChangeShowActive}>
-              {t("classenrollment.showactiveenrollments")}
+            <CheckboxLabel
+              defaultChecked={showActive}
+              onChange={this.onChangeShowActive}
+            >
+              {t('classenrollment.showactiveenrollments')}
             </CheckboxLabel>
-            <StyledActionDropDown getPopupContainer={triggerNode => triggerNode.parentNode} overlay={actionMenu}>
+            <StyledActionDropDown
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              overlay={actionMenu}
+            >
               <EduButton isGhost>
-                {t("common.actions")} <Icon type="down" />
+                {t('common.actions')} <Icon type="down" />
               </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
@@ -751,27 +837,27 @@ class ClassEnrollmentTable extends React.Component {
             pageSize={25}
             total={totalUsers}
             hideOnSinglePage
-            onChange={page => this.setPageNo(page)}
+            onChange={(page) => this.setPageNo(page)}
           />
         </TableContainer>
 
         <TypeToConfirmModal
           modalVisible={removeStudentsModalVisible}
-          title={t("classenrollment.removestudents")}
+          title={t('classenrollment.removestudents')}
           handleOnOkClick={this.confirmDeactivate}
           wordToBeTyped="DEACTIVATE"
-          primaryLabel={t("classenrollment.confirmtext")}
+          primaryLabel={t('classenrollment.confirmtext')}
           secondaryLabel={this.renderUserNames()}
           closeModal={() =>
             this.setState({
-              removeStudentsModalVisible: false
+              removeStudentsModalVisible: false,
             })
           }
         />
 
         <AddNewUserModal
           showModal={addUserFormModalVisible}
-          formTitle={t("classenrollment.addnewuser")}
+          formTitle={t('classenrollment.addnewuser')}
           closeModal={this.onCloseAddNewUserModal}
           addNewUser={this.addNewUser}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
@@ -785,9 +871,11 @@ class ClassEnrollmentTable extends React.Component {
         <AddStudentsToOtherClassModal
           {...addStudentsToOtherClassData}
           showModal={addStudentsModalVisible}
-          titleText={t("classenrollment.addstdstoanotherclass")}
-          buttonText={t("classenrollment.addstds")}
-          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
+          titleText={t('classenrollment.addstdstoanotherclass')}
+          buttonText={t('classenrollment.addstds')}
+          handleSubmit={(classCode) =>
+            putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })
+          }
           onCloseModal={this.onCloseAddStudentsToOtherClassModal}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           t={t}
@@ -795,14 +883,14 @@ class ClassEnrollmentTable extends React.Component {
         <MoveUsersToOtherClassModal
           {...addStudentsToOtherClassData}
           showModal={moveUsersModalVisible}
-          titleText={t("classenrollment.movetoanotherclass")}
-          buttonText={t("classenrollment.moveusers")}
-          handleSubmit={destinationClassCode =>
+          titleText={t('classenrollment.movetoanotherclass')}
+          buttonText={t('classenrollment.moveusers')}
+          handleSubmit={(destinationClassCode) =>
             moveUsersToOtherClass({
               districtId: userOrgId,
               destinationClassCode,
               sourceClassCode: selectedUsersInfo[0].group.code,
-              userDetails: selectedUserIds
+              userDetails: selectedUserIds,
             })
           }
           onCloseModal={this.onCloseMoveUsersToOtherClassModal}
@@ -812,24 +900,30 @@ class ClassEnrollmentTable extends React.Component {
           t={t}
         />
         {showAddToGroupModal && (
-          <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+          <FeaturesSwitch
+            inputFeatures="studentGroups"
+            actionOnInaccessible="hidden"
+          >
             <AddToGroupModal
               groupType="custom"
               visible={showAddToGroupModal}
               onCancel={() => this.setState({ showAddToGroupModal: false })}
-              checkedStudents={uniqBy(selectedUsersInfo.map(({ user }) => ({ ...user })), "_id")}
+              checkedStudents={uniqBy(
+                selectedUsersInfo.map(({ user }) => ({ ...user })),
+                '_id'
+              )}
             />
           </FeaturesSwitch>
         )}
       </MainContainer>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("manageDistrict"),
+  withNamespaces('manageDistrict'),
   connect(
-    state => ({
+    (state) => ({
       userOrgId: getUserOrgId(state),
       userDetails: getUser(state),
       classEnrollmentData: getClassEnrollmentUsersSelector(state),
@@ -837,7 +931,7 @@ const enhance = compose(
       totalUsers: getClassEnrollmentUsersCountSelector(state),
       userRole: getUserRole(state),
       getValidatedClass: getValidatedClassDetails(state),
-      enableStudentGroups: get(state, "user.user.features.studentGroups")
+      enableStudentGroups: get(state, 'user.user.features.studentGroups'),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -846,9 +940,9 @@ const enhance = compose(
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
       moveUsersToOtherClass: moveUsersToOtherClassAction,
-      requestEnrolExistingUserToClass: requestEnrolExistingUserToClassAction
+      requestEnrolExistingUserToClass: requestEnrolExistingUserToClassAction,
     }
   )
-);
+)
 
-export default enhance(withRouter(ClassEnrollmentTable));
+export default enhance(withRouter(ClassEnrollmentTable))

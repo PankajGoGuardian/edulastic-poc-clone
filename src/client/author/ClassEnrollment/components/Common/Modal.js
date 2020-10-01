@@ -1,10 +1,10 @@
-import React from "react";
-import { Form, Input, Icon } from "antd";
-import { StyledModal, Title, ActionButton, Field, FooterDiv } from "./styled";
-import { IconUser } from "@edulastic/icons";
-import { EduButton } from "@edulastic/common";
+import React from 'react'
+import { Form, Input, Icon } from 'antd'
+import { IconUser } from '@edulastic/icons'
+import { EduButton } from '@edulastic/common'
+import { StyledModal, Title, ActionButton, Field, FooterDiv } from './styled'
 
-const CommonModal = props => {
+const CommonModal = (props) => {
   const {
     showModal,
     formTitle,
@@ -12,15 +12,15 @@ const CommonModal = props => {
     buttonText,
     modalFunc,
     form: { getFieldDecorator },
-    fetchClassDetailsUsingCode
-  } = props;
+    fetchClassDetailsUsingCode,
+  } = props
 
   const title = (
     <Title>
       <IconUser />
       <label>{formTitle}</label>
     </Title>
-  );
+  )
 
   const footer = (
     <FooterDiv>
@@ -33,46 +33,56 @@ const CommonModal = props => {
         <Icon type="right" />
       </EduButton>
     </FooterDiv>
-  );
+  )
 
   return (
-    <StyledModal title={title} footer={footer} visible={showModal} onCancel={() => closeModal()}>
+    <StyledModal
+      title={title}
+      footer={footer}
+      visible={showModal}
+      onCancel={() => closeModal()}
+    >
       <Form>
         <Field name="classcode">
           <legend>Destination Class</legend>
           <Form.Item>
-            {getFieldDecorator("classcode", {
-              rules: [{ required: true, message: "Please input the destination class" }]
+            {getFieldDecorator('classcode', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Please input the destination class',
+                },
+              ],
             })(<Input placeholder="Enter class code" />)}
           </Form.Item>
         </Field>
         <Field name="clasname">
           <legend>Class Name</legend>
           <Form.Item>
-            {getFieldDecorator("classname", {
-              initialValue: ""
+            {getFieldDecorator('classname', {
+              initialValue: '',
             })(<Input />)}
           </Form.Item>
         </Field>
         <Field name="schoolname">
           <legend>School Name</legend>
           <Form.Item>
-            {getFieldDecorator("schoolname", {
-              initialValue: ""
+            {getFieldDecorator('schoolname', {
+              initialValue: '',
             })(<Input />)}
           </Form.Item>
         </Field>
         <Field name="teachername">
           <legend>Teacher Name</legend>
           <Form.Item>
-            {getFieldDecorator("teachername", {
-              initialValue: ""
+            {getFieldDecorator('teachername', {
+              initialValue: '',
             })(<Input />)}
           </Form.Item>
         </Field>
       </Form>
     </StyledModal>
-  );
-};
+  )
+}
 
-export const CommonFormModal = Form.create({ name: "add_modal" })(CommonModal);
+export const CommonFormModal = Form.create({ name: 'add_modal' })(CommonModal)

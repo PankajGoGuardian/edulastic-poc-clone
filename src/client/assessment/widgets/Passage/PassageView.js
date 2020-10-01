@@ -1,10 +1,10 @@
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable func-names */
 
-import React, { useState, useEffect, useRef } from "react";
-import { isEmpty, get } from "lodash";
-import PropTypes from "prop-types";
-import { Pagination } from "antd";
+import React, { useState, useEffect, useRef } from 'react'
+import { isEmpty, get } from 'lodash'
+import PropTypes from 'prop-types'
+import { Pagination } from 'antd'
 import {
   Stimulus,
   WithResources,
@@ -12,54 +12,50 @@ import {
   RefContext,
   rgbToHexc,
   clearSelection,
-  highlightSelectedText
-} from "@edulastic/common";
+  highlightSelectedText,
+} from '@edulastic/common'
 
-import { InstructorStimulus } from "./styled/InstructorStimulus";
-import { Heading } from "./styled/Heading";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import ColorPicker from "./ColorPicker";
-import { ColorPickerContainer, Overlay } from "./styled/ColorPicker";
-import AppConfig from "../../../../../app-config";
-import { CLEAR } from "../../constants/constantsForQuestions";
+import { InstructorStimulus } from './styled/InstructorStimulus'
+import { Heading } from './styled/Heading'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
+import ColorPicker from './ColorPicker'
+import { ColorPickerContainer, Overlay } from './styled/ColorPicker'
+import AppConfig from '../../../../../app-config'
+import { CLEAR } from '../../constants/constantsForQuestions'
 
-import HighlightPopover from "./HighlightPopover";
+import HighlightPopover from './HighlightPopover'
 
-const ContentsTitle = Heading;
-const highlightTag = "my-highlight";
+const ContentsTitle = Heading
+const highlightTag = 'my-highlight'
 
-const getPostionOfEelement = em => {
-  let deltaTop = 0;
-  let deltaLeft = 0;
-  if (
-    $(em)
-      .parent()
-      .prop("tagName") === "TD"
-  ) {
-    $(em).css("position", "relative");
+const getPostionOfEelement = (em) => {
+  let deltaTop = 0
+  let deltaLeft = 0
+  if ($(em).parent().prop('tagName') === 'TD') {
+    $(em).css('position', 'relative')
   }
 
   $(em)
     .parents()
     .each((i, parent) => {
-      if ($(parent).attr("id") === "passage-wrapper") {
-        return false;
+      if ($(parent).attr('id') === 'passage-wrapper') {
+        return false
       }
-      const p = $(parent).css("position");
-      if (p === "relative") {
-        const offest = $(parent).position();
-        deltaTop += offest.top;
-        deltaLeft += offest.left;
+      const p = $(parent).css('position')
+      if (p === 'relative') {
+        const offest = $(parent).position()
+        deltaTop += offest.top
+        deltaLeft += offest.left
       }
-    });
+    })
 
   // top and left will be used to set position of color picker
-  const top = em.offsetTop + deltaTop + em.offsetHeight - 70; // -70 is height of picker
-  const left = $(em).width() / 2 + em.offsetLeft + deltaLeft - 106; // -106 is half of width of picker;
+  const top = em.offsetTop + deltaTop + em.offsetHeight - 70 // -70 is height of picker
+  const left = $(em).width() / 2 + em.offsetLeft + deltaLeft - 106 // -106 is half of width of picker;
 
-  const bg = rgbToHexc($(em).css("backgroundColor"));
-  return { top, left, bg };
-};
+  const bg = rgbToHexc($(em).css('backgroundColor'))
+  return { top, left, bg }
+}
 
 const PassageView = ({
   item,
@@ -74,138 +70,170 @@ const PassageView = ({
   passageTestItemID,
   tabIndex,
   page,
-  setPage
+  setPage,
 }) => {
-  const mainContentsRef = useRef();
-  const [isOpen, toggleOpen] = useState(false);
-  const [selectHighlight, setSelectedHighlight] = useState(null);
+  const mainContentsRef = useRef()
+  const [isOpen, toggleOpen] = useState(false)
+  const [selectHighlight, setSelectedHighlight] = useState(null)
   // use the userWork in author mode
-  const _highlights = setHighlights ? get(highlights, `[${tabIndex}]`, "") : get(userWork, `[${tabIndex}]`, "");
+  const _highlights = setHighlights
+    ? get(highlights, `[${tabIndex}]`, '')
+    : get(userWork, `[${tabIndex}]`, '')
 
   const saveHistory = () => {
-    let { innerHTML: highlightContent = "" } = mainContentsRef.current;
+    let { innerHTML: highlightContent = '' } = mainContentsRef.current
 
-    if (highlightContent.search(new RegExp(`<${highlightTag}(.*?)>`, "g")) === -1) {
-      highlightContent = null;
+    if (
+      highlightContent.search(new RegExp(`<${highlightTag}(.*?)>`, 'g')) === -1
+    ) {
+      highlightContent = null
     } else {
-      highlightContent = highlightContent.replace(/input__math/g, "");
+      highlightContent = highlightContent.replace(/input__math/g, '')
     }
 
-    const newHighlights = highlights || {};
+    const newHighlights = highlights || {}
     if (setHighlights) {
       // this is available only at student side
-      setHighlights({ ...newHighlights, [tabIndex]: highlightContent });
+      setHighlights({ ...newHighlights, [tabIndex]: highlightContent })
     } else {
       // saving the highlights at author side
       // setHighlights is not available at author side
-      saveUserWork({ [passageTestItemID]: { resourceId: { ...newHighlights, [tabIndex]: highlightContent } } });
+      saveUserWork({
+        [passageTestItemID]: {
+          resourceId: { ...newHighlights, [tabIndex]: highlightContent },
+        },
+      })
     }
-  };
+  }
 
   const addEventToSelectedText = () => {
     if (!disableResponse && window.$) {
-      $(highlightTag).each(function(index) {
-        const newId = `highlight-text-${index}`;
-        $(this).attr("id", newId);
+      $(highlightTag).each(function (index) {
+        const newId = `highlight-text-${index}`
+        $(this).attr('id', newId)
         $(this)
           .off()
-          .on("mousedown", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const pos = getPostionOfEelement(this);
-            setSelectedHighlight({ ...pos, id: newId });
-          });
-      });
+          .on('mousedown', function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            const pos = getPostionOfEelement(this)
+            setSelectedHighlight({ ...pos, id: newId })
+          })
+      })
     }
-  };
+  }
 
   const getContent = () => {
-    let { content } = item;
-    content = decodeHTML(content);
+    let { content } = item
+    content = decodeHTML(content)
     if (isEmpty(_highlights)) {
       return content
-        ?.replace(/(<p>)/g, "")
-        ?.replace(/(<\/p>)/g, "<br/>")
-        ?.replace(/background-color: (.*?);/g, "");
+        ?.replace(/(<p>)/g, '')
+        ?.replace(/(<\/p>)/g, '<br/>')
+        ?.replace(/background-color: (.*?);/g, '')
     }
-    return _highlights;
-  };
+    return _highlights
+  }
 
   const loadInit = () => {
     // need to wait for rendering content.
-    setTimeout(addEventToSelectedText, 10);
-  };
+    setTimeout(addEventToSelectedText, 10)
+  }
 
-  const closePopover = () => toggleOpen(false);
+  const closePopover = () => toggleOpen(false)
 
-  const openPopover = () => toggleOpen(true);
+  const openPopover = () => toggleOpen(true)
 
-  const handleClickBackdrop = () => setSelectedHighlight(null);
+  const handleClickBackdrop = () => setSelectedHighlight(null)
 
-  const onChangeColor = color => {
-    if (color !== "remove") {
-      highlightSelectedText("text-heighlight", highlightTag, { background: color });
-      saveHistory();
+  const onChangeColor = (color) => {
+    if (color !== 'remove') {
+      highlightSelectedText('text-heighlight', highlightTag, {
+        background: color,
+      })
+      saveHistory()
     }
-    clearSelection();
-    toggleOpen(false);
-  };
+    clearSelection()
+    toggleOpen(false)
+  }
 
-  const updateColor = color => {
+  const updateColor = (color) => {
     if (mainContentsRef.current && selectHighlight) {
-      const element = $(`#${selectHighlight.id}`);
-      if (color === "remove") {
-        element.replaceWith(element.html());
+      const element = $(`#${selectHighlight.id}`)
+      if (color === 'remove') {
+        element.replaceWith(element.html())
       } else {
-        element.css("background-color", color);
+        element.css('background-color', color)
       }
-      clearSelection();
-      setSelectedHighlight(null);
-      saveHistory();
+      clearSelection()
+      setSelectedHighlight(null)
+      saveHistory()
     }
-  };
+  }
 
   useEffect(() => {
     if (!setHighlights && previewTab === CLEAR) {
-      clearUserWork(); // clearing the userWork at author side.
+      clearUserWork() // clearing the userWork at author side.
     }
-  }, [previewTab]); // run everytime the previewTab is changed
+  }, [previewTab]) // run everytime the previewTab is changed
 
-  const content = getContent();
-  useEffect(loadInit, [content]);
+  const content = getContent()
+  useEffect(loadInit, [content])
 
   return (
-    <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<div />} onLoaded={loadInit}>
+    <WithResources
+      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+      fallBack={<div />}
+      onLoaded={loadInit}
+    >
       {item.instructorStimulus && !flowLayout && (
-        <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructorStimulus }} />
+        <InstructorStimulus
+          dangerouslySetInnerHTML={{ __html: item.instructorStimulus }}
+        />
       )}
       {!flowLayout && (
         <QuestionTitleWrapper>
-          {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
+          {item.heading && (
+            <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />
+          )}
         </QuestionTitleWrapper>
       )}
 
-      {item.contentsTitle && !flowLayout && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
+      {item.contentsTitle && !flowLayout && (
+        <ContentsTitle
+          dangerouslySetInnerHTML={{ __html: item.contentsTitle }}
+        />
+      )}
       {!item.paginated_content && item.content && (
         <RefContext.Provider value={{ forwardedRef: mainContentsRef }}>
-          <Stimulus id="mainContents" dangerouslySetInnerHTML={{ __html: content }} userSelect={!disableResponse} />
+          <Stimulus
+            id="mainContents"
+            dangerouslySetInnerHTML={{ __html: content }}
+            userSelect={!disableResponse}
+          />
         </RefContext.Provider>
       )}
 
-      {item.paginated_content && item.pages && !!item.pages.length && !flowLayout && (
-        <div>
-          <Stimulus id="paginatedContents" dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }} />
+      {item.paginated_content &&
+        item.pages &&
+        !!item.pages.length &&
+        !flowLayout && (
+          <div>
+            <Stimulus
+              id="paginatedContents"
+              dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }}
+            />
 
-          <Pagination
-            style={{ justifyContent: "center" }}
-            pageSize={1}
-            hideOnSinglePage
-            onChange={pageNum => setPage(pageNum)}
-            current={page}
-            total={item.pages.length}
-          />
-        </div>
-      )}
+            <Pagination
+              style={{ justifyContent: 'center' }}
+              pageSize={1}
+              hideOnSinglePage
+              onChange={(pageNum) => setPage(pageNum)}
+              current={page}
+              total={item.pages.length}
+            />
+          </div>
+        )}
       {/* when the user is selecting text, 
       will show color picker within a Popover. */}
       {previewTab === CLEAR && (
@@ -224,15 +252,17 @@ const PassageView = ({
       will show colorPicker without Popover  */}
       {selectHighlight && !disableResponse && (
         <>
-          <ColorPickerContainer style={{ ...selectHighlight, position: "absolute" }}>
+          <ColorPickerContainer
+            style={{ ...selectHighlight, position: 'absolute' }}
+          >
             <ColorPicker selectColor={updateColor} bg={selectHighlight.bg} />
           </ColorPickerContainer>
           <Overlay onClick={handleClickBackdrop} />
         </>
       )}
     </WithResources>
-  );
-};
+  )
+}
 
 PassageView.propTypes = {
   setHighlights: PropTypes.func.isRequired,
@@ -242,19 +272,19 @@ PassageView.propTypes = {
   disableResponse: PropTypes.bool.isRequired,
   highlights: PropTypes.array.isRequired,
   userWork: PropTypes.object.isRequired,
-  flowLayout: PropTypes.bool
-};
+  flowLayout: PropTypes.bool,
+}
 
 PassageView.defaultProps = {
-  flowLayout: false
-};
+  flowLayout: false,
+}
 
 PassageView.modules = {
   toolbar: {
-    container: "#myToolbar"
-  }
-};
+    container: '#myToolbar',
+  },
+}
 
-PassageView.formats = ["background"];
+PassageView.formats = ['background']
 
-export default PassageView;
+export default PassageView

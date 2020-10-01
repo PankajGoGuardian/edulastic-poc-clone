@@ -10,19 +10,19 @@ import {
   titleColor,
   white,
   mediumDesktopExactWidth,
-  greyThemeLighter
-} from "@edulastic/colors";
-import { Paper } from "@edulastic/common";
-import { Anchor, Button, Col, Input, Radio, Select, Table } from "antd";
-import styled from "styled-components";
+  greyThemeLighter,
+} from '@edulastic/colors'
+import { Paper } from '@edulastic/common'
+import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
+import styled from 'styled-components'
 
 export const Container = styled(Paper)`
-  margin-top: ${props => (props.marginTop ? props.marginTop : "27px")};
+  margin-top: ${(props) => (props.marginTop ? props.marginTop : '27px')};
 
   @media screen and (max-width: 993px) {
     padding: 0;
   }
-`;
+`
 
 export const StyledAnchor = styled(Anchor)`
   max-height: unset !important;
@@ -50,7 +50,7 @@ export const StyledAnchor = styled(Anchor)`
     &:before {
       display: block;
       position: absolute;
-      content: "";
+      content: '';
       top: 14px;
       left: -5px;
       width: 8px;
@@ -60,12 +60,12 @@ export const StyledAnchor = styled(Anchor)`
     }
 
     &:after {
-      content: "";
+      content: '';
       width: 12px;
       height: 12px;
       border-radius: 50%;
       background: ${themeColor};
-      content: "";
+      content: '';
       position: absolute;
       left: -7px;
       top: 14px;
@@ -97,14 +97,14 @@ export const StyledAnchor = styled(Anchor)`
     background: ${themeColor};
     border: none;
   }
-`;
+`
 
 export const Block = styled.div`
   margin-bottom: 20px;
-  padding: ${props => (props.smallSize ? "15px" : "0")};
+  padding: ${(props) => (props.smallSize ? '15px' : '0')};
   background: ${white};
   border-radius: 4px;
-`;
+`
 
 export const Title = styled.div`
   font-size: 16px;
@@ -116,11 +116,11 @@ export const Title = styled.div`
   .ant-switch {
     margin-left: 25px;
   }
-`;
+`
 
 export const Body = styled.div`
   background: ${white};
-  padding: ${props => (props.smallSize ? "0" : "20px 0px")};
+  padding: ${(props) => (props.smallSize ? '0' : '20px 0px')};
   border-radius: 4px;
   .sebPassword {
     margin-bottom: 10px;
@@ -132,19 +132,19 @@ export const Body = styled.div`
   .dirty .ant-input:focus {
     border-color: ${red};
   }
-`;
+`
 
 export const FlexBody = styled.div`
   display: flex;
   margin-top: 30px;
   margin-bottom: 22px;
-`;
+`
 
 export const Description = styled.div`
   font-size: 12px;
   line-height: 22px;
   color: #6a737f;
-`;
+`
 
 export const StyledRadioGroup = styled(Radio.Group)`
   display: flex;
@@ -179,10 +179,10 @@ export const StyledRadioGroup = styled(Radio.Group)`
       margin-bottom: 0px;
     }
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
-  margin-left: ${({ isAdvanced }) => (isAdvanced ? "20px" : "0px")};
+  margin-left: ${({ isAdvanced }) => (isAdvanced ? '20px' : '0px')};
   .ant-table {
     color: #434b5d;
     font-size: 12px;
@@ -206,17 +206,18 @@ export const StyledTable = styled(Table)`
         padding: 8px;
         border-bottom: 1px solid #dddddd;
       }
-      &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+      &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+        > td,
       &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
         background: ${greyThemeLighter};
       }
     }
   }
-`;
+`
 
 export const CompletionTypeRadio = styled(Radio)`
   text-transform: capitalize;
-`;
+`
 export const RadioGroup = styled(Radio.Group)`
   span {
     font-size: 13px;
@@ -232,52 +233,52 @@ export const RadioGroup = styled(Radio.Group)`
   .ant-radio-wrapper {
     margin-right: 40px;
   }
-`;
+`
 
-export const StyledSelect = styled(Select)``;
+export const StyledSelect = styled(Select)``
 
-export const MaxAttempts = styled(Input)``;
+export const MaxAttempts = styled(Input)``
 
 export const BlueText = styled.span`
   color: ${secondaryTextColor};
   font-weight: bold;
-`;
+`
 
 export const BandsText = styled.span`
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.3px;
   color: #4aac8b;
-`;
+`
 
 export const NormalText = styled.span`
   font-size: 12px;
   font-weight: 700;
   color: ${cardTitleColor};
-`;
+`
 
 export const InputTitle = styled.div`
   font-size: 13px;
   font-weight: 600;
   color: #434b5d;
   margin-bottom: 12px;
-`;
+`
 
 export const ActivityInput = styled(Input)`
   font-weight: 600;
   background: ${lightGreySecondary};
   border: none;
   border-radius: 2px;
-`;
+`
 
-export const InputPassword = styled(Input)``;
+export const InputPassword = styled(Input)``
 export const MessageSpan = styled.span`
   color: ${red};
-`;
+`
 
-export const MaxAnswerChecksInput = styled(Input)``;
+export const MaxAnswerChecksInput = styled(Input)``
 
-export const AdvancedSettings = styled.div``;
+export const AdvancedSettings = styled.div``
 
 export const NavigationMenu = styled.div`
   position: absolute;
@@ -295,10 +296,10 @@ export const NavigationMenu = styled.div`
         position: fixed;
         top: 110px;
         max-height: calc(100vh - 170px);
-      `;
+      `
     }
   }}
-`;
+`
 
 export const AdvancedButton = styled(Button)`
   padding: 0;
@@ -315,16 +316,16 @@ export const AdvancedButton = styled(Button)`
   align-items: center;
 
   svg {
-    transform: ${props => (props.show ? "rotate(180deg)" : "none")};
+    transform: ${(props) => (props.show ? 'rotate(180deg)' : 'none')};
   }
-`;
+`
 
 export const Line = styled.div`
   border-top: 1px solid #00b0ff;
   width: calc((100% - 285px) / 2);
   position: relative;
   top: 20px;
-`;
+`
 
 export const RadioWrapper = styled(Block)`
   padding: 0;
@@ -361,14 +362,14 @@ export const RadioWrapper = styled(Block)`
       }
     }
   }
-`;
+`
 
 export const StyledCol = styled(Col)`
   display: flex;
   align-items: center;
-`;
+`
 
 export const Label = styled.label`
   font-weight: 600;
   color: ${titleColor};
-`;
+`

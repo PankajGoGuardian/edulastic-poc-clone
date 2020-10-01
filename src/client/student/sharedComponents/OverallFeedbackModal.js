@@ -1,23 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Modal from "react-responsive-modal";
-import styled from "styled-components";
-import { white, desktopWidth, titleColor } from "@edulastic/colors";
-import { EduButton, FlexContainer } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import Modal from 'react-responsive-modal'
+import styled from 'styled-components'
+import { white, desktopWidth, titleColor } from '@edulastic/colors'
+import { EduButton, FlexContainer } from '@edulastic/common'
 
-const getCharsToDisplay = (name = "") => {
-  const text = name.split(" ");
-  if (text.length > 1) return `${text[0][0]}${text[1][0]}`;
-  return `${text[0][0]}${text[0][1]}`;
-};
+const getCharsToDisplay = (name = '') => {
+  const text = name.split(' ')
+  if (text.length > 1) return `${text[0][0]}${text[1][0]}`
+  return `${text[0][0]}${text[0][1]}`
+}
 
 const OverallFeedbackModal = ({
   isVisible = false,
   closeCallback = () => {},
-  testTitle = "",
-  feedbackText = "",
-  url = "",
-  authorName = ""
+  testTitle = '',
+  feedbackText = '',
+  url = '',
+  authorName = '',
 }) => (
   <Modal
     open={isVisible}
@@ -25,26 +25,35 @@ const OverallFeedbackModal = ({
     footer={null}
     styles={{
       modal: {
-        width: "760px",
-        padding: "20px 40px",
-        background: white
+        width: '760px',
+        padding: '20px 40px',
+        background: white,
       },
       closeIcon: {
-        cursor: "pointer",
-        width: "34px",
-        height: "34px",
-        marginRight: "20px",
-        marginTop: "5px"
-      }
+        cursor: 'pointer',
+        width: '34px',
+        height: '34px',
+        marginRight: '20px',
+        marginTop: '5px',
+      },
     }}
   >
     <ModalHeader>assignment feedback</ModalHeader>
 
     <ModalContent>
       <FlexContainer alignItems="flex-start">
-        {url ? <TeacherProfilePic url={url} /> : <TeacherProfilePic>{getCharsToDisplay(authorName)}</TeacherProfilePic>}
+        {url ? (
+          <TeacherProfilePic url={url} />
+        ) : (
+          <TeacherProfilePic>{getCharsToDisplay(authorName)}</TeacherProfilePic>
+        )}
 
-        <FlexContainer width="500px" marginLeft="40px" flexDirection="column" alignItems="flext-start">
+        <FlexContainer
+          width="500px"
+          marginLeft="40px"
+          flexDirection="column"
+          alignItems="flext-start"
+        >
           <Title>{testTitle}</Title>
           <br />
           <Feedback>{feedbackText}</Feedback>
@@ -58,7 +67,7 @@ const OverallFeedbackModal = ({
       </EduButton>
     </ModalFooter>
   </Modal>
-);
+)
 
 OverallFeedbackModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
@@ -66,10 +75,10 @@ OverallFeedbackModal.propTypes = {
   testTitle: PropTypes.string.isRequired,
   feedbackText: PropTypes.string.isRequired,
   url: PropTypes.string,
-  assignedBy: PropTypes.string.isRequired
-};
+  assignedBy: PropTypes.string.isRequired,
+}
 
-export default OverallFeedbackModal;
+export default OverallFeedbackModal
 
 const ModalHeader = styled.h3`
   width: 680px;
@@ -80,7 +89,7 @@ const ModalHeader = styled.h3`
   white-space: nowrap;
   text-transform: capitalize;
   user-select: none;
-`;
+`
 
 const ModalContent = styled.div`
   background: ${white};
@@ -94,7 +103,7 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   user-select: none;
-`;
+`
 
 const ModalFooter = styled.div`
   display: flex;
@@ -113,19 +122,19 @@ const ModalFooter = styled.div`
       padding-right: 0px;
     }
   }
-`;
+`
 
 const Title = styled.div`
   margin: 4px 2px;
   color: ${titleColor};
   font-weight: 600;
   font-size: 14px;
-`;
+`
 
 const Feedback = styled.p`
   font-weight: normal;
   font-size: 14px;
-`;
+`
 
 const TeacherProfilePic = styled.div`
   width: 120px;
@@ -139,4 +148,4 @@ const TeacherProfilePic = styled.div`
   line-height: 120px;
   text-align: center;
   font-weight: 600;
-`;
+`

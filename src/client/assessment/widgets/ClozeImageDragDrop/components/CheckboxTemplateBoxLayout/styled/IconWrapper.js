@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const IconWrapper = styled.div`
   position: absolute;
@@ -14,4 +14,4 @@ export const IconWrapper = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
   }
-`;
+`

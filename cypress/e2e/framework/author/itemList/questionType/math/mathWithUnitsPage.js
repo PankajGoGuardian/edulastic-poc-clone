@@ -1,6 +1,6 @@
-import MathFillInTheBlanksPage from "./MathFillInTheBlanksPage";
+import MathFillInTheBlanksPage from './MathFillInTheBlanksPage'
 
 class MathWithUnitsPage extends MathFillInTheBlanksPage {
   // template
 }
-export default MathWithUnitsPage;
+export default MathWithUnitsPage

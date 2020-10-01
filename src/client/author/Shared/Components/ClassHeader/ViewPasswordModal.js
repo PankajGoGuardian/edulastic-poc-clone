@@ -1,27 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import useInterval from "@use-it/interval";
-import { Typography } from "antd";
-import styled from "styled-components";
-import moment from "moment";
-import { test } from "@edulastic/constants";
-import { themeColor, themeColorSecondaryLighter, white } from "@edulastic/colors";
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import useInterval from '@use-it/interval'
+import { Typography } from 'antd'
+import styled from 'styled-components'
+import moment from 'moment'
+import { test } from '@edulastic/constants'
+import {
+  themeColor,
+  themeColorSecondaryLighter,
+  white,
+} from '@edulastic/colors'
 import {
   getViewPasswordSelector,
   getAssignmentPasswordDetailsSelector,
-  getPasswordPolicySelector
-} from "../../../ClassBoard/ducks";
-import { toggleViewPasswordAction, regeneratePasswordAction } from "../../../src/actions/classBoard";
-import { ModalWrapper, InitOptions, StyledButton } from "../../../../common/components/ConfirmationModal/styled";
+  getPasswordPolicySelector,
+} from '../../../ClassBoard/ducks'
+import {
+  toggleViewPasswordAction,
+  regeneratePasswordAction,
+} from '../../../src/actions/classBoard'
+import {
+  ModalWrapper,
+  InitOptions,
+  StyledButton,
+} from '../../../../common/components/ConfirmationModal/styled'
 
-const { Paragraph } = Typography;
-const { passwordPolicy: passwordPolicyValues } = test;
+const { Paragraph } = Typography
+const { passwordPolicy: passwordPolicyValues } = test
 
-const formatTime = diffMs => {
-  return moment.utc(moment.duration(diffMs, "ms").asMilliseconds()).format("HH:mm:ss");
-};
+const formatTime = (diffMs) => {
+  return moment
+    .utc(moment.duration(diffMs, 'ms').asMilliseconds())
+    .format('HH:mm:ss')
+}
 
 const ViewPasswordModal = ({
   isViewPassword,
@@ -29,37 +42,43 @@ const ViewPasswordModal = ({
   passwordDetails = {},
   regeneratePassword,
   passwordPolicy,
-  match
+  match,
 }) => {
-  const { assignmentPassword, passwordExpireTime, passwordExpireIn } = passwordDetails;
-  const isStaticPassword = passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC;
-  const isDynamicPassword = passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC;
-  const [timer, setTimer] = useState(null);
-  const [canGenerate, setCanGenerate] = useState(true);
+  const {
+    assignmentPassword,
+    passwordExpireTime,
+    passwordExpireIn,
+  } = passwordDetails
+  const isStaticPassword =
+    passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC
+  const isDynamicPassword =
+    passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC
+  const [timer, setTimer] = useState(null)
+  const [canGenerate, setCanGenerate] = useState(true)
 
   useEffect(() => {
     if (isViewPassword && isDynamicPassword && !isNaN(passwordExpireTime)) {
-      setTimer(passwordExpireTime - Date.now());
-      setCanGenerate(false);
+      setTimer(passwordExpireTime - Date.now())
+      setCanGenerate(false)
     }
-  }, [passwordExpireTime]);
+  }, [passwordExpireTime])
 
   useInterval(() => {
     if (isViewPassword && isDynamicPassword && !isNaN(passwordExpireTime)) {
       if (timer > 1000 && !isNaN(timer)) {
-        setTimer(timer - 1000);
+        setTimer(timer - 1000)
       } else if (!canGenerate && !isNaN(passwordExpireTime)) {
-        setCanGenerate(true);
+        setCanGenerate(true)
       }
     }
-  }, 1000);
+  }, 1000)
 
   const handleRegeneratePassword = () => {
-    const { assignmentId, classId } = match.params;
-    regeneratePassword({ assignmentId, classId, passwordExpireIn });
-  };
+    const { assignmentId, classId } = match.params
+    regeneratePassword({ assignmentId, classId, passwordExpireIn })
+  }
 
-  if (!isViewPassword) return null;
+  if (!isViewPassword) return null
 
   return (
     <PasswordModalWrapper
@@ -69,13 +88,16 @@ const ViewPasswordModal = ({
       onCancel={toggleViewPassword}
       width={700}
       footer={[]}
-      destroyOnClose={true}
+      destroyOnClose
     >
       <InitOptions bodyStyle={{ marginBottom: 0 }}>
         {isStaticPassword && (
           <>
             <Heading>THIS ASSIGNMENT REQUIRES A PASSWORD</Heading>
-            <Content>Student must enter the password shown below to start the assignment.</Content>
+            <Content>
+              Student must enter the password shown below to start the
+              assignment.
+            </Content>
             <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
             <TitleCopy copyable={{ text: assignmentPassword }} />
           </>
@@ -84,10 +106,16 @@ const ViewPasswordModal = ({
           <>
             <Heading>THIS ASSIGNMENT REQUIRES A PASSWORD</Heading>
             <Content>
-              Student must enter the password shown below to start the assignment. This password will expire in{" "}
-              <span style={{ color: themeColorSecondaryLighter }}>{formatTime(timer)}</span> seconds
+              Student must enter the password shown below to start the
+              assignment. This password will expire in{' '}
+              <span style={{ color: themeColorSecondaryLighter }}>
+                {formatTime(timer)}
+              </span>{' '}
+              seconds
             </Content>
-            <AssignmentPassword data-cy="password">{assignmentPassword}</AssignmentPassword>
+            <AssignmentPassword data-cy="password">
+              {assignmentPassword}
+            </AssignmentPassword>
             <TitleCopy copyable={{ text: assignmentPassword }} />
           </>
         )}
@@ -95,34 +123,39 @@ const ViewPasswordModal = ({
           <>
             <Heading>PASSWORD EXPIRED</Heading>
             <Content>
-              <p>If you need to regenerate the password, please click Regenerate Password</p>
+              <p>
+                If you need to regenerate the password, please click Regenerate
+                Password
+              </p>
             </Content>
             <p>
-              <StyledButton onClick={handleRegeneratePassword}>Regenerate Password</StyledButton>
+              <StyledButton onClick={handleRegeneratePassword}>
+                Regenerate Password
+              </StyledButton>
             </p>
           </>
         )}
       </InitOptions>
     </PasswordModalWrapper>
-  );
-};
+  )
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       isViewPassword: getViewPasswordSelector(state),
       passwordDetails: getAssignmentPasswordDetailsSelector(state),
-      passwordPolicy: getPasswordPolicySelector(state)
+      passwordPolicy: getPasswordPolicySelector(state),
     }),
     {
       toggleViewPassword: toggleViewPasswordAction,
-      regeneratePassword: regeneratePasswordAction
+      regeneratePassword: regeneratePasswordAction,
     }
   )
-);
+)
 
-export default enhance(ViewPasswordModal);
+export default enhance(ViewPasswordModal)
 
 const PasswordModalWrapper = styled(ModalWrapper)`
   background: ${white};
@@ -134,22 +167,22 @@ const PasswordModalWrapper = styled(ModalWrapper)`
       padding: 20px 50px;
     }
   }
-`;
+`
 
 const Heading = styled.h3`
   font-weight: 600;
-`;
+`
 
 const Content = styled.div`
   margin: 20px 0px;
   font-weight: 600;
-`;
+`
 
 const AssignmentPassword = styled.div`
   margin: 10px 0px;
   font-size: 30px;
   font-weight: 600;
-`;
+`
 
 export const TitleCopy = styled(Paragraph)`
   &.ant-typography {
@@ -177,4 +210,4 @@ export const TitleCopy = styled(Paragraph)`
     height: 20px;
     color: ${themeColor};
   }
-`;
+`

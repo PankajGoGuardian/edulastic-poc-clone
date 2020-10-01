@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import AxisLabelsMoreOptions from "./AxisLabelsMoreOptions";
-import { RENDERING_BASE } from "../../Builder/config/constants";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
+import AxisLabelsMoreOptions from './AxisLabelsMoreOptions'
+import { RENDERING_BASE } from '../../Builder/config/constants'
 
 const AxisLabelsOptions = ({
   t,
@@ -14,77 +14,77 @@ const AxisLabelsOptions = ({
   fillSections,
   cleanSections,
   setValidation,
-  advancedAreOpen
+  advancedAreOpen,
 }) => {
   const fontSizeList = [
     {
-      id: "small",
-      label: "Small",
+      id: 'small',
+      label: 'Small',
       value: 10,
-      selected: false
+      selected: false,
     },
     {
-      id: "normal",
-      label: "Normal",
+      id: 'normal',
+      label: 'Normal',
       value: 12,
-      selected: true
+      selected: true,
     },
     {
-      id: "large",
-      label: "Large",
+      id: 'large',
+      label: 'Large',
       value: 16,
-      selected: false
+      selected: false,
     },
     {
-      id: "extra_large",
-      label: "Extra large",
+      id: 'extra_large',
+      label: 'Extra large',
       value: 20,
-      selected: false
+      selected: false,
     },
     {
-      id: "huge",
-      label: "Huge",
+      id: 'huge',
+      label: 'Huge',
       value: 24,
-      selected: false
-    }
-  ];
+      selected: false,
+    },
+  ]
 
   const renderingBaseList = [
     {
       id: RENDERING_BASE.LINE_MINIMUM_VALUE,
-      value: "Line minimum value",
-      label: "Line minimum value",
-      selected: true
+      value: 'Line minimum value',
+      label: 'Line minimum value',
+      selected: true,
     },
     {
       id: RENDERING_BASE.ZERO_BASED,
-      value: "Zero",
-      label: "Zero",
-      selected: false
-    }
-  ];
+      value: 'Zero',
+      label: 'Zero',
+      selected: false,
+    },
+  ]
 
   const responseBoxPositionList = [
     {
-      id: "top",
-      label: t("component.options.top")
+      id: 'top',
+      label: t('component.options.top'),
     },
     {
-      id: "bottom",
-      label: t("component.options.bottom")
+      id: 'bottom',
+      label: t('component.options.bottom'),
     },
     {
-      id: "right",
-      label: t("component.options.right")
+      id: 'right',
+      label: t('component.options.right'),
     },
     {
-      id: "left",
-      label: t("component.options.left")
-    }
-  ];
+      id: 'left',
+      label: t('component.options.left'),
+    },
+  ]
 
   return (
-    <Fragment>
+    <>
       <AxisLabelsMoreOptions
         t={t}
         setCanvas={setCanvas}
@@ -99,9 +99,9 @@ const AxisLabelsOptions = ({
         graphData={graphData}
         advancedAreOpen={advancedAreOpen}
       />
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 AxisLabelsOptions.propTypes = {
   t: PropTypes.func.isRequired,
@@ -112,13 +112,13 @@ AxisLabelsOptions.propTypes = {
   setNumberline: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setValidation: PropTypes.func.isRequired,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 AxisLabelsOptions.defaultProps = {
-  advancedAreOpen: false
-};
+  advancedAreOpen: false,
+}
 
-const enhance = compose(withNamespaces("assessment"));
+const enhance = compose(withNamespaces('assessment'))
 
-export default enhance(AxisLabelsOptions);
+export default enhance(AxisLabelsOptions)

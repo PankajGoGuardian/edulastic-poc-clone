@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const MainWrapper = styled.section`
   box-sizing: border-box;
@@ -6,7 +6,8 @@ const MainWrapper = styled.section`
   text-align: left;
   border-radius: 4px;
   max-width: 100%;
-  overflow: ${({ hasCollapseButtons }) => (hasCollapseButtons ? "hidden" : "auto")};
+  overflow: ${({ hasCollapseButtons }) =>
+    hasCollapseButtons ? 'hidden' : 'auto'};
   display: flex;
   flex-direction: column;
 
@@ -28,19 +29,25 @@ const MainWrapper = styled.section`
   }
 
   ${({ zoomLevel, responsiveWidth, hasCollapseButtons, theme }) => {
-    const zoomed = zoomLevel > "1" && zoomLevel !== undefined;
+    const zoomed = zoomLevel > '1' && zoomLevel !== undefined
 
     return `
-      width: ${zoomed ? `${responsiveWidth}px` : "100%"};
-      height: ${zoomed ? `${100 / zoomLevel}%` : "100%"};
-      transform: ${zoomed ? `scale(${zoomLevel})` : ""};
-      transform-origin: ${zoomed ? `top left` : ""};
-      margin: ${!zoomed ? "auto" : ""};
-      background-color: ${hasCollapseButtons ? "transparent" : theme.widgets.assessmentPlayers.mainContentBgColor};
+      width: ${zoomed ? `${responsiveWidth}px` : '100%'};
+      height: ${zoomed ? `${100 / zoomLevel}%` : '100%'};
+      transform: ${zoomed ? `scale(${zoomLevel})` : ''};
+      transform-origin: ${zoomed ? `top left` : ''};
+      margin: ${!zoomed ? 'auto' : ''};
+      background-color: ${
+        hasCollapseButtons
+          ? 'transparent'
+          : theme.widgets.assessmentPlayers.mainContentBgColor
+      };
       color: ${theme.widgets.assessmentPlayers.mainContentTextColor};
-      box-shadow: ${hasCollapseButtons ? "none" : "0 3px 10px 0 rgba(0, 0, 0, 0.1)"};
-    `;
+      box-shadow: ${
+        hasCollapseButtons ? 'none' : '0 3px 10px 0 rgba(0, 0, 0, 0.1)'
+      };
+    `
   }}
-`;
+`
 
-export default MainWrapper;
+export default MainWrapper

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { title, cardBg, mobileWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { title, cardBg, mobileWidth } from '@edulastic/colors'
 
 export const Content = styled.div`
   width: 25vw;
@@ -16,26 +16,26 @@ export const Content = styled.div`
   @media (max-width: ${mobileWidth}) {
     width: 100%;
   }
-`;
+`
 
 export const SettingsButtonWrapper = styled.div`
   position: absolute;
   top: 20px;
   right: 20px;
-`;
+`
 
 export const Heading = styled.div`
   color: ${title};
   margin-bottom: 30px;
   font-size: 20px;
   font-weight: 700;
-`;
+`
 
 export const Items = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-`;
+`
 
 export const Checkboxes = styled.div`
   margin-bottom: 20px;
@@ -47,4 +47,4 @@ export const Checkboxes = styled.div`
     font-weight: bold;
     font-size: 13px;
   }
-`;
+`

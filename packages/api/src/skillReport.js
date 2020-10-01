@@ -1,16 +1,16 @@
-import API from "@edulastic/api/src/utils/API";
+import API from '@edulastic/api/src/utils/API'
 
-const api = new API();
-const prefix = "/skill-report";
+const api = new API()
+const prefix = '/skill-report'
 
-const fetchSkillReport = data =>
+const fetchSkillReport = (data) =>
   api
     .callApi({
       url: `${prefix}/${data.classId}/${data.curriculumId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
-  fetchSkillReport
-};
+  fetchSkillReport,
+}

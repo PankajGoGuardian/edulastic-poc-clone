@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useMemo } from "react";
-import PropTypes from "prop-types";
-import { isEqual } from "lodash";
-import produce from "immer";
+import React, { useState, useEffect, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { isEqual } from 'lodash'
+import produce from 'immer'
 
-import { useDisableDragScroll } from "@edulastic/common";
+import { useDisableDragScroll } from '@edulastic/common'
 
-import HorizontalLines from "./components/HorizontalLines";
-import ArrowPair from "./components/ArrowPair";
-import ValueLabel from "./components/ValueLabel";
-import withGrid from "./HOC/withGrid";
+import HorizontalLines from './components/HorizontalLines'
+import ArrowPair from './components/ArrowPair'
+import ValueLabel from './components/ValueLabel'
+import withGrid from './HOC/withGrid'
 import {
   convertPxToUnit,
   convertUnitToPx,
   getGridVariables,
   displayHorizontalLines,
-  displayVerticalLines
-} from "./helpers";
-import Hists from "./components/Hists";
+  displayVerticalLines,
+} from './helpers'
+import Hists from './components/Hists'
 
-import BarsAxises from "./components/BarsAxises";
+import BarsAxises from './components/BarsAxises'
 
 const Histogram = ({
   item,
@@ -31,25 +31,25 @@ const Histogram = ({
   disableResponse,
   toggleBarDragging,
   deleteMode,
-  margin = { top: 0, right: 0, left: 0, bottom: 50 }
+  margin = { top: 0, right: 0, left: 0, bottom: 50 },
 }) => {
-  const { width, height, margin: gridMargin, showGridlines } = gridParams;
+  const { width, height, margin: gridMargin, showGridlines } = gridParams
 
-  const { padding, step } = getGridVariables(data, gridParams, true);
+  const { padding, step } = getGridVariables(data, gridParams, true)
 
-  const [active, setActive] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [cursorY, setCursorY] = useState(null);
-  const [initY, setInitY] = useState(null);
+  const [active, setActive] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMouseDown, setIsMouseDown] = useState(false)
+  const [cursorY, setCursorY] = useState(null)
+  const [initY, setInitY] = useState(null)
 
-  const [localData, setLocalData] = useState(data);
+  const [localData, setLocalData] = useState(data)
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
-      setLocalData(data);
+      setLocalData(data)
     }
-  }, [data]);
+  }, [data])
 
   const bars = useMemo(
     () =>
@@ -58,80 +58,87 @@ const Histogram = ({
         posX: step * index + (padding + gridMargin) / 2,
         posY: convertUnitToPx(bar.y, gridParams) + 20,
         labelVisibility: bar.labelVisibility,
-        width: step - 2
+        width: step - 2,
       })),
     [localData]
-  );
+  )
 
   const getPolylinePoints = () =>
-    bars.map(bar => `${bar.posX + bar.width / 2},${convertUnitToPx(bar.y, gridParams) + 20}`).join(" ");
+    bars
+      .map(
+        (bar) =>
+          `${bar.posX + bar.width / 2},${
+            convertUnitToPx(bar.y, gridParams) + 20
+          }`
+      )
+      .join(' ')
 
-  const getActivePoint = index =>
+  const getActivePoint = (index) =>
     active !== null
-      ? +getPolylinePoints()
-          .split(" ")
-          [active].split(",")[index]
-      : null;
+      ? +getPolylinePoints().split(' ')[active].split(',')[index]
+      : null
 
-  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+  const getActivePointValue = () =>
+    active !== null ? localData[active].y : null
 
-  const getActiveFractionFormat = () => (active !== null ? localData[active].labelFractionFormat : "Decimal");
+  const getActiveFractionFormat = () =>
+    active !== null ? localData[active].labelFractionFormat : 'Decimal'
 
   const save = () => {
     if (cursorY === null) {
-      return;
+      return
     }
-    setCursorY(null);
-    setActiveIndex(null);
-    setInitY(null);
-    setActive(null);
-    setIsMouseDown(false);
-    toggleBarDragging(false);
-    saveAnswer(localData, active);
-  };
+    setCursorY(null)
+    setActiveIndex(null)
+    setInitY(null)
+    setActive(null)
+    setIsMouseDown(false)
+    toggleBarDragging(false)
+    saveAnswer(localData, active)
+  }
 
-  const normalizeTouchEvent = e => {
+  const normalizeTouchEvent = (e) => {
     if (e?.nativeEvent?.changedTouches?.length) {
-      e.pageX = e.nativeEvent.changedTouches[0].pageX;
-      e.pageY = e.nativeEvent.changedTouches[0].pageY;
+      e.pageX = e.nativeEvent.changedTouches[0].pageX
+      e.pageY = e.nativeEvent.changedTouches[0].pageY
     }
-  };
+  }
 
-  const onMouseMove = e => {
-    if (window.isIOS) normalizeTouchEvent(e);
+  const onMouseMove = (e) => {
+    if (window.isIOS) normalizeTouchEvent(e)
     if (isMouseDown && cursorY && !deleteMode) {
-      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
+      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
       setLocalData(
-        produce(localData, newLocalData => {
-          setLocalData(newLocalData);
-          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
+        produce(localData, (newLocalData) => {
+          setLocalData(newLocalData)
+          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams)
         })
-      );
+      )
     }
-  };
+  }
 
-  const onMouseDown = index => e => {
-    if (window.isIOS) normalizeTouchEvent(e);
-    setCursorY(e.pageY);
-    setActiveIndex(index);
-    setInitY(localData[index].y);
-    setIsMouseDown(true);
-    toggleBarDragging(true);
-  };
+  const onMouseDown = (index) => (e) => {
+    if (window.isIOS) normalizeTouchEvent(e)
+    setCursorY(e.pageY)
+    setActiveIndex(index)
+    setInitY(localData[index].y)
+    setIsMouseDown(true)
+    toggleBarDragging(true)
+  }
 
   const onMouseUp = () => {
-    save();
-  };
+    save()
+  }
 
   const onMouseLeave = () => {
-    save();
-  };
+    save()
+  }
 
-  const targetRef = useDisableDragScroll();
+  const targetRef = useDisableDragScroll()
 
   return (
     <svg
-      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
+      style={{ userSelect: 'none', position: 'relative', zIndex: '15' }}
       width={width + margin.left + margin.right}
       height={height + margin.top + margin.bottom}
       onMouseMove={onMouseMove}
@@ -158,7 +165,7 @@ const Histogram = ({
 
         <Hists
           item={item}
-          saveAnswer={i => saveAnswer(localData, i)}
+          saveAnswer={(i) => saveAnswer(localData, i)}
           deleteMode={deleteMode}
           activeIndex={activeIndex}
           onPointOver={setActive}
@@ -182,8 +189,8 @@ const Histogram = ({
         )}
       </g>
     </svg>
-  );
-};
+  )
+}
 
 Histogram.propTypes = {
   item: PropTypes.object.isRequired,
@@ -197,20 +204,20 @@ Histogram.propTypes = {
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
     snapTo: PropTypes.number,
-    showGridlines: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
+    showGridlines: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   }).isRequired,
   view: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   evaluation: PropTypes.object.isRequired,
-  toggleBarDragging: PropTypes.func
-};
+  toggleBarDragging: PropTypes.func,
+}
 
 Histogram.defaultProps = {
   disableResponse: false,
   deleteMode: false,
-  toggleBarDragging: () => {}
-};
+  toggleBarDragging: () => {},
+}
 
-export default withGrid(Histogram);
+export default withGrid(Histogram)

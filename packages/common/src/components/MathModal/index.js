@@ -1,15 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { Modal as AntModal } from "antd";
-import styled from "styled-components";
-import { math } from "@edulastic/constants";
-import MathInput from "../MathInput";
-import KatexInput from "../KatexInput";
-import EduButton from "../EduButton";
-import FlexContainer from "../FlexContainer";
+import React, { useState, useEffect, useRef } from 'react'
+import PropTypes from 'prop-types'
+import { Modal as AntModal } from 'antd'
+import styled from 'styled-components'
+import { math } from '@edulastic/constants'
+import MathInput from '../MathInput'
+import KatexInput from '../KatexInput'
+import EduButton from '../EduButton'
+import FlexContainer from '../FlexContainer'
 
-const defaultSymbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
-const { defaultNumberPad } = math;
+const defaultSymbols = [
+  'basic',
+  'intermediate',
+  'advanced',
+  'units_si',
+  'units_us',
+  'all',
+]
+const { defaultNumberPad } = math
 
 const MathModal = ({
   value,
@@ -21,29 +28,29 @@ const MathModal = ({
   show,
   onSave,
   onClose,
-  width
+  width,
 }) => {
-  const mathInputRef = useRef(null);
-  const [latex, setLatex] = useState(value || "");
+  const mathInputRef = useRef(null)
+  const [latex, setLatex] = useState(value || '')
 
   useEffect(() => {
     if (show) {
       if (mathInputRef.current) {
-        mathInputRef.current.setFocus();
+        mathInputRef.current.setFocus()
       }
-      setLatex(value);
+      setLatex(value)
     }
-  }, [show]);
+  }, [show])
 
-  const onInput = newLatex => {
-    setLatex(newLatex);
-  };
+  const onInput = (newLatex) => {
+    setLatex(newLatex)
+  }
 
-  const onKeyDown = evt => {
+  const onKeyDown = (evt) => {
     if (evt.which === 13) {
-      onSave(latex);
+      onSave(latex)
     }
-  };
+  }
 
   return (
     <Modal
@@ -53,9 +60,9 @@ const MathModal = ({
       className="math-modal"
       maskClosable={false}
       onCancel={() => onClose()}
-      width={width || "auto"}
+      width={width || 'auto'}
       wrapProps={{
-        style: { overflow: "auto", display: show ? "block" : "none" }
+        style: { overflow: 'auto', display: show ? 'block' : 'none' },
       }}
       footer={
         <FlexContainer justifyContent="flex-start">
@@ -80,13 +87,13 @@ const MathModal = ({
           showResponse={showResponse}
           showDropdown={showDropdown}
           value={latex}
-          onInput={newLatex => onInput(newLatex)}
-          onKeyDown={evt => onKeyDown(evt)}
+          onInput={(newLatex) => onInput(newLatex)}
+          onKeyDown={(evt) => onKeyDown(evt)}
         />
       )}
     </Modal>
-  );
-};
+  )
+}
 
 MathModal.propTypes = {
   show: PropTypes.bool,
@@ -98,23 +105,23 @@ MathModal.propTypes = {
   showResponse: PropTypes.bool,
   value: PropTypes.string,
   onSave: PropTypes.func,
-  onClose: PropTypes.func
-};
+  onClose: PropTypes.func,
+}
 
 MathModal.defaultProps = {
   show: false,
   isEditable: true,
-  value: "",
+  value: '',
   width: null,
   symbols: defaultSymbols,
   numberPad: defaultNumberPad,
   showDropdown: false,
   showResponse: false,
   onSave: () => {},
-  onClose: () => {}
-};
+  onClose: () => {},
+}
 
-export default MathModal;
+export default MathModal
 
 const Modal = styled(AntModal)`
   & .ant-modal-body {
@@ -129,4 +136,4 @@ const Modal = styled(AntModal)`
     margin: 0px 15px;
     width: calc(100% - 30px);
   }
-`;
+`

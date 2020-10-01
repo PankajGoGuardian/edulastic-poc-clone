@@ -1,26 +1,31 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { withNamespaces } from "@edulastic/localization";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { withNamespaces } from '@edulastic/localization'
 
-import { Label } from "../../../styled/WidgetOptions/Label";
-import CommonInput from "./common/CommonInput";
+import { Label } from '../../../styled/WidgetOptions/Label'
+import CommonInput from './common/CommonInput'
 
 const MaxWidth = ({ t, type, value, ...restProps }) => (
-  <Fragment>
-    <Label>{t("component.options.maximumWidth")}</Label>
-    <CommonInput value={value} type={type} data-cy="maxWidthOption" {...restProps} />
-  </Fragment>
-);
+  <>
+    <Label>{t('component.options.maximumWidth')}</Label>
+    <CommonInput
+      value={value}
+      type={type}
+      data-cy="maxWidthOption"
+      {...restProps}
+    />
+  </>
+)
 
 MaxWidth.propTypes = {
   t: PropTypes.func.isRequired,
   value: PropTypes.number,
-  type: PropTypes.string
-};
+  type: PropTypes.string,
+}
 
 MaxWidth.defaultProps = {
-  type: "number",
-  value: 0
-};
+  type: 'number',
+  value: 0,
+}
 
-export default withNamespaces("assessment")(MaxWidth);
+export default withNamespaces('assessment')(MaxWidth)

@@ -1,141 +1,160 @@
-import { authApi } from "@edulastic/api";
-import { CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common";
-import { Col, Form, Row } from "antd";
-import React from "react";
-import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
-import { validateEmail } from "../../../../../common/utils/helpers"  
+import { authApi } from '@edulastic/api'
+import {
+  CustomModalStyled,
+  EduButton,
+  TextInputStyled,
+} from '@edulastic/common'
+import { Col, Form, Row } from 'antd'
+import React from 'react'
+import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
+import { validateEmail } from '../../../../../common/utils/helpers'
 
 class CreateDistrictAdminModal extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      emailValidateStatus: "success",
-      emailValidateMsg: "",
-      email: ""
-    };
+      emailValidateStatus: 'success',
+      emailValidateMsg: '',
+      email: '',
+    }
   }
 
   onCreateDistrictAdmin = async () => {
-    const { email, emailValidateStatus } = this.state;
-    let checkUserResponse = { userExists: true };
+    const { email, emailValidateStatus } = this.state
+    let checkUserResponse = { userExists: true }
 
-    if (emailValidateStatus === "success" && email.length > 0) {
-      checkUserResponse = await authApi.checkUserExist({ email });
-      if (checkUserResponse.userExists && checkUserResponse.role === "district-admin") {
+    if (emailValidateStatus === 'success' && email.length > 0) {
+      checkUserResponse = await authApi.checkUserExist({ email })
+      if (
+        checkUserResponse.userExists &&
+        checkUserResponse.role === 'district-admin'
+      ) {
         this.setState({
-          emailValidateStatus: "error",
-          emailValidateMsg: "Username already exists"
-        });
+          emailValidateStatus: 'error',
+          emailValidateMsg: 'Username already exists',
+        })
       }
     } else if (email.length == 0) {
       this.setState({
-        emailValidateStatus: "error",
-        emailValidateMsg: "Please input Email"
-      });
+        emailValidateStatus: 'error',
+        emailValidateMsg: 'Please input Email',
+      })
     } else if (validateEmail(email)) {
       this.setState({
-        emailValidateStatus: "error",
-        emailValidateMsg: "Username already exists"
-      });
+        emailValidateStatus: 'error',
+        emailValidateMsg: 'Username already exists',
+      })
     } else {
       this.setState({
-        emailValidateStatus: "error",
-        emailValidateMsg: "Please input valid Email"
-      });
+        emailValidateStatus: 'error',
+        emailValidateMsg: 'Please input valid Email',
+      })
     }
 
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        if (checkUserResponse.userExists && checkUserResponse.role === "district-admin") return;
+        if (
+          checkUserResponse.userExists &&
+          checkUserResponse.role === 'district-admin'
+        )
+          return
 
-        const firstName = row.name.split(" ", 1);
-        let lastName = "";
+        const firstName = row.name.split(' ', 1)
+        let lastName = ''
         if (firstName.length < row.name.length) {
-          const lastNameIndex = firstName[0].length + 1;
-          lastName = row.name.substr(lastNameIndex, row.name.length);
+          const lastNameIndex = firstName[0].length + 1
+          lastName = row.name.substr(lastNameIndex, row.name.length)
         }
         const newUser = {
           firstName: firstName[0],
           lastName,
           password: row.password,
-          email: this.state.email
-        };
-        this.props.createDistrictAdmin(newUser);
+          email: this.state.email,
+        }
+        this.props.createDistrictAdmin(newUser)
       }
-    });
-  };
+    })
+  }
 
   onCloseModal = () => {
-    this.props.closeModal();
-  };
+    this.props.closeModal()
+  }
 
-  changeEmail = e => {
+  changeEmail = (e) => {
     if (e.target.value.length === 0) {
       this.setState({
-        emailValidateStatus: "error",
-        emailValidateMsg: "Please input Email",
-        email: e.target.value
-      });
+        emailValidateStatus: 'error',
+        emailValidateMsg: 'Please input Email',
+        email: e.target.value,
+      })
     } else if (validateEmail(e.target.value)) {
       this.setState({
-        emailValidateStatus: "success",
-        emailValidateMsg: "",
-        email: e.target.value
-      });
+        emailValidateStatus: 'success',
+        emailValidateMsg: '',
+        email: e.target.value,
+      })
     } else {
       this.setState({
-        emailValidateStatus: "error",
-        emailValidateMsg: "Please input valid Email",
-        email: e.target.value
-      });
+        emailValidateStatus: 'error',
+        emailValidateMsg: 'Please input valid Email',
+        email: e.target.value,
+      })
     }
-  };
+  }
 
   render() {
-    const { modalVisible, t, form } = this.props;
-    const { getFieldDecorator } = form;
-    const { emailValidateStatus, emailValidateMsg } = this.state;
+    const { modalVisible, t, form } = this.props
+    const { getFieldDecorator } = form
+    const { emailValidateStatus, emailValidateMsg } = this.state
 
     return (
       <CustomModalStyled
         visible={modalVisible}
-        title={t("users.districtadmin.createda.title")}
+        title={t('users.districtadmin.createda.title')}
         onOk={this.onCreateDistrictAdmin}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>{t("users.districtadmin.createda.nocancel")}</EduButton>
-            <EduButton onClick={this.onCreateDistrictAdmin}>{t("users.districtadmin.createda.yescreate")}</EduButton>
-          </ButtonsContainer>
+            <EduButton isGhost onClick={this.onCloseModal}>
+              {t('users.districtadmin.createda.nocancel')}
+            </EduButton>
+            <EduButton onClick={this.onCreateDistrictAdmin}>
+              {t('users.districtadmin.createda.yescreate')}
+            </EduButton>
+          </ButtonsContainer>,
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label={t("users.districtadmin.name")}>
-              {getFieldDecorator("name", {
+            <ModalFormItem label={t('users.districtadmin.name')}>
+              {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
-                    message: t("users.districtadmin.createda.validations.name")
-                  }
-                ]
-              })(<TextInputStyled placeholder={t("users.districtadmin.createda.entername")} />)}
+                    message: t('users.districtadmin.createda.validations.name'),
+                  },
+                ],
+              })(
+                <TextInputStyled
+                  placeholder={t('users.districtadmin.createda.entername')}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label={t("users.districtadmin.username")}
+              label={t('users.districtadmin.username')}
               validateStatus={emailValidateStatus}
               help={emailValidateMsg}
               required
               type="email"
             >
               <TextInputStyled
-                placeholder={t("users.districtadmin.createda.enterusername")}
+                placeholder={t('users.districtadmin.createda.enterusername')}
                 autocomplete="new-password"
                 onChange={this.changeEmail}
               />
@@ -144,17 +163,19 @@ class CreateDistrictAdminModal extends React.Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label={t("users.districtadmin.password")}>
-              {getFieldDecorator("password", {
+            <ModalFormItem label={t('users.districtadmin.password')}>
+              {getFieldDecorator('password', {
                 rules: [
                   {
                     required: true,
-                    message: t("users.districtadmin.createda.validations.password")
-                  }
-                ]
+                    message: t(
+                      'users.districtadmin.createda.validations.password'
+                    ),
+                  },
+                ],
               })(
                 <TextInputStyled
-                  placeholder={t("users.districtadmin.createda.enterpassword")}
+                  placeholder={t('users.districtadmin.createda.enterpassword')}
                   type="password"
                   autocomplete="new-password"
                 />
@@ -163,9 +184,9 @@ class CreateDistrictAdminModal extends React.Component {
           </Col>
         </Row>
       </CustomModalStyled>
-    );
+    )
   }
 }
 
-const CreateDistrictAdminModalForm = Form.create()(CreateDistrictAdminModal);
-export default CreateDistrictAdminModalForm;
+const CreateDistrictAdminModalForm = Form.create()(CreateDistrictAdminModal)
+export default CreateDistrictAdminModalForm

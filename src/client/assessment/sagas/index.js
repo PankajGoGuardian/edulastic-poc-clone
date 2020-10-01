@@ -1,11 +1,11 @@
-import questionSaga from "./question";
-import itemsSaga from "./items";
-import testSaga from "./test";
-import evaluationSaga from "./evaluation";
-import viewSaga from "./view";
-import assessmentSaga from "./assessment";
-import testUserWorkSaga from "./testUserWork";
-import { previewTestsSaga } from "../sharedDucks/previewTest";
+import questionSaga from './question'
+import itemsSaga from './items'
+import testSaga from './test'
+import evaluationSaga from './evaluation'
+import viewSaga from './view'
+import assessmentSaga from './assessment'
+import testUserWorkSaga from './testUserWork'
+import { previewTestsSaga } from '../sharedDucks/previewTest'
 
 const assessmentSagas = [
   questionSaga(),
@@ -15,7 +15,7 @@ const assessmentSagas = [
   viewSaga(),
   assessmentSaga(),
   testUserWorkSaga(),
-  previewTestsSaga()
-];
+  previewTestsSaga(),
+]
 
-export default assessmentSagas;
+export default assessmentSagas

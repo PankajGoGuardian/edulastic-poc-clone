@@ -92,7 +92,11 @@
     "1": {
       "quetext": "This is MCQ_MULTI.1 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["right-1", "right-2"], "points": 3, "evaluation": "Partial match" },
+      "setAns": {
+        "correct": ["right-1", "right-2"],
+        "points": 3,
+        "evaluation": "Partial match"
+      },
       "attemptData": {
         "right": ["right-1", "right-2"],
         "wrong": "wrong-1",
@@ -110,7 +114,11 @@
     "2": {
       "quetext": "This is MCQ_MULTI.2 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
+      "setAns": {
+        "correct": ["right-1", "right-2"],
+        "points": 2,
+        "evaluation": "Partial match"
+      },
       "attemptData": {
         "right": ["right-1", "right-2"],
         "wrong": "wrong-1",
@@ -128,7 +136,11 @@
     "3": {
       "quetext": "This is MCQ_MULTI.3 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
+      "setAns": {
+        "correct": ["right-1", "right-2"],
+        "points": 2,
+        "evaluation": "Partial match"
+      },
       "attemptData": {
         "right": ["right-1", "right-2"],
         "wrong": "wrong-1",
@@ -146,7 +158,12 @@
     "4": {
       "quetext": "This is MCQ_MULTI.4 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match", "penalty": 1 },
+      "setAns": {
+        "correct": ["right-1", "right-2"],
+        "points": 2,
+        "evaluation": "Partial match",
+        "penalty": 1
+      },
       "attemptData": {
         "right": ["right-1", "right-2"],
         "wrong": "wrong-1",
@@ -164,7 +181,11 @@
     "5": {
       "quetext": "This is MCQ_MULTI.5 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
+      "setAns": {
+        "correct": ["right-1", "right-2"],
+        "points": 2,
+        "evaluation": "Partial match"
+      },
       "attemptData": {
         "right": ["right-1", "right-2"],
         "wrong": ["wrong-1", "wrong-2"],
@@ -182,7 +203,11 @@
     "6": {
       "quetext": "This is MCQ_MULTI.6 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["wrong-1", "wrong-2"], "points": 2, "evaluation": "Partial match" },
+      "setAns": {
+        "correct": ["wrong-1", "wrong-2"],
+        "points": 2,
+        "evaluation": "Partial match"
+      },
       "attemptData": {
         "right": ["wrong-1", "wrong-2"],
         "wrong": ["right-1", "right-2"],
@@ -761,14 +786,25 @@
       ]
     },
     "1": {
-      "quetext": ["This is CLOZE_DROPDOWN.1 , 1st - ", "INPUT", " 2nd - ", "INPUT", " 3rd - ", "INPUT"],
+      "quetext": [
+        "This is CLOZE_DROPDOWN.1 , 1st - ",
+        "INPUT",
+        " 2nd - ",
+        "INPUT",
+        " 3rd - ",
+        "INPUT"
+      ],
       "choices": {
         "INPUT_0": ["1.Choice-1", "1.Choice-2", "1.Choice-3"],
         "INPUT_1": ["2.Choice-1", "2.Choice-2", "2.Choice-3"],
         "INPUT_2": ["3.Choice-1", "3.Choice-2", "3.Choice-3"]
       },
       "setAns": {
-        "correct": { "INPUT_0": "1.Choice-2", "INPUT_1": "2.Choice-1", "INPUT_2": "3.Choice-1" },
+        "correct": {
+          "INPUT_0": "1.Choice-2",
+          "INPUT_1": "2.Choice-1",
+          "INPUT_2": "3.Choice-1"
+        },
         "points": 3
       },
       "attemptData": {

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
-import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
-import { themeColor } from "@edulastic/colors";
-import { FaBars } from "react-icons/fa";
-import { IconTrash } from "@edulastic/icons";
+import React, { useState } from 'react'
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+} from 'react-sortable-hoc'
+import { themeColor } from '@edulastic/colors'
+import { FaBars } from 'react-icons/fa'
+import { IconTrash } from '@edulastic/icons'
 
-import ModuleForm from "./ModuleForm";
+import ModuleForm from './ModuleForm'
 import {
   Label,
   ModuleContainer,
@@ -16,38 +20,44 @@ import {
   ModuleDescription,
   ModuleActions,
   StyledModuleList,
-  StyledButton
-} from "../styled";
+  StyledButton,
+} from '../styled'
 
 const ModuleResequenceHandle = SortableHandle(() => (
   <DragHandle>
     <FaBars />
   </DragHandle>
-));
+))
 
-const ModuleItem = SortableElement(props => {
+const ModuleItem = SortableElement((props) => {
   const {
     id,
     deleteModule,
     updateModule,
-    module: { mIndex, moduleId, moduleGroupName, title: moduleName, description: moduleDescription } = {}
-  } = props;
+    module: {
+      mIndex,
+      moduleId,
+      moduleGroupName,
+      title: moduleName,
+      description: moduleDescription,
+    } = {},
+  } = props
 
-  const [isEdit, toggleEdit] = useState(false);
+  const [isEdit, toggleEdit] = useState(false)
   /*
    * TODO: On SortElement Click Highlight Container
    */
-  const [dragging] = useState(false);
+  const [dragging] = useState(false)
 
-  const openEditModuleForm = () => toggleEdit(true);
+  const openEditModuleForm = () => toggleEdit(true)
 
-  const handleUpdateModule = moduleData => {
+  const handleUpdateModule = (moduleData) => {
     if (updateModule(id, moduleData)) {
-      toggleEdit(false);
+      toggleEdit(false)
     }
-  };
+  }
 
-  const handleCancleUpdate = () => toggleEdit(false);
+  const handleCancleUpdate = () => toggleEdit(false)
 
   if (isEdit) {
     return (
@@ -58,7 +68,7 @@ const ModuleItem = SortableElement(props => {
         onSave={handleUpdateModule}
         module={{ moduleId, moduleGroupName, moduleName, moduleDescription }}
       />
-    );
+    )
   }
 
   return (
@@ -72,7 +82,9 @@ const ModuleItem = SortableElement(props => {
         <ModuleTitle>
           <Label>{moduleName}</Label>
         </ModuleTitle>
-        <ModuleDescription dangerouslySetInnerHTML={{ __html: moduleDescription }} />
+        <ModuleDescription
+          dangerouslySetInnerHTML={{ __html: moduleDescription }}
+        />
       </ModuleContent>
       <ModuleActions>
         <StyledButton onClick={openEditModuleForm}>EDIT</StyledButton>
@@ -81,15 +93,21 @@ const ModuleItem = SortableElement(props => {
         </StyledButton>
       </ModuleActions>
     </ModuleContainer>
-  );
-});
+  )
+})
 
-const SortableModules = SortableContainer(props => (
+const SortableModules = SortableContainer((props) => (
   <StyledModuleList>
     {props.modulesList.map((mod, i) => (
-      <ModuleItem id={i} key={`module-${mod.title}-${mod.description}`} module={mod} index={i} {...props} />
+      <ModuleItem
+        id={i}
+        key={`module-${mod.title}-${mod.description}`}
+        module={mod}
+        index={i}
+        {...props}
+      />
     ))}
   </StyledModuleList>
-));
+))
 
-export default SortableModules;
+export default SortableModules

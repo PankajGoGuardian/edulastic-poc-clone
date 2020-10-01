@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Wrapper } from "./styled/Wrapper";
-import { Icon } from "./styled/Icon";
-import { IconCheck } from "./styled/IconCheck";
-import { IconClose } from "./styled/IconClose";
+import { Wrapper } from './styled/Wrapper'
+import { Icon } from './styled/Icon'
+import { IconCheck } from './styled/IconCheck'
+import { IconClose } from './styled/IconClose'
 
 class MathInputStatus extends React.PureComponent {
   render() {
-    const { valid } = this.props;
+    const { valid } = this.props
     return (
       <Wrapper>
         <Icon>
@@ -16,16 +16,16 @@ class MathInputStatus extends React.PureComponent {
           {!valid && <IconClose />}
         </Icon>
       </Wrapper>
-    );
+    )
   }
 }
 
 MathInputStatus.propTypes = {
-  valid: PropTypes.bool
-};
+  valid: PropTypes.bool,
+}
 
 MathInputStatus.defaultProps = {
-  valid: false
-};
+  valid: false,
+}
 
-export default MathInputStatus;
+export default MathInputStatus

@@ -717,7 +717,11 @@
         "fontsizelist": ["Small", "Normal", "Large", "Extra large", "Huge"],
         "margin": "Margin (px)",
         "stemNumeration": "Stem numeration (review only)",
-        "stemNumerationList": ["Numerical", "Uppercase alphabet", "Lowercase alphabet"],
+        "stemNumerationList": [
+          "Numerical",
+          "Uppercase alphabet",
+          "Lowercase alphabet"
+        ],
         "fontSize": "Font Size",
         "drawLabelzero": "Draw label zero",
         "displayPositionOnHover": "Display position on hover",

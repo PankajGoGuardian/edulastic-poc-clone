@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const ControlBar = styled.div`
   display: flex;
@@ -8,4 +8,4 @@ export const ControlBar = styled.div`
   padding: 22px 10px;
   align-itmes: center;
   align-self: flex-start;
-`;
+`

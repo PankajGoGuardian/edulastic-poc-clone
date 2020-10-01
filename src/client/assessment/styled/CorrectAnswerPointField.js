@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { TextField } from "@edulastic/common";
-import { greyThemeLight } from "@edulastic/colors";
+import styled from 'styled-components'
+import { TextField } from '@edulastic/common'
+import { greyThemeLight } from '@edulastic/colors'
 
 export const CorrectAnswerPointField = styled(TextField)`
   width: 230px;
@@ -11,7 +11,7 @@ export const CorrectAnswerPointField = styled(TextField)`
   font-size: 14px;
   line-height: 38px;
   padding: 0 15px;
-  margin-right: ${props => props.mr || "0px"};
+  margin-right: ${(props) => props.mr || '0px'};
   position: relative;
   z-index: 1;
-`;
+`

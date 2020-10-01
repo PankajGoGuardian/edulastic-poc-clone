@@ -1,13 +1,13 @@
-import { desktopWidth, mobileWidth, themeColor, white } from "@edulastic/colors";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
+import { desktopWidth, mobileWidth, themeColor, white } from '@edulastic/colors'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import HeaderWrapper from '../../../src/mainContent/headerWrapper'
 
 export const MobileContainer = styled(HeaderWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
+`
 
 export const LeftSide = styled.div`
   display: flex;
@@ -15,7 +15,7 @@ export const LeftSide = styled.div`
 
   @media (max-width: ${mobileWidth}) {
   }
-`;
+`
 
 export const RightSide = styled.div`
   text-align: right;
@@ -33,7 +33,7 @@ export const RightSide = styled.div`
     display: flex;
     margin-top: 20px;
   }
-`;
+`
 
 export const Back = styled(Link)`
   color: ${white};
@@ -45,7 +45,7 @@ export const Back = styled(Link)`
   :hover {
     color: ${themeColor};
   }
-`;
+`
 
 export const ReferenceText = styled.div`
   margin-left: 94.5px;
@@ -53,7 +53,7 @@ export const ReferenceText = styled.div`
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.2px;
-`;
+`
 
 export const ReferenceValue = styled.div`
   margin-left: 11px;
@@ -62,4 +62,4 @@ export const ReferenceValue = styled.div`
   font-weight: 600;
   letter-spacing: 0.2px;
   color: ${white};
-`;
+`

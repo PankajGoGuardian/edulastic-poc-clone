@@ -1,13 +1,19 @@
-import styled from "styled-components";
-import { middleMobileWidth } from "@edulastic/colors";
-import { FlexContainer } from "./FlexContainer";
+import styled from 'styled-components'
+import { middleMobileWidth } from '@edulastic/colors'
+import { FlexContainer } from './FlexContainer'
 
 export const FormContainer = styled(FlexContainer)`
-  background: ${props => props.theme.widgets.clozeImageDropDown.formContainerBgColor};
-  font-size: ${props => props.theme.widgets.clozeImageDropDown.formContainerFontSize};
-  font-weight: ${props => props.theme.widgets.clozeImageDropDown.formContainerFontWeight};
-  color: ${props => props.theme.widgets.clozeImageDropDown.formContainerColor};
-  border-bottom: 1px solid ${props => props.theme.widgets.clozeImageDropDown.formContainerBorderColor};
+  background: ${(props) =>
+    props.theme.widgets.clozeImageDropDown.formContainerBgColor};
+  font-size: ${(props) =>
+    props.theme.widgets.clozeImageDropDown.formContainerFontSize};
+  font-weight: ${(props) =>
+    props.theme.widgets.clozeImageDropDown.formContainerFontWeight};
+  color: ${(props) =>
+    props.theme.widgets.clozeImageDropDown.formContainerColor};
+  border-bottom: 1px solid
+    ${(props) =>
+      props.theme.widgets.clozeImageDropDown.formContainerBorderColor};
   border-radius: 10px 10px 0px 0px;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -17,7 +23,7 @@ export const FormContainer = styled(FlexContainer)`
     display: flex;
     padding: 4px 0px;
   }
-`;
+`
 
 export const FormBottomContainer = styled(FlexContainer)`
   justify-content: flex-start;
@@ -34,4 +40,4 @@ export const FormBottomContainer = styled(FlexContainer)`
       margin-left: 0px;
     }
   }
-`;
+`

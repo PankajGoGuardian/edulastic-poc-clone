@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { augmentStandardMetaInfo, getDomains } from "../utils/transformers";
+import { useMemo } from 'react'
+import { augmentStandardMetaInfo, getDomains } from '../utils/transformers'
 
 export const useGetStudentMasteryData = (
   metricInfo,
@@ -9,8 +9,13 @@ export const useGetStudentMasteryData = (
   asessmentMetricInfo = []
 ) =>
   useMemo(() => {
-    const standards = augmentStandardMetaInfo(metricInfo, skillInfo, scaleInfo);
-    const domains = getDomains(standards, scaleInfo, studentClassInfo, asessmentMetricInfo);
+    const standards = augmentStandardMetaInfo(metricInfo, skillInfo, scaleInfo)
+    const domains = getDomains(
+      standards,
+      scaleInfo,
+      studentClassInfo,
+      asessmentMetricInfo
+    )
 
-    return [standards, domains];
-  }, [metricInfo, skillInfo, scaleInfo]);
+    return [standards, domains]
+  }, [metricInfo, skillInfo, scaleInfo])

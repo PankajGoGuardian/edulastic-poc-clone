@@ -1,31 +1,64 @@
-import { black, extraDesktopWidthMax, mediumDesktopExactWidth, mobileWidthMax, themeColor } from "@edulastic/colors";
-import { OnDarkBgLogo } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { Button, Col, Row, Tooltip } from "antd";
-import PropTypes from "prop-types";
-import React from "react";
-import { Link } from "react-router-dom";
-import { compose } from "redux";
-import styled from "styled-components";
+import {
+  black,
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth,
+  mobileWidthMax,
+  themeColor,
+} from '@edulastic/colors'
+import { OnDarkBgLogo } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { Button, Col, Row, Tooltip } from 'antd'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { compose } from 'redux'
+import styled from 'styled-components'
 import {
   getDistrictGetStartedUrl,
   getPartnerGetStartedUrl,
-  isDistrictPolicyAllowed
-} from "../../../common/utils/helpers";
+  isDistrictPolicyAllowed,
+} from '../../../common/utils/helpers'
 
-const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName, generalSettings = {}, orgType }) => (
+const Header = ({
+  t,
+  Partners,
+  isSignupUsingDaURL,
+  districtPolicy,
+  orgShortName,
+  generalSettings = {},
+  orgType,
+}) => (
   <RegistrationHeader type="flex" align="middle">
-    <Col span={12} style={{ display: "flex" }}>
+    <Col span={12} style={{ display: 'flex' }}>
       <OnDarkBgLogo height="30px" />
-      {Partners.name !== "login" && <PartnerLogo Partners={Partners} src={Partners.headerLogo} alt={Partners.name} />}
+      {Partners.name !== 'login' && (
+        <PartnerLogo
+          Partners={Partners}
+          src={Partners.headerLogo}
+          alt={Partners.name}
+        />
+      )}
       {isSignupUsingDaURL ? (
-        <div className="district-name-and-announcement" style={{ paddingLeft: "15px" }}>
+        <div
+          className="district-name-and-announcement"
+          style={{ paddingLeft: '15px' }}
+        >
           <Row type="flex">
             <Col className="district-name">{generalSettings.name || '---'}</Col>
             <Col>
-              <StyledCustomTooltip placement="bottom" title={generalSettings.announcement} trigger="click">
-                <Button icon="bell" type="link" className="district-announcement-button">
-                  {orgType === "district" ? "District Announcement" : "School Announcement"}
+              <StyledCustomTooltip
+                placement="bottom"
+                title={generalSettings.announcement}
+                trigger="click"
+              >
+                <Button
+                  icon="bell"
+                  type="link"
+                  className="district-announcement-button"
+                >
+                  {orgType === 'district'
+                    ? 'District Announcement'
+                    : 'School Announcement'}
                 </Button>
               </StyledCustomTooltip>
             </Col>
@@ -35,40 +68,58 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName,
     </Col>
     <Col span={12} align="right">
       {isSignupUsingDaURL &&
-      (!isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") &&
-        !isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")) ? (
-          <div className="teacher-student-restricted-message">
-            {`${t("common.policyviolation").split(".")[0]}.`}
-            <br />
-            {`${t("common.policyviolation").split(".")[1]}.`}
-          </div>
+      !isDistrictPolicyAllowed(
+        isSignupUsingDaURL,
+        districtPolicy,
+        'teacherSignUp'
+      ) &&
+      !isDistrictPolicyAllowed(
+        isSignupUsingDaURL,
+        districtPolicy,
+        'studentSignUp'
+      ) ? (
+        <div className="teacher-student-restricted-message">
+          {`${t('common.policyviolation').split('.')[0]}.`}
+          <br />
+          {`${t('common.policyviolation').split('.')[1]}.`}
+        </div>
       ) : (
         <>
-          <DontHaveAccountText>{t("common.donthaveanaccount")}</DontHaveAccountText>
+          <DontHaveAccountText>
+            {t('common.donthaveanaccount')}
+          </DontHaveAccountText>
           <Link
             to={
-              isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
-              isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")
+              isDistrictPolicyAllowed(
+                isSignupUsingDaURL,
+                districtPolicy,
+                'teacherSignUp'
+              ) ||
+              isDistrictPolicyAllowed(
+                isSignupUsingDaURL,
+                districtPolicy,
+                'studentSignUp'
+              )
                 ? getDistrictGetStartedUrl(orgShortName, orgType)
                 : getPartnerGetStartedUrl(Partners)
             }
           >
-            {t("common.signupbtn")}
+            {t('common.signupbtn')}
           </Link>
         </>
       )}
     </Col>
   </RegistrationHeader>
-);
+)
 
 Header.propTypes = {
   t: PropTypes.func.isRequired,
-  Partners: PropTypes.object.isRequired
-};
+  Partners: PropTypes.object.isRequired,
+}
 
-const enhance = compose(withNamespaces("login"));
+const enhance = compose(withNamespaces('login'))
 
-export default enhance(Header);
+export default enhance(Header)
 
 const RegistrationHeader = styled(Row)`
   padding: 16px 24px;
@@ -117,7 +168,7 @@ const RegistrationHeader = styled(Row)`
       font-size: 11px;
     }
   }
-`;
+`
 
 const DontHaveAccountText = styled.span`
   font-size: 12px;
@@ -130,23 +181,23 @@ const DontHaveAccountText = styled.span`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
-`;
+`
 
 const PartnerLogo = styled.img`
-  filter: ${props => props.Partners.colorFilter};
+  filter: ${(props) => props.Partners.colorFilter};
   margin-left: 10px;
   max-height: 30px;
-`;
+`
 
-const CustomTooltip = props => {
-  const { className, children, ...attrs } = props;
+const CustomTooltip = (props) => {
+  const { className, children, ...attrs } = props
 
   return (
     <Tooltip {...attrs} overlayClassName={`${className}`}>
       {children}
     </Tooltip>
-  );
-};
+  )
+}
 
 const StyledCustomTooltip = styled(CustomTooltip)`
   max-width: 300px;
@@ -164,4 +215,4 @@ const StyledCustomTooltip = styled(CustomTooltip)`
       }
     }
   }
-`;
+`

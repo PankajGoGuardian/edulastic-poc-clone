@@ -6,22 +6,25 @@ import {
   secondaryTextColor,
   smallDesktopWidth,
   tabletWidth,
-  themeColor
-} from "@edulastic/colors";
-import { IconLock, IconMail } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Button, Checkbox, Col, Form, Input, Row } from "antd";
-import { trim, get } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import { isDistrictPolicyAllowed, isEmailValid } from "../../../common/utils/helpers";
-import cleverIcon from "../../assets/clever-icon.svg";
-import googleIcon from "../../assets/google-btn.svg";
-import classlinkIcon from "../../assets/classlink-icon.png";
-import icon365 from "../../assets/icons8-office-365.svg";
+  themeColor,
+} from '@edulastic/colors'
+import { IconLock, IconMail } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
+import { trim, get } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import {
+  isDistrictPolicyAllowed,
+  isEmailValid,
+} from '../../../common/utils/helpers'
+import cleverIcon from '../../assets/clever-icon.svg'
+import googleIcon from '../../assets/google-btn.svg'
+import classlinkIcon from '../../assets/classlink-icon.png'
+import icon365 from '../../assets/icons8-office-365.svg'
 import {
   cleverLoginAction,
   googleLoginAction,
@@ -29,75 +32,75 @@ import {
   msoLoginAction,
   classlinkLoginAction,
   getIsClassCodeModalOpen,
-  toggleClassCodeModalAction
-} from "../ducks";
-import { ForgotPasswordPopup } from "./forgotPasswordPopup";
-import { ClassCodePopup } from "./classCodePopup";
+  toggleClassCodeModalAction,
+} from '../ducks'
+import { ForgotPasswordPopup } from './forgotPasswordPopup'
+import { ClassCodePopup } from './classCodePopup'
 
-const FormItem = Form.Item;
+const FormItem = Form.Item
 
 class LoginContainer extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     login: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired
-  };
+    t: PropTypes.func.isRequired,
+  }
 
   state = {
     confirmDirty: false,
     forgotPasswordVisible: false,
-    classCode: ""
-  };
+    classCode: '',
+  }
 
-  handleSubmit = e => {
-    const { form, login } = this.props;
-    const { classCode } = this.state;
-    e.preventDefault();
+  handleSubmit = (e) => {
+    const { form, login } = this.props
+    const { classCode } = this.state
+    e.preventDefault()
     form.validateFieldsAndScroll((err, { password, email }) => {
       if (!err) {
         const payload = {
           password,
-          username: trim(email)
-        };
+          username: trim(email),
+        }
         if (classCode) {
           Object.assign(payload, {
-            classCode
-          });
+            classCode,
+          })
         }
-        login(payload);
+        login(payload)
       }
-    });
-  };
+    })
+  }
 
-  handleClassCodeChange = classCode => this.setState({ classCode });
+  handleClassCodeChange = (classCode) => this.setState({ classCode })
 
   handleConfirmBlur = ({ target: { value } }) => {
-    let { confirmDirty } = this.state;
-    confirmDirty = confirmDirty || !!value;
-    this.setState({ confirmDirty });
-  };
+    let { confirmDirty } = this.state
+    confirmDirty = confirmDirty || !!value
+    this.setState({ confirmDirty })
+  }
 
-  onForgotPasswordClick = e => {
-    e.preventDefault();
-    this.setState(state => ({
+  onForgotPasswordClick = (e) => {
+    e.preventDefault()
+    this.setState((state) => ({
       ...state,
-      forgotPasswordVisible: true
-    }));
-  };
+      forgotPasswordVisible: true,
+    }))
+  }
 
   onForgotPasswordCancel = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       ...state,
-      forgotPasswordVisible: false
-    }));
-  };
+      forgotPasswordVisible: false,
+    }))
+  }
 
   onForgotPasswordOk = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       ...state,
-      forgotPasswordVisible: false
-    }));
-  };
+      forgotPasswordVisible: false,
+    }))
+  }
 
   render() {
     const {
@@ -113,22 +116,28 @@ class LoginContainer extends React.Component {
       msoLogin,
       loadingComponents,
       isClassCodeModalOpen,
-      toggleClassCodeModal
-    } = this.props;
+      toggleClassCodeModal,
+    } = this.props
 
-    const { forgotPasswordVisible, classCode } = this.state;
+    const { forgotPasswordVisible, classCode } = this.state
 
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 }
+        xs: { span: 24 },
       },
       wrapperCol: {
-        xs: { span: 24 }
-      }
-    };
+        xs: { span: 24 },
+      },
+    }
 
     return (
-      <LoginContentWrapper imageSrc={isSignupUsingDaURL && generalSettings && generalSettings.pageBackground}>
+      <LoginContentWrapper
+        imageSrc={
+          isSignupUsingDaURL &&
+          generalSettings &&
+          generalSettings.pageBackground
+        }
+      >
         <Row type="flex" justify="space-around" align="middle">
           {isSignupUsingDaURL && generalSettings && generalSettings.logo && (
             <Col xs={{ span: 20 }} lg={{ span: 6, offset: 2 }}>
@@ -142,117 +151,173 @@ class LoginContainer extends React.Component {
                 <FormWrapper>
                   <FormHead>
                     <h3 align="center">
-                      {Partners.boxTitle === "Login" ? (
+                      {Partners.boxTitle === 'Login' ? (
                         <b>{Partners.boxTitle}</b>
                       ) : (
-                        <PartnerBoxTitle src={Partners.boxTitle} alt={Partners.name} />
+                        <PartnerBoxTitle
+                          src={Partners.boxTitle}
+                          alt={Partners.name}
+                        />
                       )}
                     </h3>
 
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'googleSignOn'
+                    ) || !isSignupUsingDaURL ? (
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
                         onClick={() => {
-                          googleLogin();
+                          googleLogin()
                         }}
                       >
-                        <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
+                        <img src={googleIcon} alt="" />{' '}
+                        {t('common.googlesigninbtn')}
                       </ThirdPartyLoginBtn>
                     ) : null}
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'office365SignOn'
+                    ) || !isSignupUsingDaURL ? (
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
                         onClick={() => {
-                          msoLogin();
+                          msoLogin()
                         }}
                       >
                         <img src={icon365} alt="" />
-                        {t("common.office365signinbtn")}
+                        {t('common.office365signinbtn')}
                       </ThirdPartyLoginBtn>
                     ) : null}
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'cleverSignOn'
+                    ) || !isSignupUsingDaURL ? (
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
                         onClick={() => {
-                          cleverLogin("teacher");
+                          cleverLogin('teacher')
                         }}
                       >
                         <img src={cleverIcon} alt="" />
-                        {t("common.cleversigninbtn")}
+                        {t('common.cleversigninbtn')}
                       </ThirdPartyLoginBtn>
                     ) : null}
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "atlasSignOn") ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'atlasSignOn'
+                    ) ? (
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
                         onClick={() => {
-                          classlinkLogin("teacher");
+                          classlinkLogin('teacher')
                         }}
                       >
-                        <img src={classlinkIcon} alt="" className="classlink-icon" />
-                        {t("common.classlinksigninbtn")}
+                        <img
+                          src={classlinkIcon}
+                          alt=""
+                          className="classlink-icon"
+                        />
+                        {t('common.classlinksigninbtn')}
                       </ThirdPartyLoginBtn>
                     ) : null}
                   </FormHead>
-                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                  !isSignupUsingDaURL ? (
+                  {isDistrictPolicyAllowed(
+                    isSignupUsingDaURL,
+                    districtPolicy,
+                    'userNameAndPassword'
+                  ) || !isSignupUsingDaURL ? (
                     <FormBody>
                       <Col span={20} offset={2}>
                         <Form onSubmit={this.handleSubmit}>
-                          <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
-                            {getFieldDecorator("email", {
+                          <FormItem
+                            {...formItemLayout}
+                            label={t('common.loginidinputlabel')}
+                          >
+                            {getFieldDecorator('email', {
                               validateFirst: true,
-                              initialValue: "",
+                              initialValue: '',
                               rules: [
                                 {
-                                  transform: value => trim(value)
+                                  transform: (value) => trim(value),
                                 },
                                 {
                                   required: true,
-                                  message: t("common.validation.emptyemailid")
+                                  message: t('common.validation.emptyemailid'),
                                 },
                                 {
-                                  type: "string",
-                                  message: t("common.validation.validemail")
+                                  type: 'string',
+                                  message: t('common.validation.validemail'),
                                 },
                                 {
                                   validator: (rule, value, callback) =>
-                                    isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
-                                }
-                              ]
-                            })(<Input data-cy="email" prefix={<IconMail color={themeColor} />} />)}
+                                    isEmailValid(
+                                      rule,
+                                      value,
+                                      callback,
+                                      'both',
+                                      t('common.validation.validemail')
+                                    ),
+                                },
+                              ],
+                            })(
+                              <Input
+                                data-cy="email"
+                                prefix={<IconMail color={themeColor} />}
+                              />
+                            )}
                           </FormItem>
-                          <FormItem {...formItemLayout} label={t("common.loginpasswordinputlabel")}>
-                            {getFieldDecorator("password", {
+                          <FormItem
+                            {...formItemLayout}
+                            label={t('common.loginpasswordinputlabel')}
+                          >
+                            {getFieldDecorator('password', {
                               rules: [
                                 {
                                   required: true,
-                                  message: t("common.validation.emptypassword")
-                                }
-                              ]
-                            })(<Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" />)}
+                                  message: t('common.validation.emptypassword'),
+                                },
+                              ],
+                            })(
+                              <Input
+                                data-cy="password"
+                                prefix={<IconLock color={themeColor} />}
+                                type="password"
+                              />
+                            )}
                           </FormItem>
                           <FormItem>
-                            {getFieldDecorator("remember", {
-                              valuePropName: "checked",
-                              initialValue: true
-                            })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
-                            <ForgetPassword style={{ marginTop: 1 }} onClick={this.onForgotPasswordClick}>
-                              <span>{t("common.forgotpasswordtext")}</span>
+                            {getFieldDecorator('remember', {
+                              valuePropName: 'checked',
+                              initialValue: true,
+                            })(
+                              <RememberCheckBox>
+                                {t('common.remembermetext')}
+                              </RememberCheckBox>
+                            )}
+                            <ForgetPassword
+                              style={{ marginTop: 1 }}
+                              onClick={this.onForgotPasswordClick}
+                            >
+                              <span>{t('common.forgotpasswordtext')}</span>
                             </ForgetPassword>
                             <LoginButton
-                              loading={loadingComponents.includes("loginButton")}
+                              loading={loadingComponents.includes(
+                                'loginButton'
+                              )}
                               data-cy="login"
                               type="primary"
                               htmlType="submit"
                             >
-                              {t("common.signinbtn")}
+                              {t('common.signinbtn')}
                             </LoginButton>
                           </FormItem>
                         </Form>
@@ -265,7 +330,7 @@ class LoginContainer extends React.Component {
           </Col>
         </Row>
         <Copyright>
-          <Col span={24}>{t("common.copyright")}</Col>
+          <Col span={24}>{t('common.copyright')}</Col>
         </Copyright>
         {forgotPasswordVisible ? (
           <ForgotPasswordPopup
@@ -284,18 +349,18 @@ class LoginContainer extends React.Component {
           />
         ) : null}
       </LoginContentWrapper>
-    );
+    )
   }
 }
 
-const LoginForm = Form.create()(LoginContainer);
+const LoginForm = Form.create()(LoginContainer)
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   connect(
-    state => ({
-      loadingComponents: get(state, ["authorUi", "currentlyLoading"], []),
-      isClassCodeModalOpen: getIsClassCodeModalOpen(state)
+    (state) => ({
+      loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
+      isClassCodeModalOpen: getIsClassCodeModalOpen(state),
     }),
     {
       googleLogin: googleLoginAction,
@@ -303,28 +368,29 @@ const enhance = compose(
       msoLogin: msoLoginAction,
       login: loginAction,
       classlinkLogin: classlinkLoginAction,
-      toggleClassCodeModal: toggleClassCodeModalAction
+      toggleClassCodeModal: toggleClassCodeModalAction,
     }
   )
-);
+)
 
-export default enhance(LoginForm);
+export default enhance(LoginForm)
 
 const LoginContentWrapper = styled(Row)`
   position: relative;
-  background-image: ${({ imageSrc }) => (imageSrc ? `url("${imageSrc}")` : "unset")};
+  background-image: ${({ imageSrc }) =>
+    imageSrc ? `url("${imageSrc}")` : 'unset'};
   background-repeat: no-repeat;
   background-size: cover;
   height: calc(100vh - 74.5px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
+`
 
 const RegistrationBody = styled(Row)`
   padding: 30px 0px 65px;
   justify-content: center;
-`;
+`
 
 const Copyright = styled(Row)`
   color: ${grey};
@@ -339,22 +405,30 @@ const Copyright = styled(Row)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
-`;
+`
 
 const PartnerBoxTitle = styled.img`
   height: 25px;
-`;
+`
 
 const FormWrapper = styled.div`
   background: white;
   overflow: hidden;
   border-radius: 8px;
-`;
+`
 
 const FormHead = styled(Row)`
   background: #157ad8;
-  background: -moz-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
-  background: -webkit-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
+  background: -moz-radial-gradient(
+    ellipse at center,
+    #94df5e 16%,
+    #00b373 100%
+  );
+  background: -webkit-radial-gradient(
+    ellipse at center,
+    #94df5e 16%,
+    #00b373 100%
+  );
   background: radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
   padding: 15px;
   h3 {
@@ -364,14 +438,14 @@ const FormHead = styled(Row)`
       font-size: 26px;
     }
   }
-`;
+`
 
 const DistrictLogo = styled.img`
   background: transparent;
   max-height: 300px;
   width: 100%;
   object-fit: contain;
-`;
+`
 
 const ThirdPartyLoginBtn = styled(Col)`
   background: #ffffff;
@@ -394,7 +468,7 @@ const ThirdPartyLoginBtn = styled(Col)`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
-`;
+`
 
 const FormBody = styled(Row)`
   padding: 15px;
@@ -426,7 +500,7 @@ const FormBody = styled(Row)`
         &.ant-form-item-required {
           &:before,
           &:after {
-            content: "";
+            content: '';
           }
         }
       }
@@ -477,9 +551,9 @@ const FormBody = styled(Row)`
   .ant-input-affix-wrapper .ant-input-prefix {
     width: 15px;
   }
-`;
+`
 
-const ForgetPassword = styled("a")`
+const ForgetPassword = styled('a')`
   float: right;
   color: ${themeColor};
   &:hover {
@@ -498,7 +572,7 @@ const ForgetPassword = styled("a")`
       font-size: 14px;
     }
   }
-`;
+`
 
 const LoginButton = styled(Button)`
   width: 100%;
@@ -515,7 +589,7 @@ const LoginButton = styled(Button)`
     border-color: ${themeColor};
     background: ${themeColor};
   }
-`;
+`
 
 const RememberCheckBox = styled(Checkbox)`
   .ant-checkbox-checked .ant-checkbox-inner {
@@ -538,4 +612,4 @@ const RememberCheckBox = styled(Checkbox)`
       font-size: 14px;
     }
   }
-`;
+`

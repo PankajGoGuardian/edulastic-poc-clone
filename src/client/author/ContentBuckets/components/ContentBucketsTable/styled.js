@@ -1,8 +1,13 @@
-import styled from "styled-components";
-import { white, secondaryTextColor } from "@edulastic/colors";
-import { IconPencilEdit, IconCheck, IconClose } from "@edulastic/icons";
-import { Checkbox } from "antd";
-import { StyledTable, StyledModal, OkButton, CancelButton } from "../../../../common/styled";
+import styled from 'styled-components'
+import { white, secondaryTextColor } from '@edulastic/colors'
+import { IconPencilEdit, IconCheck, IconClose } from '@edulastic/icons'
+import { Checkbox } from 'antd'
+import {
+  StyledTable,
+  StyledModal,
+  OkButton,
+  CancelButton,
+} from '../../../../common/styled'
 
 export const StyledContentBucketsTable = styled(StyledTable)`
   .ant-table {
@@ -24,10 +29,10 @@ export const StyledContentBucketsTable = styled(StyledTable)`
   .status-column {
     text-transform: uppercase;
   }
-`;
+`
 
 export const StyledUpsertModal = styled(StyledModal)`
-  input[type="text"] {
+  input[type='text'] {
     height: 40px;
   }
   .ant-input {
@@ -46,7 +51,7 @@ export const StyledUpsertModal = styled(StyledModal)`
     }
   }
   .ant-form-item-required::before {
-    content: "*" !important;
+    content: '*' !important;
   }
   .ant-checkbox-wrapper {
     span {
@@ -89,7 +94,7 @@ export const StyledUpsertModal = styled(StyledModal)`
       }
     }
   }
-`;
+`
 
 export const StyledCheckbox = styled(Checkbox)`
   text-transform: uppercase;
@@ -97,7 +102,7 @@ export const StyledCheckbox = styled(Checkbox)`
     padding-left: 22px;
     font-weight: 600;
   }
-`;
+`
 export const StyledOkBtn = styled(OkButton)`
   min-width: 200px;
   margin-left: 20px;
@@ -106,7 +111,7 @@ export const StyledOkBtn = styled(OkButton)`
     background: green;
     color: ${white};
   }
-`;
+`
 
 export const StyledCancelBtn = styled(CancelButton)`
   min-width: 200px;
@@ -115,26 +120,26 @@ export const StyledCancelBtn = styled(CancelButton)`
     background: green;
     color: ${white};
   }
-`;
+`
 
 export const StyledIconCheck = styled(IconCheck)`
   width: 18px;
   height: 15px;
-`;
+`
 
 export const StyledIconClose = styled(IconClose)`
   width: 13px;
   height: 13px;
-`;
+`
 
 export const StyledIconPencilEdit = styled(IconPencilEdit)`
   width: 13px;
   height: 13px;
-`;
+`
 
-export const Owner = styled.div `
-  width:120px;
-  white-space:nowrap;
+export const Owner = styled.div`
+  width: 120px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`

@@ -1,156 +1,173 @@
-import { groupBy, difference, isEmpty } from "lodash";
-import questionType from "@edulastic/constants/const/questionType";
+import { groupBy, difference, isEmpty } from 'lodash'
+import questionType from '@edulastic/constants/const/questionType'
 
-import { FRACTION_FORMATS } from "../constants/constantsForQuestions";
+import { FRACTION_FORMATS } from '../constants/constantsForQuestions'
 
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
 export const getFontSize = (fontSize, withRem = true) => {
   switch (fontSize) {
-    case "small":
-      return withRem ? "0.6875rem" : "11px";
-    case "normal":
-      return withRem ? (window.innerWidth < 1366 ? "0.8125rem" : "0.875rem") : "16px";
-    case "large":
-      return withRem ? "1.0625rem" : "17px"; // 16PX = 1REM (BASE)
-    case "xlarge":
-      return withRem ? "1.25rem" : "20px";
-    case "xxlarge":
-      return withRem ? "1.5rem" : "24px";
+    case 'small':
+      return withRem ? '0.6875rem' : '11px'
+    case 'normal':
+      return withRem
+        ? window.innerWidth < 1366
+          ? '0.8125rem'
+          : '0.875rem'
+        : '16px'
+    case 'large':
+      return withRem ? '1.0625rem' : '17px' // 16PX = 1REM (BASE)
+    case 'xlarge':
+      return withRem ? '1.25rem' : '20px'
+    case 'xxlarge':
+      return withRem ? '1.5rem' : '24px'
     default:
-      return window.innerWidth < 1366 ? "16px" : withRem ? "1rem" : "16px";
+      return window.innerWidth < 1366 ? '16px' : withRem ? '1rem' : '16px'
   }
-};
+}
 
-export const getStylesFromUiStyleToCssStyle = uiStyle => {
-  const cssStyles = {};
-  Object.keys(uiStyle || {}).forEach(item => {
-    const value = uiStyle[item];
+export const getStylesFromUiStyleToCssStyle = (uiStyle) => {
+  const cssStyles = {}
+  Object.keys(uiStyle || {}).forEach((item) => {
+    const value = uiStyle[item]
     switch (item) {
-      case "fontsize":
-        cssStyles.fontSize = getFontSize(value, true);
-        break;
-      case "minWidth":
-        cssStyles.minWidth = `${value}px`;
-        break;
-      case "widthpx":
-        cssStyles.width = `${value}px`;
-        break;
-      case "heightpx":
-        cssStyles.height = `${value}px`;
-        break;
-      case "transparentBackground":
-        if (value) cssStyles.background = "transparent";
-        break;
-      case "responseFontScale":
-        if (value === "boosted") {
-          if (uiStyle.fontsize) cssStyles.fontScale = `${parseFloat(getFontSize(uiStyle.fontsize, true)) * 1.5}rem`;
-          else cssStyles.fontScale = "1.5rem";
+      case 'fontsize':
+        cssStyles.fontSize = getFontSize(value, true)
+        break
+      case 'minWidth':
+        cssStyles.minWidth = `${value}px`
+        break
+      case 'widthpx':
+        cssStyles.width = `${value}px`
+        break
+      case 'heightpx':
+        cssStyles.height = `${value}px`
+        break
+      case 'transparentBackground':
+        if (value) cssStyles.background = 'transparent'
+        break
+      case 'responseFontScale':
+        if (value === 'boosted') {
+          if (uiStyle.fontsize)
+            cssStyles.fontScale = `${
+              parseFloat(getFontSize(uiStyle.fontsize, true)) * 1.5
+            }rem`
+          else cssStyles.fontScale = '1.5rem'
         }
-        break;
+        break
       default:
-        break;
+        break
     }
-  });
+  })
   if (cssStyles.fontScale) {
-    cssStyles.fontSize = cssStyles.fontScale;
-    delete cssStyles.fontScale;
+    cssStyles.fontSize = cssStyles.fontScale
+    delete cssStyles.fontScale
   }
-  return cssStyles;
-};
+  return cssStyles
+}
 
-export const fromStringToNumberPx = value => (typeof value === "string" ? +value.slice(0, -2) : value);
-export const topAndLeftRatio = (styleNumber, imagescale, fontsize, smallSize) => {
-  const getValueWithRatio = newRatio => (smallSize ? styleNumber / 2 : styleNumber * newRatio);
+export const fromStringToNumberPx = (value) =>
+  typeof value === 'string' ? +value.slice(0, -2) : value
+export const topAndLeftRatio = (
+  styleNumber,
+  imagescale,
+  fontsize,
+  smallSize
+) => {
+  const getValueWithRatio = (newRatio) =>
+    smallSize ? styleNumber / 2 : styleNumber * newRatio
 
   if (!imagescale) {
-    return getValueWithRatio(1);
+    return getValueWithRatio(1)
   }
 
   switch (fontsize) {
-    case "large":
-      return getValueWithRatio(1.2);
-    case "xlarge":
-      return getValueWithRatio(1.5);
-    case "xxlarge":
-      return getValueWithRatio(1.7);
-    case "small":
-      return getValueWithRatio(0.8);
+    case 'large':
+      return getValueWithRatio(1.2)
+    case 'xlarge':
+      return getValueWithRatio(1.5)
+    case 'xxlarge':
+      return getValueWithRatio(1.7)
+    case 'small':
+      return getValueWithRatio(0.8)
     default:
-      return getValueWithRatio(1);
+      return getValueWithRatio(1)
   }
-};
+}
 
 export const calculateRatio = (imagescale, fontsize, imageWidth) => {
   if (!imagescale) {
-    return imageWidth * 1;
+    return imageWidth * 1
   }
 
   switch (fontsize) {
-    case "large":
-      return imageWidth * 1.2;
-    case "xlarge":
-      return imageWidth * 1.5;
-    case "xxlarge":
-      return imageWidth * 1.7;
-    case "small":
-      return imageWidth * 0.8;
+    case 'large':
+      return imageWidth * 1.2
+    case 'xlarge':
+      return imageWidth * 1.5
+    case 'xxlarge':
+      return imageWidth * 1.7
+    case 'small':
+      return imageWidth * 0.8
     default:
-      return imageWidth * 1;
+      return imageWidth * 1
   }
-};
+}
 
-export const preventEvent = e => {
-  e.preventDefault();
-};
+export const preventEvent = (e) => {
+  e.preventDefault()
+}
 
-export const getInputSelection = el => {
-  let start = 0;
+export const getInputSelection = (el) => {
+  let start = 0
 
-  let end = 0;
+  let end = 0
 
-  let normalizedValue;
+  let normalizedValue
 
-  let range;
+  let range
 
-  let textInputRange;
+  let textInputRange
 
-  let len;
+  let len
 
-  let endRange;
+  let endRange
 
-  if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
-    start = el.selectionStart;
-    end = el.selectionEnd;
+  if (
+    typeof el.selectionStart === 'number' &&
+    typeof el.selectionEnd === 'number'
+  ) {
+    start = el.selectionStart
+    end = el.selectionEnd
   } else {
-    range = document.selection.createRange();
+    range = document.selection.createRange()
 
     if (range && range.parentElement() === el) {
-      len = el.value.length;
-      normalizedValue = el.value.replace(/\r\n/g, "\n");
+      len = el.value.length
+      normalizedValue = el.value.replace(/\r\n/g, '\n')
 
       // Create a working TextRange that lives only in the input
-      textInputRange = el.createTextRange();
-      textInputRange.moveToBookmark(range.getBookmark());
+      textInputRange = el.createTextRange()
+      textInputRange.moveToBookmark(range.getBookmark())
 
       // Check if the start and end of the selection are at the very end
       // of the input, since moveStart/moveEnd doesn't return what we want
       // in those cases
-      endRange = el.createTextRange();
-      endRange.collapse(false);
+      endRange = el.createTextRange()
+      endRange.collapse(false)
 
-      if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+      if (textInputRange.compareEndPoints('StartToEnd', endRange) > -1) {
         // eslint-disable-next-line no-multi-assign
-        start = end = len;
+        start = end = len
       } else {
-        start = -textInputRange.moveStart("character", -len);
-        start += normalizedValue.slice(0, start).split("\n").length - 1;
+        start = -textInputRange.moveStart('character', -len)
+        start += normalizedValue.slice(0, start).split('\n').length - 1
 
-        if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
-          end = len;
+        if (textInputRange.compareEndPoints('EndToEnd', endRange) > -1) {
+          end = len
         } else {
-          end = -textInputRange.moveEnd("character", -len);
-          end += normalizedValue.slice(0, end).split("\n").length - 1;
+          end = -textInputRange.moveEnd('character', -len)
+          end += normalizedValue.slice(0, end).split('\n').length - 1
         }
       }
     }
@@ -158,9 +175,9 @@ export const getInputSelection = el => {
 
   return {
     start,
-    end
-  };
-};
+    end,
+  }
+}
 
 /**
  * Convert UI alignment row standards to Mongo alignment domains
@@ -168,29 +185,31 @@ export const getInputSelection = el => {
  * @param {Array} alignmentRowStandards - alignment row standards from UI
  * @returns {Array} - alignment domains for Mongo
  */
-export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
-  if (!alignmentRowStandards || alignmentRowStandards.length === 0) return [];
-  const grouped = groupBy(alignmentRowStandards, "tloId");
-  const domainIds = Object.keys(grouped);
-  return domainIds.map(id => {
-    const allStandards = grouped[id];
-    const standards = allStandards.map(({ _id, curriculumId, identifier, grades, description, level }) => ({
-      id: _id,
-      curriculumId,
-      name: identifier,
-      grades,
-      description,
-      level
-    }));
+export const alignmentStandardsFromUIToMongo = (alignmentRowStandards) => {
+  if (!alignmentRowStandards || alignmentRowStandards.length === 0) return []
+  const grouped = groupBy(alignmentRowStandards, 'tloId')
+  const domainIds = Object.keys(grouped)
+  return domainIds.map((id) => {
+    const allStandards = grouped[id]
+    const standards = allStandards.map(
+      ({ _id, curriculumId, identifier, grades, description, level }) => ({
+        id: _id,
+        curriculumId,
+        name: identifier,
+        grades,
+        description,
+        level,
+      })
+    )
 
     return {
       name: allStandards[0].tloIdentifier,
       id: allStandards[0].tloId,
       description: allStandards[0].tloDescription,
-      standards
-    };
-  });
-};
+      standards,
+    }
+  })
+}
 
 /**
  * Convert Mongo alignment domains to UI alignment row standards
@@ -198,13 +217,15 @@ export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
  * @param {Array} alignmentDomains - alignment domains from Mongo
  * @returns {Object} - alignment row standards and grades for UI
  */
-export const alignmentStandardsFromMongoToUI = alignmentDomains => {
-  const alignmentRowStandards = [];
-  const grades = [];
-  alignmentDomains.forEach(alignmentDomain => {
-    alignmentDomain.standards.forEach(standard => {
-      const standardGrades = standard.grades.filter(grade => grades.indexOf(grade) === -1);
-      grades.push(...standardGrades);
+export const alignmentStandardsFromMongoToUI = (alignmentDomains) => {
+  const alignmentRowStandards = []
+  const grades = []
+  alignmentDomains.forEach((alignmentDomain) => {
+    alignmentDomain.standards.forEach((standard) => {
+      const standardGrades = standard.grades.filter(
+        (grade) => grades.indexOf(grade) === -1
+      )
+      grades.push(...standardGrades)
       alignmentRowStandards.push({
         description: standard.description,
         grades: standard.grades,
@@ -213,225 +234,232 @@ export const alignmentStandardsFromMongoToUI = alignmentDomains => {
         tloDescription: alignmentDomain.name,
         tloId: alignmentDomain.id,
         _id: standard.id,
-        curriculumId: standard.curriculumId
-      });
-    });
-  });
-  return { standards: alignmentRowStandards, grades };
-};
+        curriculumId: standard.curriculumId,
+      })
+    })
+  })
+  return { standards: alignmentRowStandards, grades }
+}
 
 export const getSpellCheckAttributes = (isSpellCheck = false) => ({
   spellCheck: isSpellCheck,
   autoComplete: isSpellCheck,
   autoCorrect: isSpellCheck,
-  autoCapitalize: isSpellCheck
-});
+  autoCapitalize: isSpellCheck,
+})
 
 /* align with getJustification
  * @param {string} pos
  */
-export const getDirection = pos => {
+export const getDirection = (pos) => {
   switch (pos) {
-    case "bottom":
-      return "column";
-    case "top":
-      return "column-reverse";
-    case "right":
-      return "row";
-    case "left":
-      return "row-reverse";
+    case 'bottom':
+      return 'column'
+    case 'top':
+      return 'column-reverse'
+    case 'right':
+      return 'row'
+    case 'left':
+      return 'row-reverse'
     default:
-      return "column";
+      return 'column'
   }
-};
+}
 
 /**
  * justify-content value depends on direction
  * @param {string} pos
  */
-export const getJustification = pos => {
+export const getJustification = (pos) => {
   switch (pos) {
-    case "right":
-      return "flex-start";
-    case "left":
-      return "flex-end";
+    case 'right':
+      return 'flex-start'
+    case 'left':
+      return 'flex-end'
     default:
-      return "flex-start";
+      return 'flex-start'
   }
-};
+}
 
 /**
  * User is able to enter  only variables used in 'RESTRICT VARIABLES USED TO'
  */
 
 export const mathValidateVariables = (val, options) => {
-  if (!options || (!options.allowedVariables && !options.allowNumericOnly) || !val) return val;
+  if (
+    !options ||
+    (!options.allowedVariables && !options.allowNumericOnly) ||
+    !val
+  )
+    return val
 
-  const { allowNumericOnly, allowedVariables } = options;
-  let newVal = val;
+  const { allowNumericOnly, allowedVariables } = options
+  let newVal = val
 
   if (allowNumericOnly) {
-    newVal = newVal.replace(/\b([a-zA-Z]+)\b/gm, "");
-    return newVal;
+    newVal = newVal.replace(/\b([a-zA-Z]+)\b/gm, '')
+    return newVal
   }
 
-  if (!allowedVariables) return newVal;
+  if (!allowedVariables) return newVal
 
-  const validVars = allowedVariables.split(",").map(segment => segment.trim());
-  if (validVars.length === 0) return newVal;
+  const validVars = allowedVariables.split(',').map((segment) => segment.trim())
+  if (validVars.length === 0) return newVal
 
-  const foundVars = [];
-  const varReg = /\b([a-zA-Z]+)\b/gm;
-  let m;
+  const foundVars = []
+  const varReg = /\b([a-zA-Z]+)\b/gm
+  let m
   do {
-    m = varReg.exec(newVal);
+    m = varReg.exec(newVal)
     if (m) {
-      foundVars.push({ str: m[0], segments: m[0].split("") });
+      foundVars.push({ str: m[0], segments: m[0].split('') })
     }
-  } while (m);
+  } while (m)
 
   for (const variable of foundVars) {
-    const varsToExclude = difference(variable.segments, validVars);
+    const varsToExclude = difference(variable.segments, validVars)
     if (!isEmpty(varsToExclude)) {
-      let newStr = variable.str;
+      let newStr = variable.str
       for (const varToexclude of varsToExclude) {
-        const excludeReg = new RegExp(`${varToexclude}`, "gm");
-        newStr = newStr.replace(excludeReg, "");
+        const excludeReg = new RegExp(`${varToexclude}`, 'gm')
+        newStr = newStr.replace(excludeReg, '')
       }
 
-      const excludeReg = new RegExp(`\\b${variable.str}\\b`, "gm");
-      newVal = newVal.replace(excludeReg, newStr);
+      const excludeReg = new RegExp(`\\b${variable.str}\\b`, 'gm')
+      newVal = newVal.replace(excludeReg, newStr)
     }
   }
 
-  return newVal;
-};
+  return newVal
+}
 
 export const getStemNumeration = (stemNumeration, index) => {
-  let indexStr = index + 1;
+  let indexStr = index + 1
   switch (stemNumeration) {
-    case "lowercase": {
-      indexStr = ALPHABET[index];
-      break;
+    case 'lowercase': {
+      indexStr = ALPHABET[index]
+      break
     }
-    case "uppercase": {
-      indexStr = ALPHABET[index]?.toUpperCase();
-      break;
+    case 'uppercase': {
+      indexStr = ALPHABET[index]?.toUpperCase()
+      break
     }
-    case "numerical": {
-      indexStr = index + 1;
-      break;
+    case 'numerical': {
+      indexStr = index + 1
+      break
     }
     default:
   }
-  return indexStr;
-};
+  return indexStr
+}
 
 export const convertNumberToFraction = (value, fractionFormat) => {
   const result = {
     main: null,
     sup: null,
-    sub: null
-  };
-
-  const strValue = value.toString();
-  const numValue = parseFloat(strValue);
-  const indexOfDot = strValue.indexOf(".");
-  if (Number.isNaN(numValue) || numValue.toString().length !== strValue.length || indexOfDot === -1) {
-    result.main = value;
-    return result;
+    sub: null,
   }
 
-  const countDecimals = strValue.length - indexOfDot - 1;
-  let sub = +`1${Array.from({ length: countDecimals }, () => 0).join("")}`;
+  const strValue = value.toString()
+  const numValue = parseFloat(strValue)
+  const indexOfDot = strValue.indexOf('.')
+  if (
+    Number.isNaN(numValue) ||
+    numValue.toString().length !== strValue.length ||
+    indexOfDot === -1
+  ) {
+    result.main = value
+    return result
+  }
+
+  const countDecimals = strValue.length - indexOfDot - 1
+  let sub = +`1${Array.from({ length: countDecimals }, () => 0).join('')}`
 
   if (fractionFormat === FRACTION_FORMATS.fraction) {
-    let sup = value * sub;
+    let sup = value * sub
     while (sup % 5 === 0 && sub % 5 === 0) {
-      sup /= 5;
-      sub /= 5;
+      sup /= 5
+      sub /= 5
     }
     while (sup % 2 === 0 && sub % 2 === 0) {
-      sup /= 2;
-      sub /= 2;
+      sup /= 2
+      sub /= 2
     }
-    result.sub = +sub.toFixed(0);
-    result.sup = +sup.toFixed(0);
-    return result;
+    result.sub = +sub.toFixed(0)
+    result.sup = +sup.toFixed(0)
+    return result
   }
 
   if (fractionFormat === FRACTION_FORMATS.mixedFraction) {
-    const main = Math.trunc(value);
-    let sup = Math.abs((value * sub) % sub);
+    const main = Math.trunc(value)
+    let sup = Math.abs((value * sub) % sub)
     while (sup % 5 === 0 && sub % 5 === 0) {
-      sup /= 5;
-      sub /= 5;
+      sup /= 5
+      sub /= 5
     }
     while (sup % 2 === 0 && sub % 2 === 0) {
-      sup /= 2;
-      sub /= 2;
+      sup /= 2
+      sub /= 2
     }
     if (main !== 0) {
-      result.main = main;
+      result.main = main
     }
-    result.sub = +sub.toFixed(0);
-    result.sup = +sup.toFixed(0);
-    return result;
+    result.sub = +sub.toFixed(0)
+    result.sup = +sup.toFixed(0)
+    return result
   }
 
-  result.main = value;
-  return result;
-};
+  result.main = value
+  return result
+}
 
-export const fractionStringToNumber = fString => {
-  const str = fString
-    .toString()
-    .trim()
-    .replace(/\s+/g, " ");
-  if (str.indexOf("/") === -1) {
-    return parseFloat(fString);
+export const fractionStringToNumber = (fString) => {
+  const str = fString.toString().trim().replace(/\s+/g, ' ')
+  if (str.indexOf('/') === -1) {
+    return parseFloat(fString)
   }
 
-  let split = str.split("/");
-  let lastIndex = split.length - 1;
-  split = [split[lastIndex - 1].trim(), split[lastIndex].trim()];
-  const sub = parseFloat(split[1]);
+  let split = str.split('/')
+  let lastIndex = split.length - 1
+  split = [split[lastIndex - 1].trim(), split[lastIndex].trim()]
+  const sub = parseFloat(split[1])
 
   if (Number.isNaN(sub) || sub <= 0) {
-    return NaN;
+    return NaN
   }
 
-  if (split[0].indexOf(" ") === -1) {
-    const sup = parseFloat(split[0]);
-    return sup / sub;
+  if (split[0].indexOf(' ') === -1) {
+    const sup = parseFloat(split[0])
+    return sup / sub
   }
 
-  split = split[0].split(" ");
-  lastIndex = split.length - 1;
-  split = [split[lastIndex - 1].trim(), split[lastIndex].trim()];
+  split = split[0].split(' ')
+  lastIndex = split.length - 1
+  split = [split[lastIndex - 1].trim(), split[lastIndex].trim()]
 
-  const main = parseFloat(split[0]);
-  const sup = parseFloat(split[1]);
+  const main = parseFloat(split[0])
+  const sup = parseFloat(split[1])
 
-  return +(main + sup / sub).toFixed(8);
-};
+  return +(main + sup / sub).toFixed(8)
+}
 
-export const createStandardTextStyle = props => {
-  const fontSize = props?.fontSize || `${props?.theme?.common?.standardFont || "14px"}`;
+export const createStandardTextStyle = (props) => {
+  const fontSize =
+    props?.fontSize || `${props?.theme?.common?.standardFont || '14px'}`
 
   return `
       font-size: ${fontSize};
-  `;
-};
+  `
+}
 
-export const normalizeTouchEvent = e => {
-  e.preventDefault();
-  e.stopPropagation();
+export const normalizeTouchEvent = (e) => {
+  e.preventDefault()
+  e.stopPropagation()
   if (e?.nativeEvent?.changedTouches?.length) {
-    e.clientX = e.nativeEvent.changedTouches[0].clientX;
-    e.clientY = e.nativeEvent.changedTouches[0].clientY;
+    e.clientX = e.nativeEvent.changedTouches[0].clientX
+    e.clientY = e.nativeEvent.changedTouches[0].clientY
   }
-};
+}
 
 /**
  * shows the “Remember to hide the scratchpad to answer other parts of this question”
@@ -441,17 +469,20 @@ export const normalizeTouchEvent = e => {
  */
 export function showScratchpadInfoNotification(item) {
   if (!item) {
-    return false;
+    return false
   }
 
-  const { multipartItem: isMultipart = false, data: { questions } = {} } = item || {};
+  const { multipartItem: isMultipart = false, data: { questions } = {} } =
+    item || {}
 
   if (isMultipart && Array.isArray(questions)) {
-    const isHighlightImageType = ques => ques.type === questionType.HIGHLIGHT_IMAGE;
-    const allHighLight = questions.length > 0 && questions.every(isHighlightImageType);
+    const isHighlightImageType = (ques) =>
+      ques.type === questionType.HIGHLIGHT_IMAGE
+    const allHighLight =
+      questions.length > 0 && questions.every(isHighlightImageType)
     if (!allHighLight) {
-      return true;
+      return true
     }
   }
-  return false;
+  return false
 }

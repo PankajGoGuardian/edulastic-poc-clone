@@ -1,17 +1,24 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 // import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { MultipleAssessmentReport } from "../multipleAssessmentReport";
-import { SingleAssessmentReport } from "../singleAssessmentReport";
-import { StandardsMasteryReport } from "../standardsMasteryReport";
-import { StudentProfileReport } from "../studentProfileReport";
-import { SubscriptionReport } from "../subscriptionReport";
+import { MultipleAssessmentReport } from '../multipleAssessmentReport'
+import { SingleAssessmentReport } from '../singleAssessmentReport'
+import { StandardsMasteryReport } from '../standardsMasteryReport'
+import { StudentProfileReport } from '../studentProfileReport'
+import { SubscriptionReport } from '../subscriptionReport'
 // import SearchBox from "./SearchBox";
-import { StandardReportWrapper, StyledCard, StyledContainer, ReportCardsWrapper } from "./styled";
+import {
+  StandardReportWrapper,
+  StyledCard,
+  StyledContainer,
+  ReportCardsWrapper,
+} from './styled'
 
 const StandardReport = ({ premium }) => (
   <StandardReportWrapper>
-    {!premium && <NonPremiumBar>we give access to only one report now</NonPremiumBar>}
+    {!premium && (
+      <NonPremiumBar>we give access to only one report now</NonPremiumBar>
+    )}
     {/* <SearchBox /> */}
     <StyledContainer premium={premium}>
       <ReportCardsWrapper>
@@ -32,14 +39,17 @@ const StandardReport = ({ premium }) => (
         </StyledCard>
       </ReportCardsWrapper>
       {!premium && (
-        <StyledCard style={{ width: 412, flexShrink: 0, border: 0 }} className="upgrade subscription report">
+        <StyledCard
+          style={{ width: 412, flexShrink: 0, border: 0 }}
+          className="upgrade subscription report"
+        >
           <SubscriptionReport premium={premium} />
         </StyledCard>
       )}
     </StyledContainer>
   </StandardReportWrapper>
-);
-export default StandardReport;
+)
+export default StandardReport
 
 const NonPremiumBar = styled.div`
   position: absolute;
@@ -54,4 +64,4 @@ const NonPremiumBar = styled.div`
   font-weight: 600;
   z-index: 1;
   top: -20px;
-`;
+`

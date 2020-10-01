@@ -1,1 +1,1 @@
-export const latexKeys = ["template", "validation.validResponse.value.value"];
+export const latexKeys = ['template', 'validation.validResponse.value.value']

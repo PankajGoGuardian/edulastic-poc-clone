@@ -1,16 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withNamespaces } from "@edulastic/localization";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withNamespaces } from '@edulastic/localization'
 
-import WidgetOptions from "../../../../containers/WidgetOptions";
+import WidgetOptions from '../../../../containers/WidgetOptions'
 
-import Extras from "../../../../containers/Extras";
-import LayoutWrapper from "./Layout";
+import Extras from '../../../../containers/Extras'
+import LayoutWrapper from './Layout'
 
-const AdvancedOptions = ({ t, onUiChange, item, fillSections, cleanSections, advancedAreOpen }) => (
+const AdvancedOptions = ({
+  t,
+  onUiChange,
+  item,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+}) => (
   <WidgetOptions
     outerStyle={{ marginTop: 40 }}
-    title={t("common.options.title")}
+    title={t('common.options.title')}
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
@@ -23,12 +30,16 @@ const AdvancedOptions = ({ t, onUiChange, item, fillSections, cleanSections, adv
       fillSections={fillSections}
       cleanSections={cleanSections}
     />
-    <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
+    <Extras
+      advancedAreOpen={advancedAreOpen}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    >
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
   </WidgetOptions>
-);
+)
 
 AdvancedOptions.propTypes = {
   t: PropTypes.func.isRequired,
@@ -36,13 +47,13 @@ AdvancedOptions.propTypes = {
   item: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 AdvancedOptions.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-export default withNamespaces("assessment")(AdvancedOptions);
+export default withNamespaces('assessment')(AdvancedOptions)

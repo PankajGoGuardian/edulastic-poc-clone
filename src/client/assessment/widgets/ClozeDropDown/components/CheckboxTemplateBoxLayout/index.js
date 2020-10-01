@@ -1,18 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { find } from "lodash";
-import { Popover } from "antd";
-import { response } from "@edulastic/constants";
-import { measureText } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { find } from 'lodash'
+import { Popover } from 'antd'
+import { response } from '@edulastic/constants'
+import { measureText } from '@edulastic/common'
 
-import AnswerBox from "./AnswerBox";
+import AnswerBox from './AnswerBox'
 
-import { getStemNumeration } from "../../../../utils/helpers";
-import { CLEAR } from "../../../../constants/constantsForQuestions";
+import { getStemNumeration } from '../../../../utils/helpers'
+import { CLEAR } from '../../../../constants/constantsForQuestions'
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
-    return null;
+    return null
   }
 
   const {
@@ -27,33 +27,46 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     previewTab,
     disableResponse,
     item: { responseIds },
-    isPrintPreview = false
-  } = resprops;
-  const { index, id: answerId } = find(responseIds, _response => _response.id === id);
-  const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
-  const indexStr = getStemNumeration(isPrint || isPrintPreview ? "lowercase" : stemNumeration, index);
+    isPrintPreview = false,
+  } = resprops
+  const { index, id: answerId } = find(
+    responseIds,
+    (_response) => _response.id === id
+  )
+  const userSelection = find(
+    userSelections,
+    (selection) => (selection ? selection.id : '') === id
+  )
+  const indexStr = getStemNumeration(
+    isPrint || isPrintPreview ? 'lowercase' : stemNumeration,
+    index
+  )
   const userAttempted =
-    userSelections.length > 0 && evaluation[answerId] !== undefined ? !!userSelections[index] : null;
+    userSelections.length > 0 && evaluation[answerId] !== undefined
+      ? !!userSelections[index]
+      : null
 
   const btnStyle =
-    (responsecontainerindividuals && responsecontainerindividuals.find(resp => resp.id === answerId)) ||
-    responseBtnStyle;
+    (responsecontainerindividuals &&
+      responsecontainerindividuals.find((resp) => resp.id === answerId)) ||
+    responseBtnStyle
 
   const handleClick = () => {
     if (previewTab !== CLEAR && !disableResponse) {
-      changePreviewTab(CLEAR);
+      changePreviewTab(CLEAR)
     }
-  };
+  }
 
   const _btnStyle = {
     ...btnStyle,
     width: btnStyle.widthpx,
-    height: btnStyle.heightpx
-  };
+    height: btnStyle.heightpx,
+  }
 
-  const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
+  const lessMinWidth =
+    parseInt(btnStyle.width, 10) < response.minWidthShowAnswer
 
-  const getContent = inPopover => (
+  const getContent = (inPopover) => (
     <AnswerBox
       onClick={handleClick}
       checked={userAttempted}
@@ -66,28 +79,32 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       indexStr={indexStr}
       isPrintPreview={isPrintPreview || isPrint}
     />
-  );
+  )
 
-  const { scrollWidth } = measureText(userSelection?.value || "", _btnStyle);
-  let contentWidth = scrollWidth + 65; // +65 is padding and margin and ellipsis width
+  const { scrollWidth } = measureText(userSelection?.value || '', _btnStyle)
+  let contentWidth = scrollWidth + 65 // +65 is padding and margin and ellipsis width
   if (showAnswer) {
-    contentWidth += lessMinWidth ? response.indexSizeSmallBox : 35; // index box size
+    contentWidth += lessMinWidth ? response.indexSizeSmallBox : 35 // index box size
   }
 
-  const showPopover = contentWidth >= _btnStyle.width && userAttempted;
-  const answerContent = getContent();
-  const popoverContent = getContent(true);
+  const showPopover = contentWidth >= _btnStyle.width && userAttempted
+  const answerContent = getContent()
+  const popoverContent = getContent(true)
 
-  return showPopover ? <Popover content={popoverContent}>{answerContent}</Popover> : answerContent;
-};
+  return showPopover ? (
+    <Popover content={popoverContent}>{answerContent}</Popover>
+  ) : (
+    answerContent
+  )
+}
 
 CheckboxTemplateBoxLayout.propTypes = {
   resprops: PropTypes.object,
-  id: PropTypes.string.isRequired
-};
+  id: PropTypes.string.isRequired,
+}
 
 CheckboxTemplateBoxLayout.defaultProps = {
-  resprops: {}
-};
+  resprops: {},
+}
 
-export default React.memo(CheckboxTemplateBoxLayout);
+export default React.memo(CheckboxTemplateBoxLayout)

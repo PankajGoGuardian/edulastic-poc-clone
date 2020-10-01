@@ -1,59 +1,59 @@
-import React, { useContext, useRef, useMemo } from "react";
-import { useDragLayer } from "react-dnd";
-import styled from "styled-components";
-import { get, isUndefined } from "lodash";
-import { ScrollContext, HorizontalScrollContext } from "@edulastic/common";
+import React, { useContext, useRef, useMemo } from 'react'
+import { useDragLayer } from 'react-dnd'
+import styled from 'styled-components'
+import { get, isUndefined } from 'lodash'
+import { ScrollContext, HorizontalScrollContext } from '@edulastic/common'
 
 const layerStyles = {
-  position: "fixed",
-  pointerEvents: "none",
+  position: 'fixed',
+  pointerEvents: 'none',
   zIndex: 100,
   left: 0,
   top: 0,
-  width: "100%",
-  transform: "scale(1) !important",
-  height: "100%"
-};
+  width: '100%',
+  transform: 'scale(1) !important',
+  height: '100%',
+}
 
 const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
   if (!initialOffset || !currentOffset) {
     return {
-      display: "none"
-    };
+      display: 'none',
+    }
   }
-  const { x, y } = currentOffset;
-  const transform = `translate(${x}px, ${y}px)`;
+  const { x, y } = currentOffset
+  const transform = `translate(${x}px, ${y}px)`
   return {
     transform,
     WebkitTransform: transform,
-    background: "white",
-    ...itemDimensions
-  };
-};
+    background: 'white',
+    ...itemDimensions,
+  }
+}
 
-const getContainerTopBottom = element => {
+const getContainerTopBottom = (element) => {
   const [top, bottom] = useMemo(() => {
     if (isUndefined(element?.offsetTop)) {
-      return [70, window.innerHeight];
+      return [70, window.innerHeight]
     }
-    const rect = element.getBoundingClientRect();
-    return [rect.top, rect.bottom];
-  }, [element]);
+    const rect = element.getBoundingClientRect()
+    return [rect.top, rect.bottom]
+  }, [element])
 
-  return [top, bottom];
-};
+  return [top, bottom]
+}
 
-const getContainerLeftRight = element => {
+const getContainerLeftRight = (element) => {
   const [left, right] = useMemo(() => {
     if (isUndefined(element?.offsetLeft)) {
-      return [70, window.innerWidth];
+      return [70, window.innerWidth]
     }
-    const rect = element.getBoundingClientRect();
-    return [rect.left, rect.right];
-  }, [element]);
+    const rect = element.getBoundingClientRect()
+    return [rect.left, rect.right]
+  }, [element])
 
-  return [left, right];
-};
+  return [left, right]
+}
 
 /**
  * @param {boolean} showPoint
@@ -61,31 +61,33 @@ const getContainerLeftRight = element => {
  * dragging value is on dropcontainer, showPoint is true, otherwise it is false
  */
 const CustomDragLayer = ({ showPoint }) => {
-  const verticalInterval = useRef(null);
-  const horizontalInterval = useRef(null);
-  const { isDragging, item, initialOffset, currentOffset } = useDragLayer(monitor => ({
-    item: monitor.getItem(),
-    itemType: monitor.getItemType(),
-    initialOffset: monitor.getInitialSourceClientOffset(),
-    currentOffset: monitor.getSourceClientOffset(),
-    isDragging: monitor.isDragging()
-  }));
+  const verticalInterval = useRef(null)
+  const horizontalInterval = useRef(null)
+  const { isDragging, item, initialOffset, currentOffset } = useDragLayer(
+    (monitor) => ({
+      item: monitor.getItem(),
+      itemType: monitor.getItemType(),
+      initialOffset: monitor.getInitialSourceClientOffset(),
+      currentOffset: monitor.getSourceClientOffset(),
+      isDragging: monitor.isDragging(),
+    })
+  )
 
-  const { getScrollElement } = useContext(ScrollContext);
-  const scrollEl = getScrollElement();
-  const horizontalScrollContext = useContext(HorizontalScrollContext);
-  const horizontalScrollEl = horizontalScrollContext.getScrollElement();
-  const itemDimensions = get(item, "dimensions", { width: 0, height: 0 });
+  const { getScrollElement } = useContext(ScrollContext)
+  const scrollEl = getScrollElement()
+  const horizontalScrollContext = useContext(HorizontalScrollContext)
+  const horizontalScrollEl = horizontalScrollContext.getScrollElement()
+  const itemDimensions = get(item, 'dimensions', { width: 0, height: 0 })
 
-  const [top, bottom] = getContainerTopBottom(scrollEl);
-  const [left, right] = getContainerLeftRight(horizontalScrollEl);
+  const [top, bottom] = getContainerTopBottom(scrollEl)
+  const [left, right] = getContainerLeftRight(horizontalScrollEl)
 
   // ------------- vertical drag scroll start -----------------
   if (scrollEl) {
-    const containerTop = top;
-    const containerBottom = bottom - itemDimensions.height - 50; // window.innerHeight - 50;
-    const yOffset = get(currentOffset, "y", null);
-    const scrollByVertical = yOffset < containerTop ? -10 : 10;
+    const containerTop = top
+    const containerBottom = bottom - itemDimensions.height - 50 // window.innerHeight - 50;
+    const yOffset = get(currentOffset, 'y', null)
+    const scrollByVertical = yOffset < containerTop ? -10 : 10
 
     if (
       !verticalInterval.current &&
@@ -96,45 +98,56 @@ const CustomDragLayer = ({ showPoint }) => {
       verticalInterval.current = setInterval(() => {
         scrollEl.scrollBy({
           top: scrollByVertical,
-          behavior: "smooth"
-        });
-      }, 50);
-    } else if (verticalInterval.current && ((yOffset > containerTop && yOffset < containerBottom) || !yOffset)) {
-      clearInterval(verticalInterval.current);
-      verticalInterval.current = null;
+          behavior: 'smooth',
+        })
+      }, 50)
+    } else if (
+      verticalInterval.current &&
+      ((yOffset > containerTop && yOffset < containerBottom) || !yOffset)
+    ) {
+      clearInterval(verticalInterval.current)
+      verticalInterval.current = null
     }
   }
   // ------------- vertical drag scroll end ------------------
 
   // ------------- horizontal drag scroll start ------------------
   if (horizontalScrollEl) {
-    const containerRight = right - itemDimensions.width;
-    const xOffset = get(currentOffset, "x", null);
-    const scrollByHorizontal = xOffset < left ? -10 : 10;
+    const containerRight = right - itemDimensions.width
+    const xOffset = get(currentOffset, 'x', null)
+    const scrollByHorizontal = xOffset < left ? -10 : 10
 
-    if (!horizontalInterval.current && scrollByHorizontal && xOffset && (xOffset < left || xOffset > containerRight)) {
+    if (
+      !horizontalInterval.current &&
+      scrollByHorizontal &&
+      xOffset &&
+      (xOffset < left || xOffset > containerRight)
+    ) {
       horizontalInterval.current = setInterval(() => {
         horizontalScrollEl.scrollBy({
-          left: scrollByHorizontal
-        });
-      }, 50);
-    } else if (horizontalInterval.current && ((xOffset > left && xOffset < containerRight) || !xOffset)) {
-      clearInterval(horizontalInterval.current);
-      horizontalInterval.current = null;
+          left: scrollByHorizontal,
+        })
+      }, 50)
+    } else if (
+      horizontalInterval.current &&
+      ((xOffset > left && xOffset < containerRight) || !xOffset)
+    ) {
+      clearInterval(horizontalInterval.current)
+      horizontalInterval.current = null
     }
   }
   // ------------- horizontal drag scroll end ------------------
 
   if (!isDragging) {
-    return null;
+    return null
   }
 
   /**
    * prview is React element from dragItem.
    * please have a look at useDrag section of dragItem
    */
-  const preview = get(item, "preview");
-  const style = getItemStyles(initialOffset, currentOffset, itemDimensions);
+  const preview = get(item, 'preview')
+  const style = getItemStyles(initialOffset, currentOffset, itemDimensions)
 
   return (
     <div style={layerStyles}>
@@ -147,10 +160,10 @@ const CustomDragLayer = ({ showPoint }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CustomDragLayer;
+export default CustomDragLayer
 
 // these components needed only for graph type
 const DraggingPointer = styled.div`
@@ -160,7 +173,7 @@ const DraggingPointer = styled.div`
   z-index: 1000;
 
   &::before {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     top: 0px;
@@ -172,7 +185,7 @@ const DraggingPointer = styled.div`
     border-bottom: 0px;
   }
   &::after {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     top: 0px;
@@ -185,7 +198,7 @@ const DraggingPointer = styled.div`
     border-right: 5px solid transparent;
     border-bottom: 0px;
   }
-`;
+`
 
 const DraggingPoint = styled.div`
   position: absolute;
@@ -195,4 +208,4 @@ const DraggingPoint = styled.div`
   height: 10px;
   border-radius: 50%;
   background: #434b5d;
-`;
+`

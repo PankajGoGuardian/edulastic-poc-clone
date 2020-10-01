@@ -1,16 +1,16 @@
 /* global Desmos, GGBApplet */
-import React, { useRef, useEffect } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Rnd } from "react-rnd";
-import { WithResources } from "@edulastic/common";
-import { IconClose } from "@edulastic/icons";
-import { white, boxShadowDefault } from "@edulastic/colors";
-import { Spin } from "antd";
-import BasicCalculator from "./BasicCalculator";
-import EduScientificCalculator from "./EduScientificCalculator";
-import CalculatorTitle from "./components/CalculatorTitle";
-import AppConfig from "../../../../../../app-config";
+import React, { useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { Rnd } from 'react-rnd'
+import { WithResources } from '@edulastic/common'
+import { IconClose } from '@edulastic/icons'
+import { white, boxShadowDefault } from '@edulastic/colors'
+import { Spin } from 'antd'
+import BasicCalculator from './BasicCalculator'
+import EduScientificCalculator from './EduScientificCalculator'
+import CalculatorTitle from './components/CalculatorTitle'
+import AppConfig from '../../../../../../app-config'
 
 const defaultRndPros = {
   geogebraCalculator: { x: 0, y: 0, width: 800, height: 635 },
@@ -18,13 +18,13 @@ const defaultRndPros = {
   graphingDesmos: { x: 0, y: 0, width: 600, height: 400 },
   basicDesmos: { x: 0, y: 0, width: 350, height: 500 },
   desmosScientific: { x: 0, y: 0, width: 600, height: 500 },
-  edulasticScientific: { x: 0, y: 0, width: 500, height: 370 }
-};
+  edulasticScientific: { x: 0, y: 0, width: 500, height: 370 },
+}
 
 const geogebraParams = {
   graphing: {
-    id: "ggbAppletGraphing",
-    appName: "graphing",
+    id: 'ggbAppletGraphing',
+    appName: 'graphing',
     width: 800,
     height: 600,
     showToolBar: true,
@@ -39,11 +39,11 @@ const geogebraParams = {
     errorDialogsActive: true,
     showTutorialLink: true,
     showLogging: true,
-    useBrowserForJS: false
+    useBrowserForJS: false,
   },
   scientific: {
-    id: "ggbAppletScientific",
-    appName: "scientific",
+    id: 'ggbAppletScientific',
+    appName: 'scientific',
     width: 800,
     height: 600,
     showToolBar: true,
@@ -58,48 +58,61 @@ const geogebraParams = {
     errorDialogsActive: true,
     showTutorialLink: true,
     showLogging: true,
-    useBrowserForJS: false
-  }
-};
+    useBrowserForJS: false,
+  },
+}
 
 const CalculatorContainer = ({ calculateMode, changeTool }) => {
   const handleCloseCalculator = () => {
-    changeTool(0);
-  };
+    changeTool(0)
+  }
 
-  const desmosGraphingRef = useRef();
-  const desmosBasicRef = useRef();
-  const desmosScientificRef = useRef();
+  const desmosGraphingRef = useRef()
+  const desmosBasicRef = useRef()
+  const desmosScientificRef = useRef()
 
   useEffect(() => {
-    if (desmosGraphingRef.current && calculateMode === "GRAPHING_DESMOS") {
-      const desmosGraphCalculator = Desmos.GraphingCalculator(desmosGraphingRef.current);
-      desmosGraphCalculator.setExpression({ dragMode: Desmos.DragModes.XY });
+    if (desmosGraphingRef.current && calculateMode === 'GRAPHING_DESMOS') {
+      const desmosGraphCalculator = Desmos.GraphingCalculator(
+        desmosGraphingRef.current
+      )
+      desmosGraphCalculator.setExpression({ dragMode: Desmos.DragModes.XY })
     }
 
-    if (desmosBasicRef.current && calculateMode === "BASIC_DESMOS") {
-      Desmos.FourFunctionCalculator(desmosBasicRef.current);
+    if (desmosBasicRef.current && calculateMode === 'BASIC_DESMOS') {
+      Desmos.FourFunctionCalculator(desmosBasicRef.current)
     }
 
-    if (desmosScientificRef.current && calculateMode === "SCIENTIFIC_DESMOS") {
-      Desmos.ScientificCalculator(desmosScientificRef.current);
+    if (desmosScientificRef.current && calculateMode === 'SCIENTIFIC_DESMOS') {
+      Desmos.ScientificCalculator(desmosScientificRef.current)
     }
 
-    if (calculateMode === "GRAPHING_GEOGEBRASCIENTIFIC") {
-      const geogebraGraphing = new GGBApplet(geogebraParams.graphing, "5.0", "geogebra-graphingculator");
-      geogebraGraphing.inject("geogebra-graphingculator");
+    if (calculateMode === 'GRAPHING_GEOGEBRASCIENTIFIC') {
+      const geogebraGraphing = new GGBApplet(
+        geogebraParams.graphing,
+        '5.0',
+        'geogebra-graphingculator'
+      )
+      geogebraGraphing.inject('geogebra-graphingculator')
     }
 
-    if (calculateMode === "SCIENTIFIC_GEOGEBRASCIENTIFIC") {
-      const geogebraScientific = new GGBApplet(geogebraParams.scientific, "5.0", "geogebra-scientificcalculator");
-      geogebraScientific.inject("geogebra-scientificcalculator");
+    if (calculateMode === 'SCIENTIFIC_GEOGEBRASCIENTIFIC') {
+      const geogebraScientific = new GGBApplet(
+        geogebraParams.scientific,
+        '5.0',
+        'geogebra-scientificcalculator'
+      )
+      geogebraScientific.inject('geogebra-scientificcalculator')
     }
-  }, [calculateMode]);
+  }, [calculateMode])
 
   return (
     <Container>
-      {calculateMode === "GRAPHING_DESMOS" && (
-        <RndWrapper default={defaultRndPros.graphingDesmos} dragHandleClassName="calculator-drag-handler">
+      {calculateMode === 'GRAPHING_DESMOS' && (
+        <RndWrapper
+          default={defaultRndPros.graphingDesmos}
+          dragHandleClassName="calculator-drag-handler"
+        >
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
             <Title data-cy="GRAPHING">Graphing Calculator</Title>
@@ -108,8 +121,11 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         </RndWrapper>
       )}
 
-      {calculateMode === "BASIC_DESMOS" && (
-        <RndWrapper default={defaultRndPros.basicDesmos} dragHandleClassName="calculator-drag-handler">
+      {calculateMode === 'BASIC_DESMOS' && (
+        <RndWrapper
+          default={defaultRndPros.basicDesmos}
+          dragHandleClassName="calculator-drag-handler"
+        >
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
             <Title data-cy="BASIC">Basic Calculator</Title>
@@ -118,24 +134,36 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         </RndWrapper>
       )}
 
-      {calculateMode === "SCIENTIFIC_DESMOS" && (
-        <RndWrapper default={defaultRndPros.desmosScientific} dragHandleClassName="calculator-drag-handler">
+      {calculateMode === 'SCIENTIFIC_DESMOS' && (
+        <RndWrapper
+          default={defaultRndPros.desmosScientific}
+          dragHandleClassName="calculator-drag-handler"
+        >
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
             <Title data-cy="SCIENTIFIC">Scientific Calculator</Title>
           </div>
-          <Calculator id="demos-scientific-calculator" ref={desmosScientificRef} />
+          <Calculator
+            id="demos-scientific-calculator"
+            ref={desmosScientificRef}
+          />
         </RndWrapper>
       )}
 
-      {calculateMode === "SCIENTIFIC_EDULASTIC" && (
-        <RndWrapper default={defaultRndPros.edulasticScientific} dragHandleClassName="calculator-drag-handler">
-          <CalculatorTitle onClose={handleCloseCalculator} title="Scientific Calculator" />
+      {calculateMode === 'SCIENTIFIC_EDULASTIC' && (
+        <RndWrapper
+          default={defaultRndPros.edulasticScientific}
+          dragHandleClassName="calculator-drag-handler"
+        >
+          <CalculatorTitle
+            onClose={handleCloseCalculator}
+            title="Scientific Calculator"
+          />
           <EduScientificCalculator />
         </RndWrapper>
       )}
 
-      {calculateMode === "BASIC_EDULASTIC" && (
+      {calculateMode === 'BASIC_EDULASTIC' && (
         <RndWrapper
           default={defaultRndPros.basicCalculator}
           minWidth={defaultRndPros.basicCalculator.width}
@@ -150,8 +178,11 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         </RndWrapper>
       )}
 
-      {calculateMode === "GRAPHING_GEOGEBRASCIENTIFIC" && (
-        <RndWrapper default={defaultRndPros.geogebraCalculator} dragHandleClassName="calculator-drag-handler">
+      {calculateMode === 'GRAPHING_GEOGEBRASCIENTIFIC' && (
+        <RndWrapper
+          default={defaultRndPros.geogebraCalculator}
+          dragHandleClassName="calculator-drag-handler"
+        >
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
             <Title data-cy="GRAPHING">Graphing Calculator</Title>
@@ -160,8 +191,11 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         </RndWrapper>
       )}
 
-      {calculateMode === "SCIENTIFIC_GEOGEBRASCIENTIFIC" && (
-        <RndWrapper default={defaultRndPros.geogebraCalculator} dragHandleClassName="calculator-drag-handler">
+      {calculateMode === 'SCIENTIFIC_GEOGEBRASCIENTIFIC' && (
+        <RndWrapper
+          default={defaultRndPros.geogebraCalculator}
+          dragHandleClassName="calculator-drag-handler"
+        >
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
             <Title data-cy="SCIENTIFIC">Scientific Calculator</Title>
@@ -170,13 +204,13 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         </RndWrapper>
       )}
     </Container>
-  );
-};
+  )
+}
 
 CalculatorContainer.propTypes = {
   calculateMode: PropTypes.string.isRequired,
-  changeTool: PropTypes.func.isRequired
-};
+  changeTool: PropTypes.func.isRequired,
+}
 
 const Container = styled.div`
   position: absolute;
@@ -186,16 +220,16 @@ const Container = styled.div`
   z-index: 1000;
   left: 50%;
   top: 80px;
-`;
+`
 
 const RndWrapper = styled(Rnd)`
   box-shadow: ${boxShadowDefault};
-`;
+`
 
 const Calculator = styled.div`
   width: 100%;
   height: calc(100% - 35px);
-`;
+`
 
 const Title = styled.div`
   width: 100%;
@@ -208,28 +242,28 @@ const Title = styled.div`
   font-weight: 600;
   text-align: left;
   cursor: move;
-`;
+`
 
 const CloseIcon = styled(IconClose)`
   width: 30px;
   float: right;
   cursor: pointer;
   margin-top: 10px;
-`;
+`
 
-const CalculatorContainerWithResources = props => (
+const CalculatorContainerWithResources = (props) => (
   <WithResources
     resources={[
       `${AppConfig.desmosPath}/calculator.js`,
       `${AppConfig.geoGebraPath}/deployggb.js`,
       `${AppConfig.jqueryPath}/jquery.min.js`,
       `${AppConfig.eduScientificCalcPath}/CalcSS3.js`,
-      `${AppConfig.eduScientificCalcPath}/CalcSS3.css`
+      `${AppConfig.eduScientificCalcPath}/CalcSS3.css`,
     ]}
     fallBack={<Spin />}
   >
     <CalculatorContainer {...props} />
   </WithResources>
-);
+)
 
-export default CalculatorContainerWithResources;
+export default CalculatorContainerWithResources

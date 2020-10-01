@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
-import { response } from "@edulastic/constants";
+import { withNamespaces } from '@edulastic/localization'
+import { response } from '@edulastic/constants'
 
-import MathFormulaAnswerMethod from "./MathFormulaAnswerMethod";
-import { getStylesFromUiStyleToCssStyle } from "../../../utils/helpers";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
-import SelectUnit from "../../ClozeMath/ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit";
+import MathFormulaAnswerMethod from './MathFormulaAnswerMethod'
+import { getStylesFromUiStyleToCssStyle } from '../../../utils/helpers'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import SelectUnit from '../../ClozeMath/ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit'
 
 class MathFormulaAnswer extends Component {
   render() {
@@ -23,24 +23,24 @@ class MathFormulaAnswer extends Component {
       keypadOffset,
       onChangeShowDropdown,
       toggleAdditional,
-      view = ""
-    } = this.props;
+      view = '',
+    } = this.props
 
-    const handleChangeMethod = index => (prop, val) => {
-      onChange({ index, prop, value: val });
-    };
+    const handleChangeMethod = (index) => (prop, val) => {
+      onChange({ index, prop, value: val })
+    }
 
-    const { minWidth, expectedAnsMinHeight } = response;
-    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
-    cssStyles.width = cssStyles.width || `${minWidth}px`;
-    cssStyles.height = cssStyles.height || `${expectedAnsMinHeight}px`;
+    const { minWidth, expectedAnsMinHeight } = response
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
+    cssStyles.width = cssStyles.width || `${minWidth}px`
+    cssStyles.height = cssStyles.height || `${expectedAnsMinHeight}px`
     // Validation data (answer)
-    const { options: { unit = "" } = {} } = answer[0] || {};
+    const { options: { unit = '' } = {} } = answer[0] || {}
 
     // Adding new fields to testItem to store custom value for keypadMode & customUnits
-    const { keypadMode = "units_us", customUnits = "" } = item;
+    const { keypadMode = 'units_us', customUnits = '' } = item
 
-    const dropdownUnit = changeOptions => (
+    const dropdownUnit = (changeOptions) => (
       <SelectUnit
         height="36px"
         width="140px"
@@ -49,7 +49,7 @@ class MathFormulaAnswer extends Component {
         unit={unit}
         keypadMode={keypadMode}
       />
-    );
+    )
     return (
       <Row>
         <Col span={24}>
@@ -63,7 +63,7 @@ class MathFormulaAnswer extends Component {
               onChange={handleChangeMethod(i)}
               onChangeKeypad={onChangeKeypad}
               onChangeAllowedOptions={onChangeAllowedOptions}
-              allowedVariables={item.allowedVariables || ""}
+              allowedVariables={item.allowedVariables || ''}
               allowNumericOnly={item.allowNumericOnly}
               template={item.template}
               useTemplate={item.useTemplate}
@@ -82,7 +82,7 @@ class MathFormulaAnswer extends Component {
           ))}
         </Col>
       </Row>
-    );
+    )
   }
 }
 
@@ -97,11 +97,11 @@ MathFormulaAnswer.propTypes = {
   onChangeKeypad: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  toggleAdditional: PropTypes.func
-};
+  toggleAdditional: PropTypes.func,
+}
 
 MathFormulaAnswer.defaultProps = {
-  toggleAdditional: () => null
-};
+  toggleAdditional: () => null,
+}
 
-export default withNamespaces("assessment")(MathFormulaAnswer);
+export default withNamespaces('assessment')(MathFormulaAnswer)

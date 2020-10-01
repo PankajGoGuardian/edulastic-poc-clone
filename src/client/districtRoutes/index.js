@@ -1,23 +1,32 @@
-import React, { useEffect, lazy } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { Switch, Route, Redirect } from "react-router-dom";
-import { get } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
-import { isDistrictPolicyAllowed, isDistrictPolicyAvailable } from "../common/utils/helpers";
+import React, { useEffect, lazy } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { Switch, Route, Redirect } from 'react-router-dom'
+import { get } from 'lodash'
+import { withNamespaces } from '@edulastic/localization'
+import {
+  isDistrictPolicyAllowed,
+  isDistrictPolicyAvailable,
+} from '../common/utils/helpers'
 
-import { getOrgDetailsByShortNameAndOrgTypeAction } from "../student/Signup/duck";
+import { getOrgDetailsByShortNameAndOrgTypeAction } from '../student/Signup/duck'
 
 const TeacherSignup = lazy(() =>
-  import(/* webpackChunkName: "teacherSignup" */ "../student/Signup/components/TeacherContainer/Container")
-);
-const Auth = lazy(() => import(/* webpackChunkName: "auth" */ "../Auth"));
+  import(
+    /* webpackChunkName: "teacherSignup" */ '../student/Signup/components/TeacherContainer/Container'
+  )
+)
+const Auth = lazy(() => import(/* webpackChunkName: "auth" */ '../Auth'))
 const GetStarted = lazy(() =>
-  import(/* webpackChunkName: "getStarted" */ "../student/Signup/components/GetStartedContainer")
-);
+  import(
+    /* webpackChunkName: "getStarted" */ '../student/Signup/components/GetStartedContainer'
+  )
+)
 const StudentSignup = lazy(() =>
-  import(/* webpackChunkName: "studentSignup" */ "../student/Signup/components/StudentContainer")
-);
+  import(
+    /* webpackChunkName: "studentSignup" */ '../student/Signup/components/StudentContainer'
+  )
+)
 
 const DistrictRoutes = ({
   match,
@@ -27,27 +36,30 @@ const DistrictRoutes = ({
   districtPolicy,
   districtUrlLoading,
   orgType,
-  t
+  t,
 }) => {
-  const { orgShortName } = match.params;
-  const isSignupUsingDaURL = orgShortName ? true : false;
+  const { orgShortName } = match.params
+  const isSignupUsingDaURL = !!orgShortName
   useEffect(() => {
     getOrgDetailsByShortNameAndOrgTypeAction({
-      data: { shortName: orgShortName, orgType: orgType === "school" ? "institution" : "district" },
-      error: { message: t("common.policyviolation") }
-    });
-  }, []);
+      data: {
+        shortName: orgShortName,
+        orgType: orgType === 'school' ? 'institution' : 'district',
+      },
+      error: { message: t('common.policyviolation') },
+    })
+  }, [])
 
   return (
     <>
       {districtUrlLoading ? (
-        "Loading Please Wait..."
+        'Loading Please Wait...'
       ) : (
         <Switch>
           <Route
             exact
             path={`/${orgType}/:orgShortName`}
-            render={props => (
+            render={(props) => (
               <Auth
                 {...props}
                 isSignupUsingDaURL={isSignupUsingDaURL}
@@ -59,11 +71,15 @@ const DistrictRoutes = ({
             )}
           />
 
-          {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ? (
+          {isDistrictPolicyAllowed(
+            isSignupUsingDaURL,
+            districtPolicy,
+            'teacherSignUp'
+          ) ? (
             <Route
               exact
               path={`/${orgType}/:orgShortName/signup`}
-              render={props => (
+              render={(props) => (
                 <TeacherSignup
                   {...props}
                   isSignupUsingDaURL={isSignupUsingDaURL}
@@ -76,11 +92,15 @@ const DistrictRoutes = ({
             />
           ) : null}
 
-          {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ? (
+          {isDistrictPolicyAllowed(
+            isSignupUsingDaURL,
+            districtPolicy,
+            'studentSignUp'
+          ) ? (
             <Route
               exact
               path={`/${orgType}/:orgShortName/studentsignup`}
-              render={props => (
+              render={(props) => (
                 <StudentSignup
                   {...props}
                   isSignupUsingDaURL={isSignupUsingDaURL}
@@ -93,12 +113,20 @@ const DistrictRoutes = ({
             />
           ) : null}
 
-          {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
-          isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ? (
+          {isDistrictPolicyAllowed(
+            isSignupUsingDaURL,
+            districtPolicy,
+            'teacherSignUp'
+          ) ||
+          isDistrictPolicyAllowed(
+            isSignupUsingDaURL,
+            districtPolicy,
+            'studentSignUp'
+          ) ? (
             <Route
               exact
               path={`/${orgType}/:orgShortName/GetStarted`}
-              render={props => (
+              render={(props) => (
                 <GetStarted
                   {...props}
                   isSignupUsingDaURL={isSignupUsingDaURL}
@@ -114,21 +142,21 @@ const DistrictRoutes = ({
         </Switch>
       )}
     </>
-  );
-};
+  )
+}
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   connect(
-    state => ({
-      generalSettings: get(state, "signup.generalSettings", undefined),
-      districtPolicy: get(state, "signup.districtPolicy", undefined),
-      districtUrlLoading: get(state, "signup.districtUrlLoading", true)
+    (state) => ({
+      generalSettings: get(state, 'signup.generalSettings', undefined),
+      districtPolicy: get(state, 'signup.districtPolicy', undefined),
+      districtUrlLoading: get(state, 'signup.districtUrlLoading', true),
     }),
     {
-      getOrgDetailsByShortNameAndOrgTypeAction: getOrgDetailsByShortNameAndOrgTypeAction
+      getOrgDetailsByShortNameAndOrgTypeAction,
     }
   )
-);
+)
 
-export default enhance(DistrictRoutes);
+export default enhance(DistrictRoutes)

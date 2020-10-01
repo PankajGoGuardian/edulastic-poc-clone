@@ -1,34 +1,40 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col } from "antd";
+import React, { Component } from 'react'
+import { Form, Input, Row, Col } from 'antd'
 
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+import {
+  ButtonsContainer,
+  OkButton,
+  CancelButton,
+  StyledModal,
+  ModalFormItem,
+} from '../../../../../common/styled'
 
 class EditDistrictAdminModal extends React.Component {
   onSaveDistrictAdmin = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        const { districtAdminData, updateDistrictAdmin, userOrgId } = this.props;
+        const { districtAdminData, updateDistrictAdmin, userOrgId } = this.props
         updateDistrictAdmin({
           userId: districtAdminData._id,
           data: Object.assign(row, {
-            districtId: userOrgId
-          })
-        });
-        this.onCloseModal();
+            districtId: userOrgId,
+          }),
+        })
+        this.onCloseModal()
       }
-    });
-  };
+    })
+  }
 
   onCloseModal = () => {
-    this.props.closeModal();
-  };
+    this.props.closeModal()
+  }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator } = this.props.form
     const {
       modalVisible,
-      districtAdminData: { _source }
-    } = this.props;
+      districtAdminData: { _source },
+    } = this.props
     return (
       <StyledModal
         visible={modalVisible}
@@ -42,33 +48,33 @@ class EditDistrictAdminModal extends React.Component {
           <ButtonsContainer>
             <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
             <OkButton onClick={this.onSaveDistrictAdmin}>Yes, Update</OkButton>
-          </ButtonsContainer>
+          </ButtonsContainer>,
         ]}
       >
         <Row>
           <Col span={12}>
             <ModalFormItem label="First Name">
-              {getFieldDecorator("firstName", {
+              {getFieldDecorator('firstName', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input First Name"
-                  }
+                    message: 'Please input First Name',
+                  },
                 ],
-                initialValue: _source.firstName
+                initialValue: _source.firstName,
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
           <Col span={12}>
             <ModalFormItem label="Last Name">
-              {getFieldDecorator("lastName", {
+              {getFieldDecorator('lastName', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Last Name"
-                  }
+                    message: 'Please input Last Name',
+                  },
                 ],
-                initialValue: _source.lastName
+                initialValue: _source.lastName,
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -76,26 +82,26 @@ class EditDistrictAdminModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Email">
-              {getFieldDecorator("email", {
+              {getFieldDecorator('email', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input E-mail"
+                    message: 'Please input E-mail',
                   },
                   {
-                    type: "email",
-                    message: "The input is not valid E-mail"
-                  }
+                    type: 'email',
+                    message: 'The input is not valid E-mail',
+                  },
                 ],
-                initialValue: _source.email
+                initialValue: _source.email,
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>
         </Row>
       </StyledModal>
-    );
+    )
   }
 }
 
-const EditDistrictAdminModalForm = Form.create()(EditDistrictAdminModal);
-export default EditDistrictAdminModalForm;
+const EditDistrictAdminModalForm = Form.create()(EditDistrictAdminModal)
+export default EditDistrictAdminModalForm

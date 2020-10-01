@@ -1,9 +1,9 @@
-import { debounce, get } from "lodash";
-import { white } from "@edulastic/colors";
-import { HeaderTabs, withWindowSizes, EduButton } from "@edulastic/common";
-import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
-import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { debounce, get } from 'lodash'
+import { white } from '@edulastic/colors'
+import { HeaderTabs, withWindowSizes, EduButton } from '@edulastic/common'
+import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
+import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
   IconCheck,
   IconClose,
@@ -12,20 +12,20 @@ import {
   IconMetadata,
   IconPencilEdit,
   IconPreview,
-  IconSaveNew
-} from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { roleuser } from "@edulastic/constants";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { clearEvaluationAction } from "../../../../../assessment/actions/evaluation";
-import { Tooltip } from "../../../../../common/utils/helpers";
-import { getCurrentQuestionSelector } from "../../../../sharedDucks/questions";
-import { clearAnswersAction } from "../../../actions/answers";
-import { MAX_TAB_WIDTH } from "../../../constants/others";
+  IconSaveNew,
+} from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { roleuser } from '@edulastic/constants'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { clearEvaluationAction } from '../../../../../assessment/actions/evaluation'
+import { Tooltip } from '../../../../../common/utils/helpers'
+import { getCurrentQuestionSelector } from '../../../../sharedDucks/questions'
+import { clearAnswersAction } from '../../../actions/answers'
+import { MAX_TAB_WIDTH } from '../../../constants/others'
 import {
   Container,
   CustomButton,
@@ -36,43 +36,49 @@ import {
   MobileContainer,
   MobileSecondContainer,
   MobileTopRight,
-  RightSide
-} from "./styled_components";
-import { getUserRole } from "../../../selectors/user";
+  RightSide,
+} from './styled_components'
+import { getUserRole } from '../../../selectors/user'
 
 class ButtonBar extends Component {
-  handleMenuClick = view => () => {
-    const { onChangeView, clearEvaluation, onSaveScrollTop, view: currentView, changePreviewTab } = this.props;
+  handleMenuClick = (view) => () => {
+    const {
+      onChangeView,
+      clearEvaluation,
+      onSaveScrollTop,
+      view: currentView,
+      changePreviewTab,
+    } = this.props
 
     if (currentView === view) {
-      return;
+      return
     }
 
-    onChangeView(view);
+    onChangeView(view)
 
-    if (view !== "edit" && onSaveScrollTop) {
-      onSaveScrollTop(window.pageYOffset);
+    if (view !== 'edit' && onSaveScrollTop) {
+      onSaveScrollTop(window.pageYOffset)
     }
 
-    if (view === "preview") {
-      changePreviewTab("clear");
+    if (view === 'preview') {
+      changePreviewTab('clear')
     }
 
-    if (view === "edit") {
-      clearEvaluation();
+    if (view === 'edit') {
+      clearEvaluation()
     }
-  };
+  }
 
   setClearPreviewTab = () => {
-    const { changePreviewTab, clearAnswers } = this.props;
-    clearAnswers();
-    changePreviewTab("clear");
-  };
+    const { changePreviewTab, clearAnswers } = this.props
+    clearAnswers()
+    changePreviewTab('clear')
+  }
 
   handleSave = debounce(() => {
-    const { onSave } = this.props;
-    onSave();
-  }, 1000);
+    const { onSave } = this.props
+    onSave()
+  }, 1000)
 
   render() {
     const {
@@ -99,52 +105,58 @@ class ButtonBar extends Component {
       userRole,
       showSaveAndPublishButton,
       onSaveAndPublish,
-      loadingComponents
-    } = this.props;
+      loadingComponents,
+    } = this.props
     return (
-      <React.Fragment>
+      <>
         {windowWidth > MAX_TAB_WIDTH ? (
           <Container>
-            <HeaderMidContainer style={{ width: "100%" }}>
+            <HeaderMidContainer style={{ width: '100%' }}>
               <StyledTabs selectedKeys={[view]}>
                 {hasAuthorPermission && (
                   <HeaderTabs
                     id={getFormattedAttrId(`${qTitle}-edit`)}
                     dataCy="editButton"
-                    isActive={view === "edit"}
-                    icon={<IconPencilEdit color={white} width={18} height={16} />}
+                    isActive={view === 'edit'}
+                    icon={
+                      <IconPencilEdit color={white} width={18} height={16} />
+                    }
                     linkLabel="Edit Mode"
-                    onClickHandler={this.handleMenuClick("edit")}
+                    onClickHandler={this.handleMenuClick('edit')}
                   />
                 )}
                 <HeaderTabs
                   id={getFormattedAttrId(`${qTitle}-preview-mode`)}
                   dataCy="previewButton"
-                  isActive={view === "preview"}
+                  isActive={view === 'preview'}
                   icon={<IconEye color={white} width={18} height={16} />}
                   linkLabel="Preview mode"
-                  onClickHandler={this.handleMenuClick("preview")}
+                  onClickHandler={this.handleMenuClick('preview')}
                 />
                 {showMetaData && (
                   <HeaderTabs
                     id={getFormattedAttrId(`${qTitle}-metadata`)}
                     dataCy="metadataButton"
-                    isActive={view === "metadata"}
+                    isActive={view === 'metadata'}
                     icon={<IconMetadata color={white} width={18} height={16} />}
                     linkLabel="Meta data"
-                    onClickHandler={this.handleMenuClick("metadata")}
+                    onClickHandler={this.handleMenuClick('metadata')}
                   />
                 )}
-                {hasAuthorPermission && showAuditTrail && !!permissions.length && (
-                  <HeaderTabs
-                    id={getFormattedAttrId(`${qTitle}-auditTrail`)}
-                    dataCy="auditTrailButton"
-                    isActive={view === "auditTrail"}
-                    icon={<IconPencilEdit color={white} width={18} height={16} />}
-                    linkLabel="Audit trail"
-                    onClickHandler={this.handleMenuClick("auditTrail")}
-                  />
-                )}
+                {hasAuthorPermission &&
+                  showAuditTrail &&
+                  !!permissions.length && (
+                    <HeaderTabs
+                      id={getFormattedAttrId(`${qTitle}-auditTrail`)}
+                      dataCy="auditTrailButton"
+                      isActive={view === 'auditTrail'}
+                      icon={
+                        <IconPencilEdit color={white} width={18} height={16} />
+                      }
+                      linkLabel="Audit trail"
+                      onClickHandler={this.handleMenuClick('auditTrail')}
+                    />
+                  )}
               </StyledTabs>
             </HeaderMidContainer>
 
@@ -152,10 +164,14 @@ class ButtonBar extends Component {
               <RightSide>
                 {renderRightSide()}
                 {(showPublishButton || showPublishButton === undefined) &&
-                  (itemStatus === "draft" ? (
+                  (itemStatus === 'draft' ? (
                     <>
                       {isTestFlow && (
-                        <EduButton isBlue data-cy="saveCancel" onClick={onCancel}>
+                        <EduButton
+                          isBlue
+                          data-cy="saveCancel"
+                          onClick={onCancel}
+                        >
                           <IconClose />
                           CANCEL
                         </EduButton>
@@ -193,7 +209,9 @@ class ButtonBar extends Component {
                       </EduButton>
                       {!isTestFlow && showSaveAndPublishButton && (
                         <EduButton
-                          loading={loadingComponents.includes("saveAndPublishItem")}
+                          loading={loadingComponents.includes(
+                            'saveAndPublishItem'
+                          )}
                           isBlue
                           disabled={disableSave}
                           data-cy="saveAndPublishItem"
@@ -205,15 +223,25 @@ class ButtonBar extends Component {
                     </>
                   ))}
                 {showPublishButton &&
-                  itemStatus === "draft" &&
+                  itemStatus === 'draft' &&
                   !isTestFlow &&
                   userRole !== roleuser.EDULASTIC_CURATOR && (
-                    <EduButton isBlue disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
+                    <EduButton
+                      isBlue
+                      disabled={disableSave}
+                      data-cy="publishItem"
+                      onClick={onPublishTestItem}
+                    >
                       PUBLISH
                     </EduButton>
                   )}
                 {!(showPublishButton || showPublishButton === undefined) && (
-                  <EduButton isBlue data-cy="editItem" onClick={onEnableEdit} width="120px">
+                  <EduButton
+                    isBlue
+                    data-cy="editItem"
+                    onClick={onEnableEdit}
+                    width="120px"
+                  >
                     EDIT
                   </EduButton>
                 )}
@@ -239,32 +267,32 @@ class ButtonBar extends Component {
               <MenuList selectedKeys={[view]}>
                 <MenuItem
                   id={getFormattedAttrId(`${qTitle}-edit`)}
-                  onClick={() => this.handleMenuClick("edit")}
-                  className={view === "edit" && "active"}
+                  onClick={() => this.handleMenuClick('edit')}
+                  className={view === 'edit' && 'active'}
                   data-cy="editButton"
                 >
                   <HeadIcon>
                     <IconPencilEdit color={white} width={18} height={16} />
                   </HeadIcon>
-                  {withLabels ? "Edit Mode" : ""}
+                  {withLabels ? 'Edit Mode' : ''}
                 </MenuItem>
                 <MenuItem
                   id={getFormattedAttrId(`${qTitle}-preview-mode`)}
-                  onClick={() => this.handleMenuClick("preview")}
-                  className={view === "preview" && "active"}
+                  onClick={() => this.handleMenuClick('preview')}
+                  className={view === 'preview' && 'active'}
                   data-cy="previewButton"
                 >
                   <HeadIcon>
                     <IconPreview color={white} width={18} height={16} />
                   </HeadIcon>
-                  {withLabels ? "Preview mode" : ""}
+                  {withLabels ? 'Preview mode' : ''}
                 </MenuItem>
 
                 <MenuItem
                   id={getFormattedAttrId(`${qTitle}-metadata`)}
                   data-cy="metadataButton"
-                  className={view === "metadata" && "active"}
-                  onClick={this.handleMenuClick("metadata")}
+                  className={view === 'metadata' && 'active'}
+                  onClick={this.handleMenuClick('metadata')}
                 >
                   <HeadIcon>
                     <IconMetadata color={white} width={18} height={16} />
@@ -273,26 +301,38 @@ class ButtonBar extends Component {
                 </MenuItem>
               </MenuList>
             </MobileBottom>
-            {view === "preview" && (
+            {view === 'preview' && (
               <MobileSecondContainer>
-                <EduButton height="32px" isGhost onClick={() => changePreviewTab("check")}>
+                <EduButton
+                  height="32px"
+                  isGhost
+                  onClick={() => changePreviewTab('check')}
+                >
                   <IconCheck color={white} width={16} height={16} />
-                  {t("component.questioneditor.buttonbar.checkanswer")}
+                  {t('component.questioneditor.buttonbar.checkanswer')}
                 </EduButton>
-                <EduButton height="32px" isGhost onClick={() => changePreviewTab("show")}>
+                <EduButton
+                  height="32px"
+                  isGhost
+                  onClick={() => changePreviewTab('show')}
+                >
                   <IconEye color={white} width={16} height={16} />
-                  {t("component.questioneditor.buttonbar.showanswers")}
+                  {t('component.questioneditor.buttonbar.showanswers')}
                 </EduButton>
-                <EduButton height="32px" isGhost onClick={() => this.setClearPreviewTab()}>
+                <EduButton
+                  height="32px"
+                  isGhost
+                  onClick={() => this.setClearPreviewTab()}
+                >
                   <IconEraseText color={white} width={16} height={16} />
-                  {t("component.questioneditor.buttonbar.clear")}
+                  {t('component.questioneditor.buttonbar.clear')}
                 </EduButton>
               </MobileSecondContainer>
             )}
           </MobileContainer>
         )}
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
@@ -319,8 +359,8 @@ ButtonBar.propTypes = {
   itemStatus: PropTypes.any,
   showMetaData: PropTypes.bool,
   showAuditTrail: PropTypes.bool,
-  permissions: PropTypes.object.isRequired
-};
+  permissions: PropTypes.object.isRequired,
+}
 
 ButtonBar.defaultProps = {
   renderRightSide: () => {},
@@ -331,33 +371,40 @@ ButtonBar.defaultProps = {
   showAuditTrail: false,
   isTestFlow: false,
   withLabels: false,
-  hasAuthorPermission: true
-};
+  hasAuthorPermission: true,
+}
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces("author"),
+  withNamespaces('author'),
   connect(
-    state => {
-      const { multipartItem, isPassageWithQuestions, canAddMultipleItems, data = {} } = get(
-        state,
-        ["itemDetail", "item"],
-        {}
-      );
-      const isMultipart = multipartItem || isPassageWithQuestions || canAddMultipleItems || data.questions?.length > 1;
+    (state) => {
+      const {
+        multipartItem,
+        isPassageWithQuestions,
+        canAddMultipleItems,
+        data = {},
+      } = get(state, ['itemDetail', 'item'], {})
+      const isMultipart =
+        multipartItem ||
+        isPassageWithQuestions ||
+        canAddMultipleItems ||
+        data.questions?.length > 1
       return {
-        permissions: get(state, ["user", "user", "permissions"], []),
-        qTitle: isMultipart ? "compination-multipart" : getCurrentQuestionSelector(state)?.title,
+        permissions: get(state, ['user', 'user', 'permissions'], []),
+        qTitle: isMultipart
+          ? 'compination-multipart'
+          : getCurrentQuestionSelector(state)?.title,
         userRole: getUserRole(state),
-        loadingComponents: get(state, ["authorUi", "currentlyLoading"], [])
-      };
+        loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
+      }
     },
     {
       clearAnswers: clearAnswersAction,
-      clearEvaluation: clearEvaluationAction
+      clearEvaluation: clearEvaluationAction,
     }
   )
-);
+)
 
-export default enhance(ButtonBar);
+export default enhance(ButtonBar)

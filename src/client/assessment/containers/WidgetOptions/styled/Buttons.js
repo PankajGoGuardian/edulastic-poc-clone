@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button } from "antd";
-import { themeColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Button } from 'antd'
+import { themeColor } from '@edulastic/colors'
 
 export const StyledButton = styled(Button)`
   width: max-content;
@@ -11,15 +11,18 @@ export const StyledButton = styled(Button)`
   margin-right: 10px;
   background: ${themeColor};
 
-  font-family: '${props => props.theme.common.addNewChoiceButtonFontFamily}';
+  font-family: '${(props) => props.theme.common.addNewChoiceButtonFontFamily}';
   text-transform: uppercase;
-  font-size: ${props => props.theme.common.addNewChoiceButtonFontSize};
-  font-weight: ${props => props.theme.common.addNewChoiceButtonFontWeight};
-  font-style: ${props => props.theme.common.addNewChoiceButtonFontStyle};
-  color: ${props => props.theme.common.addNewChoiceButtonColor};
+  font-size: ${(props) => props.theme.common.addNewChoiceButtonFontSize};
+  font-weight: ${(props) => props.theme.common.addNewChoiceButtonFontWeight};
+  font-style: ${(props) => props.theme.common.addNewChoiceButtonFontStyle};
+  color: ${(props) => props.theme.common.addNewChoiceButtonColor};
 
-  &:hover, &:active, &:focus {
-    background-color: ${props => props.theme.common.addNewChoiceButtonBgHoverColor};
-    color: ${props => props.theme.common.addNewChoiceButtonHoverColor};
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: ${(props) =>
+      props.theme.common.addNewChoiceButtonBgHoverColor};
+    color: ${(props) => props.theme.common.addNewChoiceButtonHoverColor};
   }
-`;
+`

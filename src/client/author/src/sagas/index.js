@@ -1,57 +1,57 @@
-import itemsSaga from "./items";
-import testItemSaga from "./testItem";
-import dictionariesSaga from "./dictionaries";
-import { classBoardSaga } from "../../ClassBoard";
-import { classResponsesSaga } from "../../ClassResponses";
-import { sharedAssignmentsSaga } from "../../sharedDucks/assignments";
-import { testsListSaga } from "../../TestList";
-import { testPageSaga } from "../../TestPage";
-import { itemDetailSaga } from "../../ItemDetail";
-import { ManageClassSaga } from "../../ManageClass";
-import { questionSaga } from "../../QuestionEditor";
-import { testsAddItemsSaga } from "../../TestPage/components/AddItems";
-import { testsAssignSaga } from "../../TestPage/components/Assign";
-import assignmentsSaga from "./assignments";
-import { reportSaga } from "../../Reports/ducks";
-import { printPreviewSaga } from "../../PrintPreview/ducks";
-import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
-import { authorRoutesWatcherSaga } from "../../sharedDucks/routes";
-import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
-import { assessmentPageSaga } from "../../AssessmentCreate";
-import { itemListSaga } from "../../ItemList";
-import { districtProfileSaga } from "../../DistrictProfile";
-import { testSettingSaga } from "../../TestSetting";
-import { termSaga } from "../../Term";
-import { districtPolicySaga } from "../../DistrictPolicy";
-import { performanceBandSaga } from "../../PerformanceBand";
-import { standardsProficiencySaga } from "../../StandardsProficiency";
-import { schoolsSaga } from "../../Schools";
-import { studentSaga } from "../../Student";
-import { teacherSaga } from "../../Teacher";
-import { districtAdminSaga } from "../../DistrictAdmin";
-import { schoolAdminSaga } from "../../SchoolAdmin";
-import { coursesSaga } from "../../Courses";
-import { classesSaga } from "../../Classes";
-import folderSaga from "./folder";
-import { interestedStandardsSaga } from "../../InterestedStandards";
-import { playlistSaga } from "../../Playlist";
-import { playlistPageSaga } from "../../PlaylistPage";
-import { dashboardTeacherSaga } from "../../Dashboard";
-import { watcherSaga as expressGraderWatcherSaga } from "../../ExpressGrader/ducks";
-import { classEnrollmentSaga } from "../../ClassEnrollment";
-import { rubricSaga } from "../../GradingRubric";
-import { watcherSaga as lcbAssignmentSettingsSaga } from "../../LCBAssignmentSettings/ducks";
-import { bucketSaga } from "../../ContentBuckets";
-import { collectionsSaga } from "../../ContentCollections";
-import { watcherSaga as subscriptionSaga } from "../../Subscription/ducks";
-import { importTestWatcher as importTestSaga } from "../../ImportTest/ducks";
-import itemScoreSaga from "./itemScore";
-import { watcherSaga as playlistTestBoxSaga } from "../../CurriculumSequence/components/ManageContentBlock/ducks";
-import { externalToolsSaga } from "../../ExternalTools";
-import { mergeUsersSaga } from "../../MergeUsers";
-import { gradebookSaga } from "../../Gradebook";
-import { advancedAssignmentsSaga } from "../../AssignmentAdvanced";
-import { watcherSaga as previewModalSaga } from "../components/common/PreviewModal/ducks";
+import itemsSaga from './items'
+import testItemSaga from './testItem'
+import dictionariesSaga from './dictionaries'
+import { classBoardSaga } from '../../ClassBoard'
+import { classResponsesSaga } from '../../ClassResponses'
+import { sharedAssignmentsSaga } from '../../sharedDucks/assignments'
+import { testsListSaga } from '../../TestList'
+import { testPageSaga } from '../../TestPage'
+import { itemDetailSaga } from '../../ItemDetail'
+import { ManageClassSaga } from '../../ManageClass'
+import { questionSaga } from '../../QuestionEditor'
+import { testsAddItemsSaga } from '../../TestPage/components/AddItems'
+import { testsAssignSaga } from '../../TestPage/components/Assign'
+import assignmentsSaga from './assignments'
+import { reportSaga } from '../../Reports/ducks'
+import { printPreviewSaga } from '../../PrintPreview/ducks'
+import { authorGroupsWatcherSaga } from '../../sharedDucks/groups'
+import { authorRoutesWatcherSaga } from '../../sharedDucks/routes'
+import { watcherSaga as UserDetails } from '../../sharedDucks/userDetails'
+import { assessmentPageSaga } from '../../AssessmentCreate'
+import { itemListSaga } from '../../ItemList'
+import { districtProfileSaga } from '../../DistrictProfile'
+import { testSettingSaga } from '../../TestSetting'
+import { termSaga } from '../../Term'
+import { districtPolicySaga } from '../../DistrictPolicy'
+import { performanceBandSaga } from '../../PerformanceBand'
+import { standardsProficiencySaga } from '../../StandardsProficiency'
+import { schoolsSaga } from '../../Schools'
+import { studentSaga } from '../../Student'
+import { teacherSaga } from '../../Teacher'
+import { districtAdminSaga } from '../../DistrictAdmin'
+import { schoolAdminSaga } from '../../SchoolAdmin'
+import { coursesSaga } from '../../Courses'
+import { classesSaga } from '../../Classes'
+import folderSaga from './folder'
+import { interestedStandardsSaga } from '../../InterestedStandards'
+import { playlistSaga } from '../../Playlist'
+import { playlistPageSaga } from '../../PlaylistPage'
+import { dashboardTeacherSaga } from '../../Dashboard'
+import { watcherSaga as expressGraderWatcherSaga } from '../../ExpressGrader/ducks'
+import { classEnrollmentSaga } from '../../ClassEnrollment'
+import { rubricSaga } from '../../GradingRubric'
+import { watcherSaga as lcbAssignmentSettingsSaga } from '../../LCBAssignmentSettings/ducks'
+import { bucketSaga } from '../../ContentBuckets'
+import { collectionsSaga } from '../../ContentCollections'
+import { watcherSaga as subscriptionSaga } from '../../Subscription/ducks'
+import { importTestWatcher as importTestSaga } from '../../ImportTest/ducks'
+import itemScoreSaga from './itemScore'
+import { watcherSaga as playlistTestBoxSaga } from '../../CurriculumSequence/components/ManageContentBlock/ducks'
+import { externalToolsSaga } from '../../ExternalTools'
+import { mergeUsersSaga } from '../../MergeUsers'
+import { gradebookSaga } from '../../Gradebook'
+import { advancedAssignmentsSaga } from '../../AssignmentAdvanced'
+import { watcherSaga as previewModalSaga } from '../components/common/PreviewModal/ducks'
 
 const authorSagas = [
   itemsSaga(),
@@ -107,7 +107,7 @@ const authorSagas = [
   mergeUsersSaga(),
   gradebookSaga(),
   previewModalSaga(),
-  advancedAssignmentsSaga()
-];
+  advancedAssignmentsSaga(),
+]
 
-export default authorSagas;
+export default authorSagas

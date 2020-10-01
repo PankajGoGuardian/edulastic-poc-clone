@@ -1,56 +1,60 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { isObject, get } from "lodash";
-import { MathKeyboard } from "@edulastic/common";
-import CustomGroup from "./CustomGroup";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { isObject, get } from 'lodash'
+import { MathKeyboard } from '@edulastic/common'
+import CustomGroup from './CustomGroup'
 
 export default class KeyPad extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     symbol: PropTypes.string.isRequired,
     item: PropTypes.object.isRequired,
-    buttonStyle: PropTypes.object
-  };
+    buttonStyle: PropTypes.object,
+  }
 
   static defaultProps = {
-    buttonStyle: {}
-  };
+    buttonStyle: {},
+  }
 
-  handleChange = value => {
-    const { onChange, item } = this.props;
-    const data = [...item.symbols];
-    data[0] = value;
-    onChange("symbols", data);
-  };
+  handleChange = (value) => {
+    const { onChange, item } = this.props
+    const data = [...item.symbols]
+    data[0] = value
+    onChange('symbols', data)
+  }
 
-  keyboardButtons = symbol => {
-    const { item } = this.props;
-    const customKeys = get(item, "customKeys", []);
+  keyboardButtons = (symbol) => {
+    const { item } = this.props
+    const customKeys = get(item, 'customKeys', [])
 
-    const customKeysBtns = customKeys.map(key => ({
+    const customKeysBtns = customKeys.map((key) => ({
       handler: key,
       label: key,
       types: [isObject(symbol) ? symbol.label : symbol],
-      command: "write"
-    }));
+      command: 'write',
+    }))
 
-    const isCustomMode = isObject(symbol);
+    const isCustomMode = isObject(symbol)
 
-    const defaultKeys = MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
+    const defaultKeys = MathKeyboard.KEYBOARD_BUTTONS.map((btn) => {
       if (isCustomMode && symbol.value.includes(btn.handler)) {
-        btn.types.push(symbol.label);
+        btn.types.push(symbol.label)
       }
-      return btn;
-    });
+      return btn
+    })
 
-    return customKeysBtns.concat(defaultKeys.filter(btn => btn.types.includes(isCustomMode ? symbol.label : symbol)));
-  };
+    return customKeysBtns.concat(
+      defaultKeys.filter((btn) =>
+        btn.types.includes(isCustomMode ? symbol.label : symbol)
+      )
+    )
+  }
 
   render() {
-    const { symbol, buttonStyle, item } = this.props;
+    const { symbol, buttonStyle, item } = this.props
 
     if (isObject(symbol)) {
-      const customKeys = get(item, "customKeys", []);
+      const customKeys = get(item, 'customKeys', [])
 
       return (
         <CustomGroup
@@ -60,9 +64,9 @@ export default class KeyPad extends React.Component {
           buttonStyle={buttonStyle}
           customKeys={customKeys}
         />
-      );
+      )
     }
 
-    return <MathKeyboard symbols={[symbol]} showDropdown={false} />;
+    return <MathKeyboard symbols={[symbol]} showDropdown={false} />
   }
 }

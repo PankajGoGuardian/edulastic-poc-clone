@@ -1,4 +1,4 @@
-import { assignmentApi } from "@edulastic/api";
+import { assignmentApi } from '@edulastic/api'
 import {
   CustomModalStyled,
   EduButton,
@@ -8,32 +8,32 @@ import {
   FieldLabel,
   SelectInputStyled,
   DatePickerStyled,
-  TextInputStyled
-} from "@edulastic/common";
-import { test as testContants } from "@edulastic/constants";
-import { Col, Row, Select } from "antd";
-import { some, get } from "lodash";
-import moment from "moment";
-import React, { useCallback, useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { getRedirectEndDate, getUserName } from "../utils";
-import { BodyContainer } from "./styled";
-import { getIsSpecificStudents } from "../ducks";
+  TextInputStyled,
+} from '@edulastic/common'
+import { test as testContants } from '@edulastic/constants'
+import { Col, Row, Select } from 'antd'
+import { some, get } from 'lodash'
+import moment from 'moment'
+import React, { useCallback, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { getRedirectEndDate, getUserName } from '../utils'
+import { BodyContainer } from './styled'
+import { getIsSpecificStudents } from '../ducks'
 
-const { redirectPolicy } = testContants;
+const { redirectPolicy } = testContants
 
 const QuestionDelivery = {
-  [redirectPolicy.QuestionDelivery.ALL]: "All",
-  [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: "Skipped and Wrong"
-};
+  [redirectPolicy.QuestionDelivery.ALL]: 'All',
+  [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
+}
 
 const ShowPreviousAttempt = {
-  FEEDBACK_ONLY: "Teacher Feedback only",
-  SCORE_AND_FEEDBACK: "Score & Teacher Feedback",
-  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Teacher Feedback"
-};
+  FEEDBACK_ONLY: 'Teacher Feedback only',
+  SCORE_AND_FEEDBACK: 'Score & Teacher Feedback',
+  STUDENT_RESPONSE_AND_FEEDBACK: 'Student Response & Teacher Feedback',
+}
 
-const Option = Select.Option;
+const Option = Select.Option
 
 /**
  * @typedef {Object} RedirectPopUpProps
@@ -66,98 +66,122 @@ const RedirectPopUp = ({
   groupId,
   testActivity,
   isPremiumUser,
-  specificStudents
+  specificStudents,
 }) => {
-  const [dueDate, setDueDate] = useState(moment().add(1, "day"));
-  const [endDate, setEndDate] = useState(moment(getRedirectEndDate(additionalData, dueDate)));
-  const [loading, setLoading] = useState(false);
-  const [type, setType] = useState("specificStudents");
-  const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
-  const [qDeliveryState, setQDeliveryState] = useState("ALL");
+  const [dueDate, setDueDate] = useState(moment().add(1, 'day'))
+  const [endDate, setEndDate] = useState(
+    moment(getRedirectEndDate(additionalData, dueDate))
+  )
+  const [loading, setLoading] = useState(false)
+  const [type, setType] = useState('specificStudents')
+  const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents)
+  const [qDeliveryState, setQDeliveryState] = useState('ALL')
   const [showPrevAttempt, setshowPrevAttempt] = useState(
-    isPremiumUser ? "FEEDBACK_ONLY" : "STUDENT_RESPONSE_AND_FEEDBACK"
-  );
-  const [allowedTime, setAllowedTime] = useState(additionalData.allowedTime || 1);
+    isPremiumUser ? 'FEEDBACK_ONLY' : 'STUDENT_RESPONSE_AND_FEEDBACK'
+  )
+  const [allowedTime, setAllowedTime] = useState(
+    additionalData.allowedTime || 1
+  )
   useEffect(() => {
-    const setRedirectStudents = {};
-    if (type === "absentStudents") {
-      absentList.forEach(st => {
-        setRedirectStudents[st] = true;
-      });
-      setStudentsToRedirect(setRedirectStudents);
-    } else if (type === "entire") {
-      const isNotRedirectable = disabledList.length > 0;
+    const setRedirectStudents = {}
+    if (type === 'absentStudents') {
+      absentList.forEach((st) => {
+        setRedirectStudents[st] = true
+      })
+      setStudentsToRedirect(setRedirectStudents)
+    } else if (type === 'entire') {
+      const isNotRedirectable = disabledList.length > 0
       !isNotRedirectable &&
-        allStudents.forEach(st => {
-          setRedirectStudents[st._id] = true;
-        });
-      setStudentsToRedirect(isNotRedirectable ? {} : setRedirectStudents);
+        allStudents.forEach((st) => {
+          setRedirectStudents[st._id] = true
+        })
+      setStudentsToRedirect(isNotRedirectable ? {} : setRedirectStudents)
     } else {
-      setStudentsToRedirect(selectedStudents);
+      setStudentsToRedirect(selectedStudents)
     }
-  }, [type, selectedStudents]);
+  }, [type, selectedStudents])
 
   const submitAction = useCallback(async () => {
     if (endDate < moment()) {
-      return notification({ messageKey: "SelectFutureEndDate" });
+      return notification({ messageKey: 'SelectFutureEndDate' })
     }
-    setLoading(true);
-    const selected = Object.keys(studentsToRedirect);
+    setLoading(true)
+    const selected = Object.keys(studentsToRedirect)
     if (selected.length === 0) {
       notification({
         msg:
-          type === "entire"
-            ? "You can redirect an assessment only after the assessment has been submitted by the student(s)."
-            : "At least one student should be selected to redirect assessment."
-      });
+          type === 'entire'
+            ? 'You can redirect an assessment only after the assessment has been submitted by the student(s).'
+            : 'At least one student should be selected to redirect assessment.',
+      })
     } else {
-      let _selected = selected;
-      if (qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG) {
+      let _selected = selected
+      if (
+        qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG
+      ) {
         const selectedStudentsTestActivity = testActivity.filter(
-          item => studentsToRedirect[item.studentId] && some(item.questionActivities, o => o.skipped || !o.correct)
-        );
-        _selected = selectedStudentsTestActivity.map(item => item.studentId);
+          (item) =>
+            studentsToRedirect[item.studentId] &&
+            some(item.questionActivities, (o) => o.skipped || !o.correct)
+        )
+        _selected = selectedStudentsTestActivity.map((item) => item.studentId)
       }
 
       if (_selected.length) {
         const redirectAssignment = {
           _id: groupId,
-          students: type === "entire" ? [] : _selected,
+          students: type === 'entire' ? [] : _selected,
           showPreviousAttempt: showPrevAttempt,
           questionsDelivery: qDeliveryState,
           endDate: +endDate,
           timedAssignment: additionalData.timedAssignment,
           allowedTime,
-          pauseAllowed: !!additionalData.pauseAllowed
-        };
+          pauseAllowed: !!additionalData.pauseAllowed,
+        }
         if (additionalData.dueDate) {
-          redirectAssignment.dueDate = dueDate.valueOf();
+          redirectAssignment.dueDate = dueDate.valueOf()
         }
         await assignmentApi
           .redirect(assignmentId, redirectAssignment)
           .then(() => {
-            notification({ type: "success", messageKey: "redirectSuccessful" });
-            closePopup(true);
+            notification({ type: 'success', messageKey: 'redirectSuccessful' })
+            closePopup(true)
           })
-          .catch(err => {
-            notification({ msg: err?.response?.data?.message || "Unknown Error" });
-            closePopup();
-          });
+          .catch((err) => {
+            notification({
+              msg: err?.response?.data?.message || 'Unknown Error',
+            })
+            closePopup()
+          })
       } else {
-        notification({ messageKey: "pleaseSelectStudentsWithIncorrectOrSkippedQuestions" });
+        notification({
+          messageKey: 'pleaseSelectStudentsWithIncorrectOrSkippedQuestions',
+        })
       }
     }
-    setLoading(false);
-  }, [studentsToRedirect, assignmentId, endDate, groupId, showPrevAttempt, qDeliveryState, dueDate, allowedTime]);
+    setLoading(false)
+  }, [
+    studentsToRedirect,
+    assignmentId,
+    endDate,
+    groupId,
+    showPrevAttempt,
+    qDeliveryState,
+    dueDate,
+    allowedTime,
+  ])
 
-  const disabledEndDate = _endDate => {
+  const disabledEndDate = (_endDate) => {
     if (!_endDate) {
-      return false;
+      return false
     }
-    return _endDate < moment().startOf("day");
-  };
+    return _endDate < moment().startOf('day')
+  }
 
-  const disabledDueDate = useCallback(_dueDate => _dueDate < moment().startOf("day") || dueDate > endDate, [endDate]);
+  const disabledDueDate = useCallback(
+    (_dueDate) => _dueDate < moment().startOf('day') || dueDate > endDate,
+    [endDate]
+  )
 
   return (
     <CustomModalStyled
@@ -169,9 +193,14 @@ const RedirectPopUp = ({
         <EduButton isGhost key="cancel" onClick={closePopup}>
           CANCEL
         </EduButton>,
-        <EduButton data-cy="confirmRedirect" loading={loading} key="submit" onClick={submitAction}>
+        <EduButton
+          data-cy="confirmRedirect"
+          loading={loading}
+          key="submit"
+          onClick={submitAction}
+        >
           REDIRECT
-        </EduButton>
+        </EduButton>,
       ]}
     >
       <BodyContainer>
@@ -182,11 +211,15 @@ const RedirectPopUp = ({
         */}
           <RadioGrp
             value={type}
-            onChange={e => {
-              setType(e.target.value);
+            onChange={(e) => {
+              setType(e.target.value)
             }}
           >
-            <RadioBtn data-cy="entireClass" value="entire" disabled={specificStudents}>
+            <RadioBtn
+              data-cy="entireClass"
+              value="entire"
+              disabled={specificStudents}
+            >
               Entire Class
             </RadioBtn>
             <RadioBtn data-cy="absentStudents" value="absentStudents">
@@ -203,25 +236,29 @@ const RedirectPopUp = ({
           <SelectInputStyled
             showSearch
             optionFilterProp="data"
-            filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            filterOption={(input, option) =>
+              option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             mode="multiple"
-            disabled={type !== "specificStudents"}
-            style={{ width: "100%" }}
+            disabled={type !== 'specificStudents'}
+            style={{ width: '100%' }}
             placeholder="Select the students"
             value={Object.keys(selectedStudents)}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-            onChange={v => {
-              setSelected(v);
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            onChange={(v) => {
+              setSelected(v)
             }}
           >
             {allStudents.map(
-              x =>
-                enrollmentStatus[x._id] == "1" && (
+              (x) =>
+                enrollmentStatus[x._id] == '1' && (
                   <Option
                     key={x._id}
                     value={x._id}
                     disabled={disabledList.includes(x._id)}
-                    data={`${x.firstName}${x.lastName || ""}${x.email || ""}${x.username || ""}`}
+                    data={`${x.firstName}${x.lastName || ''}${x.email || ''}${
+                      x.username || ''
+                    }`}
                   >
                     {getUserName(x)}
                   </Option>
@@ -238,11 +275,11 @@ const RedirectPopUp = ({
                 data-cy="dueDate"
                 allowClear={false}
                 disabledDate={disabledDueDate}
-                style={{ width: "100%", cursor: "pointer" }}
+                style={{ width: '100%', cursor: 'pointer' }}
                 value={dueDate}
                 showTime
                 showToday={false}
-                onChange={v => setDueDate(v)}
+                onChange={(v) => setDueDate(v)}
               />
             </Col>
           ) : (
@@ -252,11 +289,11 @@ const RedirectPopUp = ({
                 <SelectInputStyled
                   data-cy="questionDelivery"
                   defaultValue={qDeliveryState}
-                  onChange={val => setQDeliveryState(val)}
-                  style={{ width: "100%" }}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  onChange={(val) => setQDeliveryState(val)}
+                  style={{ width: '100%' }}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
-                  {Object.keys(QuestionDelivery).map(item => (
+                  {Object.keys(QuestionDelivery).map((item) => (
                     <Option key="1" value={item}>
                       {QuestionDelivery[item]}
                     </Option>
@@ -271,11 +308,11 @@ const RedirectPopUp = ({
               data-cy="closeDate"
               allowClear={false}
               disabledDate={disabledEndDate}
-              style={{ width: "100%", cursor: "pointer" }}
+              style={{ width: '100%', cursor: 'pointer' }}
               value={endDate}
               showTime
               showToday={false}
-              onChange={v => setEndDate(v)}
+              onChange={(v) => setEndDate(v)}
             />
           </Col>
         </Row>
@@ -287,11 +324,11 @@ const RedirectPopUp = ({
                 <SelectInputStyled
                   data-cy="questionDelivery"
                   defaultValue={qDeliveryState}
-                  onChange={val => setQDeliveryState(val)}
-                  style={{ width: "100%" }}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  onChange={(val) => setQDeliveryState(val)}
+                  style={{ width: '100%' }}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
-                  {Object.keys(QuestionDelivery).map(item => (
+                  {Object.keys(QuestionDelivery).map((item) => (
                     <Option key="1" value={item}>
                       {QuestionDelivery[item]}
                     </Option>
@@ -304,9 +341,9 @@ const RedirectPopUp = ({
               <SelectInputStyled
                 data-cy="previousAttempt"
                 value={showPrevAttempt}
-                onChange={val => setshowPrevAttempt(val)}
-                style={{ width: "100%" }}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
+                onChange={(val) => setshowPrevAttempt(val)}
+                style={{ width: '100%' }}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
                 {Object.keys(ShowPreviousAttempt).map((item, index) => (
                   <Option key={index} value={item}>
@@ -322,11 +359,11 @@ const RedirectPopUp = ({
                   type="number"
                   data-cy="allowedTime"
                   value={allowedTime / (60 * 1000)}
-                  onChange={e => setAllowedTime(e.target.value * (60 * 1000))}
-                  style={{ width: "60%" }}
+                  onChange={(e) => setAllowedTime(e.target.value * (60 * 1000))}
+                  style={{ width: '60%' }}
                   min={1}
                   max={300}
-                />{" "}
+                />{' '}
                 <span>&nbsp;minutes</span>
               </Col>
             ) : null}
@@ -334,13 +371,13 @@ const RedirectPopUp = ({
         )}
       </BodyContainer>
     </CustomModalStyled>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
-    isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
-    specificStudents: getIsSpecificStudents(state)
+  (state) => ({
+    isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
+    specificStudents: getIsSpecificStudents(state),
   }),
   null
-)(RedirectPopUp);
+)(RedirectPopUp)

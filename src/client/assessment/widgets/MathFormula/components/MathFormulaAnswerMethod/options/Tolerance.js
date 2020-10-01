@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
-import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
-import { TextInputStyled } from "../../../../../styled/InputStyles";
-import { Col } from "../../../../../styled/WidgetOptions/Col";
-import { Row } from "../../../../../styled/WidgetOptions/Row";
+import { withNamespaces } from '@edulastic/localization'
+import { CheckboxLabel } from '../../../../../styled/CheckboxWithLabel'
+import { TextInputStyled } from '../../../../../styled/InputStyles'
+import { Col } from '../../../../../styled/WidgetOptions/Col'
+import { Row } from '../../../../../styled/WidgetOptions/Row'
 
 const TolerancePure = ({ options, onChange, t }) => {
-  const [allowTolerance, setAllowTolerance] = useState(false);
+  const [allowTolerance, setAllowTolerance] = useState(false)
 
   useEffect(() => {
     if (options.tolerance) {
-      setAllowTolerance(true);
+      setAllowTolerance(true)
     }
-  }, [options.tolerance]);
+  }, [options.tolerance])
 
   return (
     <Col span={12}>
@@ -23,14 +23,14 @@ const TolerancePure = ({ options, onChange, t }) => {
           <CheckboxLabel
             data-cy="answer-allow-tolerance"
             checked={allowTolerance}
-            onChange={e => {
-              setAllowTolerance(e.target.checked);
+            onChange={(e) => {
+              setAllowTolerance(e.target.checked)
               if (!e.target.checked) {
-                onChange("tolerance", null);
+                onChange('tolerance', null)
               }
             }}
           >
-            {t("component.math.tolerance")}
+            {t('component.math.tolerance')}
           </CheckboxLabel>
         </Col>
         {allowTolerance && (
@@ -40,21 +40,21 @@ const TolerancePure = ({ options, onChange, t }) => {
               size="large"
               value={options.tolerance}
               readOnly={!allowTolerance}
-              onChange={e => onChange("tolerance", e.target.value)}
+              onChange={(e) => onChange('tolerance', e.target.value)}
             />
           </Col>
         )}
       </Row>
     </Col>
-  );
-};
+  )
+}
 
 TolerancePure.propTypes = {
   options: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
-TolerancePure.defaultProps = {};
+TolerancePure.defaultProps = {}
 
-export const Tolerance = withNamespaces("assessment")(TolerancePure);
+export const Tolerance = withNamespaces('assessment')(TolerancePure)

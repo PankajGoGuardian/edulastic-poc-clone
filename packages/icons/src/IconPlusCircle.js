@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconPlusCircle = props => (
+const IconPlusCircle = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 19.999" {...props}>
     <g id="plusCircle">
       <path
@@ -12,6 +12,6 @@ const IconPlusCircle = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconPlusCircle);
+export default withIconStyles(IconPlusCircle)

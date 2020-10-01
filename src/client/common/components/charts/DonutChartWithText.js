@@ -1,30 +1,40 @@
-import React, { useMemo, useState } from "react";
-import styled from "styled-components";
-import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
+import React, { useMemo, useState } from 'react'
+import styled from 'styled-components'
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  Tooltip,
+} from 'recharts'
 
-import { publisherFont2, publisherFont3 } from "@edulastic/colors";
+import { publisherFont2, publisherFont3 } from '@edulastic/colors'
 
-const DonutChartWithText = props => {
+const DonutChartWithText = (props) => {
   const {
     className,
     chartData,
     defs = null,
     dataKey,
     centerTextNumber = 0,
-    centerTextUnit = "Units",
+    centerTextUnit = 'Units',
     width = 200,
     height = 200,
     innerRadius = 70,
-    outerRadius = 100
-  } = props;
+    outerRadius = 100,
+  } = props
 
   return (
-    <div className={className} style={{ width: `${width}px`, height: `${height}px` }}>
+    <div
+      className={className}
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
       <ResponsiveContainer width={width} height={height}>
         <PieChart width={width} height={height}>
           {defs}
           <Pie
-            name={"name"}
+            name="name"
             data={chartData}
             labelLine={false}
             innerRadius={innerRadius}
@@ -43,8 +53,8 @@ const DonutChartWithText = props => {
         <p className="center-info-unit">{centerTextUnit}</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const StyledDonutChartWithText = styled(DonutChartWithText)`
   display: flex;
@@ -75,6 +85,6 @@ const StyledDonutChartWithText = styled(DonutChartWithText)`
       text-transform: uppercase;
     }
   }
-`;
+`
 
-export { StyledDonutChartWithText as DonutChartWithText };
+export { StyledDonutChartWithText as DonutChartWithText }

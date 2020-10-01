@@ -1,69 +1,75 @@
-import EditToolBar from "../common/editToolBar";
-import Header from "../../itemDetail/header";
+import EditToolBar from '../common/editToolBar'
+import Header from '../../itemDetail/header'
 
 class EssayPlainTextPage {
   constructor() {
-    this.editToolBar = new EditToolBar();
-    this.header = new Header();
+    this.editToolBar = new EditToolBar()
+    this.header = new Header()
   }
 
   // question Authoring
 
-  getQuestionEditor = () => cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]');
+  getQuestionEditor = () =>
+    cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]')
 
   // Action formatting options
-  getCopyCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCopy"]');
+  getCopyCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCopy"]')
 
-  getCutCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCut"]');
+  getCutCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCut"]')
 
-  getPasteCheckBox = () => cy.get('[data-cy="questionEssayPlainEditPaste"]');
+  getPasteCheckBox = () => cy.get('[data-cy="questionEssayPlainEditPaste"]')
 
   // scoring block -> move to common utitly
-  getScoreInput = () => cy.get('[data-cy="maxscore"]');
+  getScoreInput = () => cy.get('[data-cy="maxscore"]')
 
-  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]');
+  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]')
 
-  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]');
+  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]')
 
-  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]');
+  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]')
 
-  getShowWordCount = () => cy.get('[data-cy="showWordCount"]');
+  getShowWordCount = () => cy.get('[data-cy="showWordCount"]')
 
-  getBrowserSpellCheckOption = () => cy.get('[data-cy="browserSpellCheckOption"]');
+  getBrowserSpellCheckOption = () =>
+    cy.get('[data-cy="browserSpellCheckOption"]')
 
   // Display block
-  getSpecialCharactersOption = () => cy.get('[data-cy="specialCharactersOption"]');
+  getSpecialCharactersOption = () =>
+    cy.get('[data-cy="specialCharactersOption"]')
 
-  getCharactersToDisplayOption = () => cy.get('[data-cy="charactersToDisplayOption"]');
+  getCharactersToDisplayOption = () =>
+    cy.get('[data-cy="charactersToDisplayOption"]')
 
-  getMinHeightOption = () => cy.get('[data-cy="minHeightOption"]');
+  getMinHeightOption = () => cy.get('[data-cy="minHeightOption"]')
 
-  getMaxHeightOption = () => cy.get('[data-cy="maxHeightOption"]');
+  getMaxHeightOption = () => cy.get('[data-cy="maxHeightOption"]')
 
-  getPlaceholderOption = () => cy.get('[data-cy="placeholderOption"]');
+  getPlaceholderOption = () => cy.get('[data-cy="placeholderOption"]')
 
-  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
+  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]')
 
   // on preview
-  getTextEditor = () => cy.get(".ant-input").should("be.visible");
+  getTextEditor = () => cy.get('.ant-input').should('be.visible')
 
-  getCopy = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCopy"]');
+  getCopy = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCopy"]')
 
-  getCut = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCut"]');
+  getCut = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCut"]')
 
-  getPaste = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolPaste"]');
+  getPaste = () =>
+    cy.get('[data-cy="questionPlainEssayAuthorPreviewToolPaste"]')
 
-  getWordCount = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewWordCount"]');
+  getWordCount = () =>
+    cy.get('[data-cy="questionPlainEssayAuthorPreviewWordCount"]')
 
   // ACTION STARTS
 
-  clcikOnCopy = () => this.getCopy().click();
+  clcikOnCopy = () => this.getCopy().click()
 
-  clickOnpaste = () => this.getPaste().click();
+  clickOnpaste = () => this.getPaste().click()
 
-  clickOnCut = () => this.getCut().click();
+  clickOnCut = () => this.getCut().click()
 
   // ACTION ENDS
 }
 
-export default EssayPlainTextPage;
+export default EssayPlainTextPage

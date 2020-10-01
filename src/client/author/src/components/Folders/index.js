@@ -1,22 +1,30 @@
-import React, { Fragment, useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { themeColor } from "@edulastic/colors";
-import { IconFolders, IconPlusCircle } from "@edulastic/icons";
-import { isEmpty } from "lodash";
-import { receiveFolderAction, setContentsUpdatedAction } from "../../actions/folder";
+import React, { Fragment, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { themeColor } from '@edulastic/colors'
+import { IconFolders, IconPlusCircle } from '@edulastic/icons'
+import { isEmpty } from 'lodash'
+import {
+  receiveFolderAction,
+  setContentsUpdatedAction,
+} from '../../actions/folder'
 import {
   getFoldersSelector,
   isOpenAddItemsModalSelector,
   isOpenRemovalModalSelector,
-  getUpdatedFolderSelector
-} from "../../selectors/folder";
-import { FoldersListWrapper, FolderListItem, FolderListItemTitle, AddFolderButton } from "./styled";
-import FolderList from "./FolderList";
-import AddModal from "./AddModal";
-import RemovalModal from "./RemovalModal";
-import MoveModal from "./MoveModal";
-import ConfirmDelete from "./ConfirmDelete";
+  getUpdatedFolderSelector,
+} from '../../selectors/folder'
+import {
+  FoldersListWrapper,
+  FolderListItem,
+  FolderListItemTitle,
+  AddFolderButton,
+} from './styled'
+import FolderList from './FolderList'
+import AddModal from './AddModal'
+import RemovalModal from './RemovalModal'
+import MoveModal from './MoveModal'
+import ConfirmDelete from './ConfirmDelete'
 
 const Folders = ({
   folders,
@@ -29,73 +37,77 @@ const Folders = ({
   loadFolders,
   onSelectFolder,
   setContentsUpdated,
-  removeItemFromCart
+  removeItemFromCart,
 }) => {
-  const [selectedFolder, setSelectedFolder] = useState(null);
-  const [isOpenCreate, setIsOpenCreate] = useState(false);
-  const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [isOpenRename, setIsOpenRename] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null)
+  const [isOpenCreate, setIsOpenCreate] = useState(false)
+  const [isOpenConfirm, setIsOpenConfirm] = useState(false)
+  const [isOpenRename, setIsOpenRename] = useState(false)
 
   const showCreateModal = () => {
-    setIsOpenCreate(true);
-  };
+    setIsOpenCreate(true)
+  }
 
-  const showRenameModal = folder => {
-    setSelectedFolder(folder);
-    setIsOpenRename(true);
-  };
+  const showRenameModal = (folder) => {
+    setSelectedFolder(folder)
+    setIsOpenRename(true)
+  }
 
   const hideCreateOrUpdateModal = () => {
-    setIsOpenCreate(false);
-    setIsOpenRename(false);
-  };
+    setIsOpenCreate(false)
+    setIsOpenRename(false)
+  }
 
-  const showDeleteConfirm = folder => {
-    setSelectedFolder(folder);
-    setIsOpenConfirm(true);
-  };
+  const showDeleteConfirm = (folder) => {
+    setSelectedFolder(folder)
+    setIsOpenConfirm(true)
+  }
 
   const hideDeleteConfirm = () => {
-    setIsOpenConfirm(false);
-    setSelectedFolder(null);
-  };
+    setIsOpenConfirm(false)
+    setSelectedFolder(null)
+  }
 
-  const handleSelectFolder = folder => {
+  const handleSelectFolder = (folder) => {
     if (folder) {
-      setSelectedFolder(folder);
+      setSelectedFolder(folder)
     } else {
-      setSelectedFolder(null);
+      setSelectedFolder(null)
     }
 
     if (onSelectFolder) {
-      onSelectFolder(folder?._id);
+      onSelectFolder(folder?._id)
     }
-  };
+  }
 
   useEffect(() => {
-    loadFolders(folderType);
-  }, []);
+    loadFolders(folderType)
+  }, [])
 
   useEffect(() => {
     if (!isActive) {
-      setSelectedFolder(null);
+      setSelectedFolder(null)
     }
-  }, [isActive]);
+  }, [isActive])
 
   useEffect(() => {
     if (updatedFolderId) {
-      if (isActive && onSelectFolder && selectedFolder?._id === updatedFolderId) {
-        onSelectFolder(updatedFolderId);
+      if (
+        isActive &&
+        onSelectFolder &&
+        selectedFolder?._id === updatedFolderId
+      ) {
+        onSelectFolder(updatedFolderId)
       }
-      setContentsUpdated(null);
+      setContentsUpdated(null)
     }
-  }, [updatedFolderId]);
+  }, [updatedFolderId])
 
-  const isEmptyFolders = isEmpty(folders);
-  const openCreateModal = isOpenCreate || (isOpenAddModal && isEmptyFolders);
+  const isEmptyFolders = isEmpty(folders)
+  const openCreateModal = isOpenCreate || (isOpenAddModal && isEmptyFolders)
 
   return (
-    <Fragment>
+    <>
       {(openCreateModal || isOpenRename) && (
         <AddModal
           folder={selectedFolder}
@@ -105,19 +117,34 @@ const Folders = ({
         />
       )}
       {isOpenConfirm && (
-        <ConfirmDelete folder={selectedFolder} closeModal={hideDeleteConfirm} folderType={folderType} />
+        <ConfirmDelete
+          folder={selectedFolder}
+          closeModal={hideDeleteConfirm}
+          folderType={folderType}
+        />
       )}
       {isOpenAddModal && !isEmptyFolders && (
-        <MoveModal folderType={folderType} removeItemFromCart={removeItemFromCart} />
+        <MoveModal
+          folderType={folderType}
+          removeItemFromCart={removeItemFromCart}
+        />
       )}
-      {isOpenRemovalModal && <RemovalModal folderType={folderType} removeItemFromCart={removeItemFromCart} />}
+      {isOpenRemovalModal && (
+        <RemovalModal
+          folderType={folderType}
+          removeItemFromCart={removeItemFromCart}
+        />
+      )}
 
       {showAllItems && (
         <FolderListItem data-cy="FOLDERS" leftBorder active>
           <FolderListItemTitle ellipsis title="Folders">
             <IconFolders color={themeColor} />
             FOLDERS
-            <AddFolderButton data-cy="addFolderButton" onClick={showCreateModal}>
+            <AddFolderButton
+              data-cy="addFolderButton"
+              onClick={showCreateModal}
+            >
               <IconPlusCircle />
             </AddFolderButton>
           </FolderListItemTitle>
@@ -126,7 +153,12 @@ const Folders = ({
       {isActive && (
         <FoldersListWrapper data-cy="folder-list">
           {!showAllItems && (
-            <AddFolderButton data-cy="addFolderButton" onClick={showCreateModal} right="6px" top="-38px">
+            <AddFolderButton
+              data-cy="addFolderButton"
+              onClick={showCreateModal}
+              right="6px"
+              top="-38px"
+            >
               <IconPlusCircle />
             </AddFolderButton>
           )}
@@ -140,33 +172,33 @@ const Folders = ({
           />
         </FoldersListWrapper>
       )}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 Folders.propTypes = {
   onSelectFolder: PropTypes.func,
   folderType: PropTypes.string,
   showAllItems: PropTypes.bool,
-  isActive: PropTypes.bool
-};
+  isActive: PropTypes.bool,
+}
 
 Folders.defaultProps = {
   onSelectFolder: () => null,
   showAllItems: false,
   isActive: true,
-  folderType: "ASSIGNMENT"
-};
+  folderType: 'ASSIGNMENT',
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     folders: getFoldersSelector(state),
     updatedFolderId: getUpdatedFolderSelector(state),
     isOpenAddModal: isOpenAddItemsModalSelector(state),
-    isOpenRemovalModal: isOpenRemovalModalSelector(state)
+    isOpenRemovalModal: isOpenRemovalModalSelector(state),
   }),
   {
     loadFolders: receiveFolderAction,
-    setContentsUpdated: setContentsUpdatedAction
+    setContentsUpdated: setContentsUpdatedAction,
   }
-)(Folders);
+)(Folders)

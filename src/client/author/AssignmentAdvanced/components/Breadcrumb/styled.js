@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button } from "antd";
-import { white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Button } from 'antd'
+import { white } from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
@@ -9,7 +9,7 @@ export const Container = styled.div`
   &:last-child {
     margin-right: 0px;
   }
-`;
+`
 
 export const Mid = styled.div`
   background-color: ${({ bgColor }) => bgColor};
@@ -23,7 +23,7 @@ export const Mid = styled.div`
   justify-content: center;
   text-transform: uppercase;
   border: 1px solid ${({ color, bgColor }) => bgColor || color};
-`;
+`
 
 export const After = styled.div`
   width: 0;
@@ -35,7 +35,7 @@ export const After = styled.div`
   transform: rotate(90deg);
   left: -10px;
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     top: 2px;
     left: -19px;
@@ -43,9 +43,9 @@ export const After = styled.div`
     height: 0;
     border-left: 19px solid transparent;
     border-right: 19px solid transparent;
-    border-bottom: 15px solid ${({ bgColor }) => bgColor || "#f3f3f3"};
+    border-bottom: 15px solid ${({ bgColor }) => bgColor || '#f3f3f3'};
   }
-`;
+`
 
 export const Before = styled.div`
   width: 0;
@@ -53,4 +53,4 @@ export const Before = styled.div`
   border-top: 17px solid ${({ color }) => color};
   border-bottom: 17px solid ${({ color }) => color};
   border-left: 14px solid ${({ color }) => color};
-`;
+`

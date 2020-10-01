@@ -1,26 +1,26 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { textColor, themeColor, white } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { textColor, themeColor, white } from '@edulastic/colors'
 
 const SelectButtonItem = ({ icon, children, onClick }) => (
   <Container onClick={onClick}>
     {icon && <Icon>{icon}</Icon>}
     <span>{children}</span>
   </Container>
-);
+)
 
 SelectButtonItem.propTypes = {
   icon: PropTypes.any,
   children: PropTypes.any.isRequired,
-  onClick: PropTypes.func.isRequired
-};
+  onClick: PropTypes.func.isRequired,
+}
 
 SelectButtonItem.defaultProps = {
-  icon: null
-};
+  icon: null,
+}
 
-export default SelectButtonItem;
+export default SelectButtonItem
 
 const Container = styled.div`
   width: 100%;
@@ -37,8 +37,8 @@ const Container = styled.div`
     background: ${themeColor};
     color: ${white};
   }
-`;
+`
 
 const Icon = styled.span`
   margin-right: 5px;
-`;
+`

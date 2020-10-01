@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Col, Row, Button } from "antd";
+import styled from 'styled-components'
+import { Col, Row, Button } from 'antd'
 import {
   white,
   darkBlue1,
@@ -14,17 +14,17 @@ import {
   tabletWidth,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
-  smallDesktopWidth
-} from "@edulastic/colors";
+  smallDesktopWidth,
+} from '@edulastic/colors'
 
 export const FlexWrapper = styled(Row)`
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
-`;
+`
 
 export const RegistrationWrapper = styled.div`
-  background: ${greyGraphstroke} url(${props => props.image});
+  background: ${greyGraphstroke} url(${(props) => props.image});
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -35,7 +35,7 @@ export const RegistrationWrapper = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
-`;
+`
 
 export const RegistrationHeader = styled(Row)`
   padding: 16px 24px;
@@ -65,7 +65,7 @@ export const RegistrationHeader = styled(Row)`
       padding: 8px 35px;
     }
   }
-`;
+`
 
 export const BannerText = styled(Col)`
   color: white;
@@ -103,7 +103,7 @@ export const BannerText = styled(Col)`
       text-align: center;
     }
   }
-`;
+`
 
 export const RegistrationBody = styled(Row)`
   min-height: calc(100vh - 120px);
@@ -111,7 +111,7 @@ export const RegistrationBody = styled(Row)`
   @media (max-width: ${mobileWidthMax}) {
     padding: 20px;
   }
-`;
+`
 
 export const Copyright = styled(Row)`
   color: ${grey};
@@ -123,7 +123,7 @@ export const Copyright = styled(Row)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
-`;
+`
 
 export const FormWrapper = styled.div`
   background: white;
@@ -131,7 +131,7 @@ export const FormWrapper = styled.div`
   border-radius: 8px;
   position: relative;
   z-index: 1;
-`;
+`
 
 export const FormHead = styled(Row)`
   background: ${darkBlue1};
@@ -151,7 +151,7 @@ export const FormHead = styled(Row)`
       font-size: 26px;
     }
   }
-`;
+`
 
 export const ThirdPartyLoginBtn = styled(Col)`
   background: ${white};
@@ -172,7 +172,7 @@ export const ThirdPartyLoginBtn = styled(Col)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
-`;
+`
 
 export const InfoBox = styled(Col)`
   margin-top: 10px;
@@ -182,7 +182,7 @@ export const InfoBox = styled(Col)`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 12px;
   }
-`;
+`
 
 export const InfoIcon = styled(Col)`
   color: rgba(0, 0, 0, 0.44);
@@ -192,14 +192,14 @@ export const InfoIcon = styled(Col)`
     width: 14px;
     filter: contrast(2);
   }
-`;
+`
 
 export const LinkDiv = styled.div`
   a {
     border-bottom: 2px ${themeColor} solid;
     font-size: 14px;
   }
-`;
+`
 
 export const FormBody = styled(Row)`
   padding: 15px;
@@ -229,7 +229,7 @@ export const FormBody = styled(Row)`
         &.ant-form-item-required {
           &:before,
           &:after {
-            content: "";
+            content: '';
           }
         }
         @media (min-width: ${mediumDesktopExactWidth}) {
@@ -277,7 +277,7 @@ export const FormBody = styled(Row)`
       font-size: 14px;
     }
   }
-`;
+`
 
 export const RegisterButton = styled(Button)`
   width: 100%;
@@ -294,7 +294,7 @@ export const RegisterButton = styled(Button)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
-`;
+`
 
 export const CircleDiv = styled.div`
   height: ${({ size }) => size || 0}px;
@@ -303,24 +303,25 @@ export const CircleDiv = styled.div`
   left: ${({ left }) => left}px;
   bottom: ${({ bottom }) => bottom}px;
   right: ${({ right }) => right}px;
-  background: transparent linear-gradient(38deg, #00b0ff 0%, #1fe3a1 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(38deg, #00b0ff 0%, #1fe3a1 100%) 0% 0%
+    no-repeat padding-box;
   border-radius: 50%;
   position: fixed;
   opacity: 0.6;
   z-index: 0;
-`;
+`
 
 export const Description = styled.p`
   text-align: center;
   margin-bottom: 16px;
   font-family: Open Sans, SemiBold;
-`;
+`
 
 export const AlreadyhaveAccount = styled.span`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
-`;
+`
 
 export const MobileViewLinks = styled(Col)`
   margin-top: 20px;
@@ -329,7 +330,7 @@ export const MobileViewLinks = styled(Col)`
   @media (max-width: ${mobileWidthMax}) {
     display: block;
   }
-`;
+`
 
 export const DesktopVieLinks = styled.div`
   font-family: Open Sans;
@@ -346,7 +347,7 @@ export const DesktopVieLinks = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
-`;
+`
 
 export const DesktopViewCopyright = styled(Row)`
   width: 50%;
@@ -360,4 +361,4 @@ export const DesktopViewCopyright = styled(Row)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
-`;
+`

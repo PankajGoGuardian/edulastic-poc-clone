@@ -1,96 +1,104 @@
-import { createSelector } from "reselect";
-import { createAction, createReducer, combineReducers } from "redux-starter-kit";
-import { all } from "redux-saga/effects";
+import { createSelector } from 'reselect'
+import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
+import { all } from 'redux-saga/effects'
 
-import { reportAssignmentsReducer, reportAssignmentsSaga } from "./assignmentsDucks";
+import {
+  reportAssignmentsReducer,
+  reportAssignmentsSaga,
+} from './assignmentsDucks'
 
-import { reportSARSettingsReducer } from "./subPages/singleAssessmentReport/ducks";
-import { reportMARSettingsReducer } from "./subPages/multipleAssessmentReport/ducks";
-import { reportSPRSettingsReducer } from "./subPages/studentProfileReport/ducks";
-import { reportSMRSettingsReducer } from "./subPages/standardsMasteryReport/ducks";
+import { reportSARSettingsReducer } from './subPages/singleAssessmentReport/ducks'
+import { reportMARSettingsReducer } from './subPages/multipleAssessmentReport/ducks'
+import { reportSPRSettingsReducer } from './subPages/studentProfileReport/ducks'
+import { reportSMRSettingsReducer } from './subPages/standardsMasteryReport/ducks'
 
 import {
   reportSARFilterDataReducer,
-  reportSARFilterDataSaga
-} from "./subPages/singleAssessmentReport/common/filterDataDucks";
+  reportSARFilterDataSaga,
+} from './subPages/singleAssessmentReport/common/filterDataDucks'
 import {
   reportMARFilterDataReducer,
-  reportMARFilterDataSaga
-} from "./subPages/multipleAssessmentReport/common/filterDataDucks";
+  reportMARFilterDataSaga,
+} from './subPages/multipleAssessmentReport/common/filterDataDucks'
 import {
   reportSPRFilterDataReducer,
-  reportSPRFilterDataSaga
-} from "./subPages/studentProfileReport/common/filterDataDucks";
+  reportSPRFilterDataSaga,
+} from './subPages/studentProfileReport/common/filterDataDucks'
 import {
   reportStandardsFilterDataReducer,
-  reportStandardsFilterSaga
-} from "./subPages/standardsMasteryReport/common/filterDataDucks";
+  reportStandardsFilterSaga,
+} from './subPages/standardsMasteryReport/common/filterDataDucks'
 
 import {
   reportAssessmentSummaryReducer,
-  reportAssessmentSummarySaga
-} from "./subPages/singleAssessmentReport/AssessmentSummary/ducks";
+  reportAssessmentSummarySaga,
+} from './subPages/singleAssessmentReport/AssessmentSummary/ducks'
 import {
   reportPeerPerformanceReducer,
-  reportPeerPerformanceSaga
-} from "./subPages/singleAssessmentReport/PeerPerformance/ducks";
+  reportPeerPerformanceSaga,
+} from './subPages/singleAssessmentReport/PeerPerformance/ducks'
 import {
   reportQuestionAnalysisReducer,
-  reportQuestionAnalysisSaga
-} from "./subPages/singleAssessmentReport/QuestionAnalysis/ducks";
+  reportQuestionAnalysisSaga,
+} from './subPages/singleAssessmentReport/QuestionAnalysis/ducks'
 import {
   reportResponseFrequencyReducer,
-  reportResponseFrequencySaga
-} from "./subPages/singleAssessmentReport/ResponseFrequency/ducks";
+  reportResponseFrequencySaga,
+} from './subPages/singleAssessmentReport/ResponseFrequency/ducks'
 import {
   reportPerformanceByStandardsReducer,
-  performanceByStandardsSaga
-} from "./subPages/singleAssessmentReport/PerformanceByStandards/ducks";
+  performanceByStandardsSaga,
+} from './subPages/singleAssessmentReport/PerformanceByStandards/ducks'
 import {
   reportPerformanceByStudentsReducer,
-  reportPerformanceByStudentsSaga
-} from "./subPages/singleAssessmentReport/PerformanceByStudents/ducks";
+  reportPerformanceByStudentsSaga,
+} from './subPages/singleAssessmentReport/PerformanceByStudents/ducks'
 import {
   reportPerformanceOverTimeReducer,
-  reportPerformanceOverTimeSaga
-} from "./subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
+  reportPerformanceOverTimeSaga,
+} from './subPages/multipleAssessmentReport/PerformanceOverTime/ducks'
 import {
   reportPeerProgressAnalysisReducer,
-  reportPeerProgressAnalysisSaga
-} from "./subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
+  reportPeerProgressAnalysisSaga,
+} from './subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks'
 import {
   reportStudentProgressReducer,
-  reportStudentProgressSaga
-} from "./subPages/multipleAssessmentReport/StudentProgress/ducks";
+  reportStudentProgressSaga,
+} from './subPages/multipleAssessmentReport/StudentProgress/ducks'
 import {
   reportStudentProfileSummaryReducer,
-  reportStudentProfileSummarySaga
-} from "./subPages/studentProfileReport/StudentProfileSummary/ducks";
+  reportStudentProfileSummarySaga,
+} from './subPages/studentProfileReport/StudentProfileSummary/ducks'
 import {
   reportStudentMasteryProfileReducer,
-  reportStudentMasteryProfileSaga
-} from "./subPages/studentProfileReport/StudentMasteryProfile/ducks";
+  reportStudentMasteryProfileSaga,
+} from './subPages/studentProfileReport/StudentMasteryProfile/ducks'
 import {
   reportStudentAssessmentProfileReducer,
-  reportStudentAssessmentProfileSaga
-} from "./subPages/studentProfileReport/StudentAssessmentProfile/ducks";
+  reportStudentAssessmentProfileSaga,
+} from './subPages/studentProfileReport/StudentAssessmentProfile/ducks'
 import {
   reportStandardsPerformanceSummaryReducer,
-  reportStandardsPerformanceSummarySaga
-} from "./subPages/standardsMasteryReport/standardsPerformance/ducks";
+  reportStandardsPerformanceSummarySaga,
+} from './subPages/standardsMasteryReport/standardsPerformance/ducks'
 import {
   reportStandardsGradebookReducer,
-  reportStandardsGradebookSaga
-} from "./subPages/standardsMasteryReport/standardsGradebook/ducks";
-import { customReportReducer, customReportSaga } from "./components/customReport/ducks";
+  reportStandardsGradebookSaga,
+} from './subPages/standardsMasteryReport/standardsGradebook/ducks'
+import {
+  customReportReducer,
+  customReportSaga,
+} from './components/customReport/ducks'
 
-const SET_PRINTING_STATE = "[reports] set printing state";
-const SET_CSV_DOWNLOADING_STATE = "[reports] set csv download state";
+const SET_PRINTING_STATE = '[reports] set printing state'
+const SET_CSV_DOWNLOADING_STATE = '[reports] set csv download state'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const setPrintingStateAction = createAction(SET_PRINTING_STATE);
-export const setCsvDownloadingStateAction = createAction(SET_CSV_DOWNLOADING_STATE);
+export const setPrintingStateAction = createAction(SET_PRINTING_STATE)
+export const setCsvDownloadingStateAction = createAction(
+  SET_CSV_DOWNLOADING_STATE
+)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -98,17 +106,17 @@ export const setCsvDownloadingStateAction = createAction(SET_CSV_DOWNLOADING_STA
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reports;
+export const stateSelector = (state) => state.reportReducer.reports
 
 export const getPrintingState = createSelector(
   stateSelector,
-  state => state.isPrinting
-);
+  (state) => state.isPrinting
+)
 
 export const getCsvDownloadingState = createSelector(
   stateSelector,
-  state => state.isCsvDownloading
-);
+  (state) => state.isCsvDownloading
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -117,17 +125,17 @@ export const getCsvDownloadingState = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  isPrinting: false
-};
+  isPrinting: false,
+}
 
 const reports = createReducer(initialState, {
   [SET_PRINTING_STATE]: (state, { payload }) => {
-    state.isPrinting = payload;
+    state.isPrinting = payload
   },
   [SET_CSV_DOWNLOADING_STATE]: (state, { payload }) => {
-    state.isCsvDownloading = payload;
-  }
-});
+    state.isCsvDownloading = payload
+  },
+})
 
 export const reportReducer = combineReducers({
   reports,
@@ -157,8 +165,8 @@ export const reportReducer = combineReducers({
   reportStudentAssessmentProfileReducer,
   reportStandardsPerformanceSummaryReducer,
   reportStandardsGradebookReducer,
-  customReportReducer
-});
+  customReportReducer,
+})
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
 
@@ -189,8 +197,8 @@ export function* reportSaga(params) {
     reportStudentAssessmentProfileSaga(),
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),
-    customReportSaga()
-  ]);
+    customReportSaga(),
+  ])
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

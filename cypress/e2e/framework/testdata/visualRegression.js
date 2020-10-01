@@ -1,104 +1,161 @@
-export const getQuestions = tests => {
-  const questions = {};
-  Cypress._.keys(tests).forEach(testId => {
-    const items = tests[testId];
-    items.forEach(item => {
-      const { itemType, itemId } = item;
-      const testItems = questions[itemType] || [];
-      testItems.push(itemId);
-      questions[itemType] = testItems;
-    });
-  });
-  return questions;
-};
+export const getQuestions = (tests) => {
+  const questions = {}
+  Cypress._.keys(tests).forEach((testId) => {
+    const items = tests[testId]
+    items.forEach((item) => {
+      const { itemType, itemId } = item
+      const testItems = questions[itemType] || []
+      testItems.push(itemId)
+      questions[itemType] = testItems
+    })
+  })
+  return questions
+}
 
 export const draftTests = {
-  "5de8cf6fe345a10008f4cf2c": [
-    { itemId: "5dc19bf836a282f883a61857", itemType: "Cloze with Text" },
-    { itemId: "5dc1ca0e36a282f883b4a28d", itemType: "Cloze with Drag & Drop" },
-    { itemId: "5dc1b42136a282f883ae0c63", itemType: "Multiple choice - multiple response" },
-    { itemId: "5dc19ee736a282f883a6a148", itemType: "Number line with drag & drop" },
-    { itemId: "5dc1c79c36a282f883b3e227", itemType: "Graphing" },
-    { itemId: "5dc1c8b636a282f883b4300a", itemType: "Graph Placement" },
-    { itemId: "5dc19bbb36a282f883a60e47", itemType: "Match list" },
-    { itemId: "5dc1c97f36a282f883b479b4", itemType: "Fraction Editor" },
-    { itemId: "5dc1bcfa36a282f883b127cf", itemType: "Number line with plot" },
-    { itemId: "5dc1c7e036a282f883b3f914", itemType: "Dot Plot - Number Line" },
-    { itemId: "5dc1b8a436a282f883b01d52", itemType: "Math, Text & Dropdown" },
-    { itemId: "5dc1b79736a282f883afd913", itemType: "Cloze with Text" },
-    { itemId: "5dc1c70336a282f883b37d01", itemType: "Classification" },
-    { itemId: "5dc1d2d136a282f883b66680", itemType: "Math, Text & Dropdown" },
-    { itemId: "5dc1bae436a282f883b0a340", itemType: "Cloze with Drop Down" },
-    { itemId: "5dc1be9a36a282f883b18ff7", itemType: "Combination Multipart" },
-    { itemId: "5dc1950736a282f883a4da8b", itemType: "Label Image with Drag & Drop" },
-    { itemId: "5dc1d12136a282f883b60f76", itemType: "Combination Multipart" },
-    { itemId: "5dc1b66336a282f883af182c", itemType: "Essay with rich text" },
-    { itemId: "5dc1b10d36a282f883ad0668", itemType: "Match list" },
-    { itemId: "5dc1c4dd36a282f883b300a0", itemType: "Choice matrix - standard" },
-    { itemId: "5dc1ab6c36a282f883ab03d3", itemType: "Multiple choice - standard" },
-    { itemId: "5dc1b2c436a282f883ad9bd4", itemType: "True or false" },
-    { itemId: "5dc1b3e736a282f883adf9d6", itemType: "Multiple choice - multiple response" },
-    { itemId: "5dc19b2036a282f883a5f4a1", itemType: "Label Image with Text" }
-  ]
-};
+  '5de8cf6fe345a10008f4cf2c': [
+    { itemId: '5dc19bf836a282f883a61857', itemType: 'Cloze with Text' },
+    { itemId: '5dc1ca0e36a282f883b4a28d', itemType: 'Cloze with Drag & Drop' },
+    {
+      itemId: '5dc1b42136a282f883ae0c63',
+      itemType: 'Multiple choice - multiple response',
+    },
+    {
+      itemId: '5dc19ee736a282f883a6a148',
+      itemType: 'Number line with drag & drop',
+    },
+    { itemId: '5dc1c79c36a282f883b3e227', itemType: 'Graphing' },
+    { itemId: '5dc1c8b636a282f883b4300a', itemType: 'Graph Placement' },
+    { itemId: '5dc19bbb36a282f883a60e47', itemType: 'Match list' },
+    { itemId: '5dc1c97f36a282f883b479b4', itemType: 'Fraction Editor' },
+    { itemId: '5dc1bcfa36a282f883b127cf', itemType: 'Number line with plot' },
+    { itemId: '5dc1c7e036a282f883b3f914', itemType: 'Dot Plot - Number Line' },
+    { itemId: '5dc1b8a436a282f883b01d52', itemType: 'Math, Text & Dropdown' },
+    { itemId: '5dc1b79736a282f883afd913', itemType: 'Cloze with Text' },
+    { itemId: '5dc1c70336a282f883b37d01', itemType: 'Classification' },
+    { itemId: '5dc1d2d136a282f883b66680', itemType: 'Math, Text & Dropdown' },
+    { itemId: '5dc1bae436a282f883b0a340', itemType: 'Cloze with Drop Down' },
+    { itemId: '5dc1be9a36a282f883b18ff7', itemType: 'Combination Multipart' },
+    {
+      itemId: '5dc1950736a282f883a4da8b',
+      itemType: 'Label Image with Drag & Drop',
+    },
+    { itemId: '5dc1d12136a282f883b60f76', itemType: 'Combination Multipart' },
+    { itemId: '5dc1b66336a282f883af182c', itemType: 'Essay with rich text' },
+    { itemId: '5dc1b10d36a282f883ad0668', itemType: 'Match list' },
+    {
+      itemId: '5dc1c4dd36a282f883b300a0',
+      itemType: 'Choice matrix - standard',
+    },
+    {
+      itemId: '5dc1ab6c36a282f883ab03d3',
+      itemType: 'Multiple choice - standard',
+    },
+    { itemId: '5dc1b2c436a282f883ad9bd4', itemType: 'True or false' },
+    {
+      itemId: '5dc1b3e736a282f883adf9d6',
+      itemType: 'Multiple choice - multiple response',
+    },
+    { itemId: '5dc19b2036a282f883a5f4a1', itemType: 'Label Image with Text' },
+  ],
+}
 
 export const assignedTests = {
-  "5de8ce86c05b97000826d0ae": [
-    { itemId: "5dc19bf836a282f883a61857", itemType: "Cloze with Text" },
-    { itemId: "5dc1ca0e36a282f883b4a28d", itemType: "Cloze with Drag & Drop" },
-    { itemId: "5dc1b42136a282f883ae0c63", itemType: "Multiple choice - multiple response" },
-    { itemId: "5dc19ee736a282f883a6a148", itemType: "Number line with drag & drop" },
-    { itemId: "5dc1c79c36a282f883b3e227", itemType: "Graphing" },
-    { itemId: "5dc1c8b636a282f883b4300a", itemType: "Graph Placement" },
-    { itemId: "5dc19bbb36a282f883a60e47", itemType: "Match list" },
-    { itemId: "5dc1c97f36a282f883b479b4", itemType: "Fraction Editor" },
-    { itemId: "5dc1bcfa36a282f883b127cf", itemType: "Number line with plot" },
-    { itemId: "5dc1c7e036a282f883b3f914", itemType: "Dot Plot - Number Line" },
-    { itemId: "5dc1b8a436a282f883b01d52", itemType: "Math, Text & Dropdown" },
-    { itemId: "5dc1b79736a282f883afd913", itemType: "Cloze with Text" },
-    { itemId: "5dc1c70336a282f883b37d01", itemType: "Classification" },
-    { itemId: "5dc1d2d136a282f883b66680", itemType: "Math, Text & Dropdown" },
-    { itemId: "5dc1bae436a282f883b0a340", itemType: "Cloze with Drop Down" },
-    { itemId: "5dc1be9a36a282f883b18ff7", itemType: "Combination Multipart" },
-    { itemId: "5dc1950736a282f883a4da8b", itemType: "Label Image with Drag & Drop" },
-    { itemId: "5dc1d12136a282f883b60f76", itemType: "Combination Multipart" },
-    { itemId: "5dc1b66336a282f883af182c", itemType: "Essay with rich text" },
-    { itemId: "5dc1b10d36a282f883ad0668", itemType: "Match list" },
-    { itemId: "5dc1c4dd36a282f883b300a0", itemType: "Choice matrix - standard" },
-    { itemId: "5dc1ab6c36a282f883ab03d3", itemType: "Multiple choice - standard" },
-    { itemId: "5dc1b2c436a282f883ad9bd4", itemType: "True or false" },
-    { itemId: "5dc1b3e736a282f883adf9d6", itemType: "Multiple choice - multiple response" },
-    { itemId: "5dc19b2036a282f883a5f4a1", itemType: "Label Image with Text" }
-  ]
-};
+  '5de8ce86c05b97000826d0ae': [
+    { itemId: '5dc19bf836a282f883a61857', itemType: 'Cloze with Text' },
+    { itemId: '5dc1ca0e36a282f883b4a28d', itemType: 'Cloze with Drag & Drop' },
+    {
+      itemId: '5dc1b42136a282f883ae0c63',
+      itemType: 'Multiple choice - multiple response',
+    },
+    {
+      itemId: '5dc19ee736a282f883a6a148',
+      itemType: 'Number line with drag & drop',
+    },
+    { itemId: '5dc1c79c36a282f883b3e227', itemType: 'Graphing' },
+    { itemId: '5dc1c8b636a282f883b4300a', itemType: 'Graph Placement' },
+    { itemId: '5dc19bbb36a282f883a60e47', itemType: 'Match list' },
+    { itemId: '5dc1c97f36a282f883b479b4', itemType: 'Fraction Editor' },
+    { itemId: '5dc1bcfa36a282f883b127cf', itemType: 'Number line with plot' },
+    { itemId: '5dc1c7e036a282f883b3f914', itemType: 'Dot Plot - Number Line' },
+    { itemId: '5dc1b8a436a282f883b01d52', itemType: 'Math, Text & Dropdown' },
+    { itemId: '5dc1b79736a282f883afd913', itemType: 'Cloze with Text' },
+    { itemId: '5dc1c70336a282f883b37d01', itemType: 'Classification' },
+    { itemId: '5dc1d2d136a282f883b66680', itemType: 'Math, Text & Dropdown' },
+    { itemId: '5dc1bae436a282f883b0a340', itemType: 'Cloze with Drop Down' },
+    { itemId: '5dc1be9a36a282f883b18ff7', itemType: 'Combination Multipart' },
+    {
+      itemId: '5dc1950736a282f883a4da8b',
+      itemType: 'Label Image with Drag & Drop',
+    },
+    { itemId: '5dc1d12136a282f883b60f76', itemType: 'Combination Multipart' },
+    { itemId: '5dc1b66336a282f883af182c', itemType: 'Essay with rich text' },
+    { itemId: '5dc1b10d36a282f883ad0668', itemType: 'Match list' },
+    {
+      itemId: '5dc1c4dd36a282f883b300a0',
+      itemType: 'Choice matrix - standard',
+    },
+    {
+      itemId: '5dc1ab6c36a282f883ab03d3',
+      itemType: 'Multiple choice - standard',
+    },
+    { itemId: '5dc1b2c436a282f883ad9bd4', itemType: 'True or false' },
+    {
+      itemId: '5dc1b3e736a282f883adf9d6',
+      itemType: 'Multiple choice - multiple response',
+    },
+    { itemId: '5dc19b2036a282f883a5f4a1', itemType: 'Label Image with Text' },
+  ],
+}
 
 export const assignedTests1 = {
-  "5e4b9001f13f470008a12ab2": [
-    { itemId: "5dc55be71f221d00089993fd", itemType: "Cloze with Drag & Drop" },
-    { itemId: "5dc55f5c1fd7b30007f3d199", itemType: "Label Image with Drag & Drop" },
-    { itemId: "5dc55f6f1fd7b30007f3d19b", itemType: "Label Image with Drag & Drop" },
-    { itemId: "5dc55f9de402510007e1f5af", itemType: "Label Image with Drag & Drop" },
-    { itemId: "5dc55fe6e402510007e1f5b1", itemType: "Cloze with Drag & Drop" },
-    { itemId: "5dc560991373ba0007b6f082", itemType: "Cloze with Drag & Drop" },
-    { itemId: "5dc560bd1fd7b30007f3d19f", itemType: "Label Image with Drag & Drop" },
-    { itemId: "5dc561e7fa22a900071d2789", itemType: "Sort List" },
-    { itemId: "5dc5636c411194000864b588", itemType: "Classification" },
-    { itemId: "5dc5638c1373ba0007b6f085", itemType: "Classification" },
-    { itemId: "5dc563b71fd7b30007f3d1a8", itemType: "Classification" },
-    { itemId: "5dc563f3b7056400076e00cd", itemType: "Classification" },
-    { itemId: "5dc565471373ba0007b6f08b", itemType: "Match list" },
-    { itemId: "5dc5658e411194000864b58a", itemType: "Match list" },
-    { itemId: "5dc565b0b7056400076e00d1", itemType: "Match list" },
-    { itemId: "5dc565d91fd7b30007f3d1ab", itemType: "Match list" },
-    { itemId: "5dc566e7b7056400076e00d5", itemType: "OrderList" },
-    { itemId: "5dc56967e402510007e1f5c5", itemType: "Classification" },
-    { itemId: "5dc5697e8829380008941734", itemType: "Classification" },
-    { itemId: "5dc56b3117b0f80007a8164b", itemType: "Graph Placement" },
-    { itemId: "5dc56cce2709b70007f7c4ec", itemType: "Number line with drag & drop" },
-    { itemId: "5dc56d393fc89d000886dd7a", itemType: "Number line with drag & drop" },
-    { itemId: "5dc56d5700e419000870b6e6", itemType: "Number line with drag & drop" }
-  ]
-};
+  '5e4b9001f13f470008a12ab2': [
+    { itemId: '5dc55be71f221d00089993fd', itemType: 'Cloze with Drag & Drop' },
+    {
+      itemId: '5dc55f5c1fd7b30007f3d199',
+      itemType: 'Label Image with Drag & Drop',
+    },
+    {
+      itemId: '5dc55f6f1fd7b30007f3d19b',
+      itemType: 'Label Image with Drag & Drop',
+    },
+    {
+      itemId: '5dc55f9de402510007e1f5af',
+      itemType: 'Label Image with Drag & Drop',
+    },
+    { itemId: '5dc55fe6e402510007e1f5b1', itemType: 'Cloze with Drag & Drop' },
+    { itemId: '5dc560991373ba0007b6f082', itemType: 'Cloze with Drag & Drop' },
+    {
+      itemId: '5dc560bd1fd7b30007f3d19f',
+      itemType: 'Label Image with Drag & Drop',
+    },
+    { itemId: '5dc561e7fa22a900071d2789', itemType: 'Sort List' },
+    { itemId: '5dc5636c411194000864b588', itemType: 'Classification' },
+    { itemId: '5dc5638c1373ba0007b6f085', itemType: 'Classification' },
+    { itemId: '5dc563b71fd7b30007f3d1a8', itemType: 'Classification' },
+    { itemId: '5dc563f3b7056400076e00cd', itemType: 'Classification' },
+    { itemId: '5dc565471373ba0007b6f08b', itemType: 'Match list' },
+    { itemId: '5dc5658e411194000864b58a', itemType: 'Match list' },
+    { itemId: '5dc565b0b7056400076e00d1', itemType: 'Match list' },
+    { itemId: '5dc565d91fd7b30007f3d1ab', itemType: 'Match list' },
+    { itemId: '5dc566e7b7056400076e00d5', itemType: 'OrderList' },
+    { itemId: '5dc56967e402510007e1f5c5', itemType: 'Classification' },
+    { itemId: '5dc5697e8829380008941734', itemType: 'Classification' },
+    { itemId: '5dc56b3117b0f80007a8164b', itemType: 'Graph Placement' },
+    {
+      itemId: '5dc56cce2709b70007f7c4ec',
+      itemType: 'Number line with drag & drop',
+    },
+    {
+      itemId: '5dc56d393fc89d000886dd7a',
+      itemType: 'Number line with drag & drop',
+    },
+    {
+      itemId: '5dc56d5700e419000870b6e6',
+      itemType: 'Number line with drag & drop',
+    },
+  ],
+}
 
 /* 
   export const draftTests = {

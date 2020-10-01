@@ -1,14 +1,14 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { white } from "@edulastic/colors";
+import { white } from '@edulastic/colors'
 
 export const CheckBox = styled.div`
   display: inline-flex;
   position: relative;
-  width: ${props => props.width || "auto"};
-  height: ${props => props.height || "auto"};
-  min-height: ${props => props.height || "32px"};
-  min-width: ${props => props.width || "140px"};
+  width: ${(props) => props.width || 'auto'};
+  height: ${(props) => props.height || 'auto'};
+  min-height: ${(props) => props.height || '32px'};
+  min-width: ${(props) => props.width || '140px'};
   margin: 0px 2px 0px 2px;
   font-weight: 700;
   align-items: center;
@@ -58,4 +58,4 @@ export const CheckBox = styled.div`
     white-space: nowrap;
     overflow: hidden;
   }
-`;
+`

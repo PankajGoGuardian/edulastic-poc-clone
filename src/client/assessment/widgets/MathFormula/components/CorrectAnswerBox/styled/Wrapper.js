@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   padding: 15px;
@@ -6,4 +6,4 @@ export const Wrapper = styled.div`
   border-radius: 5px;
   margin: 15px 0;
   width: 100%;
-`;
+`

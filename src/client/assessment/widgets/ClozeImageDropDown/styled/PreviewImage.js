@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import styled from 'styled-components'
+import { greyThemeLight, greyThemeLighter } from '@edulastic/colors'
 
 export const PreviewImage = styled.div`
   position: relative;
@@ -11,5 +11,5 @@ export const PreviewImage = styled.div`
   background-size: contain;
   background-repeat: no-repeat;
   background-color: ${greyThemeLighter};
-  background-image: url(${({ imageSrc }) => imageSrc || ""});
-`;
+  background-image: url(${({ imageSrc }) => imageSrc || ''});
+`

@@ -1,8 +1,14 @@
-import styled from "styled-components";
-import { Layout, Spin, Input, List, Col, Row } from "antd";
-import { themeColor, white, lightGreySecondary, sectionBorder, mediumDesktopExactWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Layout, Spin, Input, List, Col, Row } from 'antd'
+import {
+  themeColor,
+  white,
+  lightGreySecondary,
+  sectionBorder,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
 
-const { Content } = Layout;
+const { Content } = Layout
 
 export const StandardsProficiencyDiv = styled.div`
   display: flex;
@@ -16,7 +22,7 @@ export const StandardsProficiencyDiv = styled.div`
   .ant-table-tbody > tr > td:first-child {
     text-align: left;
   }
-`;
+`
 
 export const StyledContent = styled(Content)`
   width: 100%;
@@ -25,7 +31,7 @@ export const StyledContent = styled(Content)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     padding: 126px 30px 30px;
   }
-`;
+`
 
 export const StyledLayout = styled(Layout)`
   position: relative;
@@ -35,9 +41,9 @@ export const StyledLayout = styled(Layout)`
   padding: 30px;
   display: flex;
   flex-direction: column;
-  pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}
+  pointer-events: ${(props) => (props.loading === 'true' ? 'none' : 'auto')}
   min-height: 400px;
-`;
+`
 
 export const SpinContainer = styled.div`
   position: absolute;
@@ -48,14 +54,14 @@ export const SpinContainer = styled.div`
   background: rgba(68, 68, 68, 0.1);
   z-index: 999;
   border-radius: 10px;
-`;
+`
 
 export const StyledSpin = styled(Spin)`
   position: absolute;
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
-`;
+`
 
 export const ModalInput = styled(Input)`
   background: ${lightGreySecondary};
@@ -63,7 +69,7 @@ export const ModalInput = styled(Input)`
   border-radius: 2px;
   height: 40px;
   margin-top: 10px;
-`;
+`
 
 export const ListItemStyled = styled(List.Item)`
   display: block;
@@ -74,11 +80,11 @@ export const ListItemStyled = styled(List.Item)`
     border: none;
     padding: 0px;
   }
-`;
+`
 
 export const RowStyled = styled(Row)`
   background: ${white};
-`;
+`
 
 export const StyledProfileRow = styled(Row)`
   display: block;
@@ -96,7 +102,7 @@ export const StyledProfileRow = styled(Row)`
     font-size: 15px;
     margin: 0px;
   }
-`;
+`
 
 export const StyledProfileCol = styled(Col)`
   display: flex;
@@ -111,9 +117,9 @@ export const StyledProfileCol = styled(Col)`
     width: 15px;
     margin-left: 20px;
   }
-`;
+`
 
 export const StyledList = styled(List)`
   margin-top: 10px;
   border: none;
-`;
+`

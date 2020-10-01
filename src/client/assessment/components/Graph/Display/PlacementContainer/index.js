@@ -1,1 +1,1 @@
-export { default as PlacementContainer } from "./PlacementContainer";
+export { default as PlacementContainer } from './PlacementContainer'

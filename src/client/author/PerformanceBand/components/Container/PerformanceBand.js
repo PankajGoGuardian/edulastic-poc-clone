@@ -1,14 +1,24 @@
-import { CustomModalStyled, EduButton, FieldLabel, notification, TextInputStyled } from "@edulastic/common";
-import { Col, Icon, Input, Row } from "antd";
-import { IconPlusCircle } from "@edulastic/icons";
-import { get, upperFirst } from "lodash";
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  CustomModalStyled,
+  EduButton,
+  FieldLabel,
+  notification,
+  TextInputStyled,
+} from '@edulastic/common'
+import { Col, Icon, Input, Row } from 'antd'
+import { IconPlusCircle } from '@edulastic/icons'
+import { get, upperFirst } from 'lodash'
+import React, { useEffect, useRef, useState } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
+import {
+  getUserId,
+  getUserOrgId,
+  getUserRole,
+} from '../../../src/selectors/user'
 import {
   createPerformanceBandAction,
   deletePerformanceBandAction,
@@ -18,9 +28,9 @@ import {
   setEditingIndexAction,
   setPerformanceBandLocalAction,
   setPerformanceBandNameAction,
-  updatePerformanceBandAction
-} from "../../ducks";
-import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
+  updatePerformanceBandAction,
+} from '../../ducks'
+import { PerformanceBandTable as PerformanceBandTableDumb } from '../PerformanceBandTable/PerformanceBandTable'
 import {
   ListItemStyled,
   PerformanceBandDiv,
@@ -31,13 +41,13 @@ import {
   StyledList,
   StyledProfileCol,
   StyledProfileRow,
-  StyledSpin
-} from "./styled";
+  StyledSpin,
+} from './styled'
 
-const title = "Manage District";
+const title = 'Manage District'
 const BlueBold = styled.b`
   color: #1774f0;
-`;
+`
 
 function ProfileRow({
   name,
@@ -55,18 +65,18 @@ function ProfileRow({
   setEditable,
   hideEdit,
   conflict,
-  setDeleteProfileName
+  setDeleteProfileName,
 }) {
-  const setPerf = payload => {
-    updatePerformanceBand({ _id, data: payload });
-  };
-  const [confirmVisible, setConfirmVisible] = useState(false);
-  const [deleteText, setDeleteText] = useState("");
-  const performanceBandInstance = useRef();
+  const setPerf = (payload) => {
+    updatePerformanceBand({ _id, data: payload })
+  }
+  const [confirmVisible, setConfirmVisible] = useState(false)
+  const [deleteText, setDeleteText] = useState('')
+  const performanceBandInstance = useRef()
 
   useEffect(() => {
-    if (conflict) setConfirmVisible(false);
-  }, [conflict]);
+    if (conflict) setConfirmVisible(false)
+  }, [conflict])
 
   return (
     <ListItemStyled>
@@ -79,56 +89,57 @@ function ProfileRow({
           <EduButton
             isGhost
             onClick={() => {
-              setConfirmVisible(false);
-              setDeleteText("");
+              setConfirmVisible(false)
+              setDeleteText('')
             }}
           >
             NO, CANCEL
           </EduButton>,
           <EduButton
-            disabled={deleteText.toUpperCase() != "DELETE"}
+            disabled={deleteText.toUpperCase() != 'DELETE'}
             loading={loading}
             onClick={() => {
-              remove(_id);
-              setDeleteProfileName(name);
+              remove(_id)
+              setDeleteProfileName(name)
             }}
           >
             YES, DELETE
-          </EduButton>
+          </EduButton>,
         ]}
       >
         <Row className="content">
           <Col span={24}>
-            <BlueBold>{name}</BlueBold> will be removed permanently and can’t be used in future tests. This action can
-            NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
+            <BlueBold>{name}</BlueBold> will be removed permanently and can’t be
+            used in future tests. This action can NOT be undone. If you are
+            sure, please type <BlueBold>DELETE</BlueBold> in the space below.
           </Col>
           <Col span={24}>
             <TextInputStyled
-              style={{ marginTop: "10px" }}
+              style={{ marginTop: '10px' }}
               align="center"
               value={deleteText}
-              onChange={e => setDeleteText(e.target.value)}
+              onChange={(e) => setDeleteText(e.target.value)}
             />
           </Col>
         </Row>
       </CustomModalStyled>
-      <StyledProfileRow onClick={e => setEditingIndex(_id)} type="flex">
+      <StyledProfileRow onClick={(e) => setEditingIndex(_id)} type="flex">
         <Col span={12}>
           {active && !readOnly ? (
             <Input
               type="text"
               value={name}
-              onClick={e => e.stopPropagation()}
-              onChange={e => {
-                setName({ name: e.target.value, _id });
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => {
+                setName({ name: e.target.value, _id })
                 if (performanceBandInstance.current) {
-                  performanceBandInstance.current.setChanged(true);
+                  performanceBandInstance.current.setChanged(true)
                 }
               }}
             />
           ) : (
-              <h3>{name}</h3>
-            )}
+            <h3>{name}</h3>
+          )}
         </Col>
         <StyledProfileCol span={12}>
           {hideEdit ? null : (
@@ -136,9 +147,9 @@ function ProfileRow({
               type="edit"
               title="edit"
               theme="filled"
-              onClick={e => {
-                e.stopPropagation();
-                setEditable({ value: true, index: _id });
+              onClick={(e) => {
+                e.stopPropagation()
+                setEditable({ value: true, index: _id })
               }}
             />
           )}
@@ -147,19 +158,19 @@ function ProfileRow({
             <Icon
               type="delete"
               theme="filled"
-              onClick={e => {
-                e.stopPropagation();
-                setConfirmVisible(true);
+              onClick={(e) => {
+                e.stopPropagation()
+                setConfirmVisible(true)
               }}
             />
           )}
           {
             <Icon
-              type={active ? "up" : "down"}
+              type={active ? 'up' : 'down'}
               theme="outlined"
-              onClick={e => {
-                e.stopPropagation();
-                setEditingIndex(_id);
+              onClick={(e) => {
+                e.stopPropagation()
+                setEditingIndex(_id)
               }}
             />
           }
@@ -173,9 +184,9 @@ function ProfileRow({
               ref={performanceBandInstance}
               performanceBandId={_id}
               dataSource={performanceBand}
-              createPerformanceband={() => { }}
+              createPerformanceband={() => {}}
               updatePerformanceBand={() => {
-                updateToServer(_id);
+                updateToServer(_id)
               }}
               readOnly={readOnly}
               setPerformanceBandData={setPerf}
@@ -184,11 +195,11 @@ function ProfileRow({
         </RowStyled>
       ) : null}
     </ListItemStyled>
-  );
+  )
 }
 
 export function PerformanceBandAlt(props) {
-  const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
+  const menuActive = { mainMenu: 'Settings', subMenu: 'Performance Bands' }
 
   const {
     loading,
@@ -207,98 +218,115 @@ export function PerformanceBandAlt(props) {
     editable,
     setEditable,
     conflict,
-    error
-  } = props;
+    error,
+  } = props
 
-  const showSpin = loading || updating || creating;
+  const showSpin = loading || updating || creating
   useEffect(() => {
-    list();
-  }, []);
+    list()
+  }, [])
 
-  const [confirmVisible, setConfirmVisible] = useState(false);
-  const [profileName, setProfileName] = useState("");
-  const [conflictModalVisible, setConflictModalVisible] = useState(false);
-  const [deleteProfileName, setDeleteProfileName] = useState("");
+  const [confirmVisible, setConfirmVisible] = useState(false)
+  const [profileName, setProfileName] = useState('')
+  const [conflictModalVisible, setConflictModalVisible] = useState(false)
+  const [deleteProfileName, setDeleteProfileName] = useState('')
 
   useEffect(() => {
-    setConflictModalVisible(conflict);
-  }, [conflict]);
+    setConflictModalVisible(conflict)
+  }, [conflict])
 
   const handleProfileLimit = () => {
-    const canCreateProfile = profiles.filter(x => x.createdBy?._id === currentUserId).length <= 10;
+    const canCreateProfile =
+      profiles.filter((x) => x.createdBy?._id === currentUserId).length <= 10
     if (!canCreateProfile) {
-      notification({ messageKey: "maximumTenProfilesPerUser" });
-      return false;
+      notification({ messageKey: 'maximumTenProfilesPerUser' })
+      return false
     }
-    return true;
-  };
+    return true
+  }
 
   const addProfile = () => {
-    const name = profileName;
+    const name = profileName
 
     if (name) {
       // needed for unicode aware length
       if ([...name].length > 150) {
-        notification({ messageKey: "maximumLengthForProifleName150" });
-        return;
+        notification({ messageKey: 'maximumLengthForProifleName150' })
+        return
       }
-      if (profiles.find(p => (p.name || "").toLowerCase() === name.toLocaleLowerCase())) {
-        notification({ msg: `Profile with name "${name}" already exists. Please try with a different name` });
-        return;
+      if (
+        profiles.find(
+          (p) => (p.name || '').toLowerCase() === name.toLocaleLowerCase()
+        )
+      ) {
+        notification({
+          msg: `Profile with name "${name}" already exists. Please try with a different name`,
+        })
+        return
       }
       const initialObj = {
         name,
         orgId: props.orgId,
-        orgType: "district",
+        orgType: 'district',
         performanceBand: [
           {
-            color: "#3DB04E",
-            name: "Proficient",
+            color: '#3DB04E',
+            name: 'Proficient',
             aboveOrAtStandard: true,
             from: 100,
-            to: 70
+            to: 70,
           },
           {
-            color: "#576BA9",
-            name: "Basic",
+            color: '#576BA9',
+            name: 'Basic',
             aboveOrAtStandard: true,
             from: 70,
-            to: 50
+            to: 50,
           },
           {
-            color: "#F39300",
-            name: "Below Basic",
+            color: '#F39300',
+            name: 'Below Basic',
             aboveOrAtStandard: false,
             from: 50,
-            to: 0
-          }
-        ]
-      };
-      create(initialObj);
-      setConfirmVisible(false);
-      setProfileName("");
+            to: 0,
+          },
+        ],
+      }
+      create(initialObj)
+      setConfirmVisible(false)
+      setProfileName('')
     } else {
-      notification({ messageKey: "NameCantBeEmpty" });
+      notification({ messageKey: 'NameCantBeEmpty' })
     }
-  };
+  }
 
   const duplicateProfile = ({ _id, name }) => {
     if (!handleProfileLimit()) {
-      return;
+      return
     }
-    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, v1OrgId, ...profile } =
-      profiles.find(x => x._id === _id) || {};
+    const {
+      _id: profileId,
+      createdBy,
+      institutionIds,
+      createdAt,
+      updatedAt,
+      __v,
+      v1OrgId,
+      ...profile
+    } = profiles.find((x) => x._id === _id) || {}
 
-    let lastVersion = 0;
+    let lastVersion = 0
     if (/#[0-9]*$/.test(name)) {
-      lastVersion = parseInt(name.split("#").slice(-1)[0] || 0);
+      lastVersion = parseInt(name.split('#').slice(-1)[0] || 0)
     }
     create({
       ...profile,
-      performanceBand: profile.performanceBand.map(({ key, v1Id, ...x }) => ({ ...x })),
-      name: `${name.replace(/#[0-9]*$/, "")}#${lastVersion + 1}`
-    });
-  };
+      performanceBand: profile.performanceBand.map(({ key, v1Id, ...x }) => ({
+        ...x,
+      })),
+      name: `${name.replace(/#[0-9]*$/, '')}#${lastVersion + 1}`,
+    })
+  }
 
   return (
     <PerformanceBandDiv>
@@ -307,25 +335,26 @@ export function PerformanceBandAlt(props) {
         visible={conflictModalVisible}
         centered
         onCancel={() => {
-          setConflictModalVisible(false);
-          props.setConflitAction(false);
+          setConflictModalVisible(false)
+          props.setConflitAction(false)
         }}
         footer={[
           <EduButton
             isGhost
             onClick={() => {
-              props.setConflitAction(false);
-              setConflictModalVisible(false);
+              props.setConflitAction(false)
+              setConflictModalVisible(false)
             }}
           >
             OK
-          </EduButton>
+          </EduButton>,
         ]}
       >
         <Row className="content">
           <Col span={24}>
-            <BlueBold>{deleteProfileName}</BlueBold> is set as the default value for{" "}
-            <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>. Please change the Test Setting before deleting.
+            <BlueBold>{deleteProfileName}</BlueBold> is set as the default value
+            for <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>. Please
+            change the Test Setting before deleting.
           </Col>
         </Row>
       </CustomModalStyled>
@@ -350,26 +379,37 @@ export function PerformanceBandAlt(props) {
                 <EduButton isGhost onClick={() => setConfirmVisible(false)}>
                   CANCEL
                 </EduButton>,
-                <EduButton disabled={profileName === ""} loading={loading} onClick={addProfile}>
+                <EduButton
+                  disabled={profileName === ''}
+                  loading={loading}
+                  onClick={addProfile}
+                >
                   CREATE
-                </EduButton>
+                </EduButton>,
               ]}
             >
               <Row>
                 <Col span={24}>
                   <FieldLabel>NAME OF THE PROFILE</FieldLabel>
-                  <TextInputStyled autoFocus value={profileName} onChange={e => setProfileName(e.target.value)} />
+                  <TextInputStyled
+                    autoFocus
+                    value={profileName}
+                    onChange={(e) => setProfileName(e.target.value)}
+                  />
                 </Col>
               </Row>
             </CustomModalStyled>
-            <EduButton type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
+            <EduButton
+              type="primary"
+              onClick={() => handleProfileLimit() && setConfirmVisible(true)}
+            >
               <IconPlusCircle width={19} height={19} /> Create new Profile
             </EduButton>
           </Row>
           <StyledList
             dataSource={profiles}
             rowKey="_id"
-            renderItem={profile => (
+            renderItem={(profile) => (
               <ProfileRow
                 {...profile}
                 remove={remove}
@@ -377,9 +417,14 @@ export function PerformanceBandAlt(props) {
                 update={update}
                 onDuplicate={() => duplicateProfile(profile)}
                 setEditable={setEditable}
-                hideEdit={props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")}
+                hideEdit={
+                  props.role != 'district-admin' &&
+                  currentUserId != get(profile, 'createdBy._id')
+                }
                 readOnly={
-                  (props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")) || !editable
+                  (props.role != 'district-admin' &&
+                    currentUserId != get(profile, 'createdBy._id')) ||
+                  !editable
                 }
                 setEditingIndex={setEditingIndex}
                 active={editingIndex === profile._id}
@@ -388,7 +433,7 @@ export function PerformanceBandAlt(props) {
                 conflict={conflict}
                 setDeleteProfileName={setDeleteProfileName}
                 savePerformance={({ _id: id, performanceBand }) => {
-                  props.updateLocal({ id, data: performanceBand });
+                  props.updateLocal({ id, data: performanceBand })
                 }}
               />
             )}
@@ -396,23 +441,23 @@ export function PerformanceBandAlt(props) {
         </StyledLayout>
       </StyledContent>
     </PerformanceBandDiv>
-  );
+  )
 }
 
 const enhance = compose(
   connect(
-    state => ({
-      loading: get(state, ["performanceBandReducer", "loading"], false),
-      updating: get(state, ["performanceBandReducer", "updating"], false),
-      creating: get(state, ["performanceBandReducer", "creating"], false),
-      profiles: get(state, ["performanceBandReducer", "profiles"], []),
-      editingIndex: get(state, ["performanceBandReducer", "editingIndex"]),
-      conflict: get(state, ["performanceBandReducer", "conflict"], false),
-      error: get(state, ["performanceBandReducer", "error"], {}),
+    (state) => ({
+      loading: get(state, ['performanceBandReducer', 'loading'], false),
+      updating: get(state, ['performanceBandReducer', 'updating'], false),
+      creating: get(state, ['performanceBandReducer', 'creating'], false),
+      profiles: get(state, ['performanceBandReducer', 'profiles'], []),
+      editingIndex: get(state, ['performanceBandReducer', 'editingIndex']),
+      conflict: get(state, ['performanceBandReducer', 'conflict'], false),
+      error: get(state, ['performanceBandReducer', 'error'], {}),
       editable: state?.performanceBandReducer?.editable,
       orgId: getUserOrgId(state),
       role: getUserRole(state),
-      currentUserId: getUserId(state)
+      currentUserId: getUserId(state),
     }),
     {
       list: receivePerformanceBandAction,
@@ -423,10 +468,10 @@ const enhance = compose(
       setName: setPerformanceBandNameAction,
       setEditingIndex: setEditingIndexAction,
       setEditable: setEditableAction,
-      setConflitAction
+      setConflitAction,
     }
   )
-);
+)
 
 // export default enhance(PerformanceBand);
-export default enhance(PerformanceBandAlt);
+export default enhance(PerformanceBandAlt)

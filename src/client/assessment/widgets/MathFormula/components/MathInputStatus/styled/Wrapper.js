@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
   position: absolute;
@@ -10,4 +10,4 @@ export const Wrapper = styled.div`
   display: flex;
   pointer-events: none;
   align-items: center;
-`;
+`

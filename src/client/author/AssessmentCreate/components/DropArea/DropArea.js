@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { DropAreaContainer, UploadDragger } from "./styled";
-import BodyWrapper from "../../../AssignmentCreate/common/BodyWrapper";
-import FlexWrapper from "../../../AssignmentCreate/common/FlexWrapper";
-import CreateUpload from "../CreateUpload/CreateUpload";
-import CreateBlank from "../CreateBlank/CreateBlank";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { DropAreaContainer, UploadDragger } from './styled'
+import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
+import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
+import CreateUpload from '../CreateUpload/CreateUpload'
+import CreateBlank from '../CreateBlank/CreateBlank'
 
 const DropArea = ({
   onUpload,
@@ -14,9 +14,9 @@ const DropArea = ({
   fileInfo,
   cancelUpload,
   uploadToDrive,
-  assesmentMetadata = {}
+  assesmentMetadata = {},
 }) => {
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = useState(false)
 
   return (
     <BodyWrapper>
@@ -51,13 +51,13 @@ const DropArea = ({
         <CreateBlank onCreate={onCreateBlank} loading={loading} />
       </FlexWrapper>
     </BodyWrapper>
-  );
-};
+  )
+}
 
 DropArea.propTypes = {
   loading: PropTypes.bool.isRequired,
   onUpload: PropTypes.func.isRequired,
-  onCreateBlank: PropTypes.func.isRequired
-};
+  onCreateBlank: PropTypes.func.isRequired,
+}
 
-export default DropArea;
+export default DropArea

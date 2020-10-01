@@ -1,10 +1,10 @@
-import PropTypes from "prop-types";
-import React, { useRef } from "react";
-import { Select } from "antd";
+import PropTypes from 'prop-types'
+import React, { useRef } from 'react'
+import { Select } from 'antd'
 
-import { MathSpan, SelectInputStyled } from "@edulastic/common";
-import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
-import { SelectContainer } from "./styled/SelectContainer";
+import { MathSpan, SelectInputStyled } from '@edulastic/common'
+import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
+import { SelectContainer } from './styled/SelectContainer'
 
 const AnswerDropdown = ({
   responseIndex,
@@ -17,13 +17,13 @@ const AnswerDropdown = ({
   defaultValue,
   placeholder,
   fontSize,
-  isPrintPreview
+  isPrintPreview,
 }) => {
-  const dropdownContainerRef = useRef(null);
+  const dropdownContainerRef = useRef(null)
   const menuStyle = {
-    top: `${dropdownContainerRef.current?.clientHeight}px !important` || "auto",
-    left: "0 !important"
-  };
+    top: `${dropdownContainerRef.current?.clientHeight}px !important` || 'auto',
+    left: '0 !important',
+  }
   return (
     <SelectContainer
       menuStyle={menuStyle}
@@ -39,22 +39,26 @@ const AnswerDropdown = ({
         placeholder={placeholder}
         disabled={disabled}
         data-cy={`dropdown-res-${responseIndex}`}
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
         value={convertToMathTemplate(defaultValue) || undefined} // placeholder doesn't work if value is empty string
         dropdownStyle={dropdownStyle}
-        onChange={value => {
-          onChange(value);
+        onChange={(value) => {
+          onChange(value)
         }}
       >
         {options.map((item, index) => (
-          <Select.Option data-cy={`dropdown-res-item-${responseIndex}-${index}`} key={index} value={item.value}>
+          <Select.Option
+            data-cy={`dropdown-res-item-${responseIndex}-${index}`}
+            key={index}
+            value={item.value}
+          >
             <MathSpan dangerouslySetInnerHTML={{ __html: item.label }} />
           </Select.Option>
         ))}
       </SelectInputStyled>
     </SelectContainer>
-  );
-};
+  )
+}
 
 AnswerDropdown.propTypes = {
   responseIndex: PropTypes.number,
@@ -63,13 +67,13 @@ AnswerDropdown.propTypes = {
   defaultValue: PropTypes.string,
   style: PropTypes.object.isRequired,
   backgroundColor: PropTypes.string.isRequired,
-  placeholder: PropTypes.string
-};
+  placeholder: PropTypes.string,
+}
 
 AnswerDropdown.defaultProps = {
-  defaultValue: "",
+  defaultValue: '',
   responseIndex: 0,
-  placeholder: ""
-};
+  placeholder: '',
+}
 
-export default AnswerDropdown;
+export default AnswerDropdown

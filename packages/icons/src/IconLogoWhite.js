@@ -1,13 +1,19 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconLogoWhite = props => (
+const IconLogoWhite = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 97" {...props}>
     <title>Edulastic_logo_mark</title>
     <defs />
-    <g id="Brandind-guides" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+    <g
+      id="Brandind-guides"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
       <g id="Edulastic_logo_mark" fill="#FFFFFF" fillRule="nonzero">
         <g id="Group">
           <polygon
@@ -37,7 +43,10 @@ const IconLogoWhite = props => (
             id="Shape"
             points="148.6 95 143 95 143 42.5 136.6 42.5 136.6 37.3 143 37.3 143 13 148.6 13 148.6 37.2 158.7 37.2 158.7 42.4 148.6 42.4"
           />
-          <polygon id="Shape" points="178.7 95 173.1 95 173.1 37.2 178.7 37.2" />
+          <polygon
+            id="Shape"
+            points="178.7 95 173.1 95 173.1 37.2 178.7 37.2"
+          />
           <path
             d="M242,50.6 C236.5,44.6 229.9,41.2 221.6,41.2 C208,41.2 197.7,52.8 197.7,66 C197.7,79.2 207.8,91 221.5,91 C229.7,91 237.5,87 242.7,80.6 L242.7,88.2 C236.8,93.3 229.5,96.2 221.7,96.2 C204.6,96.2 192.1,82.8 192.1,66 C192.1,49.2 204.9,36 221.9,36 C229.4,36 236.3,38.2 242,43.1 L242,50.6 Z"
             id="Shape"
@@ -50,6 +59,6 @@ const IconLogoWhite = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconLogoWhite);
+export default withIconStyles(IconLogoWhite)

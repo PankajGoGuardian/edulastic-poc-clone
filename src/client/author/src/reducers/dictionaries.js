@@ -1,4 +1,5 @@
-import produce from "immer";
+import produce from 'immer'
+import { getFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import {
   RECEIVE_DICT_CURRICULUMS_REQUEST,
   RECEIVE_DICT_CURRICULUMS_SUCCESS,
@@ -16,38 +17,40 @@ import {
   UPDATE_RECENT_STANDARDS,
   UPDATE_DICT_ALIGNMENT,
   CLEAR_ALIGNMENT_STANDARDS,
-  UPDATE_RECENT_COLLECTIONS
-} from "../constants/actions";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+  UPDATE_RECENT_COLLECTIONS,
+} from '../constants/actions'
 
 export const getNewAlignmentState = () => ({
-  curriculum: "",
-  curriculumId: "",
-  subject: "",
+  curriculum: '',
+  curriculumId: '',
+  subject: '',
   grades: [],
-  domains: []
-});
+  domains: [],
+})
 
 const initialItemsState = {
   curriculums: {
     curriculums: [],
     loading: false,
-    error: null
+    error: null,
   },
   standards: {
     elo: [],
     tlo: [],
     loading: false,
-    error: null
+    error: null,
   },
-  defaultCurriculumName: getFromLocalStorage("defaultCurriculumName"),
-  defaultCurriculumId: parseInt(getFromLocalStorage("defaultCurriculumId")) || "",
-  recentStandardsList: getFromLocalStorage("recentStandards") ? JSON.parse(getFromLocalStorage("recentStandards")) : [],
+  defaultCurriculumName: getFromLocalStorage('defaultCurriculumName'),
+  defaultCurriculumId:
+    parseInt(getFromLocalStorage('defaultCurriculumId')) || '',
+  recentStandardsList: getFromLocalStorage('recentStandards')
+    ? JSON.parse(getFromLocalStorage('recentStandards'))
+    : [],
   alignments: [getNewAlignmentState()],
-  recentCollectionsList: getFromLocalStorage("recentCollections")
-    ? JSON.parse(getFromLocalStorage("recentCollections"))
-    : []
-};
+  recentCollectionsList: getFromLocalStorage('recentCollections')
+    ? JSON.parse(getFromLocalStorage('recentCollections'))
+    : [],
+}
 
 const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
   switch (type) {
@@ -56,16 +59,16 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         curriculums: {
           ...state.curriculums,
-          loading: true
-        }
-      };
+          loading: true,
+        },
+      }
 
     case UPDATE_DEFAULT_CURRICULUM: {
       return {
         ...state,
         defaultCurriculumId: payload.defaultCurriculumId,
-        defaultCurriculumName: payload.defaultCurriculumName
-      };
+        defaultCurriculumName: payload.defaultCurriculumName,
+      }
     }
     case RECEIVE_DICT_CURRICULUMS_SUCCESS:
       return {
@@ -73,26 +76,26 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         curriculums: {
           ...state.curriculums,
           curriculums: payload.items,
-          loading: false
-        }
-      };
+          loading: false,
+        },
+      }
     case RECEIVE_DICT_CURRICULUMS_ERROR:
       return {
         ...state,
         curriculums: {
           ...state.curriculums,
           loading: false,
-          error: payload.error
-        }
-      };
+          error: payload.error,
+        },
+      }
     case RECEIVE_DICT_STANDARDS_REQUEST:
       return {
         ...state,
         standards: {
           ...state.standards,
-          loading: true
-        }
-      };
+          loading: true,
+        },
+      }
     case RECEIVE_DICT_STANDARDS_SUCCESS:
       return {
         ...state,
@@ -100,81 +103,86 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           ...state.standards,
           elo: payload.elo,
           tlo: payload.tlo,
-          loading: false
-        }
-      };
+          loading: false,
+        },
+      }
     case RECEIVE_DICT_STANDARDS_ERROR:
       return {
         ...state,
         standards: {
           ...state.standards,
           loading: false,
-          error: payload.error
-        }
-      };
+          error: payload.error,
+        },
+      }
     case CLEAR_DICT_STANDARDS:
       return {
         ...state,
         standards: {
           ...state.standards,
           elo: [],
-          tlo: []
-        }
-      };
+          tlo: [],
+        },
+      }
     case CLEAR_DICT_ALIGNMENTS:
       return {
         ...state,
-        alignments: [getNewAlignmentState()]
-      };
+        alignments: [getNewAlignmentState()],
+      }
     case RESET_DICT_ALIGNMENTS:
-      return produce(state, draft => {
-        const newAlignment = draft.alignments[0];
+      return produce(state, (draft) => {
+        const newAlignment = draft.alignments[0]
         if (newAlignment) {
-          newAlignment.standards = [];
+          newAlignment.standards = []
         }
-        draft.alignments = [newAlignment];
-      });
+        draft.alignments = [newAlignment]
+      })
 
     case SET_ALIGNMENT_FROM_QUESTION:
-      const authorAlignments = payload.filter(item => !item.isEquivalentStandard);
+      const authorAlignments = payload.filter(
+        (item) => !item.isEquivalentStandard
+      )
       return {
         ...state,
-        alignments: authorAlignments
-      };
+        alignments: authorAlignments,
+      }
     case ADD_DICT_ALIGNMENT:
-      const alignments = [...state.alignments];
-      if (!alignments.some(c => c.curriculumId === payload.curriculumId)) alignments.push(payload);
+      const alignments = [...state.alignments]
+      if (!alignments.some((c) => c.curriculumId === payload.curriculumId))
+        alignments.push(payload)
       return {
         ...state,
-        alignments
-      };
+        alignments,
+      }
     case REMOVE_DICT_ALINMENT:
       return {
         ...state,
-        alignments: state.alignments.filter(item => item.curriculumId !== payload)
-      };
+        alignments: state.alignments.filter(
+          (item) => item.curriculumId !== payload
+        ),
+      }
     case UPDATE_DICT_ALIGNMENT:
       const editedAlignments = [...state.alignments].map((c, index) => {
-        if (index === payload.index) return { ...c, ...payload.changedFields };
-        return c;
-      });
+        if (index === payload.index) return { ...c, ...payload.changedFields }
+        return c
+      })
 
-      return { ...state, alignments: editedAlignments };
+      return { ...state, alignments: editedAlignments }
     case UPDATE_RECENT_STANDARDS:
-      const { recentStandards } = payload;
+      const { recentStandards } = payload
       return {
         ...state,
-        recentStandardsList: recentStandards
-      };
+        recentStandardsList: recentStandards,
+      }
     case UPDATE_RECENT_COLLECTIONS:
-      const { recentCollections } = payload;
+      const { recentCollections } = payload
       return {
         ...state,
-        recentCollectionsList: recentCollections
-      };
+        recentCollectionsList: recentCollections,
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default dictionariesReducer;
+export default dictionariesReducer

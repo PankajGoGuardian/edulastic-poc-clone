@@ -1,21 +1,27 @@
-import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, EduButton, notification, SelectInputStyled, TypeToConfirmModal } from "@edulastic/common";
-import { SearchInputStyled } from "@edulastic/common/src/components/InputStyles";
-import { roleuser } from "@edulastic/constants";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Icon, Menu, Row, Select } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { GiDominoMask } from "react-icons/gi";
-import { connect } from "react-redux";
-import { compose } from "redux";
+import { themeColor } from '@edulastic/colors'
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  SelectInputStyled,
+  TypeToConfirmModal,
+} from '@edulastic/common'
+import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
+import { roleuser } from '@edulastic/constants'
+import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Icon, Menu, Row, Select } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { GiDominoMask } from 'react-icons/gi'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import {
   StyledActionDropDown,
   StyledClassName,
-  StyledFilterDiv
-} from "../../../../admin/Common/StyledComponents";
+  StyledFilterDiv,
+} from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
   LeftFilterDiv,
@@ -25,15 +31,21 @@ import {
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
-  TableContainer
-} from "../../../../common/styled";
-import { getFullNameFromAsString } from "../../../../common/utils/helpers";
-import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
-import { proxyUser } from "../../../authUtils";
-import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+  TableContainer,
+} from '../../../../common/styled'
+import { getFullNameFromAsString } from '../../../../common/utils/helpers'
+import {
+  isProxyUser as isProxyUserSelector,
+  updatePowerTeacherAction,
+} from '../../../../student/Login/ducks'
+import { proxyUser } from '../../../authUtils'
+import {
+  getSchoolsSelector,
+  receiveSchoolsAction,
+} from '../../../Schools/ducks'
+import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
+import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 import {
   addFilterAction,
   changeFilterColumnAction,
@@ -52,224 +64,244 @@ import {
   setRoleAction,
   setSearchNameAction,
   setShowActiveUsersAction,
-  updateAdminUserAction
-} from "../../ducks";
-import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
-import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
-import { StyledMaskButton, StyledSchoolAdminTable } from "./styled";
+  updateAdminUserAction,
+} from '../../ducks'
+import CreateSchoolAdminModal from './CreateSchoolAdminModal/CreateSchoolAdminModal'
+import EditSchoolAdminModal from './EditSchoolAdminModal/EditSchoolAdminModal'
+import { StyledMaskButton, StyledSchoolAdminTable } from './styled'
 
-const menuActive = { mainMenu: "Users", subMenu: "School Admin" };
+const menuActive = { mainMenu: 'Users', subMenu: 'School Admin' }
 
-const { Option } = Select;
+const { Option } = Select
 
 const filterStrDD = {
   status: {
     list: [
-      { title: "Select a value", value: undefined, disabled: true },
-      { title: "Active", value: 1, disabled: false },
-      { title: "Inactive", value: 0, disabled: false }
+      { title: 'Select a value', value: undefined, disabled: true },
+      { title: 'Active', value: 1, disabled: false },
+      { title: 'Inactive', value: 0, disabled: false },
     ],
-    placeholder: "Select a value"
-  }
-};
+    placeholder: 'Select a value',
+  },
+}
 
 class SchoolAdminTable extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       selectedRowKeys: [],
       createSchoolAdminModalVisible: false,
       editSchoolAdminModaVisible: false,
-      editSchoolAdminKey: "",
+      editSchoolAdminKey: '',
       deactivateAdminModalVisible: false,
       selectedAdminsForDeactivate: [],
 
       showActive: true,
-      searchByName: "",
+      searchByName: '',
       filtersData: [
         {
-          filtersColumn: "",
-          filtersValue: "",
-          filterStr: "",
-          filterAdded: false
-        }
+          filtersColumn: '',
+          filtersValue: '',
+          filterStr: '',
+          filterAdded: false,
+        },
       ],
       currentPage: 1,
-      refineButtonActive: false
-    };
-    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
+      refineButtonActive: false,
+    }
+    this.filterTextInputRef = [
+      React.createRef(),
+      React.createRef(),
+      React.createRef(),
+    ]
   }
 
   componentDidMount() {
-    const { loadSchoolsData, userOrgId } = this.props;
-    this.loadFilteredList();
-    loadSchoolsData({ districtId: userOrgId });
+    const { loadSchoolsData, userOrgId } = this.props
+    this.loadFilteredList()
+    loadSchoolsData({ districtId: userOrgId })
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps;
+    const { adminUsersData: result } = nextProps
     return {
-      selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
-    };
+      selectedRowKeys: state.selectedRowKeys.filter(
+        (rowKey) => !!result[rowKey]
+      ),
+    }
   }
 
-  onEditSchoolAdmin = id => {
+  onEditSchoolAdmin = (id) => {
     this.setState({
       editSchoolAdminModaVisible: true,
-      editSchoolAdminKey: id
-    });
-  };
+      editSchoolAdminKey: id,
+    })
+  }
 
-  handleDeactivateAdmin = id => {
+  handleDeactivateAdmin = (id) => {
     this.setState({
       selectedAdminsForDeactivate: [id],
-      deactivateAdminModalVisible: true
-    });
-  };
+      deactivateAdminModalVisible: true,
+    })
+  }
 
-  onSelectChange = selectedRowKeys => {
-    this.setState({ selectedRowKeys });
-  };
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys })
+  }
 
   showCreateSchoolAdminModal = () => {
     this.setState({
-      createSchoolAdminModalVisible: true
-    });
-  };
+      createSchoolAdminModalVisible: true,
+    })
+  }
 
-  onProxySchoolAdmin = id => {
-    proxyUser({ userId: id });
-  };
+  onProxySchoolAdmin = (id) => {
+    proxyUser({ userId: id })
+  }
 
-  changeActionMode = e => {
-    const { selectedRowKeys } = this.state;
-    if (e.key === "edit user") {
+  changeActionMode = (e) => {
+    const { selectedRowKeys } = this.state
+    if (e.key === 'edit user') {
       if (selectedRowKeys.length === 0) {
-        notification({ messageKey: "pleaseSelectUser" });
+        notification({ messageKey: 'pleaseSelectUser' })
       } else if (selectedRowKeys.length === 1) {
-        this.onEditSchoolAdmin(selectedRowKeys[0]);
+        this.onEditSchoolAdmin(selectedRowKeys[0])
       } else if (selectedRowKeys.length > 1) {
-        notification({ messageKey: "pleaseSelectSingleUserToEdit" });
+        notification({ messageKey: 'pleaseSelectSingleUserToEdit' })
       }
-    } else if (e.key === "deactivate user") {
+    } else if (e.key === 'deactivate user') {
       if (selectedRowKeys.length > 0) {
         this.setState({
           selectedAdminsForDeactivate: selectedRowKeys,
-          deactivateAdminModalVisible: true
-        });
+          deactivateAdminModalVisible: true,
+        })
       } else {
-        notification({ messageKey: "pleaseSelectSchoolsToDelete" });
+        notification({ messageKey: 'pleaseSelectSchoolsToDelete' })
       }
-    } else if (e.key === "enable power tools" || e.key === "disable power tools") {
-      const enableMode = e.key === "enable power tools";
+    } else if (
+      e.key === 'enable power tools' ||
+      e.key === 'disable power tools'
+    ) {
+      const enableMode = e.key === 'enable power tools'
       if (selectedRowKeys.length > 0) {
-        const { updatePowerTeacher, adminUsersData } = this.props;
-        const selectedUsersEmailOrUsernames = selectedRowKeys.map(id => {
-          const user = adminUsersData[id]?._source;
-          if (user) {
-            return user.email || user.username;
-          }
-        }).filter(u => !!u);
+        const { updatePowerTeacher, adminUsersData } = this.props
+        const selectedUsersEmailOrUsernames = selectedRowKeys
+          .map((id) => {
+            const user = adminUsersData[id]?._source
+            if (user) {
+              return user.email || user.username
+            }
+          })
+          .filter((u) => !!u)
         updatePowerTeacher({
           usernames: selectedUsersEmailOrUsernames,
-          enable: enableMode
-        });
+          enable: enableMode,
+        })
       } else {
-        notification({ messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools` });
+        notification({
+          messageKey: `pleaseSelectUserTo${
+            enableMode ? 'Enable' : 'Disable'
+          }PowerTools`,
+        })
       }
     }
-  };
+  }
 
   closeEditSchoolAdminModal = () => {
     this.setState({
-      editSchoolAdminModaVisible: false
-    });
-  };
+      editSchoolAdminModaVisible: false,
+    })
+  }
 
-  setPageNo = page => {
-    this.setState({ currentPage: page }, this.loadFilteredList);
-  };
+  setPageNo = (page) => {
+    this.setState({ currentPage: page }, this.loadFilteredList)
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
 
-  createUser = createReq => {
-    const { userOrgId, createAdminUser } = this.props;
-    createReq.role = "school-admin";
-    createReq.districtId = userOrgId;
+  createUser = (createReq) => {
+    const { userOrgId, createAdminUser } = this.props
+    createReq.role = 'school-admin'
+    createReq.districtId = userOrgId
 
     const o = {
       createReq,
-      listReq: this.getSearchQuery()
-    };
+      listReq: this.getSearchQuery(),
+    }
 
-    createAdminUser(o);
-    this.setState({ createSchoolAdminModalVisible: false });
-  };
+    createAdminUser(o)
+    this.setState({ createSchoolAdminModalVisible: false })
+  }
 
   closeCreateUserModal = () => {
     this.setState({
-      createSchoolAdminModalVisible: false
-    });
-  };
+      createSchoolAdminModalVisible: false,
+    })
+  }
 
   confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedAdminsForDeactivate } = this.state;
+    const { deleteAdminUser } = this.props
+    const { selectedAdminsForDeactivate } = this.state
 
     const o = {
-      deleteReq: { userIds: selectedAdminsForDeactivate, role: "school-admin" },
-      listReq: this.getSearchQuery()
-    };
+      deleteReq: { userIds: selectedAdminsForDeactivate, role: 'school-admin' },
+      listReq: this.getSearchQuery(),
+    }
 
-    deleteAdminUser(o);
+    deleteAdminUser(o)
     this.setState({
-      deactivateAdminModalVisible: false
-    });
-  };
+      deactivateAdminModalVisible: false,
+    })
+  }
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive });
-  };
+    this.setState({ refineButtonActive: !this.state.refineButtonActive })
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
 
-  onChangeSearch = event => {
-    this.setState({ searchByName: event.currentTarget.value });
-  };
+  onChangeSearch = (event) => {
+    this.setState({ searchByName: event.currentTarget.value })
+  }
 
-  handleSearchName = value => {
-    this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
-  };
+  handleSearchName = (value) => {
+    this.setState(
+      { searchByName: value, currentPage: 1 },
+      this.loadFilteredList
+    )
+  }
 
   onSearchFilter = (value, event, i) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === i) {
         return {
           ...item,
-          filterAdded: !!value
-        };
+          filterAdded: !!value,
+        }
       }
-      return item;
-    });
+      return item
+    })
 
     // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
-  };
+    this.setState({ filtersData: _filtersData }, () =>
+      this.filterTextInputRef[i].current.blur()
+    )
+  }
 
   onBlurFilterText = (event, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterAdded: !!event.target.value
-        };
+          filterAdded: !!event.target.value,
+        }
       }
-      return item;
-    });
-    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList)
+  }
 
   changeStatusValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
@@ -277,141 +309,143 @@ class SchoolAdminTable extends Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== ""
-        };
+          filterAdded: value !== '',
+        }
       }
-      return item;
-    });
+      return item
+    })
 
-    this.setState({ filtersData: _filtersData }, () => this.loadFilteredList(key));
-  };
+    this.setState({ filtersData: _filtersData }, () =>
+      this.loadFilteredList(key)
+    )
+  }
 
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterStr: e.target.value
-        };
+          filterStr: e.target.value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData })
+  }
 
   changeFilterColumn = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (key === index) {
         const _item = {
           ...item,
-          filtersColumn: value
-        };
-        if (value === "status") _item.filtersValue = "eq";
-        return _item;
+          filtersColumn: value,
+        }
+        if (value === 'status') _item.filtersValue = 'eq'
+        return _item
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
   changeFilterValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filtersValue: value
-        };
+          filtersValue: value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
-  onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
-  };
+  onChangeShowActive = (e) => {
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList)
+  }
 
   addFilter = () => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     if (filtersData.length < 3) {
       this.setState({
         filtersData: [
           ...filtersData,
           {
-            filtersColumn: "",
-            filtersValue: "",
-            filterStr: "",
-            prevFilterStr: "",
-            filterAdded: false
-          }
-        ]
-      });
+            filtersColumn: '',
+            filtersValue: '',
+            filterStr: '',
+            prevFilterStr: '',
+            filterAdded: false,
+          },
+        ],
+      })
     }
-  };
+  }
 
   removeFilter = (e, key) => {
-    const { filtersData } = this.state;
-    let newFiltersData = [];
+    const { filtersData } = this.state
+    let newFiltersData = []
     if (filtersData.length === 1) {
       newFiltersData.push({
         filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
+        filtersColumn: '',
+        filtersValue: '',
+        filterStr: '',
+      })
     } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
+      newFiltersData = filtersData.filter((item, index) => index != key)
     }
-    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
-  };
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList)
+  }
 
   getSearchQuery = () => {
-    const { userOrgId } = this.props;
-    const { filtersData, searchByName, currentPage } = this.state;
-    let { showActive } = this.state;
+    const { userOrgId } = this.props
+    const { filtersData, searchByName, currentPage } = this.state
+    let { showActive } = this.state
 
-    const search = {};
+    const search = {}
     for (const [index, item] of filtersData.entries()) {
-      const { filtersColumn, filtersValue, filterStr } = item;
-      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
-        if (filtersColumn === "status") {
-          showActive = filterStr;
-          continue;
+      const { filtersColumn, filtersValue, filterStr } = item
+      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+        if (filtersColumn === 'status') {
+          showActive = filterStr
+          continue
         }
         if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
         } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+          search[filtersColumn].push({ type: filtersValue, value: filterStr })
         }
       }
     }
     if (searchByName) {
-      search.name = searchByName;
+      search.name = searchByName
     }
 
     const queryObj = {
       search,
       districtId: userOrgId,
-      role: "school-admin",
+      role: 'school-admin',
       limit: 25,
-      page: currentPage
+      page: currentPage,
       // uncomment after elastic search is fixed
       // sortField,
       // order
-    };
+    }
 
-    queryObj.status = 0;
+    queryObj.status = 0
 
     if (showActive) {
-      queryObj.status = 1;
+      queryObj.status = 1
     }
-    return queryObj;
-  };
+    return queryObj
+  }
 
   loadFilteredList = () => {
-    const { loadAdminData } = this.props;
-    loadAdminData(this.getSearchQuery());
-  };
+    const { loadAdminData } = this.props
+    loadAdminData(this.getSearchQuery())
+  }
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -425,13 +459,13 @@ class SchoolAdminTable extends Component {
       selectedAdminsForDeactivate,
       filtersData,
       currentPage,
-      refineButtonActive
-    } = this.state;
+      refineButtonActive,
+    } = this.state
 
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.onSelectChange
-    };
+      onChange: this.onSelectChange,
+    }
 
     const {
       userOrgId,
@@ -444,103 +478,131 @@ class SchoolAdminTable extends Component {
       setPageNo,
       history,
       isProxyUser,
-      t
-    } = this.props;
+      t,
+    } = this.props
 
     const columns = [
       {
-        title: t("users.schooladmin.name"),
-        dataIndex: "_source.firstName",
-        sortDirections: ["descend", "ascend"],
+        title: t('users.schooladmin.name'),
+        dataIndex: '_source.firstName',
+        sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, "_source.firstName", "");
-          const next = get(b, "_source.firstName", "");
-          return next.localeCompare(prev);
+          const prev = get(a, '_source.firstName', '')
+          const next = get(b, '_source.firstName', '')
+          return next.localeCompare(prev)
         },
         render: (text, record) => {
-          const name = getFullNameFromAsString(record._source);
-          return name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
+          const name = getFullNameFromAsString(record._source)
+          return name.split(' ').includes('Anonymous') || name.length === 0
+            ? '-'
+            : name
         },
-        width: 200
+        width: 200,
       },
       {
-        title: t("users.schooladmin.username"),
-        dataIndex: "_source.email",
-        sortDirections: ["descend", "ascend"],
+        title: t('users.schooladmin.username'),
+        dataIndex: '_source.email',
+        sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, "_source.email", "");
-          const next = get(b, "_source.email", "");
-          return next.localeCompare(prev);
+          const prev = get(a, '_source.email', '')
+          const next = get(b, '_source.email', '')
+          return next.localeCompare(prev)
         },
-        width: 200
+        width: 200,
       },
       {
-        title: t("users.schooladmin.sso"),
-        dataIndex: "_source.lastSigninSSO",
-        render: (sso = "N/A") => sso,
-        width: 100
+        title: t('users.schooladmin.sso'),
+        dataIndex: '_source.lastSigninSSO',
+        render: (sso = 'N/A') => sso,
+        width: 100,
       },
       {
-        title: t("users.schooladmin.school"),
-        dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name).join(", "),
-        width: 200
+        title: t('users.schooladmin.school'),
+        dataIndex: '_source.institutionDetails',
+        render: (schools = []) =>
+          schools.map((school) => school.name).join(', '),
+        width: 200,
       },
       {
-        dataIndex: "_id",
+        dataIndex: '_id',
         render: (id, { _source }) => {
-          const name = getFullNameFromAsString(_source);
-          const status = get(_source, "status", "");
-          const fullName = name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
+          const name = getFullNameFromAsString(_source)
+          const status = get(_source, 'status', '')
+          const fullName =
+            name.split(' ').includes('Anonymous') || name.length === 0
+              ? '-'
+              : name
           return (
-            <div style={{ whiteSpace: "nowrap" }}>
+            <div style={{ whiteSpace: 'nowrap' }}>
               {role === roleuser.DISTRICT_ADMIN && (
                 <>
                   {status === 1 && !isProxyUser ? (
-                    <StyledMaskButton onClick={() => this.onProxySchoolAdmin(id)} title={`Act as ${fullName}`}>
+                    <StyledMaskButton
+                      onClick={() => this.onProxySchoolAdmin(id)}
+                      title={`Act as ${fullName}`}
+                    >
                       <GiDominoMask />
                     </StyledMaskButton>
                   ) : null}
-                  <StyledTableButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
+                  <StyledTableButton
+                    onClick={() => this.onEditSchoolAdmin(id)}
+                    title="Edit"
+                  >
                     <IconPencilEdit color={themeColor} />
                   </StyledTableButton>
-                  <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
+                  <StyledTableButton
+                    onClick={() => this.handleDeactivateAdmin(id)}
+                    title="Deactivate"
+                  >
                     <IconTrash color={themeColor} />
                   </StyledTableButton>
                 </>
               )}
             </div>
-          );
+          )
         },
-        width: 100
-      }
-    ];
+        width: 100,
+      },
+    ]
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="edit user">{t("users.schooladmin.updateuser")}</Menu.Item>
-        <Menu.Item key="deactivate user">{t("users.schooladmin.deactivateuser")}</Menu.Item>
-        <Menu.Item key="enable power tools">{t("users.schooladmin.enablePowerTools")}</Menu.Item>
-        <Menu.Item key="disable power tools">{t("users.schooladmin.disablePowerTools")}</Menu.Item>
+        <Menu.Item key="edit user">
+          {t('users.schooladmin.updateuser')}
+        </Menu.Item>
+        <Menu.Item key="deactivate user">
+          {t('users.schooladmin.deactivateuser')}
+        </Menu.Item>
+        <Menu.Item key="enable power tools">
+          {t('users.schooladmin.enablePowerTools')}
+        </Menu.Item>
+        <Menu.Item key="disable power tools">
+          {t('users.schooladmin.disablePowerTools')}
+        </Menu.Item>
       </Menu>
-    );
+    )
     const breadcrumbData = [
       {
-        title: "MANAGE SCHOOL",
-        to: "/author/users/school-admin"
+        title: 'MANAGE SCHOOL',
+        to: '/author/users/school-admin',
       },
       {
-        title: "USERS",
-        to: ""
-      }
-    ];
+        title: 'USERS',
+        to: '',
+      },
+    ]
     return (
       <MainContainer>
         <SubHeaderWrapper>
-          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            {t("common.refineresults")}
-            <Icon type={refineButtonActive ? "up" : "down"} />
+          <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+          <StyledButton
+            type="default"
+            shape="round"
+            icon="filter"
+            onClick={this._onRefineResultsCB}
+          >
+            {t('common.refineresults')}
+            <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
         <AdminSubHeader active={menuActive} history={history} />
@@ -548,51 +610,68 @@ class SchoolAdminTable extends Component {
         {refineButtonActive && (
           <FilterWrapper>
             {filtersData.map((item, i) => {
-              const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
-              const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+              const {
+                filtersColumn,
+                filtersValue,
+                filterStr,
+                filterAdded,
+              } = item
+              const isFilterTextDisable =
+                filtersColumn === '' || filtersValue === ''
               const isAddFilterDisable =
-                filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+                filtersColumn === '' ||
+                filtersValue === '' ||
+                filterStr === '' ||
+                !filterAdded
 
               return (
-                <Row gutter="20" style={{ marginBottom: "5px" }} key={i}>
+                <Row gutter="20" style={{ marginBottom: '5px' }} key={i}>
                   <Col span={6}>
                     <SelectInputStyled
-                      placeholder={t("common.selectcolumn")}
-                      onChange={e => this.changeFilterColumn(e, i)}
+                      placeholder={t('common.selectcolumn')}
+                      onChange={(e) => this.changeFilterColumn(e, i)}
                       value={filtersColumn || undefined}
                       height="32px"
                     >
                       <Option value="other" disabled>
-                        {t("common.selectcolumn")}
+                        {t('common.selectcolumn')}
                       </Option>
-                      <Option value="username">{t("users.schooladmin.username")}</Option>
-                      <Option value="email">{t("users.schooladmin.email")}</Option>
-                      <Option value="status">{t("users.schooladmin.status")}</Option>
+                      <Option value="username">
+                        {t('users.schooladmin.username')}
+                      </Option>
+                      <Option value="email">
+                        {t('users.schooladmin.email')}
+                      </Option>
+                      <Option value="status">
+                        {t('users.schooladmin.status')}
+                      </Option>
                       {/* TO DO: Uncomment after backend is done */}
                       {/* <Option value="institutionNames">School</Option> */}
                     </SelectInputStyled>
                   </Col>
                   <Col span={6}>
                     <SelectInputStyled
-                      placeholder={t("common.selectvalue")}
-                      onChange={e => this.changeFilterValue(e, i)}
+                      placeholder={t('common.selectvalue')}
+                      onChange={(e) => this.changeFilterValue(e, i)}
                       value={filtersValue || undefined}
                       height="32px"
                     >
                       <Option value="" disabled>
-                        {t("common.selectvalue")}
+                        {t('common.selectvalue')}
                       </Option>
                       <Option value="eq">Equals</Option>
-                      {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
+                      {!filterStrDD[filtersColumn] ? (
+                        <Option value="cont">Contains</Option>
+                      ) : null}
                     </SelectInputStyled>
                   </Col>
                   <Col span={6}>
                     {!filterStrDD[filtersColumn] ? (
                       <SearchInputStyled
-                        placeholder={t("common.entertext")}
-                        onChange={e => this.changeFilterText(e, i)}
+                        placeholder={t('common.entertext')}
+                        onChange={(e) => this.changeFilterText(e, i)}
                         onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                        onBlur={e => this.onBlurFilterText(e, i)}
+                        onBlur={(e) => this.onBlurFilterText(e, i)}
                         value={filterStr || undefined}
                         disabled={isFilterTextDisable}
                         ref={this.filterTextInputRef[i]}
@@ -601,51 +680,68 @@ class SchoolAdminTable extends Component {
                     ) : (
                       <SelectInputStyled
                         placeholder={filterStrDD[filtersColumn].placeholder}
-                        onChange={v => this.changeStatusValue(v, i)}
-                        value={filterStr !== "" ? filterStr : undefined}
+                        onChange={(v) => this.changeStatusValue(v, i)}
+                        value={filterStr !== '' ? filterStr : undefined}
                         height="32px"
                       >
-                        {filterStrDD[filtersColumn].list.map(item => (
-                          <Option key={item.title} value={item.value} disabled={item.disabled}>
+                        {filterStrDD[filtersColumn].list.map((item) => (
+                          <Option
+                            key={item.title}
+                            value={item.value}
+                            disabled={item.disabled}
+                          >
                             {item.title}
                           </Option>
-                          ))}
+                        ))}
                       </SelectInputStyled>
-                      )}
+                    )}
                   </Col>
-                  <Col span={6} style={{ display: "flex" }}>
+                  <Col span={6} style={{ display: 'flex' }}>
                     {i < 2 && (
                       <EduButton
                         height="32px"
                         width="50%"
                         type="primary"
-                        onClick={e => this.addFilter(e, i)}
-                        disabled={isAddFilterDisable || i < filtersData.length - 1}
+                        onClick={(e) => this.addFilter(e, i)}
+                        disabled={
+                          isAddFilterDisable || i < filtersData.length - 1
+                        }
                       >
-                        {t("common.addfilter")}
+                        {t('common.addfilter')}
                       </EduButton>
                     )}
-                    {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                      <EduButton height="32px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
-                        {t("common.removefilter")}
+                    {((filtersData.length === 1 &&
+                      filtersData[0].filterAdded) ||
+                      filtersData.length > 1) && (
+                      <EduButton
+                        height="32px"
+                        width="50%"
+                        type="primary"
+                        onClick={(e) => this.removeFilter(e, i)}
+                      >
+                        {t('common.removefilter')}
                       </EduButton>
                     )}
                   </Col>
                 </Row>
-              );
+              )
             })}
           </FilterWrapper>
         )}
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
             <SearchInputStyled
-              placeholder={t("common.searchbyname")}
+              placeholder={t('common.searchbyname')}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
             />
-            <EduButton height="36px" type="primary" onClick={this.showCreateSchoolAdminModal}>
-              {t("users.schooladmin.createschooladmin")}
+            <EduButton
+              height="36px"
+              type="primary"
+              onClick={this.showCreateSchoolAdminModal}
+            >
+              {t('users.schooladmin.createschooladmin')}
             </EduButton>
           </LeftFilterDiv>
 
@@ -653,14 +749,19 @@ class SchoolAdminTable extends Component {
             <CheckboxLabel
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
-              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+              disabled={
+                !!filtersData.find((item) => item.filtersColumn === 'status')
+              }
             >
-              {t("common.showcurrent")}
+              {t('common.showcurrent')}
             </CheckboxLabel>
             {role === roleuser.DISTRICT_ADMIN ? (
-              <StyledActionDropDown getPopupContainer={triggerNode => triggerNode.parentNode} overlay={actionMenu}>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+              >
                 <EduButton isGhost>
-                  {t("common.actions")} <Icon type="down" />
+                  {t('common.actions')} <Icon type="down" />
                 </EduButton>
               </StyledActionDropDown>
             ) : null}
@@ -668,7 +769,7 @@ class SchoolAdminTable extends Component {
         </StyledFilterDiv>
         <TableContainer>
           <StyledSchoolAdminTable
-            rowKey={record => record._id}
+            rowKey={(record) => record._id}
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={columns}
@@ -679,7 +780,7 @@ class SchoolAdminTable extends Component {
             current={currentPage}
             pageSize={25}
             total={totalUsers}
-            onChange={page => this.setPageNo(page)}
+            onChange={(page) => this.setPageNo(page)}
             hideOnSinglePage
           />
         </TableContainer>
@@ -706,34 +807,37 @@ class SchoolAdminTable extends Component {
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateAdminModalVisible}
-            title={t("users.schooladmin.deactivatesa.title")}
+            title={t('users.schooladmin.deactivatesa.title')}
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel={t("common.modalConfirmationText1") + t("users.schooladmin.deactivatesa.schooladmins")}
-            secondaryLabel={selectedAdminsForDeactivate.map(id => {
-              const { _source: { firstName, lastName } = {} } = result[id];
+            primaryLabel={
+              t('common.modalConfirmationText1') +
+              t('users.schooladmin.deactivatesa.schooladmins')
+            }
+            secondaryLabel={selectedAdminsForDeactivate.map((id) => {
+              const { _source: { firstName, lastName } = {} } = result[id]
               return (
                 <StyledClassName key={id}>
                   {firstName} {lastName}
                 </StyledClassName>
-              );
+              )
             })}
             closeModal={() =>
               this.setState({
-                deactivateAdminModalVisible: false
+                deactivateAdminModalVisible: false,
               })
             }
           />
         )}
       </MainContainer>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("manageDistrict"),
+  withNamespaces('manageDistrict'),
   connect(
-    state => ({
+    (state) => ({
       userOrgId: getUserOrgId(state),
       role: getUserRole(state),
       adminUsersData: getAdminUsersDataSelector(state),
@@ -742,7 +846,7 @@ const enhance = compose(
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
-      isProxyUser: isProxyUserSelector(state)
+      isProxyUser: isProxyUserSelector(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -764,12 +868,12 @@ const enhance = compose(
       addFilter: addFilterAction,
       removeFilter: removeFilterAction,
       setRole: setRoleAction,
-      updatePowerTeacher: updatePowerTeacherAction
+      updatePowerTeacher: updatePowerTeacherAction,
     }
   )
-);
+)
 
-export default enhance(SchoolAdminTable);
+export default enhance(SchoolAdminTable)
 
 SchoolAdminTable.propTypes = {
   loadAdminData: PropTypes.func.isRequired,
@@ -780,5 +884,5 @@ SchoolAdminTable.propTypes = {
   userOrgId: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
   pageNo: PropTypes.number.isRequired,
-  setPageNo: PropTypes.func.isRequired
-};
+  setPageNo: PropTypes.func.isRequired,
+}

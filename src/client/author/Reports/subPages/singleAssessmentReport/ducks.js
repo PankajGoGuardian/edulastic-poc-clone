@@ -1,15 +1,15 @@
-import { createSelector } from "reselect";
-import { createAction, createReducer } from "redux-starter-kit";
+import { createSelector } from 'reselect'
+import { createAction, createReducer } from 'redux-starter-kit'
 
-import { RESET_ALL_REPORTS } from "../../common/reportsRedux";
+import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
-const SET_SAR_SETTINGS = "[SAR settings] get sar settings";
-const RESET_SAR_SETTINGS = "[SAR settings] reset sar settings";
+const SET_SAR_SETTINGS = '[SAR settings] get sar settings'
+const RESET_SAR_SETTINGS = '[SAR settings] reset sar settings'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const setSARSettingsAction = createAction(SET_SAR_SETTINGS);
-export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
+export const setSARSettingsAction = createAction(SET_SAR_SETTINGS)
+export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -17,12 +17,13 @@ export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reportSARSettingsReducer;
+export const stateSelector = (state) =>
+  state.reportReducer.reportSARSettingsReducer
 
 export const getReportsSARSettings = createSelector(
   stateSelector,
-  state => state
-);
+  (state) => state
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -31,24 +32,24 @@ export const getReportsSARSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: { key: "", title: "" },
+  selectedTest: { key: '', title: '' },
   requestFilters: {
-    termId: "",
-    subject: "",
-    grade: "",
-    courseId: "",
-    groupId: "",
-    schoolId: "",
-    teacherId: "",
-    assessmentType: ""
+    termId: '',
+    subject: '',
+    grade: '',
+    courseId: '',
+    groupId: '',
+    schoolId: '',
+    teacherId: '',
+    assessmentType: '',
   },
-  reportType: ""
-};
+  reportType: '',
+}
 
 export const reportSARSettingsReducer = createReducer(initialState, {
   [SET_SAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState)
-});
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+})
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 

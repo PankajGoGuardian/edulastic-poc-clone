@@ -1,19 +1,21 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { withMathFormula } from "../HOC/withMathFormula";
-import helpers from "../helpers";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { withMathFormula } from '../HOC/withMathFormula'
+import helpers from '../helpers'
 
 const InstructorStimulus = ({ children, width }) =>
-  !helpers.isEmpty(children) ? <Wrapper width={width} dangerouslySetInnerHTML={{ __html: children }} /> : null;
+  !helpers.isEmpty(children) ? (
+    <Wrapper width={width} dangerouslySetInnerHTML={{ __html: children }} />
+  ) : null
 
 InstructorStimulus.propTypes = {
-  children: PropTypes.string
-};
+  children: PropTypes.string,
+}
 
 InstructorStimulus.defaultProps = {
-  children: ""
-};
+  children: '',
+}
 
 const Wrapper = withMathFormula(styled.div`
   padding: 25px;
@@ -21,6 +23,6 @@ const Wrapper = withMathFormula(styled.div`
   border-radius: 10px;
   margin-bottom: 15px;
   height: ${({ width }) => (!width ? null : width)};
-`);
+`)
 
-export default InstructorStimulus;
+export default InstructorStimulus

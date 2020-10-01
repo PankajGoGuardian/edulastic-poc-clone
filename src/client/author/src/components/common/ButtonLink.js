@@ -1,43 +1,64 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { themeColor, textColor, green, greenDark, darkGrey, desktopWidth } from "@edulastic/colors";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import {
+  themeColor,
+  textColor,
+  green,
+  greenDark,
+  darkGrey,
+  desktopWidth,
+} from '@edulastic/colors'
 
 const getColors = ({ color, active }) => {
-  const colors = {};
+  const colors = {}
 
   switch (color) {
-    case "primary":
-      colors.color = themeColor;
-      colors.hoverColor = themeColor;
-      if (active) colors.color = themeColor;
-      break;
-    case "default":
-      colors.color = textColor;
-      colors.hoverColor = darkGrey;
-      if (active) colors.color = darkGrey;
-      break;
-    case "success":
-      colors.color = green;
-      colors.hoverColor = greenDark;
-      if (active) colors.color = greenDark;
-      break;
+    case 'primary':
+      colors.color = themeColor
+      colors.hoverColor = themeColor
+      if (active) colors.color = themeColor
+      break
+    case 'default':
+      colors.color = textColor
+      colors.hoverColor = darkGrey
+      if (active) colors.color = darkGrey
+      break
+    case 'success':
+      colors.color = green
+      colors.hoverColor = greenDark
+      if (active) colors.color = greenDark
+      break
     default:
-      colors.color = textColor;
-      colors.hoverColor = darkGrey;
-      if (active) colors.color = darkGrey;
+      colors.color = textColor
+      colors.hoverColor = darkGrey
+      if (active) colors.color = darkGrey
   }
 
-  return colors;
-};
+  return colors
+}
 
-const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active }) => (
-  <Container onClick={onClick} type="button" uppercase={uppercase} style={style} {...getColors({ color, active })}>
+const ButtonLink = ({
+  onClick,
+  color,
+  icon,
+  children,
+  uppercase,
+  style,
+  active,
+}) => (
+  <Container
+    onClick={onClick}
+    type="button"
+    uppercase={uppercase}
+    style={style}
+    {...getColors({ color, active })}
+  >
     {icon && children && <Icon>{icon}</Icon>}
     {icon && !children && icon}
     {children && <Text>{children}</Text>}
   </Container>
-);
+)
 
 ButtonLink.propTypes = {
   onClick: PropTypes.func,
@@ -46,20 +67,20 @@ ButtonLink.propTypes = {
   icon: PropTypes.any,
   uppercase: PropTypes.bool,
   style: PropTypes.object,
-  active: PropTypes.bool
-};
+  active: PropTypes.bool,
+}
 
 ButtonLink.defaultProps = {
   onClick: () => {},
-  color: "default",
+  color: 'default',
   icon: null,
   children: null,
   uppercase: true,
   style: {},
-  active: false
-};
+  active: false,
+}
 
-export default ButtonLink;
+export default ButtonLink
 
 const Icon = styled.span`
   display: inline-flex;
@@ -70,7 +91,7 @@ const Icon = styled.span`
   @media (max-width: ${desktopWidth}) {
     margin-right: 10px;
   }
-`;
+`
 
 const Container = styled.button`
   display: flex;
@@ -82,7 +103,7 @@ const Container = styled.button`
   letter-spacing: 0.2px;
   border: none;
   padding: 10px;
-  text-transform: ${({ uppercase }) => (uppercase ? "uppercase" : "")};
+  text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : '')};
   color: ${({ color }) => color};
   background: transparent;
 
@@ -90,9 +111,9 @@ const Container = styled.button`
     color: ${({ hoverColor }) => hoverColor};
     cursor: pointer;
   }
-`;
+`
 
 const Text = styled.span`
   display: inline-block;
   padding-top: 1px;
-`;
+`

@@ -1,13 +1,13 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { test as testConstants } from "@edulastic/constants";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import { test as testConstants } from '@edulastic/constants'
 
-import presentationIcon from "../../../../assets/presentation.svg";
-import additemsIcon from "../../../../assets/add-items.svg";
-import piechartIcon from "../../../../assets/pie-chart.svg";
-import { TypeIcon, Icon } from "../../../TableList/styled";
-import AssignmentDetails from "../AssignmentDetails/AssignmentDetails";
+import presentationIcon from '../../../../assets/presentation.svg'
+import additemsIcon from '../../../../assets/add-items.svg'
+import piechartIcon from '../../../../assets/pie-chart.svg'
+import { TypeIcon, Icon } from '../../../TableList/styled'
+import AssignmentDetails from '../AssignmentDetails/AssignmentDetails'
 import {
   AssignmentThumbnail,
   AssignmentBodyWrapper,
@@ -16,28 +16,32 @@ import {
   AssignmentDetailsWrapper,
   ExpandButton,
   AssignmentStatus,
-  AssignmentNavigation
-} from "./styled";
+  AssignmentNavigation,
+} from './styled'
 
 export default class MobileAssignment extends React.Component {
   static propTypes = {
-    assignment: PropTypes.object.isRequired
-  };
-
-  state = {
-    expandItems: false
-  };
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const { expandItems } = this.state;
-    const { assignment } = this.props;
-    return nextProps.assignment !== assignment || nextState.expandItems !== expandItems;
+    assignment: PropTypes.object.isRequired,
   }
 
-  handleToggleExpandItems = () => this.setState(({ expandItems }) => ({ expandItems: !expandItems }));
+  state = {
+    expandItems: false,
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { expandItems } = this.state
+    const { assignment } = this.props
+    return (
+      nextProps.assignment !== assignment ||
+      nextState.expandItems !== expandItems
+    )
+  }
+
+  handleToggleExpandItems = () =>
+    this.setState(({ expandItems }) => ({ expandItems: !expandItems }))
 
   static renderExpandRowIcons(item) {
-    const itemLink = `${item._id}/${item.classId}`;
+    const itemLink = `${item._id}/${item.classId}`
 
     return (
       <AssignmentNavigation data-cy="PresentationIcon">
@@ -51,10 +55,10 @@ export default class MobileAssignment extends React.Component {
           <Icon src={piechartIcon} alt="Images" />
         </Link>
       </AssignmentNavigation>
-    );
+    )
   }
 
-  renderTestType = testType =>
+  renderTestType = (testType) =>
     testType === testConstants.type.PRACTICE ? (
       <TypeIcon data-cy="type" type="p">
         P
@@ -65,9 +69,9 @@ export default class MobileAssignment extends React.Component {
       <TypeIcon data-cy="type" type="c">
         C
       </TypeIcon>
-    );
+    )
 
-  renderClass = classes => (item, key) => {
+  renderClass = (classes) => (item, key) => {
     const {
       assignedBy: { name },
       testType,
@@ -75,15 +79,19 @@ export default class MobileAssignment extends React.Component {
       totalNumber,
       submittedCount,
       status,
-      gradedCount
-    } = item;
+      gradedCount,
+    } = item
 
-    const type = this.renderTestType(testType);
-    const itemStatus = <AssignmentStatus type={status}>{status || "NOT STARTED"}</AssignmentStatus>;
-    const submitted = `${submittedCount} of ${totalNumber}`;
+    const type = this.renderTestType(testType)
+    const itemStatus = (
+      <AssignmentStatus type={status}>
+        {status || 'NOT STARTED'}
+      </AssignmentStatus>
+    )
+    const submitted = `${submittedCount} of ${totalNumber}`
 
     return (
-      <AssignmentWrapper mb={key + 1 === classes ? "40px" : "5px"}>
+      <AssignmentWrapper mb={key + 1 === classes ? '40px' : '5px'}>
         <AssignmentBodyWrapper key={`status-${key}`}>
           <AssignmentDetailsWrapper>
             <AssignmentDetails title="Class" value={className} />
@@ -97,24 +105,34 @@ export default class MobileAssignment extends React.Component {
           </AssignmentDetailsWrapper>
         </AssignmentBodyWrapper>
       </AssignmentWrapper>
-    );
-  };
+    )
+  }
 
   render() {
-    const { expandItems } = this.state;
-    const { assignment } = this.props;
-    const [defaultAssignment] = assignment;
-    const { title, thumbnail, submittedCount, gradedCount, testType } = defaultAssignment;
+    const { expandItems } = this.state
+    const { assignment } = this.props
+    const [defaultAssignment] = assignment
+    const {
+      title,
+      thumbnail,
+      submittedCount,
+      gradedCount,
+      testType,
+    } = defaultAssignment
 
-    const classes = (assignment || []).length;
-    const submittedValue = submittedCount || 0;
-    const type = this.renderTestType(testType);
+    const classes = (assignment || []).length
+    const submittedValue = submittedCount || 0
+    const type = this.renderTestType(testType)
 
-    const notStarted = (assignment || []).filter(ite => ite.status === "NOT OPEN").length;
-    const inProgress = (assignment || []).filter(ite => ite.status === "IN PROGRESS").length;
+    const notStarted = (assignment || []).filter(
+      (ite) => ite.status === 'NOT OPEN'
+    ).length
+    const inProgress = (assignment || []).filter(
+      (ite) => ite.status === 'IN PROGRESS'
+    ).length
 
     return (
-      <Fragment>
+      <>
         <AssignmentWrapper>
           <AssignmentThumbnail thumbnail={thumbnail} />
           <AssignmentBodyWrapper>
@@ -132,13 +150,15 @@ export default class MobileAssignment extends React.Component {
 
             <AssignmentDetailsWrapper>
               <ExpandButton onClick={this.handleToggleExpandItems} isGhost>
-                <span>{expandItems ? "HIDE ASSIGMENTS" : "SHOW ASSIGMENTS"}</span>
+                <span>
+                  {expandItems ? 'HIDE ASSIGMENTS' : 'SHOW ASSIGMENTS'}
+                </span>
               </ExpandButton>
             </AssignmentDetailsWrapper>
           </AssignmentBodyWrapper>
         </AssignmentWrapper>
         {expandItems && assignment.map(this.renderClass(classes))}
-      </Fragment>
-    );
+      </>
+    )
   }
 }

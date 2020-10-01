@@ -1,9 +1,9 @@
-import { IconSend } from "@edulastic/icons";
-import queryString from "query-string";
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { Tooltip } from "../../../common/utils/helpers";
+import { IconSend } from '@edulastic/icons'
+import queryString from 'query-string'
+import React from 'react'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { Tooltip } from '../../../common/utils/helpers'
 import {
   ControlBtn,
   CustomAffix,
@@ -16,10 +16,10 @@ import {
   TestButton,
   ToolBar,
   ToolButton,
-  ToolTipContainer
-} from "../common";
-import HeaderMainMenu from "../common/HeaderMainMenu";
-import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
+  ToolTipContainer,
+} from '../common'
+import HeaderMainMenu from '../common/HeaderMainMenu'
+import QuestionSelectDropdown from '../common/QuestionSelectDropdown'
 
 const PlayerHeader = ({
   LCBPreviewModal,
@@ -60,11 +60,11 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
-  location
+  location,
 }) => {
-  const query = queryString.parse(location.search);
-  const { cliUser } = query;
-  const hideSubmitBtn = cliUser && previewPlayer && isLast;
+  const query = queryString.parse(location.search)
+  const { cliUser } = query
+  const hideSubmitBtn = cliUser && previewPlayer && isLast
 
   const rightButtons = (
     <SaveAndExit
@@ -77,7 +77,7 @@ const PlayerHeader = ({
       isCliUserPreview={cliUser}
       LCBPreviewModal={LCBPreviewModal}
     />
-  );
+  )
 
   return (
     <CustomAffix>
@@ -85,7 +85,7 @@ const PlayerHeader = ({
         <HeaderMainMenu skin style={{ height: headerHeight }}>
           <FlexContainer style={headerStyleWidthZoom}>
             <HeaderWrapper justifyContent="space-between">
-              <MainActionWrapper style={{ alignItems: "center" }}>
+              <MainActionWrapper style={{ alignItems: 'center' }}>
                 <LogoCompact isMobile={isMobile} buttons={rightButtons} />
                 {!LCBPreviewModal && (
                   <>
@@ -101,7 +101,11 @@ const PlayerHeader = ({
                       moveToNext={moveToNext}
                       utaId={utaId}
                     />
-                    <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
+                    <Tooltip
+                      placement="top"
+                      title="Previous"
+                      overlayStyle={overlayStyle}
+                    >
                       <ControlBtn.Back
                         prev
                         skin
@@ -109,9 +113,9 @@ const PlayerHeader = ({
                         type="primary"
                         icon="left"
                         disabled={disabled}
-                        onClick={e => {
-                          moveToPrev(null, true);
-                          e.target.blur();
+                        onClick={(e) => {
+                          moveToPrev(null, true)
+                          e.target.blur()
                         }}
                       />
                     </Tooltip>
@@ -121,14 +125,14 @@ const PlayerHeader = ({
                         skin
                         type="primary"
                         data-cy="next"
-                        icon={isLast ? null : "right"}
-                        onClick={e => {
-                          moveToNext();
-                          e.target.blur();
+                        icon={isLast ? null : 'right'}
+                        onClick={(e) => {
+                          moveToNext()
+                          e.target.blur()
                         }}
                       >
                         {isLast && <IconSend />}
-                        {isLast ? "SUBMIT" : "NEXT"}
+                        {isLast ? 'SUBMIT' : 'NEXT'}
                       </ControlBtn.Next>
                     )}
                   </>
@@ -149,7 +153,11 @@ const PlayerHeader = ({
                 {!LCBPreviewModal && (
                   <ToolTipContainer>
                     {showSettingIcon && (
-                      <Tooltip placement="top" title="Tool" overlayStyle={overlayStyle}>
+                      <Tooltip
+                        placement="top"
+                        title="Tool"
+                        overlayStyle={overlayStyle}
+                      >
                         <ToolButton
                           next
                           skin
@@ -185,9 +193,9 @@ const PlayerHeader = ({
         </HeaderMainMenu>
       </Header>
     </CustomAffix>
-  );
-};
+  )
+}
 
-const enhance = compose(withRouter);
+const enhance = compose(withRouter)
 
-export default enhance(PlayerHeader);
+export default enhance(PlayerHeader)

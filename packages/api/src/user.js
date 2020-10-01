@@ -1,8 +1,8 @@
-import API from "./utils/API";
-import * as Storage from "./utils/Storage";
+import API from './utils/API'
+import * as Storage from './utils/Storage'
 
-const api = new API();
-const prefix = "/user";
+const api = new API()
+const prefix = '/user'
 
 /*
  * api for fetching logged in users details
@@ -11,128 +11,128 @@ const getUser = (needFirebaseLoginToken = undefined) =>
   api
     .callApi({
       url: `${prefix}/me`,
-      method: "get",
+      method: 'get',
       params: {
-        needFirebaseLoginToken
-      }
+        needFirebaseLoginToken,
+      },
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getProxyUser = params =>
+const getProxyUser = (params) =>
   api
     .callApi({
       url: `${prefix}/proxy`,
       params,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
-const getSwitchedToken = role =>
+const getSwitchedToken = (role) =>
   api
     .callApi({
       url: `${prefix}/token/role/${role}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const getSwitchUser = (switchToId, personId) =>
   api
     .callApi({
       url: `${prefix}/switch`,
-      method: "get",
+      method: 'get',
       params: {
         switchToId,
-        personId
-      }
+        personId,
+      },
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
-const fetchUsers = data =>
+const fetchUsers = (data) =>
   api
     .callApi({
       url: `search/users`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
-const fetchUsersForShare = data =>
+const fetchUsersForShare = (data) =>
   api
     .callApi({
       url: `user/search`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
-const createUser = data =>
+const createUser = (data) =>
   api
     .callApi({
       url: `${prefix}/`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const updateUser = ({ data, userId }) =>
   api
     .callApi({
       url: `${prefix}/${userId}`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const updateUserRole = ({ data, userId }) =>
   api
     .callApi({
       url: `${prefix}/role/${userId}`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const deleteUser = data =>
+const deleteUser = (data) =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "delete",
-      data
+      method: 'delete',
+      data,
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
-const deleteAccount = userId =>
+const deleteAccount = (userId) =>
   api
     .callApi({
       url: `${prefix}/${userId}`,
-      method: "delete"
+      method: 'delete',
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
-const changeUserTTS = data =>
+const changeUserTTS = (data) =>
   api.callApi({
     url: `${prefix}/tts`,
-    method: "put",
-    data
-  });
+    method: 'put',
+    data,
+  })
 
-const resetPassword = data =>
+const resetPassword = (data) =>
   api.callApi({
     url: `${prefix}/password`,
-    method: "put",
-    data
-  });
+    method: 'put',
+    data,
+  })
 
 const addMultipleStudents = ({ districtId, data }) =>
   api
     .callApi({
       url: `${prefix}/${districtId}/students`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const checkUser = payload =>
+const checkUser = (payload) =>
   api
     .callApi({
       url: `${prefix}/username-email/`,
@@ -140,88 +140,98 @@ const checkUser = payload =>
         username: `${payload.username}`,
         districtId: `${payload.districtId}`,
         classCode: `${payload.classCode}`,
-        role: `${payload.role}`
+        role: `${payload.role}`,
       },
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const SearchAddEnrolMultiStudents = (classCode, data) =>
   api.callApi({
     url: `${prefix}/${classCode}/class-students`,
-    method: "post",
-    data
-  });
+    method: 'post',
+    data,
+  })
 
 const addStudentsToOtherClass = ({ classCode, userDetails }) =>
   api
     .callApi({
       url: `${prefix}/${classCode}/class-students`,
-      method: "post",
+      method: 'post',
       data: {
-        userDetails
-      }
+        userDetails,
+      },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const validateClassCode = classCode =>
+const validateClassCode = (classCode) =>
   api
     .callApi({
       url: `/group/${classCode}/validate`,
-      method: "get"
+      method: 'get',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const validateDistrictPolicy = params =>
-  api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
+const validateDistrictPolicy = (params) =>
+  api
+    .callApi({ url: `${prefix}/domain`, params })
+    .then((result) => result.data.result)
 
-const checkClassCode = params => api.callApi({ url: `/auth/class-code/`, params }).then(result => result.data.data);
+const checkClassCode = (params) =>
+  api
+    .callApi({ url: `/auth/class-code/`, params })
+    .then((result) => result.data.data)
 
-const requestNewPassword = params =>
+const requestNewPassword = (params) =>
   api
     .callApi({
       url: `auth/forgot-password`,
       params,
-      method: "POST"
+      method: 'POST',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const fetchResetPasswordUser = params =>
+const fetchResetPasswordUser = (params) =>
   api
     .callApi({
       url: `auth/reset-password`,
-      params
+      params,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const resetUserPassword = data =>
+const resetUserPassword = (data) =>
   api
     .callApi({
       url: `auth/reset-password`,
       data,
-      method: "POST"
+      method: 'POST',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const adddBulkTeacher = ({ districtId, userDetails }) =>
   api
     .callApi({
       url: `${prefix}/${districtId}/bulk-invite-teachers`,
       data: {
-        userDetails
+        userDetails,
       },
-      method: "POST"
+      method: 'POST',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const resetMyPassword = data =>
+const resetMyPassword = (data) =>
   api.callApi({
     url: `${prefix}/reset-password`,
-    method: "put",
-    data
-  });
+    method: 'put',
+    data,
+  })
 
-const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) =>
+const moveUsersToOtherClass = ({
+  districtId,
+  destinationClassCode,
+  sourceClassCode,
+  userDetails,
+}) =>
   api
     .callApi({
       url: `${prefix}/move-users`,
@@ -229,72 +239,76 @@ const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCo
         districtId,
         userDetails,
         destinationClassCode,
-        sourceClassCode
+        sourceClassCode,
       },
-      method: "POST"
+      method: 'POST',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const removeSchool = data =>
+const removeSchool = (data) =>
   api.callApi({
     url: `${prefix}/institution/${data.schoolId}/remove`,
-    method: "put",
-    data
-  });
+    method: 'put',
+    data,
+  })
 
-const sendParentCode = code =>
+const sendParentCode = (code) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/parent-code/${code}`,
-      data: {}
+      data: {},
     })
-    .then(result => {
+    .then((result) => {
       if (result?.data?.result?.token) {
-        Storage.storeAccessToken(result?.data?.result?.token, result?.data?.result?.userId, "parent");
-        Storage.selectAccessToken(result?.data?.result?.userId, "parent");
+        Storage.storeAccessToken(
+          result?.data?.result?.token,
+          result?.data?.result?.userId,
+          'parent'
+        )
+        Storage.selectAccessToken(result?.data?.result?.userId, 'parent')
       }
-      return result.data.result;
-    });
+      return result.data.result
+    })
 
-const fetchUsersFromDistrict = districtId =>
+const fetchUsersFromDistrict = (districtId) =>
   api
     .callApi({
       url: `districts/${districtId}/users`,
       data: {},
-      method: "POST"
+      method: 'POST',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const fetchUsersForMerge = ({ type, userIds }) =>
   api
     .callApi({
       url: `${prefix}/${type}/${userIds}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const mergeUsers = ({ primaryUserId, userIds }) =>
   api
     .callApi({
       url: `${prefix}/merge-user`,
-      method: "post",
-      data: { primaryUserId, userIds }
+      method: 'post',
+      data: { primaryUserId, userIds },
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
-const updatePowerTeacherTools = payload =>
+const updatePowerTeacherTools = (payload) =>
   api.callApi({
     url: `${prefix}/power-teacher`,
-    method: "post",
-    data: payload
-  });
+    method: 'post',
+    data: payload,
+  })
 
 const activateUser = ({ userId, activate }) =>
   api.callApi({
     url: `${prefix}/activate-user/${userId}/activate/${activate}`,
-    method: "put"
-  });
+    method: 'put',
+  })
 
 export default {
   getUser,
@@ -329,5 +343,5 @@ export default {
   getSwitchUser,
   mergeUsers,
   updatePowerTeacherTools,
-  activateUser
-};
+  activateUser,
+}

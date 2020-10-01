@@ -6,44 +6,44 @@ import {
   GET_ASSIGNMENT_PASSWORD,
   SET_PASSWORD_STATUS_MESSAGE,
   TEST_ACTIVITY_LOADING,
-  UPDATE_CURRENT_AUDIO_DEATILS
-} from "../constants/actions";
+  UPDATE_CURRENT_AUDIO_DEATILS,
+} from '../constants/actions'
 
-export const loadTestAction = payload => ({
+export const loadTestAction = (payload) => ({
   type: LOAD_TEST,
-  payload
-});
+  payload,
+})
 
-export const finishTestAcitivityAction = payload => ({
+export const finishTestAcitivityAction = (payload) => ({
   type: FINISH_TEST,
-  payload
-});
+  payload,
+})
 
 export const loadPreviousReponseAction = () => ({
-  type: LOAD_PREVIOUS_RESPONSES
-});
+  type: LOAD_PREVIOUS_RESPONSES,
+})
 
-export const setPasswordValidateStatusAction = payload => ({
+export const setPasswordValidateStatusAction = (payload) => ({
   type: SET_PASSWORD_VALIDATE_STATUS,
-  payload
-});
+  payload,
+})
 
-export const getAssigmentPasswordAction = payload => ({
+export const getAssigmentPasswordAction = (payload) => ({
   type: GET_ASSIGNMENT_PASSWORD,
-  payload
-});
+  payload,
+})
 
-export const setPasswordStatusAction = payload => ({
+export const setPasswordStatusAction = (payload) => ({
   type: SET_PASSWORD_STATUS_MESSAGE,
-  payload
-});
+  payload,
+})
 
-export const setTestActivityLoadingAction = payload => ({
+export const setTestActivityLoadingAction = (payload) => ({
   type: TEST_ACTIVITY_LOADING,
-  payload
-});
+  payload,
+})
 
-export const setCurrentAudioDetailsAction = payload => ({
+export const setCurrentAudioDetailsAction = (payload) => ({
   type: UPDATE_CURRENT_AUDIO_DEATILS,
-  payload
-});
+  payload,
+})

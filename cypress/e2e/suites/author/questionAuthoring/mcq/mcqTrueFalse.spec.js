@@ -1,53 +1,55 @@
 // / <reference types="Cypress" />
-import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
-import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
-import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage.js";
-import FileHelper from "../../../../framework/util/fileHelper";
+import ItemListPage from '../../../../framework/author/itemList/itemListPage.js'
+import EditItemPage from '../../../../framework/author/itemList/itemDetail/editPage.js'
+import MCQTrueFalsePage from '../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage.js'
+import FileHelper from '../../../../framework/util/fileHelper'
 import {
   SCORING_TYPE,
   STEM,
   STYLE_TYPE,
-  FONT_SIZE
-} from "../../../../framework/constants/questionAuthoring";
-import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
-import { questionType } from "../../../../framework/constants/questionTypes.js";
+  FONT_SIZE,
+} from '../../../../framework/constants/questionAuthoring'
+import validateSolutionBlockTests from '../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js'
+import { questionType } from '../../../../framework/constants/questionTypes.js'
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false" type question`, () => {
+describe(`${FileHelper.getSpecName(
+  Cypress.spec.name
+)} >> Author "True or false" type question`, () => {
   const queData = {
-    group: "Multiple Choice",
+    group: 'Multiple Choice',
     queType: questionType.MCQ_TF,
-    queText: "Which is following option is true :",
-    choices: ["TrueOption", "FalseOption"],
-    correct: ["TrueOption"],
-    alterate: ["trueOption"],
-    extlink: "www.testdomain.com",
-    formattext: "formattedtext",
-    formula: "s=ar^2"
-  };
-  const question = new MCQTrueFalsePage();
-  const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
-  const text = "testtext";
-  const formates = question.formates;
+    queText: 'Which is following option is true :',
+    choices: ['TrueOption', 'FalseOption'],
+    correct: ['TrueOption'],
+    alterate: ['trueOption'],
+    extlink: 'www.testdomain.com',
+    formattext: 'formattedtext',
+    formula: 's=ar^2',
+  }
+  const question = new MCQTrueFalsePage()
+  const editItem = new EditItemPage()
+  const itemList = new ItemListPage()
+  const text = 'testtext'
+  const formates = question.formates
 
   before(() => {
-    cy.login();
-  });
+    cy.login()
+  })
 
-  context(" > User creates question.", () => {
-    before("visit items page and select question type", () => {
-      editItem.createNewItem();
+  context(' > User creates question.', () => {
+    before('visit items page and select question type', () => {
+      editItem.createNewItem()
       // add new question
-      editItem.chooseQuestion(queData.group, queData.queType);
-    });
+      editItem.chooseQuestion(queData.group, queData.queType)
+    })
 
-    it(" > [Tc_284]:test => Enter question text", () => {
+    it(' > [Tc_284]:test => Enter question text', () => {
       // edit text
       question
         .getQuestionEditor()
         .clear()
         .type(queData.queText)
-        .should("contain", queData.queText);
+        .should('contain', queData.queText)
 
       /*  // add formatting
       question
@@ -84,71 +86,63 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .find(tag)
           .should("not.be.exist");
       }); */
-    });
+    })
 
-    it(" > [Tc_285]:test => Multiple choices options", () => {
+    it(' > [Tc_285]:test => Multiple choices options', () => {
       // check default choice options
       question
         .getAllChoices()
-        .should("have.length", 2)
-        .and("contain", "True")
-        .and("contain", "False");
+        .should('have.length', 2)
+        .and('contain', 'True')
+        .and('contain', 'False')
 
       // edit 1st choice
-      question
-        .getChoiceByIndex(0)
-        .clear()
-        .type(text)
-        .should("contain", text);
+      question.getChoiceByIndex(0).clear().type(text).should('contain', text)
 
       // delete all choices
       question
         .getAllChoices()
         .each(($el, index, $list) => {
-          const cusIndex = $list.length - (index + 1);
-          question.deleteChoiceByIndex(cusIndex);
+          const cusIndex = $list.length - (index + 1)
+          question.deleteChoiceByIndex(cusIndex)
         })
-        .should("have.length", 0);
+        .should('have.length', 0)
 
       // add new
-      const { choices } = queData;
+      const { choices } = queData
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
           .getChoiceByIndex(index)
           .clear()
           .type(ch)
-          .should("contain", ch);
-      });
-    });
+          .should('contain', ch)
+      })
+    })
 
-    it(" > [Tc_286]:test => Set Correct Answer(s)", () => {
+    it(' > [Tc_286]:test => Set Correct Answer(s)', () => {
       // update points
-      question.getPoints().verifyNumInput(0.5);
+      question.getPoints().verifyNumInput(0.5)
 
       // select correct ans
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
+      question.getAllAnsChoicesLabel().each(($el) => {
+        cy.wrap($el).click()
 
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
+        cy.wrap($el).find('input').should('be.checked')
+      })
 
       // alternate
-      question.addAlternate();
+      question.addAlternate()
 
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
+      question.getAllAnsChoicesLabel().each(($el) => {
+        cy.wrap($el).click()
 
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
-    });
+        cy.wrap($el).find('input').should('be.checked')
+      })
+    })
 
-    it(" > [Tc_287]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
+    it(' > [Tc_287]:test => Advanced Options', () => {
+      question.clickOnAdvancedOptions()
 
       // scoring
       // question.getMaxScore().verifyNumInput(1);
@@ -166,9 +160,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
             .click()
             .should("not.have.class", "ant-checkbox-checked");
  */
-      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.selectScoringType(SCORING_TYPE.PARTIAL)
 
-      question.getPanalty().verifyNumInput(0.5);
+      question.getPanalty().verifyNumInput(0.5)
 
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
@@ -177,109 +171,109 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question
         .getUnscore()
         .click()
-        .then($el2 => {
-          cy.wrap($el2).should("have.class", "ant-checkbox-checked");
+        .then(($el2) => {
+          cy.wrap($el2).should('have.class', 'ant-checkbox-checked')
 
           // question.getMinScore().should("have.attr", "disabled");
-        });
+        })
 
       question
         .getUnscore()
         .click()
-        .should("not.have.class", "ant-checkbox-checked");
+        .should('not.have.class', 'ant-checkbox-checked')
       // });
 
       /* question
         .getEnableAutoScoring()
         .click()
         .should("not.have.class", "ant-checkbox-checked"); */
-    });
+    })
 
-    it(" > [Tc_288]:test => Display", () => {
-      question.getNumofCol().verifyNumInput(1);
+    it(' > [Tc_288]:test => Display', () => {
+      question.getNumofCol().verifyNumInput(1)
 
       // font select
-      question.selectFontSize(FONT_SIZE.SMALL);
+      question.selectFontSize(FONT_SIZE.SMALL)
 
       // style select
-      question.selectChoicesStyle(STYLE_TYPE.BLOCK);
+      question.selectChoicesStyle(STYLE_TYPE.BLOCK)
 
       // label type
       const labels = [
         {
           label: STEM.NUMERICAL,
-          key: "1"
+          key: '1',
         },
         {
           label: STEM.UPPERCASE,
-          key: "A"
+          key: 'A',
         },
         {
           label: STEM.LOWERCASE,
-          key: "a"
-        }
-      ];
+          key: 'a',
+        },
+      ]
 
-      labels.forEach(option => {
-        question.selectLabelType(option.label);
+      labels.forEach((option) => {
+        question.selectLabelType(option.label)
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find(".labelOnly")
-          .should("have.text", option.key);
-      });
+          .find('.labelOnly')
+          .should('have.text', option.key)
+      })
 
-      question.selectChoicesStyle("Standard");
-    });
+      question.selectChoicesStyle('Standard')
+    })
 
-    it(" > [Tc_289]:test => Save question", () => {
-      editItem.header.save();
+    it(' > [Tc_289]:test => Save question', () => {
+      editItem.header.save()
       // cy.contains(queData.formattext).should("be.visible");
-      cy.url().should("contain", "item-detail");
-    });
+      cy.url().should('contain', 'item-detail')
+    })
 
-    it(" > [Tc_290]:test => Preview Item", () => {
-      const preview = editItem.header.preview();
+    it(' > [Tc_290]:test => Preview Item', () => {
+      const preview = editItem.header.preview()
 
-      preview.checkScore("0/1");
+      preview.checkScore('0/1')
 
-      preview.getClear().click();
+      preview.getClear().click()
 
-      preview.getShowAnswer().click();
+      preview.getShowAnswer().click()
 
-      preview.getClear().click();
+      preview.getClear().click()
 
-      preview.header.edit();
-    });
-  });
+      preview.header.edit()
+    })
+  })
 
-  context(" > User edit the question.", () => {
+  context(' > User edit the question.', () => {
     const queData = {
-      group: "Multiple Choice",
-      queType: "True or false",
-      queText: "editedWhich is following option is true :",
-      choices: ["editedTrue", "editedFalse"],
-      correct: ["editedTrue"],
-      alterate: ["editedtrue"],
-      extlink: "editedwww.testdomain.com",
-      formattext: "editedformattedtext",
-      formula: "editeds=ar^2"
-    };
+      group: 'Multiple Choice',
+      queType: 'True or false',
+      queText: 'editedWhich is following option is true :',
+      choices: ['editedTrue', 'editedFalse'],
+      correct: ['editedTrue'],
+      alterate: ['editedtrue'],
+      extlink: 'editedwww.testdomain.com',
+      formattext: 'editedformattedtext',
+      formula: 'editeds=ar^2',
+    }
 
-    before("delete old question and create dummy que to edit", () => {
-      question.createQuestion();
-      question.header.save();
+    before('delete old question and create dummy que to edit', () => {
+      question.createQuestion()
+      question.header.save()
       // edit
-      question.header.edit();
-    });
+      question.header.edit()
+    })
 
-    it(" > [Tc_291]:test => Enter question text", () => {
+    it(' > [Tc_291]:test => Enter question text', () => {
       // edit text
       question
         .getQuestionEditor()
         .clear()
         .type(queData.queText)
-        .should("contain", queData.queText);
+        .should('contain', queData.queText)
 
       /* // add formatting
       question
@@ -316,69 +310,61 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .find(tag)
           .should("not.be.exist");
       }); */
-    });
+    })
 
-    it(" > [Tc_292]:test => Multiple choices options", () => {
+    it(' > [Tc_292]:test => Multiple choices options', () => {
       // check default choice options
       question
         .getAllChoices()
-        .should("have.length", 2)
-        .and("contain", "right")
-        .and("contain", "wrong");
+        .should('have.length', 2)
+        .and('contain', 'right')
+        .and('contain', 'wrong')
 
       // edit 1st choice
-      question
-        .getChoiceByIndex(0)
-        .clear()
-        .type(text)
-        .should("contain", text);
+      question.getChoiceByIndex(0).clear().type(text).should('contain', text)
 
       // delete all choices
       question
         .getAllChoices()
         .each(($el, index, $list) => {
-          const cusIndex = $list.length - (index + 1);
-          question.deleteChoiceByIndex(cusIndex);
+          const cusIndex = $list.length - (index + 1)
+          question.deleteChoiceByIndex(cusIndex)
         })
-        .should("have.length", 0);
+        .should('have.length', 0)
 
       // add new
-      const { choices } = queData;
+      const { choices } = queData
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
           .getChoiceByIndex(index)
           .clear()
           .type(ch)
-          .should("contain", ch);
-      });
-    });
+          .should('contain', ch)
+      })
+    })
 
-    it(" > [Tc_293]:test => Set Correct Answer(s)", () => {
+    it(' > [Tc_293]:test => Set Correct Answer(s)', () => {
       // update points
-      question.getPoints().verifyNumInput(0.5);
+      question.getPoints().verifyNumInput(0.5)
 
       // select correct ans
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
+      question.getAllAnsChoicesLabel().each(($el) => {
+        cy.wrap($el).click()
 
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
+        cy.wrap($el).find('input').should('be.checked')
+      })
 
       // alternate
-      question.addAlternate();
+      question.addAlternate()
 
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
-    });
+      question.getAllAnsChoicesLabel().each(($el) => {
+        cy.wrap($el).click()
+        cy.wrap($el).find('input').should('be.checked')
+      })
+    })
 
-    it(" > [Tc_294]:test => Advanced Options", () => {
+    it(' > [Tc_294]:test => Advanced Options', () => {
       // question.clickOnAdvancedOptions();
 
       // scoring
@@ -398,9 +384,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
             .click()
             .should("not.have.class", "ant-checkbox-checked");
  */
-      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.selectScoringType(SCORING_TYPE.PARTIAL)
 
-      question.getPanalty().verifyNumInput(0.5);
+      question.getPanalty().verifyNumInput(0.5)
 
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
@@ -409,78 +395,78 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question
         .getUnscore()
         .click()
-        .then($el2 => {
-          cy.wrap($el2).should("have.class", "ant-checkbox-checked");
+        .then(($el2) => {
+          cy.wrap($el2).should('have.class', 'ant-checkbox-checked')
           // question.getMinScore().should("have.attr", "disabled");
-        });
+        })
 
       question
         .getUnscore()
         .click()
-        .should("not.have.class", "ant-checkbox-checked");
+        .should('not.have.class', 'ant-checkbox-checked')
       // });
 
       /* question
         .getEnableAutoScoring()
         .click()
         .should("not.have.class", "ant-checkbox-checked"); */
-    });
+    })
 
-    it(" > [Tc_295]:test => Display", () => {
-      question.getNumofCol().verifyNumInput(1);
+    it(' > [Tc_295]:test => Display', () => {
+      question.getNumofCol().verifyNumInput(1)
 
       // font select
-      question.selectFontSize(FONT_SIZE.SMALL);
+      question.selectFontSize(FONT_SIZE.SMALL)
 
       // style select
-      question.selectChoicesStyle(STYLE_TYPE.BLOCK);
+      question.selectChoicesStyle(STYLE_TYPE.BLOCK)
 
       // label type
       const labels = [
         {
           label: STEM.NUMERICAL,
-          key: "1"
+          key: '1',
         },
         {
           label: STEM.UPPERCASE,
-          key: "A"
+          key: 'A',
         },
         {
           label: STEM.LOWERCASE,
-          key: "a"
-        }
-      ];
+          key: 'a',
+        },
+      ]
 
-      labels.forEach(option => {
-        question.selectLabelType(option.label);
+      labels.forEach((option) => {
+        question.selectLabelType(option.label)
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find(".labelOnly")
-          .should("have.text", option.key);
-      });
+          .find('.labelOnly')
+          .should('have.text', option.key)
+      })
 
-      question.selectChoicesStyle(STYLE_TYPE.STANDARD);
-    });
+      question.selectChoicesStyle(STYLE_TYPE.STANDARD)
+    })
 
-    it(" > [Tc_296]:test => Save question", () => {
-      editItem.header.save(true);
-      cy.url().should("contain", "item-detail");
-    });
+    it(' > [Tc_296]:test => Save question', () => {
+      editItem.header.save(true)
+      cy.url().should('contain', 'item-detail')
+    })
 
-    it(" > [Tc_297]:test => Preview Item", () => {
-      const preview = editItem.header.preview();
+    it(' > [Tc_297]:test => Preview Item', () => {
+      const preview = editItem.header.preview()
 
-      preview.checkScore("0/1");
+      preview.checkScore('0/1')
 
-      preview.getClear().click();
+      preview.getClear().click()
 
-      preview.getShowAnswer().click({ force: true });
+      preview.getShowAnswer().click({ force: true })
 
-      preview.getClear().click();
+      preview.getClear().click()
 
-      preview.header.edit();
-    });
+      preview.header.edit()
+    })
 
     /*  it(" > [Tc_298]:test => Delete question from item", () => {
       editItem
@@ -489,200 +475,225 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .click()
         .should("have.length", 0);
     }); */
-  });
+  })
 
-  context(" > [sanity]:test => Create question using different options and validate solution block", () => {
-    before("visit items list page and select question type", () => {
-      editItem.createNewItem();
+  context(
+    ' > [sanity]:test => Create question using different options and validate solution block',
+    () => {
+      before('visit items list page and select question type', () => {
+        editItem.createNewItem()
+        // add new question
+        editItem.chooseQuestion(queData.group, queData.queType)
+
+        question.getQuestionEditor().clear().type(queData.queText)
+
+        question.getAllChoices().each(($el, index, $list) => {
+          const cusIndex = $list.length - (index + 1)
+          question.deleteChoiceByIndex(cusIndex)
+        })
+
+        // add choices
+        const choices = queData.choices
+        choices.forEach((ch, index) => {
+          question
+            .addNewChoice()
+            .getChoiceByIndex(index)
+            .clear()
+            .type(ch)
+            .should('contain', ch)
+        })
+
+        question.selectChoice(queData.correct[0])
+
+        // save
+        question.header.save()
+      })
+
+      it(' > [mcq_tf_test1]:test => Validate basic question with default setting', () => {
+        // preview
+        const preview = editItem.header.preview()
+
+        // show ans
+        preview
+          .getShowAnswer()
+          .click()
+          .then(() => {
+            question.checkHighlight({ wrong: true })
+
+            question.checkHighlightData({
+              color: 'right',
+              length: 1,
+              choices: [queData.correct[0]],
+            })
+          })
+
+        preview
+          .getClear()
+          .click()
+          .then(() => {
+            question.checkHighlight({ color: 'both' })
+          })
+
+        // give correct ans and validate
+
+        question.selectAnswerChoice(queData.correct[0])
+
+        preview.checkScore('1/1')
+
+        question.checkHighlight({ wrong: true })
+
+        question.checkHighlightData({
+          color: 'right',
+          length: 1,
+          choices: [queData.correct[0]],
+        })
+
+        preview
+          .getClear()
+          .click()
+          .then(() => {
+            question.checkHighlight({ color: 'both' })
+          })
+
+        // give wrong ans and check
+        question.selectAnswerChoice(queData.choices[1])
+
+        preview.checkScore('0/1')
+
+        question.checkHighlightData({
+          color: 'wrong',
+          length: 1,
+          choices: [queData.choices[1]],
+        })
+
+        question.checkHighlight({ right: true })
+
+        preview
+          .getClear()
+          .click()
+          .then(() => {
+            question.checkHighlight({ color: 'both' })
+          })
+
+        // give no ans and check
+        preview.checkScore('0/1')
+
+        question.checkHighlight({ color: 'both' })
+      })
+    }
+  )
+  context('Score block testing', () => {
+    before('visit items list page and select question type', () => {
+      editItem.createNewItem()
       // add new question
-      editItem.chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType)
 
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.queText);
+      question.getQuestionEditor().clear().type(queData.queText)
 
       question.getAllChoices().each(($el, index, $list) => {
-        const cusIndex = $list.length - (index + 1);
-        question.deleteChoiceByIndex(cusIndex);
-      });
+        const cusIndex = $list.length - (index + 1)
+        question.deleteChoiceByIndex(cusIndex)
+      })
 
       // add choices
-      const choices = queData.choices;
+      const choices = queData.choices
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
           .getChoiceByIndex(index)
           .clear()
           .type(ch)
-          .should("contain", ch);
-      });
-
-      question.selectChoice(queData.correct[0]);
-
-      // save
-      question.header.save();
-    });
-
-    it(" > [mcq_tf_test1]:test => Validate basic question with default setting", () => {
-      // preview
-      const preview = editItem.header.preview();
-
-      // show ans
-      preview
-        .getShowAnswer()
-        .click()
-        .then(() => {
-          question.checkHighlight({ wrong: true });
-
-          question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
-        });
-
-      preview
-        .getClear()
-        .click()
-        .then(() => {
-          question.checkHighlight({ color: "both" });
-        });
-
-      // give correct ans and validate
-
-      question.selectAnswerChoice(queData.correct[0]);
-
-      preview.checkScore("1/1");
-
-      question.checkHighlight({ wrong: true });
-
-      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
-
-      preview
-        .getClear()
-        .click()
-        .then(() => {
-          question.checkHighlight({ color: "both" });
-        });
-
-      // give wrong ans and check
-      question.selectAnswerChoice(queData.choices[1]);
-
-      preview.checkScore("0/1");
-
-      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[1]] });
-
-      question.checkHighlight({ right: true });
-
-      preview
-        .getClear()
-        .click()
-        .then(() => {
-          question.checkHighlight({ color: "both" });
-        });
-
-      // give no ans and check
-      preview.checkScore("0/1");
-
-      question.checkHighlight({ color: "both" });
-    });
-  });
-  context("Score block testing", () => {
-    before("visit items list page and select question type", () => {
-      editItem.createNewItem();
-      // add new question
-      editItem.chooseQuestion(queData.group, queData.queType);
-
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.queText);
-
-      question.getAllChoices().each(($el, index, $list) => {
-        const cusIndex = $list.length - (index + 1);
-        question.deleteChoiceByIndex(cusIndex);
-      });
-
-      // add choices
-      const choices = queData.choices;
-      choices.forEach((ch, index) => {
-        question
-          .addNewChoice()
-          .getChoiceByIndex(index)
-          .clear()
-          .type(ch)
-          .should("contain", ch);
-      });
-      question.selectChoice(queData.correct[0]);
+          .should('contain', ch)
+      })
+      question.selectChoice(queData.correct[0])
 
       // save
-      question.header.save();
-    });
-    it("change points and check answer", () => {
+      question.header.save()
+    })
+    it('change points and check answer', () => {
       // set score to 2
-      question.header.edit();
+      question.header.edit()
 
-      question.getPoints().type("{selectall}2");
+      question.getPoints().type('{selectall}2')
 
       // give correct answer and check
-      const preview = editItem.header.preview();
+      const preview = editItem.header.preview()
 
-      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[0])
 
-      preview.checkScore("2/2");
+      preview.checkScore('2/2')
 
-      question.checkHighlight({ wrong: true });
+      question.checkHighlight({ wrong: true })
 
-      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
+      question.checkHighlightData({
+        color: 'right',
+        length: 1,
+        choices: [queData.correct[0]],
+      })
 
       preview
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ color: "both" });
-        });
+          question.checkHighlight({ color: 'both' })
+        })
 
       // give wrong ans and check
-      question.selectAnswerChoice(queData.choices[1]);
+      question.selectAnswerChoice(queData.choices[1])
 
-      preview.checkScore("0/2");
+      preview.checkScore('0/2')
 
-      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[1]] });
+      question.checkHighlightData({
+        color: 'wrong',
+        length: 1,
+        choices: [queData.choices[1]],
+      })
 
-      question.checkHighlight({ right: true });
-    });
+      question.checkHighlight({ right: true })
+    })
 
-    it("change correct answer and check score", () => {
-      question.header.edit();
-      question.selectChoice(queData.choices[1]);
-      question.checkChoiceNotSelected(queData.choices[0]);
+    it('change correct answer and check score', () => {
+      question.header.edit()
+      question.selectChoice(queData.choices[1])
+      question.checkChoiceNotSelected(queData.choices[0])
 
       // give correct answer and check
-      const preview = editItem.header.preview();
+      const preview = editItem.header.preview()
 
-      question.selectAnswerChoice(queData.choices[1]);
+      question.selectAnswerChoice(queData.choices[1])
 
-      preview.checkScore("2/2");
+      preview.checkScore('2/2')
 
-      question.checkHighlight({ wrong: true });
+      question.checkHighlight({ wrong: true })
 
-      question.checkHighlightData({ color: "right", length: 1, choices: [queData.choices[1]] });
+      question.checkHighlightData({
+        color: 'right',
+        length: 1,
+        choices: [queData.choices[1]],
+      })
 
       preview
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ color: "both" });
-        });
+          question.checkHighlight({ color: 'both' })
+        })
 
       // give wrong ans and check
-      question.selectAnswerChoice(queData.choices[0]);
+      question.selectAnswerChoice(queData.choices[0])
 
-      preview.checkScore("0/2");
+      preview.checkScore('0/2')
 
-      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[0]] });
+      question.checkHighlightData({
+        color: 'wrong',
+        length: 1,
+        choices: [queData.choices[0]],
+      })
 
-      question.checkHighlight({ right: true });
-    });
-  });
-  context("Hint and solution block testing", () => {
-    validateSolutionBlockTests(queData.group, queData.queType);
-  });
-});
+      question.checkHighlight({ right: true })
+    })
+  })
+  context('Hint and solution block testing', () => {
+    validateSolutionBlockTests(queData.group, queData.queType)
+  })
+})

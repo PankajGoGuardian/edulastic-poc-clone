@@ -1,24 +1,24 @@
-import styled from "styled-components";
-import { Pagination } from "antd";
+import styled from 'styled-components'
+import { Pagination } from 'antd'
 
-import { white, themeColor } from "@edulastic/colors";
+import { white, themeColor } from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
+`
 
 export const ContentWrapper = styled.div`
   max-width: 100%;
-`;
+`
 
 export const MobilePaginationWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
   margin: 20px 0px;
-`;
+`
 
 export const MobilePagination = styled(Pagination)`
   .ant-pagination-item {
@@ -64,4 +64,4 @@ export const MobilePagination = styled(Pagination)`
       line-height: 35px;
     }
   }
-`;
+`

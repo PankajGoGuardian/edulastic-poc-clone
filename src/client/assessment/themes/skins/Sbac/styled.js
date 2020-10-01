@@ -1,9 +1,12 @@
-import styled from "styled-components";
-import { Button, Dropdown, Icon, Progress } from "antd";
-import { themes } from "../../../../theme";
-import { FlexContainer } from "../../common";
-const { playerSkin: { sbac } } = themes;
-const { defaultButton, navigationButtons, header } = sbac;
+import styled from 'styled-components'
+import { Button, Dropdown, Icon, Progress } from 'antd'
+import { themes } from '../../../../theme'
+import { FlexContainer } from '../../common'
+
+const {
+  playerSkin: { sbac },
+} = themes
+const { defaultButton, navigationButtons, header } = sbac
 
 export const ControlBtn = styled(Button)`
   &[disabled] {
@@ -17,7 +20,7 @@ export const ControlBtn = styled(Button)`
   width: 35px;
   height: 35px;
   border: 1px solid ${navigationButtons.color};
-  ${({style}) => style};
+  ${({ style }) => style};
   background: ${navigationButtons.background};
   color: ${navigationButtons.color};
   &:hover {
@@ -31,7 +34,7 @@ export const ControlBtn = styled(Button)`
   svg {
     fill: ${navigationButtons.color};
   }
-`;
+`
 
 export const Container = styled.div`
   margin-left: 40px;
@@ -41,7 +44,7 @@ export const Container = styled.div`
   span {
     line-height: 11px;
   }
-`;
+`
 
 export const HeaderTopMenu = styled.div`
   width: 100%;
@@ -59,7 +62,7 @@ export const HeaderTopMenu = styled.div`
     }
   }
   .ant-dropdown-placement-bottomLeft {
-    top: 5px!important;
+    top: 5px !important;
     ul {
       max-height: 250px;
       overflow: auto;
@@ -85,7 +88,7 @@ export const HeaderTopMenu = styled.div`
       }
     }
   }
-`;
+`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   .sbac-question-audio-controller {
@@ -130,20 +133,20 @@ export const StyledFlexContainer = styled(FlexContainer)`
       margin-left: 5px;
     }
   }
-`;
+`
 
-export const StyledDropdown = styled(Dropdown)`
-`;
+export const StyledDropdown = styled(Dropdown)``
 
 export const StyledIcon = styled(Icon)`
-  color: #00AD50;
-`;
+  color: #00ad50;
+`
 
 export const StyledProgress = styled(Progress)`
-  .ant-progress-success-bg, .ant-progress-bg {
-    height: 13px!important;
+  .ant-progress-success-bg,
+  .ant-progress-bg {
+    height: 13px !important;
   }
-`;
+`
 
 export const StyledTitle = styled.div`
   letter-spacing: 0.2px;
@@ -151,14 +154,14 @@ export const StyledTitle = styled.div`
   text-transform: uppercase;
   font-size: 11px;
   margin-left: 30px;
-`;
+`
 
 export const StyledQuestionMark = styled(Icon)`
   width: 16px;
   height: 16px;
   color: ${defaultButton.questionMarkColor};
   cursor: pointer;
-`;
+`
 
 export const StyledButton = styled(Button)`
   width: 35px;
@@ -178,10 +181,12 @@ export const StyledButton = styled(Button)`
       fill: ${defaultButton.hover.color};
     }
   }
-  ${({active}) => active && `border: 1px solid ${defaultButton.hover.background};
+  ${({ active }) =>
+    active &&
+    `border: 1px solid ${defaultButton.hover.background};
   color: ${defaultButton.hover.color};
   background: ${defaultButton.hover.background}!important;
   svg {
     fill: ${defaultButton.hover.color};
   }`}
-`;
+`

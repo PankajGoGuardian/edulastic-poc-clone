@@ -1,15 +1,15 @@
-import React from "react";
-import { Form, Input, Icon, Radio, AutoComplete, Spin } from "antd";
-import styled from "styled-components";
-import { radioButtondata } from "../../Data";
-import { Button } from "../StyledComponents";
+import React from 'react'
+import { Form, Input, Icon, Radio, AutoComplete, Spin } from 'antd'
+import styled from 'styled-components'
+import { radioButtondata } from '../../Data'
+import { Button } from '../StyledComponents'
 
-const { Group: RadioGroup } = Radio;
+const { Group: RadioGroup } = Radio
 
 const CircularInput = styled(Input)`
   margin-right: 10px;
   border-radius: 20px;
-`;
+`
 
 export default function SearchDistrictByIdName({
   getFieldDecorator,
@@ -22,16 +22,20 @@ export default function SearchDistrictByIdName({
   labelKey,
   placeholder,
   loading,
-  initialSearchValue
+  initialSearchValue,
 }) {
   return (
     <Form onSubmit={handleSubmit} layout="inline">
       <Form.Item>
-        {getFieldDecorator("districtSearchValue", {
-          initialValue: initialSearchValue
+        {getFieldDecorator('districtSearchValue', {
+          initialValue: initialSearchValue,
         })(
           autocomplete ? (
-            <AutoComplete onSelect={onSelect} dataSource={dataSource} style={{ width: 350 }} />
+            <AutoComplete
+              onSelect={onSelect}
+              dataSource={dataSource}
+              style={{ width: 350 }}
+            />
           ) : (
             <CircularInput placeholder={placeholder} style={{ width: 300 }} />
           )
@@ -40,10 +44,10 @@ export default function SearchDistrictByIdName({
           icon="search"
           type="submit"
           style={{
-            position: "absolute",
-            top: "0",
-            right: "10px",
-            zIndex: 20
+            position: 'absolute',
+            top: '0',
+            right: '10px',
+            zIndex: 20,
           }}
           aria-label="Search"
           noStyle
@@ -52,12 +56,16 @@ export default function SearchDistrictByIdName({
         </Button>
       </Form.Item>
       <Form.Item>
-        {getFieldDecorator("districtSearchOption", {
-          initialValue: listOfRadioOptions[0][valueKey]
+        {getFieldDecorator('districtSearchOption', {
+          initialValue: listOfRadioOptions[0][valueKey],
         })(
           <RadioGroup name="searchOptions">
-            {listOfRadioOptions.map(item => (
-              <Radio key={item[valueKey]} id={item[valueKey]} value={item[valueKey]}>
+            {listOfRadioOptions.map((item) => (
+              <Radio
+                key={item[valueKey]}
+                id={item[valueKey]}
+                value={item[valueKey]}
+              >
                 {item[labelKey]}
               </Radio>
             ))}
@@ -65,14 +73,14 @@ export default function SearchDistrictByIdName({
         )}
       </Form.Item>
     </Form>
-  );
+  )
 }
 
 SearchDistrictByIdName.defaultProps = {
   listOfRadioOptions: radioButtondata.list,
-  valueKey: "id",
-  labelKey: "label",
-  placeholder: "Search...",
+  valueKey: 'id',
+  labelKey: 'label',
+  placeholder: 'Search...',
   loading: false,
-  initialSearchValue: ""
-};
+  initialSearchValue: '',
+}

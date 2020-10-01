@@ -1,11 +1,14 @@
-import React, { memo } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Affix, Layout, Row, Col } from "antd";
-import { IconLogout } from "@edulastic/icons";
+import React, { memo } from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Affix, Layout, Row, Col } from 'antd'
+import { IconLogout } from '@edulastic/icons'
 
-import { LogoCompact } from "../../../assessment/themes/common";
-import { mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import {
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
+import { LogoCompact } from '../../../assessment/themes/common'
 
 const SummaryHeader = ({ showConfirmationModal }) => (
   <Affix>
@@ -20,28 +23,32 @@ const SummaryHeader = ({ showConfirmationModal }) => (
       </HeaderRow>
     </AssignmentsHeader>
   </Affix>
-);
+)
 
 SummaryHeader.propTypes = {
-  showConfirmationModal: PropTypes.func.isRequired
-};
+  showConfirmationModal: PropTypes.func.isRequired,
+}
 
-export default memo(SummaryHeader);
+export default memo(SummaryHeader)
 
 const AssignmentsHeader = styled(Layout.Header)`
-  border-bottom: ${props => (props.borderBottom ? props.borderBottom : `2px solid ${props.theme.headerBorderColor}`)};
-  background-color: ${props => props.theme.header.headerBgColor || themeColor};
-  color: ${props => props.theme.header.headerTitleTextColor};
+  border-bottom: ${(props) =>
+    props.borderBottom
+      ? props.borderBottom
+      : `2px solid ${props.theme.headerBorderColor}`};
+  background-color: ${(props) =>
+    props.theme.header.headerBgColor || themeColor};
+  color: ${(props) => props.theme.header.headerTitleTextColor};
   display: flex;
   align-items: center;
-  height: ${props => props.theme.HeaderHeight.xs}px;
+  height: ${(props) => props.theme.HeaderHeight.xs}px;
   padding: 0px 40px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.theme.HeaderHeight.md}px;
+    height: ${(props) => props.theme.HeaderHeight.md}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => props.theme.HeaderHeight.xl}px;
+    height: ${(props) => props.theme.HeaderHeight.xl}px;
   }
 
   .ant-col-24 {
@@ -49,7 +56,7 @@ const AssignmentsHeader = styled(Layout.Header)`
     line-height: 1.2;
     display: flex;
   }
-`;
+`
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,21 +64,21 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
-`;
+`
 
 const HeaderRow = styled(Row)`
   width: 100%;
-`;
+`
 
 const HeaderCol = styled(Col)`
   display: flex;
-`;
+`
 
 const LogoutIcon = styled(IconLogout)`
-  fill: ${props => props.theme.attemptReview.logoutIconColor};
+  fill: ${(props) => props.theme.attemptReview.logoutIconColor};
   width: 24px;
   height: 24px;
   &:hover {
-    fill: ${props => props.theme.attemptReview.logoutIconHoverColor};
+    fill: ${(props) => props.theme.attemptReview.logoutIconHoverColor};
   }
-`;
+`

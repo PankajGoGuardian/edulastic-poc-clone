@@ -1,16 +1,23 @@
-import styled from "styled-components";
-import { lightBlue, lightGrey, mainTextColor, white, themeColor, lightGrey9 } from "@edulastic/colors";
-import { Input, Col, Modal, Button } from "antd";
+import styled from 'styled-components'
+import {
+  lightBlue,
+  lightGrey,
+  mainTextColor,
+  white,
+  themeColor,
+  lightGrey9,
+} from '@edulastic/colors'
+import { Input, Col, Modal, Button } from 'antd'
 
 export const LightGreenSpan = styled.span`
   color: ${themeColor};
   font-weight: bold;
-`;
+`
 
 export const StyledCol = styled(Col)`
   justify-content: center;
   display: flex;
-`;
+`
 
 export const StyledInput = styled(Input)`
   margin: 0 auto;
@@ -27,7 +34,7 @@ export const StyledInput = styled(Input)`
   &:focus::placeholder {
     color: transparent;
   }
-`;
+`
 
 export const StyledDiv = styled.div`
   width: 90%;
@@ -35,14 +42,14 @@ export const StyledDiv = styled.div`
   margin-top: 20px;
   margin-bottom: 5px;
   margin-left: 45px;
-`;
+`
 
 export const StyledClassName = styled.p`
   text-align: center;
   color: ${lightBlue};
   font-weight: bold;
   margin-bottom: 5px;
-`;
+`
 
 export const ModalWrapper = styled(Modal)`
   background: ${lightGrey};
@@ -89,7 +96,7 @@ export const ModalWrapper = styled(Modal)`
     padding-left: 15px;
     padding-right: 25px;
   }
-`;
+`
 
 export const InitOptions = styled.div`
   background: ${white};
@@ -97,27 +104,27 @@ export const InitOptions = styled.div`
   padding: 15px 0px;
   text-align: center;
   font-weight: bold;
-  ${props => props.bodyStyle}
-`;
+  ${(props) => props.bodyStyle}
+`
 
 export const StyledButton = styled(Button)`
-  background-color: ${props => (props.cancel ? white : themeColor)};
+  background-color: ${(props) => (props.cancel ? white : themeColor)};
   border-color: ${themeColor};
-  color: ${props => (props.cancel ? themeColor : white)};
+  color: ${(props) => (props.cancel ? themeColor : white)};
   padding: 12px 50px;
   margin-right: 30px;
   height: auto;
   &:hover,
   &:focus {
-    background-color: ${props => (props.cancel ? white : themeColor)};
+    background-color: ${(props) => (props.cancel ? white : themeColor)};
     border-color: ${themeColor};
-    color: ${props => (props.cancel ? themeColor : white)};
+    color: ${(props) => (props.cancel ? themeColor : white)};
   }
-`;
+`
 
 export const ModalFooter = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
   text-align: center;
-`;
+`

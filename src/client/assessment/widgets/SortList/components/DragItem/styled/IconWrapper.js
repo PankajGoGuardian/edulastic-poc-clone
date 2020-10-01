@@ -1,14 +1,14 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const IconWrapper = styled.div`
   width: 40px;
   background: ${({ checkStyle, correct, theme, isPrintPreview }) => {
-    if (isPrintPreview) return "transparent";
+    if (isPrintPreview) return 'transparent'
     return checkStyle
       ? correct
         ? `${theme.widgets.sortList.dragItemCorrectTextBgColor}`
         : `${theme.widgets.sortList.dragItemIncorrectTextBgColor}`
-      : "none";
+      : 'none'
   }};
   position: absolute;
   right: 0px;
@@ -22,4 +22,4 @@ export const IconWrapper = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
   }
-`;
+`

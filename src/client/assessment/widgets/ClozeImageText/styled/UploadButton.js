@@ -1,7 +1,7 @@
-import { Upload } from "antd";
-import styled from "styled-components";
+import { Upload } from 'antd'
+import styled from 'styled-components'
 
-const { Dragger } = Upload;
+const { Dragger } = Upload
 
 export const UploadButton = styled(Dragger)`
   &.ant-upload.ant-upload-drag {
@@ -10,4 +10,4 @@ export const UploadButton = styled(Dragger)`
       padding: 0px;
     }
   }
-`;
+`

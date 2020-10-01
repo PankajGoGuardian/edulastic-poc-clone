@@ -1,10 +1,15 @@
-import React from "react";
-import { Button } from "antd";
-import { ConfirmationModal } from "./ConfirmationModal";
-import { connect } from "react-redux";
-import { EduButton } from "@edulastic/common";
+import React from 'react'
+import { Button } from 'antd'
+import { connect } from 'react-redux'
+import { EduButton } from '@edulastic/common'
+import { ConfirmationModal } from './ConfirmationModal'
 
-const ConfirmCancelTestEditModal = ({ onClose, onCancel, onOk, showCancelPopup }) => (
+const ConfirmCancelTestEditModal = ({
+  onClose,
+  onCancel,
+  onOk,
+  showCancelPopup,
+}) => (
   <ConfirmationModal
     centered
     visible={showCancelPopup}
@@ -16,11 +21,11 @@ const ConfirmCancelTestEditModal = ({ onClose, onCancel, onOk, showCancelPopup }
       </EduButton>,
       <EduButton height="40px" onClick={onOk}>
         Yes, Proceed
-      </EduButton>
+      </EduButton>,
     ]}
   >
     All the changes done will be discarded. Are you sure you want to proceed?
   </ConfirmationModal>
-);
+)
 
-export default connect(null)(ConfirmCancelTestEditModal);
+export default connect(null)(ConfirmCancelTestEditModal)

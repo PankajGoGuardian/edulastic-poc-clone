@@ -1,16 +1,21 @@
-import React, { Fragment, useState } from "react";
-import PropTypes from "prop-types";
+import React, { Fragment, useState } from 'react'
+import PropTypes from 'prop-types'
 
-import { themeColor, red, green, greyThemeDark4 } from "@edulastic/colors";
-import { IconCheck, IconClose } from "@edulastic/icons";
-import { isEmpty } from "lodash";
+import { themeColor, red, green, greyThemeDark4 } from '@edulastic/colors'
+import { IconCheck, IconClose } from '@edulastic/icons'
+import { isEmpty } from 'lodash'
 
-import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
+import {
+  EDIT,
+  CLEAR,
+  CHECK,
+  SHOW,
+} from '../../../constants/constantsForQuestions'
 
-import { Bar, ActiveBar, StrokedRect } from "../styled";
-import { convertUnitToPx, getGridVariables } from "../helpers";
-import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
-import AxisLabel from "./AxisLabel";
+import { Bar, ActiveBar, StrokedRect } from '../styled'
+import { convertUnitToPx, getGridVariables } from '../helpers'
+import { SHOW_ALWAYS, SHOW_BY_HOVER } from '../const'
+import AxisLabel from './AxisLabel'
 
 const Crosses = ({
   item,
@@ -23,53 +28,61 @@ const Crosses = ({
   previewTab,
   evaluation,
   saveAnswer,
-  deleteMode
+  deleteMode,
 }) => {
-  const { height, margin, yAxisMin } = gridParams;
-  const { chart_data = {} } = item;
-  const { data = [] } = chart_data;
+  const { height, margin, yAxisMin } = gridParams
+  const { chart_data = {} } = item
+  const { data = [] } = chart_data
 
-  const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
+  const { yAxisStep, step } = getGridVariables(bars, gridParams, true)
 
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [showLabel, handleLabelVisibility] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [showLabel, handleLabelVisibility] = useState(null)
 
-  const handleMouseAction = value => () => {
+  const handleMouseAction = (value) => () => {
     if (activeIndex === null) {
-      onPointOver(value);
+      onPointOver(value)
     }
-  };
+  }
 
-  const getCenterX = index => step * index;
+  const getCenterX = (index) => step * index
 
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + 20;
+  const getCenterY = (dot) => convertUnitToPx(dot.y, gridParams) + 20
 
-  const renderValidationIcons = index => (
-    <g transform={`translate(${getCenterX(index) + step / 2 - 3},${getCenterY(bars[index]) - 30})`}>
+  const renderValidationIcons = (index) => (
+    <g
+      transform={`translate(${getCenterX(index) + step / 2 - 3},${
+        getCenterY(bars[index]) - 30
+      })`}
+    >
       {evaluation[index] && <IconCheck color={green} width={12} height={10} />}
       {!evaluation[index] && <IconClose color={red} width={10} height={10} />}
     </g>
-  );
+  )
 
-  const handleMouse = index => () => {
-    handleMouseAction(index)();
-    setHoveredIndex(index);
-    handleLabelVisibility(index);
-  };
+  const handleMouse = (index) => () => {
+    handleMouseAction(index)()
+    setHoveredIndex(index)
+    handleLabelVisibility(index)
+  }
 
-  const getBarHeight = y => Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams));
+  const getBarHeight = (y) =>
+    Math.abs(
+      convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams)
+    )
 
-  const isHovered = index => hoveredIndex === index || activeIndex === index;
+  const isHovered = (index) => hoveredIndex === index || activeIndex === index
 
-  const labelIsVisible = index =>
+  const labelIsVisible = (index) =>
     data[index] &&
     ((data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
-      (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
+      data[index].labelVisibility === SHOW_ALWAYS ||
+      !data[index].labelVisibility)
 
-  const isRenderIcons = !isEmpty(evaluation);
+  const isRenderIcons = !isEmpty(evaluation)
 
   return (
-    <Fragment>
+    <>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
           <rect
@@ -82,16 +95,15 @@ const Crosses = ({
             width={step}
             height={height + margin}
           />
-          {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
+          {(previewTab === SHOW || previewTab === CHECK) &&
+            isRenderIcons &&
+            renderValidationIcons(index)}
           {Array.from({ length: dot.y }).map((a, ind) => (
             <path
               key={`path-${ind}`}
-              transform={`translate(${getCenterX(index) + step / 2 - 4}, ${height -
-                margin -
-                17 -
-                ind * yAxisStep -
-                yAxisStep / 2 +
-                20})`}
+              transform={`translate(${getCenterX(index) + step / 2 - 4}, ${
+                height - margin - 17 - ind * yAxisStep - yAxisStep / 2 + 20
+              })`}
               fill={greyThemeDark4}
               d="M8.625,0.707106781 L5.75,3.58210678 L2.875,0.707106781 L0.707106781,2.875 L3.58210678,5.75 L0.707106781,8.625 L2.87959354,10.7974868 L5.75,8.00118958 L8.62040646,10.7974868 L10.7928932,8.625 L7.91789322,5.75 L10.7928932,2.875 L8.625,0.707106781 Z"
             />
@@ -99,12 +111,12 @@ const Crosses = ({
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => {
-              handleLabelVisibility(index);
-              setHoveredIndex(index);
+              handleLabelVisibility(index)
+              setHoveredIndex(index)
             }}
             onMouseLeave={() => {
-              handleLabelVisibility(null);
-              setHoveredIndex(null);
+              handleLabelVisibility(null)
+              setHoveredIndex(null)
             }}
             x={getCenterX(index)}
             y={getCenterY(dot)}
@@ -112,8 +124,9 @@ const Crosses = ({
             height={getBarHeight(dot.y)}
             color="transparent"
           />
-          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
-            <Fragment>
+          {((view !== EDIT && !data[index].notInteractive) ||
+            view === EDIT) && (
+            <>
               <StrokedRect
                 hoverState={isHovered(index)}
                 x={getCenterX(index)}
@@ -132,25 +145,32 @@ const Crosses = ({
                 y={getCenterY(dot) - 5}
                 width={step}
                 deleteMode={deleteMode}
-                color={dot.y === 0 ? themeColor : "transparent"}
+                color={dot.y === 0 ? themeColor : 'transparent'}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
               />
-            </Fragment>
+            </>
           )}
           <g
             onMouseEnter={() => handleLabelVisibility(index)}
             onMouseLeave={() => handleLabelVisibility(null)}
             // "height +2" added to hide the fourth line in x-axis label
-            transform={`translate(${getCenterX(index) + step / 2}, ${height + 2})`}
+            transform={`translate(${getCenterX(index) + step / 2}, ${
+              height + 2
+            })`}
           >
-            {labelIsVisible(index) && <AxisLabel fractionFormat={data[index].labelFractionFormat} value={dot.x} />}
+            {labelIsVisible(index) && (
+              <AxisLabel
+                fractionFormat={data[index].labelFractionFormat}
+                value={dot.x}
+              />
+            )}
           </g>
         </Fragment>
       ))}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 Crosses.propTypes = {
   item: PropTypes.object.isRequired,
@@ -166,16 +186,16 @@ Crosses.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
   }).isRequired,
   evaluation: PropTypes.object.isRequired,
   previewTab: PropTypes.string,
   saveAnswer: PropTypes.func,
-  deleteMode: PropTypes.bool
-};
+  deleteMode: PropTypes.bool,
+}
 Crosses.defaultProps = {
   previewTab: CLEAR,
   saveAnswer: () => {},
-  deleteMode: false
-};
-export default Crosses;
+  deleteMode: false,
+}
+export default Crosses

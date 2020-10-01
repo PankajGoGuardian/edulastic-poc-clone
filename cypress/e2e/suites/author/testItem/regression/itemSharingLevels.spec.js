@@ -1,109 +1,116 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable prefer-const */
-import TeacherSideBar from "../../../../framework/author/SideBarPage";
-import SearchFilters from "../../../../framework/author/searchFiltersPage";
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
-import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
-import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
-import FileHelper from "../../../../framework/util/fileHelper";
+import TeacherSideBar from '../../../../framework/author/SideBarPage'
+import SearchFilters from '../../../../framework/author/searchFiltersPage'
+import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
+import ItemListPage from '../../../../framework/author/itemList/itemListPage'
+import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
+import MCQTrueFalsePage from '../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage'
+import FileHelper from '../../../../framework/util/fileHelper'
 
-const TEST = "LCB_2";
-const testData = require("../../../../../fixtures/testAuthoring");
+const TEST = 'LCB_2'
+const testData = require('../../../../../fixtures/testAuthoring')
 
-let ITEMS = testData[TEST].itemKeys;
-let itemKeysInTest = [];
-ITEMS.forEach(ele => {
-  itemKeysInTest.push(ele.split(".")[0]);
-});
-const userData = require("../../../../../fixtures/users");
+let ITEMS = testData[TEST].itemKeys
+let itemKeysInTest = []
+ITEMS.forEach((ele) => {
+  itemKeysInTest.push(ele.split('.')[0])
+})
+const userData = require('../../../../../fixtures/users')
 
-const { dist0001, dist0002 } = userData.itemSharingLevels;
+const { dist0001, dist0002 } = userData.itemSharingLevels
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using published test`, () => {
-  const techersidebar = new TeacherSideBar();
-  const searchFilters = new SearchFilters();
-  const testLibrary = new TestLibrary();
-  const itemListPage = new ItemListPage();
-  const previewItem = new PreviewItemPopup();
-  const mcqTrueFalsePage = new MCQTrueFalsePage();
-  let Author;
-  let itemIds;
-  let DIST1_SCHOOL1;
-  let DIST2_SCHOOL1;
-  let DIST1_SCHOOL2;
-  let test_id;
-  const EMAIL = "email";
-  const PASS = "pass";
-  const NAME = "name";
-  const SCHOOL1 = "school1";
-  const SCHOOL2 = "school2";
-  const TEACHER1 = "Teacher1";
-  const TEACHER2 = "Teacher2";
+describe(`${FileHelper.getSpecName(
+  Cypress.spec.name
+)} >>item sharing using published test`, () => {
+  const techersidebar = new TeacherSideBar()
+  const searchFilters = new SearchFilters()
+  const testLibrary = new TestLibrary()
+  const itemListPage = new ItemListPage()
+  const previewItem = new PreviewItemPopup()
+  const mcqTrueFalsePage = new MCQTrueFalsePage()
+  let Author
+  let itemIds
+  let DIST1_SCHOOL1
+  let DIST2_SCHOOL1
+  let DIST1_SCHOOL2
+  let test_id
+  const EMAIL = 'email'
+  const PASS = 'pass'
+  const NAME = 'name'
+  const SCHOOL1 = 'school1'
+  const SCHOOL2 = 'school2'
+  const TEACHER1 = 'Teacher1'
+  const TEACHER2 = 'Teacher2'
 
-  DIST1_SCHOOL1 = dist0001[SCHOOL1];
-  DIST1_SCHOOL2 = dist0001[SCHOOL2];
-  DIST2_SCHOOL1 = dist0002[SCHOOL1];
-  Author = DIST1_SCHOOL1[TEACHER1];
+  DIST1_SCHOOL1 = dist0001[SCHOOL1]
+  DIST1_SCHOOL2 = dist0001[SCHOOL2]
+  DIST2_SCHOOL1 = dist0002[SCHOOL1]
+  Author = DIST1_SCHOOL1[TEACHER1]
 
   // Permissions given to Tests are applied to items too
-  context(">sharing school,district and public levels", () => {
-    before(">login as author and creat test", () => {
-      cy.login("teacher", Author[EMAIL], Author[PASS]);
-      testLibrary.createTest(TEST, true).then(id => {
-        test_id = id;
-        itemIds = testLibrary.items;
-      });
-    });
+  context('>sharing school,district and public levels', () => {
+    before('>login as author and creat test', () => {
+      cy.login('teacher', Author[EMAIL], Author[PASS])
+      testLibrary.createTest(TEST, true).then((id) => {
+        test_id = id
+        itemIds = testLibrary.items
+      })
+    })
     context(">sharing at 'school level'", () => {
-      let clonedItem = [];
+      let clonedItem = []
 
-      before(">login as author and creat test without publishing", () => {
-        cy.login("teacher", Author[EMAIL], Author[PASS]);
-      });
-      before(">share the test", () => {
-        techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
-        testLibrary.clickOnTestCardById(test_id);
-        testLibrary.clickOnDetailsOfCard();
-        testLibrary.header.clickOnShare();
-        testLibrary.getSchoolRadio().click({ force: true });
-        testLibrary.clickSharePop();
-      });
-      it(`>assert shared test item for '${
-        DIST1_SCHOOL1[TEACHER2][NAME]
-      } from same school' and 'clone' the item`, () => {
-        cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
-        testLibrary.sidebar.clickOnItemBank();
-        itemListPage.searchFilters.clearAll();
-        itemListPage.searchFilters.sharedWithMe();
+      before('>login as author and creat test without publishing', () => {
+        cy.login('teacher', Author[EMAIL], Author[PASS])
+      })
+      before('>share the test', () => {
+        techersidebar.clickOnTestLibrary()
+        searchFilters.clearAll()
+        searchFilters.getAuthoredByMe()
+        testLibrary.clickOnTestCardById(test_id)
+        testLibrary.clickOnDetailsOfCard()
+        testLibrary.header.clickOnShare()
+        testLibrary.getSchoolRadio().click({ force: true })
+        testLibrary.clickSharePop()
+      })
+      it(`>assert shared test item for '${DIST1_SCHOOL1[TEACHER2][NAME]} from same school' and 'clone' the item`, () => {
+        cy.login(
+          'teacher',
+          DIST1_SCHOOL1[TEACHER2][EMAIL],
+          DIST1_SCHOOL1[TEACHER2][PASS]
+        )
+        testLibrary.sidebar.clickOnItemBank()
+        itemListPage.searchFilters.clearAll()
+        itemListPage.searchFilters.sharedWithMe()
         itemKeysInTest.forEach((item, index) => {
-          itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
-          itemListPage.verifyPresenceOfItemById(itemIds[index]);
-          itemListPage.clickOnViewItemById(itemIds[index]);
-          previewItem.verifyNoEditCloneOption(itemIds[index]);
-          previewItem.clickOnCopyItemOnPreview();
-          mcqTrueFalsePage.updatePoints("15");
-          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
-            expect(id).not.eq(itemIds[index]);
-            clonedItem.push(id);
-            cy.saveItemDetailToDelete(id);
-            mcqTrueFalsePage.header.clickOnPublishItem();
-          });
-        });
-      });
+          itemListPage.searchFilters.typeInSearchBox(itemIds[index])
+          itemListPage.verifyPresenceOfItemById(itemIds[index])
+          itemListPage.clickOnViewItemById(itemIds[index])
+          previewItem.verifyNoEditCloneOption(itemIds[index])
+          previewItem.clickOnCopyItemOnPreview()
+          mcqTrueFalsePage.updatePoints('15')
+          mcqTrueFalsePage.header.saveAndgetId(true).then((id) => {
+            expect(id).not.eq(itemIds[index])
+            clonedItem.push(id)
+            cy.saveItemDetailToDelete(id)
+            mcqTrueFalsePage.header.clickOnPublishItem()
+          })
+        })
+      })
       it(">verify presence of 'cloned item'", () => {
-        expect(clonedItem, `expected clone to happen successfully`).to.have.lengthOf(1);
-        itemListPage.searchFilters.clearAll();
-        clonedItem.forEach(cloned => {
-          itemListPage.searchFilters.typeInSearchBox(cloned);
-          itemListPage.verifyPresenceOfItemById(cloned);
-          itemListPage.getViewItemById(cloned).should("exist");
-        });
-        clonedItem.length = 0;
-      });
-    });
+        expect(
+          clonedItem,
+          `expected clone to happen successfully`
+        ).to.have.lengthOf(1)
+        itemListPage.searchFilters.clearAll()
+        clonedItem.forEach((cloned) => {
+          itemListPage.searchFilters.typeInSearchBox(cloned)
+          itemListPage.verifyPresenceOfItemById(cloned)
+          itemListPage.getViewItemById(cloned).should('exist')
+        })
+        clonedItem.length = 0
+      })
+    })
 
     /* https://snapwiz.atlassian.net/browse/EV-13434
      context(">school- remove share", () => {
@@ -157,58 +164,63 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
     }); */
 
     context(">sharing at 'district level'", () => {
-      let clonedItem = [];
+      let clonedItem = []
 
-      before(">login as author and creat test without publishing", () => {
-        cy.login("teacher", Author[EMAIL], Author[PASS]);
-      });
+      before('>login as author and creat test without publishing', () => {
+        cy.login('teacher', Author[EMAIL], Author[PASS])
+      })
 
-      before(">sharing at district level", () => {
-        techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
-        testLibrary.clickOnTestCardById(test_id);
-        testLibrary.clickOnDetailsOfCard();
-        testLibrary.header.clickOnShare();
-        testLibrary.removeShare();
-        testLibrary.getDistrictRadio().click({ force: true });
-        testLibrary.clickSharePop();
-      });
+      before('>sharing at district level', () => {
+        techersidebar.clickOnTestLibrary()
+        searchFilters.clearAll()
+        searchFilters.getAuthoredByMe()
+        testLibrary.clickOnTestCardById(test_id)
+        testLibrary.clickOnDetailsOfCard()
+        testLibrary.header.clickOnShare()
+        testLibrary.removeShare()
+        testLibrary.getDistrictRadio().click({ force: true })
+        testLibrary.clickSharePop()
+      })
 
-      it(`>assert shared test item for '${
-        DIST1_SCHOOL2[TEACHER1][NAME]
-      } from other school' and 'clone' the item`, () => {
+      it(`>assert shared test item for '${DIST1_SCHOOL2[TEACHER1][NAME]} from other school' and 'clone' the item`, () => {
         // Verify sharing for techer from different school but from same district
-        cy.login("teacher", DIST1_SCHOOL2[TEACHER2][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
-        testLibrary.sidebar.clickOnItemBank();
-        itemListPage.searchFilters.clearAll();
-        itemListPage.searchFilters.sharedWithMe();
+        cy.login(
+          'teacher',
+          DIST1_SCHOOL2[TEACHER2][EMAIL],
+          DIST1_SCHOOL2[TEACHER2][PASS]
+        )
+        testLibrary.sidebar.clickOnItemBank()
+        itemListPage.searchFilters.clearAll()
+        itemListPage.searchFilters.sharedWithMe()
         itemKeysInTest.forEach((item, index) => {
-          itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
-          itemListPage.verifyPresenceOfItemById(itemIds[index]);
-          itemListPage.clickOnViewItemById(itemIds[index]);
-          previewItem.verifyNoEditCloneOption(itemIds[index]);
-          previewItem.clickOnCopyItemOnPreview();
-          mcqTrueFalsePage.updatePoints("15");
-          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
-            expect(id).not.eq(itemIds[index]);
-            cy.saveItemDetailToDelete(id);
-            clonedItem.push(id);
-            mcqTrueFalsePage.header.clickOnPublishItem();
-          });
-        });
-      });
+          itemListPage.searchFilters.typeInSearchBox(itemIds[index])
+          itemListPage.verifyPresenceOfItemById(itemIds[index])
+          itemListPage.clickOnViewItemById(itemIds[index])
+          previewItem.verifyNoEditCloneOption(itemIds[index])
+          previewItem.clickOnCopyItemOnPreview()
+          mcqTrueFalsePage.updatePoints('15')
+          mcqTrueFalsePage.header.saveAndgetId(true).then((id) => {
+            expect(id).not.eq(itemIds[index])
+            cy.saveItemDetailToDelete(id)
+            clonedItem.push(id)
+            mcqTrueFalsePage.header.clickOnPublishItem()
+          })
+        })
+      })
       it(">verify presence of 'cloned item'", () => {
-        expect(clonedItem, `expected clone to happen successfully`).to.have.lengthOf(1);
-        itemListPage.searchFilters.clearAll();
-        clonedItem.forEach(cloned => {
-          itemListPage.searchFilters.typeInSearchBox(cloned);
-          itemListPage.verifyPresenceOfItemById(cloned);
-          itemListPage.getViewItemById(cloned).should("exist");
-        });
-        clonedItem.length = 0;
-      });
-    });
+        expect(
+          clonedItem,
+          `expected clone to happen successfully`
+        ).to.have.lengthOf(1)
+        itemListPage.searchFilters.clearAll()
+        clonedItem.forEach((cloned) => {
+          itemListPage.searchFilters.typeInSearchBox(cloned)
+          itemListPage.verifyPresenceOfItemById(cloned)
+          itemListPage.getViewItemById(cloned).should('exist')
+        })
+        clonedItem.length = 0
+      })
+    })
 
     /* https://snapwiz.atlassian.net/browse/EV-13434
      context(">district- remove share", () => {
@@ -413,5 +425,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
         });
       });
     }); */
-  });
-});
+  })
+})

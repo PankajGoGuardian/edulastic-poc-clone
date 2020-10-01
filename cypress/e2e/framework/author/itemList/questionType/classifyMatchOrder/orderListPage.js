@@ -1,158 +1,143 @@
 /* eslint-disable class-methods-use-this */
-import EditToolBar from "../common/editToolBar";
-import Header from "../../itemDetail/header";
-import Helpers from "../../../../util/Helpers";
+import EditToolBar from '../common/editToolBar'
+import Header from '../../itemDetail/header'
+import Helpers from '../../../../util/Helpers'
 
 class OrderListPage {
   constructor() {
-    this.editToolBar = new EditToolBar();
-    this.header = new Header();
+    this.editToolBar = new EditToolBar()
+    this.header = new Header()
   }
 
   // question content
   getListInputs = () =>
     cy
-      .get("[data-cy=sortable-list-container]")
+      .get('[data-cy=sortable-list-container]')
       .first()
-      .find("[data-cy=quillSortableItem]")
-      .find("[contenteditable=true]");
+      .find('[data-cy=quillSortableItem]')
+      .find('[contenteditable=true]')
 
   getAddInputButton = () =>
-    cy
-      .contains("span", "Add new choice")
-      .closest("button")
-      .first();
+    cy.contains('span', 'Add new choice').closest('button').first()
 
-  getListDeleteByIndex = index => cy.get(`[data-cy="deleteprefix${index}"]`);
+  getListDeleteByIndex = (index) => cy.get(`[data-cy="deleteprefix${index}"]`)
 
-  getPonitsInput = () => cy.get('[data-cy="points"]');
+  getPonitsInput = () => cy.get('[data-cy="points"]')
 
-  getAnswerLists = () => cy.get(`[data-cy="sortable-list-container"]`).last();
+  getAnswerLists = () => cy.get(`[data-cy="sortable-list-container"]`).last()
 
-  getPreviewList = () => cy.get('[data-cy="order-preview-container"]');
+  getPreviewList = () => cy.get('[data-cy="order-preview-container"]')
 
   addAlternate = () => {
-    cy.get('[data-cy="alternate"]')
-      .should("be.visible")
-      .click();
-    return this;
-  };
+    cy.get('[data-cy="alternate"]').should('be.visible').click()
+    return this
+  }
 
-  getQuestionText = () =>
-    cy
-      .get(".fr-element")
-      .first()
-      .find("p");
+  getQuestionText = () => cy.get('.fr-element').first().find('p')
 
-  getAddedAlternate = () => cy.get('[data-cy="del-alter"]');
+  getAddedAlternate = () => cy.get('[data-cy="del-alter"]')
 
   getLayout() {
-    return Helpers.getElement("layout").should("be.visble");
+    return Helpers.getElement('layout').should('be.visble')
   }
 
   getFontSizeSelect() {
-    return Helpers.getElement("fontSizeSelect");
+    return Helpers.getElement('fontSizeSelect')
   }
 
   getSmallFontSizeOption() {
-    return Helpers.getElement("small");
+    return Helpers.getElement('small')
   }
 
   getNormalFontSizeOption() {
-    return Helpers.getElement("normal");
+    return Helpers.getElement('normal')
   }
 
   getLargeFontSizeOption() {
-    return Helpers.getElement("large");
+    return Helpers.getElement('large')
   }
 
   getExtraLargeFontSizeOption() {
-    return Helpers.getElement("xlarge");
+    return Helpers.getElement('xlarge')
   }
 
   getListStyleSelect() {
-    return Helpers.getElement("listStyleOption");
+    return Helpers.getElement('listStyleOption')
   }
 
   getButtonListStyleOption() {
-    return Helpers.getElement("button");
+    return Helpers.getElement('button')
   }
 
   getListStyleOption() {
-    return Helpers.getElement("list");
+    return Helpers.getElement('list')
   }
 
   getInlineStyleOption() {
-    return Helpers.getElement("inline");
+    return Helpers.getElement('inline')
   }
 
   getHugeFontSizeOption() {
-    return Helpers.getElement("xxlarge");
+    return Helpers.getElement('xxlarge')
   }
 
   getPreview() {
-    return Helpers.getElement("order-preview-container");
+    return Helpers.getElement('order-preview-container')
   }
 
   getStemNumerationSelect() {
-    return Helpers.getElement("stemNumerationSelect");
+    return Helpers.getElement('stemNumerationSelect')
   }
 
   getNumericalOption() {
-    return Helpers.getElement("numerical");
+    return Helpers.getElement('numerical')
   }
 
   getUppercaseAlphabetOption() {
-    return Helpers.getElement("uppercase");
+    return Helpers.getElement('uppercase')
   }
 
   getLowercaseAlphabetOption() {
-    return Helpers.getElement("lowercase");
+    return Helpers.getElement('lowercase')
   }
 
   getSortableListContainer() {
-    return Helpers.getElement("order-preview-container");
+    return Helpers.getElement('order-preview-container')
   }
 
   checkListStyle(type) {
-    this.header.preview();
+    this.header.preview()
 
     // eslint-disable-next-line default-case
     switch (type) {
-      case "button":
-      case "list":
+      case 'button':
+      case 'list':
         this.getSortableListContainer()
           .children()
-          .children("div")
-          .each($el => {
-            cy.wrap($el)
-              .should("have.css", "width")
-              .and("gt", "400px");
-          });
-        break;
-      case "inline":
+          .children('div')
+          .each(($el) => {
+            cy.wrap($el).should('have.css', 'width').and('gt', '400px')
+          })
+        break
+      case 'inline':
         this.getSortableListContainer()
           .children()
-          .children("div")
-          .each($el => {
-            cy.wrap($el)
-              .should("have.css", "width")
-              .and("lt", "400px");
-          });
+          .children('div')
+          .each(($el) => {
+            cy.wrap($el).should('have.css', 'width').and('lt', '400px')
+          })
     }
 
-    this.header.edit();
+    this.header.edit()
   }
 
   checkFontSize(fontSize) {
-    this.header.preview();
+    this.header.preview()
 
-    this.getPreview()
-      .should("have.css", "font-size")
-      .and("eq", fontSize);
+    this.getPreview().should('have.css', 'font-size').and('eq', fontSize)
 
-    this.header.edit();
+    this.header.edit()
   }
 }
 
-export default OrderListPage;
+export default OrderListPage

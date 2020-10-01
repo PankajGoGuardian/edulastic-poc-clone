@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Pagination } from "antd";
+import styled from 'styled-components'
+import { Pagination } from 'antd'
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -13,21 +13,21 @@ export const StyledTableContainer = styled.div`
   input {
     border: 1px solid #d9d9d9;
   }
-`;
+`
 export const DeleteTermModalFooterDiv = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-`;
+`
 export const StyledButton = styled.a`
   margin-right: 20px;
   font-size: 20px;
-`;
+`
 
 export const StyledDeleteButton = styled(StyledButton)`
-  pointer-events: ${props => (props.disiable ? "none" : "auto")};
-  color: ${props => (props.disiable ? "rgba(0,0,0,0.65)" : "#1890ff")};
-`;
+  pointer-events: ${(props) => (props.disiable ? 'none' : 'auto')};
+  color: ${(props) => (props.disiable ? 'rgba(0,0,0,0.65)' : '#1890ff')};
+`
 
 export const StyledAddButton = styled.a`
   float: right;
@@ -44,9 +44,9 @@ export const StyledAddButton = styled.a`
     border: 2px solid #00b0ff;
     color: white;
   }
-`;
+`
 
 export const StyledPagination = styled(Pagination)`
   margin-top: 15px;
   align-self: flex-end;
-`;
+`

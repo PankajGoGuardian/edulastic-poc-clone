@@ -1,13 +1,18 @@
-import { Input, List, Row, Col } from "antd";
-import styled from "styled-components";
-import { themeColor, white, placeholderGray, backgrounds } from "@edulastic/colors";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { Input, List, Row, Col } from 'antd'
+import styled from 'styled-components'
+import {
+  themeColor,
+  white,
+  placeholderGray,
+  backgrounds,
+} from '@edulastic/colors'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 export const ExternalToolsSearchHeader = styled.div`
   display: flex;
   padding: 20px 10px;
   background: white;
-`;
+`
 
 export const StyledSearch = styled(Input.Search)`
   height: 40px;
@@ -28,21 +33,21 @@ export const StyledSearch = styled(Input.Search)`
       }
     }
   }
-`;
+`
 
 export const StyledList = styled(List)`
   padding: 0px 30px;
-`;
+`
 
 export const StyledRow = styled(Row)`
   display: flex;
   align-items: center;
-`;
+`
 
 export const StyledColRight = styled(Col)`
   display: flex;
   justify-content: flex-end;
-`;
+`
 
 export const CustomModal = styled(ConfirmationModal)`
   && {
@@ -57,4 +62,4 @@ export const CustomModal = styled(ConfirmationModal)`
       }
     }
   }
-`;
+`

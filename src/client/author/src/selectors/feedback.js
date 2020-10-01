@@ -1,18 +1,15 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect'
 
-export const stateSelector = state => state.feedbackResponse;
+export const stateSelector = (state) => state.feedbackResponse
 
 export const getFeedbackResponseSelector = createSelector(
   stateSelector,
-  state => state.data
-);
+  (state) => state.data
+)
 
-export const getStatus = createSelector(
-  stateSelector,
-  state => state.loading
-);
+export const getStatus = createSelector(stateSelector, (state) => state.loading)
 
 export const getErrorResponse = createSelector(
   stateSelector,
-  state => state.error
-);
+  (state) => state.error
+)

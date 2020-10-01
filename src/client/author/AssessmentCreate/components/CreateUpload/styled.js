@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer } from '@edulastic/common'
 
 export const CreateUploadContainer = styled(FlexContainer)`
   justify-content: center;
@@ -10,4 +10,4 @@ export const CreateUploadContainer = styled(FlexContainer)`
   height: 70%;
   /* todo: delete when upload icon is available */
   padding-bottom: 90px;
-`;
+`

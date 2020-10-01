@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const SelectContainer = styled.div`
   position: relative;
@@ -19,7 +19,7 @@ const SelectContainer = styled.div`
     align-items: center;
     padding-left: 10px;
     &:hover {
-      border-color: ${props => props.theme.default.dropdownHoverBorderColor};
+      border-color: ${(props) => props.theme.default.dropdownHoverBorderColor};
     }
     .ant-select-selection__rendered,
     .ant-select-selection-selected-value {
@@ -39,13 +39,13 @@ const SelectContainer = styled.div`
   }
   .anticon-down {
     svg {
-      fill: ${props => props.theme.default.dropdownCaretIconColor};
+      fill: ${(props) => props.theme.default.dropdownCaretIconColor};
     }
   }
   @media (max-width: 768px) {
     height: 52px;
     width: 188px;
   }
-`;
+`
 
-export default SelectContainer;
+export default SelectContainer

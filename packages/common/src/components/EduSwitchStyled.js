@@ -1,15 +1,15 @@
-import { Switch } from "antd";
-import styled from "styled-components";
-import { themeColorBlue, white } from "@edulastic/colors";
+import { Switch } from 'antd'
+import styled from 'styled-components'
+import { themeColorBlue, white } from '@edulastic/colors'
 
 export const EduSwitchStyled = styled(Switch)`
   &.ant-switch {
     background: rgba(0, 0, 0, 0.25);
     position: relative;
-    min-width: ${props => props.width || "40"}px !important;
+    min-width: ${(props) => props.width || '40'}px !important;
     .ant-switch-inner {
       &:after {
-        content: "OFF";
+        content: 'OFF';
         font-size: 9px;
         color: #606060;
         position: absolute;
@@ -23,7 +23,7 @@ export const EduSwitchStyled = styled(Switch)`
       background: ${themeColorBlue};
       .ant-switch-inner {
         &:after {
-          content: "ON";
+          content: 'ON';
           color: ${white};
           top: 50%;
           right: auto;
@@ -33,4 +33,4 @@ export const EduSwitchStyled = styled(Switch)`
       }
     }
   }
-`;
+`

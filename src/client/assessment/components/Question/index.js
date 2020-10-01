@@ -1,49 +1,52 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
-import { roleuser as userRoles } from "@edulastic/constants";
-import { getUserRole, getUserFeatures } from "../../../author/src/selectors/user";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
+import { withNamespaces } from '@edulastic/localization'
+import { roleuser as userRoles } from '@edulastic/constants'
+import {
+  getUserRole,
+  getUserFeatures,
+} from '../../../author/src/selectors/user'
 
-import { Widget } from "../../styled/Widget";
+import { Widget } from '../../styled/Widget'
 
-const { TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = userRoles;
+const { TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = userRoles
 
 class Question extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       el: null,
-      intervalID: null
-    };
+      intervalID: null,
+    }
 
-    this.node = React.createRef();
+    this.node = React.createRef()
   }
 
   componentDidMount = () => {
-    const { fillSections, section, label, sectionId, visible } = this.props;
+    const { fillSections, section, label, sectionId, visible } = this.props
 
     if (this.showSection()) {
-      const { current: node } = this.node;
-      if (typeof node !== "object") return false;
-      if (visible === false) return false;
+      const { current: node } = this.node
+      if (typeof node !== 'object') return false
+      if (visible === false) return false
 
-      fillSections(section, label, node, sectionId);
+      fillSections(section, label, node, sectionId)
 
       this.setState({
         intervalID: setInterval(() => {
-          this.updateVariablesOfSection();
-        }, 1000)
-      });
+          this.updateVariablesOfSection()
+        }, 1000),
+      })
 
       this.setState({
-        el: node
-      });
+        el: node,
+      })
     }
-  };
+  }
 
   showSection = () => {
     const {
@@ -53,14 +56,14 @@ class Question extends Component {
       section,
       label,
       features,
-      showScoringSectionAnyRole = false
-    } = this.props;
+      showScoringSectionAnyRole = false,
+    } = this.props
 
     // show all tools except advanced section and 'Solution' section
-    if (section !== "advanced" || label === "Solution") {
-      return true;
+    if (section !== 'advanced' || label === 'Solution') {
+      return true
     }
-    let showAdvancedTools = true;
+    let showAdvancedTools = true
 
     /**
      * allowed for teacher/DA/SA having premium feature and enabled power tools
@@ -68,46 +71,51 @@ class Question extends Component {
      * @see https://snapwiz.atlassian.net/browse/EV-15883
      */
     if (
-      (userRole === TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
+      (userRole === TEACHER &&
+        !features.isPublisherAuthor &&
+        !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
     ) {
-      showAdvancedTools = false;
+      showAdvancedTools = false
       if ((isPremiumUser && isPowerTeacher) || showScoringSectionAnyRole) {
-        showAdvancedTools = true;
+        showAdvancedTools = true
       }
     }
 
-    return showAdvancedTools;
-  };
+    return showAdvancedTools
+  }
 
   componentWillUnmount() {
-    const { cleanSections, sectionId } = this.props;
-    const { intervalID } = this.state;
+    const { cleanSections, sectionId } = this.props
+    const { intervalID } = this.state
 
-    cleanSections(sectionId);
-    clearInterval(intervalID);
+    cleanSections(sectionId)
+    clearInterval(intervalID)
   }
 
   updateVariablesOfSection = () => {
-    const { el } = this.state;
-    const { current: node } = this.node;
+    const { el } = this.state
+    const { current: node } = this.node
 
-    if (!node) return false;
+    if (!node) return false
 
-    if (node.clientHeight !== el.clientHeight || node.offsetTop !== el.offsetTop) {
-      const { fillSections, section, label } = this.props;
+    if (
+      node.clientHeight !== el.clientHeight ||
+      node.offsetTop !== el.offsetTop
+    ) {
+      const { fillSections, section, label } = this.props
 
-      fillSections(section, label, node);
+      fillSections(section, label, node)
 
       this.setState({
-        el: node
-      });
+        el: node,
+      })
     }
-  };
+  }
 
   render() {
     if (!this.showSection()) {
-      return null;
+      return null
     }
 
     const {
@@ -118,8 +126,8 @@ class Question extends Component {
       position,
       visible,
       overflowHandlers,
-      styles = {}
-    } = this.props;
+      styles = {},
+    } = this.props
 
     return (
       <Widget
@@ -134,7 +142,7 @@ class Question extends Component {
       >
         {children}
       </Widget>
-    );
+    )
   }
 }
 
@@ -149,27 +157,27 @@ Question.propTypes = {
   advancedAreOpen: PropTypes.bool,
   visible: PropTypes.bool,
   position: PropTypes.string,
-  overflowHandlers: PropTypes.object
-};
+  overflowHandlers: PropTypes.object,
+}
 
 Question.defaultProps = {
-  dataCy: "",
+  dataCy: '',
   questionTextArea: false,
   visible: true,
   advancedAreOpen: null,
-  position: "relative",
-  overflowHandlers: {}
-};
+  position: 'relative',
+  overflowHandlers: {},
+}
 
 export default compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
-    state => ({
+    (state) => ({
       userRole: getUserRole(state),
-      isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
-      isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
-      features: getUserFeatures(state)
+      isPowerTeacher: get(state, ['user', 'user', 'isPowerTeacher'], false),
+      isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
+      features: getUserFeatures(state),
     }),
     null
   )
-)(Question);
+)(Question)

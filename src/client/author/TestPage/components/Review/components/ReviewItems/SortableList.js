@@ -1,13 +1,13 @@
-import { Collapse } from "antd";
-import React from "react";
-import { SortableContainer } from "react-sortable-hoc";
-import SortableItem from "./SortableItem";
-import { InfoDiv, Text, Count, GroupCollapse } from "./styled";
+import { Collapse } from 'antd'
+import React from 'react'
+import { SortableContainer } from 'react-sortable-hoc'
+import SortableItem from './SortableItem'
+import { InfoDiv, Text, Count, GroupCollapse } from './styled'
 
-const { Panel } = Collapse;
+const { Panel } = Collapse
 
-const rightContent = group => {
-  const { deliverItemsCount, items } = group;
+const rightContent = (group) => {
+  const { deliverItemsCount, items } = group
   return (
     <>
       <InfoDiv>
@@ -19,16 +19,29 @@ const rightContent = group => {
         <Count>{deliverItemsCount || items.length}</Count>
       </InfoDiv>
     </>
-  );
-};
+  )
+}
 
 export default SortableContainer(
-  ({ items, isEditable, itemGroups, isPublishers, userRole, isPowerPremiumAccount, showGroupsPanel, ...rest }) => (
+  ({
+    items,
+    isEditable,
+    itemGroups,
+    isPublishers,
+    userRole,
+    isPowerPremiumAccount,
+    showGroupsPanel,
+    ...rest
+  }) => (
     <div>
       {showGroupsPanel ? (
-        <GroupCollapse defaultActiveKey={["0"]} expandIconPosition="right">
+        <GroupCollapse defaultActiveKey={['0']} expandIconPosition="right">
           {itemGroups.map((group, count) => (
-            <Panel header={group.groupName} key={count} extra={rightContent(group)}>
+            <Panel
+              header={group.groupName}
+              key={count}
+              extra={rightContent(group)}
+            >
               {items.map(
                 (item, index) =>
                   item.main.groupId == group._id && (
@@ -59,4 +72,4 @@ export default SortableContainer(
       )}
     </div>
   )
-);
+)

@@ -1,6 +1,6 @@
-import styled, { css } from "styled-components";
-import { Table, Slider, Select } from "antd";
-import { FlexContainer } from "@edulastic/common";
+import styled, { css } from 'styled-components'
+import { Table, Slider, Select } from 'antd'
+import { FlexContainer } from '@edulastic/common'
 import {
   smallDesktopWidth,
   borderGrey,
@@ -9,14 +9,14 @@ import {
   greyDarken,
   themeColorTagsBg,
   themeColorLighter,
-  greyThemeDark2
-} from "@edulastic/colors";
+  greyThemeDark2,
+} from '@edulastic/colors'
 
 export const StyledFlexContainer = styled(FlexContainer)`
   @media (max-width: ${smallDesktopWidth}) {
-    flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
+    flex-wrap: ${({ flexWrap }) => flexWrap || 'wrap'};
   }
-`;
+`
 
 export const SubHeader = styled.div`
   padding-bottom: 15px;
@@ -35,13 +35,13 @@ export const SubHeader = styled.div`
       }
     }
   }
-`;
+`
 
 export const SideButtonContainer = styled.div`
   padding: 20px 20px 0px 10px;
   display: flex;
   align-items: center;
-`;
+`
 
 export const BodyContainer = styled.div`
   height: calc(100vh - 190px);
@@ -77,12 +77,13 @@ export const BodyContainer = styled.div`
       background: #888;
     }
   }
-`;
+`
 
 const borderLoopEffect = css`
   background-image: linear-gradient(90deg, ${themeColor} 40%, transparent 60%),
     linear-gradient(90deg, ${themeColor} 40%, transparent 60%),
-    linear-gradient(0deg, ${themeColor} 40%, transparent 60%), linear-gradient(0deg, ${themeColor} 40%, transparent 60%);
+    linear-gradient(0deg, ${themeColor} 40%, transparent 60%),
+    linear-gradient(0deg, ${themeColor} 40%, transparent 60%);
   background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
   background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
   background-position: left top, right bottom, left bottom, right top;
@@ -91,34 +92,36 @@ const borderLoopEffect = css`
       background-position: left top, right bottom, left bottom, right top;
     }
     100% {
-      background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
+      background-position: left 15px top, right 15px bottom, left bottom 15px,
+        right top 15px;
     }
   }
-`;
+`
 
 export const TableContainer = styled.div`
   padding: 20px 0px;
   border-radius: 4px;
   margin-bottom: 20px;
   border: ${({ highlighted }) => !highlighted && `2px solid ${borderGrey}`};
-  animation: ${({ highlighted }) => highlighted && `border-dance 1s infinite linear;`};
+  animation: ${({ highlighted }) =>
+    highlighted && `border-dance 1s infinite linear;`};
   ${({ highlighted }) => highlighted && borderLoopEffect};
-`;
+`
 
 export const ActivityDropConainer = styled.div`
   display: inline-block;
   width: 100%;
-  min-height: ${({ height }) => height || "50px"};
+  min-height: ${({ height }) => height || '50px'};
   margin: 10px 0;
   box-sizing: border-box;
   border-radius: 5px;
   padding-left: 15px;
   padding-right: 15px;
-  line-height: ${({ height }) => height || "50px"};
+  line-height: ${({ height }) => height || '50px'};
   text-align: center;
   animation: ${({ active }) => active && `border-dance 1s infinite linear;`};
   ${borderLoopEffect};
-`;
+`
 
 export const TableHeader = styled.div`
   padding: 0px 20px 15px 20px;
@@ -155,7 +158,7 @@ export const TableHeader = styled.div`
       justify-content: flex-end;
     }
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-content {
@@ -188,7 +191,7 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const Tag = styled.span`
   color: ${themeColor};
@@ -198,9 +201,9 @@ export const Tag = styled.span`
   font-size: 11px;
   border-radius: 4px;
   padding: 4px 10px;
-  margin-right: ${({ marginRight }) => marginRight || "0px"};
+  margin-right: ${({ marginRight }) => marginRight || '0px'};
   font-weight: 600;
-`;
+`
 
 export const StyledSlider = styled(Slider)`
   width: 35%;
@@ -229,7 +232,7 @@ export const StyledSlider = styled(Slider)`
       border-color: ${themeColorLighter};
     }
   }
-`;
+`
 
 export const TableSelect = styled.div`
   position: absolute;
@@ -241,7 +244,7 @@ export const TableSelect = styled.div`
       margin-right: 20px;
     }
   }
-`;
+`
 
 export const StyledSelect = styled(Select)`
   height: 35px;
@@ -257,17 +260,17 @@ export const StyledSelect = styled(Select)`
       }
     }
   }
-`;
+`
 
 export const StyledPerfectScrollbar = styled.div`
   width: ${({ width }) => width};
-`;
+`
 
 export const StyledDescription = styled.div`
   width: 100%;
-  cursor: ${({ clickable }) => clickable && "pointer"};
-`;
+  cursor: ${({ clickable }) => clickable && 'pointer'};
+`
 
 export const StudentName = styled.div`
   margin: 4px 0;
-`;
+`

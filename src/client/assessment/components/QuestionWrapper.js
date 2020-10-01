@@ -1,74 +1,82 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import styled, { ThemeProvider, withTheme } from "styled-components";
-import { questionType, test, roleuser } from "@edulastic/constants";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get, round } from "lodash";
-import { IconClockCircularOutline } from "@edulastic/icons";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import styled, { ThemeProvider, withTheme } from 'styled-components'
+import { questionType, test, roleuser } from '@edulastic/constants'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get, round } from 'lodash'
+import { IconClockCircularOutline } from '@edulastic/icons'
 
-import { withNamespaces } from "@edulastic/localization";
-import { mobileWidthMax, smallDesktopWidth, borderGrey2, greyThemeDark2 } from "@edulastic/colors";
-import { withWindowSizes, ItemDetailContext, COMPACT } from "@edulastic/common";
-import { PaperWrapper } from "./Graph/common/styled_components";
-import { themes } from "../../theme";
-import QuestionMenu, { AdvancedOptionsLink } from "./QuestionMenu";
+import { withNamespaces } from '@edulastic/localization'
+import {
+  mobileWidthMax,
+  smallDesktopWidth,
+  borderGrey2,
+  greyThemeDark2,
+} from '@edulastic/colors'
+import { withWindowSizes, ItemDetailContext, COMPACT } from '@edulastic/common'
+import { PaperWrapper } from './Graph/common/styled_components'
+import { themes } from '../../theme'
+import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 
-import { OrderList } from "../widgets/OrderList";
-import { SortList } from "../widgets/SortList";
-import { MatchList } from "../widgets/MatchList";
-import { Classification } from "../widgets/Classification";
-import { MultipleChoice } from "../widgets/MultipleChoice";
-import { ClozeDragDrop } from "../widgets/ClozeDragDrop";
-import { ClozeImageDragDrop } from "../widgets/ClozeImageDragDrop";
-import { ClozeImageDropDown } from "../widgets/ClozeImageDropDown";
-import { ClozeImageText } from "../widgets/ClozeImageText";
-import { ClozeEditingTask } from "../widgets/ClozeEditingTask";
-import { Graph } from "./Graph";
-import { ClozeDropDown } from "../widgets/ClozeDropDown";
-import { ClozeText } from "../widgets/ClozeText";
-import { ShortText } from "../widgets/ShortText";
-import { TokenHighlight } from "../widgets/TokenHighlight";
-import { Shading } from "../widgets/Shading";
-import { Hotspot } from "../widgets/Hotspot";
-import { HighlightImage } from "../widgets/HighlightImage";
-import { Drawing } from "./Drawing";
-import { EssayPlainText } from "../widgets/EssayPlainText";
-import { EssayRichText } from "../widgets/EssayRichText";
-import FractionEditor from "../widgets/FractionEditor";
-import UploadFile from "../widgets/UploadFile";
+import { OrderList } from '../widgets/OrderList'
+import { SortList } from '../widgets/SortList'
+import { MatchList } from '../widgets/MatchList'
+import { Classification } from '../widgets/Classification'
+import { MultipleChoice } from '../widgets/MultipleChoice'
+import { ClozeDragDrop } from '../widgets/ClozeDragDrop'
+import { ClozeImageDragDrop } from '../widgets/ClozeImageDragDrop'
+import { ClozeImageDropDown } from '../widgets/ClozeImageDropDown'
+import { ClozeImageText } from '../widgets/ClozeImageText'
+import { ClozeEditingTask } from '../widgets/ClozeEditingTask'
+import { Graph } from './Graph'
+import { ClozeDropDown } from '../widgets/ClozeDropDown'
+import { ClozeText } from '../widgets/ClozeText'
+import { ShortText } from '../widgets/ShortText'
+import { TokenHighlight } from '../widgets/TokenHighlight'
+import { Shading } from '../widgets/Shading'
+import { Hotspot } from '../widgets/Hotspot'
+import { HighlightImage } from '../widgets/HighlightImage'
+import { Drawing } from './Drawing'
+import { EssayPlainText } from '../widgets/EssayPlainText'
+import { EssayRichText } from '../widgets/EssayRichText'
+import FractionEditor from '../widgets/FractionEditor'
+import UploadFile from '../widgets/UploadFile'
 
-import withAnswerSave from "./HOC/withAnswerSave";
-import { MatrixChoice } from "../widgets/MatrixChoice";
-import { Protractor } from "../widgets/Protractor";
-import { Passage } from "../widgets/Passage";
-import { Video } from "../widgets/Video";
-import { Text } from "../widgets/Text";
-import { MathFormula } from "../widgets/MathFormula";
-import { FormulaEssay } from "../widgets/FormulaEssay";
-import ClozeMath from "../widgets/ClozeMath";
-import { setQuestionDataAction } from "../../author/src/actions/question";
-import { requestScratchPadAction } from "../../author/ExpressGrader/ducks";
-import { toggleAdvancedSections } from "../actions/questions";
-import { Chart } from "../widgets/Charts";
-import { getUserRole, getUserFeatures } from "../../author/src/selectors/user";
-import AudioControls from "../AudioControls";
+import withAnswerSave from './HOC/withAnswerSave'
+import { MatrixChoice } from '../widgets/MatrixChoice'
+import { Protractor } from '../widgets/Protractor'
+import { Passage } from '../widgets/Passage'
+import { Video } from '../widgets/Video'
+import { Text } from '../widgets/Text'
+import { MathFormula } from '../widgets/MathFormula'
+import { FormulaEssay } from '../widgets/FormulaEssay'
+import ClozeMath from '../widgets/ClozeMath'
+import { setQuestionDataAction } from '../../author/src/actions/question'
+import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
+import { toggleAdvancedSections } from '../actions/questions'
+import { Chart } from '../widgets/Charts'
+import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
+import AudioControls from '../AudioControls'
 
-import { getFontSize } from "../utils/helpers";
-import PreviewRubricTable from "../../author/GradingRubric/Components/common/PreviewRubricTable";
-import { Coding } from "../widgets/Coding";
+import { getFontSize } from '../utils/helpers'
+import PreviewRubricTable from '../../author/GradingRubric/Components/common/PreviewRubricTable'
+import { Coding } from '../widgets/Coding'
 
-import Hints from "./Hints";
-import Explanation from "./Common/Explanation";
-import { EDIT } from "../constants/constantsForQuestions";
-import ShowUserWork from "./Common/ShowUserWork";
-import { playerSkinTypeSelector } from "../selectors/test";
-import { isItemVisibiltySelector, ttsUserIdSelector } from "../../author/ClassBoard/ducks";
-import ItemInvisible from "../../author/ExpressGrader/components/Question/ItemInvisible";
+import Hints from './Hints'
+import Explanation from './Common/Explanation'
+import { EDIT } from '../constants/constantsForQuestions'
+import ShowUserWork from './Common/ShowUserWork'
+import { playerSkinTypeSelector } from '../selectors/test'
+import {
+  isItemVisibiltySelector,
+  ttsUserIdSelector,
+} from '../../author/ClassBoard/ducks'
+import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
 
 const QuestionContainer = styled.div`
-  padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
-  display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
+  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
+  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
   justify-content: space-between;
   ${({ style }) => style};
   @media (max-width: ${mobileWidthMax}) {
@@ -174,7 +182,7 @@ const QuestionContainer = styled.div`
       }
     }
   }
-`;
+`
 
 export const TimeSpentWrapper = styled.p`
   font-size: 19px;
@@ -203,157 +211,159 @@ export const TimeSpentWrapper = styled.p`
     margin-right: 8px;
     fill: ${greyThemeDark2};
   }
-`;
+`
 
 export const FlexContainer = styled.div`
   flex: auto;
   display: flex;
   flex-direction: column;
   max-width: 100%;
-`;
+`
 
 export const EvaluationMessage = styled.div`
   color: rgb(250, 135, 52);
   width: 100%;
   text-align: center;
-`;
+`
 
-const DummyQuestion = () => <></>;
+const DummyQuestion = () => <></>
 
-const getQuestion = type => {
+const getQuestion = (type) => {
   switch (type) {
     case questionType.LINE_PLOT:
     case questionType.DOT_PLOT:
     case questionType.HISTOGRAM:
     case questionType.LINE_CHART:
     case questionType.BAR_CHART:
-      return Chart;
+      return Chart
     case questionType.DRAWING:
-      return Drawing;
+      return Drawing
     case questionType.HIGHLIGHT_IMAGE:
-      return HighlightImage;
+      return HighlightImage
     case questionType.SHADING:
-      return Shading;
+      return Shading
     case questionType.HOTSPOT:
-      return Hotspot;
+      return Hotspot
     case questionType.TOKEN_HIGHLIGHT:
-      return TokenHighlight;
+      return TokenHighlight
     case questionType.SHORT_TEXT:
-      return ShortText;
+      return ShortText
     case questionType.ESSAY_PLAIN_TEXT:
-      return EssayPlainText;
+      return EssayPlainText
     case questionType.ESSAY_RICH_TEXT:
-      return EssayRichText;
+      return EssayRichText
     case questionType.MULTIPLE_CHOICE:
-      return MultipleChoice;
+      return MultipleChoice
     case questionType.CHOICE_MATRIX:
-      return MatrixChoice;
+      return MatrixChoice
     case questionType.SORT_LIST:
-      return SortList;
+      return SortList
     case questionType.CLASSIFICATION:
-      return Classification;
+      return Classification
     case questionType.MATCH_LIST:
-      return MatchList;
+      return MatchList
     case questionType.ORDER_LIST:
-      return OrderList;
+      return OrderList
     case questionType.CLOZE_DRAG_DROP:
-      return ClozeDragDrop;
+      return ClozeDragDrop
     case questionType.CLOZE_IMAGE_DRAG_DROP:
-      return ClozeImageDragDrop;
+      return ClozeImageDragDrop
     case questionType.PROTRACTOR:
-      return Protractor;
+      return Protractor
     case questionType.CLOZE_IMAGE_DROP_DOWN:
-      return ClozeImageDropDown;
+      return ClozeImageDropDown
     case questionType.CLOZE_IMAGE_TEXT:
-      return ClozeImageText;
+      return ClozeImageText
     case questionType.CLOZE_DROP_DOWN:
-      return ClozeDropDown;
+      return ClozeDropDown
     case questionType.CLOZE_TEXT:
-      return ClozeText;
+      return ClozeText
     case questionType.EDITING_TASK:
-      return ClozeEditingTask;
+      return ClozeEditingTask
     case questionType.PASSAGE:
-      return Passage;
+      return Passage
     case questionType.VIDEO:
-      return Video;
+      return Video
     case questionType.TEXT:
-      return Text;
+      return Text
     case questionType.MATH:
-      return MathFormula;
+      return MathFormula
     case questionType.FORMULA_ESSAY:
-      return FormulaEssay;
+      return FormulaEssay
     case questionType.CLOZE_MATH:
     case questionType.EXPRESSION_MULTIPART:
-      return ClozeMath;
+      return ClozeMath
     case questionType.GRAPH:
-      return Graph;
+      return Graph
     case questionType.FRACTION_EDITOR:
-      return FractionEditor;
+      return FractionEditor
     case questionType.SECTION_LABEL:
-      return DummyQuestion;
+      return DummyQuestion
     case questionType.CODING:
-      return Coding;
+      return Coding
     case questionType.UPLOAD_FILE:
-      return UploadFile;
+      return UploadFile
     default:
-      return null;
+      return null
   }
-};
+}
 
-const { TEACHER, SCHOOL_ADMIN, DISTRICT_ADMIN } = roleuser;
+const { TEACHER, SCHOOL_ADMIN, DISTRICT_ADMIN } = roleuser
 
 class QuestionWrapper extends Component {
-  static contextType = ItemDetailContext;
+  static contextType = ItemDetailContext
 
   state = {
     main: [],
     advanced: [],
     activeTab: 0,
     shuffledOptsOrder: [],
-    page: 1
-  };
+    page: 1,
+  }
 
-  setPage = page => this.setState({ page });
+  setPage = (page) => this.setState({ page })
 
-  handleShuffledOptions = shuffledOptsOrder => {
-    this.setState({ shuffledOptsOrder });
-  };
+  handleShuffledOptions = (shuffledOptsOrder) => {
+    this.setState({ shuffledOptsOrder })
+  }
 
   fillSections = (section, label, el, sectionId) => {
-    if (typeof el !== "object") return;
-    this.setState(state => {
-      const sectionState = state[section];
-      const found = sectionState.filter(block => block.label === label);
+    if (typeof el !== 'object') return
+    this.setState((state) => {
+      const sectionState = state[section]
+      const found = sectionState.filter((block) => block.label === label)
 
       if (found.length) {
         // update of section offset in array
         return {
-          [section]: sectionState.filter(block => {
+          [section]: sectionState.filter((block) => {
             if (block.label === label) {
-              block.el = el;
+              block.el = el
             }
-            return block;
-          })
-        };
+            return block
+          }),
+        }
       }
 
       // push of section to array
       return {
-        [section]: sectionState.concat({ section, label, el, sectionId })
-      };
-    });
-  };
+        [section]: sectionState.concat({ section, label, el, sectionId }),
+      }
+    })
+  }
 
-  cleanSections = sectionId => {
-    if (!sectionId) return;
-    this.setState(({ main }) => ({ main: main.filter(item => item.sectionId !== sectionId) }));
-  };
+  cleanSections = (sectionId) => {
+    if (!sectionId) return
+    this.setState(({ main }) => ({
+      main: main.filter((item) => item.sectionId !== sectionId),
+    }))
+  }
 
   static getDerivedStateFromProps(props) {
     if (props.view !== EDIT) {
-      return { main: [], advanced: [], activeTab: 0 };
+      return { main: [], advanced: [], activeTab: 0 }
     }
-    return null;
+    return null
   }
 
   /**
@@ -361,9 +371,9 @@ class QuestionWrapper extends Component {
    * @returns {boolean} whether current student is a tts user
    */
   get ttsVisibilityAuthorSide() {
-    const { studentId, ttsUserIds = [], userRole, data } = this.props;
-    const key = data?.activity?.userId || studentId;
-    return userRole === "teacher" && ttsUserIds.includes(key);
+    const { studentId, ttsUserIds = [], userRole, data } = this.props
+    const key = data?.activity?.userId || studentId
+    return userRole === 'teacher' && ttsUserIds.includes(key)
   }
 
   render() {
@@ -391,7 +401,7 @@ class QuestionWrapper extends Component {
       showStudentWork,
       LCBPreviewModal,
       showUserTTS,
-      selectedTheme = "default",
+      selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
       scrollContainer,
@@ -409,35 +419,46 @@ class QuestionWrapper extends Component {
       features,
       isItemsVisible,
       ...restProps
-    } = this.props;
-    const userAnswer = get(data, "activity.userResponse", null);
-    const timeSpent = get(data, "activity.timeSpent", false);
-    const { main, advanced, activeTab, page } = this.state;
-    const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
-    const { layoutType } = this.context;
-    const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO, questionType.TEXT].includes(data.type);
+    } = this.props
+    const userAnswer = get(data, 'activity.userResponse', null)
+    const timeSpent = get(data, 'activity.timeSpent', false)
+    const { main, advanced, activeTab, page } = this.state
+    const disabled =
+      get(data, 'activity.disabled', false) || data.scoringDisabled
+    const { layoutType } = this.context
+    const isPassageOrVideoType = [
+      questionType.PASSAGE,
+      questionType.VIDEO,
+      questionType.TEXT,
+    ].includes(data.type)
     const Question =
       isExpressGrader && !isItemsVisible
-        ? () => <ItemInvisible qLabel={data.qLabel} showQuestionNumber={!isPassageOrVideoType && data.qLabel} />
-        : getQuestion(type);
+        ? () => (
+            <ItemInvisible
+              qLabel={data.qLabel}
+              showQuestionNumber={!isPassageOrVideoType && data.qLabel}
+            />
+          )
+        : getQuestion(type)
 
-    const isV1Multipart = get(this.props, "col.isV1Multipart", false);
-    const userAnswerProps = {};
+    const isV1Multipart = get(this.props, 'col.isV1Multipart', false)
+    const userAnswerProps = {}
     if (userAnswer) {
-      userAnswerProps.userAnswer = userAnswer;
+      userAnswerProps.userAnswer = userAnswer
     }
 
     if (data.id) {
       /**
        * adding `key` forces the component to re-render when `id` changes.
        */
-      userAnswerProps.key = data.id;
+      userAnswerProps.key = data.id
     }
 
     const canShowPlayer =
-      ((showUserTTS === "yes" && userRole === "student") || this.ttsVisibilityAuthorSide) &&
+      ((showUserTTS === 'yes' && userRole === 'student') ||
+        this.ttsVisibilityAuthorSide) &&
       data.tts &&
-      data.tts.taskStatus === "COMPLETED";
+      data.tts.taskStatus === 'COMPLETED'
 
     /**
      * we need to render the tts buttons at author, if it was rendered at student side
@@ -445,34 +466,44 @@ class QuestionWrapper extends Component {
      * need to render it because scratchpad data gets displaced at LCB, EG
      * @see https://snapwiz.atlassian.net/browse/EV-18747
      */
-    const hideVisibility = isLCBView || isExpressGrader || (userRole === "teacher" && LCBPreviewModal);
+    const hideVisibility =
+      isLCBView ||
+      isExpressGrader ||
+      (userRole === 'teacher' && LCBPreviewModal)
 
-    const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
+    const studentReportFeedbackVisible =
+      isStudentReport && !isPassageOrVideoType && !data.scoringDisabled
 
-    const themeToPass = themes[selectedTheme] || themes.default;
+    const themeToPass = themes[selectedTheme] || themes.default
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
 
-    const showQuestionMenu = windowWidth > parseInt(smallDesktopWidth, 10);
+    const showQuestionMenu = windowWidth > parseInt(smallDesktopWidth, 10)
 
     const advancedLink =
       !showQuestionMenu && advanced.length > 0 ? (
-        <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} bottom />
-      ) : null;
+        <AdvancedOptionsLink
+          handleAdvancedOpen={handleAdvancedOpen}
+          advancedAreOpen={advancedAreOpen}
+          bottom
+        />
+      ) : null
 
-    const { rubrics: rubricDetails } = data;
-    const rubricFeedback = data?.activity?.rubricFeedback;
+    const { rubrics: rubricDetails } = data
+    const rubricFeedback = data?.activity?.rubricFeedback
 
-    const { calculatedHeight, fullHeight } = restProps;
-    let openAdvancedOptions = false;
+    const { calculatedHeight, fullHeight } = restProps
+    let openAdvancedOptions = false
 
     if (
-      (userRole === TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
+      (userRole === TEACHER &&
+        !features.isPublisherAuthor &&
+        !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
     ) {
-      openAdvancedOptions = true;
+      openAdvancedOptions = true
       if (isPremiumUser && isPowerTeacher) {
-        openAdvancedOptions = false;
+        openAdvancedOptions = false
       }
     }
 
@@ -480,14 +511,19 @@ class QuestionWrapper extends Component {
       <ThemeProvider
         theme={{
           ...themeToPass,
-          fontSize: themeToPass.fontSize || getFontSize(get(data, "uiStyle.fontsize", "normal")),
-          isV1Migrated: data.isV1Migrated
+          fontSize:
+            themeToPass.fontSize ||
+            getFontSize(get(data, 'uiStyle.fontsize', 'normal')),
+          isV1Migrated: data.isV1Migrated,
         }}
       >
         <>
           {canShowPlayer ? (
             <AudioControls
-              btnWithText={playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase()}
+              btnWithText={
+                playerSkinType.toLowerCase() ===
+                test.playerSkinValues.edulastic.toLowerCase()
+              }
               hideVisibility={hideVisibility}
               key={data.id}
               item={data}
@@ -498,16 +534,22 @@ class QuestionWrapper extends Component {
               className="question-audio-controller"
             />
           ) : (
-            ""
+            ''
           )}
-          <div className="__print-question-main-wrapper" style={{ height: "100%" }}>
+          <div
+            className="__print-question-main-wrapper"
+            style={{ height: '100%' }}
+          >
             <QuestionContainer
               className={`fr-view question-container question-container-id-${data.id}`}
               disabled={disabled}
               noPadding={noPadding}
               isFlex
               data-cy="question-container"
-              style={{ width: "100%", height: calculatedHeight || (fullHeight ? "100%" : null) }}
+              style={{
+                width: '100%',
+                height: calculatedHeight || (fullHeight ? '100%' : null),
+              }}
             >
               {view === EDIT && showQuestionMenu && (
                 <QuestionMenuWrapper>
@@ -518,7 +560,7 @@ class QuestionWrapper extends Component {
                     advancedAreOpen={openAdvancedOptions || advancedAreOpen}
                     handleAdvancedOpen={handleAdvancedOpen}
                     scrollContainer={scrollContainer}
-                    questionTitle={data?.title || ""}
+                    questionTitle={data?.title || ''}
                     hideAdvancedToggleOption={openAdvancedOptions}
                   />
                 </QuestionMenuWrapper>
@@ -528,21 +570,37 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
-                borderRadius={isLCBView ? "10px" : restProps.borderRadius}
+                borderRadius={isLCBView ? '10px' : restProps.borderRadius}
                 style={{
                   width:
                     !isPrintPreview &&
-                    `${view === EDIT && showQuestionMenu && !disableResponse ? "calc(100% - 250px)" : "100%"}`,
-                  maxWidth: isPrintPreview && "calc(100% - 10px)",
-                  display: "flex",
-                  boxShadow: "none",
-                  paddingRight: layoutType === COMPACT ? "100px" : null,
-                  border: isLCBView && !restProps.showScratchpadByDefault ? "1px solid #DADAE4" : null
+                    `${
+                      view === EDIT && showQuestionMenu && !disableResponse
+                        ? 'calc(100% - 250px)'
+                        : '100%'
+                    }`,
+                  maxWidth: isPrintPreview && 'calc(100% - 10px)',
+                  display: 'flex',
+                  boxShadow: 'none',
+                  paddingRight: layoutType === COMPACT ? '100px' : null,
+                  border:
+                    isLCBView && !restProps.showScratchpadByDefault
+                      ? '1px solid #DADAE4'
+                      : null,
                 }}
-                flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
+                flowLayout={
+                  type === questionType.CODING && view === 'preview'
+                    ? true
+                    : flowLayout
+                }
               >
                 <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
-                  {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
+                  {evaluation === 'pending' && (
+                    <EvaluationMessage>
+                      {' '}
+                      Evaluation is pending{' '}
+                    </EvaluationMessage>
+                  )}
                   <Question
                     {...restProps}
                     setQuestionData={setQuestionData}
@@ -564,54 +622,71 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!restProps.showScratchpadByDefault && showFeedback && !isPrintPreview && (
-                    <>
-                      <TimeSpentWrapper className={isStudentReport ? "student-report" : ""}>
-                        {!!showStudentWork && (
-                          <ShowUserWork
-                            style={{ marginRight: "1rem" }}
-                            onClickHandler={() => {
-                              // load the data from server and then show
-                              loadScratchPad({
-                                testActivityId: data?.activity?.testActivityId,
-                                testItemId: data?.activity?.testItemId,
-                                qActId: data?.activity?.qActId || data?.activity?._id,
-                                callback: () => showStudentWork()
-                              });
-                            }}
-                          >
-                            Show student work
-                          </ShowUserWork>
-                        )}
-                        {timeSpent && (
-                          <>
-                            <IconClockCircularOutline />
-                            {round(timeSpent / 1000, 1)}s
-                          </>
-                        )}
-                      </TimeSpentWrapper>
-                    </>
-                  )}
+                  {!restProps.showScratchpadByDefault &&
+                    showFeedback &&
+                    !isPrintPreview && (
+                      <>
+                        <TimeSpentWrapper
+                          className={isStudentReport ? 'student-report' : ''}
+                        >
+                          {!!showStudentWork && (
+                            <ShowUserWork
+                              style={{ marginRight: '1rem' }}
+                              onClickHandler={() => {
+                                // load the data from server and then show
+                                loadScratchPad({
+                                  testActivityId:
+                                    data?.activity?.testActivityId,
+                                  testItemId: data?.activity?.testItemId,
+                                  qActId:
+                                    data?.activity?.qActId ||
+                                    data?.activity?._id,
+                                  callback: () => showStudentWork(),
+                                })
+                              }}
+                            >
+                              Show student work
+                            </ShowUserWork>
+                          )}
+                          {timeSpent && (
+                            <>
+                              <IconClockCircularOutline />
+                              {round(timeSpent / 1000, 1)}s
+                            </>
+                          )}
+                        </TimeSpentWrapper>
+                      </>
+                    )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>
                       <span>Graded Rubric</span>
-                      <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
+                      <PreviewRubricTable
+                        data={rubricDetails}
+                        rubricFeedback={rubricFeedback}
+                        isDisabled
+                      />
                     </RubricTableWrapper>
                   )}
-                  {view === "preview" && !isPrintPreview && (
+                  {view === 'preview' && !isPrintPreview && (
                     <Hints
                       question={data}
                       enableMagnifier={enableMagnifier}
                       saveHintUsage={saveHintUsage}
-                      isStudent={userRole === "student"}
+                      isStudent={userRole === 'student'}
                       itemIndex={itemIndex}
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isStudentReport={isStudentReport}
                     />
                   )}
-                  {(isLCBView || isExpressGrader || restProps.previewTab === "show") && (
-                    <Explanation isStudentReport={isStudentReport} question={data} isGrade={isGrade} />
+                  {(isLCBView ||
+                    isExpressGrader ||
+                    restProps.previewTab === 'show') && (
+                    <Explanation
+                      isStudentReport={isStudentReport}
+                      question={data}
+                      isGrade={isGrade}
+                    />
                   )}
                 </StyledFlexContainer>
               </PaperWrapper>
@@ -619,7 +694,7 @@ class QuestionWrapper extends Component {
           </div>
         </>
       </ThemeProvider>
-    );
+    )
   }
 }
 
@@ -647,8 +722,8 @@ QuestionWrapper.propTypes = {
   disableResponse: PropTypes.bool,
   clearAnswers: PropTypes.func,
   saveHintUsage: PropTypes.func,
-  LCBPreviewModal: PropTypes.any
-};
+  LCBPreviewModal: PropTypes.any,
+}
 
 QuestionWrapper.defaultProps = {
   isNew: false,
@@ -658,7 +733,7 @@ QuestionWrapper.defaultProps = {
   testItem: false,
   noPadding: false,
   isFlex: false,
-  timespent: "",
+  timespent: '',
   multiple: false,
   LCBPreviewModal: false,
   showFeedback: false,
@@ -670,45 +745,49 @@ QuestionWrapper.defaultProps = {
   handleAdvancedOpen: () => {},
   saveHintUsage: () => {},
   disableResponse: false,
-  isPresentationMode: false
-};
+  isPresentationMode: false,
+}
 
 const enhance = compose(
   React.memo,
   withWindowSizes,
   withAnswerSave,
   withTheme,
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
-    state => ({
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+    (state) => ({
+      isPresentationMode: get(
+        state,
+        ['author_classboard_testActivity', 'presentationMode'],
+        false
+      ),
       advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
-      showUserTTS: get(state, "user.user.tts", "no"),
+      showUserTTS: get(state, 'user.user.tts', 'no'),
       selectedTheme: state.ui.selectedTheme,
       zoomLevel: state.ui.zoomLevel,
       userRole: getUserRole(state),
       enableMagnifier: state.testPlayer.enableMagnifier,
       playerSkinType: playerSkinTypeSelector(state),
-      isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
-      isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
+      isPowerTeacher: get(state, ['user', 'user', 'isPowerTeacher'], false),
+      isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
-      ttsUserIds: ttsUserIdSelector(state)
+      ttsUserIds: ttsUserIdSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
       handleAdvancedOpen: toggleAdvancedSections,
-      loadScratchPad: requestScratchPadAction
+      loadScratchPad: requestScratchPadAction,
     }
   )
-);
+)
 
-export default enhance(QuestionWrapper);
+export default enhance(QuestionWrapper)
 
 const StyledFlexContainer = styled(FlexContainer)`
-  font-size: ${props => props.theme.fontSize};
-  overflow: ${({ showScroll }) => showScroll && "auto"};
-`;
+  font-size: ${(props) => props.theme.fontSize};
+  overflow: ${({ showScroll }) => showScroll && 'auto'};
+`
 
 const QuestionMenuWrapper = styled.div`
   position: relative;
@@ -717,7 +796,7 @@ const QuestionMenuWrapper = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     display: none;
   }
-`;
+`
 
 const RubricTableWrapper = styled.div`
   border: 1px solid ${borderGrey2};
@@ -725,10 +804,10 @@ const RubricTableWrapper = styled.div`
   margin-top: 10px;
   padding: 10px 10px 0px;
   > span {
-    font-size: ${props => props.theme.titleSectionFontSize};
-    font-weight: ${props => props.theme.semiBold};
+    font-size: ${(props) => props.theme.titleSectionFontSize};
+    font-weight: ${(props) => props.theme.semiBold};
     display: inline-block;
     margin: 0px 16px 10px;
     text-transform: uppercase;
   }
-`;
+`

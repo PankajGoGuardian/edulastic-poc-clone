@@ -1,24 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react'
 
 // this component only checks whether user is a keyboard user or not
 export default function CheckKeyboardUser() {
   // here keyCodes refer to tab,space,left arrow,up arrow,right arrow,down arrow
-  const keyCodes = [9, 32, 37, 38, 39, 40];
+  const keyCodes = [9, 32, 37, 38, 39, 40]
 
   useEffect(() => {
-    document.body.addEventListener("keydown", checkUser);
+    document.body.addEventListener('keydown', checkUser)
     function checkUser({ which: keycode }) {
-      const isKeyboardUser = keyCodes.indexOf(keycode) !== -1;
+      const isKeyboardUser = keyCodes.indexOf(keycode) !== -1
       if (isKeyboardUser) {
-        document.body.className += " isKeyboardUser";
-        cleanUp();
+        document.body.className += ' isKeyboardUser'
+        cleanUp()
       }
     }
     function cleanUp() {
-      document.body.removeEventListener("keydown", checkUser);
+      document.body.removeEventListener('keydown', checkUser)
     }
-    return cleanUp;
-  }, []);
+    return cleanUp
+  }, [])
 
-  return null;
+  return null
 }

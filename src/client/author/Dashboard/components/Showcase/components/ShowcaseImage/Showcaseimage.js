@@ -1,8 +1,9 @@
-import React from "react";
-import { ShowcaseContainer, River, OverlayGraph, OverlayText } from "./styled";
-import { TextWrapper } from "../../../styledComponents";
-import graph from "../../../../assets/svgs/graph.svg";
-import bg from "../../../../assets/svgs/bg.svg";
+import React from 'react'
+import { ShowcaseContainer, River, OverlayGraph, OverlayText } from './styled'
+import { TextWrapper } from '../../../styledComponents'
+import graph from '../../../../assets/svgs/graph.svg'
+import bg from '../../../../assets/svgs/bg.svg'
+
 const ShowcaseImage = () => (
   <ShowcaseContainer>
     <OverlayGraph src={graph} alt="" />
@@ -12,9 +13,9 @@ const ShowcaseImage = () => (
         Make it Child's
       </TextWrapper>
       <TextWrapper size="12px" fw="bold" color="lightgrey">
-        GET STARTED IN LESS THAN 60 SECONDS{" "}
+        GET STARTED IN LESS THAN 60 SECONDS{' '}
       </TextWrapper>
     </OverlayText>
   </ShowcaseContainer>
-);
-export default ShowcaseImage;
+)
+export default ShowcaseImage

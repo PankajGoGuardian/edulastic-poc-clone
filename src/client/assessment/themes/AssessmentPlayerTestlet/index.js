@@ -1,24 +1,28 @@
-import PropTypes from "prop-types";
-import React from "react";
-import { findIndex, get } from "lodash";
-import { connect } from "react-redux";
-import { ThemeProvider } from "styled-components";
-import { withNamespaces } from "@edulastic/localization";
+import PropTypes from 'prop-types'
+import React from 'react'
+import { findIndex, get } from 'lodash'
+import { connect } from 'react-redux'
+import { ThemeProvider } from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
 
 // actions
-import { checkAnswerEvaluation } from "../../actions/checkanswer";
-import { setTestUserWorkAction, saveTestletStateAction, saveTestletLogAction } from "../../actions/testUserWork";
-import { setUserAnswerAction } from "../../actions/answers";
-import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
-import { finishTestAcitivityAction } from "../../actions/test";
+import { checkAnswerEvaluation } from '../../actions/checkanswer'
+import {
+  setTestUserWorkAction,
+  saveTestletStateAction,
+  saveTestletLogAction,
+} from '../../actions/testUserWork'
+import { setUserAnswerAction } from '../../actions/answers'
+import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
+import { finishTestAcitivityAction } from '../../actions/test'
 
 // components
-import { Container, CalculatorContainer } from "../common";
-import PlayerContent from "./PlayerContent";
-import SubmitConfirmation from "../common/SubmitConfirmation";
+import { Container, CalculatorContainer } from '../common'
+import PlayerContent from './PlayerContent'
+import SubmitConfirmation from '../common/SubmitConfirmation'
 
 // player theme
-import { themes } from "../../../theme";
+import { themes } from '../../../theme'
 
 class AssessmentPlayerTestlet extends React.Component {
   static propTypes = {
@@ -36,86 +40,89 @@ class AssessmentPlayerTestlet extends React.Component {
     view: PropTypes.string.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
-    itemRows: PropTypes.any
-  };
+    itemRows: PropTypes.any,
+  }
 
   static defaultProps = {
     theme: themes,
-    itemRows: []
-  };
+    itemRows: [],
+  }
 
   state = {
     showExitPopup: false,
-    currentTool: 0
-  };
+    currentTool: 0,
+  }
 
   openExitPopup = () => {
-    const { closeTestPreviewModal, updateTestPlayer, demo } = this.props;
-    updateTestPlayer({ enableMagnifier: false });
+    const { closeTestPreviewModal, updateTestPlayer, demo } = this.props
+    updateTestPlayer({ enableMagnifier: false })
     this.setState({ showExitPopup: true }, () => {
       if (closeTestPreviewModal && !demo) {
-        closeTestPreviewModal();
+        closeTestPreviewModal()
       }
-    });
-  };
+    })
+  }
 
   hideExitPopup = () => {
-    this.setState({ showExitPopup: false });
-  };
+    this.setState({ showExitPopup: false })
+  }
 
   finishTest = () => {
-    const { history } = this.props;
-    if (navigator.userAgent.includes("SEB")) {
-      history.push("/student/seb-quit-confirm");
+    const { history } = this.props
+    if (navigator.userAgent.includes('SEB')) {
+      history.push('/student/seb-quit-confirm')
     } else {
-      history.push("/home/assignments");
+      history.push('/home/assignments')
     }
-  };
+  }
 
-  changeTool = tool => {
-    this.setState({ currentTool: tool });
-  };
+  changeTool = (tool) => {
+    this.setState({ currentTool: tool })
+  }
 
   submitAnswer = (uuid, timeSpent, groupId) => {
-    const { items, saveUserAnswer } = this.props;
-    const currentItemIndex = findIndex(items, item =>
-      get(item, "data.questions", [])
-        .map(q => q.id)
+    const { items, saveUserAnswer } = this.props
+    const currentItemIndex = findIndex(items, (item) =>
+      get(item, 'data.questions', [])
+        .map((q) => q.id)
         .includes(uuid)
-    );
-    saveUserAnswer(currentItemIndex, timeSpent, false, groupId);
-  };
+    )
+    saveUserAnswer(currentItemIndex, timeSpent, false, groupId)
+  }
 
-  saveTestletLog = log => {
-    const { saveTestletLog, LCBPreviewModal } = this.props;
+  saveTestletLog = (log) => {
+    const { saveTestletLog, LCBPreviewModal } = this.props
     if (!LCBPreviewModal) {
-      saveTestletLog(log);
+      saveTestletLog(log)
     }
-  };
+  }
 
   render() {
     const {
       theme,
       items,
       currentItem,
-      selectedTheme = "default",
+      selectedTheme = 'default',
       settings,
       timedAssignment = false,
       previewPlayer,
-      demo
-    } = this.props;
-    const { showExitPopup, currentTool } = this.state;
-    const item = items[currentItem];
+      demo,
+    } = this.props
+    const { showExitPopup, currentTool } = this.state
+    const item = items[currentItem]
     if (!item) {
-      return <div />;
+      return <div />
     }
 
-    const themeToPass = theme[selectedTheme] || theme.default;
+    const themeToPass = theme[selectedTheme] || theme.default
 
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
-    const { calcProvider, calcType } = settings;
-    const calculateMode = calcProvider && calcType !== "NONE" ? `${calcType}_${calcProvider}` : false;
+    const { calcProvider, calcType } = settings
+    const calculateMode =
+      calcProvider && calcType !== 'NONE'
+        ? `${calcType}_${calcProvider}`
+        : false
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -138,24 +145,29 @@ class AssessmentPlayerTestlet extends React.Component {
               finishTest={this.finishTest}
             />
           )}
-          {currentTool === 1 && <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} />}
+          {currentTool === 1 && (
+            <CalculatorContainer
+              changeTool={this.changeTool}
+              calculateMode={calculateMode}
+            />
+          )}
         </Container>
       </ThemeProvider>
-    );
+    )
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     evaluation: state.evaluation,
-    testActivityId: state.test ? state.test.testActivityId : "",
+    testActivityId: state.test ? state.test.testActivityId : '',
     questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings,
     zoomLevel: state.ui.zoomLevel,
     selectedTheme: state.ui.selectedTheme,
     timedAssignment: state.test?.settings?.timedAssignment,
     currentAssignmentTime: state.test?.currentAssignmentTime,
-    stopTimerFlag: state.test?.stopTimerFlag
+    stopTimerFlag: state.test?.stopTimerFlag,
   }),
   {
     checkAnswer: checkAnswerEvaluation,
@@ -164,6 +176,6 @@ export default connect(
     saveTestletState: saveTestletStateAction, // save to db,
     saveTestletLog: saveTestletLogAction, // save logs to db
     updateTestPlayer: updateTestPlayerAction,
-    submitTest: finishTestAcitivityAction
+    submitTest: finishTestAcitivityAction,
   }
-)(withNamespaces("common")(AssessmentPlayerTestlet));
+)(withNamespaces('common')(AssessmentPlayerTestlet))

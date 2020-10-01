@@ -1,50 +1,50 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/passage";
+const api = new API()
+const prefix = '/passage'
 
 /**
  * create passage
  * @param {Object} data
  */
-const create = data =>
+const create = (data) =>
   api
     .callApi({
       url: prefix,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const update = ({ _id, ...data }) =>
   api
     .callApi({
       url: `${prefix}/${_id}`,
-      method: "put",
-      data
+      method: 'put',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const duplicate = ({ passageId, testItemIds, testId }) =>
   api
     .callApi({
       url: `${prefix}/${passageId}/duplicate`,
-      method: "post",
-      data: { testItemIds, testId }
+      method: 'post',
+      data: { testItemIds, testId },
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getById = _id =>
+const getById = (_id) =>
   api
     .callApi({
       url: `${prefix}/${_id}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
   create,
   update,
   getById,
-  duplicate
-};
+  duplicate,
+}

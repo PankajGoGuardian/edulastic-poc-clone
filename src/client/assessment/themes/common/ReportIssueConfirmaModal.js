@@ -1,9 +1,9 @@
-import React from "react";
-import { Button } from "antd";
-import styled from "styled-components";
-import { ConfirmationModal } from "../../../author/src/components/common/ConfirmationModal";
-import { themeColor, white } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import React from 'react'
+import { Button } from 'antd'
+import styled from 'styled-components'
+import { themeColor, white } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
+import { ConfirmationModal } from '../../../author/src/components/common/ConfirmationModal'
 
 const ReportIssueConfirmaModal = ({ visible, toggleModal, handleResponse }) => {
   return (
@@ -12,28 +12,28 @@ const ReportIssueConfirmaModal = ({ visible, toggleModal, handleResponse }) => {
       textAlign="left"
       visible={visible}
       footer={null}
-      textAlign={"center"}
+      textAlign="center"
       onCancel={() => toggleModal(false)}
     >
       <ModalBody>
         <Heading>Are you sure there is a problem with this question?</Heading>
         <span>
-          Click{" "}
+          Click{' '}
           <EduButton height="26px" onClick={() => handleResponse(true)}>
             Yes
-          </EduButton>{" "}
-          to report this issue, or{" "}
+          </EduButton>{' '}
+          to report this issue, or{' '}
           <EduButton height="26px" onClick={() => handleResponse(false)}>
             Cancel
-          </EduButton>{" "}
+          </EduButton>{' '}
           to go back to the question.
         </span>
       </ModalBody>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
-export default ReportIssueConfirmaModal;
+export default ReportIssueConfirmaModal
 
 const ModalBody = styled.div`
   display: flex;
@@ -41,12 +41,12 @@ const ModalBody = styled.div`
   align-items: center;
   width: 100%;
   font-weight: 600;
-`;
+`
 
 const Heading = styled.h3`
   font-weight: 600;
   margin-bottom: 1em;
-`;
+`
 
 const StyledButton = styled(Button)`
   color: ${white};
@@ -58,4 +58,4 @@ const StyledButton = styled(Button)`
   &:focus {
     color: ${themeColor};
   }
-`;
+`

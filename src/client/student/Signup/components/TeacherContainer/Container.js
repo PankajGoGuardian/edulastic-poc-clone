@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import { get } from "lodash";
-import { Col } from "antd";
-import { notification } from "@edulastic/common";
-import { canvasApi } from "@edulastic/api";
-import Header from "./Header";
-import JoinSchool from "./JoinSchool";
-import SignupForm from "./SignupForm";
-import SubjectGradeForm from "./SubjectGrade";
-import teacherBg from "../../../assets/bg-teacher.png";
-import { getPartnerKeyFromUrl } from "../../../../common/utils/helpers";
-import { Partners } from "../../../../common/utils/static/partnerData";
-import { logoutAction } from "../../../Login/ducks";
-import CanvasBulkAddClass from "../../../../common/components/CanvasBulkAddClass";
-import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { get } from 'lodash'
+import { Col } from 'antd'
+import { notification } from '@edulastic/common'
+import { canvasApi } from '@edulastic/api'
+import Header from './Header'
+import JoinSchool from './JoinSchool'
+import SignupForm from './SignupForm'
+import SubjectGradeForm from './SubjectGrade'
+import teacherBg from '../../../assets/bg-teacher.png'
+import { getPartnerKeyFromUrl } from '../../../../common/utils/helpers'
+import { Partners } from '../../../../common/utils/static/partnerData'
+import { logoutAction } from '../../../Login/ducks'
+import CanvasBulkAddClass from '../../../../common/components/CanvasBulkAddClass'
+import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import {
   getCanvasCourseListRequestAction,
-  getCanvasSectionListRequestAction
-} from "../../../../author/ManageClass/ducks";
+  getCanvasSectionListRequestAction,
+} from '../../../../author/ManageClass/ducks'
 
 const Container = ({
   user,
@@ -36,41 +36,44 @@ const Container = ({
   canvasCourseList,
   canvasSectionList,
   orgType,
-  institutionIds
+  institutionIds,
 }) => {
-  const { isAuthenticated, signupStatus } = user;
-  const allowCanvas = sessionStorage.getItem("signupFlow") === "canvas";
-  const partnerKey = getPartnerKeyFromUrl(window.location.pathname);
-  const partner = Partners[partnerKey];
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [school, setSchool] = useState(null);
-  const userInfo = get(user, "user", {});
+  const { isAuthenticated, signupStatus } = user
+  const allowCanvas = sessionStorage.getItem('signupFlow') === 'canvas'
+  const partnerKey = getPartnerKeyFromUrl(window.location.pathname)
+  const partner = Partners[partnerKey]
+  const [isAuthorized, setIsAuthorized] = useState(false)
+  const [school, setSchool] = useState(null)
+  const userInfo = get(user, 'user', {})
 
   const handleAuthorization = async () => {
-    const result = await canvasApi.getCanvasAuthURI(school?.schoolId || institutionIds[0]);
+    const result = await canvasApi.getCanvasAuthURI(
+      school?.schoolId || institutionIds[0]
+    )
     if (!result.userAuthenticated) {
-      const subscriptionTopic = `canvas:${userInfo.districtIds[0]}_${userInfo._id}_${userInfo.username ||
-        userInfo.email ||
-        ""}`;
+      const subscriptionTopic = `canvas:${userInfo.districtIds[0]}_${
+        userInfo._id
+      }_${userInfo.username || userInfo.email || ''}`
       authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
         .then(() => {
-          setIsAuthorized(true);
+          setIsAuthorized(true)
         })
         .catch(() => {
-          notification({ msg: "canvasAuthenticationFailed" });
-        });
+          notification({ msg: 'canvasAuthenticationFailed' })
+        })
     } else {
-      setIsAuthorized(true);
+      setIsAuthorized(true)
     }
-  };
+  }
 
   useEffect(() => {
-    if (signupStatus === 2 && !isAuthorized && allowCanvas) handleAuthorization();
-  }, [signupStatus, allowCanvas]);
+    if (signupStatus === 2 && !isAuthorized && allowCanvas)
+      handleAuthorization()
+  }, [signupStatus, allowCanvas])
 
-  const schoolchange = value => {
-    setSchool(value);
-  };
+  const schoolchange = (value) => {
+    setSchool(value)
+  }
 
   if (!isAuthenticated) {
     return (
@@ -80,8 +83,8 @@ const Container = ({
             generalSettings && isSignupUsingDaURL
               ? generalSettings.pageBackground
               : isSignupUsingDaURL
-              ? ""
-              : partner.keyName === "login"
+              ? ''
+              : partner.keyName === 'login'
               ? teacherBg
               : partner.background
           }
@@ -94,7 +97,7 @@ const Container = ({
           invitedUserDetails={invitedUserDetails}
         />
       </>
-    );
+    )
   }
 
   return (
@@ -114,7 +117,10 @@ const Container = ({
         />
       )}
       {signupStatus === 2 && !allowCanvas && (
-        <SubjectGradeForm userInfo={userInfo} districtId={isSignupUsingDaURL ? generalSettings.orgId : false} />
+        <SubjectGradeForm
+          userInfo={userInfo}
+          districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
+        />
       )}
       {signupStatus === 2 && allowCanvas && isAuthorized && (
         <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
@@ -129,34 +135,34 @@ const Container = ({
         </Col>
       )}
     </>
-  );
-};
+  )
+}
 
 Container.propTypes = {
   user: PropTypes.object,
-  logout: PropTypes.func
-};
+  logout: PropTypes.func,
+}
 
 Container.defaultProps = {
   user: null,
-  logout: () => null
-};
+  logout: () => null,
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       user: state.user,
-      canvasCourseList: get(state, "manageClass.canvasCourseList", []),
-      canvasSectionList: get(state, "manageClass.canvasSectionList", []),
-      institutionIds: get(state, "user.user.institutionIds", [])
+      canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
+      canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
+      institutionIds: get(state, 'user.user.institutionIds', []),
     }),
     {
       logout: logoutAction,
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
-      getCanvasSectionListRequest: getCanvasSectionListRequestAction
+      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
     }
   )
-);
+)
 
-export default enhance(Container);
+export default enhance(Container)

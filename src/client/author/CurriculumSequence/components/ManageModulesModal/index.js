@@ -1,15 +1,15 @@
-import React from "react";
-import { connect } from "react-redux";
-import Modal from "react-responsive-modal";
-import { white } from "@edulastic/colors";
+import React from 'react'
+import { connect } from 'react-redux'
+import Modal from 'react-responsive-modal'
+import { white } from '@edulastic/colors'
 import {
   createNewModuleCSAction,
   updateModuleCSAction,
   deleteModuleCSAction,
   resequenceModulesCSAction,
-  saveCurriculumSequenceAction
-} from "../../ducks";
-import ManageModulesModalBody from "../modals/ManageModulesModalBody";
+  saveCurriculumSequenceAction,
+} from '../../ducks'
+import ManageModulesModalBody from '../modals/ManageModulesModalBody'
 
 const ManageModulesModal = ({
   visible,
@@ -23,13 +23,13 @@ const ManageModulesModal = ({
   handleTestAdded,
   testAdded,
   deleteModuleFromPlaylist,
-  updatePlaylist
+  updatePlaylist,
 }) => {
   const handleSave = () => {
     // need to save only when at-least a module present
-    if (!destinationCurriculumSequence?.modules?.length) return;
-    if (destinationCurriculumSequence._id) updatePlaylist({ isPlaylist: true });
-  };
+    if (!destinationCurriculumSequence?.modules?.length) return
+    if (destinationCurriculumSequence._id) updatePlaylist({ isPlaylist: true })
+  }
 
   return (
     <Modal
@@ -37,7 +37,9 @@ const ManageModulesModal = ({
       title="Manage Modules"
       onClose={onClose}
       footer={null}
-      styles={{ modal: { minWidth: "900px", padding: "20px 30px", background: white } }}
+      styles={{
+        modal: { minWidth: '900px', padding: '20px 30px', background: white },
+      }}
     >
       <ManageModulesModalBody
         destinationCurriculumSequence={destinationCurriculumSequence}
@@ -53,18 +55,19 @@ const ManageModulesModal = ({
         testAddedTitle={testAdded?.title}
       />
     </Modal>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
-    destinationCurriculumSequence: state.curriculumSequence?.destinationCurriculumSequence
+  (state) => ({
+    destinationCurriculumSequence:
+      state.curriculumSequence?.destinationCurriculumSequence,
   }),
   {
     addModuleToPlaylist: createNewModuleCSAction,
     updateModuleInPlaylist: updateModuleCSAction,
     deleteModuleFromPlaylist: deleteModuleCSAction,
     resequenceModules: resequenceModulesCSAction,
-    updatePlaylist: saveCurriculumSequenceAction
+    updatePlaylist: saveCurriculumSequenceAction,
   }
-)(ManageModulesModal);
+)(ManageModulesModal)

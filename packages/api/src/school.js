@@ -1,79 +1,79 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/school";
+const api = new API()
+const prefix = '/school'
 
-const getSchools = data =>
+const getSchools = (data) =>
   api
     .callApi({
       url: `${prefix}/search`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const updateSchool = ({ id, body }) =>
   api
     .callApi({
       url: `${prefix}/${id}`,
-      method: "put",
-      data: body
+      method: 'put',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const createSchool = data =>
+const createSchool = (data) =>
   api
     .callApi({
       url: `${prefix}/`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const deleteSchool = data =>
+const deleteSchool = (data) =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "delete",
-      data
+      method: 'delete',
+      data,
     })
-    .then(({ data: { result } }) => result);
+    .then(({ data: { result } }) => result)
 
-const searchSchool = body =>
+const searchSchool = (body) =>
   api
     .callApi({
-      url: "search/schools",
-      method: "post",
-      data: body
+      url: 'search/schools',
+      method: 'post',
+      data: body,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const searchDistricts = body =>
+const searchDistricts = (body) =>
   api.callApi({
-    url: "search/districts",
-    method: "post",
-    data: body
-  });
+    url: 'search/districts',
+    method: 'post',
+    data: body,
+  })
 
 const searchSchoolsByName = ({ districtId, schoolName }) =>
   api
     .callApi({
       url: `${prefix}/${districtId}/searchByName`,
-      method: "get",
+      method: 'get',
       params: {
-        schoolName
-      }
+        schoolName,
+      },
     })
-    .then(({ data }) => data.result);
+    .then(({ data }) => data.result)
 
-const updateSchoolApprovalStatus = payload =>
+const updateSchoolApprovalStatus = (payload) =>
   api
     .callApi({
       url: `${prefix}/bulk/approval-status`,
-      method: "put",
-      data: payload
+      method: 'put',
+      data: payload,
     })
-    .then(result => result);
+    .then((result) => result)
 
 export default {
   getSchools,
@@ -83,5 +83,5 @@ export default {
   searchSchool,
   searchDistricts,
   searchSchoolsByName,
-  updateSchoolApprovalStatus
-};
+  updateSchoolApprovalStatus,
+}

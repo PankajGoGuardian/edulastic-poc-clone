@@ -1,49 +1,60 @@
-import React, { useState, useEffect } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { push } from "connected-react-router";
-import styled from "styled-components";
-import { Modal, Button, Icon, Form, Input } from "antd";
-import { get } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
-import { white, greenDark, orange } from "@edulastic/colors";
-import { resetPasswordUserAction, resetPasswordAction } from "../../student/Login/ducks";
-import qs from "qs";
+import React, { useState, useEffect } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
+import styled from 'styled-components'
+import { Modal, Button, Icon, Form, Input } from 'antd'
+import { get } from 'lodash'
+import { withNamespaces } from '@edulastic/localization'
+import { white, greenDark, orange } from '@edulastic/colors'
+import qs from 'qs'
+import {
+  resetPasswordUserAction,
+  resetPasswordAction,
+} from '../../student/Login/ducks'
 
-const ResetPasswordPopup = props => {
-  const { className, t, history, resetPasswordAction, resetPasswordUserAction, user } = props;
-  const { resetPasswordUser, requestingNewPassword } = user;
+const ResetPasswordPopup = (props) => {
+  const {
+    className,
+    t,
+    history,
+    resetPasswordAction,
+    resetPasswordUserAction,
+    user,
+  } = props
+  const { resetPasswordUser, requestingNewPassword } = user
 
   useEffect(() => {
-    const params = qs.parse(location.search.substring(1));
-    resetPasswordUserAction(params);
-  }, []);
+    const params = qs.parse(location.search.substring(1))
+    resetPasswordUserAction(params)
+  }, [])
 
   const onCancel = () => {
-    history.push("/login");
-  };
+    history.push('/login')
+  }
 
-  const onSubmit = password => {
-    const urlParams = qs.parse(location.search.substring(1));
+  const onSubmit = (password) => {
+    const urlParams = qs.parse(location.search.substring(1))
     const params = {
       ...urlParams,
-      password
-    };
-    resetPasswordAction(params);
-  };
+      password,
+    }
+    resetPasswordAction(params)
+  }
 
   return (
     <>
       {resetPasswordUser ? (
-        <Modal visible={true} footer={null} className={className} width={"500px"}>
+        <Modal visible footer={null} className={className} width="500px">
           <div className="forgot-password-actions">
             <p>Reset Password</p>
             <p>
-              Hi, <Icon type="user" />{" "}
-              {resetPasswordUser.firstName +
-                " " +
-                (resetPasswordUser.middleName ? resetPasswordUser.middleName + " " : "") +
-                (resetPasswordUser.lastName ? resetPasswordUser.lastName : "")}
+              Hi, <Icon type="user" />{' '}
+              {`${resetPasswordUser.firstName} ${
+                resetPasswordUser.middleName
+                  ? `${resetPasswordUser.middleName} `
+                  : ''
+              }${resetPasswordUser.lastName ? resetPasswordUser.lastName : ''}`}
             </p>
             <ConnectedInputPasswordForm
               onSubmit={onSubmit}
@@ -55,123 +66,130 @@ const ResetPasswordPopup = props => {
         </Modal>
       ) : null}
     </>
-  );
-};
+  )
+}
 
-const InputPasswordForm = props => {
-  const { getFieldDecorator, getFieldError, setFields } = props.form;
-  const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props;
-  const [passwd, setPasswd] = useState("");
-  const [confPasswd, setConfPasswd] = useState("");
+const InputPasswordForm = (props) => {
+  const { getFieldDecorator, getFieldError, setFields } = props.form
+  const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props
+  const [passwd, setPasswd] = useState('')
+  const [confPasswd, setConfPasswd] = useState('')
 
-  const onNewPasswordChange = event => {
-    setPasswd(event.currentTarget.value);
-  };
+  const onNewPasswordChange = (event) => {
+    setPasswd(event.currentTarget.value)
+  }
 
-  const onConfirmPasswordChange = event => {
-    setConfPasswd(event.currentTarget.value);
-  };
+  const onConfirmPasswordChange = (event) => {
+    setConfPasswd(event.currentTarget.value)
+  }
 
   const checkPassword = (rule, value, callback) => {
     if (value.length < 4) {
-      callback(t("component.signup.teacher.shortpassword"));
-    } else if (value.includes(" ")) {
-      callback(t("component.signup.teacher.validpassword"));
+      callback(t('component.signup.teacher.shortpassword'))
+    } else if (value.includes(' ')) {
+      callback(t('component.signup.teacher.validpassword'))
     } else if (value !== confPasswd) {
-      callback(t("Passwords don't match"));
+      callback(t("Passwords don't match"))
     }
-    callback();
-  };
+    callback()
+  }
 
   const checkConfirmPassword = (rule, value, callback) => {
     if (value.length < 4) {
-      callback(t("component.signup.teacher.shortpassword"));
-    } else if (value.includes(" ")) {
-      callback(t("component.signup.teacher.validpassword"));
+      callback(t('component.signup.teacher.shortpassword'))
+    } else if (value.includes(' ')) {
+      callback(t('component.signup.teacher.validpassword'))
     } else if (value !== passwd) {
-      callback(t("Passwords don't match"));
+      callback(t("Passwords don't match"))
     }
-    callback();
-  };
+    callback()
+  }
 
-  const onSubmit = event => {
-    event.preventDefault();
-    const { form } = props;
+  const onSubmit = (event) => {
+    event.preventDefault()
+    const { form } = props
     form.validateFieldsAndScroll((err, { newPassword, confirmPassword }) => {
-      _onSubmit(newPassword);
-    });
-  };
+      _onSubmit(newPassword)
+    })
+  }
 
-  let newPasswordError = getFieldError("newPassword");
-  let confirmPasswordError = getFieldError("confirmPassword");
+  const newPasswordError = getFieldError('newPassword')
+  const confirmPasswordError = getFieldError('confirmPassword')
   if (
-    ((newPasswordError && !confirmPasswordError) || (!newPasswordError && confirmPasswordError)) &&
+    ((newPasswordError && !confirmPasswordError) ||
+      (!newPasswordError && confirmPasswordError)) &&
     passwd === confPasswd
   ) {
-    setFields({ newPassword: { value: passwd, errors: undefined } });
-    setFields({ confirmPassword: { value: confPasswd, errors: undefined } });
+    setFields({ newPassword: { value: passwd, errors: undefined } })
+    setFields({ confirmPassword: { value: confPasswd, errors: undefined } })
   }
   return (
     <Form onSubmit={onSubmit} autoComplete="new-password">
-      <Form.Item validateStatus={newPasswordError ? "error" : "success"} help={newPasswordError}>
-        {getFieldDecorator("newPassword", {
-          validateTrigger: ["onChange", "onBlur"],
+      <Form.Item
+        validateStatus={newPasswordError ? 'error' : 'success'}
+        help={newPasswordError}
+      >
+        {getFieldDecorator('newPassword', {
+          validateTrigger: ['onChange', 'onBlur'],
           validateFirst: true,
-          initialValue: "",
+          initialValue: '',
           rules: [
             {
               required: true,
-              message: t("component.signup.teacher.validpassword")
+              message: t('component.signup.teacher.validpassword'),
             },
             {
-              validator: checkPassword
-            }
-          ]
+              validator: checkPassword,
+            },
+          ],
         })(
           <Input
             className="password-input"
             type="password"
             placeholder="New Password"
             autoComplete="new-password"
-            prefix={<Icon type="key" style={{ color: "white" }} />}
+            prefix={<Icon type="key" style={{ color: 'white' }} />}
             onChange={onNewPasswordChange}
           />
         )}
       </Form.Item>
-      <Form.Item validateStatus={confirmPasswordError ? "error" : "success"} help={confirmPasswordError}>
-        {getFieldDecorator("confirmPassword", {
-          validateTrigger: ["onChange", "onBlur"],
+      <Form.Item
+        validateStatus={confirmPasswordError ? 'error' : 'success'}
+        help={confirmPasswordError}
+      >
+        {getFieldDecorator('confirmPassword', {
+          validateTrigger: ['onChange', 'onBlur'],
           validateFirst: true,
-          initialValue: "",
+          initialValue: '',
           rules: [
             {
               required: true,
-              message: t("component.signup.teacher.validpassword")
+              message: t('component.signup.teacher.validpassword'),
             },
             {
-              validator: checkConfirmPassword
-            }
-          ]
+              validator: checkConfirmPassword,
+            },
+          ],
         })(
           <Input
             className="password-input"
             type="password"
             placeholder="Confirm Password"
             autoComplete="new-password"
-            prefix={<Icon type="key" style={{ color: "white" }} />}
+            prefix={<Icon type="key" style={{ color: 'white' }} />}
             onChange={onConfirmPasswordChange}
           />
         )}
       </Form.Item>
       <div className="model-buttons">
         <Form.Item>
-          <Button className={"cancel-button"} key="cancel" onClick={onCancel}>
+          <Button className="cancel-button" key="cancel" onClick={onCancel}>
             Cancel
           </Button>
         </Form.Item>
         <Form.Item>
           <Button
-            className={"reset-password-button"}
+            className="reset-password-button"
             key="resetPassword"
             htmlType="submit"
             disabled={requestingNewPassword}
@@ -181,10 +199,12 @@ const InputPasswordForm = props => {
         </Form.Item>
       </div>
     </Form>
-  );
-};
+  )
+}
 
-const ConnectedInputPasswordForm = Form.create({ name: "resetPasswordForm" })(InputPasswordForm);
+const ConnectedInputPasswordForm = Form.create({ name: 'resetPasswordForm' })(
+  InputPasswordForm
+)
 
 const StyledResetPasswordPopup = styled(ResetPasswordPopup)`
   .ant-modal-content {
@@ -240,18 +260,18 @@ const StyledResetPasswordPopup = styled(ResetPasswordPopup)`
       }
     }
   }
-`;
+`
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   connect(
-    state => ({
-      user: get(state, "user", null)
+    (state) => ({
+      user: get(state, 'user', null),
     }),
     { resetPasswordAction, resetPasswordUserAction }
   )
-);
+)
 
-const ConnectedStyledResetPasswordPopup = enhance(StyledResetPasswordPopup);
+const ConnectedStyledResetPasswordPopup = enhance(StyledResetPasswordPopup)
 
-export { ConnectedStyledResetPasswordPopup as ResetPasswordPopup };
+export { ConnectedStyledResetPasswordPopup as ResetPasswordPopup }

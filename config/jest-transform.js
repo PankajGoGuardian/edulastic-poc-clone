@@ -4,7 +4,7 @@ const config = {
     [
       '@babel/preset-env',
       {
-        modules: false
+        modules: false,
       },
     ],
     '@babel/preset-react',
@@ -14,6 +14,6 @@ const config = {
     '@babel/plugin-syntax-dynamic-import',
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     '@babel/plugin-proposal-class-properties',
-  ]
-};
-module.exports = require('babel-jest').createTransformer(config);
+  ],
+}
+module.exports = require('babel-jest').createTransformer(config)

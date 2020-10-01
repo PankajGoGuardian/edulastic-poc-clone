@@ -1,9 +1,12 @@
-import styled from "styled-components";
-import { Row, Col } from "antd";
-import { themeColor, fadedBlack, extraDesktopWidthMax } from "@edulastic/colors";
-import { StyledTable as Table, StyledCard as Card } from "../../../../common/styled";
+import styled from 'styled-components'
+import { Row, Col } from 'antd'
+import { themeColor, fadedBlack, extraDesktopWidthMax } from '@edulastic/colors'
+import {
+  StyledTable as Table,
+  StyledCard as Card,
+} from '../../../../common/styled'
 
-export const StyledCard = Card;
+export const StyledCard = Card
 
 export const StyledContainer = styled(Row)`
   flex-flow: column nowrap;
@@ -62,7 +65,7 @@ export const StyledContainer = styled(Row)`
       }
     }
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -160,14 +163,14 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const StyledResponseTagContainer = styled(Col)`
   flex-grow: 1;
   @media print {
     margin-bottom: 10px;
   }
-`;
+`
 
 export const StyledSimpleBarChartContainer = styled(StyledCard)`
   padding: 10px;
@@ -187,4 +190,4 @@ export const StyledSimpleBarChartContainer = styled(StyledCard)`
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
     stroke-opacity: 0;
   }
-`;
+`

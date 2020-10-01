@@ -1,9 +1,13 @@
-import React from 'react';
-import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles';
-import SVG from '@edulastic/icons/src/common/SVG';
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconGraphVector = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.153 23.206" {...props}>
+const IconGraphVector = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 32.153 23.206"
+    {...props}
+  >
     <g transform="translate(15.056 -558.511) rotate(30)">
       <path
         fill="none"
@@ -30,6 +34,6 @@ const IconGraphVector = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconGraphVector);
+export default withIconStyles(IconGraphVector)

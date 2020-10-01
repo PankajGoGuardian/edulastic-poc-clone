@@ -1,47 +1,60 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { Select } from "antd";
-import { SelectInputStyled } from "@edulastic/common";
-import { IconGroup, IconClass } from "@edulastic/icons";
-import { lightGrey10 } from "@edulastic/colors";
-import { get, curry, isEmpty, find, uniq } from "lodash";
-import { receiveClassListAction } from "../../../Classes/ducks";
-import { getClassListSelector } from "../../duck";
-import { getUserOrgId, getSchoolsByUserRoleSelector } from "../../../src/selectors/user";
-import { receiveSchoolsAction } from "../../../Schools/ducks";
-import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { Select } from 'antd'
+import { SelectInputStyled } from '@edulastic/common'
+import { IconGroup, IconClass } from '@edulastic/icons'
+import { lightGrey10 } from '@edulastic/colors'
+import { get, curry, isEmpty, find, uniq } from 'lodash'
+import { receiveClassListAction } from '../../../Classes/ducks'
+import { getClassListSelector } from '../../duck'
+import {
+  getUserOrgId,
+  getSchoolsByUserRoleSelector,
+} from '../../../src/selectors/user'
+import { receiveSchoolsAction } from '../../../Schools/ducks'
+import {
+  receiveCourseListAction,
+  getCourseListSelector,
+} from '../../../Courses/ducks'
 import {
   ClassListFilter,
   StyledRowLabel,
   StyledTable,
   ClassListContainer,
   TableContainer,
-  InfoSection
-} from "./styled";
-import selectsData from "../../../TestPage/components/common/selectsData";
-import { getTestSelector, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
-import Tags from "../../../src/components/common/Tags";
+  InfoSection,
+} from './styled'
+import selectsData from '../../../TestPage/components/common/selectsData'
+import {
+  getTestSelector,
+  getAllTagsAction,
+  getAllTagsSelector,
+} from '../../../TestPage/ducks'
+import Tags from '../../../src/components/common/Tags'
 
-const { allGrades, allSubjects } = selectsData;
+const { allGrades, allSubjects } = selectsData
 
-const findTeacherName = row => {
-  const { owners = [], primaryTeacherId, parent: { id: teacherId } = {} } = row;
-  const teacher = find(owners, owner => owner.id === (primaryTeacherId || teacherId));
-  return teacher ? teacher.name : owners.length ? owners[0].name : "";
-};
+const findTeacherName = (row) => {
+  const { owners = [], primaryTeacherId, parent: { id: teacherId } = {} } = row
+  const teacher = find(
+    owners,
+    (owner) => owner.id === (primaryTeacherId || teacherId)
+  )
+  return teacher ? teacher.name : owners.length ? owners[0].name : ''
+}
 
-const convertTableData = row => ({
+const convertTableData = (row) => ({
   key: row._id,
   className: row.name,
   teacher: findTeacherName(row),
   subject: row.subject,
-  grades: row.grades || "",
+  grades: row.grades || '',
   type: row.type,
-  tags: row.tags
-});
+  tags: row.tags,
+})
 
 class ClassList extends React.Component {
   static propTypes = {
@@ -54,189 +67,235 @@ class ClassList extends React.Component {
     classList: PropTypes.array.isRequired,
     selectedClasses: PropTypes.array.isRequired,
     selectClass: PropTypes.func.isRequired,
-    test: PropTypes.object.isRequired
-  };
+    test: PropTypes.object.isRequired,
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      classType: "all",
+      classType: 'all',
       searchTerms: {
         institutionIds: [],
         subjects: [],
         grades: [],
         active: [1],
-        tags: []
+        tags: [],
       },
-      filterClassIds: []
-    };
+      filterClassIds: [],
+    }
   }
 
   componentDidMount() {
-    const { schools, test, loadSchoolsData, courseList, loadCourseListData, userOrgId, getAllTags } = this.props;
+    const {
+      schools,
+      test,
+      loadSchoolsData,
+      courseList,
+      loadCourseListData,
+      userOrgId,
+      getAllTags,
+    } = this.props
 
     if (isEmpty(schools)) {
-      loadSchoolsData({ districtId: userOrgId });
+      loadSchoolsData({ districtId: userOrgId })
     }
     if (isEmpty(courseList)) {
-      loadCourseListData({ districtId: userOrgId, active: 1 });
+      loadCourseListData({ districtId: userOrgId, active: 1 })
     }
 
-    getAllTags({ type: "group" });
+    getAllTags({ type: 'group' })
 
-    const { subjects = [], grades = [] } = test;
+    const { subjects = [], grades = [] } = test
     this.setState(
-      prevState => ({
+      (prevState) => ({
         ...prevState,
         searchTerms: {
           ...prevState.searchTerms,
           grades,
-          subjects
-        }
+          subjects,
+        },
       }),
       this.loadClassList
-    );
+    )
   }
 
   componentDidUpdate(prevProps) {
-    const { test } = this.props;
+    const { test } = this.props
     if (prevProps.test._id !== test._id) {
-      const { subjects = [], grades = [] } = test;
+      const { subjects = [], grades = [] } = test
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState(
-        prevState => ({
+        (prevState) => ({
           ...prevState,
           searchTerms: {
             ...prevState.searchTerms,
             grades,
-            subjects
-          }
+            subjects,
+          },
         }),
         this.loadClassList
-      );
+      )
     }
   }
 
   loadClassList = () => {
-    const { loadClassListData, userOrgId } = this.props;
-    const { searchTerms } = this.state;
+    const { loadClassListData, userOrgId } = this.props
+    const { searchTerms } = this.state
     loadClassListData({
       districtId: userOrgId,
-      queryType: "OR",
+      queryType: 'OR',
       search: searchTerms,
       page: 1,
-      limit: 4000
-    });
-  };
+      limit: 4000,
+    })
+  }
 
   changeFilter = (key, value) => {
-    const { searchTerms } = this.state;
-    searchTerms[key] = value;
-    this.setState({ searchTerms }, this.loadClassList);
-  };
+    const { searchTerms } = this.state
+    searchTerms[key] = value
+    this.setState({ searchTerms }, this.loadClassList)
+  }
 
-  handleClassTypeFilter = key => {
-    this.setState({ classType: key });
-  };
+  handleClassTypeFilter = (key) => {
+    this.setState({ classType: key })
+  }
 
-  handleSelectAll = checked => {
-    const { selectClass, classList } = this.props;
-    const { filterClassIds } = this.state;
-    let filterclassList = [];
+  handleSelectAll = (checked) => {
+    const { selectClass, classList } = this.props
+    const { filterClassIds } = this.state
+    let filterclassList = []
     if (checked) {
-      const selectedClasses = classList.map(item => item._id);
-      selectClass("class", selectedClasses, classList);
-      filterclassList = selectedClasses;
+      const selectedClasses = classList.map((item) => item._id)
+      selectClass('class', selectedClasses, classList)
+      filterclassList = selectedClasses
     } else {
-      selectClass("class", [], classList);
+      selectClass('class', [], classList)
     }
     if (filterClassIds.length) {
-      this.setState({ filterClassIds: filterclassList });
+      this.setState({ filterClassIds: filterclassList })
     }
-  };
+  }
 
-  handleClassSelectFromDropDown = value => {
-    const { classList, selectClass } = this.props;
-    this.setState({ filterClassIds: value }, () => selectClass("class", value, classList));
-  };
+  handleClassSelectFromDropDown = (value) => {
+    const { classList, selectClass } = this.props
+    this.setState({ filterClassIds: value }, () =>
+      selectClass('class', value, classList)
+    )
+  }
 
   render() {
-    const { classList, schools, courseList, selectClass, selectedClasses, tagList } = this.props;
-    const { searchTerms, classType, filterClassIds } = this.state;
+    const {
+      classList,
+      schools,
+      courseList,
+      selectClass,
+      selectedClasses,
+      tagList,
+    } = this.props
+    const { searchTerms, classType, filterClassIds } = this.state
 
     const tableData = classList
-      .filter(item => {
-        if (!filterClassIds.length) return classType === "all" || item.type === classType;
-        return filterClassIds.includes(item._id);
+      .filter((item) => {
+        if (!filterClassIds.length)
+          return classType === 'all' || item.type === classType
+        return filterClassIds.includes(item._id)
       })
-      .map(item => convertTableData(item));
+      .map((item) => convertTableData(item))
 
-    const changeField = curry(this.changeFilter);
+    const changeField = curry(this.changeFilter)
 
     const rowSelection = {
       selectedRowKeys: selectedClasses,
       hideDefaultSelections: true,
       onSelect: (_, __, selectedRows) => {
         if (selectClass) {
-          const selectedClassIds = selectedRows.map(item => item.key);
-          selectClass("class", selectedClassIds, classList);
-          if (filterClassIds.length) this.setState({ filterClassIds: selectedClassIds });
+          const selectedClassIds = selectedRows.map((item) => item.key)
+          selectClass('class', selectedClassIds, classList)
+          if (filterClassIds.length)
+            this.setState({ filterClassIds: selectedClassIds })
         }
       },
-      onSelectAll: this.handleSelectAll
-    };
+      onSelectAll: this.handleSelectAll,
+    }
 
-    const selectedClassData = classList?.filter(({ _id }) => selectedClasses.includes(_id)) || 0;
+    const selectedClassData =
+      classList?.filter(({ _id }) => selectedClasses.includes(_id)) || 0
     const schoolsCount =
-      uniq(selectedClassData?.map(({ institutionId }) => institutionId)?.filter(i => !!i))?.length || 0;
-    const classesCount = selectedClassData?.filter(({ type }) => type === "class")?.length;
-    const studentsCount = selectedClassData?.reduce((acc, curr) => acc + (curr.studentCount || 0), 0) || 0;
+      uniq(
+        selectedClassData
+          ?.map(({ institutionId }) => institutionId)
+          ?.filter((i) => !!i)
+      )?.length || 0
+    const classesCount = selectedClassData?.filter(
+      ({ type }) => type === 'class'
+    )?.length
+    const studentsCount =
+      selectedClassData?.reduce(
+        (acc, curr) => acc + (curr.studentCount || 0),
+        0
+      ) || 0
 
     const columns = [
       {
-        title: "CLASS NAME",
-        width: "25%",
-        dataIndex: "className",
-        key: "className",
+        title: 'CLASS NAME',
+        width: '25%',
+        dataIndex: 'className',
+        key: 'className',
         sorter: (a, b) => a.className > b.className,
-        sortDirections: ["descend", "ascend"],
+        sortDirections: ['descend', 'ascend'],
         render: (className, row) => (
           <div>
-            {row.type === "custom" ? (
-              <IconGroup width={20} height={19} margin="0 10px 0 0px" color={lightGrey10} />
+            {row.type === 'custom' ? (
+              <IconGroup
+                width={20}
+                height={19}
+                margin="0 10px 0 0px"
+                color={lightGrey10}
+              />
             ) : (
-              <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
+              <IconClass
+                width={13}
+                height={14}
+                margin="0 10px 0 0px"
+                color={lightGrey10}
+              />
             )}
             <span>{className}</span>
-            <Tags data-cy="tags" tags={row.tags} show={1} key="tags" isGrayTags />
+            <Tags
+              data-cy="tags"
+              tags={row.tags}
+              show={1}
+              key="tags"
+              isGrayTags
+            />
           </div>
-        )
+        ),
       },
       {
-        title: "TEACHER",
-        width: "25%",
-        dataIndex: "teacher",
-        key: "teacher",
+        title: 'TEACHER',
+        width: '25%',
+        dataIndex: 'teacher',
+        key: 'teacher',
         sorter: (a, b) => a.teacher > b.teacher,
-        sortDirections: ["descend", "ascend"]
+        sortDirections: ['descend', 'ascend'],
       },
       {
-        title: "SUBJECT",
-        width: "25%",
-        key: "subject",
-        dataIndex: "subject",
+        title: 'SUBJECT',
+        width: '25%',
+        key: 'subject',
+        dataIndex: 'subject',
         sorter: (a, b) => a.subject > b.subject,
-        sortDirections: ["descend", "ascend"]
+        sortDirections: ['descend', 'ascend'],
       },
       {
-        title: "GRADES",
-        width: "15%",
-        key: "grades",
-        dataIndex: "grades",
+        title: 'GRADES',
+        width: '15%',
+        key: 'grades',
+        dataIndex: 'grades',
         sorter: (a, b) => a.grades > b.grades,
-        sortDirections: ["descend", "ascend"]
-      }
-    ];
+        sortDirections: ['descend', 'ascend'],
+      },
+    ]
 
     return (
       <ClassListContainer>
@@ -247,8 +306,12 @@ class ClassList extends React.Component {
               mode="multiple"
               placeholder="All School"
               showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              onChange={changeField("institutionIds")}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
+              onChange={changeField('institutionIds')}
               value={searchTerms.institutionIds}
             >
               {schools.map(({ _id, name }) => (
@@ -265,9 +328,13 @@ class ClassList extends React.Component {
               mode="multiple"
               value={searchTerms.grades}
               placeholder="All grades"
-              onChange={changeField("grades")}
+              onChange={changeField('grades')}
               showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
             >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
@@ -286,9 +353,13 @@ class ClassList extends React.Component {
               mode="multiple"
               value={searchTerms.subjects}
               placeholder="All subjects"
-              onChange={changeField("subjects")}
+              onChange={changeField('subjects')}
               showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
             >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
@@ -303,9 +374,13 @@ class ClassList extends React.Component {
             <SelectInputStyled
               mode="multiple"
               placeholder="All Course"
-              onChange={changeField("courseIds")}
+              onChange={changeField('courseIds')}
               showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
             >
               {courseList.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
@@ -321,12 +396,16 @@ class ClassList extends React.Component {
               placeholder="All"
               onChange={this.handleClassTypeFilter}
               showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
             >
               {[
-                { name: "All", value: "all" },
-                { name: "Classes", value: "class" },
-                { name: "Student Groups", value: "custom" }
+                { name: 'All', value: 'all' },
+                { name: 'Classes', value: 'class' },
+                { name: 'Student Groups', value: 'custom' },
               ].map(({ name, value }) => (
                 <Select.Option key={name} value={value}>
                   {name}
@@ -342,7 +421,11 @@ class ClassList extends React.Component {
               onChange={this.handleClassSelectFromDropDown}
               mode="multiple"
               showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
               value={filterClassIds}
             >
               {classList.map(({ name, _id }) => (
@@ -359,9 +442,13 @@ class ClassList extends React.Component {
               mode="multiple"
               value={searchTerms.tags}
               placeholder="All Tags"
-              onChange={changeField("tags")}
+              onChange={changeField('tags')}
               showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
             >
               {tagList.map(({ _id, tagName }) => (
                 <Select.Option key={_id} value={_id}>
@@ -395,29 +482,29 @@ class ClassList extends React.Component {
           />
         </TableContainer>
       </ClassListContainer>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
-      termsData: get(state, "user.user.orgData.terms", []),
+    (state) => ({
+      termsData: get(state, 'user.user.orgData.terms', []),
       classList: getClassListSelector(state),
       userOrgId: getUserOrgId(state),
       schools: getSchoolsByUserRoleSelector(state),
       courseList: getCourseListSelector(state),
       test: getTestSelector(state),
-      tagList: getAllTagsSelector(state, "group")
+      tagList: getAllTagsSelector(state, 'group'),
     }),
     {
       loadClassListData: receiveClassListAction,
       loadSchoolsData: receiveSchoolsAction,
       loadCourseListData: receiveCourseListAction,
-      getAllTags: getAllTagsAction
+      getAllTags: getAllTagsAction,
     }
   )
-);
+)
 
-export default enhance(ClassList);
+export default enhance(ClassList)

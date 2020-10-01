@@ -1,23 +1,24 @@
-import styled from "styled-components";
-import { DragDrop } from "@edulastic/common";
+import styled from 'styled-components'
+import { DragDrop } from '@edulastic/common'
 
-import { white, mediumDesktopExactWidth, themeColor } from "@edulastic/colors";
+import { white, mediumDesktopExactWidth, themeColor } from '@edulastic/colors'
 
-const { DropContainer } = DragDrop;
+const { DropContainer } = DragDrop
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
-  padding-top: ${props => (props.reportMode ? "0px" : "15px")};
+  padding-top: ${(props) => (props.reportMode ? '0px' : '15px')};
   padding-right: 0px;
   padding-left: 0px;
-  padding-bottom: ${props => (props.testMode ? "15px" : props.review ? "60px" : "15px")};
+  padding-bottom: ${(props) =>
+    props.testMode ? '15px' : props.review ? '60px' : '15px'};
   overflow-y: auto;
   width: 100%;
   transition: padding 0.2s ease-in;
   .scrollbar-container {
     border-radius: 5px;
   }
-`;
+`
 
 export const Preview = styled.div`
   min-height: 90vh;
@@ -28,7 +29,7 @@ export const Preview = styled.div`
   @media (min-width: ${mediumDesktopExactWidth}) {
     width: 99%;
   }
-`;
+`
 
 export const ZoomControlCotainer = styled.div`
   position: fixed;
@@ -43,7 +44,7 @@ export const ZoomControlCotainer = styled.div`
       fill: ${white};
     }
   }
-`;
+`
 
 export const PDFZoomControl = styled.div`
   background: ${themeColor};
@@ -60,7 +61,7 @@ export const PDFZoomControl = styled.div`
   cursor: pointer;
   user-select: none;
   margin-bottom: 5px;
-`;
+`
 
 export const AnnotationsContainer = styled.div`
   width: 100%;
@@ -68,8 +69,8 @@ export const AnnotationsContainer = styled.div`
   left: 0;
   top: 0;
   position: absolute;
-  pointer-events: ${({ enableDrag }) => (enableDrag ? "" : "none")};
-`;
+  pointer-events: ${({ enableDrag }) => (enableDrag ? '' : 'none')};
+`
 
 export const Droppable = styled(DropContainer)`
   top: 0;
@@ -78,4 +79,4 @@ export const Droppable = styled(DropContainer)`
   height: fit-content;
   margin: auto;
   position: relative;
-`;
+`

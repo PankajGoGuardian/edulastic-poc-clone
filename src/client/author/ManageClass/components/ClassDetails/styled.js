@@ -15,33 +15,33 @@ import {
   mainTextColor,
   white,
   greyThemeDark4,
-  themeColorBlue
-} from "@edulastic/colors";
-import { Paper, EduTableStyled, SelectInputStyled } from "@edulastic/common";
-import { IconManage } from "@edulastic/icons";
-import IconArchive from "@edulastic/icons/src/IconArchive";
-import { Button, Divider, Icon, Menu, Modal, Row, Col } from "antd";
-import { Link } from "react-router-dom";
-import styled, { css } from "styled-components";
+  themeColorBlue,
+} from '@edulastic/colors'
+import { Paper, EduTableStyled, SelectInputStyled } from '@edulastic/common'
+import { IconManage } from '@edulastic/icons'
+import IconArchive from '@edulastic/icons/src/IconArchive'
+import { Button, Divider, Icon, Menu, Modal, Row, Col } from 'antd'
+import { Link } from 'react-router-dom'
+import styled, { css } from 'styled-components'
 
 export const OptionWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-`;
+`
 export const SelectStyled = styled(SelectInputStyled)`
   .ant-select-selection__placeholder {
     color: ${secondaryTextColor};
   }
-`;
+`
 
 export const TableWrapper = styled.div`
   background: ${white};
   padding: 10px 0px;
   border-radius: 10px;
   margin-bottom: 30px;
-`;
+`
 
 export const StudentsTable = styled(EduTableStyled)`
   .ant-table {
@@ -92,14 +92,14 @@ export const StudentsTable = styled(EduTableStyled)`
       }
     }
   }
-`;
+`
 
 export const HeaderTitle = styled.div`
   max-width: calc(100vw - 350px);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`;
+`
 
 export const Title = styled.div`
   display: flex;
@@ -117,18 +117,18 @@ export const Title = styled.div`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 22px;
   }
-`;
+`
 
 export const IconManageClass = styled(IconManage)`
   margin-top: 5px;
   margin-right: 10px;
-`;
+`
 
 export const IconArchiveClass = styled(IconArchive)`
   margin-top: 5px;
   margin-left: 10px;
   cursor: pointer;
-`;
+`
 
 const ShareButtonStyle = css`
   font-weight: 600;
@@ -136,7 +136,7 @@ const ShareButtonStyle = css`
   border-radius: 25px;
   height: 40px;
   display: flex;
-`;
+`
 
 export const EditButton = styled(Button)`
   width: 135px;
@@ -160,11 +160,11 @@ export const EditButton = styled(Button)`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: 45px;
   }
-`;
+`
 
 export const CircleIconButton = styled(Button)`
   margin-right: 16px;
-`;
+`
 
 export const ActionButton = styled(Button)`
   font-weight: 600;
@@ -174,7 +174,7 @@ export const ActionButton = styled(Button)`
   align-items: center;
   margin-right: 16px;
   color: ${themeColor};
-`;
+`
 
 export const AddStudentButton = styled(Button)`
   ${ShareButtonStyle}
@@ -188,33 +188,33 @@ export const AddStudentButton = styled(Button)`
     color: ${white};
     background: ${themeColor};
   }
-`;
+`
 export const ButtonsWrapper = styled.div`
   display: flex;
   align-items: right;
-`;
+`
 
 export const StyledDivider = styled(Divider)`
   margin: 10px 0px;
-`;
+`
 
 export const Container = styled(Paper)`
   border-radius: 0px;
   margin: 30px;
   width: 95%;
   background: none;
-`;
+`
 
 export const ContainerHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-`;
+`
 
 export const LeftContent = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 export const StyledIcon = styled(Icon)`
   margin-left: 8px;
@@ -222,7 +222,7 @@ export const StyledIcon = styled(Icon)`
     fill: ${({ fill }) => fill || themeColor};
     font-size: ${({ size }) => size || 20}px;
   }
-`;
+`
 
 export const TitleWarapper = styled.div`
   font-size: 18px;
@@ -233,19 +233,19 @@ export const TitleWarapper = styled.div`
     font-weight: 400;
     color: ${greyDarken};
   }
-`;
+`
 
 export const RightContent = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 export const AnchorLink = styled(Link)`
   font-size: 14px;
   font-weight: 700;
   color: ${themeColor};
   margin-right: 15px;
-`;
+`
 
 export const ClassLink = styled.span`
   font-size: 14px;
@@ -253,12 +253,12 @@ export const ClassLink = styled.span`
   color: ${themeColor};
   margin-right: 15px;
   cursor: pointer;
-`;
+`
 
 export const CodeWrapper = styled(Row)`
   width: 100%;
   justify-content: space-between;
-`;
+`
 
 export const ClassCode = styled(Col)`
   white-space: nowrap;
@@ -276,7 +276,7 @@ export const ClassCode = styled(Col)`
   @media (max-width: ${desktopWidth}) {
     padding-right: 0px;
   }
-`;
+`
 export const Studentscount = styled(Col)`
   white-space: nowrap;
   font-size: 12px;
@@ -293,7 +293,7 @@ export const Studentscount = styled(Col)`
   @media (max-width: ${desktopWidth}) {
     padding-right: 0px;
   }
-`;
+`
 export const CoTeacher = styled(Studentscount)`
   display: flex;
   width: 100%;
@@ -302,7 +302,7 @@ export const CoTeacher = styled(Studentscount)`
     font-size: 15px;
     margin-top: -5px;
   }
-`;
+`
 export const PopCoTeachers = styled.div`
   display: flex;
   justify-content: center;
@@ -314,7 +314,7 @@ export const PopCoTeachers = styled.div`
   margin-left: 5px;
   border-radius: 2px;
   cursor: pointer;
-`;
+`
 
 export const MainContainer = styled.div`
   display: flex;
@@ -323,14 +323,14 @@ export const MainContainer = styled.div`
   padding: 20px 0px;
   background: white;
   border-radius: 10px;
-`;
+`
 
 export const AddStudentDivider = styled.div`
   display: flex;
   align-items: center;
   margin: 15px 0px;
   justify-content: flex-end;
-`;
+`
 
 export const CleverInfoBox = styled.div`
   font-size: 14px;
@@ -346,20 +346,20 @@ export const CleverInfoBox = styled.div`
       fill: ${themeColorBlue};
     }
   }
-`;
+`
 
 export const LeftWrapper = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-`;
+`
 
 export const DividerDiv = styled.div`
   width: -webkit-fill-available;
   border-bottom: 1px #e8e8e8 solid;
   height: 1px;
   margin: 12px 8px;
-`;
+`
 
 export const Image = styled.img`
   width: 100%;
@@ -367,12 +367,12 @@ export const Image = styled.img`
   min-height: 100px;
   border-radius: 5px;
   height: auto;
-`;
+`
 
 export const MidWrapper = styled(Row)`
   width: 100%;
   margin-top: 10px;
-`;
+`
 
 export const RightWrapper = styled.div`
   text-align: start;
@@ -380,7 +380,7 @@ export const RightWrapper = styled.div`
   @media (max-width: ${desktopWidth}) {
     padding-right: 0px;
   }
-`;
+`
 
 export const FieldValue = styled.div`
   display: flex;
@@ -412,21 +412,21 @@ export const FieldValue = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 14px;
   }
-`;
+`
 
 export const FieldLabel = styled.section`
   min-width: 180px;
   text-align: right;
-`;
+`
 
-export const StudentContent = styled.div``;
+export const StudentContent = styled.div``
 
 export const NoStudents = styled.div`
   padding: 3px 8px;
   background: #e4eef3;
   border-radius: 4px;
   display: flex;
-`;
+`
 
 export const NoConentDesc = styled.div`
   font-size: 18px;
@@ -436,7 +436,7 @@ export const NoConentDesc = styled.div`
   p {
     font-size: 14px;
   }
-`;
+`
 
 export const MenuItem = styled(Menu.Item)`
   display: flex;
@@ -449,12 +449,12 @@ export const MenuItem = styled(Menu.Item)`
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-`;
+`
 
 export const StyledButton = styled(Button)`
   border-radius: 4px;
@@ -464,10 +464,10 @@ export const StyledButton = styled(Button)`
   font-family: Open Sans, Semibold;
   font-weight: 600;
   text-transform: uppercase;
-  background: ${props => (props.type === "primary" ? themeColor : white)};
-  color: ${props => (props.type === "primary" ? white : themeColor)};
+  background: ${(props) => (props.type === 'primary' ? themeColor : white)};
+  color: ${(props) => (props.type === 'primary' ? white : themeColor)};
   border-color: ${themeColor};
-`;
+`
 
 const StyledTabButton = styled.a`
   height: 30px;
@@ -491,7 +491,7 @@ const StyledTabButton = styled.a`
     text-align: center;
     margin: 0 !important;
   }
-`;
+`
 
 export const RedirectButton = styled(StyledTabButton)`
   border-radius: 4px;
@@ -527,25 +527,25 @@ export const RedirectButton = styled(StyledTabButton)`
       display: none;
     }
   }
-`;
+`
 
 export const CustomRedirectButton = styled(RedirectButton)`
   white-space: nowrap;
   width: auto;
   background: ${themeColor};
   color: ${white};
-`;
+`
 
 export const ButtonIconWrap = styled.span`
   display: block;
   left: 10px;
   position: absolute;
-`;
+`
 
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
   width: 190px;
-`;
+`
 
 export const MenuItems = styled(Menu.Item)`
   display: flex;
@@ -578,14 +578,14 @@ export const MenuItems = styled(Menu.Item)`
     color: ${white};
     background-color: ${themeColor};
   }
-`;
+`
 export const CaretUp = styled.i`
   position: absolute;
   top: -20px;
   color: ${white};
   right: 60px;
   font-size: 30px;
-`;
+`
 
 export const ImageContainer = styled.div`
   width: 250px;
@@ -593,7 +593,7 @@ export const ImageContainer = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 300px;
   }
-`;
+`
 
 export const ClassInfoContainer = styled.div`
   width: calc(100% - 250px);
@@ -605,12 +605,12 @@ export const ClassInfoContainer = styled.div`
     padding: 0 30px;
     width: calc(100% - 300px);
   }
-`;
+`
 
 export const FlexDiv = styled.div`
   width: 100%;
   display: flex;
-`;
+`
 
 export const SwitchBox = styled.span`
   font-size: 10px;
@@ -631,7 +631,7 @@ export const SwitchBox = styled.span`
   @media (max-width: ${mobileWidthLarge}) {
     display: none;
   }
-`;
+`
 
 export const GoogleClassSyncModal = styled(Modal)`
   top: 35%;
@@ -652,12 +652,12 @@ export const GoogleClassSyncModal = styled(Modal)`
     border: none;
     padding: 20px 24px;
   }
-`;
+`
 export const Institution = styled.div`
   font-size: 14px;
   color: ${greyThemeDark4};
   font-weight: normal;
-`;
+`
 
 export const NotEnrolledMessage = styled.div`
   display: flex;
@@ -665,4 +665,4 @@ export const NotEnrolledMessage = styled.div`
     margin-top: 4px;
     margin-right: 5px;
   }
-`;
+`

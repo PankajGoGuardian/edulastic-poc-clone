@@ -1,26 +1,32 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import ComposeQuestion from "./ComposeQuestion";
-import MultipleChoiceOptions from "./MultipleChoiceOptions";
+import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import ComposeQuestion from './ComposeQuestion'
+import MultipleChoiceOptions from './MultipleChoiceOptions'
 
 class Authoring extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
     setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
-  };
+    cleanSections: PropTypes.func,
+  }
 
   static defaultProps = {
     fillSections: () => {},
-    cleanSections: () => {}
-  };
+    cleanSections: () => {},
+  }
 
   render() {
-    const { item, setQuestionData, fillSections, cleanSections, fontSize } = this.props;
+    const {
+      item,
+      setQuestionData,
+      fillSections,
+      cleanSections,
+      fontSize,
+    } = this.props
 
     return (
-      <Fragment>
+      <>
         <ComposeQuestion
           item={item}
           fillSections={fillSections}
@@ -35,9 +41,9 @@ class Authoring extends Component {
           cleanSections={cleanSections}
           fontSize={fontSize}
         />
-      </Fragment>
-    );
+      </>
+    )
   }
 }
 
-export default Authoring;
+export default Authoring

@@ -1,18 +1,25 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Row, Col } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Row, Col } from 'antd'
 
-import { EduButton } from "@edulastic/common";
-import { IconPlusCircle } from "@edulastic/icons";
+import { EduButton } from '@edulastic/common'
+import { IconPlusCircle } from '@edulastic/icons'
 
-import { StyledCard, StyledH3 } from "../../../../../common/styled";
-import TrendCard from "./TrendCard";
-import { trendTypes } from "../../utils/constants";
-import FeaturesSwitch from "../../../../../../../features/components/FeaturesSwitch";
+import { StyledCard, StyledH3 } from '../../../../../common/styled'
+import TrendCard from './TrendCard'
+import { trendTypes } from '../../utils/constants'
+import FeaturesSwitch from '../../../../../../../features/components/FeaturesSwitch'
 
-const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading, handleAddToGroupClick }) => {
-  const trends = Object.keys(trendTypes);
+const TrendStats = ({
+  trendCount,
+  onTrendSelect,
+  selectedTrend,
+  renderFilters,
+  heading,
+  handleAddToGroupClick,
+}) => {
+  const trends = Object.keys(trendTypes)
 
   return (
     <UpperContainer>
@@ -27,12 +34,23 @@ const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, h
             md={14}
             lg={14}
             xl={14}
-            style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end" }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            }}
           >
             {!!handleAddToGroupClick && (
-              <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+              <FeaturesSwitch
+                inputFeatures="studentGroups"
+                actionOnInaccessible="hidden"
+              >
                 <EduButton
-                  style={{ height: "32px", padding: "0 15px 0 10px", marginRight: "5px" }}
+                  style={{
+                    height: '32px',
+                    padding: '0 15px 0 10px',
+                    marginRight: '5px',
+                  }}
                   onClick={handleAddToGroupClick}
                 >
                   <IconPlusCircle /> Add To Student Group
@@ -44,7 +62,7 @@ const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, h
         </Row>
       </PaddedContainer>
       <TrendContainer>
-        {trends.map(trend => (
+        {trends.map((trend) => (
           <Col span={8}>
             <PaddedContainer>
               <TrendCard
@@ -58,8 +76,8 @@ const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, h
         ))}
       </TrendContainer>
     </UpperContainer>
-  );
-};
+  )
+}
 
 TrendStats.propTypes = {
   onTrendSelect: PropTypes.func,
@@ -69,34 +87,34 @@ TrendStats.propTypes = {
   trendCount: PropTypes.shape({
     up: PropTypes.number,
     flat: PropTypes.number,
-    down: PropTypes.number
-  })
-};
+    down: PropTypes.number,
+  }),
+}
 
 TrendStats.defaultProps = {
   trendCount: {
     up: 0,
     flat: 0,
-    down: 0
+    down: 0,
   },
-  selectedTrend: "",
+  selectedTrend: '',
   onTrendSelect: () => {},
   renderFilters: () => null,
-  heading: ""
-};
+  heading: '',
+}
 
-export default TrendStats;
+export default TrendStats
 
 const UpperContainer = styled(StyledCard)`
   .ant-card-body {
     padding: 0px 0px 18px;
   }
-`;
+`
 const PaddedContainer = styled.div`
   padding: 0px 18px;
-`;
+`
 
 const TrendContainer = styled(Row)`
   margin-top: 15px;
   padding-top: 5px;
-`;
+`

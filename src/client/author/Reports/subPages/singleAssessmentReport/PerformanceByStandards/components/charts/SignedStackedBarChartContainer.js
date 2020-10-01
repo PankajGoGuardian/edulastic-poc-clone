@@ -1,62 +1,66 @@
-import React, { useMemo } from "react";
-import PropTypes from "prop-types";
-import { find, forEach } from "lodash";
-import { SignedStackedBarChart } from "../../../../../common/components/charts/signedStackedBarChart";
-import { getChartMasteryData, analyzeByMode, getYLabelString, viewByMode } from "../../util/transformers";
-import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
+import React, { useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { find, forEach } from 'lodash'
+import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
+import {
+  getChartMasteryData,
+  analyzeByMode,
+  getYLabelString,
+  viewByMode,
+} from '../../util/transformers'
+import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
 
-const getSelectedItems = items => {
-  const selectedItems = {};
+const getSelectedItems = (items) => {
+  const selectedItems = {}
 
-  forEach(items, item => {
-    selectedItems[item] = true;
-  });
+  forEach(items, (item) => {
+    selectedItems[item] = true
+  })
 
-  return selectedItems;
-};
+  return selectedItems
+}
 
 const dataParser = (data, scaleInfo) => {
-  return data.map(item => {
+  return data.map((item) => {
     for (let i = 0; i < scaleInfo.length; i++) {
-      item["fill_" + i] = scaleInfo[i].color;
+      item[`fill_${i}`] = scaleInfo[i].color
     }
-    return { ...item };
-  });
-};
+    return { ...item }
+  })
+}
 
-const yTickFormatter = val => {
-  return "";
-};
+const yTickFormatter = (val) => {
+  return ''
+}
 
-const barsLabelFormatter = val => {
-  if (12 <= val || val <= -12) {
-    return Math.abs(val) + "%";
-  } else {
-    return "";
+const barsLabelFormatter = (val) => {
+  if (val >= 12 || val <= -12) {
+    return `${Math.abs(val)}%`
   }
-};
+  return ''
+}
 
 const getChartSpecifics = (analyzeBy, scaleInfo) => {
   scaleInfo.sort((a, b) => {
-    return a.threshold - b.threshold;
-  });
+    return a.threshold - b.threshold
+  })
 
-  let barsData = [];
+  const barsData = []
 
-  for (let [_, value] of scaleInfo.entries()) {
+  for (const [_, value] of scaleInfo.entries()) {
     barsData.push({
-      key: value.masteryLabel + " Percentage",
-      stackId: "a",
+      key: `${value.masteryLabel} Percentage`,
+      stackId: 'a',
       fill: value.color,
-      unit: "%",
-      name: value.masteryName
-    });
+      unit: '%',
+      name: value.masteryName,
+    })
   }
   return {
-    barsData: barsData,
-    yAxisLabel: getYLabelString(analyzeBy)
-  };
-};
+    barsData,
+    yAxisLabel: getYLabelString(analyzeBy),
+  }
+}
 
 const SignedStackedBarChartContainer = ({
   report,
@@ -65,62 +69,71 @@ const SignedStackedBarChartContainer = ({
   onBarClick,
   onResetClick,
   viewBy,
-  analyzeBy
+  analyzeBy,
 }) => {
-  const { scaleInfo } = report;
-  const xAxisDataKey = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
+  const { scaleInfo } = report
+  const xAxisDataKey =
+    viewBy === viewByMode.STANDARDS ? 'standardId' : 'domainId'
 
   const orderedScaleInfo = scaleInfo.sort((a, b) => {
-    return a.threshold - b.threshold;
-  });
+    return a.threshold - b.threshold
+  })
 
-  const leastScale = orderedScaleInfo[0];
-  const parsedGroupedMetricData = useMemo(() => getChartMasteryData(report, filter, viewBy, leastScale), [
-    report,
-    filter,
-    viewBy,
-    leastScale
-  ]);
+  const leastScale = orderedScaleInfo[0]
+  const parsedGroupedMetricData = useMemo(
+    () => getChartMasteryData(report, filter, viewBy, leastScale),
+    [report, filter, viewBy, leastScale]
+  )
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      let { name = "" } = payload[0].payload;
+      const { name = '' } = payload[0].payload
       return (
         <div>
-          <BarTooltipRow title={`${viewBy === viewByMode.STANDARDS ? "Standard" : "Domain"} : `} value={name} />
           <BarTooltipRow
-            title={`Mastery ${analyzeBy === analyzeByMode.MASTERY_LEVEL ? "Level" : "Score"} : `}
+            title={`${
+              viewBy === viewByMode.STANDARDS ? 'Standard' : 'Domain'
+            } : `}
+            value={name}
+          />
+          <BarTooltipRow
+            title={`Mastery ${
+              analyzeBy === analyzeByMode.MASTERY_LEVEL ? 'Level' : 'Score'
+            } : `}
             value={payload[barIndex].name}
           />
-          <BarTooltipRow title="Student (%): " value={`${Math.abs(payload[barIndex].value)}%`} />
+          <BarTooltipRow
+            title="Student (%): "
+            value={`${Math.abs(payload[barIndex].value)}%`}
+          />
         </div>
-      );
+      )
     }
-    return false;
-  };
+    return false
+  }
 
-  const chartData = useMemo(() => dataParser(parsedGroupedMetricData, orderedScaleInfo), [
-    report,
-    filter,
-    viewBy,
-    analyzeBy
-  ]);
+  const chartData = useMemo(
+    () => dataParser(parsedGroupedMetricData, orderedScaleInfo),
+    [report, filter, viewBy, analyzeBy]
+  )
 
-  const _onBarClickCB = key => {
-    const clickedBarData = find(chartData, item => item[xAxisDataKey] === key) || {};
-    onBarClick(clickedBarData);
-  };
+  const _onBarClickCB = (key) => {
+    const clickedBarData =
+      find(chartData, (item) => item[xAxisDataKey] === key) || {}
+    onBarClick(clickedBarData)
+  }
 
   const _onResetClickCB = () => {
-    onResetClick();
-  };
+    onResetClick()
+  }
 
   const getXTickText = (payload, data) => {
-    const currentBarData = find(data, item => item[xAxisDataKey] === payload.value) || {};
-    return currentBarData.name || "";
-  };
+    const currentBarData =
+      find(data, (item) => item[xAxisDataKey] === payload.value) || {}
+    return currentBarData.name || ''
+  }
 
-  const chartSpecifics = getChartSpecifics(analyzeBy, orderedScaleInfo);
+  const chartSpecifics = getChartSpecifics(analyzeBy, orderedScaleInfo)
 
   return (
     <SignedStackedBarChart
@@ -137,8 +150,8 @@ const SignedStackedBarChartContainer = ({
       filter={getSelectedItems(selectedData)}
       xTickTooltipPosition={490}
     />
-  );
-};
+  )
+}
 
 SignedStackedBarChartContainer.propTypes = {
   viewBy: PropTypes.string.isRequired,
@@ -147,17 +160,17 @@ SignedStackedBarChartContainer.propTypes = {
   onResetClick: PropTypes.func.isRequired,
   filter: PropTypes.object.isRequired,
   report: PropTypes.object,
-  selectedData: PropTypes.array
-};
+  selectedData: PropTypes.array,
+}
 
 SignedStackedBarChartContainer.defaultProps = {
   report: {
     metricInfo: [],
     skillInfo: [],
     studInfo: [],
-    teacherInfo: []
+    teacherInfo: [],
   },
-  selectedData: []
-};
+  selectedData: [],
+}
 
-export default SignedStackedBarChartContainer;
+export default SignedStackedBarChartContainer

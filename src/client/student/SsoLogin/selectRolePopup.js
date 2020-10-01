@@ -1,105 +1,139 @@
-import React, { useState } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { Modal, Button, Icon, Input, Form } from "antd";
-import { get, trim } from "lodash";
-import { white, greenDark, orange } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { updateUserRoleAction, logoutAction } from "../Login/ducks";
+import React, { useState } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { Modal, Button, Icon, Input, Form } from 'antd'
+import { get, trim } from 'lodash'
+import { white, greenDark, orange } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
+import { updateUserRoleAction, logoutAction } from '../Login/ducks'
 
-const SelectRolePopup = props => {
-  const { t, className, updateUserRoleAction, logoutAction } = props;
-  const [selectedRole, setSelectedRole] = useState("");
+const SelectRolePopup = (props) => {
+  const { t, className, updateUserRoleAction, logoutAction } = props
+  const [selectedRole, setSelectedRole] = useState('')
 
   const onSignupAsStudent = () => {
-    setSelectedRole("student");
-  };
+    setSelectedRole('student')
+  }
 
-  const onSignupAsStudentSubmit = classCode => {
-    updateUserRoleAction({ role: "student", classCode });
-  };
+  const onSignupAsStudentSubmit = (classCode) => {
+    updateUserRoleAction({ role: 'student', classCode })
+  }
 
   const onSignupAsTeacher = () => {
-    updateUserRoleAction({ role: "teacher" });
-  };
+    updateUserRoleAction({ role: 'teacher' })
+  }
 
   const onBackClick = () => {
-    setSelectedRole("");
-  };
+    setSelectedRole('')
+  }
 
   const onCancel = () => {
-    logoutAction();
-  };
+    logoutAction()
+  }
 
   return (
-    <Modal visible={true} footer={null} className={className} width={"500px"} maskClosable={false} onCancel={onCancel}>
-      {selectedRole !== "student" ? (
+    <Modal
+      visible
+      footer={null}
+      className={className}
+      width="500px"
+      maskClosable={false}
+      onCancel={onCancel}
+    >
+      {selectedRole !== 'student' ? (
         <div className="third-party-signup-select-role">
           <p>It seems you are new to Edulastic!</p>
           <p>Sign Up! It's Free</p>
           <div className="model-buttons">
-            <Button className={"signupAsStudent-button"} key="signupAsStudent" onClick={onSignupAsStudent}>
+            <Button
+              className="signupAsStudent-button"
+              key="signupAsStudent"
+              onClick={onSignupAsStudent}
+            >
               Sign up as Student
             </Button>
-            <Button className={"signupAsTeacher-button"} key="signupAsTeacher" onClick={onSignupAsTeacher}>
+            <Button
+              className="signupAsTeacher-button"
+              key="signupAsTeacher"
+              onClick={onSignupAsTeacher}
+            >
               Sign up as Teacher
             </Button>
           </div>
         </div>
       ) : (
         <div className="third-party-signup-student-enter-class-code">
-          <Button className="back-button" type="primary" shape="circle" icon="arrow-left" onClick={onBackClick} />
+          <Button
+            className="back-button"
+            type="primary"
+            shape="circle"
+            icon="arrow-left"
+            onClick={onBackClick}
+          />
           <p>Please, enter your ClassCode</p>
           <p>(provied by your teacher)</p>
           <ConnectedClassCodeForm onSubmit={onSignupAsStudentSubmit} t={t} />
         </div>
       )}
     </Modal>
-  );
-};
+  )
+}
 
-const ClassCodeForm = props => {
-  const { getFieldDecorator } = props.form;
-  const { t, onSubmit: _onSubmit } = props;
+const ClassCodeForm = (props) => {
+  const { getFieldDecorator } = props.form
+  const { t, onSubmit: _onSubmit } = props
 
-  const onSubmit = event => {
-    event.preventDefault();
-    const { form } = props;
+  const onSubmit = (event) => {
+    event.preventDefault()
+    const { form } = props
     form.validateFieldsAndScroll((err, { classCode }) => {
-      _onSubmit(classCode);
-    });
-  };
+      _onSubmit(classCode)
+    })
+  }
 
   return (
     <Form onSubmit={onSubmit} autoComplete="new-password">
       <Form.Item>
-        {getFieldDecorator("classCode", {
+        {getFieldDecorator('classCode', {
           validateFirst: true,
-          initialValue: "",
+          initialValue: '',
           rules: [
             {
-              transform: value => trim(value)
+              transform: (value) => trim(value),
             },
             {
               required: true,
-              message: t("component.signup.student.validclasscode")
-            }
-          ]
-        })(<Input className="class-code-input" type="text" placeholder="Class code" autoComplete="new-password" />)}
+              message: t('component.signup.student.validclasscode'),
+            },
+          ],
+        })(
+          <Input
+            className="class-code-input"
+            type="text"
+            placeholder="Class code"
+            autoComplete="new-password"
+          />
+        )}
       </Form.Item>
       <div className="model-buttons">
         <Form.Item>
-          <Button className={"signup-as-student-button"} key="signupAsStudent" htmlType="submit">
+          <Button
+            className="signup-as-student-button"
+            key="signupAsStudent"
+            htmlType="submit"
+          >
             Sign up as Student
           </Button>
         </Form.Item>
       </div>
     </Form>
-  );
-};
+  )
+}
 
-const ConnectedClassCodeForm = Form.create({ name: "classCodeForm" })(ClassCodeForm);
+const ConnectedClassCodeForm = Form.create({ name: 'classCodeForm' })(
+  ClassCodeForm
+)
 
 const StyledSelectRolePopup = styled(SelectRolePopup)`
   .ant-modal-content {
@@ -185,18 +219,18 @@ const StyledSelectRolePopup = styled(SelectRolePopup)`
       }
     }
   }
-`;
+`
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   connect(
-    state => ({
-      user: get(state, "user.user", null)
+    (state) => ({
+      user: get(state, 'user.user', null),
     }),
     { updateUserRoleAction, logoutAction }
   )
-);
+)
 
-const ConnectedStyledSelectRolePopup = enhance(StyledSelectRolePopup);
+const ConnectedStyledSelectRolePopup = enhance(StyledSelectRolePopup)
 
-export { ConnectedStyledSelectRolePopup as SelectRolePopup };
+export { ConnectedStyledSelectRolePopup as SelectRolePopup }

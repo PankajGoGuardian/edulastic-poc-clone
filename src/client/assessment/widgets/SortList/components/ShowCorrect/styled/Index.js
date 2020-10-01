@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { FlexRow } from "./FlexRow";
+import styled from 'styled-components'
+import { FlexRow } from './FlexRow'
 
 export const Index = styled(FlexRow)`
   display: flex;
@@ -10,6 +10,6 @@ export const Index = styled(FlexRow)`
   width: 32px;
   height: auto;
   min-height: 32px;
-  color: ${props => props.theme.widgets.sortList.correctAnswersIndexColor};
-  background-color: ${props => props.theme.checkbox.noAnswerIconColor};
-`;
+  color: ${(props) => props.theme.widgets.sortList.correctAnswersIndexColor};
+  background-color: ${(props) => props.theme.checkbox.noAnswerIconColor};
+`

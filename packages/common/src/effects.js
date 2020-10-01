@@ -1,13 +1,21 @@
-//@ts-check
-import { call, put, fork, actionChannel, take, race, flush } from "redux-saga/effects";
-import { buffers } from "redux-saga";
+// @ts-check
+import {
+  call,
+  put,
+  fork,
+  actionChannel,
+  take,
+  race,
+  flush,
+} from 'redux-saga/effects'
+import { buffers } from 'redux-saga'
 
 function delay(ms) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve();
-    }, ms);
-  });
+      resolve()
+    }, ms)
+  })
 }
 
 /**
@@ -17,24 +25,24 @@ function delay(ms) {
  * @param {GeneratorFunction} task
  */
 export function throttleAction(ms, action, task) {
-  return fork(function*() {
-    const throttleChannel = yield actionChannel(action, buffers.sliding(1));
+  return fork(function* () {
+    const throttleChannel = yield actionChannel(action, buffers.sliding(1))
 
     while (true) {
-      const action = yield take(throttleChannel);
-      let raceResult = {};
+      const action = yield take(throttleChannel)
+      let raceResult = {}
       try {
         raceResult = yield race({
           taskResult: call(task, action),
-          timeout: call(delay, ms)
-        });
+          timeout: call(delay, ms),
+        })
       } catch (e) {
-        console.warn("error", e);
+        console.warn('error', e)
       }
 
-      if ("taskResult" in raceResult) {
-        /*const discarded =*/ yield flush(throttleChannel);
+      if ('taskResult' in raceResult) {
+        /* const discarded = */ yield flush(throttleChannel)
       }
     }
-  });
+  })
 }

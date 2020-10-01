@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from 'react'
 import {
   BarChart,
   Bar,
@@ -11,31 +11,57 @@ import {
   ResponsiveContainer,
   LabelList,
   Legend,
-  ReferenceLine
-} from "recharts";
-import { isEmpty, findLast, head } from "lodash";
-import styled from "styled-components";
-import { StyledCustomChartTooltip, StyledChartNavButton, CustomXAxisTickTooltipContainer } from "../../styled";
-import { CustomChartXTick, calculateXCoordinateOfXAxisToolTip } from "./chartUtils/customChartXTick";
-import { YAxisLabel } from "./chartUtils/yAxisLabel";
+  ReferenceLine,
+} from 'recharts'
+import { isEmpty, findLast, head } from 'lodash'
+import styled from 'styled-components'
+import {
+  StyledCustomChartTooltip,
+  StyledChartNavButton,
+  CustomXAxisTickTooltipContainer,
+} from '../../styled'
+import {
+  CustomChartXTick,
+  calculateXCoordinateOfXAxisToolTip,
+} from './chartUtils/customChartXTick'
+import { YAxisLabel } from './chartUtils/yAxisLabel'
 
-const _barsLabelFormatter = val => {
+const _barsLabelFormatter = (val) => {
   if (val !== 0) {
-    return `${val}%`;
+    return `${val}%`
   }
-  return "";
-};
+  return ''
+}
 
-const LabelText = props => {
-  const { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, bdIndex } = props;
+const LabelText = (props) => {
+  const {
+    x,
+    y,
+    width,
+    height,
+    value,
+    formatter,
+    onBarMouseOver,
+    onBarMouseLeave,
+    bdIndex,
+  } = props
   return (
-    <g className="asd-asd" onMouseOver={onBarMouseOver(bdIndex)} onMouseLeave={onBarMouseLeave(bdIndex)}>
-      <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle">
+    <g
+      className="asd-asd"
+      onMouseOver={onBarMouseOver(bdIndex)}
+      onMouseLeave={onBarMouseLeave(bdIndex)}
+    >
+      <text
+        x={x + width / 2}
+        y={y + height / 2}
+        textAnchor="middle"
+        dominantBaseline="middle"
+      >
         {formatter(value)}
       </text>
     </g>
-  );
-};
+  )
+}
 
 export const SignedStackedBarChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
@@ -51,128 +77,152 @@ export const SignedStackedBarChart = ({
   onResetClickCB,
   getXTickText,
   getTooltipJSX,
-  yAxisLabel = "",
-  yTickFormatter = val => `${val}%`,
+  yAxisLabel = '',
+  yTickFormatter = (val) => `${val}%`,
   barsLabelFormatter = _barsLabelFormatter,
   referenceLine = 0,
-  filter = {}
+  filter = {},
 }) => {
-  const page = pageSize || 7;
-  const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
-  const [copyData, setCopyData] = useState(null);
-  const [barIndex, setBarIndex] = useState(null);
-  const [activeLegend, setActiveLegend] = useState(null);
+  const page = pageSize || 7
+  const [pagination, setPagination] = useState({
+    startIndex: 0,
+    endIndex: page - 1,
+  })
+  const [copyData, setCopyData] = useState(null)
+  const [barIndex, setBarIndex] = useState(null)
+  const [activeLegend, setActiveLegend] = useState(null)
   const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
-    visibility: "hidden",
+    visibility: 'hidden',
     x: null,
     y: null,
-    content: null
-  });
+    content: null,
+  })
 
   const constants = {
-    COLOR_BLACK: "#010101",
-    TICK_FILL: { fill: "#010101", fontWeight: "bold" },
-    Y_AXIS_LABEL: { value: yAxisLabel.toUpperCase(), angle: -90, dx: 25, fontSize: 14 }
-  };
+    COLOR_BLACK: '#010101',
+    TICK_FILL: { fill: '#010101', fontWeight: 'bold' },
+    Y_AXIS_LABEL: {
+      value: yAxisLabel.toUpperCase(),
+      angle: -90,
+      dx: 25,
+      fontSize: 14,
+    },
+  }
 
   if (data !== copyData) {
     setPagination({
       startIndex: 0,
-      endIndex: page - 1
-    });
-    setCopyData(data);
+      endIndex: page - 1,
+    })
+    setCopyData(data)
   }
 
-  const chartData = useMemo(() => [...data], [pagination]);
+  const chartData = useMemo(() => [...data], [pagination])
 
-  const renderData = useMemo(() => chartData.slice(pagination.startIndex, pagination.startIndex + page), [
-    pagination,
-    data
-  ]);
+  const renderData = useMemo(
+    () => chartData.slice(pagination.startIndex, pagination.startIndex + page),
+    [pagination, data]
+  )
 
   const scrollLeft = () => {
-    let diff;
+    let diff
     if (pagination.startIndex > 0) {
       if (pagination.startIndex >= page) {
-        diff = page;
+        diff = page
       } else {
-        diff = pagination.startIndex;
+        diff = pagination.startIndex
       }
       setPagination({
         startIndex: pagination.startIndex - diff,
-        endIndex: pagination.endIndex - diff
-      });
+        endIndex: pagination.endIndex - diff,
+      })
     }
-  };
+  }
 
   const scrollRight = () => {
-    let diff;
+    let diff
     if (pagination.endIndex < chartData.length - 1) {
       if (chartData.length - 1 - pagination.endIndex >= page) {
-        diff = page;
+        diff = page
       } else {
-        diff = chartData.length - 1 - pagination.endIndex;
+        diff = chartData.length - 1 - pagination.endIndex
       }
       setPagination({
         startIndex: pagination.startIndex + diff,
-        endIndex: pagination.endIndex + diff
-      });
+        endIndex: pagination.endIndex + diff,
+      })
     }
-  };
+  }
 
-  const onBarClick = args => {
-    onBarClickCB(args[xAxisDataKey]);
-  };
+  const onBarClick = (args) => {
+    onBarClickCB(args[xAxisDataKey])
+  }
 
   const onResetClick = () => {
-    onResetClickCB();
-  };
+    onResetClickCB()
+  }
 
-  const onBarMouseOver = index => () => {
-    setBarIndex(index);
-  };
+  const onBarMouseOver = (index) => () => {
+    setBarIndex(index)
+  }
 
   const onBarMouseLeave = () => () => {
-    setBarIndex(null);
-  };
+    setBarIndex(null)
+  }
 
-  const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey);
-  const onLegendMouseLeave = () => setActiveLegend(null);
+  const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
+  const onLegendMouseLeave = () => setActiveLegend(null)
 
-  const onXAxisTickTooltipMouseOver = payload => {
-    const { coordinate } = payload;
-    let content;
+  const onXAxisTickTooltipMouseOver = (payload) => {
+    const { coordinate } = payload
+    let content
     if (getXTickText) {
-      content = getXTickText(payload, chartData);
+      content = getXTickText(payload, chartData)
     } else {
-      content = payload.value;
+      content = payload.value
     }
 
     data = {
-      visibility: "visible",
-      x: `${calculateXCoordinateOfXAxisToolTip(coordinate, xTickToolTipWidth)}px`,
+      visibility: 'visible',
+      x: `${calculateXCoordinateOfXAxisToolTip(
+        coordinate,
+        xTickToolTipWidth
+      )}px`,
       y: `${xTickTooltipPosition}px`,
-      content
-    };
-    setXAxisTickTooltipData(data);
-  };
+      content,
+    }
+    setXAxisTickTooltipData(data)
+  }
 
   const onXAxisTickTooltipMouseOut = () => {
-    setXAxisTickTooltipData({ visibility: "hidden", x: null, y: null, content: null });
-  };
+    setXAxisTickTooltipData({
+      visibility: 'hidden',
+      x: null,
+      y: null,
+      content: null,
+    })
+  }
 
-  const barKeys = useMemo(() => barsData.map((bdItem, bdIndex) => ({ key: bdItem.key, idx: bdIndex })));
+  const barKeys = useMemo(() =>
+    barsData.map((bdItem, bdIndex) => ({ key: bdItem.key, idx: bdIndex }))
+  )
   const isRoundBar = (barData, bdIndex) => {
-    const positive = barKeys.filter(ite => barData[ite.key] > 0);
-    const negative = barKeys.filter(ite => barData[ite.key] < 0);
-    return findLast(positive)?.idx === bdIndex || head(negative)?.idx === bdIndex;
-  };
+    const positive = barKeys.filter((ite) => barData[ite.key] > 0)
+    const negative = barKeys.filter((ite) => barData[ite.key] < 0)
+    return (
+      findLast(positive)?.idx === bdIndex || head(negative)?.idx === bdIndex
+    )
+  }
 
   return (
     <StyledSignedStackedBarChartContainer>
       <a
         onClick={onResetClick}
-        style={Object.keys(filter).length > 0 ? { visibility: "visible" } : { visibility: "hidden" }}
+        style={
+          Object.keys(filter).length > 0
+            ? { visibility: 'visible' }
+            : { visibility: 'hidden' }
+        }
       >
         Reset
       </a>
@@ -184,7 +234,7 @@ export const SignedStackedBarChart = ({
         className="navigator navigator-left"
         onClick={scrollLeft}
         style={{
-          visibility: pagination.startIndex == 0 ? "hidden" : "visible"
+          visibility: pagination.startIndex == 0 ? 'hidden' : 'visible',
         }}
       />
       <StyledChartNavButton
@@ -195,7 +245,8 @@ export const SignedStackedBarChart = ({
         className="navigator navigator-right"
         onClick={scrollRight}
         style={{
-          visibility: chartData.length <= pagination.endIndex + 1 ? "hidden" : "visible"
+          visibility:
+            chartData.length <= pagination.endIndex + 1 ? 'hidden' : 'visible',
         }}
       />
       <CustomXAxisTickTooltipContainer
@@ -208,11 +259,19 @@ export const SignedStackedBarChart = ({
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
       <ResponsiveContainer width="100%" height={400}>
-        <BarChart width={730} height={400} data={renderData} stackOffset="sign" margin={margin}>
+        <BarChart
+          width={730}
+          height={400}
+          data={renderData}
+          stackOffset="sign"
+          margin={margin}
+        >
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
             dataKey={xAxisDataKey}
-            tick={<CustomChartXTick data={renderData} getXTickText={getXTickText} />}
+            tick={
+              <CustomChartXTick data={renderData} getXTickText={getXTickText} />
+            }
             interval={0}
             onMouseOver={onXAxisTickTooltipMouseOver}
             onMouseOut={onXAxisTickTooltipMouseOut}
@@ -225,7 +284,15 @@ export const SignedStackedBarChart = ({
             tickFormatter={yTickFormatter}
             label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}
           />
-          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />} />
+          <Tooltip
+            cursor={false}
+            content={
+              <StyledCustomChartTooltip
+                getJSX={getTooltipJSX}
+                barIndex={barIndex}
+              />
+            }
+          />
           <Legend
             align="left"
             verticalAlign="top"
@@ -234,10 +301,10 @@ export const SignedStackedBarChart = ({
           />
           <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           {barsData.map((bdItem, bdIndex) => {
-            let fillOpacity = 1;
+            let fillOpacity = 1
 
             if (activeLegend && activeLegend !== bdItem.key) {
-              fillOpacity = 0.2;
+              fillOpacity = 0.2
             }
 
             return (
@@ -269,30 +336,38 @@ export const SignedStackedBarChart = ({
                     />
                   }
                 />
-                {renderData.map(cdItem =>
+                {renderData.map((cdItem) =>
                   filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
                     <Cell
-                      radius={isRoundBar(cdItem, bdIndex) ? [10, 10, 0, 0] : [0, 0, 0, 0]}
+                      radius={
+                        isRoundBar(cdItem, bdIndex)
+                          ? [10, 10, 0, 0]
+                          : [0, 0, 0, 0]
+                      }
                       key={cdItem[xAxisDataKey]}
                       fill={bdItem.fill}
                       fillOpacity={fillOpacity}
                     />
                   ) : (
                     <Cell
-                      radius={isRoundBar(cdItem, bdIndex) ? [10, 10, 0, 0] : [0, 0, 0, 0]}
+                      radius={
+                        isRoundBar(cdItem, bdIndex)
+                          ? [10, 10, 0, 0]
+                          : [0, 0, 0, 0]
+                      }
                       key={cdItem[xAxisDataKey]}
                       fill="#c0c0c0"
                     />
                   )
                 )}
               </Bar>
-            );
+            )
           })}
         </BarChart>
       </ResponsiveContainer>
     </StyledSignedStackedBarChartContainer>
-  );
-};
+  )
+}
 
 const StyledSignedStackedBarChartContainer = styled.div`
   padding: 10px;
@@ -320,4 +395,4 @@ const StyledSignedStackedBarChartContainer = styled.div`
       }
     }
   }
-`;
+`

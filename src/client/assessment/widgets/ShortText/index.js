@@ -1,23 +1,29 @@
-import React, { useMemo, Fragment } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
-import { replaceVariables } from "../../utils/variables";
-import EditShortText from "./EditShortText";
-import ShortTextPreview from "./ShortTextPreview";
+import React, { useMemo, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { CLEAR, EDIT, PREVIEW } from '../../constants/constantsForQuestions'
+import { replaceVariables } from '../../utils/variables'
+import EditShortText from './EditShortText'
+import ShortTextPreview from './ShortTextPreview'
 
-const ShortText = props => {
-  const { item, view } = props;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+const ShortText = (props) => {
+  const { item, view } = props
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <Fragment>
+    <>
       {view === EDIT && <EditShortText {...props} />}
-      {view === PREVIEW && <ShortTextPreview key={itemForPreview.id} {...props} item={itemForPreview} />}
-    </Fragment>
-  );
-};
+      {view === PREVIEW && (
+        <ShortTextPreview
+          key={itemForPreview.id}
+          {...props}
+          item={itemForPreview}
+        />
+      )}
+    </>
+  )
+}
 
 ShortText.propTypes = {
   view: PropTypes.string.isRequired,
@@ -31,8 +37,8 @@ ShortText.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 ShortText.defaultProps = {
   previewTab: CLEAR,
@@ -40,15 +46,14 @@ ShortText.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: "",
+  evaluation: '',
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const ShortTextContainer = connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(ShortText);
+const ShortTextContainer = connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(ShortText)
 
-export { ShortTextContainer as ShortText };
+export { ShortTextContainer as ShortText }

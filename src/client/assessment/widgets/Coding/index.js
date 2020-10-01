@@ -1,26 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 
-import { PaddingDiv } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { PREVIEW, EDIT } from "../../constants/constantsForQuestions";
+import { PaddingDiv } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { PREVIEW, EDIT } from '../../constants/constantsForQuestions'
 
-import { replaceVariables } from "../../utils/variables";
+import { replaceVariables } from '../../utils/variables'
 
-import { ContentArea } from "../../styled/ContentArea";
-import { changePreviewAction } from "../../../author/src/actions/view";
-import { getFontSize } from "../../utils/helpers";
+import { ContentArea } from '../../styled/ContentArea'
+import { changePreviewAction } from '../../../author/src/actions/view'
+import { getFontSize } from '../../utils/helpers'
 
-import Authoring from "./components/Authoring";
-import QuestionSolution from "./components/QuestionSolution";
-import LayoutDisplayOptions from "./components/LayoutDisplayOptions";
-import Preview from "./components/Preview";
-import { EmptyWrapper, CodeReviewWrapper } from "./styled";
-import "./ace";
+import Authoring from './components/Authoring'
+import QuestionSolution from './components/QuestionSolution'
+import LayoutDisplayOptions from './components/LayoutDisplayOptions'
+import Preview from './components/Preview'
+import { EmptyWrapper, CodeReviewWrapper } from './styled'
+import './ace'
 
 const Coding = ({
   item,
@@ -32,10 +32,10 @@ const Coding = ({
   flowLayout,
   setQuestionData,
   saveAnswer,
-  userAnswer
+  userAnswer,
 }) => {
   const getRenderData = () => {
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const item = view === EDIT ? templateItem : replaceVariables(templateItem)
 
     const previewStimulus = {
       stimulus: item.stimulus,
@@ -44,20 +44,20 @@ const Coding = ({
       codeStubs: item.codeStubs,
       editorConfig: item.editorConfig,
       layout: item.layout,
-      id: item.id
-    };
+      id: item.id,
+    }
     return {
       previewStimulus,
       itemForEdit: item,
-      uiStyle: item.uiStyle
-    };
-  };
+      uiStyle: item.uiStyle,
+    }
+  }
 
-  const { previewStimulus, itemForEdit, uiStyle } = getRenderData();
-  const fontSize = getFontSize(uiStyle?.fontsize);
+  const { previewStimulus, itemForEdit, uiStyle } = getRenderData()
+  const fontSize = getFontSize(uiStyle?.fontsize)
 
   return (
-    <React.Fragment>
+    <>
       <PaddingDiv>
         {view === EDIT && (
           <ContentArea>
@@ -99,9 +99,9 @@ const Coding = ({
           </CodeReviewWrapper>
         )}
       </PaddingDiv>
-    </React.Fragment>
-  );
-};
+    </>
+  )
+}
 
 Coding.propTypes = {
   view: PropTypes.string.isRequired,
@@ -113,30 +113,30 @@ Coding.propTypes = {
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 Coding.defaultProps = {
   item: {
-    options: []
+    options: [],
   },
   smallSize: false,
   history: {},
   userAnswer: [],
   fillSections: () => {},
   cleanSections: () => {},
-  flowLayout: false
-};
+  flowLayout: false,
+}
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction, changeView: changePreviewAction }
-  )
-);
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+    changeView: changePreviewAction,
+  })
+)
 
-const CodingContainer = enhance(Coding);
+const CodingContainer = enhance(Coding)
 
-export { CodingContainer as Coding };
+export { CodingContainer as Coding }

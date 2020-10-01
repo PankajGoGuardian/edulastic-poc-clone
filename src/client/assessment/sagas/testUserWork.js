@@ -1,62 +1,68 @@
-import { takeLatest, call, all, select, put } from "redux-saga/effects";
-import { testItemActivityApi, attchmentApi } from "@edulastic/api";
-import * as Sentry from "@sentry/browser";
-import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
+import { takeLatest, call, all, select, put } from 'redux-saga/effects'
+import { testItemActivityApi, attchmentApi } from '@edulastic/api'
+import * as Sentry from '@sentry/browser'
+import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import {
   SAVE_TEST_LEVEL_USER_WORK,
   SAVE_TESTLET_LOG,
   SAVE_TESTLET_LOG_SUCCESS,
-  SAVE_TESTLET_LOG_FAILURE
-} from "../constants/actions";
+  SAVE_TESTLET_LOG_FAILURE,
+} from '../constants/actions'
 
 function* saveTestletState() {
   try {
-    const userTestActivityId = yield select(state => state.test && state.test.testActivityId);
-    const _testUserWork = yield select(({ testUserWork }) => testUserWork[userTestActivityId]);
-    const groupId = yield select(getCurrentGroupWithAllClasses);
+    const userTestActivityId = yield select(
+      (state) => state.test && state.test.testActivityId
+    )
+    const _testUserWork = yield select(
+      ({ testUserWork }) => testUserWork[userTestActivityId]
+    )
+    const groupId = yield select(getCurrentGroupWithAllClasses)
     if (_testUserWork && userTestActivityId) {
       yield call(testItemActivityApi.updateUserWorkTestLevel, {
         testActivityId: userTestActivityId,
         groupId,
-        userWork: _testUserWork
-      });
+        userWork: _testUserWork,
+      })
     }
   } catch (error) {
-    console.log(error);
-    Sentry.captureException(error);
+    console.log(error)
+    Sentry.captureException(error)
   }
 }
 
 function* saveTestletLog({ payload }) {
   try {
-    const userTestActivityId = yield select(state => state.test && state.test.testActivityId);
-    const userId = yield select(state => state?.user?.user?._id);
+    const userTestActivityId = yield select(
+      (state) => state.test && state.test.testActivityId
+    )
+    const userId = yield select((state) => state?.user?.user?._id)
     if (userTestActivityId) {
       const result = yield call(attchmentApi.saveAttachment, {
-        type: "TESTLETLOG",
-        referrerType: "TESTLET",
+        type: 'TESTLETLOG',
+        referrerType: 'TESTLET',
         referrerId: userTestActivityId,
         data: payload,
         userId,
-        status: "Attempted"
-      });
+        status: 'Attempted',
+      })
       yield put({
         type: SAVE_TESTLET_LOG_SUCCESS,
-        payload: result
-      });
+        payload: result,
+      })
     }
   } catch (error) {
-    Sentry.captureException(error);
+    Sentry.captureException(error)
     yield put({
       type: SAVE_TESTLET_LOG_FAILURE,
-      payload: error
-    });
+      payload: error,
+    })
   }
 }
 
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_TEST_LEVEL_USER_WORK, saveTestletState),
-    yield takeLatest(SAVE_TESTLET_LOG, saveTestletLog)
-  ]);
+    yield takeLatest(SAVE_TESTLET_LOG, saveTestletLog),
+  ])
 }

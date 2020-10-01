@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button } from "antd";
-import { themeColor, white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Button } from 'antd'
+import { themeColor, white } from '@edulastic/colors'
 
 export const ThemeButton = styled(Button)`
   display: flex;
@@ -15,4 +15,4 @@ export const ThemeButton = styled(Button)`
     background: ${themeColor};
     border-color: ${themeColor};
   }
-`;
+`

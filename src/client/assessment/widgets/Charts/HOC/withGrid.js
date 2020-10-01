@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { withTheme } from "styled-components";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { withTheme } from 'styled-components'
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer } from '@edulastic/common'
 
-import { EDIT } from "../../../constants/constantsForQuestions";
-import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
-import { AxisLabel } from "../styled/AxisLabel";
+import { EDIT } from '../../../constants/constantsForQuestions'
+import AnnotationRnd from '../../../components/Annotations/AnnotationRnd'
+import { AxisLabel } from '../styled/AxisLabel'
 
-const withGrid = WrappedComponent => {
-  const hocComponent = props => {
+const withGrid = (WrappedComponent) => {
+  const hocComponent = (props) => {
     const {
       theme,
       name,
@@ -17,15 +17,18 @@ const withGrid = WrappedComponent => {
       view,
       item,
       setQuestionData,
-      showChartTitle
-    } = props;
+      showChartTitle,
+    } = props
 
-    const [barIsDragging, toggleBarDragging] = useState(false);
+    const [barIsDragging, toggleBarDragging] = useState(false)
 
     return (
-      <FlexContainer justifyContent="flex-start" style={{ background: theme.widgets.chart.bgColor, overflowX: "auto" }}>
+      <FlexContainer
+        justifyContent="flex-start"
+        style={{ background: theme.widgets.chart.bgColor, overflowX: 'auto' }}
+      >
         <AxisLabel axis="y">{yAxisLabel}</AxisLabel>
-        <div style={{ position: "relative" }}>
+        <div style={{ position: 'relative' }}>
           <AnnotationRnd
             question={item}
             setQuestionData={setQuestionData}
@@ -35,7 +38,10 @@ const withGrid = WrappedComponent => {
             onDoubleClick={() => toggleBarDragging(!barIsDragging)}
           />
           {showChartTitle && (
-            <FlexContainer style={{ width, marginBottom: 20 }} justifyContent="center">
+            <FlexContainer
+              style={{ width, marginBottom: 20 }}
+              justifyContent="center"
+            >
               {name}
             </FlexContainer>
           )}
@@ -43,8 +49,8 @@ const withGrid = WrappedComponent => {
           <AxisLabel>{xAxisLabel}</AxisLabel>
         </div>
       </FlexContainer>
-    );
-  };
+    )
+  }
 
   hocComponent.propTypes = {
     view: PropTypes.string.isRequired,
@@ -61,9 +67,9 @@ const withGrid = WrappedComponent => {
       yAxisMax: PropTypes.number,
       yAxisMin: PropTypes.number,
       stepSize: PropTypes.number,
-      snapTo: PropTypes.number
-    })
-  };
+      snapTo: PropTypes.number,
+    }),
+  }
 
   hocComponent.defaultProps = {
     showChartTitle: false,
@@ -74,11 +80,11 @@ const withGrid = WrappedComponent => {
       yAxisMax: 70,
       yAxisMin: 0,
       stepSize: 5,
-      snapTo: 5
-    }
-  };
+      snapTo: 5,
+    },
+  }
 
-  return withTheme(hocComponent);
-};
+  return withTheme(hocComponent)
+}
 
-export default withGrid;
+export default withGrid

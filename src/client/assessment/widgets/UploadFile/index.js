@@ -1,23 +1,29 @@
-import React, { useMemo, Fragment } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
-import { replaceVariables } from "../../utils/variables";
-import UploadFileEdit from "./components/UploadFileEdit";
-import UploadFilePreview from "./components/UploadFilePreview";
+import React, { useMemo, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { CLEAR, EDIT, PREVIEW } from '../../constants/constantsForQuestions'
+import { replaceVariables } from '../../utils/variables'
+import UploadFileEdit from './components/UploadFileEdit'
+import UploadFilePreview from './components/UploadFilePreview'
 
-const UploadFile = props => {
-  const { item, view } = props;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+const UploadFile = (props) => {
+  const { item, view } = props
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <Fragment>
+    <>
       {view === EDIT && <UploadFileEdit {...props} />}
-      {view === PREVIEW && <UploadFilePreview key={itemForPreview.id} {...props} item={itemForPreview} />}
-    </Fragment>
-  );
-};
+      {view === PREVIEW && (
+        <UploadFilePreview
+          key={itemForPreview.id}
+          {...props}
+          item={itemForPreview}
+        />
+      )}
+    </>
+  )
+}
 
 UploadFile.propTypes = {
   view: PropTypes.string.isRequired,
@@ -31,8 +37,8 @@ UploadFile.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 UploadFile.defaultProps = {
   previewTab: CLEAR,
@@ -40,13 +46,12 @@ UploadFile.defaultProps = {
   item: {},
   userAnswer: undefined,
   testItem: false,
-  evaluation: "",
+  evaluation: '',
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-export default connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(UploadFile);
+export default connect(null, { setQuestionData: setQuestionDataAction })(
+  UploadFile
+)

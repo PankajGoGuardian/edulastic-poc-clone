@@ -1,9 +1,13 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconLock = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.828 16.827" {...props}>
+const IconLock = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 17.828 16.827"
+    {...props}
+  >
     <g transform="translate(15.576 -32.657)">
       <g transform="translate(-14.661 33.549)">
         <path
@@ -28,11 +32,11 @@ const IconLock = props => (
         transform="translate(-14.162 34.07)"
         fill="none"
         stroke="#9d9fa1"
-        stroke-linecap="round"
-        stroke-width="2"
+        strokeLinecap="round"
+        strokeWidth="2"
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconLock);
+export default withIconStyles(IconLock)

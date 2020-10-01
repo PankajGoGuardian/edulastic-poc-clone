@@ -1,26 +1,36 @@
-import { Button } from "antd";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import React from "react";
-import { withNamespaces } from "@edulastic/localization";
+import { Button } from 'antd'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import React from 'react'
+import { withNamespaces } from '@edulastic/localization'
 
 // actions
-import { setFilterAction } from "../../sharedDucks/ReportsModule/ducks";
-import { filterSelector, FILTERS, assignmentsCountByFilerNameSelector } from "../ducks";
+import { setFilterAction } from '../../sharedDucks/ReportsModule/ducks'
+import {
+  filterSelector,
+  FILTERS,
+  assignmentsCountByFilerNameSelector,
+} from '../ducks'
 
 // components
-import Breadcrumb from "../../sharedComponents/Breadcrumb";
+import Breadcrumb from '../../sharedComponents/Breadcrumb'
 
 // styled components
-import { BreadcrumbWrapper } from "../../styled";
-import { setStatusBgColor } from "../../utils";
+import { BreadcrumbWrapper } from '../../styled'
+import { setStatusBgColor } from '../../utils'
 
-const breadcrumbData = [{ title: "GRADES", to: "" }];
+const breadcrumbData = [{ title: 'GRADES', to: '' }]
 
-const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsCountByFilerName }) => {
-  const filterItems = Object.keys(FILTERS);
+const AssignmentSubHeader = ({
+  t,
+  setFilter,
+  filter,
+  selectedTheme,
+  assignmentsCountByFilerName,
+}) => {
+  const filterItems = Object.keys(FILTERS)
 
   const Filter = ({ value }) => (
     <FilterBtn
@@ -32,7 +42,7 @@ const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsC
     >
       {assignmentsCountByFilerName[value]}&nbsp;{t(FILTERS[value])}
     </FilterBtn>
-  );
+  )
 
   return (
     <BreadcrumbWrapper>
@@ -42,30 +52,30 @@ const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsC
         ))}
       </StatusBtnsContainer>
     </BreadcrumbWrapper>
-  );
-};
+  )
+}
 
 const enhance = compose(
-  withNamespaces("default"),
+  withNamespaces('default'),
   connect(
-    state => ({
+    (state) => ({
       filter: filterSelector(state),
       selectedTheme: state.ui.selectedTheme,
-      assignmentsCountByFilerName: assignmentsCountByFilerNameSelector(state)
+      assignmentsCountByFilerName: assignmentsCountByFilerNameSelector(state),
     }),
     {
-      setFilter: setFilterAction
+      setFilter: setFilterAction,
     }
   )
-);
+)
 
-export default enhance(AssignmentSubHeader);
+export default enhance(AssignmentSubHeader)
 
 AssignmentSubHeader.propTypes = {
   t: PropTypes.func.isRequired,
   filter: PropTypes.string.isRequired,
-  setFilter: PropTypes.func.isRequired
-};
+  setFilter: PropTypes.func.isRequired,
+}
 
 const StatusBtnsContainer = styled.div`
   @media screen and (max-width: 768px) {
@@ -75,41 +85,46 @@ const StatusBtnsContainer = styled.div`
     flex-direction: row;
     overflow: auto;
   }
-`;
+`
 
 const FilterBtn = styled(Button)`
   min-height: 24px;
   height: auto;
-  color: ${props =>
+  color: ${(props) =>
     props.enabled
       ? props.theme.headerFilters.headerSelectedFilterTextColor
       : props.theme.headerFilters.headerFilterTextColor};
   border: 1px solid
-    ${props => (props.enabled ? setStatusBgColor(props) : props.theme.headerFilters.headerFilterBgBorderColor)};
+    ${(props) =>
+      props.enabled
+        ? setStatusBgColor(props)
+        : props.theme.headerFilters.headerFilterBgBorderColor};
   border-radius: 4px;
   margin-left: 10px;
   min-width: 85px;
-  font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
-  background: ${props => setStatusBgColor(props)};
+  font-size: ${(props) => props.theme.headerFilters.headerFilterTextSize};
+  background: ${(props) => setStatusBgColor(props)};
   &:focus,
   &:active {
-    color: ${props =>
+    color: ${(props) =>
       props.enabled
         ? props.theme.headerFilters.headerSelectedFilterTextColor
         : props.theme.headerFilters.headerFilterTextColor};
-    background: ${props => setStatusBgColor(props)};
+    background: ${(props) => setStatusBgColor(props)};
   }
   &:hover {
-    color: ${props => props.theme.headerFilters.headerFilterTextHoverColor};
-    background: ${props => props.theme.headerFilters.headerFilterBgBorderHoverColor};
-    border-color: ${props => props.theme.headerFilters.headerFilterBgBorderHoverColor};
+    color: ${(props) => props.theme.headerFilters.headerFilterTextHoverColor};
+    background: ${(props) =>
+      props.theme.headerFilters.headerFilterBgBorderHoverColor};
+    border-color: ${(props) =>
+      props.theme.headerFilters.headerFilterBgBorderHoverColor};
   }
   span {
-    font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
+    font-size: ${(props) => props.theme.headerFilters.headerFilterTextSize};
     font-weight: 600;
   }
   @media screen and (max-width: 768px) {
     margin: 5px 10px 0px 0px;
     min-width: auto;
   }
-`;
+`

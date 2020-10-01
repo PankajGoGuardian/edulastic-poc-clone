@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import AxisImage from "../../../assets/axis.png";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import AxisImage from '../../../assets/axis.png'
 
 const Container = styled.div`
   width: 100%;
@@ -10,7 +10,7 @@ const Container = styled.div`
   padding: 0;
   display: flex;
   flex-direction: column;
-`;
+`
 
 const Top = styled.div`
   width: 100%;
@@ -19,7 +19,7 @@ const Top = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
+`
 
 const Bottom = styled.div`
   width: 100%;
@@ -27,10 +27,11 @@ const Bottom = styled.div`
   background-color: #efefef;
   display: flex;
   flex-direction: row;
-  justify-content: ${props => (props.justifyContent ? props.justifyContent : "space-between")};
+  justify-content: ${(props) =>
+    props.justifyContent ? props.justifyContent : 'space-between'};
   align-items: center;
   padding: 0 24px;
-`;
+`
 
 const UnderAxis = styled.div`
   width: 100%;
@@ -38,28 +39,28 @@ const UnderAxis = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-`;
+`
 
 const Segment = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: ${props => (props.marginTop ? props.marginTop : 0)}px;
-`;
+  margin-top: ${(props) => (props.marginTop ? props.marginTop : 0)}px;
+`
 
 const Circle = styled.div`
-  width: ${props => props.diameter}px;
-  height: ${props => props.diameter}px;
-  background: ${props => (props.bgColor ? props.bgColor : "transparent")};
-  border: 2px solid ${props => props.color};
+  width: ${(props) => props.diameter}px;
+  height: ${(props) => props.diameter}px;
+  background: ${(props) => (props.bgColor ? props.bgColor : 'transparent')};
+  border: 2px solid ${(props) => props.color};
   border-radius: 50%;
-`;
+`
 
 const Line = styled.div`
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
-  background: ${props => props.color};
-`;
+  width: ${(props) => props.width}px;
+  height: ${(props) => props.height}px;
+  background: ${(props) => props.color};
+`
 
 const Label = styled.div`
   font-size: 11px;
@@ -73,12 +74,12 @@ const Label = styled.div`
   background: #ffffff;
   border: 1px solid #efefef;
   border-radius: 5px;
-  padding: ${props => props.padding};
-`;
+  padding: ${(props) => props.padding};
+`
 
 class AxisSmallSize extends Component {
   render() {
-    const { labels, segments } = this.props;
+    const { labels, segments } = this.props
     return (
       <Container>
         <Top>
@@ -137,18 +138,18 @@ class AxisSmallSize extends Component {
           </Bottom>
         )}
       </Container>
-    );
+    )
   }
 }
 
 AxisSmallSize.propTypes = {
   labels: PropTypes.bool,
-  segments: PropTypes.bool
-};
+  segments: PropTypes.bool,
+}
 
 AxisSmallSize.defaultProps = {
   labels: false,
-  segments: false
-};
+  segments: false,
+}
 
-export default AxisSmallSize;
+export default AxisSmallSize

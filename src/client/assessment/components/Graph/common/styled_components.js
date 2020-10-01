@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import TextareaAutosize from "react-autosize-textarea";
+import styled from 'styled-components'
+import TextareaAutosize from 'react-autosize-textarea'
 import {
   greenDark,
   grey,
@@ -8,27 +8,28 @@ import {
   secondaryTextColor,
   mobileWidthMax,
   themeColor,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
-import { TextField } from "@edulastic/common";
-import { StyledPaperWrapper } from "../../../styled/Widget";
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
+import { TextField } from '@edulastic/common'
+import { StyledPaperWrapper } from '../../../styled/Widget'
 
 export const GraphContainer = styled.div`
   & .__prevent-page-break {
     width: 100%;
   }
-`;
+`
 
-const createStandardTextSet = element => styled(element)`
-  font-size: ${({ theme }) => theme?.common?.smallFontSize || "12px"};
+const createStandardTextSet = (element) => styled(element)`
+  font-size: ${({ theme }) => theme?.common?.smallFontSize || '12px'};
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => {
-      const fontSize = props?.fontSize || `${props?.theme?.common?.standardFont || "14px"}`;
-      return fontSize;
+    font-size: ${(props) => {
+      const fontSize =
+        props?.fontSize || `${props?.theme?.common?.standardFont || '14px'}`
+      return fontSize
     }};
   }
-`;
+`
 
 export const InstructorStimulus = styled.p`
   border-radius: 3px;
@@ -36,7 +37,7 @@ export const InstructorStimulus = styled.p`
   margin-bottom: 15px;
   font-size: 18px;
   background: ${grey};
-`;
+`
 
 export const StyledTextarea = styled(TextareaAutosize)`
   margin-top: 15px;
@@ -57,7 +58,7 @@ export const StyledTextarea = styled(TextareaAutosize)`
   &.big {
     min-height: 135px;
   }
-`;
+`
 
 export const Subtitle = styled.div`
   color: ${secondaryTextColor};
@@ -69,30 +70,31 @@ export const Subtitle = styled.div`
   line-height: 1.36;
   letter-spacing: normal;
   text-align: left;
-`;
+`
 
 export const StyledTextField = createStandardTextSet(styled(TextField)`
-  width: ${props => (props.width ? `${props.width}` : "100px")};
+  width: ${(props) => (props.width ? `${props.width}` : '100px')};
   padding: 5px 15px;
-  margin-right: ${props => (props.marginRight ? props.marginRight : "3em")};
+  margin-right: ${(props) => (props.marginRight ? props.marginRight : '3em')};
   height: 40px;
-  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "1em")};
+  margin-bottom: ${(props) =>
+    props.marginBottom ? props.marginBottom : '1em'};
   border-radius: 4px;
-`);
+`)
 
 export const LineInput = styled(TextField)`
   width: 100px;
   text-align: center;
   margin-right: 25px;
   height: 50px;
-`;
+`
 
 export const Label = createStandardTextSet(styled.label`
   display: block;
   margin-right: 0.7em;
   margin-bottom: 0.7em;
   font-weight: 600;
-`);
+`)
 
 export const ToolSubTitle = createStandardTextSet(styled.span`
   display: flex;
@@ -105,14 +107,14 @@ export const ToolSubTitle = createStandardTextSet(styled.span`
   font-weight: 600;
   margin-bottom: 9px;
   letter-spacing: 0.2px;
-`);
+`)
 
 export const SelectWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-`;
+`
 
 export const GraphToolsParamsWrapper = styled.div`
   width: 100%;
@@ -121,18 +123,18 @@ export const GraphToolsParamsWrapper = styled.div`
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-`;
+`
 
 export const AddToolBtnWrapper = styled.div`
   width: 100%;
   margin-top: 14px;
-`;
+`
 
 export const ToolSelect = styled.div`
   & + & {
     margin-top: 17px;
   }
-`;
+`
 
 export const Container = styled.div`
   display: flex;
@@ -144,14 +146,14 @@ export const Container = styled.div`
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
   }
-`;
+`
 
 export const MoreOptionsContainer = styled(Container)`
   width: 100%;
   padding: 33px 0 0 0;
   align-items: flex-start;
   flex-direction: column;
-`;
+`
 
 export const ContainerStart = styled.div`
   display: flex;
@@ -161,12 +163,12 @@ export const ContainerStart = styled.div`
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
   }
-`;
+`
 
 export const LineParameter = styled.div`
   display: block;
   width: 50%;
-`;
+`
 
 export const TitleTextInput = styled.input`
   width: 100%;
@@ -177,7 +179,7 @@ export const TitleTextInput = styled.input`
   border: 1px solid #dfdfdf;
   color: #7a7a7a;
   background-color: transparent;
-`;
+`
 
 export const StyledDragHandle = styled.div`
   width: 50px;
@@ -193,27 +195,27 @@ export const StyledDragHandle = styled.div`
     height: 16px;
     width: 16px;
   }
-`;
+`
 
 export const QuestionTitleWrapper = styled.div`
-  font-size: ${props => props.theme.fontSize};
+  font-size: ${(props) => props.theme.fontSize};
   display: flex;
   align-items: baseline;
-`;
+`
 
 export const Item = styled.div`
   width: 100%;
   display: flex;
   align-items: stretch;
   margin-right: 15px;
-`;
+`
 
 export const MoreOptions = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
-`;
+`
 
 export const MoreOptionsHeading = createStandardTextSet(styled.div`
   width: 100%;
@@ -224,7 +226,7 @@ export const MoreOptionsHeading = createStandardTextSet(styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-`);
+`)
 
 export const MoreOptionsToggler = styled.div`
   width: 18.9px;
@@ -234,21 +236,21 @@ export const MoreOptionsToggler = styled.div`
   :hover {
     background-color: ${greenDarkSecondary};
   }
-`;
+`
 
 export const MoreOptionsColumnContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-`;
+`
 
 export const MoreOptionsColumn = styled.div`
   width: 50%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-`;
+`
 
 export const MoreOptionsRow = styled.div`
   width: 100%;
@@ -256,7 +258,7 @@ export const MoreOptionsRow = styled.div`
   flex-direction: column;
   align-items: flex-start;
   margin-top: 30px;
-`;
+`
 
 export const MoreOptionsRowInline = styled.div`
   width: 100%;
@@ -265,7 +267,7 @@ export const MoreOptionsRowInline = styled.div`
   align-items: center;
   justify-content: flex-start;
   margin-top: 16px;
-`;
+`
 
 export const MoreOptionsSubHeading = styled.div`
   color: ${secondaryTextColor};
@@ -283,17 +285,17 @@ export const MoreOptionsSubHeading = styled.div`
   // margin: 2px 0;
   // font-weight: 600;
   // line-height: 1.36;
-`;
+`
 
 export const MoreOptionsLabel = createStandardTextSet(styled.div`
   color: ${secondaryTextColor};
   font-weight: 600;
   line-height: 1.38;
-`);
+`)
 
 export const MoreOptionsLabelInline = styled(MoreOptionsLabel)`
   width: auto;
-`;
+`
 
 export const MoreOptionsInput = createStandardTextSet(styled.input`
   width: 100%;
@@ -306,37 +308,37 @@ export const MoreOptionsInput = createStandardTextSet(styled.input`
   background-color: #fff;
   font-weight: 600;
   line-height: 1.38;
-`);
+`)
 
 export const MoreOptionsInputSmall = styled(MoreOptionsInput)`
   width: 7em;
   margin: 0;
   padding: 0 5px 0 20px;
   text-align: center;
-`;
+`
 
 export const SelectContainer = styled.div`
   position: relative;
-  width: ${props => (props.width ? `${props.width}px` : "100%")};
-  height: ${props => (props.height ? `${props.height}px` : "58px")};
+  width: ${(props) => (props.width ? `${props.width}px` : '100%')};
+  height: ${(props) => (props.height ? `${props.height}px` : '58px')};
 
   &:before {
     position: absolute;
-    font-family: "FontAwesome";
+    font-family: 'FontAwesome';
     top: 0;
     right: 25px;
     display: flex;
     align-items: center;
     height: 100%;
     color: ${themeColor};
-    content: "\f0d7";
+    content: '\f0d7';
   }
 
   @media (max-width: 760px) {
     height: 52px;
     width: 188px;
   }
-`;
+`
 
 export const Select = createStandardTextSet(styled.select`
   padding: 1em 2em;
@@ -344,60 +346,64 @@ export const Select = createStandardTextSet(styled.select`
   height: 100%;
   box-sizing: border-box;
   border-radius: 5px;
-  background-color: ${props => props.theme.widgets.assessmentPlayers.selectBgColor};
+  background-color: ${(props) =>
+    props.theme.widgets.assessmentPlayers.selectBgColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  color: ${props => props.theme.widgets.assessmentPlayers.selectTextColor};
+  color: ${(props) => props.theme.widgets.assessmentPlayers.selectTextColor};
   border: none;
   outline: none;
   -webkit-appearance: none;
-`);
+`)
 
 export const MoreOptionsDivider = styled.div`
   width: 100%;
   height: 1px;
   padding: 0;
   margin-top: 48px;
-  background-color: ${props => (props.backgroundColor ? props.backgroundColor : grey)};
-`;
+  background-color: ${(props) =>
+    props.backgroundColor ? props.backgroundColor : grey};
+`
 
 export const Row = styled.div`
   display: flex;
   align-items: flex-start;
-  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "15px")};
+  margin-bottom: ${(props) =>
+    props.marginBottom ? props.marginBottom : '15px'};
   flex-wrap: wrap;
 
   &:last-child {
     margin-bottom: 0;
   }
-`;
+`
 
 export const Col = styled.div`
   display: flex;
   flex-direction: column;
-  padding-right: ${props => (props.paddingRight ? props.paddingRight : "0")};
-  padding-left: ${props => (props.paddingLeft ? props.paddingLeft : "0")};
-  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "0")}px;
+  padding-right: ${(props) => (props.paddingRight ? props.paddingRight : '0')};
+  padding-left: ${(props) => (props.paddingLeft ? props.paddingLeft : '0')};
+  margin-bottom: ${(props) =>
+    props.marginBottom ? props.marginBottom : '0'}px;
   width: ${({ md }) => (100 / 12) * md}%;
   display: block;
-`;
+`
 
 export const PaperWrapper = styled(StyledPaperWrapper)`
-  padding: ${props =>
+  padding: ${(props) =>
     props.flowLayout
-      ? "0px"
+      ? '0px'
       : props.isV1Multipart
-      ? "0px 35px"
+      ? '0px 35px'
       : props.isStudentReport
-      ? "20px 100px 20px 20px"
-      : "35px"};
+      ? '20px 100px 20px 20px'
+      : '35px'};
   min-width: ${({ style }) => style.minWidth};
   ${({ style }) => style};
 
   @media (max-width: ${mobileWidthMax}) {
-    padding: ${({ flowLayout }) => (flowLayout ? "0px" : "20px;")};
+    padding: ${({ flowLayout }) => (flowLayout ? '0px' : '20px;')};
     margin-bottom: 15px;
   }
-`;
+`
 
 export const GraphToolbar = createStandardTextSet(styled.div`
   box-sizing: border-box;
@@ -406,7 +412,7 @@ export const GraphToolbar = createStandardTextSet(styled.div`
   display: flex;
   justify-content: flex-end;
   padding: 0 0 10px 0;
-  font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
+  font-size: ${(props) => (props.fontSize ? props.fontSize : 14)}px;
 
   ul {
     list-style: none;
@@ -415,7 +421,7 @@ export const GraphToolbar = createStandardTextSet(styled.div`
   ul li {
     margin: 5px 5px 0 0;
   }
-`);
+`)
 
 export const ToolbarLeft = styled.ul`
   display: flex;
@@ -425,7 +431,7 @@ export const ToolbarLeft = styled.ul`
   flex-wrap: wrap;
   margin: 0;
   padding: 0;
-`;
+`
 
 export const ToolbarRight = styled.ul`
   display: flex;
@@ -436,7 +442,7 @@ export const ToolbarRight = styled.ul`
   li:last-child {
     margin: 5px 0 0 0;
   }
-`;
+`
 
 export const ToolbarItem = styled.div`
   width: 100%;
@@ -449,29 +455,29 @@ export const ToolbarItem = styled.div`
   svg {
     margin-bottom: 4px;
   }
-`;
+`
 
 export const ToolbarItemLabel = styled.span`
   font-weight: 600;
   text-transform: uppercase;
-  font-size: ${({ fontSize }) => fontSize || "10px"};
+  font-size: ${({ fontSize }) => fontSize || '10px'};
   line-height: 1;
-`;
+`
 
 export const ToolbarItemIcon = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  margin-bottom: ${({ mb }) => mb || "4px"};
-`;
+  margin-bottom: ${({ mb }) => mb || '4px'};
+`
 
 export const ToolBtn = styled.li`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props => props.theme.containerWhite};
+  background-color: ${(props) => props.theme.containerWhite};
   color: ${({ theme }) => theme.questionTextColor};
   cursor: pointer;
   display: inline-block;
@@ -480,9 +486,9 @@ export const ToolBtn = styled.li`
   user-select: none;
   border-radius: 4px;
   border: 1px solid #878a91;
-  z-index: ${({ zIndex }) => zIndex || ""};
-  width: ${({ width }) => width || ""};
-  height: ${({ height }) => height || ""};
+  z-index: ${({ zIndex }) => zIndex || ''};
+  width: ${({ width }) => width || ''};
+  height: ${({ height }) => height || ''};
 
   > ${ToolbarItem} {
     svg {
@@ -496,14 +502,14 @@ export const ToolBtn = styled.li`
   &:active,
   &.active {
     background-color: #878a91;
-    color: ${props => props.theme.containerWhite};
+    color: ${(props) => props.theme.containerWhite};
     border: none;
 
     > ${ToolbarItem} {
       svg {
-        color: ${props => props.theme.containerWhite};
-        stroke: ${props => props.theme.containerWhite};
-        fill: ${props => props.theme.containerWhite};
+        color: ${(props) => props.theme.containerWhite};
+        stroke: ${(props) => props.theme.containerWhite};
+        fill: ${(props) => props.theme.containerWhite};
       }
     }
   }
@@ -512,32 +518,38 @@ export const ToolBtn = styled.li`
   &.active {
     box-shadow: none;
   }
-`;
+`
 
 export const Popup = styled.div`
   position: absolute;
-  transform: ${props => (props.bottom ? "translate(-50%, 0)" : "none")};
-  left: ${props => (props.right ? "calc(100% + 20px)" : props.bottom ? "50%" : "unset")};
-  right: ${props => (props.left ? "calc(100% + 20px)" : "unset")};
-  top: ${props => (props.bottom ? "calc(100% + 20px)" : 0)};
+  transform: ${(props) => (props.bottom ? 'translate(-50%, 0)' : 'none')};
+  left: ${(props) =>
+    props.right ? 'calc(100% + 20px)' : props.bottom ? '50%' : 'unset'};
+  right: ${(props) => (props.left ? 'calc(100% + 20px)' : 'unset')};
+  top: ${(props) => (props.bottom ? 'calc(100% + 20px)' : 0)};
   box-shadow: 2px 2px 8px #939495bf;
   border-radius: 6px;
   cursor: default;
   z-index: 10;
 
   :before {
-    content: "";
+    content: '';
     position: absolute;
     transform: rotate(45deg);
     border-radius: 4px;
     height: 20px;
     width: 20px;
-    top: ${props => (props.bottom ? "-2px" : "10px")};
-    left: ${props => (props.right ? "-2px" : props.bottom ? "calc(50% - 10px)" : "calc(100% - 18px)")};
-    background: ${props => props.theme.containerWhite};
+    top: ${(props) => (props.bottom ? '-2px' : '10px')};
+    left: ${(props) =>
+      props.right
+        ? '-2px'
+        : props.bottom
+        ? 'calc(50% - 10px)'
+        : 'calc(100% - 18px)'};
+    background: ${(props) => props.theme.containerWhite};
     box-shadow: 2px -1px 5px #939495bf;
   }
-`;
+`
 
 export const Overlay = styled.div`
   position: fixed;
@@ -545,14 +557,14 @@ export const Overlay = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-`;
+`
 
 export const PopupContent = styled.div`
   position: relative;
-  background: ${props => props.theme.containerWhite};
+  background: ${(props) => props.theme.containerWhite};
   border-radius: 6px;
   font-size: 14px;
-`;
+`
 
 export const PopupToolsContainer = styled.div`
   padding: 20px;
@@ -563,4 +575,4 @@ export const PopupToolsContainer = styled.div`
   ${ToolBtn} {
     margin: 0;
   }
-`;
+`

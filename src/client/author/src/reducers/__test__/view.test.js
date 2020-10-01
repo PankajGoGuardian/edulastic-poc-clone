@@ -1,51 +1,51 @@
-import viewReducer from "../view";
+import viewReducer from '../view'
 
-import { CHANGE_VIEW, CHANGE_PREVIEW } from "../../constants/actions";
+import { CHANGE_VIEW, CHANGE_PREVIEW } from '../../constants/actions'
 
-describe("view", () => {
+describe('view', () => {
   const initialState = {
-    view: "edit",
-    preview: "clear",
-    showAnswers: false
-  };
+    view: 'edit',
+    preview: 'clear',
+    showAnswers: false,
+  }
 
-  it("should return the initial state", () => {
-    expect(viewReducer(initialState, {})).toMatchSnapshot();
-  });
+  it('should return the initial state', () => {
+    expect(viewReducer(initialState, {})).toMatchSnapshot()
+  })
 
-  it("should return the change view state1", () => {
+  it('should return the change view state1', () => {
     expect(
       viewReducer(initialState, {
         type: CHANGE_VIEW,
-        payload: { view: "edit" }
+        payload: { view: 'edit' },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the change view state2", () => {
+  it('should return the change view state2', () => {
     expect(
       viewReducer(initialState, {
         type: CHANGE_VIEW,
-        payload: { view: "preview" }
+        payload: { view: 'preview' },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the change preview state1", () => {
+  it('should return the change preview state1', () => {
     expect(
       viewReducer(initialState, {
         type: CHANGE_PREVIEW,
-        payload: { view: "clear" }
+        payload: { view: 'clear' },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the change preview state2", () => {
+  it('should return the change preview state2', () => {
     expect(
       viewReducer(initialState, {
         type: CHANGE_PREVIEW,
-        payload: { view: "check" }
+        payload: { view: 'check' },
       })
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})

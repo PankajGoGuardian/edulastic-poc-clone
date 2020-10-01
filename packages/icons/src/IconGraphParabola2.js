@@ -1,14 +1,35 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconGraphParabola2 = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="42" height="26.882" viewBox="0 0 42 26.882" {...props}>
+const IconGraphParabola2 = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="42"
+    height="26.882"
+    viewBox="0 0 42 26.882"
+    {...props}
+  >
     <g transform="translate(1 1.281)">
-      <path d="M3,0A3,3,0,1,1,0,3,3,3,0,0,1,3,0Z" transform="translate(8.313 17.405) rotate(30)" />
-      <path d="M3,0A3,3,0,1,1,0,3,3,3,0,0,1,3,0Z" transform="translate(29.313 17.405) rotate(30)" />
-      <path d="M3,0A3,3,0,1,1,0,3,3,3,0,0,1,3,0Z" transform="translate(19.313 2.405) rotate(30)" />
-      <path d="M0,0H40" transform="translate(0 21.259)" fill="none" strokeLinecap="round" strokeWidth="2" />
+      <path
+        d="M3,0A3,3,0,1,1,0,3,3,3,0,0,1,3,0Z"
+        transform="translate(8.313 17.405) rotate(30)"
+      />
+      <path
+        d="M3,0A3,3,0,1,1,0,3,3,3,0,0,1,3,0Z"
+        transform="translate(29.313 17.405) rotate(30)"
+      />
+      <path
+        d="M3,0A3,3,0,1,1,0,3,3,3,0,0,1,3,0Z"
+        transform="translate(19.313 2.405) rotate(30)"
+      />
+      <path
+        d="M0,0H40"
+        transform="translate(0 21.259)"
+        fill="none"
+        strokeLinecap="round"
+        strokeWidth="2"
+      />
 
       <path
         d="M7439.473,1543.67s5.881,16.224,14.934,15.982,14.33-15.982,14.33-15.982"
@@ -38,6 +59,6 @@ const IconGraphParabola2 = props => (
       */}
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconGraphParabola2);
+export default withIconStyles(IconGraphParabola2)

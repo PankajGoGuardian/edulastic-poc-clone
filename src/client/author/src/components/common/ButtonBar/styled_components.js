@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import {
   smallMobileWidth,
   white,
@@ -6,9 +6,9 @@ import {
   desktopWidth,
   secondaryTextColor,
   greyThemeDark2,
-  mediumDesktopExactWidth
-} from "@edulastic/colors";
-import { Button, Menu, Dropdown } from "antd";
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import { Button, Menu, Dropdown } from 'antd'
 
 export const Container = styled.div`
   display: flex;
@@ -20,29 +20,29 @@ export const Container = styled.div`
     height: 62px;
     display: flex;
   }
-`;
+`
 
-export const CustomButton = styled(Button)``;
+export const CustomButton = styled(Button)``
 
 export const MobileContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
+`
 
 export const MobileBottom = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   overflow-x: auto;
-`;
+`
 
 export const MobileSecondContainer = styled.div`
   display: none;
   justify-content: space-between;
   text-align: left;
   margin-bottom: 10px;
-`;
+`
 
 export const PreviewBar = styled.div`
   display: flex;
@@ -54,17 +54,17 @@ export const PreviewBar = styled.div`
     height: 24px;
     margin-left: 17px;
   }
-`;
+`
 
 export const StyledButton = styled.div`
   margin-right: 10px;
   margin-bottom: 10px;
-`;
+`
 
 export const HeadIcon = styled.div`
-  margin-top: ${props => props.mt || "4px"};
-  margin-right: ${props => props.mr || "10px"};
-`;
+  margin-top: ${(props) => props.mt || '4px'};
+  margin-right: ${(props) => props.mr || '10px'};
+`
 
 export const RightSide = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ export const RightSide = styled.div`
     right: 20px;
     top: 10px;
   }
-`;
+`
 
 export const MobileTopRight = styled.div`
   .btn-save {
@@ -100,7 +100,7 @@ export const MobileTopRight = styled.div`
       margin: 0px;
     }
   }
-`;
+`
 
 export const RightDropdown = styled(Dropdown)`
   display: flex;
@@ -117,7 +117,7 @@ export const RightDropdown = styled(Dropdown)`
       fill: ${white};
     }
   }
-`;
+`
 
 export const DropMenuList = styled(Menu)`
   width: 200px;
@@ -145,7 +145,7 @@ export const DropMenuList = styled(Menu)`
       }
     }
   }
-`;
+`
 
 export const MenuList = styled(Menu)`
   margin: 0px 10px;
@@ -161,7 +161,7 @@ export const MenuList = styled(Menu)`
   @media (max-width: ${smallMobileWidth}) {
     width: unset;
   }
-`;
+`
 
 export const MenuItem = styled.li`
   display: flex;
@@ -212,4 +212,4 @@ export const MenuItem = styled.li`
   @media (max-width: ${desktopWidth}) {
     flex-basis: 50%;
   }
-`;
+`

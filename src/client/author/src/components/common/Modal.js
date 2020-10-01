@@ -1,17 +1,30 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { FaTimes } from "react-icons/fa";
-import { white, themeColor, mobileWidth, boxShadowDefault } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { Button } from "@edulastic/common";
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { FaTimes } from 'react-icons/fa'
+import {
+  white,
+  themeColor,
+  mobileWidth,
+  boxShadowDefault,
+} from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
+import { Button } from '@edulastic/common'
 
-const modalRoot = document.getElementById("modal-root");
+const modalRoot = document.getElementById('modal-root')
 
 class Modal extends Component {
   render() {
-    const { onClose, onApply, title, children, t, cancelLabel, applyLabel } = this.props;
+    const {
+      onClose,
+      onApply,
+      title,
+      children,
+      t,
+      cancelLabel,
+      applyLabel,
+    } = this.props
 
     return ReactDOM.createPortal(
       <Container>
@@ -25,17 +38,26 @@ class Modal extends Component {
           </Header>
           {children}
           <Footer>
-            <StyledCancelButton onClick={onClose} variant="extendedFab" style={{ width: "40%" }}>
-              {cancelLabel || t("component.common.modal.cancel")}
+            <StyledCancelButton
+              onClick={onClose}
+              variant="extendedFab"
+              style={{ width: '40%' }}
+            >
+              {cancelLabel || t('component.common.modal.cancel')}
             </StyledCancelButton>
-            <Button onClick={onApply} variant="extendedFab" color="primary" style={{ width: "40%" }}>
-              {applyLabel || t("component.common.modal.apply")}
+            <Button
+              onClick={onApply}
+              variant="extendedFab"
+              color="primary"
+              style={{ width: '40%' }}
+            >
+              {applyLabel || t('component.common.modal.apply')}
             </Button>
           </Footer>
         </Content>
       </Container>,
       modalRoot
-    );
+    )
   }
 }
 
@@ -46,15 +68,15 @@ Modal.propTypes = {
   title: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   cancelLabel: PropTypes.string,
-  applyLabel: PropTypes.string
-};
+  applyLabel: PropTypes.string,
+}
 
 Modal.defaultProps = {
   cancelLabel: undefined,
-  applyLabel: undefined
-};
+  applyLabel: undefined,
+}
 
-export default withNamespaces("author")(Modal);
+export default withNamespaces('author')(Modal)
 
 const Container = styled.div`
   position: fixed;
@@ -66,7 +88,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1;
-`;
+`
 
 const Content = styled.div`
   position: absolute;
@@ -81,7 +103,7 @@ const Content = styled.div`
     width: 100%;
     min-width: 100%;
   }
-`;
+`
 
 const BackDoor = styled.div`
   position: fixed;
@@ -93,7 +115,7 @@ const BackDoor = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 100;
-`;
+`
 
 const Header = styled.div`
   display: flex;
@@ -103,7 +125,7 @@ const Header = styled.div`
   font-size: 22px;
   font-weight: 700;
   position: relative;
-`;
+`
 
 const Close = styled.div`
   position: absolute;
@@ -114,15 +136,15 @@ const Close = styled.div`
   :hover {
     color: ${themeColor};
   }
-`;
+`
 
 const Footer = styled.div`
   display: flex;
   margin-top: 10px;
   justify-content: space-around;
   align-items: center;
-`;
+`
 
 const StyledCancelButton = styled(Button)`
   border: 1px solid #cccccc;
-`;
+`

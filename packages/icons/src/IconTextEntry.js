@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
 const IconTextEntry = ({ title, ...props }) => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.072 14.179" {...props}>
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 23.072 14.179"
+    {...props}
+  >
     <g transform="translate(0 0)">
       <path
         d="M295.456,65.928v-.753h-3.25v.753h1.247V78.6h-1.247v.753h3.25V78.6h-1.247V65.928Z"
@@ -21,8 +25,8 @@ const IconTextEntry = ({ title, ...props }) => (
         />
       </g>
     </g>
-    <title>{title || ""}</title>
+    <title>{title || ''}</title>
   </SVG>
-);
+)
 
-export default withIconStyles(IconTextEntry);
+export default withIconStyles(IconTextEntry)

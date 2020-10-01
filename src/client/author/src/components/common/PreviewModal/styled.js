@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
-import { FlexContainer, EduButton } from "@edulastic/common";
+import styled, { css } from 'styled-components'
+import { FlexContainer, EduButton } from '@edulastic/common'
 import {
   desktopWidth,
   white,
@@ -7,29 +7,29 @@ import {
   linkColor,
   red,
   smallDesktopWidth,
-  mediumDesktopExactWidth
-} from "@edulastic/colors";
-import { Button, Icon, Typography, Input } from "antd";
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import { Button, Icon, Typography, Input } from 'antd'
 
-const { Text } = Typography;
+const { Text } = Typography
 
 export const Container = styled.div`
   display: flex;
   justify-content: space-between;
-  width: ${({ width }) => width || "100%"};
+  width: ${({ width }) => width || '100%'};
   transition: width 0.5s;
   &.scratchpad-wrapper {
     input {
       position: absolute;
     }
   }
-`;
+`
 
 export const ReportIssueBtn = styled(EduButton)`
   background: ${red} !important;
   color: ${white} !important;
   border-color: ${red} !important;
-`;
+`
 
 export const WidgetContainer = styled.div`
   position: relative;
@@ -37,12 +37,12 @@ export const WidgetContainer = styled.div`
   height: 100%;
   display: flex;
   flex-wrap: wrap;
-  align-items: ${({ alignItems = "" }) => alignItems || ""};
+  align-items: ${({ alignItems = '' }) => alignItems || ''};
   > div {
     padding: 0;
   }
   overflow: auto;
-`;
+`
 
 export const MobileLeftSide = styled.div`
   position: fixed;
@@ -51,12 +51,12 @@ export const MobileLeftSide = styled.div`
   justify-content: center;
   height: calc(100vh - 220px);
   left: 0;
-  background: ${props => props.theme.testItemPreview.mobileLeftSideBgColor};
+  background: ${(props) => props.theme.testItemPreview.mobileLeftSideBgColor};
   width: 25px;
   bottom: 20px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-`;
+`
 
 export const MobileRightSide = styled.div`
   position: fixed;
@@ -65,12 +65,12 @@ export const MobileRightSide = styled.div`
   justify-content: center;
   height: calc(100vh - 220px);
   right: 0;
-  background: ${props => props.theme.testItemPreview.mobileRightSideBgColor};
+  background: ${(props) => props.theme.testItemPreview.mobileRightSideBgColor};
   width: 25px;
   bottom: 20px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-`;
+`
 
 export const ButtonsContainer = styled(FlexContainer)`
   background: ${white};
@@ -78,31 +78,31 @@ export const ButtonsContainer = styled(FlexContainer)`
   justify-content: space-between;
   border-radius: 10px 10px 0px 0px;
   ${({ style }) => style};
-`;
+`
 
 export const ButtonsWrapper = styled.div`
   display: flex;
-  justify-content: ${props => props.justifyContent};
+  justify-content: ${(props) => props.justifyContent};
   margin: 0;
-  padding: ${props => props.padding || "0px"};
-  flex-wrap: ${props => props.wrap || "wrap"};
+  padding: ${(props) => props.padding || '0px'};
+  flex-wrap: ${(props) => props.wrap || 'wrap'};
   ${({ style }) => style};
 
   .ant-btn {
-    margin-bottom: ${props => props.mb || "0px"};
+    margin-bottom: ${(props) => props.mb || '0px'};
   }
-`;
+`
 
 export const ColumnContentArea = styled.div`
   background: #fff;
   border-radius: 0px;
-  width: ${({ width }) => width || "100%"};
-  display: ${props => (props.hideColumn ? "none" : "flex")};
+  width: ${({ width }) => width || '100%'};
+  display: ${(props) => (props.hideColumn ? 'none' : 'flex')};
   flex-direction: column;
   flex-basis: 100%;
   ${({ style }) => style};
   padding: 20px 0px;
-`;
+`
 
 export const EvaluateButton = styled(Button)`
   font-size: 11px;
@@ -123,7 +123,7 @@ export const EvaluateButton = styled(Button)`
     line-height: normal;
     padding: 5px 0px;
   }
-`;
+`
 
 export const ReportIssueButton = styled(Button)`
   font-size: 16px;
@@ -131,7 +131,7 @@ export const ReportIssueButton = styled(Button)`
   width: max-content !important;
   height: 28px;
   padding: 0px 10px;
-`;
+`
 
 export const PassageNavigation = styled.div`
   display: flex;
@@ -166,24 +166,37 @@ export const PassageNavigation = styled.div`
       }
     }
   }
-`;
+`
 
 const buttonWrapperExtraStyle = css`
-  border-top-left-radius: ${({ collapseDirection }) => (collapseDirection === "left" ? "0px" : "4px")};
-  border-bottom-left-radius: ${({ collapseDirection }) => (collapseDirection === "left" ? "0px" : "4px")};
-  border-top-right-radius: ${({ collapseDirection }) => (collapseDirection === "right" ? "0px" : "4px")};
-  border-bottom-right-radius: ${({ collapseDirection }) => (collapseDirection === "right" ? "0px" : "4px")};
+  border-top-left-radius: ${({ collapseDirection }) =>
+    collapseDirection === 'left' ? '0px' : '4px'};
+  border-bottom-left-radius: ${({ collapseDirection }) =>
+    collapseDirection === 'left' ? '0px' : '4px'};
+  border-top-right-radius: ${({ collapseDirection }) =>
+    collapseDirection === 'right' ? '0px' : '4px'};
+  border-bottom-right-radius: ${({ collapseDirection }) =>
+    collapseDirection === 'right' ? '0px' : '4px'};
   left: ${({ collapseDirection }) =>
-    collapseDirection === "left" ? "auto" : collapseDirection === "right" ? "-20px" : "-22px"};
+    collapseDirection === 'left'
+      ? 'auto'
+      : collapseDirection === 'right'
+      ? '-20px'
+      : '-22px'};
   right: ${({ collapseDirection }) =>
-    collapseDirection === "right" ? "auto" : collapseDirection === "left" ? "-20px" : "-22px"};
-`;
+    collapseDirection === 'right'
+      ? 'auto'
+      : collapseDirection === 'left'
+      ? '-20px'
+      : '-22px'};
+`
 
 export const Divider = styled.div`
   width: 0px;
   border: 1px solid #dadae4;
   position: relative;
-  background-color: ${props => (props.isCollapsed ? "#e5e5e5" : "transparent")};
+  background-color: ${(props) =>
+    props.isCollapsed ? '#e5e5e5' : 'transparent'};
   border-radius: 10px;
   z-index: 1;
   height: 65vh;
@@ -195,34 +208,38 @@ export const Divider = styled.div`
     top: 20px;
     ${buttonWrapperExtraStyle}
   }
-`;
+`
 
 const rightCollaps = css`
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
-  display: ${({ collapseDirection }) => (collapseDirection === "right" ? "none" : "")};
-`;
+  display: ${({ collapseDirection }) =>
+    collapseDirection === 'right' ? 'none' : ''};
+`
 
 const leftCollaps = css`
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  display: ${({ collapseDirection }) => (collapseDirection === "left" ? "none" : "")};
-`;
+  display: ${({ collapseDirection }) =>
+    collapseDirection === 'left' ? 'none' : ''};
+`
 
 const midCollaps = css`
   .vertical-line {
     border: 1px solid #d4d8dc;
     height: 16px;
     &.first {
-      display: ${({ collapseDirection }) => (collapseDirection === "left" ? "none" : "")};
+      display: ${({ collapseDirection }) =>
+        collapseDirection === 'left' ? 'none' : ''};
       margin-right: 2px;
     }
     &.third {
       margin-left: 2px;
-      display: ${({ collapseDirection }) => (collapseDirection === "right" ? "none" : "")};
+      display: ${({ collapseDirection }) =>
+        collapseDirection === 'right' ? 'none' : ''};
     }
   }
-`;
+`
 
 export const CollapseBtn = styled.div`
   cursor: pointer;
@@ -241,20 +258,20 @@ export const CollapseBtn = styled.div`
   }
   ${({ right, left, mid }) => {
     if (right) {
-      return rightCollaps;
+      return rightCollaps
     }
     if (mid) {
-      return midCollaps;
+      return midCollaps
     }
     if (left) {
-      return leftCollaps;
+      return leftCollaps
     }
   }}
-`;
+`
 
 export const IconArrow = styled(Icon)`
-  color: ${props => props.theme.testItemPreview.iconArrowColor};
-`;
+  color: ${(props) => props.theme.testItemPreview.iconArrowColor};
+`
 
 export const ReportHeader = styled.div`
   display: flex;
@@ -269,7 +286,7 @@ export const ReportHeader = styled.div`
     color: red;
     padding-right: 5px;
   }
-`;
+`
 
 export const ReportIssueContainer = styled.div`
   width: 100%;
@@ -278,13 +295,13 @@ export const ReportIssueContainer = styled.div`
     border-color: red;
   }
   padding-bottom: 3rem;
-`;
+`
 
 export const CloseButton = styled(Button)`
   border-radius: 50%;
   border: none;
   background: transparent;
-`;
+`
 
 export const TextAreaSendButton = styled(Button)`
   float: right;
@@ -295,7 +312,7 @@ export const TextAreaSendButton = styled(Button)`
   &:focus {
     color: ${themeColor};
   }
-`;
+`
 
 export const StyledFlex = styled.div`
   display: flex;
@@ -303,7 +320,7 @@ export const StyledFlex = styled.div`
   justify-content: center;
   align-items: center;
   ${({ style }) => style};
-`;
+`
 
 export const StyledText = styled(Text)`
   color: ${({ danger }) => (danger ? red : themeColor)};
@@ -314,7 +331,7 @@ export const StyledText = styled(Text)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     display: block;
   }
-`;
+`
 
 export const RejectButton = styled(EduButton)`
   &.ant-btn.ant-btn-primary {
@@ -333,17 +350,17 @@ export const RejectButton = styled(EduButton)`
       }
     }
   }
-`;
+`
 
 export const SyledSpan = styled.span`
   line-height: 0;
   padding: 0 11px;
-`;
+`
 
 export const StyledInput = styled(Input.TextArea)`
   padding: 8px 22px;
   height: 40px;
-`;
+`
 export const StyledRejectionSubmitBtn = styled(Button)`
   background: ${themeColor};
   height: 40px;
@@ -356,7 +373,7 @@ export const StyledRejectionSubmitBtn = styled(Button)`
     font-weight: 500;
     color: ${white};
   }
-`;
+`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   .review-scratchpad {
@@ -449,7 +466,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
       }
     }
   }
-`;
+`
 
 export const QuestionDetails = styled.div`
   display: flex;
@@ -459,12 +476,12 @@ export const QuestionDetails = styled.div`
   line-height: 20px;
   padding: 20px !important;
   width: 100%;
-`;
+`
 
 export const DetailRow = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: ${props => props.direction || "row"};
+  flex-direction: ${(props) => props.direction || 'row'};
   padding: 5px 50px 5px 0px;
 
   &:last-child {
@@ -504,29 +521,29 @@ export const DetailRow = styled.div`
     color: #aaafb5;
     font-weight: 600;
     margin-right: 10px;
-    min-width: ${props => props.labelWidth || "auto"};
+    min-width: ${(props) => props.labelWidth || 'auto'};
   }
   span {
-    font-size: ${props => props.font || 13}px;
+    font-size: ${(props) => props.font || 13}px;
     color: #434b5d;
     width: 100%;
     display: inline-block;
   }
-`;
+`
 
 export const FlexWrap = styled.div`
   display: flex;
-  align-items: ${props => props.align || "center"};
-  justify-content: ${props => props.justify || "space-between"};
-  flex-direction: ${props => props.direction || "row"};
+  align-items: ${(props) => props.align || 'center'};
+  justify-content: ${(props) => props.justify || 'space-between'};
+  flex-direction: ${(props) => props.direction || 'row'};
   padding: 4px 15px;
-  border: ${props => props.border || "1px solid #E8E8E8"};
+  border: ${(props) => props.border || '1px solid #E8E8E8'};
   border-radius: 4px;
   margin-bottom: 10px;
   width: 100%;
-`;
+`
 
 export const ScratchpadAndWidgetWrapper = styled.div`
   position: relative;
   width: 100%;
-`;
+`

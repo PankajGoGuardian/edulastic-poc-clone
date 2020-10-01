@@ -1,22 +1,28 @@
-import { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
-import { uniqBy } from "lodash";
-import * as qs from "query-string";
-import { FireBaseService as Fbs, notification as antdNotification } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { getUser } from "../../../src/selectors/user";
-import { receiveAssignmentClassList, receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
+import { useState, useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
+import { uniqBy } from 'lodash'
+import * as qs from 'query-string'
+import {
+  FireBaseService as Fbs,
+  notification as antdNotification,
+} from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { getUser } from '../../../src/selectors/user'
+import {
+  receiveAssignmentClassList,
+  receiveAssignmentsSummaryAction,
+} from '../../../src/actions/assignments'
 import {
   closeHangoutNotification as closeFirebaseNotification,
   destroyNotificationMessage,
-  notificationMessage
-} from "../../../../common/components/Notification";
-import { setAssignmentBulkActionStatus } from "../../ducks";
+  notificationMessage,
+} from '../../../../common/components/Notification'
+import { setAssignmentBulkActionStatus } from '../../ducks'
 
-const collectionName = "AssignmentBulkActionEvents";
-const DOWNLOAD_GRADES_AND_RESPONSE = "DOWNLOAD_GRADES_AND_RESPONSE";
+const collectionName = 'AssignmentBulkActionEvents'
+const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
 
 const NotificationListener = ({
   user,
@@ -24,30 +30,32 @@ const NotificationListener = ({
   fetchAssignmentClassList,
   fetchAssignmentsSummaryAction,
   setBulkActionStatus,
-  history
+  history,
 }) => {
-  const [notificationIds, setNotificationIds] = useState([]);
-  let districtId = "";
-  let testId = "";
-  const { termId = "" } = JSON.parse(sessionStorage.getItem("filters[Assignments]") || "{}");
-  const { testType = "" } = qs.parse(location.search);
+  const [notificationIds, setNotificationIds] = useState([])
+  let districtId = ''
+  let testId = ''
+  const { termId = '' } = JSON.parse(
+    sessionStorage.getItem('filters[Assignments]') || '{}'
+  )
+  const { testType = '' } = qs.parse(location.search)
   if (testType) {
-    const locationArray = location?.pathname?.split("/") || [];
-    districtId = locationArray[locationArray?.length - 2] || "";
-    testId = locationArray[locationArray?.length - 1] || "";
+    const locationArray = location?.pathname?.split('/') || []
+    districtId = locationArray[locationArray?.length - 2] || ''
+    testId = locationArray[locationArray?.length - 1] || ''
   }
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
-    db => db.collection(collectionName).where("userId", "==", `${user?._id}`),
+    (db) => db.collection(collectionName).where('userId', '==', `${user?._id}`),
     [user?._id]
-  );
+  )
 
-  const deleteNotificationDocument = docId => {
+  const deleteNotificationDocument = (docId) => {
     Fbs.db
       .collection(collectionName)
       .doc(docId)
       .delete()
-      .catch(err => console.error(err));
-  };
+      .catch((err) => console.error(err))
+  }
 
   const onNotificationClick = (e, docId) => {
     /**
@@ -55,46 +63,65 @@ const NotificationListener = ({
      * So making sure that the user clicked on Download button in the notification by
      * and only than the notification document is getting deleted.
      */
-    if (e?.target?.tagName.toLowerCase() === "a") {
-      closeFirebaseNotification(docId);
-      deleteNotificationDocument(docId);
+    if (e?.target?.tagName.toLowerCase() === 'a') {
+      closeFirebaseNotification(docId)
+      deleteNotificationDocument(docId)
     }
-  };
+  }
 
-  const showUserNotifications = docs => {
-    uniqBy(docs, "__id").forEach(doc => {
-      const { processStatus, message, statusCode, isBulkAction, status, action, downloadLink } = doc;
-      if (isBulkAction && status === "initiated" && processStatus === "done" && !notificationIds.includes(doc.__id)) {
-        setNotificationIds([...notificationIds, doc.__id]);
+  const showUserNotifications = (docs) => {
+    uniqBy(docs, '__id').forEach((doc) => {
+      const {
+        processStatus,
+        message,
+        statusCode,
+        isBulkAction,
+        status,
+        action,
+        downloadLink,
+      } = doc
+      if (
+        isBulkAction &&
+        status === 'initiated' &&
+        processStatus === 'done' &&
+        !notificationIds.includes(doc.__id)
+      ) {
+        setNotificationIds([...notificationIds, doc.__id])
         if (statusCode === 200) {
           if (action === DOWNLOAD_GRADES_AND_RESPONSE) {
             notificationMessage({
-              title: "Download Grades/Responses",
+              title: 'Download Grades/Responses',
               message,
               showButton: true,
               buttonLink: downloadLink,
-              buttonText: "DOWNLOAD",
-              notificationPosition: "bottomRight",
+              buttonText: 'DOWNLOAD',
+              notificationPosition: 'bottomRight',
               notificationKey: doc.__id,
               onCloseNotification: () => {
-                deleteNotificationDocument(doc.__id);
+                deleteNotificationDocument(doc.__id)
               },
-              onButtonClick: e => {
-                onNotificationClick(e, doc.__id);
-              }
-            });
-          } else antdNotification({ type: "success", msg: message, key: doc.__id });
+              onButtonClick: (e) => {
+                onNotificationClick(e, doc.__id)
+              },
+            })
+          } else
+            antdNotification({ type: 'success', msg: message, key: doc.__id })
         } else {
-          antdNotification({ msg: message, key: doc.__id });
+          antdNotification({ msg: message, key: doc.__id })
         }
 
         if (action !== DOWNLOAD_GRADES_AND_RESPONSE || statusCode !== 200) {
           // if status is initiated and we are displaying, delete the notification document from firebase
-          deleteNotificationDocument(doc.__id);
+          deleteNotificationDocument(doc.__id)
         }
-        if (districtId && testId && testType && action !== DOWNLOAD_GRADES_AND_RESPONSE) {
-          fetchAssignmentsSummaryAction({ districtId });
-          fetchAssignmentClassList({ districtId, testId, testType, termId });
+        if (
+          districtId &&
+          testId &&
+          testType &&
+          action !== DOWNLOAD_GRADES_AND_RESPONSE
+        ) {
+          fetchAssignmentsSummaryAction({ districtId })
+          fetchAssignmentClassList({ districtId, testId, testType, termId })
         }
 
         // if user at assignments home page and bulk action has been processed successfully
@@ -102,43 +129,43 @@ const NotificationListener = ({
           !districtId &&
           !testId &&
           !testType &&
-          location?.pathname?.includes("author/assignments") &&
-          statusCode == 200;
+          location?.pathname?.includes('author/assignments') &&
+          statusCode == 200
 
         if (isAssignmentsHomePage) {
-          setTimeout(() => history.push("author/assignments"), 3000);
+          setTimeout(() => history.push('author/assignments'), 3000)
         }
-        setBulkActionStatus(false);
+        setBulkActionStatus(false)
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     if (user && roleuser.DA_SA_ROLE_ARRAY.includes(user.role)) {
-      showUserNotifications(userNotifications);
+      showUserNotifications(userNotifications)
     }
-  }, [userNotifications]);
+  }, [userNotifications])
 
   useEffect(
     () => () => {
-      destroyNotificationMessage();
+      destroyNotificationMessage()
     },
     []
-  );
+  )
 
-  return null;
-};
+  return null
+}
 
 export default compose(
   withRouter,
   connect(
-    state => ({
-      user: getUser(state)
+    (state) => ({
+      user: getUser(state),
     }),
     {
       fetchAssignmentClassList: receiveAssignmentClassList,
       fetchAssignmentsSummaryAction: receiveAssignmentsSummaryAction,
-      setBulkActionStatus: setAssignmentBulkActionStatus
+      setBulkActionStatus: setAssignmentBulkActionStatus,
     }
   )
-)(NotificationListener);
+)(NotificationListener)

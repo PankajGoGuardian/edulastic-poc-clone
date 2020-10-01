@@ -1,5 +1,5 @@
-import { queColor, attemptTypes } from "./questionTypes";
-import { PERF_BANDS, MASTERY } from "./assignmentStatus";
+import { queColor, attemptTypes } from './questionTypes'
+import { PERF_BANDS, MASTERY } from './assignmentStatus'
 
 export function getPerformanceBandAndColor(performance) {
   const performanceBand =
@@ -7,16 +7,16 @@ export function getPerformanceBandAndColor(performance) {
       ? PERF_BANDS.PROFICIENT
       : performance <= 90 && performance > 50
       ? PERF_BANDS.BASIC
-      : PERF_BANDS.BELOW_BASIC;
+      : PERF_BANDS.BELOW_BASIC
 
   const bgColor =
     performanceBand === PERF_BANDS.PROFICIENT
       ? queColor.GREEN_5
       : performanceBand === PERF_BANDS.BASIC
       ? queColor.BLUE_1
-      : queColor.ORANGE_1;
+      : queColor.ORANGE_1
 
-  return { performanceBand, bgColor };
+  return { performanceBand, bgColor }
 }
 
 export function getMasteryStatus(standardPerformance) {
@@ -26,5 +26,5 @@ export function getMasteryStatus(standardPerformance) {
     ? MASTERY.MASTERED
     : standardPerformance < 80 && standardPerformance >= 70
     ? MASTERY.ALMOST_MASTERED
-    : MASTERY.NOT_MASTERED;
+    : MASTERY.NOT_MASTERED
 }

@@ -1,15 +1,25 @@
-import React from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { IconClose, IconChevronLeft, IconLogoCompact, IconOnWhiteLogo } from "@edulastic/icons";
+import React from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import {
+  IconClose,
+  IconChevronLeft,
+  IconLogoCompact,
+  IconOnWhiteLogo,
+} from '@edulastic/icons'
 
-import Help from "./help";
-import Navigation from "./navigation";
-import { desktopSideBar } from "../actions/toggleMenu";
-import { responsiveSideBar } from "../actions/responsivetogglemenu";
+import Help from './help'
+import Navigation from './navigation'
+import { desktopSideBar } from '../actions/toggleMenu'
+import { responsiveSideBar } from '../actions/responsivetogglemenu'
 
-const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: responsive }) => (
+const Header = ({
+  flag,
+  desktopSideBar: desktop,
+  sidebar,
+  responsiveSideBar: responsive,
+}) => (
   <Sidebar flag={flag} sidebar={sidebar}>
     <SidebarWrapper>
       <HeaderWrapper flag={flag} sidebar={sidebar}>
@@ -21,21 +31,21 @@ const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: res
       <Help flag={flag} />
     </SidebarWrapper>
   </Sidebar>
-);
+)
 
 export default React.memo(
-  connect(
-    ({ ui }) => ({ flag: ui.flag, sidebar: ui.sidebar }),
-    { desktopSideBar, responsiveSideBar }
-  )(Header)
-);
+  connect(({ ui }) => ({ flag: ui.flag, sidebar: ui.sidebar }), {
+    desktopSideBar,
+    responsiveSideBar,
+  })(Header)
+)
 
 Header.propTypes = {
   flag: PropTypes.bool.isRequired,
   sidebar: PropTypes.bool.isRequired,
   desktopSideBar: PropTypes.func.isRequired,
-  responsiveSideBar: PropTypes.func.isRequired
-};
+  responsiveSideBar: PropTypes.func.isRequired,
+}
 
 const Sidebar = styled.div`
   @media (min-width: 1200px) {
@@ -44,7 +54,7 @@ const Sidebar = styled.div`
     bottom: 0;
     left: 0;
     z-index: 100;
-    width: ${props => (props.flag ? "7rem" : "16.3rem")};
+    width: ${(props) => (props.flag ? '7rem' : '16.3rem')};
     background-color: #fbfafc;
     box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.16);
   }
@@ -59,18 +69,19 @@ const Sidebar = styled.div`
   }
   @media (max-width: 1060px) {
     width: 16rem;
-    display: ${props => (props.sidebar ? "block" : "none")};
+    display: ${(props) => (props.sidebar ? 'block' : 'none')};
   }
   @media (max-width: 425px) {
     width: 100%;
   }
-`;
+`
 
 // empty component???
-const SidebarWrapper = styled.div``;
+const SidebarWrapper = styled.div``
 const HeaderWrapper = styled.div`
-  padding: ${props => (props.flag ? " 1.7rem 1rem 1.7rem 2.5rem" : "1.8rem 1rem")};
-  margin: ${props => (props.flag ? "0rem" : "0rem 2rem")};
+  padding: ${(props) =>
+    props.flag ? ' 1.7rem 1rem 1.7rem 2.5rem' : '1.8rem 1rem'};
+  margin: ${(props) => (props.flag ? '0rem' : '0rem 2rem')};
   border-bottom: 1px solid #d9d6d6;
   text-align: center;
   align-items: center;
@@ -80,12 +91,12 @@ const HeaderWrapper = styled.div`
   @media (max-width: 1024px) {
     margin: 0rem 1rem;
   }
-`;
+`
 
 const Icon = styled(IconOnWhiteLogo)`
   width: 120px;
   height: 25px;
-`;
+`
 
 const IconCompact = styled(IconLogoCompact)`
   width: 25px;
@@ -94,7 +105,7 @@ const IconCompact = styled(IconLogoCompact)`
   &:hover {
     fill: #0eb08d;
   }
-`;
+`
 
 const ArrowBtn = styled(IconChevronLeft)`
   width: 16px;
@@ -113,7 +124,7 @@ const ArrowBtn = styled(IconChevronLeft)`
   @media (max-width: 1024px) {
     margin-right: 1rem;
   }
-`;
+`
 
 const ResponsiveToggleMenu = styled(IconClose)`
   width: 16px;
@@ -133,4 +144,4 @@ const ResponsiveToggleMenu = styled(IconClose)`
       fill: #1fe3a1;
     }
   }
-`;
+`

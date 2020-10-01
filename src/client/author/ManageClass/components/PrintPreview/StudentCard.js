@@ -1,11 +1,15 @@
-import React from "react";
-import { white } from "@edulastic/colors";
-import PropTypes from "prop-types";
-import Title from "./Title";
-import { StyledCard, BoldText, ParaP, StudnetName, UserInfo } from "./styled";
+import React from 'react'
+import { white } from '@edulastic/colors'
+import PropTypes from 'prop-types'
+import Title from './Title'
+import { StyledCard, BoldText, ParaP, StudnetName, UserInfo } from './styled'
 
-const StudentCard = ({ student: { firstName, lastName, email, username }, code, appLoginUrl }) => {
-  const name = [firstName, lastName].filter(n => n).join(" ");
+const StudentCard = ({
+  student: { firstName, lastName, email, username },
+  code,
+  appLoginUrl,
+}) => {
+  const name = [firstName, lastName].filter((n) => n).join(' ')
 
   return (
     <StyledCard>
@@ -28,12 +32,12 @@ const StudentCard = ({ student: { firstName, lastName, email, username }, code, 
         <a href={appLoginUrl}>{appLoginUrl}</a>
       </ParaP>
     </StyledCard>
-  );
-};
+  )
+}
 
 StudentCard.propTypes = {
   student: PropTypes.object.isRequired,
-  code: PropTypes.string.isRequired
-};
+  code: PropTypes.string.isRequired,
+}
 
-export default StudentCard;
+export default StudentCard

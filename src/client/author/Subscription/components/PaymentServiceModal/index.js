@@ -1,17 +1,27 @@
-import React from "react";
-import { WithResources } from "@edulastic/common";
-import { StripeProvider, Elements } from "react-stripe-elements";
-import PaymentForm from "./components/PaymentForm";
-import { StyledPaymentServiceModal, StyledSpan, StyledTitle } from "./styled";
+import React from 'react'
+import { WithResources } from '@edulastic/common'
+import { StripeProvider, Elements } from 'react-stripe-elements'
+import PaymentForm from './components/PaymentForm'
+import { StyledPaymentServiceModal, StyledSpan, StyledTitle } from './styled'
 
-const PaymentServiceModal = props => {
-  const { visible = false, closeModal, user, reason, verificationPending, stripePaymentAction } = props;
+const PaymentServiceModal = (props) => {
+  const {
+    visible = false,
+    closeModal,
+    user,
+    reason,
+    verificationPending,
+    stripePaymentAction,
+  } = props
 
-  const stripePubKey = process.env.POI_APP_STRIPE_PUBLIC_KEY;
-  if (!stripePubKey) return null;
+  const stripePubKey = process.env.POI_APP_STRIPE_PUBLIC_KEY
+  if (!stripePubKey) return null
 
   return (
-    <WithResources resources={["https://js.stripe.com/v3/"]} fallBack={<span />}>
+    <WithResources
+      resources={['https://js.stripe.com/v3/']}
+      fallBack={<span />}
+    >
       <StyledPaymentServiceModal
         visible={visible}
         title={
@@ -36,7 +46,7 @@ const PaymentServiceModal = props => {
         </StripeProvider>
       </StyledPaymentServiceModal>
     </WithResources>
-  );
-};
+  )
+}
 
-export default PaymentServiceModal;
+export default PaymentServiceModal

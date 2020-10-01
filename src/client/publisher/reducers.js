@@ -1,7 +1,7 @@
-import publisherDashboard from "./pages/Dashboard/ducks";
+import publisherDashboard from './pages/Dashboard/ducks'
 
 const publisherReducer = {
-  publisherDashboard
-};
+  publisherDashboard,
+}
 
-export default publisherReducer;
+export default publisherReducer

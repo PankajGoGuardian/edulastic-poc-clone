@@ -1,43 +1,43 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { get } from "lodash";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { get } from 'lodash'
 
 // components
-import { MainHeader } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { IconSettings } from "@edulastic/icons";
-import { AdminHeaderContent, StyledTabPane, StyledTabs } from "./styled";
+import { MainHeader } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { IconSettings } from '@edulastic/icons'
+import { AdminHeaderContent, StyledTabPane, StyledTabs } from './styled'
 
 // ducks
-import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
-import { getSchoolAdminSettingsAccess } from "../../../../DistrictPolicy/ducks";
+import { getManageTabLabelSelector, getUserRole } from '../../../selectors/user'
+import { getSchoolAdminSettingsAccess } from '../../../../DistrictPolicy/ducks'
 
 class AdminHeader extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    active: PropTypes.object.isRequired
-  };
+    active: PropTypes.object.isRequired,
+  }
 
-  onHeaderTabClick = key => {
-    const { history, role } = this.props;
+  onHeaderTabClick = (key) => {
+    const { history, role } = this.props
     // eslint-disable-next-line default-case
     switch (key) {
-      case "users":
-        if (role === "district-admin" || role === "school-admin") {
-          history.push(`/author/users/teacher`);
+      case 'users':
+        if (role === 'district-admin' || role === 'school-admin') {
+          history.push(`/author/users/teacher`)
         }
-        return;
-      case "settings":
+        return
+      case 'settings':
         if (role === roleuser.DISTRICT_ADMIN) {
-          history.push(`/author/settings/districtpolicies`);
+          history.push(`/author/settings/districtpolicies`)
         } else {
-          history.push(`/author/settings/schoolpolicies`);
+          history.push(`/author/settings/schoolpolicies`)
         }
-        return;
-      case "content":
-        history.push(`/author/content/collections`);
-        return;
+        return
+      case 'content':
+        history.push(`/author/content/collections`)
+        return
       // case "districtprofile":
       // case "schoolprofile":
       // case "schools":
@@ -46,9 +46,9 @@ class AdminHeader extends Component {
       // case "courses":
       // case "class-enrollment":
       default:
-        history.push(`/author/${key}`);
+        history.push(`/author/${key}`)
     }
-  };
+  }
 
   render() {
     const {
@@ -58,18 +58,22 @@ class AdminHeader extends Component {
       schoolLevelAdminSettings,
       manageTabLabel,
       children,
-      enableStudentGroups
-    } = this.props;
-    const schoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
-    const isDA = role === roleuser.DISTRICT_ADMIN;
-    const defaultTab = isDA ? "District Profile" : "School Profile";
-    const defaultKey = isDA ? "districtprofile" : "schoolprofile";
-    const activeKey = (active.mainMenu || "")
+      enableStudentGroups,
+    } = this.props
+    const schoolTabtext = count > 0 ? `Schools (${count})` : 'Schools'
+    const isDA = role === roleuser.DISTRICT_ADMIN
+    const defaultTab = isDA ? 'District Profile' : 'School Profile'
+    const defaultKey = isDA ? 'districtprofile' : 'schoolprofile'
+    const activeKey = (active.mainMenu || '')
       .toLocaleLowerCase()
-      .split(" ")
-      .join("");
+      .split(' ')
+      .join('')
     return (
-      <MainHeader Icon={IconSettings} headingText={manageTabLabel} mobileHeaderHeight={100}>
+      <MainHeader
+        Icon={IconSettings}
+        headingText={manageTabLabel}
+        mobileHeaderHeight={100}
+      >
         <AdminHeaderContent>
           <StyledTabs
             type="card"
@@ -86,23 +90,24 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Courses" key="courses" />
             <StyledTabPane tab="Class Enrollment" key="class-enrollment" />
             {isDA && <StyledTabPane tab="Content" key="content" />}
-            {(isDA || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings)) && (
+            {(isDA ||
+              (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings)) && (
               <StyledTabPane tab="Settings" key="settings" />
             )}
           </StyledTabs>
           {children}
         </AdminHeaderContent>
       </MainHeader>
-    );
+    )
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     role: getUserRole(state),
     schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state),
     manageTabLabel: getManageTabLabelSelector(state),
-    enableStudentGroups: get(state, "user.user.features.studentGroups")
+    enableStudentGroups: get(state, 'user.user.features.studentGroups'),
   }),
   {}
-)(AdminHeader);
+)(AdminHeader)

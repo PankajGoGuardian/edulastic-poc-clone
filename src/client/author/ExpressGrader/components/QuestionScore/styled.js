@@ -1,12 +1,12 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components'
 
 const statusColors = {
-  correct: "#DEF4E8",
-  partiallyCorrect: "#FFE9A8",
-  ungraded: "#BEDEFF",
-  wrong: "#FDE0E9",
-  skipped: "#E5E5E5"
-};
+  correct: '#DEF4E8',
+  partiallyCorrect: '#FFE9A8',
+  ungraded: '#BEDEFF',
+  wrong: '#FDE0E9',
+  skipped: '#E5E5E5',
+}
 
 const KatexStyle = css`
   .katex .base {
@@ -14,16 +14,16 @@ const KatexStyle = css`
     vertical-align: middle;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden
+    overflow: hidden;
   }
-`;
+`
 
 export const StyledWrapper = styled.div`
   cursor: pointer;
   display: flex;
   justify-content: center;
   background-color: ${({ answerStatus: status }) => statusColors[status]};
-`;
+`
 
 export const StyledText = styled.span`
   color: #434b5d;
@@ -34,4 +34,4 @@ export const StyledText = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   ${({ responseView }) => responseView && KatexStyle};
-`;
+`

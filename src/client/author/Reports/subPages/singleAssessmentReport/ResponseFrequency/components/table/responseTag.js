@@ -1,21 +1,31 @@
-import React, { Component } from "react";
-import next from "immer";
+import React, { Component } from 'react'
+import next from 'immer'
 
-import styled from "styled-components";
-import { get, isNaN } from "lodash";
-import { Row, Col, Tag } from "antd";
+import styled from 'styled-components'
+import { get, isNaN } from 'lodash'
+import { Row, Col, Tag } from 'antd'
 
-import { darkGrey, themeColorLighter, incorrect, yellow1 } from "@edulastic/colors";
-import { StyledResponseTagContainer } from "../styled";
-import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
+import {
+  darkGrey,
+  themeColorLighter,
+  incorrect,
+  yellow1,
+} from '@edulastic/colors'
+import { StyledResponseTagContainer } from '../styled'
+import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 
 export class ResponseTag extends Component {
-  tooltipText = data => () => {
-    const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = data.record;
-    const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
-    let skip = (skip_cnt / sum) * 100;
-    if (isNaN(skip)) skip = 0;
-    skip = `${Math.round(skip)}%`;
+  tooltipText = (data) => () => {
+    const {
+      corr_cnt = 0,
+      incorr_cnt = 0,
+      skip_cnt = 0,
+      part_cnt = 0,
+    } = data.record
+    const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt
+    let skip = (skip_cnt / sum) * 100
+    if (isNaN(skip)) skip = 0
+    skip = `${Math.round(skip)}%`
 
     return (
       <div>
@@ -45,44 +55,46 @@ export class ResponseTag extends Component {
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Performance: </Col>
-          <Col className="custom-table-tooltip-value">{Math.round((corr_cnt / sum) * 100)}%</Col>
+          <Col className="custom-table-tooltip-value">
+            {Math.round((corr_cnt / sum) * 100)}%
+          </Col>
         </Row>
       </div>
-    );
-  };
+    )
+  }
 
   getPrintableTag = (exisitingStyle, name, value) => {
-    const { data, incorrectFrequencyThreshold } = this.props;
-    const modifiedStyle = next(exisitingStyle, styleDraft => {
+    const { data, incorrectFrequencyThreshold } = this.props
+    const modifiedStyle = next(exisitingStyle, (styleDraft) => {
       if (data.isCorrect) {
-        styleDraft.color = themeColorLighter;
+        styleDraft.color = themeColorLighter
       } else if (value > incorrectFrequencyThreshold) {
-        styleDraft.color = yellow1;
+        styleDraft.color = yellow1
       }
 
-      styleDraft.backgroundColor = "transparent";
-    });
+      styleDraft.backgroundColor = 'transparent'
+    })
 
     return (
       <Tag style={modifiedStyle}>
         {name} - {value}%
       </Tag>
-    );
-  };
+    )
+  }
 
   getCellContents = () => {
-    const { data, incorrectFrequencyThreshold, isPrinting } = this.props;
-    const name = get(data, "name", "");
-    const value = Number(get(data, "value", 0));
+    const { data, incorrectFrequencyThreshold, isPrinting } = this.props
+    const name = get(data, 'name', '')
+    const value = Number(get(data, 'value', 0))
 
     const style = data.isCorrect
       ? { borderColor: themeColorLighter, color: themeColorLighter }
       : value > incorrectFrequencyThreshold
       ? { borderColor: yellow1, color: yellow1 }
-      : { borderColor: incorrect };
+      : { borderColor: incorrect }
 
     if (isPrinting) {
-      return this.getPrintableTag(style, name, value);
+      return this.getPrintableTag(style, name, value)
     }
 
     return (
@@ -90,17 +102,21 @@ export class ResponseTag extends Component {
         <p>{name}</p>
         <p>{value}%</p>
       </StyledTag>
-    );
-  };
+    )
+  }
 
   render() {
-    const data = get(this.props, "data", "");
+    const data = get(this.props, 'data', '')
 
     return (
       <StyledResponseTagContainer>
-        <CustomTableTooltip placement="top" title={this.tooltipText(data)} getCellContents={this.getCellContents} />
+        <CustomTableTooltip
+          placement="top"
+          title={this.tooltipText(data)}
+          getCellContents={this.getCellContents}
+        />
       </StyledResponseTagContainer>
-    );
+    )
   }
 }
 
@@ -121,4 +137,4 @@ const StyledTag = styled.div`
       flex-grow: 1;
     }
   }
-`;
+`

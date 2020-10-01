@@ -1,25 +1,27 @@
-import PlayListLibrary from "../../../../framework/author/playlist/playListLibrary";
-import FileHelper from "../../../../framework/util/fileHelper";
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-import StudentTestPage from "../../../../framework/student/studentTestPage";
+import PlayListLibrary from '../../../../framework/author/playlist/playListLibrary'
+import FileHelper from '../../../../framework/util/fileHelper'
+import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
+import AssignmentsPage from '../../../../framework/student/assignmentsPage'
+import StudentTestPage from '../../../../framework/student/studentTestPage'
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customization`, () => {
-  const playlistlibraryPage = new PlayListLibrary();
-  const testlibraryPage = new TestLibrary();
-  const assignmentsPage = new AssignmentsPage();
-  const studentTestPage = new StudentTestPage();
+describe(`${FileHelper.getSpecName(
+  Cypress.spec.name
+)}>> spark playlist customization`, () => {
+  const playlistlibraryPage = new PlayListLibrary()
+  const testlibraryPage = new TestLibrary()
+  const assignmentsPage = new AssignmentsPage()
+  const studentTestPage = new StudentTestPage()
 
-  const qType = ["MCQ_TF", "MCQ_TF"];
-  const attemptdata = [{ right: "right" }, { right: "right" }];
+  const qType = ['MCQ_TF', 'MCQ_TF']
+  const attemptdata = [{ right: 'right' }, { right: 'right' }]
   // const testToCreate = "PLAYLIST_TEST_1";
-  const collection = "Spark Math";
-  const testIds = [];
+  const collection = 'Spark Math'
+  const testIds = []
 
-  let playlisid;
-  let customplaylist;
+  let playlisid
+  let customplaylist
 
-  let newtest;
+  let newtest
 
   // const plalistdata = {
   //   metadata: {
@@ -32,18 +34,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
   // };
 
   const students = {
-    name: "Student1 ",
-    email: "student.custom@snapwiz.com",
-    pass: "snapwiz"
-  };
+    name: 'Student1 ',
+    email: 'student.custom@snapwiz.com',
+    pass: 'snapwiz',
+  }
   // const contentEditor = {
   //   email: "ce.sparkmath@automation.com",
   //   pass: "edulastic"
   // };
   const teacher = {
-    email: "teacher.custom.assign@snapwiz.com",
-    pass: "snapwiz"
-  };
+    email: 'teacher.custom.assign@snapwiz.com',
+    pass: 'snapwiz',
+  }
 
   // before("create test", () => {
   //   cy.login("publisher", contentEditor.email, contentEditor.pass);
@@ -70,106 +72,129 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
   //     playlistlibraryPage.header.clickOnPublish();
   //   });
   // });
-  context.skip(">customization - assign", () => {
+  context.skip('>customization - assign', () => {
     context(">add new test to module-'from search bar'", () => {
-      before(">login", () => {
-        cy.deleteAllAssignments("", teacher.email);
-        cy.login("teacher", teacher.email, teacher.pass);
-        testlibraryPage.createTest("default").then(id => {
-          newtest = id;
-        });
-      });
-      it(">search and use playlist", () => {
-        playlistlibraryPage.searchByCollection(collection);
-        playlistlibraryPage.clickOnPlayListCardById(playlisid);
-        playlistlibraryPage.header.clickOnUseThis();
-      });
-      it(">assign whole module", () => {
-        playlistlibraryPage.playlistCustom.clickOnAssignButtonByModule(1);
-        playlistlibraryPage.playListAssign.selectClass("Class");
-        playlistlibraryPage.playListAssign.clickOnAssign();
-      });
+      before('>login', () => {
+        cy.deleteAllAssignments('', teacher.email)
+        cy.login('teacher', teacher.email, teacher.pass)
+        testlibraryPage.createTest('default').then((id) => {
+          newtest = id
+        })
+      })
+      it('>search and use playlist', () => {
+        playlistlibraryPage.searchByCollection(collection)
+        playlistlibraryPage.clickOnPlayListCardById(playlisid)
+        playlistlibraryPage.header.clickOnUseThis()
+      })
+      it('>assign whole module', () => {
+        playlistlibraryPage.playlistCustom.clickOnAssignButtonByModule(1)
+        playlistlibraryPage.playListAssign.selectClass('Class')
+        playlistlibraryPage.playListAssign.clickOnAssign()
+      })
       it(">customize-'add new test'", () => {
-        playlistlibraryPage.sidebar.clickOnRecentUsedPlayList();
-        playlistlibraryPage.playlistCustom.clickOnManageContent(true).then(id => {
-          customplaylist = id;
-          expect(customplaylist).to.not.eq(playlisid);
-        });
-        playlistlibraryPage.playlistCustom.searchContainer.setFilters({ collection: "Private Library" });
-        playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
-        playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(1, newtest);
-        playlistlibraryPage.playlistCustom.clickUpdatePlaylist();
-        playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
-      });
+        playlistlibraryPage.sidebar.clickOnRecentUsedPlayList()
+        playlistlibraryPage.playlistCustom
+          .clickOnManageContent(true)
+          .then((id) => {
+            customplaylist = id
+            expect(customplaylist).to.not.eq(playlisid)
+          })
+        playlistlibraryPage.playlistCustom.searchContainer.setFilters({
+          collection: 'Private Library',
+        })
+        playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(
+          newtest
+        )
+        playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(
+          1,
+          newtest
+        )
+        playlistlibraryPage.playlistCustom.clickUpdatePlaylist()
+        playlistlibraryPage.reviewTab
+          .getTestsInModuleByModule(1)
+          .should('have.length', 3)
+      })
       it(">assign the whole module-'re-assign'", () => {
-        playlistlibraryPage.sidebar.clickOnRecentUsedPlayList(false);
-        playlistlibraryPage.reviewTab.clickOnAssignButtonByModule(1);
-        playlistlibraryPage.playListAssign.selectClass("Class");
-        playlistlibraryPage.playListAssign.clickOnAssign({ duplicate: false });
-      });
+        playlistlibraryPage.sidebar.clickOnRecentUsedPlayList(false)
+        playlistlibraryPage.reviewTab.clickOnAssignButtonByModule(1)
+        playlistlibraryPage.playListAssign.selectClass('Class')
+        playlistlibraryPage.playListAssign.clickOnAssign({ duplicate: false })
+      })
       it(">verify student side-'attempt'", () => {
-        cy.login("student", students.email, students.pass);
-        [...testIds.slice(0, 2), newtest].forEach(id => {
-          assignmentsPage.getAssignmentByTestId(id).should("have.length", 1);
-        });
-        assignmentsPage.clickOnAssigmentByTestId(newtest);
-        studentTestPage.attemptQuestionsByQueType(qType.slice(1), attemptdata);
-        studentTestPage.submitTest();
-      });
-    });
-    context(">move test from other module", () => {
-      before(">login", () => {
-        cy.login("teacher", teacher.email, teacher.pass);
-      });
-      it(">search and use customizesd playlist", () => {
-        playlistlibraryPage.seachAndClickPlayListById(customplaylist);
-        playlistlibraryPage.header.clickOnUseThis();
-        cy.url().should("contain", customplaylist);
-      });
-      it(">add a test and verify", () => {
-        playlistlibraryPage.playlistCustom.clickOnManageContent();
-        playlistlibraryPage.reviewTab.moveTestBetweenModule(2, 1, 1);
-        playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 4);
-        playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
+        cy.login('student', students.email, students.pass)
+        ;[...testIds.slice(0, 2), newtest].forEach((id) => {
+          assignmentsPage.getAssignmentByTestId(id).should('have.length', 1)
+        })
+        assignmentsPage.clickOnAssigmentByTestId(newtest)
+        studentTestPage.attemptQuestionsByQueType(qType.slice(1), attemptdata)
+        studentTestPage.submitTest()
+      })
+    })
+    context('>move test from other module', () => {
+      before('>login', () => {
+        cy.login('teacher', teacher.email, teacher.pass)
+      })
+      it('>search and use customizesd playlist', () => {
+        playlistlibraryPage.seachAndClickPlayListById(customplaylist)
+        playlistlibraryPage.header.clickOnUseThis()
+        cy.url().should('contain', customplaylist)
+      })
+      it('>add a test and verify', () => {
+        playlistlibraryPage.playlistCustom.clickOnManageContent()
+        playlistlibraryPage.reviewTab.moveTestBetweenModule(2, 1, 1)
+        playlistlibraryPage.reviewTab
+          .getTestsInModuleByModule(1)
+          .should('have.length', 4)
+        playlistlibraryPage.reviewTab
+          .getTestsInModuleByModule(2)
+          .should('have.length', 1)
         // TODO: need to clarify as playlist will be in draft state and publish button is not visible there
-      });
+      })
 
-      it(">assign the test", () => {
-        playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1, 4);
-        playlistlibraryPage.playListAssign.selectClass("Class");
-        playlistlibraryPage.playListAssign.clickOnAssign();
-      });
+      it('>assign the test', () => {
+        playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1, 4)
+        playlistlibraryPage.playListAssign.selectClass('Class')
+        playlistlibraryPage.playListAssign.clickOnAssign()
+      })
       it(">verify student side-'after assigning'", () => {
-        cy.login("student", students.email, students.pass);
-        assignmentsPage.getAssignmentByTestId(testIds[2]).should("have.length", 1);
-      });
-    });
-    context(">remove assigned test", () => {
-      before(">login", () => {
-        cy.login("teacher", teacher.email, teacher.pass);
-      });
-      it(">search and use playlist", () => {
-        playlistlibraryPage.seachAndClickPlayListById(customplaylist);
-        playlistlibraryPage.header.clickOnUseThis();
-        cy.url().should("contain", customplaylist);
-      });
-      it(">remove a assigned test and verify", () => {
-        playlistlibraryPage.playlistCustom.clickOnManageContent();
-        playlistlibraryPage.reviewTab.clickExpandByModule(1);
-        playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(1, 4);
+        cy.login('student', students.email, students.pass)
+        assignmentsPage
+          .getAssignmentByTestId(testIds[2])
+          .should('have.length', 1)
+      })
+    })
+    context('>remove assigned test', () => {
+      before('>login', () => {
+        cy.login('teacher', teacher.email, teacher.pass)
+      })
+      it('>search and use playlist', () => {
+        playlistlibraryPage.seachAndClickPlayListById(customplaylist)
+        playlistlibraryPage.header.clickOnUseThis()
+        cy.url().should('contain', customplaylist)
+      })
+      it('>remove a assigned test and verify', () => {
+        playlistlibraryPage.playlistCustom.clickOnManageContent()
+        playlistlibraryPage.reviewTab.clickExpandByModule(1)
+        playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(1, 4)
         // TODO: need to clarify as playlist will be in draft state and publish button is not visible there
-        playlistlibraryPage.header.clickOnSave();
-        playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
-        playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
-      });
+        playlistlibraryPage.header.clickOnSave()
+        playlistlibraryPage.reviewTab
+          .getTestsInModuleByModule(1)
+          .should('have.length', 3)
+        playlistlibraryPage.reviewTab
+          .getTestsInModuleByModule(2)
+          .should('have.length', 1)
+      })
       it(">verify student side-'presence of deleted test and attempt'", () => {
-        cy.login("student", students.email, students.pass);
-        assignmentsPage.getAssignmentByTestId(testIds[0]).should("have.length", 1);
-        assignmentsPage.clickOnAssigmentByTestId(testIds[0]);
-        studentTestPage.attemptQuestionsByQueType(qType, attemptdata);
-        studentTestPage.submitTest();
-      });
-    });
+        cy.login('student', students.email, students.pass)
+        assignmentsPage
+          .getAssignmentByTestId(testIds[0])
+          .should('have.length', 1)
+        assignmentsPage.clickOnAssigmentByTestId(testIds[0])
+        studentTestPage.attemptQuestionsByQueType(qType, attemptdata)
+        studentTestPage.submitTest()
+      })
+    })
 
     /* context(">move assigned test", () => {
     before(">login", () => {
@@ -210,5 +235,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       assignmentsPage.getAssignmentByTestId(testIds[1]).should("have.length", 1);
     });
   }); */
-  });
-});
+  })
+})

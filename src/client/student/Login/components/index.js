@@ -1,35 +1,48 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-import styled from "styled-components";
-import { Layout } from "antd";
+import React from 'react'
+import { Redirect } from 'react-router-dom'
+import styled from 'styled-components'
+import { Layout } from 'antd'
 
 // components
-import Header from "./Header";
-import LoginContainer from "./Container";
-import { Partners } from "../../../common/utils/static/partnerData";
-import { validatePartnerUrl, getPartnerKeyFromUrl } from "../../../common/utils/helpers";
+import Header from './Header'
+import LoginContainer from './Container'
+import { Partners } from '../../../common/utils/static/partnerData'
+import {
+  validatePartnerUrl,
+  getPartnerKeyFromUrl,
+} from '../../../common/utils/helpers'
 
 const Wrapper = styled(Layout)`
   width: 100%;
   overflow: hidden;
-`;
+`
 
-const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType }) => {
-  let partnerCheck = getPartnerKeyFromUrl(location.pathname);
+const Login = ({
+  isSignupUsingDaURL,
+  generalSettings,
+  districtPolicy,
+  orgShortName,
+  orgType,
+}) => {
+  const partnerCheck = getPartnerKeyFromUrl(location.pathname)
   return (
     <Wrapper>
-      {!isSignupUsingDaURL && !validatePartnerUrl(Partners[partnerCheck]) ? <Redirect exact to="/login" /> : null}
+      {!isSignupUsingDaURL && !validatePartnerUrl(Partners[partnerCheck]) ? (
+        <Redirect exact to="/login" />
+      ) : null}
       <LoginWrapper
         Partners={Partners[partnerCheck]}
         image={
           isSignupUsingDaURL
             ? generalSettings && generalSettings.pageBackground
               ? generalSettings.pageBackground
-              : ""
+              : ''
             : Partners[partnerCheck].background
         }
       >
-        {Partners[partnerCheck].name !== "login" && <Backdrop Partners={Partners[partnerCheck]} />}
+        {Partners[partnerCheck].name !== 'login' && (
+          <Backdrop Partners={Partners[partnerCheck]} />
+        )}
         <Header
           Partners={Partners[partnerCheck]}
           isSignupUsingDaURL={isSignupUsingDaURL}
@@ -48,10 +61,10 @@ const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, orgShortNa
         />
       </LoginWrapper>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
 
 const LoginWrapper = styled.div`
   background: #067059;
@@ -60,7 +73,7 @@ const LoginWrapper = styled.div`
   min-height: 100vh;
   height: 100%;
   width: 100%;
-`;
+`
 
 const Backdrop = styled.div`
   position: fixed;
@@ -68,5 +81,5 @@ const Backdrop = styled.div`
   left: 0px;
   bottom: 0px;
   right: 0px;
-  background: rgba(0, 0, 0, ${props => props.Partners.opacity});
-`;
+  background: rgba(0, 0, 0, ${(props) => props.Partners.opacity});
+`

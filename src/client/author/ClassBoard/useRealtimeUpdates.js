@@ -1,17 +1,17 @@
 // @ts-check
-import { API } from "@edulastic/api";
-import { useEffect, useState } from "react";
-import mqtt from "mqtt";
+import { API } from '@edulastic/api'
+import { useEffect, useState } from 'react'
+import mqtt from 'mqtt'
 
-const api = new API();
+const api = new API()
 
 export const getSignedUrl = async () => {
   const res = await api.callApi({
-    url: "/realtime/url"
-  });
-  const url = res ? (res.data ? res.data.url : "") : "";
-  return url;
-};
+    url: '/realtime/url',
+  })
+  const url = res ? (res.data ? res.data.url : '') : ''
+  return url
+}
 
 /**
  * @param {string} topic Topic to be listening
@@ -20,63 +20,63 @@ export const getSignedUrl = async () => {
  * @returns {mqtt.MqttClient} Client which can be used to publish messages or check connected status
  */
 const useRealtime = (topic, actionMap, options = {}) => {
-  const [mqttUrl, setMqttUrl] = useState("");
-  const [retClient, setClient] = useState(null);
+  const [mqttUrl, setMqttUrl] = useState('')
+  const [retClient, setClient] = useState(null)
   useEffect(() => {
-    getSignedUrl().then(url => {
-      setMqttUrl(url);
-    });
-  }, []);
+    getSignedUrl().then((url) => {
+      setMqttUrl(url)
+    })
+  }, [])
 
   useEffect(() => {
-    if (mqttUrl === "") {
+    if (mqttUrl === '') {
       return () => {
-        console.log("connecting...");
-      };
+        console.log('connecting...')
+      }
     }
-    const client = mqtt.connect(mqttUrl, options);
-    client.on("connect", () => {
-      setClient(client);
-      client.subscribe(topic, err => {
+    const client = mqtt.connect(mqttUrl, options)
+    client.on('connect', () => {
+      setClient(client)
+      client.subscribe(topic, (err) => {
         if (err) {
-          console.log(`error subscribing to topic ${topic} `, err);
+          console.log(`error subscribing to topic ${topic} `, err)
         } else {
-          console.log("connected ", topic);
+          console.log('connected ', topic)
         }
-      });
-    });
+      })
+    })
 
-    client.on("message", (_topic, message) => {
-      const msg = message.toString();
+    client.on('message', (_topic, message) => {
+      const msg = message.toString()
 
       try {
-        const msgObj = JSON.parse(msg);
-        console.log("got", msgObj);
-        const type = msgObj.type || "unknown";
+        const msgObj = JSON.parse(msg)
+        console.log('got', msgObj)
+        const type = msgObj.type || 'unknown'
         if (actionMap[type]) {
-          actionMap[type](msgObj.data);
+          actionMap[type](msgObj.data)
         }
       } catch (err) {
-        console.log("err", err);
+        console.log('err', err)
       }
-    });
+    })
 
-    client.on("error", err => {
-      console.error("error in mqtt client", err);
-    });
+    client.on('error', (err) => {
+      console.error('error in mqtt client', err)
+    })
 
     return () => {
-      console.warn("destroying client");
+      console.warn('destroying client')
       if (client) {
         try {
-          client.end();
+          client.end()
         } catch (e) {
-          console.warn("error ending realtime connection", e.message, e.stack);
+          console.warn('error ending realtime connection', e.message, e.stack)
         }
       }
-    };
-  }, [mqttUrl]);
-  return retClient;
-};
+    }
+  }, [mqttUrl])
+  return retClient
+}
 
-export default useRealtime;
+export default useRealtime

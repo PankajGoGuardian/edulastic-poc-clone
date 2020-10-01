@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import { Button, Input } from "antd";
-import { linkColor, themeColor } from "@edulastic/colors";
-import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
+import styled from 'styled-components'
+import { Button, Input } from 'antd'
+import { linkColor, themeColor } from '@edulastic/colors'
+import { ConfirmationModal } from '../../../../src/components/common/ConfirmationModal'
 
 export const StyledModal = styled(ConfirmationModal)`
   .ant-form-item {
     text-align: center;
   }
-`;
+`
 
 export const ActionButton = styled(Button)`
   font-weight: 500;
@@ -16,11 +16,11 @@ export const ActionButton = styled(Button)`
   height: 32px;
   display: flex;
   align-items: center;
-  ${props => props.reset && `background-color:${themeColor}`}
+  ${(props) => props.reset && `background-color:${themeColor}`}
   &:hover {
-    ${props => props.reset && `background-color:${themeColor}`}
+    ${(props) => props.reset && `background-color:${themeColor}`}
   }
-`;
+`
 
 export const Title = styled.div`
   color: ${linkColor};
@@ -30,8 +30,8 @@ export const Title = styled.div`
   svg {
     fill: ${linkColor};
   }
-`;
+`
 
 export const StyledInput = styled(Input)`
   width: 60%;
-`;
+`

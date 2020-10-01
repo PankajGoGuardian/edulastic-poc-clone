@@ -1,32 +1,37 @@
-import { eastBaycolor, lightGrey4, mainTextColor, white } from "@edulastic/colors";
-import { OnWhiteBgLogo } from "@edulastic/common";
-import { Col, Dropdown, Icon as AntIcon, Menu, Row } from "antd";
-import PropTypes from "prop-types";
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { isProxyUser as isProxyUserSelector } from "../../../Login/ducks";
+import {
+  eastBaycolor,
+  lightGrey4,
+  mainTextColor,
+  white,
+} from '@edulastic/colors'
+import { OnWhiteBgLogo } from '@edulastic/common'
+import { Col, Dropdown, Icon as AntIcon, Menu, Row } from 'antd'
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { isProxyUser as isProxyUserSelector } from '../../../Login/ducks'
 
 const Header = ({ userInfo, logout, isProxyUser }) => {
-  const [isVisible, setVisible] = useState(false);
-  const { firstName, middleName, lastName, role } = userInfo;
-  const userName = `${firstName} ${middleName || ""} ${lastName || ""}`;
+  const [isVisible, setVisible] = useState(false)
+  const { firstName, middleName, lastName, role } = userInfo
+  const userName = `${firstName} ${middleName || ''} ${lastName || ''}`
 
   const menu = (
     <Menu>
       <Menu.Item onClick={logout}>Sign Out</Menu.Item>
     </Menu>
-  );
+  )
 
   const toggleDropdown = () => {
-    setVisible(!isVisible);
-  };
+    setVisible(!isVisible)
+  }
 
   const getInitials = () => {
-    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
-    if (firstName) return `${firstName.substr(0, 2)}`;
-    if (lastName) return `${lastName.substr(0, 2)}`;
-  };
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`
+    if (firstName) return `${firstName.substr(0, 2)}`
+    if (lastName) return `${lastName.substr(0, 2)}`
+  }
 
   return (
     <HeaderWrapper type="flex" align="middle" isProxyUser={isProxyUser}>
@@ -39,36 +44,36 @@ const Header = ({ userInfo, logout, isProxyUser }) => {
             overlay={menu}
             onClick={toggleDropdown}
             className="headerDropdown"
-            trigger={["click"]}
+            trigger={['click']}
             placement="topCenter"
           >
             <div>
               <PseudoDiv>{getInitials()}</PseudoDiv>
               <UserInfo>
-                <UserName>{userName || "Anonymous"}</UserName>
+                <UserName>{userName || 'Anonymous'}</UserName>
                 <UserType>{role}</UserType>
               </UserInfo>
               <IconDropdown
-                style={{ fontSize: 20, pointerEvents: "none" }}
+                style={{ fontSize: 20, pointerEvents: 'none' }}
                 className="drop-caret"
-                type={isVisible ? "caret-up" : "caret-down"}
+                type={isVisible ? 'caret-up' : 'caret-down'}
               />
             </div>
           </Dropdown>
         </UserInfoButton>
       </Col>
     </HeaderWrapper>
-  );
-};
+  )
+}
 
 Header.propTypes = {
   userInfo: PropTypes.object.isRequired,
-  logout: PropTypes.func.isRequired
-};
+  logout: PropTypes.func.isRequired,
+}
 
-export default connect(state => ({
-  isProxyUser: isProxyUserSelector(state)
-}))(Header);
+export default connect((state) => ({
+  isProxyUser: isProxyUserSelector(state),
+}))(Header)
 
 const HeaderWrapper = styled(Row)`
   padding: 16px 24px;
@@ -78,8 +83,8 @@ const HeaderWrapper = styled(Row)`
     font-size: 12px;
     margin-right: 20px;
   }
-  margin-top: ${props => (props.isProxyUser ? 35 : 0)}px;
-`;
+  margin-top: ${(props) => (props.isProxyUser ? 35 : 0)}px;
+`
 
 const UserInfoButton = styled.div`
   cursor: pointer;
@@ -126,7 +131,7 @@ const UserInfoButton = styled.div`
     border: 0px;
     color: ${white};
   }
-`;
+`
 
 const PseudoDiv = styled.div`
   min-width: 50px;
@@ -140,7 +145,7 @@ const PseudoDiv = styled.div`
   text-align: center;
   text-transform: uppercase;
   margin-right: 10px;
-`;
+`
 
 const UserInfo = styled.div`
   display: flex;
@@ -148,7 +153,7 @@ const UserInfo = styled.div`
   text-align: left;
   margin: 0px 4px;
   color: ${eastBaycolor};
-`;
+`
 
 const UserName = styled.div`
   font-size: 14px;
@@ -157,15 +162,15 @@ const UserName = styled.div`
   overflow: hidden;
   white-space: nowrap;
   width: 80px;
-`;
+`
 
 const UserType = styled.div`
   font-size: 12px;
   text-transform: capitalize;
-`;
+`
 
 const IconDropdown = styled(AntIcon)`
   color: ${mainTextColor};
   position: absolute;
   top: -10px;
-`;
+`

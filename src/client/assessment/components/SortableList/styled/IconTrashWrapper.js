@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const IconTrashWrapper = styled.div`
   width: 50px;
@@ -12,4 +12,4 @@ export const IconTrashWrapper = styled.div`
     cursor: pointer;
     background: #f9f9f9;
   }
-`;
+`

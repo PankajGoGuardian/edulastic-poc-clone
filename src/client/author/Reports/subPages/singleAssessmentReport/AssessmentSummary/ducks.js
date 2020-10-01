@@ -1,19 +1,24 @@
-import { isEmpty } from "lodash";
-import { takeLatest, call, put, all } from "redux-saga/effects";
-import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { notification } from "@edulastic/common";
-import { createAction, createReducer } from "redux-starter-kit";
+import { isEmpty } from 'lodash'
+import { takeLatest, call, put, all } from 'redux-saga/effects'
+import { createSelector } from 'reselect'
+import { reportsApi } from '@edulastic/api'
+import { notification } from '@edulastic/common'
+import { createAction, createReducer } from 'redux-starter-kit'
 
-import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
-const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST = "[reports] get reports assessment summary request";
-const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS = "[reports] get reports assessment summary success";
-const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR = "[reports] get reports assessment summary error";
+const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST =
+  '[reports] get reports assessment summary request'
+const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS =
+  '[reports] get reports assessment summary success'
+const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR =
+  '[reports] get reports assessment summary error'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const getAssessmentSummaryRequestAction = createAction(GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST);
+export const getAssessmentSummaryRequestAction = createAction(
+  GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST
+)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -21,17 +26,18 @@ export const getAssessmentSummaryRequestAction = createAction(GET_REPORTS_ASSESS
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reportAssessmentSummaryReducer;
+export const stateSelector = (state) =>
+  state.reportReducer.reportAssessmentSummaryReducer
 
 export const getReportsAssessmentSummary = createSelector(
   stateSelector,
-  state => state.assessmentSummary
-);
+  (state) => state.assessmentSummary
+)
 
 export const getReportsAssessmentSummaryLoader = createSelector(
   stateSelector,
-  state => state.loading
-);
+  (state) => state.loading
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -41,28 +47,28 @@ export const getReportsAssessmentSummaryLoader = createSelector(
 
 export const defaultReport = {
   bandInfo: [],
-  metricInfo: []
-};
+  metricInfo: [],
+}
 
 const initialState = {
   assessmentSummary: defaultReport,
-  loading: false
-};
+  loading: false,
+}
 
 export const reportAssessmentSummaryReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST]: (state, { payload }) => {
-    state.loading = true;
+    state.loading = true
   },
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false;
-    state.assessmentSummary = payload.assessmentSummary;
+    state.loading = false
+    state.assessmentSummary = payload.assessmentSummary
   },
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false;
-    state.error = payload.error;
-  }
-});
+    state.loading = false
+    state.error = payload.error
+  },
+})
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
@@ -73,31 +79,40 @@ export const reportAssessmentSummaryReducer = createReducer(initialState, {
 function* getReportsAssessmentSummaryRequest({ payload }) {
   try {
     payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(",") || payload.requestFilters?.classId || "";
+      payload.requestFilters?.classIds?.join(',') ||
+      payload.requestFilters?.classId ||
+      ''
     payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(",") || payload.requestFilters?.groupId || "";
+      payload.requestFilters?.groupIds?.join(',') ||
+      payload.requestFilters?.groupId ||
+      ''
     const {
-      data: { result }
-    } = yield call(reportsApi.fetchAssessmentSummaryReport, payload);
-    const assessmentSummary = isEmpty(result) ? defaultReport : result;
+      data: { result },
+    } = yield call(reportsApi.fetchAssessmentSummaryReport, payload)
+    const assessmentSummary = isEmpty(result) ? defaultReport : result
 
     yield put({
       type: GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS,
-      payload: { assessmentSummary }
-    });
+      payload: { assessmentSummary },
+    })
   } catch (error) {
-    console.log("err", error.stack);
-    const msg = "Failed to fetch assessment Summary Please try again...";
-    notification({ msg });
+    console.log('err', error.stack)
+    const msg = 'Failed to fetch assessment Summary Please try again...'
+    notification({ msg })
     yield put({
       type: GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR,
-      payload: { error: msg }
-    });
+      payload: { error: msg },
+    })
   }
 }
 
 export function* reportAssessmentSummarySaga() {
-  yield all([yield takeLatest(GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST, getReportsAssessmentSummaryRequest)]);
+  yield all([
+    yield takeLatest(
+      GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST,
+      getReportsAssessmentSummaryRequest
+    ),
+  ])
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

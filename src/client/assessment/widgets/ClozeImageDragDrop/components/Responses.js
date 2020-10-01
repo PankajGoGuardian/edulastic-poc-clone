@@ -1,11 +1,11 @@
-import React from "react";
-import { isEqual, shuffle } from "lodash";
-import PropTypes from "prop-types";
+import React from 'react'
+import { isEqual, shuffle } from 'lodash'
+import PropTypes from 'prop-types'
 
-import DragItem from "@edulastic/common/src/components/DragDrop/DragItem";
-import { MathSpan } from "@edulastic/common";
+import DragItem from '@edulastic/common/src/components/DragDrop/DragItem'
+import { MathSpan } from '@edulastic/common'
 
-import { ChoiceItem, DragHandler } from "../../../components/ChoiceItem";
+import { ChoiceItem, DragHandler } from '../../../components/ChoiceItem'
 
 class Responses extends React.Component {
   static propTypes = {
@@ -19,30 +19,36 @@ class Responses extends React.Component {
     shuffleOptions: PropTypes.bool,
     transparentResponses: PropTypes.bool,
     width: PropTypes.number.isRequired,
-    widthpx: PropTypes.number.isRequired
-  };
+    widthpx: PropTypes.number.isRequired,
+  }
 
   static defaultProps = {
     dragHandler: false,
-    overflow: "hidden",
+    overflow: 'hidden',
     shuffleOptions: false,
     transparentResponses: false,
-    fontSize: "13px"
-  };
+    fontSize: '13px',
+  }
 
   shouldComponentUpdate(nextProps) {
-    const { responses: currentResponses } = this.props;
-    const { responses: nextResponses } = nextProps;
-    const responsesAreEqual = isEqual(currentResponses, nextResponses);
+    const { responses: currentResponses } = this.props
+    const { responses: nextResponses } = nextProps
+    const responsesAreEqual = isEqual(currentResponses, nextResponses)
 
-    return !responsesAreEqual;
+    return !responsesAreEqual
   }
 
   render() {
-    const { responses, dragHandler, shuffleOptions, transparentResponses, ...choiceStyle } = this.props;
-    const dragItems = shuffleOptions ? shuffle(responses) : responses;
+    const {
+      responses,
+      dragHandler,
+      shuffleOptions,
+      transparentResponses,
+      ...choiceStyle
+    } = this.props
+    const dragItems = shuffleOptions ? shuffle(responses) : responses
 
-    return dragItems.map((option = "", index) => (
+    return dragItems.map((option = '', index) => (
       <DragItem
         id={`response-item-${index}`}
         key={`response-item-${index}`}
@@ -51,14 +57,16 @@ class Responses extends React.Component {
       >
         <ChoiceItem
           style={choiceStyle}
-          className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
+          className={
+            transparentResponses ? 'draggable_box_transparent' : 'draggable_box'
+          }
         >
           {dragHandler && <DragHandler />}
           <MathSpan dangerouslySetInnerHTML={{ __html: option.value }} />
         </ChoiceItem>
       </DragItem>
-    ));
+    ))
   }
 }
 
-export default Responses;
+export default Responses

@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { PaddingDiv } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { PaddingDiv } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { changePreviewTabAction, getPreivewTabSelector } from "../../ducks";
-import { changeViewAction } from "../../../src/actions/view";
-import { getViewSelector } from "../../../src/selectors/view";
-import { updateItemByIdAction } from "../../../src/actions/items";
-import { ButtonBar, Container } from "../../../src/components/common";
-import AddNew from "../AddNew/AddNew";
-import { getItemSelector } from "../../../src/selectors/items";
-import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
-import ItemHeader from "../../../QuestionEditor/components/ItemHeader/ItemHeader";
+import { changePreviewTabAction, getPreivewTabSelector } from '../../ducks'
+import { changeViewAction } from '../../../src/actions/view'
+import { getViewSelector } from '../../../src/selectors/view'
+import { updateItemByIdAction } from '../../../src/actions/items'
+import { ButtonBar, Container } from '../../../src/components/common'
+import AddNew from '../AddNew/AddNew'
+import { getItemSelector } from '../../../src/selectors/items'
+import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
+import ItemHeader from '../../../QuestionEditor/components/ItemHeader/ItemHeader'
 
 class MainContainer extends Component {
   static propTypes = {
@@ -26,79 +26,85 @@ class MainContainer extends Component {
     previewTab: PropTypes.string.isRequired,
     setQuestionsState: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    t: PropTypes.func.isRequired
-  };
+    t: PropTypes.func.isRequired,
+  }
 
   static defaultProps = {
-    item: {}
-  };
+    item: {},
+  }
 
   state = {
-    reference: "",
-    showModal: false
-  };
+    reference: '',
+    showModal: false,
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.item) {
-      this.setState({ reference: nextProps.item._id });
+      this.setState({ reference: nextProps.item._id })
     }
   }
 
-  handleChangeView = view => {
-    const { changeView } = this.props;
-    changeView(view);
-  };
+  handleChangeView = (view) => {
+    const { changeView } = this.props
+    changeView(view)
+  }
 
   handleShowSource = () => {
-    this.setState({ showModal: true });
-  };
+    this.setState({ showModal: true })
+  }
 
-  editReference = e => {
-    const { item, updateItemById } = this.props;
+  editReference = (e) => {
+    const { item, updateItemById } = this.props
     if (item._id !== e.target.value) {
-      updateItemById({ id: item._id, reference: e.target.value });
+      updateItemById({ id: item._id, reference: e.target.value })
     }
-  };
+  }
 
-  onInputReference = e => {
-    this.setState({ reference: e.target.value });
-  };
+  onInputReference = (e) => {
+    this.setState({ reference: e.target.value })
+  }
 
   moveNew = () => {
-    const { history, item } = this.props;
-    history.push(`/author/items/${item._id}/pickup-questiontype`);
-  };
+    const { history, item } = this.props
+    history.push(`/author/items/${item._id}/pickup-questiontype`)
+  }
 
   handleHideSource = () => {
-    this.setState({ showModal: false });
-  };
+    this.setState({ showModal: false })
+  }
 
-  handleApplySource = json => {
-    const { setQuestionsState } = this.props;
+  handleApplySource = (json) => {
+    const { setQuestionsState } = this.props
     try {
-      const state = JSON.parse(json);
-      setQuestionsState(state);
-      this.handleHideSource();
+      const state = JSON.parse(json)
+      setQuestionsState(state)
+      this.handleHideSource()
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }
 
   render() {
-    const { view, changePreviewTab, previewTab, questionsData, t } = this.props;
-    const { showModal, reference } = this.state;
+    const { view, changePreviewTab, previewTab, questionsData, t } = this.props
+    const { showModal, reference } = this.state
 
     return (
       <Container>
         {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
             {JSON.stringify(questionsData, null, 4)}
           </SourceModal>
         )}
         <ItemHeader
           showIcon
-          title={t("component.itemAdd.itemlist")}
-          link={{ url: "/author/items", text: t("component.itemAdd.backToItemList") }}
+          title={t('component.itemAdd.itemlist')}
+          link={{
+            url: '/author/items',
+            text: t('component.itemAdd.backToItemList'),
+          }}
           reference={reference}
           editReference={this.editReference}
           onChange={this.onInputReference}
@@ -117,24 +123,24 @@ class MainContainer extends Component {
           <AddNew moveNew={this.moveNew} />
         </PaddingDiv>
       </Container>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("author"),
+  withNamespaces('author'),
   connect(
-    state => ({
+    (state) => ({
       view: getViewSelector(state),
       item: getItemSelector(state),
-      previewTab: getPreivewTabSelector(state)
+      previewTab: getPreivewTabSelector(state),
     }),
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
-      updateItemById: updateItemByIdAction
+      updateItemById: updateItemByIdAction,
     }
   )
-);
+)
 
-export default enhance(MainContainer);
+export default enhance(MainContainer)

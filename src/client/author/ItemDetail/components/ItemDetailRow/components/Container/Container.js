@@ -1,30 +1,37 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import { Tabs, FlexContainer } from "@edulastic/common";
-import { IconPlusCircle } from "@edulastic/icons";
-import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
-import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
-import AddNew from "../AddNew/AddNew";
-import { Content, AddButtonContainer, TabContainer, WidgetContainer, AddTabButton, GreenPlusIcon } from "./styled";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
+import { Tabs, FlexContainer } from '@edulastic/common'
+import { IconPlusCircle } from '@edulastic/icons'
+import ItemDetailWidget from '../ItemDetailWidget/ItemDetailWidget'
+import ItemDetailDropTarget from '../ItemDetailDropTarget/ItemDetailDropTarget'
+import AddNew from '../AddNew/AddNew'
+import {
+  Content,
+  AddButtonContainer,
+  TabContainer,
+  WidgetContainer,
+  AddTabButton,
+  GreenPlusIcon,
+} from './styled'
 import {
   getItemDetailDraggingSelector,
   addTabsAction,
   changeTabTitleAction,
   removeTabAction,
-  setItemLevelScoreAction
-} from "../../../../ducks";
-import AddNewItem from "../AddNew/AddNewItem";
-import { AddNewButton, Container as ButtonContainer } from "../AddNew/styled";
+  setItemLevelScoreAction,
+} from '../../../../ducks'
+import AddNewItem from '../AddNew/AddNewItem'
+import { AddNewButton, Container as ButtonContainer } from '../AddNew/styled'
 
 // src/client/author/ItemDetail/ducks.js
 
 class Container extends Component {
   state = {
-    tabIndex: 0
-  };
+    tabIndex: 0,
+  }
 
   static propTypes = {
     row: PropTypes.object.isRequired,
@@ -42,39 +49,45 @@ class Container extends Component {
     handleAddToPassage: PropTypes.func.isRequired,
     hideColumn: PropTypes.func.isRequired,
     addTabs: PropTypes.func.isRequired,
-    removeTab: PropTypes.func.isRequired
-  };
+    removeTab: PropTypes.func.isRequired,
+  }
 
-  handleTabChange = tabIndex => {
-    const { row } = this.props;
+  handleTabChange = (tabIndex) => {
+    const { row } = this.props
     this.setState({
-      tabIndex: row.tabs.length - 1 < tabIndex ? row.tabs.length - 1 : tabIndex
-    });
-  };
+      tabIndex: row.tabs.length - 1 < tabIndex ? row.tabs.length - 1 : tabIndex,
+    })
+  }
 
   onEditWidgetClick = (widget, rowIndex) => () => {
-    const { onEditWidget } = this.props;
-    onEditWidget(widget, rowIndex);
-  };
+    const { onEditWidget } = this.props
+    onEditWidget(widget, rowIndex)
+  }
 
-  onDeleteWidgetClick = widgetIndex => () => {
-    const { onDeleteWidget } = this.props;
-    onDeleteWidget(widgetIndex);
-  };
+  onDeleteWidgetClick = (widgetIndex) => () => {
+    const { onDeleteWidget } = this.props
+    onDeleteWidget(widgetIndex)
+  }
 
-  onAddBtnClick = object => () => {
-    const { onAdd } = this.props;
-    onAdd(object);
-  };
+  onAddBtnClick = (object) => () => {
+    const { onAdd } = this.props
+    onAdd(object)
+  }
 
   addNewItemToPassage = () => {
-    const { addItemToPassage } = this.props;
+    const { addItemToPassage } = this.props
     // Add new item similar to + item in pagination
-    addItemToPassage();
-  };
+    addItemToPassage()
+  }
 
-  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout, previewTab }) => {
-    const { itemData } = this.props;
+  renderTabContent = ({
+    widgetIndex,
+    widget,
+    rowIndex,
+    flowLayout,
+    previewTab,
+  }) => {
+    const { itemData } = this.props
     return (
       <ItemDetailWidget
         widget={widget}
@@ -86,16 +99,24 @@ class Container extends Component {
         flowLayout={flowLayout}
         previewTab={previewTab}
       />
-    );
-  };
+    )
+  }
 
   renderWidgets = () => {
-    const { row, dragging, rowIndex, itemData, setItemLevelScore, view, previewTab } = this.props;
-    const { tabIndex } = this.state;
+    const {
+      row,
+      dragging,
+      rowIndex,
+      itemData,
+      setItemLevelScore,
+      view,
+      previewTab,
+    } = this.props
+    const { tabIndex } = this.state
 
     return (
       <WidgetContainer flowLayout={row.flowLayout}>
-        {view !== "edit" && !row.widgets.length && itemData.itemLevelScoring && (
+        {view !== 'edit' && !row.widgets.length && itemData.itemLevelScoring && (
           <FlexContainer justifyContent="flex-end" marginBottom="1em">
             <div className="points">Points</div>
             <div>
@@ -104,11 +125,11 @@ class Container extends Component {
                 type="number"
                 min={0}
                 value={itemData.itemLevelScore}
-                onChange={e => {
-                  const v = parseFloat(e.target.value);
-                  setItemLevelScore(v);
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value)
+                  setItemLevelScore(v)
                 }}
-                style={{ maxWidth: "45px" }}
+                style={{ maxWidth: '45px' }}
               />
             </div>
           </FlexContainer>
@@ -116,7 +137,11 @@ class Container extends Component {
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
             {dragging && widget.tabIndex === tabIndex && (
-              <ItemDetailDropTarget widgetIndex={i} rowIndex={rowIndex} tabIndex={tabIndex} />
+              <ItemDetailDropTarget
+                widgetIndex={i}
+                rowIndex={rowIndex}
+                tabIndex={tabIndex}
+              />
             )}
             {!!row.tabs.length &&
               tabIndex === widget.tabIndex &&
@@ -125,7 +150,7 @@ class Container extends Component {
                 widget,
                 rowIndex,
                 flowLayout: row.flowLayout,
-                previewTab
+                previewTab,
               })}
             {!row.tabs.length &&
               this.renderTabContent({
@@ -133,13 +158,13 @@ class Container extends Component {
                 widget,
                 rowIndex,
                 flowLayout: row.flowLayout,
-                previewTab
+                previewTab,
               })}
           </React.Fragment>
         ))}
       </WidgetContainer>
-    );
-  };
+    )
+  }
 
   /**
    * check if the row can have another part.
@@ -152,13 +177,13 @@ class Container extends Component {
   canRowHaveAnotherPart = (row, rowIndex) => {
     // if its not left most row, let it add
     if (rowIndex !== 0) {
-      return true;
+      return true
     }
     // if there is only 1 widget and, that is passage, then dont show the add
     // another part button. Oh, also it should be left row.
-    const widgetCount = get(row, "widgets.length", 0);
-    return !(widgetCount === 1 && row.widgets[0].type === "passage");
-  };
+    const widgetCount = get(row, 'widgets.length', 0)
+    return !(widgetCount === 1 && row.widgets[0].type === 'passage')
+  }
 
   render() {
     const {
@@ -172,14 +197,19 @@ class Container extends Component {
       addTabs,
       removeTab,
       passageNavigator,
-      showAddItemButton
-    } = this.props;
-    const { tabIndex } = this.state;
-    const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
+      showAddItemButton,
+    } = this.props
+    const { tabIndex } = this.state
+    const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
     // adding first part?
-    const isAddFirstPart = row.widgets && row.widgets.length === 0;
+    const isAddFirstPart = row.widgets && row.widgets.length === 0
     return (
-      <Content value={tabIndex} padding="20px 0px 25px" hide={hideColumn} data-cy="itemdetail-content">
+      <Content
+        value={tabIndex}
+        padding="20px 0px 25px"
+        hide={hideColumn}
+        data-cy="itemdetail-content"
+      >
         {isPassageQuestion && row.tabs?.length === 0 && (
           <AddTabButton tabsBtn onClick={() => addTabs()}>
             <GreenPlusIcon>+</GreenPlusIcon>
@@ -189,7 +219,10 @@ class Container extends Component {
         {passageNavigator}
         {row.tabs && row.tabs.length > 0 && (
           <TabContainer>
-            <Tabs value={tabIndex} onChange={ind => this.handleTabChange(ind)}>
+            <Tabs
+              value={tabIndex}
+              onChange={(ind) => this.handleTabChange(ind)}
+            >
               {row.tabs.map((tab, key) => (
                 <Tabs.Tab
                   key={key}
@@ -197,17 +230,17 @@ class Container extends Component {
                   style={
                     isPassageQuestion
                       ? {
-                          textAlign: "center",
-                          padding: "5px 15px",
-                          display: "flex"
+                          textAlign: 'center',
+                          padding: '5px 15px',
+                          display: 'flex',
                         }
                       : {
-                          textAlign: "center",
-                          padding: "5px 15px",
-                          width: `calc(${100 / row.tabs.length}% - 10px)`
+                          textAlign: 'center',
+                          padding: '5px 15px',
+                          width: `calc(${100 / row.tabs.length}% - 10px)`,
                         }
                   }
-                  onChange={e => changeTabTitle(tabIndex, e.target.value)}
+                  onChange={(e) => changeTabTitle(tabIndex, e.target.value)}
                   editable
                   close
                   onClose={() => removeTab(key)}
@@ -220,8 +253,8 @@ class Container extends Component {
                   key={row.length}
                   label="ADD TAB"
                   style={{
-                    textAlign: "center",
-                    padding: "5px 15px"
+                    textAlign: 'center',
+                    padding: '5px 15px',
                   }}
                   addTabs={addTabs}
                   isAddTab
@@ -230,29 +263,49 @@ class Container extends Component {
             </Tabs>
           </TabContainer>
         )}
-        {!row.widgets.length && dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
-        {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
-          <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />
+        {!row.widgets.length && dragging && (
+          <ItemDetailDropTarget
+            widgetIndex={0}
+            rowIndex={rowIndex}
+            tabIndex={0}
+          />
         )}
+        {dragging &&
+          row.widgets.filter((w) => w.tabIndex === tabIndex).length === 0 && (
+            <ItemDetailDropTarget
+              widgetIndex={0}
+              rowIndex={rowIndex}
+              tabIndex={tabIndex}
+            />
+          )}
         {this.renderWidgets()}
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
             {/* New part/question */}
-            <AddNew isAddFirstPart={isAddFirstPart} onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
+            <AddNew
+              isAddFirstPart={isAddFirstPart}
+              onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
+            />
             {/* New testItem */}
-            {showAddItemButton && <AddNewItem onClick={this.addNewItemToPassage} />}
+            {showAddItemButton && (
+              <AddNewItem onClick={this.addNewItemToPassage} />
+            )}
           </AddButtonContainer>
         )}
         {isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
             <ButtonContainer>
-              <AddNewButton onClick={() => handleAddToPassage("video", tabIndex)}>
+              <AddNewButton
+                onClick={() => handleAddToPassage('video', tabIndex)}
+              >
                 <IconPlusCircle />
                 ADD VIDEO
               </AddNewButton>
             </ButtonContainer>
             <ButtonContainer>
-              <AddNewButton onClick={() => handleAddToPassage("passage", tabIndex)}>
+              <AddNewButton
+                onClick={() => handleAddToPassage('passage', tabIndex)}
+              >
                 <IconPlusCircle />
                 ADD PASSAGE
               </AddNewButton>
@@ -260,22 +313,22 @@ class Container extends Component {
           </AddButtonContainer>
         )}
       </Content>
-    );
+    )
   }
 }
 
 const enhance = compose(
   connect(
-    state => ({
-      dragging: getItemDetailDraggingSelector(state)
+    (state) => ({
+      dragging: getItemDetailDraggingSelector(state),
     }),
     {
       setItemLevelScore: setItemLevelScoreAction,
       addTabs: addTabsAction,
       changeTabTitle: changeTabTitleAction,
-      removeTab: removeTabAction
+      removeTab: removeTabAction,
     }
   )
-);
+)
 
-export default enhance(Container);
+export default enhance(Container)

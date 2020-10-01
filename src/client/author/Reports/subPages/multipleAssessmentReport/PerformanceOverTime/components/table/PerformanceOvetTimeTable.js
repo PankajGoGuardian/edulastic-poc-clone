@@ -1,13 +1,22 @@
-import React from "react";
-import { map } from "lodash";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { extraDesktopWidthMax } from "@edulastic/colors";
-import { StyledCard, StyledTable as Table, StyledH3, StyledCell } from "../../../../../common/styled";
-import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
-import { getHSLFromRange1, stringCompare, downloadCSV } from "../../../../../common/util";
-import CsvTable from "../../../../../common/components/tables/CsvTable";
+import React from 'react'
+import { map } from 'lodash'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { extraDesktopWidthMax } from '@edulastic/colors'
+import {
+  StyledCard,
+  StyledTable as Table,
+  StyledH3,
+  StyledCell,
+} from '../../../../../common/styled'
+import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
+import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
+import {
+  getHSLFromRange1,
+  stringCompare,
+  downloadCSV,
+} from '../../../../../common/util'
+import CsvTable from '../../../../../common/components/tables/CsvTable'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -56,112 +65,124 @@ const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 const staticFields = [
   {
-    title: "Assessment Name",
-    dataIndex: "testName",
-    fixed: "left",
+    title: 'Assessment Name',
+    dataIndex: 'testName',
+    fixed: 'left',
     width: 250,
-    align: "left",
-    sorter: (a, b) => stringCompare(a.testName, b.testName)
+    align: 'left',
+    sorter: (a, b) => stringCompare(a.testName, b.testName),
   },
   {
-    title: "Type",
+    title: 'Type',
     width: 110,
-    dataIndex: "testType"
+    dataIndex: 'testType',
   },
   {
-    title: "Assessment Date",
-    dataIndex: "assessmentDateFormatted",
-    className: "assessmentDate",
+    title: 'Assessment Date',
+    dataIndex: 'assessmentDateFormatted',
+    className: 'assessmentDate',
     width: 120,
-    sorter: (a, b) => a.assessmentDate - b.assessmentDate
+    sorter: (a, b) => a.assessmentDate - b.assessmentDate,
   },
   {
-    title: "Max Possible Score",
+    title: 'Max Possible Score',
     width: 120,
-    dataIndex: "maxPossibleScore"
+    dataIndex: 'maxPossibleScore',
   },
   {
-    title: "Questions",
+    title: 'Questions',
     width: 90,
-    dataIndex: "totalTestItems"
+    dataIndex: 'totalTestItems',
   },
   {
-    title: "Assigned",
+    title: 'Assigned',
     width: 90,
-    dataIndex: "totalAssigned"
+    dataIndex: 'totalAssigned',
   },
   {
-    title: "Submitted",
+    title: 'Submitted',
     width: 90,
-    dataIndex: "totalGraded"
+    dataIndex: 'totalGraded',
   },
   {
-    title: "Absent",
+    title: 'Absent',
     width: 90,
-    dataIndex: "totalAbsent"
-  }
-];
+    dataIndex: 'totalAbsent',
+  },
+]
 
 const customFields = [
   {
-    title: "Min. Score",
+    title: 'Min. Score',
     width: 100,
-    dataIndex: "minScore"
+    dataIndex: 'minScore',
   },
   {
-    title: "Max. Score",
+    title: 'Max. Score',
     width: 100,
-    dataIndex: "maxScore"
+    dataIndex: 'maxScore',
   },
   {
-    title: "Avg. Student (Score%)",
+    title: 'Avg. Student (Score%)',
     width: 120,
-    dataIndex: "score"
-  }
-];
+    dataIndex: 'score',
+  },
+]
 
 const getCol = (text, backgroundColor) => (
   <StyledCell justify="center" style={{ backgroundColor }}>
-    {text || "N/A"}
+    {text || 'N/A'}
   </StyledCell>
-);
+)
 
 const getColumns = () => {
-  const dynamicColumns = map(customFields, field => ({
+  const dynamicColumns = map(customFields, (field) => ({
     ...field,
     render: (text, record) => {
-      let value = text || 0;
-      let color = "transparent";
+      let value = text || 0
+      let color = 'transparent'
 
-      if (field.dataIndex === "score") {
-        color = getHSLFromRange1(value);
-        value = `${value}%`;
+      if (field.dataIndex === 'score') {
+        color = getHSLFromRange1(value)
+        value = `${value}%`
       } else {
         // to display maxScore and minScore upto 2 decimal places
-        value = value.toFixed(2);
+        value = value.toFixed(2)
       }
 
       const toolTipText = () => (
         <div>
-          <TableTooltipRow title="Assessment Name : " value={record.testName || "N/A"} />
-          <TableTooltipRow title="Assessment Date : " value={record.assessmentDateFormatted} />
+          <TableTooltipRow
+            title="Assessment Name : "
+            value={record.testName || 'N/A'}
+          />
+          <TableTooltipRow
+            title="Assessment Date : "
+            value={record.assessmentDateFormatted}
+          />
           <TableTooltipRow title={`${field.title} : `} value={value} />
         </div>
-      );
+      )
 
-      return <CustomTableTooltip placement="top" title={toolTipText()} getCellContents={() => getCol(value, color)} />;
-    }
-  }));
+      return (
+        <CustomTableTooltip
+          placement="top"
+          title={toolTipText()}
+          getCellContents={() => getCol(value, color)}
+        />
+      )
+    },
+  }))
 
-  return [...staticFields, ...dynamicColumns];
-};
+  return [...staticFields, ...dynamicColumns]
+}
 
 const PerformanceOverTimeTable = ({ dataSource, isCsvDownloading }) => {
-  const onCsvConvert = data => downloadCSV(`Performance Over Time.csv`, data);
+  const onCsvConvert = (data) => downloadCSV(`Performance Over Time.csv`, data)
 
   return (
     <StyledCard>
@@ -173,15 +194,15 @@ const PerformanceOverTimeTable = ({ dataSource, isCsvDownloading }) => {
         tableToRender={StyledTable}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
-        scroll={{ x: "100%" }}
+        scroll={{ x: '100%' }}
       />
     </StyledCard>
-  );
-};
+  )
+}
 
 PerformanceOverTimeTable.propTypes = {
   dataSource: PropTypes.array.isRequired,
-  isCsvDownloading: PropTypes.bool.isRequired
-};
+  isCsvDownloading: PropTypes.bool.isRequired,
+}
 
-export default PerformanceOverTimeTable;
+export default PerformanceOverTimeTable

@@ -1,7 +1,12 @@
-import { desktopWidth, mobileWidth, mobileWidthLarge, white } from "@edulastic/colors";
-import { Paper, MainContentWrapper } from "@edulastic/common";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import styled from "styled-components";
+import {
+  desktopWidth,
+  mobileWidth,
+  mobileWidthLarge,
+  white,
+} from '@edulastic/colors'
+import { Paper, MainContentWrapper } from '@edulastic/common'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import styled from 'styled-components'
 
 export const Container = styled(MainContentWrapper)`
   padding: 0;
@@ -13,7 +18,7 @@ export const Container = styled(MainContentWrapper)`
     height: initial;
     overflow: auto;
   }
-`;
+`
 
 export const ContentWrapper = styled(Paper)`
   position: relative;
@@ -28,7 +33,7 @@ export const ContentWrapper = styled(Paper)`
     border-radius: 10px;
     padding: 0 0 28px 0;
   }
-`;
+`
 
 export const MobileFilterIcon = styled.div`
   display: block;
@@ -36,17 +41,17 @@ export const MobileFilterIcon = styled.div`
   @media (max-width: ${desktopWidth}) {
     display: none;
   }
-`;
+`
 
 export const ListItems = styled.div`
   flex: 1;
-  padding-left: ${props => (props.isShowFilter ? "0px" : "30px")};
+  padding-left: ${(props) => (props.isShowFilter ? '0px' : '30px')};
   width: calc(100% - 370px); /* 370px --> width of the item filter */
 
   @media (max-width: ${desktopWidth}) {
     padding-left: 0px;
   }
-`;
+`
 
 export const ScrollbarContainer = styled(PerfectScrollbar)`
   padding: 0px 30px;
@@ -54,7 +59,7 @@ export const ScrollbarContainer = styled(PerfectScrollbar)`
   @media (max-width: ${mobileWidthLarge}) {
     padding: 0px 15px;
   }
-`;
+`
 
 export const Element = styled.div`
   margin: 0;
@@ -79,7 +84,7 @@ export const Element = styled.div`
       width: 100%;
     }
   }
-`;
+`
 
 export const SpinContainer = styled.div`
   transition: all 0.3s ease;
@@ -100,7 +105,7 @@ export const SpinContainer = styled.div`
     pointer-events: all;
     opacity: 1;
   }
-`;
+`
 
 export const PaginationContainer = styled.div`
   .ant-pagination {
@@ -110,4 +115,4 @@ export const PaginationContainer = styled.div`
     align-items: center;
     justify-content: center;
   }
-`;
+`

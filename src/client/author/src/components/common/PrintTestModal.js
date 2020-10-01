@@ -1,62 +1,76 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { Radio, Modal, Input, Alert } from "antd";
-import { EduButton, FlexContainer } from "@edulastic/common";
-import { greyThemeDark1, greyishBorder, lightGreySecondary } from "@edulastic/colors";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { testsApi } from "@edulastic/api";
-import { getOrderedQuestionsAndAnswers } from "../../../PrintAssessment/utils";
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { Radio, Modal, Input, Alert } from 'antd'
+import { EduButton, FlexContainer } from '@edulastic/common'
+import {
+  greyThemeDark1,
+  greyishBorder,
+  lightGreySecondary,
+} from '@edulastic/colors'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { testsApi } from '@edulastic/api'
+import { getOrderedQuestionsAndAnswers } from '../../../PrintAssessment/utils'
 
-const regexStr = /^[0-9,-]+$/;
+const regexStr = /^[0-9,-]+$/
 const optionInfos = {
-  complete: ["All the items in the test will be printed."],
+  complete: ['All the items in the test will be printed.'],
   manualGraded: [
-    "Items that are marked as manual graded will be printed.",
-    "e.g. Essay with rich Text, Math Essay etc..."
+    'Items that are marked as manual graded will be printed.',
+    'e.g. Essay with rich Text, Math Essay etc...',
   ],
-  custom: ["Enter the item numbers in the below box to print"]
-};
+  custom: ['Enter the item numbers in the below box to print'],
+}
 
-const PrintTestModal = ({ onCancel, onProceed, currentTestId, assignmentId }) => {
-  const [option, setOption] = useState("complete");
-  const [customValue, setCustomValue] = useState("");
-  const [error, setError] = useState("");
-  const [haveManualGradedQs, setHaveManualGradedQs] = useState(false);
+const PrintTestModal = ({
+  onCancel,
+  onProceed,
+  currentTestId,
+  assignmentId,
+}) => {
+  const [option, setOption] = useState('complete')
+  const [customValue, setCustomValue] = useState('')
+  const [error, setError] = useState('')
+  const [haveManualGradedQs, setHaveManualGradedQs] = useState(false)
 
   useEffect(() => {
     // fetching test to check if manual graded items avaiable or not
-    testsApi.getById(currentTestId, { assignmentId }).then(test => {
-      const { passages, itemGroups = [] } = test;
-      const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
-      const { questions } = getOrderedQuestionsAndAnswers(testItems, passages, "manualGraded", []);
-      setHaveManualGradedQs(!!questions.length);
-    });
-  }, []);
+    testsApi.getById(currentTestId, { assignmentId }).then((test) => {
+      const { passages, itemGroups = [] } = test
+      const testItems = itemGroups.flatMap((itemGroup) => itemGroup.items || [])
+      const { questions } = getOrderedQuestionsAndAnswers(
+        testItems,
+        passages,
+        'manualGraded',
+        []
+      )
+      setHaveManualGradedQs(!!questions.length)
+    })
+  }, [])
 
-  const handleChangeOption = e => {
-    setError("");
-    setOption(e.target.value);
-  };
+  const handleChangeOption = (e) => {
+    setError('')
+    setOption(e.target.value)
+  }
 
-  const onChangeInput = e => {
-    const { value } = e.target;
+  const onChangeInput = (e) => {
+    const { value } = e.target
     // restricting to comma, dash and number
     if (regexStr.test(value)) {
-      setCustomValue(value);
+      setCustomValue(value)
     }
-  };
+  }
 
   const handleSubmit = () => {
     const params = {
       type: option,
-      customValue
-    };
-    if (option === "custom" && !customValue.trim()) {
-      return setError("Please enter custom inputs");
+      customValue,
     }
-    onProceed(params);
-  };
+    if (option === 'custom' && !customValue.trim()) {
+      return setError('Please enter custom inputs')
+    }
+    onProceed(params)
+  }
 
   return (
     <StyledModal
@@ -79,36 +93,45 @@ const PrintTestModal = ({ onCancel, onProceed, currentTestId, assignmentId }) =>
     >
       <FlexContainer
         style={{
-          flexDirection: "column",
-          alignItems: "flex-start",
-          fontWeight: "600",
-          minHeight: "180px",
-          justifyContent: "flex-start"
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          fontWeight: '600',
+          minHeight: '180px',
+          justifyContent: 'flex-start',
         }}
       >
-        <div style={{ marginBottom: "31px", fontSize: "14px" }}>Select the print type based on your need.</div>
+        <div style={{ marginBottom: '31px', fontSize: '14px' }}>
+          Select the print type based on your need.
+        </div>
         <StyledRadioGroup onChange={handleChangeOption} value={option}>
           <Radio value="complete">COMPLETE TEST</Radio>
-          {haveManualGradedQs && <Radio value="manualGraded">MANUALLY GRADED ITEMS</Radio>}
+          {haveManualGradedQs && (
+            <Radio value="manualGraded">MANUALLY GRADED ITEMS</Radio>
+          )}
           <Radio value="custom">CUSTOM</Radio>
         </StyledRadioGroup>
 
         <Info>
           <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" />
-          <div style={{ marginLeft: "5px" }}>
+          <div style={{ marginLeft: '5px' }}>
             {optionInfos[option].map((txt, i) => (
               <span key={i}>{txt}</span>
             ))}
           </div>
         </Info>
-        {option === "custom" && (
-          <StyledInput size="large" placeholder="e.g. 1-4, 8, 11-13" onChange={onChangeInput} value={customValue} />
+        {option === 'custom' && (
+          <StyledInput
+            size="large"
+            placeholder="e.g. 1-4, 8, 11-13"
+            onChange={onChangeInput}
+            value={customValue}
+          />
         )}
         {error && <Alert message={error} type="error" showIcon closable />}
       </FlexContainer>
     </StyledModal>
-  );
-};
+  )
+}
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -139,14 +162,14 @@ const StyledModal = styled(Modal)`
     width: 100%;
     margin-top: 10px;
   }
-`;
+`
 const StyledFooter = styled.div`
   display: flex;
   justify-content: center;
   button {
     min-width: 200px;
   }
-`;
+`
 const StyledRadioGroup = styled(Radio.Group)`
   margin-bottom: 32px;
   span {
@@ -164,13 +187,13 @@ const StyledRadioGroup = styled(Radio.Group)`
   .ant-radio-wrapper {
     margin-right: 46px;
   }
-`;
+`
 
 const StyledInput = styled(Input)`
   border: 1px solid ${greyishBorder};
   background: ${lightGreySecondary};
   border-radius: 0;
-`;
+`
 
 const Info = styled.div`
   font-weight: 500;
@@ -183,6 +206,6 @@ const Info = styled.div`
   svg {
     margin-top: 4px;
   }
-`;
+`
 
-export default PrintTestModal;
+export default PrintTestModal

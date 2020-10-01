@@ -1,4 +1,4 @@
-import testsReducer from "../testItems";
+import testsReducer from '../testItems'
 
 import {
   RECEIVE_TESTS_REQUEST,
@@ -14,43 +14,43 @@ import {
   UPDATE_TEST_SUCCESS,
   UPDATE_TEST_ERROR,
   SET_DEFAULT_TEST_DATA,
-  SET_ASSIGNMENT
-} from "../../constants/actions";
+  SET_ASSIGNMENT,
+} from '../../constants/actions'
 
-describe("tests", () => {
+describe('tests', () => {
   const initialTestState = {
-    title: "New Test",
-    description: "",
+    title: 'New Test',
+    description: '',
     maxAttempts: 1,
-    renderingType: "assessment",
-    status: "draft",
-    thumbnail: "https://fakeimg.pl/500x135/",
+    renderingType: 'assessment',
+    status: 'draft',
+    thumbnail: 'https://fakeimg.pl/500x135/',
     createdBy: {
-      id: "",
-      firstName: "",
-      lastName: "",
-      email: ""
+      id: '',
+      firstName: '',
+      lastName: '',
+      email: '',
     },
     tags: [],
     scoring: {
       total: 0,
-      testItems: []
+      testItems: [],
     },
     testItems: [],
     assignments: [],
     standardsTag: {
-      curriculum: "",
-      standards: []
+      curriculum: '',
+      standards: [],
     },
     grades: [],
     subjects: [],
     courses: [],
-    collections: "",
+    collections: '',
     analytics: {
-      usage: "0",
-      likes: "0"
-    }
-  };
+      usage: '0',
+      likes: '0',
+    },
+  }
 
   const initialState = {
     entities: [],
@@ -60,282 +60,282 @@ describe("tests", () => {
     limit: 5,
     count: 0,
     loading: false,
-    creating: false
-  };
+    creating: false,
+  }
 
-  it("should return the initial state", () => {
-    expect(testsReducer(initialState, {})).toMatchSnapshot();
-  });
+  it('should return the initial state', () => {
+    expect(testsReducer(initialState, {})).toMatchSnapshot()
+  })
 
-  it("should return the initial state", () => {
-    expect(testsReducer(initialTestState, {})).toMatchSnapshot();
-  });
+  it('should return the initial state', () => {
+    expect(testsReducer(initialTestState, {})).toMatchSnapshot()
+  })
 
-  it("should return the receive tests request state", () => {
+  it('should return the receive tests request state', () => {
     expect(
       testsReducer(initialState, {
         type: RECEIVE_TESTS_REQUEST,
-        payload: {}
+        payload: {},
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the receive tests success state", () => {
+  it('should return the receive tests success state', () => {
     expect(
       testsReducer(initialState, {
         type: RECEIVE_TESTS_SUCCESS,
         payload: {
           entities: [
             {
-              title: "New Test",
-              description: "",
+              title: 'New Test',
+              description: '',
               maxAttempts: 1,
-              renderingType: "assessment",
-              status: "draft",
-              thumbnail: "https://fakeimg.pl/500x135/",
+              renderingType: 'assessment',
+              status: 'draft',
+              thumbnail: 'https://fakeimg.pl/500x135/',
               createdBy: {
-                id: "",
-                firstName: "",
-                lastName: "",
-                email: ""
+                id: '',
+                firstName: '',
+                lastName: '',
+                email: '',
               },
               tags: [],
               scoring: {
                 total: 0,
-                testItems: []
+                testItems: [],
               },
               testItems: [],
               assignments: [],
               standardsTag: {
-                curriculum: "",
-                standards: []
+                curriculum: '',
+                standards: [],
               },
               grades: [],
               subjects: [],
               courses: [],
-              collections: "",
+              collections: '',
               analytics: {
-                usage: "0",
-                likes: "0"
-              }
-            }
+                usage: '0',
+                likes: '0',
+              },
+            },
           ],
           page: 5,
           limit: 10,
-          count: 50
-        }
+          count: 50,
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the receive tests error state", () => {
+  it('should return the receive tests error state', () => {
     expect(
       testsReducer(initialState, {
         type: RECEIVE_TESTS_ERROR,
-        payload: { error: "unexpected error happend when receive tests" }
+        payload: { error: 'unexpected error happend when receive tests' },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the create test request state", () => {
+  it('should return the create test request state', () => {
     expect(
       testsReducer(initialState, {
         type: CREATE_TEST_REQUEST,
-        payload: {}
+        payload: {},
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the create test success state", () => {
+  it('should return the create test success state', () => {
     expect(
       testsReducer(initialState, {
         type: CREATE_TEST_SUCCESS,
         payload: {
           entity: {
-            title: "New Test",
-            description: "",
+            title: 'New Test',
+            description: '',
             maxAttempts: 1,
-            renderingType: "assessment",
-            status: "draft",
-            thumbnail: "https://fakeimg.pl/500x135/",
+            renderingType: 'assessment',
+            status: 'draft',
+            thumbnail: 'https://fakeimg.pl/500x135/',
             createdBy: {
-              id: "",
-              firstName: "",
-              lastName: "",
-              email: ""
+              id: '',
+              firstName: '',
+              lastName: '',
+              email: '',
             },
             tags: [],
             scoring: {
               total: 0,
-              testItems: []
+              testItems: [],
             },
             testItems: [],
             assignments: [],
             standardsTag: {
-              curriculum: "",
-              standards: []
+              curriculum: '',
+              standards: [],
             },
             grades: [],
             subjects: [],
             courses: [],
-            collections: "",
+            collections: '',
             analytics: {
-              usage: "0",
-              likes: "0"
-            }
-          }
-        }
+              usage: '0',
+              likes: '0',
+            },
+          },
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the create tests error state", () => {
+  it('should return the create tests error state', () => {
     expect(
       testsReducer(initialState, {
         type: CREATE_TEST_ERROR,
-        payload: { error: "unexpected error happend when create tests" }
+        payload: { error: 'unexpected error happend when create tests' },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the receive test id request state", () => {
+  it('should return the receive test id request state', () => {
     expect(
       testsReducer(initialTestState, {
         type: RECEIVE_TEST_BY_ID_REQUEST,
-        payload: {}
+        payload: {},
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the receive test id success state", () => {
+  it('should return the receive test id success state', () => {
     expect(
       testsReducer(initialTestState, {
         type: RECEIVE_TEST_BY_ID_SUCCESS,
         payload: {
           entity: {
-            title: "New Test",
-            description: "",
+            title: 'New Test',
+            description: '',
             maxAttempts: 1,
-            renderingType: "assessment",
-            status: "draft",
-            thumbnail: "https://fakeimg.pl/500x135/",
+            renderingType: 'assessment',
+            status: 'draft',
+            thumbnail: 'https://fakeimg.pl/500x135/',
             createdBy: {
-              id: "",
-              firstName: "",
-              lastName: "",
-              email: ""
+              id: '',
+              firstName: '',
+              lastName: '',
+              email: '',
             },
             tags: [],
             scoring: {
               total: 0,
-              testItems: []
+              testItems: [],
             },
             testItems: [],
             assignments: [],
             standardsTag: {
-              curriculum: "",
-              standards: []
+              curriculum: '',
+              standards: [],
             },
             grades: [],
             subjects: [],
             courses: [],
-            collections: "",
+            collections: '',
             analytics: {
-              usage: "0",
-              likes: "0"
-            }
-          }
-        }
+              usage: '0',
+              likes: '0',
+            },
+          },
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the receive test id error state", () => {
+  it('should return the receive test id error state', () => {
     expect(
       testsReducer(initialTestState, {
         type: RECEIVE_TEST_BY_ID_ERROR,
-        payload: { error: "unexpected error happened when receive test id" }
+        payload: { error: 'unexpected error happened when receive test id' },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the update test request state", () => {
+  it('should return the update test request state', () => {
     expect(
       testsReducer(initialTestState, {
         type: UPDATE_TEST_REQUEST,
-        payload: {}
+        payload: {},
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the update test success state", () => {
+  it('should return the update test success state', () => {
     expect(
       testsReducer(initialTestState, {
         type: UPDATE_TEST_SUCCESS,
         payload: {
           entity: {
-            title: "New Test",
-            description: "",
+            title: 'New Test',
+            description: '',
             maxAttempts: 1,
-            renderingType: "assessment",
-            status: "draft",
-            thumbnail: "https://fakeimg.pl/500x135/",
+            renderingType: 'assessment',
+            status: 'draft',
+            thumbnail: 'https://fakeimg.pl/500x135/',
             createdBy: {
-              id: "",
-              firstName: "",
-              lastName: "",
-              email: ""
+              id: '',
+              firstName: '',
+              lastName: '',
+              email: '',
             },
             tags: [],
             scoring: {
               total: 0,
-              testItems: []
+              testItems: [],
             },
             testItems: [],
             assignments: [],
             standardsTag: {
-              curriculum: "",
-              standards: []
+              curriculum: '',
+              standards: [],
             },
             grades: [],
             subjects: [],
             courses: [],
-            collections: "",
+            collections: '',
             analytics: {
-              usage: "0",
-              likes: "0"
-            }
-          }
-        }
+              usage: '0',
+              likes: '0',
+            },
+          },
+        },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the update test error state", () => {
+  it('should return the update test error state', () => {
     expect(
       testsReducer(initialTestState, {
         type: UPDATE_TEST_ERROR,
-        payload: { error: "unexpected error happened when update test" }
+        payload: { error: 'unexpected error happened when update test' },
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the set default test data state", () => {
+  it('should return the set default test data state', () => {
     expect(
       testsReducer(initialState, {
-        type: SET_DEFAULT_TEST_DATA
+        type: SET_DEFAULT_TEST_DATA,
       })
-    ).toMatchSnapshot();
-  });
+    ).toMatchSnapshot()
+  })
 
-  it("should return the set assignment state", () => {
+  it('should return the set assignment state', () => {
     expect(
       testsReducer(initialState, {
         type: SET_ASSIGNMENT,
         payload: {
-          obj: {}
-        }
+          obj: {},
+        },
       })
-    ).toMatchSnapshot();
-  });
-});
+    ).toMatchSnapshot()
+  })
+})

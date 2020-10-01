@@ -1,18 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withTheme } from "styled-components";
-import { cloneDeep } from "lodash"; // , findIndex
+import React from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withTheme } from 'styled-components'
+import { cloneDeep } from 'lodash' // , findIndex
 
-import { withNamespaces } from "@edulastic/localization";
-import { evaluationType, questionType } from "@edulastic/constants";
+import { withNamespaces } from '@edulastic/localization'
+import { evaluationType, questionType } from '@edulastic/constants'
 
-import Layout from "./Layout";
-import CustomKeys from "./CustomKeys";
+import Layout from './Layout'
+import CustomKeys from './CustomKeys'
 
-import WidgetOptions from "../../../containers/WidgetOptions";
-import Extras from "../../../containers/Extras";
-import KeyPadOptions from "../../../components/KeyPadOptions";
+import WidgetOptions from '../../../containers/WidgetOptions'
+import Extras from '../../../containers/Extras'
+import KeyPadOptions from '../../../components/KeyPadOptions'
 
 const MathFormulaOptions = ({
   onChange,
@@ -25,36 +25,36 @@ const MathFormulaOptions = ({
   cleanSections,
   advancedAreOpen,
   setKeyPadOffest,
-  showResponseBoxes
+  showResponseBoxes,
 }) => {
   const changeCustomKey = ({ index, value }) => {
-    const newCustomKeys = cloneDeep(customKeys);
-    newCustomKeys[index] = value;
-    onChange("customKeys", newCustomKeys);
-  };
+    const newCustomKeys = cloneDeep(customKeys)
+    newCustomKeys[index] = value
+    onChange('customKeys', newCustomKeys)
+  }
 
   const addCustomKey = () => {
-    onChange("customKeys", [...customKeys, ""]);
-  };
+    onChange('customKeys', [...customKeys, ''])
+  }
 
-  const deleteCustomKey = index => {
-    const newCustomKeys = cloneDeep(customKeys);
-    newCustomKeys.splice(index, 1);
-    onChange("customKeys", newCustomKeys);
-  };
+  const deleteCustomKey = (index) => {
+    const newCustomKeys = cloneDeep(customKeys)
+    newCustomKeys.splice(index, 1)
+    onChange('customKeys', newCustomKeys)
+  }
 
   const scoringTypes = [
     {
       value: evaluationType.EXACT_MATCH,
-      label: t("component.math.exactMatch")
-    }
-  ];
+      label: t('component.math.exactMatch'),
+    },
+  ]
 
   if (item && item.type === questionType.EXPRESSION_MULTIPART) {
     scoringTypes.push({
       value: evaluationType.PARTIAL_MATCH,
-      label: t("component.math.partialMatch")
-    });
+      label: t('component.math.partialMatch'),
+    })
   }
 
   return (
@@ -97,13 +97,17 @@ const MathFormulaOptions = ({
         }
       />
 
-      <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
+      <Extras
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Extras.Distractors visible={false} />
         <Extras.Hints visible={false} />
       </Extras>
     </WidgetOptions>
-  );
-};
+  )
+}
 
 MathFormulaOptions.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -116,29 +120,26 @@ MathFormulaOptions.propTypes = {
   showResponseBoxes: PropTypes.bool,
   fillSections: PropTypes.func,
   setKeyPadOffest: PropTypes.func, // this needs only for units types
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 MathFormulaOptions.defaultProps = {
   responseContainers: [],
   customKeys: [],
   uiStyle: {
-    type: "standard",
-    fontsize: "normal",
+    type: 'standard',
+    fontsize: 'normal',
     columns: 0,
-    orientation: "horizontal",
-    choice_label: "number"
+    orientation: 'horizontal',
+    choice_label: 'number',
   },
   showResponseBoxes: false,
   advancedAreOpen: false,
   setKeyPadOffest: () => null,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
+const enhance = compose(withNamespaces('assessment'), withTheme)
 
-export default enhance(MathFormulaOptions);
+export default enhance(MathFormulaOptions)

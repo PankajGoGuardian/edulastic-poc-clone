@@ -1,14 +1,28 @@
-import { lightGreySecondary, mobileWidthMax, tabletWidth, themeColor, title, white } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
-import { IconSelectCaretDown } from "@edulastic/icons";
-import { Button, Select } from "antd";
-import React from "react";
-import { connect } from "react-redux";
-import styled, { withTheme } from "styled-components";
-import { ConfirmationModal } from "../../author/src/components/common/ConfirmationModal";
-import { InitOptions, ModalWrapper } from "../../common/components/ConfirmationModal/styled";
-import { themeColorsMap } from "../../theme";
-import { setSelectedThemeAction, setSettingsModalVisibilityAction, setZoomLevelAction } from "../Sidebar/ducks";
+import {
+  lightGreySecondary,
+  mobileWidthMax,
+  tabletWidth,
+  themeColor,
+  title,
+  white,
+} from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
+import { IconSelectCaretDown } from '@edulastic/icons'
+import { Button, Select } from 'antd'
+import React from 'react'
+import { connect } from 'react-redux'
+import styled, { withTheme } from 'styled-components'
+import { ConfirmationModal } from '../../author/src/components/common/ConfirmationModal'
+import {
+  InitOptions,
+  ModalWrapper,
+} from '../../common/components/ConfirmationModal/styled'
+import { themeColorsMap } from '../../theme'
+import {
+  setSelectedThemeAction,
+  setSettingsModalVisibilityAction,
+  setZoomLevelAction,
+} from '../Sidebar/ducks'
 
 const SettingsModal = ({
   selectedTheme,
@@ -17,30 +31,30 @@ const SettingsModal = ({
   setSettingsModalVisibility,
   zoomLevel,
   setZoomLevel,
-  theme
+  theme,
 }) => {
   const bodyStyle = {
-    padding: "20px",
-    marginBottom: "15px",
-    textAlign: "left",
+    padding: '20px',
+    marginBottom: '15px',
+    textAlign: 'left',
     fontSize: theme.smallFontSize,
     fontWeight: 600,
-    boxShadow: "none"
-  };
+    boxShadow: 'none',
+  }
 
-  const closeModal = () => setSettingsModalVisibility(false);
+  const closeModal = () => setSettingsModalVisibility(false)
 
   const handleApply = () => {
-    localStorage.setItem("selectedTheme", selectedTheme);
-    localStorage.setItem("zoomLevel", zoomLevel);
-    closeModal();
-  };
+    localStorage.setItem('selectedTheme', selectedTheme)
+    localStorage.setItem('zoomLevel', zoomLevel)
+    closeModal()
+  }
 
   const handleCancel = () => {
-    setSelectedTheme(localStorage.getItem("selectedTheme") || "default");
-    setZoomLevel(localStorage.getItem("zoomLevel") || "1");
-    closeModal();
-  };
+    setSelectedTheme(localStorage.getItem('selectedTheme') || 'default')
+    setZoomLevel(localStorage.getItem('zoomLevel') || '1')
+    closeModal()
+  }
   return (
     <ConfirmationModal
       maskClosable={false}
@@ -56,7 +70,7 @@ const SettingsModal = ({
         </EduButton>,
         <EduButton key="submit" onClick={handleApply}>
           APPLY
-        </EduButton>
+        </EduButton>,
       ]}
     >
       <InitOptions bodyStyle={bodyStyle}>
@@ -66,20 +80,20 @@ const SettingsModal = ({
             value={selectedTheme}
             onChange={setSelectedTheme}
             suffixIcon={<IconSelectCaretDown color={themeColor} />}
-            style={{ marginBottom: "10px" }}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            style={{ marginBottom: '10px' }}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             <Select.Option value="default">Default</Select.Option>
-            {Object.keys(themeColorsMap).map(key => {
-              const item = themeColorsMap[key];
-              return <Select.Option value={key}>{item.title}</Select.Option>;
+            {Object.keys(themeColorsMap).map((key) => {
+              const item = themeColorsMap[key]
+              return <Select.Option value={key}>{item.title}</Select.Option>
             })}
           </StyledSelect>
         </div>
         <div>
           <CustomColumn>ZOOM</CustomColumn>
           <StyledSelect
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
             value={zoomLevel}
             onChange={setZoomLevel}
             suffixIcon={<IconSelectCaretDown color={themeColor} />}
@@ -93,21 +107,21 @@ const SettingsModal = ({
         </div>
       </InitOptions>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
 const enhance = connect(
-  state => ({
+  (state) => ({
     selectedTheme: state.ui.selectedTheme,
     settingsModalVisible: state.ui.settingsModalVisible,
-    zoomLevel: state.ui.zoomLevel
+    zoomLevel: state.ui.zoomLevel,
   }),
   {
     setSelectedTheme: setSelectedThemeAction,
     setSettingsModalVisibility: setSettingsModalVisibilityAction,
-    setZoomLevel: setZoomLevelAction
+    setZoomLevel: setZoomLevelAction,
   }
-);
+)
 
 export const ModifyModalWrapper = styled(ModalWrapper)`
   .ant-modal-footer {
@@ -115,29 +129,29 @@ export const ModifyModalWrapper = styled(ModalWrapper)`
   }
   .ant-modal-title {
     color: ${title};
-    font-size: ${props => props.theme.header.headerTitleSecondaryTextSize};
+    font-size: ${(props) => props.theme.header.headerTitleSecondaryTextSize};
   }
   @media (min-width: ${tabletWidth}) {
     height: 367px;
   }
-`;
+`
 
 export const CustomColumn = styled.div`
   margin-bottom: 8px;
-`;
+`
 
 export const StyledSelect = styled(Select)`
   width: 100%;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   .ant-select-selection {
     height: 36px;
-    border: 1px solid ${props => props.theme.header.settingsInputBorder};
+    border: 1px solid ${(props) => props.theme.header.settingsInputBorder};
     background: ${lightGreySecondary};
     color: ${title};
   }
   .ant-select-selection__rendered {
     margin: 2px 15px;
   }
-`;
+`
 
-export default enhance(withTheme(SettingsModal));
+export default enhance(withTheme(SettingsModal))

@@ -1,11 +1,11 @@
-import React, { memo } from "react";
+import React, { memo } from 'react'
 
-import { SortableContainer } from "react-sortable-hoc";
-import isObject from "lodash/isObject";
-import { withNamespaces } from "@edulastic/localization";
+import { SortableContainer } from 'react-sortable-hoc'
+import isObject from 'lodash/isObject'
+import { withNamespaces } from '@edulastic/localization'
 
-import QuillSortableItem from "./components/QuillSortableItem";
-import { SortableListContainer } from "./styled/SortableItemContainer";
+import QuillSortableItem from './components/QuillSortableItem'
+import { SortableListContainer } from './styled/SortableItemContainer'
 
 // todo: union with SortableList
 const QuillSortableList = SortableContainer(
@@ -17,28 +17,36 @@ const QuillSortableList = SortableContainer(
     onChange,
     toolbarSize,
     fontSize = 14,
-    prefix = "prefix",
+    prefix = 'prefix',
     columns = 1,
-    label = "",
-    styleType = "",
+    label = '',
+    styleType = '',
     canDelete = true,
     t,
     centerContent,
     imageDefaultWidth,
     placeholder,
     defaultLabel,
-    className
+    className,
   }) => (
-    <SortableListContainer data-cy="sortable-list-container" className={className}>
+    <SortableListContainer
+      data-cy="sortable-list-container"
+      className={className}
+    >
       {items.map((item, index) => (
         <QuillSortableItem
           fontSize={fontSize}
           key={index}
           centerContent={centerContent}
           index={index}
-          label={defaultLabel === false ? "" : label ? `${label} ${index + 1}` : ""}
+          label={
+            defaultLabel === false ? '' : label ? `${label} ${index + 1}` : ''
+          }
           indx={prefix + index}
-          placeholder={placeholder || `${t("component.multiplechoice.optionPlaceholder")} #${index + 1}`}
+          placeholder={
+            placeholder ||
+            `${t('component.multiplechoice.optionPlaceholder')} #${index + 1}`
+          }
           value={isObject(item) ? item.value : item}
           firstFocus={firstFocus}
           rOnly={readOnly}
@@ -46,13 +54,17 @@ const QuillSortableList = SortableContainer(
           columns={columns}
           styleType={styleType}
           onRemove={() => onRemove(index, item?.id)}
-          onChange={val => (typeof onChange === "function" ? onChange(index, val, item?.id) : () => {})}
+          onChange={(val) =>
+            typeof onChange === 'function'
+              ? onChange(index, val, item?.id)
+              : () => {}
+          }
           toolbarSize={toolbarSize}
           imageDefaultWidth={imageDefaultWidth}
         />
       ))}
     </SortableListContainer>
   )
-);
+)
 
-export default memo(withNamespaces("assessment")(QuillSortableList));
+export default memo(withNamespaces('assessment')(QuillSortableList))

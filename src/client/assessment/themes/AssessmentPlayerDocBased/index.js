@@ -1,26 +1,26 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { ThemeProvider } from "styled-components";
-import { isEmpty, sortBy } from "lodash";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { ThemeProvider } from 'styled-components'
+import { isEmpty, sortBy } from 'lodash'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { questionType } from "@edulastic/constants";
-import { withWindowSizes } from "@edulastic/common";
-import { Container, CalculatorContainer } from "../common";
-import SubmitConfirmation from "../common/SubmitConfirmation";
-import { themes } from "../../../theme";
-import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle.json";
-import WorksheetComponent from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
-import { changeViewAction } from "../../../author/src/actions/view";
-import { testLoadingSelector } from "../../selectors/test";
-import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
-import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
+import { questionType } from '@edulastic/constants'
+import { withWindowSizes } from '@edulastic/common'
+import { Container, CalculatorContainer } from '../common'
+import SubmitConfirmation from '../common/SubmitConfirmation'
+import { themes } from '../../../theme'
+import assessmentPlayerTheme from '../AssessmentPlayerSimple/themeStyle.json'
+import WorksheetComponent from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
+import { changeViewAction } from '../../../author/src/actions/view'
+import { testLoadingSelector } from '../../selectors/test'
+import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
+import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 
-const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC", "EDULASTIC"];
+const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC', 'EDULASTIC']
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
@@ -35,90 +35,99 @@ class AssessmentPlayerDocBased extends React.Component {
     saveProgress: PropTypes.func.isRequired,
     answersById: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-    gotoSummary: PropTypes.func.isRequired
-  };
+    gotoSummary: PropTypes.func.isRequired,
+  }
 
   static defaultProps = {
-    docUrl: "",
+    docUrl: '',
     annotations: [],
-    theme: themes
-  };
+    theme: themes,
+  }
 
   state = {
     showExitPopup: false,
     currentToolMode: {
-      calculator: false
+      calculator: false,
     },
-    currentPage: 0
-  };
+    currentPage: 0,
+  }
 
   static getDerivedStateFromProps(props, state) {
     return {
       ...state,
-      calculateMode: `${props?.settings?.calcType}_${props?.settings?.calcProvider}`
-    };
+      calculateMode: `${props?.settings?.calcType}_${props?.settings?.calcProvider}`,
+    }
   }
 
   componentDidMount() {
-    const { changeView } = this.props;
-    changeView("review");
+    const { changeView } = this.props
+    changeView('review')
   }
 
   openExitPopup = () => {
-    const { closeTestPreviewModal, previewPlayer, updateTestPlayer } = this.props;
+    const {
+      closeTestPreviewModal,
+      previewPlayer,
+      updateTestPlayer,
+    } = this.props
     if (previewPlayer && closeTestPreviewModal) {
-      return closeTestPreviewModal();
+      return closeTestPreviewModal()
     }
-    this.setState({ showExitPopup: true });
-    updateTestPlayer({ enableMagnifier: false });
-  };
-
-  hideExitPopup = () => {
-    this.setState({ showExitPopup: false });
-  };
-
-  finishTest = () => {
-    const { history, saveCurrentAnswer } = this.props;
-    saveCurrentAnswer({ pausing: true });
-    if (navigator.userAgent.includes("SEB")) {
-      history.push("/student/seb-quit-confirm");
-    } else {
-      history.push("/home/assignments");
-    }
-  };
-
-  handlePause = () => {
-    this.handleSaveProgress();
-    this.finishTest();
-  };
-
-  handleSaveProgress = () => {
-    const { saveProgress } = this.props;
-    saveProgress();
-  };
-
-  assessmentQuestions() {
-    const { items } = this.props;
-    const itemData = items?.[0]?.data;
-    if (isEmpty(itemData)) return;
-    const questionsWithSections = itemData.questions.concat(itemData.resources);
-    return sortBy(questionsWithSections, item => item.qIndex);
+    this.setState({ showExitPopup: true })
+    updateTestPlayer({ enableMagnifier: false })
   }
 
-  onChangeTool = toolType => {
+  hideExitPopup = () => {
+    this.setState({ showExitPopup: false })
+  }
+
+  finishTest = () => {
+    const { history, saveCurrentAnswer } = this.props
+    saveCurrentAnswer({ pausing: true })
+    if (navigator.userAgent.includes('SEB')) {
+      history.push('/student/seb-quit-confirm')
+    } else {
+      history.push('/home/assignments')
+    }
+  }
+
+  handlePause = () => {
+    this.handleSaveProgress()
+    this.finishTest()
+  }
+
+  handleSaveProgress = () => {
+    const { saveProgress } = this.props
+    saveProgress()
+  }
+
+  assessmentQuestions() {
+    const { items } = this.props
+    const itemData = items?.[0]?.data
+    if (isEmpty(itemData)) return
+    const questionsWithSections = itemData.questions.concat(itemData.resources)
+    return sortBy(questionsWithSections, (item) => item.qIndex)
+  }
+
+  onChangeTool = (toolType) => {
     // set all tools to false if only one tool can be active at a time
-    this.setState(prevState => {
-      const { currentToolMode } = prevState;
-      const _currentToolMode = { ...currentToolMode };
-      _currentToolMode[toolType] = !_currentToolMode[toolType];
+    this.setState((prevState) => {
+      const { currentToolMode } = prevState
+      const _currentToolMode = { ...currentToolMode }
+      _currentToolMode[toolType] = !_currentToolMode[toolType]
       return {
-        currentToolMode: _currentToolMode
-      };
-    });
-  };
+        currentToolMode: _currentToolMode,
+      }
+    })
+  }
 
   render() {
-    const { showExitPopup, calculateMode, currentToolMode, currentPage } = this.state;
+    const {
+      showExitPopup,
+      calculateMode,
+      currentToolMode,
+      currentPage,
+    } = this.state
     const {
       theme,
       items,
@@ -136,20 +145,21 @@ class AssessmentPlayerDocBased extends React.Component {
       previewPlayer,
       settings,
       playerSkinType,
-      groupId
-    } = this.props;
+      groupId,
+    } = this.props
 
-    const item = items[0];
+    const item = items[0]
     const dropdownOptions = item?.data?.questions
-      ?.filter(q => q.type !== questionType.SECTION_LABEL)
-      ?.map((_, index) => index);
-    const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
-    const questions = this.assessmentQuestions();
+      ?.filter((q) => q.type !== questionType.SECTION_LABEL)
+      ?.map((_, index) => index)
+    const currentItem = answers.filter((answer) => !isEmpty(answer)).length - 1
+    const questions = this.assessmentQuestions()
 
-    let themeToPass = theme[selectedTheme] || theme.default;
+    let themeToPass = theme[selectedTheme] || theme.default
 
-    themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
-    const extraPaddingTop = playerSkinType === "parcc" ? 35 : playerSkinType === "sbac" ? 29 : 0;
+    themeToPass = { ...themeToPass, ...assessmentPlayerTheme }
+    const extraPaddingTop =
+      playerSkinType === 'parcc' ? 35 : playerSkinType === 'sbac' ? 29 : 0
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -186,7 +196,7 @@ class AssessmentPlayerDocBased extends React.Component {
                 noCheck
                 testMode
                 extraPaddingTop={extraPaddingTop}
-                onPageChange={cpage => this.setState({ currentPage: cpage })}
+                onPageChange={(cpage) => this.setState({ currentPage: cpage })}
                 currentPage={currentPage}
                 groupId={groupId}
               />
@@ -201,7 +211,7 @@ class AssessmentPlayerDocBased extends React.Component {
             )}
             {currentToolMode.calculator ? (
               <CalculatorContainer
-                changeTool={() => this.onChangeTool("calculator")}
+                changeTool={() => this.onChangeTool('calculator')}
                 calculateMode={calculateMode}
                 calcBrands={calcBrands}
               />
@@ -209,25 +219,25 @@ class AssessmentPlayerDocBased extends React.Component {
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces("common"),
+  withNamespaces('common'),
   connect(
-    state => ({
+    (state) => ({
       loading: testLoadingSelector(state),
       selectedTheme: state.ui.selectedTheme,
       settings: state.test.settings,
-      timedAssignment: state.test?.settings?.timedAssignment
+      timedAssignment: state.test?.settings?.timedAssignment,
     }),
     {
       changeView: changeViewAction,
-      updateTestPlayer: updateTestPlayerAction
+      updateTestPlayer: updateTestPlayerAction,
     }
   )
-);
+)
 
-export default enhance(AssessmentPlayerDocBased);
+export default enhance(AssessmentPlayerDocBased)

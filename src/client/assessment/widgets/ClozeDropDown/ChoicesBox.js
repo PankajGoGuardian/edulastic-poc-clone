@@ -1,19 +1,19 @@
-import React, { useRef } from "react";
-import PropTypes from "prop-types";
-import { find } from "lodash";
-import styled from "styled-components";
-import { MathSpan, SelectInputStyled } from "@edulastic/common";
-import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
+import React, { useRef } from 'react'
+import PropTypes from 'prop-types'
+import { find } from 'lodash'
+import styled from 'styled-components'
+import { MathSpan, SelectInputStyled } from '@edulastic/common'
+import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
 
-const { Option } = SelectInputStyled;
+const { Option } = SelectInputStyled
 
 const minWidthMap = {
   xs: 100,
   sm: 100,
   md: 150,
   lg: 200,
-  xl: 250
-};
+  xl: 250,
+}
 
 const SelectWrapper = styled.span`
   position: relative;
@@ -35,14 +35,14 @@ const SelectWrapper = styled.span`
 
   .ant-select {
     font-size: ${({ theme }) => theme?.fontSize};
-    min-width: ${({ theme }) => minWidthMap[(theme?.zoomLevel)] || 100}px;
+    min-width: ${({ theme }) => minWidthMap[theme?.zoomLevel] || 100}px;
 
     .ant-select-selection {
       display: flex;
       align-items: center;
     }
   }
-`;
+`
 
 const Select = styled(SelectInputStyled)`
   &.ant-select {
@@ -56,10 +56,10 @@ const Select = styled(SelectInputStyled)`
       }
     }
   }
-`;
+`
 
 const ChoicesBox = ({ style = {}, resprops, id }) => {
-  const selectWrapperRef = useRef(null);
+  const selectWrapperRef = useRef(null)
   const {
     btnStyle,
     placeholder,
@@ -70,51 +70,54 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     isReviewTab,
     cAnswers,
     responsecontainerindividuals,
-    userSelections
-  } = resprops;
+    userSelections,
+  } = resprops
 
-  if (!id) return null;
-  const { responseIds } = item;
-  const { index } = find(responseIds, response => response.id === id);
-  let userAnswer = find(userSelections, answer => (answer ? answer.id : "") === id);
-  const individualStyle = responsecontainerindividuals[index];
+  if (!id) return null
+  const { responseIds } = item
+  const { index } = find(responseIds, (response) => response.id === id)
+  let userAnswer = find(
+    userSelections,
+    (answer) => (answer ? answer.id : '') === id
+  )
+  const individualStyle = responsecontainerindividuals[index]
 
-  const heightpx = individualStyle && individualStyle.heightpx;
-  const widthpx = individualStyle && individualStyle.widthpx;
-  const individualPlacholder = individualStyle && individualStyle.placeholder;
+  const heightpx = individualStyle && individualStyle.heightpx
+  const widthpx = individualStyle && individualStyle.widthpx
+  const individualPlacholder = individualStyle && individualStyle.placeholder
 
   const styles = {
     ...btnStyle,
     width: widthpx || btnStyle.width,
     height: heightpx || btnStyle.height,
-    ...style
-  };
-
-  if (isReviewTab) {
-    userAnswer = find(cAnswers, answer => (answer ? answer.id : "") === id);
+    ...style,
   }
 
-  const selectChange = val => {
+  if (isReviewTab) {
+    userAnswer = find(cAnswers, (answer) => (answer ? answer.id : '') === id)
+  }
+
+  const selectChange = (val) => {
     if (changeAnswers) {
-      changeAnswers(val, index, id);
+      changeAnswers(val, index, id)
     }
-  };
+  }
 
   const dropdownMenuStyle = {
     top: styles?.height ? `${styles.height}px !important` : null,
-    left: `0px !important`
-  };
+    left: `0px !important`,
+  }
   return (
     <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef}>
       <Select
         value={convertToMathTemplate(userAnswer?.value)}
         style={{
           ...styles,
-          overflow: "hidden"
+          overflow: 'hidden',
         }}
         height={heightpx || btnStyle.height}
         placeholder={individualPlacholder || placeholder}
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
         data-cy="drop_down_select"
         disabled={disableResponse}
         onChange={selectChange}
@@ -128,18 +131,18 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
           ))}
       </Select>
     </SelectWrapper>
-  );
-};
+  )
+}
 
 ChoicesBox.propTypes = {
   resprops: PropTypes.object,
   id: PropTypes.string.isRequired,
-  style: PropTypes.object
-};
+  style: PropTypes.object,
+}
 
 ChoicesBox.defaultProps = {
   resprops: {},
-  style: {}
-};
+  style: {},
+}
 
-export default ChoicesBox;
+export default ChoicesBox

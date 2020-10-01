@@ -1,23 +1,26 @@
-import { SpinLoader } from "@edulastic/common";
-import { Col, Row } from "antd";
-import { get, isEmpty } from "lodash";
-import PropTypes from "prop-types";
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { EmptyData } from "../../../common/components/emptyData";
-import { StyledH3, StyledSlider } from "../../../common/styled";
-import { getCsvDownloadingState, getPrintingState } from "../../../ducks";
-import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
-import { StyledCard, StyledContainer } from "./components/styled";
-import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
+import { SpinLoader } from '@edulastic/common'
+import { Col, Row } from 'antd'
+import { get, isEmpty } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import { EmptyData } from '../../../common/components/emptyData'
+import { StyledH3, StyledSlider } from '../../../common/styled'
+import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
+import { StackedBarChartContainer } from './components/charts/stackedBarChartContainer'
+import { StyledCard, StyledContainer } from './components/styled'
+import { ResponseFrequencyTable } from './components/table/responseFrequencyTable'
 import {
   getReportsResponseFrequency,
   getReportsResponseFrequencyLoader,
-  getResponseFrequencyRequestAction
-} from "./ducks";
-import jsonData from "./static/json/data.json";
+  getResponseFrequencyRequestAction,
+} from './ducks'
+import jsonData from './static/json/data.json'
 
-const filterData = (data, filter) => (Object.keys(filter).length > 0 ? data.filter(item => filter[item.qType]) : data);
+const filterData = (data, filter) =>
+  Object.keys(filter).length > 0
+    ? data.filter((item) => filter[item.qType])
+    : data
 
 const ResponseFrequency = ({
   loading,
@@ -25,74 +28,77 @@ const ResponseFrequency = ({
   isCsvDownloading,
   responseFrequency: res,
   getResponseFrequency,
-  settings
+  settings,
 }) => {
-  const [difficultItems, setDifficultItems] = useState(40);
-  const [misunderstoodItems, setMisunderstoodItems] = useState(20);
+  const [difficultItems, setDifficultItems] = useState(40)
+  const [misunderstoodItems, setMisunderstoodItems] = useState(20)
 
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState({})
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {};
-      q.testId = settings.selectedTest.key;
-      q.requestFilters = { ...settings.requestFilters };
-      getResponseFrequency(q);
+      const q = {}
+      q.testId = settings.selectedTest.key
+      q.requestFilters = { ...settings.requestFilters }
+      getResponseFrequency(q)
     }
-  }, [settings]);
+  }, [settings])
 
-  const assessmentName = get(settings, "selectedTest.title", "");
+  const assessmentName = get(settings, 'selectedTest.title', '')
   const obj = useMemo(() => {
     let _obj = {
       metaData: {},
       data: [],
-      filteredData: []
-    };
+      filteredData: [],
+    }
     if (res && res.metrics && !isEmpty(res.metrics)) {
       const arr = Object.keys(res.metrics).map((key, i) => {
-        res.metrics[key].uid = key;
-        return res.metrics[key];
-      });
+        res.metrics[key].uid = key
+        return res.metrics[key]
+      })
 
       _obj = {
         data: [...arr],
         filteredData: [...arr],
-        metaData: { testName: assessmentName }
-      };
+        metaData: { testName: assessmentName },
+      }
     }
-    return _obj;
-  }, [res]);
+    return _obj
+  }, [res])
 
-  const filteredData = useMemo(() => filterData(obj.data, filter), [filter, obj.data]);
+  const filteredData = useMemo(() => filterData(obj.data, filter), [
+    filter,
+    obj.data,
+  ])
 
-  const onChangeDifficultSlider = value => {
-    setDifficultItems(value);
-  };
+  const onChangeDifficultSlider = (value) => {
+    setDifficultItems(value)
+  }
 
-  const onChangeMisunderstoodSlider = value => {
-    setMisunderstoodItems(value);
-  };
+  const onChangeMisunderstoodSlider = (value) => {
+    setMisunderstoodItems(value)
+  }
 
-  const onBarClickCB = key => {
-    const _filter = { ...filter };
+  const onBarClickCB = (key) => {
+    const _filter = { ...filter }
     if (_filter[key]) {
-      delete _filter[key];
+      delete _filter[key]
     } else {
-      _filter[key] = true;
+      _filter[key] = true
     }
-    setFilter(_filter);
-  };
+    setFilter(_filter)
+  }
 
   const onResetClickCB = () => {
-    setFilter({});
-  };
+    setFilter({})
+  }
 
   if (isEmpty(res) && !loading) {
     return (
       <>
         <EmptyData />
       </>
-    );
+    )
   }
 
   return (
@@ -102,7 +108,9 @@ const ResponseFrequency = ({
       ) : (
         <StyledContainer type="flex">
           <StyledCard>
-            <StyledH3>Question Type performance for Assessment: {assessmentName}</StyledH3>
+            <StyledH3>
+              Question Type performance for Assessment: {assessmentName}
+            </StyledH3>
             <StackedBarChartContainer
               data={obj.data}
               assessment={obj.metaData}
@@ -131,7 +139,10 @@ const ResponseFrequency = ({
               </Col>
               <Col className="question-container">
                 <p>What items are misunderstood?</p>
-                <p>Set threshold to warn if % frequency of an incorrect choice is above:</p>
+                <p>
+                  Set threshold to warn if % frequency of an incorrect choice is
+                  above:
+                </p>
                 <Row type="flex" justify="start" align="middle">
                   <Col className="answer-slider-percentage">
                     <span>{misunderstoodItems}%</span>
@@ -159,11 +170,11 @@ const ResponseFrequency = ({
         </StyledContainer>
       )}
     </div>
-  );
-};
+  )
+}
 const reportPropType = PropTypes.shape({
-  metricInfo: PropTypes.array
-});
+  metricInfo: PropTypes.array,
+})
 
 ResponseFrequency.propTypes = {
   loading: PropTypes.bool.isRequired,
@@ -171,19 +182,19 @@ ResponseFrequency.propTypes = {
   isCsvDownloading: PropTypes.bool.isRequired,
   responseFrequency: reportPropType.isRequired,
   getResponseFrequency: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired
-};
+  settings: PropTypes.object.isRequired,
+}
 
 const enhance = connect(
-  state => ({
+  (state) => ({
     loading: getReportsResponseFrequencyLoader(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    responseFrequency: getReportsResponseFrequency(state)
+    responseFrequency: getReportsResponseFrequency(state),
   }),
   {
-    getResponseFrequency: getResponseFrequencyRequestAction
+    getResponseFrequency: getResponseFrequencyRequestAction,
   }
-);
+)
 
-export default enhance(ResponseFrequency);
+export default enhance(ResponseFrequency)

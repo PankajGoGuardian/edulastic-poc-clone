@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { FlexContainer } from "@edulastic/common";
-import { OptionsList } from "../styled/OptionsList";
-import Option from "./Option";
+import { FlexContainer } from '@edulastic/common'
+import { OptionsList } from '../styled/OptionsList'
+import Option from './Option'
 
 const Options = ({
   options,
@@ -19,49 +19,56 @@ const Options = ({
   fromSetAnswers,
   ...restProps
 }) => {
-  const noOfColumns = uiStyle.columns || 1;
-  const noOfRows = Math.ceil(options.length / noOfColumns);
-  const updateArrangement = arr => {
-    const res = [];
-    let colPtr = 1;
-    let rowPtr = 0;
-    let index = 0;
-    const delta = noOfRows * noOfColumns - arr.length;
-    let count = 0;
+  const noOfColumns = uiStyle.columns || 1
+  const noOfRows = Math.ceil(options.length / noOfColumns)
+  const updateArrangement = (arr) => {
+    const res = []
+    let colPtr = 1
+    let rowPtr = 0
+    let index = 0
+    const delta = noOfRows * noOfColumns - arr.length
+    let count = 0
     while (count < arr.length) {
-      res.push(arr[index]);
+      res.push(arr[index])
       // eslint-disable-next-line no-unused-expressions
-      colPtr > noOfColumns - delta && noOfColumns - delta !== 0 ? (index += noOfRows - 1) : (index += noOfRows);
-      ++colPtr;
+      colPtr > noOfColumns - delta && noOfColumns - delta !== 0
+        ? (index += noOfRows - 1)
+        : (index += noOfRows)
+      ++colPtr
       if (index >= arr.length) {
-        index = ++rowPtr;
-        colPtr = 1;
+        index = ++rowPtr
+        colPtr = 1
       }
-      count++;
+      count++
     }
-    return res;
-  };
-  const mcqOptions = uiStyle.orientation !== "vertical" ? options : updateArrangement(options);
+    return res
+  }
+  const mcqOptions =
+    uiStyle.orientation !== 'vertical' ? options : updateArrangement(options)
 
-  let _startIndex = 0;
-  const optionsIndexMap = {};
-  if (uiStyle.orientation === "vertical") {
+  let _startIndex = 0
+  const optionsIndexMap = {}
+  if (uiStyle.orientation === 'vertical') {
     options.forEach((data, i) => {
-      optionsIndexMap[data.value] = i;
-    });
+      optionsIndexMap[data.value] = i
+    })
   }
 
   const getOption = (startIndex, lastIndex) => (
     <FlexContainer
       justifyContent="left"
       className="__prevent-page-break __print-space-reduce-options"
-      width={fromSetAnswers && "100%"}
+      width={fromSetAnswers && '100%'}
     >
       {mcqOptions.slice(startIndex, lastIndex).map((option, index) => (
         <Option
           maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
           key={option.value}
-          index={uiStyle.orientation !== "vertical" ? startIndex + index : optionsIndexMap[option.value]}
+          index={
+            uiStyle.orientation !== 'vertical'
+              ? startIndex + index
+              : optionsIndexMap[option.value]
+          }
           uiStyle={uiStyle}
           item={option}
           validation={validation}
@@ -76,29 +83,29 @@ const Options = ({
         />
       ))}
     </FlexContainer>
-  );
+  )
 
   const renderOptionList = () => {
-    const optionList = [];
+    const optionList = []
     for (let row = 1; row <= noOfRows; row++) {
-      const lastIndex = noOfColumns * row;
-      optionList.push(getOption(_startIndex, lastIndex));
-      _startIndex = lastIndex;
+      const lastIndex = noOfColumns * row
+      optionList.push(getOption(_startIndex, lastIndex))
+      _startIndex = lastIndex
     }
-    return optionList;
-  };
+    return optionList
+  }
 
   return (
     <OptionsList
-      width={fromSetAnswers && "100%"}
+      width={fromSetAnswers && '100%'}
       styleType={styleType}
       fontSize={fontSize}
       className="multiplechoice-optionlist"
     >
       {renderOptionList()}
     </OptionsList>
-  );
-};
+  )
+}
 
 Options.propTypes = {
   showAnswer: PropTypes.bool,
@@ -112,8 +119,8 @@ Options.propTypes = {
   uiStyle: PropTypes.object.isRequired,
   evaluation: PropTypes.any.isRequired,
   styleType: PropTypes.string,
-  multipleResponses: PropTypes.bool
-};
+  multipleResponses: PropTypes.bool,
+}
 
 Options.defaultProps = {
   showAnswer: false,
@@ -123,7 +130,7 @@ Options.defaultProps = {
   options: [],
   multipleResponses: false,
   smallSize: false,
-  styleType: "default"
-};
+  styleType: 'default',
+}
 
-export default React.memo(Options);
+export default React.memo(Options)

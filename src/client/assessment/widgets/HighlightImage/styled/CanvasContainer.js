@@ -1,12 +1,12 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CanvasContainer = styled.div`
   position: relative;
   height: ${({ height }) => (!height ? null : `${height}px`)};
-  width: ${({ isPrintPreview, width }) => (isPrintPreview ? "100%" : width)};
+  width: ${({ isPrintPreview, width }) => (isPrintPreview ? '100%' : width)};
   min-height: ${({ minHeight }) => (!minHeight ? null : `${minHeight}px`)};
   border-radius: 10px;
-  margin-left: ${({ isPrintPreview }) => (isPrintPreview ? "0" : "10px")};
+  margin-left: ${({ isPrintPreview }) => (isPrintPreview ? '0' : '10px')};
   img {
     user-select: none;
   }
@@ -19,4 +19,4 @@ export const CanvasContainer = styled.div`
     height: 100%;
     width: 100%;
   }
-`;
+`

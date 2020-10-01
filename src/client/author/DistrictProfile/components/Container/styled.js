@@ -1,18 +1,23 @@
-import styled from "styled-components";
-import { Layout, Spin, Button, Typography } from "antd";
+import styled from 'styled-components'
+import { Layout, Spin, Button, Typography } from 'antd'
 
-import { white, largeDesktopWidth, mobileWidthMax, green } from "@edulastic/colors";
+import {
+  white,
+  largeDesktopWidth,
+  mobileWidthMax,
+  green,
+} from '@edulastic/colors'
 
-const { Content } = Layout;
+const { Content } = Layout
 
-const { Text } = Typography;
+const { Text } = Typography
 
 export const StyledLayout = styled(Layout)`
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   padding: 0 30px 30px 30px;
-`;
+`
 
 export const SpinContainer = styled.div`
   position: absolute;
@@ -23,14 +28,14 @@ export const SpinContainer = styled.div`
   background: rgba(68, 68, 68, 0.1);
   z-index: 999;
   border-radius: 10px;
-`;
+`
 
 export const StyledSpin = styled(Spin)`
   position: absolute;
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
-`;
+`
 
 export const ProfileImgWrapper = styled.div`
   width: 350px;
@@ -51,7 +56,7 @@ export const ProfileImgWrapper = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
-`;
+`
 
 export const RightContainer = styled.div`
   width: calc(100% - 370px);
@@ -62,37 +67,37 @@ export const RightContainer = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     width: 100%;
   }
-`;
+`
 
 export const FormContent = styled(Content)`
   background-color: ${white};
   border-radius: 10px;
   border: 1px solid #b6b6cc;
   padding: 20px;
-`;
+`
 
 export const TwoColumnFormContainer = styled.div`
   display: flex;
   flex-direction: row;
-`;
+`
 
 export const SubHeader = styled.div`
   display: flex;
   align-items: center;
   padding: 12px 30px;
-`;
+`
 
 export const Spacer = styled.span`
   flex-grow: 1;
-`;
+`
 
 export const StyledButton = styled(Button)`
   margin-left: 5px;
-`;
+`
 
 export const ButtonText = styled(Text)`
   color: ${green};
-`;
+`
 
 export const DropdownWrapper = styled.div`
   width: 360px;
@@ -104,4 +109,4 @@ export const DropdownWrapper = styled.div`
     border: 1px solid #40b394;
     color: #40b394;
   }
-`;
+`

@@ -1,9 +1,10 @@
-import React from "react";
-import { Row, Col, Tooltip } from "antd";
-import cardImg from "../../../../../../assets/images/cardImg.png";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { TextWrapper } from "../../../../../styledComponents";
+import React from 'react'
+import { Row, Col, Tooltip } from 'antd'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { IconArrowRight } from '@edulastic/icons'
+import { themeColor } from '@edulastic/colors'
+import { TextWrapper } from '../../../../../styledComponents'
 
 import {
   Image,
@@ -14,17 +15,16 @@ import {
   SpanRightMargin,
   RowWrapperGrade,
   RowWrapperSTudentCount,
-  StyledRow
-} from "./styled";
-import { IconArrowRight } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
+  StyledRow,
+} from './styled'
+import cardImg from '../../../../../../assets/images/cardImg.png'
 
 const CardImage = ({ data, history }) => {
-  const { name, grades = [], studentCount, subject, thumbnail, _id } = data;
+  const { name, grades = [], studentCount, subject, thumbnail, _id } = data
 
-  const gotoManageClass = (classId = "") => () => {
-    history.push(`/author/manageClass/${classId}`);
-  };
+  const gotoManageClass = (classId = '') => () => {
+    history.push(`/author/manageClass/${classId}`)
+  }
 
   return (
     <>
@@ -44,35 +44,43 @@ const CardImage = ({ data, history }) => {
               <TextWrapper color="#FFFFFF" size="12px" fw="600" minTwo>
                 {grades.length ? (
                   <>
-                    <span data-cy="grades">Grades</span> {grades.join(", ").replace(/O/i, " Other ")}
+                    <span data-cy="grades">Grades</span>{' '}
+                    {grades.join(', ').replace(/O/i, ' Other ')}
                   </>
                 ) : (
-                  ""
+                  ''
                 )}
 
                 {subject ? (
                   <>
-                    {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ""}
+                    {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ''}
                     <Tooltip title={subject} placement="bottomLeft">
-                      <SpanLeftMargin data-cy="subject">{subject}</SpanLeftMargin>
+                      <SpanLeftMargin data-cy="subject">
+                        {subject}
+                      </SpanLeftMargin>
                     </Tooltip>
                   </>
                 ) : (
-                  ""
+                  ''
                 )}
               </TextWrapper>
             </RowWrapperGrade>
             <RowWrapperSTudentCount>
-              <TextWrapper data-cy="studentCount" color="#FFFFFF" size="12px" fw="600">
-                {studentCount || 0} {studentCount > 1 ? "Students" : "Student"}
+              <TextWrapper
+                data-cy="studentCount"
+                color="#FFFFFF"
+                size="12px"
+                fw="600"
+              >
+                {studentCount || 0} {studentCount > 1 ? 'Students' : 'Student'}
               </TextWrapper>
             </RowWrapperSTudentCount>
           </Col>
         </Row>
       </OverlayText>
     </>
-  );
-};
+  )
+}
 
-const enhance = compose(withRouter);
-export default enhance(CardImage);
+const enhance = compose(withRouter)
+export default enhance(CardImage)

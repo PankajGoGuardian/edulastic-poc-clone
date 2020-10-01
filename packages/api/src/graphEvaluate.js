@@ -1,17 +1,17 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API(`${process.env.POI_APP_API_URI}`);
-const convertLatex2Js = "/math/convertLatex2Js";
+const api = new API(`${process.env.POI_APP_API_URI}`)
+const convertLatex2Js = '/math/convertLatex2Js'
 
-const convert = data =>
+const convert = (data) =>
   api
     .callApi({
       url: convertLatex2Js,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 export default {
-  convert
-};
+  convert,
+}

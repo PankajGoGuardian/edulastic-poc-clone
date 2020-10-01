@@ -1,184 +1,201 @@
-import "rc-color-picker/assets/index.css";
-import React, { Fragment, useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { questionType } from "@edulastic/constants";
+import 'rc-color-picker/assets/index.css'
+import React, { Fragment, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { questionType } from '@edulastic/constants'
 
-import CorrectAnswers from "./CorrectAnswers";
-import { EDIT } from "../../constants/constantsForQuestions";
-import Options from "./components/Options";
-import ChartPreview from "./ChartPreview";
-import PointsList from "./components/PointsList";
-import AxisOptions from "./AxisOption";
-import { getReCalculatedPoints } from "./helpers";
+import CorrectAnswers from './CorrectAnswers'
+import { EDIT } from '../../constants/constantsForQuestions'
+import Options from './components/Options'
+import ChartPreview from './ChartPreview'
+import PointsList from './components/PointsList'
+import AxisOptions from './AxisOption'
+import { getReCalculatedPoints } from './helpers'
 
-import ComposeQuestion from "./ComposeQuestion";
-import { AnnotationBlock } from "./AnnotationBlock";
+import ComposeQuestion from './ComposeQuestion'
+import { AnnotationBlock } from './AnnotationBlock'
 
-const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen }) => {
+const ChartEdit = ({
+  item,
+  setQuestionData,
+  fillSections,
+  cleanSections,
+  advancedLink,
+  advancedAreOpen,
+}) => {
   const {
     uiStyle: { yAxisMax, yAxisMin, snapTo },
-    type
-  } = item;
+    type,
+  } = item
 
-  const [currentTab, setCurrentTab] = useState(0);
-  const [firstMount, setFirstMount] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0)
+  const [firstMount, setFirstMount] = useState(false)
 
   useEffect(() => {
     if (firstMount) {
       setQuestionData(
-        produce(item, draft => {
-          const params = { yAxisMax, yAxisMin, snapTo };
-          draft.chart_data.data = getReCalculatedPoints(draft.chart_data.data, params);
+        produce(item, (draft) => {
+          const params = { yAxisMax, yAxisMin, snapTo }
+          draft.chart_data.data = getReCalculatedPoints(
+            draft.chart_data.data,
+            params
+          )
 
-          draft.validation.altResponses.forEach(altResp => {
-            altResp.value = getReCalculatedPoints(altResp.value, params);
-          });
+          draft.validation.altResponses.forEach((altResp) => {
+            altResp.value = getReCalculatedPoints(altResp.value, params)
+          })
 
-          draft.validation.validResponse.value = getReCalculatedPoints(draft.validation.validResponse.value, params);
+          draft.validation.validResponse.value = getReCalculatedPoints(
+            draft.validation.validResponse.value,
+            params
+          )
         })
-      );
+      )
     }
-  }, [yAxisMax, yAxisMin, snapTo]);
+  }, [yAxisMax, yAxisMin, snapTo])
 
   useEffect(() => {
-    setFirstMount(true);
-  }, []);
+    setFirstMount(true)
+  }, [])
 
   const handleAddPoint = () => {
     setQuestionData(
-      produce(item, draft => {
-        let initValue = yAxisMin;
+      produce(item, (draft) => {
+        let initValue = yAxisMin
         if (
           draft.type === questionType.HISTOGRAM ||
           draft.type === questionType.BAR_CHART ||
           draft.type === questionType.LINE_CHART
         ) {
-          initValue = yAxisMax;
+          initValue = yAxisMax
         }
-        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: initValue };
+        const newPoint = {
+          x: `Bar ${draft.chart_data.data.length + 1}`,
+          y: initValue,
+        }
 
-        draft.chart_data.data.push({ ...newPoint });
+        draft.chart_data.data.push({ ...newPoint })
 
-        draft.validation.altResponses.forEach(altResp => {
-          altResp.value.push({ ...newPoint });
-        });
+        draft.validation.altResponses.forEach((altResp) => {
+          altResp.value.push({ ...newPoint })
+        })
 
-        draft.validation.validResponse.value.push({ ...newPoint });
+        draft.validation.validResponse.value.push({ ...newPoint })
       })
-    );
-  };
+    )
+  }
 
-  const handlePointChange = index => (prop, value) => {
+  const handlePointChange = (index) => (prop, value) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         switch (prop) {
-          case "interactive": {
+          case 'interactive': {
             if (draft.chart_data.data[index].notInteractive === undefined) {
-              draft.chart_data.data[index].notInteractive = true;
+              draft.chart_data.data[index].notInteractive = true
             } else {
-              delete draft.chart_data.data[index].notInteractive;
+              delete draft.chart_data.data[index].notInteractive
             }
-            break;
+            break
           }
-          case "label": {
-            draft.chart_data.data[index].x = value;
-            draft.validation.altResponses.forEach(altResp => {
-              altResp.value[index].x = value;
-            });
-            draft.validation.validResponse.value[index].x = value;
-            break;
+          case 'label': {
+            draft.chart_data.data[index].x = value
+            draft.validation.altResponses.forEach((altResp) => {
+              altResp.value[index].x = value
+            })
+            draft.validation.validResponse.value[index].x = value
+            break
           }
-          case "value": {
-            draft.chart_data.data[index].y = value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value;
-            break;
+          case 'value': {
+            draft.chart_data.data[index].y =
+              value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value
+            break
           }
-          case "labelVisibility": {
-            draft.chart_data.data[index].labelVisibility = value;
-            break;
+          case 'labelVisibility': {
+            draft.chart_data.data[index].labelVisibility = value
+            break
           }
-          case "labelFractionFormat": {
-            draft.chart_data.data[index].labelFractionFormat = value;
-            break;
+          case 'labelFractionFormat': {
+            draft.chart_data.data[index].labelFractionFormat = value
+            break
           }
           default:
         }
       })
-    );
-  };
+    )
+  }
 
-  const handleDelete = index => {
+  const handleDelete = (index) => {
     setQuestionData(
-      produce(item, draft => {
-        draft.chart_data.data.splice(index, 1);
+      produce(item, (draft) => {
+        draft.chart_data.data.splice(index, 1)
 
-        draft.validation.altResponses.forEach(altResp => {
-          altResp.value.splice(index, 1);
-        });
+        draft.validation.altResponses.forEach((altResp) => {
+          altResp.value.splice(index, 1)
+        })
 
-        draft.validation.validResponse.value.splice(index, 1);
+        draft.validation.validResponse.value.splice(index, 1)
       })
-    );
-  };
+    )
+  }
 
-  const handleCloseTab = tabIndex => {
+  const handleCloseTab = (tabIndex) => {
     setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses.splice(tabIndex, 1);
-        setCurrentTab(0);
+      produce(item, (draft) => {
+        draft.validation.altResponses.splice(tabIndex, 1)
+        setCurrentTab(0)
       })
-    );
-  };
+    )
+  }
 
   const handleAddAnswer = () => {
     setQuestionData(
-      produce(item, draft => {
-        let initValue = yAxisMin;
+      produce(item, (draft) => {
+        let initValue = yAxisMin
         if (
           draft.type === questionType.HISTOGRAM ||
           draft.type === questionType.BAR_CHART ||
           draft.type === questionType.LINE_CHART
         ) {
-          initValue = yAxisMax;
+          initValue = yAxisMax
         }
         if (!draft.validation.altResponses) {
-          draft.validation.altResponses = [];
+          draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
           score: 1,
-          value: draft.validation.validResponse.value.map(chartData => ({
+          value: draft.validation.validResponse.value.map((chartData) => ({
             ...chartData,
-            y: initValue
-          }))
-        });
-        setCurrentTab(draft.validation.altResponses.length);
+            y: initValue,
+          })),
+        })
+        setCurrentTab(draft.validation.altResponses.length)
       })
-    );
-  };
+    )
+  }
 
-  const handlePointsChange = val => {
+  const handlePointsChange = (val) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.score = val;
+          draft.validation.validResponse.score = val
         } else {
-          draft.validation.altResponses[currentTab - 1].score = val;
+          draft.validation.altResponses[currentTab - 1].score = val
         }
       })
-    );
-  };
+    )
+  }
 
-  const handleAnswerChange = ans => {
+  const handleAnswerChange = (ans) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.value = ans;
+          draft.validation.validResponse.value = ans
         } else {
-          draft.validation.altResponses[currentTab - 1].value = ans;
+          draft.validation.altResponses[currentTab - 1].value = ans
         }
       })
-    );
-  };
+    )
+  }
 
   const renderChartPreview = () => (
     <ChartPreview
@@ -186,26 +203,30 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
       tab={currentTab}
       saveAnswer={handleAnswerChange}
       userAnswer={
-        currentTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[currentTab - 1]?.value
+        currentTab === 0
+          ? item.validation.validResponse.value
+          : item.validation.altResponses[currentTab - 1]?.value
       }
       view={EDIT}
       setQuestionData={setQuestionData}
     />
-  );
+  )
 
   const points =
-    currentTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[currentTab - 1]?.score;
+    currentTab === 0
+      ? item.validation.validResponse.score
+      : item.validation.altResponses[currentTab - 1]?.score
 
   const showFractionFormatSetting = [
     questionType.LINE_PLOT,
     questionType.DOT_PLOT,
     questionType.BAR_CHART,
     questionType.LINE_CHART,
-    questionType.HISTOGRAM
-  ].includes(type);
+    questionType.HISTOGRAM,
+  ].includes(type)
 
   return (
-    <Fragment>
+    <>
       <ComposeQuestion
         item={item}
         setQuestionData={setQuestionData}
@@ -261,9 +282,9 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
         advancedAreOpen={advancedAreOpen}
         item={item}
       />
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 ChartEdit.propTypes = {
   item: PropTypes.object.isRequired,
@@ -271,14 +292,14 @@ ChartEdit.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 ChartEdit.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  advancedLink: null
-};
+  advancedLink: null,
+}
 
-export default ChartEdit;
+export default ChartEdit

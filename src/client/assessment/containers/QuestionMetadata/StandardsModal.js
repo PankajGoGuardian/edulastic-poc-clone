@@ -5,16 +5,16 @@ import {
   MathFormulaDisplay,
   Paper,
   CustomModalStyled,
-  RadioBtn
-} from "@edulastic/common";
-import { Col, Row, Spin } from "antd";
-import PropTypes from "prop-types";
-import React, { useMemo, useState } from "react";
-import { setDefaultInterests } from "../../../author/dataUtils";
-import PopupRowSelect from "./PopupRowSelect";
-import { Container } from "./styled/Container";
-import { ELOList } from "./styled/ELOList";
-import { TLOList, TLOListItem } from "./styled/TLOList";
+  RadioBtn,
+} from '@edulastic/common'
+import { Col, Row, Spin } from 'antd'
+import PropTypes from 'prop-types'
+import React, { useMemo, useState } from 'react'
+import { setDefaultInterests } from '../../../author/dataUtils'
+import PopupRowSelect from './PopupRowSelect'
+import { Container } from './styled/Container'
+import { ELOList } from './styled/ELOList'
+import { TLOList, TLOListItem } from './styled/TLOList'
 
 const StandardsModal = ({
   visible,
@@ -29,79 +29,101 @@ const StandardsModal = ({
   curriculumStandardsTLO,
   getCurriculumStandards,
   curriculumStandardsLoading,
-  singleSelect = false
+  singleSelect = false,
 }) => {
   const [state, setState] = useState({
     standard,
     eloStandards: standards,
     subject,
-    grades
-  });
+    grades,
+  })
 
-  const [selectedTLO, setSelectedTLO] = useState(curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : "");
+  const [selectedTLO, setSelectedTLO] = useState(
+    curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : ''
+  )
   useMemo(() => {
-    if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id);
-  }, [curriculumStandardsTLO]);
+    if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id)
+  }, [curriculumStandardsTLO])
 
   const filteredELO = curriculumStandardsELO
-    .filter(c => c.tloId === selectedTLO)
+    .filter((c) => c.tloId === selectedTLO)
     .sort((a, b) => {
       // if tloIdentifier dont match fallback to ascending order sort
-      if (a.tloIdentifier !== b.tloIdentifier) return a.identifier - b.identifier;
+      if (a.tloIdentifier !== b.tloIdentifier)
+        return a.identifier - b.identifier
 
       // extract numeric substring from identifier
-      const aSubIdentifier = a.identifier.substring(a.tloIdentifier.length + 1);
-      const bSubIdentifier = b.identifier.substring(b.tloIdentifier.length + 1);
+      const aSubIdentifier = a.identifier.substring(a.tloIdentifier.length + 1)
+      const bSubIdentifier = b.identifier.substring(b.tloIdentifier.length + 1)
 
-      return parseInt(aSubIdentifier, 10) - parseInt(bSubIdentifier, 10);
-    });
+      return parseInt(aSubIdentifier, 10) - parseInt(bSubIdentifier, 10)
+    })
 
   const footer = (
     <FlexContainer>
-      <EduButton height="40px" data-cy="cancel-Stand-Set" isGhost onClick={onCancel}>
+      <EduButton
+        height="40px"
+        data-cy="cancel-Stand-Set"
+        isGhost
+        onClick={onCancel}
+      >
         CANCEL
       </EduButton>
-      <EduButton height="40px" data-cy="apply-Stand-Set" onClick={() => onApply(state)}>
+      <EduButton
+        height="40px"
+        data-cy="apply-Stand-Set"
+        onClick={() => onApply(state)}
+      >
         APPLY
       </EduButton>
     </FlexContainer>
-  );
+  )
 
-  const handleChangeSubject = val => {
-    setState(prevState => ({
+  const handleChangeSubject = (val) => {
+    setState((prevState) => ({
       ...prevState,
       subject: val,
-      standard: { ...prevState.standard, curriculum: "" }
-    }));
-    getCurriculumStandards({ id: "", grades: state.grades, searchStr: "" });
-    setDefaultInterests({ subject: val });
-  };
+      standard: { ...prevState.standard, curriculum: '' },
+    }))
+    getCurriculumStandards({ id: '', grades: state.grades, searchStr: '' })
+    setDefaultInterests({ subject: val })
+  }
 
   const handleChangeStandard = (curriculum, event) => {
-    const id = event.key;
-    setState({ ...state, standard: { id, curriculum } });
-    getCurriculumStandards({ id, grades: state.grades, searchStr: "" });
-    setDefaultInterests({ curriculumId: id });
-  };
+    const id = event.key
+    setState({ ...state, standard: { id, curriculum } })
+    getCurriculumStandards({ id, grades: state.grades, searchStr: '' })
+    setDefaultInterests({ curriculumId: id })
+  }
 
-  const handleChangeGrades = val => {
-    setState({ ...state, grades: val });
-    getCurriculumStandards({ id: state.standard.id, grades: val, searchStr: "" });
-    setDefaultInterests({ grades: val });
-  };
+  const handleChangeGrades = (val) => {
+    setState({ ...state, grades: val })
+    getCurriculumStandards({
+      id: state.standard.id,
+      grades: val,
+      searchStr: '',
+    })
+    setDefaultInterests({ grades: val })
+  }
 
-  const handleCheckELO = c => {
+  const handleCheckELO = (c) => {
     if (singleSelect && state.eloStandards.length) {
-      const [checked] = state.eloStandards;
+      const [checked] = state.eloStandards
       if (checked._id === c._id) {
-        return setState({ ...state, eloStandards: [] });
+        return setState({ ...state, eloStandards: [] })
       }
-      return setState({ ...state, eloStandards: [c] });
+      return setState({ ...state, eloStandards: [c] })
     }
-    if (!state.eloStandards.some(item => item._id === c._id))
-      setState({ ...state, eloStandards: [...state.eloStandards, c] });
-    else setState({ ...state, eloStandards: [...state.eloStandards].filter(elo => elo._id !== c._id) });
-  };
+    if (!state.eloStandards.some((item) => item._id === c._id))
+      setState({ ...state, eloStandards: [...state.eloStandards, c] })
+    else
+      setState({
+        ...state,
+        eloStandards: [...state.eloStandards].filter(
+          (elo) => elo._id !== c._id
+        ),
+      })
+  }
 
   return (
     <CustomModalStyled
@@ -125,23 +147,25 @@ const StandardsModal = ({
         <br />
         <Row type="flex" gutter={24}>
           <Spin spinning={curriculumStandardsLoading} size="large">
-            <Col md={8} style={{ overflow: "hidden" }}>
+            <Col md={8} style={{ overflow: 'hidden' }}>
               <TLOList>
-                {curriculumStandardsTLO.map(({ identifier, description, _id }) => (
-                  <TLOListItem
-                    title={identifier}
-                    description={description}
-                    active={_id === selectedTLO}
-                    key={_id}
-                    onClick={() => setSelectedTLO(_id)}
-                  />
-                ))}
+                {curriculumStandardsTLO.map(
+                  ({ identifier, description, _id }) => (
+                    <TLOListItem
+                      title={identifier}
+                      description={description}
+                      active={_id === selectedTLO}
+                      key={_id}
+                      onClick={() => setSelectedTLO(_id)}
+                    />
+                  )
+                )}
               </TLOList>
             </Col>
-            <Col md={16} style={{ overflow: "hidden" }}>
+            <Col md={16} style={{ overflow: 'hidden' }}>
               <ELOList padding="0">
                 <Container padding="15px" borderRadius="0px">
-                  {filteredELO.map(c => (
+                  {filteredELO.map((c) => (
                     <FlexContainer
                       key={c._id}
                       alignItems="flex-start"
@@ -152,21 +176,27 @@ const StandardsModal = ({
                         <RadioBtn
                           data-cy={c.identifier}
                           onChange={() => handleCheckELO(c)}
-                          checked={state.eloStandards.some(item => item._id === c._id)}
-                          style={{ marginRight: "10px" }}
+                          checked={state.eloStandards.some(
+                            (item) => item._id === c._id
+                          )}
+                          style={{ marginRight: '10px' }}
                         />
                       ) : (
                         <CheckboxLabel
                           singleSelect={singleSelect}
                           data-cy={c.identifier}
                           onChange={() => handleCheckELO(c)}
-                          checked={state.eloStandards.some(item => item._id === c._id)}
-                          style={{ marginRight: "10px" }}
+                          checked={state.eloStandards.some(
+                            (item) => item._id === c._id
+                          )}
+                          style={{ marginRight: '10px' }}
                         />
                       )}
                       <div>
                         <b>{c.identifier}</b>
-                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: c.description }} />
+                        <MathFormulaDisplay
+                          dangerouslySetInnerHTML={{ __html: c.description }}
+                        />
                       </div>
                     </FlexContainer>
                   ))}
@@ -177,8 +207,8 @@ const StandardsModal = ({
         </Row>
       </Paper>
     </CustomModalStyled>
-  );
-};
+  )
+}
 
 StandardsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
@@ -189,14 +219,14 @@ StandardsModal.propTypes = {
   subject: PropTypes.string,
   curriculumStandardsELO: PropTypes.array,
   curriculumStandardsTLO: PropTypes.array,
-  grades: PropTypes.array
-};
+  grades: PropTypes.array,
+}
 
 StandardsModal.defaultProps = {
-  subject: "",
+  subject: '',
   curriculumStandardsELO: [],
   curriculumStandardsTLO: [],
-  grades: []
-};
+  grades: [],
+}
 
-export default StandardsModal;
+export default StandardsModal

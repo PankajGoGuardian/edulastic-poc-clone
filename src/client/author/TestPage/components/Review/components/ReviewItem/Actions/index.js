@@ -1,11 +1,27 @@
-import React from "react";
-import { IconEye, IconTrash, IconExpand, IconCollapse } from "@edulastic/icons";
-import { Container, ActionButton } from "./styled";
+import React from 'react'
+import { IconEye, IconTrash, IconExpand, IconCollapse } from '@edulastic/icons'
+import { Container, ActionButton } from './styled'
 
-export default ({ expanded, onPreview, onDelete, onCollapseExpandRow, isEditable, style }) => (
+export default ({
+  expanded,
+  onPreview,
+  onDelete,
+  onCollapseExpandRow,
+  isEditable,
+  style,
+}) => (
   <Container style={style}>
-    <ActionButton isGhost title="Expand" data-cy={`expand-${expanded}`} onClick={onCollapseExpandRow}>
-      {expanded ? <IconCollapse width={15} height={15} /> : <IconExpand width={15} height={15} />}
+    <ActionButton
+      isGhost
+      title="Expand"
+      data-cy={`expand-${expanded}`}
+      onClick={onCollapseExpandRow}
+    >
+      {expanded ? (
+        <IconCollapse width={15} height={15} />
+      ) : (
+        <IconExpand width={15} height={15} />
+      )}
     </ActionButton>
     <ActionButton isGhost title="Preview" data-cy="preview" onClick={onPreview}>
       <IconEye width={18} height={18} />
@@ -16,4 +32,4 @@ export default ({ expanded, onPreview, onDelete, onCollapseExpandRow, isEditable
       </ActionButton>
     )}
   </Container>
-);
+)

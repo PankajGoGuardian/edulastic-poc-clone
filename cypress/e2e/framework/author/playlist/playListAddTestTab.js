@@ -1,145 +1,156 @@
 export default class PlayListAddTest {
   // *** ELEMENTS START ***
 
-  getTestCardById = id => cy.get(`[data-cy="${id}"]`);
+  getTestCardById = (id) => cy.get(`[data-cy="${id}"]`)
 
-  getAddButtonByTestId = id => this.getTestCardById(id).contains("ADD");
+  getAddButtonByTestId = (id) => this.getTestCardById(id).contains('ADD')
 
-  getViewButtonByTestId = id => this.getTestCardById(id).contains("VIEW");
+  getViewButtonByTestId = (id) => this.getTestCardById(id).contains('VIEW')
 
-  getManageModuleButton = () => cy.get('[data-cy="ManageModules"]');
+  getManageModuleButton = () => cy.get('[data-cy="ManageModules"]')
 
-  getAddModule = () => cy.get('[data-cy="addModule"]');
+  getAddModule = () => cy.get('[data-cy="addModule"]')
 
-  getModuleContainerByModule = mod => cy.get(`[data-cy="module-${mod}"]`);
+  getModuleContainerByModule = (mod) => cy.get(`[data-cy="module-${mod}"]`)
 
-  getModuleNameByModule = mod => this.getModuleContainerByModule(mod).find('[placeholder="Enter module name"]');
+  getModuleNameByModule = (mod) =>
+    this.getModuleContainerByModule(mod).find(
+      '[placeholder="Enter module name"]'
+    )
 
-  getModuleGroupNameByModule = mod =>
-    this.getModuleContainerByModule(mod).find('[placeholder="Enter module group name"]');
+  getModuleGroupNameByModule = (mod) =>
+    this.getModuleContainerByModule(mod).find(
+      '[placeholder="Enter module group name"]'
+    )
 
-  getModuleIdByModule = mod => this.getModuleContainerByModule(mod).find('[placeholder="Enter ID"]');
+  getModuleIdByModule = (mod) =>
+    this.getModuleContainerByModule(mod).find('[placeholder="Enter ID"]')
 
-  getModuleSaveByModuleNo = mod => this.getModuleContainerByModule(mod).find('[data-cy="manageModuleApply"]');
+  getModuleSaveByModuleNo = (mod) =>
+    this.getModuleContainerByModule(mod).find('[data-cy="manageModuleApply"]')
 
-  getEditByModuleNo = mod => this.getModuleContainerByModule(mod).contains("span", "EDIT");
+  getEditByModuleNo = (mod) =>
+    this.getModuleContainerByModule(mod).contains('span', 'EDIT')
 
-  getDeleteByModule = mod => this.getModuleContainerByModule(mod).find('[data-cy="addModuleCancel"]');
+  getDeleteByModule = (mod) =>
+    this.getModuleContainerByModule(mod).find('[data-cy="addModuleCancel"]')
 
-  getDoneButton = () => cy.get('[data-cy="done-module"]');
+  getDoneButton = () => cy.get('[data-cy="done-module"]')
 
-  getModuleWhileAdding = mod => this.getModuleContainerByModule(mod);
+  getModuleWhileAdding = (mod) => this.getModuleContainerByModule(mod)
 
-  getActionsButton = () => cy.get('[data-cy="moduleActions"]');
+  getActionsButton = () => cy.get('[data-cy="moduleActions"]')
 
-  getBulkAdd = () => cy.get('[ data-cy="addToModule"]');
+  getBulkAdd = () => cy.get('[ data-cy="addToModule"]')
 
-  getBulkRemove = () => cy.get('[data-cy="removeFromModule"]');
+  getBulkRemove = () => cy.get('[data-cy="removeFromModule"]')
 
-  getCheckBoxById = id =>
-    this.getTestCardById(id)
-      .find(".ant-checkbox")
-      .find("input");
+  getCheckBoxById = (id) =>
+    this.getTestCardById(id).find('.ant-checkbox').find('input')
 
-  getYesButtonWhileBulkRemove = () => cy.get('[data-cy="bulk-remove"]');
+  getYesButtonWhileBulkRemove = () => cy.get('[data-cy="bulk-remove"]')
 
-  getConfirmationBoxWhileBulkRemove = () => cy.get('[data-cy="remove-count"]');
+  getConfirmationBoxWhileBulkRemove = () => cy.get('[data-cy="remove-count"]')
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickOnManageModule = () => this.getManageModuleButton().click();
+  clickOnManageModule = () => this.getManageModuleButton().click()
 
-  clickOnAddModule = () => this.getAddModule().click();
+  clickOnAddModule = () => this.getAddModule().click()
 
-  clickOnSaveByModule = mod => this.getModuleSaveByModuleNo(mod).click();
+  clickOnSaveByModule = (mod) => this.getModuleSaveByModuleNo(mod).click()
 
-  clickOnEditByModule = mod => this.getEditByModuleNo(mod).click({ force: true });
+  clickOnEditByModule = (mod) =>
+    this.getEditByModuleNo(mod).click({ force: true })
 
-  clickOnDeleteByModule = mod => this.getDeleteByModule(mod).click();
+  clickOnDeleteByModule = (mod) => this.getDeleteByModule(mod).click()
 
-  selectModuleWhileAdding = mod => this.getModuleWhileAdding(mod).click();
+  selectModuleWhileAdding = (mod) => this.getModuleWhileAdding(mod).click()
 
-  setModuleName = (mod, name) => this.getModuleNameByModule(mod).type(`{selectall}${name}`);
+  setModuleName = (mod, name) =>
+    this.getModuleNameByModule(mod).type(`{selectall}${name}`)
 
-  setModuleGroupNameByModule = (mod, groupName) => this.getModuleGroupNameByModule(mod).type(`{selectall}${groupName}`);
+  setModuleGroupNameByModule = (mod, groupName) =>
+    this.getModuleGroupNameByModule(mod).type(`{selectall}${groupName}`)
 
-  setModuleId = (mod, id) => this.getModuleIdByModule(mod).type(`{selectall}${id}`);
+  setModuleId = (mod, id) =>
+    this.getModuleIdByModule(mod).type(`{selectall}${id}`)
 
-  clickOnActions = () => this.getActionsButton().click();
+  clickOnActions = () => this.getActionsButton().click()
 
-  clickOnBulkAdd = () => this.getBulkAdd().click();
+  clickOnBulkAdd = () => this.getBulkAdd().click()
 
-  clickBulkRemove = () => this.getBulkRemove().click();
+  clickBulkRemove = () => this.getBulkRemove().click()
 
-  clickYesWhileBulkRemove = () => this.getYesButtonWhileBulkRemove().click();
+  clickYesWhileBulkRemove = () => this.getYesButtonWhileBulkRemove().click()
 
-  checkTestById = id => this.getCheckBoxById(id).check({ force: true });
+  checkTestById = (id) => this.getCheckBoxById(id).check({ force: true })
 
-  clickOnViewTestById = id => {
-    cy.server();
-    cy.route("GET", "**/test/*").as("viewTest");
-    this.getViewButtonByTestId(id).click();
-    return cy.wait("@viewTest").then(xhr => xhr.response.body.result._id);
-  };
+  clickOnViewTestById = (id) => {
+    cy.server()
+    cy.route('GET', '**/test/*').as('viewTest')
+    this.getViewButtonByTestId(id).click()
+    return cy.wait('@viewTest').then((xhr) => xhr.response.body.result._id)
+  }
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
   addTestByIdByModule = (testId, mod) => {
-    this.getAddButtonByTestId(testId).click();
-    this.selectModuleWhileAdding(mod);
-    cy.wait(500);
-  };
+    this.getAddButtonByTestId(testId).click()
+    this.selectModuleWhileAdding(mod)
+    cy.wait(500)
+  }
 
   clickOnDone = (newPlaylist = false) => {
-    let plyaListId;
+    let plyaListId
 
-    cy.server();
-    cy.route("POST", "**/playlists").as("saveNewPlayList");
-    this.routeSavePlaylist();
+    cy.server()
+    cy.route('POST', '**/playlists').as('saveNewPlayList')
+    this.routeSavePlaylist()
 
-    this.getDoneButton().click();
+    this.getDoneButton().click()
     if (newPlaylist === true) {
-      cy.wait("@saveNewPlayList").then(xhr => {
-        expect(xhr.status).to.eq(200);
-        plyaListId = xhr.response.body.result._id;
-        cy.saveplayListDetailToDelete(plyaListId);
-      });
-    } else this.waitForSave();
+      cy.wait('@saveNewPlayList').then((xhr) => {
+        expect(xhr.status).to.eq(200)
+        plyaListId = xhr.response.body.result._id
+        cy.saveplayListDetailToDelete(plyaListId)
+      })
+    } else this.waitForSave()
 
     return cy.wait(1).then(() => {
-      Cypress.$('[class^="styles_closeButton"]').click();
-      return plyaListId;
-    });
-  };
+      Cypress.$('[class^="styles_closeButton"]').click()
+      return plyaListId
+    })
+  }
 
   bulkAddByModule = (testId, mod) => {
-    testId.forEach(id => {
-      this.checkTestById(id);
-    });
-    this.clickOnActions();
-    this.clickOnBulkAdd();
-    cy.wait(200);
-    this.selectModuleWhileAdding(mod);
-    cy.wait(1000);
-  };
+    testId.forEach((id) => {
+      this.checkTestById(id)
+    })
+    this.clickOnActions()
+    this.clickOnBulkAdd()
+    cy.wait(200)
+    this.selectModuleWhileAdding(mod)
+    cy.wait(1000)
+  }
 
   verifyCountWhileBulkRemove = (mod, count) =>
     this.getConfirmationBoxWhileBulkRemove().should(
-      "contain.text",
+      'contain.text',
       `${count} of the selected test will be removed from module-${mod}`
-    );
+    )
 
-  verifyMessage = msg => cy.get(".ant-message").should("contain", msg);
+  verifyMessage = (msg) => cy.get('.ant-message').should('contain', msg)
 
   routeSavePlaylist = () => {
-    cy.server();
-    cy.route("PUT", "**/playlists/*").as("save-playlist");
-  };
+    cy.server()
+    cy.route('PUT', '**/playlists/*').as('save-playlist')
+  }
 
-  waitForSave = () => cy.wait("@save-playlist");
+  waitForSave = () => cy.wait('@save-playlist')
   // *** APPHELPERS END ***
 }

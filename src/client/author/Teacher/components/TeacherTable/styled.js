@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { StyledTable, StyledTableButton } from "../../../../common/styled";
+import styled from 'styled-components'
+import { StyledTable, StyledTableButton } from '../../../../common/styled'
 
-export const StyledTeacherTable = styled(StyledTable)``;
+export const StyledTeacherTable = styled(StyledTable)``
 
 export const StyledMaskButton = styled(StyledTableButton)`
   svg {

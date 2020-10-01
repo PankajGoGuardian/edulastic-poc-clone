@@ -1,24 +1,24 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
 import {
   themeColorLight,
   themeColor,
   inputBgGrey,
   linkColor1,
   greyThemeLighter,
-  greyThemeLight
-} from "@edulastic/colors";
+  greyThemeLight,
+} from '@edulastic/colors'
 
 class TextField extends Component {
   state = {
-    referenceEditable: false
-  };
+    referenceEditable: false,
+  }
 
   onIconClick = () => {
-    const { referenceEditable } = this.state;
-    this.setState({ referenceEditable: !referenceEditable });
-  };
+    const { referenceEditable } = this.state
+    this.setState({ referenceEditable: !referenceEditable })
+  }
 
   render() {
     const {
@@ -33,27 +33,27 @@ class TextField extends Component {
       minimum,
       maximum,
       ...restProps
-    } = this.props;
-    const { referenceEditable } = this.state;
+    } = this.props
+    const { referenceEditable } = this.state
     return (
       <Container height={height} width={width} style={containerStyle}>
         <Field
           disabled={!referenceEditable}
-          type={!type ? "text" : type}
+          type={!type ? 'text' : type}
           style={style}
           min={!minimum ? null : minimum}
           max={!maximum ? null : maximum}
           referenceEditable={referenceEditable}
           {...restProps}
           onChange={onChange}
-          onBlur={e => {
-            this.onIconClick();
-            onBlur(e);
+          onBlur={(e) => {
+            this.onIconClick()
+            onBlur(e)
           }}
         />
         {icon && <Icon onClick={this.onIconClick}>{icon}</Icon>}
       </Container>
-    );
+    )
   }
 }
 
@@ -64,25 +64,25 @@ TextField.propTypes = {
   style: PropTypes.object,
   containerStyle: PropTypes.object,
   onChange: PropTypes.func.isRequired,
-  onBlur: PropTypes.func
-};
+  onBlur: PropTypes.func,
+}
 
 TextField.defaultProps = {
   icon: null,
-  height: "45px",
-  width: "100%",
+  height: '45px',
+  width: '100%',
   style: {},
   containerStyle: {},
-  onBlur: () => {}
-};
+  onBlur: () => {},
+}
 
-export default TextField;
+export default TextField
 
 const Container = styled.span`
   position: relative;
   height: ${({ height }) => height};
   width: ${({ width }) => width};
-`;
+`
 
 const Icon = styled.span`
   position: absolute;
@@ -99,7 +99,7 @@ const Icon = styled.span`
   &:hover {
     cursor: pointer;
   }
-`;
+`
 
 const Field = styled.input`
   border: 1px solid ${greyThemeLight};
@@ -119,4 +119,4 @@ const Field = styled.input`
   }
   ${({ style }) => style};
   }}
-`;
+`

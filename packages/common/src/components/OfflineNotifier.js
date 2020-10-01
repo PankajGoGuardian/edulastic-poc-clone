@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import React, { useState, useEffect } from 'react'
+import styled, { keyframes } from 'styled-components'
 
 const OfflineNotifier = () => {
-  const [isOffline, setOffline] = useState(false);
-  const [isBackOnline, setIsBackOnline] = useState(false);
+  const [isOffline, setOffline] = useState(false)
+  const [isBackOnline, setIsBackOnline] = useState(false)
 
   useEffect(() => {
-    window.addEventListener("offline", () => setOffline(true));
-    window.addEventListener("online", () => {
-      setIsBackOnline(true);
+    window.addEventListener('offline', () => setOffline(true))
+    window.addEventListener('online', () => {
+      setIsBackOnline(true)
       setTimeout(() => {
-        setOffline(false);
-        setIsBackOnline(false);
-      }, 2000);
-    });
-  }, []);
+        setOffline(false)
+        setIsBackOnline(false)
+      }, 2000)
+    })
+  }, [])
 
   return isOffline ? (
     isBackOnline ? (
@@ -23,16 +23,16 @@ const OfflineNotifier = () => {
       <NoInternetAlert>
         <div>No Internet Connection</div>
         <Spinner>
-          {[...new Array(12)].map(o => (
+          {[...new Array(12)].map((o) => (
             <div />
           ))}
         </Spinner>
       </NoInternetAlert>
     )
-  ) : null;
-};
+  ) : null
+}
 
-export default OfflineNotifier;
+export default OfflineNotifier
 
 const keyFrameExampleOne = keyframes`
   0% {
@@ -41,7 +41,7 @@ const keyFrameExampleOne = keyframes`
   100% {
     top: 10px;
   }
-`;
+`
 
 const NoInternetAlert = styled.div`
   position: fixed;
@@ -58,14 +58,14 @@ const NoInternetAlert = styled.div`
   padding: 5px;
   box-shadow: 1px 3px 6px 2px rgba(249, 106, 106, 0.5);
   animation: ${keyFrameExampleOne} 0.25s ease-in-out 0s;
-`;
+`
 
 const ConnectedAlert = styled(NoInternetAlert)`
   background: #28c134;
   color: white;
   width: 180px;
   box-shadow: 0px 4px 8px 2px rgba(0, 128, 0, 0.3);
-`;
+`
 
 const Spinner = styled.div`
   display: inline-block;
@@ -77,7 +77,7 @@ const Spinner = styled.div`
     animation: lds-spinner 1.2s linear infinite;
   }
   div:after {
-    content: " ";
+    content: ' ';
     display: block;
     position: absolute;
     top: 30px;
@@ -143,4 +143,4 @@ const Spinner = styled.div`
       opacity: 0;
     }
   }
-`;
+`

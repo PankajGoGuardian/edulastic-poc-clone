@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import { Layout, Spin, Row, Button, Radio } from "antd";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Layout, Spin, Row, Button, Radio } from 'antd'
+import { mediumDesktopExactWidth } from '@edulastic/colors'
 
-const { Content } = Layout;
+const { Content } = Layout
 
 export const TestSettingDiv = styled.div`
   display: flex;
   flex-direction: row;
-`;
+`
 
 export const StyledContent = styled(Content)`
   width: 100%;
@@ -16,7 +16,7 @@ export const StyledContent = styled(Content)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     padding: 126px 30px 30px;
   }
-`;
+`
 
 export const StyledLayout = styled(Layout)`
   position: relative;
@@ -26,9 +26,9 @@ export const StyledLayout = styled(Layout)`
   padding: 30px;
   display: flex;
   flex-direction: column;
-  pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}
+  pointer-events: ${(props) => (props.loading === 'true' ? 'none' : 'auto')}
   min-height: 400px;
-`;
+`
 
 export const SpinContainer = styled.div`
   position: absolute;
@@ -39,14 +39,14 @@ export const SpinContainer = styled.div`
   background: rgba(68, 68, 68, 0.1);
   z-index: 999;
   border-radius: 10px;
-`;
+`
 
 export const StyledSpin = styled(Spin)`
   position: absolute;
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
-`;
+`
 
 export const StyledRow = styled(Row)`
   display: flex;
@@ -54,20 +54,20 @@ export const StyledRow = styled(Row)`
   margin-bottom: 15px;
   min-height: 32px;
   align-items: center;
-`;
+`
 
 export const StyledLabel = styled.label`
   text-align: left;
   width: 240px;
-`;
+`
 
 export const Break = styled.div`
   height: 0;
   flex-basis: 100%;
-`;
+`
 
 export const SaveButton = styled(Button)`
   margin-left: auto;
-`;
+`
 
-export const StyledRdioGroup = styled(Radio.Group)``;
+export const StyledRdioGroup = styled(Radio.Group)``

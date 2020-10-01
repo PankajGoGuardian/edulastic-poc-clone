@@ -1,14 +1,14 @@
-import React, { useState, useRef } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import get from "lodash/get";
-import { Tag, Input, Popover } from "antd";
-import { response as responseDimensions, math } from "@edulastic/constants";
-import { dashBorderColor, white } from "@edulastic/colors";
-import FlexContainer from "@edulastic/common/src/components/FlexContainer";
-import NumberPad from "../../components/NumberPad";
+import React, { useState, useRef } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import get from 'lodash/get'
+import { Tag, Input, Popover } from 'antd'
+import { response as responseDimensions, math } from '@edulastic/constants'
+import { dashBorderColor, white } from '@edulastic/colors'
+import FlexContainer from '@edulastic/common/src/components/FlexContainer'
+import NumberPad from '../../components/NumberPad'
 
-const { characterMapButtons } = math;
+const { characterMapButtons } = math
 
 const MixMatchCorrectAnswer = ({
   item,
@@ -16,85 +16,92 @@ const MixMatchCorrectAnswer = ({
   alternateResponse,
   uiStyle,
   onUpdateValidationValue,
-  addAltAnswerMixMatch
+  addAltAnswerMixMatch,
 }) => {
-  const inputRef = useRef();
-  const correctValues = get(validResponse, "value", []);
-  const [newValues, setNewTag] = useState(correctValues.reduce((obj, _, i) => ({ ...obj, [i]: "" }), {}));
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
-  const altResponses = [];
-  alternateResponse.forEach(altResponse => {
-    altResponse.value.forEach(resp => {
-      altResponses[resp.index] = altResponses[resp.index] || [];
-      altResponses[resp.index].push({ ...resp, tabId: altResponse.id });
-    });
-  });
+  const inputRef = useRef()
+  const correctValues = get(validResponse, 'value', [])
+  const [newValues, setNewTag] = useState(
+    correctValues.reduce((obj, _, i) => ({ ...obj, [i]: '' }), {})
+  )
+  const [selection, setSelection] = useState({ start: 0, end: 0 })
+  const altResponses = []
+  alternateResponse.forEach((altResponse) => {
+    altResponse.value.forEach((resp) => {
+      altResponses[resp.index] = altResponses[resp.index] || []
+      altResponses[resp.index].push({ ...resp, tabId: altResponse.id })
+    })
+  })
   /**
    * input [{inputtype: "number"/"text"}, {inputtype: "numner"/"text"}]
    * output {0: "number"/"text", 1: "number"/text}
    */
   const responseTypes =
     uiStyle?.responsecontainerindividuals?.reduce((acc, resp) => {
-      acc[resp.index] = acc[resp.index] || {};
-      acc[resp.index] = resp.inputtype || "text";
-      return acc;
-    }, {}) || {};
+      acc[resp.index] = acc[resp.index] || {}
+      acc[resp.index] = resp.inputtype || 'text'
+      return acc
+    }, {}) || {}
 
-  const { widthpx, inputtype } = uiStyle;
+  const { widthpx, inputtype } = uiStyle
   const btnStyle = {
     minWidth: `${widthpx || responseDimensions.minWidth}px`,
     minHeight: `${responseDimensions.minHeight}px`,
-    maxWidth: responseDimensions.clozeTextMaxWidth
+    maxWidth: responseDimensions.clozeTextMaxWidth,
     // width: widthpx !== 0 ? widthpx : 140
-  };
+  }
 
   const handleClose = ({ id, tabId, value }) => {
-    onUpdateValidationValue({ id, tabId, value });
-  };
+    onUpdateValidationValue({ id, tabId, value })
+  }
 
-  const handleInputConfirm = answerIndex => {
-    if (!newValues[answerIndex].trim().length) return;
-    addAltAnswerMixMatch({ index: answerIndex, value: newValues[answerIndex] });
-    setNewTag({ ...newValues, [answerIndex]: "" });
-  };
+  const handleInputConfirm = (answerIndex) => {
+    if (!newValues[answerIndex].trim().length) return
+    addAltAnswerMixMatch({ index: answerIndex, value: newValues[answerIndex] })
+    setNewTag({ ...newValues, [answerIndex]: '' })
+  }
 
-  const handleInputChange = answerIndex => e => {
-    setNewTag({ ...newValues, [answerIndex]: e.target.value });
-  };
+  const handleInputChange = (answerIndex) => (e) => {
+    setNewTag({ ...newValues, [answerIndex]: e.target.value })
+  }
 
-  const handleSelect = e => {
-    const { selectionStart, selectionEnd } = e.target;
+  const handleSelect = (e) => {
+    const { selectionStart, selectionEnd } = e.target
     setSelection({
       start: selectionStart,
-      end: selectionEnd
-    });
-  };
+      end: selectionEnd,
+    })
+  }
 
-  const insertSpecialChar = answerIndex => (_, char) => {
+  const insertSpecialChar = (answerIndex) => (_, char) => {
     setSelection({
       start: selection.start + char.length,
-      end: selection.start + char.length
-    });
+      end: selection.start + char.length,
+    })
 
-    let value = newValues[answerIndex] || "";
-    value = value.slice(0, selection.start) + char + value.slice(selection.end);
-    setNewTag({ ...newValues, [answerIndex]: value });
-  };
+    let value = newValues[answerIndex] || ''
+    value = value.slice(0, selection.start) + char + value.slice(selection.end)
+    setNewTag({ ...newValues, [answerIndex]: value })
+  }
 
   const makeCharactersMap = () => {
-    const { characterMap } = item;
-    const make = arr => arr.map(character => ({ value: character, label: character }));
+    const { characterMap } = item
+    const make = (arr) =>
+      arr.map((character) => ({ value: character, label: character }))
 
     if (Array.isArray(characterMap) && characterMap.length > 0) {
-      return make(characterMap);
+      return make(characterMap)
     }
 
-    return make(characterMapButtons);
-  };
+    return make(characterMapButtons)
+  }
 
   const correctAnswersBlock = (
     // render all correct answers
-    <FlexContainer flexDirection="column" alignItems="flex-start" style={{ flexShrink: 0 }}>
+    <FlexContainer
+      flexDirection="column"
+      alignItems="flex-start"
+      style={{ flexShrink: 0 }}
+    >
       {correctValues.map(({ index, value }) => (
         <CorrectAnswer style={btnStyle}>
           <div className="index">{index + 1}</div>
@@ -102,11 +109,16 @@ const MixMatchCorrectAnswer = ({
         </CorrectAnswer>
       ))}
     </FlexContainer>
-  );
+  )
 
   const altAnswerBlock = (
     // render as many inputs as correct answers
-    <FlexContainer flexDirection="column" alignItems="flex-start" flexWrap="wrap" style={{ flexShrink: 0 }}>
+    <FlexContainer
+      flexDirection="column"
+      alignItems="flex-start"
+      flexWrap="wrap"
+      style={{ flexShrink: 0 }}
+    >
       {correctValues.map((_, answerIndex) => (
         <AlterAnswer id={answerIndex} key={answerIndex}>
           {altResponses[answerIndex] &&
@@ -116,9 +128,9 @@ const MixMatchCorrectAnswer = ({
                   <Tag
                     className={id}
                     closable
-                    onClose={e => {
-                      e.preventDefault();
-                      handleClose({ id, tabId, value });
+                    onClose={(e) => {
+                      e.preventDefault()
+                      handleClose({ id, tabId, value })
                     }}
                   >
                     {value}
@@ -130,13 +142,17 @@ const MixMatchCorrectAnswer = ({
             visible={newValues[answerIndex]}
             placement="bottom"
             overlayClassName="text-entry-altanswer-button"
-            content={<AddButton onClick={() => handleInputConfirm(answerIndex)}>+ add</AddButton>}
+            content={
+              <AddButton onClick={() => handleInputConfirm(answerIndex)}>
+                + add
+              </AddButton>
+            }
           >
             <Input
               data-cy="mixNmatchAltAns"
               // individual type overriding the global type
               // default to text if neither is set
-              type={responseTypes[answerIndex] || inputtype || "text"}
+              type={responseTypes[answerIndex] || inputtype || 'text'}
               size="small"
               placeholder="+ Alt Ans"
               value={newValues[answerIndex]}
@@ -147,38 +163,38 @@ const MixMatchCorrectAnswer = ({
           </Popover>
           {item.characterMap && (
             <NumberPad
-              buttonStyle={{ width: 30, height: "100%" }}
+              buttonStyle={{ width: 30, height: '100%' }}
               onChange={insertSpecialChar(answerIndex)}
-              items={[{ value: "á", label: "á" }]}
+              items={[{ value: 'á', label: 'á' }]}
               characterMapButtons={makeCharactersMap()}
-              style={{ display: "inline-flex", height: "100%" }}
+              style={{ display: 'inline-flex', height: '100%' }}
             />
           )}
         </AlterAnswer>
       ))}
     </FlexContainer>
-  );
+  )
 
   return (
     <Container width="100%" justifyContent="flex-start" flexWrap="nowrap">
       {correctAnswersBlock}
       {altAnswerBlock}
     </Container>
-  );
-};
+  )
+}
 
 MixMatchCorrectAnswer.propTypes = {
   alternateResponse: PropTypes.object.isRequired,
   uiStyle: PropTypes.object.isRequired,
-  onUpdateValidationValue: PropTypes.func.isRequired
-};
+  onUpdateValidationValue: PropTypes.func.isRequired,
+}
 
-export default MixMatchCorrectAnswer;
+export default MixMatchCorrectAnswer
 
 const Container = styled(FlexContainer)`
   padding-bottom: 14px;
   overflow: auto;
-`;
+`
 
 const CorrectAnswer = styled.div`
   display: flex;
@@ -204,7 +220,7 @@ const CorrectAnswer = styled.div`
     padding: 8px 16px;
     height: 100%;
   }
-`;
+`
 
 const AlterAnswer = styled.div`
   display: flex;
@@ -231,7 +247,7 @@ const AlterAnswer = styled.div`
     margin-right: 4px;
     white-space: pre-wrap;
   }
-`;
+`
 
 const AddButton = styled.div`
   font-size: 10px;
@@ -241,4 +257,4 @@ const AddButton = styled.div`
   cursor: pointer;
   background: ${white};
   box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.5);
-`;
+`

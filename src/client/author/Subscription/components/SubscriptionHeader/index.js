@@ -1,21 +1,24 @@
-import { EduButton, MainHeader } from "@edulastic/common";
-import { IconSubscriptionHighlight } from "@edulastic/icons";
-import { darkOrange1 } from "@edulastic/colors";
-import PropTypes from "prop-types";
-import React, { memo } from "react";
-import { withNamespaces } from "react-i18next";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
-import { ActionBtnWrapper } from "./styled";
+import { EduButton, MainHeader } from '@edulastic/common'
+import { IconSubscriptionHighlight } from '@edulastic/icons'
+import { darkOrange1 } from '@edulastic/colors'
+import PropTypes from 'prop-types'
+import React, { memo } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { ActionBtnWrapper } from './styled'
 
 const SubscriptionHeader = ({
   openComparePlanModal,
   openPaymentServiceModal,
   showUpgradeOptions,
   showRenewalOptions,
-  t
+  t,
 }) => (
-  <MainHeader Icon={IconSubscriptionHighlight} headingText={t("common.subscriptionTitle")}>
+  <MainHeader
+    Icon={IconSubscriptionHighlight}
+    headingText={t('common.subscriptionTitle')}
+  >
     <ActionBtnWrapper>
       {showUpgradeOptions && (
         <EduButton isBlue isGhost width="195px" onClick={openComparePlanModal}>
@@ -26,7 +29,7 @@ const SubscriptionHeader = ({
         <EduButton isBlue width="215px" onClick={openPaymentServiceModal}>
           UPGRADE NOW FOR $100/YEAR
         </EduButton>
-      /*
+      ) : /*
       removing renew subscription for everyone
       ) : showRenewalOptions ? (
         <EduButton
@@ -40,15 +43,15 @@ const SubscriptionHeader = ({
           <span>RENEW SUBSCRIPTION</span>
         </EduButton>
       */
-      ) : null}
+      null}
     </ActionBtnWrapper>
   </MainHeader>
-);
+)
 
 SubscriptionHeader.propTypes = {
   openComparePlanModal: PropTypes.func.isRequired,
   openPaymentServiceModal: PropTypes.func.isRequired,
-  showUpgradeOptions: PropTypes.bool.isRequired
-};
+  showUpgradeOptions: PropTypes.bool.isRequired,
+}
 
-export default memo(withNamespaces("header")(SubscriptionHeader));
+export default memo(withNamespaces('header')(SubscriptionHeader))

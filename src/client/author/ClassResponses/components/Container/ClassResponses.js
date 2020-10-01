@@ -1,25 +1,29 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { Link } from "react-router-dom";
-import { ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { Link } from 'react-router-dom'
+import { ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 // actions
-import { receiveStudentResponseAction, receiveClassResponseAction } from "../../../src/actions/classBoard";
+import { AnswerContext } from '@edulastic/common'
+import {
+  receiveStudentResponseAction,
+  receiveClassResponseAction,
+} from '../../../src/actions/classBoard'
 // selectors
 import {
   getClassResponseSelector,
   getStudentResponseSelector,
   getTestActivitySelector,
   getAdditionalDataSelector,
-  getAssignmentClassIdSelector
-} from "../../../ClassBoard/ducks";
+  getAssignmentClassIdSelector,
+} from '../../../ClassBoard/ducks'
 // components
-import ClassSelect from "../../../Shared/Components/ClassSelect/ClassSelect";
-import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
-import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelect";
-import FeedbackForm from "../FeedbackForm/FeedbackForm";
-import ClassQuestions from "./ClassQuestions";
+import ClassSelect from '../../../Shared/Components/ClassSelect/ClassSelect'
+import ClassHeader from '../../../Shared/Components/ClassHeader/ClassHeader'
+import StudentSelect from '../../../Shared/Components/StudentSelect/StudentSelect'
+import FeedbackForm from '../FeedbackForm/FeedbackForm'
+import ClassQuestions from './ClassQuestions'
 // styled wrappers
 import {
   PaginationInfo,
@@ -38,95 +42,111 @@ import {
   FeedbackButton,
   OverallButton,
   SelectWrapper,
-  FeedbackActiveButton
-} from "./styled";
-import { AnswerContext } from "@edulastic/common";
+  FeedbackActiveButton,
+} from './styled'
 
 class ClassResponses extends Component {
   state = {
-    showFeedbackForm: false
-  };
+    showFeedbackForm: false,
+  }
 
   componentDidMount() {
-    const { loadStudentResponses, match, testActivity, additionalData, history, loadClassResponses } = this.props;
+    const {
+      loadStudentResponses,
+      match,
+      testActivity,
+      additionalData,
+      history,
+      loadClassResponses,
+    } = this.props
     if (testActivity.length === 0) {
-      history.goBack();
+      history.goBack()
     }
-    const { testId, classId } = additionalData;
-    const { testActivityId } = match.params;
-    loadStudentResponses({ testActivityId, groupId: classId });
-    loadClassResponses({ testId });
+    const { testId, classId } = additionalData
+    const { testActivityId } = match.params
+    loadStudentResponses({ testActivityId, groupId: classId })
+    loadClassResponses({ testId })
   }
 
   static getDerivedStateFromProps(props, state) {
     const {
-      studentResponse: { testActivity }
-    } = props;
+      studentResponse: { testActivity },
+    } = props
     if (!testActivity) {
-      return null;
+      return null
     }
-    const { testId, classId } = testActivity;
+    const { testId, classId } = testActivity
     if (testId !== state.testId) {
-      return { testId, groupId: classId };
+      return { testId, groupId: classId }
     }
-    return null;
+    return null
   }
 
   handleCreate = () => {
-    const { history, match } = this.props;
-    history.push(`${match.url}/create`);
-  };
+    const { history, match } = this.props
+    history.push(`${match.url}/create`)
+  }
 
   onClickChart = ({ name, id }) => {
-    console.log(name, id);
-  };
+    console.log(name, id)
+  }
 
   toggleFeedback = () => {
-    const { showFeedbackForm } = this.state;
+    const { showFeedbackForm } = this.state
     this.setState({
-      showFeedbackForm: !showFeedbackForm
-    });
-  };
+      showFeedbackForm: !showFeedbackForm,
+    })
+  }
 
   render() {
-    let totalScore = 0;
-    let totalMaxScore = 0;
-    const data = [];
-    const { showFeedbackForm } = this.state;
-    const { testActivity: studentItems } = this.props;
-    const { classResponse, additionalData, studentResponse, loadStudentResponses, creating } = this.props;
-    const testActivity = studentResponse ? studentResponse.testActivity : null;
-    const questionActivities = studentResponse ? studentResponse.questionActivities : null;
-    const showClassQuestions = !!testActivity && !showFeedbackForm;
+    let totalScore = 0
+    let totalMaxScore = 0
+    const data = []
+    const { showFeedbackForm } = this.state
+    const { testActivity: studentItems } = this.props
+    const {
+      classResponse,
+      additionalData,
+      studentResponse,
+      loadStudentResponses,
+      creating,
+    } = this.props
+    const testActivity = studentResponse ? studentResponse.testActivity : null
+    const questionActivities = studentResponse
+      ? studentResponse.questionActivities
+      : null
+    const showClassQuestions = !!testActivity && !showFeedbackForm
 
     if (questionActivities) {
       questionActivities.forEach((item, i) => {
-        totalScore += item.score || 0;
-        totalMaxScore += item.maxScore || 1;
+        totalScore += item.score || 0
+        totalMaxScore += item.maxScore || 1
         data.push({
           id: item._id,
           name: `Q${i + 1}`,
           red: (item.maxScore || 1) - (item.score || 0),
           green: item.score || 0,
-          all: item.maxScore || 1
-        });
-      });
+          all: item.maxScore || 1,
+        })
+      })
     }
 
-    let assignmentId = testActivity ? testActivity.assignmentId : "";
-    let groupId = testActivity ? testActivity.groupId : "";
-    const testActivityId = testActivity ? testActivity._id : "";
-    const userId = testActivity ? testActivity.userId : "";
-    const classassignment = classResponse ? classResponse.title : "";
-    const classname = additionalData ? additionalData.className : "";
-    const classnames = [{ name: classname }];
-    const currentStudent = studentItems.find(({ studentId }) => studentId === userId);
-    const studentName = currentStudent ? currentStudent.studentName : "";
-    const linkToClass = `/author/classboard/${assignmentId}/${groupId}`;
-    const linkToResponses = `/author/classresponses/${testActivityId}`;
-    const { assignmentIdClassId } = this.props;
-    assignmentId = assignmentId || assignmentIdClassId.assignmentId;
-    groupId = groupId || assignmentIdClassId.classId;
+    let assignmentId = testActivity ? testActivity.assignmentId : ''
+    let groupId = testActivity ? testActivity.groupId : ''
+    const testActivityId = testActivity ? testActivity._id : ''
+    const userId = testActivity ? testActivity.userId : ''
+    const classassignment = classResponse ? classResponse.title : ''
+    const classname = additionalData ? additionalData.className : ''
+    const classnames = [{ name: classname }]
+    const currentStudent = studentItems.find(
+      ({ studentId }) => studentId === userId
+    )
+    const studentName = currentStudent ? currentStudent.studentName : ''
+    const linkToClass = `/author/classboard/${assignmentId}/${groupId}`
+    const linkToResponses = `/author/classresponses/${testActivityId}`
+    const { assignmentIdClassId } = this.props
+    assignmentId = assignmentId || assignmentIdClassId.assignmentId
+    groupId = groupId || assignmentIdClassId.classId
     return (
       <div>
         <ClassHeader
@@ -142,38 +162,46 @@ class ClassResponses extends Component {
           <PaginationInfo>
             <a>
               &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link>
-            </a>{" "}
+            </a>{' '}
             /
             <a>
               <Link to="/author/assignments">{classassignment}</Link>
-            </a>{" "}
+            </a>{' '}
             /
             <a>
               <Link to={linkToClass}>{classname}</Link>
-            </a>{" "}
+            </a>{' '}
             /
             <a>
               <Link to={linkToResponses}>{studentName}</Link>
             </a>
           </PaginationInfo>
           <SelectWrapper>
-            <StudentSelect students={studentItems} loadStudentResponses={loadStudentResponses} />
+            <StudentSelect
+              students={studentItems}
+              loadStudentResponses={loadStudentResponses}
+            />
             <ClassSelect classname={classnames} />
           </SelectWrapper>
         </StyledFlexContainer>
         <StyledCard bordered={false}>
           <GraphContainer>
             <ResponsiveContainer width="100%" height={240}>
-              <ComposedChart barGap={1} barSize={36} data={data} margin={{ top: 20, right: 60, bottom: 0, left: 20 }}>
+              <ComposedChart
+                barGap={1}
+                barSize={36}
+                data={data}
+                margin={{ top: 20, right: 60, bottom: 0, left: 20 }}
+              >
                 <XAxis dataKey="name" axisLine={false} tickSize={0} />
                 <YAxis
                   dataKey="all"
                   yAxisId={0}
                   tickCount={4}
                   allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: "#999" }}
+                  tick={{ strokeWidth: 0, fill: '#999' }}
                   tickSize={6}
-                  label={{ value: "ATTEMPTS", angle: -90, fill: "#999" }}
+                  label={{ value: 'ATTEMPTS', angle: -90, fill: '#999' }}
                   stroke="#999"
                 />
                 <YAxis
@@ -181,19 +209,29 @@ class ClassResponses extends Component {
                   yAxisId={1}
                   tickCount={4}
                   allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: "#999" }}
+                  tick={{ strokeWidth: 0, fill: '#999' }}
                   tickSize={6}
                   label={{
-                    value: "AVG TIME (SECONDS)",
+                    value: 'AVG TIME (SECONDS)',
                     angle: -90,
-                    fill: "#999",
-                    fontSize: "10px"
+                    fill: '#999',
+                    fontSize: '10px',
                   }}
                   orientation="right"
                   stroke="#999"
                 />
-                <Bar stackId="a" dataKey="green" fill="#1fe3a0" onClick={this.onClickChart} />
-                <Bar stackId="a" dataKey="red" fill="#ee1b82" onClick={this.onClickChart} />
+                <Bar
+                  stackId="a"
+                  dataKey="green"
+                  fill="#1fe3a0"
+                  onClick={this.onClickChart}
+                />
+                <Bar
+                  stackId="a"
+                  dataKey="red"
+                  fill="#ee1b82"
+                  onClick={this.onClickChart}
+                />
               </ComposedChart>
             </ResponsiveContainer>
           </GraphContainer>
@@ -249,27 +287,27 @@ class ClassResponses extends Component {
           </StyledFlexContainer>
         )}
       </div>
-    );
+    )
   }
 }
 
 const enhance = compose(
   connect(
-    state => ({
+    (state) => ({
       classResponse: getClassResponseSelector(state),
       studentResponse: getStudentResponseSelector(state),
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
-      assignmentIdClassId: getAssignmentClassIdSelector(state)
+      assignmentIdClassId: getAssignmentClassIdSelector(state),
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,
-      loadClassResponses: receiveClassResponseAction
+      loadClassResponses: receiveClassResponseAction,
     }
   )
-);
+)
 
-export default enhance(ClassResponses);
+export default enhance(ClassResponses)
 
 /* eslint-disable react/require-default-props */
 ClassResponses.propTypes = {
@@ -282,5 +320,5 @@ ClassResponses.propTypes = {
   loadStudentResponses: PropTypes.func,
   creating: PropTypes.object,
   assignmentIdClassId: PropTypes.object,
-  loadClassResponses: PropTypes.func
-};
+  loadClassResponses: PropTypes.func,
+}

@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-export const ValueWrapper = styled.div.attrs({ className: "value-wrapper" })`
+export const ValueWrapper = styled.div.attrs({ className: 'value-wrapper' })`
   position: relative;
   display: flex;
   justify-content: flex-start;
@@ -9,5 +9,5 @@ export const ValueWrapper = styled.div.attrs({ className: "value-wrapper" })`
   overflow: hidden;
   width: 100%;
 
-  height: ${({ isOverHight }) => isOverHight && "100%"};
-`;
+  height: ${({ isOverHight }) => isOverHight && '100%'};
+`

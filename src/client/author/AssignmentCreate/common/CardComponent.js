@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { mobileWidthMax, backgrounds } from "@edulastic/colors";
+import styled from 'styled-components'
+import { mobileWidthMax, backgrounds } from '@edulastic/colors'
 
 const CardComponent = styled.div`
   flex-basis: calc(33.33% - 30px);
@@ -8,16 +8,16 @@ const CardComponent = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 30px;
-  background-color: ${props => props.theme.brandLightGrey};
+  background-color: ${(props) => props.theme.brandLightGrey};
   border-radius: 10px;
   height: 446px;
   background-color: ${backgrounds.default};
-  margin-left: ${props => props.ml || "25px"};
+  margin-left: ${(props) => props.ml || '25px'};
   @media (max-width: ${mobileWidthMax}) {
     min-height: unset;
     flex-basis: 100%;
     margin-bottom: 10px;
   }
-`;
+`
 
-export default CardComponent;
+export default CardComponent

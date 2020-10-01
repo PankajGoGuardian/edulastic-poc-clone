@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withNamespaces } from "@edulastic/localization";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withNamespaces } from '@edulastic/localization'
 
-import Question from "../../../components/Question";
-import CorrectAnswers from "../../../components/CorrectAnswers";
+import Question from '../../../components/Question'
+import CorrectAnswers from '../../../components/CorrectAnswers'
 
 const SetCorrectAnswers = ({
   t,
@@ -17,24 +17,24 @@ const SetCorrectAnswers = ({
   onCloseTab,
   points,
   isCorrectAnsTab = false,
-  item
+  item,
 }) => {
-  const handleChangePoint = score => {
+  const handleChangePoint = (score) => {
     if (score > 0) {
-      onChangePoints(+score);
+      onChangePoints(+score)
     }
-  };
+  }
 
   const handleCloseAlter = () => {
-    onCloseTab(currentTab - 1);
-  };
+    onCloseTab(currentTab - 1)
+  }
 
-  const handleClickTab = index => onTabChange(index);
+  const handleClickTab = (index) => onTabChange(index)
 
   return (
     <Question
       section="main"
-      label={t("component.correctanswers.setcorrectanswers")}
+      label={t('component.correctanswers.setcorrectanswers')}
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
@@ -54,8 +54,8 @@ const SetCorrectAnswers = ({
         {chartPreview}
       </CorrectAnswers>
     </Question>
-  );
-};
+  )
+}
 
 SetCorrectAnswers.propTypes = {
   onTabChange: PropTypes.func.isRequired,
@@ -69,13 +69,13 @@ SetCorrectAnswers.propTypes = {
   chartPreview: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  item: PropTypes.object.isRequired
-};
+  item: PropTypes.object.isRequired,
+}
 
 SetCorrectAnswers.defaultProps = {
   chartPreview: null,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-export default withNamespaces("assessment")(SetCorrectAnswers);
+export default withNamespaces('assessment')(SetCorrectAnswers)

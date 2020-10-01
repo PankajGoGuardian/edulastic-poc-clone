@@ -1,6 +1,6 @@
-export const getStatus = status => {
-  if (status === "inreview") {
-    return "in review";
+export const getStatus = (status) => {
+  if (status === 'inreview') {
+    return 'in review'
   }
-  return status;
-};
+  return status
+}

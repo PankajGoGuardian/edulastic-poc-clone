@@ -1,8 +1,8 @@
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconAudioPause = props => (
+const IconAudioPause = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.52 15.57" {...props}>
     <g transform="translate(0)">
       <g transform="translate(0)">
@@ -17,6 +17,6 @@ const IconAudioPause = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconAudioPause);
+export default withIconStyles(IconAudioPause)

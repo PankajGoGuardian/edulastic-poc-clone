@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const MainContainer = styled.div`
    {
@@ -8,6 +8,6 @@ const MainContainer = styled.div`
       flex-direction: column;
     }
   }
-`;
+`
 
-export default MainContainer;
+export default MainContainer

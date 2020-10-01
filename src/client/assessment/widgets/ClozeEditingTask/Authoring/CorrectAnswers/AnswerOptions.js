@@ -1,67 +1,76 @@
-import React from "react";
-import produce from "immer";
-import { FlexContainer } from "@edulastic/common";
-import { CorrectAnswerOptions } from "../../../../styled/CorrectAnswerOptions";
-import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
-import { Label } from "../../../../styled/WidgetOptions/Label";
-import { SelectInputStyled as Select } from "../../../../styled/InputStyles";
-import { RadioLabel, RadioLabelGroup } from "../../../../styled/RadioWithLabel";
+import React from 'react'
+import produce from 'immer'
+import { FlexContainer } from '@edulastic/common'
+import { CorrectAnswerOptions } from '../../../../styled/CorrectAnswerOptions'
+import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
+import { Label } from '../../../../styled/WidgetOptions/Label'
+import { SelectInputStyled as Select } from '../../../../styled/InputStyles'
+import { RadioLabel, RadioLabelGroup } from '../../../../styled/RadioWithLabel'
 
-import { displayStyleOptions, displayStyles, subOptions } from "../../constants";
+import { displayStyleOptions, displayStyles, subOptions } from '../../constants'
 
-const { Option } = Select;
+const { Option } = Select
 
 const AnswerOptions = ({ t, setQuestionData, item }) => {
-  const { shuffleOptions, displayStyle = { type: "", option: "" } } = item;
+  const { shuffleOptions, displayStyle = { type: '', option: '' } } = item
   const optionsChangeHandler = (name, value) => () => {
     setQuestionData(
-      produce(item, draft => {
-        draft[name] = value;
+      produce(item, (draft) => {
+        draft[name] = value
       })
-    );
-  };
+    )
+  }
 
-  const onChangeDisplayStyle = value => {
+  const onChangeDisplayStyle = (value) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (!draft.displayStyle) {
-          draft.displayStyle = {};
+          draft.displayStyle = {}
         }
         draft.displayStyle = {
           type: value,
-          option: value === displayStyles.DRAG_DROP ? subOptions.EMPTY : subOptions.DASHED_LINE
-        };
+          option:
+            value === displayStyles.DRAG_DROP
+              ? subOptions.EMPTY
+              : subOptions.DASHED_LINE,
+        }
       })
-    );
-  };
+    )
+  }
 
   const onChangeDisplayStyleSubOption = ({ target: { value } }) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (!draft.displayStyle) {
-          draft.displayStyle = {};
+          draft.displayStyle = {}
         }
         draft.displayStyle = {
           ...draft.displayStyle,
-          option: value
-        };
+          option: value,
+        }
       })
-    );
-  };
+    )
+  }
 
-  const isDragDropStyle = displayStyle.type === displayStyles.DRAG_DROP;
-  const dStyle = displayStyle.type || displayStyles.TOGGLE;
-  const subOp = displayStyle.option ? displayStyle.option : isDragDropStyle ? subOptions.EMPTY : subOptions.DASHED_LINE;
+  const isDragDropStyle = displayStyle.type === displayStyles.DRAG_DROP
+  const dStyle = displayStyle.type || displayStyles.TOGGLE
+  const subOp = displayStyle.option
+    ? displayStyle.option
+    : isDragDropStyle
+    ? subOptions.EMPTY
+    : subOptions.DASHED_LINE
 
   return (
     <CorrectAnswerOptions alignItems="center">
       <CheckboxLabel
         key="shuffleOptions"
-        onChange={optionsChangeHandler("shuffleOptions", !shuffleOptions)}
+        onChange={optionsChangeHandler('shuffleOptions', !shuffleOptions)}
         checked={shuffleOptions}
-        style={{ alignSelf: "center" }}
+        style={{ alignSelf: 'center' }}
       >
-        <Label style={{ display: "inline" }}>{t("component.cloze.dropDown.shuffleoptions")}</Label>
+        <Label style={{ display: 'inline' }}>
+          {t('component.cloze.dropDown.shuffleoptions')}
+        </Label>
       </CheckboxLabel>
 
       <FlexContainer alignItems="center">
@@ -73,34 +82,39 @@ const AnswerOptions = ({ t, setQuestionData, item }) => {
           ))}
         </Select>
         <Label ml="8px" marginBottom="0px">
-          {t("component.options.displayStyle")}
+          {t('component.options.displayStyle')}
         </Label>
       </FlexContainer>
 
-      <RadioLabelGroup mt="4px" pl="12px" onChange={onChangeDisplayStyleSubOption} value={subOp}>
+      <RadioLabelGroup
+        mt="4px"
+        pl="12px"
+        onChange={onChangeDisplayStyleSubOption}
+        value={subOp}
+      >
         {isDragDropStyle && (
           <RadioLabel labelPadding="8px" value={subOptions.EMPTY}>
-            {t("component.options.empty")}
+            {t('component.options.empty')}
           </RadioLabel>
         )}
         {isDragDropStyle && (
           <RadioLabel labelPadding="8px" value={subOptions.PRE_FILLED}>
-            {t("component.options.preFilled")}
+            {t('component.options.preFilled')}
           </RadioLabel>
         )}
         {!isDragDropStyle && (
           <RadioLabel labelPadding="8px" value={subOptions.DASHED_LINE}>
-            {t("component.options.dashedline")}
+            {t('component.options.dashedline')}
           </RadioLabel>
         )}
         {!isDragDropStyle && (
           <RadioLabel labelPadding="8px" value={subOptions.HIGHLIGHT}>
-            {t("component.options.highlight")}
+            {t('component.options.highlight')}
           </RadioLabel>
         )}
       </RadioLabelGroup>
     </CorrectAnswerOptions>
-  );
-};
+  )
+}
 
-export default AnswerOptions;
+export default AnswerOptions

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const SecondHeader = styled.div`
   display: flex;
@@ -9,4 +9,4 @@ export const SecondHeader = styled.div`
     height: 24px;
     margin-left: 17px;
   }
-`;
+`

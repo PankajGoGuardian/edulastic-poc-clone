@@ -15,7 +15,11 @@
   "compareByData": [
     { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },
     { "key": "teacher", "title": "Teacher", "hiddenFromRole": ["teacher"] },
-    { "key": "student", "title": "Student", "hiddenFromRole": ["district-admin"] },
+    {
+      "key": "student",
+      "title": "Student",
+      "hiddenFromRole": ["district-admin"]
+    },
     { "key": "group", "title": "Class" }
   ]
 }

@@ -1,19 +1,19 @@
-import React from "react";
-import styled from "styled-components";
-import ChoicesBox from "./ChoicesBox";
+import React from 'react'
+import styled from 'styled-components'
+import ChoicesBox from './ChoicesBox'
 
 const minWidthMap = {
   xs: 100,
   sm: 100,
   md: 150,
   lg: 200,
-  xl: 250
-};
+  xl: 250,
+}
 
 export const StyledChoicesBox = styled(ChoicesBox)`
   .ant-select {
     font-size: ${({ theme }) => theme?.fontSize};
-    min-width: ${({ theme }) => minWidthMap[(theme?.zoomLevel)] || 100}px;
+    min-width: ${({ theme }) => minWidthMap[theme?.zoomLevel] || 100}px;
 
     .ant-select-selection {
       display: flex;
@@ -33,8 +33,8 @@ export const StyledChoicesBox = styled(ChoicesBox)`
   .ant-select-selection-selected-value {
     font-size: ${({ theme }) => theme?.fontSize};
   }
-`;
+`
 
-const ChoicesBoxContainer = props => <StyledChoicesBox {...props} />;
+const ChoicesBoxContainer = (props) => <StyledChoicesBox {...props} />
 
-export default ChoicesBoxContainer;
+export default ChoicesBoxContainer

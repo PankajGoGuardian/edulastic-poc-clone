@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { get } from "lodash";
-import produce from "immer";
-import PropTypes from "prop-types";
-import { ChoiceDimensions } from "@edulastic/constants";
-import { withNamespaces } from "@edulastic/localization";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import React, { Component } from 'react'
+import { get } from 'lodash'
+import produce from 'immer'
+import PropTypes from 'prop-types'
+import { ChoiceDimensions } from '@edulastic/constants'
+import { withNamespaces } from '@edulastic/localization'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import {
   Layout,
@@ -15,55 +15,74 @@ import {
   RowMinHeightOption,
   ResponseContainerPositionOption,
   StemNumerationOption,
-  NumberInput
-} from "../../../containers/WidgetOptions/components";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
-import Question from "../../../components/Question";
+  NumberInput,
+} from '../../../containers/WidgetOptions/components'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import Question from '../../../components/Question'
 
-const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
+const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions
 class LayoutWrapper extends Component {
   render() {
-    const { item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t } = this.props;
+    const {
+      item,
+      setQuestionData,
+      advancedAreOpen,
+      fillSections,
+      cleanSections,
+      t,
+    } = this.props
     const changeItem = (prop, val) => {
       setQuestionData(
-        produce(item, draft => {
-          draft[prop] = val;
+        produce(item, (draft) => {
+          draft[prop] = val
         })
-      );
-    };
+      )
+    }
 
     const changeUIStyle = (prop, val) => {
       setQuestionData(
-        produce(item, draft => {
+        produce(item, (draft) => {
           if (!draft.uiStyle) {
-            draft.uiStyle = {};
+            draft.uiStyle = {}
           }
-          draft.uiStyle[prop] = val;
+          draft.uiStyle[prop] = val
         })
-      );
-    };
+      )
+    }
 
     return (
       <Question
         section="advanced"
-        label={t("component.options.display")}
+        label={t('component.options.display')}
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+        <Layout
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.options.display')}`
+          )}
+        >
           <Row gutter={24}>
             <Col md={12}>
               <ResponseContainerPositionOption
-                onChange={val => changeUIStyle("possibilityListPosition", val)}
-                value={get(item, "uiStyle.possibilityListPosition", "left")}
+                onChange={(val) =>
+                  changeUIStyle('possibilityListPosition', val)
+                }
+                value={get(item, 'uiStyle.possibilityListPosition', 'left')}
               />
             </Col>
             <Col md={12}>
               <StemNumerationOption
-                onChange={val => changeUIStyle("validationStemNumeration", val)}
-                value={get(item, "uiStyle.validationStemNumeration", "numerical")}
+                onChange={(val) =>
+                  changeUIStyle('validationStemNumeration', val)
+                }
+                value={get(
+                  item,
+                  'uiStyle.validationStemNumeration',
+                  'numerical'
+                )}
               />
             </Col>
           </Row>
@@ -71,14 +90,14 @@ class LayoutWrapper extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <RowTitlesWidthOption
-                onChange={val => changeUIStyle("rowTitlesWidth", val)}
-                value={get(item, "uiStyle.rowTitlesWidth", "100px")}
+                onChange={(val) => changeUIStyle('rowTitlesWidth', val)}
+                value={get(item, 'uiStyle.rowTitlesWidth', '100px')}
               />
             </Col>
             <Col md={12}>
               <RowMinHeightOption
-                onChange={val => changeUIStyle("rowMinHeight", val)}
-                value={get(item, "uiStyle.rowMinHeight", "100px")}
+                onChange={(val) => changeUIStyle('rowMinHeight', val)}
+                value={get(item, 'uiStyle.rowMinHeight', '100px')}
               />
             </Col>
           </Row>
@@ -86,14 +105,14 @@ class LayoutWrapper extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <RowHeaderOption
-                onChange={val => changeUIStyle("rowHeader", val)}
-                value={get(item, "uiStyle.rowHeader", "")}
+                onChange={(val) => changeUIStyle('rowHeader', val)}
+                value={get(item, 'uiStyle.rowHeader', '')}
               />
             </Col>
             <Col md={12}>
               <MaximumResponsesPerCellOption
-                onChange={val => changeItem("maxResponsePerCell", +val)}
-                value={get(item, "maxResponsePerCell", "")}
+                onChange={(val) => changeItem('maxResponsePerCell', +val)}
+                value={get(item, 'maxResponsePerCell', '')}
               />
             </Col>
           </Row>
@@ -101,16 +120,16 @@ class LayoutWrapper extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <NumberInput
-                label={t("component.options.choiceMinWidth")}
-                onChange={val => changeUIStyle("choiceMinWidth", +val)}
-                value={get(item, "uiStyle.choiceMinWidth", choiceMinW)}
+                label={t('component.options.choiceMinWidth')}
+                onChange={(val) => changeUIStyle('choiceMinWidth', +val)}
+                value={get(item, 'uiStyle.choiceMinWidth', choiceMinW)}
               />
             </Col>
             <Col md={12}>
               <NumberInput
-                label={t("component.options.choiceMaxWidth")}
-                onChange={val => changeUIStyle("choiceMaxWidth", +val)}
-                value={get(item, "uiStyle.choiceMaxWidth", choiceMaxW)}
+                label={t('component.options.choiceMaxWidth')}
+                onChange={(val) => changeUIStyle('choiceMaxWidth', +val)}
+                value={get(item, 'uiStyle.choiceMaxWidth', choiceMaxW)}
               />
             </Col>
           </Row>
@@ -118,14 +137,14 @@ class LayoutWrapper extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <FontSizeOption
-                onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "uiStyle.fontsize", "normal")}
+                onChange={(val) => changeUIStyle('fontsize', val)}
+                value={get(item, 'uiStyle.fontsize', 'normal')}
               />
             </Col>
           </Row>
         </Layout>
       </Question>
-    );
+    )
   }
 }
 
@@ -135,13 +154,13 @@ LayoutWrapper.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 LayoutWrapper.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-export default React.memo(withNamespaces("assessment")(LayoutWrapper));
+export default React.memo(withNamespaces('assessment')(LayoutWrapper))

@@ -1,40 +1,43 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
-import { connect } from "react-redux";
-import { find, lowerCase } from "lodash";
-import { Input } from "antd";
-import { EduButton, CustomModalStyled, notification } from "@edulastic/common";
-import { themeColor } from "@edulastic/colors";
+import React, { useState, useRef, useLayoutEffect } from 'react'
+import { connect } from 'react-redux'
+import { find, lowerCase } from 'lodash'
+import { Input } from 'antd'
+import { EduButton, CustomModalStyled, notification } from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
 import {
   receiveRenameFolderAction,
   receiveCreateFolderAction,
-  toggleMoveItemsFolderAction
-} from "../../actions/folder";
-import { isOpenAddItemsModalSelector, getFoldersSelector } from "../../selectors/folder";
-import { ModalTitle } from "./styled";
+  toggleMoveItemsFolderAction,
+} from '../../actions/folder'
+import {
+  isOpenAddItemsModalSelector,
+  getFoldersSelector,
+} from '../../selectors/folder'
+import { ModalTitle } from './styled'
 
 const ExtendedInput = ({ value, onChange, visible, onKeyUp }) => {
-  const renameInput = useRef();
+  const renameInput = useRef()
   useLayoutEffect(() => {
-    renameInput.current.select();
-  }, [visible]);
+    renameInput.current.select()
+  }, [visible])
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     if (onChange) {
-      onChange(e.target.value);
+      onChange(e.target.value)
     }
-  };
+  }
 
   return (
     <Input
-      style={{ "border-color": themeColor }}
+      style={{ 'border-color': themeColor }}
       placeholder="Name this folder"
       value={value}
       onChange={handleChange}
       ref={renameInput}
       onKeyUp={onKeyUp}
     />
-  );
-};
+  )
+}
 
 const AddModal = ({
   folder,
@@ -45,51 +48,62 @@ const AddModal = ({
   closeMoveModal,
   renameFolder,
   createFolderRequest,
-  isRename
+  isRename,
 }) => {
-  const isEdit = !!folder?._id && isRename;
-  const initFolderName = isEdit ? folder?.folderName : "";
-  const [folderName, setFolderName] = useState(initFolderName);
+  const isEdit = !!folder?._id && isRename
+  const initFolderName = isEdit ? folder?.folderName : ''
+  const [folderName, setFolderName] = useState(initFolderName)
 
   const handleCloseModal = () => {
     if (isOpenAddModal) {
       closeMoveModal({
         items: [],
-        isOpen: false
-      });
+        isOpen: false,
+      })
     }
-    closeModal();
-  };
+    closeModal()
+  }
 
   const handleAddClick = () => {
-    const isExist = find(folders, f => lowerCase(f.folderName) === lowerCase(folderName));
+    const isExist = find(
+      folders,
+      (f) => lowerCase(f.folderName) === lowerCase(folderName)
+    )
     if (isExist) {
-      return notification({ messageKey: "folderNameAlreadyUsed" });
+      return notification({ messageKey: 'folderNameAlreadyUsed' })
     }
 
     if (isEdit && renameFolder) {
-      renameFolder({ folderId: folder._id, folderName, folderType });
+      renameFolder({ folderId: folder._id, folderName, folderType })
     } else if (createFolderRequest) {
-      createFolderRequest({ folderName, folderType });
+      createFolderRequest({ folderName, folderType })
     }
 
-    closeModal();
-  };
+    closeModal()
+  }
 
-  const handleCreateOnKeyPress = e => {
+  const handleCreateOnKeyPress = (e) => {
     if (e.keyCode === 13 && folderName?.length) {
-      handleAddClick();
+      handleAddClick()
     }
-  };
+  }
 
   return (
     <CustomModalStyled
       centered
       visible
-      title={<ModalTitle>{isEdit ? "Rename" : "Create a New Folder"}</ModalTitle>}
+      title={
+        <ModalTitle>{isEdit ? 'Rename' : 'Create a New Folder'}</ModalTitle>
+      }
       onCancel={handleCloseModal}
       footer={[
-        <EduButton isGhost data-cy="cancel" key="back" variant="create" onClick={handleCloseModal}>
+        <EduButton
+          isGhost
+          data-cy="cancel"
+          key="back"
+          variant="create"
+          onClick={handleCloseModal}
+        >
           Cancel
         </EduButton>,
         <EduButton
@@ -100,25 +114,30 @@ const AddModal = ({
           disabled={!folderName}
           onClick={handleAddClick}
         >
-          {isEdit ? `Update Folder` : "Create New Folder"}
-        </EduButton>
+          {isEdit ? `Update Folder` : 'Create New Folder'}
+        </EduButton>,
       ]}
     >
       {isOpenAddModal && <h4>No folders have been created.</h4>}
-      <ExtendedInput value={folderName} onChange={setFolderName} visible={isEdit} onKeyUp={handleCreateOnKeyPress} />
+      <ExtendedInput
+        value={folderName}
+        onChange={setFolderName}
+        visible={isEdit}
+        onKeyUp={handleCreateOnKeyPress}
+      />
     </CustomModalStyled>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     folders: getFoldersSelector(state),
-    isOpenAddModal: isOpenAddItemsModalSelector(state)
+    isOpenAddModal: isOpenAddItemsModalSelector(state),
   }),
   {
     createFolderRequest: receiveCreateFolderAction,
     renameFolder: receiveRenameFolderAction,
     addMoveToFolderRequest: receiveCreateFolderAction,
-    closeMoveModal: toggleMoveItemsFolderAction
+    closeMoveModal: toggleMoveItemsFolderAction,
   }
-)(AddModal);
+)(AddModal)

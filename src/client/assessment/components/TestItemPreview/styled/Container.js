@@ -1,22 +1,24 @@
-import styled from "styled-components";
-import { themeColor, greyDarken, boxShadowColor } from "@edulastic/colors";
-import { SMALL_DESKTOP_WIDTH } from "../../../constants/others";
+import styled from 'styled-components'
+import { themeColor, greyDarken, boxShadowColor } from '@edulastic/colors'
+import { SMALL_DESKTOP_WIDTH } from '../../../constants/others'
 
 export const Container = styled.div`
-  display: ${props => (props.width > SMALL_DESKTOP_WIDTH ? "flex" : "block")};
+  display: ${(props) => (props.width > SMALL_DESKTOP_WIDTH ? 'flex' : 'block')};
   position: relative;
-  justify-content: ${props => (props.isCollapsed ? "space-between" : "initial")};
+  justify-content: ${(props) =>
+    props.isCollapsed ? 'space-between' : 'initial'};
   flex-grow: 1;
   overflow: ${({ isStudentAttempt }) => !isStudentAttempt && `auto`};
   /* dont give overflow: auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598 */
   width: 100%;
   height: 100%;
-`;
+`
 
 export const Divider = styled.div`
-  width: ${props => (props.isCollapsed ? "8%" : "25px")};
+  width: ${(props) => (props.isCollapsed ? '8%' : '25px')};
   position: relative;
-  background-color: ${props => (props.isCollapsed ? "#e5e5e5" : "transparent")};
+  background-color: ${(props) =>
+    props.isCollapsed ? '#e5e5e5' : 'transparent'};
   border-radius: 10px;
   z-index: 1;
   > div {
@@ -29,12 +31,20 @@ export const Divider = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    left: ${props =>
-      props.collapseDirection === "left" ? "auto" : props.collapseDirection === "right" ? "-30px" : "-25px"};
-    right: ${props =>
-      props.collapseDirection === "right" ? "auto" : props.collapseDirection === "left" ? "-30px" : "-25px"};
+    left: ${(props) =>
+      props.collapseDirection === 'left'
+        ? 'auto'
+        : props.collapseDirection === 'right'
+        ? '-30px'
+        : '-25px'};
+    right: ${(props) =>
+      props.collapseDirection === 'right'
+        ? 'auto'
+        : props.collapseDirection === 'left'
+        ? '-30px'
+        : '-25px'};
   }
-`;
+`
 
 export const CollapseBtn = styled.i`
   cursor: pointer;
@@ -42,36 +52,40 @@ export const CollapseBtn = styled.i`
   height: 27px;
   padding: 5px 8px;
   color: ${themeColor};
-  ${props => {
+  ${(props) => {
     if (props.right) {
       return `border-top-right-radius: 5px;
           border-bottom-right-radius: 5px;
-          background-color:${props.collapseDirection === "left" ? themeColor : "#fff"};
-          color:${props.collapseDirection === "left" ? "#fff" : themeColor};
+          background-color:${
+            props.collapseDirection === 'left' ? themeColor : '#fff'
+          };
+          color:${props.collapseDirection === 'left' ? '#fff' : themeColor};
           svg{
-            fill:${props.collapseDirection === "left" ? "#fff" : themeColor};
+            fill:${props.collapseDirection === 'left' ? '#fff' : themeColor};
             &:hover{
-              fill:${props.collapseDirection === "left" ? "#fff" : themeColor};
+              fill:${props.collapseDirection === 'left' ? '#fff' : themeColor};
             }
-          }`;
+          }`
     }
     if (props.left) {
       return `border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
-        background-color:${props.collapseDirection === "right" ? themeColor : "#fff"};
-        color:${props.collapseDirection === "right" ? "#fff" : themeColor};
+        background-color:${
+          props.collapseDirection === 'right' ? themeColor : '#fff'
+        };
+        color:${props.collapseDirection === 'right' ? '#fff' : themeColor};
         svg{
-          fill:${props.collapseDirection === "right" ? "#fff" : themeColor};
+          fill:${props.collapseDirection === 'right' ? '#fff' : themeColor};
           &:hover{
-            fill:${props.collapseDirection === "right" ? "#fff" : themeColor};
+            fill:${props.collapseDirection === 'right' ? '#fff' : themeColor};
           }
-        }`;
+        }`
     }
   }}
-`;
+`
 
 export const Dividerlines = styled.span`
   color: ${greyDarken};
   transform: scaley(1.5);
   text-align: center;
-`;
+`

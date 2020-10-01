@@ -1,17 +1,25 @@
-import { themeColor } from "@edulastic/colors";
-import { EduButton, notification, SelectInputStyled, TextInputStyled } from "@edulastic/common";
-import { SearchInputStyled } from "@edulastic/common/src/components/InputStyles";
-import { roleuser } from "@edulastic/constants";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Form, Icon, Menu, Row, Select } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { compose } from "redux";
-import { StyledActionDropDown, StyledFilterDiv } from "../../../../admin/Common/StyledComponents";
+import { themeColor } from '@edulastic/colors'
+import {
+  EduButton,
+  notification,
+  SelectInputStyled,
+  TextInputStyled,
+} from '@edulastic/common'
+import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
+import { roleuser } from '@edulastic/constants'
+import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Form, Icon, Menu, Row, Select } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { compose } from 'redux'
+import {
+  StyledActionDropDown,
+  StyledFilterDiv,
+} from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
   LeftFilterDiv,
@@ -21,10 +29,14 @@ import {
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
-  TableContainer
-} from "../../../../common/styled";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import { getUserOrgId, getUserOrgName, getUserRole } from "../../../src/selectors/user";
+  TableContainer,
+} from '../../../../common/styled'
+import Breadcrumb from '../../../src/components/Breadcrumb'
+import {
+  getUserOrgId,
+  getUserOrgName,
+  getUserRole,
+} from '../../../src/selectors/user'
 // actions
 import {
   createSchoolsAction,
@@ -32,18 +44,23 @@ import {
   getSchoolsSelector,
   receiveSchoolsAction,
   updateSchoolsAction,
-  updateSchoolApprovalRequestAction
-} from "../../ducks";
-import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
-import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
-import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
-import { StyledHeaderColumn, StyledSchoolTable, StyledSortIcon, StyledSortIconDiv } from "./styled";
+  updateSchoolApprovalRequestAction,
+} from '../../ducks'
+import CreateSchoolModal from './CreateSchoolModal/CreateSchoolModal'
+import DeactivateSchoolModal from './DeactivateSchoolModal/DeactivateSchoolModal'
+import EditSchoolModal from './EditSchoolModal/EditSchoolModal'
+import {
+  StyledHeaderColumn,
+  StyledSchoolTable,
+  StyledSortIcon,
+  StyledSortIconDiv,
+} from './styled'
 
-const Option = Select.Option;
+const Option = Select.Option
 
 class SchoolsTable extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       isAdding: false,
@@ -52,133 +69,145 @@ class SchoolsTable extends React.Component {
       editSchoolModaVisible: false,
       deactivateSchoolModalVisible: false,
       selectedDeactivateSchools: [],
-      editSchoolKey: "",
-      searchByName: "",
+      editSchoolKey: '',
+      searchByName: '',
       filtersData: [
         {
-          filtersColumn: "",
-          filtersValue: "",
-          filterStr: "",
-          prevFilterStr: "",
-          filterAdded: false
-        }
+          filtersColumn: '',
+          filtersValue: '',
+          filterStr: '',
+          prevFilterStr: '',
+          filterAdded: false,
+        },
       ],
       sortedInfo: {
-        columnKey: "name",
-        order: "asc"
+        columnKey: 'name',
+        order: 'asc',
       },
       currentPage: 1,
-      refineButtonActive: false
-    };
+      refineButtonActive: false,
+    }
 
-    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
+    this.filterTextInputRef = [
+      React.createRef(),
+      React.createRef(),
+      React.createRef(),
+    ]
   }
 
   componentDidMount() {
-    this.loadFilteredList();
+    this.loadFilteredList()
   }
 
   static getDerivedStateFromProps(nextProps) {
-    if (nextProps.schoolList.length === undefined) return { dataSource: [] };
-    return { dataSource: nextProps.schoolList };
+    if (nextProps.schoolList.length === undefined) return { dataSource: [] }
+    return { dataSource: nextProps.schoolList }
   }
 
-  onHeaderCell = colName => {
-    const { sortedInfo } = this.state;
+  onHeaderCell = (colName) => {
+    const { sortedInfo } = this.state
     if (sortedInfo.columnKey === colName) {
-      if (sortedInfo.order === "asc") {
-        sortedInfo.order = "desc";
-      } else if (sortedInfo.order === "desc") {
-        sortedInfo.order = "asc";
+      if (sortedInfo.order === 'asc') {
+        sortedInfo.order = 'desc'
+      } else if (sortedInfo.order === 'desc') {
+        sortedInfo.order = 'asc'
       }
     } else {
-      sortedInfo.columnKey = colName;
-      sortedInfo.order = sortedInfo.columnKey === "isApproved" ? "desc" : "asc";
+      sortedInfo.columnKey = colName
+      sortedInfo.order = sortedInfo.columnKey === 'isApproved' ? 'desc' : 'asc'
     }
-    this.setState({ sortedInfo }, this.loadFilteredList);
-  };
+    this.setState({ sortedInfo }, this.loadFilteredList)
+  }
 
-  onEditSchool = key => {
+  onEditSchool = (key) => {
     this.setState({
       editSchoolModaVisible: true,
-      editSchoolKey: key
-    });
-  };
+      editSchoolKey: key,
+    })
+  }
 
-  cancel = key => {
-    const data = [...this.state.dataSource];
-    this.setState({ dataSource: data.filter(item => item.key !== key) });
-  };
+  cancel = (key) => {
+    const data = [...this.state.dataSource]
+    this.setState({ dataSource: data.filter((item) => item.key !== key) })
+  }
 
-  handleDelete = key => {
-    const { dataSource } = this.state;
+  handleDelete = (key) => {
+    const { dataSource } = this.state
     this.setState({
-      selectedDeactivateSchools: dataSource.filter(item => item.key === key),
-      deactivateSchoolModalVisible: true
-    });
-  };
+      selectedDeactivateSchools: dataSource.filter((item) => item.key === key),
+      deactivateSchoolModalVisible: true,
+    })
+  }
 
   onDeactivateSchool = () => {
-    const { dataSource, selectedRowKeys } = this.state;
-    const selectedSchools = dataSource.filter(item => {
-      const selectedSchool = selectedRowKeys.filter(row => row === item.key);
-      return selectedSchool.length > 0;
-    });
+    const { dataSource, selectedRowKeys } = this.state
+    const selectedSchools = dataSource.filter((item) => {
+      const selectedSchool = selectedRowKeys.filter((row) => row === item.key)
+      return selectedSchool.length > 0
+    })
     this.setState({
       selectedDeactivateSchools: selectedSchools,
-      deactivateSchoolModalVisible: true
-    });
-  };
+      deactivateSchoolModalVisible: true,
+    })
+  }
 
-  onSelectChange = selectedRowKeys => {
-    this.setState({ selectedRowKeys });
-  };
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys })
+  }
 
   showCreateSchoolModal = () => {
     this.setState({
-      createSchoolModalVisible: true
-    });
-  };
+      createSchoolModalVisible: true,
+    })
+  }
 
-  changeActionMode = e => {
-    const { selectedRowKeys, dataSource } = this.state;
-    const { t, updateSchoolApprovalRequest } = this.props;
-    const selectedSchoolsData = dataSource.filter(({ _id }) => selectedRowKeys.includes(_id));
+  changeActionMode = (e) => {
+    const { selectedRowKeys, dataSource } = this.state
+    const { t, updateSchoolApprovalRequest } = this.props
+    const selectedSchoolsData = dataSource.filter(({ _id }) =>
+      selectedRowKeys.includes(_id)
+    )
 
-    if (e.key === "edit school") {
+    if (e.key === 'edit school') {
       if (selectedRowKeys.length == 0) {
-        notification({ msg: t("school.validations.editSchool") });
+        notification({ msg: t('school.validations.editSchool') })
       } else if (selectedRowKeys.length == 1) {
-        this.onEditSchool(selectedRowKeys[0]);
+        this.onEditSchool(selectedRowKeys[0])
       } else if (selectedRowKeys.length > 1) {
-        notification({ msg: t("school.validations.editsingleschool") });
+        notification({ msg: t('school.validations.editsingleschool') })
       }
-    } else if (e.key === "deactivate school") {
+    } else if (e.key === 'deactivate school') {
       if (selectedRowKeys.length > 0) {
-        this.onDeactivateSchool();
+        this.onDeactivateSchool()
       } else {
-        notification({ msg: t("school.validations.deleteschool") });
+        notification({ msg: t('school.validations.deleteschool') })
       }
-    } else if (e.key === "approve school") {
+    } else if (e.key === 'approve school') {
       if (selectedRowKeys.length === 0) {
-        return notification({ msg: "Please select atleast one school" });
+        return notification({ msg: 'Please select atleast one school' })
       }
       if (selectedSchoolsData.some(({ isApproved }) => isApproved)) {
-        return notification({ msg: "Please select Not Approve schools only" });
+        return notification({ msg: 'Please select Not Approve schools only' })
       }
-      updateSchoolApprovalRequest({ schoolIds: selectedRowKeys, isApprove: true });
-    } else if (e.key === "unapprove school") {
+      updateSchoolApprovalRequest({
+        schoolIds: selectedRowKeys,
+        isApprove: true,
+      })
+    } else if (e.key === 'unapprove school') {
       if (selectedRowKeys.length === 0) {
-        return notification({ msg: "Please select atleast one school" });
+        return notification({ msg: 'Please select atleast one school' })
       }
       if (selectedSchoolsData.some(({ isApproved }) => !isApproved)) {
-        return notification({ msg: "Please select Approved schools only" });
+        return notification({ msg: 'Please select Approved schools only' })
       }
-      updateSchoolApprovalRequest({ schoolIds: selectedRowKeys, isApprove: false });
+      updateSchoolApprovalRequest({
+        schoolIds: selectedRowKeys,
+        isApprove: false,
+      })
     }
-  };
+  }
 
-  createSchool = newSchoolData => {
+  createSchool = (newSchoolData) => {
     const newData = {
       name: newSchoolData.name,
       districtId: this.props.userOrgId,
@@ -188,43 +217,48 @@ class SchoolsTable extends React.Component {
         city: newSchoolData.city,
         state: newSchoolData.state,
         zip: newSchoolData.zip,
-        country: newSchoolData.country
-      }
-    };
+        country: newSchoolData.country,
+      },
+    }
 
-    const { createSchool } = this.props;
-    const { sortedInfo, filtersData, searchByName } = this.state;
+    const { createSchool } = this.props
+    const { sortedInfo, filtersData, searchByName } = this.state
 
-    const search = {};
+    const search = {}
     if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
+      search.name = { type: 'cont', value: searchByName }
     }
     for (let i = 0; i < filtersData.length; i++) {
       if (filtersData[i].filterAdded) {
-        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+        search[filtersData[i].filtersColumn] = {
+          type: filtersData[i].filtersValue,
+          value: filtersData[i].filterStr,
+        }
       }
     }
 
-    createSchool({ body: newData, sortedInfo, search });
+    createSchool({ body: newData, sortedInfo, search })
 
-    this.setState({ createSchoolModalVisible: false });
-  };
+    this.setState({ createSchoolModalVisible: false })
+  }
 
   closeCreateSchoolModal = () => {
     this.setState({
-      createSchoolModalVisible: false
-    });
-  };
+      createSchoolModalVisible: false,
+    })
+  }
 
-  updateSchool = updatedSchoolData => {
-    const newData = [...this.state.dataSource];
-    const index = newData.findIndex(item => updatedSchoolData.key === item.key);
+  updateSchool = (updatedSchoolData) => {
+    const newData = [...this.state.dataSource]
+    const index = newData.findIndex(
+      (item) => updatedSchoolData.key === item.key
+    )
 
     this.setState({
       isAdding: false,
       isChangeState: true,
-      editSchoolModaVisible: false
-    });
+      editSchoolModaVisible: false,
+    })
 
     const updateData = {
       _id: newData[index]._id,
@@ -235,181 +269,188 @@ class SchoolsTable extends React.Component {
         city: updatedSchoolData.city,
         state: updatedSchoolData.state,
         country: newData[index].country,
-        zip: updatedSchoolData.zip
-      }
-    };
+        zip: updatedSchoolData.zip,
+      },
+    }
 
-    this.props.updateSchool({ id: newData[index]._id, body: updateData });
-  };
+    this.props.updateSchool({ id: newData[index]._id, body: updateData })
+  }
 
   closeEditSchoolModal = () => {
-    this.setState({ editSchoolModaVisible: false });
-  };
+    this.setState({ editSchoolModaVisible: false })
+  }
 
-  changePagination = pageNumber => {
-    this.setState({ currentPage: pageNumber }, this.loadFilteredList);
-  };
+  changePagination = (pageNumber) => {
+    this.setState({ currentPage: pageNumber }, this.loadFilteredList)
+  }
 
   deactivateSchool = () => {
-    const { selectedDeactivateSchools } = this.state;
-    const { userOrgId, deleteSchool } = this.props;
+    const { selectedDeactivateSchools } = this.state
+    const { userOrgId, deleteSchool } = this.props
 
-    const schoolIds = [];
-    selectedDeactivateSchools.map(row => {
-      schoolIds.push(row._id);
-    });
-    this.setState({ deactivateSchoolModalVisible: false });
-    deleteSchool({ districtId: userOrgId, schoolIds });
-  };
+    const schoolIds = []
+    selectedDeactivateSchools.map((row) => {
+      schoolIds.push(row._id)
+    })
+    this.setState({ deactivateSchoolModalVisible: false })
+    deleteSchool({ districtId: userOrgId, schoolIds })
+  }
 
   closeDeactivateSchoolModal = () => {
-    this.setState({ deactivateSchoolModalVisible: false });
-  };
+    this.setState({ deactivateSchoolModalVisible: false })
+  }
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive });
-  };
+    this.setState({ refineButtonActive: !this.state.refineButtonActive })
+  }
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
 
-  onChangeSearch = event => {
-    this.setState({ searchByName: event.currentTarget.value });
-  };
+  onChangeSearch = (event) => {
+    this.setState({ searchByName: event.currentTarget.value })
+  }
 
-  handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadFilteredList);
-  };
+  handleSearchName = (value) => {
+    this.setState({ searchByName: value }, this.loadFilteredList)
+  }
 
   onSearchFilter = (value, event, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterAdded: !!value
-        };
+          filterAdded: !!value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[key].current.blur());
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, () =>
+      this.filterTextInputRef[key].current.blur()
+    )
+  }
 
   onBlurFilterText = (event, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterAdded: !!event.target.value
-        };
+          filterAdded: !!event.target.value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
   changeStatusValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
+    const filtersData = [...this.state.filtersData]
 
-    if (filtersData[key].filterStr === value) return;
+    if (filtersData[key].filterStr === value) return
 
-    filtersData[key].filterStr = value;
-    filtersData[key].filterAdded = true;
-    this.setState({ filtersData }, this.loadFilteredList);
-  };
+    filtersData[key].filterStr = value
+    filtersData[key].filterAdded = true
+    this.setState({ filtersData }, this.loadFilteredList)
+  }
 
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterStr: e.target.value
-        };
+          filterStr: e.target.value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData })
+  }
 
   changeFilterColumn = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    if (filtersData[key].filtersColumn === value) return;
+    const filtersData = [...this.state.filtersData]
+    if (filtersData[key].filtersColumn === value) return
 
-    filtersData[key].filtersColumn = value;
-    if (value === "isApproved") {
-      filtersData[key].filtersValue = "eq";
-      filtersData[key].filterStr = "";
-      filtersData[key].prevFilterStr = "";
+    filtersData[key].filtersColumn = value
+    if (value === 'isApproved') {
+      filtersData[key].filtersValue = 'eq'
+      filtersData[key].filterStr = ''
+      filtersData[key].prevFilterStr = ''
     }
 
-    this.setState({ filtersData }, this.loadFilteredList);
-  };
+    this.setState({ filtersData }, this.loadFilteredList)
+  }
 
   changeFilterValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    if (filtersData[key].filtersValue === value) return;
+    const filtersData = [...this.state.filtersData]
+    if (filtersData[key].filtersValue === value) return
 
-    filtersData[key].filtersValue = value;
-    this.setState({ filtersData }, this.loadFilteredList);
-  };
+    filtersData[key].filtersValue = value
+    this.setState({ filtersData }, this.loadFilteredList)
+  }
 
   addFilter = () => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     if (filtersData.length < 3) {
       this.setState({
         filtersData: [
           ...filtersData,
           {
-            filtersColumn: "",
-            filtersValue: "",
-            filterStr: "",
-            prevFilterStr: "",
-            filterAdded: false
-          }
-        ]
-      });
+            filtersColumn: '',
+            filtersValue: '',
+            filterStr: '',
+            prevFilterStr: '',
+            filterAdded: false,
+          },
+        ],
+      })
     }
-  };
+  }
 
   removeFilter = (e, key) => {
-    const { filtersData } = this.state;
-    let newFiltersData = [];
+    const { filtersData } = this.state
+    let newFiltersData = []
     if (filtersData.length === 1) {
       newFiltersData.push({
         filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
+        filtersColumn: '',
+        filtersValue: '',
+        filterStr: '',
+      })
     } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
+      newFiltersData = filtersData.filter((item, index) => index != key)
     }
-    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
-  };
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList)
+  }
 
   getSearchQuery = () => {
-    const { filtersData, sortedInfo, searchByName, currentPage = 1 } = this.state;
-    const { userOrgId } = this.props;
+    const {
+      filtersData,
+      sortedInfo,
+      searchByName,
+      currentPage = 1,
+    } = this.state
+    const { userOrgId } = this.props
 
-    const search = {};
+    const search = {}
 
     for (let i = 0; i < filtersData.length; i++) {
-      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
-      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
-        if (filtersColumn === "isApproved" || filtersColumn === "status") {
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i]
+      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+        if (filtersColumn === 'isApproved' || filtersColumn === 'status') {
           if (!search[filtersColumn]) {
-            search[filtersColumn] = [filterStr];
+            search[filtersColumn] = [filterStr]
           } else {
-            search[filtersColumn].push(filterStr);
+            search[filtersColumn].push(filterStr)
           }
         } else if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
         } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+          search[filtersColumn].push({ type: filtersValue, value: filterStr })
         }
       }
     }
 
     if (searchByName.length > 0) {
-      search.name = [{ type: "cont", value: searchByName }];
+      search.name = [{ type: 'cont', value: searchByName }]
     }
 
     return {
@@ -419,13 +460,13 @@ class SchoolsTable extends React.Component {
       page: currentPage,
       includeStats: true,
       sortField: sortedInfo.columnKey,
-      order: sortedInfo.order
-    };
-  };
+      order: sortedInfo.order,
+    }
+  }
 
   loadFilteredList() {
-    const { loadSchoolsData } = this.props;
-    loadSchoolsData(this.getSearchQuery());
+    const { loadSchoolsData } = this.props
+    loadSchoolsData(this.getSearchQuery())
   }
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -441,71 +482,83 @@ class SchoolsTable extends React.Component {
       filtersData,
       sortedInfo,
       currentPage,
-      refineButtonActive
-    } = this.state;
+      refineButtonActive,
+    } = this.state
 
-    const { userOrgId, totalSchoolsCount, role, t } = this.props;
+    const { userOrgId, totalSchoolsCount, role, t } = this.props
 
     const breadcrumbData = [
       {
-        title: role === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
-        to: role === roleuser.SCHOOL_ADMIN ? "/author/Schools" : "/author/districtprofile"
+        title:
+          role === roleuser.SCHOOL_ADMIN ? 'MANAGE SCHOOL' : 'MANAGE DISTRICT',
+        to:
+          role === roleuser.SCHOOL_ADMIN
+            ? '/author/Schools'
+            : '/author/districtprofile',
       },
       {
-        title: "SCHOOLS",
-        to: ""
-      }
-    ];
+        title: 'SCHOOLS',
+        to: '',
+      },
+    ]
     const columnsInfo = [
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("school.name")}</p>
+            <p>{t('school.name')}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "asc"}
+                colorValue={
+                  sortedInfo.columnKey === 'name' && sortedInfo.order === 'asc'
+                }
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "desc"}
+                colorValue={
+                  sortedInfo.columnKey === 'name' && sortedInfo.order === 'desc'
+                }
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "name",
+        dataIndex: 'name',
         editable: true,
-        render: name => <span>{name || "-"}</span>,
+        render: (name) => <span>{name || '-'}</span>,
         onHeaderCell: () => ({
           onClick: () => {
-            this.onHeaderCell("name");
-          }
-        })
+            this.onHeaderCell('name')
+          },
+        }),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("school.city")}</p>
+            <p>{t('school.city')}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "asc"}
+                colorValue={
+                  sortedInfo.columnKey === 'city' && sortedInfo.order === 'asc'
+                }
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "desc"}
+                colorValue={
+                  sortedInfo.columnKey === 'city' && sortedInfo.order === 'desc'
+                }
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "city",
+        dataIndex: 'city',
         editable: true,
-        render: city => <span>{city || "-"}</span>,
+        render: (city) => <span>{city || '-'}</span>,
         onHeaderCell: () => ({
           onClick: () => {
-            this.onHeaderCell("city");
-          }
-        })
+            this.onHeaderCell('city')
+          },
+        }),
       },
       {
         title: (
@@ -514,96 +567,112 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "asc"}
+                colorValue={
+                  sortedInfo.columnKey === 'state' && sortedInfo.order === 'asc'
+                }
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "desc"}
+                colorValue={
+                  sortedInfo.columnKey === 'state' &&
+                  sortedInfo.order === 'desc'
+                }
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "state",
+        dataIndex: 'state',
         editable: true,
-        render: state => <span>{state || "-"}</span>,
+        render: (state) => <span>{state || '-'}</span>,
         onHeaderCell: () => ({
           onClick: () => {
-            this.onHeaderCell("state");
-          }
-        })
+            this.onHeaderCell('state')
+          },
+        }),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("school.zip")}</p>
+            <p>{t('school.zip')}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "asc"}
+                colorValue={
+                  sortedInfo.columnKey === 'zip' && sortedInfo.order === 'asc'
+                }
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "desc"}
+                colorValue={
+                  sortedInfo.columnKey === 'zip' && sortedInfo.order === 'desc'
+                }
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "zip",
+        dataIndex: 'zip',
         editable: true,
-        render: zip => <span>{zip || "-"}</span>,
+        render: (zip) => <span>{zip || '-'}</span>,
         onHeaderCell: () => ({
           onClick: () => {
-            this.onHeaderCell("zip");
-          }
-        })
+            this.onHeaderCell('zip')
+          },
+        }),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("school.status")}</p>
+            <p>{t('school.status')}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "isApproved" && sortedInfo.order === "desc"}
+                colorValue={
+                  sortedInfo.columnKey === 'isApproved' &&
+                  sortedInfo.order === 'desc'
+                }
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "isApproved" && sortedInfo.order === "asc"}
+                colorValue={
+                  sortedInfo.columnKey === 'isApproved' &&
+                  sortedInfo.order === 'asc'
+                }
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "isApproved",
+        dataIndex: 'isApproved',
         editable: true,
         onHeaderCell: () => ({
           onClick: () => {
-            this.onHeaderCell("isApproved");
-          }
+            this.onHeaderCell('isApproved')
+          },
         }),
         render: (text, record) => (
-          <React.Fragment>
-            {typeof record.isApproved === "boolean" && record.isApproved === false ? (
-              <span>{t("school.notapproved")}</span>
+          <>
+            {typeof record.isApproved === 'boolean' &&
+            record.isApproved === false ? (
+              <span>{t('school.notapproved')}</span>
             ) : (
-              <span>{t("school.approved")}</span>
+              <span>{t('school.approved')}</span>
             )}
-          </React.Fragment>
-        )
+          </>
+        ),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("school.teacher")}</p>
+            <p>{t('school.teacher')}</p>
           </StyledHeaderColumn>
         ),
-        dataIndex: "teachersCount",
+        dataIndex: 'teachersCount',
         editable: true,
-        align: "center",
+        align: 'center',
         render: (teachersCount, { _id } = {}) => (
           <Link
             to={{
-              pathname: "/author/users/teacher",
-              institutionId: _id
+              pathname: '/author/users/teacher',
+              institutionId: _id,
               // uncomment after school filter is implemented in backend
               // state: {
               //   filtersColumn: "institutionNames",
@@ -615,133 +684,151 @@ class SchoolsTable extends React.Component {
           >
             {teachersCount}
           </Link>
-        )
+        ),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("school.student")}</p>
+            <p>{t('school.student')}</p>
           </StyledHeaderColumn>
         ),
-        dataIndex: "studentsCount",
+        dataIndex: 'studentsCount',
         editable: true,
-        align: "center",
+        align: 'center',
         render: (studentsCount, { _id } = {}) => (
           <Link
             to={{
-              pathname: "/author/users/student",
-              institutionId: _id
+              pathname: '/author/users/student',
+              institutionId: _id,
             }}
           >
             {studentsCount}
           </Link>
-        )
+        ),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("school.section")}</p>
+            <p>{t('school.section')}</p>
           </StyledHeaderColumn>
         ),
-        dataIndex: "sectionsCount",
-        align: "center",
+        dataIndex: 'sectionsCount',
+        align: 'center',
         editable: true,
         render: (sectionsCount, { name } = {}) => (
           <Link
             to={{
-              pathname: "/author/Classes",
+              pathname: '/author/Classes',
               state: {
-                filtersColumn: "institutionNames",
-                filtersValue: "eq",
+                filtersColumn: 'institutionNames',
+                filtersValue: 'eq',
                 filterStr: name,
-                filterAdded: true
-              }
+                filterAdded: true,
+              },
             }}
           >
             {sectionsCount}
           </Link>
-        )
+        ),
       },
       {
-        dataIndex: "operation",
+        dataIndex: 'operation',
         render: (text, record) => (
-          <div style={{ whiteSpace: "nowrap" }}>
-            <StyledTableButton onClick={() => this.onEditSchool(record.key)} title="Edit">
+          <div style={{ whiteSpace: 'nowrap' }}>
+            <StyledTableButton
+              onClick={() => this.onEditSchool(record.key)}
+              title="Edit"
+            >
               <IconPencilEdit color={themeColor} />
             </StyledTableButton>
             {role === roleuser.DISTRICT_ADMIN && (
-              <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
+              <StyledTableButton
+                onClick={() => this.handleDelete(record.key)}
+                title="Deactivate"
+              >
                 <IconTrash color={themeColor} />
               </StyledTableButton>
             )}
           </div>
-        )
-      }
-    ];
+        ),
+      },
+    ]
 
-    const columns = columnsInfo.map(col => ({
-      ...col
-    }));
+    const columns = columnsInfo.map((col) => ({
+      ...col,
+    }))
 
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.onSelectChange
-    };
+      onChange: this.onSelectChange,
+    }
 
-    const editSchoolData = dataSource.filter(item => item.key === editSchoolKey);
+    const editSchoolData = dataSource.filter(
+      (item) => item.key === editSchoolKey
+    )
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="edit school">{t("school.editschool")}</Menu.Item>
+        <Menu.Item key="edit school">{t('school.editschool')}</Menu.Item>
         {role === roleuser.DISTRICT_ADMIN && (
-          <Menu.Item key="deactivate school">{t("school.deactivateschool")}</Menu.Item>
+          <Menu.Item key="deactivate school">
+            {t('school.deactivateschool')}
+          </Menu.Item>
         )}
-        {role === roleuser.DISTRICT_ADMIN && <Menu.Item key="approve school">{t("school.approveSchool")}</Menu.Item>}
         {role === roleuser.DISTRICT_ADMIN && (
-          <Menu.Item key="unapprove school">{t("school.unapproveSchool")}</Menu.Item>
+          <Menu.Item key="approve school">
+            {t('school.approveSchool')}
+          </Menu.Item>
+        )}
+        {role === roleuser.DISTRICT_ADMIN && (
+          <Menu.Item key="unapprove school">
+            {t('school.unapproveSchool')}
+          </Menu.Item>
         )}
       </Menu>
-    );
+    )
 
-    const SearchRows = [];
+    const SearchRows = []
     for (let i = 0; i < filtersData.length; i++) {
-      const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
+      const isFilterTextDisable =
+        filtersData[i].filtersColumn === '' ||
+        filtersData[i].filtersValue === ''
       const isAddFilterDisable =
-        filtersData[i].filtersColumn === "" ||
-        filtersData[i].filtersValue === "" ||
-        filtersData[i].filterStr === "" ||
-        !filtersData[i].filterAdded;
+        filtersData[i].filtersColumn === '' ||
+        filtersData[i].filtersValue === '' ||
+        filtersData[i].filterStr === '' ||
+        !filtersData[i].filterAdded
 
-      const optValues = [];
-      if (filtersData[i].filtersColumn === "isApproved") {
-        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
+      const optValues = []
+      if (filtersData[i].filtersColumn === 'isApproved') {
+        optValues.push(<Option value="eq">{t('common.equals')}</Option>)
       } else {
-        optValues.push(<Option value="">{t("common.selectvalue")}</Option>);
-        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
-        optValues.push(<Option value="cont">{t("common.contains")}</Option>);
+        optValues.push(<Option value="">{t('common.selectvalue')}</Option>)
+        optValues.push(<Option value="eq">{t('common.equals')}</Option>)
+        optValues.push(<Option value="cont">{t('common.contains')}</Option>)
       }
 
       SearchRows.push(
-        <Row gutter="20" style={{ marginBottom: "5px" }}>
+        <Row gutter="20" style={{ marginBottom: '5px' }}>
           <Col span={6}>
             <SelectInputStyled
-              placeholder={t("common.selectcolumn")}
-              onChange={e => this.changeFilterColumn(e, i)}
+              placeholder={t('common.selectcolumn')}
+              onChange={(e) => this.changeFilterColumn(e, i)}
               defaultValue={filtersData[i].filtersColumn}
               value={filtersData[i].filtersColumn}
               height="32px"
             >
-              <Option value="">{t("common.selectcolumn")}</Option>
-              <Option value="address">{t("school.address")}</Option>
-              <Option value="city">{t("school.city")}</Option>
-              <Option value="state">{t("school.state")}</Option>
-              <Option value="zip">{t("school.zip")}</Option>
-              <Option value="isApproved">{t("school.status")}</Option>
+              <Option value="">{t('common.selectcolumn')}</Option>
+              <Option value="address">{t('school.address')}</Option>
+              <Option value="city">{t('school.city')}</Option>
+              <Option value="state">{t('school.state')}</Option>
+              <Option value="zip">{t('school.zip')}</Option>
+              <Option value="isApproved">{t('school.status')}</Option>
             </SelectInputStyled>
           </Col>
           <Col span={6}>
             <SelectInputStyled
-              placeholder={t("common.selectvalue")}
-              onChange={e => this.changeFilterValue(e, i)}
+              placeholder={t('common.selectvalue')}
+              onChange={(e) => this.changeFilterValue(e, i)}
               value={filtersData[i].filtersValue}
               height="32px"
             >
@@ -749,12 +836,12 @@ class SchoolsTable extends React.Component {
             </SelectInputStyled>
           </Col>
           <Col span={6}>
-            {filtersData[i].filtersColumn !== "isApproved" ? (
+            {filtersData[i].filtersColumn !== 'isApproved' ? (
               <TextInputStyled
-                placeholder={t("common.entertext")}
-                onChange={e => this.changeFilterText(e, i)}
+                placeholder={t('common.entertext')}
+                onChange={(e) => this.changeFilterText(e, i)}
                 onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                onBlur={e => this.onBlurFilterText(e, i)}
+                onBlur={(e) => this.onBlurFilterText(e, i)}
                 disabled={isFilterTextDisable}
                 value={filtersData[i].filterStr}
                 ref={this.filterTextInputRef[i]}
@@ -762,48 +849,60 @@ class SchoolsTable extends React.Component {
               />
             ) : (
               <SelectInputStyled
-                placeholder={t("common.selectvalue")}
-                onChange={e => this.changeStatusValue(e, i)}
+                placeholder={t('common.selectvalue')}
+                onChange={(e) => this.changeStatusValue(e, i)}
                 disabled={isFilterTextDisable}
                 value={filtersData[i].filterStr}
                 height="32px"
               >
-                <Option value="">{t("common.selectvalue")}</Option>
-                <Option value="true">{t("school.approved")}</Option>
-                <Option value="false">{t("school.notapproved")}</Option>
+                <Option value="">{t('common.selectvalue')}</Option>
+                <Option value="true">{t('school.approved')}</Option>
+                <Option value="false">{t('school.notapproved')}</Option>
               </SelectInputStyled>
             )}
           </Col>
-          <Col span={6} style={{ display: "flex" }}>
+          <Col span={6} style={{ display: 'flex' }}>
             {i < 2 && (
               <EduButton
                 height="32px"
                 width="50%"
                 type="primary"
-                onClick={e => this.addFilter(e, i)}
+                onClick={(e) => this.addFilter(e, i)}
                 disabled={isAddFilterDisable || i < filtersData.length - 1}
               >
-                {t("common.addfilter")}
+                {t('common.addfilter')}
               </EduButton>
             )}
 
-            {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-              <EduButton width="50%" height="32px" type="primary" onClick={e => this.removeFilter(e, i)}>
-                {t("common.removefilter")}
+            {((filtersData.length === 1 && filtersData[0].filterAdded) ||
+              filtersData.length > 1) && (
+              <EduButton
+                width="50%"
+                height="32px"
+                type="primary"
+                onClick={(e) => this.removeFilter(e, i)}
+              >
+                {t('common.removefilter')}
               </EduButton>
             )}
           </Col>
         </Row>
-      );
+      )
     }
 
     return (
       <MainContainer>
         <SubHeaderWrapper>
-          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton isGhost type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            {t("common.refineresults")}
-            <Icon type={refineButtonActive ? "up" : "down"} />
+          <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+          <StyledButton
+            isGhost
+            type="default"
+            shape="round"
+            icon="filter"
+            onClick={this._onRefineResultsCB}
+          >
+            {t('common.refineresults')}
+            <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
 
@@ -812,32 +911,41 @@ class SchoolsTable extends React.Component {
         <StyledFilterDiv>
           <LeftFilterDiv width={80}>
             <SearchInputStyled
-              placeholder={t("common.searchbyname")}
+              placeholder={t('common.searchbyname')}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
             />
             {role === roleuser.DISTRICT_ADMIN ? (
-              <EduButton height="36px" type="primary" onClick={this.showCreateSchoolModal}>
-                {t("school.createschool")}
+              <EduButton
+                height="36px"
+                type="primary"
+                onClick={this.showCreateSchoolModal}
+              >
+                {t('school.createschool')}
               </EduButton>
             ) : null}
           </LeftFilterDiv>
           <RightFilterDiv width={15}>
             <StyledActionDropDown
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               overlay={actionMenu}
-              trigger={["click"]}
+              trigger={['click']}
             >
               <EduButton isGhost>
-                {t("common.actions")} <Icon type="down" />
+                {t('common.actions')} <Icon type="down" />
               </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
 
         <TableContainer>
-          <StyledSchoolTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+          <StyledSchoolTable
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+          />
           <StyledPagination
             current={currentPage}
             defaultCurrent={1}
@@ -859,7 +967,7 @@ class SchoolsTable extends React.Component {
           />
         )}
 
-        {editSchoolModaVisible && editSchoolKey !== "" && (
+        {editSchoolModaVisible && editSchoolKey !== '' && (
           <EditSchoolModal
             schoolData={editSchoolData[0]}
             modalVisible={editSchoolModaVisible}
@@ -881,32 +989,32 @@ class SchoolsTable extends React.Component {
           />
         )}
       </MainContainer>
-    );
+    )
   }
 }
 
-const EditableSchoolsTable = Form.create()(SchoolsTable);
+const EditableSchoolsTable = Form.create()(SchoolsTable)
 const enhance = compose(
-  withNamespaces("manageDistrict"),
+  withNamespaces('manageDistrict'),
   connect(
-    state => ({
+    (state) => ({
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
       userOrgName: getUserOrgName(state),
       role: getUserRole(state),
-      totalSchoolsCount: get(state, ["schoolsReducer", "totalSchoolCount"], 0)
+      totalSchoolsCount: get(state, ['schoolsReducer', 'totalSchoolCount'], 0),
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
       createSchool: createSchoolsAction,
       updateSchool: updateSchoolsAction,
       deleteSchool: deleteSchoolsAction,
-      updateSchoolApprovalRequest: updateSchoolApprovalRequestAction
+      updateSchoolApprovalRequest: updateSchoolApprovalRequestAction,
     }
   )
-);
+)
 
-export default enhance(EditableSchoolsTable);
+export default enhance(EditableSchoolsTable)
 
 SchoolsTable.propTypes = {
   schoolList: PropTypes.array.isRequired,
@@ -914,5 +1022,5 @@ SchoolsTable.propTypes = {
   loadSchoolsData: PropTypes.func.isRequired,
   updateSchool: PropTypes.func.isRequired,
   createSchool: PropTypes.func.isRequired,
-  deleteSchool: PropTypes.func.isRequired
-};
+  deleteSchool: PropTypes.func.isRequired,
+}

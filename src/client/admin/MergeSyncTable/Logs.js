@@ -1,48 +1,57 @@
-import React, { useEffect, useState } from "react";
-import { Button, Icon } from "antd";
-import { Table, StyledFilterInput } from "../Common/StyledComponents";
+import React, { useEffect, useState } from 'react'
+import { Button, Icon } from 'antd'
+import { Table, StyledFilterInput } from '../Common/StyledComponents'
 
-const { Column } = Table;
+const { Column } = Table
 
-export default function Logs({ logs, fetchLogsDataAction, districtId, isClasslink, loading }) {
-  const [filteredLogs, setFilteredLogs] = useState([]);
+export default function Logs({
+  logs,
+  fetchLogsDataAction,
+  districtId,
+  isClasslink,
+  loading,
+}) {
+  const [filteredLogs, setFilteredLogs] = useState([])
 
   const getLogs = () => {
-    fetchLogsDataAction({ districtId, isClasslink });
-  };
+    fetchLogsDataAction({ districtId, isClasslink })
+  }
 
-  const search = value => {
-    const newFilteredLogs = logs.filter(eachLog =>
-      Object.values(eachLog).some(logValue =>
-        String(logValue)
-          .toLowerCase()
-          .includes(value.toLowerCase())
+  const search = (value) => {
+    const newFilteredLogs = logs.filter((eachLog) =>
+      Object.values(eachLog).some((logValue) =>
+        String(logValue).toLowerCase().includes(value.toLowerCase())
       )
-    );
+    )
 
-    setFilteredLogs(newFilteredLogs);
-  };
-
-  useEffect(() => {
-    getLogs();
-  }, [districtId]);
+    setFilteredLogs(newFilteredLogs)
+  }
 
   useEffect(() => {
-    setFilteredLogs(logs);
-  }, [logs]);
+    getLogs()
+  }, [districtId])
+
+  useEffect(() => {
+    setFilteredLogs(logs)
+  }, [logs])
 
   return (
     <>
-      <Button onClick={getLogs} aria-label="Refresh Logs" title="Refresh Logs" style={{ marginBottom: "10px" }}>
+      <Button
+        onClick={getLogs}
+        aria-label="Refresh Logs"
+        title="Refresh Logs"
+        style={{ marginBottom: '10px' }}
+      >
         <Icon type="reload" />
       </Button>
       <StyledFilterInput placeholder="Search..." onSearch={search} />
       <Table
-        rowKey={record => record._id}
+        rowKey={(record) => record._id}
         dataSource={filteredLogs}
         pagination={{
-          position: "both",
-          pageSize: 10
+          position: 'both',
+          pageSize: 10,
         }}
         loading={loading}
       >
@@ -54,9 +63,9 @@ export default function Logs({ logs, fetchLogsDataAction, districtId, isClasslin
           title="Created Date"
           dataIndex="createdAt"
           key="createdAt"
-          render={timeStamp => new Date(timeStamp).toLocaleString()}
+          render={(timeStamp) => new Date(timeStamp).toLocaleString()}
         />
       </Table>
     </>
-  );
+  )
 }

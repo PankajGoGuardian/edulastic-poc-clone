@@ -7,50 +7,55 @@ import {
   DELETE_ITEM_DETAIL_WIDGET,
   UPDATE_TAB_TITLE,
   USE_TABS,
-  MOVE_WIDGET
-} from "../constants/actions";
+  MOVE_WIDGET,
+} from '../constants/actions'
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
-  payload: { id, params }
-});
+  payload: { id, params },
+})
 
-export const setItemDetailDataAction = item => ({
+export const setItemDetailDataAction = (item) => ({
   type: SET_ITEM_DETAIL_DATA,
-  payload: { item }
-});
+  payload: { item },
+})
 
-export const updateItemDetailByIdAction = (id, data, keepData, redirect = true) => ({
+export const updateItemDetailByIdAction = (
+  id,
+  data,
+  keepData,
+  redirect = true
+) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, keepData, redirect }
-});
+  payload: { id, data, keepData, redirect },
+})
 
 export const updateItemDetailDimensionAction = (left, right) => ({
   type: UPDATE_ITEM_DETAIL_DIMENSION,
-  payload: { left, right }
-});
+  payload: { left, right },
+})
 
-export const setItemDetailDraggingAction = dragging => ({
+export const setItemDetailDraggingAction = (dragging) => ({
   type: SET_DRAGGING,
-  payload: { dragging }
-});
+  payload: { dragging },
+})
 
 export const deleteWidgetAction = (rowIndex, widgetIndex) => ({
   type: DELETE_ITEM_DETAIL_WIDGET,
-  payload: { rowIndex, widgetIndex }
-});
+  payload: { rowIndex, widgetIndex },
+})
 
 export const updateTabTitleAction = ({ rowIndex, tabIndex, value }) => ({
   type: UPDATE_TAB_TITLE,
-  payload: { rowIndex, tabIndex, value }
-});
+  payload: { rowIndex, tabIndex, value },
+})
 
 export const useTabsAction = ({ rowIndex, isUseTabs }) => ({
   type: USE_TABS,
-  payload: { rowIndex, isUseTabs }
-});
+  payload: { rowIndex, isUseTabs },
+})
 
 export const moveItemDetailWidgetAction = ({ from, to }) => ({
   type: MOVE_WIDGET,
-  payload: { from, to }
-});
+  payload: { from, to },
+})

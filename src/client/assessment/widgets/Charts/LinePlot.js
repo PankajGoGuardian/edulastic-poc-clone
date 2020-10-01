@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { isEqual } from "lodash";
-import produce from "immer";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { isEqual } from 'lodash'
+import produce from 'immer'
 
-import { useDisableDragScroll } from "@edulastic/common";
+import { useDisableDragScroll } from '@edulastic/common'
 
-import ArrowPair from "./components/ArrowPair";
-import ValueLabel from "./components/ValueLabel";
-import Crosses from "./components/Crosses";
-import withGrid from "./HOC/withGrid";
-import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
-import { Line } from "./styled";
+import ArrowPair from './components/ArrowPair'
+import ValueLabel from './components/ValueLabel'
+import Crosses from './components/Crosses'
+import withGrid from './HOC/withGrid'
+import { convertPxToUnit, convertUnitToPx, getGridVariables } from './helpers'
+import { Line } from './styled'
 
 const LinePlot = ({
   item,
@@ -22,95 +22,99 @@ const LinePlot = ({
   disableResponse,
   toggleBarDragging,
   deleteMode,
-  evaluation
+  evaluation,
 }) => {
-  const { width, height, margin } = gridParams;
+  const { width, height, margin } = gridParams
 
-  const { step } = getGridVariables(data, gridParams, true);
+  const { step } = getGridVariables(data, gridParams, true)
 
-  const [active, setActive] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [cursorY, setCursorY] = useState(null);
-  const [initY, setInitY] = useState(null);
+  const [active, setActive] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMouseDown, setIsMouseDown] = useState(false)
+  const [cursorY, setCursorY] = useState(null)
+  const [initY, setInitY] = useState(null)
 
-  const [localData, setLocalData] = useState(data);
+  const [localData, setLocalData] = useState(data)
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
-      setLocalData(data);
+      setLocalData(data)
     }
-  }, [data]);
+  }, [data])
 
   const getPolylinePoints = () =>
     localData
-      .map((dot, index) => `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, gridParams) + 20}`)
-      .join(" ");
+      .map(
+        (dot, index) =>
+          `${step * index + step / 2 + 2},${
+            convertUnitToPx(dot.y, gridParams) + 20
+          }`
+      )
+      .join(' ')
 
-  const getActivePoint = index =>
+  const getActivePoint = (index) =>
     active !== null
-      ? +getPolylinePoints()
-          .split(" ")
-          [active].split(",")[index]
-      : null;
+      ? +getPolylinePoints().split(' ')[active].split(',')[index]
+      : null
 
-  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+  const getActivePointValue = () =>
+    active !== null ? localData[active].y : null
 
   const save = () => {
     if (cursorY === null) {
-      return;
+      return
     }
-    setCursorY(null);
-    setActiveIndex(null);
-    setInitY(null);
-    setActive(null);
-    setIsMouseDown(false);
-    toggleBarDragging(false);
-    saveAnswer(localData, active);
-  };
+    setCursorY(null)
+    setActiveIndex(null)
+    setInitY(null)
+    setActive(null)
+    setIsMouseDown(false)
+    toggleBarDragging(false)
+    saveAnswer(localData, active)
+  }
 
-  const normalizeTouchEvent = e => {
+  const normalizeTouchEvent = (e) => {
     if (e?.nativeEvent?.changedTouches?.length) {
-      e.pageX = e.nativeEvent.changedTouches[0].pageX;
-      e.pageY = e.nativeEvent.changedTouches[0].pageY;
+      e.pageX = e.nativeEvent.changedTouches[0].pageX
+      e.pageY = e.nativeEvent.changedTouches[0].pageY
     }
-  };
+  }
 
-  const onMouseMove = e => {
-    if (window.isIOS) normalizeTouchEvent(e);
+  const onMouseMove = (e) => {
+    if (window.isIOS) normalizeTouchEvent(e)
     if (isMouseDown && cursorY && !deleteMode) {
-      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
+      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
       setLocalData(
-        produce(localData, newLocalData => {
-          setLocalData(newLocalData);
-          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
+        produce(localData, (newLocalData) => {
+          setLocalData(newLocalData)
+          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams)
         })
-      );
+      )
     }
-  };
+  }
 
-  const onMouseDown = index => e => {
-    if (window.isIOS) normalizeTouchEvent(e);
-    setCursorY(e.pageY);
-    setActiveIndex(index);
-    setInitY(localData[index].y);
-    setIsMouseDown(true);
-    toggleBarDragging(true);
-  };
+  const onMouseDown = (index) => (e) => {
+    if (window.isIOS) normalizeTouchEvent(e)
+    setCursorY(e.pageY)
+    setActiveIndex(index)
+    setInitY(localData[index].y)
+    setIsMouseDown(true)
+    toggleBarDragging(true)
+  }
 
   const onMouseUp = () => {
-    save();
-  };
+    save()
+  }
 
   const onMouseLeave = () => {
-    save();
-  };
+    save()
+  }
 
-  const targetRef = useDisableDragScroll();
+  const targetRef = useDisableDragScroll()
 
   return (
     <svg
-      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
+      style={{ userSelect: 'none', position: 'relative', zIndex: '15' }}
       width={width}
       height={height + 40}
       onMouseMove={onMouseMove}
@@ -120,11 +124,17 @@ const LinePlot = ({
       onTouchEnd={onMouseUp}
       ref={targetRef}
     >
-      <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={2} />
+      <Line
+        x1={0}
+        y1={height - margin + 20}
+        x2={width - margin}
+        y2={height - margin + 20}
+        strokeWidth={2}
+      />
 
       <Crosses
         item={item}
-        saveAnswer={i => saveAnswer(localData, i)}
+        saveAnswer={(i) => saveAnswer(localData, i)}
         deleteMode={deleteMode}
         activeIndex={activeIndex}
         onPointOver={setActive}
@@ -139,11 +149,15 @@ const LinePlot = ({
       <ArrowPair getActivePoint={getActivePoint} />
 
       {gridParams.displayPositionOnHover && (
-        <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
+        <ValueLabel
+          getActivePoint={getActivePoint}
+          getActivePointValue={getActivePointValue}
+          active={active}
+        />
       )}
     </svg>
-  );
-};
+  )
+}
 
 LinePlot.propTypes = {
   item: PropTypes.object.isRequired,
@@ -156,20 +170,20 @@ LinePlot.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
   }).isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   evaluation: PropTypes.object.isRequired,
-  toggleBarDragging: PropTypes.func
-};
+  toggleBarDragging: PropTypes.func,
+}
 
 LinePlot.defaultProps = {
   disableResponse: false,
   deleteMode: false,
-  toggleBarDragging: () => {}
-};
+  toggleBarDragging: () => {},
+}
 
-export default withGrid(LinePlot);
+export default withGrid(LinePlot)

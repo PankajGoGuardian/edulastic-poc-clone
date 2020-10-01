@@ -1,24 +1,30 @@
-import React, { Component, useContext } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import { keyBy as _keyBy, isEmpty, get } from "lodash";
+import React, { Component, useContext } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { keyBy as _keyBy, isEmpty, get } from 'lodash'
 // components
-import { AnswerContext } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import produce from "immer";
-import { Modal, Row, Col } from "antd";
-import TestItemPreview from "../../../../assessment/components/TestItemPreview";
-import { loadScratchPadAction, clearUserWorkAction } from "../../../../assessment/actions/userWork";
+import { AnswerContext } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import produce from 'immer'
+import { Modal, Row, Col } from 'antd'
+import TestItemPreview from '../../../../assessment/components/TestItemPreview'
+import {
+  loadScratchPadAction,
+  clearUserWorkAction,
+} from '../../../../assessment/actions/userWork'
 
-import AssessmentPlayerModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { getRows } from "../../../sharedDucks/itemDetail";
+import AssessmentPlayerModal from '../../../Assignments/components/Container/TestPreviewModal'
+import { getRows } from '../../../sharedDucks/itemDetail'
 // styled wrappers
-import { StyledFlexContainer } from "./styled";
-import { getDynamicVariablesSetIdForViewResponse, ttsUserIdSelector } from "../../../ClassBoard/ducks";
-import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
-import { ThemeButton } from "../../../src/components/common/ThemeButton";
+import { StyledFlexContainer } from './styled'
+import {
+  getDynamicVariablesSetIdForViewResponse,
+  ttsUserIdSelector,
+} from '../../../ClassBoard/ducks'
+import Worksheet from '../../../AssessmentPage/components/Worksheet/Worksheet'
+import { ThemeButton } from '../../../src/components/common/ThemeButton'
 
 function Preview({
   item,
@@ -33,26 +39,41 @@ function Preview({
   isLCBView,
   questionActivity,
   userWork,
-  t
+  t,
 }) {
-  const rows = getRows(item, false);
-  const questions = get(item, ["data", "questions"], []);
-  const resources = get(item, ["data", "resources"], []);
-  let questionsKeyed = { ..._keyBy(questions, "id"), ..._keyBy(resources, "id") };
-  let passage = {};
-  if (item.passageId && passages.length) {
-    passage = passages.find(p => p._id === item.passageId) || {};
-    questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
-    rows[0] = passage.structure;
+  const rows = getRows(item, false)
+  const questions = get(item, ['data', 'questions'], [])
+  const resources = get(item, ['data', 'resources'], [])
+  let questionsKeyed = {
+    ..._keyBy(questions, 'id'),
+    ..._keyBy(resources, 'id'),
   }
-  const passageId = passage?._id;
-  const answerContextConfig = useContext(AnswerContext);
-  const target = get(questionActivity, isExpressGrader || isQuestionView ? "_id" : "qActId", "");
-  const timeSpent = (get(questionActivity, "timeSpent", 0) / 1000).toFixed(1);
-  const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item;
-  const scoringProps = { multipartItem, itemLevelScoring, isPassageWithQuestions };
-  const attachments = get(questionActivity, "scratchPad.attachments", null);
-  const scratchpadDimensions = get(questionActivity, "scratchPad.dimensions", null);
+  let passage = {}
+  if (item.passageId && passages.length) {
+    passage = passages.find((p) => p._id === item.passageId) || {}
+    questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, 'id') }
+    rows[0] = passage.structure
+  }
+  const passageId = passage?._id
+  const answerContextConfig = useContext(AnswerContext)
+  const target = get(
+    questionActivity,
+    isExpressGrader || isQuestionView ? '_id' : 'qActId',
+    ''
+  )
+  const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
+  const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item
+  const scoringProps = {
+    multipartItem,
+    itemLevelScoring,
+    isPassageWithQuestions,
+  }
+  const attachments = get(questionActivity, 'scratchPad.attachments', null)
+  const scratchpadDimensions = get(
+    questionActivity,
+    'scratchPad.dimensions',
+    null
+  )
 
   return (
     <StyledFlexContainer
@@ -71,7 +92,7 @@ function Preview({
         disableResponse={!answerContextConfig.isAnswerModifiable}
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
-        style={{ width: "100%" }}
+        style={{ width: '100%' }}
         qIndex={qIndex}
         evaluation={evaluation}
         showStudentWork={showStudentWork}
@@ -86,46 +107,48 @@ function Preview({
         saveHistory={() => {}}
         {...scoringProps}
         studentId={studentId}
-        studentName={studentName || t("common.anonymous")}
+        studentName={studentName || t('common.anonymous')}
         inLCB
         itemId={item._id}
       />
     </StyledFlexContainer>
-  );
+  )
 }
 
 Preview.propTypes = {
   item: PropTypes.object.isRequired,
   qIndex: PropTypes.number.isRequired,
   studentId: PropTypes.any.isRequired,
-  evaluation: PropTypes.object
-};
+  evaluation: PropTypes.object,
+}
 Preview.defaultProps = {
-  evaluation: {}
-};
+  evaluation: {},
+}
 
 class ClassQuestions extends Component {
   state = {
     showPlayerModal: false,
     selectedTestItem: [],
-    showDocBasedPlayer: false
-  };
+    showDocBasedPlayer: false,
+  }
 
-  static contextType = AnswerContext;
+  static contextType = AnswerContext
 
   // show AssessmentPlayerModal
   showPlayerModal = () => {
     this.setState({
-      showPlayerModal: true
-    });
-  };
+      showPlayerModal: true,
+    })
+  }
 
   getStudentName = () => {
-    const { isPresentationMode, currentStudent } = this.props;
-    if (!currentStudent) return null;
-    const name = isPresentationMode ? currentStudent.fakeName : currentStudent.studentName;
-    return name;
-  };
+    const { isPresentationMode, currentStudent } = this.props
+    if (!currentStudent) return null
+    const name = isPresentationMode
+      ? currentStudent.fakeName
+      : currentStudent.studentName
+    return name
+  }
 
   getTestItems() {
     const {
@@ -136,197 +159,240 @@ class ClassQuestions extends Component {
       isQuestionView = false,
       testItemsData,
       testActivityId,
-      passages
-    } = this.props;
+      passages,
+    } = this.props
     if (!currentStudent || !questionActivities) {
-      return [];
+      return []
     }
 
     let {
-      classResponse: { testItems }
-    } = this.props;
+      classResponse: { testItems },
+    } = this.props
 
-    const { variableSetIds } = this.props;
+    const { variableSetIds } = this.props
 
-    const { expressGrader } = this.context;
+    const { expressGrader } = this.context
     if (!expressGrader && testItems && !isQuestionView) {
-      testItems = testItemsData.filter(tid => testItems.find(ti => ti._id === tid._id));
+      testItems = testItemsData.filter((tid) =>
+        testItems.find((ti) => ti._id === tid._id)
+      )
     }
     const userQActivities =
-      currentStudent && currentStudent.questionActivities ? currentStudent.questionActivities : [];
+      currentStudent && currentStudent.questionActivities
+        ? currentStudent.questionActivities
+        : []
     if (!testItems) {
-      return [];
+      return []
     }
 
-    const { testItemsOrder = {} } = this.props;
+    const { testItemsOrder = {} } = this.props
     testItems = testItems
       .sort((x, y) => testItemsOrder[x._id] - testItemsOrder[y._id])
-      .map(item => {
-        const { data, rows, ...others } = item;
+      .map((item) => {
+        const { data, rows, ...others } = item
         if (!(data && !isEmpty(data.questions))) {
-          return;
+          return
         }
         if (item.itemLevelScoring) {
-          const firstQid = data.questions[0].id;
-          const firstQAct = userQActivities.find(x => x._id === firstQid);
+          const firstQid = data.questions[0].id
+          const firstQAct = userQActivities.find((x) => x._id === firstQid)
           if (firstQAct) {
-            if (filter === "correct" && firstQAct.maxScore !== firstQAct.score) {
-              return false;
+            if (
+              filter === 'correct' &&
+              firstQAct.maxScore !== firstQAct.score
+            ) {
+              return false
             }
 
-            if (filter === "wrong" && (firstQAct.score > 0 || firstQAct.skipped || firstQAct.graded === false)) {
-              return false;
+            if (
+              filter === 'wrong' &&
+              (firstQAct.score > 0 ||
+                firstQAct.skipped ||
+                firstQAct.graded === false)
+            ) {
+              return false
             }
 
-            if (filter === "partial" && !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)) {
-              return false;
+            if (
+              filter === 'partial' &&
+              !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)
+            ) {
+              return false
             }
-            if (filter === "skipped" && !(firstQAct.skipped && firstQAct.score === 0)) {
-              return false;
+            if (
+              filter === 'skipped' &&
+              !(firstQAct.skipped && firstQAct.score === 0)
+            ) {
+              return false
             }
-            if (filter === "notGraded" && !(firstQAct.graded === false)) {
-              return false;
+            if (filter === 'notGraded' && !(firstQAct.graded === false)) {
+              return false
             }
           }
         }
 
         let questions = data.questions
-          .map(question => {
-            const { id } = question;
-            let qActivities = questionActivities.filter(({ qid, id: altId }) => qid === id || altId === id);
+          .map((question) => {
+            const { id } = question
+            let qActivities = questionActivities.filter(
+              ({ qid, id: altId }) => qid === id || altId === id
+            )
             if (qActivities.length > 1) {
               /**
                * taking latest qActivity for a qid
                */
-              const qActivity = qActivities.find(o => o.testActivityId === testActivityId);
+              const qActivity = qActivities.find(
+                (o) => o.testActivityId === testActivityId
+              )
               if (qActivity) {
-                qActivities = [qActivity];
+                qActivities = [qActivity]
               } else {
-                qActivities = [qActivities[qActivities.length - 1]];
+                qActivities = [qActivities[qActivities.length - 1]]
               }
             }
-            qActivities = qActivities.map(q => ({
+            qActivities = qActivities.map((q) => ({
               ...q,
               studentName: this.getStudentName(),
               icon: currentStudent.icon,
-              color: currentStudent.color
-            }));
-            const label = labels[id];
+              color: currentStudent.color,
+            }))
+            const label = labels[id]
             if (!item.itemLevelScoring && qActivities[0]) {
-              if (filter === "correct" && qActivities[0].score < qActivities[0].maxScore) {
-                return false;
+              if (
+                filter === 'correct' &&
+                qActivities[0].score < qActivities[0].maxScore
+              ) {
+                return false
               }
 
               if (
-                filter === "wrong" &&
-                (qActivities[0].score > 0 || qActivities[0].skipped || qActivities[0].graded === false)
+                filter === 'wrong' &&
+                (qActivities[0].score > 0 ||
+                  qActivities[0].skipped ||
+                  qActivities[0].graded === false)
               ) {
-                return false;
+                return false
               }
 
-              if (filter === "skipped" && !(qActivities[0].skipped && qActivities[0].score === 0)) {
-                return false;
-              }
-              if (filter === "notGraded" && !(qActivities[0].graded === false)) {
-                return false;
+              if (
+                filter === 'skipped' &&
+                !(qActivities[0].skipped && qActivities[0].score === 0)
+              ) {
+                return false
               }
               if (
-                filter === "partial" &&
-                !(qActivities[0].score > 0 && qActivities[0].score < qActivities[0].maxScore)
+                filter === 'notGraded' &&
+                !(qActivities[0].graded === false)
               ) {
-                return false;
+                return false
+              }
+              if (
+                filter === 'partial' &&
+                !(
+                  qActivities[0].score > 0 &&
+                  qActivities[0].score < qActivities[0].maxScore
+                )
+              ) {
+                return false
               }
             }
-            qActivities = qActivities.map(q => {
-              const userQuestion = userQActivities.find(({ _id }) => _id === q.qid);
+            qActivities = qActivities.map((q) => {
+              const userQuestion = userQActivities.find(
+                ({ _id }) => _id === q.qid
+              )
               if (userQuestion) {
-                q.timespent = userQuestion.timeSpent;
-                q.disabled = userQuestion.disabled;
+                q.timespent = userQuestion.timeSpent
+                q.disabled = userQuestion.disabled
               }
 
-              return { ...q };
-            });
+              return { ...q }
+            })
             if (qActivities.length > 0) {
-              [question.activity] = qActivities;
+              ;[question.activity] = qActivities
             } else {
-              question.activity = undefined;
+              question.activity = undefined
             }
-            return { ...question, ...label };
+            return { ...question, ...label }
           })
-          .filter(x => x);
+          .filter((x) => x)
         if (!questions.length) {
-          return false;
+          return false
         }
         if (item.passageId && passages) {
-          const passage = passages.find(p => p._id === item.passageId);
+          const passage = passages.find((p) => p._id === item.passageId)
           if (passage) {
-            questions = [...questions, passage.data?.[0]];
+            questions = [...questions, passage.data?.[0]]
           }
         }
-        const resources = data.resources || [];
-        questions = [...questions, ...resources];
-        return { ...others, rows, data: { questions } };
+        const resources = data.resources || []
+        questions = [...questions, ...resources]
+        return { ...others, rows, data: { questions } }
       })
-      .filter(x => x);
-    return this.transformTestItemsForAlgoVariables([...testItems], variableSetIds);
+      .filter((x) => x)
+    return this.transformTestItemsForAlgoVariables(
+      [...testItems],
+      variableSetIds
+    )
   }
 
-  showStudentWork = testItem => {
+  showStudentWork = (testItem) => {
     this.setState({
       showPlayerModal: true,
-      selectedTestItem: testItem
-    });
-  };
+      selectedTestItem: testItem,
+    })
+  }
 
   hideStudentWork = () => {
-    const { closeTestletPlayer, showTestletPlayer } = this.props;
+    const { closeTestletPlayer, showTestletPlayer } = this.props
     this.setState(
       {
         showPlayerModal: false,
-        selectedTestItem: []
+        selectedTestItem: [],
       },
       () => {
         if (showTestletPlayer && closeTestletPlayer) {
-          closeTestletPlayer();
+          closeTestletPlayer()
         }
       }
-    );
-  };
+    )
+  }
 
   transformTestItemsForAlgoVariables = (testItems, variablesSetIds) =>
-    produce(testItems, draft => {
+    produce(testItems, (draft) => {
       if (!draft) {
-        return;
+        return
       }
 
-      const qidSetIds = _keyBy(variablesSetIds, "qid");
+      const qidSetIds = _keyBy(variablesSetIds, 'qid')
       for (const [idxItem, item] of draft.entries()) {
         if (!item.algoVariablesEnabled) {
-          continue;
+          continue
         }
-        const questions = get(item, "data.questions", []);
+        const questions = get(item, 'data.questions', [])
         for (const [idxQuestion, question] of questions.entries()) {
-          const qid = question.id;
-          const setIds = qidSetIds[qid];
+          const qid = question.id
+          const setIds = qidSetIds[qid]
           if (!setIds) {
-            continue;
+            continue
           }
-          const setKeyId = setIds.setId;
-          const examples = get(question, "variable.examples", []);
-          const variables = get(question, "variable.variables", {});
-          const example = examples.find(x => x.key === +setKeyId);
+          const setKeyId = setIds.setId
+          const examples = get(question, 'variable.examples', [])
+          const variables = get(question, 'variable.variables', {})
+          const example = examples.find((x) => x.key === +setKeyId)
           if (!example) {
-            continue;
+            continue
           }
           for (const variable of Object.keys(variables)) {
-            draft[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue = example[variable];
+            draft[idxItem].data.questions[idxQuestion].variable.variables[
+              variable
+            ].exampleValue = example[variable]
           }
         }
       }
-    });
+    })
 
   render() {
-    const { showPlayerModal, selectedTestItem, showDocBasedPlayer } = this.state;
+    const { showPlayerModal, selectedTestItem, showDocBasedPlayer } = this.state
     const {
       questionActivities,
       currentStudent,
@@ -343,39 +409,47 @@ class ClassQuestions extends Component {
       testActivityId,
       isPresentationMode,
       t,
-      ttsUserIds
-    } = this.props;
-    const testItems = this.getTestItems();
-    const { expressGrader: isExpressGrader = false } = this.context;
+      ttsUserIds,
+    } = this.props
+    const testItems = this.getTestItems()
+    const { expressGrader: isExpressGrader = false } = this.context
 
     const evaluationStatus = questionActivities.reduce((acc, curr) => {
       if (curr.pendingEvaluation) {
-        acc[curr.qid] = "pending";
+        acc[curr.qid] = 'pending'
       } else {
-        acc[curr.qid] = curr.evaluation;
+        acc[curr.qid] = curr.evaluation
       }
 
-      return acc;
-    }, {});
+      return acc
+    }, {})
 
     const testItemsPreview = testItems.map((item, index) => {
-      let showStudentWork = null;
-      let scractchPadUsed = userWork[item._id];
+      let showStudentWork = null
+      let scractchPadUsed = userWork[item._id]
 
-      scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPad?.scratchpad);
+      scractchPadUsed = item.data.questions.some(
+        (question) => question?.activity?.scratchPad?.scratchpad
+      )
       if (scractchPadUsed) {
-        showStudentWork = () => this.showStudentWork(item);
+        showStudentWork = () => this.showStudentWork(item)
       }
       if (testData.isDocBased) {
-        showStudentWork = () => this.setState({ showDocBasedPlayer: true });
+        showStudentWork = () => this.setState({ showDocBasedPlayer: true })
       }
-      const questionActivity = questionActivities.find(act => act.testItemId === item._id);
+      const questionActivity = questionActivities.find(
+        (act) => act.testItemId === item._id
+      )
 
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
           ttsUserIds={ttsUserIds}
-          studentName={(currentStudent || {})[isPresentationMode ? "fakeName" : "studentName"]}
+          studentName={
+            (currentStudent || {})[
+              isPresentationMode ? 'fakeName' : 'studentName'
+            ]
+          }
           key={index}
           item={item}
           passages={passages}
@@ -389,36 +463,44 @@ class ClassQuestions extends Component {
           userWork={userWork}
           t={t}
         />
-      );
-    });
+      )
+    })
     const test = showTestletPlayer
       ? {
           testType: classResponse.testType,
           title: classResponse.title,
           testletConfig: classResponse.testletConfig,
-          testletState: get(testActivity, "userWork.testletState"),
-          itemGroups: [{ items: [selectedTestItem] }]
+          testletState: get(testActivity, 'userWork.testletState'),
+          itemGroups: [{ items: [selectedTestItem] }],
         }
-      : { itemGroups: [{ items: [selectedTestItem] }] };
+      : { itemGroups: [{ items: [selectedTestItem] }] }
 
-    let docBasedProps = {};
+    let docBasedProps = {}
     if (testData.isDocBased) {
-      const { isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = testData;
-      const questionActivitiesById = _keyBy(questionActivities, "qid");
+      const {
+        isDocBased,
+        docUrl,
+        annotations,
+        pageStructure,
+        freeFormNotes = {},
+      } = testData
+      const questionActivitiesById = _keyBy(questionActivities, 'qid')
 
-      const questions = (testItemsData?.[0]?.data?.questions || []).map(q => ({
-        ...q,
-        activity: questionActivitiesById[q.id]
-      }));
-      const questionsById = _keyBy(questions, "id");
+      const questions = (testItemsData?.[0]?.data?.questions || []).map(
+        (q) => ({
+          ...q,
+          activity: questionActivitiesById[q.id],
+        })
+      )
+      const questionsById = _keyBy(questions, 'id')
       const studentWorkAnswersById = questionActivities.reduce((acc, cur) => {
-        acc[cur.qid] = cur.userResponse;
-        return acc;
-      }, {});
+        acc[cur.qid] = cur.userResponse
+        return acc
+      }, {})
       docBasedProps = {
         test: testData,
         review: true,
-        viewMode: "report",
+        viewMode: 'report',
         isDocBased,
         docUrl,
         annotations,
@@ -426,8 +508,8 @@ class ClassQuestions extends Component {
         freeFormNotes,
         questionsById,
         questions,
-        studentWorkAnswersById
-      };
+        studentWorkAnswersById,
+      }
     }
 
     return (
@@ -452,7 +534,12 @@ class ClassQuestions extends Component {
               <Col>
                 <ThemeButton
                   onClick={() => this.setState({ showDocBasedPlayer: false })}
-                  style={{ color: "#fff", width: "110px", marginLeft: "auto", marginRight: 20 }}
+                  style={{
+                    color: '#fff',
+                    width: '110px',
+                    marginLeft: 'auto',
+                    marginRight: 20,
+                  }}
                 >
                   Exit
                 </ThemeButton>
@@ -463,29 +550,37 @@ class ClassQuestions extends Component {
         ) : null}
         {testItemsPreview}
       </>
-    );
+    )
   }
 }
 
 const withConnect = connect(
   (state, ownProps) => ({
-    testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
-    testData: get(state, ["author_classboard_testActivity", "data", "test"]),
-    passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
-    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
-    userWork: get(state, ["userWork", "present"], {}),
-    ttsUserIds: ttsUserIdSelector(state)
+    testItemsData: get(
+      state,
+      ['author_classboard_testActivity', 'data', 'testItemsData'],
+      []
+    ),
+    testData: get(state, ['author_classboard_testActivity', 'data', 'test']),
+    passages: get(
+      state,
+      ['author_classboard_testActivity', 'data', 'passageData'],
+      []
+    ),
+    variableSetIds: getDynamicVariablesSetIdForViewResponse(
+      state,
+      ownProps.currentStudent.studentId
+    ),
+    userWork: get(state, ['userWork', 'present'], {}),
+    ttsUserIds: ttsUserIdSelector(state),
   }),
   {
     loadScratchPad: loadScratchPadAction,
-    clearUserWork: clearUserWorkAction
+    clearUserWork: clearUserWorkAction,
   }
-);
+)
 
-export default compose(
-  withConnect,
-  withNamespaces("student")
-)(ClassQuestions);
+export default compose(withConnect, withNamespaces('student'))(ClassQuestions)
 
 ClassQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,
@@ -496,14 +591,14 @@ ClassQuestions.propTypes = {
   qIndex: PropTypes.number,
   isPresentationMode: PropTypes.bool,
   studentViewFilter: PropTypes.string,
-  showTestletPlayer: PropTypes.bool
-};
+  showTestletPlayer: PropTypes.bool,
+}
 ClassQuestions.defaultProps = {
   qIndex: null,
   isPresentationMode: false,
   showTestletPlayer: false,
-  studentViewFilter: null
-};
+  studentViewFilter: null,
+}
 
 const StyledModal = styled(Modal)`
   width: 100% !important;
@@ -536,4 +631,4 @@ const StyledModal = styled(Modal)`
     margin-top: -10px;
     margin-bottom: 10px;
   }
-`;
+`

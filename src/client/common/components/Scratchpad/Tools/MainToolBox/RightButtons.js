@@ -1,27 +1,30 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { FlexContainer } from "@edulastic/common";
-import { drawTools } from "@edulastic/constants";
+import { FlexContainer } from '@edulastic/common'
+import { drawTools } from '@edulastic/constants'
 
-import { StyledButton } from "../styled";
-import { rightControls } from "../constants/controls";
-import HideShowDataController from "./ToggleScratchpadDataButton";
+import { StyledButton } from '../styled'
+import { rightControls } from '../constants/controls'
+import HideShowDataController from './ToggleScratchpadDataButton'
 
 const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
-  const onClickHandler = mode => () => {
-    onChangeTool(mode);
-  };
+  const onClickHandler = (mode) => () => {
+    onChangeTool(mode)
+  }
 
   return (
     <FlexContainer>
       <HideShowDataController />
-      {rightControls.map(btn => (
+      {rightControls.map((btn) => (
         <StyledButton
           key={btn.mode}
           id={btn.mode}
           pos={btn.pos}
-          disabled={(!canRedo && btn.mode === drawTools.REDO_TOOL) || (!canUndo && btn.mode === drawTools.UNDO_TOOL)}
+          disabled={
+            (!canRedo && btn.mode === drawTools.REDO_TOOL) ||
+            (!canUndo && btn.mode === drawTools.UNDO_TOOL)
+          }
           onClick={onClickHandler(btn.mode)}
           selected={deleteMode && btn.mode === drawTools.DELETE_TOOL}
         >
@@ -29,15 +32,15 @@ const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
         </StyledButton>
       ))}
     </FlexContainer>
-  );
-};
+  )
+}
 
 RightButtons.propTypes = {
-  onChangeTool: PropTypes.func
-};
+  onChangeTool: PropTypes.func,
+}
 
 RightButtons.defaultProps = {
-  onChangeTool: () => null
-};
+  onChangeTool: () => null,
+}
 
-export default RightButtons;
+export default RightButtons

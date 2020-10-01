@@ -1,19 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
-import { compose } from "redux";
-import { Spin } from "antd";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Switch, Route, withRouter } from "react-router-dom";
+import React, { useEffect } from 'react'
+import { compose } from 'redux'
+import { Spin } from 'antd'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Switch, Route, withRouter } from 'react-router-dom'
 
 // themes
-import ThemeContainer from "./themes/index";
-import { loadTestAction } from "./actions/test";
-import { startAssessmentAction } from "./actions/assessment";
-import { testActivityLoadingSelector } from "./selectors/test";
-import RequirePassword from "./RequirePassword";
+import ThemeContainer from './themes/index'
+import { loadTestAction } from './actions/test'
+import { startAssessmentAction } from './actions/assessment'
+import { testActivityLoadingSelector } from './selectors/test'
+import RequirePassword from './RequirePassword'
 
-const isPublic = window.location.href.indexOf("/public/") > -1;
+const isPublic = window.location.href.indexOf('/public/') > -1
 
 const AssessmentPlayer = ({
   defaultAP,
@@ -39,11 +39,11 @@ const AssessmentPlayer = ({
   sharedType,
   ...restProps
 }) => {
-  testId = preview ? testId : match.params.id;
+  testId = preview ? testId : match.params.id
   useEffect(() => {
-    const { utaId: testActivityId, groupId } = match.params;
+    const { utaId: testActivityId, groupId } = match.params
     // if its from a modal that maybe showing the answer, then dont reset the answer.
-    if (!LCBPreviewModal) startAssessment();
+    if (!LCBPreviewModal) startAssessment()
     // if showing student work dont genrate question labels again
     loadTest({
       testId,
@@ -55,60 +55,66 @@ const AssessmentPlayer = ({
       isShowStudentWork,
       playlistId,
       currentAssignmentId,
-      sharedType
-    });
-  }, [testId]);
+      sharedType,
+    })
+  }, [testId])
 
   if (!window.confirmBeforeGoBack && !demo && !preview) {
     // attaching event func to window to access after component unmounted
-    window.confirmBeforeGoBack = e => {
-      e.preventDefault();
-      const matched = e.target.location.pathname.match(new RegExp("/student/assessment/.*/class/.*/uta/.*/qid/.*"));
+    window.confirmBeforeGoBack = (e) => {
+      e.preventDefault()
+      const matched = e.target.location.pathname.match(
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+      )
       if (!matched) {
-        if (window.confirm("You are navigating away and you will quit the assignment. Are you sure?")) {
+        if (
+          window.confirm(
+            'You are navigating away and you will quit the assignment. Are you sure?'
+          )
+        ) {
           // to remove attached event from window after execuation done
           setTimeout(() => {
-            window.removeEventListener("popstate", window.confirmBeforeGoBack);
-            delete window.confirmBeforeGoBack;
-          }, 1000);
-          return true;
+            window.removeEventListener('popstate', window.confirmBeforeGoBack)
+            delete window.confirmBeforeGoBack
+          }, 1000)
+          return true
         }
-        window.history.go(1);
-        return false;
+        window.history.go(1)
+        return false
       }
-    };
+    }
   }
 
-  const confirmBeforeQuitting = e => {
+  const confirmBeforeQuitting = (e) => {
     // for older IE versions
-    e = e || window.event;
+    e = e || window.event
     if (e) {
-      e.returnValue = "Are you sure you want to quit?";
+      e.returnValue = 'Are you sure you want to quit?'
     }
     // for modern browsers
     // note: for modern browsers support for custom messages has been deprecated
-    return "Are you sure you want to quit";
-  };
+    return 'Are you sure you want to quit'
+  }
 
   useEffect(() => {
     if (isPublic) {
       // can't return undefined from useEffect hook
-      return () => {};
+      return () => {}
     }
-    window.removeEventListener("popstate", window.confirmBeforeGoBack);
+    window.removeEventListener('popstate', window.confirmBeforeGoBack)
     if (!demo && !preview) {
-      window.addEventListener("popstate", window.confirmBeforeGoBack);
+      window.addEventListener('popstate', window.confirmBeforeGoBack)
     }
     return () => {
       if (!demo && !preview && window.confirmBeforeGoBack) {
         setTimeout(() => {
-          window.removeEventListener("popstate", window.confirmBeforeGoBack);
-          delete window.confirmBeforeGoBack;
-        }, 1000);
+          window.removeEventListener('popstate', window.confirmBeforeGoBack)
+          delete window.confirmBeforeGoBack
+        }, 1000)
       }
-      window.removeEventListener("beforeunload", confirmBeforeQuitting);
-    };
-  }, []);
+      window.removeEventListener('beforeunload', confirmBeforeQuitting)
+    }
+  }, [])
 
   if (preview) {
     return (
@@ -126,16 +132,16 @@ const AssessmentPlayer = ({
         studentReportModal={studentReportModal}
         {...restProps}
       />
-    );
+    )
   }
   if (testActivityLoading) {
-    return <Spin />;
+    return <Spin />
   }
   if (!isPasswordValidated) {
-    return <RequirePassword />;
+    return <RequirePassword />
   }
-  const groupId = match.params.groupId || "";
-  const utaId = match.params?.utaId;
+  const groupId = match.params.groupId || ''
+  const utaId = match.params?.utaId
   return (
     <Switch>
       <Route
@@ -166,8 +172,8 @@ const AssessmentPlayer = ({
         )}
       />
     </Switch>
-  );
-};
+  )
+}
 
 AssessmentPlayer.propTypes = {
   defaultAP: PropTypes.any.isRequired,
@@ -177,32 +183,32 @@ AssessmentPlayer.propTypes = {
   preview: PropTypes.any,
   testId: PropTypes.string,
   test: PropTypes.object,
-  LCBPreviewModal: PropTypes.any.isRequired
-};
+  LCBPreviewModal: PropTypes.any.isRequired,
+}
 
 AssessmentPlayer.defaultProps = {
   preview: false,
-  testId: "",
+  testId: '',
   test: {},
   closeTestPreviewModal: () => {
     if (isPublic) {
-      window.location.href = "/";
+      window.location.href = '/'
     }
-  }
-};
+  },
+}
 
 // export component
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       isPasswordValidated: state.test.isPasswordValidated,
-      testActivityLoading: testActivityLoadingSelector(state)
+      testActivityLoading: testActivityLoadingSelector(state),
     }),
     {
       loadTest: loadTestAction,
-      startAssessment: startAssessmentAction
+      startAssessment: startAssessmentAction,
     }
   )
-);
-export default enhance(AssessmentPlayer);
+)
+export default enhance(AssessmentPlayer)

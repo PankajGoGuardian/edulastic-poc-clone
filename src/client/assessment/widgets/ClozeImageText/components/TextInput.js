@@ -1,15 +1,15 @@
-import React, { useRef, useState } from "react";
-import PropTypes from "prop-types";
-import { math } from "@edulastic/constants";
-import styled from "styled-components";
-import { Input } from "antd";
-import { isEmpty } from "lodash";
+import React, { useRef, useState } from 'react'
+import PropTypes from 'prop-types'
+import { math } from '@edulastic/constants'
+import styled from 'styled-components'
+import { Input } from 'antd'
+import { isEmpty } from 'lodash'
 
-import NumberPad from "../../../components/NumberPad";
-import { getInputSelection } from "../../../utils/helpers";
+import NumberPad from '../../../components/NumberPad'
+import { getInputSelection } from '../../../utils/helpers'
 
-const { TextArea } = Input;
-const { characterMapButtons } = math;
+const { TextArea } = Input
+const { characterMapButtons } = math
 
 const TextInput = ({
   disabled,
@@ -21,82 +21,89 @@ const TextInput = ({
   onChange,
   placeholder,
   type,
-  value
+  value,
 }) => {
-  const ref = useRef();
-  const MInput = isMultiple ? TextArea : Input;
+  const ref = useRef()
+  const MInput = isMultiple ? TextArea : Input
   const [selection, setSelection] = useState({
     start: 0,
-    end: 0
-  });
+    end: 0,
+  })
 
-  const getValue = val => {
+  const getValue = (val) => {
     // TODO: EV-10804
-    const newStr = value?.split("") || [];
-    newStr.splice(selection.start, selection.end - selection.start, val);
-    return newStr.join("");
-  };
+    const newStr = value?.split('') || []
+    newStr.splice(selection.start, selection.end - selection.start, val)
+    return newStr.join('')
+  }
 
   const makeCharactersMap = () => {
-    const make = arr => arr.map(character => ({ value: character, label: character }));
+    const make = (arr) =>
+      arr.map((character) => ({ value: character, label: character }))
 
     if (isEmpty(characterMap)) {
-      return make(characterMap);
+      return make(characterMap)
     }
 
-    return make(characterMapButtons);
-  };
+    return make(characterMapButtons)
+  }
 
-  const onChangeHandler = answer => {
-    if (type === "number" && Number.isNaN(+answer)) {
-      return;
+  const onChangeHandler = (answer) => {
+    if (type === 'number' && Number.isNaN(+answer)) {
+      return
     }
-    onChange(answer);
-  };
+    onChange(answer)
+  }
 
   return (
     <CustomInput noIndent={noIndent}>
       <MInput
         ref={ref}
-        onChange={e => onChangeHandler(e.target.value)}
+        onChange={(e) => onChangeHandler(e.target.value)}
         disabled={disabled}
-        onSelect={e => setSelection(getInputSelection(e.currentTarget))}
-        wrap={isMultiple ? "" : "off"}
+        onSelect={(e) => setSelection(getInputSelection(e.currentTarget))}
+        wrap={isMultiple ? '' : 'off'}
         value={value}
         style={{
-          resize: "none",
-          height: "100%",
-          background: background || "#f8f8f8",
-          padding: lessPadding ? "3px" : null
+          resize: 'none',
+          height: '100%',
+          background: background || '#f8f8f8',
+          padding: lessPadding ? '3px' : null,
         }}
         placeholder={placeholder}
       />
       {characterMap && (
         <NumberPad
-          buttonStyle={{ height: "100%", width: 30, position: "absolute", right: 0, top: 0 }}
-          onChange={(_, val) => {
-            onChangeHandler(getValue(val));
-            ref.current.focus();
+          buttonStyle={{
+            height: '100%',
+            width: 30,
+            position: 'absolute',
+            right: 0,
+            top: 0,
           }}
-          items={[{ value: "á", label: "á" }]}
+          onChange={(_, val) => {
+            onChangeHandler(getValue(val))
+            ref.current.focus()
+          }}
+          items={[{ value: 'á', label: 'á' }]}
           characterMapButtons={makeCharactersMap()}
         />
       )}
     </CustomInput>
-  );
-};
+  )
+}
 
 TextInput.propTypes = {
   disabled: PropTypes.bool,
-  noIndent: PropTypes.bool
-};
+  noIndent: PropTypes.bool,
+}
 
 TextInput.defaultProps = {
   noIndent: false,
-  disabled: false
-};
+  disabled: false,
+}
 
-export default TextInput;
+export default TextInput
 
 const CustomInput = styled.div`
   display: inline-flex;
@@ -106,7 +113,7 @@ const CustomInput = styled.div`
   height: 100%;
 
   .ant-input {
-    padding: ${({ noIndent }) => (noIndent ? "4px 2px" : null)};
+    padding: ${({ noIndent }) => (noIndent ? '4px 2px' : null)};
     min-height: 18px;
   }
-`;
+`

@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { upperFirst, isEmpty } from "lodash";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { upperFirst, isEmpty } from 'lodash'
 
 // components
-import { Spin, Select, Input } from "antd";
-import { EduButton, notification } from "@edulastic/common";
-import { IconClever, IconClose } from "@edulastic/icons";
-import { StyledSelect, ClassListModal, ModalClassListTable, InstitutionSelectWrapper } from "./styled";
+import { Spin, Select, Input } from 'antd'
+import { EduButton, notification } from '@edulastic/common'
+import { IconClever, IconClose } from '@edulastic/icons'
+import {
+  StyledSelect,
+  ClassListModal,
+  ModalClassListTable,
+  InstitutionSelectWrapper,
+} from './styled'
 
 // constants
-import selectsData from "../../../TestPage/components/common/selectsData";
+import selectsData from '../../../TestPage/components/common/selectsData'
 
-const { allGrades, allSubjects } = selectsData;
+const { allGrades, allSubjects } = selectsData
 
 const ClassSelectModal = ({
   type,
@@ -27,15 +32,15 @@ const ClassSelectModal = ({
   allowedInstitutions,
   defaultGrades = [],
   defaultSubjects = [],
-  existingGroups = []
+  existingGroups = [],
 }) => {
-  const [classListData, setClassListData] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [institutionId, setInstitutionId] = useState("");
+  const [classListData, setClassListData] = useState([])
+  const [selectedRows, setSelectedRows] = useState([])
+  const [institutionId, setInstitutionId] = useState('')
 
   // set classListData
   useEffect(() => {
-    if (type === "clever") {
+    if (type === 'clever') {
       setClassListData(
         classListToSync.map((c, index) => {
           const data = {
@@ -44,153 +49,155 @@ const ClassSelectModal = ({
             cleverId: c.id,
             standards: [],
             standardSets: [],
-            disabled: syncedIds.includes(c.id)
-          };
+            disabled: syncedIds.includes(c.id),
+          }
           if (syncedIds.includes(c.id)) {
-            const group = existingGroups.find(o => o.cleverId === c.id);
-            c.grades = group ? group.grades : defaultGrades;
-            c.subject = group ? group.subject : defaultSubjects[0];
+            const group = existingGroups.find((o) => o.cleverId === c.id)
+            c.grades = group ? group.grades : defaultGrades
+            c.subject = group ? group.subject : defaultSubjects[0]
             return {
               ...data,
               subject: c.subject,
               grades: c.grades,
-              disabled: syncedIds.includes(c.id)
-            };
+              disabled: syncedIds.includes(c.id),
+            }
           }
           return {
             ...data,
             subject: defaultSubjects[0],
             grades: defaultGrades,
-            disabled: false
-          };
+            disabled: false,
+          }
         })
-      );
-      setSelectedRows(classListToSync.map((c, i) => i));
+      )
+      setSelectedRows(classListToSync.map((c, i) => i))
     }
-    if (type === "googleClassroom") {
+    if (type === 'googleClassroom') {
       setClassListData(
         classListToSync.map((c, index) => {
           if (!c.grades) {
-            c.grades = defaultGrades;
+            c.grades = defaultGrades
           }
           if (!c.subject) {
-            c.subject = defaultSubjects[0];
+            c.subject = defaultSubjects[0]
           }
           return {
             ...c,
             key: index,
-            disabled: syncedIds.includes(c.enrollmentCode)
-          };
+            disabled: syncedIds.includes(c.enrollmentCode),
+          }
         })
-      );
-      setSelectedRows(classListToSync.map((c, i) => i));
+      )
+      setSelectedRows(classListToSync.map((c, i) => i))
     }
-  }, [classListToSync]);
+  }, [classListToSync])
 
   useEffect(() => {
     if (allowedInstitutions?.length === 1) {
-      setInstitutionId(allowedInstitutions[0].institutionId);
+      setInstitutionId(allowedInstitutions[0].institutionId)
     }
-  }, [allowedInstitutions]);
+  }, [allowedInstitutions])
 
   const handleClassListSync = () => {
-    const classList = classListData.filter((each, index) => selectedRows.includes(index));
+    const classList = classListData.filter((each, index) =>
+      selectedRows.includes(index)
+    )
     if (!classList?.length) {
-      notification({ messageKey: "pleaseSelectAClass" });
-    } else if (type === "googleClassroom" && !institutionId) {
-      notification({ messageKey: "pleaseSelectAnInstitution" });
+      notification({ messageKey: 'pleaseSelectAClass' })
+    } else if (type === 'googleClassroom' && !institutionId) {
+      notification({ messageKey: 'pleaseSelectAnInstitution' })
     } else {
-      onSubmit({ classList, institutionId, refreshPage });
-      onCancel();
+      onSubmit({ classList, institutionId, refreshPage })
+      onCancel()
     }
-  };
+  }
 
   const getColumns = () => {
-    const width = type === "googleClassroom" ? "15%" : "20%";
+    const width = type === 'googleClassroom' ? '15%' : '20%'
     const googleCode =
-      type === "googleClassroom"
+      type === 'googleClassroom'
         ? [
             {
               title: <b>GOOGLE CLASS CODE</b>,
-              key: "enrollmentCode",
+              key: 'enrollmentCode',
               width,
-              dataIndex: "enrollmentCode",
-              align: "left"
-            }
+              dataIndex: 'enrollmentCode',
+              align: 'left',
+            },
           ]
-        : [];
+        : []
 
     return [
       ...googleCode,
       {
         title: <b>CLASS NAME</b>,
-        key: "name",
+        key: 'name',
         width,
-        dataIndex: "name",
-        align: "center",
+        dataIndex: 'name',
+        align: 'center',
         render: (data, row, index) => (
           <Input
             title={data}
             value={data}
             disabled={row.disabled}
-            onChange={e => {
-              const classList = [...classListData];
-              classList[index].name = e.target.value;
-              setClassListData(classList);
+            onChange={(e) => {
+              const classList = [...classListData]
+              classList[index].name = e.target.value
+              setClassListData(classList)
             }}
           />
-        )
+        ),
       },
       {
         title: <b>GRADE</b>,
-        key: "grades",
+        key: 'grades',
         width,
-        dataIndex: "grades",
-        align: "center",
+        dataIndex: 'grades',
+        align: 'center',
         render: (data, row, index) => (
           <StyledSelect
             value={data || defaultGrades}
             mode="multiple"
             placeholder="Select Grades"
             disabled={row.disabled}
-            onChange={grades => {
-              const classList = [...classListData];
-              classList[index].grades = grades;
-              setClassListData(classList);
+            onChange={(grades) => {
+              const classList = [...classListData]
+              classList[index].grades = grades
+              setClassListData(classList)
             }}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
-            {allGrades.map(grade => (
+            {allGrades.map((grade) => (
               <Select.Option value={grade.value} key={grade.value}>
                 {grade.text}
               </Select.Option>
             ))}
           </StyledSelect>
-        )
+        ),
       },
       {
         title: <b>SUBJECT</b>,
-        key: "subject",
+        key: 'subject',
         width,
-        dataIndex: "subject",
-        align: "center",
+        dataIndex: 'subject',
+        align: 'center',
         render: (data, row, index) => (
           <StyledSelect
-            style={{ minWidth: "80px" }}
+            style={{ minWidth: '80px' }}
             value={data || defaultSubjects[0]}
             placeholder="Select Subject"
             disabled={row.disabled}
-            onChange={subject => {
-              const classList = [...classListData];
-              classList[index].subject = upperFirst(subject);
-              classList[index].standards = [];
-              classList[index].standardSets = [];
-              setClassListData(classList);
+            onChange={(subject) => {
+              const classList = [...classListData]
+              classList[index].subject = upperFirst(subject)
+              classList[index].standards = []
+              classList[index].standardSets = []
+              setClassListData(classList)
             }}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             {allSubjects.map(
-              subject =>
+              (subject) =>
                 subject.value && (
                   <Select.Option value={subject.value} key={subject.value}>
                     {subject.text}
@@ -198,131 +205,162 @@ const ClassSelectModal = ({
                 )
             )}
           </StyledSelect>
-        )
+        ),
       },
       {
         title: <b>STANDARDS</b>,
-        key: "standards",
+        key: 'standards',
         width,
-        dataIndex: "standards",
-        align: "center",
+        dataIndex: 'standards',
+        align: 'center',
         render: (data, row, index) => {
-          const standardsList = getStandardsListBySubject(row.subject || defaultSubjects[0]);
+          const standardsList = getStandardsListBySubject(
+            row.subject || defaultSubjects[0]
+          )
           return (
             <StyledSelect
               showSearch
               filterOption={(input, option) => {
-                if (option.props.children && typeof option.props.children === "string")
-                  return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                if (
+                  option.props.children &&
+                  typeof option.props.children === 'string'
+                )
+                  return (
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  )
 
-                return false;
+                return false
               }}
               mode="multiple"
               value={data}
               placeholder="Select Standards"
               disabled={row.disabled}
-              onChange={standards => {
-                const classList = [...classListData];
-                classList[index].standards = standards;
+              onChange={(standards) => {
+                const classList = [...classListData]
+                classList[index].standards = standards
                 classList[index].standardSets = standardsList
-                  .filter(s => standards.includes(s.value))
-                  .map(({ value, text }) => ({ _id: value, name: text }));
-                setClassListData(classList);
+                  .filter((s) => standards.includes(s.value))
+                  .map(({ value, text }) => ({ _id: value, name: text }))
+                setClassListData(classList)
               }}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
               {standardsList.map(({ value, text, disabled }) => (
                 <Select.Option value={value} key={value} disabled={disabled}>
-                  {!value.toString().includes("-") ? (
+                  {!value.toString().includes('-') ? (
                     text
                   ) : (
                     <div
                       style={{
-                        width: "100%",
-                        height: "2px",
-                        borderRadius: "20px",
-                        backgroundColor: "rgba(0, 0, 0, 0.65)"
+                        width: '100%',
+                        height: '2px',
+                        borderRadius: '20px',
+                        backgroundColor: 'rgba(0, 0, 0, 0.65)',
                       }}
                     />
                   )}
                 </Select.Option>
               ))}
             </StyledSelect>
-          );
-        }
+          )
+        },
       },
       {
         title: <b>COURSE</b>,
-        key: "course",
+        key: 'course',
         width,
-        dataIndex: "courseId",
-        align: "center",
+        dataIndex: 'courseId',
+        align: 'center',
         render: (data, row, index) => (
           <StyledSelect
             showSearch
             style={{
-              width: "100%",
-              maxWidth: "170px",
-              minWidth: "75px"
+              width: '100%',
+              maxWidth: '170px',
+              minWidth: '75px',
             }}
             labelInValue
             filterOption={(input, option) => {
-              if (option.props.children && typeof option.props.children === "string")
-                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              if (
+                option.props.children &&
+                typeof option.props.children === 'string'
+              )
+                return (
+                  option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                )
 
-              return false;
+              return false
             }}
             value={(data && { key: data }) || {}}
             placeholder="Select Course"
             disabled={row.disabled}
-            onChange={course => {
-              const classList = [...classListData];
-              classList[index].courseId = course.key;
-              if (type === "clever") {
-                classList[index].course = course.key;
-              } else if (type === "googleClassroom") {
-                classList[index].course = { id: course.key, name: course.label };
+            onChange={(course) => {
+              const classList = [...classListData]
+              classList[index].courseId = course.key
+              if (type === 'clever') {
+                classList[index].course = course.key
+              } else if (type === 'googleClassroom') {
+                classList[index].course = {
+                  id: course.key,
+                  name: course.label,
+                }
               }
-              setClassListData(classList);
+              setClassListData(classList)
             }}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
-            {(courseList || []).map(course => (
+            {(courseList || []).map((course) => (
               <Select.Option value={course._id} key={course._id}>
                 {course.name}
               </Select.Option>
             ))}
           </StyledSelect>
-        )
-      }
-    ];
-  };
+        ),
+      },
+    ]
+  }
 
   const InstitutionSelection = () => (
     <InstitutionSelectWrapper>
-      <label>We found the account is linked to multiple Institutions. Please select the one for synced classes.</label>
+      <label>
+        We found the account is linked to multiple Institutions. Please select
+        the one for synced classes.
+      </label>
       <StyledSelect
         width="170px"
         showSearch
         filterOption={(input, option) => {
-          if (option.props.children && typeof option.props.children === "string")
-            return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+          if (
+            option.props.children &&
+            typeof option.props.children === 'string'
+          )
+            return (
+              option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0
+            )
 
-          return false;
+          return false
         }}
         placeholder="Select Institution"
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
         value={institutionId}
-        onChange={value => setInstitutionId(value)}
+        onChange={(value) => setInstitutionId(value)}
       >
-        {allowedInstitutions.map(i => (
-          <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
+        {allowedInstitutions.map((i) => (
+          <Select.Option key={i.institutionId}>
+            {i.institutionName}
+          </Select.Option>
         ))}
       </StyledSelect>
     </InstitutionSelectWrapper>
-  );
+  )
 
-  const disableImport = isEmpty(selectedRows);
+  const disableImport = isEmpty(selectedRows)
 
   return (
     <ClassListModal
@@ -332,27 +370,49 @@ const ClassSelectModal = ({
       title={
         <>
           <div>
-            {type === "clever" && <IconClever height={20} width={20} style={{ position: "absolute", left: "20px" }} />}
-            <span>Import Classes and Students from {type === "clever" ? "Clever" : "Google"}</span>
-            <IconClose height={20} width={20} onClick={onCancel} style={{ cursor: "pointer" }} />
+            {type === 'clever' && (
+              <IconClever
+                height={20}
+                width={20}
+                style={{ position: 'absolute', left: '20px' }}
+              />
+            )}
+            <span>
+              Import Classes and Students from{' '}
+              {type === 'clever' ? 'Clever' : 'Google'}
+            </span>
+            <IconClose
+              height={20}
+              width={20}
+              onClick={onCancel}
+              style={{ cursor: 'pointer' }}
+            />
           </div>
           <p>
-            The following classes will be imported from you {type === "clever" ? "Clever" : "Google Classroom"} account.
+            The following classes will be imported from you{' '}
+            {type === 'clever' ? 'Clever' : 'Google Classroom'} account.
           </p>
           <p>
-            Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
-            successful, Students accounts will be automatically created in Edulastic.
+            Please enter/update class name, grade and subject to import and
+            create classes in Edulastic. Once import is successful, Students
+            accounts will be automatically created in Edulastic.
           </p>
-          {type === "googleClassroom" && allowedInstitutions.length > 1 && <InstitutionSelection />}
+          {type === 'googleClassroom' && allowedInstitutions.length > 1 && (
+            <InstitutionSelection />
+          )}
         </>
       }
       footer={[
         <EduButton isGhost onClick={onCancel}>
           CANCEL
         </EduButton>,
-        <EduButton onClick={handleClassListSync} loading={loading} disabled={disableImport}>
+        <EduButton
+          onClick={handleClassListSync}
+          loading={loading}
+          disabled={disableImport}
+        >
           Sync
-        </EduButton>
+        </EduButton>,
       ]}
     >
       {loading ? (
@@ -365,14 +425,20 @@ const ClassSelectModal = ({
           rowSelection={{
             selectedRowKeys: selectedRows,
             onChange: setSelectedRows,
-            getCheckboxProps: row => ({ disabled: row.disabled, name: row.name })
+            getCheckboxProps: (row) => ({
+              disabled: row.disabled,
+              name: row.name,
+            }),
           }}
-          pagination={{ defaultPageSize: classListData?.length || 10, hideOnSinglePage: true }}
+          pagination={{
+            defaultPageSize: classListData?.length || 10,
+            hideOnSinglePage: true,
+          }}
         />
       )}
     </ClassListModal>
-  );
-};
+  )
+}
 
 ClassSelectModal.propTypes = {
   type: PropTypes.string.isRequired,
@@ -381,10 +447,10 @@ ClassSelectModal.propTypes = {
   classListToSync: PropTypes.array.isRequired,
   loading: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
-};
+  onCancel: PropTypes.func.isRequired,
+}
 ClassSelectModal.defaultProps = {
-  loading: false
-};
+  loading: false,
+}
 
-export default ClassSelectModal;
+export default ClassSelectModal

@@ -1,14 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { useRef } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Select } from "antd";
-import { maxBy, indexOf } from "lodash";
-import { MathKeyboard, measureText, SelectInputStyled, MathFormulaDisplay } from "@edulastic/common";
-import { darkBlue } from "@edulastic/colors";
-import { getStemNumeration } from "../../../../utils/helpers";
+import React, { useRef } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { Select } from 'antd'
+import { maxBy, indexOf } from 'lodash'
+import {
+  MathKeyboard,
+  measureText,
+  SelectInputStyled,
+  MathFormulaDisplay,
+} from '@edulastic/common'
+import { darkBlue } from '@edulastic/colors'
+import { getStemNumeration } from '../../../../utils/helpers'
 
-const { Option } = Select;
+const { Option } = Select
 
 const SelectUnit = ({
   onChange,
@@ -25,37 +30,42 @@ const SelectUnit = ({
   getPopupContainer,
   isPrintPreview,
   allOptions,
-  id
+  id,
 }) => {
-  let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
-  let containerWidth = width;
+  let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
+    btn.types.includes(keypadMode)
+  )
+  let containerWidth = width
 
-  if (keypadMode === "custom") {
+  if (keypadMode === 'custom') {
     allBtns = customUnits
-      .split(",")
-      .filter(u => !!u)
-      .map(u => ({ label: u.trim(), handler: u.trim() }));
-    const lengthyUnit = maxBy(allBtns, btn => btn.label.length) || {};
-    const { width: maxWidth } = measureText(lengthyUnit.label);
+      .split(',')
+      .filter((u) => !!u)
+      .map((u) => ({ label: u.trim(), handler: u.trim() }))
+    const lengthyUnit = maxBy(allBtns, (btn) => btn.label.length) || {}
+    const { width: maxWidth } = measureText(lengthyUnit.label)
     if (parseInt(width, 10) < maxWidth) {
-      containerWidth = `${maxWidth + 33}px`;
+      containerWidth = `${maxWidth + 33}px`
     }
   }
 
-  const onChangeUnit = v => {
-    onChange("unit", v);
-  };
+  const onChangeUnit = (v) => {
+    onChange('unit', v)
+  }
 
-  const dropdownWrapper = useRef(null);
+  const dropdownWrapper = useRef(null)
   const menuStyle = {
     top: `${dropdownWrapper.current?.clientHeight}px !important`,
-    left: `${preview ? 0 : 24}px !important`
-  };
+    left: `${preview ? 0 : 24}px !important`,
+  }
 
-  let value = unit;
+  let value = unit
   if (isPrintPreview) {
-    const itemIndex = indexOf(allOptions.map(o => o.id), id);
-    value = getStemNumeration("lowercase", itemIndex);
+    const itemIndex = indexOf(
+      allOptions.map((o) => o.id),
+      id
+    )
+    value = getStemNumeration('lowercase', itemIndex)
   }
 
   return (
@@ -80,17 +90,19 @@ const SelectUnit = ({
       >
         {allBtns.map((btn, i) => (
           <Option value={btn.handler} key={i}>
-            {typeof btn.label === "object" ? (
+            {typeof btn.label === 'object' ? (
               btn.label
             ) : (
-              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: btn.label }} />
+              <MathFormulaDisplay
+                dangerouslySetInnerHTML={{ __html: btn.label }}
+              />
             )}
           </Option>
         ))}
       </SelectInputStyled>
     </DropDownWrapper>
-  );
-};
+  )
+}
 
 SelectUnit.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -104,20 +116,20 @@ SelectUnit.propTypes = {
   forwardedRef: PropTypes.object,
   width: PropTypes.string,
   disabled: PropTypes.bool.isRequired,
-  getPopupContainer: PropTypes.func
-};
+  getPopupContainer: PropTypes.func,
+}
 
 SelectUnit.defaultProps = {
-  height: "",
-  customUnits: "",
+  height: '',
+  customUnits: '',
   preview: false,
   dropdownStyle: {},
   forwardedRef: {},
-  width: "120px",
-  getPopupContainer: trigger => trigger.parentNode
-};
+  width: '120px',
+  getPopupContainer: (trigger) => trigger.parentNode,
+}
 
-export default SelectUnit;
+export default SelectUnit
 
 const DropDownWrapper = styled.div`
   display: flex;
@@ -136,7 +148,7 @@ const DropDownWrapper = styled.div`
   }
   .ant-select {
     min-width: 118px;
-    margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
+    margin-left: ${({ preview }) => (preview ? '0px' : '24px')};
     height: 100%;
     ${({ preview }) =>
       preview &&
@@ -146,9 +158,9 @@ const DropDownWrapper = styled.div`
     .ant-select-selection {
       display: flex;
       align-items: center;
-      height: ${({ height }) => height || "100%"};
-      width: ${({ width }) => width || "auto"};
-      padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
+      height: ${({ height }) => height || '100%'};
+      width: ${({ width }) => width || 'auto'};
+      padding: ${({ preview }) => (preview ? '0px' : '5px 2px')};
       ${({ preview }) =>
         preview &&
         `
@@ -169,4 +181,4 @@ const DropDownWrapper = styled.div`
       }
     }
   }
-`;
+`

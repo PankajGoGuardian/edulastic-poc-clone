@@ -1,22 +1,26 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import styled from "styled-components";
+import React from 'react'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
 
-import { largeDesktopWidth, mobileWidth } from "@edulastic/colors";
+import { largeDesktopWidth, mobileWidth } from '@edulastic/colors'
 
-import { Dump } from "../../components";
-import Card from "../Card/Card";
-import { getCards } from "./constants";
+import { Dump } from '../../components'
+import Card from '../Card/Card'
+import { getCards } from './constants'
 
 const dummyArray = Array(7)
   .fill()
-  .map((value, index) => index);
+  .map((value, index) => index)
 
-const PickUpQuestionTypes = ({ onSelectQuestionType, questionType, isPassageItem }) => {
-  const allQuestionTypes = getCards(onSelectQuestionType, isPassageItem);
+const PickUpQuestionTypes = ({
+  onSelectQuestionType,
+  questionType,
+  isPassageItem,
+}) => {
+  const allQuestionTypes = getCards(onSelectQuestionType, isPassageItem)
   const selectedQuestionTypes = allQuestionTypes.filter(({ type }) => {
     if (Array.isArray(type)) {
       /**
@@ -24,21 +28,29 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType, isPassageItem
        * like math, text and dropdown
        * @see https://snapwiz.atlassian.net/browse/EV-13704
        */
-      return type.includes(questionType);
+      return type.includes(questionType)
     }
-    return type === questionType;
-  });
+    return type === questionType
+  })
   return (
     <FlexContainer>
-      {selectedQuestionTypes.map(({ cardImage, data, onSelectQuestionType: onSelect }) => (
-        <Card key={data.title} title={data.title} data={data} cardImage={cardImage} onSelectQuestionType={onSelect} />
-      ))}
+      {selectedQuestionTypes.map(
+        ({ cardImage, data, onSelectQuestionType: onSelect }) => (
+          <Card
+            key={data.title}
+            title={data.title}
+            data={data}
+            cardImage={cardImage}
+            onSelectQuestionType={onSelect}
+          />
+        )
+      )}
       {dummyArray.map(() => (
         <Dump />
       ))}
     </FlexContainer>
-  );
-};
+  )
+}
 
 const FlexContainer = styled.div`
   display: grid;
@@ -50,13 +62,19 @@ const FlexContainer = styled.div`
   @media only screen and (max-width: ${mobileWidth}) {
     grid-template-columns: 1fr;
   }
-`;
+`
 
 PickUpQuestionTypes.propTypes = {
-  onSelectQuestionType: PropTypes.func.isRequired
-};
+  onSelectQuestionType: PropTypes.func.isRequired,
+}
 
 export default connect(
-  state => ({ isPassageItem: get(state, ["itemDetail", "item", "isPassageWithQuestions"], false) }),
+  (state) => ({
+    isPassageItem: get(
+      state,
+      ['itemDetail', 'item', 'isPassageWithQuestions'],
+      false
+    ),
+  }),
   null
-)(PickUpQuestionTypes);
+)(PickUpQuestionTypes)

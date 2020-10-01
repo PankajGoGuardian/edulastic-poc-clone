@@ -1,20 +1,25 @@
-import styled from "styled-components";
-import { Checkbox, Button } from "antd";
+import styled from 'styled-components'
+import { Checkbox, Button } from 'antd'
 
-import { FlexContainer } from "@edulastic/common";
-import { secondaryTextColor, themeColor, mobileWidthMax, desktopWidth } from "@edulastic/colors";
+import { FlexContainer } from '@edulastic/common'
+import {
+  secondaryTextColor,
+  themeColor,
+  mobileWidthMax,
+  desktopWidth,
+} from '@edulastic/colors'
 
 export const Item = styled(FlexContainer)`
   cursor: pointer;
   margin-right: 20px;
   color: ${themeColor};
   position: relative;
-`;
+`
 
 export const Container = styled(FlexContainer)`
   justify-content: space-between;
   margin: 0px;
-  width: ${props => props.hasStickyHeader && "100%"};
+  width: ${(props) => props.hasStickyHeader && '100%'};
 
   @media (max-width: ${desktopWidth}) {
     margin-top: 15px;
@@ -23,7 +28,7 @@ export const Container = styled(FlexContainer)`
       margin-top: 0px;
     }
   }
-`;
+`
 
 export const SelectAllCheckbox = styled(Checkbox)`
   font-size: 12px;
@@ -43,7 +48,7 @@ export const SelectAllCheckbox = styled(Checkbox)`
     width: 18px;
     height: 18px;
   }
-`;
+`
 
 export const ActionButton = styled(Button)`
   padding: 0;
@@ -60,6 +65,6 @@ export const ActionButton = styled(Button)`
       margin: 0 auto;
     }
   }
-`;
+`
 
-export const MobileButtomContainer = styled.div``;
+export const MobileButtomContainer = styled.div``

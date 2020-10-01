@@ -1,42 +1,45 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { EduButton, notification } from "@edulastic/common";
-import { Input } from "antd";
-import styled from "styled-components";
-import { red, green } from "@edulastic/colors";
+import React, { useState, useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { EduButton, notification } from '@edulastic/common'
+import { Input } from 'antd'
+import styled from 'styled-components'
+import { red, green } from '@edulastic/colors'
 
-import { getAssigmentPasswordAction, setPasswordStatusAction } from "./actions/test";
-import { ConfirmationModal } from "../author/src/components/common/ConfirmationModal";
+import {
+  getAssigmentPasswordAction,
+  setPasswordStatusAction,
+} from './actions/test'
+import { ConfirmationModal } from '../author/src/components/common/ConfirmationModal'
 
 const RequirePassword = ({
   isPasswordValidated,
   passwordStatusMessage,
   getAssignmentPassword,
   setPasswordStatus,
-  history
+  history,
 }) => {
   useEffect(() => {
     return () => {
-      setPasswordStatus("");
-    };
-  }, []);
-  const [assignmentPassword, setAssignmentPassword] = useState("");
+      setPasswordStatus('')
+    }
+  }, [])
+  const [assignmentPassword, setAssignmentPassword] = useState('')
   const validatePassword = () => {
     if (!assignmentPassword) {
-      return notification({ messageKey: "assignmentRequiredPass" });
+      return notification({ messageKey: 'assignmentRequiredPass' })
     }
-    getAssignmentPassword(assignmentPassword);
-  };
+    getAssignmentPassword(assignmentPassword)
+  }
 
-  const handleSetPassword = value => {
-    setAssignmentPassword(value);
-    setPasswordStatus("");
-  };
+  const handleSetPassword = (value) => {
+    setAssignmentPassword(value)
+    setPasswordStatus('')
+  }
   const onCancel = () => {
-    history.push("/home/assignments");
-  };
+    history.push('/home/assignments')
+  }
 
   return (
     <ConfirmationModal
@@ -57,7 +60,7 @@ const RequirePassword = ({
           disabled={!assignmentPassword.length}
         >
           START
-        </EduButton>
+        </EduButton>,
       ]}
     >
       <BodyStyled>
@@ -68,42 +71,45 @@ const RequirePassword = ({
             placeholder="Enter assignment password"
             value={assignmentPassword}
             type="password"
-            onChange={e => handleSetPassword(e.target.value)}
+            onChange={(e) => handleSetPassword(e.target.value)}
             message={passwordStatusMessage}
           />
           {!!passwordStatusMessage && (
-            <MessageSpan message={passwordStatusMessage}>{passwordStatusMessage}</MessageSpan>
+            <MessageSpan message={passwordStatusMessage}>
+              {passwordStatusMessage}
+            </MessageSpan>
           )}
         </p>
       </BodyStyled>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       passwordStatusMessage: state.test.passwordStatusMessage,
-      isPasswordValidated: state.test.isPasswordValidated
+      isPasswordValidated: state.test.isPasswordValidated,
     }),
     {
       getAssignmentPassword: getAssigmentPasswordAction,
-      setPasswordStatus: setPasswordStatusAction
+      setPasswordStatus: setPasswordStatusAction,
     }
   )
-);
-export default enhance(RequirePassword);
+)
+export default enhance(RequirePassword)
 
 const MessageSpan = styled.span`
-  color: ${props => (props.message === "successful" ? green : red)};
-`;
+  color: ${(props) => (props.message === 'successful' ? green : red)};
+`
 
 const PasswordInput = styled(Input)`
-  border-color: ${props => props.message && props.message !== "successful" && red};
-`;
+  border-color: ${(props) =>
+    props.message && props.message !== 'successful' && red};
+`
 
 const BodyStyled = styled.div`
   text-align: left;
   width: 100%;
-`;
+`

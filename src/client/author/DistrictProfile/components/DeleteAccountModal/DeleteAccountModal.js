@@ -1,42 +1,53 @@
-import React, { useState } from "react";
-import { compose } from "redux";
-import { Button, Form, Input } from "antd";
-import styled from "styled-components";
-import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
-
-import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
+import React, { useState } from 'react'
+import { compose } from 'redux'
+import { Button, Form, Input } from 'antd'
+import styled from 'styled-components'
+import {
+  borders,
+  backgrounds,
+  themeColor,
+  whiteSmoke,
+  numBtnColors,
+  white,
+} from '@edulastic/colors'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
-  const [disableButton, setButtonState] = useState(true);
+  const [disableButton, setButtonState] = useState(true)
 
-  const handleResponse = e => {
+  const handleResponse = (e) => {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (values && values.confirmationText && values.confirmationText.toUpperCase() === "DELETE") deleteProfile();
+        if (
+          values &&
+          values.confirmationText &&
+          values.confirmationText.toUpperCase() === 'DELETE'
+        )
+          deleteProfile()
       }
-    });
-  };
+    })
+  }
 
   const Footer = [
-    <Button ghost onClick={() => toggleModal("DELETE_ACCOUNT", false)}>
+    <Button ghost onClick={() => toggleModal('DELETE_ACCOUNT', false)}>
       NO, CANCEL
     </Button>,
     <YesButton disabled={disableButton} onClick={handleResponse}>
       YES, DELETE
-    </YesButton>
-  ];
+    </YesButton>,
+  ]
 
-  const Title = [<Heading>Delete My Account</Heading>];
+  const Title = [<Heading>Delete My Account</Heading>]
 
   const validateText = (rule, value, callback) => {
-    if (value && value.toUpperCase() === "DELETE") {
-      setButtonState(false);
-      callback();
+    if (value && value.toUpperCase() === 'DELETE') {
+      setButtonState(false)
+      callback()
     } else {
-      setButtonState(true);
-      callback();
+      setButtonState(true)
+      callback()
     }
-  };
+  }
 
   return (
     <ConfirmationModal
@@ -45,31 +56,33 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
       textAlign="left"
       visible={visible}
       footer={Footer}
-      textAlign={"center"}
-      onCancel={() => toggleModal("DELETE_ACCOUNT", false)}
+      textAlign="center"
+      onCancel={() => toggleModal('DELETE_ACCOUNT', false)}
     >
       <ModalBody>
         <span>Are you sure want to delete this account?</span>
         <span>
-          If sure, please type <strong style={{ color: themeColor }}>DELETE</strong> in the space below to proceed.
+          If sure, please type{' '}
+          <strong style={{ color: themeColor }}>DELETE</strong> in the space
+          below to proceed.
         </span>
         <FormItem>
-          {form.getFieldDecorator("confirmationText", {
+          {form.getFieldDecorator('confirmationText', {
             rules: [
               {
-                validator: validateText
-              }
-            ]
+                validator: validateText,
+              },
+            ],
           })(<TextInput type="text" />)}
         </FormItem>
       </ModalBody>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
-const enhance = compose(Form.create());
+const enhance = compose(Form.create())
 
-export default enhance(DeleteAccountModal);
+export default enhance(DeleteAccountModal)
 
 const ModalBody = styled.div`
   display: flex;
@@ -77,7 +90,7 @@ const ModalBody = styled.div`
   align-items: center;
   width: 100%;
   font-weight: 600;
-`;
+`
 
 const FormItem = styled(Form.Item)`
   width: 80%;
@@ -88,18 +101,21 @@ const FormItem = styled(Form.Item)`
     background: ${backgrounds.primary};
     padding: 10px 24px;
   }
-`;
+`
 
 const Heading = styled.h4`
   font-weight: 600;
-`;
+`
 
 const TextInput = styled(Input)`
   text-align: center;
-`;
+`
 
 const YesButton = styled(Button)`
-  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
-  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
-  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
-`;
+  color: ${(props) =>
+    props.disabled ? 'rgba(0, 0, 0, 0.25)' : white} !important;
+  background-color: ${(props) =>
+    props.disabled ? whiteSmoke : themeColor} !important;
+  border-color: ${(props) =>
+    props.disabled ? numBtnColors.borderColor : themeColor} !important;
+`

@@ -1,17 +1,26 @@
-import React, { useRef } from "react";
-import { Rnd } from "react-rnd";
-import PropTypes from "prop-types";
+import React, { useRef } from 'react'
+import { Rnd } from 'react-rnd'
+import PropTypes from 'prop-types'
 
-import { MoveControlButton } from "../../ClozeImageText/styled/ControlButton";
-import { IconMoveResize } from "../../ClozeImageText/styled/IconMoveResize";
+import { MoveControlButton } from '../../ClozeImageText/styled/ControlButton'
+import { IconMoveResize } from '../../ClozeImageText/styled/IconMoveResize'
 
-const Resizeable = ({ x, y, height, width, src, altText, handleResizing, handleDragStop }) => {
+const Resizeable = ({
+  x,
+  y,
+  height,
+  width,
+  src,
+  altText,
+  handleResizing,
+  handleDragStop,
+}) => {
   const containerDimensions = {
     width: Math.max(x + width + 10, 700),
-    height: Math.max(y + height + 10, 600)
-  };
+    height: Math.max(y + height + 10, 600),
+  }
 
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef(null)
 
   return (
     <div
@@ -20,7 +29,7 @@ const Resizeable = ({ x, y, height, width, src, altText, handleResizing, handleD
         position: `relative`,
         width: `${containerDimensions.width}px`,
         height: `${containerDimensions.height}px`,
-        marginRight: "auto"
+        marginRight: 'auto',
       }}
     >
       <Rnd
@@ -36,7 +45,7 @@ const Resizeable = ({ x, y, height, width, src, altText, handleResizing, handleD
           right: false,
           top: false,
           topLeft: false,
-          topRight: false
+          topRight: false,
         }}
       >
         <div
@@ -46,7 +55,7 @@ const Resizeable = ({ x, y, height, width, src, altText, handleResizing, handleD
             backgroundSize: `${width}px ${height}px`,
             backgroundRepeat: `no-repeat`,
             width: `100%`,
-            height: `100%`
+            height: `100%`,
           }}
         />
         <MoveControlButton>
@@ -54,8 +63,8 @@ const Resizeable = ({ x, y, height, width, src, altText, handleResizing, handleD
         </MoveControlButton>
       </Rnd>
     </div>
-  );
-};
+  )
+}
 
 Resizeable.propTypes = {
   x: PropTypes.number,
@@ -65,13 +74,13 @@ Resizeable.propTypes = {
   src: PropTypes.string.isRequired,
   altText: PropTypes.string,
   handleResizing: PropTypes.func.isRequired,
-  handleDragStop: PropTypes.func.isRequired
-};
+  handleDragStop: PropTypes.func.isRequired,
+}
 
 Resizeable.defaultProps = {
   x: 0,
   y: 0,
-  altText: ""
-};
+  altText: '',
+}
 
-export default Resizeable;
+export default Resizeable

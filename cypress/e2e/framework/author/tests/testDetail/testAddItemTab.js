@@ -1,24 +1,21 @@
 /* eslint-disable lines-between-class-members */
-import TestHeader from "./header";
-import SearchFilters from "../../searchFiltersPage";
-import ItemListPage from "../../itemList/itemListPage";
+import TestHeader from './header'
+import SearchFilters from '../../searchFiltersPage'
+import ItemListPage from '../../itemList/itemListPage'
 
 export default class TestAddItemTab {
   constructor() {
-    this.header = new TestHeader();
-    this.searchFilters = new SearchFilters();
-    this.itemListPage = new ItemListPage();
+    this.header = new TestHeader()
+    this.searchFilters = new SearchFilters()
+    this.itemListPage = new ItemListPage()
   }
 
   // *** ELEMENTS START ***
 
-  getAddButtons = () => cy.contains("ADD");
+  getAddButtons = () => cy.contains('ADD')
 
-  getRemoveButtonById = id =>
-    cy
-      .get(`[data-cy="${id}"]`)
-      .find("button")
-      .contains("REMOVE");
+  getRemoveButtonById = (id) =>
+    cy.get(`[data-cy="${id}"]`).find('button').contains('REMOVE')
 
   // *** ELEMENTS END ***
 
@@ -29,9 +26,7 @@ export default class TestAddItemTab {
     // cy.route("POST", "**/testitem**").as("saveItem");
     // cy.route("GET", "**/testitem/**").as("reload");
 
-    cy.get('[data-cy="createNewItem"]')
-      .should("be.visible")
-      .click();
+    cy.get('[data-cy="createNewItem"]').should('be.visible').click()
 
     // cy.wait("@saveItem").then(xhr => assert(xhr.status === 200, "Creating item failed"));
     // cy.wait("@reload").then(xhr => {
@@ -40,73 +35,72 @@ export default class TestAddItemTab {
     //   console.log("Item created with _id : ", itemId);
     //   cy.saveItemDetailToDelete(itemId);
     // });
-  };
+  }
 
   authoredByMe = () => {
-    cy.xpath("//li[text()='Authored by me']").click();
-    return cy.wait("@search");
-  };
+    cy.xpath("//li[text()='Authored by me']").click()
+    return cy.wait('@search')
+  }
 
-  addItemById = itemId =>
+  addItemById = (itemId) =>
     cy
       .get(`[data-cy="${itemId}"]`)
-      .find("button")
-      .contains("ADD")
-      .click({ force: true });
+      .find('button')
+      .contains('ADD')
+      .click({ force: true })
 
-  addItemByQuestionContent = question =>
+  addItemByQuestionContent = (question) =>
     cy
       .get('[data-cy="styled-wrapped-component"]')
       .contains(question)
-      .closest(".fr-view")
-      .contains("ADD")
-      .click({ force: true });
+      .closest('.fr-view')
+      .contains('ADD')
+      .click({ force: true })
 
-  removeItemById = itemId => this.getRemoveButtonById(itemId).click({ force: true });
+  removeItemById = (itemId) =>
+    this.getRemoveButtonById(itemId).click({ force: true })
 
   clickOnGroupItem = () => {
-    cy.server();
-    cy.route("POST", "**/api/search/browse-standards").as("browseStandards");
-    cy.get('[data-cy="groupItem"]').click();
-    cy.get('[data-cy="done"]'); // wait to render UI
+    cy.server()
+    cy.route('POST', '**/api/search/browse-standards').as('browseStandards')
+    cy.get('[data-cy="groupItem"]').click()
+    cy.get('[data-cy="done"]') // wait to render UI
     // cy.wait("@browseStandards");
-  };
+  }
 
-  removeGroupItemById = itemId => {
-    cy.server();
-    cy.route("GET", /.*default-thumbnail?.*/).as("removeItem");
+  removeGroupItemById = (itemId) => {
+    cy.server()
+    cy.route('GET', /.*default-thumbnail?.*/).as('removeItem')
     cy.get(`[data-cy="${itemId}"]`)
-      .find("button")
+      .find('button')
       // .contains("Selected")
-      .click({ force: true });
+      .click({ force: true })
     // cy.wait("@removeItem");
-  };
+  }
 
   addItemByIdByGroup = (group, itemId) => {
-    this.addItemById(itemId);
-    cy.get('[class^="SelectGroupModal"]')
-      .contains(`Group ${group}`)
-      .click();
-  };
+    this.addItemById(itemId)
+    cy.get('[class^="SelectGroupModal"]').contains(`Group ${group}`).click()
+  }
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
-  verifyAddedItemByQuestionContent = question =>
+  verifyAddedItemByQuestionContent = (question) =>
     cy
       .get('[data-cy="styled-wrapped-component"]')
       .contains(question)
-      .closest("div")
+      .closest('div')
       .next()
-      .contains("REMOVE")
-      .should("be.exist");
+      .contains('REMOVE')
+      .should('be.exist')
 
   verifyGroupOfItemInList = (group, itemId) =>
     cy
       .get(`[data-cy="${itemId}"]`)
-      .find("button")
-      .should("contain", `Group ${group}`);
+      .find('button')
+      .should('contain', `Group ${group}`)
 
   // *** APPHELPERS END ***
 }

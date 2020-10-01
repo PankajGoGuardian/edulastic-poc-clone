@@ -1,9 +1,9 @@
-import react, { useEffect } from "react";
+import react, { useEffect } from 'react'
 
 export default function NotFound({ history }) {
   useEffect(() => {
-    history.replace("/");
-  }, []);
+    history.replace('/')
+  }, [])
 
-  return null;
+  return null
 }

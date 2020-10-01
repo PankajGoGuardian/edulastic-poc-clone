@@ -1,34 +1,38 @@
-import React, { Component, memo } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import React, { Component, memo } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
-import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { withNamespaces } from '@edulastic/localization'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
-import { Subtitle } from "../../styled/Subtitle";
-import Question from "../../components/Question";
+import { Subtitle } from '../../styled/Subtitle'
+import Question from '../../components/Question'
 
-import Options from "./components/Options";
+import Options from './components/Options'
 
 class VideoPlayer extends Component {
   render() {
-    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props
 
     return (
       <Question
         section="main"
-        label={t("component.video.videoPlayer")}
+        label={t('component.video.videoPlayer')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.video.videoPlayer")}`)}>
-          {t("component.video.videoPlayer")}
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.video.videoPlayer')}`
+          )}
+        >
+          {t('component.video.videoPlayer')}
         </Subtitle>
         <Options setQuestionData={setQuestionData} item={item} t={t} />
       </Question>
-    );
+    )
   }
 }
 
@@ -46,25 +50,22 @@ VideoPlayer.propTypes = {
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,
       captionURL: PropTypes.string.isRequired,
-      hideControls: PropTypes.bool.isRequired
-    }).isRequired
+      hideControls: PropTypes.bool.isRequired,
+    }).isRequired,
   }).isRequired,
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 VideoPlayer.defaultProps = {
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 export default compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   memo,
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-)(VideoPlayer);
+  connect(null, { setQuestionData: setQuestionDataAction })
+)(VideoPlayer)

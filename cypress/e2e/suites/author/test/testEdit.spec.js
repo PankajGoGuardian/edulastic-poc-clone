@@ -1,187 +1,197 @@
-import promisify from "cypress-promise";
-import TestLibrary from "../../../framework/author/tests/testLibraryPage";
-import FileHelper from "../../../framework/util/fileHelper";
-import ItemListPage from "../../../framework/author/itemList/itemListPage";
-import TestSummayTab from "../../../framework/author/tests/testDetail/testSummaryTab";
-import TestReviewTab from "../../../framework/author/tests/testDetail/testReviewTab";
-import TestAddItemTab from "../../../framework/author/tests/testDetail/testAddItemTab";
+import promisify from 'cypress-promise'
+import TestLibrary from '../../../framework/author/tests/testLibraryPage'
+import FileHelper from '../../../framework/util/fileHelper'
+import ItemListPage from '../../../framework/author/itemList/itemListPage'
+import TestSummayTab from '../../../framework/author/tests/testDetail/testSummaryTab'
+import TestReviewTab from '../../../framework/author/tests/testDetail/testReviewTab'
+import TestAddItemTab from '../../../framework/author/tests/testDetail/testAddItemTab'
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`, () => {
-  const testLibraryPage = new TestLibrary();
-  const testSummayTab = new TestSummayTab();
-  const testReviewTab = new TestReviewTab();
-  const testAddItemTab = new TestAddItemTab();
-  const item = new ItemListPage();
-  const newItemKey = "MCQ_STD.default";
+describe(`${FileHelper.getSpecName(
+  Cypress.spec.name
+)} >> Test authoring flows`, () => {
+  const testLibraryPage = new TestLibrary()
+  const testSummayTab = new TestSummayTab()
+  const testReviewTab = new TestReviewTab()
+  const testAddItemTab = new TestAddItemTab()
+  const item = new ItemListPage()
+  const newItemKey = 'MCQ_STD.default'
 
   // context(" > verify test versoning/edit flows", () => {
-  let testId;
-  let newTestId;
-  let newItemId;
+  let testId
+  let newTestId
+  let newItemId
 
   const testData = {
-    edit1: { testname: "editedTest", grade: "Kindergarten", subject: "ELA" },
-    edit2: { point: "3", question: "3" },
-    edit3: { point: "2", question: "2" },
-    edit4: { testname: "editedTest", grade: "Grade 10" }
-  };
+    edit1: { testname: 'editedTest', grade: 'Kindergarten', subject: 'ELA' },
+    edit2: { point: '3', question: '3' },
+    edit3: { point: '2', question: '2' },
+    edit4: { testname: 'editedTest', grade: 'Grade 10' },
+  }
 
-  before("login and create new items and test", () => {
-    cy.login();
-    testLibraryPage.createTest("EDIT_1").then(id => {
-      testId = id;
-    });
-  });
+  before('login and create new items and test', () => {
+    cy.login()
+    testLibraryPage.createTest('EDIT_1').then((id) => {
+      testId = id
+    })
+  })
 
-  it(" > edit the name , grade , subject and verify", () => {
-    const { testname, grade, subject } = testData.edit1;
+  it(' > edit the name , grade , subject and verify', () => {
+    const { testname, grade, subject } = testData.edit1
 
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.clickOnEditTestById(testId);
+    testLibraryPage.sidebar.clickOnTestLibrary()
+    testLibraryPage.clickOnEditTestById(testId)
     // update the test summary
-    testSummayTab.setName(testname);
-    testSummayTab.selectGrade(grade);
-    testSummayTab.selectSubject(subject);
+    testSummayTab.setName(testname)
+    testSummayTab.selectGrade(grade)
+    testSummayTab.selectSubject(subject)
 
     // save , publish and verify
-    testSummayTab.header.clickOnSaveButton(true).then(id => {
-      newTestId = id;
-      testLibraryPage.verifyVersionedURL(testId, newTestId);
-      testSummayTab.header.clickOnPublishButton();
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.clickOnEditTestById(newTestId);
-      testSummayTab.verifyName(testname);
-      testSummayTab.verifyGrade(grade);
-      testSummayTab.verifySubject(subject);
-      testId = newTestId;
-    });
-  });
+    testSummayTab.header.clickOnSaveButton(true).then((id) => {
+      newTestId = id
+      testLibraryPage.verifyVersionedURL(testId, newTestId)
+      testSummayTab.header.clickOnPublishButton()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+      testLibraryPage.clickOnEditTestById(newTestId)
+      testSummayTab.verifyName(testname)
+      testSummayTab.verifyGrade(grade)
+      testSummayTab.verifySubject(subject)
+      testId = newTestId
+    })
+  })
 
-  it(" > add a precreated item and verify test", () => {
-    const { point, question } = testData.edit2;
+  it(' > add a precreated item and verify test', () => {
+    const { point, question } = testData.edit2
 
     // author a new item
-    item.createItem(newItemKey);
+    item.createItem(newItemKey)
 
-    item.getItemIdByURL().then(id => {
-      newItemId = id;
+    item.getItemIdByURL().then((id) => {
+      newItemId = id
 
-      testLibraryPage.sidebar.clickOnTestLibrary();
+      testLibraryPage.sidebar.clickOnTestLibrary()
 
-      testLibraryPage.clickOnEditTestById(testId);
-      testSummayTab.header.clickOnAddItems();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testAddItemTab.addItemById(newItemId);
-      testSummayTab.header.clickOnReview();
+      testLibraryPage.clickOnEditTestById(testId)
+      testSummayTab.header.clickOnAddItems()
+      testLibraryPage.searchFilters.getAuthoredByMe()
+      testAddItemTab.addItemById(newItemId)
+      testSummayTab.header.clickOnReview()
 
       // verify review tab before save
-      testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
-      testReviewTab.verifySummary(question, point);
+      testReviewTab
+        .getQueCardByItemIdInCollapsed(newItemId)
+        .should('have.length', 1)
+      testReviewTab.verifySummary(question, point)
 
       // save , publish and verify
-      testSummayTab.header.clickOnSaveButton(true).then(testid => {
-        newTestId = testid;
+      testSummayTab.header.clickOnSaveButton(true).then((testid) => {
+        newTestId = testid
 
-        testLibraryPage.verifyVersionedURL(testId, newTestId);
+        testLibraryPage.verifyVersionedURL(testId, newTestId)
 
-        testSummayTab.header.clickOnPublishButton();
-        testLibraryPage.sidebar.clickOnTestLibrary();
+        testSummayTab.header.clickOnPublishButton()
+        testLibraryPage.sidebar.clickOnTestLibrary()
 
-        testLibraryPage.clickOnEditTestById(newTestId);
-        testSummayTab.header.clickOnReview();
+        testLibraryPage.clickOnEditTestById(newTestId)
+        testSummayTab.header.clickOnReview()
 
-        testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
-        testReviewTab.verifySummary(question, point);
+        testReviewTab
+          .getQueCardByItemIdInCollapsed(newItemId)
+          .should('have.length', 1)
+        testReviewTab.verifySummary(question, point)
 
-        testId = newTestId;
-      });
-    });
-  });
+        testId = newTestId
+      })
+    })
+  })
 
-  it(" > verify logout , login and edit test", () => {
-    const { grade } = testData.edit4;
-    cy.login();
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.clickOnEditTestById(testId);
+  it(' > verify logout , login and edit test', () => {
+    const { grade } = testData.edit4
+    cy.login()
+    testLibraryPage.sidebar.clickOnTestLibrary()
+    testLibraryPage.clickOnEditTestById(testId)
     // update the test summary
-    testSummayTab.selectGrade(grade);
-    testSummayTab.header.clickOnReview();
+    testSummayTab.selectGrade(grade)
+    testSummayTab.header.clickOnReview()
 
     // save , publish and verify
-    testSummayTab.header.clickOnSaveButton(true).then(id => {
-      newTestId = id;
-      testLibraryPage.verifyVersionedURL(testId, newTestId);
-      testSummayTab.header.clickOnPublishButton();
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.clickOnEditTestById(newTestId);
-      testSummayTab.verifyGrade(grade);
-      testId = newTestId;
-    });
-  });
+    testSummayTab.header.clickOnSaveButton(true).then((id) => {
+      newTestId = id
+      testLibraryPage.verifyVersionedURL(testId, newTestId)
+      testSummayTab.header.clickOnPublishButton()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+      testLibraryPage.clickOnEditTestById(newTestId)
+      testSummayTab.verifyGrade(grade)
+      testId = newTestId
+    })
+  })
 
-  it(" > remove one question from add item tab and verify test", () => {
-    const [item1, item2] = testLibraryPage.items;
-    const { point, question } = testData.edit3;
+  it(' > remove one question from add item tab and verify test', () => {
+    const [item1, item2] = testLibraryPage.items
+    const { point, question } = testData.edit3
 
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.clickOnEditTestById(testId);
-    testSummayTab.header.clickOnAddItems();
+    testLibraryPage.sidebar.clickOnTestLibrary()
+    testLibraryPage.clickOnEditTestById(testId)
+    testSummayTab.header.clickOnAddItems()
 
     // remove 1 item
-    testAddItemTab.removeItemById(item1);
+    testAddItemTab.removeItemById(item1)
 
     // verify review tab before save
-    testSummayTab.header.clickOnReview();
-    testReviewTab.getQueCardByItemIdInCollapsed(item1).should("have.length", 0);
-    testReviewTab.verifySummary(question, point);
+    testSummayTab.header.clickOnReview()
+    testReviewTab.getQueCardByItemIdInCollapsed(item1).should('have.length', 0)
+    testReviewTab.verifySummary(question, point)
 
     // save , publish and verify
-    testSummayTab.header.clickOnSaveButton(true).then(id => {
-      newTestId = id;
-      testLibraryPage.verifyVersionedURL(testId, newTestId);
-      testSummayTab.header.clickOnPublishButton();
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.clickOnEditTestById(newTestId);
-      testSummayTab.header.clickOnReview();
-      testReviewTab.getQueCardByItemIdInCollapsed(item1).should("have.length", 0);
-      testReviewTab.verifySummary(question, point);
-      testId = newTestId;
-    });
-  });
+    testSummayTab.header.clickOnSaveButton(true).then((id) => {
+      newTestId = id
+      testLibraryPage.verifyVersionedURL(testId, newTestId)
+      testSummayTab.header.clickOnPublishButton()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+      testLibraryPage.clickOnEditTestById(newTestId)
+      testSummayTab.header.clickOnReview()
+      testReviewTab
+        .getQueCardByItemIdInCollapsed(item1)
+        .should('have.length', 0)
+      testReviewTab.verifySummary(question, point)
+      testId = newTestId
+    })
+  })
 
-  it(" > remove one question from review tab and verify test", () => {
-    const [item1, item2] = testLibraryPage.items;
-    const { point, question } = testData.edit4;
+  it(' > remove one question from review tab and verify test', () => {
+    const [item1, item2] = testLibraryPage.items
+    const { point, question } = testData.edit4
 
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.clickOnEditTestById(testId);
-    testSummayTab.header.clickOnReview();
+    testLibraryPage.sidebar.clickOnTestLibrary()
+    testLibraryPage.clickOnEditTestById(testId)
+    testSummayTab.header.clickOnReview()
 
     // remove 1 item
-    testReviewTab.clickOnCheckBoxByItemId(item2);
-    testReviewTab.clickOnRemoveSelected();
+    testReviewTab.clickOnCheckBoxByItemId(item2)
+    testReviewTab.clickOnRemoveSelected()
 
     // verify review tab before save
-    testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
-    testReviewTab.verifySummary(question, point);
+    testReviewTab.getQueCardByItemIdInCollapsed(item2).should('have.length', 0)
+    testReviewTab.verifySummary(question, point)
 
     // save , publish and verify
-    testSummayTab.header.clickOnSaveButton(true).then(id => {
-      newTestId = id;
-      testLibraryPage.verifyVersionedURL(testId, newTestId);
-      testSummayTab.header.clickOnPublishButton();
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.clickOnEditTestById(newTestId);
-      testSummayTab.header.clickOnReview();
-      testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
-      testReviewTab.verifySummary(question, point);
+    testSummayTab.header.clickOnSaveButton(true).then((id) => {
+      newTestId = id
+      testLibraryPage.verifyVersionedURL(testId, newTestId)
+      testSummayTab.header.clickOnPublishButton()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+      testLibraryPage.clickOnEditTestById(newTestId)
+      testSummayTab.header.clickOnReview()
+      testReviewTab
+        .getQueCardByItemIdInCollapsed(item2)
+        .should('have.length', 0)
+      testReviewTab.verifySummary(question, point)
 
-      testId = newTestId;
-    });
-  });
+      testId = newTestId
+    })
+  })
 
   /*  TODO: add test for create new item while authinng test, 
     and edit points/standard for existing item once app these gets flow implemmented
      */
   // });
-});
+})

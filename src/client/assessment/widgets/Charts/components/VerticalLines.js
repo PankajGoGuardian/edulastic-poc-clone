@@ -1,17 +1,24 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
 
-import { Line, Tick, VxText } from "../styled";
-import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
+import { Line, Tick, VxText } from '../styled'
+import { SHOW_ALWAYS, SHOW_BY_HOVER } from '../const'
 
-const VerticalLines = ({ points, gridParams, displayAxisLabel, displayGridlines, active }) => {
-  const { height, margin, showTicks } = gridParams;
-  const y2 = height - margin / 2;
+const VerticalLines = ({
+  points,
+  gridParams,
+  displayAxisLabel,
+  displayGridlines,
+  active,
+}) => {
+  const { height, margin, showTicks } = gridParams
+  const y2 = height - margin / 2
 
-  const labelIsVisible = index =>
+  const labelIsVisible = (index) =>
     points[index] &&
     ((points[index].labelVisibility === SHOW_BY_HOVER && active === index) ||
-      (points[index].labelVisibility === SHOW_ALWAYS || !points[index].labelVisibility));
+      points[index].labelVisibility === SHOW_ALWAYS ||
+      !points[index].labelVisibility)
 
   return (
     <g>
@@ -26,13 +33,29 @@ const VerticalLines = ({ points, gridParams, displayAxisLabel, displayGridlines,
               )}
             </g>
           )}
-          {displayGridlines && <Line x1={dot.posX} y1={margin} x2={dot.posX} y2={y2} strokeWidth={2} />}
-          {showTicks && <Tick x1={dot.posX} y1={y2 - 10} x2={dot.posX} y2={y2 + 10} strokeWidth={2} />}
+          {displayGridlines && (
+            <Line
+              x1={dot.posX}
+              y1={margin}
+              x2={dot.posX}
+              y2={y2}
+              strokeWidth={2}
+            />
+          )}
+          {showTicks && (
+            <Tick
+              x1={dot.posX}
+              y1={y2 - 10}
+              x2={dot.posX}
+              y2={y2 + 10}
+              strokeWidth={2}
+            />
+          )}
         </Fragment>
       ))}
     </g>
-  );
-};
+  )
+}
 
 VerticalLines.propTypes = {
   points: PropTypes.array.isRequired,
@@ -45,13 +68,13 @@ VerticalLines.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
-  }).isRequired
-};
+    snapTo: PropTypes.number,
+  }).isRequired,
+}
 
 VerticalLines.defaultProps = {
   displayAxisLabel: true,
-  displayGridlines: true
-};
+  displayGridlines: true,
+}
 
-export default VerticalLines;
+export default VerticalLines

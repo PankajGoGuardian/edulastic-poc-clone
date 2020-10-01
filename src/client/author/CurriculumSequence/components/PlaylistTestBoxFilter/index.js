@@ -1,40 +1,44 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
-import { Select, Icon } from "antd";
-import { FlexContainer } from "@edulastic/common";
-import SELECT_DATA from "../../../TestPage/components/common/selectsData";
-import { FILTERS } from "../ManageContentBlock/ducks";
-import { FilterContainer, Title, StyledCheckbox, Item, Label } from "./styled";
+import React from 'react'
+import { Select, Icon } from 'antd'
+import { FlexContainer } from '@edulastic/common'
+import SELECT_DATA from '../../../TestPage/components/common/selectsData'
+import { FILTERS } from '../ManageContentBlock/ducks'
+import { FilterContainer, Title, StyledCheckbox, Item, Label } from './styled'
 
-const PlaylistTestBoxFilter = props => {
+const PlaylistTestBoxFilter = (props) => {
   const {
     authoredList = [],
     collectionsList = [],
     sourceList = [],
     filter,
     onFilterChange,
-    status = "",
+    status = '',
     onStatusChange,
     authoredBy,
     onAuthorChange,
     grades = [],
     onGradesChange,
-    subject = "",
+    subject = '',
     onSubjectChange,
-    collection = "",
+    collection = '',
     onCollectionChange,
     sources = [],
     onSourceChange,
-    urlHasUseThis
-  } = props;
+    urlHasUseThis,
+  } = props
 
-  const { allGrades, allSubjects, allStatus } = SELECT_DATA;
-  const { Option } = Select;
+  const { allGrades, allSubjects, allStatus } = SELECT_DATA
+  const { Option } = Select
 
   return (
     <FilterContainer urlHasUseThis={urlHasUseThis}>
-      {FILTERS.map(item => (
-        <Item key={item.path} active={item.filter === filter} onClick={() => onFilterChange(item?.filter)}>
+      {FILTERS.map((item) => (
+        <Item
+          key={item.path}
+          active={item.filter === filter}
+          onClick={() => onFilterChange(item?.filter)}
+        >
           <Icon type={item.icon} />
           <Label active={item.filter === filter}>{item.text}</Label>
         </Item>
@@ -44,7 +48,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-status"
         placeholder="Select Status"
-        style={{ width: "100%", height: 40, lineHeight: 40 }}
+        style={{ width: '100%', height: 40, lineHeight: 40 }}
         value={status}
         onChange={onStatusChange}
       >
@@ -58,7 +62,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-authored"
         placeholder="Select Authored"
-        style={{ width: "100%", height: 40, lineHeight: 40 }}
+        style={{ width: '100%', height: 40, lineHeight: 40 }}
         value={authoredBy || undefined}
         onChange={onAuthorChange}
       >
@@ -72,12 +76,14 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-grade"
         mode="multiple"
-        style={{ width: "100%", minHeight: "40px", lineHeight: 40 }}
+        style={{ width: '100%', minHeight: '40px', lineHeight: 40 }}
         placeholder="Select Grades"
         value={grades}
         onChange={onGradesChange}
       >
-        {allGrades?.map(({ text, value }) => <Option key={value}>{text}</Option>)}
+        {allGrades?.map(({ text, value }) => (
+          <Option key={value}>{text}</Option>
+        ))}
       </Select>
 
       <br />
@@ -85,7 +91,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-subject"
         placeholder="Select Subject"
-        style={{ width: "100%", height: 40, lineHeight: 40 }}
+        style={{ width: '100%', height: 40, lineHeight: 40 }}
         value={subject}
         onChange={onSubjectChange}
       >
@@ -99,7 +105,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-collection"
         placeholder="Select Collection"
-        style={{ width: "100%", height: 40, lineHeight: 40 }}
+        style={{ width: '100%', height: 40, lineHeight: 40 }}
         value={collection || undefined}
         onChange={onCollectionChange}
       >
@@ -123,7 +129,7 @@ const PlaylistTestBoxFilter = props => {
         ))}
       </FlexContainer> */}
     </FilterContainer>
-  );
-};
+  )
+}
 
-export default PlaylistTestBoxFilter;
+export default PlaylistTestBoxFilter

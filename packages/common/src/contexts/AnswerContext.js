@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react'
 
 const AnswerContext = React.createContext({
   isAnswerModifiable: true,
-  hideAnswers: false
-});
+  hideAnswers: false,
+})
 
-export default AnswerContext;
+export default AnswerContext

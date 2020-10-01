@@ -1,19 +1,19 @@
-import { EduButton } from "@edulastic/common";
-import { IconDownload } from "@edulastic/icons";
-import { Button } from "antd";
-import { compose } from "redux";
-import React, { useState } from "react";
-import { withNamespaces } from '@edulastic/localization';
-import { CSVLink } from "react-csv";
-import { connect } from "react-redux";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { EduButton } from '@edulastic/common'
+import { IconDownload } from '@edulastic/icons'
+import { Button } from 'antd'
+import { compose } from 'redux'
+import React, { useState } from 'react'
+import { withNamespaces } from '@edulastic/localization'
+import { CSVLink } from 'react-csv'
+import { connect } from 'react-redux'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import {
   getCommonStudentsSelector,
   getHasCommonStudensSelector,
   saveAssignmentAction,
-  toggleHasCommonAssignmentsPopupAction
-} from "../../../TestPage/components/Assign/ducks";
-import { Paragraph } from "./styled";
+  toggleHasCommonAssignmentsPopupAction,
+} from '../../../TestPage/components/Assign/ducks'
+import { Paragraph } from './styled'
 
 const ProceedConfirmation = ({
   hasCommonStudents,
@@ -21,48 +21,53 @@ const ProceedConfirmation = ({
   saveAssignment,
   assignment,
   commonStudents,
-  t
+  t,
 }) => {
-  const [saving, setSavingState] = useState(false);
+  const [saving, setSavingState] = useState(false)
 
   const onProceed = () => {
-    setSavingState(true);
-    saveAssignment({ ...assignment, allowCommonStudents: true });
-  };
+    setSavingState(true)
+    saveAssignment({ ...assignment, allowCommonStudents: true })
+  }
 
   const onCancel = () => {
-    if (saving) return;
-    toggleCommonAssignmentsConfirmation(false);
-  };
+    if (saving) return
+    toggleCommonAssignmentsConfirmation(false)
+  }
 
   const Footer = [
-    <EduButton isGhost disabled={saving} data-cy="noDuplicate" onClick={onCancel}>
+    <EduButton
+      isGhost
+      disabled={saving}
+      data-cy="noDuplicate"
+      onClick={onCancel}
+    >
       CANCEL
     </EduButton>,
     <EduButton data-cy="duplicate" onClick={onProceed} loading={saving}>
       PROCEED
-    </EduButton>
-  ];
+    </EduButton>,
+  ]
 
-  const structuredCommonStudents = commonStudents.flatMap(student => {
-    return student.classes.map(clazz => {
+  const structuredCommonStudents = commonStudents.flatMap((student) => {
+    return student.classes.map((clazz) => {
       return {
         studentUserName: student.username,
-        studentName: student.name || t("common.anonymous"),
+        studentName: student.name || t('common.anonymous'),
         classId: clazz._id,
         clasName: clazz.name,
-        ...clazz
-      };
-    });
-  });
+        ...clazz,
+      }
+    })
+  })
 
   const headers = [
-    { label: "Student Name", key: "studentName" },
-    { label: "User Name", key: "studentUserName" },
-    { label: "Class Code", key: "code" },
-    { label: "Class Name", key: "clasName" },
-    { label: "Teacher Name", key: "teacherName" }
-  ];
+    { label: 'Student Name', key: 'studentName' },
+    { label: 'User Name', key: 'studentUserName' },
+    { label: 'Class Code', key: 'code' },
+    { label: 'Class Name', key: 'clasName' },
+    { label: 'Teacher Name', key: 'teacherName' },
+  ]
 
   return (
     <ConfirmationModal
@@ -74,7 +79,10 @@ const ProceedConfirmation = ({
       footer={Footer}
       onCancel={() => toggleCommonAssignmentsConfirmation(false)}
     >
-      <Paragraph>This Test will be assigned to {commonStudents.length} student(s) multiple times.</Paragraph>
+      <Paragraph>
+        This Test will be assigned to {commonStudents.length} student(s)
+        multiple times.
+      </Paragraph>
       <Paragraph>
         <b>Do you want to continue?</b>
       </Paragraph>
@@ -93,21 +101,21 @@ const ProceedConfirmation = ({
         </CSVLink>
       </Paragraph>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
 const withConnect = connect(
-  state => ({
+  (state) => ({
     hasCommonStudents: getHasCommonStudensSelector(state),
-    commonStudents: getCommonStudentsSelector(state)
+    commonStudents: getCommonStudentsSelector(state),
   }),
   {
     toggleCommonAssignmentsConfirmation: toggleHasCommonAssignmentsPopupAction,
-    saveAssignment: saveAssignmentAction
+    saveAssignment: saveAssignmentAction,
   }
-);
+)
 
 export default compose(
   withConnect,
-  withNamespaces("student")
-)(ProceedConfirmation);
+  withNamespaces('student')
+)(ProceedConfirmation)

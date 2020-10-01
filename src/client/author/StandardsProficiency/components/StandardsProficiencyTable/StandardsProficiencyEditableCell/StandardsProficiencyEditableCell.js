@@ -1,211 +1,243 @@
-import React, { Component } from "react";
-import { Input, Dropdown, Menu, Icon } from "antd";
+import React, { Component } from 'react'
+import { Input, Dropdown, Menu, Icon } from 'antd'
 import {
   StyledFormItem,
   ScoreColorSpan,
   StyledScoreDiv,
   StyledHiddenInput,
   StyledColorMenu,
-  ScoreMenuColorSpan
-} from "./styled";
+  ScoreMenuColorSpan,
+} from './styled'
 
 class StandardsProficiencyEditableCell extends React.Component {
   constructor(props) {
-    super(props);
-    let selectedColor = "";
-    if (this.props.dataIndex === "color") {
-      selectedColor = this.props.record.color;
+    super(props)
+    let selectedColor = ''
+    if (this.props.dataIndex === 'color') {
+      selectedColor = this.props.record.color
     }
     this.state = {
       colorValidate: {
-        validateStatus: "success",
-        validateMsg: ""
+        validateStatus: 'success',
+        validateMsg: '',
       },
-      selectedColor
-    };
+      selectedColor,
+    }
   }
 
   checkLevelUique = (rule, value, callback) => {
-    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.record.key);
-    const sameNameRow = dataSource.filter(item => item.masteryLevel === value);
+    const dataSource = this.props.dataSource.filter(
+      (item) => item.key !== this.props.record.key
+    )
+    const sameNameRow = dataSource.filter((item) => item.masteryLevel === value)
     if (sameNameRow.length <= 0) {
-      callback();
-      return;
+      callback()
+      return
     }
-    callback("Name should be unique.");
-  };
+    callback('Name should be unique.')
+  }
 
   checkShortNameUnique = (rule, value, callback) => {
     if (value.length > 2) {
-      callback("Short name should not be greater than 2 characters");
-      return;
+      callback('Short name should not be greater than 2 characters')
+      return
     }
-    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.record.key);
-    const sameShortNameRow = dataSource.filter(item => item.shortName === value);
+    const dataSource = this.props.dataSource.filter(
+      (item) => item.key !== this.props.record.key
+    )
+    const sameShortNameRow = dataSource.filter(
+      (item) => item.shortName === value
+    )
     if (sameShortNameRow.length <= 0) {
-      callback();
-      return;
+      callback()
+      return
     }
 
-    callback("Short name should be unique.");
-  };
+    callback('Short name should be unique.')
+  }
 
   checkPerThre = (rule, value, callback) => {
     if (value.length == 0) {
-      callback();
-      return;
+      callback()
+      return
     }
 
-    const { dataSource, record } = this.props;
+    const { dataSource, record } = this.props
     if (record.score == 1) {
-      callback();
-      return;
+      callback()
+      return
     }
 
-    var isnum = /^\d+$/.test(value);
+    const isnum = /^\d+$/.test(value)
     if (!isnum) {
-      callback("Please input number.");
-    } else {
-      if (parseInt(value) > 100) {
-        callback("Should not exceed 100.");
-      } else {
-        if (record.score === dataSource.length) {
-          if (parseInt(value) <= dataSource[1].threshold)
-            callback(`Value should not be less then ${dataSource[1].threshold}.`);
-          else {
-            callback();
-            return;
-          }
-        } else {
-          if (parseInt(value) >= dataSource[dataSource.length - record.score - 1].threshold) {
-            callback(`Value should be less then ${dataSource[dataSource.length - record.score - 1].threshold}.`);
-          } else if (parseInt(value) <= dataSource[dataSource.length - record.score + 1].threshold) {
-            callback(`Value should not be less then ${dataSource[dataSource.length - record.score + 1].threshold}.`);
-          } else {
-            callback();
-            return;
-          }
-        }
+      callback('Please input number.')
+    } else if (parseInt(value) > 100) {
+      callback('Should not exceed 100.')
+    } else if (record.score === dataSource.length) {
+      if (parseInt(value) <= dataSource[1].threshold)
+        callback(`Value should not be less then ${dataSource[1].threshold}.`)
+      else {
+        callback()
       }
+    } else if (
+      parseInt(value) >=
+      dataSource[dataSource.length - record.score - 1].threshold
+    ) {
+      callback(
+        `Value should be less then ${
+          dataSource[dataSource.length - record.score - 1].threshold
+        }.`
+      )
+    } else if (
+      parseInt(value) <=
+      dataSource[dataSource.length - record.score + 1].threshold
+    ) {
+      callback(
+        `Value should not be less then ${
+          dataSource[dataSource.length - record.score + 1].threshold
+        }.`
+      )
+    } else {
+      callback()
     }
-  };
+  }
 
   checkColorUnique = (rule, value, callback) => {
-    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.record.key);
-    const sameNameRow = dataSource.filter(item => item.color === value);
+    const dataSource = this.props.dataSource.filter(
+      (item) => item.key !== this.props.record.key
+    )
+    const sameNameRow = dataSource.filter((item) => item.color === value)
     if (sameNameRow.length <= 0) {
-      callback();
-      return;
+      callback()
+      return
     }
-    callback("Color should be unique");
-  };
+    callback('Color should be unique')
+  }
 
   handleColorMenuClick = (e, form) => {
-    form.setFieldsValue({ color: e.key });
-    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.record.key);
-    const sameNameRow = dataSource.filter(item => item.color === e.key);
+    form.setFieldsValue({ color: e.key })
+    const dataSource = this.props.dataSource.filter(
+      (item) => item.key !== this.props.record.key
+    )
+    const sameNameRow = dataSource.filter((item) => item.color === e.key)
     if (sameNameRow.length <= 0) {
       this.setState({
         colorValidate: {
-          validateStatus: "success",
-          validateMsg: ""
-        }
-      });
+          validateStatus: 'success',
+          validateMsg: '',
+        },
+      })
     } else {
       this.setState({
         colorValidate: {
-          validateStatus: "error",
-          validateMsg: "Color should be unique"
-        }
-      });
+          validateStatus: 'error',
+          validateMsg: 'Color should be unique',
+        },
+      })
     }
-    this.setState({ selectedColor: e.key });
-  };
+    this.setState({ selectedColor: e.key })
+  }
 
   render() {
-    const { editing, dataIndex, title, inputType, record, context, ...restProps } = this.props;
-    const { selectedColor, colorValidate } = this.state;
+    const {
+      editing,
+      dataIndex,
+      title,
+      inputType,
+      record,
+      context,
+      ...restProps
+    } = this.props
+    const { selectedColor, colorValidate } = this.state
 
-    const colorMenuItems = [];
+    const colorMenuItems = []
     const colors = [
-      "#576ba9",
-      "#a1c3ea",
-      "#f39300",
-      "#fec571",
-      "#3db04e",
-      "#74e27a",
-      "#afa515",
-      "#ebdd54",
-      "#b22222",
-      "#7c0a02",
-      "#db75c5"
-    ];
+      '#576ba9',
+      '#a1c3ea',
+      '#f39300',
+      '#fec571',
+      '#3db04e',
+      '#74e27a',
+      '#afa515',
+      '#ebdd54',
+      '#b22222',
+      '#7c0a02',
+      '#db75c5',
+    ]
     for (let i = 0; i < colors.length; i++) {
       colorMenuItems.push(
         <Menu.Item key={colors[i]}>
-          <ScoreMenuColorSpan isActive={selectedColor === colors[i]} color={colors[i]} />
+          <ScoreMenuColorSpan
+            isActive={selectedColor === colors[i]}
+            color={colors[i]}
+          />
         </Menu.Item>
-      );
+      )
     }
 
     return (
-      <React.Fragment>
+      <>
         {editing ? (
           <context.Consumer>
-            {form => {
-              const { getFieldDecorator } = form;
+            {(form) => {
+              const { getFieldDecorator } = form
 
               return (
                 <td {...restProps}>
-                  {inputType === "shortName" && (
+                  {inputType === 'shortName' && (
                     <StyledFormItem>
                       {getFieldDecorator(dataIndex, {
                         rules: [
                           {
                             required: true,
-                            message: "Please Input " + title + "!"
+                            message: `Please Input ${title}!`,
                           },
                           {
-                            validator: this.checkShortNameUnique
-                          }
+                            validator: this.checkShortNameUnique,
+                          },
                         ],
-                        initialValue: record[dataIndex]
+                        initialValue: record[dataIndex],
                       })(<Input />)}
                     </StyledFormItem>
                   )}
-                  {inputType === "threshold" && (
+                  {inputType === 'threshold' && (
                     <StyledFormItem>
                       {getFieldDecorator(dataIndex, {
                         rules: [
                           {
                             required: true,
-                            message: "Please Input " + title + "!"
+                            message: `Please Input ${title}!`,
                           },
-                          { validator: this.checkPerThre }
+                          { validator: this.checkPerThre },
                         ],
-                        initialValue: record[dataIndex]
+                        initialValue: record[dataIndex],
                       })(<Input disabled={record.score == 1} />)}
                     </StyledFormItem>
                   )}
-                  {inputType === "color" && (
-                    <StyledFormItem validateStatus={colorValidate.validateStatus} help={colorValidate.validateMsg}>
+                  {inputType === 'color' && (
+                    <StyledFormItem
+                      validateStatus={colorValidate.validateStatus}
+                      help={colorValidate.validateMsg}
+                    >
                       {getFieldDecorator(dataIndex, {
                         rules: [
                           {
                             required: true,
-                            message: "Please Input " + title + "!"
+                            message: `Please Input ${title}!`,
                           },
-                          { validator: this.checkColorUnique }
+                          { validator: this.checkColorUnique },
                         ],
-                        initialValue: record[dataIndex]
+                        initialValue: record[dataIndex],
                       })(<StyledHiddenInput />)}
                       <Dropdown
                         overlay={
-                          <StyledColorMenu onClick={e => this.handleColorMenuClick(e, form)}>
+                          <StyledColorMenu
+                            onClick={(e) => this.handleColorMenuClick(e, form)}
+                          >
                             {colorMenuItems}
                           </StyledColorMenu>
                         }
-                        trigger={["click"]}
+                        trigger={['click']}
                       >
                         <StyledScoreDiv>
                           <ScoreColorSpan color={selectedColor} />
@@ -216,32 +248,32 @@ class StandardsProficiencyEditableCell extends React.Component {
                     </StyledFormItem>
                   )}
 
-                  {inputType === "masteryLevel" && (
+                  {inputType === 'masteryLevel' && (
                     <StyledFormItem>
                       {getFieldDecorator(dataIndex, {
                         rules: [
                           {
                             required: true,
-                            message: "Please Input " + title + "!"
+                            message: `Please Input ${title}!`,
                           },
                           {
-                            validator: this.checkLevelUique
-                          }
+                            validator: this.checkLevelUique,
+                          },
                         ],
-                        initialValue: record[dataIndex]
+                        initialValue: record[dataIndex],
                       })(<Input />)}
                     </StyledFormItem>
                   )}
                 </td>
-              );
+              )
             }}
           </context.Consumer>
         ) : (
           <td {...restProps}>{restProps.children}</td>
         )}
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
-export default StandardsProficiencyEditableCell;
+export default StandardsProficiencyEditableCell

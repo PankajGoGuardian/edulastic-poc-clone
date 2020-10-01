@@ -1,14 +1,18 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Collapse, Icon } from "antd";
-import { withNamespaces } from "@edulastic/localization";
-import { greyThemeLight, greyThemeLighter, greyThemeDark2 } from "@edulastic/colors";
-import { response as defaultResponse } from "@edulastic/constants";
+import React, { Component } from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Collapse, Icon } from 'antd'
+import { withNamespaces } from '@edulastic/localization'
+import {
+  greyThemeLight,
+  greyThemeLighter,
+  greyThemeDark2,
+} from '@edulastic/colors'
+import { response as defaultResponse } from '@edulastic/constants'
 
-import MathFormulaAnswerMethod from "../../MathFormula/components/MathFormulaAnswerMethod";
+import MathFormulaAnswerMethod from '../../MathFormula/components/MathFormulaAnswerMethod'
 
-const { Panel } = Collapse;
+const { Panel } = Collapse
 
 const AnswerContainer = styled.div`
   .ant-collapse-item {
@@ -30,18 +34,18 @@ const AnswerContainer = styled.div`
       position: relative;
     }
   }
-`;
+`
 
 export const StyledCollapse = styled(Collapse)`
   .ant-collapse-content.ant-collapse-content-active {
     overflow: visible;
   }
-`;
+`
 
 class ClozeMathAnswer extends Component {
   state = {
-    showAdditionals: []
-  };
+    showAdditionals: [],
+  }
 
   render() {
     const {
@@ -52,37 +56,37 @@ class ClozeMathAnswer extends Component {
       item,
       onChangeKeypad,
       onChangeAllowedOptions,
-      toggleAdditional
-    } = this.props;
-    const { showAdditionals } = this.state;
-    const { responseContainers: responseContainers = [], uiStyle } = item;
+      toggleAdditional,
+    } = this.props
+    const { showAdditionals } = this.state
+    const { responseContainers = [], uiStyle } = item
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
-      onChange({ methodId, methodIndex, prop, value: val });
-    };
+      onChange({ methodId, methodIndex, prop, value: val })
+    }
 
     const handleChangeAdditionals = (method, direction) => {
-      const methods = showAdditionals;
+      const methods = showAdditionals
 
       switch (direction) {
-        case "pop":
-          methods.splice(methods.findIndex(el => el === method));
-          break;
-        case "push":
+        case 'pop':
+          methods.splice(methods.findIndex((el) => el === method))
+          break
+        case 'push':
         default:
-          methods.push(method);
-          break;
+          methods.push(method)
+          break
       }
 
       this.setState({
-        showAdditionals: methods
-      });
-    };
+        showAdditionals: methods,
+      })
+    }
 
     const clearAdditionals = () => {
       this.setState({
-        showAdditionals: []
-      });
-    };
+        showAdditionals: [],
+      })
+    }
 
     return (
       <AnswerContainer>
@@ -91,17 +95,32 @@ class ClozeMathAnswer extends Component {
           onChange={() => {}}
           bordered={false}
           expandIconPosition="right"
-          expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
+          expandIcon={({ isActive }) =>
+            isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />
+          }
         >
-          {answers.map(answer => {
-            const response = responseContainers.find(cont => cont.index === answer.index);
-            const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.minWidth}px` || "auto";
-            const height = response && response.heightpx ? `${response.heightpx}px` : `${defaultResponse.minHeight}px`;
+          {answers.map((answer) => {
+            const response = responseContainers.find(
+              (cont) => cont.index === answer.index
+            )
+            const width =
+              response && response.widthpx
+                ? `${response.widthpx}px`
+                : `${uiStyle.minWidth}px` || 'auto'
+            const height =
+              response && response.heightpx
+                ? `${response.heightpx}px`
+                : `${defaultResponse.minHeight}px`
             return (
-              <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
+              <Panel
+                header={`Math Input ${answer.index + 1}`}
+                key={`${answer.index}`}
+              >
                 {answer.value.map((method, methodIndex) => (
                   <MathFormulaAnswerMethod
-                    onDelete={() => onDelete({ methodIndex, methodId: method.id })}
+                    onDelete={() =>
+                      onDelete({ methodIndex, methodId: method.id })
+                    }
                     key={methodIndex + answer.index}
                     item={item}
                     index={methodIndex}
@@ -126,11 +145,11 @@ class ClozeMathAnswer extends Component {
                   />
                 ))}
               </Panel>
-            );
+            )
           })}
         </StyledCollapse>
       </AnswerContainer>
-    );
+    )
   }
 }
 
@@ -143,7 +162,7 @@ ClozeMathAnswer.propTypes = {
   toggleAdditional: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
-};
+  item: PropTypes.object.isRequired,
+}
 
-export default withNamespaces("assessment")(ClozeMathAnswer);
+export default withNamespaces('assessment')(ClozeMathAnswer)

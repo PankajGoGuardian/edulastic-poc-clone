@@ -1,6 +1,6 @@
-import { mobileWidth, tabletWidth } from "@edulastic/colors";
-import styled from "styled-components";
-import { Table } from "antd";
+import { mobileWidth, tabletWidth } from '@edulastic/colors'
+import styled from 'styled-components'
+import { Table } from 'antd'
 
 export const TableData = styled(Table)`
   text-align: center;
@@ -31,8 +31,12 @@ export const TableData = styled(Table)`
       padding-left: 2px;
     }
   }
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters,
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters {
+  .ant-table-thead
+    > tr
+    > th.ant-table-column-has-actions.ant-table-column-has-sorters,
+  .ant-table-thead
+    > tr
+    > th.ant-table-column-has-actions.ant-table-column-has-filters {
     text-align: center;
   }
   .ant-table-tbody {
@@ -73,7 +77,7 @@ export const TableData = styled(Table)`
       font-size: 9px;
     }
   }
-`;
+`
 
 export const ExpandedTable = styled(Table)`
   @media (max-width: 980px) {
@@ -110,4 +114,4 @@ export const ExpandedTable = styled(Table)`
   @media (max-width: ${mobileWidth}) {
     display: none;
   }
-`;
+`

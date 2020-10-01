@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Checkbox } from "antd";
-import { secondaryTextColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Checkbox } from 'antd'
+import { secondaryTextColor } from '@edulastic/colors'
 
 export const PointsLabel = styled.label`
   font-size: 12px;
@@ -9,7 +9,7 @@ export const PointsLabel = styled.label`
   text-align: center;
   margin-right: 0;
   margin-bottom: 8px;
-`;
+`
 
 export const QuestionIndex = styled.span`
   display: block;
@@ -18,7 +18,7 @@ export const QuestionIndex = styled.span`
   font-weight: 600;
   color: ${secondaryTextColor};
   cursor: grab;
-`;
+`
 
 export const QuestionCheckbox = styled(Checkbox)`
   display: block;
@@ -28,4 +28,4 @@ export const QuestionCheckbox = styled(Checkbox)`
     width: 18px;
     height: 18px;
   }
-`;
+`

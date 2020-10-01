@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { darkGrey } from "@edulastic/colors";
+import styled from 'styled-components'
+import { darkGrey } from '@edulastic/colors'
 
 const TextWrapper = styled.div`
   margin-bottom: 5px;
@@ -7,5 +7,5 @@ const TextWrapper = styled.div`
   text-transform: uppercase;
   color: ${darkGrey};
   text-align: center;
-`;
-export default TextWrapper;
+`
+export default TextWrapper

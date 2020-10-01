@@ -1,30 +1,30 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { withTheme } from "styled-components";
-import produce from "immer";
-import uuid from "uuid/v4";
-import { arrayMove } from "react-sortable-hoc";
-import { Icon } from "antd";
-import { withNamespaces } from "@edulastic/localization";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { PaddingDiv } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { withTheme } from 'styled-components'
+import produce from 'immer'
+import uuid from 'uuid/v4'
+import { arrayMove } from 'react-sortable-hoc'
+import { Icon } from 'antd'
+import { withNamespaces } from '@edulastic/localization'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { PaddingDiv } from '@edulastic/common'
 
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import QuillSortableList from "../../components/QuillSortableList/index";
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import QuillSortableList from '../../components/QuillSortableList/index'
 
-import { updateVariables } from "../../utils/variables";
-import { Subtitle } from "../../styled/Subtitle";
-import { TextInputStyled } from "../../styled/InputStyles";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
-import { Label } from "../../styled/WidgetOptions/Label";
-import { Row } from "../../styled/WidgetOptions/Row";
-import { Col } from "../../styled/WidgetOptions/Col";
-import { CustomStyleBtn } from "../../styled/ButtonStyles";
-import { ActionWrapper } from "./styled/ActionWrapper";
-import { CheckContainer } from "./styled/CheckContainer";
+import { updateVariables } from '../../utils/variables'
+import { Subtitle } from '../../styled/Subtitle'
+import { TextInputStyled } from '../../styled/InputStyles'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { Label } from '../../styled/WidgetOptions/Label'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { Col } from '../../styled/WidgetOptions/Col'
+import { CustomStyleBtn } from '../../styled/ButtonStyles'
+import { ActionWrapper } from './styled/ActionWrapper'
+import { CheckContainer } from './styled/CheckContainer'
 
 class GroupResponses extends React.Component {
   static propTypes = {
@@ -33,45 +33,45 @@ class GroupResponses extends React.Component {
     setQuestionData: PropTypes.func.isRequired,
     theme: PropTypes.object.isRequired,
     cleanSections: PropTypes.func,
-    fillSections: PropTypes.func
-  };
+    fillSections: PropTypes.func,
+  }
 
   static defaultProps = {
     cleanSections: () => null,
-    fillSections: () => null
-  };
+    fillSections: () => null,
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.containerRef = React.createRef();
+    this.containerRef = React.createRef()
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.options = arrayMove(draft.options, oldIndex, newIndex);
+      produce(item, (draft) => {
+        draft.options = arrayMove(draft.options, oldIndex, newIndex)
       })
-    );
-  };
+    )
+  }
 
-  remove = index => {
-    const { item, setQuestionData } = this.props;
+  remove = (index) => {
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.options.splice(index, 1);
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.options.splice(index, 1)
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   editOptions = (index, value) => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.options[index].label = value;
-        const maxLength = 0;
+      produce(item, (draft) => {
+        draft.options[index].label = value
+        const maxLength = 0
         // draft.options.forEach(option => {
         //   maxLength = Math.max(maxLength, option ? option.label.length : 0);
         // });
@@ -83,189 +83,198 @@ class GroupResponses extends React.Component {
 
         // const finalWidth = 40 + maxLength * 7;
         // draft.uiStyle.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   addNewChoiceBtn = () => {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.options.push({ value: uuid(), label: "" });
+      produce(item, (draft) => {
+        draft.options.push({ value: uuid(), label: '' })
       })
-    );
-  };
+    )
+  }
 
-  groupResponsesHandler = e => {
-    const { item, setQuestionData } = this.props;
-    const { groupResponses = [], options = [] } = item;
-    const hasGroupResponses = e.target.checked;
-    const newGroupResponses = [];
-    const newOptions = [];
+  groupResponsesHandler = (e) => {
+    const { item, setQuestionData } = this.props
+    const { groupResponses = [], options = [] } = item
+    const hasGroupResponses = e.target.checked
+    const newGroupResponses = []
+    const newOptions = []
 
     if (hasGroupResponses) {
-      newGroupResponses.push({ title: "", options: [...options] });
+      newGroupResponses.push({ title: '', options: [...options] })
     } else {
-      groupResponses.forEach(group => {
-        const opts = group.options.filter(o => !newOptions.some(no => no.value === o.value));
-        newOptions.push(...opts);
-      });
+      groupResponses.forEach((group) => {
+        const opts = group.options.filter(
+          (o) => !newOptions.some((no) => no.value === o.value)
+        )
+        newOptions.push(...opts)
+      })
     }
 
     setQuestionData(
-      produce(item, draft => {
-        draft.hasGroupResponses = hasGroupResponses;
-        draft.groupResponses = newGroupResponses;
-        draft.options = newOptions;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.hasGroupResponses = hasGroupResponses
+        draft.groupResponses = newGroupResponses
+        draft.options = newOptions
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   addGroup = () => {
     const {
-      item: { groupResponses = [] }
-    } = this.props;
+      item: { groupResponses = [] },
+    } = this.props
 
-    groupResponses.push({ title: "", options: [{ value: uuid(), label: "" }] });
-    const newGroupResponses = groupResponses.slice();
+    groupResponses.push({ title: '', options: [{ value: uuid(), label: '' }] })
+    const newGroupResponses = groupResponses.slice()
 
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.groupResponses = newGroupResponses;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.groupResponses = newGroupResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  removeGroup = index => {
+  removeGroup = (index) => {
     const {
-      item: { groupResponses = [] }
-    } = this.props;
-    groupResponses.splice(index, 1);
-    const newGroupResponses = groupResponses.slice();
+      item: { groupResponses = [] },
+    } = this.props
+    groupResponses.splice(index, 1)
+    const newGroupResponses = groupResponses.slice()
 
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.groupResponses = newGroupResponses;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.groupResponses = newGroupResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   changeGroupRespTitle = (index, e) => {
     const {
-      item: { groupResponses = [] }
-    } = this.props;
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].title = e.target.value;
+      item: { groupResponses = [] },
+    } = this.props
+    const newGroupResponses = groupResponses.slice()
+    newGroupResponses[index].title = e.target.value
 
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.groupResponses = newGroupResponses;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.groupResponses = newGroupResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  addNewGroupOption = index => {
+  addNewGroupOption = (index) => {
     const {
-      item: { groupResponses = [] }
-    } = this.props;
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options.push({ value: uuid(), label: "" });
+      item: { groupResponses = [] },
+    } = this.props
+    const newGroupResponses = groupResponses.slice()
+    newGroupResponses[index].options.push({ value: uuid(), label: '' })
 
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.groupResponses = newGroupResponses;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.groupResponses = newGroupResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   editGroupOptions = (index, itemIndex, val) => {
     const {
-      item: { groupResponses = [] }
-    } = this.props;
+      item: { groupResponses = [] },
+    } = this.props
 
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options[itemIndex].label = val;
+    const newGroupResponses = groupResponses.slice()
+    newGroupResponses[index].options[itemIndex].label = val
 
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.groupResponses = newGroupResponses;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.groupResponses = newGroupResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   removeGroupOptions = (index, itemIndex) => {
     const {
-      item: { groupResponses = [] }
-    } = this.props;
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options.splice(itemIndex, 1);
+      item: { groupResponses = [] },
+    } = this.props
+    const newGroupResponses = groupResponses.slice()
+    newGroupResponses[index].options.splice(itemIndex, 1)
 
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.groupResponses = newGroupResponses;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.groupResponses = newGroupResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   onSortEndGroupOptions = (groupIndex, params) => {
-    const { oldIndex, newIndex } = params;
+    const { oldIndex, newIndex } = params
     const {
-      item: { groupResponses = [] }
-    } = this.props;
-    const newGroupResponses = groupResponses.slice();
-    const responseToMove = newGroupResponses[groupIndex].options.splice(oldIndex, 1)[0];
-    newGroupResponses[groupIndex].options.splice(newIndex, 0, responseToMove);
+      item: { groupResponses = [] },
+    } = this.props
+    const newGroupResponses = groupResponses.slice()
+    const responseToMove = newGroupResponses[groupIndex].options.splice(
+      oldIndex,
+      1
+    )[0]
+    newGroupResponses[groupIndex].options.splice(newIndex, 0, responseToMove)
 
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.groupResponses = newGroupResponses;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.groupResponses = newGroupResponses
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   groupResponseOption = () => {
-    const { t, item } = this.props;
+    const { t, item } = this.props
     return (
       <CheckContainer>
         <CheckboxLabel
           data-cy="drag-drop-aria-check"
           checked={item.hasGroupResponses}
-          onChange={e => this.groupResponsesHandler(e)}
+          onChange={(e) => this.groupResponsesHandler(e)}
         >
-          {t("component.cloze.dragDrop.grouppossibleresponses")}
+          {t('component.cloze.dragDrop.grouppossibleresponses')}
         </CheckboxLabel>
       </CheckContainer>
-    );
-  };
+    )
+  }
 
   render() {
-    const { t, item, theme } = this.props;
+    const { t, item, theme } = this.props
     return (
       <div ref={this.containerRef}>
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.dragDrop.choicesforresponse")}`)}>
-          {t("component.cloze.dragDrop.choicesforresponse")}
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.cloze.dragDrop.choicesforresponse')}`
+          )}
+        >
+          {t('component.cloze.dragDrop.choicesforresponse')}
         </Subtitle>
 
         {!item.hasGroupResponses && (
           <PaddingDiv>
             <QuillSortableList
-              items={item.options.map(o => o.label)}
+              items={item.options.map((o) => o.label)}
               onSortEnd={this.onSortEnd}
               useDragHandle
               onRemove={this.remove}
@@ -273,7 +282,7 @@ class GroupResponses extends React.Component {
             />
             <ActionWrapper>
               <CustomStyleBtn onClick={this.addNewChoiceBtn}>
-                {t("component.cloze.dragDrop.addnewchoice")}
+                {t('component.cloze.dragDrop.addnewchoice')}
               </CustomStyleBtn>
               {this.groupResponseOption()}
             </ActionWrapper>
@@ -286,17 +295,19 @@ class GroupResponses extends React.Component {
             <Row key={index}>
               <fieldset
                 style={{
-                  borderColor: theme.widgets.clozeDragDrop.groupResponseFieldsetBorderColor,
+                  borderColor:
+                    theme.widgets.clozeDragDrop
+                      .groupResponseFieldsetBorderColor,
                   borderRadius: 2,
-                  padding: "0 20px",
+                  padding: '0 20px',
                   marginBottom: 15,
-                  border: "solid 1px"
+                  border: 'solid 1px',
                 }}
               >
-                <legend style={{ padding: "0 20px", width: "auto" }}>
-                  {t("component.cloze.dragDrop.group")} {index + 1}
+                <legend style={{ padding: '0 20px', width: 'auto' }}>
+                  {t('component.cloze.dragDrop.group')} {index + 1}
                 </legend>
-                <div style={{ float: "right" }}>
+                <div style={{ float: 'right' }}>
                   <CustomStyleBtn
                     width="40px"
                     margin="0px"
@@ -310,29 +321,37 @@ class GroupResponses extends React.Component {
                   </CustomStyleBtn>
                 </div>
                 <Col span={24}>
-                  <Label>{t("component.cloze.dragDrop.title")}</Label>
+                  <Label>{t('component.cloze.dragDrop.title')}</Label>
                   <TextInputStyled
                     size="large"
-                    onChange={e => this.changeGroupRespTitle(index, e)}
+                    onChange={(e) => this.changeGroupRespTitle(index, e)}
                     value={group.title}
                   />
                 </Col>
                 <Col span={24}>
-                  <Label>{t("component.cloze.dragDrop.choicesforresponse")}</Label>
+                  <Label>
+                    {t('component.cloze.dragDrop.choicesforresponse')}
+                  </Label>
                   {group.options.length > 0 && (
                     <QuillSortableList
                       prefix={`group_${index}`}
-                      items={group.options.map(o => o.label)}
-                      onSortEnd={params => this.onSortEndGroupOptions(index, params)}
+                      items={group.options.map((o) => o.label)}
+                      onSortEnd={(params) =>
+                        this.onSortEndGroupOptions(index, params)
+                      }
                       useDragHandle
-                      onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
-                      onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
+                      onRemove={(itemIndex) =>
+                        this.removeGroupOptions(index, itemIndex)
+                      }
+                      onChange={(itemIndex, e) =>
+                        this.editGroupOptions(index, itemIndex, e)
+                      }
                     />
                   )}
                 </Col>
                 <Col span={24}>
                   <CustomStyleBtn onClick={() => this.addNewGroupOption(index)}>
-                    {t("component.cloze.dragDrop.addnewchoice")}
+                    {t('component.cloze.dragDrop.addnewchoice')}
                   </CustomStyleBtn>
                 </Col>
               </fieldset>
@@ -340,23 +359,22 @@ class GroupResponses extends React.Component {
           ))}
         {item.hasGroupResponses && (
           <ActionWrapper>
-            <CustomStyleBtn onClick={this.addGroup}>{t("component.cloze.dragDrop.addgroup")}</CustomStyleBtn>
+            <CustomStyleBtn onClick={this.addGroup}>
+              {t('component.cloze.dragDrop.addgroup')}
+            </CustomStyleBtn>
             {this.groupResponseOption()}
           </ActionWrapper>
         )}
       </div>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
+  connect(null, { setQuestionData: setQuestionDataAction })
+)
 
-export default enhance(GroupResponses);
+export default enhance(GroupResponses)

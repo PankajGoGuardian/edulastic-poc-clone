@@ -1,8 +1,8 @@
-import React from "react";
-import Subscription from "./components/Subscription";
+import React from 'react'
+import Subscription from './components/Subscription'
 
 // TODO: manage ducks and component exports
 
-const UserSubscriptions = props => <Subscription />;
+const UserSubscriptions = (props) => <Subscription />
 
-export default UserSubscriptions;
+export default UserSubscriptions

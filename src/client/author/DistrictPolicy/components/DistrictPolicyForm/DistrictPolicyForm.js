@@ -1,12 +1,19 @@
-import { CheckboxLabel, RadioBtn, RadioGrp, notification, TextInputStyled, EduButton } from "@edulastic/common";
-import { Form } from "antd";
-import { produce } from "immer";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  CheckboxLabel,
+  RadioBtn,
+  RadioGrp,
+  notification,
+  TextInputStyled,
+  EduButton,
+} from '@edulastic/common'
+import { Form } from 'antd'
+import { produce } from 'immer'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 // actions
 import {
   changeDistrictPolicyAction,
@@ -14,71 +21,86 @@ import {
   getPolicies,
   receiveDistrictPolicyAction,
   receiveSchoolPolicyAction,
-  updateDistrictPolicyAction
-} from "../../ducks";
-import { HelperText, StyledElementDiv, StyledFormDiv, StyledFormItem, StyledLabel, StyledRow } from "./styled";
+  updateDistrictPolicyAction,
+} from '../../ducks'
+import {
+  HelperText,
+  StyledElementDiv,
+  StyledFormDiv,
+  StyledFormItem,
+  StyledLabel,
+  StyledRow,
+} from './styled'
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
   canvas: 2,
   schoology: 3,
   classlink: 4,
-  none: 5
-};
+  none: 5,
+}
 
 function validURL(value) {
   if (value.length == 0)
     return {
-      validateStatus: "success",
-      errorMsg: ""
-    };
+      validateStatus: 'success',
+      errorMsg: '',
+    }
 
-  const pattern = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9\-.]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z0-9]{2,})+/);
+  const pattern = new RegExp(
+    /^[a-zA-Z0-9][a-zA-Z0-9\-.]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z0-9]{2,})+/
+  )
 
-  const spiltArray = value.split(/[\s,]+/);
+  const spiltArray = value.split(/[\s,]+/)
   for (let i = 0; i < spiltArray.length; i++) {
     if (!pattern.test(spiltArray[i]) && spiltArray[i].length != 0) {
       return {
-        validateStatus: "error",
-        errorMsg: "Enter allowed domain(s), example - gmail.com, edulastic.com"
-      };
+        validateStatus: 'error',
+        errorMsg: 'Enter allowed domain(s), example - gmail.com, edulastic.com',
+      }
     }
   }
   return {
-    validateStatus: "success",
-    errorMsg: null
-  };
+    validateStatus: 'success',
+    errorMsg: null,
+  }
 }
 
 class DistrictPolicyForm extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       allowDomainForTeacherValidate: {
-        validateStatus: "success",
-        errorMsg: ""
+        validateStatus: 'success',
+        errorMsg: '',
       },
       allowDomainForStudentValidate: {
-        validateStatus: "success",
-        errorMsg: ""
+        validateStatus: 'success',
+        errorMsg: '',
       },
       allowDomainForSchoolValidate: {
-        validateStatus: "success",
-        errorMsg: ""
+        validateStatus: 'success',
+        errorMsg: '',
       },
       allowIpForAssignmentValidate: {
-        validateStatus: "success",
-        errorMsg: ""
-      }
-    };
+        validateStatus: 'success',
+        errorMsg: '',
+      },
+    }
   }
 
   componentDidMount() {
-    const { loadDistrictPolicy, userOrgId, role, schoolId, loadSchoolPolicy } = this.props;
-    if (role === "school-admin") {
-      loadSchoolPolicy(schoolId);
+    const {
+      loadDistrictPolicy,
+      userOrgId,
+      role,
+      schoolId,
+      loadSchoolPolicy,
+    } = this.props
+    if (role === 'school-admin') {
+      loadSchoolPolicy(schoolId)
     } else {
-      loadDistrictPolicy({ orgId: userOrgId, orgType: "district" });
+      loadDistrictPolicy({ orgId: userOrgId, orgType: 'district' })
     }
   }
 
@@ -86,171 +108,202 @@ class DistrictPolicyForm extends Component {
     /**
      * school selection is changed
      */
-    const { schoolId, loadSchoolPolicy } = this.props;
+    const { schoolId, loadSchoolPolicy } = this.props
     if (prevProps.schoolId != schoolId && schoolId) {
-      loadSchoolPolicy(schoolId);
+      loadSchoolPolicy(schoolId)
     }
   }
 
   change = (e, keyName) => {
-    const { districtPolicy, changeDistrictPolicyData, role } = this.props;
-    const districtPolicyData = { ...districtPolicy };
-    districtPolicyData[keyName] = e.target.checked;
-    changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: role === "school-admin" });
-  };
+    const { districtPolicy, changeDistrictPolicyData, role } = this.props
+    const districtPolicyData = { ...districtPolicy }
+    districtPolicyData[keyName] = e.target.checked
+    changeDistrictPolicyData({
+      ...districtPolicyData,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  handleTagTeacherChange = e => {
-    const { districtPolicy, changeDistrictPolicyData, role } = this.props;
-    const districtPolicyData = { ...districtPolicy };
+  handleTagTeacherChange = (e) => {
+    const { districtPolicy, changeDistrictPolicyData, role } = this.props
+    const districtPolicyData = { ...districtPolicy }
     this.setState({
       allowDomainForTeacherValidate: {
-        ...validURL(e.target.value)
-      }
-    });
+        ...validURL(e.target.value),
+      },
+    })
 
-    districtPolicyData.allowedDomainForTeachers = e.target.value;
-    changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: role === "school-admin" });
-  };
+    districtPolicyData.allowedDomainForTeachers = e.target.value
+    changeDistrictPolicyData({
+      ...districtPolicyData,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  handleTagStudentChange = e => {
-    const { districtPolicy, changeDistrictPolicyData, role } = this.props;
-    const districtPolicyData = { ...districtPolicy };
+  handleTagStudentChange = (e) => {
+    const { districtPolicy, changeDistrictPolicyData, role } = this.props
+    const districtPolicyData = { ...districtPolicy }
     this.setState({
       allowDomainForStudentValidate: {
-        ...validURL(e.target.value)
-      }
-    });
+        ...validURL(e.target.value),
+      },
+    })
 
-    districtPolicyData.allowedDomainForStudents = e.target.value;
-    changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: role === "school-admin" });
-  };
+    districtPolicyData.allowedDomainForStudents = e.target.value
+    changeDistrictPolicyData({
+      ...districtPolicyData,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  handleTagSchoolChange = e => {
-    const { districtPolicy, changeDistrictPolicyData, role } = this.props;
-    const districtPolicyData = { ...districtPolicy };
+  handleTagSchoolChange = (e) => {
+    const { districtPolicy, changeDistrictPolicyData, role } = this.props
+    const districtPolicyData = { ...districtPolicy }
     this.setState({
       allowDomainForSchoolValidate: {
-        ...validURL(e.target.value)
-      }
-    });
+        ...validURL(e.target.value),
+      },
+    })
 
-    districtPolicyData.allowedDomainsForDistrict = e.target.value;
-    changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: role === "school-admin" });
-  };
+    districtPolicyData.allowedDomainsForDistrict = e.target.value
+    changeDistrictPolicyData({
+      ...districtPolicyData,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  thirdpartyIntegration = e => {
-    const { districtPolicy, changeDistrictPolicyData, role } = this.props;
-    const districtPolicyData = { ...districtPolicy };
+  thirdpartyIntegration = (e) => {
+    const { districtPolicy, changeDistrictPolicyData, role } = this.props
+    const districtPolicyData = { ...districtPolicy }
     // initially make all false and according to target make flag true
-    districtPolicyData.googleClassroom = false;
-    districtPolicyData.canvas = false;
-    districtPolicyData.schoology = false;
-    districtPolicyData.classlink = false;
+    districtPolicyData.googleClassroom = false
+    districtPolicyData.canvas = false
+    districtPolicyData.schoology = false
+    districtPolicyData.classlink = false
     switch (e.target.value) {
       case 1:
-        districtPolicyData.googleClassroom = true;
-        break;
+        districtPolicyData.googleClassroom = true
+        break
       case 2:
-        districtPolicyData.canvas = true;
-        break;
+        districtPolicyData.canvas = true
+        break
       case 3:
-        districtPolicyData.schoology = true;
-        break;
+        districtPolicyData.schoology = true
+        break
       case 4:
-        districtPolicyData.classlink = true;
-        break;
+        districtPolicyData.classlink = true
+        break
       default:
-        break;
+        break
     }
-    changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: role === "school-admin" });
-  };
+    changeDistrictPolicyData({
+      ...districtPolicyData,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  disableStudentLogin = event => {
-    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props;
+  disableStudentLogin = (event) => {
+    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props
 
-    const isStudentLoginDisabled = event.target.value;
+    const isStudentLoginDisabled = event.target.value
 
-    const nextState = produce(districtPolicy, draftState => {
-      draftState.disableStudentLogin = isStudentLoginDisabled === "yes";
-    });
+    const nextState = produce(districtPolicy, (draftState) => {
+      draftState.disableStudentLogin = isStudentLoginDisabled === 'yes'
+    })
 
-    changeDistrictPolicyData({ ...nextState, schoolLevel: role === "school-admin" });
-  };
+    changeDistrictPolicyData({
+      ...nextState,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  enforceDistrictSignonPolicy = e => {
-    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props;
+  enforceDistrictSignonPolicy = (e) => {
+    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props
 
-    const { value } = e.target;
+    const { value } = e.target
 
-    const nextState = produce(districtPolicy, draftState => {
-      draftState.enforceDistrictSignonPolicy = value === "yes";
-    });
+    const nextState = produce(districtPolicy, (draftState) => {
+      draftState.enforceDistrictSignonPolicy = value === 'yes'
+    })
 
-    changeDistrictPolicyData({ ...nextState, schoolLevel: role === "school-admin" });
-  };
+    changeDistrictPolicyData({
+      ...nextState,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  isValidIp = (ipAddress = "") => {
-    const validIpAddressPattern = /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])-(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))|25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[*0-9])\.(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])-(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))|25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[*0-9])$/;
-    return validIpAddressPattern.test(ipAddress); // will return true if valid
-  };
+  isValidIp = (ipAddress = '') => {
+    const validIpAddressPattern = /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])-(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))|25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[*0-9])\.(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])-(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))|25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[*0-9])$/
+    return validIpAddressPattern.test(ipAddress) // will return true if valid
+  }
 
-  mapIpAddresses = (ipAddressesString = "", checkerror = false) => {
-    if (ipAddressesString === "") return [];
-    return ipAddressesString.split(",").map((ipAddress = "") => {
-      const trimmedIpAddress = ipAddress.trim();
+  mapIpAddresses = (ipAddressesString = '', checkerror = false) => {
+    if (ipAddressesString === '') return []
+    return ipAddressesString.split(',').map((ipAddress = '') => {
+      const trimmedIpAddress = ipAddress.trim()
       if (checkerror && !this.isValidIp(trimmedIpAddress)) {
-        throw new Error("Enter allowed IP(s), example - 128.0.*.1, 187.0.*.*"); // will return map with error
+        throw new Error('Enter allowed IP(s), example - 128.0.*.1, 187.0.*.*') // will return map with error
       }
-      return trimmedIpAddress;
-    });
-  };
+      return trimmedIpAddress
+    })
+  }
 
   changeAllowIpField = (ipAddresses = []) => {
-    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props;
+    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props
 
-    const nextState = produce(districtPolicy, draftState => {
-      draftState.allowedIpForAssignments = ipAddresses;
-    });
+    const nextState = produce(districtPolicy, (draftState) => {
+      draftState.allowedIpForAssignments = ipAddresses
+    })
 
-    changeDistrictPolicyData({ ...nextState, schoolLevel: role === "school-admin" });
-  };
+    changeDistrictPolicyData({
+      ...nextState,
+      schoolLevel: role === 'school-admin',
+    })
+  }
 
-  handleInputIpAddresses = event => {
+  handleInputIpAddresses = (event) => {
     // ipAddressesString = "127.0.0.1, 192.168.0.1"
-    const ipAddressesString = event.target.value;
+    const ipAddressesString = event.target.value
     try {
       // ipAddresses = ["127.0.0.1", "192.168.0.1"]
-      const ipAddresses = this.mapIpAddresses(ipAddressesString, true);
+      const ipAddresses = this.mapIpAddresses(ipAddressesString, true)
       this.setState({
         allowIpForAssignmentValidate: {
-          validateStatus: "success",
-          errorMsg: ""
-        }
-      });
-      this.changeAllowIpField(ipAddresses);
+          validateStatus: 'success',
+          errorMsg: '',
+        },
+      })
+      this.changeAllowIpField(ipAddresses)
     } catch (error) {
       // ipAddresses = ["127.0.0.1", "192.168.0.1"]
-      const ipAddresses = this.mapIpAddresses(ipAddressesString, false);
+      const ipAddresses = this.mapIpAddresses(ipAddressesString, false)
       this.setState({
         allowIpForAssignmentValidate: {
-          validateStatus: "error",
-          errorMsg: error.message
-        }
-      });
-      this.changeAllowIpField(ipAddresses);
+          validateStatus: 'error',
+          errorMsg: error.message,
+        },
+      })
+      this.changeAllowIpField(ipAddresses)
     }
-  };
+  }
 
   onSave = () => {
-    const { role, schoolId, districtPolicy, userOrgId, updateDistrictPolicy, createDistrictPolicy } = this.props;
-    const isSchoolLevel = role === "school-admin";
-    const districtPolicyData = { ...districtPolicy };
+    const {
+      role,
+      schoolId,
+      districtPolicy,
+      userOrgId,
+      updateDistrictPolicy,
+      createDistrictPolicy,
+    } = this.props
+    const isSchoolLevel = role === 'school-admin'
+    const districtPolicyData = { ...districtPolicy }
     const {
       allowDomainForTeacherValidate,
       allowDomainForStudentValidate,
       allowDomainForSchoolValidate,
-      allowIpForAssignmentValidate
-    } = this.state;
+      allowIpForAssignmentValidate,
+    } = this.state
 
     if (
       !districtPolicyData.userNameAndPassword &&
@@ -259,22 +312,22 @@ class DistrictPolicyForm extends Component {
       !districtPolicyData.googleSignOn &&
       !districtPolicyData.atlasSignOn
     ) {
-      notification({ messageKey: "pleaseSelectOneOrMoreSignOnParticles" });
-      return;
+      notification({ messageKey: 'pleaseSelectOneOrMoreSignOnParticles' })
+      return
     }
 
     if (
-      allowDomainForTeacherValidate.validateStatus === "error" ||
-      allowDomainForStudentValidate.validateStatus === "error" ||
-      allowDomainForSchoolValidate.validateStatus === "error" ||
-      allowIpForAssignmentValidate.validateStatus === "error"
+      allowDomainForTeacherValidate.validateStatus === 'error' ||
+      allowDomainForStudentValidate.validateStatus === 'error' ||
+      allowDomainForSchoolValidate.validateStatus === 'error' ||
+      allowIpForAssignmentValidate.validateStatus === 'error'
     ) {
-      return;
+      return
     }
 
     const updateData = {
       orgId: isSchoolLevel ? schoolId : userOrgId,
-      orgType: isSchoolLevel ? "institution" : "district",
+      orgType: isSchoolLevel ? 'institution' : 'district',
       userNameAndPassword: districtPolicyData.userNameAndPassword,
       googleSignOn: districtPolicyData.googleSignOn,
       office365SignOn: districtPolicyData.office365SignOn,
@@ -287,13 +340,16 @@ class DistrictPolicyForm extends Component {
       schoolAdminSettingsAccess: districtPolicyData.schoolAdminSettingsAccess,
       office365Usernames: districtPolicyData.office365Usernames,
       firstNameAndLastName: districtPolicyData.firstNameAndLastName,
-      allowedDomainForTeachers: districtPolicyData.allowedDomainForTeachers.length
+      allowedDomainForTeachers: districtPolicyData.allowedDomainForTeachers
+        .length
         ? districtPolicyData.allowedDomainForTeachers.split(/[\s,]+/)
         : [],
-      allowedDomainForStudents: districtPolicyData.allowedDomainForStudents.length
+      allowedDomainForStudents: districtPolicyData.allowedDomainForStudents
+        .length
         ? districtPolicyData.allowedDomainForStudents.split(/[\s,]+/)
         : [],
-      allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict.length
+      allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict
+        .length
         ? districtPolicyData.allowedDomainsForDistrict.split(/[\s,]+/)
         : [],
       googleClassroom: districtPolicyData.googleClassroom || false,
@@ -302,24 +358,25 @@ class DistrictPolicyForm extends Component {
       disableStudentLogin: districtPolicyData.disableStudentLogin || false,
       schoology: districtPolicyData.schoology || false,
       classlink: districtPolicyData.classlink || false,
-      enforceDistrictSignonPolicy: districtPolicyData.enforceDistrictSignonPolicy || false
-    };
-    if (Object.prototype.hasOwnProperty.call(districtPolicyData, "_id")) {
-      updateDistrictPolicy(updateData);
-    } else {
-      createDistrictPolicy(updateData);
+      enforceDistrictSignonPolicy:
+        districtPolicyData.enforceDistrictSignonPolicy || false,
     }
-  };
+    if (Object.prototype.hasOwnProperty.call(districtPolicyData, '_id')) {
+      updateDistrictPolicy(updateData)
+    } else {
+      createDistrictPolicy(updateData)
+    }
+  }
 
   render() {
     const {
       allowDomainForTeacherValidate,
       allowDomainForStudentValidate,
       allowDomainForSchoolValidate,
-      allowIpForAssignmentValidate
-    } = this.state;
+      allowIpForAssignmentValidate,
+    } = this.state
 
-    const { districtPolicy } = this.props;
+    const { districtPolicy } = this.props
     const thirdPartyValue = districtPolicy.googleClassroom
       ? _3RDPARTYINTEGRATION.googleClassroom
       : districtPolicy.canvas
@@ -328,47 +385,70 @@ class DistrictPolicyForm extends Component {
       ? _3RDPARTYINTEGRATION.schoology
       : districtPolicy.classlink
       ? _3RDPARTYINTEGRATION.classlink
-      : _3RDPARTYINTEGRATION.none;
-    let saveBtnStr = "Save";
-    if (Object.prototype.hasOwnProperty.call(districtPolicy, "_id")) {
-      saveBtnStr = "Save";
+      : _3RDPARTYINTEGRATION.none
+    let saveBtnStr = 'Save'
+    if (Object.prototype.hasOwnProperty.call(districtPolicy, '_id')) {
+      saveBtnStr = 'Save'
     }
-    const { role } = this.props;
-    const isSchoolLevel = role === "school-admin";
+    const { role } = this.props
+    const isSchoolLevel = role === 'school-admin'
 
     return (
       <StyledFormDiv>
         <Form>
           <StyledRow>
-            <StyledLabel>{isSchoolLevel ? "School" : "District"} Signon Policy:</StyledLabel>
+            <StyledLabel>
+              {isSchoolLevel ? 'School' : 'District'} Signon Policy:
+            </StyledLabel>
             <StyledElementDiv>
               <CheckboxLabel
                 checked={districtPolicy.userNameAndPassword}
-                onChange={e => this.change(e, "userNameAndPassword")}
+                onChange={(e) => this.change(e, 'userNameAndPassword')}
               >
                 Username and password
               </CheckboxLabel>
-              <CheckboxLabel checked={districtPolicy.googleSignOn} onChange={e => this.change(e, "googleSignOn")}>
+              <CheckboxLabel
+                checked={districtPolicy.googleSignOn}
+                onChange={(e) => this.change(e, 'googleSignOn')}
+              >
                 Google Single signon
               </CheckboxLabel>
-              <CheckboxLabel checked={districtPolicy.office365SignOn} onChange={e => this.change(e, "office365SignOn")}>
+              <CheckboxLabel
+                checked={districtPolicy.office365SignOn}
+                onChange={(e) => this.change(e, 'office365SignOn')}
+              >
                 Office365 Single signon
               </CheckboxLabel>
-              <CheckboxLabel checked={districtPolicy.atlasSignOn} onChange={e => this.change(e, "atlasSignOn")}>
+              <CheckboxLabel
+                checked={districtPolicy.atlasSignOn}
+                onChange={(e) => this.change(e, 'atlasSignOn')}
+              >
                 Classlink Single signon
               </CheckboxLabel>
-              <CheckboxLabel checked={districtPolicy.cleverSignOn} onChange={e => this.change(e, "cleverSignOn")}>
+              <CheckboxLabel
+                checked={districtPolicy.cleverSignOn}
+                onChange={(e) => this.change(e, 'cleverSignOn')}
+              >
                 Clever instance signon
               </CheckboxLabel>
             </StyledElementDiv>
           </StyledRow>
           <StyledRow>
-            <StyledLabel> {isSchoolLevel ? "School" : "District"} Sign-up Policy:</StyledLabel>
+            <StyledLabel>
+              {' '}
+              {isSchoolLevel ? 'School' : 'District'} Sign-up Policy:
+            </StyledLabel>
             <StyledElementDiv>
-              <CheckboxLabel checked={districtPolicy.teacherSignUp} onChange={e => this.change(e, "teacherSignUp")}>
+              <CheckboxLabel
+                checked={districtPolicy.teacherSignUp}
+                onChange={(e) => this.change(e, 'teacherSignUp')}
+              >
                 Allow Teachers to sign-up
               </CheckboxLabel>
-              <CheckboxLabel checked={districtPolicy.studentSignUp} onChange={e => this.change(e, "studentSignUp")}>
+              <CheckboxLabel
+                checked={districtPolicy.studentSignUp}
+                onChange={(e) => this.change(e, 'studentSignUp')}
+              >
                 Allow Students to sign-up
               </CheckboxLabel>
             </StyledElementDiv>
@@ -381,7 +461,7 @@ class DistrictPolicyForm extends Component {
             <StyledElementDiv>
               <CheckboxLabel
                 checked={districtPolicy.searchAndAddStudents}
-                onChange={e => this.change(e, "searchAndAddStudents")}
+                onChange={(e) => this.change(e, 'searchAndAddStudents')}
               >
                 Allow Teachers to search and enroll
               </CheckboxLabel>
@@ -393,18 +473,21 @@ class DistrictPolicyForm extends Component {
               with:
             </StyledLabel>
             <StyledElementDiv>
-              <CheckboxLabel checked={districtPolicy.googleUsernames} onChange={e => this.change(e, "googleUsernames")}>
+              <CheckboxLabel
+                checked={districtPolicy.googleUsernames}
+                onChange={(e) => this.change(e, 'googleUsernames')}
+              >
                 Google Usernames
               </CheckboxLabel>
               <CheckboxLabel
                 checked={districtPolicy.office365Usernames}
-                onChange={e => this.change(e, "office365Usernames")}
+                onChange={(e) => this.change(e, 'office365Usernames')}
               >
                 Office 365 Usernames
               </CheckboxLabel>
               <CheckboxLabel
                 checked={districtPolicy.firstNameAndLastName}
-                onChange={e => this.change(e, "firstNameAndLastName")}
+                onChange={(e) => this.change(e, 'firstNameAndLastName')}
               >
                 Firstname and Lastname
               </CheckboxLabel>
@@ -416,7 +499,7 @@ class DistrictPolicyForm extends Component {
               <StyledElementDiv>
                 <CheckboxLabel
                   checked={districtPolicy.schoolAdminSettingsAccess}
-                  onChange={e => this.change(e, "schoolAdminSettingsAccess")}
+                  onChange={(e) => this.change(e, 'schoolAdminSettingsAccess')}
                 />
               </StyledElementDiv>
             </StyledRow>
@@ -474,7 +557,10 @@ class DistrictPolicyForm extends Component {
           </StyledRow>
           <StyledRow>
             <StyledLabel>3rd-party integrations:</StyledLabel>
-            <RadioGrp onChange={this.thirdpartyIntegration} value={thirdPartyValue}>
+            <RadioGrp
+              onChange={this.thirdpartyIntegration}
+              value={thirdPartyValue}
+            >
               <RadioBtn value={1}>Google Classroom</RadioBtn>
               <RadioBtn value={2}>Canvas</RadioBtn>
               <RadioBtn value={3}>Schoology</RadioBtn>
@@ -485,7 +571,10 @@ class DistrictPolicyForm extends Component {
           </StyledRow>
           <StyledRow>
             <StyledLabel>Disable Student Login: </StyledLabel>
-            <RadioGrp onChange={this.disableStudentLogin} value={districtPolicy?.disableStudentLogin ? "yes" : "no"}>
+            <RadioGrp
+              onChange={this.disableStudentLogin}
+              value={districtPolicy?.disableStudentLogin ? 'yes' : 'no'}
+            >
               <RadioBtn value="yes">Yes</RadioBtn>
               <RadioBtn value="no">No</RadioBtn>
             </RadioGrp>
@@ -493,11 +582,11 @@ class DistrictPolicyForm extends Component {
           <StyledRow>
             <StyledLabel>
               Enforced District Sign-On
-              <br /> policy:{" "}
+              <br /> policy:{' '}
             </StyledLabel>
             <RadioGrp
               onChange={this.enforceDistrictSignonPolicy}
-              value={districtPolicy?.enforceDistrictSignonPolicy ? "yes" : "no"}
+              value={districtPolicy?.enforceDistrictSignonPolicy ? 'yes' : 'no'}
             >
               <RadioBtn value="yes">Yes</RadioBtn>
               <RadioBtn value="no">No</RadioBtn>
@@ -519,8 +608,9 @@ class DistrictPolicyForm extends Component {
                 placeholder="Enter allowed ip(s), example - 127.0.*.1, 187.0.*.*"
               />
               <HelperText>
-                Enter allowed IP(s) for controlled assignments. Range allowed eg: 22.32.0-255.0-255. Wild chars allowed
-                eg: 127.0.*.1, 187.0.*.* etc.
+                Enter allowed IP(s) for controlled assignments. Range allowed
+                eg: 22.32.0-255.0-255. Wild chars allowed eg: 127.0.*.1,
+                187.0.*.* etc.
               </HelperText>
             </StyledFormItem>
           </StyledRow>
@@ -529,33 +619,33 @@ class DistrictPolicyForm extends Component {
           </StyledRow>
         </Form>
       </StyledFormDiv>
-    );
+    )
   }
 }
 
 const enhance = compose(
   connect(
-    state => ({
+    (state) => ({
       districtPolicy: getPolicies(state),
       userOrgId: getUserOrgId(state),
       role: getUserRole(state),
-      schoolId: get(state, "user.saSettingsSchool")
+      schoolId: get(state, 'user.saSettingsSchool'),
     }),
     {
       loadDistrictPolicy: receiveDistrictPolicyAction,
       updateDistrictPolicy: updateDistrictPolicyAction,
       createDistrictPolicy: createDistrictPolicyAction,
       changeDistrictPolicyData: changeDistrictPolicyAction,
-      loadSchoolPolicy: receiveSchoolPolicyAction
+      loadSchoolPolicy: receiveSchoolPolicyAction,
     }
   )
-);
+)
 
-export default enhance(DistrictPolicyForm);
+export default enhance(DistrictPolicyForm)
 
 DistrictPolicyForm.propTypes = {
   loadDistrictPolicy: PropTypes.func.isRequired,
   updateDistrictPolicy: PropTypes.func.isRequired,
   createDistrictPolicy: PropTypes.func.isRequired,
-  userOrgId: PropTypes.string.isRequired
-};
+  userOrgId: PropTypes.string.isRequired,
+}

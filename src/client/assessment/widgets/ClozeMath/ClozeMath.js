@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
-import React, { useContext } from "react";
-import PropTypes from "prop-types";
+import React, { useContext } from 'react'
+import PropTypes from 'prop-types'
 import {
   WithResources,
   AnswerContext,
@@ -10,32 +10,32 @@ import {
   FlexContainer,
   QuestionLabelWrapper,
   QuestionSubLabel,
-  QuestionContentWrapper
-} from "@edulastic/common";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import produce from "immer";
-import { get, cloneDeep, find, orderBy } from "lodash";
-import { withTutorial } from "../../../tutorials/withTutorial";
-import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
-import ClozeMathAnswers from "./ClozeMathAnswers";
-import ClozeMathPreview from "./ClozeMathPreview";
-import MathFormulaOptions from "../MathFormula/components/MathFormulaOptions";
-import { checkAnswerAction } from "../../../author/src/actions/testItem";
-import { setQuestionDataAction } from "../../../author/src/actions/question";
-import { changePreviewAction } from "../../../author/src/actions/view";
-import { ContentArea } from "../../styled/ContentArea";
+  QuestionContentWrapper,
+} from '@edulastic/common'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import produce from 'immer'
+import { get, cloneDeep, find, orderBy } from 'lodash'
+import { withTutorial } from '../../../tutorials/withTutorial'
+import { CLEAR, PREVIEW, EDIT } from '../../constants/constantsForQuestions'
+import ClozeMathAnswers from './ClozeMathAnswers'
+import ClozeMathPreview from './ClozeMathPreview'
+import MathFormulaOptions from '../MathFormula/components/MathFormulaOptions'
+import { checkAnswerAction } from '../../../author/src/actions/testItem'
+import { setQuestionDataAction } from '../../../author/src/actions/question'
+import { changePreviewAction } from '../../../author/src/actions/view'
+import { ContentArea } from '../../styled/ContentArea'
 
-import { replaceVariables, updateVariables } from "../../utils/variables";
+import { replaceVariables, updateVariables } from '../../utils/variables'
 
 // import ComposeQuestion from "./ComposeQuestion";
-import Template from "./Template";
-import ChoicesForDropDown from "./ChoicesForDropDown";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
-import AppConfig from "../../../../../app-config";
-import Question from "../../components/Question";
-import QuestionOptions from "../ClozeImageDropDown/QuestionOptions";
+import Template from './Template'
+import ChoicesForDropDown from './ChoicesForDropDown'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import { StyledClozeMathWrapper } from './styled/StyledClozeMathWrapper'
+import AppConfig from '../../../../../app-config'
+import Question from '../../components/Question'
+import QuestionOptions from '../ClozeImageDropDown/QuestionOptions'
 
 const ClozeMath = ({
   view,
@@ -58,78 +58,100 @@ const ClozeMath = ({
   isPrintPreview,
   ...restProps
 }) => {
-  const answerContextConfig = useContext(AnswerContext);
-  let actualPreviewMode = previewTab;
-  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
-    actualPreviewMode = "check";
-  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
-    actualPreviewMode = "clear";
+  const answerContextConfig = useContext(AnswerContext)
+  let actualPreviewMode = previewTab
+  if (
+    answerContextConfig.expressGrader &&
+    !answerContextConfig.isAnswerModifiable
+  ) {
+    actualPreviewMode = 'check'
+  } else if (
+    answerContextConfig.expressGrader &&
+    answerContextConfig.isAnswerModifiable
+  ) {
+    actualPreviewMode = 'clear'
   }
 
-  const { col } = restProps;
+  const { col } = restProps
   const _itemChange = (prop, uiStyle) => {
-    const newItem = produce(item, draft => {
-      draft[prop] = uiStyle;
-      updateVariables(draft);
-    });
+    const newItem = produce(item, (draft) => {
+      draft[prop] = uiStyle
+      updateVariables(draft)
+    })
 
-    setQuestionData(newItem);
-  };
+    setQuestionData(newItem)
+  }
 
-  const _setQuestionData = newItem => {
+  const _setQuestionData = (newItem) => {
     setQuestionData(
-      produce(newItem, draft => {
-        updateVariables(draft);
+      produce(newItem, (draft) => {
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  const handleKeypadMode = keypad => {
+  const handleKeypadMode = (keypad) => {
     setQuestionData(
-      produce(item, draft => {
-        const symbols = cloneDeep(draft.symbols);
-        symbols[0] = keypad;
-        draft.symbols = symbols;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        const symbols = cloneDeep(draft.symbols)
+        symbols[0] = keypad
+        draft.symbols = symbols
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  const itemForPreview = replaceVariables(item);
-  const isV1Multipart = get(col, "isV1Multipart", false);
-  const { qLabel, isV1Migrated = false, qSubLabel } = item;
-  let options = [];
-  let allOptions = [];
+  const itemForPreview = replaceVariables(item)
+  const isV1Multipart = get(col, 'isV1Multipart', false)
+  const { qLabel, isV1Migrated = false, qSubLabel } = item
+  let options = []
+  let allOptions = []
   if (isPrint || isPrintPreview) {
-    const { mathUnits, dropDowns } = item.responseIds;
-    const dropdownOptions = dropDowns?.map(d => ({ ...d, type: "dropdown" })) || [];
-    const mathunitOptions = mathUnits?.map(m => ({ ...m, type: "mathunit" })) || [];
-    allOptions = orderBy([...dropdownOptions, ...mathunitOptions], ["index"]);
-    options = allOptions.map(o => {
-      if (o.type === "dropdown") {
-        return item.options[o.id];
+    const { mathUnits, dropDowns } = item.responseIds
+    const dropdownOptions =
+      dropDowns?.map((d) => ({ ...d, type: 'dropdown' })) || []
+    const mathunitOptions =
+      mathUnits?.map((m) => ({ ...m, type: 'mathunit' })) || []
+    allOptions = orderBy([...dropdownOptions, ...mathunitOptions], ['index'])
+    options = allOptions.map((o) => {
+      if (o.type === 'dropdown') {
+        return item.options[o.id]
       }
-      const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === o.id) || {};
-      let otherOptions = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(b => b.label);
+      const { keypadMode, customUnits } =
+        find(item.responseIds.mathUnits, (res) => res.id === o.id) || {}
+      let otherOptions = MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
+        btn.types.includes(keypadMode)
+      ).map((b) => b.label)
 
-      if (keypadMode === "custom") {
-        otherOptions = customUnits.split(",").filter(u => !!u);
+      if (keypadMode === 'custom') {
+        otherOptions = customUnits.split(',').filter((u) => !!u)
       }
-      return otherOptions;
-    });
+      return otherOptions
+    })
   }
 
   return (
     <WithResources
       criticalResources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-      resources={[`${AppConfig.mathquillPath}/mathquill.css`, `${AppConfig.mathquillPath}/mathquill.min.js`]}
+      resources={[
+        `${AppConfig.mathquillPath}/mathquill.css`,
+        `${AppConfig.mathquillPath}/mathquill.min.js`,
+      ]}
       fallBack={<span />}
       onLoaded={() => {}}
     >
       <StyledClozeMathWrapper>
-        <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+        <FlexContainer
+          justifyContent="flex-start"
+          alignItems="baseline"
+          width="100%"
+        >
           <QuestionLabelWrapper>
-            {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}</QuestionNumberLabel> : null}
+            {!flowLayout
+              ? showQuestionNumber && (
+                  <QuestionNumberLabel>{qLabel}</QuestionNumberLabel>
+                )
+              : null}
             {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
           </QuestionLabelWrapper>
           <QuestionContentWrapper className="__question-content-wrapper">
@@ -137,10 +159,10 @@ const ClozeMath = ({
               <StyledPaperWrapper
                 isV1Multipart={isV1Multipart}
                 style={{
-                  height: "100%",
-                  width: "100%",
-                  "max-width": "100%",
-                  flex: "auto"
+                  height: '100%',
+                  width: '100%',
+                  'max-width': '100%',
+                  flex: 'auto',
                 }}
               >
                 <ClozeMathPreview
@@ -161,7 +183,12 @@ const ClozeMath = ({
                 />
               </StyledPaperWrapper>
             )}
-            {(isPrint || isPrintPreview) && <QuestionOptions options={options} style={{ marginTop: "50px" }} />}
+            {(isPrint || isPrintPreview) && (
+              <QuestionOptions
+                options={options}
+                style={{ marginTop: '50px' }}
+              />
+            )}
             {view === EDIT && (
               <ContentArea data-cy="question-area">
                 <Template
@@ -171,11 +198,15 @@ const ClozeMath = ({
                   cleanSections={cleanSections}
                 />
 
-                <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
+                <ChoicesForDropDown
+                  item={item}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
 
                 <Question
                   section="main"
-                  label={t("component.math.correctAnswers")}
+                  label={t('component.math.correctAnswers')}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 >
@@ -211,8 +242,8 @@ const ClozeMath = ({
         </FlexContainer>
       </StyledClozeMathWrapper>
     </WithResources>
-  );
-};
+  )
+}
 
 ClozeMath.propTypes = {
   view: PropTypes.string.isRequired,
@@ -230,8 +261,8 @@ ClozeMath.propTypes = {
   instructorStimulus: PropTypes.string.isRequired,
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool,
-  advancedLink: PropTypes.any
-};
+  advancedLink: PropTypes.any,
+}
 
 ClozeMath.defaultProps = {
   previewTab: CLEAR,
@@ -243,21 +274,21 @@ ClozeMath.defaultProps = {
   cleanSections: () => {},
   showQuestionNumber: false,
   flowLayout: false,
-  advancedLink: null
-};
+  advancedLink: null,
+}
 
 const enhance = compose(
-  withTutorial("clozeMath"),
+  withTutorial('clozeMath'),
   connect(
-    state => ({
-      enableMagnifier: state.testPlayer.enableMagnifier
+    (state) => ({
+      enableMagnifier: state.testPlayer.enableMagnifier,
     }),
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,
-      changePreview: changePreviewAction
+      changePreview: changePreviewAction,
     }
   )
-);
+)
 
-export default enhance(ClozeMath);
+export default enhance(ClozeMath)

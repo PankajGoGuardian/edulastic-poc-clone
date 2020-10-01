@@ -1,8 +1,8 @@
-import React from "react";
-import RcColorPicker from "rc-color-picker";
-import styled from "styled-components";
-import { getAlpha } from "@edulastic/common";
-import { IconCaretDown } from "@edulastic/icons";
+import React from 'react'
+import RcColorPicker from 'rc-color-picker'
+import styled from 'styled-components'
+import { getAlpha } from '@edulastic/common'
+import { IconCaretDown } from '@edulastic/icons'
 
 const ColorPicker = ({ color, onChangeColor }) => (
   <RcColorPicker
@@ -18,9 +18,9 @@ const ColorPicker = ({ color, onChangeColor }) => (
       </CaretDown>
     </ColorPickerTrigger>
   </RcColorPicker>
-);
+)
 
-export default ColorPicker;
+export default ColorPicker
 
 const CaretDown = styled.div`
   bottom: -2px;
@@ -37,7 +37,7 @@ const CaretDown = styled.div`
     left: -3px;
     position: absolute;
   }
-`;
+`
 
 const ColorPickerTrigger = styled.div`
   width: 22px;
@@ -49,4 +49,4 @@ const ColorPickerTrigger = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-`;
+`

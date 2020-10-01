@@ -1,94 +1,100 @@
-import JXG from "jsxgraph";
-import { Point, Equation } from ".";
-import { CONSTANT } from "../config";
-import { handleSnap, colorGenerator, setLabel } from "../utils";
-import { getLabelParameters } from "../settings";
+import JXG from 'jsxgraph'
+import { Point, Equation } from '.'
+import { CONSTANT } from '../config'
+import { handleSnap, colorGenerator, setLabel } from '../utils'
+import { getLabelParameters } from '../settings'
 
-const jxgType = 90;
+const jxgType = 90
 
 const defaultConfig = {
   fixed: false,
   strokeWidth: 2,
-  highlightStrokeWidth: 2
-};
+  highlightStrokeWidth: 2,
+}
 
-let points = [];
+let points = []
 
 function getColorParams(color) {
   return {
-    fillColor: "transparent",
+    fillColor: 'transparent',
     strokeColor: color,
     highlightStrokeColor: color,
-    highlightFillColor: "transparent"
-  };
+    highlightFillColor: 'transparent',
+  }
 }
 
 function create(board, object, hypPoints, settings = {}) {
-  const { labelIsVisible = true, fixed = false, latex = false, result = false, pointsLabel = false } = settings;
+  const {
+    labelIsVisible = true,
+    fixed = false,
+    latex = false,
+    result = false,
+    pointsLabel = false,
+  } = settings
 
-  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object
 
-  const newLine = board.$board.create("hyperbola", hypPoints, {
+  const newLine = board.$board.create('hyperbola', hypPoints, {
     ...defaultConfig,
     ...getColorParams(priorityColor || board.priorityColor || baseColor),
     label: {
       ...getLabelParameters(jxgType),
-      visible: labelIsVisible
+      visible: labelIsVisible,
     },
     dash: dashed ? 2 : 0,
     fixed,
-    id
-  });
-  newLine.type = jxgType;
-  newLine.labelIsVisible = object.labelIsVisible;
-  newLine.baseColor = object.baseColor;
-  newLine.dashed = object.dashed;
+    id,
+  })
+  newLine.type = jxgType
+  newLine.labelIsVisible = object.labelIsVisible
+  newLine.baseColor = object.baseColor
+  newLine.dashed = object.dashed
 
   if (latex && result) {
-    newLine.type = Equation.jxgType;
-    newLine.latex = latex;
-    newLine.apiLatex = result;
-    newLine.pointsLabel = pointsLabel;
+    newLine.type = Equation.jxgType
+    newLine.latex = latex
+    newLine.apiLatex = result
+    newLine.pointsLabel = pointsLabel
   }
 
   if (!fixed) {
-    handleSnap(newLine, Object.values(newLine.ancestors), board);
-    board.handleStackedElementsMouseEvents(newLine);
+    handleSnap(newLine, Object.values(newLine.ancestors), board)
+    board.handleStackedElementsMouseEvents(newLine)
   }
 
   if (labelIsVisible) {
-    setLabel(newLine, label);
+    setLabel(newLine, label)
   }
 
-  return newLine;
+  return newLine
 }
 
 function onHandler() {
   return (board, event) => {
-    const newPoint = Point.onHandler(board, event);
-    newPoint.isTemp = true;
-    points.push(newPoint);
+    const newPoint = Point.onHandler(board, event)
+    newPoint.isTemp = true
+    points.push(newPoint)
     if (points.length === 3) {
-      points.forEach(point => {
-        point.isTemp = false;
-      });
+      points.forEach((point) => {
+        point.isTemp = false
+      })
       const object = {
         label: false,
         labelIsVisible: true,
-        baseColor: colorGenerator(board.elements.length)
-      };
-      const newLine = create(board, object, points);
-      points = [];
-      return newLine;
+        baseColor: colorGenerator(board.elements.length),
+      }
+      const newLine = create(board, object, points)
+      points = []
+      return newLine
     }
-  };
+  }
 }
 
 function clean(board) {
-  const result = points.length > 0;
-  points.forEach(point => board.$board.removeObject(point));
-  points = [];
-  return result;
+  const result = points.length > 0
+  points.forEach((point) => board.$board.removeObject(point))
+  points = []
+  return result
 }
 
 function getConfig(hyperbola) {
@@ -101,14 +107,14 @@ function getConfig(hyperbola) {
     baseColor: hyperbola.baseColor,
     dashed: hyperbola.dashed,
     points: Object.values(hyperbola.ancestors)
-      .filter(a => a.type === JXG.OBJECT_TYPE_POINT)
+      .filter((a) => a.type === JXG.OBJECT_TYPE_POINT)
       .sort((a, b) => a.id > b.id)
-      .map(point => Point.getConfig(point))
-  };
+      .map((point) => Point.getConfig(point)),
+  }
 }
 
 function getTempPoints() {
-  return points;
+  return points
 }
 
 export default {
@@ -117,5 +123,5 @@ export default {
   getConfig,
   clean,
   getTempPoints,
-  create
-};
+  create,
+}

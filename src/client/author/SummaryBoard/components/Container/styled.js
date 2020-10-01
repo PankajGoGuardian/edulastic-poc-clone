@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
-import { Card, Button } from "antd";
-import styled from "styled-components";
-import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, themeColor } from "@edulastic/colors";
+import { Link } from 'react-router-dom'
+import { Card, Button } from 'antd'
+import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
+import { mobileWidth, themeColor } from '@edulastic/colors'
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
@@ -11,7 +11,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
   @media (max-width: ${mobileWidth}) {
     flex-wrap: wrap;
   }
-`;
+`
 
 export const StyledCard = styled(Card)`
   margin: auto;
@@ -24,7 +24,7 @@ export const StyledCard = styled(Card)`
       padding: 15px;
     }
   }
-`;
+`
 
 export const StyledSummaryCard = styled(StyledCard)`
   width: calc(50% - 18px);
@@ -38,7 +38,7 @@ export const StyledSummaryCard = styled(StyledCard)`
       margin-right: 0px;
     }
   }
-`;
+`
 
 export const SummaryInfoWrapper = styled.div`
   width: 65%;
@@ -49,13 +49,13 @@ export const SummaryInfoWrapper = styled.div`
     width: 100%;
     margin-right: 0px;
   }
-`;
+`
 
 export const InfoRow = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-`;
+`
 
 export const SubInfoRow = styled(InfoRow)`
   margin-top: 35px;
@@ -71,14 +71,14 @@ export const SubInfoRow = styled(InfoRow)`
       height: 32px;
     }
   }
-`;
+`
 
 export const LowestPerformersWrapper = styled.div`
   width: 40%;
   @media (max-width: ${mobileWidth}) {
     width: 100%;
   }
-`;
+`
 
 export const InfoLabel = styled.div`
   color: #434b5d;
@@ -88,15 +88,15 @@ export const InfoLabel = styled.div`
   @media (max-width: ${mobileWidth}) {
     font-size: 12px;
   }
-`;
+`
 
-export const InfoIcon = styled.div``;
+export const InfoIcon = styled.div``
 export const InfoValue = styled.div`
   font-size: 25px;
   font-family: Open Sans, Bold;
   color: #5eb500;
   font-weight: 800;
-`;
+`
 export const ValueTitle = styled.div`
   color: #434b5d;
   font-size: 25px;
@@ -105,7 +105,7 @@ export const ValueTitle = styled.div`
   @media (max-width: ${mobileWidth}) {
     font-size: 14px;
   }
-`;
+`
 
 export const ActionContainer = styled(InfoRow)`
   justify-content: space-between;
@@ -113,13 +113,13 @@ export const ActionContainer = styled(InfoRow)`
   @media (max-width: ${mobileWidth}) {
     flex-direction: column;
   }
-`;
-export const ActionDescriptionWrapper = styled.div``;
+`
+export const ActionDescriptionWrapper = styled.div``
 export const ActionTitle = styled(InfoLabel)`
   @media (max-width: ${mobileWidth}) {
     font-size: 16px;
   }
-`;
+`
 export const ActionDescription = styled.div`
   color: #6a737f;
   font-size: 15px;
@@ -128,7 +128,7 @@ export const ActionDescription = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 15px;
   }
-`;
+`
 export const ViewRecommendationsBtn = styled(Button)`
   background-color: ${themeColor};
   border-color: ${themeColor};
@@ -143,13 +143,13 @@ export const ViewRecommendationsBtn = styled(Button)`
     color: ${themeColor};
     border-color: ${themeColor};
   }
-`;
+`
 
 export const ListContainer = styled.ul`
   padding: 0px;
   margin-bottom: 0px;
   list-style: none;
-`;
+`
 export const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
@@ -166,7 +166,7 @@ export const ListItem = styled.li`
     padding-bottom: 0px;
     margin-bottom: 0px;
   }
-`;
+`
 
 export const MistakesListItem = styled(ListItem)`
   padding-bottom: 5px;
@@ -174,7 +174,7 @@ export const MistakesListItem = styled(ListItem)`
   &:first-child {
     margin-top: 13px;
   }
-`;
+`
 
 export const MistakesTitle = styled.div`
   color: #434b5d;
@@ -184,7 +184,7 @@ export const MistakesTitle = styled.div`
   @media (max-width: ${mobileWidth}) {
     font-size: 12px;
   }
-`;
+`
 
 export const MistakesValue = styled.div`
   color: #5eb500;
@@ -196,23 +196,23 @@ export const MistakesValue = styled.div`
   img {
     margin-left: 10px;
   }
-`;
+`
 
 export const ListItemTitle = styled.div`
   font-family: Open Sans, Regular;
   color: #434b5d;
-`;
+`
 export const ListItemValue = styled.div`
   font-family: Open Sans, SemiBold;
   color: #f81e60;
   font-weight: 600;
-`;
+`
 export const Anchor = styled.a`
   color: #69727e;
-`;
+`
 export const AnchorLink = styled(Link)`
   color: #69727e;
-`;
+`
 
 export const PaginationInfo = styled.span`
   font-weight: 600;
@@ -223,4 +223,4 @@ export const PaginationInfo = styled.span`
   @media (max-width: ${mobileWidth}) {
     display: none;
   }
-`;
+`

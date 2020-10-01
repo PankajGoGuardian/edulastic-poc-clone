@@ -1,9 +1,13 @@
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconRulerPencil = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.609 23.527" {...props}>
+const IconRulerPencil = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 23.609 23.527"
+    {...props}
+  >
     <g transform="translate(0.125 -0.367)">
       <path
         d="M.455,23.769h22.36a.454.454,0,0,0,.321-.776L.776.633A.454.454,0,0,0,0,.954v22.36a.454.454,0,0,0,.454.454ZM.909,2.052,4.565,5.707,3.6,6.671a.454.454,0,1,0,.643.643l.964-.964L7.136,8.278l-.964.964a.454.454,0,1,0,.643.643l.964-.964,1.928,1.928-.964.964a.454.454,0,0,0,.643.643l.964-.964,1.928,1.928-.964.964a.454.454,0,0,0,.643.643l.964-.964,1.928,1.928-.964.964a.454.454,0,1,0,.643.643l.964-.964,1.928,1.928-.964.964a.455.455,0,0,0,.643.643l.964-.964,3.656,3.656H.909Zm0,0"
@@ -29,6 +33,6 @@ const IconRulerPencil = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconRulerPencil);
+export default withIconStyles(IconRulerPencil)

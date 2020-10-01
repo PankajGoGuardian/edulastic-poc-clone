@@ -1,93 +1,99 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import produce from "immer";
-import CorrectAnswers from "../../components/CorrectAnswers";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import produce from 'immer'
+import CorrectAnswers from '../../components/CorrectAnswers'
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector,
+} from '../../../author/QuestionEditor/ducks'
 
-import CorrectAnswer from "./CorrectAnswer";
+import CorrectAnswer from './CorrectAnswer'
 
 class SetCorrectAnswers extends Component {
   state = {
-    currentTab: 0
-  };
+    currentTab: 0,
+  }
 
-  handleTabChange = currentTab => {
-    this.setState({ currentTab });
-  };
+  handleTabChange = (currentTab) => {
+    this.setState({ currentTab })
+  }
 
-  handleRemoveAltResponses = index => {
-    const { item, setQuestionData } = this.props;
-    this.setState({ currentTab: 0 });
+  handleRemoveAltResponses = (index) => {
+    const { item, setQuestionData } = this.props
+    this.setState({ currentTab: 0 })
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (draft.validation.altResponses) {
-          draft.validation.altResponses.splice(index, 1);
+          draft.validation.altResponses.splice(index, 1)
         }
       })
-    );
-  };
+    )
+  }
 
   handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        const numberOfResponses = draft.responses?.length || 0; // responses cannot be empty, there is validator which checks that
+      produce(item, (draft) => {
+        const numberOfResponses = draft.responses?.length || 0 // responses cannot be empty, there is validator which checks that
         const response = {
           score: 1,
-          value: new Array(numberOfResponses).fill({})
-        };
+          value: new Array(numberOfResponses).fill({}),
+        }
 
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.push(response);
+        if (
+          draft.validation.altResponses &&
+          draft.validation.altResponses.length
+        ) {
+          draft.validation.altResponses.push(response)
         } else {
-          draft.validation.altResponses = [response];
+          draft.validation.altResponses = [response]
         }
       })
-    );
-  };
+    )
+  }
 
-  updateScore = score => {
+  updateScore = (score) => {
     if (!(score > 0)) {
-      return;
+      return
     }
-    const points = parseFloat(score, 10);
-    const { item, setQuestionData } = this.props;
-    const { currentTab } = this.state;
+    const points = parseFloat(score, 10)
+    const { item, setQuestionData } = this.props
+    const { currentTab } = this.state
 
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.score = points;
+          draft.validation.validResponse.score = points
         } else if (currentTab > 0) {
-          draft.validation.altResponses[currentTab - 1].score = points;
+          draft.validation.altResponses[currentTab - 1].score = points
         }
       })
-    );
-  };
+    )
+  }
 
-  updateAnswers = answers => {
-    const { item, setQuestionData } = this.props;
-    const { currentTab } = this.state;
+  updateAnswers = (answers) => {
+    const { item, setQuestionData } = this.props
+    const { currentTab } = this.state
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.value = answers;
+          draft.validation.validResponse.value = answers
         } else if (currentTab > 0) {
-          draft.validation.altResponses[currentTab - 1].value = answers;
+          draft.validation.altResponses[currentTab - 1].value = answers
         }
       })
-    );
-  };
+    )
+  }
 
   get response() {
-    const { item } = this.props;
-    const { currentTab } = this.state;
+    const { item } = this.props
+    const { currentTab } = this.state
     if (currentTab === 0) {
-      return item.validation.validResponse;
+      return item.validation.validResponse
     }
-    return item.validation.altResponses[currentTab - 1];
+    return item.validation.altResponses[currentTab - 1]
   }
 
   render() {
@@ -108,9 +114,9 @@ class SetCorrectAnswers extends Component {
       item,
       setQuestionData,
       fillSections,
-      cleanSections
-    } = this.props;
-    const { currentTab } = this.state;
+      cleanSections,
+    } = this.props
+    const { currentTab } = this.state
 
     return (
       <CorrectAnswers
@@ -146,7 +152,7 @@ class SetCorrectAnswers extends Component {
           onUpdateValidationValue={this.updateAnswers}
         />
       </CorrectAnswers>
-    );
+    )
   }
 }
 
@@ -166,40 +172,40 @@ SetCorrectAnswers.propTypes = {
   imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   imageOptions: PropTypes.object,
-  item: PropTypes.object
-};
+  item: PropTypes.object,
+}
 
 SetCorrectAnswers.defaultProps = {
-  stimulus: "",
+  stimulus: '',
   options: [],
   responses: [],
   validation: {},
   showDashedBorder: false,
-  backgroundColor: "#fff",
-  imageUrl: "",
-  imageAlterText: "",
+  backgroundColor: '#fff',
+  imageUrl: '',
+  imageAlterText: '',
   imageHeight: 490,
   imageWidth: 600,
   maxRespCount: 1,
   uiStyle: {
-    responsecontainerposition: "bottom",
-    fontsize: "normal",
-    stemNumeration: "",
+    responsecontainerposition: 'bottom',
+    fontsize: 'normal',
+    stemNumeration: '',
     widthpx: 0,
     heightpx: 0,
-    wordwrap: false
+    wordwrap: false,
   },
   imageOptions: {},
-  item: {}
-};
+  item: {},
+}
 
 const enhance = compose(
   connect(
-    state => ({
-      question: getQuestionDataSelector(state)
+    (state) => ({
+      question: getQuestionDataSelector(state),
     }),
     { setQuestionData: setQuestionDataAction }
   )
-);
+)
 
-export default enhance(SetCorrectAnswers);
+export default enhance(SetCorrectAnswers)

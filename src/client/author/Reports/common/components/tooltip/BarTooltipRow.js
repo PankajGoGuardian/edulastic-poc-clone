@@ -1,6 +1,8 @@
-import React from "react";
-import TooltipRow from "./TooltipRow";
+import React from 'react'
+import TooltipRow from './TooltipRow'
 
-const BarTooltipRow = props => <TooltipRow classNamePrefix="tooltip" {...props} />;
+const BarTooltipRow = (props) => (
+  <TooltipRow classNamePrefix="tooltip" {...props} />
+)
 
-export default BarTooltipRow;
+export default BarTooltipRow

@@ -1,145 +1,166 @@
-import React, { Fragment, Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { Select } from "antd";
-import { cloneDeep } from "lodash";
+import React, { Fragment, Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import PropTypes from 'prop-types'
+import { Select } from 'antd'
+import { cloneDeep } from 'lodash'
 
-import { TabContainer } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { TabContainer } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import CorrectAnswers from "../CorrectAnswers";
-import GraphDisplay from "./Display/GraphDisplay";
+import CorrectAnswers from '../CorrectAnswers'
+import GraphDisplay from './Display/GraphDisplay'
 
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
-import { SelectInputStyled } from "../../styled/InputStyles";
-import { Label } from "../../styled/WidgetOptions/Label";
-import { Row } from "../../styled/WidgetOptions/Row";
-import { Col } from "../../styled/WidgetOptions/Col";
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector,
+} from '../../../author/QuestionEditor/ducks'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { SelectInputStyled } from '../../styled/InputStyles'
+import { Label } from '../../styled/WidgetOptions/Label'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { Col } from '../../styled/WidgetOptions/Col'
 
 class GraphAnswers extends Component {
   state = {
-    tab: 0
-  };
+    tab: 0,
+  }
 
-  handleTabChange = tab => {
-    this.setState({ tab });
-  };
+  handleTabChange = (tab) => {
+    this.setState({ tab })
+  }
 
-  handleAltResponseClose = i => {
-    const { onRemoveAltResponses } = this.props;
-    const { tab } = this.state;
+  handleAltResponseClose = (i) => {
+    const { onRemoveAltResponses } = this.props
+    const { tab } = this.state
     if (i <= tab - 1) {
-      this.handleTabChange(tab - 1);
+      this.handleTabChange(tab - 1)
     }
-    onRemoveAltResponses(i);
-  };
+    onRemoveAltResponses(i)
+  }
 
   handleAddAnswer = () => {
-    const { onAddAltResponses, graphData } = this.props;
-    const { validation } = graphData;
+    const { onAddAltResponses, graphData } = this.props
+    const { validation } = graphData
 
-    this.handleTabChange(validation.altResponses.length + 1);
-    onAddAltResponses();
-  };
+    this.handleTabChange(validation.altResponses.length + 1)
+    onAddAltResponses()
+  }
 
-  handleUpdateCorrectScore = points => {
-    const { question, setQuestionData } = this.props;
-    const newData = cloneDeep(question);
+  handleUpdateCorrectScore = (points) => {
+    const { question, setQuestionData } = this.props
+    const newData = cloneDeep(question)
 
-    newData.validation.validResponse.score = points;
+    newData.validation.validResponse.score = points
 
-    setQuestionData(newData);
-  };
+    setQuestionData(newData)
+  }
 
-  updateValidationValue = value => {
-    const { question, setQuestionData } = this.props;
-    const { validation, toolbar } = question;
+  updateValidationValue = (value) => {
+    const { question, setQuestionData } = this.props
+    const { validation, toolbar } = question
     for (let i = 0; i < value.length; i++) {
-      if (typeof value[i].label !== "boolean" && typeof value[i].label !== "undefined") {
-        value[i].label = value[i].label.replace(/<p>/g, "").replace(/<\/p>/g, "");
+      if (
+        typeof value[i].label !== 'boolean' &&
+        typeof value[i].label !== 'undefined'
+      ) {
+        value[i].label = value[i].label
+          .replace(/<p>/g, '')
+          .replace(/<\/p>/g, '')
       }
     }
     if (toolbar && toolbar.drawingPrompt) {
-      toolbar.drawingObjects = this.getDrawingObjects(value);
+      toolbar.drawingObjects = this.getDrawingObjects(value)
     }
-    validation.validResponse.value = value;
-    setQuestionData({ ...question, validation, toolbar });
-  };
+    validation.validResponse.value = value
+    setQuestionData({ ...question, validation, toolbar })
+  }
 
   updateAltValidationValue = (value, tabIndex) => {
-    const { question, setQuestionData } = this.props;
-    const { validation } = question;
-    validation.altResponses[tabIndex].value = value;
-    setQuestionData({ ...question, validation });
-  };
+    const { question, setQuestionData } = this.props
+    const { validation } = question
+    validation.altResponses[tabIndex].value = value
+    setQuestionData({ ...question, validation })
+  }
 
   handleUpdateAltValidationScore = (i, points) => {
-    const { question, setQuestionData } = this.props;
-    const newData = cloneDeep(question);
+    const { question, setQuestionData } = this.props
+    const newData = cloneDeep(question)
 
-    newData.validation.altResponses[i].score = points;
+    newData.validation.altResponses[i].score = points
 
-    setQuestionData(newData);
-  };
+    setQuestionData(newData)
+  }
 
-  getDrawingObjects = value => {
+  getDrawingObjects = (value) => {
     const allowedTypes = [
-      "point",
-      "line",
-      "ray",
-      "segment",
-      "vector",
-      "circle",
-      "ellipse",
-      "sine",
-      "tangent",
-      "secant",
-      "exponent",
-      "logarithm",
-      "polynom",
-      "hyperbola",
-      "polygon",
-      "parabola",
-      "parabola2"
-    ];
+      'point',
+      'line',
+      'ray',
+      'segment',
+      'vector',
+      'circle',
+      'ellipse',
+      'sine',
+      'tangent',
+      'secant',
+      'exponent',
+      'logarithm',
+      'polynom',
+      'hyperbola',
+      'polygon',
+      'parabola',
+      'parabola2',
+    ]
 
-    const shapes = value.filter(elem => allowedTypes.includes(elem.type) && !elem.subElement);
-    return shapes.map(elem => {
-      const { id, type, label, baseColor, dashed } = elem;
-      const result = { id, type, label, baseColor };
+    const shapes = value.filter(
+      (elem) => allowedTypes.includes(elem.type) && !elem.subElement
+    )
+    return shapes.map((elem) => {
+      const { id, type, label, baseColor, dashed } = elem
+      const result = { id, type, label, baseColor }
 
-      if (type !== "point") {
-        result.dashed = dashed;
-        result.pointLabels = Object.values(elem.subElementsIds).map(pointId => {
-          const point = value.find(item => item.id === pointId);
-          return {
-            label: point ? point.label : "",
-            baseColor: point.baseColor
-          };
-        });
+      if (type !== 'point') {
+        result.dashed = dashed
+        result.pointLabels = Object.values(elem.subElementsIds).map(
+          (pointId) => {
+            const point = value.find((item) => item.id === pointId)
+            return {
+              label: point ? point.label : '',
+              baseColor: point.baseColor,
+            }
+          }
+        )
       }
 
-      return result;
-    });
-  };
+      return result
+    })
+  }
 
-  handleChangePoints = points => {
-    const { tab } = this.state;
+  handleChangePoints = (points) => {
+    const { tab } = this.state
     if (tab === 0) {
-      this.handleUpdateCorrectScore(points);
+      this.handleUpdateCorrectScore(points)
     } else if (tab > 0) {
-      this.handleUpdateAltValidationScore(tab - 1, points);
+      this.handleUpdateAltValidationScore(tab - 1, points)
     }
-  };
+  }
 
   renderOptions = () => {
-    const { t, getIgnoreLabelsOptions, graphData, handleSelectIgnoreLabels, handleNumberlineChange } = this.props;
+    const {
+      t,
+      getIgnoreLabelsOptions,
+      graphData,
+      handleSelectIgnoreLabels,
+      handleNumberlineChange,
+    } = this.props
 
-    if (graphData.graphType === "quadrants" || graphData.graphType === "firstQuadrant") {
+    if (
+      graphData.graphType === 'quadrants' ||
+      graphData.graphType === 'firstQuadrant'
+    ) {
       return (
-        <Fragment>
+        <>
           <Row marginTop={15} gutter={24}>
             {/* 
               NOTE: Slicing of the array is done to keep the functionality of ignoring repeated shapes together but split into two options -
@@ -151,12 +172,12 @@ class GraphAnswers extends Component {
               <Label>Ignore labels</Label>
               <SelectInputStyled
                 data-cy="ignoreLabels"
-                onChange={val => handleSelectIgnoreLabels(val)}
+                onChange={(val) => handleSelectIgnoreLabels(val)}
                 options={getIgnoreLabelsOptions()}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-                value={graphData.validation.ignoreLabels || "yes"}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                value={graphData.validation.ignoreLabels || 'yes'}
               >
-                {getIgnoreLabelsOptions().map(option => (
+                {getIgnoreLabelsOptions().map((option) => (
                   <Select.Option data-cy={option.value} key={option.value}>
                     {option.label}
                   </Select.Option>
@@ -164,34 +185,37 @@ class GraphAnswers extends Component {
               </SelectInputStyled>
             </Col>
           </Row>
-        </Fragment>
-      );
+        </>
+      )
     }
 
-    if (graphData.graphType === "axisLabels") {
-      const { numberlineAxis } = graphData;
+    if (graphData.graphType === 'axisLabels') {
+      const { numberlineAxis } = graphData
       return (
         <CheckboxLabel
           name="shuffleAnswerChoices"
           onChange={() =>
             handleNumberlineChange({
               ...numberlineAxis,
-              shuffleAnswerChoices: !numberlineAxis.shuffleAnswerChoices
+              shuffleAnswerChoices: !numberlineAxis.shuffleAnswerChoices,
             })
           }
           checked={numberlineAxis.shuffleAnswerChoices}
         >
-          {t("component.graphing.shuffleAnswerChoices")}
+          {t('component.graphing.shuffleAnswerChoices')}
         </CheckboxLabel>
-      );
+      )
     }
-  };
+  }
 
   render() {
-    const { graphData, view, previewTab, ...rest } = this.props;
-    const { tab } = this.state;
-    const { validation } = graphData;
-    const points = tab == 0 ? validation.validResponse.score : validation.altResponses[tab - 1].score;
+    const { graphData, view, previewTab, ...rest } = this.props
+    const { tab } = this.state
+    const { validation } = graphData
+    const points =
+      tab == 0
+        ? validation.validResponse.score
+        : validation.altResponses[tab - 1].score
 
     return (
       <CorrectAnswers
@@ -207,7 +231,7 @@ class GraphAnswers extends Component {
         questionType={graphData?.title}
         isCorrectAnsTab={tab === 0}
       >
-        <Fragment>
+        <>
           {tab === 0 && (
             <TabContainer>
               <GraphDisplay
@@ -239,17 +263,17 @@ class GraphAnswers extends Component {
                       altAnswerId={alter.id}
                       elements={alter.value}
                       disableResponse={false}
-                      onChange={val => this.updateAltValidationValue(val, i)}
+                      onChange={(val) => this.updateAltValidationValue(val, i)}
                       item={graphData}
                     />
                   </TabContainer>
-                );
+                )
               }
-              return null;
+              return null
             })}
-        </Fragment>
+        </>
       </CorrectAnswers>
-    );
+    )
   }
 }
 
@@ -266,17 +290,17 @@ GraphAnswers.propTypes = {
   handleSelectIgnoreLabels: PropTypes.func.isRequired,
   getIgnoreRepeatedShapesOptions: PropTypes.func.isRequired,
   handleSelectIgnoreRepeatedShapes: PropTypes.func.isRequired,
-  handleNumberlineChange: PropTypes.func.isRequired
-};
+  handleNumberlineChange: PropTypes.func.isRequired,
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
-    state => ({
-      question: getQuestionDataSelector(state)
+    (state) => ({
+      question: getQuestionDataSelector(state),
     }),
     { setQuestionData: setQuestionDataAction }
   )
-);
+)
 
-export default enhance(GraphAnswers);
+export default enhance(GraphAnswers)

@@ -1,22 +1,32 @@
-import { themeColor, white } from "@edulastic/colors";
-import { CheckboxLabel,notification } from "@edulastic/common";
-import { Col, Form, Icon, Input, InputNumber, message, Row, Slider, Table } from "antd";
-import produce from "immer";
-import { get } from "lodash";
-import React from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import { ThemeButton } from "../../../src/components/common/ThemeButton";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { themeColor, white } from '@edulastic/colors'
+import { CheckboxLabel, notification } from '@edulastic/common'
+import {
+  Col,
+  Form,
+  Icon,
+  Input,
+  InputNumber,
+  message,
+  Row,
+  Slider,
+  Table,
+} from 'antd'
+import produce from 'immer'
+import { get } from 'lodash'
+import React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { ThemeButton } from '../../../src/components/common/ThemeButton'
+import { getUserOrgId } from '../../../src/selectors/user'
 import {
   createPerformanceBandAction,
   getPerformanceBandList,
   receivePerformanceBandAction,
   setPerformanceBandChangesAction,
-  updatePerformanceBandAction
-} from "../../ducks";
-import ColorPicker, { colors as colorsList } from "../Container/ColorPicker";
+  updatePerformanceBandAction,
+} from '../../ducks'
+import ColorPicker, { colors as colorsList } from '../Container/ColorPicker'
 import {
   PercentText,
   SaveAlert,
@@ -25,29 +35,28 @@ import {
   StyledDivCenter,
   StyledEnableContainer,
   StyledSaveButton,
-  StyledTableContainer
-} from "./styled";
+  StyledTableContainer,
+} from './styled'
 
 function Ellipsify({ children: text, limit }) {
-  //needed to handle multibyte chars(unicode,emojis)
-  const chars = [...text];
+  // needed to handle multibyte chars(unicode,emojis)
+  const chars = [...text]
   if (chars.length <= limit) {
-    return text;
-  } else {
-    return `${chars.slice(0, limit - 3).join("")}...`;
+    return text
   }
+  return `${chars.slice(0, limit - 3).join('')}...`
 }
 
-const FormItem = Form.Item;
-const EditableContext = React.createContext();
+const FormItem = Form.Item
+const EditableContext = React.createContext()
 
 const EditableRow = ({ form, index, ...props }) => (
   <EditableContext.Provider value={form}>
     <tr {...props} />
   </EditableContext.Provider>
-);
+)
 
-const EditableFormRow = Form.create()(EditableRow);
+const EditableFormRow = Form.create()(EditableRow)
 
 const StyledSlider = styled(Slider)`
   margin: 0px;
@@ -72,13 +81,13 @@ const StyledSlider = styled(Slider)`
     margin-left: -7px;
     border-color: #4e95f3;
   }
-`;
+`
 
 const StyledInputNumber = styled(InputNumber)`
   width: 60px;
   margin-right: 10px;
   margin-top: -5px;
-`;
+`
 
 const StyledAddBandButton = styled(ThemeButton)`
   border-radius: 4px;
@@ -88,84 +97,100 @@ const StyledAddBandButton = styled(ThemeButton)`
   text-align: center;
   line-height: 34px;
   font-size: 11px;
-`;
+`
 
 class EditableCell extends React.Component {
   state = {
-    editing: false
-  };
+    editing: false,
+  }
 
   toggleEdit = () => {
-    const editing = !this.state.editing;
+    const editing = !this.state.editing
     this.setState({ editing }, () => {
       if (editing) {
-        this.input.focus();
+        this.input.focus()
       }
-    });
-  };
+    })
+  }
 
-  save = e => {
-    const { record, handleSave } = this.props;
+  save = (e) => {
+    const { record, handleSave } = this.props
     this.form.validateFields((error, values) => {
       if (error && error[e.currentTarget.id]) {
-        return;
+        return
       }
-      this.toggleEdit();
-      handleSave({ ...record, ...values });
-    });
-  };
+      this.toggleEdit()
+      handleSave({ ...record, ...values })
+    })
+  }
 
-  saveToValue = e => {
-    const { record, handleSave } = this.props;
+  saveToValue = (e) => {
+    const { record, handleSave } = this.props
     this.form.validateFields((error, values) => {
       if (error && error[e.currentTarget.id]) {
-        return;
+        return
       }
-      handleSave({ ...record, ...values });
-    });
-  };
+      handleSave({ ...record, ...values })
+    })
+  }
 
   checkPrice = (rule, value, callback) => {
-    const { dataSource, record } = this.props;
+    const { dataSource, record } = this.props
     if (!isNaN(value)) {
-      const sameRow = dataSource.filter(item => item.key === record.key);
-      const sameDownRow = dataSource.filter(item => item.key === record.key + 1);
-      if (sameRow[0].from < parseInt(value)) callback(`To value should be less than ${sameRow[0].from}`);
+      const sameRow = dataSource.filter((item) => item.key === record.key)
+      const sameDownRow = dataSource.filter(
+        (item) => item.key === record.key + 1
+      )
+      if (sameRow[0].from < parseInt(value))
+        callback(`To value should be less than ${sameRow[0].from}`)
       else if (sameDownRow[0].to + 1 > parseInt(value))
-        callback(`To value shouldn't be less than ${sameDownRow[0].to}`);
-      else if (parseInt(value) > 100 || parseInt(value) < 0) callback("Please input value between 0 and 100");
-      else callback();
-      return;
+        callback(`To value shouldn't be less than ${sameDownRow[0].to}`)
+      else if (parseInt(value) > 100 || parseInt(value) < 0)
+        callback('Please input value between 0 and 100')
+      else callback()
+      return
     }
-    callback("Please input value between 0 and 100");
-  };
+    callback('Please input value between 0 and 100')
+  }
 
-  changeBandName = e => {
-    if (e.target.value.length > 150) e.target.value = e.target.value.slice(0, 150);
-  };
+  changeBandName = (e) => {
+    if (e.target.value.length > 150)
+      e.target.value = e.target.value.slice(0, 150)
+  }
 
   checkBandNameUnique = (rule, value, callback) => {
-    const { record } = this.props;
-    const dataSource = this.props.dataSource.filter(item => item.key != record.key);
+    const { record } = this.props
+    const dataSource = this.props.dataSource.filter(
+      (item) => item.key != record.key
+    )
 
-    const sameNameBand = dataSource.filter(item => item.name === value);
-    if (sameNameBand.length > 0) callback("Performance Band name should be unique.");
+    const sameNameBand = dataSource.filter((item) => item.name === value)
+    if (sameNameBand.length > 0)
+      callback('Performance Band name should be unique.')
     else {
-      callback();
-      return;
+      callback()
     }
-  };
+  }
 
   render() {
-    const { editing } = this.state;
-    const { editable, dataIndex, title, record, index, handleSave, toggleEditToValue, ...restProps } = this.props;
+    const { editing } = this.state
+    const {
+      editable,
+      dataIndex,
+      title,
+      record,
+      index,
+      handleSave,
+      toggleEditToValue,
+      ...restProps
+    } = this.props
     return (
       <td {...restProps}>
         {editable ? (
           <EditableContext.Consumer>
-            {form => {
-              this.form = form;
-              if (dataIndex === "to") {
+            {(form) => {
+              this.form = form
+              if (dataIndex === 'to') {
                 return toggleEditToValue ? (
                   <StyledEnableContainer>
                     <FormItem style={{ margin: 0 }}>
@@ -173,14 +198,14 @@ class EditableCell extends React.Component {
                         rules: [
                           {
                             required: true,
-                            message: `${title} is required.`
+                            message: `${title} is required.`,
                           },
-                          { validator: this.checkPrice }
+                          { validator: this.checkPrice },
                         ],
-                        initialValue: parseInt(record[dataIndex])
+                        initialValue: parseInt(record[dataIndex]),
                       })(
                         <Input
-                          ref={node => (this.toValueInput = node)}
+                          ref={(node) => (this.toValueInput = node)}
                           onPressEnter={this.saveToValue}
                           onBlur={this.saveToValue}
                           autoFocus
@@ -189,253 +214,274 @@ class EditableCell extends React.Component {
                     </FormItem>
                   </StyledEnableContainer>
                 ) : (
-                  <div className="editable-cell-value-wrap">{restProps.children}</div>
-                );
-              } else {
-                return editing ? (
-                  <React.Fragment>
-                    {dataIndex === "name" && (
-                      <FormItem style={{ margin: 0 }}>
-                        {form.getFieldDecorator(dataIndex, {
-                          rules: [
-                            {
-                              required: true,
-                              message: `${title} is required.`
-                            },
-                            { validator: this.checkBandNameUnique }
-                          ],
-                          initialValue: record[dataIndex]
-                        })(
-                          <Input
-                            ref={node => (this.input = node)}
-                            onPressEnter={this.save}
-                            onBlur={this.save}
-                            onChange={this.changeBandName}
-                          />
-                        )}
-                      </FormItem>
-                    )}
-                  </React.Fragment>
-                ) : (
-                  <div className="editable-cell-value-wrap" onClick={this.toggleEdit}>
+                  <div className="editable-cell-value-wrap">
                     {restProps.children}
                   </div>
-                );
+                )
               }
+              return editing ? (
+                <>
+                  {dataIndex === 'name' && (
+                    <FormItem style={{ margin: 0 }}>
+                      {form.getFieldDecorator(dataIndex, {
+                        rules: [
+                          {
+                            required: true,
+                            message: `${title} is required.`,
+                          },
+                          { validator: this.checkBandNameUnique },
+                        ],
+                        initialValue: record[dataIndex],
+                      })(
+                        <Input
+                          ref={(node) => (this.input = node)}
+                          onPressEnter={this.save}
+                          onBlur={this.save}
+                          onChange={this.changeBandName}
+                        />
+                      )}
+                    </FormItem>
+                  )}
+                </>
+              ) : (
+                <div
+                  className="editable-cell-value-wrap"
+                  onClick={this.toggleEdit}
+                >
+                  {restProps.children}
+                </div>
+              )
             }}
           </EditableContext.Consumer>
         ) : (
           restProps.children
         )}
       </td>
-    );
+    )
   }
 }
 
 export class PerformanceBandTable extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       editingKey: -1,
-      isChangeState: false
-    };
+      isChangeState: false,
+    }
   }
 
   componentDidMount() {
-    const { loadPerformanceBand, userOrgId } = this.props;
+    const { loadPerformanceBand, userOrgId } = this.props
     if (loadPerformanceBand) {
-      loadPerformanceBand({ orgId: userOrgId });
+      loadPerformanceBand({ orgId: userOrgId })
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    return { dataSource: nextProps.dataSource, performanceBandId: nextProps.performanceBandId };
+    return {
+      dataSource: nextProps.dataSource,
+      performanceBandId: nextProps.performanceBandId,
+    }
   }
 
-  setChanged = v => this.setState({ isChangeState: v });
+  setChanged = (v) => this.setState({ isChangeState: v })
 
   onClickFromTo = (e, key, keyName, value) => {
-    const dataSource = [...this.state.dataSource];
-    if (key == 0 && keyName === "from") return;
-    if (key == dataSource.length - 1 && keyName === "to") return;
+    const dataSource = [...this.state.dataSource]
+    if (key == 0 && keyName === 'from') return
+    if (key == dataSource.length - 1 && keyName === 'to') return
 
-    if (keyName === "from") {
+    if (keyName === 'from') {
       if (
-        parseInt(dataSource[key].from) + value <= parseInt(dataSource[key].to) ||
-        parseInt(dataSource[key].from) + value >= parseInt(dataSource[key - 1].from)
+        parseInt(dataSource[key].from) + value <=
+          parseInt(dataSource[key].to) ||
+        parseInt(dataSource[key].from) + value >=
+          parseInt(dataSource[key - 1].from)
       ) {
-        return;
-      } else {
-        dataSource[key].from = parseInt(dataSource[key].from) + value;
-        dataSource[key - 1].to = parseInt(dataSource[key - 1].to) + value;
+        return
       }
+      dataSource[key].from = parseInt(dataSource[key].from) + value
+      dataSource[key - 1].to = parseInt(dataSource[key - 1].to) + value
     }
 
-    if (keyName === "to") {
+    if (keyName === 'to') {
       if (
-        parseInt(dataSource[key].to) + value >= parseInt(dataSource[key].from) ||
+        parseInt(dataSource[key].to) + value >=
+          parseInt(dataSource[key].from) ||
         parseInt(dataSource[key].to) + value <= parseInt(dataSource[key + 1].to)
       ) {
-        console.warn("return early", { value, to: dataSource[key].to, from: dataSource[key].from, key });
-        return;
-      } else {
-        dataSource[key].to = parseInt(dataSource[key].to) + value;
-        dataSource[key + 1].from = parseInt(dataSource[key + 1].from) + value;
+        console.warn('return early', {
+          value,
+          to: dataSource[key].to,
+          from: dataSource[key].from,
+          key,
+        })
+        return
       }
+      dataSource[key].to = parseInt(dataSource[key].to) + value
+      dataSource[key + 1].from = parseInt(dataSource[key + 1].from) + value
     }
 
-    this.setState({ isChangeState: true });
-    this.props.setPerformanceBandData(dataSource);
-  };
+    this.setState({ isChangeState: true })
+    this.props.setPerformanceBandData(dataSource)
+  }
 
   changeAbove = (e, key) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource.map(row => {
-      if (row.key === key) row.aboveOrAtStandard = e.target.checked;
-    });
-    this.setState({ isChangeState: true });
-    this.props.setPerformanceBandData(dataSource);
-  };
+    const dataSource = [...this.state.dataSource]
+    dataSource.map((row) => {
+      if (row.key === key) row.aboveOrAtStandard = e.target.checked
+    })
+    this.setState({ isChangeState: true })
+    this.props.setPerformanceBandData(dataSource)
+  }
 
   changeColor = (color, key) => {
-    const index = this.state.dataSource.findIndex(x => x.key === key);
+    const index = this.state.dataSource.findIndex((x) => x.key === key)
     const colorExists = this.state.dataSource
       .filter((x, ind) => ind != index)
-      .map(x => x.color)
-      .includes(color);
+      .map((x) => x.color)
+      .includes(color)
 
     if (colorExists) {
-      notification({ messageKey: "pleaseSelectADifferentColor" });
-      return;
+      notification({ messageKey: 'pleaseSelectADifferentColor' })
+      return
     }
-    const data = produce(this.state.dataSource, ds => {
-      ds[index].color = color;
-    });
-    this.setState({ isChangeState: true, dataSource: data });
-    this.props.setPerformanceBandData(data);
-  };
+    const data = produce(this.state.dataSource, (ds) => {
+      ds[index].color = color
+    })
+    this.setState({ isChangeState: true, dataSource: data })
+    this.props.setPerformanceBandData(data)
+  }
 
   getUnusedColor = () => {
-    const existingColors = this.state.dataSource.map(x => x.color);
-    return colorsList.find(x => !existingColors.includes(x));
-  };
+    const existingColors = this.state.dataSource.map((x) => x.color)
+    return colorsList.find((x) => !existingColors.includes(x))
+  }
 
   handleDelete = (e, key) => {
-    const dataSource = [...this.state.dataSource];
+    const dataSource = [...this.state.dataSource]
     if (dataSource.length <= 2) {
-      notification({ messageKey: "performanceBandShouldAtLeast" });
+      notification({ messageKey: 'performanceBandShouldAtLeast' })
 
-      
-      return;
+      return
     }
-    if (dataSource[0].key === key) dataSource[1].from = 100;
-    else if (dataSource[dataSource.length - 1].key === key) dataSource[dataSource.length - 2].to = 0;
-    else dataSource[key + 1].from = dataSource[key].from;
+    if (dataSource[0].key === key) dataSource[1].from = 100
+    else if (dataSource[dataSource.length - 1].key === key)
+      dataSource[dataSource.length - 2].to = 0
+    else dataSource[key + 1].from = dataSource[key].from
 
-    this.setState({ isChangeState: true });
-    this.props.setPerformanceBandData(dataSource.filter(item => item.key !== key));
-  };
+    this.setState({ isChangeState: true })
+    this.props.setPerformanceBandData(
+      dataSource.filter((item) => item.key !== key)
+    )
+  }
 
   handleAdd = () => {
-    const { dataSource } = this.state;
-    const keyArray = [];
+    const { dataSource } = this.state
+    const keyArray = []
     for (let i = 0; i < dataSource.length; i++) {
-      keyArray.push(dataSource[i].key);
+      keyArray.push(dataSource[i].key)
     }
 
     const newData = {
       key: Math.max(...keyArray) + 1,
-      name: "Performance Band" + (Math.max(...keyArray) + 1),
+      name: `Performance Band${Math.max(...keyArray) + 1}`,
       aboveOrAtStandard: true,
-      color: this.getUnusedColor() || "#fff",
+      color: this.getUnusedColor() || '#fff',
       from: 0,
-      to: 0
-    };
+      to: 0,
+    }
 
-    dataSource[dataSource.length - 1].to = dataSource[dataSource.length - 1].from - 1;
+    dataSource[dataSource.length - 1].to =
+      dataSource[dataSource.length - 1].from - 1
 
     this.setState({
       editingKey: dataSource[dataSource.length - 1].key,
-      isChangeState: true
-    });
-    this.props.setPerformanceBandData([...dataSource, newData]);
-  };
+      isChangeState: true,
+    })
+    this.props.setPerformanceBandData([...dataSource, newData])
+  }
 
-  handleSave = row => {
-    const newData = [...this.state.dataSource];
-    const index = newData.findIndex(item => row.key === item.key);
-    const item = newData[index];
+  handleSave = (row) => {
+    const newData = [...this.state.dataSource]
+    const index = newData.findIndex((item) => row.key === item.key)
+    const item = newData[index]
     newData.splice(index, 1, {
       ...item,
-      ...row
-    });
-    newData[newData.length - 1].from = newData[newData.length - 2].to;
+      ...row,
+    })
+    newData[newData.length - 1].from = newData[newData.length - 2].to
 
     this.setState({
       editingKey: -1,
-      isChangeState: true
-    });
+      isChangeState: true,
+    })
 
-    this.props.setPerformanceBandData(newData);
-  };
+    this.props.setPerformanceBandData(newData)
+  }
 
   updatePerformanceBand = () => {
-    const dataSource = [];
-    this.state.dataSource.map(row => {
+    const dataSource = []
+    this.state.dataSource.map((row) => {
       dataSource.push({
         name: row.name,
         aboveOrAtStandard: row.aboveOrAtStandard,
         from: row.from,
-        to: row.to
-      });
-    });
+        to: row.to,
+      })
+    })
 
-    let performanceBandData = {
+    const performanceBandData = {
       orgId: this.props.userOrgId,
-      orgType: "district",
-      performanceBand: dataSource
-    };
+      orgType: 'district',
+      performanceBand: dataSource,
+    }
 
     if (this.state.performanceBandId.length === 0) {
-      this.props.createPerformanceband(performanceBandData);
+      this.props.createPerformanceband(performanceBandData)
     } else {
-      this.props.updatePerformanceBand(performanceBandData);
+      this.props.updatePerformanceBand(performanceBandData)
     }
-    this.setState({ isChangeState: false });
-  };
+    this.setState({ isChangeState: false })
+  }
 
-  isToValueEditing = record => record.key === this.state.editingKey;
+  isToValueEditing = (record) => record.key === this.state.editingKey
 
   render() {
-    const { dataSource, editingKey, isChangeState, performanceBandId } = this.state;
+    const {
+      dataSource,
+      editingKey,
+      isChangeState,
+      performanceBandId,
+    } = this.state
 
     this.columns = [
       {
-        title: "Band Name",
-        dataIndex: "name",
-        width: "20%",
+        title: 'Band Name',
+        dataIndex: 'name',
+        width: '20%',
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
-            <React.Fragment>
+            <>
               <ColorPicker
                 disabled={this.props.readOnly}
                 value={record.color}
-                onChange={c => this.changeColor(c, record.key)}
-              />{" "}
+                onChange={(c) => this.changeColor(c, record.key)}
+              />{' '}
               <span title={record.name}>
                 <Ellipsify limit={20}>{record.name}</Ellipsify>
               </span>
               &nbsp;
-            </React.Fragment>
-          );
-        }
+            </>
+          )
+        },
       },
       {
-        title: "Above or At Standard",
-        dataIndex: "aboveOrAtStandard",
-        width: "20%",
+        title: 'Above or At Standard',
+        dataIndex: 'aboveOrAtStandard',
+        width: '20%',
         render: (text, record) => {
           return (
             <StyledDivCenter>
@@ -443,37 +489,37 @@ export class PerformanceBandTable extends React.Component {
                 defaultChecked={record.aboveOrAtStandard}
                 checked={record.aboveOrAtStandard}
                 disabled={this.props.readOnly}
-                onChange={e => this.changeAbove(e, record.key)}
+                onChange={(e) => this.changeAbove(e, record.key)}
               />
             </StyledDivCenter>
-          );
-        }
+          )
+        },
       },
       {
-        title: "From",
-        dataIndex: "from",
-        width: "25%",
+        title: 'From',
+        dataIndex: 'from',
+        width: '25%',
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+              <Row type="flex" align="center" style={{ flex: '1 1 auto' }}>
                 {this.props.readOnly ? (
                   <PercentText>{record.from}%</PercentText>
                 ) : (
                   <StyledInputNumber
                     value={record.from}
-                    onChange={v => {
-                      const delta = v - record.from;
-                      this.onClickFromTo(v, record.key, "from", delta);
+                    onChange={(v) => {
+                      const delta = v - record.from
+                      this.onClickFromTo(v, record.key, 'from', delta)
                     }}
                   />
                 )}
-                <Col style={{ flex: "1 1 auto" }}>
+                <Col style={{ flex: '1 1 auto' }}>
                   <StyledSlider
                     disabled={this.props.readOnly}
-                    onChange={v => {
-                      const delta = v - record.from;
-                      this.onClickFromTo(v, record.key, "from", delta);
+                    onChange={(v) => {
+                      const delta = v - record.from
+                      this.onClickFromTo(v, record.key, 'from', delta)
                     }}
                     value={parseInt(record.from)}
                     max={100}
@@ -483,35 +529,35 @@ export class PerformanceBandTable extends React.Component {
                 </Col>
               </Row>
             </StyledColFromTo>
-          );
-        }
+          )
+        },
       },
       {
-        title: "To",
-        dataIndex: "to",
-        width: "25%",
+        title: 'To',
+        dataIndex: 'to',
+        width: '25%',
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+              <Row type="flex" align="center" style={{ flex: '1 1 auto' }}>
                 {this.props.readOnly ? (
                   <PercentText>{record.to}%</PercentText>
                 ) : (
                   <StyledInputNumber
                     value={record.to}
-                    onChange={v => {
-                      const delta = v - record.to;
-                      this.onClickFromTo(v, record.key, "to", delta);
+                    onChange={(v) => {
+                      const delta = v - record.to
+                      this.onClickFromTo(v, record.key, 'to', delta)
                     }}
                   />
                 )}
-                <Col style={{ flex: "1 1 auto" }}>
+                <Col style={{ flex: '1 1 auto' }}>
                   <StyledSlider
                     disabled={this.props.readOnly}
-                    onChange={v => {
-                      const delta = v - record.to;
-                      this.onClickFromTo(v, record.key, "to", delta);
+                    onChange={(v) => {
+                      const delta = v - record.to
+                      this.onClickFromTo(v, record.key, 'to', delta)
                     }}
                     value={parseInt(record.to)}
                     max={100}
@@ -521,71 +567,76 @@ export class PerformanceBandTable extends React.Component {
                 </Col>
               </Row>
             </StyledColFromTo>
-          );
-        }
+          )
+        },
       },
       {
         title: this.props.readOnly ? (
-          ""
+          ''
         ) : (
           <StyledAddBandButton
             disabled={dataSource.length >= 10}
-            title={dataSource.length >= 10 ? "maximum 10 bands allowed" : undefined}
+            title={
+              dataSource.length >= 10 ? 'maximum 10 bands allowed' : undefined
+            }
             onClick={this.handleAdd}
           >
             ADD BAND
           </StyledAddBandButton>
         ),
-        dataIndex: "operation",
-        width: "15%",
+        dataIndex: 'operation',
+        width: '15%',
         render: (text, record) =>
           this.state.dataSource.length >= 3 && !this.props.readOnly ? (
             <StyledDivCenter>
-              <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
+              <a
+                href="javascript:;"
+                onClick={(e) => this.handleDelete(e, record.key)}
+              >
                 <Icon type="delete" theme="filled" twoToneColor={themeColor} />
               </a>
             </StyledDivCenter>
-          ) : null
-      }
-    ];
+          ) : null,
+      },
+    ]
 
     const components = {
       body: {
         row: EditableFormRow,
-        cell: EditableCell
-      }
-    };
-    const columns = this.columns.map(col => {
+        cell: EditableCell,
+      },
+    }
+    const columns = this.columns.map((col) => {
       if (!col.editable) {
-        return col;
+        return col
       }
       return {
         ...col,
-        onCell: record => ({
+        onCell: (record) => ({
           record,
           editable: col.editable,
           dataIndex: col.dataIndex,
           title: col.title,
           handleSave: this.handleSave,
           toggleEditToValue: this.isToValueEditing(record),
-          dataSource: dataSource
-        })
-      };
-    });
+          dataSource,
+        }),
+      }
+    })
 
-    const isAddDisable =
+    const isAddDisable = !!(
       dataSource.length == 0 ||
-      (dataSource[dataSource.length - 1].to == 0 && dataSource[dataSource.length - 1].from == 0) ||
+      (dataSource[dataSource.length - 1].to == 0 &&
+        dataSource[dataSource.length - 1].from == 0) ||
       editingKey != -1 ||
       dataSource.length >= 10
-        ? true
-        : false;
+    )
 
     return (
       <StyledTableContainer>
         <Table
           components={components}
-          rowClassName={() => "editable-row"}
+          rowClassName={() => 'editable-row'}
           dataSource={dataSource}
           pagination={false}
           columns={columns}
@@ -594,7 +645,11 @@ export class PerformanceBandTable extends React.Component {
         <StyledBottomDiv>
           {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
           {performanceBandId.length == 0 ? (
-            <StyledSaveButton disabled={this.props.readOnly} type="primary" onClick={this.updatePerformanceBand}>
+            <StyledSaveButton
+              disabled={this.props.readOnly}
+              type="primary"
+              onClick={this.updatePerformanceBand}
+            >
               Create
             </StyledSaveButton>
           ) : (
@@ -609,23 +664,27 @@ export class PerformanceBandTable extends React.Component {
           )}
         </StyledBottomDiv>
       </StyledTableContainer>
-    );
+    )
   }
 }
 
 const enhance = compose(
   connect(
-    state => ({
+    (state) => ({
       dataSource: getPerformanceBandList(state),
-      performanceBandId: get(state, ["performanceBandReducer", "data", "_id"], ""),
-      userOrgId: getUserOrgId(state)
+      performanceBandId: get(
+        state,
+        ['performanceBandReducer', 'data', '_id'],
+        ''
+      ),
+      userOrgId: getUserOrgId(state),
     }),
     {
       loadPerformanceBand: receivePerformanceBandAction,
       createPerformanceband: createPerformanceBandAction,
       updatePerformanceBand: updatePerformanceBandAction,
-      setPerformanceBandData: setPerformanceBandChangesAction
+      setPerformanceBandData: setPerformanceBandChangesAction,
     }
   )
-);
-export default enhance(PerformanceBandTable);
+)
+export default enhance(PerformanceBandTable)

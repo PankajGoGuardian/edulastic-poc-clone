@@ -1,70 +1,74 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { cloneDeep, get } from "lodash";
-import { Select, Icon } from "antd";
-import styled, { withTheme } from "styled-components";
-import { themeColor, themeColorTagsBg } from "@edulastic/colors";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { cloneDeep, get } from 'lodash'
+import { Select, Icon } from 'antd'
+import styled, { withTheme } from 'styled-components'
+import { themeColor, themeColorTagsBg } from '@edulastic/colors'
 
-import { withNamespaces } from "@edulastic/localization";
-import { rounding, evaluationType, nonAutoGradableTypes } from "@edulastic/constants";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { rubricsApi } from "@edulastic/api";
+import { withNamespaces } from '@edulastic/localization'
+import {
+  rounding,
+  evaluationType,
+  nonAutoGradableTypes,
+} from '@edulastic/constants'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { rubricsApi } from '@edulastic/api'
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
   setIsGradingRubricAction,
-  getIsGradingCheckboxState
-} from "../../../../author/QuestionEditor/ducks";
+  getIsGradingCheckboxState,
+} from '../../../../author/QuestionEditor/ducks'
 
-import { removeRubricIdAction } from "../../../../author/sharedDucks/questions";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
-import { Subtitle } from "../../../styled/Subtitle";
-import { CustomStyleBtn } from "../../../styled/ButtonStyles";
-import { FormGroup } from "../styled/FormGroup";
-import GradingRubricModal from "./GradingRubricModal";
-import { updateRubricDataAction } from "../../../../author/GradingRubric/ducks";
-import { getUserFeatures } from "../../../../student/Login/ducks";
-import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
-import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
-import QuestionTextArea from "../../../components/QuestionTextArea";
-import { WidgetFRInput } from "../../../styled/Widget";
+import { removeRubricIdAction } from '../../../../author/sharedDucks/questions'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import { Label } from '../../../styled/WidgetOptions/Label'
+import { SectionHeading } from '../../../styled/WidgetOptions/SectionHeading'
+import { Subtitle } from '../../../styled/Subtitle'
+import { CustomStyleBtn } from '../../../styled/ButtonStyles'
+import { FormGroup } from '../styled/FormGroup'
+import GradingRubricModal from './GradingRubricModal'
+import { updateRubricDataAction } from '../../../../author/GradingRubric/ducks'
+import { getUserFeatures } from '../../../../student/Login/ducks'
+import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
+import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
+import QuestionTextArea from '../../../components/QuestionTextArea'
+import { WidgetFRInput } from '../../../styled/Widget'
 
-const roundingTypes = [rounding.roundDown, rounding.none];
+const roundingTypes = [rounding.roundDown, rounding.none]
 
 class Scoring extends Component {
   state = {
     showGradingRubricModal: false,
-    rubricActionType: ""
-  };
+    rubricActionType: '',
+  }
 
-  handleRubricAction = actionType => {
+  handleRubricAction = (actionType) => {
     this.setState({
       showGradingRubricModal: true,
-      rubricActionType: actionType
-    });
-  };
+      rubricActionType: actionType,
+    })
+  }
 
   toggleRubricModal = () => {
-    const { updateRubricData } = this.props;
+    const { updateRubricData } = this.props
     this.setState({
       showGradingRubricModal: false,
-      rubricActionType: ""
-    });
-    updateRubricData(null);
-  };
+      rubricActionType: '',
+    })
+    updateRubricData(null)
+  }
 
-  handleViewRubric = async id => {
-    const { updateRubricData } = this.props;
-    await rubricsApi.getRubricsById(id).then(res => {
-      updateRubricData(res[0]);
-      this.handleRubricAction("VIEW RUBRIC");
-    });
-  };
+  handleViewRubric = async (id) => {
+    const { updateRubricData } = this.props
+    await rubricsApi.getRubricsById(id).then((res) => {
+      updateRubricData(res[0])
+      this.handleRubricAction('VIEW RUBRIC')
+    })
+  }
 
   render() {
     const {
@@ -87,58 +91,65 @@ class Scoring extends Component {
       showScoringType,
       extraInScoring = null,
       isCorrectAnsTab = true,
-      item = {}
-    } = this.props;
-    const { showGradingRubricModal, rubricActionType } = this.state;
+      item = {},
+    } = this.props
+    const { showGradingRubricModal, rubricActionType } = this.state
     const handleChangeValidation = (param, value) => {
-      const newData = cloneDeep(questionData);
+      const newData = cloneDeep(questionData)
 
       if (!newData.validation) {
-        newData.validation = {};
+        newData.validation = {}
       }
       if (
-        (param === "maxScore" || param === "penalty" || param === "minScoreIfAttempted" || param === "") &&
+        (param === 'maxScore' ||
+          param === 'penalty' ||
+          param === 'minScoreIfAttempted' ||
+          param === '') &&
         value < 0
       ) {
-        newData.validation[param] = 0;
+        newData.validation[param] = 0
       } else {
-        if (param === "automarkable" && !value) {
-          newData.validation.scoringType = evaluationType.EXACT_MATCH;
+        if (param === 'automarkable' && !value) {
+          newData.validation.scoringType = evaluationType.EXACT_MATCH
         }
-        newData.validation[param] = value;
+        newData.validation[param] = value
       }
 
-      setQuestionData(newData);
-    };
+      setQuestionData(newData)
+    }
 
     const handleChangeInstructions = (param, value) => {
-      const newData = cloneDeep(questionData);
-      newData[param] = value;
-      setQuestionData(newData);
-    };
+      const newData = cloneDeep(questionData)
+      newData[param] = value
+      setQuestionData(newData)
+    }
 
-    const isAutomarkChecked = get(questionData, "validation.automarkable", true);
-    const maxScore = get(questionData, "validation.validResponse.score", 1);
-    const questionType = get(questionData, "type", "");
-    const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
+    const isAutomarkChecked = get(questionData, 'validation.automarkable', true)
+    const maxScore = get(questionData, 'validation.validResponse.score', 1)
+    const questionType = get(questionData, 'type', '')
+    const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType)
 
-    const questionTitle = item?.title || questionData?.title;
+    const questionTitle = item?.title || questionData?.title
 
     return (
       <div
         section="advanced"
-        label={t("component.options.scoring")}
+        label={t('component.options.scoring')}
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
+        {isSection && (
+          <SectionHeading>{t('component.options.scoring')}</SectionHeading>
+        )}
         {!isSection && (
           <Subtitle
-            margin={noPaddingLeft ? "0 0 29px -30px" : null}
-            id={getFormattedAttrId(`${questionTitle}-${t("component.options.scoring")}`)}
+            margin={noPaddingLeft ? '0 0 29px -30px' : null}
+            id={getFormattedAttrId(
+              `${questionTitle}-${t('component.options.scoring')}`
+            )}
           >
-            {t("component.options.scoring")}
+            {t('component.options.scoring')}
           </Subtitle>
         )}
         {extraInScoring}
@@ -148,11 +159,13 @@ class Scoring extends Component {
               <CheckboxLabel
                 data-cy="autoscoreChk"
                 checked={isAutomarkChecked}
-                onChange={e => handleChangeValidation("automarkable", e.target.checked)}
+                onChange={(e) =>
+                  handleChangeValidation('automarkable', e.target.checked)
+                }
                 size="large"
                 disabled={!isCorrectAnsTab}
               >
-                {t("component.options.automarkable")}
+                {t('component.options.automarkable')}
               </CheckboxLabel>
             </Col>
             {isAutomarkChecked && (
@@ -160,11 +173,13 @@ class Scoring extends Component {
                 <CheckboxLabel
                   data-cy="unscoredChk"
                   checked={questionData.validation.unscored}
-                  onChange={e => handleChangeValidation("unscored", e.target.checked)}
+                  onChange={(e) =>
+                    handleChangeValidation('unscored', e.target.checked)
+                  }
                   size="large"
                   disabled={!isCorrectAnsTab}
                 >
-                  {t("component.options.unscored")}
+                  {t('component.options.unscored')}
                 </CheckboxLabel>
               </Col>
             )}
@@ -175,19 +190,32 @@ class Scoring extends Component {
           <Row gutter={24} type="flex" wrap="wrap" mb="0">
             {!isAutoMarkBtnVisible && (
               <Col md={12}>
-                <Label>{t("component.options.maxScore")}</Label>
+                <Label>{t('component.options.maxScore')}</Label>
                 <FormGroup center>
                   <TextInputStyled
-                    id={getFormattedAttrId(`${questionTitle}-${t("component.options.maxScore")}`)}
+                    id={getFormattedAttrId(
+                      `${questionTitle}-${t('component.options.maxScore')}`
+                    )}
                     data-cy="maxscore"
                     type="number"
                     value={maxScore}
                     step={0.5}
                     min={0}
-                    onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
+                    onChange={(e) =>
+                      handleChangeValidation('validResponse', {
+                        score: +e.target.value,
+                      })
+                    }
                     size="large"
-                    style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                    disabled={(!!questionData.rubrics && userFeatures.gradingrubrics) || isGradingCheckboxState}
+                    style={{
+                      width: '20%',
+                      marginRight: 30,
+                      borderColor: '#E1E1E1',
+                    }}
+                    disabled={
+                      (!!questionData.rubrics && userFeatures.gradingrubrics) ||
+                      isGradingCheckboxState
+                    }
                   />
                 </FormGroup>
               </Col>
@@ -195,13 +223,15 @@ class Scoring extends Component {
             {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}
             {showScoringType && scoringTypes.length > 1 && showSelect && (
               <Col md={12}>
-                <Label>{t("component.options.scoringType")}</Label>
+                <Label>{t('component.options.scoringType')}</Label>
                 <SelectInputStyled
                   size="large"
                   data-cy="scoringType"
                   value={questionData.validation.scoringType}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                  onChange={value => handleChangeValidation("scoringType", value)}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  onChange={(value) =>
+                    handleChangeValidation('scoringType', value)
+                  }
                 >
                   {scoringTypes.map(({ value: val, label }) => (
                     <Select.Option data-cy={val} key={val} value={val}>
@@ -211,16 +241,19 @@ class Scoring extends Component {
                 </SelectInputStyled>
               </Col>
             )}
-            {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
+            {questionData.validation.scoringType ===
+              evaluationType.PARTIAL_MATCH && (
               <>
                 <Col md={12}>
-                  <Label>{t("component.options.rounding")}</Label>
+                  <Label>{t('component.options.rounding')}</Label>
                   <SelectInputStyled
                     data-cy="rounding"
                     size="large"
                     value={questionData.validation.rounding}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                    onChange={value => handleChangeValidation("rounding", value)}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    onChange={(value) =>
+                      handleChangeValidation('rounding', value)
+                    }
                   >
                     {roundingTypes.map(({ value: val, label }) => (
                       <Select.Option data-cy={val} key={val} value={val}>
@@ -230,16 +263,18 @@ class Scoring extends Component {
                   </SelectInputStyled>
                 </Col>
                 <Col md={12}>
-                  <Label>{t("component.options.penalty")}</Label>
+                  <Label>{t('component.options.penalty')}</Label>
                   <FormGroup center>
                     <TextInputStyled
                       type="number"
                       data-cy="penalty"
                       step="0.5"
                       value={questionData.validation.penalty}
-                      onChange={e => handleChangeValidation("penalty", +e.target.value)}
+                      onChange={(e) =>
+                        handleChangeValidation('penalty', +e.target.value)
+                      }
                       size="large"
-                      style={{ width: "100%", borderColor: "#E1E1E1" }}
+                      style={{ width: '100%', borderColor: '#E1E1E1' }}
                     />
                   </FormGroup>
                 </Col>
@@ -254,57 +289,62 @@ class Scoring extends Component {
               <CheckboxLabel
                 data-cy="gradingRubricChk"
                 checked={isGradingCheckboxState || questionData.rubrics}
-                onChange={e => {
-                  setIsGradingRubric(e.target.checked);
-                  if (questionData.rubrics) dissociateRubricFromQuestion();
+                onChange={(e) => {
+                  setIsGradingRubric(e.target.checked)
+                  if (questionData.rubrics) dissociateRubricFromQuestion()
                 }}
                 disabled={!isCorrectAnsTab}
                 size="large"
               >
-                {t("component.options.gradingRubric")}
+                {t('component.options.gradingRubric')}
               </CheckboxLabel>
             </Col>
           </Row>
         )}
-        {(isGradingCheckboxState || questionData.rubrics) && userFeatures.gradingrubrics && (
-          <Row gutter={24}>
-            <Col md={24} lg={24} xs={24}>
-              <CustomStyleBtn
-                onClick={e => {
-                  this.handleRubricAction("CREATE NEW");
-                  e.target.blur();
-                }}
-                display="inline-block"
-                padding="0px 16px"
-                width="142px"
-                margin="0px 15px 0px 0px"
-                disabled={!isCorrectAnsTab}
-                ghost={!isCorrectAnsTab}
-              >
-                Create New Rubric
-              </CustomStyleBtn>
-              <CustomStyleBtn
-                onClick={e => {
-                  this.handleRubricAction("USE EXISTING");
-                  e.target.blur();
-                }}
-                display="inline-block"
-                padding="0px 16px"
-                width="142px"
-                margin="0px 15px 0px 0px"
-                disabled={!isCorrectAnsTab}
-                ghost={!isCorrectAnsTab}
-              >
-                Use Existing Rubric
-              </CustomStyleBtn>
-            </Col>
-          </Row>
-        )}
+        {(isGradingCheckboxState || questionData.rubrics) &&
+          userFeatures.gradingrubrics && (
+            <Row gutter={24}>
+              <Col md={24} lg={24} xs={24}>
+                <CustomStyleBtn
+                  onClick={(e) => {
+                    this.handleRubricAction('CREATE NEW')
+                    e.target.blur()
+                  }}
+                  display="inline-block"
+                  padding="0px 16px"
+                  width="142px"
+                  margin="0px 15px 0px 0px"
+                  disabled={!isCorrectAnsTab}
+                  ghost={!isCorrectAnsTab}
+                >
+                  Create New Rubric
+                </CustomStyleBtn>
+                <CustomStyleBtn
+                  onClick={(e) => {
+                    this.handleRubricAction('USE EXISTING')
+                    e.target.blur()
+                  }}
+                  display="inline-block"
+                  padding="0px 16px"
+                  width="142px"
+                  margin="0px 15px 0px 0px"
+                  disabled={!isCorrectAnsTab}
+                  ghost={!isCorrectAnsTab}
+                >
+                  Use Existing Rubric
+                </CustomStyleBtn>
+              </Col>
+            </Row>
+          )}
 
         {questionData.rubrics && userFeatures.gradingrubrics && (
           <RubricsContainer>
             <StyledTag>
-              <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
+              <span
+                onClick={() => this.handleViewRubric(questionData.rubrics._id)}
+              >
+                {questionData.rubrics.name}
+              </span>
               <span onClick={() => dissociateRubricFromQuestion()}>
                 <Icon type="close" />
               </span>
@@ -317,7 +357,12 @@ class Scoring extends Component {
             <CheckboxLabel
               data-cy="isScoringInstructionsEnabled"
               checked={questionData?.isScoringInstructionsEnabled}
-              onChange={e => handleChangeInstructions("isScoringInstructionsEnabled", e.target.checked)}
+              onChange={(e) =>
+                handleChangeInstructions(
+                  'isScoringInstructionsEnabled',
+                  e.target.checked
+                )
+              }
               size="large"
               disabled={!isCorrectAnsTab}
             >
@@ -334,9 +379,11 @@ class Scoring extends Component {
                   border="border"
                   toolbarSize="SM"
                   toolbarId="scoringInstructions"
-                  value={questionData?.scoringInstructions || ""}
+                  value={questionData?.scoringInstructions || ''}
                   placeholder="Add instructions - This is a placeholder text"
-                  onChange={(value = "") => handleChangeInstructions("scoringInstructions", value)}
+                  onChange={(value = '') =>
+                    handleChangeInstructions('scoringInstructions', value)
+                  }
                 />
               </WidgetFRInput>
             </Col>
@@ -351,13 +398,13 @@ class Scoring extends Component {
             visible={showGradingRubricModal}
             actionType={rubricActionType}
             toggleModal={() => {
-              this.toggleRubricModal();
-              setIsGradingRubric(false);
+              this.toggleRubricModal()
+              setIsGradingRubric(false)
             }}
           />
         )}
       </div>
-    );
+    )
   }
 }
 
@@ -374,8 +421,8 @@ Scoring.propTypes = {
   noPaddingLeft: PropTypes.bool,
   children: PropTypes.any,
   extraInScoring: PropTypes.elementType,
-  showScoringType: PropTypes.bool
-};
+  showScoringType: PropTypes.bool,
+}
 
 Scoring.defaultProps = {
   noPaddingLeft: false,
@@ -386,32 +433,32 @@ Scoring.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
   extraInScoring: null,
-  showScoringType: true
-};
+  showScoringType: true,
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
   connect(
-    state => ({
+    (state) => ({
       questionData: getQuestionDataSelector(state),
       isGradingCheckboxState: getIsGradingCheckboxState(state),
-      userFeatures: getUserFeatures(state)
+      userFeatures: getUserFeatures(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
       updateRubricData: updateRubricDataAction,
       setIsGradingRubric: setIsGradingRubricAction,
-      dissociateRubricFromQuestion: removeRubricIdAction
+      dissociateRubricFromQuestion: removeRubricIdAction,
     }
   )
-);
+)
 
-export default enhance(Scoring);
+export default enhance(Scoring)
 
 export const RubricsContainer = styled.div`
   margin-bottom: 20px;
-`;
+`
 
 export const StyledTag = styled.div`
   display: inline-block;
@@ -419,7 +466,7 @@ export const StyledTag = styled.div`
   padding: 3px 8px;
   border-radius: 5px;
   color: ${themeColor};
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   > span:first-child {
     margin-right: 5px;
     cursor: pointer;
@@ -427,4 +474,4 @@ export const StyledTag = styled.div`
   > span:last-child {
     cursor: pointer;
   }
-`;
+`

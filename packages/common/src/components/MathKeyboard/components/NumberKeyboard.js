@@ -1,17 +1,17 @@
-import React from "react";
-import chunk from "lodash/chunk";
-import { NumberBoardWrapper, Row, Button, Label } from "./styled";
+import React from 'react'
+import chunk from 'lodash/chunk'
+import { NumberBoardWrapper, Row, Button, Label } from './styled'
 
 const NumberKeyboard = ({ buttons, onInput }) => {
-  const rows = chunk(buttons, 3);
+  const rows = chunk(buttons, 3)
 
-  const handleClickNumPad = item => () => {
+  const handleClickNumPad = (item) => () => {
     if (item.handler && item.command) {
-      onInput(item.handler, item.command);
+      onInput(item.handler, item.command)
     } else {
-      onInput(item.value);
+      onInput(item.value)
     }
-  };
+  }
 
   return (
     <NumberBoardWrapper>
@@ -29,7 +29,7 @@ const NumberKeyboard = ({ buttons, onInput }) => {
         </Row>
       ))}
     </NumberBoardWrapper>
-  );
-};
+  )
+}
 
-export default NumberKeyboard;
+export default NumberKeyboard

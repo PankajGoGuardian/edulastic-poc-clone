@@ -1,20 +1,25 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
-import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
-import { notification } from "@edulastic/common";
-import { createAction, createReducer } from "redux-starter-kit";
+import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { createSelector } from 'reselect'
+import { reportsApi } from '@edulastic/api'
+import { message } from 'antd'
+import { notification } from '@edulastic/common'
+import { createAction, createReducer } from 'redux-starter-kit'
 
-import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
-import { getClassAndGroupIds } from "../common/utils/transformers";
+import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { getClassAndGroupIds } from '../common/utils/transformers'
 
-const GET_REPORTS_STUDENT_PROGRESS_REQUEST = "[reports] get reports student progress request";
-const GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS = "[reports] get reports student progress success";
-const GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR = "[reports] get reports student progress error";
+const GET_REPORTS_STUDENT_PROGRESS_REQUEST =
+  '[reports] get reports student progress request'
+const GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS =
+  '[reports] get reports student progress success'
+const GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR =
+  '[reports] get reports student progress error'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const getStudentProgressRequestAction = createAction(GET_REPORTS_STUDENT_PROGRESS_REQUEST);
+export const getStudentProgressRequestAction = createAction(
+  GET_REPORTS_STUDENT_PROGRESS_REQUEST
+)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -22,17 +27,18 @@ export const getStudentProgressRequestAction = createAction(GET_REPORTS_STUDENT_
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reportStudentProgressReducer;
+export const stateSelector = (state) =>
+  state.reportReducer.reportStudentProgressReducer
 
 export const getReportsStudentProgress = createSelector(
   stateSelector,
-  state => state.studentProgress
-);
+  (state) => state.studentProgress
+)
 
 export const getReportsStudentProgressLoader = createSelector(
   stateSelector,
-  state => state.loading
-);
+  (state) => state.loading
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -42,23 +48,23 @@ export const getReportsStudentProgressLoader = createSelector(
 
 const initialState = {
   studentProgress: {},
-  loading: true
-};
+  loading: true,
+}
 
 export const reportStudentProgressReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST]: (state, { payload }) => {
-    state.loading = true;
+    state.loading = true
   },
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false;
-    state.studentProgress = payload.studentProgress;
+    state.loading = false
+    state.studentProgress = payload.studentProgress
   },
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false;
-    state.error = payload.error;
-  }
-});
+    state.loading = false
+    state.error = payload.error
+  },
+})
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
@@ -68,30 +74,35 @@ export const reportStudentProgressReducer = createReducer(initialState, {
 
 function* getReportsStudentProgressRequest({ payload }) {
   try {
-    const { classIds, groupIds } = getClassAndGroupIds(payload);
+    const { classIds, groupIds } = getClassAndGroupIds(payload)
     const studentProgress = yield call(reportsApi.fetchStudentProgressReport, {
       ...payload,
       classIds,
-      groupIds
-    });
+      groupIds,
+    })
 
     yield put({
       type: GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS,
-      payload: { studentProgress }
-    });
+      payload: { studentProgress },
+    })
   } catch (error) {
-    console.log("err", error.stack);
-    let msg = "Failed to fetch student progress Please try again...";
-    notification({msg:msg});
+    console.log('err', error.stack)
+    const msg = 'Failed to fetch student progress Please try again...'
+    notification({ msg })
     yield put({
       type: GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR,
-      payload: { error: msg }
-    });
+      payload: { error: msg },
+    })
   }
 }
 
 export function* reportStudentProgressSaga() {
-  yield all([yield takeEvery(GET_REPORTS_STUDENT_PROGRESS_REQUEST, getReportsStudentProgressRequest)]);
+  yield all([
+    yield takeEvery(
+      GET_REPORTS_STUDENT_PROGRESS_REQUEST,
+      getReportsStudentProgressRequest
+    ),
+  ])
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

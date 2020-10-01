@@ -1,48 +1,49 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Button, Modal } from "antd";
-const Option = Select.Option;
+import React, { Component } from 'react'
+import { Form, Input, Row, Col, Select, Button, Modal } from 'antd'
 
-import { ModalFormItem } from "./styled";
+import { ModalFormItem } from './styled'
+
+const Option = Select.Option
 
 class AddStudentModal extends React.Component {
   onAddStudent = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        this.props.addStudent(row);
+        this.props.addStudent(row)
       }
-    });
-  };
+    })
+  }
 
   onCloseModal = () => {
-    this.props.closeModal();
-  };
+    this.props.closeModal()
+  }
 
   render() {
-    const { schoolsData, classData } = this.props;
-    const schoolsOptions = [];
+    const { schoolsData, classData } = this.props
+    const schoolsOptions = []
     if (schoolsData.length !== undefined) {
       schoolsData.map((row, index) => {
         schoolsOptions.push(
           <Option key={index} value={row._id}>
             {row.name}
           </Option>
-        );
-      });
+        )
+      })
     }
 
-    const classOptions = [];
+    const classOptions = []
     if (classData.length !== undefined) {
       classData.map((row, index) => {
         classOptions.push(
           <Option key={index} value={row.code}>
             {row.name}
           </Option>
-        );
-      });
+        )
+      })
     }
 
-    const { getFieldDecorator } = this.props.form;
-    const { modalVisible } = this.props;
+    const { getFieldDecorator } = this.props.form
+    const { modalVisible } = this.props
     return (
       <Modal
         visible={modalVisible}
@@ -57,31 +58,31 @@ class AddStudentModal extends React.Component {
           </Button>,
           <Button type="primary" key="submit" onClick={this.onAddStudent}>
             Yes, Add >
-          </Button>
+          </Button>,
         ]}
       >
         <Row>
           <Col span={12}>
             <ModalFormItem label="First Name">
-              {getFieldDecorator("firstName", {
+              {getFieldDecorator('firstName', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input First Name"
-                  }
-                ]
+                    message: 'Please input First Name',
+                  },
+                ],
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
           <Col span={12}>
             <ModalFormItem label="Last Name">
-              {getFieldDecorator("lastName", {
+              {getFieldDecorator('lastName', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Last Name"
-                  }
-                ]
+                    message: 'Please input Last Name',
+                  },
+                ],
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -89,17 +90,17 @@ class AddStudentModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Email">
-              {getFieldDecorator("email", {
+              {getFieldDecorator('email', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input E-mail"
+                    message: 'Please input E-mail',
                   },
                   {
-                    type: "email",
-                    message: "The input is not valid E-mail"
-                  }
-                ]
+                    type: 'email',
+                    message: 'The input is not valid E-mail',
+                  },
+                ],
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>
@@ -107,13 +108,13 @@ class AddStudentModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Password">
-              {getFieldDecorator("password", {
+              {getFieldDecorator('password', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input password"
-                  }
-                ]
+                    message: 'Please input password',
+                  },
+                ],
               })(<Input placeholder="Password" type="password" />)}
             </ModalFormItem>
           </Col>
@@ -121,18 +122,18 @@ class AddStudentModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Select School">
-              {getFieldDecorator("institutionIds", {
+              {getFieldDecorator('institutionIds', {
                 rules: [
                   {
                     required: true,
-                    message: "Please select school"
-                  }
-                ]
+                    message: 'Please select school',
+                  },
+                ],
               })(
                 <Select
                   mode="multiple"
                   placeholder="Select school"
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
                   {schoolsOptions}
                 </Select>
@@ -143,15 +144,18 @@ class AddStudentModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Select Class">
-              {getFieldDecorator("code", {
+              {getFieldDecorator('code', {
                 rules: [
                   {
                     required: true,
-                    message: "Please select class"
-                  }
-                ]
+                    message: 'Please select class',
+                  },
+                ],
               })(
-                <Select placeholder="Select class" getPopupContainer={triggerNode => triggerNode.parentNode}>
+                <Select
+                  placeholder="Select class"
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                >
                   {classOptions}
                 </Select>
               )}
@@ -159,9 +163,9 @@ class AddStudentModal extends React.Component {
           </Col>
         </Row>
       </Modal>
-    );
+    )
   }
 }
 
-const AddStudentModalForm = Form.create()(AddStudentModal);
-export default AddStudentModalForm;
+const AddStudentModalForm = Form.create()(AddStudentModal)
+export default AddStudentModalForm

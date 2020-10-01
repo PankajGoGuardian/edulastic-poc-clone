@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-import withIconStyles from './HOC/withIconStyles';
-import SVG from './common/SVG';
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconLogout = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.909 23.909" {...props}>
+const IconLogout = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 23.909 23.909"
+    {...props}
+  >
     <g id="Group_43" data-name="Group 43">
       <g id="Group_42" data-name="Group 42">
         <path
@@ -23,6 +27,6 @@ const IconLogout = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconLogout);
+export default withIconStyles(IconLogout)

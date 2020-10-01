@@ -1,34 +1,42 @@
-import React, { Fragment, Component } from "react";
-import PropTypes from "prop-types";
+import React, { Fragment, Component } from 'react'
+import PropTypes from 'prop-types'
 
-import { connect } from "react-redux";
-import { compose } from "redux";
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 
-import { withWindowSizes } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { withWindowSizes } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { getUserSelector } from "../../../src/selectors/user";
-import { receiveFeedbackResponseAction } from "../../../src/actions/classBoard";
+import { getUserSelector } from '../../../src/selectors/user'
+import { receiveFeedbackResponseAction } from '../../../src/actions/classBoard'
 
-import { SolutionButton, StyledCardTwo, FeedbackInput, StyledDivSec, ScoreInput, TextPara, LeaveDiv } from "./styled";
+import {
+  SolutionButton,
+  StyledCardTwo,
+  FeedbackInput,
+  StyledDivSec,
+  ScoreInput,
+  TextPara,
+  LeaveDiv,
+} from './styled'
 
 class FeedbackRight extends Component {
   constructor(props) {
-    super(props);
-    let feedback = "";
-    let score = 0;
-    let maxScore = 1;
+    super(props)
+    const feedback = ''
+    const score = 0
+    const maxScore = 1
 
     this.state = {
       score,
       maxScore,
-      feedback
-    };
+      feedback,
+    }
   }
 
   onFeedbackSubmit = () => {
-    const { score, feedback } = this.state;
-    const { user, loadFeedbackResponses } = this.props;
+    const { score, feedback } = this.state
+    const { user, loadFeedbackResponses } = this.props
 
     loadFeedbackResponses({
       body: {
@@ -36,35 +44,42 @@ class FeedbackRight extends Component {
         feedback: {
           teacherId: user.user._id,
           teacherName: user.user.firstName,
-          text: feedback
-        }
+          text: feedback,
+        },
       },
       testActivityId,
-      questionId: id
-    });
-  };
+      questionId: id,
+    })
+  }
 
-  onChangeScore = e => {
-    this.setState({ score: e.target.value });
-  };
+  onChangeScore = (e) => {
+    this.setState({ score: e.target.value })
+  }
 
-  onChangeFeedback = e => {
-    this.setState({ feedback: e.target.value });
-  };
+  onChangeFeedback = (e) => {
+    this.setState({ feedback: e.target.value })
+  }
 
   render() {
-    const { score, maxScore, feedback } = this.state;
-    const isError = maxScore < score;
-    const { t } = this.props;
+    const { score, maxScore, feedback } = this.state
+    const isError = maxScore < score
+    const { t } = this.props
     return (
       <StyledCardTwo bordered={false}>
         <StyledDivSec>
-          <ScoreInput data-cy="scoreInput" onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
+          <ScoreInput
+            data-cy="scoreInput"
+            onChange={this.onChangeScore}
+            onBlur={this.onFeedbackSubmit}
+            value={score}
+          />
           <TextPara> / {maxScore}</TextPara>
         </StyledDivSec>
-        <LeaveDiv>{isError ? "Score is too large" : "Leave a Feedback!"}</LeaveDiv>
+        <LeaveDiv>
+          {isError ? 'Score is too large' : 'Leave a Feedback!'}
+        </LeaveDiv>
         {!isError && (
-          <Fragment>
+          <>
             <FeedbackInput
               data-cy="feedBackInput"
               onChange={this.onChangeFeedback}
@@ -72,11 +87,13 @@ class FeedbackRight extends Component {
               value={feedback}
               style={{ height: 240 }}
             />
-            <SolutionButton onClick={this.onFeedbackSubmit}>UPDATE</SolutionButton>
-          </Fragment>
+            <SolutionButton onClick={this.onFeedbackSubmit}>
+              UPDATE
+            </SolutionButton>
+          </>
         )}
       </StyledCardTwo>
-    );
+    )
   }
 }
 
@@ -84,19 +101,19 @@ FeedbackRight.propTypes = {
   testItemId: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  loadFeedbackResponses: PropTypes.func.isRequired
-};
+  loadFeedbackResponses: PropTypes.func.isRequired,
+}
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces("header"),
+  withNamespaces('header'),
   connect(
-    state => ({
-      user: getUserSelector(state)
+    (state) => ({
+      user: getUserSelector(state),
     }),
     {
-      loadFeedbackResponses: receiveFeedbackResponseAction
+      loadFeedbackResponses: receiveFeedbackResponseAction,
     }
   )
-);
-export default enhance(FeedbackRight);
+)
+export default enhance(FeedbackRight)

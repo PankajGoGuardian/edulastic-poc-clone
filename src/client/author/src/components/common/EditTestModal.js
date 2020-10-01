@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { ConfirmationModal } from "./ConfirmationModal";
-import { EduButton } from "@edulastic/common";
+import React, { useEffect } from 'react'
+import { EduButton } from '@edulastic/common'
+import { ConfirmationModal } from './ConfirmationModal'
 
 const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
   <ConfirmationModal
@@ -14,7 +14,7 @@ const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
       </EduButton>,
       <EduButton height="40px" data-cy="PROCEED" onClick={onOk}>
         PROCEED
-      </EduButton>
+      </EduButton>,
     ]}
   >
     {isUsed
@@ -23,6 +23,6 @@ const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
       : `You are about to edit a test that has already been published. If you wish to edit this test,
      we will move this test to draft status. Do you want to proceed?`}
   </ConfirmationModal>
-);
+)
 
-export default EditTestModal;
+export default EditTestModal

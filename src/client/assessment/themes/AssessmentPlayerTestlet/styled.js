@@ -1,23 +1,28 @@
-import styled from "styled-components";
-import { Button } from "antd";
+import styled from 'styled-components'
+import { Button } from 'antd'
 
-import { boxShadowDefault, themeColor, lightFadedBlack } from "@edulastic/colors";
-import { Header } from "../common";
-import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import {
+  boxShadowDefault,
+  themeColor,
+  lightFadedBlack,
+} from '@edulastic/colors'
+import { Header } from '../common'
+import { IPAD_PORTRAIT_WIDTH } from '../../constants/others'
 
 export const Main = styled.main`
-  background-color: ${props => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.mainBgColor};
   padding: 70px 0px 0px;
   display: flex;
   flex-direction: row;
-  min-height: ${({ LCBPreviewModal }) => (LCBPreviewModal ? "calc(100vh - 56px)" : "100vh")};
+  min-height: ${({ LCBPreviewModal }) =>
+    LCBPreviewModal ? 'calc(100vh - 56px)' : '100vh'};
   box-sizing: border-box;
   margin: 0px;
-`;
+`
 
 export const MainContent = styled.div`
-  background-color: ${props => props.theme.mainContentBgColor};
-  color: ${props => props.theme.mainContentTextColor};
+  background-color: ${(props) => props.theme.mainContentBgColor};
+  color: ${(props) => props.theme.mainContentTextColor};
   flex: 1;
   text-align: left;
   font-size: 18px;
@@ -43,7 +48,7 @@ export const MainContent = styled.div`
     border-style: none;
     border-width: 0px;
   }
-`;
+`
 
 export const PlayerTitle = styled.h1`
   font-size: 20px;
@@ -55,7 +60,7 @@ export const PlayerTitle = styled.h1`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-`;
+`
 
 export const ActionButton = styled(Button)`
   border: none;
@@ -67,13 +72,14 @@ export const ActionButton = styled(Button)`
   justify-content: space-evenly;
   background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   color: ${({ theme }) => theme.default.headerRightButtonIconColor};
-  border: ${({ theme }) => `1px solid ${theme.default.headerRightButtonBgColor}`};
-  width: ${({ iconBtn }) => (iconBtn ? "40px" : null)};
-  padding: ${({ iconBtn }) => (iconBtn ? "5px" : "5px 15px")};
+  border: ${({ theme }) =>
+    `1px solid ${theme.default.headerRightButtonBgColor}`};
+  width: ${({ iconBtn }) => (iconBtn ? '40px' : null)};
+  padding: ${({ iconBtn }) => (iconBtn ? '5px' : '5px 15px')};
 
   span,
   svg {
-    margin: ${({ iconBtn }) => (iconBtn ? 0 : "0px 5px")};
+    margin: ${({ iconBtn }) => (iconBtn ? 0 : '0px 5px')};
   }
 
   svg {
@@ -96,7 +102,8 @@ export const ActionButton = styled(Button)`
   &:active {
     background: ${({ theme }) => theme.default.headerRightButtonIconColor};
     color: ${({ theme }) => theme.default.headerRightButtonBgColor};
-    border: ${({ theme }) => `solid 1px ${theme.default.headerRightButtonBgColor}`};
+    border: ${({ theme }) =>
+      `solid 1px ${theme.default.headerRightButtonBgColor}`};
     svg {
       fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
     }
@@ -108,11 +115,11 @@ export const ActionButton = styled(Button)`
       fill: ${lightFadedBlack};
     }
   }
-`;
+`
 
 export const FlexDisplay = styled.div`
   display: flex;
-`;
+`
 
 export const ContainerRight = styled.div`
   display: flex;
@@ -120,7 +127,7 @@ export const ContainerRight = styled.div`
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     margin-left: auto;
   }
-`;
+`
 
 export const HeaderPracticePlayer = styled(Header)`
   background: ${themeColor};
@@ -130,7 +137,7 @@ export const HeaderPracticePlayer = styled(Header)`
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     height: 104px;
   }
-`;
+`
 
 export const OverlayDiv = styled.div`
   position: absolute;
@@ -140,4 +147,4 @@ export const OverlayDiv = styled.div`
   right: 0px;
   z-index: 9999;
   background: transparent;
-`;
+`

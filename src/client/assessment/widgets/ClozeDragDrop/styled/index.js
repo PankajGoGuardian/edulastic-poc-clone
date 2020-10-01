@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { fadedBlack } from "@edulastic/colors";
+import styled from 'styled-components'
+import { fadedBlack } from '@edulastic/colors'
 
 export const Label = styled.label`
   color: ${fadedBlack};
@@ -11,7 +11,7 @@ export const Label = styled.label`
   display: inline-block;
   cursor: pointer;
   font-weight: 400;
-`;
+`
 
 export const Heading = styled.span`
   color: ${fadedBlack};
@@ -21,4 +21,4 @@ export const Heading = styled.span`
   list-style: none;
   display: block;
   font-weight: 600;
-`;
+`

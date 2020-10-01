@@ -1,11 +1,11 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 30%;
-`;
+`
 
 export const Title = styled.div`
   font-size: 11px;
@@ -15,7 +15,7 @@ export const Title = styled.div`
   text-transform: uppercase;
   margin-bottom: 6px;
   white-space: nowrap;
-`;
+`
 
 export const Value = styled.div`
   font-size: 14px;
@@ -26,4 +26,4 @@ export const Value = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`

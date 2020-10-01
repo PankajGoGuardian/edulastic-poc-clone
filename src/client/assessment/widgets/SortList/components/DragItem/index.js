@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { DragDrop } from "@edulastic/common";
-import { CHECK, SHOW, CLEAR } from "../../../../constants/constantsForQuestions";
-import { TextEmpty } from "./styled/TextEmpty";
-import { DragItemContent } from "./DragItemContent";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { DragDrop } from '@edulastic/common'
+import { CHECK, SHOW, CLEAR } from '../../../../constants/constantsForQuestions'
+import { TextEmpty } from './styled/TextEmpty'
+import { DragItemContent } from './DragItemContent'
 
 const DragItem = ({
   obj,
@@ -20,22 +20,22 @@ const DragItem = ({
   items,
   style,
   isPrintPreview,
-  flag
+  flag,
 }) => {
-  const showPreview = previewTab === CHECK || previewTab === SHOW;
+  const showPreview = previewTab === CHECK || previewTab === SHOW
 
   const clickHandler = () => {
     if (disableResponse) {
-      return;
+      return
     }
     if (active) {
-      onClick("");
+      onClick('')
     } else {
-      onClick(obj);
+      onClick(obj)
     }
-  };
+  }
 
-  const item = { item: obj, index, flag };
+  const item = { item: obj, index, flag }
 
   return obj ? (
     <DragDrop.DragItem onClick={clickHandler} data={item}>
@@ -58,8 +58,8 @@ const DragItem = ({
         <HiddenContent dangerouslySetInnerHTML={{ __html: items[index] }} />
       </TextEmpty>
     </div>
-  );
-};
+  )
+}
 
 const HiddenContent = styled.div`
   display: flex;
@@ -67,7 +67,7 @@ const HiddenContent = styled.div`
   visibility: hidden;
   width: 100%;
   margin-left: 42px;
-`;
+`
 
 DragItem.propTypes = {
   obj: PropTypes.any,
@@ -79,15 +79,15 @@ DragItem.propTypes = {
   previewTab: PropTypes.string,
   index: PropTypes.number.isRequired,
   style: PropTypes.object,
-  items: PropTypes.array
-};
+  items: PropTypes.array,
+}
 
 DragItem.defaultProps = {
   obj: null,
   correct: false,
   previewTab: CLEAR,
   items: [],
-  style: {}
-};
+  style: {},
+}
 
-export default DragItem;
+export default DragItem

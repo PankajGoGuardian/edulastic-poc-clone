@@ -15,6 +15,7 @@ import {
   testActivity,
   assignmentPolicyOptions,
   roleuser,
+  testActivityStatus,
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
@@ -760,12 +761,13 @@ export const getAggregateByQuestion = (entities, studentId) => {
     return {}
   }
   const total = entities.length
-  const submittedEntities = entities.filter((x) => x.status === 'submitted')
+  const submittedEntities = entities.filter(
+    (x) => x.UTASTATUS === testActivityStatus.SUBMITTED
+  )
   const activeEntities = entities.filter(
     (x) =>
-      x.status === 'inProgress' ||
-      x.status === 'submitted' ||
-      x.status === 'graded'
+      x.UTASTATUS === testActivityStatus.START ||
+      x.UTASTATUS === testActivityStatus.SUBMITTED
   )
   let questionsOrder = {}
   if (entities.length > 0) {
@@ -782,8 +784,9 @@ export const getAggregateByQuestion = (entities, studentId) => {
     )
   }
   const submittedNumber = submittedEntities.length
-  // TODO: handle absent
-  const absentNumber = 0
+  const absentNumber =
+    entities.filter((x) => x.UTASTATUS === testActivityStatus.ABSENT)?.length ||
+    0
   const scores = activeEntities
     .map(({ score, maxScore }) => score / maxScore)
     .reduce((prev, cur) => prev + cur, 0)
@@ -932,12 +935,12 @@ export const getGradeBookSelector = createSelector(
 
 export const notStartedStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.status === 'notStarted')
+  (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.NOT_STARTED)
 )
 
 export const inProgressStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.status === 'inProgress')
+  (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.START)
 )
 
 export const getAdditionalDataSelector = createSelector(

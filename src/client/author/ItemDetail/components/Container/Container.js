@@ -12,6 +12,8 @@ import { IconClose, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icon
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination } from "antd";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
+import questionTitle from "@edulastic/constants/const/questionTitle";
+import { themeColor } from "@edulastic/colors";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -54,7 +56,8 @@ import {
   BackLink,
   ContentWrapper,
   PassageNavigation,
-  AddRemoveButtonWrapper
+  AddRemoveButtonWrapper,
+  TestItemCount
 } from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
@@ -123,7 +126,8 @@ class Container extends Component {
     const { itemId, testId } = match.params;
 
     if (newId && oldId !== newId) {
-      getItemDetailById(newId, { data: true, validation: true });
+      const hasValidTestId = testId && testId !== "undefined";
+      getItemDetailById(newId, { data: true, validation: true, ...(hasValidTestId && { testId }) });
     }
     // State.testAuthoring ?
     // For all test with no edit permission in some cases user can clone item and save it in their own library.
@@ -288,7 +292,10 @@ class Container extends Component {
   };
 
   handleAddToPassage = (type, tabIndex) => {
-    const { isTestFlow, match, addWidgetToPassage } = this.props;
+    const { isTestFlow, match, addWidgetToPassage, item } = this.props;
+
+    // Checking if current item allows multiple items
+    const { canAddMultipleItems } = item;
     /**
      * there are two possibilites for getting item id during test flow
      * route 1: "/author/tests/:testId/createItem/:itemId"
@@ -301,7 +308,8 @@ class Container extends Component {
       itemId: isTestFlow && match?.params?.itemId ? match.params.itemId : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex
+      tabIndex,
+      canAddMultipleItems: !!canAddMultipleItems
     });
   };
 
@@ -527,25 +535,24 @@ class Container extends Component {
 
   goToItem = page => {
     const {
-      passage,
       history,
       match,
       isTestFlow,
       location: { state }
     } = this.props;
     const { testId } = match.params;
-    const _id = passage.testItems[page - 1];
+    const _id = this.passageItems[page - 1];
     if (state?.testAuthoring === false) {
       return history.push({
         pathname: `/author/items/${_id}/item-detail`,
         state: { resetView: false, testAuthoring: false, testId: state.testId }
       });
     }
-    const {regradeFlow,previousTestId,fadeSidebar} = state || {};
+    const { previousTestId, fadeSidebar } = state || {};
     history.push({
       // `/author/tests/${tId}/editItem/${item?._id}`
       pathname: isTestFlow ? `/author/tests/${testId}/editItem/${_id}` : `/author/items/${_id}/item-detail`,
-      state: { isTestFlow,previousTestId,fadeSidebar}
+      state: { isTestFlow, previousTestId, fadeSidebar }
     });
   };
 
@@ -585,6 +592,11 @@ class Container extends Component {
       : !!get(rows, [0, "tabs", "length"], 0);
     const collapseLeft = collapseDirection === "left";
     const collapseRight = collapseDirection === "right";
+
+    const passageTestItems = get(passage, "testItems", []);
+    const widgetLength = get(rows, [0, "widgets"], []).length;
+    const showAddItemButton = (!!widgetLength || passageTestItems.length > 1) && view === EDIT;
+
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.editModeContainerRef.current }}>
@@ -629,6 +641,8 @@ class Container extends Component {
                   isCollapsed={!!collapseDirection}
                   useTabsLeft={useTabsLeft}
                   passageNavigator={passageWithQuestions && this.passageNavigator}
+                  addItemToPassage={this.addItemToPassage}
+                  showAddItemButton={showAddItemButton}
                 />
               </>
             ))}
@@ -674,38 +688,56 @@ class Container extends Component {
     ];
   }
 
-  get passageNavigator() {
-    const { item, passage, view, rows, itemDeleting } = this.props;
+  get passageItems() {
+    const { passage } = this.props;
     const passageTestItems = get(passage, "testItems", []);
+
+    return passageTestItems;
+  }
+
+  get passageNavigator() {
+    const { item, passage, rows, view, itemDeleting } = this.props;
     const widgetLength = get(rows, [0, "widgets"], []).length;
+    const passageTestItems = this.passageItems;
 
     return (
-      item.canAddMultipleItems &&
+      // isPassageWithQuestions fallback condition to show/hide pagination
+      (item.canAddMultipleItems || item.isPassageWithQuestions) &&
       passage &&
       view !== "metadata" && (
-        <PassageNavigation>
+        <Col>
           {passageTestItems.length > 1 && (
-            <>
-              <span className="pagination-title">PASSAGE ITEMS </span>
-              <Pagination
-                total={passageTestItems.length}
-                pageSize={1}
-                defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
-                onChange={this.goToItem}
-              />
-            </>
+            <Row>
+              <TestItemCount className="pagination-title">{passageTestItems.length} ITEMS</TestItemCount>
+            </Row>
           )}
-          {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
-            <AddRemoveButtonWrapper>
-              <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
-                - ITEM
-              </Button>
-              <Button disabled={itemDeleting} onClick={this.addItemToPassage}>
-                + ITEM
-              </Button>
-            </AddRemoveButtonWrapper>
-          )}
-        </PassageNavigation>
+          <Row>
+            <PassageNavigation>
+              {passageTestItems.length > 1 && (
+                <>
+                  <Pagination
+                    total={passageTestItems.length}
+                    pageSize={1}
+                    defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
+                    onChange={this.goToItem}
+                  />
+                </>
+              )}
+              {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
+                <AddRemoveButtonWrapper>
+                  <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
+                    <span className="fa fa-minus-circle" style={{ color: themeColor }} />
+                    &nbsp;ITEM
+                  </Button>
+                  <Button disabled={itemDeleting} onClick={this.addItemToPassage}>
+                    <span className="fa fa-plus-circle" style={{ color: themeColor }} />
+                    &nbsp;ITEM
+                  </Button>
+                </AddRemoveButtonWrapper>
+              )}
+            </PassageNavigation>
+          </Row>
+        </Col>
       )
     );
   }
@@ -809,7 +841,7 @@ class Container extends Component {
           )}
           <ItemHeader
             showIcon
-            title={t("header:common.itemDetail")}
+            title={item.isPassageWithQuestions ? questionTitle.PASSAGE_WITH_QUESTIONS : t("header:common.itemDetail")}
             reference={match.params._id}
             windowWidth={windowWidth}
             toggleSideBar={toggleSideBar}

@@ -14,7 +14,8 @@ import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import {
   addRealtimeAssignmentAction,
   removeAssignmentAction,
-  rerenderAssignmentsAction
+  rerenderAssignmentsAction,
+  updateTestIdRealTimeAction
 } from "../../sharedDucks/AssignmentModule/ducks";
 import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
 import { Wrapper } from "../../styled";
@@ -23,7 +24,8 @@ import {
   assignmentsSelector,
   fetchAssignmentsAction,
   getAssignmentsSelector,
-  transformAssignmentForRedirect
+  transformAssignmentForRedirect,
+  assignmentIdsByTestIdSelector
 } from "../ducks";
 
 const withinThreshold = (targetDate, threshold) => {
@@ -70,7 +72,9 @@ const Content = ({
   rerenderAssignments,
   allAssignments,
   removeAssignment,
-  currentChild
+  currentChild,
+  assignmentIdsByTestId,
+  updateTestIdRealTime
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
@@ -86,14 +90,23 @@ const Content = ({
   const transformAssignment = payload => {
     addRealtimeAssignment(transformAssignmentForRedirect(currentGroup, userId, allClasses, {}, {}, payload));
   };
-
+  const regradeWatchTestIdTopics = Object.keys(assignmentIdsByTestId).map(item => `student_assessment:test:${item}`);
+  if (regradeWatchTestIdTopics.length) {
+    topics.push(...regradeWatchTestIdTopics);
+  }
   useRealtimeV2(topics, {
     addAssignment: transformAssignment,
     addReport: addRealtimeReport,
     "absentee-mark": addRealtimeReport,
     "open-assignment": transformAssignment,
     "close-assignment": transformAssignment,
-    removeAssignment
+    removeAssignment,
+    regradedAssignment: payload => {
+      const assignmentIds = assignmentIdsByTestId[payload.oldTestId];
+      if (assignmentIds && assignmentIds.length) {
+        return updateTestIdRealTime({ assignmentIds, ...payload });
+      }
+    }
   });
 
   useInterval(() => {
@@ -141,14 +154,16 @@ export default connect(
     allClasses: getClasses(state),
     userId: get(state, "user.user._id"),
     isLoading: get(state, "studentAssignment.isLoading"),
-    currentChild: state?.user?.currentChild
+    currentChild: state?.user?.currentChild,
+    assignmentIdsByTestId: assignmentIdsByTestIdSelector(state)
   }),
   {
     fetchAssignments: fetchAssignmentsAction,
     addRealtimeAssignment: addRealtimeAssignmentAction,
     addRealtimeReport: addRealtimeReportAction,
     rerenderAssignments: rerenderAssignmentsAction,
-    removeAssignment: removeAssignmentAction
+    removeAssignment: removeAssignmentAction,
+    updateTestIdRealTime: updateTestIdRealTimeAction
   }
 )(Content);
 

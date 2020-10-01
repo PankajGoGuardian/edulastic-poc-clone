@@ -177,7 +177,7 @@ class SideMenu extends Component {
     const page = currentPath.split("/").filter(item => !!item)[1];
     const isReports = currentPath.split("/").includes("testActivityReport");
     const menuIndex = getIndex(page, menuItems, isReports);
-    const isMobile = windowWidth <= parseFloat(tabletWidth);
+    const isMobile = windowWidth < parseFloat(tabletWidth);
     const footerDropdownMenu = (
       <FooterDropDown
         data-cy="footer-dropdown"
@@ -415,7 +415,7 @@ const SideBar = styled(Layout.Sider)`
     width: 125px;
   }
 
-  @media (max-width: ${tabletWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     &.ant-layout-sider-collapsed {
       min-width: 0px !important;
       max-width: 0px !important;
@@ -478,7 +478,7 @@ const ToggleSidemenu = styled.div`
     width: 12px;
     fill: ${themeColor};
   }
-  @media (max-width: ${tabletWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     display: none;
   }
 `;
@@ -822,7 +822,7 @@ const UserInfoButton = styled.div`
     color: ${white};
   }
 
-  @media (max-width: ${tabletWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     &.active {
       opacity: 0;
       pointer-events: none;

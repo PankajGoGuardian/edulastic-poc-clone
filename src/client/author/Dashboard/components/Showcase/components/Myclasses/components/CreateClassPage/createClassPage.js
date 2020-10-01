@@ -21,6 +21,9 @@ const CreateClassPage = ({
   user,
   history
 }) => {
+  const { orgData } = user;
+  const { isCleverDistrict } = orgData;
+
   const handleLoginSucess = data => {
     fetchClassList({ data });
     history.push("/author/manageClass");
@@ -71,8 +74,8 @@ const CreateClassPage = ({
         <IconPlusCircle width={20} height={20} />
         <p>Create new class</p>
       </EduButton>
-      {(allowGoogleLogin || enableCleverSync || enableCanvasSync) && <StyledP>OR</StyledP>}
-      {allowGoogleLogin !== false && (
+      {(allowGoogleLogin || enableCleverSync || enableCanvasSync) && !isCleverDistrict && <StyledP>OR</StyledP>}
+      {allowGoogleLogin !== false && !isCleverDistrict && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
           render={renderProps => (
@@ -94,7 +97,7 @@ const CreateClassPage = ({
           <p>Sync Class Roster from Clever</p>
         </SyncClassDiv>
       )}
-      {enableCanvasSync && (
+      {enableCanvasSync && !isCleverDistrict && (
         <SyncClassDiv onClick={handleSyncWithCanvas}>
           <img
             alt="Canvas"

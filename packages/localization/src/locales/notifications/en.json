@@ -192,7 +192,7 @@
     "description": ""
   },
   "getPlaylistErr": {
-    "message": "Unable to retrieve the playlist info. Please contact support.",
+    "message": "Unable to retrieve the playlist info.",
     "description": ""
   },
   "nameShouldNotEmpty": {
@@ -220,7 +220,7 @@
     "description": ""
   },
   "updatePlaylistErr": {
-    "message": "Unable to update the playlist. Please contact support.",
+    "message": "Unable to update the playlist.",
     "description": ""
   },
   "updatePlaylistErrViewOnlyAccess": {
@@ -256,11 +256,11 @@
     "description": ""
   },
   "getSharedUsersErr": {
-    "message": "Unable to retrieve shared users list. Please contact support.",
+    "message": "Unable to retrieve shared users list.",
     "description": ""
   },
   "deleteSharedUserErr": {
-    "message": "Unable to remove shared user. Please contact support.",
+    "message": "Unable to remove shared user.",
     "description": ""
   },
   "curriculumMakeApiErr": {
@@ -300,23 +300,23 @@
     "description": ""
   },
   "playlistUpdateFailed": {
-    "message": "Unable to process playlist update. Please contact support.",
+    "message": "Unable to process playlist update.",
     "description": ""
   },
   "dropPlaylistErr": {
-    "message": "Unable to process playlist drop. Please contact support.",
+    "message": "Unable to process playlist drop.",
     "description": ""
   },
   "fetchClassErr": {
-    "message": "Unable to retrieve Class/Student List. Please contact support.",
+    "message": "Unable to retrieve Class/Student List.",
     "description": ""
   },
   "fetchPlaylistErr": {
-    "message": "Unable to retrieve playlist metrics. Please contact support.",
+    "message": "Unable to retrieve playlist metrics.",
     "description": ""
   },
   "fetchPlaylistInsightsErr": {
-    "message": "Unable to retrieve playlist insights. Please contact support",
+    "message": "Unable to retrieve playlist insights.",
     "description": ""
   },
   "cancelPlaylistCustomizationErr": {
@@ -328,7 +328,7 @@
     "description": ""
   },
   "noTestId": {
-    "message": "Unable to retrieve playlist insights. Please contact support.",
+    "message": "Unable to retrieve playlist insights.",
     "description": ""
   },
   "movingTestErr": {
@@ -356,7 +356,7 @@
     "description": ""
   },
   "saveQuestionFailing": {
-    "message": "Unable to save the question. Please contact support.",
+    "message": "Unable to save the question.",
     "description": ""
   },
   "pleaseEnterName": {
@@ -364,11 +364,11 @@
     "description": ""
   },
   "receiveItemFailing": {
-    "message": "Unable to retrieve the item. Please contact support.",
+    "message": "Unable to retrieve the item.",
     "description": ""
   },
   "receiveTestFailing": {
-    "message": "Unable to retrieve the test info. Please contact support.",
+    "message": "Unable to retrieve the test info.",
     "description": ""
   },
   "itemAddedTest": {
@@ -409,6 +409,10 @@
   },
   "subjectFieldEmpty": {
     "message": "Subject field cannot be empty",
+    "description": ""
+  },
+  "noQuestions": {
+    "message": "Test has only instructions. Test must have question to be published",
     "description": ""
   },
   "teacherRemovedSuccessfully": {
@@ -525,6 +529,10 @@
   },
   "classPausedContinueWithRedirect": {
     "message": "The class has been paused for this assessment.Please resume to continue with redirect.",
+    "description": ""
+  },
+  "youCantRedirectRemoved": {
+    "message": "Please use the Add Students option in More menu to add the student to the assignment.",
     "description": ""
   },
   "pleaseSelectYourPreferedStartDate": {
@@ -1036,7 +1044,7 @@
     "description": ""
   },
   "failedToUpdatePowerTeacherTools": {
-    "message": "Failed to update power tools",
+    "message": "Failed to update power tools.",
     "description": ""
   },
   "selectOneOrMoreStudentToRemoved": {
@@ -1415,7 +1423,7 @@
     "message": " Item is not associated with any collection.",
     "description": ""
   },
-  "errorSavingPassing": {
+  "errorSavingPassage": {
     "message": " error saving passage",
     "description": ""
   },
@@ -1452,7 +1460,7 @@
     "description": ""
   },
   "errorOccurredWhileEnablingOrDisablingTextToSpeech": {
-    "message": "Error occurred while enabling/disabling text to speech. Please contact customer support.",
+    "message": "Error occurred while enabling/disabling text to speech.",
     "description": ""
   },
   "resetPasswordRequestFailing": {
@@ -1528,7 +1536,7 @@
     "description": ""
   },
   "createUserIsFailing": {
-    "message": "Unable to create the user. Please contact support.",
+    "message": "Unable to create the user.",
     "description": ""
   },
   "pleaseSelectAClass": {
@@ -1904,7 +1912,7 @@
     "description": ""
   },
   "unableToRetrieve": {
-    "message": "Unable to retrieve relevant information. Please contact support.",
+    "message": "Unable to retrieve relevant information.",
     "description": ""
   },
   "classAlreadyExist": {

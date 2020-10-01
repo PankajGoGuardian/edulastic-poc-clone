@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { testActivity } from "@edulastic/constants";
+import { testActivity, testActivityStatus } from "@edulastic/constants";
 import { CircularDiv, ResponseCard, StyledFlexContainer, ResponseCardTitle } from "../../styled";
 import { getAvatarName } from "../../../ClassBoard/Transformer";
 
@@ -37,7 +37,10 @@ const StudentResponse = ({ testActivity: _testActivity, onClick, isPresentationM
         <ResponseCard>
           <ResponseCardTitle>Student Responses</ResponseCardTitle>
           {_testActivity
-            .filter(({ status }) => [SUBMITTED, IN_PROGRESS].includes(status))
+            .filter(
+              ({ status, UTASTATUS }) =>
+                [SUBMITTED, IN_PROGRESS].includes(status) && UTASTATUS !== testActivityStatus.NOT_STARTED
+            )
             .map((student, index) => (
               <CircularDiv onClick={() => onClick(student.studentId)} key={index}>
                 {isPresentationMode ? showFakeUser(student) : getAvatarName(student.studentName)}

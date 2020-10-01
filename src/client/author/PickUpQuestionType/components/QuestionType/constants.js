@@ -2142,7 +2142,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: SQPassage,
       isPassageType: true,
       data: {
-        title: "Passage with Questions",
+        title: questionTitle.PASSAGE_WITH_QUESTIONS,
         type: questionType.PASSAGE_WITH_QUESTIONS
       },
       onSelectQuestionType

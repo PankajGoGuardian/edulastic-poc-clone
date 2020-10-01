@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useMemo } from "react";
 import { useDragLayer } from "react-dnd";
 import styled from "styled-components";
 import { get, isUndefined } from "lodash";
@@ -31,32 +31,28 @@ const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
   };
 };
 
-const getContainerTop = element => {
-  if (isUndefined(element.offsetTop)) {
-    return 70;
-  }
-  return element.offsetTop;
+const getContainerTopBottom = element => {
+  const [top, bottom] = useMemo(() => {
+    if (isUndefined(element?.offsetTop)) {
+      return [70, window.innerHeight];
+    }
+    const rect = element.getBoundingClientRect();
+    return [rect.top, rect.bottom];
+  }, [element]);
+
+  return [top, bottom];
 };
 
-const getContainerBottom = element => {
-  if (isUndefined(element.offsetTop)) {
-    return window.innerHeight;
-  }
-  return element.offsetTop + element.offsetHeight;
-};
+const getContainerLeftRight = element => {
+  const [left, right] = useMemo(() => {
+    if (isUndefined(element?.offsetLeft)) {
+      return [70, window.innerWidth];
+    }
+    const rect = element.getBoundingClientRect();
+    return [rect.left, rect.right];
+  }, [element]);
 
-const getContainerLeft = element => {
-  if (isUndefined(element.offsetLeft)) {
-    return 70;
-  }
-  return element.offsetLeft;
-};
-
-const getContainerRight = element => {
-  if (isUndefined(element.offsetLeft)) {
-    return window.innerWidth;
-  }
-  return element.offsetWidth + element.offsetLeft;
+  return [left, right];
 };
 
 /**
@@ -75,14 +71,17 @@ const CustomDragLayer = ({ showPoint }) => {
     isDragging: monitor.isDragging()
   }));
 
-  const itemDimensions = get(item, "dimensions", { width: 0, height: 0 });
-  // ------------- vertical drag scroll start -----------------
   const { getScrollElement } = useContext(ScrollContext);
   const scrollEl = getScrollElement();
+  const horizontalScrollContext = useContext(HorizontalScrollContext);
+  const horizontalScrollEl = horizontalScrollContext.getScrollElement();
+  const itemDimensions = get(item, "dimensions", { width: 0, height: 0 });
 
+  const [top, bottom] = getContainerTopBottom(scrollEl);
+  const [left, right] = getContainerLeftRight(horizontalScrollEl);
+
+  // ------------- vertical drag scroll start -----------------
   if (scrollEl) {
-    const top = getContainerTop(scrollEl);
-    const bottom = getContainerBottom(scrollEl);
     const containerTop = top;
     const containerBottom = bottom - itemDimensions.height - 50; // window.innerHeight - 50;
     const yOffset = get(currentOffset, "y", null);
@@ -108,27 +107,18 @@ const CustomDragLayer = ({ showPoint }) => {
   // ------------- vertical drag scroll end ------------------
 
   // ------------- horizontal drag scroll start ------------------
-  const horizontalScrollContext = useContext(HorizontalScrollContext);
-  const horizontalScrollEl = horizontalScrollContext.getScrollElement();
-
   if (horizontalScrollEl) {
-    const containerLeft = getContainerLeft(horizontalScrollEl);
-    const containerRight = getContainerRight(horizontalScrollEl) - itemDimensions.width;
+    const containerRight = right - itemDimensions.width;
     const xOffset = get(currentOffset, "x", null);
-    const scrollByHorizontal = xOffset < containerLeft ? -10 : 10;
+    const scrollByHorizontal = xOffset < left ? -10 : 10;
 
-    if (
-      !horizontalInterval.current &&
-      scrollByHorizontal &&
-      xOffset &&
-      (xOffset < containerLeft || xOffset > containerRight)
-    ) {
+    if (!horizontalInterval.current && scrollByHorizontal && xOffset && (xOffset < left || xOffset > containerRight)) {
       horizontalInterval.current = setInterval(() => {
         horizontalScrollEl.scrollBy({
           left: scrollByHorizontal
         });
       }, 50);
-    } else if (horizontalInterval.current && ((xOffset > containerLeft && xOffset < containerRight) || !xOffset)) {
+    } else if (horizontalInterval.current && ((xOffset > left && xOffset < containerRight) || !xOffset)) {
       clearInterval(horizontalInterval.current);
       horizontalInterval.current = null;
     }

@@ -6,7 +6,7 @@ import { normalize } from "normalizr";
 import { assignmentApi, reportsApi } from "@edulastic/api";
 
 // external actions
-import { testActivity as testActivityConstants } from "@edulastic/constants";
+import { testActivity as testActivityConstants, testActivityStatus } from "@edulastic/constants";
 import {
   assignmentSchema,
   setAssignmentsAction,
@@ -73,7 +73,23 @@ export function* watcherSaga() {
 // selectors
 
 const assignmentsSelector = state => state.studentAssignment.byId;
-const reportsSelector = state => state.studentReport.byId;
+const reportsById = state => state.studentReport.byId;
+const reportsSelector = createSelector(
+  reportsById,
+  reports => {
+    const filteredReports = {};
+    if (!Object.keys(reports).length) {
+      return filteredReports;
+    }
+    for (const r in reports) {
+      if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
+        continue;
+      }
+      filteredReports[r] = reports[r];
+    }
+    return filteredReports;
+  }
+);
 export const filterSelector = state => state.studentReport.filter;
 
 const isReport = (assignment, classIds, userId) => {
@@ -129,8 +145,10 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   currentUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
+    const classIdentifiers = values(assignmentsObj).flatMap(item => item.class.map(item => item.identifier));
+    const reports = values(reportsObj).filter(item => classIdentifiers.includes(item.assignmentClassIdentifier));
     // group reports by assignmentsID
-    const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
+    const groupedReports = groupBy(reports, item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
         // no redirected classes and no class filter or class ID match the filter and student belongs to the class

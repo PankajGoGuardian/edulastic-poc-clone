@@ -25,6 +25,7 @@ import {
   StyledButton,
   StyledTableButton,
   SubHeaderWrapper,
+  StyledPagination,
   TableContainer
 } from "../../../../common/styled";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
@@ -103,6 +104,7 @@ class StudentTable extends Component {
       showMergeStudentsModal: false,
       showActive: true,
       searchByName: "",
+      currentPage: 1,
       filtersData: [
         {
           filtersColumn: "",
@@ -430,7 +432,7 @@ class StudentTable extends Component {
   };
 
   handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadFilteredList);
+    this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
   };
 
   onSearchFilter = (value, event, i) => {
@@ -583,6 +585,7 @@ class StudentTable extends Component {
       search,
       districtId: userOrgId,
       role: "student",
+      limit: 25,
       page: currentPage
       // uncomment after elastic search is fixed
       // sortField,
@@ -606,6 +609,10 @@ class StudentTable extends Component {
     loadAdminData(this.getSearchQuery());
   };
 
+  setPageNo = page => {
+    this.setState({ currentPage: page }, this.loadFilteredList);
+  };
+
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
@@ -619,7 +626,8 @@ class StudentTable extends Component {
       selectedAdminsForDeactivate,
       showMergeStudentsModal,
       filtersData,
-      refineButtonActive
+      refineButtonActive,
+      currentPage
     } = this.state;
 
     const rowSelection = {
@@ -642,6 +650,8 @@ class StudentTable extends Component {
       resetClassDetails,
       history,
       policy,
+      totalUsers,
+      pageNo,
       t
     } = this.props;
 
@@ -811,7 +821,15 @@ class StudentTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={{ pageSize: 25, hideOnSinglePage: true }}
+            pagination={false}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={totalUsers}
+            onChange={page => this.setPageNo(page)}
+            hideOnSinglePage
           />
         </TableContainer>
         {inviteStudentModalVisible && (

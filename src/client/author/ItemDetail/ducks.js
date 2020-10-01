@@ -758,7 +758,7 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true,
           isPassageWithQuestions: true,
           canAddMultipleItems: !!payload.canAddMultipleItems,
-          itemLevelScoring:false
+          itemLevelScoring: false
         }
       };
     case ADD_PASSAGE: {
@@ -874,14 +874,14 @@ function* receiveItemSaga({ payload }) {
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (err) {
     Sentry.captureException(err);
-    let msg = "Receive item by id is failing";
+    let msg = "Unable to retrieve the item.";
     if (err.status === 404) {
       msg = "Item not found";
       yield put(push("/author/items"));
     }
     console.log("err is", err);
 
-    notification({ msg: msg });
+    notification({ type: "error", msg: msg });
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
       payload: { error: msg }
@@ -893,14 +893,15 @@ export function* deleteItemSaga({ payload }) {
   try {
     yield put(setItemDeletingAction(true));
     const { id, redirectId, isTestFlow, testId, isItemPrevew = false } = payload;
-    yield call(testItemsApi.deleteById, id);
+    const hasValidTestId = testId && testId !== "undefined";
+    yield call(testItemsApi.deleteById, id, { ...(hasValidTestId && { testId }) });
     yield put(setItemDeletingAction(false));
     yield put(deleteItemSuccesAction(id));
     notification({ type: "success", messageKey: "itemDeletedSuccessfully" });
     if (isItemPrevew) return;
 
     if (isTestFlow) {
-      yield put(push(`/author/items/${redirectId}/item-detail/test/${testId}`));
+      yield put(push(`/author/tests/${testId}/editItem/${redirectId}`));
       return;
     }
     if (redirectId) {
@@ -1036,13 +1037,17 @@ export function* updateItemSaga({ payload }) {
       }
     }
 
-    /**
+    /*
      * in test flow, until test is not created, testId comes as "undefined" in string
      * do no pass it to API as testId argument
      * @see https://snapwiz.atlassian.net/browse/EV-18458
      */
     const hasValidTestId = payload.testId && payload.testId !== "undefined";
     const testIdParam = hasValidTestId ? payload.testId : null;
+
+    if (!isEmpty(passageData) && testIdParam) {
+      passageData.testId = testIdParam;
+    }
 
     const [{ testId, ...item }, updatedPassage] = yield all([
       call(testItemsApi.updateById, payload.id, data, testIdParam),
@@ -1071,13 +1076,13 @@ export function* updateItemSaga({ payload }) {
     }
     const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
-      const {isTestFlow,previousTestId} = yield select(state => get(state, "router.location.state"), {});
+      const { isTestFlow, previousTestId } = yield select(state => get(state, "router.location.state", {}));
       yield put(
         replace(
           payload.testId
-            ? `/author/items/${item._id}/item-detail/test/${payload.testId}`
+            ? `/author/tests/${payload.testId}/editItem/${item._id}`
             : `/author/items/${item._id}/item-detail`,
-            {isTestFlow,previousTestId}
+          { isTestFlow, previousTestId }
         )
       );
     }
@@ -1150,8 +1155,8 @@ export function* updateItemSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     console.error(err);
-    const errorMessage = "Item save is failing";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to save the item.";
+    notification({ type: "error", msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -1200,8 +1205,8 @@ export function* updateItemDocBasedSaga({ payload }) {
     return { testId, ...item };
   } catch (err) {
     Sentry.captureException(err);
-    const errorMessage = "Item save is failing";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to save the item.";
+    notification({ type: "error", msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -1448,13 +1453,15 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const { backUrl, tabIndex, canAddMultipleItems } = yield select(state => get(state, "router.location.state"), {});
+    const { backUrl, tabIndex, canAddMultipleItems, isPassageWithQuestions } = yield select(
+      state => get(state, "router.location.state"),
+      {}
+    );
     const pathname = yield select(state => get(state, "router.location.pathname"), {});
-
     yield put({
       type: UPDATE_ITEM_TO_PASSAGE_TYPE,
       payload: {
-        canAddMultipleItems
+        canAddMultipleItems: canAddMultipleItems || isPassageWithQuestions
       }
     });
 
@@ -1507,10 +1514,18 @@ function* savePassage({ payload }) {
     });
     yield put(updatePassageStructureAction(modifiedPassage));
 
+    /*
+     * in test flow, until test is not created, testId comes as "undefined" in string
+     * do no pass it to API as testId argument
+     * @see https://snapwiz.atlassian.net/browse/EV-19517
+     */
+    const hasValidTestId = payload.testId && payload.testId !== "undefined";
+    const testIdParam = hasValidTestId ? payload.testId : null;
+
     // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),
-      currentItem._id !== "new" ? call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId) : null
+      currentItem._id !== "new" ? call(testItemsApi.updateById, currentItem._id, currentItem, testIdParam) : null
     ]);
 
     // if there is new, replace it with current Item's id.
@@ -1525,13 +1540,13 @@ function* savePassage({ payload }) {
   } catch (e) {
     Sentry.captureException(e);
     console.log("error: ", e);
-    notification({ msg: "errorSavingPassing" });
+    notification({ messageKey: "errorSavingPassage" });
   }
 }
 
 function* addWidgetToPassage({ payload }) {
   try {
-    const { isTestFlow = false, itemId, testId, type, tabIndex = 0 } = payload;
+    const { isTestFlow = false, itemId, testId, type, tabIndex = 0, canAddMultipleItems } = payload;
 
     const widget =
       type === "video"
@@ -1570,7 +1585,8 @@ function* addWidgetToPassage({ payload }) {
         state: {
           isPassageWithQuestions: true,
           backUrl,
-          tabIndex
+          tabIndex,
+          canAddMultipleItems: !!canAddMultipleItems // location state prop getting used by savePassage saga
         }
       })
     );

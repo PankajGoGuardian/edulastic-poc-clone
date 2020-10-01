@@ -7,7 +7,8 @@ import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } 
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { scrollTo, AnswerContext, Legends, LegendContainer } from "@edulastic/common";
+import { scrollTo, AnswerContext, Legends, LegendContainer, LCBScrollContext } from "@edulastic/common";
+import { testActivityStatus } from "@edulastic/constants";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
 import { StyledFlexContainer, StyledCard, TooltipContainer } from "./styled";
@@ -22,7 +23,9 @@ import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelec
 /**
  * @param {string} studentId
  */
-const _scrollTo = studentId => scrollTo(document.querySelector(`.student-question-container-id-${studentId}`));
+const _scrollTo = (studentId, el) => {
+  scrollTo(document.querySelector(`.student-question-container-id-${studentId}`), 160, el);
+};
 
 const green = "#5eb500";
 
@@ -47,6 +50,8 @@ CustomTooltip.defaultProps = {
 };
 
 class QuestionViewContainer extends Component {
+  static contextType = LCBScrollContext;
+
   static getDerivedStateFromProps(nextProps, preState) {
     const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = nextProps;
     const { question: _question = {} } = preState || {};
@@ -75,7 +80,7 @@ class QuestionViewContainer extends Component {
   };
 
   onClickChart = data => {
-    _scrollTo(data.id);
+    _scrollTo(data.id, this.context.current);
   };
 
   render() {
@@ -128,7 +133,12 @@ class QuestionViewContainer extends Component {
 
     if (!isEmpty(testActivity)) {
       data = testActivity
-        .filter(student => (student.status != "notStarted" || student.redirect) && student.status != "absent")
+        .filter(
+          student =>
+            (student.status != "notStarted" || student.redirect) &&
+            student.status != "absent" &&
+            student.UTASTATUS !== testActivityStatus.NOT_STARTED
+        )
         .map(st => {
           const name = isPresentationMode ? st.fakeName : st.studentName || t("common.anonymous");
           const stData = {
@@ -188,9 +198,10 @@ class QuestionViewContainer extends Component {
                   dy={10}
                   onClick={({ index }) => {
                     const { id } = data[index];
-                    _scrollTo(id);
+                    _scrollTo(id, this.context.current);
                   }}
                 />
+
                 <YAxis
                   dataKey="attempts"
                   yAxisId={0}
@@ -276,13 +287,17 @@ class QuestionViewContainer extends Component {
         </StyledFlexContainer>
         <StudentResponse
           testActivity={testActivity}
-          onClick={studentId => _scrollTo(studentId)}
+          onClick={studentId => _scrollTo(studentId, this.context.current)}
           isPresentationMode={isPresentationMode}
         />
         {testActivity &&
           !loading &&
           testActivity.map((student, index) => {
-            if (!student.testActivityId || student.status === "absent") {
+            if (
+              !student.testActivityId ||
+              student.status === "absent" ||
+              student.UTASTATUS === testActivityStatus.NOT_STARTED
+            ) {
               return null;
             }
             const qActivities = classQuestion.filter(({ userId }) => userId === student.studentId);
@@ -320,7 +335,9 @@ const enhance = compose(
     }
   )
 );
-export default enhance(QuestionViewContainer);
+
+const QuestionViewContainerConnected = enhance(QuestionViewContainer);
+export default QuestionViewContainerConnected;
 
 QuestionViewContainer.propTypes = {
   classResponse: PropTypes.object.isRequired,

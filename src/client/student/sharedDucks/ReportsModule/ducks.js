@@ -38,20 +38,12 @@ const initialState = {
 
 // load reports to store.
 const setReports = (state, { payload }) => {
-  if (payload.reportsObj) {
-    state.byId = payload.reportsObj;
-  }
-  if (payload.allReports) {
-    state.allIds = payload.allReports;
-  }
-
-  if (payload.allReports?.length === 0 && !payload.reportsObj) {
-    state.byId = {};
-  }
+  state.byId = payload.reportsObj || {};
+  state.allIds = payload.allReports || [];
 };
 
 const updateReports = (state, { payload }) => {
-  for (let id of Object.keys(payload)) {
+  for (const id of Object.keys(payload)) {
     state.byId[id] = payload[id];
   }
 };
@@ -83,7 +75,7 @@ export default createReducer(initialState, {
   [SET_PASSAGES_DATA]: setPassagesData,
   [ADD_REPORT_REALTIME]: (state, { payload: report }) => {
     if (Array.isArray(report)) {
-      for (let el of report) {
+      for (const el of report) {
         state.byId[el._id] = el;
       }
       if (report.length === 1) {
@@ -104,7 +96,7 @@ export default createReducer(initialState, {
   }
 });
 
-//selector
+// selector
 const stateSelector = state => state.studentReport;
 
 const getAllReportsSelector = createSelector(

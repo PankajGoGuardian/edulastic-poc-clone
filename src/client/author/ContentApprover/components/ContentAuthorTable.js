@@ -617,8 +617,9 @@ class ContentAuthorTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={false}
+            pagination={{ pageSize: 25, hideOnSinglePage: true }}
           />
+          {/* use below pagination when API is paginated
           <StyledPagination
             defaultCurrent={1}
             current={currentPage}
@@ -626,7 +627,7 @@ class ContentAuthorTable extends Component {
             total={totalUsers}
             onChange={page => this.setPageNo(page)}
             hideOnSinglePage
-          />
+          /> */}
         </TableContainer>
         {createDistrictAdminModalVisible && (
           <CreateContentAuthorModal

@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper, CheckboxLabel, notification, EduSwitchStyled } from "@edulastic/common";
+import { MainContentWrapper, CheckboxLabel, notification, EduSwitchStyled, LCBScrollContext } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,
@@ -12,6 +12,7 @@ import {
   IconRemove
 } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
+import { testActivityStatus } from "@edulastic/constants";
 import { Dropdown, Select } from "antd";
 import { get, isEmpty, keyBy, round } from "lodash";
 import moment from "moment";
@@ -68,7 +69,9 @@ import {
   stateStudentResponseSelector,
   testActivtyLoadingSelector,
   getActiveAssignedStudents,
-  getDisableMarkAsAbsentSelector
+  getDisableMarkAsAbsentSelector,
+  getLCBStudentsList,
+  getEnrollmentStatus
 } from "../../ducks";
 import AddStudentsPopup from "../AddStudentsPopup";
 import BarGraph from "../BarGraph/BarGraph";
@@ -109,7 +112,7 @@ class ClassBoard extends Component {
     this.changeStateTrue = this.changeStateTrue.bind(this);
     this.changeStateFalse = this.changeStateFalse.bind(this);
     this.onSelectAllChange = this.onSelectAllChange.bind(this);
-
+    this.MainContentWrapperRef = React.createRef();
     let _selectedTab = "Both";
     let questionId = null;
     if (props.location.pathname.includes("question-activity")) {
@@ -351,9 +354,21 @@ class ClassBoard extends Component {
   };
 
   handleRedirect = () => {
-    const { selectedStudents, testActivity, enrollmentStatus, additionalData = {}, assignmentStatus } = this.props;
+    const {
+      selectedStudents,
+      testActivity,
+      enrollmentStatus,
+      additionalData = {},
+      assignmentStatus,
+      removedStudents
+    } = this.props;
+
     if (additionalData.isPaused && assignmentStatus !== "DONE" && additionalData.endDate > Date.now()) {
       return notification({ type: "info", messageKey: "classPausedContinueWithRedirect" });
+    }
+
+    if (removedStudents.some(rs => selectedStudents[rs])) {
+      return notification({ type: "warn", messageKey: "youCantRedirectRemoved" });
     }
 
     const notStartedStudents = testActivity.filter(
@@ -428,6 +443,16 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
+    const inActiveStudentsSelected = (selectedStudentKeys || []).filter(
+      item =>
+        mapTestActivityByStudId?.[item]?.isAssigned === false || mapTestActivityByStudId?.[item]?.isEnrolled === false
+    );
+    if (inActiveStudentsSelected.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not mark removed or unerolled students as submit`
+      });
+    }
     const selectedSubmittedStudents = (selectedStudentKeys || []).filter(
       item =>
         mapTestActivityByStudId?.[item]?.status === "submitted" || mapTestActivityByStudId?.[item]?.status === "graded"
@@ -455,11 +480,20 @@ class ClassBoard extends Component {
       return notification({ type: "warn", messageKey: "atleastOneStudentToMarkAbsent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
-    const selectedNotStartedStudents = (selectedStudentKeys || []).filter(
+    const inActiveStudentsSelected = (selectedStudentKeys || []).filter(
       item =>
-        mapTestActivityByStudId?.[item]?.status === "notStarted" ||
-        mapTestActivityByStudId?.[item]?.status === "redirected"
+        mapTestActivityByStudId?.[item]?.isAssigned === false || mapTestActivityByStudId?.[item]?.isEnrolled === false
     );
+    if (inActiveStudentsSelected.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not mark removed or unerolled students as absent`
+      });
+    }
+    const selectedNotStartedStudents = (selectedStudentKeys || []).filter(studentId => {
+      const { UTASTATUS } = mapTestActivityByStudId?.[studentId] || {};
+      return UTASTATUS === testActivityStatus.NOT_STARTED;
+    });
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
       return notification({
@@ -481,12 +515,33 @@ class ClassBoard extends Component {
     if (isRemovedStudentsSelected) {
       return notification({ type: "warn", msg: "Cannot remove unassigned students" });
     }
+    const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
       return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
     }
+    const unEnrolledStudents = (selectedStudentKeys || []).filter(
+      item => mapTestActivityByStudId?.[item]?.isEnrolled === false
+    );
+
+    if (unEnrolledStudents.length) {
+      return notification({
+        type: "warn",
+        msg: `You can not remove unerolled students`
+      });
+    }
+
     const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
-    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    const isAnyBodyInProgress = selectedStudentsEntity.some(item => item.UTASTATUS === testActivityStatus.START);
+    if (isAnyBodyInProgress) {
+      return notification({
+        type: "warn",
+        msg: `In progress students can not be removed`
+      });
+    }
+    const isAnyBodyGraded = selectedStudentsEntity.some(
+      item => item.UTASTATUS === testActivityStatus.SUBMITTED && item.graded
+    );
     if (isAnyBodyGraded) {
       return notification({ type: "warn", messageKey: "youWillNotAbleToRemove" });
     }
@@ -692,9 +747,10 @@ class ClassBoard extends Component {
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
     const firstQuestionEntities = get(testActivity, [0, "questionActivities"], []);
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
+    const nobodyStarted = testActivity.every(activity => activity.UTASTATUS === testActivityStatus.NOT_STARTED);
 
     const existingStudents = testActivity
-      .filter(item => !item.isUnAssigned && item.enrollmentStatus === 1)
+      .filter(item => item.isAssigned && item.enrollmentStatus === 1)
       .map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
@@ -769,7 +825,7 @@ class ClassBoard extends Component {
         )}
         {showRemoveStudentsPopup && (
           <ConfirmationModal
-            title="Remove Students"
+            title="Unassign Students"
             show={showRemoveStudentsPopup}
             onOk={this.handleRemoveStudents}
             onCancel={this.handleCancelRemove}
@@ -808,345 +864,338 @@ class ClassBoard extends Component {
           testActivity={testActivity}
           isCliUser={isCliUser}
         />
-        <MainContentWrapper>
-          <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb
-              breadCrumb={location?.state?.breadCrumb}
-              isCliUser={isCliUser}
-              fromUrl={location?.state?.from}
-            />
-            {!isCliUser && (
-              <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
-                <PresentationToggleSwitch groupId={classId} />
-                <BothButton
-                  disabled={isLoading}
-                  style={{ marginLeft: "20px" }}
-                  active={selectedTab === "Both"}
-                  onClick={e => this.onTabChange(e, "Both")}
-                >
-                  CARD VIEW
-                </BothButton>
-                <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
-                  <StudentButton
-                    disabled={!firstStudentId || !isItemsVisible || isLoading}
-                    active={selectedTab === "Student"}
-                    onClick={e => {
-                      const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
-                      setCurrentTestActivityId(_testActivityId);
-                      if (!isItemsVisible) {
-                        return;
-                      }
-                      getAllTestActivitiesForStudent({
-                        studentId: firstStudentId,
-                        assignmentId,
-                        groupId: classId
-                      });
-                      this.onTabChange(e, "Student", firstStudentId, _testActivityId);
-                    }}
+        <MainContentWrapper ref={this.MainContentWrapperRef}>
+          <LCBScrollContext.Provider value={this.MainContentWrapperRef}>
+            <StyledFlexContainer justifyContent="space-between">
+              <ClassBreadBrumb
+                breadCrumb={location?.state?.breadCrumb}
+                isCliUser={isCliUser}
+                fromUrl={location?.state?.from}
+              />
+              {!isCliUser && (
+                <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
+                  <PresentationToggleSwitch groupId={classId} />
+                  <BothButton
+                    disabled={isLoading}
+                    style={{ marginLeft: "20px" }}
+                    active={selectedTab === "Both"}
+                    onClick={e => this.onTabChange(e, "Both")}
                   >
-                    STUDENTS
-                  </StudentButton>
-                </WithDisableMessage>
-                <WithDisableMessage
-                  disabled={hasRandomQuestions || !isItemsVisible}
-                  errMessage={
-                    hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
-                  }
-                >
-                  <QuestionButton
-                    active={selectedTab === "questionView"}
-                    disabled={!firstStudentId || !isItemsVisible || hasRandomQuestions || isLoading}
-                    onClick={() => {
-                      const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
-                      if (!firstQuestion) {
-                        console.warn("no question activities");
-                        return;
-                      }
-                      this.setState({
-                        selectedQuestion: 0,
-                        selectedQid: firstQuestion._id,
-                        itemId: firstQuestion.testItemId,
-                        selectedTab: "questionView"
-                      });
-                      loadTestActivity(assignmentId, classId);
-                      history.push(
-                        `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
-                      );
-                    }}
-                  >
-                    QUESTIONS
-                  </QuestionButton>
-                </WithDisableMessage>
-              </StudentButtonDiv>
-            )}
-          </StyledFlexContainer>
-          {selectedTab === "Both" && (
-            <React.Fragment>
-              <GraphContainer>
-                <StyledCard bordered={false}>
-                  <Graph
-                    gradebook={gradebook}
-                    title={additionalData.testName}
-                    testActivity={testActivity}
-                    testQuestionActivities={testQuestionActivities}
-                    onClickHandler={this.onClickBarGraph}
-                    isLoading={isLoading}
-                    isBoth
-                  />
-                </StyledCard>
-              </GraphContainer>
-              <StickyFlex
-                justifyContent="space-between"
-                hasStickyHeader={hasStickyHeader}
-                className="lcb-student-sticky-bar"
-              >
-                <div>
-                  <CheckboxLabel
-                    data-cy="selectAllCheckbox"
-                    checked={unselectedStudents.length === 0}
-                    indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
-                    onChange={this.onSelectAllChange}
-                  >
-                    {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
-                  </CheckboxLabel>
-                  <SwitchBox>
-                    <span>SHOW ACTIVE STUDENTS</span>
-                    <EduSwitchStyled checked={!isShowAllStudents} onClick={this.onShowUnEnrolled} />
-                  </SwitchBox>
-                </div>
-                <ClassBoardFeats>
-                  <RedirectButton
-                    disabled={!isItemsVisible}
-                    first
-                    data-cy="printButton"
-                    target="_blank"
-                    onClick={this.onClickPrint}
-                  >
-                    <ButtonIconWrap>
-                      <IconPrint />
-                    </ButtonIconWrap>
-                    PRINT
-                  </RedirectButton>
-                  <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
-                    <ButtonIconWrap>
-                      <IconRedirect />
-                    </ButtonIconWrap>
-                    REDIRECT
-                  </RedirectButton>
-                  <Dropdown
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                    overlay={
-                      <DropMenu>
-                        <FeaturesSwitch
-                          inputFeatures="LCBmarkAsSubmitted"
-                          key="LCBmarkAsSubmitted"
-                          actionOnInaccessible="hidden"
-                          groupId={classId}
-                        >
-                          <MenuItems
-                            data-cy="markSubmitted"
-                            disabled={disableMarkSubmitted}
-                            onClick={this.handleShowMarkAsSubmittedModal}
-                          >
-                            <IconMarkAsSubmitted width={12} />
-                            <span>Mark as Submitted</span>
-                          </MenuItems>
-                        </FeaturesSwitch>
-                        <FeaturesSwitch
-                          inputFeatures="LCBmarkAsAbsent"
-                          key="LCBmarkAsAbsent"
-                          actionOnInaccessible="hidden"
-                          groupId={classId}
-                        >
-                          <MenuItems
-                            data-cy="markAbsent"
-                            disabled={disableMarkAbsent}
-                            onClick={this.handleShowMarkAsAbsentModal}
-                          >
-                            <IconMarkAsAbsent />
-                            <span>Mark as Absent</span>
-                          </MenuItems>
-                        </FeaturesSwitch>
-
-                        <MenuItems data-cy="addStudents" onClick={this.handleShowAddStudentsPopup}>
-                          <IconAddStudents />
-                          <span>Add Students</span>
-                        </MenuItems>
-                        <MenuItems data-cy="removeStudents" onClick={this.handleShowRemoveStudentsModal}>
-                          <IconRemove />
-                          <span>Remove Students</span>
-                        </MenuItems>
-                        <MenuItems
-                          data-cy="downloadGrades"
-                          disabled={!enableDownload}
-                          onClick={() => this.handleDownloadGrades(false)}
-                        >
-                          <IconDownload />
-                          <span>Download Grades</span>
-                        </MenuItems>
-                        <MenuItems
-                          data-cy="downloadResponse"
-                          disabled={!enableDownload}
-                          onClick={() => this.handleDownloadGrades(true)}
-                        >
-                          <IconDownload />
-                          <span>Download Response</span>
-                        </MenuItems>
-                      </DropMenu>
+                    CARD VIEW
+                  </BothButton>
+                  <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+                    <StudentButton
+                      disabled={nobodyStarted || !isItemsVisible || isLoading}
+                      active={selectedTab === "Student"}
+                      onClick={e => {
+                        const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
+                        setCurrentTestActivityId(_testActivityId);
+                        if (!isItemsVisible) {
+                          return;
+                        }
+                        getAllTestActivitiesForStudent({
+                          studentId: firstStudentId,
+                          assignmentId,
+                          groupId: classId
+                        });
+                        this.onTabChange(e, "Student", firstStudentId, _testActivityId);
+                      }}
+                    >
+                      STUDENTS
+                    </StudentButton>
+                  </WithDisableMessage>
+                  <WithDisableMessage
+                    disabled={hasRandomQuestions || !isItemsVisible}
+                    errMessage={
+                      hasRandomQuestions
+                        ? "This assignment has random items for every student."
+                        : t("common.testHidden")
                     }
-                    placement="bottomRight"
                   >
-                    <RedirectButton data-cy="moreAction" last>
-                      <ButtonIconWrap>
-                        <IconMoreHorizontal />
-                      </ButtonIconWrap>
-                      MORE
-                    </RedirectButton>
-                  </Dropdown>
-                </ClassBoardFeats>
-              </StickyFlex>
-              <div ref={this.disneyCardsContainerRef}>
-                {flag ? (
-                  <DisneyCardContainer
-                    selectedStudents={selectedStudents}
-                    testActivity={testActivity}
-                    assignmentId={assignmentId}
-                    classId={classId}
-                    studentSelect={this.onSelectCardOne}
-                    endDate={additionalData.endDate || additionalData.closedDate}
-                    dueDate={additionalData.dueDate}
-                    closed={additionalData.closed}
-                    detailedClasses={additionalData.detailedClasses}
-                    studentUnselect={this.onUnselectCardOne}
-                    viewResponses={(e, selected, _testActivityId) => {
-                      setCurrentTestActivityId(_testActivityId);
-                      if (!isItemsVisible) {
-                        return;
-                      }
-                      getAllTestActivitiesForStudent({
-                        studentId: selected,
-                        assignmentId,
-                        groupId: classId
-                      });
-                      this.onTabChange(e, "Student", selected, _testActivityId);
-                    }}
-                    isPresentationMode={isPresentationMode}
-                    enrollmentStatus={enrollmentStatus}
-                  />
-                ) : (
-                  <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
-                )}
-              </div>
-
-              {redirectPopup && (
-                <RedirectPopup
-                  open={redirectPopup}
-                  allStudents={allStudents}
-                  disabledList={disabledList}
-                  absentList={absentList}
-                  selectedStudents={selectedStudents}
-                  additionalData={additionalData}
-                  enrollmentStatus={enrollmentStatus}
-                  closePopup={this.closeRedirectPopup}
-                  setSelected={setSelected}
-                  assignmentId={assignmentId}
-                  groupId={classId}
-                  testActivity={testActivity}
-                />
+                    <QuestionButton
+                      active={selectedTab === "questionView"}
+                      disabled={nobodyStarted || !isItemsVisible || hasRandomQuestions || isLoading}
+                      onClick={() => {
+                        const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
+                        if (!firstQuestion) {
+                          console.warn("no question activities");
+                          return;
+                        }
+                        this.setState({
+                          selectedQuestion: 0,
+                          selectedQid: firstQuestion._id,
+                          itemId: firstQuestion.testItemId,
+                          selectedTab: "questionView"
+                        });
+                        loadTestActivity(assignmentId, classId);
+                        history.push(
+                          `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
+                        );
+                      }}
+                    >
+                      QUESTIONS
+                    </QuestionButton>
+                  </WithDisableMessage>
+                </StudentButtonDiv>
               )}
-              {showAddStudentsPopup && (
-                <AddStudentsPopup
-                  open={showAddStudentsPopup}
-                  groupId={classId}
-                  closePolicy={additionalData.closePolicy}
-                  assignmentId={assignmentId}
-                  closePopup={this.handleHideAddStudentsPopup}
-                  disabledList={existingStudents}
-                />
-              )}
-            </React.Fragment>
-          )}
-
-          {selectedTab === "Student" && selectedStudentId && !isEmpty(testActivity) && !isEmpty(classResponse) && (
-            <React.Fragment>
-              <StudentGrapContainer>
-                <StyledCard bordered={false} paddingTop={15}>
-                  <StudentSelect
-                    data-cy="studentSelect"
-                    style={{ width: "200px" }}
-                    students={testActivity}
-                    selectedStudent={selectedStudentId}
-                    studentResponse={qActivityByStudent}
-                    handleChange={(value, _testActivityId) => {
-                      setCurrentTestActivityId(_testActivityId);
-                      getAllTestActivitiesForStudent({
-                        studentId: value,
-                        assignmentId,
-                        groupId: classId
-                      });
-                      this.setState({ selectedStudentId: value });
-                      history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`);
-                    }}
-                    isPresentationMode={isPresentationMode}
-                  />
-                  <GraphWrapper style={{ width: "100%", display: "flex" }}>
-                    <BarGraph
+            </StyledFlexContainer>
+            {selectedTab === "Both" && (
+              <React.Fragment>
+                <GraphContainer>
+                  <StyledCard bordered={false}>
+                    <Graph
                       gradebook={gradebook}
+                      title={additionalData.testName}
                       testActivity={testActivity}
-                      studentId={selectedStudentId}
-                      studentview
-                      studentViewFilter={studentViewFilter}
-                      studentResponse={studentResponse}
+                      testQuestionActivities={testQuestionActivities}
+                      onClickHandler={this.onClickBarGraph}
                       isLoading={isLoading}
+                      isBoth
                     />
-                    <InfoWrapper>
-                      {allTestActivitiesForStudent.length > 1 && (
-                        <Select
-                          data-cy="attemptSelect"
-                          style={{ width: "200px" }}
-                          value={
-                            allTestActivitiesForStudent.some(
-                              ({ _id }) => _id === (currentTestActivityId || testActivityId)
-                            )
-                              ? currentTestActivityId || testActivityId
-                              : ""
-                          }
-                          onChange={_testActivityId => {
-                            loadStudentResponses({
-                              testActivityId: _testActivityId,
-                              groupId: classId,
-                              studentId: selectedStudentId
-                            });
-                            setCurrentTestActivityId(_testActivityId);
-                            history.push(
-                              `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
-                            );
-                          }}
-                        >
-                          {[...allTestActivitiesForStudent].reverse().map((_testActivity, index) => (
-                            <Select.Option key={index} value={_testActivity._id} disabled={_testActivity.status === 2}>
-                              {`Attempt ${allTestActivitiesForStudent.length - index} ${
-                                _testActivity.status === 2 ? " (Absent)" : ""
-                              }`}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      )}
-                      <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            padding: "10px",
-                            alignItems: "center"
-                          }}
-                        >
-                          <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                          <ScoreWrapper data-cy="totalScore">{round(score, 2) || 0}</ScoreWrapper>
-                          <div style={{ border: "solid 1px black", width: "50px" }} />
-                          <ScoreWrapper data-cy="totalMaxScore">{round(maxScore, 2) || 0}</ScoreWrapper>
-                        </div>
-                        {allTestActivitiesForStudent.length > 1 && showScoreImporvement ? (
+                  </StyledCard>
+                </GraphContainer>
+                <StickyFlex
+                  justifyContent="space-between"
+                  hasStickyHeader={hasStickyHeader}
+                  className="lcb-student-sticky-bar"
+                >
+                  <div>
+                    <CheckboxLabel
+                      data-cy="selectAllCheckbox"
+                      checked={unselectedStudents.length === 0}
+                      indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
+                      onChange={this.onSelectAllChange}
+                    >
+                      {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
+                    </CheckboxLabel>
+                    <SwitchBox>
+                      <span>SHOW ACTIVE STUDENTS</span>
+                      <EduSwitchStyled checked={!isShowAllStudents} onClick={this.onShowUnEnrolled} />
+                    </SwitchBox>
+                  </div>
+                  <ClassBoardFeats>
+                    <RedirectButton
+                      disabled={!isItemsVisible}
+                      first
+                      data-cy="printButton"
+                      target="_blank"
+                      onClick={this.onClickPrint}
+                    >
+                      <ButtonIconWrap>
+                        <IconPrint />
+                      </ButtonIconWrap>
+                      PRINT
+                    </RedirectButton>
+                    <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
+                      <ButtonIconWrap>
+                        <IconRedirect />
+                      </ButtonIconWrap>
+                      REDIRECT
+                    </RedirectButton>
+                    <Dropdown
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
+                      overlay={
+                        <DropMenu>
+                          <FeaturesSwitch
+                            inputFeatures="LCBmarkAsSubmitted"
+                            key="LCBmarkAsSubmitted"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
+                            <MenuItems
+                              data-cy="markSubmitted"
+                              disabled={disableMarkSubmitted}
+                              onClick={this.handleShowMarkAsSubmittedModal}
+                            >
+                              <IconMarkAsSubmitted width={12} />
+                              <span>Mark as Submitted</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
+                          <FeaturesSwitch
+                            inputFeatures="LCBmarkAsAbsent"
+                            key="LCBmarkAsAbsent"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
+                            <MenuItems
+                              data-cy="markAbsent"
+                              disabled={disableMarkAbsent}
+                              onClick={this.handleShowMarkAsAbsentModal}
+                            >
+                              <IconMarkAsAbsent />
+                              <span>Mark as Absent</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
+
+                          <MenuItems data-cy="addStudents" onClick={this.handleShowAddStudentsPopup}>
+                            <IconAddStudents />
+                            <span>Add Students</span>
+                          </MenuItems>
+                          <MenuItems data-cy="removeStudents" onClick={this.handleShowRemoveStudentsModal}>
+                            <IconRemove />
+                            <span>Unassign Students</span>
+                          </MenuItems>
+                          <MenuItems
+                            data-cy="downloadGrades"
+                            disabled={!enableDownload}
+                            onClick={() => this.handleDownloadGrades(false)}
+                          >
+                            <IconDownload />
+                            <span>Download Grades</span>
+                          </MenuItems>
+                          <MenuItems
+                            data-cy="downloadResponse"
+                            disabled={!enableDownload}
+                            onClick={() => this.handleDownloadGrades(true)}
+                          >
+                            <IconDownload />
+                            <span>Download Response</span>
+                          </MenuItems>
+                        </DropMenu>
+                      }
+                      placement="bottomRight"
+                    >
+                      <RedirectButton data-cy="moreAction" last>
+                        <ButtonIconWrap>
+                          <IconMoreHorizontal />
+                        </ButtonIconWrap>
+                        MORE
+                      </RedirectButton>
+                    </Dropdown>
+                  </ClassBoardFeats>
+                </StickyFlex>
+                <div ref={this.disneyCardsContainerRef}>
+                  {flag ? (
+                    <DisneyCardContainer
+                      selectedStudents={selectedStudents}
+                      testActivity={testActivity}
+                      assignmentId={assignmentId}
+                      classId={classId}
+                      studentSelect={this.onSelectCardOne}
+                      endDate={additionalData.endDate || additionalData.closedDate}
+                      dueDate={additionalData.dueDate}
+                      closed={additionalData.closed}
+                      detailedClasses={additionalData.detailedClasses}
+                      studentUnselect={this.onUnselectCardOne}
+                      viewResponses={(e, selected, _testActivityId) => {
+                        setCurrentTestActivityId(_testActivityId);
+                        if (!isItemsVisible) {
+                          return;
+                        }
+                        getAllTestActivitiesForStudent({
+                          studentId: selected,
+                          assignmentId,
+                          groupId: classId
+                        });
+                        this.onTabChange(e, "Student", selected, _testActivityId);
+                      }}
+                      isPresentationMode={isPresentationMode}
+                      enrollmentStatus={enrollmentStatus}
+                    />
+                  ) : (
+                    <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
+                  )}
+                </div>
+
+                {redirectPopup && (
+                  <RedirectPopup
+                    open={redirectPopup}
+                    allStudents={allStudents}
+                    disabledList={disabledList}
+                    absentList={absentList}
+                    selectedStudents={selectedStudents}
+                    additionalData={additionalData}
+                    enrollmentStatus={enrollmentStatus}
+                    closePopup={this.closeRedirectPopup}
+                    setSelected={setSelected}
+                    assignmentId={assignmentId}
+                    groupId={classId}
+                    testActivity={testActivity}
+                  />
+                )}
+                {showAddStudentsPopup && (
+                  <AddStudentsPopup
+                    open={showAddStudentsPopup}
+                    groupId={classId}
+                    closePolicy={additionalData.closePolicy}
+                    assignmentId={assignmentId}
+                    closePopup={this.handleHideAddStudentsPopup}
+                    disabledList={existingStudents}
+                  />
+                )}
+              </React.Fragment>
+            )}
+
+            {selectedTab === "Student" && selectedStudentId && !isEmpty(testActivity) && !isEmpty(classResponse) && (
+              <React.Fragment>
+                <StudentGrapContainer>
+                  <StyledCard bordered={false} paddingTop={15}>
+                    <StudentSelect
+                      data-cy="studentSelect"
+                      style={{ width: "200px" }}
+                      students={testActivity}
+                      selectedStudent={selectedStudentId}
+                      studentResponse={qActivityByStudent}
+                      handleChange={(value, _testActivityId) => {
+                        setCurrentTestActivityId(_testActivityId);
+                        getAllTestActivitiesForStudent({
+                          studentId: value,
+                          assignmentId,
+                          groupId: classId
+                        });
+                        this.setState({ selectedStudentId: value });
+                        history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`);
+                      }}
+                      isPresentationMode={isPresentationMode}
+                    />
+                    <GraphWrapper style={{ width: "100%", display: "flex" }}>
+                      <BarGraph
+                        gradebook={gradebook}
+                        testActivity={testActivity}
+                        studentId={selectedStudentId}
+                        studentview
+                        studentViewFilter={studentViewFilter}
+                        studentResponse={studentResponse}
+                        isLoading={isLoading}
+                      />
+                      <InfoWrapper>
+                        {allTestActivitiesForStudent.length > 1 && (
+                          <Select
+                            data-cy="attemptSelect"
+                            style={{ width: "200px" }}
+                            value={
+                              allTestActivitiesForStudent.some(
+                                ({ _id }) => _id === (currentTestActivityId || testActivityId)
+                              )
+                                ? currentTestActivityId || testActivityId
+                                : ""
+                            }
+                            onChange={_testActivityId => {
+                              loadStudentResponses({
+                                testActivityId: _testActivityId,
+                                groupId: classId,
+                                studentId: selectedStudentId
+                              });
+                              setCurrentTestActivityId(_testActivityId);
+                              history.push(
+                                `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
+                              );
+                            }}
+                          >
+                            {[...allTestActivitiesForStudent].reverse().map((_testActivity, index) => (
+                              <Select.Option
+                                key={index}
+                                value={_testActivity._id}
+                                disabled={_testActivity.status === 2}
+                              >
+                                {`Attempt ${allTestActivitiesForStudent.length - index} ${
+                                  _testActivity.status === 2 ? " (Absent)" : ""
+                                }`}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        )}
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <div
                             style={{
                               display: "flex",
@@ -1155,111 +1204,124 @@ class ClassBoard extends Component {
                               alignItems: "center"
                             }}
                           >
-                            <ScoreHeader>SCORE</ScoreHeader>
-                            <ScoreChangeWrapper data-cy="scoreChange" scoreChange={studentTestActivity.scoreChange}>
-                              {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${round(
-                                studentTestActivity.scoreChange,
-                                2
-                              ) || 0}`}
-                            </ScoreChangeWrapper>
-                            <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
-                              <span>Improvement </span>
-                              <span
-                                style={{ marginLeft: "2px" }}
-                                title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
-                              >
-                                <IconInfo />
-                              </span>
-                            </ScoreHeader>
+                            <ScoreHeader>TOTAL SCORE</ScoreHeader>
+                            <ScoreWrapper data-cy="totalScore">{round(score, 2) || 0}</ScoreWrapper>
+                            <div style={{ border: "solid 1px black", width: "50px" }} />
+                            <ScoreWrapper data-cy="totalMaxScore">{round(maxScore, 2) || 0}</ScoreWrapper>
                           </div>
-                        ) : null}
-                      </div>
-                      <ScoreHeader style={{ fontSize: "12px" }}>
-                        {" "}
-                        {`TIME (min) : `}{" "}
-                        <span style={{ color: black, textTransform: "capitalize" }}>
-                          {`${Math.floor(studentTestActivity.timeSpent / 60)}:${studentTestActivity.timeSpent % 60}` ||
-                            ""}
-                        </span>
-                      </ScoreHeader>
-                      <ScoreHeader style={{ fontSize: "12px" }}>
-                        {" "}
-                        {`STATUS : `}{" "}
-                        <span style={{ color: black, textTransform: "capitalize" }}>
-                          {studentTestActivity.status === 2
-                            ? "Absent"
-                            : studentTestActivity.status === 1
-                            ? studentTestActivity.graded === "GRADED"
-                              ? "Graded"
-                              : "Submitted"
-                            : "In Progress" || ""}
-                        </span>
-                      </ScoreHeader>
-                      <ScoreHeader style={{ fontSize: "12px" }}>
-                        SUBMITTED ON :
-                        <span style={{ color: black }}>
-                          {moment(studentTestActivity.endDate).format("MMM DD, YYYY HH:mm")}
-                        </span>
-                      </ScoreHeader>
-                    </InfoWrapper>
-                  </GraphWrapper>
-                </StyledCard>
-              </StudentGrapContainer>
-              <StudentContainer
-                classResponse={classResponse}
-                studentItems={testActivity}
-                selectedStudent={selectedStudentId}
-                isPresentationMode={isPresentationMode}
-                isCliUser={isCliUser}
-              />
-            </React.Fragment>
-          )}
-          {selectedTab === "questionView" &&
-            !isEmpty(testActivity) &&
-            !isEmpty(classResponse) &&
-            (selectedQuestion || selectedQuestion === 0) && (
-              <React.Fragment>
-                <QuestionContainer
-                  isQuestionView
+                          {allTestActivitiesForStudent.length > 1 && showScoreImporvement ? (
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                padding: "10px",
+                                alignItems: "center"
+                              }}
+                            >
+                              <ScoreHeader>SCORE</ScoreHeader>
+                              <ScoreChangeWrapper data-cy="scoreChange" scoreChange={studentTestActivity.scoreChange}>
+                                {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${round(
+                                  studentTestActivity.scoreChange,
+                                  2
+                                ) || 0}`}
+                              </ScoreChangeWrapper>
+                              <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
+                                <span>Improvement </span>
+                                <span
+                                  style={{ marginLeft: "2px" }}
+                                  title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                                >
+                                  <IconInfo />
+                                </span>
+                              </ScoreHeader>
+                            </div>
+                          ) : null}
+                        </div>
+                        <ScoreHeader style={{ fontSize: "12px" }}>
+                          {" "}
+                          {`TIME (min) : `}{" "}
+                          <span style={{ color: black, textTransform: "capitalize" }}>
+                            {`${Math.floor(studentTestActivity.timeSpent / 60)}:${studentTestActivity.timeSpent %
+                              60}` || ""}
+                          </span>
+                        </ScoreHeader>
+                        <ScoreHeader style={{ fontSize: "12px" }}>
+                          {" "}
+                          {`STATUS : `}{" "}
+                          <span style={{ color: black, textTransform: "capitalize" }}>
+                            {studentTestActivity.status === 2
+                              ? "Absent"
+                              : studentTestActivity.status === 1
+                              ? studentTestActivity.graded === "GRADED"
+                                ? "Graded"
+                                : "Submitted"
+                              : "In Progress" || ""}
+                          </span>
+                        </ScoreHeader>
+                        <ScoreHeader style={{ fontSize: "12px" }}>
+                          SUBMITTED ON :
+                          <span style={{ color: black }}>
+                            {moment(studentTestActivity.endDate).format("MMM DD, YYYY HH:mm")}
+                          </span>
+                        </ScoreHeader>
+                      </InfoWrapper>
+                    </GraphWrapper>
+                  </StyledCard>
+                </StudentGrapContainer>
+                <StudentContainer
                   classResponse={classResponse}
-                  testActivity={testActivity}
-                  qIndex={selectedQuestion}
-                  itemId={itemId}
-                  question={{ id: selectedQid }}
+                  studentItems={testActivity}
+                  selectedStudent={selectedStudentId}
                   isPresentationMode={isPresentationMode}
-                >
-                  <GenSelect
-                    classid="DI"
-                    classname={firstQuestionEntities
-                      .map((x, index) => ({
-                        value: index,
-                        disabled: x.disabled || x.scoringDisabled,
-                        id: x._id,
-                        qLabel: `Question ${x?.barLabel?.slice(1)}`
-                      }))
-                      .filter(x => !x.disabled)
-                      .map(({ value, qLabel }) => ({ value, name: qLabel }))}
-                    selected={selectedQuestion}
-                    justifyContent="flex-end"
-                    handleChange={value => {
-                      const { assignmentId: _assignmentId, classId: _classId } = match.params;
-
-                      const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                      history.push(
-                        `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
-                          isCliUser ? "?cliUser=true" : ""
-                        }`
-                      );
-                      this.setState({
-                        selectedQuestion: value,
-                        selectedQid: qid,
-                        itemId: testItemId
-                      });
-                    }}
-                  />
-                </QuestionContainer>
+                  isCliUser={isCliUser}
+                />
               </React.Fragment>
             )}
+            {selectedTab === "questionView" &&
+              !isEmpty(testActivity) &&
+              !isEmpty(classResponse) &&
+              (selectedQuestion || selectedQuestion === 0) && (
+                <React.Fragment>
+                  <QuestionContainer
+                    isQuestionView
+                    classResponse={classResponse}
+                    testActivity={testActivity}
+                    qIndex={selectedQuestion}
+                    itemId={itemId}
+                    question={{ id: selectedQid }}
+                    isPresentationMode={isPresentationMode}
+                  >
+                    <GenSelect
+                      classid="DI"
+                      classname={firstQuestionEntities
+                        .map((x, index) => ({
+                          value: index,
+                          id: x._id,
+                          qLabel: `Question ${x?.barLabel?.slice(1)}`
+                        }))
+                        .map(({ value, qLabel }) => ({ value, name: qLabel }))}
+                      selected={selectedQuestion}
+                      justifyContent="flex-end"
+                      handleChange={value => {
+                        const { assignmentId: _assignmentId, classId: _classId } = match.params;
+
+                        const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
+                        history.push(
+                          `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
+                            isCliUser ? "?cliUser=true" : ""
+                          }`
+                        );
+                        this.setState({
+                          selectedQuestion: value,
+                          selectedQid: qid,
+                          itemId: testItemId
+                        });
+                      }}
+                    />
+                  </QuestionContainer>
+                </React.Fragment>
+              )}
+          </LCBScrollContext.Provider>
         </MainContentWrapper>
       </div>
     );
@@ -1276,7 +1338,7 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
-      allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
+      allStudents: getLCBStudentsList(state),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
       studentResponse: getStudentResponseSelector(state),
       qActivityByStudent: stateStudentResponseSelector(state),
@@ -1286,7 +1348,7 @@ const enhance = compose(
       disableMarkSubmitted: getDisableMarkAsSubmittedSelector(state),
       disableMarkAbsent: getDisableMarkAsAbsentSelector(state),
       assignmentStatus: getAssignmentStatusSelector(state),
-      enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
+      enrollmentStatus: getEnrollmentStatus(state),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isItemsVisible: isItemVisibiltySelector(state),
       removedStudents: removedStudentsSelector(state),

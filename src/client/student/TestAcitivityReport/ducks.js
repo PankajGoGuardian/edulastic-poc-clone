@@ -83,7 +83,7 @@ function* loadTestActivityReport({ payload }) {
       type: REMOVE_ANSWERS
     });
     const [test, reports, activities] = yield all([
-      call(testsApi.getByIdMinimal, testId, { data: true, testActivityId, groupId }),
+      call(testsApi.getByIdMinimal, testId, { data: true, isReport: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
       call(reportsApi.fetchReports, groupId, testId)
     ]);

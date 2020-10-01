@@ -2,7 +2,7 @@ import { secondaryTextColor, themeColor, themeColorLighter, white, themeColorBlu
 import { SpinLoader, FlexContainer } from "@edulastic/common";
 import { IconCollapse2 } from "@edulastic/icons";
 import { Avatar, Button } from "antd";
-import { filter, get } from "lodash";
+import { filter, get, isEmpty } from "lodash";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import React, { useEffect, useMemo, useState } from "react";
@@ -11,7 +11,7 @@ import styled from "styled-components";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
 import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import { StyledCard } from "../../../common/styled";
+import { StyledCard, NoDataContainer } from "../../../common/styled";
 import { downloadCSV, getStudentAssignments, toggleItem } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
 import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
@@ -134,6 +134,10 @@ const StudentMasteryProfile = ({
     setClickedStandard(undefined);
   };
 
+  if (isEmpty(studInfo)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>;
+  }
+
   return (
     <>
       <FlexContainer alignItems="stretch" marginBottom="20px">
@@ -152,7 +156,7 @@ const StudentMasteryProfile = ({
               </StyledP>
               <StyledP marginTop="12px">
                 <StyledText weight="Bold"> Grade: </StyledText>
-                <StyledText>{getGrades(studentInformation.grades)}</StyledText>
+                <StyledText>{getGrades(studInfo)}</StyledText>
               </StyledP>
               <StyledP>
                 <StyledText weight="Bold"> Subject: </StyledText>

@@ -178,7 +178,8 @@ class Contaier extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    let updatedSearch = { ...search };
+    let updatedSearch = omit(search, ["folderId"]);
+
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
         ...updatedSearch,
@@ -242,7 +243,9 @@ class Contaier extends Component {
     } = this.props;
     let updatedKeys = {};
     if (fieldName === "folderId") {
-      return this.handleSearch({ ...initialSearchState, [fieldName]: value, filter: "FOLDERS" });
+      const searchWithFolder = { ...initialSearchState, [fieldName]: value, filter: "FOLDERS" };
+      this.updateFilterState(searchWithFolder, sort);
+      return this.handleSearch(searchWithFolder);
     }
     if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
       setDefaultInterests({ [fieldName]: value });

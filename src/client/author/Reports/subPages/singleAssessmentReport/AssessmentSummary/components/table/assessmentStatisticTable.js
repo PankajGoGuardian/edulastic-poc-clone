@@ -73,7 +73,7 @@ export const AssessmentStatisticTable = props => {
         concatScores = concatScores.concat(scores);
       }
 
-      const scoreVariance = getVariance(concatScores);
+      const scoreVariance = concatScores.length ? getVariance(concatScores) : 0;
       let avgStudentScore = 0;
       if (sumTotalMaxScore) {
         avgStudentScore = Number(((sumTotalScore / sumTotalMaxScore) * 100).toFixed(0));

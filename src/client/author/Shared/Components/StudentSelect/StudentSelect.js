@@ -3,6 +3,7 @@ import { Select } from "antd";
 import { find } from "lodash";
 import PropTypes from "prop-types";
 import React, { Fragment } from "react";
+import { testActivityStatus } from "@edulastic/constants";
 import { Container, StyledSelect } from "./styled";
 
 const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }) => {
@@ -33,13 +34,15 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
           <Legends />
           <Container>
             <StyledSelect value={user} onChange={onSortChange}>
-              {students.map((student, index) => {
-                return (
-                  <Select.Option key={index} value={student.testActivityId || null} disabled={!valid(student)}>
-                    {isPresentationMode ? studentIcon(student) : student.studentName}
-                  </Select.Option>
-                );
-              })}
+              {students.map((student, index) => (
+                <Select.Option
+                  key={index}
+                  value={student.testActivityId || null}
+                  disabled={!valid(student) || student.UTASTATUS === testActivityStatus.NOT_STARTED}
+                >
+                  {isPresentationMode ? studentIcon(student) : student.studentName}
+                </Select.Option>
+              ))}
             </StyledSelect>
           </Container>
         </LegendContainer>

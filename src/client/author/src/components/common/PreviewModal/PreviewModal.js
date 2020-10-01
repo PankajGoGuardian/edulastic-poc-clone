@@ -39,11 +39,9 @@ import {
   getPassageSelector,
   setPrevewItemAction,
   setQuestionsForPassageAction
-  // broadcastQuestionAction
 } from "./ducks";
 import ReportIssue from "./ReportIssue";
 import { ButtonsWrapper, RejectButton } from "./styled";
-import BroadcastClassModal from "./BroadcastClassModal";
 
 class PreviewModal extends React.Component {
   constructor(props) {
@@ -55,9 +53,7 @@ class PreviewModal extends React.Component {
       showHints: false,
       showReportIssueField: false,
       fullModal: false,
-      isRejectMode: false,
-      isMeetingActive: false,
-      isBroadcasting: false
+      isRejectMode: false
     };
   }
 
@@ -65,17 +61,6 @@ class PreviewModal extends React.Component {
     const { item } = this.props;
     if (item.passageId) {
       this.loadPassage(item.passageId);
-    }
-
-    // Check meet status only for MCQ types
-    const isMCQType = item.rows[0]?.widgets?.every(({type}) => type === "multipleChoice");
-
-    if(isMCQType){
-      window.chrome?.runtime?.sendMessage?.(
-        process.env.EXTENSION_ID || 'eadjoeopijphkogdmabgffpiiebjdgoo', 
-        {type: "REQUEST_MEETINGS_STATUS"}, 
-        (response = {}) => response.meetingID && this.setState({isMeetingActive: response})
-      );
     }
   }
 
@@ -373,10 +358,12 @@ class PreviewModal extends React.Component {
 
   handleReject = () => this.setState({ isRejectMode: true });
 
-  broadcastToClass = data => {
-    const {broadcastQuestion} = this.props;
-    broadcastQuestion(data);
-    this.closeModal();
+  get navigationButtonVisibile() {
+    const { item, page } = this.props;
+    if (page === "review") {
+      return true;
+    }
+    return !item?.isPassageWithQuestions;
   }
 
   // TODO consistency for question and resources for previeew
@@ -406,7 +393,7 @@ class PreviewModal extends React.Component {
       writableCollections
     } = this.props;
 
-    const { passageLoading, showHints, showReportIssueField, fullModal, isRejectMode, isMeetingActive, isBroadcasting } = this.state;
+    const { passageLoading, showHints, showReportIssueField, fullModal, isRejectMode } = this.state;
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
@@ -450,7 +437,7 @@ class PreviewModal extends React.Component {
         className="noOverFlowModal"
         fullModal={fullModal}
       >
-        {this.navigationBtns()}
+        {this.navigationButtonVisibile && this.navigationBtns()}
         <HeadingWrapper>
           <Title>Preview</Title>
           <FlexContainer justifyContent="flex-end" width="100%">
@@ -488,17 +475,6 @@ class PreviewModal extends React.Component {
               wrap="nowrap"
               style={{ visibility: onlySratchpad && "hidden", position: "relative", marginLeft: "5px" }}
             >
-              {isMeetingActive && <EduButton
-                title="Broadcast"
-                IconBtn
-                isGhost
-                width="28px"
-                height="28px"
-                data-cy="broadcast-btn"
-                onClick={() => this.setState({isBroadcasting: true})}
-              >
-                <i className="fa fa-bullhorn" />
-              </EduButton>}
               {isAnswerBtnVisible && (
                 <>
                   <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={checkAnswer}>
@@ -683,12 +659,6 @@ class PreviewModal extends React.Component {
             )}
           </QuestionWrapper>
         </ModalContentArea>
-        {isBroadcasting && (
-        <BroadcastClassModal 
-          visible={isBroadcasting} 
-          onClose={() => this.setState({isBroadcasting: false})} 
-          onSubmit={(classId) => this.broadcastToClass({meetingID: isMeetingActive?.meetingID, classId, item})}
-        />)}
       </PreviewModalWrapper>
     );
   }
@@ -763,7 +733,6 @@ const enhance = compose(
       duplicateTestItem: duplicateTestItemPreviewRequestAction,
       deleteItem: deleteItemAction,
       approveOrRejectSingleItem: approveOrRejectSingleItemAction
-      // broadcastQuestion: broadcastQuestionAction
     }
   )
 );

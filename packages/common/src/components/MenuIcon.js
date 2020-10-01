@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { IconMatrixDot } from "@edulastic/icons";
-import { tabletWidth, greyThemeDark4 } from "@edulastic/colors";
+import { mobileWidthLarge, greyThemeDark4 } from "@edulastic/colors";
 
 export const MenuIcon = styled(IconMatrixDot).attrs({
   color: greyThemeDark4
@@ -9,7 +9,7 @@ export const MenuIcon = styled(IconMatrixDot).attrs({
   width: 18px;
   pointer-events: all;
 
-  @media (max-width: ${tabletWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     display: block;
     position: absolute;
     left: 12px;

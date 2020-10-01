@@ -7,11 +7,15 @@ import { Link, withRouter } from "react-router-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import { EduButton, notification } from "@edulastic/common";
-import { IconMoreHorizontal, IconPresentation, IconAddItem, IconPieChartIcon } from "@edulastic/icons";
+import { IconMoreHorizontal } from "@edulastic/icons";
+import presentationIcon from "../../assets/presentation.svg";
+import additemsIcon from "../../assets/add-items.svg";
+import piechartIcon from "../../assets/pie-chart.svg";
 import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 import {
   Container,
+  Icon,
   TableData,
   TypeIcon,
   BtnStatus,
@@ -102,17 +106,17 @@ const columns = [
       <ActionsWrapper data-cy="PresentationIcon">
         <Tooltip placement="bottom" title="Live Class Board">
           <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
-            <IconPresentation data-cy="lcb" alt="Images" />
+            <Icon data-cy="lcb" src={presentationIcon} alt="Images" />
           </Link>
         </Tooltip>
         <Tooltip placement="bottom" title="Express Grader">
           <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
-            <IconAddItem data-cy="expressGrader" alt="Images" />
+            <Icon data-cy="expressGrader" src={additemsIcon} alt="Images" />
           </Link>
         </Tooltip>
         <Tooltip placement="bottom" title="Reports">
           <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-            <IconPieChartIcon data-cy="reports" alt="Images" />
+            <Icon data-cy="reports" src={piechartIcon} alt="Images" />
           </Link>
         </Tooltip>
       </ActionsWrapper>
@@ -237,7 +241,8 @@ const TableList = ({
       <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>Release Score</MoreOption>
       <MoreOption onClick={() => handleBulkAction("downloadGrades")}>Download Grades</MoreOption>
       <MoreOption onClick={() => handleBulkAction("downloadResponses")}>Download Responses</MoreOption>
-      <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>Unassign</MoreOption>
+      {/** Hiding Unassign option for now, plase uncomment it to get it back */}
+      {/* <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>Unassign</MoreOption> */}
     </MoreOptionsContainer>
   );
 

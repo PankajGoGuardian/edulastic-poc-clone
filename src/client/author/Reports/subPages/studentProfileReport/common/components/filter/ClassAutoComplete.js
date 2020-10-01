@@ -13,7 +13,16 @@ import { receiveClassListAction, getClassListSelector } from "../../../../../../
 
 const DEFAULT_SEARCH_TERMS = { text: "", selectedText: "", selectedKey: "" };
 
-const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, selectedClass, selectCB }) => {
+const ClassAutoComplete = ({
+  userDetails,
+  classList,
+  loading,
+  loadClassList,
+  grade,
+  subject,
+  selectedClass,
+  selectCB
+}) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS);
 
   // build search query
@@ -27,7 +36,6 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
       districtId,
       search: {
         name: searchTerms.text,
-        active: [1],
         type: ["class"]
       }
     };
@@ -36,6 +44,12 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
     }
     if (userRole === roleuser.SCHOOL_ADMIN) {
       q.search.institutionIds = institutionIds;
+    }
+    if (grade) {
+      q.search.grades = [`${grade}`];
+    }
+    if (subject) {
+      q.search.subjects = [subject];
     }
     return q;
   }, [searchTerms.text]);
@@ -74,13 +88,13 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
   // build dropdown data
   const dropdownData = searchTerms.text
     ? [
-      <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
-        {Object.values(classList).map(item => (
-          <AutoComplete.Option key={item._id} title={item._source.name}>
-            {item._source.name}
-          </AutoComplete.Option>
+        <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
+          {Object.values(classList).map(item => (
+            <AutoComplete.Option key={item._id} title={item._source.name}>
+              {item._source.name}
+            </AutoComplete.Option>
           ))}
-      </AutoComplete.OptGroup>
+        </AutoComplete.OptGroup>
       ]
     : [];
 

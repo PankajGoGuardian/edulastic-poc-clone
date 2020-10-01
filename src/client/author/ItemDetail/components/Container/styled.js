@@ -24,18 +24,21 @@ export const ContentWrapper = styled.div`
   padding: 10px 30px;
 `;
 
+export const TestItemCount = styled.div`
+  margin-left: 32px;
+  margin-bottom: 4px;
+  color: ${title};
+  font-size: 10px;
+  font-weight: ${({ theme }) => theme.semiBold};
+`;
+
 export const PassageNavigation = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 0 10px;
+  justify-content: space-between;
+  padding: 0 22px; // toggler width
   font-size: 11px;
   color: ${linkColor};
-  .pagination-title {
-    color: ${title};
-    font-size: 10px;
-    font-weight: ${({ theme }) => theme.semiBold};
-  }
   .ant-pagination {
     margin: 0 10px;
     &li {
@@ -45,7 +48,6 @@ export const PassageNavigation = styled.div`
     }
   }
   .ant-btn {
-    border: none;
     box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
     margin-right: 10px;
     border-radius: 4px;
@@ -56,7 +58,9 @@ export const PassageNavigation = styled.div`
   }
 `;
 
-export const AddRemoveButtonWrapper = styled.div``;
+export const AddRemoveButtonWrapper = styled.div`
+  margin-left: 4px;
+`;
 
 export const ItemDetailWrapper = styled.div`
   display: flex;

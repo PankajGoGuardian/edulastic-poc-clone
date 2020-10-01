@@ -62,7 +62,7 @@ const geogebraParams = {
   }
 };
 
-const CalculatorContainer = ({ calculateMode, changeTool, style }) => {
+const CalculatorContainer = ({ calculateMode, changeTool }) => {
   const handleCloseCalculator = () => {
     changeTool(0);
   };
@@ -97,7 +97,7 @@ const CalculatorContainer = ({ calculateMode, changeTool, style }) => {
   }, [calculateMode]);
 
   return (
-    <Container style={{ ...style, zIndex: 510 }}>
+    <Container>
       {calculateMode === "GRAPHING_DESMOS" && (
         <RndWrapper default={defaultRndPros.graphingDesmos} dragHandleClassName="calculator-drag-handler">
           <div className="calculator-drag-handler">
@@ -175,16 +175,15 @@ const CalculatorContainer = ({ calculateMode, changeTool, style }) => {
 
 CalculatorContainer.propTypes = {
   calculateMode: PropTypes.string.isRequired,
-  changeTool: PropTypes.func.isRequired,
-  style: PropTypes.object
-};
-
-CalculatorContainer.defaultProps = {
-  style: {}
+  changeTool: PropTypes.func.isRequired
 };
 
 const Container = styled.div`
   position: absolute;
+  /* froala editor z-index is 998
+   * @see: https://snapwiz.atlassian.net/browse/EV-19515
+   */
+  z-index: 1000;
   left: 50%;
   top: 80px;
 `;

@@ -4,20 +4,11 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import { Tabs, FlexContainer } from "@edulastic/common";
+import { IconPlusCircle } from "@edulastic/icons";
 import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
 import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
 import AddNew from "../AddNew/AddNew";
-import {
-  Content,
-  AddButtonContainer,
-  TabContainer,
-  WidgetContainer,
-  AddPassageBtnContainer,
-  PlusIcon,
-  AddTabButton,
-  GreenPlusIcon
-} from "./styled";
-import { CustomStyleBtn } from "../../../../../../assessment/styled/ButtonStyles";
+import { Content, AddButtonContainer, TabContainer, WidgetContainer, AddTabButton, GreenPlusIcon } from "./styled";
 import {
   getItemDetailDraggingSelector,
   addTabsAction,
@@ -25,6 +16,9 @@ import {
   removeTabAction,
   setItemLevelScoreAction
 } from "../../../../ducks";
+import AddNewItem from "../AddNew/AddNewItem";
+import { AddNewButton, Container as ButtonContainer } from "../AddNew/styled";
+
 // src/client/author/ItemDetail/ducks.js
 
 class Container extends Component {
@@ -71,6 +65,12 @@ class Container extends Component {
   onAddBtnClick = object => () => {
     const { onAdd } = this.props;
     onAdd(object);
+  };
+
+  addNewItemToPassage = () => {
+    const { addItemToPassage } = this.props;
+    // Add new item similar to + item in pagination
+    addItemToPassage();
   };
 
   renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout, previewTab }) => {
@@ -171,7 +171,8 @@ class Container extends Component {
       hideColumn,
       addTabs,
       removeTab,
-      passageNavigator
+      passageNavigator,
+      showAddItemButton
     } = this.props;
     const { tabIndex } = this.state;
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
@@ -236,18 +237,27 @@ class Container extends Component {
         {this.renderWidgets()}
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
+            {/* New part/question */}
             <AddNew isAddFirstPart={isAddFirstPart} onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
+            {/* New testItem */}
+            {showAddItemButton && <AddNewItem onClick={this.addNewItemToPassage} />}
           </AddButtonContainer>
         )}
         {isPassageQuestion && (
-          <AddPassageBtnContainer>
-            <CustomStyleBtn onClick={() => handleAddToPassage("video", tabIndex)}>
-              <PlusIcon>+</PlusIcon>ADD VIDEO
-            </CustomStyleBtn>
-            <CustomStyleBtn onClick={() => handleAddToPassage("passage", tabIndex)}>
-              <PlusIcon>+</PlusIcon>ADD PASSAGE
-            </CustomStyleBtn>
-          </AddPassageBtnContainer>
+          <AddButtonContainer justifyContent="center">
+            <ButtonContainer>
+              <AddNewButton onClick={() => handleAddToPassage("video", tabIndex)}>
+                <IconPlusCircle />
+                ADD VIDEO
+              </AddNewButton>
+            </ButtonContainer>
+            <ButtonContainer>
+              <AddNewButton onClick={() => handleAddToPassage("passage", tabIndex)}>
+                <IconPlusCircle />
+                ADD PASSAGE
+              </AddNewButton>
+            </ButtonContainer>
+          </AddButtonContainer>
         )}
       </Content>
     );

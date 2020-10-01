@@ -54,7 +54,7 @@ const GradebookTable = ({ dataSource, assessments, selectedRows, setSelectedRows
         // due to grouping of assignments by report key & name (check "../transformers")
         const { assignmentId, status, percentScore } = assMap[ass.id] || {};
         const color = STATUS_LIST.find(s => s.id === status)?.color;
-        return (assignmentId && classId) ? (
+        return (assignmentId && classId && status !== 'UN ASSIGNED') ? (
           <Link to={`/author/classBoard/${assignmentId}/${classId}`}>
             <StyledTableCell color={color}>
               {percentScore || "-"}

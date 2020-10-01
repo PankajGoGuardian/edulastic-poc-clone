@@ -34,7 +34,8 @@ const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassLi
     console.log("error", err);
   };
 
-  const { isUserGoogleLoggedIn } = user;
+  const { isUserGoogleLoggedIn, orgData } = user;
+  const { isCleverDistrict } = orgData;
   return (
     <>
       <ClassCreateContainer>
@@ -51,7 +52,7 @@ const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassLi
               <Link to="/author/manageClass/createClass">
                 <EduButton isBlue>CREATE NEW CLASS</EduButton>
               </Link>
-              {googleAllowedInstitutions.length > 0 && (
+              {googleAllowedInstitutions?.length > 0 && !isCleverDistrict && (
                 <GoogleLogin
                   clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                   render={renderProps => (

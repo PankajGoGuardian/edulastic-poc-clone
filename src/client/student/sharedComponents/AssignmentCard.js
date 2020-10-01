@@ -1,6 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from "react";
 import { withRouter } from "react-router-dom";
-import { notification, useRealtimeV2, EduButton, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
+import { notification, EduButton, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -34,7 +34,6 @@ import { ConfirmationModal } from "../../author/src/components/common/Confirmati
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
 import { proxyRole } from "../Login/ducks";
-import { updateTestIdRealTimeAction } from "../sharedDucks/AssignmentModule/ducks";
 
 const isSEB = () => window.navigator.userAgent.includes("SEB");
 
@@ -79,8 +78,7 @@ const AssignmentCard = memo(
     classId,
     user: { role: userRole, _id: userId },
     proxyUserRole,
-    highlightMode,
-    updateTestIdRealTime
+    highlightMode
   }) => {
     const [showAttempts, setShowAttempts] = useState(false);
     const toggleAttemptsView = () => setShowAttempts(prev => !prev);
@@ -123,10 +121,6 @@ const AssignmentCard = memo(
     const serverTimeStamp = getServerTs(data);
 
     let { endDate, startDate, open = false, close = false, isPaused = false, maxAttempts = 1, dueDate } = data;
-    const topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
-    useRealtimeV2(topics, {
-      regradedAssignment: payload => updateTestIdRealTime({ assignmentId, ...payload })
-    });
     const currentClassList = clazz.filter(
       cl => (cl._id === classId && !cl.students?.length) || (cl.students?.length && cl.students?.includes(userId))
     );
@@ -484,8 +478,7 @@ const enhance = compose(
     }),
     {
       startAssignment: startAssignmentAction,
-      resumeAssignment: resumeAssignmentAction,
-      updateTestIdRealTime: updateTestIdRealTimeAction
+      resumeAssignment: resumeAssignmentAction
     },
     undefined, // (a, b, c) => ({ ...a, ...b, ...c }), // mergeProps
     { pure: false }

@@ -27,8 +27,8 @@ function* receiveItemSaga({ payload }) {
   } catch (err) {
     console.log("err is", err);
     Sentry.captureException(err);
-    const errorMessage = "Unable to retrieve the item. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to retrieve the item.";
+    notification({ type: "error", msg: errorMessage });
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -53,8 +53,8 @@ export function* updateItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     Sentry.captureException(err);
-    const errorMessage = "Unable to save the item. Please contact support.";
-    notification({ msg: errorMessage });
+    const errorMessage = "Unable to save the item.";
+    notification({ type: "error", msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }

@@ -1,7 +1,7 @@
 import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal } from "antd";
-import { notification } from "@edulastic/common";
+import { notification, Effects } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from "lodash";
@@ -82,6 +82,11 @@ function* loadTest({ payload }) {
     sharedType = ""
   } = payload;
   try {
+    if (!preview && !testActivityId) {
+      // we don't have a testActivityId for non-preview, lets throw error to short circuit
+      throw new Error("Unable to load the test. Please contact Edulastic Support");
+    }
+
     // if the assessment player is loaded for showing student work
     // we shouldn't be removing evaluation and answers from store.
     if (!isShowStudentWork) {
@@ -125,7 +130,8 @@ function* loadTest({ payload }) {
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {})
         }) // when preview(author side) use normal non cached api
       : call(testsApi.getPublicTest, testId, { sharedType });
-    const [testActivity] = yield all([getTestActivity]);
+    const _response = yield all([getTestActivity]);
+    const testActivity = _response?.[0] || {};
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
@@ -424,20 +430,23 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_ERROR,
       payload: err
     });
+
+    if (preview) {
+      notification({ messageKey: "youCanNoLongerUse" });
+      return Modal.destroyAll();
+    }
+
+    let messageKey = "failedLoadingTest";
+    const userRole = yield select(getUserRole);
+
     if (err.status) {
-      if (preview) {
-        notification({ messageKey: "youCanNoLongerUse" });
-        return Modal.destroyAll();
-      }
-      const userRole = yield select(getUserRole);
-      let messageKey = "failedLoadingTest";
       if (err.status === 400) {
         messageKey = "invalidAction";
       }
-      if (userRole === roleuser.STUDENT) {
-        notification({ messageKey });
-        return yield put(push("/home/assignments"));
-      }
+    }
+    if (userRole === roleuser.STUDENT) {
+      notification({ messageKey });
+      return yield put(push("/home/assignments"));
     }
   }
 }
@@ -465,10 +474,17 @@ function* submitTest({ payload }) {
     const [classId, preventRouteChange] =
       typeof payload === "string" ? [payload] : [payload.groupId, payload.preventRouteChange];
     const testActivityInState = yield select(state => state.test && state.test.testActivityId);
-    const testActivityId = payload.testActivityId || testActivityInState;
+    let testActivityId = payload.testActivityId || testActivityInState;
     const groupId = classId || (yield select(getCurrentGroupWithAllClasses));
-    if (testActivityId === "test") {
-      return;
+
+    // if no testActivityId, check in location
+    const urlFragments = window.location.href.split("/").slice(-3);
+    if (!testActivityId && urlFragments[0] === "uta") {
+      testActivityId = urlFragments[1];
+    }
+
+    if (testActivityId === "test" || !testActivityId) {
+      throw new Error("Unable to submit the test.");
     }
     yield call(testActivityApi.submit, testActivityId, groupId);
     // log the details on auto submit
@@ -505,16 +521,22 @@ function* submitTest({ payload }) {
     const test = yield select(state => state.test);
     const isCliUser = yield select(state => state.user?.isCliUser);
 
-    if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
-      return yield put(push(`/home/grades${isCliUser ? "?cliUser=true" : ""}`));
+    if (isCliUser) {
+      yield put(
+        push(
+          `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}${
+            isCliUser ? "?cliUser=true" : ""
+          }`
+        )
+      );
+      return;
     }
-    return yield put(
-      push(
-        `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}${
-          isCliUser ? "?cliUser=true" : ""
-        }`
-      )
-    );
+
+    if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
+      return yield put(push(`/home/grades`));
+    }
+
+    return yield put(push(`/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`));
   } catch (err) {
     Sentry.captureException(err);
     const { data = {} } = err.response || {};
@@ -528,8 +550,8 @@ function* submitTest({ payload }) {
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId: "" }
       });
-      notification({ msg: err.response.data });
     }
+    notification({ msg: errorMessage || err.message || "Something went wrong!" });
   } finally {
     yield put({
       type: SET_SAVE_USER_RESPONSE,
@@ -541,7 +563,7 @@ function* submitTest({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
-    yield takeEvery(FINISH_TEST, submitTest),
+    yield Effects.throttleAction(3000, FINISH_TEST, submitTest),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses)
   ]);
 }

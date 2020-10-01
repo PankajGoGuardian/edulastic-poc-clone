@@ -268,8 +268,11 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
       return !currentClass.closed
     }
   }
-  // End date is not passed consider as live assignment
-  return endDate > serverTimeStamp
+  // End date is passed but still show in assignments if UTA status is in progress
+  if (serverTimeStamp > endDate) {
+    return lastAttempt.status === testActivityStatus.START
+  }
+  return true
 }
 
 const statusFilter = (filterType) => (assignment) => {

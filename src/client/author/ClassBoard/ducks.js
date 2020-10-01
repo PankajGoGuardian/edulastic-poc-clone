@@ -155,49 +155,48 @@ export function* receiveTestActivitySaga({ payload }) {
     )
     if (isRandomDelivery) {
       // students can have different test items so generating student data for each student with its testItems
-      const studentsDataWithTestItems = students.map((student) => {
-        const activity = gradebookData.testActivities.find(
-          (a) => a.userId === student._id
-        )
-        let allItems = []
-        if (activity) {
-          allItems = activity.itemsToDeliverInGroup
-            .flatMap((g) => g.items)
-            .map((id) => {
-              const item = gradebookData.testItemsData.find(
-                (ti) => ti._id === id
-              )
-              if (item) return item
-              return {
-                _id: id,
-                itemLevelScoring: true,
+      const studentsDataWithTestItems = gradebookData.testActivities.map(
+        (activity) => {
+          let allItems = []
+          if (activity) {
+            allItems = activity.itemsToDeliverInGroup
+              .flatMap((g) => g.items)
+              .map((id) => {
+                const item = gradebookData.testItemsData.find(
+                  (ti) => ti._id === id
+                )
+                if (item) return item
+                return {
+                  _id: id,
+                  itemLevelScoring: true,
+                }
+              })
+          } else {
+            classResponse.itemGroups.forEach((group) => {
+              if (
+                group.deliveryType === ALL_RANDOM ||
+                group.deliveryType === LIMITED_RANDOM
+              ) {
+                const dummyItems = [...new Array(group.deliverItemsCount)].map(
+                  () => ({
+                    _id: '',
+                    itemLevelScoring: true,
+                  })
+                )
+                allItems.push(...dummyItems)
+              } else {
+                allItems.push(...group.items)
               }
             })
-        } else {
-          classResponse.itemGroups.forEach((group) => {
-            if (
-              group.deliveryType === ALL_RANDOM ||
-              group.deliveryType === LIMITED_RANDOM
-            ) {
-              const dummyItems = [...new Array(group.deliverItemsCount)].map(
-                () => ({
-                  _id: '',
-                  itemLevelScoring: true,
-                })
-              )
-              allItems.push(...dummyItems)
-            } else {
-              allItems.push(...group.items)
-            }
-          })
-        }
+          }
 
-        return {
-          activityId: activity?._id || '',
-          studentId: student._id,
-          items: allItems,
+          return {
+            activityId: activity?._id || '',
+            studentId: activity.userId,
+            items: allItems,
+          }
         }
-      })
+      )
 
       entities = studentsDataWithTestItems.map((studentData) => {
         const studentActivityData = transformGradeBookResponse({

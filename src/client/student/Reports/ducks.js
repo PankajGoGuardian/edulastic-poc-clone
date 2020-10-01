@@ -137,9 +137,8 @@ const isReport = (assignment, classIds, userId) => {
       if (currentClass.closed !== undefined) return currentClass.closed
     }
   }
-  const isExpired =
-    maxAttempts <= attempts || new Date(endDate) < new Date(serverTimeStamp)
-  return isExpired || attempts > 0
+  // End date is passed but dont show in report if UTA status is in progress
+  return attempts > 0 || (serverTimeStamp > endDate && lastAttempt.status !== testActivityStatus.START);
 }
 
 const statusFilter = (filterType) => (assignment) => {

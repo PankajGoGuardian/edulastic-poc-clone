@@ -9,13 +9,13 @@ const detectVariables = (str, isLatex = false) => {
     // const matches = str.match(/!([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
     const matches = str.match(/@([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
     // we should take a character as a dynamic variable
-    return matches ? matches.map(match => match.slice(1).substring(0, 1)) : [];
+    return matches ? matches.map((match) => match.slice(1).substring(0, 1)) : [];
   }
   // const matches = ` ${str}`.match(/([^\\]?\[)([a-zA-Z])+([a-zA-Z]|[0-9])*\]/g);
   // return matches ? matches.map(match => (match.startsWith("[") ? match.slice(1, -1) : match.slice(2, -1))) : [];
   const matches = str.match(/@([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
   // we should take a character as a dynamic variable
-  return matches ? matches.map(match => match.slice(1).substring(0, 1)) : [];
+  return matches ? matches.map((match) => match.slice(1).substring(0, 1)) : [];
 };
 
 export const detectVariablesFromObj = (item, key = null, latexKeys = [], exceptions = []) => {
@@ -27,7 +27,7 @@ export const detectVariablesFromObj = (item, key = null, latexKeys = [], excepti
       variables.push(...detectVariables(item, true));
     } else {
       const latexes = item.match(mathRegex) || [];
-      latexes.forEach(latex => {
+      latexes.forEach((latex) => {
         variables.push(...detectVariables(latex, true));
         item.replace(latex, "");
       });
@@ -35,7 +35,7 @@ export const detectVariablesFromObj = (item, key = null, latexKeys = [], excepti
       variables.push(...detectVariables(item));
     }
   } else if (Array.isArray(item)) {
-    item.forEach(elem => {
+    item.forEach((elem) => {
       variables.push(...detectVariablesFromObj(elem, key, latexKeys, exceptions));
     });
   } else if (typeof item === "object") {
@@ -56,11 +56,11 @@ export const updateVariables = (item, latexKeys = []) => {
       variables: []
     };
   }
-  const { variables: itemVars } = item.variable;
+  const { variables: itemVars = {} } = item.variable;
   const newVariableNames = detectVariablesFromObj(item, null, latexKeys);
   const newVariables = {};
   let newExamples = [...(item.variable.examples || [])];
-  newVariableNames.forEach(variableName => {
+  newVariableNames.forEach((variableName) => {
     newVariables[variableName] = itemVars[variableName] || {
       id: uuid.v4(),
       name: variableName,
@@ -70,19 +70,19 @@ export const updateVariables = (item, latexKeys = []) => {
       decimal: 0,
       exampleValue: Math.round(Math.random() * 100)
     };
-    newExamples = newExamples.map(example => ({ [variableName]: "", ...example }));
+    newExamples = newExamples.map((example) => ({ [variableName]: "", ...example }));
   });
   item.variable.examples = newExamples;
   item.variable.variables = newVariables;
 };
 
-export const getMathTemplate = exampleValue => `<span class="input__math" data-latex="${exampleValue}"></span>`;
+export const getMathTemplate = (exampleValue) => `<span class="input__math" data-latex="${exampleValue}"></span>`;
 
 const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   if (!variables) return str;
   let result = str.replace(mathRegex, "{math-latex}");
   let mathContent = str.match(mathRegex);
-  Object.keys(variables).forEach(variableName => {
+  Object.keys(variables).forEach((variableName) => {
     if (isLatex) {
       result = result.replace(
         new RegExp(`@${variableName}`, "g"),
@@ -95,7 +95,7 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
       );
     }
     if (mathContent) {
-      mathContent = mathContent.map(content =>
+      mathContent = mathContent.map((content) =>
         content.replace(new RegExp(`@${variableName}`, "g"), variables[variableName].exampleValue)
       );
     }
@@ -143,8 +143,8 @@ export const replaceValues = (item, variableConfig, key = null, latexKeys = [], 
 
 export const replaceVariables = (item, latexKeys = [], useMathTemplate = true) => {
   if (!has(item, "variable.variables") || !has(item, "variable.enabled") || !item.variable.enabled) return item;
-  return produce(item, draft => {
-    Object.keys(item).forEach(key => {
+  return produce(item, (draft) => {
+    Object.keys(item).forEach((key) => {
       if (key === "id" || key === "variable") return;
       if (key === "validation") {
         useMathTemplate = false;

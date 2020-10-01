@@ -205,6 +205,7 @@ export const assignmentIdsByTestIdSelector = createSelector(
   assignmentsSelector,
   (assignments) => {
     const assignmentsByTestId = {}
+    // eslint-disable-next-line guard-for-in
     for (const i in assignments) {
       const { testId, _id } = assignments[i]
       if (_id && testId) {
@@ -237,7 +238,7 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   // and end Dtae should be greateer than current one :)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1
   const attempts = (assignment.reports && assignment.reports.length) || 0
-  const lastAttempt = last(assignment.reports) || {}
+  const lastAttempt = _maxBy(assignment.reports, 'createdAt') || {}
   const serverTimeStamp = getServerTs(assignment)
   // eslint-disable-next-line
   let { endDate, class: groups = [], classId: currentGroup } = assignment
@@ -270,10 +271,10 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   }
   // End date is passed but still show in assignments if UTA status is in progress
   if (serverTimeStamp > endDate) {
-    return lastAttempt.status === testActivityStatus.START;
+    return lastAttempt.status === testActivityStatus.START
   }
-  return true;
-};
+  return true
+}
 
 const statusFilter = (filterType) => (assignment) => {
   const attempts = (assignment.reports && assignment.reports.length) || 0
@@ -318,7 +319,7 @@ export const getAllAssignmentsSelector = createSelector(
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     const classIdentifiers = values(assignmentsObj).flatMap((item) =>
-      item.class.map((item) => item.identifier)
+      item.class.map((i) => i.identifier)
     )
     const reports = values(reportsObj).filter((item) =>
       classIdentifiers.includes(item.assignmentClassIdentifier)

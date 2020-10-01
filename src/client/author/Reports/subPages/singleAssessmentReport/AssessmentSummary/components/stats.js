@@ -106,13 +106,13 @@ export const Stats = (props) => {
         />
         <StatItem
           fontSize="14px"
-          heading="Students Submitted"
+          heading="Students Submitted & Graded"
           value={state.studentsGraded}
         />
         {/* added extra white space for responsiveness */}
         <StatItem
           fontSize="14px"
-          heading="Students  Absent"
+          heading="Students Not Started, In Progress & Absent"
           value={state.studentsAbsent}
         />
       </StyledInnerRow>

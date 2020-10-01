@@ -3,11 +3,13 @@ import PropTypes from "prop-types";
 
 import { ScrollContext,notification } from "@edulastic/common";
 import { message } from "antd";
-import { get, isEmpty } from "lodash";
+import { get, isEmpty,values } from "lodash";
 import { connect } from "react-redux";
+import * as Sentry from '@sentry/browser';
 import Question from "../Question/Question";
 import { ModalWrapper, QuestionWrapperStyled, BottomNavigationWrapper } from "./styled";
 import { submitResponseAction, getTeacherEditedScoreSelector, getIsScoringCompletedSelector } from "../../ducks";
+import { hasValidAnswers } from "../../../../assessment/utils/answer";
 import { stateExpressGraderAnswerSelector, getStudentQuestionSelector } from "../../../ClassBoard/ducks";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 
@@ -166,7 +168,17 @@ class QuestionModal extends React.Component {
       const userResponse =
         allResponse.length > 0
           ? allResponse.reduce((acc, cur) => {
-              acc[cur.qid] = cur.userResponse;
+              // only if not empty send the responses to server for editing
+              if(hasValidAnswers(cur.qType,cur.userResponse)){
+                acc[cur.qid] = cur.userResponse;
+              } else {
+                const error = new Error("empty response update event");
+                Sentry.configureScope(scope => {
+                  scope.setExtra("qType",cur?.qType);
+                  scope.setExtra("userResponse",cur?.userResponse);
+                  Sentry.captureException(error);
+                });
+              }
               return acc;
             }, {})
           : _userResponse;

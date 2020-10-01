@@ -9,9 +9,11 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import styled from "styled-components";
+import * as Sentry from "@sentry/browser";
 import { setTeacherEditedScore } from "../../author/ExpressGrader/ducks";
 import PreviewRubricModal from "../../author/GradingRubric/Components/common/PreviewRubricModal";
 import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDucks/classResponses";
+import { hasValidAnswers } from '../utils/answer';
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
 import { getErrorResponse, getStatus } from "../../author/src/selectors/feedback";
 import { getUserSelector, getUserThumbnail } from "../../author/src/selectors/user";
@@ -141,10 +143,19 @@ class FeedbackRight extends Component {
     if (currentScreen === "live_class_board") {
       payload.shouldReceiveStudentResponse = true;
     }
-
     if (payload.testActivityId && payload.itemId) {
       if (allAnswers[id]) {
-        payload.userResponse = { [id]: allAnswers[id] };
+        // adding user responses only when not empty
+        if(hasValidAnswers(activity?.qType,allAnswers[id])){
+          payload.userResponse = { [id]: allAnswers[id] };
+        } else {
+          const error = new Error("empty response update event");
+          Sentry.configureScope(scope => {
+            scope.setExtra("qType",activity?.qType);
+            scope.setExtra("userResponse",allAnswers[id]);
+            Sentry.captureException(error);
+          });
+        }
       }
       updateQuestionActivityScore(payload);
     }
@@ -312,7 +323,7 @@ class FeedbackRight extends Component {
       _score = "";
     }
 
-    let _maxScore = rubricMaxScore || maxScore;
+    const _maxScore = rubricMaxScore || maxScore;
 
     // TODO: uncomment when practice question scoring is implemented (EV-12869)
     // if (isPracticeQuestion) {

@@ -51,7 +51,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       cy.contains("Share With Others");
 
       // update the settings
-      cy.visit(`author/tests/tab/settings/id/${testId}`);
+      testLibrary.visitTestById(testId);
+      testLibrary.header.clickOnSettings();
       testLibrary.header.clickOnEditButton(true);
       // set max attempt
       testLibrary.testSettings.setMaxAttempt(maxAttempt);

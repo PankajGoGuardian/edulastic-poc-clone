@@ -9,7 +9,7 @@ import { withNamespaces } from "react-i18next";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { validateEmail } from "../../../../../common/utils/helpers"  
+import { validateEmail } from "../../../../../common/utils/helpers";
 
 import { ModalFormItem } from "../AddStudentModal/styled";
 import {
@@ -21,7 +21,6 @@ import {
   IconSwap,
   ItemDiv,
   ItemText,
-  PlaceHolderText,
   SearchTabButton,
   SearchViewContainer,
   SelUserKindDiv,
@@ -55,12 +54,30 @@ const Item = ({ item, moveItem, isEnrolled }) => {
 const FormItem = Form.Item;
 const { Option } = Select;
 
+const emailText = "Enter email like... \njohn.doe@yourschool.com \njohn.doe@yourschool.com\n...";
+const firstNameText = "Enter first and last names like... \nJohn Doe \nJane Doe\n...";
+const lastNameText = "Enter last and first names like...\nDoe John \nDoe Jane\n...";
+
+const placeHolderComponent = curSel => {
+  if (curSel === "google") {
+    return emailText;
+  }
+  if (curSel === "mso") {
+    return emailText;
+  }
+  if (curSel === "fl") {
+    return firstNameText;
+  }
+  if (curSel === "lf") {
+    return lastNameText;
+  }
+};
+
 class InviteMultipleStudentModal extends Component {
   constructor(props) {
     super(props);
     const { searchAndAddStudents = false } = props;
     this.state = {
-      placeHolderVisible: true,
       curSel: "google",
       allStudents: [],
       studentsToEnroll: [],
@@ -112,11 +129,6 @@ class InviteMultipleStudentModal extends Component {
   onCloseModal = () => {
     const { closeModal } = this.props;
     closeModal();
-  };
-
-  handleChangeTextArea = e => {
-    if (e.target.value.length > 0) this.setState({ placeHolderVisible: false });
-    else this.setState({ placeHolderVisible: true });
   };
 
   handleChange = value => {
@@ -232,7 +244,7 @@ class InviteMultipleStudentModal extends Component {
     } = this.props;
     const { getFieldDecorator } = form;
     const { googleUsernames = true, office365Usernames = true, firstNameAndLastName = true } = policy;
-    const { placeHolderVisible, curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
+    const { curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
     const { schools = [] } = orgData || {};
     const allLists =
       allStudents.length > 0
@@ -249,57 +261,8 @@ class InviteMultipleStudentModal extends Component {
         ? studentsToEnroll.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} orgData={orgData} />)
         : null;
 
-    let placeHolderComponent;
-    if (curSel === "google") {
-      placeHolderComponent = (
-        <PlaceHolderText visible={placeHolderVisible}>
-          Enter email like...
-          <br />
-          john.doe@yourschool.com
-          <br />
-          john.doe@yourschool.com
-          <br />
-          ...
-        </PlaceHolderText>
-      );
-    } else if (curSel === "mso") {
-      placeHolderComponent = (
-        <PlaceHolderText visible={placeHolderVisible}>
-          Enter email like...
-          <br />
-          john.doe@yourschool.com
-          <br />
-          john.doe@yourschool.com
-          <br />
-          ...
-        </PlaceHolderText>
-      );
-    } else if (curSel === "fl") {
-      placeHolderComponent = (
-        <PlaceHolderText visible={placeHolderVisible}>
-          Enter first and last names like...
-          <br />
-          John Doe
-          <br />
-          Jane Doe
-          <br />
-          ...
-        </PlaceHolderText>
-      );
-    } else if (curSel === "lf") {
-      placeHolderComponent = (
-        <PlaceHolderText visible={placeHolderVisible}>
-          Enter last and first names like...
-          <br />
-          Doe John
-          <br />
-          Doe Jane
-          <br />
-          ...
-        </PlaceHolderText>
-      );
-    }
     const defaultSchoolId = schools.length ? schools[0]._id : "";
+    const placeholderText = placeHolderComponent(curSel);
     return (
       <CustomModalStyled
         title={t("users.student.invitestudents.tab2")}
@@ -401,14 +364,13 @@ class InviteMultipleStudentModal extends Component {
             <Row>
               <Col span={24}>
                 <FormItem style={{ marginBottom: "0px" }}>
-                  {placeHolderComponent}
                   {getFieldDecorator("students", {
                     rules: [
                       {
                         validator: this.validateStudentsList
                       }
                     ]
-                  })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
+                  })(<StyledTextArea row={10} placeholder={placeholderText} />)}
                 </FormItem>
               </Col>
             </Row>

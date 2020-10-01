@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { get, isEmpty } from "lodash";
 import { Link, withRouter } from "react-router-dom";
+import { IconPresentation, IconAddItem, IconPieChartIcon } from "@edulastic/icons";
 import { Dropdown, Tooltip, Spin, Menu } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test as testConstants, roleuser } from "@edulastic/constants";
@@ -11,22 +12,14 @@ import { test as testConstants, roleuser } from "@edulastic/constants";
 import { FlexContainer, withWindowSizes, EduButton, CheckboxLabel } from "@edulastic/common";
 
 import arrowUpIcon from "../../assets/arrow-up.svg";
-import presentationIcon from "../../assets/presentation.svg";
-import additemsIcon from "../../assets/add-items.svg";
-import piechartIcon from "../../assets/pie-chart.svg";
 import ActionMenu from "../ActionMenu/ActionMenu";
 import { getItemsInFolders, getSelectedItems } from "../../../src/selectors/folder";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-import {
-  toggleRemoveItemsFolderAction,
-  toggleMoveItemsFolderAction,
-  setItemsMoveFolderAction
-} from "../../../src/actions/folder";
+import { toggleRemoveItemsFolderAction, toggleMoveItemsFolderAction } from "../../../src/actions/folder";
 
 import {
   Container,
-  Icon,
   TableData,
   TestThumbnail,
   AssignmentTD,
@@ -116,13 +109,12 @@ const TableList = ({
   togglePrintModal,
   userRole,
   userClassList,
-  setItemsToFolder,
-  selectedItems,
   toggleAddItemFolderModal,
   toggleRemovalFolderModal
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
+  const [selectedItems, setLocalItems] = useState([]);
   // Show first three rows opened in every re-render
   useEffect(() => {
     setExpandedRows(["0", "1", "2"]);
@@ -242,7 +234,7 @@ const TableList = ({
           <ActionsWrapper data-cy="PresentationIcon" data-test={row.assignmentId}>
             <Tooltip placement="bottom" title="Live Class Board">
               <Link data-cy="lcb" to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
-                <Icon src={presentationIcon} alt="Images" />
+                <IconPresentation alt="Images" />
               </Link>
             </Tooltip>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={row.classId}>
@@ -256,14 +248,14 @@ const TableList = ({
                     to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}
                     disabled={row.hasAutoSelectGroups}
                   >
-                    <Icon src={additemsIcon} alt="Images" />
+                    <IconAddItem alt="Images" />
                   </Link>
                 </Tooltip>
               </WithDisableMessage>
             </FeaturesSwitch>
             <Tooltip placement="bottom" title="Standard Based Report">
               <Link data-cy="sbr" to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-                <Icon src={piechartIcon} alt="Images" />
+                <IconPieChartIcon alt="Images" />
               </Link>
             </Tooltip>
           </ActionsWrapper>
@@ -325,13 +317,13 @@ const TableList = ({
   const handleSelectRow = row => e => {
     const selectedIndex = selectedItems.findIndex(r => r.itemId === row.itemId);
     if (e.target && e.target.checked && selectedIndex === -1) {
-      setItemsToFolder([...selectedItems, row]);
+      setLocalItems([...selectedItems, row]);
     } else if (e.target && selectedIndex !== -1) {
       selectedItems.splice(selectedIndex, 1);
-      setItemsToFolder([...selectedItems]);
+      setLocalItems([...selectedItems]);
     } else if (!e.target && toggleAddItemFolderModal) {
-      // this case is from action button of an item
-      setItemsToFolder([row]);
+      // this case is from action button in each item
+      setLocalItems([row]);
       toggleAddItemFolderModal({
         items: [row],
         isOpen: true
@@ -341,9 +333,9 @@ const TableList = ({
 
   const handleSelectAllRow = e => {
     if (e.target.checked) {
-      setItemsToFolder(data);
+      setLocalItems(data);
     } else {
-      setItemsToFolder([]);
+      setLocalItems([]);
     }
   };
 
@@ -616,7 +608,6 @@ const enhance = compose(
       userClassList: getGroupList(state)
     }),
     {
-      setItemsToFolder: setItemsMoveFolderAction,
       toggleRemovalFolderModal: toggleRemoveItemsFolderAction,
       toggleAddItemFolderModal: toggleMoveItemsFolderAction
     }

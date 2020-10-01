@@ -262,7 +262,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.getResponsesBox();
       });
 
-      it(" > Check/uncheck Transparent possible responses", () => {
+      it(" > Check Transparent possible responses option", () => {
         question.getTransparentResponse().click({ force: true });
       });
 
@@ -573,7 +573,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.getResponsesBox();
       });
 
-      it(" > Check/uncheck Transparent possible responses", () => {
+      it(" > Check Transparent possible responses option", () => {
         question.getTransparentResponse().click({ force: true });
       });
 

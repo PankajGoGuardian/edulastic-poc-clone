@@ -3,6 +3,7 @@ import { DOK } from "../constants/questionAuthoring";
 import Helpers from "../util/Helpers";
 import { sortOptions } from "../constants/questionTypes";
 
+const { dom, $ } = Cypress;
 export default class SearchFilters {
   // *** ELEMENTS START ***
   constructor() {
@@ -25,6 +26,15 @@ export default class SearchFilters {
       standard: "Standards",
       collection: "Collections",
       tags: "Tags"
+    };
+    this.libraryTitles = {
+      entirelibrary: "Entire Library",
+      authoredByMe: "Authored by me",
+      sharedWithMe: "Shared with me",
+      coAuthor: "I am a Co-Author",
+      floders: "FOLDERS",
+      myFavorites: "My Favorites",
+      prevUsed: "Previously Used"
     };
   }
 
@@ -66,11 +76,15 @@ export default class SearchFilters {
     cy.route("POST", "**/search/**").as("search");
   };
 
-  waitForSearchResponse = () => cy.wait("@search").then(xhr => expect(xhr.status).to.eq(200));
+  waitForSearchResponse = () =>
+    cy.wait("@search").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      return this.closeFilterGuide();
+    });
 
   getAuthoredByMe = (setSortOptions = true, option) => {
     this.routeSearch();
-    cy.xpath("//li[text()='Authored by me']").click();
+    this.getFilterButtonByAttr(this.libraryTitles.authoredByMe).click();
     this.waitForSearchResponse();
     if (setSortOptions) {
       this.setSortButtonInDescOrder();
@@ -83,24 +97,36 @@ export default class SearchFilters {
     this.routeSearch();
     this.typeInSearchBox(dummyCharToType);
     cy.get('[data-cy="clearAll"]').click({ force: true });
-    cy.wait("@search").then(() => this.getSearchBar().should("not.contain", dummyCharToType));
+    this.waitForSearchResponse().then(() => this.getSearchBar().should("not.contain", dummyCharToType));
     if (setSortOptions) {
       this.setSortButtonInDescOrder();
       this.setSortOption(option);
     }
   };
 
+  clickOnGetCoAuthor = () => {
+    this.routeSearch();
+    this.getFilterButtonByAttr(this.libraryTitles.coAuthor).click({ force: true });
+    this.waitForSearchResponse();
+  };
+
+  clickOnPreviouslyUsed = () => {
+    this.routeSearch();
+    this.getFilterButtonByAttr(this.libraryTitles.prevUsed).click({ force: true });
+    this.waitForSearchResponse();
+  };
+
   setGrades = grades => {
     grades.forEach(grade => {
       CypressHelper.selectDropDownByAttribute("selectGrades", grade);
-      cy.wait("@search");
+      this.waitForSearchResponse();
     });
   };
 
   setCollection = collection => {
     this.routeSearch();
     CypressHelper.selectDropDownByAttribute("Collections", collection);
-    cy.wait("@search");
+    this.waitForSearchResponse();
   };
 
   scrollFiltersToTop = () =>
@@ -112,23 +138,21 @@ export default class SearchFilters {
       });
 
   sharedWithMe = () => {
-    cy.get('[data-icon="share-alt"]').click({ force: true });
-    cy.wait("@search");
-    cy.wait(1000);
+    this.getFilterButtonByAttr(this.libraryTitles.sharedWithMe).click({ force: true });
+    this.waitForSearchResponse();
   };
 
   getEntireLibrary = () => {
     this.routeSearch();
-    cy.get('[data-icon="book"]').click({ force: true });
+    this.getFilterButtonByAttr(this.libraryTitles.entirelibrary).click({ force: true });
     this.waitForSearchResponse();
-    cy.wait(1000);
   };
 
   typeInSearchBox = key => {
     this.routeSearch();
     this.getSearchTextBox()
       .type("{selectall}", { force: true })
-      .type(`${key}{enter}`, { force: true });
+      .type(`${key}{enter}`, { force: true, timeout: 20000 });
     this.waitForSearchResponse();
   };
 
@@ -151,7 +175,7 @@ export default class SearchFilters {
 
   clearMultipleSelectionDropDown = attr => {
     cy.get(`[data-cy="${attr}"]`).then($ele => {
-      if (Cypress.$($ele).find(".anticon-close").length > 0)
+      if ($($ele).find(".anticon-close").length > 0)
         cy.wrap($ele)
           .find(".anticon-close")
           .each(element => {
@@ -159,7 +183,7 @@ export default class SearchFilters {
             this.waitForSearchResponse();
           });
 
-      cy.wrap(Cypress.$($ele))
+      cy.wrap($ele)
         .find(".ant-select-selection__choice__content")
         .should("have.length", 0);
     });
@@ -192,6 +216,7 @@ export default class SearchFilters {
         this.waitForSearchResponse();
       }
     });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -288,14 +313,14 @@ export default class SearchFilters {
 
   expandFilters = () =>
     this.getFilterButton().then($elem => {
-      if (Cypress.$('[data-cy="clearAll"]').length === 0) cy.wrap($elem).click({ force: true });
+      if (dom.isHidden($('[data-cy="clearAll"]'))) cy.wrap($elem).click({ force: true });
       cy.get('[data-cy="clearAll"]').should("be.visible");
     });
 
   collapseFilters = () =>
     this.getFilterButton().then($elem => {
-      if (Cypress.$('[data-cy="clearAll"]').length === 1) cy.wrap($elem).click({ force: true });
-      cy.get('[data-cy="clearAll"]').should("not.exist");
+      if (dom.isVisible($('[data-cy="clearAll"]'))) cy.wrap($elem).click({ force: true });
+      cy.get('[data-cy="clearAll"]').should("not.be.visible");
     });
 
   verfifyActivePageIs = pageNo =>
@@ -305,8 +330,16 @@ export default class SearchFilters {
     this.getSortDropdown().click({ force: true });
     cy.wait(300);
     cy.get(".ant-dropdown-menu-item").then($ele => {
-      cy.wrap($ele.filter((i, ele) => Cypress.$(ele).text() === option)).click({ force: true });
+      cy.wrap($ele.filter((i, ele) => $(ele).text() === option)).click({ force: true });
     });
   };
+
+  closeFilterGuide = () =>
+    cy.get("body").then(() => {
+      if ($("._pendo-close-guide").length > 0)
+        cy.get("._pendo-close-guide")
+          .should($ele => expect(dom.isAttached($ele)).to.be.true)
+          .click();
+    });
   // *** APPHELPERS END ***
 }

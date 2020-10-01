@@ -6,7 +6,8 @@ import {
   mobileWidthMax,
   tabletWidth,
   themeColor,
-  white
+  white,
+  themeColorBlue
 } from "@edulastic/colors";
 import { Button, Icon, Menu, Popconfirm, Switch } from "antd";
 import styled, { css } from "styled-components";
@@ -254,7 +255,7 @@ export const MenuItems = styled(Menu.Item)`
 
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
     > a {
       color: ${white};
     }
@@ -306,7 +307,7 @@ export const StudentStatusDetails = styled.div`
     border-radius: 5px;
     font-size: 12px;
     color: #8f8f8f;
-    text-align:center;
+    text-align: center;
     text-transform: uppercase;
   }
 `;

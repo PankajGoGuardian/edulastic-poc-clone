@@ -2425,7 +2425,6 @@ var { uploadToS3 } = require("@edulastic/common");
          */
         function insertScreenReaderHint(annotation) {
           var num = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-
           switch (annotation.type) {
             case "highlight":
             case "strikeout":
@@ -2572,6 +2571,7 @@ var { uploadToS3 } = require("@edulastic/common");
 
           // Fall back to inserting between elements
           var svg = document.querySelector('svg[data-pdf-annotate-page="' + pageNumber + '"]');
+          if (!svg) return false;
           var rect = svg.getBoundingClientRect();
           var nodes = [].concat(_toConsumableArray(svg.parentNode.querySelectorAll(".textLayer > div")));
 
@@ -2657,6 +2657,7 @@ var { uploadToS3 } = require("@edulastic/common");
           x = x + OFFSET_ADJUST * (insertBefore ? -1 : 1);
 
           var svg = document.querySelector('svg[data-pdf-annotate-page="' + pageNumber + '"]');
+          if (!svg) return false;
           var left =
             (0, _utils.scaleDown)(svg, { left: node.getBoundingClientRect().left }).left -
             svg.getBoundingClientRect().left;
@@ -2707,6 +2708,7 @@ var { uploadToS3 } = require("@edulastic/common");
          */
         function textLayerElementFromPoint(x, y, pageNumber) {
           var svg = document.querySelector('svg[data-pdf-annotate-page="' + pageNumber + '"]');
+          if (!svg) return false;
           var rect = svg.getBoundingClientRect();
           y = (0, _utils.scaleUp)(svg, { y: y }).y + rect.top;
           x = (0, _utils.scaleUp)(svg, { x: x }).x + rect.left;

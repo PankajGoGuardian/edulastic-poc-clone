@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Col, Tooltip } from "antd";
 import styled from "styled-components";
-import { mobileWidthMax, linkColor } from "@edulastic/colors";
+import { mobileWidthMax, themeColorBlue, linkColor } from "@edulastic/colors";
 import { getAdditionalDataSelector } from "../../ClassBoard/ducks";
 import { getUserRole } from "../../../student/Login/ducks";
 import { getUserOrgId } from "../../src/selectors/user";
@@ -93,12 +93,18 @@ const PaginationInfo = styled(Col)`
 const RecentLink = styled(Link)`
   display: inline-block;
   color: ${linkColor};
+  &:hover {
+    color: ${themeColorBlue};
+  }
 `;
 const AnchorLink = styled(RecentLink)`
   max-width: 20vw;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  &:hover {
+    color: ${themeColorBlue};
+  }
 `;
 
 const Anchor = styled.a`
@@ -108,4 +114,7 @@ const Anchor = styled.a`
   white-space: nowrap;
   display: inline-block;
   color: ${linkColor};
+  &:hover {
+    color: ${themeColorBlue};
+  }
 `;

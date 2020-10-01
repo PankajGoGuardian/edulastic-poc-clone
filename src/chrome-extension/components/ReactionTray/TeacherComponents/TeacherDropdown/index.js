@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { connect } from 'react-redux';
 
-import db, { useFirestoreRealtimeDocuments} from "../../../firebase";
+// import db, { useFirestoreRealtimeDocuments} from "../../../../firebase";
+import { MeetFirebase } from '@edulastic/common';
 
-
-
-import {ENGAGEMENT_STATUS, COLORS} from '../../../constants';
-import { updateRoomDataAction } from '../../../reducers/ducks/messages';
-import {setDropdownTabAction} from "../../../reducers/ducks/edulastic";
-import NavigationLeft from '../Icons/ArrowLeft';
+import {ENGAGEMENT_STATUS, COLORS} from '../../../../constants';
+import { updateRoomDataAction } from '../../../../reducers/ducks/messages';
+import {setDropdownTabAction} from "../../../../reducers/ducks/edulastic";
+import TeacherSettings from '../TeacherSettings';
+import NavigationLeft from '../../Icons/ArrowLeft';
 import {
     Dropdown,
     SubheaderWrapper,
@@ -58,7 +58,7 @@ const getData = (meetingID, attendance = [], activities = {}, classData = []) =>
     attendanceData.forEach(x => _data[x] = x);
     const presentStudentsData = Object.keys(_data);
     const presentStudentIds = presentStudentsData.map(({userId}) => userId);
-    const absentStudentsData = classData.filter(({studentId}) => !presentStudentIds.includes(studentId))
+    const absentStudentsData = classData.filter(({studentId}) => studentId && !presentStudentIds.includes(studentId))
                                .map((data = {}) => ({...data, fullname: `${data.firstName || ''} ${data.lastName || ''}`}));
 
     const activitiesByStudent = activities
@@ -147,33 +147,35 @@ const CommonDropdown = ({meetingID, isTeacher, dropdownTab = '', roomData, class
     useEffect(() => setActiveTab(initialState[dropdownTab]),[dropdownTab]);
 
     useEffect(() => {
-        
-    db.collection('MeetingUserAttendance').doc(meetingID)
-    .onSnapshot((doc) => setAttendance(doc.data().attendance));
-
-    db.collection("MeetingUserActivity").where('meetingID','==', meetingID)
-    .onSnapshot((querySnapshot) => {
-        const _activities = [];
-        querySnapshot.forEach( doc =>_activities.push(doc.data()));
-            setEngagement(_activities);
-    });
-
+      if(isTeacher){
+        MeetFirebase.db.collection('MeetingUserAttendance').doc(meetingID)
+        .onSnapshot((doc) => setAttendance(doc.data().attendance));
+  
+        MeetFirebase.db.collection("MeetingUserActivity").where('meetingID','==', meetingID)
+        .onSnapshot((querySnapshot) => {
+            const _activities = [];
+            querySnapshot.forEach( doc =>_activities.push(doc.data()));
+                setEngagement(_activities);
+        });
+      }
     },[]);
 
     console.log("onSnapshot change",attendance, classData,activities);
 
     const {tabs=[] , data=[]} = getData(meetingID, attendance, activities, classData);
 
+    const isTeacherSettings = dropdownTab === 'teachersettings';
+
     return (
       <Dropdown>
-        <SubHeader tabName={dropdownTab} callback={() => setDropdownTab('')} />
-        {isTeacher ? (<>
+        {!isTeacherSettings && <SubHeader tabName={dropdownTab} callback={() => setDropdownTab('')} />}
+        {!isTeacherSettings  ? (<>
           <SubTabs callback={setActiveTab} active={activeTab} tabs={tabs[dropdownTab]} />
           <ListContainer>
             { data?.[dropdownTab]?.[activeTab]?.map((item,i) => <UserItem key={item.userId || i} {...item} />) }
           </ListContainer>
         </>) : (
-                 null
+                                  <TeacherSettings />
              )
             }
       </Dropdown>

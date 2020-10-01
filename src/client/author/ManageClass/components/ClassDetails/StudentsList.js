@@ -81,7 +81,7 @@ const StudentsList = ({
       dataIndex: "username",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.username > b.username,
-      render: username => <span>{username}</span>,
+      render: username => <span>{username.replace(/.deactivated|.deactivate/g, "")}</span>,
       width: "20%",
       align: "left"
     },

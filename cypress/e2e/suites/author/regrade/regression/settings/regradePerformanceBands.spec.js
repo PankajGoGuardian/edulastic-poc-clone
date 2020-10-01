@@ -169,31 +169,31 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
         });
       });
 
-      [attemptsdata1, attemptsdata2].forEach(studentdata => {
-        context(`> verify lcb/reports '${studentdata[0].overidden === 0 ? "not " : ""}overidden' assignment`, () => {
+      [attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
+        context(`> verify lcb/reports '${studentdata[0].overidden ? "not " : ""}overidden' assignment`, () => {
           before("> click on lcb", () => {
             const assignmentid = studentdata[0].overidden ? assignmentid2 : assignmentid1;
             testlibaryPage.sidebar.clickOnAssignment();
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, assignmentid);
           });
 
-          it("> verify performance band in lcb settings", () => {
+          it(`>${index} verify regraded performance band in lcb settings `, () => {
             const band = studentdata[0].overidden ? overiddenBand : regradedBand;
             lcb.header.clickLCBSettings();
             lcb.settings.showTestLevelSettings();
             lcb.settings.verifySelectedPerformanceBand(band);
           });
 
-          context("> verify reports", () => {
+          context("> verify regraded bands in pdf-reports", () => {
             before("> click reports in drop down", () => {
               lcb.header.clickOnLCBTab();
               lcb.header.clickStudentReportInDropDown();
               pdfReportCard.clickReportGeanerateButton();
             });
             studentdata.forEach(({ status, name, attempt }) => {
-              it(`> for student ${status}`, () => {
-                const band = studentdata[0].overidden ? overiddenBand : regradedBand;
-                const bands = performanceBand[band];
+              const band = studentdata[0].overidden ? overiddenBand : regradedBand;
+              const bands = performanceBand[band];
+              it(`>${name} - student ${status},expected- '${bands[attempt]}'`, () => {
                 pdfReportCard.getReportContainerByStudent(name);
                 pdfReportCard.getPerformanceBand().should("have.text", bands[attempt]);
               });
@@ -289,8 +289,8 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
         });
       });
 
-      [attemptsdata1, attemptsdata2].forEach(studentdata => {
-        context(`> verify lcb/reports '${studentdata[0].overidden === 0 ? "not " : ""}overidden' assignment`, () => {
+      [attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
+        context(`> verify lcb/reports '${studentdata[0].overidden ? "not " : ""}overidden' assignment`, () => {
           before("> click on lcb", () => {
             // cy.login("teacher", teacher);
             const assignmentid = studentdata[0].overidden ? assignmentid2 : assignmentid1;
@@ -298,21 +298,21 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'perf
             authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, assignmentid);
           });
 
-          it("> verify performance band in lcb settings", () => {
+          it(`>${index} verify regraded performance band in lcb settings`, () => {
             lcb.header.clickLCBSettings();
             lcb.settings.showTestLevelSettings();
             lcb.settings.verifySelectedPerformanceBand(regradedBand);
           });
 
-          context("> verify reports", () => {
+          context("> verify regraded bands in pdf-reports", () => {
             before("> click reports in drop down", () => {
               lcb.header.clickOnLCBTab();
               lcb.header.clickStudentReportInDropDown();
               pdfReportCard.clickReportGeanerateButton();
             });
             studentdata.forEach(({ status, name, attempt }) => {
-              it(`> for student ${status}`, () => {
-                const bands = performanceBand[regradedBand];
+              const bands = performanceBand[regradedBand];
+              it(`>${name} - student ${status}, expected- ${bands[attempt]}`, () => {
                 pdfReportCard.getReportContainerByStudent(name);
                 pdfReportCard.getPerformanceBand().should("have.text", bands[attempt]);
               });

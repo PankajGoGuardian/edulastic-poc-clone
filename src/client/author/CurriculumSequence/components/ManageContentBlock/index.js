@@ -254,7 +254,7 @@ const ManageContentBlock = props => {
                 dropdownStyle={{ display: "none" }}
                 data-cy="container-search-bar"
               />
-              <SearchIcon color={themeColor} />
+              <SearchIcon color={themeColor} onClick={() => onSearchChange(searchStrings)} />
             </SearchBoxContainer>
             <ActionButton data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
               <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />

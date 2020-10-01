@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
-import { tabletWidth, mobileWidth, linkColor, themeColor, white, darkGrey } from "@edulastic/colors";
+import { tabletWidth, mobileWidth, linkColor, themeColor, white, darkGrey, smallDesktopWidth } from "@edulastic/colors";
 import { Card, FlexContainer } from "@edulastic/common";
 
 export const Container = styled.div`
@@ -79,10 +79,12 @@ export const StyledCard = styled(Card)`
 
 export const PaginationInfo = styled.span`
   font-weight: 600;
-  display: inline-block;
   font-size: 11px;
   word-spacing: 5px;
+  display: flex;
+  white-space: nowrap;
   color: ${linkColor};
+  margin-top: 8px;
 `;
 
 export const AnchorLink = styled(Link)`
@@ -100,9 +102,16 @@ export const ActionDiv = styled.div`
 `;
 
 export const Anchor = styled.a`
+  display: block;
   text-transform: uppercase;
   color: ${linkColor};
   font-weight: bold;
+  max-width: 300px;
+  width: 100%;
+  height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const BtnAction = styled(Button)`
@@ -162,8 +171,8 @@ export const StyledSpan = styled.span`
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`
-  @media (max-width: 1365px) {
+  align-items: flex-start;
+  @media (max-width: ${smallDesktopWidth}) {
     flex-direction: column;
-    align-items: flex-start;
   }
 `;

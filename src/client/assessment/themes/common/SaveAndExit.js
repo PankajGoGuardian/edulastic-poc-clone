@@ -2,11 +2,11 @@ import { extraDesktopWidthMax, mediumDesktopExactWidth, smallDesktopWidth } from
 import { EduButton, FireBaseService as Fbs, FlexContainer } from "@edulastic/common";
 import { IconAccessibility, IconCircleLogout, IconSend } from "@edulastic/icons";
 import { Button } from "antd";
-import { get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { get } from "lodash";
 import { toggleScratchpadVisbilityAction } from "../../../common/components/Scratchpad/duck";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 import TimedTestTimer from "./TimedTestTimer";
@@ -29,11 +29,11 @@ const SaveAndExit = ({
   utaId,
   groupId,
   timedAssignment,
-  isCliUserPreview,
   isCliUser,
   LCBPreviewModal,
   hideData,
-  toggleScratchpadVisibility
+  toggleScratchpadVisibility,
+  isCliUserPreview
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId);
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;

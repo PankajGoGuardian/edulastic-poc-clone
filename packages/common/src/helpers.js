@@ -106,10 +106,10 @@ function convertBlobToFile(blob) {
   return null;
 }
 
-function convertStringToFile(str) {
+function convertStringToBlob(str) {
   const blob = new Blob([str], { type: "text/plain;charset=utf-8" });
-  const file = new File([blob], `scratchpad-${Date.now()}.text`);
-  return file;
+  blob.name = `scratchpad-${Date.now()}.text`;
+  return blob;
 }
 
 const s3Folders = Object.values(aws.s3Folders);
@@ -132,7 +132,7 @@ export const uploadToS3 = async (file, folder, progressCallback, cancelUpload) =
   if (isString(file)) {
     // this case will come from scratchpad
     // create new file with the string
-    fileToUpload = convertStringToFile(file);
+    fileToUpload = convertStringToBlob(file);
   }
 
   const { name: fileName } = fileToUpload;
@@ -300,24 +300,44 @@ export const sanitizeForReview = stimulus => {
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
   let tagFound = false;
+  let firstImageSkipped = false;
+
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
       const elem = $(this).context;
-      // replace if tag is not span
-      // span comes when we use italic or bold
-      const shouldReplace = elem.nodeName !== "SPAN"; // sanitize other tags (mainly input responses) from stimulus except span
+      const elemNodeName = elem.nodeName;
+      const isImageElement = elemNodeName === "IMG";
+
+      let shouldReplace;
+      switch (elemNodeName) {
+        case "SPAN":
+          // replace if tag is not span
+          // span comes when we use italic or bold
+          // sanitize other tags (mainly input responses) from stimulus except span
+          shouldReplace = false;
+          break;
+        case "IMG":
+          shouldReplace = firstImageSkipped;
+          break;
+        default:
+          shouldReplace = true;
+      }
+
       const latex = elem.getAttribute("data-latex");
       // sanitize span only if matrix is rendered using a span tag
       // do no sanitize if span does not have latex (in case we use bold or italic)
-      if (elem.nodeName === "SPAN" && latex && latex.includes("matrix")) {
+      if (elemNodeName === "SPAN" && latex && latex.includes("matrix")) {
         $(this).replaceWith(` [matrix] `);
       }
       if (shouldReplace) {
         if (tagMapping[tagToRemove]) {
-          $(this).replaceWith(` ${tagMapping[tagToRemove]} `);
+          $(this).replaceWith(`${tagMapping[tagToRemove]} `);
         } else {
-          $(this).replaceWith(`  [${tagToRemove}] `);
+          $(this).replaceWith(`[${tagToRemove}] `);
         }
+      }
+      if (isImageElement) {
+        firstImageSkipped = true;
       }
       tagFound = true;
     });

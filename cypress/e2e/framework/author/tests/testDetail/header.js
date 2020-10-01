@@ -35,6 +35,7 @@ export default class TestHeader {
 
   clickOnDescription = () => {
     this.getTestSummaryHeader().click({ force: true });
+    cy.get('[data-cy="testname"]').should("be.visible");
     return new TestSummayTab();
   };
 
@@ -52,9 +53,14 @@ export default class TestHeader {
     return new TestReviewTab();
   };
 
-  clickOnSettings = () => this.getTestSettingsHeader().click();
+  clickOnSettings = () => {
+    this.getTestSettingsHeader().click();
+    cy.get("#test-type");
+  };
 
   clickOnEditButton = (confirmation = false) => {
+    cy.server();
+    cy.route("PUT", "**/test/**").as("saveTest");
     this.getEditTestButton().click();
     if (confirmation) {
       cy.contains("PROCEED").click();
@@ -83,7 +89,7 @@ export default class TestHeader {
   clickOnPublishButton = () => {
     cy.server();
     cy.route("PUT", "**/test/**/publish").as("published");
-    cy.route("POST", "**/districts/*/users").as("share-test");
+    cy.route("POST", "**/search/tests").as("search-test-after-publish");
     this.clickRegradePublish();
     return cy.wait("@published").then(xhr => {
       expect(xhr.status).to.eq(200);
@@ -91,18 +97,19 @@ export default class TestHeader {
 
       if (Cypress.$('[data-cy="Assignments"]').length === 1) {
         // there is significant delay in gettting the success page in app, hence increasing the timeout.
-        return cy.contains("Share With Others", { timeout: 20000 }).then(() => {
-          return JSON.stringify(xhr.url)
-            .split("/")
-            .reverse()[1];
-        });
-      } else
-        return cy.wait("@share-test").then(
+        return cy.contains("Share With Others", { timeout: 20000 }).then(
           () =>
             JSON.stringify(xhr.url)
               .split("/")
               .reverse()[1]
         );
+      }
+      return cy.wait("@search-test-after-publish").then(
+        () =>
+          JSON.stringify(xhr.url)
+            .split("/")
+            .reverse()[1]
+      );
     });
   };
 

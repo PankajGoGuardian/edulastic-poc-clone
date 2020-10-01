@@ -1,4 +1,5 @@
-import SidebarPage from "../student/sidebarPage";
+import SidebarPage from "./sidebarPage";
+
 export default class ManagePage {
   constructor() {
     this.sideBar = new SidebarPage();
@@ -52,6 +53,14 @@ export default class ManagePage {
   typeClassCode = classCode => {
     cy.get('[data-cy="classcodeinput"]').type(classCode);
   };
+
+  goToLastPage() {
+    cy.get("body").then($body => {
+      if ($body.find(".ant-table-pagination > li").length > 0) {
+        cy.get('[title="Next Page"]').prev().click()
+      }
+    })
+  }
 
   // *** ACTIONS END ***
 

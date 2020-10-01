@@ -79,9 +79,9 @@ class AddNewUserForm extends React.Component {
       // many user can exists with same email
       // get user with student role
       let user = {};
-      if(!isEmpty(res)){
+      if (!isEmpty(res)) {
         const student = res.find(o => o.role === "student");
-        if(student){
+        if (student) {
           user = student;
         }
       }
@@ -465,7 +465,9 @@ class AddNewUserForm extends React.Component {
             <Panel header={AdditionalDetailsHeader} key="additional">
               <Field name="sisId">
                 <FieldLabel>SIS ID</FieldLabel>
-                <Form.Item>{getFieldDecorator("sisId")(<TextInputStyled placeholder="Enter SIS ID" disabled />)}</Form.Item>
+                <Form.Item>
+                  {getFieldDecorator("sisId")(<TextInputStyled placeholder="Enter SIS ID" disabled />)}
+                </Form.Item>
               </Field>
               <Field name="studentNumber">
                 <FieldLabel>Student Number</FieldLabel>
@@ -524,7 +526,14 @@ class AddNewUserForm extends React.Component {
 
               <Field name="dob" optional>
                 <FieldLabel>DOB</FieldLabel>
-                <Form.Item>{getFieldDecorator("dob")(<DatePickerStyled format="DD MMM, YYYY" />)}</Form.Item>
+                <Form.Item>
+                  {getFieldDecorator("dob")(
+                    <DatePickerStyled
+                      format="DD MMM, YYYY"
+                      disabledDate={current => current && current.valueOf() > Date.now()}
+                    />
+                  )}
+                </Form.Item>
               </Field>
               <Field name="gender">
                 <FieldLabel>Gender</FieldLabel>
@@ -540,7 +549,9 @@ class AddNewUserForm extends React.Component {
               </Field>
               <Field name="contactEmails">
                 <FieldLabel>Contact</FieldLabel>
-                <Form.Item>{getFieldDecorator("contactEmails")(<TextInputStyled placeholder="Enter Contact" />)}</Form.Item>
+                <Form.Item>
+                  {getFieldDecorator("contactEmails")(<TextInputStyled placeholder="Enter Contact" />)}
+                </Form.Item>
               </Field>
               <Field name="tts">
                 <FieldLabel>Enable Text To Speech</FieldLabel>

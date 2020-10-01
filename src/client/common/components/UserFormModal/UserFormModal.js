@@ -216,11 +216,13 @@ class UserForm extends React.Component {
                       validateTrigger: ["onBlur"],
                       rules: [{ validator: this.validateEmailValue }],
                       initialValue: get(_source, "email", get(_source, "email", ""))
-                    })(<TextInputStyled
-                      padding="0px 15px 0px 30px"
-                      prefix={<img style={iconSize} src={mailIcon} alt="" />}
-                      placeholder="Enter email"
-                    />)}
+                    })(
+                      <TextInputStyled
+                        padding="0px 15px 0px 30px"
+                        prefix={<img style={iconSize} src={mailIcon} alt="" />}
+                        placeholder="Enter email"
+                      />
+                    )}
                   </Form.Item>
                 </Field>
               )}
@@ -328,7 +330,10 @@ class UserForm extends React.Component {
                   <FieldLabel>DOB</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("dob", { initialValue: dobValue ? moment(dobValue) : null })(
-                      <DatePickerStyled format="DD MMM, YYYY" />
+                      <DatePickerStyled
+                        format="DD MMM, YYYY"
+                        disabledDate={current => current && current.valueOf() > Date.now()}
+                      />
                     )}
                   </Form.Item>
                 </Field>

@@ -2,6 +2,7 @@
 import StudentTestPage from "./studentTestPage";
 import SidebarPage from "./sidebarPage";
 
+let attempt_index = 0;
 class AssignmentsPage {
   // page element on AssignmentPage
   constructor() {
@@ -119,7 +120,7 @@ class AssignmentsPage {
   clickOnAssignmentButton() {
     cy.server();
     // cy.route("POST", "**/test-activity").as("startTest");
-    cy.route("GET", "**/test/**").as("gettest");
+    cy.route("GET", "**/test/**").as(`gettest-${++attempt_index}`);
     cy.route("POST", "**/test-activity/**").as("saved");
 
     this.getAssignmentButton()
@@ -133,7 +134,7 @@ class AssignmentsPage {
     // cy.wait("@gettest");
     // return cy.wait("@saved").then(() => new StudentTestPage());
 
-    return cy.wait("@gettest").then(() => {
+    return cy.wait(`@gettest-${attempt_index}`).then(() => {
       cy.get('[data-cy="next"]', { timeout: 30000 }).then(() => new StudentTestPage());
     });
   }
@@ -147,7 +148,7 @@ class AssignmentsPage {
       isFirstAttempt : "boolean"
     } */
     cy.server();
-    cy.route("GET", "**/test/**").as("gettest");
+    cy.route("GET", "**/test/**").as(`gettest-${++attempt_index}`);
 
     this.getAssignmentButtonByTestId(testId).click({ force: true });
 
@@ -163,7 +164,7 @@ class AssignmentsPage {
       this.clickOnStartAfterPassword();
     }
 
-    return cy.wait("@gettest").then(xhr => {
+    return cy.wait(`@gettest-${attempt_index}`).then(xhr => {
       cy.get('[data-cy="next"]', { timeout: 30000 }); // waiting for page rendering
       // TODO: trim the return value to result, so that method can be reused
       return cy.wait(1).then(() => xhr.response.body.result.itemGroups);
@@ -254,9 +255,19 @@ class AssignmentsPage {
 
   reviewSubmittedTestById = id => {
     this.getReviewButtonById(id).click({ force: true });
+    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 }).click({ force: true });
+    cy.get('[data-cy="questionNumber"]', { timeout: 60000 });
   };
 
   verifyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
+
+  verifyAssignmentIsPaused = () =>
+    cy
+      .get('[data-cy="lockAssignment"]')
+      .contains("Paused")
+      .should("exist");
+
+  verifyAssignmentIsOpen = testID => this.getAssignmentButtonByTestId(testID).should("exist");
 
   verifyTimeAvalableForTestById = (testid, time) =>
     this.getTimeAvailableForAssignmentById(testid).should("contain.text", `${time} minutes`);

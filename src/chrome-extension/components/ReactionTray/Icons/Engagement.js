@@ -1,7 +1,7 @@
 import React from 'react'
 
 const EngagementIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 480 480" style={{height: '28px', fill: '#555'}}>
+  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 480 480" style={{height: '28px', fill: '#bbbbbb'}}>
     <g>
       <g>
         <g>

@@ -151,7 +151,12 @@ class AdvancedTable extends Component {
           return (
             selectedRows.length > 0 && (
               <ActionDiv>
-                <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
+                <Dropdown
+                  overlay={menu}
+                  trigger={["click"]}
+                  placement="bottomRight"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   <EduButton height="28px" width="100%" data-cy="actions" isBlue isGhost>
                     ACTIONS
                   </EduButton>
@@ -199,6 +204,7 @@ class AdvancedTable extends Component {
                 })}
                 placement="bottomRight"
                 trigger={["click"]}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 <EduButton height="28px" width="100%" isGhost data-cy="testActions">
                   ACTIONS

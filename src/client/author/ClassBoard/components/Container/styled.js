@@ -230,7 +230,7 @@ export const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
   }
 `;
 

@@ -181,7 +181,7 @@ export default class GroupItemsPage {
   };
 
   assertNoItemsFoundWarning = () =>
-    CypressHelper.verifyAntMesssage("No test items found for current combination of filters");
+    CypressHelper.verifyAntMesssage("No test items found for current combination of filters.");
 
   addItemsToGroup = (itemIds, newTest = true, group = false) => {
     let testID;

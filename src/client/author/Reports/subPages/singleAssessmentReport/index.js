@@ -161,10 +161,10 @@ const SingleAssessmentReportContainer = props => {
   const locList = ["peer-performance", "performance-by-standards", "performance-by-students"];
   const extraFilters = locList.includes(loc)
     ? extraFilterData[loc].map(item => (
-      <SearchField key={item.key}>
-        <FilterLabel>{item.title}</FilterLabel>
-        <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
-      </SearchField>
+        <SearchField key={item.key}>
+          <FilterLabel>{item.title}</FilterLabel>
+          <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
+        </SearchField>
       ))
     : [];
 

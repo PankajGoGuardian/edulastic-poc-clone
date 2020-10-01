@@ -75,7 +75,6 @@ const PlayerHeader = ({
       showZoomBtn
       finishTest={finishTest}
       isCliUserPreview={cliUser}
-      LCBPreviewModal={LCBPreviewModal}
     />
   );
 

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { StyledTable } from "../../../common/styled";
+import styled from 'styled-components'
+import { StyledTable } from '../../../common/styled'
 
 export const StyledContentAuthorTable = styled(StyledTable)`
   .ant-table-tbody > tr > td {
@@ -12,4 +12,4 @@ export const StyledContentAuthorTable = styled(StyledTable)`
     transform: scale(2);
     margin-right: 5px;
   }
-`;
+`

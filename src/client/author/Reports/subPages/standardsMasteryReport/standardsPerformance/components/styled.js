@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Col, Row } from "antd";
-import { fadedBlack, greyishDarker1 } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Col, Row } from 'antd'
+import { fadedBlack, greyishDarker1 } from '@edulastic/colors'
 
 export const StyledChartContainer = styled.div`
   .navigator-left {
@@ -10,7 +10,7 @@ export const StyledChartContainer = styled.div`
   .navigator-right {
     right: -5px;
   }
-`;
+`
 
 export const StyledRow = styled(Row)`
   flex: 1;
@@ -34,7 +34,7 @@ export const StyledRow = styled(Row)`
       }
     }
   }
-`;
+`
 
 export const StyledInnerRow = styled(Row)`
   flex: 1;
@@ -45,7 +45,7 @@ export const StyledInnerRow = styled(Row)`
     flex-direction: column;
     margin: 5px;
   }
-`;
+`
 
 export const StyledDropDownContainer = styled(Col)`
   .ant-btn.ant-dropdown-trigger {
@@ -56,4 +56,4 @@ export const StyledDropDownContainer = styled(Col)`
     width: 100%;
     margin-bottom: 25px;
   }
-`;
+`

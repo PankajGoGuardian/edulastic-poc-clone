@@ -1,5 +1,5 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Wrapper = styled.div`
-  min-height: ${props => (props.smallSize ? 190 : 275)}px;
-`;
+  min-height: ${(props) => (props.smallSize ? 190 : 275)}px;
+`

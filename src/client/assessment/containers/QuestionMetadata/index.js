@@ -1,53 +1,57 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withNamespaces } from "react-i18next";
-import connect from "react-redux/es/connect/connect";
-import { ThemeProvider } from "styled-components";
-import _ from "lodash";
-import { questionType } from "@edulastic/constants";
-import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
-import { Subtitle } from "../../styled/Subtitle";
-import { themes } from "../../../theme";
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withNamespaces } from 'react-i18next'
+import connect from 'react-redux/es/connect/connect'
+import { ThemeProvider } from 'styled-components'
+import _ from 'lodash'
+import { questionType } from '@edulastic/constants'
+import { withMathFormula } from '@edulastic/common/src/HOC/withMathFormula'
+import { Subtitle } from '../../styled/Subtitle'
+import { themes } from '../../../theme'
 import {
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction,
   removeExistedAlignmentAction,
-  updateDictAlignmentAction
-} from "../../../author/src/actions/dictionaries";
+  updateDictAlignmentAction,
+} from '../../../author/src/actions/dictionaries'
 import {
   setQuestionAlignmentAddRowAction,
   setQuestionAlignmentRemoveRowAction,
   setQuestionDataAction,
-  getQuestionDataSelector
-} from "../../../author/QuestionEditor/ducks";
+  getQuestionDataSelector,
+} from '../../../author/QuestionEditor/ducks'
 
 import {
   getCollectionsSelector,
   setCollectionsAction,
-  getHighlightCollectionSelector
-} from "../../../author/ItemDetail/ducks";
+  getHighlightCollectionSelector,
+} from '../../../author/ItemDetail/ducks'
 
 import {
   getCurriculumsListSelector,
   getStandardsListSelector,
   standardsSelector,
   getDictionariesAlignmentsSelector,
-  getRecentCollectionsListSelector
-} from "../../../author/src/selectors/dictionaries";
+  getRecentCollectionsListSelector,
+} from '../../../author/src/selectors/dictionaries'
 
-import { Container } from "./styled/Container";
-import { ShowAlignmentRowsContainer } from "./styled/ShowAlignmentRowsContainer";
-import SecondBlock from "./SecondBlock";
-import AlignmentRow from "./AlignmentRow";
+import { Container } from './styled/Container'
+import { ShowAlignmentRowsContainer } from './styled/ShowAlignmentRowsContainer'
+import SecondBlock from './SecondBlock'
+import AlignmentRow from './AlignmentRow'
 import {
   getInterestedCurriculumsSelector,
   getOrgDataSelector,
   getUserFeatures,
-  getCollectionsToAddContent
-} from "../../../author/src/selectors/user";
-import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
-import { getAuthorQuestionStatus } from "../../../author/sharedDucks/questions";
+  getCollectionsToAddContent,
+} from '../../../author/src/selectors/user'
+import {
+  getAllTagsAction,
+  getAllTagsSelector,
+  addNewTagAction,
+} from '../../../author/TestPage/ducks'
+import { getAuthorQuestionStatus } from '../../../author/sharedDucks/questions'
 
 const QuestionMetadata = ({
   t,
@@ -72,111 +76,132 @@ const QuestionMetadata = ({
   highlightCollection,
   recentCollectionsList,
   authorQuestionSatus = false,
-  collectionsToShow
+  collectionsToShow,
 }) => {
-  const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
-  const { id: qId, type } = questionData;
+  const [searchProps, setSearchProps] = useState({
+    id: '',
+    grades: [],
+    searchStr: '',
+  })
+  const { id: qId, type } = questionData
 
   useEffect(() => {
     if (curriculums.length === 0) {
-      getCurriculums();
+      getCurriculums()
     }
-    getAllTags({ type: "testitem" });
-  }, []);
+    getAllTags({ type: 'testitem' })
+  }, [])
 
-  const handleDelete = curriculumId => () => {
-    removeAlignment(curriculumId);
-  };
+  const handleDelete = (curriculumId) => () => {
+    removeAlignment(curriculumId)
+  }
 
-  const handleChangeTags = tags => {
+  const handleChangeTags = (tags) => {
     const newQuestionData = {
       ...questionData,
-      tags
-    };
-    setQuestionData(newQuestionData);
-  };
+      tags,
+    }
+    setQuestionData(newQuestionData)
+  }
 
-  const handleQuestionDataSelect = fieldName => value => {
+  const handleQuestionDataSelect = (fieldName) => (value) => {
     const newQuestionData = {
       ...questionData,
-      [fieldName]: value
-    };
-    if ((fieldName === "authorDifficulty" || fieldName === "depthOfKnowledge") && value === "") {
-      delete newQuestionData[fieldName];
+      [fieldName]: value,
     }
-    setQuestionData(newQuestionData);
-  };
+    if (
+      (fieldName === 'authorDifficulty' || fieldName === 'depthOfKnowledge') &&
+      value === ''
+    ) {
+      delete newQuestionData[fieldName]
+    }
+    setQuestionData(newQuestionData)
+  }
 
   const handleCollectionsSelect = (val, options) => {
-    const data = {};
-    options.forEach(o => {
+    const data = {}
+    options.forEach((o) => {
       if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value);
+        data[o.props._id].push(o.props.value)
       } else {
-        data[o.props._id] = [o.props.value];
+        data[o.props._id] = [o.props.value]
       }
-    });
+    })
 
-    const collectionArray = [];
+    const collectionArray = []
     for (const [key, value] of Object.entries(data)) {
       collectionArray.push({
         _id: key,
-        bucketIds: value
-      });
+        bucketIds: value,
+      })
     }
 
-    const orgCollectionIds = collectionsToShow.map(o => o._id);
+    const orgCollectionIds = collectionsToShow.map((o) => o._id)
 
     /** **** here were extracting out the collection which are not of current user district (if any) so that 
           while saving, collections array contains these extra collections also ***** */
-    const extraCollections = collections.filter(c => !orgCollectionIds.includes(c._id));
-    setCollections([...collectionArray, ...extraCollections]);
-  };
+    const extraCollections = collections.filter(
+      (c) => !orgCollectionIds.includes(c._id)
+    )
+    setCollections([...collectionArray, ...extraCollections])
+  }
 
-  const handleRecentCollectionsSelect = collectionItem => {
-    let _collections = collections.map(o => ({ ...o }));
-    _collections = [..._collections, collectionItem];
-    setCollections(_collections);
-  };
+  const handleRecentCollectionsSelect = (collectionItem) => {
+    let _collections = collections.map((o) => ({ ...o }))
+    _collections = [..._collections, collectionItem]
+    setCollections(_collections)
+  }
 
   const handleUpdateQuestionAlignment = (index, _alignment, updated = true) => {
-    const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? _alignment : c));
+    const newAlignments = (questionData.alignment || []).map((c, i) =>
+      i === index ? _alignment : c
+    )
     if (!newAlignments.length) {
-      newAlignments.push(_alignment);
+      newAlignments.push(_alignment)
     }
     const newQuestionData = {
       ...questionData,
-      alignment: newAlignments
-    };
-    setQuestionData({ ...newQuestionData, updated });
-  };
-
-  const searchCurriculumStandards = searchObject => {
-    if (!_.isEqual(searchProps, searchObject)) {
-      setSearchProps(searchObject);
-      getCurriculumStandards(searchObject.id, searchObject.grades, searchObject.searchStr);
+      alignment: newAlignments,
     }
-  };
+    setQuestionData({ ...newQuestionData, updated })
+  }
+
+  const searchCurriculumStandards = (searchObject) => {
+    if (!_.isEqual(searchProps, searchObject)) {
+      setSearchProps(searchObject)
+      getCurriculumStandards(
+        searchObject.id,
+        searchObject.grades,
+        searchObject.searchStr
+      )
+    }
+  }
 
   const createUniqGradeAndSubjects = (grades, subject) => {
-    const uniqGrades = _.uniq([...grades]).filter(item => !!item);
-    const uniqSubjects = [subject].filter(item => !!item);
-    setQuestionData({ ...questionData, grades: uniqGrades, subjects: uniqSubjects });
-  };
+    const uniqGrades = _.uniq([...grades]).filter((item) => !!item)
+    const uniqSubjects = [subject].filter((item) => !!item)
+    setQuestionData({
+      ...questionData,
+      grades: uniqGrades,
+      subjects: uniqSubjects,
+    })
+  }
 
-  const handleChangeExternalData = key => e => {
+  const handleChangeExternalData = (key) => (e) => {
     const newQuestionData = {
       ...questionData,
-      [key]: e.target.value
-    };
-    setQuestionData(newQuestionData);
-  };
+      [key]: e.target.value,
+    }
+    setQuestionData(newQuestionData)
+  }
 
   return (
     <ThemeProvider theme={themes.default}>
       <div>
         <Container padding="20px">
-          <Subtitle margin="0px">{t("component.options.addSkillsForQuestion")}</Subtitle>
+          <Subtitle margin="0px">
+            {t('component.options.addSkillsForQuestion')}
+          </Subtitle>
 
           <ShowAlignmentRowsContainer>
             {alignment.map((el, index) => (
@@ -228,8 +253,8 @@ const QuestionMetadata = ({
         />
       </div>
     </ThemeProvider>
-  );
-};
+  )
+}
 
 QuestionMetadata.propTypes = {
   getCurriculums: PropTypes.func.isRequired,
@@ -238,7 +263,7 @@ QuestionMetadata.propTypes = {
       _id: PropTypes.string.isRequired,
       curriculum: PropTypes.string.isRequired,
       grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
+      subject: PropTypes.string.isRequired,
     })
   ).isRequired,
   curriculumStandards: PropTypes.array.isRequired,
@@ -255,31 +280,31 @@ QuestionMetadata.propTypes = {
           identifier: PropTypes.string.isRequired,
           tloId: PropTypes.string,
           eloId: PropTypes.string,
-          subEloId: PropTypes.string
+          subEloId: PropTypes.string,
         })
-      )
+      ),
     })
   ).isRequired,
   questionData: PropTypes.shape({
     depthOfKnowledge: PropTypes.string,
-    authorDifficulty: PropTypes.string
+    authorDifficulty: PropTypes.string,
   }).isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
   removeAlignment: PropTypes.func.isRequired,
   editAlignment: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
-    state => ({
+    (state) => ({
       curriculums: getCurriculumsListSelector(state),
       curriculumStandardsLoading: standardsSelector(state).loading,
       curriculumStandards: getStandardsListSelector(state),
       questionData: getQuestionDataSelector(state),
-      allTagsData: getAllTagsSelector(state, "testitem"),
+      allTagsData: getAllTagsSelector(state, 'testitem'),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       alignment: getDictionariesAlignmentsSelector(state),
       collections: getCollectionsSelector(state),
@@ -288,7 +313,7 @@ const enhance = compose(
       highlightCollection: getHighlightCollectionSelector(state),
       recentCollectionsList: getRecentCollectionsListSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
-      authorQuestionSatus: getAuthorQuestionStatus(state)
+      authorQuestionSatus: getAuthorQuestionStatus(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -300,9 +325,9 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
       editAlignment: updateDictAlignmentAction,
-      setCollections: setCollectionsAction
+      setCollections: setCollectionsAction,
     }
   )
-);
+)
 
-export default enhance(withMathFormula(QuestionMetadata));
+export default enhance(withMathFormula(QuestionMetadata))

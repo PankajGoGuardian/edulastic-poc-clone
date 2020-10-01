@@ -1,14 +1,21 @@
-import React, { useEffect, useMemo } from "react";
-import queryString from "query-string";
-import { connect } from "react-redux";
-import { get, find, isEmpty, pickBy } from "lodash";
-import qs from "qs";
+import React, { useEffect, useMemo } from 'react'
+import queryString from 'query-string'
+import { connect } from 'react-redux'
+import { get, find, isEmpty, pickBy } from 'lodash'
+import qs from 'qs'
 
-import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
-import StudentAutoComplete from "./StudentAutoComplete";
-import ClassAutoComplete from "./ClassAutoComplete";
-import { getUserRole, getOrgDataSelector, getCurrentTerm } from "../../../../../../src/selectors/user";
-import { receiveStudentsListAction, getStudentsListSelector } from "../../../../../../Student/ducks";
+import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import StudentAutoComplete from './StudentAutoComplete'
+import ClassAutoComplete from './ClassAutoComplete'
+import {
+  getUserRole,
+  getOrgDataSelector,
+  getCurrentTerm,
+} from '../../../../../../src/selectors/user'
+import {
+  receiveStudentsListAction,
+  getStudentsListSelector,
+} from '../../../../../../Student/ducks'
 import {
   getFiltersSelector,
   getSelectedClassSelector,
@@ -20,21 +27,21 @@ import {
   getSPRFilterDataRequestAction,
   getReportsSPRFilterData,
   setSelectedClassAction,
-  setStudentAction
-} from "../../filterDataDucks";
-import { getFilterOptions } from "../../utils/transformers";
-import { getFullNameFromAsString } from "../../../../../../../common/utils/helpers";
+  setStudentAction,
+} from '../../filterDataDucks'
+import { getFilterOptions } from '../../utils/transformers'
+import { getFullNameFromAsString } from '../../../../../../../common/utils/helpers'
 import {
   StyledFilterWrapper,
   GoButtonWrapper,
   SearchField,
   ApplyFitlerLabel,
-  FilterLabel
-} from "../../../../../common/styled";
+  FilterLabel,
+} from '../../../../../common/styled'
 
-import staticDropDownData from "../../../../singleAssessmentReport/common/static/staticDropDownData.json";
+import staticDropDownData from '../../../../singleAssessmentReport/common/static/staticDropDownData.json'
 
-const { subjects: subjectOptions, grades: gradeOptions } = staticDropDownData;
+const { subjects: subjectOptions, grades: gradeOptions } = staticDropDownData
 
 const StudentProfileReportsFilters = ({
   style,
@@ -54,74 +61,97 @@ const StudentProfileReportsFilters = ({
   selectedClass,
   setSelectedClass,
   defaultTerm,
-  history
+  history,
 }) => {
-  const splittedPath = location.pathname.split("/");
-  const urlStudentId = splittedPath[splittedPath.length - 1];
-  const parsedQuery = queryString.parse(location.search);
+  const splittedPath = location.pathname.split('/')
+  const urlStudentId = splittedPath[splittedPath.length - 1]
+  const parsedQuery = queryString.parse(location.search)
 
-  const { termId: urlTermId, courseId: urlCourseId, grade: urlGrade, subject: urlSubject } = parsedQuery;
+  const {
+    termId: urlTermId,
+    courseId: urlCourseId,
+    grade: urlGrade,
+    subject: urlSubject,
+  } = parsedQuery
 
-  const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
-  const { terms = [] } = orgData;
-  const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [
-    SPRFilterData,
-    terms
-  ]);
-  const coursesForTerm = useMemo(() => courseOptions.filter(c => c.termId === filters.termId), [
-    courseOptions,
-    filters.termId
-  ]);
+  const { studentClassData = [] } = get(SPRFilterData, 'data.result', {})
+  const { terms = [] } = orgData
+  const { termOptions = [], courseOptions = [] } = useMemo(
+    () => getFilterOptions(studentClassData, terms),
+    [SPRFilterData, terms]
+  )
+  const coursesForTerm = useMemo(
+    () => courseOptions.filter((c) => c.termId === filters.termId),
+    [courseOptions, filters.termId]
+  )
 
-  const defaultTermOption = useMemo(() => find(termOptions, term => term.key === defaultTerm), [
-    termOptions,
-    defaultTerm
-  ]);
+  const defaultTermOption = useMemo(
+    () => find(termOptions, (term) => term.key === defaultTerm),
+    [termOptions, defaultTerm]
+  )
 
-  const selectedTerm = useMemo(() => find(termOptions, term => term.key === urlTermId) || defaultTermOption || {}, [
-    termOptions
-  ]);
+  const selectedTerm = useMemo(
+    () =>
+      find(termOptions, (term) => term.key === urlTermId) ||
+      defaultTermOption ||
+      {},
+    [termOptions]
+  )
   const selectedCourse = useMemo(
-    () => find(coursesForTerm, course => course.key === urlCourseId) || coursesForTerm[0] || {},
+    () =>
+      find(coursesForTerm, (course) => course.key === urlCourseId) ||
+      coursesForTerm[0] ||
+      {},
     [coursesForTerm]
-  );
+  )
 
-  const selectedGrade = useMemo(() => find(gradeOptions, g => g.key === urlGrade) || gradeOptions[0], [urlGrade]);
+  const selectedGrade = useMemo(
+    () => find(gradeOptions, (g) => g.key === urlGrade) || gradeOptions[0],
+    [urlGrade]
+  )
 
-  const selectedSubject = useMemo(() => find(subjectOptions, s => s.key === urlSubject) || subjectOptions[0], [
-    urlSubject
-  ]);
+  const selectedSubject = useMemo(
+    () =>
+      find(subjectOptions, (s) => s.key === urlSubject) || subjectOptions[0],
+    [urlSubject]
+  )
 
-  const selectedClasses = useMemo(() => (selectedClass.key ? [selectedClass.key] : []), [selectedClass]);
+  const selectedClasses = useMemo(
+    () => (selectedClass.key ? [selectedClass.key] : []),
+    [selectedClass]
+  )
 
-  const profiles = get(SPRFilterData, "data.result.bandInfo", []);
-  const scales = get(SPRFilterData, "data.result.scaleInfo", []);
-  const standardProficiencyList = useMemo(() => scales.map(s => ({ key: s._id, title: s.name })), [scales]);
+  const profiles = get(SPRFilterData, 'data.result.bandInfo', [])
+  const scales = get(SPRFilterData, 'data.result.scaleInfo', [])
+  const standardProficiencyList = useMemo(
+    () => scales.map((s) => ({ key: s._id, title: s.name })),
+    [scales]
+  )
 
   useEffect(() => {
     if (SPRFilterData !== prevSPRFilterData) {
       if (urlStudentId && urlTermId) {
         const q = {
           termId: urlTermId,
-          studentId: urlStudentId
-        };
-        getSPRFilterDataRequest(q);
-        setStudent({ key: urlStudentId });
+          studentId: urlStudentId,
+        }
+        getSPRFilterDataRequest(q)
+        setStudent({ key: urlStudentId })
       }
     }
-  }, []);
+  }, [])
 
   if (SPRFilterData !== prevSPRFilterData && !isEmpty(SPRFilterData)) {
-    setPrevSPRFilterData(SPRFilterData);
+    setPrevSPRFilterData(SPRFilterData)
 
     if (studentClassData.length) {
       // if there is no student name for the selected name extract it from the class data
       if (!student.title) {
-        const classRecord = studentClassData[0];
+        const classRecord = studentClassData[0]
         setStudent({
           ...student,
-          title: getFullNameFromAsString(classRecord)
-        });
+          title: getFullNameFromAsString(classRecord),
+        })
       }
     }
 
@@ -130,61 +160,69 @@ const StudentProfileReportsFilters = ({
       termId: selectedTerm.key,
       courseId: selectedCourse.key,
       grade: selectedGrade.key,
-      subject: selectedSubject.key
+      subject: selectedSubject.key,
       // uncomment after making changes to chart files
       // performanceBandProfileId: selectedProfile,
       // standardsProficiencyProfileId: selectedScale
-    };
-    const _student = { ...student };
-    setFilters(_filters);
+    }
+    const _student = { ...student }
+    setFilters(_filters)
     // load page data
     _onGoClick({
-      filters: pickBy(_filters, f => f !== "All" && !isEmpty(f)),
-      selectedStudent: _student
-    });
+      filters: pickBy(_filters, (f) => f !== 'All' && !isEmpty(f)),
+      selectedStudent: _student,
+    })
   }
 
-  const onStudentSelect = item => {
+  const onStudentSelect = (item) => {
     if (item && item.key) {
-      setStudent(item);
-      const _reportPath = splittedPath.slice(0, splittedPath.length - 1).join("/");
-      const _filters = { ...filters, ...pickBy(parsedQuery, f => f !== "All" && !isEmpty(f)) };
-      history.push(`${_reportPath}/${item.key}?${qs.stringify(_filters)}`);
+      setStudent(item)
+      const _reportPath = splittedPath
+        .slice(0, splittedPath.length - 1)
+        .join('/')
+      const _filters = {
+        ...filters,
+        ...pickBy(parsedQuery, (f) => f !== 'All' && !isEmpty(f)),
+      }
+      history.push(`${_reportPath}/${item.key}?${qs.stringify(_filters)}`)
       getSPRFilterDataRequest({
         termId: filters.termId,
-        studentId: item.key
-      });
+        studentId: item.key,
+      })
     }
-  };
+  }
 
   const handleFilterChange = (field, { key }) => {
     const obj = {
       ...filters,
-      [field]: key
-    };
-    setFilters(obj);
+      [field]: key,
+    }
+    setFilters(obj)
     const settings = {
-      filters: pickBy(obj, f => f !== "All" && !isEmpty(f)),
-      selectedStudent: student
-    };
-    _onGoClick(settings);
-  };
+      filters: pickBy(obj, (f) => f !== 'All' && !isEmpty(f)),
+      selectedStudent: student,
+    }
+    _onGoClick(settings)
+  }
 
   const handleTermChange = ({ key }) => {
-    const _coursesForTerm = courseOptions.filter(c => c.termId === key);
-    const _course = find(_coursesForTerm, c => c.key === filters.courseId) || _coursesForTerm[0] || {};
+    const _coursesForTerm = courseOptions.filter((c) => c.termId === key)
+    const _course =
+      find(_coursesForTerm, (c) => c.key === filters.courseId) ||
+      _coursesForTerm[0] ||
+      {}
     const obj = {
       ...filters,
       termId: key,
-      courseId: _course.key
-    };
-    setFilters(obj);
+      courseId: _course.key,
+    }
+    setFilters(obj)
     const settings = {
-      filters: pickBy(obj, f => f !== "All" && !isEmpty(f)),
-      selectedStudent: student
-    };
-    _onGoClick(settings);
-  };
+      filters: pickBy(obj, (f) => f !== 'All' && !isEmpty(f)),
+      selectedStudent: student,
+    }
+    _onGoClick(settings)
+  }
 
   return (
     <StyledFilterWrapper style={style}>
@@ -205,7 +243,7 @@ const StudentProfileReportsFilters = ({
         <FilterLabel>Course</FilterLabel>
         <ControlDropDown
           by={filters.courseId}
-          selectCB={value => handleFilterChange("courseId", value)}
+          selectCB={(value) => handleFilterChange('courseId', value)}
           data={coursesForTerm}
           prefix="Courses"
           showPrefixOnSelected={false}
@@ -215,7 +253,7 @@ const StudentProfileReportsFilters = ({
         <FilterLabel>Grade</FilterLabel>
         <ControlDropDown
           by={filters.grade}
-          selectCB={value => handleFilterChange("grade", value)}
+          selectCB={(value) => handleFilterChange('grade', value)}
           data={gradeOptions}
           prefix="Grade"
           showPrefixOnSelected={false}
@@ -225,7 +263,7 @@ const StudentProfileReportsFilters = ({
         <FilterLabel>Subject</FilterLabel>
         <ControlDropDown
           by={filters.subject}
-          selectCB={value => handleFilterChange("subject", value)}
+          selectCB={(value) => handleFilterChange('subject', value)}
           data={subjectOptions}
           prefix="Subject"
           showPrefixOnSelected={false}
@@ -234,23 +272,29 @@ const StudentProfileReportsFilters = ({
       <SearchField>
         <FilterLabel>Class</FilterLabel>
         <ClassAutoComplete
-          grade={filters.grade !== "All" && filters.grade}
-          subject={filters.subject !== "All" && filters.subject}
+          grade={filters.grade !== 'All' && filters.grade}
+          subject={filters.subject !== 'All' && filters.subject}
           selectedClass={selectedClass}
           selectCB={setSelectedClass}
         />
       </SearchField>
       <SearchField>
         <FilterLabel>Student</FilterLabel>
-        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} selectedClasses={selectedClasses} />
+        <StudentAutoComplete
+          selectCB={onStudentSelect}
+          selectedStudent={student}
+          selectedClasses={selectedClasses}
+        />
       </SearchField>
       {performanceBandRequired && (
         <SearchField>
           <FilterLabel>Performance Band</FilterLabel>
           <ControlDropDown
             by={filters.performanceBandProfileId}
-            selectCB={value => handleFilterChange("performanceBandProfileId", value)}
-            data={profiles.map(p => ({ key: p._id, title: p.name }))}
+            selectCB={(value) =>
+              handleFilterChange('performanceBandProfileId', value)
+            }
+            data={profiles.map((p) => ({ key: p._id, title: p.name }))}
             prefix="Performance Band"
             showPrefixOnSelected={false}
           />
@@ -261,7 +305,9 @@ const StudentProfileReportsFilters = ({
           <FilterLabel>Standard Proficiency</FilterLabel>
           <ControlDropDown
             by={filters.standardsProficiencyProfileId}
-            selectCB={value => handleFilterChange("standardsProficiencyProfileId", value)}
+            selectCB={(value) =>
+              handleFilterChange('standardsProficiencyProfileId', value)
+            }
             data={standardProficiencyList}
             prefix="Standard Proficiency"
             showPrefixOnSelected={false}
@@ -269,11 +315,11 @@ const StudentProfileReportsFilters = ({
         </SearchField>
       )}
     </StyledFilterWrapper>
-  );
-};
+  )
+}
 
 const enhance = connect(
-  state => ({
+  (state) => ({
     SPRFilterData: getReportsSPRFilterData(state),
     filters: getFiltersSelector(state),
     student: getStudentSelector(state),
@@ -283,7 +329,7 @@ const enhance = connect(
     loading: getReportsSPRFilterLoadingState(state),
     orgData: getOrgDataSelector(state),
     studentList: getStudentsListSelector(state),
-    defaultTerm: getCurrentTerm(state)
+    defaultTerm: getCurrentTerm(state),
   }),
   {
     getSPRFilterDataRequest: getSPRFilterDataRequestAction,
@@ -291,8 +337,8 @@ const enhance = connect(
     receiveStudentsListAction,
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
-    setSelectedClass: setSelectedClassAction
+    setSelectedClass: setSelectedClassAction,
   }
-);
+)
 
-export default enhance(StudentProfileReportsFilters);
+export default enhance(StudentProfileReportsFilters)

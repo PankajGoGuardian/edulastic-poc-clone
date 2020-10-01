@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import {
   mainBgColor,
   tabletWidth,
@@ -6,15 +6,15 @@ import {
   smallDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  grey
-} from "@edulastic/colors";
-import { Col, Row } from "antd";
+  grey,
+} from '@edulastic/colors'
+import { Col, Row } from 'antd'
 
 export const ReviewPageContainer = styled.div`
   padding: 20px 30px;
   .fixed-second-header {
     background: ${mainBgColor};
-    top: ${props => props.theme.HeaderHeight.xs}px;
+    top: ${(props) => props.theme.HeaderHeight.xs}px;
     position: fixed;
     left: 70px;
     right: 0;
@@ -30,10 +30,10 @@ export const ReviewPageContainer = styled.div`
     }
 
     @media (min-width: ${mediumDesktopExactWidth}) {
-      top: ${props => props.theme.HeaderHeight.md}px;
+      top: ${(props) => props.theme.HeaderHeight.md}px;
     }
     @media (min-width: ${extraDesktopWidthMax}) {
-      top: ${props => props.theme.HeaderHeight.xl}px;
+      top: ${(props) => props.theme.HeaderHeight.xl}px;
     }
     @media (max-width: ${smallDesktopWidth}) {
       padding: 10px 10px 10px 55px;
@@ -46,21 +46,21 @@ export const ReviewPageContainer = styled.div`
       left: 0px;
     }
   }
-`;
+`
 
 export const ReviewContentWrapper = styled(Row)`
   @media (max-width: 1199px) {
     display: flex;
     flex-wrap: wrap;
   }
-`;
+`
 
 export const ReviewLeftContainer = styled(Col)`
   padding-right: 15px;
   @media (max-width: 1199px) {
     order: 2;
   }
-`;
+`
 
 export const ReviewSummaryWrapper = styled(Col)`
   padding: 0px 15px;
@@ -73,7 +73,7 @@ export const ReviewSummaryWrapper = styled(Col)`
     padding: 0px;
     margin-bottom: 10px;
   }
-`;
+`
 
 export const SecondHeader = styled.div`
   display: flex;
@@ -94,9 +94,9 @@ export const SecondHeader = styled.div`
   @media (max-width: ${desktopWidth}) {
     flex-direction: column;
   }
-`;
+`
 
 export const TestTitle = styled.div`
   font-size: 18px;
   font-weight: bold;
-`;
+`

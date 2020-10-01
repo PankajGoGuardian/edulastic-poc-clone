@@ -1,19 +1,19 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FlexContainer } from "@edulastic/common";
-import { StyledButton } from "../../styled";
-import { editingOptions } from "../../constants/controls";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { FlexContainer } from '@edulastic/common'
+import { StyledButton } from '../../styled'
+import { editingOptions } from '../../constants/controls'
 
 const EditingOption = ({ onClickEditBtn, disabled }) => {
-  const { leftOps, rightOps } = editingOptions;
-  const onClickHandler = mode => () => {
-    onClickEditBtn(mode);
-  };
+  const { leftOps, rightOps } = editingOptions
+  const onClickHandler = (mode) => () => {
+    onClickEditBtn(mode)
+  }
 
   return (
     <FlexContainer id="editing-options" flex={1}>
       <FlexContainer>
-        {leftOps.map(btn => (
+        {leftOps.map((btn) => (
           <StyledButton
             key={btn.mode}
             id={btn.mode}
@@ -27,7 +27,7 @@ const EditingOption = ({ onClickEditBtn, disabled }) => {
         ))}
       </FlexContainer>
       <FlexContainer>
-        {rightOps.map(btn => (
+        {rightOps.map((btn) => (
           <StyledButton
             key={btn.mode}
             id={btn.mode}
@@ -41,15 +41,15 @@ const EditingOption = ({ onClickEditBtn, disabled }) => {
         ))}
       </FlexContainer>
     </FlexContainer>
-  );
-};
+  )
+}
 
 EditingOption.propTypes = {
-  onClickEditBtn: PropTypes.func
-};
+  onClickEditBtn: PropTypes.func,
+}
 
 EditingOption.defaultProps = {
-  onClickEditBtn: () => null
-};
+  onClickEditBtn: () => null,
+}
 
-export default EditingOption;
+export default EditingOption

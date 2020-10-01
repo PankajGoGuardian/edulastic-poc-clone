@@ -1,7 +1,7 @@
 /* eslint-disable */
-import JXG from "jsxgraph";
-import { isNumber } from "lodash";
-import getDefaultConfig, { CONSTANT } from "./config";
+import JXG from 'jsxgraph'
+import { isNumber } from 'lodash'
+import getDefaultConfig, { CONSTANT } from './config'
 import {
   Area,
   Circle,
@@ -29,14 +29,14 @@ import {
   Tangent,
   Title,
   Dashed,
-  NumberLineDotPlotPoint
-} from "./elements";
+  NumberLineDotPlotPoint,
+} from './elements'
 import {
   fillConfigDefaultParameters,
   graphParameters2Boundingbox,
   mergeParams,
-  numberlineGraphParametersToBoundingbox
-} from "./settings";
+  numberlineGraphParametersToBoundingbox,
+} from './settings'
 import {
   calcUnitX,
   flat2nestedConfig,
@@ -51,152 +51,155 @@ import {
   isTouchDevice,
   getAllObjectsUnderMouse,
   getLabel,
-  getEquationFromApiLatex
-} from "./utils";
-import _events from "./events";
+  getEquationFromApiLatex,
+} from './utils'
+import _events from './events'
 
-import "jsxgraph/distrib/jsxgraph.css";
-import "../common/Label.css";
-import "../common/Mark.css";
-import "../common/EditButton.css";
-import "../common/DragDrop.css";
+import 'jsxgraph/distrib/jsxgraph.css'
+import '../common/Label.css'
+import '../common/Mark.css'
+import '../common/EditButton.css'
+import '../common/DragDrop.css'
 
 /**
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard
  */
 class Board {
   constructor(id, graphType, config = {}) {
-    this.graphType = graphType;
+    this.graphType = graphType
     /**
      * Elements on the board
      */
-    this.elements = [];
+    this.elements = []
 
-    this.labelForEq = [];
+    this.labelForEq = []
     /**
      * Bg elements on the board
      */
-    this.bgElements = [];
+    this.bgElements = []
     /**
      * Static unitX
      */
-    this.staticUnitX = null;
+    this.staticUnitX = null
     /**
      * Answers
      */
-    this.answers = [];
+    this.answers = []
     /**
      * Bg image
      */
-    this.bgImage = null;
+    this.bgImage = null
 
-    this.numberlineAxis = null;
+    this.numberlineAxis = null
 
-    this.numberlineTitle = null;
+    this.numberlineTitle = null
 
-    this.editButton = null;
+    this.editButton = null
 
-    this.stacksUnderMouse = true;
+    this.stacksUnderMouse = true
 
-    this.creatingHandlerIsDisabled = false;
+    this.creatingHandlerIsDisabled = false
 
-    this.numberlineSnapToTicks = true;
+    this.numberlineSnapToTicks = true
     /**
      * Board settings
      */
-    this.parameters = fillConfigDefaultParameters(config);
+    this.parameters = fillConfigDefaultParameters(config)
     /**
      * Current tool
      */
-    this.currentTool = null;
+    this.currentTool = null
 
-    this.numberlineSettings = null;
+    this.numberlineSettings = null
 
-    this.stackResponses = false;
+    this.stackResponses = false
 
-    this.disableResponse = false;
+    this.disableResponse = false
 
-    this.stackResponsesSpacing = 30;
+    this.stackResponsesSpacing = 30
 
-    this.responsesAllowed = null;
+    this.responsesAllowed = null
 
-    this.events = _events();
+    this.events = _events()
 
-    this.dragged = false;
+    this.dragged = false
 
-    this.drawingObject = null;
+    this.drawingObject = null
 
-    this.priorityColor = null;
+    this.priorityColor = null
 
-    this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
-    this.$board.setZoom(1, 1);
+    this.$board = JXG.JSXGraph.initBoard(
+      id,
+      mergeParams(getDefaultConfig(), this.parameters)
+    )
+    this.$board.setZoom(1, 1)
 
-    this.creatingHandler = () => {};
-    this.setCreatingHandler();
+    this.creatingHandler = () => {}
+    this.setCreatingHandler()
   }
 
   addDragDropValue(value, x, y, dimensions) {
-    const coords = canAddElementToBoard(this, x, y);
-    DragDrop.removePointForDrag(this);
+    const coords = canAddElementToBoard(this, x, y)
+    DragDrop.removePointForDrag(this)
     if (!coords) {
-      return;
+      return
     }
 
     const element = {
       ...value,
       dimensions,
       x: coords.usrCoords[1],
-      y: coords.usrCoords[2]
-    };
+      y: coords.usrCoords[2],
+    }
 
-    this.elements.push(DragDrop.create(this, element, {}));
-    return true;
+    this.elements.push(DragDrop.create(this, element, {}))
+    return true
   }
 
   addMark(value, x, y) {
-    const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], this.$board);
-    const [xMin, yMax, xMax, yMin] = this.$board.getBoundingBox();
+    const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], this.$board)
+    const [xMin, yMax, xMax, yMin] = this.$board.getBoundingBox()
     if (
       coords.usrCoords[1] < xMin ||
       coords.usrCoords[1] > xMax ||
       coords.usrCoords[2] < yMin ||
       coords.usrCoords[2] > yMax
     ) {
-      return false;
+      return false
     }
 
-    let position = coords.usrCoords[1];
+    let position = coords.usrCoords[1]
     if (this.numberlineSnapToTicks) {
-      position = getClosestTick(coords.usrCoords[1], this.numberlineAxis);
+      position = getClosestTick(coords.usrCoords[1], this.numberlineAxis)
     }
 
     const mark = {
       id: value.id,
       point: value.text,
-      position
-    };
+      position,
+    }
 
-    this.elements.push(Mark.onHandler(this, mark));
-    return true;
+    this.elements.push(Mark.onHandler(this, mark))
+    return true
   }
 
   drawDragDropValue(value, x, y) {
-    const coords = canAddElementToBoard(this, x, y);
+    const coords = canAddElementToBoard(this, x, y)
     if (coords.usrCoords) {
       const element = {
         ...value,
         x: coords.usrCoords[1],
-        y: coords.usrCoords[2]
-      };
-      return DragDrop.movePointForDrag(this, element);
+        y: coords.usrCoords[2],
+      }
+      return DragDrop.movePointForDrag(this, element)
     }
   }
 
   setDrawingObject(drawingObject) {
-    this.drawingObject = drawingObject;
+    this.drawingObject = drawingObject
     if (this.drawingObject) {
-      this.currentTool = null;
-      this.creatingHandler = DrawingObject.onHandler;
+      this.currentTool = null
+      this.creatingHandler = DrawingObject.onHandler
     }
   }
 
@@ -206,129 +209,129 @@ class Board {
    * @param {string} tool
    */
   setTool(tool) {
-    if (this.graphType === "axisLabels") {
-      return;
+    if (this.graphType === 'axisLabels') {
+      return
     }
     if (this.currentTool !== tool) {
-      if (this.graphType !== "axisSegments") {
-        this.abortTool();
+      if (this.graphType !== 'axisSegments') {
+        this.abortTool()
       }
     }
-    this.currentTool = tool;
+    this.currentTool = tool
     switch (tool) {
       case CONSTANT.TOOLS.POINT:
-        this.creatingHandler = Point.onHandler;
-        return;
+        this.creatingHandler = Point.onHandler
+        return
       case CONSTANT.TOOLS.LINE:
       case CONSTANT.TOOLS.RAY:
       case CONSTANT.TOOLS.SEGMENT:
       case CONSTANT.TOOLS.VECTOR:
-        this.creatingHandler = Line.onHandler(tool);
-        return;
+        this.creatingHandler = Line.onHandler(tool)
+        return
       case CONSTANT.TOOLS.CIRCLE:
-        this.creatingHandler = Circle.onHandler();
-        return;
+        this.creatingHandler = Circle.onHandler()
+        return
       case CONSTANT.TOOLS.SIN:
-        this.creatingHandler = Sin.onHandler();
-        return;
+        this.creatingHandler = Sin.onHandler()
+        return
       case CONSTANT.TOOLS.POLYGON:
-        this.creatingHandler = Polygon.onHandler();
-        return;
+        this.creatingHandler = Polygon.onHandler()
+        return
       case CONSTANT.TOOLS.PARABOLA:
-        this.creatingHandler = Parabola.onHandler();
-        return;
+        this.creatingHandler = Parabola.onHandler()
+        return
       case CONSTANT.TOOLS.PARABOLA2:
-        this.creatingHandler = Parabola2.onHandler();
-        return;
+        this.creatingHandler = Parabola2.onHandler()
+        return
       case CONSTANT.TOOLS.HYPERBOLA:
-        this.creatingHandler = Hyperbola.onHandler();
-        return;
+        this.creatingHandler = Hyperbola.onHandler()
+        return
       case CONSTANT.TOOLS.ELLIPSE:
-        this.creatingHandler = Ellipse.onHandler();
-        return;
+        this.creatingHandler = Ellipse.onHandler()
+        return
       case CONSTANT.TOOLS.TANGENT:
-        this.creatingHandler = Tangent.onHandler();
-        break;
+        this.creatingHandler = Tangent.onHandler()
+        break
       case CONSTANT.TOOLS.SECANT:
-        this.creatingHandler = Secant.onHandler();
-        break;
+        this.creatingHandler = Secant.onHandler()
+        break
       case CONSTANT.TOOLS.EXPONENT:
-        this.creatingHandler = Exponent.onHandler();
-        break;
+        this.creatingHandler = Exponent.onHandler()
+        break
       case CONSTANT.TOOLS.LOGARITHM:
-        this.creatingHandler = Logarithm.onHandler();
-        break;
+        this.creatingHandler = Logarithm.onHandler()
+        break
       case CONSTANT.TOOLS.POLYNOM:
-        this.creatingHandler = Polynom.onHandler();
-        break;
+        this.creatingHandler = Polynom.onHandler()
+        break
       case CONSTANT.TOOLS.AREA:
-        this.creatingHandler = Area.onHandler();
-        return;
+        this.creatingHandler = Area.onHandler()
+        return
       case CONSTANT.TOOLS.DASHED:
-        this.creatingHandler = Dashed.onHandler();
-        return;
+        this.creatingHandler = Dashed.onHandler()
+        return
       case CONSTANT.TOOLS.SEGMENTS_POINT:
-        this.creatingHandler = NumberlinePoint.onHandler;
-        return;
+        this.creatingHandler = NumberlinePoint.onHandler
+        return
       case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-        this.creatingHandler = NumberLineDotPlotPoint.onHandler;
-        return;
+        this.creatingHandler = NumberLineDotPlotPoint.onHandler
+        return
       case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
       case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
       case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
       case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-        this.creatingHandler = NumberlineSegment.onHandler;
-        return;
+        this.creatingHandler = NumberlineSegment.onHandler
+        return
       case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
       case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-        this.creatingHandler = NumberlineVector.onHandler;
-        return;
+        this.creatingHandler = NumberlineVector.onHandler
+        return
       case CONSTANT.TOOLS.TRASH:
       case CONSTANT.TOOLS.DELETE:
-        this.creatingHandler = () => {};
-        return;
+        this.creatingHandler = () => {}
+        return
       default:
-        throw new Error("Unknown tool:", tool);
+        throw new Error('Unknown tool:', tool)
     }
   }
 
   abortTool() {
     switch (this.currentTool) {
       case CONSTANT.TOOLS.POINT:
-        return false;
+        return false
       case CONSTANT.TOOLS.LINE:
       case CONSTANT.TOOLS.RAY:
       case CONSTANT.TOOLS.SEGMENT:
       case CONSTANT.TOOLS.VECTOR:
-        return Line.clean(this);
+        return Line.clean(this)
       case CONSTANT.TOOLS.CIRCLE:
-        return Circle.clean(this);
+        return Circle.clean(this)
       case CONSTANT.TOOLS.POLYGON:
-        return Polygon.clean(this);
+        return Polygon.clean(this)
       case CONSTANT.TOOLS.SIN:
-        return Sin.clean(this);
+        return Sin.clean(this)
       case CONSTANT.TOOLS.PARABOLA:
-        return Parabola.clean(this);
+        return Parabola.clean(this)
       case CONSTANT.TOOLS.PARABOLA2:
-        return Parabola2.clean(this);
+        return Parabola2.clean(this)
       case CONSTANT.TOOLS.ELLIPSE:
-        return Ellipse.clean(this);
+        return Ellipse.clean(this)
       case CONSTANT.TOOLS.HYPERBOLA:
-        return Hyperbola.clean(this);
+        return Hyperbola.clean(this)
       case CONSTANT.TOOLS.EXPONENT:
-        return Exponent.clean(this);
+        return Exponent.clean(this)
       case CONSTANT.TOOLS.LOGARITHM:
-        return Logarithm.clean(this);
+        return Logarithm.clean(this)
       case CONSTANT.TOOLS.POLYNOM:
-        return Polynom.clean(this);
+        return Polynom.clean(this)
       case CONSTANT.TOOLS.TANGENT:
-        return Tangent.clean(this);
+        return Tangent.clean(this)
       case CONSTANT.TOOLS.SECANT:
-        return Secant.clean(this);
+        return Secant.clean(this)
       default:
-        return false;
+        return false
     }
   }
 
@@ -346,129 +349,139 @@ class Board {
       ...Logarithm.getTempPoints(),
       ...Polynom.getTempPoints(),
       ...Tangent.getTempPoints(),
-      ...Secant.getTempPoints()
-    ];
+      ...Secant.getTempPoints(),
+    ]
   }
 
   /**
    * Add event 'Up'
    */
   setCreatingHandler() {
-    this.$board.on(getEventName("up"), event => {
+    this.$board.on(getEventName('up'), (event) => {
       if (this.disableResponse) {
-        return;
+        return
       }
 
       if (this.creatingHandlerIsDisabled) {
-        return;
+        return
       }
 
       if (this.dragged) {
-        this.dragged = false;
-        return;
+        this.dragged = false
+        return
       }
 
-      if (this.currentTool === CONSTANT.TOOLS.TRASH || this.currentTool === CONSTANT.TOOLS.DELETE) {
+      if (
+        this.currentTool === CONSTANT.TOOLS.TRASH ||
+        this.currentTool === CONSTANT.TOOLS.DELETE
+      ) {
         if (this.removeObjectsUnderMouse(event)) {
-          Area.updateShadingsForAreaPoints(this, this.elements);
-          this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
+          Area.updateShadingsForAreaPoints(this, this.elements)
+          this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE)
         }
-        return;
+        return
       }
 
-      if (this.responsesAllowed !== null && this.elements.length >= this.responsesAllowed) {
-        return;
+      if (
+        this.responsesAllowed !== null &&
+        this.elements.length >= this.responsesAllowed
+      ) {
+        return
       }
 
-      const newElement = this.creatingHandler(this, event);
+      const newElement = this.creatingHandler(this, event)
       if (newElement) {
-        this.elements.push(newElement);
-        Area.updateShadingsForAreaPoints(this, this.elements);
-        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
+        this.elements.push(newElement)
+        Area.updateShadingsForAreaPoints(this, this.elements)
+        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW)
       }
-    });
+    })
   }
 
   setPriorityColor(color) {
-    this.priorityColor = color;
+    this.priorityColor = color
   }
 
   setDisableResponse(value) {
-    this.disableResponse = value;
+    this.disableResponse = value
   }
 
   createEditButton(menuHandler) {
-    this.editButton = EditButton.createButton(this, menuHandler);
-    this.editButton.disabled = false;
+    this.editButton = EditButton.createButton(this, menuHandler)
+    this.editButton.disabled = false
   }
 
   setEditButtonStatus(disabled) {
-    this.editButton.disabled = disabled;
+    this.editButton.disabled = disabled
   }
 
   checkEditButtonCall(element) {
     return (
-      this.elements.some(elem => elem.id === element.id) ||
+      this.elements.some((elem) => elem.id === element.id) ||
       this.elements.some(
-        elem => elem.ancestors && Object.values(elem.ancestors).some(ancestor => ancestor.id === element.id)
+        (elem) =>
+          elem.ancestors &&
+          Object.values(elem.ancestors).some(
+            (ancestor) => ancestor.id === element.id
+          )
       )
-    );
+    )
   }
 
   handleElementMouseOver(element, event) {
     if (this.editButton.disabled || isTouchDevice()) {
-      return;
+      return
     }
     if (this.checkEditButtonCall(element)) {
-      let coords;
+      let coords
       if (JXG.isPoint(element)) {
-        coords = element.coords;
+        coords = element.coords
       } else {
-        coords = this.getCoords(event);
+        coords = this.getCoords(event)
       }
-      EditButton.moveButton(this, coords, element);
+      EditButton.moveButton(this, coords, element)
     }
   }
 
   handleElementMouseOut(element) {
     if (!this.editButton.disabled) {
       if (this.checkEditButtonCall(element)) {
-        EditButton.hideButton(this, element);
+        EditButton.hideButton(this, element)
       }
     }
   }
 
   handleStackedElementsMouseEvents(element) {
     if (this.editButton) {
-      element.on("mouseover", event => {
+      element.on('mouseover', (event) => {
         if (this.editButton.disabled) {
-          return;
+          return
         }
         if (this.checkEditButtonCall(element)) {
           const pointsUnderMouse = getAllObjectsUnderMouse(this, event).filter(
-            mouseElement => mouseElement.elType === "point"
-          );
+            (mouseElement) => mouseElement.elType === 'point'
+          )
 
           if (pointsUnderMouse.length === 0) {
-            this.stacksUnderMouse = false;
-            this.handleElementMouseOver(element, event);
+            this.stacksUnderMouse = false
+            this.handleElementMouseOver(element, event)
           } else {
-            this.stacksUnderMouse = true;
+            this.stacksUnderMouse = true
           }
         }
-      });
+      })
 
-      element.on("mouseout", () => {
+      element.on('mouseout', () => {
         if (!this.stacksUnderMouse && this.checkEditButtonCall(element)) {
-          this.handleElementMouseOut(element);
+          this.handleElementMouseOut(element)
         }
-      });
+      })
 
-      element.on("drag", () => {
+      element.on('drag', () => {
         if (this.checkEditButtonCall(element)) {
-          EditButton.cleanButton(this, element);
+          EditButton.cleanButton(this, element)
         }
-      });
+      })
     }
   }
 
@@ -476,13 +489,15 @@ class Board {
     this.numberlineSettings = {
       canvas,
       numberlineAxis,
-      layout
-    };
+      layout,
+    }
 
-    Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
+    Object.values(this.$board.defaultAxes).forEach((axis) =>
+      this.$board.removeObject(axis)
+    )
 
-    if (this.graphType === "axisLabels") {
-      this.resizeContainer(layout.width, layout.height);
+    if (this.graphType === 'axisLabels') {
+      this.resizeContainer(layout.width, layout.height)
     } else {
       this.updateStackSettings(
         numberlineAxis.stackResponses,
@@ -490,17 +505,19 @@ class Board {
         canvas.responsesAllowed,
         layout.width,
         layout.height
-      );
+      )
     }
 
-    this.setNumberlineSnapToTicks(numberlineAxis.snapToTicks);
+    this.setNumberlineSnapToTicks(numberlineAxis.snapToTicks)
 
-    const margin = Math.min(canvas.margin, layout.width);
-    const xMargin = margin / calcUnitX(canvas.xMin, canvas.xMax, layout.width);
-    const yMargin = layout.orientation === "vertical" ? 1 : 0;
-    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(canvas, xMargin, yMargin));
+    const margin = Math.min(canvas.margin, layout.width)
+    const xMargin = margin / calcUnitX(canvas.xMin, canvas.xMax, layout.width)
+    const yMargin = layout.orientation === 'vertical' ? 1 : 0
+    this.$board.setBoundingBox(
+      numberlineGraphParametersToBoundingbox(canvas, xMargin, yMargin)
+    )
 
-    Numberline.updateCoords(this);
+    Numberline.updateCoords(this)
 
     this.updateTitle({
       position: layout.titlePosition,
@@ -508,88 +525,105 @@ class Board {
       xMin: canvas.xMin,
       xMax: canvas.xMax,
       yMax: canvas.yMax,
-      yMin: canvas.yMin
-    });
+      yMin: canvas.yMin,
+    })
 
-    this.$board.fullUpdate();
+    this.$board.fullUpdate()
   }
 
-  updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed, width, height = 150) {
+  updateStackSettings(
+    stackResponses,
+    stackResponsesSpacing,
+    responsesAllowed,
+    width,
+    height = 150
+  ) {
     if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
-      const newHeight = Math.max(height, 75 + (responsesAllowed + 1) * stackResponsesSpacing);
-      this.resizeContainer(width, newHeight);
+      const newHeight = Math.max(
+        height,
+        75 + (responsesAllowed + 1) * stackResponsesSpacing
+      )
+      this.resizeContainer(width, newHeight)
     }
 
     if (stackResponsesSpacing < 1 || !stackResponses) {
-      this.resizeContainer(width, height);
+      this.resizeContainer(width, height)
     }
 
-    this.stackResponses = stackResponses;
-    this.stackResponsesSpacing = stackResponsesSpacing;
-    this.responsesAllowed = responsesAllowed;
+    this.stackResponses = stackResponses
+    this.stackResponsesSpacing = stackResponsesSpacing
+    this.responsesAllowed = responsesAllowed
   }
 
   setNumberlineSnapToTicks(snapToTicks) {
-    this.numberlineSnapToTicks = !!snapToTicks;
+    this.numberlineSnapToTicks = !!snapToTicks
   }
 
   setMarksDeleteHandler() {
-    this.$board.on("up", event => {
-      const mark = this.elements.find(element => `mark-delete-${element.id}` === event.target.id);
+    this.$board.on('up', (event) => {
+      const mark = this.elements.find(
+        (element) => `mark-delete-${element.id}` === event.target.id
+      )
       if (!mark) {
-        return;
+        return
       }
 
-      this.elements = this.elements.filter(element => element.id !== mark.id);
-      this.removeObject(mark);
-      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
-    });
+      this.elements = this.elements.filter((element) => element.id !== mark.id)
+      this.removeObject(mark)
+      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE)
+    })
   }
 
   setDragDropDeleteHandler() {
-    this.$board.on("up", event => {
-      const dragDrop = this.elements.find(element => `drag-drop-delete-${element.id}` === event.target.id);
+    this.$board.on('up', (event) => {
+      const dragDrop = this.elements.find(
+        (element) => `drag-drop-delete-${element.id}` === event.target.id
+      )
       if (!dragDrop) {
-        return;
+        return
       }
 
-      this.elements = this.elements.filter(element => element.id !== dragDrop.id);
-      this.removeObject(dragDrop);
-      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
-    });
+      this.elements = this.elements.filter(
+        (element) => element.id !== dragDrop.id
+      )
+      this.removeObject(dragDrop)
+      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE)
+    })
   }
 
   // Render marks
   renderMarks(marks = []) {
-    marks.forEach(mark => {
-      this.elements.push(Mark.onHandler(this, mark));
-    });
+    marks.forEach((mark) => {
+      this.elements.push(Mark.onHandler(this, mark))
+    })
   }
 
   removeMarks() {
-    this.elements.forEach(mark => this.removeObject(mark));
-    this.elements = [];
+    this.elements.forEach((mark) => this.removeObject(mark))
+    this.elements = []
   }
 
   removeMarksAnswers() {
-    this.answers.forEach(mark => this.removeObject(mark));
-    this.answers = [];
+    this.answers.forEach((mark) => this.removeObject(mark))
+    this.answers = []
   }
 
   renderTitle(title) {
-    this.numberlineTitle = Title.renderTitle(this, title);
-    this.$board.fullUpdate();
+    this.numberlineTitle = Title.renderTitle(this, title)
+    this.$board.fullUpdate()
   }
 
   updateTitle(title) {
-    this.$board.removeObject(this.numberlineTitle);
-    this.renderTitle(title);
+    this.$board.removeObject(this.numberlineTitle)
+    this.renderTitle(title)
   }
 
   getCoords(e) {
-    const pos = !isTouchDevice() ? this.$board.getMousePosition(e) : this.$board.getMousePosition(e, 0);
+    const pos = !isTouchDevice()
+      ? this.$board.getMousePosition(e)
+      : this.$board.getMousePosition(e, 0)
 
-    return new JXG.Coords(JXG.COORDS_BY_SCREEN, [pos[0], pos[1]], this.$board);
+    return new JXG.Coords(JXG.COORDS_BY_SCREEN, [pos[0], pos[1]], this.$board)
   }
 
   /**
@@ -597,178 +631,185 @@ class Board {
    *@see https://jsxgraph.org/docs/symbols/JXG.Board.html#create
    */
   createElement(...newElement) {
-    return this.$board.create(...newElement);
+    return this.$board.create(...newElement)
   }
 
   /**
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#removeObject
    */
   segmentsReset() {
-    this.elements.map(this.removeObject.bind(this));
-    this.elements = [];
+    this.elements.map(this.removeObject.bind(this))
+    this.elements = []
   }
 
   cleanToolTempPoints() {
-    return this.abortTool();
+    return this.abortTool()
   }
 
   reset() {
-    this.abortTool();
-    this.elements.map(this.removeObject.bind(this));
-    this.elements = [];
-    this.labelForEq = [];
+    this.abortTool()
+    this.elements.map(this.removeObject.bind(this))
+    this.elements = []
+    this.labelForEq = []
 
-    this.bgElements.map(el => {
+    this.bgElements.map((el) => {
       if (el.type == 12) {
-        this.labelForEq.push(el.labelHTML);
+        this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map(ancestorsEl => {
-          this.labelForEq.push(ancestorsEl.labelHTML);
-        });
+        el.inherits.map((ancestorsEl) => {
+          this.labelForEq.push(ancestorsEl.labelHTML)
+        })
       }
-    });
+    })
   }
 
   resetAnswers() {
-    this.answers.map(this.removeObject.bind(this));
-    this.answers = [];
+    this.answers.map(this.removeObject.bind(this))
+    this.answers = []
   }
 
   resetBg() {
-    this.bgElements.map(this.removeObject.bind(this));
-    this.bgElements = [];
+    this.bgElements.map(this.removeObject.bind(this))
+    this.bgElements = []
   }
 
   removeObjectsUnderMouse(event) {
-    const elementsUnderMouse = getAllObjectsUnderMouse(this, event);
-    if (this.graphType === "numberLinePlot") {
-      return NumberLineDotPlotPoint.removeElementUnderMouse(this, elementsUnderMouse);
+    const elementsUnderMouse = getAllObjectsUnderMouse(this, event)
+    if (this.graphType === 'numberLinePlot') {
+      return NumberLineDotPlotPoint.removeElementUnderMouse(
+        this,
+        elementsUnderMouse
+      )
     }
-    const elementsToDelete = this.elements.filter(el => elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1);
+    const elementsToDelete = this.elements.filter(
+      (el) => elementsUnderMouse.findIndex((eum) => eum.id === el.id) > -1
+    )
 
     if (elementsToDelete.length === 0) {
-      return false;
+      return false
     }
 
-    this.elements = this.elements.filter(el => elementsToDelete.findIndex(etd => etd.id === el.id) === -1);
-    elementsToDelete.forEach(el => {
-      this.removeObject(el);
-    });
+    this.elements = this.elements.filter(
+      (el) => elementsToDelete.findIndex((etd) => etd.id === el.id) === -1
+    )
+    elementsToDelete.forEach((el) => {
+      this.removeObject(el)
+    })
 
-    return true;
+    return true
   }
 
   removeObject(obj) {
     if (!obj || isNumber(obj)) {
-      return;
+      return
     }
 
     if (Array.isArray(obj)) {
-      obj.forEach(el => {
-        if (isNumber(obj)) return;
-        this.$board.removeObject(el);
-      });
-      return;
+      obj.forEach((el) => {
+        if (isNumber(obj)) return
+        this.$board.removeObject(el)
+      })
+      return
     }
 
     if (obj.type === Equation.jxgType) {
-      (obj.areas || []).forEach(el => {
-        this.$board.removeObject(el);
-      });
+      ;(obj.areas || []).forEach((el) => {
+        this.$board.removeObject(el)
+      })
     }
 
-    if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove();
-    if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove();
+    if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove()
+    if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove()
     if (obj.type === Area.jxgType) {
-      (obj.shadingAreaLines || []).forEach(el => {
-        this.$board.removeObject(el);
-      });
+      ;(obj.shadingAreaLines || []).forEach((el) => {
+        this.$board.removeObject(el)
+      })
     }
-    if (obj.getParents && obj.elType !== "point" && obj.elType !== "text") {
-      obj.getParents().forEach(el => {
-        this.removeObject(el);
-      });
+    if (obj.getParents && obj.elType !== 'point' && obj.elType !== 'text') {
+      obj.getParents().forEach((el) => {
+        this.removeObject(el)
+      })
     }
-    this.$board.removeObject(obj);
+    this.$board.removeObject(obj)
   }
 
   /**
    * @see https://jsxgraph.org/docs/symbols/src/src_base_constants.js.html
    */
   getConfig() {
-    this.abortTool();
+    this.abortTool()
 
     const config = this.elements
-      .filter(e => e)
-      .map(e => {
+      .filter((e) => e)
+      .map((e) => {
         switch (e.type) {
           case 14:
           case JXG.OBJECT_TYPE_POINT:
-            return Point.getConfig(e);
+            return Point.getConfig(e)
           case JXG.OBJECT_TYPE_LINE:
-            return Line.getConfig(e);
+            return Line.getConfig(e)
           case JXG.OBJECT_TYPE_CIRCLE:
-            return Circle.getConfig(e);
+            return Circle.getConfig(e)
           case JXG.OBJECT_TYPE_CONIC:
-            return Ellipse.getConfig(e);
+            return Ellipse.getConfig(e)
           case JXG.OBJECT_TYPE_POLYGON:
-            return Polygon.getConfig(e);
+            return Polygon.getConfig(e)
           case Hyperbola.jxgType:
-            return Hyperbola.getConfig(e);
+            return Hyperbola.getConfig(e)
           case Tangent.jxgType:
-            return Tangent.getConfig(e);
+            return Tangent.getConfig(e)
           case Secant.jxgType:
-            return Secant.getConfig(e);
+            return Secant.getConfig(e)
           case Exponent.jxgType:
-            return Exponent.getConfig(e);
+            return Exponent.getConfig(e)
           case Logarithm.jxgType:
-            return Logarithm.getConfig(e);
+            return Logarithm.getConfig(e)
           case Polynom.jxgType:
-            return Polynom.getConfig(e);
+            return Polynom.getConfig(e)
           case Sin.jxgType:
-            return Sin.getConfig(e);
+            return Sin.getConfig(e)
           case Parabola.jxgType:
-            return Parabola.getConfig(e);
+            return Parabola.getConfig(e)
           case Parabola2.jxgType:
-            return Parabola2.getConfig(e);
+            return Parabola2.getConfig(e)
           case Equation.jxgType:
-            return Equation.getConfig(e);
+            return Equation.getConfig(e)
           case Area.jxgType:
-            return Area.getConfig(e);
+            return Area.getConfig(e)
           case DragDrop.jxgType:
-            return DragDrop.getConfig(e);
+            return DragDrop.getConfig(e)
           default:
-            throw new Error("Unknown element type:", e.name, e.type);
+            throw new Error('Unknown element type:', e.name, e.type)
         }
-      });
-    return Object.values(flatConfig(config));
+      })
+    return Object.values(flatConfig(config))
   }
 
   getMarks() {
-    return this.elements.map(mark => Mark.getConfig(mark));
+    return this.elements.map((mark) => Mark.getConfig(mark))
   }
 
   getSegments() {
-    return this.elements.map(element => {
+    return this.elements.map((element) => {
       switch (element.segmentType) {
         case CONSTANT.TOOLS.SEGMENTS_POINT:
-          return NumberlinePoint.getConfig(element, this);
+          return NumberlinePoint.getConfig(element, this)
         case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-          return NumberLineDotPlotPoint.getConfig(element, this);
+          return NumberLineDotPlotPoint.getConfig(element, this)
         case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
         case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
         case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
         case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-          return NumberlineSegment.getConfig(element, this);
+          return NumberlineSegment.getConfig(element, this)
         case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
         case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
         case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
         case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-          return NumberlineVector.getConfig(element, this);
+          return NumberlineVector.getConfig(element, this)
         default:
-          break;
+          break
       }
-    });
+    })
   }
 
   // settings
@@ -776,7 +817,7 @@ class Board {
   getParameters(name) {
     switch (name) {
       case CONSTANT.TOOLS.POINT:
-        return this.parameters.pointParameters;
+        return this.parameters.pointParameters
       default:
     }
   }
@@ -786,29 +827,31 @@ class Board {
    */
   setPointParameters(pointParameters) {
     const isSwitchToGrid =
-      this.parameters.pointParameters && !this.parameters.pointParameters.snapToGrid && pointParameters.snapToGrid;
-    updatePointParameters(this.elements, pointParameters, isSwitchToGrid);
+      this.parameters.pointParameters &&
+      !this.parameters.pointParameters.snapToGrid &&
+      pointParameters.snapToGrid
+    updatePointParameters(this.elements, pointParameters, isSwitchToGrid)
     this.parameters.pointParameters = {
       ...this.parameters.pointParameters,
-      ...pointParameters
-    };
-    this.$board.fullUpdate();
+      ...pointParameters,
+    }
+    this.$board.fullUpdate()
   }
 
   /**
    * settings::axesParameters
    */
   setAxesParameters(axesParameters) {
-    const axes = this.$board.defaultAxes;
+    const axes = this.$board.defaultAxes
 
     if (axesParameters.x) {
-      updateAxe(axes.x, axesParameters.x, "x");
+      updateAxe(axes.x, axesParameters.x, 'x')
     }
     if (axesParameters.y) {
-      updateAxe(axes.y, axesParameters.y, "y");
+      updateAxe(axes.y, axesParameters.y, 'y')
     }
 
-    this.$board.fullUpdate();
+    this.$board.fullUpdate()
   }
 
   /**
@@ -817,8 +860,8 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#setBoundingBox
    */
   setGraphParameters(graphParameters) {
-    this.parameters.graphParameters = graphParameters;
-    this.$board.setBoundingBox(graphParameters2Boundingbox(graphParameters));
+    this.parameters.graphParameters = graphParameters
+    this.$board.setBoundingBox(graphParameters2Boundingbox(graphParameters))
   }
 
   /**
@@ -827,8 +870,8 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#setBoundingBox
    */
   setGridParameters(gridParameters) {
-    updateGrid(this.$board.grids, gridParameters);
-    this.$board.fullUpdate();
+    updateGrid(this.$board.grids, gridParameters)
+    this.$board.fullUpdate()
   }
 
   /**
@@ -836,91 +879,121 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#resizeContainer
    */
   resizeContainer(canvasWidth, canvasHeight) {
-    this.$board.resizeContainer(canvasWidth || 0, canvasHeight || 0);
+    this.$board.resizeContainer(canvasWidth || 0, canvasHeight || 0)
   }
 
   loadMarksAnswers(marks = []) {
-    marks.forEach(mark => {
-      this.answers.push(Mark.onHandler(this, { ...mark, fixed: true }));
-    });
+    marks.forEach((mark) => {
+      this.answers.push(Mark.onHandler(this, { ...mark, fixed: true }))
+    })
   }
 
   loadSegmentsAnswers(segments) {
     this.answers.push(
       // eslint-disable-next-line array-callback-return
-      ...segments.map(segment => {
+      ...segments.map((segment) => {
         switch (segment.type) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
-            return NumberlinePoint.renderAnswer(this, segment);
+            return NumberlinePoint.renderAnswer(this, segment)
           case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-            return NumberLineDotPlotPoint.render(this, segment);
+            return NumberLineDotPlotPoint.render(this, segment)
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
           case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
           case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-            return NumberlineSegment.determineAnswerType(this, segment);
+            return NumberlineSegment.determineAnswerType(this, segment)
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-            return NumberlineVector.determineAnswerType(this, segment);
+            return NumberlineVector.determineAnswerType(this, segment)
           default:
-            break;
+            break
         }
       })
-    );
+    )
   }
 
   setBgObjects(flatCfg, showPoints = true) {
-    const config = flat2nestedConfig(flatCfg);
+    const config = flat2nestedConfig(flatCfg)
     this.bgElements.push(
-      ...config.map(element =>
+      ...config.map((element) =>
         this.loadObject(element, {
           showPoints,
           checkLabelVisibility: true,
           checkPointVisibility: true,
-          fixed: true
+          fixed: true,
         })
       )
-    );
+    )
   }
 
   loadAnswersFromConfig(flatCfg) {
-    const config = flat2nestedConfig(flatCfg);
+    const config = flat2nestedConfig(flatCfg)
     this.answers.push(
-      ...config.map(element =>
+      ...config.map((element) =>
         this.loadObject(element, {
-          fixed: true
+          fixed: true,
         })
       )
-    );
-    Area.updateShadingsForAreaPoints(this, this.answers);
+    )
+    Area.updateShadingsForAreaPoints(this, this.answers)
   }
 
   loadFromConfig(flatCfg) {
-    const config = flat2nestedConfig(flatCfg);
-    this.elements.push(...config.map(element => this.loadObject(element)));
-    Area.updateShadingsForAreaPoints(this, this.elements);
+    const config = flat2nestedConfig(flatCfg)
+    this.elements.push(...config.map((element) => this.loadObject(element)))
+    Area.updateShadingsForAreaPoints(this, this.elements)
   }
 
   loadSegments(elements) {
     this.elements.push(
-      ...elements.map(element => {
+      ...elements.map((element) => {
         switch (element.type) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
-            return NumberlinePoint.loadPoint(this, element);
+            return NumberlinePoint.loadPoint(this, element)
           case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-            return NumberLineDotPlotPoint.render(this, element);
+            return NumberLineDotPlotPoint.render(this, element)
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-            return NumberlineSegment.loadSegment(this, element, true, true, CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED);
+            return NumberlineSegment.loadSegment(
+              this,
+              element,
+              true,
+              true,
+              CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED
+            )
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-            return NumberlineSegment.loadSegment(this, element, false, false, CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW);
+            return NumberlineSegment.loadSegment(
+              this,
+              element,
+              false,
+              false,
+              CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW
+            )
           case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-            return NumberlineSegment.loadSegment(this, element, false, true, CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW);
+            return NumberlineSegment.loadSegment(
+              this,
+              element,
+              false,
+              true,
+              CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW
+            )
           case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-            return NumberlineSegment.loadSegment(this, element, true, false, CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW);
+            return NumberlineSegment.loadSegment(
+              this,
+              element,
+              true,
+              false,
+              CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW
+            )
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-            return NumberlineVector.loadVector(this, element, true, false, CONSTANT.TOOLS.RAY_LEFT_DIRECTION);
+            return NumberlineVector.loadVector(
+              this,
+              element,
+              true,
+              false,
+              CONSTANT.TOOLS.RAY_LEFT_DIRECTION
+            )
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
             return NumberlineVector.loadVector(
               this,
@@ -928,9 +1001,15 @@ class Board {
               false,
               false,
               CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW
-            );
+            )
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
-            return NumberlineVector.loadVector(this, element, true, true, CONSTANT.TOOLS.RAY_RIGHT_DIRECTION);
+            return NumberlineVector.loadVector(
+              this,
+              element,
+              true,
+              true,
+              CONSTANT.TOOLS.RAY_RIGHT_DIRECTION
+            )
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
             return NumberlineVector.loadVector(
               this,
@@ -938,310 +1017,352 @@ class Board {
               false,
               true,
               CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW
-            );
+            )
           default:
-            throw new Error("Unknown element:", element);
+            throw new Error('Unknown element:', element)
         }
       })
-    );
+    )
   }
 
   loadObject(object, settings = {}) {
-    this.bgElements.map(el => {
+    this.bgElements.map((el) => {
       if (el.type == 12) {
-        this.labelForEq.push(el.labelHTML);
+        this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map(ancestorsEl => {
-          this.labelForEq.push(ancestorsEl.labelHTML);
-        });
+        el.inherits.map((ancestorsEl) => {
+          this.labelForEq.push(ancestorsEl.labelHTML)
+        })
       }
-    });
+    })
 
     const {
       showPoints = true,
       checkLabelVisibility = false,
       checkPointVisibility = false,
       fixed = false,
-      bg = false
-    } = settings;
+      bg = false,
+    } = settings
 
     switch (object._type) {
       case 14:
       case JXG.OBJECT_TYPE_POINT:
-        this.labelForEq.push(object.label);
+        this.labelForEq.push(object.label)
         return Point.create(this, object, {
           pointIsVisible: !checkPointVisibility || object.pointIsVisible,
           labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-          fixed
-        });
+          fixed,
+        })
 
       case JXG.OBJECT_TYPE_LINE:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Line.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           object.type,
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case JXG.OBJECT_TYPE_CIRCLE:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Circle.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case JXG.OBJECT_TYPE_CONIC:
-        this.labelForEq.push(object.points[0].label, object.points[1].label, object.points[2].label);
+        this.labelForEq.push(
+          object.points[0].label,
+          object.points[1].label,
+          object.points[2].label
+        )
         return Ellipse.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case JXG.OBJECT_TYPE_POLYGON:
-        object.points.map(point => {
-          this.labelForEq.push(point);
-        });
+        object.points.map((point) => {
+          this.labelForEq.push(point)
+        })
         return Polygon.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Hyperbola.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label, object.points[2].label);
+        this.labelForEq.push(
+          object.points[0].label,
+          object.points[1].label,
+          object.points[2].label
+        )
         return Hyperbola.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Tangent.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Tangent.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Secant.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Secant.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Exponent.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Exponent.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Logarithm.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Logarithm.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Polynom.jxgType:
-        object.points.map(point => {
-          this.labelForEq.push(point);
-        });
+        object.points.map((point) => {
+          this.labelForEq.push(point)
+        })
         return Polynom.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Sin.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Sin.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Parabola.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label);
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Parabola.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Parabola2.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label, object.points[2].label);
+        this.labelForEq.push(
+          object.points[0].label,
+          object.points[1].label,
+          object.points[2].label
+        )
         return Parabola2.create(
           this,
           object,
-          object.points.map(point =>
+          object.points.map((point) =>
             Point.create(this, point, {
-              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
             })
           ),
           {
             labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
+            fixed,
           }
-        );
+        )
 
       case Equation.jxgType:
         function getPoints(type, res) {
-          res = res.split("],")[1];
-          res = res.replace("['" + type + "',[", "").replace("]]", "");
-          res = res.substring(2, res.length - 2);
-          res = res.split("),(");
+          res = res.split('],')[1]
+          res = res.replace("['" + type + "',[", '').replace(']]', '')
+          res = res.substring(2, res.length - 2)
+          res = res.split('),(')
           for (var i = 0; i < res.length; i++) {
-            res[i] = res[i].split(",");
+            res[i] = res[i].split(',')
           }
-          return res;
+          return res
         }
 
         var obj = {
           label: false,
           labelIsVisible: false,
-          baseColor: "#595e98"
-        };
+          baseColor: '#595e98',
+        }
 
-        var result = object.apiLatex;
-        var latex = object.latex;
+        var result = object.apiLatex
+        var latex = object.latex
 
-        if (latex.substring(1, 6) == "left(" && latex.substr(latex.length - 6) == "right)" && latex.indexOf(",") > -1) {
-          const latexForEqPoint = latex;
-          latex = latex.replace("left(", "").replace("right)", "");
-          latex = latex.replace(/\\/g, "");
-          latex = latex.split(",");
+        if (
+          latex.substring(1, 6) == 'left(' &&
+          latex.substr(latex.length - 6) == 'right)' &&
+          latex.indexOf(',') > -1
+        ) {
+          const latexForEqPoint = latex
+          latex = latex.replace('left(', '').replace('right)', '')
+          latex = latex.replace(/\\/g, '')
+          latex = latex.split(',')
 
-          var labelPoint1 = getLabel(this.labelForEq);
+          var labelPoint1 = getLabel(this.labelForEq)
 
           var point = {
             x: latex[0],
@@ -1249,21 +1370,21 @@ class Board {
             label: object.label || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
-
-          this.labelForEq.push(object.label || getLabel(this.labelForEq));
-
-          if (!object.label) {
-            object.label = labelPoint1;
+            baseColor: '#595e98',
+            id: null,
           }
 
-          return Point.create(this, point, { latex: latexForEqPoint, result });
-        } else if (result.includes("line")) {
-          var coords = getPoints("line", result);
+          this.labelForEq.push(object.label || getLabel(this.labelForEq))
 
-          const labelPoint1 = getLabel(this.labelForEq);
+          if (!object.label) {
+            object.label = labelPoint1
+          }
+
+          return Point.create(this, point, { latex: latexForEqPoint, result })
+        } else if (result.includes('line')) {
+          var coords = getPoints('line', result)
+
+          const labelPoint1 = getLabel(this.labelForEq)
 
           var point1 = {
             x: coords[0][0],
@@ -1271,12 +1392,14 @@ class Board {
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.pointsLabel[0] || getLabel(this.labelForEq));
-          const labelPoint2 = getLabel(this.labelForEq);
+          this.labelForEq.push(
+            object.pointsLabel[0] || getLabel(this.labelForEq)
+          )
+          const labelPoint2 = getLabel(this.labelForEq)
 
           var point2 = {
             x: coords[1][0],
@@ -1284,23 +1407,29 @@ class Board {
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
-
-          this.labelForEq.push(object.pointsLabel[1] || getLabel(this.labelForEq));
-          var points = [Point.create(this, point1), Point.create(this, point2)];
-          var type = "line";
-
-          if (!object.pointsLabel) {
-            object.pointsLabel = [labelPoint1, labelPoint2];
+            baseColor: '#595e98',
+            id: null,
           }
 
-          return Line.create(this, obj, points, type, { latex, result, pointsLabel: [labelPoint1, labelPoint2] });
-        } else if (result.includes("circle")) {
-          var coords = getPoints("circle", result);
+          this.labelForEq.push(
+            object.pointsLabel[1] || getLabel(this.labelForEq)
+          )
+          var points = [Point.create(this, point1), Point.create(this, point2)]
+          var type = 'line'
 
-          const labelPoint1 = getLabel(this.labelForEq);
+          if (!object.pointsLabel) {
+            object.pointsLabel = [labelPoint1, labelPoint2]
+          }
+
+          return Line.create(this, obj, points, type, {
+            latex,
+            result,
+            pointsLabel: [labelPoint1, labelPoint2],
+          })
+        } else if (result.includes('circle')) {
+          var coords = getPoints('circle', result)
+
+          const labelPoint1 = getLabel(this.labelForEq)
 
           //point1 - center
           var point1 = {
@@ -1309,12 +1438,14 @@ class Board {
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.pointsLabel[0] || getLabel(this.labelForEq));
-          const labelPoint2 = getLabel(this.labelForEq);
+          this.labelForEq.push(
+            object.pointsLabel[0] || getLabel(this.labelForEq)
+          )
+          const labelPoint2 = getLabel(this.labelForEq)
 
           //highest point of circle (top Y)
           var point2 = {
@@ -1323,22 +1454,28 @@ class Board {
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
-
-          this.labelForEq.push(object.pointsLabel[1] || getLabel(this.labelForEq));
-          var points = [Point.create(this, point1), Point.create(this, point2)];
-
-          if (!object.pointsLabel) {
-            object.pointsLabel = [labelPoint1, labelPoint2];
+            baseColor: '#595e98',
+            id: null,
           }
 
-          return Circle.create(this, obj, points, { latex, result, labelHTML: [labelPoint1, labelPoint2] });
-        } else if (result.includes("ellipse")) {
-          var coords = getPoints("ellipse", result);
+          this.labelForEq.push(
+            object.pointsLabel[1] || getLabel(this.labelForEq)
+          )
+          var points = [Point.create(this, point1), Point.create(this, point2)]
 
-          const labelPoint1 = getLabel(this.labelForEq);
+          if (!object.pointsLabel) {
+            object.pointsLabel = [labelPoint1, labelPoint2]
+          }
+
+          return Circle.create(this, obj, points, {
+            latex,
+            result,
+            labelHTML: [labelPoint1, labelPoint2],
+          })
+        } else if (result.includes('ellipse')) {
+          var coords = getPoints('ellipse', result)
+
+          const labelPoint1 = getLabel(this.labelForEq)
 
           var point1 = {
             x: `${coords[2][0]} - ${coords[1][0]}`,
@@ -1346,12 +1483,12 @@ class Board {
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq));
-          const labelPoint2 = getLabel(this.labelForEq);
+          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
+          const labelPoint2 = getLabel(this.labelForEq)
 
           var point2 = {
             x: coords[1][0],
@@ -1359,12 +1496,12 @@ class Board {
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq));
-          const labelPoint3 = getLabel(this.labelForEq);
+          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
+          const labelPoint3 = getLabel(this.labelForEq)
 
           var point3 = {
             x: coords[2][0],
@@ -1372,25 +1509,29 @@ class Board {
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq));
-          var points = [Point.create(this, point1), Point.create(this, point2), Point.create(this, point3)];
+          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
+          var points = [
+            Point.create(this, point1),
+            Point.create(this, point2),
+            Point.create(this, point3),
+          ]
           if (!object.pointsLabel) {
-            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3];
+            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3]
           }
 
           return Ellipse.create(this, obj, points, {
             latex,
             result,
-            labelHTML: [labelPoint1, labelPoint2, labelPoint3]
-          });
-        } else if (result.includes("hyperbola")) {
-          var coords = getPoints("hyperbola", result);
+            labelHTML: [labelPoint1, labelPoint2, labelPoint3],
+          })
+        } else if (result.includes('hyperbola')) {
+          var coords = getPoints('hyperbola', result)
 
-          const labelPoint1 = getLabel(this.labelForEq);
+          const labelPoint1 = getLabel(this.labelForEq)
 
           var point1 = {
             x: coords[0][0],
@@ -1398,12 +1539,12 @@ class Board {
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq));
-          const labelPoint2 = getLabel(this.labelForEq);
+          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
+          const labelPoint2 = getLabel(this.labelForEq)
 
           var point2 = {
             x: coords[1][0],
@@ -1411,11 +1552,11 @@ class Board {
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
-          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq));
-          const labelPoint3 = getLabel(this.labelForEq);
+            baseColor: '#595e98',
+            id: null,
+          }
+          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
+          const labelPoint3 = getLabel(this.labelForEq)
 
           var point3 = {
             x: coords[2][0],
@@ -1423,25 +1564,29 @@ class Board {
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq));
-          var points = [Point.create(this, point1), Point.create(this, point2), Point.create(this, point3)];
+          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
+          var points = [
+            Point.create(this, point1),
+            Point.create(this, point2),
+            Point.create(this, point3),
+          ]
           if (!object.pointsLabel) {
-            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3];
+            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3]
           }
 
           return Hyperbola.create(this, obj, points, {
             latex,
             result,
-            labelHTML: [labelPoint1, labelPoint2, labelPoint3]
-          });
-        } else if (result.includes("parabola2")) {
-          var coords = getPoints("parabola2", result);
+            labelHTML: [labelPoint1, labelPoint2, labelPoint3],
+          })
+        } else if (result.includes('parabola2')) {
+          var coords = getPoints('parabola2', result)
 
-          const labelPoint1 = getLabel(this.labelForEq);
+          const labelPoint1 = getLabel(this.labelForEq)
 
           var point1 = {
             x: coords[1][0],
@@ -1449,12 +1594,12 @@ class Board {
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq));
-          const labelPoint2 = getLabel(this.labelForEq);
+          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
+          const labelPoint2 = getLabel(this.labelForEq)
 
           var point2 = {
             x: coords[2][0],
@@ -1462,12 +1607,12 @@ class Board {
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq));
-          const labelPoint3 = getLabel(this.labelForEq);
+          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
+          const labelPoint3 = getLabel(this.labelForEq)
 
           var point3 = {
             x: coords[0][0],
@@ -1475,36 +1620,40 @@ class Board {
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
-            baseColor: "#595e98",
-            id: null
-          };
+            baseColor: '#595e98',
+            id: null,
+          }
 
-          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq));
-          var points = [Point.create(this, point3), Point.create(this, point2), Point.create(this, point1)];
+          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
+          var points = [
+            Point.create(this, point3),
+            Point.create(this, point2),
+            Point.create(this, point1),
+          ]
           if (!object.pointsLabel) {
-            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3];
+            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3]
           }
 
           return Parabola2.create(this, obj, points, {
             latex,
             result,
-            labelHTML: [labelPoint3, labelPoint2, labelPoint1]
-          });
+            labelHTML: [labelPoint3, labelPoint2, labelPoint1],
+          })
         } else {
-          object.apiLatex = getEquationFromApiLatex(object.apiLatex);
-          return Equation.create(this, object);
+          object.apiLatex = getEquationFromApiLatex(object.apiLatex)
+          return Equation.create(this, object)
         }
 
       case Area.jxgType:
-        return Area.create(this, object, { fixed });
+        return Area.create(this, object, { fixed })
 
       case DragDrop.jxgType:
         return DragDrop.create(this, object, {
-          fixed
-        });
+          fixed,
+        })
 
       default:
-        throw new Error("Unknown element:", object);
+        throw new Error('Unknown element:', object)
     }
   }
 
@@ -1513,29 +1662,29 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/Image.html
    */
   setBgImage(bgImageParameters) {
-    const bgImage = this.createElement("image", [
+    const bgImage = this.createElement('image', [
       bgImageParameters.urlImg,
-      ...getImageCoordsByPercent(this.parameters, bgImageParameters)
-    ]);
+      ...getImageCoordsByPercent(this.parameters, bgImageParameters),
+    ])
     bgImage.setAttribute({
       fixed: true,
       highlightFillOpacity: bgImageParameters.opacity,
-      opacity: bgImageParameters.opacity
-    });
-    this.bgImage = bgImage;
+      opacity: bgImageParameters.opacity,
+    })
+    this.bgImage = bgImage
   }
 
   removeBgImage() {
-    this.$board.removeObject(this.bgImage);
+    this.$board.removeObject(this.bgImage)
   }
 
   isDragMode() {
-    return this.$board.mode === this.$board.BOARD_MODE_DRAG;
+    return this.$board.mode === this.$board.BOARD_MODE_DRAG
   }
 }
 
 export function makeBorder(id, graphType, config) {
-  return new Board(id, graphType, config);
+  return new Board(id, graphType, config)
 }
 
-export default Board;
+export default Board

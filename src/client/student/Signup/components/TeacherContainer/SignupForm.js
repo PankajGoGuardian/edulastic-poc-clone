@@ -1,15 +1,18 @@
-import { themeColor, white } from "@edulastic/colors";
-import { OnDarkBgLogo, withWindowSizes, notification } from "@edulastic/common";
-import { IconLock, IconMail, IconUser } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Form, Input, message } from "antd";
-import { isEmpty, trim } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
-import { compose } from "redux";
-import { LARGE_DESKTOP_WIDTH, MAX_TAB_WIDTH } from "../../../../author/src/constants/others";
+import { themeColor, white } from '@edulastic/colors'
+import { OnDarkBgLogo, withWindowSizes, notification } from '@edulastic/common'
+import { IconLock, IconMail, IconUser } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Form, Input, message } from 'antd'
+import { isEmpty, trim } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { Link, Redirect } from 'react-router-dom'
+import { compose } from 'redux'
+import {
+  LARGE_DESKTOP_WIDTH,
+  MAX_TAB_WIDTH,
+} from '../../../../author/src/constants/others'
 import {
   getDistrictLoginUrl,
   getDistrictStudentSignupUrl,
@@ -20,19 +23,19 @@ import {
   getPartnerStudentSignupUrl,
   isDistrictPolicyAllowed,
   isEmailValid,
-  validatePartnerUrl
-} from "../../../../common/utils/helpers";
-import { Partners } from "../../../../common/utils/static/partnerData";
-import cleverIcon from "../../../assets/clever-icon.svg";
-import googleIcon from "../../../assets/google-btn.svg";
-import icon365 from "../../../assets/icons8-office-365.svg";
+  validatePartnerUrl,
+} from '../../../../common/utils/helpers'
+import { Partners } from '../../../../common/utils/static/partnerData'
+import cleverIcon from '../../../assets/clever-icon.svg'
+import googleIcon from '../../../assets/google-btn.svg'
+import icon365 from '../../../assets/icons8-office-365.svg'
 import {
   cleverLoginAction,
   googleLoginAction,
   msoLoginAction,
   setInviteDetailsAction,
-  signupAction
-} from "../../../Login/ducks";
+  signupAction,
+} from '../../../Login/ducks'
 import {
   AlreadyhaveAccount,
   BannerText,
@@ -52,37 +55,44 @@ import {
   RegistrationBody,
   RegistrationHeader,
   RegistrationWrapper,
-  ThirdPartyLoginBtn
-} from "../../styled";
-import PasswordPopup from "../PasswordPopup";
+  ThirdPartyLoginBtn,
+} from '../../styled'
+import PasswordPopup from '../PasswordPopup'
 
-const FormItem = Form.Item;
+const FormItem = Form.Item
 
 class Signup extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     signup: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired
-  };
+    t: PropTypes.func.isRequired,
+  }
 
   state = {
     confirmDirty: false,
     signupError: {},
     showModal: false,
-    proceedBtnDisabled: true
-  };
+    proceedBtnDisabled: true,
+  }
 
   closeModal = () => {
     this.setState({
-      showModal: false
-    });
-  };
+      showModal: false,
+    })
+  }
 
-  regExp = new RegExp("^[A-Za-z0-9 ]+$");
+  regExp = new RegExp('^[A-Za-z0-9 ]+$')
 
-  handleSubmit = e => {
-    const { form, signup, t, invitedUser, invitedUserDetails, setInviteDetailsAction } = this.props;
-    e && e.preventDefault();
+  handleSubmit = (e) => {
+    const {
+      form,
+      signup,
+      t,
+      invitedUser,
+      invitedUserDetails,
+      setInviteDetailsAction,
+    } = this.props
+    e && e.preventDefault()
     form.validateFieldsAndScroll((err, { password, email, name }) => {
       if (!err) {
         if (!invitedUser) {
@@ -91,91 +101,91 @@ class Signup extends React.Component {
             password,
             email: trim(email),
             name: trim(name),
-            role: "teacher",
-            policyViolation: t("common.policyviolation"),
-            errorCallback: this.errorCallback
-          });
+            role: 'teacher',
+            policyViolation: t('common.policyviolation'),
+            errorCallback: this.errorCallback,
+          })
         } else if (invitedUser) {
-          const fullName = getFullNameFromString(trim(name));
+          const fullName = getFullNameFromString(trim(name))
           setInviteDetailsAction({
             uid: invitedUserDetails._id,
             email: invitedUserDetails.email,
             username: invitedUserDetails.email,
             ...fullName,
-            password
-          });
+            password,
+          })
         }
       }
-    });
-  };
+    })
+  }
 
   handleConfirmBlur = ({ target: { value } }) => {
-    let { confirmDirty } = this.state;
-    confirmDirty = confirmDirty || !!value;
-    this.setState({ confirmDirty });
-  };
+    let { confirmDirty } = this.state
+    confirmDirty = confirmDirty || !!value
+    this.setState({ confirmDirty })
+  }
 
   checkPassword = (rule, value, callback) => {
-    const { t } = this.props;
+    const { t } = this.props
     if (value.length < 4) {
-      callback(t("component.signup.teacher.shortpassword"));
-    } else if (value.includes(" ")) {
-      callback(t("component.signup.teacher.validpassword"));
+      callback(t('component.signup.teacher.shortpassword'))
+    } else if (value.includes(' ')) {
+      callback(t('component.signup.teacher.validpassword'))
     }
-    callback();
-  };
+    callback()
+  }
 
   checkName = (rule, value, callback) => {
-    const { t } = this.props;
+    const { t } = this.props
     if (!this.regExp.test(value.trim())) {
-      callback(t("component.signup.teacher.validinputname"));
+      callback(t('component.signup.teacher.validinputname'))
     } else {
-      callback();
+      callback()
     }
-  };
+  }
 
   onChangeEmail = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       ...state,
       signupError: {
         ...state.signupError,
-        email: ""
-      }
-    }));
-  };
+        email: '',
+      },
+    }))
+  }
 
-  errorCallback = error => {
-    if (error === "Email already exists. Please sign in to your account.") {
-      this.setState(state => ({
+  errorCallback = (error) => {
+    if (error === 'Email already exists. Please sign in to your account.') {
+      this.setState((state) => ({
         ...state,
         signupError: {
           ...state.signupError,
-          email: "error"
-        }
-      }));
+          email: 'error',
+        },
+      }))
     } else if ((error || {}).askPassword) {
       if (error.passwordMatch === false) {
-        notification({ messageKey: "passwordIsIncorrect" });
+        notification({ messageKey: 'passwordIsIncorrect' })
       }
       this.setState({
         showModal: true,
-        existingUser: error
-      });
+        existingUser: error,
+      })
     } else {
-      notification({ msg: error });
+      notification({ msg: error })
     }
-  };
+  }
 
-  onPasswordChange = password => {
+  onPasswordChange = (password) => {
     this.setState({
       proceedBtnDisabled: isEmpty(password),
-      password
-    });
-  };
+      password,
+    })
+  }
 
   onClickProceed = () => {
-    this.handleSubmit();
-  };
+    this.handleSubmit()
+  }
 
   render() {
     const {
@@ -191,31 +201,37 @@ class Signup extends React.Component {
       msoLoginAction,
       invitedUser = false,
       invitedUserDetails = {},
-      windowWidth
-    } = this.props;
+      windowWidth,
+    } = this.props
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 }
+        xs: { span: 24 },
       },
       wrapperCol: {
-        xs: { span: 24 }
-      }
-    };
+        xs: { span: 24 },
+      },
+    }
 
-    const partnerKey = getPartnerKeyFromUrl(location.pathname);
-    const partner = Partners[partnerKey];
+    const partnerKey = getPartnerKeyFromUrl(location.pathname)
+    const partner = Partners[partnerKey]
 
     const emailError =
       (this.state.signupError.email && (
         <span>
-          Email already exists. Please{" "}
-          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
+          Email already exists. Please{' '}
+          <Link
+            to={
+              isSignupUsingDaURL
+                ? getDistrictLoginUrl(orgShortName, orgType)
+                : getPartnerLoginUrl(partner)
+            }
+          >
             sign in
-          </Link>{" "}
+          </Link>{' '}
           to your account.
         </span>
       )) ||
-      getFieldError("email");
+      getFieldError('email')
 
     return (
       <div>
@@ -227,16 +243,26 @@ class Signup extends React.Component {
           onChange={this.onPasswordChange}
           onClickProceed={this.onClickProceed}
         />
-        {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
+        {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
+          <Redirect exact to="/login" />
+        ) : null}
         <RegistrationWrapper image={image}>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <OnDarkBgLogo height="30px" />
             </Col>
             <Col span={12} align="right">
-              <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
-              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
-                {t("common.signinbtn")}
+              <AlreadyhaveAccount>
+                {t('component.signup.alreadyhaveanaccount')}
+              </AlreadyhaveAccount>
+              <Link
+                to={
+                  isSignupUsingDaURL
+                    ? getDistrictLoginUrl(orgShortName, orgType)
+                    : getPartnerLoginUrl(partner)
+                }
+              >
+                {t('common.signinbtn')}
               </Link>
             </Col>
           </RegistrationHeader>
@@ -245,27 +271,35 @@ class Signup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
-                    {t("common.edulastictext")}
+                    {t('common.edulastictext')}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
-                    {t("component.signup.teacher.forteacher")}
+                    {t('component.signup.teacher.forteacher')}
                   </h1>
                   <DesktopVieLinks>
                     {!isSignupUsingDaURL ? (
                       <LinkDiv>
-                        <Link to={getPartnerDASignupUrl(partner)}>{t("component.signup.signupasadmin")}</Link>
+                        <Link to={getPartnerDASignupUrl(partner)}>
+                          {t('component.signup.signupasadmin')}
+                        </Link>
                       </LinkDiv>
                     ) : null}
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'studentSignUp'
+                    ) || !isSignupUsingDaURL ? (
                       <LinkDiv>
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictStudentSignupUrl(orgShortName, orgType)
+                              ? getDistrictStudentSignupUrl(
+                                  orgShortName,
+                                  orgType
+                                )
                               : getPartnerStudentSignupUrl(partner)
                           }
                         >
-                          {t("component.signup.signupasstudent")}
+                          {t('component.signup.signupasstudent')}
                         </Link>
                       </LinkDiv>
                     ) : null}
@@ -273,49 +307,61 @@ class Signup extends React.Component {
                 </BannerText>
                 {windowWidth >= MAX_TAB_WIDTH && (
                   <DesktopViewCopyright>
-                    <Col span={24}>{t("common.copyright")}</Col>
+                    <Col span={24}>{t('common.copyright')}</Col>
                   </DesktopViewCopyright>
                 )}
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     <FormHead>
                       <h3 align="center">
-                        <b>{t("component.signup.signupboxheading")}</b>
+                        <b>{t('component.signup.signupboxheading')}</b>
                       </h3>
-                      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
-                      !isSignupUsingDaURL ? (
+                      {isDistrictPolicyAllowed(
+                        isSignupUsingDaURL,
+                        districtPolicy,
+                        'googleSignOn'
+                      ) || !isSignupUsingDaURL ? (
                         <ThirdPartyLoginBtn
                           span={20}
                           offset={2}
                           onClick={() => {
-                            googleLoginAction({ role: "teacher" });
+                            googleLoginAction({ role: 'teacher' })
                           }}
                         >
-                          <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
+                          <img src={googleIcon} alt="" />{' '}
+                          {t('component.signup.googlesignupbtn')}
                         </ThirdPartyLoginBtn>
                       ) : null}
-                      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") ||
-                      !isSignupUsingDaURL ? (
+                      {isDistrictPolicyAllowed(
+                        isSignupUsingDaURL,
+                        districtPolicy,
+                        'office365SignOn'
+                      ) || !isSignupUsingDaURL ? (
                         <ThirdPartyLoginBtn
                           span={20}
                           offset={2}
                           onClick={() => {
-                            msoLoginAction({ role: "teacher" });
+                            msoLoginAction({ role: 'teacher' })
                           }}
                         >
-                          <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
+                          <img src={icon365} alt="" />{' '}
+                          {t('component.signup.office365signupbtn')}
                         </ThirdPartyLoginBtn>
                       ) : null}
-                      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
-                      !isSignupUsingDaURL ? (
+                      {isDistrictPolicyAllowed(
+                        isSignupUsingDaURL,
+                        districtPolicy,
+                        'cleverSignOn'
+                      ) || !isSignupUsingDaURL ? (
                         <ThirdPartyLoginBtn
                           span={20}
                           offset={2}
                           onClick={() => {
-                            cleverLoginAction("teacher");
+                            cleverLoginAction('teacher')
                           }}
                         >
-                          <img src={cleverIcon} alt="" /> {t("component.signup.cleversignupbtn")}
+                          <img src={cleverIcon} alt="" />{' '}
+                          {t('component.signup.cleversignupbtn')}
                         </ThirdPartyLoginBtn>
                       ) : null}
 
@@ -323,28 +369,43 @@ class Signup extends React.Component {
                         <InfoIcon span={3}>
                           <IconLock color={white} />
                         </InfoIcon>
-                        <Col span={21}>{t("component.signup.infotext")}</Col>
+                        <Col span={21}>{t('component.signup.infotext')}</Col>
                       </InfoBox>
                     </FormHead>
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'userNameAndPassword'
+                    ) || !isSignupUsingDaURL ? (
                       <FormBody>
                         <Col span={20} offset={2}>
-                          <h5 align="center">{t("component.signup.formboxheading")}</h5>
-                          <Form onSubmit={this.handleSubmit} autoComplete="new-password">
-                            <FormItem {...formItemLayout} label={t("component.signup.teacher.signupnamelabel")}>
-                              {getFieldDecorator("name", {
+                          <h5 align="center">
+                            {t('component.signup.formboxheading')}
+                          </h5>
+                          <Form
+                            onSubmit={this.handleSubmit}
+                            autoComplete="new-password"
+                          >
+                            <FormItem
+                              {...formItemLayout}
+                              label={t(
+                                'component.signup.teacher.signupnamelabel'
+                              )}
+                            >
+                              {getFieldDecorator('name', {
                                 validateFirst: true,
-                                initialValue: "",
+                                initialValue: '',
                                 rules: [
                                   {
                                     required: true,
-                                    message: t("component.signup.teacher.validinputname")
+                                    message: t(
+                                      'component.signup.teacher.validinputname'
+                                    ),
                                   },
                                   {
-                                    validator: this.checkName
-                                  }
-                                ]
+                                    validator: this.checkName,
+                                  },
+                                ],
                               })(
                                 <Input
                                   data-cy="name"
@@ -356,24 +417,32 @@ class Signup extends React.Component {
                             </FormItem>
                             <FormItem
                               {...formItemLayout}
-                              label={t("component.signup.teacher.signupidlabel")}
-                              validateStatus={emailError ? "error" : "success"}
+                              label={t(
+                                'component.signup.teacher.signupidlabel'
+                              )}
+                              validateStatus={emailError ? 'error' : 'success'}
                               help={emailError}
                             >
-                              {getFieldDecorator("email", {
+                              {getFieldDecorator('email', {
                                 validateFirst: true,
-                                initialValue: invitedUser ? invitedUserDetails.email : "",
+                                initialValue: invitedUser
+                                  ? invitedUserDetails.email
+                                  : '',
                                 rules: [
                                   {
-                                    transform: value => trim(value)
+                                    transform: (value) => trim(value),
                                   },
                                   {
                                     required: true,
-                                    message: t("component.signup.teacher.validemail")
+                                    message: t(
+                                      'component.signup.teacher.validemail'
+                                    ),
                                   },
                                   {
-                                    type: "string",
-                                    message: t("component.signup.teacher.validemail")
+                                    type: 'string',
+                                    message: t(
+                                      'component.signup.teacher.validemail'
+                                    ),
                                   },
                                   {
                                     validator: (rule, value, callback) =>
@@ -381,11 +450,11 @@ class Signup extends React.Component {
                                         rule,
                                         value,
                                         callback,
-                                        "email",
-                                        t("component.signup.teacher.validemail")
-                                      )
-                                  }
-                                ]
+                                        'email',
+                                        t('component.signup.teacher.validemail')
+                                      ),
+                                  },
+                                ],
                               })(
                                 <Input
                                   data-cy="email"
@@ -398,19 +467,24 @@ class Signup extends React.Component {
                                 />
                               )}
                             </FormItem>
-                            <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
-                              {getFieldDecorator("password", {
+                            <FormItem
+                              {...formItemLayout}
+                              label={t('component.signup.signuppasswordlabel')}
+                            >
+                              {getFieldDecorator('password', {
                                 validateFirst: true,
-                                initialValue: "",
+                                initialValue: '',
                                 rules: [
                                   {
                                     required: true,
-                                    message: t("component.signup.teacher.validpassword")
+                                    message: t(
+                                      'component.signup.teacher.validpassword'
+                                    ),
                                   },
                                   {
-                                    validator: this.checkPassword
-                                  }
-                                ]
+                                    validator: this.checkPassword,
+                                  },
+                                ],
                               })(
                                 <Input
                                   data-cy="password"
@@ -422,8 +496,12 @@ class Signup extends React.Component {
                               )}
                             </FormItem>
                             <FormItem>
-                              <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                                {t("component.signup.teacher.signupteacher")}
+                              <RegisterButton
+                                data-cy="signup"
+                                type="primary"
+                                htmlType="submit"
+                              >
+                                {t('component.signup.teacher.signupteacher')}
                               </RegisterButton>
                             </FormItem>
                           </Form>
@@ -436,20 +514,28 @@ class Signup extends React.Component {
                   <BannerText>
                     {!isSignupUsingDaURL ? (
                       <LinkDiv>
-                        <Link to={getPartnerDASignupUrl(partner)}>{t("component.signup.signupasadmin")}</Link>
+                        <Link to={getPartnerDASignupUrl(partner)}>
+                          {t('component.signup.signupasadmin')}
+                        </Link>
                       </LinkDiv>
                     ) : null}
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ||
-                    !isSignupUsingDaURL ? (
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'studentSignUp'
+                    ) || !isSignupUsingDaURL ? (
                       <LinkDiv>
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictStudentSignupUrl(orgShortName, orgType)
+                              ? getDistrictStudentSignupUrl(
+                                  orgShortName,
+                                  orgType
+                                )
                               : getPartnerStudentSignupUrl(partner)
                           }
                         >
-                          {t("component.signup.signupasstudent")}
+                          {t('component.signup.signupasstudent')}
                         </Link>
                       </LinkDiv>
                     ) : null}
@@ -463,24 +549,27 @@ class Signup extends React.Component {
           <CircleDiv size={32} right={72} top={500} />
           {windowWidth < MAX_TAB_WIDTH && (
             <Copyright>
-              <Col span={24}>{t("common.copyright")}</Col>
+              <Col span={24}>{t('common.copyright')}</Col>
             </Copyright>
           )}
         </RegistrationWrapper>
       </div>
-    );
+    )
   }
 }
 
-const SignupForm = Form.create()(Signup);
+const SignupForm = Form.create()(Signup)
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   withWindowSizes,
-  connect(
-    null,
-    { signup: signupAction, googleLoginAction, cleverLoginAction, msoLoginAction, setInviteDetailsAction }
-  )
-);
+  connect(null, {
+    signup: signupAction,
+    googleLoginAction,
+    cleverLoginAction,
+    msoLoginAction,
+    setInviteDetailsAction,
+  })
+)
 
-export default enhance(SignupForm);
+export default enhance(SignupForm)

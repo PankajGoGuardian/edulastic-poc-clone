@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
@@ -29,4 +29,4 @@ export const Container = styled.div`
       margin-right: 0px;
     }
   }
-`;
+`

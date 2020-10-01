@@ -1,25 +1,27 @@
-import React, { Fragment, useMemo } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import React, { Fragment, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
-import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
-import { replaceVariables } from "../../utils/variables";
+import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions'
+import { replaceVariables } from '../../utils/variables'
 
-import TokenHighlightPreview from "./TokenHighlightPreview";
-import TokenHighlightEdit from "./TokenHighlightEdit";
+import TokenHighlightPreview from './TokenHighlightPreview'
+import TokenHighlightEdit from './TokenHighlightEdit'
 
-const TokenHighlight = props => {
-  const { item, view } = props;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+const TokenHighlight = (props) => {
+  const { item, view } = props
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <Fragment>
-      {view === PREVIEW && <TokenHighlightPreview {...props} item={itemForPreview} />}
+    <>
+      {view === PREVIEW && (
+        <TokenHighlightPreview {...props} item={itemForPreview} />
+      )}
       {view === EDIT && <TokenHighlightEdit {...props} />}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 TokenHighlight.propTypes = {
   view: PropTypes.string.isRequired,
@@ -33,8 +35,8 @@ TokenHighlight.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 TokenHighlight.defaultProps = {
   previewTab: CLEAR,
@@ -42,15 +44,14 @@ TokenHighlight.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: "",
+  evaluation: '',
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const TokenHighlightContainer = connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(TokenHighlight);
+const TokenHighlightContainer = connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(TokenHighlight)
 
-export { TokenHighlightContainer as TokenHighlight };
+export { TokenHighlightContainer as TokenHighlight }

@@ -1,17 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FlexContainer } from "@edulastic/common";
-import { StyledButton } from "../styled";
-import { midControls } from "../constants/controls";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { FlexContainer } from '@edulastic/common'
+import { StyledButton } from '../styled'
+import { midControls } from '../constants/controls'
 
 const MidButtons = ({ onChangeTool, activeMode }) => {
-  const onClickHandler = mode => () => {
-    onChangeTool(mode);
-  };
+  const onClickHandler = (mode) => () => {
+    onChangeTool(mode)
+  }
 
   return (
     <FlexContainer>
-      {midControls.map(btn => (
+      {midControls.map((btn) => (
         <StyledButton
           key={btn.mode}
           id={btn.mode}
@@ -23,17 +23,17 @@ const MidButtons = ({ onChangeTool, activeMode }) => {
         </StyledButton>
       ))}
     </FlexContainer>
-  );
-};
+  )
+}
 
 MidButtons.propTypes = {
   onChangeTool: PropTypes.func,
-  activeMode: PropTypes.string
-};
+  activeMode: PropTypes.string,
+}
 
 MidButtons.defaultProps = {
   onChangeTool: () => null,
-  activeMode: ""
-};
+  activeMode: '',
+}
 
-export default MidButtons;
+export default MidButtons

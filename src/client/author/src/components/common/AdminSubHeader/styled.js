@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Tabs } from "antd";
+import styled from 'styled-components'
+import { Tabs } from 'antd'
 
 export const SubHeaderWrapper = styled.div`
   width: 100%;
@@ -9,9 +9,9 @@ export const SubHeaderWrapper = styled.div`
       padding: 0px 16px 12px;
     }
   }
-`;
+`
 
-export const StyledTabPane = styled(Tabs.TabPane)``;
+export const StyledTabPane = styled(Tabs.TabPane)``
 export const StyledSubMenu = styled(Tabs)`
   padding: 0 3%;
   margin-left: 0;
@@ -19,4 +19,4 @@ export const StyledSubMenu = styled(Tabs)`
     margin-bottom: 0;
     border-color: transparent;
   }
-`;
+`

@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { Col, Icon, Row, Select, Tooltip } from "antd";
-import moment from "moment";
-import { test as testConst, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
-import { MainContentWrapper, notification, EduButton } from "@edulastic/common";
-import { getAdditionalDataSelector, getTestActivitySelector } from "../ClassBoard/ducks";
-import { receiveTestActivitydAction } from "../src/actions/classBoard";
-import { slice } from "./ducks";
-import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { Col, Icon, Row, Select, Tooltip } from 'antd'
+import moment from 'moment'
+import {
+  test as testConst,
+  assignmentPolicyOptions,
+  assignmentStatusOptions,
+} from '@edulastic/constants'
+import { MainContentWrapper, notification, EduButton } from '@edulastic/common'
+import {
+  getAdditionalDataSelector,
+  getTestActivitySelector,
+} from '../ClassBoard/ducks'
+import { receiveTestActivitydAction } from '../src/actions/classBoard'
+import { slice } from './ducks'
+import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 /**
  * Imports from SimpleOptions for re-use
  */
@@ -17,25 +24,30 @@ import {
   StyledRowButton,
   SettingsBtn,
   StyledSelect,
-  StyledRow
-} from "../AssignTest/components/SimpleOptions/styled";
-import DateSelector from "../AssignTest/components/SimpleOptions/DateSelector";
-import Settings from "../AssignTest/components/SimpleOptions/Settings";
-import selectsData from "../TestPage/components/common/selectsData";
+  StyledRow,
+} from '../AssignTest/components/SimpleOptions/styled'
+import DateSelector from '../AssignTest/components/SimpleOptions/DateSelector'
+import Settings from '../AssignTest/components/SimpleOptions/Settings'
+import selectsData from '../TestPage/components/common/selectsData'
 
 /**
  * Imports related to testSettings
  */
-import { getDefaultTestSettingsAction } from "../TestPage/ducks";
-import { getTestEntitySelector } from "../AssignTest/duck";
-import { InputLabel, InputLabelContainer, ClassHeading } from "./styled";
-import { QuestionIcon } from "../../assessment/styled/Subtitle";
-import { allowedSettingPageToDisplay } from "../Shared/Components/ClassHeader/utils/transformers";
+import { getDefaultTestSettingsAction } from '../TestPage/ducks'
+import { getTestEntitySelector } from '../AssignTest/duck'
+import { InputLabel, InputLabelContainer, ClassHeading } from './styled'
+import { QuestionIcon } from '../../assessment/styled/Subtitle'
+import { allowedSettingPageToDisplay } from '../Shared/Components/ClassHeader/utils/transformers'
 
-export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
+export const releaseGradeKeys = [
+  'DONT_RELEASE',
+  'SCORE_ONLY',
+  'WITH_RESPONSE',
+  'WITH_ANSWERS',
+]
+export const nonPremiumReleaseGradeKeys = ['DONT_RELEASE', 'WITH_ANSWERS']
 
-const { releaseGradeTypes } = testConst;
+const { releaseGradeTypes } = testConst
 
 function LCBAssignmentSettings({
   additionalData = {},
@@ -49,46 +61,62 @@ function LCBAssignmentSettings({
   changeAttrs,
   updateAssignmentSettings,
   testActivity,
-  userId
+  userId,
 }) {
-  const { openPolicy, closePolicy } = selectsData;
-  const { assignmentId, classId } = match.params || {};
+  const { openPolicy, closePolicy } = selectsData
+  const { assignmentId, classId } = match.params || {}
   useEffect(() => {
-    loadTestActivity(assignmentId, classId);
-    loadAssignment({ assignmentId, classId });
-    loadTestSettings();
-  }, []);
+    loadTestActivity(assignmentId, classId)
+    loadAssignment({ assignmentId, classId })
+    loadTestSettings()
+  }, [])
 
   useEffect(() => {
-    const { assignedBy } = additionalData;
-    const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
+    const { assignedBy } = additionalData
+    const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId)
     if (!showSettingTab) {
-      notification({ messageKey: "persmissionDenied" });
-      history.push(`/author/classboard/${assignmentId}/${classId}`);
+      notification({ messageKey: 'persmissionDenied' })
+      history.push(`/author/classboard/${assignmentId}/${classId}`)
     }
-  }, [additionalData]);
+  }, [additionalData])
 
-  const [showSettings, setShowSettings] = useState(false);
-  const [showClassSettings, toggleClassSettings] = useState(true);
+  const [showSettings, setShowSettings] = useState(false)
+  const [showClassSettings, toggleClassSettings] = useState(true)
 
-  const { startDate, endDate, status, dueDate } = assignment?.["class"]?.[0] || {};
-  const changeField = key => value => {
-    if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
-      notification({ type: "info", messageKey: "pleaseSelectYourPreferedStartDate" });
-    } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
-      notification({ type: "info", messageKey: "pleaseSelectYourPreferedDueDate  " });
+  const { startDate, endDate, status, dueDate } =
+    assignment?.['class']?.[0] || {}
+  const changeField = (key) => (value) => {
+    if (
+      key === 'openPolicy' &&
+      value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
+    ) {
+      notification({
+        type: 'info',
+        messageKey: 'pleaseSelectYourPreferedStartDate',
+      })
+    } else if (
+      key === 'closePolicy' &&
+      value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
+    ) {
+      notification({
+        type: 'info',
+        messageKey: 'pleaseSelectYourPreferedDueDate  ',
+      })
     }
-    changeAttrs({ key, value });
-  };
-  const gradeSubject = { grades: assignment?.grades, subjects: assignment?.subjects };
+    changeAttrs({ key, value })
+  }
+  const gradeSubject = {
+    grades: assignment?.grades,
+    subjects: assignment?.subjects,
+  }
 
   const resetToDefault = () => {
-    loadTestActivity(assignmentId, classId);
-    loadAssignment({ assignmentId, classId });
-    loadTestSettings();
-  };
+    loadTestActivity(assignmentId, classId)
+    loadAssignment({ assignmentId, classId })
+    loadTestSettings()
+  }
 
-  const className = additionalData?.className;
+  const className = additionalData?.className
 
   return (
     <div>
@@ -102,8 +130,10 @@ function LCBAssignmentSettings({
       />
       <MainContentWrapper>
         <OptionConationer>
-          <InitOptions style={{ padding: "30px 50px" }}>
-            <ClassHeading>{className ? `Settings for ${className}` : "loading..."}</ClassHeading>
+          <InitOptions style={{ padding: '30px 50px' }}>
+            <ClassHeading>
+              {className ? `Settings for ${className}` : 'loading...'}
+            </ClassHeading>
             <DateSelector
               startDate={moment(startDate)}
               endDate={moment(endDate)}
@@ -116,7 +146,7 @@ function LCBAssignmentSettings({
 
             <Row gutter={32}>
               <StyledRow>
-                <Col span={12} style={{ padding: "0px 16px" }}>
+                <Col span={12} style={{ padding: '0px 16px' }}>
                   <InputLabelContainer>
                     <InputLabel>open policy</InputLabel>
                   </InputLabelContainer>
@@ -125,9 +155,11 @@ function LCBAssignmentSettings({
                     placeholder="Please select"
                     cache="false"
                     value={assignment?.openPolicy}
-                    onChange={changeField("openPolicy")}
+                    onChange={changeField('openPolicy')}
                     disabled={
-                      assignment?.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                      assignment?.passwordPolicy ===
+                        testConst.passwordPolicy
+                          .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
                       status !== assignmentStatusOptions.NOT_OPEN
                     }
                   >
@@ -138,7 +170,7 @@ function LCBAssignmentSettings({
                     ))}
                   </StyledSelect>
                 </Col>
-                <Col span={12} style={{ padding: "0px 16px" }}>
+                <Col span={12} style={{ padding: '0px 16px' }}>
                   <InputLabelContainer>
                     <InputLabel>close policy</InputLabel>
                   </InputLabelContainer>
@@ -147,7 +179,7 @@ function LCBAssignmentSettings({
                     placeholder="Please select"
                     cache="false"
                     value={assignment?.closePolicy}
-                    onChange={changeField("closePolicy")}
+                    onChange={changeField('closePolicy')}
                     disabled={status === assignmentStatusOptions.DONE}
                   >
                     {closePolicy.map(({ value, text }, index) => (
@@ -169,7 +201,7 @@ function LCBAssignmentSettings({
                   placeholder="Please select"
                   cache="false"
                   value={assignment?.releaseScore}
-                  onChange={changeField("releaseScore")}
+                  onChange={changeField('releaseScore')}
                 >
                   {releaseGradeKeys.map((item, index) => (
                     <Select.Option data-cy="class" key={index} value={item}>
@@ -183,12 +215,12 @@ function LCBAssignmentSettings({
 
             <StyledRowButton gutter={16}>
               <Col>
-                <SettingsBtn onClick={() => toggleClassSettings(old => !old)}>
+                <SettingsBtn onClick={() => toggleClassSettings((old) => !old)}>
                   CLASS LEVEL SETTINGS
                   {showClassSettings ? (
-                    <Icon style={{ marginLeft: "-12px" }} type="caret-up" />
+                    <Icon style={{ marginLeft: '-12px' }} type="caret-up" />
                   ) : (
-                    <Icon type="caret-down" style={{ marginLeft: "-10px" }} />
+                    <Icon type="caret-down" style={{ marginLeft: '-10px' }} />
                   )}
                 </SettingsBtn>
               </Col>
@@ -209,23 +241,27 @@ function LCBAssignmentSettings({
             )}
             <StyledRowButton gutter={16}>
               <Col>
-                <SettingsBtn onClick={() => setShowSettings(old => !old)}>
+                <SettingsBtn onClick={() => setShowSettings((old) => !old)}>
                   TEST LEVEL SETTINGS
                   <Tooltip title="Below settings can’t be changed here. To modify edit the test and make changes.">
                     <span>
                       <QuestionIcon
-                        customStyle={{ position: "relative", bottom: "8px", marginLeft: "6px" }}
+                        customStyle={{
+                          position: 'relative',
+                          bottom: '8px',
+                          marginLeft: '6px',
+                        }}
                         id="test-level-settings"
-                        onClick={event => {
-                          event.stopPropagation();
+                        onClick={(event) => {
+                          event.stopPropagation()
                         }}
                       />
                     </span>
                   </Tooltip>
                   {showSettings ? (
-                    <Icon style={{ marginLeft: "-12px" }} type="caret-up" />
+                    <Icon style={{ marginLeft: '-12px' }} type="caret-up" />
                   ) : (
-                    <Icon type="caret-down" style={{ marginLeft: "-10px" }} />
+                    <Icon type="caret-down" style={{ marginLeft: '-10px' }} />
                   )}
                 </SettingsBtn>
               </Col>
@@ -246,7 +282,7 @@ function LCBAssignmentSettings({
             )}
             <Row gutter={0}>
               <Col offset={12}>
-                <Col span={12} style={{ paddingLeft: "16px" }}>
+                <Col span={12} style={{ paddingLeft: '16px' }}>
                   <EduButton
                     data-cy="lcb-setting-cancel"
                     height="40px"
@@ -257,11 +293,13 @@ function LCBAssignmentSettings({
                     CANCEL
                   </EduButton>
                 </Col>
-                <Col span={12} style={{ paddingLeft: "16px" }}>
+                <Col span={12} style={{ paddingLeft: '16px' }}>
                   <EduButton
                     data-cy="lcb-setting-update"
                     height="40px"
-                    onClick={() => updateAssignmentSettings({ classId, assignmentId })}
+                    onClick={() =>
+                      updateAssignmentSettings({ classId, assignmentId })
+                    }
                   >
                     UPDATE
                   </EduButton>
@@ -272,17 +310,17 @@ function LCBAssignmentSettings({
         </OptionConationer>
       </MainContentWrapper>
     </div>
-  );
+  )
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     additionalData: getAdditionalDataSelector(state),
     assignment: state?.LCBAssignmentSettings?.assignment,
     loading: state?.LCBAssignmentSettings?.loading,
     testSettings: getTestEntitySelector(state),
     testActivity: getTestActivitySelector(state),
-    userId: state?.user?.user?._id
+    userId: state?.user?.user?._id,
   }),
   {
     loadTestActivity: receiveTestActivitydAction,
@@ -290,6 +328,6 @@ export default connect(
     updateAssignmentSettings: slice.actions.updateAssignmentClassSettings,
     changeAttrs: slice.actions.changeAttribute,
     updateLocally: slice.actions.updateAssignment,
-    loadTestSettings: getDefaultTestSettingsAction
+    loadTestSettings: getDefaultTestSettingsAction,
   }
-)(LCBAssignmentSettings);
+)(LCBAssignmentSettings)

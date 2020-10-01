@@ -8,101 +8,101 @@ import {
   SET_QUESTION_DATA,
   SET_QUESTION,
   SET_QUESTION_ALIGNMENT_ADD_ROW,
-  SET_QUESTION_ALIGNMENT_REMOVE_ROW
-} from "../constants/actions";
+  SET_QUESTION_ALIGNMENT_REMOVE_ROW,
+} from '../constants/actions'
 
 const initialState = {
   entity: null,
   loading: false,
   saving: false,
   error: null,
-  saveError: null
-};
+  saveError: null,
+}
 
 const question = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_QUESTION_REQUEST:
       return {
         ...state,
-        loading: true
-      };
+        loading: true,
+      }
     case RECEIVE_QUESTION_SUCCESS:
       return {
         ...state,
         loading: false,
-        entity: payload.entity
-      };
+        entity: payload.entity,
+      }
     case RECEIVE_QUESTION_ERROR:
       return {
         ...state,
         loading: false,
-        error: payload.error
-      };
+        error: payload.error,
+      }
 
     case SAVE_QUESTION_REQUEST:
       return {
         ...state,
-        saving: true
-      };
+        saving: true,
+      }
     case SAVE_QUESTION_SUCCESS:
       return {
         ...state,
-        saving: false
-      };
+        saving: false,
+      }
     case SAVE_QUESTION_ERROR:
       return {
         ...state,
         saving: false,
-        saveError: payload.error
-      };
+        saveError: payload.error,
+      }
 
     case SET_QUESTION_DATA:
       return {
         ...state,
-        entity: { ...state.entity, data: payload.data }
-      };
+        entity: { ...state.entity, data: payload.data },
+      }
     case SET_QUESTION_ALIGNMENT_ADD_ROW: {
-      const { alignmentRow } = payload;
-      const currentAlignment = state.entity.data && state.entity.data.alignment;
-      const newAlignment = currentAlignment ? [...currentAlignment] : [];
-      newAlignment.push(alignmentRow);
+      const { alignmentRow } = payload
+      const currentAlignment = state.entity.data && state.entity.data.alignment
+      const newAlignment = currentAlignment ? [...currentAlignment] : []
+      newAlignment.push(alignmentRow)
       return {
         ...state,
         entity: {
           ...state.entity,
           data: {
             ...state.entity.data,
-            alignment: newAlignment
-          }
-        }
-      };
+            alignment: newAlignment,
+          },
+        },
+      }
     }
     case SET_QUESTION_ALIGNMENT_REMOVE_ROW: {
-      const { index } = payload;
-      const newAlignment = [...state.entity.data.alignment];
-      newAlignment.splice(index, 1);
+      const { index } = payload
+      const newAlignment = [...state.entity.data.alignment]
+      newAlignment.splice(index, 1)
       return {
         ...state,
         entity: {
           ...state.entity,
           data: {
             ...state.entity.data,
-            alignment: newAlignment
-          }
-        }
-      };
+            alignment: newAlignment,
+          },
+        },
+      }
     }
     case SET_QUESTION:
       return {
         ...state,
         entity: {
-          data: payload.data
-        }
-      };
+          data: payload.data,
+        },
+      }
 
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default question;
+export default question

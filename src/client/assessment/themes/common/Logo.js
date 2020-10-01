@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const Logo = styled.img`
   height: 36px;
-`;
+`
 
-export default Logo;
+export default Logo

@@ -1,7 +1,7 @@
-import { FlexContainer } from "@edulastic/common";
-import styled from "styled-components";
-import { tabletWidth, themeColor } from "@edulastic/colors";
-import { Select } from "antd";
+import { FlexContainer } from '@edulastic/common'
+import styled from 'styled-components'
+import { tabletWidth, themeColor } from '@edulastic/colors'
+import { Select } from 'antd'
 
 export const Container = styled.div`
   display: flex;
@@ -30,15 +30,14 @@ export const Container = styled.div`
       margin-right: 0px;
     }
   }
-`;
+`
 export const StyledSelect = styled(Select)`
-  display:inline-block
-  @media (max-width: ${tabletWidth}) {
+  display:inline-block @media (max-width: ${tabletWidth}) {
     display: none;
   }
-`;
+`
 export const DFlexContainer = styled(FlexContainer)`
   display:inline-block @media (max-width: 770px) {
     display: none;
   }
-`;
+`

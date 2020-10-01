@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Dropdown, Select } from "antd";
-import { connect } from "react-redux";
-import { get } from "lodash";
+import React, { useState } from 'react'
+import { Dropdown, Select } from 'antd'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
 
-import { FlexContainer } from "@edulastic/common";
-import selectsData from "../../../../author/TestPage/components/common/selectsData";
-import { receiveAssignmentsAction } from "../../../src/actions/assignments";
-import FilterIcon from "../../assets/filter.svg";
+import { FlexContainer } from '@edulastic/common'
+import selectsData from '../../../TestPage/components/common/selectsData'
+import { receiveAssignmentsAction } from '../../../src/actions/assignments'
+import FilterIcon from '../../assets/filter.svg'
 import {
   Container,
   FilterImg,
@@ -20,24 +20,29 @@ import {
   StyledCloseIcon,
   FilterCheckbox,
   FilterCheckboxWrapper,
-  FilterButtonWrapper
-} from "./styled";
+  FilterButtonWrapper,
+} from './styled'
 
-const { allGrades, allSubjects } = selectsData;
+const { allGrades, allSubjects } = selectsData
 const filterState = {
   grades: [],
-  subject: "",
-  termId: ""
-};
+  subject: '',
+  termId: '',
+}
 
-const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) => {
-  const [modalshow, toggleModal] = useState(false);
-  const [popoverVisible, togglePopover] = useState(false);
-  const handleChange = key => value => {
-    filterState[key] = value;
-    const filters = { filters: filterState };
-    loadAssignments(filters);
-  };
+const FilterBar = ({
+  windowWidth,
+  windowHeight,
+  loadAssignments,
+  termsData,
+}) => {
+  const [modalshow, toggleModal] = useState(false)
+  const [popoverVisible, togglePopover] = useState(false)
+  const handleChange = (key) => (value) => {
+    filterState[key] = value
+    const filters = { filters: filterState }
+    loadAssignments(filters)
+  }
   const FilterElement = (
     <MainContainer>
       <FilterButtonWrapper>
@@ -46,7 +51,13 @@ const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) =>
         </Container>
       </FilterButtonWrapper>
       <StyledBoldText>Grade</StyledBoldText>
-      <Select showArrow mode="multiple" style={{ width: "100%" }} placeholder="All grades" onChange={handleChange("grades")}>
+      <Select
+        showArrow
+        mode="multiple"
+        style={{ width: '100%' }}
+        placeholder="All grades"
+        onChange={handleChange('grades')}
+      >
         {allGrades.map(
           ({ value, text, isContentGrade }) =>
             !isContentGrade && (
@@ -69,7 +80,12 @@ const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) =>
         </StyledParagraph>
       </FilterCheckboxWrapper>
       <StyledBoldText>Subject</StyledBoldText>
-      <Select mode="default" style={{ width: "100%" }} placeholder="All subjects" onChange={handleChange("subject")}>
+      <Select
+        mode="default"
+        style={{ width: '100%' }}
+        placeholder="All subjects"
+        onChange={handleChange('subject')}
+      >
         {allSubjects.map(({ value, text }) => (
           <Select.Option key={value} value={value}>
             {text}
@@ -77,9 +93,14 @@ const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) =>
         ))}
       </Select>
       <StyledBoldText>Year</StyledBoldText>
-      <Select mode="default" style={{ width: "100%" }} placeholder="All years" onChange={handleChange("termId")}>
+      <Select
+        mode="default"
+        style={{ width: '100%' }}
+        placeholder="All years"
+        onChange={handleChange('termId')}
+      >
         <Select.Option key="all" value="">
-          {"All years"}
+          All years
         </Select.Option>
         {termsData.map(({ _id, name }) => (
           <Select.Option key={_id} value={_id}>
@@ -88,14 +109,14 @@ const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) =>
         ))}
       </Select>
     </MainContainer>
-  );
+  )
 
   return (
     <FlexContainer>
       <Dropdown
         overlay={FilterElement}
         placement="bottomRight"
-        trigger={["click"]}
+        trigger={['click']}
         visible={popoverVisible}
         onVisibleChange={() => togglePopover(!popoverVisible)}
       >
@@ -121,14 +142,14 @@ const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) =>
         </StyledModal>
       </ModalContent>
     </FlexContainer>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
-    termsData: get(state, "user.user.orgData.terms", [])
+  (state) => ({
+    termsData: get(state, 'user.user.orgData.terms', []),
   }),
   {
-    loadAssignments: receiveAssignmentsAction
+    loadAssignments: receiveAssignmentsAction,
   }
-)(FilterBar);
+)(FilterBar)

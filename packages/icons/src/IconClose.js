@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconClose = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.635 15.635" {...props}>
+const IconClose = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 15.635 15.635"
+    {...props}
+  >
     <g transform="translate(0 0)">
       <g transform="translate(0 0)">
         <path
@@ -14,9 +18,9 @@ const IconClose = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconClose);
+export default withIconStyles(IconClose)
 
 export const IconCloseTextFormat = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.635 15.635">
 <g transform="translate(0 0)">
@@ -27,4 +31,4 @@ export const IconCloseTextFormat = `<svg xmlns="http://www.w3.org/2000/svg" view
     />
   </g>
 </g>
-</svg>`;
+</svg>`

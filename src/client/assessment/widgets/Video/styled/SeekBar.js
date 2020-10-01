@@ -1,12 +1,12 @@
-import React from "react";
-import { withMediaProps } from "react-media-player";
+import React from 'react'
+import { withMediaProps } from 'react-media-player'
 
-import { Slider } from "antd";
+import { Slider } from 'antd'
 
 const SeekBar = ({ style, media }) => {
-  const _handleChange = value => {
-    media.seekTo(+value);
-  };
+  const _handleChange = (value) => {
+    media.seekTo(+value)
+  }
   return (
     <Slider
       max={media.duration.toFixed(4)}
@@ -15,7 +15,7 @@ const SeekBar = ({ style, media }) => {
       onChange={_handleChange}
       tooltipVisible={false}
     />
-  );
-};
+  )
+}
 
-export default withMediaProps(SeekBar);
+export default withMediaProps(SeekBar)

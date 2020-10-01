@@ -1,26 +1,26 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/subscription";
+const api = new API()
+const prefix = '/subscription'
 
-const upgradeUsingLicenseKey = licenseKey =>
+const upgradeUsingLicenseKey = (licenseKey) =>
   api
     .callApi({
       url: `${prefix}/license/use`,
-      method: "put",
-      data: { license: licenseKey }
+      method: 'put',
+      data: { license: licenseKey },
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const subscriptionStatus = () =>
   api
     .callApi({
       url: `${prefix}/me`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 export default {
   upgradeUsingLicenseKey,
-  subscriptionStatus
-};
+  subscriptionStatus,
+}

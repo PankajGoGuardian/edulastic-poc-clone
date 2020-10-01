@@ -1,6 +1,12 @@
-import styled from "styled-components";
-import { Modal } from "antd";
-import { lightGreySecondary, white, secondaryTextColor, themeColor, titleColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Modal } from 'antd'
+import {
+  lightGreySecondary,
+  white,
+  secondaryTextColor,
+  themeColor,
+  titleColor,
+} from '@edulastic/colors'
 
 export const StyledPaymentServiceModal = styled(Modal)`
   width: 454px !important;
@@ -39,7 +45,7 @@ export const StyledPaymentServiceModal = styled(Modal)`
   .ant-input {
     padding-left: 40px !important;
   }
-`;
+`
 
 export const StyledSpan = styled.h5`
   color: ${secondaryTextColor};
@@ -47,14 +53,14 @@ export const StyledSpan = styled.h5`
   font-weight: 600;
   text-transform: uppercase;
   text-align: center;
-`;
+`
 
 export const StyledTitle = styled.h3`
   font-weight: 700;
   color: ${white};
   text-align: center;
   margin-top: 6px;
-`;
+`
 
 export const IconSpan = styled.span`
   svg {
@@ -62,4 +68,4 @@ export const IconSpan = styled.span`
     transform: scale(1.2);
     fill: ${secondaryTextColor};
   }
-`;
+`

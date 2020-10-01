@@ -1,33 +1,33 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-import { Wrapper, ToolButton, IconPlus, IconMinus } from "./styled";
+import { Wrapper, ToolButton, IconPlus, IconMinus } from './styled'
 
-const ANNOTATIONS_TOOL = "annotationsTool";
-const PLUS_TOOL = "plusTool";
-const MINUS_TOOL = "minusTool";
+const ANNOTATIONS_TOOL = 'annotationsTool'
+const PLUS_TOOL = 'plusTool'
+const MINUS_TOOL = 'minusTool'
 
 const ChartEditTool = ({ item, setQuestionData }) => {
-  const [selectedTool, updateTool] = useState("");
+  const [selectedTool, updateTool] = useState('')
 
-  const onToolButtonClick = tool => () => {
+  const onToolButtonClick = (tool) => () => {
     switch (tool) {
       case ANNOTATIONS_TOOL:
-        updateTool(tool);
-        break;
+        updateTool(tool)
+        break
       case PLUS_TOOL:
       case MINUS_TOOL:
         // TODO: need to implement zoom feature
-        break;
+        break
       default:
-        break;
+        break
     }
-  };
+  }
 
-  const onOverlayClick = e => {
-    e.stopPropagation();
-    updateTool(null);
-  };
+  const onOverlayClick = (e) => {
+    e.stopPropagation()
+    updateTool(null)
+  }
 
   return (
     <>
@@ -55,12 +55,12 @@ const ChartEditTool = ({ item, setQuestionData }) => {
         </ToolButton>
       </Wrapper> */}
     </>
-  );
-};
+  )
+}
 
 ChartEditTool.propTypes = {
   item: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
-  setQuestionData: PropTypes.func.isRequired
-};
+  setQuestionData: PropTypes.func.isRequired,
+}
 
-export default ChartEditTool;
+export default ChartEditTool

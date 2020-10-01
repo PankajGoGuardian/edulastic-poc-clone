@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { getStemNumeration } from "../../../utils/helpers";
-import { IconWrapper } from "./CheckboxTemplateBoxLayout/styled/IconWrapper";
-import { RightIcon } from "./CheckboxTemplateBoxLayout/styled/RightIcon";
-import { WrongIcon } from "./CheckboxTemplateBoxLayout/styled/WrongIcon";
+import { getStemNumeration } from '../../../utils/helpers'
+import { IconWrapper } from './CheckboxTemplateBoxLayout/styled/IconWrapper'
+import { RightIcon } from './CheckboxTemplateBoxLayout/styled/RightIcon'
+import { WrongIcon } from './CheckboxTemplateBoxLayout/styled/WrongIcon'
 
 // eslint-disable-next-line max-len
 const PopoverContent = ({
@@ -15,29 +15,41 @@ const PopoverContent = ({
   status,
   btnStyle,
   checkAnswer,
-  isExpressGrader
+  isExpressGrader,
 }) => {
-  const indexStr = getStemNumeration(stemNumeration, index);
+  const indexStr = getStemNumeration(stemNumeration, index)
   return (
-    <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden", margin: "0px 4px" }}>
+    <span
+      className="template_box dropdown"
+      style={{ fontSize, padding: 20, overflow: 'hidden', margin: '0px 4px' }}
+    >
       <span
         className={`response-btn ${
-          userSelections.length > 0 && userSelections[index] ? "check-answer" : ""
+          userSelections.length > 0 && userSelections[index]
+            ? 'check-answer'
+            : ''
         } ${status} show-answer"`}
-        style={{ ...btnStyle, width: "unset", margin: "0 2px 4px 0px" }}
+        style={{ ...btnStyle, width: 'unset', margin: '0 2px 4px 0px' }}
       >
-        <span className="index" style={{ display: checkAnswer && !isExpressGrader ? "none" : "flex" }}>
+        <span
+          className="index"
+          style={{ display: checkAnswer && !isExpressGrader ? 'none' : 'flex' }}
+        >
           {indexStr}
         </span>
         <span className="text">{userSelections?.[index]?.value}</span>
         <IconWrapper display="flex" rightPosition="10">
-          {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
-          {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
+          {userSelections.length > 0 &&
+            userSelections[index] &&
+            status === 'right' && <RightIcon />}
+          {userSelections.length > 0 &&
+            userSelections[index] &&
+            status === 'wrong' && <WrongIcon />}
         </IconWrapper>
       </span>
     </span>
-  );
-};
+  )
+}
 
 PopoverContent.propTypes = {
   stemNumeration: PropTypes.string,
@@ -47,15 +59,15 @@ PopoverContent.propTypes = {
   status: PropTypes.string.isRequired,
   btnStyle: PropTypes.object,
   checkAnswer: PropTypes.bool,
-  isExpressGrader: PropTypes.bool
-};
+  isExpressGrader: PropTypes.bool,
+}
 
 PopoverContent.defaultProps = {
-  stemNumeration: "",
+  stemNumeration: '',
   fontSize: 14,
   btnStyle: {},
   checkAnswer: false,
-  isExpressGrader: false
-};
+  isExpressGrader: false,
+}
 
-export default PopoverContent;
+export default PopoverContent

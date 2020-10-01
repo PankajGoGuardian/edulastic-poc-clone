@@ -1,71 +1,70 @@
-import React from 'react';
-import "../../../client/index.css";
-import { connect } from 'react-redux';
-import styled, { ThemeProvider } from 'styled-components';
+import React from 'react'
+import '../../../client/index.css'
+import { connect } from 'react-redux'
+import styled, { ThemeProvider } from 'styled-components'
 
-import { Hints } from '@edulastic/common';
-import { mobileWidthMax } from "@edulastic/colors";
+import { Hints } from '@edulastic/common'
+import { mobileWidthMax } from '@edulastic/colors'
 
-import MultipleChoice from "../Questions/MultipleChoice";
-import MatrixChoice from "../Questions/MatrixChoice";
-import { themes } from '../../../client/theme.js';
-import {saveAnswerAction} from "../../reducers/ducks/edulastic";
+import MultipleChoice from '../Questions/MultipleChoice'
+import MatrixChoice from '../Questions/MatrixChoice'
+import { themes } from '../../../client/theme.js'
+import { saveAnswerAction } from '../../reducers/ducks/edulastic'
 
 const questionType = {
-    MULTIPLE_CHOICE: "multipleChoice",
-    CHOICE_MATRIX: "choiceMatrix"
-};
+  MULTIPLE_CHOICE: 'multipleChoice',
+  CHOICE_MATRIX: 'choiceMatrix',
+}
 
-const getQuestion = type => {
-    switch (type) {
-        case questionType.MULTIPLE_CHOICE:
-            return MultipleChoice;
-        case questionType.CHOICE_MATRIX:
-            return MatrixChoice;
-        default:
-            return null;
-    }
-};
+const getQuestion = (type) => {
+  switch (type) {
+    case questionType.MULTIPLE_CHOICE:
+      return MultipleChoice
+    case questionType.CHOICE_MATRIX:
+      return MatrixChoice
+    default:
+      return null
+  }
+}
 
 const QuestionWrapper = ({
-    data,
-    type,
-    view,
-    qIndex,
-    flowLayout,
-    itemIndex,
-    saveAnswer,
-    userAnswer
+  data,
+  type,
+  view,
+  qIndex,
+  flowLayout,
+  itemIndex,
+  saveAnswer,
+  userAnswer,
 }) => {
+  const Question = getQuestion(type)
 
-    const Question = getQuestion(type);
-
-    return (
-      <QuestionContainer
-        className={`fr-view question-container question-container-id-${data.id}`}
-        noPadding
-        isFlex
-        style={{ width: "100%", height: "100%" }}
+  return (
+    <QuestionContainer
+      className={`fr-view question-container question-container-id-${data.id}`}
+      noPadding
+      isFlex
+      style={{ width: '100%', height: '100%' }}
+    >
+      <ThemeProvider
+        theme={{
+          ...themes.default,
+          isV1Migrated: data.isV1Migrated,
+        }}
       >
-        <ThemeProvider
-          theme={{
-                    ...themes.default,
-                    isV1Migrated: data.isV1Migrated
-                }}
-        >
-          <>
-            <Question
-              item={data}
-              view={view}
-              qIndex={qIndex}
-              showQuestionNumber={data.qLabel}
-              flowLayout={flowLayout}
-              itemIndex={itemIndex}
-              saveAnswer={saveAnswer}
-              userAnswer={userAnswer}
-            />
+        <>
+          <Question
+            item={data}
+            view={view}
+            qIndex={qIndex}
+            showQuestionNumber={data.qLabel}
+            flowLayout={flowLayout}
+            itemIndex={itemIndex}
+            saveAnswer={saveAnswer}
+            userAnswer={userAnswer}
+          />
 
-            {/* <Hints
+          {/* <Hints
                         question={data}
                         enableMagnifier={false}
                         saveHintUsage={false}
@@ -73,26 +72,25 @@ const QuestionWrapper = ({
                         itemIndex={itemIndex}
                     /> */}
 
-            {/* <Explanation question={data} /> */}
-          </>
-        </ThemeProvider>
-      </QuestionContainer>
-    );
-};
+          {/* <Explanation question={data} /> */}
+        </>
+      </ThemeProvider>
+    </QuestionContainer>
+  )
+}
 
 export default connect(
-  state => ({
-    userAnswer: state.edulasticReducer.userAnswer
+  (state) => ({
+    userAnswer: state.edulasticReducer.userAnswer,
   }),
   {
-    saveAnswer: saveAnswerAction
+    saveAnswer: saveAnswerAction,
   }
-)(QuestionWrapper);
-
+)(QuestionWrapper)
 
 const QuestionContainer = styled.div`
-  padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
-  display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
+  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
+  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
   justify-content: space-between;
   ${({ style }) => style};
   @media (max-width: ${mobileWidthMax}) {
@@ -157,5 +155,4 @@ const QuestionContainer = styled.div`
     width: 100%;
     padding: 0 35px;
   }
-
-`;
+`

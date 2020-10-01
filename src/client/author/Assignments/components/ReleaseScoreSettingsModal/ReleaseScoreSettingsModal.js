@@ -1,32 +1,42 @@
-import { CustomModalStyled, EduButton, RadioBtn, RadioGrp } from "@edulastic/common";
-import { test } from "@edulastic/constants";
-import styled from "styled-components";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Row } from "antd";
-import { extraDesktopWidth } from "@edulastic/colors";
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { getUserFeatures } from "../../../../student/Login/ducks";
-import { Info, InfoText } from "./styled";
+import {
+  CustomModalStyled,
+  EduButton,
+  RadioBtn,
+  RadioGrp,
+} from '@edulastic/common'
+import { test } from '@edulastic/constants'
+import styled from 'styled-components'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Row } from 'antd'
+import { extraDesktopWidth } from '@edulastic/colors'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { getUserFeatures } from '../../../../student/Login/ducks'
+import { Info, InfoText } from './styled'
 
-const { releaseGradeTypes, releaseGradeLabels } = test;
-const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
+const { releaseGradeTypes, releaseGradeLabels } = test
+const releaseGradeKeys = [
+  'DONT_RELEASE',
+  'SCORE_ONLY',
+  'WITH_RESPONSE',
+  'WITH_ANSWERS',
+]
 const ReleaseScoreSettingsModal = ({
   showReleaseGradeSettings,
   onCloseReleaseScoreSettings,
   updateReleaseScoreSettings,
-  releaseScore = "",
-  features
+  releaseScore = '',
+  features,
 }) => {
-  const [releaseGradeValue, setReleaseGradeValue] = useState(releaseScore);
+  const [releaseGradeValue, setReleaseGradeValue] = useState(releaseScore)
   useEffect(() => {
     // release score will only change on test activity receive succes
-    if (releaseGradeValue !== releaseScore) setReleaseGradeValue(releaseScore);
-  }, [releaseScore]);
-  let _releaseGradeKeys = releaseGradeKeys;
+    if (releaseGradeValue !== releaseScore) setReleaseGradeValue(releaseScore)
+  }, [releaseScore])
+  let _releaseGradeKeys = releaseGradeKeys
   if (!features.assessmentSuperPowersReleaseScorePremium) {
-    _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]];
+    _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]]
   }
   return (
     <ReleaseModal
@@ -34,7 +44,11 @@ const ReleaseScoreSettingsModal = ({
       minWidth="614px"
       visible={showReleaseGradeSettings}
       title={`Release Scores ${
-        releaseGradeValue !== "" ? (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]") : ""
+        releaseGradeValue !== ''
+          ? releaseGradeValue === releaseGradeLabels.DONT_RELEASE
+            ? '[OFF]'
+            : '[ON]'
+          : ''
       }`}
       onOk={onCloseReleaseScoreSettings}
       onCancel={onCloseReleaseScoreSettings}
@@ -47,17 +61,25 @@ const ReleaseScoreSettingsModal = ({
           data-cy="apply"
           key="submit"
           onClick={() => {
-            updateReleaseScoreSettings(releaseGradeValue);
+            updateReleaseScoreSettings(releaseGradeValue)
           }}
         >
           APPLY
-        </EduButton>
+        </EduButton>,
       ]}
     >
-      <RadioGrp value={releaseGradeValue} onChange={e => setReleaseGradeValue(e.target.value)}>
+      <RadioGrp
+        value={releaseGradeValue}
+        onChange={(e) => setReleaseGradeValue(e.target.value)}
+      >
         {_releaseGradeKeys.map((item, index) => (
-          <Row key={index} style={{ marginBottom: "5px" }}>
-            <RadioBtn style={{ marginTop: "10px" }} data-cy={item} value={item} key={item}>
+          <Row key={index} style={{ marginBottom: '5px' }}>
+            <RadioBtn
+              style={{ marginTop: '10px' }}
+              data-cy={item}
+              value={item}
+              key={item}
+            >
               {releaseGradeTypes[item]}
             </RadioBtn>
           </Row>
@@ -66,29 +88,40 @@ const ReleaseScoreSettingsModal = ({
       {!!releaseGradeValue &&
         (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? (
           <Info>
-            <FontAwesomeIcon style={{ marginLeft: "2px" }} icon={faInfoCircle} aria-hidden="true" />
-            <InfoText>This setting will be retained and the scores will not be released to the students.</InfoText>
+            <FontAwesomeIcon
+              style={{ marginLeft: '2px' }}
+              icon={faInfoCircle}
+              aria-hidden="true"
+            />
+            <InfoText>
+              This setting will be retained and the scores will not be released
+              to the students.
+            </InfoText>
           </Info>
         ) : (
           <Info>
-            <FontAwesomeIcon style={{ marginLeft: "2px" }} icon={faInfoCircle} aria-hidden="true" />
+            <FontAwesomeIcon
+              style={{ marginLeft: '2px' }}
+              icon={faInfoCircle}
+              aria-hidden="true"
+            />
             <InfoText>
-              This setting will be retained and scores will be released automatically when students complete the
-              assignment.
+              This setting will be retained and scores will be released
+              automatically when students complete the assignment.
             </InfoText>
           </Info>
         ))}
     </ReleaseModal>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({ features: getUserFeatures(state) }),
+  (state) => ({ features: getUserFeatures(state) }),
   null
-)(ReleaseScoreSettingsModal);
+)(ReleaseScoreSettingsModal)
 
 export const ReleaseModal = styled(CustomModalStyled)`
   @media (min-width: ${extraDesktopWidth}) {
     min-width: 750px !important;
   }
-`;
+`

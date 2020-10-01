@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components'
 
 export const IconWrapper = styled.div`
   display: flex;
@@ -9,4 +9,4 @@ export const IconWrapper = styled.div`
     css`
       margin-right: 0.5rem;
     `};
-`;
+`

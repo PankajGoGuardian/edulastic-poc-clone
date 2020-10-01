@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { darkBlue } from "@edulastic/colors";
+import styled from 'styled-components'
+import { darkBlue } from '@edulastic/colors'
 
 export const SelectContainer = styled.div`
   position: relative;
@@ -15,7 +15,8 @@ export const SelectContainer = styled.div`
     height: 40px;
     width: 100%;
     &::selection {
-      background: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBgColor};
+      background: ${(props) =>
+        props.theme.widgets.clozeImageDropDown.antSelectSelectionBgColor};
     }
   }
   .ant-select-selection {
@@ -24,11 +25,13 @@ export const SelectContainer = styled.div`
     justify-content: center;
     padding-left: 5px;
     border: 1px solid;
-    border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
-    background-color: ${props => props.backgroundColor} !important;
+    border-color: ${(props) =>
+      props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
+    background-color: ${(props) => props.backgroundColor} !important;
     &:hover {
       border: 1px solid;
-      border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
+      border-color: ${(props) =>
+        props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
     }
   }
 
@@ -42,21 +45,26 @@ export const SelectContainer = styled.div`
   }
 
   .ant-select-selection-selected-value {
-    font-size: ${props => props.fontSize || props.theme.widgets.clozeImageDropDown.antSelectSelectionFontSize};
-    font-weight: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontWeight};
+    font-size: ${(props) =>
+      props.fontSize ||
+      props.theme.widgets.clozeImageDropDown.antSelectSelectionFontSize};
+    font-weight: ${(props) =>
+      props.theme.widgets.clozeImageDropDown.antSelectSelectionFontWeight};
     letter-spacing: 0.2px;
-    color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};
+    color: ${(props) =>
+      props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};
     max-width: calc(100% - 20px);
     text-overflow: clip;
     ${({ isPrintPreview }) => (isPrintPreview ? { color: darkBlue } : {})};
   }
   .anticon-down {
     svg {
-      fill: ${props => props.theme.widgets.clozeImageDropDown.antIconDownColor};
+      fill: ${(props) =>
+        props.theme.widgets.clozeImageDropDown.antIconDownColor};
     }
   }
   @media (max-width: 760px) {
     height: 52px;
     width: 188px;
   }
-`;
+`

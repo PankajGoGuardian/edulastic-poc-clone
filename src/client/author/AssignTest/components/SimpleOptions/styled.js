@@ -9,21 +9,21 @@ import {
   themeColor,
   themeColorLight,
   title,
-  white
-} from "@edulastic/colors";
-import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from "antd";
-import styled from "styled-components";
-import { EduSwitchStyled } from "@edulastic/common";
+  white,
+} from '@edulastic/colors'
+import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
+import styled from 'styled-components'
+import { EduSwitchStyled } from '@edulastic/common'
 
-const RadioGroup = Radio.Group;
+const RadioGroup = Radio.Group
 
 export const OptionConationer = styled.div`
   min-height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: ${window.innerHeight <= 780 && "24px"};
-`;
+  margin-top: ${window.innerHeight <= 780 && '24px'};
+`
 
 export const InitOptions = styled.div`
   background: ${white};
@@ -35,30 +35,31 @@ export const InitOptions = styled.div`
   @media (min-width: ${largeDesktopWidth}) {
     width: 1000px;
   }
-`;
+`
 
 export const StyledRow = styled(Row)`
-  margin-bottom: ${props => props.mb || "8px"};
-`;
+  margin-bottom: ${(props) => props.mb || '8px'};
+`
 
-export const StyledRowLabel = styled(Row)``;
+export const StyledRowLabel = styled(Row)``
 
 export const ColLabel = styled(Col)`
   color: ${secondaryTextColor};
   font-weight: 600;
   margin-bottom: 8px;
-`;
+`
 
 export const StyledRowButton = styled(Row)`
   font-weight: 600;
   margin: 20px 0px;
-`;
+`
 
 export const AlignRight = styled(RadioGroup)`
   display: flex;
   justify-content: flex-start;
   & * {
-    cursor: ${({ forClassLevel }) => (forClassLevel ? "not-allowed" : "initial")};
+    cursor: ${({ forClassLevel }) =>
+      forClassLevel ? 'not-allowed' : 'initial'};
   }
   .ant-radio-wrapper {
     white-space: normal;
@@ -76,19 +77,19 @@ export const AlignRight = styled(RadioGroup)`
       margin-right: 0px;
     }
   }
-`;
+`
 
 export const StyledRadioGropRow = styled(Row)`
   margin-bottom: 15px;
   margin-top: -8px;
-`;
+`
 
 export const AlignSwitchRight = styled(EduSwitchStyled)`
   float: left;
-`;
+`
 
 export const StyledRowSettings = styled(Row)`
-  padding: ${({ noPadding }) => (noPadding ? "0px" : "15px")};
+  padding: ${({ noPadding }) => (noPadding ? '0px' : '15px')};
   background-color: #f8f8f8;
   border-radius: 4px;
   margin-left: 0px !important;
@@ -99,7 +100,7 @@ export const StyledRowSettings = styled(Row)`
     color: #434b5d;
     font-weight: 600;
   }
-`;
+`
 
 export const StyledRowSelect = styled(StyledRowSettings)`
   .ant-select {
@@ -109,7 +110,7 @@ export const StyledRowSelect = styled(StyledRowSettings)`
       padding: 0;
       min-height: auto;
       .ant-select-selection-selected-value {
-        font-size: ${props => props.theme.smallFontSize};
+        font-size: ${(props) => props.theme.smallFontSize};
         margin: 0px;
         text-transform: uppercase;
       }
@@ -126,39 +127,39 @@ export const StyledRowSelect = styled(StyledRowSettings)`
       right: 0px;
     }
   }
-`;
+`
 
 export const SpaceDiv = styled.div`
   height: 32px;
-`;
+`
 
 export const CheckBoxWrapper = styled.p`
   margin-top: 10px;
   display: flex;
   justify-content: flex-start;
-`;
+`
 
 export const SettingsWrapper = styled.div`
   margin-top: 35px;
   color: #434b5d;
   font-weight: 600;
   display: flex;
-  flex-direction: ${({ isAdvanced }) => (isAdvanced ? "row" : "column")};
-`;
+  flex-direction: ${({ isAdvanced }) => (isAdvanced ? 'row' : 'column')};
+`
 
 export const MaxAttemptIInput = styled(Input)`
   width: 20%;
   float: left;
-`;
+`
 
 export const Password = styled(Input)`
   width: 100%;
   float: left;
   margin-top: 5px;
-  border-color: ${props => (props.color ? props.color : themeColor)};
+  border-color: ${(props) => (props.color ? props.color : themeColor)};
   &:hover,
   &:focus {
-    border-color: ${props => (props.color ? props.color : themeColor)};
+    border-color: ${(props) => (props.color ? props.color : themeColor)};
   }
 
   .ant-input-disabled,
@@ -171,11 +172,11 @@ export const Password = styled(Input)`
     cursor: pointer !important;
     color: ${themeColor} !important;
   }
-`;
+`
 
 export const MessageSpan = styled.span`
   color: ${red};
-`;
+`
 
 export const SettingsBtn = styled.span`
   display: flex;
@@ -184,18 +185,19 @@ export const SettingsBtn = styled.span`
   cursor: pointer;
   font-weight: 600;
   color: #6a737f;
-  font-size: ${props => props.theme.linkFontSize};
+  font-size: ${(props) => props.theme.linkFontSize};
 
   svg {
     margin-left: 16px;
     fill: ${themeColor};
   }
-`;
+`
 
 export const StyledSelect = styled(Select)`
   min-width: 100%;
   .ant-select-selection {
-    background: ${({ isBackgroundWhite }) => (isBackgroundWhite ? white : greyThemeLighter)};
+    background: ${({ isBackgroundWhite }) =>
+      isBackgroundWhite ? white : greyThemeLighter};
     min-height: 40px;
     padding: 3px;
     border-radius: 2px;
@@ -229,13 +231,13 @@ export const StyledSelect = styled(Select)`
     }
 
     .ant-select-arrow-icon {
-      font-size: ${props => props.theme.linkFontSize};
+      font-size: ${(props) => props.theme.linkFontSize};
       svg {
         fill: ${themeColor};
       }
     }
   }
-`;
+`
 
 export const StyledDatePicker = styled(DatePicker)`
   .ant-calendar-picker-input {
@@ -245,10 +247,10 @@ export const StyledDatePicker = styled(DatePicker)`
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
-  margin-left: ${({ isAdvanced }) => (isAdvanced ? "20px" : "0px")};
+  margin-left: ${({ isAdvanced }) => (isAdvanced ? '20px' : '0px')};
   .ant-table {
     color: #434b5d;
     font-weight: 600;
@@ -263,7 +265,7 @@ export const StyledTable = styled(Table)`
       padding: 8px;
 
       &:first-child {
-        font-size: ${({ isAdvanced }) => (isAdvanced ? "14px" : "20px")};
+        font-size: ${({ isAdvanced }) => (isAdvanced ? '14px' : '20px')};
         font-weight: bold;
         text-transform: unset;
         color: #434b5d;
@@ -297,26 +299,26 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const DivBlock = styled.div`
   padding-top: 30px;
-`;
+`
 
 export const Label = styled.label`
   display: flex;
-  font-size: ${props => props.theme.linkFontSize};
+  font-size: ${(props) => props.theme.linkFontSize};
   font-weight: 600;
   text-transform: uppercase;
-`;
+`
 export const RadioButtonWrapper = styled.div`
   display: flex;
   margin-top: 10px;
-`;
+`
 
 export const StyledDiv = styled.div`
   flex: 1;
-`;
+`
 
 export const AdvancedButton = styled(Button)`
   padding: 0;
@@ -333,14 +335,14 @@ export const AdvancedButton = styled(Button)`
   align-items: center;
 
   svg {
-    transform: ${props => (props.show ? "rotate(180deg)" : "none")};
+    transform: ${(props) => (props.show ? 'rotate(180deg)' : 'none')};
   }
-`;
+`
 
 export const Block = styled.div`
   margin-bottom: 30px;
-  padding: ${props => (props.smallSize ? "15px" : "29px 30px 30px 30px")};
-  background: ${props => (props.smallSize ? white : "#f8f8f8")};
+  padding: ${(props) => (props.smallSize ? '15px' : '29px 30px 30px 30px')};
+  background: ${(props) => (props.smallSize ? white : '#f8f8f8')};
   border-radius: 4px;
 
   .ant-input {
@@ -348,7 +350,7 @@ export const Block = styled.div`
     font-size: 13px;
     border-radius: 4px;
   }
-`;
+`
 
 export const StyledRadioGroup = styled(Radio.Group)`
   span {
@@ -365,7 +367,7 @@ export const StyledRadioGroup = styled(Radio.Group)`
   .ant-radio-wrapper {
     margin-right: 40px;
   }
-`;
+`
 
 export const RadioWrapper = styled(Block)`
   padding: 0;
@@ -402,19 +404,19 @@ export const RadioWrapper = styled(Block)`
       }
     }
   }
-`;
+`
 
 export const Title = styled.div`
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.3px;
   color: ${secondaryTextColor};
-`;
+`
 
 export const TimeSpentInput = styled(Input)`
   width: 30%;
   margin: 0 30px;
-`;
+`
 
 export const SelectStudentColumn = styled(Col)`
   .student-dropdown {
@@ -435,12 +437,12 @@ export const SelectStudentColumn = styled(Col)`
       }
     }
   }
-`;
+`
 
 export const HeaderButtonsWrapper = styled.div`
   width: 100%;
   padding: 0px 0px 5px;
-`;
+`
 export const SelectAll = styled.div`
   display: inline-block;
   color: ${title};
@@ -453,7 +455,7 @@ export const SelectAll = styled.div`
     color: ${greyThemeLight};
     cursor: not-allowed;
   }
-`;
+`
 
 export const SelectTextInline = styled.div`
   display: inline-block;
@@ -462,5 +464,5 @@ export const SelectTextInline = styled.div`
   margin-right: 15px;
   font-weight: 600;
   font-size: 12px;
-`;
-export const UnselectAll = styled(SelectAll)``;
+`
+export const UnselectAll = styled(SelectAll)``

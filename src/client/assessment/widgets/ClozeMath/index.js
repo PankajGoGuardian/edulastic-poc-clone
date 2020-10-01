@@ -1,1 +1,1 @@
-export { default } from "./ClozeMath";
+export { default } from './ClozeMath'

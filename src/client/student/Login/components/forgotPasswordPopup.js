@@ -1,15 +1,18 @@
-import React, { useEffect } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { Modal, Button, Input, Icon, Form } from "antd";
-import { get, trim } from "lodash";
-import { white, greenDark, orange } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { isEmailValid } from "../../../common/utils/helpers";
-import { requestNewPasswordAction, requestNewPasswordResetControlAction } from "./../ducks";
+import React, { useEffect } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { Modal, Button, Input, Icon, Form } from 'antd'
+import { get, trim } from 'lodash'
+import { white, greenDark, orange } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
+import { isEmailValid } from '../../../common/utils/helpers'
+import {
+  requestNewPasswordAction,
+  requestNewPasswordResetControlAction,
+} from '../ducks'
 
-const ForgotPasswordPopup = props => {
+const ForgotPasswordPopup = (props) => {
   const {
     visible,
     className,
@@ -19,38 +22,38 @@ const ForgotPasswordPopup = props => {
     requestNewPassword,
     user,
     districtPolicy,
-    requestNewPasswordResetControl
-  } = props;
-  const { requestingNewPassword, requestNewPasswordSuccess } = user;
+    requestNewPasswordResetControl,
+  } = props
+  const { requestingNewPassword, requestNewPasswordSuccess } = user
 
   useEffect(() => {
-    requestNewPasswordResetControl();
-  }, []);
+    requestNewPasswordResetControl()
+  }, [])
 
   const onCancelForgotPassword = () => {
-    onCancel();
-  };
+    onCancel()
+  }
 
-  const onSendLink = email => {
-    requestNewPassword({ email, districtId: districtPolicy.orgId });
-  };
+  const onSendLink = (email) => {
+    requestNewPassword({ email, districtId: districtPolicy.orgId })
+  }
 
   const onClickTryAgain = () => {
-    requestNewPasswordResetControl();
-  };
+    requestNewPasswordResetControl()
+  }
 
   const onClickClose = () => {
-    onCancel();
-  };
+    onCancel()
+  }
 
   return (
     <Modal
       visible={visible}
       footer={null}
       className={className}
-      width={"500px"}
+      width="500px"
       onCancel={onCancelForgotPassword}
-      destroyOnClose={true}
+      destroyOnClose
     >
       <div className="third-party-signup-select-role">
         {!requestNewPasswordSuccess ? (
@@ -64,7 +67,7 @@ const ForgotPasswordPopup = props => {
               requestingNewPassword={requestingNewPassword}
             />
           </div>
-        ) : requestNewPasswordSuccess.result === "error" ? (
+        ) : requestNewPasswordSuccess.result === 'error' ? (
           <div className="link-sent-failed">
             <div className="message-container">
               <p>
@@ -73,10 +76,18 @@ const ForgotPasswordPopup = props => {
               <p>{requestNewPasswordSuccess.message}</p>
             </div>
             <div className="model-buttons">
-              <Button className="try-again-button" key="tryAgain" onClick={onClickTryAgain}>
+              <Button
+                className="try-again-button"
+                key="tryAgain"
+                onClick={onClickTryAgain}
+              >
                 Try Again
               </Button>
-              <Button className="close-button" key="close" onClick={onClickClose}>
+              <Button
+                className="close-button"
+                key="close"
+                onClick={onClickClose}
+              >
                 Go back to SignIn page
               </Button>
             </div>
@@ -87,10 +98,17 @@ const ForgotPasswordPopup = props => {
               <p>
                 <Icon type="check" /> You've got mail
               </p>
-              <p>We sent you an email with instruction on how to reset your password.</p>
+              <p>
+                We sent you an email with instruction on how to reset your
+                password.
+              </p>
             </div>
             <div className="model-buttons">
-              <Button className="close-button" key="close" onClick={onClickClose}>
+              <Button
+                className="close-button"
+                key="close"
+                onClick={onClickClose}
+              >
                 Close
               </Button>
             </div>
@@ -98,67 +116,84 @@ const ForgotPasswordPopup = props => {
         )}
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-const ForgotPasswordForm = props => {
-  const { getFieldDecorator } = props.form;
-  const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props;
+const ForgotPasswordForm = (props) => {
+  const { getFieldDecorator } = props.form
+  const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props
 
-  const onSubmit = event => {
-    event.preventDefault();
-    const { form } = props;
+  const onSubmit = (event) => {
+    event.preventDefault()
+    const { form } = props
     form.validateFieldsAndScroll((err, { email }) => {
       if (!err) {
-        _onSubmit(email);
+        _onSubmit(email)
       }
-    });
-  };
+    })
+  }
 
   return (
     <Form onSubmit={onSubmit} autoComplete="new-password">
       <Form.Item>
-        {getFieldDecorator("email", {
+        {getFieldDecorator('email', {
           validateFirst: true,
-          initialValue: "",
+          initialValue: '',
           rules: [
             {
-              transform: value => trim(value)
+              transform: (value) => trim(value),
             },
             {
               required: true,
-              message: t("common.forgotpassworderror")
+              message: t('common.forgotpassworderror'),
             },
             {
-              type: "string",
-              message: t("common.forgotpassworderror")
+              type: 'string',
+              message: t('common.forgotpassworderror'),
             },
             {
               validator: (rule, value, callback) =>
-                isEmailValid(rule, value, callback, "both", t("common.forgotpassworderror"))
-            }
-          ]
+                isEmailValid(
+                  rule,
+                  value,
+                  callback,
+                  'both',
+                  t('common.forgotpassworderror')
+                ),
+            },
+          ],
         })(
-          <Input className="email-input" placeholder="Enter Registered Username or Email" autoComplete="new-password" />
+          <Input
+            className="email-input"
+            placeholder="Enter Registered Username or Email"
+            autoComplete="new-password"
+          />
         )}
       </Form.Item>
       <div className="model-buttons">
         <Form.Item>
-          <Button className={"cancel-button"} key="cancel" onClick={onCancel}>
+          <Button className="cancel-button" key="cancel" onClick={onCancel}>
             Cancel
           </Button>
         </Form.Item>
         <Form.Item>
-          <Button className={"send-link-button"} key="sendLink" htmlType="submit" disabled={requestingNewPassword}>
+          <Button
+            className="send-link-button"
+            key="sendLink"
+            htmlType="submit"
+            disabled={requestingNewPassword}
+          >
             Send Link
           </Button>
         </Form.Item>
       </div>
     </Form>
-  );
-};
+  )
+}
 
-const ConnectedForgotPasswordForm = Form.create({ name: "forgotPasswordForm" })(ForgotPasswordForm);
+const ConnectedForgotPasswordForm = Form.create({ name: 'forgotPasswordForm' })(
+  ForgotPasswordForm
+)
 
 const StyledForgotPasswordPopup = styled(ForgotPasswordPopup)`
   .ant-modal-content {
@@ -276,22 +311,22 @@ const StyledForgotPasswordPopup = styled(ForgotPasswordPopup)`
       }
     }
   }
-`;
+`
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   connect(
-    state => ({
-      user: get(state, "user", null),
-      districtPolicy: get(state, "signup.districtPolicy", {})
+    (state) => ({
+      user: get(state, 'user', null),
+      districtPolicy: get(state, 'signup.districtPolicy', {}),
     }),
     {
       requestNewPassword: requestNewPasswordAction,
-      requestNewPasswordResetControl: requestNewPasswordResetControlAction
+      requestNewPasswordResetControl: requestNewPasswordResetControlAction,
     }
   )
-);
+)
 
-const ConnectedStyledForgotPasswordPopup = enhance(StyledForgotPasswordPopup);
+const ConnectedStyledForgotPasswordPopup = enhance(StyledForgotPasswordPopup)
 
-export { ConnectedStyledForgotPasswordPopup as ForgotPasswordPopup };
+export { ConnectedStyledForgotPasswordPopup as ForgotPasswordPopup }

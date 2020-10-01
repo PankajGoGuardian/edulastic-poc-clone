@@ -1,34 +1,40 @@
 export function offset(el, scrollElement) {
   if (!el) {
-    return;
+    return
   }
-  if(!scrollElement){
-    scrollElement = window;
+  if (!scrollElement) {
+    scrollElement = window
   }
-  const rect = el.getBoundingClientRect();
-  let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-  let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const rect = el.getBoundingClientRect()
+  let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop
   if (scrollElement && scrollElement != window) {
-    scrollTop = scrollElement.scrollTop;
-    scrollLeft = scrollElement.scrollLeft;
+    scrollTop = scrollElement.scrollTop
+    scrollLeft = scrollElement.scrollLeft
   }
-  return { top: rect.top + scrollTop, left: rect.left + scrollLeft, height: rect.height, width: rect.height };
+  return {
+    top: rect.top + scrollTop,
+    left: rect.left + scrollLeft,
+    height: rect.height,
+    width: rect.height,
+  }
 }
 
-const isSmoothScrollSupported = "scrollBehavior" in document.documentElement.style;
+const isSmoothScrollSupported =
+  'scrollBehavior' in document.documentElement.style
 
 /**
  * @param {Element} el
  */
 export function scrollTo(el, subtractScroll = 0, scrollEl) {
   if (!scrollEl) {
-    scrollEl = window;
+    scrollEl = window
   }
-  const { top = 0 } = offset(el, scrollEl) || {};
+  const { top = 0 } = offset(el, scrollEl) || {}
   if (isSmoothScrollSupported) {
     // behavior:auto|smooth|initial|inherit
-    scrollEl.scrollTo({ top: top - subtractScroll, left: 0, behavior: "auto" });
+    scrollEl.scrollTo({ top: top - subtractScroll, left: 0, behavior: 'auto' })
   } else {
-    scrollEl.scrollTo(0, top - subtractScroll);
+    scrollEl.scrollTo(0, top - subtractScroll)
   }
 }

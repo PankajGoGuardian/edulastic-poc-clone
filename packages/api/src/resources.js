@@ -1,26 +1,26 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/resources";
+const api = new API()
+const prefix = '/resources'
 
 const fetchResources = () =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const addResource = data =>
+const addResource = (data) =>
   api
     .callApi({
       url: `${prefix}`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
   addResource,
-  fetchResources
-};
+  fetchResources,
+}

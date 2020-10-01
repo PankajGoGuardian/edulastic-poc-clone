@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const ButtonWrapper = styled.div`
   display: flex;
@@ -6,4 +6,4 @@ export const ButtonWrapper = styled.div`
   max-width: 400px;
   max-height: 200px;
   overflow-y: auto;
-`;
+`

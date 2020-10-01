@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
-import styled from "styled-components";
-import get from "lodash/get";
-import PropTypes from "prop-types";
+import React, { useContext, useState } from 'react'
+import styled from 'styled-components'
+import get from 'lodash/get'
+import PropTypes from 'prop-types'
 
 import {
   Stimulus,
@@ -11,15 +11,15 @@ import {
   QuestionLabelWrapper,
   QuestionSubLabel,
   QuestionContentWrapper,
-  EduSwitchStyled
-} from "@edulastic/common";
-import Circles from "./Circles";
-import Rectangles from "./Rectangles";
-import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
-import Instructions from "../../../components/Instructions";
-import { CLEAR, SHOW, EDIT } from "../../../constants/constantsForQuestions";
-import CorrectAnswerBox from "./CorrectAnswerBox";
-import SwitchWrapper from "../styled/SwitchWrapper";
+  EduSwitchStyled,
+} from '@edulastic/common'
+import Circles from './Circles'
+import Rectangles from './Rectangles'
+import AnnotationRnd from '../../../components/Annotations/AnnotationRnd'
+import Instructions from '../../../components/Instructions'
+import { CLEAR, SHOW, EDIT } from '../../../constants/constantsForQuestions'
+import CorrectAnswerBox from './CorrectAnswerBox'
+import SwitchWrapper from '../styled/SwitchWrapper'
 
 const Display = ({
   saveAnswer,
@@ -32,51 +32,63 @@ const Display = ({
   changePreviewTab,
   isReviewTab,
   view,
-  t
+  t,
 }) => {
-  const { fractionProperties = {}, annotations = [] } = item;
-  const { fractionType } = fractionProperties;
-  const count = fractionProperties.count || 1;
-  const selected = userAnswer;
-  const answerContext = useContext(AnswerContext);
-  const hasAnnotations = annotations.length > 0;
-  const [showAnnotations, toggleAnnotationsVibility] = useState(hasAnnotations);
-  const handleSelect = index => {
+  const { fractionProperties = {}, annotations = [] } = item
+  const { fractionType } = fractionProperties
+  const count = fractionProperties.count || 1
+  const selected = userAnswer
+  const answerContext = useContext(AnswerContext)
+  const hasAnnotations = annotations.length > 0
+  const [showAnnotations, toggleAnnotationsVibility] = useState(hasAnnotations)
+  const handleSelect = (index) => {
     if (
-      previewTab === "check" ||
-      (previewTab === "show" && !answerContext.expressGrader && answerContext.isAnswerModifiable)
+      previewTab === 'check' ||
+      (previewTab === 'show' &&
+        !answerContext.expressGrader &&
+        answerContext.isAnswerModifiable)
     ) {
-      saveAnswer([]);
-      changePreviewTab("clear");
-      return;
+      saveAnswer([])
+      changePreviewTab('clear')
+      return
     }
-    const _userAnswer = [...userAnswer];
+    const _userAnswer = [...userAnswer]
     if (_userAnswer.includes(index)) {
-      _userAnswer.splice(_userAnswer.indexOf(index), 1);
+      _userAnswer.splice(_userAnswer.indexOf(index), 1)
     } else {
-      _userAnswer.push(index);
+      _userAnswer.push(index)
     }
-    saveAnswer(_userAnswer);
-  };
+    saveAnswer(_userAnswer)
+  }
   return (
     <FractionDisplay justifyContent="flex-start" alignItems="baseline">
       <QuestionLabelWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel} </QuestionNumberLabel>}
-        {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        {showQuestionNumber && (
+          <QuestionNumberLabel>{item.qLabel} </QuestionNumberLabel>
+        )}
+        {item.qSubLabel && (
+          <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+        )}
       </QuestionLabelWrapper>
 
       <QuestionContentWrapper>
         <FlexContainer justifyContent="space-between">
-          <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+          <FlexContainer
+            justifyContent="flex-start"
+            alignItems="baseline"
+            width="100%"
+          >
             <StimulusContainer dangerouslySetInnerHTML={{ __html: stimulus }} />
           </FlexContainer>
           {hasAnnotations && answerContext.isAnswerModifiable && (
             <FlexContainer>
-              <AnnotationsTitle>{t("component.fractionEditor.showAnnotations")}</AnnotationsTitle>
+              <AnnotationsTitle>
+                {t('component.fractionEditor.showAnnotations')}
+              </AnnotationsTitle>
               <SwitchWrapper>
                 <EduSwitchStyled
                   defaultChecked={showAnnotations}
-                  onChange={checked => toggleAnnotationsVibility(checked)}
+                  onChange={(checked) => toggleAnnotationsVibility(checked)}
                 />
               </SwitchWrapper>
             </FlexContainer>
@@ -84,16 +96,21 @@ const Display = ({
         </FlexContainer>
         {/* content */}
         <FractionContainer className="__prevent-page-break">
-          <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
+          <FlexContainer
+            alignItems="flex-start"
+            flexDirection="row"
+            flexWrap="wrap"
+            justifyContent="flex-start"
+          >
             {Array(count)
               .fill()
               .map((_, index) =>
-                fractionType === "circles" ? (
+                fractionType === 'circles' ? (
                   <Circles
                     fractionNumber={index}
                     sectors={fractionProperties.sectors}
                     selected={selected}
-                    sectorClick={_index => handleSelect(_index)}
+                    sectorClick={(_index) => handleSelect(_index)}
                     previewTab={previewTab}
                     isExpressGrader={answerContext.expressGrader}
                     isAnswerModifiable={answerContext.isAnswerModifiable}
@@ -106,7 +123,7 @@ const Display = ({
                     rows={fractionProperties.rows}
                     columns={fractionProperties.columns}
                     selected={selected}
-                    onSelect={_index => handleSelect(_index)}
+                    onSelect={(_index) => handleSelect(_index)}
                     previewTab={previewTab}
                     isExpressGrader={answerContext.expressGrader}
                     isAnswerModifiable={answerContext.isAnswerModifiable}
@@ -116,14 +133,21 @@ const Display = ({
                 )
               )}
           </FlexContainer>
-          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging noBorder />}
+          {showAnnotations && (
+            <AnnotationRnd
+              question={item}
+              setQuestionData={() => {}}
+              disableDragging
+              noBorder
+            />
+          )}
         </FractionContainer>
         {view && view !== EDIT && <Instructions item={item} />}
         {previewTab === SHOW && (
           <FractionContainer className="__prevent-page-break">
             <CorrectAnswerBox
               fractionProperties={fractionProperties}
-              selected={Array(get(item, "validation.validResponse.value", 1))
+              selected={Array(get(item, 'validation.validResponse.value', 1))
                 .fill()
                 .map((_, i) => i + 1)}
             />
@@ -131,8 +155,8 @@ const Display = ({
         )}
       </QuestionContentWrapper>
     </FractionDisplay>
-  );
-};
+  )
+}
 
 Display.propTypes = {
   t: PropTypes.func.isRequired,
@@ -142,8 +166,8 @@ Display.propTypes = {
   userAnswer: PropTypes.array,
   evaluation: PropTypes.any,
   showQuestionNumber: PropTypes.bool,
-  stimulus: PropTypes.string
-};
+  stimulus: PropTypes.string,
+}
 
 Display.defaultProps = {
   previewTab: CLEAR,
@@ -151,28 +175,28 @@ Display.defaultProps = {
   userAnswer: [],
   evaluation: [],
   showQuestionNumber: false,
-  stimulus: ""
-};
+  stimulus: '',
+}
 
-export default Display;
+export default Display
 
 const FractionDisplay = styled(FlexContainer)`
   overflow: auto;
-`;
+`
 
 const StimulusContainer = styled(Stimulus)`
   margin-top: 14px;
   margin-right: 20px;
   width: 100%;
-`;
+`
 
 const AnnotationsTitle = styled.span`
   margin-right: 5px;
-`;
+`
 
 const FractionContainer = styled.div`
   position: relative;
   min-width: 660px;
   min-height: 240px;
   padding: 0px 0px 1rem 0px;
-`;
+`

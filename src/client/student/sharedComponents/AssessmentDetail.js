@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { Col, Icon, Tooltip } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { Col, Icon, Tooltip } from 'antd'
 import {
   white,
   testTypeColor,
@@ -9,18 +9,21 @@ import {
   largeDesktopWidth,
   mobileWidthMax,
   smallDesktopWidth,
-  desktopWidth
-} from "@edulastic/colors";
-import { test, testActivity as testActivityConstants } from "@edulastic/constants";
-import { formatDateAndTime, formatStudentPastDueTag } from "../utils";
-import { themes } from "../../theme";
+  desktopWidth,
+} from '@edulastic/colors'
+import {
+  test,
+  testActivity as testActivityConstants,
+} from '@edulastic/constants'
+import { formatDateAndTime, formatStudentPastDueTag } from '../utils'
+import { themes } from '../../theme'
 
-const { pastDueTagBackground, pastDueTagColor } = themes.default.default;
+const { pastDueTagBackground, pastDueTagColor } = themes.default.default
 
 const {
-  studentAssignmentConstants: { assignmentStatus }
-} = testActivityConstants;
-const { ASSESSMENT, PRACTICE } = test.type;
+  studentAssignmentConstants: { assignmentStatus },
+} = testActivityConstants
+const { ASSESSMENT, PRACTICE } = test.type
 
 const AssessmentDetails = ({
   title,
@@ -39,22 +42,22 @@ const AssessmentDetails = ({
   isPaused,
   lastAttempt,
   isDueDate,
-  serverTimeStamp
+  serverTimeStamp,
 }) => {
   const status =
     started || resume
-      ? `${t("common.inProgress")} ${isPaused ? " (PAUSED)" : ""}`
-      : `${t("common.notStartedTag")} ${isPaused ? " (PAUSED)" : ""}`;
+      ? `${t('common.inProgress')} ${isPaused ? ' (PAUSED)' : ''}`
+      : `${t('common.notStartedTag')} ${isPaused ? ' (PAUSED)' : ''}`
 
-  const { endDate } = lastAttempt;
+  const { endDate } = lastAttempt
   const pastDueTag =
     isDueDate &&
     !absent &&
     formatStudentPastDueTag({
-      status: started || graded ? "submitted" : "inprogress",
+      status: started || graded ? 'submitted' : 'inprogress',
       dueDate,
-      endDate
-    });
+      endDate,
+    })
 
   return (
     <Wrapper>
@@ -71,10 +74,10 @@ const AssessmentDetails = ({
           <Tooltip title={t(`common.toolTip.${testType}`)}>
             <TestType data-cy="testType" type={testType}>
               {testType === PRACTICE
-                ? t("common.practice")
+                ? t('common.practice')
                 : testType === ASSESSMENT
-                ? t("common.assessment")
-                : t("common.common")}
+                ? t('common.assessment')
+                : t('common.common')}
             </TestType>
           </Tooltip>
         </CardTitle>
@@ -82,76 +85,86 @@ const AssessmentDetails = ({
           <CardDate>
             <Icon type={theme.assignment.cardTimeIconType} />
             <DueDetails data-cy="date">
-              {type === "assignment"
+              {type === 'assignment'
                 ? new Date(startDate) > new Date(serverTimeStamp)
-                  ? `${t("common.opensIn")} ${formatDateAndTime(startDate)} and ${t(
-                      "common.dueOn"
-                    )} ${formatDateAndTime(dueDate)}`
-                  : `${t("common.dueOn")} ${formatDateAndTime(dueDate)}`
-                : `${t("common.completedOn")} ${formatDateAndTime(endDate)}`}
+                  ? `${t('common.opensIn')} ${formatDateAndTime(
+                      startDate
+                    )} and ${t('common.dueOn')} ${formatDateAndTime(dueDate)}`
+                  : `${t('common.dueOn')} ${formatDateAndTime(dueDate)}`
+                : `${t('common.completedOn')} ${formatDateAndTime(endDate)}`}
             </DueDetails>
           </CardDate>
         )}
         <StatusWrapper>
-          {type === "assignment" ? (
-            <React.Fragment>
-              <StatusButton isPaused={isPaused} isSubmitted={started || resume} assignment={type === "assignment"}>
+          {type === 'assignment' ? (
+            <>
+              <StatusButton
+                isPaused={isPaused}
+                isSubmitted={started || resume}
+                assignment={type === 'assignment'}
+              >
                 <span data-cy="status">{status}</span>
               </StatusButton>
               {safeBrowser && (
                 <SafeExamIcon
                   src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
-                  title={t("common.safeExamToolTip")}
+                  title={t('common.safeExamToolTip')}
                 />
               )}
-            </React.Fragment>
+            </>
           ) : (
             <StatusButton isSubmitted={started} graded={graded} absent={absent}>
               <span data-cy="status">
-                {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.absent")}
+                {absent
+                  ? t('common.absent')
+                  : started
+                  ? t(`common.${graded}`)
+                  : t('common.absent')}
               </span>
             </StatusButton>
           )}
-          {pastDueTag && <StatusRow data-cy="pastDueTag">{pastDueTag}</StatusRow>}
+          {pastDueTag && (
+            <StatusRow data-cy="pastDueTag">{pastDueTag}</StatusRow>
+          )}
         </StatusWrapper>
       </CardDetails>
     </Wrapper>
-  );
-};
+  )
+}
 
 AssessmentDetails.propTypes = {
   theme: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   dueDate: PropTypes.string.isRequired,
-  started: PropTypes.bool.isRequired
-};
+  started: PropTypes.bool.isRequired,
+}
 
-export default AssessmentDetails;
+export default AssessmentDetails
 const getStatusBgColor = (props, type) => {
   if (props.assignment) {
     if (props.isSubmitted) {
-      return props.theme.assignment[`cardInProgressLabel${type}Color`];
+      return props.theme.assignment[`cardInProgressLabel${type}Color`]
     }
-    return props.theme.assignment[`cardNotStartedLabel${type}Color`];
+    return props.theme.assignment[`cardNotStartedLabel${type}Color`]
   }
   if (props.absent) {
-    return props.theme.assignment[`cardAbsentLabel${type}Color`];
+    return props.theme.assignment[`cardAbsentLabel${type}Color`]
   }
   if (props.isSubmitted) {
     switch (props.graded) {
       case assignmentStatus.GRADE_HELD:
-        return props.theme.assignment[`cardGradeHeldLabel${type}Color`];
+        return props.theme.assignment[`cardGradeHeldLabel${type}Color`]
       case assignmentStatus.NOT_GRADED:
-        return props.theme.assignment[`cardNotGradedLabel${type}Color`];
+        return props.theme.assignment[`cardNotGradedLabel${type}Color`]
       case assignmentStatus.GRADED:
-        return props.theme.assignment[`cardGradedLabel${type}Color`];
+        return props.theme.assignment[`cardGradedLabel${type}Color`]
       default:
-        return props.theme.assignment[`cardSubmitedLabel${type}Color`];
+        return props.theme.assignment[`cardSubmitedLabel${type}Color`]
     }
   } else {
-    return props.theme.assignment[`cardAbsentLabel${type}Color`];
+    return props.theme.assignment[`cardAbsentLabel${type}Color`]
   }
-};
+}
 
 const Wrapper = React.memo(styled(Col)`
   display: flex;
@@ -161,7 +174,7 @@ const Wrapper = React.memo(styled(Col)`
     flex-direction: column;
     align-items: center;
   }
-`);
+`)
 
 const ImageWrapper = React.memo(styled.div`
   max-width: 168.5px;
@@ -182,7 +195,7 @@ const ImageWrapper = React.memo(styled.div`
     max-width: 100%;
     margin: 0;
   }
-`);
+`)
 
 const Thumbnail = React.memo(styled.img`
   width: 168px;
@@ -206,10 +219,10 @@ const Thumbnail = React.memo(styled.img`
     display: block;
     margin: 0 auto;
   }
-`);
+`)
 
 const AssignmentTitle = React.memo(styled.span`
-  font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
+  font-size: ${(props) => props.theme.assignment.cardAssingmnetTitleFontSize};
   max-width: 70vw;
   display: inline-block;
   white-space: nowrap;
@@ -218,7 +231,7 @@ const AssignmentTitle = React.memo(styled.span`
   @media (max-width: ${largeDesktopWidth}) {
     max-width: 55vw;
   }
-`);
+`)
 
 const CardDetails = React.memo(styled(Col)`
   @media (min-width: ${extraDesktopWidth}) {
@@ -247,20 +260,20 @@ const CardDetails = React.memo(styled(Col)`
     flex-direction: column;
     margin-top: 10px;
   }
-`);
+`)
 
 const CardTitle = React.memo(styled.div`
   display: inline-flex;
   overflow: visible;
-  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
-  font-size: ${props => props.theme.assignment.cardTitleFontSize};
+  font-family: ${(props) => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${(props) => props.theme.assignment.cardTitleFontSize};
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: ${props => props.theme.assignment.cardTitleColor};
+  color: ${(props) => props.theme.assignment.cardTitleColor};
   padding-bottom: 8px;
   padding-top: 3px;
 
@@ -271,23 +284,23 @@ const CardTitle = React.memo(styled.div`
     font-size: 16px;
     text-align: center;
   }
-`);
+`)
 
 const CardDate = React.memo(styled.div`
   display: flex;
-  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
-  font-size: ${props => props.theme.assignment.cardTimeTextFontSize};
+  font-family: ${(props) => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${(props) => props.theme.assignment.cardTimeTextFontSize};
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: ${props => props.theme.assignment.cardTimeTextColor};
+  color: ${(props) => props.theme.assignment.cardTimeTextColor};
   padding-bottom: 5px;
 
   i {
-    color: ${props => props.theme.assignment.cardTimeIconColor};
+    color: ${(props) => props.theme.assignment.cardTimeIconColor};
     position: relative;
     top: -1px;
   }
@@ -308,28 +321,28 @@ const CardDate = React.memo(styled.div`
     padding-bottom: 13px;
     padding-top: 10px;
   }
-`);
+`)
 
 const DueDetails = React.memo(styled.span`
   padding-left: 10px;
   font-size: ${({ theme }) => theme.assignment.dueDateFontSize};
   @media (max-width: ${smallDesktopWidth}) {
     padding-left: 5px;
-    font-size: ${props => props.theme.smallLinkFontSize};
+    font-size: ${(props) => props.theme.smallLinkFontSize};
   }
-`);
+`)
 
 const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const StatusButton = React.memo(styled.div`
-  min-width: ${props => (props.isPaused ? "auto" : "121px")};
+  min-width: ${(props) => (props.isPaused ? 'auto' : '121px')};
   min-height: 23.5px;
   border-radius: 5px;
-  background-color: ${props => getStatusBgColor(props, "Bg")};
-  font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
+  background-color: ${(props) => getStatusBgColor(props, 'Bg')};
+  font-size: ${(props) => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
   letter-spacing: 0.2px;
@@ -337,7 +350,7 @@ const StatusButton = React.memo(styled.div`
   padding: 6px 24px;
   span {
     position: relative;
-    color: ${props => getStatusBgColor(props, "Text")};
+    color: ${(props) => getStatusBgColor(props, 'Text')};
   }
 
   @media (max-width: ${largeDesktopWidth}) {
@@ -349,29 +362,30 @@ const StatusButton = React.memo(styled.div`
   @media screen and (max-width: ${mobileWidthMax}) {
     width: 100%;
   }
-`);
+`)
 
 const SafeExamIcon = React.memo(styled.img`
   width: 25px;
   height: 25px;
   margin-left: 10px;
-`);
+`)
 
 const TestType = React.memo(styled.span`
-  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  font-family: ${(props) => props.theme.assignment.cardTitleFontFamily};
   width: 20px;
   height: 20px;
-  background: ${props => (props.type ? testTypeColor[props.type] : testTypeColor.assessment)};
+  background: ${(props) =>
+    props.type ? testTypeColor[props.type] : testTypeColor.assessment};
   text-align: center;
   color: ${white};
   border-radius: 50%;
   font-weight: 600;
-  font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
+  font-size: ${(props) => props.theme.assignment.cardAssingmnetTitleFontSize};
   line-height: 19px;
   margin: 0px 10px;
   display: inline-block;
   vertical-align: top;
-`);
+`)
 
 const StatusRow = styled.div`
   height: 25px;
@@ -384,4 +398,4 @@ const StatusRow = styled.div`
   padding: 6px 24px;
   border-radius: 5px;
   margin-left: 6px;
-`;
+`

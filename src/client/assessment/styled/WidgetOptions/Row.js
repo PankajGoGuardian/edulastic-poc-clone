@@ -1,18 +1,18 @@
-import styled from "styled-components";
-import { Row as AntRow } from "antd";
+import styled from 'styled-components'
+import { Row as AntRow } from 'antd'
 
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth } from '@edulastic/colors'
 
 export const Row = styled(AntRow)`
-  margin-top: ${props => (props.marginTop ? `${props.marginTop}px` : 0)};
+  margin-top: ${(props) => (props.marginTop ? `${props.marginTop}px` : 0)};
   margin-left: ${({ marginLeft }) => marginLeft};
   margin-bottom: ${({ marginBottom }) => `${marginBottom || 0}px`};
-  ${props =>
+  ${(props) =>
     props.center &&
     `
     display: flex;
     align-items: center;
-    margin-bottom: ${props.mb || "18"}px;
+    margin-bottom: ${props.mb || '18'}px;
     
     > * {
       margin-top: 0 !important;
@@ -30,4 +30,4 @@ export const Row = styled(AntRow)`
       }
     }
   `}
-`;
+`

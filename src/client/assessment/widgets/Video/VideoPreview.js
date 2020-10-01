@@ -1,26 +1,28 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Media, controls } from "react-media-player";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Media, controls } from 'react-media-player'
 
-import { videoTypes } from "@edulastic/constants";
+import { videoTypes } from '@edulastic/constants'
 
-import { FlexContainer, QuestionNumberLabel } from "@edulastic/common";
-import { Subtitle } from "../../styled/Subtitle";
-import { Label } from "../../styled/WidgetOptions/Label";
-import { Player } from "./styled/Player";
-import PlayPause from "./styled/PlayPause";
-import Fullscreen from "./styled/Fullscreen";
-import MuteUnmute from "./styled/MuteUnmute";
-import SeekBar from "./styled/SeekBar";
-import Volume from "./styled/Volume";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import { FlexContainer, QuestionNumberLabel } from '@edulastic/common'
+import { Subtitle } from '../../styled/Subtitle'
+import { Label } from '../../styled/WidgetOptions/Label'
+import { Player } from './styled/Player'
+import PlayPause from './styled/PlayPause'
+import Fullscreen from './styled/Fullscreen'
+import MuteUnmute from './styled/MuteUnmute'
+import SeekBar from './styled/SeekBar'
+import Volume from './styled/Volume'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
 
-const { CurrentTime, Duration } = controls;
+const { CurrentTime, Duration } = controls
 
 const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
   <div>
     <QuestionTitleWrapper>
-      {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+      {showQuestionNumber && (
+        <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>
+      )}
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
     </QuestionTitleWrapper>
     {item.summary && <Label>{item.summary}</Label>}
@@ -28,20 +30,28 @@ const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
       <Media>
         {({ isFullscreen, playPause }) => (
           <div className="media">
-            <div className={`media-player${isFullscreen ? " media-player--fullscreen" : ""}`} tabIndex="0">
+            <div
+              className={`media-player${
+                isFullscreen ? ' media-player--fullscreen' : ''
+              }`}
+              tabIndex="0"
+            >
               <Player
                 poster={item.uiStyle.posterImage}
                 src={item.sourceURL}
                 style={{
                   ...item.uiStyle,
-                  width: "100%",
-                  maxWidth: item.uiStyle.width
+                  width: '100%',
+                  maxWidth: item.uiStyle.width,
                 }}
                 onClick={playPause}
               />
             </div>
-            {(!item.uiStyle.hideControls || item.videoType === videoTypes.YOUTUBE) && (
-              <FlexContainer style={{ width: "100%", maxWidth: item.uiStyle.width }}>
+            {(!item.uiStyle.hideControls ||
+              item.videoType === videoTypes.YOUTUBE) && (
+              <FlexContainer
+                style={{ width: '100%', maxWidth: item.uiStyle.width }}
+              >
                 <PlayPause />
                 <SeekBar style={{ width: item.uiStyle.width - 338 }} />
                 <div>
@@ -57,7 +67,7 @@ const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
       </Media>
     )}
   </div>
-);
+)
 
 VideoPreview.propTypes = {
   item: PropTypes.shape({
@@ -74,15 +84,15 @@ VideoPreview.propTypes = {
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,
       captionURL: PropTypes.string.isRequired,
-      hideControls: PropTypes.bool.isRequired
-    }).isRequired
+      hideControls: PropTypes.bool.isRequired,
+    }).isRequired,
   }).isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
-};
+  qIndex: PropTypes.number,
+}
 VideoPreview.defaultProps = {
   showQuestionNumber: false,
-  qIndex: null
-};
+  qIndex: null,
+}
 
-export default VideoPreview;
+export default VideoPreview

@@ -1,11 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Col, Form, Input, message } from "antd";
-import { Link, Redirect } from "react-router-dom";
-import { compose } from "redux";
-import { trim } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
-import { connect } from "react-redux";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Col, Form, Input, message } from 'antd'
+import { Link, Redirect } from 'react-router-dom'
+import { compose } from 'redux'
+import { trim } from 'lodash'
+import { withNamespaces } from '@edulastic/localization'
+import { connect } from 'react-redux'
+import { withWindowSizes, OnDarkBgLogo, notification } from '@edulastic/common'
+import { IconLock, IconUser, IconMail } from '@edulastic/icons'
+import { themeColor, white } from '@edulastic/colors'
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -25,96 +28,100 @@ import {
   AlreadyhaveAccount,
   MobileViewLinks,
   DesktopVieLinks,
-  DesktopViewCopyright
-} from "../../styled";
-import { signupAction, googleLoginAction,msoLoginAction } from "../../../Login/ducks";
+  DesktopViewCopyright,
+} from '../../styled'
+import {
+  signupAction,
+  googleLoginAction,
+  msoLoginAction,
+} from '../../../Login/ducks'
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
   getPartnerLoginUrl,
   getPartnerStudentSignupUrl,
   getPartnerTeacherSignupUrl,
-  isEmailValid
-} from "../../../../common/utils/helpers";
-import { Partners } from "../../../../common/utils/static/partnerData";
+  isEmailValid,
+} from '../../../../common/utils/helpers'
+import { Partners } from '../../../../common/utils/static/partnerData'
 
-import adminBg from "../../../assets/bg-adm.png";
-import googleIcon from "../../../assets/google-btn.svg";
-import icon365 from "../../../assets/icons8-office-365.svg";
+import adminBg from '../../../assets/bg-adm.png'
+import googleIcon from '../../../assets/google-btn.svg'
+import icon365 from '../../../assets/icons8-office-365.svg'
 
-import { withWindowSizes, OnDarkBgLogo,notification  } from "@edulastic/common";	
-import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../../author/src/constants/others";	
-import { IconLock, IconUser, IconMail } from "@edulastic/icons";	
-import { themeColor, white } from "@edulastic/colors";
+import {
+  MAX_TAB_WIDTH,
+  LARGE_DESKTOP_WIDTH,
+} from '../../../../author/src/constants/others'
 
-const FormItem = Form.Item;
+const FormItem = Form.Item
 
 class AdminSignup extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     signup: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired
-  };
+    t: PropTypes.func.isRequired,
+  }
 
   state = {
     confirmDirty: false,
-    signupError: {}
-  };
+    signupError: {},
+  }
 
-  handleSubmit = e => {
-    const { form, signup } = this.props;
-    e.preventDefault();
+  handleSubmit = (e) => {
+    const { form, signup } = this.props
+    e.preventDefault()
     form.validateFieldsAndScroll((err, { password, email, name }) => {
       if (!err) {
         signup({
           password,
           email,
           name,
-          role: "teacher",
-          errorCallback: this.errorCallback
-        });
+          role: 'teacher',
+          errorCallback: this.errorCallback,
+        })
       }
-    });
-  };
+    })
+  }
 
   handleConfirmBlur = ({ target: { value } }) => {
-    let { confirmDirty } = this.state;
-    confirmDirty = confirmDirty || !!value;
-    this.setState({ confirmDirty });
-  };
+    let { confirmDirty } = this.state
+    confirmDirty = confirmDirty || !!value
+    this.setState({ confirmDirty })
+  }
 
   compareToFirstPassword = (rule, value, callback) => {
-    const { form } = this.props;
-    if (value && value !== form.getFieldValue("password")) {
-      callback("Two passwords that you enter is inconsistent!");
+    const { form } = this.props
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!')
     } else {
-      callback();
+      callback()
     }
-  };
+  }
 
   onChangeEmail = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       ...state,
       signupError: {
         ...state.signupError,
-        email: ""
-      }
-    }));
-  };
+        email: '',
+      },
+    }))
+  }
 
-  errorCallback = error => {
-    if (error === "Email already exists. Please sign in to your account.") {
-      this.setState(state => ({
+  errorCallback = (error) => {
+    if (error === 'Email already exists. Please sign in to your account.') {
+      this.setState((state) => ({
         ...state,
         signupError: {
           ...state.signupError,
-          email: "error"
-        }
-      }));
+          email: 'error',
+        },
+      }))
     } else {
-      notification({ msg:error});
+      notification({ msg: error })
     }
-  };
+  }
 
   render() {
     const {
@@ -122,40 +129,47 @@ class AdminSignup extends React.Component {
       t,
       windowWidth,
       googleLoginAction,
-      msoLoginAction
-    } = this.props;
+      msoLoginAction,
+    } = this.props
 
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 }
+        xs: { span: 24 },
       },
       wrapperCol: {
-        xs: { span: 24 }
-      }
-    };
+        xs: { span: 24 },
+      },
+    }
 
-    const partnerKey = getPartnerKeyFromUrl(location.pathname);
-    const partner = Partners[partnerKey];
+    const partnerKey = getPartnerKeyFromUrl(location.pathname)
+    const partner = Partners[partnerKey]
 
     const emailError =
       (this.state.signupError.email && (
         <span>
-          Email already exists. Please <Link to={getPartnerLoginUrl(partner)}>sign in</Link> to your account.
+          Email already exists. Please{' '}
+          <Link to={getPartnerLoginUrl(partner)}>sign in</Link> to your account.
         </span>
       )) ||
-      getFieldError("email");
+      getFieldError('email')
 
     return (
       <div>
         {!validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
-        <RegistrationWrapper image={partner.partnerKey === "login" ? adminBg : partner.background}>
+        <RegistrationWrapper
+          image={partner.partnerKey === 'login' ? adminBg : partner.background}
+        >
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <OnDarkBgLogo height="30px" />
             </Col>
             <Col span={12} align="right">
-              <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
-              <Link to={getPartnerLoginUrl(partner)}>{t("common.signinbtn")}</Link>
+              <AlreadyhaveAccount>
+                {t('component.signup.alreadyhaveanaccount')}
+              </AlreadyhaveAccount>
+              <Link to={getPartnerLoginUrl(partner)}>
+                {t('common.signinbtn')}
+              </Link>
             </Col>
           </RegistrationHeader>
           <RegistrationBody type="flex" align="middle">
@@ -163,94 +177,116 @@ class AdminSignup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={13} lg={12} xl={14}>
                   <h1>
-                    {t("common.edulastictext")}
+                    {t('common.edulastictext')}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
-                    {t("component.signup.admin.foradmin")}
+                    {t('component.signup.admin.foradmin')}
                   </h1>
                   <DesktopVieLinks>
                     <LinkDiv>
-                      <Link to={getPartnerTeacherSignupUrl(partner)}>{t("component.signup.signupasteacher")}</Link>
+                      <Link to={getPartnerTeacherSignupUrl(partner)}>
+                        {t('component.signup.signupasteacher')}
+                      </Link>
                     </LinkDiv>
                     <LinkDiv>
-                      <Link to={getPartnerStudentSignupUrl(partner)}>{t("component.signup.signupasstudent")}</Link>
+                      <Link to={getPartnerStudentSignupUrl(partner)}>
+                        {t('component.signup.signupasstudent')}
+                      </Link>
                     </LinkDiv>
                   </DesktopVieLinks>
                 </BannerText>
                 {windowWidth >= MAX_TAB_WIDTH && (
                   <DesktopViewCopyright>
-                    <Col span={24}>{t("common.copyright")}</Col>
+                    <Col span={24}>{t('common.copyright')}</Col>
                   </DesktopViewCopyright>
                 )}
                 <Col xs={24} sm={14} md={11} lg={12} xl={10}>
                   <FormWrapper>
                     <FormHead>
                       <h3 align="center">
-                        <b>{t("component.signup.signupboxheading")}</b>
+                        <b>{t('component.signup.signupboxheading')}</b>
                       </h3>
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
                         onClick={() => {
-                            googleLoginAction({ role: "teacher" });
-                          }}
+                          googleLoginAction({ role: 'teacher' })
+                        }}
                       >
-                        <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
+                        <img src={googleIcon} alt="" />{' '}
+                        {t('component.signup.googlesignupbtn')}
                       </ThirdPartyLoginBtn>
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
                         onClick={() => {
-                        msoLoginAction({ role: "teacher" });}}
+                          msoLoginAction({ role: 'teacher' })
+                        }}
                       >
-                        <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
+                        <img src={icon365} alt="" />{' '}
+                        {t('component.signup.office365signupbtn')}
                       </ThirdPartyLoginBtn>
                       <InfoBox span={20} offset={2}>
                         <InfoIcon span={3}>
                           <IconLock color={white} />
                         </InfoIcon>
-                        <Col span={21}>{t("component.signup.infotext")}</Col>
+                        <Col span={21}>{t('component.signup.infotext')}</Col>
                       </InfoBox>
                     </FormHead>
                     <FormBody>
                       <Col span={20} offset={2}>
-                        <h5 align="center">{t("component.signup.formboxheading")}</h5>
+                        <h5 align="center">
+                          {t('component.signup.formboxheading')}
+                        </h5>
                         <Form onSubmit={this.handleSubmit}>
-                          <FormItem {...formItemLayout} label={t("component.signup.admin.signupnamelabel")}>
-                            {getFieldDecorator("name", {
+                          <FormItem
+                            {...formItemLayout}
+                            label={t('component.signup.admin.signupnamelabel')}
+                          >
+                            {getFieldDecorator('name', {
                               rules: [
                                 {
                                   required: true,
-                                  message: t("component.signup.admin.validinputname")
-                                }
-                              ]
-                            })(<Input prefix={<IconUser color={themeColor} />} />)}
+                                  message: t(
+                                    'component.signup.admin.validinputname'
+                                  ),
+                                },
+                              ],
+                            })(
+                              <Input prefix={<IconUser color={themeColor} />} />
+                            )}
                           </FormItem>
                           <FormItem
                             {...formItemLayout}
-                            label={t("component.signup.admin.signupidlabel")}
-                            validateStatus={emailError ? "error" : "success"}
+                            label={t('component.signup.admin.signupidlabel')}
+                            validateStatus={emailError ? 'error' : 'success'}
                             help={emailError}
                           >
-                            {getFieldDecorator("email", {
+                            {getFieldDecorator('email', {
                               validateFirst: true,
-                              initialValue: "",
+                              initialValue: '',
                               rules: [
                                 {
-                                  transform: value => trim(value)
+                                  transform: (value) => trim(value),
                                 },
                                 {
                                   required: true,
-                                  message: t("common.validation.emptyemailid")
+                                  message: t('common.validation.emptyemailid'),
                                 },
                                 {
-                                  type: "string",
-                                  message: t("common.validation.validemail")
+                                  type: 'string',
+                                  message: t('common.validation.validemail'),
                                 },
                                 {
                                   validator: (rule, value, callback) =>
-                                    isEmailValid(rule, value, callback, "email", t("common.validation.validemail"))
-                                }
-                              ]
+                                    isEmailValid(
+                                      rule,
+                                      value,
+                                      callback,
+                                      'email',
+                                      t('common.validation.validemail')
+                                    ),
+                                },
+                              ],
                             })(
                               <Input
                                 prefix={<IconMail color={themeColor} />}
@@ -259,19 +295,27 @@ class AdminSignup extends React.Component {
                               />
                             )}
                           </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
-                            {getFieldDecorator("password", {
+                          <FormItem
+                            {...formItemLayout}
+                            label={t('component.signup.signuppasswordlabel')}
+                          >
+                            {getFieldDecorator('password', {
                               rules: [
                                 {
                                   required: true,
-                                  message: t("common.validation.emptypassword")
-                                }
-                              ]
-                            })(<Input prefix={<IconLock color={themeColor} />} type="password" />)}
+                                  message: t('common.validation.emptypassword'),
+                                },
+                              ],
+                            })(
+                              <Input
+                                prefix={<IconLock color={themeColor} />}
+                                type="password"
+                              />
+                            )}
                           </FormItem>
                           <FormItem>
                             <RegisterButton type="primary" htmlType="submit">
-                              {t("component.signup.admin.signupadminbtn")}
+                              {t('component.signup.admin.signupadminbtn')}
                             </RegisterButton>
                           </FormItem>
                         </Form>
@@ -282,10 +326,14 @@ class AdminSignup extends React.Component {
                 <MobileViewLinks>
                   <BannerText>
                     <LinkDiv>
-                      <Link to={getPartnerTeacherSignupUrl(partner)}>{t("component.signup.signupasteacher")}</Link>
+                      <Link to={getPartnerTeacherSignupUrl(partner)}>
+                        {t('component.signup.signupasteacher')}
+                      </Link>
                     </LinkDiv>
                     <LinkDiv>
-                      <Link to={getPartnerStudentSignupUrl(partner)}>{t("component.signup.signupasstudent")}</Link>
+                      <Link to={getPartnerStudentSignupUrl(partner)}>
+                        {t('component.signup.signupasstudent')}
+                      </Link>
                     </LinkDiv>
                   </BannerText>
                 </MobileViewLinks>
@@ -297,24 +345,21 @@ class AdminSignup extends React.Component {
           <CircleDiv size={32} right={72} top={500} />
           {windowWidth < MAX_TAB_WIDTH && (
             <Copyright>
-              <Col span={24}>{t("common.copyright")}</Col>
+              <Col span={24}>{t('common.copyright')}</Col>
             </Copyright>
           )}
         </RegistrationWrapper>
       </div>
-    );
+    )
   }
 }
 
-const SignupForm = Form.create()(AdminSignup);
+const SignupForm = Form.create()(AdminSignup)
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   withWindowSizes,
-  connect(
-    null,
-    { signup: signupAction,googleLoginAction,msoLoginAction}
-  )
-);
+  connect(null, { signup: signupAction, googleLoginAction, msoLoginAction })
+)
 
-export default enhance(SignupForm);
+export default enhance(SignupForm)

@@ -1,18 +1,20 @@
-import { FlexContainer } from "@edulastic/common";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { questionTitle } from "@edulastic/constants";
-import { AlternateAnswerLink } from "../../styled/ButtonStyles";
-import PointBlock from "./PointBlock";
-import AnswerTabs from "./AnswerTabs";
-import { Subtitle } from "../../styled/Subtitle";
+import { FlexContainer } from '@edulastic/common'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { withNamespaces } from '@edulastic/localization'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { questionTitle } from '@edulastic/constants'
+import { AlternateAnswerLink } from '../../styled/ButtonStyles'
+import PointBlock from './PointBlock'
+import AnswerTabs from './AnswerTabs'
+import { Subtitle } from '../../styled/Subtitle'
 
 class CorrectAnswers extends Component {
   get subtitleId() {
-    const { t, questionType } = this.props;
-    return getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`);
+    const { t, questionType } = this.props
+    return getFormattedAttrId(
+      `${questionType}-${t('component.correctanswers.setcorrectanswers')}`
+    )
   }
 
   render() {
@@ -30,17 +32,19 @@ class CorrectAnswers extends Component {
       mixAndMatch,
       questionType,
       ...rest
-    } = this.props;
-    const hidePoint = mixAndMatch && correctTab > 0;
+    } = this.props
+    const hidePoint = mixAndMatch && correctTab > 0
 
     return (
       <div
         section="main"
-        label={t("component.correctanswers.setcorrectanswers")}
+        label={t('component.correctanswers.setcorrectanswers')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={this.subtitleId}>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+        <Subtitle id={this.subtitleId}>
+          {t('component.correctanswers.setcorrectanswers')}
+        </Subtitle>
         <FlexContainer justifyContent="space-between" marginBottom="16px">
           <FlexContainer flexDirection="column">
             <AnswerTabs
@@ -50,12 +54,22 @@ class CorrectAnswers extends Component {
               correctTab={correctTab}
               validation={validation}
             />
-            {!hidePoint && <PointBlock {...rest} correctAnsScore={validation?.validResponse?.score} />}
+            {!hidePoint && (
+              <PointBlock
+                {...rest}
+                correctAnsScore={validation?.validResponse?.score}
+              />
+            )}
           </FlexContainer>
           {questionType !== questionTitle.MCQ_TRUE_OR_FALSE && !hidePoint && (
             <FlexContainer alignItems="flex-end">
-              <AlternateAnswerLink onClick={onAdd} color="primary" variant="extendedFab" data-cy="alternate">
-                {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+              <AlternateAnswerLink
+                onClick={onAdd}
+                color="primary"
+                variant="extendedFab"
+                data-cy="alternate"
+              >
+                {`+ ${t('component.correctanswers.alternativeAnswer')}`}
               </AlternateAnswerLink>
             </FlexContainer>
           )}
@@ -63,7 +77,7 @@ class CorrectAnswers extends Component {
         {children}
         {options}
       </div>
-    );
+    )
   }
 }
 
@@ -79,8 +93,8 @@ CorrectAnswers.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   questionType: PropTypes.string,
-  hidePoint: PropTypes.bool
-};
+  hidePoint: PropTypes.bool,
+}
 
 CorrectAnswers.defaultProps = {
   options: null,
@@ -88,7 +102,7 @@ CorrectAnswers.defaultProps = {
   hidePoint: false,
   fillSections: () => {},
   cleanSections: () => {},
-  questionType: ""
-};
+  questionType: '',
+}
 
-export default withNamespaces("assessment")(CorrectAnswers);
+export default withNamespaces('assessment')(CorrectAnswers)

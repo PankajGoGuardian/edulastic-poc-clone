@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconTime = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14.854 14.726" {...props}>
+const IconTime = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 14.854 14.726"
+    {...props}
+  >
     <g transform="translate(0 0)">
       <path
         d="M7.427,0A7.4,7.4,0,0,0,0,7.363a7.427,7.427,0,0,0,14.854,0A7.4,7.4,0,0,0,7.427,0Zm0,13.159a5.8,5.8,0,1,1,5.847-5.8A5.828,5.828,0,0,1,7.427,13.159Z"
@@ -17,6 +21,6 @@ const IconTime = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconTime);
+export default withIconStyles(IconTime)

@@ -1,7 +1,7 @@
-import JXG from "jsxgraph";
-import { isObject } from "lodash";
-import { tickLabel } from "./utils";
-import { Tangent, Logarithm, Sin, Parabola, Parabola2 } from "./elements";
+import JXG from 'jsxgraph'
+import { isObject } from 'lodash'
+import { tickLabel } from './utils'
+import { Tangent, Logarithm, Sin, Parabola, Parabola2 } from './elements'
 
 /**
  * Graph parameters
@@ -13,8 +13,8 @@ const graphParameters = {
   xMin: -10,
   xMax: 10,
   yMin: -10,
-  yMax: 10
-};
+  yMax: 10,
+}
 
 const pointParameters = {
   /**
@@ -36,15 +36,15 @@ const pointParameters = {
   /**
    * @see https://jsxgraph.org/docs/symbols/Point.html#snapSizeY
    */
-  snapSizeY: 1
-};
+  snapSizeY: 1,
+}
 
 const axesParameters = {
   /**
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#ticksDistance
    */
   ticksDistance: 1,
-  name: "",
+  name: '',
   /**
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#majorHeight
    */
@@ -72,8 +72,8 @@ const axesParameters = {
    */
   drawZero: true,
 
-  showAxis: true
-};
+  showAxis: true,
+}
 
 const gridParameters = {
   /**
@@ -87,213 +87,232 @@ const gridParameters = {
    */
   gridY: 1,
 
-  showGrid: true
-};
+  showGrid: true,
+}
 
 const bgImageParameters = {
-  urlImg: "",
+  urlImg: '',
   coords: [0, 0],
   size: [100, 100],
-  opacity: 0.5
-};
+  opacity: 0.5,
+}
 
 export const labelParameters = {
-  cssClass: "graph-shape-label",
-  highlightCssClass: "graph-shape-label"
-};
+  cssClass: 'graph-shape-label',
+  highlightCssClass: 'graph-shape-label',
+}
 
 const textParameters = {
-  display: "html",
+  display: 'html',
   fontSize: 12,
-  cssClass: "mark",
-  highlightCssClass: "mark",
-  parse: false
-};
+  cssClass: 'mark',
+  highlightCssClass: 'mark',
+  parse: false,
+}
 
-export const getLabelPositionParameters = elementType => {
+export const getLabelPositionParameters = (elementType) => {
   switch (elementType) {
     case JXG.OBJECT_TYPE_POINT:
       return {
-        position: "top",
+        position: 'top',
         offset: [0, 8],
-        anchorX: "left",
-        anchorY: "middle"
-      };
+        anchorX: 'left',
+        anchorY: 'middle',
+      }
     case Sin.jxgType:
       return {
-        position: "lft",
+        position: 'lft',
         offset: [10, 0],
-        anchorX: "left",
-        anchorY: "middle"
-      };
+        anchorX: 'left',
+        anchorY: 'middle',
+      }
     case Parabola.jxgType:
     case Parabola2.jxgType:
       return {
-        position: "top",
+        position: 'top',
         offset: [0, -10],
-        anchorX: "middle",
-        anchorY: "top"
-      };
+        anchorX: 'middle',
+        anchorY: 'top',
+      }
     case Logarithm.jxgType:
       return {
-        position: "rt",
+        position: 'rt',
         offset: [-10, 0],
-        anchorX: "right",
-        anchorY: "middle"
-      };
+        anchorX: 'right',
+        anchorY: 'middle',
+      }
     case Tangent.jxgType:
       return {
-        position: "top",
+        position: 'top',
         offset: [0, -10],
-        anchorX: "middle",
-        anchorY: "middle"
-      };
+        anchorX: 'middle',
+        anchorY: 'middle',
+      }
     default:
       return {
-        position: "top",
+        position: 'top',
         offset: [0, 8],
-        anchorX: "middle",
-        anchorY: "middle"
-      };
+        anchorX: 'middle',
+        anchorY: 'middle',
+      }
   }
-};
+}
 
-export const getLabelParameters = elementType => ({
+export const getLabelParameters = (elementType) => ({
   ...labelParameters,
-  ...getLabelPositionParameters(elementType)
-});
+  ...getLabelPositionParameters(elementType),
+})
 
-export const defaultTextParameters = () => ({ ...textParameters });
+export const defaultTextParameters = () => ({ ...textParameters })
 
-export const defaultBgImageParameters = () => ({ ...bgImageParameters });
+export const defaultBgImageParameters = () => ({ ...bgImageParameters })
 
-export const graphParameters2Boundingbox = p => [p.xMin || 0, p.yMax || 0, p.xMax || 0, p.yMin || 0];
+export const graphParameters2Boundingbox = (p) => [
+  p.xMin || 0,
+  p.yMax || 0,
+  p.xMax || 0,
+  p.yMin || 0,
+]
 
-export const numberlineGraphParametersToBoundingbox = (coords, xMargin, yMargin = 0) => [
+export const numberlineGraphParametersToBoundingbox = (
+  coords,
+  xMargin,
+  yMargin = 0
+) => [
   coords.xMin - xMargin,
   coords.yMax + yMargin,
   coords.xMax + xMargin,
-  coords.yMin - yMargin
-];
+  coords.yMin - yMargin,
+]
 
-export const defaultAxesParameters = () => ({ ...axesParameters });
+export const defaultAxesParameters = () => ({ ...axesParameters })
 
-export const defaultGraphParameters = () => ({ ...graphParameters });
+export const defaultGraphParameters = () => ({ ...graphParameters })
 
-export const defaultPointParameters = () => ({ ...pointParameters });
+export const defaultPointParameters = () => ({ ...pointParameters })
 
-export const defaultGridParameters = () => ({ ...gridParameters });
+export const defaultGridParameters = () => ({ ...gridParameters })
 
 function mergeAxesParameters(target, parameters) {
   if (parameters.x.ticksDistance) {
-    target.x.ticks.ticksDistance = parseFloat(parameters.x.ticksDistance);
+    target.x.ticks.ticksDistance = parseFloat(parameters.x.ticksDistance)
   }
   if (parameters.y.ticksDistance) {
-    target.y.ticks.ticksDistance = parseFloat(parameters.y.ticksDistance);
+    target.y.ticks.ticksDistance = parseFloat(parameters.y.ticksDistance)
   }
   if (parameters.x.name) {
-    target.x.withLabel = true;
-    target.x.name = parameters.x.name;
+    target.x.withLabel = true
+    target.x.name = parameters.x.name
   }
   if (parameters.y.name) {
-    target.y.withLabel = true;
-    target.y.name = parameters.y.name;
+    target.y.withLabel = true
+    target.y.name = parameters.y.name
   }
-  if ("showTicks" in parameters.x && parameters.x.showTicks === false) {
-    target.x.ticks.majorHeight = 0;
+  if ('showTicks' in parameters.x && parameters.x.showTicks === false) {
+    target.x.ticks.majorHeight = 0
   }
-  if ("showTicks" in parameters.y && parameters.y.showTicks === false) {
-    target.y.ticks.majorHeight = 0;
+  if ('showTicks' in parameters.y && parameters.y.showTicks === false) {
+    target.y.ticks.majorHeight = 0
   }
-  if ("drawLabels" in parameters.x) {
-    target.x.ticks.drawLabels = parameters.x.drawLabels;
+  if ('drawLabels' in parameters.x) {
+    target.x.ticks.drawLabels = parameters.x.drawLabels
   }
-  if ("drawLabels" in parameters.y) {
-    target.y.ticks.drawLabels = parameters.y.drawLabels;
+  if ('drawLabels' in parameters.y) {
+    target.y.ticks.drawLabels = parameters.y.drawLabels
   }
-  if ("minArrow" in parameters.x && parameters.x.minArrow === false) {
-    target.x.firstArrow = false;
+  if ('minArrow' in parameters.x && parameters.x.minArrow === false) {
+    target.x.firstArrow = false
   }
-  if ("minArrow" in parameters.y && parameters.y.minArrow === false) {
-    target.y.firstArrow = false;
+  if ('minArrow' in parameters.y && parameters.y.minArrow === false) {
+    target.y.firstArrow = false
   }
-  if ("maxArrow" in parameters.x && parameters.x.maxArrow === false) {
-    target.x.lastArrow = false;
+  if ('maxArrow' in parameters.x && parameters.x.maxArrow === false) {
+    target.x.lastArrow = false
   }
-  if ("maxArrow" in parameters.y && parameters.y.maxArrow === false) {
-    target.y.lastArrow = false;
+  if ('maxArrow' in parameters.y && parameters.y.maxArrow === false) {
+    target.y.lastArrow = false
   }
-  if ("gridX" in parameters) {
-    target.grid.gridX = parameters.gridX;
+  if ('gridX' in parameters) {
+    target.grid.gridX = parameters.gridX
   }
-  if ("gridY" in parameters) {
-    target.grid.gridY = parameters.gridY;
+  if ('gridY' in parameters) {
+    target.grid.gridY = parameters.gridY
   }
-  target.x.ticks.generateLabelText = tickLabel("x", parameters.x.commaInLabel, parameters.x.drawZero);
-  target.y.ticks.generateLabelText = tickLabel("y", parameters.y.commaInLabel, parameters.y.drawZero);
+  target.x.ticks.generateLabelText = tickLabel(
+    'x',
+    parameters.x.commaInLabel,
+    parameters.x.drawZero
+  )
+  target.y.ticks.generateLabelText = tickLabel(
+    'y',
+    parameters.y.commaInLabel,
+    parameters.y.drawZero
+  )
 }
 
 export function mergeParams(defaultConfig, userConfig) {
   if (userConfig.graphParameters) {
-    defaultConfig.boundingbox = graphParameters2Boundingbox(userConfig.graphParameters);
+    defaultConfig.boundingbox = graphParameters2Boundingbox(
+      userConfig.graphParameters
+    )
   }
   if (userConfig.axesParameters) {
-    mergeAxesParameters(defaultConfig.defaultaxes, userConfig.axesParameters);
+    mergeAxesParameters(defaultConfig.defaultaxes, userConfig.axesParameters)
   }
-  if ("gridParameters" in userConfig) {
+  if ('gridParameters' in userConfig) {
     defaultConfig.grid = {
       ...defaultConfig.grid,
-      ...userConfig.gridParameters
-    };
+      ...userConfig.gridParameters,
+    }
   }
-  return defaultConfig;
+  return defaultConfig
 }
 
 export function fillConfigDefaultParameters(config) {
   if (!isObject(config.graphParameters)) {
-    config.graphParameters = defaultGraphParameters();
+    config.graphParameters = defaultGraphParameters()
   } else {
     config.graphParameters = {
       ...defaultGraphParameters(),
-      ...config.graphParameters
-    };
+      ...config.graphParameters,
+    }
   }
 
   if (!isObject(config.pointParameters)) {
-    config.pointParameters = defaultPointParameters();
+    config.pointParameters = defaultPointParameters()
   } else {
     config.pointParameters = {
       ...defaultPointParameters(),
-      ...config.pointParameters
-    };
+      ...config.pointParameters,
+    }
   }
 
   if (!isObject(config.axesParameters)) {
     config.axesParameters = {
       x: defaultAxesParameters(),
-      y: defaultAxesParameters()
-    };
+      y: defaultAxesParameters(),
+    }
   } else {
     config.axesParameters = {
       x: {
         ...defaultAxesParameters(),
-        ...(config.axesParameters.x || {})
+        ...(config.axesParameters.x || {}),
       },
       y: {
         ...defaultAxesParameters(),
-        ...(config.axesParameters.y || {})
-      }
-    };
+        ...(config.axesParameters.y || {}),
+      },
+    }
   }
 
   if (!isObject(config.gridParameters)) {
-    config.gridParameters = defaultGridParameters();
+    config.gridParameters = defaultGridParameters()
   } else {
     config.gridParameters = {
       ...defaultGridParameters(),
-      ...config.gridParameters
-    };
+      ...config.gridParameters,
+    }
   }
 
-  return config;
+  return config
 }

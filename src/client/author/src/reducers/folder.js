@@ -1,4 +1,4 @@
-import { clone, remove, findIndex } from "lodash";
+import { clone, remove, findIndex } from 'lodash'
 import {
   RECEIVE_FOLDER_REQUEST,
   RECEIVE_FOLDER_SUCCESS,
@@ -16,8 +16,8 @@ import {
   TOGGLE_MOVE_ITEMS_TO_FOLDER,
   SET_FOLDER,
   CLEAR_FOLDER,
-  SET_ITEMS_TO_ADD
-} from "../constants/actions";
+  SET_ITEMS_TO_ADD,
+} from '../constants/actions'
 
 const initialState = {
   entities: [],
@@ -28,71 +28,75 @@ const initialState = {
   updatedFolder: null,
   isOpenAddItemModal: false,
   isOpenRemovalModal: false,
-  entity: {}
-};
+  entity: {},
+}
 
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_FOLDER_REQUEST:
       return {
         ...state,
-        loading: true
-      };
+        loading: true,
+      }
     case RECEIVE_FOLDER_SUCCESS:
       return {
         ...state,
         loading: false,
-        entities: payload.entities
-      };
+        entities: payload.entities,
+      }
     case RECEIVE_FOLDER_ERROR:
       return {
         ...state,
         loading: false,
-        error: payload.error
-      };
+        error: payload.error,
+      }
     case RECEIVE_FOLDER_CREATE_REQUEST:
       return {
         ...state,
-        creating: true
-      };
+        creating: true,
+      }
     case RECEIVE_FOLDER_CREATE_SUCCESS: {
-      const { entities } = state;
-      entities.push(payload.entity);
+      const { entities } = state
+      entities.push(payload.entity)
       return {
         ...state,
         entities: clone(entities),
-        creating: false
-      };
+        creating: false,
+      }
     }
     case RECEIVE_FOLDER_CREATE_ERROR:
       return {
         ...state,
         creating: false,
-        error: payload.error
-      };
+        error: payload.error,
+      }
     case ADD_MOVE_FOLDER_SUCCESS: {
       // params and result are always expected from action.
-      const { result, params, updatedFolder = null } = payload;
-      const { sourceFolderId } = params?.[0];
-      let currentFolderContent = [];
+      const { result, params, updatedFolder = null } = payload
+      const { sourceFolderId } = params?.[0]
+      let currentFolderContent = []
       // Update folder.entities to reflect the moved assignments.
-      const entities = state.entities.map(entity => {
+      const entities = state.entities.map((entity) => {
         // is this entity is target folder ?
         if (entity._id === result._id) {
-          return { ...entity, ...result };
+          return { ...entity, ...result }
         }
         // is this entity is source folder ?
         if (entity._id === sourceFolderId) {
           // Get all moved assignments in the source folder and filter those contents.
-          const allAssignments = params.map(item => item._id);
-          currentFolderContent = entity.content.filter(item => !allAssignments.includes(item._id));
+          const allAssignments = params.map((item) => item._id)
+          currentFolderContent = entity.content.filter(
+            (item) => !allAssignments.includes(item._id)
+          )
           return {
             ...entity,
-            ...(currentFolderContent.length > 0 ? { content: currentFolderContent } : {})
-          };
+            ...(currentFolderContent.length > 0
+              ? { content: currentFolderContent }
+              : {}),
+          }
         }
-        return entity;
-      });
+        return entity
+      })
       return {
         ...state,
         entities,
@@ -102,80 +106,85 @@ const reducer = (state = initialState, { type, payload }) => {
         // entity should have the assignments for displaying inside entity.content
         entity: {
           ...state.entity,
-          ...(currentFolderContent.length > 0 ? { content: currentFolderContent } : {})
-        }
-      };
+          ...(currentFolderContent.length > 0
+            ? { content: currentFolderContent }
+            : {}),
+        },
+      }
     }
     case DELETE_FOLDER_SUCCESS: {
-      const { folderId } = payload;
-      const { entities } = state;
-      remove(entities, entity => entity._id === folderId);
+      const { folderId } = payload
+      const { entities } = state
+      remove(entities, (entity) => entity._id === folderId)
       return {
         ...state,
-        entities: clone(entities)
-      };
+        entities: clone(entities),
+      }
     }
     case DELETE_FOLDER_ERROR:
       return {
         ...state,
-        error: payload.error
-      };
+        error: payload.error,
+      }
     case RENAME_FOLDER_SUCCESS: {
       if (payload) {
-        const { entities } = state;
-        const index = findIndex(entities, entity => entity._id === payload._id);
+        const { entities } = state
+        const index = findIndex(
+          entities,
+          (entity) => entity._id === payload._id
+        )
         if (index !== -1) {
-          entities.splice(index, 1, payload);
+          entities.splice(index, 1, payload)
         }
         return {
           ...state,
-          entities: clone(entities)
-        };
+          entities: clone(entities),
+        }
       }
-      return state;
+      return state
     }
     case RENAME_FOLDER_ERROR:
       return {
         ...state,
-        error: payload.error
-      };
+        error: payload.error,
+      }
     case SET_FOLDER:
       return {
         ...state,
-        entity: payload
-      };
+        entity: payload,
+      }
 
     case CLEAR_FOLDER:
       return {
         ...state,
-        entity: {}
-      };
+        entity: {},
+      }
     case TOGGLE_REMOVE_ITEMS_FROM_FOLDER:
       return {
         ...state,
         selectedItems: payload.items,
         isOpenRemovalModal: payload.isOpen,
-        updatedFolder: payload.updatedFolder
-      };
+        updatedFolder: payload.updatedFolder,
+      }
     case TOGGLE_MOVE_ITEMS_TO_FOLDER:
       return {
         ...state,
         selectedItems: payload.items,
-        isOpenAddItemModal: payload.isOpen
-      };
+        isOpenAddItemModal: payload.isOpen,
+      }
     case SET_CONTENTS_UPDATED:
       return {
         ...state,
-        updatedFolder: payload
-      };
+        updatedFolder: payload,
+      }
     case SET_ITEMS_TO_ADD:
       return {
         ...state,
-        selectedItems: payload
-      };
+        selectedItems: payload,
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

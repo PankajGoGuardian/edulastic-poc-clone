@@ -1,5 +1,5 @@
-export { default as CONSTANT } from "./constants";
-export { default as Colors } from "./colors";
+export { default as CONSTANT } from './constants'
+export { default as Colors } from './colors'
 
 const quadrantsDefaultConfig = {
   // X min, X max, Y min, Y max
@@ -12,19 +12,19 @@ const quadrantsDefaultConfig = {
     // X distance
     gridX: 1,
     // Y distance
-    gridY: 1
+    gridY: 1,
   },
   defaultaxes: {
     x: {
-      name: "",
+      name: '',
       withLabel: false,
-      strokeColor: "#434B5D",
-      highlightStrokeColor: "#434B5D",
+      strokeColor: '#434B5D',
+      highlightStrokeColor: '#434B5D',
       strokeWidth: 2,
       label: {
-        position: "rt",
-        anchorX: "right",
-        anchorY: "bottom"
+        position: 'rt',
+        anchorX: 'right',
+        anchorY: 'bottom',
       },
       ticks: {
         drawLabels: true,
@@ -34,25 +34,25 @@ const quadrantsDefaultConfig = {
         includeBoundaries: true,
         minorHeight: 1,
         majorHeight: 15,
-        ticksDistance: 1
+        ticksDistance: 1,
       },
       firstArrow: {
-        size: 5
+        size: 5,
       },
       lastArrow: {
-        size: 5
-      }
+        size: 5,
+      },
     },
     y: {
-      name: "",
+      name: '',
       withLabel: false,
-      strokeColor: "#434B5D",
-      highlightStrokeColor: "#434B5D",
+      strokeColor: '#434B5D',
+      highlightStrokeColor: '#434B5D',
       strokeWidth: 2,
       label: {
-        position: "rt",
-        anchorX: "left",
-        anchorY: "top"
+        position: 'rt',
+        anchorX: 'left',
+        anchorY: 'top',
       },
       ticks: {
         drawLabels: true,
@@ -61,20 +61,20 @@ const quadrantsDefaultConfig = {
         insertTicks: false,
         minorHeight: 0,
         ticksDistance: 1,
-        majorHeight: 15
+        majorHeight: 15,
       },
       firstArrow: {
-        size: 5
+        size: 5,
       },
       lastArrow: {
-        size: 5
-      }
-    }
+        size: 5,
+      },
+    },
   },
   pan: {
     enabled: false,
     needShift: false,
-    needTwoFingers: false
+    needTwoFingers: false,
   },
   zoom: {
     enabled: false,
@@ -82,14 +82,14 @@ const quadrantsDefaultConfig = {
     min: 0,
     max: 0,
     pinchHorizontal: false,
-    pinchVertical: false
-  }
-};
+    pinchVertical: false,
+  },
+}
 
 function getDefaultConfig() {
   return {
-    ...quadrantsDefaultConfig
-  };
+    ...quadrantsDefaultConfig,
+  }
 }
 
-export default getDefaultConfig;
+export default getDefaultConfig

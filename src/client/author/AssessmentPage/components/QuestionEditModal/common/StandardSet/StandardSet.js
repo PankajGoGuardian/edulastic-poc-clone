@@ -1,27 +1,30 @@
-import { isEqual } from "lodash";
-import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
-import { withNamespaces } from "react-i18next";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { ThemeProvider } from "styled-components";
-import AlignmentRow from "../../../../../../assessment/containers/QuestionMetadata/AlignmentRow";
-import { themes } from "../../../../../../theme";
-import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from "../../../../../src/actions/dictionaries";
+import { isEqual } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { ThemeProvider } from 'styled-components'
+import AlignmentRow from '../../../../../../assessment/containers/QuestionMetadata/AlignmentRow'
+import { themes } from '../../../../../../theme'
+import {
+  getDictCurriculumsAction,
+  getDictStandardsForCurriculumAction,
+} from '../../../../../src/actions/dictionaries'
 import {
   getCurriculumsListSelector,
   getStandardsListSelector,
-  standardsSelector
-} from "../../../../../src/selectors/dictionaries";
+  standardsSelector,
+} from '../../../../../src/selectors/dictionaries'
 
 const defaultAlignment = {
   standards: [],
   grades: [],
   domains: [],
-  subject: "",
-  curriculumId: "",
-  curriculum: ""
-};
+  subject: '',
+  curriculumId: '',
+  curriculum: '',
+}
 
 const StandardSet = ({
   t,
@@ -34,55 +37,65 @@ const StandardSet = ({
   curriculumStandards,
   curriculumStandardsLoading,
   isDocBased,
-  showIconBrowserBtn
+  showIconBrowserBtn,
 }) => {
-  const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
+  const [searchProps, setSearchProps] = useState({
+    id: '',
+    grades: [],
+    searchStr: '',
+  })
 
   useEffect(() => {
     if (curriculums.length === 0) {
-      getCurriculums();
+      getCurriculums()
     }
-  }, []);
+  }, [])
 
-  const questionAlignment = alignment.length ? alignment[0] : defaultAlignment;
+  const questionAlignment = alignment.length ? alignment[0] : defaultAlignment
 
-  const searchCurriculumStandards = searchObject => {
+  const searchCurriculumStandards = (searchObject) => {
     if (!isEqual(searchProps, searchObject)) {
-      setSearchProps(searchObject);
-      getCurriculumStandards(searchObject.id, searchObject.grades, searchObject.searchStr);
+      setSearchProps(searchObject)
+      getCurriculumStandards(
+        searchObject.id,
+        searchObject.grades,
+        searchObject.searchStr
+      )
     }
-  };
+  }
 
   const handleEditAlignment = (index, standardSet) => {
-    const oldAlignment = alignment.length ? alignment[0] : defaultAlignment;
+    const oldAlignment = alignment.length ? alignment[0] : defaultAlignment
 
     onUpdate({
       alignment: [
         {
           ...oldAlignment,
-          ...standardSet
-        }
-      ]
-    });
-  };
+          ...standardSet,
+        },
+      ],
+    })
+  }
 
-  const handleDelete = curriculumId => () => {
-    const filteredAlignment = alignment.filter(item => item.curriculumId !== curriculumId);
+  const handleDelete = (curriculumId) => () => {
+    const filteredAlignment = alignment.filter(
+      (item) => item.curriculumId !== curriculumId
+    )
 
     onUpdate({
-      alignment: filteredAlignment
-    });
-  };
+      alignment: filteredAlignment,
+    })
+  }
 
   const handleUpdateQuestionAlignment = (index, standardSet) => {
-    const { domains } = standardSet;
+    const { domains } = standardSet
 
     if (!isEqual(questionAlignment.domains, domains)) {
-      handleEditAlignment(index, { domains });
+      handleEditAlignment(index, { domains })
     }
-  };
+  }
 
-  const handleCreateGradeAndSubjects = () => {};
+  const handleCreateGradeAndSubjects = () => {}
 
   return (
     <ThemeProvider theme={themes.default}>
@@ -104,8 +117,8 @@ const StandardSet = ({
         showIconBrowserBtn={showIconBrowserBtn}
       />
     </ThemeProvider>
-  );
-};
+  )
+}
 
 StandardSet.propTypes = {
   t: PropTypes.func.isRequired,
@@ -115,37 +128,34 @@ StandardSet.propTypes = {
       _id: PropTypes.string.isRequired,
       curriculum: PropTypes.string.isRequired,
       grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
+      subject: PropTypes.string.isRequired,
     })
   ).isRequired,
   curriculumStandards: PropTypes.object.isRequired,
   curriculumStandardsLoading: PropTypes.bool.isRequired,
   onUpdate: PropTypes.func.isRequired,
   getCurriculums: PropTypes.func.isRequired,
-  getCurriculumStandards: PropTypes.func.isRequired
-};
+  getCurriculumStandards: PropTypes.func.isRequired,
+}
 
 StandardSet.defaultProps = {
-  alignment: []
-};
+  alignment: [],
+}
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   curriculums: getCurriculumsListSelector(state),
   curriculumStandardsLoading: standardsSelector(state).loading,
-  curriculumStandards: getStandardsListSelector(state)
-});
+  curriculumStandards: getStandardsListSelector(state),
+})
 
 const mapDispatchToProps = {
   getCurriculums: getDictCurriculumsAction,
-  getCurriculumStandards: getDictStandardsForCurriculumAction
-};
+  getCurriculumStandards: getDictStandardsForCurriculumAction,
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-);
+  withNamespaces('assessment'),
+  connect(mapStateToProps, mapDispatchToProps)
+)
 
-export default enhance(StandardSet);
+export default enhance(StandardSet)

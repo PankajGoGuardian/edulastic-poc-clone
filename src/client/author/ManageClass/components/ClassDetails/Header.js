@@ -1,41 +1,53 @@
-import { MainHeader, EduButton, TypeToConfirmModal, notification } from "@edulastic/common";
-import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PropTypes from "prop-types";
-import withRouter from "react-router-dom/withRouter";
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import * as Sentry from "@sentry/browser";
+import {
+  MainHeader,
+  EduButton,
+  TypeToConfirmModal,
+  notification,
+} from '@edulastic/common'
+import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import PropTypes from 'prop-types'
+import withRouter from 'react-router-dom/withRouter'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import * as Sentry from '@sentry/browser'
 
 // components
-import { Dropdown, Select } from "antd";
+import { Dropdown, Select } from 'antd'
 
-import GoogleLogin from "react-google-login";
+import GoogleLogin from 'react-google-login'
 import {
   IconGoogleClassroom,
   IconClever,
   IconPlusCircle,
   IconPencilEdit,
   IconAssignment,
-  IconManage
-} from "@edulastic/icons";
-import IconArchive from "@edulastic/icons/src/IconArchive";
-import { canvasApi } from "@edulastic/api";
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import { Institution, DropMenu, MenuItems, CaretUp, SelectStyled, OptionWrapper } from "./styled";
+  IconManage,
+} from '@edulastic/icons'
+import IconArchive from '@edulastic/icons/src/IconArchive'
+import { canvasApi } from '@edulastic/api'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import {
+  Institution,
+  DropMenu,
+  MenuItems,
+  CaretUp,
+  SelectStyled,
+  OptionWrapper,
+} from './styled'
 
-import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
-import { scopes } from "../ClassListContainer/ClassCreatePage";
-import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
+import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
+import { scopes } from '../ClassListContainer/ClassCreatePage'
+import AddCoTeacher from './AddCoTeacher/AddCoTeacher'
 
-const Option = Select.Option;
+const Option = Select.Option
 
-const CANVAS = "canvas";
-const GOOGLE = "google";
-const CLEVER = "clever";
+const CANVAS = 'canvas'
+const GOOGLE = 'google'
+const CLEVER = 'clever'
 
-const modalStatus = {};
+const modalStatus = {}
 
 const Header = ({
   user,
@@ -53,122 +65,132 @@ const Header = ({
   archiveClass,
   location,
   history,
-  entity
+  entity,
 }) => {
-  const handleLoginSuccess = data => {
-    fetchClassList({ data, showModal: false });
-  };
+  const handleLoginSuccess = (data) => {
+    fetchClassList({ data, showModal: false })
+  }
 
-  const handleError = err => {
-    notification({ messageKey: "googleLoginFailed" });
-    console.log("error", err);
-  };
+  const handleError = (err) => {
+    notification({ messageKey: 'googleLoginFailed' })
+    console.log('error', err)
+  }
 
-  const { _id, districtId } = entity;
-  const [showModal, setShowModal] = useState(false);
-  const { name, type, institutionId, institutionName = "", districtName = "", cleverId, active } = selectedClass;
-  const { exitPath } = location?.state || {};
+  const { _id, districtId } = entity
+  const [showModal, setShowModal] = useState(false)
+  const {
+    name,
+    type,
+    institutionId,
+    institutionName = '',
+    districtName = '',
+    cleverId,
+    active,
+  } = selectedClass
+  const { exitPath } = location?.state || {}
 
-  const typeText = type !== "class" ? "Group" : "Class";
+  const typeText = type !== 'class' ? 'Group' : 'Class'
 
-  const [isOpen, setModalStatus] = useState(modalStatus);
-  const [sentReq, setReqStatus] = useState(false);
+  const [isOpen, setModalStatus] = useState(modalStatus)
+  const [sentReq, setReqStatus] = useState(false)
 
-  const toggleModal = key => {
-    setModalStatus({ [key]: !isOpen[key] });
-  };
+  const toggleModal = (key) => {
+    setModalStatus({ [key]: !isOpen[key] })
+  }
 
   if (added && sentReq) {
-    setReqStatus(false);
-    setModalStatus(false);
+    setReqStatus(false)
+    setModalStatus(false)
   }
 
   const handleActionMenuClick = () => {
-    toggleModal("addCoTeacher");
-  };
+    toggleModal('addCoTeacher')
+  }
 
   const handleArchiveClass = () => {
-    archiveClass({ _id, districtId, exitPath, isGroup: type !== "class" });
+    archiveClass({ _id, districtId, exitPath, isGroup: type !== 'class' })
 
-    setShowModal(false);
-  };
+    setShowModal(false)
+  }
   const handleArchiveClassCancel = () => {
-    setShowModal(false);
-  };
+    setShowModal(false)
+  }
 
   const handleSyncWithCanvas = async () => {
     try {
-      const result = await canvasApi.getCanvasAuthURI(institutionId);
+      const result = await canvasApi.getCanvasAuthURI(institutionId)
       if (!result.userAuthenticated) {
-        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${user._id}_${user.username || user.email || ""}`;
+        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${
+          user._id
+        }_${user.username || user.email || ''}`
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
-          .then(res => {
-            syncCanvasModal(res);
+          .then((res) => {
+            syncCanvasModal(res)
           })
-          .catch(err => {
-            console.error("Error while authorizing", err);
-            notification({ messageKey: "errorOccuredWhileAuthorizing" });
-          });
+          .catch((err) => {
+            console.error('Error while authorizing', err)
+            notification({ messageKey: 'errorOccuredWhileAuthorizing' })
+          })
       } else {
-        syncCanvasModal();
+        syncCanvasModal()
       }
     } catch (err) {
-      Sentry.captureException(err);
+      Sentry.captureException(err)
       notification(
         err.status === 403 && err.response.data?.message
           ? {
-              msg: err.response.data?.message
+              msg: err.response.data?.message,
             }
-          : { messageKey: "errorWhileGettingAuthUri" }
-      );
+          : { messageKey: 'errorWhileGettingAuthUri' }
+      )
     }
-  };
+  }
 
   const classDetails = (
     <>
       <div>{name}</div>
       <Institution>
-        {districtName ? `${districtName}, ` : ""}
+        {districtName ? `${districtName}, ` : ''}
         {institutionName}
       </Institution>
     </>
-  );
+  )
 
   const handleCleverSync = () => {
-    const classList = [{ ...selectedClass, course: selectedClass?.course?.id }];
-    syncClassesWithClever({ classList });
-  };
+    const classList = [{ ...selectedClass, course: selectedClass?.course?.id }]
+    syncClassesWithClever({ classList })
+  }
 
-  const getAssignmentsByClass = (classId = "") => () => {
+  const getAssignmentsByClass = (classId = '') => () => {
     const filter = {
       classId,
-      testType: "",
-      termId: ""
-    };
-    sessionStorage.setItem("filters[Assignments]", JSON.stringify(filter));
-    history.push("/author/assignments");
-  };
+      testType: '',
+      termId: '',
+    }
+    sessionStorage.setItem('filters[Assignments]', JSON.stringify(filter))
+    history.push('/author/assignments')
+  }
 
-  const showSyncButtons = type === "class" && active === 1;
-  const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId;
-  const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false;
-  const showCanvasSyncButton = showSyncButtons && allowCanvasLogin;
+  const showSyncButtons = type === 'class' && active === 1
+  const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId
+  const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false
+  const showCanvasSyncButton = showSyncButtons && allowCanvasLogin
 
   const options = {
     [CLEVER]: showCleverSyncButton,
     [GOOGLE]: showGoogleSyncButton,
-    [CANVAS]: showCanvasSyncButton
-  };
+    [CANVAS]: showCanvasSyncButton,
+  }
 
-  Object.keys(options).forEach(o => {
-    if (!options[o]) delete options[o];
-  });
+  Object.keys(options).forEach((o) => {
+    if (!options[o]) delete options[o]
+  })
 
-  const showDropDown = Object.values(options).filter(o => o).length > 1;
+  const showDropDown = Object.values(options).filter((o) => o).length > 1
 
   return (
     <MainHeader Icon={IconManage} headingText={classDetails}>
-      <div style={{ display: "flex", alignItems: "right" }}>
+      <div style={{ display: 'flex', alignItems: 'right' }}>
         {showDropDown ? (
           <SelectStyled
             data-cy="sync-options-dropdown"
@@ -179,29 +201,41 @@ const Header = ({
             {Object.keys(options).map((option, index) => {
               if (option === CLEVER) {
                 return (
-                  <Option key={index} data-cy={`sync-option-${index}`} onClick={handleCleverSync}>
+                  <Option
+                    key={index}
+                    data-cy={`sync-option-${index}`}
+                    onClick={handleCleverSync}
+                  >
                     <span className="menu-label">Sync with Clever</span>
                     <IconClever width={18} height={18} />
                   </Option>
-                );
+                )
               }
               if (option === GOOGLE) {
                 if (isUserGoogleLoggedIn) {
                   return (
-                    <Option key={index} data-cy={`sync-option-${index}`} onClick={syncGCModal}>
-                      <span className="menu-label">Sync with Google Classroom</span>
+                    <Option
+                      key={index}
+                      data-cy={`sync-option-${index}`}
+                      onClick={syncGCModal}
+                    >
+                      <span className="menu-label">
+                        Sync with Google Classroom
+                      </span>
                       <IconGoogleClassroom width={18} height={18} />
                     </Option>
-                  );
+                  )
                 }
                 return (
                   <Option key={index} data-cy={`sync-option-${index}`}>
                     <GoogleLogin
                       clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                       buttonText="Sync with Google Classroom"
-                      render={renderProps => (
+                      render={(renderProps) => (
                         <OptionWrapper onClick={renderProps.onClick}>
-                          <span className="menu-label">Sync with Google Classroom</span>
+                          <span className="menu-label">
+                            Sync with Google Classroom
+                          </span>
                           <IconGoogleClassroom />
                         </OptionWrapper>
                       )}
@@ -212,11 +246,15 @@ const Header = ({
                       responseType="code"
                     />
                   </Option>
-                );
+                )
               }
               if (option === CANVAS) {
                 return (
-                  <Option key={index} data-cy={`sync-option-${index}`} onClick={handleSyncWithCanvas}>
+                  <Option
+                    key={index}
+                    data-cy={`sync-option-${index}`}
+                    onClick={handleSyncWithCanvas}
+                  >
                     <span className="menu-label">Sync with Canvas</span>
                     <img
                       alt="Canvas"
@@ -225,9 +263,9 @@ const Header = ({
                       height={18}
                     />
                   </Option>
-                );
+                )
               }
-              return null;
+              return null
             })}
           </SelectStyled>
         ) : (
@@ -248,7 +286,7 @@ const Header = ({
                 <GoogleLogin
                   clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                   buttonText="Sync with Google Classroom"
-                  render={renderProps => (
+                  render={(renderProps) => (
                     <EduButton isBlue isGhost onClick={renderProps.onClick}>
                       <IconGoogleClassroom />
                       <span>SYNC WITH GOOGLE CLASSROOM</span>
@@ -268,7 +306,7 @@ const Header = ({
                   src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
                   width={18}
                   height={18}
-                  style={{ marginRight: "10px" }}
+                  style={{ marginRight: '10px' }}
                 />
                 <span>Sync with Canvas Classroom</span>
               </EduButton>
@@ -288,11 +326,13 @@ const Header = ({
                 <CaretUp className="fa fa-caret-up" />
                 <MenuItems onClick={onEdit}>
                   <IconPencilEdit />
-                  <span>{type === "class" ? "Edit Class" : "Edit Group"}</span>
+                  <span>{type === 'class' ? 'Edit Class' : 'Edit Group'}</span>
                 </MenuItems>
                 <MenuItems onClick={() => setShowModal(true)}>
                   <IconArchive />
-                  <span>{type === "class" ? "Archive Class" : "Archive Group"}</span>
+                  <span>
+                    {type === 'class' ? 'Archive Class' : 'Archive Group'}
+                  </span>
                 </MenuItems>
                 <MenuItems onClick={handleActionMenuClick}>
                   <IconPlusCircle />
@@ -311,7 +351,7 @@ const Header = ({
                 </MenuItems>
               </DropMenu>
             }
-            getPopupContainer={trigger => trigger.parentNode}
+            getPopupContainer={(trigger) => trigger.parentNode}
             placement="bottomRight"
           >
             <EduButton isBlue data-cy="headerDropDown" IconBtn>
@@ -324,7 +364,7 @@ const Header = ({
         isOpen={isOpen.addCoTeacher}
         type={type}
         selectedClass={selectedClass}
-        handleCancel={() => toggleModal("addCoTeacher")}
+        handleCancel={() => toggleModal('addCoTeacher')}
       />
       {showModal && (
         <TypeToConfirmModal
@@ -334,7 +374,7 @@ const Header = ({
           wordToBeTyped="ARCHIVE"
           primaryLabel={`Are you sure you want to archive the following ${typeText.toLowerCase()}?`}
           secondaryLabel={
-            <p style={{ margin: "5px 0" }}>
+            <p style={{ margin: '5px 0' }}>
               <LightGreenSpan>{name}</LightGreenSpan>
             </p>
           }
@@ -343,21 +383,21 @@ const Header = ({
         />
       )}
     </MainHeader>
-  );
-};
+  )
+}
 
 Header.propTypes = {
-  onEdit: PropTypes.func
-};
+  onEdit: PropTypes.func,
+}
 
 Header.defaultProps = {
-  onEdit: () => null
-};
+  onEdit: () => null,
+}
 
 const enhance = compose(
   withRouter,
-  connect(state => ({
-    user: state?.user?.user
+  connect((state) => ({
+    user: state?.user?.user,
   }))
-);
-export default enhance(Header);
+)
+export default enhance(Header)

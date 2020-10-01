@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconSaveNew = props => (
+const IconSaveNew = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20.4 20.4" {...props}>
     <g transform="translate(0 0)">
       <path
@@ -12,6 +12,6 @@ const IconSaveNew = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconSaveNew);
+export default withIconStyles(IconSaveNew)

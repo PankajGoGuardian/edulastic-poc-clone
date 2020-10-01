@@ -5,32 +5,40 @@ import {
   mobileWidthLarge,
   mobileWidthMax,
   themeColor,
-  white
-} from "@edulastic/colors";
-import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
+  white,
+} from '@edulastic/colors'
+import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 // constants
-import { roleuser } from "@edulastic/constants";
-import { IconMoreVertical, IconPlusCircle } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { faUsers } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { roleuser } from '@edulastic/constants'
+import { IconMoreVertical, IconPlusCircle } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { faUsers } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Dropdown } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 // components
-import { Link } from "react-router-dom";
-import { compose } from "redux";
-import styled from "styled-components";
-import CartButton from "../../../ItemList/components/CartButton/CartButton";
+import { Link } from 'react-router-dom'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import CartButton from '../../../ItemList/components/CartButton/CartButton'
 // ducks
-import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction, toggleBroadcastSummaryAction } from "../../../SchoolAdmin/ducks";
-import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
-import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-import { getUserFeatures, getUserOrgId, getUserRole } from "../../selectors/user";
-import BroadcastSummaryModal from "../../../Extended/BroadcastSummaryModal";
-import BroadcastIcon from "../../assets/broadcast";
+import {
+  addBulkTeacherAdminAction,
+  setTeachersDetailsModalVisibleAction,
+  toggleBroadcastSummaryAction,
+} from '../../../SchoolAdmin/ducks'
+import StudentsDetailsModal from '../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal'
+import InviteMultipleTeacherModal from '../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal'
+import {
+  getUserFeatures,
+  getUserOrgId,
+  getUserRole,
+} from '../../selectors/user'
+import BroadcastSummaryModal from '../../../Extended/BroadcastSummaryModal'
+import BroadcastIcon from '../../assets/broadcast'
 
 const ListHeader = ({
   onCreate,
@@ -46,10 +54,10 @@ const ListHeader = ({
   renderButton,
   midTitle,
   addBulkTeacher,
-  userOrgId = "",
+  userOrgId = '',
   setTeachersDetailsModalVisible,
   teacherDetailsModalVisible,
-  userRole = "",
+  userRole = '',
   windowWidth,
   titleIcon,
   userFeatures,
@@ -57,30 +65,30 @@ const ListHeader = ({
   toggleSidebar,
   titleWidth,
   showBroadcastSummary = false,
-  toggleBroadcastSummary
+  toggleBroadcastSummary,
 }) => {
-  const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
-  const [isMeetActive, setMeetActive] = useState({});
+  const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false)
+  const [isMeetActive, setMeetActive] = useState({})
 
   useEffect(() => {
-      window.chrome?.runtime?.sendMessage?.(
-        process.env.EXTENSION_ID || 'eadjoeopijphkogdmabgffpiiebjdgoo', 
-        {type: "REQUEST_MEETINGS_STATUS"}, 
-        (response = {}) => response.meetingID && setMeetActive(response)
-      );
-  }, []);
+    window.chrome?.runtime?.sendMessage?.(
+      process.env.EXTENSION_ID || 'eadjoeopijphkogdmabgffpiiebjdgoo',
+      { type: 'REQUEST_MEETINGS_STATUS' },
+      (response = {}) => response.meetingID && setMeetActive(response)
+    )
+  }, [])
 
-  const sendInvite = userDetails => {
-    addBulkTeacher({ addReq: userDetails }); 
-  };
+  const sendInvite = (userDetails) => {
+    addBulkTeacher({ addReq: userDetails })
+  }
 
   const toggleInviteTeacherModalVisibility = () => {
-    toggleInviteTeacherModal(prevState => !prevState);
-  };
+    toggleInviteTeacherModal((prevState) => !prevState)
+  }
 
   const closeTeachersDetailModal = () => {
-    setTeachersDetailsModalVisible(false);
-  };
+    setTeachersDetailsModalVisible(false)
+  }
 
   return (
     <MainHeader titleMaxWidth={titleWidth} Icon={titleIcon} headingText={title}>
@@ -92,19 +100,18 @@ const ListHeader = ({
 
       <RightButtonWrapper>
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
-        { isMeetActive.meetingID && (
+        {isMeetActive.meetingID && (
           <div
             onClick={() => toggleBroadcastSummary(true)}
             title="Broadcast Results"
           >
-            <BroadcastIcon 
+            <BroadcastIcon
               iconStyle={{
-                fill: "#BBBFC4",
-                width: "28px",
-                height: "28px",
-                margin: "0 14px",
-                cursor: "pointer"
-    
+                fill: '#BBBFC4',
+                width: '28px',
+                height: '28px',
+                margin: '0 14px',
+                cursor: 'pointer',
               }}
             />
           </div>
@@ -117,20 +124,25 @@ const ListHeader = ({
               {windowWidth > 768 ? (
                 renderButton()
               ) : (
-                  <Dropdown
-                    overlay={renderButton()}
-                    trigger={["click"]}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                    overlayClassName="mobile-buttons-dropdown"
+                <Dropdown
+                  overlay={renderButton()}
+                  trigger={['click']}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  overlayClassName="mobile-buttons-dropdown"
+                >
+                  <EduButton
+                    IconBtn
+                    isGhost
+                    isBlue
+                    onClick={(e) => e.preventDefault()}
                   >
-                    <EduButton IconBtn isGhost isBlue onClick={e => e.preventDefault()}>
-                      <IconMoreVertical />
-                    </EduButton>
-                  </Dropdown>
-                )}
+                    <IconMoreVertical />
+                  </EduButton>
+                </Dropdown>
+              )}
             </>
           ) : userRole === roleuser.EDULASTIC_CURATOR ? null : (
-            <div style={{ display: "flex" }}>
+            <div style={{ display: 'flex' }}>
               {/* Not required for this release */}
               {/* {userRole && userRole === roleuser.TEACHER && !userFeatures.isPublisherAuthor && !userFeatures.isCurator && (
                 <EduButton isGhost onClick={toggleSidebar} isBlue>
@@ -138,11 +150,13 @@ const ListHeader = ({
                   UNLOCK COLLECTION
                 </EduButton>
               )} */}
-              {btnTitle && btnTitle.length ? null : <CartButton onClick={newTest} buttonText="New Test" />}
+              {btnTitle && btnTitle.length ? null : (
+                <CartButton onClick={newTest} buttonText="New Test" />
+              )}
               {renderExtra()}
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
                 <IconPlusStyled />
-                {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
+                {btnTitle && btnTitle.length ? btnTitle : 'NEW ITEM'}
               </EduButton>
             </div>
           ))}
@@ -195,8 +209,8 @@ const ListHeader = ({
         />
       )}
     </MainHeader>
-  );
-};
+  )
+}
 
 ListHeader.propTypes = {
   onCreate: PropTypes.func,
@@ -211,58 +225,62 @@ ListHeader.propTypes = {
   hasButton: PropTypes.bool,
   renderButton: PropTypes.func,
   midTitle: PropTypes.string,
-  toggleSidebar: PropTypes.func
-};
+  toggleSidebar: PropTypes.func,
+}
 
 ListHeader.defaultProps = {
-  btnTitle: "",
+  btnTitle: '',
   renderExtra: () => null,
   renderFilter: () => null,
   renderFilterIcon: () => null,
-  onCreate: () => { },
+  onCreate: () => {},
   createAssignment: false,
   renderButton: null,
   isAdvancedView: false,
   hasButton: true,
-  midTitle: "",
-  toggleSidebar: () => null
-};
+  midTitle: '',
+  toggleSidebar: () => null,
+}
 
 const enhance = compose(
-  withNamespaces("manageDistrict"),
+  withNamespaces('manageDistrict'),
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       userOrgId: getUserOrgId(state),
       userRole: getUserRole(state),
       userFeatures: getUserFeatures(state),
-      firstName: state?.user?.firstName || "",
-      teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false),
-      showBroadcastSummary: state.schoolAdminReducer.showBroadcastSummary
+      firstName: state?.user?.firstName || '',
+      teacherDetailsModalVisible: get(
+        state,
+        ['schoolAdminReducer', 'teacherDetailsModalVisible'],
+        false
+      ),
+      showBroadcastSummary: state.schoolAdminReducer.showBroadcastSummary,
     }),
     {
       addBulkTeacher: addBulkTeacherAdminAction,
       setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction,
-      toggleBroadcastSummary: toggleBroadcastSummaryAction
+      toggleBroadcastSummary: toggleBroadcastSummaryAction,
     }
   )
-);
-export default enhance(ListHeader);
+)
+export default enhance(ListHeader)
 
 const IconPlusStyled = styled(IconPlusCircle)`
   position: relative;
-`;
+`
 
 export const Title = styled.h1`
   font-size: 18px;
-  color: ${props => props.theme.header.headerTitleTextColor};
+  color: ${(props) => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   margin: 0;
   padding: 0;
   @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.header.headerTitleFontSize};
+    font-size: ${(props) => props.theme.header.headerTitleFontSize};
   }
-`;
+`
 
 const RightButtonWrapper = styled.div`
   display: flex;
@@ -282,7 +300,7 @@ const RightButtonWrapper = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     display: none;
   }
-`;
+`
 
 const MidTitleWrapper = styled.div`
   display: flex;
@@ -291,7 +309,7 @@ const MidTitleWrapper = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
-`;
+`
 
 export const MobileHeaderFilterIcon = styled.div`
   display: none;
@@ -322,4 +340,4 @@ export const MobileHeaderFilterIcon = styled.div`
   @media (max-width: ${desktopWidth}) {
     display: block;
   }
-`;
+`

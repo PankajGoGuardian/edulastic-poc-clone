@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import NoDataIcon from "./nodata.svg";
-import { mobileWidthMax, themeColor } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { mobileWidthMax, themeColor } from '@edulastic/colors'
+import NoDataIcon from './nodata.svg'
 
 const NoDataNotification = ({ heading, description, data }) => (
   <Wrapper>
@@ -13,16 +13,16 @@ const NoDataNotification = ({ heading, description, data }) => (
       </p>
     </NoDataBox>
   </Wrapper>
-);
+)
 
-export default NoDataNotification;
+export default NoDataNotification
 
 const Wrapper = styled.div`
   position: relative;
   align-items: center;
   justify-content: center;
   display: flex;
-`;
+`
 const NoDataBox = styled.div`
   border-radius: 6px;
   text-align: center;
@@ -36,20 +36,24 @@ const NoDataBox = styled.div`
     margin-bottom: 15px;
   }
   h4 {
-    color: ${props => (props.theme.assignment && props.theme.assignment.helpHeadingTextColor) || "#304050"};
+    color: ${(props) =>
+      (props.theme.assignment && props.theme.assignment.helpHeadingTextColor) ||
+      '#304050'};
     font-size: 18px;
     font-weight: 600;
   }
   p {
-    color: ${props => (props.theme.assignment && props.theme.assignment.helpTextColor) || "#848993"};
+    color: ${(props) =>
+      (props.theme.assignment && props.theme.assignment.helpTextColor) ||
+      '#848993'};
     font-size: 14px;
     line-height: 22px;
   }
   @media (max-width: ${mobileWidthMax}) {
     padding: 10px;
   }
-`;
+`
 
 export const ThemeColorText = styled.span`
   color: ${themeColor};
-`;
+`

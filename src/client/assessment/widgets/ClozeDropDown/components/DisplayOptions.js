@@ -1,18 +1,19 @@
-import React from "react";
+import React from 'react'
 
 const DisplayOptions = ({ options = {}, responseIds = [] }) => {
-  let userOptions = responseIds.map(item => options[item.id]);
+  const userOptions = responseIds.map((item) => options[item.id])
 
   return (
     <div>
       <h3 style={{ fontWeight: 700 }}> Options: </h3>
       {userOptions.map((item, index) => (
         <div>
-          <span style={{ fontWeight: 700 }}> {index + 1}.) </span> {item.join(", ")}
+          <span style={{ fontWeight: 700 }}> {index + 1}.) </span>{' '}
+          {item.join(', ')}
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default DisplayOptions;
+export default DisplayOptions

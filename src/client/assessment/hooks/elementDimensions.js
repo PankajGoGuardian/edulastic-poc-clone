@@ -1,4 +1,4 @@
-import { measureText } from "@edulastic/common";
+import { measureText } from '@edulastic/common'
 
 /**
  * @typedef {Object} dimensions
@@ -16,14 +16,14 @@ import { measureText } from "@edulastic/common";
  * @returns {Array<dimensions>}
  *        objects containing the dimensions of the elements if it were rendered on screen
  */
-const elementDimensions = elements => {
-  const dimensions = [];
+const elementDimensions = (elements) => {
+  const dimensions = []
   for (const element of elements) {
-    const dim = measureText(element.text);
-    dimensions.push(dim);
+    const dim = measureText(element.text)
+    dimensions.push(dim)
   }
 
-  return dimensions;
-};
+  return dimensions
+}
 
-export default elementDimensions;
+export default elementDimensions

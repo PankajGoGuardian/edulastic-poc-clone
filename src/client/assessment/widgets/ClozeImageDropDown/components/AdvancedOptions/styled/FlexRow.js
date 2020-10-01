@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const FlexRow = styled.div`
   display: flex;
@@ -7,4 +7,4 @@ export const FlexRow = styled.div`
   align-items: center;
   min-height: 40px;
   margin-bottom: ${({ noMargins }) => (noMargins ? 0 : 16)}px;
-`;
+`

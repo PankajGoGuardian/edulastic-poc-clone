@@ -1,28 +1,28 @@
-import React, { Fragment, useMemo } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { isEmpty } from "lodash";
-import { connect } from "react-redux";
-import uuidv4 from "uuid/v4";
-import styled from "styled-components";
-import produce from "immer";
+import React, { Fragment, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { isEmpty } from 'lodash'
+import { connect } from 'react-redux'
+import uuidv4 from 'uuid/v4'
+import styled from 'styled-components'
+import produce from 'immer'
 
-import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { checkAnswerAction } from "../../../author/src/actions/testItem";
-import { replaceVariables, updateVariables } from "../../utils/variables";
+import { withNamespaces } from '@edulastic/localization'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { checkAnswerAction } from '../../../author/src/actions/testItem'
+import { replaceVariables, updateVariables } from '../../utils/variables'
 
-import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
+import { CLEAR, PREVIEW, EDIT } from '../../constants/constantsForQuestions'
 
-import { ContentArea } from "../../styled/ContentArea";
+import { ContentArea } from '../../styled/ContentArea'
 
-import FormulaEssayPreview from "./components/FormulaEssayPreview";
-import FormulaEssayOptions from "./components/FormulaEssayOptions";
-import ComposeQuestion from "./ComposeQuestion";
-import TextFormattingOptions from "./TextFormattingOptions";
-import { StyledPaperWrapper } from "../../styled/Widget";
+import FormulaEssayPreview from './components/FormulaEssayPreview'
+import FormulaEssayOptions from './components/FormulaEssayOptions'
+import ComposeQuestion from './ComposeQuestion'
+import TextFormattingOptions from './TextFormattingOptions'
+import { StyledPaperWrapper } from '../../styled/Widget'
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div``
 
 const FormulaEssay = ({
   view,
@@ -41,26 +41,32 @@ const FormulaEssay = ({
   ...restProps
 }) => {
   const resetLines = () => {
-    saveAnswer([{ text: "", type: item.uiStyle && item.uiStyle.defaultMode, index: uuidv4() }]);
-  };
+    saveAnswer([
+      {
+        text: '',
+        type: item.uiStyle && item.uiStyle.defaultMode,
+        index: uuidv4(),
+      },
+    ])
+  }
 
-  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper
 
   const handleItemChange = (prop, data) => {
     setQuestionData(
-      produce(item, draft => {
-        draft[prop] = data;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft[prop] = data
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  const handleSetLines = plines => saveAnswer(plines);
+  const handleSetLines = (plines) => saveAnswer(plines)
 
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <Fragment>
+    <>
       {view === EDIT && (
         <ContentArea>
           <ComposeQuestion
@@ -89,7 +95,7 @@ const FormulaEssay = ({
         </ContentArea>
       )}
       {view === PREVIEW && (
-        <Wrapper style={{ height: "100%" }}>
+        <Wrapper style={{ height: '100%' }}>
           <FormulaEssayPreview
             disableResponse={disableResponse}
             key={itemForPreview.id}
@@ -101,15 +107,21 @@ const FormulaEssay = ({
             lines={
               !isEmpty(userAnswer)
                 ? userAnswer
-                : [{ text: "", type: item.uiStyle && item.uiStyle.defaultMode, index: uuidv4() }]
+                : [
+                    {
+                      text: '',
+                      type: item.uiStyle && item.uiStyle.defaultMode,
+                      index: uuidv4(),
+                    },
+                  ]
             }
             {...restProps}
           />
         </Wrapper>
       )}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 FormulaEssay.propTypes = {
   previewTab: PropTypes.string,
@@ -124,8 +136,8 @@ FormulaEssay.propTypes = {
   cleanSections: PropTypes.func,
   saveAnswer: PropTypes.func.isRequired,
   advancedLink: PropTypes.any,
-  disableResponse: PropTypes.bool
-};
+  disableResponse: PropTypes.bool,
+}
 
 FormulaEssay.defaultProps = {
   disableResponse: false,
@@ -137,20 +149,17 @@ FormulaEssay.defaultProps = {
   advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
-  connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction,
-      checkAnswer: checkAnswerAction
-    }
-  )
-);
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+    checkAnswer: checkAnswerAction,
+  })
+)
 
-const FormulaEssayContainer = enhance(FormulaEssay);
+const FormulaEssayContainer = enhance(FormulaEssay)
 
-export { FormulaEssayContainer as FormulaEssay };
+export { FormulaEssayContainer as FormulaEssay }

@@ -1,42 +1,48 @@
-import { themeColor, title } from "@edulastic/colors";
-import { Button, CheckboxLabel, EduSwitchStyled } from "@edulastic/common";
-import { IconClose } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Row } from "antd";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import ReactOutsideEvent from "react-outside-event";
-import SettingsBarItem from "../SettingsBarItem/SettingsBarItem";
-import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
-import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
-import { Checkboxes, Content, Heading, Items, SettingsButtonWrapper } from "./styled";
+import { themeColor, title } from '@edulastic/colors'
+import { Button, CheckboxLabel, EduSwitchStyled } from '@edulastic/common'
+import { IconClose } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Row } from 'antd'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import ReactOutsideEvent from 'react-outside-event'
+import SettingsBarItem from '../SettingsBarItem/SettingsBarItem'
+import SettingsBarUseTabs from '../SettingsBarUseTabs/SettingsBarUseTabs'
+import SettingsFlowLayout from '../SettingsFlowLayout/SettingFlowLayout'
+import {
+  Checkboxes,
+  Content,
+  Heading,
+  Items,
+  SettingsButtonWrapper,
+} from './styled'
 
 const layouts = [
   {
-    value: "100-100",
-    text: "Single column"
+    value: '100-100',
+    text: 'Single column',
   },
   {
-    value: "30-70",
-    text: "30 | 70"
+    value: '30-70',
+    text: '30 | 70',
   },
   {
-    value: "70-30",
-    text: "70 | 30"
+    value: '70-30',
+    text: '70 | 30',
   },
   {
-    value: "50-50",
-    text: "50 | 50"
+    value: '50-50',
+    text: '50 | 50',
   },
   {
-    value: "40-60",
-    text: "40 | 60"
+    value: '40-60',
+    text: '40 | 60',
   },
   {
-    value: "60-40",
-    text: "60 | 40"
-  }
-];
+    value: '60-40',
+    text: '60 | 40',
+  },
+]
 
 class Container extends Component {
   static propTypes = {
@@ -56,62 +62,62 @@ class Container extends Component {
     useFlowLayoutRight: PropTypes.bool,
     itemLevelScoring: PropTypes.bool,
     setItemLevelScoring: PropTypes.func.isRequired,
-    isSingleQuestion: PropTypes.bool
-  };
+    isSingleQuestion: PropTypes.bool,
+  }
 
   static defaultProps = {
     useFlowLayoutRight: false,
     itemLevelScoring: true,
-    isSingleQuestion: false
-  };
+    isSingleQuestion: false,
+  }
 
-  handleCheckboxChange = name => () => {
-    this.setState(state => ({
-      [name]: !state[name]
-    }));
-  };
+  handleCheckboxChange = (name) => () => {
+    this.setState((state) => ({
+      [name]: !state[name],
+    }))
+  }
 
-  handleRemoveTag = () => {};
+  handleRemoveTag = () => {}
 
   handleChangeLeftTab = () => {
-    const { useTabs, useTabsLeft } = this.props;
-    useTabs({ rowIndex: 0, isUseTabs: !useTabsLeft });
-  };
+    const { useTabs, useTabsLeft } = this.props
+    useTabs({ rowIndex: 0, isUseTabs: !useTabsLeft })
+  }
 
   handleChangeRightTab = () => {
-    const { useTabs, useTabsRight } = this.props;
-    useTabs({ rowIndex: 1, isUseTabs: !useTabsRight });
-  };
+    const { useTabs, useTabsRight } = this.props
+    useTabs({ rowIndex: 1, isUseTabs: !useTabsRight })
+  }
 
   handleChangeLeftFlowLayout = () => {
-    const { useFlowLayout, useFlowLayoutLeft } = this.props;
-    useFlowLayout({ rowIndex: 0, isUseFlowLayout: !useFlowLayoutLeft });
-  };
+    const { useFlowLayout, useFlowLayoutLeft } = this.props
+    useFlowLayout({ rowIndex: 0, isUseFlowLayout: !useFlowLayoutLeft })
+  }
 
   handleChangeRightFlowLayout = () => {
-    const { useFlowLayout, useFlowLayoutRight } = this.props;
-    useFlowLayout({ rowIndex: 1, isUseFlowLayout: !useFlowLayoutRight });
-  };
+    const { useFlowLayout, useFlowLayoutRight } = this.props
+    useFlowLayout({ rowIndex: 1, isUseFlowLayout: !useFlowLayoutRight })
+  }
 
-  onApplyLayoutClick = object => () => {
-    const { onApply } = this.props;
-    onApply(object);
-  };
+  onApplyLayoutClick = (object) => () => {
+    const { onApply } = this.props
+    onApply(object)
+  }
 
-  onOutsideEvent = event => {
-    const { onCancel } = this.props;
+  onOutsideEvent = (event) => {
+    const { onCancel } = this.props
 
-    if (event.type === "mousedown") {
-      onCancel();
+    if (event.type === 'mousedown') {
+      onCancel()
     }
-  };
+  }
 
   handleMultipart = () => {
-    const { setMultipart, onCancel, saveTestItem } = this.props;
-    setMultipart(true);
-    saveTestItem();
-    onCancel();
-  };
+    const { setMultipart, onCancel, saveTestItem } = this.props
+    setMultipart(true)
+    saveTestItem()
+    onCancel()
+  }
 
   render() {
     const {
@@ -132,9 +138,9 @@ class Container extends Component {
       isSingleQuestion = false,
       isMultipart,
       isMultiDimensionLayout,
-      isPassageQuestion
-    } = this.props;
-    const singleLayout = type === layouts[0].value;
+      isPassageQuestion,
+    } = this.props
+    const singleLayout = type === layouts[0].value
 
     const multipleItemsSettings = () => (
       <>
@@ -142,14 +148,19 @@ class Container extends Component {
           <Button
             color="primary"
             onClick={onCancel}
-            style={{ minWidth: 40, background: "transparent", padding: 0, boxShadow: "none" }}
+            style={{
+              minWidth: 40,
+              background: 'transparent',
+              padding: 0,
+              boxShadow: 'none',
+            }}
           >
             <IconClose color={title} />
           </Button>
         </SettingsButtonWrapper>
-        <Heading>{t("author:component.settingsBar.layout")}</Heading>
+        <Heading>{t('author:component.settingsBar.layout')}</Heading>
         <Items>
-          {layouts.map(item => (
+          {layouts.map((item) => (
             <SettingsBarItem
               onSelect={this.onApplyLayoutClick({ type: item.value })}
               selected={type === item.value}
@@ -163,7 +174,10 @@ class Container extends Component {
           onChangeRight={this.handleChangeRightTab}
           checkedLeft={useTabsLeft}
           checkedRight={useTabsRight}
-          disableRight={singleLayout || (isMultipart && !isPassageQuestion && isMultiDimensionLayout)}
+          disableRight={
+            singleLayout ||
+            (isMultipart && !isPassageQuestion && isMultiDimensionLayout)
+          }
         />
         {!isMultipart && (
           <SettingsFlowLayout
@@ -179,20 +193,20 @@ class Container extends Component {
           <Row
             type="flex"
             style={{
-              flexDirection: "column",
-              borderRadius: "5px",
-              boxShadow: "0 2px 5px 0 rgba(0,0,0,0.07)",
-              padding: "15px",
-              marginBottom: "50px",
-              backgroundColor: "#fff"
+              flexDirection: 'column',
+              borderRadius: '5px',
+              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.07)',
+              padding: '15px',
+              marginBottom: '50px',
+              backgroundColor: '#fff',
             }}
           >
             <Row
               style={{
                 color: themeColor,
-                fontSize: "13px",
-                fontWeight: "600",
-                marginBottom: "15px"
+                fontSize: '13px',
+                fontWeight: '600',
+                marginBottom: '15px',
               }}
             >
               Scoring Level
@@ -204,8 +218,8 @@ class Container extends Component {
                   checked={itemLevelScoring}
                   checkedChildren="on"
                   unCheckedChildren="off"
-                  onChange={v => {
-                    setItemLevelScoring(v);
+                  onChange={(v) => {
+                    setItemLevelScoring(v)
                   }}
                 />
               </Col>
@@ -214,16 +228,20 @@ class Container extends Component {
         )}
         {!isMultipart && (
           <Checkboxes>
-            <CheckboxLabel style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
-              {t("author:component.settingsBar.showVerticalDivider")}
+            <CheckboxLabel
+              style={{ marginBottom: 20 }}
+              checked={verticalDivider}
+              onChange={onVerticalDividerChange}
+            >
+              {t('author:component.settingsBar.showVerticalDivider')}
             </CheckboxLabel>
             <CheckboxLabel checked={scrolling} onChange={onScrollingChange}>
-              {t("author:component.settingsBar.enableScrolling")}
+              {t('author:component.settingsBar.enableScrolling')}
             </CheckboxLabel>
           </Checkboxes>
         )}
       </>
-    );
+    )
 
     return (
       <Content>
@@ -237,8 +255,10 @@ class Container extends Component {
           multipleItemsSettings()
         )}
       </Content>
-    );
+    )
   }
 }
 
-export default withNamespaces(["default", "author"])(ReactOutsideEvent(Container, ["mousedown"]));
+export default withNamespaces(['default', 'author'])(
+  ReactOutsideEvent(Container, ['mousedown'])
+)

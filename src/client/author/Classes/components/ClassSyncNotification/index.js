@@ -1,89 +1,103 @@
-import { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { FireBaseService as Fbs } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { uniqBy, pull } from "lodash";
-import notification from "@edulastic/common/src/components/Notification";
-import {
-  destroyNotificationMessage
-} from "../../../../common/components/Notification";
-import { getUser } from "../../../src/selectors/user";
+import { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { FireBaseService as Fbs } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { uniqBy, pull } from 'lodash'
+import notification from '@edulastic/common/src/components/Notification'
+import { destroyNotificationMessage } from '../../../../common/components/Notification'
+import { getUser } from '../../../src/selectors/user'
 import {
   fetchStudentsByIdAction,
   removeClassSyncNotificationAction,
-  setGroupSyncDataAction, setSyncClassLoadingAction
-} from "../../../ManageClass/ducks";
-import {fetchGroupsAction} from "../../../sharedDucks/groups";
+  setGroupSyncDataAction,
+  setSyncClassLoadingAction,
+} from '../../../ManageClass/ducks'
+import { fetchGroupsAction } from '../../../sharedDucks/groups'
 
-const firestoreGoogleClassSyncStatusCollection = "GoogleClassSyncStatus";
+const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
 
-const ClassSyncNotificationListener = ({ user, removeClassSyncDetails, fetchStudentsById, setSyncClassLoading, setGroupSyncData, fetchGroups }) => {
-  const [notificationIds, setNotificationIds] = useState([]);
+const ClassSyncNotificationListener = ({
+  user,
+  removeClassSyncDetails,
+  fetchStudentsById,
+  setSyncClassLoading,
+  setGroupSyncData,
+  fetchGroups,
+}) => {
+  const [notificationIds, setNotificationIds] = useState([])
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
-    db => db.collection(firestoreGoogleClassSyncStatusCollection).where("userId", "==", `${user?._id}`),
+    (db) =>
+      db
+        .collection(firestoreGoogleClassSyncStatusCollection)
+        .where('userId', '==', `${user?._id}`),
     [user?._id]
-  );
+  )
 
   const closeNotification = (event, key, data) => {
     // delete the doc from firestore
-    setNotificationIds([...pull(notificationIds, [key])]);
+    setNotificationIds([...pull(notificationIds, [key])])
     // execute delete request
-    removeClassSyncDetails();
-    const { groupId, studentsSaved } = data;
-    if(groupId){
-      fetchStudentsById({classId: groupId});
+    removeClassSyncDetails()
+    const { groupId, studentsSaved } = data
+    if (groupId) {
+      fetchStudentsById({ classId: groupId })
     } else {
       if (studentsSaved) {
-        setGroupSyncData(studentsSaved);
+        setGroupSyncData(studentsSaved)
       }
-      setSyncClassLoading(false);
-      fetchGroups();
+      setSyncClassLoading(false)
+      fetchGroups()
     }
-  };
+  }
 
-  const showUserNotifications = docs => {
-    uniqBy(docs, "__id").map(doc => {
-      const { status, studentsSaved, counter, groupId, message } = doc;
+  const showUserNotifications = (docs) => {
+    uniqBy(docs, '__id').map((doc) => {
+      const { status, studentsSaved, counter, groupId, message } = doc
 
-      if((status === "completed" || counter === 0) && !notificationIds.includes(doc.__id)){
-        setNotificationIds([...notificationIds, doc.__id]);
+      if (
+        (status === 'completed' || counter === 0) &&
+        !notificationIds.includes(doc.__id)
+      ) {
+        setNotificationIds([...notificationIds, doc.__id])
         // show sync complete notification
         notification({
-          msg: message || "Class sync task completed.",
-          type: message ? "error" : "success",
-          onClose: () => {closeNotification(event, doc.__id, {groupId, studentsSaved})}
-        });
+          msg: message || 'Class sync task completed.',
+          type: message ? 'error' : 'success',
+          onClose: () => {
+            closeNotification(event, doc.__id, { groupId, studentsSaved })
+          },
+        })
       }
-    });
-  };
+    })
+  }
 
   useEffect(
     () => () => {
-      destroyNotificationMessage();
+      destroyNotificationMessage()
     },
     []
-  );
+  )
 
   useEffect(() => {
     if (user && user.role === roleuser.TEACHER) {
-      showUserNotifications(userNotifications);
+      showUserNotifications(userNotifications)
     }
-  }, [userNotifications]);
-  return null;
-};
+  }, [userNotifications])
+  return null
+}
 
 export default compose(
   connect(
-    state => ({
-      user: getUser(state)
+    (state) => ({
+      user: getUser(state),
     }),
     {
       removeClassSyncDetails: removeClassSyncNotificationAction,
       fetchStudentsById: fetchStudentsByIdAction,
       setGroupSyncData: setGroupSyncDataAction,
       fetchGroups: fetchGroupsAction,
-      setSyncClassLoading: setSyncClassLoadingAction
+      setSyncClassLoading: setSyncClassLoadingAction,
     }
   )
-)(ClassSyncNotificationListener);
+)(ClassSyncNotificationListener)

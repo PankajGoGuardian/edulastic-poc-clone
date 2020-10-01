@@ -1,24 +1,27 @@
-import React, { useState } from "react";
-import { Col, Radio } from "antd";
+import React, { useState } from 'react'
+import { Col, Radio } from 'antd'
 
-import { withNamespaces } from "@edulastic/localization";
-import moment from "moment";
-import { HeadingSpan, ValueSpan } from "../../Common/StyledComponents/upgradePlan";
-import CreateAdminForm from "./CreateAdminForm";
-import { Row, SecondDiv, ThirdDiv } from "./styled";
+import { withNamespaces } from '@edulastic/localization'
+import moment from 'moment'
+import {
+  HeadingSpan,
+  ValueSpan,
+} from '../../Common/StyledComponents/upgradePlan'
+import CreateAdminForm from './CreateAdminForm'
+import { Row, SecondDiv, ThirdDiv } from './styled'
 
-const DISTRICT = "District";
-const SCHOOL = "School";
+const DISTRICT = 'District'
+const SCHOOL = 'School'
 
-const CreateAdmin = props => {
-  const [adminType, setAdminType] = useState(DISTRICT);
+const CreateAdmin = (props) => {
+  const [adminType, setAdminType] = useState(DISTRICT)
 
-  const { districtData, t, clearDistrictData } = props;
-  const { _source = {}, _id: districtId, subscription = {} } = districtData;
-  const { location = {} } = _source;
-  const { subType = "free", subStartDate, subEndDate } = subscription;
+  const { districtData, t, clearDistrictData } = props
+  const { _source = {}, _id: districtId, subscription = {} } = districtData
+  const { location = {} } = _source
+  const { subType = 'free', subStartDate, subEndDate } = subscription
 
-  const handleOnChange = event => setAdminType(event.target.value);
+  const handleOnChange = (event) => setAdminType(event.target.value)
 
   return (
     <>
@@ -29,11 +32,11 @@ const CreateAdmin = props => {
         </Row>
         <Row>
           <HeadingSpan>V1 ID:</HeadingSpan>
-          <ValueSpan>{_source.v1Id || "-"}</ValueSpan>
+          <ValueSpan>{_source.v1Id || '-'}</ValueSpan>
         </Row>
         <Row>
           <HeadingSpan>Clever ID:</HeadingSpan>
-          <ValueSpan>{_source.cleverId || "-"}</ValueSpan>
+          <ValueSpan>{_source.cleverId || '-'}</ValueSpan>
         </Row>
         <Row>
           <Col span={5}>
@@ -42,11 +45,15 @@ const CreateAdmin = props => {
           </Col>
           <Col span={5}>
             <HeadingSpan>Start Date:</HeadingSpan>
-            <ValueSpan>{subStartDate ? moment(subStartDate).format("YYYY-MM-DD") : "-"}</ValueSpan>
+            <ValueSpan>
+              {subStartDate ? moment(subStartDate).format('YYYY-MM-DD') : '-'}
+            </ValueSpan>
           </Col>
           <Col span={5}>
             <HeadingSpan>End Date:</HeadingSpan>
-            <ValueSpan>{subEndDate ? moment(subEndDate).format("YYYY-MM-DD") : "-"}</ValueSpan>
+            <ValueSpan>
+              {subEndDate ? moment(subEndDate).format('YYYY-MM-DD') : '-'}
+            </ValueSpan>
           </Col>
         </Row>
         <Row>
@@ -60,15 +67,15 @@ const CreateAdmin = props => {
         <Row>
           <Col span={5}>
             <HeadingSpan>City:</HeadingSpan>
-            <ValueSpan>{location?.city || "-"}</ValueSpan>
+            <ValueSpan>{location?.city || '-'}</ValueSpan>
           </Col>
           <Col span={5}>
             <HeadingSpan>State:</HeadingSpan>
-            <ValueSpan>{location?.state || "-"}</ValueSpan>
+            <ValueSpan>{location?.state || '-'}</ValueSpan>
           </Col>
           <Col span={5}>
             <HeadingSpan>Zipcode:</HeadingSpan>
-            <ValueSpan>{location?.zip || "-"}</ValueSpan>
+            <ValueSpan>{location?.zip || '-'}</ValueSpan>
           </Col>
         </Row>
       </SecondDiv>
@@ -94,7 +101,7 @@ const CreateAdmin = props => {
         />
       </ThirdDiv>
     </>
-  );
-};
+  )
+}
 
-export default withNamespaces("manageDistrict")(CreateAdmin);
+export default withNamespaces('manageDistrict')(CreateAdmin)

@@ -1,71 +1,79 @@
-import React from "react";
-import { Row, Col, Radio, Select } from "antd";
-import styled from "styled-components";
-import { CommonText, RowWrapper, ContentWrapper } from "./styled";
-import { ActivityInput, Title, InputTitle, Body, Block, RadioWrapper, RadioGroup } from "../Container/styled";
+import React from 'react'
+import { Row, Col, Radio, Select } from 'antd'
+import styled from 'styled-components'
+import { CommonText, RowWrapper, ContentWrapper } from './styled'
+import {
+  ActivityInput,
+  Title,
+  InputTitle,
+  Body,
+  Block,
+  RadioWrapper,
+  RadioGroup,
+} from '../Container/styled'
 
 const renderBodyContent = () => {
   const content = [
     {
-      label: "Progress Bar",
-      defaultValue: "limit-type",
-      type: "select",
+      label: 'Progress Bar',
+      defaultValue: 'limit-type',
+      type: 'select',
       selectOptions: [
         {
-          text: "Limit Type",
-          value: "limit-type"
-        }
-      ]
+          text: 'Limit Type',
+          value: 'limit-type',
+        },
+      ],
     },
     {
-      label: "Timer",
-      defaultValue: "limit-layout",
-      type: "select",
+      label: 'Timer',
+      defaultValue: 'limit-layout',
+      type: 'select',
       selectOptions: [
         {
-          text: "Layout",
-          value: "limit-layout"
-        }
-      ]
+          text: 'Layout',
+          value: 'limit-layout',
+        },
+      ],
     },
     {
-      label: "Item Count",
-      defaultValue: "item-transition",
-      type: "select",
+      label: 'Item Count',
+      defaultValue: 'item-transition',
+      type: 'select',
       selectOptions: [
         {
-          text: "Item Transition",
-          value: "item-transition"
-        }
-      ]
+          text: 'Item Transition',
+          value: 'item-transition',
+        },
+      ],
     },
     {
-      label: "Scrolling Indicator",
-      defaultValue: "font-size",
-      type: "select",
+      label: 'Scrolling Indicator',
+      defaultValue: 'font-size',
+      type: 'select',
       selectOptions: [
         {
-          text: "Font Size",
-          value: "font-size"
-        }
-      ]
+          text: 'Font Size',
+          value: 'font-size',
+        },
+      ],
     },
     {
-      label: "Idle Timeout Warning",
-      placeholder: "Idle Timeout Countdown Time (sec)",
-      type: "input"
+      label: 'Idle Timeout Warning',
+      placeholder: 'Idle Timeout Countdown Time (sec)',
+      type: 'input',
     },
     {
-      label: "Auto Save",
-      placeholder: "Auto Save Interval (sec)",
-      type: "input"
+      label: 'Auto Save',
+      placeholder: 'Auto Save Interval (sec)',
+      type: 'input',
     },
     {
-      label: "Auto Save UI Indicator",
-      placeholder: "Auto Save Interval (sec)",
-      type: "input"
-    }
-  ];
+      label: 'Auto Save UI Indicator',
+      placeholder: 'Auto Save Interval (sec)',
+      type: 'input',
+    },
+  ]
 
   return content.map((element, index) => (
     <RadioWrapper key={`RadioWrapper_${index}`}>
@@ -80,27 +88,39 @@ const renderBodyContent = () => {
           </RadioGroup>
         </Col>
         <Col span={8}>
-          {element.type === "select" && (
-            <SelectWrapper optionCount={element.selectOptions.length} id="select-area">
+          {element.type === 'select' && (
+            <SelectWrapper
+              optionCount={element.selectOptions.length}
+              id="select-area"
+            >
               <Select
                 defaultValue={element.defaultValue}
-                dropdownClassName={element.selectOptions.length === 1 ? "ant-select-dropdown-hidden" : ""}
-                getPopupContainer={() => document.getElementById("select-area")}
+                dropdownClassName={
+                  element.selectOptions.length === 1
+                    ? 'ant-select-dropdown-hidden'
+                    : ''
+                }
+                getPopupContainer={() => document.getElementById('select-area')}
               >
                 {element.selectOptions.map((option, indexOption) => (
-                  <Select.Option value={option.value} key={`SelectOption_${indexOption}`}>
+                  <Select.Option
+                    value={option.value}
+                    key={`SelectOption_${indexOption}`}
+                  >
                     {option.text}
                   </Select.Option>
                 ))}
               </Select>
             </SelectWrapper>
           )}
-          {element.type === "input" && <ActivityInput placeholder={element.placeholder} />}
+          {element.type === 'input' && (
+            <ActivityInput placeholder={element.placeholder} />
+          )}
         </Col>
       </RowWrapper>
     </RadioWrapper>
-  ));
-};
+  ))
+}
 
 const UiTime = () => (
   <Block id="ui-time">
@@ -127,12 +147,12 @@ const UiTime = () => (
       </Row>
     </Body>
   </Block>
-);
+)
 
-export default UiTime;
+export default UiTime
 
 const SelectWrapper = styled.div`
   .ant-select-arrow {
-    display: ${props => (props.optionCount === 1 ? "none" : "inline-block")};
+    display: ${(props) => (props.optionCount === 1 ? 'none' : 'inline-block')};
   }
-`;
+`

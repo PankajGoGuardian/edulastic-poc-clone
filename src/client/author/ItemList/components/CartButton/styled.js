@@ -1,18 +1,23 @@
-import { mediumDesktopExactWidth, mobileWidthLarge, white, themeColorBlue } from "@edulastic/colors";
-import styled from "styled-components";
+import {
+  mediumDesktopExactWidth,
+  mobileWidthLarge,
+  white,
+  themeColorBlue,
+} from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const Container = styled.div`
   position: relative;
   margin-left: 5px;
-  opacity: ${props => (props.disabled ? 0.5 : 1)};
-  pointer-events: ${props => (props.disabled ? "none" : "all")};
-  cursor: ${props => (props.disabled ? "default" : "pointer")};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'all')};
+  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
   transition: opacity 300ms ease-in-out;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     margin-left: 10px;
   }
-`;
+`
 
 export const ItemsAmount = styled.span`
   width: 22px;
@@ -33,4 +38,4 @@ export const ItemsAmount = styled.span`
     margin: 0px;
     background: #42d184;
   }
-`;
+`

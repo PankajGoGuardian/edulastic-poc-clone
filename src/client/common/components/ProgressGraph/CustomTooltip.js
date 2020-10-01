@@ -1,11 +1,11 @@
-import React from "react";
-import { Row, Col } from "antd";
-import { get, head } from "lodash";
+import React from 'react'
+import { Row, Col } from 'antd'
+import { get, head } from 'lodash'
 
-export const CustomTooltip = props => {
-  const { label, payload, className } = props;
-  const firstItem = head(payload) || {};
-  const timeSpent = get(firstItem, "payload.avgTimeSpent");
+export const CustomTooltip = (props) => {
+  const { label, payload, className } = props
+  const firstItem = head(payload) || {}
+  const timeSpent = get(firstItem, 'payload.avgTimeSpent')
 
   return (
     <>
@@ -25,11 +25,15 @@ export const CustomTooltip = props => {
             <Col className="classboard-tooltip-value">{payload[2].value}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="classboard-tooltip-key">Average Time Spent (seconds): </Col>
-            <Col className="classboard-tooltip-value">{timeSpent ? (timeSpent / 1000).toFixed(1) : 0}</Col>
+            <Col className="classboard-tooltip-key">
+              Average Time Spent (seconds):{' '}
+            </Col>
+            <Col className="classboard-tooltip-value">
+              {timeSpent ? (timeSpent / 1000).toFixed(1) : 0}
+            </Col>
           </Row>
         </div>
       ) : null}
     </>
-  );
-};
+  )
+}

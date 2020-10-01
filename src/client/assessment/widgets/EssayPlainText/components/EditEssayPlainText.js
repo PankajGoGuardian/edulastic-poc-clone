@@ -1,22 +1,25 @@
-import React from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
+import React from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
 
-import { Row, Col } from "antd";
+import { Row, Col } from 'antd'
 
-import { withNamespaces } from "@edulastic/localization";
-import { CheckboxLabel } from "@edulastic/common";
+import { withNamespaces } from '@edulastic/localization'
+import { CheckboxLabel } from '@edulastic/common'
 
-import { updateVariables } from "../../../utils/variables";
+import { updateVariables } from '../../../utils/variables'
 
-import { ContentArea } from "../../../styled/ContentArea";
+import { ContentArea } from '../../../styled/ContentArea'
 
-import ComposeQuestion from "./ComposeQuestion";
-import FormattingOptions from "./FormattingOptions";
-import Options from "./Options";
-import Question from "../../../components/Question";
-import { Scoring, BrowserSpellcheckOption } from "../../../containers/WidgetOptions/components";
-import WordLimitAndCount from "../../../components/WordLimitAndCount";
+import ComposeQuestion from './ComposeQuestion'
+import FormattingOptions from './FormattingOptions'
+import Options from './Options'
+import Question from '../../../components/Question'
+import {
+  Scoring,
+  BrowserSpellcheckOption,
+} from '../../../containers/WidgetOptions/components'
+import WordLimitAndCount from '../../../components/WordLimitAndCount'
 
 const EditEssayPlainText = ({
   item,
@@ -25,16 +28,16 @@ const EditEssayPlainText = ({
   advancedAreOpen,
   fillSections,
   cleanSections,
-  t
+  t,
 }) => {
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft[prop] = uiStyle
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   return (
     <ContentArea>
@@ -84,16 +87,20 @@ const EditEssayPlainText = ({
               <CheckboxLabel
                 data-cy="showWordCount"
                 defaultChecked={item.showWordCount}
-                onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
-                style={{ marginBottom: "1rem" }}
+                onChange={(e) =>
+                  handleItemChangeChange('showWordCount', e.target.checked)
+                }
+                style={{ marginBottom: '1rem' }}
               >
-                {t("component.essayText.showWordCheckbox")}
+                {t('component.essayText.showWordCheckbox')}
               </CheckboxLabel>
             </Col>
             <Col md={12}>
               <BrowserSpellcheckOption
                 data-cy="browserSpellCheckOption"
-                onChange={checked => handleItemChangeChange("spellcheck", checked)}
+                onChange={(checked) =>
+                  handleItemChangeChange('spellcheck', checked)
+                }
                 checked={!!item.spellcheck}
               />
             </Col>
@@ -111,8 +118,8 @@ const EditEssayPlainText = ({
         handleItemChangeChange={handleItemChangeChange}
       />
     </ContentArea>
-  );
-};
+  )
+}
 
 EditEssayPlainText.propTypes = {
   item: PropTypes.object.isRequired,
@@ -121,14 +128,14 @@ EditEssayPlainText.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 EditEssayPlainText.defaultProps = {
   advancedAreOpen: false,
   advancedLink: null,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-export default withNamespaces("assessment")(EditEssayPlainText);
+export default withNamespaces('assessment')(EditEssayPlainText)

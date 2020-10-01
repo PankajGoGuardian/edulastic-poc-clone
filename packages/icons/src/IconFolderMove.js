@@ -1,10 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconFolderMove = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" {...props}>
+const IconFolderMove = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    {...props}
+  >
     <g transform="translate(0)">
       <path fill="none" d="M0,0H24V24H0Z" />
       <path
@@ -13,6 +19,6 @@ const IconFolderMove = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconFolderMove);
+export default withIconStyles(IconFolderMove)

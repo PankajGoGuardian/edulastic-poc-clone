@@ -1,56 +1,59 @@
-import React, { Fragment } from "react";
-import { Dropdown, Menu, Col, Icon } from "antd";
-import { Link } from "react-router-dom";
-import { withNamespaces } from "react-i18next";
-import styled from "styled-components";
-import { themeColor, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
-import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
-import { IconBarChart, IconMoreVertical } from "@edulastic/icons";
-import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
-import HeaderNavigation from "./HeaderNavigation";
+import React, { Fragment } from 'react'
+import { Dropdown, Menu, Col, Icon } from 'antd'
+import { Link } from 'react-router-dom'
+import { withNamespaces } from 'react-i18next'
+import styled from 'styled-components'
+import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
+import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
+import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
+import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
+import HeaderNavigation from './HeaderNavigation'
 
 const CustomizedHeaderWrapper = ({
   windowWidth,
   onPrintClickCB,
   onDownloadCSVClickCB,
   navigationItems = [],
-  activeNavigationKey = "",
+  activeNavigationKey = '',
   hideSideMenu,
   isCliUser,
-  t
+  t,
 }) => {
   const _onPrintClickCB = () => {
-    onPrintClickCB();
-  };
+    onPrintClickCB()
+  }
 
   const _onDownloadCSVClickCB = () => {
-    onDownloadCSVClickCB();
-  };
+    onDownloadCSVClickCB()
+  }
 
-  const isSmallDesktop = windowWidth >= parseInt(tabletWidth, 10) && windowWidth <= parseInt(smallDesktopWidth, 10);
+  const isSmallDesktop =
+    windowWidth >= parseInt(tabletWidth, 10) &&
+    windowWidth <= parseInt(smallDesktopWidth, 10)
 
-  let filterNavigationItems = navigationItems;
+  let filterNavigationItems = navigationItems
   if (isCliUser) {
     filterNavigationItems = navigationItems.filter(
-      item => item.key !== "peer-performance" && item.key !== "response-frequency"
-    );
+      (item) =>
+        item.key !== 'peer-performance' && item.key !== 'response-frequency'
+    )
   }
   const availableNavItems = isSmallDesktop
-    ? filterNavigationItems.filter(ite => ite.key === activeNavigationKey)
-    : filterNavigationItems;
+    ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
+    : filterNavigationItems
 
-  const ActionButtonWrapper = isSmallDesktop ? Menu : Fragment;
-  const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
+  const ActionButtonWrapper = isSmallDesktop ? Menu : Fragment
+  const ActionButton = isSmallDesktop ? Menu.Item : EduButton
 
   const navMenu = isSmallDesktop
     ? filterNavigationItems
-        .filter(ite => ite.key !== activeNavigationKey)
-        .map(ite => (
+        .filter((ite) => ite.key !== activeNavigationKey)
+        .map((ite) => (
           <ActionButton key={ite.key}>
             <Link to={ite.location}>{ite.title}</Link>
           </ActionButton>
         ))
-    : null;
+    : null
 
   const actionRightButtons = (
     <ActionButtonWrapper>
@@ -65,14 +68,29 @@ const CustomizedHeaderWrapper = ({
         ) : null}
       </FeaturesSwitch> */}
       {onPrintClickCB ? (
-        <ActionButton isBlue isGhost IconBtn title="Print" onClick={_onPrintClickCB}>
+        <ActionButton
+          isBlue
+          isGhost
+          IconBtn
+          title="Print"
+          onClick={_onPrintClickCB}
+        >
           <Icon type="printer" />
           {isSmallDesktop && <span>Print</span>}
         </ActionButton>
       ) : null}
-      <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
+      <FeaturesSwitch
+        inputFeatures="downloadReports"
+        actionOnInaccessible="hidden"
+      >
         {onDownloadCSVClickCB ? (
-          <ActionButton isBlue isGhost IconBtn title="Download CSV" onClick={_onDownloadCSVClickCB}>
+          <ActionButton
+            isBlue
+            isGhost
+            IconBtn
+            title="Download CSV"
+            onClick={_onDownloadCSVClickCB}
+          >
             <Icon type="download" />
             {isSmallDesktop && <span>Download CSV</span>}
           </ActionButton>
@@ -85,28 +103,38 @@ const CustomizedHeaderWrapper = ({
         </ActionButton>
       )} */}
     </ActionButtonWrapper>
-  );
+  )
 
   return (
     <MainHeader
-      mobileHeaderHeight={activeNavigationKey !== "standard-reports" ? 100 : ""}
-      headingText={t("common.reports")}
+      mobileHeaderHeight={activeNavigationKey !== 'standard-reports' ? 100 : ''}
+      headingText={t('common.reports')}
       Icon={IconBarChart}
       hideSideMenu={hideSideMenu}
     >
       {navigationItems.length ? (
-        activeNavigationKey === "standard-reports" ? (
-          <FeaturesSwitch inputFeatures="customReport" actionOnInaccessible="hidden" key="customReport">
-            <HeaderNavigation navigationItems={availableNavItems} activeItemKey={activeNavigationKey} />
+        activeNavigationKey === 'standard-reports' ? (
+          <FeaturesSwitch
+            inputFeatures="customReport"
+            actionOnInaccessible="hidden"
+            key="customReport"
+          >
+            <HeaderNavigation
+              navigationItems={availableNavItems}
+              activeItemKey={activeNavigationKey}
+            />
           </FeaturesSwitch>
         ) : (
-          <HeaderNavigation navigationItems={availableNavItems} activeItemKey={activeNavigationKey} />
+          <HeaderNavigation
+            navigationItems={availableNavItems}
+            activeItemKey={activeNavigationKey}
+          />
         )
       ) : null}
       <StyledCol>
         {!isSmallDesktop && actionRightButtons}
         {isSmallDesktop && (
-          <Dropdown overlay={actionRightButtons} trigger={["click"]}>
+          <Dropdown overlay={actionRightButtons} trigger={['click']}>
             <EduButton isGhost IconBtn>
               <IconMoreVertical color={themeColor} />
             </EduButton>
@@ -114,12 +142,14 @@ const CustomizedHeaderWrapper = ({
         )}
       </StyledCol>
     </MainHeader>
-  );
-};
+  )
+}
 
-export default withNamespaces("header")(withWindowSizes(CustomizedHeaderWrapper));
+export default withNamespaces('header')(
+  withWindowSizes(CustomizedHeaderWrapper)
+)
 
 const StyledCol = styled(Col)`
   text-align: right;
   display: flex;
-`;
+`

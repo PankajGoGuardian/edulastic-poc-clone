@@ -1,40 +1,40 @@
-import { SpinLoader } from "@edulastic/common";
-import { Col, Row } from "antd";
-import next from "immer";
-import { filter, get, includes, isEmpty } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { roleuser } from "@edulastic/constants";
-import { getUserRole, getUser } from "../../../../src/selectors/user";
-import { DropDownContainer, StyledCard } from "../../../common/styled";
-import { getCsvDownloadingState } from "../../../ducks";
+import { SpinLoader } from '@edulastic/common'
+import { Col, Row } from 'antd'
+import next from 'immer'
+import { filter, get, includes, isEmpty } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import { roleuser } from '@edulastic/constants'
+import { getUserRole, getUser } from '../../../../src/selectors/user'
+import { DropDownContainer, StyledCard } from '../../../common/styled'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getFiltersSelector,
   getReportsStandardsBrowseStandards,
   getReportsStandardsFilters,
   getSelectedStandardProficiency,
   getStandardsFiltersRequestAction,
-  getReportsStandardsFiltersLoader
-} from "../common/filterDataDucks";
-import StandardsPerformanceChart from "./components/charts/StandardsPerformanceChart";
-import { StyledInnerRow, StyledRow } from "./components/styled";
-import StandardsPerformanceTable from "./components/table/StandardsPerformanceTable";
+  getReportsStandardsFiltersLoader,
+} from '../common/filterDataDucks'
+import StandardsPerformanceChart from './components/charts/StandardsPerformanceChart'
+import { StyledInnerRow, StyledRow } from './components/styled'
+import StandardsPerformanceTable from './components/table/StandardsPerformanceTable'
 import {
   getReportsStandardsPerformanceSummary,
   getReportsStandardsPerformanceSummaryLoader,
-  getStandardsPerformanceSummaryRequestAction
-} from "./ducks";
-import dropDownData from "./static/json/dropDownData.json";
+  getStandardsPerformanceSummaryRequestAction,
+} from './ducks'
+import dropDownData from './static/json/dropDownData.json'
 import {
   getMasteryLevel,
   getMasteryLevelOptions,
   getMaxMasteryScore,
   getOverallMasteryScore,
-  getParsedData
-} from "./utils/transformers";
-import { processClassAndGroupIds } from "../../../common/util";
+  getParsedData,
+} from './utils/transformers'
+import { processClassAndGroupIds } from '../../../common/util'
 
-const { compareByData, analyseByData } = dropDownData;
+const { compareByData, analyseByData } = dropDownData
 
 const StandardsPerformance = ({
   standardsPerformanceSummary,
@@ -50,68 +50,84 @@ const StandardsPerformance = ({
   filters,
   ddfilter,
   user,
-  standardsOrgData
+  standardsOrgData,
 }) => {
-  const filterData = standardsFilters || [];
-  const scaleInfo = selectedStandardProficiency || [];
-  const rawDomainData = get(browseStandards, "data.result", []);
-  const maxMasteryScore = getMaxMasteryScore(scaleInfo);
-  const masteryLevelData = getMasteryLevelOptions(scaleInfo);
+  const filterData = standardsFilters || []
+  const scaleInfo = selectedStandardProficiency || []
+  const rawDomainData = get(browseStandards, 'data.result', [])
+  const maxMasteryScore = getMaxMasteryScore(scaleInfo)
+  const masteryLevelData = getMasteryLevelOptions(scaleInfo)
 
   // filter compareBy options according to role
-  const compareByDataFiltered = filter(compareByData, option => !includes(option.hiddenFromRole, role));
+  const compareByDataFiltered = filter(
+    compareByData,
+    (option) => !includes(option.hiddenFromRole, role)
+  )
 
   const [tableFilters, setTableFilters] = useState({
     masteryLevel: masteryLevelData[0],
     compareBy: compareByDataFiltered[0],
-    analyseBy: analyseByData[0]
-  });
+    analyseBy: analyseByData[0],
+  })
 
-  const [selectedDomains, setSelectedDomains] = useState([]);
-  const [classIdArr, groupIdArr] = useMemo(() => processClassAndGroupIds(standardsOrgData), [standardsOrgData]);
+  const [selectedDomains, setSelectedDomains] = useState([])
+  const [classIdArr, groupIdArr] = useMemo(
+    () => processClassAndGroupIds(standardsOrgData),
+    [standardsOrgData]
+  )
 
   useEffect(() => {
-    const { requestFilters = {} } = settings;
-    const { termId = "", domainIds = [], grades = [], subject, schoolId } = requestFilters;
-    const modifiedFilter = next(ddfilter, draft => {
-      Object.keys(draft).forEach(key => {
-        const _keyData = typeof draft[key] === "object" ? draft[key].key : draft[key];
-        draft[key] = _keyData?.toLowerCase() === "all" ? "" : _keyData;
-      });
-    });
+    const { requestFilters = {} } = settings
+    const {
+      termId = '',
+      domainIds = [],
+      grades = [],
+      subject,
+      schoolId,
+    } = requestFilters
+    const modifiedFilter = next(ddfilter, (draft) => {
+      Object.keys(draft).forEach((key) => {
+        const _keyData =
+          typeof draft[key] === 'object' ? draft[key].key : draft[key]
+        draft[key] = _keyData?.toLowerCase() === 'all' ? '' : _keyData
+      })
+    })
     const q = {
-      testIds: settings.selectedTest.map(test => test.key).join(),
+      testIds: settings.selectedTest.map((test) => test.key).join(),
       termId,
       domainIds,
-      grades: grades.join(","),
+      grades: grades.join(','),
       subject,
       compareBy: tableFilters.compareBy.key,
       ...modifiedFilter,
-      schoolIds: schoolId
-    };
-    if (isEmpty(schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
-      q.schoolIds = get(user, "institutionIds", []).join(",");
+      schoolIds: schoolId,
+    }
+    if (isEmpty(schoolId) && get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
+      q.schoolIds = get(user, 'institutionIds', []).join(',')
     }
     if (!loadingFiltersData) {
       Object.assign(q, {
         classList: classIdArr
           .slice(1)
-          .map(cId => cId.key)
+          .map((cId) => cId.key)
           .join(),
         groupList: groupIdArr
           .slice(1)
-          .map(gId => gId.key)
-          .join()
-      });
+          .map((gId) => gId.key)
+          .join(),
+      })
     }
     if (termId) {
-      getStandardsPerformanceSummaryRequest(q);
+      getStandardsPerformanceSummaryRequest(q)
     }
-  }, [settings, tableFilters.compareBy.key, ddfilter]);
+  }, [settings, tableFilters.compareBy.key, ddfilter])
 
-  const res = get(standardsPerformanceSummary, "data.result", {});
-  const overallMetricMasteryScore = getOverallMasteryScore(res.metricInfo || []);
-  const overallMetricMasteryLevel = getMasteryLevel(overallMetricMasteryScore, scaleInfo);
+  const res = get(standardsPerformanceSummary, 'data.result', {})
+  const overallMetricMasteryScore = getOverallMasteryScore(res.metricInfo || [])
+  const overallMetricMasteryLevel = getMasteryLevel(
+    overallMetricMasteryScore,
+    scaleInfo
+  )
 
   const { domainsData, tableData } = useMemo(
     () =>
@@ -124,18 +140,26 @@ const StandardsPerformance = ({
         filterData,
         scaleInfo
       ),
-    [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]
-  );
+    [
+      res,
+      maxMasteryScore,
+      filterData,
+      selectedDomains,
+      tableFilters,
+      rawDomainData,
+      scaleInfo,
+    ]
+  )
 
   if (loading) {
-    return <SpinLoader position="fixed" />;
+    return <SpinLoader position="fixed" />
   }
 
   const tableFiltersOptions = {
     compareByData: compareByDataFiltered,
     analyseByData,
-    masteryLevelData
-  };
+    masteryLevelData,
+  }
 
   return (
     <DropDownContainer>
@@ -143,14 +167,20 @@ const StandardsPerformance = ({
         <Row>
           <Col>
             <StyledRow>
-              <StyledInnerRow type="flex" justify="center" className="students-stats">
+              <StyledInnerRow
+                type="flex"
+                justify="center"
+                className="students-stats"
+              >
                 <Col>
                   <p className="students-title">Overall Mastery Score</p>
                   <p className="students-value">{overallMetricMasteryScore}</p>
                 </Col>
                 <Col>
                   <p className="students-title">Overall Mastery Level</p>
-                  <p className="students-value">{overallMetricMasteryLevel.masteryName}</p>
+                  <p className="students-value">
+                    {overallMetricMasteryLevel.masteryName}
+                  </p>
                 </Col>
               </StyledInnerRow>
             </StyledRow>
@@ -182,11 +212,11 @@ const StandardsPerformance = ({
         />
       </StyledCard>
     </DropDownContainer>
-  );
-};
+  )
+}
 
 const enhance = connect(
-  state => ({
+  (state) => ({
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     loading: getReportsStandardsPerformanceSummaryLoader(state),
     loadingFiltersData: getReportsStandardsFiltersLoader(state),
@@ -196,12 +226,12 @@ const enhance = connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     user: getUser(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state)
+    selectedStandardProficiency: getSelectedStandardProficiency(state),
   }),
   {
     getStandardsPerformanceSummaryRequest: getStandardsPerformanceSummaryRequestAction,
-    getStandardsFiltersRequestAction
+    getStandardsFiltersRequestAction,
   }
-);
+)
 
-export default enhance(StandardsPerformance);
+export default enhance(StandardsPerformance)

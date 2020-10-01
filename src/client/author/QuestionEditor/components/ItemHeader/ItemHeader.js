@@ -1,9 +1,9 @@
-import { white } from "@edulastic/colors";
-import { MainHeader } from "@edulastic/common";
-import { IconChevronLeft } from "@edulastic/icons";
-import PropTypes from "prop-types";
-import React from "react";
-import { Back, LeftSide, RightSide } from "./styled";
+import { white } from '@edulastic/colors'
+import { MainHeader } from '@edulastic/common'
+import { IconChevronLeft } from '@edulastic/icons'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Back, LeftSide, RightSide } from './styled'
 
 const ItemHeader = ({ title, children, link }) => (
   <MainHeader mobileHeaderHeight={100} type="standard" headingText={title}>
@@ -16,18 +16,18 @@ const ItemHeader = ({ title, children, link }) => (
       )}
     </LeftSide>
   </MainHeader>
-);
+)
 
 ItemHeader.propTypes = {
   title: PropTypes.string,
   children: PropTypes.any,
-  link: PropTypes.any
-};
+  link: PropTypes.any,
+}
 
 ItemHeader.defaultProps = {
   children: null,
-  title: "",
-  link: null
-};
+  title: '',
+  link: null,
+}
 
-export default ItemHeader;
+export default ItemHeader

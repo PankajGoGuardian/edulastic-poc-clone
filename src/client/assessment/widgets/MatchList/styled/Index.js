@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Index = styled.div`
   height: auto;
   width: 32px;
-  display: ${({ preview }) => (preview ? "flex" : "none")};
+  display: ${({ preview }) => (preview ? 'flex' : 'none')};
   align-self: stretch;
   align-items: center;
   flex-shrink: 0;
@@ -16,7 +16,7 @@ export const Index = styled.div`
       : correct
       ? theme.checkbox.rightIconColor
       : theme.checkbox.wrongIconColor};
-  color: ${props => props.theme.widgets.matchList.indexColor};
-  font-weight: ${props => props.theme.widgets.matchList.indexFontWeight};
-  font-size: ${props => props.theme.widgets.matchList.indexFontSize};
-`;
+  color: ${(props) => props.theme.widgets.matchList.indexColor};
+  font-weight: ${(props) => props.theme.widgets.matchList.indexFontWeight};
+  font-size: ${(props) => props.theme.widgets.matchList.indexFontSize};
+`

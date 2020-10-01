@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Row } from "antd";
-import { white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Row } from 'antd'
+import { white } from '@edulastic/colors'
 
 export const Image = styled.img`
   width: 100%;
@@ -10,7 +10,7 @@ export const Image = styled.img`
   border: none;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-`;
+`
 export const OverlayText = styled.div`
   position: absolute;
   top: 0;
@@ -22,7 +22,7 @@ export const OverlayText = styled.div`
   overflow: hidden;
   padding: 0.5rem;
   font-weight: bold;
-`;
+`
 export const IconWrapper = styled.div`
   width: 34px;
   height: 34px;
@@ -36,9 +36,9 @@ export const IconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 export const TextDiv = styled.p`
-  font-size: ${props => props.theme.assignment.cardTitleFontSize};
+  font-size: ${(props) => props.theme.assignment.cardTitleFontSize};
   text-overflow: ellipsis;
   display: block;
   max-width: 100%;
@@ -46,19 +46,19 @@ export const TextDiv = styled.p`
   white-space: nowrap;
   font-weight: bold;
   padding-right: 50px;
-`;
+`
 export const SpanLeftMargin = styled.span`
   margin-left: 0.5rem;
-`;
+`
 export const RowWrapperGrade = styled(Row)`
   margin-top: 0.3rem;
-`;
+`
 export const RowWrapperSTudentCount = styled(Row)`
   margin-top: 1.3rem;
-`;
+`
 
 export const StyledRow = styled(Row)`
   display: flex;
   height: 34px;
   align-items: center;
-`;
+`

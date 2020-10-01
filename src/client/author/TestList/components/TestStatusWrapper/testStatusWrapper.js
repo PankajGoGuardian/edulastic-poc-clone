@@ -1,19 +1,24 @@
-import React from "react";
-import { connect } from "react-redux";
-import { showItemStatusSelector } from "../../../src/selectors/user";
-import { getStatus } from "../../../src/utils/getStatus";
+import React from 'react'
+import { connect } from 'react-redux'
+import { showItemStatusSelector } from '../../../src/selectors/user'
+import { getStatus } from '../../../src/utils/getStatus'
 
-const TestStatusWrapper = ({ children: TestStatus, status, isPublisherUser, checkUser }) => {
+const TestStatusWrapper = ({
+  children: TestStatus,
+  status,
+  isPublisherUser,
+  checkUser,
+}) => {
   if (checkUser && !isPublisherUser) {
-    return null;
+    return null
   }
-  return <TestStatus status={status}>{getStatus(status)}</TestStatus>;
-};
+  return <TestStatus status={status}>{getStatus(status)}</TestStatus>
+}
 
 TestStatusWrapper.defaultProps = {
-  checkUser: true
-};
+  checkUser: true,
+}
 
-export default connect(state => ({
-  isPublisherUser: showItemStatusSelector(state)
-}))(TestStatusWrapper);
+export default connect((state) => ({
+  isPublisherUser: showItemStatusSelector(state),
+}))(TestStatusWrapper)

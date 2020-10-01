@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { IconTrash } from "@edulastic/icons";
-import { green, red, white } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { IconTrash } from '@edulastic/icons'
+import { green, red, white } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
 
-import { IndexBox, CustomRnd, Pointer } from "../styled";
+import { IndexBox, CustomRnd, Pointer } from '../styled'
 
 const Draggable = ({
   response,
@@ -20,7 +20,7 @@ const Draggable = ({
   showIndex = true,
   showBorder,
   responseHeight,
-  responseWidth
+  responseWidth,
 }) => (
   <CustomRnd
     data-cy="drag-input"
@@ -36,7 +36,7 @@ const Draggable = ({
     position={{ x: response.left, y: response.top }}
     size={{ width: responseWidth, height: responseHeight }}
   >
-    <FlexContainer justifyContent="space-between" style={{ height: "100%" }}>
+    <FlexContainer justifyContent="space-between" style={{ height: '100%' }}>
       {showIndex && <IndexBox isActive={response.active}>{index}</IndexBox>}
       <IconTrash
         onClick={onDelete}
@@ -44,12 +44,14 @@ const Draggable = ({
         hoverColor={red}
         width={16}
         height={16}
-        style={!showIndex ? { position: "absolute", right: "10px" } : null}
+        style={!showIndex ? { position: 'absolute', right: '10px' } : null}
       />
     </FlexContainer>
-    {response.pointerPosition && response.pointerPosition !== "none" && <Pointer position={response.pointerPosition} />}
+    {response.pointerPosition && response.pointerPosition !== 'none' && (
+      <Pointer position={response.pointerPosition} />
+    )}
   </CustomRnd>
-);
+)
 
 Draggable.propTypes = {
   response: PropTypes.object.isRequired,
@@ -64,16 +66,18 @@ Draggable.propTypes = {
   showDashedBorder: PropTypes.bool,
   showBorder: PropTypes.bool,
   showIndex: PropTypes.bool,
-  responseHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  responseWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-};
+  responseHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
+  responseWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
+}
 
 Draggable.defaultProps = {
   background: white,
   transparentBackground: false,
   showDashedBorder: false,
   showIndex: false,
-  showBorder: true
-};
+  showBorder: true,
+}
 
-export default Draggable;
+export default Draggable

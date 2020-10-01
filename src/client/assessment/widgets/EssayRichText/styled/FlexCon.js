@@ -1,13 +1,19 @@
-import styled, { css } from "styled-components";
-import { FlexContainer } from "@edulastic/common";
-import { dashBorderColor, greyThemeDark1, greyThemeDark2, themeColorBlue, white } from "@edulastic/colors";
+import styled, { css } from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
+import {
+  dashBorderColor,
+  greyThemeDark1,
+  greyThemeDark2,
+  themeColorBlue,
+  white,
+} from '@edulastic/colors'
 
 const activeStyle = css`
   background: ${themeColorBlue};
   svg {
     fill: ${white};
   }
-`;
+`
 
 const normalStyle = css`
   background: ${white};
@@ -16,7 +22,7 @@ const normalStyle = css`
     width: 15px;
     height: 13px;
   }
-`;
+`
 
 export const Container = styled(FlexContainer)`
   border-radius: 4px;
@@ -35,4 +41,4 @@ export const Container = styled(FlexContainer)`
     border-top-right-radius: 4px;
     ${({ active }) => (active ? activeStyle : normalStyle)}
   }
-`;
+`

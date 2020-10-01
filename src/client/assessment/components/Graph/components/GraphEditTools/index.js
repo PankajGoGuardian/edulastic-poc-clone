@@ -1,48 +1,48 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { cloneDeep } from 'lodash'
 
-import { Overlay, Popup, PopupContent } from "../../common/styled_components";
+import { Overlay, Popup, PopupContent } from '../../common/styled_components'
 
-import { Wrapper } from "./styled/Wrapper";
-import { ToolButton } from "./styled/ToolButton";
-import { IconFuncSymbol } from "./styled/IconFuncSymbol";
-import { IconPlus } from "./styled/IconPlus";
-import { IconMinus } from "./styled/IconMinus";
-import { IconSpanner } from "./styled/IconSpanner";
-import Equations from "./components/Equations";
-import Settings from "./components/Settings";
+import { Wrapper } from './styled/Wrapper'
+import { ToolButton } from './styled/ToolButton'
+import { IconFuncSymbol } from './styled/IconFuncSymbol'
+import { IconPlus } from './styled/IconPlus'
+import { IconMinus } from './styled/IconMinus'
+import { IconSpanner } from './styled/IconSpanner'
+import Equations from './components/Equations'
+import Settings from './components/Settings'
 
-const FUNCTIONS_TOOL = "functionsTool";
-const SETTINGS_TOOL = "settingsTool";
-const ANNOTATIONS_TOOL = "annotationsTool";
-const PLUS_TOOL = "plusTool";
-const MINUS_TOOL = "minusTool";
+const FUNCTIONS_TOOL = 'functionsTool'
+const SETTINGS_TOOL = 'settingsTool'
+const ANNOTATIONS_TOOL = 'annotationsTool'
+const PLUS_TOOL = 'plusTool'
+const MINUS_TOOL = 'minusTool'
 
 class GraphEditTools extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      selectedTool: null
-    };
+      selectedTool: null,
+    }
   }
 
   changeScale(tool) {
-    const { setQuestionData, graphData } = this.props;
+    const { setQuestionData, graphData } = this.props
 
-    const newGraphData = cloneDeep(graphData);
+    const newGraphData = cloneDeep(graphData)
     let {
       canvas: { xMin, xMax, yMin, yMax },
-      uiStyle: { xDistance, yDistance }
-    } = newGraphData;
+      uiStyle: { xDistance, yDistance },
+    } = newGraphData
 
-    xMin = parseFloat(xMin);
-    xMax = parseFloat(xMax);
-    yMin = parseFloat(yMin);
-    yMax = parseFloat(yMax);
-    xDistance = parseFloat(xDistance);
-    yDistance = parseFloat(yDistance);
+    xMin = parseFloat(xMin)
+    xMax = parseFloat(xMax)
+    yMin = parseFloat(yMin)
+    yMax = parseFloat(yMax)
+    xDistance = parseFloat(xDistance)
+    yDistance = parseFloat(yDistance)
 
     if (
       Number.isNaN(xMin) ||
@@ -52,48 +52,48 @@ class GraphEditTools extends Component {
       Number.isNaN(xDistance) ||
       Number.isNaN(yDistance)
     ) {
-      return;
+      return
     }
 
     if (tool === MINUS_TOOL) {
-      xMin *= 2;
-      xMax *= 2;
-      yMin *= 2;
-      yMax *= 2;
-      xDistance *= 2;
-      yDistance *= 2;
+      xMin *= 2
+      xMax *= 2
+      yMin *= 2
+      yMax *= 2
+      xDistance *= 2
+      yDistance *= 2
     } else if (tool === PLUS_TOOL) {
-      xMin /= 2;
-      xMax /= 2;
-      yMin /= 2;
-      yMax /= 2;
-      xDistance /= 2;
-      yDistance /= 2;
+      xMin /= 2
+      xMax /= 2
+      yMin /= 2
+      yMax /= 2
+      xDistance /= 2
+      yDistance /= 2
     }
 
-    xMin = +xMin.toFixed(8);
-    xMax = +xMax.toFixed(8);
-    yMin = +yMin.toFixed(8);
-    yMax = +yMax.toFixed(8);
-    xDistance = +xDistance.toFixed(8);
-    yDistance = +yDistance.toFixed(8);
+    xMin = +xMin.toFixed(8)
+    xMax = +xMax.toFixed(8)
+    yMin = +yMin.toFixed(8)
+    yMax = +yMax.toFixed(8)
+    xDistance = +xDistance.toFixed(8)
+    yDistance = +yDistance.toFixed(8)
 
     newGraphData.canvas = {
       ...newGraphData.canvas,
       xMin,
       xMax,
       yMin,
-      yMax
-    };
+      yMax,
+    }
     newGraphData.uiStyle = {
       ...newGraphData.uiStyle,
       xDistance,
       yDistance,
       xTickDistance: xDistance,
-      yTickDistance: yDistance
-    };
+      yTickDistance: yDistance,
+    }
 
-    setQuestionData(newGraphData);
+    setQuestionData(newGraphData)
   }
 
   onToolButtonClick(tool) {
@@ -102,23 +102,23 @@ class GraphEditTools extends Component {
       case SETTINGS_TOOL:
       case ANNOTATIONS_TOOL:
         this.setState({
-          selectedTool: tool
-        });
-        break;
+          selectedTool: tool,
+        })
+        break
       case PLUS_TOOL:
       case MINUS_TOOL:
-        this.changeScale(tool);
-        break;
+        this.changeScale(tool)
+        break
       default:
-        break;
+        break
     }
   }
 
   onOverlayClick(e) {
-    e.stopPropagation();
+    e.stopPropagation()
     this.setState({
-      selectedTool: null
-    });
+      selectedTool: null,
+    })
   }
 
   render() {
@@ -131,14 +131,14 @@ class GraphEditTools extends Component {
       equations,
       setEquations,
       hideEquationTool,
-      hideSettingTool
-    } = this.props;
+      hideSettingTool,
+    } = this.props
 
-    const { selectedTool } = this.state;
+    const { selectedTool } = this.state
 
     return (
-      <Fragment>
-        {side === "left" && (
+      <>
+        {side === 'left' && (
           <Wrapper side={side} width={width} margin={margin}>
             {!hideEquationTool && (
               <ToolButton
@@ -147,14 +147,17 @@ class GraphEditTools extends Component {
               >
                 <IconFuncSymbol />
                 {selectedTool === FUNCTIONS_TOOL && (
-                  <Fragment>
-                    <Overlay onClick={e => this.onOverlayClick(e)} />
+                  <>
+                    <Overlay onClick={(e) => this.onOverlayClick(e)} />
                     <Popup right>
                       <PopupContent>
-                        <Equations equations={equations} setEquations={setEquations} />
+                        <Equations
+                          equations={equations}
+                          setEquations={setEquations}
+                        />
                       </PopupContent>
                     </Popup>
-                  </Fragment>
+                  </>
                 )}
               </ToolButton>
             )}
@@ -177,7 +180,7 @@ class GraphEditTools extends Component {
             </ToolButton> */}
           </Wrapper>
         )}
-        {side === "right" && (
+        {side === 'right' && (
           <Wrapper side={side} width={width} margin={margin}>
             {!hideSettingTool && (
               <ToolButton
@@ -186,14 +189,17 @@ class GraphEditTools extends Component {
               >
                 <IconSpanner />
                 {selectedTool === SETTINGS_TOOL && (
-                  <Fragment>
-                    <Overlay onClick={e => this.onOverlayClick(e)} />
+                  <>
+                    <Overlay onClick={(e) => this.onOverlayClick(e)} />
                     <Popup left>
                       <PopupContent>
-                        <Settings graphData={graphData} setQuestionData={setQuestionData} />
+                        <Settings
+                          graphData={graphData}
+                          setQuestionData={setQuestionData}
+                        />
                       </PopupContent>
                     </Popup>
-                  </Fragment>
+                  </>
                 )}
               </ToolButton>
             )}
@@ -205,30 +211,31 @@ class GraphEditTools extends Component {
             </ToolButton>
           </Wrapper>
         )}
-      </Fragment>
-    );
+      </>
+    )
   }
 }
 
 GraphEditTools.propTypes = {
   side: PropTypes.string,
-  graphData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
+  graphData: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
+    .isRequired,
   setQuestionData: PropTypes.func.isRequired,
   layout: PropTypes.object.isRequired,
   equations: PropTypes.array,
   setEquations: PropTypes.func,
   hideSettingTool: PropTypes.bool,
   hideEquationTool: PropTypes.bool,
-  margin: PropTypes.object
-};
+  margin: PropTypes.object,
+}
 
 GraphEditTools.defaultProps = {
-  side: "left",
+  side: 'left',
   equations: [],
   setEquations: () => {},
   hideSettingTool: false,
   hideEquationTool: false,
-  margin: { top: 0, left: 0 }
-};
+  margin: { top: 0, left: 0 },
+}
 
-export default GraphEditTools;
+export default GraphEditTools

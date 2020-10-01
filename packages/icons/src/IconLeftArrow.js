@@ -1,10 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconLeftArrow = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="16.387" height="12.621" viewBox="0 0 16.387 12.621" {...props}>
+const IconLeftArrow = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="16.387"
+    height="12.621"
+    viewBox="0 0 16.387 12.621"
+    {...props}
+  >
     <g transform="translate(16.387 71.451) rotate(180)">
       <g transform="translate(0 64.479)">
         <path
@@ -20,6 +26,6 @@ const IconLeftArrow = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconLeftArrow);
+export default withIconStyles(IconLeftArrow)

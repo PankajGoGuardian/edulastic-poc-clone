@@ -1,26 +1,26 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect'
 
-export const stateSelector = state => state.testItem;
+export const stateSelector = (state) => state.testItem
 
 export const getTestItemSelector = createSelector(
   stateSelector,
-  state => state.item
-);
+  (state) => state.item
+)
 export const getTestItemCreatingSelector = createSelector(
   stateSelector,
-  state => state.creating
-);
+  (state) => state.creating
+)
 export const getTestItemErrorSelector = createSelector(
   stateSelector,
-  state => state.createError
-);
+  (state) => state.createError
+)
 
 export const getCreateItemModalVisibleSelector = createSelector(
   stateSelector,
-  state => state.createItemModalVisible
-);
+  (state) => state.createItemModalVisible
+)
 
 export const getCreateItemModalItemIdSelector = createSelector(
   stateSelector,
-  state => state.modalItemId
-);
+  (state) => state.modalItemId
+)

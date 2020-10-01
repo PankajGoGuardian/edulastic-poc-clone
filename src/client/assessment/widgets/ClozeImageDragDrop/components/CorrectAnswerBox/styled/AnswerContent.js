@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const AnswerContent = styled.div`
   white-space: normal;
@@ -14,4 +14,4 @@ export const AnswerContent = styled.div`
   p {
     display: inline-flex;
   }
-`;
+`

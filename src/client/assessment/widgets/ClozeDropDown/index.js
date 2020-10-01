@@ -1,58 +1,61 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import styled, { withTheme } from "styled-components";
-import produce from "immer";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import styled, { withTheme } from 'styled-components'
+import produce from 'immer'
 
-import { WithResources, AnswerContext } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { WithResources, AnswerContext } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { EDIT } from "../../constants/constantsForQuestions";
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { EDIT } from '../../constants/constantsForQuestions'
 
-import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
+import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions'
 
-import Authoring from "./Authoring";
-import CorrectAnswers from "./CorrectAnswers";
-import Display from "./Display";
-import Options from "./components/Options";
+import Authoring from './Authoring'
+import CorrectAnswers from './CorrectAnswers'
+import Display from './Display'
+import Options from './components/Options'
 
-import { replaceVariables, updateVariables } from "../../utils/variables";
-import { ContentArea } from "../../styled/ContentArea";
-import ChoicesForResponses from "./ChoicesForResponses";
-import Question from "../../components/Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import AppConfig from "../../../../../app-config";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { replaceVariables, updateVariables } from '../../utils/variables'
+import { ContentArea } from '../../styled/ContentArea'
+import ChoicesForResponses from './ChoicesForResponses'
+import Question from '../../components/Question'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import AppConfig from '../../../../../app-config'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div``
 
 class ClozeDropDown extends Component {
-  static contextType = AnswerContext;
+  static contextType = AnswerContext
 
   getRenderData = () => {
-    const { item: templateItem, history, view } = this.props;
-    const itemForPreview = replaceVariables(templateItem);
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const { item: templateItem, history, view } = this.props
+    const itemForPreview = replaceVariables(templateItem)
+    const item = view === EDIT ? templateItem : replaceVariables(templateItem)
 
-    const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
-    const previewDisplayOptions = item.hasGroupResponses ? item.groupResponses : item.options;
-    let previewStimulus;
-    let itemForEdit;
+    const locationState = history.location.state
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false
+    const previewDisplayOptions = item.hasGroupResponses
+      ? item.groupResponses
+      : item.options
+    let previewStimulus
+    let itemForEdit
     if (item.smallSize || isDetailPage) {
-      previewStimulus = item.stimulus;
-      itemForEdit = templateItem;
+      previewStimulus = item.stimulus
+      itemForEdit = templateItem
     } else {
-      previewStimulus = item.stimulus;
+      previewStimulus = item.stimulus
       itemForEdit = {
         ...templateItem,
         stimulus: templateItem.stimulus,
         list: templateItem.options,
-        validation: templateItem.validation
-      };
+        validation: templateItem.validation,
+      }
     }
     return {
       previewStimulus,
@@ -61,27 +64,27 @@ class ClozeDropDown extends Component {
       itemForPreview,
       uiStyle: item.uiStyle,
       instantFeedback: item.instant_feedback,
-      instructorStimulus: item.instructorStimulus
-    };
-  };
+      instructorStimulus: item.instructorStimulus,
+    }
+  }
 
   handleOptionsChange = (name, value) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft[name] = value;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft[name] = value
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  handleAddAnswer = userAnswer => {
-    const { saveAnswer } = this.props;
-    saveAnswer(userAnswer);
-  };
+  handleAddAnswer = (userAnswer) => {
+    const { saveAnswer } = this.props
+    saveAnswer(userAnswer)
+  }
 
   render() {
-    const answerContextConfig = this.context;
+    const answerContextConfig = this.context
     const {
       view,
       previewTab,
@@ -96,21 +99,35 @@ class ClozeDropDown extends Component {
       advancedAreOpen,
       advancedLink,
       ...restProps
-    } = this.props;
+    } = this.props
 
-    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      itemForPreview,
+      uiStyle,
+    } = this.getRenderData()
 
-    const { shuffleOptions, responseIds } = item;
+    const { shuffleOptions, responseIds } = item
 
-    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper
 
     return (
-      <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => null}>
-        {view === "edit" && (
+      <WithResources
+        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+        fallBack={<span />}
+        onLoaded={() => null}
+      >
+        {view === 'edit' && (
           <ContentArea>
-            <React.Fragment>
+            <>
               <div className="authoring">
-                <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                <Authoring
+                  item={itemForEdit}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
                 <ChoicesForResponses
                   responses={responseIds || []}
                   item={item}
@@ -120,7 +137,7 @@ class ClozeDropDown extends Component {
                 <Question
                   position="unset"
                   section="main"
-                  label={t("component.correctanswers.setcorrectanswers")}
+                  label={t('component.correctanswers.setcorrectanswers')}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 >
@@ -128,7 +145,7 @@ class ClozeDropDown extends Component {
                     key="shuffleOptions"
                     validation={item.validation}
                     configureOptions={{
-                      shuffleOptions
+                      shuffleOptions,
                     }}
                     options={previewDisplayOptions}
                     item={itemForPreview}
@@ -141,10 +158,14 @@ class ClozeDropDown extends Component {
                     <CheckboxLabel
                       className="additional-options"
                       key="shuffleOptions"
-                      onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
+                      onChange={() =>
+                        this.handleOptionsChange(
+                          'shuffleOptions',
+                          !shuffleOptions
+                        )}
                       checked={shuffleOptions}
                     >
-                      {t("component.cloze.dropDown.shuffleoptions")}
+                      {t('component.cloze.dropDown.shuffleoptions')}
                     </CheckboxLabel>
                   </CorrectAnswerOptions>
                 </Question>
@@ -156,7 +177,7 @@ class ClozeDropDown extends Component {
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: "30px 120px"
+                  padding: '30px 120px',
                 }}
                 fillSections={fillSections}
                 cleanSections={cleanSections}
@@ -164,21 +185,27 @@ class ClozeDropDown extends Component {
                 responseIDs={responseIds}
                 item={item}
               />
-            </React.Fragment>
+            </>
           </ContentArea>
         )}
-        {view === "preview" && (
+        {view === 'preview' && (
           <Wrapper>
             <Display
-              showAnswer={previewTab === "show" && !answerContextConfig.expressGrader}
+              showAnswer={
+                previewTab === 'show' && !answerContextConfig.expressGrader
+              }
               preview={
-                previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
+                previewTab === 'clear' ||
+                (answerContextConfig.isAnswerModifiable &&
+                  answerContextConfig.expressGrader)
               }
               checkAnswer={
-                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
+                previewTab === 'check' ||
+                (answerContextConfig.expressGrader &&
+                  !answerContextConfig.isAnswerModifiable)
               }
               configureOptions={{
-                shuffleOptions
+                shuffleOptions,
               }}
               item={itemForPreview}
               smallSize={smallSize}
@@ -189,13 +216,15 @@ class ClozeDropDown extends Component {
               userSelections={userAnswer}
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
-              isExpressGrader={answerContextConfig.expressGrader && previewTab === "show"}
+              isExpressGrader={
+                answerContextConfig.expressGrader && previewTab === 'show'
+              }
               {...restProps}
             />
           </Wrapper>
         )}
       </WithResources>
-    );
+    )
   }
 }
 
@@ -215,13 +244,13 @@ ClozeDropDown.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 ClozeDropDown.defaultProps = {
-  previewTab: "clear",
+  previewTab: 'clear',
   item: {
-    options: []
+    options: [],
   },
   smallSize: false,
   history: {},
@@ -230,19 +259,16 @@ ClozeDropDown.defaultProps = {
   advancedAreOpen: false,
   advancedLink: null,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
+  connect(null, { setQuestionData: setQuestionDataAction })
+)
 
-const ClozeDropDownContainer = enhance(ClozeDropDown);
+const ClozeDropDownContainer = enhance(ClozeDropDown)
 
-export { ClozeDropDownContainer as ClozeDropDown };
+export { ClozeDropDownContainer as ClozeDropDown }

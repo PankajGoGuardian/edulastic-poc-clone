@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 // components
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Table, Col } from "antd";
-import { Button } from "@edulastic/common";
-import { IconGraphRightArrow as Arrow } from "@edulastic/icons";
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { Table, Col } from 'antd'
+import { Button } from '@edulastic/common'
+import { IconGraphRightArrow as Arrow } from '@edulastic/icons'
 
 // constants
 import {
@@ -16,8 +16,8 @@ import {
   greyThemeDark1,
   smallDesktopWidth,
   extraDesktopWidthMax,
-  themeColorBlue
-} from "@edulastic/colors";
+  themeColorBlue,
+} from '@edulastic/colors'
 
 export const StudentLabel = styled.div`
   margin: 10px 10px 10px 20px;
@@ -31,7 +31,7 @@ export const StudentLabel = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     height: 30px;
   }
-`;
+`
 
 export const FilterButton = styled(Button)`
   min-width: 35px;
@@ -42,51 +42,52 @@ export const FilterButton = styled(Button)`
   position: fixed;
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  margin-left: ${props => (props.showFilter ? "240px" : "-23px")};
-  background: ${props => (props.showFilter ? themeColorBlue : white)} !important;
+  margin-left: ${(props) => (props.showFilter ? '240px' : '-23px')};
+  background: ${(props) =>
+    props.showFilter ? themeColorBlue : white} !important;
   border: 1px solid ${themeColorBlue} !important;
   &:focus,
   &:hover {
     outline: unset;
-    color: ${props => (props.isShowFilter ? white : themeColorBlue)};
+    color: ${(props) => (props.isShowFilter ? white : themeColorBlue)};
   }
   svg,
   svg:hover {
-    fill: ${props => (props.showFilter ? white : themeColorBlue)};
+    fill: ${(props) => (props.showFilter ? white : themeColorBlue)};
   }
-`;
+`
 
 export const ScrollbarContainer = styled(PerfectScrollbar)`
   padding: 0 20px 0 0;
   width: auto;
-  height: ${props => props.height}px;
-`;
+  height: ${(props) => props.height}px;
+`
 
 export const TableHeader = styled.div`
   display: flex;
   margin-left: -22px;
-`;
+`
 
 export const LeftArrow = styled(Arrow)`
-  display: ${props => (props.disabled ? "none" : "block")};
+  display: ${(props) => (props.disabled ? 'none' : 'block')};
   transform: rotate(180deg);
   position: fixed;
   top: 50%;
   cursor: pointer;
-`;
+`
 
 export const RightArrow = styled(Arrow)`
-  display: ${props => (props.disabled ? "none" : "block")};
+  display: ${(props) => (props.disabled ? 'none' : 'block')};
   position: fixed;
   right: 15px;
   top: 50%;
   cursor: pointer;
-`;
+`
 
 export const TableContainer = styled.div`
   max-height: 100%;
-  width: ${props => (props.showFilter ? "calc(100% - 240px)" : "100%")};
-  padding-left: ${props => (props.showFilter ? "30px" : "0px")};
+  width: ${(props) => (props.showFilter ? 'calc(100% - 240px)' : '100%')};
+  padding-left: ${(props) => (props.showFilter ? '30px' : '0px')};
   .ant-spin {
     position: relative;
   }
@@ -95,38 +96,38 @@ export const TableContainer = styled.div`
     bottom: 30px;
     right: 30px;
   }
-`;
+`
 
 export const TableFooter = styled.div`
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
   margin-top: 15px;
-  justify-content: "space-between";
+  justify-content: 'space-between';
   li {
     border: none !important;
     box-shadow: 0px 2px 7px #c9d0db80;
   }
-`;
+`
 
 export const StyledTableCell = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 5px 10px;
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   height: 40px;
   width: 100%;
-`;
+`
 
 export const StyledTag = styled.div`
   padding: 0 10px;
   margin: 0px;
-  background: ${props => props.bgColor || themeColor};
+  background: ${(props) => props.bgColor || themeColor};
   height: 28px;
   width: auto;
   font-size: 9px;
-  color: ${props => props.textColor || "#ffffff"};
+  color: ${(props) => props.textColor || '#ffffff'};
   font-weight: bold;
   letter-spacing: 0.2px;
   border-radius: 5px;
@@ -144,7 +145,7 @@ export const StyledTag = styled.div`
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
   }
-`;
+`
 
 export const Icon = styled.img`
   margin-left: 10px;
@@ -155,7 +156,7 @@ export const Icon = styled.img`
     width: 20px;
     height: 20px;
   }
-`;
+`
 
 export const TestThumbnail = styled.img`
   border-radius: 4px;
@@ -166,7 +167,7 @@ export const TestThumbnail = styled.img`
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 50px;
   }
-`;
+`
 
 export const TestTypeIcon = styled.span`
   width: 18px;
@@ -176,7 +177,7 @@ export const TestTypeIcon = styled.span`
   text-align: center;
   text-transform: uppercase;
   color: ${white};
-  background: ${props => props.bgColor};
+  background: ${(props) => props.bgColor};
   font-weight: 600;
   font-size: 12px;
   line-height: 17px;
@@ -186,7 +187,7 @@ export const TestTypeIcon = styled.span`
     font-size: 14px;
     line-height: 19px;
   }
-`;
+`
 
 export const AssignmentTD = styled.div`
   text-align: left;
@@ -200,7 +201,7 @@ export const AssignmentTD = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     max-width: 250px;
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table {
@@ -267,12 +268,12 @@ export const StyledTable = styled(Table)`
                 font-size: 12px;
                 font-weight: 600;
                 color: ${greyThemeDark1};
-                vertical-align: ${props => props.urlHasStudent && "top"};
+                vertical-align: ${(props) => props.urlHasStudent && 'top'};
                 @media (min-width: ${extraDesktopWidthMax}) {
                   font-size: 14px;
                 }
               }
-              ${props =>
+              ${(props) =>
                 props.urlHasStudent
                   ? `
                 td:nth-child(1) {
@@ -354,10 +355,14 @@ export const StyledTable = styled(Table)`
             td:nth-child(n + 5) {
               padding: 5px 0 0 0;
             }
-            &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
-            &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
-            &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
-            &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+            &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+              > td,
+            &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+              > td,
+            &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+              > td,
+            &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+              > td {
               background-color: ${backgroundGrey};
             }
           }
@@ -365,28 +370,28 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const GroupItem = styled(Col)`
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: ${props => props.padding};
+  padding: ${(props) => props.padding};
   svg {
     path {
-      fill: ${props => props.isActive && themeColor};
+      fill: ${(props) => props.isActive && themeColor};
     }
   }
   &:hover,
   &:focus {
     background: ${fadedGrey};
   }
-`;
+`
 
 export const GroupItemLabel = styled.span`
-  font: ${props => props.fontStyle} Open Sans;
-  font-weight: ${props => props.weight || 600};
-  padding: ${props => props.padding};
+  font: ${(props) => props.fontStyle} Open Sans;
+  font-weight: ${(props) => props.weight || 600};
+  padding: ${(props) => props.padding};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -394,4 +399,4 @@ export const GroupItemLabel = styled.span`
   max-width: 80%;
   text-transform: uppercase;
   color: ${greyThemeDark1};
-`;
+`

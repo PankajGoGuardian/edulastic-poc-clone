@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconImage = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="15.773" height="13.113" viewBox="0 0 15.773 13.113" {...props}>
+const IconImage = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="15.773"
+    height="13.113"
+    viewBox="0 0 15.773 13.113"
+    {...props}
+  >
     <g transform="translate(0 -43.163)">
       <g transform="translate(0 43.163)">
         <g transform="translate(0 0)">
@@ -33,11 +39,16 @@ const IconImage = props => (
             d="M.757,55.545h0l-.2-5.484,6.688,3.672,3.391-2.8,4.734,2.109v2.719H1.382"
             transform="translate(-0.297 -49.387)"
           />
-          <rect width="1.1" height="7.277" transform="translate(0 0.976) rotate(-62.53)" fill="#434b5d" />
+          <rect
+            width="1.1"
+            height="7.277"
+            transform="translate(0 0.976) rotate(-62.53)"
+            fill="#434b5d"
+          />
         </g>
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconImage);
+export default withIconStyles(IconImage)

@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
-import React, { memo, useState } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
-import { helpers } from "@edulastic/common";
-import { ReviewTableWrapper } from "./styled";
+import React, { memo, useState } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
+import { helpers } from '@edulastic/common'
+import { ReviewTableWrapper } from './styled'
 
-import MainInfoCell from "./MainInfoCell/MainInfoCell";
-import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
-import { getStandardsSelector } from "../../ducks";
-import { getQuestionType } from "../../../../../dataUtils";
-import ListItem from "../List/ListItem";
-import { isPremiumContent } from "../../../../utils";
+import MainInfoCell from './MainInfoCell/MainInfoCell'
+import MetaInfoCell from './MetaInfoCell/MetaInfoCell'
+import { getStandardsSelector } from '../../ducks'
+import { getQuestionType } from '../../../../../dataUtils'
+import ListItem from '../List/ListItem'
+import { isPremiumContent } from '../../../../utils'
 
 const ItemsTable = ({
   items,
@@ -29,25 +29,25 @@ const ItemsTable = ({
   onChangePoints,
   isCollapse,
   passagesKeyed = {},
-  gradingRubricsFeature
+  gradingRubricsFeature,
 }) => {
-  const [expandedRows, setExpandedRows] = useState(-1);
+  const [expandedRows, setExpandedRows] = useState(-1)
 
   const handleCheckboxChange = (index, checked) => {
     if (checked) {
-      setSelected([...selected, index]);
+      setSelected([...selected, index])
     } else {
-      const newSelected = selected.filter(item => item !== index);
-      setSelected(newSelected);
+      const newSelected = selected.filter((item) => item !== index)
+      setSelected(newSelected)
     }
-  };
+  }
 
   const columns = [
     {
-      title: "Main info",
-      dataIndex: "data",
-      key: "main",
-      render: data =>
+      title: 'Main info',
+      dataIndex: 'data',
+      key: 'main',
+      render: (data) =>
         expandedRows === data.key ? (
           <ListItem
             key={data.key}
@@ -84,36 +84,40 @@ const ItemsTable = ({
             />
             <MetaInfoCell data={data.meta} />
           </>
-        )
-    }
-  ];
+        ),
+    },
+  ]
 
-  const audioStatus = item => {
-    const _questions = get(item, "data.questions", []);
-    const getAllTTS = _questions.filter(ite => ite.tts).map(ite => ite.tts);
-    const audio = {};
+  const audioStatus = (item) => {
+    const _questions = get(item, 'data.questions', [])
+    const getAllTTS = _questions.filter((ite) => ite.tts).map((ite) => ite.tts)
+    const audio = {}
     if (getAllTTS.length) {
-      const ttsSuccess = getAllTTS.filter(ite => ite.taskStatus !== "COMPLETED").length === 0;
-      audio.ttsSuccess = ttsSuccess;
+      const ttsSuccess =
+        getAllTTS.filter((ite) => ite.taskStatus !== 'COMPLETED').length === 0
+      audio.ttsSuccess = ttsSuccess
     }
-    return audio;
-  };
+    return audio
+  }
 
   const data = items.map((item, i) => {
     const isScoringDisabled =
-      (!!item?.data?.questions?.find(q => q.rubrics) && gradingRubricsFeature) ||
+      (!!item?.data?.questions?.find((q) => q.rubrics) &&
+        gradingRubricsFeature) ||
       item.autoselectedItem ||
-      item.isLimitedDeliveryType;
+      item.isLimitedDeliveryType
     const main = {
       id: item._id,
-      points: item.isLimitedDeliveryType ? 1 : scoring[item._id] || helpers.getPoints(item),
+      points: item.isLimitedDeliveryType
+        ? 1
+        : scoring[item._id] || helpers.getPoints(item),
       title: item._id,
-      isScoringDisabled
-    };
+      isScoringDisabled,
+    }
 
     const meta = {
       id: item._id,
-      by: get(item, ["createdBy", "name"], ""),
+      by: get(item, ['createdBy', 'name'], ''),
       shared: 0,
       likes: 0,
       type: getQuestionType(item),
@@ -124,52 +128,55 @@ const ItemsTable = ({
       audio: audioStatus(item),
       tags: item.tags,
       dok:
-        item.data && item.data.questions && (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
-    };
+        item.data &&
+        item.data.questions &&
+        (item.data.questions.find((e) => e.depthOfKnowledge) || {})
+          .depthOfKnowledge,
+    }
 
     if (item.data && item.data.questions && item.data.questions.length) {
-      main.stimulus = item.data.questions[0].stimulus;
+      main.stimulus = item.data.questions[0].stimulus
     }
 
     return {
       data: {
         key: i,
         main,
-        meta
-      }
-    };
-  });
+        meta,
+      },
+    }
+  })
 
   const rowSelection = {
-    onChange: selectedRowKeys => {
-      setSelected(selectedRowKeys);
+    onChange: (selectedRowKeys) => {
+      setSelected(selectedRowKeys)
     },
-    selectedRowKeys: selected
-  };
+    selectedRowKeys: selected,
+  }
   return (
     <ReviewTableWrapper
-      rowSelection={isEditable ? rowSelection : ""}
+      rowSelection={isEditable ? rowSelection : ''}
       columns={columns}
       dataSource={data}
       showHeader={false}
       pagination={false}
     />
-  );
-};
+  )
+}
 
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
   isEditable: PropTypes.bool.isRequired,
   handlePreview: PropTypes.func.isRequired,
   standards: PropTypes.object.isRequired,
-  gradingRubricsFeature: PropTypes.bool.isRequired
-};
+  gradingRubricsFeature: PropTypes.bool.isRequired,
+}
 
 const enhance = compose(
   memo,
-  connect(state => ({
-    standards: getStandardsSelector(state)
+  connect((state) => ({
+    standards: getStandardsSelector(state),
   }))
-);
+)
 
-export default enhance(ItemsTable);
+export default enhance(ItemsTable)

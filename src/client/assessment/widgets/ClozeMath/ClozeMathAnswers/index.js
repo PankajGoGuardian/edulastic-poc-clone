@@ -1,1 +1,1 @@
-export { default } from "./ClozeMathAnswers";
+export { default } from './ClozeMathAnswers'

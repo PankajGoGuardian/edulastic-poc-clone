@@ -1,21 +1,21 @@
-import React, { useRef, useEffect, useState } from "react";
-import { find, get } from "lodash";
-import { Popover } from "antd";
-import PropTypes from "prop-types";
-import { measureText } from "@edulastic/common";
+import React, { useRef, useEffect, useState } from 'react'
+import { find, get } from 'lodash'
+import { Popover } from 'antd'
+import PropTypes from 'prop-types'
+import { measureText } from '@edulastic/common'
 
-import CheckMark from "./CheckMark";
-import { AnswerBox } from "../../styled/AnswerBox";
-import { IndexBox } from "../../styled/IndexBox";
-import { AnswerContent } from "../../styled/AnswerContent";
+import CheckMark from './CheckMark'
+import { AnswerBox } from '../../styled/AnswerBox'
+import { IndexBox } from '../../styled/IndexBox'
+import { AnswerContent } from '../../styled/AnswerContent'
 
-import { CLEAR } from "../../../../constants/constantsForQuestions";
+import { CLEAR } from '../../../../constants/constantsForQuestions'
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
-    return null;
+    return null
   }
-  const answerBoxRef = useRef();
+  const answerBoxRef = useRef()
   const {
     evaluation,
     checkAnswer,
@@ -24,33 +24,42 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     previewTab,
     getUiStyles,
     changePreviewTab,
-    isPrintPreview
-  } = resprops;
+    isPrintPreview,
+  } = resprops
 
-  const { id: choiceId, index } = find(responseIds, res => res.id === id);
-  const { btnStyle: style, stemNumeration } = getUiStyles(id, index);
-  const { disableAutoExpend, ...btnStyle } = style;
-  const [boxWidth, updateBoxWidth] = useState(btnStyle.width);
-  const [showPopover, togglePopover] = useState(false);
+  const { id: choiceId, index } = find(responseIds, (res) => res.id === id)
+  const { btnStyle: style, stemNumeration } = getUiStyles(id, index)
+  const { disableAutoExpend, ...btnStyle } = style
+  const [boxWidth, updateBoxWidth] = useState(btnStyle.width)
+  const [showPopover, togglePopover] = useState(false)
 
-  const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
+  const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR)
 
-  const userAnswer = get(userSelections, `[${index}].value`);
+  const userAnswer = get(userSelections, `[${index}].value`)
 
   useEffect(() => {
     if (answerBoxRef.current) {
-      const { width } = measureText(userAnswer, getComputedStyle(answerBoxRef.current));
+      const { width } = measureText(
+        userAnswer,
+        getComputedStyle(answerBoxRef.current)
+      )
       if (boxWidth < width && !disableAutoExpend) {
-        updateBoxWidth(width);
+        updateBoxWidth(width)
       }
     }
-  }, [userAnswer]);
+  }, [userAnswer])
 
-  const attempt = !!userAnswer && evaluation[choiceId] !== undefined;
+  const attempt = !!userAnswer && evaluation[choiceId] !== undefined
   const popoverContent = (
     <AnswerBox
       checked={attempt}
-      style={{ ...btnStyle, whiteSpace: "normal", wordBreak: "break-all", width: "unset", height: "auto" }}
+      style={{
+        ...btnStyle,
+        whiteSpace: 'normal',
+        wordBreak: 'break-all',
+        width: 'unset',
+        height: 'auto',
+      }}
       correct={evaluation[choiceId]}
       onClick={handleClick}
       isPrintPreview={isPrintPreview}
@@ -60,16 +69,23 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           {stemNumeration}
         </IndexBox>
       )}
-      <AnswerContent showIndex={!checkAnswer} inPopover dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
+      <AnswerContent
+        showIndex={!checkAnswer}
+        inPopover
+        dangerouslySetInnerHTML={{ __html: userAnswer || '' }}
+      />
       {attempt && <CheckMark inPopover correct={evaluation[choiceId]} />}
     </AnswerBox>
-  );
+  )
 
-  const padding = 15;
-  const indexWidth = checkAnswer ? 0 : 40;
-  const totalContentWidth = boxWidth + padding + indexWidth;
+  const padding = 15
+  const indexWidth = checkAnswer ? 0 : 40
+  const totalContentWidth = boxWidth + padding + indexWidth
   return (
-    <Popover content={popoverContent} visible={showPopover && btnStyle.width < totalContentWidth && userAnswer}>
+    <Popover
+      content={popoverContent}
+      visible={showPopover && btnStyle.width < totalContentWidth && userAnswer}
+    >
       <AnswerBox
         ref={answerBoxRef}
         onMouseEnter={() => togglePopover(true)}
@@ -85,20 +101,23 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             {stemNumeration}
           </IndexBox>
         )}
-        <AnswerContent showIndex={!checkAnswer} dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
+        <AnswerContent
+          showIndex={!checkAnswer}
+          dangerouslySetInnerHTML={{ __html: userAnswer || '' }}
+        />
         {attempt && <CheckMark correct={evaluation[choiceId]} />}
       </AnswerBox>
     </Popover>
-  );
-};
+  )
+}
 
 CheckboxTemplateBoxLayout.propTypes = {
   resprops: PropTypes.object,
-  id: PropTypes.string.isRequired
-};
+  id: PropTypes.string.isRequired,
+}
 
 CheckboxTemplateBoxLayout.defaultProps = {
-  resprops: {}
-};
+  resprops: {},
+}
 
-export default React.memo(CheckboxTemplateBoxLayout);
+export default React.memo(CheckboxTemplateBoxLayout)

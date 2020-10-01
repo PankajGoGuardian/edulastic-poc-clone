@@ -1,17 +1,21 @@
-import { Layout, Spin } from "antd";
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { getUser } from "../../../author/src/selectors/user";
-import { getEnrollClassAction, joinClassAction, setFilterClassAction } from "../ducks";
+import { Layout, Spin } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { getUser } from '../../../author/src/selectors/user'
+import {
+  getEnrollClassAction,
+  joinClassAction,
+  setFilterClassAction,
+} from '../ducks'
 // components
-import ManageClassContainer from "./Container";
-import { proxyRole } from "../../Login/ducks";
+import ManageClassContainer from './Container'
+import { proxyRole } from '../../Login/ducks'
 
 const Wrapper = styled(Layout)`
   width: 100%;
-  background-color: ${props => props.theme.sectionBackgroundColor};
-`;
+  background-color: ${(props) => props.theme.sectionBackgroundColor};
+`
 
 const ManageClass = ({
   allClasses,
@@ -23,13 +27,13 @@ const ManageClass = ({
   studentData,
   userRole,
   currentChild,
-  proxyUserRole
+  proxyUserRole,
 }) => {
   useEffect(() => {
-    loadAllClasses();
-  }, [currentChild]);
-  const [showClass, setShowClass] = useState(true);
-  if (loading) return <Spin />;
+    loadAllClasses()
+  }, [currentChild])
+  const [showClass, setShowClass] = useState(true)
+  if (loading) return <Spin />
   return (
     <Wrapper>
       <ManageClassContainer
@@ -48,22 +52,22 @@ const ManageClass = ({
         proxyUserRole={proxyUserRole}
       />
     </Wrapper>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     allClasses: state.studentEnrollClassList.allClasses,
     filterClasses: state.studentEnrollClassList.filteredClasses,
     loading: state.studentEnrollClassList.loading,
     studentData: getUser(state),
     userRole: state?.user?.user?.role,
     currentChild: state?.user?.currentChild,
-    proxyUserRole: proxyRole(state)
+    proxyUserRole: proxyRole(state),
   }),
   {
     loadAllClasses: getEnrollClassAction,
     setClassList: setFilterClassAction,
-    joinClass: joinClassAction
+    joinClass: joinClassAction,
   }
-)(ManageClass);
+)(ManageClass)

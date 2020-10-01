@@ -1,5 +1,5 @@
-import { questionType } from "@edulastic/constants";
-import { evaluateApi } from "@edulastic/api";
+import { questionType } from '@edulastic/constants'
+import { evaluateApi } from '@edulastic/api'
 
 import {
   multipleChoice,
@@ -21,25 +21,29 @@ import {
   charts,
   // clozeMath,
   fractionEditor,
-  matchList
-} from "@edulastic/evaluators";
+  matchList,
+} from '@edulastic/evaluators'
 
 const mathEvaluate = async (data, type) => {
   // getting evaluation from backend (EV-7432)
   if (type === questionType.GRAPH) {
-    const validationObj = data?.validation;
-    const correctAnswers = validationObj?.validResponse?.value || [];
-    const alternateAnswers = (validationObj?.altResponses || []).map(altResponse => altResponse.value);
-    const allAnswers = [correctAnswers, ...alternateAnswers].filter(i => i.length);
+    const validationObj = data?.validation
+    const correctAnswers = validationObj?.validResponse?.value || []
+    const alternateAnswers = (validationObj?.altResponses || []).map(
+      (altResponse) => altResponse.value
+    )
+    const allAnswers = [correctAnswers, ...alternateAnswers].filter(
+      (i) => i.length
+    )
     if (allAnswers.length === 0) {
-      const error = new Error();
-      error.message = "Questions should have answers set";
-      throw error;
+      const error = new Error()
+      error.message = 'Questions should have answers set'
+      throw error
     }
   }
-  const result = await evaluateApi.evaluate(data, type);
-  return result;
-};
+  const result = await evaluateApi.evaluate(data, type)
+  return result
+}
 
 // clozeDropDown and ClozeText shares same logic
 const evaluators = {
@@ -73,7 +77,7 @@ const evaluators = {
   [questionType.SHADING]: shading,
   [questionType.FORMULA_ESSAY]: essayRichText,
   [questionType.GRAPH]: mathEvaluate,
-  [questionType.FRACTION_EDITOR]: fractionEditor
-};
+  [questionType.FRACTION_EDITOR]: fractionEditor,
+}
 
-export default evaluators;
+export default evaluators

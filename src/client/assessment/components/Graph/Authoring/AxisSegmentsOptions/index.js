@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import AxisSegmentsMoreOptions from "./AxisSegmentsMoreOptions";
-import { RENDERING_BASE } from "../../Builder/config/constants";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
+import AxisSegmentsMoreOptions from './AxisSegmentsMoreOptions'
+import { RENDERING_BASE } from '../../Builder/config/constants'
 
 const AxisSegmentsOptions = ({
   setCanvas,
@@ -14,63 +14,63 @@ const AxisSegmentsOptions = ({
   graphData,
   setValidation,
   setControls,
-  advancedAreOpen
+  advancedAreOpen,
 }) => {
   const fontSizeList = [
     {
-      id: "small",
-      label: "Small",
+      id: 'small',
+      label: 'Small',
       value: 10,
-      selected: false
+      selected: false,
     },
     {
-      id: "normal",
-      label: "Normal",
+      id: 'normal',
+      label: 'Normal',
       value: 12,
-      selected: true
+      selected: true,
     },
     {
-      id: "large",
-      label: "Large",
+      id: 'large',
+      label: 'Large',
       value: 16,
-      selected: false
+      selected: false,
     },
     {
-      id: "extra_large",
-      label: "Extra large",
+      id: 'extra_large',
+      label: 'Extra large',
       value: 20,
-      selected: false
+      selected: false,
     },
     {
-      id: "huge",
-      label: "Huge",
+      id: 'huge',
+      label: 'Huge',
       value: 24,
-      selected: false
-    }
-  ];
+      selected: false,
+    },
+  ]
 
   const orientationList = [
-    { value: "horizontal", label: "component.options.horizontal" },
-    { value: "vertical", label: "component.options.vertical" }
-  ];
+    { value: 'horizontal', label: 'component.options.horizontal' },
+    { value: 'vertical', label: 'component.options.vertical' },
+  ]
 
   const renderingBaseList = [
     {
       id: RENDERING_BASE.LINE_MINIMUM_VALUE,
-      value: "Line minimum value",
-      label: "Line minimum value",
-      selected: true
+      value: 'Line minimum value',
+      label: 'Line minimum value',
+      selected: true,
     },
     {
       id: RENDERING_BASE.ZERO_BASED,
-      value: "Zero",
-      label: "Zero",
-      selected: false
-    }
-  ];
+      value: 'Zero',
+      label: 'Zero',
+      selected: false,
+    },
+  ]
 
   return (
-    <Fragment>
+    <>
       <AxisSegmentsMoreOptions
         setCanvas={setCanvas}
         setOptions={setOptions}
@@ -85,9 +85,9 @@ const AxisSegmentsOptions = ({
         graphData={graphData}
         advancedAreOpen={advancedAreOpen}
       />
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 AxisSegmentsOptions.propTypes = {
   cleanSections: PropTypes.func.isRequired,
@@ -98,13 +98,13 @@ AxisSegmentsOptions.propTypes = {
   graphData: PropTypes.object.isRequired,
   setValidation: PropTypes.func.isRequired,
   setControls: PropTypes.func.isRequired,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 AxisSegmentsOptions.defaultProps = {
-  advancedAreOpen: false
-};
+  advancedAreOpen: false,
+}
 
-const enhance = compose(withNamespaces("assessment"));
+const enhance = compose(withNamespaces('assessment'))
 
-export default enhance(AxisSegmentsOptions);
+export default enhance(AxisSegmentsOptions)

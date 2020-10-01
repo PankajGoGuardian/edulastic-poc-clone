@@ -1,22 +1,37 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { groupBy, isEqual, uniqueId, pick } from "lodash";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import * as moment from "moment";
-import { FlexContainer, MainContentWrapper, withWindowSizes, notification } from "@edulastic/common";
-import { curriculumSequencesApi } from "@edulastic/api";
-import { smallDesktopWidth, desktopWidth, themeColor, extraDesktopWidthMax, mobileWidthLarge } from "@edulastic/colors";
-import { roleuser } from "@edulastic/constants";
-import { Modal, Spin } from "antd";
+import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { groupBy, isEqual, uniqueId, pick } from 'lodash'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import * as moment from 'moment'
+import {
+  FlexContainer,
+  MainContentWrapper,
+  withWindowSizes,
+  notification,
+} from '@edulastic/common'
+import { curriculumSequencesApi } from '@edulastic/api'
+import {
+  smallDesktopWidth,
+  desktopWidth,
+  themeColor,
+  extraDesktopWidthMax,
+  mobileWidthLarge,
+} from '@edulastic/colors'
+import { roleuser } from '@edulastic/constants'
+import { Modal, Spin } from 'antd'
 
-import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
-import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
-import { getRecentPlaylistSelector } from "../../Playlist/ducks";
-import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
-import { getCollectionsSelector, getUserRole, isPublisherUserSelector } from "../../src/selectors/user";
+import { getCurrentGroup, getUserFeatures } from '../../../student/Login/ducks'
+import { getFilteredClassesSelector } from '../../../student/ManageClass/ducks'
+import { getRecentPlaylistSelector } from '../../Playlist/ducks'
+import { removeTestFromModuleAction } from '../../PlaylistPage/ducks'
+import {
+  getCollectionsSelector,
+  getUserRole,
+  isPublisherUserSelector,
+} from '../../src/selectors/user'
 import {
   addNewUnitAction,
   changeGuideAction,
@@ -43,23 +58,23 @@ import {
   removePlaylistFromUseAction,
   checkPreviouslyCustomizedAction,
   unassignAssignmentsfromPlaylistAction,
-  duplicatePlaylistRequestAction
-} from "../ducks";
-import { getSummaryData } from "../util";
+  duplicatePlaylistRequestAction,
+} from '../ducks'
+import { getSummaryData } from '../util'
 /* eslint-enable */
-import Curriculum from "./Curriculum";
-import Insights from "./Insights";
-import CurriculumSequenceModals from "./modals";
-import Differentiation from "./Differentiation";
-import { getDateKeysSelector } from "../../../student/StudentPlaylist/ducks";
-import { submitLTIForm } from "./CurriculumModuleRow"; // Fix ME : Needs refactor
-import CurriculumHeader from "./CurriculumHeaders";
-import CurriculumSubHeader from "./CurriculumHeaders/CurriculumSubHeader";
-import CurriculumBreadCrumb from "./CurriculumHeaders/BreadCrumb";
-import CurriculumRightPanel from "./CurriculumRightPanel";
-import { allowDuplicateCheck } from "../../src/utils/permissionCheck";
-import { DeleteAssignmentModal } from "../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
-import { toggleDeleteAssignmentModalAction } from "../../sharedDucks/assignments";
+import Curriculum from './Curriculum'
+import Insights from './Insights'
+import CurriculumSequenceModals from './modals'
+import Differentiation from './Differentiation'
+import { getDateKeysSelector } from '../../../student/StudentPlaylist/ducks'
+import { submitLTIForm } from './CurriculumModuleRow' // Fix ME : Needs refactor
+import CurriculumHeader from './CurriculumHeaders'
+import CurriculumSubHeader from './CurriculumHeaders/CurriculumSubHeader'
+import CurriculumBreadCrumb from './CurriculumHeaders/BreadCrumb'
+import CurriculumRightPanel from './CurriculumRightPanel'
+import { allowDuplicateCheck } from '../../src/utils/permissionCheck'
+import { DeleteAssignmentModal } from '../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
+import { toggleDeleteAssignmentModalAction } from '../../sharedDucks/assignments'
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -145,7 +160,7 @@ import { toggleDeleteAssignmentModalAction } from "../../sharedDucks/assignments
  * @property {import('./ducks').AssignData} dataForAssign
  */
 
-const EUREKA_PUBLISHER = "Eureka Math";
+const EUREKA_PUBLISHER = 'Eureka Math'
 
 /** @extends Component<CurriculumSequenceProps> */
 class CurriculumSequence extends Component {
@@ -156,14 +171,14 @@ class CurriculumSequence extends Component {
     value: EUREKA_PUBLISHER,
     /** @type {Module | {}} */
     newUnit: {},
-    selectedGuide: "",
+    selectedGuide: '',
     assignModal: false,
     assignModalData: {
       startDate: moment(),
       endDate: moment(),
-      openPolicy: "Automatically on Start Date",
-      closePolicy: "Automatically on Due Date",
-      class: []
+      openPolicy: 'Automatically on Start Date',
+      closePolicy: 'Automatically on Due Date',
+      class: [],
     },
     showConfirmRemoveModal: false,
     isPlayListEdited: false,
@@ -173,194 +188,273 @@ class CurriculumSequence extends Component {
     showRightPanel: true,
     isVisibleAddModule: false,
     moduleForEdit: {},
-    unassignData: {}
-  };
+    unassignData: {},
+  }
 
   static getDerivedStateFromProps(props, state) {
-    const { studentPlaylists, classId, destinationCurriculumSequence, useThisPlayList, isStudent } = props;
+    const {
+      studentPlaylists,
+      classId,
+      destinationCurriculumSequence,
+      useThisPlayList,
+      isStudent,
+    } = props
 
     /* -- curated playlists (based on classId)-- start */
     const mappedStudentPlaylists = groupBy(
-      studentPlaylists.filter(playlist => !classId || playlist.groupId === classId),
-      "playlistId"
-    );
-    Object.entries(mappedStudentPlaylists).forEach(([playlistId, playlists]) => {
-      playlists[0].groupIds = [playlists[0].groupId];
-      mappedStudentPlaylists[playlistId] = playlists.reduce((res, ele) => {
-        res.groupIds.push(ele.groupId);
-        return res;
-      });
-      if (!classId && mappedStudentPlaylists[playlistId]?.groupIds.includes(classId)) {
-        mappedStudentPlaylists[playlistId].groupId = classId;
+      studentPlaylists.filter(
+        (playlist) => !classId || playlist.groupId === classId
+      ),
+      'playlistId'
+    )
+    Object.entries(mappedStudentPlaylists).forEach(
+      ([playlistId, playlists]) => {
+        playlists[0].groupIds = [playlists[0].groupId]
+        mappedStudentPlaylists[playlistId] = playlists.reduce((res, ele) => {
+          res.groupIds.push(ele.groupId)
+          return res
+        })
+        if (
+          !classId &&
+          mappedStudentPlaylists[playlistId]?.groupIds.includes(classId)
+        ) {
+          mappedStudentPlaylists[playlistId].groupId = classId
+        }
       }
-    });
-    const curatedStudentPlaylists = Object.values(mappedStudentPlaylists);
+    )
+    const curatedStudentPlaylists = Object.values(mappedStudentPlaylists)
     if (
       Object.keys(destinationCurriculumSequence).length &&
       curatedStudentPlaylists.length &&
       !isEqual(curatedStudentPlaylists, state.curatedStudentPlaylists) &&
       !mappedStudentPlaylists[destinationCurriculumSequence._id]
     ) {
-      const { playlistId: _id, title, grades, subjects, customize = null } = curatedStudentPlaylists[0];
-      useThisPlayList({ _id, title, grades, subjects, groupId: classId, onChange: true, isStudent, customize });
+      const {
+        playlistId: _id,
+        title,
+        grades,
+        subjects,
+        customize = null,
+      } = curatedStudentPlaylists[0]
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        groupId: classId,
+        onChange: true,
+        isStudent,
+        customize,
+      })
     }
     /* -- curated playlists -- end  */
 
     // return updated state
-    return { curatedStudentPlaylists };
+    return { curatedStudentPlaylists }
   }
 
   handlePlaylistChange = ({ _id, title, grades, subjects, groupId }) => {
-    const { useThisPlayList, isStudent, classId } = this.props;
-    this.handleGuideCancel();
-    useThisPlayList({ _id, title, grades, subjects, groupId: classId || groupId, onChange: true, isStudent });
-  };
+    const { useThisPlayList, isStudent, classId } = this.props
+    this.handleGuideCancel()
+    useThisPlayList({
+      _id,
+      title,
+      grades,
+      subjects,
+      groupId: classId || groupId,
+      onChange: true,
+      isStudent,
+    })
+  }
 
   onExplorePlaylists = () => {
-    const { history } = this.props;
-    history.push("/author/playlists");
-  };
+    const { history } = this.props
+    history.push('/author/playlists')
+  }
 
-  handleSaveClick = evt => {
-    const { saveCurriculumSequence } = this.props;
-    evt.preventDefault();
-    saveCurriculumSequence();
-  };
+  handleSaveClick = (evt) => {
+    const { saveCurriculumSequence } = this.props
+    evt.preventDefault()
+    saveCurriculumSequence()
+  }
 
   handleCustomizeClick = async () => {
     const {
       history,
-      destinationCurriculumSequence: { status, _id, title }
-    } = this.props;
-    if (status === "draft") {
-      return history.push(`/author/playlists/${_id}/edit`);
+      destinationCurriculumSequence: { status, _id, title },
+    } = this.props
+    if (status === 'draft') {
+      return history.push(`/author/playlists/${_id}/edit`)
     }
-    const duplicatePlayList = await curriculumSequencesApi.duplicatePlayList({ _id, title });
-    history.push(`/author/playlists/${duplicatePlayList._id}/edit`);
-  };
+    const duplicatePlayList = await curriculumSequencesApi.duplicatePlayList({
+      _id,
+      title,
+    })
+    history.push(`/author/playlists/${duplicatePlayList._id}/edit`)
+  }
 
   handleUseThisClick = () => {
     const {
       destinationCurriculumSequence,
       useThisPlayList,
       match: {
-        params: { id: _id }
-      }
-    } = this.props;
-    const { title, grades, subjects, customize = null } = destinationCurriculumSequence;
-    useThisPlayList({ _id, title, grades, subjects, customize, fromUseThis: true });
-  };
+        params: { id: _id },
+      },
+    } = this.props
+    const {
+      title,
+      grades,
+      subjects,
+      customize = null,
+    } = destinationCurriculumSequence
+    useThisPlayList({
+      _id,
+      title,
+      grades,
+      subjects,
+      customize,
+      fromUseThis: true,
+    })
+  }
 
   handleAddUnitOpen = () => {
-    const { newUnit } = { ...this.state };
-    const { destinationCurriculumSequence } = this.props;
+    const { newUnit } = { ...this.state }
+    const { destinationCurriculumSequence } = this.props
 
-    newUnit.id = uniqueId();
-    newUnit.data = [];
-    [newUnit.afterUnitId] = destinationCurriculumSequence
-      ? destinationCurriculumSequence.modules.map(module => module.id)
-      : [];
+    newUnit.id = uniqueId()
+    newUnit.data = []
+    ;[newUnit.afterUnitId] = destinationCurriculumSequence
+      ? destinationCurriculumSequence.modules.map((module) => module.id)
+      : []
 
-    this.setState(prevState => ({ addUnit: !prevState.addUnit, newUnit }));
-  };
+    this.setState((prevState) => ({ addUnit: !prevState.addUnit, newUnit }))
+  }
 
   handleAddCustomContent = () => {
-    this.setState(prevState => ({ addCustomContent: !prevState.addCustomContent }));
-  };
+    this.setState((prevState) => ({
+      addCustomContent: !prevState.addCustomContent,
+    }))
+  }
 
   handleSelectContent = () => {
-    const { onSelectContent } = this.props;
-    onSelectContent();
-  };
+    const { onSelectContent } = this.props
+    onSelectContent()
+  }
 
   handleAddUnit = () => {
-    this.setState(prevState => ({ addUnit: !prevState.addUnit }));
-  };
+    this.setState((prevState) => ({ addUnit: !prevState.addUnit }))
+  }
 
   handleGuidePopup = () => {
-    this.setState(prevState => ({ curriculumGuide: !prevState.curriculumGuide }));
-  };
+    this.setState((prevState) => ({
+      curriculumGuide: !prevState.curriculumGuide,
+    }))
+  }
 
   handleGuideCancel = () => {
-    this.setState({ curriculumGuide: false });
-  };
+    this.setState({ curriculumGuide: false })
+  }
 
-  addNewUnitToDestination = newUnit => {
-    const { addNewUnitToDestination } = this.props;
+  addNewUnitToDestination = (newUnit) => {
+    const { addNewUnitToDestination } = this.props
 
     /** @type {String} */
-    const { afterUnitId } = newUnit;
-    delete newUnit.afterUnitId;
+    const { afterUnitId } = newUnit
+    delete newUnit.afterUnitId
 
-    addNewUnitToDestination({ afterUnitId, newUnit });
+    addNewUnitToDestination({ afterUnitId, newUnit })
 
-    this.setState({ newUnit: {}, addUnit: false });
-  };
+    this.setState({ newUnit: {}, addUnit: false })
+  }
 
-  onGuideChange = wrappedId => {
-    const { setGuide } = this.props;
-    const id = wrappedId[0];
-    setGuide(id);
-  };
+  onGuideChange = (wrappedId) => {
+    const { setGuide } = this.props
+    const id = wrappedId[0]
+    setGuide(id)
+  }
 
   handleEditClick = () => {
     const {
       history,
-      destinationCurriculumSequence: { _id }
-    } = this.props;
-    return history.push({ pathname: `/author/playlists/${_id}/edit`, state: { editFlow: true } });
-  };
+      destinationCurriculumSequence: { _id },
+    } = this.props
+    return history.push({
+      pathname: `/author/playlists/${_id}/edit`,
+      state: { editFlow: true },
+    })
+  }
 
   onCloseConfirmRemoveModal = () => {
-    this.setState({ showConfirmRemoveModal: false });
-  };
+    this.setState({ showConfirmRemoveModal: false })
+  }
 
   handleRemoveTest = (removeModuleIndex, removeTestId) => {
     const {
       history: {
-        location: { state = {} }
-      }
-    } = this.props;
-    const { editFlow } = state;
-    const { removeTestFromPlaylist } = this;
+        location: { state = {} },
+      },
+    } = this.props
+    const { editFlow } = state
+    const { removeTestFromPlaylist } = this
     if (editFlow) {
-      this.setState({ removeModuleIndex, removeTestId, showConfirmRemoveModal: true });
+      this.setState({
+        removeModuleIndex,
+        removeTestId,
+        showConfirmRemoveModal: true,
+      })
     } else {
-      this.setState({ removeModuleIndex, removeTestId }, () => removeTestFromPlaylist(removeModuleIndex, removeTestId));
+      this.setState({ removeModuleIndex, removeTestId }, () =>
+        removeTestFromPlaylist(removeModuleIndex, removeTestId)
+      )
     }
-  };
+  }
 
   removeTestFromPlaylist = () => {
-    const { removeModuleIndex, removeTestId } = this.state;
-    const { removeTestFromModule } = this.props;
-    removeTestFromModule({ moduleIndex: removeModuleIndex, itemId: removeTestId });
-    this.setState({ showConfirmRemoveModal: false });
-  };
+    const { removeModuleIndex, removeTestId } = this.state
+    const { removeTestFromModule } = this.props
+    removeTestFromModule({
+      moduleIndex: removeModuleIndex,
+      itemId: removeTestId,
+    })
+    this.setState({ showConfirmRemoveModal: false })
+  }
 
   onApproveClick = () => {
-    const { onCuratorApproveOrReject, destinationCurriculumSequence } = this.props;
-    const { _id, collections = [] } = destinationCurriculumSequence;
-    onCuratorApproveOrReject({ playlistId: _id, status: "published", collections });
-  };
+    const {
+      onCuratorApproveOrReject,
+      destinationCurriculumSequence,
+    } = this.props
+    const { _id, collections = [] } = destinationCurriculumSequence
+    onCuratorApproveOrReject({
+      playlistId: _id,
+      status: 'published',
+      collections,
+    })
+  }
 
   onRejectClick = () => {
-    const { onCuratorApproveOrReject, destinationCurriculumSequence } = this.props;
-    const { _id } = destinationCurriculumSequence;
-    onCuratorApproveOrReject({ playlistId: _id, status: "rejected" });
-  };
+    const {
+      onCuratorApproveOrReject,
+      destinationCurriculumSequence,
+    } = this.props
+    const { _id } = destinationCurriculumSequence
+    onCuratorApproveOrReject({ playlistId: _id, status: 'rejected' })
+  }
 
-  openDropPlaylistModal = () => this.setState({ dropPlaylistModalVisible: true });
+  openDropPlaylistModal = () =>
+    this.setState({ dropPlaylistModalVisible: true })
 
-  closeDropPlaylistModal = () => this.setState({ dropPlaylistModalVisible: false });
+  closeDropPlaylistModal = () =>
+    this.setState({ dropPlaylistModalVisible: false })
 
-  handleNavChange = value => () => {
-    const { history, match } = this.props;
-    const url = `/author/playlists/${value}/${match?.params?.id}/use-this`;
+  handleNavChange = (value) => () => {
+    const { history, match } = this.props
+    const url = `/author/playlists/${value}/${match?.params?.id}/use-this`
     // this.handleSave();
-    history.push(url);
-  };
+    history.push(url)
+  }
 
-  toggleManageContentClick = (contentName = "") => () => {
+  toggleManageContentClick = (contentName = '') => () => {
     const {
       destinationCurriculumSequence,
       currentUserId,
@@ -371,137 +465,174 @@ class CurriculumSequence extends Component {
       setShowRightPanel,
       toggleManageContent,
       checkPreviouslyCustomized,
-      isConfirmedCustomization
-    } = this.props;
-    const { authors } = destinationCurriculumSequence;
-    const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
+      isConfirmedCustomization,
+    } = this.props
+    const { authors } = destinationCurriculumSequence
+    const canEdit =
+      authors?.find((x) => x._id === currentUserId) ||
+      role === roleuser.EDULASTIC_CURATOR
 
-    const isManageContentActive = activeRightPanel === "manageContent";
+    const isManageContentActive = activeRightPanel === 'manageContent'
 
     // if (isManageContentActive && manageContentDirty) {
     //   message.warn("Changes left unsaved. Please save it first");
     //   return;
     // }
-    const isAuthoringFlowReview = current === "review";
+    const isAuthoringFlowReview = current === 'review'
     if (
       !isConfirmedCustomization &&
       !isManageContentActive &&
       !canEdit &&
       !isStudent &&
-      contentName === "manageContent" &&
+      contentName === 'manageContent' &&
       !isAuthoringFlowReview
     ) {
       Modal.confirm({
-        title: "Do you want to Customize ?",
+        title: 'Do you want to Customize ?',
         content:
-          "Customizing the playlist will unlink from original source. Any updates made by the owner of the playlist will not be visible anymore. Do you want to continue?",
+          'Customizing the playlist will unlink from original source. Any updates made by the owner of the playlist will not be visible anymore. Do you want to continue?',
         onOk: () => {
-          checkPreviouslyCustomized(destinationCurriculumSequence);
-          Modal.destroyAll();
+          checkPreviouslyCustomized(destinationCurriculumSequence)
+          Modal.destroyAll()
         },
-        okText: "Continue",
+        okText: 'Continue',
         centered: true,
         width: 500,
         okButtonProps: {
-          style: { background: themeColor, outline: "none" }
-        }
-      });
+          style: { background: themeColor, outline: 'none' },
+        },
+      })
     } else {
-      setShowRightPanel(true);
-      toggleManageContent(contentName);
+      setShowRightPanel(true)
+      toggleManageContent(contentName)
     }
-  };
+  }
 
   handleCheckout = () => {
-    const { history, match } = this.props;
-    const { playlistId } = match.params;
-    return history.push(`/home/playlist/${playlistId}/recommendations`);
-  };
+    const { history, match } = this.props
+    const { playlistId } = match.params
+    return history.push(`/home/playlist/${playlistId}/recommendations`)
+  }
 
   showLtiResource = async (contentId, resource) => {
-    resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
-    const { playlistId, module } = this.props;
+    resource =
+      resource &&
+      pick(resource, [
+        'toolProvider',
+        'url',
+        'customParams',
+        'consumerKey',
+        'sharedSecret',
+      ])
+    const { playlistId, module } = this.props
     try {
       const signedRequest = await curriculumSequencesApi.getSignedRequest({
         playlistId,
         moduleId: module?._id,
         contentId,
-        resource
-      });
-      submitLTIForm(signedRequest);
+        resource,
+      })
+      submitLTIForm(signedRequest)
     } catch (e) {
-      notification({ messageKey: "failedToLoadResource" });
+      notification({ messageKey: 'failedToLoadResource' })
     }
-  };
+  }
 
   hideRightpanel = () => {
-    const { toggleManageContent, setShowRightPanel } = this.props;
-    setShowRightPanel(false);
-    toggleManageContent("");
-  };
+    const { toggleManageContent, setShowRightPanel } = this.props
+    setShowRightPanel(false)
+    toggleManageContent('')
+  }
 
   closeAddModuleModal = () => {
-    this.setState({ isVisibleAddModule: false, moduleForEdit: {} });
-  };
+    this.setState({ isVisibleAddModule: false, moduleForEdit: {} })
+  }
 
   openAddModuleModal = () => {
-    this.setState({ isVisibleAddModule: true });
-  };
+    this.setState({ isVisibleAddModule: true })
+  }
 
   editModule = (moduleIndex, module) => {
-    this.setState({ moduleForEdit: { moduleIndexForEdit: moduleIndex, module }, isVisibleAddModule: true });
-  };
+    this.setState({
+      moduleForEdit: { moduleIndexForEdit: moduleIndex, module },
+      isVisibleAddModule: true,
+    })
+  }
 
-  deleteModule = moduleIndex => {
-    this.setState({ moduleForEdit: { moduleIndexForDelete: moduleIndex }, isVisibleAddModule: true });
-  };
+  deleteModule = (moduleIndex) => {
+    this.setState({
+      moduleForEdit: { moduleIndexForDelete: moduleIndex },
+      isVisibleAddModule: true,
+    })
+  }
 
   componentDidMount() {
-    const { current, setActiveRightPanelView, urlHasUseThis, setShowRightPanel } = this.props;
-    const isAuthoringFlowReview = current === "review";
+    const {
+      current,
+      setActiveRightPanelView,
+      urlHasUseThis,
+      setShowRightPanel,
+    } = this.props
+    const isAuthoringFlowReview = current === 'review'
     if (isAuthoringFlowReview) {
-      setActiveRightPanelView("manageContent");
+      setActiveRightPanelView('manageContent')
     } else {
-      setShowRightPanel(!!urlHasUseThis);
-      setActiveRightPanelView("summary");
+      setShowRightPanel(!!urlHasUseThis)
+      setActiveRightPanelView('summary')
     }
   }
 
   checkWritePermission = () => {
-    const { destinationCurriculumSequence, currentUserId, customizeInDraft } = this.props;
+    const {
+      destinationCurriculumSequence,
+      currentUserId,
+      customizeInDraft,
+    } = this.props
     // Playlist is being authored - editFlow
-    if (!destinationCurriculumSequence.authors || customizeInDraft) return true;
-    return !!destinationCurriculumSequence.authors?.find(x => x?._id === currentUserId);
-  };
+    if (!destinationCurriculumSequence.authors || customizeInDraft) return true
+    return !!destinationCurriculumSequence.authors?.find(
+      (x) => x?._id === currentUserId
+    )
+  }
 
   // Duplicate the customised playlist
   publishPlaylistInDraft = () => {
-    const { destinationCurriculumSequence, publishCustomizedPlaylist } = this.props;
-    publishCustomizedPlaylist(destinationCurriculumSequence);
-  };
+    const {
+      destinationCurriculumSequence,
+      publishCustomizedPlaylist,
+    } = this.props
+    publishCustomizedPlaylist(destinationCurriculumSequence)
+  }
 
   // Discard the changes back to original playlist
   discardDraftPlaylist = () => {
-    const { discardDraftPlaylist, destinationCurriculumSequence } = this.props;
-    discardDraftPlaylist(destinationCurriculumSequence._id);
-  };
+    const { discardDraftPlaylist, destinationCurriculumSequence } = this.props
+    discardDraftPlaylist(destinationCurriculumSequence._id)
+  }
 
-  toggleUnassignModal = unassignData => {
-    const { toggleDeleteAssignmentModal } = this.props;
-    this.setState({ unassignData });
-    toggleDeleteAssignmentModal(true);
-  };
+  toggleUnassignModal = (unassignData) => {
+    const { toggleDeleteAssignmentModal } = this.props
+    this.setState({ unassignData })
+    toggleDeleteAssignmentModal(true)
+  }
 
   deleteAssignmentFromPlaylist = () => {
-    const { unassignAssignmentsRequest, toggleDeleteAssignmentModal } = this.props;
-    const { unassignData } = this.state;
-    toggleDeleteAssignmentModal(false);
-    unassignAssignmentsRequest(unassignData);
-    this.setState({ unassignData: {} });
-  };
+    const {
+      unassignAssignmentsRequest,
+      toggleDeleteAssignmentModal,
+    } = this.props
+    const { unassignData } = this.state
+    toggleDeleteAssignmentModal(false)
+    unassignAssignmentsRequest(unassignData)
+    this.setState({ unassignData: {} })
+  }
 
   render() {
-    const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
+    const {
+      handleRemoveTest,
+      removeTestFromPlaylist,
+      onCloseConfirmRemoveModal,
+    } = this
 
     const {
       addUnit,
@@ -512,8 +643,8 @@ class CurriculumSequence extends Component {
       dropPlaylistModalVisible,
       curatedStudentPlaylists,
       isVisibleAddModule,
-      moduleForEdit
-    } = this.state;
+      moduleForEdit,
+    } = this.state
 
     const {
       loading,
@@ -557,102 +688,133 @@ class CurriculumSequence extends Component {
       deletePlaylist,
       removePlaylistFromUse,
       customizeInDraft,
-      duplicatePlayList
-    } = this.props;
-    const isManageContentActive = activeRightPanel === "manageContent";
+      duplicatePlayList,
+    } = this.props
+    const isManageContentActive = activeRightPanel === 'manageContent'
     // check Current user's edit permission
-    const hasEditAccess = this.checkWritePermission();
-    const isNotStudentOrParent = !(role === "student" || role === "parent");
+    const hasEditAccess = this.checkWritePermission()
+    const isNotStudentOrParent = !(role === 'student' || role === 'parent')
 
     // figure out which tab contents to render || just render default playlist
-    const currentTab = match?.params?.currentTab || "playlist";
+    const currentTab = match?.params?.currentTab || 'playlist'
 
     // get active classes for student playlists
-    const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
+    const playlistClassList = [
+      ...new Set(studentPlaylists.map((playlist) => playlist.groupId)),
+    ]
 
     // show all recent playlists in changePlaylistModal
-    const slicedRecentPlaylists = recentPlaylists || [];
+    const slicedRecentPlaylists = recentPlaylists || []
 
-    const { handleUseThisClick, handleEditClick } = this;
+    const { handleUseThisClick, handleEditClick } = this
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
-      ? destinationCurriculumSequence.modules.map(module => ({
+      ? destinationCurriculumSequence.modules.map((module) => ({
           value: module.id,
-          label: module.name
+          label: module.name,
         }))
-      : [];
+      : []
 
     // TODO: change options2 to something more meaningful
-    const options2 = [{ value: "Lesson", label: "Lesson" }, { value: "Lesson 2", label: "Lesson 2" }];
+    const options2 = [
+      { value: 'Lesson', label: 'Lesson' },
+      { value: 'Lesson 2', label: 'Lesson 2' },
+    ]
 
-    const { status, customize = true, modules, collections: _playlistCollections = [] } = destinationCurriculumSequence;
-    const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-    const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
+    const {
+      status,
+      customize = true,
+      modules,
+      collections: _playlistCollections = [],
+    } = destinationCurriculumSequence
+    const sparkCollection =
+      collections.find(
+        (c) => c.name === 'Spark Math' && c.owner === 'Edulastic Corp'
+      ) || {}
+    const isSparkMathPlaylist = _playlistCollections.some(
+      (item) => item._id === sparkCollection?._id
+    )
 
     const getplaylistMetrics = () => {
-      const temp = {};
+      const temp = {}
       modules?.forEach(({ _id: moduleId }) => {
-        temp[moduleId] = playlistMetricsList.filter(x => x.playlistModuleId === moduleId);
-      });
-      return temp;
-    };
+        temp[moduleId] = playlistMetricsList.filter(
+          (x) => x.playlistModuleId === moduleId
+        )
+      })
+      return temp
+    }
 
-    const playlistMetrics = getplaylistMetrics();
+    const playlistMetrics = getplaylistMetrics()
 
-    const summaryData = getSummaryData(modules, playlistMetrics, isStudent);
+    const summaryData = getSummaryData(modules, playlistMetrics, isStudent)
 
     // Module progress
     const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules
-          .filter(m => {
+          .filter((m) => {
             if (m.data.length === 0) {
-              return false;
+              return false
             }
             for (const test of m.data) {
               if (!test.assignments || test.assignments.length === 0) {
-                return false;
+                return false
               }
               for (const assignment of test.assignments) {
                 if (!assignment.class || assignment.class.length === 0) {
-                  return false;
+                  return false
                 }
                 for (const cs of assignment.class) {
-                  if (cs.status !== "DONE") {
-                    return false;
+                  if (cs.status !== 'DONE') {
+                    return false
                   }
                 }
               }
             }
-            return true;
+            return true
           })
-          .map(x => x._id)
-      : [];
+          .map((x) => x._id)
+      : []
 
-    const isAuthoringFlowReview = current === "review";
+    const isAuthoringFlowReview = current === 'review'
 
     const enableCustomize =
-      ((((customize || hasEditAccess) && urlHasUseThis && isNotStudentOrParent) ||
+      ((((customize || hasEditAccess) &&
+        urlHasUseThis &&
+        isNotStudentOrParent) ||
         ((customize || hasEditAccess) && isNotStudentOrParent)) &&
         destinationCurriculumSequence &&
         !isAuthoringFlowReview) ||
       role === roleuser.EDULASTIC_CURATOR ||
-      mode === "embedded";
+      mode === 'embedded'
 
-    const GridCountInARow = windowWidth >= 1600 ? 5 : 4;
-    const countModular = new Array(GridCountInARow - (slicedRecentPlaylists.length % GridCountInARow)).fill(1);
+    const GridCountInARow = windowWidth >= 1600 ? 5 : 4
+    const countModular = new Array(
+      GridCountInARow - (slicedRecentPlaylists.length % GridCountInARow)
+    ).fill(1)
 
-    const isDesktop = windowWidth >= parseInt(smallDesktopWidth, 10);
-    const isMobile = windowWidth <= parseInt(mobileWidthLarge, 10);
+    const isDesktop = windowWidth >= parseInt(smallDesktopWidth, 10)
+    const isMobile = windowWidth <= parseInt(mobileWidthLarge, 10)
 
-    const isPlaylistDetailsPage = window.location?.hash === "#review";
-    const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
-    const canAllowDuplicate = allowDuplicateCheck(destinationCurriculumSequence.collections, collections, "playlist");
+    const isPlaylistDetailsPage = window.location?.hash === '#review'
+    const showBreadCrumb =
+      (currentTab === 'playlist' || isPlaylistDetailsPage) && !urlHasUseThis
+    const canAllowDuplicate = allowDuplicateCheck(
+      destinationCurriculumSequence.collections,
+      collections,
+      'playlist'
+    )
     const shouldHidCustomizeButton =
-      (isPlaylistDetailsPage || urlHasUseThis) && status === "published" && (!enableCustomize || !canAllowDuplicate);
+      (isPlaylistDetailsPage || urlHasUseThis) &&
+      status === 'published' &&
+      (!enableCustomize || !canAllowDuplicate)
 
-    const playlistsToSwitch = isStudent ? curatedStudentPlaylists : slicedRecentPlaylists;
+    const playlistsToSwitch = isStudent
+      ? curatedStudentPlaylists
+      : slicedRecentPlaylists
     // should show useThis Notification only two times
-    const showUseThisNotification = location.state?.fromUseThis && !loading && playlistsToSwitch?.length <= 3;
+    const showUseThisNotification =
+      location.state?.fromUseThis && !loading && playlistsToSwitch?.length <= 3
 
     return (
       <>
@@ -689,7 +851,10 @@ class CurriculumSequence extends Component {
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
 
-        <DeleteAssignmentModal deleteAssignmentFromPlaylist={this.deleteAssignmentFromPlaylist} fromPlaylist />
+        <DeleteAssignmentModal
+          deleteAssignmentFromPlaylist={this.deleteAssignmentFromPlaylist}
+          fromPlaylist
+        />
 
         <CurriculumSequenceWrapper>
           <CurriculumHeader
@@ -730,11 +895,19 @@ class CurriculumSequence extends Component {
           <MainContentWrapper mode={mode}>
             {showBreadCrumb && <CurriculumBreadCrumb mode={mode} />}
             {loading && <Spin />}
-            {currentTab === "playlist" && !loading && (
-              <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
+            {currentTab === 'playlist' && !loading && (
+              <StyledFlexContainer
+                width="100%"
+                alignItems="flex-start"
+                justifyContent="flex-start"
+              >
                 <ContentContainer
                   urlHasUseThis={urlHasUseThis}
-                  showRightPanel={showRightPanel && !shouldHidCustomizeButton && !!activeRightPanel}
+                  showRightPanel={
+                    showRightPanel &&
+                    !shouldHidCustomizeButton &&
+                    !!activeRightPanel
+                  }
                   showBreadCrumb={showBreadCrumb}
                 >
                   <CurriculumSubHeader
@@ -744,19 +917,21 @@ class CurriculumSequence extends Component {
                     enableCustomize={enableCustomize}
                     showRightPanel={showRightPanel}
                     summaryData={summaryData}
-                    destinationCurriculumSequence={destinationCurriculumSequence}
+                    destinationCurriculumSequence={
+                      destinationCurriculumSequence
+                    }
                     handleCheckout={this.handleCheckout}
                     isManageContentActive={isManageContentActive}
                     isContentExpanded={isContentExpanded}
                     toggleManageContentClick={this.toggleManageContentClick}
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
-                    isAuthoringFlowReview={current === "review"}
+                    isAuthoringFlowReview={current === 'review'}
                     customizeInDraft={customizeInDraft}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
                       <Curriculum
-                        mode={isManageContentActive ? "embedded" : mode}
+                        mode={isManageContentActive ? 'embedded' : mode}
                         isManageContentActive={isManageContentActive}
                         history={history}
                         status={status}
@@ -788,7 +963,9 @@ class CurriculumSequence extends Component {
                         isStudent={isStudent}
                         showRightPanel={showRightPanel}
                         fromPlaylist={fromPlaylist}
-                        setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                        setEmbeddedVideoPreviewModal={
+                          setEmbeddedVideoPreviewModal
+                        }
                         droppedItemId={droppedItemId}
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
                         customizeInDraft={customizeInDraft}
@@ -813,18 +990,22 @@ class CurriculumSequence extends Component {
                 />
               </StyledFlexContainer>
             )}
-            {currentTab === "insights" && !loading && <Insights currentPlaylist={destinationCurriculumSequence} />}
-            {currentTab === "differentiation" && !loading && isSparkMathPlaylist && (
-              <Differentiation
-                setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                showResource={this.showLtiResource}
-                {...this.props}
-              />
+            {currentTab === 'insights' && !loading && (
+              <Insights currentPlaylist={destinationCurriculumSequence} />
             )}
+            {currentTab === 'differentiation' &&
+              !loading &&
+              isSparkMathPlaylist && (
+                <Differentiation
+                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                  showResource={this.showLtiResource}
+                  {...this.props}
+                />
+              )}
           </MainContentWrapper>
         </CurriculumSequenceWrapper>
       </>
-    );
+    )
   }
 }
 
@@ -832,7 +1013,7 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       curriculumGuides: state.curriculumSequence.guides,
       isManageModulesVisible: state.curriculumSequence?.isManageModulesVisible,
       guide: state.curriculumSequence.selectedGuide,
@@ -845,8 +1026,8 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       features: getUserFeatures(state),
       isPublisherUser: isPublisherUserSelector(state),
-      isStudent: getUserRole(state) === "student",
-      isTeacher: getUserRole(state) === "teacher",
+      isStudent: getUserRole(state) === 'student',
+      isTeacher: getUserRole(state) === 'teacher',
       role: getUserRole(state),
       playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
       studentPlaylists: state?.studentPlaylist?.playlists,
@@ -854,10 +1035,12 @@ const enhance = compose(
       activeClasses: getFilteredClassesSelector(state),
       dateKeys: getDateKeysSelector(state),
       currentUserId: state?.user?.user?._id,
-      isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal,
+      isVideoResourcePreviewModal:
+        state.curriculumSequence?.isVideoResourcePreviewModal,
       showRightPanel: state.curriculumSequence?.showRightPanel,
       customizeInDraft: state.curriculumSequence?.customizeInDraft,
-      isConfirmedCustomization: state.curriculumSequence?.isConfirmedCustomization
+      isConfirmedCustomization:
+        state.curriculumSequence?.isConfirmedCustomization,
     }),
     {
       onGuideChange: changeGuideAction,
@@ -887,12 +1070,12 @@ const enhance = compose(
       checkPreviouslyCustomized: checkPreviouslyCustomizedAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       unassignAssignmentsRequest: unassignAssignmentsfromPlaylistAction,
-      duplicatePlayList: duplicatePlaylistRequestAction
+      duplicatePlayList: duplicatePlaylistRequestAction,
     }
   )
-);
+)
 
-export default enhance(CurriculumSequence);
+export default enhance(CurriculumSequence)
 
 CurriculumSequence.propTypes = {
   expandedModules: PropTypes.array,
@@ -908,40 +1091,41 @@ CurriculumSequence.propTypes = {
   handleSavePlaylist: PropTypes.func.isRequired,
   onBeginDrag: PropTypes.func.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
-  recentPlaylists: PropTypes.array
-};
+  recentPlaylists: PropTypes.array,
+}
 
 CurriculumSequence.defaultProps = {
   expandedModules: [],
-  recentPlaylists: []
-};
+  recentPlaylists: [],
+}
 
 const Wrapper = styled.div`
   display: flex;
   padding: 0px;
   box-sizing: border-box;
   width: 100%;
-  align-self: ${props => (props.active ? "flex-start" : "center")};
-  margin-left: ${props => (props.active ? "0px" : "auto")};
-  margin-right: ${props => (props.active ? "0px" : "auto")};
+  align-self: ${(props) => (props.active ? 'flex-start' : 'center')};
+  margin-left: ${(props) => (props.active ? '0px' : 'auto')};
+  margin-right: ${(props) => (props.active ? '0px' : 'auto')};
   position: relative;
-`;
+`
 
 const CurriculumSequenceWrapper = styled.div`
   background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
+`
 
 const StyledFlexContainer = styled(FlexContainer)`
   @media (max-width: ${desktopWidth}) {
-    flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
+    flex-wrap: ${({ flexWrap }) => flexWrap || 'wrap'};
   }
-`;
+`
 
 export const ContentContainer = styled.div`
-  width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 400px)" : "100%")};
+  width: ${({ showRightPanel }) =>
+    showRightPanel ? 'calc(100% - 400px)' : '100%'};
   padding-right: 5px;
   margin: 0px;
   margin-right: 10px;
@@ -950,28 +1134,30 @@ export const ContentContainer = styled.div`
   overflow-x: hidden;
   height: ${({ showBreadCrumb, isDifferentiationTab }) => {
     if (isDifferentiationTab) {
-      return "calc(100vh - 175px)";
+      return 'calc(100vh - 175px)'
     }
     if (showBreadCrumb) {
-      return "calc(100vh - 160px)";
+      return 'calc(100vh - 160px)'
     }
-    return "calc(100vh - 124px)";
+    return 'calc(100vh - 124px)'
   }};
 
   @media (max-width: ${extraDesktopWidthMax}) {
-    width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 340px)" : "100%")};
+    width: ${({ showRightPanel }) =>
+      showRightPanel ? 'calc(100% - 340px)' : '100%'};
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 240px)" : "100%")};
+    width: ${({ showRightPanel }) =>
+      showRightPanel ? 'calc(100% - 240px)' : '100%'};
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
       if (isDifferentiationTab) {
-        return "calc(100vh - 175px)";
+        return 'calc(100vh - 175px)'
       }
       if (showBreadCrumb) {
-        return "calc(100vh - 138px)";
+        return 'calc(100vh - 138px)'
       }
-      return "calc(100vh - 102px)";
+      return 'calc(100vh - 102px)'
     }};
   }
 
@@ -1006,4 +1192,4 @@ export const ContentContainer = styled.div`
       background: #888;
     }
   }
-`;
+`

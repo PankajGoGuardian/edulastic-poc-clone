@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { round } from "lodash";
-import moment from "moment";
-import BarGraph from "./BarGraph";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { round } from 'lodash'
+import moment from 'moment'
+import BarGraph from './BarGraph'
 
 import {
   GraphContainer,
@@ -12,8 +12,8 @@ import {
   Progress,
   MessageBox,
   InfoRow,
-  Info
-} from "./styled";
+  Info,
+} from './styled'
 
 const ProgressGraph = ({
   testActivity,
@@ -22,30 +22,34 @@ const ProgressGraph = ({
   onClickBar,
   isGreyBar,
   isCliUser,
-  dontRelease = false
+  dontRelease = false,
 }) => {
-  const { score, maxScore, endDate } = testActivity;
-  const scorePercentage = round((score / maxScore) * 100, 2) || 0;
+  const { score, maxScore, endDate } = testActivity
+  const scorePercentage = round((score / maxScore) * 100, 2) || 0
   const totalTimeSpent = (questionActivities || []).reduce((total, current) => {
-    total += current.timeSpent;
-    return total;
-  }, 0);
+    total += current.timeSpent
+    return total
+  }, 0)
 
-  const duration = moment.duration(totalTimeSpent);
-  const submittedOn = moment(endDate).format("MMM D YYYY / H:mm");
-  const h = Math.floor(duration.asHours());
-  let m = duration.minutes();
-  const s = duration.seconds();
+  const duration = moment.duration(totalTimeSpent)
+  const submittedOn = moment(endDate).format('MMM D YYYY / H:mm')
+  const h = Math.floor(duration.asHours())
+  let m = duration.minutes()
+  const s = duration.seconds()
   if (s > 59) {
-    m += 1;
+    m += 1
   }
 
-  const timeSpent = h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+  const timeSpent = h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`
 
   return (
-    <GraphContainer padding="20px" justifyContent="flex-start" isCliUser={isCliUser}>
+    <GraphContainer
+      padding="20px"
+      justifyContent="flex-start"
+      isCliUser={isCliUser}
+    >
       {!dontRelease && (
-        <ProgressBarContainer style={{ textAlign: isCliUser ? "center" : "" }}>
+        <ProgressBarContainer style={{ textAlign: isCliUser ? 'center' : '' }}>
           <GraphTitle>Performance Summary</GraphTitle>
           <Progress
             className="getProgress"
@@ -55,10 +59,10 @@ const ProgressGraph = ({
             width={140}
             strokeWidth={8}
             strokeColor={{
-              "0%": "#8DB8F3",
-              "100%": "#2B7FF0"
+              '0%': '#8DB8F3',
+              '100%': '#2B7FF0',
             }}
-            format={percent => `${percent}%`}
+            format={(percent) => `${percent}%`}
           />
           {isCliUser && (
             <Info>
@@ -76,7 +80,8 @@ const ProgressGraph = ({
       )}
       {isCliUser ? (
         <MessageBox>
-          Thanks for helping your teacher get a better picture of what you know and what you need to get ready to learn
+          Thanks for helping your teacher get a better picture of what you know
+          and what you need to get ready to learn
         </MessageBox>
       ) : (
         <BarGraphContainer>
@@ -90,20 +95,20 @@ const ProgressGraph = ({
         </BarGraphContainer>
       )}
     </GraphContainer>
-  );
-};
+  )
+}
 
 ProgressGraph.propTypes = {
   testItems: PropTypes.array.isRequired,
   testActivity: PropTypes.object.isRequired,
   questionActivities: PropTypes.array.isRequired,
   onClickBar: PropTypes.func,
-  isGreyBar: PropTypes.bool
-};
+  isGreyBar: PropTypes.bool,
+}
 
 ProgressGraph.defaultProps = {
   onClickBar: () => {},
-  isGreyBar: false
-};
+  isGreyBar: false,
+}
 
-export default ProgressGraph;
+export default ProgressGraph

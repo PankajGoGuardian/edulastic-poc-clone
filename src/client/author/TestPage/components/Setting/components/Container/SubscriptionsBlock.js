@@ -1,17 +1,39 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Icon } from "antd";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Icon } from 'antd'
 
-import { fadedGrey, themeColor, white, secondaryTextColor, greyishBorder } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
-import styled from "styled-components";
+import {
+  fadedGrey,
+  themeColor,
+  white,
+  secondaryTextColor,
+  greyishBorder,
+} from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
+import styled from 'styled-components'
 
 const SubscriptionsBlock = () => (
   <FlexContainer flexDirection="column" padding="40px 0 10px 0">
-    <FlexContainer width="100%" style={{ borderBottom: `1px solid ${fadedGrey}` }} padding="0 0 20px 0">
-      <FlexContainer flexDirection="column" width="100%" alignItems="flex-start">
-        <h2 style={{ fontSize: "20px", fontWeight: 700, color: secondaryTextColor }}>Advanced Options</h2>
-        <p style={{ color: greyishBorder, fontSize: 14, fontWeight: "normal" }}>
+    <FlexContainer
+      width="100%"
+      style={{ borderBottom: `1px solid ${fadedGrey}` }}
+      padding="0 0 20px 0"
+    >
+      <FlexContainer
+        flexDirection="column"
+        width="100%"
+        alignItems="flex-start"
+      >
+        <h2
+          style={{
+            fontSize: '20px',
+            fontWeight: 700,
+            color: secondaryTextColor,
+          }}
+        >
+          Advanced Options
+        </h2>
+        <p style={{ color: greyishBorder, fontSize: 14, fontWeight: 'normal' }}>
           Assess with even more options for students.
         </p>
       </FlexContainer>
@@ -38,9 +60,9 @@ const SubscriptionsBlock = () => (
       </IconItem>
     </FlexContainer>
   </FlexContainer>
-);
+)
 
-export default SubscriptionsBlock;
+export default SubscriptionsBlock
 
 export const IconItem = styled.div`
   display: flex;
@@ -59,7 +81,7 @@ export const IconItem = styled.div`
     font-size: 40px;
     color: ${themeColor};
   }
-`;
+`
 
 export const UpgradeBtn = styled.button`
   color: ${white};
@@ -71,4 +93,4 @@ export const UpgradeBtn = styled.button`
   height: 40px;
   text-transform: uppercase;
   cursor: pointer;
-`;
+`

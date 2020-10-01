@@ -1,9 +1,9 @@
-import React, { useRef, useState, useEffect } from "react";
-import { IconHeart, IconUser, IconDynamic, IconUsers } from "@edulastic/icons";
-import { cardTitleColor, themeColor, darkGrey } from "@edulastic/colors";
+import React, { useRef, useState, useEffect } from 'react'
+import { IconHeart, IconUser, IconDynamic, IconUsers } from '@edulastic/icons'
+import { cardTitleColor, themeColor, darkGrey } from '@edulastic/colors'
 // eslint-disable-next-line no-unused-vars
-import { PremiumLabel, EduButton, LikeIconStyled } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
+import { PremiumLabel, EduButton, LikeIconStyled } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import {
   Container,
   Inner,
@@ -25,12 +25,12 @@ import {
   MidRow,
   Collection,
   CollectionNameWrapper,
-  DynamicIconWrapper
-} from "./styled";
-import Tags from "../../../src/components/common/Tags";
-import { TestStatus } from "../ListItem/styled";
-import { getAuthorCollectionMap } from "../../../dataUtils";
-import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+  DynamicIconWrapper,
+} from './styled'
+import Tags from '../../../src/components/common/Tags'
+import { TestStatus } from '../ListItem/styled'
+import { getAuthorCollectionMap } from '../../../dataUtils'
+import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 
 const TestItemCard = ({
   thumbnail,
@@ -56,13 +56,13 @@ const TestItemCard = ({
   usage,
   isTestLiked,
   handleLikeTest,
-  likes
+  likes,
 }) => {
-  const [height, setHeight] = useState(0);
-  const ref = useRef(null);
+  const [height, setHeight] = useState(0)
+  const ref = useRef(null)
   useEffect(() => {
-    setHeight(ref.current.clientHeight);
-  }, [ref.current]);
+    setHeight(ref.current.clientHeight)
+  }, [ref.current])
 
   return (
     <Container
@@ -72,23 +72,23 @@ const TestItemCard = ({
         <Header src={thumbnail}>
           <Stars />
           <ButtonWrapper className="showHover">
-            {isOwner && status === "draft" && (
+            {isOwner && status === 'draft' && (
               <EduButton style={btnStyle} height="32px" onClick={moveToItem}>
                 Edit
               </EduButton>
             )}
-            {status === "published" && userRole !== roleuser.EDULASTIC_CURATOR && (
+            {status === 'published' && userRole !== roleuser.EDULASTIC_CURATOR && (
               <EduButton style={btnStyle} height="32px" onClick={assignTest}>
                 Assign
               </EduButton>
             )}
-            {(status === "published" || status === "draft") && (
+            {(status === 'published' || status === 'draft') && (
               <>
                 <EduButton
                   data-cy="test-preview-button"
                   style={btnStyle}
                   height="32px"
-                  onClick={e => showPreviewModal(testId, e)}
+                  onClick={(e) => showPreviewModal(testId, e)}
                 >
                   Preview
                 </EduButton>
@@ -98,7 +98,7 @@ const TestItemCard = ({
               </>
             )}
           </ButtonWrapper>
-          {collections.find(o => o.name === "Edulastic Certified") &&
+          {collections.find((o) => o.name === 'Edulastic Certified') &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
           {/* hiding premium tag temporarily as per CR */}
           {/* {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>} */}
@@ -110,24 +110,35 @@ const TestItemCard = ({
           {title}
         </StyledLink>
         <TagsWrapper testNameHeight={height} data-cy="test-standards">
-          <Tags show={3} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
+          <Tags
+            show={3}
+            tags={standardsIdentifiers}
+            key="standards"
+            isStandards
+            margin="0px"
+          />
         </TagsWrapper>
       </TestInfo>
 
       <MidRow>
         <Collection isDynamic>
           <label>COLLECTIONS</label>
-          <CollectionNameWrapper data-cy="test-collection" title={collectionName}>
+          <CollectionNameWrapper
+            data-cy="test-collection"
+            title={collectionName}
+          >
             {collectionName}
           </CollectionNameWrapper>
         </Collection>
         <Qcount>
-          <label>{isDocBased ? "TOTAL QUESTIONS" : "TOTAL ITEMS"}</label>
+          <label>{isDocBased ? 'TOTAL QUESTIONS' : 'TOTAL ITEMS'}</label>
           {/**
            * For doc based wee need to consider
            *  total number questions and toal number of items
            *  */}
-          <div data-cy="test-item-count">{isDocBased ? summary.totalQuestions : summary.totalItems}</div>
+          <div data-cy="test-item-count">
+            {isDocBased ? summary.totalQuestions : summary.totalItems}
+          </div>
         </Qcount>
         {isDynamic && (
           <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
@@ -140,7 +151,7 @@ const TestItemCard = ({
         {authorName && (
           <Author>
             <AuthorWrapper>
-              {collections.find(o => o.name === "Edulastic Certified") ? (
+              {collections.find((o) => o.name === 'Edulastic Certified') ? (
                 getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
               ) : (
                 <IconUser color={cardTitleColor} />
@@ -169,21 +180,25 @@ const TestItemCard = ({
             <span>{testItemId}</span>
           </PlaylistId>
         ) : null}
-        {status !== "draft" && (
+        {status !== 'draft' && (
           <>
             <ShareIcon>
               <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
               <IconText>{usage}</IconText>
             </ShareIcon>
             <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest}>
-              <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
+              <IconHeart
+                color={isTestLiked ? '#ca481e' : darkGrey}
+                width={14}
+                height={14}
+              />
               <IconText>{likes}</IconText>
             </LikeIconStyled>
           </>
         )}
       </Footer>
     </Container>
-  );
-};
+  )
+}
 
-export default TestItemCard;
+export default TestItemCard

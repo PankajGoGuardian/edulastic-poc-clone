@@ -1,8 +1,8 @@
-import React from "react";
-import { first } from "lodash";
-import { IconUser, IconUsers } from "@edulastic/icons";
-import { cardTitleColor, darkGrey } from "@edulastic/colors";
-import { PremiumLabel, EduButton } from "@edulastic/common";
+import React from 'react'
+import { first } from 'lodash'
+import { IconUser, IconUsers } from '@edulastic/icons'
+import { cardTitleColor, darkGrey } from '@edulastic/colors'
+import { PremiumLabel, EduButton } from '@edulastic/common'
 
 import {
   Container,
@@ -24,12 +24,12 @@ import {
   PlaylistCardHeaderRow,
   PlaylistSkinType,
   Grade,
-  ButtonWrapper
-} from "./styled";
-import Tags from "../../../src/components/common/Tags";
-import { TestStatus } from "../ListItem/styled";
-import { getAuthorCollectionMap } from "../../../dataUtils";
-import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+  ButtonWrapper,
+} from './styled'
+import Tags from '../../../src/components/common/Tags'
+import { TestStatus } from '../ListItem/styled'
+import { getAuthorCollectionMap } from '../../../dataUtils'
+import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 
 const PlaylistCard = ({
   _source,
@@ -44,10 +44,10 @@ const PlaylistCard = ({
   testItemId,
   allowDuplicate,
   duplicatePlayList,
-  _id
+  _id,
 }) => {
-  const grade = first(_source.grades);
-  const { thumbnail } = _source;
+  const grade = first(_source.grades)
+  const { thumbnail } = _source
 
   return (
     <Container
@@ -65,9 +65,9 @@ const PlaylistCard = ({
             <ButtonWrapper className="showHover">
               <EduButton
                 height="32px"
-                onClick={e => {
-                  e.stopPropagation();
-                  duplicatePlayList({ _id, title: _source.title });
+                onClick={(e) => {
+                  e.stopPropagation()
+                  duplicatePlayList({ _id, title: _source.title })
                 }}
               >
                 clone
@@ -76,7 +76,7 @@ const PlaylistCard = ({
           )}
 
           <Stars isPlaylist />
-          {collections.find(o => o.name === "Edulastic Certified") &&
+          {collections.find((o) => o.name === 'Edulastic Certified') &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
           {showPremiumTag && <PremiumLabel>PREMIUM</PremiumLabel>}
         </Header>
@@ -86,17 +86,31 @@ const PlaylistCard = ({
         <StyledLink data-cy="test-title" title={_source.title}>
           {_source.title}
         </StyledLink>
-        <PlaylistDesc dangerouslySetInnerHTML={{ __html: _source.description }} />
+        <PlaylistDesc
+          dangerouslySetInnerHTML={{ __html: _source.description }}
+        />
         <MidRow data-cy="test-standards">
-          <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
-          <Tags data-cy="test-tags" show={2} tags={_source.tags || tags} key="tags" margin="0px" />
+          <Tags
+            show={4}
+            tags={standardsIdentifiers}
+            key="standards"
+            isStandards
+            margin="0px"
+          />
+          <Tags
+            data-cy="test-tags"
+            show={2}
+            tags={_source.tags || tags}
+            key="tags"
+            margin="0px"
+          />
         </MidRow>
       </TestInfo>
       <Inner>
         {authorName && (
           <Author isPlaylist>
             <AuthorWrapper>
-              {collections.find(o => o.name === "Edulastic Certified") ? (
+              {collections.find((o) => o.name === 'Edulastic Certified') ? (
                 getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
               ) : (
                 <IconUser color={cardTitleColor} />
@@ -108,7 +122,10 @@ const PlaylistCard = ({
           </Author>
         )}
         <StatusRow>
-          <TestStatusWrapper status={status || _source?.status} checkUser={false}>
+          <TestStatusWrapper
+            status={status || _source?.status}
+            checkUser={false}
+          >
             {({ children, ...rest }) => (
               <TestStatus data-cy="test-status" {...rest} view="tile">
                 {children}
@@ -125,7 +142,7 @@ const PlaylistCard = ({
             <span>{testItemId}</span>
           </PlaylistId>
         ) : null}
-        {status !== "draft" && (
+        {status !== 'draft' && (
           <ShareIcon>
             <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
             <IconText>{usage}</IconText>
@@ -133,7 +150,7 @@ const PlaylistCard = ({
         )}
       </Footer>
     </Container>
-  );
-};
+  )
+}
 
-export default PlaylistCard;
+export default PlaylistCard

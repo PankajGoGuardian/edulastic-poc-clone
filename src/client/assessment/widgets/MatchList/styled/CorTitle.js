@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CorTitle = styled.div`
-  font-weight: ${props => props.theme.widgets.matchList.corTitleFontWeight};
+  font-weight: ${(props) => props.theme.widgets.matchList.corTitleFontWeight};
   min-height: 32px;
   border-radius: 4px;
   width: calc(50% - 50px);
@@ -15,11 +15,11 @@ export const CorTitle = styled.div`
   overflow: hidden;
   border: ${({
     theme: {
-      answerBox: { borderWidth, borderStyle, borderColor }
-    }
+      answerBox: { borderWidth, borderStyle, borderColor },
+    },
   }) => `${borderWidth} ${borderStyle} ${borderColor}`};
 
   .math-formula-display {
     text-align: center;
   }
-`;
+`

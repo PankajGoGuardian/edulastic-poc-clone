@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
-import { evaluationType } from "@edulastic/constants";
+import { withNamespaces } from '@edulastic/localization'
+import { evaluationType } from '@edulastic/constants'
 
-import WidgetOptions from "../../../containers/WidgetOptions";
-import Extras from "../../../containers/Extras";
-import Layout from "../Layout";
+import WidgetOptions from '../../../containers/WidgetOptions'
+import Extras from '../../../containers/Extras'
+import Layout from '../Layout'
 
-const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch];
+const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch]
 
 const Options = ({
   onChange,
@@ -18,7 +18,7 @@ const Options = ({
   advancedAreOpen,
   fillSections,
   cleanSections,
-  item = {}
+  item = {},
 }) => (
   <WidgetOptions
     showVariables
@@ -38,12 +38,16 @@ const Options = ({
       cleanSections={cleanSections}
       item={item}
     />
-    <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
+    <Extras
+      advancedAreOpen={advancedAreOpen}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    >
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
   </WidgetOptions>
-);
+)
 
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -51,23 +55,23 @@ Options.propTypes = {
   outerStyle: PropTypes.object,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 Options.defaultProps = {
   outerStyle: {},
   uiStyle: {
-    responsecontainerposition: "bottom",
-    fontsize: "normal",
-    stemNumeration: "",
+    responsecontainerposition: 'bottom',
+    fontsize: 'normal',
+    stemNumeration: '',
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
-    responsecontainerindividuals: []
+    responsecontainerindividuals: [],
   },
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-export default React.memo(withNamespaces("assessment")(Options));
+export default React.memo(withNamespaces('assessment')(Options))

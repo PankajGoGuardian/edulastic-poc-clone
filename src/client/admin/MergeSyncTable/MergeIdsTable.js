@@ -1,12 +1,19 @@
-import React from "react";
-import { CSVLink } from "react-csv";
-import { Button, Upload, Icon, Modal } from "antd";
-import { Table } from "../Common/StyledComponents";
-import { mapCountAsType, DISABLE_SUBMIT_TITLE } from "../Data";
+import React from 'react'
+import { CSVLink } from 'react-csv'
+import { Button, Upload, Icon, Modal } from 'antd'
+import { Table } from '../Common/StyledComponents'
+import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
 
-const { Column } = Table;
+const { Column } = Table
 
-const orgTypesCount = ["schoolCount", "groupCount", "daCount", "saCount", "teacherCount", "studentCount"];
+const orgTypesCount = [
+  'schoolCount',
+  'groupCount',
+  'daCount',
+  'saCount',
+  'teacherCount',
+  'studentCount',
+]
 
 const MergeIdsTable = ({
   eduCounts,
@@ -18,66 +25,72 @@ const MergeIdsTable = ({
   isClasslink,
   mergeResponse,
   closeMergeResponse,
-  disableFields
+  disableFields,
 }) => {
-  const { data: mergeResponseData, showData: showMergeResponseData, mergeType: downloadMergeType } = mergeResponse;
-  const ButtonProps = disableFields ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } : {};
+  const {
+    data: mergeResponseData,
+    showData: showMergeResponseData,
+    mergeType: downloadMergeType,
+  } = mergeResponse
+  const ButtonProps = disableFields
+    ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE }
+    : {}
 
   const handleUpload = (info, mergeType) => {
     try {
-      const { file } = info;
+      const { file } = info
       uploadCSV({
         districtId,
         cleverId,
         atlasId,
         isClasslink,
         mergeType,
-        file
-      });
+        file,
+      })
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }
 
   const props = {
-    accept: ".csv",
+    accept: '.csv',
     multiple: false,
-    showUploadList: false
-  };
+    showUploadList: false,
+  }
 
   const data = orgTypesCount.map((item, i) => ({
     key: i,
     type: mapCountAsType[item].type,
     fieldName: mapCountAsType[item].name,
-    eduCount: eduCounts[item] || "-",
-    count: countsInfo[item] || "-",
+    eduCount: eduCounts[item] || '-',
+    count: countsInfo[item] || '-',
     isEmpty: !eduCounts[item] && !countsInfo[item],
-    isMatching: eduCounts[item] === countsInfo[item]
-  }));
+    isMatching: eduCounts[item] === countsInfo[item],
+  }))
 
   const cleverHeaders = [
-    { label: "Edulastic Id", key: "edulasticId" },
-    { label: "Clever Id", key: "cleverId" },
-    { label: "Status", key: "status" }
-  ];
+    { label: 'Edulastic Id', key: 'edulasticId' },
+    { label: 'Clever Id', key: 'cleverId' },
+    { label: 'Status', key: 'status' },
+  ]
 
   const classlinkHeaders = [
-    { label: "Edulastic Id", key: "edulasticId" },
-    { label: "Classlink Id", key: "atlasId" },
-    { label: "Status", key: "status" }
-  ];
+    { label: 'Edulastic Id', key: 'edulasticId' },
+    { label: 'Classlink Id', key: 'atlasId' },
+    { label: 'Status', key: 'status' },
+  ]
 
-  const headers = isClasslink ? classlinkHeaders : cleverHeaders;
-  const title = isClasslink ? "Classlink" : "Clever";
+  const headers = isClasslink ? classlinkHeaders : cleverHeaders
+  const title = isClasslink ? 'Classlink' : 'Clever'
 
   const templateHeaders = {
-    sch: ["school_id", "id"],
-    cls: ["edu_class_section_id", isClasslink ? "atlas_id" : "clever_id"],
-    tch: ["user_id", "id"],
-    stu: ["user_id", "id"],
-    sa: ["user_id", "id"],
-    da: ["user_id", "id"]
-  };
+    sch: ['school_id', 'id'],
+    cls: ['edu_class_section_id', isClasslink ? 'atlas_id' : 'clever_id'],
+    tch: ['user_id', 'id'],
+    stu: ['user_id', 'id'],
+    sa: ['user_id', 'id'],
+    da: ['user_id', 'id'],
+  }
 
   return (
     <>
@@ -101,17 +114,25 @@ const MergeIdsTable = ({
             >
               Download
             </CSVLink>
-          </Button>
+          </Button>,
         ]}
         width="80%"
       >
-        <Table rowKey={record => record.edulasticId} dataSource={mergeResponseData} pagination={false}>
-          {headers.map(each => (
+        <Table
+          rowKey={(record) => record.edulasticId}
+          dataSource={mergeResponseData}
+          pagination={false}
+        >
+          {headers.map((each) => (
             <Column title={each.label} dataIndex={each.key} key={each.key} />
           ))}
         </Table>
       </Modal>
-      <Table rowKey={record => record.key} dataSource={data} pagination={false}>
+      <Table
+        rowKey={(record) => record.key}
+        dataSource={data}
+        pagination={false}
+      >
         <Column title="Fields" dataIndex="fieldName" key="fieldName" />
         <Column title="Edulastic Count" dataIndex="eduCount" key="eduCount" />
         <Column title={`${title} Count`} dataIndex="count" key="count" />
@@ -120,11 +141,15 @@ const MergeIdsTable = ({
           dataIndex="isEmpty"
           key="btnName"
           render={(_, { type }) => (
-            <Upload aria-label="Upload" {...props} customRequest={info => handleUpload(info, type)}>
+            <Upload
+              aria-label="Upload"
+              {...props}
+              customRequest={(info) => handleUpload(info, type)}
+            >
               <Button {...ButtonProps}>
                 <Icon type="upload" /> Upload
               </Button>
-              {" *.csv"}
+              {' *.csv'}
             </Upload>
           )}
         />
@@ -148,7 +173,7 @@ const MergeIdsTable = ({
         />
       </Table>
     </>
-  );
-};
+  )
+}
 
-export default MergeIdsTable;
+export default MergeIdsTable

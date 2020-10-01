@@ -1,18 +1,26 @@
-import React, { PureComponent } from "react";
-import { Row, Col } from "antd";
-import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq, keyBy, set, findIndex } from "lodash";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import produce from "immer";
-import qs from "qs";
-import { Paper, withWindowSizes, notification, MainContentWrapper } from "@edulastic/common";
-import { test as testConstants, roleuser } from "@edulastic/constants";
-import PreviewModal from "../../../../../src/components/common/PreviewModal";
-import HeaderBar from "../HeaderBar/HeaderBar";
-import { getItemsSubjectAndGradeSelector, setTestItemsAction } from "../../../AddItems/ducks";
-import { getStandardsSelector } from "../../ducks";
+import React, { PureComponent } from 'react'
+import { Row, Col } from 'antd'
+import PropTypes from 'prop-types'
+import { cloneDeep, get, uniq as _uniq, keyBy, set, findIndex } from 'lodash'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import produce from 'immer'
+import qs from 'qs'
+import {
+  Paper,
+  withWindowSizes,
+  notification,
+  MainContentWrapper,
+} from '@edulastic/common'
+import { test as testConstants, roleuser } from '@edulastic/constants'
+import PreviewModal from '../../../../../src/components/common/PreviewModal'
+import HeaderBar from '../HeaderBar/HeaderBar'
+import {
+  getItemsSubjectAndGradeSelector,
+  setTestItemsAction,
+} from '../../../AddItems/ducks'
+import { getStandardsSelector } from '../../ducks'
 import {
   setTestDataAction,
   previewCheckAnswerAction,
@@ -22,21 +30,31 @@ import {
   getTestItemsSelector,
   addItemsToAutoselectGroupsRequestAction,
   getAutoSelectItemsLoadingStatusSelector,
-  showGroupsPanelSelector
-} from "../../../../ducks";
-import { clearAnswersAction } from "../../../../../src/actions/answers";
-import { clearEvaluationAction } from "../../../../../../assessment/actions/evaluation";
-import { getSummarySelector } from "../../../Summary/ducks";
-import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
-import Breadcrumb from "../../../../../src/components/Breadcrumb";
-import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import { SecondHeader, ReviewSummaryWrapper, ReviewContentWrapper, ReviewLeftContainer, TestTitle } from "./styled";
-import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
-import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
-import { getUserFeatures, getUserRole, getIsPowerPremiumAccount } from "../../../../../src/selectors/user";
-import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
-import ReviewItems from "../ReviewItems";
-import { resetItemScoreAction } from "../../../../../src/ItemScore/ducks";
+  showGroupsPanelSelector,
+} from '../../../../ducks'
+import { clearAnswersAction } from '../../../../../src/actions/answers'
+import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
+import { getSummarySelector } from '../../../Summary/ducks'
+import { getQuestionsSelectorForReview } from '../../../../../sharedDucks/questions'
+import Breadcrumb from '../../../../../src/components/Breadcrumb'
+import ReviewSummary from '../ReviewSummary/ReviewSummary'
+import {
+  SecondHeader,
+  ReviewSummaryWrapper,
+  ReviewContentWrapper,
+  ReviewLeftContainer,
+  TestTitle,
+} from './styled'
+import { clearDictAlignmentAction } from '../../../../../src/actions/dictionaries'
+import { getCreateItemModalVisibleSelector } from '../../../../../src/selectors/testItem'
+import {
+  getUserFeatures,
+  getUserRole,
+  getIsPowerPremiumAccount,
+} from '../../../../../src/selectors/user'
+import TestPreviewModal from '../../../../../Assignments/components/Container/TestPreviewModal'
+import ReviewItems from '../ReviewItems'
+import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
 
 class Review extends PureComponent {
   static propTypes = {
@@ -66,19 +84,19 @@ class Review extends PureComponent {
     setTestItems: PropTypes.func.isRequired,
     showCancelButton: PropTypes.bool.isRequired,
     userFeatures: PropTypes.object.isRequired,
-    testItems: PropTypes.array.isRequired
-  };
+    testItems: PropTypes.array.isRequired,
+  }
 
   static defaultProps = {
     owner: false,
-    onSaveTestId: () => {}
-  };
+    onSaveTestId: () => {},
+  }
 
-  secondHeaderRef = React.createRef();
+  secondHeaderRef = React.createRef()
 
-  containerRef = React.createRef();
+  containerRef = React.createRef()
 
-  listWrapperRef = React.createRef();
+  listWrapperRef = React.createRef()
 
   state = {
     isCollapse: true,
@@ -86,33 +104,35 @@ class Review extends PureComponent {
     isModalVisible: false,
     item: [],
     isTestPreviewModalVisible: false,
-    currentTestId: "",
+    currentTestId: '',
     hasStickyHeader: false,
-    indexForPreview: 0
-  };
+    indexForPreview: 0,
+  }
 
   componentWillUnmount() {
     if (this.containerRef.current) {
-      this.containerRef.current.removeEventListener("scroll", this.handleScroll);
+      this.containerRef.current.removeEventListener('scroll', this.handleScroll)
     }
   }
 
   componentDidMount() {
-    this.containerRef?.current?.addEventListener("scroll", this.handleScroll);
-    const { test, addItemsToAutoselectGroupsRequest } = this.props;
-    const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
+    this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
+    const { test, addItemsToAutoselectGroupsRequest } = this.props
+    const hasAutoSelectItems = test.itemGroups.some(
+      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+    )
     if (hasAutoSelectItems) {
-      addItemsToAutoselectGroupsRequest(test);
+      addItemsToAutoselectGroupsRequest(test)
     }
 
     // url = http://localhost:3001/author/tests/tab/review/id/testId/
     // ?token=value&firebaseToken=value&userId=value&role=teacher&itemBank=cli&showCLIBanner=1
     // &showAssingmentPreview=1
-    const { showAssignmentPreview } = qs.parse(window.location.search);
+    const { showAssignmentPreview } = qs.parse(window.location.search)
     if (showAssignmentPreview) {
       this.setState({
-        isTestPreviewModalVisible: true
-      });
+        isTestPreviewModalVisible: true,
+      })
     }
   }
 
@@ -126,276 +146,298 @@ class Review extends PureComponent {
   //   // }
   // }
 
-  setSelected = values => {
-    const { test, setData } = this.props;
-    const newData = cloneDeep(test);
-    newData.itemGroups = produce(newData.itemGroups, itemGroups => {
+  setSelected = (values) => {
+    const { test, setData } = this.props
+    const newData = cloneDeep(test)
+    newData.itemGroups = produce(newData.itemGroups, (itemGroups) => {
       itemGroups
-        .flatMap(itemGroup => itemGroup.items || [])
+        .flatMap((itemGroup) => itemGroup.items || [])
         .map((item, i) => {
           if (values.includes(i)) {
-            item.selected = true;
+            item.selected = true
           } else {
-            item.selected = false;
+            item.selected = false
           }
-          return null;
-        });
-    });
-    setData(newData);
-  };
+          return null
+        })
+    })
+    setData(newData)
+  }
 
-  handleSelectAll = e => {
-    const { rows } = this.props;
-    const { checked } = e.target;
+  handleSelectAll = (e) => {
+    const { rows } = this.props
+    const { checked } = e.target
 
     if (checked) {
-      this.setSelected(rows.map((row, i) => i));
+      this.setSelected(rows.map((row, i) => i))
     } else {
-      this.setSelected([]);
+      this.setSelected([])
     }
-  };
+  }
 
   handleRemoveSelected = () => {
-    const { test, setData, setTestItems } = this.props;
-    const newData = cloneDeep(test);
+    const { test, setData, setTestItems } = this.props
+    const newData = cloneDeep(test)
     const itemsSelected = test.itemGroups
-      .flatMap(itemGroup => itemGroup.items || [])
-      .filter(item => item.selected)
-      .map(item => item._id);
+      .flatMap((itemGroup) => itemGroup.items || [])
+      .filter((item) => item.selected)
+      .map((item) => item._id)
     if (!itemsSelected.length) {
-      return notification({ type: "warn", messageKey: "pleaseSelectAtleastOneQuestion" });
+      return notification({
+        type: 'warn',
+        messageKey: 'pleaseSelectAtleastOneQuestion',
+      })
     }
-    newData.itemGroups = newData.itemGroups.map(itemGroup => ({
+    newData.itemGroups = newData.itemGroups.map((itemGroup) => ({
       ...itemGroup,
-      items: itemGroup.items.filter(testItem => !itemsSelected.includes(testItem._id))
-    }));
+      items: itemGroup.items.filter(
+        (testItem) => !itemsSelected.includes(testItem._id)
+      ),
+    }))
 
-    newData.scoring.testItems = newData.scoring.testItems.filter(item => {
+    newData.scoring.testItems = newData.scoring.testItems.filter((item) => {
       const foundItem = newData.itemGroups
-        .flatMap(itemGroup => itemGroup.items || [])
-        .find(({ id }) => id === item._id);
-      return !(foundItem && foundItem.selected);
-    });
-    const testItems = newData.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+        .flatMap((itemGroup) => itemGroup.items || [])
+        .find(({ id }) => id === item._id)
+      return !(foundItem && foundItem.selected)
+    })
+    const testItems = newData.itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
 
-    setTestItems(testItems.map(item => item._id));
-    this.setSelected([]);
-    setData(newData);
-    notification({ type: "success", messageKey: "selectedItemRemovedSuccessfully" });
-  };
+    setTestItems(testItems.map((item) => item._id))
+    this.setSelected([])
+    setData(newData)
+    notification({
+      type: 'success',
+      messageKey: 'selectedItemRemovedSuccessfully',
+    })
+  }
 
-  handleRemoveOne = indx => {
-    const { test, setData, setTestItems } = this.props;
-    const newData = cloneDeep(test);
+  handleRemoveOne = (indx) => {
+    const { test, setData, setTestItems } = this.props
+    const newData = cloneDeep(test)
 
     const itemsSelected = newData.itemGroups
-      .flatMap(itemGroup => itemGroup.items || [])
+      .flatMap((itemGroup) => itemGroup.items || [])
       .filter((_, index) => index === indx)
-      .find(item => item._id);
+      .find((item) => item._id)
 
     if (!itemsSelected) {
-      return notification({ type: "warn", messageKey: "pleaseSelectAtleastOneQuestion" });
+      return notification({
+        type: 'warn',
+        messageKey: 'pleaseSelectAtleastOneQuestion',
+      })
     }
 
-    newData.itemGroups = newData.itemGroups.map(itemGroup => ({
+    newData.itemGroups = newData.itemGroups.map((itemGroup) => ({
       ...itemGroup,
-      items: itemGroup.items.filter(testItem => testItem._id !== itemsSelected._id)
-    }));
+      items: itemGroup.items.filter(
+        (testItem) => testItem._id !== itemsSelected._id
+      ),
+    }))
 
-    newData.scoring.testItems = newData.scoring.testItems.filter(item =>
+    newData.scoring.testItems = newData.scoring.testItems.filter((item) =>
       newData.itemGroups
-        .flatMap(itemGroup => itemGroup.items || [])
+        .flatMap((itemGroup) => itemGroup.items || [])
         .find(({ id }) => id === item._id && itemsSelected._id !== id)
-    );
+    )
 
-    const testItems = newData.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+    const testItems = newData.itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
 
-    setTestItems(testItems.map(item => item._id));
-    setData(newData);
-  };
+    setTestItems(testItems.map((item) => item._id))
+    setData(newData)
+  }
 
   handleCollapse = () => {
-    const { isCollapse } = this.state;
-    this.setState({ isCollapse: !isCollapse });
-  };
+    const { isCollapse } = this.state
+    this.setState({ isCollapse: !isCollapse })
+  }
 
   toggleSummary = () => {
-    const { isShowSummary } = this.state;
+    const { isShowSummary } = this.state
     this.setState({
-      isShowSummary: !isShowSummary
-    });
-  };
+      isShowSummary: !isShowSummary,
+    })
+  }
 
   moveTestItems = ({ oldIndex, newIndex }) => {
-    const { test, setData } = this.props;
+    const { test, setData } = this.props
     if (test.itemGroups.length > 1) {
-      let itemCounter = 0;
-      let [newGroupIndex, newItemIndex] = [0, 0];
-      let [oldGroupIndex, oldItemIndex] = [0, 0];
+      let itemCounter = 0
+      let [newGroupIndex, newItemIndex] = [0, 0]
+      let [oldGroupIndex, oldItemIndex] = [0, 0]
       test.itemGroups.forEach((group, i) => {
         group.items.forEach((_, j) => {
           if (itemCounter === newIndex) {
-            [newGroupIndex, newItemIndex] = [i, j];
+            ;[newGroupIndex, newItemIndex] = [i, j]
           }
           if (itemCounter === oldIndex) {
-            [oldGroupIndex, oldItemIndex] = [i, j];
+            ;[oldGroupIndex, oldItemIndex] = [i, j]
           }
-          itemCounter++;
-        });
-      });
-      setData(
-        produce(test, draft => {
-          const tempItem = test.itemGroups[oldGroupIndex].items[oldItemIndex];
-          delete tempItem.selected;
-          draft.itemGroups[oldGroupIndex].items[oldItemIndex] = draft.itemGroups[newGroupIndex].items[newItemIndex];
-          draft.itemGroups[newGroupIndex].items[newItemIndex] = tempItem;
+          itemCounter++
         })
-      );
+      })
+      setData(
+        produce(test, (draft) => {
+          const tempItem = test.itemGroups[oldGroupIndex].items[oldItemIndex]
+          delete tempItem.selected
+          draft.itemGroups[oldGroupIndex].items[oldItemIndex] =
+            draft.itemGroups[newGroupIndex].items[newItemIndex]
+          draft.itemGroups[newGroupIndex].items[newItemIndex] = tempItem
+        })
+      )
     } else {
       setData(
-        produce(test, draft => {
-          draft.itemGroups[0].items = draft.itemGroups[0].items.map(({ selected, ...item }) => ({
-            ...item
-          }));
-          const [removed] = draft.itemGroups[0].items.splice(oldIndex, 1);
-          draft.itemGroups[0].items.splice(newIndex, 0, removed);
+        produce(test, (draft) => {
+          draft.itemGroups[0].items = draft.itemGroups[0].items.map(
+            ({ selected, ...item }) => ({
+              ...item,
+            })
+          )
+          const [removed] = draft.itemGroups[0].items.splice(oldIndex, 1)
+          draft.itemGroups[0].items.splice(newIndex, 0, removed)
         })
-      );
+      )
     }
-  };
+  }
 
-  handleMoveTo = newIndex => {
-    const { test } = this.props;
-    const oldIndex = test.itemGroups.flatMap(({ items }) => items).findIndex(item => item.selected);
-    this.moveTestItems({ oldIndex, newIndex });
-  };
+  handleMoveTo = (newIndex) => {
+    const { test } = this.props
+    const oldIndex = test.itemGroups
+      .flatMap(({ items }) => items)
+      .findIndex((item) => item.selected)
+    this.moveTestItems({ oldIndex, newIndex })
+  }
 
   handleChangePoints = (testItemId, itemScore, questionLevelScore) => {
     /**
      * prevent zero or less
      */
     if (!(itemScore > 0)) {
-      return;
+      return
     }
-    const { test, setData } = this.props;
-    const newData = cloneDeep(test);
+    const { test, setData } = this.props
+    const newData = cloneDeep(test)
 
-    if (!newData.scoring) newData.scoring = {};
-    newData.scoring[testItemId] = itemScore;
+    if (!newData.scoring) newData.scoring = {}
+    newData.scoring[testItemId] = itemScore
     if (questionLevelScore) {
-      set(newData, `scoring.questionLevel.${testItemId}`, questionLevelScore);
+      set(newData, `scoring.questionLevel.${testItemId}`, questionLevelScore)
     }
 
-    setData(newData);
-  };
+    setData(newData)
+  }
 
-  setModalVisibility = value => {
+  setModalVisibility = (value) => {
     this.setState({
-      isModalVisible: value
-    });
-  };
+      isModalVisible: value,
+    })
+  }
 
-  handleDuplicateItem = duplicateTestItemId => {
+  handleDuplicateItem = (duplicateTestItemId) => {
     const {
       onSaveTestId,
       test: { title, _id: testId },
       clearDictAlignment,
-      history
-    } = this.props;
+      history,
+    } = this.props
     if (!title) {
-      notification({ messageKey: "nameShouldNotEmpty" });
+      notification({ messageKey: 'nameShouldNotEmpty' })
     }
-    clearDictAlignment();
-    onSaveTestId();
-    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`);
-  };
+    clearDictAlignment()
+    onSaveTestId()
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`)
+  }
 
-  handlePreviewTestItem = data => {
-    const { resetItemScore, testItems } = this.props;
-    const indexForPreview = findIndex(testItems, ite => ite._id === data);
+  handlePreviewTestItem = (data) => {
+    const { resetItemScore, testItems } = this.props
+    const indexForPreview = findIndex(testItems, (ite) => ite._id === data)
     this.setState({
       item: { id: data },
-      indexForPreview
-    });
+      indexForPreview,
+    })
     // clear the item score in the store, if while adding item, check/show answer was clicked
     // EV-12256
-    resetItemScore();
-    this.setModalVisibility(true);
-  };
+    resetItemScore()
+    this.setModalVisibility(true)
+  }
 
   nextItem = () => {
-    const { indexForPreview } = this.state;
-    const { testItems, resetItemScore } = this.props;
-    const nextItemIndex = indexForPreview + 1;
+    const { indexForPreview } = this.state
+    const { testItems, resetItemScore } = this.props
+    const nextItemIndex = indexForPreview + 1
     if (nextItemIndex > testItems.length - 1) {
-      return;
+      return
     }
-    resetItemScore();
+    resetItemScore()
     this.setState({
       item: { id: testItems[nextItemIndex]._id },
-      indexForPreview: nextItemIndex
-    });
-  };
+      indexForPreview: nextItemIndex,
+    })
+  }
 
   prevItem = () => {
-    const { indexForPreview } = this.state;
-    const { testItems, resetItemScore } = this.props;
-    const prevItemIndex = indexForPreview - 1;
+    const { indexForPreview } = this.state
+    const { testItems, resetItemScore } = this.props
+    const prevItemIndex = indexForPreview - 1
     if (prevItemIndex < 0) {
-      return;
+      return
     }
-    resetItemScore();
+    resetItemScore()
     this.setState({
       item: { id: testItems[prevItemIndex]._id },
-      indexForPreview: prevItemIndex
-    });
-  };
+      indexForPreview: prevItemIndex,
+    })
+  }
 
   closeModal = () => {
-    const { clearEvaluation } = this.props;
-    this.setModalVisibility(false);
-    clearEvaluation();
-  };
+    const { clearEvaluation } = this.props
+    this.setModalVisibility(false)
+    clearEvaluation()
+  }
 
   // changing this
   handleChangeField = (field, value) => {
-    const { setData, updateDefaultThumbnail } = this.props;
-    if (field === "thumbnail") {
-      updateDefaultThumbnail("");
+    const { setData, updateDefaultThumbnail } = this.props
+    if (field === 'thumbnail') {
+      updateDefaultThumbnail('')
     }
-    setData({ [field]: value });
-  };
+    setData({ [field]: value })
+  }
 
   hidePreviewModal = () => {
-    const { clearAnswer, clearEvaluation } = this.props;
+    const { clearAnswer, clearEvaluation } = this.props
     this.setState({ isTestPreviewModalVisible: false }, () => {
-      clearAnswer();
-      clearEvaluation();
-    });
-  };
+      clearAnswer()
+      clearEvaluation()
+    })
+  }
 
   showTestPreviewModal = () => {
-    const { test } = this.props;
-    this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id });
-  };
+    const { test } = this.props
+    this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id })
+  }
 
-  handleScroll = e => {
-    const element = e.target;
-    const { hasStickyHeader } = this.state;
+  handleScroll = (e) => {
+    const element = e.target
+    const { hasStickyHeader } = this.state
     if (this.secondHeaderRef.current) {
       if (element.scrollTop > 50 && !hasStickyHeader) {
-        this.secondHeaderRef.current.classList.add("fixed-second-header");
-        this.setState({ hasStickyHeader: true });
+        this.secondHeaderRef.current.classList.add('fixed-second-header')
+        this.setState({ hasStickyHeader: true })
       } else if (element.scrollTop <= 50 && hasStickyHeader) {
-        this.secondHeaderRef.current.classList.remove("fixed-second-header");
-        this.setState({ hasStickyHeader: false });
+        this.secondHeaderRef.current.classList.remove('fixed-second-header')
+        this.setState({ hasStickyHeader: false })
       }
     }
-  };
+  }
 
   closeTestPreviewModal = () => {
-    this.setState({ isTestPreviewModalVisible: false });
-  };
+    this.setState({ isTestPreviewModalVisible: false })
+  }
 
   render() {
     const {
@@ -422,8 +464,8 @@ class Review extends PureComponent {
       isFetchingAutoselectItems = false,
       userRole,
       isPowerPremiumAccount,
-      showGroupsPanel
-    } = this.props;
+      showGroupsPanel,
+    } = this.props
     const {
       isCollapse,
       isShowSummary,
@@ -431,41 +473,51 @@ class Review extends PureComponent {
       item,
       isTestPreviewModalVisible,
       currentTestId,
-      hasStickyHeader
-    } = this.state;
+      hasStickyHeader,
+    } = this.state
 
     // when redirected from other pages, sometimes, test will only be having
     // ids in its testitems, which could create issues.
-    if (test?.itemGroups?.[0]?.items && test?.itemGroups?.[0]?.items?.some(i => typeof i === "string")) {
-      return <div />;
+    if (
+      test?.itemGroups?.[0]?.items &&
+      test?.itemGroups?.[0]?.items?.some((i) => typeof i === 'string')
+    ) {
+      return <div />
     }
 
     const selected = test?.itemGroups
-      ?.flatMap(itemGroup => itemGroup?.items || [])
+      ?.flatMap((itemGroup) => itemGroup?.items || [])
       .reduce((acc, element, i) => {
         if (element.selected) {
-          acc.push(i);
+          acc.push(i)
         }
-        return acc;
-      }, []);
+        return acc
+      }, [])
     const breadcrumbData = [
       {
-        title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS",
-        to: showCancelButton ? "/author/assignments" : "/author/tests"
+        title: showCancelButton ? 'ASSIGNMENTS / EDIT TEST' : 'TESTS',
+        to: showCancelButton ? '/author/assignments' : '/author/tests',
       },
       {
         title: current,
-        to: ""
-      }
-    ];
+        to: '',
+      },
+    ]
 
-    const isSmallSize = windowWidth > 993 ? 1 : 0;
-    const grades = _uniq([...(test.grades || []), ...itemsSubjectAndGrade.grades]);
-    const subjects = _uniq([...(test.subjects || []), ...itemsSubjectAndGrade.subjects]);
-    const collections = get(test, "collections", []);
-    const passages = get(test, "passages", []);
-    const passagesKeyed = keyBy(passages, "_id");
-    const isPublishers = userFeatures.isPublisherAuthor || userFeatures.isCurator;
+    const isSmallSize = windowWidth > 993 ? 1 : 0
+    const grades = _uniq([
+      ...(test.grades || []),
+      ...itemsSubjectAndGrade.grades,
+    ])
+    const subjects = _uniq([
+      ...(test.subjects || []),
+      ...itemsSubjectAndGrade.subjects,
+    ])
+    const collections = get(test, 'collections', [])
+    const passages = get(test, 'passages', [])
+    const passagesKeyed = keyBy(passages, '_id')
+    const isPublishers =
+      userFeatures.isPublisherAuthor || userFeatures.isCurator
 
     return (
       <MainContentWrapper ref={this.containerRef}>
@@ -482,7 +534,11 @@ class Review extends PureComponent {
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>
                 <SecondHeader>
-                  <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
+                  <Breadcrumb
+                    data={breadcrumbData}
+                    style={{ position: 'unset' }}
+                    hasStickyHeader={hasStickyHeader}
+                  />
                   <HeaderBar
                     onSelectAll={this.handleSelectAll}
                     itemTotal={testItems.length}
@@ -507,7 +563,11 @@ class Review extends PureComponent {
         )}
         <ReviewContentWrapper>
           <ReviewLeftContainer lg={24} xl={18}>
-            <Paper padding="7px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
+            <Paper
+              padding="7px 0px"
+              style={{ overflow: 'hidden' }}
+              ref={this.listWrapperRef}
+            >
               <ReviewItems
                 items={testItems}
                 scoring={test.scoring}
@@ -558,7 +618,7 @@ class Review extends PureComponent {
         </ReviewContentWrapper>
         {isModalVisible && (
           <PreviewModal
-            testId={get(this.props, "match.params.id", false)}
+            testId={get(this.props, 'match.params.id', false)}
             isTest={!!test}
             isVisible={isModalVisible}
             onClose={this.closeModal}
@@ -584,7 +644,7 @@ class Review extends PureComponent {
           closeTestPreviewModal={this.hidePreviewModal}
         />
       </MainContentWrapper>
-    );
+    )
   }
 }
 
@@ -592,7 +652,7 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       standards: getStandardsSelector(state),
       summary: getSummarySelector(state),
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
@@ -604,7 +664,7 @@ const enhance = compose(
       isFetchingAutoselectItems: getAutoSelectItemsLoadingStatusSelector(state),
       userRole: getUserRole(state),
       isPowerPremiumAccount: getIsPowerPremiumAccount(state),
-      showGroupsPanel: showGroupsPanelSelector(state)
+      showGroupsPanel: showGroupsPanelSelector(state),
     }),
     {
       setData: setTestDataAction,
@@ -616,9 +676,9 @@ const enhance = compose(
       clearEvaluation: clearEvaluationAction,
       setTestItems: setTestItemsAction,
       addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction,
-      resetItemScore: resetItemScoreAction
+      resetItemScore: resetItemScoreAction,
     }
   )
-);
+)
 
-export default enhance(Review);
+export default enhance(Review)

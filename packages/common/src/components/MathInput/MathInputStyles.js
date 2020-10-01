@@ -1,10 +1,16 @@
-import styled from "styled-components";
-import { mobileWidth, greyThemeLight, greyishBorder, boxShadowDefault } from "@edulastic/colors";
-import { Rnd } from "react-rnd";
+import styled from 'styled-components'
+import {
+  mobileWidth,
+  greyThemeLight,
+  greyishBorder,
+  boxShadowDefault,
+} from '@edulastic/colors'
+import { Rnd } from 'react-rnd'
 
 export const MathInputStyles = styled.div`
-  min-width: ${({ width, fullWidth }) => width || (fullWidth ? "100%" : "fit-content")};
-  height: ${({ height }) => height || "auto"};
+  min-width: ${({ width, fullWidth }) =>
+    width || (fullWidth ? '100%' : 'fit-content')};
+  height: ${({ height }) => height || 'auto'};
   background: ${({ background }) => background};
   position: relative;
 
@@ -22,18 +28,19 @@ export const MathInputStyles = styled.div`
     position: relative;
     border-radius: 2px;
     border: ${({ noBorder }) => !noBorder && `1px solid ${greyThemeLight}`};
-    padding: ${({ width, noPadding }) => (width ? "unset" : !noPadding && "5px 15px")};
+    padding: ${({ width, noPadding }) =>
+      width ? 'unset' : !noPadding && '5px 15px'};
     align-items: center;
     padding-right: 25px;
 
     &.clear {
-      background: ${props => props.theme.common.mathInputMathClearBgColor};
+      background: ${(props) => props.theme.common.mathInputMathClearBgColor};
     }
     &.wrong {
-      background: ${props => props.theme.common.mathInputMathWrongBgColor};
+      background: ${(props) => props.theme.common.mathInputMathWrongBgColor};
     }
     &.success {
-      background: ${props => props.theme.common.mathInputMathSuccessBgColor};
+      background: ${(props) => props.theme.common.mathInputMathSuccessBgColor};
     }
   }
 
@@ -57,8 +64,8 @@ export const MathInputStyles = styled.div`
       outline: none !important;
     }
     .mq-editable-field {
-      min-width: ${({ minWidth }) => minWidth || "80px"};
-      min-height: ${({ minHeight }) => minHeight || "35px"};
+      min-width: ${({ minWidth }) => minWidth || '80px'};
+      min-height: ${({ minHeight }) => minHeight || '35px'};
       border-radius: 2px;
       padding: 5px 4px;
       border: 1px solid ${greyThemeLight};
@@ -70,7 +77,7 @@ export const MathInputStyles = styled.div`
     }
 
     .mq-root-block {
-      font-size: ${({ fontSize }) => `${fontSize || "inherit"}`};
+      font-size: ${({ fontSize }) => `${fontSize || 'inherit'}`};
       padding-top: 5px;
       * {
         font-style: unset;
@@ -100,17 +107,19 @@ export const MathInputStyles = styled.div`
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    font-size: ${props => props.theme.common.mathResponseEmbedFontSize};
+    font-size: ${(props) => props.theme.common.mathResponseEmbedFontSize};
     font-family: ${({ theme }) => theme.defaultFontFamily};
-    font-weight: ${props => props.theme.common.mathResponseEmbedCharFontWeight};
+    font-weight: ${(props) =>
+      props.theme.common.mathResponseEmbedCharFontWeight};
     margin-right: 5px;
     line-height: 32px;
 
     .response-embed__char {
       width: 32px;
-      background: ${props => props.theme.common.mathResponseEmbedCharBgColor};
-      font-weight: ${props => props.theme.common.mathResponseEmbedCharFontWeight};
-      color: ${props => props.theme.common.mathResponseEmbedCharColor};
+      background: ${(props) => props.theme.common.mathResponseEmbedCharBgColor};
+      font-weight: ${(props) =>
+        props.theme.common.mathResponseEmbedCharFontWeight};
+      color: ${(props) => props.theme.common.mathResponseEmbedCharColor};
       border: 1px solid ${greyishBorder};
       border-right: none;
       height: 100%;
@@ -124,9 +133,10 @@ export const MathInputStyles = styled.div`
     .response-embed__text {
       width: calc(100% - 32px);
       color: ${({ theme }) => theme.common.mathResponseFontColor};
-      background: ${props => props.theme.common.mathResponseEmbedTextBgColor};
-      font-size: ${props => props.theme.common.mathResponseEmbedTextFontSize};
-      font-weight: ${props => props.theme.common.mathResponseEmbedTextFontWeight};
+      background: ${(props) => props.theme.common.mathResponseEmbedTextBgColor};
+      font-size: ${(props) => props.theme.common.mathResponseEmbedTextFontSize};
+      font-weight: ${(props) =>
+        props.theme.common.mathResponseEmbedTextFontWeight};
       border: 1px solid ${greyishBorder};
       text-transform: uppercase;
       border-left: none;
@@ -142,7 +152,7 @@ export const MathInputStyles = styled.div`
   .mq-math-mode var,
   .mq-math-mode i,
   .mq-math-mode i.mq-font {
-    font-style: ${props => props.fontStyle};
+    font-style: ${(props) => props.fontStyle};
   }
 
   @media (max-width: ${mobileWidth}) {
@@ -151,23 +161,23 @@ export const MathInputStyles = styled.div`
       flex-direction: column;
     }
   }
-`;
+`
 
-export const DraggableKeyboard = styled(Rnd).attrs(props => ({
+export const DraggableKeyboard = styled(Rnd).attrs((props) => ({
   disableDragging: props.disableDragging,
-  enableResizing: false
+  enableResizing: false,
 }))`
   box-shadow: ${boxShadowDefault};
-  position: ${({ disableDragging }) => !disableDragging && "fixed !important"};
+  position: ${({ disableDragging }) => !disableDragging && 'fixed !important'};
   z-index: 1100;
-`;
+`
 
-export const EmptyDiv = styled.div``;
+export const EmptyDiv = styled.div``
 
 export const KeyboardIcon = styled.i`
   padding: 8px;
   right: 0px;
   position: absolute;
-`;
+`
 
-export default MathInputStyles;
+export default MathInputStyles

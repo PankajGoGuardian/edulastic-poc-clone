@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { IconSearch, IconClose } from "@edulastic/icons";
+import React, { useState } from 'react'
+import { IconSearch, IconClose } from '@edulastic/icons'
 import {
   SearchBoxContainer,
   StyledInput,
@@ -7,23 +7,31 @@ import {
   PossibleInsights,
   InsightsTitle,
   InsightsItem,
-  InsightsItemIndex
-} from "./styled";
+  InsightsItemIndex,
+} from './styled'
 
 const SearchBox = () => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false)
   const showDrawer = () => {
-    setVisible(true);
-  };
+    setVisible(true)
+  }
   const onClose = () => {
-    setVisible(false);
-  };
+    setVisible(false)
+  }
   return (
     <SearchBoxContainer>
-      <StyledInput placeholder="What insights are you looking for?" prefix={<IconSearch />} />
+      <StyledInput
+        placeholder="What insights are you looking for?"
+        prefix={<IconSearch />}
+      />
       <StyledLink onClick={showDrawer}>EXPLORE ALL QUESTIONS</StyledLink>
 
-      <PossibleInsights placement="right" closable={false} onClose={onClose} visible={visible}>
+      <PossibleInsights
+        placement="right"
+        closable={false}
+        onClose={onClose}
+        visible={visible}
+      >
         <InsightsTitle>
           <span>Possible Insights</span>
           <IconClose onClick={onClose} />
@@ -42,7 +50,7 @@ const SearchBox = () => {
         </InsightsItem>
       </PossibleInsights>
     </SearchBoxContainer>
-  );
-};
+  )
+}
 
-export default SearchBox;
+export default SearchBox

@@ -1,14 +1,19 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Spin } from "antd";
-import { isEmpty, get } from "lodash";
-import { white } from "@edulastic/colors";
-import { IconDescription, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
-import { test as testConstants } from "@edulastic/constants";
-import { withWindowSizes, notification } from "@edulastic/common";
+import React from 'react'
+import { withRouter } from 'react-router'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { Spin } from 'antd'
+import { isEmpty, get } from 'lodash'
+import { white } from '@edulastic/colors'
+import {
+  IconDescription,
+  IconAddItems,
+  IconReview,
+  IconSettings,
+} from '@edulastic/icons'
+import { test as testConstants } from '@edulastic/constants'
+import { withWindowSizes, notification } from '@edulastic/common'
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -17,54 +22,60 @@ import {
   publishTestAction,
   getDefaultTestSettingsAction,
   getTestsCreatingSelector,
-  updateDocBasedTestAction
-} from "../../../TestPage/ducks";
-import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
-import { getItemDetailByIdAction } from "../../../src/actions/itemDetail";
-import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
-import { getViewSelector } from "../../../src/selectors/view";
-import Worksheet from "../Worksheet/Worksheet";
-import Description from "../Description/Description";
-import Setting from "../../../TestPage/components/Setting";
-import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
-import ShareModal from "../../../src/components/common/ShareModal";
-import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
-import { proceedPublishingItemAction } from "../../../ItemDetail/ducks";
-import WarningModal from "../../../ItemDetail/components/WarningModal";
-import { getCollectionsSelector } from "../../../src/selectors/user";
-import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
+  updateDocBasedTestAction,
+} from '../../../TestPage/ducks'
+import {
+  getQuestionsArraySelector,
+  getQuestionsSelector,
+} from '../../../sharedDucks/questions'
+import { getItemDetailByIdAction } from '../../../src/actions/itemDetail'
+import {
+  changeViewAction,
+  changePreviewAction,
+} from '../../../src/actions/view'
+import { getViewSelector } from '../../../src/selectors/view'
+import Worksheet from '../Worksheet/Worksheet'
+import Description from '../Description/Description'
+import Setting from '../../../TestPage/components/Setting'
+import TestPageHeader from '../../../TestPage/components/TestPageHeader/TestPageHeader'
+import ShareModal from '../../../src/components/common/ShareModal'
+import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
+import { proceedPublishingItemAction } from '../../../ItemDetail/ducks'
+import WarningModal from '../../../ItemDetail/components/WarningModal'
+import { getCollectionsSelector } from '../../../src/selectors/user'
+import { hasUserGotAccessToPremiumItem } from '../../../dataUtils'
 
-const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants;
+const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
 
 const tabs = {
-  DESCRIPTION: "description",
-  WORKSHEET: "edit",
-  REVIEW: "review",
-  SETTINGS: "settings"
-};
+  DESCRIPTION: 'description',
+  WORKSHEET: 'edit',
+  REVIEW: 'review',
+  SETTINGS: 'settings',
+}
 
 const buttons = [
   {
     icon: <IconDescription color={white} width={16} height={16} />,
     value: tabs.DESCRIPTION,
-    text: "Description"
+    text: 'Description',
   },
   {
     icon: <IconAddItems color={white} width={16} height={16} />,
     value: tabs.WORKSHEET,
-    text: "Worksheet"
+    text: 'Worksheet',
   },
   {
     icon: <IconReview color={white} width={24} height={24} />,
     value: tabs.REVIEW,
-    text: "Review"
+    text: 'Review',
   },
   {
     icon: <IconSettings color={white} width={16} height={16} />,
     value: tabs.SETTINGS,
-    text: "Settings"
-  }
-];
+    text: 'Settings',
+  },
+]
 
 class Container extends React.Component {
   static propTypes = {
@@ -77,26 +88,31 @@ class Container extends React.Component {
     questionsById: PropTypes.object.isRequired,
     updateDocBasedTest: PropTypes.func.isRequired,
     changeView: PropTypes.func.isRequired,
-    currentTab: PropTypes.string.isRequired
-  };
+    currentTab: PropTypes.string.isRequired,
+  }
 
-  sebPasswordRef = React.createRef();
+  sebPasswordRef = React.createRef()
 
   state = {
     editEnable: false,
-    showShareModal: false
-  };
+    showShareModal: false,
+  }
 
   componentDidMount() {
-    const { match, receiveTestById, getDefaultTestSettings, changeView } = this.props;
-    receiveTestById(match.params.assessmentId);
-    getDefaultTestSettings();
-    window.onbeforeunload = () => this.beforeUnload();
-    changeView(tabs.DESCRIPTION);
+    const {
+      match,
+      receiveTestById,
+      getDefaultTestSettings,
+      changeView,
+    } = this.props
+    receiveTestById(match.params.assessmentId)
+    getDefaultTestSettings()
+    window.onbeforeunload = () => this.beforeUnload()
+    changeView(tabs.DESCRIPTION)
   }
 
   componentWillUnmount() {
-    window.onbeforeunload = () => {};
+    window.onbeforeunload = () => {}
   }
 
   beforeUnload = () => {
@@ -105,145 +121,185 @@ class Container extends React.Component {
       match: { params },
       userId,
       questionsUpdated,
-      updated
-    } = this.props;
-    const { authors, itemGroups, status } = test;
-    const { editEnable = true } = this.state;
-    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const isEditable = owner && (editEnable || status === statusConstants.DRAFT);
+      updated,
+    } = this.props
+    const { authors, itemGroups, status } = test
+    const { editEnable = true } = this.state
+    const owner =
+      (authors && authors.some((x) => x._id === userId)) || !params.id
+    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
 
-    if (isEditable && itemGroups[0].items.length > 0 && (updated || questionsUpdated)) {
-      return "";
+    if (
+      isEditable &&
+      itemGroups[0].items.length > 0 &&
+      (updated || questionsUpdated)
+    ) {
+      return ''
     }
-  };
+  }
 
   componentDidUpdate(prevProps) {
-    const { receiveItemDetailById, assessment } = this.props;
-    if (assessment._id && !prevProps.assessment._id && assessment._id !== prevProps.assessment._id) {
-      const [testItem] = assessment.itemGroups[0].items;
-      const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+    const { receiveItemDetailById, assessment } = this.props
+    if (
+      assessment._id &&
+      !prevProps.assessment._id &&
+      assessment._id !== prevProps.assessment._id
+    ) {
+      const [testItem] = assessment.itemGroups[0].items
+      const testItemId = typeof testItem === 'object' ? testItem._id : testItem
       if (testItemId) {
-        receiveItemDetailById(testItemId);
+        receiveItemDetailById(testItemId)
       }
     }
   }
 
-  handleChangeCurrentTab = tab => () => {
+  handleChangeCurrentTab = (tab) => () => {
     const {
       changeView,
       currentTab,
       assessment: { title },
-      changePreview
-    } = this.props;
+      changePreview,
+    } = this.props
 
     if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
-      changeView(tab);
-      changePreview("clear");
+      changeView(tab)
+      changePreview('clear')
     } else if (currentTab !== tabs.DESCRIPTION) {
-      changeView(tab);
-      changePreview("clear");
+      changeView(tab)
+      changePreview('clear')
     } else {
-      notification({ messageKey: "pleaseEnterName" });
+      notification({ messageKey: 'pleaseEnterName' })
     }
-  };
+  }
 
   handleSave = async () => {
-    const { questions: assessmentQuestions, assessment, updateDocBasedTest } = this.props;
+    const {
+      questions: assessmentQuestions,
+      assessment,
+      updateDocBasedTest,
+    } = this.props
     if (!validateQuestionsForDocBased(assessmentQuestions)) {
-      return;
+      return
     }
-    updateDocBasedTest(assessment._id, assessment, true);
-  };
+    updateDocBasedTest(assessment._id, assessment, true)
+  }
 
-  validateTest = _test => {
+  validateTest = (_test) => {
     const {
       title,
       subjects,
       grades,
       passwordPolicy = passwordPolicyValues.REQUIRED_PASSWORD_POLICY_OFF,
-      assignmentPassword = "",
+      assignmentPassword = '',
       safeBrowser,
-      sebPassword
-    } = _test;
+      sebPassword,
+    } = _test
     if (!title) {
-      notification({ messageKey: "nameShouldNotEmpty" });
-      return false;
+      notification({ messageKey: 'nameShouldNotEmpty' })
+      return false
     }
     if (isEmpty(grades)) {
-      notification({ messageKey: "gradeFieldEmpty" });
-      return false;
+      notification({ messageKey: 'gradeFieldEmpty' })
+      return false
     }
     if (isEmpty(subjects)) {
-      notification({ messageKey: "subjectFieldEmpty" });
-      return false;
+      notification({ messageKey: 'subjectFieldEmpty' })
+      return false
     }
-    if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
+    if (
+      passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
       if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
-        notification({ messageKey: "enterValidPassword" });
-        return false;
+        notification({ messageKey: 'enterValidPassword' })
+        return false
       }
     }
     if (safeBrowser && !sebPassword) {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
-        this.sebPasswordRef.current.input.focus();
+        this.sebPasswordRef.current.input.focus()
       }
-      notification({ messageKey: "enterValidPassword" });
-      return false;
+      notification({ messageKey: 'enterValidPassword' })
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   handlePublishTest = (assignFlow = false) => {
-    const { questions: assessmentQuestions, publishTest, assessment, match } = this.props;
-    const { _id } = assessment;
+    const {
+      questions: assessmentQuestions,
+      publishTest,
+      assessment,
+      match,
+    } = this.props
+    const { _id } = assessment
     if (!validateQuestionsForDocBased(assessmentQuestions)) {
-      return;
+      return
     }
     if (this.validateTest(assessment)) {
-      publishTest({ _id, oldId: match.params.oldId, test: assessment, assignFlow });
-      this.setState({ editEnable: false });
+      publishTest({
+        _id,
+        oldId: match.params.oldId,
+        test: assessment,
+        assignFlow,
+      })
+      this.setState({ editEnable: false })
     }
-  };
+  }
 
   handleAssign = () => {
-    const { questions: assessmentQuestions, assessment, history, match, updated } = this.props;
-    const { status } = assessment;
+    const {
+      questions: assessmentQuestions,
+      assessment,
+      history,
+      match,
+      updated,
+    } = this.props
+    const { status } = assessment
     if (!validateQuestionsForDocBased(assessmentQuestions)) {
-      return;
+      return
     }
     if (this.validateTest(assessment)) {
       if (status !== statusConstants.PUBLISHED || updated) {
-        this.handlePublishTest(true);
+        this.handlePublishTest(true)
       } else {
-        const { id } = match.params;
+        const { id } = match.params
         if (id) {
-          history.push(`/author/assignments/${id}`);
+          history.push(`/author/assignments/${id}`)
         }
       }
     }
-  };
+  }
 
   onShareModalChange = () => {
-    const { showShareModal } = this.state;
+    const { showShareModal } = this.state
     this.setState({
-      showShareModal: !showShareModal
-    });
-  };
+      showShareModal: !showShareModal,
+    })
+  }
 
   onEnableEdit = () => {
-    this.setState({ editEnable: true });
-  };
+    this.setState({ editEnable: true })
+  }
 
   renderContent() {
-    const { currentTab, assessment, questions, match, questionsById, userId, setTestData } = this.props;
+    const {
+      currentTab,
+      assessment,
+      questions,
+      match,
+      questionsById,
+      userId,
+      setTestData,
+    } = this.props
 
-    const { params = {} } = match;
-    const { docUrl, annotations, pageStructure, freeFormNotes } = assessment;
-    const { editEnable } = this.state;
-    const { authors, status } = assessment;
-    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const isEditable = owner && (editEnable || status === statusConstants.DRAFT);
+    const { params = {} } = match
+    const { docUrl, annotations, pageStructure, freeFormNotes } = assessment
+    const { editEnable } = this.state
+    const { authors, status } = assessment
+    const owner =
+      (authors && authors.some((x) => x._id === userId)) || !params.id
+    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
 
     const props = {
       docUrl,
@@ -253,16 +309,22 @@ class Container extends React.Component {
       questionsById,
       pageStructure,
       freeFormNotes,
-      isEditable
-    };
+      isEditable,
+    }
 
     switch (currentTab) {
       case tabs.DESCRIPTION:
-        return <Description setData={setTestData} assessment={assessment} owner={owner} />;
+        return (
+          <Description
+            setData={setTestData}
+            assessment={assessment}
+            owner={owner}
+          />
+        )
       case tabs.WORKSHEET:
-        return <Worksheet key="worksheet" {...props} />;
+        return <Worksheet key="worksheet" {...props} />
       case tabs.REVIEW:
-        return <Worksheet key="review" review {...props} />;
+        return <Worksheet key="review" review {...props} />
       case tabs.SETTINGS:
         return (
           <Setting
@@ -272,16 +334,25 @@ class Container extends React.Component {
             sebPasswordRef={this.sebPasswordRef}
             owner={owner}
           />
-        );
+        )
       default:
-        return null;
+        return null
     }
   }
 
   render() {
     const {
       loading,
-      assessment: { _id: testId, authors, grades, subjects, itemGroups, title, status, isUsed },
+      assessment: {
+        _id: testId,
+        authors,
+        grades,
+        subjects,
+        itemGroups,
+        title,
+        status,
+        isUsed,
+      },
       userId,
       windowWidth,
       updated,
@@ -289,23 +360,29 @@ class Container extends React.Component {
       showWarningModal,
       proceedPublish,
       currentTab,
-      collections
-    } = this.props;
-    const { editEnable, showShareModal } = this.state;
-    const owner = (authors && authors.some(x => x._id === userId)) || !testId;
-    const showPublishButton = (status && status !== statusConstants.PUBLISHED && testId && owner) || editEnable;
-    const showShareButton = !!testId;
+      collections,
+    } = this.props
+    const { editEnable, showShareModal } = this.state
+    const owner = (authors && authors.some((x) => x._id === userId)) || !testId
+    const showPublishButton =
+      (status && status !== statusConstants.PUBLISHED && testId && owner) ||
+      editEnable
+    const showShareButton = !!testId
     const showEditButton =
-      authors && authors.some(x => x._id === userId) && status && status === statusConstants.PUBLISHED && !editEnable;
+      authors &&
+      authors.some((x) => x._id === userId) &&
+      status &&
+      status === statusConstants.PUBLISHED &&
+      !editEnable
 
-    const hasPremiumQuestion = !!itemGroups?.[0].items?.find(i =>
+    const hasPremiumQuestion = !!itemGroups?.[0].items?.find((i) =>
       hasUserGotAccessToPremiumItem(i.collections, collections)
-    );
+    )
 
-    const gradeSubject = { grades, subjects };
+    const gradeSubject = { grades, subjects }
 
     if (loading) {
-      return <Spin />;
+      return <Spin />
     }
 
     return (
@@ -319,12 +396,15 @@ class Container extends React.Component {
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
         />
-        <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
+        <WarningModal
+          visible={showWarningModal}
+          proceedPublish={proceedPublish}
+        />
 
         <TestPageHeader
           onChangeNav={this.handleChangeCurrentTab}
           current={currentTab}
-          onSave={() => this.handleSave("draft")}
+          onSave={() => this.handleSave('draft')}
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
           title={title}
@@ -345,7 +425,7 @@ class Container extends React.Component {
         />
         {this.renderContent()}
       </>
-    );
+    )
   }
 }
 
@@ -353,18 +433,18 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       assessment: getTestEntitySelector(state),
-      userId: get(state, "user.user._id", ""),
-      updated: get(state, "tests.updated", false),
-      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
-      questionsUpdated: get(state, "authorQuestions.updated", false),
+      userId: get(state, 'user.user._id', ''),
+      updated: get(state, 'tests.updated', false),
+      showWarningModal: get(state, ['itemDetail', 'showWarningModal'], false),
+      questionsUpdated: get(state, 'authorQuestions.updated', false),
       loading: getTestsLoadingSelector(state),
       questions: getQuestionsArraySelector(state),
       creating: getTestsCreatingSelector(state),
       questionsById: getQuestionsSelector(state),
       currentTab: getViewSelector(state),
-      collections: getCollectionsSelector(state)
+      collections: getCollectionsSelector(state),
     }),
     {
       receiveTestById: receiveTestByIdAction,
@@ -375,11 +455,11 @@ const enhance = compose(
       updateDocBasedTest: updateDocBasedTestAction,
       changeView: changeViewAction,
       changePreview: changePreviewAction,
-      publishTest: publishTestAction
+      publishTest: publishTestAction,
     }
   )
-);
+)
 
-Container.displayName = "AssessementPageContainer";
+Container.displayName = 'AssessementPageContainer'
 
-export default enhance(Container);
+export default enhance(Container)

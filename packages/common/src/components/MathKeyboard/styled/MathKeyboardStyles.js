@@ -1,24 +1,25 @@
-import styled from "styled-components";
-import { Button } from "antd";
-import { math } from "@edulastic/constants";
+import styled from 'styled-components'
+import { Button } from 'antd'
+import { math } from '@edulastic/constants'
 
 const {
-  KeyboardSize: { width: keyWidth }
-} = math;
+  KeyboardSize: { width: keyWidth },
+} = math
 
 export const KeyPadButton = styled(Button)`
-  font-size: ${props => {
-    const fontSize = parseInt(props.theme.mathKeyboard.numFontSize, 10) * props.fontSizeRate;
-    return `${fontSize}px !important`;
+  font-size: ${(props) => {
+    const fontSize =
+      parseInt(props.theme.mathKeyboard.numFontSize, 10) * props.fontSizeRate
+    return `${fontSize}px !important`
   }};
-`;
+`
 
 export const MathKeyboardStyles = styled.div`
   .keyboard {
     display: inline-block;
     padding: 10px;
-    border: 1px solid ${props => props.theme.mathKeyboard.keyboardBorderColor};
-    background: ${props => props.theme.mathKeyboard.keyboardBgColor};
+    border: 1px solid ${(props) => props.theme.mathKeyboard.keyboardBorderColor};
+    background: ${(props) => props.theme.mathKeyboard.keyboardBgColor};
     border-radius: 5px;
   }
   s .keyboard__header {
@@ -29,17 +30,18 @@ export const MathKeyboardStyles = styled.div`
   .keyboard__header__select {
     width: 251.7px;
     border-radius: 5px;
-    box-shadow: 0 2px 6px 0 ${props => props.theme.mathKeyboard.dropDownShadowColor};
-    background-color: ${props => props.theme.mathKeyboard.dropDownBgColor};
-    font-family: ${props => props.theme.mathKeyboard.dropDownFontFamily};
-    font-size: ${props => props.theme.mathKeyboard.dropDownFontSize};
-    font-weight: ${props => props.theme.mathKeyboard.dropDownFontWeight};
-    font-style: ${props => props.theme.mathKeyboard.dropDownFontStyle};
-    font-stretch: ${props => props.theme.mathKeyboard.dropDownFontStretch};
+    box-shadow: 0 2px 6px 0
+      ${(props) => props.theme.mathKeyboard.dropDownShadowColor};
+    background-color: ${(props) => props.theme.mathKeyboard.dropDownBgColor};
+    font-family: ${(props) => props.theme.mathKeyboard.dropDownFontFamily};
+    font-size: ${(props) => props.theme.mathKeyboard.dropDownFontSize};
+    font-weight: ${(props) => props.theme.mathKeyboard.dropDownFontWeight};
+    font-style: ${(props) => props.theme.mathKeyboard.dropDownFontStyle};
+    font-stretch: ${(props) => props.theme.mathKeyboard.dropDownFontStretch};
     line-height: 1.38;
     letter-spacing: 0.2px;
     text-align: left;
-    color: ${props => props.theme.mathKeyboard.dropDownColor};
+    color: ${(props) => props.theme.mathKeyboard.dropDownColor};
     border: none;
     outline: none;
     margin-right: 10px;
@@ -49,11 +51,11 @@ export const MathKeyboardStyles = styled.div`
   }
 
   .keyboard__dropdown-icon {
-    color: ${props => props.theme.mathKeyboard.dropDownIconColor};
+    color: ${(props) => props.theme.mathKeyboard.dropDownIconColor};
   }
 
   .keyboard__header__close {
-    border-color: ${props => props.theme.mathKeyboard.closeButtonBorderColor};
+    border-color: ${(props) => props.theme.mathKeyboard.closeButtonBorderColor};
   }
 
   .keyboard__types3 {
@@ -71,7 +73,7 @@ export const MathKeyboardStyles = styled.div`
   .keyboard__main .ant-btn:focus,
   .keyboard__main .ant-btn:hover,
   .keyboard__main .ant-btn {
-    border-color: ${props => props.theme.mathKeyboard.numBorderColor};
+    border-color: ${(props) => props.theme.mathKeyboard.numBorderColor};
   }
 
   .numberpad {
@@ -81,66 +83,67 @@ export const MathKeyboardStyles = styled.div`
   .num {
     width: ${keyWidth}px;
     height: ${keyWidth}px;
-    border-color: ${props => props.theme.mathKeyboard.numBorderColor};
+    border-color: ${(props) => props.theme.mathKeyboard.numBorderColor};
     border-radius: 0;
-    font-family: ${props => props.theme.mathKeyboard.numFontFamily};
-    font-size: ${props => props.theme.mathKeyboard.numFontSize};
-    font-weight: ${props => props.theme.mathKeyboard.numFontWeight};
-    font-style: ${props => props.theme.mathKeyboard.numFontStyle};
-    font-stretch: ${props => props.theme.mathKeyboard.numFontStretch};
+    font-family: ${(props) => props.theme.mathKeyboard.numFontFamily};
+    font-size: ${(props) => props.theme.mathKeyboard.numFontSize};
+    font-weight: ${(props) => props.theme.mathKeyboard.numFontWeight};
+    font-style: ${(props) => props.theme.mathKeyboard.numFontStyle};
+    font-stretch: ${(props) => props.theme.mathKeyboard.numFontStretch};
     line-height: 1.38;
     letter-spacing: normal;
     text-align: center;
-    color: ${props => props.theme.mathKeyboard.numColor};
+    color: ${(props) => props.theme.mathKeyboard.numColor};
     float: left;
     overflow: hidden;
     padding: 2px;
 
     :disabled,
     :disabled:hover {
-      background: ${props => props.theme.mathKeyboard.numBgDisabledColor};
-      border-color: ${props => props.theme.mathKeyboard.numBorderDisabledColor};
+      background: ${(props) => props.theme.mathKeyboard.numBgDisabledColor};
+      border-color: ${(props) =>
+        props.theme.mathKeyboard.numBorderDisabledColor};
     }
 
     :active {
-      background-color: ${props => props.theme.mathKeyboard.numBgActiveColor};
+      background-color: ${(props) => props.theme.mathKeyboard.numBgActiveColor};
     }
 
     :hover {
-      background-color: ${props => props.theme.mathKeyboard.numBgHoverColor};
+      background-color: ${(props) => props.theme.mathKeyboard.numBgHoverColor};
     }
   }
 
   .num--type-1 {
-    background-color: ${props => props.theme.mathKeyboard.numType1BgColor};
+    background-color: ${(props) => props.theme.mathKeyboard.numType1BgColor};
   }
 
   .num--type-2 {
-    background-color: ${props => props.theme.mathKeyboard.numType2BgColor};
+    background-color: ${(props) => props.theme.mathKeyboard.numType2BgColor};
   }
 
   .num--type-3 {
-    background-color: ${props => props.theme.mathKeyboard.numType3BgColor};
-    color: ${props => props.theme.mathKeyboard.numType3Color};
-    border-color: ${props => props.theme.mathKeyboard.numType3Color};
+    background-color: ${(props) => props.theme.mathKeyboard.numType3BgColor};
+    color: ${(props) => props.theme.mathKeyboard.numType3Color};
+    border-color: ${(props) => props.theme.mathKeyboard.numType3Color};
   }
 
   .num--type-4 {
-    background-color: ${props => props.theme.mathKeyboard.numType4BgColor};
-    color: ${props => props.theme.mathKeyboard.numType4Color};
-    border-color: ${props => props.theme.mathKeyboard.numType4Color};
+    background-color: ${(props) => props.theme.mathKeyboard.numType4BgColor};
+    color: ${(props) => props.theme.mathKeyboard.numType4Color};
+    border-color: ${(props) => props.theme.mathKeyboard.numType4Color};
   }
 
   .num--type-5 {
-    background-color: ${props => props.theme.mathKeyboard.numType5BgColor};
-    color: ${props => props.theme.mathKeyboard.numType5Color};
-    border-color: ${props => props.theme.mathKeyboard.numType5Color};
+    background-color: ${(props) => props.theme.mathKeyboard.numType5BgColor};
+    color: ${(props) => props.theme.mathKeyboard.numType5Color};
+    border-color: ${(props) => props.theme.mathKeyboard.numType5Color};
   }
 
   .num--type-6 {
-    background-color: ${props => props.theme.mathKeyboard.numType6BgColor};
-    color: ${props => props.theme.mathKeyboard.numType6Color};
-    border-color: ${props => props.theme.mathKeyboard.numType6Color};
+    background-color: ${(props) => props.theme.mathKeyboard.numType6BgColor};
+    color: ${(props) => props.theme.mathKeyboard.numType6Color};
+    border-color: ${(props) => props.theme.mathKeyboard.numType6Color};
   }
 
   .num--type-1,
@@ -150,7 +153,7 @@ export const MathKeyboardStyles = styled.div`
   .num--type-5,
   .num--type-6 {
     &:hover {
-      color: ${props => props.theme.mathKeyboard.numHoverColor};
+      color: ${(props) => props.theme.mathKeyboard.numHoverColor};
     }
   }
 
@@ -211,12 +214,14 @@ export const MathKeyboardStyles = styled.div`
   .num__backspace {
     height: 17px;
   }
-`;
+`
 
 export const SymbolContainer = styled.div`
   width: ${({ cols, isAll }) =>
-    `${isAll ? cols * keyWidth + 20 : cols * keyWidth}px`}; /* 20 is scrollbar width */
+    `${
+      isAll ? cols * keyWidth + 20 : cols * keyWidth
+    }px`}; /* 20 is scrollbar width */
   height: ${`${keyWidth * 4}px`};
-  flex-direction: ${({ isAll }) => (isAll ? "row" : "column")};
-  overflow-y: ${({ isAll }) => (isAll ? "auto" : "hidden")};
-`;
+  flex-direction: ${({ isAll }) => (isAll ? 'row' : 'column')};
+  overflow-y: ${({ isAll }) => (isAll ? 'auto' : 'hidden')};
+`

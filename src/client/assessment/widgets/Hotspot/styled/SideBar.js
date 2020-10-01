@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const SideBar = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${props => props.theme.widgets.hotspot.sideBarBgColor};
+  background: ${(props) => props.theme.widgets.hotspot.sideBarBgColor};
   width: 117px;
   padding: 22px 7px;
 
@@ -14,4 +14,4 @@ export const SideBar = styled.div`
   & > *:last-child {
     margin-bottom: 0;
   }
-`;
+`

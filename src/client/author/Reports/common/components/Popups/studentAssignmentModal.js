@@ -1,44 +1,44 @@
-import React from "react";
-import { Table, Spin } from "antd";
-import styled from "styled-components";
-import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
+import React from 'react'
+import { Table, Spin } from 'antd'
+import styled from 'styled-components'
+import { ConfirmationModal } from '../../../../src/components/common/ConfirmationModal'
 
 const columns = [
   {
-    title: "Assessment Name",
-    key: "assessmentName",
-    dataIndex: "assessmentName"
+    title: 'Assessment Name',
+    key: 'assessmentName',
+    dataIndex: 'assessmentName',
   },
   {
-    title: "Questions",
-    key: "questions",
-    dataIndex: "questions"
+    title: 'Questions',
+    key: 'questions',
+    dataIndex: 'questions',
   },
   {
-    title: "Standard based score",
-    key: "standardBasedScore",
-    align: "right",
-    dataIndex: "standardBasedScore"
+    title: 'Standard based score',
+    key: 'standardBasedScore',
+    align: 'right',
+    dataIndex: 'standardBasedScore',
   },
   {
-    title: "Raw score",
-    key: "maxScore",
-    align: "right",
-    dataIndex: "maxScore",
+    title: 'Raw score',
+    key: 'maxScore',
+    align: 'right',
+    dataIndex: 'maxScore',
     render: (_, record) => (
       <span>
         {record.obtainedScore}/{record.maxScore}
       </span>
-    )
+    ),
   },
   {
-    title: "Score (%)",
-    key: "score",
-    align: "right",
-    dataIndex: "score",
-    render: data => <span>{data}%</span>
-  }
-];
+    title: 'Score (%)',
+    key: 'score',
+    align: 'right',
+    dataIndex: 'score',
+    render: (data) => <span>{data}%</span>,
+  },
+]
 
 const StudentAssignmentModal = ({
   showModal,
@@ -46,9 +46,9 @@ const StudentAssignmentModal = ({
   studentAssignmentsData,
   studentName,
   standardName,
-  loadingStudentStandard
+  loadingStudentStandard,
 }) => {
-  const Title = [<Heading>{studentName}</Heading>];
+  const Title = [<Heading>{studentName}</Heading>]
 
   return (
     <ConfirmationModal
@@ -56,12 +56,12 @@ const StudentAssignmentModal = ({
       centered
       textAlign="left"
       visible={showModal}
-      textAlign={"center"}
+      textAlign="center"
       onCancel={closeModal}
       footer={null}
     >
       <ModalBody>
-        {loadingStudentStandard === "failed" ? (
+        {loadingStudentStandard === 'failed' ? (
           <Error>Unable to fetch data.</Error>
         ) : loadingStudentStandard ? (
           <Spin />
@@ -75,10 +75,10 @@ const StudentAssignmentModal = ({
         )}
       </ModalBody>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
-export default StudentAssignmentModal;
+export default StudentAssignmentModal
 
 const ModalBody = styled.div`
   display: flex;
@@ -91,18 +91,18 @@ const ModalBody = styled.div`
   tbody > tr:last-child > td {
     font-weight: 600;
   }
-`;
+`
 
 const Heading = styled.h4`
   font-weight: 600;
-`;
+`
 
 const TableHeading = styled.h3`
   font-weight: 600;
-`;
+`
 
-const StyledTable = styled(Table)``;
+const StyledTable = styled(Table)``
 
 const Error = styled.div`
   color: red;
-`;
+`

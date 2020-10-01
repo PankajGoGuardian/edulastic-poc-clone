@@ -1,6 +1,6 @@
-import { darkGrey, white, greyThemeDark2 } from "@edulastic/colors";
-import { EduButton, LikeIconStyled } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
+import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
+import { EduButton, LikeIconStyled } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import {
   IconCopy,
   IconDescription,
@@ -11,27 +11,27 @@ import {
   IconEye,
   IconPencilEdit,
   IconAssignment,
-  IconDynamic
-} from "@edulastic/icons";
-import { Icon, Select, Tooltip, Col, Row } from "antd";
-import { find } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { connect } from "react-redux";
-import Modal from "react-responsive-modal";
-import { StyledSelect } from "../../../../common/styled";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import Tags from "../../../src/components/common/Tags";
+  IconDynamic,
+} from '@edulastic/icons'
+import { Icon, Select, Tooltip, Col, Row } from 'antd'
+import { find } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { connect } from 'react-redux'
+import Modal from 'react-responsive-modal'
+import { StyledSelect } from '../../../../common/styled'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import Tags from '../../../src/components/common/Tags'
 import {
   getCollectionsSelector,
   getUserIdSelector,
   getUserRole,
   isPublisherUserSelector,
   getWritableCollectionsSelector,
-  getInterestedCurriculumsSelector
-} from "../../../src/selectors/user";
-import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+  getInterestedCurriculumsSelector,
+} from '../../../src/selectors/user'
+import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 import {
   AssessmentName,
   AssessmentNameLabel,
@@ -67,10 +67,10 @@ import {
   TagsLabel,
   TestStatus,
   TestTitleWrapper,
-  DynamicIconWrapper
-} from "./styled";
-import { allowContentEditCheck } from "../../../src/utils/permissionCheck";
-import {getInterestedStandards} from "../../../dataUtils"
+  DynamicIconWrapper,
+} from './styled'
+import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
+import { getInterestedStandards } from '../../../dataUtils'
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -84,30 +84,35 @@ class ViewModal extends React.Component {
     onDelete: PropTypes.func.isRequired,
     onReject: PropTypes.func.isRequired,
     onApprove: PropTypes.func.isRequired,
-    status: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    status: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     interestedCurriculums: PropTypes.array,
-    windowWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    windowWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     userId: PropTypes.string,
     collections: PropTypes.array,
-    allowDuplicate: PropTypes.bool.isRequired
-  };
+    allowDuplicate: PropTypes.bool.isRequired,
+  }
 
   static defaultProps = {
     interestedCurriculums: [],
-    userId: "",
-    collections: []
-  };
+    userId: '',
+    collections: [],
+  }
 
   state = {
-    editedCollections: null
-  };
+    editedCollections: null,
+  }
 
-  modalRef = React.createRef();
+  modalRef = React.createRef()
 
   onCollectionsChange = (value, options) => {
-    const newCollections = options.map(o => ({ _id: o.props.value, name: o.props.title }));
-    this.setState({ editedCollections: newCollections });
-  };
+    const newCollections = options.map((o) => ({
+      _id: o.props.value,
+      name: o.props.title,
+    }))
+    this.setState({ editedCollections: newCollections })
+  }
 
   render() {
     const {
@@ -136,69 +141,79 @@ class ViewModal extends React.Component {
       isTestLiked,
       collectionName,
       interestedCurriculums,
-      writableCollections
-    } = this.props;
+      writableCollections,
+    } = this.props
     const {
-      title = "",
-      description = "",
+      title = '',
+      description = '',
       tags = [],
       grades = [],
       subjects: _subjects,
-      thumbnail = "",
+      thumbnail = '',
       analytics = [],
       itemGroups = [],
       summary = {},
-      alignment=[],
+      alignment = [],
       permission,
       _source,
       authors,
       sharedWith,
       collections: _collections = [],
-      isDocBased
-    } = item;
+      isDocBased,
+    } = item
 
-    const { editedCollections } = this.state;
+    const { editedCollections } = this.state
 
     const modalStyles = {
       modal: {
         background: white,
-        padding: "20px 40px",
-        width: windowWidth < 768 ? "100%" : windowWidth < 1200 ? "750px" : "920px",
-        maxWidth: "unset",
-        borderRadius: "5px"
-      }
-    };
+        padding: '20px 40px',
+        width:
+          windowWidth < 768 ? '100%' : windowWidth < 1200 ? '750px' : '920px',
+        maxWidth: 'unset',
+        borderRadius: '5px',
+      },
+    }
 
     const gradesMap = {
-      K: "Kindergarten",
-      1: "Grade 1",
-      2: "Grade 2",
-      3: "Grade 3",
-      4: "Grade 4",
-      5: "Grade 5",
-      6: "Grade 6",
-      7: "Grade 7",
-      8: "Grade 8",
-      9: "Grade 9",
-      10: "Grade 10",
-      11: "Grade 11",
-      12: "Grade 12",
-      O: "Other"
-    };
+      K: 'Kindergarten',
+      1: 'Grade 1',
+      2: 'Grade 2',
+      3: 'Grade 3',
+      4: 'Grade 4',
+      5: 'Grade 5',
+      6: 'Grade 6',
+      7: 'Grade 7',
+      8: 'Grade 8',
+      9: 'Grade 9',
+      10: 'Grade 10',
+      11: 'Grade 11',
+      12: 'Grade 12',
+      O: 'Other',
+    }
 
-    const targetGrades = Array.isArray(grades) ? grades : [grades];
-    const selectedGrades = targetGrades.map(grade => gradesMap[grade]).filter(g => g);
-    const subjects = _subjects ? _subjects.filter(f => !!f) : [];
+    const targetGrades = Array.isArray(grades) ? grades : [grades]
+    const selectedGrades = targetGrades
+      .map((grade) => gradesMap[grade])
+      .filter((g) => g)
+    const subjects = _subjects ? _subjects.filter((f) => !!f) : []
 
-    const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
+    const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
 
     const isDeleteAllowed =
-      !!find(authors, o => o._id === userId) ||
-      (sharedWith?.find(x => x._id === userId) && permission === "EDIT") ||
-      isEdulasticCurator;
+      !!find(authors, (o) => o._id === userId) ||
+      (sharedWith?.find((x) => x._id === userId) && permission === 'EDIT') ||
+      isEdulasticCurator
 
-    const hasCollectionAccess = allowContentEditCheck(_collections, writableCollections);
-    const interestedStandards = getInterestedStandards(summary,alignment,interestedCurriculums);
+    const hasCollectionAccess = allowContentEditCheck(
+      _collections,
+      writableCollections
+    )
+    const interestedStandards = getInterestedStandards(
+      summary,
+      alignment,
+      interestedCurriculums
+    )
     const contanier = (
       <>
         <ModalTitle>
@@ -224,10 +239,10 @@ class ViewModal extends React.Component {
                   isGhost
                   height="40px"
                   width="100%"
-                  style={{ justifyContent: "center" }}
+                  style={{ justifyContent: 'center' }}
                   data-cy="details-button"
                   onClick={() => {
-                    onEdit();
+                    onEdit()
                   }}
                 >
                   <IconDescription />
@@ -238,10 +253,10 @@ class ViewModal extends React.Component {
                     isGhost
                     height="40px"
                     width="100%"
-                    style={{ justifyContent: "center" }}
+                    style={{ justifyContent: 'center' }}
                     data-cy="duplicate-button"
                     onClick={() => {
-                      onDuplicate();
+                      onDuplicate()
                     }}
                   >
                     <IconCopy />
@@ -249,16 +264,19 @@ class ViewModal extends React.Component {
                   </EduButton>
                 )}
 
-                {status === "inreview" && hasCollectionAccess ? (
-                  <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                {status === 'inreview' && hasCollectionAccess ? (
+                  <FeaturesSwitch
+                    inputFeatures="isCurator"
+                    actionOnInaccessible="hidden"
+                  >
                     <EduButton
                       isGhost
                       height="40px"
                       width="100%"
-                      style={{ justifyContent: "center" }}
+                      style={{ justifyContent: 'center' }}
                       data-cy="reject-button"
                       onClick={() => {
-                        onReject();
+                        onReject()
                       }}
                     >
                       <Icon type="stop" />
@@ -271,7 +289,7 @@ class ViewModal extends React.Component {
                     isGhost
                     height="40px"
                     width="100%"
-                    style={{ justifyContent: "center" }}
+                    style={{ justifyContent: 'center' }}
                     data-cy="delete-button"
                     onClick={() => onDelete()}
                   >
@@ -283,14 +301,21 @@ class ViewModal extends React.Component {
             )}
             {!publicAccess && hasCollectionAccess && (
               <ButtonContainer>
-                {status === "inreview" || status === "rejected" ? (
-                  <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                {status === 'inreview' || status === 'rejected' ? (
+                  <FeaturesSwitch
+                    inputFeatures="isCurator"
+                    actionOnInaccessible="hidden"
+                  >
                     <EduButton
                       isGhost
                       height="40px"
                       data-cy="approve-button"
                       onClick={() => {
-                        onApprove(editedCollections !== null ? editedCollections : _collections);
+                        onApprove(
+                          editedCollections !== null
+                            ? editedCollections
+                            : _collections
+                        )
                       }}
                     >
                       <Icon type="check" />
@@ -300,7 +325,9 @@ class ViewModal extends React.Component {
                 ) : null}
               </ButtonContainer>
             )}
-            <ButtonContainer className={publicAccess ? "public-access-btn-wrapper" : ""}>
+            <ButtonContainer
+              className={publicAccess ? 'public-access-btn-wrapper' : ''}
+            >
               <EduButton
                 height="40px"
                 width="100%"
@@ -313,14 +340,20 @@ class ViewModal extends React.Component {
                 Preview
               </EduButton>
               {publicAccess && (
-                <EduButton height="40px" width="100%" justifyContent="center" data-cy="assign-button" onClick={assign}>
+                <EduButton
+                  height="40px"
+                  width="100%"
+                  justifyContent="center"
+                  data-cy="assign-button"
+                  onClick={assign}
+                >
                   <span>ASSIGN</span>
                 </EduButton>
               )}
-              {permission !== "VIEW" &&
+              {permission !== 'VIEW' &&
                 !isEdulasticCurator &&
                 !publicAccess &&
-                status !== "published" &&
+                status !== 'published' &&
                 hasCollectionAccess && (
                   <EduButton
                     height="40px"
@@ -333,30 +366,42 @@ class ViewModal extends React.Component {
                     <span>EDIT</span>
                   </EduButton>
                 )}
-              {status === "published" && !isEdulasticCurator && !publicAccess && !isPublisherUser && (
-                <EduButton
-                  height="40px"
-                  width="100%"
-                  justifyContent="center"
-                  data-cy="edit/assign-button"
-                  onClick={assign}
-                >
-                  <IconAssignment />
-                  <span>ASSIGN</span>
-                </EduButton>
-              )}
+              {status === 'published' &&
+                !isEdulasticCurator &&
+                !publicAccess &&
+                !isPublisherUser && (
+                  <EduButton
+                    height="40px"
+                    width="100%"
+                    justifyContent="center"
+                    data-cy="edit/assign-button"
+                    onClick={assign}
+                  >
+                    <IconAssignment />
+                    <span>ASSIGN</span>
+                  </EduButton>
+                )}
             </ButtonContainer>
-            {status === "inreview" || status === "rejected" ? (
-              <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+            {status === 'inreview' || status === 'rejected' ? (
+              <FeaturesSwitch
+                inputFeatures="isCurator"
+                actionOnInaccessible="hidden"
+              >
                 <ButtonContainer>
                   <StyledSelect
                     mode="multiple"
                     size="medium"
-                    style={{ width: "100%" }}
+                    style={{ width: '100%' }}
                     value={
-                      editedCollections !== null ? editedCollections.map(o => o._id) : _collections.map(o => o._id)
+                      editedCollections !== null
+                        ? editedCollections.map((o) => o._id)
+                        : _collections.map((o) => o._id)
                     }
-                    filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                    filterOption={(input, option) =>
+                      option.props.title
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
                     getPopupContainer={() => this.modalRef.current}
                     onChange={this.onCollectionsChange}
                   >
@@ -382,19 +427,30 @@ class ViewModal extends React.Component {
             </div>
             <AssessmentName data-cy="testcard-name">{title}</AssessmentName>
 
-            <DescriptionLabel data-cy="testcard-description">Description</DescriptionLabel>
+            <DescriptionLabel data-cy="testcard-description">
+              Description
+            </DescriptionLabel>
             <Description>{description}</Description>
 
             <Row gutter={10}>
               <Col span={12}>
                 <GradeLabel>Grade</GradeLabel>
                 <GradeConatiner data-cy="testcard-grades">
-                  {!!selectedGrades.length && <Tags isGrayTags tags={selectedGrades} show={2} key="grades" />}
+                  {!!selectedGrades.length && (
+                    <Tags
+                      isGrayTags
+                      tags={selectedGrades}
+                      show={2}
+                      key="grades"
+                    />
+                  )}
                 </GradeConatiner>
               </Col>
               <Col span={12} data-cy="testcard-subject">
                 <SubjectLabel>Subject</SubjectLabel>
-                {subjects && <Tags isGrayTags tags={subjects} show={1} key="subjects" />}
+                {subjects && (
+                  <Tags isGrayTags tags={subjects} show={1} key="subjects" />
+                )}
               </Col>
             </Row>
 
@@ -406,14 +462,24 @@ class ViewModal extends React.Component {
             <Footer>
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} />
-                <IconText data-cy="testcard-collection">{collectionName}</IconText>
+                <IconText data-cy="testcard-collection">
+                  {collectionName}
+                </IconText>
               </FooterIcon>
               <FooterIcon rotate>
                 <IconUsers color={darkGrey} width={14} height={14} />
                 {analytics && <IconText>{analytics[0]?.usage || 0} </IconText>}
               </FooterIcon>
-              <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest} style={{ marginLeft: "10px" }}>
-                <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
+              <LikeIconStyled
+                isLiked={isTestLiked}
+                onClick={handleLikeTest}
+                style={{ marginLeft: '10px' }}
+              >
+                <IconHeart
+                  color={isTestLiked ? '#ca481e' : darkGrey}
+                  width={14}
+                  height={14}
+                />
                 {analytics && <IconText>{analytics[0]?.likes || 0}</IconText>}
               </LikeIconStyled>
             </Footer>
@@ -429,9 +495,13 @@ class ViewModal extends React.Component {
                       : /**
                          * for doc based, we need to consider questions as items
                          */
-                        (isDocBased ? summary.totalQuestions : summary.totalItems) || 0}
+                        (isDocBased
+                          ? summary.totalQuestions
+                          : summary.totalItems) || 0}
                   </SummaryCardValue>
-                  <SummaryCardLabel>{isDocBased ? "Questions" : "Items"}</SummaryCardLabel>
+                  <SummaryCardLabel>
+                    {isDocBased ? 'Questions' : 'Items'}
+                  </SummaryCardLabel>
                 </SummaryCard>
                 <SummaryCard data-cy="testcard-total-points">
                   <SummaryCardValue>{summary.totalPoints}</SummaryCardValue>
@@ -441,23 +511,33 @@ class ViewModal extends React.Component {
             </SummaryContainer>
             <PerfectScrollbar>
               {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
-              {summary?.groupSummary?.length > 1 || itemGroups?.[0]?.type === "AUTOSELECT" ? (
+              {summary?.groupSummary?.length > 1 ||
+              itemGroups?.[0]?.type === 'AUTOSELECT' ? (
                 summary?.groupSummary?.map((group, i) => {
-                  const standards = interestedStandards?.map(x => x.identifier);
+                  const standards = interestedStandards?.map(
+                    (x) => x.identifier
+                  )
                   return (
                     <>
                       <GroupName>{itemGroups[i]?.groupName}</GroupName>
                       <SummaryCardContainer>
                         <GroupSummaryCard>
-                          <GroupSummaryCardValue>{group.totalItems}</GroupSummaryCardValue>
+                          <GroupSummaryCardValue>
+                            {group.totalItems}
+                          </GroupSummaryCardValue>
                           <SummaryCardLabel>Items</SummaryCardLabel>
                         </GroupSummaryCard>
                         <GroupSummaryCard>
-                          <Tags tags={standards} key="standards" show={2} isStandards />
+                          <Tags
+                            tags={standards}
+                            key="standards"
+                            show={2}
+                            isStandards
+                          />
                         </GroupSummaryCard>
                       </SummaryCardContainer>
                     </>
-                  );
+                  )
                 })
               ) : (
                 <SummaryList>
@@ -468,7 +548,7 @@ class ViewModal extends React.Component {
                   </ListHeader>
                   {!!summary?.standards?.length &&
                     interestedStandards.map(
-                      data =>
+                      (data) =>
                         !data.isEquivalentStandard && (
                           <ListRow data-cy={data.identifier}>
                             <ListCell>
@@ -494,27 +574,27 @@ class ViewModal extends React.Component {
           </ModalColumn>
         </ModalContainer>
       </>
-    );
+    )
 
     if (modalView) {
       return (
         <Modal open={isShow} onClose={close} styles={modalStyles}>
           {contanier}
         </Modal>
-      );
+      )
     }
-    return contanier;
+    return contanier
   }
 }
 
 export default connect(
-  state => ({
+  (state) => ({
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),
     isPublisherUser: isPublisherUserSelector(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
-    writableCollections: getWritableCollectionsSelector(state)
+    writableCollections: getWritableCollectionsSelector(state),
   }),
   {}
-)(ViewModal);
+)(ViewModal)

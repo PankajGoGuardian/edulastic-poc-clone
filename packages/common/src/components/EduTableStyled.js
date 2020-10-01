@@ -1,9 +1,15 @@
-import styled from "styled-components";
-import { Table } from "antd";
-import { white, cardTitleColor, themeColorBlue, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Table } from 'antd'
+import {
+  white,
+  cardTitleColor,
+  themeColorBlue,
+  greyThemeLight,
+  greyThemeLighter,
+} from '@edulastic/colors'
 
 export const EduTableStyled = styled(Table)`
-  width: ${props => props.width || "auto"};
+  width: ${(props) => props.width || 'auto'};
   .ant-table-body,
   .ant-table-body-inner,
   .ant-table-fixed {
@@ -62,13 +68,13 @@ export const EduTableStyled = styled(Table)`
         & > th {
           font-size: 10px;
           background: ${white};
-          text-align: ${props => props.align || "center"};
+          text-align: ${(props) => props.align || 'center'};
           padding: 5px 0px 15px;
           border-bottom: none;
           font-weight: bold;
           text-transform: uppercase;
           color: ${cardTitleColor};
-          white-space: ${props => props.wrap || "nowrap"};
+          white-space: ${(props) => props.wrap || 'nowrap'};
 
           &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
           & .ant-table-header-column .ant-table-column-sorters::before {
@@ -98,13 +104,13 @@ export const EduTableStyled = styled(Table)`
       }
     }
     .ant-table-tbody {
-      text-align: ${props => props.align || "center"};
+      text-align: ${(props) => props.align || 'center'};
       & > tr {
         & > td {
           padding: 5px 0;
           font-weight: 600;
           border-bottom: 1px solid #f2f3f2;
-          font-size: ${props => props.theme.linkFontSize};
+          font-size: ${(props) => props.theme.linkFontSize};
         }
         &:hover {
           &:not(.ant-table-expanded-row) > td {
@@ -132,4 +138,4 @@ export const EduTableStyled = styled(Table)`
   .ant-table-pagination {
     padding-right: 55px;
   }
-`;
+`

@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   StyledDivMid,
   StudentsCardRow,
@@ -7,38 +7,40 @@ import {
   IconExpand,
   QuestionContainer,
   QuestionRow,
-  QuestionLabel
-} from "./styled";
+  QuestionLabel,
+} from './styled'
 
 export default class Questions extends React.Component {
   static propTypes = {
-    student: PropTypes.object
-  };
+    student: PropTypes.object,
+  }
 
   static defaultProps = {
-    student: {}
-  };
+    student: {},
+  }
 
   state = {
-    isDetail: false
-  };
+    isDetail: false,
+  }
 
   toggleDetailView = () => {
-    const { isDetail } = this.state;
-    this.setState({ isDetail: !isDetail });
-  };
+    const { isDetail } = this.state
+    this.setState({ isDetail: !isDetail })
+  }
 
   render() {
-    const { student } = this.props;
-    const { isDetail } = this.state;
+    const { student } = this.props
+    const { isDetail } = this.state
     return (
-      <React.Fragment>
+      <>
         {isDetail && (
           <QuestionContainer>
             {student.questionActivities.map((question, i) => (
               <QuestionRow key={i}>
                 <QuestionLabel>{`Question ${i + 1}`}</QuestionLabel>
-                <QuestionLabel>{question.score ? question.score : "-"}</QuestionLabel>
+                <QuestionLabel>
+                  {question.score ? question.score : '-'}
+                </QuestionLabel>
               </QuestionRow>
             ))}
           </QuestionContainer>
@@ -49,7 +51,7 @@ export default class Questions extends React.Component {
             <IconExpand up={isDetail} />
           </StyledDivMid>
         </StudentsCardRow>
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }

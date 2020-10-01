@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { EduButton } from "@edulastic/common";
-import { lightGrey9 } from "@edulastic/colors";
-import { Table, Tooltip } from "antd";
-import { IconInfo } from "@edulastic/icons";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { EduButton } from '@edulastic/common'
+import { lightGrey9 } from '@edulastic/colors'
+import { Table, Tooltip } from 'antd'
+import { IconInfo } from '@edulastic/icons'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import {
   itemsDataTableSelector,
   approveOrRejectMultipleItem as approveOrRejectMultipleItemAction,
-  testsDataTableSelector
-} from "../../ducks";
+  testsDataTableSelector,
+} from '../../ducks'
 import {
   setApproveConfirmationOpenAction,
-  getShowApproveConfirmationSelector
-} from "../../../TestPage/components/AddItems/ducks";
-import { approveOrRejectMultipleTestsRequestAction } from "../../../TestList/ducks";
+  getShowApproveConfirmationSelector,
+} from '../../../TestPage/components/AddItems/ducks'
+import { approveOrRejectMultipleTestsRequestAction } from '../../../TestList/ducks'
 
-const padd = num => {
+const padd = (num) => {
   if (num < 10) {
-    return `0${num}`;
+    return `0${num}`
   }
-  return num;
-};
+  return num
+}
 const ApproveConfirmModal = ({
   contentType,
   showApproveConfirmation,
@@ -30,23 +30,23 @@ const ApproveConfirmModal = ({
   testsDataTable,
   approveOrRejectMultipleItem,
   setApproveConfirmationOpen,
-  approveOrRejectMultipleTestsRequest
+  approveOrRejectMultipleTestsRequest,
 }) => {
-  const [isApproving, setIsApproving] = useState(false);
+  const [isApproving, setIsApproving] = useState(false)
 
-  const dataSource = contentType === "TEST" ? testsDataTable : itemsDataTable;
+  const dataSource = contentType === 'TEST' ? testsDataTable : itemsDataTable
   useEffect(() => {
-    setIsApproving(false);
-  }, [showApproveConfirmation]);
+    setIsApproving(false)
+  }, [showApproveConfirmation])
 
-  const contentHeading = contentType === "TEST" ? "Test" : "Item";
+  const contentHeading = contentType === 'TEST' ? 'Test' : 'Item'
   const columns = [
     {
-      title: "Collection",
-      dataIndex: "name",
-      key: "collection",
+      title: 'Collection',
+      dataIndex: 'name',
+      key: 'collection',
       render: (item, row) => {
-        if (item === "No Collection") {
+        if (item === 'No Collection') {
           return (
             <div>
               <span>{item}</span>
@@ -55,38 +55,44 @@ const ApproveConfirmModal = ({
                   row.count > 1 ? `${contentHeading}s` : contentHeading
                 } will not be approved. Please select a collection to get approved`}
               >
-                <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "10px" }} />
+                <IconInfo
+                  color={lightGrey9}
+                  style={{ cursor: 'pointer', marginLeft: '10px' }}
+                />
               </Tooltip>
             </div>
-          );
+          )
         }
-        return item;
-      }
+        return item
+      },
     },
     {
       title: `${contentHeading} Count`,
-      dataIndex: "count",
-      key: "items",
-      render: count => `${padd(count)} ${count > 1 ? `${contentHeading}s` : contentHeading}`
-    }
-  ];
+      dataIndex: 'count',
+      key: 'items',
+      render: (count) =>
+        `${padd(count)} ${count > 1 ? `${contentHeading}s` : contentHeading}`,
+    },
+  ]
 
   const handleApprove = () => {
-    if (contentType === "TEST") {
-      approveOrRejectMultipleTestsRequest({ status: "published" });
+    if (contentType === 'TEST') {
+      approveOrRejectMultipleTestsRequest({ status: 'published' })
     } else {
-      approveOrRejectMultipleItem({ status: "published" });
+      approveOrRejectMultipleItem({ status: 'published' })
     }
-    setIsApproving(true);
-  };
+    setIsApproving(true)
+  }
 
   const handleCancel = () => {
-    setApproveConfirmationOpen(false);
-  };
+    setApproveConfirmationOpen(false)
+  }
 
   return (
     <StyledModal
-      title={<p style={{ marginBottom: "20px" }}>{`Approve ${contentHeading}s`}</p>}
+      title={
+        <p style={{ marginBottom: '20px' }}>{`Approve ${contentHeading}s`}</p>
+      }
       visible={showApproveConfirmation}
       onCancel={handleCancel}
       maskClosable={false}
@@ -95,9 +101,14 @@ const ApproveConfirmModal = ({
         <EduButton isGhost key="cancel" onClick={handleCancel}>
           CANCEL
         </EduButton>,
-        <EduButton data-cy="approve" key="submit" onClick={handleApprove} loading={isApproving}>
+        <EduButton
+          data-cy="approve"
+          key="submit"
+          onClick={handleApprove}
+          loading={isApproving}
+        >
           APPROVE
-        </EduButton>
+        </EduButton>,
       ]}
       destroyOnClose
     >
@@ -105,21 +116,21 @@ const ApproveConfirmModal = ({
         <Table pagination={false} dataSource={dataSource} columns={columns} />;
       </BodyStyled>
     </StyledModal>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     itemsDataTable: itemsDataTableSelector(state),
     testsDataTable: testsDataTableSelector(state),
-    showApproveConfirmation: getShowApproveConfirmationSelector(state)
+    showApproveConfirmation: getShowApproveConfirmationSelector(state),
   }),
   {
     approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
     setApproveConfirmationOpen: setApproveConfirmationOpenAction,
-    approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction
+    approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
   }
-)(ApproveConfirmModal);
+)(ApproveConfirmModal)
 
 const StyledModal = styled(ConfirmationModal)`
   .ant-modal-content {
@@ -130,9 +141,9 @@ const StyledModal = styled(ConfirmationModal)`
       min-height: 80px;
     }
   }
-`;
+`
 
 const BodyStyled = styled.div`
   text-align: left;
   width: 100%;
-`;
+`

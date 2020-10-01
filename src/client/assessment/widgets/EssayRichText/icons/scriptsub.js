@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconScriptSub = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="15.192" height="13.462" viewBox="0 0 15.192 13.462" {...props}>
+const IconScriptSub = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="15.192"
+    height="13.462"
+    viewBox="0 0 15.192 13.462"
+    {...props}
+  >
     <g transform="translate(-15.227 -29.578)">
       <path
         d="M5.336,0H2.57L-.086-4.32-2.742,0H-5.336l3.789-5.891-3.547-5.531h2.672L.039-7.312l2.414-4.109H5.063L1.477-5.758Z"
@@ -15,6 +21,6 @@ const IconScriptSub = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconScriptSub);
+export default withIconStyles(IconScriptSub)

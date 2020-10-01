@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
-import { Row, Col } from "antd";
-import { isEmpty } from "lodash";
-import { SignedStackedBarChart } from "../../../../../common/components/charts/signedStackedBarChart";
-import { getChartData } from "../../utils/transformers";
+import React, { useMemo } from 'react'
+import { Row, Col } from 'antd'
+import { isEmpty } from 'lodash'
+import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
+import { getChartData } from '../../utils/transformers'
 
 export const SignedStackBarChartContainer = ({
   filteredDenormalizedData,
@@ -10,48 +10,51 @@ export const SignedStackBarChartContainer = ({
   chartFilter,
   masteryScale = [],
   role,
-  onBarClickCB
+  onBarClickCB,
 }) => {
-  const chartData = useMemo(() => getChartData(filteredDenormalizedData, masteryScale, filters, role), [
-    filteredDenormalizedData,
-    masteryScale,
-    filters,
-    role
-  ]);
+  const chartData = useMemo(
+    () => getChartData(filteredDenormalizedData, masteryScale, filters, role),
+    [filteredDenormalizedData, masteryScale, filters, role]
+  )
 
   const getChartSpecifics = () => {
     if (!isEmpty(masteryScale)) {
-      const tempArr = masteryScale.sort((a, b) => a.score - b.score);
-      const barsData = [];
+      const tempArr = masteryScale.sort((a, b) => a.score - b.score)
+      const barsData = []
       for (let i = 0; i < tempArr.length; i++) {
         barsData.push({
           key: tempArr[i].masteryLabel,
-          stackId: "a",
+          stackId: 'a',
           fill: tempArr[i].color,
-          unit: "%",
-          name: tempArr[i].masteryName
-        });
+          unit: '%',
+          name: tempArr[i].masteryName,
+        })
       }
       return {
         barsData,
-        yAxisLabel: "Student %",
-        xAxisDataKey: "standard"
-      };
+        yAxisLabel: 'Student %',
+        xAxisDataKey: 'standard',
+      }
     }
     return {
       barsData: [],
-      yAxisLabel: "Student %",
-      xAxisDataKey: "standard"
-    };
-  };
+      yAxisLabel: 'Student %',
+      xAxisDataKey: 'standard',
+    }
+  }
 
-  const chartSpecifics = useMemo(() => getChartSpecifics(), [masteryScale]);
+  const chartSpecifics = useMemo(() => getChartSpecifics(), [masteryScale])
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      const { dataKey: masteryLabel, value: studentPercent } = payload[barIndex];
-      const { standard, standardName, masteryLabelInfo, totalStudents } = payload[barIndex].payload;
-      const masteryName = masteryLabelInfo[masteryLabel];
+      const { dataKey: masteryLabel, value: studentPercent } = payload[barIndex]
+      const {
+        standard,
+        standardName,
+        masteryLabelInfo,
+        totalStudents,
+      } = payload[barIndex].payload
+      const masteryName = masteryLabelInfo[masteryLabel]
 
       return (
         <div>
@@ -76,25 +79,25 @@ export const SignedStackBarChartContainer = ({
             <Col className="tooltip-value">{totalStudents}</Col>
           </Row>
         </div>
-      );
+      )
     }
-    return false;
-  };
+    return false
+  }
 
-  const _onBarClickCB = key => {
-    onBarClickCB(key);
-  };
+  const _onBarClickCB = (key) => {
+    onBarClickCB(key)
+  }
 
-  const _onResetClickCB = () => {};
+  const _onResetClickCB = () => {}
 
-  const yTickFormatter = () => "";
+  const yTickFormatter = () => ''
 
-  const barsLabelFormatter = val => {
+  const barsLabelFormatter = (val) => {
     if (val !== 0) {
-      return `${Math.abs(val)}%`;
+      return `${Math.abs(val)}%`
     }
-    return "";
-  };
+    return ''
+  }
 
   return (
     <SignedStackedBarChart
@@ -109,5 +112,5 @@ export const SignedStackBarChartContainer = ({
       barsLabelFormatter={barsLabelFormatter}
       filter={chartFilter}
     />
-  );
-};
+  )
+}

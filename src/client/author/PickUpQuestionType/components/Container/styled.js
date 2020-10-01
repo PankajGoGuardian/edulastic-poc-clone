@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import {
   mobileWidth,
   desktopWidth,
@@ -8,12 +8,12 @@ import {
   boxShadowDefault,
   white,
   extraDesktopWidthMax,
-  mediumDesktopExactWidth
-} from "@edulastic/colors";
-import Modal from "react-responsive-modal";
-import { Link } from "react-router-dom";
-import { Menu, Affix } from "antd";
-import { MainContentWrapper } from "@edulastic/common";
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import Modal from 'react-responsive-modal'
+import { Link } from 'react-router-dom'
+import { Menu, Affix } from 'antd'
+import { MainContentWrapper } from '@edulastic/common'
 
 export const Content = styled.div`
   display: flex;
@@ -23,26 +23,28 @@ export const Content = styled.div`
     display: flex;
     flex-wrap: wrap;
   }
-`;
+`
 
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 280px;
-  top: ${props => props.theme.HeaderHeight.xs + 41}px; // 41 is value of extra offset e.g. padding, heading
+  top: ${(props) =>
+    props.theme.HeaderHeight.xs +
+    41}px; // 41 is value of extra offset e.g. padding, heading
   padding: 30px 0px 10px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    top: ${props => props.theme.HeaderHeight.md + 41}px;
+    top: ${(props) => props.theme.HeaderHeight.md + 41}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    top: ${props => props.theme.HeaderHeight.xl + 41}px;
+    top: ${(props) => props.theme.HeaderHeight.xl + 41}px;
   }
-`;
+`
 
 export const PickQuestionWrapper = styled(MainContentWrapper)`
   display: flex;
   justify-content: space-between;
-`;
+`
 
 export const LeftSide = styled.div`
   width: 280px;
@@ -121,7 +123,7 @@ export const LeftSide = styled.div`
   @media (max-width: ${desktopWidth}) {
     display: none;
   }
-`;
+`
 
 export const RightSide = styled.div`
   position: relative;
@@ -151,7 +153,7 @@ export const RightSide = styled.div`
     width: 100%;
     height: auto !important;
   }
-`;
+`
 
 export const LeftMenuWrapper = styled(Menu)`
   background: transparent;
@@ -165,7 +167,7 @@ export const LeftMenuWrapper = styled(Menu)`
     height: 21px !important;
     margin-right: 20px;
   }
-`;
+`
 
 export const MenuTitle = styled.div`
   display: block;
@@ -179,9 +181,9 @@ export const MenuTitle = styled.div`
   @media (max-width: ${desktopWidth}) {
     position: relative;
   }
-`;
+`
 
-export const StyledModal = styled(Modal)``;
+export const StyledModal = styled(Modal)``
 
 export const StyledModalContainer = styled.div`
   padding: 40px 16px 0;
@@ -256,7 +258,7 @@ export const StyledModalContainer = styled.div`
       }
     }
   }
-`;
+`
 
 export const MobileButtons = styled.div`
   display: none;
@@ -266,7 +268,7 @@ export const MobileButtons = styled.div`
     align-items: center;
     margin-bottom: 20px;
   }
-`;
+`
 
 export const SelectWidget = styled.div`
   height: 40px;
@@ -287,7 +289,7 @@ export const SelectWidget = styled.div`
     min-width: auto;
     padding: 0 15px
   }
-`;
+`
 
 export const BackLink = styled(Link)`
   background: ${white};
@@ -305,4 +307,4 @@ export const BackLink = styled(Link)`
   @media (max-width: ${mobileWidthLarge}) {
     padding: 0 15px;
   }
-`;
+`

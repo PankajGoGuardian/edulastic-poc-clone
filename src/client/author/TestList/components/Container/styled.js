@@ -6,18 +6,18 @@ import {
   greyThemeLighter,
   mediumDesktopExactWidth,
   textColor,
-  themeColor
-} from "@edulastic/colors";
-import { Card, FlexContainer } from "@edulastic/common";
-import { Affix, Input, Pagination, Modal } from "antd";
-import styled from "styled-components";
+  themeColor,
+} from '@edulastic/colors'
+import { Card, FlexContainer } from '@edulastic/common'
+import { Affix, Input, Pagination, Modal } from 'antd'
+import styled from 'styled-components'
 
 export const ScrollBox = styled.div`
   padding-right: 30px;
   & > div {
     padding: 20px 0px 5px;
   }
-`;
+`
 
 export const SearchInput = styled(Input.Search)`
   .ant-input {
@@ -25,23 +25,23 @@ export const SearchInput = styled(Input.Search)`
     border: 1px solid ${greyThemeLight};
     border-radius: 2px;
     height: 40px;
-    font-size: ${props => props.theme.smallLinkFontSize};
+    font-size: ${(props) => props.theme.smallLinkFontSize};
 
     @media (min-width: ${extraDesktopWidthMax}) {
-      font-size: ${props => props.theme.smallFontSize};
+      font-size: ${(props) => props.theme.smallFontSize};
     }
   }
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 export const CardBox = styled.div`
-  width: ${({ isPlaylist }) => (isPlaylist ? "242px" : "255px")};
+  width: ${({ isPlaylist }) => (isPlaylist ? '242px' : '255px')};
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 264px;
   }
-`;
+`
 
 export const Container = styled.div`
   padding: 0px 0px 0px 20px;
@@ -59,37 +59,39 @@ export const Container = styled.div`
 
   .scrollbar-container {
     overflow: auto !important;
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`};
+    height: ${(props) => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`};
 
     ::-webkit-scrollbar {
       display: none;
     }
 
     @media (min-width: ${mediumDesktopExactWidth}) {
-      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
+      height: ${(props) =>
+        `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
     }
     @media (min-width: ${extraDesktopWidthMax}) {
-      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
+      height: ${(props) =>
+        `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
     }
   }
 
   @media (max-width: ${desktopWidth}) {
     padding: 20px;
   }
-`;
+`
 
 export const ScrollbarWrapper = styled.div`
-  display: ${({ isShowFilter }) => (isShowFilter ? "none" : "block")};
-`;
+  display: ${({ isShowFilter }) => (isShowFilter ? 'none' : 'block')};
+`
 
 export const Filter = styled.div`
-  width: ${props => (props.isShowFilter ? "20px" : "250px")};
+  width: ${(props) => (props.isShowFilter ? '20px' : '250px')};
   z-index: 0;
 
   @media (max-width: ${desktopWidth}) {
     display: none;
   }
-`;
+`
 
 export const CardContainer = styled(Card)`
   box-shadow: none;
@@ -97,7 +99,7 @@ export const CardContainer = styled(Card)`
   .ant-card-body {
     padding: 0px;
   }
-`;
+`
 
 export const MobileFilter = styled.div`
   height: 50px;
@@ -110,25 +112,26 @@ export const MobileFilter = styled.div`
       margin-right: 10px;
     }
   }
-`;
+`
 
 export const Main = styled.div`
   flex: 1;
   background: white;
-  width: ${props => (props.isShowFilter ? "calc(100% - 20px)" : "calc(100% - 250px)")};
+  width: ${(props) =>
+    props.isShowFilter ? 'calc(100% - 20px)' : 'calc(100% - 250px)'};
   overflow: hidden;
-  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
+  height: ${(props) => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+    height: ${(props) => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+    height: ${(props) => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
   @media (max-width: ${desktopWidth}) {
     width: 100%;
   }
-`;
+`
 
 export const FilterButton = styled.div`
   flex: 1;
@@ -147,39 +150,45 @@ export const FilterButton = styled.div`
       color: ${textColor};
     }
   }
-`;
+`
 
 export const SearchModalContainer = styled.div`
   width: 100%;
-`;
+`
 
 export const MobileFilterModal = styled(Modal)`
   display: block;
   @media (min-width: ${desktopWidth}) {
     display: block;
   }
-`;
+`
 
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 250px;
-  top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+  top: ${(props) =>
+    props.theme.HeaderHeight.xs +
+    (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
   padding: 0px 0px 20px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    top: ${props => props.theme.HeaderHeight.md + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+    top: ${(props) =>
+      props.theme.HeaderHeight.md +
+      (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    top: ${props => props.theme.HeaderHeight.xl + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+    top: ${(props) =>
+      props.theme.HeaderHeight.xl +
+      (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
   }
-`;
+`
 
 export const PaginationWrapper = styled(Pagination)`
-  padding: ${props => (props.type === "tile" ? "20px 0" : "24px 32px")};
+  padding: ${(props) => (props.type === 'tile' ? '20px 0' : '24px 32px')};
   padding-right: 55px;
   text-align: right;
   margin-right: 20px;
-`;
+`
 
 export const StyleChangeWrapper = styled.div`
   margin-right: 15px;
@@ -190,7 +199,7 @@ export const StyleChangeWrapper = styled.div`
   svg {
     cursor: pointer;
   }
-`;
+`
 
 export const StyledCountText = styled.div`
   display: flex;
@@ -200,7 +209,7 @@ export const StyledCountText = styled.div`
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-`;
+`
 
 export const ItemsMenu = styled(FlexContainer)`
   align-items: center;
@@ -210,7 +219,7 @@ export const ItemsMenu = styled(FlexContainer)`
   @media screen and (max-width: ${desktopWidth}) {
     padding: 15px;
   }
-`;
+`
 
 export const PaginationInfo = styled.div`
   font-weight: 600;
@@ -224,7 +233,7 @@ export const PaginationInfo = styled.div`
     color: ${greyThemeDark1};
     margin-right: 5px;
   }
-`;
+`
 
 export const FiltersWrapper = styled.div`
   display: flex;
@@ -242,4 +251,4 @@ export const FiltersWrapper = styled.div`
     border-radius: 6px;
     margin-bottom: 5px;
   }
-`;
+`

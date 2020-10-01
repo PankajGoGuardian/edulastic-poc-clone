@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const Table = styled.table`
   width: 100%;
@@ -9,6 +9,6 @@ const Table = styled.table`
     background: none !important;
     border-collapse: collapse;
   }
-`;
+`
 
-export default Table;
+export default Table

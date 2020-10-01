@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconCloudUpload = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 548.176 548.176" {...props}>
+const IconCloudUpload = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 548.176 548.176"
+    {...props}
+  >
     <g>
       <path
         d="M524.326,297.352c-15.896-19.89-36.21-32.782-60.959-38.684c7.81-11.8,11.704-24.934,11.704-39.399
@@ -21,6 +25,6 @@ const IconCloudUpload = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconCloudUpload);
+export default withIconStyles(IconCloudUpload)

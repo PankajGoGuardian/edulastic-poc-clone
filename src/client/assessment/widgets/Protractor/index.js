@@ -1,20 +1,20 @@
-import React, { memo, useMemo } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { compose } from "redux";
-import { connect } from "react-redux";
+import React, { memo, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 
-import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { replaceVariables } from "../../utils/variables";
+import { withNamespaces } from '@edulastic/localization'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { replaceVariables } from '../../utils/variables'
 
-import { ContentArea } from "../../styled/ContentArea";
+import { ContentArea } from '../../styled/ContentArea'
 
-import ProtractorView from "./ProtractorView";
-import Details from "./Details";
-import { StyledPaperWrapper } from "../../styled/Widget";
+import ProtractorView from './ProtractorView'
+import Details from './Details'
+import { StyledPaperWrapper } from '../../styled/Widget'
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div``
 
 const Protractor = ({
   item,
@@ -27,25 +27,34 @@ const Protractor = ({
   advancedAreOpen,
   ...restProps
 }) => {
-  const Wrapper = smallSize ? EmptyWrapper : StyledPaperWrapper;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+  const Wrapper = smallSize ? EmptyWrapper : StyledPaperWrapper
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
-  if (view === "edit") {
+  if (view === 'edit') {
     return (
       <ContentArea>
-        <Details item={item} smallSize={smallSize} fillSections={fillSections} cleanSections={cleanSections} />
+        <Details
+          item={item}
+          smallSize={smallSize}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
       </ContentArea>
-    );
+    )
   }
 
-  if (view === "preview") {
+  if (view === 'preview') {
     return (
       <Wrapper>
-        <ProtractorView smallSize={smallSize} item={itemForPreview} {...restProps} />
+        <ProtractorView
+          smallSize={smallSize}
+          item={itemForPreview}
+          {...restProps}
+        />
       </Wrapper>
-    );
+    )
   }
-};
+}
 
 Protractor.propTypes = {
   item: PropTypes.object.isRequired,
@@ -55,26 +64,23 @@ Protractor.propTypes = {
   t: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool,
   cleanSections: PropTypes.func,
-  fillSections: PropTypes.func
-};
+  fillSections: PropTypes.func,
+}
 
 Protractor.defaultProps = {
   advancedAreOpen: false,
   cleanSections: () => {},
-  fillSections: () => {}
-};
+  fillSections: () => {},
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   memo,
-  connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
-  )
-);
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+  })
+)
 
-const ProtractorContainer = enhance(Protractor);
+const ProtractorContainer = enhance(Protractor)
 
-export { ProtractorContainer as Protractor };
+export { ProtractorContainer as Protractor }

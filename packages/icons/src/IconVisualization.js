@@ -1,10 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconVisualization = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="18.21" height="13.645" viewBox="0 0 18.21 13.645" {...props}>
+const IconVisualization = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="18.21"
+    height="13.645"
+    viewBox="0 0 18.21 13.645"
+    {...props}
+  >
     <g transform="translate(0 -64.178)">
       <g transform="translate(0 64.178)">
         <g transform="translate(0 0)">
@@ -24,6 +30,6 @@ const IconVisualization = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconVisualization);
+export default withIconStyles(IconVisualization)

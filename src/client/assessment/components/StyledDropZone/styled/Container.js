@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { FlexContainer } from "@edulastic/common";
-import { lightBlue7 } from "@edulastic/colors";
+import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
+import { lightBlue7 } from '@edulastic/colors'
 
 export const Container = styled(FlexContainer)`
   min-height: 200px;
@@ -17,4 +17,4 @@ export const Container = styled(FlexContainer)`
   &:active {
     border: 1px solid ${lightBlue7};
   }
-`;
+`

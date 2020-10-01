@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { white, themeColor, lightGrey12 } from "@edulastic/colors";
+import { white, themeColor, lightGrey12 } from '@edulastic/colors'
 
 const CorItem = styled.div`
   display: flex;
@@ -20,13 +20,13 @@ const CorItem = styled.div`
   overflow: hidden;
   border: ${({
     theme: {
-      answerBox: { borderWidth, borderStyle, borderColor }
-    }
+      answerBox: { borderWidth, borderStyle, borderColor },
+    },
   }) => `${borderWidth} ${borderStyle} ${borderColor}`};
   border-radius: ${({
     theme: {
-      answerBox: { borderRadius }
-    }
+      answerBox: { borderRadius },
+    },
   }) => borderRadius};
   ${({ index }) =>
     index &&
@@ -49,6 +49,6 @@ const CorItem = styled.div`
     color: white;
   }
  `}
-`;
+`
 
-export default CorItem;
+export default CorItem

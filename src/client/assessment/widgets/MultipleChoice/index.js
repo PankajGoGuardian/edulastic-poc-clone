@@ -1,131 +1,150 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { get, cloneDeep } from "lodash";
-import styled from "styled-components";
-import produce from "immer";
-import { questionTitle } from "@edulastic/constants";
-import { PaddingDiv } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { get, cloneDeep } from 'lodash'
+import styled from 'styled-components'
+import produce from 'immer'
+import { questionTitle } from '@edulastic/constants'
+import { PaddingDiv } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import {
+  PREVIEW,
+  EDIT,
+  CLEAR,
+  CHECK,
+  SHOW,
+} from '../../constants/constantsForQuestions'
 
-import Options from "./components/Options";
-import Authoring from "./components/Authoring";
-import Display from "./components/Display";
-import CorrectAnswers from "./CorrectAnswers";
-import { replaceVariables } from "../../utils/variables";
+import Options from './components/Options'
+import Authoring from './components/Authoring'
+import Display from './components/Display'
+import CorrectAnswers from './CorrectAnswers'
+import { replaceVariables } from '../../utils/variables'
 
-import { ContentArea } from "../../styled/ContentArea";
-import { AdvancedOptionContainer } from "../../styled/AdvancedOptionContainer";
-import { changePreviewAction } from "../../../author/src/actions/view";
-import Question from "../../components/Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import { getFontSize } from "../../utils/helpers";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { ContentArea } from '../../styled/ContentArea'
+import { AdvancedOptionContainer } from '../../styled/AdvancedOptionContainer'
+import { changePreviewAction } from '../../../author/src/actions/view'
+import Question from '../../components/Question'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import { getFontSize } from '../../utils/helpers'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div``
 
 const MutlChoiceWrapper = styled(StyledPaperWrapper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
-  ${({ flowLayout }) => flowLayout && "background: transparent"};
-  padding: ${props => (props.padding ? props.padding : "0px")};
-  box-shadow: ${props => (props.boxShadow ? props.boxShadow : "none")};
-`;
+  ${({ flowLayout }) => flowLayout && 'background: transparent'};
+  padding: ${(props) => (props.padding ? props.padding : '0px')};
+  box-shadow: ${(props) => (props.boxShadow ? props.boxShadow : 'none')};
+`
 
 const Divider = styled.div`
   padding: 10px 0;
-`;
+`
 
 class MultipleChoice extends Component {
   getRenderData = () => {
-    const { item: templateItem, history, view } = this.props;
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const { item: templateItem, history, view } = this.props
+    const item = view === EDIT ? templateItem : replaceVariables(templateItem)
 
-    const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
-    let previewDisplayOptions;
-    let previewStimulus;
-    let itemForEdit;
+    const locationState = history.location.state
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false
+    let previewDisplayOptions
+    let previewStimulus
+    let itemForEdit
     if (item.smallSize || isDetailPage) {
-      previewStimulus = item.stimulus;
-      previewDisplayOptions = item.options;
-      itemForEdit = templateItem;
+      previewStimulus = item.stimulus
+      previewDisplayOptions = item.options
+      itemForEdit = templateItem
     } else {
-      previewStimulus = item.stimulus;
-      previewDisplayOptions = item.options;
+      previewStimulus = item.stimulus
+      previewDisplayOptions = item.options
       itemForEdit = {
         ...templateItem,
         stimulus: templateItem.stimulus,
         list: templateItem.options,
-        validation: templateItem.validation
-      };
+        validation: templateItem.validation,
+      }
     }
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       uiStyle: item.uiStyle,
-      multipleResponses: !!item.multipleResponses
-    };
-  };
+      multipleResponses: !!item.multipleResponses,
+    }
+  }
 
-  handleAddAnswer = qid => {
-    const { saveAnswer, userAnswer, item, previewTab, changePreviewTab, changeView } = this.props;
-    const newAnswer = cloneDeep(userAnswer);
+  handleAddAnswer = (qid) => {
+    const {
+      saveAnswer,
+      userAnswer,
+      item,
+      previewTab,
+      changePreviewTab,
+      changeView,
+    } = this.props
+    const newAnswer = cloneDeep(userAnswer)
     if (previewTab !== CLEAR) {
-      changePreviewTab(CLEAR);
-      changeView(CLEAR);
+      changePreviewTab(CLEAR)
+      changeView(CLEAR)
     }
     if (item.multipleResponses) {
       if (newAnswer.includes(qid)) {
-        const removeIndex = newAnswer.findIndex(el => el === qid);
-        newAnswer.splice(removeIndex, 1);
-        saveAnswer(newAnswer);
+        const removeIndex = newAnswer.findIndex((el) => el === qid)
+        newAnswer.splice(removeIndex, 1)
+        saveAnswer(newAnswer)
       } else {
-        saveAnswer([...newAnswer, qid]);
+        saveAnswer([...newAnswer, qid])
       }
     } else {
-      saveAnswer([qid]);
+      saveAnswer([qid])
     }
-  };
+  }
 
-  handleRemoveAnswer = opIndex => {
-    const { saveAnswer, userAnswer } = this.props;
-    const newAnswer = cloneDeep(userAnswer);
-    const removeIndex = newAnswer.findIndex(el => el === opIndex);
+  handleRemoveAnswer = (opIndex) => {
+    const { saveAnswer, userAnswer } = this.props
+    const newAnswer = cloneDeep(userAnswer)
+    const removeIndex = newAnswer.findIndex((el) => el === opIndex)
     if (removeIndex !== -1) {
-      newAnswer.splice(removeIndex, 1);
+      newAnswer.splice(removeIndex, 1)
     }
-    saveAnswer(newAnswer);
-  };
+    saveAnswer(newAnswer)
+  }
 
   handleOptionsChange = (name, value) => {
-    const { setQuestionData, item, saveAnswer } = this.props;
+    const { setQuestionData, item, saveAnswer } = this.props
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         const reduceResponses = (acc, val, index) => {
           if (index === 0) {
-            acc.push(val);
+            acc.push(val)
           }
-          return acc;
-        };
-
-        if (name === "multipleResponses" && value === false) {
-          draft.validation.validResponse.value = draft.validation.validResponse.value.reduce(reduceResponses, []);
-          draft.validation.altResponses = draft.validation.altResponses.map(res => {
-            res.value = res.value.reduce(reduceResponses, []);
-            return res;
-          });
-          saveAnswer([]);
+          return acc
         }
 
-        draft[name] = value;
+        if (name === 'multipleResponses' && value === false) {
+          draft.validation.validResponse.value = draft.validation.validResponse.value.reduce(
+            reduceResponses,
+            []
+          )
+          draft.validation.altResponses = draft.validation.altResponses.map(
+            (res) => {
+              res.value = res.value.reduce(reduceResponses, [])
+              return res
+            }
+          )
+          saveAnswer([])
+        }
+
+        draft[name] = value
       })
-    );
-  };
+    )
+  }
 
   render() {
     const {
@@ -147,16 +166,22 @@ class MultipleChoice extends Component {
       disableResponse,
       setQuestionData,
       ...restProps
-    } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle, multipleResponses } = this.getRenderData();
-    const isV1Multipart = get(col, "isV1Multipart", false);
-    const fontSize = getFontSize(uiStyle?.fontsize);
-    const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
-    const qId = item.id;
+    } = this.props
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      uiStyle,
+      multipleResponses,
+    } = this.getRenderData()
+    const isV1Multipart = get(col, 'isV1Multipart', false)
+    const fontSize = getFontSize(uiStyle?.fontsize)
+    const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper
+    const qId = item.id
     // const multi_response = this.props.item.multipleResponses;
 
     return (
-      <React.Fragment>
+      <>
         <PaddingDiv className="multiple-choice-wrapper">
           {view === EDIT && (
             <ContentArea>
@@ -169,7 +194,7 @@ class MultipleChoice extends Component {
               />
               <Question
                 section="main"
-                label={t("component.correctanswers.setcorrectanswers")}
+                label={t('component.correctanswers.setcorrectanswers')}
                 fillSections={fillSections}
                 cleanSections={cleanSections}
               >
@@ -194,10 +219,14 @@ class MultipleChoice extends Component {
                 {item.title !== questionTitle.MCQ_TRUE_OR_FALSE && (
                   <CheckboxLabel
                     data-cy="multi"
-                    onChange={() => this.handleOptionsChange("multipleResponses", !multipleResponses)}
+                    onChange={() =>
+                      this.handleOptionsChange(
+                        'multipleResponses',
+                        !multipleResponses
+                      )}
                     checked={multipleResponses}
                   >
-                    {t("component.multiplechoice.multipleResponses")}
+                    {t('component.multiplechoice.multipleResponses')}
                   </CheckboxLabel>
                 )}
               </Question>
@@ -220,7 +249,9 @@ class MultipleChoice extends Component {
           )}
           {view === PREVIEW && (
             <Wrapper isV1Multipart={isV1Multipart} flowLayout={flowLayout}>
-              {previewTab === SHOW || previewTab === CLEAR || previewTab === CHECK ? (
+              {previewTab === SHOW ||
+              previewTab === CLEAR ||
+              previewTab === CHECK ? (
                 <Display
                   showAnswer={previewTab === SHOW}
                   preview={previewTab === CLEAR}
@@ -251,8 +282,8 @@ class MultipleChoice extends Component {
             </Wrapper>
           )}
         </PaddingDiv>
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
@@ -277,36 +308,36 @@ MultipleChoice.propTypes = {
   disableResponse: PropTypes.bool,
   col: PropTypes.object.isRequired,
   advancedLink: PropTypes.any,
-  changeView: PropTypes.func.isRequired
-};
+  changeView: PropTypes.func.isRequired,
+}
 
 MultipleChoice.defaultProps = {
   previewTab: CLEAR,
   item: {
-    options: []
+    options: [],
   },
   advancedLink: null,
   smallSize: false,
   history: {},
   userAnswer: [],
   testItem: false,
-  evaluation: "",
+  evaluation: '',
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
   flowLayout: false,
-  disableResponse: false
-};
+  disableResponse: false,
+}
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction, changeView: changePreviewAction }
-  )
-);
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+    changeView: changePreviewAction,
+  })
+)
 
-const MultipleChoiceContainer = enhance(MultipleChoice);
+const MultipleChoiceContainer = enhance(MultipleChoice)
 
-export { MultipleChoiceContainer as MultipleChoice };
+export { MultipleChoiceContainer as MultipleChoice }

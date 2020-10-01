@@ -1,42 +1,43 @@
-import { enrollmentApi } from "@edulastic/api";
-import { CustomModalStyled, EduButton, notification } from "@edulastic/common";
-import { IconUser } from "@edulastic/icons";
-import { Collapse, Form, Icon, Spin } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { getUserOrgData } from "../../../../src/selectors/user";
-import { getValidatedClassDetails } from "../../../../Student/ducks";
-import { fetchStudentsByIdAction } from "../../../ducks";
-import AdditionalFields from "./AdditionalFields";
-import BasicFields from "./BasicFields";
-import { AddForm, PanelHeader, Title } from "./styled";
+import { enrollmentApi } from '@edulastic/api'
+import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
+import { IconUser } from '@edulastic/icons'
+import { Collapse, Form, Icon, Spin } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { getUserOrgData } from '../../../../src/selectors/user'
+import { getValidatedClassDetails } from '../../../../Student/ducks'
+import { fetchStudentsByIdAction } from '../../../ducks'
+import AdditionalFields from './AdditionalFields'
+import BasicFields from './BasicFields'
+import { AddForm, PanelHeader, Title } from './styled'
 
-const { Panel } = Collapse;
+const { Panel } = Collapse
 class AddStudentModal extends React.Component {
   state = {
-    keys: ["basic"],
+    keys: ['basic'],
     isUpdate: false,
-    foundUserId: "",
-    foundUserContactEmails: ""
-  };
+    foundUserId: '',
+    foundUserContactEmails: '',
+  }
 
-  setIsUpdate = payload => {
+  setIsUpdate = (payload) => {
     this.setState({
       ...this.state,
-      isUpdate: payload
-    });
-  };
+      isUpdate: payload,
+    })
+  }
 
-  setFounduser = payload => {
+  setFounduser = (payload) => {
     this.setState({
       ...this.state,
-      foundUserId: payload
-    });
-  };
+      foundUserId: payload,
+    })
+  }
 
-  setFoundContactEmails = value => this.setState({ foundUserContactEmails: value });
+  setFoundContactEmails = (value) =>
+    this.setState({ foundUserContactEmails: value })
 
   enrollStudent = async () => {
     const {
@@ -44,33 +45,36 @@ class AddStudentModal extends React.Component {
       orgData,
       loadStudents,
       handleCancel,
-      classDetails
-    } = this.props;
-    let { _id: classId = "" } = groupInfo;
-    let { code: classCode = "" } = groupInfo;
-    const { districtId } = orgData;
-    const userId = this.state.foundUserId;
+      classDetails,
+    } = this.props
+    let { _id: classId = '' } = groupInfo
+    let { code: classCode = '' } = groupInfo
+    const { districtId } = orgData
+    const userId = this.state.foundUserId
 
     // manageClass > manageClass entity
     if (!classId && !classCode) {
-      classId = classDetails?._id || "";
-      classCode = classDetails?.code || "";
+      classId = classDetails?._id || ''
+      classCode = classDetails?.code || ''
     }
 
     const data = {
       classCode,
       studentIds: [userId],
-      districtId
-    };
-    const res = await enrollmentApi.SearchAddEnrolMultiStudents(data);
-    if (res.status == 200) {
-      notification({ type: "success", messageKey: "userAddedToclassSuccessfully" });
-      handleCancel();
-      loadStudents({ classId });
-      return null;
+      districtId,
     }
-    notification({ type: "error", messageKey: "createUserIsFailing" });
-  };
+    const res = await enrollmentApi.SearchAddEnrolMultiStudents(data)
+    if (res.status == 200) {
+      notification({
+        type: 'success',
+        messageKey: 'userAddedToclassSuccessfully',
+      })
+      handleCancel()
+      loadStudents({ classId })
+      return null
+    }
+    notification({ type: 'error', messageKey: 'createUserIsFailing' })
+  }
 
   render() {
     const {
@@ -86,19 +90,26 @@ class AddStudentModal extends React.Component {
       fetchClassDetailsUsingCode,
       showTtsField,
       validatedClassDetails,
-      resetClassDetails
-    } = this.props;
+      resetClassDetails,
+    } = this.props
 
-    const { keys, isUpdate } = this.state;
-    const { getFieldDecorator, getFieldValue, setFields, setFieldsValue, isFieldTouched, getFieldError } = form;
-    const std = {};
+    const { keys, isUpdate } = this.state
+    const {
+      getFieldDecorator,
+      getFieldValue,
+      setFields,
+      setFieldsValue,
+      isFieldTouched,
+      getFieldError,
+    } = form
+    const std = {}
 
     const title = (
       <Title>
         <IconUser />
-        <label>{isEdit ? "Update User" : "Add Student"}</label>
+        <label>{isEdit ? 'Update User' : 'Add Student'}</label>
       </Title>
-    );
+    )
 
     const footer = (
       <>
@@ -108,20 +119,29 @@ class AddStudentModal extends React.Component {
         <EduButton
           data-cy="addButton"
           onClick={isUpdate ? this.enrollStudent : handleAdd}
-          disabled={isFieldTouched("email") && getFieldError("email")}
+          disabled={isFieldTouched('email') && getFieldError('email')}
         >
-          {isUpdate ? "Yes, Enroll Student" : isEdit ? "Yes, Update" : "Yes, Add Student"}
+          {isUpdate
+            ? 'Yes, Enroll Student'
+            : isEdit
+            ? 'Yes, Update'
+            : 'Yes, Add Student'}
         </EduButton>
       </>
-    );
+    )
 
-    const expandIcon = panelProps => (panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />);
+    const expandIcon = (panelProps) =>
+      panelProps.isActive ? (
+        <Icon type="caret-up" />
+      ) : (
+        <Icon type="caret-down" />
+      )
 
     const AdditionalDetailsHeader = (
       <PanelHeader>
         <label>Configure Additional Details</label>
       </PanelHeader>
-    );
+    )
 
     return (
       <CustomModalStyled
@@ -155,7 +175,12 @@ class AddStudentModal extends React.Component {
               resetClassDetails={resetClassDetails}
               setFoundContactEmails={this.setFoundContactEmails}
             />
-            <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
+            <Collapse
+              accordion
+              defaultActiveKey={keys}
+              expandIcon={expandIcon}
+              expandIconPosition="right"
+            >
               <Panel header={AdditionalDetailsHeader} key="additional">
                 <AdditionalFields
                   getFieldDecorator={getFieldDecorator}
@@ -171,7 +196,7 @@ class AddStudentModal extends React.Component {
           </AddForm>
         </Spin>
       </CustomModalStyled>
-    );
+    )
   }
 }
 
@@ -182,23 +207,25 @@ AddStudentModal.propTypes = {
   submitted: PropTypes.bool,
   isOpen: PropTypes.bool,
   stds: PropTypes.array,
-  isEdit: PropTypes.bool
-};
+  isEdit: PropTypes.bool,
+}
 
 AddStudentModal.defaultProps = {
   isOpen: false,
   stds: [],
   isEdit: false,
-  submitted: false
-};
+  submitted: false,
+}
 
-const AddStudentForm = Form.create({ name: "add_student_form" })(AddStudentModal);
+const AddStudentForm = Form.create({ name: 'add_student_form' })(
+  AddStudentModal
+)
 
 export default connect(
-  state => ({
+  (state) => ({
     orgData: getUserOrgData(state),
     selectedClass: getValidatedClassDetails(state) || {},
-    classDetails: get(state, "manageClass.entity")
+    classDetails: get(state, 'manageClass.entity'),
   }),
   { loadStudents: fetchStudentsByIdAction }
-)(AddStudentForm);
+)(AddStudentForm)

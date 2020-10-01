@@ -1,5 +1,5 @@
-import { createAction } from "redux-starter-kit";
+import { createAction } from 'redux-starter-kit'
 
-export const RESET_ALL_REPORTS = "[reports] reset all reports";
+export const RESET_ALL_REPORTS = '[reports] reset all reports'
 
-export const resetAllReportsAction = createAction(RESET_ALL_REPORTS);
+export const resetAllReportsAction = createAction(RESET_ALL_REPORTS)

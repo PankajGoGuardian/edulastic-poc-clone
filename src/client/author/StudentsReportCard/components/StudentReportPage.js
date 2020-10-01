@@ -1,25 +1,35 @@
-import React, { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import PropTypes from "prop-types";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useLayoutEffect,
+} from 'react'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
 
-import PerformanceBrand from "./performanceBrand";
-import { QuestionTableContainer } from "./QuestionTableContainer";
-import { StandardTableContainer } from "./StandardTableContainer";
-import PageHeader from "./PageHeader";
-import { receiveStudentResponseAction } from "../../src/actions/classBoard";
-import { stateStudentResponseSelector } from "../../ClassBoard/ducks";
-import { getQuestionTableData, getChartAndStandardTableData } from "../utils/transformers";
+import PerformanceBrand from './performanceBrand'
+import { QuestionTableContainer } from './QuestionTableContainer'
+import { StandardTableContainer } from './StandardTableContainer'
+import PageHeader from './PageHeader'
+import { receiveStudentResponseAction } from '../../src/actions/classBoard'
+import { stateStudentResponseSelector } from '../../ClassBoard/ducks'
+import {
+  getQuestionTableData,
+  getChartAndStandardTableData,
+} from '../utils/transformers'
 
-import { StyledTableWrapper, StyledPage, StyledLegendContainer } from "./styles";
-const A4_HEIGHT = 1200;
-const QUESTION_TABLE_MARGIN = 30;
-const STANDARD_TABLE_MARGIN = 30;
-const USER_INFO_HEIGHT = 37;
-const USER_INFO_MARGIN = 30;
-const PAGE_SIZE_HEIGHT = 30;
-const TABLE_HEADER_HEIGHT = 55;
-const INSTRUCTION_LEGEND_HEIGHT = 34;
+import { StyledTableWrapper, StyledPage, StyledLegendContainer } from './styles'
+
+const A4_HEIGHT = 1200
+const QUESTION_TABLE_MARGIN = 30
+const STANDARD_TABLE_MARGIN = 30
+const USER_INFO_HEIGHT = 37
+const USER_INFO_MARGIN = 30
+const PAGE_SIZE_HEIGHT = 30
+const TABLE_HEADER_HEIGHT = 55
+const INSTRUCTION_LEGEND_HEIGHT = 34
 
 const LegendContainer = () => (
   <StyledLegendContainer>
@@ -30,7 +40,7 @@ const LegendContainer = () => (
       <span>#</span>TECH ENHANCED ITEM
     </div>
   </StyledLegendContainer>
-);
+)
 
 const StudentReportPage = ({
   studentResponse,
@@ -40,63 +50,79 @@ const StudentReportPage = ({
   loadStudentResponse,
   sections,
   classResponse,
-  performanceBandsData
+  performanceBandsData,
 }) => {
-  const performanceRef = useRef();
-  const mainContainerRef = useRef();
-  const [performanceBlockHeight, setPerformanceBlockHeight] = useState(0);
-  const [questionTableDims, setQuestionTableDims] = useState({});
-  const [standardTableDims, setStandardTableDims] = useState({});
+  const performanceRef = useRef()
+  const mainContainerRef = useRef()
+  const [performanceBlockHeight, setPerformanceBlockHeight] = useState(0)
+  const [questionTableDims, setQuestionTableDims] = useState({})
+  const [standardTableDims, setStandardTableDims] = useState({})
 
   useEffect(() => {
     loadStudentResponse({
       groupId,
       testActivityId: testActivity.testActivityId,
-      studentId: testActivity.studentId
-    });
-  }, [testActivity.studentId]);
+      studentId: testActivity.studentId,
+    })
+  }, [testActivity.studentId])
 
   useLayoutEffect(() => {
     setTimeout(() => {
-      setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0);
+      setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0)
 
-      //get questions table row height
+      // get questions table row height
       const questionsElm =
         document
           .getElementById(`report-${testActivity.studentId}`)
-          ?.querySelectorAll(".student-report-card-question-table-container .ant-table-body > table > tbody > tr") ||
-        [];
-      const questionsDims = {};
-      questionsElm.forEach((elm, i) => (questionsDims[i] = elm.clientHeight));
-      setQuestionTableDims(questionsDims);
+          ?.querySelectorAll(
+            '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
+          ) || []
+      const questionsDims = {}
+      questionsElm.forEach((elm, i) => (questionsDims[i] = elm.clientHeight))
+      setQuestionTableDims(questionsDims)
 
-      //get standard table row height
+      // get standard table row height
       const standardELms =
         document
           .getElementById(`report-${testActivity.studentId}`)
-          ?.querySelectorAll(".student-report-card-standard-table-container .ant-table-body > table > tbody > tr") ||
-        [];
-      const standardDims = {};
-      standardELms.forEach((elm, i) => (standardDims[i] = elm.clientHeight));
-      setStandardTableDims(standardDims);
-    }, 2000);
-  }, [studentResponse, author_classboard_testActivity, testActivity, mainContainerRef.current]);
+          ?.querySelectorAll(
+            '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
+          ) || []
+      const standardDims = {}
+      standardELms.forEach((elm, i) => (standardDims[i] = elm.clientHeight))
+      setStandardTableDims(standardDims)
+    }, 2000)
+  }, [
+    studentResponse,
+    author_classboard_testActivity,
+    testActivity,
+    mainContainerRef.current,
+  ])
 
   const currentStudentResponse = {
-    data: studentResponse.byStudentId[testActivity.studentId]
-  };
-  const testData = get(author_classboard_testActivity, "data.test", {});
+    data: studentResponse.byStudentId[testActivity.studentId],
+  }
+  const testData = get(author_classboard_testActivity, 'data.test', {})
 
-  //memotized required for performance
+  // memotized required for performance
   const data = useMemo(() => {
-    const questionTableData = getQuestionTableData(currentStudentResponse, author_classboard_testActivity);
-    const chartAndStandardTable = getChartAndStandardTableData(currentStudentResponse, author_classboard_testActivity);
-    const studentName = testActivity.studentName;
+    const questionTableData = getQuestionTableData(
+      currentStudentResponse,
+      author_classboard_testActivity
+    )
+    const chartAndStandardTable = getChartAndStandardTableData(
+      currentStudentResponse,
+      author_classboard_testActivity
+    )
+    const studentName = testActivity.studentName
     const feedback = author_classboard_testActivity.data.testActivities?.find(
-      ta => ta.userId === testActivity.studentId
-    )?.feedback;
-    const classTitle = author_classboard_testActivity.additionalData?.className;
-    const studentActivityStartDate = get(studentResponse, "data.testActivity.startDate");
+      (ta) => ta.userId === testActivity.studentId
+    )?.feedback
+    const classTitle = author_classboard_testActivity.additionalData?.className
+    const studentActivityStartDate = get(
+      studentResponse,
+      'data.testActivity.startDate'
+    )
     return {
       ...chartAndStandardTable,
       ...questionTableData,
@@ -104,51 +130,60 @@ const StudentReportPage = ({
       classResponse,
       feedback,
       classTitle,
-      studentActivityStartDate
-    };
-  }, [studentResponse, author_classboard_testActivity, testActivity]);
+      studentActivityStartDate,
+    }
+  }, [studentResponse, author_classboard_testActivity, testActivity])
 
-  const showPerformanceBand = sections.performanceBand;
-  const showQuestionsTable = sections.questionPerformance || sections.studentResponse || sections.correctAnswer;
-  const showStandardTable = sections.standardsPerformance || sections.masteryStatus;
+  const showPerformanceBand = sections.performanceBand
+  const showQuestionsTable =
+    sections.questionPerformance ||
+    sections.studentResponse ||
+    sections.correctAnswer
+  const showStandardTable =
+    sections.standardsPerformance || sections.masteryStatus
 
-  //memrizing the print page calculation
-  //spliting content into different section
+  // memrizing the print page calculation
+  // spliting content into different section
   const splitQuestionTablesIntoPages = useMemo(() => {
-    let printData = {};
-    let counter = 0;
-    let totalHeight = 0;
-    let extraHeight = PAGE_SIZE_HEIGHT + TABLE_HEADER_HEIGHT;
-    totalHeight = extraHeight + performanceBlockHeight;
+    let printData = {}
+    let counter = 0
+    let totalHeight = 0
+    const extraHeight = PAGE_SIZE_HEIGHT + TABLE_HEADER_HEIGHT
+    totalHeight = extraHeight + performanceBlockHeight
 
-    const questionValues = Object.values(questionTableDims);
-    const standardValues = Object.values(standardTableDims);
+    const questionValues = Object.values(questionTableDims)
+    const standardValues = Object.values(standardTableDims)
 
     if (showQuestionsTable && questionValues.length) {
-      totalHeight += INSTRUCTION_LEGEND_HEIGHT;
+      totalHeight += INSTRUCTION_LEGEND_HEIGHT
 
       questionValues.forEach((value, i) => {
         if (totalHeight + value > A4_HEIGHT) {
           printData[counter] = {
             questionEnd: i,
-            questionStart: counter === 0 ? 0 : printData[counter - 1].questionEnd,
-            footerMargin: A4_HEIGHT - totalHeight
-          };
-          totalHeight = extraHeight + USER_INFO_HEIGHT + USER_INFO_MARGIN + INSTRUCTION_LEGEND_HEIGHT;
-          counter++;
+            questionStart:
+              counter === 0 ? 0 : printData[counter - 1].questionEnd,
+            footerMargin: A4_HEIGHT - totalHeight,
+          }
+          totalHeight =
+            extraHeight +
+            USER_INFO_HEIGHT +
+            USER_INFO_MARGIN +
+            INSTRUCTION_LEGEND_HEIGHT
+          counter++
         }
         if (i === questionValues.length - 1) {
-          totalHeight += QUESTION_TABLE_MARGIN;
+          totalHeight += QUESTION_TABLE_MARGIN
         }
-        totalHeight += value;
-      });
+        totalHeight += value
+      })
 
       printData[counter] = {
         ...(printData[counter] || {}),
         questionEnd: questionValues.length,
         questionStart: counter === 0 ? 0 : printData[counter - 1]?.questionEnd,
-        footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0
-      };
+        footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0,
+      }
     }
 
     if (showStandardTable && standardValues.length) {
@@ -157,45 +192,57 @@ const StudentReportPage = ({
           printData[counter] = {
             ...(printData[counter] || {}),
             standardEnd: i,
-            standardStart: counter === 0 ? 0 : printData[counter - 1].standardEnd || 0,
-            footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0
-          };
-          totalHeight = extraHeight + USER_INFO_HEIGHT + USER_INFO_MARGIN;
-          counter++;
+            standardStart:
+              counter === 0 ? 0 : printData[counter - 1].standardEnd || 0,
+            footerMargin:
+              A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0,
+          }
+          totalHeight = extraHeight + USER_INFO_HEIGHT + USER_INFO_MARGIN
+          counter++
         }
         if (i === standardValues.length - 1) {
-          totalHeight += STANDARD_TABLE_MARGIN;
+          totalHeight += STANDARD_TABLE_MARGIN
         }
-        totalHeight += value;
-      });
+        totalHeight += value
+      })
       printData[counter] = {
         ...(printData[counter] || {}),
         standardEnd: standardValues.length,
         standardStart: counter === 0 ? 0 : printData[counter - 1]?.standardEnd,
-        footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0
-      };
+        footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0,
+      }
     }
 
-    //if nothing is selected, then also student details should be display. So, atleast one page will be default
+    // if nothing is selected, then also student details should be display. So, atleast one page will be default
     if (!Object.keys(printData).length) {
-      totalHeight = performanceBlockHeight;
-      if (questionValues.length) totalHeight += QUESTION_TABLE_MARGIN;
-      if (standardValues.length) totalHeight += STANDARD_TABLE_MARGIN;
+      totalHeight = performanceBlockHeight
+      if (questionValues.length) totalHeight += QUESTION_TABLE_MARGIN
+      if (standardValues.length) totalHeight += STANDARD_TABLE_MARGIN
 
       printData = {
         0: {
           questionEnd: questionValues.length,
           standardEnd: standardValues.length,
-          footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0
-        }
-      };
+          footerMargin:
+            A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0,
+        },
+      }
     }
-    return printData;
-  }, [performanceBlockHeight, questionTableDims, standardTableDims, mainContainerRef.current]);
+    return printData
+  }, [
+    performanceBlockHeight,
+    questionTableDims,
+    standardTableDims,
+    mainContainerRef.current,
+  ])
 
   return (
     <StyledPage>
-      <div id={`report-${testActivity.studentId}`} data-cy={testActivity.studentName} ref={mainContainerRef}>
+      <div
+        id={`report-${testActivity.studentId}`}
+        data-cy={testActivity.studentName}
+        ref={mainContainerRef}
+      >
         {
           <PerformanceBrand
             showPerformanceBand={showPerformanceBand}
@@ -208,7 +255,10 @@ const StudentReportPage = ({
         }
         {showQuestionsTable && !!data.questionTableData?.length && (
           <StyledTableWrapper className="student-report-card-question-table-container hide-on-print">
-            <QuestionTableContainer dataSource={data.questionTableData} columnsFlags={sections} />
+            <QuestionTableContainer
+              dataSource={data.questionTableData}
+              columnsFlags={sections}
+            />
             <LegendContainer />
           </StyledTableWrapper>
         )}
@@ -224,9 +274,15 @@ const StudentReportPage = ({
         )}
       </div>
       {Object.keys(splitQuestionTablesIntoPages).map((key, i) => {
-        const totalPages = Object.keys(splitQuestionTablesIntoPages).length;
-        const pageData = splitQuestionTablesIntoPages[key];
-        const { questionStart, questionEnd, standardStart, standardEnd, footerMargin } = pageData;
+        const totalPages = Object.keys(splitQuestionTablesIntoPages).length
+        const pageData = splitQuestionTablesIntoPages[key]
+        const {
+          questionStart,
+          questionEnd,
+          standardStart,
+          standardEnd,
+          footerMargin,
+        } = pageData
         return (
           <>
             {i === 0 && (
@@ -249,7 +305,10 @@ const StudentReportPage = ({
             {showQuestionsTable && !!questionEnd && (
               <StyledTableWrapper className="student-report-card-question-table-container hide-without-print">
                 <QuestionTableContainer
-                  dataSource={data.questionTableData.slice(questionStart, questionEnd)}
+                  dataSource={data.questionTableData.slice(
+                    questionStart,
+                    questionEnd
+                  )}
                   columnsFlags={sections}
                 />
                 <LegendContainer />
@@ -258,7 +317,10 @@ const StudentReportPage = ({
             {showStandardTable && !!standardEnd && (
               <StyledTableWrapper className="student-report-card-standard-table-container hide-without-print">
                 <StandardTableContainer
-                  dataSource={data.standardsTableData.slice(standardStart, standardEnd)}
+                  dataSource={data.standardsTableData.slice(
+                    standardStart,
+                    standardEnd
+                  )}
                   standardsMap={data.standardsMap}
                   assignmentMasteryMap={data.assignmentMasteryMap}
                   columnsFlags={sections}
@@ -268,21 +330,21 @@ const StudentReportPage = ({
             <div
               style={{
                 height: `${PAGE_SIZE_HEIGHT}px`,
-                pageBreakAfter: "always",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                marginTop: `${footerMargin}px`
+                pageBreakAfter: 'always',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                marginTop: `${footerMargin}px`,
               }}
               className="hide-without-print"
             >
               {i + 1}/{totalPages}
             </div>
           </>
-        );
+        )
       })}
     </StyledPage>
-  );
-};
+  )
+}
 
 StudentReportPage.propTypes = {
   studentResponse: PropTypes.object,
@@ -291,18 +353,22 @@ StudentReportPage.propTypes = {
   groupId: PropTypes.string.isRequired,
   loadStudentResponse: PropTypes.func.isRequired,
   sections: PropTypes.object,
-  classResponse: PropTypes.object
-};
+  classResponse: PropTypes.object,
+}
 
 const enhance = connect(
-  state => ({
+  (state) => ({
     studentResponse: stateStudentResponseSelector(state),
-    author_classboard_testActivity: get(state, ["author_classboard_testActivity"], []),
-    entities: get(state, ["author_classboard_testActivity", "entities"], [])
+    author_classboard_testActivity: get(
+      state,
+      ['author_classboard_testActivity'],
+      []
+    ),
+    entities: get(state, ['author_classboard_testActivity', 'entities'], []),
   }),
   {
-    loadStudentResponse: receiveStudentResponseAction
+    loadStudentResponse: receiveStudentResponseAction,
   }
-);
+)
 
-export default enhance(StudentReportPage);
+export default enhance(StudentReportPage)

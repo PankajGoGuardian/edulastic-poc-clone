@@ -1,47 +1,62 @@
-import React from "react";
-import styled from "styled-components";
-import { MathFormulaDisplay } from "@edulastic/common";
-import { white } from "@edulastic/colors";
-import { IconWrapper } from "./styled/IconWrapper";
-import { RightIcon } from "./styled/RightIcon";
-import { WrongIcon } from "./styled/WrongIcon";
+import React from 'react'
+import styled from 'styled-components'
+import { MathFormulaDisplay } from '@edulastic/common'
+import { white } from '@edulastic/colors'
+import { IconWrapper } from './styled/IconWrapper'
+import { RightIcon } from './styled/RightIcon'
+import { WrongIcon } from './styled/WrongIcon'
 
-const AnswerBox = ({ checked, correct, userAnswer, indexStr, inPopover, showIndex, lessMinWidth, ...rest }) => (
+const AnswerBox = ({
+  checked,
+  correct,
+  userAnswer,
+  indexStr,
+  inPopover,
+  showIndex,
+  lessMinWidth,
+  ...rest
+}) => (
   <Container data-cy="answer-box" {...rest} checked={checked} correct={correct}>
     {showIndex && (
       <IndexBox data-cy="index" checked={checked} correct={correct}>
         {indexStr}
       </IndexBox>
     )}
-    <AnswerContent inPopover={inPopover} dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
-    <IconWrapper data-cy={`icon-${checked && correct}`} rightPosition={lessMinWidth ? 1 : 8}>
+    <AnswerContent
+      inPopover={inPopover}
+      dangerouslySetInnerHTML={{ __html: userAnswer || '' }}
+    />
+    <IconWrapper
+      data-cy={`icon-${checked && correct}`}
+      rightPosition={lessMinWidth ? 1 : 8}
+    >
       {checked && correct && <RightIcon />}
       {checked && !correct && <WrongIcon />}
     </IconWrapper>
   </Container>
-);
-export default AnswerBox;
+)
+export default AnswerBox
 
 const Container = styled.div`
   display: inline-flex;
   position: relative;
-  vertical-align: ${({ isDragStyle }) => (isDragStyle ? "middle" : "bottom")};
+  vertical-align: ${({ isDragStyle }) => (isDragStyle ? 'middle' : 'bottom')};
   cursor: pointer;
   border-radius: 4px;
   background: ${({ theme, checked, correct, isPrintPreview }) => {
-    if (isPrintPreview) return white;
+    if (isPrintPreview) return white
     if (!checked) {
-      return theme.checkbox.noAnswerBgColor;
+      return theme.checkbox.noAnswerBgColor
     }
     if (!correct) {
-      return theme.checkbox.wrongBgColor;
+      return theme.checkbox.wrongBgColor
     }
     if (correct) {
-      return theme.checkbox.rightBgColor;
+      return theme.checkbox.rightBgColor
     }
-    return theme.widgets.clozeDropDown.boxBgColor;
+    return theme.widgets.clozeDropDown.boxBgColor
   }};
-`;
+`
 
 const AnswerContent = styled(MathFormulaDisplay)`
   overflow: hidden;
@@ -53,12 +68,12 @@ const AnswerContent = styled(MathFormulaDisplay)`
   line-height: 1.2;
   ${({ showIndex, inPopover }) => `
     max-width: ${showIndex ? 560 : 600}px;
-    width: ${showIndex ? "calc(100% - 60px)" : "100%"};
+    width: ${showIndex ? 'calc(100% - 60px)' : '100%'};
     padding-right: ${showIndex ? 5 : 20}px;
-    text-overflow: ${inPopover ? "" : "ellipsis"};
-    white-space: ${inPopover ? "" : "nowrap"};
+    text-overflow: ${inPopover ? '' : 'ellipsis'};
+    white-space: ${inPopover ? '' : 'nowrap'};
   `}
-`;
+`
 
 const IndexBox = styled.div`
   width: 32px;
@@ -80,4 +95,4 @@ const IndexBox = styled.div`
     font-size: ${theme.widgets.clozeDropDown.indexBoxFontSize};
     font-weight: ${theme.widgets.clozeDropDown.indexBoxFontWeight};
   `}
-`;
+`

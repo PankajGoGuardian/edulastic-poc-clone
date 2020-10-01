@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { MathFormulaDisplay } from "@edulastic/common";
+import styled from 'styled-components'
+import { MathFormulaDisplay } from '@edulastic/common'
 
 export const AnswerContent = styled(MathFormulaDisplay)`
   overflow: hidden;
@@ -12,7 +12,7 @@ export const AnswerContent = styled(MathFormulaDisplay)`
   vertical-align: middle;
   ${({ showIndex, inPopover, isPrintPreview }) => `
     max-width: ${showIndex ? 560 : 600}px;
-    width: ${showIndex && !inPopover ? "calc(100% - 60px)" : "100%"};
+    width: ${showIndex && !inPopover ? 'calc(100% - 60px)' : '100%'};
     padding-right: ${isPrintPreview ? 25 : showIndex ? 5 : 20}px;
   `}
-`;
+`

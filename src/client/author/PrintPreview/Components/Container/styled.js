@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const PrintPreviewBack = styled.div`
   width: 100%;
@@ -10,17 +10,18 @@ export const PrintPreviewBack = styled.div`
     width: 100%;
   }
 
-  .__print-feedback-wrapper, .__print-feedback-main-wrapper {
-    width: 120px!important;
+  .__print-feedback-wrapper,
+  .__print-feedback-main-wrapper {
+    width: 120px !important;
   }
   .test-item-col {
-    height: auto!important;
+    height: auto !important;
   }
   .__print-item-fix-width {
-    width: 210mm!important;
-    overflow: auto!important;
+    width: 210mm !important;
+    overflow: auto !important;
   }
-`;
+`
 
 export const PrintPreviewContainer = styled.div`
   padding: 0;
@@ -28,7 +29,7 @@ export const PrintPreviewContainer = styled.div`
   min-height: 297mm;
   margin: 0 auto;
   background-color: #fff;
-  height: "";
+  height: '';
   font-variant: normal !important;
   pointer-events: none;
 
@@ -37,7 +38,7 @@ export const PrintPreviewContainer = styled.div`
     -webkit-print-color-adjust: exact !important;
   }
 
-  input[type="text"] {
+  input[type='text'] {
     pointer-events: none;
   }
 
@@ -45,8 +46,8 @@ export const PrintPreviewContainer = styled.div`
     max-width: 40%;
   }
   .question-wrapper {
-    width: calc(100% - 10px)!important;
-    max-width: 100%!important;
+    width: calc(100% - 10px) !important;
+    max-width: 100% !important;
     padding: 10px 0;
   }
   .print-preview-score {
@@ -59,17 +60,18 @@ export const PrintPreviewContainer = styled.div`
     margin-left: 0;
     margin-right: 0;
   }
-  .graph-wrapper, .test-item-preview {
-    overflow: unset!important;
+  .graph-wrapper,
+  .test-item-preview {
+    overflow: unset !important;
   }
   .__prevent-page-break.__print-time-spent {
-    margin: 0!important;
+    margin: 0 !important;
     p {
-      padding: 0!important;
-      margin: 0!important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
   }
-`;
+`
 
 export const StyledTitle = styled.p`
   font-size: 30px;
@@ -77,21 +79,21 @@ export const StyledTitle = styled.p`
   font-weight: normal;
   padding: 15px 0 0 25px;
   margin: 0;
-`;
+`
 
 export const PagePrinterHeader = styled.div`
   display: flex;
   justify-content: flex-start;
   padding: 15px 25px 15px 25px;
-`;
+`
 
-export const TestInfo = styled.div``;
+export const TestInfo = styled.div``
 
 export const InfoItem = styled.p`
   font-size: 1em;
   font-weight: bold;
-`;
+`
 
 export const Color = styled.span`
   color: #58b294;
-`;
+`

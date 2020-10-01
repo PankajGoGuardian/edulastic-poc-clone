@@ -1,25 +1,39 @@
-import { EduButton, ScrollContext, Tabs, withWindowSizes, notification } from "@edulastic/common";
-import { questionType } from "@edulastic/constants";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Pagination } from "antd";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { ThemeProvider } from "styled-components";
+import {
+  EduButton,
+  ScrollContext,
+  Tabs,
+  withWindowSizes,
+  notification,
+} from '@edulastic/common'
+import { questionType } from '@edulastic/constants'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Pagination } from 'antd'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { ThemeProvider } from 'styled-components'
 
-import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
-import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
-import Divider from "../../../../../assessment/components/TestItemPreview/Divider";
-import { themes } from "../../../../../theme";
-import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
+import QuestionWrapper from '../../../../../assessment/components/QuestionWrapper'
+import { MAX_MOBILE_WIDTH } from '../../../../../assessment/constants/others'
+import Divider from '../../../../../assessment/components/TestItemPreview/Divider'
+import { themes } from '../../../../../theme'
+import {
+  deleteItemAction,
+  getItemDeletingSelector,
+} from '../../../../ItemDetail/ducks'
 import {
   approveOrRejectSingleItem as approveOrRejectSingleItemAction,
   loadScratchPadAction,
-  submitReviewFeedbackAction
-} from "../../../../ItemList/ducks";
-import { getUserFeatures, getUserId, getUserRole, getUserSelector } from "../../../selectors/user";
-import PreviewModalWithRejectNote from "./PreviewModalWithRejectNote";
+  submitReviewFeedbackAction,
+} from '../../../../ItemList/ducks'
+import {
+  getUserFeatures,
+  getUserId,
+  getUserRole,
+  getUserSelector,
+} from '../../../selectors/user'
+import PreviewModalWithRejectNote from './PreviewModalWithRejectNote'
 import {
   ButtonsContainer,
   ButtonsWrapper,
@@ -31,10 +45,13 @@ import {
   PassageNavigation,
   WidgetContainer,
   ReportIssueBtn,
-  ScratchpadAndWidgetWrapper
-} from "./styled";
-import QuestionPreviewDetails from "./QuestionPreviewDetails";
-import { ScratchpadTool, Scratchpad } from "../../../../../common/components/Scratchpad";
+  ScratchpadAndWidgetWrapper,
+} from './styled'
+import QuestionPreviewDetails from './QuestionPreviewDetails'
+import {
+  ScratchpadTool,
+  Scratchpad,
+} from '../../../../../common/components/Scratchpad'
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -46,78 +63,82 @@ class AuthorTestItemPreview extends Component {
     fullModal: false,
     verticalDivider: false,
     scrolling: false,
-    style: { padding: 0, display: "flex" },
+    style: { padding: 0, display: 'flex' },
     qIndex: null,
-    student: {}
-  };
+    student: {},
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       value: 0,
-      collapseDirection: "",
+      collapseDirection: '',
       isRejectMode: false,
-      isEnableScratchpad: false
-    };
+      isEnableScratchpad: false,
+    }
   }
 
-  scrollContainer = React.createRef();
+  scrollContainer = React.createRef()
 
   componentDidMount() {
-    const { loadScratchPad, attachmentId } = this.props;
+    const { loadScratchPad, attachmentId } = this.props
     if (attachmentId) {
-      loadScratchPad(attachmentId);
+      loadScratchPad(attachmentId)
     }
   }
 
-  handleTabChange = value => {
+  handleTabChange = (value) => {
     this.setState({
-      value
-    });
-  };
+      value,
+    })
+  }
 
   submitReviewFeedback = (note, scratchpad) => {
-    const { submitReviewFeedback, item, approveOrRejectSingleItem: _approveOrRejectSingleItem } = this.props;
+    const {
+      submitReviewFeedback,
+      item,
+      approveOrRejectSingleItem: _approveOrRejectSingleItem,
+    } = this.props
 
     if (item?._id) {
-      const data = { note };
+      const data = { note }
       if (scratchpad) {
-        data.scratchpad = scratchpad;
+        data.scratchpad = scratchpad
       }
       submitReviewFeedback({
-        status: "rejected",
+        status: 'rejected',
         data: {
-          type: "scratchpad",
-          referrerType: "TestItemContent",
+          type: 'scratchpad',
+          referrerType: 'TestItemContent',
           referrerId: item._id,
           data,
-          status: "rejected"
-        }
-      });
-      _approveOrRejectSingleItem({ itemId: item._id, status: "rejected" });
+          status: 'rejected',
+        },
+      })
+      _approveOrRejectSingleItem({ itemId: item._id, status: 'rejected' })
     }
-    this.setState({ isRejectMode: false });
-  };
+    this.setState({ isRejectMode: false })
+  }
 
-  getStyle = first => {
-    const { verticalDivider, scrolling } = this.props;
-    const style = {};
+  getStyle = (first) => {
+    const { verticalDivider, scrolling } = this.props
+    const style = {}
     if (first && verticalDivider) {
-      style.borderRightWidth = "3px";
-      style.borderRightStyle = "solid";
+      style.borderRightWidth = '3px'
+      style.borderRightStyle = 'solid'
     }
     if (scrolling) {
-      style.height = "calc(100vh - 200px)";
-      style.overflowY = "auto";
+      style.height = 'calc(100vh - 200px)'
+      style.overflowY = 'auto'
     }
-    return style;
-  };
+    return style
+  }
 
-  setCollapseView = dir => {
-    this.setState(prevState => ({
-      collapseDirection: prevState.collapseDirection ? "" : dir
-    }));
-  };
+  setCollapseView = (dir) => {
+    this.setState((prevState) => ({
+      collapseDirection: prevState.collapseDirection ? '' : dir,
+    }))
+  }
 
   getSubIndex = (colIndex, widget, sectionQue, subCount) => {
     /*
@@ -128,24 +149,36 @@ class AuthorTestItemPreview extends Component {
     the subCount so that the sub-question count numbering flow remains ie. a-z
     */
     if (colIndex === 0) {
-      if (widget?.tabIndex === 0) return subCount;
-      return Array.isArray(sectionQue[0]) ? sectionQue[0][0] + subCount : sectionQue[0] + subCount;
+      if (widget?.tabIndex === 0) return subCount
+      return Array.isArray(sectionQue[0])
+        ? sectionQue[0][0] + subCount
+        : sectionQue[0] + subCount
     }
 
     if (widget?.tabIndex === 0)
-      return (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) + subCount;
+      return (
+        (Array.isArray(sectionQue[0])
+          ? sectionQue[0][0] + sectionQue[0][1]
+          : sectionQue[0]) + subCount
+      )
 
     if (Array.isArray(sectionQue[1])) {
       return (
-        (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
+        (Array.isArray(sectionQue[0])
+          ? sectionQue[0][0] + sectionQue[0][1]
+          : sectionQue[0]) +
         sectionQue[1][0] +
         subCount
-      );
+      )
     }
     return (
-      (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) + sectionQue[1] + subCount
-    );
-  };
+      (Array.isArray(sectionQue[0])
+        ? sectionQue[0][0] + sectionQue[0][1]
+        : sectionQue[0]) +
+      sectionQue[1] +
+      subCount
+    )
+  }
 
   renderTabContent = ({ widget, flowLayout, widgetIndex, colIndex }) => {
     const {
@@ -163,17 +196,17 @@ class AuthorTestItemPreview extends Component {
       cols,
       isMultipart,
       ...restProps
-    } = this.props;
+    } = this.props
     // const questionCount = get(item, ["data", "questions"], []).length;
     // TODO
     // make resources and questions consistent
     // resources are not saving as a part of item.data.resources
     // const isMultiPart = questionCount > 1;
-    const timespent = widget.timespent !== undefined ? widget.timespent : null;
+    const timespent = widget.timespent !== undefined ? widget.timespent : null
     // const alphabets = "abcdefghijklmnopqrstuvwxyz";
 
     // const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
-    const question = questions[widget.reference];
+    const question = questions[widget.reference]
     // if (isMultiPart || resourceCount > 0) {
     //   if (!question.qSubLabel) {
     //     question.qSubLabel = alphabets[subIndex - resourceCount];
@@ -189,13 +222,14 @@ class AuthorTestItemPreview extends Component {
     //       qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : "" // show subIndex if multipart, otherwise nothing
     //     };
     if (!question) {
-      return <div />;
+      return <div />
     }
     if (question.activity && question.activity.filtered) {
-      return <div />;
+      return <div />
     }
-    const widgets = cols[colIndex]?.widgets || [];
-    const borderRadius = widgetIndex === 0 || widgetIndex === widgets.length - 1 ? "10px" : "0px";
+    const widgets = cols[colIndex]?.widgets || []
+    const borderRadius =
+      widgetIndex === 0 || widgetIndex === widgets.length - 1 ? '10px' : '0px'
 
     return (
       <Tabs.TabContainer>
@@ -220,117 +254,166 @@ class AuthorTestItemPreview extends Component {
           tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />
       </Tabs.TabContainer>
-    );
-  };
+    )
+  }
 
-  toggleScratchpad = showNotification => {
-    const { isEnableScratchpad } = this.state;
+  toggleScratchpad = (showNotification) => {
+    const { isEnableScratchpad } = this.state
 
     if (showNotification && !isEnableScratchpad) {
       this.setState(
         {
-          isEnableScratchpad: !isEnableScratchpad
+          isEnableScratchpad: !isEnableScratchpad,
         },
         () => {
           notification({
-            type: "info",
-            messageKey: "scratchpadInfoMultipart"
-          });
+            type: 'info',
+            messageKey: 'scratchpadInfoMultipart',
+          })
         }
-      );
-      return null;
+      )
+      return null
     }
-    this.setState({ isEnableScratchpad: !isEnableScratchpad });
-  };
+    this.setState({ isEnableScratchpad: !isEnableScratchpad })
+  }
 
   renderLeftButtons = (showScratch, showNotification) => {
-    const { onlySratchpad, toggleReportIssue } = this.props;
-    const { isEnableScratchpad } = this.state;
+    const { onlySratchpad, toggleReportIssue } = this.props
+    const { isEnableScratchpad } = this.state
 
-    const scratchpadHandler = () => this.toggleScratchpad(showNotification);
+    const scratchpadHandler = () => this.toggleScratchpad(showNotification)
 
     return (
       <>
         {showScratch && (
-          <ButtonsContainer style={onlySratchpad ? { display: "none" } : {}}>
+          <ButtonsContainer style={onlySratchpad ? { display: 'none' } : {}}>
             <ButtonsWrapper justifyContent="flex-start">
               <EduButton isGhost height="28px" onClick={scratchpadHandler}>
-                {isEnableScratchpad ? "Hide Scratchpad" : "Show Scratchpad"}
+                {isEnableScratchpad ? 'Hide Scratchpad' : 'Show Scratchpad'}
               </EduButton>
             </ButtonsWrapper>
           </ButtonsContainer>
         )}
-        <div style={{ position: "absolute", right: "40px", bottom: "10px", zIndex: "1" }}>
-          <ReportIssueBtn title="Report Issue" height="28px" width="30px" IconBtn isGhost onClick={toggleReportIssue}>
+        <div
+          style={{
+            position: 'absolute',
+            right: '40px',
+            bottom: '10px',
+            zIndex: '1',
+          }}
+        >
+          <ReportIssueBtn
+            title="Report Issue"
+            height="28px"
+            width="30px"
+            IconBtn
+            isGhost
+            onClick={toggleReportIssue}
+          >
             <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           </ReportIssueBtn>
         </div>
       </>
-    );
-  };
+    )
+  }
 
   renderRightButtons = () => {
-    const { isPassage, item, goToItem, passageTestItems, page } = this.props;
+    const { isPassage, item, goToItem, passageTestItems, page } = this.props
 
     return (
       <>
-        {isPassage && passageTestItems.length > 1 && (page === "addItems" || page === "itemList") && (
-          <PassageNavigation>
-            <span>PASSAGE ITEMS </span>
-            <Pagination
-              total={passageTestItems.length}
-              pageSize={1}
-              current={passageTestItems.findIndex(i => i === item.versionId) + 1}
-              onChange={goToItem}
-            />
-          </PassageNavigation>
-        )}
+        {isPassage &&
+          passageTestItems.length > 1 &&
+          (page === 'addItems' || page === 'itemList') && (
+            <PassageNavigation>
+              <span>PASSAGE ITEMS </span>
+              <Pagination
+                total={passageTestItems.length}
+                pageSize={1}
+                current={
+                  passageTestItems.findIndex((i) => i === item.versionId) + 1
+                }
+                onChange={goToItem}
+              />
+            </PassageNavigation>
+          )}
       </>
-    );
-  };
+    )
+  }
 
-  getScrollContainerProps = showScratch => {
-    const { page, fullModal, viewComponent, isPassage } = this.props;
+  getScrollContainerProps = (showScratch) => {
+    const { page, fullModal, viewComponent, isPassage } = this.props
     const commonProps = {
       style: {
-        overflow: "auto"
+        overflow: 'auto',
       },
       ref: this.scrollContainer,
-      "data-cy": "scroll-conteianer"
-    };
+      'data-cy': 'scroll-conteianer',
+    }
 
     // item preview popup
     // 90px is scratchpad toolbox height
-    if (viewComponent === "authorPreviewPopup") {
-      const tempHeight = isPassage && fullModal ? "calc(100vh - 160px)" : fullModal ? "calc(100vh - 100px)" : "70vh";
-      commonProps.style.height = showScratch ? `calc(${tempHeight} - 90px)` : tempHeight;
-      return commonProps;
+    if (viewComponent === 'authorPreviewPopup') {
+      const tempHeight =
+        isPassage && fullModal
+          ? 'calc(100vh - 160px)'
+          : fullModal
+          ? 'calc(100vh - 100px)'
+          : '70vh'
+      commonProps.style.height = showScratch
+        ? `calc(${tempHeight} - 90px)`
+        : tempHeight
+      return commonProps
     }
 
     // item detail preview
-    if (page === "itemAuthoring") {
-      commonProps.style.height = showScratch ? "calc(100vh - 272px)" : "calc(100vh - 182px)";
-      return commonProps;
+    if (page === 'itemAuthoring') {
+      commonProps.style.height = showScratch
+        ? 'calc(100vh - 272px)'
+        : 'calc(100vh - 182px)'
+      return commonProps
     }
-    return {};
-  };
+    return {}
+  }
 
-  renderColumns(col, colIndex, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData) {
-    const { style, windowWidth, onlySratchpad, viewComponent, fullModal, item, isPassage, ...restProps } = this.props;
-    const { value, isEnableScratchpad } = this.state;
-    const { createdBy, data = {}, maxScore, _id } = item;
-    const { questions = [] } = data;
-    const [firstQuestion = {}] = questions;
+  renderColumns(
+    col,
+    colIndex,
+    sectionQue,
+    resourceCount,
+    showScratch,
+    saveScratchpad,
+    scratchpadData
+  ) {
+    const {
+      style,
+      windowWidth,
+      onlySratchpad,
+      viewComponent,
+      fullModal,
+      item,
+      isPassage,
+      ...restProps
+    } = this.props
+    const { value, isEnableScratchpad } = this.state
+    const { createdBy, data = {}, maxScore, _id } = item
+    const { questions = [] } = data
+    const [firstQuestion = {}] = questions
     const standardIdentfiers =
       questions
-        ?.flatMap(q => q?.alignment)
-        ?.flatMap(x => x?.domains)
-        ?.flatMap(d => d?.standards)
-        ?.map(s => s?.name)
-        ?.filter(s => Boolean(s)) || [];
-    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = firstQuestion;
+        ?.flatMap((q) => q?.alignment)
+        ?.flatMap((x) => x?.domains)
+        ?.flatMap((d) => d?.standards)
+        ?.map((s) => s?.name)
+        ?.filter((s) => Boolean(s)) || []
+    const {
+      authorDifficulty,
+      depthOfKnowledge,
+      bloomsTaxonomy,
+      tags,
+    } = firstQuestion
 
-    let subCount = 0;
+    let subCount = 0
     const columns = (
       <>
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
@@ -341,29 +424,42 @@ class AuthorTestItemPreview extends Component {
                 label={tab}
                 style={{
                   width: `calc(${100 / col.tabs.length}% - 30px)`,
-                  textAlign: "center",
-                  padding: "5px 15px"
+                  textAlign: 'center',
+                  padding: '5px 15px',
                 }}
                 {...restProps}
               />
             ))}
           </Tabs>
         )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
-          <MobileRightSide onClick={() => this.handleTabChange(1)}>
-            <IconArrow type="left" />
-          </MobileRightSide>
-        )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
-          <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-            <IconArrow type="right" />
-          </MobileLeftSide>
-        )}
+        {col.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!col.tabs.length &&
+          value === 0 && (
+            <MobileRightSide onClick={() => this.handleTabChange(1)}>
+              <IconArrow type="left" />
+            </MobileRightSide>
+          )}
+        {col.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!col.tabs.length &&
+          value === 1 && (
+            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+              <IconArrow type="right" />
+            </MobileLeftSide>
+          )}
         {showScratch && isEnableScratchpad && <ScratchpadTool />}
-        <WidgetContainer alignItems="flex-start" {...this.getScrollContainerProps(showScratch)}>
+        <WidgetContainer
+          alignItems="flex-start"
+          {...this.getScrollContainerProps(showScratch)}
+        >
           <ScratchpadAndWidgetWrapper>
             {showScratch && isEnableScratchpad && (
-              <Scratchpad hideTools saveData={saveScratchpad} data={scratchpadData} />
+              <Scratchpad
+                hideTools
+                saveData={saveScratchpad}
+                data={scratchpadData}
+              />
             )}
 
             {col?.widgets?.map((widget, i) => (
@@ -378,7 +474,7 @@ class AuthorTestItemPreview extends Component {
                     colIndex,
                     sectionQue,
                     subCount: subCount++,
-                    resourceCount
+                    resourceCount,
                   })}
                 {((col.tabs && !col.tabs.length) || !col.tabs) &&
                   this.renderTabContent({
@@ -388,7 +484,7 @@ class AuthorTestItemPreview extends Component {
                     colIndex,
                     sectionQue,
                     subCount: subCount++,
-                    resourceCount
+                    resourceCount,
                   })}
               </React.Fragment>
             ))}
@@ -418,13 +514,13 @@ class AuthorTestItemPreview extends Component {
           )}
         </WidgetContainer>
       </>
-    );
+    )
 
-    return columns;
+    return columns
   }
 
   renderColumnContentAreaWithRejectNote = (sectionQue, resourceCount) => {
-    const { item, onlySratchpad } = this.props;
+    const { item, onlySratchpad } = this.props
     return (
       <PreviewModalWithRejectNote
         item={item}
@@ -434,117 +530,150 @@ class AuthorTestItemPreview extends Component {
         submitReviewFeedback={this.submitReviewFeedback}
         onlySratchpad={onlySratchpad}
       />
-    );
-  };
-
-  get collapseButtons() {
-    const { collapseDirection } = this.state;
-    return <Divider collapseDirection={collapseDirection} setCollapseView={this.setCollapseView} />;
+    )
   }
 
-  getSectionQue = cols => {
-    if (cols.length !== 2) return [cols[0]?.widgets?.length];
+  get collapseButtons() {
+    const { collapseDirection } = this.state
+    return (
+      <Divider
+        collapseDirection={collapseDirection}
+        setCollapseView={this.setCollapseView}
+      />
+    )
+  }
 
-    const sections = [];
+  getSectionQue = (cols) => {
+    if (cols.length !== 2) return [cols[0]?.widgets?.length]
+
+    const sections = []
 
     if (cols[0]?.tabs?.length === 2) {
       sections.push([
-        cols[0]?.widgets?.filter(x => x.tabIndex === 0).length,
-        cols[0]?.widgets?.filter(x => x.tabIndex === 1).length
-      ]);
-    } else sections.push(cols[0]?.widgets?.length);
+        cols[0]?.widgets?.filter((x) => x.tabIndex === 0).length,
+        cols[0]?.widgets?.filter((x) => x.tabIndex === 1).length,
+      ])
+    } else sections.push(cols[0]?.widgets?.length)
 
     if (cols[1]?.tabs?.length === 2) {
       sections.push([
-        cols[1]?.widgets?.filter(x => x.tabIndex === 0).length,
-        cols[1]?.widgets?.filter(x => x.tabIndex === 1).length
-      ]);
-    } else sections.push(cols[1]?.widgets?.length);
+        cols[1]?.widgets?.filter((x) => x.tabIndex === 0).length,
+        cols[1]?.widgets?.filter((x) => x.tabIndex === 1).length,
+      ])
+    } else sections.push(cols[1]?.widgets?.length)
 
-    return sections;
-  };
+    return sections
+  }
 
   /**
    * need to show scratchpad on clicking reject button.
    * @param {string} scratchpadData is from PreviewModalWithRejectNote component.
    * @param {func}  saveScratchpad is from PeviewModalWithRejectNote component.
    */
-  renderColumnsContentArea = ({ sectionQue, resourceCount, scratchpadData, saveScratchpad }) => {
-    const { cols, passageNavigator } = this.props;
-    const { collapseDirection } = this.state;
+  renderColumnsContentArea = ({
+    sectionQue,
+    resourceCount,
+    scratchpadData,
+    saveScratchpad,
+  }) => {
+    const { cols, passageNavigator } = this.props
+    const { collapseDirection } = this.state
 
     return cols.map((col, i) => {
-      const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-      const widgets = col.widgets || [];
-      const isHighlightImageType = w => w.type === questionType.HIGHLIGHT_IMAGE;
-      const showScratch = widgets.some(isHighlightImageType) || !!saveScratchpad;
-      const hasMultipleWidgets = widgets.length > 1;
-      const allHighLight = widgets.length > 0 && widgets.every(isHighlightImageType);
-      const showNotification = hasMultipleWidgets && !allHighLight;
+      const hideColumn =
+        (collapseDirection === 'left' && i === 0) ||
+        (collapseDirection === 'right' && i === 1)
+      const widgets = col.widgets || []
+      const isHighlightImageType = (w) =>
+        w.type === questionType.HIGHLIGHT_IMAGE
+      const showScratch = widgets.some(isHighlightImageType) || !!saveScratchpad
+      const hasMultipleWidgets = widgets.length > 1
+      const allHighLight =
+        widgets.length > 0 && widgets.every(isHighlightImageType)
+      const showNotification = hasMultipleWidgets && !allHighLight
 
       return (
-        <Container width={!collapseDirection ? col.dimension : hideColumn ? "0px" : "100%"}>
+        <Container
+          width={
+            !collapseDirection ? col.dimension : hideColumn ? '0px' : '100%'
+          }
+        >
           <ColumnContentArea>
             {i === 1 && passageNavigator}
-            {i === 0 ? this.renderLeftButtons(showScratch, showNotification) : this.renderRightButtons()}
-            {this.renderColumns(col, i, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData)}
+            {i === 0
+              ? this.renderLeftButtons(showScratch, showNotification)
+              : this.renderRightButtons()}
+            {this.renderColumns(
+              col,
+              i,
+              sectionQue,
+              resourceCount,
+              showScratch,
+              saveScratchpad,
+              scratchpadData
+            )}
           </ColumnContentArea>
           {i === 0 && cols.length > 1 && this.collapseButtons}
         </Container>
-      );
-    });
-  };
+      )
+    })
+  }
 
   render() {
-    const { cols, onlySratchpad } = this.props;
-    const { isRejectMode } = this.state;
-    let questionCount = 0;
-    let resourceCount = 0;
+    const { cols, onlySratchpad } = this.props
+    const { isRejectMode } = this.state
+    let questionCount = 0
+    let resourceCount = 0
     cols
-      .filter(item => item.widgets?.length > 0)
+      .filter((item) => item.widgets?.length > 0)
       .forEach(({ widgets }) => {
-        questionCount += widgets.length;
+        questionCount += widgets.length
         resourceCount += widgets.reduce((count, wid) => {
-          if (wid.widgetType === "resource") {
-            return count + 1;
+          if (wid.widgetType === 'resource') {
+            return count + 1
           }
-          return count;
-        }, 0);
-      });
+          return count
+        }, 0)
+      })
     if (questionCount === 0) {
-      return null;
+      return null
     }
     // send in an array of lengths to preserve the sub-question count
     // filter out the questions with different tab indices in each section
-    const sectionQue = this.getSectionQue(cols);
+    const sectionQue = this.getSectionQue(cols)
     return (
       <ThemeProvider theme={themes.default}>
-        <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
+        <ScrollContext.Provider
+          value={{ getScrollElement: () => this.scrollContainer.current }}
+        >
           {isRejectMode || onlySratchpad
-            ? this.renderColumnContentAreaWithRejectNote(sectionQue, resourceCount)
+            ? this.renderColumnContentAreaWithRejectNote(
+                sectionQue,
+                resourceCount
+              )
             : this.renderColumnsContentArea({ sectionQue, resourceCount })}
         </ScrollContext.Provider>
       </ThemeProvider>
-    );
+    )
   }
 }
 const enhance = compose(
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       deleting: getItemDeletingSelector(state),
       userFeatures: getUserFeatures(state),
       userId: getUserId(state),
       user: getUserSelector(state).user,
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
     }),
     {
       deleteItem: deleteItemAction,
       approveOrRejectSingleItem: approveOrRejectSingleItemAction,
       submitReviewFeedback: submitReviewFeedbackAction,
-      loadScratchPad: loadScratchPadAction
+      loadScratchPad: loadScratchPadAction,
     }
   )
-);
+)
 
-export default enhance(AuthorTestItemPreview);
+export default enhance(AuthorTestItemPreview)

@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { Table } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import { Table } from 'antd'
 
 export const OnHoverTable = styled(Table)`
   .ant-table-row {
@@ -10,10 +10,10 @@ export const OnHoverTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const Button = styled.button`
-  ${props =>
+  ${(props) =>
     props.noStyle &&
     `
     background:none;
@@ -21,16 +21,16 @@ export const Button = styled.button`
     border:0;
     border-radius:0
   `}
-  opacity: ${props => (props.disabled ? "0.2" : "1")};
+  opacity: ${(props) => (props.disabled ? '0.2' : '1')};
   cursor: pointer;
-`;
+`
 
 Button.defaultProps = {
-  noStyle: true
-};
+  noStyle: true,
+}
 
 export const OnHoverButton = styled(Button).attrs({
-  id: "onHoverVisible"
+  id: 'onHoverVisible',
 })`
   opacity: 0;
   margin-right: 20px;
@@ -38,4 +38,4 @@ export const OnHoverButton = styled(Button).attrs({
   &:last-child {
     margin-right: 0;
   }
-`;
+`

@@ -1,15 +1,21 @@
-import React from "react";
-import styled from "styled-components";
-import { Input } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import { Input } from 'antd'
 
-import { CustomModalStyled, EduButton } from "@edulastic/common";
-import { lightGrey, lightGrey9 } from "@edulastic/colors";
+import { CustomModalStyled, EduButton } from '@edulastic/common'
+import { lightGrey, lightGrey9 } from '@edulastic/colors'
 
-export const ClassCodePopup = ({ visible, classCode, handleClassCodeChange, toggleClassCodeModal, onOk }) => {
+export const ClassCodePopup = ({
+  visible,
+  classCode,
+  handleClassCodeChange,
+  toggleClassCodeModal,
+  onOk,
+}) => {
   const onCancel = () => {
-    handleClassCodeChange("");
-    toggleClassCodeModal(false);
-  };
+    handleClassCodeChange('')
+    toggleClassCodeModal(false)
+  }
 
   return (
     <CustomModalStyled
@@ -23,13 +29,13 @@ export const ClassCodePopup = ({ visible, classCode, handleClassCodeChange, togg
           <EduButton onClick={onOk} disabled={!classCode}>
             Yes, Sign In
           </EduButton>
-        </ModalFooter>
+        </ModalFooter>,
       ]}
     >
       <ModalContent>
         <p>
-          Please sign-in to your district-specific page. Contact your teacher/administrator for the correct sign-in
-          link.
+          Please sign-in to your district-specific page. Contact your
+          teacher/administrator for the correct sign-in link.
         </p>
         <p>OR</p>
         <p>
@@ -39,13 +45,13 @@ export const ClassCodePopup = ({ visible, classCode, handleClassCodeChange, togg
             type="text"
             placeholder="Enter Class Code"
             value={classCode}
-            onChange={event => handleClassCodeChange(event.target.value)}
+            onChange={(event) => handleClassCodeChange(event.target.value)}
           />
         </p>
       </ModalContent>
     </CustomModalStyled>
-  );
-};
+  )
+}
 
 const ModalContent = styled.div`
   margin-top: 25px;
@@ -54,20 +60,20 @@ const ModalContent = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`;
+`
 
 const FieldLabel = styled.span`
   margin-right: 10px;
-`;
+`
 
 const ModalFooter = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: ${props => props.marginTop};
+  margin-top: ${(props) => props.marginTop};
   .ant-btn {
     width: 150px;
   }
-`;
+`
 
 const StyledInput = styled(Input)`
   margin: 0 auto;
@@ -84,4 +90,4 @@ const StyledInput = styled(Input)`
   &:focus::placeholder {
     color: transparent;
   }
-`;
+`

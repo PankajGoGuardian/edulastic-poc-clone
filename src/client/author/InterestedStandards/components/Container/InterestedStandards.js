@@ -1,26 +1,26 @@
-import { CheckboxLabel, EduButton } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { Col, Icon, Row } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
-import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { CheckboxLabel, EduButton } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { Col, Icon, Row } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { getDictCurriculumsAction } from '../../../src/actions/dictionaries'
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
+import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
+import { getCurriculumsListSelector } from '../../../src/selectors/dictionaries'
+import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 // actions
 import {
   deleteStandardAction,
   receiveInterestedStandardsAction,
   saveInterestedStandardsAction,
   updateInterestedStandardsAction,
-  updateStandardsPreferencesAction
-} from "../../ducks";
-import StandardSetModal from "../StandardSetsModal/StandardSetsModal";
+  updateStandardsPreferencesAction,
+} from '../../ducks'
+import StandardSetModal from '../StandardSetsModal/StandardSetsModal'
 import {
   InterestedStandardsDiv,
   SpinContainer,
@@ -30,167 +30,220 @@ import {
   StyledSubjectCloseButton,
   StyledSubjectContent,
   StyledSubjectLine,
-  StyledSubjectTitle
-} from "./styled";
+  StyledSubjectTitle,
+} from './styled'
 
-const title = "Manage District";
-const menuActive = { mainMenu: "Settings", subMenu: "Interested Standards" };
+const title = 'Manage District'
+const menuActive = { mainMenu: 'Settings', subMenu: 'Interested Standards' }
 
 class InterestedStandards extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      standardSetsModalVisible: false
-    };
+      standardSetsModalVisible: false,
+    }
   }
 
   componentDidMount() {
-    const { loadInterestedStandards, userOrgId, getCurriculums, role, schoolId } = this.props;
-    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
-    const orgId = isSchoolLevel ? schoolId : userOrgId;
-    const orgType = isSchoolLevel ? "institution" : "district";
+    const {
+      loadInterestedStandards,
+      userOrgId,
+      getCurriculums,
+      role,
+      schoolId,
+    } = this.props
+    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN
+    const orgId = isSchoolLevel ? schoolId : userOrgId
+    const orgType = isSchoolLevel ? 'institution' : 'district'
     loadInterestedStandards({
       orgId,
-      orgType
-    });
-    getCurriculums();
+      orgType,
+    })
+    getCurriculums()
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.loading || prevState.saving || prevState.updating) return null;
+    if (prevState.loading || prevState.saving || prevState.updating) return null
     return {
-        dataSource: nextProps.courseList
-      };
+      dataSource: nextProps.courseList,
+    }
   }
 
-  updateInterestedStandards = data => {
-    const { updateInterestedStandards } = this.props;
+  updateInterestedStandards = (data) => {
+    const { updateInterestedStandards } = this.props
     updateInterestedStandards({
-      body: data
-    });
-  };
+      body: data,
+    })
+  }
 
   saveInterestedStandards = () => {
-    const { updateInterestedStandards, interestedStaData, userOrgId, schoolId, role } = this.props;
-    const { showAllStandards = false, includeOtherStandards = false } = interestedStaData;
+    const {
+      updateInterestedStandards,
+      interestedStaData,
+      userOrgId,
+      schoolId,
+      role,
+    } = this.props
+    const {
+      showAllStandards = false,
+      includeOtherStandards = false,
+    } = interestedStaData
 
-    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
-    const orgId = isSchoolLevel ? schoolId : userOrgId;
-    const orgType = isSchoolLevel ? "institution" : "district";
+    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN
+    const orgId = isSchoolLevel ? schoolId : userOrgId
+    const orgType = isSchoolLevel ? 'institution' : 'district'
     const saveData = {
       orgId,
       orgType,
       showAllStandards,
       includeOtherStandards,
-      curriculums: []
-    };
+      curriculums: [],
+    }
     if (interestedStaData.curriculums) {
       for (let i = 0; i < interestedStaData.curriculums.length; i++) {
         saveData.curriculums.push({
           _id: interestedStaData.curriculums[i]._id,
           name: interestedStaData.curriculums[i].name,
-          subject: interestedStaData.curriculums[i].subject
-        });
+          subject: interestedStaData.curriculums[i].subject,
+        })
       }
     }
 
-    updateInterestedStandards(saveData);
-  };
+    updateInterestedStandards(saveData)
+  }
 
   showMyStandardSetsModal = () => {
-    this.setState({ standardSetsModalVisible: true });
-  };
+    this.setState({ standardSetsModalVisible: true })
+  }
 
   hideMyStandardSetsModal = () => {
-    this.setState({ standardSetsModalVisible: false });
-  };
+    this.setState({ standardSetsModalVisible: false })
+  }
 
-  updateMyStandardSets = updatedStandards => {
-    const { userOrgId, curriculums, updateInterestedStandards, role, schoolId } = this.props;
-    const curriculumsData = [];
+  updateMyStandardSets = (updatedStandards) => {
+    const {
+      userOrgId,
+      curriculums,
+      updateInterestedStandards,
+      role,
+      schoolId,
+    } = this.props
+    const curriculumsData = []
     for (let i = 0; i < updatedStandards.length; i++) {
-      const selStandards = curriculums.filter(item => item.curriculum === updatedStandards[i]);
+      const selStandards = curriculums.filter(
+        (item) => item.curriculum === updatedStandards[i]
+      )
       curriculumsData.push({
         _id: selStandards[0]._id,
         name: selStandards[0].curriculum,
-        subject: selStandards[0].subject
-      });
+        subject: selStandards[0].subject,
+      })
     }
-    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
-    const orgId = isSchoolLevel ? schoolId : userOrgId;
-    const orgType = isSchoolLevel ? "institution" : "district";
+    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN
+    const orgId = isSchoolLevel ? schoolId : userOrgId
+    const orgType = isSchoolLevel ? 'institution' : 'district'
     const standardsData = {
       orgId,
       orgType,
-      curriculums: curriculumsData
-    };
-    updateInterestedStandards(standardsData);
-    this.hideMyStandardSetsModal();
-  };
+      curriculums: curriculumsData,
+    }
+    updateInterestedStandards(standardsData)
+    this.hideMyStandardSetsModal()
+  }
 
   closeCurriculum = (id, disableClose) => {
-    const { deleteStandard } = this.props;
-    if (!disableClose) deleteStandard(id);
-  };
+    const { deleteStandard } = this.props
+    if (!disableClose) deleteStandard(id)
+  }
 
-  updatePreferences = e => {
-    const { updateStandardsPreferences } = this.props;
-    const { checked, name } = e.target;
-    updateStandardsPreferences({ name, value: checked });
-  };
+  updatePreferences = (e) => {
+    const { updateStandardsPreferences } = this.props
+    const { checked, name } = e.target
+    updateStandardsPreferences({ name, value: checked })
+  }
 
-  handleSchoolSelect = schoolId => {
-    const { loadInterestedStandards } = this.props;
+  handleSchoolSelect = (schoolId) => {
+    const { loadInterestedStandards } = this.props
     loadInterestedStandards({
       orgId: schoolId,
-      orgType: "institution"
-    });
-  };
+      orgType: 'institution',
+    })
+  }
 
   render() {
-    const { loading, updating, saving, history, curriculums, interestedStaData, role } = this.props;
-    const readOnly = role === roleuser.SCHOOL_ADMIN;
-    const showSpin = loading || updating || saving;
-    const { standardSetsModalVisible } = this.state;
-    const { showAllStandards, includeOtherStandards = false } = interestedStaData;
-    let isDisableSaveBtn = true;
-    const subjectArray = ["Mathematics", "ELA", "Science", "Social Studies", "Other Subjects"];
-    const selectedStandards = [];
-      const standardsList = [];
-    if (interestedStaData != null && interestedStaData.hasOwnProperty("curriculums")) {
-      isDisableSaveBtn = interestedStaData.curriculums.length == 0;
+    const {
+      loading,
+      updating,
+      saving,
+      history,
+      curriculums,
+      interestedStaData,
+      role,
+    } = this.props
+    const readOnly = role === roleuser.SCHOOL_ADMIN
+    const showSpin = loading || updating || saving
+    const { standardSetsModalVisible } = this.state
+    const {
+      showAllStandards,
+      includeOtherStandards = false,
+    } = interestedStaData
+    let isDisableSaveBtn = true
+    const subjectArray = [
+      'Mathematics',
+      'ELA',
+      'Science',
+      'Social Studies',
+      'Other Subjects',
+    ]
+    const selectedStandards = []
+    const standardsList = []
+    if (
+      interestedStaData != null &&
+      interestedStaData.hasOwnProperty('curriculums')
+    ) {
+      isDisableSaveBtn = interestedStaData.curriculums.length == 0
       for (let i = 0; i < subjectArray.length; i++) {
-        const filtedSubject = interestedStaData.curriculums.filter(item => item.subject === subjectArray[i]);
+        const filtedSubject = interestedStaData.curriculums.filter(
+          (item) => item.subject === subjectArray[i]
+        )
         if (filtedSubject.length > 0) {
-          selectedStandards.push(filtedSubject);
+          selectedStandards.push(filtedSubject)
         }
       }
     }
 
     if (selectedStandards.length > 0) {
       for (let i = 0; i < selectedStandards.length; i++) {
-        const subjectStandards = [];
+        const subjectStandards = []
         for (let j = 0; j < selectedStandards[i].length; j++) {
-          const disableClose = selectedStandards[i][j]?.orgType === "district" && readOnly;
+          const disableClose =
+            selectedStandards[i][j]?.orgType === 'district' && readOnly
           subjectStandards.push(
             <StyledSubjectLine>
               <StyledSubjectCloseButton
                 disabled={disableClose}
-                onClick={() => this.closeCurriculum(selectedStandards[i][j]._id, disableClose)}
+                onClick={() =>
+                  this.closeCurriculum(
+                    selectedStandards[i][j]._id,
+                    disableClose
+                  )
+                }
               >
                 <Icon type="close" />
               </StyledSubjectCloseButton>
               <p>{selectedStandards[i][j].name}</p>
             </StyledSubjectLine>
-          );
+          )
         }
         standardsList.push(
-          <React.Fragment>
-            <StyledSubjectTitle>{selectedStandards[i][0].subject}</StyledSubjectTitle>
+          <>
+            <StyledSubjectTitle>
+              {selectedStandards[i][0].subject}
+            </StyledSubjectTitle>
             {subjectStandards}
-          </React.Fragment>
-        );
+          </>
+        )
       }
     }
     // show list end
@@ -199,7 +252,7 @@ class InterestedStandards extends Component {
       <InterestedStandardsDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
-          <StyledLayout loading={showSpin ? "true" : "false"}>
+          <StyledLayout loading={showSpin ? 'true' : 'false'}>
             <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
               <SpinContainer>
@@ -207,8 +260,15 @@ class InterestedStandards extends Component {
               </SpinContainer>
             )}
             <Row>
-              <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
-                <CheckboxLabel onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
+              <Col
+                span={12}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <CheckboxLabel
+                  onChange={this.updatePreferences}
+                  name="showAllStandards"
+                  checked={showAllStandards}
+                >
                   Allow teachers to view and use other standards
                 </CheckboxLabel>
                 <CheckboxLabel
@@ -223,17 +283,24 @@ class InterestedStandards extends Component {
                   type="primary"
                   onClick={this.showMyStandardSetsModal}
                   style={{
-                    marginTop: "10px",
-                    width: "260px",
-                    borderRadius: "15px"
+                    marginTop: '10px',
+                    width: '260px',
+                    borderRadius: '15px',
                   }}
                 >
                   Select your standard sets
                 </EduButton>
               </Col>
-              <Col span={12} style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Col
+                span={12}
+                style={{ display: 'flex', justifyContent: 'flex-end' }}
+              >
                 <SaSchoolSelect onChange={this.handleSchoolSelect} />
-                <EduButton style={{ marginleft: "10px" }} type="primary" onClick={this.saveInterestedStandards}>
+                <EduButton
+                  style={{ marginleft: '10px' }}
+                  type="primary"
+                  onClick={this.saveInterestedStandards}
+                >
                   Save
                 </EduButton>
               </Col>
@@ -254,21 +321,21 @@ class InterestedStandards extends Component {
           </StyledLayout>
         </StyledContent>
       </InterestedStandardsDiv>
-    );
+    )
   }
 }
 
 const enhance = compose(
   connect(
-    state => ({
-      interestedStaData: get(state, ["interestedStandardsReducer", "data"], []),
-      loading: get(state, ["interestedStandardsReducer", "loading"], false),
-      saving: get(state, ["interestedStandardsReducer", "saving"], false),
-      updating: get(state, ["interestedStandardsReducer", "updating"], false),
-      schoolId: get(state, "user.saSettingsSchool"),
+    (state) => ({
+      interestedStaData: get(state, ['interestedStandardsReducer', 'data'], []),
+      loading: get(state, ['interestedStandardsReducer', 'loading'], false),
+      saving: get(state, ['interestedStandardsReducer', 'saving'], false),
+      updating: get(state, ['interestedStandardsReducer', 'updating'], false),
+      schoolId: get(state, 'user.saSettingsSchool'),
       userOrgId: getUserOrgId(state),
       curriculums: getCurriculumsListSelector(state),
-      role: getUserRole(state)
+      role: getUserRole(state),
     }),
     {
       loadInterestedStandards: receiveInterestedStandardsAction,
@@ -276,17 +343,17 @@ const enhance = compose(
       saveInterestedStandards: saveInterestedStandardsAction,
       getCurriculums: getDictCurriculumsAction,
       deleteStandard: deleteStandardAction,
-      updateStandardsPreferences: updateStandardsPreferencesAction
+      updateStandardsPreferences: updateStandardsPreferencesAction,
     }
   )
-);
+)
 
-export default enhance(InterestedStandards);
+export default enhance(InterestedStandards)
 
 InterestedStandards.propTypes = {
   loadInterestedStandards: PropTypes.func.isRequired,
   updateInterestedStandards: PropTypes.func.isRequired,
   saveInterestedStandards: PropTypes.func.isRequired,
   interestedStaData: PropTypes.object.isRequired,
-  userOrgId: PropTypes.string.isRequired
-};
+  userOrgId: PropTypes.string.isRequired,
+}

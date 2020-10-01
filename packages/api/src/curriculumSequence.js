@@ -1,172 +1,174 @@
-import qs from "qs";
-import API from "./utils/API";
+import qs from 'qs'
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/playlists";
+const api = new API()
+const prefix = '/playlists'
 const getPlaylist = ({ id, forUseThis = false }) =>
   api
     .callApi({
-      method: "get",
-      url: `${prefix}/${id}${forUseThis ? "?forUseThis=1" : ""}`
+      method: 'get',
+      url: `${prefix}/${id}${forUseThis ? '?forUseThis=1' : ''}`,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const delelePlaylist = id =>
+const delelePlaylist = (id) =>
   api
     .callApi({
-      method: "delete",
-      url: `${prefix}/${id}`
+      method: 'delete',
+      url: `${prefix}/${id}`,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
-const delelePlaylistFromUse = id =>
+const delelePlaylistFromUse = (id) =>
   api
     .callApi({
-      method: "delete",
-      url: `${prefix}/use/${id}`
+      method: 'delete',
+      url: `${prefix}/use/${id}`,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const searchDistinctPublishers = () =>
   api
     .callApi({
-      method: "get",
-      url: `${prefix}/search/collection`
+      method: 'get',
+      url: `${prefix}/search/collection`,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const updateCurriculumSequence = (id, curriculumSequence) => {
-  const _curriculumSequence = { ...curriculumSequence };
+  const _curriculumSequence = { ...curriculumSequence }
 
-  delete _curriculumSequence._id;
-  delete _curriculumSequence.__v;
+  delete _curriculumSequence._id
+  delete _curriculumSequence.__v
 
   const options = {
-    method: "put",
+    method: 'put',
     url: `${prefix}/${id}`,
-    data: _curriculumSequence
-  };
+    data: _curriculumSequence,
+  }
 
-  return api.callApi(options).then(res => res.data.result);
-};
+  return api.callApi(options).then((res) => res.data.result)
+}
 
 const searchCurriculumSequences = ({ search, sort, limit, page }) => {
   const options = {
-    method: "post",
+    method: 'post',
     url: `${prefix}/search/`,
     data: {
       page,
       limit,
       search,
-      sort
-    }
-  };
+      sort,
+    },
+  }
 
-  return api.callApi(options).then(res => res.data.result);
-};
+  return api.callApi(options).then((res) => res.data.result)
+}
 
 const create = ({ data }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}`,
-      data
+      data,
     })
-    .then(res => res.data.result);
+    .then((res) => res.data.result)
 
 const update = ({ data, id }) =>
   api
     .callApi({
-      method: "put",
+      method: 'put',
       url: `${prefix}/${id}`,
-      data
+      data,
     })
-    .then(res => res.data.result);
+    .then((res) => res.data.result)
 
-const publishPlaylist = payload =>
+const publishPlaylist = (payload) =>
   api
     .callApi({
-      method: "put",
+      method: 'put',
       url: payload.unlinkFromId
         ? `${prefix}/${payload.id}/publish?unlinkFromId=${payload.unlinkFromId}`
-        : `${prefix}/${payload}/publish`
+        : `${prefix}/${payload}/publish`,
     })
-    .then(res => res);
+    .then((res) => res)
 
-const updatePlaylistStatus = data =>
+const updatePlaylistStatus = (data) =>
   api
     .callApi({
-      method: "put",
+      method: 'put',
       url: `${prefix}/${data.playlistId}/publish?status=${data.status}`,
-      data: { collections: data.collections }
+      data: { collections: data.collections },
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const duplicatePlayList = ({ _id, title, forUseThis = false }) =>
   api
     .callApi({
-      method: "post",
-      url: `${prefix}/${_id}/duplicate?title=${title}${forUseThis ? `&forUseThis=1` : ""}`
+      method: 'post',
+      url: `${prefix}/${_id}/duplicate?title=${title}${
+        forUseThis ? `&forUseThis=1` : ''
+      }`,
     })
-    .then(res => res.data.result);
+    .then((res) => res.data.result)
 
 const publishCustomizeDraft = ({ _id, data }) =>
   api
     .callApi({
-      method: "put",
+      method: 'put',
       url: `${prefix}/${_id}/duplicate`,
-      data
+      data,
     })
-    .then(res => res.data.result);
+    .then((res) => res.data.result)
 
-const checkExistingDuplicatedForUser = id =>
+const checkExistingDuplicatedForUser = (id) =>
   api
     .callApi({
-      method: "get",
-      url: `${prefix}/${id}/duplicate`
+      method: 'get',
+      url: `${prefix}/${id}/duplicate`,
     })
-    .then(res => res.data.result);
+    .then((res) => res.data.result)
 
-const fetchPlaylistMetrics = data => {
-  const queryString = qs.stringify(data);
+const fetchPlaylistMetrics = (data) => {
+  const queryString = qs.stringify(data)
   return api
     .callApi({
-      method: "get",
-      url: `/report/playlist-metrics?${queryString}`
+      method: 'get',
+      url: `/report/playlist-metrics?${queryString}`,
     })
-    .then(result => result.data.result);
-};
+    .then((result) => result.data.result)
+}
 
-const fetchPlaylistInsights = data => {
-  const queryString = qs.stringify(data);
+const fetchPlaylistInsights = (data) => {
+  const queryString = qs.stringify(data)
   return api
     .callApi({
-      method: "get",
-      url: `/report/insights?${queryString}`
+      method: 'get',
+      url: `/report/insights?${queryString}`,
     })
-    .then(result => result.data.result);
-};
+    .then((result) => result.data.result)
+}
 
 const getSignedRequest = ({ playlistId, moduleId, contentId, resource }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/${playlistId}/generate-lti-request`,
       data: {
         moduleId,
         contentId,
-        resource
-      }
+        resource,
+      },
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const usePlaylist = id =>
+const usePlaylist = (id) =>
   api
     .callApi({
-      method: "post",
-      url: `${prefix}/${id}/use-this`
+      method: 'post',
+      url: `${prefix}/${id}/use-this`,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
   getCurriculums: getPlaylist,
@@ -185,5 +187,5 @@ export default {
   delelePlaylistFromUse,
   usePlaylist,
   publishCustomizeDraft,
-  checkExistingDuplicatedForUser
-};
+  checkExistingDuplicatedForUser,
+}

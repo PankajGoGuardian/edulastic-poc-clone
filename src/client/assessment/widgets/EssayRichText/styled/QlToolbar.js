@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const QlToolbar = styled.div`
   &.ql-toolbar.ql-snow {
@@ -6,4 +6,4 @@ export const QlToolbar = styled.div`
     border: none;
     padding: 0;
   }
-`;
+`

@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import { whiteSmoke, fadedBlack, red, desktopWidth } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { whiteSmoke, fadedBlack, red, desktopWidth } from '@edulastic/colors'
 
 export const Banner = ({ text, buttonText, onButtonClick, showButton }) => (
   <BannerContainer>
     <BannerText>{text}</BannerText>
     {showButton && <Button onClick={onButtonClick}>{buttonText}</Button>}
   </BannerContainer>
-);
+)
 
 const Button = styled.button`
   background-color: ${whiteSmoke};
@@ -21,7 +21,7 @@ const Button = styled.button`
   @media (max-width: ${desktopWidth}) {
     margin-right: 20px;
   }
-`;
+`
 
 const BannerContainer = styled.div`
   height: 35px;
@@ -34,10 +34,10 @@ const BannerContainer = styled.div`
   z-index: 1;
   display: flex;
   align-items: center;
-`;
+`
 
 const BannerText = styled.div`
   font-weight: bold;
   text-align: center;
   flex: 1;
-`;
+`

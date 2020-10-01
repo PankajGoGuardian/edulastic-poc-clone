@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { cloneDeep, isEqual } from "lodash";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { cloneDeep, isEqual } from 'lodash'
 
-import ArrowPair from "./components/ArrowPair";
-import ValueLabel from "./components/ValueLabel";
-import Circles from "./components/Circles";
-import withGrid from "./HOC/withGrid";
-import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
-import { Line } from "./styled";
+import ArrowPair from './components/ArrowPair'
+import ValueLabel from './components/ValueLabel'
+import Circles from './components/Circles'
+import withGrid from './HOC/withGrid'
+import { convertPxToUnit, convertUnitToPx, getGridVariables } from './helpers'
+import { Line } from './styled'
 
 const DotPlot = ({
   item,
@@ -19,103 +19,110 @@ const DotPlot = ({
   evaluation,
   disableResponse,
   toggleBarDragging,
-  deleteMode
+  deleteMode,
 }) => {
-  const { width, height, margin, yAxisMax, yAxisMin, stepSize } = gridParams;
+  const { width, height, margin, yAxisMax, yAxisMin, stepSize } = gridParams
 
-  const { step } = getGridVariables(data, gridParams, true);
+  const { step } = getGridVariables(data, gridParams, true)
 
-  const [active, setActive] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [cursorY, setCursorY] = useState(null);
-  const [initY, setInitY] = useState(null);
+  const [active, setActive] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMouseDown, setIsMouseDown] = useState(false)
+  const [cursorY, setCursorY] = useState(null)
+  const [initY, setInitY] = useState(null)
 
-  const [localData, setLocalData] = useState(data);
+  const [localData, setLocalData] = useState(data)
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
-      setLocalData(data);
+      setLocalData(data)
     }
-  }, [data]);
+  }, [data])
 
   const getPolylinePoints = () =>
     localData
       .map(
         (dot, index) =>
-          `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, {
-            height,
-            margin,
-            yAxisMax,
-            yAxisMin,
-            stepSize
-          }) + 20}`
+          `${step * index + step / 2 + 2},${
+            convertUnitToPx(dot.y, {
+              height,
+              margin,
+              yAxisMax,
+              yAxisMin,
+              stepSize,
+            }) + 20
+          }`
       )
-      .join(" ");
+      .join(' ')
 
-  const getActivePoint = index =>
+  const getActivePoint = (index) =>
     active !== null
-      ? +getPolylinePoints()
-          .split(" ")
-          [active].split(",")[index]
-      : null;
+      ? +getPolylinePoints().split(' ')[active].split(',')[index]
+      : null
 
-  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+  const getActivePointValue = () =>
+    active !== null ? localData[active].y : null
 
   const save = () => {
     if (cursorY === null) {
-      return;
+      return
     }
-    setCursorY(null);
-    setActiveIndex(null);
-    setInitY(null);
-    setActive(null);
-    setIsMouseDown(false);
-    toggleBarDragging(false);
-    saveAnswer(localData, active);
-  };
+    setCursorY(null)
+    setActiveIndex(null)
+    setInitY(null)
+    setActive(null)
+    setIsMouseDown(false)
+    toggleBarDragging(false)
+    saveAnswer(localData, active)
+  }
 
-  const onMouseMove = e => {
-    const newLocalData = cloneDeep(localData);
+  const onMouseMove = (e) => {
+    const newLocalData = cloneDeep(localData)
     if (isMouseDown && cursorY && !deleteMode) {
-      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
-      newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
+      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
+      newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams)
 
-      setLocalData(newLocalData);
+      setLocalData(newLocalData)
     }
-  };
+  }
 
-  const onMouseDown = index => e => {
-    setCursorY(e.pageY);
-    setActiveIndex(index);
-    setInitY(localData[index].y);
-    setIsMouseDown(true);
-    toggleBarDragging(true);
-  };
+  const onMouseDown = (index) => (e) => {
+    setCursorY(e.pageY)
+    setActiveIndex(index)
+    setInitY(localData[index].y)
+    setIsMouseDown(true)
+    toggleBarDragging(true)
+  }
 
   const onMouseUp = () => {
-    save();
-  };
+    save()
+  }
 
   const onMouseLeave = () => {
-    save();
-  };
+    save()
+  }
 
   return (
     <svg
-      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
+      style={{ userSelect: 'none', position: 'relative', zIndex: '15' }}
       width={width}
       height={height + 40}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
+      <Line
+        x1={0}
+        y1={height - margin + 20}
+        x2={width - margin}
+        y2={height - margin + 20}
+        strokeWidth={1}
+      />
 
       <Circles
         item={item}
         onMouseDown={!disableResponse ? onMouseDown : () => {}}
-        saveAnswer={i => saveAnswer(localData, i)}
+        saveAnswer={(i) => saveAnswer(localData, i)}
         activeIndex={activeIndex}
         deleteMode={deleteMode}
         onPointOver={setActive}
@@ -129,11 +136,15 @@ const DotPlot = ({
       <ArrowPair getActivePoint={getActivePoint} />
 
       {gridParams.displayPositionOnHover && (
-        <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
+        <ValueLabel
+          getActivePoint={getActivePoint}
+          getActivePointValue={getActivePointValue}
+          active={active}
+        />
       )}
     </svg>
-  );
-};
+  )
+}
 
 DotPlot.propTypes = {
   item: PropTypes.object.isRequired,
@@ -146,20 +157,20 @@ DotPlot.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
   }).isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   evaluation: PropTypes.object.isRequired,
-  toggleBarDragging: PropTypes.func
-};
+  toggleBarDragging: PropTypes.func,
+}
 
 DotPlot.defaultProps = {
   disableResponse: false,
   deleteMode: false,
-  toggleBarDragging: () => {}
-};
+  toggleBarDragging: () => {},
+}
 
-export default withGrid(DotPlot);
+export default withGrid(DotPlot)

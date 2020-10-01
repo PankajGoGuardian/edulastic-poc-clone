@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconHeader2 = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="14.419" height="13.462" viewBox="0 0 14.419 13.462" {...props}>
+const IconHeader2 = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="14.419"
+    height="13.462"
+    viewBox="0 0 14.419 13.462"
+    {...props}
+  >
     <g transform="translate(-16 -29.578)">
       <path
         d="M10.8,0H8.383V-4.93H3.859V0H1.438V-11.422H3.859v4.477H8.383v-4.477H10.8Z"
@@ -15,6 +21,6 @@ const IconHeader2 = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconHeader2);
+export default withIconStyles(IconHeader2)

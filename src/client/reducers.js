@@ -1,16 +1,16 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux'
 
-import assessmentReducers from "./assessment/reducers";
-import authorReducers from "./author/src/reducers";
-import studentReducers from "./student/reducers";
-import curriculumSequenceReducers from "./author/CurriculumSequence/ducks";
-import tutorial from "./tutorials/tutorialReducer";
-import adminReducers from "./admin/reducers";
-import publisherReducer from "./publisher/reducers";
-import { customReportReducer } from "./admin/Components/CustomReportContainer/ducks";
-import commonReducers from "./common/ducks";
-import { slice as resetPasswordSlice } from "./SetParentPassword/ducks";
-import { publicTestReducer } from "./publicTest/ducks";
+import assessmentReducers from './assessment/reducers'
+import authorReducers from './author/src/reducers'
+import studentReducers from './student/reducers'
+import curriculumSequenceReducers from './author/CurriculumSequence/ducks'
+import tutorial from './tutorials/tutorialReducer'
+import adminReducers from './admin/reducers'
+import publisherReducer from './publisher/reducers'
+import { customReportReducer } from './admin/Components/CustomReportContainer/ducks'
+import commonReducers from './common/ducks'
+import { slice as resetPasswordSlice } from './SetParentPassword/ducks'
+import { publicTestReducer } from './publicTest/ducks'
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
@@ -23,7 +23,7 @@ const rootReducer = combineReducers({
   customReportReducer,
   ...commonReducers,
   resetPassword: resetPasswordSlice.reducer,
-  publicTest: publicTestReducer
-});
+  publicTest: publicTestReducer,
+})
 
-export default rootReducer;
+export default rootReducer

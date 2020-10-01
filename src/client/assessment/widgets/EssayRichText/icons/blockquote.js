@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconBlockQuote = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="14.899" height="12.607" viewBox="0 0 14.899 12.607" {...props}>
+const IconBlockQuote = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="14.899"
+    height="12.607"
+    viewBox="0 0 14.899 12.607"
+    {...props}
+  >
     <g transform="translate(0 -36.547)">
       <g transform="translate(0 36.547)">
         <path
@@ -17,6 +23,6 @@ const IconBlockQuote = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconBlockQuote);
+export default withIconStyles(IconBlockQuote)

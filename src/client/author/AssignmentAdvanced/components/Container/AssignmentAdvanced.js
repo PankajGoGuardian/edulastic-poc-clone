@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { find, isEmpty, get } from "lodash";
-import { Dropdown } from "antd";
-import * as qs from "query-string";
-import { withWindowSizes, FlexContainer } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { authorAssignment } from "@edulastic/colors";
-import { IconMoreVertical } from "@edulastic/icons";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { find, isEmpty, get } from 'lodash'
+import { Dropdown } from 'antd'
+import * as qs from 'query-string'
+import { withWindowSizes, FlexContainer } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { authorAssignment } from '@edulastic/colors'
+import { IconMoreVertical } from '@edulastic/icons'
 import {
   receiveAssignmentClassList,
   receiveAssignmentsSummaryAction,
-  toggleReleaseScoreSettingsAction
-} from "../../../src/actions/assignments";
+  toggleReleaseScoreSettingsAction,
+} from '../../../src/actions/assignments'
 
 import {
   getAssignmentsSummary,
@@ -22,10 +22,10 @@ import {
   getToggleReleaseGradeStateSelector,
   getCurrentTestSelector,
   getAssignmentsLoadingSelector,
-  getBulkActionStatusSelector
-} from "../../../src/selectors/assignments";
-import ListHeader from "../../../src/components/common/ListHeader";
-import ActionMenu from "../../../Assignments/components/ActionMenu/ActionMenu";
+  getBulkActionStatusSelector,
+} from '../../../src/selectors/assignments'
+import ListHeader from '../../../src/components/common/ListHeader'
+import ActionMenu from '../../../Assignments/components/ActionMenu/ActionMenu'
 import {
   Container,
   PaginationInfo,
@@ -37,14 +37,14 @@ import {
   TableWrapper,
   StyledButton,
   StyledSpan,
-  StyledFlexContainer
-} from "./styled";
-import { Breadcrumb } from "../Breadcrumb";
-import TableList from "../TableList";
-import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import EditTestModal from "../../../src/components/common/EditTestModal";
-import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
-import { releaseScoreAction } from "../../../src/actions/classBoard";
+  StyledFlexContainer,
+} from './styled'
+import { Breadcrumb } from '../Breadcrumb'
+import TableList from '../TableList'
+import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
+import EditTestModal from '../../../src/components/common/EditTestModal'
+import ReleaseScoreSettingsModal from '../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal'
+import { releaseScoreAction } from '../../../src/actions/classBoard'
 import {
   bulkOpenAssignmentAction,
   bulkCloseAssignmentAction,
@@ -52,128 +52,172 @@ import {
   bulkMarkAsDoneAssignmentAction,
   bulkReleaseScoreAssignmentAction,
   bulkUnassignAssignmentAction,
-  bulkDownloadGradesAndResponsesAction
-} from "../../ducks";
-import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
-import { getUserId, getUserRole, getGroupList } from "../../../src/selectors/user";
-import { canEditTest } from "../../../Assignments/utils";
-import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
-import PrintTestModal from "../../../src/components/common/PrintTestModal";
+  bulkDownloadGradesAndResponsesAction,
+} from '../../ducks'
+import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
+import {
+  getUserId,
+  getUserRole,
+  getGroupList,
+} from '../../../src/selectors/user'
+import { canEditTest } from '../../../Assignments/utils'
+import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
+import PrintTestModal from '../../../src/components/common/PrintTestModal'
 
-const { assignmentStatusBg } = authorAssignment;
+const { assignmentStatusBg } = authorAssignment
 
 class AssignmentAdvanced extends Component {
   state = {
     openEditPopup: false,
     isPreviewModalVisible: false,
-    filterStatus: "",
+    filterStatus: '',
     isHeaderAction: false,
-    openPrintModal: false
-  };
-
-  componentDidMount() {
-    const { match, location } = this.props;
-    const { districtId, testId } = match.params;
-    const { loadAssignmentsClassList, loadAssignmentsSummary, assignmentsSummary } = this.props;
-    const { testType = "" } = qs.parse(location.search);
-    const { termId = "" } = JSON.parse(sessionStorage.getItem("filters[Assignments]") || "{}");
-    if (isEmpty(assignmentsSummary)) {
-      loadAssignmentsSummary({ districtId });
-    }
-    loadAssignmentsClassList({ districtId, testId, testType, termId });
+    openPrintModal: false,
   }
 
-  handleCreate = () => {};
+  componentDidMount() {
+    const { match, location } = this.props
+    const { districtId, testId } = match.params
+    const {
+      loadAssignmentsClassList,
+      loadAssignmentsSummary,
+      assignmentsSummary,
+    } = this.props
+    const { testType = '' } = qs.parse(location.search)
+    const { termId = '' } = JSON.parse(
+      sessionStorage.getItem('filters[Assignments]') || '{}'
+    )
+    if (isEmpty(assignmentsSummary)) {
+      loadAssignmentsSummary({ districtId })
+    }
+    loadAssignmentsClassList({ districtId, testId, testType, termId })
+  }
 
-  onOpenReleaseScoreSettings = testId => {
-    const { toggleReleaseGradePopUp } = this.props;
-    toggleReleaseGradePopUp(true);
-    this.setState({ currentTestId: testId });
-  };
+  handleCreate = () => {}
 
-  renderBreadcrumbs = assingment => {
-    const { filterStatus } = this.state;
+  onOpenReleaseScoreSettings = (testId) => {
+    const { toggleReleaseGradePopUp } = this.props
+    toggleReleaseGradePopUp(true)
+    this.setState({ currentTestId: testId })
+  }
+
+  renderBreadcrumbs = (assingment) => {
+    const { filterStatus } = this.state
 
     return (
       <FlexContainer>
         <div>
           <StyledSpan>Filter By</StyledSpan>
-          <StyledButton data-cy="allFilter" type="primary" onClick={() => this.setState({ filterStatus: "" })}>
+          <StyledButton
+            data-cy="allFilter"
+            type="primary"
+            onClick={() => this.setState({ filterStatus: '' })}
+          >
             All
           </StyledButton>
         </div>
         <Breadcrumbs>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: "NOT OPEN" })}
+            handleClick={() => this.setState({ filterStatus: 'NOT OPEN' })}
             first
-            color={filterStatus === "NOT OPEN" ? "white" : assignmentStatusBg.NOT_OPEN}
-            bgColor={filterStatus === "NOT OPEN" && assignmentStatusBg.NOT_OPEN}
+            color={
+              filterStatus === 'NOT OPEN'
+                ? 'white'
+                : assignmentStatusBg.NOT_OPEN
+            }
+            bgColor={filterStatus === 'NOT OPEN' && assignmentStatusBg.NOT_OPEN}
           >
-            <span data-cy="notOpenFilter">{assingment.notStarted || 0}</span>Not Open
+            <span data-cy="notOpenFilter">{assingment.notStarted || 0}</span>Not
+            Open
           </Breadcrumb>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: "IN PROGRESS" })}
-            color={filterStatus === "IN PROGRESS" ? "white" : assignmentStatusBg.IN_PROGRESS}
-            bgColor={filterStatus === "IN PROGRESS" && assignmentStatusBg.IN_PROGRESS}
+            handleClick={() => this.setState({ filterStatus: 'IN PROGRESS' })}
+            color={
+              filterStatus === 'IN PROGRESS'
+                ? 'white'
+                : assignmentStatusBg.IN_PROGRESS
+            }
+            bgColor={
+              filterStatus === 'IN PROGRESS' && assignmentStatusBg.IN_PROGRESS
+            }
           >
-            <span data-cy="inProgressFilter">{assingment.inProgress || 0}</span>In Progress
+            <span data-cy="inProgressFilter">{assingment.inProgress || 0}</span>
+            In Progress
           </Breadcrumb>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: "IN GRADING" })}
-            color={filterStatus === "IN GRADING" ? "white" : assignmentStatusBg.IN_GRADING}
-            bgColor={filterStatus === "IN GRADING" && assignmentStatusBg.IN_GRADING}
+            handleClick={() => this.setState({ filterStatus: 'IN GRADING' })}
+            color={
+              filterStatus === 'IN GRADING'
+                ? 'white'
+                : assignmentStatusBg.IN_GRADING
+            }
+            bgColor={
+              filterStatus === 'IN GRADING' && assignmentStatusBg.IN_GRADING
+            }
           >
-            <span data-cy="inGradingFilter">{assingment.inGrading || 0}</span>In Grading
+            <span data-cy="inGradingFilter">{assingment.inGrading || 0}</span>In
+            Grading
           </Breadcrumb>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: "DONE" })}
-            color={filterStatus === "DONE" ? "white" : assignmentStatusBg.DONE}
-            bgColor={filterStatus === "DONE" && assignmentStatusBg.DONE}
+            handleClick={() => this.setState({ filterStatus: 'DONE' })}
+            color={filterStatus === 'DONE' ? 'white' : assignmentStatusBg.DONE}
+            bgColor={filterStatus === 'DONE' && assignmentStatusBg.DONE}
           >
             <span data-cy="doneFilter">{assingment.graded || 0}</span>Done
           </Breadcrumb>
         </Breadcrumbs>
       </FlexContainer>
-    );
-  };
+    )
+  }
 
   onEnableEdit = () => {
-    const { history, match } = this.props;
-    const { testId } = match.params;
+    const { history, match } = this.props
+    const { testId } = match.params
     history.push({
       pathname: `/author/tests/${testId}/editAssigned`,
-      state: { showCancelButton: true }
-    });
-  };
+      state: { showCancelButton: true },
+    })
+  }
 
-  toggleEditModal = value => {
-    this.setState({ openEditPopup: value });
-  };
+  toggleEditModal = (value) => {
+    this.setState({ openEditPopup: value })
+  }
 
-  toggleTestPreviewModal = value => {
-    this.setState({ isPreviewModalVisible: !!value });
-  };
+  toggleTestPreviewModal = (value) => {
+    this.setState({ isPreviewModalVisible: !!value })
+  }
 
-  onUpdateReleaseScoreSettings = releaseScore => {
-    const { currentTestId, filterState } = this.state;
-    const { setReleaseScore, toggleReleaseGradePopUp } = this.props;
-    setReleaseScore(undefined, undefined, releaseScore, currentTestId, filterState);
-    toggleReleaseGradePopUp(false);
-  };
+  onUpdateReleaseScoreSettings = (releaseScore) => {
+    const { currentTestId, filterState } = this.state
+    const { setReleaseScore, toggleReleaseGradePopUp } = this.props
+    setReleaseScore(
+      undefined,
+      undefined,
+      releaseScore,
+      currentTestId,
+      filterState
+    )
+    toggleReleaseGradePopUp(false)
+  }
 
   togglePrintModal = () => {
-    const { openPrintModal } = this.state;
-    this.setState({ openPrintModal: !openPrintModal });
-  };
+    const { openPrintModal } = this.state
+    this.setState({ openPrintModal: !openPrintModal })
+  }
 
-  gotoPrintView = data => {
-    const { type, customValue } = data;
-    const { match } = this.props;
-    const { testId } = match.params;
+  gotoPrintView = (data) => {
+    const { type, customValue } = data
+    const { match } = this.props
+    const { testId } = match.params
 
-    window.open(`/author/printAssessment/${testId}?type=${type}&qs=${type === "custom" ? customValue : ""}`, "_blank");
-    this.togglePrintModal();
-  };
+    window.open(
+      `/author/printAssessment/${testId}?type=${type}&qs=${
+        type === 'custom' ? customValue : ''
+      }`,
+      '_blank'
+    )
+    this.togglePrintModal()
+  }
 
   render() {
     const {
@@ -198,15 +242,24 @@ class AssignmentAdvanced extends Component {
       isLoadingAssignments,
       bulkActionStatus,
       userRole,
-      userClassList
-    } = this.props;
-    const { testId } = match.params;
-    const { filterStatus, openEditPopup, isPreviewModalVisible, isHeaderAction, openPrintModal } = this.state;
-    const assingment = find(assignmentsSummary, item => item.testId === testId) || {};
-    const { testType = "" } = qs.parse(location.search);
+      userClassList,
+    } = this.props
+    const { testId } = match.params
+    const {
+      filterStatus,
+      openEditPopup,
+      isPreviewModalVisible,
+      isHeaderAction,
+      openPrintModal,
+    } = this.state
+    const assingment =
+      find(assignmentsSummary, (item) => item.testId === testId) || {}
+    const { testType = '' } = qs.parse(location.search)
     return (
       <div>
-        {isHeaderAction && <DeleteAssignmentModal testId={testId} testName={assingment?.title} />}
+        {isHeaderAction && (
+          <DeleteAssignmentModal testId={testId} testName={assingment?.title} />
+        )}
         <EditTestModal
           visible={openEditPopup}
           isUsed
@@ -223,11 +276,15 @@ class AssignmentAdvanced extends Component {
         />
 
         {openPrintModal && (
-          <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal} currentTestId={testId} />
+          <PrintTestModal
+            onProceed={this.gotoPrintView}
+            onCancel={this.togglePrintModal}
+            currentTestId={testId}
+          />
         )}
 
         <ListHeader
-          title={assingment.title || "Loading..."}
+          title={assingment.title || 'Loading...'}
           titleWidth="1120px"
           hasButton={false}
           renderExtra={() => (
@@ -242,16 +299,16 @@ class AssignmentAdvanced extends Component {
                 userRole,
                 userId,
                 toggleDeleteModal: () => {
-                  this.setState({ isHeaderAction: true });
-                  toggleDeleteAssignmentModal(true);
+                  this.setState({ isHeaderAction: true })
+                  toggleDeleteAssignmentModal(true)
                 },
                 userClassList,
                 togglePrintModal: this.togglePrintModal,
-                assignmentTest: assingment
+                assignmentTest: assingment,
               })}
               placement="bottomLeft"
-              trigger={["hover"]}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              trigger={['hover']}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
               <BtnAction>
                 <IconMoreVertical />
@@ -262,7 +319,11 @@ class AssignmentAdvanced extends Component {
         <Container>
           <StyledFlexContainer justifyContent="space-between">
             <PaginationInfo>
-              &lt;&nbsp;<AnchorLink to="/author/assignments">Assignments&nbsp;</AnchorLink>/&nbsp;
+              &lt;&nbsp;
+              <AnchorLink to="/author/assignments">
+                Assignments&nbsp;
+              </AnchorLink>
+              /&nbsp;
               <Anchor>{assingment.title}</Anchor>
             </PaginationInfo>
             {this.renderBreadcrumbs(assingment, history)}
@@ -272,17 +333,23 @@ class AssignmentAdvanced extends Component {
               <TableList
                 classList={classList}
                 filterStatus={filterStatus}
-                rowKey={recode => recode.assignmentId}
+                rowKey={(recode) => recode.assignmentId}
                 bulkOpenAssignmentRequest={bulkOpenAssignmentRequest}
                 bulkCloseAssignmentRequest={bulkCloseAssignmentRequest}
                 bulkPauseAssignmentRequest={bulkPauseAssignmentRequest}
-                bulkMarkAsDoneAssignmentRequest={bulkMarkAsDoneAssignmentRequest}
-                bulkReleaseScoreAssignmentRequest={bulkReleaseScoreAssignmentRequest}
+                bulkMarkAsDoneAssignmentRequest={
+                  bulkMarkAsDoneAssignmentRequest
+                }
+                bulkReleaseScoreAssignmentRequest={
+                  bulkReleaseScoreAssignmentRequest
+                }
                 bulkUnassignAssignmentRequest={bulkUnassignAssignmentRequest}
-                bulkDownloadGradesAndResponsesRequest={bulkDownloadGradesAndResponsesRequest}
-                toggleDeleteAssignmentModal={toggleState => {
-                  this.setState({ isHeaderAction: false });
-                  toggleDeleteAssignmentModal(toggleState);
+                bulkDownloadGradesAndResponsesRequest={
+                  bulkDownloadGradesAndResponsesRequest
+                }
+                toggleDeleteAssignmentModal={(toggleState) => {
+                  this.setState({ isHeaderAction: false })
+                  toggleDeleteAssignmentModal(toggleState)
                 }}
                 testType={testType}
                 testName={assingment.title}
@@ -299,7 +366,7 @@ class AssignmentAdvanced extends Component {
           updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
         />
       </div>
-    );
+    )
   }
 }
 
@@ -309,25 +376,25 @@ AssignmentAdvanced.propTypes = {
   loadAssignmentsSummary: PropTypes.func.isRequired,
   assignmentsSummary: PropTypes.array.isRequired,
   classList: PropTypes.array.isRequired,
-  history: PropTypes.object.isRequired
-};
+  history: PropTypes.object.isRequired,
+}
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces("header"),
+  withNamespaces('header'),
   connect(
-    state => ({
+    (state) => ({
       assignmentsSummary: getAssignmentsSummary(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
-      error: get(state, "test.error", false),
+      error: get(state, 'test.error', false),
       classList: getAssignmentClassList(state),
       test: getCurrentTestSelector(state),
       userId: getUserId(state),
       isLoadingAssignments: getAssignmentsLoadingSelector(state),
       bulkActionStatus: getBulkActionStatusSelector(state),
       userRole: getUserRole(state),
-      userClassList: getGroupList(state)
+      userClassList: getGroupList(state),
     }),
     {
       setReleaseScore: releaseScoreAction,
@@ -341,9 +408,9 @@ const enhance = compose(
       bulkReleaseScoreAssignmentRequest: bulkReleaseScoreAssignmentAction,
       bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
       bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
-      toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction
+      toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
     }
   )
-);
+)
 
-export default enhance(AssignmentAdvanced);
+export default enhance(AssignmentAdvanced)

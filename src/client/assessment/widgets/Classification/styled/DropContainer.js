@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const DropContainer = styled.div`
   height: 600px;
@@ -11,4 +11,4 @@ export const DropContainer = styled.div`
     height: 100%;
     pointer-events: none;
   }
-`;
+`

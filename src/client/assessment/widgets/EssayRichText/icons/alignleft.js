@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconAlignLeft = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="15.282" height="12.008" viewBox="0 0 15.282 12.008" {...props}>
+const IconAlignLeft = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="15.282"
+    height="12.008"
+    viewBox="0 0 15.282 12.008"
+    {...props}
+  >
     <g transform="translate(0 -54.817)">
       <g transform="translate(0 54.817)">
         <path
@@ -25,6 +31,6 @@ const IconAlignLeft = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconAlignLeft);
+export default withIconStyles(IconAlignLeft)

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Row, Table } from "antd";
+import styled from 'styled-components'
+import { Row, Table } from 'antd'
 import {
   grey,
   lightGrey9,
@@ -9,10 +9,10 @@ import {
   secondaryTextColor,
   white,
   greenThird,
-  backgroundGrey
-} from "@edulastic/colors";
+  backgroundGrey,
+} from '@edulastic/colors'
 
-import { StyledCard } from "../../Reports/common/styled";
+import { StyledCard } from '../../Reports/common/styled'
 
 export const StyledPage = styled.div`
   .hide-without-print {
@@ -74,13 +74,13 @@ export const StyledPage = styled.div`
   .student-report-card-standard-table-container {
     padding: 10px 10px;
   }
-`;
+`
 
 export const Container = styled(StyledCard)`
   margin-bottom: 20px;
   box-shadow: none;
   border: solid 1px ${grey};
-`;
+`
 
 export const PerformanceBrandWrapper = styled(StyledCard)`
   width: 100%;
@@ -192,7 +192,7 @@ export const PerformanceBrandWrapper = styled(StyledCard)`
       margin: 0 26px 0 26px;
     }
   }
-`;
+`
 
 export const StyledTitle = styled.p`
   font-size: 30px;
@@ -200,18 +200,18 @@ export const StyledTitle = styled.p`
   font-weight: normal;
   padding: 15px 0 0 25px;
   margin: 0;
-`;
+`
 
 export const Color = styled.span`
   color: ${lightGreen5};
-`;
+`
 
 export const StyledPerformancePercent = styled.div`
   .student-report-card-chart-area-score {
     background-color: ${({ backGroundcolor }) => backGroundcolor};
     color: white;
   }
-`;
+`
 export const PerformanceTitle = styled(Row)`
   font-size: 13px;
   color: ${secondaryTextColor};
@@ -219,13 +219,13 @@ export const PerformanceTitle = styled(Row)`
   text-transform: uppercase;
   width: 192px;
   text-align: center;
-`;
+`
 
 export const StyledTableWrapper = styled(StyledCard)`
   margin-bottom: 20px;
   box-shadow: none;
   border: solid 1px ${grey};
-`;
+`
 
 export const StyledTable = styled(Table)`
   .math-formula-display {
@@ -269,7 +269,7 @@ export const StyledTable = styled(Table)`
   .ant-pagination {
     display: none;
   }
-`;
+`
 
 export const StyledPageHeader = styled.div`
   display: flex;
@@ -282,7 +282,7 @@ export const StyledPageHeader = styled.div`
   span {
     font-weight: bold;
   }
-`;
+`
 
 export const StyledLegendContainer = styled.div`
   display: flex;
@@ -297,4 +297,4 @@ export const StyledLegendContainer = styled.div`
       margin-right: 10px;
     }
   }
-`;
+`

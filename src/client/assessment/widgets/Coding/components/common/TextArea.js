@@ -1,25 +1,33 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Input, Button } from "antd";
-import { withTheme } from "styled-components";
-import { IconUpload } from "@edulastic/icons";
-import { StyledSubtitle } from "./styled";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Input, Button } from 'antd'
+import { withTheme } from 'styled-components'
+import { IconUpload } from '@edulastic/icons'
+import { StyledSubtitle } from './styled'
 
-const TextArea = ({ title, fileUpload, onChange, value, placeholder, theme, showUpload }) => {
+const TextArea = ({
+  title,
+  fileUpload,
+  onChange,
+  value,
+  placeholder,
+  theme,
+  showUpload,
+}) => {
   const uploadButtonStyle = {
-    float: "right",
+    float: 'right',
     border: 0,
     padding: 0,
-    fontSize: "12px",
+    fontSize: '12px',
     color: theme?.widgets?.coding?.buttonTestCaseFileUpload,
-    fontWeight: 600
-  };
+    fontWeight: 600,
+  }
 
   const uploadIconStyle = {
     fill: theme?.widgets?.coding?.buttonTestCaseFileUpload,
-    margin: "0 10px",
-    verticalAlign: "middle"
-  };
+    margin: '0 10px',
+    verticalAlign: 'middle',
+  }
 
   return (
     <div>
@@ -39,13 +47,13 @@ const TextArea = ({ title, fileUpload, onChange, value, placeholder, theme, show
         onChange={onChange}
         autoSize={{
           minRows: 6,
-          maxRows: 6
+          maxRows: 6,
         }}
         placeholder={placeholder}
       />
     </div>
-  );
-};
+  )
+}
 
 TextArea.propTypes = {
   title: PropTypes.string,
@@ -53,11 +61,11 @@ TextArea.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string,
   placeholder: PropTypes.string,
-  showUpload: PropTypes.bool
-};
+  showUpload: PropTypes.bool,
+}
 
 TextArea.defaultProps = {
-  showUpload: true
-};
+  showUpload: true,
+}
 
-export default withTheme(TextArea);
+export default withTheme(TextArea)

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { Modal } from "antd";
-import { white } from "@edulastic/colors";
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { Modal } from 'antd'
+import { white } from '@edulastic/colors'
 
-const UnauthorizedPopup = props => {
-  const [visible, setVisible] = useState(true);
-  const { className } = props;
+const UnauthorizedPopup = (props) => {
+  const [visible, setVisible] = useState(true)
+  const { className } = props
 
   return (
     <Modal
@@ -16,10 +16,13 @@ const UnauthorizedPopup = props => {
       maskClosable={false}
       onCancel={() => setVisible(false)}
     >
-      <p>User not yet authorized to use Edulastic. Please contact your district administrator!</p>
+      <p>
+        User not yet authorized to use Edulastic. Please contact your district
+        administrator!
+      </p>
     </Modal>
-  );
-};
+  )
+}
 
 const StyledUnauthorizedPopup = styled(UnauthorizedPopup)`
   .ant-modal-content {
@@ -45,6 +48,6 @@ const StyledUnauthorizedPopup = styled(UnauthorizedPopup)`
       }
     }
   }
-`;
+`
 
-export { StyledUnauthorizedPopup as UnauthorizedPopup };
+export { StyledUnauthorizedPopup as UnauthorizedPopup }

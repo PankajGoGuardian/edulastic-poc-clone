@@ -1,5 +1,5 @@
-import { Modal } from "antd";
-import styled from "styled-components";
+import { Modal } from 'antd'
+import styled from 'styled-components'
 
 export const ModalWrapper = styled(Modal)`
   top: 0;
@@ -15,12 +15,12 @@ export const ModalWrapper = styled(Modal)`
       overflow-y: unset !important;
     }
   }
-`;
+`
 
 export const QuestionWrapperStyled = styled.div`
   overflow-y: auto;
   height: 100%;
-`;
+`
 
 export const BottomNavigationWrapper = styled.div`
   padding: 20px 0px;
@@ -29,4 +29,4 @@ export const BottomNavigationWrapper = styled.div`
   bottom: 0px;
   left: 0px;
   right: 0px;
-`;
+`

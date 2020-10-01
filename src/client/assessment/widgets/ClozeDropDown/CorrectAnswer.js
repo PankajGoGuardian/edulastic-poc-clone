@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { EDIT } from "../../constants/constantsForQuestions";
-import Display from "./Display";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { EDIT } from '../../constants/constantsForQuestions'
+import Display from './Display'
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -12,16 +12,24 @@ class CorrectAnswer extends Component {
     hasGroupResponses: PropTypes.bool.isRequired,
     configureOptions: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
-    item: PropTypes.object.isRequired
-  };
+    item: PropTypes.object.isRequired,
+  }
 
-  handleMultiSelect = answers => {
-    const { onUpdateValidationValue } = this.props;
-    onUpdateValidationValue(answers);
-  };
+  handleMultiSelect = (answers) => {
+    const { onUpdateValidationValue } = this.props
+    onUpdateValidationValue(answers)
+  }
 
   render() {
-    const { options, stimulus, response, hasGroupResponses, item, configureOptions, uiStyle } = this.props;
+    const {
+      options,
+      stimulus,
+      response,
+      hasGroupResponses,
+      item,
+      configureOptions,
+      uiStyle,
+    } = this.props
     return (
       <Display
         preview
@@ -37,8 +45,8 @@ class CorrectAnswer extends Component {
         hasGroupResponses={hasGroupResponses}
         view={EDIT}
       />
-    );
+    )
   }
 }
 
-export default CorrectAnswer;
+export default CorrectAnswer

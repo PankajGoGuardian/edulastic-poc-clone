@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const PremiumLabel = styled.div`
   position: absolute;
@@ -11,6 +11,6 @@ const PremiumLabel = styled.div`
   font-weight: bold;
   padding: 3px 15px;
   border-radius: 5px;
-`;
+`
 
-export default PremiumLabel;
+export default PremiumLabel

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const MathInputWrapper = styled.div`
   position: relative;
@@ -10,6 +10,6 @@ const MathInputWrapper = styled.div`
   & > div {
     max-width: 100%;
   }
-`;
+`
 
-export default MathInputWrapper;
+export default MathInputWrapper

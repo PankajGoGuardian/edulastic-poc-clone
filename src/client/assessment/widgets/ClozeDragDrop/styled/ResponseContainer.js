@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const ResponseContainer = styled.div`
   padding: 0px 10px;
@@ -15,4 +15,4 @@ export const ResponseContainer = styled.div`
     display: block;
     max-width: 380px;
   }
-`;
+`

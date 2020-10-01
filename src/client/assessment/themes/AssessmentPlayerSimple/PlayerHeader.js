@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
-import React, { Fragment, useState } from "react";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import styled from "styled-components";
-import { nonAutoGradableTypes } from "@edulastic/constants";
-import { withWindowSizes } from "@edulastic/common";
-import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
-import { Tooltip, isZoomGreator } from "../../../common/utils/helpers";
+import React, { Fragment, useState } from 'react'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
+import styled from 'styled-components'
+import { nonAutoGradableTypes } from '@edulastic/constants'
+import { withWindowSizes } from '@edulastic/common'
+import {
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import { Tooltip, isZoomGreator } from '../../../common/utils/helpers'
 
 import {
   Header,
@@ -21,15 +24,15 @@ import {
   LogoCompact,
   ToolBar,
   ToolTipContainer,
-  MainActionWrapper
-} from "../common";
+  MainActionWrapper,
+} from '../common'
 
-import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
+import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 
-import SettingsModal from "../../../student/sharedComponents/SettingsModal";
-import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
+import SettingsModal from '../../../student/sharedComponents/SettingsModal'
+import QuestionSelectDropdown from '../common/QuestionSelectDropdown'
 
-import ToolbarModal from "../common/ToolbarModal";
+import ToolbarModal from '../common/ToolbarModal'
 
 const PlayerHeader = ({
   title,
@@ -54,23 +57,24 @@ const PlayerHeader = ({
   enableMagnifier,
   timedAssignment,
   utaId,
-  groupId
+  groupId,
 }) => {
-  const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
+  const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
-  const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
-  const showSettingIcon = windowWidth < IPAD_LANDSCAPE_WIDTH || isZoomGreator("md", theme.zoomLevel);
-  let isNonAutoGradable = false;
-  const item = items[currentItem];
+  const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC']
+  const showSettingIcon =
+    windowWidth < IPAD_LANDSCAPE_WIDTH || isZoomGreator('md', theme.zoomLevel)
+  let isNonAutoGradable = false
+  const item = items[currentItem]
   if (item.data && item.data.questions) {
-    item.data.questions.forEach(question => {
+    item.data.questions.forEach((question) => {
       if (nonAutoGradableTypes.includes(question.type)) {
-        isNonAutoGradable = true;
+        isNonAutoGradable = true
       }
-    });
+    })
   }
 
-  const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
+  const isMobile = windowWidth <= MAX_MOBILE_WIDTH
   const rightButtons = (
     <SaveAndExit
       utaId={utaId}
@@ -79,10 +83,10 @@ const PlayerHeader = ({
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
     />
-  );
+  )
 
   return (
-    <Fragment>
+    <>
       <ToolbarModal
         isVisible={isToolbarModalVisible}
         onClose={() => setToolbarModalVisible(false)}
@@ -103,7 +107,11 @@ const PlayerHeader = ({
         <HeaderMainMenu skinb="true">
           <HeaderPracticePlayer>
             <HeaderWrapper justifyContent="space-between">
-              <LogoCompact isMobile={isMobile} buttons={rightButtons} title={title} />
+              <LogoCompact
+                isMobile={isMobile}
+                buttons={rightButtons}
+                title={title}
+              />
               <MainActionWrapper alignItems="center">
                 {isMobile && (
                   <QuestionSelectDropdown
@@ -149,7 +157,11 @@ const PlayerHeader = ({
                     tool={toolsOpenStatus}
                     changeCaculateMode={() => {}}
                     changeTool={toggleToolsOpenStatus}
-                    qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+                    qType={get(
+                      items,
+                      `[${currentItem}].data.questions[0].type`,
+                      null
+                    )}
                     handleMagnifier={handleMagnifier}
                     enableMagnifier={enableMagnifier}
                     timedAssignment={timedAssignment}
@@ -163,13 +175,13 @@ const PlayerHeader = ({
           </HeaderPracticePlayer>
         </HeaderMainMenu>
       </Header>
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 PlayerHeader.defaultProps = {
-  onSaveProgress: () => {}
-};
+  onSaveProgress: () => {},
+}
 
 const enhance = compose(
   withRouter,
@@ -177,13 +189,13 @@ const enhance = compose(
   connect(
     (state, { timedAssignment }) => ({
       settings: state.test.settings,
-      timedAssignment: timedAssignment || state.test?.settings?.timedAssignment
+      timedAssignment: timedAssignment || state.test?.settings?.timedAssignment,
     }),
     null
   )
-);
+)
 
-export default enhance(PlayerHeader);
+export default enhance(PlayerHeader)
 
 const HeaderPracticePlayer = styled(FlexContainer)`
   padding: 12px 0px;
@@ -198,4 +210,4 @@ const HeaderPracticePlayer = styled(FlexContainer)`
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     padding: 0px;
   }
-`;
+`

@@ -1,19 +1,24 @@
-import { white, mobileWidth, greyThemeDark2, mediumDesktopExactWidth } from "@edulastic/colors";
-import styled from "styled-components";
+import {
+  white,
+  mobileWidth,
+  greyThemeDark2,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const Container = styled.div`
   display: flex;
   position: relative;
   padding: 0;
-  min-height: ${({ flowLayout }) => (flowLayout ? "unset" : "250px")};
+  min-height: ${({ flowLayout }) => (flowLayout ? 'unset' : '250px')};
   margin-bottom: 30px;
   flex-direction: row;
-  opacity: ${({ isDragging }) => (isDragging ? "0.4" : "1")};
+  opacity: ${({ isDragging }) => (isDragging ? '0.4' : '1')};
 
   @media (max-width: ${mobileWidth}) {
     padding: 0;
   }
-`;
+`
 
 export const Buttons = styled.div`
   position: absolute;
@@ -65,4 +70,4 @@ export const Buttons = styled.div`
   @media (max-width: ${mobileWidth}) {
     right: 0px;
   }
-`;
+`

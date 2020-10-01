@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Button } from "antd";
+import styled from 'styled-components'
+import { Button } from 'antd'
 
 export const StyledCollapseButton = styled(Button)`
   position: absolute;
@@ -9,4 +9,4 @@ export const StyledCollapseButton = styled(Button)`
   height: 24px;
   font-size: 30px;
   line-height: 22px;
-`;
+`

@@ -1,137 +1,134 @@
-import EditToolBar from "../common/editToolBar";
-import Header from "../../itemDetail/header";
-import EditItemPage from "../../itemDetail/editPage";
-import { questionType, questionGroup } from "../../../../constants/questionTypes";
+import EditToolBar from '../common/editToolBar'
+import Header from '../../itemDetail/header'
+import EditItemPage from '../../itemDetail/editPage'
+import {
+  questionType,
+  questionGroup,
+} from '../../../../constants/questionTypes'
 
 class MCQStandardPage {
   constructor() {
-    this.orientationOption = { Horizontal: "horizontal", Vertical: "vertical" };
+    this.orientationOption = { Horizontal: 'horizontal', Vertical: 'vertical' }
 
     this.styleOptions = {
-      Standard: "standard",
-      Block: "block",
-      "Radio Button Below": "radioBelow"
-    };
+      Standard: 'standard',
+      Block: 'block',
+      'Radio Button Below': 'radioBelow',
+    }
 
     this.labelOption = {
-      Numerical: "number",
-      "Uppercase alphabet": "upper-alpha",
-      "Lowercase alphabet": "lower-alpha"
-    };
+      Numerical: 'number',
+      'Uppercase alphabet': 'upper-alpha',
+      'Lowercase alphabet': 'lower-alpha',
+    }
 
     this.fontSizeOption = {
-      Small: "small",
-      Normal: "normal",
-      Large: "large",
-      "Extra Large": "xlarge",
-      Huge: "xxlarge"
-    };
+      Small: 'small',
+      Normal: 'normal',
+      Large: 'large',
+      'Extra Large': 'xlarge',
+      Huge: 'xxlarge',
+    }
 
-    this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
+    this.scoringTypeOption = {
+      'Exact match': 'exactMatch',
+      'Partial match': 'partialMatch',
+    }
 
-    this.roundingType = { "Round down": "roundDown", None: "none" };
+    this.roundingType = { 'Round down': 'roundDown', None: 'none' }
 
-    this.editToolBar = new EditToolBar();
+    this.editToolBar = new EditToolBar()
 
     this.formates = [
-      { tag: "strong", sel: "bold-1" },
-      { tag: "em", sel: "italic-1" },
-      { tag: "u", sel: "underline-1" },
-      { tag: "s", sel: "strikeThrough-1" },
-      { tag: "sub", sel: "subscript-1" },
-      { tag: "sup", sel: "superscript-1" }
-    ];
+      { tag: 'strong', sel: 'bold-1' },
+      { tag: 'em', sel: 'italic-1' },
+      { tag: 'u', sel: 'underline-1' },
+      { tag: 's', sel: 'strikeThrough-1' },
+      { tag: 'sub', sel: 'subscript-1' },
+      { tag: 'sup', sel: 'superscript-1' },
+    ]
 
-    this.header = new Header();
+    this.header = new Header()
   }
 
   // question content
-  getQuestionEditor = () => cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]');
+  getQuestionEditor = () =>
+    cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]')
 
-  setQuestionEditorText = text =>
-    this.getQuestionEditor()
-      .clear({ force: true })
-      .type(text);
+  setQuestionEditorText = (text) =>
+    this.getQuestionEditor().clear({ force: true }).type(text)
 
   // choices
-  getChoiceByIndex = index =>
+  getChoiceByIndex = (index) =>
     // const selector = `#idprefix${index}`;
     cy
       .get('[data-cy="quillSortableItem"]')
       .eq(index)
-      .find('[contenteditable="true"]');
+      .find('[contenteditable="true"]')
 
   deleteChoiceByIndex(index) {
-    const selector = `[data-cy=deleteprefix${index}]`;
-    cy.get(selector).click({ force: true });
-    return this;
+    const selector = `[data-cy=deleteprefix${index}]`
+    cy.get(selector).click({ force: true })
+    return this
   }
 
   getAllChoices = () =>
     cy
       .get('[data-cy="sortable-list-container"]')
       .first()
-      .find('[data-cy="quillSortableItem"]');
+      .find('[data-cy="quillSortableItem"]')
   // .find(".ql-editor");
 
-  getAllAnsChoicesLabel = () => cy.get('[data-cy="anwer-labels"]');
+  getAllAnsChoicesLabel = () => cy.get('[data-cy="anwer-labels"]')
 
   addNewChoice() {
-    cy.get('[data-cy="add-new-ch"]')
-      .eq(0)
-      .should("be.visible")
-      .click();
-    return this;
+    cy.get('[data-cy="add-new-ch"]').eq(0).should('be.visible').click()
+    return this
   }
 
   // correct ans
 
-  getPoints = () => cy.get('[data-cy="points"]');
+  getPoints = () => cy.get('[data-cy="points"]')
 
   addAlternate() {
-    cy.get("[data-cy='alternate']")
-      .click({ force: true });
-    return this;
+    cy.get("[data-cy='alternate']").click({ force: true })
+    return this
   }
 
   getAlternates = () =>
     cy
-      .contains("div", "Set Correct Answer(s)")
+      .contains('div', 'Set Correct Answer(s)')
       .next()
-      .contains("span", "Alternate");
+      .contains('span', 'Alternate')
 
   deleteAlternate() {
-    return this;
+    return this
   }
 
   selectAlternatetab = () => {
-    cy.contains("span", "Alternate 1").click();
-  };
+    cy.contains('span', 'Alternate 1').click()
+  }
 
-  getMultipleResponse = () => cy.get('[data-cy="multi"]').closest("label");
+  getMultipleResponse = () => cy.get('[data-cy="multi"]').closest('label')
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.contains("ADVANCED OPTIONS")
-      .should("be.visible")
-      .click({ force: true });
-    return this;
+    cy.contains('ADVANCED OPTIONS').should('be.visible').click({ force: true })
+    return this
   }
 
-  getStyleOption = () => cy.get('[data-cy="styleSelect"]');
+  getStyleOption = () => cy.get('[data-cy="styleSelect"]')
 
   selectChoicesStyle(option) {
-    const selectOp = `[data-cy="${this.styleOptions[option]}"]`;
-    this.getStyleOption().click();
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.styleOptions[option]}"]`
+    this.getStyleOption().click()
+    cy.get(selectOp).should('be.visible').click()
 
     this.getStyleOption()
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
 
     /*    cy.contains("label", "Style")
       .next()
@@ -141,245 +138,223 @@ class MCQStandardPage {
     return this; */
   }
 
-  getWrongOption = () => cy.get("label.wrong");
+  getWrongOption = () => cy.get('label.wrong')
 
-  getRightOption = () => cy.get("label.right");
+  getRightOption = () => cy.get('label.right')
 
-  getBothHighlight = () => cy.get("label.right,label.wrong");
+  getBothHighlight = () => cy.get('label.right,label.wrong')
 
-  getLabelType = () => cy.get('[data-cy="labelTypeSelect"]').should("be.visible");
+  getLabelType = () =>
+    cy.get('[data-cy="labelTypeSelect"]').should('be.visible')
 
   selectLabelType(option) {
-    const selectOp = `[data-cy="${this.labelOption[option]}"]`;
-    this.getLabelType().click();
+    const selectOp = `[data-cy="${this.labelOption[option]}"]`
+    this.getLabelType().click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).should('be.visible').click()
 
     this.getLabelType()
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   selectOrientation(option) {
-    const selectOp = `[data-cy="${this.orientationOption[option]}"]`;
-    cy.get('[data-cy="orientationSelect"]')
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.orientationOption[option]}"]`
+    cy.get('[data-cy="orientationSelect"]').should('be.visible').click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).should('be.visible').click()
 
     cy.get('[data-cy="orientationSelect"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
-  selectChoice = choice => {
+  selectChoice = (choice) => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
       .click()
-      .closest("label")
-      .find("input")
-      .should("be.checked");
-  };
+      .closest('label')
+      .find('input')
+      .should('be.checked')
+  }
 
-  deselectChoice = choice => {
+  deselectChoice = (choice) => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
       .click()
-      .closest("label")
-      .find("input")
-      .should("not.be.checked");
-  };
+      .closest('label')
+      .find('input')
+      .should('not.be.checked')
+  }
 
-  checkChoiceSelected = choice => {
+  checkChoiceSelected = (choice) => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
-      .closest("label")
-      .find("input")
-      .should("be.checked");
-  };
+      .closest('label')
+      .find('input')
+      .should('be.checked')
+  }
 
-  checkChoiceNotSelected = choice => {
+  checkChoiceNotSelected = (choice) => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
-      .closest("label")
-      .find("input")
-      .should("not.be.checked");
-  };
+      .closest('label')
+      .find('input')
+      .should('not.be.checked')
+  }
 
   selectFontSize(option) {
-    const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;
-    cy.get('[data-cy="fontSizeSelect"]')
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`
+    cy.get('[data-cy="fontSizeSelect"]').should('be.visible').click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).should('be.visible').click()
 
     cy.get('[data-cy="fontSizeSelect"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
-  checkHighlight = label => {
-    const { right, wrong, both } = label;
+  checkHighlight = (label) => {
+    const { right, wrong, both } = label
     if (right) {
-      this.getRightOption().should("have.length", 0);
+      this.getRightOption().should('have.length', 0)
     }
     if (wrong) {
-      this.getWrongOption().should("have.length", 0);
+      this.getWrongOption().should('have.length', 0)
     }
     if (both) {
-      this.getBothHighlight().should("have.length", 0);
+      this.getBothHighlight().should('have.length', 0)
     }
-  };
+  }
 
-  checkHighlightData = data => {
-    const { color, length, choices } = data;
-    if (color === "right") {
-      this.getRightOption().should("have.length", length);
-      choices.forEach(text => this.getRightOption().should("contain", text));
+  checkHighlightData = (data) => {
+    const { color, length, choices } = data
+    if (color === 'right') {
+      this.getRightOption().should('have.length', length)
+      choices.forEach((text) => this.getRightOption().should('contain', text))
     }
-    if (color === "wrong") {
-      this.getWrongOption().should("have.length", length);
-      choices.forEach(text => this.getWrongOption().should("contain", text));
+    if (color === 'wrong') {
+      this.getWrongOption().should('have.length', length)
+      choices.forEach((text) => this.getWrongOption().should('contain', text))
     }
-  };
+  }
 
   selectScoringType(option) {
-    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
+    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`
     cy.get('[data-cy="scoringType"]')
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
     cy.get(selectOp)
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
     cy.get('[data-cy="scoringType"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   selectRoundingType(option) {
-    const selectOp = `[data-cy="${this.roundingType[option]}"]`;
-    cy.get('[data-cy="rounding"]')
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.roundingType[option]}"]`
+    cy.get('[data-cy="rounding"]').should('be.visible').click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).should('be.visible').click()
 
     cy.get('[data-cy="rounding"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
-  selectAnswerChoice = options => {
-    cy.contains(options).click();
-  };
+  selectAnswerChoice = (options) => {
+    cy.contains(options).click()
+  }
 
-  getPanalty = () => cy.get('[data-cy="penalty"]');
+  getPanalty = () => cy.get('[data-cy="penalty"]')
 
-  getCheckAnsAttempt = () => cy.get('[data-cy="checkAttempts"]').should("be.visible");
+  getCheckAnsAttempt = () =>
+    cy.get('[data-cy="checkAttempts"]').should('be.visible')
 
-  getEnableAutoScoring = () => cy.get('[data-cy="autoscoreChk"]');
+  getEnableAutoScoring = () => cy.get('[data-cy="autoscoreChk"]')
   // return cy.contains("Enable auto scoring").prev();
 
-  getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
+  getMinScore = () => cy.get('[data-cy=minscore]').should('be.visible')
 
-  getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
+  getMaxScore = () => cy.get('[data-cy="maxscore"]').should('be.visible')
 
   getCheckAnswerCheckbox = () =>
-    cy
-      .contains("Check answer button")
-      .children()
-      .eq(0)
-      .should("be.visible");
+    cy.contains('Check answer button').children().eq(0).should('be.visible')
 
-  getUnscore = () => cy.get('[data-cy="unscoredChk"]').parent();
+  getUnscore = () => cy.get('[data-cy="unscoredChk"]').parent()
 
-  getNumofCol = () => cy.get('[data-cy="columns"]');
+  getNumofCol = () => cy.get('[data-cy="columns"]')
 
-  getSource = () => cy.get('[data-cy="source"]').should("be.visible");
+  getSource = () => cy.get('[data-cy="source"]').should('be.visible')
 
-  getCancel = () => cy.contains("Cancel").should("be.visible");
+  getCancel = () => cy.contains('Cancel').should('be.visible')
 
-  updatePoints = newPoints =>
-    this.getPoints()
-      .type("{selectall}")
-      .type(newPoints);
+  updatePoints = (newPoints) =>
+    this.getPoints().type('{selectall}').type(newPoints)
 
   // default question
-  createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
-    const item = new EditItemPage();
-    item.createNewItem(onlyItem);
-    item.chooseQuestion(questionGroup.MCQ, questionType.MCQ_STD);
-    cy.fixture("questionAuthoring").then(authoringData => {
-      const { quetext, choices, setAns } = authoringData.MCQ_STD[queKey];
+  createQuestion(queKey = 'default', queIndex = 0, onlyItem = true) {
+    const item = new EditItemPage()
+    item.createNewItem(onlyItem)
+    item.chooseQuestion(questionGroup.MCQ, questionType.MCQ_STD)
+    cy.fixture('questionAuthoring').then((authoringData) => {
+      const { quetext, choices, setAns } = authoringData.MCQ_STD[queKey]
 
       if (quetext) {
-        const text = `Q${queIndex + 1} - ${quetext}`;
-        this.setQuestionEditorText(text);
+        const text = `Q${queIndex + 1} - ${quetext}`
+        this.setQuestionEditorText(text)
       }
 
       if (choices) {
-        const choicesCount = choices.length;
-        this.getAllChoices().then(allChoices => {
-          const defaultChoiceCount = allChoices.length;
-          let choiceDiff = defaultChoiceCount - choicesCount;
+        const choicesCount = choices.length
+        this.getAllChoices().then((allChoices) => {
+          const defaultChoiceCount = allChoices.length
+          let choiceDiff = defaultChoiceCount - choicesCount
           while (choiceDiff > 0) {
-            this.deleteChoiceByIndex(0);
-            choiceDiff -= 1;
+            this.deleteChoiceByIndex(0)
+            choiceDiff -= 1
           }
           while (choiceDiff < 0) {
-            this.addNewChoice();
-            choiceDiff += 1;
+            this.addNewChoice()
+            choiceDiff += 1
           }
           choices.forEach((choice, index) => {
             this.getChoiceByIndex(index)
               .clear({ force: true })
-              .type(choice, { force: true });
-          });
-        });
+              .type(choice, { force: true })
+          })
+        })
       }
 
       if (setAns) {
-        const { correct, points } = setAns;
+        const { correct, points } = setAns
         // uncheck default ans
         this.getAllAnsChoicesLabel()
-          .find("input:checked")
-          .click({ force: true });
+          .find('input:checked')
+          .click({ force: true })
 
-        this.getAllAnsChoicesLabel()
-          .contains(correct)
-          .click();
+        this.getAllAnsChoicesLabel().contains(correct).click()
 
-        this.getPoints()
-          .clear({ force: true })
-          .type(`{selectAll}${points}`);
+        this.getPoints().clear({ force: true }).type(`{selectAll}${points}`)
 
         // this.header.save();
         // item.updateItemLevelScore(points).then(() => item.header.save(true));
       }
-    });
+    })
   }
 }
 
-export default MCQStandardPage;
+export default MCQStandardPage

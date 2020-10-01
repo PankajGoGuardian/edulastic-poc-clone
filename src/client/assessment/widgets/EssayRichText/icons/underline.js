@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconUnderline = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="13.327" height="13.327" viewBox="0 0 13.327 13.327" {...props}>
+const IconUnderline = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="13.327"
+    height="13.327"
+    viewBox="0 0 13.327 13.327"
+    {...props}
+  >
     <g transform="translate(-0.002)">
       <g transform="translate(0.002)">
         <path
@@ -17,6 +23,6 @@ const IconUnderline = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconUnderline);
+export default withIconStyles(IconUnderline)

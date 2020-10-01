@@ -1,25 +1,30 @@
-import styled from "styled-components";
-import { extraDesktopWidthMax, themeColor, themeColorLight, greyThemeDark1 } from "@edulastic/colors";
-import { StyledTable as Table, StyledTag } from "../../../../common/styled";
+import styled from 'styled-components'
+import {
+  extraDesktopWidthMax,
+  themeColor,
+  themeColorLight,
+  greyThemeDark1,
+} from '@edulastic/colors'
+import { StyledTable as Table, StyledTag } from '../../../../common/styled'
 
 export const ReStyledTag = styled(StyledTag)`
-  cursor: ${props => props.cursor || "default"};
+  cursor: ${(props) => props.cursor || 'default'};
   &:hover {
     color: #ffffff;
   }
-`;
+`
 
 export const StyledSpan = styled.span`
-  cursor: ${props => props.cursor || "default"};
+  cursor: ${(props) => props.cursor || 'default'};
   font: 12px/17px Open Sans;
   font-weight: 600;
   letter-spacing: 0px;
   color: ${greyThemeDark1};
-  text-align: ${props => props.alignment || "left"};
+  text-align: ${(props) => props.alignment || 'left'};
   &:hover {
-    color: ${props => props.hoverColor || greyThemeDark1};
+    color: ${(props) => props.hoverColor || greyThemeDark1};
   }
-`;
+`
 
 export const OnClick = styled.span`
   color: ${themeColor};
@@ -27,7 +32,7 @@ export const OnClick = styled.span`
   &:hover {
     color: ${themeColorLight};
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -102,4 +107,4 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`

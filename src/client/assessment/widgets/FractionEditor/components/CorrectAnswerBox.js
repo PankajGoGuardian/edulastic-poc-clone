@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react'
 
-import { FlexContainer, CorrectAnswersContainer } from "@edulastic/common";
-import Rectangles from "./Rectangles";
-import Circles from "./Circles";
+import { FlexContainer, CorrectAnswersContainer } from '@edulastic/common'
+import Rectangles from './Rectangles'
+import Circles from './Circles'
 
 const CorrectAnswerBox = ({ fractionProperties, selected }) => {
-  const { count, rows, columns, sectors, fractionType } = fractionProperties;
+  const { count, rows, columns, sectors, fractionType } = fractionProperties
   /**
    * creating an object with keys as selected fractions and value to true
    * for example if
@@ -13,9 +13,9 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
    * evaluation = {1: true, 2: true}
    */
   const evaluation = selected.reduce((obj, elem) => {
-    obj[elem] = true;
-    return obj;
-  }, {});
+    obj[elem] = true
+    return obj
+  }, {})
   return (
     <CorrectAnswersContainer
       title="Correct Answer"
@@ -29,7 +29,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
         {Array(count)
           .fill()
           .map((_, index) =>
-            fractionType === "circles" ? (
+            fractionType === 'circles' ? (
               <Circles
                 fractionNumber={index}
                 sectors={sectors}
@@ -58,7 +58,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
           )}
       </FlexContainer>
     </CorrectAnswersContainer>
-  );
-};
+  )
+}
 
-export default CorrectAnswerBox;
+export default CorrectAnswerBox

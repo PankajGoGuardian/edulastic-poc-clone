@@ -1,7 +1,7 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/dashboard";
+const api = new API()
+const prefix = '/dashboard'
 
 /*
  * api for fetching dashboard details
@@ -10,11 +10,11 @@ const getTeacherDashboardDetails = () => {
   return api
     .callApi({
       url: `${prefix}/teacher`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
-};
+    .then((result) => result.data.result)
+}
 
 export default {
-  getTeacherDashboardDetails
-};
+  getTeacherDashboardDetails,
+}

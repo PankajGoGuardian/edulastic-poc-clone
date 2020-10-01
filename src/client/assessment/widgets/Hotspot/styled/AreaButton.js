@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
-import { EduButton } from "@edulastic/common";
+import styled, { css } from 'styled-components'
+import { EduButton } from '@edulastic/common'
 
 // background-color: #1A73E8;
 //     border-color: #1A73E8;
@@ -14,7 +14,7 @@ const activeStyle = css`
   & svg {
     fill: #fff;
   }
-`;
+`
 
 const normalStyle = css`
   &.ant-btn.ant-btn-primary {
@@ -25,11 +25,11 @@ const normalStyle = css`
   & svg {
     fill: #878a91;
   }
-`;
+`
 
 export const AreaButton = styled(EduButton).attrs({ isGhost: true })`
   width: auto;
   height: 28px;
   margin: 0px 5px;
   ${({ active }) => (active ? activeStyle : normalStyle)}
-`;
+`

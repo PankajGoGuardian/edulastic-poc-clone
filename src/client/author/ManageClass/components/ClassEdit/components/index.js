@@ -1,8 +1,8 @@
-import React from "react";
-import * as moment from "moment";
-import PropTypes from "prop-types";
-import { Form } from "antd";
-import { Field, Optional, Label } from "./styled";
+import React from 'react'
+import * as moment from 'moment'
+import PropTypes from 'prop-types'
+import { Form } from 'antd'
+import { Field, Optional, Label } from './styled'
 
 export const FieldLabel = ({
   label,
@@ -12,30 +12,37 @@ export const FieldLabel = ({
   getFieldValue,
   fiedlName,
   initialValue,
-  disabled = false
+  disabled = false,
 }) => {
   const checkEndDate = (rule, value, callback) => {
-    const startDate = getFieldValue("startDate");
-    const diff = moment(startDate).diff(value, "days");
+    const startDate = getFieldValue('startDate')
+    const diff = moment(startDate).diff(value, 'days')
     if (diff > 0) {
-      callback(rule.message);
+      callback(rule.message)
     } else {
-      callback();
+      callback()
     }
-  };
+  }
 
   const validations = {
     name: [
-      { required: true, message: "Please enter a valid class name" },
-      { max: 256, message: "Must less than 256 characters!" }
+      { required: true, message: 'Please enter a valid class name' },
+      { max: 256, message: 'Must less than 256 characters!' },
     ],
     startDate: [],
-    endDate: [{ validator: checkEndDate, message: "Should be later than the Start date" }],
-    subject: [{ required: !disabled, message: "Please select a subject." }],
-    grades: [{ required: !disabled, message: "Please select a Grade." }],
-    institutionId: [{ required: !disabled, message: "Please select a School." }],
-    tags: []
-  };
+    endDate: [
+      {
+        validator: checkEndDate,
+        message: 'Should be later than the Start date',
+      },
+    ],
+    subject: [{ required: !disabled, message: 'Please select a subject.' }],
+    grades: [{ required: !disabled, message: 'Please select a Grade.' }],
+    institutionId: [
+      { required: !disabled, message: 'Please select a School.' },
+    ],
+    tags: [],
+  }
 
   return (
     <Field>
@@ -46,12 +53,12 @@ export const FieldLabel = ({
       <Form.Item>
         {getFieldDecorator(fiedlName, {
           rules: validations[fiedlName],
-          initialValue
+          initialValue,
         })(children)}
       </Form.Item>
     </Field>
-  );
-};
+  )
+}
 
 FieldLabel.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
@@ -60,13 +67,13 @@ FieldLabel.propTypes = {
   initialValue: PropTypes.any,
   label: PropTypes.string,
   optional: PropTypes.bool,
-  children: PropTypes.node
-};
+  children: PropTypes.node,
+}
 
 FieldLabel.defaultProps = {
-  fiedlName: "unknown",
-  label: "",
+  fiedlName: 'unknown',
+  label: '',
   initialValue: null,
   optional: false,
-  children: null
-};
+  children: null,
+}

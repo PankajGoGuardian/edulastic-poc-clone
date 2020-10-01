@@ -9,59 +9,63 @@ import {
   UPDATE_DICT_ALIGNMENT,
   UPDATE_DEFAULT_CURRICULUM,
   RESET_DICT_ALIGNMENTS,
-  UPDATE_RECENT_COLLECTIONS
-} from "../constants/actions";
+  UPDATE_RECENT_COLLECTIONS,
+} from '../constants/actions'
 
 export const getDictCurriculumsAction = () => ({
-  type: RECEIVE_DICT_CURRICULUMS_REQUEST
-});
+  type: RECEIVE_DICT_CURRICULUMS_REQUEST,
+})
 
-export const getDictStandardsForCurriculumAction = (curriculumId, grades, search) => ({
+export const getDictStandardsForCurriculumAction = (
+  curriculumId,
+  grades,
+  search
+) => ({
   type: RECEIVE_DICT_STANDARDS_REQUEST,
-  payload: { curriculumId, grades, search }
-});
+  payload: { curriculumId, grades, search },
+})
 
 export const clearDictStandardsAction = () => ({
-  type: CLEAR_DICT_STANDARDS
-});
+  type: CLEAR_DICT_STANDARDS,
+})
 
 export const clearDictAlignmentAction = () => ({
-  type: CLEAR_DICT_ALIGNMENTS
-});
+  type: CLEAR_DICT_ALIGNMENTS,
+})
 
 export const resetDictAlignmentsAction = () => ({
-  type: RESET_DICT_ALIGNMENTS
-});
+  type: RESET_DICT_ALIGNMENTS,
+})
 
-export const addNewAlignmentAction = alignment => ({
+export const addNewAlignmentAction = (alignment) => ({
   type: ADD_NEW_ALIGNMENT,
-  payload: alignment
-});
+  payload: alignment,
+})
 
-export const removeExistedAlignmentAction = curriculumId => ({
+export const removeExistedAlignmentAction = (curriculumId) => ({
   type: REMOVE_EXISTED_ALIGNMENT,
-  payload: curriculumId
-});
+  payload: curriculumId,
+})
 
 export const updateDictAlignmentAction = (alignmentIndex, payload) => ({
   type: UPDATE_DICT_ALIGNMENT,
   payload: {
     index: alignmentIndex,
-    changedFields: payload
-  }
-});
+    changedFields: payload,
+  },
+})
 
-export const updateDefaultCurriculumAction = payload => ({
+export const updateDefaultCurriculumAction = (payload) => ({
   type: UPDATE_DEFAULT_CURRICULUM,
-  payload
-});
+  payload,
+})
 
-export const updateRecentStandardsAction = payload => ({
+export const updateRecentStandardsAction = (payload) => ({
   type: UPDATE_RECENT_STANDARDS,
-  payload
-});
+  payload,
+})
 
-export const updateRecentCollectionsAction = payload => ({
+export const updateRecentCollectionsAction = (payload) => ({
   type: UPDATE_RECENT_COLLECTIONS,
-  payload
-});
+  payload,
+})

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CorrectAnswerItem = styled.div`
   width: calc(100% - 40px);
@@ -6,13 +6,15 @@ export const CorrectAnswerItem = styled.div`
   align-items: stretch;
   margin-bottom: 10px;
   cursor: pointer;
-  background: ${props => props.theme.widgets.orderList.correctAnswerItemBgColor};
+  background: ${(props) =>
+    props.theme.widgets.orderList.correctAnswerItemBgColor};
   margin-left: 40px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-left: 2px solid ${props => props.theme.widgets.orderList.correctAnswerItemBorderColor};
+  border-left: 2px solid
+    ${(props) => props.theme.widgets.orderList.correctAnswerItemBorderColor};
   span,
   p {
-    color: ${props => props.theme.widgets.orderList.correctAnswerTextColor};
+    color: ${(props) => props.theme.widgets.orderList.correctAnswerTextColor};
   }
-`;
+`

@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CorrectAnswerBox = styled.div.attrs({
-  className: "correctanswer-box"
+  className: 'correctanswer-box',
 })`
   padding: 16px;
-  font-size: ${props => props.fontSize}px;
-  width: ${({ width }) => width || "100%"};
-`;
+  font-size: ${(props) => props.fontSize}px;
+  width: ${({ width }) => width || '100%'};
+`

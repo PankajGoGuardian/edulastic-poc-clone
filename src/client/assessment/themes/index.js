@@ -1,68 +1,94 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { Spin, message, Modal, Button } from "antd";
-import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from "lodash";
-import useInterval from "@use-it/interval";
-import { test as testTypes, assignmentPolicyOptions, questionType, roleuser } from "@edulastic/constants";
-import { AssessmentPlayerContext, useRealtimeV2, notification } from "@edulastic/common";
-import { themeColor } from "@edulastic/colors";
+import React, { useEffect, useRef, useState, useMemo } from 'react'
+import { compose } from 'redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { Spin, message, Modal, Button } from 'antd'
+import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from 'lodash'
+import useInterval from '@use-it/interval'
+import {
+  test as testTypes,
+  assignmentPolicyOptions,
+  questionType,
+  roleuser,
+} from '@edulastic/constants'
+import {
+  AssessmentPlayerContext,
+  useRealtimeV2,
+  notification,
+} from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
 
-import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
-import { finishTestAcitivityAction, setPasswordValidateStatusAction } from "../actions/test";
-import { evaluateAnswer } from "../actions/evaluation";
-import { changePreview as changePreviewAction } from "../actions/view";
-import { getQuestionsByIdSelector } from "../selectors/questions";
-import { testLoadingSelector, playerSkinTypeSelector } from "../selectors/test";
-import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/answers";
-import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
-import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
-import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
-import AssessmentPlayerTestlet from "./AssessmentPlayerTestlet";
-import { CHECK, CLEAR } from "../constants/constantsForQuestions";
-import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
-import { hideHintsAction } from "../actions/userInteractions";
-import UnansweredPopup from "./common/UnansweredPopup";
+import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
+import {
+  finishTestAcitivityAction,
+  setPasswordValidateStatusAction,
+} from '../actions/test'
+import { evaluateAnswer } from '../actions/evaluation'
+import { changePreview as changePreviewAction } from '../actions/view'
+import { getQuestionsByIdSelector } from '../selectors/questions'
+import { testLoadingSelector, playerSkinTypeSelector } from '../selectors/test'
+import {
+  getAnswersArraySelector,
+  getAnswersListSelector,
+} from '../selectors/answers'
+import AssessmentPlayerDefault from './AssessmentPlayerDefault'
+import AssessmentPlayerSimple from './AssessmentPlayerSimple'
+import AssessmentPlayerDocBased from './AssessmentPlayerDocBased'
+import AssessmentPlayerTestlet from './AssessmentPlayerTestlet'
+import { CHECK, CLEAR } from '../constants/constantsForQuestions'
+import { updateTestPlayerAction } from '../../author/sharedDucks/testPlayer'
+import { hideHintsAction } from '../actions/userInteractions'
+import UnansweredPopup from './common/UnansweredPopup'
 import {
   regradedRealtimeAssignmentAction,
-  clearRegradeAssignmentAction
-} from "../../student/sharedDucks/AssignmentModule/ducks";
-import { evaluateCurrentAnswersForPreviewAction } from "../sharedDucks/previewTest";
-import { userWorkSelector } from "../../student/sharedDucks/TestItem";
-import { hasUserWork } from "../utils/answer";
-import { fetchAssignmentsAction } from "../../student/Reports/ducks";
+  clearRegradeAssignmentAction,
+} from '../../student/sharedDucks/AssignmentModule/ducks'
+import { evaluateCurrentAnswersForPreviewAction } from '../sharedDucks/previewTest'
+import { userWorkSelector } from '../../student/sharedDucks/TestItem'
+import { hasUserWork } from '../utils/answer'
+import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 
-const shouldAutoSave = itemRows => {
+const shouldAutoSave = (itemRows) => {
   if (!itemRows) {
-    return false;
+    return false
   }
   const autoSavableTypes = {
     essayRichText: 1,
     essayPlainText: 1,
-    formulaessay: 1
-  };
+    formulaessay: 1,
+  }
   for (const row of itemRows) {
     for (const widget of row?.widgets || []) {
-      if (widget.widgetType === "question" && autoSavableTypes[widget.type]) {
-        return true;
+      if (widget.widgetType === 'question' && autoSavableTypes[widget.type]) {
+        return true
       }
     }
   }
-  return false;
-};
+  return false
+}
 
-const RealTimeV2HookWrapper = ({ userId, testId, regradedAssignment, regradedRealtimeAssignment }) => {
-  let topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
+const RealTimeV2HookWrapper = ({
+  userId,
+  testId,
+  regradedAssignment,
+  regradedRealtimeAssignment,
+}) => {
+  let topics = [
+    `student_assessment:user:${userId}`,
+    `student_assessment:test:${testId}`,
+  ]
   if (regradedAssignment?.newTestId) {
-    topics = [...topics, `student_assessment:test:${regradedAssignment?.newTestId}`];
+    topics = [
+      ...topics,
+      `student_assessment:test:${regradedAssignment?.newTestId}`,
+    ]
   }
   useRealtimeV2(topics, {
-    regradedAssignment: payload => regradedRealtimeAssignment(payload)
-  });
-  return null;
-};
+    regradedAssignment: (payload) => regradedRealtimeAssignment(payload),
+  })
+  return null
+}
 
 const AssessmentContainer = ({
   view,
@@ -121,14 +147,17 @@ const AssessmentContainer = ({
   evaluateForPreview,
   ...restProps
 }) => {
-  const qid = preview || testletType ? 0 : match.params.qid || 0;
-  const [currentItem, setCurrentItem] = useState(Number(qid));
-  const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({ qLabels: [], show: false });
-  const [showRegradedModal, setShowRegradedModal] = useState(false);
-  const isLast = () => currentItem === items.length - 1;
-  const isFirst = () => currentItem === 0;
+  const qid = preview || testletType ? 0 : match.params.qid || 0
+  const [currentItem, setCurrentItem] = useState(Number(qid))
+  const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({
+    qLabels: [],
+    show: false,
+  })
+  const [showRegradedModal, setShowRegradedModal] = useState(false)
+  const isLast = () => currentItem === items.length - 1
+  const isFirst = () => currentItem === 0
 
-  const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
+  const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
   // start assessment
   useEffect(() => {
@@ -138,298 +167,326 @@ const AssessmentContainer = ({
      * TODO: Use studentAssignment.assignment to store current assignment data
      */
     if (!assignmentById[currentAssignment]) {
-      fetchAssignments();
+      fetchAssignments()
     }
 
-    window.localStorage.assessmentLastTime = Date.now();
-    return () => setPasswordValidateStatus(false);
-  }, []);
+    window.localStorage.assessmentLastTime = Date.now()
+    return () => setPasswordValidateStatus(false)
+  }, [])
 
   useEffect(() => {
     if (!loading && items.length === 0) {
       Modal.info({
         title: "It looks like there aren't any Items in this test.",
-        okText: "Close"
-      });
+        okText: 'Close',
+      })
     }
-  }, [loading]);
+  }, [loading])
 
   useEffect(() => {
-    setCurrentItem(Number(qid));
+    setCurrentItem(Number(qid))
     if (enableMagnifier) {
-      updateTestPlayer({ enableMagnifier: false });
+      updateTestPlayer({ enableMagnifier: false })
     }
-  }, [qid]);
+  }, [qid])
 
   useEffect(() => {
-    lastTime.current = Date.now();
-    window.localStorage.assessmentLastTime = lastTime.current;
-    gotoItem(currentItem);
-  }, [currentItem]);
+    lastTime.current = Date.now()
+    window.localStorage.assessmentLastTime = lastTime.current
+    gotoItem(currentItem)
+  }, [currentItem])
 
   useEffect(() => {
     if (regradedAssignment && regradedAssignment?.newTestId !== testId) {
-      setShowRegradedModal(true);
+      setShowRegradedModal(true)
     }
-  }, [regradedAssignment?.newTestId]);
+  }, [regradedAssignment?.newTestId])
 
   const onRegradedModalOk = () => {
-    history.push(`/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`);
-    clearRegradeAssignment();
-    setShowRegradedModal(false);
-  };
-  const saveCurrentAnswer = payload => {
-    const timeSpent = Date.now() - lastTime.current;
-    saveUserAnswer(currentItem, timeSpent, false, groupId, payload);
-  };
+    history.push(
+      `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`
+    )
+    clearRegradeAssignment()
+    setShowRegradedModal(false)
+  }
+  const saveCurrentAnswer = (payload) => {
+    const timeSpent = Date.now() - lastTime.current
+    saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
+  }
 
   function getPreviewTab(index = currentItem) {
-    let previewTab = CLEAR;
-    const { showPreviousAttempt: redirectPolicy } = testSettings || {};
+    let previewTab = CLEAR
+    const { showPreviousAttempt: redirectPolicy } = testSettings || {}
     const {
-      showPreviousAttemptOptions: { STUDENT_RESPONSE_AND_FEEDBACK }
-    } = assignmentPolicyOptions;
+      showPreviousAttemptOptions: { STUDENT_RESPONSE_AND_FEEDBACK },
+    } = assignmentPolicyOptions
 
     if (redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK) {
-      const questionIds = (items[index]?.data?.questions || []).map(question => question.id);
-      const currentlyAnsweredQIds = Object.keys(answersById);
-      const previouslyAnsweredQIds = Object.keys(userPrevAnswer);
+      const questionIds = (items[index]?.data?.questions || []).map(
+        (question) => question.id
+      )
+      const currentlyAnsweredQIds = Object.keys(answersById)
+      const previouslyAnsweredQIds = Object.keys(userPrevAnswer)
 
       const renderCheckAnswerView =
         questionIds.length > 0 &&
-        questionIds.some(id => previouslyAnsweredQIds.includes(id) && !currentlyAnsweredQIds.includes(id));
+        questionIds.some(
+          (id) =>
+            previouslyAnsweredQIds.includes(id) &&
+            !currentlyAnsweredQIds.includes(id)
+        )
 
       if (renderCheckAnswerView) {
-        previewTab = CHECK;
+        previewTab = CHECK
       }
     }
 
-    return previewTab;
+    return previewTab
   }
 
   useEffect(() => {
-    const previewTab = getPreviewTab();
-    changePreview(previewTab);
-  }, [userPrevAnswer, answersById, items]);
+    const previewTab = getPreviewTab()
+    changePreview(previewTab)
+  }, [userPrevAnswer, answersById, items])
 
   const getUnAnsweredQuestions = () => {
-    const questions = items[currentItem]?.data?.questions || [];
+    const questions = items[currentItem]?.data?.questions || []
     /**
      * if user used scratchpad or other tools like cross out
      * consider item as attempted
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
     if (hasUserWork(items[currentItem]?._id, restProps.userWork || {})) {
-      return [];
+      return []
     }
-    return questions.filter(q => {
-      const qAnswers = answersById[q.id];
+    return questions.filter((q) => {
+      const qAnswers = answersById[q.id]
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
-          return (answersById[q.id] || []).filter(token => token?.selected).length === 0;
+          return (
+            (answersById[q.id] || []).filter((token) => token?.selected)
+              .length === 0
+          )
         case questionType.LINE_CHART:
         case questionType.BAR_CHART:
         case questionType.HISTOGRAM:
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
-          const initialData = q.chart_data.data;
-          return initialData.every((d, i) => d?.y === qAnswers?.[i]?.y);
+          const initialData = q.chart_data.data
+          return initialData.every((d, i) => d?.y === qAnswers?.[i]?.y)
         }
         case questionType.MATCH_LIST:
-          return Object.values(qAnswers || {}).every(d => isNull(d));
+          return Object.values(qAnswers || {}).every((d) => isNull(d))
         case questionType.SORT_LIST:
         case questionType.CLOZE_DRAG_DROP:
         case questionType.HOTSPOT:
-          return !qAnswers?.some(ans => ans?.toString());
+          return !qAnswers?.some((ans) => ans?.toString())
         case questionType.ORDER_LIST: {
-          const prevOrder = [...Array(q.list.length).keys()];
-          return qAnswers ? isEqual(prevOrder, qAnswers) : true;
+          const prevOrder = [...Array(q.list.length).keys()]
+          return qAnswers ? isEqual(prevOrder, qAnswers) : true
         }
         case questionType.MATH:
-          if (q.title === "Complete the Equation") {
-            const ans = (qAnswers || "").replace(/\\ /g, "");
-            return isEmpty(ans) || ans === "+=";
+          if (q.title === 'Complete the Equation') {
+            const ans = (qAnswers || '').replace(/\\ /g, '')
+            return isEmpty(ans) || ans === '+='
           }
-          return isEmpty(qAnswers);
+          return isEmpty(qAnswers)
         case questionType.FORMULA_ESSAY:
-          return (qAnswers || []).every(d => {
-            const ans = (d.text || "").replace(/\\ /g, "");
-            return isEmpty(ans);
-          });
+          return (qAnswers || []).every((d) => {
+            const ans = (d.text || '').replace(/\\ /g, '')
+            return isEmpty(ans)
+          })
         case questionType.EXPRESSION_MULTIPART: {
-          const { inputs = {}, dropDowns = {}, maths = {}, mathUnits = {} } = qAnswers || {};
+          const { inputs = {}, dropDowns = {}, maths = {}, mathUnits = {} } =
+            qAnswers || {}
           const isAnswered = Object.values({
             ...inputs,
             ...dropDowns,
             ...maths,
-            ...mathUnits
-          }).some(d => d.value?.trim() || d.unit);
-          return !isAnswered;
+            ...mathUnits,
+          }).some((d) => d.value?.trim() || d.unit)
+          return !isAnswered
         }
         case questionType.CLOZE_TEXT: {
-          return (qAnswers || []).every(d => {
-            if (typeof d === "string") {
-              return isEmpty(d);
+          return (qAnswers || []).every((d) => {
+            if (typeof d === 'string') {
+              return isEmpty(d)
             }
             if (Array.isArray(d)) {
-              return isEmpty(d || d?.value);
+              return isEmpty(d || d?.value)
             }
-            return isEmpty(d?.value);
-          });
+            return isEmpty(d?.value)
+          })
         }
         case questionType.CLASSIFICATION: {
           if (!isObject(qAnswers)) {
-            return true;
+            return true
           }
-          const keys = Object.keys(qAnswers);
-          return keys.length === 0 || keys.every(key => isEmpty(qAnswers[key]));
+          const keys = Object.keys(qAnswers)
+          return (
+            keys.length === 0 || keys.every((key) => isEmpty(qAnswers[key]))
+          )
         }
         case questionType.CLOZE_IMAGE_DROP_DOWN:
         case questionType.CLOZE_IMAGE_TEXT: {
           if (!isObject(qAnswers)) {
-            return true;
+            return true
           }
-          const keys = Object.keys(qAnswers);
-          return keys.some(key => !qAnswers[key]);
+          const keys = Object.keys(qAnswers)
+          return keys.some((key) => !qAnswers[key])
         }
         default:
-          return isEmpty(answersById[q.id]);
+          return isEmpty(answersById[q.id])
       }
-    });
-  };
+    })
+  }
 
   const onCloseUnansweedPopup = () => {
     setUnansweredPopupSetting({
       ...unansweredPopupSetting,
-      show: false
-    });
-  };
+      show: false,
+    })
+  }
 
-  const gotoQuestion = (index, needsToProceed = false, context = "") => {
+  const gotoQuestion = (index, needsToProceed = false, context = '') => {
     if (preview) {
-      hideHints();
-      setCurrentItem(index);
-      const timeSpent = Date.now() - lastTime.current;
-      evaluateForPreview({ currentItem, timeSpent });
+      hideHints()
+      setCurrentItem(index)
+      const timeSpent = Date.now() - lastTime.current
+      evaluateForPreview({ currentItem, timeSpent })
     } else {
-      const unansweredQs = getUnAnsweredQuestions();
-      if ((unansweredQs.length && needsToProceed) || !unansweredQs.length || index < currentItem) {
-        const previewTab = getPreviewTab(index);
+      const unansweredQs = getUnAnsweredQuestions()
+      if (
+        (unansweredQs.length && needsToProceed) ||
+        !unansweredQs.length ||
+        index < currentItem
+      ) {
+        const previewTab = getPreviewTab(index)
         saveCurrentAnswer({
           urlToGo: `${url}/qid/${index}`,
           locState: history?.location?.state,
-          callback: () => changePreview(previewTab)
-        });
+          callback: () => changePreview(previewTab),
+        })
       } else {
         setUnansweredPopupSetting({
           show: true,
-          qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
+          qLabels: unansweredQs.map(
+            ({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`
+          ),
           index,
-          context
-        });
+          context,
+        })
       }
     }
-  };
+  }
 
   const moveToNext = async (e, needsToProceed = false, value) => {
-    if (!isLast() && value !== "SUBMIT") {
-      gotoQuestion(Number(currentItem) + 1, needsToProceed, "next");
+    if (!isLast() && value !== 'SUBMIT') {
+      gotoQuestion(Number(currentItem) + 1, needsToProceed, 'next')
     }
 
-    const timeSpent = Date.now() - lastTime.current;
+    const timeSpent = Date.now() - lastTime.current
 
     if (isLast() && preview && !demo) {
-      evaluateForPreview({ currentItem, timeSpent, callback: submitPreviewTest });
+      evaluateForPreview({
+        currentItem,
+        timeSpent,
+        callback: submitPreviewTest,
+      })
     }
 
-    if ((isLast() || value === "SUBMIT") && !preview) {
-      const unansweredQs = getUnAnsweredQuestions();
+    if ((isLast() || value === 'SUBMIT') && !preview) {
+      const unansweredQs = getUnAnsweredQuestions()
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
-          urlToGo: `${url}/${"test-summary"}`,
-          locState: { ...history?.location?.state, fromSummary: true }
-        });
+          urlToGo: `${url}/${'test-summary'}`,
+          locState: { ...history?.location?.state, fromSummary: true },
+        })
       } else {
         setUnansweredPopupSetting({
           show: true,
-          qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
+          qLabels: unansweredQs.map(
+            ({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`
+          ),
           index: Number(currentItem) + 1,
-          context: "next"
-        });
+          context: 'next',
+        })
       }
     }
     if (enableMagnifier) {
-      updateTestPlayer({ enableMagnifier: false });
+      updateTestPlayer({ enableMagnifier: false })
     }
-  };
+  }
 
   const saveProgress = () => {
-    const timeSpent = Date.now() - lastTime.current;
-    saveUserAnswer(currentItem, timeSpent, false, groupId);
-  };
+    const timeSpent = Date.now() - lastTime.current
+    saveUserAnswer(currentItem, timeSpent, false, groupId)
+  }
 
   const gotoSummary = async () => {
     if (!preview) {
       if (!testletType) {
-        const timeSpent = Date.now() - lastTime.current;
+        const timeSpent = Date.now() - lastTime.current
         saveUserAnswer(currentItem, timeSpent, false, groupId, {
-          urlToGo: `${url}/${"test-summary"}`,
-          locState: { ...history?.location?.state, fromSummary: true }
-        });
+          urlToGo: `${url}/${'test-summary'}`,
+          locState: { ...history?.location?.state, fromSummary: true },
+        })
       }
     } else {
-      history.push(`/login`);
+      history.push(`/login`)
     }
-  };
+  }
 
   const moveToPrev = (e, needsToProceed = false) => {
-    if (!isFirst()) gotoQuestion(Number(currentItem) - 1, needsToProceed, "prev");
+    if (!isFirst())
+      gotoQuestion(Number(currentItem) - 1, needsToProceed, 'prev')
     if (enableMagnifier) {
-      updateTestPlayer({ enableMagnifier: false });
+      updateTestPlayer({ enableMagnifier: false })
     }
-  };
+  }
 
   const onSkipUnansweredPopup = async () => {
     setUnansweredPopupSetting({
       ...unansweredPopupSetting,
-      show: false
-    });
-    const { index, context } = unansweredPopupSetting;
-    if (context === "next") {
-      await moveToNext(null, true);
-    } else if (context === "prev") {
-      moveToPrev(null, true);
+      show: false,
+    })
+    const { index, context } = unansweredPopupSetting
+    if (context === 'next') {
+      await moveToNext(null, true)
+    } else if (context === 'prev') {
+      moveToPrev(null, true)
     } else {
-      gotoQuestion(index, true);
+      gotoQuestion(index, true)
     }
-  };
+  }
 
-  const testItem = items[currentItem] || {};
+  const testItem = items[currentItem] || {}
   if (items && items.length > 0 && Object.keys(testItem).length === 0) {
     notification({
-      messageKey: "invalidAction"
-    });
+      messageKey: 'invalidAction',
+    })
     if (userRole === roleuser.STUDENT) {
-      history.push("/home/assignments");
+      history.push('/home/assignments')
     }
   }
-  let itemRows = testItem.rows;
+  let itemRows = testItem.rows
 
-  let passage = {};
+  let passage = {}
   if (testItem.passageId && passages) {
-    passage = passages.find(p => p._id === testItem.passageId);
-    itemRows = [passage?.structure, ...itemRows];
+    passage = passages.find((p) => p._id === testItem.passageId)
+    itemRows = [passage?.structure, ...itemRows]
   }
 
-  const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows]);
+  const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows])
 
   useInterval(() => {
     if (autoSave) {
-      saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId);
+      saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
     }
-  }, 1000 * 30);
+  }, 1000 * 30)
 
-  const handleMagnifier = () => updateTestPlayer({ enableMagnifier: !enableMagnifier });
+  const handleMagnifier = () =>
+    updateTestPlayer({ enableMagnifier: !enableMagnifier })
   const props = {
     saveCurrentAnswer,
     items,
@@ -461,29 +518,29 @@ const AssessmentContainer = ({
     handleMagnifier,
     enableMagnifier,
     studentReportModal,
-    ...restProps
-  };
+    ...restProps,
+  }
 
   useEffect(() => {
     if (savingResponse) {
-      message.loading("Submitting the response", 0);
+      message.loading('Submitting the response', 0)
     } else {
-      message.destroy();
+      message.destroy()
     }
     return () => {
       /**
        * message might appear just during unmount.
        * in that case we need to destroy it after
        */
-      setTimeout(() => message?.destroy(), 1500);
-    };
-  }, [savingResponse]);
+      setTimeout(() => message?.destroy(), 1500)
+    }
+  }, [savingResponse])
 
   if (loading) {
-    return <Spin />;
+    return <Spin />
   }
 
-  let playerComponent = null;
+  let playerComponent = null
   if (!isUndefined(docUrl)) {
     playerComponent = (
       <AssessmentPlayerDocBased
@@ -496,8 +553,11 @@ const AssessmentContainer = ({
         gotoSummary={gotoSummary}
         {...props}
       />
-    );
-  } else if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
+    )
+  } else if (
+    testType === testTypes.type.TESTLET ||
+    test.testType === testTypes.type.TESTLET
+  ) {
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
@@ -507,33 +567,44 @@ const AssessmentContainer = ({
         gotoSummary={gotoSummary}
         {...test}
       />
-    );
+    )
   } else {
     /**
      * at student side only scratchPad should be enabled,
      * highlight image default pen should be disabled
      */
-    playerComponent = defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />;
+    playerComponent = defaultAP ? (
+      <AssessmentPlayerDefault {...props} />
+    ) : (
+      <AssessmentPlayerSimple {...props} />
+    )
   }
 
   return (
-    <AssessmentPlayerContext.Provider value={{ isStudentAttempt: true, currentItem }}>
+    <AssessmentPlayerContext.Provider
+      value={{ isStudentAttempt: true, currentItem }}
+    >
       {showRegradedModal && (
         <Modal
           visible
           centered
           width={500}
           okButtonProps={{
-            style: { background: themeColor }
+            style: { background: themeColor },
           }}
           closable={false}
           footer={[
-            <Button style={{ background: themeColor, color: "white" }} loading={loading} onClick={onRegradedModalOk}>
+            <Button
+              style={{ background: themeColor, color: 'white' }}
+              loading={loading}
+              onClick={onRegradedModalOk}
+            >
               Ok
-            </Button>
+            </Button>,
           ]}
         >
-          The assignment has been modified by Instructor. Please restart the assignment.
+          The assignment has been modified by Instructor. Please restart the
+          assignment.
         </Modal>
       )}
       {unansweredPopupSetting.show && (
@@ -555,8 +626,8 @@ const AssessmentContainer = ({
       )}
       {playerComponent}
     </AssessmentPlayerContext.Provider>
-  );
-};
+  )
+}
 
 AssessmentContainer.propTypes = {
   gotoItem: PropTypes.func.isRequired,
@@ -574,8 +645,8 @@ AssessmentContainer.propTypes = {
   test: PropTypes.object,
   assignmentById: PropTypes.object,
   currentAssignment: PropTypes.string,
-  fetchAssignments: PropTypes.func.isRequired
-};
+  fetchAssignments: PropTypes.func.isRequired,
+}
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
@@ -583,8 +654,8 @@ AssessmentContainer.defaultProps = {
   testletConfig: {},
   test: {},
   assignmentById: {},
-  currentAssignment: ""
-};
+  currentAssignment: '',
+}
 
 const enhance = compose(
   withRouter,
@@ -599,7 +670,13 @@ const enhance = compose(
       playerSkinType: playerSkinTypeSelector(state),
       testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
-      testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),
+      testletState: get(
+        state,
+        `testUserWork[${
+          state.test ? state.test.testActivityId : ''
+        }].testletState`,
+        {}
+      ),
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),
@@ -611,12 +688,12 @@ const enhance = compose(
       testSettings: state.test?.settings,
       showMagnifier: state.test.showMagnifier,
       enableMagnifier: state.testPlayer.enableMagnifier,
-      regradedAssignment: get(state, "studentAssignment.regradedAssignment"),
-      userId: get(state, "user.user._id"),
-      userRole: get(state, "user.user.role"),
+      regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
+      userId: get(state, 'user.user._id'),
+      userRole: get(state, 'user.user.role'),
       userWork: userWorkSelector(state),
-      assignmentById: get(state, "studentAssignment.byId"),
-      currentAssignment: get(state, "studentAssignment.current")
+      assignmentById: get(state, 'studentAssignment.byId'),
+      currentAssignment: get(state, 'studentAssignment.current'),
     }),
     {
       saveUserResponse,
@@ -630,9 +707,9 @@ const enhance = compose(
       clearRegradeAssignment: clearRegradeAssignmentAction,
       setPasswordValidateStatus: setPasswordValidateStatusAction,
       fetchAssignments: fetchAssignmentsAction,
-      evaluateForPreview: evaluateCurrentAnswersForPreviewAction
+      evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
     }
   )
-);
+)
 
-export default enhance(AssessmentContainer);
+export default enhance(AssessmentContainer)

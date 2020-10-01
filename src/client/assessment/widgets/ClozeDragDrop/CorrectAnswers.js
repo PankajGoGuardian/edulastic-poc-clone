@@ -1,122 +1,126 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { ItemLevelContext } from "@edulastic/common";
-import _ from "lodash";
-import CorrectAnswers from "../../components/CorrectAnswers";
-import CorrectAnswer from "./CorrectAnswer";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { ItemLevelContext } from '@edulastic/common'
+import _ from 'lodash'
+import CorrectAnswers from '../../components/CorrectAnswers'
+import CorrectAnswer from './CorrectAnswer'
 
 class SetCorrectAnswers extends Component {
   state = {
-    currentTab: 0
-  };
+    currentTab: 0,
+  }
 
-  static contextType = ItemLevelContext;
+  static contextType = ItemLevelContext
 
   componentDidUpdate(prevProps) {
-    const { options } = this.props;
+    const { options } = this.props
 
     if (!_.isEqual(options, prevProps.options)) {
-      const { validation } = this.props;
-      const oldValue = validation.validResponse.value;
-      const diff = _.difference(prevProps.options, options);
-      if (oldValue.some(el => diff.includes(el))) {
-        const index = prevProps.options.indexOf(diff[0]);
-        const valueIndex = oldValue.indexOf(diff[0]);
-        const newAnswers = _.cloneDeep(oldValue);
-        newAnswers[valueIndex] = options[index];
-        this.updateCorrectValidationAnswers(newAnswers);
+      const { validation } = this.props
+      const oldValue = validation.validResponse.value
+      const diff = _.difference(prevProps.options, options)
+      if (oldValue.some((el) => diff.includes(el))) {
+        const index = prevProps.options.indexOf(diff[0])
+        const valueIndex = oldValue.indexOf(diff[0])
+        const newAnswers = _.cloneDeep(oldValue)
+        newAnswers[valueIndex] = options[index]
+        this.updateCorrectValidationAnswers(newAnswers)
       }
     }
   }
 
-  updateCorrectValidationAnswers = answers => {
-    const { item, setQuestionData } = this.props;
+  updateCorrectValidationAnswers = (answers) => {
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.validation.validResponse.value = answers;
+      produce(item, (draft) => {
+        draft.validation.validResponse.value = answers
       })
-    );
-  };
+    )
+  }
 
   addAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    const { currentTab } = this.state;
+    const { setQuestionData, item } = this.props
+    const { currentTab } = this.state
 
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         const response = {
           score: 1,
-          value: new Array(draft.responseIds.length).fill(null)
-        };
+          value: new Array(draft.responseIds.length).fill(null),
+        }
 
-        draft.validation.altResponses = draft.validation.altResponses || [];
-        draft.validation.altResponses.push(response);
+        draft.validation.altResponses = draft.validation.altResponses || []
+        draft.validation.altResponses.push(response)
       })
-    );
+    )
     this.setState({
-      currentTab: currentTab + 1
-    });
-  };
+      currentTab: currentTab + 1,
+    })
+  }
 
-  removeAltResponses = index => {
-    const { setQuestionData, item } = this.props;
+  removeAltResponses = (index) => {
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.splice(index, 1);
+      produce(item, (draft) => {
+        if (
+          draft.validation &&
+          draft.validation.altResponses &&
+          draft.validation.altResponses.length
+        ) {
+          draft.validation.altResponses.splice(index, 1)
         }
       })
-    );
+    )
     this.setState({
-      currentTab: 0
-    });
-  };
+      currentTab: 0,
+    })
+  }
 
-  tabChange = value => {
-    this.setState({ currentTab: value });
-  };
+  tabChange = (value) => {
+    this.setState({ currentTab: value })
+  }
 
-  updateScore = score => {
+  updateScore = (score) => {
     if (!(score > 0)) {
-      return;
+      return
     }
-    const points = parseFloat(score, 10);
-    const { item, setQuestionData } = this.props;
-    const { currentTab } = this.state;
+    const points = parseFloat(score, 10)
+    const { item, setQuestionData } = this.props
+    const { currentTab } = this.state
 
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.score = points;
+          draft.validation.validResponse.score = points
         } else if (currentTab > 0) {
-          draft.validation.altResponses[currentTab - 1].score = points;
+          draft.validation.altResponses[currentTab - 1].score = points
         }
       })
-    );
-  };
+    )
+  }
 
-  updateAnswers = answers => {
-    const { item, setQuestionData } = this.props;
-    const { currentTab } = this.state;
+  updateAnswers = (answers) => {
+    const { item, setQuestionData } = this.props
+    const { currentTab } = this.state
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.value = answers;
+          draft.validation.validResponse.value = answers
         } else if (currentTab > 0) {
-          draft.validation.altResponses[currentTab - 1].value = answers;
+          draft.validation.altResponses[currentTab - 1].value = answers
         }
       })
-    );
-  };
+    )
+  }
 
   get response() {
-    const { validation } = this.props;
-    const { currentTab } = this.state;
+    const { validation } = this.props
+    const { currentTab } = this.state
     if (currentTab === 0) {
-      return validation.validResponse;
+      return validation.validResponse
     }
-    return validation.altResponses[currentTab - 1];
+    return validation.altResponses[currentTab - 1]
   }
 
   render() {
@@ -129,10 +133,10 @@ class SetCorrectAnswers extends Component {
       responseIDs,
       item,
       fillSections,
-      cleanSections
-    } = this.props;
-    const { currentTab } = this.state;
-    const { response } = this;
+      cleanSections,
+    } = this.props
+    const { currentTab } = this.state
+    const { response } = this
 
     return (
       <CorrectAnswers
@@ -160,7 +164,7 @@ class SetCorrectAnswers extends Component {
           item={item}
         />
       </CorrectAnswers>
-    );
+    )
   }
 }
 
@@ -173,23 +177,23 @@ SetCorrectAnswers.propTypes = {
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
   responseIDs: PropTypes.array,
-  item: PropTypes.object.isRequired
-};
+  item: PropTypes.object.isRequired,
+}
 
 SetCorrectAnswers.defaultProps = {
-  stimulus: "",
+  stimulus: '',
   options: [],
   responseIDs: [],
   validation: {},
   hasGroupResponses: false,
   uiStyle: {
-    responsecontainerposition: "bottom",
-    fontsize: "normal",
-    stemNumeration: "",
+    responsecontainerposition: 'bottom',
+    fontsize: 'normal',
+    stemNumeration: '',
     widthpx: 0,
     heightpx: 0,
-    wordwrap: false
-  }
-};
+    wordwrap: false,
+  },
+}
 
-export default SetCorrectAnswers;
+export default SetCorrectAnswers

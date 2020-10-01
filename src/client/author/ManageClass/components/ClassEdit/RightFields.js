@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { debounce, concat, find, isEmpty, filter } from "lodash";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { debounce, concat, find, isEmpty, filter } from 'lodash'
 
-import * as moment from "moment";
-import { Col, Input, Select, DatePicker } from "antd";
-import { FieldLabel } from "./components";
-import { StyledFlexContainer } from "./styled";
-import selectsData from "../../../TestPage/components/common/selectsData";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { StandardsValidationMSG } from "../ClassCreate/styled";
-import Tags from "./Tags";
-import { TextInputStyled, DatePickerStyled, SelectInputStyled } from "@edulastic/common";
+import * as moment from 'moment'
+import { Col, Input, Select, DatePicker } from 'antd'
+import {
+  TextInputStyled,
+  DatePickerStyled,
+  SelectInputStyled,
+} from '@edulastic/common'
+import { FieldLabel } from './components'
+import { StyledFlexContainer } from './styled'
+import selectsData from '../../../TestPage/components/common/selectsData'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import { StandardsValidationMSG } from '../ClassCreate/styled'
+import Tags from './Tags'
 
-const { allGrades, allSubjects } = selectsData;
-const subjects = filter(allSubjects, el => el.value !== "");
+const { allGrades, allSubjects } = selectsData
+const subjects = filter(allSubjects, (el) => el.value !== '')
 
-const classStartDate = moment();
-const classEndDate = moment(); // .add("days", 7);
+const classStartDate = moment()
+const classEndDate = moment() // .add("days", 7);
 
 const RightFields = ({
   courseList,
@@ -40,55 +44,64 @@ const RightFields = ({
   type,
   ...restProps
 }) => {
-  const [startDate, setStartDate] = useState(moment(defaultStartDate || classStartDate));
+  const [startDate, setStartDate] = useState(
+    moment(defaultStartDate || classStartDate)
+  )
   useEffect(() => {
-    setSubject(defaultSubject || "");
-  }, []);
-  const updateSubject = e => {
-    setSubject(e);
-    clearStandards();
-  };
+    setSubject(defaultSubject || '')
+  }, [])
+  const updateSubject = (e) => {
+    setSubject(e)
+    clearStandards()
+  }
 
-  const onStartDateChangeHandler = date => {
-    setStartDate(date);
-  };
+  const onStartDateChangeHandler = (date) => {
+    setStartDate(date)
+  }
 
-  const handleSearch = debounce(keyword => searchCourse(keyword), 500);
-  const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
-  const defaultStandardSetIds = defaultStandardSets.map(({ _id }) => _id);
-  const isExist = find(courseList, ({ _id }) => _id === defaultCourse.id);
-  let courseOptions = [];
+  const handleSearch = debounce((keyword) => searchCourse(keyword), 500)
+  const handleFocus = debounce((keyword = '') => searchCourse(keyword), 500)
+  const defaultStandardSetIds = defaultStandardSets.map(({ _id }) => _id)
+  const isExist = find(courseList, ({ _id }) => _id === defaultCourse.id)
+  let courseOptions = []
   if (!isExist && !isEmpty(defaultCourse)) {
     courseOptions = concat(
       [
         {
           _id: defaultCourse.id,
-          name: defaultCourse.name
-        }
+          name: defaultCourse.name,
+        },
       ],
       courseList
-    );
+    )
   } else {
-    courseOptions = courseList;
+    courseOptions = courseList
   }
 
-  const disabledStartDateHandler = current => current && current < moment().subtract(1, "d");
-  const disabledEndDateHandler1 = current => current && current < moment(startDate).subtract(1, "d");
-  const disabledEndDateHandler2 = current => current && current < moment();
+  const disabledStartDateHandler = (current) =>
+    current && current < moment().subtract(1, 'd')
+  const disabledEndDateHandler1 = (current) =>
+    current && current < moment(startDate).subtract(1, 'd')
+  const disabledEndDateHandler2 = (current) => current && current < moment()
 
-  const titlePrefix = type === "custom" ? "group" : "class";
+  const titlePrefix = type === 'custom' ? 'group' : 'class'
 
   return (
     <>
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
-          <FieldLabel label={`${titlePrefix} name`} {...restProps} fiedlName="name" initialValue={defaultName}>
+          <FieldLabel
+            label={`${titlePrefix} name`}
+            {...restProps}
+            fiedlName="name"
+            initialValue={defaultName}
+          >
             <TextInputStyled placeholder="Enter the name of your class" />
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
 
-      {type === "class" ? (
+      {type === 'class' ? (
         <StyledFlexContainer gutter={24}>
           <Col xs={12}>
             <FieldLabel
@@ -104,7 +117,7 @@ const RightFields = ({
                 placeholder="Open Date"
                 disabledDate={disabledStartDateHandler}
                 onChange={onStartDateChangeHandler}
-                disabled={moment(startDate) < moment() || !!cleverId ? true : false}
+                disabled={!!(moment(startDate) < moment() || !!cleverId)}
               />
             </FieldLabel>
           </Col>
@@ -120,7 +133,11 @@ const RightFields = ({
                 data-cy="endDate"
                 format="DD MMM, YYYY"
                 placeholder="End Date"
-                disabledDate={moment(startDate) < moment() ? disabledEndDateHandler2 : disabledEndDateHandler1}
+                disabledDate={
+                  moment(startDate) < moment()
+                    ? disabledEndDateHandler2
+                    : disabledEndDateHandler1
+                }
                 disabled={!!cleverId}
               />
             </FieldLabel>
@@ -129,8 +146,15 @@ const RightFields = ({
       ) : (
         <StyledFlexContainer gutter={24}>
           <Col xs={24}>
-            <FieldLabel label="Description" {...restProps} fiedlName="description" initialValue={defaultDescription}>
-              <TextInputStyled placeholder={`Enter ${titlePrefix} description`} />
+            <FieldLabel
+              label="Description"
+              {...restProps}
+              fiedlName="description"
+              initialValue={defaultDescription}
+            >
+              <TextInputStyled
+                placeholder={`Enter ${titlePrefix} description`}
+              />
             </FieldLabel>
           </Col>
         </StyledFlexContainer>
@@ -145,8 +169,12 @@ const RightFields = ({
             initialValue={defaultGrade}
             disabled={!!cleverId}
           >
-            <SelectInputStyled placeholder="Select Grades" mode="multiple" disabled={!!cleverId}>
-              {allGrades.map(el => (
+            <SelectInputStyled
+              placeholder="Select Grades"
+              mode="multiple"
+              disabled={!!cleverId}
+            >
+              {allGrades.map((el) => (
                 <Select.Option key={el.value} value={el.value}>
                   {el.text}
                 </Select.Option>
@@ -155,9 +183,19 @@ const RightFields = ({
           </FieldLabel>
         </Col>
         <Col xs={12}>
-          <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={subject} disabled={!!cleverId}>
-            <SelectInputStyled placeholder="Select Subject" onSelect={updateSubject} disabled={!!cleverId}>
-              {subjects.map(el => (
+          <FieldLabel
+            label="Subject"
+            {...restProps}
+            fiedlName="subject"
+            initialValue={subject}
+            disabled={!!cleverId}
+          >
+            <SelectInputStyled
+              placeholder="Select Subject"
+              onSelect={updateSubject}
+              disabled={!!cleverId}
+            >
+              {subjects.map((el) => (
                 <Select.Option key={el.value} value={el.value}>
                   {el.text}
                 </Select.Option>
@@ -167,7 +205,7 @@ const RightFields = ({
         </Col>
       </StyledFlexContainer>
 
-      {type === "class" && (
+      {type === 'class' && (
         <StyledFlexContainer gutter={24}>
           <Col xs={24}>
             <FieldLabel
@@ -180,17 +218,31 @@ const RightFields = ({
                 showSearch
                 mode="multiple"
                 optionFilterProp="children"
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option) =>
+                  option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                }
                 placeholder="Select Standards"
                 disabled={!!cleverId}
               >
                 {!subject ? (
-                  <Select.Option key="subject_first" value="subject_first" disabled>
-                    <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
+                  <Select.Option
+                    key="subject_first"
+                    value="subject_first"
+                    disabled
+                  >
+                    <StandardsValidationMSG>
+                      Please select subject first.
+                    </StandardsValidationMSG>
                   </Select.Option>
                 ) : (
-                  filteredCurriculums.map(el => (
-                    <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                  filteredCurriculums.map((el) => (
+                    <Select.Option
+                      key={el.value}
+                      value={el.value}
+                      disabled={el.disabled}
+                    >
                       {el.text}
                     </Select.Option>
                   ))
@@ -206,8 +258,17 @@ const RightFields = ({
       */}
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
-          <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
-            <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={defaultCourse.id || ""}>
+          <FeaturesSwitch
+            inputFeatures="selectCourse"
+            actionOnInaccessible="hidden"
+            key="selectCourse"
+          >
+            <FieldLabel
+              label="Course"
+              {...restProps}
+              fiedlName="courseId"
+              initialValue={defaultCourse.id || ''}
+            >
               <SelectInputStyled
                 placeholder="Select Course"
                 showSearch
@@ -220,8 +281,10 @@ const RightFields = ({
                 loading={isSearching}
                 disabled={!!cleverId}
               >
-                {courseOptions.map(el => (
-                  <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number || ""}`}</Select.Option>
+                {courseOptions.map((el) => (
+                  <Select.Option key={el._id} value={el._id}>{`${el.name} - ${
+                    el.number || ''
+                  }`}</Select.Option>
                 ))}
               </SelectInputStyled>
             </FieldLabel>
@@ -229,12 +292,17 @@ const RightFields = ({
         </Col>
       </StyledFlexContainer>
 
-      {type === "class" && (
+      {type === 'class' && (
         <StyledFlexContainer gutter={24}>
           <Col xs={12}>
-            <FieldLabel label="School" {...restProps} fiedlName="institutionId" initialValue={defaultSchool || ""}>
+            <FieldLabel
+              label="School"
+              {...restProps}
+              fiedlName="institutionId"
+              initialValue={defaultSchool || ''}
+            >
               <SelectInputStyled placeholder="Select School">
-                {schoolList.map(el => (
+                {schoolList.map((el) => (
                   <Select.Option key={el._id} value={el._id}>
                     {el.name}
                   </Select.Option>
@@ -248,23 +316,31 @@ const RightFields = ({
         </StyledFlexContainer>
       )}
     </>
-  );
-};
+  )
+}
 
 RightFields.propTypes = {
   filteredCurriculums: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       text: PropTypes.string.isRequired,
-      disabled: PropTypes.bool
+      disabled: PropTypes.bool,
     })
   ).isRequired,
   courseList: PropTypes.array.isRequired,
   searchCourse: PropTypes.func.isRequired,
   isSearching: PropTypes.bool.isRequired,
   defaultName: PropTypes.string.isRequired,
-  defaultStartDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
-  defaultEndDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
+  defaultStartDate: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.number,
+  ]),
+  defaultEndDate: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.number,
+  ]),
   defaultGrade: PropTypes.array,
   defaultSubject: PropTypes.string,
   defaultStandardSets: PropTypes.array,
@@ -277,20 +353,20 @@ RightFields.propTypes = {
   tags: PropTypes.array,
   setFieldsValue: PropTypes.func.isRequired,
   allTagsData: PropTypes.array,
-  addNewTag: PropTypes.func.isRequired
-};
+  addNewTag: PropTypes.func.isRequired,
+}
 
 RightFields.defaultProps = {
   defaultStartDate: classStartDate,
   defaultEndDate: classEndDate,
   defaultCourse: {},
   defaultGrade: [],
-  defaultSubject: "",
-  defaultSchool: "",
+  defaultSubject: '',
+  defaultSchool: '',
   defaultStandardSets: [],
   schoolList: [],
   tags: [],
-  allTagsData: []
-};
+  allTagsData: [],
+}
 
-export default RightFields;
+export default RightFields

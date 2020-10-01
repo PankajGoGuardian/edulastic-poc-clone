@@ -1,75 +1,86 @@
-import React from "react";
-import { DragSource } from "react-dnd";
-import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
-import striptags from "striptags";
-import { isMobileDevice } from "@edulastic/common";
+import React from 'react'
+import { DragSource } from 'react-dnd'
+import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import striptags from 'striptags'
+import { isMobileDevice } from '@edulastic/common'
 
-import DragPreview from "../../../components/SourceDragPreview";
+import DragPreview from '../../../components/SourceDragPreview'
 
 function collectSource(connector, monitor) {
   return {
     connectDragSource: connector.dragSource(),
-    isDragging: monitor.isDragging()
-  };
+    isDragging: monitor.isDragging(),
+  }
 }
 
 const specSource = {
   canDrag(props) {
-    return !props.disableResponse;
+    return !props.disableResponse
   },
 
   beginDrag(props) {
-    const item = { item: props.obj, index: props.index };
-    return item;
+    const item = { item: props.obj, index: props.index }
+    return item
   },
 
   endDrag(props, monitor, component) {
     if (!monitor.didDrop()) {
-      return;
+      return
     }
 
-    const itemCurrent = monitor.getItem();
-    const itemTo = monitor.getDropResult();
-    const data = striptags(props.data) || "";
-    let [, fromContainerIndex, fromRespIndex] = data.split("_");
-    fromContainerIndex = parseInt(fromContainerIndex, 10);
-    fromRespIndex = parseInt(fromRespIndex, 10);
+    const itemCurrent = monitor.getItem()
+    const itemTo = monitor.getDropResult()
+    const data = striptags(props.data) || ''
+    let [, fromContainerIndex, fromRespIndex] = data.split('_')
+    fromContainerIndex = parseInt(fromContainerIndex, 10)
+    fromRespIndex = parseInt(fromRespIndex, 10)
 
-    const node = ReactDOM.findDOMNode(component);
-    const { height, width } = node.getBoundingClientRect();
+    const node = ReactDOM.findDOMNode(component)
+    const { height, width } = node.getBoundingClientRect()
 
     props.onDrop(
       {
-        fromContainerIndex: Number.isNaN(fromContainerIndex) ? undefined : fromContainerIndex,
+        fromContainerIndex: Number.isNaN(fromContainerIndex)
+          ? undefined
+          : fromContainerIndex,
         fromRespIndex: Number.isNaN(fromRespIndex) ? undefined : fromRespIndex,
         item: props.item,
         index: itemCurrent.index,
-        itemRect: { height, width, ...itemTo.position }
+        itemRect: { height, width, ...itemTo.position },
       },
       itemTo.index
-    );
-  }
-};
+    )
+  },
+}
 
 class DragItem extends React.Component {
   render() {
-    const { connectDragSource, data, children, style, disableResponse, ...restProps } = this.props;
+    const {
+      connectDragSource,
+      data,
+      children,
+      style,
+      disableResponse,
+      ...restProps
+    } = this.props
     return (
       data &&
       connectDragSource(
         <div
           style={{
             ...style,
-            justifyContent: "center"
+            justifyContent: 'center',
           }}
           draggable={!disableResponse}
         >
-          {!disableResponse && isMobileDevice() && <DragPreview {...restProps}>{children}</DragPreview>}
+          {!disableResponse && isMobileDevice() && (
+            <DragPreview {...restProps}>{children}</DragPreview>
+          )}
           {children}
         </div>
       )
-    );
+    )
   }
 }
 
@@ -82,12 +93,12 @@ DragItem.propTypes = {
   active: PropTypes.bool.isRequired,
   smallSize: PropTypes.bool.isRequired,
   style: PropTypes.object.isRequired,
-  title: PropTypes.string
-};
+  title: PropTypes.string,
+}
 
 DragItem.defaultProps = {
   data: null,
-  title: ""
-};
+  title: '',
+}
 
-export default DragSource("metal", specSource, collectSource)(DragItem);
+export default DragSource('metal', specSource, collectSource)(DragItem)

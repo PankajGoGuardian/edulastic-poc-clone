@@ -1,47 +1,55 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { cloneDeep } from "lodash";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import ReactDOM from 'react-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { cloneDeep } from 'lodash'
 
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { withNamespaces } from '@edulastic/localization'
 
-import QuestionTextArea from "../../components/QuestionTextArea";
-import { Subtitle } from "../../styled/Subtitle";
+import QuestionTextArea from '../../components/QuestionTextArea'
+import { Subtitle } from '../../styled/Subtitle'
 
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import Question from "../../components/Question";
-import { updateVariables } from "../../utils/variables";
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import Question from '../../components/Question'
+import { updateVariables } from '../../utils/variables'
 
 class ComposeQuestion extends Component {
   render() {
-    const { item, t, setQuestionData, fillSections, cleanSections } = this.props;
+    const { item, t, setQuestionData, fillSections, cleanSections } = this.props
 
-    const handleQuestionChange = value => {
-      const newData = cloneDeep(item);
-      newData.stimulus = value;
-      updateVariables(newData);
-      setQuestionData(newData);
-    };
+    const handleQuestionChange = (value) => {
+      const newData = cloneDeep(item)
+      newData.stimulus = value
+      updateVariables(newData)
+      setQuestionData(newData)
+    }
 
-    if (!item) return null;
+    if (!item) return null
 
     return (
       <Question
         section="main"
-        label={t("component.orderlist.composeQuestion")}
+        label={t('component.orderlist.composeQuestion')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.orderlist.composeQuestion")}`)}>
-          {t("component.orderlist.composeQuestion")}
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.orderlist.composeQuestion')}`
+          )}
+        >
+          {t('component.orderlist.composeQuestion')}
         </Subtitle>
 
-        <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} border="border" />
+        <QuestionTextArea
+          onChange={handleQuestionChange}
+          value={item.stimulus}
+          border="border"
+        />
       </Question>
-    );
+    )
   }
 }
 
@@ -50,21 +58,18 @@ ComposeQuestion.propTypes = {
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 ComposeQuestion.defaultProps = {
   item: {},
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 export default compose(
-  withNamespaces("assessment"),
-  connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
-  )
-)(ComposeQuestion);
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+  })
+)(ComposeQuestion)

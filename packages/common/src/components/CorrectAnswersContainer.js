@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-import { lightGrey1 } from "@edulastic/colors";
-import { Subtitle } from "@edulastic/common";
+import { lightGrey1 } from '@edulastic/colors'
+import { Subtitle } from '@edulastic/common'
 
 const CorrectAnswersContainer = ({
   title,
@@ -19,7 +19,7 @@ const CorrectAnswersContainer = ({
   noBackground,
   showBorder,
   padding,
-  margin
+  margin,
 }) => (
   <div className="__prevent-page-break">
     <Container
@@ -38,31 +38,31 @@ const CorrectAnswersContainer = ({
       {children}
     </Container>
   </div>
-);
+)
 
 CorrectAnswersContainer.propTypes = {
   title: PropTypes.string.isRequired,
   children: PropTypes.any,
-  imageStyle: PropTypes.object
-};
+  imageStyle: PropTypes.object,
+}
 
 CorrectAnswersContainer.defaultProps = {
   children: null,
-  imageStyle: {}
-};
+  imageStyle: {},
+}
 
-export default CorrectAnswersContainer;
+export default CorrectAnswersContainer
 
 const Container = styled.div`
   height: auto;
   flex: 1 1 30%;
-  margin: ${({ margin }) => margin || "20px 0px"};
-  padding: ${({ padding }) => padding || "22px 12px"};
+  margin: ${({ margin }) => margin || '20px 0px'};
+  padding: ${({ padding }) => padding || '22px 12px'};
   min-height: ${({ minHeight }) => minHeight || 200}px;
   background-color: ${({ noBackground }) => !noBackground && lightGrey1};
   max-width: ${({ maxWidth }) => maxWidth || null};
-  min-width: ${({ minWidth }) => minWidth || "650px"};
-  border: ${({ showBorder }) => showBorder && "1px solid #d6d6d6"};
+  min-width: ${({ minWidth }) => minWidth || '650px'};
+  border: ${({ showBorder }) => showBorder && '1px solid #d6d6d6'};
   border-radius: 4px;
 
   width: 100%;
@@ -76,4 +76,4 @@ const Container = styled.div`
         : null}
     ${({ imageStyle }) => imageStyle}
   }
-`;
+`

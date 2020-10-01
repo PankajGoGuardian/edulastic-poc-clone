@@ -1,8 +1,8 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconGraphDashed = props => (
+const IconGraphDashed = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 17" {...props}>
     <g strokeLinecap="round" strokeDasharray="1 5">
       <path
@@ -11,6 +11,6 @@ const IconGraphDashed = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconGraphDashed);
+export default withIconStyles(IconGraphDashed)

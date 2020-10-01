@@ -1,22 +1,22 @@
-import React, { useEffect, useState, useContext, useMemo } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { cloneDeep, get } from "lodash";
-import { helpers, AnswerContext } from "@edulastic/common";
-import JsxParser from "react-jsx-parser";
-import { SHOW, CHECK, CLEAR, EDIT } from "../../constants/constantsForQuestions";
-import AnswerBox from "./AnswerBox";
-import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
-import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
-import ClozeInput from "./ClozeMathBlock/ClozeInput";
-import ClozeMathInput from "./ClozeMathBlock/ClozeMathInput";
-import ClozeMathWithUnit from "./ClozeMathBlock/ClozeMathWithUnit";
-import ClozeDropDownAnswerDisplay from "./ClozeMathDisplay/ClozeDropDownAnswerDisplay";
-import ClozeInputAnswerDisplay from "./ClozeMathDisplay/ClozeInputAnswerDisplay";
-import ClozeMathAnswerDisplay from "./ClozeMathDisplay/ClozeMathAnswerDisplay";
-import MathSpanWrapper from "../../components/MathSpanWrapper";
-import Instructions from "../../components/Instructions";
-import { getFontSize } from "../../utils/helpers";
+import React, { useEffect, useState, useContext, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { cloneDeep, get } from 'lodash'
+import { helpers, AnswerContext } from '@edulastic/common'
+import JsxParser from 'react-jsx-parser'
+import { SHOW, CHECK, CLEAR, EDIT } from '../../constants/constantsForQuestions'
+import AnswerBox from './AnswerBox'
+import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton'
+import ClozeDropDown from './ClozeMathBlock/ClozeDropDown'
+import ClozeInput from './ClozeMathBlock/ClozeInput'
+import ClozeMathInput from './ClozeMathBlock/ClozeMathInput'
+import ClozeMathWithUnit from './ClozeMathBlock/ClozeMathWithUnit'
+import ClozeDropDownAnswerDisplay from './ClozeMathDisplay/ClozeDropDownAnswerDisplay'
+import ClozeInputAnswerDisplay from './ClozeMathDisplay/ClozeInputAnswerDisplay'
+import ClozeMathAnswerDisplay from './ClozeMathDisplay/ClozeMathAnswerDisplay'
+import MathSpanWrapper from '../../components/MathSpanWrapper'
+import Instructions from '../../components/Instructions'
+import { getFontSize } from '../../utils/helpers'
 
 const ClozeMathPreview = ({
   type,
@@ -35,118 +35,148 @@ const ClozeMathPreview = ({
   disableResponse,
   isPrintPreview,
   allOptions = [],
-  enableMagnifier = false
+  enableMagnifier = false,
 }) => {
-  const [newHtml, setNewHtml] = useState("");
-  const { isAnswerModifiable } = useContext(AnswerContext);
+  const [newHtml, setNewHtml] = useState('')
+  const { isAnswerModifiable } = useContext(AnswerContext)
 
   const allAnswers = useMemo(() => {
     if (isExpressGrader || type === SHOW) {
       return {
-        mathAnswers: get(item, "validation.validResponse.value", []),
-        dropdownAnswers: get(item, "validation.validResponse.dropdown.value", []),
-        textInputAnswers: get(item, "validation.validResponse.textinput.value", []),
-        mathUnitAnswers: get(item, "validation.validResponse.mathUnits.value", []),
-        altMathAnswers: get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res)),
-        altDropDowns: get(item, "validation.altResponses", []).map(alt => get(alt, "dropdown.value", [])),
-        altInputs: get(item, "validation.altResponses", []).map(alt => get(alt, "textinput.value", [])),
-        altMathUnitAnswers: get(item, "validation.altResponses", []).map(alt => get(alt, "mathUnits.value", []))
-      };
+        mathAnswers: get(item, 'validation.validResponse.value', []),
+        dropdownAnswers: get(
+          item,
+          'validation.validResponse.dropdown.value',
+          []
+        ),
+        textInputAnswers: get(
+          item,
+          'validation.validResponse.textinput.value',
+          []
+        ),
+        mathUnitAnswers: get(
+          item,
+          'validation.validResponse.mathUnits.value',
+          []
+        ),
+        altMathAnswers: get(item, 'validation.altResponses', []).map((alt) =>
+          get(alt, 'value', []).map((res) => res)
+        ),
+        altDropDowns: get(item, 'validation.altResponses', []).map((alt) =>
+          get(alt, 'dropdown.value', [])
+        ),
+        altInputs: get(item, 'validation.altResponses', []).map((alt) =>
+          get(alt, 'textinput.value', [])
+        ),
+        altMathUnitAnswers: get(
+          item,
+          'validation.altResponses',
+          []
+        ).map((alt) => get(alt, 'mathUnits.value', [])),
+      }
     }
-    return {};
-  }, [item?.validation, type, isExpressGrader]);
+    return {}
+  }, [item?.validation, type, isExpressGrader])
 
   const uiStyles = useMemo(() => {
-    const styles = {};
-    const { uiStyle = {} } = item;
+    const styles = {}
+    const { uiStyle = {} } = item
 
-    styles.fontSize = getFontSize(uiStyle.fontsize);
+    styles.fontSize = getFontSize(uiStyle.fontsize)
 
     if (uiStyle.heightpx) {
-      styles.height = `${uiStyle.heightpx}px`;
+      styles.height = `${uiStyle.heightpx}px`
     }
 
     if (uiStyle.responseFontScale) {
-      styles.responseFontScale = uiStyle.responseFontScale;
+      styles.responseFontScale = uiStyle.responseFontScale
     }
 
     if (uiStyle.minWidth) {
-      styles.minWidth = `${uiStyle.minWidth}px`;
+      styles.minWidth = `${uiStyle.minWidth}px`
     }
 
     if (uiStyle.minHeight) {
-      styles.minHeight = `${uiStyle.minHeight}px`;
+      styles.minHeight = `${uiStyle.minHeight}px`
     }
 
     if (parseInt(uiStyle.minWidth, 10) < 25) {
-      styles.padding = "4px 2px";
+      styles.padding = '4px 2px'
     }
 
-    return styles;
-  }, [item.uiStyle]);
+    return styles
+  }, [item.uiStyle])
 
   const handleAddAnswer = (answer, answerType, id) => {
-    if (!isAnswerModifiable) return;
-    let newAnswers = cloneDeep(userAnswer);
-    const answers = newAnswers[answerType] || {};
-    answers[id] = answer;
+    if (!isAnswerModifiable) return
+    let newAnswers = cloneDeep(userAnswer)
+    const answers = newAnswers[answerType] || {}
+    answers[id] = answer
 
     newAnswers = {
       ...newAnswers,
-      [answerType]: answers
-    };
-    saveAnswer(newAnswers);
+      [answerType]: answers,
+    }
+    saveAnswer(newAnswers)
     if (enableMagnifier) {
       setTimeout(() => {
-        const questionWrapper = document.querySelector(".zoomed-container-wrapper .question-wrapper .jsx-parser p");
+        const questionWrapper = document.querySelector(
+          '.zoomed-container-wrapper .question-wrapper .jsx-parser p'
+        )
         if (questionWrapper) {
           questionWrapper.innerHTML = document.querySelector(
-            ".unzoom-container-wrapper .question-wrapper .jsx-parser p"
-          ).innerHTML;
+            '.unzoom-container-wrapper .question-wrapper .jsx-parser p'
+          ).innerHTML
         }
-      }, 1000);
+      }, 1000)
     }
-  };
+  }
 
   const onInnerClick = () => {
     if (type === CHECK || type === SHOW) {
-      changePreviewTab(CLEAR);
+      changePreviewTab(CLEAR)
       if (changePreview) {
-        changePreview(CLEAR);
+        changePreview(CLEAR)
       }
     }
-  };
+  }
 
   useEffect(() => {
     if (window.$) {
-      setNewHtml(helpers.parseTemplate(stimulus));
+      setNewHtml(helpers.parseTemplate(stimulus))
     }
-  }, [stimulus]);
+  }, [stimulus])
 
-  const testUserAnswer = {};
+  const testUserAnswer = {}
   if (testItem) {
     const keynameMap = {
-      textinput: "inputs",
-      dropdown: "dropDowns",
-      value: "maths",
-      mathUnits: "mathUnits"
-    };
+      textinput: 'inputs',
+      dropdown: 'dropDowns',
+      value: 'maths',
+      mathUnits: 'mathUnits',
+    }
 
     if (item.validation.validResponse) {
-      Object.keys(item.validation.validResponse).forEach(keyName => {
+      Object.keys(item.validation.validResponse).forEach((keyName) => {
         if (keynameMap[keyName]) {
-          testUserAnswer[keynameMap[keyName]] = {};
-          if (keyName !== "value") {
-            item.validation.validResponse[keyName].value.forEach(answerItem => {
-              testUserAnswer[keynameMap[keyName]][answerItem.id] = { ...answerItem };
-            });
+          testUserAnswer[keynameMap[keyName]] = {}
+          if (keyName !== 'value') {
+            item.validation.validResponse[keyName].value.forEach(
+              (answerItem) => {
+                testUserAnswer[keynameMap[keyName]][answerItem.id] = {
+                  ...answerItem,
+                }
+              }
+            )
           } else {
-            item.validation.validResponse.value.forEach(answerItem => {
-              testUserAnswer[keynameMap[keyName]][answerItem[0].id] = { ...answerItem[0] };
-            });
+            item.validation.validResponse.value.forEach((answerItem) => {
+              testUserAnswer[keynameMap[keyName]][answerItem[0].id] = {
+                ...answerItem[0],
+              }
+            })
           }
         }
-      });
+      })
     }
   }
 
@@ -169,8 +199,8 @@ const ClozeMathPreview = ({
             isV1Migrated,
             disableResponse: disableResponse || !isAnswerModifiable,
             isPrintPreview,
-            allOptions
-          }
+            allOptions,
+          },
         }}
         showWarnings
         components={{
@@ -178,7 +208,7 @@ const ClozeMathPreview = ({
           textdropdown: testItem ? ClozeDropDownAnswerDisplay : ClozeDropDown,
           textinput: testItem ? ClozeInputAnswerDisplay : ClozeInput,
           mathinput: testItem ? ClozeMathAnswerDisplay : ClozeMathInput,
-          mathunit: testItem ? ClozeMathAnswerDisplay : ClozeMathWithUnit
+          mathunit: testItem ? ClozeMathAnswerDisplay : ClozeMathWithUnit,
         }}
         jsx={newHtml}
       />
@@ -198,8 +228,8 @@ const ClozeMathPreview = ({
         />
       )}
     </QuestionWrapper>
-  );
-};
+  )
+}
 
 ClozeMathPreview.propTypes = {
   type: PropTypes.string.isRequired,
@@ -207,28 +237,31 @@ ClozeMathPreview.propTypes = {
   stimulus: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
-  userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
-  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
+  userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
+    .isRequired,
+  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
+    .isRequired,
   options: PropTypes.object.isRequired,
   responseIds: PropTypes.object.isRequired,
   changePreview: PropTypes.func,
   testItem: PropTypes.bool,
-  isExpressGrader: PropTypes.bool
-};
+  isExpressGrader: PropTypes.bool,
+}
 
 ClozeMathPreview.defaultProps = {
   changePreview: () => {},
   testItem: false,
-  isExpressGrader: false
-};
+  isExpressGrader: false,
+}
 
-export default withCheckAnswerButton(ClozeMathPreview);
+export default withCheckAnswerButton(ClozeMathPreview)
 
 const QuestionWrapper = styled.div`
-  font-size: ${props => props.uiStyles.normal || "16px"};
-  font-weight: ${props => (props.responseFontScale === "boosted" ? 600 : "normal")};
+  font-size: ${(props) => props.uiStyles.normal || '16px'};
+  font-weight: ${(props) =>
+    props.responseFontScale === 'boosted' ? 600 : 'normal'};
   position: relative;
   li {
     margin: 4px 0;
   }
-`;
+`

@@ -1,243 +1,289 @@
-import React from "react";
-import styled from "styled-components";
-import { isUndefined, last, get, isEmpty, keyBy } from "lodash";
-import { Tooltip as AntDTooltip, Modal } from "antd";
-import { notification } from "@edulastic/common";
-import { themeColor } from "@edulastic/colors";
-import { signUpState, test as testConst } from "@edulastic/constants";
-import * as Sentry from "@sentry/browser";
-import { API } from "@edulastic/api";
-import { Partners } from "./static/partnerData";
-import { smallestZoomLevel } from "./static/zoom";
-import { breakpoints } from "../../student/zoomTheme";
+import React from 'react'
+import styled from 'styled-components'
+import { isUndefined, last, get, isEmpty, keyBy } from 'lodash'
+import { Tooltip as AntDTooltip, Modal } from 'antd'
+import { notification } from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
+import { signUpState, test as testConst } from '@edulastic/constants'
+import * as Sentry from '@sentry/browser'
+import { API } from '@edulastic/api'
+import { Partners } from './static/partnerData'
+import { smallestZoomLevel } from './static/zoom'
+import { breakpoints } from '../../student/zoomTheme'
 
 // eslint-disable-next-line no-control-regex
-const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
 
-const api = new API();
+const api = new API()
 
-export const getWordsInURLPathName = pathname => {
+export const getWordsInURLPathName = (pathname) => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
-  let path = pathname;
-  path += "";
-  path = path.split("/");
-  path = path.filter(item => !!(item && item.trim()));
-  return path;
-};
+  let path = pathname
+  path += ''
+  path = path.split('/')
+  path = path.filter((item) => !!(item && item.trim()))
+  return path
+}
 
-export const isLoggedInForPrivateRoute = user => {
+export const isLoggedInForPrivateRoute = (user) => {
   if (user && user.isAuthenticated) {
-    if (user && user.user && !user.user.role && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
-      return false;
+    if (
+      user &&
+      user.user &&
+      !user.user.role &&
+      (user.user.googleId || user.user.msoId || user.user.cleverId)
+    ) {
+      return false
     }
-    if (user && user.user && user.user.role !== "teacher") {
-      return true;
+    if (user && user.user && user.user.role !== 'teacher') {
+      return true
     }
     if (
       user.user &&
-      user.user.role === "teacher" &&
+      user.user.role === 'teacher' &&
       (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
     ) {
-      return true;
+      return true
     }
   }
-  return false;
-};
+  return false
+}
 
-export const isLoggedInForLoggedOutRoute = user => {
+export const isLoggedInForLoggedOutRoute = (user) => {
   if (user && user.isAuthenticated) {
-    if (user && user.user && !user.user.role && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
-      return true;
+    if (
+      user &&
+      user.user &&
+      !user.user.role &&
+      (user.user.googleId || user.user.msoId || user.user.cleverId)
+    ) {
+      return true
     }
-    if (user && user.user && user.user.role !== "teacher") {
-      return true;
+    if (user && user.user && user.user.role !== 'teacher') {
+      return true
     }
     if (
       user.user &&
-      user.user.role === "teacher" &&
+      user.user.role === 'teacher' &&
       (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
     ) {
-      return true;
+      return true
     }
   }
-  return false;
-};
+  return false
+}
 
-export const validatePartnerUrl = partner => {
+export const validatePartnerUrl = (partner) => {
   // eslint-disable-next-line no-restricted-globals
-  const pathname = location.pathname;
+  const pathname = location.pathname
   if (
-    partner.keyName !== "login" &&
-    pathname.toLocaleLowerCase().includes("partnerlogin") &&
+    partner.keyName !== 'login' &&
+    pathname.toLocaleLowerCase().includes('partnerlogin') &&
     pathname.toLocaleLowerCase().includes(partner.keyName.toLocaleLowerCase())
   ) {
-    return true;
+    return true
   }
-  if (partner.keyName === "login" && !pathname.toLocaleLowerCase().includes("partnerlogin")) {
-    return true;
+  if (
+    partner.keyName === 'login' &&
+    !pathname.toLocaleLowerCase().includes('partnerlogin')
+  ) {
+    return true
   }
-  return false;
-};
+  return false
+}
 
-export const getPartnerLoginUrl = partner =>
-  partner.keyName === "login" ? `/login` : `/partnerLogin/${partner.keyName}/`;
+export const getPartnerLoginUrl = (partner) =>
+  partner.keyName === 'login' ? `/login` : `/partnerLogin/${partner.keyName}/`
 
-export const getPartnerTeacherSignupUrl = partner =>
-  partner.keyName === "login" ? `/signup` : `/partnerLogin/${partner.keyName}/signup`;
+export const getPartnerTeacherSignupUrl = (partner) =>
+  partner.keyName === 'login'
+    ? `/signup`
+    : `/partnerLogin/${partner.keyName}/signup`
 
-export const getPartnerStudentSignupUrl = partner =>
-  partner.keyName === "login" ? `/studentsignup` : `/partnerLogin/${partner.keyName}/studentsignup`;
+export const getPartnerStudentSignupUrl = (partner) =>
+  partner.keyName === 'login'
+    ? `/studentsignup`
+    : `/partnerLogin/${partner.keyName}/studentsignup`
 
-export const getPartnerDASignupUrl = partner =>
-  partner.keyName === "login" ? `/adminsignup` : `/partnerLogin/${partner.keyName}/adminsignup`;
+export const getPartnerDASignupUrl = (partner) =>
+  partner.keyName === 'login'
+    ? `/adminsignup`
+    : `/partnerLogin/${partner.keyName}/adminsignup`
 
-export const getPartnerGetStartedUrl = partner =>
-  partner.keyName === "login" ? `/getStarted` : `/partnerLogin/${partner.keyName}/getStarted/`;
+export const getPartnerGetStartedUrl = (partner) =>
+  partner.keyName === 'login'
+    ? `/getStarted`
+    : `/partnerLogin/${partner.keyName}/getStarted/`
 
-export const getPartnerKeyFromUrl = pathname => {
-  const pathArr = pathname.split("/");
-  const partnersArr = Object.keys(Partners);
-  const tempPartner = pathArr[partnersArr.length - 1];
-  const foundPartner = partnersArr.find(item => item === tempPartner);
+export const getPartnerKeyFromUrl = (pathname) => {
+  const pathArr = pathname.split('/')
+  const partnersArr = Object.keys(Partners)
+  const tempPartner = pathArr[partnersArr.length - 1]
+  const foundPartner = partnersArr.find((item) => item === tempPartner)
   if (foundPartner) {
-    return foundPartner;
+    return foundPartner
   }
-  return "login";
-};
+  return 'login'
+}
 
-export const getDistrictLoginUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}`;
+export const getDistrictLoginUrl = (orgShortName, orgType) =>
+  `/${orgType}/${orgShortName}`
 
-export const getDistrictTeacherSignupUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}/signup`;
+export const getDistrictTeacherSignupUrl = (orgShortName, orgType) =>
+  `/${orgType}/${orgShortName}/signup`
 
-export const getDistrictStudentSignupUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}/studentsignup`;
+export const getDistrictStudentSignupUrl = (orgShortName, orgType) =>
+  `/${orgType}/${orgShortName}/studentsignup`
 
-export const getDistrictGetStartedUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}/getstarted`;
+export const getDistrictGetStartedUrl = (orgShortName, orgType) =>
+  `/${orgType}/${orgShortName}/getstarted`
 
-export const isDistrictPolicyAllowed = (isSignupUsingDaURL, districtPolicy, name) => {
-  if (isSignupUsingDaURL && districtPolicy && (districtPolicy[name] || isUndefined(districtPolicy[name]))) {
-    return true;
+export const isDistrictPolicyAllowed = (
+  isSignupUsingDaURL,
+  districtPolicy,
+  name
+) => {
+  if (
+    isSignupUsingDaURL &&
+    districtPolicy &&
+    (districtPolicy[name] || isUndefined(districtPolicy[name]))
+  ) {
+    return true
   }
-  return false;
-};
+  return false
+}
 
 export const isDistrictPolicyAvailable = (isSignupUsingDaURL, districtPolicy) =>
-  isSignupUsingDaURL && typeof districtPolicy === "object";
+  isSignupUsingDaURL && typeof districtPolicy === 'object'
 
 export const isEmailValid = (rule, value, callback, checks, message) => {
-  const userNameRegExp = new RegExp(`^[A-Za-z0-9._ \\-\\+\\'\\"]+$`);
+  const userNameRegExp = new RegExp(`^[A-Za-z0-9._ \\-\\+\\'\\"]+$`)
 
-  let flag = false;
+  let flag = false
 
-  if (checks === "email") {
-    flag = emailRegex.test(value.trim());
-  } else if (checks === "username") {
-    flag = userNameRegExp.test(value.trim());
-  } else if (checks === "both" || !checks) {
-    flag = emailRegex.test(value.trim()) || userNameRegExp.test(value.trim());
+  if (checks === 'email') {
+    flag = emailRegex.test(value.trim())
+  } else if (checks === 'username') {
+    flag = userNameRegExp.test(value.trim())
+  } else if (checks === 'both' || !checks) {
+    flag = emailRegex.test(value.trim()) || userNameRegExp.test(value.trim())
   }
 
   if (flag) {
-    callback();
-    return true;
+    callback()
+    return true
   }
-  callback(message);
-};
+  callback(message)
+}
 
-export const getFullNameFromAsString = obj =>
-  `${obj.firstName} ${obj.middleName ? `${obj.middleName} ` : ""}${obj.lastName ? obj.lastName : ""}`;
+export const getFullNameFromAsString = (obj) =>
+  `${obj.firstName} ${obj.middleName ? `${obj.middleName} ` : ''}${
+    obj.lastName ? obj.lastName : ''
+  }`
 
-export const getFullNameFromString = name => {
-  let nameList = name.split(" ");
-  nameList = nameList.filter(item => !!(item && item.trim()));
+export const getFullNameFromString = (name) => {
+  let nameList = name.split(' ')
+  nameList = nameList.filter((item) => !!(item && item.trim()))
   if (!nameList.length) {
-    return false;
+    return false
   }
 
-  let firstName;
-  let lastName;
-  let middleName;
+  let firstName
+  let lastName
+  let middleName
   if (nameList.length === 1) {
-    firstName = nameList[0];
+    firstName = nameList[0]
   } else if (nameList.length === 2) {
-    firstName = nameList[0];
-    lastName = nameList[1];
+    firstName = nameList[0]
+    lastName = nameList[1]
   } else if (nameList.length > 2) {
-    firstName = nameList[0];
-    middleName = nameList.slice(1, nameList.length - 1).join(" ");
-    lastName = last(nameList);
+    firstName = nameList[0]
+    middleName = nameList.slice(1, nameList.length - 1).join(' ')
+    lastName = last(nameList)
   }
 
   return {
     firstName,
     middleName,
-    lastName
-  };
-};
-
-export const getInitialsFromName = obj => obj.firstName[0] + (obj.lastName ? obj.lastName[0] : "");
-
-export const getDistrictSignOutUrl = generalSettings => {
-  if (generalSettings.orgType === "institution") {
-    return `/school/${generalSettings.shortName}`;
+    lastName,
   }
-  return `/district/${generalSettings.shortName}`;
-};
+}
 
-export const setSignOutUrl = url => {
-  sessionStorage.setItem("signOutUrl", url);
-};
+export const getInitialsFromName = (obj) =>
+  obj.firstName[0] + (obj.lastName ? obj.lastName[0] : '')
 
-export const getSignOutUrl = () => sessionStorage.getItem("signOutUrl") || "/login";
+export const getDistrictSignOutUrl = (generalSettings) => {
+  if (generalSettings.orgType === 'institution') {
+    return `/school/${generalSettings.shortName}`
+  }
+  return `/district/${generalSettings.shortName}`
+}
 
-export const getStartedUrl = () => "/getStarted";
+export const setSignOutUrl = (url) => {
+  sessionStorage.setItem('signOutUrl', url)
+}
 
-export const removeSignOutUrl = () => sessionStorage.removeItem("signOutUrl");
+export const getSignOutUrl = () =>
+  sessionStorage.getItem('signOutUrl') || '/login'
 
-export const validateQuestionsForDocBased = questions => {
+export const getStartedUrl = () => '/getStarted'
+
+export const removeSignOutUrl = () => sessionStorage.removeItem('signOutUrl')
+
+export const validateQuestionsForDocBased = (questions) => {
   if (!questions.length) {
-    notification({ type: "warn", messageKey: "aleastOneQuestion" });
-    return false;
+    notification({ type: 'warn', messageKey: 'aleastOneQuestion' })
+    return false
   }
 
   const sectionTitle = questions
-    .filter(question => question.type === "sectionLabel")
-    .every(question => !!question.title.trim());
+    .filter((question) => question.type === 'sectionLabel')
+    .every((question) => !!question.title.trim())
 
   if (!sectionTitle) {
-    notification({ messageKey: "sectionNameCanNotEmpty" });
-    return false;
+    notification({ messageKey: 'sectionNameCanNotEmpty' })
+    return false
   }
 
   const correctAnswerPicked = questions
-    .filter(question => question.type !== "sectionLabel" && question.type !== "essayPlainText")
-    .every(question => {
-      const validationValue = get(question, "validation.validResponse.value");
-      if (question.type === "math") {
-        return validationValue.every(value => !isEmpty(value.value));
+    .filter(
+      (question) =>
+        question.type !== 'sectionLabel' && question.type !== 'essayPlainText'
+    )
+    .every((question) => {
+      const validationValue = get(question, 'validation.validResponse.value')
+      if (question.type === 'math') {
+        return validationValue.every((value) => !isEmpty(value.value))
       }
-      return !isEmpty(validationValue);
-    });
+      return !isEmpty(validationValue)
+    })
 
   if (!correctAnswerPicked) {
-    notification({ type: "warn", messageKey: "correctAnswer" });
-    return false;
+    notification({ type: 'warn', messageKey: 'correctAnswer' })
+    return false
   }
-  return true;
-};
+  return true
+}
 
-export const addThemeBackgroundColor = elem => styled(elem)`
-  background-color: ${props => props.theme.sectionBackgroundColor};
-`;
+export const addThemeBackgroundColor = (elem) => styled(elem)`
+  background-color: ${(props) => props.theme.sectionBackgroundColor};
+`
 
-export const ifZoomed = zoomLevel => zoomLevel && zoomLevel !== smallestZoomLevel;
+export const ifZoomed = (zoomLevel) =>
+  zoomLevel && zoomLevel !== smallestZoomLevel
 
-export const isZoomGreator = (zoomLevel, levelToCheck) => breakpoints[levelToCheck] > breakpoints[zoomLevel];
+export const isZoomGreator = (zoomLevel, levelToCheck) =>
+  breakpoints[levelToCheck] > breakpoints[zoomLevel]
 
 export const Tooltip = ({ children, ...rest }) =>
-  window.isMobileDevice || window.isIOS ? children : <AntDTooltip {...rest}>{children}</AntDTooltip>;
+  window.isMobileDevice || window.isIOS ? (
+    children
+  ) : (
+    <AntDTooltip {...rest}>{children}</AntDTooltip>
+  )
 
-export const nameValidator = name => {
-  const trimmedName = name.trim();
+export const nameValidator = (name) => {
+  const trimmedName = name.trim()
 
   // rules (valid name)
   // should start with alphabet
@@ -245,37 +291,56 @@ export const nameValidator = name => {
   // should contain only one space between name/word
   // can contain number after initial alphabet
 
-  const namePattern = /^(?!\d)[a-zA-Z\d]{2,}[a-zA-Z\d]+(?: [a-zA-z\d]+)*$/;
+  const namePattern = /^(?!\d)[a-zA-Z\d]{2,}[a-zA-Z\d]+(?: [a-zA-z\d]+)*$/
   if (!trimmedName || !namePattern.test(trimmedName)) {
-    return false;
+    return false
   }
-  return true;
-};
+  return true
+}
 
-export const getDefaultSettings = ({ testType = "", defaultTestProfiles = {} }) => {
+export const getDefaultSettings = ({
+  testType = '',
+  defaultTestProfiles = {},
+}) => {
   switch (true) {
     case testType === testConst.type.COMMON:
       return {
-        performanceBand: { _id: defaultTestProfiles?.performanceBand?.common || "" },
-        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.common || "" }
-      };
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.common || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.common || '',
+        },
+      }
     case testType === testConst.type.ASSESSMENT:
       return {
-        performanceBand: { _id: defaultTestProfiles?.performanceBand?.class || "" },
-        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.class || "" }
-      };
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.class || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.class || '',
+        },
+      }
     case testType === testConst.type.PRACTICE:
       return {
-        performanceBand: { _id: defaultTestProfiles?.performanceBand?.practice || "" },
-        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.practice || "" }
-      };
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.practice || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.practice || '',
+        },
+      }
     default:
       return {
-        performanceBand: { _id: defaultTestProfiles?.performanceBand?.common || "" },
-        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.common || "" }
-      };
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.common || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.common || '',
+        },
+      }
   }
-};
+}
 
 /**
  *
@@ -284,16 +349,16 @@ export const getDefaultSettings = ({ testType = "", defaultTestProfiles = {} }) 
  * @returns a tuple containing the type and message for notifaction [type, msg]
  */
 export const getTypeAndMsgBasedOnScore = (score, maxScore) => {
-  let returnValue = [];
+  let returnValue = []
   if (score === maxScore) {
-    returnValue = ["success", "Correct"];
+    returnValue = ['success', 'Correct']
   } else if (score > 0) {
-    returnValue = ["success", "Partially Correct"];
+    returnValue = ['success', 'Partially Correct']
   } else {
-    returnValue = ["error", "Incorrect"];
+    returnValue = ['error', 'Incorrect']
   }
-  return returnValue;
-};
+  return returnValue
+}
 
 /**
  * Make confirmation popup native to app
@@ -302,67 +367,73 @@ export const getTypeAndMsgBasedOnScore = (score, maxScore) => {
  *  */
 export const getUserConfirmation = (message, callback) =>
   Modal.confirm({
-    title: "Alert",
+    title: 'Alert',
     content: message,
     onOk: () => {
-      callback(true);
-      Modal.destroyAll();
+      callback(true)
+      Modal.destroyAll()
     },
-    okText: "Yes, Continue",
+    okText: 'Yes, Continue',
     onCancel: () => {
-      callback(false);
-      Modal.destroyAll();
+      callback(false)
+      Modal.destroyAll()
     },
     centered: true,
     width: 500,
     okButtonProps: {
-      style: { background: themeColor }
-    }
-  });
+      style: { background: themeColor },
+    },
+  })
 
 /**
  * Widgets contains the correct sequence of the Questions
  * @param {array} widgets
  * @param {array} questions
  */
-export const reSequenceQuestionsWithWidgets = (widgets = [], questions = []) => {
-  const _questions = keyBy(questions, "id");
-  const reSequencedQ = widgets.map(({ reference }) => _questions[reference]).filter(x => x);
-  return reSequencedQ.length ? reSequencedQ : questions;
-};
+export const reSequenceQuestionsWithWidgets = (
+  widgets = [],
+  questions = []
+) => {
+  const _questions = keyBy(questions, 'id')
+  const reSequencedQ = widgets
+    .map(({ reference }) => _questions[reference])
+    .filter((x) => x)
+  return reSequencedQ.length ? reSequencedQ : questions
+}
 
-export const validateEmail = (email = "") => emailRegex.test(String(email).toLowerCase());
+export const validateEmail = (email = '') =>
+  emailRegex.test(String(email).toLowerCase())
 
 /** Use this helper to invoke at places where you to need to validate client time into sentry */
 export const checkClientTime = (meta = {}) => {
-  const error = new Error("[App] CLIENT_TIME_MISMATCH");
+  const error = new Error('[App] CLIENT_TIME_MISMATCH')
   // log into sentry if we see a difference at user client side
   setTimeout(async () => {
     try {
       const resp = await api
         .callApi({
           url: `/utils/fetch-sync-time`,
-          method: "get"
+          method: 'get',
         })
-        .then(({ data }) => data);
+        .then(({ data }) => data)
       if (resp.serverTimeISO) {
         try {
-          const serverTime = new Date(resp.serverTimeISO).getTime();
-          const currentTime = new Date().getTime();
+          const serverTime = new Date(resp.serverTimeISO).getTime()
+          const currentTime = new Date().getTime()
           if (Math.abs((serverTime - currentTime) / 1000) > 10) {
-            Sentry.withScope(scope => {
-              scope.setTag("issueType", "clientTypeMismatchError");
-              scope.setExtra("message", new Date().toISOString());
-              scope.setExtras(meta);
-              Sentry.captureException(error);
-            });
+            Sentry.withScope((scope) => {
+              scope.setTag('issueType', 'clientTypeMismatchError')
+              scope.setExtra('message', new Date().toISOString())
+              scope.setExtras(meta)
+              Sentry.captureException(error)
+            })
           }
         } catch (e) {
-          Sentry.captureException(e);
+          Sentry.captureException(e)
         }
       }
     } catch (e) {
-      Sentry.captureException(e);
+      Sentry.captureException(e)
     }
-  });
-};
+  })
+}

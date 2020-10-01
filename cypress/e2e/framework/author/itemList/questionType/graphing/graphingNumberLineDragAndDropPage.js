@@ -1,8 +1,8 @@
-import GraphingNumberLineStandardPage from "./graphingNumberLineStdPage";
+import GraphingNumberLineStandardPage from './graphingNumberLineStdPage'
 
 class GraphingNumberLineDragAndDropPage extends GraphingNumberLineStandardPage {
   constructor() {
-    super();
+    super()
   }
 }
-export default GraphingNumberLineDragAndDropPage;
+export default GraphingNumberLineDragAndDropPage

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { title } from "@edulastic/colors";
+import styled from 'styled-components'
+import { title } from '@edulastic/colors'
 
 export default styled.div`
   color: ${title};
@@ -8,4 +8,4 @@ export default styled.div`
   & span {
     margin: 0px 8px;
   }
-`;
+`

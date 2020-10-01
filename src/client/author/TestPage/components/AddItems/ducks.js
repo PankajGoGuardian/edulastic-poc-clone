@@ -1,50 +1,93 @@
-import { createSelector } from "reselect";
-import { notification } from "@edulastic/common";
-import { libraryFilters } from "@edulastic/constants";
-import { createAction } from "redux-starter-kit";
-import * as Sentry from "@sentry/browser";
-import { call, put, all, takeEvery, select, takeLatest, take, race } from "redux-saga/effects";
-import { push } from "connected-react-router";
-import { testItemsApi, contentErrorApi } from "@edulastic/api";
-import { keyBy } from "lodash";
-import { getAllTagsSelector, TAGS_SAGA_FETCH_STATUS, SET_ALL_TAGS, SET_ALL_TAGS_FAILED } from "../../ducks";
-import { DELETE_ITEM_SUCCESS } from "../../../ItemDetail/ducks";
+import { createSelector } from 'reselect'
+import { notification } from '@edulastic/common'
+import { libraryFilters } from '@edulastic/constants'
+import { createAction } from 'redux-starter-kit'
+import * as Sentry from '@sentry/browser'
+import {
+  call,
+  put,
+  all,
+  takeEvery,
+  select,
+  takeLatest,
+  take,
+  race,
+} from 'redux-saga/effects'
+import { push } from 'connected-react-router'
+import { testItemsApi, contentErrorApi } from '@edulastic/api'
+import { keyBy } from 'lodash'
+import {
+  getAllTagsSelector,
+  TAGS_SAGA_FETCH_STATUS,
+  SET_ALL_TAGS,
+  SET_ALL_TAGS_FAILED,
+} from '../../ducks'
+import { DELETE_ITEM_SUCCESS } from '../../../ItemDetail/ducks'
 import {
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
-  APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
-} from "../../../src/constants/actions";
-import { UPDATE_TEST_ITEM_LIKE_COUNT } from "../../../ItemList/ducks";
+  APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS,
+} from '../../../src/constants/actions'
+import { UPDATE_TEST_ITEM_LIKE_COUNT } from '../../../ItemList/ducks'
 
-const { SMART_FILTERS } = libraryFilters;
+const { SMART_FILTERS } = libraryFilters
 
 export const filterMenuItems = [
-  { icon: "book", filter: SMART_FILTERS.ENTIRE_LIBRARY, path: "all", text: "Entire Library" },
-  { icon: "folder", filter: SMART_FILTERS.AUTHORED_BY_ME, path: "by-me", text: "Authored by me" },
-  { icon: "share-alt", filter: SMART_FILTERS.SHARED_WITH_ME, path: "shared", text: "Shared with me" },
+  {
+    icon: 'book',
+    filter: SMART_FILTERS.ENTIRE_LIBRARY,
+    path: 'all',
+    text: 'Entire Library',
+  },
+  {
+    icon: 'folder',
+    filter: SMART_FILTERS.AUTHORED_BY_ME,
+    path: 'by-me',
+    text: 'Authored by me',
+  },
+  {
+    icon: 'share-alt',
+    filter: SMART_FILTERS.SHARED_WITH_ME,
+    path: 'shared',
+    text: 'Shared with me',
+  },
 
   // These two filters are to be enabled later so, commented out
   // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" },
-  { icon: "folders", filter: SMART_FILTERS.FOLDERS, path: "folders", text: "FOLDERS" }
-];
+  {
+    icon: 'heart',
+    filter: SMART_FILTERS.FAVORITES,
+    path: 'favourites',
+    text: 'My Favorites',
+  },
+  {
+    icon: 'folders',
+    filter: SMART_FILTERS.FOLDERS,
+    path: 'folders',
+    text: 'FOLDERS',
+  },
+]
 
 // constants
 
-export const RECEIVE_TEST_ITEMS_REQUEST = "[addItems] receive items request";
-export const RECEIVE_TEST_ITEMS_SUCCESS = "[addItems] receive items success";
-export const RECEIVE_TEST_ITEMS_ERROR = "[addItems] receive items error";
-export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
-export const REMOVE_TEST_ITEMS_REQUEST = "[addItems] remove items request";
-export const SET_TEST_ITEM_REQUEST = "[addItems] set passage item request";
-export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
-export const GET_ITEMS_SUBJECT_AND_GRADE = "[addItems] get subjects and grades";
-export const REPORT_CONTENT_ERROR_REQUEST = "[addItems] report content error request";
-export const SET_SEARCH_FILTER_STATE = "[addItems] update search filter state";
-export const CLEAR_SEARCH_FILTER_STATE = "[addItems] clear search filter state";
-export const UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN = "[addItems] update init search state on login";
-export const RESET_PAGE_STATE_ADD_ITEMS = "[addItems] reset page state";
-export const SHOW_ADD_PASSAGE_ITEM_MODAL = "[addItems] toggle show add passage item modal";
-export const SET_APPROVE_CONFIRMATION_OPEN = "[addItems] set approve confirmation modal open";
+export const RECEIVE_TEST_ITEMS_REQUEST = '[addItems] receive items request'
+export const RECEIVE_TEST_ITEMS_SUCCESS = '[addItems] receive items success'
+export const RECEIVE_TEST_ITEMS_ERROR = '[addItems] receive items error'
+export const SET_TEST_ITEMS_REQUEST = '[addItems] set items request'
+export const REMOVE_TEST_ITEMS_REQUEST = '[addItems] remove items request'
+export const SET_TEST_ITEM_REQUEST = '[addItems] set passage item request'
+export const CLEAR_SELECTED_ITEMS = '[addItems] clear selected items'
+export const GET_ITEMS_SUBJECT_AND_GRADE = '[addItems] get subjects and grades'
+export const REPORT_CONTENT_ERROR_REQUEST =
+  '[addItems] report content error request'
+export const SET_SEARCH_FILTER_STATE = '[addItems] update search filter state'
+export const CLEAR_SEARCH_FILTER_STATE = '[addItems] clear search filter state'
+export const UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN =
+  '[addItems] update init search state on login'
+export const RESET_PAGE_STATE_ADD_ITEMS = '[addItems] reset page state'
+export const SHOW_ADD_PASSAGE_ITEM_MODAL =
+  '[addItems] toggle show add passage item modal'
+export const SET_APPROVE_CONFIRMATION_OPEN =
+  '[addItems] set approve confirmation modal open'
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -53,16 +96,16 @@ export const receiveTestItemsSuccess = (items, count, page, limit) => ({
     items,
     count,
     page,
-    limit
-  }
-});
+    limit,
+  },
+})
 
-export const receiveTestItemsError = error => ({
+export const receiveTestItemsError = (error) => ({
   type: RECEIVE_TEST_ITEMS_ERROR,
   payload: {
-    error
-  }
-});
+    error,
+  },
+})
 
 export const receiveTestItemsAction = (search, sort, page, limit) => ({
   type: RECEIVE_TEST_ITEMS_REQUEST,
@@ -70,79 +113,81 @@ export const receiveTestItemsAction = (search, sort, page, limit) => ({
     search,
     sort,
     page,
-    limit
-  }
-});
+    limit,
+  },
+})
 
-export const setTestItemsAction = data => ({
+export const setTestItemsAction = (data) => ({
   type: SET_TEST_ITEMS_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
-export const removeTestItemsAction = data => ({
+export const removeTestItemsAction = (data) => ({
   type: REMOVE_TEST_ITEMS_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
-export const setItemFromPassageAction = data => ({
+export const setItemFromPassageAction = (data) => ({
   type: SET_TEST_ITEM_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
 export const clearSelectedItemsAction = () => ({
-  type: CLEAR_SELECTED_ITEMS
-});
+  type: CLEAR_SELECTED_ITEMS,
+})
 
-export const getItemsSubjectAndGradeAction = data => ({
+export const getItemsSubjectAndGradeAction = (data) => ({
   type: GET_ITEMS_SUBJECT_AND_GRADE,
-  payload: data
-});
+  payload: data,
+})
 
-export const reportContentErrorAction = data => ({
+export const reportContentErrorAction = (data) => ({
   type: REPORT_CONTENT_ERROR_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
-export const updateSearchFilterStateAction = payload => ({
+export const updateSearchFilterStateAction = (payload) => ({
   type: SET_SEARCH_FILTER_STATE,
-  payload
-});
+  payload,
+})
 
-export const clearFilterStateAction = payload => ({
+export const clearFilterStateAction = (payload) => ({
   type: CLEAR_SEARCH_FILTER_STATE,
-  payload
-});
+  payload,
+})
 
-export const updateInitSearchStateAction = payload => ({
+export const updateInitSearchStateAction = (payload) => ({
   type: UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN,
-  payload
-});
+  payload,
+})
 
-export const resetPageStateAction = createAction(RESET_PAGE_STATE_ADD_ITEMS);
-export const setApproveConfirmationOpenAction = createAction(SET_APPROVE_CONFIRMATION_OPEN);
+export const resetPageStateAction = createAction(RESET_PAGE_STATE_ADD_ITEMS)
+export const setApproveConfirmationOpenAction = createAction(
+  SET_APPROVE_CONFIRMATION_OPEN
+)
 
 // reducer
 
 export const initialSearchState = {
   subject: [],
-  curriculumId: "",
+  curriculumId: '',
   standardIds: [],
-  questionType: "",
-  depthOfKnowledge: "",
-  authorDifficulty: "",
+  questionType: '',
+  depthOfKnowledge: '',
+  authorDifficulty: '',
   collections: [],
-  status: "",
+  status: '',
   grades: [],
   tags: [],
   authoredByIds: [],
   filter: filterMenuItems[0].filter,
-  createdAt: ""
-};
+  createdAt: '',
+}
 
 export const initialSortState = {
-  sortBy: "popularity",
-  sortDir: "desc"
-};
+  sortBy: 'popularity',
+  sortDir: 'desc',
+}
 
 const initialState = {
   items: [],
@@ -154,19 +199,19 @@ const initialState = {
   selectedItems: [],
   itemsSubjectAndGrade: {
     subjects: [],
-    grades: []
+    grades: [],
   },
   search: { ...initialSearchState },
   archivedItems: [],
   needToSetFilter: true,
   showApproveConfirmation: false,
-  sort: { ...initialSortState }
-};
+  sort: { ...initialSortState },
+}
 
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_TEST_ITEMS_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true }
     case RECEIVE_TEST_ITEMS_SUCCESS:
       return {
         ...state,
@@ -175,107 +220,107 @@ export const reducer = (state = initialState, { type, payload }) => {
         items: payload.items,
         count: payload.count,
         page: payload.page,
-        limit: payload.limit
-      };
+        limit: payload.limit,
+      }
     case RECEIVE_TEST_ITEMS_ERROR:
-      return { ...state, loading: false, error: payload.error };
+      return { ...state, loading: false, error: payload.error }
     case SET_TEST_ITEMS_REQUEST:
       return {
         ...state,
-        selectedItems: payload
-      };
+        selectedItems: payload,
+      }
     case SET_TEST_ITEM_REQUEST:
       return {
         ...state,
-        selectedItems: [...state.selectedItems, payload]
-      };
+        selectedItems: [...state.selectedItems, payload],
+      }
     case REMOVE_TEST_ITEMS_REQUEST:
       return {
         ...state,
-        selectedItems: state.selectedItems.filter(i => !payload.includes(i))
-      };
+        selectedItems: state.selectedItems.filter((i) => !payload.includes(i)),
+      }
     case CLEAR_SELECTED_ITEMS:
       return {
         ...state,
         selectedItems: [],
         itemsSubjectAndGrade: {
           subjects: [],
-          grades: []
-        }
-      };
+          grades: [],
+        },
+      }
     case GET_ITEMS_SUBJECT_AND_GRADE:
       return {
         ...state,
-        itemsSubjectAndGrade: payload
-      };
+        itemsSubjectAndGrade: payload,
+      }
     case SET_SEARCH_FILTER_STATE:
       return {
         ...state,
         search: { ...payload.search },
         sort: { ...payload.sort },
-        needToSetFilter: true
-      };
+        needToSetFilter: true,
+      }
     case CLEAR_SEARCH_FILTER_STATE:
       return {
         ...state,
         search: { ...initialSearchState },
         sort: { ...initialSortState },
-        ...(payload || {})
-      };
+        ...(payload || {}),
+      }
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
       return {
         ...state,
         search: {
           ...state.search,
           grades: payload.grades || [],
-          subject: payload.subject[0] || ""
-        }
-      };
+          subject: payload.subject[0] || '',
+        },
+      }
     case DELETE_ITEM_SUCCESS: {
       return {
         ...state,
-        archivedItems: [...state.archivedItems, payload]
-      };
+        archivedItems: [...state.archivedItems, payload],
+      }
     }
     case APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS:
       return {
         ...state,
-        items: state.items.map(i => {
+        items: state.items.map((i) => {
           if (i._id === payload.itemId) {
             return {
               ...i,
-              status: payload.status
-            };
+              status: payload.status,
+            }
           }
-          return i;
-        })
-      };
+          return i
+        }),
+      }
     case APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS: {
-      const itemIdsMap = keyBy(payload.itemIds);
+      const itemIdsMap = keyBy(payload.itemIds)
       return {
         ...state,
-        items: state.items.map(i => {
+        items: state.items.map((i) => {
           if (itemIdsMap[i._id]) {
             return {
               ...i,
-              status: payload.status
-            };
+              status: payload.status,
+            }
           }
-          return i;
+          return i
         }),
-        selectedItems: [...state.selectedItems]
-      };
+        selectedItems: [...state.selectedItems],
+      }
     }
     case RESET_PAGE_STATE_ADD_ITEMS:
       return {
         ...state,
         page: 1,
-        needToSetFilter: true
-      };
+        needToSetFilter: true,
+      }
     case UPDATE_TEST_ITEM_LIKE_COUNT:
       return {
         ...state,
-        items: state.items.map(item => {
+        items: state.items.map((item) => {
           if (item.versionId === payload.versionId) {
             return {
               ...item,
@@ -284,141 +329,148 @@ export const reducer = (state = initialState, { type, payload }) => {
                   usage: item?.analytics?.[0]?.usage || 0,
                   likes: payload.toggleValue
                     ? (item?.analytics?.[0]?.likes || 0) + 1
-                    : (item?.analytics?.[0]?.likes || 1) - 1
-                }
+                    : (item?.analytics?.[0]?.likes || 1) - 1,
+                },
               ],
-              alreadyLiked: payload.toggleValue
-            };
+              alreadyLiked: payload.toggleValue,
+            }
           }
-          return item;
-        })
-      };
+          return item
+        }),
+      }
     case SET_APPROVE_CONFIRMATION_OPEN:
       return {
         ...state,
-        showApproveConfirmation: payload
-      };
+        showApproveConfirmation: payload,
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
 // saga
 
-function* receiveTestItemsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
+function* receiveTestItemsSaga({
+  payload: { search = {}, sort = {}, page = 1, limit = 10 },
+}) {
   try {
-    const currentLocation = yield select(state => state.router.location.pathname);
-    yield put(push(`${currentLocation}?page=${page}`));
+    const currentLocation = yield select(
+      (state) => state.router.location.pathname
+    )
+    yield put(push(`${currentLocation}?page=${page}`))
 
     // if the tags are still being fetched, wait for it to fetch and complete
     if (TAGS_SAGA_FETCH_STATUS.isLoading) {
       yield race({
         success: take(SET_ALL_TAGS),
-        fail: take(SET_ALL_TAGS_FAILED)
-      });
+        fail: take(SET_ALL_TAGS_FAILED),
+      })
     }
 
-    const allTagsData = yield select(state => getAllTagsSelector(state, "testitem"));
-    const allTagsKeyById = keyBy(allTagsData, "_id");
-    const { tags = [] } = search;
-    const searchTags = tags.map(tag => allTagsKeyById[tag]?.tagName || "");
+    const allTagsData = yield select((state) =>
+      getAllTagsSelector(state, 'testitem')
+    )
+    const allTagsKeyById = keyBy(allTagsData, '_id')
+    const { tags = [] } = search
+    const searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
       sort,
       page,
-      limit
-    });
-    yield put(receiveTestItemsSuccess(items, count, page, limit));
+      limit,
+    })
+    yield put(receiveTestItemsSuccess(items, count, page, limit))
   } catch (err) {
-    Sentry.captureException(err);
-    const errorMessage = "Unable to retrieve test items.";
-    notification({ type: "error", messageKey: "receiveItemFailing" });
-    yield put(receiveTestItemsError(errorMessage));
+    Sentry.captureException(err)
+    const errorMessage = 'Unable to retrieve test items.'
+    notification({ type: 'error', messageKey: 'receiveItemFailing' })
+    yield put(receiveTestItemsError(errorMessage))
   }
 }
 
 function* reportContentErrorSaga({ payload }) {
   try {
-    yield call(contentErrorApi.reportContentError, payload);
-    notification({ type: "success", messageKey: "issueReportedSuccessfully" });
+    yield call(contentErrorApi.reportContentError, payload)
+    notification({ type: 'success', messageKey: 'issueReportedSuccessfully' })
   } catch (err) {
-    Sentry.captureException(err);
-    notification({ messageKey: "failedToReportIssue" });
+    Sentry.captureException(err)
+    notification({ messageKey: 'failedToReportIssue' })
   }
 }
 
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
-    yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga)
-  ]);
+    yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
+  ])
 }
 
 // selectors
 
-export const stateTestItemsSelector = state => state.testsAddItems;
+export const stateTestItemsSelector = (state) => state.testsAddItems
 
 export const getArchivedItemsSelector = createSelector(
   stateTestItemsSelector,
-  state => state.archivedItems
-);
+  (state) => state.archivedItems
+)
 
 export const getTestItemsSelector = createSelector(
   stateTestItemsSelector,
-  state => state.items.filter(item => !state.archivedItems.includes(item._id))
-);
+  (state) =>
+    state.items.filter((item) => !state.archivedItems.includes(item._id))
+)
 
 export const getPopStateSelector = createSelector(
   stateTestItemsSelector,
-  state => state.showPopUp
-);
+  (state) => state.showPopUp
+)
 
 export const getTestItemsLoadingSelector = createSelector(
   stateTestItemsSelector,
-  state => state.loading
-);
+  (state) => state.loading
+)
 
 export const getTestsItemsCountSelector = createSelector(
   stateTestItemsSelector,
-  state => state.count - state.archivedItems.length
-);
+  (state) => state.count - state.archivedItems.length
+)
 
 export const getTestsItemsLimitSelector = createSelector(
   stateTestItemsSelector,
-  state => state.limit
-);
+  (state) => state.limit
+)
 
 export const getTestsItemsPageSelector = createSelector(
   stateTestItemsSelector,
-  state => state.page
-);
+  (state) => state.page
+)
 
 export const getSelectedItemSelector = createSelector(
   stateTestItemsSelector,
-  state => state.selectedItems
-);
+  (state) => state.selectedItems
+)
 
 export const getItemsSubjectAndGradeSelector = createSelector(
   stateTestItemsSelector,
-  state => state.itemsSubjectAndGrade
-);
+  (state) => state.itemsSubjectAndGrade
+)
 
 export const getPassageConfirmModalStateSelector = createSelector(
   stateTestItemsSelector,
-  state => state.showPassageConfirmModal
-);
+  (state) => state.showPassageConfirmModal
+)
 
 export const getSearchFilterStateSelector = createSelector(
   stateTestItemsSelector,
-  state => state.search
-);
+  (state) => state.search
+)
 
 export const getShowApproveConfirmationSelector = createSelector(
   stateTestItemsSelector,
-  state => state.showApproveConfirmation
-);
+  (state) => state.showApproveConfirmation
+)
 
 export const getSortFilterStateSelector = createSelector(
   stateTestItemsSelector,
-  state => state.sort
-);
+  (state) => state.sort
+)

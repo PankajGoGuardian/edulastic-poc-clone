@@ -1,30 +1,30 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { Label } from "../styled/WidgetOptions/Label";
-import { StyledSelect } from "./Common/InputField";
-import { SelectInputStyled } from "../styled/InputStyles";
+import { Label } from '../styled/WidgetOptions/Label'
+import { StyledSelect } from './Common/InputField'
+import { SelectInputStyled } from '../styled/InputStyles'
 
 const FontSizeSelect = ({ t, onChange, value }) => {
   const options = [
-    { value: "small", label: t("component.options.small") },
-    { value: "normal", label: t("component.options.normal") },
-    { value: "large", label: t("component.options.large") },
-    { value: "xlarge", label: t("component.options.extraLarge") },
-    { value: "xxlarge", label: t("component.options.huge") }
-  ];
+    { value: 'small', label: t('component.options.small') },
+    { value: 'normal', label: t('component.options.normal') },
+    { value: 'large', label: t('component.options.large') },
+    { value: 'xlarge', label: t('component.options.extraLarge') },
+    { value: 'xxlarge', label: t('component.options.huge') },
+  ]
 
   return (
-    <Fragment>
-      <Label>{t("component.options.fontSize")}</Label>
+    <>
+      <Label>{t('component.options.fontSize')}</Label>
       <SelectInputStyled
         data-cy="fontSizeSelect"
         size="large"
         value={value}
         onChange={onChange}
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
       >
         {options.map(({ value: val, label }) => (
           <SelectInputStyled.Option data-cy={val} key={val} value={val}>
@@ -32,18 +32,18 @@ const FontSizeSelect = ({ t, onChange, value }) => {
           </SelectInputStyled.Option>
         ))}
       </SelectInputStyled>
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 FontSizeSelect.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.any
-};
+  value: PropTypes.any,
+}
 
 FontSizeSelect.defaultProps = {
-  value: "normal"
-};
+  value: 'normal',
+}
 
-export default withNamespaces("assessment")(FontSizeSelect);
+export default withNamespaces('assessment')(FontSizeSelect)

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Input } from "antd";
-import styled from "styled-components";
-import { withMathFormula } from "../../HOC/withMathFormula";
-import { getMathHtml } from "../../utils/mathUtils";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Input } from 'antd'
+import styled from 'styled-components'
+import { withMathFormula } from '../../HOC/withMathFormula'
+import { getMathHtml } from '../../utils/mathUtils'
 
 const Div = styled.div`
   .katex-display {
@@ -13,41 +13,41 @@ const Div = styled.div`
   .katex-display .katex {
     text-align: left !important;
   }
-`;
+`
 
 const KatexInput = ({ value, onInput }) => {
-  const [katexHtml, setKatexHtml] = useState("");
-  const [latex, setLatex] = useState("");
+  const [katexHtml, setKatexHtml] = useState('')
+  const [latex, setLatex] = useState('')
 
   useEffect(() => {
-    setLatex(value);
-  }, []);
+    setLatex(value)
+  }, [])
 
   useEffect(() => {
     if (value !== latex) {
-      setLatex(value);
+      setLatex(value)
     }
-  }, [value]);
+  }, [value])
 
-  const onChange = pLatex => {
-    setLatex(pLatex);
-    setKatexHtml(getMathHtml(pLatex));
-    onInput(pLatex);
-  };
+  const onChange = (pLatex) => {
+    setLatex(pLatex)
+    setKatexHtml(getMathHtml(pLatex))
+    onInput(pLatex)
+  }
 
   return (
-    <React.Fragment>
-      <Input value={latex} onChange={e => onChange(e.target.value)} />
+    <>
+      <Input value={latex} onChange={(e) => onChange(e.target.value)} />
       <Div dangerouslySetInnerHTML={{ __html: katexHtml }} />
-    </React.Fragment>
-  );
-};
+    </>
+  )
+}
 
 KatexInput.propTypes = {
   value: PropTypes.string.isRequired,
-  onInput: PropTypes.func.isRequired
-};
+  onInput: PropTypes.func.isRequired,
+}
 
-KatexInput.defaultProps = {};
+KatexInput.defaultProps = {}
 
-export default withMathFormula(KatexInput);
+export default withMathFormula(KatexInput)

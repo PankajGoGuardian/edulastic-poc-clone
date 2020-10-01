@@ -1,15 +1,15 @@
-import { SimpleConfirmModal } from "@edulastic/common";
-import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
-import { Col, Tooltip } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React, { useState } from "react";
-import connect from "react-redux/lib/connect/connect";
-import withRouter from "react-router-dom/withRouter";
-import { compose } from "redux";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
-import { getUserId } from "../../../src/selectors/user";
+import { SimpleConfirmModal } from '@edulastic/common'
+import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
+import { Col, Tooltip } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import connect from 'react-redux/lib/connect/connect'
+import withRouter from 'react-router-dom/withRouter'
+import { compose } from 'redux'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import { setAssignmentFiltersAction } from '../../../src/actions/assignments'
+import { getUserId } from '../../../src/selectors/user'
 import {
   ClassCode,
   ClassLink,
@@ -18,8 +18,8 @@ import {
   CoTeacher,
   RightContent,
   Studentscount,
-  PopCoTeachers
-} from "./styled";
+  PopCoTeachers,
+} from './styled'
 
 const SubHeader = ({
   name,
@@ -33,30 +33,35 @@ const SubHeader = ({
   gradeSubject,
   studentsList,
   userId,
-  lastTeacher
+  lastTeacher,
 }) => {
-  const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
-  const { exitPath } = location?.state || {};
-  const typeText = type !== "class" ? "Group" : "Class";
-  const studentCount = studentsList?.filter(stu => stu.enrollmentStatus === 1 && stu.status === 1)?.length;
-  const totalStudent = studentCount < 10 ? <span> 0{studentCount} </span> : studentCount;
-  const coTeachers = owners ? owners.filter(owner => owner.id !== userId).map(owner => owner.name) : [];
+  const [showUnarchiveModal, setShowUnarchiveModal] = useState(false)
+  const { exitPath } = location?.state || {}
+  const typeText = type !== 'class' ? 'Group' : 'Class'
+  const studentCount = studentsList?.filter(
+    (stu) => stu.enrollmentStatus === 1 && stu.status === 1
+  )?.length
+  const totalStudent =
+    studentCount < 10 ? <span> 0{studentCount} </span> : studentCount
+  const coTeachers = owners
+    ? owners.filter((owner) => owner.id !== userId).map((owner) => owner.name)
+    : []
 
-  const teacher = coTeachers.slice(0, 1);
-  const otherTeachers = coTeachers.slice(1, lastTeacher);
-  const otherTeacherNames = otherTeachers.join(", ");
+  const teacher = coTeachers.slice(0, 1)
+  const otherTeachers = coTeachers.slice(1, lastTeacher)
+  const otherTeacherNames = otherTeachers.join(', ')
 
   const handleUnarchiveClass = () => {
-    unarchiveClass({ groupId: _id, exitPath, isGroup: type !== "class" });
-    setShowUnarchiveModal(false);
-  };
+    unarchiveClass({ groupId: _id, exitPath, isGroup: type !== 'class' })
+    setShowUnarchiveModal(false)
+  }
   const handleUnarchiveClassCancel = () => {
-    setShowUnarchiveModal(false);
-  };
+    setShowUnarchiveModal(false)
+  }
 
   return (
     <ContainerHeader>
-      {type === "class" && (
+      {type === 'class' && (
         <CodeWrapper>
           <ClassCode lg={6} span={24}>
             Class Code <span>{code}</span>
@@ -84,20 +89,25 @@ const SubHeader = ({
                 </CoTeacher>
               </FeaturesSwitch>
             ) : (
-              ""
+              ''
             )}
           </Col>
         </CodeWrapper>
       )}
       <RightContent>
-        {active !== 1 && <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>}
+        {active !== 1 && (
+          <ClassLink onClick={() => setShowUnarchiveModal(true)}>
+            UNARCHIVE
+          </ClassLink>
+        )}
         {showUnarchiveModal && (
           <SimpleConfirmModal
             visible={showUnarchiveModal}
             title={`Unarchive ${typeText}`}
             description={
-              <p style={{ margin: "5px 0" }}>
-                Are you sure you want to Unarchive <LightGreenSpan>{name}</LightGreenSpan>?
+              <p style={{ margin: '5px 0' }}>
+                Are you sure you want to Unarchive{' '}
+                <LightGreenSpan>{name}</LightGreenSpan>?
               </p>
             }
             buttonText="Unarchive"
@@ -107,30 +117,30 @@ const SubHeader = ({
         )}
       </RightContent>
     </ContainerHeader>
-  );
-};
+  )
+}
 
 SubHeader.propTypes = {
   name: PropTypes.string,
-  code: PropTypes.string
-};
+  code: PropTypes.string,
+}
 
 SubHeader.defaultProps = {
-  name: "",
-  code: ""
-};
+  name: '',
+  code: '',
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       userId: getUserId(state),
-      studentsList: get(state, "manageClass.studentsList", [])
+      studentsList: get(state, 'manageClass.studentsList', []),
     }),
     {
-      setAssignmentFilters: setAssignmentFiltersAction
+      setAssignmentFilters: setAssignmentFiltersAction,
     }
   )
-);
+)
 
-export default enhance(SubHeader);
+export default enhance(SubHeader)

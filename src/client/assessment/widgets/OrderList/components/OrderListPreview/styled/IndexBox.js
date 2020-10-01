@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { white } from '@edulastic/colors'
 
 export const IndexBox = styled.div`
   color: ${white};
@@ -20,4 +20,4 @@ export const IndexBox = styled.div`
     };
     width: ${smallSize ? 30 : 32}px;
   `}
-`;
+`

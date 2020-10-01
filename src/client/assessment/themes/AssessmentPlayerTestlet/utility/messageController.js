@@ -7,9 +7,9 @@
  */
 class MessageController {
   constructor(scope) {
-    this.scope = scope;
-    this.context = null;
-    this._onMessage = this._onMessage.bind(this);
+    this.scope = scope
+    this.context = null
+    this._onMessage = this._onMessage.bind(this)
   }
 
   call(method, args) {
@@ -17,31 +17,31 @@ class MessageController {
       {
         scope: this.scope,
         method,
-        arguments: args || []
+        arguments: args || [],
       },
       window.location
-    );
+    )
     // console.log("parent side...")
   }
 
   _onMessage(msg) {
-    if (msg.data.scope === this.scope) return;
+    if (msg.data.scope === this.scope) return
 
     if (msg.data.method in this) {
       // eslint-disable-next-line prefer-spread
-      this[msg.data.method].apply(this, msg.data.arguments);
+      this[msg.data.method].apply(this, msg.data.arguments)
     }
   }
 
   connect(context = window) {
-    this.context = context;
-    this.context.addEventListener("message", this._onMessage);
+    this.context = context
+    this.context.addEventListener('message', this._onMessage)
   }
 
   disconnect() {
-    this.context.removeEventListener("message", this._onMessage);
-    this.context = null;
+    this.context.removeEventListener('message', this._onMessage)
+    this.context = null
   }
 }
 
-export default MessageController;
+export default MessageController

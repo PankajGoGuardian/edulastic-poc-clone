@@ -1,28 +1,35 @@
-import { Paper } from "@edulastic/common";
-import { mobileWidth, themeColor, white, linkColor, title } from "@edulastic/colors";
-import styled from "styled-components";
+import { Paper } from '@edulastic/common'
+import {
+  mobileWidth,
+  themeColor,
+  white,
+  linkColor,
+  title,
+} from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const Content = styled(Paper)`
   display: flex;
   flex-wrap: nowrap;
-  padding: ${props => (props.padding ? props.padding : "0px")};
+  padding: ${(props) => (props.padding ? props.padding : '0px')};
   position: relative;
-`;
+`
 
 export const PreviewContent = styled(Content)`
-  padding: ${props => (props.padding ? props.padding : "0px")};
+  padding: ${(props) => (props.padding ? props.padding : '0px')};
   min-height: 50px;
-  background-color: ${props => (props.view === "preview" ? "transparent" : white)};
+  background-color: ${(props) =>
+    props.view === 'preview' ? 'transparent' : white};
   @media (max-width: ${mobileWidth}) {
     & > div {
       padding: 0;
     }
   }
-`;
+`
 
 export const ContentWrapper = styled.div`
   padding: 10px 30px;
-`;
+`
 
 export const TestItemCount = styled.div`
   margin-left: 32px;
@@ -30,7 +37,7 @@ export const TestItemCount = styled.div`
   color: ${title};
   font-size: 10px;
   font-weight: ${({ theme }) => theme.semiBold};
-`;
+`
 
 export const PassageNavigation = styled.div`
   display: flex;
@@ -56,15 +63,15 @@ export const PassageNavigation = styled.div`
     width: 75px;
     font-size: 11px;
   }
-`;
+`
 
 export const AddRemoveButtonWrapper = styled.div`
   margin-left: 4px;
-`;
+`
 
 export const ItemDetailWrapper = styled.div`
   display: flex;
-  padding: ${props => (props.padding ? props.padding : "0px 30px 40px")};
+  padding: ${(props) => (props.padding ? props.padding : '0px 30px 40px')};
   flex-wrap: nowrap;
   width: 100%;
   justify-content: space-between;
@@ -72,7 +79,7 @@ export const ItemDetailWrapper = styled.div`
     margin-top: 0;
     padding: 0px 25px 25px;
   }
-`;
+`
 
 export const ButtonClose = styled.div`
   width: 40px;
@@ -89,7 +96,7 @@ export const ButtonClose = styled.div`
   svg {
     fill: ${white};
   }
-`;
+`
 
 export const BackLink = styled.span`
   background: ${white};
@@ -107,4 +114,4 @@ export const BackLink = styled.span`
   margin: 0 0 26px 25px;
   max-width: 140px;
   text-align: center;
-`;
+`

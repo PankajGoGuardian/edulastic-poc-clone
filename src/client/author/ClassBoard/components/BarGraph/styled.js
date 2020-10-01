@@ -1,8 +1,13 @@
-import styled from "styled-components";
-import { Card } from "antd";
-import { white, mobileWidth, extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Card } from 'antd'
+import {
+  white,
+  mobileWidth,
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
 
-import { CustomTooltip } from "./CustomTooltip";
+import { CustomTooltip } from './CustomTooltip'
 
 export const MainDiv = styled.div`
   width: 100%;
@@ -43,39 +48,39 @@ export const MainDiv = styled.div`
   }
 
   font-size: 12px;
-`;
+`
 
 export const StyledCustomTooltip = styled(CustomTooltip)`
   padding: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  font-size: ${props => props.theme.commentFontSize};
+  font-size: ${(props) => props.theme.commentFontSize};
   white-space: pre;
   background-color: ${white};
   border-radius: 10px;
 
   .classboard-tooltip-title {
     font-weight: 900;
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
   }
   .classboard-tooltip-value {
     font-weight: 900;
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
     .classboard-tooltip-title {
-      font-size: ${props => props.theme.standardFont};
+      font-size: ${(props) => props.theme.standardFont};
     }
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.standardFont};
+    font-size: ${(props) => props.theme.standardFont};
     .classboard-tooltip-title {
-      font-size: ${props => props.theme.titleSectionFontSize};
+      font-size: ${(props) => props.theme.titleSectionFontSize};
     }
   }
-`;
+`
 
-export const TooltipContainer = styled(Card)``;
+export const TooltipContainer = styled(Card)``
 
 export const OnScreenNotification = styled.h3`
   display: flex;
@@ -84,4 +89,4 @@ export const OnScreenNotification = styled.h3`
   text-align: center;
   align-items: center;
   justify-content: center;
-`;
+`

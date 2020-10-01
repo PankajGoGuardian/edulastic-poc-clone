@@ -1,30 +1,33 @@
-import { createAction, createReducer } from "redux-starter-kit";
-import { takeEvery, takeLatest, put, call, select } from "redux-saga/effects";
-import { groupApi, enrollmentApi } from "@edulastic/api";
+import { createAction, createReducer } from 'redux-starter-kit'
+import { takeEvery, takeLatest, put, call, select } from 'redux-saga/effects'
+import { groupApi, enrollmentApi } from '@edulastic/api'
 
 // actions
-export const FETCH_GROUPS = "[author groups] fetch owned groups";
-export const FETCH_ARCHIVE_GROUPS = "[author groups] fetch owned achive groups";
-export const FETCH_GROUP_MEMBERS = "[author groups] fetch students of the group";
-export const SET_GROUPS = "[author groups] set groups";
-export const SET_ARCHIVE_GROUPS = "[author groups]set archive groups";
-export const SET_GROUP_MEMBERS = "[author groups] add students to groups";
-export const SET_MULTIPLE_GROUP_MEMBERS = "[author groups] set multiple group members";
-export const SET_LOADED_GROUPS = "[author groups] set loaded groups";
-export const ADD_GROUP = "[author groups] add group";
-export const RESET_STUDENTS = "[author groups] reset students list";
+export const FETCH_GROUPS = '[author groups] fetch owned groups'
+export const FETCH_ARCHIVE_GROUPS = '[author groups] fetch owned achive groups'
+export const FETCH_GROUP_MEMBERS = '[author groups] fetch students of the group'
+export const SET_GROUPS = '[author groups] set groups'
+export const SET_ARCHIVE_GROUPS = '[author groups]set archive groups'
+export const SET_GROUP_MEMBERS = '[author groups] add students to groups'
+export const SET_MULTIPLE_GROUP_MEMBERS =
+  '[author groups] set multiple group members'
+export const SET_LOADED_GROUPS = '[author groups] set loaded groups'
+export const ADD_GROUP = '[author groups] add group'
+export const RESET_STUDENTS = '[author groups] reset students list'
 
 // actions
-export const fetchGroupsAction = createAction(FETCH_GROUPS);
-export const fetchArchiveGroupsAction = createAction(FETCH_ARCHIVE_GROUPS);
-export const fetchGroupMembersAction = createAction(FETCH_GROUP_MEMBERS);
-export const setGroupsAction = createAction(SET_GROUPS);
-export const setArchiveGroupsAction = createAction(SET_ARCHIVE_GROUPS);
-export const setGroupMemebersAction = createAction(SET_GROUP_MEMBERS);
-export const fetchMultipleGroupMembersAction = createAction(SET_MULTIPLE_GROUP_MEMBERS);
-export const setLoadedGroupsAction = createAction(SET_LOADED_GROUPS);
-export const addGroupAction = createAction(ADD_GROUP);
-export const resetStudentAction = createAction(RESET_STUDENTS);
+export const fetchGroupsAction = createAction(FETCH_GROUPS)
+export const fetchArchiveGroupsAction = createAction(FETCH_ARCHIVE_GROUPS)
+export const fetchGroupMembersAction = createAction(FETCH_GROUP_MEMBERS)
+export const setGroupsAction = createAction(SET_GROUPS)
+export const setArchiveGroupsAction = createAction(SET_ARCHIVE_GROUPS)
+export const setGroupMemebersAction = createAction(SET_GROUP_MEMBERS)
+export const fetchMultipleGroupMembersAction = createAction(
+  SET_MULTIPLE_GROUP_MEMBERS
+)
+export const setLoadedGroupsAction = createAction(SET_LOADED_GROUPS)
+export const addGroupAction = createAction(ADD_GROUP)
+export const resetStudentAction = createAction(RESET_STUDENTS)
 
 // initial state
 const initialState = {
@@ -32,32 +35,32 @@ const initialState = {
   groups: [],
   archiveGroups: [],
   students: [],
-  loadedGroups: []
-};
+  loadedGroups: [],
+}
 
 // set groups
 const setGroups = (state, { payload }) => {
-  state.groups = payload;
-  state.isLoading = false;
-};
+  state.groups = payload
+  state.isLoading = false
+}
 // set archive groups
 const setArchiveGroups = (state, { payload }) => {
-  state.archiveGroups = payload;
-  state.isLoading = false;
-};
+  state.archiveGroups = payload
+  state.isLoading = false
+}
 
 // set loading to true
-const setLoading = state => {
-  state.isLoading = true;
-};
+const setLoading = (state) => {
+  state.isLoading = true
+}
 
 // populate groups
 const populateGroups = (state, { payload = [] }) => {
-  const { students = [] } = state;
+  const { students = [] } = state
 
-  const studentsMap = {};
+  const studentsMap = {}
   for (const student of students) {
-    studentsMap[`${student.groupId}_${student._id}`] = student;
+    studentsMap[`${student.groupId}_${student._id}`] = student
   }
 
   // updating student list
@@ -66,29 +69,29 @@ const populateGroups = (state, { payload = [] }) => {
   // and filter that element from payload
   const newPayload = payload
     .filter(({ enrollmentStatus }) => enrollmentStatus > 0)
-    .filter(student => {
+    .filter((student) => {
       if (studentsMap[`${student.groupId}_${student._id}`]) {
-        studentsMap[`${student.groupId}_${student._id}`] = student;
-        return false;
+        studentsMap[`${student.groupId}_${student._id}`] = student
+        return false
       }
-      return true;
-    });
+      return true
+    })
 
   // append remaining students(payload) to the students array
-  state.students = [...Object.values(studentsMap), ...newPayload];
-};
+  state.students = [...Object.values(studentsMap), ...newPayload]
+}
 
 const setLoadedGroups = (state, { payload }) => {
-  state.loadedGroups = payload;
-};
+  state.loadedGroups = payload
+}
 
 const addGroup = (state, { payload }) => {
-  state.groups = [...state.groups, payload];
-};
+  state.groups = [...state.groups, payload]
+}
 
-const resetStudents = state => {
-  state.students = [];
-};
+const resetStudents = (state) => {
+  state.students = []
+}
 
 // default reducer
 export default createReducer(initialState, {
@@ -98,72 +101,79 @@ export default createReducer(initialState, {
   [SET_GROUP_MEMBERS]: populateGroups,
   [SET_LOADED_GROUPS]: setLoadedGroups,
   [ADD_GROUP]: addGroup,
-  [RESET_STUDENTS]: resetStudents
-});
+  [RESET_STUDENTS]: resetStudents,
+})
 
 // selectors
-const module = "authorGroups";
-export const getGroupsSelector = state => (state[module].isLoading ? [] : state[module].groups);
-export const getArchiveGroupsSelector = state => (state[module].isLoading ? [] : state[module].archiveGroups);
-export const getStudentsSelector = state => (state[module].isLoading ? [] : state[module].students);
+const module = 'authorGroups'
+export const getGroupsSelector = (state) =>
+  state[module].isLoading ? [] : state[module].groups
+export const getArchiveGroupsSelector = (state) =>
+  state[module].isLoading ? [] : state[module].archiveGroups
+export const getStudentsSelector = (state) =>
+  state[module].isLoading ? [] : state[module].students
 
-export const getLoadedGroupsSelector = state => state[module].loadedGroups;
-export const groupsLoadingSelector = state => state[module].isLoading;
+export const getLoadedGroupsSelector = (state) => state[module].loadedGroups
+export const groupsLoadingSelector = (state) => state[module].isLoading
 
 // fetch groups of that user
 function* fetchGroups() {
   try {
-    const data = yield call(groupApi.fetchMyGroups);
-    yield put(setGroupsAction(data));
+    const data = yield call(groupApi.fetchMyGroups)
+    yield put(setGroupsAction(data))
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
 }
 //
 function* fetchArchiveGroups() {
   try {
-    const data = yield call(groupApi.fetchMyArchiveGroups);
-    yield put(setArchiveGroupsAction(data));
+    const data = yield call(groupApi.fetchMyArchiveGroups)
+    yield put(setArchiveGroupsAction(data))
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
 }
 
 // fetch members of a particular group
 function* fetchMembers({ payload }) {
   try {
-    const { classId = [] } = payload;
-    const loadedGroups = yield select(getLoadedGroupsSelector);
+    const { classId = [] } = payload
+    const loadedGroups = yield select(getLoadedGroupsSelector)
     if (loadedGroups.includes(classId)) {
-      return;
+      return
     }
-    const { students = [] } = yield call(enrollmentApi.fetch, classId);
-    setLoadedGroupsAction([...loadedGroups, classId]);
-    yield put(setGroupMemebersAction(students.map(student => ({ ...student, groupId: classId }))));
+    const { students = [] } = yield call(enrollmentApi.fetch, classId)
+    setLoadedGroupsAction([...loadedGroups, classId])
+    yield put(
+      setGroupMemebersAction(
+        students.map((student) => ({ ...student, groupId: classId }))
+      )
+    )
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
 }
 
 function* fetchMultipleGroupMembers({ payload }) {
   try {
-    const groupIds = payload || [];
-    const loadedGroups = yield select(getLoadedGroupsSelector);
-    const newGroups = groupIds.filter(id => !loadedGroups.includes(id));
+    const groupIds = payload || []
+    const loadedGroups = yield select(getLoadedGroupsSelector)
+    const newGroups = groupIds.filter((id) => !loadedGroups.includes(id))
     if (!newGroups.length) {
-      return;
+      return
     }
-    const allStudents = yield call(enrollmentApi.fetchByIds, groupIds);
-    yield put(setGroupMemebersAction(allStudents));
-    setLoadedGroupsAction([...groupIds, ...newGroups]);
+    const allStudents = yield call(enrollmentApi.fetchByIds, groupIds)
+    yield put(setGroupMemebersAction(allStudents))
+    setLoadedGroupsAction([...groupIds, ...newGroups])
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
 }
 
 export function* authorGroupsWatcherSaga() {
-  yield takeLatest(FETCH_GROUPS, fetchGroups);
-  yield takeLatest(FETCH_ARCHIVE_GROUPS, fetchArchiveGroups);
-  yield takeEvery(FETCH_GROUP_MEMBERS, fetchMembers);
-  yield takeLatest(SET_MULTIPLE_GROUP_MEMBERS, fetchMultipleGroupMembers);
+  yield takeLatest(FETCH_GROUPS, fetchGroups)
+  yield takeLatest(FETCH_ARCHIVE_GROUPS, fetchArchiveGroups)
+  yield takeEvery(FETCH_GROUP_MEMBERS, fetchMembers)
+  yield takeLatest(SET_MULTIPLE_GROUP_MEMBERS, fetchMultipleGroupMembers)
 }

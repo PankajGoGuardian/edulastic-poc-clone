@@ -1,16 +1,16 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/country";
+const api = new API()
+const prefix = '/country'
 
 const getCountries = () =>
   api
     .callApi({
       url: `${prefix}/`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
-  getCountries
-};
+  getCountries,
+}

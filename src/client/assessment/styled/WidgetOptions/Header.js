@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Header = styled.div`
   padding: 20px 0;
@@ -7,4 +7,4 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-`;
+`

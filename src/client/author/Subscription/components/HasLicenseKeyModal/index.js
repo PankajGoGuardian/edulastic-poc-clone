@@ -1,11 +1,20 @@
-import { useState } from "react";
-import { StyledHasLicenseKeyModal, Container } from "./styled";
-import { Input, message } from "antd";
-import { themeColor, greyishBorder, lightGreySecondary } from "@edulastic/colors";
-import { FlexContainer,notification } from "@edulastic/common";
-import { ThemeButton } from "../styled/commonStyled";
+import { useState } from 'react'
+import { Input, message } from 'antd'
+import {
+  themeColor,
+  greyishBorder,
+  lightGreySecondary,
+} from '@edulastic/colors'
+import { FlexContainer, notification } from '@edulastic/common'
+import { StyledHasLicenseKeyModal, Container } from './styled'
+import { ThemeButton } from '../styled/commonStyled'
 
-const getFooterComponent = ({ hideModal, nextAction, isSubscribed, verificationPending }) =>
+const getFooterComponent = ({
+  hideModal,
+  nextAction,
+  isSubscribed,
+  verificationPending,
+}) =>
   !isSubscribed ? (
     <FlexContainer width="450px">
       <ThemeButton onClick={hideModal} disabled={verificationPending}>
@@ -21,56 +30,67 @@ const getFooterComponent = ({ hideModal, nextAction, isSubscribed, verificationP
         DONE
       </ThemeButton>
     </FlexContainer>
-  );
+  )
 
-const HasLicenseKeyModal = props => {
+const HasLicenseKeyModal = (props) => {
   const {
     visible = false,
     closeModal,
     verifyAndUpgradeLicense,
     expDate,
     isSubscribed = false,
-    verificationPending = false
-  } = props;
+    verificationPending = false,
+  } = props
 
-  const [licenseKey, setLicenseKey] = useState();
+  const [licenseKey, setLicenseKey] = useState()
 
   const hideModal = () => {
-    setLicenseKey("");
-    closeModal();
-  };
+    setLicenseKey('')
+    closeModal()
+  }
 
-  const handleChange = e => setLicenseKey(e.target.value);
+  const handleChange = (e) => setLicenseKey(e.target.value)
 
   const nextAction = () => {
-    if (licenseKey) verifyAndUpgradeLicense(licenseKey);
-    else notification({ type: "warn", messageKey:"pleaseEnterLisence"});
-  };
+    if (licenseKey) verifyAndUpgradeLicense(licenseKey)
+    else notification({ type: 'warn', messageKey: 'pleaseEnterLisence' })
+  }
 
   return (
     <StyledHasLicenseKeyModal
       visible={visible}
-      title={<h3 style={{ fontWeight: 700, fontSize: "22px" }}>Upgrade to Premium</h3>}
+      title={
+        <h3 style={{ fontWeight: 700, fontSize: '22px' }}>
+          Upgrade to Premium
+        </h3>
+      }
       onCancel={hideModal}
-      footer={[getFooterComponent({ hideModal, nextAction, isSubscribed, verificationPending })]}
+      footer={[
+        getFooterComponent({
+          hideModal,
+          nextAction,
+          isSubscribed,
+          verificationPending,
+        }),
+      ]}
       centered
     >
       {!isSubscribed && (
         <Container width="480">
           <p>
-            Enter your License Key that you received at the end of the order process or via email in the box below, the
-            click on "Next"
+            Enter your License Key that you received at the end of the order
+            process or via email in the box below, the click on "Next"
           </p>
           <br />
           <br />
           <Input
             placeholder="Enter your license key"
             style={{
-              width: "85%",
-              height: "50px",
+              width: '85%',
+              height: '50px',
               background: lightGreySecondary,
               border: `1px solid ${greyishBorder}`,
-              margin: "auto"
+              margin: 'auto',
             }}
             value={licenseKey}
             onChange={handleChange}
@@ -81,13 +101,18 @@ const HasLicenseKeyModal = props => {
       {isSubscribed && (
         <Container width="300">
           <h4 style={{ fontWeight: 700 }}>Congratulations!</h4>
-          <p>Your account is upgraded to Premium version for a year and the subscription will expire on</p>
-          <p style={{ color: themeColor, paddingTop: "8px", fontWeight: 600 }}>{expDate}</p>
+          <p>
+            Your account is upgraded to Premium version for a year and the
+            subscription will expire on
+          </p>
+          <p style={{ color: themeColor, paddingTop: '8px', fontWeight: 600 }}>
+            {expDate}
+          </p>
           <br />
         </Container>
       )}
     </StyledHasLicenseKeyModal>
-  );
-};
+  )
+}
 
-export default HasLicenseKeyModal;
+export default HasLicenseKeyModal

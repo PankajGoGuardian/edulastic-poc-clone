@@ -1,31 +1,36 @@
-import { eastBaycolor, lightGrey4, mainTextColor, white } from "@edulastic/colors";
-import { OnWhiteBgLogo } from "@edulastic/common";
-import { Col, Dropdown, Icon as AntIcon, Menu, Row } from "antd";
-import { get } from "lodash";
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
+import {
+  eastBaycolor,
+  lightGrey4,
+  mainTextColor,
+  white,
+} from '@edulastic/colors'
+import { OnWhiteBgLogo } from '@edulastic/common'
+import { Col, Dropdown, Icon as AntIcon, Menu, Row } from 'antd'
+import { get } from 'lodash'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
 
 const menu = (
   <Menu>
     <Menu.Item>1st menu item</Menu.Item>
     <Menu.Item>2nd menu item</Menu.Item>
   </Menu>
-);
+)
 const Header = ({ user }) => {
-  const [isVisible, setVisible] = useState(false);
+  const [isVisible, setVisible] = useState(false)
   const toggleDropdown = () => {
-    setVisible(!isVisible);
-  };
-  const userInfo = get(user, "user", {});
-  const { firstName, lastName, middleName, role } = userInfo;
-  const userName = `${firstName} ${middleName || ""} ${lastName || ""}`;
+    setVisible(!isVisible)
+  }
+  const userInfo = get(user, 'user', {})
+  const { firstName, lastName, middleName, role } = userInfo
+  const userName = `${firstName} ${middleName || ''} ${lastName || ''}`
 
   const getInitials = () => {
-    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
-    if (firstName) return `${firstName.substr(0, 2)}`;
-    if (lastName) return `${lastName.substr(0, 2)}`;
-  };
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`
+    if (firstName) return `${firstName.substr(0, 2)}`
+    if (lastName) return `${lastName.substr(0, 2)}`
+  }
 
   return (
     <HeaderWrapper type="flex" align="middle">
@@ -38,31 +43,31 @@ const Header = ({ user }) => {
             overlay={menu}
             onClick={toggleDropdown}
             className="headerDropdown"
-            trigger={["click"]}
+            trigger={['click']}
             placement="topCenter"
           >
             <div>
               <PseudoDiv>{getInitials()}</PseudoDiv>
               <UserInfo>
-                <UserName>{userName || "Anonymous"}</UserName>
+                <UserName>{userName || 'Anonymous'}</UserName>
                 <UserType>{role}</UserType>
               </UserInfo>
               <IconDropdown
-                style={{ fontSize: 20, pointerEvents: "none" }}
+                style={{ fontSize: 20, pointerEvents: 'none' }}
                 className="drop-caret"
-                type={isVisible ? "caret-up" : "caret-down"}
+                type={isVisible ? 'caret-up' : 'caret-down'}
               />
             </div>
           </Dropdown>
         </UserInfoButton>
       </Col>
     </HeaderWrapper>
-  );
-};
+  )
+}
 
-export default connect(state => ({
-  user: state.user
-}))(Header);
+export default connect((state) => ({
+  user: state.user,
+}))(Header)
 
 const HeaderWrapper = styled(Row)`
   padding: 16px 24px;
@@ -71,7 +76,7 @@ const HeaderWrapper = styled(Row)`
     font-size: 12px;
     margin-right: 20px;
   }
-`;
+`
 
 const UserInfoButton = styled.div`
   cursor: pointer;
@@ -118,7 +123,7 @@ const UserInfoButton = styled.div`
     border: 0px;
     color: ${white};
   }
-`;
+`
 
 const PseudoDiv = styled.div`
   min-width: 50px;
@@ -132,7 +137,7 @@ const PseudoDiv = styled.div`
   text-align: center;
   text-transform: uppercase;
   margin-right: 10px;
-`;
+`
 
 const UserInfo = styled.div`
   display: flex;
@@ -140,18 +145,18 @@ const UserInfo = styled.div`
   text-align: left;
   margin: 0px 4px;
   color: ${eastBaycolor};
-`;
+`
 
 const UserName = styled.div`
   font-size: 14px;
-`;
+`
 
 const UserType = styled.div`
   font-size: 12px;
-`;
+`
 
 const IconDropdown = styled(AntIcon)`
   color: ${mainTextColor};
   position: absolute;
   top: -10px;
-`;
+`

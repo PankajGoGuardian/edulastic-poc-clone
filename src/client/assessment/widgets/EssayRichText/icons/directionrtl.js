@@ -1,10 +1,20 @@
-import React from "react";
-import withIconStyles from "@edulastic/icons/src/HOC/withIconStyles";
-import SVG from "@edulastic/icons/src/common/SVG";
+import React from 'react'
+import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
+import SVG from '@edulastic/icons/src/common/SVG'
 
-const IconDirectionRtl = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="20px" height="14px" viewBox="0 0 20 14" {...props}>
-    <g id="paragraph-sign" transform="translate(-1.000000, -1.000000)" fillRule="nonzero">
+const IconDirectionRtl = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="20px"
+    height="14px"
+    viewBox="0 0 20 14"
+    {...props}
+  >
+    <g
+      id="paragraph-sign"
+      transform="translate(-1.000000, -1.000000)"
+      fillRule="nonzero"
+    >
       <path
         d="M14.413,2.756 L14.413,1.325 C14.413,1.14550746 14.2674925,1 14.088,1 L6.078,1 C4.75523001,0.907954554 3.44242721,1.28582361 2.371,2.067 C1.4463849,2.85203466 0.939655978,4.02257476 1,5.234 C0.911773024,6.50360962 1.41524688,7.74273112 2.364,8.591 C3.49944428,9.43624337 4.89843264,9.85023334 6.311,9.759 L7.794,9.759 L7.794,14.481 C7.794,14.6604925 7.93950746,14.806 8.119,14.806 L9.133,14.806 C9.31249254,14.806 9.458,14.6604925 9.458,14.481 L9.458,3.081 L10.765,3.081 L10.765,14.481 C10.765,14.6604925 10.9105075,14.806 11.09,14.806 L12.072,14.806 C12.2514925,14.806 12.397,14.6604925 12.397,14.481 L12.397,3.081 L14.087,3.081 C14.1733685,3.08126575 14.2562906,3.04714213 14.3174564,2.98616398 C14.3786222,2.92518583 14.413,2.8423689 14.413,2.756 Z"
         id="Path"
@@ -16,6 +26,6 @@ const IconDirectionRtl = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconDirectionRtl);
+export default withIconStyles(IconDirectionRtl)

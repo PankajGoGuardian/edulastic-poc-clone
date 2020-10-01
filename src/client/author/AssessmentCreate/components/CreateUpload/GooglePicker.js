@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { WithResources } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { WithResources } from '@edulastic/common'
 
-const GOOGLE_SDK_URL = "https://apis.google.com/js/api.js";
+const GOOGLE_SDK_URL = 'https://apis.google.com/js/api.js'
 
 const GoogleChooser = ({
   clientId,
@@ -19,100 +19,111 @@ const GoogleChooser = ({
   multiselect,
   disabled,
   onAuthFailed,
-  children
+  children,
 }) => {
-  const isGoogleReady = () => !!window.gapi;
+  const isGoogleReady = () => !!window.gapi
 
-  const isGoogleAuthReady = () => !!window.gapi.auth;
+  const isGoogleAuthReady = () => !!window.gapi.auth
 
-  const isGooglePickerReady = () => !!window?.google?.picker;
+  const isGooglePickerReady = () => !!window?.google?.picker
 
   const onApiLoad = () => {
     if (isGoogleReady()) {
-      window.gapi.load("auth");
-      window.gapi.load("picker");
+      window.gapi.load('auth')
+      window.gapi.load('picker')
     }
-  };
+  }
 
-  const doAuth = callback => {
+  const doAuth = (callback) => {
     window.gapi.auth.authorize(
       {
         client_id: clientId,
         scope,
-        immediate: authImmediate
+        immediate: authImmediate,
       },
       callback
-    );
-  };
+    )
+  }
 
-  const handlecreatePicker = oauthToken => {
-    onAuthenticate(oauthToken);
+  const handlecreatePicker = (oauthToken) => {
+    onAuthenticate(oauthToken)
 
     if (createPicker) {
-      return createPicker(window.google, oauthToken);
+      return createPicker(window.google, oauthToken)
     }
 
-    const googleViewId = window.google?.picker?.ViewId?.[viewId];
-    const view = new window.google.picker.View(googleViewId);
+    const googleViewId = window.google?.picker?.ViewId?.[viewId]
+    const view = new window.google.picker.View(googleViewId)
 
     if (mimeTypes) {
-      view.setMimeTypes(mimeTypes.join(","));
+      view.setMimeTypes(mimeTypes.join(','))
     }
     if (query) {
-      view.setQuery(query);
+      view.setQuery(query)
     }
 
     if (!view) {
-      throw new Error("Can't find view by viewId");
+      throw new Error("Can't find view by viewId")
     }
 
     const picker = new window.google.picker.PickerBuilder()
       .addView(view)
       .setOAuthToken(oauthToken)
-      .setCallback(onChange);
+      .setCallback(onChange)
 
     if (origin) {
-      picker.setOrigin(origin);
+      picker.setOrigin(origin)
     }
 
     if (navHidden) {
-      picker.enableFeature(window.google.picker.Feature.NAV_HIDDEN);
+      picker.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
     }
 
     if (multiselect) {
-      picker.enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED);
+      picker.enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED)
     }
 
-    picker.build().setVisible(true);
-  };
+    picker.build().setVisible(true)
+  }
 
   const onChoose = () => {
-    if (!isGoogleReady() || !isGoogleAuthReady() || !isGooglePickerReady() || disabled) {
-      return null;
+    if (
+      !isGoogleReady() ||
+      !isGoogleAuthReady() ||
+      !isGooglePickerReady() ||
+      disabled
+    ) {
+      return null
     }
 
-    const token = window.gapi.auth.getToken();
-    const oauthToken = token && token.access_token;
+    const token = window.gapi.auth.getToken()
+    const oauthToken = token && token.access_token
 
     if (oauthToken) {
-      handlecreatePicker(oauthToken);
+      handlecreatePicker(oauthToken)
     } else {
-      doAuth(response => {
+      doAuth((response) => {
         if (response.access_token) {
-          handlecreatePicker(response.access_token);
+          handlecreatePicker(response.access_token)
         } else {
-          onAuthFailed(response);
+          onAuthFailed(response)
         }
-      });
+      })
     }
-  };
+  }
 
   return (
-    <WithResources resources={[GOOGLE_SDK_URL]} fallBack={<></>} onLoaded={onApiLoad}>
-      <div onClick={onChoose}>{children || <button>Open google chooser</button>}</div>
+    <WithResources
+      resources={[GOOGLE_SDK_URL]}
+      fallBack={<></>}
+      onLoaded={onApiLoad}
+    >
+      <div onClick={onChoose}>
+        {children || <button>Open google chooser</button>}
+      </div>
     </WithResources>
-  );
-};
+  )
+}
 
 GoogleChooser.propTypes = {
   children: PropTypes.node,
@@ -127,19 +138,19 @@ GoogleChooser.propTypes = {
   createPicker: PropTypes.func,
   multiselect: PropTypes.bool,
   navHidden: PropTypes.bool,
-  disabled: PropTypes.bool
-};
+  disabled: PropTypes.bool,
+}
 
 GoogleChooser.defaultProps = {
-  onChange: () => { },
-  onAuthenticate: () => { },
-  onAuthFailed: () => { },
-  scope: "https://www.googleapis.com/auth/drive.readonly",
-  viewId: "DOCS",
+  onChange: () => {},
+  onAuthenticate: () => {},
+  onAuthFailed: () => {},
+  scope: 'https://www.googleapis.com/auth/drive.readonly',
+  viewId: 'DOCS',
   authImmediate: false,
   multiselect: false,
   navHidden: false,
-  disabled: false
-};
+  disabled: false,
+}
 
-export default GoogleChooser;
+export default GoogleChooser

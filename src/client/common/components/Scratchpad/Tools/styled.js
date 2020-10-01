@@ -1,12 +1,12 @@
-import styled, { css } from "styled-components";
-import { FlexContainer } from "@edulastic/common";
-import { Button, Select } from "antd";
-import { white, secondaryTextColor, smallDesktopWidth } from "@edulastic/colors";
-import icons from "./assets/images/icons.png";
+import styled, { css } from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
+import { Button, Select } from 'antd'
+import { white, secondaryTextColor, smallDesktopWidth } from '@edulastic/colors'
+import icons from './assets/images/icons.png'
 
 export const ToolBoxContainer = styled(FlexContainer)`
   position: relative;
-`;
+`
 
 export const MainToolBoxContainer = styled(FlexContainer)`
   height: 45px;
@@ -15,7 +15,7 @@ export const MainToolBoxContainer = styled(FlexContainer)`
   background: #6e7380;
   background-image: -webkit-linear-gradient(top, #9a9a9a, #6a6c71);
   border-bottom: 1px solid #6e7380;
-`;
+`
 
 export const SubToolBoxContainer = styled(FlexContainer)`
   height: 45px;
@@ -23,19 +23,24 @@ export const SubToolBoxContainer = styled(FlexContainer)`
   user-select: none;
   background-color: #ededed;
   border-bottom: 1px solid #b3b3b3;
-`;
+`
 
 const selectedButtonStyle = css`
   border: 0px;
   background-color: #6e7380;
   background-image: -webkit-linear-gradient(top, #8e8f92, #616265);
-  box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.2), inset 0px -1px 0px 0px rgba(255, 255, 255, 0.3);
-`;
+  box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.2),
+    inset 0px -1px 0px 0px rgba(255, 255, 255, 0.3);
+`
 
 const editingButtonStyle = css`
   background-color: #d4d4d4;
-  background-image: -webkit-linear-gradient(top, rgb(212, 212, 212), rgb(237, 237, 237));
-`;
+  background-image: -webkit-linear-gradient(
+    top,
+    rgb(212, 212, 212),
+    rgb(237, 237, 237)
+  );
+`
 
 export const StyledButton = styled(Button)`
   height: 38px;
@@ -72,18 +77,18 @@ export const StyledButton = styled(Button)`
     background-image: url(${icons});
     background-position: ${({ pos }) => `center ${pos || 0}px`};
   }
-`;
+`
 
 export const Sprite = styled.div`
   height: 19px;
   width: ${({ width }) => width || 20}px;
   background-position: ${({ pos }) => `0 ${pos}px`};
   background-image: url(${icons});
-`;
+`
 
 export const StyledSelect = styled(Select).attrs({
   showArrow: false,
-  getPopupContainer: triggerNode => triggerNode.parentNode
+  getPopupContainer: (triggerNode) => triggerNode.parentNode,
 })`
   margin-left: 6px;
   height: 24px;
@@ -103,7 +108,7 @@ export const StyledSelect = styled(Select).attrs({
     border: 1px solid #757575;
     border-radius: 2px;
   }
-`;
+`
 // ==============================
 export const Label = styled.div`
   font-weight: 600;
@@ -112,7 +117,7 @@ export const Label = styled.div`
   margin-bottom: 4px;
   text-align: center;
   white-space: nowrap;
-`;
+`
 
 export const Separate = styled.div`
   width: 90%;
@@ -122,9 +127,9 @@ export const Separate = styled.div`
   bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
-`;
+`
 
-export const customizeIcon = icon => styled(icon)`
+export const customizeIcon = (icon) => styled(icon)`
   fill: ${white};
   width: 19px;
   height: 19px;
@@ -135,11 +140,11 @@ export const customizeIcon = icon => styled(icon)`
   &:hover {
     fill: ${white};
   }
-`;
+`
 
 export const Block = styled.div`
   margin-bottom: 4px;
-`;
+`
 
 export const ExpandWrapper = styled.div`
   display: flex;
@@ -150,16 +155,16 @@ export const ExpandWrapper = styled.div`
   .scratchpad-action-tools {
     flex-direction: row;
   }
-`;
+`
 
 export const DrawingToolsContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-`;
+`
 
 export const TogglerWrapper = styled.div`
-  display: ${({ isTeacher }) => (isTeacher ? "flex" : "none")};
+  display: ${({ isTeacher }) => (isTeacher ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   font-weight: 600;
@@ -170,4 +175,4 @@ export const TogglerWrapper = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     display: none;
   }
-`;
+`

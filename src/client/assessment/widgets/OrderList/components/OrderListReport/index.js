@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { SortableContainer } from "react-sortable-hoc";
-import OrderListReportItem from "./components/OrderListReportItem";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { SortableContainer } from 'react-sortable-hoc'
+import OrderListReportItem from './components/OrderListReportItem'
 
 class OrderListReport extends Component {
   getStemNumeration = (i, uiStyle) => {
     if (uiStyle) {
       switch (uiStyle.validationStemNumeration) {
-        case "upper-alpha":
-          return String.fromCharCode(i + 65);
-        case "lower-alpha":
-          return String.fromCharCode(i + 65).toLowerCase();
+        case 'upper-alpha':
+          return String.fromCharCode(i + 65)
+        case 'lower-alpha':
+          return String.fromCharCode(i + 65).toLowerCase()
         default:
-          break;
+          break
       }
     }
 
-    return i + 1;
-  };
+    return i + 1
+  }
 
   render() {
     const {
@@ -28,8 +28,8 @@ class OrderListReport extends Component {
       styleType,
       uiStyle,
       questions,
-      getStemNumeration
-    } = this.props;
+      getStemNumeration,
+    } = this.props
     return (
       <div style={listStyle}>
         {questions.map((q, i) => (
@@ -48,7 +48,7 @@ class OrderListReport extends Component {
           </OrderListReportItem>
         ))}
       </div>
-    );
+    )
   }
 }
 
@@ -60,13 +60,13 @@ OrderListReport.propTypes = {
   evaluation: PropTypes.array,
   columns: PropTypes.number,
   styleType: PropTypes.string,
-  uiStyle: PropTypes.object.isRequired
-};
+  uiStyle: PropTypes.object.isRequired,
+}
 OrderListReport.defaultProps = {
   disableResponse: false,
   evaluation: [],
   columns: 1,
-  styleType: "button"
-};
+  styleType: 'button',
+}
 
-export default SortableContainer(OrderListReport);
+export default SortableContainer(OrderListReport)

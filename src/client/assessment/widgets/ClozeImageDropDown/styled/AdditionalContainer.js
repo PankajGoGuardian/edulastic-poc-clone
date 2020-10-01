@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { tabletWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { tabletWidth } from '@edulastic/colors'
 
 export const AdditionalContainer = styled.div`
   margin-top: 40px;
@@ -12,4 +12,4 @@ export const AdditionalContainer = styled.div`
       margin: 4px 0px;
     }
   }
-`;
+`

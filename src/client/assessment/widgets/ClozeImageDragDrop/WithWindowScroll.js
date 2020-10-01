@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
-import { ScrollContext } from "@edulastic/common";
-import PropTypes from "prop-types";
+import React, { useContext } from 'react'
+import { ScrollContext } from '@edulastic/common'
+import PropTypes from 'prop-types'
 
 export function WithWindowScroll({ children }) {
-  const scrollContext = useContext(ScrollContext);
-  const scrollElement = scrollContext.getScrollElement();
+  const scrollContext = useContext(ScrollContext)
+  const scrollElement = scrollContext.getScrollElement()
   /**
    * keep the original scroll element passed from main container
    * however, scroll should be applied to window and not container in edit mode
@@ -13,12 +13,16 @@ export function WithWindowScroll({ children }) {
    */
   const scrollContextData = {
     getScrollElement: () => scrollElement,
-    scrollWindowInsteadContainer: true
-  };
+    scrollWindowInsteadContainer: true,
+  }
 
-  return <ScrollContext.Provider value={scrollContextData}>{children}</ScrollContext.Provider>;
+  return (
+    <ScrollContext.Provider value={scrollContextData}>
+      {children}
+    </ScrollContext.Provider>
+  )
 }
 
 WithWindowScroll.propTypes = {
-  children: PropTypes.element.isRequired
-};
+  children: PropTypes.element.isRequired,
+}

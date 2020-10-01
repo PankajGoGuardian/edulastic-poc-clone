@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react'
 
 const BroadcastIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    style={{width: 28, height: 28, fill: '#bbbbbb'}}
+    style={{ width: 28, height: 28, fill: '#bbbbbb' }}
     width="512"
     height="512"
     viewBox="0 0 512 512"
@@ -15,6 +15,6 @@ const BroadcastIcon = () => (
       transform="rotate(-45 273.17 236.73)"
     />
   </svg>
-  )
+)
 
-export default BroadcastIcon;
+export default BroadcastIcon

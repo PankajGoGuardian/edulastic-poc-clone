@@ -1,14 +1,23 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import { Dropdown, Menu, Icon, Input } from "antd";
-import { themeColorLight, largeDesktopWidth, desktopWidth, white } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
-import { searchContentAction, setContentCurriculumAction, toggleCheckedUnitItemAction } from "../ducks";
-import SelectContentRow from "./SelectContentRow";
-import CloseButtonMobileIcon from "../assets/close-button.svg";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { Dropdown, Menu, Icon, Input } from 'antd'
+import {
+  themeColorLight,
+  largeDesktopWidth,
+  desktopWidth,
+  white,
+} from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
+import {
+  searchContentAction,
+  setContentCurriculumAction,
+  toggleCheckedUnitItemAction,
+} from '../ducks'
+import SelectContentRow from './SelectContentRow'
+import CloseButtonMobileIcon from '../assets/close-button.svg'
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -76,13 +85,13 @@ import CloseButtonMobileIcon from "../assets/close-button.svg";
 /** @extends Component<CurriculumProps> */
 class SelectContent extends Component {
   handleSelectContent = () => {
-    const { onSelectContent } = this.props;
-    onSelectContent();
-  };
+    const { onSelectContent } = this.props
+    onSelectContent()
+  }
 
   componentDidMount() {
-    const { searchContentCurriculums } = this.props;
-    searchContentCurriculums();
+    const { searchContentCurriculums } = this.props
+    searchContentCurriculums()
   }
 
   render() {
@@ -93,25 +102,28 @@ class SelectContent extends Component {
       onBeginDrag,
       contentCurriculums,
       setContentCurriculum,
-      toggleCheckedUnitItem
-    } = this.props;
-    const { title = "", modules = [] } = curriculum;
+      toggleCheckedUnitItem,
+    } = this.props
+    const { title = '', modules = [] } = curriculum
 
     const menu = (
       <Menu>
-        {contentCurriculums.map(curriculumItem => (
-          <Menu.Item key={`menu-${curriculumItem._id}`} onClick={() => setContentCurriculum(curriculumItem._id)}>
+        {contentCurriculums.map((curriculumItem) => (
+          <Menu.Item
+            key={`menu-${curriculumItem._id}`}
+            onClick={() => setContentCurriculum(curriculumItem._id)}
+          >
             {curriculumItem.title}
           </Menu.Item>
         ))}
       </Menu>
-    );
+    )
 
     return (
       <CurriculumWrapper>
         <CurriculumHeader>
           <DropdownCloseWrapper>
-            <Dropdown overlay={menu} trigger={["click"]}>
+            <Dropdown overlay={menu} trigger={['click']}>
               <CurriculumTitle>
                 {title} <Icon type="down" />
               </CurriculumTitle>
@@ -122,7 +134,7 @@ class SelectContent extends Component {
           </DropdownCloseWrapper>
           <Input.Search placeholder={`Content in ${title}`} />
         </CurriculumHeader>
-        {modules.map(moduleItem => (
+        {modules.map((moduleItem) => (
           <SelectContentRow
             key={moduleItem._id}
             module={moduleItem}
@@ -133,7 +145,7 @@ class SelectContent extends Component {
           />
         ))}
       </CurriculumWrapper>
-    );
+    )
   }
 }
 
@@ -148,7 +160,7 @@ SelectContent.propTypes = {
     status: PropTypes.string.isRequired,
     thumbnail: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    updatedDate: PropTypes.string.isRequired
+    updatedDate: PropTypes.string.isRequired,
   }),
   toggleCheckedUnitItem: PropTypes.any.isRequired,
   onSelectContent: PropTypes.func.isRequired,
@@ -157,18 +169,18 @@ SelectContent.propTypes = {
   onBeginDrag: PropTypes.any.isRequired,
   searchContentCurriculums: PropTypes.func.isRequired,
   contentCurriculums: PropTypes.any.isRequired,
-  setContentCurriculum: PropTypes.func.isRequired
-};
+  setContentCurriculum: PropTypes.func.isRequired,
+}
 
 SelectContent.defaultProps = {
-  curriculum: null
-};
+  curriculum: null,
+}
 
 const DropdownCloseWrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-`;
+`
 
 const CurriculumHeader = styled(FlexContainer)`
   display: flex;
@@ -205,8 +217,8 @@ const CurriculumHeader = styled(FlexContainer)`
     align-items: center;
     cursor: pointer;
   }
-`;
-CurriculumHeader.displayName = "CurriculumHeader";
+`
+CurriculumHeader.displayName = 'CurriculumHeader'
 
 const CloseButtonMobile = styled.div`
   display: flex;
@@ -215,7 +227,7 @@ const CloseButtonMobile = styled.div`
   @media only screen and (min-width: ${largeDesktopWidth}) {
     display: none;
   }
-`;
+`
 
 const CurriculumTitle = styled.div`
   margin: 20px;
@@ -228,7 +240,7 @@ const CurriculumTitle = styled.div`
     margin-left: 10px;
     color: ${themeColorLight};
   }
-`;
+`
 
 const CurriculumWrapper = styled.div`
   background: ${white};
@@ -259,27 +271,27 @@ const CurriculumWrapper = styled.div`
       }
     }
   }
-`;
+`
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   searchContentCurriculums() {
-    dispatch(searchContentAction());
+    dispatch(searchContentAction())
   },
   setContentCurriculum(id) {
-    dispatch(setContentCurriculumAction(id));
+    dispatch(setContentCurriculumAction(id))
   },
   toggleCheckedUnitItem(id) {
-    dispatch(toggleCheckedUnitItemAction(id));
-  }
-});
+    dispatch(toggleCheckedUnitItemAction(id))
+  },
+})
 
 const enhance = compose(
   connect(
     ({ curriculumSequence }) => ({
-      contentCurriculums: curriculumSequence.contentCurriculums
+      contentCurriculums: curriculumSequence.contentCurriculums,
     }),
     mapDispatchToProps
   )
-);
+)
 
-export default enhance(SelectContent);
+export default enhance(SelectContent)

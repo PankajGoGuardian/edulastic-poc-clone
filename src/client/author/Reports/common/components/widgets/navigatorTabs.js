@@ -1,14 +1,16 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Row, Col } from "antd";
-import styled from "styled-components";
-import { themeColor, black, darkGrey, grey } from "@edulastic/colors";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Row, Col } from 'antd'
+import styled from 'styled-components'
+import { themeColor, black, darkGrey, grey } from '@edulastic/colors'
 
 const Tab = ({ className, tabData, isLast, selectedTab }) => {
   return (
     <Col
       className={
-        selectedTab === tabData.key ? `${className} navigator-tab navigator-tab-selected` : `${className} navigator-tab`
+        selectedTab === tabData.key
+          ? `${className} navigator-tab navigator-tab-selected`
+          : `${className} navigator-tab`
       }
     >
       <StyledLink to={tabData.location}>
@@ -18,27 +20,31 @@ const Tab = ({ className, tabData, isLast, selectedTab }) => {
       </StyledLink>
       {!isLast ? <div className="navigator-tab-divider" /> : null}
     </Col>
-  );
-};
+  )
+}
 
 export const NavigatorTabs = ({ data, selectedTab }) => {
   return (
     <StyledContainer>
-      <StyledRow className="navigator-tabs-container" type="flex" justify="start">
+      <StyledRow
+        className="navigator-tabs-container"
+        type="flex"
+        justify="start"
+      >
         {data.map((tabData, index) => {
           return (
             <StyledTab
               key={tabData.key}
               tabData={tabData}
-              isLast={data.length - 1 === index ? true : false}
+              isLast={data.length - 1 === index}
               selectedTab={selectedTab}
             />
-          );
+          )
         })}
       </StyledRow>
     </StyledContainer>
-  );
-};
+  )
+}
 
 const StyledContainer = styled.div`
   min-height: 35px;
@@ -50,14 +56,14 @@ const StyledContainer = styled.div`
   .navigator-tabs-container::-webkit-scrollbar {
     height: 0px;
   }
-`;
+`
 
 const StyledRow = styled(Row)`
   height: 100%;
   overflow: auto;
   flex-flow: nowrap;
   flex: 1;
-`;
+`
 
 const StyledTab = styled(Tab)`
   flex: 1;
@@ -69,7 +75,8 @@ const StyledTab = styled(Tab)`
   font-weight: 900;
 
   span {
-    color: ${props => (props.tabData.key === props.selectedTab ? black : darkGrey)};
+    color: ${(props) =>
+      props.tabData.key === props.selectedTab ? black : darkGrey};
   }
 
   .navigator-tab-highlighter {
@@ -83,7 +90,7 @@ const StyledTab = styled(Tab)`
     background-color: ${darkGrey};
     margin: 10px;
   }
-`;
+`
 
 const StyledLink = styled(Link)`
   height: 100%;
@@ -93,8 +100,9 @@ const StyledLink = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
 const StyledSpan = styled.span`
-  border-bottom: ${props => (props.selectedTab === props.currentTab ? "solid 2px " + themeColor : 0)};
-`;
+  border-bottom: ${(props) =>
+    props.selectedTab === props.currentTab ? `solid 2px ${themeColor}` : 0};
+`

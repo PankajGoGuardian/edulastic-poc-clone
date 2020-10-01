@@ -1,34 +1,34 @@
-import { linkColor1, themeColor, white } from "@edulastic/colors";
-import { IconLock as LockIcon, IconPlusCircle } from "@edulastic/icons";
-import { Button, Typography } from "antd";
-import styled from "styled-components";
+import { linkColor1, themeColor, white } from '@edulastic/colors'
+import { IconLock as LockIcon, IconPlusCircle } from '@edulastic/icons'
+import { Button, Typography } from 'antd'
+import styled from 'styled-components'
 
-const { Text } = Typography;
+const { Text } = Typography
 
 export const TitleWrapper = styled.h1`
-  font-size: ${props => props.theme.header.headerTitleFontSize};
-  color: ${props => props.theme.header.headerTitleTextColor};
+  font-size: ${(props) => props.theme.header.headerTitleFontSize};
+  color: ${(props) => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   line-height: normal;
   margin: 0px;
-`;
+`
 
 export const IconPlus = styled(IconPlusCircle)`
   margin-right: 0.5rem;
   width: 20px;
   height: 20px;
-`;
+`
 
 export const IconLock = styled(LockIcon)`
   margin-right: 0.5rem;
   width: 20px;
   height: 20px;
-`;
+`
 
 export const ButtonText = styled(Text)`
   font-size: 13px;
   padding: 0 10px 0 10px;
-`;
+`
 
 export const PopoverWrapper = styled.div`
   .ant-popover-content {
@@ -39,14 +39,14 @@ export const PopoverWrapper = styled.div`
     top: 0px !important;
     display: block;
   }
-`;
+`
 
 export const PopoverTitle = styled.h4`
   color: ${themeColor};
   text-align: left;
   width: 100%;
   font-weight: 700;
-`;
+`
 
 export const PopoverDetail = styled.p`
   text-align: left;
@@ -55,7 +55,7 @@ export const PopoverDetail = styled.p`
   font: Regular 13px/18px Open Sans;
   letter-spacing: 0.24px;
   color: ${linkColor1};
-`;
+`
 
 export const PopoverCancel = styled(Button)`
   background: transparent;
@@ -70,7 +70,7 @@ export const PopoverCancel = styled(Button)`
     color: ${themeColor};
     opacity: 0.9;
   }
-`;
+`
 
 export const UpgradeBtn = styled(Button)`
   background: ${themeColor};
@@ -83,4 +83,4 @@ export const UpgradeBtn = styled(Button)`
     color: ${white};
     opacity: 0.9;
   }
-`;
+`

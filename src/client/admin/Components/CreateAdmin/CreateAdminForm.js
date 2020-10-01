@@ -1,182 +1,202 @@
-import React, { useState } from "react";
-import { Col, Form, Row, Select, Spin, Input } from "antd";
-import { authApi, schoolApi, userApi } from "@edulastic/api";
-import { CheckboxLabel, EduButton, notification } from "@edulastic/common";
-import { validateEmail } from "../../../common/utils/helpers"  
-import { LeftButtonsContainer, FormItem, StyledSelect } from "./styled";
+import React, { useState } from 'react'
+import { Col, Form, Row, Select, Spin, Input } from 'antd'
+import { authApi, schoolApi, userApi } from '@edulastic/api'
+import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
+import { validateEmail } from '../../../common/utils/helpers'
+import { LeftButtonsContainer, FormItem, StyledSelect } from './styled'
 
-const Option = Select.Option;
+const Option = Select.Option
 
 const INITIAL_EMAIL_VALIDATION = {
-  status: "success",
-  message: ""
-};
+  status: 'success',
+  message: '',
+}
 
-const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin, districtId, onCancel, t }) => {
-  const [emailValidation, setEmailValidation] = useState(INITIAL_EMAIL_VALIDATION);
-  const [email, setEmail] = useState("");
+const CreateAdminForm = ({
+  form,
+  isCreatingDistrictAdmin,
+  isCreatingSchoolAdmin,
+  districtId,
+  onCancel,
+  t,
+}) => {
+  const [emailValidation, setEmailValidation] = useState(
+    INITIAL_EMAIL_VALIDATION
+  )
+  const [email, setEmail] = useState('')
 
-  const [schoolList, setSchoolList] = useState([]);
-  const [isPowerTeacher, setIsPowerTeacher] = useState(false);
-  const [fetching, setFetching] = useState(false);
+  const [schoolList, setSchoolList] = useState([])
+  const [isPowerTeacher, setIsPowerTeacher] = useState(false)
+  const [fetching, setFetching] = useState(false)
 
-  const handleChange = value => {
-    form.setFieldsValue({ institutionIds: value });
-    setFetching(false);
-    setSchoolList([]);
-  };
+  const handleChange = (value) => {
+    form.setFieldsValue({ institutionIds: value })
+    setFetching(false)
+    setSchoolList([])
+  }
 
-  const changePowerTool = e => setIsPowerTeacher(e.target.checked);
+  const changePowerTool = (e) => setIsPowerTeacher(e.target.checked)
 
   const resetFields = () => {
-    form.resetFields();
-    setEmail("");
-    setIsPowerTeacher(false);
-  };
+    form.resetFields()
+    setEmail('')
+    setIsPowerTeacher(false)
+  }
 
-  const createAdmin = async createReq => {
-    createReq.role = isCreatingDistrictAdmin ? "district-admin" : "school-admin";
-    createReq.districtId = districtId;
+  const createAdmin = async (createReq) => {
+    createReq.role = isCreatingDistrictAdmin ? 'district-admin' : 'school-admin'
+    createReq.districtId = districtId
 
     try {
-      await userApi.createUser(createReq);
+      await userApi.createUser(createReq)
       notification({
-        type: "success",
-        msg: `${isCreatingDistrictAdmin ? "District Admin" : "School Admin"} created successfully`
-      });
-      resetFields();
+        type: 'success',
+        msg: `${
+          isCreatingDistrictAdmin ? 'District Admin' : 'School Admin'
+        } created successfully`,
+      })
+      resetFields()
     } catch (error) {
-      notification({ msg: error.message, messageKey: "apiFormErr" });
+      notification({ msg: error.message, messageKey: 'apiFormErr' })
     }
-  };
+  }
 
-  const fetchSchool = async value => {
-    setFetching(true);
-    setSchoolList([]);
-    const searchParam = value ? { search: { name: [{ type: "cont", value }] } } : {};
+  const fetchSchool = async (value) => {
+    setFetching(true)
+    setSchoolList([])
+    const searchParam = value
+      ? { search: { name: [{ type: 'cont', value }] } }
+      : {}
     const schoolListData = await schoolApi.getSchools({
       districtId,
       limit: 25,
       page: 1,
-      sortField: "name",
-      order: "asc",
-      ...searchParam
-    });
-    setSchoolList(schoolListData.data);
-    setFetching(false);
-  };
+      sortField: 'name',
+      order: 'asc',
+      ...searchParam,
+    })
+    setSchoolList(schoolListData.data)
+    setFetching(false)
+  }
 
   const onCreateAdmin = async () => {
-    let checkUserResponse = { userExists: true };
-    if (emailValidation.status === "success" && email.length > 0) {
-      checkUserResponse = await authApi.checkUserExist({ email });
+    let checkUserResponse = { userExists: true }
+    if (emailValidation.status === 'success' && email.length > 0) {
+      checkUserResponse = await authApi.checkUserExist({ email })
       if (
         checkUserResponse.userExists &&
-        ((checkUserResponse.role === "district-admin" && isCreatingDistrictAdmin) ||
-          (checkUserResponse.role === "school-admin" && isCreatingSchoolAdmin))
+        ((checkUserResponse.role === 'district-admin' &&
+          isCreatingDistrictAdmin) ||
+          (checkUserResponse.role === 'school-admin' && isCreatingSchoolAdmin))
       ) {
         setEmailValidation({
-          status: "error",
-          message: "Username already exists"
-        });
+          status: 'error',
+          message: 'Username already exists',
+        })
       }
     } else if (email.length == 0) {
       setEmailValidation({
-        status: "error",
-        message: "Please input Email"
-      });
+        status: 'error',
+        message: 'Please input Email',
+      })
     } else if (validateEmail(email)) {
       setEmailValidation({
-        status: "error",
-        message: "Username already exists"
-      });
+        status: 'error',
+        message: 'Username already exists',
+      })
     } else {
       setEmailValidation({
-        status: "error",
-        message: "Please input valid Email"
-      });
+        status: 'error',
+        message: 'Please input valid Email',
+      })
     }
 
     form.validateFields((err, row) => {
       if (!err) {
         if (
           checkUserResponse.userExists &&
-          ((checkUserResponse.role === "district-admin" && isCreatingDistrictAdmin) ||
-            (checkUserResponse.role === "school-admin" && isCreatingSchoolAdmin))
+          ((checkUserResponse.role === 'district-admin' &&
+            isCreatingDistrictAdmin) ||
+            (checkUserResponse.role === 'school-admin' &&
+              isCreatingSchoolAdmin))
         )
-          return;
+          return
 
-        const firstName = row.name.split(" ", 1);
-        let lastName = "";
+        const firstName = row.name.split(' ', 1)
+        let lastName = ''
         if (firstName.length < row.name.length) {
-          const lastNameIndex = firstName[0].length + 1;
-          lastName = row.name.substr(lastNameIndex, row.name.length);
+          const lastNameIndex = firstName[0].length + 1
+          lastName = row.name.substr(lastNameIndex, row.name.length)
         }
         const newUser = {
           firstName: firstName[0],
           lastName,
           password: row.password,
-          email
-        };
-        if (isCreatingSchoolAdmin) {
-          newUser.institutionIds = row.institutionIds.map(each => each.key);
-          newUser.isPowerTeacher = isPowerTeacher;
+          email,
         }
-        createAdmin(newUser);
+        if (isCreatingSchoolAdmin) {
+          newUser.institutionIds = row.institutionIds.map((each) => each.key)
+          newUser.isPowerTeacher = isPowerTeacher
+        }
+        createAdmin(newUser)
       }
-    });
-  };
+    })
+  }
 
-  const changeEmail = e => {
-    setEmail(e.target.value);
+  const changeEmail = (e) => {
+    setEmail(e.target.value)
     if (e.target.value.length === 0) {
       setEmailValidation({
-        status: "error",
-        message: "Please input Email"
-      });
+        status: 'error',
+        message: 'Please input Email',
+      })
     } else if (validateEmail(e.target.value)) {
       setEmailValidation({
-        status: "success",
-        message: ""
-      });
+        status: 'success',
+        message: '',
+      })
     } else {
       setEmailValidation({
-        status: "error",
-        message: "Please input valid Email"
-      });
+        status: 'error',
+        message: 'Please input valid Email',
+      })
     }
-  };
+  }
 
-  const { getFieldDecorator } = form;
-  const { status, message } = emailValidation;
+  const { getFieldDecorator } = form
+  const { status, message } = emailValidation
 
   return (
     <>
       <Row>
         <Col span={24}>
-          <FormItem label={t("users.districtadmin.name")}>
-            {getFieldDecorator("name", {
+          <FormItem label={t('users.districtadmin.name')}>
+            {getFieldDecorator('name', {
               rules: [
                 {
                   required: true,
-                  message: t("users.districtadmin.createda.validations.name")
-                }
-              ]
-            })(<Input placeholder={t("users.districtadmin.createda.entername")} />)}
+                  message: t('users.districtadmin.createda.validations.name'),
+                },
+              ],
+            })(
+              <Input
+                placeholder={t('users.districtadmin.createda.entername')}
+              />
+            )}
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
           <FormItem
-            label={t("users.districtadmin.username")}
+            label={t('users.districtadmin.username')}
             validateStatus={status}
             help={message}
             required
             type="email"
           >
             <Input
-              placeholder={t("users.districtadmin.createda.enterusername")}
+              placeholder={t('users.districtadmin.createda.enterusername')}
               autocomplete="new-password"
               onChange={changeEmail}
               value={email}
@@ -186,17 +206,19 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
       </Row>
       <Row>
         <Col span={24}>
-          <FormItem label={t("users.districtadmin.password")}>
-            {getFieldDecorator("password", {
+          <FormItem label={t('users.districtadmin.password')}>
+            {getFieldDecorator('password', {
               rules: [
                 {
                   required: true,
-                  message: t("users.districtadmin.createda.validations.password")
-                }
-              ]
+                  message: t(
+                    'users.districtadmin.createda.validations.password'
+                  ),
+                },
+              ],
             })(
               <Input
-                placeholder={t("users.districtadmin.createda.enterpassword")}
+                placeholder={t('users.districtadmin.createda.enterpassword')}
                 type="password"
                 autocomplete="new-password"
               />
@@ -208,28 +230,30 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
         <>
           <Row>
             <Col span={24}>
-              <FormItem label={t("users.schooladmin.school")}>
-                {getFieldDecorator("institutionIds", {
+              <FormItem label={t('users.schooladmin.school')}>
+                {getFieldDecorator('institutionIds', {
                   rules: [
                     {
                       required: true,
-                      message: t("users.schooladmin.createsa.validations.school")
-                    }
-                  ]
+                      message: t(
+                        'users.schooladmin.createsa.validations.school'
+                      ),
+                    },
+                  ],
                 })(
                   <StyledSelect
                     mode="multiple"
                     dropdownClassName="dropdown-custom-menu"
                     labelInValue
-                    placeholder={t("users.schooladmin.createsa.selectschool")}
+                    placeholder={t('users.schooladmin.createsa.selectschool')}
                     notFoundContent={fetching ? <Spin size="small" /> : null}
                     filterOption={false}
                     onSearch={fetchSchool}
                     onChange={handleChange}
                     onFocus={fetchSchool}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   >
-                    {schoolList.map(school => (
+                    {schoolList.map((school) => (
                       <Option key={school._id} value={school._id}>
                         {school._source.name}
                       </Option>
@@ -241,8 +265,11 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
           </Row>
           <Row>
             <Col span={24}>
-              <CheckboxLabel checked={isPowerTeacher} onChange={changePowerTool}>
-                {t("users.schooladmin.powertools")}
+              <CheckboxLabel
+                checked={isPowerTeacher}
+                onChange={changePowerTool}
+              >
+                {t('users.schooladmin.powertools')}
               </CheckboxLabel>
             </Col>
           </Row>
@@ -250,14 +277,17 @@ const CreateAdminForm = ({ form, isCreatingDistrictAdmin, isCreatingSchoolAdmin,
       )}
       <LeftButtonsContainer>
         <EduButton isGhost onClick={onCancel}>
-          {t("users.districtadmin.createda.nocancel")}
+          {t('users.districtadmin.createda.nocancel')}
         </EduButton>
-        <EduButton disabled={emailValidation.status === "error"} onClick={onCreateAdmin}>
-          {t("users.districtadmin.createda.yescreate")}
+        <EduButton
+          disabled={emailValidation.status === 'error'}
+          onClick={onCreateAdmin}
+        >
+          {t('users.districtadmin.createda.yescreate')}
         </EduButton>
       </LeftButtonsContainer>
     </>
-  );
-};
+  )
+}
 
-export default Form.create()(CreateAdminForm);
+export default Form.create()(CreateAdminForm)

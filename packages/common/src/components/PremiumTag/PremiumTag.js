@@ -1,11 +1,11 @@
-import React from "react";
-import { Tag } from "antd";
-import styled from "styled-components";
-import { lightGrey, greyDarken, themeLightGrayBgColor } from "@edulastic/colors";
+import React from 'react'
+import { Tag } from 'antd'
+import styled from 'styled-components'
+import { lightGrey, greyDarken, themeLightGrayBgColor } from '@edulastic/colors'
 
-const PremiumTag = () => <TagPremium>PREMIUM</TagPremium>;
+const PremiumTag = () => <TagPremium>PREMIUM</TagPremium>
 
-export default PremiumTag;
+export default PremiumTag
 
 const TagPremium = styled(Tag)`
   background: ${themeLightGrayBgColor};
@@ -15,4 +15,4 @@ const TagPremium = styled(Tag)`
   font-size: 10px;
   margin-right: 3px;
   padding: 4px 10px;
-`;
+`

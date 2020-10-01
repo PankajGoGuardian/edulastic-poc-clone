@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { cloneDeep } from "lodash";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { cloneDeep } from 'lodash'
 
-import Matrix from "./Matrix";
-import CheckAnswerButton from "../../../themes/common/CheckAnswerButton";
-import { CLEAR } from "../../../constants/constantsForQuestions";
+import Matrix from './Matrix'
+import CheckAnswerButton from '../../../themes/common/CheckAnswerButton'
+import { CLEAR } from '../../../constants/constantsForQuestions'
 
 const Preview = ({
   saveAnswer,
@@ -20,34 +20,34 @@ const Preview = ({
   disableResponse,
   changeView,
   evaluation,
-  isPrintPreview
+  isPrintPreview,
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
-    const newAnswer = cloneDeep(userAnswer);
+    const newAnswer = cloneDeep(userAnswer)
     if (previewTab !== CLEAR) {
-      changePreviewTab(CLEAR);
-      changeView(CLEAR);
+      changePreviewTab(CLEAR)
+      changeView(CLEAR)
     }
 
-    const { responseIds = [] } = item || {};
-    const rowIds = responseIds?.[rowIndex];
-    const responseId = rowIds?.[columnIndex];
-    newAnswer.value[responseId] = checked;
+    const { responseIds = [] } = item || {}
+    const rowIds = responseIds?.[rowIndex]
+    const responseId = rowIds?.[columnIndex]
+    newAnswer.value[responseId] = checked
 
     if (!item.multipleResponses) {
-      rowIds.forEach(id => {
+      rowIds.forEach((id) => {
         if (id !== responseId) {
-          delete newAnswer.value[id];
+          delete newAnswer.value[id]
         }
-      });
+      })
     }
 
     if (!newAnswer.value[responseId]) {
-      delete newAnswer.value[responseId];
+      delete newAnswer.value[responseId]
     }
 
-    saveAnswer(newAnswer);
-  };
+    saveAnswer(newAnswer)
+  }
 
   return (
     <QuestionWrapper pl={pl}>
@@ -66,10 +66,15 @@ const Preview = ({
         />
       </QuestionContent>
 
-      {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
+      {item.instant_feedback && (
+        <CheckAnswerButton
+          feedbackAttempts={feedbackAttempts}
+          onCheck={onCheckAnswer}
+        />
+      )}
     </QuestionWrapper>
-  );
-};
+  )
+}
 
 Preview.propTypes = {
   item: PropTypes.object.isRequired,
@@ -82,27 +87,27 @@ Preview.propTypes = {
   changePreviewTab: PropTypes.func,
   evaluation: PropTypes.object,
   previewTab: PropTypes.string,
-  disableResponse: PropTypes.bool
-};
+  disableResponse: PropTypes.bool,
+}
 
 Preview.defaultProps = {
   smallSize: false,
   evaluation: null,
   previewTab: CLEAR,
   changePreviewTab: () => {},
-  disableResponse: false
-};
+  disableResponse: false,
+}
 
-export default Preview;
+export default Preview
 
 const QuestionContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
+`
 
 const QuestionWrapper = styled.div`
   max-width: 100%;
   width: max-content;
   padding-left: ${({ pl }) => pl};
-`;
+`

@@ -1,21 +1,29 @@
-import React, { Component } from "react";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import Scoring from "../../../containers/WidgetOptions/components/Scoring";
+import React, { Component } from 'react'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
+import PropTypes from 'prop-types'
+import Scoring from '../../../containers/WidgetOptions/components/Scoring'
 
 const types = [
-  { label: "Exact match", value: "exactMatch" },
-  { label: "Partial match", value: "partialMatch" },
-  { label: "Partial match v2", value: "partialMatchV2" },
-  { label: "Contains", value: "contains" },
-  { label: "By location", value: "byLocation" },
-  { label: "By count", value: "byCount" }
-];
+  { label: 'Exact match', value: 'exactMatch' },
+  { label: 'Partial match', value: 'partialMatch' },
+  { label: 'Partial match v2', value: 'partialMatchV2' },
+  { label: 'Contains', value: 'contains' },
+  { label: 'By location', value: 'byLocation' },
+  { label: 'By count', value: 'byCount' },
+]
 
 class ScoreSettings extends Component {
   render() {
-    const { scoringTypes, showSelect, cleanSections, fillSections, advancedAreOpen, item, isSection } = this.props;
+    const {
+      scoringTypes,
+      showSelect,
+      cleanSections,
+      fillSections,
+      advancedAreOpen,
+      item,
+      isSection,
+    } = this.props
     return (
       <Scoring
         showSelect={showSelect}
@@ -26,7 +34,7 @@ class ScoreSettings extends Component {
         isSection={isSection}
         item={item}
       />
-    );
+    )
   }
 }
 
@@ -35,17 +43,17 @@ ScoreSettings.propTypes = {
   showSelect: PropTypes.bool,
   cleanSections: PropTypes.func,
   fillSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 ScoreSettings.defaultProps = {
   scoringTypes: types,
   showSelect: true,
   cleanSections: () => {},
   fillSections: () => {},
-  advancedAreOpen: false
-};
+  advancedAreOpen: false,
+}
 
-const enhance = compose(withNamespaces("assessment"));
+const enhance = compose(withNamespaces('assessment'))
 
-export default enhance(ScoreSettings);
+export default enhance(ScoreSettings)

@@ -1,59 +1,68 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
-import uuidv4 from "uuid/v4";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { cloneDeep } from 'lodash'
+import uuidv4 from 'uuid/v4'
 
-import MathEssayInputLine from "./components/MathEssayInputLine/index";
-import { Wrapper } from "./styled/Wrapper";
+import MathEssayInputLine from './components/MathEssayInputLine/index'
+import { Wrapper } from './styled/Wrapper'
 
-export const MathEssayInputContext = React.createContext({});
+export const MathEssayInputContext = React.createContext({})
 
-const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item, disableResponse }) => {
-  const [currentLineIndex, setCurrentLineIndex] = useState();
-  const [localType, setLocalType] = useState(uiStyle.defaultMode);
+const MathEssayInput = ({
+  textFormattingOptions,
+  uiStyle,
+  lines,
+  setLines,
+  item,
+  disableResponse,
+}) => {
+  const [currentLineIndex, setCurrentLineIndex] = useState()
+  const [localType, setLocalType] = useState(uiStyle.defaultMode)
 
   const handleChange = (index, value) => {
-    const newLines = cloneDeep(lines);
+    const newLines = cloneDeep(lines)
 
-    if ((!value || value === "<p><br></p>") && newLines.length > 1) {
-      newLines.splice(index, 1);
-      setCurrentLineIndex(index - 1);
+    if ((!value || value === '<p><br></p>') && newLines.length > 1) {
+      newLines.splice(index, 1)
+      setCurrentLineIndex(index - 1)
     } else {
-      newLines[index].text = value;
+      newLines[index].text = value
     }
 
-    setLines(newLines);
-  };
+    setLines(newLines)
+  }
 
-  const onAddNewLine = index => {
-    const newLines = cloneDeep(lines);
+  const onAddNewLine = (index) => {
+    const newLines = cloneDeep(lines)
 
     if (item.uiStyle.max_lines && newLines.length === item.uiStyle.max_lines) {
-      return;
+      return
     }
 
     newLines.splice(index + 1, 0, {
-      text: "",
+      text: '',
       type: localType,
-      index: uuidv4()
-    });
-    setLines(newLines);
-    setCurrentLineIndex(index + 1);
-  };
+      index: uuidv4(),
+    })
+    setLines(newLines)
+    setCurrentLineIndex(index + 1)
+  }
 
-  const handleChangeType = index => type => {
-    const newLines = cloneDeep(lines);
-    newLines[index].type = type;
-    if (newLines[index].text === "<p><br></p>" && type === "math") {
-      newLines[index].text = "";
+  const handleChangeType = (index) => (type) => {
+    const newLines = cloneDeep(lines)
+    newLines[index].type = type
+    if (newLines[index].text === '<p><br></p>' && type === 'math') {
+      newLines[index].text = ''
     }
-    setLines(newLines);
-    setLocalType(type);
-  };
+    setLines(newLines)
+    setLocalType(type)
+  }
 
   return (
-    <div style={{ width: "100%" }}>
-      <MathEssayInputContext.Provider value={{ textFormattingOptions, uiStyle }}>
+    <div style={{ width: '100%' }}>
+      <MathEssayInputContext.Provider
+        value={{ textFormattingOptions, uiStyle }}
+      >
         <Wrapper>
           {lines.map((line, i) => (
             <MathEssayInputLine
@@ -62,14 +71,14 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item,
               id={line.index}
               item={item}
               onAddNewLine={() => onAddNewLine(i)}
-              onChange={val => handleChange(i, val)}
+              onChange={(val) => handleChange(i, val)}
               line={line}
               active={currentLineIndex === i}
-              setActive={outside => {
+              setActive={(outside) => {
                 if (outside) {
-                  setCurrentLineIndex();
+                  setCurrentLineIndex()
                 } else {
-                  setCurrentLineIndex(i);
+                  setCurrentLineIndex(i)
                 }
               }}
               onChangeType={handleChangeType(i)}
@@ -78,8 +87,8 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item,
         </Wrapper>
       </MathEssayInputContext.Provider>
     </div>
-  );
-};
+  )
+}
 
 MathEssayInput.propTypes = {
   textFormattingOptions: PropTypes.array,
@@ -87,13 +96,13 @@ MathEssayInput.propTypes = {
   setLines: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
-  disableResponse: PropTypes.bool
-};
+  disableResponse: PropTypes.bool,
+}
 
 MathEssayInput.defaultProps = {
   disableResponse: false,
   textFormattingOptions: [],
-  uiStyle: {}
-};
+  uiStyle: {},
+}
 
-export default MathEssayInput;
+export default MathEssayInput

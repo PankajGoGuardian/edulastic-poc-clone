@@ -1,11 +1,11 @@
-import { find } from "lodash";
-import * as moment from "moment";
-import PropTypes from "prop-types";
-import { Col } from "antd";
-import React from "react";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
-import selectsData from "../../../TestPage/components/common/selectsData";
+import { find } from 'lodash'
+import * as moment from 'moment'
+import PropTypes from 'prop-types'
+import { Col } from 'antd'
+import React from 'react'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import defaultImage from '../../../src/assets/manageclass/abstract.jpg'
+import selectsData from '../../../TestPage/components/common/selectsData'
 import {
   ClassInfoContainer,
   FieldValue,
@@ -14,11 +14,11 @@ import {
   ImageContainer,
   MainContainer,
   MidWrapper,
-  StyledDivider
-} from "./styled";
-import SubHeader from "./SubHeader";
+  StyledDivider,
+} from './styled'
+import SubHeader from './SubHeader'
 
-const { allGrades, allSubjects } = selectsData;
+const { allGrades, allSubjects } = selectsData
 
 const MainInfo = ({
   entity = {},
@@ -30,7 +30,7 @@ const MainInfo = ({
   archiveClass,
   allowCanvasLogin,
   syncCanvasModal,
-  unarchiveClass
+  unarchiveClass,
 }) => {
   // eslint-disable-next-line max-len
   const {
@@ -45,11 +45,16 @@ const MainInfo = ({
     startDate,
     endDate,
     googleCode,
-    canvasCourseName = "",
-    canvasCourseSectionName = ""
-  } = entity;
-  const _grade = allGrades.filter(item => grades.includes(item.value)).map(item => ` ${item.text}`) || grades;
-  const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
+    canvasCourseName = '',
+    canvasCourseSectionName = '',
+  } = entity
+  const _grade =
+    allGrades
+      .filter((item) => grades.includes(item.value))
+      .map((item) => ` ${item.text}`) || grades
+  const _subject = find(allSubjects, (item) => item.value === subject) || {
+    text: subject,
+  }
 
   return (
     <div>
@@ -86,17 +91,23 @@ const MainInfo = ({
               </Col>
 
               <Col lg={7} md={12}>
-                {type === "class" && (
+                {type === 'class' && (
                   <FieldValue>
                     <div>Standard</div>
                     {standardSets && standardSets.length ? (
-                      <span>{standardSets.map(({ name }) => name).join(", ")}</span>
+                      <span>
+                        {standardSets.map(({ name }) => name).join(', ')}
+                      </span>
                     ) : (
                       <span>Other</span>
                     )}
                   </FieldValue>
                 )}
-                <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
+                <FeaturesSwitch
+                  inputFeatures="selectCourse"
+                  actionOnInaccessible="hidden"
+                  key="selectCourse"
+                >
                   <FieldValue>
                     <div>Course</div>
                     <span>{course && course.name}</span>
@@ -104,20 +115,20 @@ const MainInfo = ({
                 </FeaturesSwitch>
               </Col>
 
-              {type === "class" && (
+              {type === 'class' && (
                 <Col lg={6} md={12}>
                   <FieldValue>
                     <div>Start Date</div>
-                    <span>{moment(startDate).format("MMM DD, YYYY")}</span>
+                    <span>{moment(startDate).format('MMM DD, YYYY')}</span>
                   </FieldValue>
                   <FieldValue>
                     <div>End Date</div>
-                    <span>{moment(endDate).format("MMM DD, YYYY")}</span>
+                    <span>{moment(endDate).format('MMM DD, YYYY')}</span>
                   </FieldValue>
                 </Col>
               )}
               <Col lg={5} md={12}>
-                {type === "class" && (
+                {type === 'class' && (
                   <>
                     {!!googleId && (
                       <FieldValue>
@@ -130,7 +141,7 @@ const MainInfo = ({
                 {!!lastSyncDate && (
                   <FieldValue>
                     <div>Last Sync</div>
-                    <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
+                    <span>{moment(lastSyncDate).format('MMM DD, YYYY')}</span>
                   </FieldValue>
                 )}
               </Col>
@@ -142,7 +153,7 @@ const MainInfo = ({
                     <span>{canvasCourseSectionName}</span>
                   </FieldValue>
                 )}
-                {type === "class" && (
+                {type === 'class' && (
                   <FieldValue>
                     {!!canvasCourseName && (
                       <>
@@ -159,11 +170,11 @@ const MainInfo = ({
       </MainContainer>
       <StyledDivider orientation="left" />
     </div>
-  );
-};
+  )
+}
 
 MainInfo.propTypes = {
-  entity: PropTypes.object.isRequired
-};
+  entity: PropTypes.object.isRequired,
+}
 
-export default MainInfo;
+export default MainInfo

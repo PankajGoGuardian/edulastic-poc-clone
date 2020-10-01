@@ -1,397 +1,414 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
-import promisify from "cypress-promise";
-import ItemListPage from "../itemList/itemListPage";
-import TeacherSideBar from "../SideBarPage";
-import TestSummary from "./testDetail/testSummaryTab";
-import TestAddItem from "./testDetail/testAddItemTab";
-import SearchFilters from "../searchFiltersPage";
-import TestHeader from "./testDetail/header";
-import TestAssignPage from "./testDetail/testAssignPage";
-import TestReviewTab from "./testDetail/testReviewTab";
-import TestSettings from "./testDetail/testSettingsPage";
+import promisify from 'cypress-promise'
+import ItemListPage from '../itemList/itemListPage'
+import TeacherSideBar from '../SideBarPage'
+import TestSummary from './testDetail/testSummaryTab'
+import TestAddItem from './testDetail/testAddItemTab'
+import SearchFilters from '../searchFiltersPage'
+import TestHeader from './testDetail/header'
+import TestAssignPage from './testDetail/testAssignPage'
+import TestReviewTab from './testDetail/testReviewTab'
+import TestSettings from './testDetail/testSettingsPage'
 
 export default class TestLibrary {
   constructor() {
-    this.sidebar = new TeacherSideBar();
-    this.items = [];
-    this.searchFilters = new SearchFilters();
-    this.header = new TestHeader();
-    this.assignPage = new TestAssignPage();
-    this.testSummary = new TestSummary();
-    this.testAddItem = new TestAddItem();
-    this.review = new TestReviewTab();
-    this.testSettings = new TestSettings();
+    this.sidebar = new TeacherSideBar()
+    this.items = []
+    this.searchFilters = new SearchFilters()
+    this.header = new TestHeader()
+    this.assignPage = new TestAssignPage()
+    this.testSummary = new TestSummary()
+    this.testAddItem = new TestAddItem()
+    this.review = new TestReviewTab()
+    this.testSettings = new TestSettings()
   }
 
   // *** ELEMENTS START ***
 
-  getTestCardById = testId => cy.get(`[data-cy="${testId}"]`).as("testcard");
+  getTestCardById = (testId) => cy.get(`[data-cy="${testId}"]`).as('testcard')
 
-  getShortId = testId => testId.substr(testId.length - 5);
+  getShortId = (testId) => testId.substr(testId.length - 5)
 
-  getNameList = () => cy.get('[data-cy="name-button-pop"]').find("input");
+  getNameList = () => cy.get('[data-cy="name-button-pop"]').find('input')
 
-  getPermissionButton = () => cy.get('[data-cy="permission-button-pop"]');
+  getPermissionButton = () => cy.get('[data-cy="permission-button-pop"]')
 
-  getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]');
+  getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]')
 
-  getEditButton = () => cy.get('[data-cy="edit"]');
+  getEditButton = () => cy.get('[data-cy="edit"]')
 
-  getVersionedTestID = () => cy.url().then(url => url.split("/").reverse()[2]);
+  getVersionedTestID = () => cy.url().then((url) => url.split('/').reverse()[2])
 
-  getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
+  getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]')
 
-  getProceedButton = () => cy.get('[data-cy="PROCEED"]');
+  getProceedButton = () => cy.get('[data-cy="PROCEED"]')
 
-  getDuplicateButtonInReview = () => cy.get('[data-cy="duplicate"]');
+  getDuplicateButtonInReview = () => cy.get('[data-cy="duplicate"]')
 
-  getCreateNewTestButton = () => cy.get('[data-cy="createNew"]');
+  getCreateNewTestButton = () => cy.get('[data-cy="createNew"]')
 
-  getTileViewButton = () => cy.get('[data-cy="tileView"]');
+  getTileViewButton = () => cy.get('[data-cy="tileView"]')
 
-  getListViewButton = () => cy.get('[data-cy="listView"]');
+  getListViewButton = () => cy.get('[data-cy="listView"]')
 
-  getPreviewByTestId = id => this.getTestCardById(id).find('[data-cy="view"]');
+  getPreviewByTestId = (id) => this.getTestCardById(id).find('[data-cy="view"]')
 
-  getTestIdOnCardByTestId = id => this.getTestCardById(id).find('[data-cy="test-id"]');
+  getTestIdOnCardByTestId = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-id"]')
 
-  getAuthorNameByTestId = id => this.getTestCardById(id).find('[data-cy="test-author-name"]');
+  getAuthorNameByTestId = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-author-name"]')
 
-  getCollectionByTestId = id => this.getTestCardById(id).find('[data-cy="test-collection"]');
+  getCollectionByTestId = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-collection"]')
 
-  getTotalItemCountBtTestId = id => this.getTestCardById(id).find('[data-cy="test-item-count"]');
+  getTotalItemCountBtTestId = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-item-count"]')
 
-  getStandardsByTestId = id => this.getTestCardById(id).find('[data-cy="test-standards"]');
+  getStandardsByTestId = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-standards"]')
 
-  getTestTagsByTestId = id => this.getTestCardById(id).find('[data-cy="test-tags"]');
+  getTestTagsByTestId = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-tags"]')
 
-  getTestStatusByTestId = id => this.getTestCardById(id).find('[data-cy="test-status"]');
+  getTestStatusByTestId = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-status"]')
 
-  getGradesOnTestCardPopUp = () => cy.get('[data-cy="testcard-grades"]');
+  getGradesOnTestCardPopUp = () => cy.get('[data-cy="testcard-grades"]')
 
-  getTestNameOnTestCardPopUp = () => cy.get('[data-cy="testcard-name"]');
+  getTestNameOnTestCardPopUp = () => cy.get('[data-cy="testcard-name"]')
 
-  getTestSubjectsOnTestCardPopUp = () => cy.get('[data-cy="testcard-subject"]');
+  getTestSubjectsOnTestCardPopUp = () => cy.get('[data-cy="testcard-subject"]')
 
-  getTestTagsOnTestCardPopUp = () => cy.get('[data-cy="testcard-tags"]');
+  getTestTagsOnTestCardPopUp = () => cy.get('[data-cy="testcard-tags"]')
 
-  getTestCollectionOnTestCardPopUp = () => cy.get('[data-cy="testcard-collection"]');
+  getTestCollectionOnTestCardPopUp = () =>
+    cy.get('[data-cy="testcard-collection"]')
 
-  getTestTotalItemsOnTestCardPopUp = () => cy.get('[data-cy="testcard-total-items"]');
+  getTestTotalItemsOnTestCardPopUp = () =>
+    cy.get('[data-cy="testcard-total-items"]')
 
-  getTestTotalPointsOnTestCardPopUp = () => cy.get('[data-cy="testcard-total-points"]');
+  getTestTotalPointsOnTestCardPopUp = () =>
+    cy.get('[data-cy="testcard-total-points"]')
 
-  getStandardRowByStandardOnTestCardPopUp = standard => cy.get(`[data-cy="${standard}"]`);
+  getStandardRowByStandardOnTestCardPopUp = (standard) =>
+    cy.get(`[data-cy="${standard}"]`)
 
-  getPreviewButtonOnTestCardPopUp = () => cy.get('[data-cy="preview-button"]');
+  getPreviewButtonOnTestCardPopUp = () => cy.get('[data-cy="preview-button"]')
 
-  getAssignButtonOnTestCardById = id =>
+  getAssignButtonOnTestCardById = (id) =>
     this.showButtonsOnTestCardById(id).then(() =>
-      this.getTestCardById(id)
-        .find("button")
-        .contains("Assign")
-    );
+      this.getTestCardById(id).find('button').contains('Assign')
+    )
 
-  getPreviewButtonOnTestCardById = id =>
+  getPreviewButtonOnTestCardById = (id) =>
     this.showButtonsOnTestCardById(id).then(() =>
-      this.getTestCardById(id)
-        .find("button")
-        .contains("Preview")
-    );
+      this.getTestCardById(id).find('button').contains('Preview')
+    )
 
-  getMoreButtonOnTestCardById = id =>
+  getMoreButtonOnTestCardById = (id) =>
     this.showButtonsOnTestCardById(id).then(() =>
-      this.getTestCardById(id)
-        .find("button")
-        .contains("More")
-    );
+      this.getTestCardById(id).find('button').contains('More')
+    )
 
   getAllTestCardsInCurrentPage = () =>
-    cy
-      .get('[data-cy="test-id"]')
-      .closest(".ant-card")
-      .parent();
+    cy.get('[data-cy="test-id"]').closest('.ant-card').parent()
 
-  getTestCardInCurrentPageByIndex = index => this.getAllTestCardsInCurrentPage().eq(index);
+  getTestCardInCurrentPageByIndex = (index) =>
+    this.getAllTestCardsInCurrentPage().eq(index)
 
-  getTestIdOfCardInCurrentPageByIndex = index => this.getTestCardInCurrentPageByIndex(index).invoke("attr", "data-cy");
+  getTestIdOfCardInCurrentPageByIndex = (index) =>
+    this.getTestCardInCurrentPageByIndex(index).invoke('attr', 'data-cy')
 
-  getCloseTestCardPopUpButton = () => cy.get(`button[class^="styles_closeButton"]`);
+  getCloseTestCardPopUpButton = () =>
+    cy.get(`button[class^="styles_closeButton"]`)
 
-  getTestNameOnTestCardById = id => this.getTestCardById(id).find('[data-cy="test-title"]');
+  getTestNameOnTestCardById = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-title"]')
 
-  getDescriptionOnTestCardById = id => this.getTestCardById(id).find('[data-cy="test-description"]');
+  getDescriptionOnTestCardById = (id) =>
+    this.getTestCardById(id).find('[data-cy="test-description"]')
 
-  getTestlibraryTitle = () => cy.get('[title="Test"]');
+  getTestlibraryTitle = () => cy.get('[title="Test"]')
 
-  getDescriptionOnTestCardPopUp = () => cy.get('[data-cy="testcard-description"]').next();
+  getDescriptionOnTestCardPopUp = () =>
+    cy.get('[data-cy="testcard-description"]').next()
 
-  getUploadPDFInTestCreate = () => cy.get("button").contains("UPLOAD PDF");
+  getUploadPDFInTestCreate = () => cy.get('button').contains('UPLOAD PDF')
 
-  getAnswerOnlyButton = () => cy.get("button").contains("Continue with blank");
+  getAnswerOnlyButton = () => cy.get('button').contains('Continue with blank')
 
-  getAddEssayTypeInDocBased = () => cy.get('[class^="styled__AddQuestionIcon"]').last();
+  getAddEssayTypeInDocBased = () =>
+    cy.get('[class^="styled__AddQuestionIcon"]').last()
 
-  getDoneButtonInAddingQuestion = () => cy.get("button").contains("DONE");
+  getDoneButtonInAddingQuestion = () => cy.get('button').contains('DONE')
 
-  getProceedButton = () => cy.get("button").contains("PROCEED");
+  getProceedButton = () => cy.get('button').contains('PROCEED')
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickAddEssayTypeQueInDoc = () => this.getAddEssayTypeInDocBased().click({ force: true });
+  clickAddEssayTypeQueInDoc = () =>
+    this.getAddEssayTypeInDocBased().click({ force: true })
 
-  clickDoneAddingQueInDoc = () => this.getDoneButtonInAddingQuestion().click({ force: true });
+  clickDoneAddingQueInDoc = () =>
+    this.getDoneButtonInAddingQuestion().click({ force: true })
 
-  clickProceedWithoutStandard = () => this.getProceedButton().click({ force: true });
+  clickProceedWithoutStandard = () =>
+    this.getProceedButton().click({ force: true })
 
   clickOnTileView = () => {
     this.getTileViewButton()
       .click()
-      .should("have.css", "color", "rgb(185, 185, 185)");
-  };
+      .should('have.css', 'color', 'rgb(185, 185, 185)')
+  }
 
   clickOnListView = () => {
     this.getListViewButton()
       .click()
-      .should("have.css", "color", "rgb(185, 185, 185)");
-  };
+      .should('have.css', 'color', 'rgb(185, 185, 185)')
+  }
 
-  clickOnPreviewByTestId = id => {
-    this.getPreviewByTestId(id).click();
-  };
+  clickOnPreviewByTestId = (id) => {
+    this.getPreviewByTestId(id).click()
+  }
 
-  showButtonsOnTestCardById = id =>
-    this.getTestCardById(id)
-      .find(".ant-card-head-title")
-      .trigger("mouseover");
+  showButtonsOnTestCardById = (id) =>
+    this.getTestCardById(id).find('.ant-card-head-title').trigger('mouseover')
 
-  clickAssignOnTestCardById = id => {
-    cy.server();
-    cy.route("POST", "**/group/search").as("load-classes");
-    this.getAssignButtonOnTestCardById(id).click({ force: true });
-    cy.wait("@load-classes");
-  };
+  clickAssignOnTestCardById = (id) => {
+    cy.server()
+    cy.route('POST', '**/group/search').as('load-classes')
+    this.getAssignButtonOnTestCardById(id).click({ force: true })
+    cy.wait('@load-classes')
+  }
 
-  clickMoreOnTestCardById = id => this.getMoreButtonOnTestCardById(id).click({ force: true });
+  clickMoreOnTestCardById = (id) =>
+    this.getMoreButtonOnTestCardById(id).click({ force: true })
 
-  clickPreviewOnTestCardById = id => this.getPreviewButtonOnTestCardById(id).click({ force: true });
+  clickPreviewOnTestCardById = (id) =>
+    this.getPreviewButtonOnTestCardById(id).click({ force: true })
 
-  clickPreviewOnTestCardPopUp = () => this.getPreviewButtonOnTestCardPopUp().click();
+  clickPreviewOnTestCardPopUp = () =>
+    this.getPreviewButtonOnTestCardPopUp().click()
 
   clickAssignOnTestCardPopUp = () => {
-    cy.server();
-    cy.route("POST", "**/group/search").as("load-classes");
-    this.getAssignEdit().click();
-    cy.wait("@load-classes");
-  };
+    cy.server()
+    cy.route('POST', '**/group/search').as('load-classes')
+    this.getAssignEdit().click()
+    cy.wait('@load-classes')
+  }
 
-  clickCloseTestCardPopUp = () => this.getCloseTestCardPopUpButton().click();
+  clickCloseTestCardPopUp = () => this.getCloseTestCardPopUpButton().click()
 
   clickOnAuthorTest = (fromAssignmentsPage = false) => {
     this.getCreateNewTestButton()
       .click()
       .then(() => {
-        if (fromAssignmentsPage) cy.contains(" Or Author a Test >>").click({ force: true });
-        cy.contains("button", "CREATE TEST").click();
-      });
-  };
+        if (fromAssignmentsPage)
+          cy.contains(' Or Author a Test >>').click({ force: true })
+        cy.contains('button', 'CREATE TEST').click()
+      })
+  }
 
-  createTest = (key = "default", publish = true) => {
-    const testSummary = new TestSummary();
-    const testAddItem = new TestAddItem();
-    const itemListPage = new ItemListPage();
+  createTest = (key = 'default', publish = true) => {
+    const testSummary = new TestSummary()
+    const testAddItem = new TestAddItem()
+    const itemListPage = new ItemListPage()
 
-    return cy.fixture("testAuthoring").then(testData => {
-      const test = testData[key];
-      this.items = [];
+    return cy.fixture('testAuthoring').then((testData) => {
+      const test = testData[key]
+      this.items = []
       test.itemKeys.forEach(async (itemKey, index) => {
-        const _id = await promisify(itemListPage.createItem(itemKey, index));
+        const _id = await promisify(itemListPage.createItem(itemKey, index))
         // .then(_id => {
         // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
-        this.items.push(_id);
+        this.items.push(_id)
         // });
-      });
+      })
 
       // create new test
-      this.sidebar.clickOnTestLibrary();
-      this.clickOnAuthorTest();
+      this.sidebar.clickOnTestLibrary()
+      this.clickOnAuthorTest()
 
       // test description
-      if (test.name) testSummary.setName(test.name);
+      if (test.name) testSummary.setName(test.name)
       if (test.grade) {
-        test.grade.forEach(grade => {
-          testSummary.selectGrade(grade);
-        });
+        test.grade.forEach((grade) => {
+          testSummary.selectGrade(grade)
+        })
       }
       if (test.subject) {
-        test.subject.forEach(subject => {
-          testSummary.selectSubject(subject, true);
-        });
+        test.subject.forEach((subject) => {
+          testSummary.selectSubject(subject, true)
+        })
       }
 
       if (test.collections) {
-        testSummary.selectCollection(test.collections, true);
+        testSummary.selectCollection(test.collections, true)
       }
 
       // add items
-      testSummary.header.clickOnAddItems();
-      this.searchFilters.clearAll();
-      cy.route("POST", "**api/test").as("createTest");
+      testSummary.header.clickOnAddItems()
+      this.searchFilters.clearAll()
+      cy.route('POST', '**api/test').as('createTest')
       testAddItem.authoredByMe().then(() => {
         this.items.forEach((itemKey, index) => {
-          testAddItem.addItemById(itemKey);
-          if (index === 0) cy.wait("@createTest").then(xhr => this.saveTestId(xhr));
-          cy.wait(500);
-        });
-      });
+          testAddItem.addItemById(itemKey)
+          if (index === 0)
+            cy.wait('@createTest').then((xhr) => this.saveTestId(xhr))
+          cy.wait(500)
+        })
+      })
 
       // store gets updated with some delay, if no wait then published test doesn't consist all selected questions
-      cy.wait(1000);
+      cy.wait(1000)
       // review
-      testSummary.header.clickOnReview();
+      testSummary.header.clickOnReview()
       // save
-      cy.wait(2000);
+      cy.wait(2000)
       // testSummary.header.clickOnSaveButton(true);
       // publish
-      if (publish) return testSummary.header.clickOnPublishButton();
-      else return cy.url().then(url => url.split("/").reverse()[0]);
-    });
-  };
+      if (publish) return testSummary.header.clickOnPublishButton()
+      return cy.url().then((url) => url.split('/').reverse()[0])
+    })
+  }
 
-  clickOnEditTestById = testId => {
-    cy.server();
-    cy.route("GET", "**/content-sharing/**").as("testload");
-    this.getTestCardById(testId);
-    cy.get("@testcard")
-      .find(".showHover")
-      .invoke("show")
-      .contains("button", "Edit")
+  clickOnEditTestById = (testId) => {
+    cy.server()
+    cy.route('GET', '**/content-sharing/**').as('testload')
+    this.getTestCardById(testId)
+    cy.get('@testcard')
+      .find('.showHover')
+      .invoke('show')
+      .contains('button', 'Edit')
       .click({ force: true })
       .then(() => {
-        cy.wait("@testload");
-        cy.wait("@testload");
-      });
-  };
+        cy.wait('@testload')
+        cy.wait('@testload')
+      })
+  }
 
   clickOnAssign = () => {
-    cy.server();
-    cy.route("POST", "**/group/search").as("groups");
-    cy.contains("ASSIGN").click({ force: true });
-    cy.wait("@groups");
-    cy.wait(1000);
-  };
+    cy.server()
+    cy.route('POST', '**/group/search').as('groups')
+    cy.contains('ASSIGN').click({ force: true })
+    cy.wait('@groups')
+    cy.wait(1000)
+  }
 
   clickOnDuplicate = () => {
-    cy.route("POST", "**/test/**").as("duplicateTest");
-    cy.route("GET", "**/test/*/assignments").as("getTest");
-    cy.contains("CLONE").click({ force: true });
-    cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
+    cy.route('POST', '**/test/**').as('duplicateTest')
+    cy.route('GET', '**/test/*/assignments').as('getTest')
+    cy.contains('CLONE').click({ force: true })
+    cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
     // cy.wait("@getTest");
-  };
+  }
 
-  clickOnTestCardById = testId => {
+  clickOnTestCardById = (testId) => {
     this.getTestCardById(testId)
       // .contains("TOTAL ITEMS")
       // .click({ force: true })
-      .click();
-  };
+      .click()
+  }
 
   clickOnDetailsOfCard = () => {
-    cy.server();
-    cy.route("GET", "**/regrade-assignments").as("assignment");
+    cy.server()
+    cy.route('GET', '**/regrade-assignments').as('assignment')
     cy.get('[data-cy="details-button"]')
       .click({ force: true })
       .then(() => {
-        cy.wait(500);
-        cy.wait("@assignment");
-        cy.wait(3000);
-      });
-  };
+        cy.wait(500)
+        cy.wait('@assignment')
+        cy.wait(3000)
+      })
+  }
 
   share = (name, option, validuser) => {
-    this.shareOption(option);
-    cy.server();
-    cy.route("POST", "**/user/search").as("users");
+    this.shareOption(option)
+    cy.server()
+    cy.route('POST', '**/user/search').as('users')
     this.getNameList()
       .type(name, { force: true })
-      .then(ele => {
-        cy.wait("@users").then(() => {
+      .then((ele) => {
+        cy.wait('@users').then(() => {
           if (validuser) {
-            cy.get(".ant-select-dropdown-menu-item")
-              .contains(name)
-              .click();
+            cy.get('.ant-select-dropdown-menu-item').contains(name).click()
           } else {
-            cy.wrap(ele).type("{downarrow}{enter}");
+            cy.wrap(ele).type('{downarrow}{enter}')
           }
-        });
+        })
 
         // TODO: Verify Search results
-      });
-    this.clickSharePop();
-  };
+      })
+    this.clickSharePop()
+  }
 
   clickSharePop = (validEmail = true, email) => {
-    cy.server();
-    cy.route("POST", "**/content-sharing/**").as("testload");
-    cy.route("GET", "**/content-sharing/**").as("testload1");
+    cy.server()
+    cy.route('POST', '**/content-sharing/**').as('testload')
+    cy.route('GET', '**/content-sharing/**').as('testload1')
     this.getShareButtonPop()
       .click({ force: true })
       .then(() => {
         if (validEmail) {
-          cy.wait("@testload").then(xhr => assert(xhr.status === 200, "verify share request"));
-          cy.wait("@testload1");
+          cy.wait('@testload').then((xhr) =>
+            assert(xhr.status === 200, 'verify share request')
+          )
+          cy.wait('@testload1')
         } else {
-          cy.wait("@testload").then(xhr => assert(xhr.status === 404, "Cancel share request"));
-          cy.contains(`Invalid mails found (${email})`);
+          cy.wait('@testload').then((xhr) =>
+            assert(xhr.status === 404, 'Cancel share request')
+          )
+          cy.contains(`Invalid mails found (${email})`)
         }
-      });
-  };
+      })
+  }
 
-  shareOption = option => {
-    this.getPermissionButton().click({ force: true });
+  shareOption = (option) => {
+    this.getPermissionButton().click({ force: true })
     this.getShareButtonPop()
       .parent()
       .parent()
       .contains(option)
-      .click({ force: true });
-  };
+      .click({ force: true })
+  }
 
   selectPeopletoshare = (email, edit = false, validuser = true) => {
     // Valid User: Teacher from the same district
     if (edit) {
-      this.share(email, "Can Edit, Add/Remove Items", validuser);
+      this.share(email, 'Can Edit, Add/Remove Items', validuser)
     } else {
-      this.share(email, "Can View & Duplicate", validuser);
+      this.share(email, 'Can View & Duplicate', validuser)
     }
 
-    cy.wait(2000);
-  };
+    cy.wait(2000)
+  }
 
   publishedToDraft = () => {
-    cy.server();
-    cy.route("POST", "**/test/**").as("duplicateTest");
-    cy.route("PUT", "**/test/**").as("testdrafted");
+    cy.server()
+    cy.route('POST', '**/test/**').as('duplicateTest')
+    cy.route('PUT', '**/test/**').as('testdrafted')
     this.getEditButton()
-      .should("exist")
+      .should('exist')
       .click()
       .then(() => {
         // pop up that comes up when we try to edit a published test
-        this.getProceedButton().click({ force: true });
-        cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
-      });
-    cy.wait(5000);
-  };
+        this.getProceedButton().click({ force: true })
+        cy.wait('@testdrafted').then((xhr) =>
+          assert(xhr.status === 200, 'Test drafted')
+        )
+      })
+    cy.wait(5000)
+  }
 
   duplicateTestInReview = () => {
-    cy.server();
-    cy.route("POST", "**/test/**").as("duplicateTest");
-    this.getDuplicateButtonInReview()
-      .should("be.visible")
-      .click();
-    cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
-  };
+    cy.server()
+    cy.route('POST', '**/test/**').as('duplicateTest')
+    this.getDuplicateButtonInReview().should('be.visible').click()
+    cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
+  }
 
   // *** ACTIONS END ***
 
@@ -400,308 +417,303 @@ export default class TestLibrary {
   verifyVersionedURL = (oldTestId, newTestId) =>
     // URL changes after ~4 sec after API response, could not watch this event, hence wait
     cy.wait(5000).then(() =>
-      cy.url().then(newUrl => {
-        expect(newUrl).to.include(`/${newTestId}/old/${oldTestId}`);
+      cy.url().then((newUrl) => {
+        expect(newUrl).to.include(`/${newTestId}/old/${oldTestId}`)
       })
-    );
+    )
 
-  saveTestId = xhr => {
-    assert(xhr.status === 200, "saving test");
-    const testId = xhr.response.body.result._id;
-    console.log("test created with _id : ", testId);
-    cy.saveTestDetailToDelete(testId);
-  };
+  saveTestId = (xhr) => {
+    assert(xhr.status === 200, 'saving test')
+    const testId = xhr.response.body.result._id
+    console.log('test created with _id : ', testId)
+    cy.saveTestDetailToDelete(testId)
+  }
 
-  assertTestPublishedNoEdit = oldTestId => {
+  assertTestPublishedNoEdit = (oldTestId) => {
     // Test_id should change after editing test
-    this.getAssignEdit().should("contain", "ASSIGN");
-    this.clickOnDetailsOfCard();
-    this.getEditButton().should("not.exist");
-    this.duplicateTestInReview();
-    cy.wait(3000);
-    this.verifyAbsenceOfIdInUrl(oldTestId);
-  };
+    this.getAssignEdit().should('contain', 'ASSIGN')
+    this.clickOnDetailsOfCard()
+    this.getEditButton().should('not.exist')
+    this.duplicateTestInReview()
+    cy.wait(3000)
+    this.verifyAbsenceOfIdInUrl(oldTestId)
+  }
 
-  verifyAbsenceOfIdInUrl = id => {
+  verifyAbsenceOfIdInUrl = (id) => {
     cy.url()
-      .then(url => url.split("/").reverse()[0])
-      .should("not.eq", id);
-  };
+      .then((url) => url.split('/').reverse()[0])
+      .should('not.eq', id)
+  }
 
-  assertTestPublishedEdit = testId => {
+  assertTestPublishedEdit = (testId) => {
     // Test_id should not change after editing test
-    this.getAssignEdit()
-      .should("contain", "ASSIGN")
-      .should("exist");
-    this.clickOnDetailsOfCard();
-    this.publishedToDraft();
+    this.getAssignEdit().should('contain', 'ASSIGN').should('exist')
+    this.clickOnDetailsOfCard()
+    this.publishedToDraft()
     cy.url()
-      .then(url => url.split("/").reverse()[0])
-      .should("be.eq", testId);
-    this.header.clickOnPublishButton();
+      .then((url) => url.split('/').reverse()[0])
+      .should('be.eq', testId)
+    this.header.clickOnPublishButton()
     cy.url()
-      .then(url => url.split("/").reverse()[1])
-      .should("be.eq", testId);
-  };
+      .then((url) => url.split('/').reverse()[1])
+      .should('be.eq', testId)
+  }
 
-  assertTestDraftNoEdit = () => this.getAssignEdit().should("not.be.exist");
+  assertTestDraftNoEdit = () => this.getAssignEdit().should('not.be.exist')
 
-  assertTestDraftEdit = testId => {
-    this.getAssignEdit()
-      .should("contain", "EDIT")
-      .click({ force: true });
-    cy.wait("@assignment");
+  assertTestDraftEdit = (testId) => {
+    this.getAssignEdit().should('contain', 'EDIT').click({ force: true })
+    cy.wait('@assignment')
     cy.url()
-      .then(url => url.split("/").reverse()[0])
-      .should("be.eq", testId);
-  };
+      .then((url) => url.split('/').reverse()[0])
+      .should('be.eq', testId)
+  }
 
-  checkforNonExistanceOfTest = testId => cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
+  checkforNonExistanceOfTest = (testId) =>
+    cy.get('body').should('not.have.descendants', `[data-cy="${testId}"]`)
 
   // *** APPHELPERS END ***
 
   removeShare = () => {
-    this.getSchoolRadio();
-    cy.server();
-    cy.route("DELETE", "**/content-sharing/**").as("removeshare");
+    this.getSchoolRadio()
+    cy.server()
+    cy.route('DELETE', '**/content-sharing/**').as('removeshare')
     cy.wait(1).then(() => {
       if (Cypress.$('[data-cy="share-button-close"]').length) {
-        cy.get('[data-cy="share-button-close"]').each(shareClose => {
-          cy.wrap(shareClose).click({ force: true });
-          cy.wait("@removeshare");
-        });
+        cy.get('[data-cy="share-button-close"]').each((shareClose) => {
+          cy.wrap(shareClose).click({ force: true })
+          cy.wait('@removeshare')
+        })
       }
-    });
-  };
+    })
+  }
 
-  editsharing = () => cy.contains("span", "Edit").click({ force: true });
+  editsharing = () => cy.contains('span', 'Edit').click({ force: true })
 
   sharingDisabled = () => {
-    this.getSchoolRadio().should("not.be.enabled");
-    this.getDistrictRadio().should("not.be.enabled");
-    this.getPublicRadio().should("not.be.enabled");
-  };
+    this.getSchoolRadio().should('not.be.enabled')
+    this.getDistrictRadio().should('not.be.enabled')
+    this.getPublicRadio().should('not.be.enabled')
+  }
 
   sharingEnabled = () => {
-    this.getSchoolRadio().should("be.enabled");
-    this.getDistrictRadio().should("be.enabled");
-    this.getPublicRadio().should("be.enabled");
-  };
+    this.getSchoolRadio().should('be.enabled')
+    this.getDistrictRadio().should('be.enabled')
+    this.getPublicRadio().should('be.enabled')
+  }
 
-  sharingEnabledPublic = () => this.getPublicRadio().should("be.enabled");
+  sharingEnabledPublic = () => this.getPublicRadio().should('be.enabled')
 
   closeSharing = () => {
-    cy.get(".ant-modal-close-x").click({ force: true });
-  };
+    cy.get('.ant-modal-close-x').click({ force: true })
+  }
 
-  getSchoolRadio = () => cy.get('[value="SCHOOL"]');
+  getSchoolRadio = () => cy.get('[value="SCHOOL"]')
 
-  getDistrictRadio = () => cy.get('[value="DISTRICT"]');
+  getDistrictRadio = () => cy.get('[value="DISTRICT"]')
 
-  getPublicRadio = () => cy.get('[value="PUBLIC"]');
+  getPublicRadio = () => cy.get('[value="PUBLIC"]')
 
-  assertUrl = testId => {
+  assertUrl = (testId) => {
     cy.url()
-      .then(url => url.split("/").reverse()[1])
-      .should("be.eq", testId);
-  };
+      .then((url) => url.split('/').reverse()[1])
+      .should('be.eq', testId)
+  }
 
   publishedToDraftAssigned = () => {
-    cy.server();
-    cy.route("PUT", "**/test/**").as("newVersion");
-    cy.route("GET", "**/api/test/**").as("testdrafted");
+    cy.server()
+    cy.route('PUT', '**/test/**').as('newVersion')
+    cy.route('GET', '**/api/test/**').as('testdrafted')
     this.getEditButton()
-      .should("exist")
+      .should('exist')
       .click()
       .then(() => {
         // pop up that comes up when we try to edit a published test
-        this.getProceedButton().click({ force: true });
-        cy.wait("@newVersion").then(() => {
-          cy.wait("@testdrafted").then(xhr => {
-            assert(xhr.status === 200, "Test versioned");
-          });
-        });
-      });
+        this.getProceedButton().click({ force: true })
+        cy.wait('@newVersion').then(() => {
+          cy.wait('@testdrafted').then((xhr) => {
+            assert(xhr.status === 200, 'Test versioned')
+          })
+        })
+      })
     return cy
       .url()
-      .should("contain", "/old/")
+      .should('contain', '/old/')
       .then(() => cy.get('[data-cy-item-index="0"]'))
       .then(() => {
-        this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id));
-      });
-  };
+        this.getVersionedTestID().then((id) => cy.saveTestDetailToDelete(id))
+      })
+  }
 
-  createNewTestAndFillDetails = testData => {
-    const { grade, name, subject, collections, tags, description } = testData;
-    this.sidebar.clickOnTestLibrary();
-    this.clickOnAuthorTest();
-    this.testSummary.setName(name);
-    if (description) this.testSummary.setDescription(description);
+  createNewTestAndFillDetails = (testData) => {
+    const { grade, name, subject, collections, tags, description } = testData
+    this.sidebar.clickOnTestLibrary()
+    this.clickOnAuthorTest()
+    this.testSummary.setName(name)
+    if (description) this.testSummary.setDescription(description)
     if (grade) {
-      this.testSummary.clearGrades();
-      if (Array.isArray(grade)) grade.forEach(gra => this.testSummary.selectGrade(gra));
-      else this.testSummary.selectGrade(grade);
+      this.testSummary.clearGrades()
+      if (Array.isArray(grade))
+        grade.forEach((gra) => this.testSummary.selectGrade(gra))
+      else this.testSummary.selectGrade(grade)
     }
     if (subject) {
-      this.testSummary.clearSubjects();
-      if (Array.isArray(subject)) subject.forEach(sub => this.testSummary.selectSubject(sub));
-      else this.testSummary.selectSubject(subject);
+      this.testSummary.clearSubjects()
+      if (Array.isArray(subject))
+        subject.forEach((sub) => this.testSummary.selectSubject(sub))
+      else this.testSummary.selectSubject(subject)
     }
-    if (collections) this.testSummary.selectCollection(collections);
+    if (collections) this.testSummary.selectCollection(collections)
 
-    if (tags) this.testSummary.addTags(tags);
-  };
+    if (tags) this.testSummary.addTags(tags)
+  }
 
-  seachTestAndGotoReviewById = id => {
-    this.searchAndClickTestCardById(id);
-    this.clickOnDetailsOfCard();
-  };
+  seachTestAndGotoReviewById = (id) => {
+    this.searchAndClickTestCardById(id)
+    this.clickOnDetailsOfCard()
+  }
 
-  searchAndClickTestCardById = id => {
-    this.sidebar.clickOnTestLibrary();
-    this.searchFilters.clearAll();
-    this.searchFilters.getAuthoredByMe();
-    this.clickOnTestCardById(id);
-  };
+  searchAndClickTestCardById = (id) => {
+    this.sidebar.clickOnTestLibrary()
+    this.searchFilters.clearAll()
+    this.searchFilters.getAuthoredByMe()
+    this.clickOnTestCardById(id)
+  }
 
-  visitTestById = id => {
-    cy.server();
-    cy.route("GET", "**/test/*/regrade-assignments").as("load-test-review");
-    cy.visit(`/author/tests/tab/review/id/${id}`);
-    cy.wait("@load-test-review", { timeout: 120000 }); // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
-  };
+  visitTestById = (id) => {
+    cy.server()
+    cy.route('GET', '**/test/*/regrade-assignments').as('load-test-review')
+    cy.visit(`/author/tests/tab/review/id/${id}`)
+    cy.wait('@load-test-review', { timeout: 120000 }) // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
+  }
 
-  searchByCollection = collection => {
-    this.sidebar.clickOnTestLibrary();
-    this.searchFilters.clearAll();
-    this.searchFilters.setCollection(collection);
-  };
+  searchByCollection = (collection) => {
+    this.sidebar.clickOnTestLibrary()
+    this.searchFilters.clearAll()
+    this.searchFilters.setCollection(collection)
+  }
 
   verifyLayoutByViewById = (id, isListView = false) => {
-    this.getAuthorNameByTestId(id);
-    if (!isListView) this.getPreviewByTestId(id).should("not.exist");
-    else this.getPreviewByTestId(id).should("exist");
-  };
+    this.getAuthorNameByTestId(id)
+    if (!isListView) this.getPreviewByTestId(id).should('not.exist')
+    else this.getPreviewByTestId(id).should('exist')
+  }
 
-  verifyTestIdOnTestCardById = id => this.getTestIdOnCardByTestId(id).should("contain", this.getShortId(id));
+  verifyTestIdOnTestCardById = (id) =>
+    this.getTestIdOnCardByTestId(id).should('contain', this.getShortId(id))
 
-  verifyAuthorNameOnTestCardById = (id, author) => this.getAuthorNameByTestId(id).should("contain", author);
+  verifyAuthorNameOnTestCardById = (id, author) =>
+    this.getAuthorNameByTestId(id).should('contain', author)
 
-  verifyCollectionOnTestCardbyId = (id, collection) => this.getCollectionByTestId(id).should("contain", collection);
+  verifyCollectionOnTestCardbyId = (id, collection) =>
+    this.getCollectionByTestId(id).should('contain', collection)
 
-  verifyTotalItemCountByTestId = (id, count) => this.getTotalItemCountBtTestId(id).should("contain", count);
+  verifyTotalItemCountByTestId = (id, count) =>
+    this.getTotalItemCountBtTestId(id).should('contain', count)
 
-  verifyStatusOnTestCardById = (id, status) => this.getTestStatusByTestId(id).should("contain", status);
+  verifyStatusOnTestCardById = (id, status) =>
+    this.getTestStatusByTestId(id).should('contain', status)
 
-  verifyNameOnTestCardById = (id, name) => this.getTestNameOnTestCardById(id).should("have.text", name);
+  verifyNameOnTestCardById = (id, name) =>
+    this.getTestNameOnTestCardById(id).should('have.text', name)
 
-  verifyDescriptionOnTestCardById = (id, desc) => this.getDescriptionOnTestCardById(id).should("have.text", desc);
+  verifyDescriptionOnTestCardById = (id, desc) =>
+    this.getDescriptionOnTestCardById(id).should('have.text', desc)
 
   verifyStandardsOnTestCardById = (id, standards, listview = false) => {
-    this.getStandardsByTestId(id).then($ele => {
-      if ($ele.find(".hidden-tags").length > 0)
+    this.getStandardsByTestId(id).then(($ele) => {
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find(".hidden-tags")
+          .find('.hidden-tags')
           .last()
-          .trigger(`${listview ? "click" : "mouseover"}`)
-          .then(() => cy.wait(500));
-    });
-    standards.forEach(sta =>
-      this.getStandardsByTestId(id)
-        .find("span")
-        .contains(sta)
-    );
-  };
+          .trigger(`${listview ? 'click' : 'mouseover'}`)
+          .then(() => cy.wait(500))
+    })
+    standards.forEach((sta) =>
+      this.getStandardsByTestId(id).find('span').contains(sta)
+    )
+  }
 
   verifyTagsOnTestCardById = (id, tags) => {
-    this.getStandardsByTestId(id).then($ele => {
-      if ($ele.find(".hidden-tags").length > 0)
+    this.getStandardsByTestId(id).then(($ele) => {
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find(".hidden-tags")
+          .find('.hidden-tags')
           .first()
           .click({ force: true })
-          .then(() => cy.wait(500));
-    });
-    tags.forEach(sta =>
-      this.getStandardsByTestId(id)
-        .find("span")
-        .contains(sta)
-    );
-  };
+          .then(() => cy.wait(500))
+    })
+    tags.forEach((sta) =>
+      this.getStandardsByTestId(id).find('span').contains(sta)
+    )
+  }
 
-  verifyGradesOnTestCardPopUp = grades => {
-    this.getGradesOnTestCardPopUp().then($ele => {
-      if ($ele.find(".hidden-tags").length > 0)
+  verifyGradesOnTestCardPopUp = (grades) => {
+    this.getGradesOnTestCardPopUp().then(($ele) => {
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find(".hidden-tags")
+          .find('.hidden-tags')
           .click({ force: true })
-          .then(() => cy.wait(500));
-    });
-    grades.forEach(grade => {
-      this.getGradesOnTestCardPopUp()
-        .find("span")
-        .contains(grade);
-    });
-  };
+          .then(() => cy.wait(500))
+    })
+    grades.forEach((grade) => {
+      this.getGradesOnTestCardPopUp().find('span').contains(grade)
+    })
+  }
 
-  verifySubjectsOnTestCardPopUp = subjects =>
-    this.getTestSubjectsOnTestCardPopUp().then($ele => {
-      if ($ele.find(".hidden-tags").length > 0)
+  verifySubjectsOnTestCardPopUp = (subjects) =>
+    this.getTestSubjectsOnTestCardPopUp().then(($ele) => {
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find(".hidden-tags")
+          .find('.hidden-tags')
           .click({ force: true })
-          .then(() => cy.wait(500));
+          .then(() => cy.wait(500))
 
-      subjects.forEach(sub => {
-        this.getTestSubjectsOnTestCardPopUp()
-          .find("span")
-          .contains(sub);
-      });
-    });
+      subjects.forEach((sub) => {
+        this.getTestSubjectsOnTestCardPopUp().find('span').contains(sub)
+      })
+    })
 
-  verifyTagsOnTestCardPopUp = tags =>
-    this.getTestTagsOnTestCardPopUp().then($ele => {
-      if ($ele.find(".hidden-tags").length > 0)
+  verifyTagsOnTestCardPopUp = (tags) =>
+    this.getTestTagsOnTestCardPopUp().then(($ele) => {
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find(".hidden-tags")
+          .find('.hidden-tags')
           .click({ force: true })
-          .then(() => cy.wait(500));
+          .then(() => cy.wait(500))
 
-      tags.forEach(tag => {
-        this.getTestSubjectsOnTestCardPopUp()
-          .find("span")
-          .contains(tag);
-      });
-    });
+      tags.forEach((tag) => {
+        this.getTestSubjectsOnTestCardPopUp().find('span').contains(tag)
+      })
+    })
 
-  verifyTestNameOnTestCardPopUp = name => this.getTestNameOnTestCardPopUp().should("contain", name);
+  verifyTestNameOnTestCardPopUp = (name) =>
+    this.getTestNameOnTestCardPopUp().should('contain', name)
 
-  verifyDescriptionOnTestCardPopUp = desc => this.getDescriptionOnTestCardPopUp().should("contain", desc);
+  verifyDescriptionOnTestCardPopUp = (desc) =>
+    this.getDescriptionOnTestCardPopUp().should('contain', desc)
 
-  verifyTestCollectionOnTestCardPopUp = collection =>
-    this.getTestCollectionOnTestCardPopUp().should("have.text", collection);
+  verifyTestCollectionOnTestCardPopUp = (collection) =>
+    this.getTestCollectionOnTestCardPopUp().should('have.text', collection)
 
-  verifyTotalItemsOnTestCardPopUp = count =>
-    this.getTestTotalItemsOnTestCardPopUp().should("have.text", `${count}Items`);
+  verifyTotalItemsOnTestCardPopUp = (count) =>
+    this.getTestTotalItemsOnTestCardPopUp().should('have.text', `${count}Items`)
 
-  verifyTotalPointsOnTestCardPopUp = points =>
-    this.getTestTotalPointsOnTestCardPopUp().should("have.text", `${points}Points`);
+  verifyTotalPointsOnTestCardPopUp = (points) =>
+    this.getTestTotalPointsOnTestCardPopUp().should(
+      'have.text',
+      `${points}Points`
+    )
 
   verifyStandardTableRowByStandard = (standard, questCount, points) => {
     this.getStandardRowByStandardOnTestCardPopUp(standard)
       .children()
-      .then($ele => {
-        cy.wrap($ele)
-          .eq(0)
-          .should("have.text", standard);
+      .then(($ele) => {
+        cy.wrap($ele).eq(0).should('have.text', standard)
 
-        cy.wrap($ele)
-          .eq(1)
-          .should("have.text", `${questCount}`);
+        cy.wrap($ele).eq(1).should('have.text', `${questCount}`)
 
-        cy.wrap($ele)
-          .eq(2)
-          .should("have.text", `${points}`);
-      });
-  };
+        cy.wrap($ele).eq(2).should('have.text', `${points}`)
+      })
+  }
 }

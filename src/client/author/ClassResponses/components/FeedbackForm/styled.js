@@ -1,6 +1,7 @@
-import styled from "styled-components";
-import { Card, Button, Input } from "antd";
-const { TextArea } = Input;
+import styled from 'styled-components'
+import { Card, Button, Input } from 'antd'
+
+const { TextArea } = Input
 
 export const StyledCardTwo = styled(Card)`
   border-radius: 10px;
@@ -8,7 +9,7 @@ export const StyledCardTwo = styled(Card)`
   display: inline-block;
   margin: 0px 0 auto 0px
   min-width: 250px;
-`;
+`
 
 export const StyledDivSec = styled.div`
   height: 50px;
@@ -16,7 +17,7 @@ export const StyledDivSec = styled.div`
   margin: auto;
   display: flex;
   justify-content: center;
-`;
+`
 
 export const ScoreInput = styled(Input)`
   width: 130px;
@@ -26,21 +27,21 @@ export const ScoreInput = styled(Input)`
   font-size: 1.8em;
   font-weight: bold;
   display: inline-block;
-`;
+`
 
 export const TextPara = styled.p`
   margin-left: 10px;
   font-size: 1.8em;
   font-weight: bold;
   display: inline-block;
-`;
+`
 
 export const LeaveDiv = styled.div`
   margin: 30px 0px 20px 0px;
   font-weight: bold;
   color: #545b6b;
   font-size: 0.9em;
-`;
+`
 
 export const FeedbackInput = styled(TextArea)`
   width: 100%;
@@ -48,7 +49,7 @@ export const FeedbackInput = styled(TextArea)`
   border: 1px solid #eaeaea;
   border-radius: 5px;
   display: inline-block;
-`;
+`
 
 export const SolutionButton = styled(Button)`
   font-size: 1em;
@@ -63,4 +64,4 @@ export const SolutionButton = styled(Button)`
     color: #fff;
     background-color: #00b0ff;
   }
-`;
+`

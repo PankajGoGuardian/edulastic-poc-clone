@@ -1,34 +1,34 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Modal } from "antd";
+import React, { Component } from 'react'
+import { Form, Input, Row, Col, Button, Modal } from 'antd'
 
-import { ModalFormItem } from "./styled";
+import { ModalFormItem } from './styled'
 
 class EditStudentModal extends React.Component {
   onSaveStudent = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        const { studentData, saveStudent, userOrgId: districtId } = this.props;
+        const { studentData, saveStudent, userOrgId: districtId } = this.props
         saveStudent({
           userId: studentData._id,
           data: Object.assign(row, {
-            districtId
-          })
-        });
-        this.onCloseModal();
+            districtId,
+          }),
+        })
+        this.onCloseModal()
       }
-    });
-  };
+    })
+  }
 
   onCloseModal = () => {
-    this.props.closeModal();
-  };
+    this.props.closeModal()
+  }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator } = this.props.form
     const {
       modalVisible,
-      studentData: { _source }
-    } = this.props;
+      studentData: { _source },
+    } = this.props
     return (
       <Modal
         visible={modalVisible}
@@ -43,33 +43,33 @@ class EditStudentModal extends React.Component {
           </Button>,
           <Button type="primary" key="submit" onClick={this.onSaveStudent}>
             Yes, Update >
-          </Button>
+          </Button>,
         ]}
       >
         <Row>
           <Col span={12}>
             <ModalFormItem label="First Name">
-              {getFieldDecorator("firstName", {
+              {getFieldDecorator('firstName', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input First Name"
-                  }
+                    message: 'Please input First Name',
+                  },
                 ],
-                initialValue: _source.firstName
+                initialValue: _source.firstName,
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
           <Col span={12}>
             <ModalFormItem label="Last Name">
-              {getFieldDecorator("lastName", {
+              {getFieldDecorator('lastName', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Last Name"
-                  }
+                    message: 'Please input Last Name',
+                  },
                 ],
-                initialValue: _source.lastName
+                initialValue: _source.lastName,
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -77,26 +77,26 @@ class EditStudentModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Email">
-              {getFieldDecorator("email", {
+              {getFieldDecorator('email', {
                 rules: [
                   {
                     required: true,
-                    message: "Please input E-mail"
+                    message: 'Please input E-mail',
                   },
                   {
-                    type: "email",
-                    message: "The input is not valid E-mail"
-                  }
+                    type: 'email',
+                    message: 'The input is not valid E-mail',
+                  },
                 ],
-                initialValue: _source.email
+                initialValue: _source.email,
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>
         </Row>
       </Modal>
-    );
+    )
   }
 }
 
-const EditStudentModalForm = Form.create()(EditStudentModal);
-export default EditStudentModalForm;
+const EditStudentModalForm = Form.create()(EditStudentModal)
+export default EditStudentModalForm

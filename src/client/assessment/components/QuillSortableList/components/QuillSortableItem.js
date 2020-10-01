@@ -1,14 +1,14 @@
-import React, { memo } from "react";
-import { SortableElement } from "react-sortable-hoc";
-import PropTypes from "prop-types";
+import React, { memo } from 'react'
+import { SortableElement } from 'react-sortable-hoc'
+import PropTypes from 'prop-types'
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer } from '@edulastic/common'
 
-import { SortableItemContainer } from "../styled/SortableItemContainer";
-import { Label } from "../styled/Label";
-import { IconTrash } from "../styled/IconTrash";
-import DragHandle from "./DragHandle";
-import QuestionTextArea from "../../QuestionTextArea";
+import { SortableItemContainer } from '../styled/SortableItemContainer'
+import { Label } from '../styled/Label'
+import { IconTrash } from '../styled/IconTrash'
+import DragHandle from './DragHandle'
+import QuestionTextArea from '../../QuestionTextArea'
 
 // TODO: rOnly is in use?
 const QuillSortableItem = SortableElement(
@@ -27,9 +27,13 @@ const QuillSortableItem = SortableElement(
     canDelete,
     placeholder,
     centerContent,
-    imageDefaultWidth
+    imageDefaultWidth,
   }) => (
-    <SortableItemContainer styleType={styleType} fontSize={fontSize} columns={columns}>
+    <SortableItemContainer
+      styleType={styleType}
+      fontSize={fontSize}
+      columns={columns}
+    >
       {label && <Label>{label}</Label>}
       <FlexContainer flex={1} data-cy="quillSortableItem" alignItems="center">
         <div className="main">
@@ -48,12 +52,16 @@ const QuillSortableItem = SortableElement(
           />
         </div>
         {canDelete && onRemove && (
-          <IconTrash data-cypress="deleteButton" data-cy={`delete${indx}`} onClick={onRemove} />
+          <IconTrash
+            data-cypress="deleteButton"
+            data-cy={`delete${indx}`}
+            onClick={onRemove}
+          />
         )}
       </FlexContainer>
     </SortableItemContainer>
   )
-);
+)
 
 QuillSortableItem.propTypes = {
   t: PropTypes.func,
@@ -64,16 +72,16 @@ QuillSortableItem.propTypes = {
   rOnly: PropTypes.bool,
   firstFocus: PropTypes.bool,
   style: PropTypes.object,
-  imageDefaultWidth: PropTypes.number
-};
+  imageDefaultWidth: PropTypes.number,
+}
 
 QuillSortableItem.defaultProps = {
-  toolbarId: "quill-sortable-item",
+  toolbarId: 'quill-sortable-item',
   rOnly: false,
   firstFocus: false,
-  styleType: "button",
+  styleType: 'button',
   style: {},
-  imageDefaultWidth: 300
-};
+  imageDefaultWidth: 300,
+}
 
-export default memo(QuillSortableItem);
+export default memo(QuillSortableItem)

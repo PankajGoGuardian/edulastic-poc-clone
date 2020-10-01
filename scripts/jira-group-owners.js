@@ -11,30 +11,31 @@
  *
  */
 
-(async () => {
-  $(".issuerow")
+;(async () => {
+  $('.issuerow')
     .map(() => {
       const url = `snapwiz.atlassian.net${$(this)
-        .find("[data-issue-key]")
-        .attr("href")}`;
-      const assignee = $(this)
-        .find("[data-user]")
-        .html();
-      return `${url}|${assignee}`;
+        .find('[data-issue-key]')
+        .attr('href')}`
+      const assignee = $(this).find('[data-user]').html()
+      return `${url}|${assignee}`
     })
     .toArray()
     .reduce((agg, curr, i, arr) => {
-      if (typeof curr !== "string") alert("No");
-      const split = curr.split("|");
-      agg[split[1]] = agg[split[1]] || [];
-      agg[split[1]].push(split[0]);
+      if (typeof curr !== 'string') alert('No')
+      const split = curr.split('|')
+      agg[split[1]] = agg[split[1]] || []
+      agg[split[1]].push(split[0])
 
       if (i === arr.length - 1) {
-        return Object.keys(agg).reduce((_agg, key) => `${_agg}\n\n${key}\n${(agg[key] || []).join("\n")}`, "");
+        return Object.keys(agg).reduce(
+          (_agg, key) => `${_agg}\n\n${key}\n${(agg[key] || []).join('\n')}`,
+          ''
+        )
       }
-      return agg;
-    }, {});
-  console.log("==========================");
-  console.log("YaY! Ran successfully. 🏃‍♂️🤓");
-  console.log("==========================");
-})(window.copy, true);
+      return agg
+    }, {})
+  console.log('==========================')
+  console.log('YaY! Ran successfully. 🏃‍♂️🤓')
+  console.log('==========================')
+})(window.copy, true)

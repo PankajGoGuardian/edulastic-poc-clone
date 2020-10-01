@@ -1,38 +1,35 @@
-import React from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import React from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
-import { getUserRole } from "../../../../../author/src/selectors/user";
-import { toggleScratchpadVisbilityAction } from "../../duck";
-import { TogglerWrapper } from "../styled";
+import { getUserRole } from '../../../../../author/src/selectors/user'
+import { toggleScratchpadVisbilityAction } from '../../duck'
+import { TogglerWrapper } from '../styled'
 
 function Toggler({ userRole, hideData, toggleVisibility }) {
-  const isTeacher = userRole === "teacher";
-  const state = hideData ? "show" : "hide";
+  const isTeacher = userRole === 'teacher'
+  const state = hideData ? 'show' : 'hide'
 
   return (
     <TogglerWrapper onClick={toggleVisibility} isTeacher={isTeacher}>
       {state} student work
     </TogglerWrapper>
-  );
+  )
 }
 
 Toggler.propTypes = {
   userRole: PropTypes.string.isRequired,
   hideData: PropTypes.bool.isRequired,
-  toggleVisibility: PropTypes.func.isRequired
-};
+  toggleVisibility: PropTypes.func.isRequired,
+}
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   userRole: getUserRole(state),
-  hideData: state?.scratchpad?.hideData
-});
+  hideData: state?.scratchpad?.hideData,
+})
 
 const mapDispatchToProps = {
-  toggleVisibility: toggleScratchpadVisbilityAction
-};
+  toggleVisibility: toggleScratchpadVisbilityAction,
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Toggler);
+export default connect(mapStateToProps, mapDispatchToProps)(Toggler)

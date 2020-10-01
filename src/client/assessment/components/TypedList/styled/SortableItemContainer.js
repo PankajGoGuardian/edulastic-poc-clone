@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const SortableItemContainer = styled.div`
-  width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
+  width: ${(props) =>
+    props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2}%;
   min-height: 40px;
   margin: 0 0 17px 0;
   display: inline-flex;
@@ -19,8 +20,8 @@ export const SortableItemContainer = styled.div`
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   }
   & div.main i.fa-align-justify {
-    color: ${props => props.theme.typedList.dragIconColor};
-    font-size: ${props => props.theme.typedList.dragIconFontSize};
+    color: ${(props) => props.theme.typedList.dragIconColor};
+    font-size: ${(props) => props.theme.typedList.dragIconFontSize};
     padding: 12px 15px;
   }
-`;
+`

@@ -1,12 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { getStemNumeration } from "../../utils/helpers";
-import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
-import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
-import { AnswerBox } from "./AnswerBox";
+import { getStemNumeration } from '../../utils/helpers'
+import { StyledCorrectAnswerbox } from './styled/StyledCorrectAnswerbox'
+import { CorrectAnswerTitle } from './styled/CorrectAnswerTitle'
+import { AnswerBox } from './AnswerBox'
 
 const CorrectAnswerBoxLayout = ({
   hasGroupResponses,
@@ -18,43 +18,47 @@ const CorrectAnswerBoxLayout = ({
   btnStyle,
   stemNumeration,
   centerText,
-  t
+  t,
 }) => {
-  let results;
+  let results
 
   if (hasGroupResponses) {
-    results = {};
-    userAnswers.forEach(userAnswer => {
+    results = {}
+    userAnswers.forEach((userAnswer) => {
       if (results[userAnswer.group] === undefined) {
-        results[userAnswer.group] = [];
+        results[userAnswer.group] = []
       }
-      results[userAnswer.group].push(userAnswer.data);
-    });
+      results[userAnswer.group].push(userAnswer.data)
+    })
   } else {
-    results = userAnswers;
+    results = userAnswers
   }
 
-  const getLabel = value => {
+  const getLabel = (value) => {
     if (hasGroupResponses) {
-      const Group = groupResponses.find(group => group.options.find(option => option.value === value));
+      const Group = groupResponses.find((group) =>
+        group.options.find((option) => option.value === value)
+      )
       if (Group) {
-        const Item = Group.options.find(option => option.value === value);
+        const Item = Group.options.find((option) => option.value === value)
         if (Item) {
-          return Item.label;
+          return Item.label
         }
       }
     } else {
-      const Item = groupResponses.find(option => option.value === value);
+      const Item = groupResponses.find((option) => option.value === value)
       if (Item) {
-        return Item.label;
+        return Item.label
       }
     }
-  };
+  }
 
   return (
     <StyledCorrectAnswerbox fontSize={fontSize}>
       <CorrectAnswerTitle>
-        {altAnsIndex ? `${t("component.cloze.altAnswers")} ${altAnsIndex}` : t("component.cloze.correctAnswer")}
+        {altAnsIndex
+          ? `${t('component.cloze.altAnswers')} ${altAnsIndex}`
+          : t('component.cloze.correctAnswer')}
       </CorrectAnswerTitle>
       <div>
         {hasGroupResponses &&
@@ -62,8 +66,14 @@ const CorrectAnswerBoxLayout = ({
             <div key={index}>
               <h3>{groupResponses[key] && groupResponses[key].title}</h3>
               {results[key].map((value, responseIndex) => {
-                const numeration = getStemNumeration(stemNumeration, responseIndex);
-                const label = Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value;
+                const numeration = getStemNumeration(
+                  stemNumeration,
+                  responseIndex
+                )
+                const label =
+                  Array.isArray(groupResponses) && !cleanValue
+                    ? getLabel(value)
+                    : value
                 return (
                   <AnswerBox
                     key={numeration}
@@ -73,16 +83,20 @@ const CorrectAnswerBoxLayout = ({
                     label={label}
                     centerText={centerText}
                   />
-                );
+                )
               })}
             </div>
           ))}
 
         {!hasGroupResponses &&
           results.map((result, index) => {
-            const numeration = getStemNumeration(stemNumeration, index);
+            const numeration = getStemNumeration(stemNumeration, index)
             const label =
-              Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result;
+              Array.isArray(groupResponses) &&
+              groupResponses.length > 0 &&
+              !cleanValue
+                ? getLabel(result)
+                : result
             return (
               <AnswerBox
                 btnStyle={btnStyle}
@@ -91,12 +105,12 @@ const CorrectAnswerBoxLayout = ({
                 label={label}
                 centerText={centerText}
               />
-            );
+            )
           })}
       </div>
     </StyledCorrectAnswerbox>
-  );
-};
+  )
+}
 
 CorrectAnswerBoxLayout.propTypes = {
   hasGroupResponses: PropTypes.bool,
@@ -108,19 +122,19 @@ CorrectAnswerBoxLayout.propTypes = {
   btnStyle: PropTypes.object,
   altAnsIndex: PropTypes.number,
   stemNumeration: PropTypes.string,
-  centerText: PropTypes.bool
-};
+  centerText: PropTypes.bool,
+}
 
 CorrectAnswerBoxLayout.defaultProps = {
   hasGroupResponses: false,
   groupResponses: [],
-  fontSize: "13px",
+  fontSize: '13px',
   userAnswers: [],
   cleanValue: false,
   altAnsIndex: 0,
-  stemNumeration: "numerical",
+  stemNumeration: 'numerical',
   btnStyle: {},
-  centerText: false
-};
+  centerText: false,
+}
 
-export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));
+export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout))

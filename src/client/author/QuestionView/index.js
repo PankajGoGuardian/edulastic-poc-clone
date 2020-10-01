@@ -1,70 +1,108 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { produce } from "immer";
-import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
-import { head, get, isEmpty, round, sumBy } from "lodash";
-import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { scrollTo, AnswerContext, Legends, LegendContainer, LCBScrollContext } from "@edulastic/common";
-import { testActivityStatus } from "@edulastic/constants";
-import { getAvatarName } from "../ClassBoard/Transformer";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import PropTypes from 'prop-types'
+import { produce } from 'immer'
+import {
+  Bar,
+  ComposedChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Line,
+} from 'recharts'
+import { head, get, isEmpty, round, sumBy } from 'lodash'
+import {
+  dropZoneTitleColor,
+  greyGraphstroke,
+  incorrect,
+  yellow1,
+  white,
+  themeColor,
+} from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
+import {
+  scrollTo,
+  AnswerContext,
+  Legends,
+  LegendContainer,
+  LCBScrollContext,
+} from '@edulastic/common'
+import { testActivityStatus } from '@edulastic/constants'
+import { getAvatarName } from '../ClassBoard/Transformer'
 
-import { StyledFlexContainer, StyledCard, TooltipContainer } from "./styled";
-import StudentResponse from "./component/studentResponses/studentResponse";
-import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
+import { StyledFlexContainer, StyledCard, TooltipContainer } from './styled'
+import StudentResponse from './component/studentResponses/studentResponse'
+import ClassQuestions from '../ClassResponses/components/Container/ClassQuestions'
 
 // actions
-import { receiveAnswersAction } from "../src/actions/classBoard";
+import { receiveAnswersAction } from '../src/actions/classBoard'
 // selectors
-import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelector } from "../ClassBoard/ducks";
+import {
+  getAssignmentClassIdSelector,
+  getClassQuestionSelector,
+  getQLabelsSelector,
+} from '../ClassBoard/ducks'
 
 /**
  * @param {string} studentId
  */
 const _scrollTo = (studentId, el) => {
-  scrollTo(document.querySelector(`.student-question-container-id-${studentId}`), 160, el);
-};
+  scrollTo(
+    document.querySelector(`.student-question-container-id-${studentId}`),
+    160,
+    el
+  )
+}
 
-const green = "#5eb500";
+const green = '#5eb500'
 
 const CustomTooltip = ({ payload }) => {
-  const firstItem = head(payload) || {};
-  const timeSpent = get(firstItem, "payload.avgTimeSpent");
-  const fullName = get(firstItem, "payload.name");
-  const score = get(firstItem, "payload.score");
+  const firstItem = head(payload) || {}
+  const timeSpent = get(firstItem, 'payload.avgTimeSpent')
+  const fullName = get(firstItem, 'payload.name')
+  const score = get(firstItem, 'payload.score')
   return (
     <TooltipContainer title={fullName}>
       {`Time(seconds): ${timeSpent || 0}`} <br /> {`Score: ${score}`}
     </TooltipContainer>
-  );
-};
+  )
+}
 
 CustomTooltip.propTypes = {
-  payload: PropTypes.object
-};
+  payload: PropTypes.object,
+}
 
 CustomTooltip.defaultProps = {
-  payload: {}
-};
+  payload: {},
+}
 
 class QuestionViewContainer extends Component {
-  static contextType = LCBScrollContext;
+  static contextType = LCBScrollContext
 
   static getDerivedStateFromProps(nextProps, preState) {
-    const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = nextProps;
-    const { question: _question = {} } = preState || {};
+    const {
+      loadClassQuestionResponses,
+      assignmentIdClassId: { assignmentId, classId } = {},
+      question,
+    } = nextProps
+    const { question: _question = {} } = preState || {}
     if (question.id !== _question.id) {
-      loadClassQuestionResponses(assignmentId, classId, question.id, nextProps.itemId);
+      loadClassQuestionResponses(
+        assignmentId,
+        classId,
+        question.id,
+        nextProps.itemId
+      )
     }
     return {
       question,
-      loading: question.id !== _question.id
-    };
+      loading: question.id !== _question.id,
+    }
   }
 
-  isMobile = () => window.innerWidth < 480;
+  isMobile = () => window.innerWidth < 480
 
   // calcTimeSpent = (student = {}) => {
   //   const {
@@ -75,13 +113,13 @@ class QuestionViewContainer extends Component {
   // };
 
   calcTimeSpentAsSec = (activities = []) => {
-    const totalSpent = sumBy(activities, ({ timeSpent }) => timeSpent || 0);
-    return round(totalSpent / activities.length / 1000, 2);
-  };
+    const totalSpent = sumBy(activities, ({ timeSpent }) => timeSpent || 0)
+    return round(totalSpent / activities.length / 1000, 2)
+  }
 
-  onClickChart = data => {
-    _scrollTo(data.id, this.context.current);
-  };
+  onClickChart = (data) => {
+    _scrollTo(data.id, this.context.current)
+  }
 
   render() {
     const {
@@ -94,27 +132,32 @@ class QuestionViewContainer extends Component {
       isQuestionView = false,
       isPresentationMode,
       labels,
-      t
-    } = this.props;
-    const { loading } = this.state;
+      t,
+    } = this.props
+    const { loading } = this.state
 
-    let filteredItems = testItems?.filter(item => item.data.questions.some(q => q.id === question.id));
+    let filteredItems = testItems?.filter((item) =>
+      item.data.questions.some((q) => q.id === question.id)
+    )
 
-    filteredItems = produce(filteredItems, draft => {
-      draft?.forEach(item => {
-        if (item.itemLevelScoring) return;
-        item.data.questions = item.data.questions.filter(({ id }) => id === question.id);
-        item.rows = item.rows.map(row => ({
+    filteredItems = produce(filteredItems, (draft) => {
+      draft?.forEach((item) => {
+        if (item.itemLevelScoring) return
+        item.data.questions = item.data.questions.filter(
+          ({ id }) => id === question.id
+        )
+        item.rows = item.rows.map((row) => ({
           ...row,
           widgets: row.widgets.filter(
-            ({ reference, widgetType }) => reference === question.id || widgetType === "resource"
-          )
-        }));
-      });
-      return draft;
-    });
-    const isMobile = this.isMobile();
-    let data = [];
+            ({ reference, widgetType }) =>
+              reference === question.id || widgetType === 'resource'
+          ),
+        }))
+      })
+      return draft
+    })
+    const isMobile = this.isMobile()
+    let data = []
     // if (testActivity.length > 0) {
     //   testActivity.map(student => {
     //     if (student.status === "submitted") {
@@ -134,55 +177,59 @@ class QuestionViewContainer extends Component {
     if (!isEmpty(testActivity)) {
       data = testActivity
         .filter(
-          student =>
-            (student.status != "notStarted" || student.redirect) &&
-            student.status != "absent" &&
+          (student) =>
+            (student.status != 'notStarted' || student.redirect) &&
+            student.status != 'absent' &&
             student.UTASTATUS !== testActivityStatus.NOT_STARTED
         )
-        .map(st => {
-          const name = isPresentationMode ? st.fakeName : st.studentName || t("common.anonymous");
+        .map((st) => {
+          const name = isPresentationMode
+            ? st.fakeName
+            : st.studentName || t('common.anonymous')
           const stData = {
             name,
             id: st.studentId,
             avatarName: getAvatarName(name),
 
-            avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities.filter(x => x._id === question.id)),
+            avgTimeSpent: this.calcTimeSpentAsSec(
+              st.questionActivities.filter((x) => x._id === question.id)
+            ),
             attempts: st.questionActivities.length,
             correct: 0,
             wrong: 0,
             pCorrect: 0,
             skipped: 0,
             manuallyGraded: 0,
-            score: 0
-          };
+            score: 0,
+          }
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
             .forEach(({ skipped, graded, score, maxScore }) => {
               if (skipped) {
-                stData.skipped += 1;
+                stData.skipped += 1
               } else if (graded === false) {
-                stData.manuallyGraded += 1;
+                stData.manuallyGraded += 1
               } else if (score === maxScore && score > 0) {
-                stData.correct += 1;
+                stData.correct += 1
               } else if (score > 0 && score < maxScore) {
-                stData.pCorrect += 1;
+                stData.pCorrect += 1
               } else if (score === 0) {
-                stData.wrong += 1;
+                stData.wrong += 1
               }
-              stData.score = score;
+              stData.score = score
 
-              return null;
-            });
-          return stData;
-        });
+              return null
+            })
+          return stData
+        })
     }
 
     if (isMobile) {
-      data = data.slice(0, 2);
+      data = data.slice(0, 2)
     }
 
     return (
-      <React.Fragment>
+      <>
         <StyledFlexContainer>
           <StyledCard bordered={false}>
             <LegendContainer>
@@ -197,8 +244,8 @@ class QuestionViewContainer extends Component {
                   cursor="pointer"
                   dy={10}
                   onClick={({ index }) => {
-                    const { id } = data[index];
-                    _scrollTo(id, this.context.current);
+                    const { id } = data[index]
+                    _scrollTo(id, this.context.current)
                   }}
                 />
 
@@ -209,10 +256,10 @@ class QuestionViewContainer extends Component {
                   tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
                   label={{
-                    value: "Scoring points",
+                    value: 'Scoring points',
                     angle: -90,
                     fill: greyGraphstroke,
-                    dx: -10
+                    dx: -10,
                   }}
                   stroke={greyGraphstroke}
                 />
@@ -223,18 +270,18 @@ class QuestionViewContainer extends Component {
                   tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
                   label={{
-                    value: "AVG TIME (SECONDS)",
+                    value: 'AVG TIME (SECONDS)',
                     angle: -90,
                     fill: greyGraphstroke,
                     dx: 20,
-                    fontSize: "10px"
+                    fontSize: '10px',
                   }}
                   orientation="right"
                   stroke={greyGraphstroke}
                 />
                 <Bar
                   className="correct"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="correct"
                   fill={green}
@@ -242,7 +289,7 @@ class QuestionViewContainer extends Component {
                 />
                 <Bar
                   className="wrong"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="wrong"
                   fill={incorrect}
@@ -250,7 +297,7 @@ class QuestionViewContainer extends Component {
                 />
                 <Bar
                   className="pCorrect"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="pCorrect"
                   fill={yellow1}
@@ -258,7 +305,7 @@ class QuestionViewContainer extends Component {
                 />
                 <Bar
                   className="skipped"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="skipped"
                   fill={dropZoneTitleColor}
@@ -266,7 +313,7 @@ class QuestionViewContainer extends Component {
                 />
                 <Bar
                   className="manuallyGraded"
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="manuallyGraded"
                   fill="rgb(56, 150, 190)"
@@ -287,7 +334,7 @@ class QuestionViewContainer extends Component {
         </StyledFlexContainer>
         <StudentResponse
           testActivity={testActivity}
-          onClick={studentId => _scrollTo(studentId, this.context.current)}
+          onClick={(studentId) => _scrollTo(studentId, this.context.current)}
           isPresentationMode={isPresentationMode}
         />
         {testActivity &&
@@ -295,12 +342,14 @@ class QuestionViewContainer extends Component {
           testActivity.map((student, index) => {
             if (
               !student.testActivityId ||
-              student.status === "absent" ||
+              student.status === 'absent' ||
               student.UTASTATUS === testActivityStatus.NOT_STARTED
             ) {
-              return null;
+              return null
             }
-            const qActivities = classQuestion.filter(({ userId }) => userId === student.studentId);
+            const qActivities = classQuestion.filter(
+              ({ userId }) => userId === student.studentId
+            )
             return (
               <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                 <ClassQuestions
@@ -315,29 +364,29 @@ class QuestionViewContainer extends Component {
                   isLCBView
                 />
               </AnswerContext.Provider>
-            );
+            )
           })}
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("student"),
+  withNamespaces('student'),
   connect(
-    state => ({
+    (state) => ({
       classQuestion: getClassQuestionSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
-      labels: getQLabelsSelector(state)
+      labels: getQLabelsSelector(state),
     }),
     {
-      loadClassQuestionResponses: receiveAnswersAction
+      loadClassQuestionResponses: receiveAnswersAction,
     }
   )
-);
+)
 
-const QuestionViewContainerConnected = enhance(QuestionViewContainer);
-export default QuestionViewContainerConnected;
+const QuestionViewContainerConnected = enhance(QuestionViewContainer)
+export default QuestionViewContainerConnected
 
 QuestionViewContainer.propTypes = {
   classResponse: PropTypes.object.isRequired,
@@ -345,10 +394,10 @@ QuestionViewContainer.propTypes = {
   testActivity: PropTypes.array.isRequired,
   classQuestion: PropTypes.array,
   children: PropTypes.node,
-  qIndex: PropTypes.number
-};
+  qIndex: PropTypes.number,
+}
 QuestionViewContainer.defaultProps = {
   classQuestion: [],
   children: null,
-  qIndex: null
-};
+  qIndex: null,
+}

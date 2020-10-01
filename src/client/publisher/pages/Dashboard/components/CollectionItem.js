@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
+import React, { useEffect } from 'react'
+import styled from 'styled-components'
 
 import {
   publisherFont1,
@@ -8,31 +8,39 @@ import {
   publisherItemBankIcon,
   publisherTestsIcon,
   publisherPlaylistIcon,
-  publisherBorder1
-} from "@edulastic/colors";
-import { IconItemLibrary, IconTestBank, IconPlaylist, IconSettings } from "@edulastic/icons";
-import { StyledH4, ItemContent } from "./styled";
-import { DonutChartWithText } from "../../../../common/components/charts/DonutChartWithText";
+  publisherBorder1,
+} from '@edulastic/colors'
+import {
+  IconItemLibrary,
+  IconTestBank,
+  IconPlaylist,
+  IconSettings,
+} from '@edulastic/icons'
+import { StyledH4, ItemContent } from './styled'
+import { DonutChartWithText } from '../../../../common/components/charts/DonutChartWithText'
 
-const CollectionItem = props => {
-  const { className, data } = props;
+const CollectionItem = (props) => {
+  const { className, data } = props
   const defaultValue = {
     draft: 0,
     published: 0,
-    issues: 0
-  };
+    issues: 0,
+  }
 
   const {
     PlayLists: playlists = defaultValue,
     TestItems: itemBank = defaultValue,
-    Tests: tests = defaultValue
-  } = data.metrics;
+    Tests: tests = defaultValue,
+  } = data.metrics
 
   return (
     <div className={className}>
       <div className="item-heading-section">
         <StyledH4>{data.name}</StyledH4>
-        <IconSettings className="collection-item-icon" style={{ fill: publisherFont2 }} />
+        <IconSettings
+          className="collection-item-icon"
+          style={{ fill: publisherFont2 }}
+        />
       </div>
       <div className="item-content-section">
         <ItemContent className="item-content">
@@ -52,92 +60,101 @@ const CollectionItem = props => {
         </ItemContent>
         <ItemContent className="item-content">
           <div className="content-type-heading">
-            <IconItemLibrary className="collection-item-icon" style={{ fill: publisherItemBankIcon }} />
+            <IconItemLibrary
+              className="collection-item-icon"
+              style={{ fill: publisherItemBankIcon }}
+            />
             <p>Item Bank</p>
           </div>
           <div className="item-content-body">
             <div className="item-content-key-value">
-              <p>{"draft"}</p>
+              <p>draft</p>
               <StyledH4>{itemBank?.draft || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"published"}</p>
+              <p>published</p>
               <StyledH4>{itemBank?.published || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"issues"}</p>
+              <p>issues</p>
               <StyledH4>{itemBank?.issues || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"inreview"}</p>
+              <p>inreview</p>
               <StyledH4>{itemBank?.inreview || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"rejected"}</p>
+              <p>rejected</p>
               <StyledH4>{itemBank?.rejected || 0}</StyledH4>
             </div>
           </div>
         </ItemContent>
         <ItemContent className="item-content">
           <div className="content-type-heading">
-            <IconTestBank className="collection-item-icon" style={{ fill: publisherTestsIcon }} />
+            <IconTestBank
+              className="collection-item-icon"
+              style={{ fill: publisherTestsIcon }}
+            />
             <p>Tests</p>
           </div>
           <div className="item-content-body">
             <div className="item-content-key-value">
-              <p>{"draft"}</p>
+              <p>draft</p>
               <StyledH4>{tests?.draft || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"published"}</p>
+              <p>published</p>
               <StyledH4>{tests?.published || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"issues"}</p>
+              <p>issues</p>
               <StyledH4>{tests?.issues || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"inreview"}</p>
+              <p>inreview</p>
               <StyledH4>{tests?.inreview || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"rejected"}</p>
+              <p>rejected</p>
               <StyledH4>{tests?.rejected || 0}</StyledH4>
             </div>
           </div>
         </ItemContent>
         <ItemContent className="item-content">
           <div className="content-type-heading">
-            <IconPlaylist className="collection-item-icon" style={{ fill: publisherPlaylistIcon }} />
+            <IconPlaylist
+              className="collection-item-icon"
+              style={{ fill: publisherPlaylistIcon }}
+            />
             <p>Playlists</p>
           </div>
           <div className="item-content-body">
             <div className="item-content-key-value">
-              <p>{"draft"}</p>
+              <p>draft</p>
               <StyledH4>{playlists?.draft || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"published"}</p>
+              <p>published</p>
               <StyledH4>{playlists?.published || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"issues"}</p>
+              <p>issues</p>
               <StyledH4>{playlists?.issues || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"inreview"}</p>
+              <p>inreview</p>
               <StyledH4>{playlists?.inreview || 0}</StyledH4>
             </div>
             <div className="item-content-key-value">
-              <p>{"rejected"}</p>
+              <p>rejected</p>
               <StyledH4>{playlists?.rejected || 0}</StyledH4>
             </div>
           </div>
         </ItemContent>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const StyledCollectionItem = styled(CollectionItem)`
   background-color: ${publisherCollectionBg};
@@ -202,6 +219,6 @@ const StyledCollectionItem = styled(CollectionItem)`
       }
     }
   }
-`;
+`
 
-export { StyledCollectionItem as CollectionItem };
+export { StyledCollectionItem as CollectionItem }

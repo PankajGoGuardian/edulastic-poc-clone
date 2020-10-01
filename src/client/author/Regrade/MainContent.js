@@ -1,32 +1,38 @@
-import React from "react";
-import { Radio, Row } from "antd";
-import { Container, InputsWrapper, OptionTitle } from "./styled";
-import AssignmentsTable from "./Table";
+import React from 'react'
+import { Radio, Row } from 'antd'
+import { Container, InputsWrapper, OptionTitle } from './styled'
+import AssignmentsTable from './Table'
 
-const Group = Radio.Group;
+const Group = Radio.Group
 const ACTIONS = {
-  SKIP: "SKIP",
-  SCORE: "SCORE",
-  MANUAL: "MANUAL",
-  DISCARD: "DISCARD"
-};
+  SKIP: 'SKIP',
+  SCORE: 'SCORE',
+  MANUAL: 'MANUAL',
+  DISCARD: 'DISCARD',
+}
 
 const MainContent = ({ regradeSettings, onUpdateSettings }) => {
-  const { editedQuestion, addedQuestion, testSettings } = regradeSettings.options;
+  const {
+    editedQuestion,
+    addedQuestion,
+    testSettings,
+  } = regradeSettings.options
   return (
     <Container>
-      <h2>Following assignments will be updated and re-scored if applicable.</h2>
+      <h2>
+        Following assignments will be updated and re-scored if applicable.
+      </h2>
       <AssignmentsTable />
       <InputsWrapper>
         <Row>
           <OptionTitle>Added Items</OptionTitle>
         </Row>
         <Group
-          style={{ marginLeft: "20px" }}
+          style={{ marginLeft: '20px' }}
           defaultValue={addedQuestion}
-          onChange={e => onUpdateSettings("addedQuestion", e.target.value)}
+          onChange={(e) => onUpdateSettings('addedQuestion', e.target.value)}
         >
-          <Row key={"addedQuestion"}>
+          <Row key="addedQuestion">
             <Radio data-cy="no-points" value={ACTIONS.SKIP}>
               Give ZERO Points
             </Radio>
@@ -44,11 +50,11 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
           <OptionTitle>Edit Items</OptionTitle>
         </Row>
         <Group
-          style={{ marginLeft: "20px" }}
+          style={{ marginLeft: '20px' }}
           defaultValue={editedQuestion}
-          onChange={e => onUpdateSettings("editedQuestion", e.target.value)}
+          onChange={(e) => onUpdateSettings('editedQuestion', e.target.value)}
         >
-          <Row key={"editedQuestion"}>
+          <Row key="editedQuestion">
             <Radio data-cy="skip-grading" value={ACTIONS.SKIP}>
               Skip rescoring
             </Radio>
@@ -67,15 +73,15 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
         </Row>
         <Row>
           <Group
-            style={{ marginLeft: "20px" }}
+            style={{ marginLeft: '20px' }}
             defaultValue={testSettings}
-            onChange={e => onUpdateSettings("testSettings", e.target.value)}
+            onChange={(e) => onUpdateSettings('testSettings', e.target.value)}
           >
             <Row>
-              <Radio data-cy="choose-all" value={"ALL"}>
+              <Radio data-cy="choose-all" value="ALL">
                 Choose all assignments
               </Radio>
-              <Radio data-cy="exclude-overidden" value={"EXCLUDE"}>
+              <Radio data-cy="exclude-overidden" value="EXCLUDE">
                 Exclude assignments where overridden
               </Radio>
             </Row>
@@ -84,11 +90,13 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
       </InputsWrapper>
       <InputsWrapper>
         <Row>
-          <OptionTitle>Removed items will be discard from assignment</OptionTitle>
+          <OptionTitle>
+            Removed items will be discard from assignment
+          </OptionTitle>
         </Row>
       </InputsWrapper>
     </Container>
-  );
-};
+  )
+}
 
-export default MainContent;
+export default MainContent

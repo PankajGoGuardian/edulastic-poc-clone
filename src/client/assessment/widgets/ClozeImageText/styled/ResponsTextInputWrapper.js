@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { greyDarken, white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { greyDarken, white } from '@edulastic/colors'
 
 export const ResponsTextInputWrapper = styled.div.attrs({
-  className: "imagelabelDropDown-droppable iseditablearialabel"
+  className: 'imagelabelDropDown-droppable iseditablearialabel',
 })`
   display: flex;
   align-items: center;
@@ -13,4 +13,4 @@ export const ResponsTextInputWrapper = styled.div.attrs({
     display: flex;
     align-items: center;
   }
-`;
+`

@@ -1,5 +1,5 @@
-import { scratchpad } from "../components/Scratchpad/duck";
+import { scratchpad } from '../components/Scratchpad/duck'
 
 export default {
-  scratchpad
-};
+  scratchpad,
+}

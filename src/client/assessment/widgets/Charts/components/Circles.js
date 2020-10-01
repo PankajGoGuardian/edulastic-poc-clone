@@ -1,16 +1,21 @@
-import React, { Fragment, useState } from "react";
-import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
-import { themeColor, red, green } from "@edulastic/colors";
-import { IconCheck, IconClose } from "@edulastic/icons";
+import React, { Fragment, useState } from 'react'
+import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
+import { themeColor, red, green } from '@edulastic/colors'
+import { IconCheck, IconClose } from '@edulastic/icons'
 
-import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
+import {
+  EDIT,
+  CLEAR,
+  CHECK,
+  SHOW,
+} from '../../../constants/constantsForQuestions'
 
-import { Bar, ActiveBar, Circle, StrokedRect } from "../styled";
-import { convertUnitToPx, getGridVariables } from "../helpers";
-import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
+import { Bar, ActiveBar, Circle, StrokedRect } from '../styled'
+import { convertUnitToPx, getGridVariables } from '../helpers'
+import { SHOW_ALWAYS, SHOW_BY_HOVER } from '../const'
 
-import AxisLabel from "./AxisLabel";
+import AxisLabel from './AxisLabel'
 
 const Circles = ({
   item,
@@ -23,53 +28,63 @@ const Circles = ({
   previewTab,
   evaluation,
   saveAnswer,
-  deleteMode
+  deleteMode,
 }) => {
-  const { height, margin, yAxisMin, yAxisMax, stepSize } = gridParams;
-  const { chart_data = {} } = item;
-  const { data = [] } = chart_data;
+  const { height, margin, yAxisMin, yAxisMax, stepSize } = gridParams
+  const { chart_data = {} } = item
+  const { data = [] } = chart_data
 
-  const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
+  const { yAxisStep, step } = getGridVariables(bars, gridParams, true)
 
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [showLabel, handleLabelVisibility] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [showLabel, handleLabelVisibility] = useState(null)
 
-  const handleMouseAction = value => () => {
+  const handleMouseAction = (value) => () => {
     if (activeIndex === null) {
-      onPointOver(value);
+      onPointOver(value)
     }
-  };
+  }
 
-  const getCenterX = index => step * index;
+  const getCenterX = (index) => step * index
 
-  const getCenterY = dot => convertUnitToPx(dot.y, { height, margin, yAxisMax, yAxisMin, stepSize }) + 20;
+  const getCenterY = (dot) =>
+    convertUnitToPx(dot.y, { height, margin, yAxisMax, yAxisMin, stepSize }) +
+    20
 
-  const renderValidationIcons = index => (
-    <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
+  const renderValidationIcons = (index) => (
+    <g
+      transform={`translate(${getCenterX(index) + step / 2 - 6},${
+        getCenterY(bars[index]) - 30
+      })`}
+    >
       {evaluation[index] && <IconCheck color={green} width={12} height={12} />}
       {!evaluation[index] && <IconClose color={red} width={12} height={12} />}
     </g>
-  );
+  )
 
-  const handleMouse = index => () => {
-    handleMouseAction(index)();
-    setHoveredIndex(index);
-    handleLabelVisibility(index);
-  };
+  const handleMouse = (index) => () => {
+    handleMouseAction(index)()
+    setHoveredIndex(index)
+    handleLabelVisibility(index)
+  }
 
-  const getBarHeight = y => Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams));
+  const getBarHeight = (y) =>
+    Math.abs(
+      convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams)
+    )
 
-  const isHovered = index => hoveredIndex === index || activeIndex === index;
+  const isHovered = (index) => hoveredIndex === index || activeIndex === index
 
-  const labelIsVisible = index =>
+  const labelIsVisible = (index) =>
     data[index] &&
     ((data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
-      (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
+      data[index].labelVisibility === SHOW_ALWAYS ||
+      !data[index].labelVisibility)
 
-  const isRenderIcons = !isEmpty(evaluation);
+  const isRenderIcons = !isEmpty(evaluation)
 
   return (
-    <Fragment>
+    <>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
           <rect
@@ -82,7 +97,9 @@ const Circles = ({
             width={step}
             height={height + margin}
           />
-          {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
+          {(previewTab === SHOW || previewTab === CHECK) &&
+            isRenderIcons &&
+            renderValidationIcons(index)}
           {Array.from({ length: dot.y }).map((a, ind) => (
             <Circle
               key={`circle-inner-${ind}`}
@@ -94,12 +111,12 @@ const Circles = ({
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => {
-              handleLabelVisibility(index);
-              setHoveredIndex(index);
+              handleLabelVisibility(index)
+              setHoveredIndex(index)
             }}
             onMouseLeave={() => {
-              handleLabelVisibility(null);
-              setHoveredIndex(null);
+              handleLabelVisibility(null)
+              setHoveredIndex(null)
             }}
             x={getCenterX(index)}
             y={getCenterY(dot)}
@@ -107,8 +124,9 @@ const Circles = ({
             height={getBarHeight(dot.y)}
             color="transparent"
           />
-          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
-            <Fragment>
+          {((view !== EDIT && !data[index].notInteractive) ||
+            view === EDIT) && (
+            <>
               <StrokedRect
                 hoverState={isHovered(index)}
                 x={getCenterX(index)}
@@ -124,25 +142,32 @@ const Circles = ({
                 y={getCenterY(dot) - 4}
                 width={step}
                 deleteMode={deleteMode}
-                color={dot.y === 0 ? themeColor : "transparent"}
+                color={dot.y === 0 ? themeColor : 'transparent'}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
               />
-            </Fragment>
+            </>
           )}
           <g
             onMouseEnter={() => handleLabelVisibility(index)}
             onMouseLeave={() => handleLabelVisibility(null)}
             // "height +2" added to hide the fourth line in x-axis label
-            transform={`translate(${getCenterX(index) + step / 2}, ${height + 2})`}
+            transform={`translate(${getCenterX(index) + step / 2}, ${
+              height + 2
+            })`}
           >
-            {labelIsVisible(index) && <AxisLabel fractionFormat={data[index].labelFractionFormat} value={dot.x} />}
+            {labelIsVisible(index) && (
+              <AxisLabel
+                fractionFormat={data[index].labelFractionFormat}
+                value={dot.x}
+              />
+            )}
           </g>
         </Fragment>
       ))}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 Circles.propTypes = {
   item: PropTypes.object.isRequired,
@@ -157,16 +182,16 @@ Circles.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
   }).isRequired,
   evaluation: PropTypes.object.isRequired,
   previewTab: PropTypes.string,
   saveAnswer: PropTypes.func,
-  deleteMode: PropTypes.bool
-};
+  deleteMode: PropTypes.bool,
+}
 Circles.defaultProps = {
   previewTab: CLEAR,
   saveAnswer: () => {},
-  deleteMode: false
-};
-export default Circles;
+  deleteMode: false,
+}
+export default Circles

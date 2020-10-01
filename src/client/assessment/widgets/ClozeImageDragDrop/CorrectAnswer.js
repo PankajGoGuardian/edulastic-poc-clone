@@ -1,9 +1,9 @@
-import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { ItemLevelContext } from "@edulastic/common";
-import Display from "./Display";
-import { EDIT } from "../../constants/constantsForQuestions";
+import { withNamespaces } from '@edulastic/localization'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { ItemLevelContext } from '@edulastic/common'
+import Display from './Display'
+import { EDIT } from '../../constants/constantsForQuestions'
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -24,23 +24,23 @@ class CorrectAnswer extends Component {
     imageWidth: PropTypes.number.isRequired,
     item: PropTypes.object,
     imageOptions: PropTypes.object,
-    imageHeight: PropTypes.number
-  };
+    imageHeight: PropTypes.number,
+  }
 
   static defaultProps = {
     imageOptions: {},
     item: {},
-    imageHeight: 490
-  };
+    imageHeight: 490,
+  }
 
-  static contextType = ItemLevelContext;
+  static contextType = ItemLevelContext
 
-  handleMultiSelect = answers => {
-    const { onUpdateValidationValue } = this.props;
+  handleMultiSelect = (answers) => {
+    const { onUpdateValidationValue } = this.props
     // replace the empty values in the value with null
-    answers = Array.from(answers, answer => answer || null);
-    onUpdateValidationValue(answers);
-  };
+    answers = Array.from(answers, (answer) => answer || null)
+    onUpdateValidationValue(answers)
+  }
 
   render() {
     const {
@@ -60,8 +60,8 @@ class CorrectAnswer extends Component {
       maxRespCount,
       imageOptions = {},
       item,
-      setQuestionData
-    } = this.props;
+      setQuestionData,
+    } = this.props
 
     return (
       <Display
@@ -89,8 +89,8 @@ class CorrectAnswer extends Component {
         setQuestionData={setQuestionData}
         getHeading={t}
       />
-    );
+    )
   }
 }
 
-export default withNamespaces("assessment")(CorrectAnswer);
+export default withNamespaces('assessment')(CorrectAnswer)

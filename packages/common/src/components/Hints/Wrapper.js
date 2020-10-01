@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export default styled.div`
   background: #eeeeef;
@@ -8,4 +8,4 @@ export default styled.div`
   .ant-tabs-bar {
     border-bottom: 1px solid #ccc;
   }
-`;
+`

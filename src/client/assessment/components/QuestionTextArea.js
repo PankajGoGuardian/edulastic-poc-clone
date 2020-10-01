@@ -1,6 +1,6 @@
-import React, { memo } from "react";
-import PropTypes from "prop-types";
-import { FroalaEditor } from "@edulastic/common";
+import React, { memo } from 'react'
+import PropTypes from 'prop-types'
+import { FroalaEditor } from '@edulastic/common'
 
 // TODO: decide what to do with first focus
 const QuestionTextArea = ({
@@ -16,7 +16,7 @@ const QuestionTextArea = ({
   imageDefaultWidth,
   fontSize,
   buttons,
-  allowQuickInsert
+  allowQuickInsert,
 }) => (
   <FroalaEditor
     placeholder={placeholder}
@@ -34,7 +34,7 @@ const QuestionTextArea = ({
     buttons={buttons}
     allowQuickInsert={allowQuickInsert}
   />
-);
+)
 
 QuestionTextArea.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -46,18 +46,18 @@ QuestionTextArea.propTypes = {
   readOnly: PropTypes.bool,
   border: PropTypes.string,
   imageDefaultWidth: PropTypes.number,
-  allowQuickInsert: PropTypes.bool
-};
+  allowQuickInsert: PropTypes.bool,
+}
 
 QuestionTextArea.defaultProps = {
-  toolbarSize: "STD",
-  toolbarId: "question-text-area",
+  toolbarSize: 'STD',
+  toolbarId: 'question-text-area',
   additionalToolbarOptions: [],
-  placeholder: "Enter a question",
+  placeholder: 'Enter a question',
   readOnly: false,
-  border: "none",
+  border: 'none',
   imageDefaultWidth: 300,
-  allowQuickInsert: true
-};
+  allowQuickInsert: true,
+}
 
-export default memo(QuestionTextArea);
+export default memo(QuestionTextArea)

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const ColorPickerContainer = styled.div`
   position: relative;
@@ -7,4 +7,4 @@ export const ColorPickerContainer = styled.div`
   width: 0;
   height: 0;
   z-index: 1000;
-`;
+`

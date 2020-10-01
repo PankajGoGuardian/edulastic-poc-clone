@@ -1,150 +1,150 @@
-import qs from "qs";
-import API from "./utils/API";
+import qs from 'qs'
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/auth";
+const api = new API()
+const prefix = '/auth'
 
-const login = data =>
+const login = (data) =>
   api
     .callApi({
       url: `${prefix}/login`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const signup = data =>
+const signup = (data) =>
   api
     .callApi({
       url: `${prefix}/signup`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const signupWithGoogle = () =>
   api.callApi({
     url: `${prefix}/login-google`,
-    method: "post"
-  });
+    method: 'post',
+  })
 
 const getGoogleAuth = () =>
   api.callApi({
     url: `${prefix}/googleLoginOAuth`,
-    method: "post"
-  });
+    method: 'post',
+  })
 
-const checkUserExist = data =>
+const checkUserExist = (data) =>
   api
     .callApi({
       url: `${prefix}/user/exist`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const googleLogin = params =>
+const googleLogin = (params) =>
   api
     .callApi({
       url: `${prefix}/login-google`,
-      method: "get",
-      params
+      method: 'get',
+      params,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const cleverLogin = () =>
   api
     .callApi({
       url: `${prefix}/login-clever`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const classlinkLogin = params =>
+const classlinkLogin = (params) =>
   api
     .callApi({
       url: `${prefix}/login-atlas`,
-      method: "get",
+      method: 'get',
       params,
-      paramsSerializer: _params => qs.stringify(_params)
+      paramsSerializer: (_params) => qs.stringify(_params),
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const msoLogin = () =>
   api
     .callApi({
       url: `${prefix}/login-mso`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const googleSSOLogin = data =>
+const googleSSOLogin = (data) =>
   api
     .callApi({
       url: `${prefix}/callback-sso/google`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const cleverSSOLogin = data =>
+const cleverSSOLogin = (data) =>
   api
     .callApi({
       url: `${prefix}/callback-sso/clever`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const classlinkSSOLogin = data =>
+const classlinkSSOLogin = (data) =>
   api
     .callApi({
       url: `${prefix}/callback-sso/atlas`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const msoSSOLogin = data =>
+const msoSSOLogin = (data) =>
   api
     .callApi({
       url: `${prefix}/callback-sso/mso`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const V1Redirect = id =>
+const V1Redirect = (id) =>
   api
     .callApi({
-      url: `${prefix}/fwd?id=${id}`
+      url: `${prefix}/fwd?id=${id}`,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
-const validateClassCode = params =>
+const validateClassCode = (params) =>
   api
     .callApi({
       url: `${prefix}/class-code/validate/`,
-      params
+      params,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getInvitedUserDetails = params =>
+const getInvitedUserDetails = (params) =>
   api
     .callApi({
       url: `${prefix}/invite-teacher`,
-      params
+      params,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const updateInvitedUserDetails = data =>
+const updateInvitedUserDetails = (data) =>
   api
     .callApi({
       url: `${prefix}/invite-teacher`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 export default {
   login,
@@ -163,5 +163,5 @@ export default {
   V1Redirect,
   validateClassCode,
   getInvitedUserDetails,
-  updateInvitedUserDetails
-};
+  updateInvitedUserDetails,
+}

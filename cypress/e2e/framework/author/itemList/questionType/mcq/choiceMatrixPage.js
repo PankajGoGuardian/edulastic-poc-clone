@@ -1,68 +1,73 @@
 /* eslint-disable class-methods-use-this */
-import Header from "../../itemDetail/header";
-import Helpers from "../../../../util/Helpers";
-import EditItemPage from "../../itemDetail/editPage";
-import { questionType, questionGroup } from "../../../../constants/questionTypes";
+import Header from '../../itemDetail/header'
+import Helpers from '../../../../util/Helpers'
+import EditItemPage from '../../itemDetail/editPage'
+import {
+  questionType,
+  questionGroup,
+} from '../../../../constants/questionTypes'
 
 class ChoiceMatrixStandardPage {
   constructor() {
-    this.header = new Header();
+    this.header = new Header()
 
     this.numerationOption = {
-      Numerical: "number",
-      "Uppercase alphabet": "upper-alpha",
-      "Lowercase alphabet": "lower-alpha"
-    };
+      Numerical: 'number',
+      'Uppercase alphabet': 'upper-alpha',
+      'Lowercase alphabet': 'lower-alpha',
+    }
 
     this.fontSizeOption = {
-      Small: "small",
-      Normal: "normal",
-      Large: "large",
-      "Extra Large": "xlarge",
-      Huge: "xxlarge"
-    };
+      Small: 'small',
+      Normal: 'normal',
+      Large: 'large',
+      'Extra Large': 'xlarge',
+      Huge: 'xxlarge',
+    }
 
     this.matrixOption = {
-      Inline: "inline",
-      Table: "table"
-    };
+      Inline: 'inline',
+      Table: 'table',
+    }
 
     this.stemNumerationOption = {
-      Numerical: "number",
-      "Uppercase alphabet": "upper-alpha",
-      "Lowercase alphabet": "lower-alpha"
-    };
+      Numerical: 'number',
+      'Uppercase alphabet': 'upper-alpha',
+      'Lowercase alphabet': 'lower-alpha',
+    }
 
-    this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
+    this.scoringTypeOption = {
+      'Exact match': 'exactMatch',
+      'Partial match': 'partialMatch',
+    }
 
-    this.roundingType = { "Round down": "roundDown", None: "none" };
+    this.roundingType = { 'Round down': 'roundDown', None: 'none' }
   }
 
   // question content
-  getQuestionEditor = () => cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]');
+  getQuestionEditor = () =>
+    cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]')
 
-  setQuestionEditorText = text =>
-    this.getQuestionEditor()
-      .clear({ force: true })
-      .type(text);
+  setQuestionEditorText = (text) =>
+    this.getQuestionEditor().clear({ force: true }).type(text)
 
   markAnswerInput = (index, element, target) => {
     cy.get('[data-cy="title"]').then(() => {
-      if (Cypress.$('[title="Choice matrix - labels"]').length === 1) element++;
+      if (Cypress.$('[title="Choice matrix - labels"]').length === 1) element++
 
-      cy.get("tbody > tr")
+      cy.get('tbody > tr')
         .eq(index)
-        .find("td")
+        .find('td')
         .eq(element)
         .find(target)
-        .click({ force: true });
-    });
-  };
+        .click({ force: true })
+    })
+  }
 
-  selectAnswerChoice = opt =>
+  selectAnswerChoice = (opt) =>
     opt.forEach((element, index) => {
-      this.markAnswerInput(index, element + 1, "input");
-    });
+      this.markAnswerInput(index, element + 1, 'input')
+    })
 
   // choices
   getChoiceByIndex(index) {
@@ -73,29 +78,29 @@ class ChoiceMatrixStandardPage {
       .find(".ql-editor");
  */
     return this.getallChoices()
-      .should("have.length.at.least", index + 1)
-      .eq(index);
+      .should('have.length.at.least', index + 1)
+      .eq(index)
   }
 
   deleteChoiceByIndex(index) {
-    const selector = `[data-cy=deletelist1${index}]`;
-    cy.get(selector).click();
-    return this;
+    const selector = `[data-cy=deletelist1${index}]`
+    cy.get(selector).click()
+    return this
   }
 
   getallChoices() {
     return cy
       .get('[data-cy="sortable-list-container"]')
       .first()
-      .find(".fr-element");
+      .find('.fr-element')
     // .find(".ql-editor");
   }
 
   addNewChoice() {
-    cy.get(":nth-child(2) > [data-cy=addButton]")
-      .should("be.visible")
-      .click({ force: true });
-    return this;
+    cy.get(':nth-child(2) > [data-cy=addButton]')
+      .should('be.visible')
+      .click({ force: true })
+    return this
   }
 
   // steams
@@ -106,450 +111,427 @@ class ChoiceMatrixStandardPage {
       .next()
       .find(".ql-editor"); */
     return this.getallSteam()
-      .should("have.length.at.least", index + 1)
-      .eq(index);
+      .should('have.length.at.least', index + 1)
+      .eq(index)
   }
 
   deleteSteamByIndex(index) {
-    const selector = `[data-cy=deletelist2${index}]`;
-    cy.get(selector).click();
-    return this;
+    const selector = `[data-cy=deletelist2${index}]`
+    cy.get(selector).click()
+    return this
   }
 
   getallSteam() {
     return cy
       .get('[data-cy="sortable-list-container"]')
       .eq(1)
-      .find(".fr-element");
+      .find('.fr-element')
     // .find(".ql-editor");
   }
 
   addNewSteam() {
-    cy.get(":nth-child(3) > [data-cy=addButton]")
-      .should("be.visible")
-      .click({ force: true });
-    return this;
+    cy.get(':nth-child(3) > [data-cy=addButton]')
+      .should('be.visible')
+      .click({ force: true })
+    return this
   }
 
   getMaxScore() {
-    return cy.get('[data-cy="maxscore"]').should("be.visible");
+    return cy.get('[data-cy="maxscore"]').should('be.visible')
   }
 
   selectScoringType(option) {
-    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
-    cy.get('[data-cy="scoringType"]').click({ force: true });
+    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`
+    cy.get('[data-cy="scoringType"]').click({ force: true })
 
-    cy.get(selectOp).click({ force: true });
+    cy.get(selectOp).click({ force: true })
 
     cy.get('[data-cy="scoringType"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   getPenalty() {
-    return cy.get('[data-cy="penalty"]');
+    return cy.get('[data-cy="penalty"]')
   }
 
   getMinScore() {
-    return cy.get('[data-cy="minscore"]').should("be.visible");
+    return cy.get('[data-cy="minscore"]').should('be.visible')
   }
 
   getEnableAutoScoring() {
-    return cy.contains("Enable auto scoring").should("be.visible");
+    return cy.contains('Enable auto scoring').should('be.visible')
   }
 
   getPoints() {
-    return cy.get('[data-cy="points"]');
+    return cy.get('[data-cy="points"]')
   }
 
   // correct ans
   getCorrectAnsTableRow() {
-    return cy
-      .get('[data-cy="matrixTable"]')
-      .children()
-      .get("tr.ant-table-row");
+    return cy.get('[data-cy="matrixTable"]').children().get('tr.ant-table-row')
   }
 
   addAlternate() {
-    cy.get("[data-cy='alternate']").click();
-    return this;
+    cy.get("[data-cy='alternate']").click()
+    return this
   }
 
   getAlternateTabs() {
-    return cy.get("[data-cy=tabs]").contains("span", "Alternate");
+    return cy.get('[data-cy=tabs]').contains('span', 'Alternate')
   }
 
   checkAlternateTabNotVisible() {
-    cy.contains("span", "Alternate").should("not.be.visible");
+    cy.contains('span', 'Alternate').should('not.be.visible')
   }
 
   deleteAlternate() {
     cy.get('[data-cy="del-alter"]')
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
     // switch back to correct ans tab
     /* cy.get("[data-cy=correct]")
       .should("be.visible")
       .click(); */
-    return this;
+    return this
   }
 
   getMultipleResponse() {
-    return cy.contains("Multiple responses").should("be.visible");
+    return cy.contains('Multiple responses').should('be.visible')
   }
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.get("body")
-      .contains("ADVANCED OPTIONS")
-      .click();
-    return this;
+    cy.get('body').contains('ADVANCED OPTIONS').click()
+    return this
   }
 
   selectMatrixStyle(option) {
-    const selectOp = `[data-cy="${this.matrixOption[option]}"]`;
+    const selectOp = `[data-cy="${this.matrixOption[option]}"]`
     cy.get('[data-cy="matrixStyle"]')
       // .should("be.visible")
       .click()
-      .as("matrixStyle");
+      .as('matrixStyle')
 
     cy.get(selectOp)
       .scrollIntoView()
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
-    cy.get("@matrixStyle")
+    cy.get('@matrixStyle')
       .scrollIntoView()
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   selectStemNumeration(option) {
-    const selectOp = `[data-cy="${this.stemNumerationOption[option]}"]`;
+    const selectOp = `[data-cy="${this.stemNumerationOption[option]}"]`
     cy.get('[data-cy="stemNum"]')
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
     cy.get(selectOp)
       // .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
 
     cy.get('[data-cy="stemNum"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   selectFontSize(option) {
-    const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;
-    cy.get('[data-cy="fontSizeSelect"]')
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`
+    cy.get('[data-cy="fontSizeSelect"]').should('be.visible').click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click({ force: true });
+    cy.get(selectOp).should('be.visible').click({ force: true })
 
     cy.get('[data-cy="fontSizeSelect"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   getLayout() {
-    return Helpers.getElement("layout").should("be.visble");
+    return Helpers.getElement('layout').should('be.visble')
   }
 
   getFontSizeSelect() {
-    return Helpers.getElement("fontSizeSelect");
+    return Helpers.getElement('fontSizeSelect')
   }
 
   getSmallFontSizeOption() {
-    return Helpers.getElement("small");
+    return Helpers.getElement('small')
   }
 
   getNormalFontSizeOption() {
-    return Helpers.getElement("normal");
+    return Helpers.getElement('normal')
   }
 
   getLargeFontSizeOption() {
-    return Helpers.getElement("large");
+    return Helpers.getElement('large')
   }
 
   getExtraLargeFontSizeOption() {
-    return Helpers.getElement("xlarge");
+    return Helpers.getElement('xlarge')
   }
 
   getHugeFontSizeOption() {
-    return Helpers.getElement("xxlarge");
+    return Helpers.getElement('xxlarge')
   }
 
   getMatrixTable() {
-    return Helpers.getElement("matrixTable")
-      .find("table")
-      .should("be.visible");
+    return Helpers.getElement('matrixTable').find('table').should('be.visible')
   }
 
   getStemNumerationSelect() {
-    return Helpers.getElement("stemNum");
+    return Helpers.getElement('stemNum')
   }
 
   checkFontSize(fontSize) {
-    this.header.preview();
-    this.getMatrixTable()
-      .should("have.css", "font-size")
-      .and("eq", fontSize);
+    this.header.preview()
+    this.getMatrixTable().should('have.css', 'font-size').and('eq', fontSize)
 
-    this.header.edit();
+    this.header.edit()
   }
 
   checkMatrixStyle(option) {
-    this.header.preview();
+    this.header.preview()
 
-    if (option === "Inline") {
+    if (option === 'Inline') {
       this.getMatrixTable()
-        .find("thead th div > span")
-        .each($el => {
-          cy.wrap($el).should("be.empty");
-        });
+        .find('thead th div > span')
+        .each(($el) => {
+          cy.wrap($el).should('be.empty')
+        })
     }
 
-    if (option === "Table") {
+    if (option === 'Table') {
       this.getMatrixTable()
-        .find("thead tr")
+        .find('thead tr')
         .eq(1)
-        .find("div")
-        .each($el => {
-          cy.wrap($el).should("not.be.empty");
-        });
+        .find('div')
+        .each(($el) => {
+          cy.wrap($el).should('not.be.empty')
+        })
     }
 
-    this.header.edit();
+    this.header.edit()
   }
 
   checkDividers(checked) {
-    this.header.preview();
+    this.header.preview()
 
     if (checked) {
       this.getMatrixTable()
-        .find("tbody td")
-        .each($el => {
-          cy.wrap($el)
-            .should("have.css", "border-top-width")
-            .and("eq", "1px");
+        .find('tbody td')
+        .each(($el) => {
+          cy.wrap($el).should('have.css', 'border-top-width').and('eq', '1px')
 
           cy.wrap($el)
-            .should("have.css", "border-bottom-width")
-            .and("eq", "1px");
-        });
+            .should('have.css', 'border-bottom-width')
+            .and('eq', '1px')
+        })
     } else {
       this.getMatrixTable()
-        .find("tbody tr")
-        .each($el => {
-          cy.wrap($el)
-            .should("have.css", "border-top-width")
-            .and("eq", "0px");
+        .find('tbody tr')
+        .each(($el) => {
+          cy.wrap($el).should('have.css', 'border-top-width').and('eq', '0px')
 
           cy.wrap($el)
-            .should("have.css", "border-bottom-width")
-            .and("eq", "0px");
-        });
+            .should('have.css', 'border-bottom-width')
+            .and('eq', '0px')
+        })
     }
 
-    this.header.edit();
+    this.header.edit()
   }
 
   checkStemNumeration(type) {
-    this.header.preview();
-    const upperLetters = ["A", "B", "C", "D"];
-    const lowerLetters = ["a", "b", "c", "d"];
+    this.header.preview()
+    const upperLetters = ['A', 'B', 'C', 'D']
+    const lowerLetters = ['a', 'b', 'c', 'd']
 
     // eslint-disable-next-line default-case
     switch (type) {
-      case "number":
+      case 'number':
         this.getMatrixTable()
-          .find("tbody tr td:first-child")
+          .find('tbody tr td:first-child')
           .each(($el, index) => {
-            cy.wrap($el).should("contain", `${index + 1}`);
-          });
-        break;
-      case "upper-alpha":
+            cy.wrap($el).should('contain', `${index + 1}`)
+          })
+        break
+      case 'upper-alpha':
         this.getMatrixTable()
-          .find("tbody tr td:first-child")
+          .find('tbody tr td:first-child')
           .each(($el, index) => {
-            cy.wrap($el).should("contain", upperLetters[index]);
-          });
-        break;
-      case "lower-alpha":
+            cy.wrap($el).should('contain', upperLetters[index])
+          })
+        break
+      case 'lower-alpha':
         this.getMatrixTable()
-          .find("tbody tr td:first-child")
+          .find('tbody tr td:first-child')
           .each(($el, index) => {
-            cy.wrap($el).should("contain", lowerLetters[index]);
-          });
-        break;
+            cy.wrap($el).should('contain', lowerLetters[index])
+          })
+        break
     }
 
-    this.header.edit();
+    this.header.edit()
   }
 
   getStemColumnTitle() {
-    return Helpers.getElement("stemColumnTitle")
+    return Helpers.getElement('stemColumnTitle')
       .next()
-      .find('[contenteditable="true"]');
+      .find('[contenteditable="true"]')
   }
 
   checkTableTitle(text) {
-    this.header.preview();
+    this.header.preview()
 
-    this.getMatrixTable()
-      .find("thead")
-      .should("contain", text);
+    this.getMatrixTable().find('thead').should('contain', text)
 
-    this.header.edit();
+    this.header.edit()
   }
 
   checkTableColumnWidth(columnIndex, width) {
-    this.header.preview();
+    this.header.preview()
 
     this.getMatrixTable()
-      .find("tbody tr")
+      .find('tbody tr')
       .eq(0)
-      .find("td")
+      .find('td')
       .eq(columnIndex)
-      .should("have.css", "width")
-      .and("eq", `${width}px`);
+      .should('have.css', 'width')
+      .and('eq', `${width}px`)
 
-    this.header.edit();
+    this.header.edit()
   }
 
   getOptionRowTitle() {
-    return Helpers.getElement("optionRowTitle")
+    return Helpers.getElement('optionRowTitle')
       .next()
-      .find('[contenteditable="true"]');
+      .find('[contenteditable="true"]')
   }
 
   getStemWidth() {
-    return Helpers.getElement("stemWidth");
+    return Helpers.getElement('stemWidth')
   }
 
   getOptionWidth() {
-    return Helpers.getElement("optionWidth");
+    return Helpers.getElement('optionWidth')
   }
 
   getDividersCheckbox() {
-    return Helpers.getElement("dividersCheckbox");
+    return Helpers.getElement('dividersCheckbox')
   }
 
   selectRoundingType(option) {
-    const selectOp = `[data-cy="${this.roundingType[option]}"]`;
-    cy.get('[data-cy="rounding"]')
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.roundingType[option]}"]`
+    cy.get('[data-cy="rounding"]').should('be.visible').click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).should('be.visible').click()
 
     cy.get('[data-cy="rounding"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
-  createQuestion(qShortKey, queKey = "default", queIndex = 0, onlyItem = true) {
-    const item = new EditItemPage();
-    item.createNewItem(onlyItem);
-    item.chooseQuestion(questionGroup.MCQ, questionType[`${qShortKey}`]);
-    cy.fixture("questionAuthoring").then(authoringData => {
-      const { quetext, choices, setAns, steams } = authoringData[qShortKey][queKey];
+  createQuestion(qShortKey, queKey = 'default', queIndex = 0, onlyItem = true) {
+    const item = new EditItemPage()
+    item.createNewItem(onlyItem)
+    item.chooseQuestion(questionGroup.MCQ, questionType[`${qShortKey}`])
+    cy.fixture('questionAuthoring').then((authoringData) => {
+      const { quetext, choices, setAns, steams } = authoringData[qShortKey][
+        queKey
+      ]
 
       if (quetext) {
-        const text = `Q${queIndex + 1} - ${quetext}`;
-        this.setQuestionEditorText(text);
+        const text = `Q${queIndex + 1} - ${quetext}`
+        this.setQuestionEditorText(text)
       }
 
       if (choices) {
-        const choicesCount = choices.length;
-        this.getallChoices().then(allChoices => {
-          const defaultChoiceCount = allChoices.length;
-          let choiceDiff = defaultChoiceCount - choicesCount;
+        const choicesCount = choices.length
+        this.getallChoices().then((allChoices) => {
+          const defaultChoiceCount = allChoices.length
+          let choiceDiff = defaultChoiceCount - choicesCount
           while (choiceDiff > 0) {
-            this.deleteChoiceByIndex(0);
-            choiceDiff -= 1;
+            this.deleteChoiceByIndex(0)
+            choiceDiff -= 1
           }
           while (choiceDiff < 0) {
-            this.addNewChoice();
-            choiceDiff += 1;
+            this.addNewChoice()
+            choiceDiff += 1
           }
           choices.forEach((choice, index) => {
             this.getChoiceByIndex(index)
               .clear({ force: true })
-              .type(choice, { force: true });
-          });
-        });
+              .type(choice, { force: true })
+          })
+        })
       }
 
       if (steams) {
-        const steamsCount = steams.length;
-        this.getallSteam().then(allSteams => {
-          const defaultSteamCount = allSteams.length;
-          let steamDiff = defaultSteamCount - steamsCount;
+        const steamsCount = steams.length
+        this.getallSteam().then((allSteams) => {
+          const defaultSteamCount = allSteams.length
+          let steamDiff = defaultSteamCount - steamsCount
           while (steamDiff > 0) {
-            this.deleteSteamByIndex(0);
-            steamDiff -= 1;
+            this.deleteSteamByIndex(0)
+            steamDiff -= 1
           }
           while (steamDiff < 0) {
-            this.addNewSteam();
-            steamDiff += 1;
+            this.addNewSteam()
+            steamDiff += 1
           }
           steams.forEach((steam, index) => {
             this.getSteamByIndex(index)
               .clear({ force: true })
-              .type(steam, { force: true });
-          });
-        });
+              .type(steam, { force: true })
+          })
+        })
       }
 
       if (setAns) {
-        const { correct, points, evaluation } = setAns;
-        this.getPoints()
-          .clear({ force: true })
-          .type(`{selectAll}${points}`);
+        const { correct, points, evaluation } = setAns
+        this.getPoints().clear({ force: true }).type(`{selectAll}${points}`)
 
-        Object.keys(correct).forEach(chKey => {
+        Object.keys(correct).forEach((chKey) => {
           this.getCorrectAnsTableRow()
             .contains(chKey)
-            .closest("tr")
-            .then(ele => {
+            .closest('tr')
+            .then((ele) => {
               cy.wrap(ele)
-                .find("input")
+                .find('input')
                 .eq(steams.indexOf(correct[chKey]))
-                .click();
-            });
-        });
+                .click()
+            })
+        })
 
-        this.clickOnAdvancedOptions();
+        this.clickOnAdvancedOptions()
         // set evaluation type
         if (evaluation) {
           // this.getEnableAutoScoring().click({ force: true });
           // CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
-          this.selectScoringType(evaluation);
+          this.selectScoringType(evaluation)
         }
 
         // this.header.save();
         /*  item.updateItemLevelScore(points);
         item.header.save(true); */
       }
-    });
+    })
   }
 }
 
-export default ChoiceMatrixStandardPage;
+export default ChoiceMatrixStandardPage

@@ -1,111 +1,134 @@
 /* eslint-disable array-callback-return */
-import React, { useState, useCallback } from "react";
-import { Button, Dropdown, Menu, Icon, Empty } from "antd";
-import styled from "styled-components";
-import { partial } from "lodash";
-import { fadedGrey, lightGreySecondary, themeColor, themeColorBlue } from "@edulastic/colors";
+import React, { useState, useCallback } from 'react'
+import { Button, Dropdown, Menu, Icon, Empty } from 'antd'
+import styled from 'styled-components'
+import { partial } from 'lodash'
+import {
+  fadedGrey,
+  lightGreySecondary,
+  themeColor,
+  themeColorBlue,
+} from '@edulastic/colors'
 
-import { useInternalEffect } from "../../hooks/useInternalEffect";
+import { useInternalEffect } from '../../hooks/useInternalEffect'
 
 const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
-  <Menu selectedKeys={[selected.key]} className={`${className}`} onClick={handleMenuClick}>
+  <Menu
+    selectedKeys={[selected.key]}
+    className={`${className}`}
+    onClick={handleMenuClick}
+  >
     <Menu.Item key="0" disabled>
       {data.length ? (
         prefix
       ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ textAlign: "left", margin: "10px 0" }} />
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          style={{ textAlign: 'left', margin: '10px 0' }}
+        />
       )}
     </Menu.Item>
-    {data.map(item => (
+    {data.map((item) => (
       <Menu.Item key={item.key} title={item.title}>
         {item.title}
       </Menu.Item>
     ))}
   </Menu>
-);
+)
 
 const ControlDropDown = ({
   className,
-  containerClassName = "",
-  prefix = "",
+  containerClassName = '',
+  prefix = '',
   showPrefixOnSelected = true,
   by,
   selectCB,
   data,
   comData,
-  trigger = ["click"],
+  trigger = ['click'],
   buttonWidth,
-  style
+  style,
 }) => {
-  const [selected, setSelected] = useState(by);
-  const [isActive, setActive] = useState(false);
+  const [selected, setSelected] = useState(by)
+  const [isActive, setActive] = useState(false)
 
   useInternalEffect(() => {
-    let item = null;
+    let item = null
     if (data.length) {
-      item = data.find(_item => {
+      item = data.find((_item) => {
         if (_item.key === selected.key) {
-          return true;
+          return true
         }
-      });
+      })
       if (!item) {
-        item = data[0];
+        item = data[0]
       }
     } else {
-      item = { key: "", title: "" };
+      item = { key: '', title: '' }
     }
 
-    setSelected(item);
-  }, [data]);
+    setSelected(item)
+  }, [data])
 
   useInternalEffect(() => {
-    let item = data.find(_item => {
-      if (typeof by === "string" && _item.key === by) {
-        return true;
+    let item = data.find((_item) => {
+      if (typeof by === 'string' && _item.key === by) {
+        return true
       }
-      if (typeof by === "object" && _item.key === by.key) {
-        return true;
+      if (typeof by === 'object' && _item.key === by.key) {
+        return true
       }
-    });
+    })
 
     if (!item && data.length) {
-      item = data[0];
+      item = data[0]
     } else if (!item && !data.length) {
-      item = { key: "", title: "" };
+      item = { key: '', title: '' }
     }
 
-    setSelected(item);
-  }, [by]);
+    setSelected(item)
+  }, [by])
 
   const handleMenuClick = useCallback(
-    event => {
-      const _selected = { key: event.key, title: event.item.props.title };
-      setActive(false);
-      setSelected(_selected);
+    (event) => {
+      const _selected = { key: event.key, title: event.item.props.title }
+      setActive(false)
+      setSelected(_selected)
       if (selectCB) {
-        selectCB(event, _selected, comData);
+        selectCB(event, _selected, comData)
       }
     },
     [selectCB]
-  );
+  )
 
-  const title = (selected && selected.title) || prefix;
+  const title = (selected && selected.title) || prefix
 
   return (
-    <StyledDiv className={`${containerClassName} control-dropdown`} buttonWidth={buttonWidth} style={style}>
+    <StyledDiv
+      className={`${containerClassName} control-dropdown`}
+      buttonWidth={buttonWidth}
+      style={style}
+    >
       <Dropdown
         onVisibleChange={setActive}
-        overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)}
+        overlay={partial(
+          CustomMenu,
+          className,
+          data,
+          handleMenuClick,
+          prefix,
+          selected
+        )}
         trigger={trigger}
       >
         <Button title={title}>
-          {(showPrefixOnSelected ? `${prefix} ` : "") + selected?.title}
-          <Icon type={isActive ? "up" : "down"} />
+          {(showPrefixOnSelected ? `${prefix} ` : '') + selected?.title}
+          <Icon type={isActive ? 'up' : 'down'} />
         </Button>
       </Dropdown>
     </StyledDiv>
-  );
-};
+  )
+}
 
 const StyledDiv = styled.div`
   button {
@@ -113,7 +136,7 @@ const StyledDiv = styled.div`
     justify-content: start;
     align-items: center;
     font-size: 11px;
-    width: ${({ buttonWidth }) => buttonWidth || "auto"};
+    width: ${({ buttonWidth }) => buttonWidth || 'auto'};
     &.ant-btn.ant-dropdown-trigger {
       background-color: ${lightGreySecondary};
       border-color: ${fadedGrey};
@@ -143,7 +166,7 @@ const StyledDiv = styled.div`
       overflow: hidden;
     }
   }
-`;
+`
 
 const StyledControlDropDown = styled(ControlDropDown)`
   max-height: 250px;
@@ -162,6 +185,6 @@ const StyledControlDropDown = styled(ControlDropDown)`
   .ant-dropdown-menu-submenu-title {
     font-size: 11px;
   }
-`;
+`
 
-export { StyledControlDropDown as ControlDropDown };
+export { StyledControlDropDown as ControlDropDown }

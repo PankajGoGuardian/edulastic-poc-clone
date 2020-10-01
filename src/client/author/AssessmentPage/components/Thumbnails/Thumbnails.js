@@ -1,12 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Dropdown, Menu } from "antd";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Dropdown, Menu } from 'antd'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
-import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList } from "./styled";
-import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
+import {
+  ThumbnailsWrapper,
+  ReuploadButtonWrapper,
+  ReuploadButton,
+  ThumbnailsList,
+} from './styled'
+import ThumbnailsItem from '../ThumbnailsItem/ThumbnailsItem'
 
-const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf) => (
+const menu = (
+  onReupload,
+  onAddBlank,
+  onDeleteBlank,
+  pdfPageLength = 1,
+  onAddPdf
+) => (
   <Menu>
     <Menu.Item onClick={onAddBlank}>Add Blank Page</Menu.Item>
     <Menu.Item disabled={pdfPageLength === 1} onClick={onDeleteBlank}>
@@ -15,7 +26,7 @@ const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf
     <Menu.Item onClick={onAddPdf}>Add Another PDF</Menu.Item>
     <Menu.Item onClick={onReupload}>Reupload PDF</Menu.Item>
   </Menu>
-);
+)
 
 const Thumbnails = ({
   list,
@@ -37,11 +48,16 @@ const Thumbnails = ({
   testMode,
   reportMode,
   currentPage,
-  noCheck
+  noCheck,
 }) => {
-  const onChangePage = page => () => onPageChange(page);
+  const onChangePage = (page) => () => onPageChange(page)
   return (
-    <ThumbnailsWrapper reportMode={reportMode} testMode={testMode} review={review} minimized={minimized}>
+    <ThumbnailsWrapper
+      reportMode={reportMode}
+      testMode={testMode}
+      review={review}
+      minimized={minimized}
+    >
       <PerfectScrollbar>
         <ThumbnailsList>
           {list.map((item, key) => (
@@ -51,7 +67,9 @@ const Thumbnails = ({
               index={key}
               disableDelete={list.length <= 1}
               page={item.pageNo}
-              hasAnnotations={annotations.some(annotation => annotation.page === item.pageNo + 1)}
+              hasAnnotations={annotations.some(
+                (annotation) => annotation.page === item.pageNo + 1
+              )}
               setDeleteConfirmation={setDeleteConfirmation}
               onClick={onChangePage(key)}
               onDelete={() => onDeletePage(key)}
@@ -59,7 +77,7 @@ const Thumbnails = ({
               onMoveDown={onMovePageDown(key)}
               onInsertBlankPage={onInsertBlankPage(key)}
               onRotate={onRotate(key)}
-              url={item.URL !== "blank" && item.URL}
+              url={item.URL !== 'blank' && item.URL}
               current={currentPage}
               total={list.length}
               rotate={item.rotate}
@@ -70,7 +88,13 @@ const Thumbnails = ({
           <ReuploadButtonWrapper noCheck={noCheck}>
             <Dropdown
               placement="topCenter"
-              overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length, onAddPdf)}
+              overlay={menu(
+                onReupload,
+                onAddBlankPage,
+                onDeleteSelectedBlankPage,
+                list.length,
+                onAddPdf
+              )}
             >
               <ReuploadButton>Manage document</ReuploadButton>
             </Dropdown>
@@ -78,8 +102,8 @@ const Thumbnails = ({
         )}
       </PerfectScrollbar>
     </ThumbnailsWrapper>
-  );
-};
+  )
+}
 
 Thumbnails.propTypes = {
   list: PropTypes.array.isRequired,
@@ -94,11 +118,11 @@ Thumbnails.propTypes = {
   onInsertBlankPage: PropTypes.func.isRequired,
   onRotate: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
-  review: PropTypes.bool
-};
+  review: PropTypes.bool,
+}
 
 Thumbnails.defaultProps = {
-  review: false
-};
+  review: false,
+}
 
-export default Thumbnails;
+export default Thumbnails

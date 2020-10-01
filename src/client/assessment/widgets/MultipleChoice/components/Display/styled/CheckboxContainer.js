@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CheckboxContainer = styled.div`
   position: absolute;
@@ -6,6 +6,6 @@ export const CheckboxContainer = styled.div`
     opacity: 0;
     display: none;
   }
-`;
+`
 
-CheckboxContainer.displayName = "MCQCheckboxContainer";
+CheckboxContainer.displayName = 'MCQCheckboxContainer'

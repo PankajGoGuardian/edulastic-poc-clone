@@ -1,5 +1,10 @@
-import styled from "styled-components";
-import { themeColor, largeDesktopWidth, extraDesktopWidthMax, tabletWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import {
+  themeColor,
+  largeDesktopWidth,
+  extraDesktopWidthMax,
+  tabletWidth,
+} from '@edulastic/colors'
 
 const Header = styled.div`
   width: 100%;
@@ -25,6 +30,6 @@ const Header = styled.div`
     flex-direction: column;
     height: auto;
   }
-`;
+`
 
-export default Header;
+export default Header

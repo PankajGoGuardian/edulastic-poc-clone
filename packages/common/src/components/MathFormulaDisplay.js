@@ -1,18 +1,18 @@
-import styled, { withTheme } from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
-import { fonts } from "@edulastic/constants";
+import styled, { withTheme } from 'styled-components'
+import { desktopWidth } from '@edulastic/colors'
+import { fonts } from '@edulastic/constants'
 
-import { withMathFormula } from "../HOC/withMathFormula";
+import { withMathFormula } from '../HOC/withMathFormula'
 
 const MathFormulaDisplay = withTheme(
   withMathFormula(styled.div.attrs({
-    className: "math-formula-display"
+    className: 'math-formula-display',
   })`
-    width: ${props => !props.centerContent && "100%"};
-    overflow-wrap: ${props => props.centerContent && "initial"};
-    font-size: ${props => props.fontSize || props.theme.fontSize};
+    width: ${(props) => !props.centerContent && '100%'};
+    overflow-wrap: ${(props) => props.centerContent && 'initial'};
+    font-size: ${(props) => props.fontSize || props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
-    padding-left: ${props => props.paddingLeft && "50px"};
+    padding-left: ${(props) => props.paddingLeft && '50px'};
 
     & * {
       display: inline;
@@ -22,11 +22,11 @@ const MathFormulaDisplay = withTheme(
       display: table;
     }
 
-    table thead{
+    table thead {
       display: table-header-group;
     }
 
-    table tbody{
+    table tbody {
       display: table-row-group;
     }
 
@@ -34,7 +34,8 @@ const MathFormulaDisplay = withTheme(
       display: table-row;
     }
 
-    table td,th {
+    table td,
+    th {
       display: table-cell;
     }
 
@@ -49,6 +50,6 @@ const MathFormulaDisplay = withTheme(
       font-size: ${fonts.previewFontSizeMobile};
     }
   `)
-);
+)
 
-export default MathFormulaDisplay;
+export default MathFormulaDisplay

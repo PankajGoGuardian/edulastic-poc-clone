@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { Tabs } from "antd";
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { Tabs } from 'antd'
 import {
   ManageSubscriptionByDistrict,
   ManageSubscriptionByUser,
   ManageSubscriptionBySchool,
-  ManageSubscriptionByUserSegments
-} from "../Upgrade/Tabs";
+  ManageSubscriptionByUserSegments,
+} from '../Upgrade/Tabs'
 import {
   getDistrictDataAction,
   getDistrictDataSelector,
@@ -24,10 +24,10 @@ import {
   manageSubscriptionsByUserSegments,
   getManageSubscriptionByUserSegmentsData,
   saveOrgPermissionsAction,
-  getSubscriptionAction
-} from "../Upgrade/ducks";
+  getSubscriptionAction,
+} from '../Upgrade/ducks'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 function UpgradeUser({
   getDistrictDataAction,
@@ -49,10 +49,10 @@ function UpgradeUser({
   addGradeSubjectRow,
   deleteGradeSubjectRow,
   saveOrgPermissions,
-  getSubscriptionAction
+  getSubscriptionAction,
 }) {
-  const [activeTab, setActiveTab] = useState("manageSubscriptionByDistrict");
-  const onChangeTab = tabKey => setActiveTab(tabKey);
+  const [activeTab, setActiveTab] = useState('manageSubscriptionByDistrict')
+  const onChangeTab = (tabKey) => setActiveTab(tabKey)
 
   return (
     <Tabs type="card" onChange={onChangeTab} activeKey={activeTab} animated>
@@ -84,7 +84,11 @@ function UpgradeUser({
           searchUsersByEmailIdAction={searchUsersByEmailIdAction}
         />
       </TabPane>
-      <TabPane tab="Manage by User Segments" key="manageSubscriptionByUserSegments" forceRender>
+      <TabPane
+        tab="Manage by User Segments"
+        key="manageSubscriptionByUserSegments"
+        forceRender
+      >
         <ManageSubscriptionByUserSegments
           getSubscriptionAction={getSubscriptionAction}
           manageUserSegmentsData={manageUserSegmentsData}
@@ -95,36 +99,39 @@ function UpgradeUser({
         />
       </TabPane>
     </Tabs>
-  );
+  )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   districtData: getDistrictDataSelector(state),
   manageUsersData: getUsersDataSelector(state),
   manageSchoolData: getManageSubscriptionBySchoolData(state),
-  manageUserSegmentsData: getManageSubscriptionByUserSegmentsData(state)
-});
+  manageUserSegmentsData: getManageSubscriptionByUserSegmentsData(state),
+})
 
-const withConnect = connect(
-  mapStateToProps,
-  {
-    getDistrictDataAction,
-    upgradeDistrictSubscriptionAction,
-    upgradeUserSubscriptionAction,
-    searchUsersByEmailIdAction,
-    selectDistrictAction: manageSubscriptionsBydistrict.actions.selectDistrict,
-    searchSchoolsByIdAction,
-    bulkSchoolsSubscribeAction,
-    setPartialPremiumDataAction: manageSubscriptionsByUserSegments.actions.setPartialPremiumData,
-    upgradePartialPremiumUserAction,
-    getSubscriptionAction,
-    updateCurrentEditableRow: manageSubscriptionsBySchool.actions.updateCurrentEditableRow,
-    setEditableRowFieldValues: manageSubscriptionsBySchool.actions.setEditableRowFieldValues,
-    setGradeSubjectValue: manageSubscriptionsByUserSegments.actions.setGradeSubjectValue,
-    addGradeSubjectRow: manageSubscriptionsByUserSegments.actions.addGradeSubjectRow,
-    deleteGradeSubjectRow: manageSubscriptionsByUserSegments.actions.deleteGradeSubjectRow,
-    saveOrgPermissions: saveOrgPermissionsAction
-  }
-);
+const withConnect = connect(mapStateToProps, {
+  getDistrictDataAction,
+  upgradeDistrictSubscriptionAction,
+  upgradeUserSubscriptionAction,
+  searchUsersByEmailIdAction,
+  selectDistrictAction: manageSubscriptionsBydistrict.actions.selectDistrict,
+  searchSchoolsByIdAction,
+  bulkSchoolsSubscribeAction,
+  setPartialPremiumDataAction:
+    manageSubscriptionsByUserSegments.actions.setPartialPremiumData,
+  upgradePartialPremiumUserAction,
+  getSubscriptionAction,
+  updateCurrentEditableRow:
+    manageSubscriptionsBySchool.actions.updateCurrentEditableRow,
+  setEditableRowFieldValues:
+    manageSubscriptionsBySchool.actions.setEditableRowFieldValues,
+  setGradeSubjectValue:
+    manageSubscriptionsByUserSegments.actions.setGradeSubjectValue,
+  addGradeSubjectRow:
+    manageSubscriptionsByUserSegments.actions.addGradeSubjectRow,
+  deleteGradeSubjectRow:
+    manageSubscriptionsByUserSegments.actions.deleteGradeSubjectRow,
+  saveOrgPermissions: saveOrgPermissionsAction,
+})
 
-export default compose(withConnect)(UpgradeUser);
+export default compose(withConnect)(UpgradeUser)

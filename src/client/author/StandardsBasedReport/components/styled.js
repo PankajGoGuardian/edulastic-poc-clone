@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Table, Card, Progress } from "antd";
+import styled from 'styled-components'
+import { Table, Card, Progress } from 'antd'
 
 import {
   white,
@@ -16,26 +16,26 @@ import {
   smallDesktopWidth,
   mobileWidth,
   mobileWidthMax,
-  extraDesktopWidth
-} from "@edulastic/colors";
-import { Link } from "react-router-dom";
-import { FlexContainer } from "@edulastic/common";
-import HeaderWrapper from "../../src/mainContent/headerWrapper";
+  extraDesktopWidth,
+} from '@edulastic/colors'
+import { Link } from 'react-router-dom'
+import { FlexContainer } from '@edulastic/common'
+import HeaderWrapper from '../../src/mainContent/headerWrapper'
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 20px;
-`;
+`
 
 export const MoblieFlexContainer = styled(FlexContainer)`
   width: 100%;
   display: flex;
   overflow: auto;
-  flex-wrap: ${({ flexWrap }) => (flexWrap ? "wrap" : "nowrap")};
-  justify-content: ${({ justify }) => justify || "flex-start"};
+  flex-wrap: ${({ flexWrap }) => (flexWrap ? 'wrap' : 'nowrap')};
+  justify-content: ${({ justify }) => justify || 'flex-start'};
   margin-bottom: 10px;
   margin-right: 0px;
-`;
+`
 
 export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
   justify-content: space-around;
@@ -50,11 +50,11 @@ export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
   img {
     transform: rotate(-270deg);
   }
-`;
+`
 
 export const StyledCard = styled(Card)`
   width: 100%;
-  border: ${props => (props.noBorder ? "none" : "1px solid #E9E9E9")};
+  border: ${(props) => (props.noBorder ? 'none' : '1px solid #E9E9E9')};
   border-radius: 10px;
   .ant-card-body {
     padding: 0px;
@@ -69,7 +69,7 @@ export const StyledCard = styled(Card)`
       align-items: center;
     }
   }
-`;
+`
 
 export const ReportTitle = styled.div`
   font-family: Open Sans, Bold;
@@ -78,7 +78,7 @@ export const ReportTitle = styled.div`
   font-weight: 800;
   margin-bottom: 5px;
   text-transform: capitalize;
-`;
+`
 
 export const DetailCard = styled(StyledCard)`
   width: 48%;
@@ -96,7 +96,7 @@ export const DetailCard = styled(StyledCard)`
     margin-top: 10px;
     margin-left: 0px;
   }
-`;
+`
 
 export const DetailCardHeader = styled.div`
   background-color: ${lightGreySecondary};
@@ -106,7 +106,7 @@ export const DetailCardHeader = styled.div`
     padding: 30px 15px 25px 15px;
     width: 100%;
   }
-`;
+`
 export const DetailCardTitle = styled.div`
   color: ${secondaryTextColor};
   font-size: 18px;
@@ -118,17 +118,17 @@ export const DetailCardTitle = styled.div`
   .anticon-close {
     cursor: pointer;
   }
-`;
+`
 export const DetailCardSubTitle = styled.div`
   color: ${secondaryTextColor};
   font-size: 16px;
   font-weight: 800;
   margin-bottom: 10px;
-`;
+`
 export const DetailCardDesc = styled.div`
   color: ${linkColor1};
   font-size: 13px;
-`;
+`
 
 export const StudnetCell = styled.div`
   color: ${secondaryTextColor};
@@ -140,37 +140,37 @@ export const StudnetCell = styled.div`
     white-space: nowrap;
     overflow: hidden;
   }
-`;
+`
 
 export const MasteryCell = styled.div`
   text-align: center;
   i {
     margin-left: 15px;
   }
-`;
+`
 
 export const PerformanceScore = styled.span`
   color: ${greenThird};
   font-size: 14px;
   font-weight: 600;
-`;
+`
 export const PerformancePercent = styled.span`
   color: ${secondaryTextColor};
   font-size: 14px;
   font-weight: 600;
   padding-left: 10px;
-`;
+`
 
 export const Container = styled(HeaderWrapper)`
   display: flex;
   border-radius: 5px;
   align-items: center;
   justify-content: space-between;
-  background-color: ${props => props.theme.header.headerBgColor};
+  background-color: ${(props) => props.theme.header.headerBgColor};
   padding: 0px 15px;
   height: 62px;
   z-index: 1;
-`;
+`
 
 export const StyledTitle = styled.h1`
   color: ${white};
@@ -178,44 +178,44 @@ export const StyledTitle = styled.h1`
   font-weight: bold;
   margin: 20px;
   padding: 0;
-`;
+`
 
 export const StyledLink = styled(Link)`
   color: white;
   :hover {
     color: white;
   }
-`;
+`
 
 export const StyledLinkActive = styled(Link)`
   color: black;
   :hover {
     color: black;
   }
-`;
+`
 
 export const StyledParaFirst = styled.p`
   font-size: 0.9em;
-`;
+`
 
 export const SpaceD = styled.div`
   display: inline-block;
   width: 10px;
-`;
+`
 
 export const StyledParaSecond = styled.p`
   font-size: 0.5em;
-`;
+`
 
 export const StyledDiv = styled.div`
   margin-right: 20px;
-`;
+`
 
 export const StyledTabs = styled.div`
   width: 37%;
   height: 62px;
   display: flex;
-`;
+`
 
 export const StyledAnchorA = styled.a`
   display: inline-block;
@@ -229,7 +229,7 @@ export const StyledAnchorA = styled.a`
   margin: 6px 0;
   border-radius: 25px;
   margin-right: 15px;
-`;
+`
 
 export const StyledAnchor = styled.a`
   display: inline-block;
@@ -250,7 +250,7 @@ export const StyledAnchor = styled.a`
   @media (max-width: 1450px) {
     font-size: 0.6em;
   }
-`;
+`
 
 export const MoreButton = styled.button`
   background: transparent;
@@ -260,7 +260,7 @@ export const MoreButton = styled.button`
   height: 30px;
   padding: 0 10px;
   min-width: 100px;
-`;
+`
 
 export const DetailTable = styled(Table)`
   padding: 24px 16px;
@@ -296,7 +296,9 @@ export const DetailTable = styled(Table)`
       }
     }
   }
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters {
+  .ant-table-thead
+    > tr
+    > th.ant-table-column-has-actions.ant-table-column-has-sorters {
     @media (max-width: ${mobileWidth}) {
       padding-right: 15px !important;
       background-color: white;
@@ -339,7 +341,7 @@ export const DetailTable = styled(Table)`
   @media (max-width: ${smallDesktopWidth}) {
     padding: 12px;
   }
-`;
+`
 
 export const TableData = styled(Table)`
   width: 100%;
@@ -462,7 +464,7 @@ export const TableData = styled(Table)`
       font-size: 9px;
     }
   }
-`;
+`
 
 export const DivWrapper = styled(StyledFlexContainer)`
   display: flex;
@@ -472,7 +474,7 @@ export const DivWrapper = styled(StyledFlexContainer)`
   @media (max-width: ${smallDesktopWidth}) {
     overflow: auto;
   }
-`;
+`
 
 export const StandardCell = styled.div`
   border-radius: 5px;
@@ -483,7 +485,7 @@ export const StandardCell = styled.div`
   font-size: 10px;
   font-weight: bold;
   text-transform: uppercase;
-`;
+`
 
 export const StandardsMobile = styled.div`
   width: 150px;
@@ -495,13 +497,13 @@ export const StandardsMobile = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 15px;
-`;
+`
 
 export const QuestionCell = styled.div`
   color: ${greenThird};
   font-size: 14px;
   font-weight: 600;
-`;
+`
 
 export const MasterySummary = styled(Progress)`
   .ant-progress-inner {
@@ -511,7 +513,7 @@ export const MasterySummary = styled(Progress)`
     .ant-progress-bg {
       height: 16px !important;
       border-radius: 4px 0px 0px 4px !important;
-      background-color: ${props => props.color};
+      background-color: ${(props) => props.color};
     }
   }
   .ant-progress-outer {
@@ -526,21 +528,21 @@ export const MasterySummary = styled(Progress)`
     font-size: 14px;
     margin-left: 30px;
   }
-`;
+`
 
 export const MasterySummaryInfo = styled.div`
   margin-top: 15px;
   color: ${secondaryTextColor};
-`;
+`
 
 export const PerformanceSummary = styled.div`
   color: ${secondaryTextColor};
   font-weight: 600;
   font-size: 14px;
-`;
+`
 
 export const InfoCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
+`

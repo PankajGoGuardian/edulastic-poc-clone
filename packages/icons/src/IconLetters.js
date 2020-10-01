@@ -1,11 +1,15 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import { themeColor } from "@edulastic/colors";
-import SVG from "./common/SVG";
+import React from 'react'
+import { themeColor } from '@edulastic/colors'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconLetters = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.109 14.869" {...props}>
+const IconLetters = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24.109 14.869"
+    {...props}
+  >
     <g transform="translate(0 0)">
       <path
         d="M295.6,65.965v-.79h-3.4v.79h1.3v13.29h-1.3v.79h3.4v-.79h-1.3V65.965Z"
@@ -23,6 +27,6 @@ const IconLetters = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconLetters);
+export default withIconStyles(IconLetters)

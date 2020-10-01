@@ -1,11 +1,11 @@
-import React from "react";
-import { Spin } from "antd";
-import { get } from "lodash";
-import { helpers } from "@edulastic/common";
-import SortableList from "./SortableList";
-import { getQuestionType } from "../../../../../dataUtils";
-import { StyledSpinnerContainer } from "./styled";
-import { isPremiumContent } from "../../../../utils";
+import React from 'react'
+import { Spin } from 'antd'
+import { get } from 'lodash'
+import { helpers } from '@edulastic/common'
+import SortableList from './SortableList'
+import { getQuestionType } from '../../../../../dataUtils'
+import { StyledSpinnerContainer } from './styled'
+import { isPremiumContent } from '../../../../utils'
 
 const ReviewItems = ({
   items,
@@ -31,39 +31,43 @@ const ReviewItems = ({
   isFetchingAutoselectItems = false,
   userRole,
   isPowerPremiumAccount,
-  showGroupsPanel
+  showGroupsPanel,
 }) => {
-  const container = getContainer();
-  if (!container) return null;
+  const container = getContainer()
+  if (!container) return null
 
-  const audioStatus = item => {
-    const _questions = get(item, "data.questions", []);
-    const getAllTTS = _questions.filter(ite => ite.tts).map(ite => ite.tts);
-    const audio = {};
+  const audioStatus = (item) => {
+    const _questions = get(item, 'data.questions', [])
+    const getAllTTS = _questions.filter((ite) => ite.tts).map((ite) => ite.tts)
+    const audio = {}
     if (getAllTTS.length) {
-      const ttsSuccess = getAllTTS.filter(ite => ite.taskStatus !== "COMPLETED").length === 0;
-      audio.ttsSuccess = ttsSuccess;
+      const ttsSuccess =
+        getAllTTS.filter((ite) => ite.taskStatus !== 'COMPLETED').length === 0
+      audio.ttsSuccess = ttsSuccess
     }
-    return audio;
-  };
+    return audio
+  }
 
   const data = items.map((item, i) => {
     const isScoringDisabled =
-      (!!item?.data?.questions?.find(q => q.rubrics) && userFeatures.gradingrubrics) ||
+      (!!item?.data?.questions?.find((q) => q.rubrics) &&
+        userFeatures.gradingrubrics) ||
       item.autoselectedItem ||
-      item.isLimitedDeliveryType;
+      item.isLimitedDeliveryType
 
     const main = {
       id: item._id,
-      points: item.isLimitedDeliveryType ? 1 : scoring[item._id] || helpers.getPoints(item),
+      points: item.isLimitedDeliveryType
+        ? 1
+        : scoring[item._id] || helpers.getPoints(item),
       title: item._id,
       isScoringDisabled,
-      groupId: item.groupId
-    };
+      groupId: item.groupId,
+    }
 
     const meta = {
       id: item._id,
-      by: get(item, ["createdBy", "name"], ""),
+      by: get(item, ['createdBy', 'name'], ''),
       analytics: item?.analytics || [],
       type: getQuestionType(item),
       points: scoring[item._id] || helpers.getPoints(item),
@@ -73,28 +77,31 @@ const ReviewItems = ({
       audio: audioStatus(item),
       tags: item.tags,
       dok:
-        item.data && item.data.questions && (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
-    };
+        item.data &&
+        item.data.questions &&
+        (item.data.questions.find((e) => e.depthOfKnowledge) || {})
+          .depthOfKnowledge,
+    }
 
     if (item.data && item.data.questions && item.data.questions.length) {
-      main.stimulus = item.data.questions[0].stimulus;
+      main.stimulus = item.data.questions[0].stimulus
     }
 
     return {
       key: i,
       main,
-      meta
-    };
-  });
+      meta,
+    }
+  })
 
   const handleCheckboxChange = (index, checked) => {
     if (checked) {
-      setSelected([...selected, index]);
+      setSelected([...selected, index])
     } else {
-      const newSelected = selected.filter(item => item !== index);
-      setSelected(newSelected);
+      const newSelected = selected.filter((item) => item !== index)
+      setSelected(newSelected)
     }
-  };
+  }
 
   return (
     <>
@@ -110,7 +117,7 @@ const ReviewItems = ({
         owner={owner}
         onSortEnd={moveTestItems}
         lockToContainerEdges
-        lockOffset={["10%", "10%"]}
+        lockOffset={['10%', '10%']}
         onSelect={handleCheckboxChange}
         selected={selected}
         questions={questions}
@@ -131,7 +138,7 @@ const ReviewItems = ({
         </StyledSpinnerContainer>
       )}
     </>
-  );
-};
+  )
+}
 
-export default ReviewItems;
+export default ReviewItems

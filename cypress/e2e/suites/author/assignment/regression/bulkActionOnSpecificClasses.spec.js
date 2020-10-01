@@ -1,59 +1,67 @@
-import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
-import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
+import TestAssignPage from '../../../../framework/author/tests/testDetail/testAssignPage'
+import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
 import AssignmentBulkActionsPage, {
   filter,
-  icons
-} from "../../../../framework/author/assignments/AssignmentBulkActionsPage";
-import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-import SidebarPage from "../../../../framework/student/sidebarPage";
-import FileHelper from "../../../../framework/util/fileHelper";
-import TeacherSideBar from "../../../../framework/author/SideBarPage";
-import { grades, teacherSide } from "../../../../framework/constants/assignmentStatus";
-import { getRandomClass, getRandomStudent } from "../../../../framework/constants/constantFunctions";
-import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
-import ReportsPage from "../../../../framework/student/reportsPage";
+  icons,
+} from '../../../../framework/author/assignments/AssignmentBulkActionsPage'
+import AssignmentsPage from '../../../../framework/student/assignmentsPage'
+import SidebarPage from '../../../../framework/student/sidebarPage'
+import FileHelper from '../../../../framework/util/fileHelper'
+import TeacherSideBar from '../../../../framework/author/SideBarPage'
+import {
+  grades,
+  teacherSide,
+} from '../../../../framework/constants/assignmentStatus'
+import {
+  getRandomClass,
+  getRandomStudent,
+} from '../../../../framework/constants/constantFunctions'
+import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
+import ReportsPage from '../../../../framework/student/reportsPage'
 
 // import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 // import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment Actions In School Admin`, () => {
-  const sideBarPage = new TeacherSideBar();
-  const authorAssignmentPage = new AuthorAssignmentPage();
-  const lcbPage = new LiveClassboardPage();
-  const testAssignPage = new TestAssignPage();
-  const bulkActionPage = new AssignmentBulkActionsPage();
-  const studAssignmentPage = new AssignmentsPage();
-  const studeSideBar = new SidebarPage();
-  const reportsPage = new ReportsPage();
+describe(`${FileHelper.getSpecName(
+  Cypress.spec.name
+)} :- Verify Bulk Assignment Actions In School Admin`, () => {
+  const sideBarPage = new TeacherSideBar()
+  const authorAssignmentPage = new AuthorAssignmentPage()
+  const lcbPage = new LiveClassboardPage()
+  const testAssignPage = new TestAssignPage()
+  const bulkActionPage = new AssignmentBulkActionsPage()
+  const studAssignmentPage = new AssignmentsPage()
+  const studeSideBar = new SidebarPage()
+  const reportsPage = new ReportsPage()
 
   // const testLibraryPage = new TestLibrary();
   // const manageClass = new TeacherManageClassPage();
   // const startDate = new Date();
   // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
 
-  let notOpenClasses;
-  let inProgressClasses;
+  let notOpenClasses
+  let inProgressClasses
 
   const classData = {
-    className: ["Auto_class_"],
+    className: ['Auto_class_'],
     grade: grades.GRADE_10,
-    subject: "Mathematics",
-    standardSet: "Math - Common Core",
-    testID: "5f524262b628db00085f6c82"
-  };
+    subject: 'Mathematics',
+    standardSet: 'Math - Common Core',
+    testID: '5f524262b628db00085f6c82',
+  }
 
   const studData = {
-    username: "_bulk_auto_",
-    name: "autoStud",
-    password: "snapwiz"
-  };
+    username: '_bulk_auto_',
+    name: 'autoStud',
+    password: 'snapwiz',
+  }
 
   const Teacher = {
-    email: "bulkauto@automation.com",
-    pass: "automation",
-    adminEmail: "bulkAutoadmin@snapwiz.com",
-    adminPass: "automation"
-  };
+    email: 'bulkauto@automation.com',
+    pass: 'automation',
+    adminEmail: 'bulkAutoadmin@snapwiz.com',
+    adminPass: 'automation',
+  }
 
   /* before(" > Create test data", () => {
     cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
@@ -87,758 +95,946 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} :- Verify Bulk Assignment
     });
   }) */
 
-  context(" > Bulk action on assignments", () => {
-    before("Login into teacher", () => {
-      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
-      cy.login("teacher", Teacher.email, Teacher.pass);
+  context(' > Bulk action on assignments', () => {
+    before('Login into teacher', () => {
+      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass)
+      cy.login('teacher', Teacher.email, Teacher.pass)
 
-      notOpenClasses = [];
+      notOpenClasses = []
       for (let i = 1; i <= 30; i++) {
-        notOpenClasses.push(classData.className + i.toString());
+        notOpenClasses.push(classData.className + i.toString())
       }
-      testAssignPage.assignTestWithoutOpening(notOpenClasses, classData.testID);
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
-    });
+      testAssignPage.assignTestWithoutOpening(notOpenClasses, classData.testID)
+      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+    })
 
     it("> Open 'not started' assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickOpenActionButton("15", "15");
-
-      bulkActionPage.clickPreviousPage();
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS);
-      });
-      bulkActionPage.clickNextPage();
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS);
-      });
-
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, "15");
-
-      cy.login("teacher", Teacher.email, Teacher.pass);
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.verifyAssignmentStatusOfClass(
-        classData.testID,
-        getRandomClass(classData.className, 1, 15),
-        teacherSide.IN_PROGRESS
-      );
-      authorAssignmentPage.verifyAssignmentStatusOfClass(
-        classData.testID,
-        getRandomClass(classData.className, 1, 15),
-        teacherSide.IN_PROGRESS
-      );
-      authorAssignmentPage.verifyAssignmentStatusOfClass(
-        classData.testID,
-        getRandomClass(classData.className, 16, 30),
-        teacherSide.NOT_OPEN
-      );
-      authorAssignmentPage.verifyAssignmentStatusOfClass(
-        classData.testID,
-        getRandomClass(classData.className, 16, 30),
-        teacherSide.NOT_OPEN
-      );
-
-      cy.login("student", getRandomStudent(classData.className, studData.username, 1, 15), studData.password);
-      studAssignmentPage.verifyAssignmentIsOpen(classData.testID);
-
-      cy.login("student", getRandomStudent(classData.className, studData.username, 16, 30), studData.password);
-      studAssignmentPage.verifyAssignmentIslocked();
-    });
-
-    it("> Pause 'in progress' assignments :", () => {
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickPauseActionButton("15", "15");
-
-      bulkActionPage.clickPreviousPage();
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS_PAUSED);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
         if (index > 9 && index < 15)
-          bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS_PAUSED);
-      });
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickOpenActionButton('15', '15')
 
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, "15");
+      bulkActionPage.clickPreviousPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS
+          )
+      })
+      bulkActionPage.clickNextPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS
+          )
+      })
 
-      cy.login("teacher", Teacher.email, Teacher.pass);
-      sideBarPage.clickOnAssignment();
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+
+      cy.login('teacher', Teacher.email, Teacher.pass)
+      sideBarPage.clickOnAssignment()
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 1, 15),
-        teacherSide.IN_PROGRESS_PAUSED
-      );
+        teacherSide.IN_PROGRESS
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 1, 15),
-        teacherSide.IN_PROGRESS_PAUSED
-      );
+        teacherSide.IN_PROGRESS
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 16, 30),
         teacherSide.NOT_OPEN
-      );
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 16, 30),
         teacherSide.NOT_OPEN
-      );
+      )
 
-      cy.login("student", getRandomStudent(classData.className, studData.username, 1, 15), studData.password);
-      studAssignmentPage.verifyAssignmentIsPaused(classData.testID);
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 1, 15),
+        studData.password
+      )
+      studAssignmentPage.verifyAssignmentIsOpen(classData.testID)
 
-      cy.login("student", getRandomStudent(classData.className, studData.username, 16, 30), studData.password);
-      studAssignmentPage.verifyAssignmentIslocked();
-    });
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 16, 30),
+        studData.password
+      )
+      studAssignmentPage.verifyAssignmentIslocked()
+    })
 
-    it("> Open Paused assignments :", () => {
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+    it("> Pause 'in progress' assignments :", () => {
+      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickOpenActionButton("15", "15");
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickPauseActionButton('15', '15')
 
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, "15");
+      bulkActionPage.clickPreviousPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS_PAUSED
+          )
+      })
+      bulkActionPage.clickNextPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS_PAUSED
+          )
+      })
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+
+      cy.login('teacher', Teacher.email, Teacher.pass)
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.verifyAssignmentStatusOfClass(
+        classData.testID,
+        getRandomClass(classData.className, 1, 15),
+        teacherSide.IN_PROGRESS_PAUSED
+      )
+      authorAssignmentPage.verifyAssignmentStatusOfClass(
+        classData.testID,
+        getRandomClass(classData.className, 1, 15),
+        teacherSide.IN_PROGRESS_PAUSED
+      )
+      authorAssignmentPage.verifyAssignmentStatusOfClass(
+        classData.testID,
+        getRandomClass(classData.className, 16, 30),
+        teacherSide.NOT_OPEN
+      )
+      authorAssignmentPage.verifyAssignmentStatusOfClass(
+        classData.testID,
+        getRandomClass(classData.className, 16, 30),
+        teacherSide.NOT_OPEN
+      )
+
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 1, 15),
+        studData.password
+      )
+      studAssignmentPage.verifyAssignmentIsPaused(classData.testID)
+
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 16, 30),
+        studData.password
+      )
+      studAssignmentPage.verifyAssignmentIslocked()
+    })
+
+    it('> Open Paused assignments :', () => {
+      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS);
-      });
-    });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickOpenActionButton('15', '15')
+
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+
+      bulkActionPage.clickPreviousPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS
+          )
+      })
+      bulkActionPage.clickNextPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS
+          )
+      })
+    })
 
     it("> Pause 'in grading' assignments:", () => {
       notOpenClasses.forEach((className, index) => {
         if (index < 10) {
-          sideBarPage.clickOnAssignment();
-          authorAssignmentPage.filterByTestType("All");
-          bulkActionPage.clickTestByID(classData.testID);
-          bulkActionPage.clickIconByClassName(icons.LCB, className);
-          lcbPage.checkSelectAllCheckboxOfStudent();
-          lcbPage.clickOnMarkAsSubmit();
+          sideBarPage.clickOnAssignment()
+          authorAssignmentPage.filterByTestType('All')
+          bulkActionPage.clickTestByID(classData.testID)
+          bulkActionPage.clickIconByClassName(icons.LCB, className)
+          lcbPage.checkSelectAllCheckboxOfStudent()
+          lcbPage.clickOnMarkAsSubmit()
         } else if (index > 9 && index < 15) {
-          sideBarPage.clickOnAssignment();
-          authorAssignmentPage.filterByTestType("All");
-          bulkActionPage.clickTestByID(classData.testID);
-          bulkActionPage.clickNextPage();
-          bulkActionPage.clickIconByClassName(icons.LCB, className);
-          lcbPage.checkSelectAllCheckboxOfStudent();
-          lcbPage.clickOnMarkAsSubmit();
+          sideBarPage.clickOnAssignment()
+          authorAssignmentPage.filterByTestType('All')
+          bulkActionPage.clickTestByID(classData.testID)
+          bulkActionPage.clickNextPage()
+          bulkActionPage.clickIconByClassName(icons.LCB, className)
+          lcbPage.checkSelectAllCheckboxOfStudent()
+          lcbPage.clickOnMarkAsSubmit()
         }
-      });
+      })
 
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
-
-      bulkActionPage.clickPauseActionButton("15", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, "15");
-
-      bulkActionPage.clickPreviousPage();
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_GRADING_PAUSED);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
         if (index > 9 && index < 15)
-          bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_GRADING_PAUSED);
-      });
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      cy.login("teacher", Teacher.email, Teacher.pass);
-      sideBarPage.clickOnAssignment();
+      bulkActionPage.clickPauseActionButton('15', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, '15')
+
+      bulkActionPage.clickPreviousPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_GRADING_PAUSED
+          )
+      })
+      bulkActionPage.clickNextPage()
+      notOpenClasses.forEach((className, index) => {
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_GRADING_PAUSED
+          )
+      })
+
+      cy.login('teacher', Teacher.email, Teacher.pass)
+      sideBarPage.clickOnAssignment()
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 1, 15),
         teacherSide.IN_GRADING_PAUSED
-      );
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 1, 15),
         teacherSide.IN_GRADING_PAUSED
-      );
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 16, 30),
         teacherSide.NOT_OPEN
-      );
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 16, 30),
         teacherSide.NOT_OPEN
-      );
+      )
 
-      cy.login("student", getRandomStudent(classData.className, studData.username, 1, 15), studData.password);
-      studeSideBar.clickOnGrades();
-      reportsPage.verifyReviewPaused();
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 1, 15),
+        studData.password
+      )
+      studeSideBar.clickOnGrades()
+      reportsPage.verifyReviewPaused()
 
-      cy.login("student", getRandomStudent(classData.className, studData.username, 1, 15), studData.password);
-      studeSideBar.clickOnGrades();
-      reportsPage.verifyReviewPaused();
-    });
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 1, 15),
+        studData.password
+      )
+      studeSideBar.clickOnGrades()
+      reportsPage.verifyReviewPaused()
+    })
 
     it("> Open 'in-grading-paused' assignments :", () => {
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickOpenActionButton("15", "15");
+      bulkActionPage.clickOpenActionButton('15', '15')
       /* inGradinClasses.forEach((className)=>{
         bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.DONE)
       }) */
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, "15");
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_GRADING);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_GRADING
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_GRADING);
-      });
-    });
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_GRADING
+          )
+      })
+    })
 
     it("> Close 'in-grading' assignments :", () => {
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickCloseActionButton("15", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickCloseActionButton('15', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-    });
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+    })
 
-    it("> Mark as done for already Done assignments :", () => {
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+    it('> Mark as done for already Done assignments :', () => {
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickDoneActionButton("0", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickDoneActionButton('0', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-    });
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+    })
 
-    it("> Open  already closed assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+    it('> Open  already closed assignments :', () => {
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickOpenActionButton("0", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickOpenActionButton('0', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-    });
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+    })
 
-    it("> Pause already closed assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+    it('> Pause already closed assignments :', () => {
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickPauseActionButton("0", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickPauseActionButton('0', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-    });
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+    })
 
     it("> Close 'not started' assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickCloseActionButton("0", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickCloseActionButton('0', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.NOT_OPEN);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.NOT_OPEN
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.NOT_OPEN);
-      });
-    });
+        if (index > 19 && index < 30)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.NOT_OPEN
+          )
+      })
+    })
 
     it("> Mark as done for 'not started' assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickDoneActionButton("0", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickDoneActionButton('0', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.NOT_OPEN);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.NOT_OPEN
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.NOT_OPEN);
-      });
-    });
+        if (index > 19 && index < 30)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.NOT_OPEN
+          )
+      })
+    })
 
     it("> Close 'Paused' assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickOpenActionButton("15", "15");
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickOpenActionButton('15', '15')
 
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickPauseActionButton("15", "15");
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickPauseActionButton('15', '15')
 
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickCloseActionButton("15", "15");
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickCloseActionButton('15', '15')
 
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "30");
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '30')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+      bulkActionPage.clickNextPage()
       notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-    });
-  });
+        if (index > 19 && index < 30)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+    })
+  })
 
-  context(" > Mark as done action for assignments", () => {
-    before("Login into teacher", () => {
-      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
-      cy.login("teacher", Teacher.email, Teacher.pass);
+  context(' > Mark as done action for assignments', () => {
+    before('Login into teacher', () => {
+      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass)
+      cy.login('teacher', Teacher.email, Teacher.pass)
 
-      inProgressClasses = [];
+      inProgressClasses = []
       for (let i = 1; i <= 30; i++) {
-        inProgressClasses.push(classData.className + i.toString());
+        inProgressClasses.push(classData.className + i.toString())
       }
-      testAssignPage.assignOpenTest(inProgressClasses, classData.testID);
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
-    });
+      testAssignPage.assignOpenTest(inProgressClasses, classData.testID)
+      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+    })
 
     it("> Close 'In progress' assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       inProgressClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickCloseActionButton("15", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickCloseActionButton('15', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       inProgressClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-    });
+        if (index > 9 && index < 15)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+    })
 
     it("> Mark as done for 'Paused' assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
-      inProgressClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
-      inProgressClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
-
-      bulkActionPage.clickPauseActionButton("15", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
-
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
-      inProgressClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
-      inProgressClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
-
-      bulkActionPage.clickDoneActionButton("0", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
-
-      bulkActionPage.clickPreviousPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
         if (index > 14 && index < 20)
-          bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS_PAUSED);
-      });
-      bulkActionPage.clickNextPage();
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
         if (index > 19 && index < 30)
-          bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS_PAUSED);
-      });
-    });
+          bulkActionPage.selectClassByClassName(className)
+      })
+
+      bulkActionPage.clickPauseActionButton('15', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
+
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
+      inProgressClasses.forEach((className, index) => {
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
+      inProgressClasses.forEach((className, index) => {
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
+
+      bulkActionPage.clickDoneActionButton('0', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
+
+      bulkActionPage.clickPreviousPage()
+      inProgressClasses.forEach((className, index) => {
+        if (index > 14 && index < 20)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS_PAUSED
+          )
+      })
+      bulkActionPage.clickNextPage()
+      inProgressClasses.forEach((className, index) => {
+        if (index > 19 && index < 30)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS_PAUSED
+          )
+      })
+    })
 
     it("> Mark as done for 'In progress' assignments :", () => {
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickOpenActionButton("15", "15");
+      bulkActionPage.clickOpenActionButton('15', '15')
 
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickDoneActionButton("0", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
+      bulkActionPage.clickDoneActionButton('0', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS
+          )
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.IN_PROGRESS);
-      });
-    });
+        if (index > 19 && index < 30)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.IN_PROGRESS
+          )
+      })
+    })
 
     it("> Mark as done for 'in grading' assignments:", () => {
       inProgressClasses.forEach((className, index) => {
         if (index > 14 && index < 20) {
-          sideBarPage.clickOnReport();
-          sideBarPage.clickOnAssignment();
-          authorAssignmentPage.filterByTestType("All");
-          bulkActionPage.clickTestByID(classData.testID);
-          bulkActionPage.clickNextPage();
-          bulkActionPage.clickIconByClassName(icons.LCB, className);
-          lcbPage.checkSelectAllCheckboxOfStudent();
-          lcbPage.clickOnMarkAsSubmit();
+          sideBarPage.clickOnReport()
+          sideBarPage.clickOnAssignment()
+          authorAssignmentPage.filterByTestType('All')
+          bulkActionPage.clickTestByID(classData.testID)
+          bulkActionPage.clickNextPage()
+          bulkActionPage.clickIconByClassName(icons.LCB, className)
+          lcbPage.checkSelectAllCheckboxOfStudent()
+          lcbPage.clickOnMarkAsSubmit()
         } else if (index > 19 && index < 30) {
-          sideBarPage.clickOnReport();
-          sideBarPage.clickOnAssignment();
-          authorAssignmentPage.filterByTestType("All");
-          bulkActionPage.clickTestByID(classData.testID);
-          bulkActionPage.clickNextPage();
-          bulkActionPage.clickNextPage();
-          bulkActionPage.clickIconByClassName(icons.LCB, className);
-          lcbPage.checkSelectAllCheckboxOfStudent();
-          lcbPage.clickOnMarkAsSubmit();
+          sideBarPage.clickOnReport()
+          sideBarPage.clickOnAssignment()
+          authorAssignmentPage.filterByTestType('All')
+          bulkActionPage.clickTestByID(classData.testID)
+          bulkActionPage.clickNextPage()
+          bulkActionPage.clickNextPage()
+          bulkActionPage.clickIconByClassName(icons.LCB, className)
+          lcbPage.checkSelectAllCheckboxOfStudent()
+          lcbPage.clickOnMarkAsSubmit()
         }
-      });
+      })
 
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
-      bulkActionPage.clickNextPage();
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 19 && index < 30)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickDoneActionButton("15", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "30");
+      bulkActionPage.clickDoneActionButton('15', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '30')
 
-      bulkActionPage.clickPreviousPage();
+      bulkActionPage.clickPreviousPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 14 && index < 20) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
-      bulkActionPage.clickNextPage();
+        if (index > 14 && index < 20)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 19 && index < 30) bulkActionPage.verifyAssignmentStatusOfClass(className, teacherSide.DONE);
-      });
+        if (index > 19 && index < 30)
+          bulkActionPage.verifyAssignmentStatusOfClass(
+            className,
+            teacherSide.DONE
+          )
+      })
 
-      cy.login("teacher", Teacher.email, Teacher.pass);
-      sideBarPage.clickOnAssignment();
+      cy.login('teacher', Teacher.email, Teacher.pass)
+      sideBarPage.clickOnAssignment()
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 15, 30),
         teacherSide.DONE
-      );
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 15, 30),
         teacherSide.DONE
-      );
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 15, 30),
         teacherSide.DONE
-      );
+      )
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
         getRandomClass(classData.className, 15, 30),
         teacherSide.DONE
-      );
+      )
 
-      cy.login("student", getRandomStudent(classData.className, studData.username, 15, 30), studData.password);
-      studeSideBar.clickOnGrades();
-      reportsPage.getTestCardByTesyId(classData.testID);
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 15, 30),
+        studData.password
+      )
+      studeSideBar.clickOnGrades()
+      reportsPage.getTestCardByTesyId(classData.testID)
 
-      cy.login("student", getRandomStudent(classData.className, studData.username, 15, 30), studData.password);
-      studeSideBar.clickOnGrades();
-      reportsPage.getTestCardByTesyId(classData.testID);
-    });
+      cy.login(
+        'student',
+        getRandomStudent(classData.className, studData.username, 15, 30),
+        studData.password
+      )
+      studeSideBar.clickOnGrades()
+      reportsPage.getTestCardByTesyId(classData.testID)
+    })
 
     it("> Mark as done for 'in grading paused' assignments:", () => {
-      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass);
-      cy.login("teacher", Teacher.email, Teacher.pass);
+      cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass)
+      cy.login('teacher', Teacher.email, Teacher.pass)
 
-      inProgressClasses = [];
+      inProgressClasses = []
       for (let i = 1; i <= 15; i++) {
-        inProgressClasses.push(classData.className + i.toString());
+        inProgressClasses.push(classData.className + i.toString())
       }
-      testAssignPage.assignOpenTest(inProgressClasses, classData.testID);
+      testAssignPage.assignOpenTest(inProgressClasses, classData.testID)
 
-      cy.login("", Teacher.adminEmail, Teacher.adminPass);
+      cy.login('', Teacher.adminEmail, Teacher.adminPass)
       inProgressClasses.forEach((className, index) => {
         if (index < 10) {
-          sideBarPage.clickOnReport();
-          sideBarPage.clickOnAssignment();
-          authorAssignmentPage.filterByTestType("All");
-          bulkActionPage.clickTestByID(classData.testID);
-          bulkActionPage.clickIconByClassName(icons.LCB, className);
-          lcbPage.checkSelectAllCheckboxOfStudent();
-          lcbPage.clickOnMarkAsSubmit();
+          sideBarPage.clickOnReport()
+          sideBarPage.clickOnAssignment()
+          authorAssignmentPage.filterByTestType('All')
+          bulkActionPage.clickTestByID(classData.testID)
+          bulkActionPage.clickIconByClassName(icons.LCB, className)
+          lcbPage.checkSelectAllCheckboxOfStudent()
+          lcbPage.clickOnMarkAsSubmit()
         } else if (index > 9 && index < 15) {
-          sideBarPage.clickOnReport();
-          sideBarPage.clickOnAssignment();
-          authorAssignmentPage.filterByTestType("All");
-          bulkActionPage.clickTestByID(classData.testID);
-          bulkActionPage.clickNextPage();
-          bulkActionPage.clickIconByClassName(icons.LCB, className);
-          lcbPage.checkSelectAllCheckboxOfStudent();
-          lcbPage.clickOnMarkAsSubmit();
+          sideBarPage.clickOnReport()
+          sideBarPage.clickOnAssignment()
+          authorAssignmentPage.filterByTestType('All')
+          bulkActionPage.clickTestByID(classData.testID)
+          bulkActionPage.clickNextPage()
+          bulkActionPage.clickIconByClassName(icons.LCB, className)
+          lcbPage.checkSelectAllCheckboxOfStudent()
+          lcbPage.clickOnMarkAsSubmit()
         }
-      });
+      })
 
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       inProgressClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickPauseActionButton("15", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, "15");
+      bulkActionPage.clickPauseActionButton('15', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, '15')
 
-      sideBarPage.clickOnReport();
-      sideBarPage.clickOnAssignment();
-      authorAssignmentPage.filterByTestType("All");
-      bulkActionPage.clickTestByID(classData.testID);
+      sideBarPage.clickOnReport()
+      sideBarPage.clickOnAssignment()
+      authorAssignmentPage.filterByTestType('All')
+      bulkActionPage.clickTestByID(classData.testID)
       inProgressClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className);
-      });
-      bulkActionPage.clickNextPage();
+        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      })
+      bulkActionPage.clickNextPage()
       inProgressClasses.forEach((className, index) => {
-        if (index > 9 && index < 15) bulkActionPage.selectClassByClassName(className);
-      });
+        if (index > 9 && index < 15)
+          bulkActionPage.selectClassByClassName(className)
+      })
 
-      bulkActionPage.clickDoneActionButton("15", "15");
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, "15");
-    });
-  });
-});
+      bulkActionPage.clickDoneActionButton('15', '15')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
+    })
+  })
+})

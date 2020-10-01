@@ -1,12 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { themeColorBlue } from "@edulastic/colors";
-import styled from "styled-components";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import { themeColorBlue } from '@edulastic/colors'
+import styled from 'styled-components'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconPresentation = props => (
-  <Presentation xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.515 16.913" {...props}>
+const IconPresentation = (props) => (
+  <Presentation
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 19.515 16.913"
+    {...props}
+  >
     <g transform="translate(0 -36.543)">
       <path
         fill="#1AB394"
@@ -16,7 +20,7 @@ const IconPresentation = props => (
       />
     </g>
   </Presentation>
-);
+)
 
 const Presentation = styled(SVG)`
   &:hover {
@@ -24,6 +28,6 @@ const Presentation = styled(SVG)`
       fill: ${themeColorBlue};
     }
   }
-`;
+`
 
-export default withIconStyles(IconPresentation);
+export default withIconStyles(IconPresentation)

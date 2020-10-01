@@ -1,19 +1,21 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { SortableContainer } from "react-sortable-hoc";
-import { compose } from "redux";
-import { get, isEmpty } from "lodash";
-import { ChoiceDimensions } from "@edulastic/constants";
-import styled from "styled-components";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { SortableContainer } from 'react-sortable-hoc'
+import { compose } from 'redux'
+import { get, isEmpty } from 'lodash'
+import { ChoiceDimensions } from '@edulastic/constants'
+import styled from 'styled-components'
 
-import OrderListPreviewItem, { PreviewItem } from "./components/OrderListPreviewItem";
+import OrderListPreviewItem, {
+  PreviewItem,
+} from './components/OrderListPreviewItem'
 
 const {
   maxWidth: defaultMaxW,
   minWidth: defaultMinW,
   minHeight: defaultMinH,
-  maxHeight: defaultMaxH
-} = ChoiceDimensions;
+  maxHeight: defaultMaxH,
+} = ChoiceDimensions
 class OrderListPreview extends Component {
   render() {
     const {
@@ -28,27 +30,27 @@ class OrderListPreview extends Component {
       getStemNumeration,
       showAnswer,
       isPrintPreview,
-      options
-    } = this.props;
+      options,
+    } = this.props
 
-    const listItemMinWidth = get(uiStyle, "choiceMinWidth", defaultMinW);
-    const listItemMaxWidth = get(uiStyle, "choiceMaxWidth", defaultMaxW);
+    const listItemMinWidth = get(uiStyle, 'choiceMinWidth', defaultMinW)
+    const listItemMaxWidth = get(uiStyle, 'choiceMaxWidth', defaultMaxW)
 
-    const isInline = styleType === "inline";
-    const numOfQuestions = questions.length || 1;
+    const isInline = styleType === 'inline'
+    const numOfQuestions = questions.length || 1
 
     const listContainerStyle = {
-      paddingLeft: "20px",
+      paddingLeft: '20px',
       minWidth: listItemMinWidth,
-      maxWidth: isInline ? numOfQuestions * listItemMaxWidth : listItemMaxWidth
-    };
+      maxWidth: isInline ? numOfQuestions * listItemMaxWidth : listItemMaxWidth,
+    }
 
     const listItemStyle = {
       minHeight: defaultMinH,
       maxHeight: defaultMaxH,
       minWidth: listItemMinWidth,
-      maxWidth: listItemMaxWidth
-    };
+      maxWidth: listItemMaxWidth,
+    }
 
     return (
       <OrderListWrapper
@@ -71,9 +73,12 @@ class OrderListPreview extends Component {
                 style: listItemStyle,
                 showDragHandle: false,
                 question: showAnswer ? q : options[q],
-                stemNumeration: getStemNumeration(uiStyle.validationStemNumeration, i),
-                isPrintPreview
-              };
+                stemNumeration: getStemNumeration(
+                  uiStyle.validationStemNumeration,
+                  i
+                ),
+                isPrintPreview,
+              }
               return showAnswer ? (
                 <div className="__prevent-page-break">
                   <PreviewItem {...itemProps} />
@@ -88,25 +93,26 @@ class OrderListPreview extends Component {
                   checked={!isEmpty(evaluation)}
                   correct={evaluation[q]}
                 />
-              );
+              )
             })}
         </div>
       </OrderListWrapper>
-    );
+    )
   }
 }
 
 const OrderListWrapper = styled.div`
   display: flex;
   div {
-    display: ${props => (props.styleType === "inline" ? "flex" : null)};
-    flex-direction: ${props => (props.styleType === "inline" ? "row" : null)};
+    display: ${(props) => (props.styleType === 'inline' ? 'flex' : null)};
+    flex-direction: ${(props) => (props.styleType === 'inline' ? 'row' : null)};
     flex-wrap: nowrap;
     flex-shrink: 0;
   }
-  align-items: ${props => (props.styleType === "inline" ? "center" : "flex-start")};
+  align-items: ${(props) =>
+    props.styleType === 'inline' ? 'center' : 'flex-start'};
   justify-content: stretch;
-`;
+`
 
 OrderListPreview.propTypes = {
   listStyle: PropTypes.object.isRequired,
@@ -118,8 +124,8 @@ OrderListPreview.propTypes = {
   smallSize: PropTypes.bool,
   disableResponse: PropTypes.bool,
   columns: PropTypes.number,
-  styleType: PropTypes.string
-};
+  styleType: PropTypes.string,
+}
 
 OrderListPreview.defaultProps = {
   questions: [],
@@ -128,9 +134,9 @@ OrderListPreview.defaultProps = {
   smallSize: false,
   disableResponse: false,
   columns: 1,
-  styleType: "button"
-};
+  styleType: 'button',
+}
 
-const enhance = compose(SortableContainer);
+const enhance = compose(SortableContainer)
 
-export default enhance(OrderListPreview);
+export default enhance(OrderListPreview)

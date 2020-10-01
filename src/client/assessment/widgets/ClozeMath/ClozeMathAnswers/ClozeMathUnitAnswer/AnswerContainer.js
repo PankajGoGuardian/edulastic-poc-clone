@@ -1,5 +1,9 @@
-import styled from "styled-components";
-import { greyThemeLight, greyThemeLighter, greyThemeDark2 } from "@edulastic/colors";
+import styled from 'styled-components'
+import {
+  greyThemeLight,
+  greyThemeLighter,
+  greyThemeDark2,
+} from '@edulastic/colors'
 
 export const AnswerContainer = styled.div`
   .ant-collapse-item {
@@ -20,4 +24,4 @@ export const AnswerContainer = styled.div`
       position: relative;
     }
   }
-`;
+`

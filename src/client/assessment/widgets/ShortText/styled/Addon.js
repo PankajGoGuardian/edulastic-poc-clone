@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { grey, lightGrey } from "@edulastic/colors";
+import styled from 'styled-components'
+import { grey, lightGrey } from '@edulastic/colors'
 
 export const Addon = styled.div`
   background: ${lightGrey};
@@ -17,4 +17,4 @@ export const Addon = styled.div`
   :hover {
     background: ${grey};
   }
-`;
+`

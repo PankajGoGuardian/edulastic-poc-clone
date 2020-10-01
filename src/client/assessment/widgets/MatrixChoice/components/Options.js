@@ -1,19 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withTheme } from "styled-components";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withTheme } from 'styled-components'
 
-import { withNamespaces } from "@edulastic/localization";
-import { evaluationType } from "@edulastic/constants";
+import { withNamespaces } from '@edulastic/localization'
+import { evaluationType } from '@edulastic/constants'
 
-import WidgetOptions from "../../../containers/WidgetOptions";
-import Extras from "../../../containers/Extras";
+import WidgetOptions from '../../../containers/WidgetOptions'
+import Extras from '../../../containers/Extras'
 
-import Layout from "./Layout";
+import Layout from './Layout'
 
-const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch];
+const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch]
 
-function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, item = {} }) {
+function Options({
+  onChange,
+  uiStyle,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+  item = {},
+}) {
   return (
     <WidgetOptions
       showVariables
@@ -32,12 +39,16 @@ function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOp
         item={item}
       />
 
-      <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+      <Extras
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      >
         <Extras.Distractors />
         <Extras.Hints />
       </Extras>
     </WidgetOptions>
-  );
+  )
 }
 
 Options.propTypes = {
@@ -45,25 +56,22 @@ Options.propTypes = {
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 Options.defaultProps = {
   uiStyle: {
-    type: "standard",
-    fontsize: "normal",
+    type: 'standard',
+    fontsize: 'normal',
     columns: 0,
-    orientation: "horizontal",
-    choiceLabel: "number"
+    orientation: 'horizontal',
+    choiceLabel: 'number',
   },
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
+const enhance = compose(withNamespaces('assessment'), withTheme)
 
-export default enhance(Options);
+export default enhance(Options)

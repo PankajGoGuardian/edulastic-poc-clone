@@ -1,30 +1,30 @@
 import {
   RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST,
   RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS,
-  RECEIVE_CLASSSTUDENT_RESPONSE_ERROR
-} from "../constants/actions";
+  RECEIVE_CLASSSTUDENT_RESPONSE_ERROR,
+} from '../constants/actions'
 
 const initialState = {
   data: {},
   error: null,
-  loading: false
-};
+  loading: false,
+}
 
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true }
     case RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS:
       return {
         ...state,
         loading: false,
-        data: payload
-      };
+        data: payload,
+      }
     case RECEIVE_CLASSSTUDENT_RESPONSE_ERROR:
-      return { ...state, loading: false, error: payload.error };
+      return { ...state, loading: false, error: payload.error }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

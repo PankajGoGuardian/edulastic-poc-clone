@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 /**
  * pass related props from assesment players to the question components
@@ -7,7 +7,7 @@ import React from "react";
  */
 const assessmentPlayerContext = React.createContext({
   isStudentAttempt: false,
-  currentItem: 0
-});
+  currentItem: 0,
+})
 
-export default assessmentPlayerContext;
+export default assessmentPlayerContext

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Modal } from "antd";
+import styled from 'styled-components'
+import { Modal } from 'antd'
 
 export const StyledModal = styled(Modal)`
   .ant-modal-footer {
@@ -15,4 +15,4 @@ export const StyledModal = styled(Modal)`
       font-weight: 600;
     }
   }
-`;
+`

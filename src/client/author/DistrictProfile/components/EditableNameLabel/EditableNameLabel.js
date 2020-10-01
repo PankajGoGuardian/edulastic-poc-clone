@@ -1,82 +1,87 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 
-import { Icon, Input } from "antd";
-import { StyledFormItem, LabelContainer, StyledP } from "./styled";
+import { Icon, Input } from 'antd'
+import { StyledFormItem, LabelContainer, StyledP } from './styled'
 
 class EditableNameLabel extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       editing: false,
       value: this.props.value,
-      validateStatus: "success",
-      validateMsg: ""
-    };
+      validateStatus: 'success',
+      validateMsg: '',
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
-      value: nextProps.value
-    };
+      value: nextProps.value,
+    }
   }
 
   setRequiredStatus = () => {
-    const { value } = this.state;
-    const { requiredStatus } = this.props;
+    const { value } = this.state
+    const { requiredStatus } = this.props
     if (value.length == 0 && requiredStatus) {
       this.setState({
-        validateStatus: "error",
+        validateStatus: 'error',
         validateMsg: `Plasse input your profile name`,
-        editing: true
-      });
+        editing: true,
+      })
     }
-  };
+  }
 
   onInputBlur = () => {
-    const { value, validateStatus } = this.state;
-    const { requiredStatus } = this.props;
+    const { value, validateStatus } = this.state
+    const { requiredStatus } = this.props
 
-    if (validateStatus === "error") return;
+    if (validateStatus === 'error') return
     if (value.length == 0 && requiredStatus) {
       this.setState({
-        validateStatus: "error",
-        validateMsg: `Plasse input your profile name`
-      });
-      return;
+        validateStatus: 'error',
+        validateMsg: `Plasse input your profile name`,
+      })
+      return
     }
 
     this.setState({
       editing: false,
-      value: value.toString().replace(/\s\s+/g, " ")
-    });
-    const { setProfileName } = this.props;
-    setProfileName(value.toString().replace(/\s\s+/g, " "));
-  };
+      value: value.toString().replace(/\s\s+/g, ' '),
+    })
+    const { setProfileName } = this.props
+    setProfileName(value.toString().replace(/\s\s+/g, ' '))
+  }
 
-  handleChange = e => {
-    const validateStatus = e.target.value.length == 0 ? "error" : "success";
-    const validateMsg = validateStatus === "success" ? "" : "Please input your profile name";
+  handleChange = (e) => {
+    const validateStatus = e.target.value.length == 0 ? 'error' : 'success'
+    const validateMsg =
+      validateStatus === 'success' ? '' : 'Please input your profile name'
     this.setState({
       value: e.target.value,
       validateStatus,
-      validateMsg
-    });
-    this.props.setProfileName(e.target.value.toString().replace(/\s\s+/g, " "));
-  };
+      validateMsg,
+    })
+    this.props.setProfileName(e.target.value.toString().replace(/\s\s+/g, ' '))
+  }
 
   onClickLabel = () => {
     this.setState({
-      editing: true
-    });
-    this.props.updateEditing(true);
-  };
+      editing: true,
+    })
+    this.props.updateEditing(true)
+  }
 
   render() {
-    const { editing, value, validateStatus, validateMsg } = this.state;
+    const { editing, value, validateStatus, validateMsg } = this.state
     return (
-      <React.Fragment>
+      <>
         {editing ? (
-          <StyledFormItem validateStatus={validateStatus} help={validateMsg} required={true}>
+          <StyledFormItem
+            validateStatus={validateStatus}
+            help={validateMsg}
+            required
+          >
             <Input
               onBlur={this.onInputBlur}
               onChange={this.handleChange}
@@ -91,9 +96,9 @@ class EditableNameLabel extends React.Component {
             <Icon type="edit" theme="twoTone" />
           </LabelContainer>
         )}
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
-export default EditableNameLabel;
+export default EditableNameLabel

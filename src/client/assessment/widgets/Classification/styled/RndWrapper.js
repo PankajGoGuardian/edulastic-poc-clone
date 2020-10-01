@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Rnd as ReactRnd } from "react-rnd";
+import styled from 'styled-components'
+import { Rnd as ReactRnd } from 'react-rnd'
 
 export const RndWrapper = styled.div`
   /* 
@@ -7,10 +7,11 @@ export const RndWrapper = styled.div`
     * only applied when it is not resizeable (in preview mode only)
   */
   .answer-draggable-wrapper {
-    transform: ${({ isResizable, translateProps }) => !isResizable && `translate(${translateProps}) !important`};
+    transform: ${({ isResizable, translateProps }) =>
+      !isResizable && `translate(${translateProps}) !important`};
     min-height: ${({ minHeight }) => `${minHeight}px`};
   }
-`;
+`
 
 export const Rnd = styled(ReactRnd).attrs(({ isResizable }) => ({
   enableResizing: {
@@ -21,7 +22,7 @@ export const Rnd = styled(ReactRnd).attrs(({ isResizable }) => ({
     right: !!isResizable,
     top: !!isResizable,
     topLeft: !!isResizable,
-    topRight: !!isResizable
+    topRight: !!isResizable,
   },
-  className: "answer-draggable-wrapper"
-}))``;
+  className: 'answer-draggable-wrapper',
+}))``

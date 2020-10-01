@@ -1,35 +1,35 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import ReactOutsideEvent from "react-outside-event";
-import { EduButton, FlexContainer } from "@edulastic/common";
-import { Input } from "antd";
-import { Container } from "./styled";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import ReactOutsideEvent from 'react-outside-event'
+import { EduButton, FlexContainer } from '@edulastic/common'
+import { Input } from 'antd'
+import { Container } from './styled'
 
 class Prompt extends Component {
   state = {
-    position: 1
-  };
+    position: 1,
+  }
 
-  handleChange = e => {
-    this.setState({ position: e.target.value });
-  };
+  handleChange = (e) => {
+    this.setState({ position: e.target.value })
+  }
 
   handleSuccess = () => {
-    const { position } = this.state;
-    const { onSuccess } = this.props;
-    onSuccess(position);
-  };
+    const { position } = this.state
+    const { onSuccess } = this.props
+    onSuccess(position)
+  }
 
-  onOutsideEvent = event => {
-    const { setShowPrompt } = this.props;
-    if (event.type === "mousedown") {
-      setShowPrompt(false);
+  onOutsideEvent = (event) => {
+    const { setShowPrompt } = this.props
+    if (event.type === 'mousedown') {
+      setShowPrompt(false)
     }
-  };
+  }
 
   render() {
-    const { position } = this.state;
-    const { style, maxValue } = this.props;
+    const { position } = this.state
+    const { style, maxValue } = this.props
     return (
       <Container style={style}>
         <FlexContainer style={{ marginBottom: 10 }}>
@@ -48,19 +48,19 @@ class Prompt extends Component {
           </EduButton>
         </FlexContainer>
       </Container>
-    );
+    )
   }
 }
 
 Prompt.propTypes = {
   style: PropTypes.object,
   maxValue: PropTypes.number,
-  onSuccess: PropTypes.func.isRequired
-};
+  onSuccess: PropTypes.func.isRequired,
+}
 
 Prompt.defaultProps = {
   maxValue: 1,
-  style: {}
-};
+  style: {},
+}
 
-export default ReactOutsideEvent(Prompt, ["mousedown"]);
+export default ReactOutsideEvent(Prompt, ['mousedown'])

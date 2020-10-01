@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { Button, Radio } from "antd";
-import styled from "styled-components";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { ModalBody, Heading, YesButton } from "./ConfirmModal";
-import { white, borderGrey3 } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import React, { useState } from 'react'
+import { Button, Radio } from 'antd'
+import styled from 'styled-components'
+import { white, borderGrey3 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { ModalBody, Heading, YesButton } from './ConfirmModal'
 
 const ShareModal = ({ visible, handleResponse }) => {
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(1)
   const Footer = [
-    <EduButton height="40px" isGhost onClick={() => handleResponse("CANCEL")}>
+    <EduButton height="40px" isGhost onClick={() => handleResponse('CANCEL')}>
       NO
     </EduButton>,
-    <EduButton height="40px" onClick={() => handleResponse("SAVE")}>
+    <EduButton height="40px" onClick={() => handleResponse('SAVE')}>
       SAVE
-    </EduButton>
-  ];
+    </EduButton>,
+  ]
 
   return (
     <StyledModal
@@ -24,27 +24,29 @@ const ShareModal = ({ visible, handleResponse }) => {
       textAlign="center"
       visible={visible}
       footer={Footer}
-      textAlign={"center"}
-      onCancel={() => handleResponse("CANCEL")}
+      textAlign="center"
+      onCancel={() => handleResponse('CANCEL')}
     >
       <StyledModalBody>
-        <Radio.Group onChange={e => setValue(e.target.value)} value={value}>
+        <Radio.Group onChange={(e) => setValue(e.target.value)} value={value}>
           <StyledRadio value={1}>Do not share</StyledRadio>
           <StyledRadio value={2}>Share with district</StyledRadio>
-          <StyledRadio value={3}>Share with whole edulastic community</StyledRadio>
+          <StyledRadio value={3}>
+            Share with whole edulastic community
+          </StyledRadio>
         </Radio.Group>
       </StyledModalBody>
     </StyledModal>
-  );
-};
+  )
+}
 
-export default ShareModal;
+export default ShareModal
 
 const StyledRadio = styled(Radio)`
   display: block;
   height: 30px;
   line-height: 30px;
-`;
+`
 
 const StyledModal = styled(ConfirmationModal)`
   .ant-modal-content {
@@ -57,7 +59,7 @@ const StyledModal = styled(ConfirmationModal)`
       padding: 20px 16px 10px;
     }
   }
-`;
+`
 
 const StyledModalBody = styled(ModalBody)`
   display: block;
@@ -76,4 +78,4 @@ const StyledModalBody = styled(ModalBody)`
       border-radius: 5px;
     }
   }
-`;
+`

@@ -1,15 +1,16 @@
-import React from "react";
-import styled from "styled-components";
-import { someGreyColor1, lightBlue } from "@edulastic/colors";
-import { round } from "lodash";
+import React from 'react'
+import styled from 'styled-components'
+import { someGreyColor1, lightBlue } from '@edulastic/colors'
+import { round } from 'lodash'
 
-const PrintPreviewScore = props => {
-  const { className, data } = props;
-  const maxScore = data?.activity?.maxScore || data.validation?.validResponse?.score || 0;
-  let score = data?.activity?.score || 0;
+const PrintPreviewScore = (props) => {
+  const { className, data } = props
+  const maxScore =
+    data?.activity?.maxScore || data.validation?.validResponse?.score || 0
+  let score = data?.activity?.score || 0
 
   if (data.activity && !data.activity.graded && !data.activity.skipped) {
-    score = "";
+    score = ''
   }
 
   return (
@@ -19,12 +20,12 @@ const PrintPreviewScore = props => {
         <div className="max-score-div">{maxScore}</div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const StyledPrintPreviewScore = styled(PrintPreviewScore)`
   width: 100%;
-  display: ${props => (props.disabled ? "none" : "flex")};
+  display: ${(props) => (props.disabled ? 'none' : 'flex')};
   justify-content: center;
   padding: 10px;
   break-before: avoid;
@@ -57,6 +58,6 @@ const StyledPrintPreviewScore = styled(PrintPreviewScore)`
       max-height: 40px;
     }
   }
-`;
+`
 
-export { StyledPrintPreviewScore as PrintPreviewScore };
+export { StyledPrintPreviewScore as PrintPreviewScore }

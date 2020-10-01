@@ -1,20 +1,20 @@
-import { tabletWidth } from "@edulastic/colors";
-import { ErrorHandler } from "@edulastic/common";
-import { Layout } from "antd";
-import React from "react";
-import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import styled, { ThemeProvider } from "styled-components";
-import { getUserOrgId, getUserRole } from "../author/src/selectors/user";
-import { isProxyUser as isProxyUserSelector } from "../student/Login/ducks";
-import SideMenu from "../author/src/Sidebar/SideMenu";
-import { addThemeBackgroundColor } from "../common/utils/helpers";
-import { themes as globalThemes } from "../theme";
-import { Dashboard } from "./pages/Dashboard/dashboard";
+import { tabletWidth } from '@edulastic/colors'
+import { ErrorHandler } from '@edulastic/common'
+import { Layout } from 'antd'
+import React from 'react'
+import { connect } from 'react-redux'
+import { Route, Switch } from 'react-router-dom'
+import styled, { ThemeProvider } from 'styled-components'
+import { getUserOrgId, getUserRole } from '../author/src/selectors/user'
+import { isProxyUser as isProxyUserSelector } from '../student/Login/ducks'
+import SideMenu from '../author/src/Sidebar/SideMenu'
+import { addThemeBackgroundColor } from '../common/utils/helpers'
+import { themes as globalThemes } from '../theme'
+import { Dashboard } from './pages/Dashboard/dashboard'
 
-const Publisher = props => {
-  const { match, selectedTheme, isProxyUser } = props;
-  const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
+const Publisher = (props) => {
+  const { match, selectedTheme, isProxyUser } = props
+  const themeToPass = globalThemes[selectedTheme] || globalThemes.default
 
   return (
     <ThemeProvider theme={themeToPass}>
@@ -31,28 +31,30 @@ const Publisher = props => {
         </MainContainer>
       </StyledLayout>
     </ThemeProvider>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     orgId: getUserOrgId(state),
     role: getUserRole(state),
-    isProxyUser: isProxyUserSelector(state)
+    isProxyUser: isProxyUserSelector(state),
   }),
   null
-)(Publisher);
+)(Publisher)
 
 const StyledSideMenu = styled(SideMenu)`
-  top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
-`;
+  top: ${(props) => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+`
 
 const StyledLayout = styled(Layout)`
-  margin-top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+  margin-top: ${(props) =>
+    props.isProxyUser ? props.theme.BannerHeight : 0}px;
   .fixed-header {
-    top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px !important;
+    top: ${(props) =>
+      props.isProxyUser ? props.theme.BannerHeight : 0}px !important;
   }
-`;
+`
 
 const MainContainer = addThemeBackgroundColor(styled.div`
   padding-left: 70px;
@@ -85,8 +87,8 @@ const MainContainer = addThemeBackgroundColor(styled.div`
   @media (max-width: ${tabletWidth}) {
     padding-left: 0px;
   }
-`);
+`)
 
 const Wrapper = styled.div`
   position: relative;
-`;
+`

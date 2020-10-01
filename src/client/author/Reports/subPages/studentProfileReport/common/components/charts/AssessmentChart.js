@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { round, get, find } from "lodash";
-import { addColors } from "../../../../../common/util";
-import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
-import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { round, get, find } from 'lodash'
+import { addColors } from '../../../../../common/util'
+import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
+import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
 
 const AssessmentChart = ({
   data,
@@ -13,39 +13,50 @@ const AssessmentChart = ({
   studentInformation = {},
   xTickTooltipPosition = 460,
   isBarClickable = false,
-  printWidth
+  printWidth,
 }) => {
-  const xDataKey = "uniqId";
+  const xDataKey = 'uniqId'
 
-  const dataWithColors = addColors(data, selectedTests, xDataKey, "score");
+  const dataWithColors = addColors(data, selectedTests, xDataKey, 'score')
 
-  const barsLabelFormatter = value => `${round(value || 0)}%`;
+  const barsLabelFormatter = (value) => `${round(value || 0)}%`
 
   const getXTickText = (payload, _data) => {
-    const currentBarData = find(_data, item => item[xDataKey] === payload.value) || {};
-    return currentBarData.testName || "";
-  };
+    const currentBarData =
+      find(_data, (item) => item[xDataKey] === payload.value) || {}
+    return currentBarData.testName || ''
+  }
 
   const _onBarClickCB = (key, args = {}) => {
-    const clickedBarData = find(dataWithColors, item => item[xDataKey] === key) || {};
-    onBarClickCB(clickedBarData, args);
-  };
+    const clickedBarData =
+      find(dataWithColors, (item) => item[xDataKey] === key) || {}
+    onBarClickCB(clickedBarData, args)
+  }
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      const record = get(payload[0], "payload", {});
+      const record = get(payload[0], 'payload', {})
       return (
         <div>
-          <BarTooltipRow title="Assessment : " value={record.testName || "N/A"} />
-          <BarTooltipRow title="Subject : " value={studentInformation.standardSet || "N/A"} />
+          <BarTooltipRow
+            title="Assessment : "
+            value={record.testName || 'N/A'}
+          />
+          <BarTooltipRow
+            title="Subject : "
+            value={studentInformation.standardSet || 'N/A'}
+          />
           <BarTooltipRow title="Type : " value={record.testType} />
           <BarTooltipRow title="Performance Band : " value={record.band.name} />
-          <BarTooltipRow title="Student Performance : " value={`${record.score}%`} />
+          <BarTooltipRow
+            title="Student Performance : "
+            value={`${record.score}%`}
+          />
         </div>
-      );
+      )
     }
-    return false;
-  };
+    return false
+  }
 
   return (
     <SimpleStackedBarChart
@@ -66,20 +77,20 @@ const AssessmentChart = ({
       printWidth={printWidth}
       overflowStyle="" // display complete tooltip
     />
-  );
-};
+  )
+}
 
 AssessmentChart.propTypes = {
   data: PropTypes.array.isRequired,
   onBarClickCB: PropTypes.func,
   onResetClickCB: PropTypes.func,
-  selectedTests: PropTypes.array
-};
+  selectedTests: PropTypes.array,
+}
 
 AssessmentChart.defaultProps = {
   onResetClickCB: () => {},
   onBarClickCB: () => {},
-  selectedTests: []
-};
+  selectedTests: [],
+}
 
-export default AssessmentChart;
+export default AssessmentChart

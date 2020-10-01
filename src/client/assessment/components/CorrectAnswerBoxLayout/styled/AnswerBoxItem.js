@@ -1,6 +1,6 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components'
 
-import { white } from "@edulastic/colors";
+import { white } from '@edulastic/colors'
 
 export const AnswerBoxItem = styled.div`
   display: inline-flex;
@@ -27,7 +27,7 @@ export const AnswerBoxItem = styled.div`
   & .text {
     flex: 1;
     display: flex;
-    align-items: ${({ verticallyCentered }) => verticallyCentered && "center"};
+    align-items: ${({ verticallyCentered }) => verticallyCentered && 'center'};
     justify-content: center;
     height: 100%;
 
@@ -46,4 +46,4 @@ export const AnswerBoxItem = styled.div`
         }
       `}
   }
-`;
+`

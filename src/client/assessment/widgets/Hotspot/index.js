@@ -1,25 +1,25 @@
-import React, { Fragment, useMemo } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { replaceVariables } from "../../utils/variables";
+import React, { Fragment, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { replaceVariables } from '../../utils/variables'
 
-import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
+import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions'
 
-import HotspotPreview from "./HotspotPreview";
-import HotspotEdit from "./HotspotEdit";
+import HotspotPreview from './HotspotPreview'
+import HotspotEdit from './HotspotEdit'
 
-const Hotspot = props => {
-  const { item, view } = props;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+const Hotspot = (props) => {
+  const { item, view } = props
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <Fragment>
+    <>
       {view === PREVIEW && <HotspotPreview {...props} item={itemForPreview} />}
       {view === EDIT && <HotspotEdit {...props} />}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 Hotspot.propTypes = {
   view: PropTypes.string.isRequired,
@@ -32,8 +32,8 @@ Hotspot.propTypes = {
   evaluation: PropTypes.any,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 Hotspot.defaultProps = {
   previewTab: CLEAR,
@@ -41,15 +41,14 @@ Hotspot.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: "",
+  evaluation: '',
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const HotspotContainer = connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(Hotspot);
+const HotspotContainer = connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(Hotspot)
 
-export { HotspotContainer as Hotspot };
+export { HotspotContainer as Hotspot }

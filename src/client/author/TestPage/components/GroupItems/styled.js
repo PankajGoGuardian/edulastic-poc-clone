@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Row, Radio, Button } from "antd";
+import styled from 'styled-components'
+import { Row, Radio, Button } from 'antd'
 import {
   boxShadowDefault,
   white,
@@ -7,15 +7,15 @@ import {
   linkColor1,
   borderGrey,
   lightGreySecondary,
-  themeColorTagsBg
-} from "@edulastic/colors";
+  themeColorTagsBg,
+} from '@edulastic/colors'
 
-export const Container = styled.div``;
+export const Container = styled.div``
 
 export const BreadcrumbContainer = styled(Row)`
   margin-left: 40px;
   margin-top: 15px;
-`;
+`
 
 export const CreateGroupWrapper = styled.div`
   width: 80%;
@@ -25,11 +25,11 @@ export const CreateGroupWrapper = styled.div`
   margin-top: 50px;
   box-shadow: ${boxShadowDefault};
   border-radius: 8px;
-`;
+`
 
 export const Heading = styled.div`
-  font-size: ${props => props.theme.keyboardFontSize};
-  font-weight: ${props => props.theme.semiBold};
+  font-size: ${(props) => props.theme.keyboardFontSize};
+  font-weight: ${(props) => props.theme.semiBold};
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 30px;
@@ -38,33 +38,34 @@ export const Heading = styled.div`
     font-size: 18px;
     line-height: 16px;
   }
-`;
+`
 
-export const ContentBody = styled.div``;
+export const ContentBody = styled.div``
 
 export const GroupField = styled.div`
-  margin-bottom: ${({ marginBottom }) => marginBottom || "30px"};
+  margin-bottom: ${({ marginBottom }) => marginBottom || '30px'};
   input {
     height: 40px;
   }
   .ant-checkbox-wrapper {
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
     text-transform: uppercase;
-    font-weight: ${props => props.theme.semiBold};
+    font-weight: ${(props) => props.theme.semiBold};
     .ant-checkbox {
       margin-right: 10px;
     }
   }
-`;
+`
 
 export const Label = styled.label`
   display: block;
-  margin-bottom: ${({ fontWeight }) => (fontWeight ? "0px" : "5px")};
-  font-size: ${({ fontWeight, theme }) => (fontWeight ? theme.standardFont : theme.smallFontSize)};
+  margin-bottom: ${({ fontWeight }) => (fontWeight ? '0px' : '5px')};
+  font-size: ${({ fontWeight, theme }) =>
+    fontWeight ? theme.standardFont : theme.smallFontSize};
   text-transform: uppercase;
-  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : "600")};
-  cursor: ${({ fontWeight }) => (fontWeight ? "pointer" : "default")};
-`;
+  font-weight: ${({ fontWeight }) => fontWeight || '600'};
+  cursor: ${({ fontWeight }) => (fontWeight ? 'pointer' : 'default')};
+`
 
 export const RadioGroup = styled(Radio.Group)`
   display: block;
@@ -75,12 +76,12 @@ export const RadioGroup = styled(Radio.Group)`
       margin-right: 10px;
     }
     > span:last-child {
-      font-weight: ${props => props.theme.semiBold};
+      font-weight: ${(props) => props.theme.semiBold};
       text-transform: uppercase;
-      ${props => props.theme.smallFontSize};
+      ${(props) => props.theme.smallFontSize};
     }
   }
-`;
+`
 
 export const ItemCountWrapper = styled.div`
   display: inline;
@@ -89,7 +90,7 @@ export const ItemCountWrapper = styled.div`
     margin: 0px 5px;
     height: 30px;
   }
-`;
+`
 
 export const AddGroupButton = styled.span`
   text-transform: uppercase;
@@ -97,7 +98,7 @@ export const AddGroupButton = styled.span`
   background: ${themeColor};
   display: inline-block;
   padding: 10px 30px;
-  font-size: ${props => props.theme.commentFontSize};
+  font-size: ${(props) => props.theme.commentFontSize};
   border-radius: 4px;
   cursor: pointer;
   box-shadow: ${boxShadowDefault};
@@ -108,13 +109,13 @@ export const AddGroupButton = styled.span`
     color: ${themeColor};
     background: ${white};
   }
-`;
+`
 
 export const RadioMessage = styled.div`
   margin: 5px 0px 20px 35px;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   color: ${linkColor1};
-`;
+`
 
 export const SelectItemsButton = styled(AddGroupButton)`
   color: ${themeColor};
@@ -130,18 +131,18 @@ export const SelectItemsButton = styled(AddGroupButton)`
     color: ${white};
     background: ${themeColor};
   }
-`;
+`
 
 export const BrowseButton = styled(SelectItemsButton)`
   box-shadow: unset;
   display: flex;
   width: auto;
   border-radius: 2px;
-`;
+`
 
 export const QuestionTagsWrapper = styled.div`
   display: flex;
-`;
+`
 
 export const QuestionTagsContainer = styled.div`
   width: 510px;
@@ -151,7 +152,7 @@ export const QuestionTagsContainer = styled.div`
   border: 1px solid ${borderGrey};
   border-radius: 2px;
   padding: 3px 8px 8px 3px;
-`;
+`
 
 export const SelectWrapper = styled.div`
   width: ${({ width }) => width};
@@ -174,34 +175,34 @@ export const SelectWrapper = styled.div`
     background: ${lightGreySecondary};
     border-radius: 2px;
   }
-`;
+`
 
 export const AutoSelectFields = styled.div`
   margin-bottom: 30px;
   display: flex;
   flex-wrap: wrap;
-`;
+`
 
 export const DoneButton = styled(AddGroupButton)`
   margin: auto;
-`;
+`
 
 export const Footer = styled.div`
   display: flex;
   justify-content: center;
   padding-top: 10px;
-`;
+`
 
 export const ItemTag = styled.span`
   background: ${themeColorTagsBg};
   color: ${themeColor};
   border-radius: 4px;
   padding: 1px 6px;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   display: inline-block;
   margin: 5px 0px 0px 5px;
-  font-weight: ${props => props.theme.semiBold};
-`;
+  font-weight: ${(props) => props.theme.semiBold};
+`
 
 export const StandardNameSection = styled.div`
   height: 40px;
@@ -218,7 +219,7 @@ export const StandardNameSection = styled.div`
   > span:last-child {
     cursor: pointer;
   }
-`;
+`
 
 export const PanelHeading = styled.div`
   display: flex;
@@ -234,7 +235,7 @@ export const PanelHeading = styled.div`
       }
     }
   }
-`;
+`
 
 export const SaveButton = styled(Button)`
   width: 130px;
@@ -248,4 +249,4 @@ export const SaveButton = styled(Button)`
   &:focus {
     color: ${themeColor};
   }
-`;
+`

@@ -1,23 +1,32 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
 
-import { MainWrapper, StyledContent, StyledLayout } from "../../../../admin/Common/StyledComponents";
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import Collections from "../Collections/Collections";
-import { uploadContnentStatus, contentImportJobIds } from "../../ducks";
-import { UPLOAD_STATUS } from "../../../ImportTest/ducks";
+import {
+  MainWrapper,
+  StyledContent,
+  StyledLayout,
+} from '../../../../admin/Common/StyledComponents'
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
+import Collections from '../Collections/Collections'
+import { uploadContnentStatus, contentImportJobIds } from '../../ducks'
+import { UPLOAD_STATUS } from '../../../ImportTest/ducks'
 
-const title = "Manage District";
-const menuActive = { mainMenu: "Content", subMenu: "Collections" };
+const title = 'Manage District'
+const menuActive = { mainMenu: 'Content', subMenu: 'Collections' }
 
-export const Container = ({ history, routeKey, uploadStatus = "", jobIds = [] }) => {
+export const Container = ({
+  history,
+  routeKey,
+  uploadStatus = '',
+  jobIds = [],
+}) => {
   useEffect(() => {
     if (uploadStatus !== UPLOAD_STATUS.DONE && jobIds.length) {
-      history.push("/author/import-content");
+      history.push('/author/import-content')
     }
-  }, []);
+  }, [])
 
   return (
     <MainWrapper key={routeKey}>
@@ -28,15 +37,15 @@ export const Container = ({ history, routeKey, uploadStatus = "", jobIds = [] })
         </StyledLayout>
       </StyledContent>
     </MainWrapper>
-  );
-};
+  )
+}
 
 const enhance = compose(
-  connect(state => ({
-    routeKey: get(state, ["router", "location", "key"]),
+  connect((state) => ({
+    routeKey: get(state, ['router', 'location', 'key']),
     uploadStatus: uploadContnentStatus(state),
-    jobIds: contentImportJobIds(state)
+    jobIds: contentImportJobIds(state),
   }))
-);
+)
 
-export default enhance(Container);
+export default enhance(Container)

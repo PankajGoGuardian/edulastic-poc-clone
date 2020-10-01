@@ -1,37 +1,40 @@
-require("dotenv").config();
-const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
-const CopyPlugin = require('copy-webpack-plugin');
-const ReactRefreshPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
-const webpack = require("webpack");
-const path = require("path");
-const CircularDependencyPlugin = require("circular-dependency-plugin");
-const packageJson = require("./package.json");
+require('dotenv').config()
+const BundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
-console.log("port", port);
-let config = {
-  entry: "./src/client/index.js",
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3001
+const webpack = require('webpack')
+const path = require('path')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
+const packageJson = require('./package.json')
+
+console.log('port', port)
+const config = {
+  entry: './src/client/index.js',
   devServer: {
-    port
+    port,
   },
   envs: {
     // add the client package json env to be be consumed in the app
     // as process.env.__CLIENT_VERSION__
-    __CLIENT_VERSION__: packageJson.version
+    __CLIENT_VERSION__: packageJson.version,
   },
   output: {
-    dir: process.env.DESTINATION || "./dist",
+    dir: process.env.DESTINATION || './dist',
     sourceMap: true,
-    ...(process.env.QUICK_BUILD ? { sourceMap: false, minimize: false } : {})
+    ...(process.env.QUICK_BUILD ? { sourceMap: false, minimize: false } : {}),
   },
   chainWebpack: (chain, opts) => {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === 'production') {
       chain
-        .plugin("Analyzer")
-        .use(BundleAnalyzer, [{ analyzerMode: "static", defaultSizes: "gzip", openAnalyzer: false }]);
+        .plugin('Analyzer')
+        .use(BundleAnalyzer, [
+          { analyzerMode: 'static', defaultSizes: 'gzip', openAnalyzer: false },
+        ])
       chain.module
-        .rule("js")
+        .rule('js')
         .include.add(/node_modules\/\@edulastic/)
         .add(/node_modules\/query-string/)
         .add(/node_modules\/qs/)
@@ -50,32 +53,36 @@ let config = {
         .add(/node_modules\/acorn-jsx/)
         .add(/node_modules\/strict-uri-encode/)
         .add(/node_modules\/react-jsx-parser/)
-        .add(/node_modules\/espree/);
-      chain.module
-        .rule("js")
-        .use("babel-loader")
-        .options({
-          cacheDirectory: true,
-          cacheCompression: true,
-          cacheIdentifier: "jsx:react::namedImports:undefined",
-          babelrc: false
-        });
+        .add(/node_modules\/espree/)
+      chain.module.rule('js').use('babel-loader').options({
+        cacheDirectory: true,
+        cacheCompression: true,
+        cacheIdentifier: 'jsx:react::namedImports:undefined',
+        babelrc: false,
+      })
     }
 
-    chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
+    chain.plugin('MomentsLocale').use(MomentLocalesPlugin)
 
-    chain.plugin("PdfWorker").use(CopyPlugin, [[{
-      from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
-      to: 'pdf.worker.js'
-    }]]);
+    chain.plugin('PdfWorker').use(CopyPlugin, [
+      [
+        {
+          from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
+          to: 'pdf.worker.js',
+        },
+      ],
+    ])
 
-    chain.plugin("BannerPlugin").use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }]);
+    chain
+      .plugin('BannerPlugin')
+      .use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }])
     // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);
     // not really required, since the plugin by itself is doing the same.
-    if (process.env.NODE_ENV !== "production") chain.plugin("ReactRefreshPlugin").use(ReactRefreshPlugin);
-  }
-};
-if (process.env.PUBLIC_URL) {
-  config.output.publicUrl = process.env.PUBLIC_URL;
+    if (process.env.NODE_ENV !== 'production')
+      chain.plugin('ReactRefreshPlugin').use(ReactRefreshPlugin)
+  },
 }
-module.exports = config;
+if (process.env.PUBLIC_URL) {
+  config.output.publicUrl = process.env.PUBLIC_URL
+}
+module.exports = config

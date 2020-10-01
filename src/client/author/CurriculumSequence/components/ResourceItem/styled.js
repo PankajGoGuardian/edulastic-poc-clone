@@ -1,5 +1,11 @@
-import styled from "styled-components";
-import { borderGrey4, playlistTabLink, backgrounds, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
+import styled from 'styled-components'
+import {
+  borderGrey4,
+  playlistTabLink,
+  backgrounds,
+  themeColor,
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
 
 export const ResourceItemWrapper = styled.div`
   width: 95%;
@@ -24,7 +30,7 @@ export const ResourceItemWrapper = styled.div`
       display: block;
     }
   }
-`;
+`
 
 export const IconWrapper = styled.div`
   width: 30px;
@@ -42,7 +48,7 @@ export const IconWrapper = styled.div`
       width: 16px;
     }
   }
-`;
+`
 
 export const ResourceTitle = styled.div`
   text-align: left;
@@ -67,11 +73,11 @@ export const ResourceTitle = styled.div`
       margin-left: 15px;
     }
   }
-`;
+`
 
 export const TitleText = styled.div`
   display: inline-block;
-  max-width: ${props => (props.noStandards ? 230 : 145)}px;
+  max-width: ${(props) => (props.noStandards ? 230 : 145)}px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -79,4 +85,4 @@ export const TitleText = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
   }
-`;
+`

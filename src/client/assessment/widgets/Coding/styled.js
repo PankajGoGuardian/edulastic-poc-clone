@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { TextField } from "@edulastic/common";
+import styled from 'styled-components'
+import { TextField } from '@edulastic/common'
 import {
   themeColor,
   white,
@@ -7,10 +7,10 @@ import {
   fadedGrey,
   greyThemeLighter,
   lightGreySecondary,
-  green
-} from "@edulastic/colors";
-import { Button, Table, Tabs, Radio, Modal, Form } from "antd";
-import { StyledPaperWrapper } from "../../styled/Widget";
+  green,
+} from '@edulastic/colors'
+import { Button, Table, Tabs, Radio, Modal, Form } from 'antd'
+import { StyledPaperWrapper } from '../../styled/Widget'
 
 export const SubtitleContainer = styled.div`
   padding: 10px 20px;
@@ -24,7 +24,7 @@ export const SubtitleContainer = styled.div`
       color: ${white};
     }
   }
-`;
+`
 
 export const EditorHeader = styled.div`
   width: 100%;
@@ -33,7 +33,7 @@ export const EditorHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
+`
 // export const StyledFroalaEditor = styled(FroalaEditor)`
 //   .fr-element {
 //     background: #f8f8fb !important;
@@ -49,7 +49,7 @@ export const EditorHeader = styled.div`
 export const StyledSectionContainer = styled.div`
   padding: 15px 30px 0 30px;
   ${({ style }) => style};
-`;
+`
 
 export const StyledTextField = styled(TextField)`
   padding: 5px 15px;
@@ -62,14 +62,14 @@ export const StyledTextField = styled(TextField)`
     font-style: normal;
     color: #b1b1b1;
   }
-`;
+`
 
 export const StyledTitle = styled.div`
   padding: 5px 0;
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 500;
-`;
+`
 
 export const StyledButton = styled(Button)`
   background: ${themeColor};
@@ -82,28 +82,33 @@ export const StyledButton = styled(Button)`
   float: right;
   padding: 6px 29px;
   ${({ style }) => style};
-`;
+`
 
 export const StyledCodeEditorWrapper = styled.div`
   border: 2px solid ${borderGrey};
   border-bottom: none;
   border-radius: 4px 4px 0px 0px;
   ${({ style }) => style};
-`;
+`
 
 export const StyledActionWrapper = styled.div`
   float: right;
   padding: 4.5px 0;
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table {
     overflow: auto;
-    ${({ border }) => border && { border: `1px solid ${borderGrey}`, borderTop: "none", borderRadius: "0 0 4px 4px" }};
+    ${({ border }) =>
+      border && {
+        border: `1px solid ${borderGrey}`,
+        borderTop: 'none',
+        borderRadius: '0 0 4px 4px',
+      }};
     &-thead {
       & > tr > th {
-        color: ${props => props.theme.manageDistrict.tableHeaderTxtColor};
-        font-size: ${props => props.theme.manageDistrict.tableHeaderTxtSize};
+        color: ${(props) => props.theme.manageDistrict.tableHeaderTxtColor};
+        font-size: ${(props) => props.theme.manageDistrict.tableHeaderTxtSize};
         font-weight: bold;
         padding: 20px 10px;
         text-transform: uppercase;
@@ -137,18 +142,18 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const StyledTableButton = styled.a`
   margin-right: 20px;
   &:last-child {
     margin-right: 0;
   }
-`;
+`
 
 export const StyledTableHeader = styled.div`
   text-align: center;
-`;
+`
 
 export const StyledTabs = styled(Tabs)`
   border: 2px solid ${borderGrey};
@@ -165,11 +170,11 @@ export const StyledTabs = styled(Tabs)`
       padding: 16px 38px;
     }
   }
-`;
+`
 
 export const StyledRadio = styled(Radio)`
   padding: 0 100px 0 0;
-`;
+`
 
 export const StyledRadioGroup = styled(Radio.Group)`
   text-transform: uppercase;
@@ -177,16 +182,16 @@ export const StyledRadioGroup = styled(Radio.Group)`
   label {
     font-size: ${({ fontSize }) => fontSize};
   }
-`;
+`
 
-export const EmptyWrapper = styled.div``;
+export const EmptyWrapper = styled.div``
 
 export const CodeReviewWrapper = styled(StyledPaperWrapper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
-  ${({ flowLayout }) => flowLayout && "background: transparent"};
-  padding: ${props => (props.padding ? props.padding : "0px")};
-  box-shadow: ${props => (props.boxShadow ? props.boxShadow : "none")};
-`;
+  ${({ flowLayout }) => flowLayout && 'background: transparent'};
+  padding: ${(props) => (props.padding ? props.padding : '0px')};
+  box-shadow: ${(props) => (props.boxShadow ? props.boxShadow : 'none')};
+`
 
 export const StyledModal = styled(Modal)`
   .ant {
@@ -247,7 +252,7 @@ export const StyledModal = styled(Modal)`
       }
     }
   }
-`;
+`
 
 export const StyledForm = styled(Form)`
   .ant-row {
@@ -276,4 +281,4 @@ export const StyledForm = styled(Form)`
   .ant-dropdown {
     z-index: 10000;
   }
-`;
+`

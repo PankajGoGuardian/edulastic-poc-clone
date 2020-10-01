@@ -1,12 +1,20 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Modal } from "antd";
-import { themeColor } from "@edulastic/colors";
-import { MathFormulaDisplay, CustomModalStyled, EduButton } from "@edulastic/common";
-import { launchAssignmentFromLinkAction, startAssignmentAction, redirectToDashboardAction } from "./Assignments/ducks";
-import { changeClassAction, getUserRole } from "./Login/ducks";
-import { showTestInstructionsAction } from "./sharedDucks/AssignmentModule/ducks";
+import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Modal } from 'antd'
+import { themeColor } from '@edulastic/colors'
+import {
+  MathFormulaDisplay,
+  CustomModalStyled,
+  EduButton,
+} from '@edulastic/common'
+import {
+  launchAssignmentFromLinkAction,
+  startAssignmentAction,
+  redirectToDashboardAction,
+} from './Assignments/ducks'
+import { changeClassAction, getUserRole } from './Login/ducks'
+import { showTestInstructionsAction } from './sharedDucks/AssignmentModule/ducks'
 
 const StartAssignment = ({
   match,
@@ -19,89 +27,99 @@ const StartAssignment = ({
   showInstruction,
   assignment,
   setShowTestInstruction,
-  history
+  history,
 }) => {
   useEffect(() => {
-    const { assignmentId, groupId } = match.params;
-    if (userRole === "student") {
-      changeClass(groupId);
+    const { assignmentId, groupId } = match.params
+    if (userRole === 'student') {
+      changeClass(groupId)
     }
-    launchAssignment({ assignmentId, groupId });
-  }, []);
+    launchAssignment({ assignmentId, groupId })
+  }, [])
 
   useEffect(() => {
     if (timedAssignment) {
-      const { assignmentId, groupId } = match.params;
-      const { pauseAllowed, allowedTime, testId, testType = "assessment" } = timedAssignment;
+      const { assignmentId, groupId } = match.params
+      const {
+        pauseAllowed,
+        allowedTime,
+        testId,
+        testType = 'assessment',
+      } = timedAssignment
       const content = pauseAllowed ? (
         <p>
-          {" "}
-          This is a timed assignment which should be finished within the time limit set for this assignment. The time
-          limit for this assignment is{" "}
+          {' '}
+          This is a timed assignment which should be finished within the time
+          limit set for this assignment. The time limit for this assignment is{' '}
           <span data-cy="test-time" style={{ fontWeight: 700 }}>
-            {" "}
+            {' '}
             {allowedTime / (60 * 1000)} minutes
           </span>
           . Do you want to continue?
         </p>
       ) : (
         <p>
-          {" "}
-          This is a timed assignment which should be finished within the time limit set for this assignment. The time
-          limit for this assignment is{" "}
+          {' '}
+          This is a timed assignment which should be finished within the time
+          limit set for this assignment. The time limit for this assignment is{' '}
           <span data-cy="test-time" style={{ fontWeight: 700 }}>
-            {" "}
+            {' '}
             {allowedTime / (60 * 1000)} minutes
-          </span>{" "}
+          </span>{' '}
           and you can’t quit in between. Do you want to continue?
         </p>
-      );
+      )
 
       Modal.confirm({
-        title: "Do you want to Continue ?",
+        title: 'Do you want to Continue ?',
         content,
         onOk: () => {
-          console.warn("==Initiating assignment==", { testId, assignmentId, testType, groupId });
-          startAssignment({ testId, assignmentId, testType, classId: groupId });
-          console.warn("==Initiated assignment successfully==");
-          Modal.destroyAll();
+          console.warn('==Initiating assignment==', {
+            testId,
+            assignmentId,
+            testType,
+            groupId,
+          })
+          startAssignment({ testId, assignmentId, testType, classId: groupId })
+          console.warn('==Initiated assignment successfully==')
+          Modal.destroyAll()
         },
         onCancel: () => {
-          redirectToDashboard();
-          Modal.destroyAll();
+          redirectToDashboard()
+          Modal.destroyAll()
         },
-        okText: "Continue",
+        okText: 'Continue',
         centered: true,
         width: 500,
         okButtonProps: {
-          style: { background: themeColor }
-        }
-      });
+          style: { background: themeColor },
+        },
+      })
     }
-  }, [timedAssignment]);
+  }, [timedAssignment])
 
   const cancelInstructions = () => {
-    setShowTestInstruction({ showInstruction: false, assignment: {} });
-    history.push("/home/assignments");
-  };
+    setShowTestInstruction({ showInstruction: false, assignment: {} })
+    history.push('/home/assignments')
+  }
 
   const continueToTest = () => {
-    const { assignmentId, groupId } = match.params;
-    const { testId, testType = "assessment" } = assignment;
-    startAssignment({ testId, assignmentId, testType, classId: groupId });
-    setShowTestInstruction({ showInstruction: false, assignment: {} });
-  };
+    const { assignmentId, groupId } = match.params
+    const { testId, testType = 'assessment' } = assignment
+    startAssignment({ testId, assignmentId, testType, classId: groupId })
+    setShowTestInstruction({ showInstruction: false, assignment: {} })
+  }
 
   if (showInstruction && assignment.instruction) {
-    const { instruction } = assignment;
+    const { instruction } = assignment
     const footer = [
       <EduButton onClick={cancelInstructions} isGhost>
         <span>Cancel</span>
       </EduButton>,
       <EduButton onClick={continueToTest}>
         <span>Continue</span>
-      </EduButton>
-    ];
+      </EduButton>,
+    ]
 
     return (
       <CustomModalStyled
@@ -114,24 +132,27 @@ const StartAssignment = ({
         onOk={continueToTest}
         onCancel={cancelInstructions}
       >
-        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: instruction }} style={{ marginTop: "1rem" }} />
+        <MathFormulaDisplay
+          dangerouslySetInnerHTML={{ __html: instruction }}
+          style={{ marginTop: '1rem' }}
+        />
       </CustomModalStyled>
-    );
+    )
   }
-  return <div> Initializing Assignment... </div>;
-};
+  return <div> Initializing Assignment... </div>
+}
 
 StartAssignment.propTypes = {
   match: PropTypes.object.isRequired,
   launchAssignment: PropTypes.func.isRequired,
-  changeClass: PropTypes.func.isRequired
-};
+  changeClass: PropTypes.func.isRequired,
+}
 
 export default connect(
   ({ studentAssignment }) => ({
     timedAssignment: studentAssignment.unconfirmedTimedAssignment,
     showInstruction: studentAssignment.showInstruction,
-    assignment: studentAssignment.assignment
+    assignment: studentAssignment.assignment,
   }),
   {
     launchAssignment: launchAssignmentFromLinkAction,
@@ -139,6 +160,6 @@ export default connect(
     redirectToDashboard: redirectToDashboardAction,
     changeClass: changeClassAction,
     userRole: getUserRole,
-    setShowTestInstruction: showTestInstructionsAction
+    setShowTestInstruction: showTestInstructionsAction,
   }
-)(StartAssignment);
+)(StartAssignment)

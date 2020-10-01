@@ -1,124 +1,125 @@
-import EditToolBar from "../common/editToolBar";
-import Header from "../../itemDetail/header";
-import EditItemPage from "../../itemDetail/editPage";
-import Helpers from "../../../../util/Helpers";
+import EditToolBar from '../common/editToolBar'
+import Header from '../../itemDetail/header'
+import EditItemPage from '../../itemDetail/editPage'
+import Helpers from '../../../../util/Helpers'
+
 class EssayPlainTextPage {
   constructor() {
-    this.editItemPage = new EditItemPage();
-    this.editToolBar = new EditToolBar();
-    this.header = new Header();
+    this.editItemPage = new EditItemPage()
+    this.editToolBar = new EditToolBar()
+    this.header = new Header()
   }
 
   // question Authoring
 
-  getQuestionEditor = () => cy.get(".fr-element").eq(0);
+  getQuestionEditor = () => cy.get('.fr-element').eq(0)
 
   // advance options
   clickOnAdvancedOptions() {
-    this.editItemPage.showAdvancedOptions();
-    return this;
+    this.editItemPage.showAdvancedOptions()
+    return this
   }
 
   // Action formatting options
-  getCopyCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCopy"]');
+  getCopyCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCopy"]')
 
-  getCutCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCut"]');
+  getCutCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCut"]')
 
-  getPasteCheckBox = () => cy.get('[data-cy="questionEssayPlainEditPaste"]');
+  getPasteCheckBox = () => cy.get('[data-cy="questionEssayPlainEditPaste"]')
 
   // scoring block -> move to common utitly
-  getScoreInput = () => cy.get('[data-cy="maxscore"]');
+  getScoreInput = () => cy.get('[data-cy="maxscore"]')
 
-  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]');
+  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]')
 
-  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]');
+  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]')
 
-  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]');
+  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]')
 
-  getPreviewBoxContainer = () => cy.get('[data-cy="previewBoxContainer"]');
+  getPreviewBoxContainer = () => cy.get('[data-cy="previewBoxContainer"]')
 
-  getShowWordCount = () => cy.get('[data-cy="showWordCount"]');
+  getShowWordCount = () => cy.get('[data-cy="showWordCount"]')
 
-  getBrowserSpellCheckOption = () => cy.get('[data-cy="browserSpellCheckOption"]');
+  getBrowserSpellCheckOption = () =>
+    cy.get('[data-cy="browserSpellCheckOption"]')
 
-  getWordlimitOptions = () => cy.get('[data-cy="wordLimitOptions"]');
+  getWordlimitOptions = () => cy.get('[data-cy="wordLimitOptions"]')
 
-  getWordLimitInput = () => cy.get('[data-cy="wordLimitInput"]');
+  getWordLimitInput = () => cy.get('[data-cy="wordLimitInput"]')
 
   getFontSizeSelect() {
-    return Helpers.getElement("fontSizeOption");
+    return Helpers.getElement('fontSizeOption')
   }
 
   getFontSize(value) {
-    return Helpers.getElement(value);
+    return Helpers.getElement(value)
   }
 
   // Display block
-  getSpecialCharactersOption = () => cy.get('[data-cy="specialCharactersOption"]');
+  getSpecialCharactersOption = () =>
+    cy.get('[data-cy="specialCharactersOption"]')
 
-  getCharactersToDisplayOption = () => cy.get('[data-cy="charactersToDisplay"]').next();
+  getCharactersToDisplayOption = () =>
+    cy.get('[data-cy="charactersToDisplay"]').next()
 
-  getMinHeightOption = () => cy.get('[data-cy="minHeightOption"]').next();
+  getMinHeightOption = () => cy.get('[data-cy="minHeightOption"]').next()
 
-  getMaxHeightOption = () => cy.get('[data-cy="maxHeightOption"]').next();
+  getMaxHeightOption = () => cy.get('[data-cy="maxHeightOption"]').next()
 
-  getPlaceholderOption = () => cy.get('[data-cy="placeholder"]').next();
+  getPlaceholderOption = () => cy.get('[data-cy="placeholder"]').next()
 
-  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
+  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]')
 
   // on preview
-  getTextEditor = () => cy.get(".ant-input").should("be.visible");
+  getTextEditor = () => cy.get('.ant-input').should('be.visible')
 
-  getCopy = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCopy"]');
+  getCopy = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCopy"]')
 
-  getCut = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCut"]');
+  getCut = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolCut"]')
 
-  getPaste = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewToolPaste"]');
+  getPaste = () =>
+    cy.get('[data-cy="questionPlainEssayAuthorPreviewToolPaste"]')
 
-  getWordCount = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewWordCount"]');
+  getWordCount = () =>
+    cy.get('[data-cy="questionPlainEssayAuthorPreviewWordCount"]')
 
   // ACTION STARTS
 
-  clickOnCopy = () => this.getCopy().click();
+  clickOnCopy = () => this.getCopy().click()
 
-  clickOnpaste = () => this.getPaste().click();
+  clickOnpaste = () => this.getPaste().click()
 
-  clickOnCut = () => this.getCut().click();
+  clickOnCut = () => this.getCut().click()
 
-  selectWordlimitOption = value => {
+  selectWordlimitOption = (value) => {
     this.getWordlimitOptions()
       .click()
       .then(() => {
-        cy.get(".ant-select-dropdown-menu")
-          .contains(value)
-          .click();
-      });
-    this.getWordlimitOptions().should("contain.text", value);
-  };
+        cy.get('.ant-select-dropdown-menu').contains(value).click()
+      })
+    this.getWordlimitOptions().should('contain.text', value)
+  }
 
-  selectSpecialCharacterInPreview = value => {
-    cy.get('[data-cy="questionSpecialCharacter"]').click({ force: true });
-    cy.get("[class^=CharacterMap]")
-      .children()
-      .eq(2)
-      .click();
-    this.getTextEditor().should("have.text", value);
-  };
+  selectSpecialCharacterInPreview = (value) => {
+    cy.get('[data-cy="questionSpecialCharacter"]').click({ force: true })
+    cy.get('[class^=CharacterMap]').children().eq(2).click()
+    this.getTextEditor().should('have.text', value)
+  }
 
   selectFont(value) {
-    this.getFontSizeSelect().click();
-    this.getFontSize(value).click();
+    this.getFontSizeSelect().click()
+    this.getFontSize(value).click()
   }
 
   checkFontSize(fontSize) {
-    this.header.preview();
+    this.header.preview()
     this.getPreviewBoxContainer()
-      .should("have.css", "font-size")
-      .and("eq", fontSize);
-    this.header.edit();
+      .should('have.css', 'font-size')
+      .and('eq', fontSize)
+    this.header.edit()
   }
 
   // ACTION ENDS
 }
 
-export default EssayPlainTextPage;
+export default EssayPlainTextPage

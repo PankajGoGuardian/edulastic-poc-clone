@@ -1,3 +1,3 @@
-import { sagas as publisherDashboardSaga } from "./pages/Dashboard/ducks";
+import { sagas as publisherDashboardSaga } from './pages/Dashboard/ducks'
 
-export default [...publisherDashboardSaga];
+export default [...publisherDashboardSaga]

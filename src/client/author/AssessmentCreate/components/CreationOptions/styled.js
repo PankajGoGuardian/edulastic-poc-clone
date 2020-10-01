@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const OptionsContainer = styled.div`
   margin-top: 89px;
@@ -6,4 +6,4 @@ export const OptionsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-`;
+`

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const getItemBackground = (alpha, hoverBg = false) => ({
   active,
@@ -6,60 +6,72 @@ const getItemBackground = (alpha, hoverBg = false) => ({
   checkAnswers,
   correct,
   locked,
-  theme
+  theme,
 }) => {
-  const isCheckGreen = checkAnswers && active && !locked && correct;
-  const isCheckRed = checkAnswers && active && !locked && !correct;
-  const isCheckLocked = (checkAnswers && active && locked) || (checkAnswers && !active && locked);
-  const isShowGreen = showAnswers && correct && !locked;
-  const isShowLocked = (showAnswers && correct && locked) || (showAnswers && !correct && active && locked);
-  const isShowRed = showAnswers && !correct && active && !locked;
-  const isSimplyActive = !checkAnswers && !showAnswers && active;
+  const isCheckGreen = checkAnswers && active && !locked && correct
+  const isCheckRed = checkAnswers && active && !locked && !correct
+  const isCheckLocked =
+    (checkAnswers && active && locked) || (checkAnswers && !active && locked)
+  const isShowGreen = showAnswers && correct && !locked
+  const isShowLocked =
+    (showAnswers && correct && locked) ||
+    (showAnswers && !correct && active && locked)
+  const isShowRed = showAnswers && !correct && active && !locked
+  const isSimplyActive = !checkAnswers && !showAnswers && active
 
   if (isCheckGreen || isShowGreen) {
-    return theme.widgets.shading.correctLiBgColor;
+    return theme.widgets.shading.correctLiBgColor
   }
   if (isCheckRed || isShowRed) {
-    return theme.widgets.shading.incorrectLiBgColor;
+    return theme.widgets.shading.incorrectLiBgColor
   }
   if (isCheckLocked || isShowLocked || isSimplyActive) {
-    return theme.widgets.shading.lockedLiBgColor;
+    return theme.widgets.shading.lockedLiBgColor
   }
-  return hoverBg ? theme.widgets.shading.liBgHoverColor : theme.widgets.shading.liBgColor;
-};
+  return hoverBg
+    ? theme.widgets.shading.liBgHoverColor
+    : theme.widgets.shading.liBgColor
+}
 
 const getBorderWidth = ({ active, checkAnswers, correct, locked, border }) => {
-  if (border !== "full") {
-    return 0;
+  if (border !== 'full') {
+    return 0
   }
-  const isCheckGreen = checkAnswers && active && !locked && correct;
-  const isCheckRed = checkAnswers && active && !locked && !correct;
+  const isCheckGreen = checkAnswers && active && !locked && correct
+  const isCheckRed = checkAnswers && active && !locked && !correct
 
-  return isCheckGreen || isCheckRed ? "2px" : "1px";
-};
+  return isCheckGreen || isCheckRed ? '2px' : '1px'
+}
 
-const getBorderColor = ({ active, checkAnswers, correct, locked, showAnswers, theme }) => {
-  const isCheckGreen = checkAnswers && active && !locked && correct;
-  const isCheckRed = checkAnswers && active && !locked && !correct;
-  const isShowGreen = showAnswers && correct && !locked;
-  const isShowRed = showAnswers && !correct && active && !locked;
+const getBorderColor = ({
+  active,
+  checkAnswers,
+  correct,
+  locked,
+  showAnswers,
+  theme,
+}) => {
+  const isCheckGreen = checkAnswers && active && !locked && correct
+  const isCheckRed = checkAnswers && active && !locked && !correct
+  const isShowGreen = showAnswers && correct && !locked
+  const isShowRed = showAnswers && !correct && active && !locked
 
   if (isCheckGreen || isShowGreen) {
-    return theme.widgets.shading.correctLiBorderColor;
+    return theme.widgets.shading.correctLiBorderColor
   }
   if (isCheckRed || isShowRed) {
-    return theme.widgets.shading.incorrectLiBorderColor;
+    return theme.widgets.shading.incorrectLiBorderColor
   }
 
-  return theme.widgets.shading.liBorderColor;
-};
+  return theme.widgets.shading.liBorderColor
+}
 
 export const Li = styled.li`
   width: ${({ width }) => width * 30}px;
-  visibility: ${props => props.visibility};
+  visibility: ${(props) => props.visibility};
   height: ${({ height }) => height * 30}px;
   background: ${getItemBackground(0.5)};
-  cursor: ${({ locked }) => (locked ? "not-allowed" : "pointer")};
+  cursor: ${({ locked }) => (locked ? 'not-allowed' : 'pointer')};
   border-width: ${getBorderWidth};
   border-style: solid;
   border-color: ${getBorderColor};
@@ -72,7 +84,7 @@ export const Li = styled.li`
     margin-left: 0;
   }
   &:hover {
-    ${props =>
+    ${(props) =>
       props.hover &&
       `
       background: ${getItemBackground(0.6, true)};
@@ -80,4 +92,4 @@ export const Li = styled.li`
       border: 3px solid ${props.theme.widgets.shading.liBorderHoverColor};
     `}
   }
-`;
+`

@@ -1,321 +1,319 @@
-import { notification } from "@edulastic/common";
-import qs from "qs";
-import API from "./utils/API";
+import { notification } from '@edulastic/common'
+import qs from 'qs'
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/clever/";
-const atlasPrefix = "/atlas/";
+const api = new API()
+const prefix = '/clever/'
+const atlasPrefix = '/atlas/'
 
-const searchUpdateDistrict = params =>
+const searchUpdateDistrict = (params) =>
   api
     .callApi({
       url: `districts`,
-      method: "get",
+      method: 'get',
       params,
-      paramsSerializer: params => qs.stringify(params)
+      paramsSerializer: (params) => qs.stringify(params),
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const searchClasslinkDistrict = params =>
+const searchClasslinkDistrict = (params) =>
   api
     .callApi({
       url: `${atlasPrefix}districts/classlink`,
-      method: "get",
+      method: 'get',
       params,
-      paramsSerializer: params => qs.stringify(params)
+      paramsSerializer: (params) => qs.stringify(params),
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const updateDistrictCleverId = ({ districtId, cleverId }) =>
   api
     .callApi({
       url: `districts/${districtId}/clever-id`,
-      method: "put",
-      data: { cleverId }
+      method: 'put',
+      data: { cleverId },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const updateDistrictClasslinkId = ({ districtId, atlasId }) =>
-    api
-      .callApi({
-        url: `${atlasPrefix}merge/${districtId}`,
-        method: "post",
-        data: { atlasId }
-      })
-      .then(({ data }) => data);
+  api
+    .callApi({
+      url: `${atlasPrefix}merge/${districtId}`,
+      method: 'post',
+      data: { atlasId },
+    })
+    .then(({ data }) => data)
 
-const deleteDistrictApi = districtId =>
+const deleteDistrictApi = (districtId) =>
   api
     .callApi({
       url: `districts/${districtId}`,
-      method: "delete"
+      method: 'delete',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const fetchExistingDataMergeClever = ({ districtId, cleverId }) =>
   api
     .callApi({
       url: `${prefix}clever-district/${districtId}`,
-      method: "get",
-      params: { cleverId }
+      method: 'get',
+      params: { cleverId },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const fetchExistingDataMergeClasslink = ({ districtId, atlasId }) =>
   api
     .callApi({
       url: `${atlasPrefix}${atlasId}/district/${districtId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const deleteClasslinkDistrictApi = districtId =>
+const deleteClasslinkDistrictApi = (districtId) =>
   api
     .callApi({
       url: `${atlasPrefix}district/${districtId}`,
-      method: "delete"
+      method: 'delete',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-
-
-const applyDeltaSyncApi = data =>
+const applyDeltaSyncApi = (data) =>
   api
     .callApi({
       url: `${prefix}update-delta-sync-info`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const applyAtlasDeltaSyncApi = ({atlasId, ...data}) =>
+const applyAtlasDeltaSyncApi = ({ atlasId, ...data }) =>
   api
     .callApi({
       url: `${atlasPrefix}${atlasId}/delta-sync-config`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const selectedSchoolSyncApi = ({ cleverId, schoolCleverIds }) =>
   api
     .callApi({
       url: `${prefix}districts/${cleverId}/schools-sync`,
-      method: "post",
+      method: 'post',
       data: {
-        schoolCleverIds
-      }
+        schoolCleverIds,
+      },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const completeDistrictSync = ({ cleverId }) =>
   api
     .callApi({
       url: `${prefix}district/${cleverId}`,
-      method: "get"
+      method: 'get',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const selectedAtlasSchoolSyncApi = ({ atlasId, atlasSchoolIds }) =>
   api
     .callApi({
       url: `${atlasPrefix}district/${atlasId}/schools-sync`,
-      method: "post",
+      method: 'post',
       data: {
-        atlasSchoolIds
-      }
+        atlasSchoolIds,
+      },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-// TODO: re-check why this call gets stuck at pending 
+// TODO: re-check why this call gets stuck at pending
 const completeAtlasDistrictSync = ({ atlasId }) =>
   api
     .callApi({
       url: `${atlasPrefix}district-sync/${atlasId}`,
-      method: "post"
+      method: 'post',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const fetchCleverClassNamesSyncApi = data =>
+const fetchCleverClassNamesSyncApi = (data) =>
   api
     .callApi({
       url: `${prefix}class-name-pattern`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const fetchAtlasClassNamesSyncApi = data =>
+const fetchAtlasClassNamesSyncApi = (data) =>
   api
     .callApi({
       url: `${atlasPrefix}${data.orgId}/class-name-pattern`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const enableDisableCleverSyncApi = ({ syncEnabled, districtId }) =>
   api
     .callApi({
       url: `${prefix}district/${districtId}/clever-sync-status`,
-      method: "put",
+      method: 'put',
       data: {
-        syncEnabled
-      }
+        syncEnabled,
+      },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const enableDisableClasslinkSyncApi = ({ syncEnabled, districtId }) =>
   api
     .callApi({
       url: `${atlasPrefix}district/${districtId}/sync-status`,
-      method: "put",
+      method: 'put',
       data: {
-        syncEnabled
-      }
+        syncEnabled,
+      },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const fetchCurriculumDataApi = () =>
   api
     .callApi({
       url: `/curriculum`,
-      method: "get"
+      method: 'get',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const uploadCSVtoClever = ({ districtId, mergeType, file }) => {
-  const formData = new FormData();
-  formData.append("file", file);
+  const formData = new FormData()
+  formData.append('file', file)
   return api
     .callApi({
       url: `${prefix}merge/${districtId}?mergeType=${mergeType}`,
-      method: "post",
+      method: 'post',
       data: formData,
-      headers: { "Content-Type": "multipart/form-data" }
+      headers: { 'Content-Type': 'multipart/form-data' },
     })
-    .then(({ data }) => data.result);
-};
+    .then(({ data }) => data.result)
+}
 
 const uploadCSVtoAtlas = ({ districtId, file, mergeType }) => {
-  const formData = new FormData();
-  formData.append("file", file);
+  const formData = new FormData()
+  formData.append('file', file)
   return api
     .callApi({
       url: `${atlasPrefix}${districtId}/mergeids?mergeType=${mergeType}`,
-      method: "post",
+      method: 'post',
       data: formData,
-      headers: { "Content-Type": "multipart/form-data" }
+      headers: { 'Content-Type': 'multipart/form-data' },
     })
-    .then(({ data }) => data.result);
-};
+    .then(({ data }) => data.result)
+}
 
-const updateCleverSubjectStandardApi = data =>
+const updateCleverSubjectStandardApi = (data) =>
   api
     .callApi({
       url: `${prefix}update-subject-mapping`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const updateAtlasSubjectStandardApi = data =>
+const updateAtlasSubjectStandardApi = (data) =>
   api
     .callApi({
       url: `${atlasPrefix}${data.orgId}/subject-mapping`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const logsDataApi = districtId =>
+const logsDataApi = (districtId) =>
   api
     .callApi({
       url: `${prefix}district/${districtId}/clever-log`,
-      method: "get"
+      method: 'get',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
 const logsAtlasDataApi = (districtId) =>
-    api
-      .callApi({
-        url: `${atlasPrefix}district/${districtId}/setup-logs`,
-        method: "get"
-      })
-      .then(({ data }) => data);
+  api
+    .callApi({
+      url: `${atlasPrefix}district/${districtId}/setup-logs`,
+      method: 'get',
+    })
+    .then(({ data }) => data)
 
-const getUsersDataApi = districtId =>
+const getUsersDataApi = (districtId) =>
   api
     .callApi({
       url: `${prefix}districtstats/${districtId}/`,
-      method: "get"
+      method: 'get',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const getClasslinkUsersDataApi = districtId =>
+const getClasslinkUsersDataApi = (districtId) =>
   api
     .callApi({
       url: `${atlasPrefix}${districtId}/district-stats`,
-      method: "get"
+      method: 'get',
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-const manageSubscription = data =>
+const manageSubscription = (data) =>
   api
     .callApi({
-      url: "/subscription",
-      method: "post",
-      data
+      url: '/subscription',
+      method: 'post',
+      data,
     })
     .then(({ data: response }) => response)
-    .catch(({ data: errorData }) => notification({ msg: errorData.message }));
+    .catch(({ data: errorData }) => notification({ msg: errorData.message }))
 
-const searchUsersByEmailIds = data =>
+const searchUsersByEmailIds = (data) =>
   api
     .callApi({
       url: `/search/users/by-emails`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
-const searchUsersByEmailsOrIds = data =>
+const searchUsersByEmailsOrIds = (data) =>
   api
     .callApi({
       url: `/search/users/by-emails-or-ids`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
-const searchSchoolsById = data =>
+const searchSchoolsById = (data) =>
   api
     .callApi({
       url: `/search/schools`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
 
 const saveOrgPermissionsApi = ({ permissions, districtId }) =>
   api
     .callApi({
       url: `districts/${districtId}`,
-      method: "put",
+      method: 'put',
       data: {
-        permissions
-      }
+        permissions,
+      },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
 
-  const getSubscription = ({ districtId, schoolId }) =>
-    api
-      .callApi({
-        url: `/subscription`,
-        method: "get",
-        params: { districtId, schoolId }
-      })
-      .then(({ data }) => data.result);
+const getSubscription = ({ districtId, schoolId }) =>
+  api
+    .callApi({
+      url: `/subscription`,
+      method: 'get',
+      params: { districtId, schoolId },
+    })
+    .then(({ data }) => data.result)
 
 export default {
   getSubscription,
@@ -350,5 +348,5 @@ export default {
   searchSchoolsById,
   saveOrgPermissionsApi,
   searchUsersByEmailsOrIds,
-  searchClasslinkDistrict
-};
+  searchClasslinkDistrict,
+}

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Document, Page } from "react-pdf";
-import { Dropdown, Menu, Modal } from "antd";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { Document, Page } from 'react-pdf'
+import { Dropdown, Menu, Modal } from 'antd'
 
-import { ThumbnailsItemWrapper, PageNumber, PagePreview } from "./styled";
-import { BLANK_URL } from "../Worksheet/Worksheet";
+import { ThumbnailsItemWrapper, PageNumber, PagePreview } from './styled'
+import { BLANK_URL } from '../Worksheet/Worksheet'
 
 const createContextMenu = ({
   index,
@@ -19,7 +19,7 @@ const createContextMenu = ({
   hasAnnotations,
   setRotateDirection,
   setConfirmRotate,
-  setDeleteConfirmation
+  setDeleteConfirmation,
 }) => (
   <Menu>
     <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
@@ -35,10 +35,10 @@ const createContextMenu = ({
       onClick={
         hasAnnotations
           ? () => {
-              setConfirmRotate(true);
-              setRotateDirection("clockwise");
+              setConfirmRotate(true)
+              setRotateDirection('clockwise')
             }
-          : onRotate("clockwise")
+          : onRotate('clockwise')
       }
     >
       Rotate clockwise
@@ -47,10 +47,10 @@ const createContextMenu = ({
       onClick={
         hasAnnotations
           ? () => {
-              setConfirmRotate(true);
-              setRotateDirection("counterclockwise");
+              setConfirmRotate(true)
+              setRotateDirection('counterclockwise')
             }
-          : onRotate("counterclockwise")
+          : onRotate('counterclockwise')
       }
     >
       Rotate counterclockwise
@@ -58,12 +58,16 @@ const createContextMenu = ({
     <Menu.Divider />
     <Menu.Item
       disabled={disableDelete}
-      onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}
+      onClick={
+        url || hasAnnotations
+          ? () => setDeleteConfirmation(true, index)
+          : onDelete
+      }
     >
       Delete
     </Menu.Item>
   </Menu>
-);
+)
 
 const ThumbnailsItem = ({
   page,
@@ -81,10 +85,10 @@ const ThumbnailsItem = ({
   hasAnnotations,
   setDeleteConfirmation,
   rotate,
-  total
+  total,
 }) => {
-  const [confirmRotate, setConfirmRotate] = useState(false);
-  const [rotateDirection, setRotateDirection] = useState("clockwise");
+  const [confirmRotate, setConfirmRotate] = useState(false)
+  const [rotateDirection, setRotateDirection] = useState('clockwise')
   const contextMenu = createContextMenu({
     index,
     viewMode,
@@ -99,29 +103,29 @@ const ThumbnailsItem = ({
     setConfirmRotate,
     setRotateDirection,
     setDeleteConfirmation,
-    url
-  });
+    url,
+  })
 
-  const pageNumber = url === BLANK_URL ? 1 : page;
+  const pageNumber = url === BLANK_URL ? 1 : page
 
   return (
     <>
       <Modal
         visible={confirmRotate}
         onOk={() => {
-          onRotate(rotateDirection)();
-          setConfirmRotate(false);
+          onRotate(rotateDirection)()
+          setConfirmRotate(false)
         }}
         onCancel={() => setConfirmRotate(false)}
       >
-        These pages contain one or more questions or annotations. Rotating the page may result this content positioned
-        incorrectly.
+        These pages contain one or more questions or annotations. Rotating the
+        page may result this content positioned incorrectly.
       </Modal>
       <Dropdown
         overlayClassName="pdfContextMenuDocBased"
         overlay={contextMenu}
-        disabled={viewMode !== "edit"}
-        trigger={["contextMenu"]}
+        disabled={viewMode !== 'edit'}
+        trigger={['contextMenu']}
       >
         <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
           <PagePreview rotate={rotate}>
@@ -135,8 +139,8 @@ const ThumbnailsItem = ({
         </ThumbnailsItemWrapper>
       </Dropdown>
     </>
-  );
-};
+  )
+}
 
 ThumbnailsItem.propTypes = {
   page: PropTypes.number.isRequired,
@@ -150,12 +154,12 @@ ThumbnailsItem.propTypes = {
   onMoveUp: PropTypes.func.isRequired,
   onMoveDown: PropTypes.func.isRequired,
   onInsertBlankPage: PropTypes.func.isRequired,
-  onRotate: PropTypes.func.isRequired
-};
+  onRotate: PropTypes.func.isRequired,
+}
 
 ThumbnailsItem.defaultProps = {
   rotate: 0,
-  url: false
-};
+  url: false,
+}
 
-export default ThumbnailsItem;
+export default ThumbnailsItem

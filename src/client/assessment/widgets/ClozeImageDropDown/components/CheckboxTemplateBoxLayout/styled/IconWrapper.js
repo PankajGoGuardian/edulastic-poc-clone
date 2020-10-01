@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const IconWrapper = styled.div`
   position: absolute;
@@ -6,4 +6,4 @@ export const IconWrapper = styled.div`
   top: 50%;
   transform: translateY(-50%);
   display: flex;
-`;
+`

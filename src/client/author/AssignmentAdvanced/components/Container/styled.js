@@ -1,8 +1,16 @@
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { Button } from "antd";
-import { tabletWidth, mobileWidth, linkColor, themeColor, white, darkGrey, smallDesktopWidth } from "@edulastic/colors";
-import { Card, FlexContainer } from "@edulastic/common";
+import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+import { Button } from 'antd'
+import {
+  tabletWidth,
+  mobileWidth,
+  linkColor,
+  themeColor,
+  white,
+  darkGrey,
+  smallDesktopWidth,
+} from '@edulastic/colors'
+import { Card, FlexContainer } from '@edulastic/common'
 
 export const Container = styled.div`
   padding: 30px;
@@ -13,7 +21,7 @@ export const Container = styled.div`
   @media (max-width: ${mobileWidth}) {
     padding: 0 26px 45px 26px;
   }
-`;
+`
 
 export const TableWrapper = styled.div`
   margin-top: 22px;
@@ -62,7 +70,7 @@ export const TableWrapper = styled.div`
       }
     }
   }
-`;
+`
 
 export const StyledCard = styled(Card)`
   border-radius: 5;
@@ -75,7 +83,7 @@ export const StyledCard = styled(Card)`
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
-`;
+`
 
 export const PaginationInfo = styled.span`
   font-weight: 600;
@@ -85,12 +93,12 @@ export const PaginationInfo = styled.span`
   white-space: nowrap;
   color: ${linkColor};
   margin-top: 8px;
-`;
+`
 
 export const AnchorLink = styled(Link)`
   text-transform: uppercase;
   color: ${linkColor};
-`;
+`
 
 export const ActionDiv = styled.div`
   display: flex;
@@ -99,7 +107,7 @@ export const ActionDiv = styled.div`
   text-align: center;
   flex: 1;
   padding-right: 7px;
-`;
+`
 
 export const Anchor = styled.a`
   display: block;
@@ -112,7 +120,7 @@ export const Anchor = styled.a`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 export const BtnAction = styled(Button)`
   color: ${white};
@@ -141,7 +149,7 @@ export const BtnAction = styled(Button)`
       fill: ${themeColor};
     }
   }
-`;
+`
 
 export const Breadcrumbs = styled.div`
   display: flex;
@@ -150,7 +158,7 @@ export const Breadcrumbs = styled.div`
     margin-right: 10px;
     font-size: 20px;
   }
-`;
+`
 
 export const StyledButton = styled(Button)`
   width: 130px;
@@ -161,18 +169,18 @@ export const StyledButton = styled(Button)`
   @media (max-width: 1365px) {
     width: 50px;
   }
-`;
+`
 
 export const StyledSpan = styled.span`
   text-transform: uppercase;
   font-size: 13px;
   font-weight: 600;
   margin-right: 20px;
-`;
+`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   align-items: flex-start;
   @media (max-width: ${smallDesktopWidth}) {
     flex-direction: column;
   }
-`;
+`

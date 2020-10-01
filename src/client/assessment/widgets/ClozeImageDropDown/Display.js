@@ -1,35 +1,39 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { shuffle, isUndefined, get, maxBy, orderBy } from "lodash";
-import { withTheme } from "styled-components";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { shuffle, isUndefined, get, maxBy, orderBy } from 'lodash'
+import { withTheme } from 'styled-components'
 import {
   Stimulus,
   QuestionNumberLabel,
   FlexContainer,
   QuestionSubLabel,
   QuestionLabelWrapper,
-  QuestionContentWrapper
-} from "@edulastic/common";
-import { getLatexValueFromMathTemplate } from "@edulastic/common/src/utils/mathUtils";
-import { clozeImage, response } from "@edulastic/constants";
-import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
-import AnswerDropdown from "./components/AnswerDropdown";
-import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
-import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
-import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
-import { StyledPreviewImage } from "./styled/StyledPreviewImage";
-import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
-import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
-import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { getFontSize, topAndLeftRatio, getStemNumeration } from "../../utils/helpers";
-import { Pointer } from "../../styled/Pointer";
-import { Point } from "../../styled/Point";
-import { Triangle } from "../../styled/Triangle";
-import QuestionOptions from "./QuestionOptions";
-import Instructions from "../../components/Instructions";
-import { EDIT } from "../../constants/constantsForQuestions";
+  QuestionContentWrapper,
+} from '@edulastic/common'
+import { getLatexValueFromMathTemplate } from '@edulastic/common/src/utils/mathUtils'
+import { clozeImage, response } from '@edulastic/constants'
+import CorrectAnswerBoxLayout from './components/CorrectAnswerBox'
+import AnswerDropdown from './components/AnswerDropdown'
+import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout'
+import { StyledPreviewTemplateBox } from './styled/StyledPreviewTemplateBox'
+import { StyledPreviewContainer } from './styled/StyledPreviewContainer'
+import { StyledPreviewImage } from './styled/StyledPreviewImage'
+import { StyledDisplayContainer } from './styled/StyledDisplayContainer'
+import { TemplateBoxContainer } from './styled/TemplateBoxContainer'
+import { TemplateBoxLayoutContainer } from './styled/TemplateBoxLayoutContainer'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
+import {
+  getFontSize,
+  topAndLeftRatio,
+  getStemNumeration,
+} from '../../utils/helpers'
+import { Pointer } from '../../styled/Pointer'
+import { Point } from '../../styled/Point'
+import { Triangle } from '../../styled/Triangle'
+import QuestionOptions from './QuestionOptions'
+import Instructions from '../../components/Instructions'
+import { EDIT } from '../../constants/constantsForQuestions'
 
 /**
  * answers do not contain an index field
@@ -42,114 +46,119 @@ import { EDIT } from "../../constants/constantsForQuestions";
  * @param {Object} idIndexMap
  */
 function getAnswersSortedByIndex(answers = {}, idIndexMap = {}) {
-  const answersIndexed = produce(answers, draft => {
-    Object.keys(draft).forEach(key => {
-      draft[key] = { value: draft[key], index: idIndexMap[key], id: key };
-    });
-  });
-  const answersSortedByIndex = orderBy(answersIndexed, ["index"], ["asc"]);
-  return answersSortedByIndex;
+  const answersIndexed = produce(answers, (draft) => {
+    Object.keys(draft).forEach((key) => {
+      draft[key] = { value: draft[key], index: idIndexMap[key], id: key }
+    })
+  })
+  const answersSortedByIndex = orderBy(answersIndexed, ['index'], ['asc'])
+  return answersSortedByIndex
 }
 
 class Display extends Component {
-  containerRef = React.createRef();
+  containerRef = React.createRef()
 
   selectChange = (value, id) => {
-    const { onChange: changeAnswers, userSelections } = this.props;
+    const { onChange: changeAnswers, userSelections } = this.props
     changeAnswers(
-      produce(userSelections, draft => {
-        draft[id] = getLatexValueFromMathTemplate(value) || value;
+      produce(userSelections, (draft) => {
+        draft[id] = getLatexValueFromMathTemplate(value) || value
       })
-    );
-  };
+    )
+  }
 
-  shuffle = arr => {
-    const newArr = arr.map(item => shuffle(item));
+  shuffle = (arr) => {
+    const newArr = arr.map((item) => shuffle(item))
 
-    return newArr;
-  };
+    return newArr
+  }
 
   getWidth = () => {
-    const { item } = this.props;
-    const { imageOriginalWidth, imageWidth } = item;
-    const { maxWidth } = clozeImage;
+    const { item } = this.props
+    const { imageOriginalWidth, imageWidth } = item
+    const { maxWidth } = clozeImage
 
     // If image uploaded is smaller than the max width, keep it as-is
     // If image is larger, compress it to max width (keep aspect-ratio by default)
     // If user changes image size manually to something larger, allow it
 
     if (!isUndefined(imageWidth)) {
-      return imageWidth > 0 ? imageWidth : maxWidth;
+      return imageWidth > 0 ? imageWidth : maxWidth
     }
 
     if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
-      return imageOriginalWidth;
+      return imageOriginalWidth
     }
     if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
-      return maxWidth;
+      return maxWidth
     }
-    return maxWidth;
-  };
+    return maxWidth
+  }
 
   getHeight = () => {
-    const { item } = this.props;
-    const { imageHeight, keepAspectRatio, imageOriginalHeight, imageOriginalWidth } = item;
-    const { maxHeight } = clozeImage;
-    const imageWidth = this.getWidth();
+    const { item } = this.props
+    const {
+      imageHeight,
+      keepAspectRatio,
+      imageOriginalHeight,
+      imageOriginalWidth,
+    } = item
+    const { maxHeight } = clozeImage
+    const imageWidth = this.getWidth()
     // If image uploaded is smaller than the max width, keep it as-is
     // If image is larger, compress it to max width (keep aspect-ratio by default)
     // If user changes image size manually to something larger, allow it
     if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
-      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
+      return (imageOriginalHeight * imageWidth) / imageOriginalWidth
     }
 
     if (!isUndefined(imageHeight)) {
-      return imageHeight > 0 ? imageHeight : maxHeight;
+      return imageHeight > 0 ? imageHeight : maxHeight
     }
 
     if (!isUndefined(imageHeight)) {
-      return imageHeight > 0 ? imageHeight : maxHeight;
+      return imageHeight > 0 ? imageHeight : maxHeight
     }
 
     if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
-      return imageOriginalHeight;
+      return imageOriginalHeight
     }
 
-    return maxHeight;
-  };
+    return maxHeight
+  }
 
   getResponseBoxMaxValues = () => {
-    const { responseContainers } = this.props;
+    const { responseContainers } = this.props
 
     if (responseContainers.length > 0) {
-      const maxTop = maxBy(responseContainers, res => res.top);
-      const maxLeft = maxBy(responseContainers, res => res.left);
+      const maxTop = maxBy(responseContainers, (res) => res.top)
+      const maxLeft = maxBy(responseContainers, (res) => res.left)
       return {
         responseBoxMaxTop: maxTop.top + maxTop.height,
-        responseBoxMaxLeft: maxLeft.left + maxLeft.width
-      };
+        responseBoxMaxLeft: maxLeft.left + maxLeft.width,
+      }
     }
 
-    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
-  };
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 }
+  }
 
   onClickCheckboxHandler = () => {
-    const { changePreview, changePreviewTab } = this.props;
+    const { changePreview, changePreviewTab } = this.props
     if (changePreview) {
-      changePreview("clear");
+      changePreview('clear')
     }
-    changePreviewTab("clear");
-  };
+    changePreviewTab('clear')
+  }
 
   get idIndexMap() {
-    const { item: { responses = [] } = {} } = this.props;
-    const idIndexMap = {};
+    const { item: { responses = [] } = {} } = this.props
+    const idIndexMap = {}
     responses.forEach((resp, index) => {
       if (resp.id) {
-        idIndexMap[resp.id] = index;
+        idIndexMap[resp.id] = index
       }
-    });
-    return idIndexMap;
+    })
+    return idIndexMap
   }
 
   render() {
@@ -182,81 +191,106 @@ class Display extends Component {
       isPrint = false,
       isPrintPreview = false,
       setAnswers,
-      view
-    } = this.props;
+      view,
+    } = this.props
 
-    const { shuffleOptions } = configureOptions;
-    const { maxHeight, maxWidth } = clozeImage;
-    let newOptions;
+    const { shuffleOptions } = configureOptions
+    const { maxHeight, maxWidth } = clozeImage
+    let newOptions
     if (preview && shuffleOptions) {
-      newOptions = this.shuffle(options);
+      newOptions = this.shuffle(options)
     } else {
-      newOptions = options;
+      newOptions = options
     }
     // Layout Options
-    const fontSize = theme.fontsize || getFontSize(fontsize);
+    const fontSize = theme.fontsize || getFontSize(fontsize)
 
-    const { heightpx, wordwrap, responsecontainerindividuals = [], stemNumeration } = uiStyle;
+    const {
+      heightpx,
+      wordwrap,
+      responsecontainerindividuals = [],
+      stemNumeration,
+    } = uiStyle
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: heightpx !== 0 ? heightpx : "auto",
-      whiteSpace: wordwrap ? "inherit" : "nowrap"
-    };
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
+      heightpx: heightpx !== 0 ? heightpx : 'auto',
+      whiteSpace: wordwrap ? 'inherit' : 'nowrap',
+    }
 
-    let cAnswers = get(item, "validation.validResponse.value", []);
-    const showDropItemBorder = get(item, "responseLayout.showborder", false);
-    const placeholder = uiStyle.placeholder || "";
-    const imageHeight = this.getHeight();
-    const imageWidth = this.getWidth();
-    let canvasHeight = imageHeight + (imageOptions.y || 0);
-    let canvasWidth = imageWidth + +(imageOptions.x || 0);
+    let cAnswers = get(item, 'validation.validResponse.value', [])
+    const showDropItemBorder = get(item, 'responseLayout.showborder', false)
+    const placeholder = uiStyle.placeholder || ''
+    const imageHeight = this.getHeight()
+    const imageWidth = this.getWidth()
+    let canvasHeight = imageHeight + (imageOptions.y || 0)
+    let canvasWidth = imageWidth + +(imageOptions.x || 0)
 
-    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+    const {
+      responseBoxMaxTop,
+      responseBoxMaxLeft,
+    } = this.getResponseBoxMaxValues()
 
     if (canvasHeight < responseBoxMaxTop) {
-      canvasHeight = responseBoxMaxTop + 20;
+      canvasHeight = responseBoxMaxTop + 20
     }
 
     if (canvasWidth < responseBoxMaxLeft) {
-      canvasWidth = responseBoxMaxLeft;
+      canvasWidth = responseBoxMaxLeft
     }
-    const largestResponseWidth = responseContainers.reduce((acc, resp) => Math.max(acc, resp.width), 0);
-    let containerHeight = 0;
+    const largestResponseWidth = responseContainers.reduce(
+      (acc, resp) => Math.max(acc, resp.width),
+      0
+    )
+    let containerHeight = 0
     // calculate the dropdown menu height, its top relative to container, for each responseContainer
-    const tops = [];
-    let maxResponseOffsetX = 0;
+    const tops = []
+    let maxResponseOffsetX = 0
     responseContainers.forEach((responseContainer, i) => {
-      const delta = parseFloat(responseContainer?.height) + (newOptions?.[i]?.length * 32 || 110);
-      tops.push(topAndLeftRatio(responseContainer?.top, imagescale, fontsize, smallSize) + delta);
-      const respOffset = responseContainer.left || 0 + responseContainer.width || 0;
-      maxResponseOffsetX = Math.max(respOffset, maxResponseOffsetX);
-    });
+      const delta =
+        parseFloat(responseContainer?.height) +
+        (newOptions?.[i]?.length * 32 || 110)
+      tops.push(
+        topAndLeftRatio(
+          responseContainer?.top,
+          imagescale,
+          fontsize,
+          smallSize
+        ) + delta
+      )
+      const respOffset =
+        responseContainer.left || 0 + responseContainer.width || 0
+      maxResponseOffsetX = Math.max(respOffset, maxResponseOffsetX)
+    })
 
-    containerHeight = Math.max(canvasHeight, maxHeight, Math.max(...tops));
-    const containerWidth = Math.max(maxResponseOffsetX, canvasWidth);
+    containerHeight = Math.max(canvasHeight, maxHeight, Math.max(...tops))
+    const containerWidth = Math.max(maxResponseOffsetX, canvasWidth)
 
-    let userSelectedAnswers = userSelections;
+    let userSelectedAnswers = userSelections
     if (isPrintPreview || isPrint) {
-      userSelectedAnswers = responseContainers.map((_, i) => getStemNumeration("lowercase", i));
-      cAnswers = responseContainers.map((_, i) => getStemNumeration("lowercase", i));
+      userSelectedAnswers = responseContainers.map((_, i) =>
+        getStemNumeration('lowercase', i)
+      )
+      cAnswers = responseContainers.map((_, i) =>
+        getStemNumeration('lowercase', i)
+      )
     }
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         smallSize={smallSize}
-        width={isPrintPreview ? "" : containerWidth}
+        width={isPrintPreview ? '' : containerWidth}
         fontSize={fontSize}
-        height={isPrintPreview ? "" : containerHeight}
+        height={isPrintPreview ? '' : containerHeight}
       >
         <StyledPreviewContainer
-          width={isPrintPreview ? "" : containerWidth}
+          width={isPrintPreview ? '' : containerWidth}
           smallSize={smallSize}
-          height={isPrintPreview ? "" : containerHeight}
+          height={isPrintPreview ? '' : containerHeight}
         >
           {!isPrintPreview ? (
             <StyledPreviewImage
               data-cy="imageInpreviewContainer"
-              imageSrc={imageUrl || ""}
+              imageSrc={imageUrl || ''}
               width={this.getWidth()}
               height={this.getHeight()}
               alt={imageAlterText}
@@ -264,9 +298,9 @@ class Display extends Component {
               maxHeight={maxHeight}
               maxWidth={maxWidth}
               style={{
-                position: "absolute",
+                position: 'absolute',
                 top: imageOptions.y || 0,
-                left: imageOptions.x || 0
+                left: imageOptions.x || 0,
               }}
             />
           ) : (
@@ -274,41 +308,69 @@ class Display extends Component {
               src={imageUrl}
               alt={imageAlterText}
               style={{
-                width: "100%"
+                width: '100%',
               }}
             />
           )}
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
-              const { height: individualHeight = 0, width: individualWidth = 0 } = responseContainer;
-              const { heightpx: globalHeight = 0, widthpx: globalWidth = 0 } = uiStyle;
-              const { minWidth, minHeight } = response;
-              const height = parseInt(individualHeight, 10) || parseInt(globalHeight, 10) || minHeight;
-              const width = parseInt(individualWidth, 10) || parseInt(globalWidth, 10) || minWidth;
-              const dropTargetIndex = index;
-              const top = topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize);
-              const left = topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize);
+              const {
+                height: individualHeight = 0,
+                width: individualWidth = 0,
+              } = responseContainer
+              const {
+                heightpx: globalHeight = 0,
+                widthpx: globalWidth = 0,
+              } = uiStyle
+              const { minWidth, minHeight } = response
+              const height =
+                parseInt(individualHeight, 10) ||
+                parseInt(globalHeight, 10) ||
+                minHeight
+              const width =
+                parseInt(individualWidth, 10) ||
+                parseInt(globalWidth, 10) ||
+                minWidth
+              const dropTargetIndex = index
+              const top = topAndLeftRatio(
+                responseContainer.top,
+                imagescale,
+                fontsize,
+                smallSize
+              )
+              const left = topAndLeftRatio(
+                responseContainer.left,
+                imagescale,
+                fontsize,
+                smallSize
+              )
               const btnStyle = {
-                height: isPrintPreview ? `${(height / containerHeight) * 100}%` : height,
-                width: isPrintPreview ? `${(width / containerWidth) * 100}%` : width,
+                height: isPrintPreview
+                  ? `${(height / containerHeight) * 100}%`
+                  : height,
+                width: isPrintPreview
+                  ? `${(width / containerWidth) * 100}%`
+                  : width,
                 top: isPrintPreview ? `${(top / containerHeight) * 100}%` : top,
-                left: isPrintPreview ? `${(left / containerWidth) * 100}%` : left,
+                left: isPrintPreview
+                  ? `${(left / containerWidth) * 100}%`
+                  : left,
                 border: showDropItemBorder
                   ? showDashedBorder
                     ? `2px dashed ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
-                    : "none"
-                  : "none",
-                position: "absolute",
-                borderRadius: "4px"
-              };
-              const responseId = responseContainer.id;
+                    : 'none'
+                  : 'none',
+                position: 'absolute',
+                borderRadius: '4px',
+              }
+              const responseId = responseContainer.id
 
               return (
                 <div
                   key={index}
                   style={{
                     ...btnStyle,
-                    borderStyle: smallSize ? "dashed" : "none"
+                    borderStyle: smallSize ? 'dashed' : 'none',
                   }}
                   className="imagelabeldragdrop-droppable active"
                 >
@@ -318,31 +380,42 @@ class Display extends Component {
                       responseIndex={dropTargetIndex}
                       style={{
                         width: `100%`,
-                        height: `100%`
+                        height: `100%`,
                       }}
                       fontSize={fontSize}
-                      dropdownStyle={{ zoom: theme.widgets.clozeImageDropDown.imageZoom }}
+                      dropdownStyle={{
+                        zoom: theme.widgets.clozeImageDropDown.imageZoom,
+                      }}
                       disabled={disableResponse}
                       backgroundColor={backgroundColor}
-                      options={(newOptions[dropTargetIndex] || []).map(op => ({
-                        value: op,
-                        label: op
-                      }))}
-                      onChange={value => this.selectChange(value, responseId)}
-                      defaultValue={isReviewTab ? cAnswers[responseId] : userSelectedAnswers[responseId]}
+                      options={(newOptions[dropTargetIndex] || []).map(
+                        (op) => ({
+                          value: op,
+                          label: op,
+                        })
+                      )}
+                      onChange={(value) => this.selectChange(value, responseId)}
+                      defaultValue={
+                        isReviewTab
+                          ? cAnswers[responseId]
+                          : userSelectedAnswers[responseId]
+                      }
                       isPrintPreview={isPrint || isPrintPreview}
                     />
                   )}
-                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                  <Pointer
+                    className={responseContainer.pointerPosition}
+                    width={responseContainer.width}
+                  >
                     <Point />
                     <Triangle theme={theme} />
                   </Pointer>
                 </div>
-              );
+              )
             })}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
-    );
+    )
 
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
@@ -351,7 +424,7 @@ class Display extends Component {
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
-        imageUrl={imageUrl || ""}
+        imageUrl={imageUrl || ''}
         imageWidth={this.getWidth()}
         imageHeight={this.getHeight()}
         canvasHeight={canvasHeight}
@@ -370,9 +443,15 @@ class Display extends Component {
         minWidthShowAnswer={response.minWidthShowAnswer}
         minHeight={response.minHeight}
         userSelections={
-          item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections
+          item && item.activity && item.activity.userResponse
+            ? item.activity.userResponse
+            : userSelections
         }
-        evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
+        evaluation={
+          item && item.activity && item.activity.evaluation
+            ? item.activity.evaluation
+            : evaluation
+        }
         imageOptions={imageOptions}
         onClickHandler={this.onClickCheckboxHandler}
         largestResponseWidth={largestResponseWidth}
@@ -380,21 +459,27 @@ class Display extends Component {
         item={item}
         isPrintPreview={isPrintPreview || isPrint}
       />
-    );
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
-    const altAnswers = get(validation, "altResponses", []);
+    )
+    const templateBoxLayout =
+      showAnswer || checkAnswer
+        ? checkboxTemplateBoxLayout
+        : previewTemplateBoxLayout
+    const altAnswers = get(validation, 'altResponses', [])
 
-    const correctAnswers = get(validation, ["validResponse", "value"], {});
+    const correctAnswers = get(validation, ['validResponse', 'value'], {})
     const correctAnswerBoxLayout = (
-      <React.Fragment>
+      <>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
           stemNumeration={stemNumeration}
           userAnswers={getAnswersSortedByIndex(correctAnswers, this.idIndexMap)}
         />
         {altAnswers.map((answer, index) => {
-          const { value = {} } = answer;
-          const altAnswerSorted = getAnswersSortedByIndex(value, this.idIndexMap);
+          const { value = {} } = answer
+          const altAnswerSorted = getAnswersSortedByIndex(
+            value,
+            this.idIndexMap
+          )
           return (
             <CorrectAnswerBoxLayout
               fontSize={fontSize}
@@ -402,24 +487,41 @@ class Display extends Component {
               userAnswers={altAnswerSorted}
               altAnsIndex={index + 1}
             />
-          );
+          )
         })}
-      </React.Fragment>
-    );
+      </>
+    )
 
-    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
+    const answerBox =
+      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />
 
     return (
-      <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize} ref={this.containerRef} height="auto">
-        <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+      <StyledDisplayContainer
+        fontSize={fontSize}
+        smallSize={smallSize}
+        ref={this.containerRef}
+        height="auto"
+      >
+        <FlexContainer
+          justifyContent="flex-start"
+          alignItems="baseline"
+          width="100%"
+        >
           <QuestionLabelWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+            {showQuestionNumber && (
+              <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+            )}
+            {item.qSubLabel && (
+              <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+            )}
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper>
             <QuestionTitleWrapper>
-              <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+              <Stimulus
+                smallSize={smallSize}
+                dangerouslySetInnerHTML={{ __html: question }}
+              />
             </QuestionTitleWrapper>
 
             <TemplateBoxContainer
@@ -427,15 +529,19 @@ class Display extends Component {
               flexDirection="column"
               className="cloze-image-dropdown-response"
             >
-              <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
-              {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
+              <TemplateBoxLayoutContainer smallSize={smallSize}>
+                {templateBoxLayout}
+              </TemplateBoxLayoutContainer>
+              {(isPrintPreview || isPrint) && (
+                <QuestionOptions options={newOptions} />
+              )}
               {view && view !== EDIT && <Instructions item={item} />}
               {answerBox}
             </TemplateBoxContainer>
           </QuestionContentWrapper>
         </FlexContainer>
       </StyledDisplayContainer>
-    );
+    )
   }
 }
 
@@ -466,8 +572,8 @@ Display.propTypes = {
   isExpressGrader: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   imageOptions: PropTypes.object,
-  isReviewTab: PropTypes.bool
-};
+  isReviewTab: PropTypes.bool,
+}
 
 Display.defaultProps = {
   options: [],
@@ -482,22 +588,22 @@ Display.defaultProps = {
   responseContainers: [],
   showDashedBorder: false,
   smallSize: false,
-  backgroundColor: "#0288d1",
+  backgroundColor: '#0288d1',
   validation: {},
   imageUrl: undefined,
-  imageAlterText: "",
+  imageAlterText: '',
   uiStyle: {
-    fontsize: "normal",
-    stemNumeration: "numerical",
+    fontsize: 'normal',
+    stemNumeration: 'numerical',
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
-    responsecontainerindividuals: []
+    responsecontainerindividuals: [],
   },
   showQuestionNumber: false,
   imageOptions: {},
   isExpressGrader: false,
-  isReviewTab: false
-};
+  isReviewTab: false,
+}
 
-export default withTheme(Display);
+export default withTheme(Display)

@@ -1,43 +1,48 @@
-import React, { useState } from "react";
-import { compose } from "redux";
-import { Button, Form, Input } from "antd";
-import styled from "styled-components";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { ModalBody, Heading, YesButton } from "./ConfirmModal";
-import { backgrounds, themeColor } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import React, { useState } from 'react'
+import { compose } from 'redux'
+import { Button, Form, Input } from 'antd'
+import styled from 'styled-components'
+import { backgrounds, themeColor } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { ModalBody, Heading, YesButton } from './ConfirmModal'
 
 const DeleteModal = ({ visible, toggleModal, form }) => {
-  const [disableButton, setButtonState] = useState(true);
+  const [disableButton, setButtonState] = useState(true)
 
-  const handleResponse = e => {
+  const handleResponse = (e) => {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (values && values.confirmationText && values.confirmationText.toUpperCase() === "DELETE") toggleModal("YES");
+        if (
+          values &&
+          values.confirmationText &&
+          values.confirmationText.toUpperCase() === 'DELETE'
+        )
+          toggleModal('YES')
       }
-    });
-  };
+    })
+  }
 
   const Footer = [
-    <EduButton height="40px" isGhost onClick={() => toggleModal("NO")}>
+    <EduButton height="40px" isGhost onClick={() => toggleModal('NO')}>
       NO, CANCEL
     </EduButton>,
     <EduButton height="40px" disabled={disableButton} onClick={handleResponse}>
       YES, DELETE
-    </EduButton>
-  ];
+    </EduButton>,
+  ]
 
-  const Title = [<Heading>Delete Rubric</Heading>];
+  const Title = [<Heading>Delete Rubric</Heading>]
 
   const validateText = (rule, value, callback) => {
-    if (value && value.toUpperCase() === "DELETE") {
-      setButtonState(false);
-      callback();
+    if (value && value.toUpperCase() === 'DELETE') {
+      setButtonState(false)
+      callback()
     } else {
-      setButtonState(true);
-      callback();
+      setButtonState(true)
+      callback()
     }
-  };
+  }
 
   return (
     <ConfirmationModal
@@ -46,31 +51,33 @@ const DeleteModal = ({ visible, toggleModal, form }) => {
       textAlign="left"
       visible={visible}
       footer={Footer}
-      textAlign={"center"}
-      onCancel={() => toggleModal("NO")}
+      textAlign="center"
+      onCancel={() => toggleModal('NO')}
     >
       <ModalBody>
         <span>Deleting the Rubric will completely remove the data.</span>
         <span>
-          If sure, please type <strong style={{ color: themeColor }}>DELETE</strong> in the space below to proceed.
+          If sure, please type{' '}
+          <strong style={{ color: themeColor }}>DELETE</strong> in the space
+          below to proceed.
         </span>
         <FormItem>
-          {form.getFieldDecorator("confirmationText", {
+          {form.getFieldDecorator('confirmationText', {
             rules: [
               {
-                validator: validateText
-              }
-            ]
+                validator: validateText,
+              },
+            ],
           })(<TextInput type="text" />)}
         </FormItem>
       </ModalBody>
     </ConfirmationModal>
-  );
-};
+  )
+}
 
-const enhance = compose(Form.create());
+const enhance = compose(Form.create())
 
-export default enhance(DeleteModal);
+export default enhance(DeleteModal)
 
 const FormItem = styled(Form.Item)`
   width: 80%;
@@ -81,8 +88,8 @@ const FormItem = styled(Form.Item)`
     background: ${backgrounds.primary};
     padding: 10px 24px;
   }
-`;
+`
 
 const TextInput = styled(Input)`
   text-align: center;
-`;
+`

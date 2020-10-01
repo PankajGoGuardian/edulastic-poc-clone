@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Button } from "antd";
+import styled from 'styled-components'
+import { Button } from 'antd'
 import {
   extraDesktopWidth,
   largeDesktopWidth,
@@ -8,11 +8,14 @@ import {
   mobileWidthMax,
   themeColor,
   white,
-  themeColorHoverBlue
-} from "@edulastic/colors";
+  themeColorHoverBlue,
+} from '@edulastic/colors'
 
 const StartAssignButton = styled(Button)`
-  ${props => (props.theme.zoomLevel == "xs" ? "max-width: 200px; height: 40px;" : "max-width: 300px; height: auto;")}
+  ${(props) =>
+    props.theme.zoomLevel == 'xs'
+      ? 'max-width: 200px; height: 40px;'
+      : 'max-width: 300px; height: auto;'}
   width: 150px;
   border-radius: 4px;
   display: flex;
@@ -40,7 +43,7 @@ const StartAssignButton = styled(Button)`
   }
 
   span {
-    font-size: ${props => props.theme.assignment.cardDefaultBtnFontSize};
+    font-size: ${(props) => props.theme.assignment.cardDefaultBtnFontSize};
     font-weight: 600;
     letter-spacing: 0.2px;
   }
@@ -61,8 +64,8 @@ const StartAssignButton = styled(Button)`
     margin-top: 0px;
   }
   @media screen and (max-width: ${mobileWidthMax}) {
-    ${props => props.assessment && "margin-top: 10px;margin-left:0px;"}
+    ${(props) => props.assessment && 'margin-top: 10px;margin-left:0px;'}
   }
-`;
+`
 
-export default StartAssignButton;
+export default StartAssignButton

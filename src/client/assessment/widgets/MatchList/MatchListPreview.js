@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { withTheme } from "styled-components";
-import { connect } from "react-redux";
-import { cloneDeep, isEqual, get, shuffle, keyBy, isEmpty } from "lodash";
-import { compose } from "redux";
+import React, { useState, useEffect, useContext, useRef } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { withTheme } from 'styled-components'
+import { connect } from 'react-redux'
+import { cloneDeep, isEqual, get, shuffle, keyBy, isEmpty } from 'lodash'
+import { compose } from 'redux'
 import {
   FlexContainer,
   Stimulus,
@@ -15,36 +15,46 @@ import {
   QuestionLabelWrapper,
   QuestionSubLabel,
   QuestionContentWrapper,
-  AssessmentPlayerContext
-} from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { ChoiceDimensions } from "@edulastic/constants";
-import { white } from "@edulastic/colors";
+  AssessmentPlayerContext,
+} from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { ChoiceDimensions } from '@edulastic/constants'
+import { white } from '@edulastic/colors'
 
-import Instructions from "../../components/Instructions";
-import { CHECK, SHOW, PREVIEW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { getFontSize, getDirection } from "../../utils/helpers";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
-import { storeOrderInRedux } from "../../actions/assessmentPlayer";
-import CorrectAnswers from "./components/CorrectAnswers";
-import PossibleResponses from "./components/PossibleResponses";
-import MatchList from "./components/MatchList";
+import Instructions from '../../components/Instructions'
+import {
+  CHECK,
+  SHOW,
+  PREVIEW,
+  CLEAR,
+  EDIT,
+} from '../../constants/constantsForQuestions'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { getFontSize, getDirection } from '../../utils/helpers'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { storeOrderInRedux } from '../../actions/assessmentPlayer'
+import CorrectAnswers from './components/CorrectAnswers'
+import PossibleResponses from './components/PossibleResponses'
+import MatchList from './components/MatchList'
 
-const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW, minHeight: choiceMinHeight } = ChoiceDimensions;
+const {
+  maxWidth: choiceDefaultMaxW,
+  minWidth: choiceDefaultMinW,
+  minHeight: choiceMinHeight,
+} = ChoiceDimensions
 
 const getInitialAnswer = (list = []) => {
-  const ans = {};
+  const ans = {}
   Array.isArray(list) &&
-    list.forEach(l => {
-      ans[l.value] = null;
-    });
-  return ans;
-};
+    list.forEach((l) => {
+      ans[l.value] = null
+    })
+  return ans
+}
 
-const { DragPreview } = DragDrop;
+const { DragPreview } = DragDrop
 
 /**
  * TODO
@@ -69,7 +79,7 @@ const MatchListPreview = ({
   isReviewTab,
   isPrintPreview,
   updateOptionsToStore,
-  optionsFromStore
+  optionsFromStore,
 }) => {
   const {
     possibleResponses: posResponses,
@@ -78,47 +88,59 @@ const MatchListPreview = ({
     stimulus,
     list,
     shuffleOptions,
-    duplicatedResponses = false
-  } = item;
-  const answerContextConfig = useContext(AnswerContext);
-  const assessmentPlayerContext = useContext(AssessmentPlayerContext);
-  const { isStudentAttempt } = assessmentPlayerContext;
-  const { expressGrader, isAnswerModifiable } = answerContextConfig;
+    duplicatedResponses = false,
+  } = item
+  const answerContextConfig = useContext(AnswerContext)
+  const assessmentPlayerContext = useContext(AssessmentPlayerContext)
+  const { isStudentAttempt } = assessmentPlayerContext
+  const { expressGrader, isAnswerModifiable } = answerContextConfig
 
-  const validResponse = get(item, "validation.validResponse.value", {});
-  const alternateResponses = get(item, "validation.altResponses", []);
-  const stemNumeration = get(item, "uiStyle.validationStemNumeration", "");
-  const dragItemMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
-  const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
+  const validResponse = get(item, 'validation.validResponse.value', {})
+  const alternateResponses = get(item, 'validation.altResponses', [])
+  const stemNumeration = get(item, 'uiStyle.validationStemNumeration', '')
+  const dragItemMinWidth = get(
+    item,
+    'uiStyle.choiceMinWidth',
+    choiceDefaultMinW
+  )
+  const dragItemMaxWidth = get(
+    item,
+    'uiStyle.choiceMaxWidth',
+    choiceDefaultMaxW
+  )
 
   const getPossibleResponses = () => {
     if (!groupPossibleResponses) {
-      return shuffleOptions ? [...shuffle(posResponses)] : [...posResponses];
+      return shuffleOptions ? [...shuffle(posResponses)] : [...posResponses]
     }
-    let groupArrays = [];
+    let groupArrays = []
     possibleResponseGroups.forEach((group, groupIndex) => {
-      let responses = shuffleOptions ? shuffle(group.responses) : group.responses;
-      responses = responses.map(response => ({ ...response, groupIndex }));
-      groupArrays = [...groupArrays, ...responses];
-    });
-    return groupArrays;
-  };
+      let responses = shuffleOptions
+        ? shuffle(group.responses)
+        : group.responses
+      responses = responses.map((response) => ({ ...response, groupIndex }))
+      groupArrays = [...groupArrays, ...responses]
+    })
+    return groupArrays
+  }
 
-  const [ans, setAns] = useState(getInitialAnswer(list));
+  const [ans, setAns] = useState(getInitialAnswer(list))
 
   function getInitialDragItems() {
     if (optionsFromStore) {
-      return optionsFromStore;
+      return optionsFromStore
     }
     if (duplicatedResponses) {
-      return getPossibleResponses();
+      return getPossibleResponses()
     }
     return getPossibleResponses().filter(
-      answer => typeof userAnswer === "object" && !Object.values(userAnswer).includes(answer.value)
-    );
+      (answer) =>
+        typeof userAnswer === 'object' &&
+        !Object.values(userAnswer).includes(answer.value)
+    )
   }
 
-  const [dragItems, setDragItems] = useState(getInitialDragItems());
+  const [dragItems, setDragItems] = useState(getInitialDragItems())
 
   /**
    * drag items has flattned structure of all the responses
@@ -126,16 +148,16 @@ const MatchListPreview = ({
    * required to segregate into different groups in the responses section
    */
   const possibleResponsesGrouped = () => {
-    const groupArrays = [];
-    dragItems.forEach(response => {
-      const { groupIndex } = response;
-      groupArrays[groupIndex] = groupArrays[groupIndex] || [];
-      groupArrays[groupIndex].push(response);
-    });
-    return groupArrays;
-  };
+    const groupArrays = []
+    dragItems.forEach((response) => {
+      const { groupIndex } = response
+      groupArrays[groupIndex] = groupArrays[groupIndex] || []
+      groupArrays[groupIndex].push(response)
+    })
+    return groupArrays
+  }
 
-  const groupedPossibleResponses = possibleResponsesGrouped();
+  const groupedPossibleResponses = possibleResponsesGrouped()
 
   /**
    * need ref to store the dragItems order
@@ -145,13 +167,13 @@ const MatchListPreview = ({
    * values change in state due to useEffect
    * and during component unmount it has a different order, than what user last saw in the screen
    */
-  const dragItemsRef = useRef(dragItems);
+  const dragItemsRef = useRef(dragItems)
 
   /**
    * this ref is required to keep track if the user started to attempt
    * in that case we will not stop using the preserved order from the redux store
    */
-  const userAttemptRef = useRef(false);
+  const userAttemptRef = useRef(false)
 
   useEffect(
     () =>
@@ -165,21 +187,26 @@ const MatchListPreview = ({
        */
       () => {
         if (isStudentAttempt && shuffleOptions) {
-          updateOptionsToStore({ itemId: item.id, options: dragItemsRef.current });
+          updateOptionsToStore({
+            itemId: item.id,
+            options: dragItemsRef.current,
+          })
         }
       },
     []
-  );
+  )
 
   useEffect(() => {
     if (!isEmpty(userAnswer)) {
-      setAns(userAnswer);
+      setAns(userAnswer)
     }
     let newDragItems = duplicatedResponses
       ? getPossibleResponses()
       : getPossibleResponses().filter(
-          answer => typeof userAnswer === "object" && !Object.values(userAnswer).some(i => i === answer.value)
-        );
+          (answer) =>
+            typeof userAnswer === 'object' &&
+            !Object.values(userAnswer).some((i) => i === answer.value)
+        )
     /**
      * at student side, if shuffle is on and if user comes back to this question
      * for subsequent renders, show the preserved order maintained in redux store
@@ -189,100 +216,103 @@ const MatchListPreview = ({
      */
     if (isStudentAttempt && shuffleOptions) {
       if (!userAttemptRef.current && optionsFromStore) {
-        newDragItems = optionsFromStore;
+        newDragItems = optionsFromStore
       }
-      dragItemsRef.current = newDragItems;
+      dragItemsRef.current = newDragItems
     }
     if (!isEqual(dragItems, newDragItems)) {
-      setDragItems(newDragItems);
+      setDragItems(newDragItems)
     }
-  }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses]);
+  }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses])
 
-  const preview = previewTab === CHECK || previewTab === SHOW;
+  const preview = previewTab === CHECK || previewTab === SHOW
 
   const onDrop = (itemCurrent, itemTo) => {
-    const answers = cloneDeep(ans);
-    const dItems = cloneDeep(dragItems);
-    const { item: _item, sourceFlag, sourceIndex } = itemCurrent;
+    const answers = cloneDeep(ans)
+    const dItems = cloneDeep(dragItems)
+    const { item: _item, sourceFlag, sourceIndex } = itemCurrent
 
     if (isStudentAttempt && shuffleOptions) {
-      userAttemptRef.current = true;
+      userAttemptRef.current = true
     }
 
     // when item is set/unset (if/else) as an answer
-    if (itemTo.flag === "ans") {
+    if (itemTo.flag === 'ans') {
       if (dItems.includes(_item)) {
         // when moved out from dragItems
-        dItems.splice(dItems.indexOf(_item), 1);
+        dItems.splice(dItems.indexOf(_item), 1)
       }
-      if (sourceFlag === "ans") {
+      if (sourceFlag === 'ans') {
         // when moved from one row to another
-        answers[list[sourceIndex].value] = null;
+        answers[list[sourceIndex].value] = null
       }
-      answers[list[itemTo.index].value] = _item.value;
+      answers[list[itemTo.index].value] = _item.value
     } else if (Object.values(answers).includes(_item.value)) {
-      answers[(list?.[sourceIndex]?.value)] = null;
-      dItems.push(_item);
+      answers[list?.[sourceIndex]?.value] = null
+      dItems.push(_item)
     }
 
     if (!isEqual(ans, answers)) {
-      setAns(answers);
+      setAns(answers)
     }
     if (!isEqual(dItems, dragItems)) {
-      setDragItems(dItems);
+      setDragItems(dItems)
     }
     if (preview) {
-      changePreview(CLEAR);
+      changePreview(CLEAR)
     }
-    saveAnswer(answers);
-  };
+    saveAnswer(answers)
+  }
 
   const handleShuffleChange = () => {
     setQuestionData(
-      produce(item, draft => {
-        draft.shuffleOptions = !item.shuffleOptions;
+      produce(item, (draft) => {
+        draft.shuffleOptions = !item.shuffleOptions
       })
-    );
-  };
+    )
+  }
 
   const handleDuplicatedResponsesChange = () => {
     setQuestionData(
-      produce(item, draft => {
-        draft.duplicatedResponses = !item.duplicatedResponses;
+      produce(item, (draft) => {
+        draft.duplicatedResponses = !item.duplicatedResponses
       })
-    );
-  };
+    )
+  }
 
-  const allItemsById = keyBy(getPossibleResponses(), "value");
+  const allItemsById = keyBy(getPossibleResponses(), 'value')
 
-  const alternateAnswers = {};
+  const alternateAnswers = {}
   if (alternateResponses.length > 0) {
-    list.forEach(l => {
-      alternateAnswers[l.value] = [];
-      alternateResponses.forEach(alt => {
-        alternateAnswers[l.value].push(allItemsById?.[alt.value[l.value]]?.label || "");
-      });
-    });
+    list.forEach((l) => {
+      alternateAnswers[l.value] = []
+      alternateResponses.forEach((alt) => {
+        alternateAnswers[l.value].push(
+          allItemsById?.[alt.value[l.value]]?.label || ''
+        )
+      })
+    })
   }
 
   /**
    * calculate styles here based on question JSON
    */
-  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
-  const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
-  const horizontallyAligned = listPosition === "left" || listPosition === "right";
+  const fontSize = getFontSize(get(item, 'uiStyle.fontsize', 'normal'))
+  const listPosition = get(item, 'uiStyle.possibilityListPosition', 'bottom')
+  const horizontallyAligned =
+    listPosition === 'left' || listPosition === 'right'
 
   const {
     answerBox: { borderColor },
-    checkbox: { wrongBgColor, rightBgColor }
-  } = theme;
+    checkbox: { wrongBgColor, rightBgColor },
+  } = theme
 
   const getStyles = ({ flag, _preview, correct, width }) => ({
-    display: "flex",
-    width: width || "auto",
-    alignItems: "center",
-    justifyContent: _preview ? "space-between" : "center",
-    margin: flag === "dragItems" ? "4px" : "0px",
+    display: 'flex',
+    width: width || 'auto',
+    alignItems: 'center',
+    justifyContent: _preview ? 'space-between' : 'center',
+    margin: flag === 'dragItems' ? '4px' : '0px',
     background: isPrintPreview
       ? white
       : _preview
@@ -290,56 +320,73 @@ const MatchListPreview = ({
         ? rightBgColor
         : wrongBgColor
       : theme.widgets.matchList.dragItemBgColor,
-    border: _preview ? "none" : flag === "ans" ? "none" : `1px solid ${borderColor}`,
-    cursor: "pointer",
-    alignSelf: "stretch",
+    border: _preview
+      ? 'none'
+      : flag === 'ans'
+      ? 'none'
+      : `1px solid ${borderColor}`,
+    cursor: 'pointer',
+    alignSelf: 'stretch',
     borderRadius: 4,
     fontWeight: theme.widgets.matchList.dragItemFontWeight,
     color: theme.widgets.matchList.dragItemColor,
     minWidth: dragItemMinWidth,
-    overflow: "hidden",
-    transform: "translate3d(0px, 0px, 0px)",
-    minHeight: flag !== "ans" ? choiceMinHeight : "100%"
-  });
+    overflow: 'hidden',
+    transform: 'translate3d(0px, 0px, 0px)',
+    minHeight: flag !== 'ans' ? choiceMinHeight : '100%',
+  })
 
-  const direction = getDirection(listPosition);
+  const direction = getDirection(listPosition)
   const wrapperStyle = {
-    display: "flex",
-    flexDirection: isPrintPreview && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
-    alignItems: horizontallyAligned ? "flex-start" : "center",
-    width: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
-  };
+    display: 'flex',
+    flexDirection:
+      isPrintPreview && direction.includes('row')
+        ? direction.replace(/row/gi, 'column')
+        : direction,
+    alignItems: horizontallyAligned ? 'flex-start' : 'center',
+    width: isPrintPreview ? '100%' : horizontallyAligned ? 1050 : 750,
+  }
 
-  const showEvaluate = (preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader);
+  const showEvaluate =
+    (preview && !isAnswerModifiable && expressGrader) ||
+    (preview && !expressGrader)
 
   /**
    * scroll element
    */
-  const previewWrapperRef = useRef();
+  const previewWrapperRef = useRef()
 
   return (
-    <HorizontalScrollContext.Provider value={{ getScrollElement: () => previewWrapperRef.current }}>
+    <HorizontalScrollContext.Provider
+      value={{ getScrollElement: () => previewWrapperRef.current }}
+    >
       <StyledPaperWrapper
         data-cy="matchListPreview"
         style={{
           fontSize,
-          overflowX: isPrintPreview ? "hidden" : "auto",
-          margin: "auto",
-          width: "100%"
+          overflowX: isPrintPreview ? 'hidden' : 'auto',
+          margin: 'auto',
+          width: '100%',
         }}
         padding={smallSize}
         ref={previewWrapperRef}
-        boxShadow={smallSize ? "none" : ""}
+        boxShadow={smallSize ? 'none' : ''}
       >
         <FlexContainer justifyContent="flex-start" alignItems="baseline">
           <QuestionLabelWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+            {showQuestionNumber && (
+              <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+            )}
+            {item.qSubLabel && (
+              <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+            )}
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper>
             <QuestionTitleWrapper>
-              {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+              {!smallSize && view === PREVIEW && (
+                <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
+              )}
             </QuestionTitleWrapper>
             <div
               data-cy="previewWrapper"
@@ -384,7 +431,7 @@ const MatchListPreview = ({
                 />
               )}
             </div>
-            {view === "edit" && (
+            {view === 'edit' && (
               <FlexContainer>
                 <CheckboxLabel
                   className="additional-options"
@@ -392,7 +439,7 @@ const MatchListPreview = ({
                   onChange={handleShuffleChange}
                   checked={item.shuffleOptions}
                 >
-                  {t("component.cloze.dragDrop.shuffleoptions")}
+                  {t('component.cloze.dragDrop.shuffleoptions')}
                 </CheckboxLabel>
                 <CheckboxLabel
                   className="additional-options"
@@ -400,11 +447,11 @@ const MatchListPreview = ({
                   onChange={handleDuplicatedResponsesChange}
                   checked={!!item.duplicatedResponses}
                 >
-                  {t("component.matchList.duplicatedResponses")}
+                  {t('component.matchList.duplicatedResponses')}
                 </CheckboxLabel>
               </FlexContainer>
             )}
-            <div style={{ ...wrapperStyle, alignItems: "flex-start" }}>
+            <div style={{ ...wrapperStyle, alignItems: 'flex-start' }}>
               {view !== EDIT && <Instructions item={item} />}
             </div>
             {previewTab === SHOW || isReviewTab ? (
@@ -425,8 +472,8 @@ const MatchListPreview = ({
         <DragPreview />
       </StyledPaperWrapper>
     </HorizontalScrollContext.Provider>
-  );
-};
+  )
+}
 
 MatchListPreview.propTypes = {
   previewTab: PropTypes.string,
@@ -443,8 +490,8 @@ MatchListPreview.propTypes = {
   changePreview: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   evaluation: PropTypes.object,
-  isReviewTab: PropTypes.bool
-};
+  isReviewTab: PropTypes.bool,
+}
 
 MatchListPreview.defaultProps = {
   previewTab: CLEAR,
@@ -453,21 +500,22 @@ MatchListPreview.defaultProps = {
   evaluation: {},
   showQuestionNumber: false,
   disableResponse: false,
-  isReviewTab: false
-};
+  isReviewTab: false,
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
   connect(
     (state, ownProps) => ({
-      optionsFromStore: state.assessmentPlayer?.[ownProps?.item.id || ""] || null
+      optionsFromStore:
+        state.assessmentPlayer?.[ownProps?.item.id || ''] || null,
     }),
     {
       setQuestionData: setQuestionDataAction,
-      updateOptionsToStore: storeOrderInRedux
+      updateOptionsToStore: storeOrderInRedux,
     }
   )
-);
+)
 
-export default enhance(MatchListPreview);
+export default enhance(MatchListPreview)

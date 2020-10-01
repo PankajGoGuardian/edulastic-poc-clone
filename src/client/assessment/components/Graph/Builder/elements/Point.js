@@ -1,17 +1,17 @@
-import JXG from "jsxgraph";
-import { CONSTANT } from "../config";
-import { defaultPointParameters, getLabelParameters } from "../settings";
-import EditButton from "./EditButton";
-import { setLabel, nameGen, colorGenerator } from "../utils";
-import { Area, Equation } from ".";
+import JXG from 'jsxgraph'
+import { CONSTANT } from '../config'
+import { defaultPointParameters, getLabelParameters } from '../settings'
+import EditButton from './EditButton'
+import { setLabel, nameGen, colorGenerator } from '../utils'
+import { Area, Equation } from '.'
 
 function getColorParams(color) {
   return {
     fillColor: color,
     strokeColor: color,
     highlightStrokeColor: color,
-    highlightFillColor: color
-  };
+    highlightFillColor: color,
+  }
 }
 
 function create(board, object, settings = {}) {
@@ -21,69 +21,74 @@ function create(board, object, settings = {}) {
     fixed = false,
     snapToGrid = true,
     latex = false,
-    result = false
-  } = settings;
+    result = false,
+  } = settings
 
-  const { x, y, id = null, label, baseColor, priorityColor } = object;
+  const { x, y, id = null, label, baseColor, priorityColor } = object
 
-  const hideColor = pointIsVisible ? null : "transparent";
+  const hideColor = pointIsVisible ? null : 'transparent'
 
-  const point = board?.$board?.create("point", [x, y], {
+  const point = board?.$board?.create('point', [x, y], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-    ...getColorParams(hideColor || priorityColor || board.priorityColor || baseColor),
+    ...getColorParams(
+      hideColor || priorityColor || board.priorityColor || baseColor
+    ),
     label: {
       ...getLabelParameters(JXG.OBJECT_TYPE_POINT),
-      visible: labelIsVisible
+      visible: labelIsVisible,
     },
     fixed,
     snapToGrid,
-    id
-  });
+    id,
+  })
 
-  point.pointIsVisible = object.pointIsVisible;
-  point.labelIsVisible = object.labelIsVisible;
-  point.baseColor = baseColor;
+  point.pointIsVisible = object.pointIsVisible
+  point.labelIsVisible = object.labelIsVisible
+  point.baseColor = baseColor
 
   if (!fixed) {
-    point.on("up", () => {
+    point.on('up', () => {
       if (point.dragged) {
-        point.dragged = false;
+        point.dragged = false
         if (!point.isTemp) {
-          Area.updateShadingsForAreaPoints(board, board.elements);
-          board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+          Area.updateShadingsForAreaPoints(board, board.elements)
+          board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
         }
       }
-    });
+    })
 
-    point.on("drag", e => {
+    point.on('drag', (e) => {
       if (e.movementX === 0 && e.movementY === 0) {
-        return;
+        return
       }
-      point.dragged = true;
-      board.dragged = true;
-      EditButton.cleanButton(board, point);
-    });
+      point.dragged = true
+      board.dragged = true
+      EditButton.cleanButton(board, point)
+    })
 
-    point.on("mouseover", event => board.handleElementMouseOver(point, event));
-    point.on("mouseout", () => board.handleElementMouseOut(point));
+    point.on('mouseover', (event) => board.handleElementMouseOver(point, event))
+    point.on('mouseout', () => board.handleElementMouseOut(point))
   }
 
   if (labelIsVisible) {
-    setLabel(point, label);
+    setLabel(point, label)
   }
 
   if (latex != false && result != false) {
-    point.type = Equation.jxgType;
-    point.latex = latex;
-    point.apiLatex = result;
+    point.type = Equation.jxgType
+    point.latex = latex
+    point.apiLatex = result
   }
 
-  return point;
+  return point
 }
 
 function onHandler(board, event, id = null) {
-  const coords = board.getCoords(event).usrCoords;
-  const elements = board.elements.concat(board.getTempPoints(), board.bgElements);
+  const coords = board.getCoords(event).usrCoords
+  const elements = board.elements.concat(
+    board.getTempPoints(),
+    board.bgElements
+  )
   const object = {
     x: coords[1],
     y: coords[2],
@@ -91,9 +96,9 @@ function onHandler(board, event, id = null) {
     labelIsVisible: true,
     pointIsVisible: true,
     baseColor: colorGenerator(board.elements.length),
-    id
-  };
-  return create(board, object);
+    id,
+  }
+  return create(board, object)
 }
 
 function getConfig(point) {
@@ -106,13 +111,13 @@ function getConfig(point) {
     label: point.labelHTML || false,
     labelIsVisible: point.labelIsVisible,
     pointIsVisible: point.pointIsVisible,
-    baseColor: point.baseColor
-  };
+    baseColor: point.baseColor,
+  }
 }
 
 export default {
   onHandler,
   getConfig,
   create,
-  getColorParams
-};
+  getColorParams,
+}

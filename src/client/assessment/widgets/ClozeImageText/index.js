@@ -1,119 +1,120 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { cloneDeep, get } from "lodash";
-import produce from "immer";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { cloneDeep, get } from 'lodash'
+import produce from 'immer'
 
-import { AnswerContext, WithResources } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { changePreviewAction } from "../../../author/src/actions/view";
-import { EDIT } from "../../constants/constantsForQuestions";
-import { replaceVariables, updateVariables } from "../../utils/variables";
+import { AnswerContext, WithResources } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { changePreviewAction } from '../../../author/src/actions/view'
+import { EDIT } from '../../constants/constantsForQuestions'
+import { replaceVariables, updateVariables } from '../../utils/variables'
 
-import { ContentArea } from "../../styled/ContentArea";
-import { EditorContainer } from "./styled/EditorContainer";
-import { AdditionalContainer } from "./styled/AdditionalContainer";
-import Options from "./components/Options";
-import Display from "./Display";
-import Authoring from "./Authoring";
-import CorrectAnswers from "./CorrectAnswers";
-import Question from "../../components/Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import AppConfig from "../../../../../app-config";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { ContentArea } from '../../styled/ContentArea'
+import { EditorContainer } from './styled/EditorContainer'
+import { AdditionalContainer } from './styled/AdditionalContainer'
+import Options from './components/Options'
+import Display from './Display'
+import Authoring from './Authoring'
+import CorrectAnswers from './CorrectAnswers'
+import Question from '../../components/Question'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import AppConfig from '../../../../../app-config'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 class ClozeImageText extends Component {
-  static contextType = AnswerContext;
+  static contextType = AnswerContext
 
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
     showDraghandle: false,
-    transparentResponses: false
-  };
+    transparentResponses: false,
+  }
 
   getRenderData = () => {
-    const { item: templateItem, history, view } = this.props;
-    const itemForPreview = replaceVariables(templateItem);
-    const item = view === EDIT ? templateItem : itemForPreview;
+    const { item: templateItem, history, view } = this.props
+    const itemForPreview = replaceVariables(templateItem)
+    const item = view === EDIT ? templateItem : itemForPreview
 
-    const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
-    const previewDisplayOptions = item.options;
-    let previewStimulus;
-    let itemForEdit;
+    const locationState = history.location.state
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false
+    const previewDisplayOptions = item.options
+    let previewStimulus
+    let itemForEdit
     if (isDetailPage) {
-      previewStimulus = item.stimulus;
-      itemForEdit = templateItem;
+      previewStimulus = item.stimulus
+      itemForEdit = templateItem
     } else {
-      previewStimulus = item.stimulus;
+      previewStimulus = item.stimulus
       itemForEdit = {
         ...item,
         stimulus: templateItem.stimulus,
         list: templateItem.options,
-        validation: templateItem.validation
-      };
+        validation: templateItem.validation,
+      }
     }
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       uiStyle: item.uiStyle,
-      itemForPreview
-    };
-  };
+      itemForPreview,
+    }
+  }
 
   handleOptionsChange = (name, value) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft[name] = value;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft[name] = value
+        updateVariables(draft)
       })
-    );
+    )
 
     switch (name) {
-      case "duplicated_responses": {
-        this.setState({ duplicatedResponses: value });
-        break;
+      case 'duplicated_responses': {
+        this.setState({ duplicatedResponses: value })
+        break
       }
-      case "shuffleOptions": {
-        this.setState({ shuffleOptions: value });
-        break;
+      case 'shuffleOptions': {
+        this.setState({ shuffleOptions: value })
+        break
       }
-      case "show_draghandle": {
-        this.setState({ showDraghandle: value });
-        break;
+      case 'show_draghandle': {
+        this.setState({ showDraghandle: value })
+        break
       }
-      case "transparent_responses": {
-        this.setState({ transparentResponses: value });
-        break;
+      case 'transparent_responses': {
+        this.setState({ transparentResponses: value })
+        break
       }
       default:
     }
-  };
+  }
 
   handleValidationOptionsChange = (name, value) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.validation[name] = value;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.validation[name] = value
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  handleAddAnswer = userAnswer => {
-    const { saveAnswer } = this.props;
-    const newAnswer = cloneDeep(userAnswer);
-    saveAnswer(newAnswer);
-  };
+  handleAddAnswer = (userAnswer) => {
+    const { saveAnswer } = this.props
+    const newAnswer = cloneDeep(userAnswer)
+    saveAnswer(newAnswer)
+  }
 
   render() {
-    const answerContextConfig = this.context;
+    const answerContextConfig = this.context
     const {
       qIndex,
       view,
@@ -128,27 +129,46 @@ class ClozeImageText extends Component {
       userAnswer = {},
       cleanSections,
       ...restProps
-    } = this.props;
+    } = this.props
 
-    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      itemForPreview,
+      uiStyle,
+    } = this.getRenderData()
 
-    const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
+    const ignoreCase =
+      item && item.validation ? item.validation.ignoreCase : false
 
-    const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
-    const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
-    const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
+    const allowSingleLetterMistake =
+      item && item.validation ? item.validation.allowSingleLetterMistake : false
+    const mixAndMatch = get(item, ['validation', 'mixAndMatch'], false)
+    const {
+      duplicatedResponses,
+      showDraghandle,
+      shuffleOptions,
+      transparentResponses,
+    } = this.state
 
-    const { expressGrader, isAnswerModifiable } = answerContextConfig;
+    const { expressGrader, isAnswerModifiable } = answerContextConfig
 
-    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
-    const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
-    const isShowAnswer = previewTab === "show" && !expressGrader;
+    const isCheckAnswer =
+      previewTab === 'check' || (expressGrader && !isAnswerModifiable)
+    const isClearAnswer =
+      previewTab === 'clear' || (isAnswerModifiable && expressGrader)
+    const isShowAnswer = previewTab === 'show' && !expressGrader
 
-    const Wrapper = testItem ? React.Fragment : StyledPaperWrapper;
+    const Wrapper = testItem ? React.Fragment : StyledPaperWrapper
     return (
-      <React.Fragment>
-        <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => null}>
-          {view === "edit" && (
+      <>
+        <WithResources
+          resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+          fallBack={<span />}
+          onLoaded={() => null}
+        >
+          {view === 'edit' && (
             <ContentArea>
               <EditorContainer>
                 <div className="authoring">
@@ -160,18 +180,20 @@ class ClozeImageText extends Component {
                   />
                   <Question
                     section="main"
-                    label={t("component.correctanswers.setcorrectanswers")}
+                    label={t('component.correctanswers.setcorrectanswers')}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                   >
                     <CorrectAnswers
-                      key={duplicatedResponses || showDraghandle || shuffleOptions}
+                      key={
+                        duplicatedResponses || showDraghandle || shuffleOptions
+                      }
                       validation={item.validation}
                       configureOptions={{
                         duplicatedResponses,
                         showDraghandle,
                         shuffleOptions,
-                        transparentResponses
+                        transparentResponses,
                       }}
                       options={previewDisplayOptions}
                       imageAlterText={item.imageAlterText}
@@ -179,7 +201,10 @@ class ClozeImageText extends Component {
                       imageUrl={item.imageUrl}
                       imageWidth={item.imageWidth}
                       question={previewStimulus}
-                      showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                      showDashedBorder={
+                        item.responseLayout &&
+                        item.responseLayout.showdashedborder
+                      }
                       uiStyle={uiStyle}
                       backgroundColor={item.background}
                       maxRespCount={item.maxRespCount}
@@ -192,22 +217,32 @@ class ClozeImageText extends Component {
 
                     <AdditionalContainer>
                       <CheckboxLabel
-                        onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
+                        onChange={() =>
+                          this.handleValidationOptionsChange(
+                            'ignoreCase',
+                            !ignoreCase
+                          )}
                         checked={!!ignoreCase}
                       >
-                        {t("component.cloze.dropDown.ignorecase")}
+                        {t('component.cloze.dropDown.ignorecase')}
                       </CheckboxLabel>
 
                       <CheckboxLabel
                         onChange={() =>
-                          this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
-                        }
+                          this.handleValidationOptionsChange(
+                            'allowSingleLetterMistake',
+                            !allowSingleLetterMistake
+                          )}
                         checked={!!allowSingleLetterMistake}
                       >
-                        {t("component.cloze.dropDown.allowsinglelettermistake")}
+                        {t('component.cloze.dropDown.allowsinglelettermistake')}
                       </CheckboxLabel>
                       <CheckboxLabel
-                        onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
+                        onChange={() =>
+                          this.handleValidationOptionsChange(
+                            'mixAndMatch',
+                            !mixAndMatch
+                          )}
                         checked={!!mixAndMatch}
                       >
                         Mix-n-Match alternative answers
@@ -223,7 +258,7 @@ class ClozeImageText extends Component {
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: "16px 60px 7px 60px"
+                  padding: '16px 60px 7px 60px',
                 }}
                 advancedAreOpen={advancedAreOpen}
                 fillSections={fillSections}
@@ -233,7 +268,7 @@ class ClozeImageText extends Component {
               />
             </ContentArea>
           )}
-          {view === "preview" && (
+          {view === 'preview' && (
             <Wrapper>
               <Display
                 checkAnswer={isCheckAnswer}
@@ -250,7 +285,7 @@ class ClozeImageText extends Component {
                   duplicatedResponses,
                   showDraghandle,
                   shuffleOptions,
-                  transparentResponses
+                  transparentResponses,
                 }}
                 imageAlterText={item.imageAlterText}
                 responseContainers={itemForPreview.responses}
@@ -260,19 +295,21 @@ class ClozeImageText extends Component {
                 qIndex={qIndex}
                 imageOptions={item.imageOptions}
                 validation={itemForPreview.validation}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                showDashedBorder={
+                  item.responseLayout && item.responseLayout.showdashedborder
+                }
                 backgroundColor={item.background}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 maxRespCount={item.maxRespCount}
-                isExpressGrader={expressGrader && previewTab === "show"}
+                isExpressGrader={expressGrader && previewTab === 'show'}
                 view={view}
                 {...restProps}
               />
             </Wrapper>
           )}
         </WithResources>
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
@@ -291,13 +328,13 @@ ClozeImageText.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 ClozeImageText.defaultProps = {
-  previewTab: "clear",
+  previewTab: 'clear',
   item: {
-    opttions: []
+    opttions: [],
   },
   history: {},
   testItem: false,
@@ -305,18 +342,18 @@ ClozeImageText.defaultProps = {
   advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
-  )
-);
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+    changePreview: changePreviewAction,
+  })
+)
 
-const ClozeImageTextContainer = enhance(ClozeImageText);
+const ClozeImageTextContainer = enhance(ClozeImageText)
 
-export { ClozeImageTextContainer as ClozeImageText };
+export { ClozeImageTextContainer as ClozeImageText }

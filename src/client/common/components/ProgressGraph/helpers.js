@@ -1,62 +1,68 @@
-import { isEmpty, get, keyBy } from "lodash";
-import { incorrect, yellow1, linkColor1, themeColorLighter, darkBlue2 } from "@edulastic/colors";
+import { isEmpty, get, keyBy } from 'lodash'
+import {
+  incorrect,
+  yellow1,
+  linkColor1,
+  themeColorLighter,
+  darkBlue2,
+} from '@edulastic/colors'
 
-export const NUMBER_OF_BARS = 10;
+export const NUMBER_OF_BARS = 10
 
 export const bars = {
   correctAttemps: {
-    className: "correctAttemps",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "correctAttemps",
-    fill: themeColorLighter
+    className: 'correctAttemps',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'correctAttemps',
+    fill: themeColorLighter,
   },
   incorrectAttemps: {
-    className: "incorrectAttemps",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "incorrectAttemps",
-    fill: incorrect
+    className: 'incorrectAttemps',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'incorrectAttemps',
+    fill: incorrect,
   },
   partialAttempts: {
-    className: "partialAttempts",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "partialAttempts",
-    fill: yellow1
+    className: 'partialAttempts',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'partialAttempts',
+    fill: yellow1,
   },
   skippedNum: {
-    className: "skippedNum",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "skippedNum",
-    fill: linkColor1
+    className: 'skippedNum',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'skippedNum',
+    fill: linkColor1,
   },
   manualGradedNum: {
-    className: "manualGradedNum",
-    yAxisId: "left",
-    stackId: "a",
-    dataKey: "manualGradedNum",
-    fill: darkBlue2
-  }
-};
+    className: 'manualGradedNum',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'manualGradedNum',
+    fill: darkBlue2,
+  },
+}
 
 export const convertData = (questionActivities, testItems) => {
-  let maxAttemps = 0;
-  let maxTimeSpent = 0;
-  let data = [];
+  let maxAttemps = 0
+  let maxTimeSpent = 0
+  let data = []
 
   if (isEmpty(questionActivities)) {
-    return [maxAttemps, maxTimeSpent, data];
+    return [maxAttemps, maxTimeSpent, data]
   }
 
-  const activitiesByQid = keyBy(questionActivities, "qid");
+  const activitiesByQid = keyBy(questionActivities, 'qid')
 
   data = testItems
-    .reduce((acc, curr) => [...acc, ...get(curr, "data.questions", [])], [])
-    .filter(x => !x.scoringDisabled)
+    .reduce((acc, curr) => [...acc, ...get(curr, 'data.questions', [])], [])
+    .filter((x) => !x.scoringDisabled)
     .map((question, index) => {
-      const { barLabel } = question;
+      const { barLabel } = question
       const questionActivity = {
         index,
         qid: question.id,
@@ -72,63 +78,74 @@ export const convertData = (questionActivities, testItems) => {
         skippedNum: 0,
         notStartedNum: 0,
         timeSpent: 0,
-        manualGradedNum: 0
-      };
-
-      const activity = activitiesByQid[question.id];
-      if (isEmpty(activity)) {
-        return questionActivity;
+        manualGradedNum: 0,
       }
-      const { testItemId, graded, score, maxScore, timeSpent, pendingEvaluation } = activity;
-      let { notStarted, skipped } = activity;
-      let skippedx = false;
+
+      const activity = activitiesByQid[question.id]
+      if (isEmpty(activity)) {
+        return questionActivity
+      }
+      const {
+        testItemId,
+        graded,
+        score,
+        maxScore,
+        timeSpent,
+        pendingEvaluation,
+      } = activity
+      let { notStarted, skipped } = activity
+      let skippedx = false
 
       if (testItemId) {
-        questionActivity.itemLevelScoring = true;
-        questionActivity.itemId = testItemId;
+        questionActivity.itemLevelScoring = true
+        questionActivity.itemId = testItemId
       }
 
       if (!notStarted) {
-        questionActivity.totalAttemps += 1;
+        questionActivity.totalAttemps += 1
       } else if (score > 0) {
-        notStarted = false;
+        notStarted = false
       } else {
-        questionActivity.notStartedNum += 1;
+        questionActivity.notStartedNum += 1
       }
 
       if (skipped && score === 0) {
-        questionActivity.skippedNum += 1;
-        skippedx = true;
+        questionActivity.skippedNum += 1
+        skippedx = true
       }
 
       if (score > 0) {
-        skipped = false;
+        skipped = false
       }
 
-      if ((graded === false && !notStarted && !skipped && !score) || pendingEvaluation) {
-        questionActivity.manualGradedNum += 1;
+      if (
+        (graded === false && !notStarted && !skipped && !score) ||
+        pendingEvaluation
+      ) {
+        questionActivity.manualGradedNum += 1
       } else if (score === maxScore && !notStarted && score > 0) {
-        questionActivity.correctAttemps += 1;
+        questionActivity.correctAttemps += 1
       } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
-        questionActivity.incorrectAttemps += 1;
+        questionActivity.incorrectAttemps += 1
       } else if (score > 0 && score < maxScore) {
-        questionActivity.partialAttempts += 1;
+        questionActivity.partialAttempts += 1
       }
       if (timeSpent && !notStarted) {
-        questionActivity.timeSpent += timeSpent;
+        questionActivity.timeSpent += timeSpent
       }
 
-      questionActivity.avgTimeSpent = questionActivity.timeSpent / (questionActivity.totalAttemps || 1);
+      questionActivity.avgTimeSpent =
+        questionActivity.timeSpent / (questionActivity.totalAttemps || 1)
 
       if (questionActivity.totalAttemps > maxAttemps) {
-        maxAttemps = questionActivity.totalAttemps;
+        maxAttemps = questionActivity.totalAttemps
       }
       if (questionActivity.avgTimeSpent > maxTimeSpent) {
-        maxTimeSpent = questionActivity.avgTimeSpent;
+        maxTimeSpent = questionActivity.avgTimeSpent
       }
 
-      return questionActivity;
-    });
+      return questionActivity
+    })
 
-  return [maxAttemps, maxTimeSpent, data];
-};
+  return [maxAttemps, maxTimeSpent, data]
+}

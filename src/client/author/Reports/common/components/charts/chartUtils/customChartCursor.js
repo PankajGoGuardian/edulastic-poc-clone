@@ -1,10 +1,20 @@
-import React from "react";
-import styled from "styled-components";
-import { fadedBlack } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { fadedBlack } from '@edulastic/colors'
 
-export const CustomChartCursor = props => {
-  const { right, height, width, payload, points, lineYDomain, direction } = props;
-  const lineYPlotPoint = points[0].y + (height * (lineYDomain[1] - payload[2].value)) / lineYDomain[1];
+export const CustomChartCursor = (props) => {
+  const {
+    right,
+    height,
+    width,
+    payload,
+    points,
+    lineYDomain,
+    direction,
+  } = props
+  const lineYPlotPoint =
+    points[0].y +
+    (height * (lineYDomain[1] - payload[2].value)) / lineYDomain[1]
   return (
     <StyledLineContainer>
       <line
@@ -26,11 +36,11 @@ export const CustomChartCursor = props => {
         strokeDasharray="6"
       />
     </StyledLineContainer>
-  );
-};
+  )
+}
 
 const StyledLineContainer = styled.g`
   line {
     pointer-events: none;
   }
-`;
+`

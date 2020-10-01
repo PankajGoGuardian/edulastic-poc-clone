@@ -1,14 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
+import React from 'react'
+import PropTypes from 'prop-types'
+import isEqual from 'lodash/isEqual'
 
-import { FlexContainer, DragDrop, DragDropInnerContainer } from "@edulastic/common";
+import {
+  FlexContainer,
+  DragDrop,
+  DragDropInnerContainer,
+} from '@edulastic/common'
 
-import { StyledResponseDiv } from "../../ClozeDragDrop/styled/ResponseBox";
-import { DropContainerTitle } from "../../../components/DropContainerTitle";
-import Responses from "./Responses";
+import { StyledResponseDiv } from '../../ClozeDragDrop/styled/ResponseBox'
+import { DropContainerTitle } from '../../../components/DropContainerTitle'
+import Responses from './Responses'
 
-const { DropContainer } = DragDrop;
+const { DropContainer } = DragDrop
 
 const ResponseBoxLayout = ({
   smallSize,
@@ -23,22 +27,38 @@ const ResponseBoxLayout = ({
   shuffleOptions,
   ...choiceStyle
 }) => {
-  const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
+  const horizontallyAligned =
+    responseContainerPosition === 'left' ||
+    responseContainerPosition === 'right'
   const containerStyle = {
-    height: horizontallyAligned && "100%",
-    padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16
-  };
-  const fontSizeToApply = smallSize ? 10 : fontSize;
+    height: horizontallyAligned && '100%',
+    padding: smallSize ? '5px 10px' : horizontallyAligned ? 10 : 16,
+  }
+  const fontSizeToApply = smallSize ? 10 : fontSize
 
   return (
-    <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%", border: "none" }}>
-      <StyledResponseDiv className="responses_box" data-cy="responses-box" style={containerStyle}>
-        <FlexContainer flexDirection="column" style={isPrintMode ? { width: "100%" } : {}}>
-          <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
+    <DropContainer
+      drop={onDrop}
+      style={{ height: horizontallyAligned && '100%', border: 'none' }}
+    >
+      <StyledResponseDiv
+        className="responses_box"
+        data-cy="responses-box"
+        style={containerStyle}
+      >
+        <FlexContainer
+          flexDirection="column"
+          style={isPrintMode ? { width: '100%' } : {}}
+        >
+          <DropContainerTitle>
+            {getHeading('component.cloze.dragDrop.optionContainerHeading')}
+          </DropContainerTitle>
           <DragDropInnerContainer>
             <FlexContainer
               justifyContent="flex-start"
-              flexDirection={isPrintMode ? "column" : horizontallyAligned ? "column" : "row"}
+              flexDirection={
+                isPrintMode ? 'column' : horizontallyAligned ? 'column' : 'row'
+              }
               flexWrap="wrap"
             >
               <Responses
@@ -55,8 +75,8 @@ const ResponseBoxLayout = ({
         </FlexContainer>
       </StyledResponseDiv>
     </DropContainer>
-  );
-};
+  )
+}
 
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,
@@ -68,21 +88,21 @@ ResponseBoxLayout.propTypes = {
   transparentResponses: PropTypes.bool,
   responseContainerPosition: PropTypes.string,
   isPrintMode: PropTypes.bool,
-  shuffleOptions: PropTypes.bool
-};
+  shuffleOptions: PropTypes.bool,
+}
 
 ResponseBoxLayout.defaultProps = {
   responses: [],
-  fontSize: "13px",
+  fontSize: '13px',
   smallSize: false,
   dragHandler: false,
   transparentResponses: false,
-  responseContainerPosition: "bottom",
+  responseContainerPosition: 'bottom',
   isPrintMode: false,
-  shuffleOptions: false
-};
+  shuffleOptions: false,
+}
 
 export default React.memo(ResponseBoxLayout, (prevProps, nextProps) => {
-  const responsesAreEqual = isEqual(prevProps.responses, nextProps.responses);
-  return responsesAreEqual;
-});
+  const responsesAreEqual = isEqual(prevProps.responses, nextProps.responses)
+  return responsesAreEqual
+})

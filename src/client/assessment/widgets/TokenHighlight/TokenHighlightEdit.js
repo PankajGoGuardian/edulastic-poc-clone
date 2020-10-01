@@ -1,22 +1,33 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { cloneDeep, find } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
-import produce from "immer";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { cloneDeep, find } from 'lodash'
+import { withNamespaces } from '@edulastic/localization'
+import produce from 'immer'
 
-import { WORD_MODE, PARAGRAPH_MODE, EDIT, CUSTOM_MODE } from "../../constants/constantsForQuestions";
-import { updateVariables } from "../../utils/variables";
+import {
+  WORD_MODE,
+  PARAGRAPH_MODE,
+  EDIT,
+  CUSTOM_MODE,
+} from '../../constants/constantsForQuestions'
+import { updateVariables } from '../../utils/variables'
 
-import CorrectAnswers from "../../components/CorrectAnswers";
-import { ContentArea } from "../../styled/ContentArea";
+import CorrectAnswers from '../../components/CorrectAnswers'
+import { ContentArea } from '../../styled/ContentArea'
 
-import TokenHighlightPreview from "./TokenHighlightPreview";
-import Options from "./components/Options";
-import ComposeQuestion from "./ComposeQuestion";
-import Template from "./Template";
+import TokenHighlightPreview from './TokenHighlightPreview'
+import Options from './components/Options'
+import ComposeQuestion from './ComposeQuestion'
+import Template from './Template'
 
-import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray, getCustomArray } from "./helpers";
-import Question from "../../components/Question";
+import {
+  getInitialArray,
+  getParagraphsArray,
+  getSentencesArray,
+  getWordsArray,
+  getCustomArray,
+} from './helpers'
+import Question from '../../components/Question'
 
 const TokenHighlightEdit = ({
   item,
@@ -25,112 +36,115 @@ const TokenHighlightEdit = ({
   cleanSections,
   advancedLink,
   advancedAreOpen,
-  t
+  t,
 }) => {
-  const [correctTab, setCorrectTab] = useState(0);
+  const [correctTab, setCorrectTab] = useState(0)
 
-  const [templateTab, setTemplateTab] = useState(0);
+  const [templateTab, setTemplateTab] = useState(0)
 
-  const mode = item.tokenization;
+  const mode = item.tokenization
 
-  const initialArray = getInitialArray(item.template);
+  const initialArray = getInitialArray(item.template)
 
-  const [template, setTemplate] = useState();
+  const [template, setTemplate] = useState()
 
   useEffect(() => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (template || draft.templeWithTokens.length === 0) {
-          let resultArray = [];
+          let resultArray = []
           if (mode === WORD_MODE) {
-            resultArray = getWordsArray(initialArray);
+            resultArray = getWordsArray(initialArray)
           } else if (mode === PARAGRAPH_MODE) {
-            resultArray = getParagraphsArray(initialArray);
+            resultArray = getParagraphsArray(initialArray)
           } else if (mode === CUSTOM_MODE) {
-            resultArray = getCustomArray(initialArray);
+            resultArray = getCustomArray(initialArray)
           } else {
-            resultArray = getSentencesArray(initialArray);
+            resultArray = getSentencesArray(initialArray)
           }
 
-          draft.templeWithTokens = resultArray;
+          draft.templeWithTokens = resultArray
 
-          setTemplate(resultArray);
+          setTemplate(resultArray)
         } else {
-          draft.templeWithTokens = item.templeWithTokens;
-          setTemplate(cloneDeep(item.templeWithTokens));
+          draft.templeWithTokens = item.templeWithTokens
+          setTemplate(cloneDeep(item.templeWithTokens))
         }
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  }, [mode, item.template]);
+    )
+  }, [mode, item.template])
 
   const handleAddAnswer = () => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (!draft.validation.altResponses) {
-          draft.validation.altResponses = [];
+          draft.validation.altResponses = []
         }
 
         draft.validation.altResponses.push({
           score: 1,
-          value: []
-        });
+          value: [],
+        })
       })
-    );
-    setCorrectTab(correctTab + 1);
-  };
+    )
+    setCorrectTab(correctTab + 1)
+  }
 
-  const handlePointsChange = val => {
+  const handlePointsChange = (val) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (correctTab === 0) {
-          draft.validation.validResponse.score = val;
+          draft.validation.validResponse.score = val
         } else {
-          draft.validation.altResponses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val
         }
 
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   const handleAnswerChange = (ans, click) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         // keep previous correct answer on changing custom token, not on clicking token.
         if (mode === CUSTOM_MODE && !click) {
-          let prevAnswers = draft.validation.validResponse.value;
+          let prevAnswers = draft.validation.validResponse.value
           if (correctTab !== 0) {
-            prevAnswers = draft.validation.altResponses[correctTab - 1].value;
+            prevAnswers = draft.validation.altResponses[correctTab - 1].value
           }
-          ans.forEach(elem => {
-            const exist = find(prevAnswers, pans => pans.value === elem.value && pans.selected);
+          ans.forEach((elem) => {
+            const exist = find(
+              prevAnswers,
+              (pans) => pans.value === elem.value && pans.selected
+            )
             if (exist) {
-              elem.selected = true;
+              elem.selected = true
             }
-          });
+          })
         }
         if (correctTab === 0) {
-          draft.validation.validResponse.value = ans;
+          draft.validation.validResponse.value = ans
         } else {
-          draft.validation.altResponses[correctTab - 1].value = ans;
+          draft.validation.altResponses[correctTab - 1].value = ans
         }
 
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  const handleCloseTab = tabIndex => {
+  const handleCloseTab = (tabIndex) => {
     setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses.splice(tabIndex, 1);
+      produce(item, (draft) => {
+        draft.validation.altResponses.splice(tabIndex, 1)
 
-        setCorrectTab(0);
-        updateVariables(draft);
+        setCorrectTab(0)
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   const renderOptions = (
     <TokenHighlightPreview
@@ -138,11 +152,13 @@ const TokenHighlightEdit = ({
       mode={mode}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
+        correctTab === 0
+          ? item.validation.validResponse.value
+          : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
     />
-  );
+  )
 
   return (
     <ContentArea>
@@ -167,7 +183,7 @@ const TokenHighlightEdit = ({
 
       <Question
         section="main"
-        label={t("component.tokenHighlight.correctAnswer")}
+        label={t('component.tokenHighlight.correctAnswer')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
@@ -183,7 +199,9 @@ const TokenHighlightEdit = ({
           questionType={item?.title}
           onChangePoints={handlePointsChange}
           points={
-            correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
+            correctTab === 0
+              ? item.validation.validResponse.score
+              : item.validation.altResponses[correctTab - 1].score
           }
           isCorrectAnsTab={correctTab === 0}
         />
@@ -198,8 +216,8 @@ const TokenHighlightEdit = ({
         item={item}
       />
     </ContentArea>
-  );
-};
+  )
+}
 
 TokenHighlightEdit.propTypes = {
   item: PropTypes.object.isRequired,
@@ -207,14 +225,14 @@ TokenHighlightEdit.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  advancedLink: PropTypes.any
-};
+  advancedLink: PropTypes.any,
+}
 
 TokenHighlightEdit.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  advancedLink: null
-};
+  advancedLink: null,
+}
 
-export default withNamespaces("assessment")(TokenHighlightEdit);
+export default withNamespaces('assessment')(TokenHighlightEdit)

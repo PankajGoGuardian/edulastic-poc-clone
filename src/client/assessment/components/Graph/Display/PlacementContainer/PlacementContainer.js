@@ -1,23 +1,31 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { cloneDeep, isEqual } from "lodash";
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { cloneDeep, isEqual } from 'lodash'
 
-import { DragDrop, WithResources } from "@edulastic/common";
+import { DragDrop, WithResources } from '@edulastic/common'
 
-import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
-import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import {
+  CHECK,
+  CLEAR,
+  EDIT,
+  SHOW,
+} from '../../../../constants/constantsForQuestions'
+import {
+  setElementsStashAction,
+  setStashIndexAction,
+} from '../../../../actions/graphTools'
 
-import { makeBorder } from "../../Builder";
-import { CONSTANT } from "../../Builder/config";
+import { makeBorder } from '../../Builder'
+import { CONSTANT } from '../../Builder/config'
 import {
   defaultGraphParameters,
   defaultPointParameters,
   defaultAxesParameters,
-  defaultGridParameters
-} from "../../Builder/settings";
+  defaultGridParameters,
+} from '../../Builder/settings'
 
-import AnnotationRnd from "../../../Annotations/AnnotationRnd";
+import AnnotationRnd from '../../../Annotations/AnnotationRnd'
 
 import {
   GraphWrapper,
@@ -29,165 +37,167 @@ import {
   Title,
   JSXBoxWrapper,
   JSXBoxWithDropValues,
-  StyledToolsContainer
-} from "./styled";
-import Tools from "../../common/Tools";
-import DragDropValues from "./DragDropValues";
-import AppConfig from "../../../../../../../app-config";
+  StyledToolsContainer,
+} from './styled'
+import Tools from '../../common/Tools'
+import DragDropValues from './DragDropValues'
+import AppConfig from '../../../../../../../app-config'
 
 const valueHeightHashMap = {
-  "1": {
+  1: {
     width: 80,
-    height: 32
+    height: 32,
   },
-  "1.5": {
+  1.5: {
     width: 120,
-    height: 48
+    height: 48,
   },
-  "1.75": {
+  1.75: {
     width: 140,
-    height: 56
+    height: 56,
   },
-  "2.5": {
+  2.5: {
     width: 200,
-    height: 80
+    height: 80,
   },
-  "3": {
+  3: {
     width: 240,
-    height: 96
-  }
-};
+    height: 96,
+  },
+}
 
-const { DragPreview, DropContainer } = DragDrop;
+const { DragPreview, DropContainer } = DragDrop
 
 const getColoredElems = (elements, compareResult, theme) => {
-  const { rightIconColor } = theme.widgets.graphPlacement;
-  const { wrongIconColor } = theme.widgets.graphPlacement;
+  const { rightIconColor } = theme.widgets.graphPlacement
+  const { wrongIconColor } = theme.widgets.graphPlacement
 
-  if (compareResult && compareResult.details && compareResult.details.length > 0) {
-    let newElems = cloneDeep(elements);
-    const subElems = [];
+  if (
+    compareResult &&
+    compareResult.details &&
+    compareResult.details.length > 0
+  ) {
+    let newElems = cloneDeep(elements)
+    const subElems = []
 
-    newElems = newElems.map(el => {
+    newElems = newElems.map((el) => {
       if (!el.subElement) {
-        const detail = compareResult.details.find(det => det.id === el.id);
-        let newEl = {};
-        let result = false;
+        const detail = compareResult.details.find((det) => det.id === el.id)
+        let newEl = {}
+        let result = false
 
         if (detail && detail.result) {
           newEl = {
             ...el,
             priorityColor: rightIconColor,
             customOptions: {
-              isCorrect: true
-            }
-          };
-          result = true;
+              isCorrect: true,
+            },
+          }
+          result = true
         } else {
           newEl = {
             ...el,
             priorityColor: wrongIconColor,
             customOptions: {
-              isCorrect: false
-            }
-          };
+              isCorrect: false,
+            },
+          }
         }
 
         if (el.subElementsIds) {
-          Object.values(el.subElementsIds).forEach(val => {
+          Object.values(el.subElementsIds).forEach((val) => {
             subElems.push({
               id: val,
-              result
-            });
-          });
+              result,
+            })
+          })
         }
-        return newEl;
+        return newEl
       }
-      return el;
-    });
+      return el
+    })
 
-    newElems = newElems.map(el => {
+    newElems = newElems.map((el) => {
       if (el.subElement) {
-        const detail = subElems.find(det => det.id === el.id);
-        let newEl = {};
+        const detail = subElems.find((det) => det.id === el.id)
+        let newEl = {}
         if (detail && detail.result) {
           newEl = {
             ...el,
             priorityColor: rightIconColor,
             customOptions: {
-              isCorrect: true
-            }
-          };
+              isCorrect: true,
+            },
+          }
         } else {
           newEl = {
             ...el,
             priorityColor: wrongIconColor,
             customOptions: {
-              isCorrect: false
-            }
-          };
+              isCorrect: false,
+            },
+          }
         }
-        return newEl;
+        return newEl
       }
-      return el;
-    });
-    return newElems;
+      return el
+    })
+    return newElems
   }
-  return elements;
-};
+  return elements
+}
 
 const getCorrectAnswer = (answerArr, theme) => {
-  const { rightIconColor } = theme.widgets.graphPlacement;
+  const { rightIconColor } = theme.widgets.graphPlacement
 
   if (Array.isArray(answerArr)) {
-    return answerArr.map(el => ({
+    return answerArr.map((el) => ({
       ...el,
       priorityColor: rightIconColor,
       customOptions: {
-        isCorrect: true
-      }
-    }));
+        isCorrect: true,
+      },
+    }))
   }
-  return answerArr;
-};
+  return answerArr
+}
 
-const getCompareResult = evaluation => {
+const getCompareResult = (evaluation) => {
   if (!evaluation) {
-    return null;
+    return null
   }
 
-  let compareResult = null;
+  let compareResult = null
 
-  Object.keys(evaluation).forEach(key => {
+  Object.keys(evaluation).forEach((key) => {
     if (compareResult) {
-      return;
+      return
     }
     if (evaluation[key].commonResult) {
-      compareResult = evaluation[key];
+      compareResult = evaluation[key]
     }
-  });
+  })
 
   if (compareResult) {
-    return compareResult;
+    return compareResult
   }
 
-  return evaluation[0];
-};
+  return evaluation[0]
+}
 
 class PlacementContainer extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this._graphId = `jxgbox${Math.random()
-      .toString(36)
-      .replace(".", "")}`;
-    this._graph = null;
+    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graph = null
 
-    this.state = { resourcesLoaded: false, showPoint: false };
+    this.state = { resourcesLoaded: false, showPoint: false }
 
-    this.onReset = this.onReset.bind(this);
-    this.updateValues = this.updateValues.bind(this);
-    this.graphContainerRef = React.createRef();
+    this.onReset = this.onReset.bind(this)
+    this.updateValues = this.updateValues.bind(this)
+    this.graphContainerRef = React.createRef()
   }
 
   componentDidMount() {
@@ -203,10 +213,10 @@ class PlacementContainer extends PureComponent {
       setElementsStash,
       graphType,
       disableResponse,
-      theme
-    } = this.props;
+      theme,
+    } = this.props
 
-    const { resourcesLoaded } = this.state;
+    const { resourcesLoaded } = this.state
     // we should create a graph with whole settings for the first time.
     // @see https://snapwiz.atlassian.net/browse/EV-17315
     const settings = {
@@ -214,46 +224,46 @@ class PlacementContainer extends PureComponent {
       gridParameters: gridParams,
       axesParameters: {
         x: xAxesParameters,
-        y: yAxesParameters
-      }
-    };
+        y: yAxesParameters,
+      },
+    }
 
-    this._graph = makeBorder(this._graphId, graphType, settings);
+    this._graph = makeBorder(this._graphId, graphType, settings)
 
-    const defaultColor = theme.widgets.chart.labelStrokeColor;
-    const bgColor = theme.widgets.graphPlacement.backgroundShapes;
+    const defaultColor = theme.widgets.chart.labelStrokeColor
+    const bgColor = theme.widgets.graphPlacement.backgroundShapes
 
     if (this._graph) {
       if (!disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true);
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true)
       }
 
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.setDisableResponse(disableResponse)
 
-      this._graph.resizeContainer(layout.width, layout.height);
+      this._graph.resizeContainer(layout.width, layout.height)
 
       this._graph.setPointParameters({
         ...defaultPointParameters(),
-        ...pointParameters
-      });
+        ...pointParameters,
+      })
 
-      this._graph.setBgImage(bgImgOptions);
+      this._graph.setBgImage(bgImgOptions)
       if (resourcesLoaded) {
-        const bgShapeValues = backgroundShapes.values.map(el => ({
+        const bgShapeValues = backgroundShapes.values.map((el) => ({
           ...el,
-          priorityColor: bgColor
-        }));
-        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
+          priorityColor: bgColor,
+        }))
+        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
       }
 
-      this._graph.setDragDropDeleteHandler();
-      this._graph.setPriorityColor(defaultColor);
+      this._graph.setDragDropDeleteHandler()
+      this._graph.setPriorityColor(defaultColor)
 
-      this.setElementsToGraph();
+      this.setElementsToGraph()
     }
 
-    this.setGraphUpdateEventHandler();
-    setElementsStash(this._graph.getConfig(), this.getStashId());
+    this.setGraphUpdateEventHandler()
+    setElementsStash(this._graph.getConfig(), this.getStashId())
   }
 
   componentDidUpdate(prevProps) {
@@ -270,17 +280,17 @@ class PlacementContainer extends PureComponent {
       previewTab,
       changePreviewTab,
       elements,
-      theme
-    } = this.props;
+      theme,
+    } = this.props
 
-    const { resourcesLoaded } = this.state;
+    const { resourcesLoaded } = this.state
 
-    const bgColor = theme.widgets.graphPlacement.backgroundShapes;
+    const bgColor = theme.widgets.graphPlacement.backgroundShapes
 
     if (this._graph) {
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.setDisableResponse(disableResponse)
       if (prevProps.disableResponse && !disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true);
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true)
       }
 
       if (
@@ -291,8 +301,8 @@ class PlacementContainer extends PureComponent {
       ) {
         this._graph.setGraphParameters({
           ...defaultGraphParameters(),
-          ...canvas
-        });
+          ...canvas,
+        })
       }
 
       if (
@@ -305,44 +315,51 @@ class PlacementContainer extends PureComponent {
       ) {
         this._graph.setPointParameters({
           ...defaultPointParameters(),
-          ...pointParameters
-        });
+          ...pointParameters,
+        })
       }
 
       if (
-        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance ||
+        xAxesParameters.ticksDistance !==
+          prevProps.xAxesParameters.ticksDistance ||
         xAxesParameters.name !== prevProps.xAxesParameters.name ||
         xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks ||
         xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels ||
         xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
         xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
-        xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
+        xAxesParameters.commaInLabel !==
+          prevProps.xAxesParameters.commaInLabel ||
         xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
         xAxesParameters.drawZero !== prevProps.xAxesParameters.drawZero ||
-        yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
+        yAxesParameters.ticksDistance !==
+          prevProps.yAxesParameters.ticksDistance ||
         yAxesParameters.name !== prevProps.yAxesParameters.name ||
         yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
         yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
         yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
         yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
-        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
+        yAxesParameters.commaInLabel !==
+          prevProps.yAxesParameters.commaInLabel ||
         yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis ||
         yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero
       ) {
         this._graph.setAxesParameters({
           x: {
             ...defaultAxesParameters(),
-            ...xAxesParameters
+            ...xAxesParameters,
           },
           y: {
             ...defaultAxesParameters(),
-            ...yAxesParameters
-          }
-        });
+            ...yAxesParameters,
+          },
+        })
       }
 
-      if (layout.width !== prevProps.layout.width || layout.height !== prevProps.layout.height) {
-        this._graph.resizeContainer(layout.width, layout.height);
+      if (
+        layout.width !== prevProps.layout.width ||
+        layout.height !== prevProps.layout.height
+      ) {
+        this._graph.resizeContainer(layout.width, layout.height)
       }
 
       if (
@@ -352,8 +369,8 @@ class PlacementContainer extends PureComponent {
       ) {
         this._graph.setGridParameters({
           ...defaultGridParameters(),
-          ...gridParams
-        });
+          ...gridParams,
+        })
       }
 
       if (
@@ -364,181 +381,210 @@ class PlacementContainer extends PureComponent {
         bgImgOptions.size[0] !== prevProps.bgImgOptions.size[0] ||
         bgImgOptions.size[1] !== prevProps.bgImgOptions.size[1]
       ) {
-        this._graph.removeBgImage();
-        this._graph.setBgImage(bgImgOptions);
+        this._graph.removeBgImage()
+        this._graph.setBgImage(bgImgOptions)
       }
 
       if (
-        JSON.stringify(backgroundShapes.values) !== JSON.stringify(prevProps.backgroundShapes.values) ||
+        JSON.stringify(backgroundShapes.values) !==
+          JSON.stringify(prevProps.backgroundShapes.values) ||
         backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints
       ) {
-        this._graph.resetBg();
+        this._graph.resetBg()
         if (resourcesLoaded) {
-          const bgShapeValues = backgroundShapes.values.map(el => ({
+          const bgShapeValues = backgroundShapes.values.map((el) => ({
             ...el,
-            priorityColor: bgColor
-          }));
-          this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
+            priorityColor: bgColor,
+          }))
+          this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
         }
       }
 
-      this.setElementsToGraph(prevProps);
+      this.setElementsToGraph(prevProps)
     }
 
-    if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
-      changePreviewTab(CLEAR);
+    if (
+      (previewTab === CHECK || previewTab === SHOW) &&
+      !isEqual(elements, prevProps.elements)
+    ) {
+      changePreviewTab(CLEAR)
     }
   }
 
   onReset() {
-    this._graph.reset();
-    this.updateValues();
+    this._graph.reset()
+    this.updateValues()
   }
 
   onUndo = () => {
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] - 1]);
-      setStashIndex(stashIndex[id] - 1, id);
+      setValue(stash[id][stashIndex[id] - 1])
+      setStashIndex(stashIndex[id] - 1, id)
     }
-  };
+  }
 
   onRedo() {
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] + 1]);
-      setStashIndex(stashIndex[id] + 1, id);
+      setValue(stash[id][stashIndex[id] + 1])
+      setStashIndex(stashIndex[id] + 1, id)
     }
   }
 
   getStashId() {
-    const { questionId, altAnswerId, view } = this.props;
-    const type = altAnswerId || view;
-    return `${questionId}_${type}`;
+    const { questionId, altAnswerId, view } = this.props
+    const type = altAnswerId || view
+    return `${questionId}_${type}`
   }
 
-  onSelectControl = control => {
+  onSelectControl = (control) => {
     switch (control) {
-      case "undo":
-        return this.onUndo();
-      case "redo":
-        return this.onRedo();
-      case "reset":
-        return this.onReset();
+      case 'undo':
+        return this.onUndo()
+      case 'redo':
+        return this.onRedo()
+      case 'reset':
+        return this.onReset()
       default:
-        return () => {};
+        return () => {}
     }
-  };
+  }
 
   updateValues() {
-    const conf = this._graph.getConfig();
-    const { setValue, setElementsStash } = this.props;
-    setValue(conf);
-    setElementsStash(conf, this.getStashId());
+    const conf = this._graph.getConfig()
+    const { setValue, setElementsStash } = this.props
+    setValue(conf)
+    setElementsStash(conf, this.getStashId())
   }
 
   graphUpdateHandler = () => {
-    this.updateValues();
-  };
+    this.updateValues()
+  }
 
   setGraphUpdateEventHandler = () => {
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_UPDATE, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
-  };
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_MOVE,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_NEW,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_UPDATE,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_DELETE,
+      this.graphUpdateHandler
+    )
+  }
 
   setElementsToGraph = (prevProps = {}) => {
-    const { resourcesLoaded } = this.state;
+    const { resourcesLoaded } = this.state
     if (!resourcesLoaded) {
-      return;
+      return
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, theme } = this.props;
+    const {
+      elements,
+      evaluation,
+      disableResponse,
+      elementsIsCorrect,
+      previewTab,
+      theme,
+    } = this.props
 
     // correct answers blocks
     if (elementsIsCorrect) {
-      this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements, theme));
-      return;
+      this._graph.resetAnswers()
+      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements, theme))
+      return
     }
 
     if (disableResponse) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult, theme);
-      this._graph.reset();
-      this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult, theme)
+      this._graph.reset()
+      this._graph.resetAnswers()
+      this._graph.loadAnswersFromConfig(coloredElements)
+      return
     }
 
     if (previewTab === CHECK || previewTab === SHOW) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult, theme);
-      this._graph.reset();
-      this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult, theme)
+      this._graph.reset()
+      this._graph.resetAnswers()
+      this._graph.loadFromConfig(coloredElements)
+      return
     }
 
     if (
       !isEqual(elements, this._graph.getConfig()) ||
-      (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
+      (previewTab === CLEAR &&
+        (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
-      this._graph.reset();
-      this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements);
+      this._graph.reset()
+      this._graph.resetAnswers()
+      this._graph.loadFromConfig(elements)
     }
-  };
+  }
 
   getDragDropValues = () => {
-    const { list, elements } = this.props;
-    return list.filter(elem => !elements.some(el => elem.id === el.id));
-  };
+    const { list, elements } = this.props
+    return list.filter((elem) => !elements.some((el) => elem.id === el.id))
+  }
 
   resourcesOnLoaded = () => {
-    const { resourcesLoaded } = this.state;
-    const { backgroundShapes, theme } = this.props;
-    const bgColor = theme.widgets.graphPlacement.backgroundShapes;
+    const { resourcesLoaded } = this.state
+    const { backgroundShapes, theme } = this.props
+    const bgColor = theme.widgets.graphPlacement.backgroundShapes
 
     if (resourcesLoaded) {
-      return;
+      return
     }
-    this.setState({ resourcesLoaded: true });
+    this.setState({ resourcesLoaded: true })
 
-    const bgShapeValues = backgroundShapes.values.map(el => ({
+    const bgShapeValues = backgroundShapes.values.map((el) => ({
       ...el,
-      priorityColor: bgColor
-    }));
-    this._graph.resetBg();
-    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
-    this.setElementsToGraph();
-  };
+      priorityColor: bgColor,
+    }))
+    this._graph.resetBg()
+    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
+    this.setElementsToGraph()
+  }
 
-  getDragValueOffset = offset => {
+  getDragValueOffset = (offset) => {
     if (this.graphContainerRef.current && offset) {
-      const element = this.graphContainerRef.current;
-      const { x, y } = element.getBoundingClientRect();
-      const px = offset.x - x;
-      const py = offset.y - y;
-      return { x: px, y: py };
+      const element = this.graphContainerRef.current
+      const { x, y } = element.getBoundingClientRect()
+      const px = offset.x - x
+      const py = offset.y - y
+      return { x: px, y: py }
     }
-    return { x: 0, y: 0 };
-  };
+    return { x: 0, y: 0 }
+  }
 
   handleDropValue = ({ itemOffset, data, itemRect }) => {
-    const d = this.getDragValueOffset(itemOffset);
-    const { width, height } = itemRect;
-    if (this._graph.addDragDropValue(data, d.x + width / 4, d.y + height, { width, height })) {
-      this.updateValues();
+    const d = this.getDragValueOffset(itemOffset)
+    const { width, height } = itemRect
+    if (
+      this._graph.addDragDropValue(data, d.x + width / 4, d.y + height, {
+        width,
+        height,
+      })
+    ) {
+      this.updateValues()
     }
-  };
+  }
 
-  handleDraggingValue = isOver => {
-    this.setState({ showPoint: isOver });
-  };
+  handleDraggingValue = (isOver) => {
+    this.setState({ showPoint: isOver })
+  }
 
   render() {
     const {
@@ -551,54 +597,77 @@ class PlacementContainer extends PureComponent {
       setQuestionData,
       questionId,
       zoomLevel,
-      isPrintPreview
-    } = this.props;
-    const { showPoint } = this.state;
+      isPrintPreview,
+    } = this.props
+    const { showPoint } = this.state
     const hasAnnotation =
-      annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
+      annotation &&
+      (annotation.labelTop ||
+        annotation.labelLeft ||
+        annotation.labelRight ||
+        annotation.labelBottom)
 
-    const margin = layout.margin ? layout.margin : hasAnnotation ? 20 : 0;
+    const margin = layout.margin ? layout.margin : hasAnnotation ? 20 : 0
 
-    const dragDropBoundsClassName = `jsxbox-with-drag-drop-${questionId ||
-      Math.random()
-        .toString()
-        .slice(2, 9)}`;
+    const dragDropBoundsClassName = `jsxbox-with-drag-drop-${
+      questionId || Math.random().toString().slice(2, 9)
+    }`
 
-    const valueDimensions = valueHeightHashMap[zoomLevel];
+    const valueDimensions = valueHeightHashMap[zoomLevel]
 
     return (
-      <div data-cy="placement-graph-container" style={{ width: "100%" }}>
+      <div data-cy="placement-graph-container" style={{ width: '100%' }}>
         <WithResources
-          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
+          resources={[
+            `${AppConfig.jqueryPath}/jquery.min.js`,
+            `${AppConfig.katexPath}/katex.min.js`,
+          ]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >
           <span />
         </WithResources>
         <GraphWrapper>
-          {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
+          {annotation && annotation.title && (
+            <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />
+          )}
           {!disableResponse && !isPrintPreview && (
             <StyledToolsContainer>
-              <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
+              <Tools
+                controls={controls}
+                onSelectControl={this.onSelectControl}
+                fontSize={layout.fontSize}
+              />
             </StyledToolsContainer>
           )}
           <div className="__prevent-page-break">
             <JSXBoxWithDropValues className={dragDropBoundsClassName}>
               <JSXBoxWrapper showBorder={hasAnnotation} padding={margin}>
                 {annotation && annotation.labelTop && (
-                  <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
+                  <LabelTop
+                    dangerouslySetInnerHTML={{ __html: annotation.labelTop }}
+                  />
                 )}
                 {annotation && annotation.labelRight && (
-                  <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
+                  <LabelRight
+                    dangerouslySetInnerHTML={{ __html: annotation.labelRight }}
+                  />
                 )}
                 {annotation && annotation.labelLeft && (
-                  <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
+                  <LabelLeft
+                    dangerouslySetInnerHTML={{ __html: annotation.labelLeft }}
+                  />
                 )}
                 {annotation && annotation.labelBottom && (
-                  <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
+                  <LabelBottom
+                    dangerouslySetInnerHTML={{ __html: annotation.labelBottom }}
+                  />
                 )}
                 <div ref={this.graphContainerRef}>
-                  <DropContainer drop={this.handleDropValue} hover={this.handleDraggingValue}>
+                  <DropContainer
+                    drop={this.handleDropValue}
+                    hover={this.handleDraggingValue}
+                  >
                     <JSXBox
                       data-cy="jxgbox"
                       id={this._graphId}
@@ -629,7 +698,7 @@ class PlacementContainer extends PureComponent {
           <DragPreview showPoint={showPoint} />
         </GraphWrapper>
       </div>
-    );
+    )
   }
 }
 
@@ -661,8 +730,8 @@ PlacementContainer.propTypes = {
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
-  list: PropTypes.array
-};
+  list: PropTypes.array,
+}
 
 PlacementContainer.defaultProps = {
   backgroundShapes: { values: [], showPoints: true },
@@ -676,17 +745,17 @@ PlacementContainer.defaultProps = {
   previewTab: CLEAR,
   changePreviewTab: () => {},
   elementsIsCorrect: false,
-  list: []
-};
+  list: [],
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     stash: state.graphTools.stash,
     stashIndex: state.graphTools.stashIndex,
-    zoomLevel: state.ui.zoomLevel
+    zoomLevel: state.ui.zoomLevel,
   }),
   {
     setElementsStash: setElementsStashAction,
-    setStashIndex: setStashIndexAction
+    setStashIndex: setStashIndexAction,
   }
-)(PlacementContainer);
+)(PlacementContainer)

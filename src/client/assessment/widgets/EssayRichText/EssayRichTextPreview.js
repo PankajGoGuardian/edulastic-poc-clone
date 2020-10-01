@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import styled, { withTheme } from "styled-components";
-import { get } from "lodash";
+import React, { useState, useEffect, useContext } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import styled, { withTheme } from 'styled-components'
+import { get } from 'lodash'
 
 import {
   Stimulus,
@@ -13,21 +13,28 @@ import {
   AnswerContext,
   QuestionSubLabel,
   QuestionLabelWrapper,
-  QuestionContentWrapper
-} from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { lightGrey12, white } from "@edulastic/colors";
-import { calculateWordsCount } from "@edulastic/common/src/helpers";
-import { Toolbar } from "../../styled/Toolbar";
-import { Item } from "../../styled/Item";
-import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
+  QuestionContentWrapper,
+} from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { lightGrey12, white } from '@edulastic/colors'
+import { calculateWordsCount } from '@edulastic/common/src/helpers'
+import { Toolbar } from '../../styled/Toolbar'
+import { Item } from '../../styled/Item'
+import {
+  PREVIEW,
+  ON_LIMIT,
+  ALWAYS,
+} from '../../constants/constantsForQuestions'
 
-import { ValidList } from "./constants/validList";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import Instructions from "../../components/Instructions";
+import { ValidList } from './constants/validList'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import Instructions from '../../components/Instructions'
 
-const getToolBarButtons = item => (item.formattingOptions || []).filter(x => x.active && x.value).map(x => x.value);
+const getToolBarButtons = (item) =>
+  (item.formattingOptions || [])
+    .filter((x) => x.active && x.value)
+    .map((x) => x.value)
 
 const EssayRichTextPreview = ({
   col,
@@ -41,74 +48,89 @@ const EssayRichTextPreview = ({
   showQuestionNumber,
   disableResponse,
   previewTab,
-  isPrintPreview
+  isPrintPreview,
 }) => {
-  userAnswer = typeof userAnswer === "object" ? "" : userAnswer;
-  const toolbarButtons = getToolBarButtons(item);
-  const answerContextConfig = useContext(AnswerContext);
+  userAnswer = typeof userAnswer === 'object' ? '' : userAnswer
+  const toolbarButtons = getToolBarButtons(item)
+  const answerContextConfig = useContext(AnswerContext)
 
-  let minHeight = get(item, "uiStyle.minHeight", 200);
-  const maxHeight = get(item, "uiStyle.maxHeight", 300);
-  minHeight -= 1;
+  let minHeight = get(item, 'uiStyle.minHeight', 200)
+  const maxHeight = get(item, 'uiStyle.maxHeight', 300)
+  minHeight -= 1
   // minHeight -1 cuz when maxHeight and minHeight is same,
   // div with maxHeight has border 1px which is parent of div with minHeight,
   // hence parent div  height is shrinked by 1px, hence scroll bar appears
   // border 1px is coming from froala editor default css which is necessary
 
-  const characters = get(item, "characterMap", []);
-  const [wordCount, setWordCount] = useState(0);
+  const characters = get(item, 'characterMap', [])
+  const [wordCount, setWordCount] = useState(0)
 
   useEffect(() => {
-    if (Array.isArray(userAnswer) || typeof userAnswer !== "string") {
-      saveAnswer("");
-      setWordCount(0);
-    } else if (typeof userAnswer === "string" && disableResponse) {
-      setWordCount(calculateWordsCount(userAnswer));
+    if (Array.isArray(userAnswer) || typeof userAnswer !== 'string') {
+      saveAnswer('')
+      setWordCount(0)
+    } else if (typeof userAnswer === 'string' && disableResponse) {
+      setWordCount(calculateWordsCount(userAnswer))
     }
-  }, [userAnswer]);
+  }, [userAnswer])
 
   // TODO: if this is slooooooow, debounce or throttle it..
-  const handleTextChange = val => {
-    if (typeof val === "string") {
-      const wordsCount = typeof val === "string" ? calculateWordsCount(val) : 0;
-      const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
-      setWordCount(wordsCount + mathInputCount);
-      saveAnswer(val);
+  const handleTextChange = (val) => {
+    if (typeof val === 'string') {
+      const wordsCount = typeof val === 'string' ? calculateWordsCount(val) : 0
+      const mathInputCount =
+        typeof val === 'string' ? (val.match(/input__math/g) || []).length : 0
+      setWordCount(wordsCount + mathInputCount)
+      saveAnswer(val)
     }
-  };
+  }
 
-  const showLimitAlways = item.showWordLimit === ALWAYS;
+  const showLimitAlways = item.showWordLimit === ALWAYS
 
-  const showOnLimit = item.showWordLimit === ON_LIMIT;
+  const showOnLimit = item.showWordLimit === ON_LIMIT
 
   const displayWordCount =
     (showOnLimit && item.maxWord < wordCount) || showLimitAlways
-      ? `${wordCount} / ${item.maxWord} ${t("component.essayText.wordsLimitTitle")}`
-      : `${wordCount} ${t("component.essayText.wordsTitle")}`;
+      ? `${wordCount} / ${item.maxWord} ${t(
+          'component.essayText.wordsLimitTitle'
+        )}`
+      : `${wordCount} ${t('component.essayText.wordsTitle')}`
 
   const wordCountStyle =
     (showLimitAlways || showOnLimit) && item.maxWord < wordCount
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
-      : {};
+      : {}
 
-  const isV1Multipart = get(col, "isV1Multipart", false);
+  const isV1Multipart = get(col, 'isV1Multipart', false)
 
   /**
    * if answerContextConfig comes from LCB/EG pages
    */
-  const isReadOnly = (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
+  const isReadOnly =
+    (previewTab === 'show' && !answerContextConfig.isAnswerModifiable) ||
+    disableResponse
 
   return item.id ? (
-    <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper
+      isV1Multipart={isV1Multipart}
+      padding={smallSize}
+      boxShadow={smallSize ? 'none' : ''}
+    >
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
         <QuestionLabelWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          {showQuestionNumber && (
+            <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+          )}
+          {item.qSubLabel && (
+            <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+          )}
         </QuestionLabelWrapper>
 
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
-            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+            {view === PREVIEW && !smallSize && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
           </QuestionTitleWrapper>
           <EssayRichTextContainer data-cy="previewBoxContainer">
             {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
@@ -129,7 +151,9 @@ const EssayRichTextPreview = ({
                   toolbarInline={false}
                   toolbarSticky={false}
                   initOnClick={false}
-                  readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
+                  readOnly={
+                    !answerContextConfig.isAnswerModifiable || disableResponse
+                  }
                   quickInsertTags={[]}
                   buttons={toolbarButtons}
                   customCharacters={characters}
@@ -138,21 +162,22 @@ const EssayRichTextPreview = ({
                 />
               </FroalaEditorContainer>
             )}
-            {((!Array.isArray(userAnswer) && isReadOnly) || (!Array.isArray(userAnswer) && isPrintPreview)) && (
+            {((!Array.isArray(userAnswer) && isReadOnly) ||
+              (!Array.isArray(userAnswer) && isPrintPreview)) && (
               <FlexContainer
                 alignItems="flex-start"
                 justifyContent="flex-start"
                 style={{
-                  minHeight: "150px",
-                  borderRadius: "4px 4px 0 0",
+                  minHeight: '150px',
+                  borderRadius: '4px 4px 0 0',
                   border: `1px solid ${lightGrey12}`,
-                  padding: "6px",
-                  margin: "-1px" // Parent component has borders
+                  padding: '6px',
+                  margin: '-1px', // Parent component has borders
                 }}
               >
                 <MathFormulaDisplay
                   dangerouslySetInnerHTML={{
-                    __html: userAnswer || ""
+                    __html: userAnswer || '',
                   }}
                 />
               </FlexContainer>
@@ -162,7 +187,10 @@ const EssayRichTextPreview = ({
               (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
                 <EssayToolbar borderRadiusOnlyBottom>
                   <FlexContainer />
-                  <Item data-cy="questionRichEssayAuthorPreviewWordCount" style={wordCountStyle}>
+                  <Item
+                    data-cy="questionRichEssayAuthorPreviewWordCount"
+                    style={wordCountStyle}
+                  >
                     {displayWordCount}
                   </Item>
                 </EssayToolbar>
@@ -172,8 +200,8 @@ const EssayRichTextPreview = ({
       </FlexContainer>
       <Instructions item={item} />
     </StyledPaperWrapper>
-  ) : null;
-};
+  ) : null
+}
 
 EssayRichTextPreview.propTypes = {
   t: PropTypes.func.isRequired,
@@ -187,65 +215,62 @@ EssayRichTextPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   isPrintPreview: PropTypes.bool.isRequired,
   disableResponse: PropTypes.bool.isRequired,
-  col: PropTypes.object
-};
+  col: PropTypes.object,
+}
 
 EssayRichTextPreview.defaultProps = {
   smallSize: false,
-  userAnswer: "",
+  userAnswer: '',
   showQuestionNumber: false,
-  col: {}
-};
+  col: {},
+}
 
-const toolbarOptions = options => {
+const toolbarOptions = (options) => {
   const arrSorted = options
-    .filter(ite => ite.active)
-    .map(item => {
-      const { value, param } = item;
-      return ValidList.includes(value) ? { [value]: param } : value;
-    });
+    .filter((ite) => ite.active)
+    .map((item) => {
+      const { value, param } = item
+      return ValidList.includes(value) ? { [value]: param } : value
+    })
 
-  const arr = [];
-  let ind = 0;
+  const arr = []
+  let ind = 0
 
   arrSorted.forEach((item, i) => {
-    if (item === "|") {
-      if (arrSorted[i + 1] === "|") {
-        arrSorted.splice(i + 1, 1);
+    if (item === '|') {
+      if (arrSorted[i + 1] === '|') {
+        arrSorted.splice(i + 1, 1)
       }
-      arr.push(arrSorted.slice(ind, i));
-      ind = i + 1;
+      arr.push(arrSorted.slice(ind, i))
+      ind = i + 1
     }
-    if (i === arrSorted.length - 1 && item !== "|") {
-      arr.push(arrSorted.slice(ind));
+    if (i === arrSorted.length - 1 && item !== '|') {
+      arr.push(arrSorted.slice(ind))
     }
-  });
+  })
 
-  return arr;
-};
+  return arr
+}
 
-EssayRichTextPreview.modules = options => toolbarOptions(options);
+EssayRichTextPreview.modules = (options) => toolbarOptions(options)
 
 EssayRichTextPreview.formats = [
-  "header",
-  "script",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "align"
-];
+  'header',
+  'script',
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'blockquote',
+  'list',
+  'bullet',
+  'indent',
+  'align',
+]
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
+const enhance = compose(withNamespaces('assessment'), withTheme)
 
-export default enhance(EssayRichTextPreview);
+export default enhance(EssayRichTextPreview)
 
 const EssayRichTextContainer = styled.div`
   width: 100%;
@@ -254,7 +279,7 @@ const EssayRichTextContainer = styled.div`
   border-right: 1px solid ${lightGrey12};
   border-bottom: 1px solid ${lightGrey12};
   border-left: 1px solid ${lightGrey12};
-`;
+`
 
 const FroalaEditorContainer = styled.div`
   & * {
@@ -262,7 +287,7 @@ const FroalaEditorContainer = styled.div`
   }
 
   .fr-box.fr-basic .fr-element {
-    font-size: ${props => props.theme.fontSize};
+    font-size: ${(props) => props.theme.fontSize};
   }
   .fr-toolbar.fr-top {
     border-radius: 4px 4px 0 0 !important;
@@ -276,21 +301,22 @@ const FroalaEditorContainer = styled.div`
 
   .fr-box .fr-counter,
   .fr-box.fr-basic .fr-element {
-    color: ${props => props.theme.widgets.essayRichText.toolbarColor};
+    color: ${(props) => props.theme.widgets.essayRichText.toolbarColor};
   }
 
   .fr-box.fr-basic .fr-wrapper {
-    background: ${props => props.theme.widgets.essayRichText.textInputBgColor};
+    background: ${(props) =>
+      props.theme.widgets.essayRichText.textInputBgColor};
     border: none !important;
   }
 
   .fr-toolbar .fr-command.fr-btn svg path {
-    fill: ${props => props.theme.widgets.essayRichText.toolbarColor};
+    fill: ${(props) => props.theme.widgets.essayRichText.toolbarColor};
   }
-`;
+`
 
 const EssayToolbar = styled(Toolbar)`
   min-height: 40px;
   background: ${white};
   border-top: 1px solid ${lightGrey12};
-`;
+`

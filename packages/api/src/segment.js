@@ -1,9 +1,9 @@
-import { get, without, countBy } from "lodash";
-import { createHmac } from "crypto-browserify";
-import AppConfig from "../../../app-config";
+import { get, without, countBy } from 'lodash'
+import { createHmac } from 'crypto-browserify'
+import AppConfig from '../../../app-config'
 
-const allowedRoles = ["teacher", "school-admin", "district-admin"];
-const minFeatures = 5;
+const allowedRoles = ['teacher', 'school-admin', 'district-admin']
+const minFeatures = 5
 
 const getUserDetails = ({
   email,
@@ -13,11 +13,17 @@ const getUserDetails = ({
   clever = false,
   clever_district = false,
   gm = false,
-  orgData: { districts = [] }
+  orgData: { districts = [] },
 }) => {
   // setting first district details for student other user role will have only one district
-  const { districtId = "", districtName: district="", districtState: state="", v1Id} = districts?.[0] || {};
-  const schoolId = get(orgData, "schools[0].v1Id", "") || get(orgData, "schools[0]._id", "");
+  const {
+    districtId = '',
+    districtName: district = '',
+    districtState: state = '',
+    v1Id,
+  } = districts?.[0] || {}
+  const schoolId =
+    get(orgData, 'schools[0].v1Id', '') || get(orgData, 'schools[0]._id', '')
   return {
     domain: window.document.domain,
     email,
@@ -31,28 +37,31 @@ const getUserDetails = ({
     // its districtId
     groupId: v1Id || districtId,
     schoolId,
-    school: get(orgData, "schools[0].name", ""),
+    school: get(orgData, 'schools[0].name', ''),
     districtId: v1Id || districtId,
     district,
-    state
+    state,
   }
-};
+}
 
 const analyticsIdentify = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
-    return;
+    return
   }
   if (user) {
     const {
-      role = "",
+      role = '',
       _id,
       v1Id,
       features = { premiumUser: false },
       firstName,
       lastName,
-      orgData: { defaultGrades: [grade = "", ,] = [], defaultSubjects: [subject = "", ,] = [] }
-    } = user;
-    const userId = v1Id || _id;
+      orgData: {
+        defaultGrades: [grade = '', ,] = [],
+        defaultSubjects: [subject = '', ,] = [],
+      },
+    } = user
+    const userId = v1Id || _id
     if (allowedRoles.includes(role) && window.analytics) {
       // Passing user_hash to have secure communication
       window.analytics.identify(
@@ -62,8 +71,9 @@ const analyticsIdentify = ({ user }) => {
           isV2User: true,
           grade,
           subject,
-          name: without([firstName, lastName], undefined, null, "").join(" "),
-          premium_user: (countBy(Object.values(features), Boolean).true || 0) > minFeatures
+          name: without([firstName, lastName], undefined, null, '').join(' '),
+          premium_user:
+            (countBy(Object.values(features), Boolean).true || 0) > minFeatures,
         },
         {
           Intercom: {
@@ -71,23 +81,23 @@ const analyticsIdentify = ({ user }) => {
             // Keep your secret key safe! Never commit it directly to your repository,
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
-            user_hash: createHmac("sha256", AppConfig.segmentHashSecret)
+            user_hash: createHmac('sha256', AppConfig.segmentHashSecret)
               .update(userId.toString())
-              .digest("hex")
-          }
+              .digest('hex'),
+          },
         }
-      );
+      )
     }
   }
-};
+}
 
 const unloadIntercom = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
-    return;
+    return
   }
   if (user) {
-    const { role = "", _id, v1Id } = user;
-    const userId = v1Id || _id;
+    const { role = '', _id, v1Id } = user
+    const userId = v1Id || _id
     if (allowedRoles.includes(role) && window.analytics) {
       window.analytics.identify(
         userId,
@@ -98,17 +108,17 @@ const unloadIntercom = ({ user }) => {
             // Keep your secret key safe! Never commit it directly to your repository,
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
-            user_hash: createHmac("sha256", AppConfig.segmentHashSecret)
+            user_hash: createHmac('sha256', AppConfig.segmentHashSecret)
               .update(userId.toString())
-              .digest("hex")
-          }
+              .digest('hex'),
+          },
         }
-      );
+      )
     }
   }
-};
+}
 
 export default {
   unloadIntercom,
-  analyticsIdentify
-};
+  analyticsIdentify,
+}

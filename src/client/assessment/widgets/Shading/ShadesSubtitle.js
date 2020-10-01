@@ -1,81 +1,87 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { compose } from "redux";
-import { withTheme } from "styled-components";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { compose } from 'redux'
+import { withTheme } from 'styled-components'
 
-import { withNamespaces } from "@edulastic/localization";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { withNamespaces } from '@edulastic/localization'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
-import { updateVariables } from "../../utils/variables";
+import { updateVariables } from '../../utils/variables'
 
-import ShadesView from "./components/ShadesView";
+import ShadesView from './components/ShadesView'
 
-import { Subtitle } from "../../styled/Subtitle";
-import Question from "../../components/Question";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { Subtitle } from '../../styled/Subtitle'
+import Question from '../../components/Question'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 class ShadesSubtitle extends Component {
   render() {
-    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props
 
-    const { canvas } = item;
+    const { canvas } = item
 
-    const cell_width = canvas ? canvas.cell_width : 1;
-    const cell_height = canvas ? canvas.cell_height : 1;
-    const rowCount = canvas ? canvas.rowCount : 1;
-    const columnCount = canvas ? canvas.columnCount : 1;
-    const shaded = canvas ? canvas.shaded : [];
-    const read_only_author_cells = canvas ? canvas.read_only_author_cells : false;
+    const cell_width = canvas ? canvas.cell_width : 1
+    const cell_height = canvas ? canvas.cell_height : 1
+    const rowCount = canvas ? canvas.rowCount : 1
+    const columnCount = canvas ? canvas.columnCount : 1
+    const shaded = canvas ? canvas.shaded : []
+    const read_only_author_cells = canvas
+      ? canvas.read_only_author_cells
+      : false
 
     const handleCanvasOptionsChange = (prop, val) => {
       setQuestionData(
-        produce(item, draft => {
-          draft.canvas[prop] = val;
+        produce(item, (draft) => {
+          draft.canvas[prop] = val
 
-          if (prop === "columnCount" || prop === "rowCount") {
-            draft.canvas.shaded = [];
+          if (prop === 'columnCount' || prop === 'rowCount') {
+            draft.canvas.shaded = []
           }
 
-          draft.validation.validResponse.value = [];
+          draft.validation.validResponse.value = []
           if (draft.validation.altResponses) {
-            draft.validation.altResponses.forEach(altResponse => {
-              altResponse.value = [];
-            });
+            draft.validation.altResponses.forEach((altResponse) => {
+              altResponse.value = []
+            })
           }
 
-          updateVariables(draft);
+          updateVariables(draft)
         })
-      );
-    };
+      )
+    }
 
     const handleOnCellClick = (rowNumber, colNumber) => () => {
       setQuestionData(
-        produce(item, draft => {
+        produce(item, (draft) => {
           const indexOfSameShade = draft.canvas.shaded.findIndex(
-            shade => shade[0] === rowNumber && shade[1] === colNumber
-          );
+            (shade) => shade[0] === rowNumber && shade[1] === colNumber
+          )
 
           if (indexOfSameShade === -1) {
-            draft.canvas.shaded.push([rowNumber, colNumber]);
+            draft.canvas.shaded.push([rowNumber, colNumber])
           } else {
-            draft.canvas.shaded.splice(indexOfSameShade, 1);
+            draft.canvas.shaded.splice(indexOfSameShade, 1)
           }
 
-          updateVariables(draft);
+          updateVariables(draft)
         })
-      );
-    };
+      )
+    }
 
     return (
       <Question
         section="main"
-        label={t("component.shading.shadesSubtitle")}
+        label={t('component.shading.shadesSubtitle')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.shading.shadesSubtitle")}`)}>
-          {t("component.shading.shadesSubtitle")}
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.shading.shadesSubtitle')}`
+          )}
+        >
+          {t('component.shading.shadesSubtitle')}
         </Subtitle>
 
         <div>
@@ -93,14 +99,19 @@ class ShadesSubtitle extends Component {
         </div>
 
         <CheckboxLabel
-          onChange={() => handleCanvasOptionsChange("read_only_author_cells", !read_only_author_cells)}
+          onChange={() =>
+            handleCanvasOptionsChange(
+              'read_only_author_cells',
+              !read_only_author_cells
+            )
+          }
           defaultChecked={read_only_author_cells}
           mt="20px"
         >
-          {t("component.shading.lockShadedCells")}
+          {t('component.shading.lockShadedCells')}
         </CheckboxLabel>
       </Question>
-    );
+    )
   }
 }
 
@@ -109,17 +120,14 @@ ShadesSubtitle.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 ShadesSubtitle.defaultProps = {
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
+const enhance = compose(withNamespaces('assessment'), withTheme)
 
-export default enhance(ShadesSubtitle);
+export default enhance(ShadesSubtitle)

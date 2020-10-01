@@ -10,64 +10,64 @@ import {
   TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
   SET_CONTENTS_UPDATED,
   TOGGLE_MOVE_ITEMS_TO_FOLDER,
-  REMOVAL_ITEMS_FROM_FOLDER_REQUEST
-} from "../constants/actions";
+  REMOVAL_ITEMS_FROM_FOLDER_REQUEST,
+} from '../constants/actions'
 
-export const receiveFolderAction = payload => ({
+export const receiveFolderAction = (payload) => ({
   type: RECEIVE_FOLDER_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const receiveCreateFolderAction = payload => ({
+export const receiveCreateFolderAction = (payload) => ({
   type: RECEIVE_FOLDER_CREATE_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const receiveAddMoveFolderAction = payload => ({
+export const receiveAddMoveFolderAction = (payload) => ({
   type: ADD_MOVE_FOLDER_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const receiveDeleteFolderAction = payload => ({
+export const receiveDeleteFolderAction = (payload) => ({
   type: DELETE_FOLDER_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const receiveRenameFolderAction = payload => ({
+export const receiveRenameFolderAction = (payload) => ({
   type: RENAME_FOLDER_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const setFolderAction = payload => ({
+export const setFolderAction = (payload) => ({
   type: SET_FOLDER,
-  payload
-});
+  payload,
+})
 
 export const clearFolderAction = () => ({
-  type: CLEAR_FOLDER
-});
+  type: CLEAR_FOLDER,
+})
 
-export const setItemsMoveFolderAction = payload => ({
+export const setItemsMoveFolderAction = (payload) => ({
   type: SET_ITEMS_TO_ADD,
-  payload
-});
+  payload,
+})
 
-export const toggleRemoveItemsFolderAction = payload => ({
+export const toggleRemoveItemsFolderAction = (payload) => ({
   type: TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
-  payload
-});
+  payload,
+})
 
-export const toggleMoveItemsFolderAction = payload => ({
+export const toggleMoveItemsFolderAction = (payload) => ({
   type: TOGGLE_MOVE_ITEMS_TO_FOLDER,
-  payload
-});
+  payload,
+})
 
-export const removeItemsFromFolderAction = payload => ({
+export const removeItemsFromFolderAction = (payload) => ({
   type: REMOVAL_ITEMS_FROM_FOLDER_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const setContentsUpdatedAction = payload => ({
+export const setContentsUpdatedAction = (payload) => ({
   type: SET_CONTENTS_UPDATED,
-  payload
-});
+  payload,
+})

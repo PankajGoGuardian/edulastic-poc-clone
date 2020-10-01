@@ -1,9 +1,17 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import produce from "immer";
-import { isUndefined, mapValues, cloneDeep, findIndex, find, get, orderBy } from "lodash";
-import styled, { withTheme } from "styled-components";
-import JsxParser from "react-jsx-parser";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import produce from 'immer'
+import {
+  isUndefined,
+  mapValues,
+  cloneDeep,
+  findIndex,
+  find,
+  get,
+  orderBy,
+} from 'lodash'
+import styled, { withTheme } from 'styled-components'
+import JsxParser from 'react-jsx-parser'
 
 import {
   helpers,
@@ -12,103 +20,106 @@ import {
   FlexContainer,
   QuestionLabelWrapper,
   QuestionContentWrapper,
-  QuestionSubLabel
-} from "@edulastic/common";
-import { getLatexValueFromMathTemplate } from "@edulastic/common/src/utils/mathUtils";
+  QuestionSubLabel,
+} from '@edulastic/common'
+import { getLatexValueFromMathTemplate } from '@edulastic/common/src/utils/mathUtils'
 
-import DisplayOptions from "../ClozeImageDropDown/QuestionOptions";
+import DisplayOptions from '../ClozeImageDropDown/QuestionOptions'
 
-import { EDIT } from "../../constants/constantsForQuestions";
+import { EDIT } from '../../constants/constantsForQuestions'
 
-import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
-import { getFontSize } from "../../utils/helpers";
+import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout'
+import { getFontSize } from '../../utils/helpers'
 
-import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
-import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
-import MathSpanWrapper from "../../components/MathSpanWrapper";
-import Instructions from "../../components/Instructions";
-import ChoicesBox from "./ChoicesBox";
+import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout'
+import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton'
+import MathSpanWrapper from '../../components/MathSpanWrapper'
+import Instructions from '../../components/Instructions'
+import ChoicesBox from './ChoicesBox'
 
 class ClozeDropDownDisplay extends Component {
   state = {
-    parsedTemplate: ""
-  };
+    parsedTemplate: '',
+  }
 
   static getDerivedStateFromProps({ stimulus }) {
-    return { parsedTemplate: helpers.parseTemplate(stimulus) };
+    return { parsedTemplate: helpers.parseTemplate(stimulus) }
   }
 
   componentDidMount() {
-    const { stimulus } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
+    const { stimulus } = this.props
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) })
   }
 
   selectChange = (value, index, id) => {
-    const _value = getLatexValueFromMathTemplate(value) || value;
+    const _value = getLatexValueFromMathTemplate(value) || value
     const {
       onChange: changeAnswers,
       userSelections,
-      item: { responseIds }
-    } = this.props;
+      item: { responseIds },
+    } = this.props
     changeAnswers(
-      produce(userSelections, draft => {
+      produce(userSelections, (draft) => {
         // answers are null for all the lower indices if a higher index is answered
         // TODO fix the way answers are stored
-        const changedIndex = findIndex(draft, (answer = {}) => answer?.id === id);
-        draft[index] = _value;
+        const changedIndex = findIndex(
+          draft,
+          (answer = {}) => answer?.id === id
+        )
+        draft[index] = _value
         if (changedIndex !== -1) {
-          draft[changedIndex] = { value: _value, index, id };
+          draft[changedIndex] = { value: _value, index, id }
         } else {
-          const response = find(responseIds, res => res.id === id);
-          draft[response.index] = { value: _value, index, id };
+          const response = find(responseIds, (res) => res.id === id)
+          draft[response.index] = { value: _value, index, id }
         }
       })
-    );
-  };
+    )
+  }
 
-  shuffle = arr => {
+  shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
-    return arr;
-  };
+    return arr
+  }
 
-  shuffleGroup = data =>
+  shuffleGroup = (data) =>
     mapValues(data, (value, key) => {
       if (!isUndefined(value)) {
-        data[key] = this.shuffle(value);
+        data[key] = this.shuffle(value)
       }
-      data[key] = value;
-      return data[key];
-    });
+      data[key] = value
+      return data[key]
+    })
 
   getBtnStyle = () => {
-    const { uiStyle } = this.props;
+    const { uiStyle } = this.props
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto"
-    };
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
+      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 'auto',
+    }
 
     const btnStyle = {
       width: 0,
       height: 0,
       widthpx: 0,
-      heightpx: 0
-    };
+      heightpx: 0,
+    }
 
     if (btnStyle && btnStyle.width === 0) {
-      btnStyle.width = responseBtnStyle.widthpx;
+      btnStyle.width = responseBtnStyle.widthpx
     } else {
-      btnStyle.width = btnStyle.widthpx;
+      btnStyle.width = btnStyle.widthpx
     }
     if (btnStyle && btnStyle.height === 0) {
-      btnStyle.height = responseBtnStyle.heightpx;
+      btnStyle.height = responseBtnStyle.heightpx
     } else {
-      btnStyle.height = btnStyle.heightpx;
+      btnStyle.height = btnStyle.heightpx
     }
-    return { btnStyle, responseBtnStyle };
-  };
+    return { btnStyle, responseBtnStyle }
+  }
 
   render() {
     const {
@@ -133,31 +144,42 @@ class ClozeDropDownDisplay extends Component {
       changePreviewTab,
       view,
       isPrint,
-      isPrintPreview
-    } = this.props;
+      isPrintPreview,
+    } = this.props
 
-    const { parsedTemplate } = this.state;
-    const { shuffleOptions } = configureOptions;
-    let responses = cloneDeep(options);
+    const { parsedTemplate } = this.state
+    const { shuffleOptions } = configureOptions
+    let responses = cloneDeep(options)
     if (preview && shuffleOptions) {
-      responses = this.shuffleGroup(responses);
+      responses = this.shuffleGroup(responses)
     }
     // Layout Options
-    const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize, true);
-    const { placeholder, responsecontainerindividuals = [], stemNumeration } = uiStyle;
-    const { btnStyle, responseBtnStyle } = this.getBtnStyle();
-    let maxLineHeight = smallSize ? 50 : 40;
-    maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
+    const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize, true)
+    const {
+      placeholder,
+      responsecontainerindividuals = [],
+      stemNumeration,
+    } = uiStyle
+    const { btnStyle, responseBtnStyle } = this.getBtnStyle()
+    let maxLineHeight = smallSize ? 50 : 40
+    maxLineHeight =
+      maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight
 
-    const hasAltAnswers = item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
+    const hasAltAnswers =
+      item.validation &&
+      item.validation.altResponses &&
+      item.validation.altResponses.length > 0
 
     const answerBox =
       showAnswer || isExpressGrader ? (
-        <React.Fragment>
+        <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
-            userAnswers={item.validation.validResponse && item.validation.validResponse.value}
+            userAnswers={
+              item.validation.validResponse &&
+              item.validation.validResponse.value
+            }
             responseIds={item.responseIds}
             stemNumeration={stemNumeration}
           />
@@ -170,10 +192,10 @@ class ClozeDropDownDisplay extends Component {
               stemNumeration={stemNumeration}
             />
           )}
-        </React.Fragment>
+        </>
       ) : (
         <div />
-      );
+      )
     const resProps = {
       item,
       btnStyle,
@@ -190,11 +212,19 @@ class ClozeDropDownDisplay extends Component {
       previewTab,
       changePreviewTab,
       responsecontainerindividuals,
-      cAnswers: get(item, "validation.validResponse.value", []),
-      userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
-      evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
-    };
-    const displayOptions = orderBy(item.responseIds, ["index"]).map(option => options[option.id]);
+      cAnswers: get(item, 'validation.validResponse.value', []),
+      userSelections:
+        item && item.activity && item.activity.userResponse
+          ? item.activity.userResponse
+          : userSelections,
+      evaluation:
+        item && item.activity && item.activity.evaluation
+          ? item.activity.evaluation
+          : evaluation,
+    }
+    const displayOptions = orderBy(item.responseIds, ['index']).map(
+      (option) => options[option.id]
+    )
     const questionContent = (
       <ContentWrapper view={view} fontSize={fontSize}>
         <JsxParser
@@ -203,37 +233,55 @@ class ClozeDropDownDisplay extends Component {
           showWarnings
           components={{
             textdropdown:
-              showAnswer || checkAnswer || isPrint || isPrintPreview ? CheckboxTemplateBoxLayout : ChoicesBox,
-            mathspan: MathSpanWrapper
+              showAnswer || checkAnswer || isPrint || isPrintPreview
+                ? CheckboxTemplateBoxLayout
+                : ChoicesBox,
+            mathspan: MathSpanWrapper,
           }}
           jsx={parsedTemplate}
         />
       </ContentWrapper>
-    );
+    )
 
     return (
-      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+      <FlexContainer
+        justifyContent="flex-start"
+        alignItems="baseline"
+        width="100%"
+      >
         <QuestionLabelWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          {showQuestionNumber && (
+            <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+          )}
+          {item.qSubLabel && (
+            <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+          )}
         </QuestionLabelWrapper>
 
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
             {!!question && (
-              <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+              <Stimulus
+                qIndex={qIndex}
+                smallSize={smallSize}
+                dangerouslySetInnerHTML={{ __html: question }}
+              />
             )}
             {!question && questionContent}
           </QuestionTitleWrapper>
           {question && questionContent}
           {(isPrint || isPrintPreview) && (
-            <DisplayOptions options={displayOptions} responseIds={item.responseIds} style={{ marginTop: "50px" }} />
+            <DisplayOptions
+              options={displayOptions}
+              responseIds={item.responseIds}
+              style={{ marginTop: '50px' }}
+            />
           )}
           {view !== EDIT && <Instructions item={item} />}
           {answerBox}
         </QuestionContentWrapper>
       </FlexContainer>
-    );
+    )
   }
 }
 
@@ -260,8 +308,8 @@ ClozeDropDownDisplay.propTypes = {
   isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object,
-  view: PropTypes.string.isRequired
-};
+  view: PropTypes.string.isRequired,
+}
 
 ClozeDropDownDisplay.defaultProps = {
   options: {},
@@ -273,27 +321,27 @@ ClozeDropDownDisplay.defaultProps = {
   checkAnswer: false,
   userSelections: [],
   isPrint: false,
-  stimulus: "",
+  stimulus: '',
   disableResponse: false,
   smallSize: false,
   configureOptions: {
-    shuffleOptions: false
+    shuffleOptions: false,
   },
   uiStyle: {
-    fontsize: "normal",
-    stemNumeration: "numerical",
+    fontsize: 'normal',
+    stemNumeration: 'numerical',
     widthpx: 0,
     heightpx: 0,
     placeholder: null,
-    responsecontainerindividuals: []
+    responsecontainerindividuals: [],
   },
   showQuestionNumber: false,
   isReviewTab: false,
   isExpressGrader: false,
-  qIndex: null
-};
+  qIndex: null,
+}
 
-export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
+export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay))
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -302,16 +350,18 @@ const QuestionTitleWrapper = styled.div`
   iframe {
     max-width: 100%;
   }
-`;
+`
 
 const ContentWrapper = styled.div`
-  padding: ${props => (props.view === EDIT ? 15 : 0)}px;
-  border: ${props =>
-    props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
-  border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
+  padding: ${(props) => (props.view === EDIT ? 15 : 0)}px;
+  border: ${(props) =>
+    props.view === EDIT
+      ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}`
+      : null};
+  border-radius: ${(props) => (props.view === EDIT ? 10 : 0)}px;
   width: 100%;
 
   p {
-    font-size: ${({ fontSize }) => fontSize || "auto"};
+    font-size: ${({ fontSize }) => fontSize || 'auto'};
   }
-`;
+`

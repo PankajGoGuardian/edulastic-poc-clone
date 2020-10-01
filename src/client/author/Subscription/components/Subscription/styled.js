@@ -1,6 +1,11 @@
-import styled from "styled-components";
-import { Modal } from "antd";
-import { white, secondaryTextColor, largeDesktopWidth, titleColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Modal } from 'antd'
+import {
+  white,
+  secondaryTextColor,
+  largeDesktopWidth,
+  titleColor,
+} from '@edulastic/colors'
 
 export const CompareModal = styled(Modal)`
   width: calc(100% - 80px) !important;
@@ -29,7 +34,7 @@ export const CompareModal = styled(Modal)`
     transform: scale(1.5);
     fill: ${white};
   }
-`;
+`
 
 export const PlanCard = styled.div`
   width: 400px;
@@ -44,7 +49,7 @@ export const PlanCard = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     width: 300px;
   }
-`;
+`
 
 export const PlanHeader = styled.div`
   height: 60px;
@@ -54,7 +59,7 @@ export const PlanHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 
 export const PlanLabel = styled.div`
   width: 100%;
@@ -65,7 +70,7 @@ export const PlanLabel = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: 600;
-`;
+`
 
 export const PlanContent = styled.div`
   width: 330px;
@@ -74,13 +79,13 @@ export const PlanContent = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     width: 220px;
   }
-`;
+`
 
 export const PlanTitle = styled.div`
   font-weight: 700;
   color: ${secondaryTextColor};
-`;
+`
 
 export const PlanDescription = styled.div`
   margin-bottom: 23px;
-`;
+`

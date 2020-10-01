@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import Display from "./Display";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import Display from './Display'
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -15,13 +15,13 @@ class CorrectAnswer extends Component {
     responseIds: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
     isV1Migrated: PropTypes.bool.isRequired,
-    item: PropTypes.object.isRequired
-  };
+    item: PropTypes.object.isRequired,
+  }
 
   handleMultiSelect = (answers, id, widthpx) => {
-    const { onUpdateValidationValue } = this.props;
-    onUpdateValidationValue(answers, id, widthpx);
-  };
+    const { onUpdateValidationValue } = this.props
+    onUpdateValidationValue(answers, id, widthpx)
+  }
 
   render() {
     const {
@@ -35,8 +35,8 @@ class CorrectAnswer extends Component {
       view,
       isV1Migrated,
       previewTab,
-      item
-    } = this.props;
+      item,
+    } = this.props
 
     return (
       <Display
@@ -57,8 +57,8 @@ class CorrectAnswer extends Component {
         previewTab={previewTab}
         item={item}
       />
-    );
+    )
   }
 }
 
-export default CorrectAnswer;
+export default CorrectAnswer

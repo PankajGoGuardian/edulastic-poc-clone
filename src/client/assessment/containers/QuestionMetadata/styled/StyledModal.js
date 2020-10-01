@@ -1,28 +1,28 @@
-import styled from "styled-components";
-import { Modal } from "antd";
+import styled from 'styled-components'
+import { Modal } from 'antd'
 
 export const StyledModal = styled(Modal)`
   min-width: 70%;
 
   .ant-modal-content {
-    color: ${props => props.theme.questionMetadata.textColor};
-    background: ${props => props.theme.questionMetadata.containerBackground};
+    color: ${(props) => props.theme.questionMetadata.textColor};
+    background: ${(props) => props.theme.questionMetadata.containerBackground};
   }
 
   .ant-modal-header {
     border-bottom: 0;
-    background: ${props => props.theme.questionMetadata.containerBackground};
+    background: ${(props) => props.theme.questionMetadata.containerBackground};
 
     .ant-modal-title {
       font-weight: 700;
       font-size: 22px;
-      color: ${props => props.theme.questionMetadata.textColor};
+      color: ${(props) => props.theme.questionMetadata.textColor};
     }
   }
 
   .ant-modal-close-x {
     font-size: 22px;
-    color: ${props => props.theme.questionMetadata.textColor};
+    color: ${(props) => props.theme.questionMetadata.textColor};
   }
 
   .ant-modal-footer {
@@ -38,4 +38,4 @@ export const StyledModal = styled(Modal)`
       font-weight: 600;
     }
   }
-`;
+`

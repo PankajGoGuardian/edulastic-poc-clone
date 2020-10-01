@@ -1,13 +1,13 @@
-import { createSelector } from "reselect";
-import { createAction, createReducer } from "redux-starter-kit";
+import { createSelector } from 'reselect'
+import { createAction, createReducer } from 'redux-starter-kit'
 
-import { RESET_ALL_REPORTS } from "../../common/reportsRedux";
+import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
-const SET_SMR_SETTINGS = "[SMR settings] get smr settings";
+const SET_SMR_SETTINGS = '[SMR settings] get smr settings'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const setSMRSettingsAction = createAction(SET_SMR_SETTINGS);
+export const setSMRSettingsAction = createAction(SET_SMR_SETTINGS)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -15,12 +15,13 @@ export const setSMRSettingsAction = createAction(SET_SMR_SETTINGS);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reportSMRSettingsReducer;
+export const stateSelector = (state) =>
+  state.reportReducer.reportSMRSettingsReducer
 
 export const getReportsSMRSettings = createSelector(
   stateSelector,
-  state => state
-);
+  (state) => state
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -31,19 +32,19 @@ export const getReportsSMRSettings = createSelector(
 const initialState = {
   selectedTest: [],
   requestFilters: {
-    termId: "",
-    subject: "",
-    grades: ["K"],
-    domainIds: ["All"]
+    termId: '',
+    subject: '',
+    grades: ['K'],
+    domainIds: ['All'],
     // classSectionId: "",
     // assessmentType: ""
-  }
-};
+  },
+}
 
 export const reportSMRSettingsReducer = createReducer(initialState, {
   [SET_SMR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState)
-});
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+})
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 

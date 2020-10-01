@@ -1,9 +1,9 @@
-import { themeColor } from "@edulastic/colors";
-import React from "react";
-import SVG from "./common/SVG";
-import withIconStyles from "./HOC/withIconStyles";
+import { themeColor } from '@edulastic/colors'
+import React from 'react'
+import SVG from './common/SVG'
+import withIconStyles from './HOC/withIconStyles'
 
-const IconELogo = props => (
+const IconELogo = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.49 21.673" {...props}>
     <g transform="translate(24379.039 -2253)">
       <path
@@ -12,7 +12,10 @@ const IconELogo = props => (
         fill={themeColor}
       />
       <g transform="translate(-24372.367 2259.408)">
-        <path d="M0,0H4.848V1.655H1.679V3.262h3.17V4.888H1.679V7.226h3.17V8.888H0V0" fill="#fff" />
+        <path
+          d="M0,0H4.848V1.655H1.679V3.262h3.17V4.888H1.679V7.226h3.17V8.888H0V0"
+          fill="#fff"
+        />
         <path
           d="M.692,0a.67.67,0,0,1,.493.205.678.678,0,0,1,.2.5.671.671,0,0,1-.2.489A.671.671,0,0,1,.692,1.4.665.665,0,0,1,.2,1.19.672.672,0,0,1,0,.7a.678.678,0,0,1,.2-.5A.664.664,0,0,1,.692,0"
           transform="translate(7.652 3.588)"
@@ -21,6 +24,6 @@ const IconELogo = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconELogo);
+export default withIconStyles(IconELogo)

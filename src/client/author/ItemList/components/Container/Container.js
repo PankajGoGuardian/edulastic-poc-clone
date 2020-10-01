@@ -1,28 +1,34 @@
-import { withWindowSizes } from "@edulastic/common";
-import { IconItemLibrary } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { roleuser, sortOptions } from "@edulastic/constants";
-import { Pagination, Spin } from "antd";
-import { debounce, omit, isEqual } from "lodash";
-import moment from "moment";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import { withWindowSizes } from '@edulastic/common'
+import { IconItemLibrary } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { roleuser, sortOptions } from '@edulastic/constants'
+import { Pagination, Spin } from 'antd'
+import { debounce, omit, isEqual } from 'lodash'
+import moment from 'moment'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import {
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction,
+} from '../../../../student/Login/ducks'
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction
-} from "../../../src/actions/dictionaries";
-import { createTestItemAction } from "../../../src/actions/testItem";
-import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
-import ListHeader from "../../../src/components/common/ListHeader";
-import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
-import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
-import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
+  getDictStandardsForCurriculumAction,
+} from '../../../src/actions/dictionaries'
+import { createTestItemAction } from '../../../src/actions/testItem'
+import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
+import ListHeader from '../../../src/components/common/ListHeader'
+import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
+import {
+  getCurriculumsListSelector,
+  getStandardsListSelector,
+} from '../../../src/selectors/dictionaries'
+import { getTestItemCreatingSelector } from '../../../src/selectors/testItem'
 import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
@@ -30,9 +36,12 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserFeatures,
-  getUserRole
-} from "../../../src/selectors/user";
-import { ItemsMenu, PaginationInfo } from "../../../TestList/components/Container/styled";
+  getUserRole,
+} from '../../../src/selectors/user'
+import {
+  ItemsMenu,
+  PaginationInfo,
+} from '../../../TestList/components/Container/styled'
 import {
   clearFilterStateAction,
   clearSelectedItemsAction,
@@ -48,23 +57,23 @@ import {
   getSelectedItemSelector,
   setApproveConfirmationOpenAction,
   getSortFilterStateSelector,
-  initialSortState
-} from "../../../TestPage/components/AddItems/ducks";
+  initialSortState,
+} from '../../../TestPage/components/AddItems/ducks'
 import {
   getAllTagsAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
-  setDefaultTestDataAction
-} from "../../../TestPage/ducks";
+  setDefaultTestDataAction,
+} from '../../../TestPage/ducks'
 import {
   approveOrRejectMultipleItem as approveOrRejectMultipleItemAction,
-  createTestFromCartAction
-} from "../../ducks";
-import Actions from "../Actions";
-import SelectCollectionModal from "../Actions/SelectCollection";
-import CartButton from "../CartButton/CartButton";
-import ItemFilter from "../ItemFilter/ItemFilter";
-import ItemListContainer from "./ItemListContainer";
+  createTestFromCartAction,
+} from '../../ducks'
+import Actions from '../Actions'
+import SelectCollectionModal from '../Actions/SelectCollection'
+import CartButton from '../CartButton/CartButton'
+import ItemFilter from '../ItemFilter/ItemFilter'
+import ItemListContainer from './ItemListContainer'
 import {
   Container,
   ContentWrapper,
@@ -72,20 +81,20 @@ import {
   ListItems,
   MobileFilterIcon,
   PaginationContainer,
-  ScrollbarContainer
-} from "./styled";
-import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
-import HeaderFilter from "../HeaderFilter";
-import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
-import ApproveConfirmModal from "../ApproveConfirmModal";
-import SortMenu from "../SortMenu";
+  ScrollbarContainer,
+} from './styled'
+import { setDefaultInterests, getDefaultInterests } from '../../../dataUtils'
+import HeaderFilter from '../HeaderFilter'
+import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
+import ApproveConfirmModal from '../ApproveConfirmModal'
+import SortMenu from '../SortMenu'
 
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
     isShowFilter: true,
-    openSidebar: false
-  };
+    openSidebar: false,
+  }
 
   componentDidMount() {
     const {
@@ -103,228 +112,265 @@ class Contaier extends Component {
       interestedSubjects,
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
-      sort: initSort = {}
-    } = this.props;
+      sort: initSort = {},
+    } = this.props
     const {
       subject = interestedSubjects || [],
       grades = interestedGrades || [],
-      curriculumId = firstCurriculum && firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum._id : ""
-    } = getDefaultInterests();
-    const isAuthoredNow = history?.location?.state?.isAuthoredNow;
-    const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
-    const { params = {} } = match;
-    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
-    const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[itemList]")) || {};
+      curriculumId = firstCurriculum &&
+      firstCurriculum.subject === interestedSubjects?.[0]
+        ? firstCurriculum._id
+        : '',
+    } = getDefaultInterests()
+    const isAuthoredNow = history?.location?.state?.isAuthoredNow
+    const applyAuthoredFilter = isAuthoredNow
+      ? { filter: 'AUTHORED_BY_ME' }
+      : {}
+    const { params = {} } = match
+    const sessionFilters =
+      JSON.parse(sessionStorage.getItem('filters[itemList]')) || {}
+    const sessionSort =
+      JSON.parse(sessionStorage.getItem('sortBy[itemList]')) || {}
     const sort = {
       ...initSort,
-      sortBy: "popularity",
-      sortDir: "desc",
-      ...sessionSort
-    };
+      sortBy: 'popularity',
+      sortDir: 'desc',
+      ...sessionSort,
+    }
     const search = {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
       subject,
       grades,
-      curriculumId: parseInt(curriculumId, 10) || ""
-    };
-    setDefaultTestData();
-    clearSelectedItems();
-    getAllTags({ type: "testitem" });
+      curriculumId: parseInt(curriculumId, 10) || '',
+    }
+    setDefaultTestData()
+    clearSelectedItems()
+    getAllTags({ type: 'testitem' })
     if (params.filterType) {
-      const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
-      const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-      const updatedSearch = { ...search, filter };
+      const getMatchingObj = filterMenuItems.filter(
+        (item) => item.path === params.filterType
+      )
+      const { filter = '' } = (getMatchingObj.length && getMatchingObj[0]) || {}
+      const updatedSearch = { ...search, filter }
 
       if (filter === filterMenuItems[0].filter) {
-        updatedSearch.status = "";
+        updatedSearch.status = ''
       }
-      this.updateFilterState(updatedSearch, sort);
+      this.updateFilterState(updatedSearch, sort)
 
       if (filter === filterMenuItems[4].filter) {
-        updatedSearch.filter = filterMenuItems[0].filter;
+        updatedSearch.filter = filterMenuItems[0].filter
       }
 
-      receiveItems(updatedSearch, sort, 1, limit);
+      receiveItems(updatedSearch, sort, 1, limit)
     } else {
-      this.updateFilterState(search, sort);
-      receiveItems(search, sort, 1, limit);
+      this.updateFilterState(search, sort)
+      receiveItems(search, sort, 1, limit)
     }
     if (curriculums.length === 0) {
-      getCurriculums();
+      getCurriculums()
     }
     if (search.curriculumId) {
-      getCurriculumStandards(search.curriculumId, search.grades, "");
+      getCurriculumStandards(search.curriculumId, search.grades, '')
     }
   }
 
   updateFilterState = (newSearch, sort = {}) => {
-    const { updateSearchFilterState } = this.props;
-    updateSearchFilterState({ search: newSearch, sort });
-    sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
-    sessionStorage.setItem("sortBy[itemList]", JSON.stringify(sort));
-  };
+    const { updateSearchFilterState } = this.props
+    updateSearchFilterState({ search: newSearch, sort })
+    sessionStorage.setItem('filters[itemList]', JSON.stringify(newSearch))
+    sessionStorage.setItem('sortBy[itemList]', JSON.stringify(sort))
+  }
 
-  handleSearch = searchState => {
-    const { limit, receiveItems, userFeatures, search: propSearch, sort } = this.props;
-    let search = searchState || propSearch;
-    if (!userFeatures.isCurator) search = omit(search, "authoredByIds");
-    receiveItems(search, sort, 1, limit);
-  };
+  handleSearch = (searchState) => {
+    const {
+      limit,
+      receiveItems,
+      userFeatures,
+      search: propSearch,
+      sort,
+    } = this.props
+    let search = searchState || propSearch
+    if (!userFeatures.isCurator) search = omit(search, 'authoredByIds')
+    receiveItems(search, sort, 1, limit)
+  }
 
-  handleLabelSearch = e => {
-    const { limit, receiveItems, history, search } = this.props;
-    const { key: filterType } = e;
-    const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    let updatedSearch = omit(search, ["folderId"]);
+  handleLabelSearch = (e) => {
+    const { limit, receiveItems, history, search } = this.props
+    const { key: filterType } = e
+    const getMatchingObj = filterMenuItems.filter(
+      (item) => item.path === filterType
+    )
+    const { filter = '' } = (getMatchingObj.length && getMatchingObj[0]) || {}
+    let updatedSearch = omit(search, ['folderId'])
 
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
         ...updatedSearch,
-        status: ""
-      };
+        status: '',
+      }
     }
-    const sortByRecency = ["by-me", "shared"].includes(filterType);
+    const sortByRecency = ['by-me', 'shared'].includes(filterType)
     const sort = {
-      sortBy: sortByRecency ? "recency" : "popularity",
-      sortDir: "desc"
-    };
+      sortBy: sortByRecency ? 'recency' : 'popularity',
+      sortDir: 'desc',
+    }
     this.updateFilterState(
       {
         ...updatedSearch,
-        filter
+        filter,
       },
       sort
-    );
+    )
 
-    if (filterType !== "folders") {
-      receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
+    if (filterType !== 'folders') {
+      receiveItems({ ...updatedSearch, filter }, sort, 1, limit)
     }
 
-    history.push(`/author/items/filter/${filterType}`);
-  };
+    history.push(`/author/items/filter/${filterType}`)
+  }
 
   handleClearSearch = () => {
-    const { clearFilterState, limit, receiveItems, search = {}, sort = {} } = this.props;
+    const {
+      clearFilterState,
+      limit,
+      receiveItems,
+      search = {},
+      sort = {},
+    } = this.props
 
     // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(search, initialSearchState) && isEqual(sort, initialSortState)) return null;
+    if (isEqual(search, initialSearchState) && isEqual(sort, initialSortState))
+      return null
 
-    clearFilterState();
+    clearFilterState()
 
-    this.updateFilterState(initialSearchState, initialSortState);
-    receiveItems(initialSearchState, initialSortState, 1, limit);
-    setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
-  };
+    this.updateFilterState(initialSearchState, initialSortState)
+    receiveItems(initialSearchState, initialSortState, 1, limit)
+    setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
+  }
 
-  handleSearchFieldChangeCurriculumId = value => {
-    const { clearDictStandards, getCurriculumStandards, search, sort } = this.props;
-    clearDictStandards();
+  handleSearchFieldChangeCurriculumId = (value) => {
+    const {
+      clearDictStandards,
+      getCurriculumStandards,
+      search,
+      sort,
+    } = this.props
+    clearDictStandards()
     const updatedSearchValue = {
       ...search,
       curriculumId: value,
-      standardIds: []
-    };
-    this.updateFilterState(updatedSearchValue, sort);
-    this.handleSearch(updatedSearchValue);
-    getCurriculumStandards(value, search.grades, "");
-  };
+      standardIds: [],
+    }
+    this.updateFilterState(updatedSearchValue, sort)
+    this.handleSearch(updatedSearchValue)
+    getCurriculumStandards(value, search.grades, '')
+  }
 
-  handleSearchFieldChange = fieldName => (value, dateString) => {
+  handleSearchFieldChange = (fieldName) => (value, dateString) => {
     const {
       updateDefaultGrades,
       udpateDefaultSubject,
       clearDictStandards,
       getCurriculumStandards,
       search,
-      sort
-    } = this.props;
-    let updatedKeys = {};
-    if (fieldName === "folderId") {
-      const searchWithFolder = { ...initialSearchState, [fieldName]: value, filter: "FOLDERS" };
-      this.updateFilterState(searchWithFolder, sort);
-      return this.handleSearch(searchWithFolder);
+      sort,
+    } = this.props
+    let updatedKeys = {}
+    if (fieldName === 'folderId') {
+      const searchWithFolder = {
+        ...initialSearchState,
+        [fieldName]: value,
+        filter: 'FOLDERS',
+      }
+      this.updateFilterState(searchWithFolder, sort)
+      return this.handleSearch(searchWithFolder)
     }
-    if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
-      setDefaultInterests({ [fieldName]: value });
+    if (
+      fieldName === 'grades' ||
+      fieldName === 'subject' ||
+      fieldName === 'curriculumId'
+    ) {
+      setDefaultInterests({ [fieldName]: value })
     }
-    if (fieldName === "curriculumId") {
-      this.handleSearchFieldChangeCurriculumId(value);
-      return;
+    if (fieldName === 'curriculumId') {
+      this.handleSearchFieldChangeCurriculumId(value)
+      return
     }
-    if (fieldName === "grades" && search.curriculumId) {
-      clearDictStandards();
-      getCurriculumStandards(search.curriculumId, value, "");
+    if (fieldName === 'grades' && search.curriculumId) {
+      clearDictStandards()
+      getCurriculumStandards(search.curriculumId, value, '')
     }
-    if (fieldName === "subject") {
-      clearDictStandards();
-      udpateDefaultSubject(value);
+    if (fieldName === 'subject') {
+      clearDictStandards()
+      udpateDefaultSubject(value)
       updatedKeys = {
         ...search,
         [fieldName]: value,
-        curriculumId: "",
-        standardIds: []
-      };
+        curriculumId: '',
+        standardIds: [],
+      }
     }
-    if (fieldName === "createdAt") {
+    if (fieldName === 'createdAt') {
       updatedKeys = {
         ...search,
-        [fieldName]: value ? moment(dateString, "DD/MM/YYYY").valueOf() : ""
-      };
+        [fieldName]: value ? moment(dateString, 'DD/MM/YYYY').valueOf() : '',
+      }
     } else {
       updatedKeys = {
         ...search,
-        [fieldName]: value
-      };
+        [fieldName]: value,
+      }
     }
 
-    if (fieldName === "grades") {
-      updateDefaultGrades(value);
-      storeInLocalStorage("defaultGrades", value);
+    if (fieldName === 'grades') {
+      updateDefaultGrades(value)
+      storeInLocalStorage('defaultGrades', value)
     }
 
-    this.updateFilterState(updatedKeys, sort);
-    this.handleSearch(updatedKeys);
-  };
+    this.updateFilterState(updatedKeys, sort)
+    this.handleSearch(updatedKeys)
+  }
 
-  searchDebounce = debounce(this.handleSearch, 500);
+  searchDebounce = debounce(this.handleSearch, 500)
 
-  handleSearchInputChange = tags => {
-    const { search, sort } = this.props;
+  handleSearchInputChange = (tags) => {
+    const { search, sort } = this.props
     const updatedKeys = {
       ...search,
-      searchString: tags
-    };
+      searchString: tags,
+    }
 
-    this.updateFilterState(updatedKeys, sort);
-    this.searchDebounce();
-  };
+    this.updateFilterState(updatedKeys, sort)
+    this.searchDebounce()
+  }
 
   handleCreate = async () => {
-    const { createItem } = this.props;
+    const { createItem } = this.props
     createItem({
       rows: [
         {
           tabs: [],
-          dimension: "100%",
+          dimension: '100%',
           widgets: [],
           flowLayout: false,
-          content: ""
-        }
-      ]
-    });
-  };
+          content: '',
+        },
+      ],
+    })
+  }
 
-  handlePaginationChange = page => {
-    const { search, sort } = this.props;
-    const { receiveItems, limit } = this.props;
-    receiveItems(search, sort, page, limit);
-  };
+  handlePaginationChange = (page) => {
+    const { search, sort } = this.props
+    const { receiveItems, limit } = this.props
+    receiveItems(search, sort, page, limit)
+  }
 
   renderPagination = () => {
-    const { count, page } = this.props;
+    const { count, page } = this.props
     return (
       <Pagination
         simple={false}
@@ -334,73 +380,78 @@ class Contaier extends Component {
         total={count}
         current={page}
       />
-    );
-  };
+    )
+  }
 
   toggleFilter = () => {
-    const { isShowFilter } = this.state;
+    const { isShowFilter } = this.state
 
     this.setState({
-      isShowFilter: !isShowFilter
-    });
-  };
+      isShowFilter: !isShowFilter,
+    })
+  }
 
-  rejectNumberChecker = testItems => {
-    let count = 0;
+  rejectNumberChecker = (testItems) => {
+    let count = 0
     for (const i of testItems) {
-      if (i.status === "inreview") {
-        count++;
+      if (i.status === 'inreview') {
+        count++
       }
     }
-    return count;
-  };
+    return count
+  }
 
-  approveNumberChecker = testItems => {
-    let count = 0;
+  approveNumberChecker = (testItems) => {
+    let count = 0
     for (const i of testItems) {
-      if (i.status === "inreview" || i.status === "rejected") {
-        count++;
+      if (i.status === 'inreview' || i.status === 'rejected') {
+        count++
       }
     }
-    return count;
-  };
+    return count
+  }
 
   onClickNewTest = () => {
-    const { createTestFromCart } = this.props;
-    createTestFromCart();
-  };
+    const { createTestFromCart } = this.props
+    createTestFromCart()
+  }
 
-  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+  toggleSidebar = () =>
+    this.setState((prevState) => ({ openSidebar: !prevState.openSidebar }))
 
   onSelectSortOption = (value, sortDir) => {
-    const { search, limit, sort, receiveItems } = this.props;
+    const { search, limit, sort, receiveItems } = this.props
     const updateSort = {
       ...sort,
       sortBy: value,
-      sortDir
-    };
-    this.updateFilterState(search, updateSort);
-    receiveItems(search, updateSort, 1, limit);
-  };
+      sortDir,
+    }
+    this.updateFilterState(search, updateSort)
+    receiveItems(search, updateSort, 1, limit)
+  }
 
   handleApproveItems = () => {
-    const { approveOrRejectMultipleItem, selectedItems, setApproveConfirmationOpen } = this.props;
+    const {
+      approveOrRejectMultipleItem,
+      selectedItems,
+      setApproveConfirmationOpen,
+    } = this.props
     if (selectedItems.length > 1) {
-      setApproveConfirmationOpen(true);
+      setApproveConfirmationOpen(true)
     } else {
-      approveOrRejectMultipleItem({ status: "published" });
+      approveOrRejectMultipleItem({ status: 'published' })
     }
-  };
+  }
 
   renderCartButton = () => {
-    const { approveOrRejectMultipleItem, userRole } = this.props;
-    if (userRole === roleuser.EDULASTIC_CURATOR) return null;
+    const { approveOrRejectMultipleItem, userRole } = this.props
+    if (userRole === roleuser.EDULASTIC_CURATOR) return null
 
     return (
       <>
         <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
           <CartButton
-            onClick={() => approveOrRejectMultipleItem({ status: "rejected" })}
+            onClick={() => approveOrRejectMultipleItem({ status: 'rejected' })}
             buttonText="Reject"
             numberChecker={this.rejectNumberChecker}
           />
@@ -411,10 +462,15 @@ class Contaier extends Component {
           />
         </FeaturesSwitch>
       </>
-    );
-  };
+    )
+  }
 
-  renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
+  renderFilterIcon = (isShowFilter) => (
+    <FilterToggleBtn
+      isShowFilter={isShowFilter}
+      toggleFilter={this.toggleFilter}
+    />
+  )
 
   render() {
     const {
@@ -427,20 +483,24 @@ class Contaier extends Component {
       count,
       search,
       userRole,
-      sort = {}
-    } = this.props;
+      sort = {},
+    } = this.props
 
-    const { isShowFilter, openSidebar } = this.state;
+    const { isShowFilter, openSidebar } = this.state
     return (
       <div>
-        <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
+        <SideContent
+          onClick={this.toggleSidebar}
+          open={openSidebar}
+          showSliderBtn={false}
+        />
         <SelectCollectionModal contentType="TESTITEM" />
         <ApproveConfirmModal contentType="TESTITEM" />
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
           windowWidth={windowWidth}
-          title={t("header:common.itemBank")}
+          title={t('header:common.itemBank')}
           titleIcon={IconItemLibrary}
           renderExtra={this.renderCartButton}
           renderFilterIcon={this.renderFilterIcon}
@@ -458,25 +518,37 @@ class Contaier extends Component {
             search={search}
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
-            items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
+            items={
+              userRole === roleuser.EDULASTIC_CURATOR
+                ? [filterMenuItems[0]]
+                : filterMenuItems
+            }
             toggleFilter={this.toggleFilter}
             t={t}
             itemCount={count}
-            showFilter={windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter}
+            showFilter={
+              windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter
+            }
           />
           <ListItems isShowFilter={isShowFilter}>
             <Element>
-              <MobileFilterIcon> {this.renderFilterIcon(isShowFilter)} </MobileFilterIcon>
+              <MobileFilterIcon>
+                {' '}
+                {this.renderFilterIcon(isShowFilter)}{' '}
+              </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
                 {loading && <Spin size="large" />}
                 <>
                   <ItemsMenu>
                     <PaginationInfo>
-                      <span>{count}</span> <span>{t("author:component.item.itemsFound")}</span>
+                      <span>{count}</span>{' '}
+                      <span>{t('author:component.item.itemsFound')}</span>
                     </PaginationInfo>
                     <HeaderFilter
                       search={search}
-                      handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
+                      handleCloseFilter={(type, value) =>
+                        this.handleSearchFieldChange(type)(value)
+                      }
                       type="testitem"
                     />
                     <SortMenu
@@ -490,8 +562,15 @@ class Contaier extends Component {
 
                   {!loading && (
                     <ScrollbarContainer>
-                      <ItemListContainer windowWidth={windowWidth} search={search} />
-                      {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
+                      <ItemListContainer
+                        windowWidth={windowWidth}
+                        search={search}
+                      />
+                      {count > 10 && (
+                        <PaginationContainer>
+                          {this.renderPagination()}
+                        </PaginationContainer>
+                      )}
                     </ScrollbarContainer>
                   )}
                 </>
@@ -500,7 +579,7 @@ class Contaier extends Component {
           </ListItems>
         </Container>
       </div>
-    );
+    )
   }
 }
 
@@ -520,7 +599,7 @@ Contaier.propTypes = {
       _id: PropTypes.string.isRequired,
       curriculum: PropTypes.string.isRequired,
       grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
+      subject: PropTypes.string.isRequired,
     })
   ).isRequired,
   getCurriculums: PropTypes.func.isRequired,
@@ -528,14 +607,14 @@ Contaier.propTypes = {
   curriculumStandards: PropTypes.array.isRequired,
   clearDictStandards: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  setDefaultTestData: PropTypes.func.isRequired
-};
+  setDefaultTestData: PropTypes.func.isRequired,
+}
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces(["author", "header"]),
+  withNamespaces(['author', 'header']),
   connect(
-    state => ({
+    (state) => ({
       limit: getTestsItemsLimitSelector(state),
       page: getTestsItemsPageSelector(state),
       count: getTestsItemsCountSelector(state),
@@ -553,7 +632,7 @@ const enhance = compose(
       passageItems: state.tests.passageItems || [],
       userFeatures: getUserFeatures(state),
       userRole: getUserRole(state),
-      selectedItems: getSelectedItemSelector(state)
+      selectedItems: getSelectedItemSelector(state),
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -572,9 +651,9 @@ const enhance = compose(
       updateSearchFilterState: updateSearchFilterStateAction,
       clearFilterState: clearFilterStateAction,
       approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
-      setApproveConfirmationOpen: setApproveConfirmationOpenAction
+      setApproveConfirmationOpen: setApproveConfirmationOpenAction,
     }
   )
-);
+)
 
-export default enhance(Contaier);
+export default enhance(Contaier)

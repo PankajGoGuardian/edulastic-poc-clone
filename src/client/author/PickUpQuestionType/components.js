@@ -1,5 +1,10 @@
-import styled from "styled-components";
-import { themeColor, cardBg, cardBorder, mediumDesktopExactWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import {
+  themeColor,
+  cardBg,
+  cardBorder,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
 
 export const RoundDiv = styled.div`
   display: flex;
@@ -20,7 +25,7 @@ export const RoundDiv = styled.div`
       color: #fff;
     }
   }
-`;
+`
 
 export const Header = styled.div`
   display: flex;
@@ -35,7 +40,7 @@ export const Header = styled.div`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 16px;
   }
-`;
+`
 
 export const Content = styled.div`
   width: 100%;
@@ -46,25 +51,25 @@ export const Content = styled.div`
   overflow: hidden;
   display: flex;
   align-items: center;
-`;
+`
 
 export const StyledPreviewImage = styled.img`
   width: 100%;
   user-select: none;
   pointer-events: none;
   object-fit: contain;
-  &[src*="passage"] {
+  &[src*='passage'] {
     border: 1px solid #e5e5e5;
     border-radius: 5px;
   }
-`;
+`
 
 export const QuestionText = styled.div`
   font-size: 14px;
   font-weight: bold;
   padding: 10px 0;
-`;
+`
 
 export const Dump = styled.div`
   height: 0px;
-`;
+`

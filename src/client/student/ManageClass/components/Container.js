@@ -1,28 +1,40 @@
-import React, { useState } from "react";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React, { useState } from 'react'
+import { compose } from 'redux'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 // hoc
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
 // components
-import { Button, Col, Input, Modal, Row, Spin } from "antd";
-import { MainHeader, EduButton, MainContentWrapper, notification } from "@edulastic/common";
-import { IconPlus, IconManage } from "@edulastic/icons";
-import { smallDesktopWidth, themeColor, white, themeColorBlue } from "@edulastic/colors";
-import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
-import { StudentSlectCommon } from "../../sharedComponents/ClassSelector";
-import { NoDataBox } from "../../styled";
-import ClassCard from "./CardContainer";
-import NoDataIcon from "../../assets/nodata.svg";
+import { Button, Col, Input, Modal, Row, Spin } from 'antd'
+import {
+  MainHeader,
+  EduButton,
+  MainContentWrapper,
+  notification,
+} from '@edulastic/common'
+import { IconPlus, IconManage } from '@edulastic/icons'
+import {
+  smallDesktopWidth,
+  themeColor,
+  white,
+  themeColorBlue,
+} from '@edulastic/colors'
+import ShowActiveClass from '../../sharedComponents/ShowActiveClasses'
+import { StudentSlectCommon } from '../../sharedComponents/ClassSelector'
+import { NoDataBox } from '../../styled'
+import ClassCard from './CardContainer'
+import NoDataIcon from '../../assets/nodata.svg'
 
 // constants
 
 const ClassCards = ({ classList, t }) => {
-  const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
-  return cards;
-};
+  const cards = classList.map((classItem) => (
+    <ClassCard key={classItem._id} classItem={classItem} t={t} />
+  ))
+  return cards
+}
 
 const ManageClassContainer = ({
   t,
@@ -36,41 +48,49 @@ const ManageClassContainer = ({
   setClassList,
   setShowClass,
   userRole,
-  proxyUserRole
+  proxyUserRole,
 }) => {
-  const [isJoinClassModalVisible, setJoinClassModal] = useState(false);
-  const [classCode, setClassCode] = useState(null);
-  const code = classList.map(_code => _code.code);
+  const [isJoinClassModalVisible, setJoinClassModal] = useState(false)
+  const [classCode, setClassCode] = useState(null)
+  const code = classList.map((_code) => _code.code)
 
   const joinClassHandler = () => {
     if (code.includes(classCode)) {
-      notification({ messageKey: "classAlreadyExist" });
-      return;
+      notification({ messageKey: 'classAlreadyExist' })
+      return
     }
-    const { email, firstName, role } = studentData;
+    const { email, firstName, role } = studentData
     if (classCode && classCode.trim().length) {
-      joinClass({ classCode, email, firstName, role });
+      joinClass({ classCode, email, firstName, role })
     } else {
-      setClassCode("");
+      setClassCode('')
     }
-  };
+  }
 
   const closeModalHandler = () => {
-    setJoinClassModal(false);
-    setClassCode(null);
-  };
-  const isParentRoleProxy = proxyUserRole === "parent";
-  if (loading) return <Spin />;
+    setJoinClassModal(false)
+    setClassCode(null)
+  }
+  const isParentRoleProxy = proxyUserRole === 'parent'
+  if (loading) return <Spin />
   return (
     <>
-      <MainHeader Icon={IconManage} headingText={t("header:common.myClassTitle")}>
-        {userRole === "parent" ? (
+      <MainHeader
+        Icon={IconManage}
+        headingText={t('header:common.myClassTitle')}
+      >
+        {userRole === 'parent' ? (
           <StudentSlectCommon />
         ) : (
           !isParentRoleProxy && (
-            <JoinClassBtn isGhost isBlue data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
+            <JoinClassBtn
+              isGhost
+              isBlue
+              data-cy="joinclass"
+              onClick={() => setJoinClassModal(true)}
+            >
               <IconPlus width={12} height={12} color="white" stroke="white" />
-              <span>{t("common.joinClass")}</span>
+              <span>{t('common.joinClass')}</span>
             </JoinClassBtn>
           )
         )}
@@ -78,27 +98,39 @@ const ManageClassContainer = ({
           <JoinClassModal
             visible={isJoinClassModalVisible}
             onCancel={closeModalHandler}
-            title={t("common.enterClassCode")}
+            title={t('common.enterClassCode')}
             footer={
               <ButtonWrapper>
-                <EduButton data-cy="cancelbutton" height="36px" isGhost onClick={closeModalHandler}>
-                  {t("common.cancel")}
+                <EduButton
+                  data-cy="cancelbutton"
+                  height="36px"
+                  isGhost
+                  onClick={closeModalHandler}
+                >
+                  {t('common.cancel')}
                 </EduButton>
-                <EduButton data-cy="joinbutton" height="36px" onClick={joinClassHandler} type="primary">
-                  {t("common.join")}
+                <EduButton
+                  data-cy="joinbutton"
+                  height="36px"
+                  onClick={joinClassHandler}
+                  type="primary"
+                >
+                  {t('common.join')}
                 </EduButton>
               </ButtonWrapper>
             }
           >
             <StyledInput
               data-cy="classcodeinput"
-              placeholder={t("common.enterClassCode").toLowerCase()}
+              placeholder={t('common.enterClassCode').toLowerCase()}
               value={classCode}
-              onChange={e => setClassCode(e.target.value)}
+              onChange={(e) => setClassCode(e.target.value)}
               classCode
             />
             {classCode !== null && !classCode.length ? (
-              <ErrorMessage data-cy="errormessage">enter class code</ErrorMessage>
+              <ErrorMessage data-cy="errormessage">
+                enter class code
+              </ErrorMessage>
             ) : null}
           </JoinClassModal>
         )}
@@ -126,33 +158,38 @@ const ManageClassContainer = ({
           <NoDataBoxWrapper>
             <NoDataBox>
               <img src={NoDataIcon} alt="noData" />
-              <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
-              <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
+              <h4>
+                {showClass
+                  ? t('common.noActiveClassesTitle')
+                  : t('common.noClassesTitle')}
+              </h4>
+              <p>
+                {showClass
+                  ? t('common.noActiveClassesSubTitle')
+                  : t('common.noClassesSubTitle')}
+              </p>
             </NoDataBox>
           </NoDataBoxWrapper>
         )}
       </MainContentWrapper>
     </>
-  );
-};
+  )
+}
 
-const enhance = compose(
-  withNamespaces(["manageClass", "header"]),
-  React.memo
-);
+const enhance = compose(withNamespaces(['manageClass', 'header']), React.memo)
 
-export default enhance(ManageClassContainer);
+export default enhance(ManageClassContainer)
 
 ManageClassContainer.propTypes = {
   t: PropTypes.func.isRequired,
   classList: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
-  showClass: PropTypes.string.isRequired
-};
+  showClass: PropTypes.string.isRequired,
+}
 
 const NoDataBoxWrapper = styled.div`
   height: calc(100vh - 150px);
-`;
+`
 
 const ClassCardWrapper = styled.div`
   display: flex;
@@ -160,17 +197,17 @@ const ClassCardWrapper = styled.div`
   justify-content: space-between;
   margin-top: 20px;
   &:after {
-    content: "";
+    content: '';
     flex: auto;
   }
-`;
+`
 
 const SubHeaderWrapper = styled(Row)`
   display: flex;
   flex-direction: row;
   align-items: baseline;
   justify-content: flex-end;
-`;
+`
 const JoinClassBtn = styled(EduButton)`
   display: flex;
   align-items: center;
@@ -189,7 +226,7 @@ const JoinClassBtn = styled(EduButton)`
     font-size: 10px;
     height: 32px;
   }
-`;
+`
 
 export const JoinClassModal = styled(Modal)`
   top: 35%;
@@ -210,11 +247,11 @@ export const JoinClassModal = styled(Modal)`
     border: none;
     padding: 20px 24px;
   }
-`;
+`
 export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
-`;
+`
 
 export const StyledButton = styled(Button)`
   border-radius: 4px;
@@ -224,21 +261,24 @@ export const StyledButton = styled(Button)`
   font-family: Open Sans, Semibold;
   font-weight: 600;
   text-transform: uppercase;
-  background: ${props => (props.type === "primary" ? themeColor : white)};
-  color: ${props => (props.type === "primary" ? white : themeColor)};
+  background: ${(props) => (props.type === 'primary' ? themeColor : white)};
+  color: ${(props) => (props.type === 'primary' ? white : themeColor)};
   border-color: ${themeColor};
   &:hover,
   :focus {
-    background: ${props => (props.type === "primary" ? themeColor : white)};
-    color: ${props => (props.type === "primary" ? white : themeColor)};
+    background: ${(props) => (props.type === 'primary' ? themeColor : white)};
+    color: ${(props) => (props.type === 'primary' ? white : themeColor)};
   }
-`;
+`
 
 export const StyledInput = styled(Input)`
-  border: ${props => (props.classCode && !props.classCode.length ? `1px solid ${themeColor}` : "1px solid red")};
-`;
+  border: ${(props) =>
+    props.classCode && !props.classCode.length
+      ? `1px solid ${themeColor}`
+      : '1px solid red'};
+`
 export const ErrorMessage = styled.div`
   color: red;
   text-align: start;
   padding-top: 5px;
-`;
+`

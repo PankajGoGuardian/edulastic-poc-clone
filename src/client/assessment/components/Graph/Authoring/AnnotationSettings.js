@@ -1,33 +1,35 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
+import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { Subtitle } from "../../../styled/Subtitle";
-import { WidgetFRInput } from "../../../styled/Widget";
-import QuestionTextArea from "../../QuestionTextArea";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import { Label } from '../../../styled/WidgetOptions/Label'
+import { Subtitle } from '../../../styled/Subtitle'
+import { WidgetFRInput } from '../../../styled/Widget'
+import QuestionTextArea from '../../QuestionTextArea'
 
 class AnnotationSettings extends Component {
   handleInputChange = (name, value) => {
-    const { annotation, setAnnotation } = this.props;
-    if (value === "<p><br></p>") {
-      value = "";
+    const { annotation, setAnnotation } = this.props
+    if (value === '<p><br></p>') {
+      value = ''
     }
-    setAnnotation({ ...annotation, [name]: value });
-  };
+    setAnnotation({ ...annotation, [name]: value })
+  }
 
   render() {
-    const { t, annotation, title: graphTitle } = this.props;
-    const { title, labelTop, labelBottom, labelLeft, labelRight } = annotation;
+    const { t, annotation, title: graphTitle } = this.props
+    const { title, labelTop, labelBottom, labelLeft, labelRight } = annotation
 
     return (
-      <Fragment>
-        <Subtitle id={getFormattedAttrId(`${graphTitle}-Labels`)}>Labels</Subtitle>
+      <>
+        <Subtitle id={getFormattedAttrId(`${graphTitle}-Labels`)}>
+          Labels
+        </Subtitle>
         <Row gutter={24}>
           <Col md={12}>
             <Label>Title</Label>
@@ -36,7 +38,7 @@ class AnnotationSettings extends Component {
                 toolbarId="annotationTitle"
                 toolbarSize="SM"
                 value={title}
-                onChange={value => this.handleInputChange("title", value)}
+                onChange={(value) => this.handleInputChange('title', value)}
               />
             </WidgetFRInput>
           </Col>
@@ -47,7 +49,7 @@ class AnnotationSettings extends Component {
                 toolbarId="annotationLabelTop"
                 toolbarSize="SM"
                 value={labelTop}
-                onChange={value => this.handleInputChange("labelTop", value)}
+                onChange={(value) => this.handleInputChange('labelTop', value)}
               />
             </WidgetFRInput>
           </Col>
@@ -61,7 +63,7 @@ class AnnotationSettings extends Component {
                 toolbarId="annotationLabelLeft"
                 toolbarSize="SM"
                 value={labelLeft}
-                onChange={value => this.handleInputChange("labelLeft", value)}
+                onChange={(value) => this.handleInputChange('labelLeft', value)}
               />
             </WidgetFRInput>
           </Col>
@@ -72,7 +74,8 @@ class AnnotationSettings extends Component {
                 toolbarId="annotationLabelRight"
                 toolbarSize="SM"
                 value={labelRight}
-                onChange={value => this.handleInputChange("labelRight", value)}
+                onChange={(value) =>
+                  this.handleInputChange('labelRight', value)}
               />
             </WidgetFRInput>
           </Col>
@@ -86,32 +89,33 @@ class AnnotationSettings extends Component {
                 toolbarId="annotationLabelBottom"
                 toolbarSize="SM"
                 value={labelBottom}
-                onChange={value => this.handleInputChange("labelBottom", value)}
+                onChange={(value) =>
+                  this.handleInputChange('labelBottom', value)}
               />
             </WidgetFRInput>
           </Col>
         </Row>
-      </Fragment>
-    );
+      </>
+    )
   }
 }
 
 AnnotationSettings.propTypes = {
   t: PropTypes.func.isRequired,
   annotation: PropTypes.object,
-  setAnnotation: PropTypes.func.isRequired
-};
+  setAnnotation: PropTypes.func.isRequired,
+}
 
 AnnotationSettings.defaultProps = {
   annotation: {
-    title: "",
-    labelTop: "",
-    labelBottom: "",
-    labelLeft: "",
-    labelRight: ""
-  }
-};
+    title: '',
+    labelTop: '',
+    labelBottom: '',
+    labelLeft: '',
+    labelRight: '',
+  },
+}
 
-const enhance = compose(withNamespaces("assessment"));
+const enhance = compose(withNamespaces('assessment'))
 
-export default enhance(AnnotationSettings);
+export default enhance(AnnotationSettings)

@@ -1,5 +1,5 @@
-import { darkGrey } from "@edulastic/colors";
-import styled from "styled-components";
+import { darkGrey } from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const LikeIconStyled = styled.div`
   max-width: 60px;
@@ -13,7 +13,7 @@ export const LikeIconStyled = styled.div`
     left: 5px;
     top: 5px;
     transition: 0.2s;
-    fill=${props => (props.isLiked ? "#ca481e" : darkGrey)}
+    fill=${(props) => (props.isLiked ? '#ca481e' : darkGrey)}
   }
   &:hover {
     svg {
@@ -22,8 +22,8 @@ export const LikeIconStyled = styled.div`
       position: absolute;
       left: 2px;
       top: 2px;
-      fill: ${props => (props.isLiked ? "black" : "#ca481e")};
+      fill: ${(props) => (props.isLiked ? 'black' : '#ca481e')};
       transition: 0.2s;
     }
   }
-`;
+`

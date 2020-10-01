@@ -1,9 +1,12 @@
-import styled from "styled-components";
-import { Row } from "antd";
-import { FlexContainer } from "@edulastic/common";
-import { fadedBlack, extraDesktopWidthMax } from "@edulastic/colors";
-import { StyledTable as Table, StyledCustomChartTooltip as CustomChartTooltip } from "../../../../common/styled";
-import { AssessmentStatisticTable } from "./table/assessmentStatisticTable";
+import styled from 'styled-components'
+import { Row } from 'antd'
+import { FlexContainer } from '@edulastic/common'
+import { fadedBlack, extraDesktopWidthMax } from '@edulastic/colors'
+import {
+  StyledTable as Table,
+  StyledCustomChartTooltip as CustomChartTooltip,
+} from '../../../../common/styled'
+import { AssessmentStatisticTable } from './table/assessmentStatisticTable'
 
 export const UpperContainer = styled(FlexContainer)`
   @media print {
@@ -38,9 +41,9 @@ export const UpperContainer = styled(FlexContainer)`
       }
     }
   }
-`;
+`
 
-export const TableContainer = styled(Row)``;
+export const TableContainer = styled(Row)``
 
 export const StyledAssessmentStatisticTable = styled(AssessmentStatisticTable)`
   .top-area {
@@ -65,7 +68,7 @@ export const StyledAssessmentStatisticTable = styled(AssessmentStatisticTable)`
       text-align: right;
     }
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -181,9 +184,9 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
   min-width: 70px;
   min-height: auto;
-`;
+`

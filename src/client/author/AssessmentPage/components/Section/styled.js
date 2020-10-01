@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { Input } from "antd";
+import styled from 'styled-components'
+import { Input } from 'antd'
 
-import { IconCheck } from "@edulastic/icons";
-import { secondaryTextColor, greenDark } from "@edulastic/colors";
+import { IconCheck } from '@edulastic/icons'
+import { secondaryTextColor, greenDark } from '@edulastic/colors'
 
 export const SectionWrapper = styled.div`
   display: flex;
@@ -10,7 +10,7 @@ export const SectionWrapper = styled.div`
   position: relative;
   width: 240px;
   margin: 17px 20px 17px 13px;
-`;
+`
 
 export const SectionTitle = styled.p`
   margin: 0;
@@ -22,7 +22,7 @@ export const SectionTitle = styled.p`
   overflow: hidden;
   white-space: nowrap;
   color: ${secondaryTextColor};
-`;
+`
 
 export const SectionForm = styled(Input)`
   margin: 0;
@@ -37,7 +37,7 @@ export const SectionForm = styled(Input)`
     border-bottom: 1px solid #cbcbcb;
   }
   box-shadow: none !important;
-`;
+`
 
 export const SectionFormConfirmButton = styled(IconCheck)`
   right: 0;
@@ -48,7 +48,7 @@ export const SectionFormConfirmButton = styled(IconCheck)`
     stroke: ${greenDark};
     stroke-width: 2;
   }
-`;
+`
 
 export const Actions = styled.span`
   display: flex;
@@ -77,4 +77,4 @@ export const Actions = styled.span`
       }
     }
   }
-`;
+`

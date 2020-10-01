@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconScratchPad = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.811 23.076" {...props}>
+const IconScratchPad = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 18.811 23.076"
+    {...props}
+  >
     <g transform="translate(-391.096 -217.111)">
       <path
         d="M485.357,374.617l-1.025.513q-2.566,1.282-5.131,2.565a.7.7,0,0,1-1.043-.833q.608-2.421,1.211-4.844a.684.684,0,1,1,1.319.313c-.151.611-.307,1.221-.46,1.832-.14.559-.277,1.118-.424,1.708.1-.046.172-.077.242-.112q2.937-1.469,5.876-2.936a1.2,1.2,0,0,1,.51-.144.664.664,0,0,1,.6.886q-.453,1.8-.916,3.6-.471,1.841-.946,3.681a.688.688,0,0,1-.644.591.666.666,0,0,1-.678-.858c.248-1,.507-1.99.761-2.985l.719-2.811C485.332,374.746,485.338,374.71,485.357,374.617Z"
@@ -16,6 +20,6 @@ const IconScratchPad = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconScratchPad);
+export default withIconStyles(IconScratchPad)

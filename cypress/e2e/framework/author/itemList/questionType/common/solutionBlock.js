@@ -1,59 +1,55 @@
-import EditToolBar from "../common/editToolBar";
-import Header from "../../itemDetail/header";
+import EditToolBar from './editToolBar'
+import Header from '../../itemDetail/header'
 
 class solutionBlockPage {
   constructor() {
-    this.editToolBar = new EditToolBar();
-    this.header = new Header();
+    this.editToolBar = new EditToolBar()
+    this.header = new Header()
   }
 
-  getHintContainer = () => cy.get('[data-cy="hint-container"]');
+  getHintContainer = () => cy.get('[data-cy="hint-container"]')
 
-  getShowHintButton = () => this.getHintContainer().find(".ant-btn");
+  getShowHintButton = () => this.getHintContainer().find('.ant-btn')
 
-  getTemplateEditor = () => cy.get(".fr-element").eq(0);
+  getTemplateEditor = () => cy.get('.fr-element').eq(0)
 
-  getMoreHint = () => cy.get('[data-cy="more-hint"]');
+  getMoreHint = () => cy.get('[data-cy="more-hint"]')
 
   getHintArea = () => {
-    cy.get('[data-cy="hints"]')
-      .next()
-      .find('[contenteditable="true"]');
-  };
+    cy.get('[data-cy="hints"]').next().find('[contenteditable="true"]')
+  }
 
   clickOnAdvancedOptions = () => {
-    cy.get('[class^="AdvancedOptionsLink"]').then(ele => {
-      if (ele.siblings().length === 3) cy.wrap(ele).click();
-    });
-    return this;
-  };
+    cy.get('[class^="AdvancedOptionsLink"]').then((ele) => {
+      if (ele.siblings().length === 3) cy.wrap(ele).click()
+    })
+    return this
+  }
 
-  VerifyDistractor = value => {
+  VerifyDistractor = (value) => {
     cy.get('[data-cy="instructor_stimulus"]')
       .next()
       .find('[contenteditable="true"]')
       .type(value)
-      .should("contain", value);
-  };
+      .should('contain', value)
+  }
 
-  verifyExplanation = value => {
+  verifyExplanation = (value) => {
     cy.get('[data-cy="sample_answer"]')
       .next()
       .find('[contenteditable="true"]')
       .type(value)
-      .should("contain", value);
-  };
+      .should('contain', value)
+  }
 
   addNewHint = () => {
-    cy.get('[data-cy="add-new-ch"]')
-      .last()
-      .click({ force: true });
-    cy.wait(500);
-  };
+    cy.get('[data-cy="add-new-ch"]').last().click({ force: true })
+    cy.wait(500)
+  }
 
   addHint = (value, index = 0) => {
     if (index > 0) {
-      this.addNewHint();
+      this.addNewHint()
     }
     cy.get('[data-cy="hints"]')
       .next()
@@ -61,50 +57,55 @@ class solutionBlockPage {
       .eq(`${index}`)
       .clear()
       .type(value)
-      .should("contain", value);
-  };
+      .should('contain', value)
+  }
 
-  deleteHint = index => {
-    cy.get(`[data-cy="deletehints${index}"]`).click();
-  };
+  deleteHint = (index) => {
+    cy.get(`[data-cy="deletehints${index}"]`).click()
+  }
 
   VerifyHintInPreview = (hintIndex, hintCount, hintvalue) => {
-    if (hintIndex > 0) this.clickOnMoreHint(hintCount);
+    if (hintIndex > 0) this.clickOnMoreHint(hintCount)
     cy.get('[data-cy="hint-count"]')
       .eq(hintIndex)
-      .should("have.text", `${hintIndex + 1}/${hintCount}`);
+      .should('have.text', `${hintIndex + 1}/${hintCount}`)
     cy.get('[data-cy="hint-subcontainer"]')
       .eq(hintIndex)
       .find('[data-cy="styled-wrapped-component"]')
-      .should("have.text", hintvalue);
-    if (hintIndex == 0) this.getMoreHint().should("not.exist");
-  };
+      .should('have.text', hintvalue)
+    if (hintIndex == 0) this.getMoreHint().should('not.exist')
+  }
 
   verifyHintNotExist = (value, index) => {
     cy.get('[data-cy="hints"]')
       .next()
       .find('[contenteditable="true"]')
       .eq(`${index}`)
-      .should("not.contain", value);
-  };
+      .should('not.contain', value)
+  }
 
-  VerifyDeletedHintInPreview = (hintIndex, hintCount, hintvalue, hintlength) => {
-    this.clickOnMoreHint(hintCount);
+  VerifyDeletedHintInPreview = (
+    hintIndex,
+    hintCount,
+    hintvalue,
+    hintlength
+  ) => {
+    this.clickOnMoreHint(hintCount)
     cy.get('[data-cy="hint-count"]')
       .eq(hintIndex)
-      .should("have.text", `${hintIndex + 1}/${hintlength}`);
+      .should('have.text', `${hintIndex + 1}/${hintlength}`)
     cy.get('[data-cy="hint-subcontainer"]')
       .eq(hintIndex)
       .find('[data-cy="styled-wrapped-component"]')
-      .should("not.have.text", hintvalue);
-  };
+      .should('not.have.text', hintvalue)
+  }
 
-  clickOnShowHintButton = () => this.getShowHintButton().click({ force: true });
+  clickOnShowHintButton = () => this.getShowHintButton().click({ force: true })
 
-  clickOnMoreHint = hintCount => {
+  clickOnMoreHint = (hintCount) => {
     for (let i = 1; i < hintCount; i++) {
-      this.getMoreHint().click({ force: true });
+      this.getMoreHint().click({ force: true })
     }
-  };
+  }
 }
-export default solutionBlockPage;
+export default solutionBlockPage

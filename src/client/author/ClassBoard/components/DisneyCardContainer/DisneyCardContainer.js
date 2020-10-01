@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { round, shuffle, get } from "lodash";
-import { Col, Row, Spin } from "antd";
-import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
-import { connect } from "react-redux";
-import { withNamespaces } from "@edulastic/localization";
-import { compose } from "redux";
-import { CheckboxLabel } from "@edulastic/common";
-import WithDisableMessage from "../../../src/components/common/ToggleDisable";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { round, shuffle, get } from 'lodash'
+import { Col, Row, Spin } from 'antd'
+import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
+import { connect } from 'react-redux'
+import { withNamespaces } from '@edulastic/localization'
+import { compose } from 'redux'
+import { CheckboxLabel } from '@edulastic/common'
+import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 import {
   ScratchPadIcon,
   StyledIconCol,
@@ -37,21 +37,28 @@ import {
   StyledParaSSS,
   RightAlignedCol,
   ExclamationMark,
-  StatusRow
-} from "./styled";
+  StatusRow,
+} from './styled'
 
-import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
-import { getAvatarName, getStudentCardStatus } from "../../Transformer";
+import {
+  NoDataBox,
+  NoDataWrapper,
+  NoDataIcon,
+} from '../../../src/components/common/NoDataNotification'
+import { getAvatarName, getStudentCardStatus } from '../../Transformer'
 import {
   isItemVisibiltySelector,
   testActivtyLoadingSelector,
   getServerTsSelector,
   getShowRefreshMessage,
   getBulckAssignedCount,
-  getBulkAssignedCountProcessedCount
-} from "../../ducks";
-import { formatStudentPastDueTag, maxDueDateFromClassess } from "../../../../student/utils";
-import { receiveTestActivitydAction } from "../../../src/actions/classBoard";
+  getBulkAssignedCountProcessedCount,
+} from '../../ducks'
+import {
+  formatStudentPastDueTag,
+  maxDueDateFromClassess,
+} from '../../../../student/utils'
+import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
 
 class DisneyCardContainer extends Component {
   static propTypes = {
@@ -61,34 +68,37 @@ class DisneyCardContainer extends Component {
     viewResponses: PropTypes.func.isRequired,
     isPresentationMode: PropTypes.bool,
     isLoading: PropTypes.bool,
-    testActivityLoading: PropTypes.bool
-  };
+    testActivityLoading: PropTypes.bool,
+  }
 
   static defaultProps = {
     isPresentationMode: false,
     isLoading: false,
-    testActivityLoading: false
-  };
+    testActivityLoading: false,
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      testActivity: []
-    };
+      testActivity: [],
+    }
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { testActivity, assignmentId, classId, isPresentationMode } = props;
+    const { testActivity, assignmentId, classId, isPresentationMode } = props
     return {
-      testActivity: !state.isPresentationMode && isPresentationMode ? shuffle(testActivity) : testActivity,
+      testActivity:
+        !state.isPresentationMode && isPresentationMode
+          ? shuffle(testActivity)
+          : testActivity,
       assignmentId,
       classId,
-      isPresentationMode
-    };
+      isPresentationMode,
+    }
   }
 
   render() {
-    const { testActivity } = this.state;
+    const { testActivity } = this.state
     const {
       selectedStudents,
       studentSelect,
@@ -110,14 +120,18 @@ class DisneyCardContainer extends Component {
       bulkAssignedCount,
       bulkAssignedCountProcessed,
       loadTestActivity,
-      assignmentId
-    } = this.props;
+      assignmentId,
+    } = this.props
     const noDataNotification = () => (
       <>
         {showRefreshMessage && (
           <Refresh>
-            {bulkAssignedCount - bulkAssignedCountProcessed} out of {bulkAssignedCount} assignments are being processed.
-            Click <span onClick={() => loadTestActivity(assignmentId, classId)}>here</span> to refresh
+            {bulkAssignedCount - bulkAssignedCountProcessed} out of{' '}
+            {bulkAssignedCount} assignments are being processed. Click{' '}
+            <span onClick={() => loadTestActivity(assignmentId, classId)}>
+              here
+            </span>{' '}
+            to refresh
           </Refresh>
         )}
         <NoDataWrapper height="300px" margin="20px auto">
@@ -128,11 +142,11 @@ class DisneyCardContainer extends Component {
           </NoDataBox>
         </NoDataWrapper>
       </>
-    );
+    )
 
-    const showLoader = () => <Spin size="small" />;
-    const styledCard = [];
-    const classess = detailedClasses?.filter(({ _id }) => _id === classId);
+    const showLoader = () => <Spin size="small" />
+    const styledCard = []
+    const classess = detailedClasses?.filter(({ _id }) => _id === classId)
 
     if (testActivity.length > 0) {
       /**
@@ -141,26 +155,34 @@ class DisneyCardContainer extends Component {
        * 2. move this sort of tranforming code somewhere else
        */
       testActivity.map((student, index) => {
-        const status = getStudentCardStatus(student, endDate, serverTimeStamp, closed);
+        const status = getStudentCardStatus(
+          student,
+          endDate,
+          serverTimeStamp,
+          closed
+        )
 
         const hasUsedScratchPad = student?.questionActivities.some(
-          questionActivity => questionActivity?.scratchPad?.scratchpad === true
-        );
+          (questionActivity) =>
+            questionActivity?.scratchPad?.scratchpad === true
+        )
 
         const score = (_status, attemptScore) => {
           /* for redirected, old attempts status will show in numbers like START = 0, SUBMITTED = 1, ABSENT = 2 */
           if (_status === 3) {
-            return <span style={{ marginTop: "-3px" }}>-</span>;
+            return <span style={{ marginTop: '-3px' }}>-</span>
           }
           if (attemptScore >= 0) {
-            return <span>{round(attemptScore, 2) || 0}</span>;
+            return <span>{round(attemptScore, 2) || 0}</span>
           }
-          return <span>{round(student.score, 2) || 0}</span>;
-        };
+          return <span>{round(student.score, 2) || 0}</span>
+        }
 
-        const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
+        const viewResponseStatus = ['Submitted', 'In Progress', 'Graded']
 
-        const name = isPresentationMode ? student.fakeName : student.studentName || "Anonymous";
+        const name = isPresentationMode
+          ? student.fakeName
+          : student.studentName || 'Anonymous'
         /**
          * for differentiating archived students
          */
@@ -170,73 +192,95 @@ class DisneyCardContainer extends Component {
               <ExclamationMark />
             </span>
           ) : (
-            ""
-          );
-        const isAcitveStudentUnassigned = student.isAssigned === false && student.isEnrolled;
+            ''
+          )
+        const isAcitveStudentUnassigned =
+          student.isAssigned === false && student.isEnrolled
         const unAssignedMessage = isAcitveStudentUnassigned ? (
           <span title="Unassigned">
             <ExclamationMark />
           </span>
         ) : (
-          ""
-        );
+          ''
+        )
 
-        const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
-        const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
+        const canShowResponse =
+          isItemsVisible && viewResponseStatus.includes(status.status)
+        const actualDueDate = maxDueDateFromClassess(
+          classess,
+          student.studentId
+        )
         const pastDueTag =
-          (actualDueDate || dueDate) && status.status !== "Absent"
+          (actualDueDate || dueDate) && status.status !== 'Absent'
             ? formatStudentPastDueTag({
                 status: student.status,
                 dueDate: actualDueDate || dueDate,
-                endDate: student.endDate
+                endDate: student.endDate,
               })
-            : null;
-        const responseLink = student.testActivityId && status.status !== "Absent" && student.UTASTATUS !== 3 && (
-          <PagInfo
-            data-cy="viewResponse"
-            disabled={!isItemsVisible}
-            onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
-          >
-            {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
-            VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-            {/* </Link> */}
-          </PagInfo>
-        );
+            : null
+        const responseLink = student.testActivityId &&
+          status.status !== 'Absent' &&
+          student.UTASTATUS !== 3 && (
+            <PagInfo
+              data-cy="viewResponse"
+              disabled={!isItemsVisible}
+              onClick={(e) =>
+                viewResponses(e, student.studentId, student.testActivityId)
+              }
+            >
+              {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
+              VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+              {/* </Link> */}
+            </PagInfo>
+          )
         const studentData = (
           <StyledCard
             data-cy={`student-card-${name}`}
             bordered={false}
             key={index}
             isClickEnable={canShowResponse}
-            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
+            onClick={(e) =>
+              canShowResponse
+                ? viewResponses(e, student.studentId, student.testActivityId)
+                : () => {}
+            }
           >
-            <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+            <WithDisableMessage
+              disabled={!isItemsVisible}
+              errMessage={t('common.testHidden')}
+            >
               <PaginationInfoF>
                 {isPresentationMode ? (
                   <i
-                    onClick={e =>
-                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                    onClick={(e) =>
+                      viewResponseStatus.includes(status.status)
+                        ? viewResponses(e, student.studentId)
+                        : ''
                     }
                     style={{
                       color: student.color,
-                      fontSize: "32px",
-                      marginRight: "12px",
-                      cursor: viewResponseStatus.includes(status.status) ? "pointer" : "default"
+                      fontSize: '32px',
+                      marginRight: '12px',
+                      cursor: viewResponseStatus.includes(status.status)
+                        ? 'pointer'
+                        : 'default',
                     }}
                     className={`fa fa-${student.icon}`}
                   >
-                    {" "}
+                    {' '}
                   </i>
                 ) : (
                   <CircularDiv
                     data-cy="studentAvatarName"
                     isLink={viewResponseStatus.includes(status.status)}
                     title={student.userName}
-                    onClick={e =>
-                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                    onClick={(e) =>
+                      viewResponseStatus.includes(status.status)
+                        ? viewResponses(e, student.studentId)
+                        : ''
                     }
                   >
-                    {getAvatarName(student.studentName || "Anonymous")}
+                    {getAvatarName(student.studentName || 'Anonymous')}
                   </CircularDiv>
                 )}
                 <StyledName>
@@ -244,9 +288,11 @@ class DisneyCardContainer extends Component {
                     isLink={viewResponseStatus.includes(status.status)}
                     data-cy="studentName"
                     disabled={!isItemsVisible}
-                    title={isPresentationMode ? "" : student.userName}
-                    onClick={e =>
-                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                    title={isPresentationMode ? '' : student.userName}
+                    onClick={(e) =>
+                      viewResponseStatus.includes(status.status)
+                        ? viewResponses(e, student.studentId)
+                        : ''
                     }
                   >
                     {name}
@@ -257,8 +303,10 @@ class DisneyCardContainer extends Component {
                         isLink={viewResponseStatus.includes(status.status)}
                         data-cy="studentStatus"
                         color={status.color}
-                        onClick={e =>
-                          viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                        onClick={(e) =>
+                          viewResponseStatus.includes(status.status)
+                            ? viewResponses(e, student.studentId)
+                            : ''
                         }
                       >
                         {enrollMentFlag}
@@ -280,21 +328,21 @@ class DisneyCardContainer extends Component {
                 </StyledName>
                 <RightAlignedCol>
                   <Row>
-                    <Col onClick={e => e.stopPropagation()}>
+                    <Col onClick={(e) => e.stopPropagation()}>
                       <CheckboxLabel
                         checked={selectedStudents[student.studentId]}
-                        onChange={e => {
+                        onChange={(e) => {
                           if (e.target.checked) {
-                            studentSelect(student.studentId);
+                            studentSelect(student.studentId)
                           } else {
-                            studentUnselect(student.studentId);
+                            studentUnselect(student.studentId)
                           }
                         }}
                         studentId={student.studentId}
                       />
                     </Col>
                   </Row>
-                  <Row style={{ display: "flex" }}>
+                  <Row style={{ display: 'flex' }}>
                     {hasUsedScratchPad && (
                       <StyledIconCol title="Student has used scratchpad">
                         <ScratchPadIcon />
@@ -320,7 +368,7 @@ class DisneyCardContainer extends Component {
                     <StyledFlexDiv>
                       <StyledParaFF>Performance</StyledParaFF>
                       <StyledParaSSS data-cy="studentPerformance">
-                        {student.score > 0 && student.status !== "redirected"
+                        {student.score > 0 && student.status !== 'redirected'
                           ? round((student.score / student.maxScore) * 100, 2)
                           : 0}
                         %
@@ -328,7 +376,8 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {score(student.UTASTATUS)}&nbsp;/ {round(student.maxScore, 2) || 0}
+                        {score(student.UTASTATUS)}&nbsp;/{' '}
+                        {round(student.maxScore, 2) || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>
@@ -336,32 +385,51 @@ class DisneyCardContainer extends Component {
                 </PaginationInfoS>
                 <PaginationInfoT data-cy="questions">
                   {student.questionActivities
-                    .filter(x => !x.disabled)
+                    .filter((x) => !x.disabled)
                     .map((questionAct, questionIndex) => {
-                      const weight = questionAct.weight;
-                      if (questionAct.notStarted || student.status === "redirected") {
-                        return <SquareColorDisabled key={questionIndex} />;
+                      const weight = questionAct.weight
+                      if (
+                        questionAct.notStarted ||
+                        student.status === 'redirected'
+                      ) {
+                        return <SquareColorDisabled key={questionIndex} />
                       }
                       if (questionAct.skipped && questionAct.score === 0) {
-                        return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
+                        return (
+                          <SquareColorDivGray
+                            title="skipped"
+                            weight={weight}
+                            key={questionIndex}
+                          />
+                        )
                       }
-                      if (questionAct.graded === false || questionAct.pendingEvaluation) {
-                        return <SquareColorBlue key={questionIndex} />;
+                      if (
+                        questionAct.graded === false ||
+                        questionAct.pendingEvaluation
+                      ) {
+                        return <SquareColorBlue key={questionIndex} />
                       }
-                      if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
-                        return <SquareColorDivGreen key={questionIndex} />;
+                      if (
+                        questionAct.score === questionAct.maxScore &&
+                        questionAct.score > 0
+                      ) {
+                        return <SquareColorDivGreen key={questionIndex} />
                       }
-                      if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
-                        return <SquareColorDivYellow key={questionIndex} />;
+                      if (
+                        questionAct.score > 0 &&
+                        questionAct.score < questionAct.maxScore
+                      ) {
+                        return <SquareColorDivYellow key={questionIndex} />
                       }
                       if (questionAct.score === 0) {
-                        return <SquareColorDivPink key={questionIndex} />;
+                        return <SquareColorDivPink key={questionIndex} />
                       }
-                      return null;
+                      return null
                     })}
                 </PaginationInfoT>
               </div>
-              {(recentAttemptsGrouped?.[student.studentId]?.length > 0 || student.status === "redirected") && (
+              {(recentAttemptsGrouped?.[student.studentId]?.length > 0 ||
+                student.status === 'redirected') && (
                 <RecentAttemptsContainer>
                   <PaginationInfoS>
                     <PerfomanceSection>
@@ -369,59 +437,94 @@ class DisneyCardContainer extends Component {
                         <StyledParaFF>Performance</StyledParaFF>
                         <StyledParaFF>{responseLink}</StyledParaFF>
                       </StyledFlexDiv>
-                      <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
-                        {student.status === "redirected" && (
+                      <StyledFlexDiv style={{ justifyContent: 'flex-start' }}>
+                        {student.status === 'redirected' && (
                           <AttemptDiv>
-                            <CenteredStyledParaSS>-&nbsp;/ {round(student.maxScore, 2) || 0}</CenteredStyledParaSS>
-                            <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
+                            <CenteredStyledParaSS>
+                              -&nbsp;/ {round(student.maxScore, 2) || 0}
+                            </CenteredStyledParaSS>
+                            <StyledParaSS
+                              style={{
+                                fontSize: '12px',
+                                justifyContent: 'center',
+                              }}
+                            >
                               Not Started
                             </StyledParaSS>
-                            <p style={{ fontSize: "12px" }}>
-                              Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 2}
+                            <p style={{ fontSize: '12px' }}>
+                              Attempt{' '}
+                              {(recentAttemptsGrouped[student.studentId]?.[0]
+                                ?.number || 0) + 2}
                             </p>
                           </AttemptDiv>
                         )}
                         <AttemptDiv
                           data-cy="attempt-container"
                           className="attempt-container"
-                          onClick={e => {
-                            e.stopPropagation();
+                          onClick={(e) => {
+                            e.stopPropagation()
                             viewResponses(
                               e,
                               student.studentId,
                               student.testActivityId,
-                              (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
-                            );
+                              (recentAttemptsGrouped[student.studentId]?.[0]
+                                ?.number || 0) + 1
+                            )
                           }}
                         >
                           <CenteredStyledParaSS>
-                            {score(student.status, student.score)}&nbsp;/ {round(student.maxScore, 2) || 0}
+                            {score(student.status, student.score)}&nbsp;/{' '}
+                            {round(student.maxScore, 2) || 0}
                           </CenteredStyledParaSS>
                           <StyledParaSSS>
-                            {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
+                            {student.score > 0
+                              ? round(
+                                  (student.score / student.maxScore) * 100,
+                                  2
+                                )
+                              : 0}
+                            %
                           </StyledParaSSS>
-                          <p style={{ fontSize: "12px" }}>
-                            Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
+                          <p style={{ fontSize: '12px' }}>
+                            Attempt{' '}
+                            {(recentAttemptsGrouped[student.studentId]?.[0]
+                              ?.number || 0) + 1}
                           </p>
                         </AttemptDiv>
-                        {recentAttemptsGrouped?.[student.studentId].map(attempt => (
-                          <AttemptDiv
-                            className="attempt-container"
-                            key={attempt._id || attempt.id}
-                            onClick={e => {
-                              e.stopPropagation();
-                              viewResponses(e, attempt.userId, attempt._id, attempt.number);
-                            }}
-                          >
-                            <CenteredStyledParaSS>
-                              {score(attempt.status, attempt.score)}&nbsp;/ {round(attempt.maxScore, 2) || 0}
-                            </CenteredStyledParaSS>
-                            <StyledParaSSS>
-                              {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
-                            </StyledParaSSS>
-                            <p style={{ fontSize: "12px" }}>Attempt {attempt.number}</p>
-                          </AttemptDiv>
-                        ))}
+                        {recentAttemptsGrouped?.[student.studentId].map(
+                          (attempt) => (
+                            <AttemptDiv
+                              className="attempt-container"
+                              key={attempt._id || attempt.id}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                viewResponses(
+                                  e,
+                                  attempt.userId,
+                                  attempt._id,
+                                  attempt.number
+                                )
+                              }}
+                            >
+                              <CenteredStyledParaSS>
+                                {score(attempt.status, attempt.score)}&nbsp;/{' '}
+                                {round(attempt.maxScore, 2) || 0}
+                              </CenteredStyledParaSS>
+                              <StyledParaSSS>
+                                {attempt.score > 0
+                                  ? round(
+                                      (attempt.score / attempt.maxScore) * 100,
+                                      2
+                                    )
+                                  : 0}
+                                %
+                              </StyledParaSSS>
+                              <p style={{ fontSize: '12px' }}>
+                                Attempt {attempt.number}
+                              </p>
+                            </AttemptDiv>
+                          )
+                        )}
                       </StyledFlexDiv>
                     </PerfomanceSection>
                   </PaginationInfoS>
@@ -429,10 +532,10 @@ class DisneyCardContainer extends Component {
               )}
             </WithDisableMessage>
           </StyledCard>
-        );
-        styledCard.push(studentData);
-        return null;
-      });
+        )
+        styledCard.push(studentData)
+        return null
+      })
     }
     return (
       <StyledCardContiner>
@@ -442,31 +545,34 @@ class DisneyCardContainer extends Component {
             : noDataNotification()
           : showLoader()}
       </StyledCardContiner>
-    );
+    )
   }
 }
 
 const withConnect = connect(
-  state => ({
-    isLoading: get(state, "classResponse.loading"),
+  (state) => ({
+    isLoading: get(state, 'classResponse.loading'),
     testActivityLoading: testActivtyLoadingSelector(state),
     isItemsVisible: isItemVisibiltySelector(state),
-    recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {},
-    testActivities: state?.author_classboard_testActivity?.data?.testActivities || {},
+    recentAttemptsGrouped:
+      state?.author_classboard_testActivity?.data
+        ?.recentTestActivitiesGrouped || {},
+    testActivities:
+      state?.author_classboard_testActivity?.data?.testActivities || {},
     serverTimeStamp: getServerTsSelector(state),
     showRefreshMessage: getShowRefreshMessage(state),
     bulkAssignedCount: getBulckAssignedCount(state),
-    bulkAssignedCountProcessed: getBulkAssignedCountProcessedCount(state)
+    bulkAssignedCountProcessed: getBulkAssignedCountProcessedCount(state),
   }),
   {
-    loadTestActivity: receiveTestActivitydAction
+    loadTestActivity: receiveTestActivitydAction,
   }
-);
+)
 
 export default compose(
-  withNamespaces("classBoard"),
+  withNamespaces('classBoard'),
   withConnect
-)(DisneyCardContainer);
+)(DisneyCardContainer)
 
 const AttemptDiv = styled.div`
   text-align: center;
@@ -474,11 +580,11 @@ const AttemptDiv = styled.div`
   ${StyledParaSSS} {
     margin-left: 0;
   }
-`;
+`
 
 const CenteredStyledParaSS = styled(StyledParaSS)`
   justify-content: center;
-`;
+`
 
 const RecentAttemptsContainer = styled.div`
   position: absolute;
@@ -506,7 +612,7 @@ const RecentAttemptsContainer = styled.div`
      */
     font-size: 12px;
   }
-`;
+`
 
 const Refresh = styled.div`
   width: 100%;
@@ -521,4 +627,4 @@ const Refresh = styled.div`
     font-style: italic;
     cursor: pointer;
   }
-`;
+`

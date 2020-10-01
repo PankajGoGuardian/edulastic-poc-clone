@@ -1,149 +1,165 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { isEqual, max } from "lodash";
-import next from "immer";
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { isEqual, max } from 'lodash'
+import next from 'immer'
 
-import { WithResources, measureText } from "@edulastic/common";
-import { response } from "@edulastic/constants";
+import { WithResources, measureText } from '@edulastic/common'
+import { response } from '@edulastic/constants'
 
-import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
-import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import {
+  CHECK,
+  CLEAR,
+  EDIT,
+  SHOW,
+} from '../../../../constants/constantsForQuestions'
+import {
+  setElementsStashAction,
+  setStashIndexAction,
+} from '../../../../actions/graphTools'
 
 import {
   defaultAxesParameters,
   defaultGraphParameters,
   defaultGridParameters,
-  defaultPointParameters
-} from "../../Builder/settings";
-import { makeBorder } from "../../Builder";
-import { CONSTANT } from "../../Builder/config";
+  defaultPointParameters,
+} from '../../Builder/settings'
+import { makeBorder } from '../../Builder'
+import { CONSTANT } from '../../Builder/config'
 
-import AnnotationRnd from "../../../Annotations/AnnotationRnd";
+import AnnotationRnd from '../../../Annotations/AnnotationRnd'
 
-import Tools from "../../common/Tools";
-import ResponseBox from "./ResponseBox";
-import { GraphWrapper, JSXBox, ContainerWithResponses } from "./styled";
-import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
-import AppConfig from "../../../../../../../app-config";
+import Tools from '../../common/Tools'
+import ResponseBox from './ResponseBox'
+import { GraphWrapper, JSXBox, ContainerWithResponses } from './styled'
+import {
+  getAdjustedHeightAndWidth,
+  getAdjustedV1AnnotationCoordinatesForRender,
+} from '../../common/utils'
+import AppConfig from '../../../../../../../app-config'
 
 const v1Dimenstions = {
   v1Height: 432,
-  v1Width: 720
-};
-export const defaultTitleWidth = 150;
+  v1Width: 720,
+}
+export const defaultTitleWidth = 150
 
 const getColoredElems = (elements, compareResult) => {
-  if (compareResult && compareResult.details && compareResult.details.length > 0) {
-    const { details } = compareResult;
-    return elements.map(el => {
-      const detail = details && details.find(det => det.label.id === el.id);
-      let newEl = {};
+  if (
+    compareResult &&
+    compareResult.details &&
+    compareResult.details.length > 0
+  ) {
+    const { details } = compareResult
+    return elements.map((el) => {
+      const detail = details && details.find((det) => det.label.id === el.id)
+      let newEl = {}
 
       if (detail && detail.result) {
         newEl = {
-          className: "correct",
-          ...el
-        };
+          className: 'correct',
+          ...el,
+        }
       } else {
         newEl = {
-          className: "incorrect",
-          ...el
-        };
+          className: 'incorrect',
+          ...el,
+        }
       }
-      return newEl;
-    });
+      return newEl
+    })
   }
-  return elements;
-};
+  return elements
+}
 
-const getCorrectAnswer = answerArr => {
+const getCorrectAnswer = (answerArr) => {
   if (Array.isArray(answerArr)) {
-    return answerArr.map(el => ({
-      className: "correct",
-      ...el
-    }));
+    return answerArr.map((el) => ({
+      className: 'correct',
+      ...el,
+    }))
   }
-  return answerArr;
-};
+  return answerArr
+}
 
-const getCompareResult = evaluation => {
+const getCompareResult = (evaluation) => {
   if (!evaluation) {
-    return null;
+    return null
   }
 
-  let compareResult = null;
+  let compareResult = null
 
-  Object.keys(evaluation).forEach(key => {
+  Object.keys(evaluation).forEach((key) => {
     if (compareResult) {
-      return;
+      return
     }
     if (evaluation[key].result) {
-      compareResult = evaluation[key];
+      compareResult = evaluation[key]
     }
-  });
+  })
 
   if (compareResult) {
-    return compareResult;
+    return compareResult
   }
 
-  return evaluation[0];
-};
+  return evaluation[0]
+}
 
 class AxisLabelsContainer extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.MIN_WIDTH = 500;
-    this.MIN_HEIGHT = 150;
+    this.MIN_WIDTH = 500
+    this.MIN_HEIGHT = 150
 
-    this._graphId = `jxgbox${Math.random()
-      .toString(36)
-      .replace(".", "")}`;
-    this._graph = null;
+    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graph = null
 
     this.state = {
-      resourcesLoaded: false
-    };
+      resourcesLoaded: false,
+    }
 
-    this.updateValues = this.updateValues.bind(this);
+    this.updateValues = this.updateValues.bind(this)
 
-    this.axisLabelsContainerRef = React.createRef();
+    this.axisLabelsContainerRef = React.createRef()
   }
 
   // -2 done to make room for the border when width is an integer but the actual width is slightly less
   get parentHeight() {
-    return this.axisLabelsContainerRef?.current?.clientHeight || 0;
+    return this.axisLabelsContainerRef?.current?.clientHeight || 0
   }
 
   get parentWidth() {
-    return this.axisLabelsContainerRef?.current?.clientWidth || 0;
+    return this.axisLabelsContainerRef?.current?.clientWidth || 0
   }
 
   get isHorizontal() {
     const {
-      numberlineAxis: { responseBoxPosition }
-    } = this.props;
+      numberlineAxis: { responseBoxPosition },
+    } = this.props
 
-    return responseBoxPosition === "top" || responseBoxPosition === "bottom";
+    return responseBoxPosition === 'top' || responseBoxPosition === 'bottom'
   }
 
   get choiceMaxWidth() {
-    const { list } = this.props;
-    const { maxWidth } = response;
-    const maxContentWidth = Math.min(max(list.map(value => measureText(value.text).width)), maxWidth);
+    const { list } = this.props
+    const { maxWidth } = response
+    const maxContentWidth = Math.min(
+      max(list.map((value) => measureText(value.text).width)),
+      maxWidth
+    )
     if (!this.isHorizontal && defaultTitleWidth > maxContentWidth) {
-      return defaultTitleWidth;
+      return defaultTitleWidth
     }
-    return maxContentWidth;
+    return maxContentWidth
   }
 
   get adjustedHeightWidth() {
     const {
       layout,
       numberlineAxis: { responseBoxPosition },
-      disableResponse
-    } = this.props;
+      disableResponse,
+    } = this.props
 
     return getAdjustedHeightAndWidth(
       this.parentWidth,
@@ -154,7 +170,7 @@ class AxisLabelsContainer extends PureComponent {
       responseBoxPosition,
       this.choiceMaxWidth,
       disableResponse
-    );
+    )
   }
 
   componentDidMount() {
@@ -170,63 +186,67 @@ class AxisLabelsContainer extends PureComponent {
       setElementsStash,
       disableResponse,
       view,
-      setQuestionData
-    } = this.props;
+      setQuestionData,
+    } = this.props
 
-    const adjustedHeightWidth = this.adjustedHeightWidth;
+    const adjustedHeightWidth = this.adjustedHeightWidth
 
     if (view === EDIT) {
       setQuestionData(
-        next(graphData, draft => {
-          draft.prevContSize = adjustedHeightWidth;
+        next(graphData, (draft) => {
+          draft.prevContSize = adjustedHeightWidth
         })
-      );
+      )
     }
-    this._graph = makeBorder(this._graphId, graphData.graphType);
+    this._graph = makeBorder(this._graphId, graphData.graphType)
 
     if (this._graph) {
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.setDisableResponse(disableResponse)
 
-      this._graph.resizeContainer(adjustedHeightWidth.width, adjustedHeightWidth.height);
+      this._graph.resizeContainer(
+        adjustedHeightWidth.width,
+        adjustedHeightWidth.height
+      )
 
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
-        ...canvas
-      });
+        ...canvas,
+      })
       this._graph.setPointParameters({
         ...defaultPointParameters(),
-        ...pointParameters
-      });
+        ...pointParameters,
+      })
       this._graph.setAxesParameters({
         x: {
           ...defaultAxesParameters(),
-          ...xAxesParameters
+          ...xAxesParameters,
         },
         y: {
-          ...yAxesParameters
-        }
-      });
+          ...yAxesParameters,
+        },
+      })
       this._graph.setGridParameters({
         ...defaultGridParameters(),
-        ...gridParams
-      });
+        ...gridParams,
+      })
 
       const _numberlineAxis = {
         ...numberlineAxis,
-        shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
-      };
+        shuffleAnswerChoices:
+          view !== EDIT && numberlineAxis.shuffleAnswerChoices,
+      }
       const _layout = {
         ...layout,
-        ...adjustedHeightWidth
-      };
-      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout);
+        ...adjustedHeightWidth,
+      }
+      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout)
 
-      this._graph.setMarksDeleteHandler();
+      this._graph.setMarksDeleteHandler()
 
-      this.setElementsToGraph();
+      this.setElementsToGraph()
 
-      this.setGraphUpdateEventHandler();
-      setElementsStash(this._graph.getMarks(), this.getStashId());
+      this.setGraphUpdateEventHandler()
+      setElementsStash(this._graph.getMarks(), this.getStashId())
     }
   }
 
@@ -241,20 +261,23 @@ class AxisLabelsContainer extends PureComponent {
       elements,
       view,
       graphData,
-      setQuestionData
-    } = this.props;
+      setQuestionData,
+    } = this.props
 
-    const adjustedHeightWidth = this.adjustedHeightWidth;
-    if (!isEqual(graphData.prevContSize, adjustedHeightWidth) && view === EDIT) {
+    const adjustedHeightWidth = this.adjustedHeightWidth
+    if (
+      !isEqual(graphData.prevContSize, adjustedHeightWidth) &&
+      view === EDIT
+    ) {
       setQuestionData(
-        next(graphData, draft => {
-          draft.prevContSize = adjustedHeightWidth;
+        next(graphData, (draft) => {
+          draft.prevContSize = adjustedHeightWidth
         })
-      );
+      )
     }
 
     if (this._graph) {
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.setDisableResponse(disableResponse)
 
       if (
         !isEqual(canvas, prevProps.canvas) ||
@@ -263,152 +286,179 @@ class AxisLabelsContainer extends PureComponent {
       ) {
         const _numberlineAxis = {
           ...numberlineAxis,
-          shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
-        };
+          shuffleAnswerChoices:
+            view !== EDIT && numberlineAxis.shuffleAnswerChoices,
+        }
 
         const _layout = {
           ...layout,
-          ...adjustedHeightWidth
-        };
-        this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout);
+          ...adjustedHeightWidth,
+        }
+        this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout)
       }
 
-      this.setElementsToGraph(prevProps);
+      this.setElementsToGraph(prevProps)
     }
 
-    const { disableResponse: prevDisableResponse } = prevProps;
+    const { disableResponse: prevDisableResponse } = prevProps
     if (disableResponse && prevDisableResponse !== disableResponse) {
       // reset the graph when editResponse is disabled
-      this._graph.reset();
+      this._graph.reset()
     }
 
-    if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
-      changePreviewTab(CLEAR);
+    if (
+      (previewTab === CHECK || previewTab === SHOW) &&
+      !isEqual(elements, prevProps.elements)
+    ) {
+      changePreviewTab(CLEAR)
     }
   }
 
   updateValues() {
-    const conf = this._graph.getMarks();
-    const { setValue, setElementsStash } = this.props;
-    setValue(conf);
-    setElementsStash(conf, this.getStashId());
+    const conf = this._graph.getMarks()
+    const { setValue, setElementsStash } = this.props
+    setValue(conf)
+    setElementsStash(conf, this.getStashId())
   }
 
   graphUpdateHandler = () => {
-    this.updateValues();
-  };
+    this.updateValues()
+  }
 
   setGraphUpdateEventHandler = () => {
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_UPDATE, this.graphUpdateHandler);
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
-  };
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_MOVE,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_NEW,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_UPDATE,
+      this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_DELETE,
+      this.graphUpdateHandler
+    )
+  }
 
   setElementsToGraph = (prevProps = {}) => {
-    const { resourcesLoaded } = this.state;
+    const { resourcesLoaded } = this.state
     if (!resourcesLoaded) {
-      return;
+      return
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
+    const {
+      elements,
+      evaluation,
+      disableResponse,
+      elementsIsCorrect,
+      previewTab,
+    } = this.props
 
     // correct answers blocks
     if (elementsIsCorrect) {
-      this._graph.removeMarksAnswers();
-      this._graph.loadMarksAnswers(getCorrectAnswer(elements));
-      return;
+      this._graph.removeMarksAnswers()
+      this._graph.loadMarksAnswers(getCorrectAnswer(elements))
+      return
     }
 
     if (disableResponse) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
-      this._graph.removeMarks();
-      this._graph.removeMarksAnswers();
-      this._graph.loadMarksAnswers(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult)
+      this._graph.removeMarks()
+      this._graph.removeMarksAnswers()
+      this._graph.loadMarksAnswers(coloredElements)
+      return
     }
 
     if (previewTab === CHECK || previewTab === SHOW) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
-      this._graph.removeMarks();
-      this._graph.removeMarksAnswers();
-      this._graph.renderMarks(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult)
+      this._graph.removeMarks()
+      this._graph.removeMarksAnswers()
+      this._graph.renderMarks(coloredElements)
+      return
     }
 
     if (
       !isEqual(elements, this._graph.getMarks()) ||
-      (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
+      (previewTab === CLEAR &&
+        (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
-      this._graph.removeMarks();
-      this._graph.removeMarksAnswers();
-      this._graph.renderMarks(elements);
+      this._graph.removeMarks()
+      this._graph.removeMarksAnswers()
+      this._graph.renderMarks(elements)
     }
-  };
+  }
 
-  controls = ["undo", "redo"];
+  controls = ['undo', 'redo']
 
   onUndo = () => {
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] - 1]);
-      setStashIndex(stashIndex[id] - 1, id);
+      setValue(stash[id][stashIndex[id] - 1])
+      setStashIndex(stashIndex[id] - 1, id)
     }
-  };
+  }
 
   onRedo() {
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] + 1]);
-      setStashIndex(stashIndex[id] + 1, id);
+      setValue(stash[id][stashIndex[id] + 1])
+      setStashIndex(stashIndex[id] + 1, id)
     }
   }
 
   getStashId() {
-    const { graphData, altAnswerId, view } = this.props;
-    const type = altAnswerId || view;
-    return `${graphData.id}_${type}`;
+    const { graphData, altAnswerId, view } = this.props
+    const type = altAnswerId || view
+    return `${graphData.id}_${type}`
   }
 
-  onSelectControl = control => {
+  onSelectControl = (control) => {
     switch (control) {
-      case "undo":
-        return this.onUndo();
-      case "redo":
-        return this.onRedo();
+      case 'undo':
+        return this.onUndo()
+      case 'redo':
+        return this.onRedo()
       default:
-        return () => {};
+        return () => {}
     }
-  };
+  }
 
   resourcesOnLoaded = () => {
-    const { resourcesLoaded } = this.state;
+    const { resourcesLoaded } = this.state
     if (resourcesLoaded) {
-      return;
+      return
     }
-    this.setState({ resourcesLoaded: true });
-    this.setElementsToGraph();
-  };
+    this.setState({ resourcesLoaded: true })
+    this.setElementsToGraph()
+  }
 
   onAddMark = (mark, x, y) => {
     if (this._graph.addMark(mark, x, y)) {
-      this.updateValues();
+      this.updateValues()
     }
-  };
+  }
 
   getMarkValues = () => {
-    const { list, elements } = this.props;
-    return list.filter(elem => !elements.some(el => elem.id === el.id));
-  };
+    const { list, elements } = this.props
+    return list.filter((elem) => !elements.some((el) => elem.id === el.id))
+  }
 
   render() {
     const {
       layout,
-      numberlineAxis: { responseBoxPosition, separationDistanceX, separationDistanceY },
+      numberlineAxis: {
+        responseBoxPosition,
+        separationDistanceX,
+        separationDistanceY,
+      },
       disableResponse,
       view,
       graphData,
@@ -416,34 +466,48 @@ class AxisLabelsContainer extends PureComponent {
       list,
       zoomLevel,
       theme,
-      isPrintPreview
-    } = this.props;
-    const { shouldZoom } = theme;
-    const { isV1Migrated } = graphData;
+      isPrintPreview,
+    } = this.props
+    const { shouldZoom } = theme
+    const { isV1Migrated } = graphData
 
-    const adjustedHeightWidth = this.adjustedHeightWidth;
+    const adjustedHeightWidth = this.adjustedHeightWidth
 
-    let _graphData = graphData;
+    let _graphData = graphData
     if (isV1Migrated) {
-      _graphData = next(graphData, __graphData => {
+      _graphData = next(graphData, (__graphData) => {
         if (__graphData.annotations) {
           for (const o of __graphData.annotations) {
-            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o, v1Dimenstions);
-            o.position.x = co.x;
-            o.position.y = co.y;
-            o.size.width = co.width;
-            o.size.height = co.height;
+            const co = getAdjustedV1AnnotationCoordinatesForRender(
+              adjustedHeightWidth,
+              layout,
+              o,
+              v1Dimenstions
+            )
+            o.position.x = co.x
+            o.position.y = co.y
+            o.size.width = co.width
+            o.size.height = co.height
           }
         }
-      });
+      })
     }
     // +20 is padding between container and choices
-    const responseBoxWidth = this.isHorizontal ? "100%" : `${this.choiceMaxWidth + 100}px`;
+    const responseBoxWidth = this.isHorizontal
+      ? '100%'
+      : `${this.choiceMaxWidth + 100}px`
 
     return (
-      <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef} style={{ width: "100%" }}>
+      <div
+        data-cy="axis-labels-container"
+        ref={this.axisLabelsContainerRef}
+        style={{ width: '100%' }}
+      >
         <WithResources
-          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
+          resources={[
+            `${AppConfig.jqueryPath}/jquery.min.js`,
+            `${AppConfig.katexPath}/katex.min.js`,
+          ]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >
@@ -458,8 +522,13 @@ class AxisLabelsContainer extends PureComponent {
               fontSize={layout?.fontSize}
             />
           )}
-          <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
-            <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
+          <ContainerWithResponses
+            className="jsxbox-with-response-box"
+            responseBoxPosition={responseBoxPosition}
+          >
+            <div
+              className={`jsxbox-with-response-box-response-options ${this._graphId}`}
+            >
               {!disableResponse && (
                 <ResponseBox
                   shouldZoom={shouldZoom}
@@ -473,12 +542,19 @@ class AxisLabelsContainer extends PureComponent {
                   position={responseBoxPosition}
                   responseBoxWidth={responseBoxWidth}
                   choiceWidth={this.choiceMaxWidth}
-                  minWidth={Math.min(adjustedHeightWidth.width, this.parentWidth)}
+                  minWidth={Math.min(
+                    adjustedHeightWidth.width,
+                    this.parentWidth
+                  )}
                   minHeight={adjustedHeightWidth.height}
                 />
               )}
               <div className="jsxbox-with-annotation">
-                <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+                <JSXBox
+                  id={this._graphId}
+                  className="jxgbox"
+                  margin={layout.margin}
+                />
                 <AnnotationRnd
                   question={_graphData}
                   setQuestionData={setQuestionData}
@@ -494,7 +570,7 @@ class AxisLabelsContainer extends PureComponent {
           </ContainerWithResponses>
         </GraphWrapper>
       </div>
-    );
+    )
   }
 }
 
@@ -523,8 +599,8 @@ AxisLabelsContainer.propTypes = {
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
   zoomLevel: PropTypes.number,
-  theme: PropTypes.object
-};
+  theme: PropTypes.object,
+}
 
 AxisLabelsContainer.defaultProps = {
   list: [],
@@ -537,17 +613,17 @@ AxisLabelsContainer.defaultProps = {
   changePreviewTab: () => {},
   elementsIsCorrect: false,
   zoomLevel: 1,
-  theme: {}
-};
+  theme: {},
+}
 
 export default connect(
   (state, props) => ({
     stash: state.graphTools.stash,
     stashIndex: state.graphTools.stashIndex,
-    zoomLevel: props.view === "edit" ? 1 : state.ui.zoomLevel
+    zoomLevel: props.view === 'edit' ? 1 : state.ui.zoomLevel,
   }),
   {
     setElementsStash: setElementsStashAction,
-    setStashIndex: setStashIndexAction
+    setStashIndex: setStashIndexAction,
   }
-)(AxisLabelsContainer);
+)(AxisLabelsContainer)

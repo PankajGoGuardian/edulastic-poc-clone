@@ -1,45 +1,49 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { FlexContainer } from "@edulastic/common";
-import Tags from "../../../../src/components/common/Tags";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
+import Tags from '../../../../src/components/common/Tags'
 
 const ClassCell = ({ group, data }) => {
-  let students;
+  let students
   if (!students || !students.length) {
-    students = ["All students"];
+    students = ['All students']
   }
 
   const classNames = group
     .map(({ _id, name }) => {
       if (Array.isArray(data) && data.includes(_id)) {
-        return name;
+        return name
       }
-      return null;
+      return null
     })
     .filter(Boolean)
-    .join(" ");
+    .join(' ')
 
   return (
     <FlexContainer>
       <span>{classNames}</span>
-      <TagsContainer>{students && !!students.length && <Tags tags={students} type="secondary" />}</TagsContainer>
+      <TagsContainer>
+        {students && !!students.length && (
+          <Tags tags={students} type="secondary" />
+        )}
+      </TagsContainer>
     </FlexContainer>
-  );
-};
+  )
+}
 
 ClassCell.propTypes = {
   group: PropTypes.array,
-  data: PropTypes.array
-};
+  data: PropTypes.array,
+}
 
 ClassCell.defaultProps = {
   group: [],
-  data: []
-};
+  data: [],
+}
 
-export default ClassCell;
+export default ClassCell
 
 const TagsContainer = styled.div`
   margin-left: 5px;
-`;
+`

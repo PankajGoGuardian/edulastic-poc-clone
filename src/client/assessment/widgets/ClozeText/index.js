@@ -1,184 +1,198 @@
 /* eslint-disable no-restricted-globals */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { get, findIndex } from "lodash";
-import styled, { withTheme } from "styled-components";
-import produce from "immer";
-import { WithResources, AnswerContext } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { get, findIndex } from 'lodash'
+import styled, { withTheme } from 'styled-components'
+import produce from 'immer'
+import { WithResources, AnswerContext } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { EDIT } from "../../constants/constantsForQuestions";
-import { updateVariables, replaceVariables } from "../../utils/variables";
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { EDIT } from '../../constants/constantsForQuestions'
+import { updateVariables, replaceVariables } from '../../utils/variables'
 
-import Options from "./components/Options";
-import CorrectAnswers from "./CorrectAnswers";
-import Authoring from "./Authoring";
-import Display from "./Display";
-import { ContentArea } from "../../styled/ContentArea";
-import Question from "../../components/Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import AppConfig from "../../../../../app-config";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import Options from './components/Options'
+import CorrectAnswers from './CorrectAnswers'
+import Authoring from './Authoring'
+import Display from './Display'
+import { ContentArea } from '../../styled/ContentArea'
+import Question from '../../components/Question'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import AppConfig from '../../../../../app-config'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div``
 
 class ClozeText extends Component {
-  static contextType = AnswerContext;
+  static contextType = AnswerContext
 
   getRenderData = () => {
-    const { item: templateItem, history, view } = this.props;
-    const itemForPreview = replaceVariables(templateItem);
-    const item = view === EDIT ? templateItem : itemForPreview;
+    const { item: templateItem, history, view } = this.props
+    const itemForPreview = replaceVariables(templateItem)
+    const item = view === EDIT ? templateItem : itemForPreview
 
-    const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
-    const previewDisplayOptions = item.hasGroupResponses ? item.groupResponses : item.options;
-    let previewStimulus;
-    let itemForEdit;
+    const locationState = history.location.state
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false
+    const previewDisplayOptions = item.hasGroupResponses
+      ? item.groupResponses
+      : item.options
+    let previewStimulus
+    let itemForEdit
     if (item.smallSize || isDetailPage) {
-      previewStimulus = item.stimulus;
-      itemForEdit = templateItem;
+      previewStimulus = item.stimulus
+      itemForEdit = templateItem
     } else {
-      previewStimulus = item.stimulus;
+      previewStimulus = item.stimulus
       itemForEdit = {
         ...templateItem,
         stimulus: templateItem.stimulus,
         list: templateItem.options,
-        validation: templateItem.validation
-      };
+        validation: templateItem.validation,
+      }
     }
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       itemForPreview,
-      uiStyle: item.uiStyle
-    };
-  };
+      uiStyle: item.uiStyle,
+    }
+  }
 
   handleRemoveAltResponsesMixMatch = () => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses = [];
+      produce(item, (draft) => {
+        draft.validation.altResponses = []
       })
-    );
-  };
+    )
+  }
 
   handleOptionsChange = (name, value) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft[name] = value;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft[name] = value
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   handleValidationOptionsChange = (name, value) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.validation[name] = value;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.validation[name] = value
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  handleAddAnswer = userAnswer => {
-    const { saveAnswer, setQuestionData, item } = this.props;
-    const { uiStyle } = item;
-    saveAnswer(userAnswer);
+  handleAddAnswer = (userAnswer) => {
+    const { saveAnswer, setQuestionData, item } = this.props
+    const { uiStyle } = item
+    saveAnswer(userAnswer)
     if (uiStyle.globalSettings) {
       setQuestionData(
-        produce(item, draft => {
+        produce(item, (draft) => {
           userAnswer
-            .filter(ans => !!ans)
-            .forEach(ans => {
-              const { id, value, index } = ans;
-              const splitWidth = Math.max(value.split("").length * 9, 100);
-              const width = Math.min(splitWidth, 400);
-              const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
+            .filter((ans) => !!ans)
+            .forEach((ans) => {
+              const { id, value, index } = ans
+              const splitWidth = Math.max(value.split('').length * 9, 100)
+              const width = Math.min(splitWidth, 400)
+              const ind = findIndex(
+                draft.uiStyle.responsecontainerindividuals,
+                (container) => container.id === id
+              )
               if (ind === -1) {
                 draft.uiStyle.responsecontainerindividuals.push({
                   id,
                   index,
-                  previewWidth: width
-                });
+                  previewWidth: width,
+                })
               } else {
                 draft.uiStyle.responsecontainerindividuals[ind] = {
                   ...draft.uiStyle.responsecontainerindividuals[ind],
-                  previewWidth: width
-                };
+                  previewWidth: width,
+                }
               }
-            });
+            })
         })
-      );
+      )
     }
-  };
+  }
 
   handleIndividualTypeChange = (index, type) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.uiStyle.responsecontainerindividuals[index].inputtype = type;
-        if (type === "number") {
+      produce(item, (draft) => {
+        draft.uiStyle.responsecontainerindividuals[index].inputtype = type
+        if (type === 'number') {
           // set all the correct answers to empty if ans contains text
-          draft.validation.validResponse.value = draft.validation.validResponse.value.map(ans => {
-            if (ans.index === index && ans.value.split("\n").some(isNaN)) {
-              ans.value = "";
-            }
-            return ans;
-          });
-          // set all the alt answers to empty if ans contains text
-          draft.validation.altResponses = draft.validation.altResponses.map(resp => {
-            resp.value = resp.value.map(ans => {
-              if (ans.index === index && ans.value.split("\n").some(isNaN)) {
-                ans.value = "";
+          draft.validation.validResponse.value = draft.validation.validResponse.value.map(
+            (ans) => {
+              if (ans.index === index && ans.value.split('\n').some(isNaN)) {
+                ans.value = ''
               }
-              return ans;
-            });
-            return resp;
-          });
+              return ans
+            }
+          )
+          // set all the alt answers to empty if ans contains text
+          draft.validation.altResponses = draft.validation.altResponses.map(
+            (resp) => {
+              resp.value = resp.value.map((ans) => {
+                if (ans.index === index && ans.value.split('\n').some(isNaN)) {
+                  ans.value = ''
+                }
+                return ans
+              })
+              return resp
+            }
+          )
         }
       })
-    );
-  };
+    )
+  }
 
-  handleGlobalTypeChange = type => {
-    const { setQuestionData, item } = this.props;
+  handleGlobalTypeChange = (type) => {
+    const { setQuestionData, item } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.uiStyle.inputtype = type;
-        if (type === "number") {
+      produce(item, (draft) => {
+        draft.uiStyle.inputtype = type
+        if (type === 'number') {
           // set all the correct answers to empty if ans contains text
-          draft.validation.validResponse.value = draft.validation.validResponse.value.map(ans => {
-            if (ans.value.split("\n").some(isNaN)) {
-              ans.value = "";
-            }
-            return ans;
-          });
-          // set all the alt answers to empty if ans contains text
-          draft.validation.altResponses = draft.validation.altResponses.map(resp => {
-            resp.value = resp.value.map(ans => {
-              if (ans.value.split("\n").some(isNaN)) {
-                ans.value = "";
+          draft.validation.validResponse.value = draft.validation.validResponse.value.map(
+            (ans) => {
+              if (ans.value.split('\n').some(isNaN)) {
+                ans.value = ''
               }
-              return ans;
-            });
-            return resp;
-          });
+              return ans
+            }
+          )
+          // set all the alt answers to empty if ans contains text
+          draft.validation.altResponses = draft.validation.altResponses.map(
+            (resp) => {
+              resp.value = resp.value.map((ans) => {
+                if (ans.value.split('\n').some(isNaN)) {
+                  ans.value = ''
+                }
+                return ans
+              })
+              return resp
+            }
+          )
         }
       })
-    );
-  };
+    )
+  }
 
   render() {
-    const answerContextConfig = this.context;
+    const answerContextConfig = this.context
     const {
       view,
       previewTab,
@@ -194,32 +208,50 @@ class ClozeText extends Component {
       advancedLink,
       disableResponse,
       ...restProps
-    } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+    } = this.props
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      itemForPreview,
+      uiStyle,
+    } = this.getRenderData()
 
-    const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
+    const { duplicatedResponses, showDraghandle, shuffleOptions } = item
 
-    const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
+    const ignoreCase =
+      item && item.validation ? item.validation.ignoreCase : false
 
-    const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
-    const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
+    const allowSingleLetterMistake =
+      item && item.validation ? item.validation.allowSingleLetterMistake : false
+    const mixAndMatch = get(item, ['validation', 'mixAndMatch'], false)
 
-    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper
 
-    const { expressGrader, isAnswerModifiable } = answerContextConfig;
+    const { expressGrader, isAnswerModifiable } = answerContextConfig
 
-    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
-    const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
-    const isShowAnswer = previewTab === "show" && !expressGrader;
+    const isCheckAnswer =
+      previewTab === 'check' || (expressGrader && !isAnswerModifiable)
+    const isClearAnswer =
+      previewTab === 'clear' || (isAnswerModifiable && expressGrader)
+    const isShowAnswer = previewTab === 'show' && !expressGrader
     return (
-      <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => null}>
-        {view === "edit" && (
+      <WithResources
+        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+        fallBack={<span />}
+        onLoaded={() => null}
+      >
+        {view === 'edit' && (
           <ContentArea data-cy="question-area">
             <div className="authoring">
-              <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
+              <Authoring
+                item={itemForEdit}
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+              />
               <Question
                 section="main"
-                label={t("component.correctanswers.setcorrectanswers")}
+                label={t('component.correctanswers.setcorrectanswers')}
                 fillSections={fillSections}
                 cleanSections={cleanSections}
               >
@@ -227,13 +259,15 @@ class ClozeText extends Component {
                   key={duplicatedResponses || showDraghandle || shuffleOptions}
                   validation={item.validation}
                   configureOptions={{
-                    shuffleOptions
+                    shuffleOptions,
                   }}
                   options={previewDisplayOptions}
                   stimulus={previewStimulus}
                   uiStyle={uiStyle}
                   responseIds={item.responseIds}
-                  handleRemoveAltResponsesMixMatch={this.handleRemoveAltResponsesMixMatch}
+                  handleRemoveAltResponsesMixMatch={
+                    this.handleRemoveAltResponsesMixMatch
+                  }
                   cleanSections={cleanSections}
                   fillSections={fillSections}
                   view={view}
@@ -244,25 +278,38 @@ class ClozeText extends Component {
                 <div>
                   <CheckboxLabel
                     data-cy="ignoreCase"
-                    onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
+                    onChange={() =>
+                      this.handleValidationOptionsChange(
+                        'ignoreCase',
+                        !ignoreCase
+                      )
+                    }
                     checked={!!ignoreCase}
                   >
-                    {t("component.cloze.dropDown.ignorecase")}
+                    {t('component.cloze.dropDown.ignorecase')}
                   </CheckboxLabel>
 
                   <CheckboxLabel
                     data-cy="allowSingleLetterMistake"
                     onChange={() =>
-                      this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
+                      this.handleValidationOptionsChange(
+                        'allowSingleLetterMistake',
+                        !allowSingleLetterMistake
+                      )
                     }
                     checked={!!allowSingleLetterMistake}
                   >
-                    {t("component.cloze.dropDown.allowsinglelettermistake")}
+                    {t('component.cloze.dropDown.allowsinglelettermistake')}
                   </CheckboxLabel>
 
                   <CheckboxLabel
                     data-cy="mixAndMatchAltAnswer"
-                    onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
+                    onChange={() =>
+                      this.handleValidationOptionsChange(
+                        'mixAndMatch',
+                        !mixAndMatch
+                      )
+                    }
                     checked={!!mixAndMatch}
                   >
                     Mix-n-Match alternative answers
@@ -288,10 +335,12 @@ class ClozeText extends Component {
             </div>
           </ContentArea>
         )}
-        {view === "preview" && (
+        {view === 'preview' && (
           <Wrapper
-            overflowProps={disableResponse ? { maxWidth: "100%", overflowX: "auto" } : {}}
-            paddingProps={{ paddingBottom: "1rem" }}
+            overflowProps={
+              disableResponse ? { maxWidth: '100%', overflowX: 'auto' } : {}
+            }
+            paddingProps={{ paddingBottom: '1rem' }}
             borderRadius="0px"
           >
             <Display
@@ -299,7 +348,7 @@ class ClozeText extends Component {
               showAnswer={isShowAnswer}
               preview={isClearAnswer}
               configureOptions={{
-                shuffleOptions
+                shuffleOptions,
               }}
               smallSize={smallSize}
               options={previewDisplayOptions}
@@ -315,14 +364,14 @@ class ClozeText extends Component {
               previewTab={previewTab}
               validation={itemForPreview.validation}
               key={previewDisplayOptions && previewStimulus && uiStyle}
-              isExpressGrader={expressGrader && previewTab === "show"}
+              isExpressGrader={expressGrader && previewTab === 'show'}
               disableResponse={disableResponse}
               {...restProps}
             />
           </Wrapper>
         )}
       </WithResources>
-    );
+    )
   }
 }
 
@@ -342,13 +391,13 @@ ClozeText.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 ClozeText.defaultProps = {
-  previewTab: "clear",
+  previewTab: 'clear',
   item: {
-    options: []
+    options: [],
   },
   smallSize: false,
   history: {},
@@ -358,21 +407,18 @@ ClozeText.defaultProps = {
   advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
-  connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
-  )
-);
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+  })
+)
 
-const ClozeTextContainer = enhance(ClozeText);
+const ClozeTextContainer = enhance(ClozeText)
 
-export { ClozeTextContainer as ClozeText };
+export { ClozeTextContainer as ClozeText }

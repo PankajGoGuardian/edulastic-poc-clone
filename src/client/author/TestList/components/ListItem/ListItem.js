@@ -1,40 +1,62 @@
-import { assignmentApi } from "@edulastic/api";
-import { uniqBy } from "lodash";
-import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
+import { assignmentApi } from '@edulastic/api'
+import { uniqBy } from 'lodash'
+import {
+  cardTitleColor,
+  darkGrey,
+  fadedBlack,
+  themeColor,
+} from '@edulastic/colors'
 import {
   CheckboxLabel,
   MathFormulaDisplay,
   PremiumTag,
   LikeIconStyled,
   EduButton,
-  FlexContainer
-} from "@edulastic/common";
-import { test } from "@edulastic/constants";
-import { IconClose, IconEye, IconHeart, IconId, IconUser, IconDynamic, IconUsers, IconPlus } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col } from "antd";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
+  FlexContainer,
+} from '@edulastic/common'
+import { test } from '@edulastic/constants'
+import {
+  IconClose,
+  IconEye,
+  IconHeart,
+  IconId,
+  IconUser,
+  IconDynamic,
+  IconUsers,
+  IconPlus,
+} from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col } from 'antd'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
+import {
+  getAuthorCollectionMap,
+  flattenPlaylistStandards,
+  showPremiumLabelOnContent,
+} from '../../../dataUtils'
 import {
   ViewButton as ViewButtonContainer,
   ViewButtonStyled,
-  AddRemoveButton
-} from "../../../ItemList/components/Item/styled";
-import Tags from "../../../src/components/common/Tags";
+  AddRemoveButton,
+} from '../../../ItemList/components/Item/styled'
+import Tags from '../../../src/components/common/Tags'
 import {
   isCoTeacherSelector,
   getCollectionsSelector,
   getUserId,
-  getCollectionsToAddContent
-} from "../../../src/selectors/user";
-import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector, toggleTestLikeAction } from "../../ducks";
-import { EllipsisWrapper, ViewButton } from "../Item/styled";
-import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
-import ViewModal from "../ViewModal";
+  getCollectionsToAddContent,
+} from '../../../src/selectors/user'
+import {
+  approveOrRejectSingleTestRequestAction,
+  getSelectedTestsSelector,
+  toggleTestLikeAction,
+} from '../../ducks'
+import { EllipsisWrapper, ViewButton } from '../Item/styled'
+import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
+import ViewModal from '../ViewModal'
 import {
   Author,
   AuthorName,
@@ -58,10 +80,10 @@ import {
   TestStatus,
   ViewButtonWrapper,
   DynamicIconWrapper,
-  AddRemove
-} from "./styled";
-import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
-import { sharedTypeMap } from "../Item/Item";
+  AddRemove,
+} from './styled'
+import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
+import { sharedTypeMap } from '../Item/Item'
 
 class ListItem extends Component {
   static propTypes = {
@@ -72,111 +94,115 @@ class ListItem extends Component {
     owner: PropTypes.object,
     testItemId: PropTypes.string,
     orgCollections: PropTypes.array.isRequired,
-    isPreviewModalVisible: PropTypes.bool
-  };
+    isPreviewModalVisible: PropTypes.bool,
+  }
 
   static defaultProps = {
-    authorName: "",
+    authorName: '',
     owner: {},
     isPreviewModalVisible: false,
-    testItemId: ""
-  };
+    testItemId: '',
+  }
 
   state = {
-    isOpenModal: false
-  };
+    isOpenModal: false,
+  }
 
-  moveToItem = e => {
-    e && e.stopPropagation();
-    const { history, item, mode, isPlaylist } = this.props;
-    if (mode === "embedded") return;
+  moveToItem = (e) => {
+    e && e.stopPropagation()
+    const { history, item, mode, isPlaylist } = this.props
+    if (mode === 'embedded') return
     if (isPlaylist) {
-      history.push(`/author/playlists/${item._id}#review`);
+      history.push(`/author/playlists/${item._id}#review`)
     } else {
-      const tab = item.title ? "review" : "description";
+      const tab = item.title ? 'review' : 'description'
       history.push({
         pathname: `/author/tests/tab/${tab}/id/${item._id}`,
         state: {
-          editTestFlow: true
-        }
-      });
+          editTestFlow: true,
+        },
+      })
     }
-  };
+  }
 
-  duplicate = async e => {
-    e && e.stopPropagation();
-    const { history, item } = this.props;
-    const duplicateTest = await assignmentApi.duplicateAssignment(item);
-    history.push(`/author/tests/${duplicateTest._id}`);
-  };
+  duplicate = async (e) => {
+    e && e.stopPropagation()
+    const { history, item } = this.props
+    const duplicateTest = await assignmentApi.duplicateAssignment(item)
+    history.push(`/author/tests/${duplicateTest._id}`)
+  }
 
   closeModal = () => {
-    this.setState({ isOpenModal: false });
-  };
+    this.setState({ isOpenModal: false })
+  }
 
-  assignTest = e => {
-    e && e.stopPropagation();
-    const { history, item } = this.props;
+  assignTest = (e) => {
+    e && e.stopPropagation()
+    const { history, item } = this.props
     history.push({
       pathname: `/author/assignments/${item._id}`,
-      state: { from: "testLibrary", fromText: "Test Library", toUrl: "/author/tests" }
-    });
-  };
+      state: {
+        from: 'testLibrary',
+        fromText: 'Test Library',
+        toUrl: '/author/tests',
+      },
+    })
+  }
 
   openModal = () => {
-    this.setState({ isOpenModal: true });
-  };
+    this.setState({ isOpenModal: true })
+  }
 
   hidePreviewModal = () => {
-    this.setState({ isPreviewModalVisible: false });
-  };
+    this.setState({ isPreviewModalVisible: false })
+  }
 
-  showPreviewModal = testId => {
-    this.setState({ isPreviewModalVisible: true, currentTestId: testId });
-  };
+  showPreviewModal = (testId) => {
+    this.setState({ isPreviewModalVisible: true, currentTestId: testId })
+  }
 
   onApprove = (newCollections = []) => {
     const {
       item: { _id: testId },
-      approveOrRejectSingleTestRequest
-    } = this.props;
+      approveOrRejectSingleTestRequest,
+    } = this.props
     approveOrRejectSingleTestRequest({
       testId,
-      status: "published",
-      collections: newCollections
-    });
-  };
+      status: 'published',
+      collections: newCollections,
+    })
+  }
 
   onReject = () => {
     const {
       item: { _id: testId },
-      approveOrRejectSingleTestRequest
-    } = this.props;
-    approveOrRejectSingleTestRequest({ testId, status: "rejected" });
-  };
+      approveOrRejectSingleTestRequest,
+    } = this.props
+    approveOrRejectSingleTestRequest({ testId, status: 'rejected' })
+  }
 
-  handleLikeTest = e => {
-    e.stopPropagation();
-    const { item, toggleTestLikeRequest, isTestLiked } = this.props;
+  handleLikeTest = (e) => {
+    e.stopPropagation()
+    const { item, toggleTestLikeRequest, isTestLiked } = this.props
     toggleTestLikeRequest({
       contentId: item._id,
-      contentType: "TEST",
+      contentType: 'TEST',
       toggleValue: !isTestLiked,
-      versionId: item.versionId
-    });
-  };
+      versionId: item.versionId,
+    })
+  }
 
-  handleAddRemoveToCart = (item, isInCart) => evt => {
-    const { onRemoveFromCart, onAddToCart } = this.props;
+  handleAddRemoveToCart = (item, isInCart) => (evt) => {
+    const { onRemoveFromCart, onAddToCart } = this.props
     if (evt) {
-      evt.stopPropagation();
+      evt.stopPropagation()
     }
     if (isInCart) {
-      onRemoveFromCart(item);
+      onRemoveFromCart(item)
     } else {
-      onAddToCart(item);
+      onAddToCart(item)
     }
-  };
+  }
 
   render() {
     const {
@@ -188,7 +214,7 @@ class ListItem extends Component {
         description,
         thumbnail,
         collections = [],
-        sharedType
+        sharedType,
       },
       item,
       authorName,
@@ -210,46 +236,59 @@ class ListItem extends Component {
       orgCollections = [],
       currentUserId,
       isTestLiked,
-      collectionToWrite
-    } = this.props;
-    const { analytics = [] } = isPlaylist ? _source : item;
-    const likes = analytics?.[0]?.likes || "0";
-    const usage = analytics?.[0]?.usage || "0";
+      collectionToWrite,
+    } = this.props
+    const { analytics = [] } = isPlaylist ? _source : item
+    const likes = analytics?.[0]?.likes || '0'
+    const usage = analytics?.[0]?.usage || '0'
     const standardsIdentifiers = isPlaylist
       ? flattenPlaylistStandards(_source?.modules)
-      : standards.map(_item => _item.identifier);
-    const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
-    const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;
-    const isInCart = !!selectedTests.find(o => o._id === item._id);
+      : standards.map((_item) => _item.identifier)
+    const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state
+    const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail
+    const isInCart = !!selectedTests.find((o) => o._id === item._id)
     const allowDuplicate =
-      allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
+      allowDuplicateCheck(
+        collections,
+        orgCollections,
+        isPlaylist ? 'playList' : 'test'
+      ) || isOwner
 
     const showPremiumTag =
-      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
+      showPremiumLabelOnContent(
+        isPlaylist ? _source.collections : collections,
+        orgCollections
+      ) &&
       !isCoTeacher &&
-      !(_source?.createdBy?._id === currentUserId);
+      !(_source?.createdBy?._id === currentUserId)
 
     const isDynamic =
       !isPlaylist &&
       item?.itemGroups?.some(
-        group =>
+        (group) =>
           group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
           group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-      );
+      )
 
-    let collectionName = "PRIVATE";
+    let collectionName = 'PRIVATE'
     if (collections?.length > 0 && orgCollections.length > 0) {
-      let filteredCollections = orgCollections?.filter(c => collections?.find(i => i._id === c._id));
-      filteredCollections = uniqBy(filteredCollections, "_id");
-      if (filteredCollections?.length > 0) collectionName = filteredCollections?.map(c => c.name).join(", ");
-    } else if (collections?.length && collections?.find(o => o.name === "Edulastic Certified")) {
-      collectionName = "Edulastic Certified";
+      let filteredCollections = orgCollections?.filter((c) =>
+        collections?.find((i) => i._id === c._id)
+      )
+      filteredCollections = uniqBy(filteredCollections, '_id')
+      if (filteredCollections?.length > 0)
+        collectionName = filteredCollections?.map((c) => c.name).join(', ')
+    } else if (
+      collections?.length &&
+      collections?.find((o) => o.name === 'Edulastic Certified')
+    ) {
+      collectionName = 'Edulastic Certified'
     } else if (sharedType) {
       // sharedType comes as number when "Shared with me" filter is selected
       if (!Number.isNaN(+sharedType)) {
-        collectionName = sharedTypeMap[+sharedType];
+        collectionName = sharedTypeMap[+sharedType]
       } else {
-        collectionName = sharedType;
+        collectionName = sharedType
       }
     }
 
@@ -257,7 +296,7 @@ class ListItem extends Component {
       <Header src={thumbnailData}>
         <Stars size="small" />
       </Header>
-    );
+    )
 
     return (
       <>
@@ -295,7 +334,13 @@ class ListItem extends Component {
                 <FlexContainer
                   width="100%"
                   justifyContent="flex-start"
-                  onClick={isPlaylist ? e => this.moveToItem(e) : mode === "embedded" ? "" : this.openModal}
+                  onClick={
+                    isPlaylist
+                      ? (e) => this.moveToItem(e)
+                      : mode === 'embedded'
+                      ? ''
+                      : this.openModal
+                  }
                 >
                   <ListCard title={cardTitle} />
 
@@ -306,7 +351,11 @@ class ListItem extends Component {
                     <Description data-cy="test-description">
                       <EllipsisWrapper view="list">
                         {isPlaylist ? (
-                          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: _source.description }} />
+                          <MathFormulaDisplay
+                            dangerouslySetInnerHTML={{
+                              __html: _source.description,
+                            }}
+                          />
                         ) : (
                           description
                         )}
@@ -314,25 +363,33 @@ class ListItem extends Component {
                     </Description>
                   </Inner>
                 </FlexContainer>
-                {!isPlaylist && mode === "embedded" && (
+                {!isPlaylist && mode === 'embedded' && (
                   <ViewButtonWrapper span={6}>
-                    {!isTestAdded && mode === "embedded" && (
+                    {!isTestAdded && mode === 'embedded' && (
                       <ViewButton
-                        onClick={() => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}
+                        onClick={() =>
+                          addTestToPlaylist({
+                            ...item,
+                            standardIdentifiers: standardsIdentifiers,
+                          })
+                        }
                       >
                         ADD
                       </ViewButton>
                     )}
 
-                    {!isTestAdded && mode === "embedded" && (
-                      <ViewButton isTestAdded={isTestAdded} onClick={() => this.showPreviewModal(item._id)}>
+                    {!isTestAdded && mode === 'embedded' && (
+                      <ViewButton
+                        isTestAdded={isTestAdded}
+                        onClick={() => this.showPreviewModal(item._id)}
+                      >
                         VIEW
                       </ViewButton>
                     )}
 
-                    {isTestAdded && mode === "embedded" && (
+                    {isTestAdded && mode === 'embedded' && (
                       <div
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => this.showPreviewModal(item._id)}
                         title="Preview"
                       >
@@ -340,17 +397,27 @@ class ListItem extends Component {
                       </div>
                     )}
 
-                    {isTestAdded && mode === "embedded" && (
+                    {isTestAdded && mode === 'embedded' && (
                       <StyledModuleName>
-                        <span style={{ width: "100%", textAlign: "center" }}>{moduleTitle}</span>
-                        <div style={{ cursor: "pointer" }} onClick={() => removeTestFromPlaylist(item._id)}>
+                        <span style={{ width: '100%', textAlign: 'center' }}>
+                          {moduleTitle}
+                        </span>
+                        <div
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => removeTestFromPlaylist(item._id)}
+                        >
                           <IconClose color={fadedBlack} width={10} />
                         </div>
                       </StyledModuleName>
                     )}
 
                     <CheckboxLabel
-                      onChange={e => handleCheckboxAction(e, { _id: item._id, title: item.title })}
+                      onChange={(e) =>
+                        handleCheckboxAction(e, {
+                          _id: item._id,
+                          title: item.title,
+                        })
+                      }
                       checked={checked}
                     />
                   </ViewButtonWrapper>
@@ -358,17 +425,22 @@ class ListItem extends Component {
 
                 {isPlaylist && collectionToWrite?.length > 0 && (
                   <ViewButtonContainer
-                    onClick={e => {
-                      e.stopPropagation();
+                    onClick={(e) => {
+                      e.stopPropagation()
                     }}
                   >
-                    <EduButton style={{ marginRight: "10px" }} isGhost data-cy="view" onClick={e => this.moveToItem(e)}>
+                    <EduButton
+                      style={{ marginRight: '10px' }}
+                      isGhost
+                      data-cy="view"
+                      onClick={(e) => this.moveToItem(e)}
+                    >
                       Details
                     </EduButton>
                     <AddRemove selectedToCart={checked}>
                       <CheckboxLabel
-                        style={{ display: "none" }}
-                        onChange={e => handleCheckboxAction(e, item._id)}
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleCheckboxAction(e, item._id)}
                         checked={checked}
                       />
                       {checked ? <IconClose /> : <IconPlus />}
@@ -376,12 +448,18 @@ class ListItem extends Component {
                   </ViewButtonContainer>
                 )}
 
-                {!isPlaylist && mode !== "embedded" && isCoTeacher && (
+                {!isPlaylist && mode !== 'embedded' && isCoTeacher && (
                   <ViewButtonContainer>
-                    <ViewButtonStyled data-cy="view" onClick={() => this.showPreviewModal(item._id)}>
-                      <IconEye /> {t("component.itemlist.preview")}
+                    <ViewButtonStyled
+                      data-cy="view"
+                      onClick={() => this.showPreviewModal(item._id)}
+                    >
+                      <IconEye /> {t('component.itemlist.preview')}
                     </ViewButtonStyled>
-                    <AddRemoveButton onClick={this.handleAddRemoveToCart(item, isInCart)} selectedToCart={isInCart}>
+                    <AddRemoveButton
+                      onClick={this.handleAddRemoveToCart(item, isInCart)}
+                      selectedToCart={isInCart}
+                    >
                       {isInCart ? <IconClose /> : <IconPlus />}
                     </AddRemoveButton>
                   </ViewButtonContainer>
@@ -392,14 +470,30 @@ class ListItem extends Component {
             <Footer span={24}>
               <TagsWrapper data-cy="test-standards" span={12}>
                 <Tags tags={tags} show={1} key="tags" />
-                {tags.length && standardsIdentifiers.length ? <span style={{ marginRight: "10px" }} /> : ""}
-                <Tags tags={standardsIdentifiers} show={1} key="standards" isStandards />
-                <TestStatusWrapper status={testStatus || _source?.status} checkUser={false}>
+                {tags.length && standardsIdentifiers.length ? (
+                  <span style={{ marginRight: '10px' }} />
+                ) : (
+                  ''
+                )}
+                <Tags
+                  tags={standardsIdentifiers}
+                  show={1}
+                  key="standards"
+                  isStandards
+                />
+                <TestStatusWrapper
+                  status={testStatus || _source?.status}
+                  checkUser={false}
+                >
                   {({ children, ...rest }) => (
                     <TestStatus
                       data-cy="test-status"
                       style={{
-                        marginLeft: tags.length || (standardsIdentifiers && standardsIdentifiers.length) ? "10px" : 0
+                        marginLeft:
+                          tags.length ||
+                          (standardsIdentifiers && standardsIdentifiers.length)
+                            ? '10px'
+                            : 0,
                       }}
                       {...rest}
                     >
@@ -407,7 +501,7 @@ class ListItem extends Component {
                     </TestStatus>
                   )}
                 </TestStatusWrapper>
-                {collections.find(o => o.name === "Edulastic Certified") &&
+                {collections.find((o) => o.name === 'Edulastic Certified') &&
                   getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon}
                 {isDynamic && (
                   <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
@@ -421,11 +515,14 @@ class ListItem extends Component {
                   {showPremiumTag && <PremiumTag />}
                   {authorName && (
                     <Author>
-                      {collections.find(o => o.name === "Edulastic Certified") ? (
-                        getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
+                      {collections.find(
+                        (o) => o.name === 'Edulastic Certified'
+                      ) ? (
+                        getAuthorCollectionMap(true, 30, 30).edulastic_certified
+                          .icon
                       ) : (
                         <IconUser color={cardTitleColor} />
-                      )}{" "}
+                      )}{' '}
                       &nbsp;
                       <AuthorName data-cy="test-author-name" title={authorName}>
                         {authorName}
@@ -441,8 +538,16 @@ class ListItem extends Component {
                     <IconText>{usage}</IconText>
                   </IconWrapper>
                   {!isPlaylist && (
-                    <LikeIconStyled isLiked={isTestLiked} onClick={this.handleLikeTest} style={{ marginLeft: "20px" }}>
-                      <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
+                    <LikeIconStyled
+                      isLiked={isTestLiked}
+                      onClick={this.handleLikeTest}
+                      style={{ marginLeft: '20px' }}
+                    >
+                      <IconHeart
+                        color={isTestLiked ? '#ca481e' : darkGrey}
+                        width={14}
+                        height={14}
+                      />
                       <IconText>{likes}</IconText>
                     </LikeIconStyled>
                   )}
@@ -452,25 +557,25 @@ class ListItem extends Component {
           </ContentWrapper>
         </Container>
       </>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("author"),
+  withNamespaces('author'),
   connect(
-    state => ({
+    (state) => ({
       selectedTests: getSelectedTestsSelector(state),
       orgCollections: getCollectionsSelector(state),
       isCoTeacher: isCoTeacherSelector(state),
       currentUserId: getUserId(state),
-      collectionToWrite: getCollectionsToAddContent(state)
+      collectionToWrite: getCollectionsToAddContent(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
-      toggleTestLikeRequest: toggleTestLikeAction
+      toggleTestLikeRequest: toggleTestLikeAction,
     }
   )
-);
+)
 
-export default enhance(ListItem);
+export default enhance(ListItem)

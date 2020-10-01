@@ -1,8 +1,8 @@
-import React from "react";
-import { Link, withRouter } from "react-router-dom";
-import { Row, Col, Tooltip } from "antd";
-import { IconPlusCircle, IconGraphRightArrow } from "@edulastic/icons";
-import { themeColorLight, cardTitleColor, themeColor } from "@edulastic/colors";
+import React from 'react'
+import { Link, withRouter } from 'react-router-dom'
+import { Row, Col, Tooltip } from 'antd'
+import { IconPlusCircle, IconGraphRightArrow } from '@edulastic/icons'
+import { themeColorLight, cardTitleColor, themeColor } from '@edulastic/colors'
 import {
   CardText,
   Image,
@@ -16,25 +16,32 @@ import {
   AssignmentStatusText,
   AssignmentTitle,
   AssignmentCount,
-  Label
-} from "./styled";
-import { TextWrapper } from "../../../../../styledComponents";
+  Label,
+} from './styled'
+import { TextWrapper } from '../../../../../styledComponents'
 
 export const CardTextContent = ({ data, history }) => {
-  const { totalAssignment, asgnStatus, asgnTitle, asgnId, _id, asgnThumbnail } = data;
+  const {
+    totalAssignment,
+    asgnStatus,
+    asgnTitle,
+    asgnId,
+    _id,
+    asgnThumbnail,
+  } = data
 
   const gotoAssignedAssessment = () => {
-    if (asgnId) history.push(`/author/classboard/${asgnId}/${_id}`);
-  };
+    if (asgnId) history.push(`/author/classboard/${asgnId}/${_id}`)
+  }
 
   const applyClassFilter = () => {
     const filter = {
       classId: _id,
-      testType: "",
-      termId: ""
-    };
-    sessionStorage.setItem("filters[Assignments]", JSON.stringify(filter));
-  };
+      testType: '',
+      termId: '',
+    }
+    sessionStorage.setItem('filters[Assignments]', JSON.stringify(filter))
+  }
 
   return (
     <CardText>
@@ -42,14 +49,18 @@ export const CardTextContent = ({ data, history }) => {
         <LeftCol>
           <Link to="/author/assignments" onClick={applyClassFilter}>
             <IconWrapper>
-              <OverlayText data-cy="totalAssignment">{totalAssignment || 0}</OverlayText>
+              <OverlayText data-cy="totalAssignment">
+                {totalAssignment || 0}
+              </OverlayText>
             </IconWrapper>
           </Link>
         </LeftCol>
 
         <CenterCol>
           <Link to="/author/assignments" onClick={applyClassFilter}>
-            <AssignmentCount>{totalAssignment > 1 ? "Assignments" : "Assignment"}</AssignmentCount>
+            <AssignmentCount>
+              {totalAssignment > 1 ? 'Assignments' : 'Assignment'}
+            </AssignmentCount>
           </Link>
         </CenterCol>
 
@@ -57,7 +68,11 @@ export const CardTextContent = ({ data, history }) => {
           <RightCol>
             <Tooltip title="Create New Assignment" placement="topLeft">
               <Link to="/author/assignments/select">
-                <IconPlusCircle color={themeColorLight} width={25} height={25} />
+                <IconPlusCircle
+                  color={themeColorLight}
+                  width={25}
+                  height={25}
+                />
               </Link>
             </Tooltip>
           </RightCol>
@@ -72,18 +87,27 @@ export const CardTextContent = ({ data, history }) => {
             </LeftCol>
             <CenterCol>
               <Tooltip title={asgnTitle} placement="topLeft">
-                <AssignmentTitle data-cy="assignmentTitle">{asgnTitle}</AssignmentTitle>
+                <AssignmentTitle data-cy="assignmentTitle">
+                  {asgnTitle}
+                </AssignmentTitle>
               </Tooltip>
-              <AssignmentStatusText data-cy="assignmentStatus">{asgnStatus}</AssignmentStatusText>
+              <AssignmentStatusText data-cy="assignmentStatus">
+                {asgnStatus}
+              </AssignmentStatusText>
             </CenterCol>
             <RightCol height="auto">
               <IconGraphRightArrow color={themeColor} />
             </RightCol>
           </>
         ) : (
-          <Col span={16} style={{ cursor: "default" }}>
+          <Col span={16} style={{ cursor: 'default' }}>
             <Row>
-              <TextWrapper data-cy="assignmentTitle" color={cardTitleColor} size="12px" mb="22px">
+              <TextWrapper
+                data-cy="assignmentTitle"
+                color={cardTitleColor}
+                size="12px"
+                mb="22px"
+              >
                 No Recent Assignments
               </TextWrapper>
             </Row>
@@ -91,7 +115,7 @@ export const CardTextContent = ({ data, history }) => {
         )}
       </RowWrapper1>
     </CardText>
-  );
-};
+  )
+}
 
-export default withRouter(CardTextContent);
+export default withRouter(CardTextContent)

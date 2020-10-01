@@ -15,28 +15,28 @@ import {
   themeLightGrayColor,
   title,
   white,
-  themeColorBlue
-} from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
-import { IconHeart, IconId, IconUser, IconUsers } from "@edulastic/icons";
-import { Tag, Button } from "antd";
-import styled, { css } from "styled-components";
+  themeColorBlue,
+} from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
+import { IconHeart, IconId, IconUser, IconUsers } from '@edulastic/icons'
+import { Tag, Button } from 'antd'
+import styled, { css } from 'styled-components'
 
 const Style = css`
   background: transparent !important;
-  font-family: ${props => props.theme.defaultFontFamily} !important;
-  font-size: ${props => props.theme.questionTextnormalFontSize} !important;
-  color: ${props => props.theme.questionTextColor} !important;
+  font-family: ${(props) => props.theme.defaultFontFamily} !important;
+  font-size: ${(props) => props.theme.questionTextnormalFontSize} !important;
+  color: ${(props) => props.theme.questionTextColor} !important;
   font-weight: normal !important;
   font-style: normal !important;
   text-decoration: none;
-`;
+`
 
 export const StimulusWrapper = styled.span`
   & *:not(.edu) {
     ${Style}
   }
-`;
+`
 const ButtonStyleCss = css`
   @media (max-width: ${tabletWidth}) {
     &.ant-btn {
@@ -52,9 +52,9 @@ const ButtonStyleCss = css`
       }
     }
   }
-`;
+`
 export const Link = styled.a`
-  font-size: ${props => props.theme.questionTextnormalFontSize};
+  font-size: ${(props) => props.theme.questionTextnormalFontSize};
   padding-right: 20px;
   font-weight: 700;
   line-height: 20px;
@@ -80,7 +80,7 @@ export const Link = styled.a`
     display: block;
     max-width: 100%;
   }
-`;
+`
 
 export const Container = styled.div`
   padding: 12px 0px 8px;
@@ -94,7 +94,7 @@ export const Container = styled.div`
       position: relative;
 
       &:before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         left: 28px;
@@ -104,7 +104,7 @@ export const Container = styled.div`
       }
     }
   }
-`;
+`
 
 export const Question = styled.div`
   display: flex;
@@ -123,7 +123,7 @@ export const Question = styled.div`
     margin-bottom: 15px;
     text-align: center;
   }
-`;
+`
 
 export const QuestionContent = styled.div`
   flex: 1;
@@ -134,7 +134,7 @@ export const QuestionContent = styled.div`
   @media (max-width: ${tabletWidth}) {
     text-align: left;
   }
-`;
+`
 
 export const ViewButton = styled.div`
   display: flex;
@@ -148,21 +148,25 @@ export const ViewButton = styled.div`
     justify-content: flex-end;
     padding-right: 5px;
   }
-`;
+`
 
 const ButtonStyle = styled(EduButton)`
   ${ButtonStyleCss}
-`;
+`
 
 export const AddRemoveBtn = styled(ButtonStyle)`
   &.ant-btn {
-    color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : red)} !important;
-    border-color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : red)} !important;
+    color: ${({ isAddOrRemove }) =>
+      isAddOrRemove ? themeColor : red} !important;
+    border-color: ${({ isAddOrRemove }) =>
+      isAddOrRemove ? themeColor : red} !important;
     background: white !important;
     margin-top: 15px;
     &:hover {
-      border-color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColorBlue : red)} !important;
-      background: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColorBlue : white)} !important;
+      border-color: ${({ isAddOrRemove }) =>
+        isAddOrRemove ? themeColorBlue : red} !important;
+      background: ${({ isAddOrRemove }) =>
+        isAddOrRemove ? themeColorBlue : white} !important;
       color: ${({ isAddOrRemove }) => (isAddOrRemove ? white : red)} !important;
     }
     @media (max-width: ${tabletWidth}) {
@@ -175,17 +179,19 @@ export const AddRemoveBtn = styled(ButtonStyle)`
       &:hover,
       &:focus,
       &:active {
-        border: 1px solid ${props => (props.isAddOrRemove ? themeColor : red)} !important;
-        color: ${props => (props.isAddOrRemove ? themeColor : red)};
+        border: 1px solid ${(props) => (props.isAddOrRemove ? themeColor : red)} !important;
+        color: ${(props) => (props.isAddOrRemove ? themeColor : red)};
       }
     }
   }
-`;
+`
 
 export const AddRemoveBtnPublisher = styled(AddRemoveBtn)`
   &.ant-btn {
-    background: ${({ isAddOrRemove }) => (isAddOrRemove ? "inherit" : backgroundGrey)};
-    border: ${({ isAddOrRemove }) => `1px solid ${isAddOrRemove ? themeColor : backgroundGrey}`} !important;
+    background: ${({ isAddOrRemove }) =>
+      isAddOrRemove ? 'inherit' : backgroundGrey};
+    border: ${({ isAddOrRemove }) =>
+      `1px solid ${isAddOrRemove ? themeColor : backgroundGrey}`} !important;
     color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : labelGrey2)};
     i {
       svg {
@@ -199,31 +205,35 @@ export const AddRemoveBtnPublisher = styled(AddRemoveBtn)`
       &:hover,
       &:focus,
       &:active {
-        border: 1px solid ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : backgroundGrey)} !important;
-        color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : labelGrey2)};
+        border: 1px solid
+          ${({ isAddOrRemove }) =>
+            isAddOrRemove ? themeColor : backgroundGrey} !important;
+        color: ${({ isAddOrRemove }) =>
+          isAddOrRemove ? themeColor : labelGrey2};
       }
     }
   }
-`;
+`
 
 export const MoreInfo = styled(ButtonStyle)`
-  background: ${props => (props.isOpenedDetails ? themeColor : white)};
-  color: ${props => (props.isOpenedDetails ? white : themeColor)};
+  background: ${(props) => (props.isOpenedDetails ? themeColor : white)};
+  color: ${(props) => (props.isOpenedDetails ? white : themeColor)};
   margin-right: 10px;
   transition: all 0.3s ease;
   &:focus,
   &:hover {
-    background: ${props => (props.isOpenedDetails ? themeColor : white)};
+    background: ${(props) => (props.isOpenedDetails ? themeColor : white)};
     svg {
-      fill: ${props => (props.isOpenedDetails ? white : themeColor)};
+      fill: ${(props) => (props.isOpenedDetails ? white : themeColor)};
     }
   }
   svg {
-    fill: ${props => (props.isOpenedDetails ? white : themeColor)};
+    fill: ${(props) => (props.isOpenedDetails ? white : themeColor)};
     transition: all 0.3s ease;
-    transform: ${props => (props.isOpenedDetails ? "rotate(180deg)" : "rotate(0deg)")};
+    transform: ${(props) =>
+      props.isOpenedDetails ? 'rotate(180deg)' : 'rotate(0deg)'};
   }
-`;
+`
 
 export const ViewButtonStyled = styled(Button)`
   ${ButtonStyleCss};
@@ -245,7 +255,7 @@ export const ViewButtonStyled = styled(Button)`
       fill: ${themeColor};
     }
   }
-`;
+`
 
 export const CheckboxWrapper = styled.div`
   padding: 0px;
@@ -257,31 +267,35 @@ export const CheckboxWrapper = styled.div`
   &:focus {
     color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
   }
-`;
+`
 
 export const AddRemoveButton = styled(ButtonStyle)`
   &.ant-btn {
     margin-left: 10px;
     color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
-    border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+    border-color: ${({ selectedToCart }) =>
+      selectedToCart ? red : themeColor} !important;
     background: white !important;
     &:hover {
-      border-color: ${({ selectedToCart }) => (selectedToCart ? white : themeColorBlue)} !important;
+      border-color: ${({ selectedToCart }) =>
+        selectedToCart ? white : themeColorBlue} !important;
     }
     svg {
-      fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+      fill: ${({ selectedToCart }) =>
+        selectedToCart ? red : themeColor} !important;
     }
     &:hover,
     &:focus {
       background: ${lightGrey};
       color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
-      border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+      border-color: ${({ selectedToCart }) =>
+        selectedToCart ? red : themeColor} !important;
       svg {
         fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
       }
     }
   }
-`;
+`
 
 export const Detail = styled.div`
   width: 100%;
@@ -298,7 +312,7 @@ export const Detail = styled.div`
     display: inline-flex;
     min-height: 0;
   }
-`;
+`
 
 export const TypeCategory = styled.div`
   display: flex;
@@ -312,7 +326,7 @@ export const TypeCategory = styled.div`
     position: relative;
     top: 0px;
   }
-`;
+`
 
 export const DetailCategory = styled.div`
   display: flex;
@@ -330,9 +344,9 @@ export const DetailCategory = styled.div`
     svg {
       max-width: unset;
       max-height: unset;
-      fill: ${props => (props.isLiked ? "#ca481e" : themeLightGrayColor)};
+      fill: ${(props) => (props.isLiked ? '#ca481e' : themeLightGrayColor)};
       &:hover {
-        fill: ${props => (props.isLiked ? "black" : "#ca481e")};
+        fill: ${(props) => (props.isLiked ? 'black' : '#ca481e')};
       }
     }
   }
@@ -358,22 +372,22 @@ export const DetailCategory = styled.div`
       justify-content: center;
     }
   }
-`;
+`
 
 export const CategoryName = styled.span`
   display: flex;
   align-items: baseline;
-  font-size: ${props => props.theme.smallLinkFontSize};
+  font-size: ${(props) => props.theme.smallLinkFontSize};
   font-weight: 600;
-  margin-right: ${props => (props.type === "like" ? "0px" : "5px")};
+  margin-right: ${(props) => (props.type === 'like' ? '0px' : '5px')};
   color: ${themeLightGrayColor};
 
   @media (max-width: ${tabletWidth}) {
     display: block;
-    font-size: ${props => props.theme.standardFont};
+    font-size: ${(props) => props.theme.standardFont};
     margin: 0 auto;
   }
-`;
+`
 
 export const CategoryContent = styled.div`
   display: flex;
@@ -385,7 +399,7 @@ export const CategoryContent = styled.div`
     width: 100%;
     margin: 0px;
   }
-`;
+`
 
 export const Label = styled(Tag)`
   padding: 2px 10px;
@@ -393,7 +407,7 @@ export const Label = styled(Tag)`
   border: none;
   font-weight: 700;
   background: ${themeLightGrayBgColor};
-`;
+`
 
 export const Count = styled.div`
   display: inline-flex;
@@ -407,7 +421,7 @@ export const Count = styled.div`
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
-`;
+`
 
 export const LabelText = styled.span`
   font-size: 10px;
@@ -420,20 +434,20 @@ export const LabelText = styled.span`
     font-weight: bold;
     font-size: 10px;
   }
-`;
+`
 
 export const Text = styled.span`
   display: flex;
   align-items: center;
-  font-size: ${props => props.theme.smallLinkFontSize};
+  font-size: ${(props) => props.theme.smallLinkFontSize};
   font-weight: 600;
   color: ${themeLightGrayColor};
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 8px;
-    font-size: ${props => props.theme.standardFont};
+    font-size: ${(props) => props.theme.standardFont};
   }
-`;
+`
 
 export const Categories = styled.div`
   display: flex;
@@ -448,31 +462,31 @@ export const Categories = styled.div`
     width: 100%;
     margin: 0;
   }
-`;
+`
 
 export const ShareIcon = styled(IconUsers)`
   display: flex;
   align-items: center;
   fill: ${themeColor};
-`;
+`
 
 export const HeartIcon = styled(IconHeart)`
   display: flex;
   align-items: center;
   fill: ${themeColor};
-`;
+`
 
 export const UserIcon = styled(IconUser)`
   display: flex;
   align-items: center;
   fill: ${themeColor};
-`;
+`
 
 export const IdIcon = styled(IconId)`
   display: flex;
   align-items: center;
   fill: ${themeColor};
-`;
+`
 
 export const StandardContent = styled.div`
   display: flex;
@@ -483,7 +497,7 @@ export const StandardContent = styled.div`
     margin-right: 0;
     align-items: center;
   }
-`;
+`
 
 export const LabelStandard = styled.div`
   display: flex;
@@ -511,7 +525,7 @@ export const LabelStandard = styled.div`
     height: 26px;
     padding: 4px;
   }
-`;
+`
 
 export const LabelStandardText = styled.span`
   font-size: 10px;
@@ -525,7 +539,7 @@ export const LabelStandardText = styled.span`
     font-weight: bold;
     font-size: 10px;
   }
-`;
+`
 
 export const CountGreen = styled.div`
   display: inline-flex;
@@ -535,15 +549,15 @@ export const CountGreen = styled.div`
   line-height: 24px;
   margin-right: 10px;
   color: ${greenPrimary};
-`;
+`
 
 export const Details = styled.div`
   background: ${lightGreySecondary};
   border-radius: 3px;
-  margin-top: ${props => (props.isOpenedDetails ? "12px" : "0")};
-  padding: ${props => (props.isOpenedDetails ? "20px" : "0 20px 0")};
+  margin-top: ${(props) => (props.isOpenedDetails ? '12px' : '0')};
+  padding: ${(props) => (props.isOpenedDetails ? '20px' : '0 20px 0')};
   transition: all 0.3s ease;
-  max-height: ${props => (props.isOpenedDetails ? "150px" : "0")};
+  max-height: ${(props) => (props.isOpenedDetails ? '150px' : '0')};
   position: relative;
   overflow: hidden;
 
@@ -551,7 +565,7 @@ export const Details = styled.div`
     display: flex;
     flex-wrap: wrap;
   }
-`;
+`
 
 export const HeartWrapper = styled.span`
   cursor: pointer;
@@ -561,4 +575,4 @@ export const HeartWrapper = styled.span`
       fill: ${({ isEnabled }) => (isEnabled ? red : themeLightGrayColor)};
     }
   }
-`;
+`

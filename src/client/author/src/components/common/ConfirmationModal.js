@@ -1,24 +1,23 @@
-
-import { CustomModalStyled } from "@edulastic/common";
-import { titleColor } from "@edulastic/colors";
-import styled from "styled-components";
+import { CustomModalStyled } from '@edulastic/common'
+import { titleColor } from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const ConfirmationModal = styled(CustomModalStyled)`
-  min-width: ${props => (props.modalWidth ? props.modalWidth : "600px")};
-  top: ${props => (props.top ? props.top : "100px")};
+  min-width: ${(props) => (props.modalWidth ? props.modalWidth : '600px')};
+  top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
     .ant-modal-body {
-      display: ${props => (props.textAlign !== "left" ? "flex" : "block")};
+      display: ${(props) => (props.textAlign !== 'left' ? 'flex' : 'block')};
       align-items: center;
-      text-align: ${props => (props.textAlign ? props.textAlign : "center")};
-      min-height: ${({ bodyHeight }) => bodyHeight || "180px"};
+      text-align: ${(props) => (props.textAlign ? props.textAlign : 'center')};
+      min-height: ${({ bodyHeight }) => bodyHeight || '180px'};
       p {
         font-size: 14px;
         color: ${titleColor};
         font-weight: 600;
         width: 100%;
       }
-      margin-top: ${props => (!props.title ? "30px" : 0)};
+      margin-top: ${(props) => (!props.title ? '30px' : 0)};
     }
     .ant-modal-footer {
       border: none;
@@ -26,7 +25,6 @@ export const ConfirmationModal = styled(CustomModalStyled)`
       justify-content: center;
       padding: 15px 15px 0px;
       .ant-btn {
-
         &[disabled],
         &[disabled]:hover,
         &[disabled]:active {
@@ -44,4 +42,4 @@ export const ConfirmationModal = styled(CustomModalStyled)`
       }
     }
   }
-`;
+`

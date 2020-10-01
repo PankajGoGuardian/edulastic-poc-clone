@@ -1,15 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Popover } from "antd";
-import { SortableElement } from "react-sortable-hoc";
-import { MathFormulaDisplay, measureText } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Popover } from 'antd'
+import { SortableElement } from 'react-sortable-hoc'
+import { MathFormulaDisplay, measureText } from '@edulastic/common'
 
-import DragHandle from "./DragHandle";
-import { IconWrapper } from "./IconWrapper";
-import { Container } from "../styled/Container";
-import { IndexBox } from "../styled/IndexBox";
-import { StyledDragHandle } from "../styled/StyledDragHandle";
-import { Text } from "../styled/Text";
+import DragHandle from './DragHandle'
+import { IconWrapper } from './IconWrapper'
+import { Container } from '../styled/Container'
+import { IndexBox } from '../styled/IndexBox'
+import { StyledDragHandle } from '../styled/StyledDragHandle'
+import { Text } from '../styled/Text'
 
 export const PreviewItem = ({
   question,
@@ -22,7 +22,7 @@ export const PreviewItem = ({
   correct,
   stemNumeration,
   showAnswer,
-  isPrintPreview = false
+  isPrintPreview = false,
 }) => {
   const content = (
     <Text
@@ -33,11 +33,14 @@ export const PreviewItem = ({
       showAnswer={showAnswer}
       {...style}
     >
-      <MathFormulaDisplay style={{ margin: "auto", style }} dangerouslySetInnerHTML={{ __html: question }} />
+      <MathFormulaDisplay
+        style={{ margin: 'auto', style }}
+        dangerouslySetInnerHTML={{ __html: question }}
+      />
     </Text>
-  );
-  const { width } = measureText(question, style);
-  const showPopover = style.maxWidth < width;
+  )
+  const { width } = measureText(question, style)
+  const showPopover = style.maxWidth < width
   return (
     <div className="__prevent-page-break">
       <Container
@@ -53,13 +56,21 @@ export const PreviewItem = ({
           </StyledDragHandle>
         )}
         {(correct !== undefined || showAnswer) && (
-          <IndexBox smallSize={smallSize} correct={correct} showAnswer={showAnswer}>
+          <IndexBox
+            smallSize={smallSize}
+            correct={correct}
+            showAnswer={showAnswer}
+          >
             {stemNumeration}
           </IndexBox>
         )}
 
         {showPopover ? (
-          <Popover placement="bottomLeft" getPopupContainer={triggerNode => triggerNode.parentNode} content={content}>
+          <Popover
+            placement="bottomLeft"
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            content={content}
+          >
             {content}
           </Popover>
         ) : (
@@ -69,8 +80,8 @@ export const PreviewItem = ({
         {correct !== undefined && <IconWrapper correct={correct} />}
       </Container>
     </div>
-  );
-};
+  )
+}
 
 PreviewItem.propTypes = {
   question: PropTypes.string.isRequired,
@@ -82,17 +93,17 @@ PreviewItem.propTypes = {
   styleType: PropTypes.string,
   style: PropTypes.object.isRequired,
   showAnswer: PropTypes.bool.isRequired,
-  stemNumeration: PropTypes.string.isRequired
-};
+  stemNumeration: PropTypes.string.isRequired,
+}
 
 PreviewItem.defaultProps = {
   showDragHandle: true,
-  styleType: "button",
+  styleType: 'button',
   smallSize: false,
   correct: undefined,
-  columns: 1
-};
+  columns: 1,
+}
 
-const OrderListPreviewItem = SortableElement(PreviewItem);
+const OrderListPreviewItem = SortableElement(PreviewItem)
 
-export default OrderListPreviewItem;
+export default OrderListPreviewItem

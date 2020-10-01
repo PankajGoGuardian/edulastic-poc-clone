@@ -1,92 +1,100 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { EXACT_MATCH, CONTAINS } from "../../constants/constantsForQuestions";
-import { updateVariables } from "../../utils/variables";
+import { EXACT_MATCH, CONTAINS } from '../../constants/constantsForQuestions'
+import { updateVariables } from '../../utils/variables'
 
-import CorrectAnswers from "../../components/CorrectAnswers";
-import { ContentArea } from "../../styled/ContentArea";
+import CorrectAnswers from '../../components/CorrectAnswers'
+import { ContentArea } from '../../styled/ContentArea'
 
-import CorrectAnswer from "./components/CorrectAnswer";
-import ComposeQuestion from "./components/ComposeQuestion";
-import Options from "./components/Options";
-import Question from "../../components/Question";
+import CorrectAnswer from './components/CorrectAnswer'
+import ComposeQuestion from './components/ComposeQuestion'
+import Options from './components/Options'
+import Question from '../../components/Question'
 
-const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen, t }) => {
-  const [correctTab, setCorrectTab] = useState(0);
+const EditShortText = ({
+  item,
+  setQuestionData,
+  fillSections,
+  cleanSections,
+  advancedLink,
+  advancedAreOpen,
+  t,
+}) => {
+  const [correctTab, setCorrectTab] = useState(0)
 
-  const { matchingRule = "" } = item?.validation?.validResponse || {};
+  const { matchingRule = '' } = item?.validation?.validResponse || {}
 
   const handleAddAnswer = () => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (!draft.validation.altResponses) {
-          draft.validation.altResponses = [];
+          draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
           score: 1,
           matchingRule,
-          value: ""
-        });
+          value: '',
+        })
       })
-    );
-    setCorrectTab(correctTab + 1);
-  };
+    )
+    setCorrectTab(correctTab + 1)
+  }
 
-  const handleCloseTab = tabIndex => {
+  const handleCloseTab = (tabIndex) => {
     setQuestionData(
-      produce(item, draft => {
-        draft.validation.altResponses.splice(tabIndex, 1);
+      produce(item, (draft) => {
+        draft.validation.altResponses.splice(tabIndex, 1)
 
-        setCorrectTab(0);
-        updateVariables(draft);
+        setCorrectTab(0)
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  const handlePointsChange = val => {
+  const handlePointsChange = (val) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (correctTab === 0) {
-          draft.validation.validResponse.score = val;
+          draft.validation.validResponse.score = val
         } else {
-          draft.validation.altResponses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val
         }
 
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   // The "matchingRule" must have same value for both Correct and Alternate answers
-  const handleScoringTypeChange = value => {
+  const handleScoringTypeChange = (value) => {
     setQuestionData(
-      produce(item, draft => {
-        draft.validation.validResponse.matchingRule = value;
-        draft.validation?.altResponses?.forEach(altResp => {
-          altResp.matchingRule = value;
-        });
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.validation.validResponse.matchingRule = value
+        draft.validation?.altResponses?.forEach((altResp) => {
+          altResp.matchingRule = value
+        })
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  const handleValueChange = value => {
+  const handleValueChange = (value) => {
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         if (correctTab === 0) {
-          draft.validation.validResponse.value = value;
+          draft.validation.validResponse.value = value
         } else {
-          draft.validation.altResponses[correctTab - 1].value = value;
+          draft.validation.altResponses[correctTab - 1].value = value
         }
 
-        updateVariables(draft);
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   const renderOptions = () => (
     <CorrectAnswer
@@ -96,16 +104,18 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
       onSelectChange={handleScoringTypeChange}
       onChange={handleValueChange}
       options={[
-        { value: EXACT_MATCH, label: t("component.shortText.exactMatch") },
-        { value: CONTAINS, label: t("component.shortText.anyTextContaining") }
+        { value: EXACT_MATCH, label: t('component.shortText.exactMatch') },
+        { value: CONTAINS, label: t('component.shortText.anyTextContaining') },
       ]}
       selectValue={matchingRule}
       inputValue={
-        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
+        correctTab === 0
+          ? item.validation.validResponse.value
+          : item.validation.altResponses[correctTab - 1].value
       }
       isCorrectAnsTab={correctTab === 0}
     />
-  );
+  )
 
   return (
     <ContentArea>
@@ -120,7 +130,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
       <Question
         data-cy="questionArea"
         section="main"
-        label={t("component.shortText.correctAnswers")}
+        label={t('component.shortText.correctAnswers')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
@@ -135,7 +145,9 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
           cleanSections={cleanSections}
           questionType={item?.title}
           points={
-            correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
+            correctTab === 0
+              ? item.validation.validResponse.score
+              : item.validation.altResponses[correctTab - 1].score
           }
           onChangePoints={handlePointsChange}
           isCorrectAnsTab={correctTab === 0}
@@ -156,8 +168,8 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         isCorrectAnsTab={correctTab === 0}
       />
     </ContentArea>
-  );
-};
+  )
+}
 
 EditShortText.propTypes = {
   item: PropTypes.object.isRequired,
@@ -166,14 +178,14 @@ EditShortText.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  advancedLink: PropTypes.any
-};
+  advancedLink: PropTypes.any,
+}
 
 EditShortText.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  advancedLink: null
-};
+  advancedLink: null,
+}
 
-export default withNamespaces("assessment")(EditShortText);
+export default withNamespaces('assessment')(EditShortText)

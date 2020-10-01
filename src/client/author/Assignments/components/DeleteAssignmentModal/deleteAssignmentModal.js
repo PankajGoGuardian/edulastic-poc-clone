@@ -1,21 +1,21 @@
-import { EduButton, CustomModalStyled } from "@edulastic/common";
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { roleuser } from "@edulastic/constants";
+import { EduButton, CustomModalStyled } from '@edulastic/common'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { roleuser } from '@edulastic/constants'
 import {
   InitOptions,
   LightGreenSpan,
   ModalFooter,
-  StyledInput
-} from "../../../../common/components/ConfirmationModal/styled";
+  StyledInput,
+} from '../../../../common/components/ConfirmationModal/styled'
 import {
   deleteAssignmentRequestAction as deleteAssignmetByTestId,
   getToggleDeleteAssignmentModalState,
-  toggleDeleteAssignmentModalAction
-} from "../../../sharedDucks/assignments";
-import { deleteAssignmentAction as deleteAssigmnetByClass } from "../../../TestPage/components/Assign/ducks";
-import { bulkUnassignAssignmentAction } from "../../../AssignmentAdvanced/ducks";
-import { getUserRole } from "../../../src/selectors/user";
+  toggleDeleteAssignmentModalAction,
+} from '../../../sharedDucks/assignments'
+import { deleteAssignmentAction as deleteAssigmnetByClass } from '../../../TestPage/components/Assign/ducks'
+import { bulkUnassignAssignmentAction } from '../../../AssignmentAdvanced/ducks'
+import { getUserRole } from '../../../src/selectors/user'
 
 const DeleteAssignmentModal = ({
   toggleDeleteAssignmentModalState,
@@ -33,45 +33,49 @@ const DeleteAssignmentModal = ({
   testType,
   userRole,
   deleteAssignmentFromPlaylist,
-  fromPlaylist = false
+  fromPlaylist = false,
 }) => {
-  const [confirmText, setConfirmText] = useState("");
-  const [unassignConfirmation, setUnassignConfirmation] = useState(false);
+  const [confirmText, setConfirmText] = useState('')
+  const [unassignConfirmation, setUnassignConfirmation] = useState(false)
   const handleUnassign = () => {
-    if (confirmText.toLocaleLowerCase() === "unassign") {
+    if (confirmText.toLocaleLowerCase() === 'unassign') {
       if (unassignConfirmation) {
         if (lcb) {
-          return deleteAssigmnetByClassRequest({ assignmentId, classId, testId });
+          return deleteAssigmnetByClassRequest({
+            assignmentId,
+            classId,
+            testId,
+          })
         }
         if (advancedAssignments) {
-          return handleUnassignAssignments();
+          return handleUnassignAssignments()
         }
         if (fromPlaylist) {
-          return deleteAssignmentFromPlaylist();
+          return deleteAssignmentFromPlaylist()
         }
         if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
           bulkUnassignAssignmentRequest({
             data: {},
             testId,
             testType,
-            fromHomePage: true
-          });
-          return toggleDeleteAssignmentModal(false);
+            fromHomePage: true,
+          })
+          return toggleDeleteAssignmentModal(false)
         }
-        deleteAssignmetByTestIdRequest(testId);
+        deleteAssignmetByTestIdRequest(testId)
       } else {
-        setUnassignConfirmation(true);
+        setUnassignConfirmation(true)
       }
     }
-  };
+  }
 
   const onCancel = () => {
     if (unassignConfirmation) {
-      setUnassignConfirmation(false);
+      setUnassignConfirmation(false)
     } else {
-      toggleDeleteAssignmentModal(false);
+      toggleDeleteAssignmentModal(false)
     }
-  };
+  }
 
   return (
     <CustomModalStyled
@@ -88,30 +92,34 @@ const DeleteAssignmentModal = ({
           <EduButton
             data-cy="submitConfirm"
             key="delete"
-            disabled={confirmText.toLocaleLowerCase() !== "unassign"}
+            disabled={confirmText.toLocaleLowerCase() !== 'unassign'}
             onClick={handleUnassign}
           >
             Yes, Unassign
           </EduButton>
-        </ModalFooter>
+        </ModalFooter>,
       ]}
     >
       {unassignConfirmation ? (
         <div>
-          <p style={{ color: "red" }}>
-            This action will delete the data for the entire class for this assignment. Do you want to continue?
+          <p style={{ color: 'red' }}>
+            This action will delete the data for the entire class for this
+            assignment. Do you want to continue?
           </p>
         </div>
       ) : (
         <InitOptions className="delete-message-container">
           <div className="delete-message">
             <p>
-              This action will result in <span style={{ color: "#ed6a6b" }}> PERMANENT DELETION </span>
-              of ALL student responses in <b className="delete-message-test-name">{testName}</b>.
+              This action will result in{' '}
+              <span style={{ color: '#ed6a6b' }}> PERMANENT DELETION </span>
+              of ALL student responses in{' '}
+              <b className="delete-message-test-name">{testName}</b>.
             </p>
             <p>
-              If you are sure, please type <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below and
-              proceed.
+              If you are sure, please type{' '}
+              <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below
+              and proceed.
             </p>
           </div>
           <div className="delete-confirm-contaner">
@@ -121,26 +129,28 @@ const DeleteAssignmentModal = ({
               type="text"
               placeholder="Type the action"
               value={confirmText}
-              onChange={event => setConfirmText(event.currentTarget.value)}
+              onChange={(event) => setConfirmText(event.currentTarget.value)}
             />
           </div>
         </InitOptions>
       )}
     </CustomModalStyled>
-  );
-};
+  )
+}
 
 const ConnectedDeleteAssignmentModal = connect(
-  state => ({
-    toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state),
-    userRole: getUserRole(state)
+  (state) => ({
+    toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(
+      state
+    ),
+    userRole: getUserRole(state),
   }),
   {
     toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
     deleteAssignmetByTestIdRequest: deleteAssignmetByTestId,
     deleteAssigmnetByClassRequest: deleteAssigmnetByClass,
-    bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction
+    bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
   }
-)(DeleteAssignmentModal);
+)(DeleteAssignmentModal)
 
-export { ConnectedDeleteAssignmentModal as DeleteAssignmentModal };
+export { ConnectedDeleteAssignmentModal as DeleteAssignmentModal }

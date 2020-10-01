@@ -1,14 +1,14 @@
 /* eslint-disable func-names */
 /* eslint-disable array-callback-return */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { find, cloneDeep, isArray } from "lodash";
-import produce from "immer";
-import { withNamespaces } from "@edulastic/localization";
-import { FroalaEditor, getFormattedAttrId } from "@edulastic/common";
-import { Subtitle } from "../../../styled/Subtitle";
-import Question from "../../../components/Question";
-import { updateVariables } from "../../../utils/variables";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { find, cloneDeep, isArray } from 'lodash'
+import produce from 'immer'
+import { withNamespaces } from '@edulastic/localization'
+import { FroalaEditor, getFormattedAttrId } from '@edulastic/common'
+import { Subtitle } from '../../../styled/Subtitle'
+import Question from '../../../components/Question'
+import { updateVariables } from '../../../utils/variables'
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -16,111 +16,116 @@ class TemplateMarkup extends Component {
     item: PropTypes.object.isRequired,
     setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
-  };
+    cleanSections: PropTypes.func,
+  }
 
   static defaultProps = {
     fillSections: () => {},
-    cleanSections: () => {}
-  };
+    cleanSections: () => {},
+  }
 
-  onChangeMarkUp = stimulus => {
-    const { item, setQuestionData } = this.props;
+  onChangeMarkUp = (stimulus) => {
+    const { item, setQuestionData } = this.props
 
-    const reduceResponseIds = tmpl => {
-      const newResponseIds = [];
+    const reduceResponseIds = (tmpl) => {
+      const newResponseIds = []
       if (!window.$) {
-        return newResponseIds;
+        return newResponseIds
       }
-      const temp = tmpl || "";
-      const parsedHTML = $("<div />").html(temp);
+      const temp = tmpl || ''
+      const parsedHTML = $('<div />').html(temp)
 
       $(parsedHTML)
-        .find("response")
-        .each(function(index) {
-          const id = $(this).attr("id");
-          newResponseIds.push({ index, id });
-        });
+        .find('response')
+        .each(function (index) {
+          const id = $(this).attr('id')
+          newResponseIds.push({ index, id })
+        })
 
-      return newResponseIds;
-    };
+      return newResponseIds
+    }
 
     const reduceValidations = (responseIds, validation) => {
-      const _validation = cloneDeep(validation);
-      const _responseIds = cloneDeep(responseIds);
+      const _validation = cloneDeep(validation)
+      const _responseIds = cloneDeep(responseIds)
       // update valid responses
-      const validResponses = {};
-      _responseIds.forEach(r => {
-        validResponses[r.id] = _validation.validResponse.value[r.id] || "";
-      });
-      _validation.validResponse.value = validResponses;
+      const validResponses = {}
+      _responseIds.forEach((r) => {
+        validResponses[r.id] = _validation.validResponse.value[r.id] || ''
+      })
+      _validation.validResponse.value = validResponses
 
       // update alternative responses
       if (isArray(_validation.altResponses)) {
         _validation.altResponses.forEach(({ value = {} }) => {
-          const newAnswers = {};
-          _responseIds.forEach(({ id = "" }) => {
-            newAnswers[id] = value[id] || "";
-          });
-          value = newAnswers;
-        });
+          const newAnswers = {}
+          _responseIds.forEach(({ id = '' }) => {
+            newAnswers[id] = value[id] || ''
+          })
+          value = newAnswers
+        })
       }
 
-      return _validation;
-    };
+      return _validation
+    }
     // Fix me: We might not require this for display type input
     const reduceOptions = (responseIds, options = {}) => {
-      const _options = cloneDeep(options);
+      const _options = cloneDeep(options)
 
-      const optionsKeys = Object.keys(_options);
+      const optionsKeys = Object.keys(_options)
       if (optionsKeys.length) {
-        optionsKeys.map(id => {
-          const isExist = find(responseIds, response => response.id === id);
+        optionsKeys.map((id) => {
+          const isExist = find(responseIds, (response) => response.id === id)
           if (!isExist) {
-            delete _options[id];
+            delete _options[id]
           }
-        });
+        })
       }
-      return _options;
-    };
+      return _options
+    }
 
     setQuestionData(
-      produce(item, draft => {
-        draft.stimulus = stimulus;
-        draft.responseIds = reduceResponseIds(stimulus);
-        draft.validation = reduceValidations(draft.responseIds, draft.validation);
-        draft.options = reduceOptions(draft.responseIds, draft.options);
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.stimulus = stimulus
+        draft.responseIds = reduceResponseIds(stimulus)
+        draft.validation = reduceValidations(
+          draft.responseIds,
+          draft.validation
+        )
+        draft.options = reduceOptions(draft.responseIds, draft.options)
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   render() {
-    const { t, item, fillSections, cleanSections } = this.props;
+    const { t, item, fillSections, cleanSections } = this.props
 
     return (
       <Question
         section="main"
-        label={t("component.cloze.dropDown.composequestion")}
+        label={t('component.cloze.dropDown.composequestion')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={getFormattedAttrId(t("component.cloze.dropDown.composequestion"))}>
-          {t("component.cloze.dropDown.composequestion")}
+        <Subtitle
+          id={getFormattedAttrId(t('component.cloze.dropDown.composequestion'))}
+        >
+          {t('component.cloze.dropDown.composequestion')}
         </Subtitle>
 
         <FroalaEditor
           data-cy="templateBox"
           toolbarId="cloze-dropdown-template-box"
-          placeholder={t("component.cloze.dropDown.thisisstem")}
-          additionalToolbarOptions={["response"]}
+          placeholder={t('component.cloze.dropDown.thisisstem')}
+          additionalToolbarOptions={['response']}
           value={item.stimulus}
           onChange={this.onChangeMarkUp}
           border="border"
         />
       </Question>
-    );
+    )
   }
 }
 
-export default withNamespaces("assessment")(TemplateMarkup);
+export default withNamespaces('assessment')(TemplateMarkup)

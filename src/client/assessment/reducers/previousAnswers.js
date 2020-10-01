@@ -1,17 +1,20 @@
-import { LOAD_PREVIOUS_ANSWERS, REMOVE_PREVIOUS_ANSWERS } from "../constants/actions";
+import {
+  LOAD_PREVIOUS_ANSWERS,
+  REMOVE_PREVIOUS_ANSWERS,
+} from '../constants/actions'
 
-const initialState = {};
+const initialState = {}
 
 export default function reducer(state = initialState, { type, payload }) {
   switch (type) {
     case LOAD_PREVIOUS_ANSWERS:
       return {
         ...state,
-        ...payload
-      };
+        ...payload,
+      }
     case REMOVE_PREVIOUS_ANSWERS:
-      return {};
+      return {}
     default:
-      return state;
+      return state
   }
 }

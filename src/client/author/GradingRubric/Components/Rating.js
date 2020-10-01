@@ -1,26 +1,35 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Icon } from "antd";
-import { RatingContaner, DeleteRating } from "../styled";
-import TextInput from "./common/TextInput";
-import produce from "immer";
-import { updateRubricDataAction, getCurrentRubricDataSelector } from "../ducks";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Icon } from 'antd'
+import produce from 'immer'
+import { RatingContaner, DeleteRating } from '../styled'
+import TextInput from './common/TextInput'
+import { updateRubricDataAction, getCurrentRubricDataSelector } from '../ducks'
 
-const Rating = ({ data, id, parentId, currentRubricData, updateRubricData, isEditable, className }) => {
-  const allRatings = currentRubricData.criteria.find(c => c.id === parentId).ratings;
+const Rating = ({
+  data,
+  id,
+  parentId,
+  currentRubricData,
+  updateRubricData,
+  isEditable,
+  className,
+}) => {
+  const allRatings = currentRubricData.criteria.find((c) => c.id === parentId)
+    .ratings
   const handleDelete = () => {
-    const updatedRubricData = produce(currentRubricData, draft => {
-      draft.criteria.map(criteria => {
+    const updatedRubricData = produce(currentRubricData, (draft) => {
+      draft.criteria.map((criteria) => {
         if (criteria.id === parentId) {
-          const ratings = criteria.ratings.filter(r => r.id !== id);
-          criteria.ratings = ratings;
+          const ratings = criteria.ratings.filter((r) => r.id !== id)
+          criteria.ratings = ratings
         }
-        return criteria;
-      });
-    });
-    updateRubricData(updatedRubricData);
-  };
+        return criteria
+      })
+    })
+    updateRubricData(updatedRubricData)
+  }
 
   return (
     <RatingContaner className={className}>
@@ -36,7 +45,11 @@ const Rating = ({ data, id, parentId, currentRubricData, updateRubricData, isEdi
           />
         </span>
         {allRatings.length > 2 && isEditable && (
-          <DeleteRating className="delete-rating-button" title="Delete" onClick={handleDelete}>
+          <DeleteRating
+            className="delete-rating-button"
+            title="Delete"
+            onClick={handleDelete}
+          >
             <Icon type="close" />
           </DeleteRating>
         )}
@@ -62,16 +75,16 @@ const Rating = ({ data, id, parentId, currentRubricData, updateRubricData, isEdi
         />
       </div>
     </RatingContaner>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
-    //questionData: getQuestionDataSelector(state)
-    currentRubricData: getCurrentRubricDataSelector(state)
+  (state) => ({
+    // questionData: getQuestionDataSelector(state)
+    currentRubricData: getCurrentRubricDataSelector(state),
   }),
   {
-    //setQuestionData: setQuestionDataAction
-    updateRubricData: updateRubricDataAction
+    // setQuestionData: setQuestionDataAction
+    updateRubricData: updateRubricDataAction,
   }
-)(Rating);
+)(Rating)

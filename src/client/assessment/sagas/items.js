@@ -1,12 +1,17 @@
-import { takeLatest, call, put, all, select } from "redux-saga/effects";
-import { push } from "connected-react-router";
-import * as Sentry from "@sentry/browser";
-import { uploadToS3, notification, Effects } from "@edulastic/common";
-import { maxBy, isEmpty } from "lodash";
-import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi, testActivityApi } from "@edulastic/api";
-import { assignmentPolicyOptions, aws } from "@edulastic/constants";
+import { takeLatest, call, put, all, select } from 'redux-saga/effects'
+import { push } from 'connected-react-router'
+import * as Sentry from '@sentry/browser'
+import { uploadToS3, notification, Effects } from '@edulastic/common'
+import { maxBy, isEmpty } from 'lodash'
+import {
+  itemsApi,
+  testItemActivityApi,
+  attchmentApi as attachmentApi,
+  testActivityApi,
+} from '@edulastic/api'
+import { assignmentPolicyOptions, aws } from '@edulastic/constants'
 
-import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
+import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
@@ -17,76 +22,110 @@ import {
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS,
   CLEAR_USER_WORK,
-  CLEAR_HINT_USAGE
-} from "../constants/actions";
-import { getPreviousAnswersListSelector } from "../selectors/answers";
-import { redirectPolicySelector } from "../selectors/test";
-import { getServerTs } from "../../student/utils";
-import { utaStartTimeUpdateRequired } from "../../student/sharedDucks/AssignmentModule/ducks";
+  CLEAR_HINT_USAGE,
+} from '../constants/actions'
+import { getPreviousAnswersListSelector } from '../selectors/answers'
+import { redirectPolicySelector } from '../selectors/test'
+import { getServerTs } from '../../student/utils'
+import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
 
-const { POLICY_CLOSE_MANUALLY_BY_ADMIN, POLICY_CLOSE_MANUALLY_IN_CLASS } = assignmentPolicyOptions;
+const {
+  POLICY_CLOSE_MANUALLY_BY_ADMIN,
+  POLICY_CLOSE_MANUALLY_IN_CLASS,
+} = assignmentPolicyOptions
 
-const manuallyClosePolicies = [POLICY_CLOSE_MANUALLY_IN_CLASS, POLICY_CLOSE_MANUALLY_BY_ADMIN];
+const manuallyClosePolicies = [
+  POLICY_CLOSE_MANUALLY_IN_CLASS,
+  POLICY_CLOSE_MANUALLY_BY_ADMIN,
+]
 
-const defaultUploadFolder = aws.s3Folders.DEFAULT;
+const defaultUploadFolder = aws.s3Folders.DEFAULT
 
 function* receiveItemSaga({ payload }) {
   try {
-    const item = yield call(itemsApi.receiveItemById, payload.id);
+    const item = yield call(itemsApi.receiveItemById, payload.id)
 
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
-      payload: { item }
-    });
+      payload: { item },
+    })
   } catch (err) {
-    Sentry.captureException(err);
-    console.error(err);
+    Sentry.captureException(err)
+    console.error(err)
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: "Unable to retrieve the item. Please contact support." }
-    });
+      payload: {
+        error: 'Unable to retrieve the item. Please contact support.',
+      },
+    })
   }
 }
 
 // fetch all questionIds from item
-export const getQuestionIds = item => {
-  let questions = [];
+export const getQuestionIds = (item) => {
+  let questions = []
   item.rows &&
-    item.rows.forEach(row => {
-      questions = [...questions, ...row.widgets.map(widget => widget.reference)].filter(q => !!q);
-    });
+    item.rows.forEach((row) => {
+      questions = [
+        ...questions,
+        ...row.widgets.map((widget) => widget.reference),
+      ].filter((q) => !!q)
+    })
 
-  return questions;
-};
+  return questions
+}
 
 function* saveUserResponse({ payload }) {
   try {
-    const ts = payload.timeSpent || 0;
-    const { autoSave, shouldClearUserWork = false, isPlaylist = false, callback, pausing } = payload;
-    const itemIndex = payload.itemId;
-    const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
-    const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
-    const groupId = payload.groupId || (yield select(getCurrentGroupWithAllClasses));
+    const ts = payload.timeSpent || 0
+    const {
+      autoSave,
+      shouldClearUserWork = false,
+      isPlaylist = false,
+      callback,
+      pausing,
+    } = payload
+    const itemIndex = payload.itemId
+    const assignmentsByIds = yield select(
+      (state) => state.studentAssignment && state.studentAssignment.byId
+    )
+    const assignmentId = yield select(
+      (state) => state.studentAssignment && state.studentAssignment.current
+    )
+    const groupId =
+      payload.groupId || (yield select(getCurrentGroupWithAllClasses))
     // eslint-disable-next-line prefer-const
-    const assignment = assignmentsByIds[assignmentId] || {};
-    let { endDate } = assignment;
-    const { closePolicy } = assignment;
-    const { class: clazz = [] } = assignment;
-    const serverTimeStamp = getServerTs(assignment);
+    const assignment = assignmentsByIds[assignmentId] || {}
+    let { endDate } = assignment
+    const { closePolicy } = assignment
+    const { class: clazz = [] } = assignment
+    const serverTimeStamp = getServerTs(assignment)
 
-    const timedAssignment = yield select(state => state.test?.settings?.timedAssignment);
+    const timedAssignment = yield select(
+      (state) => state.test?.settings?.timedAssignment
+    )
     if (pausing && timedAssignment) {
-      const utaId = yield select(state => state.test.testActivityId);
+      const utaId = yield select((state) => state.test.testActivityId)
       if (utaId) {
-        yield call(testActivityApi.updateUtaTime, { utaId, type: "pausing" });
-        yield put(utaStartTimeUpdateRequired(null));
+        yield call(testActivityApi.updateUtaTime, { utaId, type: 'pausing' })
+        yield put(utaStartTimeUpdateRequired(null))
       }
     }
 
     if (!endDate && clazz.length) {
-      endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "endDate") || {}).endDate;
+      endDate = (
+        maxBy(
+          clazz.filter((cl) => cl._id === groupId),
+          'endDate'
+        ) || {}
+      ).endDate
       if (!endDate) {
-        endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
+        endDate = (
+          maxBy(
+            clazz.filter((cl) => cl._id === groupId),
+            'closedDate'
+          ) || {}
+        ).closedDate
       }
     }
     /**
@@ -94,57 +133,80 @@ function* saveUserResponse({ payload }) {
      * for manuallyClosePolicies Expiry date check is not required
      */
 
-    if (!manuallyClosePolicies.includes(closePolicy) && endDate && endDate < serverTimeStamp) {
-      notification({ messageKey: "testTimeEnded" });
-      if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
-      return yield put(push("/home/assignments"));
+    if (
+      !manuallyClosePolicies.includes(closePolicy) &&
+      endDate &&
+      endDate < serverTimeStamp
+    ) {
+      notification({ messageKey: 'testTimeEnded' })
+      if (isPlaylist)
+        return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`))
+      return yield put(push('/home/assignments'))
     }
-    const items = yield select(state => state.test && state.test.items);
-    const answers = yield select(state => state.answers);
+    const items = yield select((state) => state.test && state.test.items)
+    const answers = yield select((state) => state.answers)
     // prevent autSave if response is empty for every question in current item
-    if (autoSave && answers && Object.values(answers).every(ans => typeof ans !== "number" && isEmpty(ans))) {
-      return;
+    if (
+      autoSave &&
+      answers &&
+      Object.values(answers).every(
+        (ans) => typeof ans !== 'number' && isEmpty(ans)
+      )
+    ) {
+      return
     }
-    const { testActivityId: userTestActivityId, passages, isDocBased } = yield select(state => state.test);
-    const shuffledOptions = yield select(state => state.shuffledOptions);
+    const {
+      testActivityId: userTestActivityId,
+      passages,
+      isDocBased,
+    } = yield select((state) => state.test)
+    const shuffledOptions = yield select((state) => state.shuffledOptions)
     // passages: state.test.passages
-    const currentItem = items.length && items[itemIndex];
+    const currentItem = items.length && items[itemIndex]
     if (!userTestActivityId || !currentItem) {
-      return;
+      return
     }
-    let passage = {};
+    let passage = {}
     if (currentItem.passageId && passages) {
-      passage = passages.find(p => p._id === currentItem.passageId);
+      passage = passages.find((p) => p._id === currentItem.passageId)
     }
-    const passageId = passage._id;
+    const passageId = passage._id
 
-    const questions = getQuestionIds(currentItem);
-    const bookmarked = !!(yield select(state => state.assessmentBookmarks[currentItem._id]));
-    const userPrevAnswer = yield select(getPreviousAnswersListSelector);
-    const redirectPolicy = yield select(redirectPolicySelector);
-    const itemAnswers = {};
-    const shuffles = {};
-    const timesSpent = {};
-    questions.forEach(question => {
-      timesSpent[question] = ts / questions.length;
-      itemAnswers[question] = answers[question];
+    const questions = getQuestionIds(currentItem)
+    const bookmarked = !!(yield select(
+      (state) => state.assessmentBookmarks[currentItem._id]
+    ))
+    const userPrevAnswer = yield select(getPreviousAnswersListSelector)
+    const redirectPolicy = yield select(redirectPolicySelector)
+    const itemAnswers = {}
+    const shuffles = {}
+    const timesSpent = {}
+    questions.forEach((question) => {
+      timesSpent[question] = ts / questions.length
+      itemAnswers[question] = answers[question]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
       if (
-        redirectPolicy === assignmentPolicyOptions.showPreviousAttemptOptions.STUDENT_RESPONSE_AND_FEEDBACK &&
+        redirectPolicy ===
+          assignmentPolicyOptions.showPreviousAttemptOptions
+            .STUDENT_RESPONSE_AND_FEEDBACK &&
         !answers[question] &&
         !!userPrevAnswer[question]
       ) {
-        itemAnswers[question] = userPrevAnswer[question];
+        itemAnswers[question] = userPrevAnswer[question]
       }
       if (shuffledOptions[question]) {
-        shuffles[question] = shuffledOptions[question];
+        shuffles[question] = shuffledOptions[question]
       }
-    });
+    })
 
-    const testItemId = currentItem._id;
-    const _userWork = yield select(({ userWork }) => userWork.present[testItemId] || {});
-    const userInteractions = yield select(({ userInteractions: _userInteractions }) => _userInteractions[testItemId]);
+    const testItemId = currentItem._id
+    const _userWork = yield select(
+      ({ userWork }) => userWork.present[testItemId] || {}
+    )
+    const userInteractions = yield select(
+      ({ userInteractions: _userInteractions }) => _userInteractions[testItemId]
+    )
     const activity = {
       answers: itemAnswers,
       testItemId,
@@ -154,66 +216,76 @@ function* saveUserResponse({ payload }) {
       interactions: userInteractions,
       timesSpent,
       shuffledOptions: shuffles,
-      bookmarked
-    };
+      bookmarked,
+    }
 
-    let userWorkData = { ..._userWork, scratchpad: false };
-    let shouldSaveOrUpdateAttachment = false;
-    const scratchPadUsed = !isEmpty(_userWork?.scratchpad);
+    let userWorkData = { ..._userWork, scratchpad: false }
+    let shouldSaveOrUpdateAttachment = false
+    const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
 
     if (scratchPadUsed) {
-      const { height, width } = yield select(state => state.scratchpad);
-      userWorkData = { ...userWorkData, scratchpad: true, dimensions: { height, width } };
-      shouldSaveOrUpdateAttachment = true;
+      const { height, width } = yield select((state) => state.scratchpad)
+      userWorkData = {
+        ...userWorkData,
+        scratchpad: true,
+        dimensions: { height, width },
+      }
+      shouldSaveOrUpdateAttachment = true
     }
-    activity.userWork = userWorkData;
-    yield call(testItemActivityApi.create, activity, autoSave, pausing);
-    const userId = yield select(state => state?.user?.user?._id);
+    activity.userWork = userWorkData
+    yield call(testItemActivityApi.create, activity, autoSave, pausing)
+    const userId = yield select((state) => state?.user?.user?._id)
     if (shouldSaveOrUpdateAttachment) {
       const fileData = isDocBased
         ? { ..._userWork.scratchpad, name: `${userTestActivityId}_${userId}` }
-        : _userWork.scratchpad;
-      const scratchpadUri = yield call(uploadToS3, fileData, defaultUploadFolder);
+        : _userWork.scratchpad
+      const scratchpadUri = yield call(
+        uploadToS3,
+        fileData,
+        defaultUploadFolder
+      )
       const update = {
         data: { scratchpad: scratchpadUri },
         referrerId: userTestActivityId,
         userId,
-        type: "scratchpad",
-        referrerType: "TestActivityContent",
+        type: 'scratchpad',
+        referrerType: 'TestActivityContent',
         referrerId2: testItemId,
-        status: "published"
-      };
+        status: 'published',
+      }
       const filter = {
         referrerId: userTestActivityId,
-        referrerId2: testItemId
-      };
-      yield call(attachmentApi.updateAttachment, { update, filter });
+        referrerId2: testItemId,
+      }
+      yield call(attachmentApi.updateAttachment, { update, filter })
     }
     if (passageId) {
-      const highlights = yield select(({ userWork }) => userWork.present[passageId]?.resourceId);
+      const highlights = yield select(
+        ({ userWork }) => userWork.present[passageId]?.resourceId
+      )
       if (highlights) {
         const update = {
           data: { resourceId: highlights },
           referrerId: userTestActivityId,
           userId,
-          type: "passage",
-          referrerType: "TestItemContent",
+          type: 'passage',
+          referrerType: 'TestItemContent',
           referrerId2: passageId,
-          status: "published"
-        };
+          status: 'published',
+        }
         const filter = {
           referrerId: userTestActivityId,
-          referrerId2: passageId
-        };
-        yield call(attachmentApi.updateAttachment, { update, filter });
+          referrerId2: passageId,
+        }
+        yield call(attachmentApi.updateAttachment, { update, filter })
       }
     }
-    yield put({ type: SAVE_USER_RESPONSE_SUCCESS });
+    yield put({ type: SAVE_USER_RESPONSE_SUCCESS })
     yield put({
-      type: CLEAR_HINT_USAGE
-    });
+      type: CLEAR_HINT_USAGE,
+    })
     if (payload?.urlToGo) {
-      yield put(push({ pathname: payload.urlToGo, state: payload?.locState }));
+      yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
     }
     if (shouldClearUserWork) {
       /**
@@ -222,23 +294,24 @@ function* saveUserResponse({ payload }) {
        * otherwise the store data remains and it is shown in the other assignment
        */
       yield put({
-        type: CLEAR_USER_WORK
-      });
+        type: CLEAR_USER_WORK,
+      })
     }
     if (callback) {
-      yield call(callback);
+      yield call(callback)
     }
   } catch (err) {
-    yield put({ type: SAVE_USER_RESPONSE_ERROR });
-    console.log(err);
-    Sentry.captureException(err);
+    yield put({ type: SAVE_USER_RESPONSE_ERROR })
+    console.log(err)
+    Sentry.captureException(err)
     if (err.status === 403) {
-      const { isPlaylist = false } = payload;
-      if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
-      yield put(push("/home/assignments"));
-      notification({ msg: err.response.data });
+      const { isPlaylist = false } = payload
+      if (isPlaylist)
+        return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`))
+      yield put(push('/home/assignments'))
+      notification({ msg: err.response.data })
     } else {
-      notification({ messageKey: "failedSavingAnswer" });
+      notification({ messageKey: 'failedSavingAnswer' })
     }
     // yield call(message.error, "Failed saving the Answer");
   }
@@ -246,19 +319,19 @@ function* saveUserResponse({ payload }) {
 
 function* loadUserResponse({ payload }) {
   try {
-    const itemIndex = payload.itemId;
-    const items = yield select(state => state.test && state.test.items);
-    const item = items[itemIndex];
-    const { answers } = yield call(itemsApi.getUserResponse, item._id);
+    const itemIndex = payload.itemId
+    const items = yield select((state) => state.test && state.test.items)
+    const item = items[itemIndex]
+    const { answers } = yield call(itemsApi.getUserResponse, item._id)
     yield put({
       type: LOAD_ANSWERS,
       payload: {
-        ...answers
-      }
-    });
+        ...answers,
+      },
+    })
   } catch (e) {
-    Sentry.captureException(e);
-    notification({ messageKey: "failedLoadingAnswer" });
+    Sentry.captureException(e)
+    notification({ messageKey: 'failedLoadingAnswer' })
   }
 }
 
@@ -266,6 +339,6 @@ export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
     yield Effects.throttleAction(8000, SAVE_USER_RESPONSE, saveUserResponse),
-    yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse)
-  ]);
+    yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
+  ])
 }

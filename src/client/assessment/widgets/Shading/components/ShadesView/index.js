@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Wrapper } from "./styled/Wrapper";
-import { Ul } from "./styled/Ul";
-import { Li } from "./styled/Li";
+import { Wrapper } from './styled/Wrapper'
+import { Ul } from './styled/Ul'
+import { Li } from './styled/Li'
 
 const ShadesView = ({
   cellWidth,
@@ -19,62 +19,68 @@ const ShadesView = ({
   showAnswers,
   marginTop,
   lockedCells,
-  checkAnswers
+  checkAnswers,
 }) => {
-  const rowsArray = Array(rowCount).fill(null);
+  const rowsArray = Array(rowCount).fill(null)
 
-  const columnsArray = Array(colCount).fill(null);
+  const columnsArray = Array(colCount).fill(null)
 
   const isLockedIndexExists = (i, j) =>
-    Array.isArray(lockedCells) && lockedCells.findIndex(shade => shade[0] === i && shade[1] === j) !== -1;
+    Array.isArray(lockedCells) &&
+    lockedCells.findIndex((shade) => shade[0] === i && shade[1] === j) !== -1
 
-  const isShadeActive = (i, j) => shaded.findIndex(shade => shade[0] === i && shade[1] === j) !== -1;
+  const isShadeActive = (i, j) =>
+    shaded.findIndex((shade) => shade[0] === i && shade[1] === j) !== -1
 
-  const getActiveShadesCount = shade => {
-    let count = 0;
+  const getActiveShadesCount = (shade) => {
+    let count = 0
 
     rowsArray.forEach((row, i) => {
       columnsArray.forEach((col, j) => {
         if (isShadeActive(i, j) && !isLockedIndexExists(i, j)) {
-          count++;
+          count++
         }
-      });
-    });
+      })
+    })
 
-    return count <= shade;
-  };
+    return count <= shade
+  }
 
   const isCorrectAnswer = (i, j) =>
-    correctAnswers.findIndex(shade =>
-      Array.isArray(shade) ? shade[0] === i && shade[1] === j : getActiveShadesCount(shade)
-    ) !== -1;
+    correctAnswers.findIndex((shade) =>
+      Array.isArray(shade)
+        ? shade[0] === i && shade[1] === j
+        : getActiveShadesCount(shade)
+    ) !== -1
 
-  let count = -1;
+  let count = -1
 
   const getVisibility = ({ rowIndex, columnIndex }) => {
-    let res = "visible";
+    let res = 'visible'
 
     hidden.forEach(([row, column]) => {
       if (row === rowIndex && column === columnIndex) {
-        res = "hidden";
+        res = 'hidden'
       }
-    });
+    })
 
-    return res;
-  };
+    return res
+  }
 
   return (
     <Wrapper border={border} marginTop={marginTop} data-cy="shadesView">
       {rowsArray.map((row, i) => (
         <Ul key={i}>
           {columnsArray.map((col, j) => {
-            if (isShadeActive(i, j)) count++;
+            if (isShadeActive(i, j)) count++
 
             return (
               <Li
                 correct={
                   isCorrectAnswer(i, j) ||
-                  (!Array.isArray(correctAnswers[0]) && isShadeActive(i, j) && correctAnswers[0] > count)
+                  (!Array.isArray(correctAnswers[0]) &&
+                    isShadeActive(i, j) &&
+                    correctAnswers[0] > count)
                 }
                 data-cy="shadesViewItem"
                 border={border}
@@ -84,18 +90,20 @@ const ShadesView = ({
                 showAnswers={showAnswers}
                 locked={isLockedIndexExists(i, j)}
                 active={isShadeActive(i, j) || isLockedIndexExists(i, j)}
-                onClick={isLockedIndexExists(i, j) ? undefined : onCellClick(i, j)}
+                onClick={
+                  isLockedIndexExists(i, j) ? undefined : onCellClick(i, j)
+                }
                 height={cellHeight}
                 width={cellWidth}
                 key={j}
               />
-            );
+            )
           })}
         </Ul>
       ))}
     </Wrapper>
-  );
-};
+  )
+}
 
 ShadesView.propTypes = {
   cellHeight: PropTypes.number.isRequired,
@@ -111,8 +119,8 @@ ShadesView.propTypes = {
   correctAnswers: PropTypes.any,
   showAnswers: PropTypes.any,
   marginTop: PropTypes.any,
-  checkAnswers: PropTypes.bool
-};
+  checkAnswers: PropTypes.bool,
+}
 
 ShadesView.defaultProps = {
   lockedCells: undefined,
@@ -121,8 +129,8 @@ ShadesView.defaultProps = {
   showAnswers: false,
   marginTop: undefined,
   checkAnswers: false,
-  border: "full",
-  hover: true
-};
+  border: 'full',
+  hover: true,
+}
 
-export default ShadesView;
+export default ShadesView

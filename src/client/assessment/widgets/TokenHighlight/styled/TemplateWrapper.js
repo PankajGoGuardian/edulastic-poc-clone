@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const TemplateWrapper = styled.div`
   /* modes for tokens (custom, word, sentence ...) */
@@ -6,4 +6,4 @@ export const TemplateWrapper = styled.div`
     border: none;
     margin: 0;
   }
-`;
+`

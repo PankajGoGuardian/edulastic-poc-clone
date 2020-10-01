@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 import {
   white,
@@ -10,14 +10,14 @@ import {
   extraDesktopWidthMax,
   smallDesktopWidth,
   inputBorder,
-  whiteSmoke
-} from "@edulastic/colors";
+  whiteSmoke,
+} from '@edulastic/colors'
 
 const getBackground = ({ selected, checked, correct }) =>
-  selected ? (checked ? (correct ? green : red) : themeColor) : white;
+  selected ? (checked ? (correct ? green : red) : themeColor) : white
 
 const getBorder = ({ selected, checked, correct }) =>
-  selected ? (checked ? (correct ? green : red) : themeColor) : greyishDarker1;
+  selected ? (checked ? (correct ? green : red) : themeColor) : greyishDarker1
 
 export const QuestionChunk = styled.div`
   min-width: 150px;
@@ -33,7 +33,7 @@ export const QuestionChunk = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     min-width: 145px;
   }
-`;
+`
 
 export const QuestionOption = styled.span`
   display: inline-block;
@@ -46,8 +46,10 @@ export const QuestionOption = styled.span`
   line-height: 30px;
   color: ${({ selected }) => (selected ? white : secondaryTextColor)};
   background: ${getBackground};
-  cursor: ${({ review, mode }) => (review && mode !== "report" ? "pointer" : "default")};
-  border-radius: ${({ multipleResponses }) => (!multipleResponses ? "50%" : null)};
+  cursor: ${({ review, mode }) =>
+    review && mode !== 'report' ? 'pointer' : 'default'};
+  border-radius: ${({ multipleResponses }) =>
+    !multipleResponses ? '50%' : null};
   &:not(:last-child) {
     margin-right: 4px;
   }
@@ -58,15 +60,15 @@ export const QuestionOption = styled.span`
     font-size: 13px;
     line-height: 30px;
   }
-`;
+`
 
 export const QuestionText = styled.p`
   margin: 0;
   font-size: 14px;
-  width: ${({ check }) => (check ? "210px" : "150px")};
+  width: ${({ check }) => (check ? '210px' : '150px')};
   border: 1px solid ${inputBorder};
   border-radius: 4px;
   padding: 4px 11px;
   background: ${whiteSmoke};
   color: rgba(0, 0, 0, 0.25); /* TODO: re-visit once mockup is updated */
-`;
+`

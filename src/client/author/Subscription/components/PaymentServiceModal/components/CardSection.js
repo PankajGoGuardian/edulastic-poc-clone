@@ -1,6 +1,6 @@
-import React from "react";
-import { CardElement } from "react-stripe-elements";
-import styled from "styled-components";
+import React from 'react'
+import { CardElement } from 'react-stripe-elements'
+import styled from 'styled-components'
 import {
   themeColor,
   greyishBorder,
@@ -8,9 +8,9 @@ import {
   themeColorLight,
   linkColor1,
   redDark,
-  white
-} from "@edulastic/colors";
-import { Button } from "antd";
+  white,
+} from '@edulastic/colors'
+import { Button } from 'antd'
 
 const OuterContainer = styled.div`
   display: flex;
@@ -18,13 +18,13 @@ const OuterContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
-`;
+`
 
 const InnerContainer = styled.div`
   display: flex;
   margin-bottom: 10px;
   width: 100%;
-`;
+`
 
 const InputContainer = styled.div`
   margin: 10px;
@@ -53,7 +53,7 @@ const InputContainer = styled.div`
   .StripeElement--webkit-autofill {
     background-color: #fefde5 !important;
   }
-`;
+`
 
 const StyledButton = styled(Button)`
   width: 390px;
@@ -67,29 +67,29 @@ const StyledButton = styled(Button)`
     background: ${themeColor};
     color: ${white};
   }
-`;
+`
 
 const CardStyle = {
   base: {
     color: linkColor1,
-    fontSize: "16px",
-    "::placeholder": {
-      color: linkColor1
-    }
-  }
-};
+    fontSize: '16px',
+    '::placeholder': {
+      color: linkColor1,
+    },
+  },
+}
 
 const CardSection = ({ handleCardSubmit, verificationPending }) => (
   <OuterContainer>
     <InnerContainer>
       <InputContainer>
-        <CardElement style={CardStyle} hidePostalCode={true} />
+        <CardElement style={CardStyle} hidePostalCode />
       </InputContainer>
     </InnerContainer>
     <StyledButton onClick={handleCardSubmit} disabled={verificationPending}>
       Pay $100
     </StyledButton>
   </OuterContainer>
-);
+)
 
-export default CardSection;
+export default CardSection

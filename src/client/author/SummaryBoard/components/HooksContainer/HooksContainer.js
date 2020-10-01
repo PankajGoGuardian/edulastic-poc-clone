@@ -1,13 +1,13 @@
 // @ts-check
-import { connect } from "react-redux";
+import { connect } from 'react-redux'
 import {
   realtimeGradebookActivityAddAction,
   gradebookTestItemAddAction,
   realtimeGradebookActivitySubmitAction,
   realtimeGradebookQuestionAddMaxScoreAction,
-  realtimeGradebookQuestionsRemoveAction
-} from "../../../src/reducers/testActivity";
-import useRealtimeUpdates from "../../useRealtimeUpdates";
+  realtimeGradebookQuestionsRemoveAction,
+} from '../../../src/reducers/testActivity'
+import useRealtimeUpdates from '../../useRealtimeUpdates'
 
 const Shell = ({
   addActivity,
@@ -18,28 +18,25 @@ const Shell = ({
   // eslint-disable-next-line
   removeQuestions,
   // eslint-disable-next-line
-  addQuestionsMaxScore
+  addQuestionsMaxScore,
 }) => {
   // eslint-disable-next-line
   const client = useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
     addItem,
-    submitActivity
+    submitActivity,
     // TODO: need to comeback to it when we need to handle realtime impact of regrading
     // removeQuestions,
     // addQuestionsMaxScore
-  });
+  })
 
-  return null;
-};
+  return null
+}
 
-export default connect(
-  null,
-  {
-    addActivity: realtimeGradebookActivityAddAction,
-    addItem: gradebookTestItemAddAction,
-    submitActivity: realtimeGradebookActivitySubmitAction,
-    removeQuestions: realtimeGradebookQuestionsRemoveAction,
-    addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction
-  }
-)(Shell);
+export default connect(null, {
+  addActivity: realtimeGradebookActivityAddAction,
+  addItem: gradebookTestItemAddAction,
+  submitActivity: realtimeGradebookActivitySubmitAction,
+  removeQuestions: realtimeGradebookQuestionsRemoveAction,
+  addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
+})(Shell)

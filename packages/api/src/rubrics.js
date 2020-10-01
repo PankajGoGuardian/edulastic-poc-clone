@@ -1,33 +1,40 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
+const api = new API()
 
-const createRubrics = payload =>
+const createRubrics = (payload) =>
   api
     .callApi({
-      method: "post",
-      url: "/rubrics",
+      method: 'post',
+      url: '/rubrics',
       data: {
-        ...payload
-      }
+        ...payload,
+      },
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
-const getSerchedRubrics = data =>
-  api.callApi({ url: "/rubrics/search", method: "post", data: { ...data } }).then(result => result.data.result);
+const getSerchedRubrics = (data) =>
+  api
+    .callApi({ url: '/rubrics/search', method: 'post', data: { ...data } })
+    .then((result) => result.data.result)
 
-const getRubricsById = id => api.callApi({ url: `/rubrics/${id}` }).then(result => result.data.result);
+const getRubricsById = (id) =>
+  api.callApi({ url: `/rubrics/${id}` }).then((result) => result.data.result)
 
-const deleteRuricsById = id =>
-  api.callApi({ url: `/rubrics/${id}`, method: "delete" }).then(result => result.data.result);
+const deleteRuricsById = (id) =>
+  api
+    .callApi({ url: `/rubrics/${id}`, method: 'delete' })
+    .then((result) => result.data.result)
 
 const updateRubricsById = ({ id, body }) =>
-  api.callApi({ url: `/rubrics/${id}`, method: "put", data: body }).then(result => result.data.result);
+  api
+    .callApi({ url: `/rubrics/${id}`, method: 'put', data: body })
+    .then((result) => result.data.result)
 
 export default {
   createRubrics,
   getSerchedRubrics,
   getRubricsById,
   deleteRuricsById,
-  updateRubricsById
-};
+  updateRubricsById,
+}

@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
-import { fonts } from "@edulastic/constants";
+import styled from 'styled-components'
+import { desktopWidth } from '@edulastic/colors'
+import { fonts } from '@edulastic/constants'
 
-import { withMathFormula } from "../HOC/withMathFormula";
+import { withMathFormula } from '../HOC/withMathFormula'
 
 const CenteredText = withMathFormula(styled.div`
   text-align: center;
@@ -14,6 +14,6 @@ const CenteredText = withMathFormula(styled.div`
   @media (max-width: ${desktopWidth}) {
     font-size: ${fonts.previewFontSizeMobile};
   }
-`);
+`)
 
-export default CenteredText;
+export default CenteredText

@@ -1,9 +1,9 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import produce from "immer";
-import styled, { withTheme } from "styled-components";
-import { findIndex, find, isEmpty, get } from "lodash";
-import JsxParser from "react-jsx-parser";
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import produce from 'immer'
+import styled, { withTheme } from 'styled-components'
+import { findIndex, find, isEmpty, get } from 'lodash'
+import JsxParser from 'react-jsx-parser'
 import {
   InstructorStimulus,
   helpers,
@@ -12,55 +12,64 @@ import {
   QuestionLabelWrapper,
   QuestionSubLabel,
   QuestionContentWrapper,
-  FlexContainer
-} from "@edulastic/common";
-import { EDIT } from "../../constants/constantsForQuestions";
-import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
-import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
-import MathSpanWrapper from "../../components/MathSpanWrapper";
-import Instructions from "../../components/Instructions";
-import ClozeTextInput from "./ClozeTextInput";
+  FlexContainer,
+} from '@edulastic/common'
+import { EDIT } from '../../constants/constantsForQuestions'
+import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout'
+import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout'
+import MathSpanWrapper from '../../components/MathSpanWrapper'
+import Instructions from '../../components/Instructions'
+import ClozeTextInput from './ClozeTextInput'
 
-import { getFontSize, getStemNumeration } from "../../utils/helpers";
+import { getFontSize, getStemNumeration } from '../../utils/helpers'
 
 class ClozeTextDisplay extends Component {
   state = {
-    parsedTemplate: ""
-  };
+    parsedTemplate: '',
+  }
 
   componentDidMount() {
-    const { stimulus } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
+    const { stimulus } = this.props
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) })
   }
 
-  static getDerivedStateFromProps({ stimulus = "" }) {
-    return { parsedTemplate: helpers.parseTemplate(stimulus.replace(/\u200B/gi, "")) };
-  }
-
-  getFontSize = size => {
-    switch (size) {
-      case "small":
-        return "11px";
-      case "normal":
-        return "14px";
-      case "large":
-        return "17px";
-      case "xlarge":
-        return "20px";
-      case "xxlarge":
-        return "24px";
-      default:
-        return "14px";
+  static getDerivedStateFromProps({ stimulus = '' }) {
+    return {
+      parsedTemplate: helpers.parseTemplate(stimulus.replace(/\u200B/gi, '')),
     }
-  };
+  }
+
+  getFontSize = (size) => {
+    switch (size) {
+      case 'small':
+        return '11px'
+      case 'normal':
+        return '14px'
+      case 'large':
+        return '17px'
+      case 'xlarge':
+        return '20px'
+      case 'xxlarge':
+        return '24px'
+      default:
+        return '14px'
+    }
+  }
 
   getUiStyles = (responseBoxId, responseIndex) => {
-    const { uiStyle, theme } = this.props;
-    const { widthpx, heightpx, placeholder, inputtype, stemNumeration, responsecontainerindividuals } = uiStyle;
-    const fontSize = this.getFontSize(uiStyle.fontsize);
+    const { uiStyle, theme } = this.props
+    const {
+      widthpx,
+      heightpx,
+      placeholder,
+      inputtype,
+      stemNumeration,
+      responsecontainerindividuals,
+    } = uiStyle
+    const fontSize = this.getFontSize(uiStyle.fontsize)
 
     const btnStyle = {
-      position: "relative",
+      position: 'relative',
       maxWidth: 600,
       width: widthpx || 140,
       height: heightpx || 32,
@@ -68,64 +77,72 @@ class ClozeTextDisplay extends Component {
       type: inputtype,
       fontSize,
       placeholder,
-      color: theme.questionTextColor
-    };
+      color: theme.questionTextColor,
+    }
 
-    const responseBoxStyle = find(responsecontainerindividuals, resp => resp.id === responseBoxId) || {};
+    const responseBoxStyle =
+      find(responsecontainerindividuals, (resp) => resp.id === responseBoxId) ||
+      {}
 
     if (responseBoxStyle.widthpx) {
-      btnStyle.width = responseBoxStyle.widthpx;
-      btnStyle.disableAutoExpend = true;
+      btnStyle.width = responseBoxStyle.widthpx
+      btnStyle.disableAutoExpend = true
     }
 
     if (responseBoxStyle.heightpx) {
-      btnStyle.height = responseBoxStyle.heightpx;
+      btnStyle.height = responseBoxStyle.heightpx
     }
 
     if (responseBoxStyle.inputtype) {
-      btnStyle.type = responseBoxStyle.inputtype;
+      btnStyle.type = responseBoxStyle.inputtype
     }
 
     if (responseBoxStyle.placeholder) {
-      btnStyle.placeholder = responseBoxStyle.placeholder;
+      btnStyle.placeholder = responseBoxStyle.placeholder
     }
 
-    return { btnStyle, stemNumeration: getStemNumeration(stemNumeration, responseIndex) };
-  };
+    return {
+      btnStyle,
+      stemNumeration: getStemNumeration(stemNumeration, responseIndex),
+    }
+  }
 
   onChangeUserAnswer = (value, id, widthpx) => {
-    const { onChange: changeAnswers, userSelections, responseIds } = this.props;
+    const { onChange: changeAnswers, userSelections, responseIds } = this.props
     changeAnswers(
-      produce(userSelections, draft => {
+      produce(userSelections, (draft) => {
         /**
          * if there are three responses
          * if user does not answer the first two and answers the third
          * the first two are stored as null thus findIndex needs optionalChaining;
          * EV-10907
          */
-        const changedIndex = findIndex(draft, (answer = {}) => answer?.id === id);
+        const changedIndex = findIndex(
+          draft,
+          (answer = {}) => answer?.id === id
+        )
         if (changedIndex !== -1) {
-          draft[changedIndex].value = value;
+          draft[changedIndex].value = value
         } else {
-          const resbtn = find(responseIds, res => res.id === id);
-          draft[resbtn.index] = { value, index: resbtn.index, id };
+          const resbtn = find(responseIds, (res) => res.id === id)
+          draft[resbtn.index] = { value, index: resbtn.index, id }
         }
       }),
       id,
       widthpx
-    );
-  };
+    )
+  }
 
   _changeInput = ({ value, id, type }, widthpx) => {
-    if (type === "number") {
-      value = +value;
-      if (typeof value === "number" && !Number.isNaN(value)) {
-        this.onChangeUserAnswer(value, id);
+    if (type === 'number') {
+      value = +value
+      if (typeof value === 'number' && !Number.isNaN(value)) {
+        this.onChangeUserAnswer(value, id)
       }
-      return;
+      return
     }
-    this.onChangeUserAnswer(value, id, widthpx);
-  };
+    this.onChangeUserAnswer(value, id, widthpx)
+  }
 
   render() {
     const {
@@ -149,11 +166,11 @@ class ClozeTextDisplay extends Component {
       view,
       isPrint = false,
       isV1Migrated,
-      isPrintPreview = false
-    } = this.props;
+      isPrintPreview = false,
+    } = this.props
 
-    const { parsedTemplate } = this.state;
-    const fontSize = getFontSize(uiStyle.fontsize);
+    const { parsedTemplate } = this.state
+    const fontSize = getFontSize(uiStyle.fontsize)
 
     const resProps = {
       item,
@@ -169,31 +186,39 @@ class ClozeTextDisplay extends Component {
       previewTab,
       changePreviewTab,
       isV1Migrated,
-      cAnswers: get(item, "validation.validResponse.value", []),
-      isPrintPreview
-    };
+      cAnswers: get(item, 'validation.validResponse.value', []),
+      isPrintPreview,
+    }
 
     const QuestionContent = (
-      <StyledParser view={view} className={resProps.isV1Migrated && "migrated-question"}>
+      <StyledParser
+        view={view}
+        className={resProps.isV1Migrated && 'migrated-question'}
+      >
         <JsxParser
           disableKeyGeneration
           bindings={{ resProps }}
           showWarnings
           components={{
-            textinput: showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ClozeTextInput,
-            mathspan: MathSpanWrapper
+            textinput:
+              showAnswer || checkAnswer || isPrint
+                ? CheckboxTemplateBoxLayout
+                : ClozeTextInput,
+            mathspan: MathSpanWrapper,
           }}
           jsx={parsedTemplate}
         />
       </StyledParser>
-    );
+    )
 
     const answerBox =
       showAnswer || isExpressGrader ? (
         <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
-            userAnswers={validation.validResponse && validation.validResponse.value}
+            userAnswers={
+              validation.validResponse && validation.validResponse.value
+            }
             stemNumeration={uiStyle.stemNumeration}
           />
           {!isEmpty(item.validation.altResponses) &&
@@ -209,22 +234,37 @@ class ClozeTextDisplay extends Component {
         </>
       ) : (
         <div />
-      );
+      )
 
     return (
       <div style={{ fontSize }}>
-        {instructorStimulus && instructorStimulus !== "<p><br></p>" && (
-          <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
+        {instructorStimulus && instructorStimulus !== '<p><br></p>' && (
+          <InstructorStimulus
+            dangerouslySetInnerHTML={{ __html: instructorStimulus }}
+          />
         )}
-        <FlexContainer alignItems="baseline" justifyContent="flex-start" width="100%">
+        <FlexContainer
+          alignItems="baseline"
+          justifyContent="flex-start"
+          width="100%"
+        >
           <QuestionLabelWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+            {showQuestionNumber && (
+              <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+            )}
+            {item.qSubLabel && (
+              <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+            )}
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper>
             <QuestionTitleWrapper>
-              {!!question && <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />}
+              {!!question && (
+                <Stimulus
+                  smallSize={smallSize}
+                  dangerouslySetInnerHTML={{ __html: question }}
+                />
+              )}
               {!question && QuestionContent}
             </QuestionTitleWrapper>
             {question && QuestionContent}
@@ -233,7 +273,7 @@ class ClozeTextDisplay extends Component {
           </QuestionContentWrapper>
         </FlexContainer>
       </div>
-    );
+    )
   }
 }
 
@@ -258,15 +298,15 @@ ClozeTextDisplay.propTypes = {
   view: PropTypes.string.isRequired,
   stimulus: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  changePreviewTab: PropTypes.func.isRequired
-};
+  changePreviewTab: PropTypes.func.isRequired,
+}
 
 ClozeTextDisplay.defaultProps = {
   responseIds: {},
   onChange: () => {},
   showAnswer: false,
   isPrint: false,
-  instructorStimulus: "",
+  instructorStimulus: '',
   evaluation: {},
   checkAnswer: false,
   userSelections: [],
@@ -274,21 +314,21 @@ ClozeTextDisplay.defaultProps = {
   item: {},
   validation: {},
   uiStyle: {
-    fontsize: "normal",
-    stemNumeration: "numerical",
+    fontsize: 'normal',
+    stemNumeration: 'numerical',
     widthpx: 140,
     heightpx: 0,
     placeholder: null,
-    inputtype: "text",
-    responsecontainerindividuals: []
+    inputtype: 'text',
+    responsecontainerindividuals: [],
   },
   showQuestionNumber: false,
   disableResponse: false,
   isExpressGrader: false,
-  isReviewTab: false
-};
+  isReviewTab: false,
+}
 
-export default withTheme(ClozeTextDisplay);
+export default withTheme(ClozeTextDisplay)
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -300,23 +340,25 @@ const QuestionTitleWrapper = styled.div`
   .jsx-parser {
     width: 100%;
   }
-`;
+`
 
 const StyledParser = styled.div`
-  padding: ${props => (props.view === EDIT ? 15 : 0)}px;
-  border: ${props =>
-    props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
-  border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
+  padding: ${(props) => (props.view === EDIT ? 15 : 0)}px;
+  border: ${(props) =>
+    props.view === EDIT
+      ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}`
+      : null};
+  border-radius: ${(props) => (props.view === EDIT ? 10 : 0)}px;
   width: 100%;
   /* overflow: auto; */
 
   .jsx-parser {
     p {
-      font-size: ${props => props.theme.fontSize};
+      font-size: ${(props) => props.theme.fontSize};
     }
 
     input {
-      font-size: ${props => props.theme.fontSize};
+      font-size: ${(props) => props.theme.fontSize};
     }
   }
-`;
+`

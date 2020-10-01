@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { Paper } from "@edulastic/common";
-import { secondaryTextColor, themeColor } from "@edulastic/colors";
-import { Checkbox } from "antd";
+import { Paper } from '@edulastic/common'
+import { secondaryTextColor, themeColor } from '@edulastic/colors'
+import { Checkbox } from 'antd'
 
 export const QuestionFormWrapper = styled(Paper)`
   border-radius: 4px;
@@ -10,7 +10,7 @@ export const QuestionFormWrapper = styled(Paper)`
   .ant-input-number-input {
     text-align: center;
   }
-`;
+`
 
 export const FormGroup = styled.div`
   &:not(:last-child) {
@@ -22,11 +22,11 @@ export const FormGroup = styled.div`
       border-color: ${themeColor};
     }
   }
-`;
+`
 
 export const FormInline = styled.div`
   display: flex;
-`;
+`
 
 export const FormLabel = styled.label`
   display: block;
@@ -35,7 +35,7 @@ export const FormLabel = styled.label`
   line-height: 1.38;
   font-weight: 600;
   color: ${secondaryTextColor};
-`;
+`
 
 export const Points = styled.span`
   display: inline-block;
@@ -43,7 +43,7 @@ export const Points = styled.span`
   font-weight: 600;
   text-transform: uppercase;
   padding-left: 17px;
-`;
+`
 
 export const CheckboxGroupStyled = styled(Checkbox.Group)`
   margin-bottom: 10px;
@@ -59,4 +59,4 @@ export const CheckboxGroupStyled = styled(Checkbox.Group)`
     margin-right: 25px;
     font-weight: bold;
   }
-`;
+`

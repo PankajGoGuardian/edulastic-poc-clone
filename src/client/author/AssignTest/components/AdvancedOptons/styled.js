@@ -5,30 +5,30 @@ import {
   themeColor,
   themeColorLight,
   white,
-  backgrounds
-} from "@edulastic/colors";
-import { DatePicker, Row, Select, Table } from "antd";
-import styled from "styled-components";
+  backgrounds,
+} from '@edulastic/colors'
+import { DatePicker, Row, Select, Table } from 'antd'
+import styled from 'styled-components'
 
 export const OptionConationer = styled.div`
   margin-top: 20px;
-`;
+`
 
 export const InitOptions = styled.div`
   background: ${white};
   border-radius: 8px;
   padding: 40px;
-`;
+`
 
 export const StyledRow = styled(Row)`
   margin-bottom: 20px;
-`;
+`
 
 export const StyledRowLabel = styled(Row)`
   color: ${secondaryTextColor};
   font-weight: 600;
   margin-bottom: 8px;
-`;
+`
 
 export const SettingsBtn = styled.span`
   display: flex;
@@ -42,7 +42,7 @@ export const SettingsBtn = styled.span`
     margin-left: 16px;
     fill: ${themeColor};
   }
-`;
+`
 
 export const StyledSelect = styled(Select)`
   width: 100%;
@@ -97,14 +97,14 @@ export const StyledSelect = styled(Select)`
       margin-top: 4px;
     }
   }
-`;
+`
 
 export const Label = styled.label`
   width: 100%;
   display: inline-block;
   margin: 0px 0px 5px;
   font-weight: 600;
-`;
+`
 
 export const StyledDatePicker = styled(DatePicker)`
   .ant-calendar-picker-input {
@@ -115,12 +115,12 @@ export const StyledDatePicker = styled(DatePicker)`
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 export const TableContainer = styled.div`
   margin-left: 70px;
   flex: 2;
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table {
@@ -160,11 +160,11 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const ClassListContainer = styled.div`
   display: flex;
-`;
+`
 
 export const ClassSelectorLabel = styled.div`
   color: #434b5d;
@@ -181,7 +181,7 @@ export const ClassSelectorLabel = styled.div`
     padding-bottom: 20px;
     border-bottom: 1px #e4eaf1 solid;
   }
-`;
+`
 
 export const ClassListFilter = styled.div`
   display: flex;
@@ -248,7 +248,7 @@ export const ClassListFilter = styled.div`
       fill: ${themeColor};
     }
   }
-`;
+`
 
 export const InfoSection = styled.div`
   display: flex;
@@ -274,4 +274,4 @@ export const InfoSection = styled.div`
       font-size: 16px;
     }
   }
-`;
+`

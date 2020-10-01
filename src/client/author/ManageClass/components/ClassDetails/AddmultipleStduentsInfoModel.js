@@ -1,39 +1,44 @@
-import React from "react";
-import { Modal, Table } from "antd";
-import { ThemeButton } from "../../../src/components/common/ThemeButton";
+import React from 'react'
+import { Modal, Table } from 'antd'
+import { ThemeButton } from '../../../src/components/common/ThemeButton'
 
-const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, infoModalData, setInfoModalData }) => {
+const AddMultipleStudentsInfoModal = ({
+  infoModelVisible,
+  setinfoModelVisible,
+  infoModalData,
+  setInfoModalData,
+}) => {
   const handleCancel = () => {
-    setinfoModelVisible(false);
-    setInfoModalData([]);
-  };
+    setinfoModelVisible(false)
+    setInfoModalData([])
+  }
 
-  const newInfoModalData = infoModalData.map(user => ({
+  const newInfoModalData = infoModalData.map((user) => ({
     ...user,
     msg:
-      user.status == "FAILED_DOMAIN_RESTRICTED"
-        ? " -"
-        : user.firstName === ""
-        ? "Student name will be auto-updated after first sign-in"
-        : `${user.firstName} ${user.lastName || ""}`
-  }));
+      user.status == 'FAILED_DOMAIN_RESTRICTED'
+        ? ' -'
+        : user.firstName === ''
+        ? 'Student name will be auto-updated after first sign-in'
+        : `${user.firstName} ${user.lastName || ''}`,
+  }))
   const columns = [
     {
-      title: "Name",
-      dataIndex: "msg",
-      key: "msg"
+      title: 'Name',
+      dataIndex: 'msg',
+      key: 'msg',
     },
     {
-      title: "Username",
-      dataIndex: "username",
-      key: "username"
+      title: 'Username',
+      dataIndex: 'username',
+      key: 'username',
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status"
-    }
-  ];
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+  ]
   return (
     <Modal
       title="Student details"
@@ -46,8 +51,12 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
         </ThemeButton>
       }
     >
-      <Table dataSource={newInfoModalData} columns={columns} pagination={false} />
+      <Table
+        dataSource={newInfoModalData}
+        columns={columns}
+        pagination={false}
+      />
     </Modal>
-  );
-};
-export default AddMultipleStudentsInfoModal;
+  )
+}
+export default AddMultipleStudentsInfoModal

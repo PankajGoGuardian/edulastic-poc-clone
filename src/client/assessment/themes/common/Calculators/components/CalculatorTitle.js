@@ -1,18 +1,18 @@
-import React from "react";
-import styled from "styled-components";
-import { greyThemeDark3 } from "@edulastic/colors";
-import { IconClose } from "@edulastic/icons";
+import React from 'react'
+import styled from 'styled-components'
+import { greyThemeDark3 } from '@edulastic/colors'
+import { IconClose } from '@edulastic/icons'
 
 const CalculatorTitle = ({ title, onClose }) => (
   <Container className="calculator-drag-handler">
     <CloseIcon color={greyThemeDark3} onClick={onClose} />
     <Title data-cy="SCIENTIFIC">{title}</Title>
   </Container>
-);
+)
 
 const Container = styled.div`
   position: relative;
-`;
+`
 
 const CloseIcon = styled(IconClose)`
   width: 12px;
@@ -21,7 +21,7 @@ const CloseIcon = styled(IconClose)`
   cursor: pointer;
   position: absolute;
   top: calc(50% - 6px);
-`;
+`
 
 const Title = styled.div`
   width: 100%;
@@ -34,6 +34,6 @@ const Title = styled.div`
   font-weight: 600;
   text-align: left;
   cursor: move;
-`;
+`
 
-export default CalculatorTitle;
+export default CalculatorTitle

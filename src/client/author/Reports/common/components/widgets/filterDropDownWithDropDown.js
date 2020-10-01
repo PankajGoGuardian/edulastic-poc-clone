@@ -1,23 +1,28 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { Button, Dropdown, Menu, Icon } from "antd";
-import { NormalDropDown } from "./normalDropDown";
-import { themeColor, white } from "@edulastic/colors";
-import { ControlDropDown } from "./controlDropDown";
-import { IconFilter } from "@edulastic/icons";
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { Button, Dropdown, Menu, Icon } from 'antd'
+import { themeColor, white } from '@edulastic/colors'
+import { IconFilter } from '@edulastic/icons'
+import { NormalDropDown } from './normalDropDown'
+import { ControlDropDown } from './controlDropDown'
 
-export const FilterDropDownWithDropDown = ({ className, updateCB, data, values }) => {
-  const [visible, setVisible] = useState(false);
+export const FilterDropDownWithDropDown = ({
+  className,
+  updateCB,
+  data,
+  values,
+}) => {
+  const [visible, setVisible] = useState(false)
 
-  const handleMenuClick = event => {};
+  const handleMenuClick = (event) => {}
 
-  const handleVisibleChange = flag => {
-    setVisible(flag);
-  };
+  const handleVisibleChange = (flag) => {
+    setVisible(flag)
+  }
 
   const updateNormalDropDownCB = (event, selected, comData) => {
-    updateCB(event, selected, comData);
-  };
+    updateCB(event, selected, comData)
+  }
 
   const menu = (
     <StyledMenu className={`${className}`} onClick={handleMenuClick}>
@@ -33,42 +38,51 @@ export const FilterDropDownWithDropDown = ({ className, updateCB, data, values }
               comData={item.key}
             />
           </StyledControlDropDownContainer>
-        );
+        )
       })}
     </StyledMenu>
-  );
+  )
 
   return (
-    <StyledContainer className={`${className || ""}`}>
-      <Dropdown overlay={menu} visible={visible} onVisibleChange={handleVisibleChange} trigger={["click"]}>
+    <StyledContainer className={`${className || ''}`}>
+      <Dropdown
+        overlay={menu}
+        visible={visible}
+        onVisibleChange={handleVisibleChange}
+        trigger={['click']}
+      >
         <StyledButton>
-          <IconFilter color={visible ? white : themeColor} width={20} height={29} />
+          <IconFilter
+            color={visible ? white : themeColor}
+            width={20}
+            height={29}
+          />
         </StyledButton>
       </Dropdown>
     </StyledContainer>
-  );
-};
+  )
+}
 
 const StyledButton = styled(Button)`
   margin: 5px;
   width: 44px;
   padding: 0px;
-`;
+`
 
 const StyledMenu = styled(Menu)`
   min-width: 230px;
   padding: 5px 0 10px;
-`;
+`
 
 const StyledIcon = styled(Icon)`
   color: ${themeColor};
-`;
+`
 
 const StyledContainer = styled.div`
   .ant-dropdown-open {
     background: ${themeColor};
   }
-`;
+`
 
 const StyledControlDropDownContainer = styled.div`
   padding: 5px 17px;
@@ -92,4 +106,4 @@ const StyledControlDropDownContainer = styled.div`
       }
     }
   }
-`;
+`

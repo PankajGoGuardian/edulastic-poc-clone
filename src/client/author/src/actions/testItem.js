@@ -4,41 +4,47 @@ import {
   CHECK_ANSWER,
   SHOW_ANSWER,
   TOGGLE_CREATE_ITEM_MODAL,
-  ADD_ITEM_EVALUATION
-} from "../constants/actions";
+  ADD_ITEM_EVALUATION,
+} from '../constants/actions'
 
-export const createTestItemAction = (data, testFlow = false, testId, newPassageItem = false, testName) => ({
+export const createTestItemAction = (
+  data,
+  testFlow = false,
+  testId,
+  newPassageItem = false,
+  testName
+) => ({
   type: CREATE_TEST_ITEM_REQUEST,
   payload: {
     data,
     testFlow,
     testId,
     newPassageItem,
-    testName
-  }
-});
+    testName,
+  },
+})
 
 export const updateTestItemByIdAction = (id, data) => ({
   type: UPDATE_TEST_ITEM_REQUEST,
-  payload: { id, data }
-});
+  payload: { id, data },
+})
 
-export const checkAnswerAction = mode => ({
+export const checkAnswerAction = (mode) => ({
   type: CHECK_ANSWER,
-  payload: mode
-});
+  payload: mode,
+})
 
-export const showAnswerAction = mode => ({
+export const showAnswerAction = (mode) => ({
   type: SHOW_ANSWER,
-  payload: mode
-});
+  payload: mode,
+})
 
 export const toggleCreateItemModalAction = ({ modalVisible, itemId }) => ({
   type: TOGGLE_CREATE_ITEM_MODAL,
-  payload: { modalVisible, itemId }
-});
+  payload: { modalVisible, itemId },
+})
 
-export const addItemEvaluationAction = data => ({
+export const addItemEvaluationAction = (data) => ({
   type: ADD_ITEM_EVALUATION,
-  payload: data
-});
+  payload: data,
+})

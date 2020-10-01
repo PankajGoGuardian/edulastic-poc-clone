@@ -1,11 +1,11 @@
-import React from "react";
-import { Modal } from "antd";
-import { EduButton } from "@edulastic/common";
-import styled from "styled-components";
-import { white, lightGreen5, greenDark1, darkGrey2 } from "@edulastic/colors";
+import React from 'react'
+import { Modal } from 'antd'
+import { EduButton } from '@edulastic/common'
+import styled from 'styled-components'
+import { white, lightGreen5, greenDark1, darkGrey2 } from '@edulastic/colors'
 
-const UnansweredPopup = props => {
-  const { className, visible, title, onSkip, onClose } = props;
+const UnansweredPopup = (props) => {
+  const { className, visible, title, onSkip, onClose } = props
 
   const footer = (
     <StyledFooter>
@@ -16,10 +16,10 @@ const UnansweredPopup = props => {
         CLOSE
       </EduButton>
     </StyledFooter>
-  );
+  )
   return (
     <Modal
-      title={title || "Attention"}
+      title={title || 'Attention'}
       visible={visible}
       onOk={onSkip}
       className={className}
@@ -34,8 +34,8 @@ const UnansweredPopup = props => {
         <p>(You might need to scroll down to see all the questions)</p>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
 const StyledUnansweredPopup = styled(UnansweredPopup)`
   .container {
@@ -81,7 +81,7 @@ const StyledUnansweredPopup = styled(UnansweredPopup)`
       font-weight: bold;
     }
   }
-`;
+`
 
 const StyledFooter = styled.div`
   display: flex;
@@ -89,6 +89,6 @@ const StyledFooter = styled.div`
   button {
     min-width: 100px;
   }
-`;
+`
 
-export default StyledUnansweredPopup;
+export default StyledUnansweredPopup

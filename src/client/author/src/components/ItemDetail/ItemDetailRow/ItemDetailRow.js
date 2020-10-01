@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { Icon } from "antd";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { Icon } from 'antd'
 
-import { mobileWidth, themeColor, white } from "@edulastic/colors";
-import { FlexContainer, Tabs, Paper } from "@edulastic/common";
-import ItemDetailWidget from "./ItemDetailWidget";
-import ItemDetailDropTarget from "./ItemDetailDropTarget";
-import { getItemDetailDraggingSelector } from "../../../selectors/itemDetail";
-import { MAX_MOBILE_WIDTH } from "../../../constants/others";
-import AddNew from "./AddNew";
+import { mobileWidth, themeColor, white } from '@edulastic/colors'
+import { FlexContainer, Tabs, Paper } from '@edulastic/common'
+import ItemDetailWidget from './ItemDetailWidget'
+import ItemDetailDropTarget from './ItemDetailDropTarget'
+import { getItemDetailDraggingSelector } from '../../../selectors/itemDetail'
+import { MAX_MOBILE_WIDTH } from '../../../constants/others'
+import AddNew from './AddNew'
 
 class ItemDetailRow extends Component {
   state = {
-    value: 0
-  };
+    value: 0,
+  }
 
   static propTypes = {
     row: PropTypes.object.isRequired,
@@ -27,17 +27,17 @@ class ItemDetailRow extends Component {
     onEditTabTitle: PropTypes.func.isRequired,
     rowIndex: PropTypes.number.isRequired,
     count: PropTypes.number.isRequired,
-    windowWidth: PropTypes.number.isRequired
-  };
+    windowWidth: PropTypes.number.isRequired,
+  }
 
-  handleTabChange = value => {
+  handleTabChange = (value) => {
     this.setState({
-      value
-    });
-  };
+      value,
+    })
+  }
 
   renderTabContent = ({ widgetIndex, widget, rowIndex }) => {
-    const { onEditWidget, onDeleteWidget } = this.props;
+    const { onEditWidget, onDeleteWidget } = this.props
     return (
       <ItemDetailWidget
         widget={widget}
@@ -46,18 +46,26 @@ class ItemDetailRow extends Component {
         widgetIndex={widgetIndex}
         rowIndex={rowIndex}
       />
-    );
-  };
+    )
+  }
 
   render() {
-    const { row, onAdd, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
-    const { value } = this.state;
+    const {
+      row,
+      onAdd,
+      onEditTabTitle,
+      rowIndex,
+      dragging,
+      count,
+      windowWidth,
+    } = this.props
+    const { value } = this.state
     return (
       <Container
         value={value}
         style={{
           width: row.dimension,
-          marginRight: count - 1 === rowIndex ? "0px" : "30px"
+          marginRight: count - 1 === rowIndex ? '0px' : '30px',
         }}
       >
         {row.tabs && windowWidth > MAX_MOBILE_WIDTH && !!row.tabs.length && (
@@ -68,57 +76,79 @@ class ItemDetailRow extends Component {
                   key={tabIndex}
                   label={tab}
                   style={{
-                    width: "50%",
-                    textAlign: "center",
-                    padding: "30px 20px 15px"
+                    width: '50%',
+                    textAlign: 'center',
+                    padding: '30px 20px 15px',
                   }}
-                  onChange={e => onEditTabTitle(tabIndex, e.target.value)}
+                  onChange={(e) => onEditTabTitle(tabIndex, e.target.value)}
                   editable
                 />
               ))}
             </Tabs>
           </TabContainer>
         )}
-        {row.tabs && windowWidth < MAX_MOBILE_WIDTH && !!row.tabs.length && value === 0 && (
-          <MobileRightSide onClick={() => this.handleTabChange(1)}>
-            <Icon type="left" style={{ color: white }} />
-          </MobileRightSide>
+        {row.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!row.tabs.length &&
+          value === 0 && (
+            <MobileRightSide onClick={() => this.handleTabChange(1)}>
+              <Icon type="left" style={{ color: white }} />
+            </MobileRightSide>
+          )}
+        {row.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!row.tabs.length &&
+          value === 1 && (
+            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+              <Icon type="right" style={{ color: white }} />
+            </MobileLeftSide>
+          )}
+        {!row.widgets.length && dragging && (
+          <ItemDetailDropTarget
+            widgetIndex={0}
+            rowIndex={rowIndex}
+            tabIndex={0}
+          />
         )}
-        {row.tabs && windowWidth < MAX_MOBILE_WIDTH && !!row.tabs.length && value === 1 && (
-          <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-            <Icon type="right" style={{ color: white }} />
-          </MobileLeftSide>
-        )}
-        {!row.widgets.length && dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
-        {dragging && row.widgets.filter(w => w.tabIndex === value).length === 0 && (
-          <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={value} />
-        )}
+        {dragging &&
+          row.widgets.filter((w) => w.tabIndex === value).length === 0 && (
+            <ItemDetailDropTarget
+              widgetIndex={0}
+              rowIndex={rowIndex}
+              tabIndex={value}
+            />
+          )}
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
             {dragging && widget.tabIndex === value && (
-              <ItemDetailDropTarget widgetIndex={i} rowIndex={rowIndex} tabIndex={value} />
+              <ItemDetailDropTarget
+                widgetIndex={i}
+                rowIndex={rowIndex}
+                tabIndex={value}
+              />
             )}
             {!!row.tabs.length &&
               value === widget.tabIndex &&
               this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
-            {!row.tabs.length && this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
+            {!row.tabs.length &&
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
           </React.Fragment>
         ))}
         <AddButtonContainer justifyContent="center">
           <AddNew onClick={() => onAdd({ rowIndex, tabIndex: value })} />
         </AddButtonContainer>
       </Container>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  connect(state => ({
-    dragging: getItemDetailDraggingSelector(state)
+  connect((state) => ({
+    dragging: getItemDetailDraggingSelector(state),
   }))
-);
+)
 
-export default enhance(ItemDetailRow);
+export default enhance(ItemDetailRow)
 
 const Container = styled(Paper)`
   width: 100%;
@@ -132,14 +162,14 @@ const Container = styled(Paper)`
 
   @media (max-width: ${mobileWidth}) {
     padding-left: 10px;
-    margin-right: ${props => !props.value && "20px !important"};
-    margin-left: ${props => props.value && "20px !important"};
+    margin-right: ${(props) => !props.value && '20px !important'};
+    margin-left: ${(props) => props.value && '20px !important'};
   }
-`;
+`
 
 const TabContainer = styled.div`
   margin-bottom: 30px;
-`;
+`
 
 const AddButtonContainer = styled(FlexContainer)`
   margin-bottom: 30px;
@@ -148,7 +178,7 @@ const AddButtonContainer = styled(FlexContainer)`
   @media (max-width: ${mobileWidth}) {
     margin-right: 0px;
   }
-`;
+`
 
 const MobileRightSide = styled.div`
   position: fixed;
@@ -162,7 +192,7 @@ const MobileRightSide = styled.div`
   bottom: 20px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-`;
+`
 
 const MobileLeftSide = styled.div`
   position: fixed;
@@ -176,4 +206,4 @@ const MobileLeftSide = styled.div`
   bottom: 20px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-`;
+`

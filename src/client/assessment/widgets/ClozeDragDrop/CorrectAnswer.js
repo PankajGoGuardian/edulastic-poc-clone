@@ -1,7 +1,7 @@
-import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import Display from "./Display";
+import { withNamespaces } from '@edulastic/localization'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import Display from './Display'
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -14,13 +14,13 @@ class CorrectAnswer extends Component {
     configureOptions: PropTypes.object.isRequired,
     responseIDs: PropTypes.array.isRequired,
     uiStyle: PropTypes.object.isRequired,
-    item: PropTypes.object.isRequired
-  };
+    item: PropTypes.object.isRequired,
+  }
 
-  handleMultiSelect = answers => {
-    const { onUpdateValidationValue } = this.props;
-    onUpdateValidationValue(answers);
-  };
+  handleMultiSelect = (answers) => {
+    const { onUpdateValidationValue } = this.props
+    onUpdateValidationValue(answers)
+  }
 
   render() {
     const {
@@ -32,8 +32,8 @@ class CorrectAnswer extends Component {
       configureOptions,
       uiStyle,
       responseIDs,
-      item
-    } = this.props;
+      item,
+    } = this.props
 
     return (
       <Display
@@ -51,8 +51,8 @@ class CorrectAnswer extends Component {
         t={t}
         item={item}
       />
-    );
+    )
   }
 }
 
-export default withNamespaces("assessment")(CorrectAnswer);
+export default withNamespaces('assessment')(CorrectAnswer)

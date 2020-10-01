@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Table, Input, Tabs } from "antd";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import styled from 'styled-components'
+import { Table, Input, Tabs } from 'antd'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import {
   white,
   themeColor,
@@ -10,12 +10,14 @@ import {
   smallDesktopWidth,
   themeColorLight,
   red,
-  themeColorBlue
-} from "@edulastic/colors";
+  themeColorBlue,
+} from '@edulastic/colors'
 
 export const CollectionTableContainer = styled.div`
-  width: ${({ isCollectionSelected }) => (isCollectionSelected ? "35%" : "100%")};
-  margin-right: ${({ isCollectionSelected }) => (isCollectionSelected ? "1%" : "0px")};
+  width: ${({ isCollectionSelected }) =>
+    isCollectionSelected ? '35%' : '100%'};
+  margin-right: ${({ isCollectionSelected }) =>
+    isCollectionSelected ? '1%' : '0px'};
   background-color: ${white};
   border-radius: 8px;
   padding: 20px;
@@ -27,21 +29,21 @@ export const CollectionTableContainer = styled.div`
     margin-bottom: 20px;
     display: block;
   }
-`;
+`
 
 export const HeadingContainer = styled.div`
   height: 40px;
   margin-bottom: 10px;
   display: flex;
-`;
+`
 
 export const TableHeading = styled.span`
-  font-size: ${props => props.theme.headerTitle};
-  font-weight: ${props => props.theme.bold};
+  font-size: ${(props) => props.theme.headerTitle};
+  font-weight: ${(props) => props.theme.bold};
   height: 40px;
   display: inline-block;
   line-height: 40px;
-`;
+`
 
 export const PermissionsButton = styled.span`
   color: ${themeColor};
@@ -53,7 +55,7 @@ export const PermissionsButton = styled.span`
   line-height: 30px;
   text-align: center;
   text-transform: uppercase;
-  font-size: ${props => props.theme.commentFontSize};
+  font-size: ${(props) => props.theme.commentFontSize};
   cursor: pointer;
   transition: all 0.3s ease-in;
   margin-right: 10px;
@@ -65,7 +67,7 @@ export const PermissionsButton = styled.span`
       display: none;
     }
     &:before {
-      content: "Add Permissions";
+      content: 'Add Permissions';
     }
   }
 
@@ -73,14 +75,14 @@ export const PermissionsButton = styled.span`
     width: 105px;
     margin-right: 5px;
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-content {
     .ant-table-body {
       th,
       td {
-        font-weight: ${props => props.theme.semiBold};
+        font-weight: ${(props) => props.theme.semiBold};
       }
       .ant-table-thead {
         > tr {
@@ -89,7 +91,7 @@ export const StyledTable = styled(Table)`
             color: ${darkGrey1};
             text-transform: uppercase;
             border-bottom: 2px solid ${white};
-            font-size: ${props => props.theme.bodyFontSize};
+            font-size: ${(props) => props.theme.bodyFontSize};
           }
         }
       }
@@ -97,7 +99,7 @@ export const StyledTable = styled(Table)`
         > tr {
           > td {
             padding: 8px 16px;
-            font-size: ${props => props.theme.standardFont};
+            font-size: ${(props) => props.theme.standardFont};
             &:last-child {
               padding: 0px;
             }
@@ -106,7 +108,7 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const AddCollectionButton = styled.span`
   background: ${themeColor};
@@ -118,11 +120,11 @@ export const AddCollectionButton = styled.span`
   line-height: 40px;
   text-align: center;
   text-transform: uppercase;
-  font-size: ${props => props.theme.commentFontSize};
+  font-size: ${(props) => props.theme.commentFontSize};
   cursor: pointer;
-  font-weight: ${props => props.theme.semiBold};
+  font-weight: ${(props) => props.theme.semiBold};
   margin-left: 20px;
-`;
+`
 
 export const ImportButton = styled(AddCollectionButton)`
   background: transparent;
@@ -135,14 +137,14 @@ export const ImportButton = styled(AddCollectionButton)`
   line-height: 30px;
   transition: all 0.3s ease-in;
   i {
-    font-size: ${props => props.theme.questionTextlargeFontSize};
+    font-size: ${(props) => props.theme.questionTextlargeFontSize};
     margin-right: 10px;
   }
   &:hover {
     color: ${white};
     background: ${themeColor};
   }
-`;
+`
 
 export const StyledSearch = styled(Input.Search)`
   height: 40px;
@@ -163,22 +165,22 @@ export const StyledSearch = styled(Input.Search)`
       }
     }
   }
-`;
+`
 
 export const BackArrowButton = styled.span`
   cursor: pointer;
-  font-size: ${props => props.theme.questionTexthugeFontSize};
+  font-size: ${(props) => props.theme.questionTexthugeFontSize};
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 export const TablesWrapper = styled.div`
   display: block;
   @media (max-width: ${smallDesktopWidth}) {
     flex-wrap: wrap;
   }
-`;
+`
 
 export const PermissionTableContainer = styled(CollectionTableContainer)`
   padding-top: 5px;
@@ -197,38 +199,38 @@ export const PermissionTableContainer = styled(CollectionTableContainer)`
     width: 100%;
     display: block;
   }
-`;
+`
 
 export const AddPermissionButton = styled(ImportButton)`
   height: 40px;
   line-height: 40px;
   float: right;
   margin-left: 0px;
-`;
+`
 
 export const StyledTab = styled(Tabs)`
   .ant-tabs-bar {
     border-bottom: 0px;
     .ant-tabs-tab {
-      font-size: ${props => props.theme.smallFontSize};
-      font-weight: ${props => props.theme.semiBold};
+      font-size: ${(props) => props.theme.smallFontSize};
+      font-weight: ${(props) => props.theme.semiBold};
       padding-top: 20px;
       padding-bottom: 20px;
     }
   }
-`;
+`
 
 export const CollectionSearchHeader = styled.div`
   display: flex;
   padding: 20px 10px;
   background: white;
-`;
+`
 
 export const StatusText = styled.span`
-  font-size: ${props => props.theme.tagFontSize};
+  font-size: ${(props) => props.theme.tagFontSize};
   text-transform: uppercase;
-  color: ${({ color }) => (color === "red" ? red : themeColorLight)};
-`;
+  color: ${({ color }) => (color === 'red' ? red : themeColorLight)};
+`
 
 export const StyledScollBar = styled(PerfectScrollbar)`
   max-height: ${({ maxHeight }) => maxHeight}px;
@@ -238,11 +240,11 @@ export const StyledScollBar = styled(PerfectScrollbar)`
   @media (max-width: ${smallDesktopWidth}) {
     max-height: 350px;
   }
-`;
+`
 
 export const DeletePermissionButton = styled.span`
   cursor: pointer;
   color: ${themeColor};
   margin-left: 7px;
   font-size: 18px;
-`;
+`

@@ -1,5 +1,5 @@
-import { queColor, attemptTypes } from "./questionTypes";
-import { PERF_BANDS, MASTERY } from "./assignmentStatus";
+import { queColor, attemptTypes } from './questionTypes'
+import { PERF_BANDS, MASTERY } from './assignmentStatus'
 
 export function getPerformanceBandAndColor(performance) {
   const performanceBand =
@@ -7,16 +7,16 @@ export function getPerformanceBandAndColor(performance) {
       ? PERF_BANDS.PROFICIENT
       : performance <= 90 && performance > 50
       ? PERF_BANDS.BASIC
-      : PERF_BANDS.BELOW_BASIC;
+      : PERF_BANDS.BELOW_BASIC
 
   const bgColor =
     performanceBand === PERF_BANDS.PROFICIENT
       ? queColor.GREEN_5
       : performanceBand === PERF_BANDS.BASIC
       ? queColor.BLUE_1
-      : queColor.ORANGE_1;
+      : queColor.ORANGE_1
 
-  return { performanceBand, bgColor };
+  return { performanceBand, bgColor }
 }
 
 export function getMasteryStatus(standardPerformance) {
@@ -26,17 +26,17 @@ export function getMasteryStatus(standardPerformance) {
     ? MASTERY.MASTERED
     : standardPerformance < 80 && standardPerformance >= 70
     ? MASTERY.ALMOST_MASTERED
-    : MASTERY.NOT_MASTERED;
+    : MASTERY.NOT_MASTERED
 }
 
-export function getRandomStudent(className, studName,min, max) {
-  return getRandomClass(className, min, max) + studName + getNumberInRange(1, 5);
+export function getRandomStudent(className, studName, min, max) {
+  return getRandomClass(className, min, max) + studName + getNumberInRange(1, 5)
 }
 
 export function getRandomClass(className, min, max) {
-  return className + getNumberInRange(min, max);
+  return className + getNumberInRange(min, max)
 }
 
-export function getNumberInRange(min,max){
-  return (Math.floor(Math.random() * (max - min) + min)).toString();
+export function getNumberInRange(min, max) {
+  return Math.floor(Math.random() * (max - min) + min).toString()
 }

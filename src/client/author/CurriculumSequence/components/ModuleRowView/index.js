@@ -1,12 +1,16 @@
-import React, { Fragment } from "react";
-import { Dropdown, Icon, Menu, Col } from "antd";
-import { IconMoreVertical, IconVerified } from "@edulastic/icons";
-import { lightGrey5, themeColor, themeColorLighter } from "@edulastic/colors";
-import { removeCommentsFromHtml } from "@edulastic/common/src/helpers";
-import { StyledLabel, StyledTag, MenuStyled } from "../../../Reports/common/styled";
-import { Tooltip } from "../../../../common/utils/helpers";
+import React, { Fragment } from 'react'
+import { Dropdown, Icon, Menu, Col } from 'antd'
+import { IconMoreVertical, IconVerified } from '@edulastic/icons'
+import { lightGrey5, themeColor, themeColorLighter } from '@edulastic/colors'
+import { removeCommentsFromHtml } from '@edulastic/common/src/helpers'
+import {
+  StyledLabel,
+  StyledTag,
+  MenuStyled,
+} from '../../../Reports/common/styled'
+import { Tooltip } from '../../../../common/utils/helpers'
 
-import ProgressBars from "./ProgressBars";
+import ProgressBars from './ProgressBars'
 import {
   CaretUp,
   IconActionButton,
@@ -18,10 +22,10 @@ import {
   ModuleTitlePrefix,
   ModuleDescription,
   LastColumn,
-  HideLinkLabel
-} from "../styled";
+  HideLinkLabel,
+} from '../styled'
 
-const ModuleRowView = props => {
+const ModuleRowView = (props) => {
   const {
     module,
     isDesktop,
@@ -41,95 +45,127 @@ const ModuleRowView = props => {
     deleteModuleMenuClick,
     isPlaylistDetailsPage,
     isManageContentActive,
-    customizeInDraft
-  } = props;
+    customizeInDraft,
+  } = props
 
-  const { title, data = [], description = "", moduleId, moduleGroupName } = module;
+  const {
+    title,
+    data = [],
+    description = '',
+    moduleId,
+    moduleGroupName,
+  } = module
 
-  const hideEditOptions = !urlHasUseThis;
+  const hideEditOptions = !urlHasUseThis
 
-  const totalAssigned = data.length;
+  const totalAssigned = data.length
 
   const moduleInlineStyle = {
-    "white-space": "nowrap",
+    'white-space': 'nowrap',
     opacity: module.hidden ? `.5` : `1`,
-    pointerEvents: module.hidden ? "none" : "all",
-    overflow: "hidden"
-  };
+    pointerEvents: module.hidden ? 'none' : 'all',
+    overflow: 'hidden',
+  }
 
-  const toPreviewDescription = (description || "").replace(/<p[^>]*>/g, "<span>").replace(/<\/p>/g, "</span>");
+  const toPreviewDescription = (description || '')
+    .replace(/<p[^>]*>/g, '<span>')
+    .replace(/<\/p>/g, '</span>')
 
-  const onClickHideShow = event => {
-    event.preventDefault();
-    event.stopPropagation();
-    toggleModule(module, moduleIndex);
-  };
+  const onClickHideShow = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    toggleModule(module, moduleIndex)
+  }
 
   const onClickAssign = () => {
-    !module.hidden && totalAssigned ? assignModule(module) : {};
-  };
+    !module.hidden && totalAssigned ? assignModule(module) : {}
+  }
 
   const moduleManagementMenu = (
     <MenuStyled data-cy="moduleItemMoreMenu">
       <CaretUp className="fa fa-caret-up" />
-      {!isDesktop && <Menu.Item onClick={onClickHideShow}>{module.hidden ? "Show Module" : "Hide Module"}</Menu.Item>}
-      {!isDesktop && !moduleStatus && totalAssigned && <Menu.Item onClick={onClickAssign}>Assign Module</Menu.Item>}
+      {!isDesktop && (
+        <Menu.Item onClick={onClickHideShow}>
+          {module.hidden ? 'Show Module' : 'Hide Module'}
+        </Menu.Item>
+      )}
+      {!isDesktop && !moduleStatus && totalAssigned && (
+        <Menu.Item onClick={onClickAssign}>Assign Module</Menu.Item>
+      )}
       <Menu.Item onClick={addModuleMenuClick}>Add Module</Menu.Item>
       <Menu.Item onClick={editModuleMenuClick}>Edit Module</Menu.Item>
       <Menu.Item onClick={deleteModuleMenuClick}>Delete Module</Menu.Item>
     </MenuStyled>
-  );
+  )
 
-  const hideLink = !hideEditOptions && hasEditAccess && !isStudent && !moduleStatus && (
-    <HideLinkLabel
-      textColor={themeColor}
-      fontWeight="Bold"
-      data-cy={module.hidden ? "show-module" : "hide-module"}
-      onClick={onClickHideShow}
-    >
-      {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
-    </HideLinkLabel>
-  );
+  const hideLink = !hideEditOptions &&
+    hasEditAccess &&
+    !isStudent &&
+    !moduleStatus && (
+      <HideLinkLabel
+        textColor={themeColor}
+        fontWeight="Bold"
+        data-cy={module.hidden ? 'show-module' : 'hide-module'}
+        onClick={onClickHideShow}
+      >
+        {module.hidden ? 'SHOW MODULE' : 'HIDE MODULE'}
+      </HideLinkLabel>
+    )
 
-  let moduleCompleteOrAssign = "";
+  let moduleCompleteOrAssign = ''
   if (!isStudent && moduleStatus && !hideEditOptions) {
     moduleCompleteOrAssign = (
-      <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
+      <StyledLabel
+        data-cy="module-complete"
+        textColor={themeColorLighter}
+        fontWeight="Bold"
+      >
         MODULE COMPLETED
-        <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
+        <IconVerified
+          color={themeColorLighter}
+          style={{ 'margin-left': '20px' }}
+        />
       </StyledLabel>
-    );
+    )
   } else if (!isStudent && !hideEditOptions) {
     moduleCompleteOrAssign = (
-      <StyledTag data-cy="AssignWholeModule" bgColor={themeColor} onClick={onClickAssign} style={moduleInlineStyle}>
-        {totalAssigned ? "ASSIGN MODULE" : "NO ASSIGNMENTS"}
+      <StyledTag
+        data-cy="AssignWholeModule"
+        bgColor={themeColor}
+        onClick={onClickAssign}
+        style={moduleInlineStyle}
+      >
+        {totalAssigned ? 'ASSIGN MODULE' : 'NO ASSIGNMENTS'}
       </StyledTag>
-    );
+    )
   }
 
   const moreActions = !isStudent &&
     (!isPlaylistDetailsPage || isManageContentActive) &&
     (hasEditAccess || customizeInDraft) && (
-      <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
-        <IconActionButton onClick={e => e.stopPropagation()}>
+      <Dropdown overlay={moduleManagementMenu} trigger={['click']}>
+        <IconActionButton onClick={(e) => e.stopPropagation()}>
           <IconMoreVertical width={5} height={14} color={themeColor} />
         </IconActionButton>
       </Dropdown>
-    );
+    )
 
   const moduleActions = (
-    <Fragment>
+    <>
       {hideLink}
       <LastColumn
         style={moduleInlineStyle}
-        width={hideEditOptions || isStudent ? "auto" : null}
-        justifyContent={hideEditOptions && "flex-end"}
-        ml={hideEditOptions && "auto"}
+        width={hideEditOptions || isStudent ? 'auto' : null}
+        justifyContent={hideEditOptions && 'flex-end'}
+        ml={hideEditOptions && 'auto'}
       >
-        {[moduleCompleteOrAssign, !isManageContentActive && isPlaylistDetailsPage ? null : moreActions]}
+        {[
+          moduleCompleteOrAssign,
+          !isManageContentActive && isPlaylistDetailsPage ? null : moreActions,
+        ]}
       </LastColumn>
-    </Fragment>
-  );
+    </>
+  )
 
   return (
     <ModuleHeader>
@@ -141,8 +177,8 @@ const ModuleRowView = props => {
           urlHasUseThis={urlHasUseThis}
           style={{
             ...moduleInlineStyle,
-            marginRight: urlHasUseThis && "auto",
-            width: isDesktop ? "" : "100%"
+            marginRight: urlHasUseThis && 'auto',
+            width: isDesktop ? '' : '100%',
           }}
         >
           <StyledLabel fontWeight="normal" textColor={lightGrey5}>
@@ -157,7 +193,7 @@ const ModuleRowView = props => {
                 <Icon
                   type="close-circle"
                   data-cy="removeUnit"
-                  style={{ visibility: "hidden" }}
+                  style={{ visibility: 'hidden' }}
                   onClick={() => removeUnit(module.id)}
                 />
               )}
@@ -167,7 +203,9 @@ const ModuleRowView = props => {
             <ModuleDescription
               collapsed={collapsed}
               dangerouslySetInnerHTML={{
-                __html: removeCommentsFromHtml(collapsed ? toPreviewDescription : description)
+                __html: removeCommentsFromHtml(
+                  collapsed ? toPreviewDescription : description
+                ),
               }}
             />
           )}
@@ -178,13 +216,13 @@ const ModuleRowView = props => {
           urlHasUseThis={urlHasUseThis}
           columnStyle={moduleInlineStyle}
           data={summaryData[moduleIndex]}
-          renderExtra={isMobile ? hideLink : ""}
+          renderExtra={isMobile ? hideLink : ''}
         />
         {isDesktop ? moduleActions : moreActions}
       </ModuleHeaderData>
     </ModuleHeader>
-  );
-};
+  )
+}
 
-export const InfoProgressBar = ProgressBars;
-export default ModuleRowView;
+export const InfoProgressBar = ProgressBars
+export default ModuleRowView

@@ -1,9 +1,15 @@
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconRead = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="23.232" height="23.232" viewBox="0 0 23.232 23.232" {...props}>
+const IconRead = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="23.232"
+    height="23.232"
+    viewBox="0 0 23.232 23.232"
+    {...props}
+  >
     <g transform="translate(0 -0.006)">
       <g transform="translate(0 0.006)">
         <path
@@ -14,6 +20,6 @@ const IconRead = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconRead);
+export default withIconStyles(IconRead)

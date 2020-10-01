@@ -1,11 +1,18 @@
-import React from "react";
-import styled from "styled-components";
-import { Modal, Row, Col, Spin, Select, Checkbox } from "antd";
-import { IconClose } from "@edulastic/icons";
-import { EduButton } from "@edulastic/common";
-import GoogleLogin from "react-google-login";
-import { greyThemeDark1, greyThemeLight, greyThemeLighter, lightGrey9, darkGrey2, themeColor } from "@edulastic/colors";
-import { scopes } from "../../../author/ManageClass/components/ClassListContainer/ClassCreatePage";
+import React from 'react'
+import styled from 'styled-components'
+import { Modal, Row, Col, Spin, Select, Checkbox } from 'antd'
+import { IconClose } from '@edulastic/icons'
+import { EduButton } from '@edulastic/common'
+import GoogleLogin from 'react-google-login'
+import {
+  greyThemeDark1,
+  greyThemeLight,
+  greyThemeLighter,
+  lightGrey9,
+  darkGrey2,
+  themeColor,
+} from '@edulastic/colors'
+import { scopes } from '../../../author/ManageClass/components/ClassListContainer/ClassCreatePage'
 
 const HangoutsModal = ({
   title,
@@ -21,7 +28,7 @@ const HangoutsModal = ({
   onCancel,
   loading,
   classList = [],
-  isStudent
+  isStudent,
 }) => (
   <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
     {loading ? (
@@ -37,7 +44,10 @@ const HangoutsModal = ({
         <StyledCol span={24} marginBottom="5px" justify="left">
           <StyledDiv color={darkGrey2}>{description}</StyledDiv>
         </StyledCol>
-        <StyledCol span={24} marginBottom={!isStudent && selected?.googleId ? "5px" : "20px"}>
+        <StyledCol
+          span={24}
+          marginBottom={!isStudent && selected?.googleId ? '5px' : '20px'}
+        >
           <StyledSelect
             placeholder="Select Class"
             dropdownStyle={{ zIndex: 2000 }}
@@ -55,12 +65,20 @@ const HangoutsModal = ({
         {!isStudent && selected?.googleId && (
           <StyledCol span={24} marginBottom="15px" justify="left">
             <Checkbox checked={checked} onChange={onCheckUncheck}>
-              <StyledDiv fontStyle="11px/15px Open Sans">SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM</StyledDiv>
+              <StyledDiv fontStyle="11px/15px Open Sans">
+                SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM
+              </StyledDiv>
             </Checkbox>
           </StyledCol>
         )}
         <StyledCol span={24}>
-          <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ "margin-left": "0px" }}>
+          <EduButton
+            height="40px"
+            width="200px"
+            isGhost
+            onClick={onCancel}
+            style={{ 'margin-left': '0px' }}
+          >
             Cancel
           </EduButton>
           {isStudent || hangoutLink ? (
@@ -70,7 +88,7 @@ const HangoutsModal = ({
               href={hangoutLink}
               target="_blank"
               disabled={!selected}
-              style={{ "margin-left": "20px" }}
+              style={{ 'margin-left': '20px' }}
             >
               Join
             </EduButton>
@@ -78,21 +96,23 @@ const HangoutsModal = ({
             <GoogleLogin
               clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
               developerKey={process.env.POI_APP_GOOGLE_KEY}
-              render={renderProps => (
+              render={(renderProps) => (
                 <>
                   <EduButton
                     height="40px"
                     width="200px"
                     disabled={!selected}
                     onClick={renderProps.onClick}
-                    style={{ "margin-left": "20px" }}
+                    style={{ 'margin-left': '20px' }}
                   >
                     Launch
                   </EduButton>
                 </>
               )}
               scope={scopes}
-              discoveryDocs={["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]}
+              discoveryDocs={[
+                'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+              ]}
               onSuccess={onOk}
               onFailure={onError}
               prompt="consent"
@@ -103,9 +123,9 @@ const HangoutsModal = ({
       </Row>
     )}
   </StyledModal>
-);
+)
 
-export default HangoutsModal;
+export default HangoutsModal
 
 const StyledModal = styled(Modal)`
   .ant-modal-content {
@@ -120,17 +140,17 @@ const StyledModal = styled(Modal)`
       padding: 24px 46px 32px;
     }
   }
-`;
+`
 
 const StyledCol = styled(Col)`
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justify || "center"};
-  margin-bottom: ${props => props.marginBottom};
+  justify-content: ${(props) => props.justify || 'center'};
+  margin-bottom: ${(props) => props.marginBottom};
   svg {
     cursor: pointer;
   }
-`;
+`
 
 const StyledSelect = styled(Select)`
   width: 100%;
@@ -156,12 +176,12 @@ const StyledSelect = styled(Select)`
       }
     }
   }
-`;
+`
 
 const StyledDiv = styled.div`
   display: inline;
   text-align: left;
-  font: ${props => props.fontStyle || "14px/19px Open Sans"};
-  font-weight: ${props => props.fontWeight || 600};
-  color: ${props => props.color || greyThemeDark1};
-`;
+  font: ${(props) => props.fontStyle || '14px/19px Open Sans'};
+  font-weight: ${(props) => props.fontWeight || 600};
+  color: ${(props) => props.color || greyThemeDark1};
+`

@@ -1,10 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconDynamic = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="21.784" height="9.803" viewBox="0 0 21.784 9.803" {...props}>
+const IconDynamic = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="21.784"
+    height="9.803"
+    viewBox="0 0 21.784 9.803"
+    {...props}
+  >
     <g transform="translate(-0.05 -141.332)">
       <g transform="translate(0.05 141.332)">
         <path
@@ -14,6 +20,6 @@ const IconDynamic = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconDynamic);
+export default withIconStyles(IconDynamic)

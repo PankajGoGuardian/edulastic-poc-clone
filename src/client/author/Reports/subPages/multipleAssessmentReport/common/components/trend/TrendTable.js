@@ -1,19 +1,24 @@
-import { Col, Row } from "antd";
-import { capitalize, groupBy, map, values } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { extraDesktopWidthMax } from "@edulastic/colors";
-import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import CsvTable from "../../../../../common/components/tables/CsvTable";
-import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
-import { StyledCard, StyledCell, StyledH3, StyledTable as Table } from "../../../../../common/styled";
-import { getHSLFromRange1 } from "../../../../../common/util";
-import dropDownData from "../../static/json/dropDownData.json";
-import { reportLinkColor } from "../../utils/constants";
-import { compareByMap } from "../../utils/trend";
-import TrendColumn from "./TrendColumn";
+import { Col, Row } from 'antd'
+import { capitalize, groupBy, map, values } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { extraDesktopWidthMax } from '@edulastic/colors'
+import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
+import CsvTable from '../../../../../common/components/tables/CsvTable'
+import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
+import {
+  StyledCard,
+  StyledCell,
+  StyledH3,
+  StyledTable as Table,
+} from '../../../../../common/styled'
+import { getHSLFromRange1 } from '../../../../../common/util'
+import dropDownData from '../../static/json/dropDownData.json'
+import { reportLinkColor } from '../../utils/constants'
+import { compareByMap } from '../../utils/trend'
+import TrendColumn from './TrendColumn'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -62,23 +67,31 @@ const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 const formatText = (test, type) => {
-  if (test[type] === null || typeof test[type] === "undefined") return "-";
+  if (test[type] === null || typeof test[type] === 'undefined') return '-'
 
-  if (test.records[0].maxScore === null || test.records[0].totalScore === null) return "Absent";
+  if (test.records[0].maxScore === null || test.records[0].totalScore === null)
+    return 'Absent'
 
-  if (type == "score") {
-    return `${test[type]}%`;
+  if (type == 'score') {
+    return `${test[type]}%`
   }
 
-  return test[type];
-};
+  return test[type]
+}
 
-const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, test) => {
+const getCol = (
+  text,
+  backgroundColor,
+  isCellClickable,
+  pageTitle,
+  location,
+  test
+) => {
   if (isCellClickable && text) {
-    const { assignmentId, groupId, testActivityId } = test.records[0];
+    const { assignmentId, groupId, testActivityId } = test.records[0]
 
     return (
       <StyledCell justify="center" style={{ backgroundColor }}>
@@ -90,59 +103,61 @@ const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, tes
               // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
               breadCrumb: [
                 {
-                  title: "INSIGHTS",
-                  to: "/author/reports"
+                  title: 'INSIGHTS',
+                  to: '/author/reports',
                 },
                 {
                   title: pageTitle,
-                  to: `${location.pathname}${location.search}`
-                }
-              ]
-            }
+                  to: `${location.pathname}${location.search}`,
+                },
+              ],
+            },
           }}
         >
           {text}
         </Link>
       </StyledCell>
-    );
+    )
   }
   return (
     <StyledCell justify="center" style={{ backgroundColor }}>
-      {text || "-"}
+      {text || '-'}
     </StyledCell>
-  );
-};
+  )
+}
 
 const getCellAttributes = (test = {}, analyseBy = {}) => {
-  let value = "-";
-  let color = "transparent";
+  let value = '-'
+  let color = 'transparent'
 
   switch (analyseBy.key) {
-    case "proficiencyBand":
+    case 'proficiencyBand':
       if (test.proficiencyBand) {
-        value = test.proficiencyBand.name || value;
-        color = test.proficiencyBand.color || color;
+        value = test.proficiencyBand.name || value
+        color = test.proficiencyBand.color || color
       }
-      break;
-    case "standard":
-      value = test.proficiencyBand.aboveStandard ? "Above Standard" : "Below Standard";
-      color = getHSLFromRange1((test.proficiencyBand.aboveStandard || 0) * 100);
-      break;
+      break
+    case 'standard':
+      value = test.proficiencyBand.aboveStandard
+        ? 'Above Standard'
+        : 'Below Standard'
+      color = getHSLFromRange1((test.proficiencyBand.aboveStandard || 0) * 100)
+      break
     default:
-      value = formatText(test, analyseBy.key);
-      if (value !== "Absent") {
-        color = getHSLFromRange1(test.score);
+      value = formatText(test, analyseBy.key)
+      if (value !== 'Absent') {
+        color = getHSLFromRange1(test.score)
       }
-      break;
+      break
   }
 
-  return { value, color };
-};
+  return { value, color }
+}
 
 const getColumns = (
   testData = [],
   rawMetric = [],
-  analyseBy = "",
+  analyseBy = '',
   compareBy = {},
   customColumns = [],
   toolTipContent,
@@ -151,121 +166,137 @@ const getColumns = (
   location,
   pageTitle
 ) => {
-  const groupedTests = groupBy(testData, "testId");
-  const groupedAvailableTests = groupBy(rawMetric, "testId");
+  const groupedTests = groupBy(testData, 'testId')
+  const groupedAvailableTests = groupBy(rawMetric, 'testId')
 
   const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
-    const currentTestGroup = groupedTests[testId] || {};
-    const test = currentTestGroup[0] || {};
-    const assessmentName = (test && test.testName) || "";
+    const currentTestGroup = groupedTests[testId] || {}
+    const test = currentTestGroup[0] || {}
+    const assessmentName = (test && test.testName) || ''
     const { startDate } =
-      groupedAvailableTests[testId].reduce((ele, res) => (ele.startDate > res.startDate ? ele : res)) || {};
+      groupedAvailableTests[testId].reduce((ele, res) =>
+        ele.startDate > res.startDate ? ele : res
+      ) || {}
 
     return {
       key: testId,
       title: assessmentName,
       startDate,
-      align: "center",
-      className: "normal-text",
-      dataIndex: "tests",
+      align: 'center',
+      className: 'normal-text',
+      dataIndex: 'tests',
       width: 120,
       render: (tests = {}, record) => {
-        const currentTest = tests[testId];
+        const currentTest = tests[testId]
 
         if (!currentTest) {
-          return getCol("-", "transparent");
+          return getCol('-', 'transparent')
         }
 
-        const { color, value } = getCellAttributes(currentTest, analyseBy);
+        const { color, value } = getCellAttributes(currentTest, analyseBy)
 
-        if (value === "Absent") {
-          return getCol("Absent", "#cccccc");
+        if (value === 'Absent') {
+          return getCol('Absent', '#cccccc')
         }
 
         const toolTipText = () => (
           <div>
             <TableTooltipRow title="Assessment Name: " value={assessmentName} />
             {toolTipContent(record, value)}
-            <TableTooltipRow title={`${capitalize(analyseBy.title)} : `} value={value} />
+            <TableTooltipRow
+              title={`${capitalize(analyseBy.title)} : `}
+              value={value}
+            />
           </div>
-        );
+        )
 
         return (
           <CustomTableTooltip
             placement="top"
             title={toolTipText()}
-            getCellContents={() => getCol(value, color, isCellClickable, pageTitle, location, record.tests[testId])}
+            getCellContents={() =>
+              getCol(
+                value,
+                color,
+                isCellClickable,
+                pageTitle,
+                location,
+                record.tests[testId]
+              )
+            }
           />
-        );
-      }
-    };
-  });
+        )
+      },
+    }
+  })
 
   // filter out test data without testName
-  const filteredDynamicColumns = dynamicColumns.filter(t => t.title);
+  const filteredDynamicColumns = dynamicColumns.filter((t) => t.title)
 
   const columns = [
     {
       key: compareBy.key,
       title: capitalize(compareBy.title),
-      align: "left",
-      fixed: "left",
+      align: 'left',
+      fixed: 'left',
       width: 180,
-      className: "class-name-column",
+      className: 'class-name-column',
       dataIndex: compareByMap[compareBy.key],
       render: (data, record) =>
-        compareBy.key === "student" ? (
-          <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
+        compareBy.key === 'student' ? (
+          <Link
+            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
+          >
             {data}
           </Link>
         ) : (
           data
         ),
       sorter: (a, b) => {
-        const keyword = compareByMap[compareBy.key];
-        return a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase());
-      }
+        const keyword = compareByMap[compareBy.key]
+        return a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase())
+      },
     },
     ...customColumns,
     {
-      key: "trend",
-      title: "Trend",
-      dataIndex: "tests",
+      key: 'trend',
+      title: 'Trend',
+      dataIndex: 'tests',
       width: 150,
-      align: "center",
-      visibleOn: ["browser"],
+      align: 'center',
+      visibleOn: ['browser'],
       render: (tests, record) => {
         const augmentedTests = map(tests, (test, testId) => {
-          const currentTestGroup = groupedTests[testId] || {};
-          const currentTest = currentTestGroup[0] || {};
-          const currentTestName = currentTest.testName || "";
+          const currentTestGroup = groupedTests[testId] || {}
+          const currentTest = currentTestGroup[0] || {}
+          const currentTestName = currentTest.testName || ''
 
           return {
             ...test,
-            testName: currentTestName
-          };
-        }).sort((a, b) => a.records[0].startDate - b.records[0].startDate);
+            testName: currentTestName,
+          }
+        }).sort((a, b) => a.records[0].startDate - b.records[0].startDate)
 
-        return <TrendColumn type={record.trend} tests={augmentedTests} />;
-      }
+        return <TrendColumn type={record.trend} tests={augmentedTests} />
+      },
     },
     {
-      key: "type",
-      title: "Trend",
-      dataIndex: "trend",
+      key: 'type',
+      title: 'Trend',
+      dataIndex: 'trend',
       width: 150,
-      align: "center",
-      visibleOn: ["csv"],
-      render: trend => capitalize(trend)
+      align: 'center',
+      visibleOn: ['csv'],
+      render: (trend) => capitalize(trend),
     },
     {
-      title: "SIS ID",
-      dataIndex: "sisId",
-      key: "sisId",
+      title: 'SIS ID',
+      dataIndex: 'sisId',
+      key: 'sisId',
       width: 100,
-      visibleOn: ["csv"]
-    }
-  ];
+      visibleOn: ['csv'],
+    },
+  ]
 
   return columns.concat(
     filteredDynamicColumns.sort((a, b) =>
@@ -273,8 +304,8 @@ const getColumns = (
         ? a.startDate - b.startDate
         : a.title.toLowerCase().localeCompare(b.title.toLowerCase())
     )
-  );
-};
+  )
+}
 
 const TrendTable = ({
   filters = {},
@@ -291,7 +322,7 @@ const TrendTable = ({
   onCsvConvert,
   isCellClickable,
   location,
-  pageTitle
+  pageTitle,
 }) => {
   const columns = getColumns(
     testData,
@@ -304,8 +335,8 @@ const TrendTable = ({
     isCellClickable,
     location,
     pageTitle
-  );
-  const groupedAvailableTests = groupBy(rawMetric, "testId");
+  )
+  const groupedAvailableTests = groupBy(rawMetric, 'testId')
 
   return (
     <StyledCard>
@@ -322,18 +353,18 @@ const TrendTable = ({
           colouredCellsNo={values(groupedAvailableTests).length}
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
-          scroll={{ x: "100%" }}
+          scroll={{ x: '100%' }}
           tableToRender={StyledTable}
         />
       </TableContainer>
     </StyledCard>
-  );
-};
+  )
+}
 
 const optionShape = PropTypes.shape({
   key: PropTypes.string,
-  title: PropTypes.string
-});
+  title: PropTypes.string,
+})
 
 TrendTable.propTypes = {
   testData: PropTypes.array.isRequired,
@@ -345,20 +376,20 @@ TrendTable.propTypes = {
   heading: PropTypes.string,
   toolTipContent: PropTypes.func,
   isCsvDownloading: PropTypes.bool,
-  onCsvConvert: PropTypes.func
-};
+  onCsvConvert: PropTypes.func,
+}
 
 TrendTable.defaultProps = {
   analyseBy: dropDownData.analyseByData[0],
   compareBy: dropDownData.compareByData[0],
   customColumns: [],
-  heading: "",
+  heading: '',
   toolTipContent: () => null,
   isCsvDownloading: false,
-  onCsvConvert: () => {}
-};
+  onCsvConvert: () => {},
+}
 
-export default TrendTable;
+export default TrendTable
 
 const TableContainer = styled.div`
   .ant-table-body {
@@ -368,4 +399,4 @@ const TableContainer = styled.div`
     white-space: nowrap;
     min-width: 150px;
   }
-`;
+`

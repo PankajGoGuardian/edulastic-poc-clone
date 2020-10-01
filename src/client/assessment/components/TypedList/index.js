@@ -1,20 +1,38 @@
-import React from "react";
-import { SortableContainer } from "react-sortable-hoc";
-import { isObject } from "lodash";
+import React from 'react'
+import { SortableContainer } from 'react-sortable-hoc'
+import { isObject } from 'lodash'
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer } from '@edulastic/common'
 
-import CustomGroup from "./components/CustomGroup";
-import withAddButton from "../HOC/withAddButton";
+import CustomGroup from './components/CustomGroup'
+import withAddButton from '../HOC/withAddButton'
 
-import TypedListItem from "./components/TypedListItem";
+import TypedListItem from './components/TypedListItem'
 
 const TypedList = SortableContainer(
-  ({ type, selectData, items = [], onRemove, onChange, prefix = "prefix", columns = 1 }) => (
-    <FlexContainer style={{ flexWrap: "wrap" }} justifyContent="space-between" data-cy="answer-typed-list-item">
+  ({
+    type,
+    selectData,
+    items = [],
+    onRemove,
+    onChange,
+    prefix = 'prefix',
+    columns = 1,
+  }) => (
+    <FlexContainer
+      style={{ flexWrap: 'wrap' }}
+      justifyContent="space-between"
+      data-cy="answer-typed-list-item"
+    >
       {items.map((value, index) => {
         if (isObject(value)) {
-          return <CustomGroup onRemove={() => onRemove(index)} onChange={val => onChange(index, val)} value={value} />;
+          return (
+            <CustomGroup
+              onRemove={() => onRemove(index)}
+              onChange={(val) => onChange(index, val)}
+              value={value}
+            />
+          )
         }
 
         return (
@@ -27,12 +45,14 @@ const TypedList = SortableContainer(
             value={value}
             columns={columns}
             onRemove={() => onRemove(index)}
-            onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}
+            onChange={(val) =>
+              typeof onChange === 'function' ? onChange(index, val) : () => {}
+            }
           />
-        );
+        )
       })}
     </FlexContainer>
   )
-);
+)
 
-export default withAddButton(TypedList);
+export default withAddButton(TypedList)

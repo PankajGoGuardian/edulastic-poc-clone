@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Popover } from "antd";
-import { MathFormulaDisplay, measureText } from "@edulastic/common";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { Popover } from 'antd'
+import { MathFormulaDisplay, measureText } from '@edulastic/common'
 
-import { getStemNumeration } from "../../../../utils/helpers";
-import DragHandle from "../DragHandle";
-import { Container } from "./styled/Container";
-import { StyledDragHandle } from "./styled/StyledDragHandle";
-import { Text } from "./styled/Text";
-import { WithIndex } from "./styled/WithIndex";
-import { IconWrapper } from "./styled/IconWrapper";
-import { IconCheck } from "./styled/IconCheck";
-import { IconClose } from "./styled/IconClose";
+import { getStemNumeration } from '../../../../utils/helpers'
+import DragHandle from '../DragHandle'
+import { Container } from './styled/Container'
+import { StyledDragHandle } from './styled/StyledDragHandle'
+import { Text } from './styled/Text'
+import { WithIndex } from './styled/WithIndex'
+import { IconWrapper } from './styled/IconWrapper'
+import { IconCheck } from './styled/IconCheck'
+import { IconClose } from './styled/IconClose'
 
 export const DragItemContent = ({
   smallSize,
@@ -23,28 +23,33 @@ export const DragItemContent = ({
   style,
   isReviewTab,
   stemNumeration,
-  isPrintPreview
+  isPrintPreview,
 }) => {
-  const [show, toggleShow] = useState(true);
+  const [show, toggleShow] = useState(true)
 
   const hidePopover = () => {
-    toggleShow(false);
-  };
+    toggleShow(false)
+  }
 
   const openPopover = () => {
-    toggleShow(true);
-  };
+    toggleShow(true)
+  }
 
-  const popoverContent = <MathFormulaDisplay onMouseEnter={hidePopover} dangerouslySetInnerHTML={{ __html: obj }} />;
-  const { scrollWidth } = measureText(obj, style);
+  const popoverContent = (
+    <MathFormulaDisplay
+      onMouseEnter={hidePopover}
+      dangerouslySetInnerHTML={{ __html: obj }}
+    />
+  )
+  const { scrollWidth } = measureText(obj, style)
   /**
    * 10 will be ellipsis width at other parts,
    * measureText method returns scrollWidth + 10
    * but in this type, drag item is not using ellipsis.
    * so need to reduce 10px
    */
-  const showPopover = scrollWidth - 10 > style?.maxWidth;
-  const checkStyle = !active && showPreview && !isReviewTab;
+  const showPopover = scrollWidth - 10 > style?.maxWidth
+  const checkStyle = !active && showPreview && !isReviewTab
 
   const content = (
     <Container
@@ -64,7 +69,12 @@ export const DragItemContent = ({
         </StyledDragHandle>
       )}
 
-      <Text checkStyle={checkStyle} correct={correct} smallSize={smallSize} isPrintPreview={isPrintPreview}>
+      <Text
+        checkStyle={checkStyle}
+        correct={correct}
+        smallSize={smallSize}
+        isPrintPreview={isPrintPreview}
+      >
         {showPreview && (
           <WithIndex checkStyle={checkStyle} correct={correct}>
             {getStemNumeration(stemNumeration, index)}
@@ -72,14 +82,18 @@ export const DragItemContent = ({
         )}
         <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />
         {showPreview && checkStyle && (
-          <IconWrapper checkStyle={checkStyle} correct={correct} isPrintPreview={isPrintPreview}>
+          <IconWrapper
+            checkStyle={checkStyle}
+            correct={correct}
+            isPrintPreview={isPrintPreview}
+          >
             {correct && <IconCheck />}
             {!correct && <IconClose />}
           </IconWrapper>
         )}
       </Text>
     </Container>
-  );
+  )
 
   return showPopover ? (
     <Popover visible={show} content={popoverContent}>
@@ -87,8 +101,8 @@ export const DragItemContent = ({
     </Popover>
   ) : (
     content
-  );
-};
+  )
+}
 
 DragItemContent.propTypes = {
   obj: PropTypes.any,
@@ -98,10 +112,10 @@ DragItemContent.propTypes = {
   isReviewTab: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   style: PropTypes.object.isRequired,
-  correct: PropTypes.bool
-};
+  correct: PropTypes.bool,
+}
 
 DragItemContent.defaultProps = {
   obj: null,
-  correct: false
-};
+  correct: false,
+}

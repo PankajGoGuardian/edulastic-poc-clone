@@ -1,10 +1,15 @@
-import styled from "styled-components";
-import { textColor, themeColor, mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import styled from 'styled-components'
+import {
+  textColor,
+  themeColor,
+  mobileWidth,
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
 
 export const AdditionalToggle = styled.span`
   cursor: pointer;
   text-transform: uppercase;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   color: ${textColor};
   position: relative;
   margin-top: 2px;
@@ -12,7 +17,7 @@ export const AdditionalToggle = styled.span`
   letter-spacing: 0.1px;
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     top: 6px;
     right: -28px;
@@ -20,17 +25,17 @@ export const AdditionalToggle = styled.span`
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
     transition: all 0.3s ease;
-    transform: ${({ active }) => (active ? "rotate(180deg)" : "rotate(0deg)")};
+    transform: ${({ active }) => (active ? 'rotate(180deg)' : 'rotate(0deg)')};
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.widgetOptions.labelFontSize};
+    font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
   }
-`;
+`
 
 export const AdditionalContainer = styled.div`
   margin-top: 34px;
-`;
+`
 
 export const AdditionalCompareUsing = styled.div`
   max-width: 390px;
@@ -49,11 +54,11 @@ export const AdditionalCompareUsing = styled.div`
     max-width: 260px;
 
     &-selection-selected-value {
-      font-size: ${props => props.theme.smallFontSize};
+      font-size: ${(props) => props.theme.smallFontSize};
       padding-left: 15px;
 
       @media (min-width: ${extraDesktopWidthMax}) {
-        font-size: ${props => props.theme.widgetOptions.labelFontSize};
+        font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
       }
     }
   }
@@ -72,13 +77,13 @@ export const AdditionalCompareUsing = styled.div`
       max-width: 100%;
     }
   }
-`;
+`
 
 export const AdditionalContainerRule = styled.div`
   display: block;
   width: 100%;
   text-align: right;
-`;
+`
 
 export const AdditionalAddRule = styled.span`
   cursor: pointer;
@@ -86,10 +91,10 @@ export const AdditionalAddRule = styled.span`
   text-transform: uppercase;
   color: ${themeColor};
   display: inline-block;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   letter-spacing: 0.4px;
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.widgetOptions.labelFontSize};
+    font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
   }
-`;
+`

@@ -1,206 +1,222 @@
-import EditToolBar from "../common/editToolBar";
-import Header from "../../itemDetail/header";
-import EditItemPage from "../../itemDetail/editPage";
-import { questionGroup, questionType, queColor } from "../../../../constants/questionTypes";
-import Helpers from "../../../../util/Helpers";
+import EditToolBar from '../common/editToolBar'
+import Header from '../../itemDetail/header'
+import EditItemPage from '../../itemDetail/editPage'
+import {
+  questionGroup,
+  questionType,
+  queColor,
+} from '../../../../constants/questionTypes'
+import Helpers from '../../../../util/Helpers'
 
 class EssayRichTextPage {
   constructor() {
-    this.editItemPage = new EditItemPage();
-    this.editToolBar = new EditToolBar();
-    this.header = new Header();
+    this.editItemPage = new EditItemPage()
+    this.editToolBar = new EditToolBar()
+    this.header = new Header()
   }
 
-  getQuestionEditor = () => cy.get(".fr-element").eq(0);
+  getQuestionEditor = () => cy.get('.fr-element').eq(0)
   // Text formatting options
 
   // scoring block -> move to common utitly
-  getScoreInput = () => cy.get('[data-cy="maxscore"]');
+  getScoreInput = () => cy.get('[data-cy="maxscore"]')
 
-  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]');
+  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]')
 
-  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]');
+  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]')
 
-  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]');
+  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]')
 
-  getShowWordCount = () => cy.get('[data-cy="showWordCount"]');
+  getShowWordCount = () => cy.get('[data-cy="showWordCount"]')
 
-  getBrowserSpellCheckOption = () => cy.get('[data-cy="browserSpellCheckOption"]');
+  getBrowserSpellCheckOption = () =>
+    cy.get('[data-cy="browserSpellCheckOption"]')
 
-  getPlaceHolderInPreview = () => this.getPreviewBox().find("[class^=fr-placeholder]");
+  getPlaceHolderInPreview = () =>
+    this.getPreviewBox().find('[class^=fr-placeholder]')
 
   getFontSizeSelect() {
-    return Helpers.getElement("fontSizeSelect");
+    return Helpers.getElement('fontSizeSelect')
   }
 
   getFontSize(value) {
-    return Helpers.getElement(value);
+    return Helpers.getElement(value)
   }
 
   // advance options
   clickOnAdvancedOptions() {
-    this.editItemPage.showAdvancedOptions();
-    return this;
+    this.editItemPage.showAdvancedOptions()
+    return this
   }
 
   // Display block
-  getSpecialCharactersOption = () => cy.get('[data-cy="specialCharactersOption"]');
+  getSpecialCharactersOption = () =>
+    cy.get('[data-cy="specialCharactersOption"]')
 
-  getCharactersToDisplay = () => cy.get('[data-cy="charactersToDisplay"]').next();
+  getCharactersToDisplay = () =>
+    cy.get('[data-cy="charactersToDisplay"]').next()
 
-  getMinHeightOption = () => cy.get('[data-cy="minHeightOption"]').next();
+  getMinHeightOption = () => cy.get('[data-cy="minHeightOption"]').next()
 
-  getMaxHeightOption = () => cy.get('[data-cy="maxHeightOption"]').next();
+  getMaxHeightOption = () => cy.get('[data-cy="maxHeightOption"]').next()
 
-  getPlaceholderOption = () => cy.get('[data-cy="placeholder"]').next();
+  getPlaceholderOption = () => cy.get('[data-cy="placeholder"]').next()
 
-  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
+  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]')
 
-  getWordlimitOptions = () => cy.get('[data-cy="wordLimitOptions"]');
+  getWordlimitOptions = () => cy.get('[data-cy="wordLimitOptions"]')
 
-  getWordLimitInput = () => cy.get('[data-cy="wordLimitInput"]');
+  getWordLimitInput = () => cy.get('[data-cy="wordLimitInput"]')
 
-  getWordCount = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewWordCount"]');
+  getWordCount = () =>
+    cy.get('[data-cy="questionPlainEssayAuthorPreviewWordCount"]')
 
   // on preview
-  getTextEditor = () => cy.get('*[class^="EssayRichTextPreview"]').find('[contenteditable="true"]');
+  getTextEditor = () =>
+    cy.get('*[class^="EssayRichTextPreview"]').find('[contenteditable="true"]')
 
-  getTextInPreview = () => this.getTextEditor().find("p");
+  getTextInPreview = () => this.getTextEditor().find('p')
 
-  getWordCount = () => cy.get('[data-cy="questionRichEssayAuthorPreviewWordCount"]');
+  getWordCount = () =>
+    cy.get('[data-cy="questionRichEssayAuthorPreviewWordCount"]')
 
-  getPreviewBox = () => cy.get('[data-cy="previewBoxContainer"]');
+  getPreviewBox = () => cy.get('[data-cy="previewBoxContainer"]')
 
-  getPreviewBoxContainer = () => this.getPreviewBox().find('[contenteditable="true"]');
+  getPreviewBoxContainer = () =>
+    this.getPreviewBox().find('[contenteditable="true"]')
 
-  getSpecialCharacterOptionInPreview = () => cy.get('[data-cmd="specialCharacters"]');
+  getSpecialCharacterOptionInPreview = () =>
+    cy.get('[data-cmd="specialCharacters"]')
 
   // TOOL BAR Options
 
-  getToolBarOptionInPreview = value => cy.get(`[data-cmd="${value}"]`);
+  getToolBarOptionInPreview = (value) => cy.get(`[data-cmd="${value}"]`)
 
-  getMathInputField = () => cy.get('[data-cy="answer-math-input-field"]');
+  getMathInputField = () => cy.get('[data-cy="answer-math-input-field"]')
 
-  getToolBarOptionInEditMode = value => cy.get(`[data-cy="${value}"]`);
+  getToolBarOptionInEditMode = (value) => cy.get(`[data-cy="${value}"]`)
 
-  selectOptions = value => cy.get(`[data-param1="${value}"]`).click();
+  selectOptions = (value) => cy.get(`[data-param1="${value}"]`).click()
 
-  verifySeparatorVisibilityAfter = value => {
+  verifySeparatorVisibilityAfter = (value) => {
     this.getToolBarOptionInPreview(value)
       .next()
-      .should("have.class", "fr-separator");
-  };
+      .should('have.class', 'fr-separator')
+  }
 
-  verifyMathInput = value => {
-    this.getMathInputField().type(value);
-    cy.get("button")
-      .contains("OK")
+  verifyMathInput = (value) => {
+    this.getMathInputField().type(value)
+    cy.get('button')
+      .contains('OK')
       .click({ force: true })
       .then(() => {
-        cy.get(`[data-latex="${value}"`).should("be.visible");
-      });
-  };
+        cy.get(`[data-latex="${value}"`).should('be.visible')
+      })
+  }
 
-  selectToolBarOptionInEditMode = value => {
-    this.getToolBarOptionInEditMode(value).then($ele => {
-      if ($ele.css("background-color") !== queColor.BLUE_2) {
-        cy.wrap($ele).click();
+  selectToolBarOptionInEditMode = (value) => {
+    this.getToolBarOptionInEditMode(value).then(($ele) => {
+      if ($ele.css('background-color') !== queColor.BLUE_2) {
+        cy.wrap($ele).click()
       }
-    });
-    this.getToolBarOptionInEditMode(value).should("have.css", "background-color", queColor.BLUE_2);
-  };
+    })
+    this.getToolBarOptionInEditMode(value).should(
+      'have.css',
+      'background-color',
+      queColor.BLUE_2
+    )
+  }
 
-  unselectAllToolBarOptions = value => {
-    this.getToolBarOptionInEditMode(value).then($ele => {
-      if ($ele.css("background-color") === queColor.BLUE_2) {
-        cy.wrap($ele).click();
+  unselectAllToolBarOptions = (value) => {
+    this.getToolBarOptionInEditMode(value).then(($ele) => {
+      if ($ele.css('background-color') === queColor.BLUE_2) {
+        cy.wrap($ele).click()
       }
-    });
-  };
+    })
+  }
 
   addTableWithCells = (row, column) => {
-    cy.get(`[data-row="${row}"][data-col="${column}"]`).click();
-  };
+    cy.get(`[data-row="${row}"][data-col="${column}"]`).click()
+  }
 
-  getInsertLinkInputWithIndex = index => cy.get("[class^=fr-link-attr]").eq(index);
+  getInsertLinkInputWithIndex = (index) =>
+    cy.get('[class^=fr-link-attr]').eq(index)
 
   insertLink = (url, text) => {
-    this.getInsertLinkInputWithIndex(0).type(url);
-    this.getInsertLinkInputWithIndex(1).type(text);
-    cy.get('[data-cmd="linkInsert"]').click();
-  };
+    this.getInsertLinkInputWithIndex(0).type(url)
+    this.getInsertLinkInputWithIndex(1).type(text)
+    cy.get('[data-cmd="linkInsert"]').click()
+  }
 
   // ACTION STARTS
 
-  setPoints = points => this.getScoreInput().type(`{selectall}${points}`);
+  setPoints = (points) => this.getScoreInput().type(`{selectall}${points}`)
 
   clickOnAdvancedOptions = () => {
-    cy.get('[class^="AdvancedOptionsLink"]').then(ele => {
-      if (ele.siblings().length === 3) cy.wrap(ele).click();
-    });
-    return this;
-  };
-
-  createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
-    const item = new EditItemPage();
-
-    item.createNewItem(onlyItem);
-    item.chooseQuestion(questionGroup.WRITING, questionType.ESSAY_RICH);
-    cy.fixture("questionAuthoring").then(authoringData => {
-      const { quetext, setAns } = authoringData.ESSAY_RICH[queKey];
-
-      if (quetext) {
-        const text = `Q${queIndex + 1} - ${quetext}`;
-        this.getQuestionEditor().type(text);
-      }
-      if (setAns.points) {
-        this.clickOnAdvancedOptions();
-        this.setPoints(setAns.points);
-      }
-    });
+    cy.get('[class^="AdvancedOptionsLink"]').then((ele) => {
+      if (ele.siblings().length === 3) cy.wrap(ele).click()
+    })
+    return this
   }
 
-  selectSpecialCharacterInPreview = value => {
-    this.getSpecialCharacterOptionInPreview().click();
-    cy.get('[data-param1="Custom"]').click();
-    cy.get(`[data-param1="${value}"]`).click({ force: true });
-    this.getPreviewBoxContainer().should("have.text", value);
-  };
+  createQuestion(queKey = 'default', queIndex = 0, onlyItem = true) {
+    const item = new EditItemPage()
+
+    item.createNewItem(onlyItem)
+    item.chooseQuestion(questionGroup.WRITING, questionType.ESSAY_RICH)
+    cy.fixture('questionAuthoring').then((authoringData) => {
+      const { quetext, setAns } = authoringData.ESSAY_RICH[queKey]
+
+      if (quetext) {
+        const text = `Q${queIndex + 1} - ${quetext}`
+        this.getQuestionEditor().type(text)
+      }
+      if (setAns.points) {
+        this.clickOnAdvancedOptions()
+        this.setPoints(setAns.points)
+      }
+    })
+  }
+
+  selectSpecialCharacterInPreview = (value) => {
+    this.getSpecialCharacterOptionInPreview().click()
+    cy.get('[data-param1="Custom"]').click()
+    cy.get(`[data-param1="${value}"]`).click({ force: true })
+    this.getPreviewBoxContainer().should('have.text', value)
+  }
 
   selectFont(value) {
-    this.getFontSizeSelect().click();
-    this.getFontSize(value).click();
+    this.getFontSizeSelect().click()
+    this.getFontSize(value).click()
   }
 
   checkFontSize(fontSize) {
-    this.header.preview();
+    this.header.preview()
     this.getPreviewBoxContainer()
-      .should("have.css", "font-size")
-      .and("eq", fontSize);
-    this.header.edit();
+      .should('have.css', 'font-size')
+      .and('eq', fontSize)
+    this.header.edit()
   }
 
-  selectWordlimitOption = value => {
+  selectWordlimitOption = (value) => {
     this.getWordlimitOptions()
       .click()
       .then(() => {
-        cy.get(".ant-select-dropdown-menu")
-          .contains(value)
-          .click();
-      });
-    this.getWordlimitOptions().should("contain.text", value);
-  };
+        cy.get('.ant-select-dropdown-menu').contains(value).click()
+      })
+    this.getWordlimitOptions().should('contain.text', value)
+  }
 
   verifyMinAndMaxHeightInPreview = (min, max) => {
-    this.header.preview();
+    this.header.preview()
     this.getPreviewBox()
-      .find("[class^=fr-wrapper]")
-      .should("have.css", "max-height", `${max}px`);
+      .find('[class^=fr-wrapper]')
+      .should('have.css', 'max-height', `${max}px`)
     this.getPreviewBox()
-      .find("[class^=fr-element]")
-      .should("have.css", "min-height", `${min - 1}px`);
-  };
+      .find('[class^=fr-element]')
+      .should('have.css', 'min-height', `${min - 1}px`)
+  }
   // ACTION ENDS
 }
 
-export default EssayRichTextPage;
+export default EssayRichTextPage

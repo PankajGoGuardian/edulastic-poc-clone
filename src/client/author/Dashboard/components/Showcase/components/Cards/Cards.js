@@ -1,13 +1,19 @@
-import React from "react";
-import { Row, Col } from "antd";
-import { themeColor } from "@edulastic/colors";
-import { Greencard, Infocard, InfoCardIconWrapper, RateWrapper, ButtonWrapper } from "./styled";
-import { TextWrapper } from "../../../styledComponents";
-import eurekaMath from "../../../../assets/svgs/eureka-math.svg";
-import heart from "../../../../assets/svgs/heart.svg";
-import share from "../../../../assets/svgs/share-button.svg";
-import user from "../../../../assets/svgs/man-user.svg";
-import hash from "../../../../assets/svgs/hash.svg";
+import React from 'react'
+import { Row, Col } from 'antd'
+import { themeColor } from '@edulastic/colors'
+import {
+  Greencard,
+  Infocard,
+  InfoCardIconWrapper,
+  RateWrapper,
+  ButtonWrapper,
+} from './styled'
+import { TextWrapper } from '../../../styledComponents'
+import eurekaMath from '../../../../assets/svgs/eureka-math.svg'
+import heart from '../../../../assets/svgs/heart.svg'
+import share from '../../../../assets/svgs/share-button.svg'
+import user from '../../../../assets/svgs/man-user.svg'
+import hash from '../../../../assets/svgs/hash.svg'
 // greenCard box
 export const GreencardSection = () => (
   <Greencard>
@@ -17,7 +23,7 @@ export const GreencardSection = () => (
     </TextWrapper>
     <RateWrapper defaultValue={0} />
   </Greencard>
-);
+)
 // info card
 export const InfoSection = () => (
   <Infocard>
@@ -25,7 +31,8 @@ export const InfoSection = () => (
       Course 3 Middle School Math
     </TextWrapper>
     <TextWrapper size="12px" color="#434B5D" padding="0.5rem">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia.
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum
+      metus et luctus lacinia.
     </TextWrapper>
     <ButtonWrapper block>TRY NOW</ButtonWrapper>
     <InfoCardIconWrapper>
@@ -71,4 +78,4 @@ export const InfoSection = () => (
       </Col>
     </InfoCardIconWrapper>
   </Infocard>
-);
+)

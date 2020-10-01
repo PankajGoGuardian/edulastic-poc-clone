@@ -1,21 +1,21 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
-import produce from "immer";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import "react-quill/dist/quill.snow.css";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import ReactDOM from 'react-dom'
+import produce from 'immer'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import 'react-quill/dist/quill.snow.css'
 
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { withNamespaces } from '@edulastic/localization'
 
-import QuestionTextArea from "../../components/QuestionTextArea";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { updateVariables } from "../../utils/variables";
+import QuestionTextArea from '../../components/QuestionTextArea'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { updateVariables } from '../../utils/variables'
 
-import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Subtitle } from '../../styled/Subtitle'
+import { Widget } from '../../styled/Widget'
 
 class ComposeQuestion extends Component {
   static propTypes = {
@@ -23,74 +23,75 @@ class ComposeQuestion extends Component {
     item: PropTypes.object.isRequired,
     setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
-  };
+    cleanSections: PropTypes.func,
+  }
 
   static defaultProps = {
     fillSections: () => {},
-    cleanSections: () => {}
-  };
+    cleanSections: () => {},
+  }
 
   componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
+    const { fillSections, t, item } = this.props
     // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.uiStyle.layoutHeight;
+    const node = ReactDOM.findDOMNode(this)
+    const deskHeight = item.uiStyle.layoutHeight
 
     fillSections(
-      "main",
-      t("component.cloze.text.composequestion"),
+      'main',
+      t('component.cloze.text.composequestion'),
       node.offsetTop,
       deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
       deskHeight === true,
       deskHeight
-    );
-  };
+    )
+  }
 
   componentWillUnmount = () => {
-    const { cleanSections } = this.props;
+    const { cleanSections } = this.props
 
-    cleanSections();
-  };
+    cleanSections()
+  }
 
-  onChangeQuestion = stimulus => {
-    const { item, setQuestionData } = this.props;
+  onChangeQuestion = (stimulus) => {
+    const { item, setQuestionData } = this.props
     setQuestionData(
-      produce(item, draft => {
-        draft.stimulus = stimulus;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft.stimulus = stimulus
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
   render() {
-    const { t, item } = this.props;
+    const { t, item } = this.props
 
     return (
       <Widget>
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.text.composequestion")}`)}>
-          {t("component.cloze.text.composequestion")}
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.cloze.text.composequestion')}`
+          )}
+        >
+          {t('component.cloze.text.composequestion')}
         </Subtitle>
 
         <QuestionTextArea
           inputId="stimulusInput"
-          placeholder={t("component.cloze.text.thisisstem")}
+          placeholder={t('component.cloze.text.thisisstem')}
           onChange={this.onChangeQuestion}
           value={item.stimulus}
           border="border"
         />
       </Widget>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
+  withNamespaces('assessment'),
+  connect(null, { setQuestionData: setQuestionDataAction })
+)
 
-export default enhance(ComposeQuestion);
+export default enhance(ComposeQuestion)

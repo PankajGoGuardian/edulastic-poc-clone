@@ -1,7 +1,7 @@
-import { evaluateAnswer } from "../evaluation";
+import { evaluateAnswer } from '../evaluation'
 
-describe("Assessment", () => {
-  it("assessment should return an action", () => {
-    expect(evaluateAnswer({})).toMatchSnapshot();
-  });
-});
+describe('Assessment', () => {
+  it('assessment should return an action', () => {
+    expect(evaluateAnswer({})).toMatchSnapshot()
+  })
+})

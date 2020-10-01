@@ -1,12 +1,20 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Text = styled.div`
   width: ${({ showDragHandle, smallSize }) =>
-    showDragHandle ? (smallSize ? "calc(100% - 30px)" : "calc(100% - 50px)") : "100%"};
+    showDragHandle
+      ? smallSize
+        ? 'calc(100% - 30px)'
+        : 'calc(100% - 50px)'
+      : '100%'};
 
   background: ${({ checkStyle, correct, theme, isPrintPreview }) => {
-    if (isPrintPreview) return "transparent";
-    return checkStyle ? (correct ? `${theme.checkbox.rightBgColor}` : `${theme.checkbox.wrongBgColor}`) : "none";
+    if (isPrintPreview) return 'transparent'
+    return checkStyle
+      ? correct
+        ? `${theme.checkbox.rightBgColor}`
+        : `${theme.checkbox.wrongBgColor}`
+      : 'none'
   }};
   display: flex;
   position: relative;
@@ -20,4 +28,4 @@ export const Text = styled.div`
     align-items: center;
     padding-right: 40px;
   }
-`;
+`

@@ -1,21 +1,27 @@
-import { tagsApi } from "@edulastic/api";
-import { FieldLabel, FlexContainer, SelectInputStyled, TextInputStyled, notification } from "@edulastic/common";
-import { red } from "@edulastic/colors";
-import { Select } from "antd";
-import { TextAreaInputStyled } from "@edulastic/common/src/components/InputStyles";
-import { uniqBy } from "lodash";
-import PropTypes from "prop-types";
-import React, { createRef, useEffect, useMemo, useState } from "react";
-import { selectsData } from "../../../common";
-import SummaryHeader from "../SummaryHeader/SummaryHeader";
-import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from "./styled";
+import { tagsApi } from '@edulastic/api'
+import {
+  FieldLabel,
+  FlexContainer,
+  SelectInputStyled,
+  TextInputStyled,
+  notification,
+} from '@edulastic/common'
+import { red } from '@edulastic/colors'
+import { Select } from 'antd'
+import { TextAreaInputStyled } from '@edulastic/common/src/components/InputStyles'
+import { uniqBy } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { createRef, useEffect, useMemo, useState } from 'react'
+import { selectsData } from '../../../common'
+import SummaryHeader from '../SummaryHeader/SummaryHeader'
+import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 
 export const renderAnalytics = (title, Icon, isLiked = false) => (
   <AnalyticsItem>
-    <Icon color={isLiked ? red : "#bbbfc4"} width={15} height={15} />
+    <Icon color={isLiked ? red : '#bbbfc4'} width={15} height={15} />
     <MetaTitle>{title}</MetaTitle>
   </AnalyticsItem>
-);
+)
 
 const Sidebar = ({
   title,
@@ -38,61 +44,66 @@ const Sidebar = ({
   windowWidth,
   isEditable,
   test,
-  toggleTestLikeRequest
+  toggleTestLikeRequest,
 }) => {
-  const newAllTagsData = uniqBy([...allTagsData, ...tags], "_id");
-  const subjectsList = selectsData.allSubjects;
-  const [searchValue, setSearchValue] = useState("");
-  const testTitleInput = createRef();
+  const newAllTagsData = uniqBy([...allTagsData, ...tags], '_id')
+  const subjectsList = selectsData.allSubjects
+  const [searchValue, setSearchValue] = useState('')
+  const testTitleInput = createRef()
 
   useEffect(() => {
     if (testTitleInput.current) {
-      testTitleInput.current.input.focus();
+      testTitleInput.current.input.focus()
     }
-  }, []);
+  }, [])
 
-  const filteredCollections = useMemo(() => collections.filter(c => collectionsToShow.some(o => o._id === c._id)), [
-    collections,
-    collectionsToShow
-  ]);
+  const filteredCollections = useMemo(
+    () =>
+      collections.filter((c) => collectionsToShow.some((o) => o._id === c._id)),
+    [collections, collectionsToShow]
+  )
 
-  const selectTags = async id => {
-    let newTag = {};
+  const selectTags = async (id) => {
+    let newTag = {}
     if (id === searchValue) {
-      const tempSearchValue = searchValue;
-      setSearchValue("");
+      const tempSearchValue = searchValue
+      setSearchValue('')
       try {
         const { _id, tagName } = await tagsApi.create({
           tagName: tempSearchValue,
-          tagType: "test"
-        });
-        newTag = { _id, tagName };
-        addNewTag({ tag: newTag, tagType: "test" });
+          tagType: 'test',
+        })
+        newTag = { _id, tagName }
+        addNewTag({ tag: newTag, tagType: 'test' })
       } catch (e) {
-        notification({ messageKey: "savingTagErr" });
+        notification({ messageKey: 'savingTagErr' })
       }
     } else {
-      newTag = newAllTagsData.find(tag => tag._id === id);
+      newTag = newAllTagsData.find((tag) => tag._id === id)
     }
-    const newTags = [...tags, newTag];
-    onChangeField("tags", newTags);
-    setSearchValue("");
-  };
+    const newTags = [...tags, newTag]
+    onChangeField('tags', newTags)
+    setSearchValue('')
+  }
 
-  const deselectTags = id => {
-    const newTags = tags.filter(tag => tag._id !== id);
-    onChangeField("tags", newTags);
-  };
+  const deselectTags = (id) => {
+    const newTags = tags.filter((tag) => tag._id !== id)
+    onChangeField('tags', newTags)
+  }
 
-  const searchTags = async value => {
-    if (newAllTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
-      setSearchValue("");
+  const searchTags = async (value) => {
+    if (
+      newAllTagsData.some(
+        (tag) => tag.tagName === value || tag.tagName === value.trim()
+      )
+    ) {
+      setSearchValue('')
     } else {
-      setSearchValue(value);
+      setSearchValue(value)
     }
-  };
+  }
 
-  const selectedTags = useMemo(() => tags.map(t => t._id), [tags]);
+  const selectedTags = useMemo(() => tags.map((t) => t._id), [tags])
 
   return (
     <FlexContainer padding="30px" flexDirection="column">
@@ -113,17 +124,19 @@ const Sidebar = ({
           showArrow
           value={title}
           data-cy="testname"
-          onChange={e => onChangeField("title", e.target.value)}
+          onChange={(e) => onChangeField('title', e.target.value)}
           size="large"
           placeholder="Enter the test name"
           ref={testTitleInput}
           margin="0px 0px 15px"
         />
-        {title !== undefined && !title.trim().length ? <ErrorWrapper>Please enter test title.</ErrorWrapper> : null}
+        {title !== undefined && !title.trim().length ? (
+          <ErrorWrapper>Please enter test title.</ErrorWrapper>
+        ) : null}
         <FieldLabel>Description</FieldLabel>
         <TextAreaInputStyled
           value={description}
-          onChange={e => onChangeField("description", e.target.value)}
+          onChange={(e) => onChangeField('description', e.target.value)}
           size="large"
           placeholder="Enter a description"
           margin="0px 0px 15px"
@@ -139,9 +152,12 @@ const Sidebar = ({
           defaultValue={grades}
           onChange={onChangeGrade}
           optionFilterProp="children"
-          getPopupContainer={trigger => trigger.parentNode}
+          getPopupContainer={(trigger) => trigger.parentNode}
           margin="0px 0px 15px"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+            0
+          }
         >
           {selectsData.allGrades.map(({ value, text }) => (
             <Select.Option key={value} value={value}>
@@ -161,8 +177,11 @@ const Sidebar = ({
           defaultValue={subjects}
           onChange={onChangeSubjects}
           optionFilterProp="children"
-          getPopupContainer={trigger => trigger.parentNode}
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          getPopupContainer={(trigger) => trigger.parentNode}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+            0
+          }
         >
           {subjectsList.map(({ value, text }) => (
             <Select.Option key={value} value={value}>
@@ -181,13 +200,17 @@ const Sidebar = ({
               size="large"
               margin="0px 0px 15px"
               placeholder="Please select"
-              value={filteredCollections.flatMap(c => c.bucketIds)}
+              value={filteredCollections.flatMap((c) => c.bucketIds)}
               onChange={(value, options) => onChangeCollection(value, options)}
               optionFilterProp="children"
-              getPopupContainer={trigger => trigger.parentNode}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              getPopupContainer={(trigger) => trigger.parentNode}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
             >
-              {collectionsToShow.map(o => (
+              {collectionsToShow.map((o) => (
                 <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                   {`${o.collectionName} - ${o.name}`}
                 </Select.Option>
@@ -210,15 +233,19 @@ const Sidebar = ({
           onSearch={searchTags}
           onSelect={selectTags}
           onDeselect={deselectTags}
-          getPopupContainer={trigger => trigger.parentNode}
-          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+          getPopupContainer={(trigger) => trigger.parentNode}
+          filterOption={(input, option) =>
+            option.props.title
+              .toLowerCase()
+              .includes(input.trim().toLowerCase())
+          }
         >
           {searchValue?.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
               {`${searchValue} (Create new Tag)`}
             </Select.Option>
           ) : (
-            ""
+            ''
           )}
           {newAllTagsData.map(({ tagName, _id }) => (
             <Select.Option key={_id} value={_id} title={tagName}>
@@ -227,12 +254,12 @@ const Sidebar = ({
           ))}
         </SelectInputStyled>
         {!!searchValue.length && !searchValue.trim().length && (
-          <p style={{ color: "red" }}>Please enter valid characters.</p>
+          <p style={{ color: 'red' }}>Please enter valid characters.</p>
         )}
       </Block>
     </FlexContainer>
-  );
-};
+  )
+}
 
 Sidebar.propTypes = {
   title: PropTypes.string.isRequired,
@@ -247,13 +274,13 @@ Sidebar.propTypes = {
   description: PropTypes.string.isRequired,
   createdBy: PropTypes.object,
   thumbnail: PropTypes.string,
-  onChangeSubjects: PropTypes.func.isRequired
-};
+  onChangeSubjects: PropTypes.func.isRequired,
+}
 
 Sidebar.defaultProps = {
   owner: false,
-  createdBy: "",
-  thumbnail: ""
-};
+  createdBy: '',
+  thumbnail: '',
+}
 
-export default Sidebar;
+export default Sidebar

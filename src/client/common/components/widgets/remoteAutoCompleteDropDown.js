@@ -1,14 +1,14 @@
 // @ts-check
-import { black, themeColor, white } from "@edulastic/colors";
-import { AutoComplete, Icon, Input } from "antd";
-import { some } from "lodash";
-import React, { useImperativeHandle, useRef, useState } from "react";
-import styled from "styled-components";
-import { useInternalEffect } from "../../../author/Reports/common/hooks/useInternalEffect";
-import { TextInputStyled } from "@edulastic/common";
+import { black, themeColor, white } from '@edulastic/colors'
+import { AutoComplete, Icon, Input } from 'antd'
+import { some } from 'lodash'
+import React, { useImperativeHandle, useRef, useState } from 'react'
+import styled from 'styled-components'
+import { TextInputStyled } from '@edulastic/common'
+import { useInternalEffect } from '../../../author/Reports/common/hooks/useInternalEffect'
 
-const Option = AutoComplete.Option;
-const OptGroup = AutoComplete.OptGroup;
+const Option = AutoComplete.Option
+const OptGroup = AutoComplete.OptGroup
 
 // IMPORTANT:
 // onChange props is passed by ant design to support Ant design Form items as it requires onChange Callback
@@ -18,238 +18,257 @@ const OptGroup = AutoComplete.OptGroup;
 
 const RemoteAutocompleteDropDown = ({
   className,
-  containerClassName = "",
-  prefix = "",
-  by = { key: "", title: "" },
+  containerClassName = '',
+  prefix = '',
+  by = { key: '', title: '' },
   selectCB = (obj, comData) => {},
-  onSearchTextChange = value => {},
+  onSearchTextChange = (value) => {},
   data = [],
   comData,
-  iconType = "caret-down",
+  iconType = 'caret-down',
   rotateIcon = true,
   onChange,
   createNew = false,
-  createNewLabel = "Create New",
-  existingLabel = "Existing",
-  placeholder = "",
+  createNewLabel = 'Create New',
+  existingLabel = 'Existing',
+  placeholder = '',
   ItemTemplate = null,
-  minHeight = "30px",
-  filterKeys = ["title"],
+  minHeight = '30px',
+  filterKeys = ['title'],
   setSelectedOnDataChange = false,
   isLoading = false,
   _ref,
   disabled = false,
-  isModalOpen
+  isModalOpen,
 }) => {
-  const [dropDownData, setDropDownData] = useState(data);
-  const [selected, setSelected] = useState(by);
-  const [text, setText] = useState(by.title);
-  const [isDropDownVisible, setIsDropDownVisible] = useState(false);
-  const [addCreateNewOption, setAddCreateNewOption] = useState(false);
-  const autoRef = useRef(null);
-  const textChangeStatusRef = useRef(false);
-  const isFirstRender = useRef(true);
+  const [dropDownData, setDropDownData] = useState(data)
+  const [selected, setSelected] = useState(by)
+  const [text, setText] = useState(by.title)
+  const [isDropDownVisible, setIsDropDownVisible] = useState(false)
+  const [addCreateNewOption, setAddCreateNewOption] = useState(false)
+  const autoRef = useRef(null)
+  const textChangeStatusRef = useRef(false)
+  const isFirstRender = useRef(true)
 
   const isItemPresent = (_data, isPresentItem) => {
-    const isItemPresentFlag = _data.find(_item => _item.title === isPresentItem.title);
-    return !!isItemPresentFlag;
-  };
+    const isItemPresentFlag = _data.find(
+      (_item) => _item.title === isPresentItem.title
+    )
+    return !!isItemPresentFlag
+  }
 
   useInternalEffect(() => {
-    let item = null;
+    let item = null
     if (setSelectedOnDataChange) {
       if (data.length) {
-        item = data.find(item => {
+        item = data.find((item) => {
           if (item.key === selected.key) {
-            return true;
+            return true
           }
-        });
+        })
         if (!item) {
-          item = data[0];
+          item = data[0]
         }
       } else {
-        item = { key: "", title: "" };
+        item = { key: '', title: '' }
       }
-      setSelected(item);
+      setSelected(item)
     }
 
-    setDropDownData(data);
+    setDropDownData(data)
     if (isItemPresent(data, { title: text }) && createNew) {
-      setAddCreateNewOption(false);
+      setAddCreateNewOption(false)
     } else if (createNew) {
-      setAddCreateNewOption(true);
+      setAddCreateNewOption(true)
     }
-  }, [data]);
+  }, [data])
 
   useInternalEffect(() => {
-    let item = data.find(item => {
-      if (typeof by === "string" && item.key === by) {
-        return true;
+    let item = data.find((item) => {
+      if (typeof by === 'string' && item.key === by) {
+        return true
       }
-      if (typeof by === "object" && item.key === by.key) {
-        return true;
+      if (typeof by === 'object' && item.key === by.key) {
+        return true
       }
-    });
+    })
 
     if (!item && data.length) {
-      item = data[0];
+      item = data[0]
     } else if (!item && !data.length) {
-      item = { key: "", title: "" };
+      item = { key: '', title: '' }
     }
 
     if (setSelectedOnDataChange) {
-      setSelected(item);
+      setSelected(item)
     } else {
-      setSelected({ key: "", title: "" });
+      setSelected({ key: '', title: '' })
     }
-  }, []);
+  }, [])
 
   useInternalEffect(() => {
-    setDropDownData([...data]);
-  }, [isLoading]);
+    setDropDownData([...data])
+  }, [isLoading])
 
   useImperativeHandle(_ref, () => ({
     wipeSelected: () => {
-      setText("");
-      setDropDownData([...data]);
-      onSelect("", { props: { title: "" } });
-    }
-  }));
+      setText('')
+      setDropDownData([...data])
+      onSelect('', { props: { title: '' } })
+    },
+  }))
 
-  const buildDropDownData = datum => {
-    let searchedDatum;
+  const buildDropDownData = (datum) => {
+    let searchedDatum
     if (text && text.length >= 3) {
-      searchedDatum = datum.filter(item => {
-        return some(filterKeys, fKey => {
-          let test = item[fKey] || item.title;
-          test = `${test}`.toLocaleLowerCase();
-          return test.includes(`${text}`.toLocaleLowerCase());
-        });
-      });
+      searchedDatum = datum.filter((item) => {
+        return some(filterKeys, (fKey) => {
+          let test = item[fKey] || item.title
+          test = `${test}`.toLocaleLowerCase()
+          return test.includes(`${text}`.toLocaleLowerCase())
+        })
+      })
     } else {
-      searchedDatum = datum;
+      searchedDatum = datum
     }
 
-    let arr;
-    if (addCreateNewOption && text && text.trim() && text.length >= 3 && !isLoading) {
-      const existingArr = searchedDatum.map(item => (
+    let arr
+    if (
+      addCreateNewOption &&
+      text &&
+      text.trim() &&
+      text.length >= 3 &&
+      !isLoading
+    ) {
+      const existingArr = searchedDatum.map((item) => (
         // cleverId is required to validate district
-        <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
+        <Option
+          key={item.key}
+          title={item.title}
+          cleverId={item.cleverId || ''}
+        >
           {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
         </Option>
-      ));
+      ))
       arr = [
         <OptGroup key="Create New" label={createNewLabel}>
           {[
             <Option key="Add New" title={text}>
-              <p data-title={text} style={{ width: "100%", height: "100%" }}>
+              <p data-title={text} style={{ width: '100%', height: '100%' }}>
                 {text}
               </p>
-            </Option>
+            </Option>,
           ]}
         </OptGroup>,
         <OptGroup key="Existing" label={existingLabel}>
           {[...existingArr]}
-        </OptGroup>
-      ];
+        </OptGroup>,
+      ]
     } else {
-      arr = searchedDatum.map(item => (
+      arr = searchedDatum.map((item) => (
         // cleverId is required to validate district
-        <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
+        <Option
+          key={item.key}
+          title={item.title}
+          cleverId={item.cleverId || ''}
+        >
           {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
         </Option>
-      ));
+      ))
     }
 
-    return arr;
-  };
+    return arr
+  }
 
-  const onSearch = value => {
+  const onSearch = (value) => {
     if (value.length > 2) {
-      let exactMatchFound = false;
-      const searchItem = data.filter(item => item.title === value);
+      let exactMatchFound = false
+      const searchItem = data.filter((item) => item.title === value)
       if (searchItem) {
-        exactMatchFound = true;
+        exactMatchFound = true
       }
-      setDropDownData([...data]);
+      setDropDownData([...data])
 
       if (createNew && !exactMatchFound) {
-        setAddCreateNewOption(true);
+        setAddCreateNewOption(true)
       } else {
-        setAddCreateNewOption(false);
+        setAddCreateNewOption(false)
       }
     } else {
       if (data.length !== dropDownData.length) {
         // If search text length is less than 3 and we are not displaying all the iteps then display all the items.
-        setDropDownData(data);
+        setDropDownData(data)
       }
       if (createNew && !isItemPresent(data, { title: value }) && value) {
-        setAddCreateNewOption(true);
+        setAddCreateNewOption(true)
       } else {
-        setAddCreateNewOption(false);
+        setAddCreateNewOption(false)
       }
     }
-    setText(value);
-    textChangeStatusRef.current = true;
-    onSearchTextChange(value);
-  };
+    setText(value)
+    textChangeStatusRef.current = true
+    onSearchTextChange(value)
+  }
 
-  const triggerChange = changedValue => {
+  const triggerChange = (changedValue) => {
     if (onChange) {
       onChange({
-        ...changedValue
-      });
+        ...changedValue,
+      })
     }
-  };
+  }
 
   const onBlur = () => {
-    setText(selected.title);
-    triggerChange(selected);
+    setText(selected.title)
+    triggerChange(selected)
 
-    textChangeStatusRef.current = false;
-  };
+    textChangeStatusRef.current = false
+  }
 
   const onSelect = (key, item) => {
-    const obj = { key, title: item.props.title, cleverId: item.props.cleverId };
-    setSelected(obj);
-    setText(obj.title);
-    selectCB(obj, comData);
+    const obj = { key, title: item.props.title, cleverId: item.props.cleverId }
+    setSelected(obj)
+    setText(obj.title)
+    selectCB(obj, comData)
 
-    triggerChange(obj);
-    autoRef.current.blur(obj.title);
+    triggerChange(obj)
+    autoRef.current.blur(obj.title)
 
-    textChangeStatusRef.current = false;
-  };
+    textChangeStatusRef.current = false
+  }
 
   const _onChange = () => {
     if (textChangeStatusRef.current !== true) {
-      autoRef.current.blur();
+      autoRef.current.blur()
     }
-  };
+  }
 
   const onFocus = () => {
-    setText("");
-    triggerChange({ key: "", title: "" });
-    setDropDownData(data);
-    setAddCreateNewOption(false);
-    textChangeStatusRef.current = true;
-  };
+    setText('')
+    triggerChange({ key: '', title: '' })
+    setDropDownData(data)
+    setAddCreateNewOption(false)
+    textChangeStatusRef.current = true
+  }
 
-  const onDropdownVisibleChange = open => {
-    setIsDropDownVisible(open);
-  };
+  const onDropdownVisibleChange = (open) => {
+    setIsDropDownVisible(open)
+  }
 
-  const dataSource = buildDropDownData(dropDownData);
-  isFirstRender.current = false;
+  const dataSource = buildDropDownData(dropDownData)
+  isFirstRender.current = false
   return (
-    <StyledDiv isModalOpen={isModalOpen} className={`${containerClassName} remote-autocomplete-dropdown`}>
+    <StyledDiv
+      isModalOpen={isModalOpen}
+      className={`${containerClassName} remote-autocomplete-dropdown`}
+    >
       <AutoComplete
         dataSource={dataSource}
         dropdownClassName={className}
         className={className}
         onSearch={onSearch}
         onBlur={onBlur}
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
         onFocus={onFocus}
         onSelect={onSelect}
         onChange={_onChange}
@@ -262,20 +281,24 @@ const RemoteAutocompleteDropDown = ({
           data-cy={selected.title ? selected.title : placeholder}
           suffix={
             <Icon
-              type={isLoading ? "loading" : iconType}
-              className={`${isDropDownVisible && rotateIcon ? "ant-input-suffix-icon-rotate-up" : ""}`}
-              style={{ color: "#00ad50" }}
+              type={isLoading ? 'loading' : iconType}
+              className={`${
+                isDropDownVisible && rotateIcon
+                  ? 'ant-input-suffix-icon-rotate-up'
+                  : ''
+              }`}
+              style={{ color: '#00ad50' }}
             />
           }
           placeholder={selected.title ? selected.title : placeholder}
         />
       </AutoComplete>
     </StyledDiv>
-  );
-};
+  )
+}
 
 const StyledDiv = styled.div`
-  margin: ${props => (props.isModalOpen ? "0px" : "0px 5px")};
+  margin: ${(props) => (props.isModalOpen ? '0px' : '0px 5px')};
   overflow: hidden;
 
   .ant-input-suffix i {
@@ -284,12 +307,12 @@ const StyledDiv = styled.div`
   .ant-select-selection {
     .ant-select-selection__rendered {
       .ant-input {
-        ${props =>
+        ${(props) =>
           props.isModalOpen && {
-            border: "1px solid #b9b9b9 !important",
-            height: "40px",
-            background: "#f8f8f8 !important",
-            borderRadius: "2px"
+            border: '1px solid #b9b9b9 !important',
+            height: '40px',
+            background: '#f8f8f8 !important',
+            borderRadius: '2px',
           }}
       }
     }
@@ -302,13 +325,13 @@ const StyledDiv = styled.div`
   button {
     white-space: pre-wrap;
   }
-`;
+`
 
 const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
   .ant-select-dropdown-menu {
     .ant-select-dropdown-menu-item {
       padding: 10px;
-      min-height: ${props => (props.minHeight ? props.minHeight : "30px")};
+      min-height: ${(props) => (props.minHeight ? props.minHeight : '30px')};
       &-active,
       &:hover {
         background-color: ${themeColor};
@@ -340,6 +363,6 @@ const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
     color: ${black};
     cursor: default;
   }
-`;
+`
 
-export { StyledRemoteAutocompleteDropDown as RemoteAutocompleteDropDown };
+export { StyledRemoteAutocompleteDropDown as RemoteAutocompleteDropDown }

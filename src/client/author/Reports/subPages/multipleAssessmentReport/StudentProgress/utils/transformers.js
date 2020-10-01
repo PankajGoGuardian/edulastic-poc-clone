@@ -1,24 +1,32 @@
-import { map, forEach, find, orderBy } from "lodash";
-import next from "immer";
-import { getProficiencyBand } from "../../../../common/util";
+import { map, forEach, find, orderBy } from 'lodash'
+import next from 'immer'
+import { getProficiencyBand } from '../../../../common/util'
 
 export const augmentWithBand = (metricInfo = [], bandInfo = []) =>
-  map(metricInfo, metric => {
-    return next(metric, draftMetric => {
+  map(metricInfo, (metric) => {
+    return next(metric, (draftMetric) => {
       forEach(draftMetric.tests, (test, testId) => {
-        draftMetric.tests[testId].proficiencyBand = getProficiencyBand(test.score, bandInfo);
-      });
-    });
-  });
+        draftMetric.tests[testId].proficiencyBand = getProficiencyBand(
+          test.score,
+          bandInfo
+        )
+      })
+    })
+  })
 
 export const augmentWithStudentInfo = (metricInfo = [], orgData = []) => {
-  let data = map(metricInfo, student => {
+  const data = map(metricInfo, (student) => {
     // get the related organisation
-    const relatedOrg = find(orgData, org => org.groupId === student.groupId) || {};
-    const { groupName = "N/A", schoolName = "N/A", teacherName = "N/A" } = relatedOrg;
-    return { ...student, groupName, schoolName, teacherName };
-  });
+    const relatedOrg =
+      find(orgData, (org) => org.groupId === student.groupId) || {}
+    const {
+      groupName = 'N/A',
+      schoolName = 'N/A',
+      teacherName = 'N/A',
+    } = relatedOrg
+    return { ...student, groupName, schoolName, teacherName }
+  })
 
-  //sorting data in accessending order of student name
-  return orderBy(data, ["firstName", "lastName"], ["asc", "asc"]);
-};
+  // sorting data in accessending order of student name
+  return orderBy(data, ['firstName', 'lastName'], ['asc', 'asc'])
+}

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { white } from '@edulastic/colors'
 
 export const ColorPickerContainer = styled.div`
   z-index: 900;
@@ -12,7 +12,7 @@ export const ColorPickerContainer = styled.div`
 
   &::after {
     position: absolute;
-    content: "";
+    content: '';
     border: 10px solid;
     border-top-color: white;
     border-right-color: transparent;
@@ -22,7 +22,7 @@ export const ColorPickerContainer = styled.div`
     left: 50%;
     transform: translateX(-50%);
   }
-`;
+`
 
 export const Overlay = styled.div`
   position: fixed;
@@ -31,4 +31,4 @@ export const Overlay = styled.div`
   right: 0px;
   bottom: 0px;
   z-index: 2;
-`;
+`

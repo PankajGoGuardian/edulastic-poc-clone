@@ -1,36 +1,67 @@
 /* eslint-disable react/prop-types */
-import { passageApi, testItemsApi } from "@edulastic/api";
-import { red, themeColor, white, title } from "@edulastic/colors";
-import { EduButton, FlexContainer, notification, withWindowSizes } from "@edulastic/common";
-import { questionType, roleuser } from "@edulastic/constants";
-import { IconClose, IconCollapse, IconCopy, IconExpand, IconPencilEdit, IconTrash, IconClear } from "@edulastic/icons";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Icon, Modal, Spin } from "antd";
-import { get, intersection, keyBy, uniq } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import styled, { css } from "styled-components";
-import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
-import { Nav } from "../../../../../assessment/themes/common";
-import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
-import { getAssignmentsSelector } from "../../../../AssignTest/duck";
-import { clearItemDetailAction, deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
+import { passageApi, testItemsApi } from '@edulastic/api'
+import { red, themeColor, white, title } from '@edulastic/colors'
+import {
+  EduButton,
+  FlexContainer,
+  notification,
+  withWindowSizes,
+} from '@edulastic/common'
+import { questionType, roleuser } from '@edulastic/constants'
+import {
+  IconClose,
+  IconCollapse,
+  IconCopy,
+  IconExpand,
+  IconPencilEdit,
+  IconTrash,
+  IconClear,
+} from '@edulastic/icons'
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Icon, Modal, Spin } from 'antd'
+import { get, intersection, keyBy, uniq } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import styled, { css } from 'styled-components'
+import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
+import { Nav } from '../../../../../assessment/themes/common'
+import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
+import { getAssignmentsSelector } from '../../../../AssignTest/duck'
+import {
+  clearItemDetailAction,
+  deleteItemAction,
+  getItemDeletingSelector,
+} from '../../../../ItemDetail/ducks'
 import {
   addItemToCartAction,
-  approveOrRejectSingleItem as approveOrRejectSingleItemAction
-} from "../../../../ItemList/ducks";
-import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
-import { getTestSelector, setTestDataAndUpdateAction, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
-import { clearAnswersAction } from "../../../actions/answers";
-import { changePreviewAction, changeViewAction } from "../../../actions/view";
-import { getCollectionsSelector, getUserFeatures, getWritableCollectionsSelector } from "../../../selectors/user";
-import { allowDuplicateCheck, allowContentEditCheck } from "../../../utils/permissionCheck";
-import ScoreBlock from "../ScoreBlock";
-import AuthorTestItemPreview from "./AuthorTestItemPreview";
+  approveOrRejectSingleItem as approveOrRejectSingleItemAction,
+} from '../../../../ItemList/ducks'
+import {
+  getSelectedItemSelector,
+  setTestItemsAction,
+} from '../../../../TestPage/components/AddItems/ducks'
+import {
+  getTestSelector,
+  setTestDataAndUpdateAction,
+  updateTestAndNavigateAction,
+} from '../../../../TestPage/ducks'
+import { clearAnswersAction } from '../../../actions/answers'
+import { changePreviewAction, changeViewAction } from '../../../actions/view'
+import {
+  getCollectionsSelector,
+  getUserFeatures,
+  getWritableCollectionsSelector,
+} from '../../../selectors/user'
+import {
+  allowDuplicateCheck,
+  allowContentEditCheck,
+} from '../../../utils/permissionCheck'
+import ScoreBlock from '../ScoreBlock'
+import AuthorTestItemPreview from './AuthorTestItemPreview'
 import {
   addPassageAction,
   clearPreviewAction,
@@ -38,14 +69,14 @@ import {
   getItemDetailSelectorForPreview,
   getPassageSelector,
   setPrevewItemAction,
-  setQuestionsForPassageAction
-} from "./ducks";
-import ReportIssue from "./ReportIssue";
-import { ButtonsWrapper, RejectButton } from "./styled";
+  setQuestionsForPassageAction,
+} from './ducks'
+import ReportIssue from './ReportIssue'
+import { ButtonsWrapper, RejectButton } from './styled'
 
 class PreviewModal extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       flag: false,
@@ -53,14 +84,14 @@ class PreviewModal extends React.Component {
       showHints: false,
       showReportIssueField: false,
       fullModal: false,
-      isRejectMode: false
-    };
+      isRejectMode: false,
+    }
   }
 
   componentDidMount() {
-    const { item } = this.props;
+    const { item } = this.props
     if (item.passageId) {
-      this.loadPassage(item.passageId);
+      this.loadPassage(item.passageId)
     }
   }
 
@@ -68,61 +99,76 @@ class PreviewModal extends React.Component {
     /**
      * FIXME: move this to redux-saga
      */
-    const { addPassage } = this.props;
-    this.setState({ passageLoading: true });
+    const { addPassage } = this.props
+    this.setState({ passageLoading: true })
     try {
-      passageApi.getById(id).then(response => {
-        addPassage(response);
-        this.setState({ passageLoading: false });
-      });
+      passageApi.getById(id).then((response) => {
+        addPassage(response)
+        this.setState({ passageLoading: false })
+      })
     } catch (e) {
-      this.setState({ passageLoading: false });
+      this.setState({ passageLoading: false })
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { item: newItem } = this.props;
-    const { item: oldItem } = prevProps;
+    const { item: newItem } = this.props
+    const { item: oldItem } = prevProps
     if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
-      this.loadPassage(newItem.passageId);
+      this.loadPassage(newItem.passageId)
     }
   }
 
   componentWillUnmount() {
-    const { clearAnswers } = this.props;
-    clearAnswers();
+    const { clearAnswers } = this.props
+    clearAnswers()
   }
 
   componentWillReceiveProps(nextProps) {
-    const { flag } = this.state;
-    const { isVisible } = nextProps;
+    const { flag } = this.state
+    const { isVisible } = nextProps
     if (isVisible && !flag) {
-      this.setState({ flag: true });
+      this.setState({ flag: true })
     }
   }
 
   closeModal = () => {
-    const { onClose, changePreviewMode, clearPreview } = this.props;
-    this.setState({ flag: false });
-    clearPreview();
-    changePreviewMode("clear");
-    onClose();
-  };
+    const { onClose, changePreviewMode, clearPreview } = this.props
+    this.setState({ flag: false })
+    clearPreview()
+    changePreviewMode('clear')
+    onClose()
+  }
 
   handleDuplicateTestItem = async () => {
-    const { data, testId, duplicateTestItem, test, match, isTest = !!testId, passage, item = {} } = this.props;
-    const itemId = data.id;
-    const regradeFlow = match.params.oldId && match.params.oldId !== "undefined";
+    const {
+      data,
+      testId,
+      duplicateTestItem,
+      test,
+      match,
+      isTest = !!testId,
+      passage,
+      item = {},
+    } = this.props
+    const itemId = data.id
+    const regradeFlow = match.params.oldId && match.params.oldId !== 'undefined'
     if (!passage) {
-      return duplicateTestItem({ data, testId, test, match, isTest, itemId, regradeFlow });
+      return duplicateTestItem({
+        data,
+        testId,
+        test,
+        match,
+        isTest,
+        itemId,
+        regradeFlow,
+      })
     }
 
-    const { _id: currentItem = "" } = item;
+    const { _id: currentItem = '' } = item
     Modal.confirm({
-      title: "Clone Passage Item",
-      content: `This passage has ${
-        passage.testItems.length
-      } Items associated with it. Would you like to clone complete passage or a single item?`,
+      title: 'Clone Passage Item',
+      content: `This passage has ${passage.testItems.length} Items associated with it. Would you like to clone complete passage or a single item?`,
       onOk: () => {
         duplicateTestItem({
           data,
@@ -133,10 +179,10 @@ class PreviewModal extends React.Component {
           itemId,
           regradeFlow,
           passage,
-          currentItem
-        });
-        Modal.destroyAll();
-        this.closeModal();
+          currentItem,
+        })
+        Modal.destroyAll()
+        this.closeModal()
       },
       onCancel: () => {
         duplicateTestItem({
@@ -148,19 +194,19 @@ class PreviewModal extends React.Component {
           itemId,
           regradeFlow,
           passage,
-          duplicateWholePassage: true
-        });
-        Modal.destroyAll();
-        this.closeModal();
+          duplicateWholePassage: true,
+        })
+        Modal.destroyAll()
+        this.closeModal()
       },
-      okText: "Current Item",
-      cancelText: "Complete Passage",
+      okText: 'Current Item',
+      cancelText: 'Complete Passage',
       centered: true,
       width: 500,
       okButtonProps: {
-        style: { background: themeColor, outline: "none" }
-      }
-    });
+        style: { background: themeColor, outline: 'none' },
+      },
+    })
 
     // const duplicatedItem = await duplicateTestItem(itemId);
 
@@ -177,7 +223,7 @@ class PreviewModal extends React.Component {
     // } else {
     //   history.push(`/author/items/${duplicatedItem._id}/item-detail`);
     // }
-  };
+  }
 
   // this is the one need to be modified
   editTestItem = () => {
@@ -190,125 +236,136 @@ class PreviewModal extends React.Component {
       updateTestAndNavigate,
       test,
       isTest = !!testId,
-      match
-    } = this.props;
+      match,
+    } = this.props
 
-    const itemId = data.id;
-    const regradeFlow = match.params.oldId && match.params.oldId !== "undefined";
+    const itemId = data.id
+    const regradeFlow = match.params.oldId && match.params.oldId !== 'undefined'
 
     // change the question editor view to "edit"
-    changeView("edit");
+    changeView('edit')
     // itemDetail store has leftovers from previous visit to the page,
     // clearing it before navigation.
 
-    clearItemStore();
+    clearItemStore()
     if (isTest) {
       updateTestAndNavigate({
         pathname: `/author/tests/${testId}/editItem/${itemId}`,
-        fadeSidebar: "false",
+        fadeSidebar: 'false',
         regradeFlow,
         previousTestId: test.previousTestId,
         testId,
-        isEditing: true
-      });
+        isEditing: true,
+      })
     } else {
-      history.push(`/author/items/${itemId}/item-detail`);
+      history.push(`/author/items/${itemId}/item-detail`)
     }
-  };
+  }
 
   clearView = () => {
-    const { changePreviewMode, clearAnswers } = this.props;
-    changePreviewMode("clear");
-    clearAnswers();
-  };
+    const { changePreviewMode, clearAnswers } = this.props
+    changePreviewMode('clear')
+    clearAnswers()
+  }
 
-  goToItem = page => {
+  goToItem = (page) => {
     const {
       setQuestionsForPassage,
       setPrevewItem,
       item,
       testItemPreviewData,
       passage,
-      updateCurrentItemFromPassagePagination
-    } = this.props;
-    const itemId = passage.testItems[page - 1];
+      updateCurrentItemFromPassagePagination,
+    } = this.props
+    const itemId = passage.testItems[page - 1]
     if (!(testItemPreviewData && testItemPreviewData.data)) {
-      setPrevewItem(item);
+      setPrevewItem(item)
     }
-    testItemsApi.getById(itemId).then(response => {
+    testItemsApi.getById(itemId).then((response) => {
       if (response?._id && updateCurrentItemFromPassagePagination) {
         /**
          * Whenever we are changing the item using the navigation in the passage
          * we need to update the state in the ItemListContainer component as well
          * why? @see https://snapwiz.atlassian.net/browse/EV-15223
          */
-        updateCurrentItemFromPassagePagination(response._id);
+        updateCurrentItemFromPassagePagination(response._id)
       }
-      setQuestionsForPassage(response);
-    });
-  };
+      setQuestionsForPassage(response)
+    })
+  }
 
   handleSelection = () => {
-    const { setDataAndSave, selectedRows, addItemToCart, test, gotoSummary, item, setTestItems, page } = this.props;
+    const {
+      setDataAndSave,
+      selectedRows,
+      addItemToCart,
+      test,
+      gotoSummary,
+      item,
+      setTestItems,
+      page,
+    } = this.props
 
-    if (page === "itemList") {
-      return addItemToCart(item);
+    if (page === 'itemList') {
+      return addItemToCart(item)
     }
-    if (!test?.title?.trim()?.length && page !== "itemList") {
-      this.closeModal();
-      gotoSummary();
-      console.log("Reaching here");
-      notification({ messageKey: "nameShouldNotEmpty" });
+    if (!test?.title?.trim()?.length && page !== 'itemList') {
+      this.closeModal()
+      gotoSummary()
+      console.log('Reaching here')
+      notification({ messageKey: 'nameShouldNotEmpty' })
     }
-    let keys = [...(selectedRows || [])];
+    let keys = [...(selectedRows || [])]
     if (test.safeBrowser && !test.sebPassword) {
-      notification({ messageKey: "enterValidPassword" });
-      return;
+      notification({ messageKey: 'enterValidPassword' })
+      return
     }
     if (!keys.includes(item?._id)) {
-      keys[keys.length] = item?._id;
-      setDataAndSave({ addToTest: true, item });
-      notification({ type: "success", messageKey: "itemAddedTest" });
+      keys[keys.length] = item?._id
+      setDataAndSave({ addToTest: true, item })
+      notification({ type: 'success', messageKey: 'itemAddedTest' })
     } else {
-      keys = (keys || []).filter(key => key !== item?._id);
-      setDataAndSave({ addToTest: false, item: { _id: item?._id } });
-      notification({ type: "success", messageKey: "itemRemovedTest" });
+      keys = (keys || []).filter((key) => key !== item?._id)
+      setDataAndSave({ addToTest: false, item: { _id: item?._id } })
+      notification({ type: 'success', messageKey: 'itemRemovedTest' })
     }
-    setTestItems(keys);
-  };
+    setTestItems(keys)
+  }
 
   get isAddOrRemove() {
-    const { item, selectedRows } = this.props;
+    const { item, selectedRows } = this.props
     if (selectedRows && selectedRows.length) {
-      return !selectedRows.includes(item?._id);
+      return !selectedRows.includes(item?._id)
     }
-    return true;
+    return true
   }
 
   toggleHints = () => {
-    this.setState(prevState => ({
-      showHints: !prevState.showHints
-    }));
-  };
+    this.setState((prevState) => ({
+      showHints: !prevState.showHints,
+    }))
+  }
 
   toggleReportIssue = () => {
-    this.setState(prevState => ({ showReportIssueField: !prevState.showReportIssueField }));
-  };
+    this.setState((prevState) => ({
+      showReportIssueField: !prevState.showReportIssueField,
+    }))
+  }
 
   toggleFullModal = () => {
-    this.setState(prevState => ({
-      fullModal: !prevState.fullModal
-    }));
-  };
+    this.setState((prevState) => ({
+      fullModal: !prevState.fullModal,
+    }))
+  }
 
   navigationBtns = () => {
-    const { nextItem, prevItem } = this.props;
+    const { nextItem, prevItem } = this.props
     return (
       <>
         <PrevArrow
           onClick={() => {
-            this.clearView();
-            prevItem();
+            this.clearView()
+            prevItem()
           }}
           position="absolute"
         >
@@ -316,22 +373,22 @@ class PreviewModal extends React.Component {
         </PrevArrow>
         <NextArrow
           onClick={() => {
-            this.clearView();
-            nextItem();
+            this.clearView()
+            nextItem()
           }}
           position="absolute"
         >
           <FontAwesomeIcon icon={faAngleRight} />
         </NextArrow>
       </>
-    );
-  };
+    )
+  }
 
-  getBtnStyle = addedToTest => ({
-    backgroundColor: !addedToTest ? "#fff" : themeColor,
-    color: !addedToTest ? themeColor : "#fff",
-    borderColor: !addedToTest ? themeColor : ""
-  });
+  getBtnStyle = (addedToTest) => ({
+    backgroundColor: !addedToTest ? '#fff' : themeColor,
+    color: !addedToTest ? themeColor : '#fff',
+    borderColor: !addedToTest ? themeColor : '',
+  })
 
   handleDeleteItem = () => {
     const {
@@ -339,31 +396,37 @@ class PreviewModal extends React.Component {
       deleteItem,
       isEditable,
       page,
-      closeModal
-    } = this.props;
+      closeModal,
+    } = this.props
     if (!isEditable) {
-      notification({ messageKey: "dontHaveWritePermission" });
-      return;
+      notification({ messageKey: 'dontHaveWritePermission' })
+      return
     }
-    if (closeModal) closeModal();
-    return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });
-  };
+    if (closeModal) closeModal()
+    return deleteItem({
+      id: _id,
+      isItemPrevew: page === 'addItems' || page === 'itemList',
+    })
+  }
 
-  handleApproveOrRejectSingleItem = value => {
-    const { approveOrRejectSingleItem: _approveOrRejectSingleItem, item } = this.props;
+  handleApproveOrRejectSingleItem = (value) => {
+    const {
+      approveOrRejectSingleItem: _approveOrRejectSingleItem,
+      item,
+    } = this.props
     if (item?._id) {
-      _approveOrRejectSingleItem({ itemId: item._id, status: value });
+      _approveOrRejectSingleItem({ itemId: item._id, status: value })
     }
-  };
+  }
 
-  handleReject = () => this.setState({ isRejectMode: true });
+  handleReject = () => this.setState({ isRejectMode: true })
 
   get navigationButtonVisibile() {
-    const { item, page } = this.props;
-    if (page === "review") {
-      return true;
+    const { item, page } = this.props
+    if (page === 'review') {
+      return true
     }
-    return !item?.isPassageWithQuestions;
+    return !item?.isPassageWithQuestions
   }
 
   // TODO consistency for question and resources for previeew
@@ -379,7 +442,7 @@ class PreviewModal extends React.Component {
       showAnswer,
       preview,
       passage,
-      questions = keyBy(get(item, "data.questions", []), "id"),
+      questions = keyBy(get(item, 'data.questions', []), 'id'),
       page,
       showAddPassageItemToTestButton = false, // show if add item to test button needs to shown.
       windowWidth,
@@ -390,45 +453,65 @@ class PreviewModal extends React.Component {
       testAssignments,
       userRole,
       deleting,
+      writableCollections,
+    } = this.props
+
+    const {
+      passageLoading,
+      showHints,
+      showReportIssueField,
+      fullModal,
+      isRejectMode,
+    } = this.state
+    const resources = keyBy(get(item, 'data.resources', []), 'id')
+
+    let allWidgets = { ...questions, ...resources }
+    const { authors = [], rows, data = {} } = item || {}
+    const questionsType =
+      data.questions && uniq(data.questions.map((question) => question.type))
+    const intersectionCount = intersection(
+      questionsType,
+      questionType.manuallyGradableQn
+    ).length
+    const isAnswerBtnVisible =
+      questionsType && intersectionCount < questionsType.length
+    const isOwner = authors.some((author) => author._id === userId)
+    const hasCollectionAccess = allowContentEditCheck(
+      item?.collections,
       writableCollections
-    } = this.props;
-
-    const { passageLoading, showHints, showReportIssueField, fullModal, isRejectMode } = this.state;
-    const resources = keyBy(get(item, "data.resources", []), "id");
-
-    let allWidgets = { ...questions, ...resources };
-    const { authors = [], rows, data = {} } = item || {};
-    const questionsType = data.questions && uniq(data.questions.map(question => question.type));
-    const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
-    const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
-    const isOwner = authors.some(author => author._id === userId);
-    const hasCollectionAccess = allowContentEditCheck(item?.collections, writableCollections);
-    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner;
-    const allRows = item && !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
-    const passageTestItems = get(passage, "testItems", []);
-    const isPassage = passage && passageTestItems.length;
+    )
+    const allowDuplicate =
+      allowDuplicateCheck(item?.collections, collections, 'item') || isOwner
+    const allRows =
+      item && !!item.passageId && !!passage
+        ? [passage.structure, ...rows]
+        : rows
+    const passageTestItems = get(passage, 'testItems', [])
+    const isPassage = passage && passageTestItems.length
     if (!!item?.passageId && !!passage) {
-      allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
+      allWidgets = { ...allWidgets, ...keyBy(passage.data, 'id') }
     }
 
-    const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH;
+    const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH
 
-    const isTestInRegrade = !!test?._id && (testAssignments.length && test.isUsed);
+    const isTestInRegrade = !!test?._id && testAssignments.length && test.isUsed
     const isDisableEdit = !(
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
       (hasCollectionAccess && userFeatures.isCurator)
-    );
-    const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
-    const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
+    )
+    const isDisableDuplicate = !(
+      allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
+    )
+    const disableEdit = item?.algoVariablesEnabled && isTestInRegrade
 
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 0 }}
         wrapClassName="preview-full-modal"
         isSmallSize={isSmallSize}
-        width={isSmallSize || fullModal ? "100%" : "75%"}
-        height={isSmallSize || fullModal ? "100%" : null}
+        width={isSmallSize || fullModal ? '100%' : '75%'}
+        height={isSmallSize || fullModal ? '100%' : null}
         visible={isVisible}
         closable={false}
         onCancel={this.closeModal}
@@ -443,13 +526,13 @@ class PreviewModal extends React.Component {
           <FlexContainer justifyContent="flex-end" width="100%">
             <ScoreBlock
               customStyle={{
-                position: "relative",
-                top: "unset",
-                right: "unset",
-                bottom: "unset",
-                left: "unset",
-                margin: "0 5px",
-                transform: "unset"
+                position: 'relative',
+                top: 'unset',
+                right: 'unset',
+                bottom: 'unset',
+                left: 'unset',
+                margin: '0 5px',
+                transform: 'unset',
               }}
             />
           </FlexContainer>
@@ -463,29 +546,50 @@ class PreviewModal extends React.Component {
                 justifyContent="center"
                 onClick={this.handleSelection}
               >
-                {this.isAddOrRemove ? "ADD PASSAGE TO TEST" : "REMOVE FROM TEST"}
+                {this.isAddOrRemove
+                  ? 'ADD PASSAGE TO TEST'
+                  : 'REMOVE FROM TEST'}
               </EduButton>
             ) : (
-              <EduButton isBlue height="28px" justifyContent="center" onClick={this.handleSelection}>
-                {this.isAddOrRemove ? "Add To Test" : "Remove from Test"}
+              <EduButton
+                isBlue
+                height="28px"
+                justifyContent="center"
+                onClick={this.handleSelection}
+              >
+                {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
               </EduButton>
             )}
             <ButtonsWrapper
               justifyContent="flex-end"
               wrap="nowrap"
-              style={{ visibility: onlySratchpad && "hidden", position: "relative", marginLeft: "5px" }}
+              style={{
+                visibility: onlySratchpad && 'hidden',
+                position: 'relative',
+                marginLeft: '5px',
+              }}
             >
               {isAnswerBtnVisible && (
                 <>
-                  <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={checkAnswer}>
+                  <EduButton
+                    isGhost
+                    height="28px"
+                    data-cy="check-answer-btn"
+                    onClick={checkAnswer}
+                  >
                     CHECK ANSWER
                   </EduButton>
-                  <EduButton isGhost height="28px" data-cy="show-answers-btn" onClick={showAnswer}>
+                  <EduButton
+                    isGhost
+                    height="28px"
+                    data-cy="show-answers-btn"
+                    onClick={showAnswer}
+                  >
                     SHOW ANSWER
                   </EduButton>
                 </>
               )}
-              {page !== "itemAuthoring" && (
+              {page !== 'itemAuthoring' && (
                 <EduButton
                   title="Clear"
                   IconBtn
@@ -516,7 +620,11 @@ class PreviewModal extends React.Component {
                   isGhost
                   height="28px"
                   width="28px"
-                  title={isDisableEdit ? "Edit permission is restricted by the author" : "Edit item"}
+                  title={
+                    isDisableEdit
+                      ? 'Edit permission is restricted by the author'
+                      : 'Edit item'
+                  }
                   noHover={isDisableEdit}
                   disabled={isDisableEdit}
                   onClick={this.editTestItem}
@@ -529,7 +637,11 @@ class PreviewModal extends React.Component {
                 isGhost
                 width="28px"
                 height="28px"
-                title={isDisableDuplicate ? "Clone permission is restricted by the author" : "Clone"}
+                title={
+                  isDisableDuplicate
+                    ? 'Clone permission is restricted by the author'
+                    : 'Clone'
+                }
                 noHover={isDisableDuplicate}
                 disabled={isDisableDuplicate}
                 onClick={this.handleDuplicateTestItem}
@@ -537,8 +649,10 @@ class PreviewModal extends React.Component {
                 <IconCopy color={themeColor} />
               </EduButton>
               {isOwner &&
-                !(userFeatures?.isPublisherAuthor && item.status === "published") &&
-                (page === "addItems" || page === "itemList") && (
+                !(
+                  userFeatures?.isPublisherAuthor && item.status === 'published'
+                ) &&
+                (page === 'addItems' || page === 'itemList') && (
                   <EduButton
                     IconBtn
                     title="Delete item"
@@ -552,9 +666,12 @@ class PreviewModal extends React.Component {
                     {/* <span>delete</span> */}
                   </EduButton>
                 )}
-              <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+              <FeaturesSwitch
+                inputFeatures="isCurator"
+                actionOnInaccessible="hidden"
+              >
                 <>
-                  {item && item.status === "inreview" && hasCollectionAccess ? (
+                  {item && item.status === 'inreview' && hasCollectionAccess ? (
                     <RejectButton
                       title="Reject"
                       isGhost
@@ -566,12 +683,16 @@ class PreviewModal extends React.Component {
                       <span>Reject</span>
                     </RejectButton>
                   ) : null}
-                  {item && (item.status === "inreview" || item.status === "rejected") && hasCollectionAccess ? (
+                  {item &&
+                  (item.status === 'inreview' || item.status === 'rejected') &&
+                  hasCollectionAccess ? (
                     <EduButton
                       title="Approve"
                       isGhost
                       height="28px"
-                      onClick={() => this.handleApproveOrRejectSingleItem("published")}
+                      onClick={() =>
+                        this.handleApproveOrRejectSingleItem('published')
+                      }
                     >
                       <Icon type="check" color={themeColor} />
                       <span>Approve</span>
@@ -588,7 +709,7 @@ class PreviewModal extends React.Component {
               width="28px"
               height="28px"
               onClick={this.toggleFullModal}
-              title={fullModal ? "Collapse" : "Expand"}
+              title={fullModal ? 'Collapse' : 'Expand'}
             >
               {fullModal ? <IconCollapse /> : <IconExpand />}
             </EduButton>
@@ -601,7 +722,7 @@ class PreviewModal extends React.Component {
               onClick={this.closeModal}
               title="Close"
               noHover
-              style={{ border: "none", boxShadow: "none" }}
+              style={{ border: 'none', boxShadow: 'none' }}
             >
               <IconClose width={10} height={10} color={`${title} !important`} />
             </EduButton>
@@ -621,7 +742,7 @@ class PreviewModal extends React.Component {
                   previewTab={preview}
                   verticalDivider={item.verticalDivider}
                   scrolling={item.scrolling}
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   questions={allWidgets}
                   viewComponent="authorPreviewPopup"
                   handleCheckAnswer={checkAnswer}
@@ -632,7 +753,9 @@ class PreviewModal extends React.Component {
                   allowDuplicate={allowDuplicate}
                   /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
                   isEditable={
-                    (isEditable && isOwner) || userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR
+                    (isEditable && isOwner) ||
+                    userFeatures.isCurator ||
+                    userRole === roleuser.EDULASTIC_CURATOR
                   }
                   isPassage={isPassage}
                   passageTestItems={passageTestItems}
@@ -653,14 +776,18 @@ class PreviewModal extends React.Component {
                 {/* we may need to bring hint button back */}
                 {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
                 {showReportIssueField && (
-                  <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
+                  <ReportIssue
+                    textareaRows="3"
+                    item={item}
+                    toggleReportIssue={this.toggleReportIssue}
+                  />
                 )}
               </>
             )}
           </QuestionWrapper>
         </ModalContentArea>
       </PreviewModalWrapper>
-    );
+    )
   }
 }
 
@@ -683,8 +810,8 @@ PreviewModal.propTypes = {
   history: PropTypes.any.isRequired,
   windowWidth: PropTypes.number.isRequired,
   prevItem: PropTypes.func,
-  nextItem: PropTypes.func
-};
+  nextItem: PropTypes.func,
+}
 
 PreviewModal.defaultProps = {
   checkAnswer: () => {},
@@ -693,29 +820,31 @@ PreviewModal.defaultProps = {
   prevItem: () => {},
   nextItem: () => {},
   loading: false,
-  isEditable: false
-};
+  isEditable: false,
+}
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
     (state, ownProps) => {
-      const itemId = (ownProps.data || {}).id;
+      const itemId = (ownProps.data || {}).id
       return {
-        item: getItemDetailSelectorForPreview(state, itemId, ownProps.page) || get(state, "itemDetail.item"),
+        item:
+          getItemDetailSelectorForPreview(state, itemId, ownProps.page) ||
+          get(state, 'itemDetail.item'),
         collections: getCollectionsSelector(state),
         passage: getPassageSelector(state),
-        preview: get(state, ["view", "preview"]),
-        userId: get(state, ["user", "user", "_id"]),
-        testItemPreviewData: get(state, ["testItemPreview", "item"], {}),
+        preview: get(state, ['view', 'preview']),
+        userId: get(state, ['user', 'user', '_id']),
+        testItemPreviewData: get(state, ['testItemPreview', 'item'], {}),
         selectedRows: getSelectedItemSelector(state),
         test: getTestSelector(state),
         testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state),
         deleting: getItemDeletingSelector(state),
-        writableCollections: getWritableCollectionsSelector(state)
-      };
+        writableCollections: getWritableCollectionsSelector(state),
+      }
     },
     {
       changeView: changeViewAction,
@@ -732,12 +861,12 @@ const enhance = compose(
       updateTestAndNavigate: updateTestAndNavigateAction,
       duplicateTestItem: duplicateTestItemPreviewRequestAction,
       deleteItem: deleteItemAction,
-      approveOrRejectSingleItem: approveOrRejectSingleItemAction
+      approveOrRejectSingleItem: approveOrRejectSingleItemAction,
     }
   )
-);
+)
 
-export default enhance(PreviewModal);
+export default enhance(PreviewModal)
 
 const ProgressContainer = styled.div`
   min-width: 250px;
@@ -745,16 +874,16 @@ const ProgressContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 
 const PreviewModalWrapper = styled(Modal)`
-  height: ${({ isSmallSize }) => (isSmallSize ? "100%" : "auto")};
-  border-radius: ${({ fullModal }) => (fullModal ? "0px" : "5px")};
+  height: ${({ isSmallSize }) => (isSmallSize ? '100%' : 'auto')};
+  border-radius: ${({ fullModal }) => (fullModal ? '0px' : '5px')};
   background: #f7f7f7;
   top: 30px;
   padding: 0px;
   position: relative;
-  margin: ${({ fullModal }) => (fullModal ? "0px" : "20px auto")};
+  margin: ${({ fullModal }) => (fullModal ? '0px' : '20px auto')};
 
   .ant-modal-content {
     background: transparent;
@@ -768,7 +897,7 @@ const PreviewModalWrapper = styled(Modal)`
       color: #000;
     }
   }
-`;
+`
 
 const ArrowStyle = css`
   max-width: 30px;
@@ -787,17 +916,17 @@ const ArrowStyle = css`
       fill: ${white};
     }
   }
-`;
+`
 
 const PrevArrow = styled(Nav.BackArrow)`
   ${ArrowStyle};
-`;
+`
 
 const NextArrow = styled(Nav.NextArrow)`
   ${ArrowStyle};
   left: unset;
   right: 0px;
-`;
+`
 
 const HeadingWrapper = styled.div`
   display: flex;
@@ -806,17 +935,17 @@ const HeadingWrapper = styled.div`
   background: ${white};
   justify-content: space-between;
   position: relative;
-`;
+`
 
 const ModalTopAction = styled(FlexContainer)`
   justify-content: flex-end;
-`;
+`
 
 const Title = styled.div`
   font-weight: bold;
   font-size: 20px;
   user-select: none;
-`;
+`
 
 export const PlusIcon = styled.div`
   position: relative;
@@ -829,7 +958,7 @@ export const PlusIcon = styled.div`
   font-size: 18px;
   line-height: 1;
   margin-right: 10px;
-`;
+`
 
 const QuestionWrapper = styled.div`
   display: flex;
@@ -837,9 +966,9 @@ const QuestionWrapper = styled.div`
   .report {
     flex: 0 0 100%;
   }
-`;
+`
 
 const ModalContentArea = styled.div`
   border-radius: 0px;
   padding: 0px 30px;
-`;
+`

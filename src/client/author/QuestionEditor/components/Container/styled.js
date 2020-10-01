@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import {
   themeColor,
   smallMobileWidth,
@@ -6,8 +6,8 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
   desktopWidth,
-  mobileWidth
-} from "@edulastic/colors";
+  mobileWidth,
+} from '@edulastic/colors'
 
 export const BackLink = styled.span`
   background: #fff;
@@ -26,7 +26,7 @@ export const BackLink = styled.span`
   @media (max-width: ${smallMobileWidth}) {
     padding: 0 10px;
   }
-`;
+`
 
 export const StyledButton = styled.div`
   background: ${themeColor};
@@ -38,7 +38,7 @@ export const StyledButton = styled.div`
   display: inline-block;
   float: right;
   cursor: pointer;
-`;
+`
 
 export const QuestionContentWrapper = styled.div`
   width: 100%;
@@ -49,11 +49,13 @@ export const QuestionContentWrapper = styled.div`
   position: relative;
   @media (min-width: ${mediumDesktopExactWidth}) {
     /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
-    min-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.md + 55}px)`};
+    min-height: ${({ theme }) =>
+      `calc(100vh - ${theme.HeaderHeight.md + 55}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
-    min-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xl + 55}px)`};
+    min-height: ${({ theme }) =>
+      `calc(100vh - ${theme.HeaderHeight.xl + 55}px)`};
   }
   @media (max-width: ${desktopWidth}) {
     /** 155px is height of BreadCrumbBar and Header and 5px is height of scrollbar(horizontal) */
@@ -65,4 +67,4 @@ export const QuestionContentWrapper = styled.div`
   @media (max-width: ${mobileWidth}) {
     padding: 0px 25px;
   }
-`;
+`

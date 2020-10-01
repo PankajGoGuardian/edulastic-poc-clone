@@ -1,18 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-import { helpers, WithMathFormula } from "@edulastic/common";
-import { mainTextColor } from "@edulastic/colors";
-import MatrixCell from "../MatrixCell";
-import { StyledTable } from "./styled/StyledTable";
-import { getFontSize } from "../../../../utils/helpers";
-import StyledHeader from "./styled/StyledHeader";
-import { IconWrapper } from "./styled/IconWrapper";
-import { IconCheck } from "./styled/IconCheck";
-import { IconClose } from "./styled/IconClose";
+import { helpers, WithMathFormula } from '@edulastic/common'
+import { mainTextColor } from '@edulastic/colors'
+import MatrixCell from '../MatrixCell'
+import { StyledTable } from './styled/StyledTable'
+import { getFontSize } from '../../../../utils/helpers'
+import StyledHeader from './styled/StyledHeader'
+import { IconWrapper } from './styled/IconWrapper'
+import { IconCheck } from './styled/IconCheck'
+import { IconClose } from './styled/IconClose'
 
-const Matrix = props => {
+const Matrix = (props) => {
   const {
     stems,
     options,
@@ -23,37 +23,37 @@ const Matrix = props => {
     uiStyle,
     evaluation,
     smallSize,
-    isPrintPreview
-  } = props;
+    isPrintPreview,
+  } = props
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
-    return null;
+    return null
   }
 
   const getCell = (columnIndex, data) => {
-    let checked = false;
-    let correct = false;
-    const rowIndex = data.index;
-    const responseId = responseIds?.[rowIndex]?.[columnIndex];
+    let checked = false
+    let correct = false
+    const rowIndex = data.index
+    const responseId = responseIds?.[rowIndex]?.[columnIndex]
 
     if (evaluation) {
-      correct = evaluation[responseId] ? true : "incorrect";
+      correct = evaluation[responseId] ? true : 'incorrect'
     }
 
     if (response && response.value) {
-      checked = response.value[responseId];
+      checked = response.value[responseId]
     }
 
-    const handleChange = e => {
+    const handleChange = (e) => {
       const checkData = {
         columnIndex,
         rowIndex,
-        checked: e.target.checked
-      };
+        checked: e.target.checked,
+      }
 
-      onCheck(checkData);
-    };
+      onCheck(checkData)
+    }
 
     return (
       <MatrixCell
@@ -69,85 +69,98 @@ const Matrix = props => {
         {evaluation && checked && (
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>
             {correct === true && <IconCheck />}
-            {correct === "incorrect" && <IconClose />}
+            {correct === 'incorrect' && <IconClose />}
           </IconWrapper>
         )}
       </MatrixCell>
-    );
-  };
+    )
+  }
 
-  const isTable = uiStyle.type === "table";
+  const isTable = uiStyle.type === 'table'
 
   const optionsData = options.map((option, i) => ({
     title: (
-      <StyledHeader style={{ color: mainTextColor }} dangerouslySetInnerHTML={{ __html: isTable ? option : "" }} />
+      <StyledHeader
+        style={{ color: mainTextColor }}
+        dangerouslySetInnerHTML={{ __html: isTable ? option : '' }}
+      />
     ),
     dataIndex: `${i}`,
-    width: uiStyle.optionWidth || "auto",
+    width: uiStyle.optionWidth || 'auto',
     key: i,
-    render: data => getCell(i, data)
-  }));
+    render: (data) => getCell(i, data),
+  }))
 
-  const hasOptionRow = !helpers.isEmpty(uiStyle.optionRowTitle);
-  const hasStemTitle = !helpers.isEmpty(uiStyle.stemTitle);
+  const hasOptionRow = !helpers.isEmpty(uiStyle.optionRowTitle)
+  const hasStemTitle = !helpers.isEmpty(uiStyle.stemTitle)
 
-  const stemTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stemTitle || "" }} />;
-  const optionRowTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle || "" }} />;
+  const stemTitle = (
+    <StyledHeader
+      dangerouslySetInnerHTML={{ __html: uiStyle.stemTitle || '' }}
+    />
+  )
+  const optionRowTitle = (
+    <StyledHeader
+      dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle || '' }}
+    />
+  )
 
   let columns = [
     {
       title: stemTitle,
-      dataIndex: "stem",
-      key: "stem",
-      width: uiStyle.stemWidth || "auto",
-      render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
+      dataIndex: 'stem',
+      key: 'stem',
+      width: uiStyle.stemWidth || 'auto',
+      render: (stem) => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />,
     },
     {
       title: optionRowTitle,
-      children: [...optionsData]
-    }
-  ];
+      children: [...optionsData],
+    },
+  ]
 
   if (isTable && uiStyle.stemNumeration) {
     columns = [
       {
-        title: "",
-        dataIndex: "numeration",
-        key: "numeration",
-        render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
+        title: '',
+        dataIndex: 'numeration',
+        key: 'numeration',
+        render: (stem) => (
+          <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
+        ),
       },
-      ...columns
-    ];
+      ...columns,
+    ]
   }
 
-  const getData = i => {
-    const result = {};
+  const getData = (i) => {
+    const result = {}
 
     options.forEach((o, index) => {
       result[index] = {
-        index: i
-      };
-    });
+        index: i,
+      }
+    })
 
     if (evaluation && evaluation.length > 0) {
       result[options.length] = {
-        index: i
-      };
+        index: i,
+      }
     }
 
-    return result;
-  };
+    return result
+  }
 
   const data = stems.map((stem, i) => ({
     key: i,
     stem,
     numeration: helpers.getNumeration(i, uiStyle.stemNumeration),
-    ...getData(i)
-  }));
+    ...getData(i),
+  }))
 
-  const fontSize = getFontSize(uiStyle.fontsize);
+  const fontSize = getFontSize(uiStyle.fontsize)
 
-  const showHead = isTable || hasStemTitle || hasOptionRow;
+  const showHead = isTable || hasStemTitle || hasOptionRow
 
   return (
     <StyledTable
@@ -163,8 +176,8 @@ const Matrix = props => {
       isTable={isTable}
       showHead={showHead}
     />
-  );
-};
+  )
+}
 
 Matrix.propTypes = {
   stems: PropTypes.array.isRequired,
@@ -174,21 +187,21 @@ Matrix.propTypes = {
   uiStyle: PropTypes.object,
   smallSize: PropTypes.bool,
   isMultiple: PropTypes.bool,
-  evaluation: PropTypes.object
-};
+  evaluation: PropTypes.object,
+}
 
 Matrix.defaultProps = {
   isMultiple: false,
   evaluation: null,
   smallSize: false,
-  uiStyle: {}
-};
+  uiStyle: {},
+}
 
-export default Matrix;
+export default Matrix
 
 const MathSpan = WithMathFormula(styled.div`
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-`);
+`)

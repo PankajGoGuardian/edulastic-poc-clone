@@ -1,5 +1,5 @@
-import React from "react";
-import ToolsIcons from "./static/AnnotationIcons";
+import React from 'react'
+import ToolsIcons from './static/AnnotationIcons'
 
 const {
   BoxIcon,
@@ -15,90 +15,90 @@ const {
   PreviousIcon,
   TextLineIcon,
   TextIcon,
-  Videoicon
-} = ToolsIcons;
+  Videoicon,
+} = ToolsIcons
 
 export const ANNOTATION_TOOLS = [
   {
-    key: "thumbnails",
-    title: "PDF Thumbnails",
-    icon: <LayoutIcon />
+    key: 'thumbnails',
+    title: 'PDF Thumbnails',
+    icon: <LayoutIcon />,
   },
   {
-    key: "list",
-    title: "List",
-    icon: <ListIcon />
+    key: 'list',
+    title: 'List',
+    icon: <ListIcon />,
   },
   {
-    key: "cursor",
-    title: "Cursor",
-    icon: <CursorIcon />
+    key: 'cursor',
+    title: 'Cursor',
+    icon: <CursorIcon />,
   },
   {
-    key: "drag",
-    title: "Drag",
-    icon: <MoveIcon />
+    key: 'drag',
+    title: 'Drag',
+    icon: <MoveIcon />,
   },
   {
-    key: "undo",
-    title: "Undo",
-    icon: <PreviousIcon />
+    key: 'undo',
+    title: 'Undo',
+    icon: <PreviousIcon />,
   },
   {
-    key: "redo",
-    title: "Redo",
-    icon: <NextIcon />
+    key: 'redo',
+    title: 'Redo',
+    icon: <NextIcon />,
   },
   {
-    key: "area",
-    title: "Rectangle",
+    key: 'area',
+    title: 'Rectangle',
     icon: <BoxIcon />,
-    showColorPicker: true
+    showColorPicker: true,
   },
   {
-    key: "mask",
-    title: "White mask",
-    icon: <CleanIcon />
-  },
-  {
-    key: "highlight",
-    title: "Highlight",
+    key: 'mask',
+    title: 'White mask',
     icon: <CleanIcon />,
-    showColorPicker: true
   },
   {
-    key: "strikeout",
-    title: "Strikeout",
+    key: 'highlight',
+    title: 'Highlight',
+    icon: <CleanIcon />,
+    showColorPicker: true,
+  },
+  {
+    key: 'strikeout',
+    title: 'Strikeout',
     icon: <TextLineIcon />,
-    showColorPicker: true
+    showColorPicker: true,
   },
   {
-    key: "text",
-    title: "Text Tool",
+    key: 'text',
+    title: 'Text Tool',
     icon: <TextIcon />,
     showColorPicker: true,
-    showSizeSelection: true
+    showSizeSelection: true,
   },
   {
-    key: "draw",
-    title: "Pen Tool",
+    key: 'draw',
+    title: 'Pen Tool',
     icon: <EditIcon />,
     showColorPicker: true,
-    showSizeSelection: true
+    showSizeSelection: true,
   },
   {
-    key: "video",
-    title: "Add Video",
-    icon: <Videoicon />
+    key: 'video',
+    title: 'Add Video',
+    icon: <Videoicon />,
   },
   {
-    key: "image",
-    title: "Add Image",
-    icon: <ImageIcon />
+    key: 'image',
+    title: 'Add Image',
+    icon: <ImageIcon />,
   },
   {
-    key: "point",
-    title: "Comment",
-    icon: <MessageIcon />
-  }
-];
+    key: 'point',
+    title: 'Comment',
+    icon: <MessageIcon />,
+  },
+]

@@ -1,204 +1,218 @@
 /* eslint-disable default-case */
-import TestHeader from "./header";
-import searchFiltersPage from "../../searchFiltersPage";
-import Header from "../../itemList/itemDetail/header";
-import QuestionResponsePage from "../../assignments/QuestionResponsePage";
-import StudentTestPage from "../../../student/studentTestPage";
-import PreviewItemPopup from "../../itemList/itemPreview";
+import TestHeader from './header'
+import searchFiltersPage from '../../searchFiltersPage'
+import Header from '../../itemList/itemDetail/header'
+import QuestionResponsePage from '../../assignments/QuestionResponsePage'
+import StudentTestPage from '../../../student/studentTestPage'
+import PreviewItemPopup from '../../itemList/itemPreview'
 
 export default class TestReviewTab {
   constructor() {
-    this.testheader = new TestHeader();
-    this.searchFilters = new searchFiltersPage();
-    this.itemHeader = new Header();
-    this.qrp = new QuestionResponsePage();
-    this.studentTestPage = new StudentTestPage();
-    this.previewItemPopUp = new PreviewItemPopup();
+    this.testheader = new TestHeader()
+    this.searchFilters = new searchFiltersPage()
+    this.itemHeader = new Header()
+    this.qrp = new QuestionResponsePage()
+    this.studentTestPage = new StudentTestPage()
+    this.previewItemPopUp = new PreviewItemPopup()
   }
 
   // *** ELEMENTS START ***
 
-  getQueCardByItemIdInCollapsed = item => cy.get(`[data-cy="${item}"]`).as("queCard");
+  getQueCardByItemIdInCollapsed = (item) =>
+    cy.get(`[data-cy="${item}"]`).as('queCard')
 
-  getQueContainerById = id => cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]');
+  getQueContainerById = (id) =>
+    cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]')
 
-  getTestGradeSelect = () => cy.get('[data-cy="gradeSelect"]');
+  getTestGradeSelect = () => cy.get('[data-cy="gradeSelect"]')
 
-  getTestSubjectSelect = () => cy.get('[data-cy="subjectSelect"]');
+  getTestSubjectSelect = () => cy.get('[data-cy="subjectSelect"]')
 
-  getMoveTo = () => cy.get('[data-cy="moveto"]');
+  getMoveTo = () => cy.get('[data-cy="moveto"]')
 
-  getPointsOnQueCardByid = id => this.getQueCardByItemIdInCollapsed(id).find("input");
+  getPointsOnQueCardByid = (id) =>
+    this.getQueCardByItemIdInCollapsed(id).find('input')
 
-  getAllquestionInReview = () => cy.get('[data-cy="styled-wrapped-component"]');
+  getAllquestionInReview = () => cy.get('[data-cy="styled-wrapped-component"]')
 
-  getItemIdIdByIndex = index =>
+  getItemIdIdByIndex = (index) =>
     cy
       .get('[data-cy="styled-wrapped-component"]')
       .eq(index)
       .parent()
-      .invoke("attr", "data-cy");
+      .invoke('attr', 'data-cy')
 
-  getQueContainer = () => cy.get('[data-cy="question-container"]');
+  getQueContainer = () => cy.get('[data-cy="question-container"]')
 
-  getGroupContainerByGroupIndex = group => cy.get(".ant-collapse-header").eq(group - 1);
+  getGroupContainerByGroupIndex = (group) =>
+    cy.get('.ant-collapse-header').eq(group - 1)
 
-  getAllQuestionsByGroupIndex = group =>
+  getAllQuestionsByGroupIndex = (group) =>
     this.getGroupContainerByGroupIndex(group)
       .next()
-      .find('[data-cy="styled-wrapped-component"]');
+      .find('[data-cy="styled-wrapped-component"]')
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  selectGrade = grade => {
-    this.getTestGradeSelect().click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
+  selectGrade = (grade) => {
+    this.getTestGradeSelect().click({ force: true })
+    cy.get('.ant-select-dropdown-menu-item')
       .contains(grade)
-      .click({ force: true });
-    this.getTestGradeSelect()
-      .find("input")
-      .type("{esc}", { force: true });
-  };
+      .click({ force: true })
+    this.getTestGradeSelect().find('input').type('{esc}', { force: true })
+  }
 
-  selectSubject = subject => {
-    this.getTestSubjectSelect().click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
+  selectSubject = (subject) => {
+    this.getTestSubjectSelect().click({ force: true })
+    cy.get('.ant-select-dropdown-menu-item')
       .contains(subject)
-      .click({ force: true });
-    cy.focused().blur();
-  };
+      .click({ force: true })
+    cy.focused().blur()
+  }
 
-  clickOnCheckBoxByItemId = itemId => {
+  clickOnCheckBoxByItemId = (itemId) => {
     this.getQueCardByItemIdInCollapsed(itemId)
       .parent()
       .prev()
-      .find(".ant-checkbox-input")
-      .click({ force: true });
-  };
+      .find('.ant-checkbox-input')
+      .click({ force: true })
+  }
 
-  clickOnRemoveSelected = () => cy.get('[data-cy="removeSelected"]').click();
+  clickOnRemoveSelected = () => cy.get('[data-cy="removeSelected"]').click()
 
-  clickOnMoveTo = () => this.getMoveTo().click();
+  clickOnMoveTo = () => this.getMoveTo().click()
 
-  clickOnExpandRow = () => cy.get('[data-cy="expand-rows"]').click();
+  clickOnExpandRow = () => cy.get('[data-cy="expand-rows"]').click()
 
-  clickExpandByItemId = id =>
+  clickExpandByItemId = (id) =>
     this.getQueCardByItemIdInCollapsed(id)
       .find('[title="Expand"]')
-      .click({ force: true });
+      .click({ force: true })
 
-  clickOnCollapseRow = () => cy.get('[data-cy="collapse-rows"]').click();
+  clickOnCollapseRow = () => cy.get('[data-cy="collapse-rows"]').click()
 
-  clickOnPreview = id =>
+  clickOnPreview = (id) =>
     this.getQueCardByItemIdInCollapsed(id)
       // .contains("Preview")
       .find('[data-cy="preview" ]')
-      .click();
+      .click()
 
-  previewQuestById = id => {
+  previewQuestById = (id) => {
     this.getQueCardByItemIdInCollapsed(id)
       // .find("span", "Preview")
       .find('[data-cy="preview" ]')
-      .click({ force: true });
-  };
+      .click({ force: true })
+  }
 
   updatePointsByID = (id, points) => {
     this.getPointsOnQueCardByid(id)
-      .type("{selectall}", { force: true })
-      .type(points, { force: true });
-  };
+      .type('{selectall}', { force: true })
+      .type(points, { force: true })
+  }
 
   clickOnViewAsStudent = () => {
-    cy.wait(3000);
-    cy.get('[data-cy="viewAsStudent"]').click();
-  };
+    cy.wait(3000)
+    cy.get('[data-cy="viewAsStudent"]').click()
+  }
 
-  closePreiview = () =>
-    cy
-      .get(".ant-modal-close")
-      .eq(0)
-      .click({ force: true });
+  closePreiview = () => cy.get('.ant-modal-close').eq(0).click({ force: true })
 
-  moveQuestionByIndex = index => {
-    this.clickOnMoveTo();
+  moveQuestionByIndex = (index) => {
+    this.clickOnMoveTo()
     this.getMoveTo()
       .next()
-      .find("input")
+      .find('input')
       .clear({ force: true })
-      .type(index, { force: true });
-    this.getMoveTo()
-      .next()
-      .contains("Reorder")
-      .click({ force: true });
-  };
+      .type(index, { force: true })
+    this.getMoveTo().next().contains('Reorder').click({ force: true })
+  }
 
-  expandGroupByGroupIndex = group =>
-    this.getGroupContainerByGroupIndex(group).then(ele => {
-      if (ele.attr("aria-expanded") === "false") cy.wrap(ele).click();
-    });
+  expandGroupByGroupIndex = (group) =>
+    this.getGroupContainerByGroupIndex(group).then((ele) => {
+      if (ele.attr('aria-expanded') === 'false') cy.wrap(ele).click()
+    })
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
   verifySummary = (quetions, points) => {
-    cy.get('[data-cy="question"]').should("have.text", `${quetions}`);
-    cy.get('[data-cy="points"]').should("have.text", `${points}`);
-  };
+    cy.get('[data-cy="question"]').should('have.text', `${quetions}`)
+    cy.get('[data-cy="points"]').should('have.text', `${points}`)
+  }
 
   verifyGradeSubject = (grade, subject) => {
     this.getTestGradeSelect()
-      .find(".ant-select-selection__choice")
-      .contains(grade);
+      .find('.ant-select-selection__choice')
+      .contains(grade)
 
     this.getTestSubjectSelect()
-      .find(".ant-select-selection__choice")
-      .contains(subject);
-  };
+      .find('.ant-select-selection__choice')
+      .contains(subject)
+  }
 
-  verifyItemByContent = question =>
+  verifyItemByContent = (question) =>
     cy
       .get('[data-cy="styled-wrapped-component"]')
       .contains(question)
-      .should("be.exist", `verify added items - ${question}should appear in review tab`);
+      .should(
+        'be.exist',
+        `verify added items - ${question}should appear in review tab`
+      )
 
   asesrtPointsByid = (id, points) => {
     this.getQueCardByItemIdInCollapsed(id)
-      .find(".ant-input-lg")
-      .should("have.value", points.toString());
-  };
+      .find('.ant-input-lg')
+      .should('have.value', points.toString())
+  }
 
-  verifyQustionById = id => {
-    this.getQueCardByItemIdInCollapsed(id).should("exist");
-  };
+  verifyQustionById = (id) => {
+    this.getQueCardByItemIdInCollapsed(id).should('exist')
+  }
 
   verifyMovedQuestionById = (id, index) => {
-    this.getQueCardByItemIdInCollapsed(id).should("have.attr", "data-cy-item-index", (index - 1).toString());
-  };
+    this.getQueCardByItemIdInCollapsed(id).should(
+      'have.attr',
+      'data-cy-item-index',
+      (index - 1).toString()
+    )
+  }
 
   verifyNoOfItemsInGroupByNo = (group, itemCount) => {
-    cy.get(`[data-cy="item-Group ${group}"]`).should("contain", itemCount);
-  };
+    cy.get(`[data-cy="item-Group ${group}"]`).should('contain', itemCount)
+  }
 
-  verifyItemCoutInPreview = count => this.getAllquestionInReview().should("have.length", count);
+  verifyItemCoutInPreview = (count) =>
+    this.getAllquestionInReview().should('have.length', count)
 
-  verifyItemCoutByGroupInPublisherPreview = (count, group = 1, deliveryCount) => {
-    this.expandGroupByGroupIndex(group);
-    this.getGroupContainerByGroupIndex(group).should("contain", `TOTAL ITEMS${count}`);
-    if (deliveryCount) this.getGroupContainerByGroupIndex(group).should("contain", `Item to Deliver${deliveryCount}`);
-    this.getAllQuestionsByGroupIndex(group).should("have.length", count);
-  };
+  verifyItemCoutByGroupInPublisherPreview = (
+    count,
+    group = 1,
+    deliveryCount
+  ) => {
+    this.expandGroupByGroupIndex(group)
+    this.getGroupContainerByGroupIndex(group).should(
+      'contain',
+      `TOTAL ITEMS${count}`
+    )
+    if (deliveryCount)
+      this.getGroupContainerByGroupIndex(group).should(
+        'contain',
+        `Item to Deliver${deliveryCount}`
+      )
+    this.getAllQuestionsByGroupIndex(group).should('have.length', count)
+  }
 
   verifyItemIdsByGroupIndex = (items, group) => {
-    this.expandGroupByGroupIndex(group);
+    this.expandGroupByGroupIndex(group)
     this.getAllQuestionsByGroupIndex(group).each((question, index) => {
       cy.wrap(question)
         .parent()
-        .invoke("attr", "data-cy")
-        .then(val => expect(val).to.be.oneOf(items));
-    });
-  };
+        .invoke('attr', 'data-cy')
+        .then((val) => expect(val).to.be.oneOf(items))
+    })
+  }
   // *** APPHELPERS END ***
 }

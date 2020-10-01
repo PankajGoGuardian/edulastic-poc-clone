@@ -1,5 +1,5 @@
-import { white } from "@edulastic/colors";
-import styled from "styled-components";
+import { white } from '@edulastic/colors'
+import styled from 'styled-components'
 
 const Title = styled.p`
   display: flex;
@@ -13,6 +13,6 @@ const Title = styled.p`
   letter-spacing: normal;
   color: ${white};
   white-space: nowrap;
-`;
+`
 
-export default Title;
+export default Title

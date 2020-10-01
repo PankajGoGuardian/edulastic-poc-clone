@@ -1,21 +1,29 @@
-import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, EduButton, notification, TypeToConfirmModal } from "@edulastic/common";
-import { SearchInputStyled, SelectInputStyled } from "@edulastic/common/src/components/InputStyles";
-import { roleuser } from "@edulastic/constants";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Icon, Menu, Row, Select } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { compose } from "redux";
+import { themeColor } from '@edulastic/colors'
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  TypeToConfirmModal,
+} from '@edulastic/common'
+import {
+  SearchInputStyled,
+  SelectInputStyled,
+} from '@edulastic/common/src/components/InputStyles'
+import { roleuser } from '@edulastic/constants'
+import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Icon, Menu, Row, Select } from 'antd'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { compose } from 'redux'
 import {
   StyledActionDropDown,
   StyledClassName,
-  StyledFilterDiv
-} from "../../../../admin/Common/StyledComponents";
+  StyledFilterDiv,
+} from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
   LeftFilterDiv,
@@ -24,11 +32,11 @@ import {
   StyledButton,
   StyledTableButton,
   SubHeaderWrapper,
-  TableContainer
-} from "../../../../common/styled";
-import { receiveAdminDataAction } from "../../../SchoolAdmin/ducks";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+  TableContainer,
+} from '../../../../common/styled'
+import { receiveAdminDataAction } from '../../../SchoolAdmin/ducks'
+import Breadcrumb from '../../../src/components/Breadcrumb'
+import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 import {
   createCourseAction,
   deactivateCourseAction,
@@ -37,193 +45,210 @@ import {
   resetUploadModalStatusAction,
   setSelectedRowKeysAction,
   setShowActiveStatusAction,
-  updateCourseAction
-} from "../../ducks";
-import AddCourseModal from "./AddCourseModal/AddCourseModal";
-import EditCourseModal from "./EditCourseModal/EditCourseModal";
+  updateCourseAction,
+} from '../../ducks'
+import AddCourseModal from './AddCourseModal/AddCourseModal'
+import EditCourseModal from './EditCourseModal/EditCourseModal'
 import {
   StyledCoursesTable,
   StyledHeaderColumn,
   StyledPagination,
   StyledSortIcon,
-  StyledSortIconDiv
-} from "./styled";
-import UploadCourseModal from "./UploadCourseModal";
+  StyledSortIconDiv,
+} from './styled'
+import UploadCourseModal from './UploadCourseModal'
 
-const Option = Select.Option;
+const Option = Select.Option
 
 class CoursesTable extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       dataSource: [],
       addCourseModalVisible: false,
       editCourseModalVisible: false,
       uploadCourseModalVisible: false,
-      editCourseKey: "",
-      searchByName: "",
+      editCourseKey: '',
+      searchByName: '',
       filtersData: [
         {
-          filtersColumn: "",
-          filtersValue: "",
-          filterStr: "",
-          filterAdded: false
-        }
+          filtersColumn: '',
+          filtersValue: '',
+          filterStr: '',
+          filterAdded: false,
+        },
       ],
       sortedInfo: {
-        columnKey: "name",
-        order: "asc"
+        columnKey: 'name',
+        order: 'asc',
       },
       currentPage: 1,
       showActive: true,
       searchData: {},
       deactivateCourseModalVisible: false,
-      refineButtonActive: false
-    };
-    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
+      refineButtonActive: false,
+    }
+    this.filterTextInputRef = [
+      React.createRef(),
+      React.createRef(),
+      React.createRef(),
+    ]
   }
 
   componentDidMount() {
-    const { userOrgId, loadCourseListData, loadAdminData, role } = this.props;
+    const { userOrgId, loadCourseListData, loadAdminData, role } = this.props
     loadCourseListData({
       districtId: userOrgId,
       page: 1,
       limit: 25,
-      sortField: "name",
-      order: "asc",
+      sortField: 'name',
+      order: 'asc',
       search: {},
-      active: 1
-    });
+      active: 1,
+    })
 
     // get all sa admin from current school
 
     role === roleuser.SCHOOL_ADMIN &&
       loadAdminData({
         districtId: userOrgId,
-        role: "school-admin",
-        limit: 25
-      });
+        role: 'school-admin',
+        limit: 25,
+      })
 
     this.setState({
       searchData: {
         districtId: userOrgId,
         page: 1,
         limit: 25,
-        sortField: "name",
-        order: "asc",
+        sortField: 'name',
+        order: 'asc',
         search: {},
-        active: 1
-      }
-    });
+        active: 1,
+      },
+    })
   }
 
   static getDerivedStateFromProps(nextProps) {
     return {
       dataSource: nextProps.courseList,
       selectedRowKeys: nextProps.selectedRowKeys,
-      schoolAdmins: nextProps.schoolAdmins
-    };
+      schoolAdmins: nextProps.schoolAdmins,
+    }
   }
 
-  onHeaderCell = colName => {
-    const { sortedInfo } = this.state;
+  onHeaderCell = (colName) => {
+    const { sortedInfo } = this.state
     if (sortedInfo.columnKey === colName) {
-      if (sortedInfo.order === "asc") {
-        sortedInfo.order = "desc";
-      } else if (sortedInfo.order === "desc") {
-        sortedInfo.order = "asc";
+      if (sortedInfo.order === 'asc') {
+        sortedInfo.order = 'desc'
+      } else if (sortedInfo.order === 'desc') {
+        sortedInfo.order = 'asc'
       }
     } else {
-      sortedInfo.columnKey = colName;
-      sortedInfo.order = "asc";
+      sortedInfo.columnKey = colName
+      sortedInfo.order = 'asc'
     }
-    this.setState({ sortedInfo }, this.loadFilteredList);
-  };
+    this.setState({ sortedInfo }, this.loadFilteredList)
+  }
 
-  onEditCourse = key => {
+  onEditCourse = (key) => {
     this.setState({
       editCourseModalVisible: true,
-      editCourseKey: key
-    });
-  };
+      editCourseKey: key,
+    })
+  }
 
   confirmDeactivate = () => {
-    const { selectedRowKeys } = this.state;
-    const { deactivateCourse } = this.props;
-    const selectedCourses = selectedRowKeys.map(id => ({
-      id
-    }));
-    deactivateCourse(selectedCourses);
+    const { selectedRowKeys } = this.state
+    const { deactivateCourse } = this.props
+    const selectedCourses = selectedRowKeys.map((id) => ({
+      id,
+    }))
+    deactivateCourse(selectedCourses)
     this.setState({
-      deactivateCourseModalVisible: false
-    });
-  };
+      deactivateCourseModalVisible: false,
+    })
+  }
 
-  onSelectChange = selectedRowKeys => {
-    this.props.setSelectedRowKeys(selectedRowKeys);
-  };
+  onSelectChange = (selectedRowKeys) => {
+    this.props.setSelectedRowKeys(selectedRowKeys)
+  }
 
   showAddCourseModal = () => {
     this.setState({
-      addCourseModalVisible: true
-    });
-  };
+      addCourseModalVisible: true,
+    })
+  }
 
-  changeActionMode = e => {
-    const { selectedRowKeys } = this.state;
+  changeActionMode = (e) => {
+    const { selectedRowKeys } = this.state
 
-    if (e.key === "upload csv") {
-      this.setState({ uploadCourseModalVisible: true });
-    } else if (e.key === "edit course") {
+    if (e.key === 'upload csv') {
+      this.setState({ uploadCourseModalVisible: true })
+    } else if (e.key === 'edit course') {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey: "pleaseSelectCourseEdit" });
+        notification({ messageKey: 'pleaseSelectCourseEdit' })
       } else if (selectedRowKeys.length == 1) {
-        this.onEditCourse(selectedRowKeys[0]);
+        this.onEditCourse(selectedRowKeys[0])
       } else if (selectedRowKeys.length > 1) {
-        notification({ messageKey: "pleaseSelectSingleCourseEdit" });
+        notification({ messageKey: 'pleaseSelectSingleCourseEdit' })
       }
-    } else if (e.key === "deactivate course") {
+    } else if (e.key === 'deactivate course') {
       if (selectedRowKeys.length > 0) {
         this.setState({
-          deactivateCourseModalVisible: true
-        });
+          deactivateCourseModalVisible: true,
+        })
       } else {
-        notification({ messageKey: "pleaseSelectCourseToDelete" });
+        notification({ messageKey: 'pleaseSelectCourseToDelete' })
       }
     }
-  };
+  }
 
-  addCourse = addCourseData => {
-    const { userOrgId, createCourse } = this.props;
-    addCourseData.districtId = userOrgId;
-    createCourse(addCourseData);
-    this.setState({ addCourseModalVisible: false });
-  };
+  addCourse = (addCourseData) => {
+    const { userOrgId, createCourse } = this.props
+    addCourseData.districtId = userOrgId
+    createCourse(addCourseData)
+    this.setState({ addCourseModalVisible: false })
+  }
 
   closeAddCourseModal = () => {
     this.setState({
-      addCourseModalVisible: false
-    });
-  };
+      addCourseModalVisible: false,
+    })
+  }
 
-  updateCourse = updatedCourseData => {
-    const { updateCourse, userOrgId } = this.props;
-    const { dataSource, editCourseKey, filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
-    const selectedSourceKey = dataSource.filter(item => item.key == editCourseKey);
+  updateCourse = (updatedCourseData) => {
+    const { updateCourse, userOrgId } = this.props
+    const {
+      dataSource,
+      editCourseKey,
+      filtersData,
+      sortedInfo,
+      searchByName,
+      currentPage,
+      showActive,
+    } = this.state
+    const selectedSourceKey = dataSource.filter(
+      (item) => item.key == editCourseKey
+    )
 
-    const search = {};
+    const search = {}
 
     if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
+      search.name = { type: 'cont', value: searchByName }
     }
 
     for (let i = 0; i < filtersData.length; i++) {
       if (
-        filtersData[i].filtersColumn !== "" &&
-        filtersData[i].filtersValue !== "" &&
-        filtersData[i].filterStr !== ""
+        filtersData[i].filtersColumn !== '' &&
+        filtersData[i].filtersValue !== '' &&
+        filtersData[i].filterStr !== ''
       ) {
-        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+        search[filtersData[i].filtersColumn] = {
+          type: filtersData[i].filtersValue,
+          value: filtersData[i].filterStr,
+        }
       }
     }
 
@@ -233,94 +258,98 @@ class CoursesTable extends React.Component {
       page: currentPage,
       sortField: sortedInfo.columnKey,
       order: sortedInfo.order,
-      search
-    };
+      search,
+    }
 
-    if (showActive) loadListJsonData.active = 1;
+    if (showActive) loadListJsonData.active = 1
 
     updateCourse({
       updateData: {
         courseId: selectedSourceKey[0]._id,
-        data: updatedCourseData
+        data: updatedCourseData,
       },
-      searchData: loadListJsonData
-    });
+      searchData: loadListJsonData,
+    })
 
     this.setState({
-      editCourseModalVisible: false
-    });
-  };
+      editCourseModalVisible: false,
+    })
+  }
 
   closeEditCourseModal = () => {
     this.setState({
-      editCourseModalVisible: false
-    });
-  };
+      editCourseModalVisible: false,
+    })
+  }
 
-  changePagination = pageNumber => {
-    this.setState({ currentPage: pageNumber }, this.loadFilteredList);
-  };
+  changePagination = (pageNumber) => {
+    this.setState({ currentPage: pageNumber }, this.loadFilteredList)
+  }
 
-  onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
-  };
+  onChangeShowActive = (e) => {
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList)
+  }
 
   closeUploadCourseModal = () => {
-    this.setState({ uploadCourseModalVisible: false });
-    this.props.resetUploadModal();
-  };
+    this.setState({ uploadCourseModalVisible: false })
+    this.props.resetUploadModal()
+  }
 
   renderCourseNames() {
-    const { dataSource, selectedRowKeys } = this.state;
-    const selectedCourses = dataSource.filter(item => selectedRowKeys.includes(item._id));
-    return selectedCourses.map(_course => {
-      const { id, name, number } = _course;
+    const { dataSource, selectedRowKeys } = this.state
+    const selectedCourses = dataSource.filter((item) =>
+      selectedRowKeys.includes(item._id)
+    )
+    return selectedCourses.map((_course) => {
+      const { id, name, number } = _course
       return (
         <StyledClassName key={id}>
           {name} {number}
         </StyledClassName>
-      );
-    });
+      )
+    })
   }
 
   deactivateSingleCourse = ({ _id }) => {
-    this.props.setSelectedRowKeys([_id]);
+    this.props.setSelectedRowKeys([_id])
     this.setState({
-      deactivateCourseModalVisible: true
-    });
-  };
+      deactivateCourseModalVisible: true,
+    })
+  }
 
   onCancelConfirmModal = () => {
     this.setState({
-      deactivateCourseModalVisible: false
-    });
-  };
+      deactivateCourseModalVisible: false,
+    })
+  }
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive });
-  };
+    this.setState({ refineButtonActive: !this.state.refineButtonActive })
+  }
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
 
-  onChangeSearch = event => {
-    this.setState({ searchByName: event.currentTarget.value });
-  };
+  onChangeSearch = (event) => {
+    this.setState({ searchByName: event.currentTarget.value })
+  }
 
-  handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadFilteredList);
-  };
+  handleSearchName = (value) => {
+    this.setState({ searchByName: value }, this.loadFilteredList)
+  }
 
   onSearchFilter = (value, event, i) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === i) {
-        return { ...item, filterAdded: !!value };
+        return { ...item, filterAdded: !!value }
       }
-      return item;
-    });
+      return item
+    })
 
     // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
-  };
+    this.setState({ filtersData: _filtersData }, () =>
+      this.filterTextInputRef[i].current.blur()
+    )
+  }
 
   onBlurFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
@@ -328,99 +357,105 @@ class CoursesTable extends React.Component {
         return {
           ...item,
           filterStr: e.target.value,
-          filterAdded: true
-        };
+          filterAdded: true,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
   changeStatusValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = value;
-    this.setState({ filtersData }, this.loadFilteredList);
-  };
+    const filtersData = [...this.state.filtersData]
+    filtersData[key].filterStr = value
+    this.setState({ filtersData }, this.loadFilteredList)
+  }
 
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
-        return { ...item, filterStr: e.target.value };
+        return { ...item, filterStr: e.target.value }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData })
+  }
 
   changeFilterColumn = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filtersColumn = value;
-    if (value === "status") filtersData[key].filtersValue = "eq";
-    this.setState({ filtersData }, this.loadFilteredList);
-  };
+    const filtersData = [...this.state.filtersData]
+    filtersData[key].filtersColumn = value
+    if (value === 'status') filtersData[key].filtersValue = 'eq'
+    this.setState({ filtersData }, this.loadFilteredList)
+  }
 
   changeFilterValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filtersValue = value;
-    this.setState({ filtersData }, this.loadFilteredList);
-  };
+    const filtersData = [...this.state.filtersData]
+    filtersData[key].filtersValue = value
+    this.setState({ filtersData }, this.loadFilteredList)
+  }
 
   addFilter = (e, key) => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     if (filtersData.length < 3) {
       const _filtersData = filtersData.map((item, index) => {
         if (index === key) {
           return {
             ...item,
-            filterAdded: true
-          };
+            filterAdded: true,
+          }
         }
-        return item;
-      });
+        return item
+      })
 
       _filtersData.push({
         filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
-      this.setState({ filtersData: _filtersData });
+        filtersColumn: '',
+        filtersValue: '',
+        filterStr: '',
+      })
+      this.setState({ filtersData: _filtersData })
     }
-  };
+  }
 
   removeFilter = (e, key) => {
-    const { filtersData } = this.state;
-    let newFiltersData = [];
+    const { filtersData } = this.state
+    let newFiltersData = []
     if (filtersData.length === 1) {
       newFiltersData.push({
         filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
+        filtersColumn: '',
+        filtersValue: '',
+        filterStr: '',
+      })
     } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
+      newFiltersData = filtersData.filter((item, index) => index != key)
     }
-    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
-  };
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList)
+  }
 
   getSearchQuery = () => {
-    const { filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
-    const { userOrgId } = this.props;
+    const {
+      filtersData,
+      sortedInfo,
+      searchByName,
+      currentPage,
+      showActive,
+    } = this.state
+    const { userOrgId } = this.props
 
-    const search = {};
+    const search = {}
 
     if (searchByName.length > 0) {
-      search.name = [{ type: "cont", value: searchByName }];
+      search.name = [{ type: 'cont', value: searchByName }]
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
-      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i]
+      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
         if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
         } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+          search[filtersColumn].push({ type: filtersValue, value: filterStr })
         }
       }
     }
@@ -431,21 +466,21 @@ class CoursesTable extends React.Component {
       limit: 25,
       page: currentPage,
       sortField: sortedInfo.columnKey,
-      order: sortedInfo.order
-    };
+      order: sortedInfo.order,
+    }
     if (showActive) {
-      loadListJsonData.active = 1;
+      loadListJsonData.active = 1
     }
 
     // TO DO: remove this line after further investigation
-    this.setState({ searchData: loadListJsonData });
+    this.setState({ searchData: loadListJsonData })
 
-    return loadListJsonData;
-  };
+    return loadListJsonData
+  }
 
   loadFilteredList() {
-    const { loadCourseListData } = this.props;
-    loadCourseListData(this.getSearchQuery());
+    const { loadCourseListData } = this.props
+    loadCourseListData(this.getSearchQuery())
   }
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -463,223 +498,277 @@ class CoursesTable extends React.Component {
       showActive,
       searchData,
       deactivateCourseModalVisible,
-      refineButtonActive
-    } = this.state;
+      refineButtonActive,
+    } = this.state
 
-    const { totalCourseCount, userOrgId, role, t, schoolAdmins = {} } = this.props;
-    const isSchoolAdmin = role === roleuser.SCHOOL_ADMIN;
-    const schoolAdminIds = isSchoolAdmin ? Object.keys(schoolAdmins) : [];
+    const {
+      totalCourseCount,
+      userOrgId,
+      role,
+      t,
+      schoolAdmins = {},
+    } = this.props
+    const isSchoolAdmin = role === roleuser.SCHOOL_ADMIN
+    const schoolAdminIds = isSchoolAdmin ? Object.keys(schoolAdmins) : []
     const columnsInfo = [
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("course.name")}</p>
+            <p>{t('course.name')}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "asc"}
+                colorValue={
+                  sortedInfo.columnKey === 'name' && sortedInfo.order === 'asc'
+                }
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "desc"}
+                colorValue={
+                  sortedInfo.columnKey === 'name' && sortedInfo.order === 'desc'
+                }
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "name",
+        dataIndex: 'name',
         editable: true,
         width: 200,
         onHeaderCell: () => ({
           onClick: () => {
-            this.onHeaderCell("name");
-          }
-        })
+            this.onHeaderCell('name')
+          },
+        }),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("course.number")}</p>
+            <p>{t('course.number')}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "number" && sortedInfo.order === "asc"}
+                colorValue={
+                  sortedInfo.columnKey === 'number' &&
+                  sortedInfo.order === 'asc'
+                }
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "number" && sortedInfo.order === "desc"}
+                colorValue={
+                  sortedInfo.columnKey === 'number' &&
+                  sortedInfo.order === 'desc'
+                }
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "number",
+        dataIndex: 'number',
         editable: true,
         width: 200,
         onHeaderCell: () => ({
           onClick: () => {
-            this.onHeaderCell("number");
-          }
-        })
+            this.onHeaderCell('number')
+          },
+        }),
       },
       {
         title: (
           <StyledHeaderColumn>
-            <p>{t("course.classes")}</p>
+            <p>{t('course.classes')}</p>
           </StyledHeaderColumn>
         ),
-        dataIndex: "classCount",
+        dataIndex: 'classCount',
         editable: true,
         width: 100,
-        align: "center",
+        align: 'center',
         render: (classCount, record) => {
-          const courseName = get(record, "name", "");
+          const courseName = get(record, 'name', '')
           return (
             <Link
               to={{
-                pathname: "/author/Classes",
+                pathname: '/author/Classes',
                 state: {
-                  filtersColumn: "courses",
-                  filtersValue: "eq",
+                  filtersColumn: 'courses',
+                  filtersValue: 'eq',
                   filterStr: courseName,
-                  filterAdded: true
-                }
+                  filterAdded: true,
+                },
               }}
             >
               {classCount}
             </Link>
-          );
-        }
+          )
+        },
       },
       {
-        dataIndex: "operation",
+        dataIndex: 'operation',
         width: 100,
         render: (text, record) => (
-          <div style={{ whiteSpace: "nowrap" }}>
-            {!(isSchoolAdmin && schoolAdminIds.indexOf(record.createdBy._id) === -1) && !!record.active && (
-              <>
-                <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
-                  <IconPencilEdit color={themeColor} />
-                </StyledTableButton>
-                <StyledTableButton onClick={() => this.deactivateSingleCourse(record)} title="Deactivate">
-                  <IconTrash color={themeColor} />
-                </StyledTableButton>
-              </>
-            )}
+          <div style={{ whiteSpace: 'nowrap' }}>
+            {!(
+              isSchoolAdmin &&
+              schoolAdminIds.indexOf(record.createdBy._id) === -1
+            ) &&
+              !!record.active && (
+                <>
+                  <StyledTableButton
+                    onClick={() => this.onEditCourse(record.key)}
+                    title="Edit"
+                  >
+                    <IconPencilEdit color={themeColor} />
+                  </StyledTableButton>
+                  <StyledTableButton
+                    onClick={() => this.deactivateSingleCourse(record)}
+                    title="Deactivate"
+                  >
+                    <IconTrash color={themeColor} />
+                  </StyledTableButton>
+                </>
+              )}
           </div>
-        )
-      }
-    ];
+        ),
+      },
+    ]
 
     const breadcrumbData = [
       {
-        title: role === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
-        to: role === roleuser.SCHOOL_ADMIN ? "/author/Courses" : "/author/districtprofile"
+        title:
+          role === roleuser.SCHOOL_ADMIN ? 'MANAGE SCHOOL' : 'MANAGE DISTRICT',
+        to:
+          role === roleuser.SCHOOL_ADMIN
+            ? '/author/Courses'
+            : '/author/districtprofile',
       },
       {
-        title: "COURSES",
-        to: ""
-      }
-    ];
+        title: 'COURSES',
+        to: '',
+      },
+    ]
 
-    const columns = columnsInfo.map(col => ({
-      ...col
-    }));
+    const columns = columnsInfo.map((col) => ({
+      ...col,
+    }))
 
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
-      getCheckboxProps: data => ({
-        disabled: isSchoolAdmin && schoolAdminIds.indexOf(data.createdBy._id) === -1 && !!data.active
-      })
-    };
+      getCheckboxProps: (data) => ({
+        disabled:
+          isSchoolAdmin &&
+          schoolAdminIds.indexOf(data.createdBy._id) === -1 &&
+          !!data.active,
+      }),
+    }
 
-    const selectedCourse = dataSource.filter(item => item.key == editCourseKey);
+    const selectedCourse = dataSource.filter(
+      (item) => item.key == editCourseKey
+    )
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="upload csv">{t("course.uploadcourse")}</Menu.Item>
-        <Menu.Item key="edit course">{t("course.editcourse")}</Menu.Item>
-        <Menu.Item key="deactivate course">{t("course.deactivatecourse")}</Menu.Item>
+        <Menu.Item key="upload csv">{t('course.uploadcourse')}</Menu.Item>
+        <Menu.Item key="edit course">{t('course.editcourse')}</Menu.Item>
+        <Menu.Item key="deactivate course">
+          {t('course.deactivatecourse')}
+        </Menu.Item>
       </Menu>
-    );
+    )
 
-    const SearchRows = [];
+    const SearchRows = []
     for (let i = 0; i < filtersData.length; i++) {
-      const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
+      const isFilterTextDisable =
+        filtersData[i].filtersColumn === '' ||
+        filtersData[i].filtersValue === ''
       const isAddFilterDisable =
-        filtersData[i].filtersColumn === "" ||
-        filtersData[i].filtersValue === "" ||
-        filtersData[i].filterStr === "" ||
-        !filtersData[i].filterAdded;
+        filtersData[i].filtersColumn === '' ||
+        filtersData[i].filtersValue === '' ||
+        filtersData[i].filterStr === '' ||
+        !filtersData[i].filterAdded
 
       SearchRows.push(
-        <Row gutter={20} style={{ marginBottom: "5px" }} key={`${filtersData[i].filtersColumn}${i}`}>
+        <Row
+          gutter={20}
+          style={{ marginBottom: '5px' }}
+          key={`${filtersData[i].filtersColumn}${i}`}
+        >
           <Col span={6}>
             <SelectInputStyled
-              placeholder={t("common.selectcolumn")}
-              onChange={e => this.changeFilterColumn(e, i)}
+              placeholder={t('common.selectcolumn')}
+              onChange={(e) => this.changeFilterColumn(e, i)}
               defaultValue={filtersData[i].filtersColumn}
               value={filtersData[i].filtersColumn}
               height="32px"
             >
-              <Option value="">{t("common.selectcolumn")}</Option>
-              <Option value="name">{t("course.coursename")}</Option>
-              <Option value="number">{t("course.coursenumber")}</Option>
+              <Option value="">{t('common.selectcolumn')}</Option>
+              <Option value="name">{t('course.coursename')}</Option>
+              <Option value="number">{t('course.coursenumber')}</Option>
             </SelectInputStyled>
           </Col>
           <Col span={6}>
             <SelectInputStyled
-              placeholder={t("common.selectvalue")}
-              onChange={e => this.changeFilterValue(e, i)}
+              placeholder={t('common.selectvalue')}
+              onChange={(e) => this.changeFilterValue(e, i)}
               value={filtersData[i].filtersValue}
               height="32px"
             >
-              <Option value="">{t("common.selectvalue")}</Option>
-              <Option value="eq">{t("common.equals")}</Option>
-              <Option value="cont">{t("common.contains")}</Option>
+              <Option value="">{t('common.selectvalue')}</Option>
+              <Option value="eq">{t('common.equals')}</Option>
+              <Option value="cont">{t('common.contains')}</Option>
             </SelectInputStyled>
           </Col>
           <Col span={6}>
             <SearchInputStyled
-              placeholder={t("common.entertext")}
-              onChange={e => this.changeFilterText(e, i)}
+              placeholder={t('common.entertext')}
+              onChange={(e) => this.changeFilterText(e, i)}
               onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-              onBlur={e => this.onBlurFilterText(e, i)}
+              onBlur={(e) => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}
               ref={this.filterTextInputRef[i]}
               height="32px"
             />
           </Col>
-          <Col span={6} style={{ display: "flex" }}>
+          <Col span={6} style={{ display: 'flex' }}>
             {i < 2 && (
               <EduButton
                 type="primary"
-                onClick={e => this.addFilter(e, i)}
+                onClick={(e) => this.addFilter(e, i)}
                 disabled={isAddFilterDisable || i < filtersData.length - 1}
                 height="32px"
                 width="50%"
               >
-                {t("common.addfilter")}
+                {t('common.addfilter')}
               </EduButton>
             )}
 
-            {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-              <EduButton height="32px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
-                {t("common.removefilter")}
+            {((filtersData.length === 1 && filtersData[0].filterAdded) ||
+              filtersData.length > 1) && (
+              <EduButton
+                height="32px"
+                width="50%"
+                type="primary"
+                onClick={(e) => this.removeFilter(e, i)}
+              >
+                {t('common.removefilter')}
               </EduButton>
             )}
           </Col>
         </Row>
-      );
+      )
     }
 
     return (
       <MainContainer>
         <SubHeaderWrapper>
-          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            {t("common.refineresults")}
-            <Icon type={refineButtonActive ? "up" : "down"} />
+          <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+          <StyledButton
+            type="default"
+            shape="round"
+            icon="filter"
+            onClick={this._onRefineResultsCB}
+          >
+            {t('common.refineresults')}
+            <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
 
@@ -688,26 +777,29 @@ class CoursesTable extends React.Component {
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
             <SearchInputStyled
-              placeholder={t("common.searchbyname")}
+              placeholder={t('common.searchbyname')}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
             />
             <EduButton type="primary" onClick={this.showAddCourseModal}>
-              {t("course.createcourse")}
+              {t('course.createcourse')}
             </EduButton>
           </LeftFilterDiv>
           <RightFilterDiv>
-            <CheckboxLabel defaultChecked={showActive} onChange={this.onChangeShowActive}>
-              {t("course.showactivecourse")}
+            <CheckboxLabel
+              defaultChecked={showActive}
+              onChange={this.onChangeShowActive}
+            >
+              {t('course.showactivecourse')}
             </CheckboxLabel>
             <StyledActionDropDown
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               overlay={actionMenu}
-              trigger={["click"]}
+              trigger={['click']}
             >
               <EduButton isGhost>
-                {t("common.actions")} <Icon type="down" />
+                {t('common.actions')} <Icon type="down" />
               </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
@@ -728,7 +820,7 @@ class CoursesTable extends React.Component {
             hideOnSinglePage
           />
         </TableContainer>
-        {editCourseModalVisible && editCourseKey != "" && (
+        {editCourseModalVisible && editCourseKey != '' && (
           <EditCourseModal
             courseData={selectedCourse[0]}
             modalVisible={editCourseModalVisible}
@@ -758,32 +850,32 @@ class CoursesTable extends React.Component {
 
         <TypeToConfirmModal
           modalVisible={deactivateCourseModalVisible}
-          title={t("course.deactivatecoursemodal.title")}
+          title={t('course.deactivatecoursemodal.title')}
           handleOnOkClick={this.confirmDeactivate}
           wordToBeTyped="DEACTIVATE"
-          primaryLabel={t("course.deactivatecoursemodal.confirmtext")}
+          primaryLabel={t('course.deactivatecoursemodal.confirmtext')}
           secondaryLabel={this.renderCourseNames()}
           closeModal={() =>
             this.setState({
-              deactivateCourseModalVisible: false
+              deactivateCourseModalVisible: false,
             })
           }
         />
       </MainContainer>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("manageDistrict"),
+  withNamespaces('manageDistrict'),
   connect(
-    state => ({
+    (state) => ({
       userOrgId: getUserOrgId(state),
       courseList: getCourseListSelector(state),
-      selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], []),
-      totalCourseCount: get(state, ["coursesReducer", "totalCourseCount"], 0),
+      selectedRowKeys: get(state, ['coursesReducer', 'selectedRowKeys'], []),
+      totalCourseCount: get(state, ['coursesReducer', 'totalCourseCount'], 0),
       role: getUserRole(state),
-      schoolAdmins: get(state, ["schoolAdminReducer", "data", "result"], [])
+      schoolAdmins: get(state, ['schoolAdminReducer', 'data', 'result'], []),
     }),
     {
       createCourse: createCourseAction,
@@ -793,12 +885,12 @@ const enhance = compose(
       setSelectedRowKeys: setSelectedRowKeysAction,
       setShowActiveStatus: setShowActiveStatusAction,
       loadAdminData: receiveAdminDataAction,
-      resetUploadModal: resetUploadModalStatusAction
+      resetUploadModal: resetUploadModalStatusAction,
     }
   )
-);
+)
 
-export default enhance(CoursesTable);
+export default enhance(CoursesTable)
 
 CoursesTable.propTypes = {
   userOrgId: PropTypes.string.isRequired,
@@ -809,5 +901,5 @@ CoursesTable.propTypes = {
   updateCourse: PropTypes.func.isRequired,
   deactivateCourse: PropTypes.func.isRequired,
   setSelectedRowKeys: PropTypes.func.isRequired,
-  resetUploadModal: PropTypes.func.isRequired
-};
+  resetUploadModal: PropTypes.func.isRequired,
+}

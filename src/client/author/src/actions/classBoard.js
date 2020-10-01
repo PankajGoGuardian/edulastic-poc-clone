@@ -1,4 +1,4 @@
-import { createAction } from "redux-starter-kit";
+import { createAction } from 'redux-starter-kit'
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -38,163 +38,200 @@ import {
   TOGGLE_VIEW_PASSWORD_MODAL,
   REGENERATE_PASSWORD,
   UPDATE_PASSWORD_DETAILS,
-  CANVAS_SYNC_GRADES
-} from "../constants/actions";
+  CANVAS_SYNC_GRADES,
+} from '../constants/actions'
 
-export const receiveClassResponseAction = data => ({
+export const receiveClassResponseAction = (data) => ({
   type: RECEIVE_CLASS_RESPONSE_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
-export const receiveStudentResponseAction = data => ({
+export const receiveStudentResponseAction = (data) => ({
   type: RECEIVE_STUDENT_RESPONSE_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
-export const receiveClassStudentResponseAction = data => ({
+export const receiveClassStudentResponseAction = (data) => ({
   type: RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
-export const receiveFeedbackResponseAction = data => ({
+export const receiveFeedbackResponseAction = (data) => ({
   type: RECEIVE_FEEDBACK_RESPONSE_REQUEST,
-  payload: data
-});
+  payload: data,
+})
 
 export const clearFeedbackResponseAction = () => ({
-  type: CLEAR_FEEDBACK_RESPONSE
-});
+  type: CLEAR_FEEDBACK_RESPONSE,
+})
 
 export const receiveGradeBookdAction = (assignmentId, classId) => ({
   type: RECEIVE_GRADEBOOK_REQUEST,
-  payload: { assignmentId, classId }
-});
+  payload: { assignmentId, classId },
+})
 
 export const receiveTestActivitydAction = (assignmentId, classId) => ({
   type: RECEIVE_TESTACTIVITY_REQUEST,
-  payload: { assignmentId, classId }
-});
+  payload: { assignmentId, classId },
+})
 
-export const releaseScoreAction = (assignmentId, classId, releaseScore, testId, filterState) => ({
+export const releaseScoreAction = (
+  assignmentId,
+  classId,
+  releaseScore,
+  testId,
+  filterState
+) => ({
   type: UPDATE_RELEASE_SCORE,
-  payload: { assignmentId, classId, releaseScore, testId, filterState }
-});
+  payload: { assignmentId, classId, releaseScore, testId, filterState },
+})
 
-export const receiveStudentQuestionAction = (assignmentId, classId, questionId, studentId, testItemId) => ({
+export const receiveStudentQuestionAction = (
+  assignmentId,
+  classId,
+  questionId,
+  studentId,
+  testItemId
+) => ({
   type: RECEIVE_STUDENT_QUESTION_REQUEST,
-  payload: { assignmentId, classId, questionId, studentId, testItemId }
-});
+  payload: { assignmentId, classId, questionId, studentId, testItemId },
+})
 
-export const receiveAnswersAction = (assignmentId, classId, questionId, itemId) => ({
+export const receiveAnswersAction = (
+  assignmentId,
+  classId,
+  questionId,
+  itemId
+) => ({
   type: RECEIVE_CLASS_QUESTION_REQUEST,
-  payload: { assignmentId, classId, questionId, itemId }
-});
+  payload: { assignmentId, classId, questionId, itemId },
+})
 
 export const markAsDoneAction = (assignmentId, classId, testId) => ({
   type: SET_MARK_AS_DONE,
-  payload: { assignmentId, classId, testId }
-});
+  payload: { assignmentId, classId, testId },
+})
 
 export const openAssignmentAction = (assignmentId, classId, testId) => ({
   type: OPEN_ASSIGNMENT,
-  payload: { assignmentId, classId, testId }
-});
+  payload: { assignmentId, classId, testId },
+})
 
 export const closeAssignmentAction = (assignmentId, classId, testId) => ({
   type: CLOSE_ASSIGNMENT,
-  payload: { assignmentId, classId, testId }
-});
+  payload: { assignmentId, classId, testId },
+})
 
 export const markAbsentAction = (assignmentId, classId, students) => ({
   type: MARK_AS_ABSENT,
-  payload: { assignmentId, classId, students }
-});
+  payload: { assignmentId, classId, students },
+})
 
 export const markSubmittedAction = (assignmentId, classId, students) => ({
   type: MARK_AS_SUBMITTED,
-  payload: { assignmentId, classId, students }
-});
+  payload: { assignmentId, classId, students },
+})
 
-export const downloadGradesResponseAction = (assignmentId, classId, students, isResponseRequired) => ({
+export const downloadGradesResponseAction = (
+  assignmentId,
+  classId,
+  students,
+  isResponseRequired
+) => ({
   type: DOWNLOAD_GRADES_RESPONSES,
-  payload: { assignmentId, classId, students, isResponseRequired }
-});
+  payload: { assignmentId, classId, students, isResponseRequired },
+})
 
-export const updateStudentActivityAction = payload => ({
+export const updateStudentActivityAction = (payload) => ({
   type: UPDATE_REMOVED_STUDENTS_LIST,
-  payload
-});
+  payload,
+})
 
-export const updateSubmittedStudentsAction = payload => ({
+export const updateSubmittedStudentsAction = (payload) => ({
   type: UPDATE_SUBMITTED_STUDENTS,
-  payload
-});
+  payload,
+})
 
 export const removeStudentAction = (assignmentId, classId, students) => ({
   type: REMOVE_STUDENTS,
-  payload: { assignmentId, classId, students }
-});
+  payload: { assignmentId, classId, students },
+})
 
-export const addStudentsAction = (assignmentId, classId, students, endDate) => ({
+export const addStudentsAction = (
+  assignmentId,
+  classId,
+  students,
+  endDate
+) => ({
   type: ADD_STUDENTS,
-  payload: { assignmentId, classId, students, endDate }
-});
+  payload: { assignmentId, classId, students, endDate },
+})
 
-export const updateRemovedStudentsAction = payload => ({
+export const updateRemovedStudentsAction = (payload) => ({
   type: UPDATE_STUDENTS_LIST,
-  payload
-});
+  payload,
+})
 
-export const updateClassStudentsAction = payload => ({
+export const updateClassStudentsAction = (payload) => ({
   type: UPDATE_CLASS_STUDENTS_LIST,
-  payload
-});
+  payload,
+})
 
-export const fetchClassStudentsAction = payload => ({
+export const fetchClassStudentsAction = (payload) => ({
   type: FETCH_STUDENTS,
-  payload
-});
+  payload,
+})
 
-export const updateAssignmentStatusAction = status => ({
+export const updateAssignmentStatusAction = (status) => ({
   type: UPDATE_ASSIGNMENT_STATUS,
-  payload: status
-});
+  payload: status,
+})
 
-export const updateOpenAssignmentsAction = classId => ({
+export const updateOpenAssignmentsAction = (classId) => ({
   type: UPDATE_OPEN_ASSIGNMENTS,
-  payload: { classId }
-});
+  payload: { classId },
+})
 
-export const updateCloseAssignmentsAction = classId => ({
+export const updateCloseAssignmentsAction = (classId) => ({
   type: UPDATE_CLOSE_ASSIGNMENTS,
-  payload: { classId }
-});
+  payload: { classId },
+})
 
-export const saveOverallFeedbackAction = (testActivityId, groupId, feedback) => ({
+export const saveOverallFeedbackAction = (
+  testActivityId,
+  groupId,
+  feedback
+) => ({
   type: SAVE_OVERALL_FEEDBACK,
-  payload: { testActivityId, groupId, feedback }
-});
+  payload: { testActivityId, groupId, feedback },
+})
 
-export const updateOverallFeedbackAction = payload => ({
+export const updateOverallFeedbackAction = (payload) => ({
   type: UPDATE_OVERALL_FEEDBACK,
-  payload
-});
+  payload,
+})
 
-export const togglePauseAssignmentAction = payload => ({
+export const togglePauseAssignmentAction = (payload) => ({
   type: TOGGLE_PAUSE_ASSIGNMENT,
-  payload
-});
+  payload,
+})
 
-export const setIsPausedAction = payload => ({
+export const setIsPausedAction = (payload) => ({
   type: SET_IS_PAUSED,
-  payload
-});
+  payload,
+})
 
-export const setCurrentTestActivityIdAction = createAction(SET_CURRENT_TESTACTIVITY);
-export const getAllTestActivitiesForStudentAction = createAction(GET_ALL_TESTACTIVITIES_FOR_STUDENT);
-export const setAllTestActivitiesForStudentAction = createAction(SET_ALL_TESTACTIVITIES_FOR_STUDENT);
-export const redirectToAssignmentsAction = createAction(REDIRECT_TO_ASSIGNMENTS);
-export const toggleViewPasswordAction = createAction(TOGGLE_VIEW_PASSWORD_MODAL);
-export const regeneratePasswordAction = createAction(REGENERATE_PASSWORD);
-export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS);
-export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES);
+export const setCurrentTestActivityIdAction = createAction(
+  SET_CURRENT_TESTACTIVITY
+)
+export const getAllTestActivitiesForStudentAction = createAction(
+  GET_ALL_TESTACTIVITIES_FOR_STUDENT
+)
+export const setAllTestActivitiesForStudentAction = createAction(
+  SET_ALL_TESTACTIVITIES_FOR_STUDENT
+)
+export const redirectToAssignmentsAction = createAction(REDIRECT_TO_ASSIGNMENTS)
+export const toggleViewPasswordAction = createAction(TOGGLE_VIEW_PASSWORD_MODAL)
+export const regeneratePasswordAction = createAction(REGENERATE_PASSWORD)
+export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS)
+export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES)

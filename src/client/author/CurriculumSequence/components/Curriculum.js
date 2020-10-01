@@ -1,14 +1,18 @@
-import { themeColor, white } from "@edulastic/colors";
-import PropTypes from "prop-types";
-import React, { useState, useEffect, useCallback } from "react";
-import { Prompt } from "react-router-dom";
-import { FaBars } from "react-icons/fa";
-import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
-import styled from "styled-components";
-import { IconPlusCircle } from "@edulastic/icons";
-import DropContainer from "../../../assessment/components/DropContainer";
-import { themes } from "../../../theme";
-import CurriculumModuleRow from "./CurriculumModuleRow";
+import { themeColor, white } from '@edulastic/colors'
+import PropTypes from 'prop-types'
+import React, { useState, useEffect, useCallback } from 'react'
+import { Prompt } from 'react-router-dom'
+import { FaBars } from 'react-icons/fa'
+import {
+  sortableContainer,
+  sortableElement,
+  sortableHandle,
+} from 'react-sortable-hoc'
+import styled from 'styled-components'
+import { IconPlusCircle } from '@edulastic/icons'
+import DropContainer from '../../../assessment/components/DropContainer'
+import { themes } from '../../../theme'
+import CurriculumModuleRow from './CurriculumModuleRow'
 
 /**
  * @typedef CurriculumProps
@@ -18,14 +22,14 @@ import CurriculumModuleRow from "./CurriculumModuleRow";
  */
 
 export const SortableTestsHandle = sortableHandle(({ clickHandle }) => (
-  <DragHandle onClick={e => clickHandle(e)}>
+  <DragHandle onClick={(e) => clickHandle(e)}>
     <IconHandle>
       <FaBars />
     </IconHandle>
   </DragHandle>
-));
+))
 
-const SortableItem = sortableElement(props => {
+const SortableItem = sortableElement((props) => {
   const {
     curriculum: { _id: playlistId } = {},
     curriculum,
@@ -61,18 +65,18 @@ const SortableItem = sortableElement(props => {
     droppedItemId,
     isPlaylistDetailsPage,
     ...rest
-  } = props;
+  } = props
 
-  const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
+  const handleTestSort = (prop) => handleTestsSort({ ...prop, mIndex: id })
   return (
     <AssignmentItemContainer data-cy="curriculum-module">
       {isReview && <SortableTestsHandle />}
       <DropContainer
         theme={themes.default}
-        width={isReview ? "calc(100% - 40px)" : "100%"}
+        width={isReview ? 'calc(100% - 40px)' : '100%'}
         key={`drop-${id}-${moduleItem._id}`}
         drop={(arg1, item) => {
-          onDrop(id, item);
+          onDrop(id, item)
         }}
         isPlaylist
       >
@@ -113,17 +117,19 @@ const SortableItem = sortableElement(props => {
         />
       </DropContainer>
     </AssignmentItemContainer>
-  );
-});
+  )
+})
 
-const SortableContainer = sortableContainer(({ children }) => <ModuleWrapper>{children}</ModuleWrapper>);
+const SortableContainer = sortableContainer(({ children }) => (
+  <ModuleWrapper>{children}</ModuleWrapper>
+))
 
 /** @extends Component<CurriculumProps> */
-const Curriculum = props => {
-  const onDrop = toModuleIndex => {
-    const { onDrop: dropHandler } = props;
-    dropHandler(toModuleIndex);
-  };
+const Curriculum = (props) => {
+  const onDrop = (toModuleIndex) => {
+    const { onDrop: dropHandler } = props
+    dropHandler(toModuleIndex)
+  }
 
   const {
     curriculum = {},
@@ -136,71 +142,91 @@ const Curriculum = props => {
     status,
     isManageContentActive,
     hasEditAccess,
-    urlHasUseThis
-  } = props;
+    urlHasUseThis,
+  } = props
 
-  const { _id: playlistId, modules = [] } = curriculum;
+  const { _id: playlistId, modules = [] } = curriculum
 
-  const [modulesContainerRef, setModulesContainerRef] = useState();
+  const [modulesContainerRef, setModulesContainerRef] = useState()
 
-  const onRefChange = useCallback(node => setModulesContainerRef(node), []);
+  const onRefChange = useCallback((node) => setModulesContainerRef(node), [])
 
   useEffect(() => {
-    const { parentElement } = modulesContainerRef?.container?.parentElement || {};
-    const persistObj = JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`));
+    const { parentElement } =
+      modulesContainerRef?.container?.parentElement || {}
+    const persistObj = JSON.parse(
+      sessionStorage.getItem(`playlist/${playlistId}`)
+    )
     if (parentElement && persistObj) {
-      parentElement.scrollTo({ top: persistObj?.currentOffsetTop || 0, behavior: "smooth" });
+      parentElement.scrollTo({
+        top: persistObj?.currentOffsetTop || 0,
+        behavior: 'smooth',
+      })
     }
-    return () => resetDestination({ isAuthoring: Object.keys(curriculum).length && hasEditAccess && !urlHasUseThis });
-  }, [modulesContainerRef]);
+    return () =>
+      resetDestination({
+        isAuthoring:
+          Object.keys(curriculum).length && hasEditAccess && !urlHasUseThis,
+      })
+  }, [modulesContainerRef])
 
-  const handleActionClick = (e, destinaion, assignmentId, classId, moduleId, contentId) => {
+  const handleActionClick = (
+    e,
+    destinaion,
+    assignmentId,
+    classId,
+    moduleId,
+    contentId
+  ) => {
     // prevent Event Bubbling
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
 
-    let currentOffsetTop = 0;
-    const { childNodes, parentElement } = modulesContainerRef?.container || {};
-    let depth = modules.findIndex(({ _id }) => _id === moduleId);
+    let currentOffsetTop = 0
+    const { childNodes, parentElement } = modulesContainerRef?.container || {}
+    let depth = modules.findIndex(({ _id }) => _id === moduleId)
     // Calculate the sum of heights of each childNode thats has -ve offsetTop
     if (depth > 0 && childNodes) {
       while (depth >= 0) {
-        const node = childNodes?.[depth];
+        const node = childNodes?.[depth]
         if (node) {
-          currentOffsetTop += node.scrollHeight;
+          currentOffsetTop += node.scrollHeight
         }
-        --depth;
+        --depth
       }
     }
 
     // subract half of viewport height, so that content renders at the center
     if (parentElement) {
-      currentOffsetTop -= parentElement?.parentElement?.clientHeight / 2 || 0;
+      currentOffsetTop -= parentElement?.parentElement?.clientHeight / 2 || 0
     }
 
     const persistObj = {
       moduleId,
       contentId,
-      currentOffsetTop
-    };
+      currentOffsetTop,
+    }
 
     // persist the current minimal state in session
-    sessionStorage.setItem(`playlist/${playlistId}`, JSON.stringify(persistObj));
+    sessionStorage.setItem(`playlist/${playlistId}`, JSON.stringify(persistObj))
     history.push({
-      pathname: `/author/${destinaion}/${assignmentId}/${classId}`
-    });
-  };
+      pathname: `/author/${destinaion}/${assignmentId}/${classId}`,
+    })
+  }
 
   return (
     <SortableContainer
       ref={onRefChange}
       onSortEnd={onSortEnd}
       lockAxis="y"
-      lockOffset={["0%", "0%"]}
+      lockOffset={['0%', '0%']}
       lockToContainerEdges
       useDragHandle
     >
-      <Prompt when={manageContentDirty} message={() => "Changes done here are not saved. Do you want to leave?"} />
+      <Prompt
+        when={manageContentDirty}
+        message={() => 'Changes done here are not saved. Do you want to leave?'}
+      />
       {modules.map((moduleItem, index) => (
         <SortableItem
           moduleItem={moduleItem}
@@ -215,16 +241,18 @@ const Curriculum = props => {
       ))}
       {!isStudent &&
         hasEditAccess &&
-        (isManageContentActive || history.location.state?.editFlow || status === "draft") &&
-        history.location.hash !== "#review" && (
+        (isManageContentActive ||
+          history.location.state?.editFlow ||
+          status === 'draft') &&
+        history.location.hash !== '#review' && (
           <AddNewOrManageModules onClick={openAddModuleModal}>
             <IconPlusCircle />
             <span>Add Module</span>
           </AddNewOrManageModules>
         )}
     </SortableContainer>
-  );
-};
+  )
+}
 
 Curriculum.propTypes = {
   onDrop: PropTypes.func.isRequired,
@@ -237,20 +265,20 @@ Curriculum.propTypes = {
   onBeginDrag: PropTypes.func.isRequired,
   handleRemove: PropTypes.func.isRequired,
   modulesStatus: PropTypes.array.isRequired,
-  onCollapseExpand: PropTypes.func.isRequired
-};
+  onCollapseExpand: PropTypes.func.isRequired,
+}
 
 const ModuleWrapper = styled.div`
   flex-grow: 1;
   width: 60%;
   z-index: 0;
   margin-top: -1px;
-`;
+`
 
 const AssignmentItemContainer = styled.div`
   display: flex;
   width: 100%;
-`;
+`
 
 const DragHandle = styled.div`
   color: ${themeColor};
@@ -267,12 +295,12 @@ const DragHandle = styled.div`
   margin-bottom: 10px;
   margin-top: 10px;
   border-radius: 10px 0 0 10px;
-`;
+`
 
 const IconHandle = styled.span`
   font-size: 16px;
   margin-top: 10px;
-`;
+`
 
 const AddNewOrManageModules = styled.div`
   position: absolute;
@@ -296,8 +324,8 @@ const AddNewOrManageModules = styled.div`
     width: 20px;
     height: 20px;
   }
-`;
+`
 
-ModuleWrapper.displayName = "ModuleWrapper";
+ModuleWrapper.displayName = 'ModuleWrapper'
 
-export default Curriculum;
+export default Curriculum

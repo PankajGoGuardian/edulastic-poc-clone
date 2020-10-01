@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { get } from "lodash";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { Checkbox } from "antd";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { get } from 'lodash'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { Checkbox } from 'antd'
 
-import { withNamespaces } from "@edulastic/localization";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { withNamespaces } from '@edulastic/localization'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
-import { updateVariables } from "../../utils/variables";
+import { updateVariables } from '../../utils/variables'
 
-import Question from "../../components/Question";
+import Question from '../../components/Question'
 
 import {
   Layout,
@@ -20,13 +20,16 @@ import {
   MinHeightOption,
   MaxHeightOption,
   SpecialCharactersOption,
-  CharactersToDisplayOption
-} from "../../containers/WidgetOptions/components";
-import { Row } from "../../styled/WidgetOptions/Row";
-import { Col } from "../../styled/WidgetOptions/Col";
+  CharactersToDisplayOption,
+} from '../../containers/WidgetOptions/components'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { Col } from '../../styled/WidgetOptions/Col'
 
-import { changeItemAction, changeUIStyleAction } from "../../../author/src/actions/question";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import {
+  changeItemAction,
+  changeUIStyleAction,
+} from '../../../author/src/actions/question'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 class LayoutComponent extends Component {
   render() {
@@ -38,36 +41,40 @@ class LayoutComponent extends Component {
       advancedAreOpen,
       fillSections,
       cleanSections,
-      t
-    } = this.props;
+      t,
+    } = this.props
 
     const handleValidationChange = (prop, uiStyle) => {
       setQuestionData(
-        produce(item, draft => {
-          draft.validation[prop] = uiStyle;
-          updateVariables(draft);
+        produce(item, (draft) => {
+          draft.validation[prop] = uiStyle
+          updateVariables(draft)
         })
-      );
-    };
+      )
+    }
 
     return (
       <Question
         section="advanced"
-        label={t("component.options.display")}
+        label={t('component.options.display')}
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+        <Layout
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.options.display')}`
+          )}
+        >
           <Row gutter={24} type="flex" align="middle">
             <Col md={12}>
               <SpecialCharactersOption
                 data-cy="specialCharactersOption"
-                onChange={checked => {
+                onChange={(checked) => {
                   if (checked) {
-                    changeItem("characterMap", []);
+                    changeItem('characterMap', [])
                   } else {
-                    changeItem("characterMap", undefined);
+                    changeItem('characterMap', undefined)
                   }
                 }}
                 checked={!!item.characterMap}
@@ -77,13 +84,19 @@ class LayoutComponent extends Component {
               <Col md={12}>
                 <CharactersToDisplayOption
                   disabled
-                  onChange={val =>
+                  onChange={(val) =>
                     changeItem(
-                      "characterMap",
-                      val.split("").reduce((acc, cur) => (acc.includes(cur) ? acc : [...acc, cur]), [])
+                      'characterMap',
+                      val
+                        .split('')
+                        .reduce(
+                          (acc, cur) =>
+                            acc.includes(cur) ? acc : [...acc, cur],
+                          []
+                        )
                     )
                   }
-                  value={item.characterMap.join("")}
+                  value={item.characterMap.join('')}
                 />
               </Col>
             )}
@@ -92,14 +105,14 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <MinHeightOption
-                onChange={val => changeUIStyle("minHeight", +val)}
-                value={get(item, "uiStyle.minHeight", 300)}
+                onChange={(val) => changeUIStyle('minHeight', +val)}
+                value={get(item, 'uiStyle.minHeight', 300)}
               />
             </Col>
             <Col md={12}>
               <MaxHeightOption
-                onChange={val => changeUIStyle("maxHeight", +val)}
-                value={get(item, "uiStyle.maxHeight", 300)}
+                onChange={(val) => changeUIStyle('maxHeight', +val)}
+                value={get(item, 'uiStyle.maxHeight', 300)}
               />
             </Col>
           </Row>
@@ -107,17 +120,17 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <PlaceholderOption
-                onChange={val => {
-                  changeItem("placeholder", val);
+                onChange={(val) => {
+                  changeItem('placeholder', val)
                 }}
                 type="text"
-                value={get(item, "placeholder", "")}
+                value={get(item, 'placeholder', '')}
               />
             </Col>
             <Col md={12}>
               <FontSizeOption
-                onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "uiStyle.fontsize", "normal")}
+                onChange={(val) => changeUIStyle('fontsize', val)}
+                value={get(item, 'uiStyle.fontsize', 'normal')}
               />
             </Col>
           </Row>
@@ -135,7 +148,7 @@ class LayoutComponent extends Component {
           </Row> */}
         </Layout>
       </Question>
-    );
+    )
   }
 }
 
@@ -147,19 +160,19 @@ LayoutComponent.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 LayoutComponent.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 export default compose(
-  withNamespaces("assessment"),
-  connect(
-    ({ user }) => ({ user }),
-    { changeItem: changeItemAction, changeUIStyle: changeUIStyleAction }
-  )
-)(LayoutComponent);
+  withNamespaces('assessment'),
+  connect(({ user }) => ({ user }), {
+    changeItem: changeItemAction,
+    changeUIStyle: changeUIStyleAction,
+  })
+)(LayoutComponent)

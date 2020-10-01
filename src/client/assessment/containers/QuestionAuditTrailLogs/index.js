@@ -1,53 +1,62 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withNamespaces } from "react-i18next";
-import connect from "react-redux/es/connect/connect";
-import { ThemeProvider } from "styled-components";
-import { themes } from "../../../theme";
-import { get } from "lodash";
-import AuditList from "./AuditList";
-import PreviewModal from "../../../author/src/components/common/PreviewModal";
-import { fetchQuestionPreviewAttachmentsAction } from "../../../author/ItemDetail/ducks";
-import { setScratchpadDataAction } from "../../../author/src/components/common/PreviewModal/previewAttachment.ducks";
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withNamespaces } from 'react-i18next'
+import connect from 'react-redux/es/connect/connect'
+import { ThemeProvider } from 'styled-components'
+import { get } from 'lodash'
+import { themes } from '../../../theme'
+import AuditList from './AuditList'
+import PreviewModal from '../../../author/src/components/common/PreviewModal'
+import { fetchQuestionPreviewAttachmentsAction } from '../../../author/ItemDetail/ducks'
+import { setScratchpadDataAction } from '../../../author/src/components/common/PreviewModal/previewAttachment.ducks'
 
-import { Container, StyledLayout, SpinContainer, StyledSpin, StyledPreviewModal } from "./styled";
+import {
+  Container,
+  StyledLayout,
+  SpinContainer,
+  StyledSpin,
+  StyledPreviewModal,
+} from './styled'
 
 const QuestionAuditTrailLogs = ({
   isLoading,
   auditTrails,
   fetchQuestionPreviewAttachments,
   item,
-  setScratchpadData
+  setScratchpadData,
 }) => {
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
 
   useEffect(() => {
     fetchQuestionPreviewAttachments({
-      referrerId: item._id
-    });
-  }, []);
+      referrerId: item._id,
+    })
+  }, [])
 
-  const handleShowNotes = id => {
-    const scratchpad = auditTrails.attachments.find(a => a._id === id);
+  const handleShowNotes = (id) => {
+    const scratchpad = auditTrails.attachments.find((a) => a._id === id)
     setScratchpadData({
-      [item._id]: { scratchpad: scratchpad?.data?.scratchpad }
-    });
-    setShowPreviewModal(true);
-  };
+      [item._id]: { scratchpad: scratchpad?.data?.scratchpad },
+    })
+    setShowPreviewModal(true)
+  }
 
-  const closeModal = () => setShowPreviewModal(false);
+  const closeModal = () => setShowPreviewModal(false)
 
   return (
     <ThemeProvider theme={themes.default}>
-      <StyledLayout loading={isLoading ? "true" : "false"}>
+      <StyledLayout loading={isLoading ? 'true' : 'false'}>
         <Container>
           {isLoading && (
             <SpinContainer>
               <StyledSpin size="large" />
             </SpinContainer>
           )}
-          <AuditList auditTrails={auditTrails} handleShowNotes={handleShowNotes} />
+          <AuditList
+            auditTrails={auditTrails}
+            handleShowNotes={handleShowNotes}
+          />
           {showPreviewModal && (
             <StyledPreviewModal
               isVisible={showPreviewModal}
@@ -57,7 +66,7 @@ const QuestionAuditTrailLogs = ({
               onClose={closeModal}
               data={{ ...item, id: item._id }}
               isEditable={false}
-              testId={""}
+              testId=""
               isTest={false}
               gotoSummary={() => {}}
               hideButtons
@@ -67,22 +76,22 @@ const QuestionAuditTrailLogs = ({
         </Container>
       </StyledLayout>
     </ThemeProvider>
-  );
-};
+  )
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
-    state => ({
-      isLoading: get(state, "itemDetail.loadingAuditLogs", false),
-      auditTrails: get(state, "itemDetail.previewData", []),
-      item: get(state, "itemDetail.item", {})
+    (state) => ({
+      isLoading: get(state, 'itemDetail.loadingAuditLogs', false),
+      auditTrails: get(state, 'itemDetail.previewData', []),
+      item: get(state, 'itemDetail.item', {}),
     }),
     {
       fetchQuestionPreviewAttachments: fetchQuestionPreviewAttachmentsAction,
-      setScratchpadData: setScratchpadDataAction
+      setScratchpadData: setScratchpadDataAction,
     }
   )
-);
+)
 
-export default enhance(QuestionAuditTrailLogs);
+export default enhance(QuestionAuditTrailLogs)

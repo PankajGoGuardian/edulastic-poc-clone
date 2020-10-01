@@ -1,36 +1,49 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
 
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import TermTable from "../TermTable/TermTable";
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
+import TermTable from '../TermTable/TermTable'
 
-import { TermDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
+import {
+  TermDiv,
+  StyledContent,
+  StyledLayout,
+  SpinContainer,
+  StyledSpin,
+} from './styled'
 
-const title = "Manage District";
-const menuActive = { mainMenu: "Settings", subMenu: "Term" };
+const title = 'Manage District'
+const menuActive = { mainMenu: 'Settings', subMenu: 'Term' }
 
 class Term extends Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
-  deleteTerm = deletedTermId => {
-    const { deleteTermSetting, userOrgId } = this.props;
-    deleteTermSetting({ body: { termId: deletedTermId, orgId: userOrgId } });
-  };
+  deleteTerm = (deletedTermId) => {
+    const { deleteTermSetting, userOrgId } = this.props
+    deleteTermSetting({ body: { termId: deletedTermId, orgId: userOrgId } })
+  }
 
   render() {
-    const { termSetting, loading, creating, updating, deleting, history } = this.props;
-    const showSpin = loading || creating || updating || deleting;
+    const {
+      termSetting,
+      loading,
+      creating,
+      updating,
+      deleting,
+      history,
+    } = this.props
+    const showSpin = loading || creating || updating || deleting
     return (
       <TermDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
-          <StyledLayout loading={showSpin ? "true" : "false"}>
+          <StyledLayout loading={showSpin ? 'true' : 'false'}>
             <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
               <SpinContainer>
@@ -41,24 +54,24 @@ class Term extends Component {
           </StyledLayout>
         </StyledContent>
       </TermDiv>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  connect(state => ({
-    loading: get(state, ["termReducer", "loading"], false),
-    updating: get(state, ["termReducer", "updating"], false),
-    creating: get(state, ["termReducer", "creating"], false),
-    deleting: get(state, ["termReducer", "deleting"], false)
+  connect((state) => ({
+    loading: get(state, ['termReducer', 'loading'], false),
+    updating: get(state, ['termReducer', 'updating'], false),
+    creating: get(state, ['termReducer', 'creating'], false),
+    deleting: get(state, ['termReducer', 'deleting'], false),
   }))
-);
+)
 
-export default enhance(Term);
+export default enhance(Term)
 
 Term.propTypes = {
   loading: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
   creating: PropTypes.bool.isRequired,
-  deleting: PropTypes.bool.isRequired
-};
+  deleting: PropTypes.bool.isRequired,
+}

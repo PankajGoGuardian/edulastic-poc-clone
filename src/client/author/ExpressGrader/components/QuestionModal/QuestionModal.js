@@ -1,23 +1,36 @@
-import React, { createRef } from "react";
-import PropTypes from "prop-types";
+import React, { createRef } from 'react'
+import PropTypes from 'prop-types'
 
-import { ScrollContext,notification } from "@edulastic/common";
-import { message } from "antd";
-import { get, isEmpty,values } from "lodash";
-import { connect } from "react-redux";
-import * as Sentry from '@sentry/browser';
-import Question from "../Question/Question";
-import { ModalWrapper, QuestionWrapperStyled, BottomNavigationWrapper } from "./styled";
-import { submitResponseAction, getTeacherEditedScoreSelector, getIsScoringCompletedSelector } from "../../ducks";
-import { hasValidAnswers } from "../../../../assessment/utils/answer";
-import { stateExpressGraderAnswerSelector, getStudentQuestionSelector } from "../../../ClassBoard/ducks";
-import BottomNavigation from "../BottomNavigation/BottomNavigation";
+import { ScrollContext, notification } from '@edulastic/common'
+import { message } from 'antd'
+import { get, isEmpty, values } from 'lodash'
+import { connect } from 'react-redux'
+import * as Sentry from '@sentry/browser'
+import Question from '../Question/Question'
+import {
+  ModalWrapper,
+  QuestionWrapperStyled,
+  BottomNavigationWrapper,
+} from './styled'
+import {
+  submitResponseAction,
+  getTeacherEditedScoreSelector,
+  getIsScoringCompletedSelector,
+} from '../../ducks'
+import { hasValidAnswers } from '../../../../assessment/utils/answer'
+import {
+  stateExpressGraderAnswerSelector,
+  getStudentQuestionSelector,
+} from '../../../ClassBoard/ducks'
+import BottomNavigation from '../BottomNavigation/BottomNavigation'
 
-const QuestionWrapper = React.forwardRef((props, ref) => <QuestionWrapperStyled {...props} ref={ref} />);
+const QuestionWrapper = React.forwardRef((props, ref) => (
+  <QuestionWrapperStyled {...props} ref={ref} />
+))
 
 class QuestionModal extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       loaded: false,
       // visible: false,
@@ -26,114 +39,120 @@ class QuestionModal extends React.Component {
       colIndex: null,
       maxQuestions: null,
       maxStudents: null,
-      editResponse: false
-    };
-    this.containerRef = createRef();
+      editResponse: false,
+    }
+    this.containerRef = createRef()
   }
 
   componentDidMount() {
-    const { record, tableData, scoreMode } = this.props;
-    const loaded = true;
-    let maxQuestions = null;
-    let maxStudents = null;
-    const colIndex = record ? record.colIndex : null;
-    const rowIndex = record ? record.rowIndex : null;
+    const { record, tableData, scoreMode } = this.props
+    const loaded = true
+    let maxQuestions = null
+    let maxStudents = null
+    const colIndex = record ? record.colIndex : null
+    const rowIndex = record ? record.rowIndex : null
 
     if (rowIndex !== null) {
-      maxQuestions = tableData[rowIndex].questions;
-      maxStudents = tableData.length;
+      maxQuestions = tableData[rowIndex].questions
+      maxStudents = tableData.length
     }
-    this.setState({ rowIndex, colIndex, loaded, maxQuestions, maxStudents, editResponse: !scoreMode });
-    document.addEventListener("keyup", this.keyListener, false);
+    this.setState({
+      rowIndex,
+      colIndex,
+      loaded,
+      maxQuestions,
+      maxStudents,
+      editResponse: !scoreMode,
+    })
+    document.addEventListener('keyup', this.keyListener, false)
   }
 
   componentWillReceiveProps(nextProps) {
-    const { record, tableData } = nextProps;
-    const loaded = true;
-    const newcolIndex = record ? record.colIndex : null;
-    const newrowIndex = record ? record.rowIndex : null;
-    const { rowIndex, colIndex } = this.state;
+    const { record, tableData } = nextProps
+    const loaded = true
+    const newcolIndex = record ? record.colIndex : null
+    const newrowIndex = record ? record.rowIndex : null
+    const { rowIndex, colIndex } = this.state
 
     if (rowIndex === null && colIndex === null) {
-      const maxQuestions = tableData[rowIndex].questions;
-      const maxStudents = tableData.length;
+      const maxQuestions = tableData[rowIndex].questions
+      const maxStudents = tableData.length
       this.setState({
         loaded,
         rowIndex: newrowIndex,
         colIndex: newcolIndex,
         maxQuestions,
-        maxStudents
-      });
+        maxStudents,
+      })
     }
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keyup", this.keyListener, false);
+    document.removeEventListener('keyup', this.keyListener, false)
   }
 
-  keyListener = event => {
+  keyListener = (event) => {
     if (event.keyCode === 37) {
-      this.prevQuestion();
+      this.prevQuestion()
     }
     if (event.keyCode === 38) {
-      this.prevStudent(event);
+      this.prevStudent(event)
     }
     if (event.keyCode === 39) {
-      this.nextQuestion();
+      this.nextQuestion()
     }
     if (event.keyCode === 40) {
-      this.nextStudent(event);
+      this.nextStudent(event)
     }
-  };
+  }
 
   showModal = () => {
-    const { showQuestionModal } = this.props;
-    showQuestionModal();
-  };
+    const { showQuestionModal } = this.props
+    showQuestionModal()
+  }
 
   hideModal = () => {
-    this.submitResponse();
-    const { hideQuestionModal } = this.props;
-    hideQuestionModal();
-  };
+    this.submitResponse()
+    const { hideQuestionModal } = this.props
+    hideQuestionModal()
+  }
 
   nextStudent = (event) => {
-    
-    const { maxStudents } = this.state;
-    const { rowIndex } = this.state;
-    const nextIndex = rowIndex + 1;
+    const { maxStudents } = this.state
+    const { rowIndex } = this.state
+    const nextIndex = rowIndex + 1
     if (nextIndex !== maxStudents) {
-      this.submitResponse();
+      this.submitResponse()
       this.setState({ loaded: false }, () => {
-        this.setState({ rowIndex: nextIndex, loaded: true });
-      });
+        this.setState({ rowIndex: nextIndex, loaded: true })
+      })
     } else {
-      event.stopPropagation();
-      notification({ type: "success", messageKey:"finishedGrading"});
+      event.stopPropagation()
+      notification({ type: 'success', messageKey: 'finishedGrading' })
     }
-  };
+  }
 
   prevStudent = (event) => {
-    const { rowIndex } = this.state;
+    const { rowIndex } = this.state
     if (rowIndex !== 0) {
-      this.submitResponse();
-      const prevIndex = rowIndex - 1;
+      this.submitResponse()
+      const prevIndex = rowIndex - 1
       this.setState({ loaded: false }, () => {
-        this.setState({ rowIndex: prevIndex, loaded: true });
-      });
-    } else{
-      event?.stopPropagation();
+        this.setState({ rowIndex: prevIndex, loaded: true })
+      })
+    } else {
+      event?.stopPropagation()
     }
-  };
+  }
 
   getQuestion = () => {
-    const { rowIndex, colIndex, loaded } = this.state;
-    const { tableData } = this.props;
-    return get(tableData, [rowIndex, `Q${colIndex}`]);
-  };
+    const { rowIndex, colIndex, loaded } = this.state
+    const { tableData } = this.props
+    return get(tableData, [rowIndex, `Q${colIndex}`])
+  }
 
   submitResponse = () => {
-    const question = this.getQuestion();
+    const question = this.getQuestion()
     /**
      *  testActivityId,
         itemId,
@@ -147,15 +166,18 @@ class QuestionModal extends React.Component {
       submitResponse,
       teacherEditedScore,
       studentResponseLoading,
-      studentQuestionResponseTestActivityId
-    } = this.props;
+      studentQuestionResponseTestActivityId,
+    } = this.props
     if (studentResponseLoading) {
-      return;
-    };
-    const { testActivityId, testItemId: itemId } = question;
-    if(studentQuestionResponseTestActivityId && (testActivityId != studentQuestionResponseTestActivityId)){
+      return
+    }
+    const { testActivityId, testItemId: itemId } = question
+    if (
+      studentQuestionResponseTestActivityId &&
+      testActivityId != studentQuestionResponseTestActivityId
+    ) {
       // TODO: this situation shouldn't happen. but currently happening when switching netween students rapidly. need to fix it
-      return;
+      return
     }
     if (!isEmpty(_userResponse)) {
       /**
@@ -163,57 +185,58 @@ class QuestionModal extends React.Component {
        * In that case only send currenytly attempted _userResponse
        */
 
-      const scores = isEmpty(teacherEditedScore) ? undefined : { ...teacherEditedScore };
+      const scores = isEmpty(teacherEditedScore)
+        ? undefined
+        : { ...teacherEditedScore }
 
       const userResponse =
         allResponse.length > 0
           ? allResponse.reduce((acc, cur) => {
               // only if not empty send the responses to server for editing
-              if(hasValidAnswers(cur.qType,cur.userResponse)){
-                acc[cur.qid] = cur.userResponse;
+              if (hasValidAnswers(cur.qType, cur.userResponse)) {
+                acc[cur.qid] = cur.userResponse
               } else {
-                const error = new Error("empty response update event");
-                Sentry.configureScope(scope => {
-                  scope.setExtra("qType",cur?.qType);
-                  scope.setExtra("userResponse",cur?.userResponse);
-                  Sentry.captureException(error);
-                });
+                const error = new Error('empty response update event')
+                Sentry.configureScope((scope) => {
+                  scope.setExtra('qType', cur?.qType)
+                  scope.setExtra('userResponse', cur?.userResponse)
+                  Sentry.captureException(error)
+                })
               }
-              return acc;
+              return acc
             }, {})
-          : _userResponse;
-      submitResponse({ testActivityId, itemId, groupId, userResponse, scores });
+          : _userResponse
+      submitResponse({ testActivityId, itemId, groupId, userResponse, scores })
     }
-  };
+  }
 
   nextQuestion = () => {
-   
-    const { maxQuestions } = this.state;
-    const { colIndex } = this.state;
-    const nextIndex = colIndex + 1;
+    const { maxQuestions } = this.state
+    const { colIndex } = this.state
+    const nextIndex = colIndex + 1
     if (nextIndex !== maxQuestions) {
-      this.submitResponse();
+      this.submitResponse()
       this.setState({ loaded: false }, () => {
-        this.setState({ colIndex: nextIndex, loaded: true });
-      });
+        this.setState({ colIndex: nextIndex, loaded: true })
+      })
     } else {
-      notification({ type: "success", messageKey:"finishedGrading"});
+      notification({ type: 'success', messageKey: 'finishedGrading' })
     }
-  };
+  }
 
   prevQuestion = () => {
-    this.submitResponse();
-    const { colIndex } = this.state;
+    this.submitResponse()
+    const { colIndex } = this.state
     if (colIndex !== 0) {
-      const prevIndex = colIndex - 1;
+      const prevIndex = colIndex - 1
       this.setState({ loaded: false }, () => {
-        this.setState({ colIndex: prevIndex, loaded: true });
-      });
+        this.setState({ colIndex: prevIndex, loaded: true })
+      })
     }
-  };
+  }
 
   render() {
-    let question = null;
+    let question = null
     const {
       isVisibleModal,
       tableData,
@@ -222,17 +245,16 @@ class QuestionModal extends React.Component {
       windowWidth,
       studentResponseLoading,
       isScoringInProgress,
-      studentQuestionResponseTestActivityId
-
-    } = this.props;
-    const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
+      studentQuestionResponseTestActivityId,
+    } = this.props
+    const { rowIndex, colIndex, loaded, row, editResponse } = this.state
 
     if (colIndex !== null && rowIndex !== null) {
-      question = tableData[rowIndex][`Q${colIndex}`];
+      question = tableData[rowIndex][`Q${colIndex}`]
     }
-    let student = {};
+    let student = {}
     if (rowIndex !== null) {
-      student = tableData[rowIndex].students;
+      student = tableData[rowIndex].students
     }
 
     return (
@@ -246,12 +268,17 @@ class QuestionModal extends React.Component {
         onOk={this.hideModal}
         onCancel={this.hideModal}
         visible={isVisibleModal}
-        bodyStyle={{ background: "#f0f2f5", height: "100%", overflowY: "auto" }}
+        bodyStyle={{ background: '#f0f2f5', height: '100%', overflowY: 'auto' }}
       >
         {isVisibleModal && question && loaded && (
-          <React.Fragment>
-            <ScrollContext.Provider value={{ getScrollElement: () => this.containerRef?.current }}>
-              <QuestionWrapper ref={this.containerRef} style={{ marginBottom: windowWidth > 1024 ? "66px" : "99px" }}>
+          <>
+            <ScrollContext.Provider
+              value={{ getScrollElement: () => this.containerRef?.current }}
+            >
+              <QuestionWrapper
+                ref={this.containerRef}
+                style={{ marginBottom: windowWidth > 1024 ? '66px' : '99px' }}
+              >
                 <Question
                   record={question}
                   key={question.id}
@@ -259,7 +286,9 @@ class QuestionModal extends React.Component {
                   student={student}
                   isPresentationMode={isPresentationMode}
                   editResponse={editResponse}
-                  studentResponseLoading={studentResponseLoading || isScoringInProgress}
+                  studentResponseLoading={
+                    studentResponseLoading || isScoringInProgress
+                  }
                 />
               </QuestionWrapper>
             </ScrollContext.Provider>
@@ -270,15 +299,18 @@ class QuestionModal extends React.Component {
                 nextStudent={this.nextStudent}
                 prevQuestion={this.prevQuestion}
                 nextQuestion={this.nextQuestion}
-                style={{ padding: "20px 3%" }}
+                style={{ padding: '20px 3%' }}
                 editResponse={editResponse}
-                toggleEditResponse={() => this.setState(({ editResponse }) => ({ editResponse: !editResponse }))}
+                toggleEditResponse={() =>
+                  this.setState(({ editResponse }) => ({
+                    editResponse: !editResponse,
+                  }))}
               />
             </BottomNavigationWrapper>
-          </React.Fragment>
+          </>
         )}
       </ModalWrapper>
-    );
+    )
   }
 }
 
@@ -288,21 +320,22 @@ QuestionModal.propTypes = {
   isVisibleModal: PropTypes.bool.isRequired,
   showQuestionModal: PropTypes.func.isRequired,
   hideQuestionModal: PropTypes.func.isRequired,
-  isPresentationMode: PropTypes.bool
-};
+  isPresentationMode: PropTypes.bool,
+}
 
 QuestionModal.defaultProps = {
-  isPresentationMode: false
-};
+  isPresentationMode: false,
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     userResponse: stateExpressGraderAnswerSelector(state),
     allResponse: getStudentQuestionSelector(state),
     teacherEditedScore: getTeacherEditedScoreSelector(state),
     studentResponseLoading: state.studentQuestionResponse?.loading,
     isScoringInProgress: getIsScoringCompletedSelector(state),
-    studentQuestionResponseTestActivityId: state.studentQuestionResponse?.data?.testActivityId
+    studentQuestionResponseTestActivityId:
+      state.studentQuestionResponse?.data?.testActivityId,
   }),
   { submitResponse: submitResponseAction }
-)(QuestionModal);
+)(QuestionModal)

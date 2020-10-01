@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react'
 
 const QuestionContext = React.createContext({
-  questionId: ""
-});
+  questionId: '',
+})
 
-export const QuestionContextProvider = QuestionContext.Provider;
+export const QuestionContextProvider = QuestionContext.Provider
 
-export default QuestionContext;
+export default QuestionContext

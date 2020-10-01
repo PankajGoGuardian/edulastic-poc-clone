@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useCallback } from "react";
-import { Button, Dropdown, Menu, Icon } from "antd";
-import styled from "styled-components";
-import { partial } from "lodash";
+import React, { useState, useMemo, useCallback } from 'react'
+import { Button, Dropdown, Menu, Icon } from 'antd'
+import styled from 'styled-components'
+import { partial } from 'lodash'
 
 const CustomMenu = (className, data, handleMenuClick) => {
   return (
@@ -11,25 +11,32 @@ const CustomMenu = (className, data, handleMenuClick) => {
           <Menu.Item key={item.key} title={item.title}>
             {item.title}
           </Menu.Item>
-        );
+        )
       })}
     </Menu>
-  );
-};
+  )
+}
 
-const NormalDropDown = ({ className, containerClassName = "", by, updateCB, data, comData }) => {
-  const [selected, setSelected] = useState(by);
+const NormalDropDown = ({
+  className,
+  containerClassName = '',
+  by,
+  updateCB,
+  data,
+  comData,
+}) => {
+  const [selected, setSelected] = useState(by)
 
   const handleMenuClick = useCallback(
-    event => {
-      const _selected = { key: event.key, title: event.item.props.title };
-      setSelected(_selected);
+    (event) => {
+      const _selected = { key: event.key, title: event.item.props.title }
+      setSelected(_selected)
       if (updateCB) {
-        updateCB(event, _selected, comData);
+        updateCB(event, _selected, comData)
       }
     },
     [updateCB]
-  );
+  )
 
   return (
     <StyledDiv className={`${className} ${containerClassName} normal-dropdown`}>
@@ -40,8 +47,8 @@ const NormalDropDown = ({ className, containerClassName = "", by, updateCB, data
         </Button>
       </Dropdown>
     </StyledDiv>
-  );
-};
+  )
+}
 
 const StyledDiv = styled.div`
   margin: 0px 5px;
@@ -49,11 +56,11 @@ const StyledDiv = styled.div`
   button {
     white-space: pre-wrap;
   }
-`;
+`
 
 const StyledNormalDropDown = styled(NormalDropDown)`
   max-height: 250px;
   overflow-y: scroll;
-`;
+`
 
-export { StyledNormalDropDown as NormalDropDown };
+export { StyledNormalDropDown as NormalDropDown }

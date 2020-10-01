@@ -1,2 +1,5 @@
-export { default } from "./components/Container/container";
-export { reducer as externalToolsReducer, watcherSaga as externalToolsSaga } from "./ducks";
+export { default } from './components/Container/container'
+export {
+  reducer as externalToolsReducer,
+  watcherSaga as externalToolsSaga,
+} from './ducks'

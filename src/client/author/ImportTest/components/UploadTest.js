@@ -1,82 +1,102 @@
-import React, { useEffect, useState } from "react";
-import { IconUpload } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import { sumBy } from "lodash";
+import React, { useEffect, useState } from 'react'
+import { IconUpload } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router'
+import { connect } from 'react-redux'
+import { sumBy } from 'lodash'
 
-import { Select, message } from "antd";
-import { notification } from "@edulastic/common";
-import { UploadTitle, UploadDescription, StyledButton, StyledUpload, uploadIconStyle, FlexContainer } from "./styled";
-import { uploadTestRequestAction } from "../ducks";
-import { getAllTagsAction, getAllTagsSelector } from "../../TestPage/ducks";
+import { Select, message } from 'antd'
+import { notification } from '@edulastic/common'
+import {
+  UploadTitle,
+  UploadDescription,
+  StyledButton,
+  StyledUpload,
+  uploadIconStyle,
+  FlexContainer,
+} from './styled'
+import { uploadTestRequestAction } from '../ducks'
+import { getAllTagsAction, getAllTagsSelector } from '../../TestPage/ducks'
 
 const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
-  const [selectedTags, setselectedTags] = useState([]);
-  const [contentType, setContentType] = useState("qti");
+  const [selectedTags, setselectedTags] = useState([])
+  const [contentType, setContentType] = useState('qti')
   useEffect(() => {
-    getAllTags({ type: "testitem" });
-  }, []);
+    getAllTags({ type: 'testitem' })
+  }, [])
 
   const customRequest = ({ onSuccess }) => {
     // Can check each file for server side validation or response
     setTimeout(() => {
-      onSuccess("ok"); // fake response
-    }, 0);
-  };
+      onSuccess('ok') // fake response
+    }, 0)
+  }
 
   const onChange = ({ fileList }) => {
-    if (fileList.every(({ status }) => status === "done")) {
-      sessionStorage.setItem("qtiTags", JSON.stringify(selectedTags));
-      uploadTest({ fileList, contentType });
+    if (fileList.every(({ status }) => status === 'done')) {
+      sessionStorage.setItem('qtiTags', JSON.stringify(selectedTags))
+      uploadTest({ fileList, contentType })
     }
-  };
+  }
 
   const beforeUpload = (_, fileList) => {
     // file validation for size and type should be done here
-    const totalFileSize = sumBy(fileList, "size");
+    const totalFileSize = sumBy(fileList, 'size')
     if (totalFileSize / 1024000 > 15) {
-       notification({ messageKey:"fileSizeExceeds"});
-      return false;
+      notification({ messageKey: 'fileSizeExceeds' })
+      return false
     }
-  };
+  }
 
   const props = {
-    name: "file",
+    name: 'file',
     customRequest,
-    accept: ".zip",
+    accept: '.zip',
     onChange,
     multiple: true,
     beforeUpload,
-    showUploadList: false
-  };
+    showUploadList: false,
+  }
 
   const testTags = allTagsData.map(({ _id, tagName }) => (
     <Select.Option key={_id} value={_id} title={tagName}>
       {tagName}
     </Select.Option>
-  ));
+  ))
 
   const onTagSelect = (_, selectedItems) => {
-    setselectedTags(selectedItems.map(item => ({ _id: item.props.value, tagName: item.props.title })));
-  };
+    setselectedTags(
+      selectedItems.map((item) => ({
+        _id: item.props.value,
+        tagName: item.props.title,
+      }))
+    )
+  }
 
-  const handleTypeChange = value => setContentType(value);
+  const handleTypeChange = (value) => setContentType(value)
 
   return (
     <FlexContainer flexDirection="column" alignItems="center">
       <StyledUpload {...props}>
         <FlexContainer flexDirection="column" alignItems="center">
           <IconUpload style={uploadIconStyle} />
-          <UploadTitle>{t("qtiimport.uploadpage.title")}</UploadTitle>
-          <UploadDescription>{t("qtiimport.uploadpage.description")}</UploadDescription>
+          <UploadTitle>{t('qtiimport.uploadpage.title')}</UploadTitle>
+          <UploadDescription>
+            {t('qtiimport.uploadpage.description')}
+          </UploadDescription>
           <StyledButton position="absolute" bottom="100px">
-            {t("qtiimport.uploadpage.importbuttontext")}
+            {t('qtiimport.uploadpage.importbuttontext')}
           </StyledButton>
         </FlexContainer>
       </StyledUpload>
-      <Select mode="tags" style={{ width: "100%" }} placeholder="Select tags" onChange={onTagSelect} allowClear>
+      <Select
+        mode="tags"
+        style={{ width: '100%' }}
+        placeholder="Select tags"
+        onChange={onTagSelect}
+        allowClear
+      >
         {testTags}
       </Select>
       <Select onChange={handleTypeChange} value={contentType}>
@@ -84,26 +104,26 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
         <Select.Option value="webct">Webct</Select.Option>
       </Select>
     </FlexContainer>
-  );
-};
+  )
+}
 
 UploadTest.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   form: PropTypes.object.isRequired,
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired
+    push: PropTypes.func.isRequired,
   }).isRequired,
-  uploadTest: PropTypes.func.isRequired
-};
+  uploadTest: PropTypes.func.isRequired,
+}
 
-export default withNamespaces("qtiimport")(
+export default withNamespaces('qtiimport')(
   withRouter(
     connect(
-      state => ({
-        allTagsData: getAllTagsSelector(state, "testitem")
+      (state) => ({
+        allTagsData: getAllTagsSelector(state, 'testitem'),
       }),
       { uploadTest: uploadTestRequestAction, getAllTags: getAllTagsAction }
     )(UploadTest)
   )
-);
+)

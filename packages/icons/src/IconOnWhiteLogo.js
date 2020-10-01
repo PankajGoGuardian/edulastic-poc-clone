@@ -1,13 +1,19 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconOnWhiteLogo = props => (
+const IconOnWhiteLogo = (props) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 97" {...props}>
     <title>Edulastic_logo_mark</title>
     <defs />
-    <g id="Brandind-guides" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+    <g
+      id="Brandind-guides"
+      stroke="none"
+      strokeWidth="1"
+      fill="none"
+      fillRule="evenodd"
+    >
       <g id="Edulastic_logo_mark" fillRule="nonzero">
         <g id="Group" fill="#00A37C">
           <polygon
@@ -23,7 +29,11 @@ const IconOnWhiteLogo = props => (
             id="Shape"
           />
         </g>
-        <g id="Group" transform="translate(207.000000, 0.000000)" fill="#253243">
+        <g
+          id="Group"
+          transform="translate(207.000000, 0.000000)"
+          fill="#253243"
+        >
           <polygon id="Shape" points="6.2 95 0.6 95 0.6 0 6.2 0" />
           <path
             d="M76.2,95 L70.6,95 L70.6,84.6 L70.4,84.6 C66.2,92 56.9,96.2 48.4,96.2 C30.9,96.2 19.9,82.6 19.9,65.7 C19.9,48.8 30.8,35.9 48.1,35.9 C57,35.9 65.5,39.9 70.3,47.1 L70.5,47.1 L70.5,37.1 L76.1,37.1 L76.1,95 L76.2,95 Z M25.5,65.8 C25.5,79 34.3,91 48.3,91 C63.1,91 71.1,79 71.1,65.1 C71.1,51.7 62,41.2 48,41.2 C34.6,41.2 25.5,53.2 25.5,65.8 Z"
@@ -37,7 +47,10 @@ const IconOnWhiteLogo = props => (
             id="Shape"
             points="148.6 95 143 95 143 42.5 136.6 42.5 136.6 37.3 143 37.3 143 13 148.6 13 148.6 37.2 158.7 37.2 158.7 42.4 148.6 42.4"
           />
-          <polygon id="Shape" points="178.7 95 173.1 95 173.1 37.2 178.7 37.2" />
+          <polygon
+            id="Shape"
+            points="178.7 95 173.1 95 173.1 37.2 178.7 37.2"
+          />
           <path
             d="M242,50.6 C236.5,44.6 229.9,41.2 221.6,41.2 C208,41.2 197.7,52.8 197.7,66 C197.7,79.2 207.8,91 221.5,91 C229.7,91 237.5,87 242.7,80.6 L242.7,88.2 C236.8,93.3 229.5,96.2 221.7,96.2 C204.6,96.2 192.1,82.8 192.1,66 C192.1,49.2 204.9,36 221.9,36 C229.4,36 236.3,38.2 242,43.1 L242,50.6 Z"
             id="Shape"
@@ -51,6 +64,6 @@ const IconOnWhiteLogo = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconOnWhiteLogo);
+export default withIconStyles(IconOnWhiteLogo)

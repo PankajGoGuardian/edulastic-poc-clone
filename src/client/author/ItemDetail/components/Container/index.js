@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
-import { compose } from "redux";
-import { Spin } from "antd";
-import { connect } from "react-redux";
-import { get, isEmpty } from "lodash";
-import { withRouter } from "react-router-dom";
-import MultipleQuestionView from "./Container";
-import QuestionView from "../../../QuestionEditor";
+import React, { useState, useEffect } from 'react'
+import { compose } from 'redux'
+import { Spin } from 'antd'
+import { connect } from 'react-redux'
+import { get, isEmpty } from 'lodash'
+import { withRouter } from 'react-router-dom'
+import MultipleQuestionView from './Container'
+import QuestionView from '../../../QuestionEditor'
 import {
   isSingleQuestionViewSelector,
   getItemDetailByIdAction,
@@ -18,12 +18,12 @@ import {
   getTestItemStatusSelector,
   clearItemDetailAction,
   proceedPublishingItemAction,
-  saveCurrentTestItemAction
-} from "../../ducks";
-import WarningModal from "../WarningModal";
-import { getCurrentQuestionIdSelector } from "../../../sharedDucks/questions";
-import SettingsBar from "../SettingsBar";
-import { getUserFeatures } from "../../../src/selectors/user";
+  saveCurrentTestItemAction,
+} from '../../ducks'
+import WarningModal from '../WarningModal'
+import { getCurrentQuestionIdSelector } from '../../../sharedDucks/questions'
+import SettingsBar from '../SettingsBar'
+import { getUserFeatures } from '../../../src/selectors/user'
 
 const ItemDetailContainer = ({
   isSingleQuestionView = false,
@@ -47,43 +47,47 @@ const ItemDetailContainer = ({
   location,
   ...props
 }) => {
-  const { modalItemId } = props;
-  const { id, testId } = match.params;
+  const { modalItemId } = props
+  const { id, testId } = match.params
   // TODO: make it friggin editable or something. Feature is not done yet!
-  const [isEditable, setEditable] = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
-  const [isMultipart, setMultipart] = useState(false);
+  const [isEditable, setEditable] = useState(true)
+  const [showSettings, setShowSettings] = useState(false)
+  const [isMultipart, setMultipart] = useState(false)
 
-  const itemId = id || modalItemId || match.params.itemId;
+  const itemId = id || modalItemId || match.params.itemId
 
   useEffect(() => {
     if (testId) {
-      setRedirectTestAction(testId);
+      setRedirectTestAction(testId)
     }
-    if (itemId && itemId !== "new") {
-      const hasValidTestId = testId && testId !== "undefined";
-      getItem(itemId, { data: true, validation: true, ...(hasValidTestId && { testId }) });
+    if (itemId && itemId !== 'new') {
+      const hasValidTestId = testId && testId !== 'undefined'
+      getItem(itemId, {
+        data: true,
+        validation: true,
+        ...(hasValidTestId && { testId }),
+      })
     }
-  }, [itemId]);
+  }, [itemId])
 
   const saveItem = () => {
-    updateItem(itemId, item, testId, isTestFlow, location.state);
-  };
+    updateItem(itemId, item, testId, isTestFlow, location.state)
+  }
 
   const publishItem = () => {
-    const status = userFeatures.isPublisherAuthor ? "inreview" : "published";
+    const status = userFeatures.isPublisherAuthor ? 'inreview' : 'published'
     const obj = {
       isCurator: userFeatures.isCurator,
       isPublisherAuthor: userFeatures.isPublisherAuthor,
       itemId,
       status,
-      locationState: { ...location.state }
-    };
-    publishTestItem(obj);
-    setEditable(false);
-  };
+      locationState: { ...location.state },
+    }
+    publishTestItem(obj)
+    setEditable(false)
+  }
 
-  if (isEmpty(item) && itemId === "new") history.push("/author/items");
+  if (isEmpty(item) && itemId === 'new') history.push('/author/items')
 
   // item is not yet loaded.
   // the store could have values from previous load, in that case
@@ -94,10 +98,18 @@ const ItemDetailContainer = ({
       <div>
         <Spin />
       </div>
-    );
+    )
 
-  const showPublishButton = (!isTestFlow && (itemId && testItemStatus && testItemStatus !== "published")) || isEditable;
-  const hasAuthorPermissions = item && item.authors && item.authors.some(author => author._id === currentUserId);
+  const showPublishButton =
+    (!isTestFlow &&
+      itemId &&
+      testItemStatus &&
+      testItemStatus !== 'published') ||
+    isEditable
+  const hasAuthorPermissions =
+    item &&
+    item.authors &&
+    item.authors.some((author) => author._id === currentUserId)
 
   const allProps = {
     ...props,
@@ -111,12 +123,15 @@ const ItemDetailContainer = ({
     setShowSettings,
     item,
     setMultipart,
-    isMultipart
-  };
+    isMultipart,
+  }
 
   return (
     <>
-      <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
+      <WarningModal
+        visible={showWarningModal}
+        proceedPublish={proceedPublish}
+      />
       {showSettings && (
         // TODO: combine this with the other settings bar in itemDetail page. or seprate it
         // and have it in side questionView maybe !? !!Food for thought.
@@ -135,21 +150,21 @@ const ItemDetailContainer = ({
         <MultipleQuestionView {...allProps} />
       )}
     </>
-  );
-};
+  )
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       item: getItemDetailSelector(state),
       testItemStatus: getTestItemStatusSelector(state),
       isSingleQuestionView: isSingleQuestionViewSelector(state),
       isLoading: getItemDetailLoadingSelector(state),
-      currentUserId: get(state, ["user", "user", "_id"]),
+      currentUserId: get(state, ['user', 'user', '_id']),
       currentQuestionId: getCurrentQuestionIdSelector(state),
-      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
-      userFeatures: getUserFeatures(state)
+      showWarningModal: get(state, ['itemDetail', 'showWarningModal'], false),
+      userFeatures: getUserFeatures(state),
     }),
     {
       getItem: getItemDetailByIdAction,
@@ -158,9 +173,9 @@ const enhance = compose(
       publishTestItem: publishTestItemAction,
       clearItem: clearItemDetailAction,
       proceedPublish: proceedPublishingItemAction,
-      saveTestItem: saveCurrentTestItemAction
+      saveTestItem: saveCurrentTestItemAction,
     }
   )
-);
+)
 
-export default enhance(ItemDetailContainer);
+export default enhance(ItemDetailContainer)

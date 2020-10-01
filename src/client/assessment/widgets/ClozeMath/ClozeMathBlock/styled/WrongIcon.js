@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { IconClose } from "@edulastic/icons";
+import styled from 'styled-components'
+import { IconClose } from '@edulastic/icons'
 
 export const WrongIcon = styled(IconClose)`
   width: 12px;
@@ -8,4 +8,4 @@ export const WrongIcon = styled(IconClose)`
   &:hover {
     fill: ${({ theme }) => theme.checkbox.wrongIconColor};
   }
-`;
+`

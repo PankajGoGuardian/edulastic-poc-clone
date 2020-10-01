@@ -10,6 +10,6 @@ module.exports = {
   popoverMaxWidth: 400,
   v1DocBased: {
     width: 712,
-    height: 792
-  }
-};
+    height: 792,
+  },
+}

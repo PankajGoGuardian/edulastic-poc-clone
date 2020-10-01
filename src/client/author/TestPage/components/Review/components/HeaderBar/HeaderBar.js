@@ -1,13 +1,20 @@
-import { themeColor, white } from "@edulastic/colors";
-import { CheckboxLabel, EduButton, notification } from "@edulastic/common";
-import { test as testContatns } from "@edulastic/constants";
-import { IconClose, IconCollapse, IconDescription, IconExpand, IconEye, IconMoveTo } from "@edulastic/icons";
-import PropTypes from "prop-types";
-import React, { useState } from "react";
-import Prompt from "../Prompt/Prompt";
-import { Container, Item, MobileButtomContainer } from "./styled";
+import { themeColor, white } from '@edulastic/colors'
+import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
+import { test as testContatns } from '@edulastic/constants'
+import {
+  IconClose,
+  IconCollapse,
+  IconDescription,
+  IconExpand,
+  IconEye,
+  IconMoveTo,
+} from '@edulastic/icons'
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import Prompt from '../Prompt/Prompt'
+import { Container, Item, MobileButtomContainer } from './styled'
 
-const { ITEM_GROUP_TYPES } = testContatns;
+const { ITEM_GROUP_TYPES } = testContatns
 const HeaderBar = ({
   onSelectAll,
   onRemoveSelected,
@@ -23,32 +30,34 @@ const HeaderBar = ({
   isShowSummary,
   onShowTestPreview,
   hasStickyHeader,
-  itemGroups
+  itemGroups,
 }) => {
-  const [showPrompt, setShowPrompt] = useState(false);
-  const disableRMbtns = itemGroups.some(group => group.type === ITEM_GROUP_TYPES.AUTOSELECT);
+  const [showPrompt, setShowPrompt] = useState(false)
+  const disableRMbtns = itemGroups.some(
+    (group) => group.type === ITEM_GROUP_TYPES.AUTOSELECT
+  )
 
-  const handleSuccess = position => {
-    const post = position - 1;
+  const handleSuccess = (position) => {
+    const post = position - 1
     if (post > itemTotal - 1) {
-      notification({ type: "info", messageKey: "valueMoreThanQuestions" });
+      notification({ type: 'info', messageKey: 'valueMoreThanQuestions' })
     } else if (post < 0) {
-      notification({ type: "info", messageKey: "valueLessThanQuestions" });
+      notification({ type: 'info', messageKey: 'valueLessThanQuestions' })
     } else {
-      onMoveTo(post);
-      setShowPrompt(false);
+      onMoveTo(post)
+      setShowPrompt(false)
     }
-  };
+  }
 
   const handleMoveTo = () => {
-    if (disableRMbtns) return;
+    if (disableRMbtns) return
     if (selectedItems.length === 1) {
-      setShowPrompt(!showPrompt);
+      setShowPrompt(!showPrompt)
     } else {
-      notification({ type: "info", messageKey: "selectQuestionOne" });
-      setShowPrompt(false);
+      notification({ type: 'info', messageKey: 'selectQuestionOne' })
+      setShowPrompt(false)
     }
-  };
+  }
 
   return (
     <Container windowWidth={windowWidth} hasStickyHeader={hasStickyHeader}>
@@ -63,8 +72,14 @@ const HeaderBar = ({
         // alignment issues when there is no select all button exists. dont remove it.
         <span />
       )}
-      <MobileButtomContainer style={{ display: "flex" }}>
-        <EduButton height="32px" data-cy="viewAsStudent" isGhost onClick={onShowTestPreview} color="primary">
+      <MobileButtomContainer style={{ display: 'flex' }}>
+        <EduButton
+          height="32px"
+          data-cy="viewAsStudent"
+          isGhost
+          onClick={onShowTestPreview}
+          color="primary"
+        >
           <IconEye color={themeColor} width={12} height={12} />
           {windowWidth > 767 && <span>View as Student</span>}
         </EduButton>
@@ -82,7 +97,7 @@ const HeaderBar = ({
           </EduButton>
         )}
         {owner && isEditable && (
-          <div style={{ position: "relative", marginLeft: "5px" }}>
+          <div style={{ position: 'relative', marginLeft: '5px' }}>
             <EduButton
               data-cy="moveto"
               disabled={disableRMbtns}
@@ -96,7 +111,7 @@ const HeaderBar = ({
             </EduButton>
             {showPrompt && (
               <Prompt
-                style={{ position: "absolute", left: 0, top: 32, zIndex: 2 }}
+                style={{ position: 'absolute', left: 0, top: 32, zIndex: 2 }}
                 maxValue={itemTotal}
                 onSuccess={handleSuccess}
                 setShowPrompt={setShowPrompt}
@@ -105,7 +120,7 @@ const HeaderBar = ({
           </div>
         )}
         <EduButton
-          data-cy={setCollapse ? "expand-rows" : "collapse-rows"}
+          data-cy={setCollapse ? 'expand-rows' : 'collapse-rows'}
           height="32px"
           isGhost
           onClick={onCollapse}
@@ -116,7 +131,9 @@ const HeaderBar = ({
           ) : (
             <IconCollapse color={themeColor} width={12} height={12} />
           )}
-          {windowWidth > 767 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
+          {windowWidth > 767 && (
+            <span>{setCollapse ? 'Expand Rows' : 'Collapse Rows'}</span>
+          )}
         </EduButton>
 
         {windowWidth < 1200 && (
@@ -124,22 +141,28 @@ const HeaderBar = ({
             height="32px"
             isGhost
             style={{
-              background: !isShowSummary ? themeColor : "",
-              color: !isShowSummary ? white : "",
-              borderRadius: "4px",
-              maxHeight: "32px"
+              background: !isShowSummary ? themeColor : '',
+              color: !isShowSummary ? white : '',
+              borderRadius: '4px',
+              maxHeight: '32px',
             }}
             onClick={toggleSummary}
             color="primary"
           >
-            <IconDescription color={isShowSummary ? themeColor : white} width={13} height={13} />
-            {windowWidth > 767 && <span>{isShowSummary ? "Show Summary" : "Hide Summary"}</span>}
+            <IconDescription
+              color={isShowSummary ? themeColor : white}
+              width={13}
+              height={13}
+            />
+            {windowWidth > 767 && (
+              <span>{isShowSummary ? 'Show Summary' : 'Hide Summary'}</span>
+            )}
           </EduButton>
         )}
       </MobileButtomContainer>
     </Container>
-  );
-};
+  )
+}
 
 HeaderBar.propTypes = {
   onSelectAll: PropTypes.func.isRequired,
@@ -153,7 +176,7 @@ HeaderBar.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   setCollapse: PropTypes.bool.isRequired,
   isShowSummary: PropTypes.bool.isRequired,
-  toggleSummary: PropTypes.func.isRequired
-};
+  toggleSummary: PropTypes.func.isRequired,
+}
 
-export default HeaderBar;
+export default HeaderBar

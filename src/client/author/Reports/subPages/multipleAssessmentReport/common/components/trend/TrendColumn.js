@@ -1,53 +1,59 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { BarChart, Bar, Tooltip } from "recharts";
-import { StyledTrendIcon } from "../styled";
-import { trendTypes } from "../../utils/constants";
+import React from 'react'
+import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { BarChart, Bar, Tooltip } from 'recharts'
+import { StyledTrendIcon } from '../styled'
+import { trendTypes } from '../../utils/constants'
 
 const TrendColumn = ({ tests, type }) => {
-  if (tests.length < 2 || type === "No Trend") {
-    return "No Trend";
+  if (tests.length < 2 || type === 'No Trend') {
+    return 'No Trend'
   }
 
   return (
     <StyledContainer>
-      <BarChart width={120} height={30} barCategoryGap={1} data={tests} maxBarSize={100}>
+      <BarChart
+        width={120}
+        height={30}
+        barCategoryGap={1}
+        data={tests}
+        maxBarSize={100}
+      >
         <Bar dataKey="score" fill={trendTypes[type].color} />
         <Tooltip
           wrapperStyle={{ top: 40 }}
           cursor={false}
           content={({ payload }) => {
             if (!payload[0]) {
-              return null;
+              return null
             }
 
-            const { testName, score } = payload[0].payload;
+            const { testName, score } = payload[0].payload
 
             return (
               <StyledTooltip>
                 <span>Assessment : {testName}</span>
                 <span>Performance {`${score}%`}</span>
               </StyledTooltip>
-            );
+            )
           }}
         />
       </BarChart>
       <StyledTrendIcon type={type} className="fa fa-arrow-up" />
     </StyledContainer>
-  );
-};
+  )
+}
 
 TrendColumn.propTypes = {
   tests: PropTypes.array.isRequired,
-  type: PropTypes.oneOf(Object.keys(trendTypes))
-};
+  type: PropTypes.oneOf(Object.keys(trendTypes)),
+}
 
 TrendColumn.defaultProps = {
-  type: "up"
-};
+  type: 'up',
+}
 
-export default TrendColumn;
+export default TrendColumn
 
 const StyledContainer = styled.div`
   text-align: center;
@@ -65,7 +71,7 @@ const StyledContainer = styled.div`
       overflow: visible;
     }
   }
-`;
+`
 
 const StyledTooltip = styled.div`
   min-width: 150px;
@@ -81,4 +87,4 @@ const StyledTooltip = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-`;
+`

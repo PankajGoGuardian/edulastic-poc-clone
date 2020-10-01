@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Popover } from "antd";
-import { compose } from "redux";
-import styled, { withTheme } from "styled-components";
-import { get, isEmpty } from "lodash";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Popover } from 'antd'
+import { compose } from 'redux'
+import styled, { withTheme } from 'styled-components'
+import { get, isEmpty } from 'lodash'
 
 import {
   Stimulus,
@@ -13,20 +13,26 @@ import {
   QuestionLabelWrapper,
   QuestionSubLabel,
   QuestionContentWrapper,
-  TextInputStyled
-} from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+  TextInputStyled,
+} from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { CHECK, SHOW, PREVIEW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
-import Instructions from "../../components/Instructions";
-import { SmallContainer } from "./styled/SmallContainer";
-import { SmallStim } from "./styled/SmallStim";
-import { getSpellCheckAttributes } from "../../utils/helpers";
-import { Addon } from "./styled/Addon";
-import CharacterMap from "../../components/CharacterMap";
-import { InputWrapper } from "./styled/InputWrapper";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { StyledPaperWrapper } from "../../styled/Widget";
+import {
+  CHECK,
+  SHOW,
+  PREVIEW,
+  CLEAR,
+  EDIT,
+} from '../../constants/constantsForQuestions'
+import Instructions from '../../components/Instructions'
+import { SmallContainer } from './styled/SmallContainer'
+import { SmallStim } from './styled/SmallStim'
+import { getSpellCheckAttributes } from '../../utils/helpers'
+import { Addon } from './styled/Addon'
+import CharacterMap from '../../components/CharacterMap'
+import { InputWrapper } from './styled/InputWrapper'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { StyledPaperWrapper } from '../../styled/Widget'
 
 const ShortTextPreview = ({
   view,
@@ -40,82 +46,91 @@ const ShortTextPreview = ({
   disableResponse,
   showQuestionNumber,
   evaluation,
-  isPrintPreview
+  isPrintPreview,
 }) => {
-  const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
-  const inputType = get(item, "uiStyle.input_type", "text");
+  const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer)
+  const [selection, setSelection] = useState({ start: 0, end: 0 })
+  const inputType = get(item, 'uiStyle.input_type', 'text')
 
   useEffect(() => {
     if (Array.isArray(userAnswer)) {
-      setText("");
+      setText('')
       /**
        * to display already enetered user response
        */
-    } else if (typeof userAnswer === "string" && userAnswer) {
-      setText(userAnswer);
+    } else if (typeof userAnswer === 'string' && userAnswer) {
+      setText(userAnswer)
     }
-  }, [userAnswer]);
+  }, [userAnswer])
 
   useEffect(() => {
-    saveAnswer(text);
-  }, [text]);
+    saveAnswer(text)
+  }, [text])
 
-  const handleTextChange = e => {
-    const val = e.target.value;
-    setText(val);
-  };
+  const handleTextChange = (e) => {
+    const val = e.target.value
+    setText(val)
+  }
 
-  const handleSelect = e => {
-    const { selectionStart, selectionEnd } = e.target;
+  const handleSelect = (e) => {
+    const { selectionStart, selectionEnd } = e.target
 
     if (selectionStart !== selectionEnd) {
       setSelection({
         start: selectionStart,
-        end: selectionEnd
-      });
+        end: selectionEnd,
+      })
     } else {
-      setSelection(null);
+      setSelection(null)
     }
 
     setSelection({
       start: selectionStart,
-      end: selectionEnd
-    });
-  };
+      end: selectionEnd,
+    })
+  }
 
-  const preview = previewTab === CHECK || previewTab === SHOW;
-  let background; // no background highlights initially
+  const preview = previewTab === CHECK || previewTab === SHOW
+  let background // no background highlights initially
   if (text.length && preview) {
     if (evaluation === true) {
-      background = theme.checkbox.rightBgColor;
+      background = theme.checkbox.rightBgColor
     } else {
-      background = theme.checkbox.wrongBgColor;
+      background = theme.checkbox.wrongBgColor
     }
   }
 
   if (isPrintPreview) {
-    background = "transparent";
+    background = 'transparent'
   }
 
-  const isCharacterMap = Array.isArray(item.characterMap) && !!item.characterMap.length;
+  const isCharacterMap =
+    Array.isArray(item.characterMap) && !!item.characterMap.length
 
   return (
-    <StyledPaperWrapper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
         <QuestionLabelWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          {showQuestionNumber && (
+            <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+          )}
+          {item.qSubLabel && (
+            <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+          )}
         </QuestionLabelWrapper>
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
-            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+            {view === PREVIEW && !smallSize && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
           </QuestionTitleWrapper>
           {smallSize && (
             <SmallContainer>
-              <SmallStim bold>{t("component.shortText.smallSizeTitle")}</SmallStim>
+              <SmallStim bold>
+                {t('component.shortText.smallSizeTitle')}
+              </SmallStim>
 
-              <SmallStim>{t("component.shortText.smallSizePar")}</SmallStim>
+              <SmallStim>{t('component.shortText.smallSizePar')}</SmallStim>
             </SmallContainer>
           )}
 
@@ -129,23 +144,27 @@ const ShortTextPreview = ({
               disabled={disableResponse}
               onChange={handleTextChange}
               onSelect={handleSelect}
-              placeholder={item.placeholder || ""}
+              placeholder={item.placeholder || ''}
               type={inputType}
               {...getSpellCheckAttributes(item.spellcheck)}
             />
-            {isCharacterMap && inputType === "text" && (
+            {isCharacterMap && inputType === 'text' && (
               <Popover
                 placement="bottomLeft"
                 trigger="click"
                 content={
                   <CharacterMap
                     characters={item.characterMap}
-                    onSelect={char => {
+                    onSelect={(char) => {
                       setSelection({
                         start: selection.start + char.length,
-                        end: selection.start + char.length
-                      });
-                      setText(text.slice(0, selection.start) + char + text.slice(selection.end));
+                        end: selection.start + char.length,
+                      })
+                      setText(
+                        text.slice(0, selection.start) +
+                          char +
+                          text.slice(selection.end)
+                      )
                     }}
                   />
                 }
@@ -158,15 +177,17 @@ const ShortTextPreview = ({
           {previewTab === SHOW && (
             <>
               <CorrectAnswersContainer
-                title={t("component.shortText.correctAnswers")}
+                title={t('component.shortText.correctAnswers')}
                 minHeight="auto"
                 padding="15px 25px 20px"
               >
-                <CorrectAnswers>{item?.validation?.validResponse?.value}</CorrectAnswers>
+                <CorrectAnswers>
+                  {item?.validation?.validResponse?.value}
+                </CorrectAnswers>
               </CorrectAnswersContainer>
               {!isEmpty(item.validation?.altResponses) && (
                 <CorrectAnswersContainer
-                  title={t("component.shortText.alternateAnswers")}
+                  title={t('component.shortText.alternateAnswers')}
                   minHeight="auto"
                   padding="15px 25px 20px"
                   titleMargin="0px 0px 8px"
@@ -186,8 +207,8 @@ const ShortTextPreview = ({
         </QuestionContentWrapper>
       </FlexContainer>
     </StyledPaperWrapper>
-  );
-};
+  )
+}
 
 ShortTextPreview.propTypes = {
   previewTab: PropTypes.string,
@@ -199,23 +220,20 @@ ShortTextPreview.propTypes = {
   userAnswer: PropTypes.any.isRequired,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
-};
+  qIndex: PropTypes.number,
+}
 
 ShortTextPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   showQuestionNumber: false,
-  qIndex: null
-};
+  qIndex: null,
+}
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
+const enhance = compose(withNamespaces('assessment'), withTheme)
 
-export default enhance(ShortTextPreview);
+export default enhance(ShortTextPreview)
 
 const CorrectAnswers = styled.div`
   padding-left: 20px;
-`;
+`

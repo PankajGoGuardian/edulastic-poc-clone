@@ -1,36 +1,48 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { cloneDeep, isEqual } from "lodash";
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { cloneDeep, isEqual } from 'lodash'
 
-import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
-import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import {
+  CHECK,
+  CLEAR,
+  EDIT,
+  SHOW,
+} from '../../../../constants/constantsForQuestions'
+import {
+  setElementsStashAction,
+  setStashIndexAction,
+} from '../../../../actions/graphTools'
 
 import {
   defaultAxesParameters,
   defaultGraphParameters,
   defaultGridParameters,
-  defaultPointParameters
-} from "../../Builder/settings";
-import { makeBorder } from "../../Builder";
-import { CONSTANT, Colors } from "../../Builder/config";
-import AnnotationRnd from "../../../Annotations/AnnotationRnd";
+  defaultPointParameters,
+} from '../../Builder/settings'
+import { makeBorder } from '../../Builder'
+import { CONSTANT, Colors } from '../../Builder/config'
+import AnnotationRnd from '../../../Annotations/AnnotationRnd'
 
-import Tools from "../../common/Tools";
-import SegmentsTools from "./SegmentsTools";
-import { GraphWrapper, JSXBox } from "./styled";
+import Tools from '../../common/Tools'
+import SegmentsTools from './SegmentsTools'
+import { GraphWrapper, JSXBox } from './styled'
 
 const getColoredElems = (elements, compareResult) => {
-  if (compareResult && compareResult.details && compareResult.details.length > 0) {
-    let newElems = cloneDeep(elements);
-    newElems = newElems.map(el => {
-      const detail = compareResult.details.find(det => det.shape.id === el.id);
+  if (
+    compareResult &&
+    compareResult.details &&
+    compareResult.details.length > 0
+  ) {
+    let newElems = cloneDeep(elements)
+    newElems = newElems.map((el) => {
+      const detail = compareResult.details.find((det) => det.shape.id === el.id)
 
-      const red = Colors.red[CONSTANT.TOOLS.POINT];
-      const redHollow = Colors.red[CONSTANT.TOOLS.SEGMENTS_POINT];
+      const red = Colors.red[CONSTANT.TOOLS.POINT]
+      const redHollow = Colors.red[CONSTANT.TOOLS.SEGMENTS_POINT]
 
-      const green = Colors.green[CONSTANT.TOOLS.POINT];
-      const greenHollow = Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT];
+      const green = Colors.green[CONSTANT.TOOLS.POINT]
+      const greenHollow = Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT]
 
       switch (el.type) {
         case CONSTANT.TOOLS.SEGMENTS_POINT:
@@ -39,55 +51,55 @@ const getColoredElems = (elements, compareResult) => {
           return {
             colors: detail && detail.result ? green : red,
             pointColor: detail && detail.result ? green : red,
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
           return {
             lineColor: detail && detail.result ? green : red,
             leftPointColor: detail && detail.result ? green : red,
             rightPointColor: detail && detail.result ? green : red,
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
           return {
             lineColor: detail && detail.result ? green : red,
             leftPointColor: detail && detail.result ? greenHollow : redHollow,
             rightPointColor: detail && detail.result ? greenHollow : redHollow,
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
           return {
             lineColor: detail && detail.result ? green : red,
             leftPointColor: detail && detail.result ? greenHollow : redHollow,
             rightPointColor: detail && detail.result ? green : red,
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
           return {
             lineColor: detail && detail.result ? green : red,
             leftPointColor: detail && detail.result ? green : red,
             rightPointColor: detail && detail.result ? greenHollow : redHollow,
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
         case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
           return {
             colors: detail && detail.result ? green : red,
             pointColor: detail && detail.result ? greenHollow : redHollow,
-            ...el
-          };
+            ...el,
+          }
         default:
-          return null;
+          return null
       }
-    });
-    return newElems;
+    })
+    return newElems
   }
-  return elements;
-};
+  return elements
+}
 
-const getCorrectAnswer = answerArr => {
+const getCorrectAnswer = (answerArr) => {
   if (Array.isArray(answerArr)) {
-    return answerArr.map(el => {
+    return answerArr.map((el) => {
       switch (el.type) {
         case CONSTANT.TOOLS.SEGMENTS_POINT:
         case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
@@ -95,105 +107,103 @@ const getCorrectAnswer = answerArr => {
           return {
             colors: Colors.green[CONSTANT.TOOLS.POINT],
             pointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
           return {
             lineColor: Colors.green[CONSTANT.TOOLS.POINT],
             leftPointColor: Colors.green[CONSTANT.TOOLS.POINT],
             rightPointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
           return {
             lineColor: Colors.green[CONSTANT.TOOLS.POINT],
             leftPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
             rightPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
           return {
             lineColor: Colors.green[CONSTANT.TOOLS.POINT],
             leftPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
             rightPointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
           return {
             lineColor: Colors.green[CONSTANT.TOOLS.POINT],
             leftPointColor: Colors.green[CONSTANT.TOOLS.POINT],
             rightPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
-            ...el
-          };
+            ...el,
+          }
         case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
         case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
           return {
             colors: Colors.green[CONSTANT.TOOLS.POINT],
             pointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
-            ...el
-          };
+            ...el,
+          }
         default:
-          return null;
+          return null
       }
-    });
+    })
   }
-  return answerArr;
-};
+  return answerArr
+}
 
-const getCompareResult = evaluation => {
+const getCompareResult = (evaluation) => {
   if (!evaluation) {
-    return null;
+    return null
   }
 
-  let compareResult = null;
+  let compareResult = null
 
-  Object.keys(evaluation).forEach(key => {
+  Object.keys(evaluation).forEach((key) => {
     if (compareResult) {
-      return;
+      return
     }
     if (evaluation[key].result) {
-      compareResult = evaluation[key];
+      compareResult = evaluation[key]
     }
-  });
+  })
 
   if (compareResult) {
-    return compareResult;
+    return compareResult
   }
 
-  return evaluation[0];
-};
+  return evaluation[0]
+}
 
 class AxisSegmentsContainer extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this._graphId = `jxgbox${Math.random()
-      .toString(36)
-      .replace(".", "")}`;
-    this._graph = null;
+    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graph = null
 
     this.state = {
       selectedTool: this.getDefaultTool(),
-      selectedControls: []
-    };
+      selectedControls: [],
+    }
 
-    this.updateValues = this.updateValues.bind(this);
+    this.updateValues = this.updateValues.bind(this)
 
-    this.controls = ["undo", "redo", "reset", "trash"];
+    this.controls = ['undo', 'redo', 'reset', 'trash']
   }
 
   getDefaultTool() {
-    const { tools = [] } = this.props;
+    const { tools = [] } = this.props
 
     return {
       name: (Array.isArray(tools) && tools[0]) || undefined,
       index: 0,
-      groupIndex: -1
-    };
+      groupIndex: -1,
+    }
   }
 
   setDefaultToolState() {
-    this.setState({ selectedTool: this.getDefaultTool() });
+    this.setState({ selectedTool: this.getDefaultTool() })
   }
 
   componentDidMount() {
@@ -207,51 +217,51 @@ class AxisSegmentsContainer extends PureComponent {
       gridParams,
       graphData,
       setElementsStash,
-      disableResponse
-    } = this.props;
+      disableResponse,
+    } = this.props
 
-    this._graph = makeBorder(this._graphId, graphData.graphType);
+    this._graph = makeBorder(this._graphId, graphData.graphType)
 
     if (this._graph) {
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.setDisableResponse(disableResponse)
 
-      this._graph.resizeContainer(layout.width, layout.height);
+      this._graph.resizeContainer(layout.width, layout.height)
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
-        ...canvas
-      });
+        ...canvas,
+      })
       this._graph.setPointParameters({
         ...defaultPointParameters(),
-        ...pointParameters
-      });
+        ...pointParameters,
+      })
       this._graph.setAxesParameters({
         x: {
           ...defaultAxesParameters(),
-          ...xAxesParameters
+          ...xAxesParameters,
         },
         y: {
-          ...yAxesParameters
-        }
-      });
+          ...yAxesParameters,
+        },
+      })
       this._graph.setGridParameters({
         ...defaultGridParameters(),
-        ...gridParams
-      });
+        ...gridParams,
+      })
 
-      this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT);
+      this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT)
 
       this._graph.setPointParameters({
-        snapSizeX: numberlineAxis.ticksDistance
-      });
+        snapSizeX: numberlineAxis.ticksDistance,
+      })
 
-      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout)
 
-      this.setElementsToGraph();
+      this.setElementsToGraph()
     }
 
-    this.setGraphUpdateEventHandler();
+    this.setGraphUpdateEventHandler()
 
-    setElementsStash(this._graph.getSegments(), this.getStashId());
+    setElementsStash(this._graph.getSegments(), this.getStashId())
   }
 
   componentDidUpdate(prevProps) {
@@ -263,29 +273,31 @@ class AxisSegmentsContainer extends PureComponent {
       disableResponse,
       previewTab,
       changePreviewTab,
-      elements
-    } = this.props;
-    const { disableResponse: prevDisableResponse } = prevProps;
+      elements,
+    } = this.props
+    const { disableResponse: prevDisableResponse } = prevProps
     if (disableResponse && prevDisableResponse !== disableResponse) {
-      this.onReset();
+      this.onReset()
     }
 
-    const { selectedTool } = this.state;
+    const { selectedTool } = this.state
 
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
-      this.setDefaultToolState();
-      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT);
+      this.setDefaultToolState()
+      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT)
     }
     if (this._graph) {
-      this._graph.setDisableResponse(disableResponse);
+      this._graph.setDisableResponse(disableResponse)
       if (
-        numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses ||
-        numberlineAxis.stackResponsesSpacing !== prevProps.numberlineAxis.stackResponsesSpacing ||
+        numberlineAxis.stackResponses !==
+          prevProps.numberlineAxis.stackResponses ||
+        numberlineAxis.stackResponsesSpacing !==
+          prevProps.numberlineAxis.stackResponsesSpacing ||
         canvas.responsesAllowed !== prevProps.canvas.responsesAllowed
       ) {
-        this._graph.segmentsReset();
-        this._graph.setTool(selectedTool.name || CONSTANT.TOOLS.SEGMENTS_POINT);
-        this.updateValues();
+        this._graph.segmentsReset()
+        this._graph.setTool(selectedTool.name || CONSTANT.TOOLS.SEGMENTS_POINT)
+        this.updateValues()
       }
 
       if (
@@ -293,120 +305,147 @@ class AxisSegmentsContainer extends PureComponent {
         !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
         !isEqual(layout, prevProps.layout)
       ) {
-        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
+        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout)
       }
 
-      this.setElementsToGraph(prevProps);
+      this.setElementsToGraph(prevProps)
     }
 
-    if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
-      changePreviewTab(CLEAR);
+    if (
+      (previewTab === CHECK || previewTab === SHOW) &&
+      !isEqual(elements, prevProps.elements)
+    ) {
+      changePreviewTab(CLEAR)
     }
   }
 
   onSelectTool = ({ name, index, groupIndex }) => {
-    this.setState({ selectedTool: { name, index, groupIndex }, selectedControls: [] });
-    this._graph.setTool(name);
-  };
+    this.setState({
+      selectedTool: { name, index, groupIndex },
+      selectedControls: [],
+    })
+    this._graph.setTool(name)
+  }
 
   onUndo = () => {
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] - 1]);
-      setStashIndex(stashIndex[id] - 1, id);
+      setValue(stash[id][stashIndex[id] - 1])
+      setStashIndex(stashIndex[id] - 1, id)
     }
-  };
+  }
 
   onRedo() {
-    const { stash, stashIndex, setStashIndex, setValue } = this.props;
-    const id = this.getStashId();
+    const { stash, stashIndex, setStashIndex, setValue } = this.props
+    const id = this.getStashId()
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
-      setValue(stash[id][stashIndex[id] + 1]);
-      setStashIndex(stashIndex[id] + 1, id);
+      setValue(stash[id][stashIndex[id] + 1])
+      setStashIndex(stashIndex[id] + 1, id)
     }
   }
 
   onReset() {
-    this._graph.segmentsReset();
-    this.updateValues();
+    this._graph.segmentsReset()
+    this.updateValues()
   }
 
   getStashId() {
-    const { graphData, altAnswerId, view } = this.props;
-    const type = altAnswerId || view;
-    return `${graphData.id}_${type}`;
+    const { graphData, altAnswerId, view } = this.props
+    const type = altAnswerId || view
+    return `${graphData.id}_${type}`
   }
 
   updateValues() {
-    const conf = this._graph.getSegments();
-    const { setValue, setElementsStash } = this.props;
-    setValue(conf);
-    setElementsStash(conf, this.getStashId());
+    const conf = this._graph.getSegments()
+    const { setValue, setElementsStash } = this.props
+    setValue(conf)
+    setElementsStash(conf, this.getStashId())
   }
 
   setGraphUpdateEventHandler = () => {
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.updateValues());
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.updateValues());
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.updateValues());
-  };
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () =>
+      this.updateValues()
+    )
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () =>
+      this.updateValues()
+    )
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () =>
+      this.updateValues()
+    )
+  }
 
   setElementsToGraph = (prevProps = {}) => {
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
+    const {
+      elements,
+      evaluation,
+      disableResponse,
+      elementsIsCorrect,
+      previewTab,
+    } = this.props
 
     // correct answers blocks
     if (elementsIsCorrect) {
-      this._graph.resetAnswers();
-      this._graph.loadSegmentsAnswers(getCorrectAnswer(elements));
-      return;
+      this._graph.resetAnswers()
+      this._graph.loadSegmentsAnswers(getCorrectAnswer(elements))
+      return
     }
 
     if (disableResponse) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
-      this._graph.segmentsReset();
-      this._graph.resetAnswers();
-      this._graph.loadSegmentsAnswers(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult)
+      this._graph.segmentsReset()
+      this._graph.resetAnswers()
+      this._graph.loadSegmentsAnswers(coloredElements)
+      return
     }
 
     if (previewTab === CHECK || previewTab === SHOW) {
-      const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
-      this._graph.segmentsReset();
-      this._graph.resetAnswers();
-      this._graph.loadSegments(coloredElements);
-      return;
+      const compareResult = getCompareResult(evaluation)
+      const coloredElements = getColoredElems(elements, compareResult)
+      this._graph.segmentsReset()
+      this._graph.resetAnswers()
+      this._graph.loadSegments(coloredElements)
+      return
     }
 
     if (
       !isEqual(elements, this._graph.getSegments()) ||
-      (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
+      (previewTab === CLEAR &&
+        (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
-      this._graph.segmentsReset();
-      this._graph.resetAnswers();
-      this._graph.loadSegments(elements);
+      this._graph.segmentsReset()
+      this._graph.resetAnswers()
+      this._graph.loadSegments(elements)
     }
-  };
+  }
 
-  onSelectControl = toolName => {
-    if (toolName === "undo") {
-      return this.onUndo();
+  onSelectControl = (toolName) => {
+    if (toolName === 'undo') {
+      return this.onUndo()
     }
-    if (toolName === "redo") {
-      return this.onRedo();
+    if (toolName === 'redo') {
+      return this.onRedo()
     }
-    if (toolName === "reset") {
-      return this.onReset();
+    if (toolName === 'reset') {
+      return this.onReset()
     }
-    this.setState({ selectedControls: [toolName], selectedTool: {} });
-    this._graph.setTool(toolName);
-  };
+    this.setState({ selectedControls: [toolName], selectedTool: {} })
+    this._graph.setTool(toolName)
+  }
 
   render() {
-    const { layout, tools, disableResponse, view, graphData, setQuestionData, isPrintPreview } = this.props;
-    const { selectedTool, selectedControls } = this.state;
-    const vertical = layout.orientation === "vertical";
+    const {
+      layout,
+      tools,
+      disableResponse,
+      view,
+      graphData,
+      setQuestionData,
+      isPrintPreview,
+    } = this.props
+    const { selectedTool, selectedControls } = this.state
+    const vertical = layout.orientation === 'vertical'
 
     return (
       <div data-cy="axis-segments-container">
@@ -420,8 +459,12 @@ class AxisSegmentsContainer extends PureComponent {
               fontSize={layout?.fontSize}
             />
           )}
-          <div style={{ position: "relative" }}>
-            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+          <div style={{ position: 'relative' }}>
+            <JSXBox
+              id={this._graphId}
+              className="jxgbox"
+              margin={layout.margin}
+            />
             <AnnotationRnd
               noBorder={view !== EDIT}
               question={graphData}
@@ -440,7 +483,7 @@ class AxisSegmentsContainer extends PureComponent {
           )}
         </GraphWrapper>
       </div>
-    );
+    )
   }
 }
 
@@ -467,8 +510,8 @@ AxisSegmentsContainer.propTypes = {
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
-  elementsIsCorrect: PropTypes.bool
-};
+  elementsIsCorrect: PropTypes.bool,
+}
 
 AxisSegmentsContainer.defaultProps = {
   evaluation: null,
@@ -478,16 +521,16 @@ AxisSegmentsContainer.defaultProps = {
   disableResponse: false,
   previewTab: CLEAR,
   changePreviewTab: () => {},
-  elementsIsCorrect: false
-};
+  elementsIsCorrect: false,
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex
+    stashIndex: state.graphTools.stashIndex,
   }),
   {
     setElementsStash: setElementsStashAction,
-    setStashIndex: setStashIndexAction
+    setStashIndex: setStashIndexAction,
   }
-)(AxisSegmentsContainer);
+)(AxisSegmentsContainer)

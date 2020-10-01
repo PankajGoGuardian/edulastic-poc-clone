@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import { mobileWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { mobileWidth } from '@edulastic/colors'
 
 export const ResponseQuestion = styled.div`
   border-radius: 5px;
-  background: ${props => props.background};
+  background: ${(props) => props.background};
   padding: 0px 0px 30px;
   @media (max-width: ${mobileWidth}) {
     padding: 10px;
@@ -12,4 +12,4 @@ export const ResponseQuestion = styled.div`
       width: 100%;
     }
   }
-`;
+`

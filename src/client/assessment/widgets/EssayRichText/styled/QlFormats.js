@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const QlFormats = styled.span`
   display: flex;
@@ -12,4 +12,4 @@ export const QlFormats = styled.span`
   & > *:last-child {
     margin-right: 0;
   }
-`;
+`

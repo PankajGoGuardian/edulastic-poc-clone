@@ -1,9 +1,11 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 // actions
 
 // components
-import StudentQuestions from "../StudentQuestions/StudentQuestions";
+import * as moment from 'moment'
+import { round } from 'lodash'
+import StudentQuestions from '../StudentQuestions/StudentQuestions'
 // styled wrappers
 import {
   StyledStudentQuestion,
@@ -16,37 +18,43 @@ import {
   ScoreContainer,
   ScoreLabel,
   TotalScore,
-  FractionLine
-} from "./styled";
-import { UTAConstantsToLabels, gradingLabels, UTAStatusToConstants } from "../../utils/constants";
-import * as moment from "moment";
-import { round } from "lodash";
+  FractionLine,
+} from './styled'
+import {
+  UTAConstantsToLabels,
+  gradingLabels,
+  UTAStatusToConstants,
+} from '../../utils/constants'
 
 class StudentQuestionContainer extends Component {
   render() {
-    const { testActivity: studentItems } = this.props;
-    const { classResponse, additionalData, studentResponse } = this.props;
-    const testActivity = studentResponse ? studentResponse.testActivity : null;
-    const questionActivities = studentResponse ? studentResponse.questionActivities : null;
+    const { testActivity: studentItems } = this.props
+    const { classResponse, additionalData, studentResponse } = this.props
+    const testActivity = studentResponse ? studentResponse.testActivity : null
+    const questionActivities = studentResponse
+      ? studentResponse.questionActivities
+      : null
 
-    let score = 0,
-      maxScore = 0;
+    let score = 0
+    let maxScore = 0
     if (testActivity) {
-      score = testActivity.score;
-      maxScore = testActivity.maxScore;
+      score = testActivity.score
+      maxScore = testActivity.maxScore
     }
 
-    let assignmentId = testActivity ? testActivity.assignmentId : "";
-    let groupId = testActivity ? testActivity.groupId : "";
-    const userId = testActivity ? testActivity.userId : "";
-    const classname = additionalData ? additionalData.className : "";
-    const testName = additionalData ? additionalData.testName : "";
-    const assignedBy = additionalData ? additionalData?.assignedBy?.name : "";
-    const currentStudent = studentItems.find(({ studentId }) => studentId === userId);
-    const studentName = currentStudent ? currentStudent.studentName : "";
-    const { assignmentIdClassId } = this.props;
-    assignmentId = assignmentId || assignmentIdClassId.assignmentId;
-    groupId = groupId || assignmentIdClassId.classId;
+    let assignmentId = testActivity ? testActivity.assignmentId : ''
+    let groupId = testActivity ? testActivity.groupId : ''
+    const userId = testActivity ? testActivity.userId : ''
+    const classname = additionalData ? additionalData.className : ''
+    const testName = additionalData ? additionalData.testName : ''
+    const assignedBy = additionalData ? additionalData?.assignedBy?.name : ''
+    const currentStudent = studentItems.find(
+      ({ studentId }) => studentId === userId
+    )
+    const studentName = currentStudent ? currentStudent.studentName : ''
+    const { assignmentIdClassId } = this.props
+    assignmentId = assignmentId || assignmentIdClassId.assignmentId
+    groupId = groupId || assignmentIdClassId.classId
 
     return (
       <StyledStudentQuestion>
@@ -70,20 +78,26 @@ class StudentQuestionContainer extends Component {
             </InfoItem>
           </StudentInformation>
           <TimeContainer>
-            {testActivity.status !== UTAStatusToConstants.ABSENT && additionalData.endDate ? (
+            {testActivity.status !== UTAStatusToConstants.ABSENT &&
+            additionalData.endDate ? (
               <TimeItem>
-                <Color>Due:</Color> {moment(additionalData.endDate).format("MMMM DD, YYYY | hh:mm A")}
+                <Color>Due:</Color>{' '}
+                {moment(additionalData.endDate).format(
+                  'MMMM DD, YYYY | hh:mm A'
+                )}
               </TimeItem>
             ) : null}
             <TimeItem>
-              <Color>Status:</Color>{" "}
+              <Color>Status:</Color>{' '}
               {testActivity.status === UTAStatusToConstants.ABSENT
                 ? UTAConstantsToLabels[testActivity.status]
                 : gradingLabels[testActivity.graded]}
             </TimeItem>
-            {testActivity.status !== UTAStatusToConstants.ABSENT && testActivity.endDate ? (
+            {testActivity.status !== UTAStatusToConstants.ABSENT &&
+            testActivity.endDate ? (
               <TimeItem>
-                <Color>Submitted on:</Color> {moment(testActivity.endDate).format("MMMM DD, YYYY | hh:mm A")}
+                <Color>Submitted on:</Color>{' '}
+                {moment(testActivity.endDate).format('MMMM DD, YYYY | hh:mm A')}
               </TimeItem>
             ) : null}
           </TimeContainer>
@@ -97,19 +111,20 @@ class StudentQuestionContainer extends Component {
           ) : null}
         </StudentQuestionHeader>
 
-        {!!studentResponse && testActivity.status !== UTAStatusToConstants.ABSENT && (
-          <StudentQuestions
-            currentStudent={currentStudent || []}
-            questionActivities={studentResponse.questionActivities}
-            classResponse={classResponse}
-          />
-        )}
+        {!!studentResponse &&
+          testActivity.status !== UTAStatusToConstants.ABSENT && (
+            <StudentQuestions
+              currentStudent={currentStudent || []}
+              questionActivities={studentResponse.questionActivities}
+              classResponse={classResponse}
+            />
+          )}
       </StyledStudentQuestion>
-    );
+    )
   }
 }
 
-export default StudentQuestionContainer;
+export default StudentQuestionContainer
 
 /* eslint-disable react/require-default-props */
 StudentQuestionContainer.propTypes = {
@@ -117,5 +132,5 @@ StudentQuestionContainer.propTypes = {
   studentResponse: PropTypes.object,
   testActivity: PropTypes.array,
   additionalData: PropTypes.object,
-  assignmentIdClassId: PropTypes.object
-};
+  assignmentIdClassId: PropTypes.object,
+}

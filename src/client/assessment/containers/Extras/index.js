@@ -1,63 +1,85 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
-import styled from "styled-components";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
+import styled from 'styled-components'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import QuestionTextArea from "../../components/QuestionTextArea";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
-import QuillSortableHintsList from "../../components/QuillSortableHintsList";
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import QuestionTextArea from '../../components/QuestionTextArea'
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector,
+} from '../../../author/QuestionEditor/ducks'
+import QuillSortableHintsList from '../../components/QuillSortableHintsList'
 
-import { WidgetFRInput } from "../../styled/Widget";
-import { Subtitle } from "../../styled/Subtitle";
-import { Label } from "../../styled/WidgetOptions/Label";
+import { WidgetFRInput } from '../../styled/Widget'
+import { Subtitle } from '../../styled/Subtitle'
+import { Label } from '../../styled/WidgetOptions/Label'
 
-import Distractors from "./Distractors";
-import Hints from "./Hints";
-import { change } from "./helpers";
-import { Row } from "../../styled/WidgetOptions/Row";
-import { Col } from "../../styled/WidgetOptions/Col";
-import { getFontSize } from "../../utils/helpers";
-import { SectionHeading } from "../../styled/WidgetOptions/SectionHeading";
-import Question from "../../components/Question";
+import Distractors from './Distractors'
+import Hints from './Hints'
+import { change } from './helpers'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { Col } from '../../styled/WidgetOptions/Col'
+import { getFontSize } from '../../utils/helpers'
+import { SectionHeading } from '../../styled/WidgetOptions/SectionHeading'
+import Question from '../../components/Question'
 
 class Extras extends Component {
   render() {
-    const { t, children, item, setQuestionData, isSection, fillSections, cleanSections, advancedAreOpen } = this.props;
-    const _change = change({ item, setQuestionData });
-    const fontSize = getFontSize(item.uiStyle);
+    const {
+      t,
+      children,
+      item,
+      setQuestionData,
+      isSection,
+      fillSections,
+      cleanSections,
+      advancedAreOpen,
+    } = this.props
+    const _change = change({ item, setQuestionData })
+    const fontSize = getFontSize(item.uiStyle)
 
     return (
       <QuestionContainer fontSize={fontSize}>
         <Question
           section="advanced"
-          label={t("component.options.solution")}
+          label={t('component.options.solution')}
           fillSections={fillSections}
           cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
         >
-          {isSection && <SectionHeading>{t("component.options.solution")}</SectionHeading>}
+          {isSection && (
+            <SectionHeading>{t('component.options.solution')}</SectionHeading>
+          )}
           {!isSection && (
-            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.solution")}`)}>
-              {t("component.options.solution")}
+            <Subtitle
+              id={getFormattedAttrId(
+                `${item?.title}-${t('component.options.solution')}`
+              )}
+            >
+              {t('component.options.solution')}
             </Subtitle>
           )}
 
           <Row gutter={24}>
             <Col md={24}>
-              <Label data-cy="instructor_stimulus">{t("component.options.overallDistractorRationale")}</Label>
+              <Label data-cy="instructor_stimulus">
+                {t('component.options.overallDistractorRationale')}
+              </Label>
 
               <WidgetFRInput>
                 <QuestionTextArea
                   toolbarId="instructor_stimulus"
                   toolbarSize="SM"
-                  placeholder={t("component.options.enterDistractorRationaleQuestion")}
-                  onChange={value => _change("instructorStimulus", value)}
-                  value={get(item, "instructorStimulus", "")}
+                  placeholder={t(
+                    'component.options.enterDistractorRationaleQuestion'
+                  )}
+                  onChange={(value) => _change('instructorStimulus', value)}
+                  value={get(item, 'instructorStimulus', '')}
                 />
               </WidgetFRInput>
             </Col>
@@ -65,15 +87,17 @@ class Extras extends Component {
 
           <Row gutter={24}>
             <Col md={24}>
-              <Label data-cy="sample_answer">{t("component.options.explanation")}</Label>
+              <Label data-cy="sample_answer">
+                {t('component.options.explanation')}
+              </Label>
 
               <WidgetFRInput>
                 <QuestionTextArea
-                  placeholder={t("component.options.enterSampleAnswer")}
+                  placeholder={t('component.options.enterSampleAnswer')}
                   toolbarId="sample_answer"
                   toolbarSize="SM"
-                  onChange={value => _change("sampleAnswer", value)}
-                  value={get(item, "sampleAnswer", "")}
+                  onChange={(value) => _change('sampleAnswer', value)}
+                  value={get(item, 'sampleAnswer', '')}
                 />
               </WidgetFRInput>
             </Col>
@@ -84,12 +108,12 @@ class Extras extends Component {
 
         {children}
       </QuestionContainer>
-    );
+    )
   }
 }
 
-Extras.Distractors = Distractors;
-Extras.Hints = Hints;
+Extras.Distractors = Distractors
+Extras.Hints = Hints
 
 Extras.propTypes = {
   children: PropTypes.any,
@@ -99,30 +123,30 @@ Extras.propTypes = {
   isSection: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 Extras.defaultProps = {
   children: null,
   isSection: false,
   advancedAreOpen: true,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
-    state => ({
-      item: getQuestionDataSelector(state)
+    (state) => ({
+      item: getQuestionDataSelector(state),
     }),
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
     }
   )
-);
+)
 
-export default enhance(Extras);
+export default enhance(Extras)
 
 const QuestionContainer = styled.div`
   .fr-wrapper.show-placeholder .fr-placeholder {
@@ -130,4 +154,4 @@ const QuestionContainer = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-`;
+`

@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Icon } from "antd";
-import { EduSwitchStyled } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Icon } from 'antd'
+import { EduSwitchStyled } from '@edulastic/common'
 import {
   Link,
   CloseModal,
@@ -10,8 +10,8 @@ import {
   StyledText,
   StyledTextInfo,
   CloseModalText,
-  EditResponse
-} from "./styled";
+  EditResponse,
+} from './styled'
 
 const BottomNavigation = ({
   prevStudent,
@@ -20,12 +20,14 @@ const BottomNavigation = ({
   nextQuestion,
   hideModal,
   editResponse,
-  toggleEditResponse
+  toggleEditResponse,
 }) => (
   <NavigationWrapper>
     <StyledTextInfo>
       <Icon type="info-circle" />
-      <StyledText>USE THE KEYBOARDS ARROW TO NAVIGATE BETWEEN THE SCREENS</StyledText>
+      <StyledText>
+        USE THE KEYBOARDS ARROW TO NAVIGATE BETWEEN THE SCREENS
+      </StyledText>
     </StyledTextInfo>
     <LinksWrapper>
       <Link onClick={prevStudent}>
@@ -46,7 +48,12 @@ const BottomNavigation = ({
       </Link>
       <EditResponse>
         <StyledText>EDIT RESPONSE</StyledText>
-        <EduSwitchStyled width={45} data-cy="editResponse" checked={editResponse} onClick={toggleEditResponse} />
+        <EduSwitchStyled
+          width={45}
+          data-cy="editResponse"
+          checked={editResponse}
+          onClick={toggleEditResponse}
+        />
       </EditResponse>
       <CloseModal data-cy="exitbutton" onClick={hideModal}>
         <Icon type="close" width={5} height={5} />
@@ -54,14 +61,14 @@ const BottomNavigation = ({
       </CloseModal>
     </LinksWrapper>
   </NavigationWrapper>
-);
+)
 
 BottomNavigation.propTypes = {
   prevStudent: PropTypes.func.isRequired,
   nextStudent: PropTypes.func.isRequired,
   prevQuestion: PropTypes.func.isRequired,
   nextQuestion: PropTypes.func.isRequired,
-  hideModal: PropTypes.func.isRequired
-};
+  hideModal: PropTypes.func.isRequired,
+}
 
-export default BottomNavigation;
+export default BottomNavigation

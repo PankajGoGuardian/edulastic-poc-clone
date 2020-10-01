@@ -1,7 +1,14 @@
-import React from "react";
-import DragItem from "./DragItem";
+import React from 'react'
+import DragItem from './DragItem'
 
-function DragItems({ dragItems, onDropHandler, getStyles, disableResponse, changePreviewTab, previewTab }) {
+function DragItems({
+  dragItems,
+  onDropHandler,
+  getStyles,
+  disableResponse,
+  changePreviewTab,
+  previewTab,
+}) {
   return dragItems.map(
     (item, ind) =>
       dragItems.includes(item) && (
@@ -17,7 +24,7 @@ function DragItems({ dragItems, onDropHandler, getStyles, disableResponse, chang
           previewTab={previewTab}
         />
       )
-  );
+  )
 }
 
-export default DragItems;
+export default DragItems

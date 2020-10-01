@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const ColorPickerWrapper = styled.div`
   position: fixed;
@@ -6,4 +6,4 @@ export const ColorPickerWrapper = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-`;
+`

@@ -1,7 +1,12 @@
-import styled from "styled-components";
-import { Menu, Button } from "antd";
+import styled from 'styled-components'
+import { Menu, Button } from 'antd'
 
-import { white, mobileWidth, themeColor, themeColorBlue } from "@edulastic/colors";
+import {
+  white,
+  mobileWidth,
+  themeColor,
+  themeColorBlue,
+} from '@edulastic/colors'
 
 export const Container = styled.div`
   left: 0;
@@ -15,7 +20,7 @@ export const Container = styled.div`
   @media screen and (max-width: ${mobileWidth}) {
     width: 244px;
   }
-`;
+`
 
 export const StyledMenu = styled(Menu)`
   border: 0px;
@@ -49,16 +54,16 @@ export const StyledMenu = styled(Menu)`
       }
     }
   }
-`;
+`
 
 export const StyledLink = styled.a`
   margin-top: 2px;
-`;
+`
 
 export const SpaceElement = styled.div`
   display: inline-block;
   width: 10px;
-`;
+`
 
 export const ActionButtonWrapper = styled.div`
   text-align: center;
@@ -67,7 +72,7 @@ export const ActionButtonWrapper = styled.div`
   @media screen and (max-width: ${mobileWidth}) {
     display: none;
   }
-`;
+`
 
 export const ActionButton = styled(Button)`
   color: ${white};
@@ -88,4 +93,4 @@ export const ActionButton = styled(Button)`
     background-color: ${themeColor};
     color: ${white};
   }
-`;
+`

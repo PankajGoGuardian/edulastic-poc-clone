@@ -1,14 +1,14 @@
-import React from "react";
-import { Spin } from "antd";
+import React from 'react'
+import { Spin } from 'antd'
 
-import styled from "styled-components";
-import { lightFadedBlack } from "@edulastic/colors";
+import styled from 'styled-components'
+import { lightFadedBlack } from '@edulastic/colors'
 
 export default () => (
   <SpinnerContainer>
     <Spin />
   </SpinnerContainer>
-);
+)
 
 const SpinnerContainer = styled.div`
   position: fixed;
@@ -18,4 +18,4 @@ const SpinnerContainer = styled.div`
   right: 0px;
   z-index: 9999;
   background: ${lightFadedBlack};
-`;
+`

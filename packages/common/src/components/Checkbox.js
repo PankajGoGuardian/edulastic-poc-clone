@@ -1,16 +1,37 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { themeColor, white, grey, secondaryTextColor, darkGrey } from "@edulastic/colors";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled, { css } from 'styled-components'
+import {
+  themeColor,
+  white,
+  grey,
+  secondaryTextColor,
+  darkGrey,
+} from '@edulastic/colors'
 
-const Checkbox = ({ onChange, checked, label, style, className, labelFontSize, textTransform, disabled }) => {
+const Checkbox = ({
+  onChange,
+  checked,
+  label,
+  style,
+  className,
+  labelFontSize,
+  textTransform,
+  disabled,
+}) => {
   const onClickHandler = () => {
     if (!disabled) {
-      onChange();
+      onChange()
     }
-  };
+  }
   return (
-    <Container data-cy="multi" onClick={onClickHandler} style={style} className={className} disabled={disabled}>
+    <Container
+      data-cy="multi"
+      onClick={onClickHandler}
+      style={style}
+      className={className}
+      disabled={disabled}
+    >
       <Input type="checkbox" checked={checked} onChange={() => {}} />
       <span />
       {label && (
@@ -19,7 +40,7 @@ const Checkbox = ({ onChange, checked, label, style, className, labelFontSize, t
             fontSize: labelFontSize,
             fontWeight: 600,
             color: disabled ? darkGrey : secondaryTextColor,
-            textTransform
+            textTransform,
           }}
           className="label"
         >
@@ -27,8 +48,8 @@ const Checkbox = ({ onChange, checked, label, style, className, labelFontSize, t
         </span>
       )}
     </Container>
-  );
-};
+  )
+}
 
 Checkbox.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -38,20 +59,20 @@ Checkbox.propTypes = {
   className: PropTypes.string,
   labelFontSize: PropTypes.string,
   textTransform: PropTypes.string,
-  disabled: PropTypes.bool
-};
+  disabled: PropTypes.bool,
+}
 
 Checkbox.defaultProps = {
   style: {},
-  label: "",
-  className: "",
+  label: '',
+  className: '',
   checked: false,
-  labelFontSize: "13px",
+  labelFontSize: '13px',
   textTransform: null,
-  disabled: false
-};
+  disabled: false,
+}
 
-export default Checkbox;
+export default Checkbox
 
 const Input = styled.input`
   display: none;
@@ -75,7 +96,7 @@ const Input = styled.input`
 
   + span:after {
     display: block;
-    content: "";
+    content: '';
     position: absolute;
     left: 5px;
     top: 1px;
@@ -87,14 +108,14 @@ const Input = styled.input`
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
   }
-`;
+`
 
 const disabledStyle = css`
   cursor: not-allowed;
-`;
+`
 
 const Container = styled.span`
   cursor: pointer;
   user-select: none;
   ${({ disabled }) => (disabled ? disabledStyle : ``)}
-`;
+`

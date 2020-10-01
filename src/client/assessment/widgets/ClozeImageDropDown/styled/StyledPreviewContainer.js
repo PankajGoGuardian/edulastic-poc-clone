@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const StyledPreviewContainer = styled.div`
   position: relative;
@@ -7,10 +7,10 @@ export const StyledPreviewContainer = styled.div`
   margin: auto;
   height: ${({ height }) => (!height ? null : `${height}px`)};
   width: ${({ width }) => (!width ? null : `${width}px`)};
-  max-width: ${({ width }) => (width ? `${width}px` : "100%")};
+  max-width: ${({ width }) => (width ? `${width}px` : '100%')};
   max-height: ${({ maxHeight }) => (!maxHeight ? null : `${maxHeight}px`)};
 
   img {
     max-width: unset !important;
   }
-`;
+`

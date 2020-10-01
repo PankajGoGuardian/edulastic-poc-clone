@@ -1,4 +1,4 @@
-import { userApi } from "@edulastic/api";
+import { userApi } from '@edulastic/api'
 import {
   backgrounds,
   borders,
@@ -11,19 +11,25 @@ import {
   title,
   white,
   extraDesktopWidthMax,
-  themeColorBlue
-} from "@edulastic/colors";
-import { FieldLabel, MainContentWrapper, SelectInputStyled, EduButton, EduSwitchStyled } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { Form, Icon, Input, Select, Tag, Modal } from "antd";
-import produce from "immer";
-import { isEqual, map, omit, get } from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import styled from "styled-components";
-import { roleuser } from "@edulastic/constants";
+  themeColorBlue,
+} from '@edulastic/colors'
+import {
+  FieldLabel,
+  MainContentWrapper,
+  SelectInputStyled,
+  EduButton,
+  EduSwitchStyled,
+} from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { Form, Icon, Input, Select, Tag, Modal } from 'antd'
+import produce from 'immer'
+import { isEqual, map, omit, get } from 'lodash'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import { roleuser } from '@edulastic/constants'
 import {
   deleteAccountAction,
   removeInterestedCurriculumsAction,
@@ -34,21 +40,21 @@ import {
   updateUserDetailsAction,
   showJoinSchoolAction,
   hideJoinSchoolAction,
-  updatePowerTeacherAction
-} from "../../../../student/Login/ducks";
-import { Wrapper } from "../../../../student/styled/index";
-import StandardSetModal from "../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal";
-import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
-import DeleteAccountModal from "../DeleteAccountModal/DeleteAccountModal";
-import DeleteSchoolModal from "../DeleteSchoolModal/DeleteSchoolModal";
-import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
-import Photo from "./Photo";
-import { selectsData } from "../../../TestPage/components/common";
-import JoinSchool from "../../../../student/Signup/components/TeacherContainer/JoinSchool";
-import { getInterestedCurriculumsByOrgType } from "../../../src/selectors/user";
+  updatePowerTeacherAction,
+} from '../../../../student/Login/ducks'
+import { Wrapper } from '../../../../student/styled/index'
+import StandardSetModal from '../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal'
+import { getDictCurriculumsAction } from '../../../src/actions/dictionaries'
+import { getCurriculumsListSelector } from '../../../src/selectors/dictionaries'
+import DeleteAccountModal from '../DeleteAccountModal/DeleteAccountModal'
+import DeleteSchoolModal from '../DeleteSchoolModal/DeleteSchoolModal'
+import EmailConfirmModal from '../EmailConfirmModal/EmailConfirmModal'
+import Photo from './Photo'
+import { selectsData } from '../../../TestPage/components/common'
+import JoinSchool from '../../../../student/Signup/components/TeacherContainer/JoinSchool'
+import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
 
-const FormItem = Form.Item;
+const FormItem = Form.Item
 class ProfileBody extends React.Component {
   state = {
     confirmDirty: false,
@@ -64,162 +70,206 @@ class ProfileBody extends React.Component {
     defaultGrades: [],
     defaultSubjects: [],
     autoShareGCAssignment: undefined,
-    showDefaultSettingSave: false
-  };
-
-  static getDerivedStateFromProps(props, state) {
-    const { defaultGrades, defaultSubjects, autoShareGCAssignment } = props.user.orgData;
-    const { interestedCurriculums } = props;
-    const derivedStateProps = {};
-    if (state.defaultGrades.length === 0 && defaultGrades.length) {
-      Object.assign(derivedStateProps, { defaultGrades });
-    }
-    if (state.defaultSubjects.length === 0 && defaultSubjects.length) {
-      Object.assign(derivedStateProps, { defaultSubjects });
-    }
-    if (state.autoShareGCAssignment === undefined) {
-      Object.assign(derivedStateProps, { autoShareGCAssignment });
-    }
-    if (!state.showSaveStandSetsBtn && !isEqual(interestedCurriculums, state.interestedCurriculums)) {
-      Object.assign(derivedStateProps, { interestedCurriculums });
-    }
-    return Object.keys(derivedStateProps).length ? derivedStateProps : null;
+    showDefaultSettingSave: false,
   }
 
-  handleSubmit = e => {
-    const { form, user } = this.props;
-    const { showChangePassword, isEditProfile } = this.state;
-    e.preventDefault();
+  static getDerivedStateFromProps(props, state) {
+    const {
+      defaultGrades,
+      defaultSubjects,
+      autoShareGCAssignment,
+    } = props.user.orgData
+    const { interestedCurriculums } = props
+    const derivedStateProps = {}
+    if (state.defaultGrades.length === 0 && defaultGrades.length) {
+      Object.assign(derivedStateProps, { defaultGrades })
+    }
+    if (state.defaultSubjects.length === 0 && defaultSubjects.length) {
+      Object.assign(derivedStateProps, { defaultSubjects })
+    }
+    if (state.autoShareGCAssignment === undefined) {
+      Object.assign(derivedStateProps, { autoShareGCAssignment })
+    }
+    if (
+      !state.showSaveStandSetsBtn &&
+      !isEqual(interestedCurriculums, state.interestedCurriculums)
+    ) {
+      Object.assign(derivedStateProps, { interestedCurriculums })
+    }
+    return Object.keys(derivedStateProps).length ? derivedStateProps : null
+  }
+
+  handleSubmit = (e) => {
+    const { form, user } = this.props
+    const { showChangePassword, isEditProfile } = this.state
+    e.preventDefault()
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
+        const isnotNormalLogin =
+          !!user.googleId ||
+          !!user.canvasId ||
+          !!user.cliId ||
+          !!user.cleverId ||
+          !!user.msoId
 
         if (
           isnotNormalLogin ||
           (isEditProfile && values.email === user.email) ||
           (!isEditProfile && showChangePassword)
         ) {
-          this.handleUpdateDetails(false);
+          this.handleUpdateDetails(false)
         } else {
-          this.setState({ showEmailConfirmModal: true });
+          this.setState({ showEmailConfirmModal: true })
         }
       }
-    });
-  };
+    })
+  }
 
   handleChangeEmail = () => {
-    this.handleUpdateDetails(true);
-  };
+    this.handleUpdateDetails(true)
+  }
 
   handleUpdateDetails(isLogout) {
     const {
       form: { getFieldValue },
       user,
-      updateUserDetails
-    } = this.props;
-    const { showChangePassword, isEditProfile } = this.state;
-    const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
+      updateUserDetails,
+    } = this.props
+    const { showChangePassword, isEditProfile } = this.state
+    const isnotNormalLogin =
+      !!user.googleId ||
+      !!user.canvasId ||
+      !!user.cliId ||
+      !!user.cleverId ||
+      !!user.msoId
     // in case of author only one districtId will exist
     const data = {
       districtId: user?.districtIds?.[0],
-      email: isEditProfile && !isnotNormalLogin ? getFieldValue("email") : user.email,
-      firstName: isEditProfile ? getFieldValue("firstName") : user.firstName,
-      lastName: isEditProfile ? getFieldValue("lastName") : user.lastName,
-      title: isEditProfile ? getFieldValue("title") : user.title
-    };
-    if (showChangePassword) data.password = getFieldValue("password");
+      email:
+        isEditProfile && !isnotNormalLogin
+          ? getFieldValue('email')
+          : user.email,
+      firstName: isEditProfile ? getFieldValue('firstName') : user.firstName,
+      lastName: isEditProfile ? getFieldValue('lastName') : user.lastName,
+      title: isEditProfile ? getFieldValue('title') : user.title,
+    }
+    if (showChangePassword) data.password = getFieldValue('password')
 
     updateUserDetails({
       data,
       userId: user._id,
-      isLogout
-    });
-    this.setState({ showEmailConfirmModal: false, isEditProfile: false, showChangePassword: false });
+      isLogout,
+    })
+    this.setState({
+      showEmailConfirmModal: false,
+      isEditProfile: false,
+      showChangePassword: false,
+    })
   }
 
-  handleCancel = e => {
-    e.preventDefault();
-    this.setState({ isEditProfile: false, showChangePassword: false });
-  };
+  handleCancel = (e) => {
+    e.preventDefault()
+    this.setState({ isEditProfile: false, showChangePassword: false })
+  }
 
   handleConfirmBlur = ({ target: { value } }) => {
-    let { confirmDirty } = this.state;
-    confirmDirty = confirmDirty || !!value;
-    this.setState({ confirmDirty });
-  };
+    let { confirmDirty } = this.state
+    confirmDirty = confirmDirty || !!value
+    this.setState({ confirmDirty })
+  }
 
   compareToFirstPassword = (rule, value, callback) => {
-    const { form, t } = this.props;
-    if (value && value.length < 4) callback(t("common.title.confirmPasswordLengthErrorMessage"));
-    else if (value && value !== form.getFieldValue("password")) callback(t("common.title.confirmPasswordMess"));
-    else callback();
-  };
+    const { form, t } = this.props
+    if (value && value.length < 4)
+      callback(t('common.title.confirmPasswordLengthErrorMessage'))
+    else if (value && value !== form.getFieldValue('password'))
+      callback(t('common.title.confirmPasswordMess'))
+    else callback()
+  }
 
   validateToNextPassword = (rule, value, callback) => {
-    const { form, t } = this.props;
-    const { confirmDirty } = this.state;
+    const { form, t } = this.props
+    const { confirmDirty } = this.state
     if (value && confirmDirty) {
-      form.validateFields(["confirmPassword"], { force: true });
+      form.validateFields(['confirmPassword'], { force: true })
     }
-    if (value && value.length < 4) callback(t("common.title.passwordLengthErrorMessage"));
-    callback();
-  };
+    if (value && value.length < 4)
+      callback(t('common.title.passwordLengthErrorMessage'))
+    callback()
+  }
 
   toggleModal = (modalType, value) => {
-    if (modalType === "DELETE_ACCOUNT") this.setState({ showModal: value });
-    else if (modalType === "REMOVE_SCHOOL") this.setState({ showDeleteSchoolModal: value, selectedSchool: null });
-    else if (modalType === "EMAIL_CONFIRM") this.setState({ showEmailConfirmModal: false, isEditProfile: false });
-  };
+    if (modalType === 'DELETE_ACCOUNT') this.setState({ showModal: value })
+    else if (modalType === 'REMOVE_SCHOOL')
+      this.setState({ showDeleteSchoolModal: value, selectedSchool: null })
+    else if (modalType === 'EMAIL_CONFIRM')
+      this.setState({ showEmailConfirmModal: false, isEditProfile: false })
+  }
 
   hideMyStandardSetsModal = () => {
-    this.setState({ showStandardSetsModal: false });
-  };
+    this.setState({ showStandardSetsModal: false })
+  }
 
-  updateMyStandardSets = updatedStandards => {
-    const { curriculums, updateInterestedCurriculums, user } = this.props;
-    const { role } = user;
+  updateMyStandardSets = (updatedStandards) => {
+    const { curriculums, updateInterestedCurriculums, user } = this.props
+    const { role } = user
 
-    const curriculumsData = [];
+    const curriculumsData = []
     for (let i = 0; i < updatedStandards.length; i++) {
-      const selStandards = curriculums.filter(item => item.curriculum === updatedStandards[i]);
+      const selStandards = curriculums.filter(
+        (item) => item.curriculum === updatedStandards[i]
+      )
       curriculumsData.push({
         _id: selStandards[0]._id,
         name: selStandards[0].curriculum,
         subject: selStandards[0].subject,
-        grades: selStandards[0].grades
-      });
+        grades: selStandards[0].grades,
+      })
     }
     const orgType =
-      role === roleuser.DISTRICT_ADMIN ? "district" : role === roleuser.SCHOOL_ADMIN ? "institution" : "teacher";
-    let orgId = user._id;
+      role === roleuser.DISTRICT_ADMIN
+        ? 'district'
+        : role === roleuser.SCHOOL_ADMIN
+        ? 'institution'
+        : 'teacher'
+    let orgId = user._id
     if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0];
+      orgId = user.districtIds[0]
     }
     if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0];
+      orgId = user.institutionIds[0]
     }
     const standardsData = {
       orgId,
       orgType,
-      curriculums: curriculumsData
-    };
+      curriculums: curriculumsData,
+    }
 
-    updateInterestedCurriculums(standardsData);
-    this.hideMyStandardSetsModal();
-  };
+    updateInterestedCurriculums(standardsData)
+    this.hideMyStandardSetsModal()
+  }
 
   saveSettings = () => {
-    const { updateDefaultSettings, user } = this.props;
-    const { defaultGrades, defaultSubjects, autoShareGCAssignment, isPowerTeacher } = this.state;
-    const { role } = user;
+    const { updateDefaultSettings, user } = this.props
+    const {
+      defaultGrades,
+      defaultSubjects,
+      autoShareGCAssignment,
+      isPowerTeacher,
+    } = this.state
+    const { role } = user
     const orgType =
-      role === roleuser.DISTRICT_ADMIN ? "district" : role === roleuser.SCHOOL_ADMIN ? "institution" : "teacher";
-    let orgId = user._id;
+      role === roleuser.DISTRICT_ADMIN
+        ? 'district'
+        : role === roleuser.SCHOOL_ADMIN
+        ? 'institution'
+        : 'teacher'
+    let orgId = user._id
     if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0];
+      orgId = user.districtIds[0]
     }
     if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0];
+      orgId = user.institutionIds[0]
     }
     const settingsToUpdate = {
       orgId,
@@ -227,162 +277,178 @@ class ProfileBody extends React.Component {
       defaultGrades,
       defaultSubjects,
       autoShareGCAssignment,
-      isPowerTeacher
-    };
-    updateDefaultSettings(settingsToUpdate);
-    this.setState({ showDefaultSettingSave: false });
-  };
+      isPowerTeacher,
+    }
+    updateDefaultSettings(settingsToUpdate)
+    this.setState({ showDefaultSettingSave: false })
+  }
 
   onSettingChange = (value, field) => {
-    this.setState({ showDefaultSettingSave: true });
+    this.setState({ showDefaultSettingSave: true })
     switch (field) {
-      case "grade": {
-        this.setState({ defaultGrades: value });
-        break;
+      case 'grade': {
+        this.setState({ defaultGrades: value })
+        break
       }
-      case "subject": {
-        this.setState({ defaultSubjects: value });
-        break;
+      case 'subject': {
+        this.setState({ defaultSubjects: value })
+        break
       }
-      case "autoSync": {
-        this.setState({ autoShareGCAssignment: value });
-        break;
+      case 'autoSync': {
+        this.setState({ autoShareGCAssignment: value })
+        break
       }
       default:
-        break;
+        break
     }
-  };
+  }
 
   handleSaveStandardSets = () => {
-    const { updateInterestedCurriculums, user } = this.props;
-    const { interestedCurriculums } = this.state;
-    const { role } = user;
+    const { updateInterestedCurriculums, user } = this.props
+    const { interestedCurriculums } = this.state
+    const { role } = user
 
-    const updatedInterestedCurriculums = map(interestedCurriculums, obj => omit(obj, ["orgType"]));
+    const updatedInterestedCurriculums = map(interestedCurriculums, (obj) =>
+      omit(obj, ['orgType'])
+    )
     const orgType =
-      role === roleuser.DISTRICT_ADMIN ? "district" : role === roleuser.SCHOOL_ADMIN ? "institution" : "teacher";
-    let orgId = user._id;
+      role === roleuser.DISTRICT_ADMIN
+        ? 'district'
+        : role === roleuser.SCHOOL_ADMIN
+        ? 'institution'
+        : 'teacher'
+    let orgId = user._id
     if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0];
+      orgId = user.districtIds[0]
     }
     if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0];
+      orgId = user.institutionIds[0]
     }
     const standardsData = {
       orgId,
       orgType,
-      curriculums: updatedInterestedCurriculums
-    };
+      curriculums: updatedInterestedCurriculums,
+    }
 
-    updateInterestedCurriculums(standardsData);
-    this.setState({ showSaveStandSetsBtn: false });
-  };
+    updateInterestedCurriculums(standardsData)
+    this.setState({ showSaveStandSetsBtn: false })
+  }
 
-  removeStandardSet = id => {
-    this.setState({ showSaveStandSetsBtn: true });
+  removeStandardSet = (id) => {
+    this.setState({ showSaveStandSetsBtn: true })
 
-    const updatedState = produce(this.state, draft => {
-      draft.interestedCurriculums = draft.interestedCurriculums.filter(e => e._id != id);
-    });
+    const updatedState = produce(this.state, (draft) => {
+      draft.interestedCurriculums = draft.interestedCurriculums.filter(
+        (e) => e._id != id
+      )
+    })
 
-    const updatedInterestedCurriculums = updatedState.interestedCurriculums;
-    this.setState({ interestedCurriculums: updatedInterestedCurriculums });
-  };
+    const updatedInterestedCurriculums = updatedState.interestedCurriculums
+    this.setState({ interestedCurriculums: updatedInterestedCurriculums })
+  }
 
   deleteProfile = () => {
-    const { deleteAccount, user } = this.props;
-    this.toggleModal("DELETE_ACCOUNT", false);
-    deleteAccount(user._id);
-  };
+    const { deleteAccount, user } = this.props
+    this.toggleModal('DELETE_ACCOUNT', false)
+    deleteAccount(user._id)
+  }
 
   getSchoolList = () => {
-    const { user } = this.props;
-    const schools = user.orgData.schools.map(school => (
+    const { user } = this.props
+    const schools = user.orgData.schools.map((school) => (
       <StyledTag id={school._id}>
         {school.name}
         <Icon
           type="close"
           onClick={() => {
-            if (user.orgData.schools.length > 1) this.setState({ selectedSchool: school, showDeleteSchoolModal: true });
+            if (user.orgData.schools.length > 1)
+              this.setState({
+                selectedSchool: school,
+                showDeleteSchoolModal: true,
+              })
           }}
         />
       </StyledTag>
-    ));
-    return schools;
-  };
+    ))
+    return schools
+  }
 
   getStandardSets = () => {
-    const { interestedCurriculums } = this.state;
-    const curriculums = interestedCurriculums.map(curriculum => (
+    const { interestedCurriculums } = this.state
+    const curriculums = interestedCurriculums.map((curriculum) => (
       <StyledTag id={curriculum._id}>
         {curriculum.name}
-        <Icon type="close" onClick={() => this.removeStandardSet(curriculum._id)} />
+        <Icon
+          type="close"
+          onClick={() => this.removeStandardSet(curriculum._id)}
+        />
       </StyledTag>
-    ));
-    return curriculums;
-  };
+    ))
+    return curriculums
+  }
 
   handleRemoveSchool = () => {
-    const { selectedSchool } = this.state;
-    const { removeSchool, user } = this.props;
+    const { selectedSchool } = this.state
+    const { removeSchool, user } = this.props
     removeSchool({
       userId: user._id,
-      schoolId: selectedSchool._id
-    });
-    this.toggleModal("REMOVE_SCHOOL", false);
-  };
+      schoolId: selectedSchool._id,
+    })
+    this.toggleModal('REMOVE_SCHOOL', false)
+  }
 
   handleSelectStandardButton = () => {
-    const { getDictCurriculums } = this.props;
-    getDictCurriculums();
-    this.setState({ showStandardSetsModal: true });
-  };
+    const { getDictCurriculums } = this.props
+    getDictCurriculums()
+    this.setState({ showStandardSetsModal: true })
+  }
 
   handleAddSchool = () => {
-    const { showJoinSchool } = this.props;
-    showJoinSchool();
-  };
+    const { showJoinSchool } = this.props
+    showJoinSchool()
+  }
 
-  handlePowerTeacherUpdate = checked => {
-    const { updatePowerTeacher, user } = this.props;
-    const { role, email, username } = user;
-    const params = {};
+  handlePowerTeacherUpdate = (checked) => {
+    const { updatePowerTeacher, user } = this.props
+    const { role, email, username } = user
+    const params = {}
     if ([roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(role)) {
-      params.usernames = [email || username];
-      params.enable = checked;
+      params.usernames = [email || username]
+      params.enable = checked
     }
-    updatePowerTeacher(params);
-  };
+    updatePowerTeacher(params)
+  }
 
   checkUser = async (rule, value, callback) => {
-    const { user, t } = this.props;
+    const { user, t } = this.props
 
     if (value !== user.email) {
       const result = await userApi.checkUser({
         username: value,
         districtId: user?.districtIds?.[0],
-        role: user.role
-      });
+        role: user.role,
+      })
 
-      if (result.length > 0) callback(t("common.title.emailAlreadyExistsMessage"));
+      if (result.length > 0)
+        callback(t('common.title.emailAlreadyExistsMessage'))
     }
-    callback();
-  };
+    callback()
+  }
 
   getEditProfileContent = () => {
     const {
       t,
       user,
-      form: { getFieldDecorator }
-    } = this.props;
+      form: { getFieldDecorator },
+    } = this.props
     return (
       <Details>
         <DetailRow padding="15px 0px">
-          <DetailTitle>{t("common.title.userTitleLabel")}</DetailTitle>
+          <DetailTitle>{t('common.title.userTitleLabel')}</DetailTitle>
           <DetailData>
             <InputItemWrapper>
-              {getFieldDecorator("title", {
-                initialValue: user.title
+              {getFieldDecorator('title', {
+                initialValue: user.title,
               })(
                 <TitleSelect>
                   <Select.Option value="Mr.">Mr.</Select.Option>
@@ -391,65 +457,72 @@ class ProfileBody extends React.Component {
                   <Select.Option value="Dr.">Dr.</Select.Option>
                 </TitleSelect>
               )}
-            </InputItemWrapper>{" "}
+            </InputItemWrapper>{' '}
           </DetailData>
         </DetailRow>
         <DetailRow padding="15px 0px">
-          <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
+          <DetailTitle>{t('common.title.firstNameInputLabel')}</DetailTitle>
           <DetailData>
             <InputItemWrapper>
-              {getFieldDecorator("firstName", {
+              {getFieldDecorator('firstName', {
                 initialValue: user.firstName,
                 rules: [
                   {
                     required: true,
-                    message: t("common.title.firstName")
-                  }
-                ]
+                    message: t('common.title.firstName'),
+                  },
+                ],
               })(<Input type="text" />)}
-            </InputItemWrapper>{" "}
+            </InputItemWrapper>{' '}
           </DetailData>
         </DetailRow>
         <DetailRow padding="15px 0px">
-          <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
+          <DetailTitle>{t('common.title.lastNameInputLabel')}</DetailTitle>
           <DetailData>
             <InputItemWrapper>
-              {getFieldDecorator("lastName", {
-                initialValue: user.lastName
+              {getFieldDecorator('lastName', {
+                initialValue: user.lastName,
               })(<Input type="text" />)}
-            </InputItemWrapper>{" "}
+            </InputItemWrapper>{' '}
           </DetailData>
         </DetailRow>
         <DetailRow>
-          <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-          {user.googleId || user.canvasId || user.cliId || user.cleverId || !!user.msoId ? (
+          <DetailTitle>{t('common.title.emailUsernameLabel')}</DetailTitle>
+          {user.googleId ||
+          user.canvasId ||
+          user.cliId ||
+          user.cleverId ||
+          !!user.msoId ? (
             <DetailData>{user.email}</DetailData>
           ) : (
             <DetailData>
               <InputItemWrapper>
-                {getFieldDecorator("email", {
+                {getFieldDecorator('email', {
                   initialValue: user.email,
                   rules: [
                     { validator: this.checkUser },
-                    { required: true, message: t("common.title.invalidEmailMessage") },
+                    {
+                      required: true,
+                      message: t('common.title.invalidEmailMessage'),
+                    },
                     {
                       // validation so that no white spaces are allowed
-                      message: t("common.title.invalidEmailMessage"),
-                      pattern: /^\S*$/
+                      message: t('common.title.invalidEmailMessage'),
+                      pattern: /^\S*$/,
                     },
-                    { max: 256, message: t("common.title.emailLengthMessage") }
-                  ]
+                    { max: 256, message: t('common.title.emailLengthMessage') },
+                  ],
                 })(<Input type="text" />)}
-              </InputItemWrapper>{" "}
+              </InputItemWrapper>{' '}
             </DetailData>
           )}
         </DetailRow>
       </Details>
-    );
-  };
+    )
+  }
 
   AdminProfileContent = () => {
-    const { t, user } = this.props;
+    const { t, user } = this.props
     return (
       <ProfileContentWrapper>
         <UserDetail>
@@ -458,33 +531,41 @@ class ProfileBody extends React.Component {
           </SubHeader>
           <Details>
             <DetailRow>
-              <DetailTitle>{t("common.title.userTitleLabel")}</DetailTitle>
-              <DetailData>{user.title || "Title"}</DetailData>
+              <DetailTitle>{t('common.title.userTitleLabel')}</DetailTitle>
+              <DetailData>{user.title || 'Title'}</DetailData>
             </DetailRow>
             <DetailRow>
-              <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
+              <DetailTitle>{t('common.title.firstNameInputLabel')}</DetailTitle>
               <DetailData>{user.firstName}</DetailData>
             </DetailRow>
             <DetailRow>
-              <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
-              <DetailData>{user.lastName || ""}</DetailData>
+              <DetailTitle>{t('common.title.lastNameInputLabel')}</DetailTitle>
+              <DetailData>{user.lastName || ''}</DetailData>
             </DetailRow>
             <DetailRow>
-              <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
+              <DetailTitle>{t('common.title.emailUsernameLabel')}</DetailTitle>
               <DetailData>{user.email}</DetailData>
             </DetailRow>
           </Details>
         </UserDetail>
       </ProfileContentWrapper>
-    );
-  };
+    )
+  }
 
   render() {
     const {
-      form: { getFieldDecorator }
-    } = this.props;
+      form: { getFieldDecorator },
+    } = this.props
 
-    const { flag, t, user, curriculums, userInfo, joinSchoolVisible, hideJoinSchool } = this.props;
+    const {
+      flag,
+      t,
+      user,
+      curriculums,
+      userInfo,
+      joinSchoolVisible,
+      hideJoinSchool,
+    } = this.props
     const {
       showChangePassword,
       isEditProfile,
@@ -498,31 +579,40 @@ class ProfileBody extends React.Component {
       defaultSubjects = [],
       autoShareGCAssignment = false,
       showDefaultSettingSave = false,
-      interestedCurriculums
-    } = this.state;
+      interestedCurriculums,
+    } = this.state
     // checking if institution policy/ district policy is enabled
     // OR teacher with home school and having any google sync classroom
-    const institutionPolicies = get(user, "orgData.policies.institutions", []);
+    const institutionPolicies = get(user, 'orgData.policies.institutions', [])
     const googleClassRoomAllowed =
       (institutionPolicies.length
-        ? !!institutionPolicies.filter(p => p.allowGoogleClassroom).length
-        : get(user, "orgData.policies.district.allowGoogleClassroom", false)) ||
-      (user.orgData?.districts?.[0]?.districtStatus === 2 && !!user.orgData.classList.filter(c => !!c.googleId).length);
+        ? !!institutionPolicies.filter((p) => p.allowGoogleClassroom).length
+        : get(user, 'orgData.policies.district.allowGoogleClassroom', false)) ||
+      (user.orgData?.districts?.[0]?.districtStatus === 2 &&
+        !!user.orgData.classList.filter((c) => !!c.googleId).length)
     const interestedStaData = {
-      curriculums: interestedCurriculums
-    };
-    const { features, role } = user;
-    let showPowerTools = false;
+      curriculums: interestedCurriculums,
+    }
+    const { features, role } = user
+    let showPowerTools = false
 
     if (
-      [roleuser.TEACHER, roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) &&
+      [
+        roleuser.TEACHER,
+        roleuser.DISTRICT_ADMIN,
+        roleuser.SCHOOL_ADMIN,
+      ].includes(role) &&
       !features.isPublisherAuthor &&
       !features.isCurator &&
       features.premium
     ) {
-      showPowerTools = true;
+      showPowerTools = true
     }
-    const showDefaultSettings = [roleuser.TEACHER, roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role);
+    const showDefaultSettings = [
+      roleuser.TEACHER,
+      roleuser.DISTRICT_ADMIN,
+      roleuser.SCHOOL_ADMIN,
+    ].includes(role)
     return (
       <MainContentWrapper padding="30px" flag={flag}>
         <ProfileWrapper display="flex" boxShadow="none" minHeight="max-content">
@@ -530,34 +620,37 @@ class ProfileBody extends React.Component {
             <Photo user={user} isProfile />
           </ProfileImgWrapper>
           <RightContainer>
-            {user.role.toUpperCase() === "EDULASTIC-ADMIN" ? (
+            {user.role.toUpperCase() === 'EDULASTIC-ADMIN' ? (
               this.AdminProfileContent()
             ) : (
               <ProfileContentWrapper>
                 <UserDetail>
                   <SubHeader>
                     <Title>Instructor Information</Title>
-                    {!isEditProfile && ["teacher", "district-admin", "school-admin"].includes(user.role) ? (
+                    {!isEditProfile &&
+                    ['teacher', 'district-admin', 'school-admin'].includes(
+                      user.role
+                    ) ? (
                       <>
                         <EditProfileButton
                           isGhost
                           type="primary"
                           onClick={() => {
-                            this.setState({ isEditProfile: true });
+                            this.setState({ isEditProfile: true })
                           }}
                         >
                           <Icon type="edit" theme="filled" />
-                          {t("common.title.editProfile")}
+                          {t('common.title.editProfile')}
                         </EditProfileButton>
                         <DeleteAccountButton
                           isGhost
                           noHover
                           onClick={() => {
-                            this.setState({ showModal: true });
+                            this.setState({ showModal: true })
                           }}
                         >
                           <Icon type="close" />
-                          {t("common.title.deleteAccount")}
+                          {t('common.title.deleteAccount')}
                         </DeleteAccountButton>
                       </>
                     ) : null}
@@ -565,19 +658,27 @@ class ProfileBody extends React.Component {
                   {!isEditProfile ? (
                     <Details>
                       <DetailRow>
-                        <DetailTitle>{t("common.title.userTitleLabel")}</DetailTitle>
-                        <DetailData>{user.title || "Title"}</DetailData>
+                        <DetailTitle>
+                          {t('common.title.userTitleLabel')}
+                        </DetailTitle>
+                        <DetailData>{user.title || 'Title'}</DetailData>
                       </DetailRow>
                       <DetailRow>
-                        <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
+                        <DetailTitle>
+                          {t('common.title.firstNameInputLabel')}
+                        </DetailTitle>
                         <DetailData>{user.firstName}</DetailData>
                       </DetailRow>
                       <DetailRow>
-                        <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
-                        <DetailData>{user.lastName || ""}</DetailData>
+                        <DetailTitle>
+                          {t('common.title.lastNameInputLabel')}
+                        </DetailTitle>
+                        <DetailData>{user.lastName || ''}</DetailData>
                       </DetailRow>
                       <DetailRow>
-                        <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
+                        <DetailTitle>
+                          {t('common.title.emailUsernameLabel')}
+                        </DetailTitle>
                         <DetailData>{user.email}</DetailData>
                       </DetailRow>
                     </Details>
@@ -585,57 +686,73 @@ class ProfileBody extends React.Component {
                     this.getEditProfileContent()
                   )}
                 </UserDetail>
-                {user.role === "edulastic-curator" ? null : (
+                {user.role === 'edulastic-curator' ? null : (
                   <ChangePasswordToggleButton
                     onClick={() => {
-                      this.setState({ showChangePassword: !showChangePassword });
+                      this.setState({ showChangePassword: !showChangePassword })
                     }}
                   >
                     <span>Change Password</span>
-                    <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
+                    <Icon
+                      type={showChangePassword ? 'caret-up' : 'caret-down'}
+                    />
                   </ChangePasswordToggleButton>
                 )}
 
                 {showChangePassword && (
                   <FormWrapper>
                     <FormItemWrapper>
-                      <Label>{t("common.title.newPasswordLabel")}</Label>
-                      {getFieldDecorator("password", {
+                      <Label>{t('common.title.newPasswordLabel')}</Label>
+                      {getFieldDecorator('password', {
                         rules: [
                           {
                             required: true,
-                            message: t("common.title.password")
+                            message: t('common.title.password'),
                           },
                           {
-                            validator: this.validateToNextPassword
-                          }
-                        ]
+                            validator: this.validateToNextPassword,
+                          },
+                        ],
                       })(<Input type="password" />)}
-                    </FormItemWrapper>{" "}
+                    </FormItemWrapper>{' '}
                     <FormItemWrapper>
-                      <Label>{t("common.title.confirmPaswswordLabel")}</Label>
-                      {getFieldDecorator("confirmPassword", {
+                      <Label>{t('common.title.confirmPaswswordLabel')}</Label>
+                      {getFieldDecorator('confirmPassword', {
                         rules: [
                           {
                             required: true,
-                            message: t("common.title.password")
+                            message: t('common.title.password'),
                           },
                           {
-                            validator: this.compareToFirstPassword
-                          }
-                        ]
-                      })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
-                    </FormItemWrapper>{" "}
+                            validator: this.compareToFirstPassword,
+                          },
+                        ],
+                      })(
+                        <Input
+                          type="password"
+                          onBlur={this.handleConfirmBlur}
+                        />
+                      )}
+                    </FormItemWrapper>{' '}
                   </FormWrapper>
                 )}
                 {(isEditProfile || showChangePassword) && (
                   <FormButtonWrapper>
                     <FormItem>
-                      <EduButton width="100px" type="primary" onClick={this.handleSubmit}>
-                        {t("common.title.save")}
+                      <EduButton
+                        width="100px"
+                        type="primary"
+                        onClick={this.handleSubmit}
+                      >
+                        {t('common.title.save')}
                       </EduButton>
-                      <EduButton width="100px" isGhost type="primary" onClick={this.handleCancel}>
-                        {t("common.title.cancel")}
+                      <EduButton
+                        width="100px"
+                        isGhost
+                        type="primary"
+                        onClick={this.handleCancel}
+                      >
+                        {t('common.title.cancel')}
                       </EduButton>
                     </FormItem>
                   </FormButtonWrapper>
@@ -646,9 +763,17 @@ class ProfileBody extends React.Component {
             {user.role === roleuser.TEACHER && (
               <SchoolWrapper>
                 <SchoolLabel>My Schools</SchoolLabel>
-                <SchoolListWrapper data-cy="mySchools">{this.getSchoolList()}</SchoolListWrapper>
+                <SchoolListWrapper data-cy="mySchools">
+                  {this.getSchoolList()}
+                </SchoolListWrapper>
                 <AddSchoolSection>
-                  <AddSchoolBtn data-cy="addSchool" width="190px" isBlue onClick={this.handleAddSchool} type="primary">
+                  <AddSchoolBtn
+                    data-cy="addSchool"
+                    width="190px"
+                    isBlue
+                    onClick={this.handleAddSchool}
+                    type="primary"
+                  >
                     Add School
                   </AddSchoolBtn>
                 </AddSchoolSection>
@@ -660,9 +785,16 @@ class ProfileBody extends React.Component {
                 <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
                 <StandardSetsButtons>
                   {showSaveStandSetsBtn && (
-                    <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
+                    <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>
+                      SAVE
+                    </SaveStandardSetsBtn>
                   )}
-                  <SelectSetsButton width="190px" isBlue onClick={this.handleSelectStandardButton} type="primary">
+                  <SelectSetsButton
+                    width="190px"
+                    isBlue
+                    onClick={this.handleSelectStandardButton}
+                    type="primary"
+                  >
                     Select your standard sets
                   </SelectSetsButton>
                 </StandardSetsButtons>
@@ -674,22 +806,26 @@ class ProfileBody extends React.Component {
                   <StyledDiv>
                     <Title>Default Settings</Title>
                     {showDefaultSettingSave && (
-                      <SaveDefaultSettingsBtn onClick={this.saveSettings}>SAVE</SaveDefaultSettingsBtn>
+                      <SaveDefaultSettingsBtn onClick={this.saveSettings}>
+                        SAVE
+                      </SaveDefaultSettingsBtn>
                     )}
                   </StyledDiv>
-                  <FieldLabel>{t("common.title.interestedGrade")}</FieldLabel>
+                  <FieldLabel>{t('common.title.interestedGrade')}</FieldLabel>
                   <SelectInputStyled
                     data-cy="gradeSelect"
                     mode="multiple"
                     size="large"
                     placeholder="Please select"
                     defaultValue={defaultGrades}
-                    onChange={value => this.onSettingChange(value, "grade")}
+                    onChange={(value) => this.onSettingChange(value, 'grade')}
                     optionFilterProp="children"
-                    getPopupContainer={trigger => trigger.parentNode}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     margin="0px 0px 15px"
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
                     }
                   >
                     {selectsData.allGrades.map(({ value, text }) => (
@@ -698,7 +834,7 @@ class ProfileBody extends React.Component {
                       </Select.Option>
                     ))}
                   </SelectInputStyled>
-                  <FieldLabel>{t("common.title.interestedSubject")}</FieldLabel>
+                  <FieldLabel>{t('common.title.interestedSubject')}</FieldLabel>
                   <SelectInputStyled
                     data-cy="subjectSelect"
                     mode="multiple"
@@ -706,11 +842,13 @@ class ProfileBody extends React.Component {
                     margin="0px 0px 15px"
                     placeholder="Please select"
                     defaultValue={defaultSubjects}
-                    onChange={value => this.onSettingChange(value, "subject")}
+                    onChange={(value) => this.onSettingChange(value, 'subject')}
                     optionFilterProp="children"
-                    getPopupContainer={trigger => trigger.parentNode}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
                     }
                   >
                     {selectsData.allSubjects.map(({ value, text }) => (
@@ -721,16 +859,21 @@ class ProfileBody extends React.Component {
                   </SelectInputStyled>
                   {user.role === roleuser.TEACHER && googleClassRoomAllowed && (
                     <SwitchWrapper>
-                      <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
+                      <FieldLabel>
+                        {t('common.title.autoShareWithGC')}
+                      </FieldLabel>
+                      ,
                       <EduSwitchStyled
                         defaultChecked={autoShareGCAssignment}
-                        onChange={checked => this.onSettingChange(checked, "autoSync")}
+                        onChange={(checked) =>
+                          this.onSettingChange(checked, 'autoSync')
+                        }
                       />
                     </SwitchWrapper>
                   )}
                   {showPowerTools && (
-                    <SwitchWrapper style={{ justifyContent: "space-between" }}>
-                      <FieldLabel>{t("common.title.powerUser")}</FieldLabel>
+                    <SwitchWrapper style={{ justifyContent: 'space-between' }}>
+                      <FieldLabel>{t('common.title.powerUser')}</FieldLabel>
                       <EduSwitchStyled
                         defaultChecked={userInfo.isPowerTeacher}
                         onChange={this.handlePowerTeacherUpdate}
@@ -743,7 +886,11 @@ class ProfileBody extends React.Component {
           </RightContainer>
         </ProfileWrapper>
         {showModal && (
-          <DeleteAccountModal visible={showModal} toggleModal={this.toggleModal} deleteProfile={this.deleteProfile} />
+          <DeleteAccountModal
+            visible={showModal}
+            toggleModal={this.toggleModal}
+            deleteProfile={this.deleteProfile}
+          />
         )}
         {showDeleteSchoolModal && (
           <DeleteSchoolModal
@@ -783,22 +930,22 @@ class ProfileBody extends React.Component {
           </StyledModal>
         )}
       </MainContentWrapper>
-    );
+    )
   }
 }
 
 const enhance = compose(
   React.memo,
-  withNamespaces("profile"),
+  withNamespaces('profile'),
   Form.create(),
   connect(
-    state => ({
+    (state) => ({
       flag: state.ui.flag,
       user: state.user.user,
       joinSchoolVisible: state.user.joinSchoolVisible,
-      userInfo: get(state.user, "user", {}),
+      userInfo: get(state.user, 'user', {}),
       curriculums: getCurriculumsListSelector(state),
-      interestedCurriculums: getInterestedCurriculumsByOrgType(state)
+      interestedCurriculums: getInterestedCurriculumsByOrgType(state),
     }),
     {
       resetMyPassword: resetMyPasswordAction,
@@ -811,18 +958,18 @@ const enhance = compose(
       updateDefaultSettings: updateDefaultSettingsAction,
       showJoinSchool: showJoinSchoolAction,
       hideJoinSchool: hideJoinSchoolAction,
-      updatePowerTeacher: updatePowerTeacherAction
+      updatePowerTeacher: updatePowerTeacherAction,
     }
   )
-);
+)
 
-export default enhance(ProfileBody);
+export default enhance(ProfileBody)
 
 ProfileBody.propTypes = {
   flag: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
-};
+  user: PropTypes.object.isRequired,
+}
 
 const StyledModal = styled(Modal)`
   .ant-modal-body > .ant-row {
@@ -832,11 +979,11 @@ const StyledModal = styled(Modal)`
     width: 90%;
     margin-left: 5%;
   }
-`;
+`
 
 const StyledDiv = styled.div`
   padding-bottom: 15px;
-`;
+`
 
 export const Block = styled.div`
   display: flex;
@@ -849,7 +996,7 @@ export const Block = styled.div`
     margin-bottom: 0;
     padding-bottom: 0;
   }
-`;
+`
 
 const ProfileWrapper = styled(Wrapper)`
   padding: 0px;
@@ -857,7 +1004,7 @@ const ProfileWrapper = styled(Wrapper)`
   @media screen and (max-width: ${mobileWidthMax}) {
     padding: 20px;
   }
-`;
+`
 
 const RightContainer = styled.div`
   width: calc(100% - 310px);
@@ -868,7 +1015,7 @@ const RightContainer = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     width: 100%;
   }
-`;
+`
 
 const ProfileContentWrapper = styled.div`
   width: 100%;
@@ -876,36 +1023,36 @@ const ProfileContentWrapper = styled.div`
   border-bottom: 1px solid #b6b6cc;
   padding-bottom: 20px;
   overflow: hidden;
-`;
+`
 
 const SchoolWrapper = styled(ProfileContentWrapper)`
   display: flex;
   align-items: center;
   margin-top: 20px;
-`;
+`
 
 const SchoolLabel = styled.span`
   font-weight: 600;
   font-size: 16px;
   min-width: 150px;
-`;
+`
 
-const StandardSetsLabel = styled(SchoolLabel)``;
+const StandardSetsLabel = styled(SchoolLabel)``
 
 const SchoolListWrapper = styled.span`
   width: 100%;
   display: flex;
   display: inline-block;
-`;
+`
 
 const StandardSetsList = styled(SchoolListWrapper)`
   width: 100%;
   margin-bottom: 5px;
-`;
+`
 
 const StandardSetsButtons = styled.div`
   float: right;
-`;
+`
 
 const StyledTag = styled(Tag)`
   background-color: #b3bcc4;
@@ -921,13 +1068,13 @@ const StyledTag = styled(Tag)`
     color: #676e74 !important;
     margin-left: 10px !important;
   }
-`;
+`
 
-const UserDetail = styled.div``;
+const UserDetail = styled.div``
 
 const SubHeader = styled.div`
   overflow: hidden;
-`;
+`
 
 const Title = styled.h3`
   color: ${title};
@@ -935,7 +1082,7 @@ const Title = styled.h3`
   font-weight: bold;
   margin: 5px 0px;
   float: left;
-`;
+`
 
 const ProfileImgWrapper = styled.div`
   width: 300px;
@@ -954,17 +1101,17 @@ const ProfileImgWrapper = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
-`;
+`
 
 const Details = styled.div`
   padding: 30px 0px 20px;
-`;
+`
 
 const DetailRow = styled.div`
   display: flex;
   align-items: center;
   padding: 10px 0px;
-`;
+`
 
 const DetailTitle = styled.span`
   font-size: 10px;
@@ -973,21 +1120,21 @@ const DetailTitle = styled.span`
   width: 150px;
   display: inline-block;
   text-transform: uppercase;
-`;
+`
 const DetailData = styled.span`
   font-size: 11px;
   color: ${title};
   font-weight: 600;
   display: inline-block;
   width: calc(100% - 150px);
-`;
+`
 
 const Label = styled.label`
   text-transform: uppercase;
-`;
+`
 
 const ChangePasswordToggleButton = styled.div`
-  color: "#6A737F";
+  color: '#6A737F';
   font-size: 10px;
   text-transform: uppercase;
   cursor: pointer;
@@ -999,7 +1146,7 @@ const ChangePasswordToggleButton = styled.div`
   svg {
     fill: ${themeColorBlue};
   }
-`;
+`
 
 const FormWrapper = styled(Form)`
   width: 100%;
@@ -1018,7 +1165,7 @@ const FormWrapper = styled(Form)`
     width: 100%;
     flex-direction: column;
   }
-`;
+`
 
 const FormItemWrapper = styled(FormItem)`
   width: calc(50% - 10px);
@@ -1031,11 +1178,11 @@ const FormItemWrapper = styled(FormItem)`
   .ant-form-explain {
     font-size: 12px;
   }
-`;
+`
 
 const TitleSelect = styled(Select)`
   min-width: 100px;
-`;
+`
 
 const InputItemWrapper = styled(FormItem)`
   width: 50%;
@@ -1066,7 +1213,7 @@ const InputItemWrapper = styled(FormItem)`
     width: 100%;
     display: block;
   }
-`;
+`
 
 const FormButtonWrapper = styled.div`
   text-align: center;
@@ -1075,7 +1222,7 @@ const FormButtonWrapper = styled.div`
   .ant-form-item-children {
     display: flex;
   }
-`;
+`
 
 const EditProfileButton = styled(EduButton)`
   margin-left: 15px;
@@ -1095,7 +1242,7 @@ const EditProfileButton = styled(EduButton)`
     width: 100%;
     margin: 8px 0 0 0;
   }
-`;
+`
 
 const DeleteAccountButton = styled(EditProfileButton)`
   background: ${white} !important;
@@ -1109,37 +1256,37 @@ const DeleteAccountButton = styled(EditProfileButton)`
       fill: ${red} !important;
     }
   }
-`;
+`
 
 const SelectSetsButton = styled(EditProfileButton)`
   background: ${themeColor};
   border-color: ${themeColor};
   color: ${white};
-`;
+`
 
 const SaveStandardSetsBtn = styled(SelectSetsButton)`
   margin: 5px 0px 5px 15px;
   :hover{
     color ${themeColor};
   }
-`;
+`
 
 const SaveDefaultSettingsBtn = styled(SelectSetsButton)`
   margin: 5px 0px 5px 15px;
   :hover{
     color ${themeColor};
   }
-`;
+`
 
 const AddSchoolBtn = styled(EditProfileButton)`
   background: ${themeColor};
   border-color: ${themeColor};
   color: ${white};
-`;
+`
 
 const AddSchoolSection = styled.div`
   float: right;
-`;
+`
 
 const SwitchWrapper = styled.div`
   justify-content: space-between;
@@ -1149,4 +1296,4 @@ const SwitchWrapper = styled.div`
   button {
     margin-right: 150px;
   }
-`;
+`

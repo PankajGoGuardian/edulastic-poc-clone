@@ -1,5 +1,5 @@
-import { textColor, white, themeColor } from "@edulastic/colors";
-import styled from "styled-components";
+import { textColor, white, themeColor } from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const Container = styled.div`
   background: ${({ selected }) => (selected ? themeColor : white)};
@@ -14,8 +14,8 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   color: ${({ selected }) => (selected ? white : textColor)};
-`;
+`
 
 export const Text = styled.div`
   margin-top: 10px;
-`;
+`

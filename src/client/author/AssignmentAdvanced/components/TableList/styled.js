@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Table, Button } from "antd";
-import { testActivity } from "@edulastic/constants";
+import styled from 'styled-components'
+import { Table, Button } from 'antd'
+import { testActivity } from '@edulastic/constants'
 import {
   white,
   cardTitleColor,
@@ -9,10 +9,10 @@ import {
   tabletWidth,
   testTypeColor,
   lightGrey4,
-  themeColorBlue
-} from "@edulastic/colors";
+  themeColorBlue,
+} from '@edulastic/colors'
 
-const { assignmentStatusBg } = authorAssignment;
+const { assignmentStatusBg } = authorAssignment
 const {
   authorAssignmentConstants: {
     assignmentStatus: {
@@ -28,38 +28,38 @@ const {
       DONE,
       SUBMITTED,
       SUBMITTED_PAUSED,
-      NOT_STARTED
-    }
-  }
-} = testActivity;
+      NOT_STARTED,
+    },
+  },
+} = testActivity
 
-const defineStatusBg = status => {
+const defineStatusBg = (status) => {
   switch (status) {
     case NOT_OPEN:
-      return assignmentStatusBg.NOT_OPEN;
+      return assignmentStatusBg.NOT_OPEN
     case IN_PROGRESS:
     case IN_PROGRESS_PAUSED:
-      return assignmentStatusBg.IN_PROGRESS;
+      return assignmentStatusBg.IN_PROGRESS
     case IN_GRADING:
     case IN_GRADING_PAUSED:
-      return assignmentStatusBg.IN_GRADING;
+      return assignmentStatusBg.IN_GRADING
     case NOT_GRADED:
     case NOT_GRADED_PAUSED:
-      return assignmentStatusBg.NOT_GRADED;
+      return assignmentStatusBg.NOT_GRADED
     case GRADES_HELD:
     case GRADES_HELD_PAUSED:
-      return assignmentStatusBg.GRADES_HELD;
+      return assignmentStatusBg.GRADES_HELD
     case SUBMITTED:
     case SUBMITTED_PAUSED:
-      return assignmentStatusBg.SUBMITTED;
+      return assignmentStatusBg.SUBMITTED
     case NOT_STARTED:
-      return assignmentStatusBg.NOT_STARTED;
+      return assignmentStatusBg.NOT_STARTED
     case DONE:
-      return assignmentStatusBg.DONE;
+      return assignmentStatusBg.DONE
     default:
-      return "";
+      return ''
   }
-};
+}
 
 export const Container = styled.div`
   padding: 30;
@@ -67,7 +67,7 @@ export const Container = styled.div`
   right: 0;
   height: 100%;
   width: 100%;
-`;
+`
 
 export const TableData = styled(Table)`
   color: ${secondaryTextColor};
@@ -117,15 +117,19 @@ export const TableData = styled(Table)`
       padding-right: 0px;
     }
   }
-`;
+`
 
 export const TypeIcon = styled.span`
   display: inline-block;
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props =>
-    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
+  background: ${(props) =>
+    props.type === 'p'
+      ? testTypeColor.practice
+      : props.type === 'c'
+      ? testTypeColor.common
+      : testTypeColor.assessment};
   text-align: center;
   color: ${white};
   border-radius: 50%;
@@ -134,7 +138,7 @@ export const TypeIcon = styled.span`
   line-height: 17px;
   padding-left: 1px;
   text-transform: uppercase;
-`;
+`
 
 export const BtnStatus = styled(Button)`
   color: ${white};
@@ -145,8 +149,8 @@ export const BtnStatus = styled(Button)`
   height: 26px;
   text-align: center;
   border-radius: 4px;
-  background-color: ${props => defineStatusBg(props.status)};
-`;
+  background-color: ${(props) => defineStatusBg(props.status)};
+`
 
 export const ActionsWrapper = styled.div`
   display: flex;
@@ -163,12 +167,12 @@ export const ActionsWrapper = styled.div`
     width: 15px;
     height: 15px;
   }
-`;
+`
 
 export const GreyFont = styled.span`
   color: grey;
   font-size: 14px;
-`;
+`
 
 export const BulkActionsWrapper = styled.div`
   display: flex;
@@ -188,11 +192,11 @@ export const BulkActionsWrapper = styled.div`
       background: ${lightGrey4};
     }
   }
-`;
+`
 
 export const BulkActionsButtonContainer = styled.div`
   display: flex;
-`;
+`
 
 export const MoreOption = styled.div`
   padding: 0px 12px;
@@ -206,9 +210,9 @@ export const MoreOption = styled.div`
     color: ${white};
     background: ${themeColorBlue};
   }
-`;
+`
 
 export const AssessmentTypeWrapper = styled.div`
   display: flex;
   justify-content: center;
-`;
+`

@@ -1,835 +1,843 @@
-import ReportsPage from "./reportsPage";
-import MathEditor from "./mathEditor";
-import { attemptTypes, questionTypeKey as questionType, queColor, CALCULATOR } from "../constants/questionTypes";
-import AssignmentsPage from "./assignmentsPage";
-import { studentSide } from "../constants/assignmentStatus";
-import CypressHelper from "../util/cypressHelpers";
+import ReportsPage from './reportsPage'
+import MathEditor from './mathEditor'
+import {
+  attemptTypes,
+  questionTypeKey as questionType,
+  queColor,
+  CALCULATOR,
+} from '../constants/questionTypes'
+import AssignmentsPage from './assignmentsPage'
+import { studentSide } from '../constants/assignmentStatus'
+import CypressHelper from '../util/cypressHelpers'
 
 class StudentTestPage {
   constructor() {
-    this.mathEditor = new MathEditor();
-    this.assignmentPage = new AssignmentsPage();
-    this.attemptType = { RIGHT: "right", WRONG: "wrong" };
-    this.report = new ReportsPage();
+    this.mathEditor = new MathEditor()
+    this.assignmentPage = new AssignmentsPage()
+    this.attemptType = { RIGHT: 'right', WRONG: 'wrong' }
+    this.report = new ReportsPage()
   }
 
   // *** ELEMENTS START ***
 
   getQuestionText = () =>
-    cy
-      .get('[class^="QuestionNumberLabel"]')
-      .parent()
-      .next();
+    cy.get('[class^="QuestionNumberLabel"]').parent().next()
 
-  getCheckAns = () => cy.get("[data-cy=checkAnswer]");
+  getCheckAns = () => cy.get('[data-cy=checkAnswer]')
 
-  getEvaluationMessage = () => cy.get(".ant-message-custom-content");
+  getEvaluationMessage = () => cy.get('.ant-message-custom-content')
 
-  getNext = () => cy.get("[data-cy=next]");
+  getNext = () => cy.get('[data-cy=next]')
 
-  getPrevious = () => cy.get("[data-cy=prev]");
+  getPrevious = () => cy.get('[data-cy=prev]')
 
-  getQueDropDown = () => cy.get('[data-cy="options"]').should("be.visible");
+  getQueDropDown = () => cy.get('[data-cy="options"]').should('be.visible')
 
-  getQuestionDropDownList = () => cy.get('[data-cy="questionSelectOptions"]');
+  getQuestionDropDownList = () => cy.get('[data-cy="questionSelectOptions"]')
 
-  getHint = () => cy.contains("hint").should("be.visible");
+  getHint = () => cy.contains('hint').should('be.visible')
 
-  getBookmark = () => cy.contains("bookmark").should("be.visible");
+  getBookmark = () => cy.contains('bookmark').should('be.visible')
 
-  getAllChoices = () => cy.get('[class^="MultiChoiceContent"]');
+  getAllChoices = () => cy.get('[class^="MultiChoiceContent"]')
 
-  getLabels = qcard => qcard.find("label");
+  getLabels = (qcard) => qcard.find('label')
 
-  clickOnAll = () => cy.get('[ data-cy="all"]').click();
+  clickOnAll = () => cy.get('[ data-cy="all"]').click()
 
-  clickOnBookmarked = () => cy.get('[ data-cy="bookmarked"]').click();
+  clickOnBookmarked = () => cy.get('[ data-cy="bookmarked"]').click()
 
-  clickOnSkipped = () => cy.get('[ data-cy="skipped"]').click();
+  clickOnSkipped = () => cy.get('[ data-cy="skipped"]').click()
 
   // @questionNumber = "Q1" ; "Q2"
-  clickOnReviewQuestion = questionNumber => {
-    cy.server();
-    cy.route("GET", "**/test/**").as("gettest");
-    cy.get(`[data-cy="${questionNumber}"]`).click();
-    cy.wait("@gettest");
-  };
+  clickOnReviewQuestion = (questionNumber) => {
+    cy.server()
+    cy.route('GET', '**/test/**').as('gettest')
+    cy.get(`[data-cy="${questionNumber}"]`).click()
+    cy.wait('@gettest')
+  }
 
-  getScientificCalc = () => cy.get('[data-cy="SCIENTIFIC"]');
+  getScientificCalc = () => cy.get('[data-cy="SCIENTIFIC"]')
 
-  getBasicCalc = () => cy.get('[data-cy="BASIC"]');
+  getBasicCalc = () => cy.get('[data-cy="BASIC"]')
 
-  getGraphCalc = () => cy.get('[data-cy="GRAPHING"]');
+  getGraphCalc = () => cy.get('[data-cy="GRAPHING"]')
 
-  getAchievedScore = () => cy.get('[data-cy="score"]');
+  getAchievedScore = () => cy.get('[data-cy="score"]')
 
-  getMaxScore = () => cy.get('[data-cy="maxscore"]');
+  getMaxScore = () => cy.get('[data-cy="maxscore"]')
 
-  getAnswerBox = () => cy.get(".responses_box");
+  getAnswerBox = () => cy.get('.responses_box')
 
-  getQuestionBox = () => cy.get(".template_box ");
+  getQuestionBox = () => cy.get('.template_box ')
 
-  getQuestionBoxByIndex = index => cy.get(`#response-container-${index}`);
+  getQuestionBoxByIndex = (index) => cy.get(`#response-container-${index}`)
 
-  getCalculatorButton = () => cy.get('[data-cy="calculator"]');
+  getCalculatorButton = () => cy.get('[data-cy="calculator"]')
 
-  getImageQuestionBox = () => cy.get(".imagedragdrop_template_box ");
+  getImageQuestionBox = () => cy.get('.imagedragdrop_template_box ')
 
-  getLabelImageQuestionByIndex = index => cy.get(`#answerboard-dragdropbox-${index}`);
+  getLabelImageQuestionByIndex = (index) =>
+    cy.get(`#answerboard-dragdropbox-${index}`)
 
-  getHighlightToken = answer => cy.get('[data-cy="previewWrapper"]').contains("span", answer);
+  getHighlightToken = (answer) =>
+    cy.get('[data-cy="previewWrapper"]').contains('span', answer)
 
-  getRenderedDropDownLabels = () => cy.get("body").find(".ant-select-selection__rendered");
+  getRenderedDropDownLabels = () =>
+    cy.get('body').find('.ant-select-selection__rendered')
 
-  getInputsLabelText = () => cy.get(".template_box").find("input");
+  getInputsLabelText = () => cy.get('.template_box').find('input')
 
-  getCountDown = () => cy.get('[class^="TimedTestTimer"]').find("label");
+  getCountDown = () => cy.get('[class^="TimedTestTimer"]').find('label')
 
-  getOkOnTimeoutPopUp = () => cy.get('[class^="AssignmentTimeEndedAlert"]').find("button");
+  getOkOnTimeoutPopUp = () =>
+    cy.get('[class^="AssignmentTimeEndedAlert"]').find('button')
 
-  getExitButton = () => cy.get("[data-cy=finishTest]");
+  getExitButton = () => cy.get('[data-cy=finishTest]')
 
-  getAllClozeTextInput = () => cy.get('[class^="ClozeTextInput"]');
+  getAllClozeTextInput = () => cy.get('[class^="ClozeTextInput"]')
 
-  getClozeTextInputByIndex = index => this.getAllClozeTextInput().eq(index);
+  getClozeTextInputByIndex = (index) => this.getAllClozeTextInput().eq(index)
 
-  getAllQuestionInDropDown = () => cy.get('[data-cy="question-in-dropdown"]');
+  getAllQuestionInDropDown = () => cy.get('[data-cy="question-in-dropdown"]')
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickOnSkipOnPopUp = () => cy.get('[data-cy="proceed-skip"]').click({ force: true });
+  clickOnSkipOnPopUp = () =>
+    cy.get('[data-cy="proceed-skip"]').click({ force: true })
 
   clickOnCheckAns = (isExhausted = false) => {
-    cy.server();
-    cy.route("POST", "**/evaluation").as("evaluation");
+    cy.server()
+    cy.route('POST', '**/evaluation').as('evaluation')
 
-    this.getCheckAns().click();
+    this.getCheckAns().click()
 
-    if (isExhausted) CypressHelper.verifyAntMesssage(" Check answer limit exceeded for the item.");
+    if (isExhausted)
+      CypressHelper.verifyAntMesssage(
+        ' Check answer limit exceeded for the item.'
+      )
     else
-      cy.wait("@evaluation").then(xhr =>
+      cy.wait('@evaluation').then((xhr) =>
         expect(
           xhr.status,
-          `verify evaluation request - ${xhr.status === 200 || JSON.stringify(xhr.responseBody)}`
+          `verify evaluation request - ${
+            xhr.status === 200 || JSON.stringify(xhr.responseBody)
+          }`
         ).to.eq(200)
-      );
-  };
+      )
+  }
 
   clickOnNext = (onlyPreview = false, isSkipped = false) => {
-    cy.server();
-    cy.route("POST", "**/test-activity/**").as("saved");
-    cy.wait(300);
-    this.getNext()
-      .should("be.visible")
-      .click();
+    cy.server()
+    cy.route('POST', '**/test-activity/**').as('saved')
+    cy.wait(300)
+    this.getNext().should('be.visible').click()
     /*  if (isSkipped) {
       this.clickOnSkipOnPopUp();
     } */
-    if (!onlyPreview) return cy.wait("@saved");
-  };
+    if (!onlyPreview) return cy.wait('@saved')
+  }
 
   clickOnPrevious() {
-    this.getPrevious()
-      .should("be.visible")
-      .click();
+    this.getPrevious().should('be.visible').click()
   }
 
   //  click on finish test
   clickOnExitTest = (onlyPreview = false) => {
     cy.url().then(() => {
       if (Cypress.$('[data-cy="finishTest"]').length === 1) {
-        this.getExitButton()
-          .should("be.visible")
-          .click();
+        this.getExitButton().should('be.visible').click()
         if (!onlyPreview) {
-          cy.server();
-          cy.route("POST", "**/test-activity/*/test-item/*").as("exit-test");
-          this.clickOnProceed();
-          cy.wait("@exit-test");
+          cy.server()
+          cy.route('POST', '**/test-activity/*/test-item/*').as('exit-test')
+          this.clickOnProceed()
+          cy.wait('@exit-test')
         }
       }
-    });
-  };
+    })
+  }
 
-  clickOnCancel = () =>
-    cy
-      .get("[data-cy=cancel]")
-      .should("be.visible")
-      .click();
+  clickOnCancel = () => cy.get('[data-cy=cancel]').should('be.visible').click()
 
-  clickOnProceed = () => cy.get("[data-cy=proceed]").click({ force: true });
+  clickOnProceed = () => cy.get('[data-cy=proceed]').click({ force: true })
 
   clickSubmitButton = () => {
-    cy.server();
+    cy.server()
     // cy.route("GET", "**/test-activity/*").as("saved");
-    cy.route("PUT", "**/test-activity/**").as("testactivity");
-    cy.contains("SUBMIT")
-      .as("submit")
-      .should("be.visible")
-      .click();
+    cy.route('PUT', '**/test-activity/**').as('testactivity')
+    cy.contains('SUBMIT').as('submit').should('be.visible').click()
 
     /* cy.get("[data-cy=submit]")
       .should("be.visible")
       .click(); */
 
-    cy.wait("@testactivity");
-  };
+    cy.wait('@testactivity')
+  }
 
   submitTest = () => {
-    this.clickSubmitButton();
-    cy.get('[data-cy="Grades"]');
-    cy.url().then(url => {
-      if (!url.includes("/home/grades"))
+    this.clickSubmitButton()
+    cy.get('[data-cy="Grades"]')
+    cy.url().then((url) => {
+      if (!url.includes('/home/grades'))
         cy.get('[data-cy="Grades"]')
           .click({ force: true })
-          .click({ force: true });
-    });
-    return cy.url().should("include", "/home/grades");
-  };
+          .click({ force: true })
+    })
+    return cy.url().should('include', '/home/grades')
+  }
 
   clickOnMenuCheckAns = () => {
-    cy.get("[data-cy=setting]")
-      .should("be.visible")
-      .click();
-    cy.contains("Check Answer")
-      .should("be.visible")
-      .click();
-    return this;
-  };
+    cy.get('[data-cy=setting]').should('be.visible').click()
+    cy.contains('Check Answer').should('be.visible').click()
+    return this
+  }
 
-  clickOnChoice = ch =>
-    cy
-      .contains("label", ch)
-      .should("be.visible")
-      .click();
+  clickOnChoice = (ch) => cy.contains('label', ch).should('be.visible').click()
 
-  clickOnCalcuator = () => this.getCalculatorButton().click();
+  clickOnCalcuator = () => this.getCalculatorButton().click()
 
   clickOkOnTimeOutPopUp = () => {
-    cy.server();
-    cy.route("GET", "**/test-activity/*").as("load-reports");
-    this.getOkOnTimeoutPopUp().click();
-    cy.wait("@load-reports");
-    return cy.url().should("include", "/home/grades");
-  };
+    cy.server()
+    cy.route('GET', '**/test-activity/*').as('load-reports')
+    this.getOkOnTimeoutPopUp().click()
+    cy.wait('@load-reports')
+    return cy.url().should('include', '/home/grades')
+  }
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
   checkAnsValidateAsWrong = (maxPoints = 1) => {
-    this.clickOnCheckAns();
+    this.clickOnCheckAns()
     // CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
-    CypressHelper.verifyAntMesssage(`Incorrect`);
-  };
+    CypressHelper.verifyAntMesssage(`Incorrect`)
+  }
 
   checkAnsValidateAsRight = (maxPoints = 1) => {
-    this.clickOnCheckAns();
+    this.clickOnCheckAns()
     // CypressHelper.verifyAntMesssage(`score: ${maxPoints}/${maxPoints}`);
-    CypressHelper.verifyAntMesssage(`Correct`);
-  };
+    CypressHelper.verifyAntMesssage(`Correct`)
+  }
 
   checkAnsValidateAsNoPoint = (maxPoints = 1) => {
-    this.getCheckAns().click();
+    this.getCheckAns().click()
     // CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
-    CypressHelper.verifyAntMesssage(`Attempt the question to check answer`);
-    return this;
-  };
+    CypressHelper.verifyAntMesssage(`Attempt the question to check answer`)
+    return this
+  }
 
   // MCQ
-  checkHighLightByAnswer = answer => {
+  checkHighLightByAnswer = (answer) => {
     cy.contains(answer)
-      .should("be.visible")
+      .should('be.visible')
       .click()
-      .then($el => {
-        cy.wrap($el)
-          .closest("label")
-          .find("input")
-          .should("be.checked");
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).closest('label').find('input').should('be.checked')
+      })
+    return this
+  }
 
-  checkHighLightUncheckedByAnswer = answer => {
+  checkHighLightUncheckedByAnswer = (answer) => {
     cy.contains(answer)
-      .should("be.visible")
+      .should('be.visible')
       .click()
-      .then($el => {
-        cy.wrap($el)
-          .closest("label")
-          .find("input")
-          .should("not.checked");
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).closest('label').find('input').should('not.checked')
+      })
+    return this
+  }
 
   verifyLabelChecked = (quecard, choice) =>
     this.getLabels(quecard)
       .contains(choice)
-      .closest("label")
-      .find("input")
-      .should("be.checked");
+      .closest('label')
+      .find('input')
+      .should('be.checked')
 
   // CHOICE MATRIX
   checkAnsMatrix = (answer, steams) => {
     cy.get('[data-cy="matrixTable"]')
       .children()
-      .find("tr.ant-table-row")
-      .then($rows => {
-        Object.keys(answer).forEach(chKey => {
+      .find('tr.ant-table-row')
+      .then(($rows) => {
+        Object.keys(answer).forEach((chKey) => {
           cy.wrap($rows)
             .contains(chKey)
-            .closest("tr")
-            .then(ele => {
+            .closest('tr')
+            .then((ele) => {
               cy.wrap(ele)
-                .find("input")
+                .find('input')
                 .eq(steams.indexOf(answer[chKey]))
-                .click({ force: true });
-            });
-        });
-      });
-  };
+                .click({ force: true })
+            })
+        })
+      })
+  }
 
   verifyAnseredMatrix = (card, attempt, steams) => {
     card
       .find('[data-cy="matrixTable"]')
       .eq(0)
       .children()
-      .find("tr.ant-table-row")
-      .then(ele => {
-        Object.keys(attempt).forEach(chKey => {
+      .find('tr.ant-table-row')
+      .then((ele) => {
+        Object.keys(attempt).forEach((chKey) => {
           cy.wrap(ele)
             .contains(chKey)
-            .closest("tr")
-            .then(row => {
+            .closest('tr')
+            .then((row) => {
               cy.wrap(row)
-                .find("input")
+                .find('input')
                 .eq(steams.indexOf(attempt[chKey]))
-                .should("be.checked");
-            });
-        });
-      });
-  };
+                .should('be.checked')
+            })
+        })
+      })
+  }
 
   // TODO : remove below redundent methods if not is use
-  clickFirstRadioByTitle = title =>
+  clickFirstRadioByTitle = (title) =>
     cy
-      .contains("p", title)
-      .closest("td")
+      .contains('p', title)
+      .closest('td')
       .next()
-      .find(">div")
-      .find("input")
+      .find('>div')
+      .find('input')
       .click()
       .parent()
-      .should("have.class", "ant-radio-checked");
+      .should('have.class', 'ant-radio-checked')
 
-  clickSecondRadioByTitle = title =>
+  clickSecondRadioByTitle = (title) =>
     cy
-      .contains("p", title)
-      .closest("td")
+      .contains('p', title)
+      .closest('td')
       .next()
       .next()
-      .find(">div")
-      .find("input")
+      .find('>div')
+      .find('input')
       .click()
       .parent()
-      .should("have.class", "ant-radio-checked");
+      .should('have.class', 'ant-radio-checked')
 
-  shouldCheckedFirstRadio = title =>
+  shouldCheckedFirstRadio = (title) =>
     cy
-      .contains("p", title)
-      .closest("td")
+      .contains('p', title)
+      .closest('td')
       .next()
-      .find(">div")
-      .find("input")
+      .find('>div')
+      .find('input')
       .click()
       .parent()
-      .should("have.class", "ant-radio-checked");
+      .should('have.class', 'ant-radio-checked')
 
-  shouldCheckedSecondRadio = title =>
+  shouldCheckedSecondRadio = (title) =>
     cy
-      .contains("p", title)
-      .closest("td")
+      .contains('p', title)
+      .closest('td')
       .next()
       .next()
-      .find(">div")
-      .find("input")
+      .find('>div')
+      .find('input')
       .click()
       .parent()
-      .should("have.class", "ant-radio-checked");
+      .should('have.class', 'ant-radio-checked')
 
   // CLOZE DROP DOWN
   verifyAnswerClozeDropDown = (card, attempt, attemptType) => {
     card
-      .find(".jsx-parser")
+      .find('.jsx-parser')
       .find('[data-cy="drop_down_select"]')
       .each((box, i) => {
-        cy.wrap(box).as("responseBox");
+        cy.wrap(box).as('responseBox')
         if (attemptType !== attemptTypes.SKIP) {
-          cy.get("@responseBox").should("contain.text", attempt[i]);
+          cy.get('@responseBox').should('contain.text', attempt[i])
         }
-      });
-  };
+      })
+  }
 
   verifyAnswerClozeText = (card, attempt, attemptType) => {
     card.find('[class^="ClozeTextInput"]').each((box, i) => {
-      cy.wrap(box)
-        .find("input")
-        .as("responseBox");
+      cy.wrap(box).find('input').as('responseBox')
       if (attemptType !== attemptTypes.SKIP) {
-        cy.get("@responseBox").should("have.value", attempt[i]);
+        cy.get('@responseBox').should('have.value', attempt[i])
       }
-    });
-  };
+    })
+  }
 
   verifyEssayText = (card, attempt, attemptType) => {
-    if (attemptType != attemptTypes.SKIP) card.find(".fr-element").should("have.text", attempt);
-  };
+    if (attemptType != attemptTypes.SKIP)
+      card.find('.fr-element').should('have.text', attempt)
+  }
 
   // CLOZE DRAGDROP TODO: refact and make it generic
   dragAndDropByIndex = (answer, questionIndex) => {
     this.getAnswerBox()
-      .contains("div", answer)
+      .contains('div', answer)
       .customDragDrop(`#response-container-${questionIndex}`)
       .then(() => {
-        this.getQuestionBox().contains("div", answer);
-      });
-    return this;
-  };
+        this.getQuestionBox().contains('div', answer)
+      })
+    return this
+  }
 
   dragAndDropInsideQuestion = (answer, questionIndex) => {
     this.getQuestionBox()
-      .contains("div", answer)
+      .contains('div', answer)
       .customDragDrop(`#response-container-${questionIndex}`)
       .then(() => {
-        this.getQuestionBox().contains("div", answer);
-      });
-    return this;
-  };
+        this.getQuestionBox().contains('div', answer)
+      })
+    return this
+  }
 
   imageDragAndDropByIndex = (answer, questionIndex) => {
     this.getAnswerBox()
-      .contains("div", answer)
+      .contains('div', answer)
       .customDragDrop(`#answerboard-dragdropbox-${questionIndex}`)
       .then(() => {
-        this.getImageQuestionBox().contains("div", answer);
-      });
-    return this;
-  };
+        this.getImageQuestionBox().contains('div', answer)
+      })
+    return this
+  }
 
   imageDragAndDropInsideQuestion = (answer, questionIndex) => {
     this.getImageQuestionBox()
-      .contains("div", answer)
+      .contains('div', answer)
       .customDragDrop(`#answerboard-dragdropbox-${questionIndex}`)
       .then(() => {
-        this.getImageQuestionBox().contains("div", answer);
-      });
-    return this;
-  };
+        this.getImageQuestionBox().contains('div', answer)
+      })
+    return this
+  }
 
   browserBack = () => {
-    cy.wait(1000);
-    cy.go("back");
-    return this;
-  };
+    cy.wait(1000)
+    cy.go('back')
+    return this
+  }
 
   browserForward = () => {
-    cy.wait(1000);
-    cy.go("forward");
-    return this;
-  };
+    cy.wait(1000)
+    cy.go('forward')
+    return this
+  }
 
   clickQuestionDropdown = (question, index, total) => {
-    const key = Object.keys(question)[0];
-    this.getQueDropDown().click();
+    const key = Object.keys(question)[0]
+    this.getQueDropDown().click()
 
-    cy.contains(key)
-      .should("be.visible")
-      .click();
+    cy.contains(key).should('be.visible').click()
 
-    cy.contains(question[key]).should("be.visible");
+    cy.contains(question[key]).should('be.visible')
 
     if (index === 0) {
-      this.getPrevious().should("be.disabled");
+      this.getPrevious().should('be.disabled')
 
-      this.getNext().should("not.be.disabled");
+      this.getNext().should('not.be.disabled')
     }
     if (index > 0 && index < total - 1) {
-      this.getPrevious().should("not.be.disabled");
+      this.getPrevious().should('not.be.disabled')
 
-      this.getNext().should("not.be.disabled");
+      this.getNext().should('not.be.disabled')
     }
     if (index === total - 1) {
-      this.getPrevious().should("not.be.disabled");
+      this.getPrevious().should('not.be.disabled')
 
-      this.getNext().should("not.have.class", "ant-btn-icon-only");
+      this.getNext().should('not.have.class', 'ant-btn-icon-only')
     }
-    return this;
-  };
+    return this
+  }
 
-  firstPageRefreshWithNavButton = title => {
-    this.clickOnNext();
-    cy.wait(1000);
-    cy.reload();
-    this.clickOnPrevious();
-    cy.contains(title).should("be.visible");
-    return this;
-  };
+  firstPageRefreshWithNavButton = (title) => {
+    this.clickOnNext()
+    cy.wait(1000)
+    cy.reload()
+    this.clickOnPrevious()
+    cy.contains(title).should('be.visible')
+    return this
+  }
 
-  pageRefreshWithNavButton = title => {
-    this.clickOnPrevious();
-    cy.wait(1000);
-    cy.reload();
-    this.clickOnNext();
-    cy.contains(title).should("be.visible");
-    return this;
-  };
+  pageRefreshWithNavButton = (title) => {
+    this.clickOnPrevious()
+    cy.wait(1000)
+    cy.reload()
+    this.clickOnNext()
+    cy.contains(title).should('be.visible')
+    return this
+  }
 
   clickDropDownByIndex = (answer, index) => {
-    cy.get("div.template_box")
-      .find(".ant-select")
+    cy.get('div.template_box').find('.ant-select').eq(index).click()
+    cy.get('.ant-select-dropdown')
       .eq(index)
-      .click();
-    cy.get(".ant-select-dropdown")
-      .eq(index)
-      .should("have.css", "display", "block")
-      .contains("li", answer)
+      .should('have.css', 'display', 'block')
+      .contains('li', answer)
       .click()
       .then(() => {
-        cy.get(".template_box").contains("div", answer);
-      });
-    return this;
-  };
+        cy.get('.template_box').contains('div', answer)
+      })
+    return this
+  }
 
   // cloze with drop down
-  checkAnsDropdown = attemptdata => {
+  checkAnsDropdown = (attemptdata) => {
     attemptdata.forEach((val, index) => {
-      this.clickDropDownClozeByIndex(val, index);
-    });
-  };
+      this.clickDropDownClozeByIndex(val, index)
+    })
+  }
 
   clickDropDownClozeByIndex = (answer, index) => {
-    cy.get("[data-cy='drop_down_select']")
-      .eq(index)
-      .click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
+    cy.get("[data-cy='drop_down_select']").eq(index).click({ force: true })
+    cy.get('.ant-select-dropdown-menu-item')
       .contains(answer)
-      .click({ force: true });
-    cy.get("[data-cy='drop_down_select']")
-      .eq(index)
-      .should("contain", answer);
-  };
+      .click({ force: true })
+    cy.get("[data-cy='drop_down_select']").eq(index).should('contain', answer)
+  }
 
   // cloze with text
 
-  typeAnswersInClozeInput = attemptData =>
+  typeAnswersInClozeInput = (attemptData) =>
     attemptData.forEach((val, index) => {
-      this.getClozeTextInputByIndex(index).type(`{selectall}${val}`);
-    });
+      this.getClozeTextInputByIndex(index).type(`{selectall}${val}`)
+    })
 
   clickImageDropDownByIndex = (answer, index) => {
-    cy.get("div.imagelabeldragdrop-droppable")
+    cy.get('div.imagelabeldragdrop-droppable').eq(index).click()
+    cy.get('.ant-select-dropdown')
       .eq(index)
-      .click();
-    cy.get(".ant-select-dropdown")
-      .eq(index)
-      .should("have.css", "display", "block")
-      .contains("li", answer)
+      .should('have.css', 'display', 'block')
+      .contains('li', answer)
       .click()
       .then(() => {
-        cy.get(".imagedropdown_template_box").contains("div", answer);
-      });
-    return this;
-  };
+        cy.get('.imagedropdown_template_box').contains('div', answer)
+      })
+    return this
+  }
 
   typeTextToAnswerBoard = (answer, index) => {
     this.getQuestionBox()
-      .find("input")
+      .find('input')
       .eq(index)
-      .should("be.visible")
+      .should('be.visible')
       .click()
       .clear()
       .type(answer)
-      .should("have.value", answer);
-    return this;
-  };
+      .should('have.value', answer)
+    return this
+  }
 
   // Essay Type
 
-  typeEssayRichText = content => {
-    cy.server();
-    cy.route("POST", "**/test-activity/**").as("saved");
-    cy.get(".fr-element")
-      .should("be.visible")
+  typeEssayRichText = (content) => {
+    cy.server()
+    cy.route('POST', '**/test-activity/**').as('saved')
+    cy.get('.fr-element')
+      .should('be.visible')
       .first()
       .type(content)
-      .then(() => cy.get("body").click());
-    cy.wait("@saved", { timeout: 45000 }); // it will trigger at interval of 30000ms
-  };
+      .then(() => cy.get('body').click())
+    cy.wait('@saved', { timeout: 45000 }) // it will trigger at interval of 30000ms
+  }
 
   // Sort List
 
-  getSourceBoard = () => cy.contains("p", "Source").closest("div");
+  getSourceBoard = () => cy.contains('p', 'Source').closest('div')
 
-  getTartgetBoard = () => cy.contains("p", "Target").closest("div");
+  getTartgetBoard = () => cy.contains('p', 'Target').closest('div')
 
   clickRightMoveButton = () => {
-    cy.get(".anticon-caret-right").click();
-    return this;
-  };
+    cy.get('.anticon-caret-right').click()
+    return this
+  }
 
   clickLeftMoveButton = () => {
-    cy.get(".anticon-caret-left").click();
-    return this;
-  };
+    cy.get('.anticon-caret-left').click()
+    return this
+  }
 
   clickUpMoveButton = () => {
-    cy.get(".anticon-caret-up").click();
-    return this;
-  };
+    cy.get('.anticon-caret-up').click()
+    return this
+  }
 
   clickDownMoveButton = () => {
-    cy.get(".anticon-caret-down").click();
-    return this;
-  };
+    cy.get('.anticon-caret-down').click()
+    return this
+  }
 
-  getSourceAnswerByIndex = index =>
+  getSourceAnswerByIndex = (index) =>
     this.getSourceBoard()
       .find(`#drag-drop-board-${index} > div`)
-      .should("be.visible");
+      .should('be.visible')
 
-  getTargetAnswerByIndex = index =>
+  getTargetAnswerByIndex = (index) =>
     this.getTartgetBoard()
       .find(`#drag-drop-board-${index}-target > div`)
-      .should("be.visible");
+      .should('be.visible')
 
   checkHighLightByIndex = (index, checkedColor, unCheckedColor) => {
     this.getSourceAnswerByIndex(index)
       .click()
-      .then($el => {
-        cy.wrap($el).should("have.css", "background-color", checkedColor);
+      .then(($el) => {
+        cy.wrap($el).should('have.css', 'background-color', checkedColor)
       })
       .click()
-      .then($el => {
-        cy.wrap($el).should("have.css", "background-color", unCheckedColor);
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).should('have.css', 'background-color', unCheckedColor)
+      })
+    return this
+  }
 
   dragAndDropSortListByOnTargetByIndex = (answer, sIndex, tIndex) => {
     this.getTargetAnswerByIndex(sIndex)
       .customDragDrop(`#drag-drop-board-${tIndex}-target`)
       .then(() => {
-        this.getTartgetBoard().contains("p", answer);
-      });
-    return this;
-  };
+        this.getTartgetBoard().contains('p', answer)
+      })
+    return this
+  }
 
   // Classification
 
-  getSourceBoardByIndex = index => cy.get(`[data-cy="drag-drop-item-${index}"]`);
+  getSourceBoardByIndex = (index) =>
+    cy.get(`[data-cy="drag-drop-item-${index}"]`)
 
-  getTargetBoardByIndex = index => cy.get(`#drag-drop-board-${index}`);
+  getTargetBoardByIndex = (index) => cy.get(`#drag-drop-board-${index}`)
 
   dragAndDropClassifcationFromSourceToTarget = (answer, sIndex, tIndex) => {
     this.getSourceBoardByIndex(sIndex)
       .customDragDrop(`div#drag-drop-board-${tIndex}`)
       .then(() => {
-        this.getTargetBoardByIndex(tIndex).contains("p", answer);
-      });
-    return this;
-  };
+        this.getTargetBoardByIndex(tIndex).contains('p', answer)
+      })
+    return this
+  }
 
   dragAndDropClassifcationInsideTarget = (answer, sIndex, tIndex) => {
     this.getTargetBoardByIndex(sIndex)
       .customDragDrop(`div#drag-drop-board-${tIndex}`)
       .then(() => {
-        this.getTargetBoardByIndex(tIndex).contains("p", answer);
-      });
+        this.getTargetBoardByIndex(tIndex).contains('p', answer)
+      })
 
-    return this;
-  };
+    return this
+  }
 
   dragAndDropMatchListFromSourceToTarget = (answer, tIndex) => {
-    cy.contains("h3", "Drag & Drop the answer")
+    cy.contains('h3', 'Drag & Drop the answer')
       .next()
-      .contains("p", answer)
+      .contains('p', answer)
       .parent()
       .parent()
       .customDragDrop(`div#drag-drop-board-${tIndex}`)
       .then(() => {
-        this.getTargetBoardByIndex(tIndex).contains("p", answer);
-      });
-    return this;
-  };
+        this.getTargetBoardByIndex(tIndex).contains('p', answer)
+      })
+    return this
+  }
 
-  getMatchListTargetByIndex = index => cy.get(`#drag-drop-board-${index}> div`).should("be.visible");
+  getMatchListTargetByIndex = (index) =>
+    cy.get(`#drag-drop-board-${index}> div`).should('be.visible')
 
   // Order List
 
-  getSortListByIndex = index => cy.get(`#order-list-${index}`);
+  getSortListByIndex = (index) => cy.get(`#order-list-${index}`)
 
   dragAndDropSortList = (answer, sIndex, tIndex) => {
     this.getSortListByIndex(sIndex)
       .customDragDrop(`#order-list-${tIndex}`)
       .then(() => {
-        this.getSortListByIndex(tIndex).contains("p", answer);
-      });
-    return this;
-  };
+        this.getSortListByIndex(tIndex).contains('p', answer)
+      })
+    return this
+  }
 
   // Highlight
 
-  getShadeItemByIndex = index =>
-    cy
-      .get('[data-cy="shadesViewItem"]')
-      .should("be.visible")
-      .eq(index);
+  getShadeItemByIndex = (index) =>
+    cy.get('[data-cy="shadesViewItem"]').should('be.visible').eq(index)
 
-  checkSelectedShadeItemByIndex = index => {
+  checkSelectedShadeItemByIndex = (index) => {
     this.getShadeItemByIndex(index)
       .click()
-      .then($el => {
-        cy.wrap($el).should("have.css", "background-color", "rgba(0, 176, 255, 0.8)");
-      });
-  };
+      .then(($el) => {
+        cy.wrap($el).should(
+          'have.css',
+          'background-color',
+          'rgba(0, 176, 255, 0.8)'
+        )
+      })
+  }
 
-  checkUnSelectedShadeItemByIndex = index => {
+  checkUnSelectedShadeItemByIndex = (index) => {
     this.getShadeItemByIndex(index)
       .click()
-      .then($el => {
-        cy.wrap($el).should("have.css", "background-color", "rgba(0, 176, 255, 0.19)");
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).should(
+          'have.css',
+          'background-color',
+          'rgba(0, 176, 255, 0.19)'
+        )
+      })
+    return this
+  }
 
-  getHotspotPolygonByIndex = index =>
-    cy
-      .get('[data-cy="answer-container"]')
-      .find("polygon")
-      .eq(index);
+  getHotspotPolygonByIndex = (index) =>
+    cy.get('[data-cy="answer-container"]').find('polygon').eq(index)
 
-  checkSelectedPolygonByIndex = index => {
+  checkSelectedPolygonByIndex = (index) => {
     this.getHotspotPolygonByIndex(index)
       .click()
-      .then($el => {
-        cy.wrap($el).should("have.css", "stroke", "rgb(0, 123, 179)");
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).should('have.css', 'stroke', 'rgb(0, 123, 179)')
+      })
+    return this
+  }
 
-  checkUnselectedPolygonByIndex = index => {
+  checkUnselectedPolygonByIndex = (index) => {
     this.getHotspotPolygonByIndex(index)
       .click()
-      .then($el => {
-        cy.wrap($el).should("have.css", "stroke", "rgba(0, 176, 255, 1)");
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).should('have.css', 'stroke', 'rgba(0, 176, 255, 1)')
+      })
+    return this
+  }
 
-  checkSelectedToken = answer => {
+  checkSelectedToken = (answer) => {
     this.getHighlightToken(answer)
       .click()
-      .then($el => {
-        cy.wrap($el).should("have.class", "active-word");
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).should('have.class', 'active-word')
+      })
+    return this
+  }
 
-  checkUnselectedToken = answer => {
+  checkUnselectedToken = (answer) => {
     this.getHighlightToken(answer)
       .click()
-      .then($el => {
-        cy.wrap($el).should("not.have.class", "active-word");
-      });
-    return this;
-  };
+      .then(($el) => {
+        cy.wrap($el).should('not.have.class', 'active-word')
+      })
+    return this
+  }
 
   // MATH : TODO: revist and make these generic
-  typeFormula = answer => this.mathEditor.typeFormula(answer);
+  typeFormula = (answer) => this.mathEditor.typeFormula(answer)
 
-  verifyTypedFormulaLength = len => this.mathEditor.checkTypedFormulaCount(len);
+  verifyTypedFormulaLength = (len) =>
+    this.mathEditor.checkTypedFormulaCount(len)
 
-  typeFormulaWithKeyboard = answer => this.mathEditor.typeFormulaWithVirtualKeyboard(answer);
+  typeFormulaWithKeyboard = (answer) =>
+    this.mathEditor.typeFormulaWithVirtualKeyboard(answer)
 
-  checkSavedFormulaAnswer = answer => this.mathEditor.checkTypedFormulaCount(answer.length);
+  checkSavedFormulaAnswer = (answer) =>
+    this.mathEditor.checkTypedFormulaCount(answer.length)
 
-  typeFractionNumerator = answer => this.mathEditor.typeFractionNumerator(answer);
+  typeFractionNumerator = (answer) =>
+    this.mathEditor.typeFractionNumerator(answer)
 
-  typeFractionNumeratorWithKeyboard = answer => this.mathEditor.typeFractionNumeratorWithVirtualKeyboard(answer);
+  typeFractionNumeratorWithKeyboard = (answer) =>
+    this.mathEditor.typeFractionNumeratorWithVirtualKeyboard(answer)
 
-  checkSavedFractionNumerator = answer => this.mathEditor.checkTypedFractionNumeratorCount(answer.length);
+  checkSavedFractionNumerator = (answer) =>
+    this.mathEditor.checkTypedFractionNumeratorCount(answer.length)
 
-  typeFractionDenominator = answer => this.mathEditor.typeFractionDenominator(answer);
+  typeFractionDenominator = (answer) =>
+    this.mathEditor.typeFractionDenominator(answer)
 
-  typeFractionDenominatorWithKeyboard = answer => this.mathEditor.typeFractionDenominatorWithVirtualKeyboard(answer);
+  typeFractionDenominatorWithKeyboard = (answer) =>
+    this.mathEditor.typeFractionDenominatorWithVirtualKeyboard(answer)
 
-  checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
+  checkSavedFractionDenominator = (answer) =>
+    this.mathEditor.checkTypedFractionDenominatorCount(answer.length)
 
-  getQuestionInPracticeByIndex = qIndex => cy.get(`[data-cy="queCircle-${qIndex + 1}"]`);
+  getQuestionInPracticeByIndex = (qIndex) =>
+    cy.get(`[data-cy="queCircle-${qIndex + 1}"]`)
 
-  getActiveItemCircle = () => cy.get('[data-test="true"]');
+  getActiveItemCircle = () => cy.get('[data-test="true"]')
 
   selectQuestioninPracticePlayerByIndex = (index, isSkipped = false) => {
-    cy.server();
-    cy.route("POST", "**/test-activity/**").as("saved");
-    this.getQuestionInPracticeByIndex(index).then($ele => {
-      if ($ele.css("background-color") !== queColor.GREEN_2) {
-        this.getActiveItemCircle().then($item => {
-          const currentQue = parseInt($item.attr("data-cy").split("-")[1]);
-          const queToNavigate = index + 1;
-          cy.wrap($ele).click({ force: true });
+    cy.server()
+    cy.route('POST', '**/test-activity/**').as('saved')
+    this.getQuestionInPracticeByIndex(index).then(($ele) => {
+      if ($ele.css('background-color') !== queColor.GREEN_2) {
+        this.getActiveItemCircle().then(($item) => {
+          const currentQue = parseInt($item.attr('data-cy').split('-')[1])
+          const queToNavigate = index + 1
+          cy.wrap($ele).click({ force: true })
           // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
-          cy.wait("@saved");
-        });
+          cy.wait('@saved')
+        })
       }
-    });
-  };
+    })
+  }
 
-  verifySideBar = qIndex => {
-    this.getQuestionInPracticeByIndex(qIndex).should("have.css", "background-color", queColor.GREEN_2);
-  };
+  verifySideBar = (qIndex) => {
+    this.getQuestionInPracticeByIndex(qIndex).should(
+      'have.css',
+      'background-color',
+      queColor.GREEN_2
+    )
+  }
 
   verifyTopProgress = (qIndex, total) => {
-    cy.get('[data-cy="progressItem"]').should("contain.text", `${qIndex + 1} / ${total} Completed`);
-  };
+    cy.get('[data-cy="progressItem"]').should(
+      'contain.text',
+      `${qIndex + 1} / ${total} Completed`
+    )
+  }
 
   verifyQuestionLeft = (qIndex, total) => {
-    cy.get('[data-cy="questionLeftToAttempt"]').should("contain.text", `${total - qIndex} Left`);
-  };
+    cy.get('[data-cy="questionLeftToAttempt"]').should(
+      'contain.text',
+      `${total - qIndex} Left`
+    )
+  }
 
-  attemptAssignment = (email, status, attempt, questionTypeMap, password, aType = "CLASS_ASSESSMENT") => {
+  attemptAssignment = (
+    email,
+    status,
+    attempt,
+    questionTypeMap,
+    password,
+    aType = 'CLASS_ASSESSMENT'
+  ) => {
     if (status !== studentSide.NOT_STARTED) {
-      cy.login("student", email, password);
-      this.assignmentPage.clickOnAssignmentButton();
+      cy.login('student', email, password)
+      this.assignmentPage.clickOnAssignmentButton()
       Object.keys(attempt).forEach((queNum, index, att) => {
-        const [queType] = questionTypeMap[queNum].queKey.split(".");
-        const { attemptData } = questionTypeMap[queNum];
-        if (aType === "PRACTICE_ASSESSMENT") {
-          this.verifySideBar(index);
+        const [queType] = questionTypeMap[queNum].queKey.split('.')
+        const { attemptData } = questionTypeMap[queNum]
+        if (aType === 'PRACTICE_ASSESSMENT') {
+          this.verifySideBar(index)
           // this.verifyTopProgress(index, att.length);
-          this.verifyQuestionLeft(index, att.length);
+          this.verifyQuestionLeft(index, att.length)
         }
-        this.attemptQuestion(queType, attempt[queNum], attemptData);
-        if (status === studentSide.IN_PROGRESS && index + 1 === Object.keys(attempt).length) this.clickOnExitTest();
-        else this.clickOnNext(false, attempt[queNum] === attemptTypes.SKIP);
-      });
+        this.attemptQuestion(queType, attempt[queNum], attemptData)
+        if (
+          status === studentSide.IN_PROGRESS &&
+          index + 1 === Object.keys(attempt).length
+        )
+          this.clickOnExitTest()
+        else this.clickOnNext(false, attempt[queNum] === attemptTypes.SKIP)
+      })
 
       /*  if (status === studentSide.IN_PROGRESS) {
         cy.get("svg:nth-child(2)").click({ force: true }); // TODO: remove work around solution
         this.clickOnProceed();
       } */
       if (status === studentSide.SUBMITTED || status === studentSide.GRADED) {
-        this.submitTest();
-        cy.contains("Grades").should("be.visible");
+        this.submitTest()
+        cy.contains('Grades').should('be.visible')
       }
     }
-  };
+  }
 
   attemptQuestion = (attemptQueType, attemptType, attemptData) => {
-    cy.wait(300); // double rendering issue causes choices to suffle and breaks test, hence waiting
-    const { right, wrong, partialCorrect } = attemptData;
+    cy.wait(300) // double rendering issue causes choices to suffle and breaks test, hence waiting
+    const { right, wrong, partialCorrect } = attemptData
     const attempts =
       attemptType === attemptTypes.RIGHT
         ? right
@@ -837,146 +845,139 @@ class StudentTestPage {
         ? wrong
         : attemptType === attemptTypes.PARTIAL_CORRECT
         ? partialCorrect
-        : undefined;
+        : undefined
     if (attempts) {
       switch (attemptQueType) {
         case questionType.MULTIPLE_CHOICE_STANDARD:
         case questionType.TRUE_FALSE:
         case questionType.MULTIPLE_CHOICE_MULTIPLE:
         case questionType.MULTIPLE_CHOICE_BLOCK:
-          if (Cypress._.isArray(attempts)) attempts.forEach(choice => this.clickOnChoice(choice));
-          else this.clickOnChoice(attempts);
+          if (Cypress._.isArray(attempts))
+            attempts.forEach((choice) => this.clickOnChoice(choice))
+          else this.clickOnChoice(attempts)
 
-          break;
+          break
 
         case questionType.CHOICE_MATRIX_STANDARD:
         case questionType.CHOICE_MATRIX_INLINE:
         case questionType.CHOICE_MATRIX_LABEL: {
-          const { steams } = attemptData;
-          this.checkAnsMatrix(attempts, steams);
-          break;
+          const { steams } = attemptData
+          this.checkAnsMatrix(attempts, steams)
+          break
         }
         case questionType.CLOZE_DROP_DOWN:
-          this.checkAnsDropdown(attempts);
-          break;
+          this.checkAnsDropdown(attempts)
+          break
         case questionType.CLOZE_TEXT:
-          this.typeAnswersInClozeInput(attempts);
-          break;
+          this.typeAnswersInClozeInput(attempts)
+          break
 
         case questionType.ESSAY_RICH:
-          this.typeEssayRichText(attempts);
-          break;
+          this.typeEssayRichText(attempts)
+          break
 
         case questionType.MATH_NUMERIC:
-          this.typeFormula(attempts);
-          this.verifyTypedFormulaLength(attempts.length);
-          break;
+          this.typeFormula(attempts)
+          this.verifyTypedFormulaLength(attempts.length)
+          break
 
         default:
-          assert.fail(1, 2, "question type did not match while in attempt question method");
-          break;
+          assert.fail(
+            1,
+            2,
+            'question type did not match while in attempt question method'
+          )
+          break
       }
     }
-  };
+  }
 
-  verifyNoOfQuestions = NoOfQues => {
-    this.getQueDropDown()
-      .as("question-dropdown")
-      .click({ force: true });
-    this.getQuestionDropDownList().should("have.length", NoOfQues);
-    cy.get("@question-dropdown").click({ force: true });
-  };
+  verifyNoOfQuestions = (NoOfQues) => {
+    this.getQueDropDown().as('question-dropdown').click({ force: true })
+    this.getQuestionDropDownList().should('have.length', NoOfQues)
+    cy.get('@question-dropdown').click({ force: true })
+  }
 
   // getQuestionText = () => cy.get('[data-cy="styled-wrapped-component"]');
 
   verifyQuestionText = (index, text) => {
-    this.getQuestionByIndex(index);
-    this.getQuestionText().should("contain", text);
-  };
+    this.getQuestionByIndex(index)
+    this.getQuestionText().should('contain', text)
+  }
 
   getQuestionByIndex = (index, isSkipped = false) => {
-    cy.server();
-    cy.route("POST", "**/test-activity/**").as("saved");
+    cy.server()
+    cy.route('POST', '**/test-activity/**').as('saved')
     this.getQueDropDown()
-      .invoke("text")
-      .then(txt => {
-        const currentQue = parseInt(txt.match(/(\d+)/)[0]);
-        const queToNavigate = index + 1;
+      .invoke('text')
+      .then((txt) => {
+        const currentQue = parseInt(txt.match(/(\d+)/)[0])
+        const queToNavigate = index + 1
         if (!txt.includes(`Question ${queToNavigate}/`)) {
-          this.getQueDropDown().click({ force: true });
-          this.getQuestionDropDownList()
-            .eq(index)
-            .click({ force: true });
+          this.getQueDropDown().click({ force: true })
+          this.getQuestionDropDownList().eq(index).click({ force: true })
           // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
-          cy.wait("@saved");
+          cy.wait('@saved')
         }
-      });
+      })
 
-    return this.getQueDropDown().should("contain", `Question ${index + 1}/`);
-  };
+    return this.getQueDropDown().should('contain', `Question ${index + 1}/`)
+  }
 
   attemptQuestionsByQueType = (queType, attempt) => {
     /* This function will attempt question with correct
     answers by defualt */
     queType.forEach((type, index) => {
-      this.attemptQuestion(type, "right", attempt[index]);
-      this.clickOnNext();
-    });
-  };
+      this.attemptQuestion(type, 'right', attempt[index])
+      this.clickOnNext()
+    })
+  }
 
   // Feedback
 
-  verifyFeedback = feedback => cy.get('[data-cy="feedBack"]').should("contain.text", feedback);
+  verifyFeedback = (feedback) =>
+    cy.get('[data-cy="feedBack"]').should('contain.text', feedback)
 
   verifyScore = (score, maxScore) => {
-    this.getAchievedScore().should("have.text", `${score}`);
-    this.getMaxScore().should("have.text", `${maxScore}`);
-  };
+    this.getAchievedScore().should('have.text', `${score}`)
+    this.getMaxScore().should('have.text', `${maxScore}`)
+  }
 
-  verifyResponseEvaluation = attemptType =>
+  verifyResponseEvaluation = (attemptType) =>
     cy
       .get('[data-cy="answerType"]')
       .should(
-        "contain.text",
+        'contain.text',
         attemptType === attemptTypes.RIGHT
-          ? "Thats Correct"
+          ? 'Thats Correct'
           : attemptType === attemptTypes.PARTIAL_CORRECT
-          ? "Thats Partially Correct"
-          : "Thats Incorrect"
-      );
+          ? 'Thats Partially Correct'
+          : 'Thats Incorrect'
+      )
 
-  assertCalcType = type => {
+  assertCalcType = (type) => {
     switch (type) {
       case CALCULATOR.SCIENTIFIC:
-        this.getScientificCalc()
-          .should("exist")
-          .prev()
-          .click({ force: true });
-        break;
+        this.getScientificCalc().should('exist').prev().click({ force: true })
+        break
       case CALCULATOR.BASIC:
-        this.getBasicCalc()
-          .should("exist")
-          .prev()
-          .click({ force: true });
-        break;
+        this.getBasicCalc().should('exist').prev().click({ force: true })
+        break
       case CALCULATOR.GRAPH:
-        this.getGraphCalc()
-          .should("exist")
-          .prev()
-          .click({ force: true });
-        break;
+        this.getGraphCalc().should('exist').prev().click({ force: true })
+        break
       case CALCULATOR.NONE:
-        this.getCalculatorButton().should("not.exist");
-        break;
+        this.getCalculatorButton().should('not.exist')
+        break
       default:
-        assert.fail(1, 2, "calulator type did not match in student test page");
+        assert.fail(1, 2, 'calulator type did not match in student test page')
     }
-  };
+  }
 
   //
   verifyQuestionResponseRetained = (queTypeKey, attemptType, attemptData) => {
-    cy.get('[data-cy="question-container"]').as("quecard");
-    const { right, wrong, partialCorrect } = attemptData;
+    cy.get('[data-cy="question-container"]').as('quecard')
+    const { right, wrong, partialCorrect } = attemptData
     const attempt =
       attemptType === attemptTypes.RIGHT
         ? right
@@ -984,9 +985,9 @@ class StudentTestPage {
         ? wrong
         : attemptType === attemptTypes.PARTIAL_CORRECT
         ? partialCorrect
-        : undefined;
+        : undefined
 
-    const currentQuestionType = queTypeKey;
+    const currentQuestionType = queTypeKey
     switch (currentQuestionType) {
       case questionType.MULTIPLE_CHOICE_STANDARD:
       case questionType.MULTIPLE_CHOICE_MULTIPLE:
@@ -997,75 +998,90 @@ class StudentTestPage {
           case attemptTypes.WRONG:
           case attemptTypes.PARTIAL_CORRECT:
             if (Cypress._.isArray(attempt))
-              attempt.forEach(choice => this.verifyLabelChecked(cy.get("@quecard"), choice));
+              attempt.forEach((choice) =>
+                this.verifyLabelChecked(cy.get('@quecard'), choice)
+              )
             else {
-              this.verifyLabelChecked(cy.get("@quecard"), attempt);
+              this.verifyLabelChecked(cy.get('@quecard'), attempt)
             }
-            break;
+            break
 
           default:
-            break;
+            break
         }
-        break;
+        break
 
       case questionType.CHOICE_MATRIX_STANDARD:
       case questionType.CHOICE_MATRIX_INLINE:
       case questionType.CHOICE_MATRIX_LABEL: {
-        const { steams } = attemptData;
+        const { steams } = attemptData
         switch (attemptType) {
           case attemptTypes.RIGHT:
           case attemptTypes.WRONG:
           case attemptTypes.PARTIAL_CORRECT:
-            this.verifyAnseredMatrix(cy.get("@quecard"), right, steams, attemptType);
-            break;
+            this.verifyAnseredMatrix(
+              cy.get('@quecard'),
+              right,
+              steams,
+              attemptType
+            )
+            break
 
           default:
-            break;
+            break
         }
-        break;
+        break
       }
 
       case questionType.CLOZE_DROP_DOWN:
-        this.verifyAnswerClozeDropDown(cy.get("@quecard"), attempt, attemptType);
-        break;
+        this.verifyAnswerClozeDropDown(cy.get('@quecard'), attempt, attemptType)
+        break
 
       case questionType.CLOZE_TEXT:
-        this.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType);
-        break;
+        this.verifyAnswerClozeText(cy.get('@quecard'), attempt, attemptType)
+        break
 
       case questionType.ESSAY_RICH:
-        this.verifyEssayText(cy.get("@quecard"), attempt, attemptType);
-        break;
+        this.verifyEssayText(cy.get('@quecard'), attempt, attemptType)
+        break
 
       default:
-        break;
+        break
     }
-  };
+  }
 
-  getCountdownText = () => this.getCountDown().invoke("text");
+  getCountdownText = () => this.getCountDown().invoke('text')
 
   verifyAndGetRemainingTime = (expectedTimeInHours, timeAdujst = 3) =>
     /* expectedTimeInHours: `HH:MM:SS`, timeAdujst: integer(seconds) */
-    this.getCountdownText().then(time => {
-      const expectedTimeInSeconds = CypressHelper.hoursToSeconds(expectedTimeInHours);
-      const currentInTimeInSeconds = CypressHelper.hoursToSeconds(time);
+    this.getCountdownText().then((time) => {
+      const expectedTimeInSeconds = CypressHelper.hoursToSeconds(
+        expectedTimeInHours
+      )
+      const currentInTimeInSeconds = CypressHelper.hoursToSeconds(time)
 
       expect(
         currentInTimeInSeconds > expectedTimeInSeconds - timeAdujst &&
           currentInTimeInSeconds < expectedTimeInSeconds + timeAdujst,
         `expected time in UI is ${timeAdujst} seconds around "${expectedTimeInHours}" and 
         and got "${time}"`
-      ).to.be.true;
+      ).to.be.true
 
       return this.getCountDown()
-        .should("have.css", "color", expectedTimeInSeconds > 120 ? queColor.WHITE : queColor.RED)
-        .then(() => currentInTimeInSeconds);
-    });
+        .should(
+          'have.css',
+          'color',
+          expectedTimeInSeconds > 120 ? queColor.WHITE : queColor.RED
+        )
+        .then(() => currentInTimeInSeconds)
+    })
 
-  waitWhileAttempt = hours => cy.wait(CypressHelper.hoursToSeconds(hours) * 1000);
+  waitWhileAttempt = (hours) =>
+    cy.wait(CypressHelper.hoursToSeconds(hours) * 1000)
 
-  verifyAssesmentPlayerSkin = skin => cy.get(`[data-cy="${skin}"]`).should("be.visible");
+  verifyAssesmentPlayerSkin = (skin) =>
+    cy.get(`[data-cy="${skin}"]`).should('be.visible')
 
   // *** APPHELPERS END ***
 }
-export default StudentTestPage;
+export default StudentTestPage

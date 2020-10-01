@@ -1,38 +1,38 @@
-import React, { memo, useEffect } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import SearchDistrictTable from "../SearchDistrictTable";
-import MergeSyncTable from "../MergeSyncTable";
-import { FirstDiv, H2, OuterDiv } from "../Common/StyledComponents";
+import React, { memo, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import SearchDistrictTable from '../SearchDistrictTable'
+import MergeSyncTable from '../MergeSyncTable'
+import { FirstDiv, H2, OuterDiv } from '../Common/StyledComponents'
 import {
   fetchTableData as fetchTableDataAction,
   updateClever as updateCleverAction,
   getTableData,
   deleteDistrictId as deleteDistrictIdAction,
   getUsersDataAction,
-  clearTableDataAction
-} from "../SearchDistrictTable/ducks";
-import {clearMergeDataAction} from "../MergeSyncTable/ducks";
+  clearTableDataAction,
+} from '../SearchDistrictTable/ducks'
+import { clearMergeDataAction } from '../MergeSyncTable/ducks'
 
-import {SearchForm} from './SearchForm';
+import { SearchForm } from './SearchForm'
 
 const listOfRadioOptions = [
   {
-    id: "name",
-    label: "District Name",
-    message: "Please enter valid district name"
+    id: 'name',
+    label: 'District Name',
+    message: 'Please enter valid district name',
   },
   {
-    id: "id",
-    label: "District Id",
-    message: "Please enter valid District ID"
+    id: 'id',
+    label: 'District Id',
+    message: 'Please enter valid District ID',
   },
   {
-    id: "cleverid",
-    label: "Clever Id",
-    message: "Please enter valid Clever ID"
-  }
-];
+    id: 'cleverid',
+    label: 'Clever Id',
+    message: 'Please enter valid Clever ID',
+  },
+]
 
 function CleverSearch(props) {
   const {
@@ -42,13 +42,16 @@ function CleverSearch(props) {
     deleteDistrictId,
     getUsersData,
     clearTableData,
-    clearMergeData
-  } = props;
+    clearMergeData,
+  } = props
 
-  useEffect(() => () => {
-    clearTableData();
-    clearMergeData();
-  }, []);
+  useEffect(
+    () => () => {
+      clearTableData()
+      clearMergeData()
+    },
+    []
+  )
 
   return (
     <div>
@@ -57,7 +60,7 @@ function CleverSearch(props) {
         <FirstDiv>
           <SearchForm
             fetchTableData={fetchTableData}
-            searchProps={{listOfRadioOptions}}
+            searchProps={{ listOfRadioOptions }}
           />
         </FirstDiv>
         <SearchDistrictTable
@@ -69,26 +72,20 @@ function CleverSearch(props) {
       </OuterDiv>
       <MergeSyncTable />
     </div>
-  );
+  )
 }
 
-const mapStateToProps = state => ({
-  tableData: getTableData(state)
-});
+const mapStateToProps = (state) => ({
+  tableData: getTableData(state),
+})
 
-const withConnect = connect(
-  mapStateToProps,
-  {
-    fetchTableData: fetchTableDataAction,
-    updateClever: updateCleverAction,
-    deleteDistrictId: deleteDistrictIdAction,
-    getUsersData: getUsersDataAction,
-    clearTableData: clearTableDataAction,
-    clearMergeData: clearMergeDataAction
-  }
-);
+const withConnect = connect(mapStateToProps, {
+  fetchTableData: fetchTableDataAction,
+  updateClever: updateCleverAction,
+  deleteDistrictId: deleteDistrictIdAction,
+  getUsersData: getUsersDataAction,
+  clearTableData: clearTableDataAction,
+  clearMergeData: clearMergeDataAction,
+})
 
-export default compose(
-  withConnect,
-  memo
-)(CleverSearch);
+export default compose(withConnect, memo)(CleverSearch)

@@ -1,7 +1,7 @@
-import styled, { css } from "styled-components";
-import { Button, Modal } from "antd";
-import { IconEdit } from "@edulastic/icons";
-import { FlexContainer } from "@edulastic/common";
+import styled, { css } from 'styled-components'
+import { Button, Modal } from 'antd'
+import { IconEdit } from '@edulastic/icons'
+import { FlexContainer } from '@edulastic/common'
 import {
   mobileWidthMax,
   white,
@@ -10,8 +10,8 @@ import {
   mobileWidthLarge,
   mediumDesktopExactWidth,
   themeColorBlue,
-  themeColorHoverBlue
-} from "@edulastic/colors";
+  themeColorHoverBlue,
+} from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
 export const FixedHeaderStyle = css`
@@ -22,10 +22,10 @@ export const FixedHeaderStyle = css`
   right: 0;
   z-index: 999;
   width: auto;
-  height: ${props => props.theme.HeaderHeight.xs}px;
+  height: ${(props) => props.theme.HeaderHeight.xs}px;
   box-shadow: 1px 8px 11px rgba(0, 0, 0, 0.2);
   padding: 10px 30px;
-`;
+`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
@@ -33,8 +33,8 @@ export const StyledFlexContainer = styled(FlexContainer)`
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
-  ${props => props.hasStickyHeader && FixedHeaderStyle}
-`;
+  ${(props) => props.hasStickyHeader && FixedHeaderStyle}
+`
 
 export const StudentButtonWrapper = styled(FlexContainer)`
   width: calc(75% - 15px);
@@ -44,9 +44,9 @@ export const StudentButtonWrapper = styled(FlexContainer)`
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
-`;
+`
 
-export const StyledStudentTabButton = styled.div``;
+export const StyledStudentTabButton = styled.div``
 
 export const StudentButtonDiv = styled.div`
   display: flex;
@@ -60,7 +60,7 @@ export const StudentButtonDiv = styled.div`
     margin-right: 0px;
     overflow: auto;
   }
-`;
+`
 
 const StyledTabButton = styled.a`
   height: 28px;
@@ -89,18 +89,18 @@ const StyledTabButton = styled.a`
     width: 100%;
     margin: 0 !important;
   }
-`;
+`
 
-export const CorrectButton = StyledTabButton;
-export const WrongButton = StyledTabButton;
+export const CorrectButton = StyledTabButton
+export const WrongButton = StyledTabButton
 
 export const AllButton = styled(StyledTabButton)`
   border-radius: 4px 0px 0px 4px;
-`;
+`
 
 export const PartiallyCorrectButton = styled(StyledTabButton)`
   border-radius: 0px 4px 4px 0px;
-`;
+`
 
 export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   height: 40px;
@@ -143,7 +143,7 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
       display: block;
     }
   }
-`;
+`
 
 export const EditIconStyled = styled(IconEdit)`
   fill: ${white};
@@ -151,7 +151,7 @@ export const EditIconStyled = styled(IconEdit)`
   &:hover {
     fill: ${white};
   }
-`;
+`
 
 export const ScrollToTopButton = styled(Button)`
   position: fixed;
@@ -159,8 +159,8 @@ export const ScrollToTopButton = styled(Button)`
   right: 0;
   margin-right: 20px;
   margin-bottom: 20px;
-  display: ${props => (props.hasStickyHeader ? "block" : "none")};
-`;
+  display: ${(props) => (props.hasStickyHeader ? 'block' : 'none')};
+`
 export const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding: 0 50px 0 50px;
@@ -190,7 +190,7 @@ export const StyledModal = styled(Modal)`
     width: 100%;
     margin-top: 10px;
   }
-`;
+`
 export const StyledFooter = styled.div`
   display: flex;
   justify-content: center;
@@ -198,4 +198,4 @@ export const StyledFooter = styled.div`
     min-width: 150px;
     margin-top: 5px;
   }
-`;
+`

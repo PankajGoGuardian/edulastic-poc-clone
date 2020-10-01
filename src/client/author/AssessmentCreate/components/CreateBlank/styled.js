@@ -1,17 +1,17 @@
-import styled from "styled-components";
-import { Button } from "antd";
-import { darkGrey, themeColor, white } from "@edulastic/colors";
-import CardComponent from "../../../AssignmentCreate/common/CardComponent";
+import styled from 'styled-components'
+import { Button } from 'antd'
+import { darkGrey, themeColor, white } from '@edulastic/colors'
+import CardComponent from '../../../AssignmentCreate/common/CardComponent'
 
 export const Description = styled.p`
   font-size: 11px;
   font-weight: bold;
   color: ${darkGrey};
   margin-top: 5px !important;
-`;
+`
 
 export const Container = styled(CardComponent)`
-  ${props =>
+  ${(props) =>
     props.blank &&
     `.ant-btn {
       width: 225px;
@@ -24,17 +24,17 @@ export const Container = styled(CardComponent)`
       background: ${white} !important;
       color: ${themeColor} !important;
     }`};
-`;
+`
 
 export const ButtonsContainer = styled.div`
   display: flex;
-  width: ${props => props.width || "50%"};
+  width: ${(props) => props.width || '50%'};
   justify-content: space-evenly;
 
   .ant-upload-list {
     display: none;
   }
-`;
+`
 
 export const RoundedButton = styled(Button)`
   width: 45px;
@@ -59,4 +59,4 @@ export const RoundedButton = styled(Button)`
       fill: ${white} !important;
     }
   }
-`;
+`

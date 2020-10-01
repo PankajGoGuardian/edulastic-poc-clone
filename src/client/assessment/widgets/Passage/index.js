@@ -1,36 +1,37 @@
-import React, { useMemo } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import get from "lodash/get";
+import React, { useMemo } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import get from 'lodash/get'
 
-import { Paper } from "@edulastic/common";
-import { white, boxShadowDefault } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { replaceVariables } from "../../utils/variables";
+import { Paper } from '@edulastic/common'
+import { white, boxShadowDefault } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { replaceVariables } from '../../utils/variables'
 
-import { ContentArea } from "../../styled/ContentArea";
+import { ContentArea } from '../../styled/ContentArea'
 
-import PassageView from "./PassageView";
-import Details from "./Details";
+import PassageView from './PassageView'
+import Details from './Details'
 
-import { saveUserWorkAction, clearUserWorkAction } from "../../actions/userWork";
+import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div``
 
 // Do not change id here
 const PassageWrapper = styled(Paper).attrs(() => ({
-  id: "passage-wrapper"
+  id: 'passage-wrapper',
 }))`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
-  background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
-  box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
+  background: ${({ flowLayout }) => (flowLayout ? 'transparent' : white)};
+  box-shadow: ${({ flowLayout }) =>
+    flowLayout ? 'unset' : `0 3px 10px 0 ${boxShadowDefault}`};
   position: relative;
   text-align: justify;
   word-break: break-all;
-`;
+`
 
 const Passage = ({
   item,
@@ -44,9 +45,9 @@ const Passage = ({
   flowLayout,
   ...restProps
 }) => {
-  const Wrapper = smallSize ? EmptyWrapper : PassageWrapper;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
-  if (view === "edit") {
+  const Wrapper = smallSize ? EmptyWrapper : PassageWrapper
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
+  if (view === 'edit') {
     return (
       <ContentArea>
         <Details
@@ -56,10 +57,10 @@ const Passage = ({
           setQuestionData={setQuestionData}
         />
       </ContentArea>
-    );
+    )
   }
 
-  if (view === "preview") {
+  if (view === 'preview') {
     return (
       <Wrapper flowLayout={flowLayout}>
         <PassageView
@@ -70,9 +71,9 @@ const Passage = ({
           {...restProps}
         />
       </Wrapper>
-    );
+    )
   }
-};
+}
 
 Passage.propTypes = {
   item: PropTypes.object.isRequired,
@@ -82,30 +83,34 @@ Passage.propTypes = {
   t: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
-};
+  cleanSections: PropTypes.func,
+}
 
 Passage.defaultProps = {
   smallSize: false,
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   connect(
     (state, ownProps) => ({
-      userWork: get(state, `userWork.present[${ownProps.passageTestItemID}].resourceId`, [])
+      userWork: get(
+        state,
+        `userWork.present[${ownProps.passageTestItemID}].resourceId`,
+        []
+      ),
     }),
     {
       setQuestionData: setQuestionDataAction,
       saveUserWork: saveUserWorkAction,
-      clearUserWork: clearUserWorkAction
+      clearUserWork: clearUserWorkAction,
     }
   )
-);
+)
 
-const PassageContainer = enhance(Passage);
+const PassageContainer = enhance(Passage)
 
-export { PassageContainer as Passage };
+export { PassageContainer as Passage }

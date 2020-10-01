@@ -1,1 +1,1 @@
-export { watcherSaga as signupSaga } from "./duck";
+export { watcherSaga as signupSaga } from './duck'

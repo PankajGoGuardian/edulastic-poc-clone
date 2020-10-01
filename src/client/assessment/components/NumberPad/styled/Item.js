@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import { math } from "@edulastic/constants";
+import styled from 'styled-components'
+import { math } from '@edulastic/constants'
 
 const {
-  KeyboardSize: { width, height }
-} = math;
+  KeyboardSize: { width, height },
+} = math
 
 export const Item = styled.div`
   width: ${width}px;
@@ -11,18 +11,18 @@ export const Item = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${props => props.theme.numberPad.itemBorderColor};
-  color: ${props => props.theme.numberPad.itemColor};
-  font-weight: ${props => props.theme.numberPad.itemFontWeight};
-  background: ${props => props.theme.numberPad.itemBgColor};
+  border: 1px solid ${(props) => props.theme.numberPad.itemBorderColor};
+  color: ${(props) => props.theme.numberPad.itemColor};
+  font-weight: ${(props) => props.theme.numberPad.itemFontWeight};
+  background: ${(props) => props.theme.numberPad.itemBgColor};
   cursor: pointer;
   user-select: none;
 
   :hover {
-    background: ${props => props.theme.numberPad.itemBgHoverColor};
+    background: ${(props) => props.theme.numberPad.itemBgHoverColor};
   }
 
   :active {
-    background: ${props => props.theme.numberPad.itemBgActiveColor};
+    background: ${(props) => props.theme.numberPad.itemBgActiveColor};
   }
-`;
+`

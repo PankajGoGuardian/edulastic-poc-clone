@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Button, Select, Spin } from "antd";
-import { EduButton, notification } from "@edulastic/common";
-import styled from "styled-components";
-import { backgroundGrey2, black, green, themeColorTagsBg } from "@edulastic/colors";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import React, { useState, useEffect } from 'react'
+import { Button, Select, Spin } from 'antd'
+import { EduButton, notification } from '@edulastic/common'
+import styled from 'styled-components'
+import {
+  backgroundGrey2,
+  black,
+  green,
+  themeColorTagsBg,
+} from '@edulastic/colors'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const CanvasSyncModal = ({
   visible,
@@ -19,60 +24,76 @@ const CanvasSyncModal = ({
   user,
   groupId,
   institutionId,
-  isFetchingCanvasData
+  isFetchingCanvasData,
 }) => {
-  const [course, setCourse] = useState(canvasCode);
-  const [section, setSection] = useState(canvasCourseSectionCode);
-  const [idDisabled, setIsDisabled] = useState(!!canvasCode && !!canvasCourseSectionCode);
+  const [course, setCourse] = useState(canvasCode)
+  const [section, setSection] = useState(canvasCourseSectionCode)
+  const [idDisabled, setIsDisabled] = useState(
+    !!canvasCode && !!canvasCourseSectionCode
+  )
 
   // filter already synced canvas sections
   const activeCanvasClassSectionCode = user?.orgData?.classList
     .filter(
-      o =>
-        o.active === 1 && o.canvasCourseSectionCode && `${o._id}` !== `${groupId}` && `${o.canvasCode}` === `${course}`
+      (o) =>
+        o.active === 1 &&
+        o.canvasCourseSectionCode &&
+        `${o._id}` !== `${groupId}` &&
+        `${o.canvasCode}` === `${course}`
     )
-    .map(o => `${o.canvasCourseSectionCode}`);
+    .map((o) => `${o.canvasCourseSectionCode}`)
   canvasSectionList = canvasSectionList.filter(
-    o => !activeCanvasClassSectionCode.includes(`${o.id}`) && `${o.course_id}` === `${course}`
-  );
-  const isSyncDisabled = isFetchingCanvasData || !canvasCourseList?.length || !canvasSectionList?.length;
+    (o) =>
+      !activeCanvasClassSectionCode.includes(`${o.id}`) &&
+      `${o.course_id}` === `${course}`
+  )
+  const isSyncDisabled =
+    isFetchingCanvasData ||
+    !canvasCourseList?.length ||
+    !canvasSectionList?.length
 
   useEffect(() => {
-    getCanvasCourseListRequest(institutionId);
+    getCanvasCourseListRequest(institutionId)
     if (course && section) {
-      getCanvasSectionListRequest({ institutionId, allCourseIds: [course] });
+      getCanvasSectionListRequest({ institutionId, allCourseIds: [course] })
     }
-  }, []);
+  }, [])
 
-  const handleCourseChange = value => {
-    getCanvasSectionListRequest({ institutionId, allCourseIds: [value] });
-    setCourse(value);
-    setSection("");
-  };
+  const handleCourseChange = (value) => {
+    getCanvasSectionListRequest({ institutionId, allCourseIds: [value] })
+    setCourse(value)
+    setSection('')
+  }
 
   useEffect(() => {
-    if (!course && canvasCourseList.length) handleCourseChange(canvasCourseList[0].id);
-  }, [canvasCourseList]);
+    if (!course && canvasCourseList.length)
+      handleCourseChange(canvasCourseList[0].id)
+  }, [canvasCourseList])
 
   useEffect(() => {
     if (!section) {
-      setSection(canvasSectionList?.[0]?.id || undefined);
+      setSection(canvasSectionList?.[0]?.id || undefined)
     }
-  }, [canvasSectionList]);
+  }, [canvasSectionList])
 
   const handleSync = () => {
     if (!course || !section) {
-      return notification({ msg: "bothCourseandSectionRequired" });
+      return notification({ msg: 'bothCourseandSectionRequired' })
     }
 
-    const { id: canvasCourseCode, name: canvasCourseName } = canvasCourseList.find(({ id }) => id === course);
+    const {
+      id: canvasCourseCode,
+      name: canvasCourseName,
+    } = canvasCourseList.find(({ id }) => id === course)
 
-    const selectedSectionDetails = canvasSectionList.find(({ id }) => id === section);
+    const selectedSectionDetails = canvasSectionList.find(
+      ({ id }) => id === section
+    )
     if (!selectedSectionDetails) {
-      return notification({ msg: "bothCourseandSectionRequired" });
+      return notification({ msg: 'bothCourseandSectionRequired' })
     }
 
-    const { id: sectionId, name: sectionName } = selectedSectionDetails;
+    const { id: sectionId, name: sectionName } = selectedSectionDetails
 
     const data = {
       userId: user._id,
@@ -82,31 +103,45 @@ const CanvasSyncModal = ({
       sectionId,
       sectionName,
       institutionId,
-      districtId: user?.districtIds?.[0]
-    };
-    syncClassWithCanvas(data);
-  };
+      districtId: user?.districtIds?.[0],
+    }
+    syncClassWithCanvas(data)
+  }
 
-  const Title = <h4>Select Canvas Course & Section</h4>;
+  const Title = <h4>Select Canvas Course & Section</h4>
   const Footer = [
     ...(!!canvasCode && !!canvasCourseSectionCode
       ? [
           // eslint-disable-next-line react/jsx-indent
-          <Button disabled={syncClassLoading} onClick={() => setIsDisabled(false)}>
+          <Button
+            disabled={syncClassLoading}
+            onClick={() => setIsDisabled(false)}
+          >
             Change Details
-          </Button>
+          </Button>,
         ]
       : []),
     <EduButton disabled={syncClassLoading} isGhost onClick={handleCancel}>
       Cancel
     </EduButton>,
-    <EduButton type="primary" disabled={isSyncDisabled} loading={syncClassLoading} onClick={handleSync}>
-      {syncClassLoading ? "Syncing..." : "Sync"}
-    </EduButton>
-  ];
+    <EduButton
+      type="primary"
+      disabled={isSyncDisabled}
+      loading={syncClassLoading}
+      onClick={handleSync}
+    >
+      {syncClassLoading ? 'Syncing...' : 'Sync'}
+    </EduButton>,
+  ]
 
   return (
-    <StyledModal visible={visible} title={Title} footer={Footer} centered onCancel={handleCancel}>
+    <StyledModal
+      visible={visible}
+      title={Title}
+      footer={Footer}
+      centered
+      onCancel={handleCancel}
+    >
       {isFetchingCanvasData && <Spin />}
       <FieldWrapper>
         <label>Course</label>
@@ -114,10 +149,10 @@ const CanvasSyncModal = ({
           placeholder="Select a Course"
           value={+course || undefined}
           onChange={handleCourseChange}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={idDisabled}
         >
-          {canvasCourseList.map(c => (
+          {canvasCourseList.map((c) => (
             <Select.Option key={c.id} value={+c.id}>
               {c.name}
             </Select.Option>
@@ -129,20 +164,20 @@ const CanvasSyncModal = ({
         <Select
           placeholder="Select a Section"
           value={+section || undefined}
-          onChange={value => {
-            setSection(value);
+          onChange={(value) => {
+            setSection(value)
           }}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={idDisabled}
           notFoundContent={
             activeCanvasClassSectionCode?.length ? (
-              <div style={{ color: black }}>No new Canvas Section available to sync</div>
-            ) : (
-              undefined
-            )
+              <div style={{ color: black }}>
+                No new Canvas Section available to sync
+              </div>
+            ) : undefined
           }
         >
-          {canvasSectionList.map(s => (
+          {canvasSectionList.map((s) => (
             <Select.Option key={s.id} value={+s.id}>
               {s.name}
             </Select.Option>
@@ -150,10 +185,10 @@ const CanvasSyncModal = ({
         </Select>
       </FieldWrapper>
     </StyledModal>
-  );
-};
+  )
+}
 
-export default CanvasSyncModal;
+export default CanvasSyncModal
 
 const StyledModal = styled(ConfirmationModal)`
   .ant-modal-content {
@@ -167,7 +202,7 @@ const StyledModal = styled(ConfirmationModal)`
       display: block;
     }
   }
-`;
+`
 
 const FieldWrapper = styled.div`
   display: block;
@@ -198,4 +233,4 @@ const FieldWrapper = styled.div`
       }
     }
   }
-`;
+`

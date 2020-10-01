@@ -1,10 +1,17 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import { Select } from "antd";
+import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Select } from 'antd'
 
-import { StyledSubtitle } from "./styled";
+import { StyledSubtitle } from './styled'
 
-const Dropdown = ({ title, onChange, value, placeholder, options, menuClassName }) => {
+const Dropdown = ({
+  title,
+  onChange,
+  value,
+  placeholder,
+  options,
+  menuClassName,
+}) => {
   return (
     <div>
       <StyledSubtitle>{title}</StyledSubtitle>
@@ -13,17 +20,17 @@ const Dropdown = ({ title, onChange, value, placeholder, options, menuClassName 
         onChange={onChange}
         placeholder={placeholder}
         dropdownClassName={menuClassName}
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
       >
-        {options.map(option => (
+        {options.map((option) => (
           <Select.Option key={option} value={option}>
             {option}
           </Select.Option>
         ))}
       </Select>
     </div>
-  );
-};
+  )
+}
 
 Dropdown.propTypes = {
   title: PropTypes.string,
@@ -31,11 +38,11 @@ Dropdown.propTypes = {
   value: PropTypes.string,
   placeholder: PropTypes.string,
   options: PropTypes.arrayOf(PropTypes.string),
-  menuClassName: PropTypes.string
-};
+  menuClassName: PropTypes.string,
+}
 
 Dropdown.defaultProps = {
-  menuClassName: "testcase-category-menu"
-};
+  menuClassName: 'testcase-category-menu',
+}
 
-export default Dropdown;
+export default Dropdown

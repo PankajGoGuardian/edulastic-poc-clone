@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Text = styled.div`
   resize: none;
@@ -18,16 +18,16 @@ export const Text = styled.div`
     width: ${
       showDragHandle
         ? smallSize
-          ? "calc(100% - 30px)"
-          : "calc(100% - 32px)"
+          ? 'calc(100% - 30px)'
+          : 'calc(100% - 32px)'
         : showAnswer
         ? smallSize
-          ? "calc(100% - 30px)"
-          : "calc(100% - 32px)"
-        : "100%"
+          ? 'calc(100% - 30px)'
+          : 'calc(100% - 32px)'
+        : '100%'
     };
-    padding: ${smallSize ? "2px 5px" : "2px 15px"};
-    padding-right:${correct === undefined ? "" : "30px"};
+    padding: ${smallSize ? '2px 5px' : '2px 15px'};
+    padding-right:${correct === undefined ? '' : '30px'};
     border-color: ${
       correct !== undefined
         ? correct
@@ -36,4 +36,4 @@ export const Text = styled.div`
         : theme.widgets.orderList.textBorderColor
     };
   `}
-`;
+`

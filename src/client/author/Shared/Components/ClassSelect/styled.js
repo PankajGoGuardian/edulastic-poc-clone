@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { Select } from "antd";
-import { themes } from "../../../../theme";
+import styled from 'styled-components'
+import { Select } from 'antd'
+import { themes } from '../../../../theme'
 
-const classBoardTheme = themes.default.classboard;
+const classBoardTheme = themes.default.classboard
 
 export const Container = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ export const Container = styled.div`
     width: 100% !important;
     align-items: center !important;
   }
-`;
+`
 
 export const StyledClassID = styled.div`
   color: #4aac8b;
@@ -45,7 +45,7 @@ export const StyledClassID = styled.div`
   margin-right: 10px;
   text-align: center;
   font-size: 10px;
-`;
+`
 
 export const StyledSelect = styled(Select)`
   min-width: 130px;
@@ -74,4 +74,4 @@ export const StyledSelect = styled(Select)`
       }
     }
   }
-`;
+`

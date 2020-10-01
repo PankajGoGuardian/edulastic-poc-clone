@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { textColor, extraDesktopWidthMax } from "@edulastic/colors";
+import styled from 'styled-components'
+import { textColor, extraDesktopWidthMax } from '@edulastic/colors'
 
 const TextWrapper = styled.div`
   margin-bottom: 20px;
@@ -9,5 +9,5 @@ const TextWrapper = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     line-height: 26px;
   }
-`;
-export default TextWrapper;
+`
+export default TextWrapper

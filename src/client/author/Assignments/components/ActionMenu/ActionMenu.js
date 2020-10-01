@@ -1,21 +1,21 @@
-import React from "react";
-import { Menu } from "antd";
-import { Link } from "react-router-dom";
-import { assignmentApi } from "@edulastic/api";
-import { get } from "lodash";
-import { notification } from "@edulastic/common";
-import * as Sentry from "@sentry/browser";
-import { IconPrint, IconTrashAlt, IconBarChart } from "@edulastic/icons";
-import { roleuser, test } from "@edulastic/constants";
-import classIcon from "../../assets/manage-class.svg";
-import copyItem from "../../assets/copy-item.svg";
-import viewIcon from "../../assets/view.svg";
-import infomationIcon from "../../assets/information.svg";
-import responsiveIcon from "../../assets/responses.svg";
-import { Container, StyledMenu, StyledLink, SpaceElement } from "./styled";
+import React from 'react'
+import { Menu } from 'antd'
+import { Link } from 'react-router-dom'
+import { assignmentApi } from '@edulastic/api'
+import { get } from 'lodash'
+import { notification } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
+import { IconPrint, IconTrashAlt, IconBarChart } from '@edulastic/icons'
+import { roleuser, test } from '@edulastic/constants'
+import classIcon from '../../assets/manage-class.svg'
+import copyItem from '../../assets/copy-item.svg'
+import viewIcon from '../../assets/view.svg'
+import infomationIcon from '../../assets/information.svg'
+import responsiveIcon from '../../assets/responses.svg'
+import { Container, StyledMenu, StyledLink, SpaceElement } from './styled'
 
-const { duplicateAssignment } = assignmentApi;
-const { testContentVisibility: testContentVisibilityOptions } = test;
+const { duplicateAssignment } = assignmentApi
+const { testContentVisibility: testContentVisibilityOptions } = test
 
 const ActionMenu = ({
   onOpenReleaseScoreSettings = () => {},
@@ -28,83 +28,114 @@ const ActionMenu = ({
   addItemToFolder = () => {},
   removeItemsFromFolder = () => {},
   row = {},
-  userId = "",
-  userRole = "",
+  userId = '',
+  userRole = '',
   assignmentTest = {},
   canEdit = true,
   userClassList,
-  canUnassign = true
+  canUnassign = true,
 }) => {
-  const getAssignmentDetails = () => (!Object.keys(currentAssignment).length ? row : currentAssignment);
-  const assignmentDetails = getAssignmentDetails();
-  const currentTestId = assignmentDetails.testId;
-  const currentAssignmentId = assignmentDetails._id;
-  const currentClassId = assignmentDetails.classId;
+  const getAssignmentDetails = () =>
+    !Object.keys(currentAssignment).length ? row : currentAssignment
+  const assignmentDetails = getAssignmentDetails()
+  const currentTestId = assignmentDetails.testId
+  const currentAssignmentId = assignmentDetails._id
+  const currentClassId = assignmentDetails.classId
   const shouldSendAssignmentId =
-    assignmentTest?.testType === test.type.COMMON || !assignmentTest?.authors?.find(a => a._id === userId);
+    assignmentTest?.testType === test.type.COMMON ||
+    !assignmentTest?.authors?.find((a) => a._id === userId)
 
   const handleShowPreview = () => {
     if (
-      [test.testContentVisibility.GRADING, test.testContentVisibility.HIDDEN].includes(
-        assignmentDetails?.testContentVisibility
-      )
+      [
+        test.testContentVisibility.GRADING,
+        test.testContentVisibility.HIDDEN,
+      ].includes(assignmentDetails?.testContentVisibility)
     ) {
-      return notification({ messageKey: "previewOfItemsRestricted" });
+      return notification({ messageKey: 'previewOfItemsRestricted' })
     }
     if (shouldSendAssignmentId) {
-      showPreviewModal(currentTestId, currentAssignmentId, assignmentDetails?.classId);
+      showPreviewModal(
+        currentTestId,
+        currentAssignmentId,
+        assignmentDetails?.classId
+      )
     } else {
-      showPreviewModal(currentTestId);
+      showPreviewModal(currentTestId)
     }
-  };
+  }
 
   const createDuplicateAssignment = () => {
     duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title })
-      .then(testItem => {
-        const duplicateTestId = testItem._id;
-        history.push(`/author/tests/${duplicateTestId}`);
+      .then((testItem) => {
+        const duplicateTestId = testItem._id
+        history.push(`/author/tests/${duplicateTestId}`)
       })
-      .catch(err => {
+      .catch((err) => {
         const {
-          data: { message: errorMessage }
-        } = err.response;
-        Sentry.captureException(err);
-        notification({ msg: errorMessage || "User does not have duplicate permission." });
-      });
-  };
+          data: { message: errorMessage },
+        } = err.response
+        Sentry.captureException(err)
+        notification({
+          msg: errorMessage || 'User does not have duplicate permission.',
+        })
+      })
+  }
 
   const handlePrintTest = () => {
-    const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
-    const { assignmentVisibility = [] } = row;
-    const { HIDDEN, GRADING } = testContentVisibilityOptions;
-    if (!isAdmin && (assignmentVisibility.includes(HIDDEN) || assignmentVisibility.includes(GRADING))) {
-      return notification({ type: "warn", messageKey: "viewItemsRestriccedByAdmin" });
+    const isAdmin =
+      userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+    const { assignmentVisibility = [] } = row
+    const { HIDDEN, GRADING } = testContentVisibilityOptions
+    if (
+      !isAdmin &&
+      (assignmentVisibility.includes(HIDDEN) ||
+        assignmentVisibility.includes(GRADING))
+    ) {
+      return notification({
+        type: 'warn',
+        messageKey: 'viewItemsRestriccedByAdmin',
+      })
     }
-    togglePrintModal(currentTestId, currentAssignmentId, currentClassId);
-  };
+    togglePrintModal(currentTestId, currentAssignmentId, currentClassId)
+  }
 
   // owner of the assignment
-  const assignmentOwnerId = get(assignmentDetails, "assignedBy._id", "");
+  const assignmentOwnerId = get(assignmentDetails, 'assignedBy._id', '')
 
   // current user and assignment owner is same: true
-  const isAssignmentOwner = (userId && userId === assignmentOwnerId) || false;
-  const isCoAuthor = userClassList?.some(c => c?._id === assignmentDetails?.classId) || false;
-  const isAdmin = roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole;
+  const isAssignmentOwner = (userId && userId === assignmentOwnerId) || false
+  const isCoAuthor =
+    userClassList?.some((c) => c?._id === assignmentDetails?.classId) || false
+  const isAdmin =
+    roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
 
   return (
     <Container>
       <StyledMenu>
-        <Menu.Item data-cy="add-to-folder" key="add-to-folder" onClick={addItemToFolder}>
+        <Menu.Item
+          data-cy="add-to-folder"
+          key="add-to-folder"
+          onClick={addItemToFolder}
+        >
           Add to Folder
         </Menu.Item>
-        <Menu.Item data-cy="remove-from-folder" key="remove-from-folder" onClick={removeItemsFromFolder}>
+        <Menu.Item
+          data-cy="remove-from-folder"
+          key="remove-from-folder"
+          onClick={removeItemsFromFolder}
+        >
           Remove from Folder
         </Menu.Item>
         <Menu.Item data-cy="assign" key="assign">
           <Link
             to={{
               pathname: `/author/assignments/${currentTestId}`,
-              state: { from: "assignments", fromText: "Assignments", toUrl: "/author/assignments" }
+              state: {
+                from: 'assignments',
+                fromText: 'Assignments',
+                toUrl: '/author/assignments',
+              },
             }}
             rel="noopener noreferrer"
           >
@@ -114,7 +145,11 @@ const ActionMenu = ({
           </Link>
         </Menu.Item>
         {!row.hasAutoSelectGroups && (
-          <Menu.Item data-cy="duplicate" key="duplicate" onClick={createDuplicateAssignment}>
+          <Menu.Item
+            data-cy="duplicate"
+            key="duplicate"
+            onClick={createDuplicateAssignment}
+          >
             <StyledLink target="_blank" rel="noopener noreferrer">
               <img alt="icon" src={copyItem} />
               <SpaceElement />
@@ -131,14 +166,21 @@ const ActionMenu = ({
           </StyledLink>
         </Menu.Item>
         <Menu.Item data-cy="view-details" key="view-details">
-          <Link to={`/author/tests/tab/review/id/${currentTestId}`} rel="noopener noreferrer">
+          <Link
+            to={`/author/tests/tab/review/id/${currentTestId}`}
+            rel="noopener noreferrer"
+          >
             <img alt="icon" src={infomationIcon} />
             <SpaceElement />
             View Test Details
           </Link>
         </Menu.Item>
         {!assignmentTest?.isDocBased && (
-          <Menu.Item data-cy="print-assignment" key="print-assignment" onClick={handlePrintTest}>
+          <Menu.Item
+            data-cy="print-assignment"
+            key="print-assignment"
+            onClick={handlePrintTest}
+          >
             <StyledLink target="_blank" rel="noopener noreferrer">
               <IconPrint />
               <SpaceElement />
@@ -149,7 +191,9 @@ const ActionMenu = ({
         <Menu.Item
           data-cy="release-grades"
           key="release-grades"
-          onClick={() => onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)}
+          onClick={() =>
+            onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)
+          }
         >
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={responsiveIcon} />
@@ -158,7 +202,9 @@ const ActionMenu = ({
           </StyledLink>
         </Menu.Item>
         <Menu.Item data-cy="summary-grades" key="summary-report">
-          <Link to={`/author/reports/performance-by-students/test/${currentTestId}`}>
+          <Link
+            to={`/author/reports/performance-by-students/test/${currentTestId}`}
+          >
             <IconBarChart />
             <SpaceElement />
             View Summary Report
@@ -177,7 +223,7 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {/**Hiding Unassign option for now, please uncomment it to get it back*/}
+        {/** Hiding Unassign option for now, please uncomment it to get it back */}
         {/* {(isAssignmentOwner || isCoAuthor || isAdmin) && canUnassign && (
           <Menu.Item
             data-cy="delete-Assignment"
@@ -193,7 +239,7 @@ const ActionMenu = ({
         )} */}
       </StyledMenu>
     </Container>
-  );
-};
+  )
+}
 
-export default ActionMenu;
+export default ActionMenu

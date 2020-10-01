@@ -1,197 +1,208 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/assignments";
+const api = new API()
+const prefix = '/assignments'
 
 const gradebook = ({ assignmentId, classId }) =>
   api
     .callApi({
       url: `${prefix}/${assignmentId}/classes/${classId}/gradebook`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const testActivity = ({ assignmentId, classId }) =>
   api
     .callApi({
       url: `${prefix}/${assignmentId}/classes/${classId}/test-activity`,
-      method: "get"
+      method: 'get',
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
-const releaseScore = ({ assignmentId, classId, releaseScore: _releaseScore, testId, filterState }) =>
+const releaseScore = ({
+  assignmentId,
+  classId,
+  releaseScore: _releaseScore,
+  testId,
+  filterState,
+}) =>
   api
     .callApi({
-      method: "put",
+      method: 'put',
       url: `${prefix}/${assignmentId}/test/${testId}/group/${classId}/releaseScore`,
       data: { releaseScore: _releaseScore },
-      params: filterState
+      params: filterState,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const markAsDone = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
-      method: "put",
-      url: `${prefix}/${assignmentId}/mark-as-done?groupId=${classId}&testId=${testId}`
+      method: 'put',
+      url: `${prefix}/${assignmentId}/mark-as-done?groupId=${classId}&testId=${testId}`,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const openAssignment = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
-      method: "put",
-      url: `${prefix}/${assignmentId}/open?groupId=${classId}&testId=${testId}`
+      method: 'put',
+      url: `${prefix}/${assignmentId}/open?groupId=${classId}&testId=${testId}`,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const closeAssignment = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
-      method: "put",
-      url: `${prefix}/${assignmentId}/close?groupId=${classId}&testId=${testId}`
+      method: 'put',
+      url: `${prefix}/${assignmentId}/close?groupId=${classId}&testId=${testId}`,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const markAbsent = ({ assignmentId, classId, students }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/${assignmentId}/mark-as-absent`,
-      data: { groupId: classId, students }
+      data: { groupId: classId, students },
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const markSubmitted = ({ assignmentId, classId, students }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/${assignmentId}/mark-as-submitted`,
-      data: { groupId: classId, students }
+      data: { groupId: classId, students },
     })
-    .then(result => result.data.result);
+    .then((result) => result.data.result)
 
 const togglePause = ({ assignmentId, classId, value, testId }) =>
   api
     .callApi({
-      method: "put",
-      url: `${prefix}/${assignmentId}/toggle-pause?groupId=${classId}&value=${value}&testId=${testId}`
+      method: 'put',
+      url: `${prefix}/${assignmentId}/toggle-pause?groupId=${classId}&value=${value}&testId=${testId}`,
     })
-    .then(result => result.data);
+    .then((result) => result.data)
 
 const removeStudents = ({ assignmentId, classId, students }) =>
   api
     .callApi({
-      method: "put",
+      method: 'put',
       url: `${prefix}/${assignmentId}/remove-students`,
-      data: { _id: classId, students }
+      data: { _id: classId, students },
     })
-    .then(response => response.data.result);
+    .then((response) => response.data.result)
 
 const addStudents = ({ assignmentId, classId, students, endDate }) =>
   api
     .callApi({
-      method: "put",
+      method: 'put',
       url: `${prefix}/${assignmentId}/add-students`,
-      data: { _id: classId, students, endDate }
+      data: { _id: classId, students, endDate },
     })
-    .then(response => response.data.result);
+    .then((response) => response.data.result)
 
 const testActivitiesForStudent = ({ studentId, assignmentId, groupId }) =>
   api
     .callApi({
-      method: "get",
-      url: `${prefix}/${assignmentId}/group/${groupId}/student/${studentId}/test-activity`
+      method: 'get',
+      url: `${prefix}/${assignmentId}/group/${groupId}/student/${studentId}/test-activity`,
     })
-    .then(response => response.data.result);
+    .then((response) => response.data.result)
 
-const downloadGrades = ({ assignmentId, classId, students, isResponseRequired }) =>
+const downloadGrades = ({
+  assignmentId,
+  classId,
+  students,
+  isResponseRequired,
+}) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/${assignmentId}/group/${classId}/download-grades-and-response`,
-      data: { studentIds: students, isResponseRequired }
+      data: { studentIds: students, isResponseRequired },
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const regeneratePassword = ({ assignmentId, classId, passwordExpireIn }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/${assignmentId}/group/${classId}/regenerate-password`,
-      data: { passwordExpireIn }
+      data: { passwordExpireIn },
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const bulkOpenAssignment = ({ testId, data, testType }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/test/${testId}/bulk-open`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {}
+      params: Object.keys(data).length === 0 ? { testType } : {},
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const bulkCloseAssignment = ({ testId, data, testType }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/test/${testId}/bulk-close`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {}
+      params: Object.keys(data).length === 0 ? { testType } : {},
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const bulkPauseAssignment = ({ testId, data, testType }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/test/${testId}/bulk-pause`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {}
+      params: Object.keys(data).length === 0 ? { testType } : {},
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const bulkMarkAsDoneAssignment = ({ testId, data, testType }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/test/${testId}/bulk-mark-as-done`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {}
+      params: Object.keys(data).length === 0 ? { testType } : {},
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const bulkReleaseScoreAssignment = ({ testId, data, testType }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/test/${testId}/bulk-release-score`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {}
+      params: Object.keys(data).length === 0 ? { testType } : {},
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const bulkUnassignAssignment = ({ testId, data, testType }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/test/${testId}/bulk-unassign`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {}
+      params: Object.keys(data).length === 0 ? { testType } : {},
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 const bulkDownloadGrades = ({ testId, data, testType }) =>
   api
     .callApi({
-      method: "post",
+      method: 'post',
       url: `${prefix}/test/${testId}/bulk-download-grades-and-response`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {}
+      params: Object.keys(data).length === 0 ? { testType } : {},
     })
-    .then(response => response.data);
+    .then((response) => response.data)
 
 export default {
   gradebook,
@@ -214,5 +225,5 @@ export default {
   bulkMarkAsDoneAssignment,
   bulkReleaseScoreAssignment,
   bulkUnassignAssignment,
-  bulkDownloadGrades
-};
+  bulkDownloadGrades,
+}

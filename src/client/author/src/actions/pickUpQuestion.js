@@ -1,18 +1,22 @@
-import { SET_QUESTION_CATEGORY, SET_QUESTION_TAB, SET_SCROLL_TOP } from "../constants/actions";
+import {
+  SET_QUESTION_CATEGORY,
+  SET_QUESTION_TAB,
+  SET_SCROLL_TOP,
+} from '../constants/actions'
 
-export const setQuestionCategory = payload => ({
+export const setQuestionCategory = (payload) => ({
   type: SET_QUESTION_CATEGORY,
-  payload
-});
+  payload,
+})
 
-export const setQuestionTab = payload => ({
+export const setQuestionTab = (payload) => ({
   type: SET_QUESTION_TAB,
-  payload
-});
+  payload,
+})
 
-export const saveScrollTop = value => {
+export const saveScrollTop = (value) => {
   return {
     type: SET_SCROLL_TOP,
-    payload: value
-  };
-};
+    payload: value,
+  }
+}

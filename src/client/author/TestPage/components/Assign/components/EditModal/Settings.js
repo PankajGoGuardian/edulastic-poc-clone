@@ -1,45 +1,73 @@
 // selectors
-import { test } from "@edulastic/constants";
-import { Col, Radio } from "antd";
-import React, { useState } from "react";
-import styled from "styled-components";
+import { test } from '@edulastic/constants'
+import { Col, Radio } from 'antd'
+import React, { useState } from 'react'
+import styled from 'styled-components'
 // components
-import { AlignRight, AlignSwitchRight, MaxAttemptIInput, Password, SettingsWrapper, StyledRowSettings } from "./styled";
+import {
+  AlignRight,
+  AlignSwitchRight,
+  MaxAttemptIInput,
+  Password,
+  SettingsWrapper,
+  StyledRowSettings,
+} from './styled'
 
-const { releaseGradeTypes, calculatorKeys, calculators, releaseGradeLabels } = test;
-const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
-const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
+const {
+  releaseGradeTypes,
+  calculatorKeys,
+  calculators,
+  releaseGradeLabels,
+} = test
+const evaluationtypes = [
+  'All or Nothing',
+  'Partial Credit',
+  'Dont penalize for incorrect selection',
+]
+const releaseGradeKeys = [
+  'DONT_RELEASE',
+  'SCORE_ONLY',
+  'WITH_RESPONSE',
+  'WITH_ANSWERS',
+]
 
-const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updateAssignmentSettings }) => {
-  const [isAutomatic, setAssignmentCompletionType] = useState(0);
-  const [type, setEvaluationType] = useState(0);
-  const [showPassword, togglePasswordField] = useState(false);
-  const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
+const Settings = ({
+  onUpdateMaxAttempts,
+  testSettings,
+  assignmentSettings,
+  updateAssignmentSettings,
+}) => {
+  const [isAutomatic, setAssignmentCompletionType] = useState(0)
+  const [type, setEvaluationType] = useState(0)
+  const [showPassword, togglePasswordField] = useState(false)
+  const [tempTestSettings, updateTempTestSettings] = useState({
+    ...testSettings,
+  })
 
-  const updateMarkAsDone = e => {
-    setAssignmentCompletionType(e.target.value);
-  };
+  const updateMarkAsDone = (e) => {
+    setAssignmentCompletionType(e.target.value)
+  }
 
-  const evalMethod = e => {
-    setEvaluationType(e.target.value);
-  };
+  const evalMethod = (e) => {
+    setEvaluationType(e.target.value)
+  }
 
   const overRideSettings = (key, value) => {
     const newSettingsState = {
       ...assignmentSettings,
-      [key]: value
-    };
+      [key]: value,
+    }
     const newTempTestSettingsState = {
       ...tempTestSettings,
-      [key]: value
-    };
-    if (key === "safeBrowser" && value === false) {
-      delete newSettingsState.sebPassword;
-      delete newTempTestSettingsState.sebPassword;
+      [key]: value,
     }
-    updateTempTestSettings(newTempTestSettingsState);
-    updateAssignmentSettings(newSettingsState);
-  };
+    if (key === 'safeBrowser' && value === false) {
+      delete newSettingsState.sebPassword
+      delete newTempTestSettingsState.sebPassword
+    }
+    updateTempTestSettings(newTempTestSettingsState)
+    updateAssignmentSettings(newSettingsState)
+  }
   const {
     releaseScore = tempTestSettings.releaseScore,
     maxAttempts = tempTestSettings.maxAttempts,
@@ -48,8 +76,8 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
     shuffleQuestions = tempTestSettings.shuffleQuestions,
     shuffleAnswers = tempTestSettings.shuffleAnswers,
     calcType = tempTestSettings.calcType,
-    answerOnPaper = tempTestSettings.answerOnPaper
-  } = assignmentSettings;
+    answerOnPaper = tempTestSettings.answerOnPaper,
+  } = assignmentSettings
   return (
     <SettingsWrapper>
       {/* Mark as done */}
@@ -69,11 +97,19 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       {/* Release score */}
       <StyledRowSettings gutter={16}>
         <Col span={8}>
-          <RowTitle>Release Scores {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</RowTitle>
+          <RowTitle>
+            Release Scores{' '}
+            {releaseScore === releaseGradeLabels.DONT_RELEASE
+              ? '[OFF]'
+              : '[ON]'}
+          </RowTitle>
         </Col>
         <Col span={16}>
-          <AlignRight value={releaseScore} onChange={e => overRideSettings("releaseScore", e.target.value)}>
-            {releaseGradeKeys.map(item => (
+          <AlignRight
+            value={releaseScore}
+            onChange={(e) => overRideSettings('releaseScore', e.target.value)}
+          >
+            {releaseGradeKeys.map((item) => (
               <Radio value={item} key={item}>
                 {releaseGradeTypes[item]}
               </Radio>
@@ -93,7 +129,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
             data-cy="maxAttempt"
             size="large"
             value={maxAttempts}
-            onChange={e => onUpdateMaxAttempts(e.target.value)}
+            onChange={(e) => onUpdateMaxAttempts(e.target.value)}
             min={1}
             step={1}
           />
@@ -107,19 +143,22 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
           <RowTitle>Safe Exam Browser/Kiosk Mode</RowTitle>
         </Col>
         <Col span={8}>
-          <AlignSwitchRight defaultChecked={safeBrowser} onChange={value => overRideSettings("safeBrowser", value)} />
+          <AlignSwitchRight
+            defaultChecked={safeBrowser}
+            onChange={(value) => overRideSettings('safeBrowser', value)}
+          />
           {safeBrowser && (
             <Password
               prefix={
                 <i
-                  className={`fa fa-eye${showPassword ? "-slash" : ""}`}
+                  className={`fa fa-eye${showPassword ? '-slash' : ''}`}
                   onClick={() => togglePasswordField(!showPassword)}
                 />
               }
-              onChange={e => overRideSettings("sebPassword", e.target.value)}
+              onChange={(e) => overRideSettings('sebPassword', e.target.value)}
               size="large"
               value={sebPassword}
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               placeholder="Password"
             />
           )}
@@ -135,7 +174,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
         <Col span={16}>
           <AlignSwitchRight
             defaultChecked={shuffleQuestions}
-            onChange={value => overRideSettings("shuffleQuestions", value)}
+            onChange={(value) => overRideSettings('shuffleQuestions', value)}
           />
         </Col>
       </StyledRowSettings>
@@ -149,7 +188,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
         <Col span={16}>
           <AlignSwitchRight
             defaultChecked={shuffleAnswers}
-            onChange={value => overRideSettings("shuffleAnswers", value)}
+            onChange={(value) => overRideSettings('shuffleAnswers', value)}
           />
         </Col>
       </StyledRowSettings>
@@ -161,8 +200,11 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
           <RowTitle>Show Calculator</RowTitle>
         </Col>
         <Col span={16}>
-          <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
-            {calculatorKeys.map(item => (
+          <AlignRight
+            value={calcType}
+            onChange={(e) => overRideSettings('calcType', e.target.value)}
+          >
+            {calculatorKeys.map((item) => (
               <Radio value={item} key={item}>
                 {calculators[item]}
               </Radio>
@@ -180,7 +222,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
         <Col span={16}>
           <AlignSwitchRight
             defaultChecked={answerOnPaper}
-            onChange={value => overRideSettings("answerOnPaper", value)}
+            onChange={(value) => overRideSettings('answerOnPaper', value)}
           />
         </Col>
       </StyledRowSettings>
@@ -214,12 +256,12 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       </StyledRowSettings>
       {/* Evaluation Method */}
     </SettingsWrapper>
-  );
-};
+  )
+}
 
-export default Settings;
+export default Settings
 
 const RowTitle = styled.h4`
   font-weight: 600;
   margin: 0px;
-`;
+`

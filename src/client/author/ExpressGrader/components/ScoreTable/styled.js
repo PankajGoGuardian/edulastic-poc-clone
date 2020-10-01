@@ -1,16 +1,24 @@
-import styled from "styled-components";
-import { Card, Table, Tag } from "antd";
-import { secondaryTextColor, smallDesktopWidth, greenDark, lightGreen, green, title, white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Card, Table, Tag } from 'antd'
+import {
+  secondaryTextColor,
+  smallDesktopWidth,
+  greenDark,
+  lightGreen,
+  green,
+  title,
+  white,
+} from '@edulastic/colors'
 
 export const StyledCard = styled(Card)`
-  margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
+  margin-bottom: ${({ marginBottom }) => marginBottom || '20px'};
   width: 100%;
   height: auto;
   border-radius: 0px;
   .ant-card-body {
     padding: 0px;
   }
-`;
+`
 
 export const TableTitle = styled.div`
   color: ${title};
@@ -20,7 +28,7 @@ export const TableTitle = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 14px;
   }
-`;
+`
 
 export const TableData = styled(Table)`
   .ant-table td {
@@ -62,40 +70,48 @@ export const TableData = styled(Table)`
     }
   }
 
-  .ant-table-body{
+  .ant-table-body {
     &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+      width: 8px;
+      height: 8px;
+    }
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-
-  &:hover {
-    cursor: pointer;
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: transparent;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #888;
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    &:hover {
+      cursor: pointer;
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+      }
     }
   }
-  }
 
-  .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
-  .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
-  .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
-  .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+  .ant-table-thead
+    > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+    > td,
+  .ant-table-tbody
+    > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+    > td,
+  .ant-table-thead
+    > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+    > td,
+  .ant-table-tbody
+    > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+    > td {
     background: #f2f3f2;
   }
 
@@ -129,7 +145,7 @@ export const TableData = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const StyledDivFF = styled.div`
   color: ${greenDark};
@@ -139,7 +155,7 @@ export const StyledDivFF = styled.div`
   font-size: 0.9em;
   font-weight: 800;
   margin: auto;
-`;
+`
 
 export const StyledDivColor = styled.span`
   color: ${secondaryTextColor};
@@ -149,7 +165,7 @@ export const StyledDivColor = styled.span`
   font-size: 0.9em;
   font-weight: 800;
   margin: auto;
-`;
+`
 
 export const StyledDivMid = styled.div`
   min-width: 35px;
@@ -168,14 +184,14 @@ export const StyledDivMid = styled.div`
     text-align: left;
     padding-left: 0px;
   }
-`;
+`
 
 export const StyledDivPartOne = styled.div`
   width: 49.9%;
   display: inline-block;
   font-weight: bold;
   border-right: 0.1em solid ${lightGreen};
-`;
+`
 
 export const StyledDivPartTwo = styled.div`
   width: 49.9%;
@@ -186,7 +202,7 @@ export const StyledDivPartTwo = styled.div`
   font-size: 1em;
   font-weight: 800;
   margin: auto;
-`;
+`
 
 export const StyledTitle = styled.div`
   text-align: center;
@@ -196,27 +212,27 @@ export const StyledTitle = styled.div`
   color: ${greenDark};
   font-variant: tabular-nums;
   line-height: 1.5;
-`;
+`
 
 export const StyledTag = styled(Tag)`
   background: ${green}33;
   margin: 1px 0;
   border: 0;
-`;
+`
 
 export const StyledText = styled.span`
   font-family: Open Sans;
   font-weight: 600;
   font-size: 14px;
-  color: ${props => props.color};
-`;
+  color: ${(props) => props.color};
+`
 
 const TitleText = styled.div`
   color: #aaafb5;
   font-size: 12px;
   font-weight: bold;
   text-transform: uppercase;
-`;
+`
 
-export const StudentsTitle = styled(TitleText)``;
-export const ScoreTitle = styled(TitleText)``;
+export const StudentsTitle = styled(TitleText)``
+export const ScoreTitle = styled(TitleText)``

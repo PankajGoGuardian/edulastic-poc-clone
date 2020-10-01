@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Toggler = styled.div`
   position: relative;
@@ -7,8 +7,8 @@ export const Toggler = styled.div`
   cursor: pointer;
 
   ::before {
-    content: "";
-    background-color: ${props => props.theme.widgetOptions.togglerBgColor};
+    content: '';
+    background-color: ${(props) => props.theme.widgetOptions.togglerBgColor};
     position: absolute;
     width: 100%;
     height: 3px;
@@ -17,9 +17,9 @@ export const Toggler = styled.div`
   }
 
   ::after {
-    display: ${props => (props.isOpen ? "none" : "block")};
-    content: "";
-    background-color: ${props => props.theme.widgetOptions.togglerBgColor};
+    display: ${(props) => (props.isOpen ? 'none' : 'block')};
+    content: '';
+    background-color: ${(props) => props.theme.widgetOptions.togglerBgColor};
     position: absolute;
     width: 3px;
     height: 100%;
@@ -29,10 +29,12 @@ export const Toggler = styled.div`
 
   :hover {
     ::before {
-      background-color: ${props => props.theme.widgetOptions.togglerBgHoverColor};
+      background-color: ${(props) =>
+        props.theme.widgetOptions.togglerBgHoverColor};
     }
     ::after {
-      background-color: ${props => props.theme.widgetOptions.togglerBgHoverColor};
+      background-color: ${(props) =>
+        props.theme.widgetOptions.togglerBgHoverColor};
     }
   }
-`;
+`

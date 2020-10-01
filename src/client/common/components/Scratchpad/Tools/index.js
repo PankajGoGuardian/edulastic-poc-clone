@@ -1,15 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { notification } from "@edulastic/common";
-import { drawTools } from "@edulastic/constants";
-import MainToolBox from "./MainToolBox";
-import SubToolBox from "./SubToolBox";
-import { updateScratchpadAction, updateEditModeAction } from "../duck";
-import { ToolBoxContainer } from "./styled";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { notification } from '@edulastic/common'
+import { drawTools } from '@edulastic/constants'
+import MainToolBox from './MainToolBox'
+import SubToolBox from './SubToolBox'
+import { updateScratchpadAction, updateEditModeAction } from '../duck'
+import { ToolBoxContainer } from './styled'
 
-const Tools = props => {
-  const { scratchData, updateScratchpad, editScratchpad } = props;
+const Tools = (props) => {
+  const { scratchData, updateScratchpad, editScratchpad } = props
   const {
     fillColor,
     lineWidth,
@@ -21,36 +21,42 @@ const Tools = props => {
     activeMode,
     selectedNodes,
     canRedo,
-    canUndo
-  } = scratchData;
-  const onClickEditingButton = mode => {
-    editScratchpad({ editMode: mode });
-  };
+    canUndo,
+  } = scratchData
+  const onClickEditingButton = (mode) => {
+    editScratchpad({ editMode: mode })
+  }
 
-  const onChangeTool = value => {
-    const data = {};
+  const onChangeTool = (value) => {
+    const data = {}
     if (value === drawTools.UNDO_TOOL || value === drawTools.REDO_TOOL) {
-      return onClickEditingButton(value);
+      return onClickEditingButton(value)
     }
 
     if (value === drawTools.DELETE_TOOL) {
-      data.deleteMode = !deleteMode;
-      data.activeMode = "";
+      data.deleteMode = !deleteMode
+      data.activeMode = ''
     } else if (activeMode === value) {
-      data.activeMode = "";
+      data.activeMode = ''
     } else {
-      data.activeMode = value;
-      data.deleteMode = false;
+      data.activeMode = value
+      data.deleteMode = false
     }
-    if (value === drawTools.DRAW_BREAKING_LINE || value === drawTools.DRAW_CURVE_LINE) {
-      notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing" });
+    if (
+      value === drawTools.DRAW_BREAKING_LINE ||
+      value === drawTools.DRAW_CURVE_LINE
+    ) {
+      notification({
+        type: 'info',
+        messageKey: 'pleaseDoubleClickToStopDrawing',
+      })
     }
-    updateScratchpad(data);
-  };
+    updateScratchpad(data)
+  }
 
   const onChangeOption = (prop, value) => {
-    updateScratchpad({ ...scratchData, [prop]: value });
-  };
+    updateScratchpad({ ...scratchData, [prop]: value })
+  }
 
   return (
     <ToolBoxContainer alignItems="stretch" flexDirection="column">
@@ -74,19 +80,19 @@ const Tools = props => {
         onClickEditBtn={onClickEditingButton}
       />
     </ToolBoxContainer>
-  );
-};
+  )
+}
 
 Tools.propTypes = {
-  scratchData: PropTypes.object.isRequired
-};
+  scratchData: PropTypes.object.isRequired,
+}
 
 export default connect(
-  state => ({
-    scratchData: state.scratchpad
+  (state) => ({
+    scratchData: state.scratchpad,
   }),
   {
     updateScratchpad: updateScratchpadAction,
-    editScratchpad: updateEditModeAction
+    editScratchpad: updateEditModeAction,
   }
-)(Tools);
+)(Tools)

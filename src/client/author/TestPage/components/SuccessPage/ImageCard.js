@@ -1,14 +1,14 @@
-import React from "react";
-import { IconHeart, IconUser, IconUsers } from "@edulastic/icons";
-import { cardTitleColor, secondaryTextColor } from "@edulastic/colors";
-import { keyBy } from "lodash";
-import Tags from "../../../src/components/common/Tags";
+import React from 'react'
+import { IconHeart, IconUser, IconUsers } from '@edulastic/icons'
+import { cardTitleColor, secondaryTextColor } from '@edulastic/colors'
+import { keyBy } from 'lodash'
+import Tags from '../../../src/components/common/Tags'
 import {
   flattenPlaylistStandards,
   getTestAuthorName,
   getPlaylistAuthorName,
-  getAuthorCollectionMap
-} from "../../../dataUtils";
+  getAuthorCollectionMap,
+} from '../../../dataUtils'
 
 import {
   Container,
@@ -31,31 +31,42 @@ import {
   MidRow,
   Collection,
   CollectionNameWrapper,
-  ThinLine
-} from "../../../TestList/components/Item/styled";
-import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
-import { TestStatus } from "../../../TestList/components/ListItem/styled";
+  ThinLine,
+} from '../../../TestList/components/Item/styled'
+import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/testStatusWrapper'
+import { TestStatus } from '../../../TestList/components/ListItem/styled'
 
-const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [], contentData = {} }) => {
+const ImageCard = ({
+  isPlaylist,
+  _source = {},
+  collections: allCollections = [],
+  contentData = {},
+}) => {
   const {
     title,
     summary = {},
     tags,
     modules,
     analytics = [],
-    _id = "",
+    _id = '',
     collections = [],
     status,
     thumbnail,
-    isDocBased
-  } = _source;
-  const authorName = isPlaylist ? getPlaylistAuthorName({ _source }) : getTestAuthorName(_source);
-  const { usage = 0, likes = 0 } = analytics[0] || {};
-  const itemId = _id.substr(_id.length - 5);
-  const collectionById = keyBy(allCollections, "_id");
-  const filterCollections = collections.map(col => collectionById[col._id]).filter(c => c);
-  const { totalItems, totalQuestions, standards = [] } = summary;
-  const standardsIdentifiers = isPlaylist ? flattenPlaylistStandards(modules) : standards.map(item => item.identifier);
+    isDocBased,
+  } = _source
+  const authorName = isPlaylist
+    ? getPlaylistAuthorName({ _source })
+    : getTestAuthorName(_source)
+  const { usage = 0, likes = 0 } = analytics[0] || {}
+  const itemId = _id.substr(_id.length - 5)
+  const collectionById = keyBy(allCollections, '_id')
+  const filterCollections = collections
+    .map((col) => collectionById[col._id])
+    .filter((c) => c)
+  const { totalItems, totalQuestions, standards = [] } = summary
+  const standardsIdentifiers = isPlaylist
+    ? flattenPlaylistStandards(modules)
+    : standards.map((item) => item.identifier)
 
   return (
     <Container
@@ -64,13 +75,15 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [],
       title={
         <Header src={thumbnail}>
           <Stars />
-          {filterCollections.find(o => o.name === "Edulastic Certified") &&
+          {filterCollections.find((o) => o.name === 'Edulastic Certified') &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
         </Header>
       }
     >
-      <TestInfo style={{ textAlign: "left" }}>
-        <StyledLink title={contentData.title || title}>{contentData.title || title}</StyledLink>
+      <TestInfo style={{ textAlign: 'left' }}>
+        <StyledLink title={contentData.title || title}>
+          {contentData.title || title}
+        </StyledLink>
         <TagsWrapper isPlaylist={isPlaylist}>
           <Tags
             show={4}
@@ -87,7 +100,10 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [],
         <MidRow>
           <Collection>
             <label>COLLECTIONS</label>
-            <CollectionNameWrapper title="Private Library" style={{ color: secondaryTextColor }}>
+            <CollectionNameWrapper
+              title="Private Library"
+              style={{ color: secondaryTextColor }}
+            >
               Private Library
             </CollectionNameWrapper>
           </Collection>
@@ -129,21 +145,31 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [],
             <span>{itemId}</span>
           </PlaylistId>
         ) : null}
-        {status !== "draft" && (
+        {status !== 'draft' && (
           <>
             <ShareIcon>
-              <IconUsers color={cardTitleColor} width={14} height={14} style={{ marginRight: "8px" }} />
+              <IconUsers
+                color={cardTitleColor}
+                width={14}
+                height={14}
+                style={{ marginRight: '8px' }}
+              />
               <IconText>{usage}</IconText>
             </ShareIcon>
             <LikeIcon>
-              <IconHeart color={cardTitleColor} width={14} height={14} style={{ marginRight: "8px" }} />
+              <IconHeart
+                color={cardTitleColor}
+                width={14}
+                height={14}
+                style={{ marginRight: '8px' }}
+              />
               <IconText>{likes}</IconText>
             </LikeIcon>
           </>
         )}
       </Footer>
     </Container>
-  );
-};
+  )
+}
 
-export default ImageCard;
+export default ImageCard

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Polyline = styled.polyline`
   fill: none;
@@ -10,4 +10,4 @@ export const Polyline = styled.polyline`
   stroke-linejoin: round;
   z-index: -1;
   pointer-events: none;
-`;
+`

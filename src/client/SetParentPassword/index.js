@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { notification } from "@edulastic/common";
-import { Layout, Button, Icon, Form, Input, Row, Col, Spin, message } from "antd";
-import { withRouter } from "react-router";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { slice } from "./ducks";
+import React, { useEffect, useState } from 'react'
+import { notification } from '@edulastic/common'
+import {
+  Layout,
+  Button,
+  Icon,
+  Form,
+  Input,
+  Row,
+  Col,
+  Spin,
+  message,
+} from 'antd'
+import { withRouter } from 'react-router'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { slice } from './ducks'
 
-const { Content } = Layout;
+const { Content } = Layout
 
 function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
+  return Object.keys(fieldsError).some((field) => fieldsError[field])
 }
 
 function SetParentPassword({
@@ -20,54 +30,59 @@ function SetParentPassword({
   sendParentCode,
   resetPassword,
   loadedUserName,
-  passwordProgress
+  passwordProgress,
 }) {
   useEffect(() => {
     if (match?.params?.code) {
-      sendParentCode(match?.params?.code);
+      sendParentCode(match?.params?.code)
     }
-  }, [match?.params?.code]);
+  }, [match?.params?.code])
 
-  const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = form;
+  const {
+    getFieldDecorator,
+    getFieldsError,
+    getFieldError,
+    isFieldTouched,
+  } = form
 
-  const [confirmDirty, setConfirmDirty] = useState(false);
+  const [confirmDirty, setConfirmDirty] = useState(false)
 
-  const handleConfirmBlur = e => {
-    const { value } = e.target;
-    setConfirmDirty(confirmDirty || !!value);
-  };
+  const handleConfirmBlur = (e) => {
+    const { value } = e.target
+    setConfirmDirty(confirmDirty || !!value)
+  }
 
   const compareToFirstPassword = (rule, value, callback) => {
-    if (value && value !== form.getFieldValue("password")) {
-      callback("Two passwords that you enter is inconsistent!");
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!')
     } else {
-      callback();
+      callback()
     }
-  };
+  }
 
   const validateToNextPassword = (rule, value, callback) => {
     if (value && confirmDirty) {
-      form.validateFields(["confirm"], { force: true });
+      form.validateFields(['confirm'], { force: true })
     }
-    callback();
-  };
+    callback()
+  }
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault()
 
     form.validateFields((err, values) => {
-      const { password, confirm } = values;
+      const { password, confirm } = values
       if (password !== confirm) {
-        notification({ messageKey:"passwordAndConfirmShouldMatch"});
-        return;
+        notification({ messageKey: 'passwordAndConfirmShouldMatch' })
+        return
       }
       if (password.length < 7) {
-        notification({ messageKey:"passwordShouldBeAtleast7Characters"});
-        return;
+        notification({ messageKey: 'passwordShouldBeAtleast7Characters' })
+        return
       }
-      resetPassword({ password, username: loadedUserName });
-    });
-  };
+      resetPassword({ password, username: loadedUserName })
+    })
+  }
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -77,36 +92,45 @@ function SetParentPassword({
             <Col span={6} offset={9}>
               {loadedUserId ? (
                 <>
-                  <h2 style={{ textAlign: "center" }}>Set Password</h2>
+                  <h2 style={{ textAlign: 'center' }}>Set Password</h2>
 
                   <Form.Item label="Password">
-                    {getFieldDecorator("password", {
+                    {getFieldDecorator('password', {
                       rules: [
                         {
                           required: true,
-                          message: "Please input your password!"
+                          message: 'Please input your password!',
                         },
                         {
-                          validator: validateToNextPassword
-                        }
-                      ]
+                          validator: validateToNextPassword,
+                        },
+                      ],
                     })(<Input.Password loading={passwordProgress} />)}
                   </Form.Item>
                   <Form.Item label="Confirm Password">
-                    {getFieldDecorator("confirm", {
+                    {getFieldDecorator('confirm', {
                       rules: [
                         {
                           required: true,
-                          message: "Please confirm your password!"
+                          message: 'Please confirm your password!',
                         },
                         {
-                          validator: compareToFirstPassword
-                        }
-                      ]
-                    })(<Input.Password loading={passwordProgress} onBlur={handleConfirmBlur} />)}
+                          validator: compareToFirstPassword,
+                        },
+                      ],
+                    })(
+                      <Input.Password
+                        loading={passwordProgress}
+                        onBlur={handleConfirmBlur}
+                      />
+                    )}
                   </Form.Item>
                   <Form.Item>
-                    <Button type="primary" disabled={passwordProgress} htmlType="submit">
+                    <Button
+                      type="primary"
+                      disabled={passwordProgress}
+                      htmlType="submit"
+                    >
                       Submit
                     </Button>
                   </Form.Item>
@@ -114,7 +138,7 @@ function SetParentPassword({
               ) : (
                 <>
                   <Spin size="large" />
-                  <h2 style={{ textAlign: "center" }}>Verifying code...</h2>
+                  <h2 style={{ textAlign: 'center' }}>Verifying code...</h2>
                 </>
               )}
             </Col>
@@ -122,22 +146,25 @@ function SetParentPassword({
         </Content>
       </Layout>
     </Form>
-  );
+  )
 }
 
 const enhance = compose(
   withRouter,
-  Form.create({ name: "ResetpasswordLogin" }),
+  Form.create({ name: 'ResetpasswordLogin' }),
 
   connect(
-    state => ({
+    (state) => ({
       loading: state?.resetPassword?.loading,
       passwordProgress: state?.resetPassword?.passwordProgress,
       loadedUserId: state?.resetPassword?.parentUserId,
-      loadedUserName: state?.resetPassword?.username
+      loadedUserName: state?.resetPassword?.username,
     }),
-    { sendParentCode: slice.actions.sendParentCodeRequest, resetPassword: slice.actions.resetPasswordRequest }
+    {
+      sendParentCode: slice.actions.sendParentCodeRequest,
+      resetPassword: slice.actions.resetPasswordRequest,
+    }
   )
-);
+)
 
-export default enhance(SetParentPassword);
+export default enhance(SetParentPassword)

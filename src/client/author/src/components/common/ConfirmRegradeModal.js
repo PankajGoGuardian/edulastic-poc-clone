@@ -1,10 +1,17 @@
-import React from "react";
-import { Button } from "antd";
-import { ConfirmationModal } from "./ConfirmationModal";
-import { connect } from "react-redux";
-import { EduButton } from "@edulastic/common";
+import React from 'react'
+import { Button } from 'antd'
+import { connect } from 'react-redux'
+import { EduButton } from '@edulastic/common'
+import { ConfirmationModal } from './ConfirmationModal'
 
-const ConfirmRegradeModal = ({ visible, onCancel, onCancelRegrade, onOk, loading, creating }) => (
+const ConfirmRegradeModal = ({
+  visible,
+  onCancel,
+  onCancelRegrade,
+  onOk,
+  loading,
+  creating,
+}) => (
   <ConfirmationModal
     centered
     visible={visible}
@@ -20,16 +27,22 @@ const ConfirmRegradeModal = ({ visible, onCancel, onCancelRegrade, onOk, loading
       >
         Skip Regrade
       </EduButton>,
-      <EduButton height="40px" loading={loading || creating} disabled={loading || creating} onClick={onOk}>
+      <EduButton
+        height="40px"
+        loading={loading || creating}
+        disabled={loading || creating}
+        onClick={onOk}
+      >
         Regrade
-      </EduButton>
+      </EduButton>,
     ]}
   >
-    There are some ongoing assignments linked to the test, would you like to apply the changes?
+    There are some ongoing assignments linked to the test, would you like to
+    apply the changes?
   </ConfirmationModal>
-);
+)
 
-export default connect(state => ({
+export default connect((state) => ({
   loading: state?.tests?.loading,
-  creating: state?.tests?.creating
-}))(ConfirmRegradeModal);
+  creating: state?.tests?.creating,
+}))(ConfirmRegradeModal)

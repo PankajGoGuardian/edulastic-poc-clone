@@ -1,31 +1,31 @@
-import { FlexContainer, Paper } from "@edulastic/common";
-import { themeColor, mobileWidth, greyThemeDark2 } from "@edulastic/colors";
-import styled from "styled-components";
-import { Button } from "antd";
+import { FlexContainer, Paper } from '@edulastic/common'
+import { themeColor, mobileWidth, greyThemeDark2 } from '@edulastic/colors'
+import styled from 'styled-components'
+import { Button } from 'antd'
 
 export const Content = styled(Paper)`
   left: 0;
   right: 0;
   width: 100%;
   max-height: calc(100vh - 135px);
-  padding: ${props => (props.padding ? props.padding : "0px")};
+  padding: ${(props) => (props.padding ? props.padding : '0px')};
   overflow: auto;
   position: relative;
-  display: ${props => (props.hide ? "none" : "initial")};
+  display: ${(props) => (props.hide ? 'none' : 'initial')};
   @media (max-width: ${mobileWidth}) {
     padding: 33px 30px;
   }
-`;
+`
 
 export const TabContainer = styled.div`
   margin-bottom: 30px;
-`;
+`
 
 export const AddButtonContainer = styled(FlexContainer)`
   margin-bottom: 0;
   margin-top: 25px;
   flex-wrap: wrap;
-`;
+`
 
 export const AddPassageBtnContainer = styled.div`
   display: flex;
@@ -35,7 +35,7 @@ export const AddPassageBtnContainer = styled.div`
     margin-right: 10px;
     padding: 0px;
   }
-`;
+`
 
 export const AddTabButton = styled(Button)`
   color: ${themeColor};
@@ -56,7 +56,7 @@ export const AddTabButton = styled(Button)`
     position: unset;
     color: ${themeColor};
   }
-`;
+`
 
 export const MobileSide = styled.div`
   position: fixed;
@@ -64,20 +64,20 @@ export const MobileSide = styled.div`
   align-items: center;
   justify-content: center;
   height: calc(100vh - 220px);
-  right: ${props => (props.type === "right" ? "0" : "unset")};
-  left: ${props => (props.type === "left" ? "0" : "unset")};
+  right: ${(props) => (props.type === 'right' ? '0' : 'unset')};
+  left: ${(props) => (props.type === 'left' ? '0' : 'unset')};
   background: ${themeColor};
   width: 25px;
   bottom: 20px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-`;
+`
 
 export const WidgetContainer = styled.div`
-  display: ${({ flowLayout }) => (flowLayout ? "flex" : "block")};
+  display: ${({ flowLayout }) => (flowLayout ? 'flex' : 'block')};
   flex-wrap: wrap;
   align-items: center;
-`;
+`
 
 export const CollapseBtn = styled.i`
   position: absolute;
@@ -97,7 +97,7 @@ export const CollapseBtn = styled.i`
   &.fa-arrow-right {
     left: 1px;
   }
-`;
+`
 
 export const PlusIcon = styled.span`
   display: inline-block;
@@ -110,10 +110,10 @@ export const PlusIcon = styled.span`
   color: ${greyThemeDark2};
   font-size: 18px !important;
   line-height: 1;
-`;
+`
 
 export const GreenPlusIcon = styled(PlusIcon)`
   color: #fff;
   background: ${themeColor};
   position: unset;
-`;
+`

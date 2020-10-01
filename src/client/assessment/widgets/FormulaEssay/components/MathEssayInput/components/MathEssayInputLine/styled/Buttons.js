@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Buttons = styled.div`
   display: flex;
@@ -7,4 +7,4 @@ export const Buttons = styled.div`
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-`;
+`

@@ -1,27 +1,42 @@
-import { EduButton, FlexContainer, CheckboxLabel } from "@edulastic/common";
-import { test } from "@edulastic/constants";
-import { withNamespaces } from "@edulastic/localization";
-import { Dropdown, Spin, Tooltip, Menu } from "antd";
-import produce from "immer";
-import { get, isEmpty } from "lodash";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import NoDataNotification from "../../../../common/components/NoDataNotification";
-import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
-import { getAssignmentsSummary, getAssignmentTestsSelector } from "../../../src/selectors/assignments";
-import { getUserIdSelector, getUserRole, getGroupList } from "../../../src/selectors/user";
+import { EduButton, FlexContainer, CheckboxLabel } from '@edulastic/common'
+import { test } from '@edulastic/constants'
+import { withNamespaces } from '@edulastic/localization'
+import { Dropdown, Spin, Tooltip, Menu } from 'antd'
+import produce from 'immer'
+import { get, isEmpty } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
+import { receiveAssignmentsSummaryAction } from '../../../src/actions/assignments'
+import {
+  getAssignmentsSummary,
+  getAssignmentTestsSelector,
+} from '../../../src/selectors/assignments'
+import {
+  getUserIdSelector,
+  getUserRole,
+  getGroupList,
+} from '../../../src/selectors/user'
 import {
   toggleRemoveItemsFolderAction,
   toggleMoveItemsFolderAction,
-  setItemsMoveFolderAction
-} from "../../../src/actions/folder";
-import { getSelectedItems } from "../../../src/selectors/folder";
-import { canEditTest } from "../../utils";
-import ActionMenu from "../ActionMenu/ActionMenu";
-import { ActionDiv, AssignmentTD, Container, TableData, TestThumbnail, TypeIcon, TypeWrapper } from "./styled";
+  setItemsMoveFolderAction,
+} from '../../../src/actions/folder'
+import { getSelectedItems } from '../../../src/selectors/folder'
+import { canEditTest } from '../../utils'
+import ActionMenu from '../ActionMenu/ActionMenu'
+import {
+  ActionDiv,
+  AssignmentTD,
+  Container,
+  TableData,
+  TestThumbnail,
+  TypeIcon,
+  TypeWrapper,
+} from './styled'
 
 class AdvancedTable extends Component {
   state = {
@@ -31,38 +46,43 @@ class AdvancedTable extends Component {
     sort: {},
     columns: [
       {
-        title: "ASSIGNMENT NAME",
-        dataIndex: "title",
-        align: "left",
-        sortDirections: ["descend", "ascend"],
+        title: 'ASSIGNMENT NAME',
+        dataIndex: 'title',
+        align: 'left',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
-        width: "28%",
+        width: '28%',
         sortOrder: false,
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 0) }),
-        className: "assignment-name",
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 0) }),
+        className: 'assignment-name',
         render: (text, row) => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <FlexContainer style={{ marginLeft: 0, justifyContent: "unset" }}>
+            <FlexContainer style={{ marginLeft: 0, justifyContent: 'unset' }}>
               <div>
                 <TestThumbnail src={row.thumbnail} />
               </div>
               <AssignmentTD>{text}</AssignmentTD>
             </FlexContainer>
           </Tooltip>
-        )
+        ),
       },
       {
-        title: "Type",
-        dataIndex: "testType",
-        sortDirections: ["descend", "ascend"],
+        title: 'Type',
+        dataIndex: 'testType',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
-        width: "4%",
-        align: "left",
-        className: "assignment-name",
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 1) }),
+        width: '4%',
+        align: 'left',
+        className: 'assignment-name',
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 1) }),
         render: (_, row) => (
-          <TypeWrapper paddingLeft="0px" width="100%" float="none" justify="left">
+          <TypeWrapper
+            paddingLeft="0px"
+            width="100%"
+            float="none"
+            justify="left"
+          >
             {row && row.testType === test.type.PRACTICE ? (
               <TypeIcon data-cy="type" type="p">
                 P
@@ -75,98 +95,108 @@ class AdvancedTable extends Component {
               </TypeIcon>
             )}
           </TypeWrapper>
-        )
+        ),
       },
       {
-        title: "Classes",
-        dataIndex: "total",
-        sortDirections: ["descend", "ascend"],
+        title: 'Classes',
+        dataIndex: 'total',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 2) }),
-        width: "8%",
-        render: text => <div>{text}</div>
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 2) }),
+        width: '8%',
+        render: (text) => <div>{text}</div>,
       },
       {
-        title: "Students",
-        dataIndex: "totalStudents",
-        sortDirections: ["descend", "ascend"],
+        title: 'Students',
+        dataIndex: 'totalStudents',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 3) }),
-        width: "8%",
-        render: text => <div> {text} </div>
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 3) }),
+        width: '8%',
+        render: (text) => <div> {text} </div>,
       },
       {
-        title: "Not Started & Absent",
-        dataIndex: "notStartedStudents",
-        sortDirections: ["descend", "ascend"],
+        title: 'Not Started & Absent',
+        dataIndex: 'notStartedStudents',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 4) }),
-        width: "14%",
-        render: text => <div>{text} </div>
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 4) }),
+        width: '14%',
+        render: (text) => <div>{text} </div>,
       },
       {
-        title: "In Progress",
-        dataIndex: "inProgressStudents",
-        sortDirections: ["descend", "ascend"],
+        title: 'In Progress',
+        dataIndex: 'inProgressStudents',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 5) }),
-        width: "8%",
-        render: text => <div> {text} </div>
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 5) }),
+        width: '8%',
+        render: (text) => <div> {text} </div>,
       },
       {
-        title: "Submitted",
-        dataIndex: "inGradingStudents",
-        sortDirections: ["descend", "ascend"],
+        title: 'Submitted',
+        dataIndex: 'inGradingStudents',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 6) }),
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 6) }),
 
-        width: "8%",
-        render: text => <div> {text} </div>
+        width: '8%',
+        render: (text) => <div> {text} </div>,
       },
       {
-        title: "Graded",
-        dataIndex: "gradedStudents",
-        sortDirections: ["descend", "ascend"],
+        title: 'Graded',
+        dataIndex: 'gradedStudents',
+        sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 6) }),
+        onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 6) }),
 
-        width: "6%",
-        render: text => <div> {text} </div>
+        width: '6%',
+        render: (text) => <div> {text} </div>,
       },
       {
         title: () => {
-          const { selectedRows } = this.props;
+          const { selectedRows } = this.props
           const menu = (
             <Menu>
-              <Menu.Item onClick={() => this.toggleMoveFolderModal()}>Add to Folder</Menu.Item>
-              <Menu.Item onClick={() => this.handleRemoveItemsFromFolder()}>Remove from Folder</Menu.Item>
+              <Menu.Item onClick={() => this.toggleMoveFolderModal()}>
+                Add to Folder
+              </Menu.Item>
+              <Menu.Item onClick={() => this.handleRemoveItemsFromFolder()}>
+                Remove from Folder
+              </Menu.Item>
             </Menu>
-          );
+          )
           return (
             selectedRows.length > 0 && (
               <ActionDiv>
                 <Dropdown
                   overlay={menu}
-                  trigger={["click"]}
+                  trigger={['click']}
                   placement="bottomRight"
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
-                  <EduButton height="28px" width="100%" data-cy="actions" isBlue isGhost>
+                  <EduButton
+                    height="28px"
+                    width="100%"
+                    data-cy="actions"
+                    isBlue
+                    isGhost
+                  >
                     ACTIONS
                   </EduButton>
                 </Dropdown>
               </ActionDiv>
             )
-          );
+          )
         },
-        dataIndex: "action",
-        width: "10%",
+        dataIndex: 'action',
+        width: '10%',
         render: (_, row) => {
           const {
             onOpenReleaseScoreSettings,
@@ -174,14 +204,16 @@ class AdvancedTable extends Component {
             showPreviewModal,
             toggleEditModal,
             toggleDeleteModal,
-            userId = "",
-            userRole = "",
+            userId = '',
+            userRole = '',
             togglePrintModal,
             userClassList,
-            assignmentsSummary
-          } = this.props;
-          const canEdit = canEditTest(row, userId);
-          const assignmentTest = assignmentsSummary.find(at => at.testId === row.testId);
+            assignmentsSummary,
+          } = this.props
+          const canEdit = canEditTest(row, userId)
+          const assignmentTest = assignmentsSummary.find(
+            (at) => at.testId === row.testId
+          )
           return (
             <ActionDiv data-cy="testActions">
               <Dropdown
@@ -200,201 +232,248 @@ class AdvancedTable extends Component {
                   togglePrintModal,
                   userClassList,
                   addItemToFolder: this.handleSelectRow(row),
-                  removeItemsFromFolder: () => this.handleRemoveItemsFromFolder(row)
+                  removeItemsFromFolder: () =>
+                    this.handleRemoveItemsFromFolder(row),
                 })}
                 placement="bottomRight"
-                trigger={["click"]}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
+                trigger={['click']}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
-                <EduButton height="28px" width="100%" isGhost data-cy="testActions">
+                <EduButton
+                  height="28px"
+                  width="100%"
+                  isGhost
+                  data-cy="testActions"
+                >
                   ACTIONS
                 </EduButton>
               </Dropdown>
             </ActionDiv>
-          );
+          )
         },
         onCell: () => ({
           onMouseEnter: this.disableRowClick,
-          onMouseLeave: this.enableRowClick
-        })
+          onMouseLeave: this.enableRowClick,
+        }),
       },
       {
         title: () => {
-          const { selectedAll, indeterminate } = this.isSelectedAll();
+          const { selectedAll, indeterminate } = this.isSelectedAll()
           return (
             <CheckboxLabel
               size="15px"
               indeterminate={indeterminate}
               onChange={this.handleSelectAllRow}
               checked={selectedAll}
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             />
-          );
+          )
         },
-        dataIndex: "checked",
-        width: "5%",
+        dataIndex: 'checked',
+        width: '5%',
         render: (_, row) => (
-          <ActionDiv onClick={e => e.stopPropagation()}>
-            <CheckboxLabel size="15px" checked={this.isSelectedRow(row)} onChange={this.handleSelectRow(row)} />
+          <ActionDiv onClick={(e) => e.stopPropagation()}>
+            <CheckboxLabel
+              size="15px"
+              checked={this.isSelectedRow(row)}
+              onChange={this.handleSelectRow(row)}
+            />
           </ActionDiv>
-        )
-      }
-    ]
-  };
+        ),
+      },
+    ],
+  }
 
   static getDerivedStateFromProps(nextProps) {
-    const { filtering } = nextProps;
+    const { filtering } = nextProps
     if (filtering) {
-      return { current: 1 };
+      return { current: 1 }
     }
-    return {};
+    return {}
   }
 
   componentDidMount() {
-    this.fetchSummary(1, {});
+    this.fetchSummary(1, {})
   }
 
   fetchSummary = (pageNo, sort) => {
-    const { loadAssignmentsSummary, districtId, filters } = this.props;
-    loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo }, sort });
-  };
+    const { loadAssignmentsSummary, districtId, filters } = this.props
+    loadAssignmentsSummary({
+      districtId,
+      filters: { ...filters, pageNo },
+      sort,
+    })
+  }
 
-  enableRowClick = () => this.setState({ enableRowClick: true });
+  enableRowClick = () => this.setState({ enableRowClick: true })
 
-  disableRowClick = () => this.setState({ enableRowClick: false });
+  disableRowClick = () => this.setState({ enableRowClick: false })
 
-  goToAdvancedView = row => {
-    const { history, districtId } = this.props;
-    const { enableRowClick } = this.state;
+  goToAdvancedView = (row) => {
+    const { history, districtId } = this.props
+    const { enableRowClick } = this.state
     if (enableRowClick) {
-      history.push(`/author/assignments/${districtId}/${row.testId}?testType=${row.testType}`);
+      history.push(
+        `/author/assignments/${districtId}/${row.testId}?testType=${row.testType}`
+      )
     }
-  };
+  }
 
-  handlePagination = page => {
-    const { sort } = this.state;
-    this.fetchSummary(page, sort);
-    this.setState({ current: page });
-  };
+  handlePagination = (page) => {
+    const { sort } = this.state
+    this.fetchSummary(page, sort)
+    this.setState({ current: page })
+  }
 
   handleSort = (col, index) => {
-    const { columns, current } = this.state;
-    const { sortOrder } = col;
-    const newSortOrder = sortOrder === false ? "descend" : sortOrder === "descend" ? "ascend" : false;
-    const newColumns = produce(columns, draft => {
+    const { columns, current } = this.state
+    const { sortOrder } = col
+    const newSortOrder =
+      sortOrder === false
+        ? 'descend'
+        : sortOrder === 'descend'
+        ? 'ascend'
+        : false
+    const newColumns = produce(columns, (draft) => {
       draft.forEach((o, indx) => {
-        if (indx === index) o.sortOrder = newSortOrder;
-        else if (indx < 7) o.sortOrder = false;
-      });
-    });
+        if (indx === index) o.sortOrder = newSortOrder
+        else if (indx < 7) o.sortOrder = false
+      })
+    })
     this.setState({
       columns: newColumns,
-      sort: newSortOrder ? { sortBy: col.dataIndex, sortOrder: newSortOrder } : {}
-    });
-    this.fetchSummary(current, newSortOrder ? { sortBy: col.dataIndex, sortOrder: newSortOrder } : {});
-  };
+      sort: newSortOrder
+        ? { sortBy: col.dataIndex, sortOrder: newSortOrder }
+        : {},
+    })
+    this.fetchSummary(
+      current,
+      newSortOrder ? { sortBy: col.dataIndex, sortOrder: newSortOrder } : {}
+    )
+  }
 
-  handleSelectRow = row => e => {
-    const { toggleAddItemFolderModal, setItemsToFolder, selectedRows } = this.props;
-    const selectedIndex = selectedRows.findIndex(r => r.itemId === row.testId);
+  handleSelectRow = (row) => (e) => {
+    const {
+      toggleAddItemFolderModal,
+      setItemsToFolder,
+      selectedRows,
+    } = this.props
+    const selectedIndex = selectedRows.findIndex((r) => r.itemId === row.testId)
     if (e.target && e.target.checked && selectedIndex === -1) {
-      setItemsToFolder([...selectedRows, { itemId: row.testId, name: row.title }]);
+      setItemsToFolder([
+        ...selectedRows,
+        { itemId: row.testId, name: row.title },
+      ])
     } else if (e.target && selectedIndex !== -1) {
-      selectedRows.splice(selectedIndex, 1);
-      setItemsToFolder([...selectedRows]);
+      selectedRows.splice(selectedIndex, 1)
+      setItemsToFolder([...selectedRows])
     } else if (!e.target && toggleAddItemFolderModal) {
       // this case is from action button of an item
-      setItemsToFolder([{ itemId: row.testId, name: row.title }]);
+      setItemsToFolder([{ itemId: row.testId, name: row.title }])
       toggleAddItemFolderModal({
         items: [{ itemId: row.testId, name: row.title }],
-        isOpen: true
-      });
+        isOpen: true,
+      })
     }
-  };
+  }
 
-  handleSelectAllRow = e => {
-    const { assignmentsSummary, setItemsToFolder } = this.props;
+  handleSelectAllRow = (e) => {
+    const { assignmentsSummary, setItemsToFolder } = this.props
     if (e.target.checked) {
-      setItemsToFolder(assignmentsSummary.map(r => ({ itemId: r.testId, title: r.title })));
+      setItemsToFolder(
+        assignmentsSummary.map((r) => ({ itemId: r.testId, title: r.title }))
+      )
     } else {
-      setItemsToFolder([]);
+      setItemsToFolder([])
     }
-  };
+  }
 
-  handleRemoveItemsFromFolder = row => {
-    const { toggleRemovalFolderModal, selectedRows } = this.props;
+  handleRemoveItemsFromFolder = (row) => {
+    const { toggleRemovalFolderModal, selectedRows } = this.props
     if (!isEmpty(row)) {
       toggleRemovalFolderModal({
         items: [{ itemId: row.testId, name: row.title }],
-        isOpen: true
-      });
+        isOpen: true,
+      })
     } else if (!isEmpty(selectedRows)) {
       toggleRemovalFolderModal({
         items: selectedRows,
-        isOpen: true
-      });
+        isOpen: true,
+      })
     }
-  };
+  }
 
   toggleMoveFolderModal = () => {
-    const { toggleAddItemFolderModal, selectedRows } = this.props;
+    const { toggleAddItemFolderModal, selectedRows } = this.props
     if (toggleAddItemFolderModal) {
       toggleAddItemFolderModal({
         items: selectedRows,
-        isOpen: true
-      });
+        isOpen: true,
+      })
     }
-  };
+  }
 
-  isSelectedRow = row => {
-    const { selectedRows } = this.props;
-    return !!selectedRows.find(r => r.itemId === row.testId);
-  };
+  isSelectedRow = (row) => {
+    const { selectedRows } = this.props
+    return !!selectedRows.find((r) => r.itemId === row.testId)
+  }
 
   isSelectedAll = () => {
-    const { assignmentsSummary, selectedRows } = this.props;
-    const selectedAll = selectedRows.length === assignmentsSummary.length;
-    return { selectedAll, indeterminate: selectedRows.length > 0 && !selectedAll };
-  };
+    const { assignmentsSummary, selectedRows } = this.props
+    const selectedAll = selectedRows.length === assignmentsSummary.length
+    return {
+      selectedAll,
+      indeterminate: selectedRows.length > 0 && !selectedAll,
+    }
+  }
 
   render() {
-    const { assignmentsSummary, totalData, loading } = this.props;
-    const { perPage, current, columns } = this.state;
+    const { assignmentsSummary, totalData, loading } = this.props
+    const { perPage, current, columns } = this.state
 
     if (loading) {
-      return <Spin size="large" />;
+      return <Spin size="large" />
     }
 
     const NoDataMessage = (
       <>
         <p>There are no assignments found for the filter options selected.</p>
-        <p>Something Wrong? Check the filters including the school year selected.</p>
+        <p>
+          Something Wrong? Check the filters including the school year selected.
+        </p>
       </>
-    );
+    )
 
     if (assignmentsSummary.length < 1) {
       return (
-        <NoDataNotification style={{ width: "auto" }} heading="Assignments not available" description={NoDataMessage} />
-      );
+        <NoDataNotification
+          style={{ width: 'auto' }}
+          heading="Assignments not available"
+          description={NoDataMessage}
+        />
+      )
     }
 
     return (
       <Container>
         <TableData
           columns={columns}
-          dataSource={assignmentsSummary.map(item => ({ ...item, key: `${item.testId}_${item.testType}` }))}
-          onRow={row => ({
-            onClick: () => this.goToAdvancedView(row)
+          dataSource={assignmentsSummary.map((item) => ({
+            ...item,
+            key: `${item.testId}_${item.testType}`,
+          }))}
+          onRow={(row) => ({
+            onClick: () => this.goToAdvancedView(row),
           })}
           pagination={{
             pageSize: perPage,
             onChange: this.handlePagination,
             total: totalData,
-            current
+            current,
           }}
         />
       </Container>
-    );
+    )
   }
 }
 
@@ -404,36 +483,36 @@ AdvancedTable.propTypes = {
   districtId: PropTypes.string.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
   filters: PropTypes.object.isRequired,
-  history: PropTypes.object
-};
+  history: PropTypes.object,
+}
 
 AdvancedTable.defaultProps = {
   onOpenReleaseScoreSettings: () => {},
-  history: {}
-};
+  history: {},
+}
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assignmentCard"),
+  withNamespaces('assignmentCard'),
   connect(
-    state => ({
+    (state) => ({
       assignmentsSummary: getAssignmentsSummary(state),
-      filtering: get(state, "author_assignments.filtering"),
-      totalData: get(state, "author_assignments.total", 0),
-      loading: get(state, "author_assignments.loading"),
+      filtering: get(state, 'author_assignments.filtering'),
+      totalData: get(state, 'author_assignments.total', 0),
+      loading: get(state, 'author_assignments.loading'),
       userId: getUserIdSelector(state),
       userRole: getUserRole(state),
       selectedRows: getSelectedItems(state),
       assignmentTests: getAssignmentTestsSelector(state),
-      userClassList: getGroupList(state)
+      userClassList: getGroupList(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       setItemsToFolder: setItemsMoveFolderAction,
       toggleRemovalFolderModal: toggleRemoveItemsFolderAction,
-      toggleAddItemFolderModal: toggleMoveItemsFolderAction
+      toggleAddItemFolderModal: toggleMoveItemsFolderAction,
     }
   )
-);
+)
 
-export default enhance(AdvancedTable);
+export default enhance(AdvancedTable)

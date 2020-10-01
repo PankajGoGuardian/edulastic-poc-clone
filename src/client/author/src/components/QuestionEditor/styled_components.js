@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { mobileWidth } from "@edulastic/colors";
+import styled from 'styled-components'
+import { mobileWidth } from '@edulastic/colors'
 
 export const Container = styled.div`
   padding: 25px 40px;
@@ -7,6 +7,6 @@ export const Container = styled.div`
   @media (max-width: ${mobileWidth}) {
     padding: 10px 25px;
   }
-`;
+`
 
-export default Container;
+export default Container

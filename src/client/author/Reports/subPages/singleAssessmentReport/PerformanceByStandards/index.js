@@ -1,39 +1,62 @@
-import { SpinLoader } from "@edulastic/common";
-import { Col, Row } from "antd";
-import next from "immer";
-import { capitalize, filter as filterArr, find, indexOf, intersectionBy } from "lodash";
-import PropTypes from "prop-types";
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { getInterestedCurriculumsSelector, getUserRole } from "../../../../src/selectors/user";
-import { EmptyData } from "../../../common/components/emptyData";
-import { AutocompleteDropDown } from "../../../common/components/widgets/autocompleteDropDown";
-import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import { StyledCard, StyledDropDownContainer, StyledH3, StyledSignedBarContainer } from "../../../common/styled";
-import { getCsvDownloadingState } from "../../../ducks";
+import { SpinLoader } from '@edulastic/common'
+import { Col, Row } from 'antd'
+import next from 'immer'
+import {
+  capitalize,
+  filter as filterArr,
+  find,
+  indexOf,
+  intersectionBy,
+} from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import {
+  getInterestedCurriculumsSelector,
+  getUserRole,
+} from '../../../../src/selectors/user'
+import { EmptyData } from '../../../common/components/emptyData'
+import { AutocompleteDropDown } from '../../../common/components/widgets/autocompleteDropDown'
+import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
+import {
+  StyledCard,
+  StyledDropDownContainer,
+  StyledH3,
+  StyledSignedBarContainer,
+} from '../../../common/styled'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterSelectedStandardsProficiencyProfile,
-  getSAFFilterStandardsProficiencyProfiles
-} from "../common/filterDataDucks";
-import CardHeader, { CardDropdownWrapper, CardTitle } from "./common/CardHeader/CardHeader";
-import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
-import SimpleStackedBarChartContainer from "./components/charts/SimpleStackedBarChartContainer";
-import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
+  getSAFFilterStandardsProficiencyProfiles,
+} from '../common/filterDataDucks'
+import CardHeader, {
+  CardDropdownWrapper,
+  CardTitle,
+} from './common/CardHeader/CardHeader'
+import SignedStackedBarChartContainer from './components/charts/SignedStackedBarChartContainer'
+import SimpleStackedBarChartContainer from './components/charts/SimpleStackedBarChartContainer'
+import PerformanceAnalysisTable from './components/table/performanceAnalysisTable'
 import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
-  getPerformanceByStandardsReportSelector
-} from "./ducks";
-import dropDownFormat from "./static/json/dropDownFormat.json";
-import { analysisParseData, analyzeByMode, compareByMode, viewByMode } from "./util/transformers";
+  getPerformanceByStandardsReportSelector,
+} from './ducks'
+import dropDownFormat from './static/json/dropDownFormat.json'
+import {
+  analysisParseData,
+  analyzeByMode,
+  compareByMode,
+  viewByMode,
+} from './util/transformers'
 
-const findCompareByTitle = (key = "") => {
-  if (!key) return "";
+const findCompareByTitle = (key = '') => {
+  if (!key) return ''
 
-  const { title = "" } = find(dropDownFormat.compareByDropDownData, item => item.key === key) || {};
+  const { title = '' } =
+    find(dropDownFormat.compareByDropDownData, (item) => item.key === key) || {}
 
-  return title;
-};
+  return title
+}
 
 const PerformanceByStandards = ({
   loading,
@@ -48,150 +71,175 @@ const PerformanceByStandards = ({
   standardProficiencyProfiles,
   location,
   pageTitle,
-  filters
+  filters,
 }) => {
   const scaleInfo = useMemo(
     () =>
       (
-        standardProficiencyProfiles.find(s => s._id === selectedStandardProficiencyProfile) ||
-        standardProficiencyProfiles[0]
+        standardProficiencyProfiles.find(
+          (s) => s._id === selectedStandardProficiencyProfile
+        ) || standardProficiencyProfiles[0]
       )?.scale,
     [selectedStandardProficiencyProfile, standardProficiencyProfiles]
-  );
+  )
 
-  const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
-  const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
-  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
-  const [standardId, setStandardId] = useState("");
-  const [selectedStandards, setSelectedStandards] = useState([]);
-  const [selectedDomains, setSelectedDomains] = useState([]);
+  const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
+  const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
+  const [compareBy, setCompareBy] = useState(
+    role === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
+  )
+  const [standardId, setStandardId] = useState('')
+  const [selectedStandards, setSelectedStandards] = useState([])
+  const [selectedDomains, setSelectedDomains] = useState([])
 
-  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0;
-  const isViewByStandards = viewBy === viewByMode.STANDARDS;
+  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0
+  const isViewByStandards = viewBy === viewByMode.STANDARDS
 
   const reportWithFilteredSkills = useMemo(
     () =>
-      next(report, draftReport => {
+      next(report, (draftReport) => {
         draftReport.skillInfo = filterArr(
           draftReport.skillInfo,
-          skill => String(skill.curriculumId) === String(standardId)
-        );
-        draftReport.scaleInfo = scaleInfo;
+          (skill) => String(skill.curriculumId) === String(standardId)
+        )
+        draftReport.scaleInfo = scaleInfo
       }),
     [report, standardId, scaleInfo]
-  );
+  )
 
   const standardsDropdownData = useMemo(() => {
-    const { standardsMap } = reportWithFilteredSkills;
-    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: +item, name: standardsMap[item] }));
-    let intersected = standardsMapArr;
+    const { standardsMap } = reportWithFilteredSkills
+    const standardsMapArr = Object.keys(standardsMap).map((item) => ({
+      _id: +item,
+      name: standardsMap[item],
+    }))
+    let intersected = standardsMapArr
     if (interestedCurriculums && interestedCurriculums.length) {
-      intersected = intersectionBy(standardsMapArr, interestedCurriculums, "_id");
+      intersected = intersectionBy(
+        standardsMapArr,
+        interestedCurriculums,
+        '_id'
+      )
     }
-    intersected = intersected.map(item => ({ key: item._id, title: item.name }));
-    return intersected || [];
-  }, [report]);
+    intersected = intersected.map((item) => ({
+      key: item._id,
+      title: item.name,
+    }))
+    return intersected || []
+  }, [report])
 
-  const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
-    if (o.allowedRoles) {
-      return o.allowedRoles.includes(role);
+  const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(
+    (o) => {
+      if (o.allowedRoles) {
+        return o.allowedRoles.includes(role)
+      }
+      return true
     }
-    return true;
-  });
+  )
 
   const getTitleByTestId = () => {
     const {
-      selectedTest: { title: testTitle = "" }
-    } = settings;
-    return testTitle;
-  };
+      selectedTest: { title: testTitle = '' },
+    } = settings
+    return testTitle
+  }
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {};
-      q.testId = settings.selectedTest.key;
-      q.requestFilters = { ...settings.requestFilters };
-      getPerformanceByStandards(q);
+      const q = {}
+      q.testId = settings.selectedTest.key
+      q.requestFilters = { ...settings.requestFilters }
+      getPerformanceByStandards(q)
     }
-  }, [settings]);
+  }, [settings])
 
   const setSelectedData = ({ defaultStandardId }) => {
     const _defaultStandardId =
-      standardsDropdownData.find(s => `${s.key}` === `${defaultStandardId}`)?.key ||
+      standardsDropdownData.find((s) => `${s.key}` === `${defaultStandardId}`)
+        ?.key ||
       standardsDropdownData?.[0]?.key ||
-      "";
-    setStandardId(_defaultStandardId);
-    setSelectedStandards([]);
-    setSelectedDomains([]);
-  };
-
-  useEffect(() => {
-    setSelectedData(reportWithFilteredSkills);
-  }, [report]);
-
-  const handleResetSelection = () => {
-    setSelectedData(report);
-  };
-
-  const handleToggleSelectedData = item => {
-    const dataField = isViewByStandards ? "standardId" : "domainId";
-    const stateHandler = isViewByStandards ? setSelectedStandards : setSelectedDomains;
-
-    stateHandler(prevState => {
-      const newState = next(prevState, draftState => {
-        const index = indexOf(prevState, item[dataField]);
-        if (index > -1) {
-          draftState.splice(index, 1);
-        } else {
-          draftState.push(item[dataField]);
-        }
-      });
-
-      return newState;
-    });
-  };
-
-  const handleViewByChange = (event, selected) => {
-    setViewBy(selected.key);
-  };
-
-  const handleAnalyzeByChange = (event, selected) => {
-    setAnalyzeBy(selected.key);
-  };
-
-  const handleCompareByChange = (event, selected) => {
-    setCompareBy(selected.key);
-  };
-
-  const handleStandardIdChange = selected => {
-    setStandardId(selected.key);
-  };
-
-  if (loading) {
-    return <SpinLoader position="fixed" />;
+      ''
+    setStandardId(_defaultStandardId)
+    setSelectedStandards([])
+    setSelectedDomains([])
   }
 
-  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filters);
+  useEffect(() => {
+    setSelectedData(reportWithFilteredSkills)
+  }, [report])
 
-  const { testId } = match.params;
-  const testName = getTitleByTestId(testId);
-  const assignmentInfo = `${testName}`;
+  const handleResetSelection = () => {
+    setSelectedData(report)
+  }
 
-  const selectedStandardId = standardsDropdownData.find(s => `${s.key}` === `${standardId}`);
+  const handleToggleSelectedData = (item) => {
+    const dataField = isViewByStandards ? 'standardId' : 'domainId'
+    const stateHandler = isViewByStandards
+      ? setSelectedStandards
+      : setSelectedDomains
 
-  const selectedItems = isViewByStandards ? selectedStandards : selectedDomains;
+    stateHandler((prevState) => {
+      const newState = next(prevState, (draftState) => {
+        const index = indexOf(prevState, item[dataField])
+        if (index > -1) {
+          draftState.splice(index, 1)
+        } else {
+          draftState.push(item[dataField])
+        }
+      })
+
+      return newState
+    })
+  }
+
+  const handleViewByChange = (event, selected) => {
+    setViewBy(selected.key)
+  }
+
+  const handleAnalyzeByChange = (event, selected) => {
+    setAnalyzeBy(selected.key)
+  }
+
+  const handleCompareByChange = (event, selected) => {
+    setCompareBy(selected.key)
+  }
+
+  const handleStandardIdChange = (selected) => {
+    setStandardId(selected.key)
+  }
+
+  if (loading) {
+    return <SpinLoader position="fixed" />
+  }
+
+  const [tableData, totalPoints] = analysisParseData(
+    reportWithFilteredSkills,
+    viewBy,
+    compareBy,
+    filters
+  )
+
+  const { testId } = match.params
+  const testName = getTitleByTestId(testId)
+  const assignmentInfo = `${testName}`
+
+  const selectedStandardId = standardsDropdownData.find(
+    (s) => `${s.key}` === `${standardId}`
+  )
+
+  const selectedItems = isViewByStandards ? selectedStandards : selectedDomains
 
   const BarToRender =
     analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE
       ? SimpleStackedBarChartContainer
-      : SignedStackedBarChartContainer;
+      : SignedStackedBarChartContainer
 
   if (!report.metricInfo.length || !report.studInfo.length) {
     return (
       <>
         <EmptyData />
       </>
-    );
+    )
   }
 
   return (
@@ -222,10 +270,17 @@ const PerformanceByStandards = ({
                   data={dropDownFormat.analyzeByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer padding="0px 5px" xs={24} sm={24} md={7} lg={7} xl={7}>
+              <StyledDropDownContainer
+                padding="0px 5px"
+                xs={24}
+                sm={24}
+                md={7}
+                lg={7}
+                xl={7}
+              >
                 <AutocompleteDropDown
                   prefix="Standard set"
-                  by={selectedStandardId || { key: "", title: "" }}
+                  by={selectedStandardId || { key: '', title: '' }}
                   selectCB={handleStandardIdChange}
                   data={standardsDropdownData}
                 />
@@ -245,10 +300,11 @@ const PerformanceByStandards = ({
           />
         </StyledSignedBarContainer>
       </StyledCard>
-      <StyledCard style={{ marginTop: "20px" }}>
+      <StyledCard style={{ marginTop: '20px' }}>
         <CardHeader>
           <CardTitle>
-            {capitalize(viewBy)} Performance Analysis by {findCompareByTitle(compareBy)} | {assignmentInfo}
+            {capitalize(viewBy)} Performance Analysis by{' '}
+            {findCompareByTitle(compareBy)} | {assignmentInfo}
           </CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
@@ -274,8 +330,8 @@ const PerformanceByStandards = ({
         />
       </StyledCard>
     </>
-  );
-};
+  )
+}
 
 const reportPropType = PropTypes.shape({
   teacherInfo: PropTypes.array,
@@ -283,8 +339,8 @@ const reportPropType = PropTypes.shape({
   skillInfo: PropTypes.array,
   metricInfo: PropTypes.array,
   studInfo: PropTypes.array,
-  standardsMap: PropTypes.object
-});
+  standardsMap: PropTypes.object,
+})
 
 PerformanceByStandards.propTypes = {
   loading: PropTypes.bool.isRequired,
@@ -296,22 +352,26 @@ PerformanceByStandards.propTypes = {
   standardProficiencyProfiles: PropTypes.array.isRequired,
   interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
-  role: PropTypes.string.isRequired
-};
+  role: PropTypes.string.isRequired,
+}
 
 const enhance = connect(
-  state => ({
+  (state) => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
     role: getUserRole(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(state),
-    standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(state)
+    selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(
+      state
+    ),
+    standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
+      state
+    ),
   }),
   {
-    getPerformanceByStandards: getPerformanceByStandardsAction
+    getPerformanceByStandards: getPerformanceByStandardsAction,
   }
-);
+)
 
-export default enhance(PerformanceByStandards);
+export default enhance(PerformanceByStandards)

@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const HeaderMainMenu = styled.div`
   width: 100%;
-  ${({style}) => style};
-`;
+  ${({ style }) => style};
+`
 
-export default HeaderMainMenu;
+export default HeaderMainMenu

@@ -1,15 +1,17 @@
-import { Upload } from "antd";
-import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { Upload } from 'antd'
+import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
 
-const { Dragger } = Upload;
+const { Dragger } = Upload
 
 export const DropAreaContainer = styled.div`
   display: block;
   margin: 34px 43px 0 46px;
   border-radius: 4px;
-  background: ${({ isDragging }) => (isDragging ? "rgba(0,0,0,0.5)" : "transparent")};
-  border: ${({ isDragging }) => (isDragging ? `2px dashed ${themeColor}` : "none")};
+  background: ${({ isDragging }) =>
+    isDragging ? 'rgba(0,0,0,0.5)' : 'transparent'};
+  border: ${({ isDragging }) =>
+    isDragging ? `2px dashed ${themeColor}` : 'none'};
   border-radius: 10px;
   position: absolute;
   width: 90%;
@@ -20,7 +22,7 @@ export const DropAreaContainer = styled.div`
   h1 {
     color: #fff;
   }
-`;
+`
 
 export const UploadDragger = styled(Dragger)`
   display: flex;
@@ -47,4 +49,4 @@ export const UploadDragger = styled(Dragger)`
     padding: 0;
     margin: 0;
   }
-`;
+`

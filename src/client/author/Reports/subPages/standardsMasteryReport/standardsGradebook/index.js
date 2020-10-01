@@ -1,32 +1,42 @@
-import { SpinLoader } from "@edulastic/common";
-import { Col, Row } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { isEmpty, get } from "lodash";
-import { roleuser } from "@edulastic/constants";
-import { getInterestedCurriculumsSelector, getUser } from "../../../../src/selectors/user";
-import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
-import { StyledCard, StyledH3 } from "../../../common/styled";
-import { getStudentAssignments, processClassAndGroupIds } from "../../../common/util";
-import { getCsvDownloadingState } from "../../../ducks";
+import { SpinLoader } from '@edulastic/common'
+import { Col, Row } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { isEmpty, get } from 'lodash'
+import { roleuser } from '@edulastic/constants'
+import {
+  getInterestedCurriculumsSelector,
+  getUser,
+} from '../../../../src/selectors/user'
+import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
+import { StyledCard, StyledH3 } from '../../../common/styled'
+import {
+  getStudentAssignments,
+  processClassAndGroupIds,
+} from '../../../common/util'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getFiltersSelector,
   getSelectedStandardProficiency,
-  getReportsStandardsFiltersLoader
-} from "../common/filterDataDucks";
-import { getMaxMasteryScore } from "../standardsPerformance/utils/transformers";
-import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
-import { TableContainer, UpperContainer } from "./components/styled";
-import { StandardsGradebookTable } from "./components/table/standardsGradebookTable";
+  getReportsStandardsFiltersLoader,
+} from '../common/filterDataDucks'
+import { getMaxMasteryScore } from '../standardsPerformance/utils/transformers'
+import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
+import { TableContainer, UpperContainer } from './components/styled'
+import { StandardsGradebookTable } from './components/table/standardsGradebookTable'
 import {
   getReportsStandardsGradebookLoader,
   getStandardsGradebookRequestAction,
   getStudentStandardData,
   getStudentStandardLoader,
-  getStudentStandardsAction
-} from "./ducks";
-import { getDenormalizedData, getFilteredDenormalizedData, groupedByStandard } from "./utils/transformers";
+  getStudentStandardsAction,
+} from './ducks'
+import {
+  getDenormalizedData,
+  getFilteredDenormalizedData,
+  groupedByStandard,
+} from './utils/transformers'
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -47,86 +57,104 @@ const StandardsGradebook = ({
   pageTitle,
   ddfilter,
   user,
-  standardsOrgData
+  standardsOrgData,
 }) => {
-  const [chartFilter, setChartFilter] = useState({});
+  const [chartFilter, setChartFilter] = useState({})
 
-  const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(false);
-  const [clickedStandard, setClickedStandard] = useState(undefined);
-  const [clickedStudentName, setClickedStudentName] = useState(undefined);
+  const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(
+    false
+  )
+  const [clickedStandard, setClickedStandard] = useState(undefined)
+  const [clickedStudentName, setClickedStudentName] = useState(undefined)
 
   const studentAssignmentsData = useMemo(
-    () => getStudentAssignments(selectedStandardProficiency, studentStandardData),
+    () =>
+      getStudentAssignments(selectedStandardProficiency, studentStandardData),
     [selectedStandardProficiency, studentStandardData]
-  );
-  const [classIdArr, groupIdArr] = useMemo(() => processClassAndGroupIds(standardsOrgData), [standardsOrgData]);
+  )
+  const [classIdArr, groupIdArr] = useMemo(
+    () => processClassAndGroupIds(standardsOrgData),
+    [standardsOrgData]
+  )
 
   useEffect(() => {
     if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
       const q = {
-        testIds: settings.selectedTest.map(test => test.key).join(),
+        testIds: settings.selectedTest.map((test) => test.key).join(),
         ...settings.requestFilters,
         grades: (settings.requestFilters.grades || []).join(),
-        schoolIds: settings.requestFilters.schoolId
-      };
-      if (isEmpty(q.schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
-        q.schoolIds = get(user, "institutionIds", []).join(",");
+        schoolIds: settings.requestFilters.schoolId,
+      }
+      if (
+        isEmpty(q.schoolId) &&
+        get(user, 'role', '') === roleuser.SCHOOL_ADMIN
+      ) {
+        q.schoolIds = get(user, 'institutionIds', []).join(',')
       }
       if (!loadingFiltersData) {
         Object.assign(q, {
           classList: classIdArr
             .slice(1)
-            .map(cId => cId.key)
+            .map((cId) => cId.key)
             .join(),
           groupList: groupIdArr
             .slice(1)
-            .map(gId => gId.key)
-            .join()
-        });
+            .map((gId) => gId.key)
+            .join(),
+        })
       }
-      getStandardsGradebookRequest(q);
+      getStandardsGradebookRequest(q)
     }
-  }, [settings]);
+  }, [settings])
 
-  const denormalizedData = useMemo(() => getDenormalizedData(standardsGradebook), [standardsGradebook]);
+  const denormalizedData = useMemo(
+    () => getDenormalizedData(standardsGradebook),
+    [standardsGradebook]
+  )
 
-  const filteredDenormalizedData = useMemo(() => getFilteredDenormalizedData(denormalizedData, ddfilter, role), [
-    denormalizedData,
-    ddfilter,
-    role
-  ]);
+  const filteredDenormalizedData = useMemo(
+    () => getFilteredDenormalizedData(denormalizedData, ddfilter, role),
+    [denormalizedData, ddfilter, role]
+  )
 
-  const onBarClickCB = key => {
-    const _chartFilter = { ...chartFilter };
+  const onBarClickCB = (key) => {
+    const _chartFilter = { ...chartFilter }
     if (_chartFilter[key]) {
-      delete _chartFilter[key];
+      delete _chartFilter[key]
     } else {
-      _chartFilter[key] = true;
+      _chartFilter[key] = true
     }
-    setChartFilter(_chartFilter);
-  };
+    setChartFilter(_chartFilter)
+  }
 
-  const masteryScale = selectedStandardProficiency || [];
-  const maxMasteryScore = getMaxMasteryScore(masteryScale);
+  const masteryScale = selectedStandardProficiency || []
+  const maxMasteryScore = getMaxMasteryScore(masteryScale)
 
-  const standardsData = useMemo(() => groupedByStandard(filteredDenormalizedData, maxMasteryScore, masteryScale), [
-    filteredDenormalizedData,
-    maxMasteryScore,
-    masteryScale
-  ]);
+  const standardsData = useMemo(
+    () =>
+      groupedByStandard(
+        filteredDenormalizedData,
+        maxMasteryScore,
+        masteryScale
+      ),
+    [filteredDenormalizedData, maxMasteryScore, masteryScale]
+  )
 
   const handleOnClickStandard = (params, standard, studentName) => {
-    getStudentStandards({ ...params, testIds: settings.selectedTest.map(test => test.key).join() });
-    setClickedStandard(standard);
-    setStudentAssignmentModal(true);
-    setClickedStudentName(studentName);
-  };
+    getStudentStandards({
+      ...params,
+      testIds: settings.selectedTest.map((test) => test.key).join(),
+    })
+    setClickedStandard(standard)
+    setStudentAssignmentModal(true)
+    setClickedStudentName(studentName)
+  }
 
   const closeStudentAssignmentModal = () => {
-    setStudentAssignmentModal(false);
-    setClickedStandard(undefined);
-    setClickedStudentName(undefined);
-  };
+    setStudentAssignmentModal(false)
+    setClickedStandard(undefined)
+    setClickedStudentName(undefined)
+  }
 
   return (
     <div>
@@ -180,12 +208,12 @@ const StandardsGradebook = ({
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
 const enhance = compose(
   connect(
-    state => ({
+    (state) => ({
       loading: getReportsStandardsGradebookLoader(state),
       loadingFiltersData: getReportsStandardsFiltersLoader(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -194,15 +222,15 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       studentStandardData: getStudentStandardData(state),
       loadingStudentStandard: getStudentStandardLoader(state),
-      user: getUser(state)
+      user: getUser(state),
     }),
     {
       getStandardsGradebookRequest: getStandardsGradebookRequestAction,
-      getStudentStandards: getStudentStandardsAction
+      getStudentStandards: getStudentStandardsAction,
     }
   )
-);
+)
 
-export default enhance(StandardsGradebook);
+export default enhance(StandardsGradebook)
 
 // -----|-----|-----|-----|-----| COMPONENT ENDED |-----|-----|-----|-----|----- //

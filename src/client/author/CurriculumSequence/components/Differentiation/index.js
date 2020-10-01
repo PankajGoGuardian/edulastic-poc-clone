@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { groupBy, maxBy, last } from "lodash";
-import { IconClose } from "@edulastic/icons";
-import { EduButton } from "@edulastic/common";
-import { assignmentStatusOptions } from "@edulastic/constants";
-import { getCurrentTerm } from "../../../src/selectors/user";
-import { receiveAssignmentsAction } from "../../../src/actions/assignments";
-import { getAssignmentsSelector } from "../../../src/selectors/assignments";
-import { StyledFlexContainer, SubHeader, StyledSelect } from "./style";
-import WorkTable from "./WorkTable";
+import React, { useEffect, useState } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { groupBy, maxBy, last } from 'lodash'
+import { IconClose } from '@edulastic/icons'
+import { EduButton } from '@edulastic/common'
+import { assignmentStatusOptions } from '@edulastic/constants'
+import { getCurrentTerm } from '../../../src/selectors/user'
+import { receiveAssignmentsAction } from '../../../src/actions/assignments'
+import { getAssignmentsSelector } from '../../../src/selectors/assignments'
+import { StyledFlexContainer, SubHeader, StyledSelect } from './style'
+import WorkTable from './WorkTable'
 import {
   fetchDifferentiationStudentListAction,
   getDifferentiationStudentListSelector,
@@ -22,11 +22,11 @@ import {
   addTestToDifferentationAction,
   addResourceToDifferentiationAction,
   addSubResourceToTestInDiffAction,
-  removeSubResourceInDiffAction
-} from "../../ducks";
-import ManageContentBlock from "../ManageContentBlock";
-import { HideRightPanel } from "../CurriculumRightPanel";
-import { ContentContainer } from "../CurriculumSequence";
+  removeSubResourceInDiffAction,
+} from '../../ducks'
+import ManageContentBlock from '../ManageContentBlock'
+import { HideRightPanel } from '../CurriculumRightPanel'
+import { ContentContainer } from '../CurriculumSequence'
 
 const Differentiation = ({
   termId,
@@ -47,123 +47,133 @@ const Differentiation = ({
   removeSubResource,
   toggleManageContent,
   activeRightPanel,
-  history
+  history,
 }) => {
-  const [selectedClass, setSelectedClass] = useState();
-  const [classList, setClassList] = useState([]);
-  const [assignmentsByTestId, setAssignmentsByTestId] = useState({});
-  const [testData, setTestData] = useState([]);
-  const [selectedTest, setSelectedTest] = useState();
-  const showManageContent = activeRightPanel === "manageContent";
+  const [selectedClass, setSelectedClass] = useState()
+  const [classList, setClassList] = useState([])
+  const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
+  const [testData, setTestData] = useState([])
+  const [selectedTest, setSelectedTest] = useState()
+  const showManageContent = activeRightPanel === 'manageContent'
 
-  const openManageContentPanel = e => {
-    e.target.blur();
+  const openManageContentPanel = (e) => {
+    e.target.blur()
     if (toggleManageContent) {
-      toggleManageContent("manageContent");
+      toggleManageContent('manageContent')
     }
-  };
+  }
 
   const hideManageContentPanel = () => {
     if (toggleManageContent) {
-      toggleManageContent("");
+      toggleManageContent('')
     }
-  };
+  }
 
   useEffect(() => {
     const filters = {
-      groupId: "",
-      grade: "",
-      subject: "",
+      groupId: '',
+      grade: '',
+      subject: '',
       termId,
-      testType: "",
-      classId: "",
-      status: "DONE"
-    };
-    receiveAssignments({ filters });
+      testType: '',
+      classId: '',
+      status: 'DONE',
+    }
+    receiveAssignments({ filters })
 
-    return hideManageContentPanel;
-  }, []);
+    return hideManageContentPanel
+  }, [])
 
   useEffect(() => {
     if (assignments.length) {
-      const gradedAssignments = assignments.filter(a => a.status === assignmentStatusOptions.DONE);
-      const _assignmentsByTestId = groupBy(gradedAssignments, "testId");
-      setAssignmentsByTestId(_assignmentsByTestId);
+      const gradedAssignments = assignments.filter(
+        (a) => a.status === assignmentStatusOptions.DONE
+      )
+      const _assignmentsByTestId = groupBy(gradedAssignments, 'testId')
+      setAssignmentsByTestId(_assignmentsByTestId)
 
-      const testDataGenerated = Object.keys(_assignmentsByTestId).map(testId => ({
-        title: _assignmentsByTestId[testId][0].title,
-        _id: testId
-      }));
+      const testDataGenerated = Object.keys(_assignmentsByTestId).map(
+        (testId) => ({
+          title: _assignmentsByTestId[testId][0].title,
+          _id: testId,
+        })
+      )
 
-      const { testId } = history.location.state || {};
-      const specificTest = testId && testDataGenerated.find(({ _id }) => _id === testId);
+      const { testId } = history.location.state || {}
+      const specificTest =
+        testId && testDataGenerated.find(({ _id }) => _id === testId)
 
-      setTestData(testDataGenerated);
+      setTestData(testDataGenerated)
 
-      const lastTestData = specificTest || last(testDataGenerated);
+      const lastTestData = specificTest || last(testDataGenerated)
 
       if (lastTestData) {
-        setSelectedTest(lastTestData._id);
-        let currentTestClasses = _assignmentsByTestId[lastTestData._id].map(a => ({
-          classId: a.classId,
-          assignmentId: a._id,
-          className: a.className,
-          title: a.title,
-          createdAt: a.createdAt
-        }));
+        setSelectedTest(lastTestData._id)
+        let currentTestClasses = _assignmentsByTestId[lastTestData._id].map(
+          (a) => ({
+            classId: a.classId,
+            assignmentId: a._id,
+            className: a.className,
+            title: a.title,
+            createdAt: a.createdAt,
+          })
+        )
 
-        currentTestClasses = groupBy(currentTestClasses, "classId");
-        currentTestClasses = Object.keys(currentTestClasses).map(classId => {
-          const clazzArray = currentTestClasses[classId];
-          return maxBy(clazzArray, "createdAt");
-        });
+        currentTestClasses = groupBy(currentTestClasses, 'classId')
+        currentTestClasses = Object.keys(currentTestClasses).map((classId) => {
+          const clazzArray = currentTestClasses[classId]
+          return maxBy(clazzArray, 'createdAt')
+        })
 
-        setClassList(currentTestClasses);
-        setSelectedClass(currentTestClasses[0]);
+        setClassList(currentTestClasses)
+        setSelectedClass(currentTestClasses[0])
       }
     }
-  }, [assignments]);
+  }, [assignments])
 
   useEffect(() => {
     if (selectedClass) {
-      fetchDifferentiationStudentList({ assignmentId: selectedClass.assignmentId, groupId: selectedClass.classId });
+      fetchDifferentiationStudentList({
+        assignmentId: selectedClass.assignmentId,
+        groupId: selectedClass.classId,
+      })
       fetchDifferentiationWork({
         assignmentId: selectedClass.assignmentId,
         groupId: selectedClass.classId,
-        testId: selectedTest
-      });
+        testId: selectedTest,
+      })
     }
-  }, [selectedClass]);
+  }, [selectedClass])
 
-  const handleAssignmentChange = value => {
-    setSelectedTest(value);
+  const handleAssignmentChange = (value) => {
+    setSelectedTest(value)
 
-    let selectedTestClasses = assignmentsByTestId[value].map(a => ({
+    let selectedTestClasses = assignmentsByTestId[value].map((a) => ({
       classId: a.classId,
       assignmentId: a._id,
       className: a.className,
       title: a.title,
-      createdAt: a.createdAt
-    }));
+      createdAt: a.createdAt,
+    }))
 
-    selectedTestClasses = groupBy(selectedTestClasses, "classId");
-    selectedTestClasses = Object.keys(selectedTestClasses).map(classId => {
-      const clazzArray = selectedTestClasses[classId];
-      return maxBy(clazzArray, "createdAt");
-    });
+    selectedTestClasses = groupBy(selectedTestClasses, 'classId')
+    selectedTestClasses = Object.keys(selectedTestClasses).map((classId) => {
+      const clazzArray = selectedTestClasses[classId]
+      return maxBy(clazzArray, 'createdAt')
+    })
 
-    setClassList(selectedTestClasses);
-    setSelectedClass();
-  };
+    setClassList(selectedTestClasses)
+    setSelectedClass()
+  }
 
   const handleClassChange = (value, option) => {
     setSelectedClass({
       classId: option.props.classId,
       assignmentId: option.props.assignmentId,
       className: option.props.cName,
-      title: option.props.title
-    });
-  };
+      title: option.props.title,
+    })
+  }
 
   const workTableCommonProps = {
     differentiationStudentList,
@@ -175,17 +185,26 @@ const Differentiation = ({
     addSubResourceToTestInDiff,
     setEmbeddedVideoPreviewModal,
     showResource,
-    removeSubResource
-  };
+    removeSubResource,
+  }
 
   return (
-    <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start" flexDirection="column">
+    <StyledFlexContainer
+      width="100%"
+      alignItems="flex-start"
+      justifyContent="flex-start"
+      flexDirection="column"
+    >
       <SubHeader>
         <div>
           <span>Based on Performance in</span>
           <StyledSelect
             showSearch
-            filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
+            filterOption={(input, option) =>
+              option.props.children
+                .toLowerCase()
+                .includes(input.trim().toLowerCase())
+            }
             data-cy="select-assignment"
             style={{ minWidth: 200, maxWidth: 300 }}
             placeholder="SELECT ASSIGNMENT"
@@ -201,12 +220,20 @@ const Differentiation = ({
           <span>Recommendations For</span>
           <StyledSelect
             showSearch
-            filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
+            filterOption={(input, option) =>
+              option.props.children
+                .toLowerCase()
+                .includes(input.trim().toLowerCase())
+            }
             data-cy="select-group"
             style={{ minWidth: 170, maxWidth: 280 }}
             placeholder="SELECT GROUP"
             onChange={(value, option) => handleClassChange(value, option)}
-            value={selectedClass ? `${selectedClass.assignmentId}_${selectedClass.classId}` : undefined}
+            value={
+              selectedClass
+                ? `${selectedClass.assignmentId}_${selectedClass.classId}`
+                : undefined
+            }
           >
             {classList.map(({ classId, className, assignmentId, title }) => (
               <StyledSelect.Option
@@ -237,7 +264,11 @@ const Differentiation = ({
         )}
       </SubHeader>
       <StyledFlexContainer width="100%" justifyContent="flex-start">
-        <ContentContainer isDifferentiationTab showRightPanel={showManageContent} urlHasUseThis>
+        <ContentContainer
+          isDifferentiationTab
+          showRightPanel={showManageContent}
+          urlHasUseThis
+        >
           <div>
             <WorkTable
               type="REVIEW"
@@ -263,7 +294,7 @@ const Differentiation = ({
           </div>
         </ContentContainer>
         {showManageContent && (
-          <div style={{ position: "relative" }}>
+          <div style={{ position: 'relative' }}>
             {/* <SideButtonContainer style={{ paddingTop: 5 }}>
                 Hiding this button for now as implementation is not done. 
               
@@ -284,19 +315,19 @@ const Differentiation = ({
         )}
       </StyledFlexContainer>
     </StyledFlexContainer>
-  );
-};
+  )
+}
 
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state) => ({
       termId: getCurrentTerm(state),
       assignments: getAssignmentsSelector(state),
       differentiationStudentList: getDifferentiationStudentListSelector(state),
       differentiationWork: getDifferentiationWorkSelector(state),
       isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
-      workStatusData: getWorkStatusDataSelector(state)
+      workStatusData: getWorkStatusDataSelector(state),
     }),
     {
       receiveAssignments: receiveAssignmentsAction,
@@ -306,9 +337,9 @@ const enhance = compose(
       addTestToDifferentiation: addTestToDifferentationAction,
       addResourceToDifferentiation: addResourceToDifferentiationAction,
       addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
-      removeSubResource: removeSubResourceInDiffAction
+      removeSubResource: removeSubResourceInDiffAction,
     }
   )
-);
+)
 
-export default enhance(Differentiation);
+export default enhance(Differentiation)

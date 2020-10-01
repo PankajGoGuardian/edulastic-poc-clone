@@ -1,13 +1,26 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React from 'react'
 
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconArrowCircleUp = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38" {...props}>
+const IconArrowCircleUp = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="38"
+    height="38"
+    viewBox="0 0 38 38"
+    {...props}
+  >
     <g transform="translate(-513 -159)">
-      <circle className="a" cx="19" cy="19" r="19" transform="translate(513 159)" fill="#edf5fc" />
+      <circle
+        className="a"
+        cx="19"
+        cy="19"
+        r="19"
+        transform="translate(513 159)"
+        fill="#edf5fc"
+      />
       <path
         className="b"
         fill="#4ca4e8"
@@ -16,6 +29,6 @@ const IconArrowCircleUp = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconArrowCircleUp);
+export default withIconStyles(IconArrowCircleUp)

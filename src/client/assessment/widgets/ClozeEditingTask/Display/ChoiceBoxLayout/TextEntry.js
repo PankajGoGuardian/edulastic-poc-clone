@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import styled, { css } from "styled-components";
-import { lightBlue1 } from "@edulastic/colors";
-import { TextInputStyled } from "../../../../styled/InputStyles";
-import { subOptions } from "../../constants";
+import React, { useState, useEffect } from 'react'
+import styled, { css } from 'styled-components'
+import { lightBlue1 } from '@edulastic/colors'
+import { TextInputStyled } from '../../../../styled/InputStyles'
+import { subOptions } from '../../constants'
 
 const TextEntry = ({ styles, userAnswer, onChange, displayStyleOption }) => {
-  const [localValue, setlocalValue] = useState("");
-  const answer = userAnswer || "";
-  const isDahsline = subOptions.DASHED_LINE === displayStyleOption;
+  const [localValue, setlocalValue] = useState('')
+  const answer = userAnswer || ''
+  const isDahsline = subOptions.DASHED_LINE === displayStyleOption
 
-  const handleChange = ({ target: { value } }) => setlocalValue(value);
+  const handleChange = ({ target: { value } }) => setlocalValue(value)
 
-  const handleBlur = () => onChange(localValue);
+  const handleBlur = () => onChange(localValue)
 
   useEffect(() => {
-    setlocalValue(answer);
-  }, [answer]);
+    setlocalValue(answer)
+  }, [answer])
   return (
     <TextEntryWrapper style={styles}>
       <TextInput
@@ -27,10 +27,10 @@ const TextEntry = ({ styles, userAnswer, onChange, displayStyleOption }) => {
         isDahsline={isDahsline}
       />
     </TextEntryWrapper>
-  );
-};
+  )
+}
 
-export default TextEntry;
+export default TextEntry
 
 const TextEntryWrapper = styled.div`
   position: relative;
@@ -38,12 +38,13 @@ const TextEntryWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   vertical-align: bottom;
-`;
+`
 
 const inputStyle = css`
-  border-bottom: ${({ isDahsline }) => (isDahsline ? "2px dashed;" : "")};
-  background-color: ${({ isDahsline }) => (isDahsline ? "transparent" : lightBlue1)};
-`;
+  border-bottom: ${({ isDahsline }) => (isDahsline ? '2px dashed;' : '')};
+  background-color: ${({ isDahsline }) =>
+    isDahsline ? 'transparent' : lightBlue1};
+`
 
 const TextInput = styled(TextInputStyled)`
   &.ant-input {
@@ -55,4 +56,4 @@ const TextInput = styled(TextInputStyled)`
       ${inputStyle}
     }
   }
-`;
+`

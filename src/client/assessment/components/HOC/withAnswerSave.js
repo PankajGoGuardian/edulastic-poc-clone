@@ -1,15 +1,19 @@
-import React, { useContext } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { AnswerContext } from "@edulastic/common";
-import { setUserAnswerAction } from "../../actions/answers";
-import { getUserAnswerSelector, getEvaluationByIdSelector, getUserPrevAnswerSelector } from "../../selectors/answers";
+import React, { useContext } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { AnswerContext } from '@edulastic/common'
+import { setUserAnswerAction } from '../../actions/answers'
+import {
+  getUserAnswerSelector,
+  getEvaluationByIdSelector,
+  getUserPrevAnswerSelector,
+} from '../../selectors/answers'
 
-const getQuestionId = questionId => questionId || "tmp";
+const getQuestionId = (questionId) => questionId || 'tmp'
 
-export default WrappedComponent => {
+export default (WrappedComponent) => {
   const hocComponent = ({
     setUserAnswer,
     testItemId,
@@ -18,17 +22,19 @@ export default WrappedComponent => {
     userPrevAnswer,
     ...props
   }) => {
-    const { data: question } = props;
-    const questionId = getQuestionId(question?.id);
-    const answerContext = useContext(AnswerContext);
+    const { data: question } = props
+    const questionId = getQuestionId(question?.id)
+    const answerContext = useContext(AnswerContext)
 
-    const saveAnswer = data => {
+    const saveAnswer = (data) => {
       if (answerContext.isAnswerModifiable && questionId) {
-        setUserAnswer(questionId, data);
+        setUserAnswer(questionId, data)
       }
-    };
+    }
 
-    const userAnswer = answerContext.hideAnswers ? undefined : _userAnswer || userPrevAnswer;
+    const userAnswer = answerContext.hideAnswers
+      ? undefined
+      : _userAnswer || userPrevAnswer
 
     // `isReviewTab` is being only passed from test page's review tab, in which case
     // userAnswer nor evaluation should be propagated forward. Doing the same will cause
@@ -43,12 +49,12 @@ export default WrappedComponent => {
         evaluation={!props.isReviewTab ? evaluation : undefined}
         {...props}
       />
-    );
-  };
+    )
+  }
 
   hocComponent.propTypes = {
-    setUserAnswer: PropTypes.func.isRequired
-  };
+    setUserAnswer: PropTypes.func.isRequired,
+  }
 
   const enhance = compose(
     withRouter,
@@ -57,14 +63,14 @@ export default WrappedComponent => {
         return {
           userAnswer: getUserAnswerSelector(state, props),
           userPrevAnswer: getUserPrevAnswerSelector(state, props),
-          evaluation: getEvaluationByIdSelector(state, props)
-        };
+          evaluation: getEvaluationByIdSelector(state, props),
+        }
       },
       {
-        setUserAnswer: setUserAnswerAction
+        setUserAnswer: setUserAnswerAction,
       }
     )
-  );
+  )
 
-  return enhance(hocComponent);
-};
+  return enhance(hocComponent)
+}

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { Modal } from "antd";
-import AssessmentPlayer from "../../../../assessment";
-import TestActivityPreview from "./TestActivityPreview";
-import { finishedPreviewTestAction } from "../../../../assessment/sharedDucks/previewTest";
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { Modal } from 'antd'
+import AssessmentPlayer from '../../../../assessment'
+import TestActivityPreview from './TestActivityPreview'
+import { finishedPreviewTestAction } from '../../../../assessment/sharedDucks/previewTest'
 
 const TestPreviewModal = ({
   isModalVisible,
@@ -24,26 +24,29 @@ const TestPreviewModal = ({
   finishedPreviewTest,
   ...restProps
 }) => {
-  const [showStudentPerformancePreview, setShowStudentPerformancePreview] = useState(false);
+  const [
+    showStudentPerformancePreview,
+    setShowStudentPerformancePreview,
+  ] = useState(false)
   useEffect(() => {
     if (error) {
-      closeTestPreviewModal();
+      closeTestPreviewModal()
     }
-  }, [error]);
+  }, [error])
 
   const handleCloseModal = () => {
-    closeTestPreviewModal();
-    finishedPreviewTest();
-    setShowStudentPerformancePreview(false);
-  };
+    closeTestPreviewModal()
+    finishedPreviewTest()
+    setShowStudentPerformancePreview(false)
+  }
 
   const submitPreviewTest = () => {
     if (showStudentPerformance) {
-      setShowStudentPerformancePreview(true);
+      setShowStudentPerformancePreview(true)
     } else {
-      handleCloseModal();
+      handleCloseModal()
     }
-  };
+  }
 
   return (
     <StyledModal
@@ -59,7 +62,9 @@ const TestPreviewModal = ({
       closable={false}
       centered
     >
-      {showStudentPerformancePreview && <TestActivityPreview onClose={handleCloseModal} />}
+      {showStudentPerformancePreview && (
+        <TestActivityPreview onClose={handleCloseModal} />
+      )}
       {!showStudentPerformancePreview && (
         <AssessmentPlayer
           closeTestPreviewModal={handleCloseModal}
@@ -78,30 +83,27 @@ const TestPreviewModal = ({
         />
       )}
     </StyledModal>
-  );
-};
+  )
+}
 
 TestPreviewModal.propTypes = {
   isModalVisible: PropTypes.bool,
   LCBPreviewModal: PropTypes.bool,
   test: PropTypes.object,
-  testId: PropTypes.string.isRequired
-};
+  testId: PropTypes.string.isRequired,
+}
 
 TestPreviewModal.defaultProps = {
   test: {},
   isModalVisible: false,
-  LCBPreviewModal: false
-};
+  LCBPreviewModal: false,
+}
 
-const enhanced = connect(
-  null,
-  {
-    finishedPreviewTest: finishedPreviewTestAction
-  }
-);
+const enhanced = connect(null, {
+  finishedPreviewTest: finishedPreviewTestAction,
+})
 
-export default enhanced(TestPreviewModal);
+export default enhanced(TestPreviewModal)
 
 const StyledModal = styled(Modal)`
   .ant-modal-header {
@@ -116,4 +118,4 @@ const StyledModal = styled(Modal)`
       }
     }
   }
-`;
+`

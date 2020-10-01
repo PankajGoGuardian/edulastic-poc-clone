@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import { Row, Col, Card, Button } from "antd";
-import { IconCircleCheck, IconCalculator } from "@edulastic/icons";
-import { white, themeColor } from "@edulastic/colors";
-import Header from "./Header";
+import React from 'react'
+import styled from 'styled-components'
+import { Row, Col, Card, Button } from 'antd'
+import { IconCircleCheck, IconCalculator } from '@edulastic/icons'
+import { white, themeColor } from '@edulastic/colors'
+import Header from './Header'
 
 const Schedule = () => (
   <>
@@ -17,8 +17,10 @@ const Schedule = () => (
               <h1>You&apos;r sample teacher account is now ready</h1>
             </TitleWrapper>
             <Description>
-              Use this acccount to see how teachers can easily create assessments and get instant data. <br />
-              To see how to administer common assessments and samples of school and district reports, click
+              Use this acccount to see how teachers can easily create
+              assessments and get instant data. <br />
+              To see how to administer common assessments and samples of school
+              and district reports, click
               <br />
               &quot;Schedule a Demo&quot; below
             </Description>
@@ -59,13 +61,13 @@ const Schedule = () => (
       </Col>
     </ScheduleBody>
   </>
-);
+)
 
-export default Schedule;
+export default Schedule
 
 const ScheduleBody = styled(Row)`
   margin-top: 80px;
-`;
+`
 
 const TitleWrapper = styled.div`
   display: flex;
@@ -80,12 +82,12 @@ const TitleWrapper = styled.div`
   svg {
     fill: ${themeColor};
   }
-`;
+`
 const Description = styled.div`
   text-align: center;
   font-size: 18px;
   font-weight: 500;
-`;
+`
 
 const StyledCard = styled(Card)`
   border-radius: 10px;
@@ -109,13 +111,13 @@ const StyledCard = styled(Card)`
     text-align: center;
     font-weight: 500;
   }
-`;
+`
 
 const StyledCardContaner = styled(StyledCard)`
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 const commonBtn = styled(Button)`
   font-weight: 600;
@@ -134,14 +136,14 @@ const commonBtn = styled(Button)`
   &:hover {
     color: ${white};
   }
-`;
+`
 
 const ScheduleBtn = styled(commonBtn)`
   background: ${themeColor};
   &:hover {
     background: ${themeColor};
   }
-`;
+`
 
 const TeacherBtn = styled(commonBtn)`
   background: ${themeColor};
@@ -149,4 +151,4 @@ const TeacherBtn = styled(commonBtn)`
   &:hover {
     background: ${themeColor};
   }
-`;
+`

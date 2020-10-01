@@ -1,22 +1,30 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 
-import { white, themeColor, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
-import { IconPlayFilled } from "@edulastic/icons";
-import { TextWrapper, LinkWrapper } from "../../../../author/Dashboard/components/styledComponents";
+import {
+  white,
+  themeColor,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
+import { IconPlayFilled } from '@edulastic/icons'
+import {
+  TextWrapper,
+  LinkWrapper,
+} from '../../../../author/Dashboard/components/styledComponents'
 import {
   VideoSection,
   VideoPlayer,
   VideoOverlay,
   ContentWrapper,
   ChatIconContainer,
-  ChatIcon
-} from "../../../../author/Dashboard/components/SideContent/styled";
-import videoImg from "../../../../author/Dashboard/assets/images/videoImage.png";
-import { StyledQuestionsList } from "./questionsList";
+  ChatIcon,
+} from '../../../../author/Dashboard/components/SideContent/styled'
+import videoImg from '../../../../author/Dashboard/assets/images/videoImage.png'
+import { StyledQuestionsList } from './questionsList'
 
-const LeftSide = props => {
-  const { className } = props;
+const LeftSide = (props) => {
+  const { className } = props
   return (
     <div className={className}>
       <div className="introduction-edulastic">
@@ -39,7 +47,8 @@ const LeftSide = props => {
             Build assessments in minutes
           </TextWrapper>
           <TextWrapper size="14px" rfs="13px" color="#848993">
-            Search, review and assess using content from any of the following question banks:
+            Search, review and assess using content from any of the following
+            question banks:
           </TextWrapper>
         </ContentWrapper>
       </div>
@@ -57,8 +66,8 @@ const LeftSide = props => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const StyledLeftSide = styled(LeftSide)`
   width: 358px;
@@ -66,11 +75,11 @@ export const StyledLeftSide = styled(LeftSide)`
   background-color: ${white};
   position: fixed;
 
-  height: calc(100% - ${props => props.theme.HeaderHeight.xs}px);
+  height: calc(100% - ${(props) => props.theme.HeaderHeight.xs}px);
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: calc(100% - ${props => props.theme.HeaderHeight.md}px);
+    height: calc(100% - ${(props) => props.theme.HeaderHeight.md}px);
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: calc(100% - ${props => props.theme.HeaderHeight.xl}px);
+    height: calc(100% - ${(props) => props.theme.HeaderHeight.xl}px);
   }
-`;
+`

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef } from 'react'
 
 /**
  *
@@ -9,10 +9,10 @@ import { useState, useRef } from "react";
 function dependenciesCheck(prev, current) {
   for (let i = 0; i < prev.length; i++) {
     if (prev[i] !== current[i]) {
-      return false;
+      return false
     }
   }
-  return true;
+  return true
 }
 
 /**
@@ -21,16 +21,16 @@ function dependenciesCheck(prev, current) {
  * @param {array} dependencies
  */
 function useInternalEffect(callBack, dependencies) {
-  const [prevDep, setPrevDep] = useState(dependencies);
-  const firsteRenderRef = useRef(true);
+  const [prevDep, setPrevDep] = useState(dependencies)
+  const firsteRenderRef = useRef(true)
 
   if (firsteRenderRef.current === true) {
-    firsteRenderRef.current = false;
-    callBack();
+    firsteRenderRef.current = false
+    callBack()
   } else if (!dependenciesCheck(prevDep, dependencies)) {
-    callBack();
-    setPrevDep(dependencies);
+    callBack()
+    setPrevDep(dependencies)
   }
 }
 
-export { useInternalEffect };
+export { useInternalEffect }

@@ -1,9 +1,15 @@
-import styled, { css } from "styled-components";
-import { white, red, themeColor, title, mediumDesktopExactWidth } from "@edulastic/colors";
-import { Button, Col, Row } from "antd";
-import { MainContentWrapper } from "@edulastic/common";
+import styled, { css } from 'styled-components'
+import {
+  white,
+  red,
+  themeColor,
+  title,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import { Button, Col, Row } from 'antd'
+import { MainContentWrapper } from '@edulastic/common'
 
-export const StyledFlexContainer = styled(Row)``;
+export const StyledFlexContainer = styled(Row)``
 
 const ShareButtonStyle = css`
   font-weight: 600;
@@ -15,7 +21,7 @@ const ShareButtonStyle = css`
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: 40px;
   }
-`;
+`
 
 export const SaveClassBtn = styled(Button)`
   ${ShareButtonStyle}
@@ -29,7 +35,7 @@ export const SaveClassBtn = styled(Button)`
     color: ${white};
     background: ${themeColor};
   }
-`;
+`
 
 export const CancelClassBtn = styled(Button)`
   ${ShareButtonStyle}
@@ -42,12 +48,12 @@ export const CancelClassBtn = styled(Button)`
     color: ${themeColor};
     background: ${white};
   }
-`;
+`
 
 export const ButtonsWrapper = styled.div`
   display: flex;
   align-items: right;
-`;
+`
 
 // main content
 
@@ -55,24 +61,24 @@ export const Container = styled(MainContentWrapper)`
   .ant-form-item-control {
     line-height: normal;
   }
-`;
+`
 
 export const FormTitle = styled.div`
   color: ${title};
-  font-size: ${props => props.theme.subtitleFontSize};
+  font-size: ${(props) => props.theme.subtitleFontSize};
   line-height: 1;
   margin-bottom: 25px;
   font-weight: bold;
   text-align: left;
   display: flex;
-`;
+`
 
-export const MainContainer = styled.div``;
+export const MainContainer = styled.div``
 
-export const LeftContainer = styled(Col)``;
+export const LeftContainer = styled(Col)``
 
-export const RightContainer = styled(Col)``;
+export const RightContainer = styled(Col)``
 
 export const StandardsValidationMSG = styled.div`
   color: ${red};
-`;
+`

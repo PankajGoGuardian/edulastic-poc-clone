@@ -1,50 +1,56 @@
-import React, { useState, Fragment, useEffect } from "react";
-import { connect } from "react-redux";
+import React, { useState, Fragment, useEffect } from 'react'
+import { connect } from 'react-redux'
 
-import { EduButton } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { EduButton } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { checkAnswerAction } from "../../../author/src/actions/testItem";
-import { changePreviewAction } from "../../../author/src/actions/view";
-import { CHECK } from "../../constants/constantsForQuestions";
+import { checkAnswerAction } from '../../../author/src/actions/testItem'
+import { changePreviewAction } from '../../../author/src/actions/view'
+import { CHECK } from '../../constants/constantsForQuestions'
 
-export const withCheckAnswerButton = WrappedComponent => {
-  const hocComponent = ({ item, userAnswer, checkAnswerAction, changeMode, t, ...restProps }) => {
-    const initial = item ? item.feedback_attempts || null : null;
-    const [attempts, setAttempts] = useState(initial);
+export const withCheckAnswerButton = (WrappedComponent) => {
+  const hocComponent = ({
+    item,
+    userAnswer,
+    checkAnswerAction,
+    changeMode,
+    t,
+    ...restProps
+  }) => {
+    const initial = item ? item.feedback_attempts || null : null
+    const [attempts, setAttempts] = useState(initial)
 
     useEffect(() => {
       if (attempts !== null && attempts !== initial) {
-        checkAnswerAction();
-        changeMode(CHECK);
+        checkAnswerAction()
+        changeMode(CHECK)
       }
-    }, [attempts]);
+    }, [attempts])
 
     const checkAnswers = () => {
       if (Array.isArray(userAnswer) && userAnswer.length > 0) {
-        setAttempts(attempts - 1);
+        setAttempts(attempts - 1)
       }
-    };
+    }
 
     return (
-      <Fragment>
+      <>
         <WrappedComponent item={item} userAnswer={userAnswer} {...restProps} />
         {item && item.instant_feedback && (
-          <Fragment>
+          <>
             <br />
             <EduButton onClick={checkAnswers} disabled={attempts === 0}>
-              {t("component.options.check_answer")}
+              {t('component.options.check_answer')}
             </EduButton>
-          </Fragment>
+          </>
         )}
-      </Fragment>
-    );
-  };
+      </>
+    )
+  }
 
-  return withNamespaces("assessment")(
-    connect(
-      () => ({}),
-      { checkAnswerAction, changeMode: changePreviewAction }
-    )(hocComponent)
-  );
-};
+  return withNamespaces('assessment')(
+    connect(() => ({}), { checkAnswerAction, changeMode: changePreviewAction })(
+      hocComponent
+    )
+  )
+}

@@ -1,69 +1,84 @@
-import styled from "styled-components";
-import { Button } from "antd";
+import styled from 'styled-components'
+import { Button } from 'antd'
 
 const Back = styled(Button)`
-  width: ${props => (props.next ? (props.skin ? "58px" : "187px") : "58px")};
+  width: ${(props) => (props.next ? (props.skin ? '58px' : '187px') : '58px')};
   height: 40px;
   width: 40px;
   border-radius: 4px;
   background: ${({ theme, skin }) =>
     skin
       ? theme.widgets.assessmentPlayers.mainContentBgColor
-      : theme.widgets.assessmentPlayers.controlBtnPrimaryColor}; /* white or green */
+      : theme.widgets.assessmentPlayers
+          .controlBtnPrimaryColor}; /* white or green */
   color: ${({ theme, skin }) =>
-    skin ? theme.widgets.assessmentPlayers.controlBtnPrimaryColor : theme.widgets.assessmentPlayers.mainContentBgColor};
+    skin
+      ? theme.widgets.assessmentPlayers.controlBtnPrimaryColor
+      : theme.widgets.assessmentPlayers.mainContentBgColor};
   border: ${({ theme, skin }) =>
     skin
       ? `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`
       : `1px solid ${theme.widgets.assessmentPlayers.controlBtnPrimaryColor}`};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border: none;
-  color: ${props => props.theme.default.headerButtonIconActiveColor};
+  color: ${(props) => props.theme.default.headerButtonIconActiveColor};
   font-size: 2rem;
-  padding: ${props => (props.next ? (props.skin ? "0" : "0 25px") : "0")};
+  padding: ${(props) => (props.next ? (props.skin ? '0' : '0 25px') : '0')};
   position: relative;
   text-align: left;
-  display: ${props => (props.setting ? "none" : props.next ? (props.skin ? "flex" : "block") : "flex")};
+  display: ${(props) =>
+    props.setting
+      ? 'none'
+      : props.next
+      ? props.skin
+        ? 'flex'
+        : 'block'
+      : 'flex'};
   align-items: center;
   justify-content: center;
-  padding-bottom: ${props => (props.next ? "2px" : "0")};
-  padding-right: ${props => (props.next ? "0" : "3px")};
+  padding-bottom: ${(props) => (props.next ? '2px' : '0')};
+  padding-right: ${(props) => (props.next ? '0' : '3px')};
   margin-left: 5px;
   cursor: normal;
 
   &:hover,
   &:focus {
-    background: ${({ theme, skin }) => (skin ? theme.widgets.assessmentPlayers.controlBtnPrimaryColor : "")};
-    color: ${({ theme, skin }) => (skin ? theme.widgets.assessmentPlayers.mainContentBgColor : "")};
-    border: ${({ theme, skin }) => (skin ? `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}` : "")};
+    background: ${({ theme, skin }) =>
+      skin ? theme.widgets.assessmentPlayers.controlBtnPrimaryColor : ''};
+    color: ${({ theme, skin }) =>
+      skin ? theme.widgets.assessmentPlayers.mainContentBgColor : ''};
+    border: ${({ theme, skin }) =>
+      skin
+        ? `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`
+        : ''};
   }
 
   &[disabled] {
-    background: ${props => props.theme.default.headerButtonBgColor};
+    background: ${(props) => props.theme.default.headerButtonBgColor};
     cursor: not-allowed;
-    border: 1px solid ${props => props.theme.default.headerButtonBgColor};
-    color: ${props => props.theme.default.headerButtonIconColor};
+    border: 1px solid ${(props) => props.theme.default.headerButtonBgColor};
+    color: ${(props) => props.theme.default.headerButtonIconColor};
     &:hover {
-      background: ${props => props.theme.default.headerButtonBgColor};
-      border-color: ${props => props.theme.default.headerButtonBgColor};
+      background: ${(props) => props.theme.default.headerButtonBgColor};
+      border-color: ${(props) => props.theme.default.headerButtonBgColor};
     }
     i {
       svg {
-        fill: ${props => props.theme.header.headerButtonHoverColor};
+        fill: ${(props) => props.theme.header.headerButtonHoverColor};
       }
     }
   }
   &:focus,
   &:active {
-    color: ${props => props.theme.default.headerButtonIconActiveColor};
-    background-color: ${props =>
+    color: ${(props) => props.theme.default.headerButtonIconActiveColor};
+    background-color: ${(props) =>
       props.skin
         ? props.theme.default.headerButtonActiveBgColor
         : props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
     border: none;
     i {
       svg {
-        fill: ${props => props.theme.header.headerButtonHoverColor};
+        fill: ${(props) => props.theme.header.headerButtonHoverColor};
       }
     }
   }
@@ -85,7 +100,7 @@ const Back = styled(Button)`
     font-stretch: normal;
     line-height: 1.36;
     letter-spacing: 0.7px;
-    color: ${props => props.theme.default.headerButtonIconColor};
+    color: ${(props) => props.theme.default.headerButtonIconColor};
   }
 
   .ant-btn {
@@ -106,8 +121,15 @@ const Back = styled(Button)`
   }
 
   @media (min-width: 767px) {
-    width: ${props => (props.next ? (props.skin ? "40px" : "187px") : props.skin ? "40px" : "50px")};
-    height: ${props => (props.skin ? "40px" : "50px")};
+    width: ${(props) =>
+      props.next
+        ? props.skin
+          ? '40px'
+          : '187px'
+        : props.skin
+        ? '40px'
+        : '50px'};
+    height: ${(props) => (props.skin ? '40px' : '50px')};
   }
   @media (max-width: 767px) {
     width: 40px;
@@ -116,11 +138,11 @@ const Back = styled(Button)`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${props => {
+    background-color: ${(props) => {
       if (props.setting) {
         return props.skin
           ? props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor
-          : props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor;
+          : props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor
       }
     }};
 
@@ -133,32 +155,39 @@ const Back = styled(Button)`
       height: 50%;
     }
   }
-`;
+`
 
 const Next = styled(Button)`
-  background: ${({ theme }) => theme.widgets.assessmentPlayers.mainContentBgColor};
-  color: ${({ theme }) => theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
-  border: ${({ theme }) => `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
+  background: ${({ theme }) =>
+    theme.widgets.assessmentPlayers.mainContentBgColor};
+  color: ${({ theme }) =>
+    theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+  border: ${({ theme }) =>
+    `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
   height: 40px;
   width: 100px;
   margin-left: 5px;
   display: flex;
   align-items: center;
   svg {
-    fill: ${({ theme }) => theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+    fill: ${({ theme }) =>
+      theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
     margin-right: 5px;
   }
   &:hover,
   &:focus {
-    background: ${({ theme }) => theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+    background: ${({ theme }) =>
+      theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
     color: ${({ theme }) => theme.widgets.assessmentPlayers.mainContentBgColor};
-    border: ${({ theme }) => `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
+    border: ${({ theme }) =>
+      `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
     svg {
-      fill: ${({ theme }) => theme.widgets.assessmentPlayers.mainContentBgColor};
+      fill: ${({ theme }) =>
+        theme.widgets.assessmentPlayers.mainContentBgColor};
     }
   }
-`;
+`
 export default {
   Back,
-  Next
-};
+  Next,
+}

@@ -1,14 +1,14 @@
-import { MainHeader } from "@edulastic/common";
-import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
-import { IconClockDashboard } from "@edulastic/icons";
-import { Col } from "antd";
-import React from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { getUserOrgName } from "../../../../../author/src/selectors/user";
+import { MainHeader } from '@edulastic/common'
+import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
+import { IconClockDashboard } from '@edulastic/icons'
+import { Col } from 'antd'
+import React from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { getUserOrgName } from '../../../../../author/src/selectors/user'
 
-const CustomizedHeaderWrapper = props => {
-  const { districtName } = props;
+const CustomizedHeaderWrapper = (props) => {
+  const { districtName } = props
   return (
     <MainHeader headingText="Dashboard" Icon={IconClockDashboard}>
       <HeaderMidContainer>
@@ -20,16 +20,16 @@ const CustomizedHeaderWrapper = props => {
         </EduButton> */}
       </StyledCol>
     </MainHeader>
-  );
-};
+  )
+}
 
-const mapStateToProps = state => ({
-  districtName: getUserOrgName(state)
-});
+const mapStateToProps = (state) => ({
+  districtName: getUserOrgName(state),
+})
 
-export default connect(mapStateToProps)(CustomizedHeaderWrapper);
+export default connect(mapStateToProps)(CustomizedHeaderWrapper)
 
 const StyledCol = styled(Col)`
   display: flex;
   text-align: right;
-`;
+`

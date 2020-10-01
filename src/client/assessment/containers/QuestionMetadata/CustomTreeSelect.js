@@ -1,35 +1,43 @@
-import { extraDesktopWidthMax, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
-import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
+import {
+  extraDesktopWidthMax,
+  greyThemeLight,
+  greyThemeLighter,
+} from '@edulastic/colors'
+import PropTypes from 'prop-types'
+import React, { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import { SelectSuffixIcon } from './styled/SelectSuffixIcon'
 
 const CustomTreeSelect = ({ bg, children, title, style }) => {
-  const [show, setShow] = useState(false);
-  const wrapperRef = useRef();
+  const [show, setShow] = useState(false)
+  const wrapperRef = useRef()
 
-  const handleClickOutside = event => {
+  const handleClickOutside = (event) => {
     if (
       event.target.className &&
       event.target.className.includes &&
-      (event.target.className.includes("ant-select-dropdown-menu-item") ||
-        event.target.className.includes("ant-select-dropdown-menu"))
+      (event.target.className.includes('ant-select-dropdown-menu-item') ||
+        event.target.className.includes('ant-select-dropdown-menu'))
     ) {
-      return;
+      return
     }
 
-    if (wrapperRef && wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-      setShow(false);
+    if (
+      wrapperRef &&
+      wrapperRef.current &&
+      !wrapperRef.current.contains(event.target)
+    ) {
+      setShow(false)
     }
-  };
+  }
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   return (
     <div ref={wrapperRef}>
@@ -41,28 +49,28 @@ const CustomTreeSelect = ({ bg, children, title, style }) => {
         {show && <Main>{children}</Main>}
       </Wrapper>
     </div>
-  );
-};
+  )
+}
 
 CustomTreeSelect.propTypes = {
   children: PropTypes.any.isRequired,
   title: PropTypes.string,
-  style: PropTypes.object
-};
+  style: PropTypes.object,
+}
 
 CustomTreeSelect.defaultProps = {
-  title: "",
-  style: {}
-};
+  title: '',
+  style: {},
+}
 
-export default CustomTreeSelect;
+export default CustomTreeSelect
 
 const Wrapper = styled.div`
   position: relative;
-`;
+`
 
 const Title = styled.div`
-  background: ${props => props.bg || greyThemeLighter};
+  background: ${(props) => props.bg || greyThemeLighter};
   min-height: 40px;
   border-radius: 2px;
   cursor: pointer;
@@ -73,20 +81,20 @@ const Title = styled.div`
   border: 1px solid ${greyThemeLight};
 
   span {
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
 
     @media (min-width: ${extraDesktopWidthMax}) {
-      font-size: ${props => props.theme.widgetOptions.labelFontSize};
+      font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
     }
   }
-`;
+`
 
 const TextEllipsis = styled.span`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 100%;
-`;
+`
 
 const Main = styled.div`
   background: #fff;
@@ -100,8 +108,8 @@ const Main = styled.div`
   z-index: 1000;
 
   .ant-select-selection {
-    color: ${props => props.theme.questionMetadata.textColor};
-    background: ${props => props.theme.questionMetadata.containerBackground};
+    color: ${(props) => props.theme.questionMetadata.textColor};
+    background: ${(props) => props.theme.questionMetadata.containerBackground};
     border: 0;
     padding: 5px;
   }
@@ -109,4 +117,4 @@ const Main = styled.div`
   .select-label {
     margin-bottom: 5px;
   }
-`;
+`

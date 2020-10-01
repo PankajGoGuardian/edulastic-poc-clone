@@ -1,13 +1,19 @@
-import styled, { css } from "styled-components";
-import { Input, Select } from "antd";
-import { desktopWidth, white, title, lightGreySecondary, themeColor } from "@edulastic/colors";
+import styled, { css } from 'styled-components'
+import { Input, Select } from 'antd'
+import {
+  desktopWidth,
+  white,
+  title,
+  lightGreySecondary,
+  themeColor,
+} from '@edulastic/colors'
 
 const smallFontCss = css`
   width: 520px;
   margin-top: 6px;
   font-size: 16px;
   font-weight: 500;
-`;
+`
 
 export const ModalHeader = styled.h3`
   width: 680px;
@@ -17,7 +23,7 @@ export const ModalHeader = styled.h3`
   overflow: hidden;
   white-space: nowrap;
   ${({ smallFont }) => smallFont && smallFontCss};
-`;
+`
 
 export const ModalContent = styled.div`
   background: ${white};
@@ -27,10 +33,10 @@ export const ModalContent = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   padding: 15px 0px 20px 0px;
-  margin-bottom: ${({ hideFooter }) => !hideFooter && "20px"}
+  margin-bottom: ${({ hideFooter }) => !hideFooter && '20px'}
   display: flex;
   flex-direction: column;
-`;
+`
 
 export const ModalFooter = styled.div`
   display: flex;
@@ -49,7 +55,7 @@ export const ModalFooter = styled.div`
       padding-right: 0px;
     }
   }
-`;
+`
 
 export const Title = styled.div`
   margin: 4px 2px;
@@ -57,11 +63,11 @@ export const Title = styled.div`
   color: ${title};
   font-weight: 600;
   font-size: 11px;
-`;
+`
 
 export const StyledInput = styled(Input)`
   background: ${lightGreySecondary};
-  width: "100%";
+  width: '100%';
   height: 40px;
   background: #f8f8f8 0% 0% no-repeat padding-box;
   border: 1px solid #b9b9b9;
@@ -70,7 +76,7 @@ export const StyledInput = styled(Input)`
   &::placeholder {
     color: #6a737f;
   }
-`;
+`
 
 export const StyledSelect = styled(Select)`
   width: 100%;
@@ -97,4 +103,4 @@ export const StyledSelect = styled(Select)`
   .ant-select-arrow {
     color: ${themeColor};
   }
-`;
+`

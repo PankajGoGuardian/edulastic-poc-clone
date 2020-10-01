@@ -1,11 +1,11 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import { Breadcrumb, Icon } from "antd";
-import styled from "styled-components";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { Breadcrumb, Icon } from 'antd'
+import styled from 'styled-components'
 
-const BreadCrumb = props => {
-  const { data, style } = props;
+const BreadCrumb = (props) => {
+  const { data, style } = props
   return (
     <Container style={style}>
       <Breadcrumb>
@@ -22,19 +22,19 @@ const BreadCrumb = props => {
           ))}
       </Breadcrumb>
     </Container>
-  );
-};
+  )
+}
 
 BreadCrumb.propTypes = {
   data: PropTypes.array.isRequired,
-  style: PropTypes.object
-};
+  style: PropTypes.object,
+}
 
 BreadCrumb.defaultProps = {
-  style: {}
-};
+  style: {},
+}
 
-export default BreadCrumb;
+export default BreadCrumb
 
 const Container = styled.div`
   position: static;
@@ -43,16 +43,17 @@ const Container = styled.div`
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator {
     font-weight: bold !important;
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
-    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
+    font-size: ${(props) =>
+      props.theme.breadcrumbs.breadcrumbTextSize} !important;
+    color: ${(props) => props.theme.breadcrumbs.breadcrumbTextColor};
 
     a {
-      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
+      color: ${(props) => props.theme.breadcrumbs.breadcrumbLinkColor};
     }
   }
 
   .anticon-left {
     margin-right: 5px;
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
+    font-size: ${(props) => props.theme.breadcrumbs.breadcrumbTextSize};
   }
-`;
+`

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Form } from "antd";
+import styled from 'styled-components'
+import { Form } from 'antd'
 
 export const ModalFormItem = styled(Form.Item)`
   display: flex;
@@ -15,4 +15,4 @@ export const ModalFormItem = styled(Form.Item)`
     width: 100%;
     max-width: 100%;
   }
-`;
+`

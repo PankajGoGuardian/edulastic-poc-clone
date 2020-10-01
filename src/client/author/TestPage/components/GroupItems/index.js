@@ -1,34 +1,43 @@
-import { testItemsApi } from "@edulastic/api";
-import { CheckboxLabel, EduButton, notification, RadioBtn, RadioGrp } from "@edulastic/common";
-import { test as testConstants } from "@edulastic/constants";
-import { IconPencilEdit } from "@edulastic/icons";
-import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Collapse, Icon, Input, Select } from "antd";
-import { isEqual, keyBy, maxBy, pick } from "lodash";
-import nanoid from "nanoid";
-import React, { useEffect, useState } from "react";
-import { withNamespaces } from "react-i18next";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import StandardsModal from "../../../../assessment/containers/QuestionMetadata/StandardsModal";
-import { getDefaultInterests } from "../../../dataUtils";
-import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from "../../../src/actions/dictionaries";
-import Breadcrumb from "../../../src/components/Breadcrumb";
+import { testItemsApi } from '@edulastic/api'
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  RadioBtn,
+  RadioGrp,
+} from '@edulastic/common'
+import { test as testConstants } from '@edulastic/constants'
+import { IconPencilEdit } from '@edulastic/icons'
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Collapse, Icon, Input, Select } from 'antd'
+import { isEqual, keyBy, maxBy, pick } from 'lodash'
+import nanoid from 'nanoid'
+import React, { useEffect, useState } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import StandardsModal from '../../../../assessment/containers/QuestionMetadata/StandardsModal'
+import { getDefaultInterests } from '../../../dataUtils'
+import {
+  getDictCurriculumsAction,
+  getDictStandardsForCurriculumAction,
+} from '../../../src/actions/dictionaries'
+import Breadcrumb from '../../../src/components/Breadcrumb'
 import {
   getCurriculumsListSelector,
   getDictionariesAlignmentsSelector,
   getStandardsListSelector,
-  standardsSelector
-} from "../../../src/selectors/dictionaries";
+  standardsSelector,
+} from '../../../src/selectors/dictionaries'
 import {
   getCollectionsSelector,
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
-  getInterestedSubjectsSelector
-} from "../../../src/selectors/user";
+  getInterestedSubjectsSelector,
+} from '../../../src/selectors/user'
 import {
   addNewGroupAction,
   deleteItemsGroupAction,
@@ -38,10 +47,10 @@ import {
   getTestEntitySelector,
   NewGroup,
   setTestDataAction,
-  updateGroupDataAction
-} from "../../ducks";
-import { removeTestItemsAction } from "../AddItems/ducks";
-import selectsData from "../common/selectsData";
+  updateGroupDataAction,
+} from '../../ducks'
+import { removeTestItemsAction } from '../AddItems/ducks'
+import selectsData from '../common/selectsData'
 import {
   AutoSelectFields,
   BreadcrumbContainer,
@@ -59,11 +68,11 @@ import {
   QuestionTagsWrapper,
   RadioMessage,
   SelectWrapper,
-  StandardNameSection
-} from "./styled";
-import TypeConfirmModal from "./TypeConfirmModal";
+  StandardNameSection,
+} from './styled'
+import TypeConfirmModal from './TypeConfirmModal'
 
-const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants;
+const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
 const GroupItems = ({
   t,
@@ -86,185 +95,218 @@ const GroupItems = ({
   history,
   interestedGrades,
   interestedSubjects,
-  interestedCurriculums: [firstCurriculum]
+  interestedCurriculums: [firstCurriculum],
 }) => {
-  const { Panel } = Collapse;
+  const { Panel } = Collapse
 
-  const [editGroupDetail, setEditGroupDetails] = useState({});
-  const [showStandardModal, setShowStandardModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
-  const [currentGroupIndex, setCurrentGroupIndex] = useState(null);
-  const [confirmModalCategory, setConfirmModalCategory] = useState(null);
-  const [fetchingItems, setFetchingItems] = useState(false);
-  const [deleteGroupIndex, setDeleteGroupIndex] = useState(null);
-  const [activePanels, setActivePanels] = useState([]);
+  const [editGroupDetail, setEditGroupDetails] = useState({})
+  const [showStandardModal, setShowStandardModal] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [searchProps, setSearchProps] = useState({
+    id: '',
+    grades: [],
+    searchStr: '',
+  })
+  const [currentGroupIndex, setCurrentGroupIndex] = useState(null)
+  const [confirmModalCategory, setConfirmModalCategory] = useState(null)
+  const [fetchingItems, setFetchingItems] = useState(false)
+  const [deleteGroupIndex, setDeleteGroupIndex] = useState(null)
+  const [activePanels, setActivePanels] = useState([])
   const {
-    subject = interestedSubjects?.[0] || "",
+    subject = interestedSubjects?.[0] || '',
     grades = interestedGrades || [],
-    curriculumId = firstCurriculum?.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
-  } = getDefaultInterests();
+    curriculumId = firstCurriculum?.subject === interestedSubjects?.[0]
+      ? firstCurriculum?._id
+      : '',
+  } = getDefaultInterests()
 
   const goBackUrl = match.params?.id
     ? `/author/tests/tab/addItems/id/${match.params.id}`
-    : "/author/tests/create/addItems";
+    : '/author/tests/create/addItems'
 
   const breadcrumbData = [
     {
-      title: "TESTS",
-      to: "/author/tests"
+      title: 'TESTS',
+      to: '/author/tests',
     },
     {
-      title: "ADD ITEMS",
-      to: goBackUrl
+      title: 'ADD ITEMS',
+      to: goBackUrl,
     },
     {
-      title: "QUESTION DELIVERY GROUPS",
-      to: ""
-    }
-  ];
+      title: 'QUESTION DELIVERY GROUPS',
+      to: '',
+    },
+  ]
 
-  const switchToAddItems = () => history.push(goBackUrl);
-  const collectionData = collections.map(o => ({ text: o.name, value: o._id }));
+  const switchToAddItems = () => history.push(goBackUrl)
+  const collectionData = collections.map((o) => ({
+    text: o.name,
+    value: o._id,
+  }))
 
   useEffect(() => {
-    setActivePanels(test.itemGroups.map((_, i) => (i + 1).toString()));
+    setActivePanels(test.itemGroups.map((_, i) => (i + 1).toString()))
     if (curriculums.length === 0) {
-      getCurriculums();
+      getCurriculums()
     }
-    getAllTags({ type: "testitem" });
+    getAllTags({ type: 'testitem' })
 
-    searchCurriculumStandards({ id: curriculumId, grades, searchStr: "" });
-  }, []);
+    searchCurriculumStandards({ id: curriculumId, grades, searchStr: '' })
+  }, [])
 
   const handleChange = (fieldName, value) => {
-    let updatedGroupData = { ...editGroupDetail };
-    if (fieldName === "type") {
+    let updatedGroupData = { ...editGroupDetail }
+    if (fieldName === 'type') {
       updatedGroupData = {
         ...updatedGroupData,
         items: [],
-        type: updatedGroupData.type === ITEM_GROUP_TYPES.STATIC ? ITEM_GROUP_TYPES.AUTOSELECT : ITEM_GROUP_TYPES.STATIC,
+        type:
+          updatedGroupData.type === ITEM_GROUP_TYPES.STATIC
+            ? ITEM_GROUP_TYPES.AUTOSELECT
+            : ITEM_GROUP_TYPES.STATIC,
         deliveryType:
           updatedGroupData.type === ITEM_GROUP_TYPES.STATIC
             ? ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
-            : ITEM_GROUP_DELIVERY_TYPES.ALL
-      };
-    } else if (fieldName === "deliverItemsCount") {
-      if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC && value >= updatedGroupData.items.length) {
-        notification({ messageKey: "totalItemsToBeDelivered" });
-        return;
+            : ITEM_GROUP_DELIVERY_TYPES.ALL,
       }
-      if (updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT && value > 100) {
-        notification({ messageKey: "totalItemsToBeDeliveredCannotBeMOreThan100" });
-        return;
+    } else if (fieldName === 'deliverItemsCount') {
+      if (
+        updatedGroupData.type === ITEM_GROUP_TYPES.STATIC &&
+        value >= updatedGroupData.items.length
+      ) {
+        notification({ messageKey: 'totalItemsToBeDelivered' })
+        return
+      }
+      if (
+        updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+        value > 100
+      ) {
+        notification({
+          messageKey: 'totalItemsToBeDeliveredCannotBeMOreThan100',
+        })
+        return
       }
       updatedGroupData = {
         ...updatedGroupData,
-        [fieldName]: value
-      };
-    } else if (fieldName === "deliveryType") {
+        [fieldName]: value,
+      }
+    } else if (fieldName === 'deliveryType') {
       if (
         updatedGroupData.type === ITEM_GROUP_TYPES.STATIC &&
         value === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         updatedGroupData.items.length < 2
       ) {
-        notification({ messageKey: "pleaseSelectAtleastTwoItems" });
-        return;
+        notification({ messageKey: 'pleaseSelectAtleastTwoItems' })
+        return
       }
       updatedGroupData = {
         ...updatedGroupData,
-        [fieldName]: value
-      };
-    } else if (fieldName === "tags") {
-      const allTagsKeyById = keyBy(allTagsData, "_id");
+        [fieldName]: value,
+      }
+    } else if (fieldName === 'tags') {
+      const allTagsKeyById = keyBy(allTagsData, '_id')
       updatedGroupData = {
         ...updatedGroupData,
-        [fieldName]: value.map(tagId => allTagsKeyById[tagId])
-      };
+        [fieldName]: value.map((tagId) => allTagsKeyById[tagId]),
+      }
     } else {
       updatedGroupData = {
         ...updatedGroupData,
-        [fieldName]: value
-      };
+        [fieldName]: value,
+      }
     }
 
     if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC) {
-      let extraPick = [];
+      let extraPick = []
       if (
-        [ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM, ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM].includes(
-          updatedGroupData.deliveryType
-        )
+        [
+          ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM,
+          ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM,
+        ].includes(updatedGroupData.deliveryType)
       )
-        extraPick = ["deliverItemsCount"];
+        extraPick = ['deliverItemsCount']
       updatedGroupData = pick(updatedGroupData, [
-        "type",
-        "groupName",
-        "items",
-        "deliveryType",
-        "index",
-        "_id",
-        ...extraPick
-      ]);
+        'type',
+        'groupName',
+        'items',
+        'deliveryType',
+        'index',
+        '_id',
+        ...extraPick,
+      ])
     }
-    setEditGroupDetails(updatedGroupData);
-  };
+    setEditGroupDetails(updatedGroupData)
+  }
 
-  const handleTypeSelect = groupIndex => {
-    let showModal = false;
-    const { type, items, collectionDetails, standardDetails, dok, tags, difficulty } = editGroupDetail;
+  const handleTypeSelect = (groupIndex) => {
+    let showModal = false
+    const {
+      type,
+      items,
+      collectionDetails,
+      standardDetails,
+      dok,
+      tags,
+      difficulty,
+    } = editGroupDetail
 
     if (type === ITEM_GROUP_TYPES.STATIC && items.length > 0) {
-      showModal = true;
+      showModal = true
     } else if (
       type === ITEM_GROUP_TYPES.AUTOSELECT &&
-      (collectionDetails || standardDetails || dok || tags?.length || difficulty)
+      (collectionDetails ||
+        standardDetails ||
+        dok ||
+        tags?.length ||
+        difficulty)
     ) {
-      showModal = true;
+      showModal = true
     }
     if (showModal) {
-      setConfirmModalCategory("TYPE");
-      setShowConfirmModal(true);
-      return setCurrentGroupIndex(groupIndex);
+      setConfirmModalCategory('TYPE')
+      setShowConfirmModal(true)
+      return setCurrentGroupIndex(groupIndex)
     }
-    return handleChange("type", "");
-  };
+    return handleChange('type', '')
+  }
 
-  const handleConfirmResponse = value => {
-    if (value === "YES") {
-      if (confirmModalCategory === "TYPE") handleChange("type", "");
+  const handleConfirmResponse = (value) => {
+    if (value === 'YES') {
+      if (confirmModalCategory === 'TYPE') handleChange('type', '')
       else {
-        const currentGroup = test.itemGroups[deleteGroupIndex];
-        deleteItemsGroup(currentGroup.groupName);
-        removeTestItems(currentGroup.items.map(i => i._id));
-        setDeleteGroupIndex(null);
+        const currentGroup = test.itemGroups[deleteGroupIndex]
+        deleteItemsGroup(currentGroup.groupName)
+        removeTestItems(currentGroup.items.map((i) => i._id))
+        setDeleteGroupIndex(null)
       }
     }
-    setConfirmModalCategory(null);
-    setShowConfirmModal(false);
-  };
+    setConfirmModalCategory(null)
+    setShowConfirmModal(false)
+  }
 
   const handleDeleteGroup = (e, index) => {
-    e.stopPropagation();
-    setDeleteGroupIndex(index);
-    setConfirmModalCategory("DELETE GROUP");
-    setShowConfirmModal(true);
-  };
+    e.stopPropagation()
+    setDeleteGroupIndex(index)
+    setConfirmModalCategory('DELETE GROUP')
+    setShowConfirmModal(true)
+  }
 
   const handleAddGroup = () => {
     if (test.itemGroups.length === 15) {
-      notification({ type: "warn", messageKey: "cantCreateMoreThan15Groups" });
-      return;
+      notification({ type: 'warn', messageKey: 'cantCreateMoreThan15Groups' })
+      return
     }
-    const { index } = maxBy(test.itemGroups, "index");
+    const { index } = maxBy(test.itemGroups, 'index')
     const data = {
       ...NewGroup,
       _id: nanoid(),
       groupName: `Group ${index + 2}`,
-      index: index + 1
-    };
-    addNewGroup(data);
-    setActivePanels([...activePanels, (test.itemGroups.length + 1).toString()]);
-  };
+      index: index + 1,
+    }
+    addNewGroup(data)
+    setActivePanels([...activePanels, (test.itemGroups.length + 1).toString()])
+  }
 
   const checkDuplicateGroup = (collectionId, standardId) => {
     const duplicateGroup = test.itemGroups.find(
@@ -272,208 +314,271 @@ const GroupItems = ({
         index !== currentGroupIndex &&
         g.collectionDetails?._id === collectionId &&
         g.standardDetails?.standardId === standardId
-    );
+    )
     if (duplicateGroup) {
-      notification({ type: "warn", msg: `The combination already exists in ${duplicateGroup.groupName}` });
-      return true;
+      notification({
+        type: 'warn',
+        msg: `The combination already exists in ${duplicateGroup.groupName}`,
+      })
+      return true
     }
-    return false;
-  };
+    return false
+  }
 
-  const handleApply = data => {
+  const handleApply = (data) => {
     if (!data?.eloStandards?.length) {
-      return notification({ type: "warn", messageKey: "pleaseSelectStantdardBeforeApplying" });
+      return notification({
+        type: 'warn',
+        messageKey: 'pleaseSelectStantdardBeforeApplying',
+      })
     }
-    const { subject, eloStandards } = data;
-    const grades = data.grades.length ? data.grades : eloStandards[0]?.grades || [];
-    const { curriculumId, _id: standardId, tloId: domainId, identifier } = eloStandards[0];
+    const { subject, eloStandards } = data
+    const grades = data.grades.length
+      ? data.grades
+      : eloStandards[0]?.grades || []
+    const {
+      curriculumId,
+      _id: standardId,
+      tloId: domainId,
+      identifier,
+    } = eloStandards[0]
     const standardDetails = {
       subject,
       grades,
       curriculumId,
       standardId,
       domainId,
-      identifier
-    };
-    setShowStandardModal(false);
-    const { collectionDetails } = editGroupDetail;
-    if (collectionDetails && checkDuplicateGroup(collectionDetails._id, standardId)) return;
-    handleChange("standardDetails", standardDetails);
-  };
+      identifier,
+    }
+    setShowStandardModal(false)
+    const { collectionDetails } = editGroupDetail
+    if (
+      collectionDetails &&
+      checkDuplicateGroup(collectionDetails._id, standardId)
+    )
+      return
+    handleChange('standardDetails', standardDetails)
+  }
 
-  const handleCollectionChange = collectionId => {
-    const { value: _id, text: name } = collectionData.find(d => d.value === collectionId);
-    const { standardDetails } = editGroupDetail;
+  const handleCollectionChange = (collectionId) => {
+    const { value: _id, text: name } = collectionData.find(
+      (d) => d.value === collectionId
+    )
+    const { standardDetails } = editGroupDetail
     if (standardDetails) {
-      const isDuplicate = checkDuplicateGroup(collectionId, standardDetails.standardId);
-      if (isDuplicate) return;
+      const isDuplicate = checkDuplicateGroup(
+        collectionId,
+        standardDetails.standardId
+      )
+      if (isDuplicate) return
     }
-    handleChange("collectionDetails", { _id, name });
-  };
+    handleChange('collectionDetails', { _id, name })
+  }
 
-  const searchCurriculumStandards = searchObject => {
+  const searchCurriculumStandards = (searchObject) => {
     if (!isEqual(searchProps, searchObject)) {
-      setSearchProps(searchObject);
-      getCurriculumStandards(searchObject.id, searchObject.grades, searchObject.searchStr);
+      setSearchProps(searchObject)
+      getCurriculumStandards(
+        searchObject.id,
+        searchObject.grades,
+        searchObject.searchStr
+      )
     }
-  };
+  }
 
   const validateGroups = () => {
     if (currentGroupIndex !== null) {
-      return notification({ messageKey: "pleaseSaveTheChangesMadeToGroupFirst" });
+      return notification({
+        messageKey: 'pleaseSaveTheChangesMadeToGroupFirst',
+      })
     }
-    const staticGroups = [];
-    const autoSelectGroups = [];
-    let isValid = true;
+    const staticGroups = []
+    const autoSelectGroups = []
+    let isValid = true
 
-    test.itemGroups.forEach(group => {
-      if (group.type === ITEM_GROUP_TYPES.STATIC) staticGroups.push(group);
-      else autoSelectGroups.push(group);
-    });
+    test.itemGroups.forEach((group) => {
+      if (group.type === ITEM_GROUP_TYPES.STATIC) staticGroups.push(group)
+      else autoSelectGroups.push(group)
+    })
 
     for (let i = 0; i < staticGroups.length; i++) {
-      const { items, deliveryType, deliverItemsCount } = staticGroups[i];
+      const { items, deliveryType, deliverItemsCount } = staticGroups[i]
       if (items.length === 0) {
-        notification({ messageKey: "eachStaticGroupShouldContainAtleastOneItems" });
-        isValid = false;
-        break;
+        notification({
+          messageKey: 'eachStaticGroupShouldContainAtleastOneItems',
+        })
+        isValid = false
+        break
       }
-      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
-        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
-        isValid = false;
-        break;
+      if (
+        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        !deliverItemsCount
+      ) {
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        isValid = false
+        break
       }
     }
 
     for (let i = 0; i < autoSelectGroups.length; i++) {
-      const { collectionDetails, standardDetails, deliverItemsCount } = autoSelectGroups[i];
+      const {
+        collectionDetails,
+        standardDetails,
+        deliverItemsCount,
+      } = autoSelectGroups[i]
       if (!collectionDetails || !standardDetails) {
-        notification({ messageKey: "eachAutoselectGroupShouldHaveAStandardAndCollection" });
-        isValid = false;
-        break;
+        notification({
+          messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
+        })
+        isValid = false
+        break
       }
       if (!deliverItemsCount) {
-        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
-        isValid = false;
-        break;
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        isValid = false
+        break
       }
     }
 
     if (isValid) {
-      switchToAddItems();
+      switchToAddItems()
     }
-  };
+  }
 
   const handleEditGroup = (e, itemGroup, index) => {
-    if (activePanels.includes((index + 1).toString())) e.stopPropagation();
-    setEditGroupDetails(itemGroup);
-    setCurrentGroupIndex(index);
-  };
+    if (activePanels.includes((index + 1).toString())) e.stopPropagation()
+    setEditGroupDetails(itemGroup)
+    setCurrentGroupIndex(index)
+  }
 
   const validateGroup = () => {
-    let isValid = true;
+    let isValid = true
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
-      const { deliveryType, deliverItemsCount } = editGroupDetail;
-      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
-        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
-        isValid = false;
+      const { deliveryType, deliverItemsCount } = editGroupDetail
+      if (
+        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        !deliverItemsCount
+      ) {
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        isValid = false
       }
     } else {
-      const { collectionDetails, standardDetails, deliverItemsCount } = editGroupDetail;
+      const {
+        collectionDetails,
+        standardDetails,
+        deliverItemsCount,
+      } = editGroupDetail
       if (!collectionDetails || !standardDetails) {
-        notification({ messageKey: "eachAutoselectGroupShouldHaveAStandardAndCollection" });
-        isValid = false;
+        notification({
+          messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
+        })
+        isValid = false
       }
       if (isValid && !deliverItemsCount) {
-        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
-        isValid = false;
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        isValid = false
       }
     }
-    return isValid;
-  };
+    return isValid
+  }
 
   const handleSaveGroup = async () => {
     if (!validateGroup()) {
-      return;
+      return
     }
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
-      return saveGroupToTest();
+      return saveGroupToTest()
     }
 
     const optionalFields = {
       depthOfKnowledge: editGroupDetail.dok,
       authorDifficulty: editGroupDetail.difficulty,
-      tags: editGroupDetail.tags?.map(tag => tag.tagName) || []
-    };
-    Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
+      tags: editGroupDetail.tags?.map((tag) => tag.tagName) || [],
+    }
+    Object.keys(optionalFields).forEach(
+      (key) => optionalFields[key] === undefined && delete optionalFields[key]
+    )
     const data = {
       limit: editGroupDetail.deliverItemsCount,
       search: {
         collectionId: editGroupDetail.collectionDetails._id,
         standardId: editGroupDetail.standardDetails.standardId,
-        ...optionalFields
-      }
-    };
-    if (data.limit > 100) {
-      notification({ messageKey: "maximum100Questions" });
-      return;
+        ...optionalFields,
+      },
     }
-    setFetchingItems(true);
+    if (data.limit > 100) {
+      notification({ messageKey: 'maximum100Questions' })
+      return
+    }
+    setFetchingItems(true)
 
-    const allStaticGroupItemIds = getStaticGroupItemIds(test);
+    const allStaticGroupItemIds = getStaticGroupItemIds(test)
     testItemsApi
-      .getAutoSelectedItems({ ...data, search: { ...data.search, nInItemIds: allStaticGroupItemIds } })
-      .then(res => {
-        const { items, total } = res;
+      .getAutoSelectedItems({
+        ...data,
+        search: { ...data.search, nInItemIds: allStaticGroupItemIds },
+      })
+      .then((res) => {
+        const { items, total } = res
         if (items.length === 0) {
-          notification({ messageKey: "noItemsFoundForCurrentCombination" });
-          return;
+          notification({ messageKey: 'noItemsFoundForCurrentCombination' })
+          return
         }
         if (total < data.limit) {
-          return notification({ msg: `There are only ${total} items that meet the search criteria` });
+          return notification({
+            msg: `There are only ${total} items that meet the search criteria`,
+          })
         }
-        const testItems = items.map(i => ({ ...i, autoselectedItem: true }));
-        saveGroupToTest(testItems);
+        const testItems = items.map((i) => ({ ...i, autoselectedItem: true }))
+        saveGroupToTest(testItems)
       })
-      .catch(err => {
-        notification({ msg: err.message || "Failed to fetch test items" });
-      });
-    setFetchingItems(false);
-  };
+      .catch((err) => {
+        notification({ msg: err.message || 'Failed to fetch test items' })
+      })
+    setFetchingItems(false)
+  }
 
-  const saveGroupToTest = items => {
-    const oldGroupData = test.itemGroups[currentGroupIndex];
-    let updatedGroupData = { ...editGroupDetail };
+  const saveGroupToTest = (items) => {
+    const oldGroupData = test.itemGroups[currentGroupIndex]
+    let updatedGroupData = { ...editGroupDetail }
     if (editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT) {
-      removeTestItems(oldGroupData.items.map(i => i._id));
-      updatedGroupData = { ...updatedGroupData, items };
-    } else if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC && oldGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT) {
-      updatedGroupData = { ...updatedGroupData, items: [] };
+      removeTestItems(oldGroupData.items.map((i) => i._id))
+      updatedGroupData = { ...updatedGroupData, items }
+    } else if (
+      editGroupDetail.type === ITEM_GROUP_TYPES.STATIC &&
+      oldGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
+    ) {
+      updatedGroupData = { ...updatedGroupData, items: [] }
     }
     if (
-      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-      updatedGroupData.items.some(item => item.itemLevelScoring === false)
+      updatedGroupData.deliveryType ===
+        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+      updatedGroupData.items.some((item) => item.itemLevelScoring === false)
     ) {
-      notification({ type: "warn", messageKey: "allItemsInsideLimited" });
-      return;
+      notification({ type: 'warn', messageKey: 'allItemsInsideLimited' })
+      return
     }
     const disableAnswerOnPaper =
-      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
-      updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT;
+      updatedGroupData.deliveryType ===
+        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
+      updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
     if (test.answerOnPaper && disableAnswerOnPaper) {
-      setTestData({ answerOnPaper: false });
-      notification({ type: "warn", messageKey: "answerOnPaperIsNotSupportedForAutoselecteGroup" });
+      setTestData({ answerOnPaper: false })
+      notification({
+        type: 'warn',
+        messageKey: 'answerOnPaperIsNotSupportedForAutoselecteGroup',
+      })
     }
-    updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex });
-    setCurrentGroupIndex(null);
-    setEditGroupDetails({});
-    setFetchingItems(false);
-  };
+    updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex })
+    setCurrentGroupIndex(null)
+    setEditGroupDetails({})
+    setFetchingItems(false)
+  }
 
   const handleCancel = () => {
-    setCurrentGroupIndex(null);
-    setEditGroupDetails({});
-  };
+    setCurrentGroupIndex(null)
+    setEditGroupDetails({})
+  }
 
   return (
     <Container>
@@ -484,8 +589,10 @@ const GroupItems = ({
           grades={grades}
           standards={[]}
           standard={{
-            curriculum: curriculums.find(item => item._id === parseInt(curriculumId))?.curriculum || "",
-            id: parseInt(curriculumId) || ""
+            curriculum:
+              curriculums.find((item) => item._id === parseInt(curriculumId))
+                ?.curriculum || '',
+            id: parseInt(curriculumId) || '',
           }}
           visible={showStandardModal}
           curriculums={curriculums}
@@ -507,23 +614,26 @@ const GroupItems = ({
         />
       )}
       <BreadcrumbContainer>
-        <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+        <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </BreadcrumbContainer>
       <CreateGroupWrapper>
         <Heading>
           Question Delivery Groups&nbsp;&nbsp;
           <FontAwesomeIcon icon={faQuestionCircle} aria-hidden="true" />
         </Heading>
-        <Collapse activeKey={activePanels} onChange={panels => setActivePanels(panels)}>
+        <Collapse
+          activeKey={activePanels}
+          onChange={(panels) => setActivePanels(panels)}
+        >
           {test.itemGroups.map((itemGroup, index) => {
             const editingDeliveryType =
               editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
                 ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-                : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM;
+                : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
             const currentDeliveryType =
               itemGroup.type === ITEM_GROUP_TYPES.STATIC
                 ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-                : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM;
+                : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
             return (
               <Panel
                 header={[
@@ -531,17 +641,23 @@ const GroupItems = ({
                     <Label fontWeight="600">{itemGroup.groupName}</Label>
                     <div>
                       {currentGroupIndex !== index && (
-                        <div title="Edit" onClick={e => handleEditGroup(e, itemGroup, index)}>
+                        <div
+                          title="Edit"
+                          onClick={(e) => handleEditGroup(e, itemGroup, index)}
+                        >
                           <IconPencilEdit />
                         </div>
                       )}
                       {test.itemGroups.length > 1 && (
-                        <div title="Delete" onClick={e => handleDeleteGroup(e, index)}>
+                        <div
+                          title="Delete"
+                          onClick={(e) => handleDeleteGroup(e, index)}
+                        >
                           <FontAwesomeIcon icon={faTrashAlt} />
                         </div>
                       )}
                     </div>
-                  </PanelHeading>
+                  </PanelHeading>,
                 ]}
                 key={index + 1}
               >
@@ -555,24 +671,37 @@ const GroupItems = ({
                       }
                       data-cy={`autoselect-${itemGroup.groupName}`}
                       disabled={currentGroupIndex !== index}
-                      onChange={e => handleTypeSelect(index)}
+                      onChange={(e) => handleTypeSelect(index)}
                     >
                       AUTO SELECT ITEMS BASED ON STANDARDS
                     </CheckboxLabel>
                   </GroupField>
-                  {(currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
-                  (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (
+                  {(currentGroupIndex === index &&
+                    editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
+                  (currentGroupIndex !== index &&
+                    itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (
                     <GroupField>
                       <Label>Items</Label>
                       <QuestionTagsWrapper>
-                        <QuestionTagsContainer data-cy={`item-container-${itemGroup.groupName}`}>
-                          {(currentGroupIndex === index ? editGroupDetail.items : itemGroup.items)
-                            .map(({ _id }) => _id.substring(_id.length, _id.length - 6))
-                            .map(id => (
+                        <QuestionTagsContainer
+                          data-cy={`item-container-${itemGroup.groupName}`}
+                        >
+                          {(currentGroupIndex === index
+                            ? editGroupDetail.items
+                            : itemGroup.items
+                          )
+                            .map(({ _id }) =>
+                              _id.substring(_id.length, _id.length - 6)
+                            )
+                            .map((id) => (
                               <ItemTag>{id}</ItemTag>
                             ))}
                         </QuestionTagsContainer>
-                        <EduButton height="40px" isGhost onClick={switchToAddItems}>
+                        <EduButton
+                          height="40px"
+                          isGhost
+                          onClick={switchToAddItems}
+                        >
                           Select Items
                         </EduButton>
                       </QuestionTagsWrapper>
@@ -585,16 +714,20 @@ const GroupItems = ({
                           data-cy={`collection-${itemGroup.groupName}`}
                           size="default"
                           placeholder="Select Collection"
-                          onChange={value => handleCollectionChange(value, index)}
+                          onChange={(value) =>
+                            handleCollectionChange(value, index)
+                          }
                           value={
                             currentGroupIndex === index
                               ? editGroupDetail.collectionDetails?._id
                               : itemGroup.collectionDetails?._id
                           }
-                          getPopupContainer={triggerNode => triggerNode.parentNode}
+                          getPopupContainer={(triggerNode) =>
+                            triggerNode.parentNode
+                          }
                           disabled={currentGroupIndex !== index}
                         >
-                          {collectionData.map(el => (
+                          {collectionData.map((el) => (
                             <Select.Option
                               key={el.value}
                               value={el.value}
@@ -607,8 +740,10 @@ const GroupItems = ({
                       </SelectWrapper>
                       <SelectWrapper width="200px">
                         <Label>Standards</Label>
-                        {(currentGroupIndex === index && editGroupDetail.standardDetails) ||
-                        (currentGroupIndex !== index && itemGroup.standardDetails) ? (
+                        {(currentGroupIndex === index &&
+                          editGroupDetail.standardDetails) ||
+                        (currentGroupIndex !== index &&
+                          itemGroup.standardDetails) ? (
                           <StandardNameSection>
                             <span>
                               {currentGroupIndex === index
@@ -617,7 +752,8 @@ const GroupItems = ({
                             </span>
                             <span
                               onClick={() => {
-                                if (currentGroupIndex === index) handleChange("standardDetails", "");
+                                if (currentGroupIndex === index)
+                                  handleChange('standardDetails', '')
                               }}
                             >
                               <Icon type="close" />
@@ -629,8 +765,8 @@ const GroupItems = ({
                             data-cy={`standard-${itemGroup.groupName}`}
                             onClick={() => {
                               if (currentGroupIndex === index) {
-                                setShowStandardModal(true);
-                                setCurrentGroupIndex(index);
+                                setShowStandardModal(true)
+                                setCurrentGroupIndex(index)
                               }
                             }}
                           >
@@ -644,9 +780,15 @@ const GroupItems = ({
                           data-cy="selectDOK"
                           placeholder="Select DOK"
                           size="default"
-                          onSelect={value => handleChange("dok", value)}
-                          value={currentGroupIndex === index ? editGroupDetail.dok : itemGroup.dok}
-                          getPopupContainer={triggerNode => triggerNode.parentNode}
+                          onSelect={(value) => handleChange('dok', value)}
+                          value={
+                            currentGroupIndex === index
+                              ? editGroupDetail.dok
+                              : itemGroup.dok
+                          }
+                          getPopupContainer={(triggerNode) =>
+                            triggerNode.parentNode
+                          }
                           disabled={currentGroupIndex !== index}
                         >
                           {selectsData.allDepthOfKnowledge.map((el, index) => (
@@ -655,7 +797,7 @@ const GroupItems = ({
                               value={el.value}
                               data-cy={`${itemGroup.groupName} ${el.text}`}
                             >
-                              {`${index > 0 ? index : ""} ${el.text}`}
+                              {`${index > 0 ? index : ''} ${el.text}`}
                             </Select.Option>
                           ))}
                         </Select>
@@ -667,19 +809,26 @@ const GroupItems = ({
                           mode="multiple"
                           data-cy="selectTags"
                           size="default"
-                          onChange={value => handleChange("tags", value)}
+                          onChange={(value) => handleChange('tags', value)}
                           filterOption={(input, option) =>
-                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            option.props.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
                           }
                           value={
                             currentGroupIndex === index
-                              ? editGroupDetail.tags?.map(tag => tag._id) || []
-                              : itemGroup.tags?.map(tag => tag._id) || []
+                              ? editGroupDetail.tags?.map((tag) => tag._id) ||
+                                []
+                              : itemGroup.tags?.map((tag) => tag._id) || []
                           }
                           disabled={currentGroupIndex !== index}
                         >
-                          {allTagsData.map(el => (
-                            <Select.Option key={el._id} value={el._id} data-cy={`${itemGroup.groupName} ${el.tagName}`}>
+                          {allTagsData.map((el) => (
+                            <Select.Option
+                              key={el._id}
+                              value={el._id}
+                              data-cy={`${itemGroup.groupName} ${el.tagName}`}
+                            >
                               {el.tagName}
                             </Select.Option>
                           ))}
@@ -691,12 +840,20 @@ const GroupItems = ({
                           placeholder="Select one"
                           data-cy="selectDifficulty"
                           size="default"
-                          onSelect={value => handleChange("difficulty", value)}
-                          value={currentGroupIndex === index ? editGroupDetail.difficulty : itemGroup.difficulty}
-                          getPopupContainer={triggerNode => triggerNode.parentNode}
+                          onSelect={(value) =>
+                            handleChange('difficulty', value)
+                          }
+                          value={
+                            currentGroupIndex === index
+                              ? editGroupDetail.difficulty
+                              : itemGroup.difficulty
+                          }
+                          getPopupContainer={(triggerNode) =>
+                            triggerNode.parentNode
+                          }
                           disabled={currentGroupIndex !== index}
                         >
-                          {selectsData.allAuthorDifficulty.map(el => (
+                          {selectsData.allAuthorDifficulty.map((el) => (
                             <Select.Option
                               key={el.value}
                               value={el.value}
@@ -712,12 +869,20 @@ const GroupItems = ({
                   <GroupField>
                     <RadioGrp
                       name="radiogroup"
-                      value={currentGroupIndex === index ? editGroupDetail.deliveryType : itemGroup.deliveryType}
-                      onChange={e => handleChange("deliveryType", e.target.value)}
+                      value={
+                        currentGroupIndex === index
+                          ? editGroupDetail.deliveryType
+                          : itemGroup.deliveryType
+                      }
+                      onChange={(e) =>
+                        handleChange('deliveryType', e.target.value)
+                      }
                       disabled={currentGroupIndex !== index}
                     >
-                      {((currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
-                        (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
+                      {((currentGroupIndex === index &&
+                        editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
+                        (currentGroupIndex !== index &&
+                          itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
                         <>
                           <RadioBtn
                             data-cy={`check-deliver-all-${itemGroup.groupName}`}
@@ -728,14 +893,19 @@ const GroupItems = ({
                           </RadioBtn>
 
                           <RadioMessage>
-                            Use this option to deliver a specific number of randomly picked question per Group.
+                            Use this option to deliver a specific number of
+                            randomly picked question per Group.
                           </RadioMessage>
                         </>
                       )}
                       <RadioBtn
                         data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
                         defaultChecked={false}
-                        value={currentGroupIndex === index ? editingDeliveryType : currentDeliveryType}
+                        value={
+                          currentGroupIndex === index
+                            ? editingDeliveryType
+                            : currentDeliveryType
+                        }
                       >
                         <ItemCountWrapper>
                           <span>Deliver a total of </span>
@@ -743,33 +913,43 @@ const GroupItems = ({
                             data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
                             type="number"
                             disabled={
-                              (editGroupDetail.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
+                              (editGroupDetail.deliveryType ===
+                                ITEM_GROUP_DELIVERY_TYPES.ALL &&
                                 currentGroupIndex === index) ||
                               currentGroupIndex !== index
                             }
                             min={0}
                             value={
                               currentGroupIndex === index
-                                ? editGroupDetail.deliverItemsCount || ""
-                                : itemGroup.deliverItemsCount || ""
+                                ? editGroupDetail.deliverItemsCount || ''
+                                : itemGroup.deliverItemsCount || ''
                             }
-                            onChange={e => handleChange("deliverItemsCount", parseFloat(e.target.value))}
-                            max={editGroupDetail.type === ITEM_GROUP_TYPES.STATIC ? itemGroup.items.length : 100}
+                            onChange={(e) =>
+                              handleChange(
+                                'deliverItemsCount',
+                                parseFloat(e.target.value)
+                              )
+                            }
+                            max={
+                              editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
+                                ? itemGroup.items.length
+                                : 100
+                            }
                           />
                           <span> Item(s)</span>
                         </ItemCountWrapper>
                       </RadioBtn>
                     </RadioGrp>
                   </GroupField>
-                  <GroupField style={{ display: "flex" }} marginBottom="5px">
+                  <GroupField style={{ display: 'flex' }} marginBottom="5px">
                     {currentGroupIndex === index && (
                       <>
                         <EduButton
                           loading={fetchingItems}
                           data-cy={`save-${itemGroup.groupName}`}
-                          onClick={e => {
-                            handleSaveGroup();
-                            e.target.blur();
+                          onClick={(e) => {
+                            handleSaveGroup()
+                            e.target.blur()
                           }}
                         >
                           Save
@@ -777,9 +957,9 @@ const GroupItems = ({
                         <EduButton
                           isGhost
                           loading={fetchingItems}
-                          onClick={e => {
-                            handleCancel();
-                            e.target.blur();
+                          onClick={(e) => {
+                            handleCancel()
+                            e.target.blur()
                           }}
                         >
                           Cancel
@@ -789,10 +969,10 @@ const GroupItems = ({
                   </GroupField>
                 </ContentBody>
               </Panel>
-            );
+            )
           })}
         </Collapse>
-        <GroupField style={{ marginTop: "10px" }}>
+        <GroupField style={{ marginTop: '10px' }}>
           {currentGroupIndex === null && (
             <EduButton data-cy="add-group" onClick={handleAddGroup}>
               Add Group
@@ -806,15 +986,15 @@ const GroupItems = ({
         </Footer>
       </CreateGroupWrapper>
     </Container>
-  );
-};
+  )
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withRouter,
   connect(
-    state => ({
-      allTagsData: getAllTagsSelector(state, "testitem"),
+    (state) => ({
+      allTagsData: getAllTagsSelector(state, 'testitem'),
       collections: getCollectionsSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       curriculumStandardsLoading: standardsSelector(state).loading,
@@ -823,7 +1003,7 @@ const enhance = compose(
       test: getTestEntitySelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state)
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -833,9 +1013,9 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       removeTestItems: removeTestItemsAction,
       deleteItemsGroup: deleteItemsGroupAction,
-      setTestData: setTestDataAction
+      setTestData: setTestDataAction,
     }
   )
-);
+)
 
-export default enhance(GroupItems);
+export default enhance(GroupItems)

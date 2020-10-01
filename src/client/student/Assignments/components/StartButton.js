@@ -1,38 +1,53 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { borders, mobileWidthMax } from "@edulastic/colors";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { borders, mobileWidthMax } from '@edulastic/colors'
 // assets
-import lockIcon from "../../assets/lock-icon.svg";
+import lockIcon from '../../assets/lock-icon.svg'
 // components
-import StartButton from "../../styled/AssignmentCardButton";
+import StartButton from '../../styled/AssignmentCardButton'
 
-const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused, assessment, serverTimeStamp }) => {
-  const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
+const AssignmentButton = ({
+  startDate,
+  t,
+  startTest,
+  attempted,
+  resume,
+  isPaused,
+  assessment,
+  serverTimeStamp,
+}) => {
+  const startButtonText = resume
+    ? t('common.resume')
+    : attempted
+    ? t('common.retake')
+    : t('common.startAssignment')
   // Enable start button based on server time stamp and start date
-  return new Date(startDate) > new Date(serverTimeStamp) || !startDate || isPaused ? (
+  return new Date(startDate) > new Date(serverTimeStamp) ||
+    !startDate ||
+    isPaused ? (
     <NotAvailableButton disabled>
       <span>
         <img src={lockIcon} alt="" />
       </span>
       <span data-cy="lockAssignment">
-        {t("common.lockAssignment")}
-        {isPaused ? " (Paused)" : ""}
+        {t('common.lockAssignment')}
+        {isPaused ? ' (Paused)' : ''}
       </span>
     </NotAvailableButton>
   ) : (
     <StartButton onClick={startTest} assessment={assessment}>
       <span data-cy="assignmentButton">{startButtonText}</span>
     </StartButton>
-  );
-};
+  )
+}
 AssignmentButton.propTypes = {
   startDate: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   startTest: PropTypes.isRequired,
   attempted: PropTypes.bool.isRequired,
-  resume: PropTypes.bool.isRequired
-};
+  resume: PropTypes.bool.isRequired,
+}
 
 const NotAvailableButton = styled(StartButton)`
   display: flex;
@@ -70,14 +85,15 @@ const NotAvailableButton = styled(StartButton)`
     }
   }
   span {
-    color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
+    color: ${(props) => props.theme.assignment.cardNotAvailabelBtnTextColor};
   }
   &:hover {
-    background-color: ${props => props.theme.assignment.cardNotAvailabelBtnBgColor};
+    background-color: ${(props) =>
+      props.theme.assignment.cardNotAvailabelBtnBgColor};
     span {
-      color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
+      color: ${(props) => props.theme.assignment.cardNotAvailabelBtnTextColor};
     }
   }
-`;
+`
 
-export default AssignmentButton;
+export default AssignmentButton

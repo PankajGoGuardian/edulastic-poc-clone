@@ -1,20 +1,20 @@
-import styled from "styled-components";
-import { WithMathFormula } from "@edulastic/common";
+import styled from 'styled-components'
+import { WithMathFormula } from '@edulastic/common'
 
 export const QuestionHeader = WithMathFormula(
   styled.div`
     font-size: 15px;
-    color: ${props => props.theme.widgets.orderList.questionTextColor};
+    color: ${(props) => props.theme.widgets.orderList.questionTextColor};
     line-height: 1.63;
     margin-bottom: 10px;
-    padding: ${props => (props.padding ? props.padding : "10px 20px")};
+    padding: ${(props) => (props.padding ? props.padding : '10px 20px')};
     label {
       font-size: 16px;
       font-weight: 700;
       margin-right: 10px;
     }
   `
-);
+)
 // ?Original style
 // export const QuestionHeader = WithMathFormula(
 //   styled.div`

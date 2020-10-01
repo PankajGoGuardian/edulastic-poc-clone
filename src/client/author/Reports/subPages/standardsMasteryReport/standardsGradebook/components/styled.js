@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { StyledTable as Table } from "../../../../common/styled";
-import { Col } from "antd";
-import { themeColor, themeColorLight } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Col } from 'antd'
+import { themeColor, themeColorLight } from '@edulastic/colors'
+import { StyledTable as Table } from '../../../../common/styled'
 
 export const UpperContainer = styled.div`
   .dropdown-container {
@@ -10,14 +10,14 @@ export const UpperContainer = styled.div`
     justify-content: flex-end;
     flex-wrap: wrap;
   }
-`;
+`
 
 export const TableContainer = styled.div`
   .control-dropdown-row {
     display: flex;
     justify-content: flex-end;
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-body {
@@ -58,7 +58,7 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
 export const StyledDropDownContainer = styled(Col)`
   .ant-btn.ant-dropdown-trigger {
@@ -69,7 +69,7 @@ export const StyledDropDownContainer = styled(Col)`
     width: 100%;
     margin-bottom: 25px;
   }
-`;
+`
 
 export const OnClick = styled.span`
   cursor: pointer;
@@ -77,4 +77,4 @@ export const OnClick = styled.span`
   &:hover {
     font-weight: 700;
   }
-`;
+`

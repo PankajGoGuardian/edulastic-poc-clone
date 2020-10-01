@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-import withIconStyles from './HOC/withIconStyles';
-import SVG from './common/SVG';
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconHeader = props => (
+const IconHeader = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 119.173 20.901"
@@ -70,6 +70,6 @@ const IconHeader = props => (
       transform="translate(97.899 5.064)"
     />
   </SVG>
-);
+)
 
-export default withIconStyles(IconHeader);
+export default withIconStyles(IconHeader)

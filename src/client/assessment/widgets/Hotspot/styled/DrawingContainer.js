@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const DrawingContainer = styled.div`
   border: 1px solid #b9b9b9;
@@ -6,4 +6,4 @@ export const DrawingContainer = styled.div`
   border-radius: 2px;
   width: 100%;
   min-height: 200px;
-`;
+`

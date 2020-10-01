@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { DragDrop } from "@edulastic/common";
-import Item from "./Item";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { DragDrop } from '@edulastic/common'
+import Item from './Item'
 
-const { DragItem } = DragDrop;
+const { DragItem } = DragDrop
 
 const DragItemContainer = ({
   item,
@@ -26,25 +26,29 @@ const DragItemContainer = ({
     dragHandle,
     renderIndex,
     item,
-    ...rest
-  };
+    ...rest,
+  }
   const itemTo = {
     item,
     from,
-    fromColumnId
-  };
+    fromColumnId,
+  }
 
   return (
     <MainWrapper>
       {disableDrag && <Item {...itemProps} showIndex />}
       {!disableDrag && (
-        <DragItem data={itemTo} className="drag-item" data-cy={`drag-drop-item-${renderIndex}`}>
+        <DragItem
+          data={itemTo}
+          className="drag-item"
+          data-cy={`drag-drop-item-${renderIndex}`}
+        >
           <Item {...itemProps} />
         </DragItem>
       )}
     </MainWrapper>
-  );
-};
+  )
+}
 
 DragItemContainer.propTypes = {
   item: PropTypes.string.isRequired,
@@ -59,20 +63,20 @@ DragItemContainer.propTypes = {
   maxWidth: PropTypes.number.isRequired,
   minWidth: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,
-  maxHeight: PropTypes.number.isRequired
-};
+  maxHeight: PropTypes.number.isRequired,
+}
 
 DragItemContainer.defaultProps = {
   disableDrag: false,
   isTransparent: false,
   dragHandle: false,
-  width: null
-};
+  width: null,
+}
 
 const MainWrapper = styled.div`
   max-width: 100%;
   margin: 5px;
   transform: translate3d(0px, 0px, 0px);
-`;
+`
 
-export default DragItemContainer;
+export default DragItemContainer

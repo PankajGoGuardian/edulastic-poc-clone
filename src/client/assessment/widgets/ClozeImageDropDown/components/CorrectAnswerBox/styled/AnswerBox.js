@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const AnswerBox = styled.div`
   display: inline-flex;
@@ -8,12 +8,12 @@ export const AnswerBox = styled.div`
   background: ${({ theme }) => theme.widgets.clozeImageDropDown.boxBgColor};
   border: ${({
     theme: {
-      answerBox: { borderWidth, borderStyle, borderColor }
-    }
+      answerBox: { borderWidth, borderStyle, borderColor },
+    },
   }) => `${borderWidth} ${borderStyle} ${borderColor}`};
   border-radius: ${({
     theme: {
-      answerBox: { borderRadius }
-    }
+      answerBox: { borderRadius },
+    },
   }) => borderRadius};
-`;
+`

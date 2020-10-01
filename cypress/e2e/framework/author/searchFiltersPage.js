@@ -1,345 +1,417 @@
-import CypressHelper from "../util/cypressHelpers";
-import { DOK } from "../constants/questionAuthoring";
-import Helpers from "../util/Helpers";
-import { sortOptions } from "../constants/questionTypes";
+import CypressHelper from '../util/cypressHelpers'
+import { DOK } from '../constants/questionAuthoring'
+import Helpers from '../util/Helpers'
+import { sortOptions } from '../constants/questionTypes'
 
-const { dom, $ } = Cypress;
+const { dom, $ } = Cypress
 export default class SearchFilters {
   // *** ELEMENTS START ***
   constructor() {
     this.itemBankFilterAttrs = {
-      staus: "selectStatus",
-      grades: "selectGrades",
-      subject: "selectSubject",
-      standardSet: "selectSdtSet",
-      standard: "selectStd",
-      queType: "selectqType",
-      dok: "selectDOK",
-      difficulty: "selectDifficulty",
-      collection: "Collections",
-      tags: "selectTags"
-    };
+      staus: 'selectStatus',
+      grades: 'selectGrades',
+      subject: 'selectSubject',
+      standardSet: 'selectSdtSet',
+      standard: 'selectStd',
+      queType: 'selectqType',
+      dok: 'selectDOK',
+      difficulty: 'selectDifficulty',
+      collection: 'Collections',
+      tags: 'selectTags',
+    }
     this.testLibaryFilterAttrs = {
-      grades: "Grades",
-      subject: "Subject",
-      standardSet: "Standard set",
-      standard: "Standards",
-      collection: "Collections",
-      tags: "Tags"
-    };
+      grades: 'Grades',
+      subject: 'Subject',
+      standardSet: 'Standard set',
+      standard: 'Standards',
+      collection: 'Collections',
+      tags: 'Tags',
+    }
     this.libraryTitles = {
-      entirelibrary: "Entire Library",
-      authoredByMe: "Authored by me",
-      sharedWithMe: "Shared with me",
-      coAuthor: "I am a Co-Author",
-      floders: "FOLDERS",
-      myFavorites: "My Favorites",
-      prevUsed: "Previously Used"
-    };
+      entirelibrary: 'Entire Library',
+      authoredByMe: 'Authored by me',
+      sharedWithMe: 'Shared with me',
+      coAuthor: 'I am a Co-Author',
+      floders: 'FOLDERS',
+      myFavorites: 'My Favorites',
+      prevUsed: 'Previously Used',
+    }
   }
 
-  getSearch = () => cy.get(".ant-input-search");
+  getSearch = () => cy.get('.ant-input-search')
 
-  getSearchBar = () => cy.contains("Search by skills and keywords").next();
+  getSearchBar = () => cy.contains('Search by skills and keywords').next()
 
-  getSearchTextBox = () => this.getSearchBar().find("input");
+  getSearchTextBox = () => this.getSearchBar().find('input')
 
-  getPaginationContainer = () => cy.get(".ant-pagination");
+  getPaginationContainer = () => cy.get('.ant-pagination')
 
-  getPaginationButtonByPageIndex = index => this.getPaginationContainer().find(`[title="${index}"]`);
+  getPaginationButtonByPageIndex = (index) =>
+    this.getPaginationContainer().find(`[title="${index}"]`)
 
-  getJumpToLastPageButton = () => this.getPaginationButtonByPageIndex("Next 5 Pages").next();
+  getJumpToLastPageButton = () =>
+    this.getPaginationButtonByPageIndex('Next 5 Pages').next()
 
   getTotalPagesInPagination = () =>
     this.getJumpToLastPageButton()
-      .invoke("text")
-      .then(txt => parseInt(txt, 10));
+      .invoke('text')
+      .then((txt) => parseInt(txt, 10))
 
-  getFilterButton = () =>
-    cy
-      .get('[data-cy="filter"]')
-      .last()
-      .find("svg");
+  getFilterButton = () => cy.get('[data-cy="filter"]').last().find('svg')
 
-  getFilterButtonByAttr = attr => cy.get(`[data-cy="${attr}"]`);
+  getFilterButtonByAttr = (attr) => cy.get(`[data-cy="${attr}"]`)
 
-  getSortButton = () => cy.get('[data-cy="sort-button"]');
+  getSortButton = () => cy.get('[data-cy="sort-button"]')
 
-  getSortDropdown = () => cy.get('[data-cy="sort-dropdown"]');
+  getSortDropdown = () => cy.get('[data-cy="sort-dropdown"]')
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   routeSearch = () => {
-    cy.server();
-    cy.route("POST", "**/search/**").as("search");
-  };
+    cy.server()
+    cy.route('POST', '**/search/**').as('search')
+  }
 
   waitForSearchResponse = () =>
-    cy.wait("@search").then(xhr => {
-      expect(xhr.status).to.eq(200);
-      return this.closeFilterGuide();
-    });
+    cy.wait('@search').then((xhr) => {
+      expect(xhr.status).to.eq(200)
+      return this.closeFilterGuide()
+    })
 
   getAuthoredByMe = (setSortOptions = true, option) => {
-    this.routeSearch();
-    this.getFilterButtonByAttr(this.libraryTitles.authoredByMe).click();
-    this.waitForSearchResponse();
+    this.routeSearch()
+    this.getFilterButtonByAttr(this.libraryTitles.authoredByMe).click()
+    this.waitForSearchResponse()
     if (setSortOptions) {
-      this.setSortButtonInDescOrder();
-      this.setSortOption(option);
+      this.setSortButtonInDescOrder()
+      this.setSortOption(option)
     }
-  };
+  }
 
   clearAll = (setSortOptions = true, option) => {
-    const dummyCharToType = Helpers.getRamdomString(2).toUpperCase();
-    this.routeSearch();
-    this.typeInSearchBox(dummyCharToType);
-    cy.get('[data-cy="clearAll"]').click({ force: true });
-    this.waitForSearchResponse().then(() => this.getSearchBar().should("not.contain", dummyCharToType));
+    const dummyCharToType = Helpers.getRamdomString(2).toUpperCase()
+    this.routeSearch()
+    this.typeInSearchBox(dummyCharToType)
+    cy.get('[data-cy="clearAll"]').click({ force: true })
+    this.waitForSearchResponse().then(() =>
+      this.getSearchBar().should('not.contain', dummyCharToType)
+    )
     if (setSortOptions) {
-      this.setSortButtonInDescOrder();
-      this.setSortOption(option);
+      this.setSortButtonInDescOrder()
+      this.setSortOption(option)
     }
-  };
+  }
 
   clickOnGetCoAuthor = () => {
-    this.routeSearch();
-    this.getFilterButtonByAttr(this.libraryTitles.coAuthor).click({ force: true });
-    this.waitForSearchResponse();
-  };
+    this.routeSearch()
+    this.getFilterButtonByAttr(this.libraryTitles.coAuthor).click({
+      force: true,
+    })
+    this.waitForSearchResponse()
+  }
 
   clickOnPreviouslyUsed = () => {
-    this.routeSearch();
-    this.getFilterButtonByAttr(this.libraryTitles.prevUsed).click({ force: true });
-    this.waitForSearchResponse();
-  };
+    this.routeSearch()
+    this.getFilterButtonByAttr(this.libraryTitles.prevUsed).click({
+      force: true,
+    })
+    this.waitForSearchResponse()
+  }
 
-  setGrades = grades => {
-    grades.forEach(grade => {
-      CypressHelper.selectDropDownByAttribute("selectGrades", grade);
-      this.waitForSearchResponse();
-    });
-  };
+  setGrades = (grades) => {
+    grades.forEach((grade) => {
+      CypressHelper.selectDropDownByAttribute('selectGrades', grade)
+      this.waitForSearchResponse()
+    })
+  }
 
-  setCollection = collection => {
-    this.routeSearch();
-    CypressHelper.selectDropDownByAttribute("Collections", collection);
-    this.waitForSearchResponse();
-  };
+  setCollection = (collection) => {
+    this.routeSearch()
+    CypressHelper.selectDropDownByAttribute('Collections', collection)
+    this.waitForSearchResponse()
+  }
 
   scrollFiltersToTop = () =>
     cy
-      .get(".scrollbar-container")
+      .get('.scrollbar-container')
       .eq(1)
-      .then($elem => {
-        $elem.scrollTop(0);
-      });
+      .then(($elem) => {
+        $elem.scrollTop(0)
+      })
 
   sharedWithMe = () => {
-    this.getFilterButtonByAttr(this.libraryTitles.sharedWithMe).click({ force: true });
-    this.waitForSearchResponse();
-  };
+    this.getFilterButtonByAttr(this.libraryTitles.sharedWithMe).click({
+      force: true,
+    })
+    this.waitForSearchResponse()
+  }
 
   getEntireLibrary = () => {
-    this.routeSearch();
-    this.getFilterButtonByAttr(this.libraryTitles.entirelibrary).click({ force: true });
-    this.waitForSearchResponse();
-  };
+    this.routeSearch()
+    this.getFilterButtonByAttr(this.libraryTitles.entirelibrary).click({
+      force: true,
+    })
+    this.waitForSearchResponse()
+  }
 
-  typeInSearchBox = key => {
-    this.routeSearch();
+  typeInSearchBox = (key) => {
+    this.routeSearch()
     this.getSearchTextBox()
-      .type("{selectall}", { force: true })
-      .type(`${key}{enter}`, { force: true, timeout: 20000 });
-    this.waitForSearchResponse();
-  };
+      .type('{selectall}', { force: true })
+      .type(`${key}{enter}`, { force: true, timeout: 20000 })
+    this.waitForSearchResponse()
+  }
 
   clickOnSearchIcon = () => {
-    this.getSearch()
-      .find("i")
-      .click({ force: true });
-    this.waitForSearchResponse();
-  };
+    this.getSearch().find('i').click({ force: true })
+    this.waitForSearchResponse()
+  }
 
   clickJumpToLastPage = () => {
-    this.getJumpToLastPageButton().click({ force: true });
-    this.waitForSearchResponse();
-  };
+    this.getJumpToLastPageButton().click({ force: true })
+    this.waitForSearchResponse()
+  }
 
-  clickButtonInPaginationByPageNo = pageNo => {
-    this.getPaginationButtonByPageIndex(pageNo).click({ force: true });
-    this.waitForSearchResponse();
-  };
+  clickButtonInPaginationByPageNo = (pageNo) => {
+    this.getPaginationButtonByPageIndex(pageNo).click({ force: true })
+    this.waitForSearchResponse()
+  }
 
-  clearMultipleSelectionDropDown = attr => {
-    cy.get(`[data-cy="${attr}"]`).then($ele => {
-      if ($($ele).find(".anticon-close").length > 0)
+  clearMultipleSelectionDropDown = (attr) => {
+    cy.get(`[data-cy="${attr}"]`).then(($ele) => {
+      if ($($ele).find('.anticon-close').length > 0)
         cy.wrap($ele)
-          .find(".anticon-close")
-          .each(element => {
-            element.click();
-            this.waitForSearchResponse();
-          });
+          .find('.anticon-close')
+          .each((element) => {
+            element.click()
+            this.waitForSearchResponse()
+          })
 
       cy.wrap($ele)
-        .find(".ant-select-selection__choice__content")
-        .should("have.length", 0);
-    });
-  };
+        .find('.ant-select-selection__choice__content')
+        .should('have.length', 0)
+    })
+  }
 
   setSortButtonInDescOrder = () =>
     this.getSortButton()
-      .find("svg")
-      .then($ele => {
-        if ($ele.attr("dir") === "asc")
+      .find('svg')
+      .then(($ele) => {
+        if ($ele.attr('dir') === 'asc')
           cy.wrap($ele)
             .click({ force: true })
-            .then(() => this.waitForSearchResponse());
-      });
+            .then(() => this.waitForSearchResponse())
+      })
 
   setSortButtonInAsceOrder = () =>
     this.getSortButton()
-      .find("svg")
-      .then($ele => {
-        if ($ele.attr("dir") === "desc")
+      .find('svg')
+      .then(($ele) => {
+        if ($ele.attr('dir') === 'desc')
           cy.wrap($ele)
             .click({ force: true })
-            .then(() => this.waitForSearchResponse());
-      });
+            .then(() => this.waitForSearchResponse())
+      })
 
   setSortOption = (option = sortOptions.Recency) =>
-    this.getSortDropdown().then($ele => {
+    this.getSortDropdown().then(($ele) => {
       if ($ele.text().trim() !== option) {
-        this.selectOptionInSortDropDown(option);
-        this.waitForSearchResponse();
+        this.selectOptionInSortDropDown(option)
+        this.waitForSearchResponse()
       }
-    });
+    })
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
-  getTotalNoOfItemsInBank = () => this.getTotalPagesInPagination().then(count => count * 25);
+  getTotalNoOfItemsInBank = () =>
+    this.getTotalPagesInPagination().then((count) => count * 25)
 
-  setFilters = ({ standards, queType, dok, difficulty, collection, status, tags }, isItemBank = true) => {
-    const dataCyAttributes = isItemBank ? this.itemBankFilterAttrs : this.testLibaryFilterAttrs;
-    this.routeSearch();
-    cy.route("POST", "**/search/browse-standards").as("brwose-standards-1");
+  setFilters = (
+    { standards, queType, dok, difficulty, collection, status, tags },
+    isItemBank = true
+  ) => {
+    const dataCyAttributes = isItemBank
+      ? this.itemBankFilterAttrs
+      : this.testLibaryFilterAttrs
+    this.routeSearch()
+    cy.route('POST', '**/search/browse-standards').as('brwose-standards-1')
     if (standards) {
       if (standards.grade)
-        standards.grade.forEach(grade => {
-          CypressHelper.selectDropDownByAttribute(dataCyAttributes.grades, grade);
-          this.waitForSearchResponse();
-          CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.grades, grade, true);
-        });
+        standards.grade.forEach((grade) => {
+          CypressHelper.selectDropDownByAttribute(
+            dataCyAttributes.grades,
+            grade
+          )
+          this.waitForSearchResponse()
+          CypressHelper.verifySelectedOptionInDropDownByAttr(
+            dataCyAttributes.grades,
+            grade,
+            true
+          )
+        })
       if (standards.subject) {
-        this.clearMultipleSelectionDropDown(dataCyAttributes.subject);
-        CypressHelper.selectDropDownByAttribute(dataCyAttributes.subject, standards.subject);
-        this.waitForSearchResponse();
-        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.subject, standards.subject, true);
+        this.clearMultipleSelectionDropDown(dataCyAttributes.subject)
+        CypressHelper.selectDropDownByAttribute(
+          dataCyAttributes.subject,
+          standards.subject
+        )
+        this.waitForSearchResponse()
+        CypressHelper.verifySelectedOptionInDropDownByAttr(
+          dataCyAttributes.subject,
+          standards.subject,
+          true
+        )
       }
       if (standards.standardSet) {
-        CypressHelper.selectDropDownByAttribute(dataCyAttributes.standardSet, standards.standardSet);
-        this.waitForSearchResponse();
-        cy.wait("@brwose-standards-1");
-        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.standardSet, standards.standardSet);
+        CypressHelper.selectDropDownByAttribute(
+          dataCyAttributes.standardSet,
+          standards.standardSet
+        )
+        this.waitForSearchResponse()
+        cy.wait('@brwose-standards-1')
+        CypressHelper.verifySelectedOptionInDropDownByAttr(
+          dataCyAttributes.standardSet,
+          standards.standardSet
+        )
       }
       if (standards.standard)
-        standards.standard.forEach(sta => {
-          CypressHelper.selectDropDownByAttribute(dataCyAttributes.standard, sta);
-          this.waitForSearchResponse();
-          CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.standard, sta, true);
-        });
+        standards.standard.forEach((sta) => {
+          CypressHelper.selectDropDownByAttribute(
+            dataCyAttributes.standard,
+            sta
+          )
+          this.waitForSearchResponse()
+          CypressHelper.verifySelectedOptionInDropDownByAttr(
+            dataCyAttributes.standard,
+            sta,
+            true
+          )
+        })
     }
     if (queType) {
-      CypressHelper.selectDropDownByAttribute(dataCyAttributes.queType, queType);
-      this.waitForSearchResponse();
-      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.queType, queType);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.queType, queType)
+      this.waitForSearchResponse()
+      CypressHelper.verifySelectedOptionInDropDownByAttr(
+        dataCyAttributes.queType,
+        queType
+      )
     }
 
     if (dok) {
       switch (dok) {
         case DOK.Recall:
-          dok = `1 ${dok}`;
-          break;
+          dok = `1 ${dok}`
+          break
 
         case DOK.SkillConcept:
-          dok = `2 ${dok}`;
-          break;
+          dok = `2 ${dok}`
+          break
 
         case DOK.StrategicThinking:
-          dok = `3 ${dok}`;
-          break;
+          dok = `3 ${dok}`
+          break
 
         case DOK.ExtendedThinking:
-          dok = `4 ${dok}`;
-          break;
+          dok = `4 ${dok}`
+          break
 
         default:
-          break;
+          break
       }
-      CypressHelper.selectDropDownByAttribute(dataCyAttributes.dok, dok);
-      this.waitForSearchResponse();
-      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.dok, dok);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.dok, dok)
+      this.waitForSearchResponse()
+      CypressHelper.verifySelectedOptionInDropDownByAttr(
+        dataCyAttributes.dok,
+        dok
+      )
     }
 
     if (difficulty) {
-      CypressHelper.selectDropDownByAttribute(dataCyAttributes.difficulty, difficulty);
-      this.waitForSearchResponse();
-      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.difficulty, difficulty);
+      CypressHelper.selectDropDownByAttribute(
+        dataCyAttributes.difficulty,
+        difficulty
+      )
+      this.waitForSearchResponse()
+      CypressHelper.verifySelectedOptionInDropDownByAttr(
+        dataCyAttributes.difficulty,
+        difficulty
+      )
     }
 
     if (collection) {
-      CypressHelper.selectDropDownByAttribute(dataCyAttributes.collection, collection);
-      this.waitForSearchResponse();
-      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.collection, collection, true);
+      CypressHelper.selectDropDownByAttribute(
+        dataCyAttributes.collection,
+        collection
+      )
+      this.waitForSearchResponse()
+      CypressHelper.verifySelectedOptionInDropDownByAttr(
+        dataCyAttributes.collection,
+        collection,
+        true
+      )
     }
 
     if (status) {
-      CypressHelper.selectDropDownByAttribute(dataCyAttributes.staus, status);
-      this.waitForSearchResponse();
-      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.staus, status);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.staus, status)
+      this.waitForSearchResponse()
+      CypressHelper.verifySelectedOptionInDropDownByAttr(
+        dataCyAttributes.staus,
+        status
+      )
     }
 
     if (tags)
-      tags.forEach(tag => {
-        CypressHelper.selectDropDownByAttribute(dataCyAttributes.tags, tag);
-        this.waitForSearchResponse();
-        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.tags, tag, true);
-      });
-  };
+      tags.forEach((tag) => {
+        CypressHelper.selectDropDownByAttribute(dataCyAttributes.tags, tag)
+        this.waitForSearchResponse()
+        CypressHelper.verifySelectedOptionInDropDownByAttr(
+          dataCyAttributes.tags,
+          tag,
+          true
+        )
+      })
+  }
 
   expandFilters = () =>
-    this.getFilterButton().then($elem => {
-      if (dom.isHidden($('[data-cy="clearAll"]'))) cy.wrap($elem).click({ force: true });
-      cy.get('[data-cy="clearAll"]').should("be.visible");
-    });
+    this.getFilterButton().then(($elem) => {
+      if (dom.isHidden($('[data-cy="clearAll"]')))
+        cy.wrap($elem).click({ force: true })
+      cy.get('[data-cy="clearAll"]').should('be.visible')
+    })
 
   collapseFilters = () =>
-    this.getFilterButton().then($elem => {
-      if (dom.isVisible($('[data-cy="clearAll"]'))) cy.wrap($elem).click({ force: true });
-      cy.get('[data-cy="clearAll"]').should("not.be.visible");
-    });
+    this.getFilterButton().then(($elem) => {
+      if (dom.isVisible($('[data-cy="clearAll"]')))
+        cy.wrap($elem).click({ force: true })
+      cy.get('[data-cy="clearAll"]').should('not.be.visible')
+    })
 
-  verfifyActivePageIs = pageNo =>
-    this.getPaginationButtonByPageIndex(pageNo).should("have.class", "ant-pagination-item-active");
+  verfifyActivePageIs = (pageNo) =>
+    this.getPaginationButtonByPageIndex(pageNo).should(
+      'have.class',
+      'ant-pagination-item-active'
+    )
 
-  selectOptionInSortDropDown = option => {
-    this.getSortDropdown().click({ force: true });
-    cy.wait(300);
-    cy.get(".ant-dropdown-menu-item").then($ele => {
-      cy.wrap($ele.filter((i, ele) => $(ele).text() === option)).click({ force: true });
-    });
-  };
+  selectOptionInSortDropDown = (option) => {
+    this.getSortDropdown().click({ force: true })
+    cy.wait(300)
+    cy.get('.ant-dropdown-menu-item').then(($ele) => {
+      cy.wrap($ele.filter((i, ele) => $(ele).text() === option)).click({
+        force: true,
+      })
+    })
+  }
 
   closeFilterGuide = () =>
-    cy.get("body").then(() => {
-      if ($("._pendo-close-guide").length > 0)
-        cy.get("._pendo-close-guide")
-          .should($ele => expect(dom.isAttached($ele)).to.be.true)
-          .click();
-    });
+    cy.get('body').then(() => {
+      if ($('._pendo-close-guide').length > 0)
+        cy.get('._pendo-close-guide')
+          .should(($ele) => expect(dom.isAttached($ele)).to.be.true)
+          .click()
+    })
   // *** APPHELPERS END ***
 }

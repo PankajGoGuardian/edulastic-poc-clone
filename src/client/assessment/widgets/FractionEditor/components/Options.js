@@ -1,80 +1,92 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Select, Modal } from "antd";
-import { notification } from "@edulastic/common";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Select, Modal } from 'antd'
+import { notification } from '@edulastic/common'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
-import Question from "../../../components/Question/index";
-import Input from "./Input";
-import { Subtitle } from "../../../styled/Subtitle";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
-import { SelectInputStyled } from "../../../styled/InputStyles";
+import Question from '../../../components/Question/index'
+import Input from './Input'
+import { Subtitle } from '../../../styled/Subtitle'
+import { Label } from '../../../styled/WidgetOptions/Label'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import { SelectInputStyled } from '../../../styled/InputStyles'
 
-const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, item }) => {
-  const { confirm } = Modal;
-  const { Option } = Select;
-  const { fractionProperties = {} } = item;
-  const { fractionType } = fractionProperties;
-  const handleFractionTypeChange = _fractionType => {
+const Options = ({
+  fillSections,
+  cleanSections,
+  t,
+  produce,
+  setQuestionData,
+  item,
+}) => {
+  const { confirm } = Modal
+  const { Option } = Select
+  const { fractionProperties = {} } = item
+  const { fractionType } = fractionProperties
+  const handleFractionTypeChange = (_fractionType) => {
     if (_fractionType !== fractionType) {
       confirm({
-        title: "Changing the illustration will reset the selections. Do you wish to continue?",
+        title:
+          'Changing the illustration will reset the selections. Do you wish to continue?',
         onOk() {
           setQuestionData(
-            produce(item, draft => {
-              const obj = {};
-              if (draft.fractionProperties.fractionType === "circles") {
-                delete draft.fractionProperties.sectors;
-                obj.rows = 2;
-                obj.columns = 2;
+            produce(item, (draft) => {
+              const obj = {}
+              if (draft.fractionProperties.fractionType === 'circles') {
+                delete draft.fractionProperties.sectors
+                obj.rows = 2
+                obj.columns = 2
               } else {
-                delete draft.fractionProperties.rows;
-                delete draft.fractionProperties.columns;
-                obj.sectors = 7;
+                delete draft.fractionProperties.rows
+                delete draft.fractionProperties.columns
+                obj.sectors = 7
               }
               draft.fractionProperties = {
                 ...draft.fractionProperties,
                 ...obj,
                 fractionType: _fractionType,
                 selected: [1],
-                count: 1
-              };
-              draft.validation.validResponse.value = 1;
+                count: 1,
+              }
+              draft.validation.validResponse.value = 1
             })
-          );
-        }
-      });
+          )
+        },
+      })
     }
-  };
+  }
 
   const handleDimensionChange = (prop, value) => {
-    const regex = new RegExp("^[1-9]+([0-9]*)$", "g");
+    const regex = new RegExp('^[1-9]+([0-9]*)$', 'g')
     if (!regex.test(value)) {
-      notification({ messageKey: "valuesCanOnlyBeGreaterThanZero" });
-      return null;
+      notification({ messageKey: 'valuesCanOnlyBeGreaterThanZero' })
+      return null
     }
     setQuestionData(
-      produce(item, draft => {
+      produce(item, (draft) => {
         draft.fractionProperties = {
           ...draft.fractionProperties,
           [prop]: +value > 1 ? +value : 1,
-          selected: [1]
-        };
+          selected: [1],
+        }
       })
-    );
-  };
+    )
+  }
 
   return (
     <Question
       section="main"
-      label={t("common.options.mainTitle")}
+      label={t('common.options.mainTitle')}
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("common.options.mainTitle")}`)}>
-        {t("common.options.mainTitle")}
+      <Subtitle
+        id={getFormattedAttrId(
+          `${item?.title}-${t('common.options.mainTitle')}`
+        )}
+      >
+        {t('common.options.mainTitle')}
       </Subtitle>
 
       <Row gutter={24}>
@@ -84,7 +96,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             value={fractionType}
             placeholder="Fraction Type"
             onChange={handleFractionTypeChange}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             <Option value="circles">Circles</Option>
             <Option value="rectangles">Rectangles</Option>
@@ -97,11 +109,11 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             min={1}
             value={fractionProperties.count}
             placeholder="Fraction count"
-            onBlur={value => handleDimensionChange("count", +value)}
+            onBlur={(value) => handleDimensionChange('count', +value)}
           />
         </Col>
       </Row>
-      {fractionType === "circles" ? (
+      {fractionType === 'circles' ? (
         <Row gutter={24}>
           <Col span={12}>
             <Label>Sectors</Label>
@@ -110,7 +122,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               size="default"
               value={fractionProperties.sectors || 7}
               placeholder="Sectors"
-              onBlur={value => handleDimensionChange("sectors", +value)}
+              onBlur={(value) => handleDimensionChange('sectors', +value)}
               min={2}
             />
           </Col>
@@ -124,7 +136,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               size="default"
               value={fractionProperties.rows}
               placeholder="Rows"
-              onBlur={value => handleDimensionChange("rows", +value)}
+              onBlur={(value) => handleDimensionChange('rows', +value)}
               min={1}
             />
           </Col>
@@ -135,15 +147,15 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               size="default"
               value={fractionProperties.columns}
               placeholder="Columns"
-              onBlur={value => handleDimensionChange("columns", +value)}
+              onBlur={(value) => handleDimensionChange('columns', +value)}
               min={1}
             />
           </Col>
         </Row>
       )}
     </Question>
-  );
-};
+  )
+}
 
 Options.propTypes = {
   fillSections: PropTypes.func.isRequired,
@@ -151,11 +163,11 @@ Options.propTypes = {
   t: PropTypes.func.isRequired,
   produce: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object
-};
+  item: PropTypes.object,
+}
 
 Options.defaultProps = {
-  item: {}
-};
+  item: {},
+}
 
-export default Options;
+export default Options

@@ -1,19 +1,28 @@
-import React from "react";
-import StandardTags from "./styled/StandardTags";
-import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
-import { themeColor, grey } from "@edulastic/colors";
+import React from 'react'
+import { themeColor, grey } from '@edulastic/colors'
+import StandardTags from './styled/StandardTags'
+import StandardsWrapper, { RecentStandards } from './styled/StandardsWrapper'
 
-const RecentCollectionsList = ({ recentCollectionsList, collections, handleCollectionsSelect, isDocBased }) => {
+const RecentCollectionsList = ({
+  recentCollectionsList,
+  collections,
+  handleCollectionsSelect,
+  isDocBased,
+}) => {
   return (
     <StandardsWrapper isDocBased={isDocBased}>
       <div>RECENTLY USED:</div>
       <RecentStandards>
-        {recentCollectionsList.map(recentCollection => (
+        {recentCollectionsList.map((recentCollection) => (
           <StandardTags
-            color={collections.find(o => o._id === recentCollection._id) ? grey : themeColor}
+            color={
+              collections.find((o) => o._id === recentCollection._id)
+                ? grey
+                : themeColor
+            }
             onClick={() => {
-              if (!collections.find(o => o._id === recentCollection._id)) {
-                handleCollectionsSelect(recentCollection);
+              if (!collections.find((o) => o._id === recentCollection._id)) {
+                handleCollectionsSelect(recentCollection)
               }
             }}
           >
@@ -22,7 +31,7 @@ const RecentCollectionsList = ({ recentCollectionsList, collections, handleColle
         ))}
       </RecentStandards>
     </StandardsWrapper>
-  );
-};
+  )
+}
 
-export default RecentCollectionsList;
+export default RecentCollectionsList

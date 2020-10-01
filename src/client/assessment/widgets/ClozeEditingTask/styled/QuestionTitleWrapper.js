@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -7,4 +7,4 @@ export const QuestionTitleWrapper = styled.div`
   iframe {
     max-width: 100%;
   }
-`;
+`

@@ -1,41 +1,60 @@
-import React, { useMemo, useState } from "react";
-import { ticks } from "d3-array";
-import { Legends } from "@edulastic/common";
-import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { white, dropZoneTitleColor, secondaryTextColor, themeColor, greyThemeLight } from "@edulastic/colors";
-import CustomBar from "./CustomBar";
-import { BarGraphWrapper, BarLegendContainer, ChartNavButton } from "./styled";
-import { NUMBER_OF_BARS, bars, convertData } from "./helpers";
+import React, { useMemo, useState } from 'react'
+import { ticks } from 'd3-array'
+import { Legends } from '@edulastic/common'
+import {
+  ComposedChart,
+  Bar,
+  Line,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from 'recharts'
+import {
+  white,
+  dropZoneTitleColor,
+  secondaryTextColor,
+  themeColor,
+  greyThemeLight,
+} from '@edulastic/colors'
+import CustomBar from './CustomBar'
+import { BarGraphWrapper, BarLegendContainer, ChartNavButton } from './styled'
+import { NUMBER_OF_BARS, bars, convertData } from './helpers'
 
 const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
-  const [page, setPage] = useState(0);
-  const [maxAttemps, maxTimeSpent, data] = useMemo(() => convertData(questionActivities, testItems), [
-    questionActivities,
-    testItems
-  ]);
-  const renderData = data.slice(page * NUMBER_OF_BARS, page * NUMBER_OF_BARS + NUMBER_OF_BARS);
+  const [page, setPage] = useState(0)
+  const [maxAttemps, maxTimeSpent, data] = useMemo(
+    () => convertData(questionActivities, testItems),
+    [questionActivities, testItems]
+  )
+  const renderData = data.slice(
+    page * NUMBER_OF_BARS,
+    page * NUMBER_OF_BARS + NUMBER_OF_BARS
+  )
 
   const handleClick = ({ itemId, index }) => {
-    let nextItemIndex = testItems.findIndex(item => item._id === itemId);
+    let nextItemIndex = testItems.findIndex((item) => item._id === itemId)
     if (nextItemIndex === -1) {
-      nextItemIndex = index;
+      nextItemIndex = index
     }
-    onClickBar(nextItemIndex);
-  };
+    onClickBar(nextItemIndex)
+  }
 
   const prevBars = () => {
     if (page > 0) {
-      setPage(page - 1);
+      setPage(page - 1)
     }
-  };
+  }
 
   const nextBars = () => {
     if (page * NUMBER_OF_BARS + NUMBER_OF_BARS < data.length) {
-      setPage(page + 1);
+      setPage(page + 1)
     }
-  };
+  }
 
-  const optionalBarColor = useMemo(() => (isGreyBar ? { fill: greyThemeLight } : {}), [isGreyBar]);
+  const optionalBarColor = useMemo(
+    () => (isGreyBar ? { fill: greyThemeLight } : {}),
+    [isGreyBar]
+  )
 
   return (
     <BarGraphWrapper>
@@ -69,7 +88,11 @@ const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
             dataKey="name"
             tickSize={0}
             dy={8}
-            tick={{ fontSize: "10px", strokeWidth: 2, fill: secondaryTextColor }}
+            tick={{
+              fontSize: '10px',
+              strokeWidth: 2,
+              fill: secondaryTextColor,
+            }}
             padding={{ left: 20, right: 20 }}
             cursor="pointer"
             onClick={handleClick}
@@ -79,11 +102,11 @@ const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
             yAxisId="left"
             allowDecimals={false}
             label={{
-              value: "ATTEMPTS",
+              value: 'ATTEMPTS',
               dx: -10,
               angle: -90,
               fill: dropZoneTitleColor,
-              fontSize: "10px"
+              fontSize: '10px',
             }}
           />
           <YAxis
@@ -91,18 +114,18 @@ const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
             domain={[0, maxTimeSpent + Math.ceil((10 / 100) * maxTimeSpent)]}
             allowDecimals={false}
             label={{
-              value: "AVG TIME (SECONDS)",
+              value: 'AVG TIME (SECONDS)',
               angle: -90,
               dx: 20,
               fill: dropZoneTitleColor,
-              fontSize: "10px"
+              fontSize: '10px',
             }}
             orientation="right"
             ticks={ticks(0, maxTimeSpent + 10000, 10)}
-            tickFormatter={val => Math.round(val / 1000)}
+            tickFormatter={(val) => Math.round(val / 1000)}
           />
 
-          {Object.keys(bars).map(key => (
+          {Object.keys(bars).map((key) => (
             <Bar
               {...bars[key]}
               {...optionalBarColor}
@@ -125,7 +148,7 @@ const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
         </ComposedChart>
       </ResponsiveContainer>
     </BarGraphWrapper>
-  );
-};
+  )
+}
 
-export default BarGraph;
+export default BarGraph

@@ -1,5 +1,5 @@
 {
-  "plugins": ["cypress"],
+  "plugins": ["cypress", "prettier"],
   "extends": ["airbnb", "plugin:cypress/recommended", "prettier"],
   "parser": "babel-eslint",
   "env": {
@@ -45,7 +45,6 @@
     "import/no-extraneous-dependencies": 0,
     "no-continue": 0,
     "no-restricted-syntax": [0, "ForInStatement"],
-    "comma-dangle": ["warn", "never"],
     "no-await-in-loop": 0,
     "react/no-find-dom-node": 0,
     "react/prop-types": 0,
@@ -55,6 +54,18 @@
     "prefer-destructuring": 0,
     "import/no-named-as-default": 0,
     "react/destructuring-assignment": "warn",
-    "cypress/no-unnecessary-waiting": "warn"
+    "cypress/no-unnecessary-waiting": "warn",
+    "react/jsx-closing-tag-location": 0,
+    "react/jsx-indent": 0,
+    "react/jsx-props-no-spreading": 1,
+    "prettier/prettier": [
+      "error",
+      {
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": false,
+        "singleQuote": true
+      }
+    ]
   }
 }

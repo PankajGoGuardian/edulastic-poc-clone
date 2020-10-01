@@ -1,58 +1,68 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { IconPhotoCamera } from "@edulastic/icons";
-import { aws } from "@edulastic/constants";
-import { Upload, Spin } from "antd";
-import { white, greyishDarker2, largeDesktopWidth, themeColorBlue } from "@edulastic/colors";
-import { beforeUpload, notification } from "@edulastic/common";
-import { uploadToS3 } from "../../../author/src/utils/upload";
-import { updateProfileImageAction } from "../../Login/ducks";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { connect } from 'react-redux'
+import { IconPhotoCamera } from '@edulastic/icons'
+import { aws } from '@edulastic/constants'
+import { Upload, Spin } from 'antd'
+import {
+  white,
+  greyishDarker2,
+  largeDesktopWidth,
+  themeColorBlue,
+} from '@edulastic/colors'
+import { beforeUpload, notification } from '@edulastic/common'
+import { uploadToS3 } from '../../../author/src/utils/upload'
+import { updateProfileImageAction } from '../../Login/ducks'
 
 class Photo extends React.Component {
   state = {
-    loading: false
-  };
+    loading: false,
+  }
 
-  handleChange = async info => {
-    const { user, updateProfileImagePath } = this.props;
+  handleChange = async (info) => {
+    const { user, updateProfileImagePath } = this.props
     try {
-      this.setState({ loading: true });
-      const { file } = info;
+      this.setState({ loading: true })
+      const { file } = info
       if (!file.type.match(/image/g)) {
-        notification({ messageKey: "pleaseUploadFileInImageFormat" });
-        this.setState({ loading: false });
-        return;
-      } if (!beforeUpload(file)) {
-        this.setState({ loading: false });
-        return;
+        notification({ messageKey: 'pleaseUploadFileInImageFormat' })
+        this.setState({ loading: false })
+        return
       }
-      const imageUrl = await uploadToS3(file, `${aws.s3Folders.USER}`, `${user._id}`);
+      if (!beforeUpload(file)) {
+        this.setState({ loading: false })
+        return
+      }
+      const imageUrl = await uploadToS3(
+        file,
+        `${aws.s3Folders.USER}`,
+        `${user._id}`
+      )
       // for student to updated profile image any one districtId is fine to pass
       // any district id will be enough to find the user
       updateProfileImagePath({
         data: {
           thumbnail: imageUrl,
           email: user.email,
-          districtId: user.districtIds?.[0]
+          districtId: user.districtIds?.[0],
         },
-        userId: user._id
-      });
+        userId: user._id,
+      })
       this.setState({
-        loading: false
-      });
+        loading: false,
+      })
     } catch (e) {
-      notification({ messageKey: "unableTOsaveThumbnail" });
+      notification({ messageKey: 'unableTOsaveThumbnail' })
       this.setState({
-        loading: false
-      });
-      console.log(e);
+        loading: false,
+      })
+      console.log(e)
     }
-  };
+  }
 
   render() {
-    const { height = 250, windowWidth = 250, imageUrl, mode = "" } = this.props;
+    const { height = 250, windowWidth = 250, imageUrl, mode = '' } = this.props
     const uploadButton = (
       <Container height={height} width={windowWidth}>
         <Image alt="Profile">
@@ -62,17 +72,17 @@ class Photo extends React.Component {
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
       </Container>
-    );
+    )
 
-    const { loading } = this.state;
+    const { loading } = this.state
 
     const props = {
       beforeUpload: () => false,
       onChange: this.handleChange,
-      accept: "image/*",
+      accept: 'image/*',
       multiple: false,
-      showUploadList: false
-    };
+      showUploadList: false,
+    }
 
     return (
       <UploadWrapper height={height}>
@@ -82,10 +92,14 @@ class Photo extends React.Component {
               {loading ? (
                 <ImageLoading />
               ) : imageUrl ? (
-                <Image imgUrl={imageUrl} height={height} windowWidth={windowWidth} />
+                <Image
+                  imgUrl={imageUrl}
+                  height={height}
+                  windowWidth={windowWidth}
+                />
               ) : (
-                    uploadButton
-                  )}
+                uploadButton
+              )}
             </ImageContainer>
             <Camera mode={mode}>
               <IconPhotoCamera color={white} width="20px" />
@@ -93,7 +107,7 @@ class Photo extends React.Component {
           </Container>
         </Upload>
       </UploadWrapper>
-    );
+    )
   }
 }
 
@@ -102,25 +116,25 @@ Photo.propTypes = {
   height: PropTypes.number,
   isEditable: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired,
-  onChangeField: PropTypes.func
-};
+  onChangeField: PropTypes.func,
+}
 
 Photo.defaultProps = {
   height: 165,
-  onChangeField: () => null
-};
+  onChangeField: () => null,
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     user: state.user.user,
-    imageUrl: state.user.user.thumbnail
+    imageUrl: state.user.user.thumbnail,
   }),
   { updateProfileImagePath: updateProfileImageAction }
-)(Photo);
+)(Photo)
 
 const Container = styled.div`
-  height: ${props => props.height}px;
-  width: ${props => props.width}px;
+  height: ${(props) => props.height}px;
+  width: ${(props) => props.width}px;
   position: relative;
   border-radius: 50%;
   background: ${greyishDarker2};
@@ -129,12 +143,12 @@ const Container = styled.div`
     width: 150px;
     height: 150px;
   }
-`;
+`
 
 const UploadWrapper = styled.div`
   .ant-upload-select {
-    width: ${props => props.width}px;
-    height: ${props => props.height}px;
+    width: ${(props) => props.width}px;
+    height: ${(props) => props.height}px;
     border: none;
     padding: 0px !important;
   }
@@ -146,7 +160,7 @@ const UploadWrapper = styled.div`
     width: 150px;
     height: 150px;
   }
-`;
+`
 
 const ImageLoading = styled(Spin)`
   background: ${greyishDarker2};
@@ -154,17 +168,18 @@ const ImageLoading = styled(Spin)`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 
 const Image = styled.div`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? `${props.height}px` : "100%")};
+  height: ${(props) =>
+    props.windowWidth > 993 ? `${props.height}px` : '100%'};
   border-radius: 50%;
-  background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
+  background: url(${(props) => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
-`;
+`
 
 const Backdrop = styled.div`
   background: rgba(0, 0, 0, 0.5);
@@ -172,7 +187,7 @@ const Backdrop = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 50%;
-`;
+`
 
 const Camera = styled.div`
   background: ${themeColorBlue};
@@ -187,25 +202,24 @@ const Camera = styled.div`
   justify-content: center;
   z-index: 1;
   cursor: pointer;
-  ${props =>
-    props.mode == "small"
+  ${(props) =>
+    props.mode == 'small'
       ? ` right: 0px;
     left: auto;
     bottom: 0px;`
-      : ""}
-  @media (max-width:${largeDesktopWidth}){
+      : ''}
+  @media (max-width:${largeDesktopWidth}) {
     left: 5px;
   }
-  
-`;
+`
 
 const ImageContainer = styled.div`
   width: 100%;
-  height: ${props => props.height}px;
+  height: ${(props) => props.height}px;
   overflow: hidden;
   border-radius: 50%;
 
   @media (max-width: ${largeDesktopWidth}) {
     height: 150px;
   }
-`;
+`

@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef, Fragment } from "react";
-import PropTypes from "prop-types";
-import { filter, isEmpty, isEqual } from "lodash";
-import { withRouter } from "react-router-dom";
-import PlayerHeader from "./PlayerHeader";
-import ParentController from "./utility/parentController";
-import getUserResponse from "./utility/helpers";
-import { MainContent, Main, OverlayDiv } from "./styled";
-import Magnifier from "../../../common/components/Magnifier";
+import React, { useEffect, useState, useRef, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { filter, isEmpty, isEqual } from 'lodash'
+import { withRouter } from 'react-router-dom'
+import PlayerHeader from './PlayerHeader'
+import ParentController from './utility/parentController'
+import getUserResponse from './utility/helpers'
+import { MainContent, Main, OverlayDiv } from './styled'
+import Magnifier from '../../../common/components/Magnifier'
 
-let frameController = {};
+let frameController = {}
 
 const PlayerContent = ({
   openExitPopup,
@@ -31,233 +31,283 @@ const PlayerContent = ({
   submitTest,
   ...restProps
 }) => {
-  const frameRef = useRef();
-  const frameRefForMagnifier = useRef();
-  const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
-  const [currentPage, setCurrentQuestion] = useState(0);
-  const [testletItems, setQuestions] = useState([]);
-  const [currentScoring, setCurrentScoring] = useState(false);
-  const [unlockNext, setUnlockNext] = useState(false);
-  const { hasSubmitButton } = testletData;
+  const frameRef = useRef()
+  const frameRefForMagnifier = useRef()
+  const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
+  const [currentPage, setCurrentQuestion] = useState(0)
+  const [testletItems, setQuestions] = useState([])
+  const [currentScoring, setCurrentScoring] = useState(false)
+  const [unlockNext, setUnlockNext] = useState(false)
+  const { hasSubmitButton } = testletData
 
-  const handleScrollPage = e => {
-    const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".pages");
+  const handleScrollPage = (e) => {
+    const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(
+      '.pages'
+    )
     if (page) {
-      page.scrollTo(0, e.target.scrollTop);
+      page.scrollTo(0, e.target.scrollTop)
     }
-  };
+  }
 
-  const handleScrollPanel = e => {
-    const panel = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".winsight-panel");
+  const handleScrollPanel = (e) => {
+    const panel = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(
+      '.winsight-panel'
+    )
     if (panel) {
-      panel.scrollTo(0, e.target.scrollTop);
+      panel.scrollTo(0, e.target.scrollTop)
     }
-  };
+  }
 
   const applyStyleToElements = () => {
-    const win = document.defaultView;
+    const win = document.defaultView
     if (win.getComputedStyle) {
       // apply style from actual dom to magnified dom for specific class type
       const magnifiedElems = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelectorAll(
-        ".pages .end"
-      );
-      frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".pages .end").forEach((elm, i) => {
-        magnifiedElems[i].style.display = win.getComputedStyle(elm).display;
-      });
+        '.pages .end'
+      )
+      frameRef.current?.contentWindow?.document?.body
+        ?.querySelectorAll('.pages .end')
+        .forEach((elm, i) => {
+          magnifiedElems[i].style.display = win.getComputedStyle(elm).display
+        })
     }
-  };
+  }
 
   /*
     TODO: Refactor copyDom mutations to remove duplication from src/client/common/components/Magnifier.js
   */
   const copyDom = () => {
     setTimeout(() => {
-      if (frameRefForMagnifier.current && frameRefForMagnifier?.current?.contentWindow?.document?.body) {
+      if (
+        frameRefForMagnifier.current &&
+        frameRefForMagnifier?.current?.contentWindow?.document?.body
+      ) {
         frameRefForMagnifier.current.contentWindow.document.body.innerHTML =
-          frameRef.current?.contentWindow?.document?.body?.innerHTML;
+          frameRef.current?.contentWindow?.document?.body?.innerHTML
 
-        applyStyleToElements();
+        applyStyleToElements()
         handleScrollPage({
-          target: frameRef.current?.contentWindow?.document?.body?.querySelector(".pages")
-        });
+          target: frameRef.current?.contentWindow?.document?.body?.querySelector(
+            '.pages'
+          ),
+        })
         handleScrollPanel({
-          target: frameRef.current?.contentWindow?.document?.body?.querySelector(".winsight-panel")
-        });
+          target: frameRef.current?.contentWindow?.document?.body?.querySelector(
+            '.winsight-panel'
+          ),
+        })
       }
-    }, 1000);
-  };
+    }, 1000)
+  }
 
-  const attachDettachHandlerOnTab = (type = "attach") => {
-    const elems = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".tabbed .tab") || [];
-    elems.forEach(elm => {
-      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
-    });
-    const pages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".pages");
-    pages.forEach(elm => {
-      type === "attach"
-        ? elm.addEventListener("scroll", handleScrollPage)
-        : elm.removeEventListener("scroll", handleScrollPage);
-    });
+  const attachDettachHandlerOnTab = (type = 'attach') => {
+    const elems =
+      frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+        '.tabbed .tab'
+      ) || []
+    elems.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('click', copyDom)
+        : elm.removeEventListener('click', copyDom)
+    })
+    const pages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+      '.pages'
+    )
+    pages.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('scroll', handleScrollPage)
+        : elm.removeEventListener('scroll', handleScrollPage)
+    })
 
     // add scroll event to panel
-    const panels = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".winsight-panel");
-    panels.forEach(elm => {
-      type === "attach"
-        ? elm.addEventListener("scroll", handleScrollPanel)
-        : elm.removeEventListener("scroll", handleScrollPanel);
-    });
+    const panels = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+      '.winsight-panel'
+    )
+    panels.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('scroll', handleScrollPanel)
+        : elm.removeEventListener('scroll', handleScrollPanel)
+    })
 
-    const buttons = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".winsight-button");
-    buttons.forEach(elm => {
-      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
-    });
-    const options = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".option");
-    options.forEach(elm => {
-      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
-    });
+    const buttons = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+      '.winsight-button'
+    )
+    buttons.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('click', copyDom)
+        : elm.removeEventListener('click', copyDom)
+    })
+    const options = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+      '.option'
+    )
+    options.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('click', copyDom)
+        : elm.removeEventListener('click', copyDom)
+    })
 
     // attach click events to accordions
-    const accordions = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".accordion");
-    accordions.forEach(elm => {
-      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
-    });
+    const accordions = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+      '.accordion'
+    )
+    accordions.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('click', copyDom)
+        : elm.removeEventListener('click', copyDom)
+    })
 
     // attach click event to dropdowns
-    const dropdowns = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".selectTrigger");
-    dropdowns.forEach(elm => {
-      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
-    });
+    const dropdowns = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+      '.selectTrigger'
+    )
+    dropdowns.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('click', copyDom)
+        : elm.removeEventListener('click', copyDom)
+    })
 
     // attach click event to passage
-    const passages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".passageSelection");
-    passages.forEach(elm => {
-      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
-    });
-  };
+    const passages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(
+      '.passageSelection'
+    )
+    passages.forEach((elm) => {
+      type === 'attach'
+        ? elm.addEventListener('click', copyDom)
+        : elm.removeEventListener('click', copyDom)
+    })
+  }
 
   const showMagnifier = () => {
-    updateTestPlayer({ enableMagnifier: true });
+    updateTestPlayer({ enableMagnifier: true })
     if (frameRefForMagnifier.current) {
-      setTimeout(attachDettachHandlerOnTab, 1000);
-      copyDom();
+      setTimeout(attachDettachHandlerOnTab, 1000)
+      copyDom()
     }
-  };
+  }
 
   const hideMagnifier = () => {
-    updateTestPlayer({ enableMagnifier: false });
-    attachDettachHandlerOnTab("dettach");
-  };
+    updateTestPlayer({ enableMagnifier: false })
+    attachDettachHandlerOnTab('dettach')
+  }
 
   const handleMagnifier = () => {
     if (!enableMagnifier) {
-      setTimeout(showMagnifier, 1000);
+      setTimeout(showMagnifier, 1000)
     } else {
-      hideMagnifier();
+      hideMagnifier()
     }
-  };
+  }
 
   const rerenderMagnifier = () => {
     if (enableMagnifier) {
-      showMagnifier();
+      showMagnifier()
     }
-  };
+  }
 
-  const getEduQuestions = testletItemId =>
-    filter(questions, _q => (_q.testletQuestionId || "").includes(testletItemId));
+  const getEduQuestions = (testletItemId) =>
+    filter(questions, (_q) =>
+      (_q.testletQuestionId || '').includes(testletItemId)
+    )
 
   const saveUserResponse = () => {
     if (!LCBPreviewModal && !previewPlayer) {
-      const { currentPageIds } = frameController;
+      const { currentPageIds } = frameController
       for (const scoringId in currentPageIds) {
         if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-          const eduQuestions = getEduQuestions(scoringId.trim());
+          const eduQuestions = getEduQuestions(scoringId.trim())
           if (isEmpty(eduQuestions)) {
-            continue;
+            continue
           }
-          eduQuestions.forEach(eduQuestion => {
+          eduQuestions.forEach((eduQuestion) => {
             if (eduQuestion) {
-              const timeSpent = Date.now() - lastTime.current;
-              onSubmitAnswer(eduQuestion.id, timeSpent, groupId);
+              const timeSpent = Date.now() - lastTime.current
+              onSubmitAnswer(eduQuestion.id, timeSpent, groupId)
             }
-          });
+          })
         }
       }
     }
-  };
+  }
 
   const nextQuestion = () => {
-    saveUserResponse();
+    saveUserResponse()
     if (currentPage < testletItems.length) {
-      frameController.sendNext();
+      frameController.sendNext()
     } else if (!LCBPreviewModal) {
       if (hasSubmitButton) {
-        submitTest(groupId);
+        submitTest(groupId)
       } else {
-        gotoSummary();
+        gotoSummary()
       }
     }
     if (enableMagnifier) {
-      hideMagnifier();
+      hideMagnifier()
     }
-  };
+  }
 
   const prevQuestion = () => {
-    saveUserResponse();
-    frameController.sendPrevDev();
+    saveUserResponse()
+    frameController.sendPrevDev()
     if (enableMagnifier) {
-      hideMagnifier();
+      hideMagnifier()
     }
-  };
+  }
 
   const handleReponse = () => {
     if (LCBPreviewModal) {
-      return;
+      return
     }
-    const { currentPageIds, response } = frameController;
-    console.clear();
+    const { currentPageIds, response } = frameController
+    console.clear()
     for (const scoringId in currentPageIds) {
       if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-        const eduQuestions = getEduQuestions(scoringId.trim());
-        console.log(scoringId);
-        console.log((currentPageIds[scoringId] || []).join(","));
+        const eduQuestions = getEduQuestions(scoringId.trim())
+        console.log(scoringId)
+        console.log((currentPageIds[scoringId] || []).join(','))
         if (isEmpty(eduQuestions)) {
-          continue;
+          continue
         }
-        console.log(response[scoringId]);
+        console.log(response[scoringId])
 
-        eduQuestions.forEach(eduQuestion => {
-          const data = getUserResponse(eduQuestion, response);
-          console.log(data);
+        eduQuestions.forEach((eduQuestion) => {
+          const data = getUserResponse(eduQuestion, response)
+          console.log(data)
           if (!previewPlayer && !isEmpty(data)) {
-            setUserAnswer(eduQuestion.id, data);
+            setUserAnswer(eduQuestion.id, data)
           }
-        });
+        })
       }
     }
-  };
+  }
 
   const handleTestletState = (itemState, itemResponse) => {
     if (!LCBPreviewModal) {
       if (enableMagnifier) {
-        setTimeout(showMagnifier, 1000);
+        setTimeout(showMagnifier, 1000)
       }
-      const newState = { testletState: { state: itemState, response: itemResponse } };
+      const newState = {
+        testletState: { state: itemState, response: itemResponse },
+      }
       if (!isEqual(newState, testletState) && !previewPlayer) {
         setTestUserWork({
-          [testActivityId]: newState
-        });
+          [testActivityId]: newState,
+        })
       }
     }
-  };
+  }
 
   useEffect(() => {
     if (testletData.testletURL && frameRef.current) {
-      const { state: initState = {} } = testletState;
+      const { state: initState = {} } = testletState
 
       // initState.pageNum = 23;
 
-      frameController = new ParentController(testletData.testletId, initState, testletState.response);
-      frameController.connect(frameRef.current.contentWindow);
+      frameController = new ParentController(
+        testletData.testletId,
+        initState,
+        testletState.response
+      )
+      frameController.connect(frameRef.current.contentWindow)
       frameController.setCallback({
         setCurrentQuestion,
         setQuestions,
@@ -266,37 +316,37 @@ const PlayerContent = ({
         handleReponse,
         handleTestletState,
         handleLog: previewPlayer ? () => null : saveTestletLog,
-        submitTest: nextQuestion
-      });
+        submitTest: nextQuestion,
+      })
       if (enableMagnifier) {
-        setTimeout(showMagnifier, 1000);
+        setTimeout(showMagnifier, 1000)
       }
       return () => {
-        frameController.disconnect();
-      };
+        frameController.disconnect()
+      }
     }
-  }, [testletData]);
+  }, [testletData])
 
   useEffect(() => {
-    window.addEventListener("resize", rerenderMagnifier);
-    return () => window.removeEventListener("resize", rerenderMagnifier);
-  }, []);
+    window.addEventListener('resize', rerenderMagnifier)
+    return () => window.removeEventListener('resize', rerenderMagnifier)
+  }, [])
 
   useEffect(() => {
     if (currentPage > 0) {
       if (!LCBPreviewModal && !previewPlayer) {
-        saveTestletState();
+        saveTestletState()
       }
-      window.localStorage.assessmentLastTime = Date.now();
-      frameController.getCurrentPageScoreID();
+      window.localStorage.assessmentLastTime = Date.now()
+      frameController.getCurrentPageScoreID()
     }
     if (enableMagnifier) {
-      setTimeout(showMagnifier, 1000);
+      setTimeout(showMagnifier, 1000)
     }
-  }, [currentPage]);
+  }, [currentPage])
 
   const content = ({ fromContent }) => (
-    <Fragment>
+    <>
       <PlayerHeader
         title={title}
         dropdownOptions={testletItems}
@@ -325,8 +375,8 @@ const PlayerContent = ({
           )}
         </MainContent>
       </Main>
-    </Fragment>
-  );
+    </>
+  )
 
   return (
     <Magnifier
@@ -335,13 +385,13 @@ const PlayerContent = ({
       type="testlet"
       offset={{
         top: 70,
-        left: 0
+        left: 0,
       }}
     >
       {content({ fromContent: true })}
     </Magnifier>
-  );
-};
+  )
+}
 
 PlayerContent.propTypes = {
   openExitPopup: PropTypes.func.isRequired,
@@ -360,12 +410,12 @@ PlayerContent.propTypes = {
   location: PropTypes.object.isRequired,
   groupId: PropTypes.string.isRequired,
   changeTool: PropTypes.func.isRequired,
-  saveTestletLog: PropTypes.func.isRequired
-};
+  saveTestletLog: PropTypes.func.isRequired,
+}
 
 PlayerContent.defaultProps = {
   LCBPreviewModal: false,
-  previewPlayer: false
-};
+  previewPlayer: false,
+}
 
-export default withRouter(PlayerContent);
+export default withRouter(PlayerContent)

@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import { IconTrash as Icon } from "@edulastic/icons";
+import styled from 'styled-components'
+import { IconTrash as Icon } from '@edulastic/icons'
 
 export const IconTrash = styled(Icon)`
-  fill: ${props => props.theme.questionMetadata.iconTrashColor};
+  fill: ${(props) => props.theme.questionMetadata.iconTrashColor};
   :hover {
-    fill: ${props => props.theme.questionMetadata.iconHoverTrashColor};
+    fill: ${(props) => props.theme.questionMetadata.iconHoverTrashColor};
   }
   width: 16px;
   height: 16px;
-`;
+`

@@ -1,31 +1,31 @@
-import React, { useMemo, Fragment } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { useMemo, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
-import { replaceVariables } from "../../utils/variables";
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { CLEAR, EDIT, PREVIEW } from '../../constants/constantsForQuestions'
+import { replaceVariables } from '../../utils/variables'
 
-import SortListPreview from "./SortListPreview";
-import EditSortList from "./EditSortList";
+import SortListPreview from './SortListPreview'
+import EditSortList from './EditSortList'
 
-import { ContentArea } from "../../styled/ContentArea";
+import { ContentArea } from '../../styled/ContentArea'
 
-const SortList = props => {
-  const { item, view } = props;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+const SortList = (props) => {
+  const { item, view } = props
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <Fragment>
+    <>
       {view === EDIT && (
         <ContentArea>
           <EditSortList {...props} />
         </ContentArea>
       )}
       {view === PREVIEW && <SortListPreview {...props} item={itemForPreview} />}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 SortList.propTypes = {
   view: PropTypes.string.isRequired,
@@ -37,8 +37,8 @@ SortList.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 SortList.defaultProps = {
   previewTab: CLEAR,
@@ -47,12 +47,11 @@ SortList.defaultProps = {
   userAnswer: [],
   testItem: false,
   advancedAreOpen: false,
-  evaluation: ""
-};
+  evaluation: '',
+}
 
-const SortListContainer = connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(SortList);
+const SortListContainer = connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(SortList)
 
-export { SortListContainer as SortList };
+export { SortListContainer as SortList }

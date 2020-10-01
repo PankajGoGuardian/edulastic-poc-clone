@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import * as moment from "moment";
-import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
-import { Dropdown } from "antd";
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import * as moment from 'moment'
+import { get, unset, split, isEmpty, pick, pickBy, identity } from 'lodash'
+import { Dropdown } from 'antd'
 
-import { enrollmentApi } from "@edulastic/api";
+import { enrollmentApi } from '@edulastic/api'
 import {
   IconCircle,
   IconNoVolume,
@@ -16,33 +16,43 @@ import {
   IconRemove,
   IconVolumeUp,
   IconEclipse,
-  IconInfo
-} from "@edulastic/icons";
-import { EduButton, notification } from "@edulastic/common";
+  IconInfo,
+} from '@edulastic/icons'
+import { EduButton, notification } from '@edulastic/common'
 
-import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
-import ResetPwd from "./ResetPwd/ResetPwd";
-import { AddStudentDivider, ButtonsWrapper, CaretUp, DropMenu, MenuItems, CleverInfoBox } from "./styled";
-import AddStudentModal from "./AddStudent/AddStudentModal";
-import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
-import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
-import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
-import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
-import { MergeStudentsModal } from "../../../MergeUsers";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import DeleteConfirm from './DeleteConfirm/DeleteConfirm'
+import ResetPwd from './ResetPwd/ResetPwd'
+import {
+  AddStudentDivider,
+  ButtonsWrapper,
+  CaretUp,
+  DropMenu,
+  MenuItems,
+  CleverInfoBox,
+} from './styled'
+import AddStudentModal from './AddStudent/AddStudentModal'
+import InviteMultipleStudentModal from '../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal'
+import AddMultipleStudentsInfoModal from './AddmultipleStduentsInfoModel'
+import AddCoTeacher from './AddCoTeacher/AddCoTeacher'
+import AddToGroupModal from '../../../Reports/common/components/Popups/AddToGroupModal'
+import { MergeStudentsModal } from '../../../MergeUsers'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 // ducks
 import {
   addStudentRequestAction,
   changeTTSRequestAction,
   selectStudentAction,
-  updateStudentRequestAction
-} from "../../ducks";
-import { getUserOrgData, getUserOrgId } from "../../../src/selectors/user";
-import { getUserFeatures } from "../../../../student/Login/ducks";
-import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
+  updateStudentRequestAction,
+} from '../../ducks'
+import { getUserOrgData, getUserOrgId } from '../../../src/selectors/user'
+import { getUserFeatures } from '../../../../student/Login/ducks'
+import {
+  getSchoolPolicy,
+  receiveSchoolPolicyAction,
+} from '../../../DistrictPolicy/ducks'
 
-const modalStatus = {};
+const modalStatus = {}
 
 const ActionContainer = ({
   type,
@@ -64,242 +74,266 @@ const ActionContainer = ({
   policy,
   searchAndAddStudents,
   enableStudentGroups,
-  districtId
+  districtId,
 }) => {
-  const [isOpen, setModalStatus] = useState(modalStatus);
-  const [sentReq, setReqStatus] = useState(false);
-  const [isEdit, setEditStudentStatues] = useState(false);
+  const [isOpen, setModalStatus] = useState(modalStatus)
+  const [sentReq, setReqStatus] = useState(false)
+  const [isEdit, setEditStudentStatues] = useState(false)
 
-  const [isAddMultipleStudentsModal, setIsAddMultipleStudentsModal] = useState(false);
+  const [isAddMultipleStudentsModal, setIsAddMultipleStudentsModal] = useState(
+    false
+  )
 
-  const [infoModelVisible, setinfoModelVisible] = useState(false);
-  const [infoModalData, setInfoModalData] = useState([]);
+  const [infoModelVisible, setinfoModelVisible] = useState(false)
+  const [infoModalData, setInfoModalData] = useState([])
 
-  const { textToSpeech } = features;
-  const { _id: classId, active } = selectedClass;
-  let formRef = null;
+  const { textToSpeech } = features
+  const { _id: classId, active } = selectedClass
+  let formRef = null
 
-  const checkForAddStudent = !!(active && !cleverId && type === "class");
+  const checkForAddStudent = !!(active && !cleverId && type === 'class')
 
-  const toggleModal = key => {
-    setModalStatus({ [key]: !isOpen[key] });
-    setEditStudentStatues(false);
-  };
+  const toggleModal = (key) => {
+    setModalStatus({ [key]: !isOpen[key] })
+    setEditStudentStatues(false)
+  }
 
   if (added && sentReq) {
-    setReqStatus(false);
-    setModalStatus(false);
+    setReqStatus(false)
+    setModalStatus(false)
   }
 
   const handleAddMultipleStudent = () => {
-    setIsAddMultipleStudentsModal(true);
-  };
+    setIsAddMultipleStudentsModal(true)
+  }
   const closeInviteStudentModal = () => {
-    setIsAddMultipleStudentsModal(false);
-  };
-  const sendInviteStudent = async inviteStudentList => {
-    setIsAddMultipleStudentsModal(false);
+    setIsAddMultipleStudentsModal(false)
+  }
+  const sendInviteStudent = async (inviteStudentList) => {
+    setIsAddMultipleStudentsModal(false)
     const result = await enrollmentApi.addEnrolMultiStudents({
       classId: selectedClass._id,
-      data: inviteStudentList
-    });
-    setInfoModalData(result.data.result);
-    setinfoModelVisible(true);
-    loadStudents({ classId });
-  };
+      data: inviteStudentList,
+    })
+    setInfoModalData(result.data.result)
+    setinfoModelVisible(true)
+    loadStudents({ classId })
+  }
 
   const addStudent = () => {
     if (formRef) {
-      const { form } = formRef.props;
+      const { form } = formRef.props
       form.validateFields((err, values) => {
         if (!err) {
           if (isEdit) {
             if (values.dob) {
-              values.dob = moment(values.dob).format("x");
+              values.dob = moment(values.dob).format('x')
             }
-            const std = { ...selectedStudent[0], ...values, districtId };
-            const userId = std._id || std.userId;
-            std.currentSignUpState = "DONE";
-            std.username = values.email;
+            const std = { ...selectedStudent[0], ...values, districtId }
+            const userId = std._id || std.userId
+            std.currentSignUpState = 'DONE'
+            std.username = values.email
             const stdData = pick(std, [
-              "districtId",
-              "dob",
-              "ellStatus",
-              "email",
-              "firstName",
-              "gender",
-              "institutionIds",
-              "lastName",
-              "race",
-              "sisId",
-              "studentNumber",
-              "frlStatus",
-              "iepStatus",
-              "sedStatus",
-              "username",
-              "password",
-              "contactEmails"
-            ]);
+              'districtId',
+              'dob',
+              'ellStatus',
+              'email',
+              'firstName',
+              'gender',
+              'institutionIds',
+              'lastName',
+              'race',
+              'sisId',
+              'studentNumber',
+              'frlStatus',
+              'iepStatus',
+              'sedStatus',
+              'username',
+              'password',
+              'contactEmails',
+            ])
             // contactEmails field is in csv of multiple emails
-            const contactEmailsString = get(stdData, "contactEmails", "");
+            const contactEmailsString = get(stdData, 'contactEmails', '')
             const contactEmails =
-              contactEmailsString && typeof contactEmailsString === "string"
-                ? contactEmailsString.split(",").map(x => x.trim())
-                : contactEmailsString;
+              contactEmailsString && typeof contactEmailsString === 'string'
+                ? contactEmailsString.split(',').map((x) => x.trim())
+                : contactEmailsString
             // no need to have length check, as it is already handled in form validator
             if (contactEmails?.[0]) {
-              stdData.contactEmails = contactEmails;
+              stdData.contactEmails = contactEmails
             } else {
-              stdData.contactEmails = [];
+              stdData.contactEmails = []
             }
             updateStudentRequest({
               userId,
-              data: pickBy(stdData, identity)
-            });
-            setModalStatus(false);
+              data: pickBy(stdData, identity),
+            })
+            setModalStatus(false)
           } else {
-            const { fullName } = values;
-            const tempName = split(fullName, " ");
-            const firstName = tempName[0];
-            const lastName = tempName[1];
-            values.classCode = selectedClass.code;
-            values.role = "student";
-            values.districtId = districtId;
-            values.institutionIds = orgData.institutionIds;
-            values.firstName = firstName;
-            values.lastName = lastName;
+            const { fullName } = values
+            const tempName = split(fullName, ' ')
+            const firstName = tempName[0]
+            const lastName = tempName[1]
+            values.classCode = selectedClass.code
+            values.role = 'student'
+            values.districtId = districtId
+            values.institutionIds = orgData.institutionIds
+            values.firstName = firstName
+            values.lastName = lastName
 
-            const contactEmails = get(values, "contactEmails");
+            const contactEmails = get(values, 'contactEmails')
             if (contactEmails) {
               // contactEmails is comma seperated emails
-              values.contactEmails = contactEmails.split(",").map(x => x.trim());
+              values.contactEmails = contactEmails
+                .split(',')
+                .map((x) => x.trim())
             }
 
             if (values.dob) {
-              values.dob = moment(values.dob).format("x");
+              values.dob = moment(values.dob).format('x')
             }
 
-            unset(values, ["confirmPassword"]);
-            unset(values, ["fullName"]);
+            unset(values, ['confirmPassword'])
+            unset(values, ['fullName'])
 
-            addStudentRequest(pickBy(values, identity));
-            setReqStatus(true);
+            addStudentRequest(pickBy(values, identity))
+            setReqStatus(true)
           }
         }
-      });
+      })
     }
-    setSelectedStudents([]);
-  };
+    setSelectedStudents([])
+  }
 
-  const saveFormRef = node => {
-    formRef = node;
-  };
+  const saveFormRef = (node) => {
+    formRef = node
+  }
 
   const handleActionMenuClick = ({ key }) => {
-    const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1 || s.status !== 1);
+    const inactiveStudents = selectedStudent.filter(
+      (s) => s.enrollmentStatus !== 1 || s.status !== 1
+    )
     switch (key) {
-      case "enableSpeech":
+      case 'enableSpeech':
         if (isEmpty(selectedStudent)) {
-          notification({ messageKey: "selectOneOrMoreStudentsToenebaleTextToSpeech" });
-          return;
+          notification({
+            messageKey: 'selectOneOrMoreStudentsToenebaleTextToSpeech',
+          })
+          return
         }
         if (changeTTS) {
-          const isEnabled = selectedStudent.find(std => std.tts === "yes");
+          const isEnabled = selectedStudent.find((std) => std.tts === 'yes')
           if (isEnabled) {
-            notification({ messageKey: "atleastOneOfSelectedStudentsIsAlreadyEnabled" });
-            return;
+            notification({
+              messageKey: 'atleastOneOfSelectedStudentsIsAlreadyEnabled',
+            })
+            return
           }
-          const stdIds = selectedStudent.map(std => std._id).join(",");
-          changeTTS({ userId: stdIds, ttsStatus: "yes" });
+          const stdIds = selectedStudent.map((std) => std._id).join(',')
+          changeTTS({ userId: stdIds, ttsStatus: 'yes' })
         }
-        break;
-      case "disableSpeech": {
+        break
+      case 'disableSpeech': {
         if (isEmpty(selectedStudent)) {
-          notification({ messageKey: "selectOneOrMoreStudentsToDisableTextToSpeech" });
-          return;
+          notification({
+            messageKey: 'selectOneOrMoreStudentsToDisableTextToSpeech',
+          })
+          return
         }
-        const isDisabled = selectedStudent.find(std => std.tts === "no");
+        const isDisabled = selectedStudent.find((std) => std.tts === 'no')
         if (isDisabled) {
-          notification({ messageKey: "atleastOneOfSelectedStudentsIsAlreadyDisabled" });
-          return;
+          notification({
+            messageKey: 'atleastOneOfSelectedStudentsIsAlreadyDisabled',
+          })
+          return
         }
         if (changeTTS) {
-          const stdIds = selectedStudent.map(std => std._id).join(",");
-          changeTTS({ userId: stdIds, ttsStatus: "no" });
+          const stdIds = selectedStudent.map((std) => std._id).join(',')
+          changeTTS({ userId: stdIds, ttsStatus: 'no' })
         }
-        break;
+        break
       }
-      case "deleteStudent":
+      case 'deleteStudent':
         if (isEmpty(selectedStudent)) {
-          notification({ messageKey: "selectOneOrMoreStudentsToRemove" });
-          return;
+          notification({ messageKey: 'selectOneOrMoreStudentsToRemove' })
+          return
         }
-        toggleModal("delete");
-        break;
-      case "resetPwd":
+        toggleModal('delete')
+        break
+      case 'resetPwd':
         if (isEmpty(selectedStudent)) {
-          notification({ messageKey: "SelectOneOrMoreStudentsToChangePassword" });
-          return;
+          notification({
+            messageKey: 'SelectOneOrMoreStudentsToChangePassword',
+          })
+          return
         }
-        toggleModal("resetPwd");
-        break;
-      case "editStudent":
+        toggleModal('resetPwd')
+        break
+      case 'editStudent':
         if (isEmpty(selectedStudent)) {
-          notification({ messageKey: "pleaseSelectAStudentToUpdate" });
-          return;
+          notification({ messageKey: 'pleaseSelectAStudentToUpdate' })
+          return
         }
         if (selectedStudent.length > 1) {
-          notification({ messageKey: "pleaseSelectOnlyOneStudent" });
-          return;
+          notification({ messageKey: 'pleaseSelectOnlyOneStudent' })
+          return
         }
-        toggleModal("add");
-        setEditStudentStatues(true);
-        break;
-      case "addCoTeacher":
-        toggleModal("addCoTeacher");
-        break;
-      case "addToGroup":
+        toggleModal('add')
+        setEditStudentStatues(true)
+        break
+      case 'addCoTeacher':
+        toggleModal('addCoTeacher')
+        break
+      case 'addToGroup':
         if (inactiveStudents.length) {
-          notification({ messageKey: "deactivatedStudentSelected" });
+          notification({ messageKey: 'deactivatedStudentSelected' })
         } else if (selectedStudent.length < 1) {
-          notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
+          notification({ messageKey: 'selectOneOrMoreStudentsForGroup' })
         } else {
-          toggleModal("addToGroup");
+          toggleModal('addToGroup')
         }
-        break;
-      case "mergeStudents": {
+        break
+      case 'mergeStudents': {
         if (inactiveStudents.length) {
-          notification({ messageKey: "deactivatedStudentSelected" });
+          notification({ messageKey: 'deactivatedStudentSelected' })
         } else if (selectedStudent.length > 1) {
-          toggleModal("mergeStudents");
+          toggleModal('mergeStudents')
         } else {
-          notification({ type: "info", messageKey: "pleaseSelectTowOrMoreStudents" });
+          notification({
+            type: 'info',
+            messageKey: 'pleaseSelectTowOrMoreStudents',
+          })
         }
-        break;
+        break
       }
       default:
-        break;
+        break
     }
-  };
+  }
 
   useEffect(() => {
     if (checkForAddStudent) {
       // if school policy does not exists then action will populate district policy
-      loadSchoolPolicy(selectedClass.institutionId);
+      loadSchoolPolicy(selectedClass.institutionId)
     }
-  }, []);
+  }, [])
 
   const onMergeStudents = () => {
-    toggleModal("mergeStudents");
-    loadStudents({ classId });
-  };
+    toggleModal('mergeStudents')
+    loadStudents({ classId })
+  }
 
   const handlePrintPreview = () => {
-    const selectedStudentIds = selectedStudent.map(s => s._id);
-    window.open(`/author/manageClass/${classId}/printpreview?studentIds=${selectedStudentIds.join(",")}`, "_blank");
-  };
+    const selectedStudentIds = selectedStudent.map((s) => s._id)
+    window.open(
+      `/author/manageClass/${classId}/printpreview?studentIds=${selectedStudentIds.join(
+        ','
+      )}`,
+      '_blank'
+    )
+  }
 
-  const atlasId = selectedClass.atlasId;
+  const atlasId = selectedClass.atlasId
 
   return (
     <>
@@ -315,7 +349,7 @@ const ActionContainer = ({
       {isOpen.add && (
         <AddStudentModal
           handleAdd={addStudent}
-          handleCancel={() => toggleModal("add")}
+          handleCancel={() => toggleModal('add')}
           isOpen={isOpen.add}
           submitted={submitted}
           wrappedComponentRef={saveFormRef}
@@ -327,36 +361,42 @@ const ActionContainer = ({
 
       <ResetPwd
         isOpen={isOpen.resetPwd}
-        handleCancel={() => toggleModal("resetPwd")}
+        handleCancel={() => toggleModal('resetPwd')}
         selectedStudent={selectedStudent}
       />
 
-      <DeleteConfirm isOpen={isOpen.delete} handleCancel={() => toggleModal("delete")} />
+      <DeleteConfirm
+        isOpen={isOpen.delete}
+        handleCancel={() => toggleModal('delete')}
+      />
 
       <AddCoTeacher
         isOpen={isOpen.addCoTeacher}
         type={type}
         selectedClass={selectedClass}
-        handleCancel={() => toggleModal("addCoTeacher")}
+        handleCancel={() => toggleModal('addCoTeacher')}
       />
 
-      {type === "class" && (
-        <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+      {type === 'class' && (
+        <FeaturesSwitch
+          inputFeatures="studentGroups"
+          actionOnInaccessible="hidden"
+        >
           <AddToGroupModal
             type="group"
             visible={isOpen.addToGroup}
-            onCancel={() => toggleModal("addToGroup")}
+            onCancel={() => toggleModal('addToGroup')}
             checkedStudents={selectedStudent}
           />
         </FeaturesSwitch>
       )}
 
-      {type === "class" && (
+      {type === 'class' && (
         <MergeStudentsModal
           visible={isOpen.mergeStudents}
-          userIds={selectedStudent.map(s => s._id)}
+          userIds={selectedStudent.map((s) => s._id)}
           onSubmit={onMergeStudents}
-          onCancel={() => toggleModal("mergeStudents")}
+          onCancel={() => toggleModal('mergeStudents')}
         />
       )}
 
@@ -374,18 +414,32 @@ const ActionContainer = ({
 
         <ButtonsWrapper>
           {checkForAddStudent && (
-            <EduButton height="30px" isGhost data-cy="addStudent" onClick={() => toggleModal("add")}>
+            <EduButton
+              height="30px"
+              isGhost
+              data-cy="addStudent"
+              onClick={() => toggleModal('add')}
+            >
               <IconPlusCircle />
               ADD STUDENT
             </EduButton>
           )}
           {checkForAddStudent && (
-            <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+            <EduButton
+              height="30px"
+              data-cy="addMultiStu"
+              onClick={handleAddMultipleStudent}
+            >
               <IconPlusCircle />
               ADD MULTIPLE STUDENTS
             </EduButton>
           )}
-          <EduButton height="30px" isGhost data-cy="printRoster" onClick={handlePrintPreview}>
+          <EduButton
+            height="30px"
+            isGhost
+            data-cy="printRoster"
+            onClick={handlePrintPreview}
+          >
             <IconPrint />
             PRINT
           </EduButton>
@@ -422,13 +476,13 @@ const ActionContainer = ({
                     <span>Edit Student</span>
                   </MenuItems>
                 )}
-                {type === "class" && enableStudentGroups && (
+                {type === 'class' && enableStudentGroups && (
                   <MenuItems key="addToGroup">
                     <IconPlus />
                     <span>Add To Group</span>
                   </MenuItems>
                 )}
-                {type === "class" && (
+                {type === 'class' && (
                   <MenuItems key="mergeStudents">
                     <IconEclipse />
                     <span>Merge Students</span>
@@ -436,7 +490,7 @@ const ActionContainer = ({
                 )}
               </DropMenu>
             }
-            getPopupContainer={trigger => trigger.parentNode}
+            getPopupContainer={(trigger) => trigger.parentNode}
             placement="bottomRight"
           >
             <EduButton data-cy="actions" height="30px" isGhost>
@@ -465,8 +519,8 @@ const ActionContainer = ({
         </ButtonsWrapper>
       </AddStudentDivider>
     </>
-  );
-};
+  )
+}
 
 ActionContainer.propTypes = {
   addStudentRequest: PropTypes.func.isRequired,
@@ -475,29 +529,29 @@ ActionContainer.propTypes = {
   submitted: PropTypes.bool.isRequired,
   added: PropTypes.any.isRequired,
   selectedStudent: PropTypes.array.isRequired,
-  changeTTS: PropTypes.func.isRequired
-};
+  changeTTS: PropTypes.func.isRequired,
+}
 
-ActionContainer.defaultProps = {};
+ActionContainer.defaultProps = {}
 
 export default connect(
-  state => ({
+  (state) => ({
     userOrgId: getUserOrgId(state),
     orgData: getUserOrgData(state),
-    selectedClass: get(state, "manageClass.entity"),
-    submitted: get(state, "manageClass.submitted"),
-    added: get(state, "manageClass.added"),
-    selectedStudent: get(state, "manageClass.selectedStudent", []),
-    studentsList: get(state, "manageClass.studentsList", []),
+    selectedClass: get(state, 'manageClass.entity'),
+    submitted: get(state, 'manageClass.submitted'),
+    added: get(state, 'manageClass.added'),
+    selectedStudent: get(state, 'manageClass.selectedStudent', []),
+    studentsList: get(state, 'manageClass.studentsList', []),
     features: getUserFeatures(state),
     policy: getSchoolPolicy(state),
-    enableStudentGroups: get(state, "user.user.features.studentGroups")
+    enableStudentGroups: get(state, 'user.user.features.studentGroups'),
   }),
   {
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
     changeTTS: changeTTSRequestAction,
     setSelectedStudents: selectStudentAction,
-    loadSchoolPolicy: receiveSchoolPolicyAction
+    loadSchoolPolicy: receiveSchoolPolicyAction,
   }
-)(ActionContainer);
+)(ActionContainer)

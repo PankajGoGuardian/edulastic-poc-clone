@@ -9,59 +9,59 @@ import {
   SET_ASSIGNMENT_FILTER,
   ADVANCED_ASSIGNMENT_VIEW,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
-  TOGGLE_STUDENT_REPORT_CARD_SETTINGS
-} from "../constants/actions";
+  TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+} from '../constants/actions'
 
-export const googleSyncAssignmentAction = payload => ({
+export const googleSyncAssignmentAction = (payload) => ({
   type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const receiveAssignmentsAction = payload => ({
+export const receiveAssignmentsAction = (payload) => ({
   type: RECEIVE_ASSIGNMENTS_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const receiveAssignmentsSummaryAction = payload => ({
+export const receiveAssignmentsSummaryAction = (payload) => ({
   type: RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const receiveAssignmentByIdAction = payload => ({
+export const receiveAssignmentByIdAction = (payload) => ({
   type: FETCH_CURRENT_EDITING_ASSIGNMENT,
-  payload
-});
+  payload,
+})
 
-export const receiveAssignmentByAssignmentIdAction = payload => ({
+export const receiveAssignmentByAssignmentIdAction = (payload) => ({
   type: FETCH_CURRENT_ASSIGNMENT,
-  payload
-});
+  payload,
+})
 
-export const updateReleaseScoreSettingsAction = payload => ({
+export const updateReleaseScoreSettingsAction = (payload) => ({
   type: UPDATE_RELEASE_SCORE_SETTINGS,
-  payload
-});
+  payload,
+})
 
-export const receiveAssignmentClassList = payload => ({
+export const receiveAssignmentClassList = (payload) => ({
   type: RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
-  payload
-});
+  payload,
+})
 
-export const toggleReleaseScoreSettingsAction = payload => ({
+export const toggleReleaseScoreSettingsAction = (payload) => ({
   type: TOGGLE_RELEASE_GRADE_SETTINGS,
-  payload
-});
+  payload,
+})
 
 export const toggleAssignmentViewAction = () => ({
-  type: ADVANCED_ASSIGNMENT_VIEW
-});
+  type: ADVANCED_ASSIGNMENT_VIEW,
+})
 
-export const setAssignmentFiltersAction = payload => ({
+export const setAssignmentFiltersAction = (payload) => ({
   type: SET_ASSIGNMENT_FILTER,
-  payload
-});
+  payload,
+})
 
-export const toggleStudentReportCardSettingsAction = payload => ({
+export const toggleStudentReportCardSettingsAction = (payload) => ({
   type: TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
-  payload
+  payload,
 })

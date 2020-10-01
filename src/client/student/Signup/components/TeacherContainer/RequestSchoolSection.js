@@ -1,54 +1,63 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
-import styled from "styled-components";
-import { Form } from "antd";
-import { withNamespaces } from "@edulastic/localization";
-import { EduButton,notification } from "@edulastic/common";
-import { userApi } from "@edulastic/api";
-import { themeColor, mobileWidthLarge, greyGraphstroke } from "@edulastic/colors";
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
+import styled from 'styled-components'
+import { Form } from 'antd'
+import { withNamespaces } from '@edulastic/localization'
+import { EduButton, notification } from '@edulastic/common'
+import { userApi } from '@edulastic/api'
+import {
+  themeColor,
+  mobileWidthLarge,
+  greyGraphstroke,
+} from '@edulastic/colors'
 
-import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
-import { createAndAddSchoolAction } from "../../../Login/ducks";
-import RequestSchoolForm from "./RequestSchoolForm";
+import {
+  searchDistrictsRequestAction,
+  createAndJoinSchoolRequestAction,
+} from '../../duck'
+import { createAndAddSchoolAction } from '../../../Login/ducks'
+import RequestSchoolForm from './RequestSchoolForm'
 
-const RequestSchool = props => {
-  const [requestButtonDisabled, setRequestButtonDisabled] = useState(true);
-  const { form, userInfo, createAndAddSchool, t, creatingAddingSchool } = props;
+const RequestSchool = (props) => {
+  const [requestButtonDisabled, setRequestButtonDisabled] = useState(true)
+  const { form, userInfo, createAndAddSchool, t, creatingAddingSchool } = props
   const {
-    orgData: { districts: [{districtId, districtName}] }
-  } = userInfo;
+    orgData: {
+      districts: [{ districtId, districtName }],
+    },
+  } = userInfo
 
   useEffect(() => {
-    (async function checkDistrictPolicy() {
+    ;(async function checkDistrictPolicy() {
       try {
-        let signOnMethod = "userNameAndPassword";
-        signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
-        signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
-        signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
+        let signOnMethod = 'userNameAndPassword'
+        signOnMethod = userInfo.msoId ? 'office365SignOn' : signOnMethod
+        signOnMethod = userInfo.cleverId ? 'cleverSignOn' : signOnMethod
+        signOnMethod = userInfo.googleId ? 'googleSignOn' : signOnMethod
         const checkDistrictPolicyPayload = {
           districtId,
           email: userInfo.email,
           type: userInfo.role,
-          signOnMethod
-        };
-        await userApi.validateDistrictPolicy(checkDistrictPolicyPayload);
-        setRequestButtonDisabled(false);
+          signOnMethod,
+        }
+        await userApi.validateDistrictPolicy(checkDistrictPolicyPayload)
+        setRequestButtonDisabled(false)
       } catch (error) {
-        notification({ msg:t("common.policyviolation")});
-        setRequestButtonDisabled(true);
+        notification({ msg: t('common.policyviolation') })
+        setRequestButtonDisabled(true)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
-        const { name, address, city, country, state, zip } = values;
+        const { name, address, city, country, state, zip } = values
         const body = {
           name,
           districtName,
@@ -58,12 +67,12 @@ const RequestSchool = props => {
             state,
             zip,
             address,
-            country
+            country,
           },
-          requestNewSchool: true
-        };
+          requestNewSchool: true,
+        }
 
-        const { firstName, middleName, lastName, institutionIds } = userInfo;
+        const { firstName, middleName, lastName, institutionIds } = userInfo
         createAndAddSchool({
           createSchool: body,
           joinSchool: {
@@ -71,19 +80,25 @@ const RequestSchool = props => {
               email: userInfo.email,
               firstName,
               middleName,
-              lastName
+              lastName,
             },
-            userId: userInfo._id
+            userId: userInfo._id,
           },
-          institutionIds
-        });
+          institutionIds,
+        })
       }
-    });
-  };
+    })
+  }
 
   return (
     <RequestFormWrapper>
-      <RequestSchoolForm form={form} t={t} handleSubmit={handleSubmit} userInfo={userInfo} fromUserProfile />
+      <RequestSchoolForm
+        form={form}
+        t={t}
+        handleSubmit={handleSubmit}
+        userInfo={userInfo}
+        fromUserProfile
+      />
       <ButtonRow>
         <EduButton
           height="32px"
@@ -92,43 +107,45 @@ const RequestSchool = props => {
           htmlType="submit"
           disabled={creatingAddingSchool || requestButtonDisabled}
         >
-          <span>{t("component.signup.teacher.requestnewschool")}</span>
+          <span>{t('component.signup.teacher.requestnewschool')}</span>
         </EduButton>
       </ButtonRow>
     </RequestFormWrapper>
-  );
-};
+  )
+}
 
 RequestSchool.propTypes = {
   form: PropTypes.object.isRequired,
   userInfo: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
-const RequestSchoolSection = Form.create({ name: "request_school" })(RequestSchool);
+const RequestSchoolSection = Form.create({ name: 'request_school' })(
+  RequestSchool
+)
 
 const enhance = compose(
-  withNamespaces("login"),
+  withNamespaces('login'),
   withRouter,
   connect(
-    state => ({
-      creatingAddingSchool: get(state, "user.creatingAddingSchool")
+    (state) => ({
+      creatingAddingSchool: get(state, 'user.creatingAddingSchool'),
     }),
     {
       searchDistrict: searchDistrictsRequestAction,
       createAndJoinSchoolRequest: createAndJoinSchoolRequestAction,
-      createAndAddSchool: createAndAddSchoolAction
+      createAndAddSchool: createAndAddSchoolAction,
     }
   )
-);
+)
 
-export default enhance(RequestSchoolSection);
+export default enhance(RequestSchoolSection)
 
 const ButtonRow = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-`;
+`
 
 const RequestFormWrapper = styled.div`
   margin-left: 10px;
@@ -160,7 +177,7 @@ const RequestFormWrapper = styled.div`
   }
   .ant-form-item-label {
     & > label::after {
-      content: "";
+      content: '';
     }
     align-self: start;
     padding-top: 5px;
@@ -234,4 +251,4 @@ const RequestFormWrapper = styled.div`
       }
     }
   }
-`;
+`

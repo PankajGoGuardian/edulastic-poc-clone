@@ -1,12 +1,12 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth } from '@edulastic/colors'
 
 export const FormGroup = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  ${props =>
+  ${(props) =>
     props.center &&
     `
     input {
@@ -40,4 +40,4 @@ export const FormGroup = styled.div`
       }
     }
   `}
-`;
+`

@@ -1,42 +1,50 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withTheme } from "styled-components";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { withTheme } from 'styled-components'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
-import produce from "immer";
-import WidgetOptions from "../../../containers/WidgetOptions";
+import produce from 'immer'
+import WidgetOptions from '../../../containers/WidgetOptions'
 
-import Settings from "./Settings";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { StyledInput } from "../styled/StyledInput";
-import { Subtitle } from "../../../styled/Subtitle";
-import Question from "../../../components/Question";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
-import { TextInputStyled } from "../../../styled/InputStyles";
+import Settings from './Settings'
+import { Label } from '../../../styled/WidgetOptions/Label'
+import { StyledInput } from '../styled/StyledInput'
+import { Subtitle } from '../../../styled/Subtitle'
+import Question from '../../../components/Question'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import { TextInputStyled } from '../../../styled/InputStyles'
 
-const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advancedAreOpen, setQuestionData }) => {
+const AdvancedOptions = ({
+  t,
+  theme,
+  item,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+  setQuestionData,
+}) => {
   const [modalSettings, setModalSettings] = useState({
     editMode: false,
-    modalName: ""
-  });
+    modalName: '',
+  })
 
   const handleUiChange = (prop, value) => {
     setQuestionData(
-      produce(item, draft => {
-        draft.uiStyle[prop] = +value;
+      produce(item, (draft) => {
+        draft.uiStyle[prop] = +value
       })
-    );
-  };
+    )
+  }
 
   const handleChange = (prop, value) => {
     setQuestionData(
-      produce(item, draft => {
-        draft[prop] = value;
+      produce(item, (draft) => {
+        draft[prop] = value
       })
-    );
-  };
+    )
+  }
 
   return (
     <WidgetOptions
@@ -59,49 +67,61 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
 
       <Question
         section="advanced"
-        label={t("component.options.extras")}
+        label={t('component.options.extras')}
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.extras")}`)}>
-          {t("component.options.extras")}
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.options.extras')}`
+          )}
+        >
+          {t('component.options.extras')}
         </Subtitle>
 
         <Row gutter={24}>
           <Col span={12}>
-            <Label>{t("component.video.width")}</Label>
+            <Label>{t('component.video.width')}</Label>
             <TextInputStyled
               size="large"
               type="number"
-              value={item && item.uiStyle && item.uiStyle.width ? item.uiStyle.width : ""}
-              onChange={e => handleUiChange("width", e.target.value)}
+              value={
+                item && item.uiStyle && item.uiStyle.width
+                  ? item.uiStyle.width
+                  : ''
+              }
+              onChange={(e) => handleUiChange('width', e.target.value)}
             />
           </Col>
           <Col span={12}>
-            <Label>{t("component.video.height")}</Label>
+            <Label>{t('component.video.height')}</Label>
             <TextInputStyled
               size="large"
               type="number"
-              value={item && item.uiStyle && item.uiStyle.height ? item.uiStyle.height : ""}
-              onChange={e => handleUiChange("height", e.target.value)}
+              value={
+                item && item.uiStyle && item.uiStyle.height
+                  ? item.uiStyle.height
+                  : ''
+              }
+              onChange={(e) => handleUiChange('height', e.target.value)}
             />
           </Col>
         </Row>
         <Row gutter={24}>
           <Col span={24}>
-            <Label>{t("component.video.transcript")}</Label>
+            <Label>{t('component.video.transcript')}</Label>
             <TextInputStyled
               size="large"
-              value={item.transcript || ""}
-              onChange={e => handleChange("transcript", e.target.value)}
+              value={item.transcript || ''}
+              onChange={(e) => handleChange('transcript', e.target.value)}
             />
           </Col>
         </Row>
       </Question>
     </WidgetOptions>
-  );
-};
+  )
+}
 
 AdvancedOptions.propTypes = {
   item: PropTypes.shape({
@@ -118,23 +138,23 @@ AdvancedOptions.propTypes = {
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,
       captionURL: PropTypes.string.isRequired,
-      hideControls: PropTypes.bool.isRequired
-    }).isRequired
+      hideControls: PropTypes.bool.isRequired,
+    }).isRequired,
   }).isRequired,
   t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  setQuestionData: PropTypes.func.isRequired
-};
+  setQuestionData: PropTypes.func.isRequired,
+}
 
 AdvancedOptions.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
-  advancedAreOpen: false
-};
+  advancedAreOpen: false,
+}
 
-const enhance = compose(withTheme);
+const enhance = compose(withTheme)
 
-export default enhance(AdvancedOptions);
+export default enhance(AdvancedOptions)

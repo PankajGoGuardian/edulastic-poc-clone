@@ -1,25 +1,29 @@
-import React from "react";
-import styled from "styled-components";
-import { Select } from "antd";
-import { themeColor, tabletWidth } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { Select } from 'antd'
+import { themeColor, tabletWidth } from '@edulastic/colors'
 
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { getCurrentItemSelector, getItemCountSelector, setCurrentItemAction } from "../../sharedDucks/TestItem";
-import Nav from "../../../assessment/themes/common/Nav";
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import {
+  getCurrentItemSelector,
+  getItemCountSelector,
+  setCurrentItemAction,
+} from '../../sharedDucks/TestItem'
+import Nav from '../../../assessment/themes/common/Nav'
 
-const { Option } = Select;
+const { Option } = Select
 
 const QuestionSelect = ({ count, current, setCurrentItem }) => (
   <QuestionListWrapper>
     <Select
       data-cy="questionNumber"
       value={current}
-      getPopupContainer={triggerNode => triggerNode.parentNode}
-      onChange={val => {
-        setCurrentItem(val);
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      onChange={(val) => {
+        setCurrentItem(val)
       }}
     >
       {[...new Array(count)].map((item, index) => (
@@ -30,7 +34,10 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => (
     </Select>
     <div>
       {current > 0 && (
-        <PreviousBtn data-cy="previousItem" onClick={() => setCurrentItem(current - 1)}>
+        <PreviousBtn
+          data-cy="previousItem"
+          onClick={() => setCurrentItem(current - 1)}
+        >
           <FontAwesomeIcon icon={faAngleLeft} />
         </PreviousBtn>
       )}
@@ -41,22 +48,22 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => (
       )}
     </div>
   </QuestionListWrapper>
-);
+)
 export default connect(
-  state => ({
+  (state) => ({
     current: getCurrentItemSelector(state),
-    count: getItemCountSelector(state)
+    count: getItemCountSelector(state),
   }),
   {
-    setCurrentItem: setCurrentItemAction
+    setCurrentItem: setCurrentItemAction,
   }
-)(QuestionSelect);
+)(QuestionSelect)
 
 QuestionSelect.propTypes = {
   current: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
-  setCurrentItem: PropTypes.func.isRequired
-};
+  setCurrentItem: PropTypes.func.isRequired,
+}
 
 const QuestionListWrapper = styled.div`
   display: flex;
@@ -92,15 +99,15 @@ const QuestionListWrapper = styled.div`
   .ant-select-dropdown {
     z-index: 1;
   }
-`;
+`
 
 const PreviousBtn = styled(Nav.BackArrow)`
   left: 80px;
   @media screen and (max-width: ${tabletWidth}) {
     left: 4px;
   }
-`;
+`
 
 const NextBtn = styled(Nav.NextArrow)`
   right: 10px;
-`;
+`

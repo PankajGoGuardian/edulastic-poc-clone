@@ -1,13 +1,13 @@
-import API from './utils/API';
+import API from './utils/API'
 
-const api = new API('http://localhost:9020');
+const api = new API('http://localhost:9020')
 
-const getAssessment = id =>
+const getAssessment = (id) =>
   api
     .callApi({
       url: `/assessment/${id}`,
     })
-    .then(data => data.data);
+    .then((data) => data.data)
 
 const addQuestion = ({ assessmentId, question, options, type, answer }) =>
   api.callApi({
@@ -19,9 +19,9 @@ const addQuestion = ({ assessmentId, question, options, type, answer }) =>
       type,
       answer,
     },
-  });
+  })
 
 export default {
   getAssessment,
   addQuestion,
-};
+}

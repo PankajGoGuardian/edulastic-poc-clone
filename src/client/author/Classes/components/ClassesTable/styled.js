@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Icon, Button } from "antd";
-import { StyledTable } from "../../../../common/styled";
+import styled from 'styled-components'
+import { Icon, Button } from 'antd'
+import { StyledTable } from '../../../../common/styled'
 
 export const ClassTable = styled(StyledTable)`
   .ant-table {
@@ -10,20 +10,20 @@ export const ClassTable = styled(StyledTable)`
       }
     }
   }
-`;
+`
 export const TeacherSpan = styled.span`
   margin-right: 10px;
 
   &:not(:last-child):after {
-    content: ",";
+    content: ',';
   }
-`;
+`
 
 export const StyledHeaderColumn = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-`;
+`
 
 export const StyledSortIconDiv = styled.div`
   position: relative;
@@ -33,7 +33,7 @@ export const StyledSortIconDiv = styled.div`
   text-align: center;
   font-weight: 400;
   color: rgba(0, 0, 0, 0.45);
-`;
+`
 
 export const StyledSortIcon = styled(Icon)`
   display: block;
@@ -43,9 +43,9 @@ export const StyledSortIcon = styled(Icon)`
   position: relative;
   font-size: 11px;
   margin-top: 0.125em;
-  color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
-`;
+  color: ${(props) => (props.colorValue ? '#1890ff' : '#bfbfbf')};
+`
 
 export const StyledCreateSchoolBtn = styled(Button)`
   font-size: 11px;
-`;
+`

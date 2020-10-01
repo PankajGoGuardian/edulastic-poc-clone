@@ -1,15 +1,17 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
-import FileHelper from "../framework/util/fileHelper";
-import StudentTestPage from "../framework/student/studentTestPage";
-import { assignedTests } from "../framework/testdata/visualRegression";
-import { assignedTests1 } from "../framework/testdata/visualRegression";
+import FileHelper from '../framework/util/fileHelper'
+import StudentTestPage from '../framework/student/studentTestPage'
+import {
+  assignedTests,
+  assignedTests1,
+} from '../framework/testdata/visualRegression'
 
-const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
-const test = new StudentTestPage();
-const allTestIds = Object.keys(assignedTests1);
+const SCREEN_SIZES = Cypress.config('SCREEN_SIZES')
+const test = new StudentTestPage()
+const allTestIds = Object.keys(assignedTests1)
 const assignmentURL = [
-  "/student/assessment/5e4b9001f13f470008a12ab2/class/5e4b86f0c12c24000700889f/uta/5e6b0fa198bb760008edda8b/qid/"
-];
+  '/student/assessment/5e4b9001f13f470008a12ab2/class/5e4b86f0c12c24000700889f/uta/5e6b0fa198bb760008edda8b/qid/',
+]
 /* const assignmentURL = [
   "/student/assessment/5dc3e3018286cb00071c326b/class/5d53b53af7efc82f60100347/uta/5dc3fe580e43cf000724ffa9/qid",
   "/student/assessment/5dc3bea2b38694000706b3af/class/5d53b53af7efc82f60100347/uta/5dc3fe6a66cdd400074ce6c2/qid",
@@ -19,52 +21,54 @@ const assignmentURL = [
   "/student/assessment/5dc27818474ba500079b39eb/class/5d53b53af7efc82f60100347/uta/5dc3fe9c2ab139000860fa3d/qid"
 ]; */
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
-  before("set token", () => {
-    cy.fixture("usersVisualRegression").then(allusers => {
-      const { username, password } = allusers.studentPlayer;
-      cy.setToken(username, password); // setting auth token for student user
-    });
-  });
+  before('set token', () => {
+    cy.fixture('usersVisualRegression').then((allusers) => {
+      const { username, password } = allusers.studentPlayer
+      cy.setToken(username, password) // setting auth token for student user
+    })
+  })
 
-  allTestIds.forEach(testId => {
-    const pageURL = assignmentURL.filter(url => url.includes(testId))[0];
-    const items = assignedTests1[testId];
+  allTestIds.forEach((testId) => {
+    const pageURL = assignmentURL.filter((url) => url.includes(testId))[0]
+    const items = assignedTests1[testId]
 
-    SCREEN_SIZES.forEach(size => {
+    SCREEN_SIZES.forEach((size) => {
       context(`Assessment Player-${testId}-${size}`, () => {
-        before("set token", () => {
-          cy.setResolution(size);
-          cy.visit(`/${pageURL}/0`);
-          cy.wait(1000);
-        });
+        before('set token', () => {
+          cy.setResolution(size)
+          cy.visit(`/${pageURL}/0`)
+          cy.wait(1000)
+        })
 
         items.forEach((item, index) => {
-          const { itemId } = item;
-          const queNum = `Question ${parseInt(index, 10) + 1}`;
+          const { itemId } = item
+          const queNum = `Question ${parseInt(index, 10) + 1}`
           it(`>${queNum}-${itemId}-'${size}'`, () => {
-            cy.setResolution(size);
-            test.getQueDropDown().click();
-            cy.contains(`${queNum}/${items.length}`).click({ force: true });
-            cy.wait(2000); // allow que to render before taking screenshot
-            cy.matchImageSnapshotWithSize();
+            cy.setResolution(size)
+            test.getQueDropDown().click()
+            cy.contains(`${queNum}/${items.length}`).click({ force: true })
+            cy.wait(2000) // allow que to render before taking screenshot
+            cy.matchImageSnapshotWithSize()
             cy.isPageScrollPresent().then(({ hasScroll }) => {
-              if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50);
-            });
-          });
-        });
+              if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50)
+            })
+          })
+        })
 
         it(`> review page-'${size}'`, () => {
-          cy.setResolution(size);
-          test.getQueDropDown().click();
-          cy.contains(`Question ${items.length}/${items.length}`).click({ force: true });
-          cy.wait(2000);
-          test.clickOnNext();
-          cy.matchImageSnapshotWithSize();
+          cy.setResolution(size)
+          test.getQueDropDown().click()
+          cy.contains(`Question ${items.length}/${items.length}`).click({
+            force: true,
+          })
+          cy.wait(2000)
+          test.clickOnNext()
+          cy.matchImageSnapshotWithSize()
           cy.isPageScrollPresent().then(({ hasScroll }) => {
-            if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50);
-          });
-        });
-      });
-    });
-  });
-});
+            if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50)
+          })
+        })
+      })
+    })
+  })
+})

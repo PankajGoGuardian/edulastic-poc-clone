@@ -1,14 +1,20 @@
-import React from "react";
-import { withMediaProps } from "react-media-player";
-import { Circle, Polygon, Path, Svg } from "./styledSVG";
+import React from 'react'
+import { withMediaProps } from 'react-media-player'
+import { Circle, Polygon, Path, Svg } from './styledSVG'
 
 const MuteUnmute = ({ media, style }) => {
   const _handleMuteUnmute = () => {
-    media.muteUnmute();
-  };
+    media.muteUnmute()
+  }
 
   return (
-    <Svg width="36px" height="36px" viewBox="0 0 36 36" style={style} onClick={_handleMuteUnmute}>
+    <Svg
+      width="36px"
+      height="36px"
+      viewBox="0 0 36 36"
+      style={style}
+      onClick={_handleMuteUnmute}
+    >
       <Circle cx="18" cy="18" r="18" />
       <Polygon points="11,14.844 11,21.442 14.202,21.442 17.656,25 17.656,11 14.074,14.844" />
       {media.volume >= 0.5 && (
@@ -30,7 +36,7 @@ const MuteUnmute = ({ media, style }) => {
         />
       )}
     </Svg>
-  );
-};
+  )
+}
 
-export default withMediaProps(MuteUnmute);
+export default withMediaProps(MuteUnmute)

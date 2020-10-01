@@ -1,17 +1,17 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react'
 
-const useUnload = fn => {
-  const cb = useRef();
-
-  useEffect(() => {
-    cb.current = fn;
-  }, [cb]);
+const useUnload = (fn) => {
+  const cb = useRef()
 
   useEffect(() => {
-    const onComponentUnload = () => cb.current();
-    window.addEventListener("beforeunload", onComponentUnload);
-    return () => window.removeEventListener("beforeunload", onComponentUnload);
-  }, []);
-};
+    cb.current = fn
+  }, [cb])
 
-export default useUnload;
+  useEffect(() => {
+    const onComponentUnload = () => cb.current()
+    window.addEventListener('beforeunload', onComponentUnload)
+    return () => window.removeEventListener('beforeunload', onComponentUnload)
+  }, [])
+}
+
+export default useUnload

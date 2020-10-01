@@ -1,9 +1,15 @@
-import { greyThemeDark2, mobileWidth, themeColor, title, white } from "@edulastic/colors";
-import { IconClose, IconPencilEdit } from "@edulastic/icons";
-import { Button } from "antd";
-import PropTypes from "prop-types";
-import React, { useMemo } from "react";
-import styled from "styled-components";
+import {
+  greyThemeDark2,
+  mobileWidth,
+  themeColor,
+  title,
+  white,
+} from '@edulastic/colors'
+import { IconClose, IconPencilEdit } from '@edulastic/icons'
+import { Button } from 'antd'
+import PropTypes from 'prop-types'
+import React, { useMemo } from 'react'
+import styled from 'styled-components'
 
 const Tab = ({
   IconPosition,
@@ -20,9 +26,9 @@ const Tab = ({
   borderRadius,
   addTabs,
   isAddTab,
-  isPassageQuestion
+  isPassageQuestion,
 }) => {
-  const textWidth = useMemo(() => (label?.length || 0) * 10 + 10, [label]);
+  const textWidth = useMemo(() => (label?.length || 0) * 10 + 10, [label])
 
   const inputTab = (
     <EditableTab>
@@ -35,15 +41,20 @@ const Tab = ({
       />
       {active && <IconPencilEdit color={themeColor} width={16} height={16} />}
     </EditableTab>
-  );
+  )
 
   const closeButton = !active && (
     <CloseIcon IconPosition={IconPosition} className="close-icon">
-      <IconClose color={active ? white : "#AAAFB5"} width={8} height={8} onClick={onClose} />
+      <IconClose
+        color={active ? white : '#AAAFB5'}
+        width={8}
+        height={8}
+        onClick={onClose}
+      />
     </CloseIcon>
-  );
+  )
 
-  const labelBar = <span data-cy={data_cy || null}>{label}</span>;
+  const labelBar = <span data-cy={data_cy || null}>{label}</span>
 
   if (isAddTab) {
     return (
@@ -51,16 +62,22 @@ const Tab = ({
         <GreenPlusIcon>+</GreenPlusIcon>
         ADD TAB
       </AddTabButton>
-    );
+    )
   }
 
   return (
-    <Container active={active} style={style} type={type} borderRadius={borderRadius} onClick={onClick}>
+    <Container
+      active={active}
+      style={style}
+      type={type}
+      borderRadius={borderRadius}
+      onClick={onClick}
+    >
       {editable ? inputTab : labelBar}
       {close && closeButton}
     </Container>
-  );
-};
+  )
+}
 
 Tab.propTypes = {
   label: PropTypes.any.isRequired,
@@ -74,8 +91,8 @@ Tab.propTypes = {
   data_cy: PropTypes.string,
   type: PropTypes.string,
   IconPosition: PropTypes.string,
-  borderRadius: PropTypes.bool
-};
+  borderRadius: PropTypes.bool,
+}
 
 Tab.defaultProps = {
   onClick: () => {},
@@ -84,27 +101,28 @@ Tab.defaultProps = {
   editable: false,
   close: false,
   onChange: () => {},
-  onClose: evt => {
-    evt.stopPropagation();
+  onClose: (evt) => {
+    evt.stopPropagation()
   },
-  data_cy: "",
-  type: "default",
+  data_cy: '',
+  type: 'default',
   borderRadius: false,
-  IconPosition: null
-};
+  IconPosition: null,
+}
 
-export default Tab;
+export default Tab
 
 const Container = styled.div`
   color: ${title};
-  padding: ${({ type }) => (type === "primary" ? "0px 25px" : "10px 25px")};
+  padding: ${({ type }) => (type === 'primary' ? '0px 25px' : '10px 25px')};
   cursor: pointer;
   background: ${white};
-  height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
+  height: ${({ type }) => (type === 'primary' ? '28px' : 'auto')};
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: ${({ active }) => `1px solid ${active ? themeColor : "transparent"}`};
+  border-bottom: ${({ active }) =>
+    `1px solid ${active ? themeColor : 'transparent'}`};
   background: ${white};
   color: ${({ active }) => (active ? themeColor : greyThemeDark2)};
   border-radius: 0px;
@@ -132,28 +150,29 @@ const Container = styled.div`
     width: 50%;
     margin-bottom: 10px;
   }
-`;
+`
 
 const Input = styled.input`
   border: 0;
   width: 100%;
-  text-align: ${({ isPassageQuestion }) => (isPassageQuestion ? "left" : "center")};
+  text-align: ${({ isPassageQuestion }) =>
+    isPassageQuestion ? 'left' : 'center'};
   outline: none;
   background: transparent;
   text-align: center;
-`;
+`
 
 const EditableTab = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 10px;
-`;
+`
 
 const CloseIcon = styled.span`
   margin-left: 14px;
-  float: ${props => (props.IconPosition ? props.IconPosition : "none")};
-`;
+  float: ${(props) => (props.IconPosition ? props.IconPosition : 'none')};
+`
 
 export const AddTabButton = styled(Button)`
   color: ${themeColor};
@@ -178,7 +197,7 @@ export const AddTabButton = styled(Button)`
   &:focus {
     color: ${themeColor};
   }
-`;
+`
 
 export const GreenPlusIcon = styled.span`
   display: inline-block;
@@ -193,4 +212,4 @@ export const GreenPlusIcon = styled.span`
   line-height: 1;
   color: #fff !important;
   background: ${themeColor};
-`;
+`

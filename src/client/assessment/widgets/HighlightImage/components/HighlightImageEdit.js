@@ -1,15 +1,21 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { ContentArea } from "../../../styled/ContentArea";
+import { ContentArea } from '../../../styled/ContentArea'
 
-import ComposeQuestion from "./ComposeQuestion";
-import Options from "./Options";
+import ComposeQuestion from './ComposeQuestion'
+import Options from './Options'
 
-const HighlightImageEdit = ({ item, fillSections, cleanSections, advancedLink, advancedAreOpen }) => {
-  const [loading, setLoading] = useState(false);
+const HighlightImageEdit = ({
+  item,
+  fillSections,
+  cleanSections,
+  advancedLink,
+  advancedAreOpen,
+}) => {
+  const [loading, setLoading] = useState(false)
 
   return (
     <ContentArea>
@@ -28,22 +34,22 @@ const HighlightImageEdit = ({ item, fillSections, cleanSections, advancedLink, a
         item={item}
       />
     </ContentArea>
-  );
-};
+  )
+}
 
 HighlightImageEdit.propTypes = {
   item: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  advancedLink: PropTypes.any
-};
+  advancedLink: PropTypes.any,
+}
 
 HighlightImageEdit.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
   advancedAreOpen: false,
-  advancedLink: null
-};
+  advancedLink: null,
+}
 
-export default withNamespaces("assessment")(HighlightImageEdit);
+export default withNamespaces('assessment')(HighlightImageEdit)

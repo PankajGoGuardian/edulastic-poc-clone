@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { measureText } from "@edulastic/common";
+import { measureText } from '@edulastic/common'
 
-import Answer from "./Answer";
+import Answer from './Answer'
 
 /**
  * 1. gets the size of container
@@ -14,41 +14,57 @@ import Answer from "./Answer";
  */
 
 function Response({ answer, id }) {
-  let containerRef = null;
-  const [containerDimensions, setContainerDimensions] = useState({ height: 35, width: 100 });
-  const { scrollHeight: contentHeight, scrollWidth: contentWidth } = measureText(answer);
-  const { height: containerHeight, width: containerWidth } = containerDimensions;
-  const showPopover = contentHeight > containerHeight || contentWidth > containerWidth;
+  let containerRef = null
+  const [containerDimensions, setContainerDimensions] = useState({
+    height: 35,
+    width: 100,
+  })
+  const {
+    scrollHeight: contentHeight,
+    scrollWidth: contentWidth,
+  } = measureText(answer)
+  const { height: containerHeight, width: containerWidth } = containerDimensions
+  const showPopover =
+    contentHeight > containerHeight || contentWidth > containerWidth
 
   useEffect(() => {
     if (containerRef) {
-      const { height: containerPrevHeight, width: containerPrevWidth } = containerDimensions;
-      const { clientHeight: containerNewHeight, clientWidth: containerNewWidth } = containerRef;
+      const {
+        height: containerPrevHeight,
+        width: containerPrevWidth,
+      } = containerDimensions
+      const {
+        clientHeight: containerNewHeight,
+        clientWidth: containerNewWidth,
+      } = containerRef
 
-      if (containerNewHeight !== containerPrevHeight || containerNewWidth !== containerPrevWidth) {
+      if (
+        containerNewHeight !== containerPrevHeight ||
+        containerNewWidth !== containerPrevWidth
+      ) {
         setContainerDimensions({
           width: containerNewWidth,
-          height: containerNewHeight
-        });
+          height: containerNewHeight,
+        })
       }
     }
-  }, [containerRef]);
+  }, [containerRef])
 
   return (
     <Answer
       key={id}
-      ref={ref => {
-        containerRef = ref;
+      ref={(ref) => {
+        containerRef = ref
       }}
       answer={answer}
       showPopover={showPopover}
     />
-  );
+  )
 }
 
 Response.propTypes = {
   id: PropTypes.string.isRequired,
-  answer: PropTypes.string.isRequired
-};
+  answer: PropTypes.string.isRequired,
+}
 
-export default Response;
+export default Response

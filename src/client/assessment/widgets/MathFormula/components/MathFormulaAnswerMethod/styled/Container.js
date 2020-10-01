@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { sectionBorder } from "@edulastic/colors";
+import styled from 'styled-components'
+import { sectionBorder } from '@edulastic/colors'
 
 export const Container = styled.div`
   margin-bottom: 15px;
@@ -12,4 +12,4 @@ export const Container = styled.div`
     margin-top: 15px;
     border-top: 1px solid ${sectionBorder};
   }
-`;
+`

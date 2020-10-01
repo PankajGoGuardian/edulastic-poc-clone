@@ -11,13 +11,13 @@ import {
   white,
   secondaryTextColor,
   extraDesktopWidthMax,
-  mobileWidthLarge
-} from "@edulastic/colors";
-import { IconSearch } from "@edulastic/icons";
-import { SelectInputStyled } from "@edulastic/common";
-import { Modal } from "antd";
-import styled from "styled-components";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+  mobileWidthLarge,
+} from '@edulastic/colors'
+import { IconSearch } from '@edulastic/icons'
+import { SelectInputStyled } from '@edulastic/common'
+import { Modal } from 'antd'
+import styled from 'styled-components'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 export const ManageContentOuterWrapper = styled.div`
   width: 400px;
@@ -32,7 +32,7 @@ export const ManageContentOuterWrapper = styled.div`
   @media (max-width: ${desktopWidth}) {
     position: fixed;
     right: 0px;
-    top: ${props => props.theme.HeaderHeight.sd}px;
+    top: ${(props) => props.theme.HeaderHeight.sd}px;
     min-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
     max-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
     background: white;
@@ -42,11 +42,11 @@ export const ManageContentOuterWrapper = styled.div`
     }
   }
   @media (max-width: ${mobileWidthLarge}) {
-    top: ${props => props.theme.HeaderHeight.xs}px;
+    top: ${(props) => props.theme.HeaderHeight.xs}px;
     min-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xs}px)`};
     max-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xs}px)`};
   }
-`;
+`
 
 export const ToggleManageContent = styled.div`
   display: none;
@@ -70,7 +70,7 @@ export const ToggleManageContent = styled.div`
       fill: ${greyThemeDark1};
     }
   }
-`;
+`
 
 export const ManageContentContainer = styled.div`
   width: 100%;
@@ -105,25 +105,26 @@ export const ManageContentContainer = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     border-radius: 0px;
   }
-`;
+`
 
 export const SearchByNavigationBar = styled.div`
   width: 100%;
   display: flex;
   justify-content: ${({ justify }) => justify};
-`;
+`
 
 export const SearchByTab = styled.div`
   padding: 0px 6px 10px 6px;
   margin: 0px 20px 2px 0px;
   color: ${({ isTabActive }) => (isTabActive ? themeColor : playlistTabLink)};
-  border-bottom: ${({ isTabActive }) => isTabActive && `1px solid ${themeColor}`};
+  border-bottom: ${({ isTabActive }) =>
+    isTabActive && `1px solid ${themeColor}`};
   text-transform: uppercase;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   user-select: none;
-`;
+`
 
 export const ManageContentLabel = styled.div`
   color: ${secondaryTextColor};
@@ -134,13 +135,13 @@ export const ManageContentLabel = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
-`;
+`
 
 export const SearchBoxContainer = styled.div`
   position: relative;
   margin-right: 5px;
   flex: 1;
-`;
+`
 
 export const SearchIcon = styled(IconSearch)`
   position: absolute;
@@ -150,7 +151,7 @@ export const SearchIcon = styled(IconSearch)`
   width: 14px;
   height: 14px;
   cursor: pointer;
-`;
+`
 
 export const SearchBar = styled(SelectInputStyled)`
   &.ant-select .ant-select-selection {
@@ -161,7 +162,7 @@ export const SearchBar = styled(SelectInputStyled)`
       font-size: 11px;
     }
   }
-`;
+`
 
 export const ActionButton = styled.div`
   width: 40px;
@@ -184,7 +185,7 @@ export const ActionButton = styled.div`
     height: 38px;
     width: 38px;
   }
-`;
+`
 
 export const ActionsContainer = styled.div`
   display: flex;
@@ -192,7 +193,7 @@ export const ActionsContainer = styled.div`
   width: 100%;
   margin-top: 0%;
   position: relative;
-`;
+`
 
 export const ManageModuleBtn = styled.div`
   display: flex;
@@ -219,7 +220,7 @@ export const ManageModuleBtn = styled.div`
       transform: rotate(0.5turn);
     }
   }
-`;
+`
 
 export const ResourceDataList = styled.div`
   margin-bottom: 20px;
@@ -229,12 +230,12 @@ export const ResourceDataList = styled.div`
   align-items: start;
   height: ${({ urlHasUseThis, isDifferentiationTab }) => {
     if (isDifferentiationTab) {
-      return "calc(100vh - 355px)";
+      return 'calc(100vh - 355px)'
     }
     if (urlHasUseThis) {
-      return "calc(100vh - 305px)";
+      return 'calc(100vh - 305px)'
     }
-    return "calc(100vh - 345px)";
+    return 'calc(100vh - 345px)'
   }};
 
   &::-webkit-scrollbar {
@@ -264,19 +265,22 @@ export const ResourceDataList = styled.div`
   }
 
   @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
-    height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 285px)" : "calc(100vh - 322px)")};
+    height: ${({ urlHasUseThis }) =>
+      urlHasUseThis ? 'calc(100vh - 285px)' : 'calc(100vh - 322px)'};
   }
 
   @media (max-width: ${desktopWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 142}px)`};
+    height: ${(props) =>
+      `calc(100vh - ${props.theme.HeaderHeight.xs + 142}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 332px)" : "calc(100vh - 370px)")};
+    height: ${({ urlHasUseThis }) =>
+      urlHasUseThis ? 'calc(100vh - 332px)' : 'calc(100vh - 370px)'};
   }
   @media (max-width: ${mobileWidthLarge}) {
     height: calc(100vh - 242px);
   }
-`;
+`
 
 export const LoaderWrapper = styled.div`
   width: 100%;
@@ -285,7 +289,7 @@ export const LoaderWrapper = styled.div`
   padding: 10px;
   margin-top: 10px;
   cursor: default;
-`;
+`
 
 export const CustomModal = styled(ConfirmationModal)`
   && {
@@ -300,7 +304,7 @@ export const CustomModal = styled(ConfirmationModal)`
       }
     }
   }
-`;
+`
 
 export const ModalWrapper = styled(Modal)`
   top: 0px;
@@ -324,4 +328,4 @@ export const ModalWrapper = styled(Modal)`
       }
     }
   }
-`;
+`

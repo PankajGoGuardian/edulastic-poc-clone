@@ -1,104 +1,123 @@
-import { CustomModalStyled, EduButton } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { DatePicker, Form, Icon, Input, Table } from "antd";
-import { get } from "lodash";
-import * as moment from "moment";
-import React from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { CustomModalStyled, EduButton } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { DatePicker, Form, Icon, Input, Table } from 'antd'
+import { get } from 'lodash'
+import * as moment from 'moment'
+import React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 // selectors
-import { createTermAction, deleteTermAction, receiveTermAction, updateTermAction } from "../../ducks";
-import CreateTermModal from "./CreateTermModal/CreateTermModal";
-import EditTermModal from "./EditTermModal/EditTermModal";
+import {
+  createTermAction,
+  deleteTermAction,
+  receiveTermAction,
+  updateTermAction,
+} from '../../ducks'
+import CreateTermModal from './CreateTermModal/CreateTermModal'
+import EditTermModal from './EditTermModal/EditTermModal'
 import {
   DeleteTermModalFooterDiv,
   StyledAddButton,
   StyledButton,
   StyledDeleteButton,
   StyledPagination,
-  StyledTableContainer
-} from "./styled";
+  StyledTableContainer,
+} from './styled'
 
-const FormItem = Form.Item;
-const EditableContext = React.createContext();
+const FormItem = Form.Item
+const EditableContext = React.createContext()
 class EditableCell extends React.Component {
   render() {
-    const { editing, dataIndex, title, inputType, record, index, ...restProps } = this.props;
+    const {
+      editing,
+      dataIndex,
+      title,
+      inputType,
+      record,
+      index,
+      ...restProps
+    } = this.props
     return (
       <EditableContext.Consumer>
-        {form => {
-          const { getFieldDecorator } = form;
+        {(form) => {
+          const { getFieldDecorator } = form
           return (
             <td {...restProps}>
               {editing ? (
                 <FormItem style={{ margin: 0 }}>
-                  {inputType === "text"
+                  {inputType === 'text'
                     ? getFieldDecorator(dataIndex, {
-                      rules: [
-                        {
-                          required: true,
-                          message: `Please Input ${  title  }!`
-                        }
-                      ],
-                      initialValue: record[dataIndex]
-                    })(<Input />)
+                        rules: [
+                          {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                          },
+                        ],
+                        initialValue: record[dataIndex],
+                      })(<Input />)
                     : getFieldDecorator(dataIndex, {
-                      rules: [{ required: true, message: `Please Input ${  title  }!` }],
-                      initialValue: moment(record[dataIndex], "DD MMM YYYY")
-                    })(<DatePicker format="DD MMM YYYY" />)}
+                        rules: [
+                          { required: true, message: `Please Input ${title}!` },
+                        ],
+                        initialValue: moment(record[dataIndex], 'DD MMM YYYY'),
+                      })(<DatePicker format="DD MMM YYYY" />)}
                 </FormItem>
               ) : (
-                  restProps.children
-                )}
+                restProps.children
+              )}
             </td>
-          );
+          )
         }}
       </EditableContext.Consumer>
-    );
+    )
   }
 }
 
 class TermTable extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       selectedKey: -1,
       createTermModalVisible: false,
       editTermModalVisible: false,
       deleteTermModalVisible: false,
-      currentPage: 1
-    };
+      currentPage: 1,
+    }
 
     this.columns = [
       {
-        title: "School Year Name",
-        dataIndex: "name",
-        width: "25%",
-        editable: true
+        title: 'School Year Name',
+        dataIndex: 'name',
+        width: '25%',
+        editable: true,
       },
       {
-        title: "Start Date",
-        dataIndex: "startDateVisible",
-        width: "25%",
-        editable: true
+        title: 'Start Date',
+        dataIndex: 'startDateVisible',
+        width: '25%',
+        editable: true,
       },
       {
-        title: "End Date",
-        dataIndex: "endDateVisible",
-        width: "25%",
-        editable: true
+        title: 'End Date',
+        dataIndex: 'endDateVisible',
+        width: '25%',
+        editable: true,
       },
       {
-        title: <StyledAddButton onClick={this.handleAdd}>+ Add School Year</StyledAddButton>,
-        dataIndex: "operation",
+        title: (
+          <StyledAddButton onClick={this.handleAdd}>
+            + Add School Year
+          </StyledAddButton>
+        ),
+        dataIndex: 'operation',
         render: (text, record) => {
-          const toDayDate = moment(new Date(), "DD MMM YYYY");
-          toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-          const deleteDisabled = toDayDate.valueOf() > record.startDate;
+          const toDayDate = moment(new Date(), 'DD MMM YYYY')
+          toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+          const deleteDisabled = toDayDate.valueOf() > record.startDate
           return (
-            <React.Fragment>
+            <>
               <StyledButton onClick={() => this.showEditTermModal(record.key)}>
                 <Icon type="edit" theme="twoTone" />
               </StyledButton>
@@ -108,138 +127,145 @@ class TermTable extends React.Component {
                   onClick={() => {
                     this.setState({
                       selectedKey: record.key,
-                      deleteTermModalVisible: true
-                    });
+                      deleteTermModalVisible: true,
+                    })
                   }}
                 />
               </StyledDeleteButton>
-            </React.Fragment>
-          );
-        }
-      }
-    ];
+            </>
+          )
+        },
+      },
+    ]
   }
 
   static getDerivedStateFromProps(nextProps) {
     if (nextProps.termSetting.length === undefined) {
       return {
-        data: []
-      };
+        data: [],
+      }
     }
-    if (nextProps.loading || nextProps.creating || nextProps.deleting || nextProps.updating) {
-      return null;
+    if (
+      nextProps.loading ||
+      nextProps.creating ||
+      nextProps.deleting ||
+      nextProps.updating
+    ) {
+      return null
     }
     return {
-      data: nextProps.termSetting
-    };
-
-
+      data: nextProps.termSetting,
+    }
   }
 
   componentDidMount() {
-    const { loadTermSetting, userOrgId } = this.props;
-    loadTermSetting({ orgId: userOrgId });
+    const { loadTermSetting, userOrgId } = this.props
+    loadTermSetting({ orgId: userOrgId })
   }
 
   handleAdd = () => {
-    this.showCreateTermModal();
-  };
+    this.showCreateTermModal()
+  }
 
-  handleDelete = key => {
-    const data = [...this.state.data];
-    const selectedTerm = data.filter(item => item.key == key);
-    const { deleteTermSetting, userOrgId } = this.props;
-    deleteTermSetting({ body: { termId: selectedTerm[0]._id, orgId: userOrgId } });
+  handleDelete = (key) => {
+    const data = [...this.state.data]
+    const selectedTerm = data.filter((item) => item.key == key)
+    const { deleteTermSetting, userOrgId } = this.props
+    deleteTermSetting({
+      body: { termId: selectedTerm[0]._id, orgId: userOrgId },
+    })
     this.setState({
-      deleteTermModalVisible: false
-    });
-  };
+      deleteTermModalVisible: false,
+    })
+  }
 
-  createTerm = termData => {
-    const { userOrgId, createTermSetting } = this.props;
+  createTerm = (termData) => {
+    const { userOrgId, createTermSetting } = this.props
     const createdTermData = {
       body: {
         name: termData.name,
         startDate: termData.startDate.valueOf(),
         endDate: termData.endDate.valueOf(),
-        districtId: userOrgId
+        districtId: userOrgId,
       },
-      key: this.state.data.length
-    };
-    createTermSetting(createdTermData);
-    this.setState({ createTermModalVisible: false });
-  };
+      key: this.state.data.length,
+    }
+    createTermSetting(createdTermData)
+    this.setState({ createTermModalVisible: false })
+  }
 
   showCreateTermModal = () => {
-    this.setState({ createTermModalVisible: true });
-  };
+    this.setState({ createTermModalVisible: true })
+  }
 
   closeCreateTermModal = () => {
-    this.setState({ createTermModalVisible: false });
-  };
+    this.setState({ createTermModalVisible: false })
+  }
 
-  updateTerm = termData => {
-    const { updateTermSetting, userOrgId } = this.props;
-    termData.districtId = userOrgId;
-    updateTermSetting({ body: termData });
-    this.setState({ selectedKey: -1 });
-  };
+  updateTerm = (termData) => {
+    const { updateTermSetting, userOrgId } = this.props
+    termData.districtId = userOrgId
+    updateTermSetting({ body: termData })
+    this.setState({ selectedKey: -1 })
+  }
 
-  showEditTermModal = key => {
+  showEditTermModal = (key) => {
     this.setState({
       editTermModalVisible: true,
-      selectedKey: key
-    });
-  };
+      selectedKey: key,
+    })
+  }
 
   closeEditTermModal = () => {
     this.setState({
       editTermModalVisible: false,
-      selectedKey: -1
-    });
-  };
+      selectedKey: -1,
+    })
+  }
 
-  changePagination = pageNumber => {
-    this.setState({ currentPage: pageNumber });
-  };
+  changePagination = (pageNumber) => {
+    this.setState({ currentPage: pageNumber })
+  }
 
   render() {
     const components = {
       body: {
-        cell: EditableCell
-      }
-    };
-    const readOnly = this.props.role === roleuser.SCHOOL_ADMIN;
+        cell: EditableCell,
+      },
+    }
+    const readOnly = this.props.role === roleuser.SCHOOL_ADMIN
 
-    const colLength = this.columns.length;
+    const colLength = this.columns.length
     /**
      * excluding the last Column if readOnly
      */
-    const columns = this.columns.slice(0, readOnly ? colLength - 1 : colLength).map(col => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: record => ({
-          record,
-          inputType: col.dataIndex === "name" ? "text" : "date",
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: false
-        })
-      };
-    });
+    const columns = this.columns
+      .slice(0, readOnly ? colLength - 1 : colLength)
+      .map((col) => {
+        if (!col.editable) {
+          return col
+        }
+        return {
+          ...col,
+          onCell: (record) => ({
+            record,
+            inputType: col.dataIndex === 'name' ? 'text' : 'date',
+            dataIndex: col.dataIndex,
+            title: col.title,
+            editing: false,
+          }),
+        }
+      })
     const {
       data,
       createTermModalVisible,
       editTermModalVisible,
       selectedKey,
       deleteTermModalVisible,
-      currentPage
-    } = this.state;
-    const selectedTerm = data.find(item => item.key === selectedKey);
-    const { termSetting: termsData } = this.props;
+      currentPage,
+    } = this.state
+    const selectedTerm = data.find((item) => item.key === selectedKey)
+    const { termSetting: termsData } = this.props
     return (
       <StyledTableContainer>
         <EditableContext.Provider value={this.props.form}>
@@ -286,7 +312,7 @@ class TermTable extends React.Component {
               centered
               onCancel={() =>
                 this.setState({
-                  deleteTermModalVisible: false
+                  deleteTermModalVisible: false,
                 })
               }
               footer={[
@@ -296,49 +322,55 @@ class TermTable extends React.Component {
                     key="back"
                     onClick={() =>
                       this.setState({
-                        deleteTermModalVisible: false
+                        deleteTermModalVisible: false,
                       })
                     }
                   >
                     No, Cancel
                   </EduButton>
-                  <EduButton key="submit" type="primary" onClick={() => this.handleDelete(selectedKey)}>
+                  <EduButton
+                    key="submit"
+                    type="primary"
+                    onClick={() => this.handleDelete(selectedKey)}
+                  >
                     Yes, Delete
                   </EduButton>
-                </DeleteTermModalFooterDiv>
+                </DeleteTermModalFooterDiv>,
               ]}
             >
-              <p style={{ textAlign: "center" }}>
-                {`Are you sure you want to delete ${selectedTerm && selectedTerm.name} - school year?`}
+              <p style={{ textAlign: 'center' }}>
+                {`Are you sure you want to delete ${
+                  selectedTerm && selectedTerm.name
+                } - school year?`}
               </p>
             </CustomModalStyled>
           </div>
         )}
       </StyledTableContainer>
-    );
+    )
   }
 }
 
-const EditableTermTable = Form.create()(TermTable);
+const EditableTermTable = Form.create()(TermTable)
 
 const enhance = compose(
   connect(
-    state => ({
+    (state) => ({
       userOrgId: getUserOrgId(state),
       role: getUserRole(state),
-      termSetting: get(state, ["termReducer", "data"], []),
-      loading: get(state, ["termReducer", "loading"], false),
-      updating: get(state, ["termReducer", "updating"], false),
-      creating: get(state, ["termReducer", "creating"], false),
-      deleting: get(state, ["termReducer", "deleting"], false)
+      termSetting: get(state, ['termReducer', 'data'], []),
+      loading: get(state, ['termReducer', 'loading'], false),
+      updating: get(state, ['termReducer', 'updating'], false),
+      creating: get(state, ['termReducer', 'creating'], false),
+      deleting: get(state, ['termReducer', 'deleting'], false),
     }),
     {
       loadTermSetting: receiveTermAction,
       updateTermSetting: updateTermAction,
       createTermSetting: createTermAction,
-      deleteTermSetting: deleteTermAction
+      deleteTermSetting: deleteTermAction,
     }
   )
-);
+)
 
-export default enhance(EditableTermTable);
+export default enhance(EditableTermTable)

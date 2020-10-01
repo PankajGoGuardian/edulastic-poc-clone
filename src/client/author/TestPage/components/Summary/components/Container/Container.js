@@ -1,22 +1,25 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import { Button } from "antd";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { uniq as _uniq } from "lodash";
-import { IconSource } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import { withWindowSizes, MainContentWrapper } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { Button } from 'antd'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { uniq as _uniq } from 'lodash'
+import { IconSource } from '@edulastic/icons'
+import { themeColor } from '@edulastic/colors'
+import { withWindowSizes, MainContentWrapper } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 
-import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
-import { ButtonLink } from "../../../../../src/components/common";
-import SummaryCard from "../Sidebar/SideBarSwitch";
-import Breadcrumb from "../../../../../src/components/Breadcrumb";
-import { SecondHeader } from "./styled";
-import { getSummarySelector } from "../../ducks";
-import { getUserFeatures } from "../../../../../../student/Login/ducks";
-import { getUser, getCollectionsToAddContent } from "../../../../../src/selectors/user";
+import { getItemsSubjectAndGradeSelector } from '../../../AddItems/ducks'
+import { ButtonLink } from '../../../../../src/components/common'
+import SummaryCard from '../Sidebar/SideBarSwitch'
+import Breadcrumb from '../../../../../src/components/Breadcrumb'
+import { SecondHeader } from './styled'
+import { getSummarySelector } from '../../ducks'
+import { getUserFeatures } from '../../../../../../student/Login/ducks'
+import {
+  getUser,
+  getCollectionsToAddContent,
+} from '../../../../../src/selectors/user'
 import {
   getlastUsedCollectionListSelector,
   getDefaultThumbnailSelector,
@@ -24,8 +27,8 @@ import {
   getAllTagsAction,
   getAllTagsSelector,
   addNewTagAction,
-  toggleTestLikeAction
-} from "../../../../ducks";
+  toggleTestLikeAction,
+} from '../../../../ducks'
 
 const Summary = ({
   setData,
@@ -57,57 +60,60 @@ const Summary = ({
   onChangeSubjects,
   isEditable = true,
   showCancelButton,
-  toggleTestLikeRequest
+  toggleTestLikeRequest,
 }) => {
   const handleChangeField = (field, value) => {
-    if (field === "thumbnail") {
-      updateDefaultThumbnail("");
+    if (field === 'thumbnail') {
+      updateDefaultThumbnail('')
     }
-    setData({ ...test, [field]: value });
-  };
+    setData({ ...test, [field]: value })
+  }
 
   useEffect(() => {
-    getAllTags({ type: isPlaylist ? "playlist" : "test" });
-  }, []);
+    getAllTags({ type: isPlaylist ? 'playlist' : 'test' })
+  }, [])
 
   useEffect(() => {
     // pre-populate collections initially
-    const bucketIds = lastUsedCollections.flatMap(c => c.bucketIds);
+    const bucketIds = lastUsedCollections.flatMap((c) => c.bucketIds)
     const populatedCollections = collectionsToShow
-      .filter(item => bucketIds.includes(item.bucketId))
-      .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
+      .filter((item) => bucketIds.includes(item.bucketId))
+      .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }))
     if (!test.title && !test.collections?.length) {
-      onChangeCollection(null, populatedCollections, collectionsToShow);
+      onChangeCollection(null, populatedCollections, collectionsToShow)
     }
-  }, [lastUsedCollections, collectionsToShow]);
+  }, [lastUsedCollections, collectionsToShow])
 
   const breadcrumbData = [
     {
-      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS",
-      to: showCancelButton ? "/author/assignments" : "/author/tests"
+      title: showCancelButton ? 'ASSIGNMENTS / EDIT TEST' : 'TESTS',
+      to: showCancelButton ? '/author/assignments' : '/author/tests',
     },
     {
       title: current,
-      to: ""
-    }
-  ];
+      to: '',
+    },
+  ]
   const playlistBreadcrumbData = [
     {
-      title: "PLAYLIST",
-      to: "/author/playlists"
+      title: 'PLAYLIST',
+      to: '/author/playlists',
     },
     {
-      title: "SUMMARY",
-      to: ""
-    }
-  ];
-  const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
-  const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
+      title: 'SUMMARY',
+      to: '',
+    },
+  ]
+  const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades])
+  const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects])
 
   return (
     <MainContentWrapper>
       <SecondHeader>
-        <Breadcrumb data={isPlaylist ? playlistBreadcrumbData : breadcrumbData} style={{ position: "unset" }} />
+        <Breadcrumb
+          data={isPlaylist ? playlistBreadcrumbData : breadcrumbData}
+          style={{ position: 'unset' }}
+        />
         {!isPlaylist && false && (
           <Button>
             <ButtonLink
@@ -115,7 +121,7 @@ const Summary = ({
               color="primary"
               icon={<IconSource color={themeColor} width={16} height={16} />}
             >
-              {t("component.questioneditor.buttonbar.source")}
+              {t('component.questioneditor.buttonbar.source')}
             </ButtonLink>
           </Button>
         )}
@@ -142,7 +148,9 @@ const Summary = ({
         onChangeCollection={onChangeCollection}
         onChangeSubjects={onChangeSubjects}
         textColor={textColor}
-        createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
+        createdBy={
+          test.createdBy && test.createdBy._id ? test.createdBy : currentUser
+        }
         thumbnail={defaultThumbnail || test.thumbnail}
         backgroundColor={backgroundColor}
         onChangeColor={onChangeColor}
@@ -153,15 +161,15 @@ const Summary = ({
         toggleTestLikeRequest={toggleTestLikeRequest}
       />
     </MainContentWrapper>
-  );
-};
+  )
+}
 
 Summary.defaultProps = {
   owner: false,
   isPlaylist: false,
   isBackgroundColorPickerVisible: false,
-  isTextColorPickerVisible: false
-};
+  isTextColorPickerVisible: false,
+}
 Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
@@ -179,31 +187,31 @@ Summary.propTypes = {
   backgroundColor: PropTypes.string.isRequired,
   isBackgroundColorPickerVisible: PropTypes.bool,
   isTextColorPickerVisible: PropTypes.bool,
-  onChangeColor: PropTypes.func.isRequired
-};
+  onChangeColor: PropTypes.func.isRequired,
+}
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces("author"),
+  withNamespaces('author'),
   connect(
-    state => ({
+    (state) => ({
       summary: getSummarySelector(state),
       currentUser: getUser(state),
       defaultThumbnail: getDefaultThumbnailSelector(state),
-      allTagsData: getAllTagsSelector(state, "test"),
-      allPlaylistTagsData: getAllTagsSelector(state, "playlist"),
+      allTagsData: getAllTagsSelector(state, 'test'),
+      allPlaylistTagsData: getAllTagsSelector(state, 'playlist'),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       features: getUserFeatures(state),
       lastUsedCollections: getlastUsedCollectionListSelector(state),
-      collectionsToShow: getCollectionsToAddContent(state)
+      collectionsToShow: getCollectionsToAddContent(state),
     }),
     {
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
       updateDefaultThumbnail: updateDefaultThumbnailAction,
-      toggleTestLikeRequest: toggleTestLikeAction
+      toggleTestLikeRequest: toggleTestLikeAction,
     }
   )
-);
+)
 
-export default enhance(Summary);
+export default enhance(Summary)

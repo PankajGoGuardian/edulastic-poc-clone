@@ -1,82 +1,87 @@
-import React, { useState } from "react";
-import { Form, Input, Row, Col } from "antd";
+import React, { useState } from 'react'
+import { Form, Input, Row, Col } from 'antd'
 
-import { authApi } from "@edulastic/api";
+import { authApi } from '@edulastic/api'
 import {
   ButtonsContainer,
   OkButton,
   CancelButton,
   StyledModal,
-  ModalFormItem
-} from "../../../common/styled";
-import { validateEmail } from "../../../common/utils/helpers"  
+  ModalFormItem,
+} from '../../../common/styled'
+import { validateEmail } from '../../../common/utils/helpers'
 
-
-const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, closeModal }) => {
-  const [emailValidateStatus, setEmailValidateStatus] = useState("success");
-  const [emailValidateMsg, setEmailValidateMsg] = useState("");
-  const [email, setEmail] = useState("");
+const CreateContentAuthorModal = ({
+  modalVisible,
+  t,
+  form,
+  createDistrictAdmin,
+  closeModal,
+}) => {
+  const [emailValidateStatus, setEmailValidateStatus] = useState('success')
+  const [emailValidateMsg, setEmailValidateMsg] = useState('')
+  const [email, setEmail] = useState('')
 
   const onCreateContentAuthor = async () => {
-    let checkUserResponse = { userExists: true };
+    let checkUserResponse = { userExists: true }
 
-    if (emailValidateStatus === "success" && email.length > 0) {
-      checkUserResponse = await authApi.checkUserExist({ email });
+    if (emailValidateStatus === 'success' && email.length > 0) {
+      checkUserResponse = await authApi.checkUserExist({ email })
       if (checkUserResponse.userExists) {
-        setEmailValidateStatus("error");
-        setEmailValidateMsg("Username already exists");
+        setEmailValidateStatus('error')
+        setEmailValidateMsg('Username already exists')
       }
     } else if (email.length == 0) {
-      setEmailValidateStatus("error");
-      setEmailValidateMsg("Please input Email");
+      setEmailValidateStatus('error')
+      setEmailValidateMsg('Please input Email')
     } else if (validateEmail(email)) {
-      setEmailValidateStatus("error");
-      setEmailValidateMsg("Username already exists");
+      setEmailValidateStatus('error')
+      setEmailValidateMsg('Username already exists')
     } else {
-      setEmailValidateStatus("error");
-      setEmailValidateMsg("Please input valid Email");
+      setEmailValidateStatus('error')
+      setEmailValidateMsg('Please input valid Email')
     }
 
     form.validateFields((err, row) => {
       if (!err) {
-        if (checkUserResponse.userExists) return;
+        if (checkUserResponse.userExists) return
 
-        const firstName = row.name.split(" ", 1);
-        let lastName = "";
+        const firstName = row.name.split(' ', 1)
+        let lastName = ''
         if (firstName.length < row.name.length) {
-          const lastNameIndex = firstName[0].length + 1;
-          lastName = row.name.substr(lastNameIndex, row.name.length);
+          const lastNameIndex = firstName[0].length + 1
+          lastName = row.name.substr(lastNameIndex, row.name.length)
         }
         const newUser = {
           firstName: firstName[0],
           lastName,
           password: row.password,
-          email
-        };
-        createDistrictAdmin(newUser);
+          email,
+        }
+        createDistrictAdmin(newUser)
       }
-    });
-  };
+    })
+  }
 
-  const changeEmail = e => {
+  const changeEmail = (e) => {
     if (e.target.value.length === 0) {
-      setEmailValidateStatus("error");
-      setEmailValidateMsg("Please input Email");
+      setEmailValidateStatus('error')
+      setEmailValidateMsg('Please input Email')
     } else if (validateEmail(e.target.value)) {
-      setEmailValidateStatus("success");
-      setEmailValidateMsg("");
+      setEmailValidateStatus('success')
+      setEmailValidateMsg('')
     } else {
-      setEmailValidateStatus("error");
-      setEmailValidateMsg("Please input valid Email");
+      setEmailValidateStatus('error')
+      setEmailValidateMsg('Please input valid Email')
     }
-    setEmail(e.target.value);
-  };
+    setEmail(e.target.value)
+  }
 
-  const { getFieldDecorator } = form;
+  const { getFieldDecorator } = form
   return (
     <StyledModal
       visible={modalVisible}
-      title={t("users.contentAuthor.createCA.title")}
+      title={t('users.contentAuthor.createCA.title')}
       onOk={onCreateContentAuthor}
       onCancel={closeModal}
       maskClosable={false}
@@ -84,39 +89,43 @@ const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, 
       footer={[
         <ButtonsContainer>
           <CancelButton onClick={closeModal}>
-            {t("users.contentAuthor.createCA.nocancel")}
+            {t('users.contentAuthor.createCA.nocancel')}
           </CancelButton>
           <OkButton onClick={onCreateContentAuthor}>
-            {t("users.contentAuthor.createCA.yescreate")}
+            {t('users.contentAuthor.createCA.yescreate')}
           </OkButton>
-        </ButtonsContainer>
+        </ButtonsContainer>,
       ]}
     >
       <Row>
         <Col span={24}>
-          <ModalFormItem label={t("users.contentAuthor.name")}>
-            {getFieldDecorator("name", {
+          <ModalFormItem label={t('users.contentAuthor.name')}>
+            {getFieldDecorator('name', {
               rules: [
                 {
                   required: true,
-                  message: t("users.contentAuthor.createCA.validations.name")
-                }
-              ]
-            })(<Input placeholder={t("users.contentAuthor.createCA.entername")} />)}
+                  message: t('users.contentAuthor.createCA.validations.name'),
+                },
+              ],
+            })(
+              <Input
+                placeholder={t('users.contentAuthor.createCA.entername')}
+              />
+            )}
           </ModalFormItem>
         </Col>
       </Row>
       <Row>
         <Col span={24}>
           <ModalFormItem
-            label={t("users.contentAuthor.email")}
+            label={t('users.contentAuthor.email')}
             validateStatus={emailValidateStatus}
             help={emailValidateMsg}
             required
             type="email"
           >
             <Input
-              placeholder={t("users.contentAuthor.createCA.enteremail")}
+              placeholder={t('users.contentAuthor.createCA.enteremail')}
               autocomplete="new-password"
               onChange={changeEmail}
             />
@@ -125,17 +134,19 @@ const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, 
       </Row>
       <Row>
         <Col span={24}>
-          <ModalFormItem label={t("users.contentAuthor.password")}>
-            {getFieldDecorator("password", {
+          <ModalFormItem label={t('users.contentAuthor.password')}>
+            {getFieldDecorator('password', {
               rules: [
                 {
                   required: true,
-                  message: t("users.contentAuthor.createCA.validations.password")
-                }
-              ]
+                  message: t(
+                    'users.contentAuthor.createCA.validations.password'
+                  ),
+                },
+              ],
             })(
               <Input
-                placeholder={t("users.contentAuthor.createCA.enterpassword")}
+                placeholder={t('users.contentAuthor.createCA.enterpassword')}
                 type="password"
                 autocomplete="new-password"
               />
@@ -144,8 +155,8 @@ const CreateContentAuthorModal = ({ modalVisible, t, form, createDistrictAdmin, 
         </Col>
       </Row>
     </StyledModal>
-  );
-};
+  )
+}
 
-const CreateContentAuthorModalForm = Form.create()(CreateContentAuthorModal);
-export default CreateContentAuthorModalForm;
+const CreateContentAuthorModalForm = Form.create()(CreateContentAuthorModal)
+export default CreateContentAuthorModalForm

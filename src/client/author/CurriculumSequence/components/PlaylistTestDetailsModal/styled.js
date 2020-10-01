@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Modal } from "antd";
-import { white, mainBgColor, title, themeColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Modal } from 'antd'
+import { white, mainBgColor, title, themeColor } from '@edulastic/colors'
 
 export const ModalWrapper = styled(Modal)`
   top: 0px;
@@ -25,13 +25,13 @@ export const ModalWrapper = styled(Modal)`
       }
     }
   }
-`;
+`
 
 export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 8px 10px;
-`;
+`
 
 export const SubHeader = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ export const SubHeader = styled.div`
   width: 100%;
   align-items: center;
   justify-content: space-between;
-`;
+`
 
 export const BreadCrumb = styled.div`
   color: ${title};
@@ -49,7 +49,7 @@ export const BreadCrumb = styled.div`
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-`;
+`
 
 export const ActionsWrapper = styled.div`
   display: flex;
@@ -57,7 +57,7 @@ export const ActionsWrapper = styled.div`
   justify-content: space-evenly;
   margin-left: auto;
   min-width: 300px;
-`;
+`
 export const ActionBtn = styled.button`
   display: flex;
   align-items: space-evenly;
@@ -87,4 +87,4 @@ export const ActionBtn = styled.button`
       fill: ${white} !important;
     }
   }
-`;
+`

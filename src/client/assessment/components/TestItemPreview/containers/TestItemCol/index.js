@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Tabs, AnswerContext } from "@edulastic/common";
-import { questionType } from "@edulastic/constants";
-import { sortBy } from "lodash";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Tabs, AnswerContext } from '@edulastic/common'
+import { questionType } from '@edulastic/constants'
+import { sortBy } from 'lodash'
 
-import { MAX_MOBILE_WIDTH } from "../../../../constants/others";
+import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
-import QuestionWrapper from "../../../QuestionWrapper";
+import QuestionWrapper from '../../../QuestionWrapper'
 
-import { Container, WidgetContainer } from "./styled/Container";
-import { MobileRightSide } from "./styled/MobileRightSide";
-import { MobileLeftSide } from "./styled/MobileLeftSide";
-import { IconArrow } from "./styled/IconArrow";
-import TabContainer from "./TabContainer";
+import { Container, WidgetContainer } from './styled/Container'
+import { MobileRightSide } from './styled/MobileRightSide'
+import { MobileLeftSide } from './styled/MobileLeftSide'
+import { IconArrow } from './styled/IconArrow'
+import TabContainer from './TabContainer'
 
 class TestItemCol extends Component {
   state = {
-    value: 0
-  };
+    value: 0,
+  }
 
   static propTypes = {
     col: PropTypes.object.isRequired,
@@ -34,8 +34,8 @@ class TestItemCol extends Component {
     previewTab: PropTypes.string.isRequired,
     isDocBased: PropTypes.bool,
     colCount: PropTypes.number.isRequired,
-    colIndex: PropTypes.number.isRequired
-  };
+    colIndex: PropTypes.number.isRequired,
+  }
 
   static defaultProps = {
     showFeedback: false,
@@ -44,16 +44,22 @@ class TestItemCol extends Component {
     qIndex: null,
     previousQuestionActivity: [],
     isDocBased: false,
-    evaluation: {}
-  };
+    evaluation: {},
+  }
 
-  handleTabChange = value => {
+  handleTabChange = (value) => {
     this.setState({
-      value
-    });
-  };
+      value,
+    })
+  }
 
-  renderTabContent = (widget, flowLayout, itemIndex, showStackedView, lengthOfwidgets) => {
+  renderTabContent = (
+    widget,
+    flowLayout,
+    itemIndex,
+    showStackedView,
+    lengthOfwidgets
+  ) => {
     const {
       preview,
       LCBPreviewModal,
@@ -75,49 +81,53 @@ class TestItemCol extends Component {
       showScratchpadByDefault,
       isStudentAttempt,
       ...restProps
-    } = this.props;
-    const timespent = widget.timespent !== undefined ? widget.timespent : null;
-    const question = questions[widget.reference];
-    const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
-    const { fullHeight } = restProps;
+    } = this.props
+    const timespent = widget.timespent !== undefined ? widget.timespent : null
+    const question = questions[widget.reference]
+    const prevQActivityForQuestion = previousQuestionActivity.find(
+      (qa) => qa.qid === question.id
+    )
+    const { fullHeight } = restProps
     if (!question) {
-      return <div />;
+      return <div />
     }
 
     if (question.activity && question.activity.filtered) {
-      return <div />;
+      return <div />
     }
 
-    const displayFeedback = true;
-    let minHeight = null;
+    const displayFeedback = true
+    let minHeight = null
     if (
       multiple &&
-      widget.widgetType === "question" &&
+      widget.widgetType === 'question' &&
       (isLCBView || showStackedView || isDocBased || isStudentAttempt)
     ) {
       // we shows multiple feedback in multiple question type
       // when scoring type is question level.
       // feedback wrapper is required minHeight 320 at least
-      minHeight = "320px";
+      minHeight = '320px'
     }
 
     // question false undefined false undefined undefined true true
     return (
       <TabContainer
         updatePositionToStore={
-          (showStackedView || isDocBased || (isPassageWithQuestions && !itemLevelScoring)) &&
-          widget.widgetType === "question"
+          (showStackedView ||
+            isDocBased ||
+            (isPassageWithQuestions && !itemLevelScoring)) &&
+          widget.widgetType === 'question'
         }
         questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
         minHeight={minHeight}
         itemIndex={itemIndex}
-        marginTop={itemIndex > 0 && lengthOfwidgets > 1 ? 20 : ""}
+        marginTop={itemIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
         showBorder={!showScratchpadByDefault && isLCBView}
       >
         <QuestionWrapper
-          showFeedback={showFeedback && widget?.widgetType !== "resource"}
+          showFeedback={showFeedback && widget?.widgetType !== 'resource'}
           evaluation={evaluation}
           multiple={multiple}
           type={widget.type}
@@ -136,18 +146,20 @@ class TestItemCol extends Component {
           prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}
           displayFeedback={displayFeedback}
-          calculatedHeight={showStackedView || fullHeight ? "100%" : "auto"}
+          calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
           fullMode
           {...restProps}
           showScratchpadByDefault={showScratchpadByDefault}
-          style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
+          style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
           tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />
         {/*  on the student side, show feedback for each question only when item level scoring is off */}
-        {isStudentReport && !itemLevelScoring && teachCherFeedBack(widget, null, null, showStackedView)}
+        {isStudentReport &&
+          !itemLevelScoring &&
+          teachCherFeedBack(widget, null, null, showStackedView)}
       </TabContainer>
-    );
-  };
+    )
+  }
 
   render() {
     const {
@@ -159,29 +171,40 @@ class TestItemCol extends Component {
       testReviewStyle = {},
       isPassageWithQuestions,
       ...restProps
-    } = this.props;
-    const { value } = this.state;
-    const { showStackedView, fullHeight, isSingleQuestionView, isPrintPreview } = restProps;
-    const derivedWidth = showStackedView || isSingleQuestionView ? "100%" : null;
+    } = this.props
+    const { value } = this.state
+    const {
+      showStackedView,
+      fullHeight,
+      isSingleQuestionView,
+      isPrintPreview,
+    } = restProps
+    const derivedWidth = showStackedView || isSingleQuestionView ? '100%' : null
     const width = derivedWidth
-      ? "100%"
+      ? '100%'
       : restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
-      ? `calc(${col?.dimension || "100%"} + 280px)`
-      : col?.dimension || "auto";
+      ? `calc(${col?.dimension || '100%'} + 280px)`
+      : col?.dimension || 'auto'
     const widgets =
-      (col?.tabs && !!col?.tabs?.length && isPrintPreview ? sortBy(col?.widgets, ["tabIndex"]) : col?.widgets) || [];
+      (col?.tabs && !!col?.tabs?.length && isPrintPreview
+        ? sortBy(col?.widgets, ['tabIndex'])
+        : col?.widgets) || []
 
     return (
       <Container
-        className={`test-item-col ${col?.tabs?.length ? "test-item-tab-container" : ""}`}
+        className={`test-item-col ${
+          col?.tabs?.length ? 'test-item-tab-container' : ''
+        }`}
         value={value}
         style={style}
         width={width}
-        height={fullHeight ? "100%" : "auto"}
+        height={fullHeight ? '100%' : 'auto'}
         showStackedView={showStackedView}
         colCount={colCount}
         hasCollapseButtons={
-          ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
+          ['studentReport', 'studentPlayer'].includes(
+            restProps.viewComponent
+          ) && restProps.showCollapseBtn
         }
       >
         {!isPrintPreview && (
@@ -194,58 +217,82 @@ class TestItemCol extends Component {
                     label={tab}
                     style={{
                       width: `calc(${100 / col.tabs.length}% - 10px)`,
-                      textAlign: "center",
-                      padding: "5px 15px"
+                      textAlign: 'center',
+                      padding: '5px 15px',
                     }}
                     {...restProps}
                   />
                 ))}
               </Tabs>
             )}
-            {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
-              <MobileRightSide onClick={() => this.handleTabChange(1)}>
-                <IconArrow type="left" />
-              </MobileRightSide>
-            )}
-            {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
-              <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-                <IconArrow type="right" />
-              </MobileLeftSide>
-            )}
+            {col.tabs &&
+              windowWidth < MAX_MOBILE_WIDTH &&
+              !!col.tabs.length &&
+              value === 0 && (
+                <MobileRightSide onClick={() => this.handleTabChange(1)}>
+                  <IconArrow type="left" />
+                </MobileRightSide>
+              )}
+            {col.tabs &&
+              windowWidth < MAX_MOBILE_WIDTH &&
+              !!col.tabs.length &&
+              value === 1 && (
+                <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+                  <IconArrow type="right" />
+                </MobileLeftSide>
+              )}
           </>
         )}
         <WidgetContainer
           data-cy="widgetContainer"
           style={{
             ...testReviewStyle,
-            height: showStackedView || fullHeight ? "100%" : "auto",
-            alignItems: fullHeight && "flex-start"
+            height: showStackedView || fullHeight ? '100%' : 'auto',
+            alignItems: fullHeight && 'flex-start',
           }}
         >
           {widgets
-            .filter(widget => widget.type !== questionType.SECTION_LABEL)
+            .filter((widget) => widget.type !== questionType.SECTION_LABEL)
             .map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
                   value === widget.tabIndex &&
                   !isPrintPreview &&
-                  this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
+                  this.renderTabContent(
+                    widget,
+                    col.flowLayout,
+                    i,
+                    showStackedView,
+                    arr.length
+                  )}
                 {col.tabs &&
                   !!col.tabs.length &&
                   isPrintPreview &&
-                  this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
+                  this.renderTabContent(
+                    widget,
+                    col.flowLayout,
+                    i,
+                    showStackedView,
+                    arr.length
+                  )}
                 {col.tabs &&
                   !col.tabs.length &&
-                  this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
+                  this.renderTabContent(
+                    widget,
+                    col.flowLayout,
+                    i,
+                    showStackedView,
+                    arr.length
+                  )}
               </React.Fragment>
             ))}
         </WidgetContainer>
       </Container>
-    );
+    )
   }
 }
 
-TestItemCol.contextType = AnswerContext;
+TestItemCol.contextType = AnswerContext
 
-export default TestItemCol;
+export default TestItemCol

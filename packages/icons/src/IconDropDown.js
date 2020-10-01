@@ -1,14 +1,25 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
 const IconDropDown = ({ title, ...props }) => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20.104 20.031" {...props}>
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20.104 20.031"
+    {...props}
+  >
     <g transform="translate(0 0)">
-      <g fill="none" stroke="#fff" stroke-width="1.5">
+      <g fill="none" stroke="#fff" strokeWidth="1.5">
         <rect width="20.103" height="20.032" rx="5" stroke="none" />
-        <rect x="0.75" y="0.75" width="18.603" height="18.532" rx="4.25" fill="none" />
+        <rect
+          x="0.75"
+          y="0.75"
+          width="18.603"
+          height="18.532"
+          rx="4.25"
+          fill="none"
+        />
       </g>
       <g transform="translate(6.926 9.014)">
         <path
@@ -18,8 +29,8 @@ const IconDropDown = ({ title, ...props }) => (
         />
       </g>
     </g>
-    <title>{title || ""}</title>
+    <title>{title || ''}</title>
   </SVG>
-);
+)
 
-export default withIconStyles(IconDropDown);
+export default withIconStyles(IconDropDown)

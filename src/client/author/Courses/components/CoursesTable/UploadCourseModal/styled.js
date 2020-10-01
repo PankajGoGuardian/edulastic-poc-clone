@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Button, Modal, Icon, Spin, Table, Alert } from "antd";
+import styled from 'styled-components'
+import { Button, Modal, Icon, Spin, Table, Alert } from 'antd'
 
 export const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -15,13 +15,13 @@ export const StyledModal = styled(Modal)`
     justify-content: space-between;
     align-items: center;
   }
-`;
+`
 
 export const StyledDownloadBtn = styled(Button)`
   border: none;
   outline: none;
   box-shadow: none;
-`;
+`
 
 export const StyledUploadBtn = styled(StyledDownloadBtn)`
   display: flex;
@@ -35,30 +35,30 @@ export const StyledUploadBtn = styled(StyledDownloadBtn)`
   p {
     margin: -20px auto 0;
   }
-`;
+`
 
 export const StyledUploadCSVDiv = styled.div`
   display: none;
-`;
+`
 
 export const SuccessIcon = styled(Icon)`
   color: #52c41a;
   margin-right: 10px;
-`;
+`
 export const AlertMsgDiv = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 export const AlertIcon = styled(Icon)`
   color: #f5222d;
   margin-right: 10px;
-`;
+`
 
 export const ConfirmP = styled.p`
   color: #1890ff
   margin-bottom: 10px;
-`;
+`
 
 export const StatusDiv = styled.div`
   display: flex;
@@ -66,15 +66,15 @@ export const StatusDiv = styled.div`
   p {
     margin: 0;
   }
-`;
+`
 
 export const SuccessP = styled.p`
   color: #52c41a;
-`;
+`
 
 export const AlertP = styled.p`
   color: #f5222d;
-`;
+`
 
 export const UploadedContent = styled.div`
   display: flex;
@@ -83,37 +83,37 @@ export const UploadedContent = styled.div`
   height: 350px;
   overflow-y: auto;
   width: 100%;
-  border: ${props => (props.isBulkSuccess ? "1px solid #b7eb8f;" : "none;")}
-  background-color: ${props => (props.isBulkSuccess ? "#f6ffed;" : "#fff;")}
+  border: ${(props) => (props.isBulkSuccess ? '1px solid #b7eb8f;' : 'none;')}
+  background-color: ${(props) => (props.isBulkSuccess ? '#f6ffed;' : '#fff;')}
   padding: 20px;
   border-radius: 4px;
-`;
+`
 
 export const StyledSpin = styled(Spin)`
   position: absolute;
   left: 50%;
   top: 50%;
-  display: ${props => (props.isVisible ? "block" : "none")};
+  display: ${(props) => (props.isVisible ? 'block' : 'none')};
   transform: translate(-50%, -50%);
-`;
+`
 
 export const StyledTableButton = styled.a`
   margin-right: 20px;
   font-size: 20px;
-`;
+`
 
 export const StyledConfirmButton = styled(Button)`
   margin-left: 20px;
-`;
+`
 
 export const StyledTable = styled(Table)`
   width: 100%;
-`;
+`
 
 export const AlertSuccess = styled.p`
   margin-bottom: 10px;
-`;
+`
 
 export const StyledAlert = styled(Alert)`
   width: 100%;
-`;
+`

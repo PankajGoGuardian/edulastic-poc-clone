@@ -1,10 +1,10 @@
-//@ts-check
-import React from "react";
-import { connect } from "react-redux";
-import { Switch, Redirect } from "react-router-dom";
-import { getUserFeatures } from "../../student/Login/ducks";
-import { getGroupList } from "../../author/src/selectors/user";
-import { isFeatureAccessibleToUser as isFeatureAccessible } from "../featuresUtils";
+// @ts-check
+import React from 'react'
+import { connect } from 'react-redux'
+import { Switch, Redirect } from 'react-router-dom'
+import { getUserFeatures } from '../../student/Login/ducks'
+import { getGroupList } from '../../author/src/selectors/user'
+import { isFeatureAccessibleToUser as isFeatureAccessible } from '../featuresUtils'
 
 /**
  *
@@ -15,18 +15,22 @@ import { isFeatureAccessibleToUser as isFeatureAccessible } from "../featuresUti
  * features is optional, if omitted only gradeSubject will be taken into account
  *
  */
-const FeaturesSwitch = props => {
-  let { children, actionOnInaccessible = "hidden", redirectRoute = "" } = props;
+const FeaturesSwitch = (props) => {
+  const {
+    children,
+    actionOnInaccessible = 'hidden',
+    redirectRoute = '',
+  } = props
 
   const isAccessible = isFeatureAccessible({
-    ...props
-  });
+    ...props,
+  })
 
   const redirect = (
     <Switch>
       <Redirect exact to={redirectRoute} />
     </Switch>
-  );
+  )
 
   const _children = React.Children.map(children, (child, index) => {
     return React.cloneElement(child, {
@@ -34,22 +38,22 @@ const FeaturesSwitch = props => {
       ...child.props,
       children: child.props.children,
       actionOnInaccessible,
-      isAccessible: isAccessible
-    });
-  });
+      isAccessible,
+    })
+  })
 
   // TODO: Remove once BE is fixed
   return isAccessible
     ? _children
-    : actionOnInaccessible === "disabled"
+    : actionOnInaccessible === 'disabled'
     ? _children
-    : actionOnInaccessible === "redirect"
+    : actionOnInaccessible === 'redirect'
     ? redirect
-    : null;
-};
-export { isFeatureAccessible };
-export default connect(state => ({
+    : null
+}
+export { isFeatureAccessible }
+export default connect((state) => ({
   features: getUserFeatures(state),
-  groupList: getGroupList(state)
-  //@ts-ignore
-}))(FeaturesSwitch);
+  groupList: getGroupList(state),
+  // @ts-ignore
+}))(FeaturesSwitch)

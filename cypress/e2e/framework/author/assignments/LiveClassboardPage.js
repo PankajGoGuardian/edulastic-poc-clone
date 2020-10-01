@@ -1,102 +1,116 @@
 /* eslint-disable class-methods-use-this */
-import LCBHeader from "./lcbHeader";
-import { studentSide as asgnStatus, studentSide, teacherSide } from "../../constants/assignmentStatus";
-import QuestionResponsePage from "./QuestionResponsePage";
-import { attemptTypes, queColor } from "../../constants/questionTypes";
-import RediectPopup from "./redirectPopupPage";
-import TeacherSideBar from "../SideBarPage";
-import LCBtestSettings from "./lcbTestSettings";
+import LCBHeader from './lcbHeader'
+import {
+  studentSide as asgnStatus,
+  studentSide,
+  teacherSide,
+} from '../../constants/assignmentStatus'
+import QuestionResponsePage from './QuestionResponsePage'
+import { attemptTypes, queColor } from '../../constants/questionTypes'
+import RediectPopup from './redirectPopupPage'
+import TeacherSideBar from '../SideBarPage'
+import LCBtestSettings from './lcbTestSettings'
 
 class LiveClassboardPage {
   constructor() {
-    this.header = new LCBHeader();
-    this.questionResponsePage = new QuestionResponsePage();
-    this.redirectPopup = new RediectPopup();
-    this.settings = new LCBtestSettings();
+    this.header = new LCBHeader()
+    this.questionResponsePage = new QuestionResponsePage()
+    this.redirectPopup = new RediectPopup()
+    this.settings = new LCBtestSettings()
   }
 
   // *** ELEMENTS START ***
 
-  getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
+  getQuestionsTab = () =>
+    cy.get('[data-cy=studentnQuestionTab]').contains('a', 'QUESTIONS')
 
-  getSubmitSummary = () => cy.get('[data-cy="submittedSummary"]');
+  getSubmitSummary = () => cy.get('[data-cy="submittedSummary"]')
 
-  getCardIndex = studentName =>
+  getCardIndex = (studentName) =>
     cy
       .get('[data-cy="studentName"]')
       .contains(studentName)
-      .then(ele => Cypress.$('[data-cy="studentName"]').index(ele));
+      .then((ele) => Cypress.$('[data-cy="studentName"]').index(ele))
 
-  getStudentCardByStudentName = studentName => {
-    const selector = `[data-cy="student-card-${studentName}"]`;
-    return cy.get(selector);
-  };
+  getStudentCardByStudentName = (studentName) => {
+    const selector = `[data-cy="student-card-${studentName}"]`
+    return cy.get(selector)
+  }
 
-  getAllStudentStatus = () => cy.get('[data-cy="studentName"]').next();
+  getAllStudentStatus = () => cy.get('[data-cy="studentName"]').next()
 
-  getStudentStatusByIndex = index => this.getAllStudentStatus().eq(index);
+  getStudentStatusByIndex = (index) => this.getAllStudentStatus().eq(index)
 
-  getStudentScoreByIndex = index => cy.get('[data-cy="studentScore"]').eq(index);
+  getStudentScoreByIndex = (index) =>
+    cy.get('[data-cy="studentScore"]').eq(index)
 
-  getViewResponseByIndex = index => cy.get('[data-cy="viewResponse"]').eq(index);
+  getViewResponseByIndex = (index) =>
+    cy.get('[data-cy="viewResponse"]').eq(index)
 
-  getQuestionsByIndex = index => cy.get('[data-cy="questions"]').eq(index);
+  getQuestionsByIndex = (index) => cy.get('[data-cy="questions"]').eq(index)
 
-  getViewResponseByStudentName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="viewResponse"]');
+  getViewResponseByStudentName = (stuName) =>
+    this.getStudentCardByStudentName(stuName).find('[data-cy="viewResponse"]')
 
-  getStudentNameByName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="studentName"]');
+  getStudentNameByName = (stuName) =>
+    this.getStudentCardByStudentName(stuName).find('[data-cy="studentName"]')
 
   getAllStudentName = () =>
-    cy.get('[data-cy="studentName"]').then($ele => {
-      const studentNames = [];
+    cy.get('[data-cy="studentName"]').then(($ele) => {
+      const studentNames = []
       $ele.each((i, s) => {
-        console.log("$student ", s);
-        studentNames.push(Cypress.$(s).text());
-      });
-      return studentNames;
-    });
+        console.log('$student ', s)
+        studentNames.push(Cypress.$(s).text())
+      })
+      return studentNames
+    })
 
-  getAvatarNameByStudentName = stuName =>
-    this.getStudentCardByStudentName(stuName).find('[data-cy="studentAvatarName"]');
+  getAvatarNameByStudentName = (stuName) =>
+    this.getStudentCardByStudentName(stuName).find(
+      '[data-cy="studentAvatarName"]'
+    )
 
-  getStudentPerformanceByIndex = index => cy.get('[data-cy="studentPerformance"]').eq(index);
+  getStudentPerformanceByIndex = (index) =>
+    cy.get('[data-cy="studentPerformance"]').eq(index)
 
-  getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
+  getQuestionsTab = () =>
+    cy.get('[data-cy=studentnQuestionTab]').contains('a', 'QUESTIONS')
 
-  getAvgScore = () => cy.get(".ant-progress-text");
+  getAvgScore = () => cy.get('.ant-progress-text')
 
-  getRedirecPopUp = () => cy.get(".ant-modal-content");
+  getRedirecPopUp = () => cy.get('.ant-modal-content')
 
-  getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]');
+  getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]')
 
-  getTimewhileRedirect = () => cy.get('[data-cy="allowedTime"]');
+  getTimewhileRedirect = () => cy.get('[data-cy="allowedTime"]')
 
-  getCardViewTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "CARD VIEW");
+  getCardViewTab = () =>
+    cy.get('[data-cy=studentnQuestionTab]').contains('a', 'CARD VIEW')
 
-  getStudentsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "STUDENTS");
+  getStudentsTab = () =>
+    cy.get('[data-cy=studentnQuestionTab]').contains('a', 'STUDENTS')
 
-  getPresentToggleSwitch = () => cy.get("[data-cy=studentnQuestionTab]").find('[class^="PresentationToggleSwitch"]');
+  getPresentToggleSwitch = () =>
+    cy
+      .get('[data-cy=studentnQuestionTab]')
+      .find('[class^="PresentationToggleSwitch"]')
 
-  getAllAttemptContainersByStudentName = stuName =>
-    this.getStudentCardByStudentName(stuName).find('[data-cy="attempt-container"]');
+  getAllAttemptContainersByStudentName = (stuName) =>
+    this.getStudentCardByStudentName(stuName).find(
+      '[data-cy="attempt-container"]'
+    )
 
   getAttemptContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAllAttemptContainersByStudentName(stuName).eq(ind);
+    this.getAllAttemptContainersByStudentName(stuName).eq(ind)
 
   getScoreOnAttemptContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAttemptContainerByIndexByStudentName(stuName, ind)
-      .find("p")
-      .eq(0);
+    this.getAttemptContainerByIndexByStudentName(stuName, ind).find('p').eq(0)
 
   getPerfOnAttemptContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAttemptContainerByIndexByStudentName(stuName, ind)
-      .find("p")
-      .eq(1);
+    this.getAttemptContainerByIndexByStudentName(stuName, ind).find('p').eq(1)
 
   getAttemptNoOnContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAttemptContainerByIndexByStudentName(stuName, ind)
-      .find("p")
-      .eq(2);
+    this.getAttemptContainerByIndexByStudentName(stuName, ind).find('p').eq(2)
 
   // *** ELEMENTS END ***
 
@@ -105,271 +119,293 @@ class LiveClassboardPage {
   clickOnCardViewTab = () => {
     this.getCardViewTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.BLUE_2);
-  };
+      .should('have.css', 'background-color', queColor.BLUE_2)
+  }
 
   clickOnStudentsTab = () => {
     this.getStudentsTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.BLUE_2);
-    cy.contains("Student Feedback!"); // waiting for UI to render
-  };
+      .should('have.css', 'background-color', queColor.BLUE_2)
+    cy.contains('Student Feedback!') // waiting for UI to render
+  }
 
   clickonQuestionsTab = () => {
-    cy.server();
-    cy.route("GET", /\bitem\b.*\bgroup\b/).as("getFirstQuestion");
-    cy.route("GET", "**/test/**").as("get-test-data");
+    cy.server()
+    cy.route('GET', /\bitem\b.*\bgroup\b/).as('getFirstQuestion')
+    cy.route('GET', '**/test/**').as('get-test-data')
     this.getQuestionsTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.BLUE_2);
-    cy.wait("@get-test-data");
+      .should('have.css', 'background-color', queColor.BLUE_2)
+    cy.wait('@get-test-data')
     return cy
-      .wait("@getFirstQuestion")
-      .then(xhr => xhr.response.body.result[0] && xhr.response.body.result[0].testItemId);
-  };
+      .wait('@getFirstQuestion')
+      .then(
+        (xhr) =>
+          xhr.response.body.result[0] && xhr.response.body.result[0].testItemId
+      )
+  }
 
   clickOnPresent = () => {
-    this.getPresentToggleSwitch().then($ele => {
-      if (
-        Cypress.$($ele)
-          .text()
-          .includes("PRESENT")
-      )
-        cy.wrap($ele)
-          .click({ force: true })
-          .should("contain.text", "RESET");
-    });
-  };
+    this.getPresentToggleSwitch().then(($ele) => {
+      if (Cypress.$($ele).text().includes('PRESENT'))
+        cy.wrap($ele).click({ force: true }).should('contain.text', 'RESET')
+    })
+  }
 
   clickOnReset = () => {
-    this.getPresentToggleSwitch().then($ele => {
-      if (
-        Cypress.$($ele)
-          .text()
-          .includes("RESET")
-      )
-        cy.wrap($ele)
-          .click({ force: true })
-          .should("contain.text", "PRESENT");
-    });
-  };
+    this.getPresentToggleSwitch().then(($ele) => {
+      if (Cypress.$($ele).text().includes('RESET'))
+        cy.wrap($ele).click({ force: true }).should('contain.text', 'PRESENT')
+    })
+  }
 
-  selectCheckBoxByStudentName = student => {
+  selectCheckBoxByStudentName = (student) => {
     this.getStudentCardByStudentName(student)
       .find('input[type="checkbox"]')
-      .click({ force: true });
-  };
+      .click({ force: true })
+  }
 
-  clickOnRedirect = () => cy.get('[data-cy="rediectButton"]').click();
+  clickOnRedirect = () => cy.get('[data-cy="rediectButton"]').click()
 
   clickOnRedirectSubmit = () => {
-    cy.server();
-    cy.route("POST", "**/redirect").as("redirect");
-    cy.route("GET", "**/test-activity").as("testactivity");
+    cy.server()
+    cy.route('POST', '**/redirect').as('redirect')
+    cy.route('GET', '**/test-activity').as('testactivity')
     this.getRedirecPopUp()
       .get('[data-cy="confirmRedirect"]')
-      .click({ force: true });
-    cy.wait("@redirect").then(xhr => {
-      expect(xhr.status).to.equal(200);
-      expect(xhr.response.body.result).to.eq("Assignment Redirect is successful");
-    });
+      .click({ force: true })
+    cy.wait('@redirect').then((xhr) => {
+      expect(xhr.status).to.equal(200)
+      expect(xhr.response.body.result).to.eq(
+        'Assignment Redirect is successful'
+      )
+    })
 
     // FIXME: page doesn't update unless refresh on Cypress only,
     // need to revisit h. for now reloading the page to verify redirected stats
     // cy.reload();
     // cy.wait("@testactivity");
-  };
+  }
 
   // lcb > MORE actions
 
-  clickOnMore = () => cy.get('[data-cy="moreAction"]').click({ force: true });
+  clickOnMore = () => cy.get('[data-cy="moreAction"]').click({ force: true })
 
   // SUBMIT
   clickOnMarkAsSubmit = () => {
-    cy.server();
-    cy.route("POST", "**/mark-as-submitted").as("markSubmit");
-    this.clickOnMore().then(() => cy.get('[data-cy="markSubmitted"]').click());
-    this.getConfirmationInput().type("SUBMIT");
-    this.submitConfirmationInput();
-    cy.wait("@markSubmit").then(xhr => assert(xhr.status === 200, `verify submit request ${xhr.status}`));
-  };
+    cy.server()
+    cy.route('POST', '**/mark-as-submitted').as('markSubmit')
+    this.clickOnMore().then(() => cy.get('[data-cy="markSubmitted"]').click())
+    this.getConfirmationInput().type('SUBMIT')
+    this.submitConfirmationInput()
+    cy.wait('@markSubmit').then((xhr) =>
+      assert(xhr.status === 200, `verify submit request ${xhr.status}`)
+    )
+  }
 
-  submitConfirmationInput = () => cy.get('[data-cy="submitConfirm"]').click();
+  submitConfirmationInput = () => cy.get('[data-cy="submitConfirm"]').click()
 
   // ABSENT
   clickOnMarkAsAbsent = (isAllow = true) => {
-    cy.server();
-    cy.route("POST", "**/mark-as-absent").as("markAbsent");
-    this.clickOnMore().then(() => cy.get('[data-cy="markAbsent"]').click());
+    cy.server()
+    cy.route('POST', '**/mark-as-absent').as('markAbsent')
+    this.clickOnMore().then(() => cy.get('[data-cy="markAbsent"]').click())
     if (isAllow) {
-      this.getConfirmationInput().type("ABSENT");
-      this.submitConfirmationInput();
-      cy.wait("@markAbsent").then(xhr => assert(xhr.status === 200, `verify absent request ${xhr.status}`));
+      this.getConfirmationInput().type('ABSENT')
+      this.submitConfirmationInput()
+      cy.wait('@markAbsent').then((xhr) =>
+        assert(xhr.status === 200, `verify absent request ${xhr.status}`)
+      )
     } else {
-      cy.contains("selected have already started the assessment, you will not be allowed to mark as absent").should(
-        "be.visible"
-      );
+      cy.contains(
+        'selected have already started the assessment, you will not be allowed to mark as absent'
+      ).should('be.visible')
     }
-  };
+  }
 
   // REMOVE
   clickOnRemove = (isAllow = true) => {
-    cy.server();
-    cy.route("PUT", "**/remove-students").as("removeStudents");
-    this.clickOnMore().then(() => cy.get('[data-cy="removeStudents"]').click());
+    cy.server()
+    cy.route('PUT', '**/remove-students').as('removeStudents')
+    this.clickOnMore().then(() => cy.get('[data-cy="removeStudents"]').click())
     if (isAllow) {
-      this.getConfirmationInput().type("REMOVE");
-      this.submitConfirmationInput();
-      cy.wait("@removeStudents").then(xhr => assert(xhr.status === 200, `verify remove request ${xhr.status}`));
+      this.getConfirmationInput().type('REMOVE')
+      this.submitConfirmationInput()
+      cy.wait('@removeStudents').then((xhr) =>
+        assert(xhr.status === 200, `verify remove request ${xhr.status}`)
+      )
     } else {
-      cy.contains("You will not be able to remove selected student(s) as the status is graded").should("be.visible");
+      cy.contains(
+        'You will not be able to remove selected student(s) as the status is graded'
+      ).should('be.visible')
     }
-  };
+  }
 
   // ADD STUDENT
   clickOnAddStudent = () => {
-    cy.server();
-    cy.route("GET", "**/enrollment/**").as("enrollment");
-    cy.route("PUT", "**/add-students").as("addStudents");
-    this.clickOnMore().then(() => cy.get('[data-cy="addStudents"]').click());
-    cy.wait("@enrollment");
-  };
+    cy.server()
+    cy.route('GET', '**/enrollment/**').as('enrollment')
+    cy.route('PUT', '**/add-students').as('addStudents')
+    this.clickOnMore().then(() => cy.get('[data-cy="addStudents"]').click())
+    cy.wait('@enrollment')
+  }
 
   addOneStudent = (stuEmail, isEnabled = true) => {
-    this.clickOnAddStudent();
-    cy.get('[data-cy="selectStudents"]').click();
-    cy.get(".ant-select-dropdown-menu-item")
+    this.clickOnAddStudent()
+    cy.get('[data-cy="selectStudents"]').click()
+    cy.get('.ant-select-dropdown-menu-item')
       .contains(stuEmail)
-      .then(ele => {
+      .then((ele) => {
         if (isEnabled) {
-          cy.wrap(ele).click({ force: true });
-          cy.focused().blur();
-          cy.get('[data-cy="addButton"]').click({ force: true });
-          cy.wait("@addStudents").then(xhr => assert(xhr.status === 200, `verify add student request ${xhr.status}`));
-          cy.contains("Successfully added").should("be.visible", "verify Successfully added message");
+          cy.wrap(ele).click({ force: true })
+          cy.focused().blur()
+          cy.get('[data-cy="addButton"]').click({ force: true })
+          cy.wait('@addStudents').then((xhr) =>
+            assert(
+              xhr.status === 200,
+              `verify add student request ${xhr.status}`
+            )
+          )
+          cy.contains('Successfully added').should(
+            'be.visible',
+            'verify Successfully added message'
+          )
         } else {
           cy.wrap(ele).should(
-            "have.class",
-            "ant-select-dropdown-menu-item-disabled",
-            "verify existing studnet should be disabled in list"
-          );
-          cy.focused().blur();
+            'have.class',
+            'ant-select-dropdown-menu-item-disabled',
+            'verify existing studnet should be disabled in list'
+          )
+          cy.focused().blur()
         }
-      });
-  };
+      })
+  }
 
-  copyPassword = () => cy.get('[data-cy="password"]').invoke("text");
+  copyPassword = () => cy.get('[data-cy="password"]').invoke('text')
 
-  closePassWord = () =>
-    cy
-      .get("button")
-      .find(".ant-modal-close-icon")
-      .click();
+  closePassWord = () => cy.get('button').find('.ant-modal-close-icon').click()
 
-  updateTimeWhileRedirect = time => this.getTimewhileRedirect().type(`{selectall}${time}`);
+  updateTimeWhileRedirect = (time) =>
+    this.getTimewhileRedirect().type(`{selectall}${time}`)
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
-  verifyTimeWhileRedirectIs = time => this.getTimewhileRedirect().should("have.value", `${time}`);
+  verifyTimeWhileRedirectIs = (time) =>
+    this.getTimewhileRedirect().should('have.value', `${time}`)
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
-    cy.url().should("include", `/author/classboard/${assignmnetId}/${classId}`);
+    cy.url().should('include', `/author/classboard/${assignmnetId}/${classId}`)
 
   checkClassName(className) {
-    return cy.get("[data-cy=CurrentClassName]").then($ele => {
-      assert.equal($ele.text(), className, "Class name does not match :");
-    });
+    return cy.get('[data-cy=CurrentClassName]').then(($ele) => {
+      assert.equal($ele.text(), className, 'Class name does not match :')
+    })
   }
 
   checkSummaryTabIsPresent() {
-    return cy
-      .get("[data-cy=Summary]")
-      .contains("Summary")
-      .should("be.visible");
+    return cy.get('[data-cy=Summary]').contains('Summary').should('be.visible')
   }
 
   checkLiveClassBoardTabIsPresent() {
     return cy
-      .get("[data-cy=LiveClassBoard]")
-      .contains("LIVE CLASS BOARD")
-      .should("be.visible");
+      .get('[data-cy=LiveClassBoard]')
+      .contains('LIVE CLASS BOARD')
+      .should('be.visible')
   }
 
   checkExpressGraderTabIsPresent() {
     return cy
-      .get("[data-cy=Expressgrader]")
-      .contains("EXPRESS GRADER")
-      .should("be.visible");
+      .get('[data-cy=Expressgrader]')
+      .contains('EXPRESS GRADER')
+      .should('be.visible')
   }
 
   checkStandardBasedReportTabIsPresent() {
     return cy
-      .get("[data-cy=StandardsBasedReport]")
-      .contains("STANDARDS BASED REPORT")
-      .should("be.visible");
+      .get('[data-cy=StandardsBasedReport]')
+      .contains('STANDARDS BASED REPORT')
+      .should('be.visible')
   }
 
   checkMoreTabIsPresent() {
-    return cy.get("[data-cy=moreButton]").click();
+    return cy.get('[data-cy=moreButton]').click()
   }
 
   checkMarkAsDoneIsPresentUnderMoreTab() {
     return cy
-      .get("[data-cy=moreButton]")
+      .get('[data-cy=moreButton]')
       .next()
-      .find("li")
+      .find('li')
       .eq(0)
-      .contains("Mark as Done")
-      .should("be.visible");
+      .contains('Mark as Done')
+      .should('be.visible')
   }
 
   checkReleaseScoreIsPresentUnderMoreTab() {
     return cy
-      .get("[data-cy=moreButton]")
+      .get('[data-cy=moreButton]')
       .next()
-      .find("li")
+      .find('li')
       .eq(1)
-      .contains("Release Score")
-      .should("be.visible");
+      .contains('Release Score')
+      .should('be.visible')
   }
 
   checkSelectAllCheckboxOfStudent = () => {
-    cy.get("[data-cy=selectAllCheckbox]")
+    cy.get('[data-cy=selectAllCheckbox]')
       .closest(`span`)
-      .then($ele => {
-        if (!$ele.hasClass("ant-checkbox-checked")) cy.wrap($ele).click();
-      });
-  };
+      .then(($ele) => {
+        if (!$ele.hasClass('ant-checkbox-checked')) cy.wrap($ele).click()
+      })
+  }
 
-  uncheckSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").uncheck({ force: true });
+  uncheckSelectAllCheckboxOfStudent = () =>
+    cy.get('[data-cy=selectAllCheckbox]').uncheck({ force: true })
 
   clickAttemptContainerByIndexByName = (stuName, ind) => {
-    this.getAttemptContainerByIndexByStudentName(stuName, ind).click();
+    this.getAttemptContainerByIndexByStudentName(stuName, ind).click()
     /* avoiding route for test activity */
-    cy.contains("Student Feedback!", { timeout: 60000 }).should("be.visible");
-  };
+    cy.contains('Student Feedback!', { timeout: 60000 }).should('be.visible')
+  }
 
   checkStudentResponseIsDisplayed = () =>
     cy
-      .get(".ant-card-body")
+      .get('.ant-card-body')
       .eq(1)
-      .should("contain", "Student Response")
-      .should("be.visible");
+      .should('contain', 'Student Response')
+      .should('be.visible')
 
   verifySubmittedCount = (submitted, total) =>
-    this.getSubmitSummary().should("contain.text", `${submitted} out of ${total} Submitted`);
+    this.getSubmitSummary().should(
+      'contain.text',
+      `${submitted} out of ${total} Submitted`
+    )
 
-  verifyAbsentCount = absent => this.getSubmitSummary().should("contain.text", `${absent} absent`);
+  verifyAbsentCount = (absent) =>
+    this.getSubmitSummary().should('contain.text', `${absent} absent`)
 
-  verifyStudentCard(studentName, status, score, performance, queAttempt, email) {
-    const queCards = Object.keys(queAttempt).map(queNum => queAttempt[queNum]);
-    this.getCardIndex(studentName).then(index => {
-      let [totalScore, maxScore] = score.split("/").map(ele => ele.trim());
-      if ([studentSide.ABSENT, studentSide.NOT_STARTED, teacherSide.REDIRECTED].indexOf(status) !== -1) {
-        totalScore = `-`;
-        performance = "0%";
+  verifyStudentCard(
+    studentName,
+    status,
+    score,
+    performance,
+    queAttempt,
+    email
+  ) {
+    const queCards = Object.keys(queAttempt).map((queNum) => queAttempt[queNum])
+    this.getCardIndex(studentName).then((index) => {
+      let [totalScore, maxScore] = score.split('/').map((ele) => ele.trim())
+      if (
+        [
+          studentSide.ABSENT,
+          studentSide.NOT_STARTED,
+          teacherSide.REDIRECTED,
+        ].indexOf(status) !== -1
+      ) {
+        totalScore = `-`
+        performance = '0%'
       }
       /*  // TODO : remove log once flow is commplted
       console.log(
@@ -377,222 +413,248 @@ class LiveClassboardPage {
         `${studentName}, ${status}, ${score}, ${performance}, ${JSON.stringify(queAttempt)} , ${queCards}`
       ); */
 
-      this.getStudentNameByName(studentName).should("have.attr", "title", email);
-      this.getAvatarNameByStudentName(studentName).should("have.attr", "title", email);
-      this.verifyStudentStatusIsByIndex(index, status);
-      this.verifyScoreByStudentIndex(index, totalScore, maxScore);
-      this.getStudentPerformanceByIndex(index).should("have.text", performance);
-      this.verifyQuestionCards(index, queCards);
-      if ([studentSide.NOT_STARTED, studentSide.ABSENT].indexOf(status) === -1) {
-        cy.server();
-        cy.route("GET", "**/test-activity/**").as("test-activity");
+      this.getStudentNameByName(studentName).should('have.attr', 'title', email)
+      this.getAvatarNameByStudentName(studentName).should(
+        'have.attr',
+        'title',
+        email
+      )
+      this.verifyStudentStatusIsByIndex(index, status)
+      this.verifyScoreByStudentIndex(index, totalScore, maxScore)
+      this.getStudentPerformanceByIndex(index).should('have.text', performance)
+      this.verifyQuestionCards(index, queCards)
+      if (
+        [studentSide.NOT_STARTED, studentSide.ABSENT].indexOf(status) === -1
+      ) {
+        cy.server()
+        cy.route('GET', '**/test-activity/**').as('test-activity')
         // this.getViewResponseByIndex(index)
         this.getViewResponseByStudentName(studentName)
-          .should("be.exist")
+          .should('be.exist')
           .click({ force: true })
           .then(() => {
-            cy.wait("@test-activity");
-            cy.get(".ant-select-selection-selected-value")
+            cy.wait('@test-activity')
+            cy.get('.ant-select-selection-selected-value')
               .eq(0)
-              .should("have.text", studentName);
-          });
-        this.clickOnCardViewTab();
+              .should('have.text', studentName)
+          })
+        this.clickOnCardViewTab()
         // } else this.getViewResponseByIndex(index).should("not.be.exist");
-      } else this.getViewResponseByStudentName(studentName).should("not.be.exist");
-    });
+      } else
+        this.getViewResponseByStudentName(studentName).should('not.be.exist')
+    })
   }
 
   // for performance on redirected student card on hover
-  verifyStudentCardRedirectedPerformance({ studentName, attempt1, attempt2, attempt3 }) {}
+  verifyStudentCardRedirectedPerformance({
+    studentName,
+    attempt1,
+    attempt2,
+    attempt3,
+  }) {}
 
   verifyStudentStatusIsByIndex = (index, status, isManualGraded = false) => {
     if (!isManualGraded)
-      this.getStudentStatusByIndex(index).should($ele => {
-        const studentStatus = Cypress.$($ele)
-          .text()
-          .toLowerCase()
-          .trim();
-        expect(studentStatus, `student status for card index ${index + 1}`).to.eq(
-          (status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status).toLowerCase()
-        );
-      });
+      this.getStudentStatusByIndex(index).should(($ele) => {
+        const studentStatus = Cypress.$($ele).text().toLowerCase().trim()
+        expect(
+          studentStatus,
+          `student status for card index ${index + 1}`
+        ).to.eq(
+          (status === asgnStatus.SUBMITTED
+            ? asgnStatus.GRADED
+            : status
+          ).toLowerCase()
+        )
+      })
     else
-      this.getStudentStatusByIndex(index).should($ele => {
-        const studentStatus = Cypress.$($ele)
-          .text()
-          .toLowerCase()
-          .trim();
-        expect(studentStatus, `student status for card index ${index + 1}`).to.eq(status.toLowerCase());
-      });
-  };
+      this.getStudentStatusByIndex(index).should(($ele) => {
+        const studentStatus = Cypress.$($ele).text().toLowerCase().trim()
+        expect(
+          studentStatus,
+          `student status for card index ${index + 1}`
+        ).to.eq(status.toLowerCase())
+      })
+  }
 
-  verifyRedirectIcon = student => {
+  verifyRedirectIcon = (student) => {
     this.getStudentCardByStudentName(student)
       .find('[data-cy="redirected"]')
-      .should("be.exist");
-  };
+      .should('be.exist')
+  }
 
-  verifyStudentsOnRedirectPopUp = student =>
+  verifyStudentsOnRedirectPopUp = (student) =>
     this.getRedirecPopUp()
-      .find(".ant-select-selection__choice__content")
-      .should("contain.text", student);
+      .find('.ant-select-selection__choice__content')
+      .should('contain.text', student)
 
-  verifyQuestion = queCount =>
+  verifyQuestion = (queCount) =>
     cy.get('[data-cy="questions"]').each((ele, index, $all) => {
-      cy.wrap(ele)
-        .find("div")
-        .should("have.length", queCount);
-    });
+      cy.wrap(ele).find('div').should('have.length', queCount)
+    })
 
   verifyQuestionCards = (index, queCards) => {
-    this.getQuestionsByIndex(index).then(ele => {
+    this.getQuestionsByIndex(index).then((ele) => {
       queCards.forEach((que, qindex) => {
         switch (que) {
           case attemptTypes.RIGHT:
-            expect(
-              ele
-                .find("div")
-                .eq(qindex)
-                .css("background-color")
-            ).to.eq(queColor.RIGHT);
-            break;
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.RIGHT
+            )
+            break
 
           case attemptTypes.WRONG:
-            expect(
-              ele
-                .find("div")
-                .eq(qindex)
-                .css("background-color")
-            ).to.eq(queColor.WRONG);
-            break;
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.WRONG
+            )
+            break
 
           case attemptTypes.PARTIAL_CORRECT:
-            expect(
-              ele
-                .find("div")
-                .eq(qindex)
-                .css("background-color")
-            ).to.eq(queColor.YELLOW);
-            break;
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.YELLOW
+            )
+            break
 
           case attemptTypes.SKIP:
-            expect(
-              ele
-                .find("div")
-                .eq(qindex)
-                .css("background-color")
-            ).to.eq(queColor.SKIP);
-            break;
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.SKIP
+            )
+            break
 
           case attemptTypes.MANUAL_GRADE:
-            expect(
-              ele
-                .find("div")
-                .eq(qindex)
-                .css("background-color")
-            ).to.eq(queColor.MANUAL_GRADE);
-            break;
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.MANUAL_GRADE
+            )
+            break
 
           default:
-            expect(
-              ele
-                .find("div")
-                .eq(qindex)
-                .css("background-color")
-            ).to.eq(queColor.NO_ATTEMPT);
-            break;
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.NO_ATTEMPT
+            )
+            break
         }
-      });
-    });
-  };
+      })
+    })
+  }
 
-  getScoreAndPerformance = (attempt, queTypeMap, queNum, queCentric = false) => {
-    let totalScore = 0;
-    let maxScore = 0;
-    let score;
-    let perf;
-    let perfValue;
-    let stats;
-    const quePerformanceAllStudent = [];
-    let quePerformanceScore;
-    let sumAvgQuePerformance = 0;
+  getScoreAndPerformance = (
+    attempt,
+    queTypeMap,
+    queNum,
+    queCentric = false
+  ) => {
+    let totalScore = 0
+    let maxScore = 0
+    let score
+    let perf
+    let perfValue
+    let stats
+    const quePerformanceAllStudent = []
+    let quePerformanceScore
+    let sumAvgQuePerformance = 0
 
-    Object.keys(attempt).forEach(item => {
-      const attempType = attempt[item];
-      const { points, attemptData, queKey } = queCentric ? queTypeMap[queNum] : queTypeMap[item];
+    Object.keys(attempt).forEach((item) => {
+      const attempType = attempt[item]
+      const { points, attemptData, queKey } = queCentric
+        ? queTypeMap[queNum]
+        : queTypeMap[item]
       // if (attempType === attemptTypes.RIGHT) totalScore += points;
-      const score = this.questionResponsePage.getScoreByAttempt(attemptData, points, queKey.split(".")[0], attempType);
-      totalScore += score;
-      maxScore += points;
-      quePerformanceAllStudent.push(score / points);
-    });
+      const score = this.questionResponsePage.getScoreByAttempt(
+        attemptData,
+        points,
+        queKey.split('.')[0],
+        attempType
+      )
+      totalScore += score
+      maxScore += points
+      quePerformanceAllStudent.push(score / points)
+    })
 
-    quePerformanceAllStudent.forEach(item => {
-      sumAvgQuePerformance += item;
-    });
+    quePerformanceAllStudent.forEach((item) => {
+      sumAvgQuePerformance += item
+    })
 
-    score = `${totalScore} / ${maxScore}`;
-    perfValue = Cypress._.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2);
-    perf = `${perfValue}%`;
-    quePerformanceScore = `${Cypress._.round(sumAvgQuePerformance, 2)} / ${quePerformanceAllStudent.length}`;
-    return { score, perf, perfValue, quePerformanceScore, totalScore, maxScore };
+    score = `${totalScore} / ${maxScore}`
+    perfValue = Cypress._.round(
+      (parseFloat(totalScore) / parseFloat(maxScore)) * 100,
+      2
+    )
+    perf = `${perfValue}%`
+    quePerformanceScore = `${Cypress._.round(sumAvgQuePerformance, 2)} / ${
+      quePerformanceAllStudent.length
+    }`
+    return { score, perf, perfValue, quePerformanceScore, totalScore, maxScore }
     // return stats;
-  };
+  }
 
   getFeedBackScore = (feedbackMap, queTypeMap) => {
-    const score = {};
-    Object.keys(feedbackMap).forEach(queNum => {
-      const attempType = feedbackMap[queNum];
-      const { points, attemptData, queKey } = queTypeMap[queNum];
+    const score = {}
+    Object.keys(feedbackMap).forEach((queNum) => {
+      const attempType = feedbackMap[queNum]
+      const { points, attemptData, queKey } = queTypeMap[queNum]
       // score[queNum] = attempType === attemptTypes.RIGHT ? points : "0";
       score[queNum] = this.questionResponsePage.getScoreByAttempt(
         attemptData,
         points,
-        queKey.split(".")[0],
+        queKey.split('.')[0],
         attempType
-      );
-    });
+      )
+    })
 
-    return score;
-  };
+    return score
+  }
 
   verifyAvgScore(statsMap) {
-    let scoreObtain = 0;
-    let totalMaxScore = 0;
-    Object.keys(statsMap).forEach(studentName => {
-      const { score, status } = statsMap[studentName];
-      const [scored, max] = score.split("/");
+    let scoreObtain = 0
+    let totalMaxScore = 0
+    Object.keys(statsMap).forEach((studentName) => {
+      const { score, status } = statsMap[studentName]
+      const [scored, max] = score.split('/')
       // if (status === asgnStatus.SUBMITTED || status === asgnStatus.GRADED) {
       if (status !== asgnStatus.NOT_STARTED) {
         // submittedCount += 1;
-        scoreObtain += parseFloat(scored);
-        totalMaxScore += parseFloat(max);
+        scoreObtain += parseFloat(scored)
+        totalMaxScore += parseFloat(max)
       }
-    });
+    })
 
-    const avgPerformance = `${Cypress._.round((scoreObtain / totalMaxScore) * 100)}%`;
-    this.getAvgScore().should("have.text", avgPerformance);
+    const avgPerformance = `${Cypress._.round(
+      (scoreObtain / totalMaxScore) * 100
+    )}%`
+    this.getAvgScore().should('have.text', avgPerformance)
   }
 
-  verifyStudentCentricCard(studentName, studentAttempts, questionTypeMap, cardEntry = true) {
+  verifyStudentCentricCard(
+    studentName,
+    studentAttempts,
+    questionTypeMap,
+    cardEntry = true
+  ) {
     if (cardEntry) {
-      this.questionResponsePage.selectStudent(studentName);
+      this.questionResponsePage.selectStudent(studentName)
       Object.keys(studentAttempts).forEach((queNum, qIndex) => {
-        const attemptType = studentAttempts[queNum];
-        const { queKey, attemptData, points } = questionTypeMap[queNum];
-        this.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptType, attemptData, true, qIndex);
-      });
+        const attemptType = studentAttempts[queNum]
+        const { queKey, attemptData, points } = questionTypeMap[queNum]
+        this.questionResponsePage.verifyQuestionResponseCard(
+          points,
+          queKey,
+          attemptType,
+          attemptData,
+          true,
+          qIndex
+        )
+      })
     } else {
-      this.questionResponsePage.verifyOptionDisabled(studentName);
+      this.questionResponsePage.verifyOptionDisabled(studentName)
     }
   }
 
   verifyQuestionCentricCard = (queNum, studentAttempts, questionTypeMap) => {
-    this.questionResponsePage.selectQuestion(queNum);
-    Object.keys(studentAttempts).forEach(studentName => {
-      const attemptType = studentAttempts[studentName];
+    this.questionResponsePage.selectQuestion(queNum)
+    Object.keys(studentAttempts).forEach((studentName) => {
+      const attemptType = studentAttempts[studentName]
       if (attemptType !== null) {
-        const { queKey, attemptData, points } = questionTypeMap[queNum];
+        const { queKey, attemptData, points } = questionTypeMap[queNum]
         this.questionResponsePage.verifyQuestionResponseCard(
           points,
           queKey,
@@ -600,107 +662,146 @@ class LiveClassboardPage {
           attemptData,
           false,
           studentName
-        );
+        )
       } else {
-        this.questionResponsePage.verifyNoQuestionResponseCard(studentName);
+        this.questionResponsePage.verifyNoQuestionResponseCard(studentName)
       }
-    });
-  };
+    })
+  }
 
   updateScore = (studentName, score, feedback) => {
-    Object.keys(score).forEach(queNum => {
-      this.questionResponsePage.selectQuestion(queNum);
-      this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score[queNum], feedback);
-    });
-  };
+    Object.keys(score).forEach((queNum) => {
+      this.questionResponsePage.selectQuestion(queNum)
+      this.questionResponsePage.updateScoreAndFeedbackForStudent(
+        studentName,
+        score[queNum],
+        feedback
+      )
+    })
+  }
 
-  getRedirectedQuestionCentricData = (redirectedData, queCentric, attempted = true) => {
-    const reDirectedQueCentric = Object.assign({}, queCentric);
-    const reDirectedQueCentricBeforeAttempt = Object.assign({}, queCentric);
+  getRedirectedQuestionCentricData = (
+    redirectedData,
+    queCentric,
+    attempted = true
+  ) => {
+    const reDirectedQueCentric = { ...queCentric }
+    const reDirectedQueCentricBeforeAttempt = { ...queCentric }
     redirectedData.forEach(({ attempt, stuName }) => {
-      Object.keys(attempt).forEach(queNum => {
+      Object.keys(attempt).forEach((queNum) => {
         if (attempted) {
-          reDirectedQueCentric[queNum][stuName] = attempt[queNum];
+          reDirectedQueCentric[queNum][stuName] = attempt[queNum]
         } else {
-          reDirectedQueCentricBeforeAttempt[queNum][stuName] = null;
+          reDirectedQueCentricBeforeAttempt[queNum][stuName] = null
         }
-      });
-    });
-    return attempted ? reDirectedQueCentric : reDirectedQueCentricBeforeAttempt;
-  };
+      })
+    })
+    return attempted ? reDirectedQueCentric : reDirectedQueCentricBeforeAttempt
+  }
 
-  getQuestionCentricData = (attemptsData, queCentric, onlySubmitted = false) => {
+  getQuestionCentricData = (
+    attemptsData,
+    queCentric,
+    onlySubmitted = false
+  ) => {
     attemptsData
-      .filter(({ status }) => (onlySubmitted ? status === studentSide.SUBMITTED : status !== studentSide.NOT_STARTED))
+      .filter(({ status }) =>
+        onlySubmitted
+          ? status === studentSide.SUBMITTED
+          : status !== studentSide.NOT_STARTED
+      )
       .forEach(({ attempt, stuName }) => {
-        Object.keys(attempt).forEach(queNum => {
-          if (!queCentric[queNum]) queCentric[queNum] = {};
-          queCentric[queNum][stuName] = attempt[queNum];
-        });
-      });
-    return queCentric;
-  };
+        Object.keys(attempt).forEach((queNum) => {
+          if (!queCentric[queNum]) queCentric[queNum] = {}
+          queCentric[queNum][stuName] = attempt[queNum]
+        })
+      })
+    return queCentric
+  }
 
-  getNullifiedAttempts = attempts => {
-    const noAttempts = {};
+  getNullifiedAttempts = (attempts) => {
+    const noAttempts = {}
     for (const key in attempts) {
       if (attempts.hasOwnProperty(key)) {
-        noAttempts[key] = attemptTypes.NO_ATTEMPT;
+        noAttempts[key] = attemptTypes.NO_ATTEMPT
       }
     }
-    return noAttempts;
-  };
+    return noAttempts
+  }
 
   getQuestionTypeMap = (itemKeys, questionData, questionTypeMap) => {
     itemKeys.forEach((queKey, index) => {
-      const [queType, questionKey] = queKey.split(".");
-      const { attemptData, standards, choices } = questionData[queType][questionKey];
-      const { points, correct } = questionData[queType][questionKey].setAns;
-      const queMap = { queKey, points, attemptData, standards, choices, correct };
-      questionTypeMap[`Q${index + 1}`] = queMap;
-    });
-    return questionTypeMap;
-  };
+      const [queType, questionKey] = queKey.split('.')
+      const { attemptData, standards, choices } = questionData[queType][
+        questionKey
+      ]
+      const { points, correct } = questionData[queType][questionKey].setAns
+      const queMap = {
+        queKey,
+        points,
+        attemptData,
+        standards,
+        choices,
+        correct,
+      }
+      questionTypeMap[`Q${index + 1}`] = queMap
+    })
+    return questionTypeMap
+  }
 
   getAllStudentName = () =>
-    cy.get('[data-cy="studentName"]').then($ele => {
-      const studentNames = [];
+    cy.get('[data-cy="studentName"]').then(($ele) => {
+      const studentNames = []
       $ele.each((i, s) => {
-        studentNames.push(Cypress.$(s).text());
-      });
-      return studentNames;
-    });
+        studentNames.push(Cypress.$(s).text())
+      })
+      return studentNames
+    })
 
   verifyScoreByStudentIndex = (index, totalScore, maxScore) =>
-    this.getStudentScoreByIndex(index).then($ele =>
-      expect($ele.text().replace(/\u00a0/g, " "), `verify student card score for student index ${index + 1}`).to.eq(
-        `${totalScore} / ${maxScore}`
-      )
-    );
+    this.getStudentScoreByIndex(index).then(($ele) =>
+      expect(
+        $ele.text().replace(/\u00a0/g, ' '),
+        `verify student card score for student index ${index + 1}`
+      ).to.eq(`${totalScore} / ${maxScore}`)
+    )
 
-  showMulipleAttemptsByStuName = stuName => {
+  showMulipleAttemptsByStuName = (stuName) => {
     this.getStudentCardByStudentName(stuName)
       .find('[data-cy="questions"]')
       .parent()
-      .then($heading => cy.wrap($heading).trigger("mouseover", "top", { force: true }))
-      .then(() => cy.wait(1000));
-  };
+      .then(($heading) =>
+        cy.wrap($heading).trigger('mouseover', 'top', { force: true })
+      )
+      .then(() => cy.wait(1000))
+  }
 
   verifyStudentPerfOnAttemptContainer = (stuName, attempIndex, per) =>
-    this.getPerfOnAttemptContainerByIndexByStudentName(stuName, attempIndex).should("have.text", per);
+    this.getPerfOnAttemptContainerByIndexByStudentName(
+      stuName,
+      attempIndex
+    ).should('have.text', per)
 
   verifyAttemptNumberOnAttemptContainer = (stuName, attempIndex, cardIndex) =>
-    this.getAttemptNoOnContainerByIndexByStudentName(stuName, cardIndex).should("have.text", `Attempt ${attempIndex}`);
+    this.getAttemptNoOnContainerByIndexByStudentName(stuName, cardIndex).should(
+      'have.text',
+      `Attempt ${attempIndex}`
+    )
 
   verifyStudentScoreOnAttemptContainer = (stuName, attempIndex, score) =>
-    this.getScoreOnAttemptContainerByIndexByStudentName(stuName, attempIndex).then($ele =>
+    this.getScoreOnAttemptContainerByIndexByStudentName(
+      stuName,
+      attempIndex
+    ).then(($ele) =>
       expect(
-        $ele.text().replace(/\u00a0/g, " "),
-        `verify student card score for student(${stuName}), for container index ${attempIndex + 1}`
+        $ele.text().replace(/\u00a0/g, ' '),
+        `verify student card score for student(${stuName}), for container index ${
+          attempIndex + 1
+        }`
       ).to.eq(`${score}`)
-    );
+    )
 
   // *** APPHELPERS END ***
 }
 
-export default LiveClassboardPage;
+export default LiveClassboardPage

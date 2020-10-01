@@ -1,45 +1,46 @@
-import { CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common";
-import { Col, Row } from "antd";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
 import {
-  ErrorMessage,
-  LightGreenSpan,
-  StyledCol,
-  StyledP
-} from "./styled";
+  CustomModalStyled,
+  EduButton,
+  TextInputStyled,
+} from '@edulastic/common'
+import { Col, Row } from 'antd'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { ErrorMessage, LightGreenSpan, StyledCol, StyledP } from './styled'
 
 class TypeToConfirmModal extends Component {
   state = {
-    textValue: "",
-    errorMsg: null
-  };
+    textValue: '',
+    errorMsg: null,
+  }
 
   onCloseModal = () => {
-    const { closeModal } = this.props;
-    closeModal();
-  };
+    const { closeModal } = this.props
+    closeModal()
+  }
 
-  onChangeInput = e => {
-    this.setState({ textValue: e.target.value, errorMsg: null });
-  };
+  onChangeInput = (e) => {
+    this.setState({ textValue: e.target.value, errorMsg: null })
+  }
 
   onProceed = () => {
-    const { textValue } = this.state;
-    const { wordToBeTyped, handleOnOkClick } = this.props;
+    const { textValue } = this.state
+    const { wordToBeTyped, handleOnOkClick } = this.props
     if (textValue.toLowerCase() !== wordToBeTyped.toLowerCase()) {
       this.setState({
         ...this.state,
-        errorMsg: textValue.trim().length ? "Confirmation text did not match." : "Please enter confirmation text."
-      });
+        errorMsg: textValue.trim().length
+          ? 'Confirmation text did not match.'
+          : 'Please enter confirmation text.',
+      })
     } else {
       this.setState({
         ...this.state,
-        errorMsg: null
-      });
-      handleOnOkClick();
+        errorMsg: null,
+      })
+      handleOnOkClick()
     }
-  };
+  }
 
   render() {
     const {
@@ -49,11 +50,11 @@ class TypeToConfirmModal extends Component {
       wordToBeTyped,
       primaryLabel,
       secondaryLabel,
-      okButtonText
-    } = this.props;
-    const { textValue, errorMsg } = this.state;
+      okButtonText,
+    } = this.props
+    const { textValue, errorMsg } = this.state
 
-    const btnText = `Yes, ${okButtonText || title}`;
+    const btnText = `Yes, ${okButtonText || title}`
 
     return (
       <CustomModalStyled
@@ -64,12 +65,17 @@ class TypeToConfirmModal extends Component {
         maskClosable={false}
         centered
         footer={[
-          <EduButton height="40px" isGhost key="cancelButton" onClick={this.onCloseModal}>
+          <EduButton
+            height="40px"
+            isGhost
+            key="cancelButton"
+            onClick={this.onCloseModal}
+          >
             NO, CANCEL
           </EduButton>,
           <EduButton height="40px" key="okButton" onClick={this.onProceed}>
             {btnText}
-          </EduButton>
+          </EduButton>,
         ]}
       >
         <Row>
@@ -77,7 +83,9 @@ class TypeToConfirmModal extends Component {
             <StyledP>{primaryLabel}</StyledP>
             <StyledP>{secondaryLabel}</StyledP>
             <StyledP>
-              If Yes, please type <LightGreenSpan>{wordToBeTyped}</LightGreenSpan> in the space below to proceed.
+              If Yes, please type{' '}
+              <LightGreenSpan>{wordToBeTyped}</LightGreenSpan> in the space
+              below to proceed.
             </StyledP>
           </Col>
         </Row>
@@ -88,24 +96,24 @@ class TypeToConfirmModal extends Component {
               value={textValue}
               onChange={this.onChangeInput}
               // here paste is not allowed, and user has to manually type in ARCHIVE
-              onPaste={evt => evt.preventDefault()}
+              onPaste={(evt) => evt.preventDefault()}
               errorMsg={errorMsg}
             />
           </StyledCol>
         </Row>
         {errorMsg ? <ErrorMessage>{errorMsg}</ErrorMessage> : null}
       </CustomModalStyled>
-    );
+    )
   }
 }
 
-export default TypeToConfirmModal;
+export default TypeToConfirmModal
 
 TypeToConfirmModal.defaultProps = {
-  primaryLabel: "Are you sure you want to archive the following class(es)?",
+  primaryLabel: 'Are you sure you want to archive the following class(es)?',
   modalVisible: false,
-  secondaryLabel: ""
-};
+  secondaryLabel: '',
+}
 
 TypeToConfirmModal.propTypes = {
   modalVisible: PropTypes.bool,
@@ -113,6 +121,10 @@ TypeToConfirmModal.propTypes = {
   handleOnOkClick: PropTypes.func.isRequired,
   wordToBeTyped: PropTypes.string.isRequired,
   primaryLabel: PropTypes.string,
-  secondaryLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.arrayOf(PropTypes.element)]),
-  closeModal: PropTypes.func.isRequired
-};
+  secondaryLabel: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
+    PropTypes.arrayOf(PropTypes.element),
+  ]),
+  closeModal: PropTypes.func.isRequired,
+}

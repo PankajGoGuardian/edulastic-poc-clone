@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
-import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
-import { TextInputStyled } from "../../../../../styled/InputStyles";
-import { Col } from "../../../../../styled/WidgetOptions/Col";
-import { Row } from "../../../../../styled/WidgetOptions/Row";
+import { withNamespaces } from '@edulastic/localization'
+import { CheckboxLabel } from '../../../../../styled/CheckboxWithLabel'
+import { TextInputStyled } from '../../../../../styled/InputStyles'
+import { Col } from '../../../../../styled/WidgetOptions/Col'
+import { Row } from '../../../../../styled/WidgetOptions/Row'
 
 const SignificantDecimalPlacesPure = ({ options, onChange, t }) => {
-  const [allowSignificantDecimalPlaces, setAllowSignificantDecimalPlaces] = useState(false);
+  const [
+    allowSignificantDecimalPlaces,
+    setAllowSignificantDecimalPlaces,
+  ] = useState(false)
 
   useEffect(() => {
     if (options.significantDecimalPlaces) {
-      setAllowSignificantDecimalPlaces(true);
+      setAllowSignificantDecimalPlaces(true)
     }
-  }, [options.significantDecimalPlaces]);
+  }, [options.significantDecimalPlaces])
 
   return (
     <Col span={12}>
@@ -23,14 +26,14 @@ const SignificantDecimalPlacesPure = ({ options, onChange, t }) => {
           <CheckboxLabel
             data-cy="answer-allow-significant-decimal-places"
             checked={allowSignificantDecimalPlaces}
-            onChange={e => {
-              setAllowSignificantDecimalPlaces(e.target.checked);
+            onChange={(e) => {
+              setAllowSignificantDecimalPlaces(e.target.checked)
               if (!e.target.checked) {
-                onChange("significantDecimalPlaces", null);
+                onChange('significantDecimalPlaces', null)
               }
             }}
           >
-            {t("component.math.significantDecimalPlaces")}
+            {t('component.math.significantDecimalPlaces')}
           </CheckboxLabel>
         </Col>
         {allowSignificantDecimalPlaces && (
@@ -41,22 +44,26 @@ const SignificantDecimalPlacesPure = ({ options, onChange, t }) => {
               type="number"
               value={options.significantDecimalPlaces}
               readOnly={!allowSignificantDecimalPlaces}
-              onChange={e => onChange("significantDecimalPlaces", e.target.value)}
+              onChange={(e) =>
+                onChange('significantDecimalPlaces', e.target.value)
+              }
               min={0}
             />
           </Col>
         )}
       </Row>
     </Col>
-  );
-};
+  )
+}
 
 SignificantDecimalPlacesPure.propTypes = {
   options: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
-SignificantDecimalPlacesPure.defaultProps = {};
+SignificantDecimalPlacesPure.defaultProps = {}
 
-export const SignificantDecimalPlaces = withNamespaces("assessment")(SignificantDecimalPlacesPure);
+export const SignificantDecimalPlaces = withNamespaces('assessment')(
+  SignificantDecimalPlacesPure
+)

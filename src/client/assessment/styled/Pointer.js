@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Pointer = styled.div`
   position: absolute;
@@ -34,4 +34,4 @@ export const Pointer = styled.div`
     bottom: -20px;
     transform: rotate(180deg);
   }
-`;
+`

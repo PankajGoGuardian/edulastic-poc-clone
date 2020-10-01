@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const IndexBox = styled.div`
   width: 40px;
@@ -14,4 +14,4 @@ export const IndexBox = styled.div`
     font-size: ${theme.widgets.clozeImageText.indexBoxFontWeight};
     font-weight: ${theme.widgets.clozeImageText.indexBoxFontWeight};
   `}
-`;
+`

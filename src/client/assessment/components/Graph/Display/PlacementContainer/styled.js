@@ -1,11 +1,11 @@
-import styled, { css } from "styled-components";
-import { secondaryTextColor, white, greyishBorder } from "@edulastic/colors";
-import { WithMathFormula } from "@edulastic/common";
+import styled, { css } from 'styled-components'
+import { secondaryTextColor, white, greyishBorder } from '@edulastic/colors'
+import { WithMathFormula } from '@edulastic/common'
 
 export const StyledToolsContainer = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
   margin-bottom: 12px;
-`;
+`
 
 export const GraphToolbar = styled.div`
   box-sizing: border-box;
@@ -18,7 +18,7 @@ export const GraphToolbar = styled.div`
   min-height: 88px;
   padding: 0;
   background-color: rgba(230, 230, 230, 0.23);
-  font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
+  font-size: ${(props) => (props.fontSize ? props.fontSize : 14)}px;
 
   ul {
     list-style: none;
@@ -27,7 +27,7 @@ export const GraphToolbar = styled.div`
   ul li {
     margin: 2px 1px 0 0;
   }
-`;
+`
 
 export const ToolbarLeft = styled.ul`
   display: flex;
@@ -40,7 +40,7 @@ export const ToolbarLeft = styled.ul`
   flex-wrap: wrap;
   margin: 0;
   padding: 0;
-`;
+`
 
 export const ToolbarRight = styled.ul`
   display: flex;
@@ -50,7 +50,7 @@ export const ToolbarRight = styled.ul`
   margin: 0;
   margin-left: auto;
   padding: 0;
-`;
+`
 
 export const ToolbarItem = styled.div`
   width: 100%;
@@ -59,14 +59,14 @@ export const ToolbarItem = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
+`
 
 export const ToolbarItemLabel = styled.span`
-  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)};
+  color: ${(props) => (props.color ? props.color : `${secondaryTextColor}`)};
   font-size: 14px;
   font-weight: 600;
   line-height: 19px;
-`;
+`
 
 export const ToolbarItemIcon = styled.div`
   display: flex;
@@ -78,7 +78,7 @@ export const ToolbarItemIcon = styled.div`
   min-width: 23px;
   min-height: 24px;
   margin-bottom: 5px;
-`;
+`
 
 export const ToolBtn = styled.li`
   display: flex;
@@ -112,31 +112,33 @@ export const ToolBtn = styled.li`
       fill: #878a91;
     }
   }
-`;
+`
 
 export const GraphWrapper = styled.div`
-  width: ${props => (props.width ? `${props.width}px` : "100%")};
+  width: ${(props) => (props.width ? `${props.width}px` : '100%')};
   border-radius: 4px;
-  border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
-`;
+  border: ${(props) => (props.border ? 1 : 0)}px solid
+    ${(props) => props.borderColor};
+`
 
 const borderStyle = css`
   border-radius: 0;
   border-style: solid;
   border-width: ${({ showBorder }) => (showBorder ? 1 : 0)}px;
-  border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
-`;
+  border-color: ${(props) =>
+    props.theme.widgets.chart.axisBorderColor} !important;
+`
 
 export const JSXBoxWrapper = styled.div`
   position: relative;
-  overflow: ${({ showBorder }) => (showBorder ? "hidden" : "auto")};
-  padding: ${props => (props.padding ? props.padding : 0)}px;
-`;
+  overflow: ${({ showBorder }) => (showBorder ? 'hidden' : 'auto')};
+  padding: ${(props) => (props.padding ? props.padding : 0)}px;
+`
 
 export const JSXBox = styled.div`
   // IMPORTANT: TRY NOT TO WRITE SVG ELEMENTS STYLE HERE CUZ ATTRIBUTES GET OVERRIDEN
 
-  background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+  background-color: ${(props) => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
   ${borderStyle}
@@ -146,21 +148,23 @@ export const JSXBox = styled.div`
     &.drag-drop {
       border: 1px solid ${greyishBorder};
       &.incorrect {
-        border: 1px solid ${props => props.theme.widgets.graphPlacement.wrongBgColor};
+        border: 1px solid
+          ${(props) => props.theme.widgets.graphPlacement.wrongBgColor};
       }
       &.correct {
-        border: 1px solid ${props => props.theme.widgets.graphPlacement.rightBgColor};
+        border: 1px solid
+          ${(props) => props.theme.widgets.graphPlacement.rightBgColor};
       }
     }
   }
 
   text {
-    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+    fill: ${(props) => props.theme.widgets.chart.labelStrokeColor};
   }
 
   div {
-    color: ${props => props.theme.widgets.chart.labelStrokeColor};
-    background-color: ${props => props.theme.widgets.chart.bgColor};
+    color: ${(props) => props.theme.widgets.chart.labelStrokeColor};
+    background-color: ${(props) => props.theme.widgets.chart.bgColor};
   }
 
   .drag-drop-content {
@@ -175,17 +179,24 @@ export const JSXBox = styled.div`
       width: calc(100% - 18px);
     }
 
-    background-color: ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.rightBgColor};
-    color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
+    background-color: ${(props) =>
+      !props.isPrintPreview && props.theme.widgets.graphPlacement.rightBgColor};
+    color: ${(props) => props.theme.widgets.graphPlacement.descriptionColor};
 
     .drag-drop-icon {
-      fill: ${props => props.theme.widgets.graphPlacement.rightIconColor};
+      fill: ${(props) => props.theme.widgets.graphPlacement.rightIconColor};
     }
     .drag-drop-content-triangle::before {
-      border-top: 8px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.rightBgColor};
+      border-top: 8px solid
+        ${(props) =>
+          !props.isPrintPreview &&
+          props.theme.widgets.graphPlacement.rightBgColor};
     }
     .drag-drop-content-triangle::after {
-      border-top: 7px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.rightBgColor};
+      border-top: 7px solid
+        ${(props) =>
+          !props.isPrintPreview &&
+          props.theme.widgets.graphPlacement.rightBgColor};
     }
   }
 
@@ -193,33 +204,41 @@ export const JSXBox = styled.div`
     > :first-child {
       width: calc(100% - 18px);
     }
-    background-color: ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
-    color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
+    background-color: ${(props) =>
+      !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
+    color: ${(props) => props.theme.widgets.graphPlacement.descriptionColor};
     .drag-drop-icon {
-      fill: ${props => props.theme.widgets.graphPlacement.wrongIconColor};
+      fill: ${(props) => props.theme.widgets.graphPlacement.wrongIconColor};
     }
     .drag-drop-content-triangle::before {
-      border-top: 8px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
+      border-top: 8px solid
+        ${(props) =>
+          !props.isPrintPreview &&
+          props.theme.widgets.graphPlacement.wrongBgColor};
     }
     .drag-drop-content-triangle::after {
-      border-top: 7px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
+      border-top: 7px solid
+        ${(props) =>
+          !props.isPrintPreview &&
+          props.theme.widgets.graphPlacement.wrongBgColor};
     }
   }
-`;
+`
 
 export const JSXBoxWithDropValues = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-`;
+`
 
 export const DragDropValuesContainer = styled.div`
   position: relative;
   min-height: 100px;
   min-width: 100%;
-  width: ${({ width }) => (width ? `${width}px` : "100%")};
-  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
+  width: ${({ width }) => (width ? `${width}px` : '100%')};
+  background-color: ${(props) =>
+    props.theme.widgets.axisLabels.responseBoxBgColor};
   padding: 15px 25px 22px;
   margin-top: 20px;
 
@@ -240,16 +259,18 @@ export const DragDropValuesContainer = styled.div`
   .froala-wrapper {
     margin: auto;
   }
-`;
+`
 
 export const DragDropTitle = styled.div`
-  height: ${props => props.height}px;
-  line-height: ${props => props.height}px;
-  font-size: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontSize};
-  font-weight: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontWeight};
+  height: ${(props) => props.height}px;
+  line-height: ${(props) => props.height}px;
+  font-size: ${(props) =>
+    props.theme.widgets.graphPlacement.dragDropTitleFontSize};
+  font-weight: ${(props) =>
+    props.theme.widgets.graphPlacement.dragDropTitleFontWeight};
   width: 100%;
   text-align: center;
-`;
+`
 
 export const LabelTop = WithMathFormula(styled.div`
   height: 1.4rem;
@@ -260,7 +281,7 @@ export const LabelTop = WithMathFormula(styled.div`
   vertical-align: middle;
   position: absolute;
   width: 100%;
-`);
+`)
 export const LabelBottom = WithMathFormula(styled.div`
   height: 1.4rem;
   line-height: 1rem;
@@ -270,7 +291,7 @@ export const LabelBottom = WithMathFormula(styled.div`
   vertical-align: middle;
   position: absolute;
   width: 100%;
-`);
+`)
 export const LabelRight = WithMathFormula(styled.div`
   height: 1.4rem;
   line-height: 1rem;
@@ -283,14 +304,14 @@ export const LabelRight = WithMathFormula(styled.div`
   position: absolute;
   width: 100%;
   padding-left: 40px;
-`);
+`)
 
 export const DragDropContainer = WithMathFormula(
   styled.div`
     margin: auto 0;
     width: 100%;
   `
-);
+)
 
 export const Title = WithMathFormula(styled.div`
   text-align: center;
@@ -298,7 +319,7 @@ export const Title = WithMathFormula(styled.div`
   font-size: 1.5em;
   display: block;
   padding: 1em 0;
-`);
+`)
 
 export const LabelLeft = WithMathFormula(styled.div`
   height: 1.4rem;
@@ -312,4 +333,4 @@ export const LabelLeft = WithMathFormula(styled.div`
   position: absolute;
   width: 100%;
   padding-right: 40px;
-`);
+`)

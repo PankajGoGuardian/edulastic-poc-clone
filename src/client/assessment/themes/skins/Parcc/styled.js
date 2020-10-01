@@ -1,19 +1,19 @@
-import styled from "styled-components";
-import { Popover, Button, Dropdown, Menu, Icon } from "antd";
-import { smallDesktopWidth } from "@edulastic/colors";
-import { themes } from "../../../../theme";
+import styled from 'styled-components'
+import { Popover, Button, Dropdown, Menu, Icon } from 'antd'
+import { smallDesktopWidth } from '@edulastic/colors'
+import { themes } from '../../../../theme'
 
 const {
-  playerSkin: { parcc }
-} = themes;
-const { defaultButton, navigationButtons, menuItem, breadcrumb } = parcc;
+  playerSkin: { parcc },
+} = themes
+const { defaultButton, navigationButtons, menuItem, breadcrumb } = parcc
 
 export const StyledPopover = styled(Popover)`
   padding: 0;
   .ant-popover-inner-content {
     padding: 0;
   }
-`;
+`
 
 export const StyledButton = styled.div`
   margin-right: 10px;
@@ -25,10 +25,12 @@ export const StyledButton = styled.div`
   border-radius: 4px;
   border: 1px solid;
   cursor: pointer;
-  font-weight:600;
+  font-weight: 600;
   ${({ theme, active, style }) => `
     color: ${active ? defaultButton.active.color : defaultButton.color};
-    background: ${active ? defaultButton.active.background : defaultButton.background};
+    background: ${
+      active ? defaultButton.active.background : defaultButton.background
+    };
     border-color: ${theme.default.headerButtonBorderColor};
     font-size: 11px;
     width: 151px;
@@ -61,7 +63,7 @@ export const StyledButton = styled.div`
       margin-right: 0px;
     }
   }
-`;
+`
 
 export const ControlBtn = styled(Button)`
   &[disabled] {
@@ -85,9 +87,9 @@ export const ControlBtn = styled(Button)`
   svg {
     fill: ${navigationButtons.color};
   }
-`;
+`
 
-export const StyledDropdown = styled(Dropdown)``;
+export const StyledDropdown = styled(Dropdown)``
 
 export const StyledMenu = styled(Menu)`
   ${({ style }) => style};
@@ -117,7 +119,7 @@ export const StyledMenu = styled(Menu)`
       margin-right: 6px;
     }
   }
-`;
+`
 
 export const StyledHeaderTitle = styled.div`
   display: flex;
@@ -137,12 +139,12 @@ export const StyledHeaderTitle = styled.div`
   svg {
     fill: ${breadcrumb.color};
   }
-`;
+`
 
 export const HistoryBackLeftArrow = styled(Icon)`
   margin-right: 5px;
   font-size: 10px;
-`;
+`
 
 export const Container = styled.div`
   margin-left: 40px;
@@ -152,4 +154,4 @@ export const Container = styled.div`
   span {
     line-height: 11px;
   }
-`;
+`

@@ -1,5 +1,5 @@
-import { themeColor, white } from "@edulastic/colors";
-import styled from "styled-components";
+import { themeColor, white } from '@edulastic/colors'
+import styled from 'styled-components'
 
 export const Container = styled.div`
   border-radius: 5px;
@@ -7,11 +7,11 @@ export const Container = styled.div`
   padding: 15px;
   margin-bottom: 50px;
   background-color: ${white};
-`;
+`
 
 export const Heading = styled.div`
   color: ${themeColor};
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 15px;
-`;
+`

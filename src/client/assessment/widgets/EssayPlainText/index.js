@@ -1,26 +1,33 @@
-import React, { Fragment, useMemo } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { replaceVariables } from "../../utils/variables";
+import React, { Fragment, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { replaceVariables } from '../../utils/variables'
 
-import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
+import { CLEAR, EDIT, PREVIEW } from '../../constants/constantsForQuestions'
 
-import EditEssayPlainText from "./components/EditEssayPlainText";
-import EssayPlainTextPreview from "./EssayPlainTextPreview";
+import EditEssayPlainText from './components/EditEssayPlainText'
+import EssayPlainTextPreview from './EssayPlainTextPreview'
 
-const EssayPlainText = props => {
-  const { item, view, disableResponse, isPrintPreview } = props;
+const EssayPlainText = (props) => {
+  const { item, view, disableResponse, isPrintPreview } = props
 
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <Fragment>
+    <>
       {view === EDIT && <EditEssayPlainText {...props} />}
-      {view === PREVIEW && <EssayPlainTextPreview key={itemForPreview.id} {...props} item={itemForPreview} disableResponse={disableResponse || isPrintPreview} />}
-    </Fragment>
-  );
-};
+      {view === PREVIEW && (
+        <EssayPlainTextPreview
+          key={itemForPreview.id}
+          {...props}
+          item={itemForPreview}
+          disableResponse={disableResponse || isPrintPreview}
+        />
+      )}
+    </>
+  )
+}
 
 EssayPlainText.propTypes = {
   view: PropTypes.string.isRequired,
@@ -34,8 +41,8 @@ EssayPlainText.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 EssayPlainText.defaultProps = {
   previewTab: CLEAR,
@@ -43,15 +50,14 @@ EssayPlainText.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: "",
+  evaluation: '',
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const EssayPlainTextContainer = connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(EssayPlainText);
+const EssayPlainTextContainer = connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(EssayPlainText)
 
-export { EssayPlainTextContainer as EssayPlainText };
+export { EssayPlainTextContainer as EssayPlainText }

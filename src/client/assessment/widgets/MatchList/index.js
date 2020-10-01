@@ -1,23 +1,25 @@
-import React, { Fragment, useMemo } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { Fragment, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-import { replaceVariables } from "../../utils/variables";
-import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
-import { changePreviewAction } from "../../../author/src/actions/view";
-import MatchListPreview from "./MatchListPreview";
-import MatchListEdit from "./MatchListEdit";
+import { replaceVariables } from '../../utils/variables'
+import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions'
+import { changePreviewAction } from '../../../author/src/actions/view'
+import MatchListPreview from './MatchListPreview'
+import MatchListEdit from './MatchListEdit'
 
-const MatchList = props => {
-  const { item, view } = props;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+const MatchList = (props) => {
+  const { item, view } = props
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
   return (
-    <Fragment>
-      {view === PREVIEW && itemForPreview && <MatchListPreview {...props} showBorder item={itemForPreview} />}
+    <>
+      {view === PREVIEW && itemForPreview && (
+        <MatchListPreview {...props} showBorder item={itemForPreview} />
+      )}
       {view === EDIT && <MatchListEdit {...props} />}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 MatchList.propTypes = {
   view: PropTypes.string.isRequired,
@@ -30,8 +32,8 @@ MatchList.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 MatchList.defaultProps = {
   previewTab: CLEAR,
@@ -39,15 +41,14 @@ MatchList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: "",
+  evaluation: '',
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
-const MatchListContainer = connect(
-  null,
-  { changePreview: changePreviewAction }
-)(MatchList);
+const MatchListContainer = connect(null, {
+  changePreview: changePreviewAction,
+})(MatchList)
 
-export { MatchListContainer as MatchList };
+export { MatchListContainer as MatchList }

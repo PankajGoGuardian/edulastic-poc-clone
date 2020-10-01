@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { themeColorHoverBlue } from "@edulastic/colors";
+import styled from 'styled-components'
+import { themeColorHoverBlue } from '@edulastic/colors'
 
 export const InnerWrapper = styled.div`
   display: flex;
@@ -24,42 +24,42 @@ export const InnerWrapper = styled.div`
     maxHeight,
     width,
     showIcon,
-    isPrintPreview
+    isPrintPreview,
   }) => {
-    let bgColor = theme.widgets.classification.dragItemBgColor;
-    let borderColor = theme.widgets.classification.dragItemBorderColor;
+    let bgColor = theme.widgets.classification.dragItemBgColor
+    let borderColor = theme.widgets.classification.dragItemBorderColor
 
     if (preview && valid !== undefined) {
-      bgColor = theme.widgets.classification.dragItemNotValidBorderColor;
-      borderColor = theme.widgets.classification.dragItemNotValidBgColor;
+      bgColor = theme.widgets.classification.dragItemNotValidBorderColor
+      borderColor = theme.widgets.classification.dragItemNotValidBgColor
     }
 
     if (preview && valid) {
-      bgColor = theme.widgets.classification.dragItemValidBgColor;
-      borderColor = theme.widgets.classification.dragItemValidBorderColor;
+      bgColor = theme.widgets.classification.dragItemValidBgColor
+      borderColor = theme.widgets.classification.dragItemValidBorderColor
     }
 
     if (!preview && transparent) {
-      bgColor = "transparent";
+      bgColor = 'transparent'
     }
 
-    if (isPrintPreview && bgColor !== "#FFFFFF") {
-      bgColor = "transparent";
+    if (isPrintPreview && bgColor !== '#FFFFFF') {
+      bgColor = 'transparent'
     }
 
     return `
-      border-color: ${showIcon ? "transparent" : borderColor};
+      border-color: ${showIcon ? 'transparent' : borderColor};
       background-color: ${bgColor};
       opacity:  ${dragging ? 0.1 : 1};
       font-weight: ${theme.widgets.classification.dragItemFontWeight};
       border-width: 2px;
-      width: ${width ? `${width + 10}px` : ""};
+      width: ${width ? `${width + 10}px` : ''};
       min-width: ${minWidth}px;
       max-width: ${maxWidth - 25}px;
       min-height: ${minHeight}px;
       max-height: ${maxHeight}px;
-      padding-right: ${showIcon ? "20px" : ""};
-    `;
+      padding-right: ${showIcon ? '20px' : ''};
+    `
   }}
 
   &:hover {
@@ -69,4 +69,4 @@ export const InnerWrapper = styled.div`
       color: white !important;
     }
   }
-`;
+`

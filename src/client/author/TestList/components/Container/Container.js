@@ -1,19 +1,31 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { debounce, get, has, pickBy, identity, pick, isEqual, omit } from "lodash";
-import * as qs from "query-string";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import moment from "moment";
-import { Button, Row, Spin, Dropdown, Menu } from "antd";
-import Modal from "react-responsive-modal";
-import { withWindowSizes, FlexContainer, notification } from "@edulastic/common";
-import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
-import { white, greyLight1, greyThemeLight } from "@edulastic/colors";
-import { storeInLocalStorage, getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
-import { libraryFilters, sortOptions } from "@edulastic/constants";
-import { withNamespaces } from "react-i18next";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import {
+  debounce,
+  get,
+  has,
+  pickBy,
+  identity,
+  pick,
+  isEqual,
+  omit,
+} from 'lodash'
+import * as qs from 'query-string'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import moment from 'moment'
+import { Button, Row, Spin, Dropdown, Menu } from 'antd'
+import Modal from 'react-responsive-modal'
+import { withWindowSizes, FlexContainer, notification } from '@edulastic/common'
+import { IconList, IconTile, IconTestBank } from '@edulastic/icons'
+import { white, greyLight1, greyThemeLight } from '@edulastic/colors'
+import {
+  storeInLocalStorage,
+  getFromSessionStorage,
+} from '@edulastic/api/src/utils/Storage'
+import { libraryFilters, sortOptions } from '@edulastic/constants'
+import { withNamespaces } from 'react-i18next'
 import {
   ScrollBox,
   Container,
@@ -31,10 +43,10 @@ import {
   CardBox,
   StyledCountText,
   ItemsMenu,
-  MobileFilterModal
-} from "./styled";
+  MobileFilterModal,
+} from './styled'
 
-import CardWrapper from "../CardWrapper/CardWrapper";
+import CardWrapper from '../CardWrapper/CardWrapper'
 import {
   receiveTestsAction,
   getTestsSelector,
@@ -53,32 +65,35 @@ import {
   approveOrRejectMultipleTestsRequestAction,
   getSortFilterStateSelector,
   initialSortState,
-  getSelectedTestsSelector
-} from "../../ducks";
+  getSelectedTestsSelector,
+} from '../../ducks'
 import {
   getTestsCreatingSelector,
   clearTestDataAction,
   clearCreatedItemsAction,
-  getAllTagsAction
-} from "../../../TestPage/ducks";
+  getAllTagsAction,
+} from '../../../TestPage/ducks'
 import {
   clearSelectedItemsAction,
-  setApproveConfirmationOpenAction
-} from "../../../TestPage/components/AddItems/ducks";
-import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
+  setApproveConfirmationOpenAction,
+} from '../../../TestPage/components/AddItems/ducks'
+import { getCurriculumsListSelector } from '../../../src/selectors/dictionaries'
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction
-} from "../../../src/actions/dictionaries";
+  getDictStandardsForCurriculumAction,
+} from '../../../src/actions/dictionaries'
 
-import ListHeader from "../../../src/components/common/ListHeader";
-import TestListFilters from "./TestListFilters";
-import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
-import AddBulkTestModal from "../../../PlaylistPage/components/AddBulkTestModal/AddBulkTestModal";
-import DeleteBulkTestModal from "../../../PlaylistPage/components/DeleteBulkTestModal/DeleteBulkTestModal";
-import ManageModulesModalBody from "../../../CurriculumSequence/components/modals/ManageModulesModalBody";
-import { StyledButton, BtnActionsContainer } from "../../../TestPage/components/AddItems/styled";
+import ListHeader from '../../../src/components/common/ListHeader'
+import TestListFilters from './TestListFilters'
+import AddTestModal from '../../../PlaylistPage/components/AddTestsModal/AddTestModal'
+import AddBulkTestModal from '../../../PlaylistPage/components/AddBulkTestModal/AddBulkTestModal'
+import DeleteBulkTestModal from '../../../PlaylistPage/components/DeleteBulkTestModal/DeleteBulkTestModal'
+import ManageModulesModalBody from '../../../CurriculumSequence/components/modals/ManageModulesModalBody'
+import {
+  StyledButton,
+  BtnActionsContainer,
+} from '../../../TestPage/components/AddItems/styled'
 import {
   createNewModuleAction,
   updateModuleAction,
@@ -87,44 +102,48 @@ import {
   createTestInModuleAction,
   addTestToModuleInBulkAction,
   deleteTestFromModuleInBulkAction,
-  removeTestFromPlaylistAction
-} from "../../../PlaylistPage/ducks";
-import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
-import NoDataNotification from "../../../../common/components/NoDataNotification";
+  removeTestFromPlaylistAction,
+} from '../../../PlaylistPage/ducks'
+import RemoveTestModal from '../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   getInterestedCurriculumsSelector,
   getInterestedSubjectsSelector,
   getInterestedGradesSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
-  getUserFeatures
-} from "../../../src/selectors/user";
-import { getInterestedStandards, getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
+  getUserFeatures,
+} from '../../../src/selectors/user'
+import {
+  getInterestedStandards,
+  getDefaultInterests,
+  setDefaultInterests,
+} from '../../../dataUtils'
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
-  isProxyUser as isProxyUserSelector
-} from "../../../../student/Login/ducks";
-import CartButton from "../CartButton/cartButton";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+  isProxyUser as isProxyUserSelector,
+} from '../../../../student/Login/ducks'
+import CartButton from '../CartButton/cartButton'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
-import Actions from "../../../ItemList/components/Actions";
-import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
-import HeaderFilter from "../../../ItemList/components/HeaderFilter";
+import Actions from '../../../ItemList/components/Actions'
+import SelectCollectionModal from '../../../ItemList/components/Actions/SelectCollection'
+import HeaderFilter from '../../../ItemList/components/HeaderFilter'
 
-import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
-import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
-import SortMenu from "../../../ItemList/components/SortMenu";
-import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
-import ApproveConfirmModal from "../../../ItemList/components/ApproveConfirmModal";
+import InputTag from '../../../ItemList/components/ItemFilter/SearchTag'
+import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
+import SortMenu from '../../../ItemList/components/SortMenu'
+import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
+import ApproveConfirmModal from '../../../ItemList/components/ApproveConfirmModal'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
 // like seprating out filter and test rendering into two, and connect them to only what is required.
 
-const setBlockstyleInSession = blockstyle => {
-  sessionStorage.setItem("testLibraryBlockstyle", blockstyle);
-};
+const setBlockstyleInSession = (blockstyle) => {
+  sessionStorage.setItem('testLibraryBlockstyle', blockstyle)
+}
 
 class TestList extends Component {
   static propTypes = {
@@ -144,7 +163,7 @@ class TestList extends Component {
         _id: PropTypes.string.isRequired,
         curriculum: PropTypes.string.isRequired,
         grades: PropTypes.array.isRequired,
-        subject: PropTypes.string.isRequired
+        subject: PropTypes.string.isRequired,
       })
     ).isRequired,
     getCurriculums: PropTypes.func.isRequired,
@@ -157,17 +176,17 @@ class TestList extends Component {
     playlist: PropTypes.object.isRequired,
     mode: PropTypes.string.isRequired,
     getAllTags: PropTypes.func.isRequired,
-    testFilters: PropTypes.object.isRequired
-  };
+    testFilters: PropTypes.object.isRequired,
+  }
 
   static defaultProps = {
     clearSelectedItems: () => null,
-    clearTestData: () => null
-  };
+    clearTestData: () => null,
+  }
 
   state = {
-    standardQuery: "",
-    blockstyle: "tile",
+    standardQuery: '',
+    blockstyle: 'tile',
     showCreateModuleModal: false,
     showManageModuleModal: false,
     showConfirmRemoveModal: false,
@@ -177,28 +196,28 @@ class TestList extends Component {
     isShowFilter: false,
     markedTests: [],
     moduleModalAdd: null,
-    openSidebar: false
-  };
+    openSidebar: false,
+  }
 
   static getDerivedStateFromProps = (props, prevState) => {
-    const { features, mode } = props;
-    const localBlockstyle = getFromSessionStorage("testLibraryBlockstyle");
+    const { features, mode } = props
+    const localBlockstyle = getFromSessionStorage('testLibraryBlockstyle')
     if (localBlockstyle) {
       return {
         ...prevState,
-        blockstyle: localBlockstyle
-      };
+        blockstyle: localBlockstyle,
+      }
     }
-    if (features.isCurator && mode !== "embedded") {
-      setBlockstyleInSession("horizontal");
+    if (features.isCurator && mode !== 'embedded') {
+      setBlockstyleInSession('horizontal')
       return {
         ...prevState,
-        blockstyle: "horizontal"
-      };
+        blockstyle: 'horizontal',
+      }
     }
-    setBlockstyleInSession("tile");
-    return prevState;
-  };
+    setBlockstyleInSession('tile')
+    return prevState
+  }
 
   componentDidMount() {
     const {
@@ -221,122 +240,149 @@ class TestList extends Component {
       interestedSubjects,
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
-      sort: initSort = {}
-    } = this.props;
+      sort: initSort = {},
+    } = this.props
     const {
       subject = interestedSubjects || [],
       grades = interestedGrades || [],
-      curriculumId = firstCurriculum && firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum._id : ""
-    } = getDefaultInterests();
-    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[testList]")) || {};
-    const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[testList]")) || {};
+      curriculumId = firstCurriculum &&
+      firstCurriculum.subject === interestedSubjects?.[0]
+        ? firstCurriculum._id
+        : '',
+    } = getDefaultInterests()
+    const sessionFilters =
+      JSON.parse(sessionStorage.getItem('filters[testList]')) || {}
+    const sessionSort =
+      JSON.parse(sessionStorage.getItem('sortBy[testList]')) || {}
     const searchFilters = {
       ...testFilters,
       ...sessionFilters,
       subject,
       grades,
-      curriculumId: parseInt(curriculumId, 10) || ""
-    };
+      curriculumId: parseInt(curriculumId, 10) || '',
+    }
 
     const sort = {
       ...initSort,
-      sortBy: "popularity",
-      sortDir: "desc",
-      ...sessionSort
-    };
+      sortBy: 'popularity',
+      sortDir: 'desc',
+      ...sessionSort,
+    }
 
     // propagate filter from query params to the store (test.filters)
-    let searchParams = qs.parse(location.search);
-    searchParams = this.typeCheck(searchParams, searchFilters);
+    let searchParams = qs.parse(location.search)
+    searchParams = this.typeCheck(searchParams, searchFilters)
     if (Object.keys(searchParams).length) {
-      searchParams.curriculumId = Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
-      searchParams.standardIds = searchParams.standardIds ? searchParams.standardIds.map(id => parseInt(id, 10)) : [];
-      Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
+      searchParams.curriculumId =
+        Number(searchParams.curriculumId) || searchFilters.curriculumId || ''
+      searchParams.standardIds = searchParams.standardIds
+        ? searchParams.standardIds.map((id) => parseInt(id, 10))
+        : []
+      Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)))
     }
 
-    this.updateFilterState(searchFilters, sort, true);
+    this.updateFilterState(searchFilters, sort, true)
 
     if (searchFilters.filter === filterMenuItems[5].filter) {
-      searchFilters.filter = filterMenuItems[0].filter;
+      searchFilters.filter = filterMenuItems[0].filter
     }
 
-    if (mode === "embedded") {
-      const selectedTests = [];
-      const { modules } = playlist;
-      const { state = {} } = location;
-      const { editFlow } = state;
-      modules?.forEach(mod => {
-        mod.data.forEach(test => {
-          selectedTests.push(test.contentId);
-        });
-      });
+    if (mode === 'embedded') {
+      const selectedTests = []
+      const { modules } = playlist
+      const { state = {} } = location
+      const { editFlow } = state
+      modules?.forEach((mod) => {
+        mod.data.forEach((test) => {
+          selectedTests.push(test.contentId)
+        })
+      })
       this.setState({
         selectedTests,
         editFlow,
-        blockstyle: "horizontal"
-      });
-      setBlockstyleInSession("horizontal");
+        blockstyle: 'horizontal',
+      })
+      setBlockstyleInSession('horizontal')
       receiveTests({
         page: 1,
         limit,
         search: searchFilters,
-        sort
-      });
+        sort,
+      })
     } else {
       if (!curriculums.length) {
-        getCurriculums();
+        getCurriculums()
       }
-      const pageNumber = params.page || page;
-      const limitCount = params.limit || limit;
-      const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
-      history.push(`/author/tests?${queryParams}`);
-      receiveTests({ page: 1, limit, search: searchFilters, sort });
-      getAllTags({ type: "test" });
+      const pageNumber = params.page || page
+      const limitCount = params.limit || limit
+      const queryParams = qs.stringify(
+        pickBy(
+          { ...searchFilters, page: pageNumber, limit: limitCount },
+          identity
+        )
+      )
+      history.push(`/author/tests?${queryParams}`)
+      receiveTests({ page: 1, limit, search: searchFilters, sort })
+      getAllTags({ type: 'test' })
     }
 
     if (searchFilters.curriculumId) {
-      const { curriculumId: _curriculumId, grades: curriculumGrades = [] } = searchFilters;
-      clearDictStandards();
-      getCurriculumStandards(_curriculumId, curriculumGrades, "");
+      const {
+        curriculumId: _curriculumId,
+        grades: curriculumGrades = [],
+      } = searchFilters
+      clearDictStandards()
+      getCurriculumStandards(_curriculumId, curriculumGrades, '')
     }
-    clearCreatedItems();
-    clearSelectedItems();
+    clearCreatedItems()
+    clearSelectedItems()
   }
 
   updateFilterState = (searchState, sortState, all) => {
-    const { updateAllTestFilters, updateTestFilters, testFilters } = this.props;
+    const { updateAllTestFilters, updateTestFilters, testFilters } = this.props
     const search = all
       ? { ...searchState }
       : {
           ...testFilters,
-          [searchState.key]: searchState.value
-        };
-    sessionStorage.setItem("filters[testList]", JSON.stringify(search));
-    sessionStorage.setItem("sortBy[testList]", JSON.stringify(sortState));
+          [searchState.key]: searchState.value,
+        }
+    sessionStorage.setItem('filters[testList]', JSON.stringify(search))
+    sessionStorage.setItem('sortBy[testList]', JSON.stringify(sortState))
     if (all) {
-      return updateAllTestFilters({ search, sort: sortState });
+      return updateAllTestFilters({ search, sort: sortState })
     }
-    updateTestFilters({ search, sort: sortState });
-  };
+    updateTestFilters({ search, sort: sortState })
+  }
 
-  searchTest = debounce(search => {
-    const { receiveTests, limit, history, playlistPage, playlist: { _id } = {}, sort } = this.props;
-    const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
-    history.push(locToPush);
-    receiveTests({ search, limit, page: 1, sort });
-  }, 500);
+  searchTest = debounce((search) => {
+    const {
+      receiveTests,
+      limit,
+      history,
+      playlistPage,
+      playlist: { _id } = {},
+      sort,
+    } = this.props
+    const queryParams = qs.stringify(
+      pickBy({ ...search, page: 1, limit }, identity)
+    )
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`
+    history.push(locToPush)
+    receiveTests({ search, limit, page: 1, sort })
+  }, 500)
 
-  handleSearchInputChange = tags => {
-    const { testFilters, sort } = this.props;
+  handleSearchInputChange = (tags) => {
+    const { testFilters, sort } = this.props
     const newSearch = {
       ...testFilters,
-      searchString: tags
-    };
+      searchString: tags,
+    }
 
-    this.updateFilterState(newSearch, sort, true);
-    this.searchTest(newSearch);
-  };
+    this.updateFilterState(newSearch, sort, true)
+    this.searchTest(newSearch)
+  }
 
   /**
    * invoked when any of the filter changes.
@@ -355,138 +401,179 @@ class TestList extends Component {
       testFilters,
       playlistPage,
       playlist: { _id } = {},
-      sort = {}
-    } = this.props;
+      sort = {},
+    } = this.props
 
-    if (name === "folderId") {
-      const searchfilterWithFolder = { ...emptyFilters, [name]: value, filter: "FOLDERS" };
-      this.updateFilterState(searchfilterWithFolder, sort, true);
-      return receiveTests({ search: searchfilterWithFolder, sort, page: 1, limit });
+    if (name === 'folderId') {
+      const searchfilterWithFolder = {
+        ...emptyFilters,
+        [name]: value,
+        filter: 'FOLDERS',
+      }
+      this.updateFilterState(searchfilterWithFolder, sort, true)
+      return receiveTests({
+        search: searchfilterWithFolder,
+        sort,
+        page: 1,
+        limit,
+      })
     }
     // all the fields to pass for search.
 
     let updatedKeys = {
-      ...testFilters
-    };
-
-    if (name === "grades" || name === "subject" || name === "curriculumId") {
-      setDefaultInterests({ [name]: value });
+      ...testFilters,
     }
 
-    if (name === "curriculumId") {
-      clearDictStandards();
-      getCurriculumStandards(value, testFilters.grades, "");
+    if (name === 'grades' || name === 'subject' || name === 'curriculumId') {
+      setDefaultInterests({ [name]: value })
+    }
+
+    if (name === 'curriculumId') {
+      clearDictStandards()
+      getCurriculumStandards(value, testFilters.grades, '')
       updatedKeys = {
         ...updatedKeys,
-        standardIds: []
-      };
+        standardIds: [],
+      }
     }
-    if (name === "grades" && testFilters.curriculumId) {
-      clearDictStandards();
-      getCurriculumStandards(testFilters.curriculumId, value, "");
+    if (name === 'grades' && testFilters.curriculumId) {
+      clearDictStandards()
+      getCurriculumStandards(testFilters.curriculumId, value, '')
     }
-    if (name === "subject") {
+    if (name === 'subject') {
       updatedKeys = {
         ...updatedKeys,
         [name]: value,
-        curriculumId: "",
-        standardIds: []
-      };
-      updateDefaultSubject(value);
-      storeInLocalStorage("defaultSubject", value);
-      clearDictStandards();
+        curriculumId: '',
+        standardIds: [],
+      }
+      updateDefaultSubject(value)
+      storeInLocalStorage('defaultSubject', value)
+      clearDictStandards()
     }
-    if (name === "createdAt") {
+    if (name === 'createdAt') {
       updatedKeys = {
         ...updatedKeys,
-        [name]: value ? moment(dateString, "DD/MM/YYYY").valueOf() : ""
-      };
+        [name]: value ? moment(dateString, 'DD/MM/YYYY').valueOf() : '',
+      }
     } else {
       updatedKeys = {
         ...updatedKeys,
-        [name]: value
-      };
+        [name]: value,
+      }
     }
-    if (name === "grades") {
-      updateDefaultGrades(value);
-      storeInLocalStorage("defaultGrades", value);
+    if (name === 'grades') {
+      updateDefaultGrades(value)
+      storeInLocalStorage('defaultGrades', value)
     }
     const searchFilters = {
       ...updatedKeys,
-      [name]: name === "createdAt" ? updatedKeys[name] : value
-    };
-    this.updateFilterState(searchFilters, sort, true);
+      [name]: name === 'createdAt' ? updatedKeys[name] : value,
+    }
+    this.updateFilterState(searchFilters, sort, true)
     // update the url to reflect the newly applied filter and get the new results.
-    const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
-    history.push(locToPush);
-    receiveTests({ search: searchFilters, sort, page: 1, limit });
-  };
+    const queryParams = qs.stringify(
+      pickBy({ ...searchFilters, page: 1, limit }, identity)
+    )
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`
+    history.push(locToPush)
+    receiveTests({ search: searchFilters, sort, page: 1, limit })
+  }
 
   handleCreate = () => {
-    const { history, clearCreatedItems, clearSelectedItems, clearTestData, mode } = this.props;
-    if (mode !== "embedded") {
-      history.push("/author/tests/select");
+    const {
+      history,
+      clearCreatedItems,
+      clearSelectedItems,
+      clearTestData,
+      mode,
+    } = this.props
+    if (mode !== 'embedded') {
+      history.push('/author/tests/select')
     }
-    clearTestData();
-    clearCreatedItems();
-    clearSelectedItems();
-  };
+    clearTestData()
+    clearCreatedItems()
+    clearSelectedItems()
+  }
 
-  updateTestList = page => {
-    const { receiveTests, limit, history, testFilters, playlistPage, playlist: { _id } = {}, sort } = this.props;
+  updateTestList = (page) => {
+    const {
+      receiveTests,
+      limit,
+      history,
+      testFilters,
+      playlistPage,
+      playlist: { _id } = {},
+      sort,
+    } = this.props
     const searchFilters = {
-      ...testFilters
-    };
+      ...testFilters,
+    }
 
-    const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
-    history.push(locToPush);
-    receiveTests({ page, limit, search: searchFilters, sort });
-  };
+    const queryParams = qs.stringify(
+      pickBy({ ...searchFilters, page, limit }, identity)
+    )
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`
+    history.push(locToPush)
+    receiveTests({ page, limit, search: searchFilters, sort })
+  }
 
-  handlePaginationChange = page => {
-    this.updateTestList(page);
-  };
+  handlePaginationChange = (page) => {
+    this.updateTestList(page)
+  }
 
   handleClearFilter = () => {
-    const { history, mode, limit, receiveTests, testFilters, sort } = this.props;
+    const { history, mode, limit, receiveTests, testFilters, sort } = this.props
 
     // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(testFilters, emptyFilters) && isEqual(sort, initialSortState)) return null;
+    if (isEqual(testFilters, emptyFilters) && isEqual(sort, initialSortState))
+      return null
 
-    this.updateFilterState(emptyFilters, initialSortState, true);
-    setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
-    if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
-    receiveTests({ page: 1, limit, search: emptyFilters, sort: initialSortState });
-  };
+    this.updateFilterState(emptyFilters, initialSortState, true)
+    setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
+    if (mode !== 'embedded')
+      history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`)
+    receiveTests({
+      page: 1,
+      limit,
+      search: emptyFilters,
+      sort: initialSortState,
+    })
+  }
 
-  handleStyleChange = blockstyle => {
+  handleStyleChange = (blockstyle) => {
     this.setState({
-      blockstyle
-    });
-    setBlockstyleInSession(blockstyle);
-  };
+      blockstyle,
+    })
+    setBlockstyleInSession(blockstyle)
+  }
 
   showFilterHandler = () => {
-    this.setState({ isShowFilter: true });
-  };
+    this.setState({ isShowFilter: true })
+  }
 
   closeSearchModal = () => {
-    this.setState({ isShowFilter: false });
-  };
+    this.setState({ isShowFilter: false })
+  }
 
   typeCheck = (parsedQueryData, search) => {
-    const parsedQueryDataClone = {};
+    const parsedQueryDataClone = {}
     for (const key of Object.keys(parsedQueryData)) {
-      if (search[key] instanceof Array && !(parsedQueryData[key] instanceof Array)) {
-        parsedQueryDataClone[key] = [parsedQueryData[key]];
+      if (
+        search[key] instanceof Array &&
+        !(parsedQueryData[key] instanceof Array)
+      ) {
+        parsedQueryDataClone[key] = [parsedQueryData[key]]
       } else {
-        parsedQueryDataClone[key] = parsedQueryData[key];
+        parsedQueryDataClone[key] = parsedQueryData[key]
       }
     }
-    return parsedQueryDataClone;
-  };
+    return parsedQueryDataClone
+  }
 
   setFilterParams(parsedQueryData) {
     const {
@@ -494,255 +581,304 @@ class TestList extends Component {
       receiveTests,
       match: { params = {} },
       testFilters,
-      sort
-    } = this.props;
+      sort,
+    } = this.props
 
     const search = {
-      ...testFilters
-    };
+      ...testFilters,
+    }
 
-    parsedQueryData = this.typeCheck(parsedQueryData, search);
+    parsedQueryData = this.typeCheck(parsedQueryData, search)
     const searchClone = {
-      ...testFilters
-    };
+      ...testFilters,
+    }
 
     for (const key of Object.keys(parsedQueryData)) {
       if (has(testFilters, key)) {
-        searchClone[key] = parsedQueryData[key];
+        searchClone[key] = parsedQueryData[key]
       }
     }
 
-    this.updateFilterState(searchClone, sort, true);
+    this.updateFilterState(searchClone, sort, true)
 
-    const { curriculumId, grade } = searchClone;
+    const { curriculumId, grade } = searchClone
     if (curriculumId && parsedQueryData.standardQuery.length >= 2) {
-      getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery);
+      getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery)
     }
     receiveTests({
       page: Number(params.page),
       limit: Number(params.limit),
       search: searchClone,
-      sort
-    });
+      sort,
+    })
   }
 
   handleCreateNewModule = () => {
-    this.setState({ showCreateModuleModal: true });
-  };
+    this.setState({ showCreateModuleModal: true })
+  }
 
   handleManageModule = () => {
-    this.setState({ showManageModuleModal: true });
-  };
+    this.setState({ showManageModuleModal: true })
+  }
 
   onCloseManageModule = () => {
-    this.setState({ showManageModuleModal: false });
-  };
+    this.setState({ showManageModuleModal: false })
+  }
 
   handleSaveModule = () => {
-    const { handleSave } = this.props;
-    handleSave();
-    this.setState({ showManageModuleModal: false });
-  };
+    const { handleSave } = this.props
+    handleSave()
+    this.setState({ showManageModuleModal: false })
+  }
 
-  deleteModule = id => {
-    const { selectedTests } = this.state;
-    const { playlist, deleteModuleFromPlaylist } = this.props;
-    const moduleData = playlist?.modules?.[id]?.data?.map(x => x.contentId);
-    const newSelectedTests = selectedTests?.filter(testId => !moduleData.includes(testId));
-    this.setState({ selectedTests: newSelectedTests }, () => deleteModuleFromPlaylist(id));
-  };
+  deleteModule = (id) => {
+    const { selectedTests } = this.state
+    const { playlist, deleteModuleFromPlaylist } = this.props
+    const moduleData = playlist?.modules?.[id]?.data?.map((x) => x.contentId)
+    const newSelectedTests = selectedTests?.filter(
+      (testId) => !moduleData.includes(testId)
+    )
+    this.setState({ selectedTests: newSelectedTests }, () =>
+      deleteModuleFromPlaylist(id)
+    )
+  }
 
-  handleAddTests = item => {
+  handleAddTests = (item) => {
     if (!item) {
-      console.error("Test data is missing while adding tests in bulk..");
-      return;
+      console.error('Test data is missing while adding tests in bulk..')
+      return
     }
 
-    if (item?.status === "draft" || item?.status === "rejected") {
-      const testStatus = item?.status === "draft" ? "Draft" : "Rejected";
-      notification({ type: "warn", msg: `${testStatus} tests cannot be added` });
-      return;
+    if (item?.status === 'draft' || item?.status === 'rejected') {
+      const testStatus = item?.status === 'draft' ? 'Draft' : 'Rejected'
+      notification({ type: 'warn', msg: `${testStatus} tests cannot be added` })
+      return
     }
 
     const {
-      playlist: { modules }
-    } = this.props;
+      playlist: { modules },
+    } = this.props
     if (!modules.length) {
-      this.setState({ showManageModuleModal: true, moduleModalAdd: true, testAdded: item });
-      notification({ type: "warn", messageKey: "createOneModuleAtleast" });
+      this.setState({
+        showManageModuleModal: true,
+        moduleModalAdd: true,
+        testAdded: item,
+      })
+      notification({ type: 'warn', messageKey: 'createOneModuleAtleast' })
     } else {
-      this.setState({ showAddTestInModules: true, testAdded: item });
+      this.setState({ showAddTestInModules: true, testAdded: item })
     }
-  };
+  }
 
   handleBulkAddTests = () => {
-    const { markedTests } = this.state;
-    const { playlist: { modules } = {} } = this.props;
+    const { markedTests } = this.state
+    const { playlist: { modules } = {} } = this.props
     if (modules?.length) {
       if (markedTests.length) {
-        this.setState({ showAddModules: true });
+        this.setState({ showAddModules: true })
       } else {
-        notification({ type: "warn", messageKey: "selectOneOrMoreTest" });
+        notification({ type: 'warn', messageKey: 'selectOneOrMoreTest' })
       }
     } else {
-      notification({ type: "warn", messageKey: "createOneModuleAtleast" });
+      notification({ type: 'warn', messageKey: 'createOneModuleAtleast' })
     }
-  };
+  }
 
   handleBulkRemoveTests = () => {
-    const { markedTests } = this.state;
-    const { playlist: { modules } = {} } = this.props;
+    const { markedTests } = this.state
+    const { playlist: { modules } = {} } = this.props
     if (modules?.length) {
       if (markedTests.length) {
-        this.setState({ showRemoveModules: true });
+        this.setState({ showRemoveModules: true })
       } else {
-        notification({ type: "warn", messageKey: "selectOneOrMoreTest" });
+        notification({ type: 'warn', messageKey: 'selectOneOrMoreTest' })
       }
     } else {
-      notification({ type: "warn", messageKey: "createOneModuleAtleast" });
+      notification({ type: 'warn', messageKey: 'createOneModuleAtleast' })
     }
-  };
+  }
 
   handleCheckboxAction = (e, prop) => {
-    const { markedTests } = this.state;
+    const { markedTests } = this.state
     if (e.target.checked) {
-      this.setState({ markedTests: [...markedTests, prop] });
+      this.setState({ markedTests: [...markedTests, prop] })
     } else {
-      this.setState({ markedTests: markedTests.filter(data => data._id !== prop._id) });
+      this.setState({
+        markedTests: markedTests.filter((data) => data._id !== prop._id),
+      })
     }
-  };
+  }
 
   onCloseCreateModule = () => {
-    this.setState({ showCreateModuleModal: false });
-  };
+    this.setState({ showCreateModuleModal: false })
+  }
 
   onCloseAddTestModal = () => {
-    this.setState({ showAddTestInModules: false });
-  };
+    this.setState({ showAddTestInModules: false })
+  }
 
   onCloseBulkAddTestModal = () => {
-    this.setState({ showAddModules: false });
-  };
+    this.setState({ showAddModules: false })
+  }
 
   onCloseBulkDeleteTestModal = () => {
-    this.setState({ showRemoveModules: false });
-  };
+    this.setState({ showRemoveModules: false })
+  }
 
   removeTestFromPlaylist = () => {
-    const { selectedTests, removeItemId } = this.state;
-    const { deleteTestFromPlaylist } = this.props;
-    const newSelectedTests = selectedTests.filter(testId => testId !== removeItemId);
-    deleteTestFromPlaylist({ itemId: removeItemId });
-    this.setState({ selectedTests: newSelectedTests, showConfirmRemoveModal: false });
-  };
+    const { selectedTests, removeItemId } = this.state
+    const { deleteTestFromPlaylist } = this.props
+    const newSelectedTests = selectedTests.filter(
+      (testId) => testId !== removeItemId
+    )
+    deleteTestFromPlaylist({ itemId: removeItemId })
+    this.setState({
+      selectedTests: newSelectedTests,
+      showConfirmRemoveModal: false,
+    })
+  }
 
-  handleRemoveTest = itemId => {
-    const { removeTestFromPlaylist } = this;
+  handleRemoveTest = (itemId) => {
+    const { removeTestFromPlaylist } = this
     this.setState({ removeItemId: itemId }, () => {
-      removeTestFromPlaylist();
-    });
-  };
+      removeTestFromPlaylist()
+    })
+  }
 
   onCloseConfirmRemoveModal = () => {
-    this.setState({ showConfirmRemoveModal: false });
-  };
+    this.setState({ showConfirmRemoveModal: false })
+  }
 
-  handleTestAdded = index => {
-    const { addTestToModule, handleSave } = this.props;
-    const { testAdded, selectedTests } = this.state;
-    this.setState(prevState => ({
+  handleTestAdded = (index) => {
+    const { addTestToModule, handleSave } = this.props
+    const { testAdded, selectedTests } = this.state
+    this.setState((prevState) => ({
       ...prevState,
       selectedTests: [...selectedTests, testAdded._id],
-      moduleModalAdd: null
-    }));
-    addTestToModule({ moduleIndex: index, testAdded });
-    if (selectedTests.length === 0) handleSave();
-  };
+      moduleModalAdd: null,
+    }))
+    addTestToModule({ moduleIndex: index, testAdded })
+    if (selectedTests.length === 0) handleSave()
+  }
 
-  handleBulkTestAdded = index => {
-    const { addTestToModuleInBulk, handleSave, playlist: { modules = [] } = {}, tests = [] } = this.props;
-    const { markedTests, selectedTests } = this.state;
-    const addedTestIds = modules.flatMap(x => x.data.map(y => y.contentId));
-    const markedIds = markedTests.map(obj => obj._id);
-    const uniqueMarkedIds = markedIds.filter(x => !addedTestIds.includes(x));
-    const uniqueMarkedTests = markedTests.filter(x => uniqueMarkedIds.includes(x._id));
+  handleBulkTestAdded = (index) => {
+    const {
+      addTestToModuleInBulk,
+      handleSave,
+      playlist: { modules = [] } = {},
+      tests = [],
+    } = this.props
+    const { markedTests, selectedTests } = this.state
+    const addedTestIds = modules.flatMap((x) => x.data.map((y) => y.contentId))
+    const markedIds = markedTests.map((obj) => obj._id)
+    const uniqueMarkedIds = markedIds.filter((x) => !addedTestIds.includes(x))
+    const uniqueMarkedTests = markedTests.filter((x) =>
+      uniqueMarkedIds.includes(x._id)
+    )
     if (uniqueMarkedIds.length !== markedIds.length) {
       if (uniqueMarkedIds.length === 0) {
-        notification({ type: "warn", messageKey: "selectedTestAlreadyExistInModule" });
-        return;
+        notification({
+          type: 'warn',
+          messageKey: 'selectedTestAlreadyExistInModule',
+        })
+        return
       }
-      if (uniqueMarkedIds.length < markedIds.length && uniqueMarkedIds.length !== 0)
-        notification({ type: "warn", messageKey: "someSelectedTestAlreadyExistInModule" });
+      if (
+        uniqueMarkedIds.length < markedIds.length &&
+        uniqueMarkedIds.length !== 0
+      )
+        notification({
+          type: 'warn',
+          messageKey: 'someSelectedTestAlreadyExistInModule',
+        })
     }
 
     // Dont add draft type tests
-    const nonDraftTests = uniqueMarkedTests.filter(x => tests.find(y => y._id === x._id).status !== "draft");
+    const nonDraftTests = uniqueMarkedTests.filter(
+      (x) => tests.find((y) => y._id === x._id).status !== 'draft'
+    )
     if (nonDraftTests.length === uniqueMarkedTests.length) {
       this.setState(() => ({
         selectedTests: [...selectedTests, ...uniqueMarkedIds],
-        markedTests: []
-      }));
-      const uniqueMarkedTestsIds = uniqueMarkedTests.map(x => x?._id);
-      const testsToAdd = tests.filter(x => uniqueMarkedTestsIds?.includes(x?._id));
-      const testsWithStandardIdentifiers = testsToAdd?.map(x => ({
+        markedTests: [],
+      }))
+      const uniqueMarkedTestsIds = uniqueMarkedTests.map((x) => x?._id)
+      const testsToAdd = tests.filter((x) =>
+        uniqueMarkedTestsIds?.includes(x?._id)
+      )
+      const testsWithStandardIdentifiers = testsToAdd?.map((x) => ({
         ...x,
-        standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
-      }));
-      addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
-      notification({ type: "success", messageKey: "testAddedPlalist" });
+        standardIdentifiers: x?.summary?.standards?.reduce(
+          (a, c) => a.concat(c?.identifier),
+          []
+        ),
+      }))
+      addTestToModuleInBulk({
+        moduleIndex: index,
+        tests: testsWithStandardIdentifiers,
+      })
+      notification({ type: 'success', messageKey: 'testAddedPlalist' })
     } else {
-      const nonDraftIds = nonDraftTests.map(x => x._id);
+      const nonDraftIds = nonDraftTests.map((x) => x._id)
       this.setState(() => ({
         selectedTests: [...selectedTests, ...nonDraftIds],
-        markedTests: []
-      }));
-      const nonDraftTestsIds = nonDraftTests?.map(x => x?._id);
-      const testsToAdd = tests.filter(x => nonDraftTestsIds?.includes(x?._id));
-      const testsWithStandardIdentifiers = testsToAdd?.map(x => ({
+        markedTests: [],
+      }))
+      const nonDraftTestsIds = nonDraftTests?.map((x) => x?._id)
+      const testsToAdd = tests.filter((x) => nonDraftTestsIds?.includes(x?._id))
+      const testsWithStandardIdentifiers = testsToAdd?.map((x) => ({
         ...x,
-        standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
-      }));
-      addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
+        standardIdentifiers: x?.summary?.standards?.reduce(
+          (a, c) => a.concat(c?.identifier),
+          []
+        ),
+      }))
+      addTestToModuleInBulk({
+        moduleIndex: index,
+        tests: testsWithStandardIdentifiers,
+      })
       nonDraftTests.length
         ? notification({
-            type: "warn",
-            msg: `${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`
+            type: 'warn',
+            msg: `${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`,
           })
-        : notification({ type: "warn", messageKey: "draftTestCantBeAdded" });
+        : notification({ type: 'warn', messageKey: 'draftTestCantBeAdded' })
     }
-    if (selectedTests.length === 0) handleSave();
-  };
+    if (selectedTests.length === 0) handleSave()
+  }
 
-  handleBulkTestDelete = len => {
-    const { deleteTestFromModuleInBulk } = this.props;
-    const { markedTests, selectedTests } = this.state;
-    const testIds = markedTests.map(test => test._id);
-    this.setState(prevState => ({
+  handleBulkTestDelete = (len) => {
+    const { deleteTestFromModuleInBulk } = this.props
+    const { markedTests, selectedTests } = this.state
+    const testIds = markedTests.map((test) => test._id)
+    this.setState((prevState) => ({
       ...prevState,
-      selectedTests: [...selectedTests.filter(x => !testIds.includes(x))],
-      markedTests: []
-    }));
+      selectedTests: [...selectedTests.filter((x) => !testIds.includes(x))],
+      markedTests: [],
+    }))
     if (len) {
-      deleteTestFromModuleInBulk({ testIds });
-      notification({ type: "success", messageKey: "testremovedPlaylist" });
+      deleteTestFromModuleInBulk({ testIds })
+      notification({ type: 'success', messageKey: 'testremovedPlaylist' })
     } else {
-      notification({ type: "success", messageKey: "selectedTestAreCleared" });
+      notification({ type: 'success', messageKey: 'selectedTestAreCleared' })
     }
-  };
+  }
 
-  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) =>
+    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
-  onAddToCart = item => {
-    const { addTestToCart } = this.props;
-    addTestToCart(item);
-  };
+  onAddToCart = (item) => {
+    const { addTestToCart } = this.props
+    addTestToCart(item)
+  }
 
-  onRemoveFromCart = item => {
-    const { removeTestFromCart } = this.props;
-    removeTestFromCart(item);
-  };
+  onRemoveFromCart = (item) => {
+    const { removeTestFromCart } = this.props
+    removeTestFromCart(item)
+  }
 
-  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+  toggleSidebar = () =>
+    this.setState((prevState) => ({ openSidebar: !prevState.openSidebar }))
 
   renderCardContent = () => {
     const {
@@ -754,26 +890,26 @@ class TestList extends Component {
       userId,
       mode,
       interestedCurriculums,
-      playlist = {}
-    } = this.props;
-    const { blockstyle, selectedTests, markedTests } = this.state;
-    const markedTestsList = markedTests.map(data => data._id);
-    const moduleTitleMap = {};
+      playlist = {},
+    } = this.props
+    const { blockstyle, selectedTests, markedTests } = this.state
+    const markedTestsList = markedTests.map((data) => data._id)
+    const moduleTitleMap = {}
     const modulesMap =
-      playlist?.modules?.map(module => ({
+      playlist?.modules?.map((module) => ({
         title: module.title,
-        data: [...module.data.map(it => it.contentId)]
-      })) || [];
+        data: [...module.data.map((it) => it.contentId)],
+      })) || []
 
-    const testIds = tests?.map(test => test._id) || [];
-    testIds.forEach(testId => {
+    const testIds = tests?.map((test) => test._id) || []
+    testIds.forEach((testId) => {
       for (const obj of modulesMap) {
-        if (obj?.data?.includes(testId)) moduleTitleMap[testId] = obj.title;
+        if (obj?.data?.includes(testId)) moduleTitleMap[testId] = obj.title
       }
-    });
+    })
 
     if (loading) {
-      return <Spin size="large" />;
+      return <Spin size="large" />
     }
     if (tests.length < 1) {
       return (
@@ -781,47 +917,63 @@ class TestList extends Component {
           heading="Tests not available"
           description={`There are no tests found for this filter. You can create new item by clicking the "NEW TEST" button.`}
         />
-      );
+      )
     }
-    const GridCountInARow = windowWidth > 1600 ? 5 : windowWidth >= 1366 ? 4 : 3;
-    const countModular = new Array(GridCountInARow - (tests.length % GridCountInARow)).fill(1);
+    const GridCountInARow = windowWidth > 1600 ? 5 : windowWidth >= 1366 ? 4 : 3
+    const countModular = new Array(
+      GridCountInARow - (tests.length % GridCountInARow)
+    ).fill(1)
 
-    if (blockstyle === "tile") {
+    if (blockstyle === 'tile') {
       return (
-        <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
+        <Row
+          type="flex"
+          justify={windowWidth > 575 ? 'space-between' : 'center'}
+        >
           {tests.map((item, index) => (
             <CardWrapper
               item={item}
               key={index}
-              owner={item.authors && item.authors.some(x => x._id === userId)}
+              owner={item.authors && item.authors.some((x) => x._id === userId)}
               blockStyle="tile"
               windowWidth={windowWidth}
               history={history}
               match={match}
-              standards={getInterestedStandards(item.summary, item.alignment, interestedCurriculums)}
+              standards={getInterestedStandards(
+                item.summary,
+                item.alignment,
+                interestedCurriculums
+              )}
             />
           ))}
 
-          {windowWidth > 1024 && countModular.map(index => <CardBox key={index} />)}
+          {windowWidth > 1024 &&
+            countModular.map((index) => <CardBox key={index} />)}
         </Row>
-      );
+      )
     }
 
     return (
       <Row>
-        {tests.map(item => (
+        {tests.map((item) => (
           <CardWrapper
             key={item._id}
-            owner={item.authors && item.authors.some(x => x._id === userId)}
+            owner={item.authors && item.authors.some((x) => x._id === userId)}
             item={item}
             windowWidth={windowWidth}
             history={history}
             match={match}
             mode={mode}
             removeTestFromPlaylist={this.handleRemoveTest}
-            isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
+            isTestAdded={
+              selectedTests ? selectedTests.includes(item._id) : false
+            }
             addTestToPlaylist={this.handleAddTests}
-            standards={getInterestedStandards(item.summary, item.alignment, interestedCurriculums)}
+            standards={getInterestedStandards(
+              item.summary,
+              item.alignment,
+              interestedCurriculums
+            )}
             moduleTitle={moduleTitleMap[item._id]}
             checked={markedTestsList.includes(item._id)}
             handleCheckboxAction={this.handleCheckboxAction}
@@ -830,112 +982,133 @@ class TestList extends Component {
           />
         ))}
       </Row>
-    );
-  };
+    )
+  }
 
-  handleLabelSearch = e => {
-    const { key: filterType } = e;
-    const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receiveTests, limit, testFilters, playlistPage, playlist: { _id } = {} } = this.props;
-    let updatedKeys = omit(testFilters, ["folderId"]);
+  handleLabelSearch = (e) => {
+    const { key: filterType } = e
+    const getMatchingObj = filterMenuItems.filter(
+      (item) => item.path === filterType
+    )
+    const { filter = '' } = (getMatchingObj.length && getMatchingObj[0]) || {}
+    const {
+      history,
+      receiveTests,
+      limit,
+      testFilters,
+      playlistPage,
+      playlist: { _id } = {},
+    } = this.props
+    let updatedKeys = omit(testFilters, ['folderId'])
 
     if (filter === filterMenuItems[0].filter) {
       updatedKeys = {
         ...updatedKeys,
-        status: ""
-      };
+        status: '',
+      }
     }
-    const sortByRecency = ["by-me", "shared", "co-author"].includes(filterType);
+    const sortByRecency = ['by-me', 'shared', 'co-author'].includes(filterType)
     const sort = {
-      sortBy: sortByRecency ? "recency" : "popularity",
-      sortDir: "desc"
-    };
-    updatedKeys.filter = filter;
-    this.updateFilterState(updatedKeys, sort, true);
+      sortBy: sortByRecency ? 'recency' : 'popularity',
+      sortDir: 'desc',
+    }
+    updatedKeys.filter = filter
+    this.updateFilterState(updatedKeys, sort, true)
 
-    const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
-    history.push(locToPush);
+    const queryParams = qs.stringify(
+      pickBy({ ...updatedKeys, page: 1, limit }, identity)
+    )
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`
+    history.push(locToPush)
 
-    if (filterType !== "folders") {
+    if (filterType !== 'folders') {
       receiveTests({
         page: 1,
         limit,
         search: updatedKeys,
-        sort
-      });
+        sort,
+      })
     }
-  };
+  }
 
-  rejectNumberChecker = tests => {
-    let num = 0;
+  rejectNumberChecker = (tests) => {
+    let num = 0
     for (const o of tests) {
-      if (o.status === "inreview") {
-        num++;
+      if (o.status === 'inreview') {
+        num++
       }
     }
-    return num;
-  };
+    return num
+  }
 
-  approveNumberChecker = tests => {
-    let num = 0;
+  approveNumberChecker = (tests) => {
+    let num = 0
     for (const o of tests) {
-      if (o.status === "inreview" || o.status === "rejected") {
-        num++;
+      if (o.status === 'inreview' || o.status === 'rejected') {
+        num++
       }
     }
-    return num;
-  };
+    return num
+  }
 
   onSelectSortOption = (value, sortDir) => {
-    const { testFilters, limit, sort, receiveTests } = this.props;
+    const { testFilters, limit, sort, receiveTests } = this.props
     const updateSort = {
       ...sort,
       sortBy: value,
-      sortDir
-    };
-    this.updateFilterState(testFilters, updateSort, true);
+      sortDir,
+    }
+    this.updateFilterState(testFilters, updateSort, true)
     receiveTests({
       page: 1,
       limit,
       search: testFilters,
-      sort: updateSort
-    });
-  };
+      sort: updateSort,
+    })
+  }
 
   handleApproveTests = () => {
-    const { approveOrRejectMultipleTestsRequest, selectedTests, setApproveConfirmationOpen } = this.props;
+    const {
+      approveOrRejectMultipleTestsRequest,
+      selectedTests,
+      setApproveConfirmationOpen,
+    } = this.props
     if (selectedTests.length > 1) {
-      setApproveConfirmationOpen(true);
+      setApproveConfirmationOpen(true)
     } else {
-      approveOrRejectMultipleTestsRequest({ status: "published" });
+      approveOrRejectMultipleTestsRequest({ status: 'published' })
     }
-  };
+  }
 
   renderExtra = () => (
     <>
       <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
         <CartButton
           onClick={() => {
-            const { approveOrRejectMultipleTestsRequest } = this.props;
-            approveOrRejectMultipleTestsRequest({ status: "rejected" });
+            const { approveOrRejectMultipleTestsRequest } = this.props
+            approveOrRejectMultipleTestsRequest({ status: 'rejected' })
           }}
           buttonText="Reject"
           numberChecker={this.rejectNumberChecker}
         />
-        <CartButton onClick={this.handleApproveTests} buttonText="Approve" numberChecker={this.approveNumberChecker} />
+        <CartButton
+          onClick={this.handleApproveTests}
+          buttonText="Approve"
+          numberChecker={this.approveNumberChecker}
+        />
       </FeaturesSwitch>
     </>
-  );
+  )
 
   toggleFilter = () => {
-    const { isShowFilter } = this.state;
+    const { isShowFilter } = this.state
 
     this.setState({
-      isShowFilter: !isShowFilter
-    });
-  };
+      isShowFilter: !isShowFilter,
+    })
+  }
 
   render() {
     const {
@@ -951,8 +1124,8 @@ class TestList extends Component {
       testFilters,
       isProxyUser,
       t,
-      sort = {}
-    } = this.props;
+      sort = {},
+    } = this.props
 
     const {
       blockstyle,
@@ -965,44 +1138,57 @@ class TestList extends Component {
       markedTests,
       moduleModalAdd,
       testAdded,
-      openSidebar
-    } = this.state;
+      openSidebar,
+    } = this.state
     const search = {
-      ...testFilters
-    };
+      ...testFilters,
+    }
 
-    let modulesList = [];
+    let modulesList = []
     if (playlist) {
-      modulesList = playlist.modules;
+      modulesList = playlist.modules
     }
 
     const menu = (
       <Menu>
-        <Menu.Item key="0" data-cy="addToModule" onClick={this.handleBulkAddTests}>
+        <Menu.Item
+          key="0"
+          data-cy="addToModule"
+          onClick={this.handleBulkAddTests}
+        >
           Add to Module
         </Menu.Item>
-        <Menu.Item key="1" data-cy="removeFromModule" onClick={this.handleBulkRemoveTests}>
+        <Menu.Item
+          key="1"
+          data-cy="removeFromModule"
+          onClick={this.handleBulkRemoveTests}
+        >
           Remove from Modules
         </Menu.Item>
       </Menu>
-    );
+    )
 
-    const counts = [];
+    const counts = []
     markedTests.forEach(({ _id }) => {
       playlist?.modules?.forEach((module, i) => {
-        if (module?.data.map(x => x.contentId).includes(_id)) {
-          if (counts[i]) counts[i]++;
-          else counts[i] = 1;
+        if (module?.data.map((x) => x.contentId).includes(_id)) {
+          if (counts[i]) counts[i]++
+          else counts[i] = 1
         }
-      });
-    });
+      })
+    })
 
     const modulesNamesCountMap = counts.map((item, i) => ({
       count: item,
-      mName: playlist?.modules[i]?.title
-    }));
+      mName: playlist?.modules[i]?.title,
+    }))
 
-    const renderFilterIcon = () => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
+    const renderFilterIcon = () => (
+      <FilterToggleBtn
+        isShowFilter={isShowFilter}
+        toggleFilter={this.toggleFilter}
+      />
+    )
 
     return (
       <>
@@ -1011,36 +1197,42 @@ class TestList extends Component {
           onClose={this.onCloseConfirmRemoveModal}
           handleRemove={this.removeTestFromPlaylist}
         />
-        {mode !== "embedded" && (
+        {mode !== 'embedded' && (
           <>
             <ListHeader
               onCreate={this.handleCreate}
               creating={creating}
-              title={t("common.testLibrary")}
+              title={t('common.testLibrary')}
               titleIcon={IconTestBank}
               btnTitle="New Test"
               renderFilter={() => (
                 <StyleChangeWrapper>
                   <IconTile
                     data-cy="tileView"
-                    onClick={() => this.handleStyleChange("tile")}
+                    onClick={() => this.handleStyleChange('tile')}
                     width={18}
                     height={18}
-                    color={blockstyle === "tile" ? greyThemeLight : greyLight1}
+                    color={blockstyle === 'tile' ? greyThemeLight : greyLight1}
                   />
                   <IconList
                     data-cy="listView"
-                    onClick={() => this.handleStyleChange("horizontal")}
+                    onClick={() => this.handleStyleChange('horizontal')}
                     width={18}
                     height={18}
-                    color={blockstyle === "horizontal" ? greyThemeLight : greyLight1}
+                    color={
+                      blockstyle === 'horizontal' ? greyThemeLight : greyLight1
+                    }
                   />
                 </StyleChangeWrapper>
               )}
               renderExtra={this.renderExtra}
               toggleSidebar={this.toggleSidebar}
             />
-            <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
+            <SideContent
+              onClick={this.toggleSidebar}
+              open={openSidebar}
+              showSliderBtn={false}
+            />
           </>
         )}
         <Container>
@@ -1049,15 +1241,20 @@ class TestList extends Component {
               placeholder="Search by skills and keywords"
               onSearchInputChange={this.handleSearchInputChange}
               value={testFilters.searchString}
-              disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
+              disabled={
+                testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES
+              }
             />
             <FilterButton>
               <Button onClick={() => this.showFilterHandler()}>
-                {!isShowFilter ? "SHOW FILTERS" : "HIDE FILTERS"}
+                {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
               </Button>
             </FilterButton>
           </MobileFilter>
-          <MobileFilterModal open={isShowFilter} onClose={this.closeSearchModal}>
+          <MobileFilterModal
+            open={isShowFilter}
+            onClose={this.closeSearchModal}
+          >
             <SearchModalContainer>
               <TestListFilters
                 search={search}
@@ -1076,7 +1273,13 @@ class TestList extends Component {
               title="Manage Modules"
               onClose={this.onCloseManageModule}
               footer={null}
-              styles={{ modal: { minWidth: "900px", padding: "20px 30px", background: white } }}
+              styles={{
+                modal: {
+                  minWidth: '900px',
+                  padding: '20px 30px',
+                  background: white,
+                },
+              }}
             >
               <ManageModulesModalBody
                 destinationCurriculumSequence={playlist}
@@ -1153,7 +1356,11 @@ class TestList extends Component {
                   <span>{count}</span> TESTS FOUND
                 </PaginationInfo>
 
-                <HeaderFilter search={search} handleCloseFilter={this.handleFiltersChange} type="test" />
+                <HeaderFilter
+                  search={search}
+                  handleCloseFilter={this.handleFiltersChange}
+                  type="test"
+                />
                 <SortMenu
                   options={sortOptions.testList}
                   onSelect={this.onSelectSortOption}
@@ -1161,14 +1368,31 @@ class TestList extends Component {
                   sortBy={sort.sortBy}
                 />
 
-                {mode === "embedded" && (
+                {mode === 'embedded' && (
                   <BtnActionsContainer>
                     <StyledCountText>
-                      {playlist.modules?.flatMap(item => item?.data || [])?.length} TESTS SELECTED
+                      {
+                        playlist.modules?.flatMap((item) => item?.data || [])
+                          ?.length
+                      }{' '}
+                      TESTS SELECTED
                     </StyledCountText>
-                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => {}}>
-                      <Dropdown overlay={menu} trigger={["click"]} placement="bottomCenter">
-                        <a data-cy="moduleActions" className="ant-dropdown-link" href="#">
+                    <StyledButton
+                      data-cy="createNewItem"
+                      type="secondary"
+                      size="large"
+                      onClick={() => {}}
+                    >
+                      <Dropdown
+                        overlay={menu}
+                        trigger={['click']}
+                        placement="bottomCenter"
+                      >
+                        <a
+                          data-cy="moduleActions"
+                          className="ant-dropdown-link"
+                          href="#"
+                        >
                           Actions
                         </a>
                       </Dropdown>
@@ -1183,9 +1407,11 @@ class TestList extends Component {
                     </StyledButton>
                   </BtnActionsContainer>
                 )}
-                {mode !== "embedded" && blockstyle === "horizontal" && <Actions type="TEST" />}
+                {mode !== 'embedded' && blockstyle === 'horizontal' && (
+                  <Actions type="TEST" />
+                )}
               </ItemsMenu>
-              <PerfectScrollbar style={{ padding: "0 32px" }}>
+              <PerfectScrollbar style={{ padding: '0 32px' }}>
                 <CardContainer type={blockstyle}>
                   {this.renderCardContent()}
                   <PaginationWrapper
@@ -1204,15 +1430,15 @@ class TestList extends Component {
           <ApproveConfirmModal contentType="TEST" />
         </Container>
       </>
-    );
+    )
   }
 }
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces("header"),
+  withNamespaces('header'),
   connect(
-    state => ({
+    (state) => ({
       tests: getTestsSelector(state),
       loading: getTestsLoadingSelector(state),
       page: getTestsPageSelector(state),
@@ -1225,12 +1451,12 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      userId: get(state, "user.user._id", false),
+      userId: get(state, 'user.user._id', false),
       testFilters: getTestsFilterSelector(state),
       features: getUserFeatures(state),
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
-      selectedTests: getSelectedTestsSelector(state)
+      selectedTests: getSelectedTestsSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1257,9 +1483,9 @@ const enhance = compose(
       addTestToCart: addTestToCartAction,
       removeTestFromCart: removeTestFromCartAction,
       approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
-      setApproveConfirmationOpen: setApproveConfirmationOpenAction
+      setApproveConfirmationOpen: setApproveConfirmationOpenAction,
     }
   )
-);
+)
 
-export default enhance(TestList);
+export default enhance(TestList)

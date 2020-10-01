@@ -1,96 +1,114 @@
-import React from "react";
-import styled from "styled-components";
-import { Avatar, Table } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import { Avatar, Table } from 'antd'
 import {
   titleColor,
   white,
   testTypeColor,
   mediumDesktopExactWidth,
   cardTitleColor,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
-import { Tooltip } from "../../../../common/utils/helpers";
-import additemsIcon from "../../../Assignments/assets/add-items.svg";
-import piechartIcon from "../../../Assignments/assets/pie-chart.svg";
-import presentationIcon from "../../../Assignments/assets/presentation.svg";
-import { StatusLabel } from "../../../Assignments/components/TableList/styled";
-import { CustomIcon } from "../styled";
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
+import { Tooltip } from '../../../../common/utils/helpers'
+import additemsIcon from '../../../Assignments/assets/add-items.svg'
+import piechartIcon from '../../../Assignments/assets/pie-chart.svg'
+import presentationIcon from '../../../Assignments/assets/presentation.svg'
+import { StatusLabel } from '../../../Assignments/components/TableList/styled'
+import { CustomIcon } from '../styled'
 
-const AssignmentsClasses = ({ moduleId, contentId, assignmentRows, handleActionClick }) => {
+const AssignmentsClasses = ({
+  moduleId,
+  contentId,
+  assignmentRows,
+  handleActionClick,
+}) => {
   if (!assignmentRows.length) {
-    return null;
+    return null
   }
-  const data = assignmentRows?.map((assignment, index) => ({ key: index, ...assignment }));
+  const data = assignmentRows?.map((assignment, index) => ({
+    key: index,
+    ...assignment,
+  }))
 
-  const renderTextCell = text => (
+  const renderTextCell = (text) => (
     <StyledLabel>
       <Tooltip placement="bottomLeft" title={text}>
         <span>{text}</span>
       </Tooltip>
     </StyledLabel>
-  );
+  )
 
   const columns = [
     {
-      title: "Class",
-      dataIndex: "name",
-      render: text => renderTextCell(text),
-      sorter: (a, b) => a.name - b.name
+      title: 'Class',
+      dataIndex: 'name',
+      render: (text) => renderTextCell(text),
+      sorter: (a, b) => a.name - b.name,
     },
     {
-      title: "Type",
-      width: "60px",
-      dataIndex: "testType",
-      render: testType => (
+      title: 'Type',
+      width: '60px',
+      dataIndex: 'testType',
+      render: (testType) => (
         <CustomIcon marginRight={0} align="unset">
           <Avatar
             size={18}
             style={{
-              backgroundColor: testTypeColor[testType || "practice"],
-              fontSize: "13px"
+              backgroundColor: testTypeColor[testType || 'practice'],
+              fontSize: '13px',
             }}
           >
-            {testType[0].toUpperCase() || "P"}
+            {testType[0].toUpperCase() || 'P'}
           </Avatar>
         </CustomIcon>
       ),
-      sorter: (a, b) => a.testType - b.testType
+      sorter: (a, b) => a.testType - b.testType,
     },
     {
-      title: "Assigned By",
-      dataIndex: "assignedBy",
-      render: text => renderTextCell(text),
-      sorter: (a, b) => a.assignedBy - b.assignedBy
+      title: 'Assigned By',
+      dataIndex: 'assignedBy',
+      render: (text) => renderTextCell(text),
+      sorter: (a, b) => a.assignedBy - b.assignedBy,
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      width: "90px",
-      render: text => <StyledStatusLabel status={text}>{text}</StyledStatusLabel>,
-      sorter: (a, b) => a.status - b.status
+      title: 'Status',
+      dataIndex: 'status',
+      width: '90px',
+      render: (text) => (
+        <StyledStatusLabel status={text}>{text}</StyledStatusLabel>
+      ),
+      sorter: (a, b) => a.status - b.status,
     },
     {
-      title: "Submitted",
-      dataIndex: "submittedCount",
-      render: (text, row) => renderTextCell(`${text || 0} of ${row?.assignedCount || 0}`),
-      sorter: (a, b) => a.submittedCount - b.submittedCount
+      title: 'Submitted',
+      dataIndex: 'submittedCount',
+      render: (text, row) =>
+        renderTextCell(`${text || 0} of ${row?.assignedCount || 0}`),
+      sorter: (a, b) => a.submittedCount - b.submittedCount,
     },
     {
-      title: "Graded",
-      dataIndex: "gradedNumber",
-      render: text => renderTextCell(text),
-      sorter: (a, b) => a.gradedNumber - b.gradedNumber
+      title: 'Graded',
+      dataIndex: 'gradedNumber',
+      render: (text) => renderTextCell(text),
+      sorter: (a, b) => a.gradedNumber - b.gradedNumber,
     },
     {
-      title: "",
-      dataIndex: "action",
-      width: "80px",
+      title: '',
+      dataIndex: 'action',
+      width: '80px',
       render: (_, assignment) => (
         <ActionsWrapper data-cy="PresentationIcon">
           <Tooltip placement="bottom" title="Live Class Board">
             <BtnContainer
-              onClick={e =>
-                handleActionClick(e, "classboard", assignment?.assignmentId, assignment?.classId, moduleId, contentId)
+              onClick={(e) =>
+                handleActionClick(
+                  e,
+                  'classboard',
+                  assignment?.assignmentId,
+                  assignment?.classId,
+                  moduleId,
+                  contentId
+                )
               }
             >
               <img src={presentationIcon} alt="Images" />
@@ -99,10 +117,10 @@ const AssignmentsClasses = ({ moduleId, contentId, assignmentRows, handleActionC
 
           <Tooltip placement="bottom" title="Express Grader">
             <BtnContainer
-              onClick={e =>
+              onClick={(e) =>
                 handleActionClick(
                   e,
-                  "expressgrader",
+                  'expressgrader',
                   assignment?.assignmentId,
                   assignment?.classId,
                   moduleId,
@@ -116,10 +134,10 @@ const AssignmentsClasses = ({ moduleId, contentId, assignmentRows, handleActionC
 
           <Tooltip placement="bottom" title="Reports">
             <BtnContainer
-              onClick={e =>
+              onClick={(e) =>
                 handleActionClick(
                   e,
-                  "standardsBasedReport",
+                  'standardsBasedReport',
                   assignment?.assignmentId,
                   assignment?.classId,
                   moduleId,
@@ -131,29 +149,29 @@ const AssignmentsClasses = ({ moduleId, contentId, assignmentRows, handleActionC
             </BtnContainer>
           </Tooltip>
         </ActionsWrapper>
-      )
-    }
-  ];
+      ),
+    },
+  ]
 
   return (
     <AssignmentsClassesContainer
-      onClick={e => {
-        e.preventDefault();
-        e.stopPropagation();
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
       }}
     >
       <TableData columns={columns} dataSource={data} pagination={false} />
     </AssignmentsClassesContainer>
-  );
-};
+  )
+}
 
-export default AssignmentsClasses;
+export default AssignmentsClasses
 
 const AssignmentsClassesContainer = styled.div`
   background: ${white};
   width: 100%;
   display: block;
-`;
+`
 
 const ActionsWrapper = styled.div`
   display: flex;
@@ -161,7 +179,7 @@ const ActionsWrapper = styled.div`
   align-items: center;
   justify-content: space-evenly;
   margin-right: 0px;
-`;
+`
 
 const BtnContainer = styled.div`
   background: transparent;
@@ -169,13 +187,13 @@ const BtnContainer = styled.div`
     width: 18px;
     height: 18px;
   }
-`;
+`
 
 const StyledStatusLabel = styled(StatusLabel)`
   display: flex;
   justify-content: center;
   font-size: 10px;
-`;
+`
 
 export const TableData = styled(Table)`
   text-align: center;
@@ -208,17 +226,17 @@ export const TableData = styled(Table)`
         text-transform: uppercase;
         color: ${cardTitleColor};
         white-space: nowrap;
-        font-size: ${props => props.theme.headerFilterFontSize};
+        font-size: ${(props) => props.theme.headerFilterFontSize};
 
         &:first-child {
           padding-left: 24px;
         }
 
         @media (min-width: ${mediumDesktopExactWidth}) {
-          font-size: ${props => props.theme.linkFontSize};
+          font-size: ${(props) => props.theme.linkFontSize};
         }
         @media (min-width: ${extraDesktopWidthMax}) {
-          font-size: ${props => props.theme.smallFontSize};
+          font-size: ${(props) => props.theme.smallFontSize};
         }
 
         &.assignment-name {
@@ -243,7 +261,7 @@ export const TableData = styled(Table)`
             .ant-table-column-sorter {
               &-up,
               &-down {
-                font-size: ${props => props.theme.headerFilterFontSize};
+                font-size: ${(props) => props.theme.headerFilterFontSize};
               }
             }
           }
@@ -251,7 +269,7 @@ export const TableData = styled(Table)`
       }
     }
   }
-`;
+`
 
 const StyledLabel = styled.div`
   text-align: center;
@@ -265,4 +283,4 @@ const StyledLabel = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 12px;
   }
-`;
+`

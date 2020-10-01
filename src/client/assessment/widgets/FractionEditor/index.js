@@ -1,18 +1,18 @@
-import React from "react";
-import produce from "immer";
-import PropTypes from "prop-types";
+import React from 'react'
+import produce from 'immer'
+import PropTypes from 'prop-types'
 
-import { CLEAR, EDIT } from "../../constants/constantsForQuestions";
-import { ContentArea } from "../../styled/ContentArea";
-import ComposeQuestion from "./components/ComposeQuestion";
-import CorrectAnswers from "./components/CorrectAnswers";
-import Options from "./components/Options";
-import Display from "./components/Display";
-import Annotations from "../../components/Annotations/Annotations";
-import Question from "../../components/Question";
-import ExtraSection from "./components/Extras";
+import { CLEAR, EDIT } from '../../constants/constantsForQuestions'
+import { ContentArea } from '../../styled/ContentArea'
+import ComposeQuestion from './components/ComposeQuestion'
+import CorrectAnswers from './components/CorrectAnswers'
+import Options from './components/Options'
+import Display from './components/Display'
+import Annotations from '../../components/Annotations/Annotations'
+import Question from '../../components/Question'
+import ExtraSection from './components/Extras'
 
-const FractionEditor = props => {
+const FractionEditor = (props) => {
   const {
     view,
     item,
@@ -29,8 +29,8 @@ const FractionEditor = props => {
     disableResponse,
     changePreviewTab,
     isReviewTab,
-    advancedAreOpen
-  } = props;
+    advancedAreOpen,
+  } = props
   return (
     <>
       {view === EDIT ? (
@@ -59,7 +59,7 @@ const FractionEditor = props => {
             cleanSections={cleanSections}
             item={item}
           />
-          { /** 
+          {/** 
           <Question
             section="main"
             label={t("common.options.annotations")}
@@ -69,10 +69,13 @@ const FractionEditor = props => {
           <Annotations question={item} setQuestionData={setQuestionData} editable /> 
            
           </Question>
-          */ 
-          }
+          */}
           {advancedLink}
-          <ExtraSection fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
+          <ExtraSection
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            advancedAreOpen={advancedAreOpen}
+          />
         </ContentArea>
       ) : (
         <Display
@@ -91,8 +94,8 @@ const FractionEditor = props => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
 FractionEditor.propTypes = {
   view: PropTypes.string.isRequired,
@@ -106,8 +109,8 @@ FractionEditor.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  showQuestionNumber: PropTypes.bool
-};
+  showQuestionNumber: PropTypes.bool,
+}
 
 FractionEditor.defaultProps = {
   previewTab: CLEAR,
@@ -117,7 +120,7 @@ FractionEditor.defaultProps = {
   advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {},
-  showQuestionNumber: false
-};
+  showQuestionNumber: false,
+}
 
-export default FractionEditor;
+export default FractionEditor

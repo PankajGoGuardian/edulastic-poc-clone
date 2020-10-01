@@ -1,13 +1,16 @@
-//@ts-check
-import React, { Component } from "react";
-import { Icon, Row, Col } from "antd";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { get, round } from "lodash";
+// @ts-check
+import React, { Component } from 'react'
+import { Icon, Row, Col } from 'antd'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import PropTypes from 'prop-types'
+import { get, round } from 'lodash'
 
-import { getTestActivitySelector, getAdditionalDataSelector } from "../../ClassBoard/ducks";
-import { getStandardWisePerformanceDetailMemoized } from "../Transformer";
+import {
+  getTestActivitySelector,
+  getAdditionalDataSelector,
+} from '../../ClassBoard/ducks'
+import { getStandardWisePerformanceDetailMemoized } from '../Transformer'
 import {
   DetailCard,
   DetailCardHeader,
@@ -19,96 +22,101 @@ import {
   PerformanceScore,
   PerformancePercent,
   MasteryCell,
-  MasterySummary
-} from "./styled";
+  MasterySummary,
+} from './styled'
 
 const sortAlphaNum = (a, b) => {
   if (a < b) {
-    return -1;
+    return -1
   }
   if (a > b) {
-    return 1;
+    return 1
   }
-  return 0;
-};
+  return 0
+}
 
 const columns = [
   {
-    title: "Student",
-    dataIndex: "student",
-    key: "student",
-    className: "summary-student-column",
+    title: 'Student',
+    dataIndex: 'student',
+    key: 'student',
+    className: 'summary-student-column',
     sorter: (a, b) => sortAlphaNum(a.student, b.student),
-    render: text => <StudnetCell>{text}</StudnetCell>
+    render: (text) => <StudnetCell>{text}</StudnetCell>,
   },
   {
-    title: "Mastery",
-    dataIndex: "mastery",
-    key: "mastery",
-    className: "mastery-column",
+    title: 'Mastery',
+    dataIndex: 'mastery',
+    key: 'mastery',
+    className: 'mastery-column',
     sorter: (a, b) => sortAlphaNum(a.performance, b.performance),
-    render: mastery => (
+    render: (mastery) => (
       <MasteryCell title={mastery.masteryLevel}>
         <span style={{ color: mastery.color }}>{mastery.shortName}</span>
       </MasteryCell>
-    )
+    ),
   },
   {
-    title: "Performance",
-    dataIndex: "performance",
-    className: "performance-column",
-    sorter: (a, b) => sortAlphaNum(a.performance.split("@")[1], b.performance.split("@")[1]),
-    key: "performance",
-    render: text => {
-      const strArr = text.split("@");
+    title: 'Performance',
+    dataIndex: 'performance',
+    className: 'performance-column',
+    sorter: (a, b) =>
+      sortAlphaNum(a.performance.split('@')[1], b.performance.split('@')[1]),
+    key: 'performance',
+    render: (text) => {
+      const strArr = text.split('@')
       return (
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: 'center' }}>
           <PerformanceScore>{strArr[0]}</PerformanceScore>
           <PerformancePercent>{strArr[1]}</PerformancePercent>
         </div>
-      );
-    }
-  }
-];
+      )
+    },
+  },
+]
 
 class DetailedDisplay extends Component {
   filterData = () => {
-    const { testActivity, data } = this.props;
-    const studentData = testActivity.filter(std => {
-      if (std.status != "submitted") {
-        return false;
+    const { testActivity, data } = this.props
+    const studentData = testActivity.filter((std) => {
+      if (std.status != 'submitted') {
+        return false
       }
       return std.questionActivities.filter(
-        questionActivity => data.qIds.filter(qId => questionActivity._id === qId).length > 0
-      );
-    });
-    return studentData;
-  };
+        (questionActivity) =>
+          data.qIds.filter((qId) => questionActivity._id === qId).length > 0
+      )
+    })
+    return studentData
+  }
 
   displayData = () => {
-    const { additionalData, isPresentationMode } = this.props;
-    const assignmentMasteryArray = additionalData.assignmentMastery || [];
-    assignmentMasteryArray.sort((a, b) => b.threshold - a.threshold);
+    const { additionalData, isPresentationMode } = this.props
+    const assignmentMasteryArray = additionalData.assignmentMastery || []
+    assignmentMasteryArray.sort((a, b) => b.threshold - a.threshold)
     const scoreStudentWise = getStandardWisePerformanceDetailMemoized(
       this.props.testActivity,
       this.props.data,
       isPresentationMode
-    );
+    )
 
     return Object.keys(scoreStudentWise).map((studentId, index) => {
-      const score = scoreStudentWise[studentId] ? scoreStudentWise[studentId].score : 0;
-      const perfomancePercentage = (score / scoreStudentWise[studentId].maxScore) * 100;
+      const score = scoreStudentWise[studentId]
+        ? scoreStudentWise[studentId].score
+        : 0
+      const perfomancePercentage =
+        (score / scoreStudentWise[studentId].maxScore) * 100
 
       // TODO: need to update `mastery'
       let mastery = {
-        color: "#E61E54",
-        masteryLabel: "NM"
-      };
+        color: '#E61E54',
+        masteryLabel: 'NM',
+      }
 
       for (let i = 0; i < assignmentMasteryArray.length; i++) {
         if (perfomancePercentage >= assignmentMasteryArray[i].threshold) {
-          mastery = assignmentMasteryArray[i];
-          break;
+          mastery = assignmentMasteryArray[i]
+          break
         }
       }
 
@@ -116,15 +124,17 @@ class DetailedDisplay extends Component {
         key: index + 1,
         student: scoreStudentWise[studentId].studentName,
         mastery,
-        performance: `${round(score, 2)}/${scoreStudentWise[studentId].maxScore}@(${round(perfomancePercentage, 2)}%)`
-      };
-    });
-  };
+        performance: `${round(score, 2)}/${
+          scoreStudentWise[studentId].maxScore
+        }@(${round(perfomancePercentage, 2)}%)`,
+      }
+    })
+  }
 
   render() {
-    const { data, onClose, performancePercentage } = this.props;
+    const { data, onClose, performancePercentage } = this.props
     return (
-      <React.Fragment>
+      <>
         <DetailCard>
           <DetailCardHeader>
             <DetailCardTitle>
@@ -133,10 +143,18 @@ class DetailedDisplay extends Component {
             </DetailCardTitle>
             <DetailCardSubTitle>{`Standard: ${data?.identifier}`}</DetailCardSubTitle>
             <DetailCardDesc>{data.desc}</DetailCardDesc>
-            <Row style={{ marginTop: "10px" }}>
+            <Row style={{ marginTop: '10px' }}>
               <Col span={15}>
-                {" "}
-                <p style={{ fontSize: "14px", color: "rgba(0,0,0,0.3)", fontWeight: "bold" }}>MASTERY SUMMARY</p>
+                {' '}
+                <p
+                  style={{
+                    fontSize: '14px',
+                    color: 'rgba(0,0,0,0.3)',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  MASTERY SUMMARY
+                </p>
               </Col>
               <Col span={9}>
                 <MasterySummary
@@ -146,39 +164,61 @@ class DetailedDisplay extends Component {
                 />
               </Col>
             </Row>
-            <Row style={{ marginTop: "10px" }}>
+            <Row style={{ marginTop: '10px' }}>
               <Col span={15}>
-                {" "}
-                <p style={{ fontSize: "14px", color: "rgba(0,0,0,0.3)", fontWeight: "bold" }}>PERFORMANCE SUMMARY</p>
+                {' '}
+                <p
+                  style={{
+                    fontSize: '14px',
+                    color: 'rgba(0,0,0,0.3)',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  PERFORMANCE SUMMARY
+                </p>
               </Col>
               <Col span={9}>
-                {" "}
-                <p style={{ fontSize: "14px", fontWeight: "bold", color: "#5eb500" }}>
-                  {round(parseFloat(performancePercentage), 2) || 0}%{" "}
+                {' '}
+                <p
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    color: '#5eb500',
+                  }}
+                >
+                  {round(parseFloat(performancePercentage), 2) || 0}%{' '}
                 </p>
               </Col>
             </Row>
           </DetailCardHeader>
-          <DetailTable columns={columns} dataSource={this.displayData()} pagination={false} />
+          <DetailTable
+            columns={columns}
+            dataSource={this.displayData()}
+            pagination={false}
+          />
         </DetailCard>
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
 
 const enhance = compose(
-  connect(state => ({
+  connect((state) => ({
     testActivity: getTestActivitySelector(state),
     additionalData: getAdditionalDataSelector(state),
-    isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+    isPresentationMode: get(
+      state,
+      ['author_classboard_testActivity', 'presentationMode'],
+      false
+    ),
   }))
-);
+)
 
-export default enhance(DetailedDisplay);
+export default enhance(DetailedDisplay)
 DetailedDisplay.propTypes = {
   data: PropTypes.object.isRequired,
   /* eslint-disable react/require-default-props */
   onClose: PropTypes.func,
   additionalData: PropTypes.object,
-  testActivity: PropTypes.array
-};
+  testActivity: PropTypes.array,
+}

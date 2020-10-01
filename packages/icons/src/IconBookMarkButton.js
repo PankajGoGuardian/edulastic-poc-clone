@@ -1,10 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconBookMarkButton = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="15.939" height="19.924" viewBox="0 0 15.939 19.924" {...props}>
+const IconBookMarkButton = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="15.939"
+    height="19.924"
+    viewBox="0 0 15.939 19.924"
+    {...props}
+  >
     <g transform="translate(-50.999 0)">
       <g transform="translate(51)">
         <path
@@ -14,6 +20,6 @@ const IconBookMarkButton = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconBookMarkButton);
+export default withIconStyles(IconBookMarkButton)

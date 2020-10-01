@@ -1,25 +1,25 @@
-import React from "react";
-import { notification } from "antd";
-import { EduButton } from "@edulastic/common";
+import React from 'react'
+import { notification } from 'antd'
+import { EduButton } from '@edulastic/common'
 
 export const notificationMessage = ({
-  title = "",
-  message = "",
+  title = '',
+  message = '',
   showButton = false,
-  buttonLink = "",
-  buttonText = "",
-  notificationPosition = "bottomRight",
-  notificationKey = "",
+  buttonLink = '',
+  buttonText = '',
+  notificationPosition = 'bottomRight',
+  notificationKey = '',
   onCloseNotification = () => {},
   onButtonClick = () => {},
-  duration
+  duration,
 }) => {
   notification.open({
     key: notificationKey,
     message: title,
     description: (
       <div>
-        <p style={{ "margin-top": "10px" }}>{message}</p>
+        <p style={{ 'margin-top': '10px' }}>{message}</p>
         {showButton && (
           <EduButton
             height="30px"
@@ -27,9 +27,9 @@ export const notificationMessage = ({
             href={buttonLink}
             target="_blank"
             style={{
-              marginTop: "20px",
-              marginLeft: "0px",
-              padding: "0px"
+              marginTop: '20px',
+              marginLeft: '0px',
+              padding: '0px',
             }}
           >
             {buttonText}
@@ -41,14 +41,14 @@ export const notificationMessage = ({
     top: 70,
     duration: duration || 0,
     onClose: () => onCloseNotification(),
-    onClick: e => onButtonClick(e)
-  });
-};
+    onClick: (e) => onButtonClick(e),
+  })
+}
 
 export const destroyNotificationMessage = () => {
-  notification.destroy();
-};
+  notification.destroy()
+}
 
-export const closeHangoutNotification = key => {
-  notification.close(key);
-};
+export const closeHangoutNotification = (key) => {
+  notification.close(key)
+}

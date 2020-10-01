@@ -1,8 +1,14 @@
-import React from "react";
-import { mobileWidth, mobileWidthMax, incorrect, yellow1, lightGrey9 } from "@edulastic/colors";
-import styled from "styled-components";
+import React from 'react'
+import {
+  mobileWidth,
+  mobileWidthMax,
+  incorrect,
+  yellow1,
+  lightGrey9,
+} from '@edulastic/colors'
+import styled from 'styled-components'
 
-const green = "#5eb500";
+const green = '#5eb500'
 
 const Legends = () => (
   <>
@@ -29,7 +35,7 @@ const Legends = () => (
       </LegendItem>
     </LegendItems>
   </>
-);
+)
 
 export const LegendContainer = styled.div`
   display: flex;
@@ -39,7 +45,7 @@ export const LegendContainer = styled.div`
     margin-bottom: 10px;
     flex-direction: column;
   }
-`;
+`
 
 export const LegendItems = styled.div`
   display: flex;
@@ -51,7 +57,7 @@ export const LegendItems = styled.div`
     flex-wrap: wrap;
     justify-content: center;
   }
-`;
+`
 
 export const LegendItem = styled.div`
   display: flex;
@@ -64,14 +70,14 @@ export const LegendItem = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin-top: 10px;
   }
-`;
+`
 
 export const LegendIcon = styled.div`
   height: 15px;
   width: 15px;
-  background-color: ${({ color = "#1FE3A1" }) => color};
+  background-color: ${({ color = '#1FE3A1' }) => color};
   border-radius: 2px;
-`;
+`
 
 export const LegendLabel = styled.div`
   margin-left: 8px;
@@ -80,6 +86,6 @@ export const LegendLabel = styled.div`
   font-weight: 600;
   font-size: 8px;
   white-space: nowrap;
-`;
+`
 
-export default Legends;
+export default Legends

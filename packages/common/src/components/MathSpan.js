@@ -1,21 +1,21 @@
-import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
-import { fonts } from "@edulastic/constants";
+import styled from 'styled-components'
+import { desktopWidth } from '@edulastic/colors'
+import { fonts } from '@edulastic/constants'
 
-import { withMathFormula } from "../HOC/withMathFormula";
+import { withMathFormula } from '../HOC/withMathFormula'
 
 const MathSpan = withMathFormula(styled.span`
   display: inline;
-  user-select: ${({ selectableText }) => (selectableText ? "text" : "none")};
+  user-select: ${({ selectableText }) => (selectableText ? 'text' : 'none')};
   word-break: break-word;
   font-weight: ${fonts.previewFontWeight};
-  ${props =>
+  ${(props) =>
     props.isPrintPreview && {
-      "max-width": "100%",
-      "text-overflow": "ellipsis",
-      overflow: "hidden",
-      "white-space": "nowrap"
-    }} 
+      'max-width': '100%',
+      'text-overflow': 'ellipsis',
+      overflow: 'hidden',
+      'white-space': 'nowrap',
+    }}
 
   @media (max-width: ${desktopWidth}) {
     font-size: ${fonts.previewFontSizeMobile};
@@ -23,6 +23,6 @@ const MathSpan = withMathFormula(styled.span`
   img.fr-dii {
     vertical-align: top;
   }
-`);
+`)
 
-export default MathSpan;
+export default MathSpan

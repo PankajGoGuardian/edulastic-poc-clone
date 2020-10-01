@@ -1,116 +1,142 @@
-import { get, keyBy, values, groupBy, isEmpty, uniqBy } from "lodash";
-import next from "immer";
-import { roleuser } from "@edulastic/constants";
+import { get, keyBy, values, groupBy, isEmpty, uniqBy } from 'lodash'
+import next from 'immer'
+import { roleuser } from '@edulastic/constants'
 
-export const getQuestions = author_classboard_testActivity => {
-  const testItemsData = get(author_classboard_testActivity, "data.testItemsData", []);
+export const getQuestions = (author_classboard_testActivity) => {
+  const testItemsData = get(
+    author_classboard_testActivity,
+    'data.testItemsData',
+    []
+  )
   const arrOfArr = testItemsData.map((item, index) => {
     if (item.data && item.data.questions) {
-      return item.data.questions;
+      return item.data.questions
     }
-    return [];
-  });
-  let questionsArr = [];
+    return []
+  })
+  let questionsArr = []
 
-  for (let item of arrOfArr) {
-    questionsArr = [...questionsArr, ...item];
+  for (const item of arrOfArr) {
+    questionsArr = [...questionsArr, ...item]
   }
 
-  return questionsArr;
-};
+  return questionsArr
+}
 
 export const getQuestionTableData = (studentResponse, questionArr) => {
-  const questionActivities = get(studentResponse, "data.questionActivities", []);
-  const questions = keyBy(questionArr, "id");
-  let totalScore = 0;
-  let obtainedScore = 0;
-  const questionTableData = next(questionActivities, arr => {
+  const questionActivities = get(studentResponse, 'data.questionActivities', [])
+  const questions = keyBy(questionArr, 'id')
+  let totalScore = 0
+  let obtainedScore = 0
+  const questionTableData = next(questionActivities, (arr) => {
     for (let i = 0; i < arr.length; i++) {
-      let item = arr[i];
-      let q = questions[item.qid];
-      let options = keyBy(q.options, "value");
-      let correctAnswers = get(q, "validation.validResponse.value", []);
-      const userResponse = item.userResponse ? item.userResponse : [];
-      item.questionNumber = i + 1;
+      const item = arr[i]
+      const q = questions[item.qid]
+      const options = keyBy(q.options, 'value')
+      const correctAnswers = get(q, 'validation.validResponse.value', [])
+      const userResponse = item.userResponse ? item.userResponse : []
+      item.questionNumber = i + 1
       item.yourAnswer = Array.isArray(userResponse)
-        ? userResponse.map((item, index) => (options[item] ? options[item].label : ""))
-        : [];
-      item.correctAnswer = correctAnswers.map((item, index) => (options[item] ? options[item].label : ""));
-      totalScore += item.maxScore;
-      obtainedScore += item.score;
+        ? userResponse.map((item, index) =>
+            options[item] ? options[item].label : ''
+          )
+        : []
+      item.correctAnswer = correctAnswers.map((item, index) =>
+        options[item] ? options[item].label : ''
+      )
+      totalScore += item.maxScore
+      obtainedScore += item.score
     }
-  });
+  })
 
-  return { questionTableData, totalScore, obtainedScore };
-};
+  return { questionTableData, totalScore, obtainedScore }
+}
 
-export const getChartAndStandardTableData = (studentResponse, author_classboard_testActivity) => {
-  const testItems = get(author_classboard_testActivity, "data.testItemsData", []);
-  const questionActivities = get(studentResponse, "data.questionActivities", []);
-  const assignmentMastery = get(author_classboard_testActivity, "additionalData.assignmentMastery", []);
-  const assignmentMasteryCopy = assignmentMastery.map(item => ({
+export const getChartAndStandardTableData = (
+  studentResponse,
+  author_classboard_testActivity
+) => {
+  const testItems = get(
+    author_classboard_testActivity,
+    'data.testItemsData',
+    []
+  )
+  const questionActivities = get(studentResponse, 'data.questionActivities', [])
+  const assignmentMastery = get(
+    author_classboard_testActivity,
+    'additionalData.assignmentMastery',
+    []
+  )
+  const assignmentMasteryCopy = assignmentMastery.map((item) => ({
     ...item,
     count: 0,
     total: questionActivities.length,
-    fill: item.color
-  }));
-  let assignmentMasteryMap = keyBy(assignmentMasteryCopy, "masteryLevel");
+    fill: item.color,
+  }))
+  const assignmentMasteryMap = keyBy(assignmentMasteryCopy, 'masteryLevel')
 
   const standardsTableData = uniqBy(
     testItems.reduce((acc, item) => {
-      const questions = item.data.questions;
+      const questions = item.data.questions
       const allDomains = questions
-        .map(q => {
-          const domains = (q.alignment || []).map(ali => ali.domains || []).flat();
-          const qActivity = questionActivities.filter(qa => qa.qid === q.id)[0] || {};
-          let { score = 0, maxScore } = qActivity;
+        .map((q) => {
+          const domains = (q.alignment || [])
+            .map((ali) => ali.domains || [])
+            .flat()
+          const qActivity =
+            questionActivities.filter((qa) => qa.qid === q.id)[0] || {}
+          let { score = 0, maxScore } = qActivity
           if (!maxScore) {
-            maxScore = q.validation?.validResponse?.score;
+            maxScore = q.validation?.validResponse?.score
           }
-          let performance = Number(((score / maxScore) * 100).toFixed(2));
-          performance = !isNaN(performance) ? performance : 0;
-          let mastery = assignmentMastery.find((_item, index) => {
+          let performance = Number(((score / maxScore) * 100).toFixed(2))
+          performance = !isNaN(performance) ? performance : 0
+          const mastery = assignmentMastery.find((_item, index) => {
             if (performance >= _item.threshold) {
-              return true;
+              return true
             }
-          });
+          })
           if (mastery) {
-            assignmentMasteryMap[mastery.masteryLevel].count++;
+            assignmentMasteryMap[mastery.masteryLevel].count++
           }
 
           return domains
-            .map(d => {
-              return (d.standards || []).map(std => ({
+            .map((d) => {
+              return (d.standards || []).map((std) => ({
                 ...std,
                 domain: d.name,
                 question: q.qLabel,
-                masterySummary: mastery ? mastery.masteryLevel : "",
-                performance: performance,
+                masterySummary: mastery ? mastery.masteryLevel : '',
+                performance,
                 score,
-                maxScore
-              }));
+                maxScore,
+              }))
             })
-            .flat();
+            .flat()
         })
-        .flat();
+        .flat()
 
-      return [...acc, ...allDomains];
+      return [...acc, ...allDomains]
     }, []),
-    "id"
-  );
-  console.log("standardsTableData", standardsTableData);
+    'id'
+  )
+  console.log('standardsTableData', standardsTableData)
 
-  const chartData = values(assignmentMasteryMap);
+  const chartData = values(assignmentMasteryMap)
 
-  return { standardsTableData, chartData, assignmentMasteryMap };
-};
+  return { standardsTableData, chartData, assignmentMasteryMap }
+}
 
-//hiding seeting tab if assignment assigned by either DA/SA
+// hiding seeting tab if assignment assigned by either DA/SA
 export const allowedSettingPageToDisplay = (assignedBy = {}, userId) => {
-  let showSettingTab = true;
-  const { role, _id } = assignedBy;
-  if (assignedBy && [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) && _id !== userId) {
-    showSettingTab = false;
+  let showSettingTab = true
+  const { role, _id } = assignedBy
+  if (
+    assignedBy &&
+    [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) &&
+    _id !== userId
+  ) {
+    showSettingTab = false
   }
-  return showSettingTab;
-};
+  return showSettingTab
+}

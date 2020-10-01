@@ -1,6 +1,12 @@
-import styled from "styled-components";
-import { Modal } from "antd";
-import { lightGreySecondary, black, white, secondaryTextColor, titleColor } from "@edulastic/colors";
+import styled from 'styled-components'
+import { Modal } from 'antd'
+import {
+  lightGreySecondary,
+  black,
+  white,
+  secondaryTextColor,
+  titleColor,
+} from '@edulastic/colors'
 
 export const StyledPurchaseLicenseModal = styled(Modal)`
   width: 750px !important;
@@ -40,11 +46,11 @@ export const StyledPurchaseLicenseModal = styled(Modal)`
     top: 10px;
     right: 10px;
   }
-`;
+`
 
 export const Title = styled.h5`
   color: ${secondaryTextColor};
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-`;
+`

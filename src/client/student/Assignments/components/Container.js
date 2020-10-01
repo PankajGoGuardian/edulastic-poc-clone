@@ -1,63 +1,63 @@
-import { largeDesktopWidth } from "@edulastic/colors";
-import { useRealtimeV2 } from "@edulastic/common";
-import useInterval from "@use-it/interval";
-import { Layout, Spin } from "antd";
-import { get, values } from "lodash";
-import PropTypes from "prop-types";
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import NoDataNotification from "../../../common/components/NoDataNotification";
-import { getClasses, getCurrentGroup } from "../../Login/ducks";
+import { largeDesktopWidth } from '@edulastic/colors'
+import { useRealtimeV2 } from '@edulastic/common'
+import useInterval from '@use-it/interval'
+import { Layout, Spin } from 'antd'
+import { get, values } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import NoDataNotification from '../../../common/components/NoDataNotification'
+import { getClasses, getCurrentGroup } from '../../Login/ducks'
 // components
-import AssignmentCard from "../../sharedComponents/AssignmentCard";
+import AssignmentCard from '../../sharedComponents/AssignmentCard'
 import {
   addRealtimeAssignmentAction,
   removeAssignmentAction,
   rerenderAssignmentsAction,
-  updateTestIdRealTimeAction
-} from "../../sharedDucks/AssignmentModule/ducks";
-import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
-import { Wrapper } from "../../styled";
+  updateTestIdRealTimeAction,
+} from '../../sharedDucks/AssignmentModule/ducks'
+import { addRealtimeReportAction } from '../../sharedDucks/ReportsModule/ducks'
+import { Wrapper } from '../../styled'
 // actions
 import {
   assignmentsSelector,
   fetchAssignmentsAction,
   getAssignmentsSelector,
   transformAssignmentForRedirect,
-  assignmentIdsByTestIdSelector
-} from "../ducks";
+  assignmentIdsByTestIdSelector,
+} from '../ducks'
 
 const withinThreshold = (targetDate, threshold) => {
-  const diff = new Date(targetDate) - Date.now();
+  const diff = new Date(targetDate) - Date.now()
   if (diff <= threshold) {
-    return true;
+    return true
   }
-  return false;
-};
+  return false
+}
 
 /**
  *
  * @param {Object[]} assignments
  * @returns {boolean}
  */
-const needRealtimeDateTracking = assignments => {
-  const threshold = 24 * 60 * 60 * 1000; // 24 hours
+const needRealtimeDateTracking = (assignments) => {
+  const threshold = 24 * 60 * 60 * 1000 // 24 hours
   for (const assignment of assignments) {
     if (assignment.endDate && withinThreshold(assignment.endDate, threshold)) {
-      return true;
+      return true
     }
     for (const cls of assignment.class) {
       if (cls.startDate && withinThreshold(cls.startDate, threshold)) {
-        return true;
+        return true
       }
       if (cls.endDate && withinThreshold(cls.endDate, threshold)) {
-        return true;
+        return true
       }
     }
   }
-  return false;
-};
+  return false
+}
 
 const Content = ({
   flag,
@@ -74,63 +74,81 @@ const Content = ({
   removeAssignment,
   currentChild,
   assignmentIdsByTestId,
-  updateTestIdRealTime
+  updateTestIdRealTime,
 }) => {
   useEffect(() => {
-    fetchAssignments(currentGroup);
-  }, [currentChild, currentGroup]);
+    fetchAssignments(currentGroup)
+  }, [currentChild, currentGroup])
 
   const topics = [
     `student_assignment:user:${userId}`,
     ...(currentGroup
       ? [`student_assignment:class:${currentGroup}`]
-      : allClasses.map(x => `student_assignment:class:${x._id}`))
-  ];
+      : allClasses.map((x) => `student_assignment:class:${x._id}`)),
+  ]
 
-  const transformAssignment = payload => {
-    addRealtimeAssignment(transformAssignmentForRedirect(currentGroup, userId, allClasses, {}, {}, payload));
-  };
-  const regradeWatchTestIdTopics = Object.keys(assignmentIdsByTestId).map(item => `student_assessment:test:${item}`);
+  const transformAssignment = (payload) => {
+    addRealtimeAssignment(
+      transformAssignmentForRedirect(
+        currentGroup,
+        userId,
+        allClasses,
+        {},
+        {},
+        payload
+      )
+    )
+  }
+  const regradeWatchTestIdTopics = Object.keys(assignmentIdsByTestId).map(
+    (item) => `student_assessment:test:${item}`
+  )
   if (regradeWatchTestIdTopics.length) {
-    topics.push(...regradeWatchTestIdTopics);
+    topics.push(...regradeWatchTestIdTopics)
   }
   useRealtimeV2(topics, {
     addAssignment: transformAssignment,
     addReport: addRealtimeReport,
-    "absentee-mark": addRealtimeReport,
-    "open-assignment": transformAssignment,
-    "close-assignment": transformAssignment,
+    'absentee-mark': addRealtimeReport,
+    'open-assignment': transformAssignment,
+    'close-assignment': transformAssignment,
     removeAssignment,
-    regradedAssignment: payload => {
-      const assignmentIds = assignmentIdsByTestId[payload.oldTestId];
+    regradedAssignment: (payload) => {
+      const assignmentIds = assignmentIdsByTestId[payload.oldTestId]
       if (assignmentIds && assignmentIds.length) {
-        return updateTestIdRealTime({ assignmentIds, ...payload });
+        return updateTestIdRealTime({ assignmentIds, ...payload })
       }
-    }
-  });
+    },
+  })
 
   useInterval(() => {
     if (needRealtimeDateTracking(allAssignments)) {
-      rerenderAssignments();
+      rerenderAssignments()
     }
-  }, 60 * 1000);
+  }, 60 * 1000)
 
   const noDataNotification = () => (
     <NoDataNotification
       heading="No Assignments "
-      description={"You don't have any currently assigned or completed assignments."}
+      description={
+        "You don't have any currently assigned or completed assignments."
+      }
     />
-  );
+  )
 
   const renderAssignments = () => (
     <AssignmentWrapper>
-      {assignments.map(item => (
-        <AssignmentCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} type="assignment" />
+      {assignments.map((item) => (
+        <AssignmentCard
+          key={`${item._id}_${item.classId}`}
+          data={item}
+          classId={item.classId}
+          type="assignment"
+        />
       ))}
     </AssignmentWrapper>
-  );
+  )
 
-  const showLoader = () => <Spin size="small" />;
+  const showLoader = () => <Spin size="small" />
 
   return (
     <LayoutContent flag={flag}>
@@ -142,20 +160,20 @@ const Content = ({
           : showLoader()}
       </Wrapper>
     </LayoutContent>
-  );
-};
+  )
+}
 
 export default connect(
-  state => ({
+  (state) => ({
     flag: state.ui.flag,
     currentGroup: getCurrentGroup(state),
     assignments: getAssignmentsSelector(state),
     allAssignments: values(assignmentsSelector(state)),
     allClasses: getClasses(state),
-    userId: get(state, "user.user._id"),
-    isLoading: get(state, "studentAssignment.isLoading"),
+    userId: get(state, 'user.user._id'),
+    isLoading: get(state, 'studentAssignment.isLoading'),
     currentChild: state?.user?.currentChild,
-    assignmentIdsByTestId: assignmentIdsByTestIdSelector(state)
+    assignmentIdsByTestId: assignmentIdsByTestIdSelector(state),
   }),
   {
     fetchAssignments: fetchAssignmentsAction,
@@ -163,9 +181,9 @@ export default connect(
     addRealtimeReport: addRealtimeReportAction,
     rerenderAssignments: rerenderAssignmentsAction,
     removeAssignment: removeAssignmentAction,
-    updateTestIdRealTime: updateTestIdRealTimeAction
+    updateTestIdRealTime: updateTestIdRealTimeAction,
   }
-)(Content);
+)(Content)
 
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,
@@ -178,19 +196,19 @@ Content.propTypes = {
   userId: PropTypes.string.isRequired,
   addRealtimeAssignment: PropTypes.func.isRequired,
   addRealtimeReport: PropTypes.func.isRequired,
-  rerenderAssignments: PropTypes.func.isRequired
-};
+  rerenderAssignments: PropTypes.func.isRequired,
+}
 
 Content.defaultProps = {
-  assignments: []
-};
+  assignments: [],
+}
 
 const LayoutContent = styled(Layout.Content)`
   width: 100%;
-`;
+`
 
 const AssignmentWrapper = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     margin-top: -3px;
   }
-`;
+`

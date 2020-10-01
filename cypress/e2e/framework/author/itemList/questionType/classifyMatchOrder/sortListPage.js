@@ -1,231 +1,211 @@
 /* eslint-disable class-methods-use-this */
-import Header from "../../itemDetail/header";
-import Helpers from "../../../../util/Helpers";
+import Header from '../../itemDetail/header'
+import Helpers from '../../../../util/Helpers'
 
 class SortListPage {
   constructor() {
-    this.header = new Header();
+    this.header = new Header()
 
     this.numerationOption = {
-      Numerical: "number",
-      "Uppercase alphabet": "upper-alpha",
-      "Lowercase alphabet": "lower-alpha"
-    };
+      Numerical: 'number',
+      'Uppercase alphabet': 'upper-alpha',
+      'Lowercase alphabet': 'lower-alpha',
+    }
 
     this.fontSizeOption = {
-      Small: "small",
-      Normal: "normal",
-      Large: "large",
-      "Extra Large": "xlarge",
-      Huge: "xxlarge"
-    };
+      Small: 'small',
+      Normal: 'normal',
+      Large: 'large',
+      'Extra Large': 'xlarge',
+      Huge: 'xxlarge',
+    }
 
     this.matrixOption = {
-      Inline: "inline",
-      Table: "table"
-    };
+      Inline: 'inline',
+      Table: 'table',
+    }
 
     this.stemNumerationOption = {
-      Numerical: "number",
-      "Uppercase alphabet": "upper-alpha",
-      "Lowercase alphabet": "lower-alpha"
-    };
+      Numerical: 'number',
+      'Uppercase alphabet': 'upper-alpha',
+      'Lowercase alphabet': 'lower-alpha',
+    }
   }
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.get("body")
-      .contains("span", "Advanced Options")
-      .should("be.visible")
-      .click();
-    return this;
+    cy.get('body')
+      .contains('span', 'Advanced Options')
+      .should('be.visible')
+      .click()
+    return this
   }
 
   selectFontSize(option) {
-    const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;
-    cy.get('[data-cy="fontSizeSelect"]')
-      .should("be.visible")
-      .click();
+    const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`
+    cy.get('[data-cy="fontSizeSelect"]').should('be.visible').click()
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).should('be.visible').click()
 
     cy.get('[data-cy="fontSizeSelect"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+      .find('.ant-select-selection-selected-value')
+      .should('contain', option)
 
-    return this;
+    return this
   }
 
   getLayout() {
-    return Helpers.getElement("layout").should("be.visble");
+    return Helpers.getElement('layout').should('be.visble')
   }
 
   getFontSizeSelect() {
-    return Helpers.getElement("fontSizeSelect");
+    return Helpers.getElement('fontSizeSelect')
   }
 
   getSmallFontSizeOption() {
-    return Helpers.getElement("small");
+    return Helpers.getElement('small')
   }
 
   getNormalFontSizeOption() {
-    return Helpers.getElement("normal");
+    return Helpers.getElement('normal')
   }
 
   getLargeFontSizeOption() {
-    return Helpers.getElement("large");
+    return Helpers.getElement('large')
   }
 
   getExtraLargeFontSizeOption() {
-    return Helpers.getElement("xlarge");
+    return Helpers.getElement('xlarge')
   }
 
   getHugeFontSizeOption() {
-    return Helpers.getElement("xxlarge");
+    return Helpers.getElement('xxlarge')
   }
 
   getSortListPreview() {
-    return Helpers.getElement("sortListPreview");
+    return Helpers.getElement('sortListPreview')
   }
 
   getSortListComponent() {
-    return Helpers.getElement("sortListComponent");
+    return Helpers.getElement('sortListComponent')
   }
 
   getOrientationSelect() {
-    return Helpers.getElement("orientationSelect");
+    return Helpers.getElement('orientationSelect')
   }
 
   getHorizontalOption() {
-    return Helpers.getElement("horizontal");
+    return Helpers.getElement('horizontal')
   }
 
   getVerticalOption() {
-    return Helpers.getElement("vertical");
+    return Helpers.getElement('vertical')
   }
 
   checkFontSize(fontSize) {
-    this.header.preview();
+    this.header.preview()
 
     this.getSortListPreview()
-      .should("have.css", "font-size")
-      .and("eq", fontSize);
+      .should('have.css', 'font-size')
+      .and('eq', fontSize)
 
-    this.header.edit();
+    this.header.edit()
   }
 
   checkOrientation(orientation) {
-    this.header.preview();
+    this.header.preview()
 
-    if (orientation === "horizontal") {
+    if (orientation === 'horizontal') {
       this.getSortListComponent()
-        .should("have.css", "flex-direction")
-        .and("eq", "row");
+        .should('have.css', 'flex-direction')
+        .and('eq', 'row')
     }
 
-    if (orientation === "vertical") {
+    if (orientation === 'vertical') {
       this.getSortListComponent()
-        .should("have.css", "flex-direction")
-        .and("eq", "column");
+        .should('have.css', 'flex-direction')
+        .and('eq', 'column')
     }
 
-    this.header.edit();
+    this.header.edit()
   }
 
-  getQuestionText = () =>
-    cy
-      .get(".fr-element")
-      .first()
-      .find("p");
+  getQuestionText = () => cy.get('.fr-element').first().find('p')
 
   getListInputs = () =>
     cy
-      .get("[data-cy=sortable-list-container]")
+      .get('[data-cy=sortable-list-container]')
       .first()
-      .find("[data-cy=quillSortableItem]")
-      .find("[contenteditable=true]");
+      .find('[data-cy=quillSortableItem]')
+      .find('[contenteditable=true]')
 
   getAddInputButton = () =>
-    cy
-      .contains("span", "Add new choice")
-      .closest("button")
-      .first();
+    cy.contains('span', 'Add new choice').closest('button').first()
 
-  getListInputByIndex = index =>
-    cy
-      .get(`#drag-handler-prefix${index}`)
-      .next()
-      .find("div .ql-editor");
+  getListInputByIndex = (index) =>
+    cy.get(`#drag-handler-prefix${index}`).next().find('div .ql-editor')
 
   getDeleteChoiceButtons = () =>
     cy
       .get('[data-cy="sortable-list-container"]')
       .first()
-      .find('[data-cypress="deleteButton"]');
+      .find('[data-cypress="deleteButton"]')
 
-  getListDeleteByIndex = index => cy.get(`[data-cy="deleteprefix${index}"]`);
+  getListDeleteByIndex = (index) => cy.get(`[data-cy="deleteprefix${index}"]`)
 
-  getPonitsInput = () => cy.get('[data-cy="points"]');
+  getPonitsInput = () => cy.get('[data-cy="points"]')
 
   getAnswerLists = () =>
     cy
       .get(`[data-cy="sortable-list-container"]`)
       .last()
-      .find("[data-cy=quillSortableItem]");
+      .find('[data-cy=quillSortableItem]')
 
   addAlternate = () => {
-    cy.get('[data-cy="alternate"]')
-      .should("be.visible")
-      .click();
-    return this;
-  };
+    cy.get('[data-cy="alternate"]').should('be.visible').click()
+    return this
+  }
 
-  getAddedAlternate = () => cy.get('[data-cy="del-alter"]');
+  getAddedAlternate = () => cy.get('[data-cy="del-alter"]')
 
-  getPreviewList = () => cy.get('[data-cy="sortListComponent"]');
+  getPreviewList = () => cy.get('[data-cy="sortListComponent"]')
 
-  getSourceBoard = () => cy.get("#drag-drop-board-0").parent();
+  getSourceBoard = () => cy.get('#drag-drop-board-0').parent()
 
-  getTargetBoard = () => cy.get("#drag-drop-board-0-target").parent();
+  getTargetBoard = () => cy.get('#drag-drop-board-0-target').parent()
 
   dragAndDropFromAnswerToBoard = (sLabel, sIndex, tIndex) => {
     cy.get(`#drag-drop-board-${sIndex}`)
       .find('[class^="TextEmpty"]')
-      .should("not.exist");
+      .should('not.exist')
     cy.get(`#drag-drop-board-${sIndex}`)
       .customDragDrop(`#drag-drop-board-${tIndex}-target`)
       .then(() => {
-        cy.get(`#drag-drop-board-${tIndex}-target`).trigger("dragend");
+        cy.get(`#drag-drop-board-${tIndex}-target`).trigger('dragend')
         cy.get(`#drag-drop-board-${sIndex}`)
           .find('[class^="TextEmpty"]')
-          .should("exist");
+          .should('exist')
         cy.get(`#drag-drop-board-${tIndex}-target`)
-          .contains("p", sLabel)
-          .should("be.visible");
-      });
-    return this;
-  };
+          .contains('p', sLabel)
+          .should('be.visible')
+      })
+    return this
+  }
 
   dragAndDropInsideTarget = (sLabel, sIndex, tIndex) => {
     cy.get(`#drag-drop-board-${tIndex}-target`)
       .customDragDrop(`#drag-drop-board-${sIndex}-target`)
       .then(() => {
-        cy.get(`#drag-drop-board-${sIndex}-target`).trigger("dragend");
+        cy.get(`#drag-drop-board-${sIndex}-target`).trigger('dragend')
         cy.get(`#drag-drop-board-${tIndex}-target`)
-          .contains("p", sLabel)
-          .should("be.visible");
-      });
-    return this;
-  };
+          .contains('p', sLabel)
+          .should('be.visible')
+      })
+    return this
+  }
 
   getCorrectAnswerList = () =>
-    cy
-      .get("body")
-      .find("h3", "Correct Answers")
-      .next()
-      .children();
+    cy.get('body').find('h3', 'Correct Answers').next().children()
 }
 
-export default SortListPage;
+export default SortListPage

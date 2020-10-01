@@ -1,8 +1,11 @@
-import styled from "styled-components";
-import { extraDesktopWidthMax } from "@edulastic/colors";
-import { StyledTable as Table, StyledCard as Card } from "../../../../common/styled";
+import styled from 'styled-components'
+import { extraDesktopWidthMax } from '@edulastic/colors'
+import {
+  StyledTable as Table,
+  StyledCard as Card,
+} from '../../../../common/styled'
 
-export const StyledCard = styled(Card)``;
+export const StyledCard = styled(Card)``
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -61,7 +64,7 @@ export const StyledTable = styled(Table)`
 
       tbody {
         tr {
-          td:nth-child(n + ${props => props.colorCellStart}) {
+          td:nth-child(n + ${(props) => props.colorCellStart}) {
             padding: 0px;
             div {
               height: 100%;
@@ -73,9 +76,9 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`
 
-export const UpperContainer = styled.div``;
+export const UpperContainer = styled.div``
 
 export const TableContainer = styled.div`
   .parent-row {
@@ -89,10 +92,10 @@ export const TableContainer = styled.div`
       width: 100%;
     }
   }
-`;
+`
 export const StyledP = styled.p`
   font-size: 12px;
   font-weight: 600;
   color: #7c848e;
   text-align: center;
-`;
+`

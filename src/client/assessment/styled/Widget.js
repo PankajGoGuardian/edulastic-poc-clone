@@ -6,23 +6,24 @@ import {
   greyThemeLighter,
   mediumDesktopExactWidth,
   selectColor,
-  title
-} from "@edulastic/colors";
-import { Paper } from "@edulastic/common";
-import styled from "styled-components";
-import { createStandardTextStyle } from "../utils/helpers";
+  title,
+} from '@edulastic/colors'
+import { Paper } from '@edulastic/common'
+import styled from 'styled-components'
+import { createStandardTextStyle } from '../utils/helpers'
 
 export const WidgetWrapper = styled.div`
   margin-top: 30px;
-`;
+`
 
 export const Widget = styled.div`
-  position: ${({ position }) => position || "relative"};
+  position: ${({ position }) => position || 'relative'};
   padding: 15px 20px;
   ${({ overflowHandlers }) => overflowHandlers};
-  display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
+  display: ${({ advancedAreOpen }) =>
+    advancedAreOpen !== null ? (advancedAreOpen ? 'block' : 'none') : 'block'};
   ${({ visible }) =>
-    typeof visible !== "undefined" &&
+    typeof visible !== 'undefined' &&
     !visible &&
     `
       position: absolute;
@@ -39,19 +40,20 @@ export const Widget = styled.div`
     padding-right: 20px;
     letter-spacing: 0.3px;
     text-transform: uppercase;
-    ${props => createStandardTextStyle(props)}
+    ${(props) => createStandardTextStyle(props)}
   }
 
   .ql-editor {
-    padding: ${props => (props.questionTextArea ? "0 !important" : "inherit")};
-    font-size: ${props => (props.questionTextArea ? "14px" : "inherit")};
-    color: ${props => (props.questionTextArea ? title : "inherit")};
-    position: ${props => (props.questionTextArea ? "relative" : "inherit")};
-    top: ${props => (props.questionTextArea ? "-7px" : "inherit")};
+    padding: ${(props) =>
+      props.questionTextArea ? '0 !important' : 'inherit'};
+    font-size: ${(props) => (props.questionTextArea ? '14px' : 'inherit')};
+    color: ${(props) => (props.questionTextArea ? title : 'inherit')};
+    position: ${(props) => (props.questionTextArea ? 'relative' : 'inherit')};
+    top: ${(props) => (props.questionTextArea ? '-7px' : 'inherit')};
 
     &.ql-blank::before {
-      color: ${props => (props.questionTextArea ? title : "inherit")};
-      font-style: ${props => (props.questionTextArea ? "normal" : "inherit")};
+      color: ${(props) => (props.questionTextArea ? title : 'inherit')};
+      font-style: ${(props) => (props.questionTextArea ? 'normal' : 'inherit')};
     }
   }
 
@@ -63,7 +65,7 @@ export const Widget = styled.div`
 
   .ant-select {
     &-selection-selected-value {
-      ${props => createStandardTextStyle(props)}
+      ${(props) => createStandardTextStyle(props)}
       padding-left: 10px;
       letter-spacing: 0.3px;
       color: ${selectColor};
@@ -87,7 +89,7 @@ export const Widget = styled.div`
   }
 
   .ant-input {
-    ${props => createStandardTextStyle(props)}
+    ${(props) => createStandardTextStyle(props)}
     padding-left: 21px;
     letter-spacing: 0.3px;
     color: ${selectColor};
@@ -95,7 +97,7 @@ export const Widget = styled.div`
   }
 
   .ql-container {
-    ${props => createStandardTextStyle(props)}
+    ${(props) => createStandardTextStyle(props)}
     letter-spacing: 0.3px;
     font-weight: 600;
     margin-top: 6px !important;
@@ -121,10 +123,10 @@ export const Widget = styled.div`
   .ql-container,
   .ant-input,
   .ant-input-selection-selected-value {
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
 
     @media (min-width: ${mediumDesktopExactWidth}) {
-      font-size: ${props => props.theme.bodyFontSize};
+      font-size: ${(props) => props.theme.bodyFontSize};
     }
   }
 
@@ -137,26 +139,26 @@ export const Widget = styled.div`
       margin-top: 20px;
     }
   }
-`;
+`
 
 export const WidgetSubHeading = styled.div`
   color: ${fadedBlack};
   margin-bottom: 10px;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${(props) => props.theme.smallFontSize};
   line-height: 1.333;
   list-style: none;
   display: block;
   font-weight: 600;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.standardFont};
+    font-size: ${(props) => props.theme.standardFont};
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
     line-height: 1.5;
     margin-bottom: 15px;
   }
-`;
+`
 
 export const WidgetMethods = styled.div`
   columns: 2;
@@ -176,7 +178,7 @@ export const WidgetMethods = styled.div`
     width: calc(100% - 35px) !important;
     max-width: 295px;
   }
-`;
+`
 
 export const WidgetFRInput = styled.div`
   div.mig {
@@ -191,7 +193,7 @@ export const WidgetFRInput = styled.div`
     &-box {
       background-color: ${greyThemeLighter};
       border: 1px solid ${greyThemeLight};
-      font-size: ${props => props.fontSize || "13px"};
+      font-size: ${(props) => props.fontSize || '13px'};
       width: 100%;
       min-height: 35px;
       padding: 0 15px;
@@ -207,16 +209,20 @@ export const WidgetFRInput = styled.div`
       width: 100%;
       min-height: 35px;
       padding: 8px 0px;
-      ${props => createStandardTextStyle(props)}
+      ${(props) => createStandardTextStyle(props)}
     }
   }
-`;
+`
 
 export const StyledPaperWrapper = styled(Paper)`
-  background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
-  ${({ overflowProps, paddingProps }) => ({ ...overflowProps, ...paddingProps })};
+  background-color: ${(props) =>
+    props.theme.widgets.assessmentPlayers.mainContentBgColor};
+  ${({ overflowProps, paddingProps }) => ({
+    ...overflowProps,
+    ...paddingProps,
+  })};
 
   textarea {
     user-select: text;
   }
-`;
+`

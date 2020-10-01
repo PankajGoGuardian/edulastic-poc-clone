@@ -1,12 +1,16 @@
-import React from "react";
+import React from 'react'
 
-import { MainWrapper, StyledContent, StyledLayout } from "../../../../admin/Common/StyledComponents";
-import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import {
+  MainWrapper,
+  StyledContent,
+  StyledLayout,
+} from '../../../../admin/Common/StyledComponents'
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 
-import ExternalTools from "../ExternalTools/ExternalTools";
+import ExternalTools from '../ExternalTools/ExternalTools'
 
-const title = "Manage District";
-const menuActive = { mainMenu: "Content", subMenu: "ExternalTools" };
+const title = 'Manage District'
+const menuActive = { mainMenu: 'Content', subMenu: 'ExternalTools' }
 
 const Container = ({ history, routeKey }) => {
   return (
@@ -18,7 +22,7 @@ const Container = ({ history, routeKey }) => {
         </StyledLayout>
       </StyledContent>
     </MainWrapper>
-  );
-};
+  )
+}
 
-export default Container;
+export default Container

@@ -1,9 +1,9 @@
-import styled, { css } from "styled-components";
-import { white, inputBorder } from "@edulastic/colors";
-import { MathInput } from "@edulastic/common";
+import styled, { css } from 'styled-components'
+import { white, inputBorder } from '@edulastic/colors'
+import { MathInput } from '@edulastic/common'
 
 export const MathAnswer = styled(MathInput)`
-  width: ${({ check }) => check && "210px"};
+  width: ${({ check }) => check && '210px'};
   .input {
     height: 40px;
 
@@ -43,4 +43,4 @@ export const MathAnswer = styled(MathInput)`
         left: 0 !important;
       }
     `}
-`;
+`

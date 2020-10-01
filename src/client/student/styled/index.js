@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 import {
   tabletWidth,
@@ -8,21 +8,23 @@ import {
   textColor,
   titleColor,
   title,
-  backgrounds
-} from "@edulastic/colors";
+  backgrounds,
+} from '@edulastic/colors'
 
 export const Wrapper = styled.div`
-  min-height: ${props => props.minHeight || "75vh"};
+  min-height: ${(props) => props.minHeight || '75vh'};
   margin: 15px 0px;
   border-radius: 10px;
-  background-color: ${props => props.bgColor || props.theme.assignment.cardContainerBgColor};
+  background-color: ${(props) =>
+    props.bgColor || props.theme.assignment.cardContainerBgColor};
   position: relative;
-  display: ${props => props.display || ""};
-  justify-content: ${props => (props.display === "flex" ? "space-between" : "")};
+  display: ${(props) => props.display || ''};
+  justify-content: ${(props) =>
+    props.display === 'flex' ? 'space-between' : ''};
   @media screen and (max-width: ${mobileWidthMax}) {
     display: block;
   }
-`;
+`
 
 export const NoDataBox = styled.div`
   background: ${backgrounds.default};
@@ -120,7 +122,7 @@ export const NoDataBox = styled.div`
     padding: 36px 25px;
     height: auto;
   }
-`;
+`
 
 export const BreadcrumbWrapper = styled.div`
   width: 100%;
@@ -130,11 +132,11 @@ export const BreadcrumbWrapper = styled.div`
   margin-top: 0;
 
   .ant-breadcrumb-link {
-    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
+    color: ${(props) => props.theme.breadcrumbs.breadcrumbTextColor};
     text-transform: uppercase;
 
     a {
-      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
+      color: ${(props) => props.theme.breadcrumbs.breadcrumbLinkColor};
     }
   }
 
@@ -147,14 +149,14 @@ export const BreadcrumbWrapper = styled.div`
   @media screen and (max-width: ${tabletWidth}) {
     flex-direction: column;
   }
-`;
+`
 
 export const Title = styled.h3`
-  font-size: ${props => props.theme.header.headerTitleSecondaryTextSize};
+  font-size: ${(props) => props.theme.header.headerTitleSecondaryTextSize};
   font-weight: bold;
   line-height: 24px;
-  color: ${props => props.theme.headerTitleSecondaryTextColor || title};
+  color: ${(props) => props.theme.headerTitleSecondaryTextColor || title};
   display: block;
   margin-left: 12px;
   margin: 15px 0px;
-`;
+`

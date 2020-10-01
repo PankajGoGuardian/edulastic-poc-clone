@@ -1,24 +1,29 @@
-import React from "react";
-import styled from "styled-components";
-import { Tabs as AntTabs, Tooltip } from "antd";
-import MainKeyboard from "./MainKeyboard";
-import { TAB_BUTTONS } from "../constants/keyboardButtons";
+import React from 'react'
+import styled from 'styled-components'
+import { Tabs as AntTabs, Tooltip } from 'antd'
+import MainKeyboard from './MainKeyboard'
+import { TAB_BUTTONS } from '../constants/keyboardButtons'
 
-const { TabPane } = AntTabs;
+const { TabPane } = AntTabs
 
-const tabLabel = (label, name) => <Tooltip title={name}>{label}</Tooltip>;
+const tabLabel = (label, name) => <Tooltip title={name}>{label}</Tooltip>
 
 const FullKeybord = ({ onInput, numbers }) => (
   <Tabs>
     {TAB_BUTTONS.map(({ label, name, key, buttons }) => (
       <TabPane tab={tabLabel(label, name)} key={key}>
-        <MainKeyboard onInput={onInput} btns={buttons} numbers={key === "GENERAL" ? numbers : null} fullKeybord />
+        <MainKeyboard
+          onInput={onInput}
+          btns={buttons}
+          numbers={key === 'GENERAL' ? numbers : null}
+          fullKeybord
+        />
       </TabPane>
     ))}
   </Tabs>
-);
+)
 
-export default FullKeybord;
+export default FullKeybord
 
 const Tabs = styled(AntTabs)`
   & .ant-tabs-nav .ant-tabs-tab {
@@ -33,4 +38,4 @@ const Tabs = styled(AntTabs)`
   & .ant-tabs-nav-scroll {
     padding: 0px 24px;
   }
-`;
+`

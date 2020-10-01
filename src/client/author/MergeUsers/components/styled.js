@@ -1,10 +1,15 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 // components
-import { Modal, Table } from "antd";
+import { Modal, Table } from 'antd'
 
 // constants
-import { greyThemeDark1, darkGrey2, smallDesktopWidth, lightGrey11 } from "@edulastic/colors";
+import {
+  greyThemeDark1,
+  darkGrey2,
+  smallDesktopWidth,
+  lightGrey11,
+} from '@edulastic/colors'
 
 export const StyledModal = styled(Modal)`
   min-width: fit-content;
@@ -68,7 +73,7 @@ export const StyledModal = styled(Modal)`
       }
     }
   }
-`;
+`
 
 export const StyledTable = styled(Table)`
   width: 100%;
@@ -122,4 +127,4 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`;
+`

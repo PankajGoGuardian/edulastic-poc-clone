@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import ReactOutsideEvent from "react-outside-event";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import ReactOutsideEvent from 'react-outside-event'
 import {
   white,
   tabletWidth,
@@ -10,13 +10,20 @@ import {
   extraDesktopWidthMax,
   greyThemeLighter,
   smallDesktopWidth,
-  mobileWidthLarge
-} from "@edulastic/colors";
-import { get, cloneDeep, some } from "lodash";
-import { withRouter, Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Dropdown, Icon as AntIcon, Popover } from "antd";
-import styled from "styled-components";
+  mobileWidthLarge,
+} from '@edulastic/colors'
+import { get, cloneDeep, some } from 'lodash'
+import { withRouter, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import {
+  Layout,
+  Menu as AntMenu,
+  Row,
+  Dropdown,
+  Icon as AntIcon,
+  Popover,
+} from 'antd'
+import styled from 'styled-components'
 import {
   IconLogoCompact,
   IconClockDashboard,
@@ -33,134 +40,148 @@ import {
   IconProfileHighlight,
   IconSignoutHighlight,
   IconInterface,
-  IconSwitchUser
-} from "@edulastic/icons";
-import { withWindowSizes, OnDarkBgLogo } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { getLastPlayListSelector } from "../../Playlist/ducks";
-import { logoutAction } from "../actions/auth";
-import { toggleSideBarAction } from "../actions/toggleMenu";
-import { getUserFeatures } from "../../../student/Login/ducks";
-import { isOrganizationDistrictSelector, getAccountSwitchDetails } from "../selectors/user";
-import SwitchUserModal from "../../../common/components/SwtichUserModal/SwitchUserModal";
-import { switchUser } from "../../authUtils";
+  IconSwitchUser,
+} from '@edulastic/icons'
+import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { getLastPlayListSelector } from '../../Playlist/ducks'
+import { logoutAction } from '../actions/auth'
+import { toggleSideBarAction } from '../actions/toggleMenu'
+import { getUserFeatures } from '../../../student/Login/ducks'
+import {
+  isOrganizationDistrictSelector,
+  getAccountSwitchDetails,
+} from '../selectors/user'
+import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
+import { switchUser } from '../../authUtils'
 
 const menuItems = [
   {
-    label: "Dashboard",
+    label: 'Dashboard',
     icon: IconClockDashboard,
     allowedPathPattern: [/author\/dashboard/, /publisher\/dashboard/],
-    path: "author/dashboard"
+    path: 'author/dashboard',
   },
   {
-    label: "Assignments",
+    label: 'Assignments',
     icon: IconAssignment,
     allowedPathPattern: [
       /author\/assignments/,
       /author\/classboard/,
       /author\/expressgrader/,
-      /author\/standardsBasedReport/
+      /author\/standardsBasedReport/,
     ],
-    path: "author/assignments",
+    path: 'author/assignments',
     customSelection: true,
-    condtition: "showCancelButton"
+    condtition: 'showCancelButton',
   },
   {
-    label: "Gradebook",
+    label: 'Gradebook',
     icon: IconInterface,
     allowedPathPattern: [/author\/gradebook/],
-    path: "author/gradebook"
+    path: 'author/gradebook',
   },
   {
-    label: "Insights",
+    label: 'Insights',
     icon: IconBarChart,
     allowedPathPattern: [/author\/reports/],
-    path: "author/reports"
+    path: 'author/reports',
   },
   {
-    label: "library",
-    divider: true
+    label: 'library',
+    divider: true,
   },
   {
-    label: "Item Bank",
+    label: 'Item Bank',
     icon: IconItemLibrary,
     allowedPathPattern: [/author\/items/],
-    path: "author/items"
+    path: 'author/items',
   },
   {
-    label: "Test",
+    label: 'Test',
     icon: IconTestBank,
     allowedPathPattern: [/author\/tests/],
-    path: "author/tests"
+    path: 'author/tests',
   },
   {
-    label: "Playlist",
+    label: 'Playlist',
     icon: IconPlaylist2,
     allowedPathPattern: [/author\/playlists/],
-    path: "author/playlists"
+    path: 'author/playlists',
   },
   {
-    label: "user management",
-    divider: true
+    label: 'user management',
+    divider: true,
   },
   {
-    label: "Manage Class",
+    label: 'Manage Class',
     icon: IconManage,
     allowedPathPattern: [/author\/manageClass/],
-    path: "author/manageClass",
-    role: ["teacher"]
+    path: 'author/manageClass',
+    role: ['teacher'],
   },
   {
-    label: "Manage District",
+    label: 'Manage District',
     icon: IconSettings,
-    path: "author/districtprofile",
+    path: 'author/districtprofile',
     allowedPathPattern: [/districtprofile/],
-    role: ["edulastic-admin", "district-admin"]
+    role: ['edulastic-admin', 'district-admin'],
   },
   {
-    label: "Manage School",
+    label: 'Manage School',
     icon: IconSettings,
-    path: "author/schoolprofile",
+    path: 'author/schoolprofile',
     allowedPathPattern: [/schools/],
-    role: ["school-admin"]
-  }
-];
+    role: ['school-admin'],
+  },
+]
 
-const libraryItems = ["library", "Item Bank", "Test", "Playlist"];
+const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist']
 
 // Only "My Playlist" and assignment screens are visible in mobile
-const allowedPathInMobile = ["assignments", "playlists/playlist"];
-export const isDisablePageInMobile = path => {
-  const isMobileSize = window.innerWidth <= parseInt(mobileWidthLarge, 10);
-  const isAllowedPath = some(allowedPathInMobile, p => path.includes(p));
-  return isMobileSize && !isAllowedPath;
-};
+const allowedPathInMobile = ['assignments', 'playlists/playlist']
+export const isDisablePageInMobile = (path) => {
+  const isMobileSize = window.innerWidth <= parseInt(mobileWidthLarge, 10)
+  const isAllowedPath = some(allowedPathInMobile, (p) => path.includes(p))
+  return isMobileSize && !isAllowedPath
+}
 
 class SideMenu extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       showModal: false,
-      isVisible: false
-    };
+      isVisible: false,
+    }
 
-    this.sideMenuRef = React.createRef();
+    this.sideMenuRef = React.createRef()
   }
 
   get MenuItems() {
-    const { lastPlayList, features, isOrganizationDistrict, userRole } = this.props;
+    const {
+      lastPlayList,
+      features,
+      isOrganizationDistrict,
+      userRole,
+    } = this.props
 
-    let _menuItems = cloneDeep(menuItems);
+    let _menuItems = cloneDeep(menuItems)
     if (isOrganizationDistrict) {
-      _menuItems = _menuItems.map(i => (i.label === "Manage District" ? { ...i, label: "Organization" } : i));
+      _menuItems = _menuItems.map((i) =>
+        i.label === 'Manage District' ? { ...i, label: 'Organization' } : i
+      )
     }
     if (features.isCurator) {
-      _menuItems = _menuItems.map(i => (i.label === "Dashboard" ? { ...i, path: "publisher/dashboard" } : i));
-      _menuItems = _menuItems.filter(i => ["Dashboard", ...libraryItems].includes(i.label));
+      _menuItems = _menuItems.map((i) =>
+        i.label === 'Dashboard' ? { ...i, path: 'publisher/dashboard' } : i
+      )
+      _menuItems = _menuItems.filter((i) =>
+        ['Dashboard', ...libraryItems].includes(i.label)
+      )
     }
     if (features.isPublisherAuthor) {
-      _menuItems = _menuItems.filter(i => libraryItems.includes(i.label));
+      _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))
     }
 
     // if (features.isCurator || features.isPublisherAuthor) {
@@ -174,36 +195,36 @@ class SideMenu extends Component {
     // }
 
     if (userRole === roleuser.EDULASTIC_CURATOR) {
-      _menuItems = _menuItems.filter(i => libraryItems.includes(i.label));
+      _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))
     }
 
-    if (!lastPlayList || !lastPlayList.value) return _menuItems;
+    if (!lastPlayList || !lastPlayList.value) return _menuItems
 
-    const [item1, ...rest] = _menuItems;
-    const { _id = "" } = lastPlayList.value || {};
+    const [item1, ...rest] = _menuItems
+    const { _id = '' } = lastPlayList.value || {}
     const myPlayListItem = {
-      label: "My Playlist",
+      label: 'My Playlist',
       icon: IconPlaylist,
       allowedPathPattern: [
         /playlists\/playlist\/.{24}\/use-this/,
         /playlists\/insights\/.{24}\/use-this/,
         /playlists\/differentiation\/.{24}\/use-this/,
         /playlists\/assignments\/.{24}\/.{24}/,
-        /playlists\/assignments\/.{24}\/.{24}\/.{24}/
+        /playlists\/assignments\/.{24}\/.{24}\/.{24}/,
       ],
-      path: `author/playlists/playlist/${_id}/use-this`
-    };
-    if (item1.divider) {
-      return [myPlayListItem, ..._menuItems];
+      path: `author/playlists/playlist/${_id}/use-this`,
     }
-    return [item1, myPlayListItem, ...rest];
+    if (item1.divider) {
+      return [myPlayListItem, ..._menuItems]
+    }
+    return [item1, myPlayListItem, ...rest]
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
     width: 18px;
     height: 22px;
     fill: rgb(67, 75, 93);
-    margin-right: ${() => (isSidebarCollapsed ? "0rem" : "1.5rem")};
+    margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1.5rem')};
 
     .ant-menu-item-active > & {
       fill: rgb(67, 75, 93);
@@ -211,73 +232,73 @@ class SideMenu extends Component {
     .ant-menu-item-selected > & {
       fill: ${white};
     }
-  `;
+  `
 
-  handleMenu = item => {
+  handleMenu = (item) => {
     if (item.key) {
-      const { history } = this.props;
-      const { path } = this.MenuItems[item.key];
+      const { history } = this.props
+      const { path } = this.MenuItems[item.key]
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
-          history.push({ pathname: `/${path}`, state: { from: "myPlaylist" } });
+          history.push({ pathname: `/${path}`, state: { from: 'myPlaylist' } })
         } else {
-          history.push(`/${path}`);
+          history.push(`/${path}`)
         }
       }
     }
-  };
+  }
 
   toggleMenu = () => {
-    const { toggleSideBar } = this.props;
-    toggleSideBar();
-  };
+    const { toggleSideBar } = this.props
+    toggleSideBar()
+  }
 
-  handleVisibleChange = flag => {
-    this.setState({ isVisible: flag });
-  };
+  handleVisibleChange = (flag) => {
+    this.setState({ isVisible: flag })
+  }
 
   toggleDropdown = () => {
-    this.setState(prevState => ({ isVisible: !prevState.isVisible }));
-  };
+    this.setState((prevState) => ({ isVisible: !prevState.isVisible }))
+  }
 
   onClickFooterDropDownMenu = ({ key }) => {
-    const { logout } = this.props;
-    if (key === "0") {
+    const { logout } = this.props
+    if (key === '0') {
       // onClickLogout
-      this.toggleMenu();
+      this.toggleMenu()
       document
-        .querySelector(".intercom-launcher-frame")
-        ?.contentWindow?.document?.querySelector(".intercom-launcher-active")
-        ?.click();
-      logout();
-    } else if (key === "1") {
+        .querySelector('.intercom-launcher-frame')
+        ?.contentWindow?.document?.querySelector('.intercom-launcher-active')
+        ?.click()
+      logout()
+    } else if (key === '1') {
       // onClickLogoutProfile
-      this.toggleDropdown();
-      this.toggleMenu();
+      this.toggleDropdown()
+      this.toggleMenu()
     }
-    if (key === "3") {
-      this.setState({ showModal: true });
+    if (key === '3') {
+      this.setState({ showModal: true })
     }
-  };
+  }
 
-  onOutsideEvent = event => {
-    const { isSidebarCollapsed } = this.props;
+  onOutsideEvent = (event) => {
+    const { isSidebarCollapsed } = this.props
 
-    if (event.type === "mousedown" && !isSidebarCollapsed) {
-      this.toggleMenu();
-      this.setState({ isVisible: false });
+    if (event.type === 'mousedown' && !isSidebarCollapsed) {
+      this.toggleMenu()
+      this.setState({ isVisible: false })
     }
-  };
+  }
 
   getInitials = () => {
-    const { firstName, lastName } = this.props;
-    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
-    if (firstName) return `${firstName.substr(0, 2)}`;
-    if (lastName) return `${lastName.substr(0, 2)}`;
-  };
+    const { firstName, lastName } = this.props
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`
+    if (firstName) return `${firstName.substr(0, 2)}`
+    if (lastName) return `${lastName.substr(0, 2)}`
+  }
 
   render() {
-    const { broken, isVisible, showModal } = this.state;
+    const { broken, isVisible, showModal } = this.state
     const {
       userId,
       switchDetails,
@@ -292,64 +313,81 @@ class SideMenu extends Component {
       profileThumbnail,
       locationState,
       features,
-      showUseThisNotification
-    } = this.props;
+      showUseThisNotification,
+    } = this.props
     if (userRole === roleuser.STUDENT) {
-      return null;
+      return null
     }
-    const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
+    const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${
+      lastName || ``
+    }`
 
-    const isCollapsed = isSidebarCollapsed;
-    const isMobile = windowWidth < parseFloat(tabletWidth);
-    const defaultSelectedMenu = this.MenuItems.findIndex(menuItem => {
-      if (menuItem.customSelection && menuItem.condtition && locationState?.[menuItem.condtition]) {
-        return true;
+    const isCollapsed = isSidebarCollapsed
+    const isMobile = windowWidth < parseFloat(tabletWidth)
+    const defaultSelectedMenu = this.MenuItems.findIndex((menuItem) => {
+      if (
+        menuItem.customSelection &&
+        menuItem.condtition &&
+        locationState?.[menuItem.condtition]
+      ) {
+        return true
       }
       return (
         menuItem &&
         !menuItem.divider &&
-        menuItem.allowedPathPattern.some(path => !!history.location.pathname.match(path))
-      );
-    });
+        menuItem.allowedPathPattern.some(
+          (path) => !!history.location.pathname.match(path)
+        )
+      )
+    })
 
-    const isPublisher = features.isCurator || features.isPublisherAuthor;
+    const isPublisher = features.isCurator || features.isPublisherAuthor
 
-    let _userRole = null;
+    let _userRole = null
     if (userRole === roleuser.TEACHER) {
-      _userRole = "Teacher";
+      _userRole = 'Teacher'
     } else if (userRole === roleuser.SCHOOL_ADMIN) {
-      _userRole = "School-Admin";
+      _userRole = 'School-Admin'
     } else if (userRole === roleuser.DISTRICT_ADMIN) {
-      _userRole = "District-Admin";
+      _userRole = 'District-Admin'
     } else if (userRole === roleuser.STUDENT) {
-      _userRole = "Student";
+      _userRole = 'Student'
     } else if (userRole === roleuser.EDULASTIC_CURATOR) {
-      _userRole = "Edulastic Curator";
+      _userRole = 'Edulastic Curator'
     } else {
-      _userRole = "Unknown";
+      _userRole = 'Unknown'
     }
 
     if (features.isCurator) {
-      _userRole = "Content Editor";
+      _userRole = 'Content Editor'
     } else if (features.isPublisherAuthor) {
-      _userRole = "Author";
+      _userRole = 'Author'
     }
 
-    const otherAccounts = get(switchDetails, "otherAccounts", []);
-    const users = otherAccounts.filter(acc => acc._id !== userId);
+    const otherAccounts = get(switchDetails, 'otherAccounts', [])
+    const users = otherAccounts.filter((acc) => acc._id !== userId)
 
     const footerDropdownMenu = (
-      <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
-        <Menu onClick={this.onClickFooterDropDownMenu} style={{ height: "auto" }}>
+      <FooterDropDown
+        data-cy="footer-dropdown"
+        isVisible={isVisible}
+        isCollapsed={isCollapsed}
+      >
+        <Menu
+          onClick={this.onClickFooterDropDownMenu}
+          style={{ height: 'auto' }}
+        >
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/author/profile">
-              <IconProfileHighlight /> <span>{isCollapsed ? "" : "My Profile"}</span>
+              <IconProfileHighlight />{' '}
+              <span>{isCollapsed ? '' : 'My Profile'}</span>
             </Link>
           </Menu.Item>
           {!isPublisher && (
             <Menu.Item key="2" className="removeSelectedBorder">
               <Link to="/author/subscription">
-                <IconSubscriptionHighlight /> <span>{isCollapsed ? "" : "Subscription"}</span>
+                <IconSubscriptionHighlight />{' '}
+                <span>{isCollapsed ? '' : 'Subscription'}</span>
               </Link>
             </Menu.Item>
           )}
@@ -357,28 +395,30 @@ class SideMenu extends Component {
             <Menu.Item key="3" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser />
-                <span>{isCollapsed ? "" : "Switch Account"} </span>
+                <span>{isCollapsed ? '' : 'Switch Account'} </span>
               </a>
             </Menu.Item>
           ) : userRole !== roleuser.EDULASTIC_CURATOR ? (
             <Menu.Item key="4" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
-                <IconSwitchUser /> <span>{isCollapsed ? "" : "Add Account"}</span>
+                <IconSwitchUser />{' '}
+                <span>{isCollapsed ? '' : 'Add Account'}</span>
               </Link>
             </Menu.Item>
           ) : null}
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
-              <IconSignoutHighlight /> <span>{isCollapsed ? "" : "Sign Out"}</span>
+              <IconSignoutHighlight />{' '}
+              <span>{isCollapsed ? '' : 'Sign Out'}</span>
             </a>
           </Menu.Item>
         </Menu>
       </FooterDropDown>
-    );
+    )
 
     return (
       <FixedSidebar
-        className={`${!isCollapsed ? "full" : ""} ${className}`}
+        className={`${!isCollapsed ? 'full' : ''} ${className}`}
         onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
         isCollapsed={isCollapsed}
         ref={this.sideMenuRef}
@@ -388,75 +428,109 @@ class SideMenu extends Component {
           switchUser={switchUser}
           showModal={showModal}
           closeModal={() => this.setState({ showModal: false })}
-          otherAccounts={get(switchDetails, "otherAccounts", [])}
-          personId={get(switchDetails, "personId")}
+          otherAccounts={get(switchDetails, 'otherAccounts', [])}
+          personId={get(switchDetails, 'personId')}
           userRole={userRole}
         />
         <SideBar
           collapsed={isCollapsed}
           collapsible
           breakpoint="md"
-          onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
+          onBreakpoint={(brokenStatus) =>
+            this.setState({ broken: brokenStatus })
+          }
           width="220"
-          collapsedWidth={broken ? "0" : "70"}
+          collapsedWidth={broken ? '0' : '70'}
           className="sideBarwrapper"
         >
           <ToggleSidemenu
-            onClick={e => {
-              e.stopPropagation();
-              this.toggleMenu();
+            onClick={(e) => {
+              e.stopPropagation()
+              this.toggleMenu()
             }}
           >
-            <AntIcon type={isCollapsed ? "right" : "left"} />
+            <AntIcon type={isCollapsed ? 'right' : 'left'} />
           </ToggleSidemenu>
           <LogoWrapper className="logoWrapper">
-            {broken && <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />}
-            {isCollapsed ? !isMobile && <LogoCompact /> : <OnDarkBgLogo height={isMobile ? "16px" : "26px"} />}
+            {broken && (
+              <AntIcon
+                className="mobileCloseIcon"
+                type="close"
+                theme="outlined"
+                onClick={this.toggleMenu}
+              />
+            )}
+            {isCollapsed ? (
+              !isMobile && <LogoCompact />
+            ) : (
+              <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
+            )}
           </LogoWrapper>
           <MenuWrapper>
             {locationState?.fadeSidebar && <Overlay />}
-            <Menu selectedKeys={[defaultSelectedMenu.toString()]} mode="inline" onClick={item => this.handleMenu(item)}>
+            <Menu
+              selectedKeys={[defaultSelectedMenu.toString()]}
+              mode="inline"
+              onClick={(item) => this.handleMenu(item)}
+            >
               {this.MenuItems.map((menu, index) => {
                 if (menu.divider) {
                   return (
-                    <MenuItem divider visible data-cy={menu.label} key={index.toString()}>
+                    <MenuItem
+                      divider
+                      visible
+                      data-cy={menu.label}
+                      key={index.toString()}
+                    >
                       {!isCollapsed ? <span>{menu.label}</span> : <Hr />}
                     </MenuItem>
-                  );
+                  )
                 }
                 /**
                  * show playlist based on `features` list
                  */
-                if (menu.label === "Playlist" && !features.playlist) {
-                  return null;
+                if (menu.label === 'Playlist' && !features.playlist) {
+                  return null
                 }
                 // to hide Dashboard from side menu if a user is DA or SA.
                 if (
-                  menu.label === "Dashboard" &&
-                  ["district-admin", "school-admin"].includes(userRole) &&
+                  menu.label === 'Dashboard' &&
+                  ['district-admin', 'school-admin'].includes(userRole) &&
                   !features.isCurator
                 ) {
-                  return null;
+                  return null
                 }
                 // hide Gradebook from side menu based on features list
-                if (menu.label === "Gradebook" && !features.gradebook) {
-                  return null;
+                if (menu.label === 'Gradebook' && !features.gradebook) {
+                  return null
                 }
-                const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
-                const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
+                const MenuIcon = this.renderIcon(
+                  menu.icon,
+                  isCollapsed,
+                  menu.stroke
+                )
+                const isItemVisible =
+                  !menu.role || (menu.role && menu.role.includes(userRole))
 
-                const disableMenu = isDisablePageInMobile(menu?.path);
-                if (menu.label === "My Playlist" && isCollapsed && showUseThisNotification) {
+                const disableMenu = isDisablePageInMobile(menu?.path)
+                if (
+                  menu.label === 'My Playlist' &&
+                  isCollapsed &&
+                  showUseThisNotification
+                ) {
                   const content = (
-                    <span>&quot;In Use&ldquo; Play lists are available in the &quot;My Playlists&ldquo; area.</span>
-                  );
+                    <span>
+                      &quot;In Use&ldquo; Play lists are available in the
+                      &quot;My Playlists&ldquo; area.
+                    </span>
+                  )
                   return (
                     <MenuItem
                       data-cy={menu.label}
                       key={index.toString()}
                       onClick={this.toggleMenu}
                       visible={isItemVisible}
-                      title={isCollapsed ? menu.label : ""}
+                      title={isCollapsed ? menu.label : ''}
                     >
                       <Popover
                         visible
@@ -466,9 +540,11 @@ class SideMenu extends Component {
                       >
                         <MenuIcon />
                       </Popover>
-                      <LabelMenuItem isCollapsed={isCollapsed}>{menu.label}</LabelMenuItem>
+                      <LabelMenuItem isCollapsed={isCollapsed}>
+                        {menu.label}
+                      </LabelMenuItem>
                     </MenuItem>
-                  );
+                  )
                 }
                 return (
                   <MenuItem
@@ -476,13 +552,15 @@ class SideMenu extends Component {
                     key={index.toString()}
                     onClick={this.toggleMenu}
                     visible={isItemVisible}
-                    title={isCollapsed ? menu.label : ""}
+                    title={isCollapsed ? menu.label : ''}
                     disabled={disableMenu}
                   >
                     <MenuIcon />
-                    <LabelMenuItem isCollapsed={isCollapsed}>{menu.label}</LabelMenuItem>
+                    <LabelMenuItem isCollapsed={isCollapsed}>
+                      {menu.label}
+                    </LabelMenuItem>
                   </MenuItem>
-                );
+                )
               })}
             </Menu>
             <MenuFooter>
@@ -491,9 +569,13 @@ class SideMenu extends Component {
                   href="https://edulastic.zendesk.com/hc/en-us"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ display: "flex", width: "100%", justifyContent: isCollapsed && "center" }}
+                  style={{
+                    display: 'flex',
+                    width: '100%',
+                    justifyContent: isCollapsed && 'center',
+                  }}
                 >
-                  <IconContainer className={isCollapsed ? "active" : ""}>
+                  <IconContainer className={isCollapsed ? 'active' : ''}>
                     <HelpIcon />
                   </IconContainer>
                   <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
@@ -502,39 +584,49 @@ class SideMenu extends Component {
               <UserInfoButton
                 isVisible={isVisible}
                 isCollapsed={isCollapsed}
-                className={`userinfoBtn ${isCollapsed ? "active" : ""}`}
+                className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
               >
                 <Dropdown
                   onClick={this.toggleDropdown}
                   overlayStyle={{
-                    position: "fixed",
-                    minWidth: isCollapsed ? "50px" : "220px",
-                    maxWidth: isCollapsed ? "50px" : "0px"
+                    position: 'fixed',
+                    minWidth: isCollapsed ? '50px' : '220px',
+                    maxWidth: isCollapsed ? '50px' : '0px',
                   }}
                   className="footerDropdown"
                   overlay={footerDropdownMenu}
-                  trigger={["click"]}
+                  trigger={['click']}
                   placement="topCenter"
                   isVisible={isVisible}
                   onVisibleChange={this.handleVisibleChange}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
                   <div>
                     {profileThumbnail ? (
-                      <UserImg src={profileThumbnail} isCollapsed={isCollapsed} />
+                      <UserImg
+                        src={profileThumbnail}
+                        isCollapsed={isCollapsed}
+                      />
                     ) : (
-                      <PseudoDiv isCollapsed={isCollapsed}>{this.getInitials()}</PseudoDiv>
+                      <PseudoDiv isCollapsed={isCollapsed}>
+                        {this.getInitials()}
+                      </PseudoDiv>
                     )}
-                    <div style={{ width: "100px", display: !isCollapsed ? "block" : "none" }}>
-                      <UserName>{userName || "Anonymous"}</UserName>
+                    <div
+                      style={{
+                        width: '100px',
+                        display: !isCollapsed ? 'block' : 'none',
+                      }}
+                    >
+                      <UserName>{userName || 'Anonymous'}</UserName>
                       <UserType isVisible={isVisible}>{_userRole}</UserType>
                     </div>
 
                     {!isCollapsed && (
                       <IconDropdown
-                        style={{ fontSize: 15, pointerEvents: "none" }}
+                        style={{ fontSize: 15, pointerEvents: 'none' }}
                         className="drop-caret"
-                        type={isVisible ? "caret-up" : "caret-down"}
+                        type={isVisible ? 'caret-up' : 'caret-down'}
                       />
                     )}
                   </div>
@@ -544,7 +636,7 @@ class SideMenu extends Component {
           </MenuWrapper>
         </SideBar>
       </FixedSidebar>
-    );
+    )
   }
 }
 
@@ -559,39 +651,43 @@ SideMenu.propTypes = {
   isSidebarCollapsed: PropTypes.bool.isRequired,
   logout: PropTypes.func.isRequired,
   className: PropTypes.string,
-  lastPlayList: PropTypes.object
-};
+  lastPlayList: PropTypes.object,
+}
 
 SideMenu.defaultProps = {
-  className: "",
-  lastPlayList: {}
-};
+  className: '',
+  lastPlayList: {},
+}
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state) => ({
       isSidebarCollapsed: state.authorUi.isSidebarCollapsed,
-      firstName: get(state.user, "user.firstName", ""),
-      middleName: get(state.user, "user.middleName", ""),
-      lastName: get(state.user, "user.lastName", ""),
-      userRole: get(state.user, "user.role", ""),
-      userId: get(state.user, "user._id", ""),
+      firstName: get(state.user, 'user.firstName', ''),
+      middleName: get(state.user, 'user.middleName', ''),
+      lastName: get(state.user, 'user.lastName', ''),
+      userRole: get(state.user, 'user.role', ''),
+      userId: get(state.user, 'user._id', ''),
       isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
       features: getUserFeatures(state),
-      profileThumbnail: get(state.user, "user.thumbnail"),
+      profileThumbnail: get(state.user, 'user.thumbnail'),
       switchDetails: getAccountSwitchDetails(state),
-      locationState: get(state, "router.location.state"),
-      showUseThisNotification: get(state, "curriculumSequence.showUseThisNotification", false)
+      locationState: get(state, 'router.location.state'),
+      showUseThisNotification: get(
+        state,
+        'curriculumSequence.showUseThisNotification',
+        false
+      ),
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
-);
+)
 
-export const SideMenuComp = SideMenu;
-export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
+export const SideMenuComp = SideMenu
+export default enhance(ReactOutsideEvent(SideMenu, ['mousedown']))
 
 const Overlay = styled.div`
   position: absolute;
@@ -601,7 +697,7 @@ const Overlay = styled.div`
   background-color: black;
   opacity: 0.2;
   z-index: 1000;
-`;
+`
 
 const FixedSidebar = styled.div`
   position: fixed;
@@ -609,7 +705,7 @@ const FixedSidebar = styled.div`
   top: 0px;
   bottom: 0px;
   z-index: 1002;
-  cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
+  cursor: ${(props) => (props.isCollapsed ? 'pointer' : 'initial')};
 
   @media (max-width: ${tabletWidth}) {
     z-index: 1000;
@@ -619,7 +715,7 @@ const FixedSidebar = styled.div`
       padding-top: 25px;
     }
   }
-`;
+`
 const SideBar = styled(Layout.Sider)`
   height: 100%;
   width: 220px;
@@ -681,7 +777,7 @@ const SideBar = styled(Layout.Sider)`
   @media print {
     display: none;
   }
-`;
+`
 
 const LogoWrapper = styled(Row)`
   height: ${({ theme }) => theme.HeaderHeight.xl}px;
@@ -699,7 +795,7 @@ const LogoWrapper = styled(Row)`
   @media (max-width: ${mobileWidthLarge}) {
     height: ${({ theme }) => theme.HeaderHeight.xs}px;
   }
-`;
+`
 
 const ToggleSidemenu = styled.div`
   position: absolute;
@@ -723,7 +819,7 @@ const ToggleSidemenu = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     display: none;
   }
-`;
+`
 
 const MenuWrapper = styled.div`
   display: flex;
@@ -744,7 +840,7 @@ const MenuWrapper = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   }
-`;
+`
 
 const Menu = styled(AntMenu)`
   background: transparent;
@@ -754,7 +850,7 @@ const Menu = styled(AntMenu)`
       background-color: transparent;
 
       svg {
-        fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
+        fill: ${(props) => props.theme.sideMenu.menuSelectedItemLinkColor};
       }
 
       &:before {
@@ -845,14 +941,14 @@ const Menu = styled(AntMenu)`
     background: transparent;
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       bottom: 0;
       left: 14px;
       right: 14px;
       border-radius: 4px;
-      background: ${props => props.theme.sideMenu.menuSelectedItemBgColor};
+      background: ${(props) => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
       opacity: 0;
       pointer-events: none;
@@ -863,13 +959,13 @@ const Menu = styled(AntMenu)`
     svg {
       position: relative;
       z-index: 5;
-      fill: ${props => props.theme.sideMenu.menuItemLinkColor};
+      fill: ${(props) => props.theme.sideMenu.menuItemLinkColor};
     }
     &:hover {
       svg {
-        fill: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
+        fill: ${(props) => props.theme.sideMenu.menuItemLinkHoverColor};
       }
-      color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
+      color: ${(props) => props.theme.sideMenu.menuItemLinkHoverColor};
     }
   }
 
@@ -898,7 +994,7 @@ const Menu = styled(AntMenu)`
       }
     }
   }
-`;
+`
 
 const MenuItem = styled(AntMenu.Item)`
   font-family: Open Sans;
@@ -909,12 +1005,14 @@ const MenuItem = styled(AntMenu.Item)`
   line-height: 1.36;
   letter-spacing: 0.3px;
   text-align: left;
-  color: ${props =>
-    props.divider ? props.theme.sideMenu.sidebarDividerColor : props.theme.sideMenu.menuItemLinkColor};
-  display: ${props => (props.visible ? "flex" : "none !important")};
+  color: ${(props) =>
+    props.divider
+      ? props.theme.sideMenu.sidebarDividerColor
+      : props.theme.sideMenu.menuItemLinkColor};
+  display: ${(props) => (props.visible ? 'flex' : 'none !important')};
   align-items: center;
   margin-top: 16px;
-  text-transform: ${({ divider }) => divider && "uppercase"};
+  text-transform: ${({ divider }) => divider && 'uppercase'};
   &.ant-menu-item-disabled,
   &.ant-menu-submenu-disabled {
     color: rgba(121, 143, 163, 0.3) !important;
@@ -922,50 +1020,52 @@ const MenuItem = styled(AntMenu.Item)`
       fill: rgba(121, 143, 163, 0.3) !important;
     }
   }
-`;
+`
 
 const UserName = styled.div`
-  font-size: ${props => props.theme.sideMenu.userInfoNameFontSize};
-  color: ${props => props.theme.sideMenu.userInfoNameTextColor};
+  font-size: ${(props) => props.theme.sideMenu.userInfoNameFontSize};
+  color: ${(props) => props.theme.sideMenu.userInfoNameTextColor};
   text-transform: capitalize;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`;
+`
 
 const UserType = styled.div`
   font-size: 12px;
-  color: ${props => (props.isVisible ? white : props.theme.sideMenu.userInfoRoleTextColor)};
+  color: ${(props) =>
+    props.isVisible ? white : props.theme.sideMenu.userInfoRoleTextColor};
   width: 96%;
-`;
+`
 
 const FooterDropDown = styled.div`
   position: relative;
-  opacity: ${props => (props.isVisible ? "1" : "0")};
+  opacity: ${(props) => (props.isVisible ? '1' : '0')};
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
     overflow: hidden;
     max-width: 100%;
     .ant-menu-item:not(.ant-menu-item-selected) svg {
-      fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+      fill: ${(props) => props.theme.sideMenu.userInfoDropdownItemTextColor};
       &:hover,
       &:focus {
-        fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+        fill: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
       }
     }
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
-      margin-top: ${props => (props.isCollapsed ? "0" : "10px")};
-      margin-left: ${props => (props.isCollapsed ? "0" : "8px")};
-      box-shadow: ${props => (props.isCollapsed ? "0 -3px 5px 0 rgba(0,0,0,0.07)" : "none")};
+      margin-top: ${(props) => (props.isCollapsed ? '0' : '10px')};
+      margin-left: ${(props) => (props.isCollapsed ? '0' : '8px')};
+      box-shadow: ${(props) =>
+        props.isCollapsed ? '0 -3px 5px 0 rgba(0,0,0,0.07)' : 'none'};
 
       li {
         &.ant-menu-item {
           margin: 0px;
           height: 58px;
-          
         }
       }
     }
@@ -975,14 +1075,18 @@ const FooterDropDown = styled.div`
         margin-bottom: 0 !important;
         padding: 5px 16px;
         height: 50px;
-        background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
+        background: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemBgColor};
         /* &:hover,
         &:focus {
-          background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
+          background: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
         } */
         a {
-          color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
-          font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
+          color: ${(props) =>
+            props.theme.sideMenu.userInfoDropdownItemTextColor};
+          font-size: ${(props) =>
+            props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
           display: flex;
           align-items: center;
@@ -990,15 +1094,17 @@ const FooterDropDown = styled.div`
           &:hover {
             svg,
             svg path {
-              fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+              fill: ${(props) =>
+                props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             }
           }
           &:focus {
-            color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            color: ${(props) =>
+              props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             a {
-              color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+              color: ${(props) =>
+                props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             }
-      
           }
           svg {
             margin-right: 15px;
@@ -1007,26 +1113,26 @@ const FooterDropDown = styled.div`
             width: 23px;
           }
         }
-         span:hover {
-          color:${white};
+        span:hover {
+          color: ${white};
         }
       }
     }
   }
-`;
+`
 
 const MenuFooter = styled.div`
   position: static;
   width: 100%;
   margin-top: auto;
-`;
+`
 
 const HelpText = styled.span`
   max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: ${({ isCollapsed }) => (isCollapsed ? "none" : "block")};
-`;
+  display: ${({ isCollapsed }) => (isCollapsed ? 'none' : 'block')};
+`
 
 const QuestionButton = styled.div`
   margin: 8px 0px;
@@ -1034,35 +1140,37 @@ const QuestionButton = styled.div`
   position: relative;
   overflow: hidden;
   align-items: center;
-  padding: ${({ isCollapsed }) => (isCollapsed ? "5px 0px" : "5px 25px")};
-  justify-content: ${({ isCollapsed }) => (isCollapsed ? "center" : "flex-start")};
-  font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
-  color: ${props => props.theme.sideMenu.helpButtonTextColor};
+  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  justify-content: ${({ isCollapsed }) =>
+    isCollapsed ? 'center' : 'flex-start'};
+  font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
+  color: ${(props) => props.theme.sideMenu.helpButtonTextColor};
   cursor: pointer;
 
   svg {
-    fill: ${props => props.theme.sideMenu.helpIconColor};
+    fill: ${(props) => props.theme.sideMenu.helpIconColor};
   }
   span {
     font-weight: 600;
   }
   &:hover {
-    color: ${props => props.theme.sideMenu.helpButtonTextHoverColor};
+    color: ${(props) => props.theme.sideMenu.helpButtonTextHoverColor};
     svg {
-      fill: ${props => props.theme.sideMenu.helpIconHoverColor};
+      fill: ${(props) => props.theme.sideMenu.helpIconHoverColor};
     }
   }
-`;
+`
 
 const UserImg = styled.div`
   width: 50px;
   height: 50px;
-  background: url(${props => props.src});
+  background: url(${(props) => props.src});
   background-position: center center;
   background-size: cover;
   border-radius: 50%;
-  margin: ${({ isCollapsed }) => (isCollapsed ? "0px auto" : "10px 10px 15px 20px")};
-`;
+  margin: ${({ isCollapsed }) =>
+    isCollapsed ? '0px auto' : '10px 10px 15px 20px'};
+`
 
 const UserInfoButton = styled.div`
   cursor: pointer;
@@ -1093,7 +1201,11 @@ const UserInfoButton = styled.div`
     width: 100%;
     height: 80px;
     background-color: ${({ theme, isCollapsed, isVisible }) =>
-      isCollapsed ? "" : isVisible ? theme.sideMenu.userInfoButtonBgHoverColor : theme.sideMenu.userInfoButtonBgColor};
+      isCollapsed
+        ? ''
+        : isVisible
+        ? theme.sideMenu.userInfoButtonBgHoverColor
+        : theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
     position: relative;
@@ -1114,7 +1226,7 @@ const UserInfoButton = styled.div`
       background: transparent;
     }
   }
-`;
+`
 
 const PseudoDiv = styled.div`
   width: 50px;
@@ -1127,8 +1239,9 @@ const PseudoDiv = styled.div`
   line-height: 50px;
   text-align: center;
   text-transform: uppercase;
-  margin: ${({ isCollapsed }) => (isCollapsed ? "0px auto" : "10px 10px 15px 20px")};
-`;
+  margin: ${({ isCollapsed }) =>
+    isCollapsed ? '0px auto' : '10px 10px 15px 20px'};
+`
 
 const LogoCompact = styled(IconLogoCompact)`
   width: 22px;
@@ -1137,44 +1250,44 @@ const LogoCompact = styled(IconLogoCompact)`
   &:hover {
     fill: #0eb08d;
   }
-`;
+`
 
 const IconContainer = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-right: 24px;
-  position: ${({ isCollapsed }) => (isCollapsed ? "absolute" : "relative")};
+  position: ${({ isCollapsed }) => (isCollapsed ? 'absolute' : 'relative')};
 
   &.active {
     margin-right: 0;
     box-shadow: none;
   }
-`;
+`
 
 const HelpIcon = styled(IconQuestion)`
   fill: #1fe3a1;
   width: auto;
   height: 22px;
-`;
+`
 
 const IconDropdown = styled(AntIcon)`
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
   position: absolute;
-  color: ${props => props.theme.sideMenu.dropdownIconColor};
-`;
+  color: ${(props) => props.theme.sideMenu.dropdownIconColor};
+`
 
 const LabelMenuItem = styled.span`
   max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: ${({ isCollapsed }) => (isCollapsed ? "none" : "block")};
-`;
+  display: ${({ isCollapsed }) => (isCollapsed ? 'none' : 'block')};
+`
 
 const Hr = styled.div`
   border: ${({ theme }) => `1px solid ${theme.sideMenu.sidebarDividerColor}`};
   opacity: 0.2;
   width: 80%;
-`;
+`

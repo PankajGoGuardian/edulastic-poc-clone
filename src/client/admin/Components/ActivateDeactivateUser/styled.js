@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Radio } from "antd";
+import styled from 'styled-components'
+import { Radio } from 'antd'
 
 export const StyledRadioGroup = styled(Radio.Group)`
   .ant-radio-wrapper {
@@ -10,4 +10,4 @@ export const StyledRadioGroup = styled(Radio.Group)`
     margin-right: 5px;
     max-height: 15px;
   }
-`;
+`

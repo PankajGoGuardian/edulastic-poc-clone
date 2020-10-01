@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { themeColor, extraDesktopWidthMax } from "@edulastic/colors";
+import styled from 'styled-components'
+import { themeColor, extraDesktopWidthMax } from '@edulastic/colors'
 
 export const ItemBody = styled.div`
   margin-top: 11px;
@@ -19,7 +19,8 @@ export const ItemBody = styled.div`
 
   .ant-select-selection,
   .ant-input {
-    background: ${props => props.theme.questionMetadata.antSelectSelectionBgColor};
+    background: ${(props) =>
+      props.theme.questionMetadata.antSelectSelectionBgColor};
   }
 
   .ant-select-selection {
@@ -49,13 +50,16 @@ export const ItemBody = styled.div`
   }
 
   .ant-select-selection-selected-value {
-    font-size: ${props => props.theme.smallFontSize};
-    font-weight: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontWeight};
+    font-size: ${(props) => props.theme.smallFontSize};
+    font-weight: ${(props) =>
+      props.theme.questionMetadata.antSelectSelectionSelectedValueFontWeight};
     letter-spacing: 0.2px;
-    color: ${props => props.theme.questionMetadata.antSelectSelectionChoiceContentColor};
+    color: ${(props) =>
+      props.theme.questionMetadata.antSelectSelectionChoiceContentColor};
 
     @media (min-width: ${extraDesktopWidthMax}) {
-      font-size: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontSize};
+      font-size: ${(props) =>
+        props.theme.questionMetadata.antSelectSelectionSelectedValueFontSize};
     }
   }
 
@@ -64,6 +68,6 @@ export const ItemBody = styled.div`
   }
 
   .ant-select-arrow-icon {
-    color: ${props => props.theme.questionMetadata.antSelectArrowIconColor};
+    color: ${(props) => props.theme.questionMetadata.antSelectArrowIconColor};
   }
-`;
+`

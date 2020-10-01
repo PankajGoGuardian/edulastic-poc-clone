@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import {
   themeColor,
   secondaryTextColor,
@@ -7,8 +7,8 @@ import {
   largeDesktopWidth,
   smallDesktopWidth,
   desktopWidth,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
 
 export const CurrentPlanContainer = styled.div`
   width: 100%;
@@ -16,13 +16,13 @@ export const CurrentPlanContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 40px;
-`;
+`
 
 export const PlanStatus = styled.h3`
   color: ${linkColor1};
   font-weight: 700;
   margin: 0;
-`;
+`
 
 export const AvailablePlansContainer = styled.div`
   width: 100%;
@@ -32,7 +32,7 @@ export const AvailablePlansContainer = styled.div`
   flex-direction: column;
   border-radius: 4px;
   margin-bottom: 10px;
-`;
+`
 
 export const PlanContainerWrapper = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ export const PlanContainerWrapper = styled.div`
   width: 100%;
   background: ${white};
   border-radius: 10px;
-`;
+`
 
 export const PlansContainer = styled.div`
   width: 100%;
@@ -52,15 +52,15 @@ export const PlansContainer = styled.div`
   background: ${white};
   border-radius: 8px;
   padding: 18px;
-  filter: ${({ isblur }) => isblur && "blur(8px)"};
-`;
+  filter: ${({ isblur }) => isblur && 'blur(8px)'};
+`
 
 export const ContentWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   user-select: none;
-`;
+`
 
 export const PlanImage = styled.div`
   width: 180px;
@@ -75,7 +75,7 @@ export const PlanImage = styled.div`
     border-radius: 100px;
     margin: 2px auto;
   }
-`;
+`
 
 export const PlanDetails = styled.div`
   width: calc(100% - 200px);
@@ -84,7 +84,7 @@ export const PlanDetails = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     width: calc(100% - 380px);
   }
-`;
+`
 
 export const GridContainer = styled.div`
   display: grid;
@@ -106,7 +106,7 @@ export const GridContainer = styled.div`
   @media (max-width: ${desktopWidth}) {
     grid-template-columns: 85%;
   }
-`;
+`
 
 export const FlexCard = styled.div`
   display: flex;
@@ -115,7 +115,7 @@ export const FlexCard = styled.div`
   flex-direction: column;
   padding: 10px;
   margin: 10px;
-`;
+`
 
 export const InnerWrapper = styled.div`
   display: flex;
@@ -123,7 +123,7 @@ export const InnerWrapper = styled.div`
   justify-content: flex-start;
   width: 100%;
   margin-bottom: 8px;
-`;
+`
 
 export const FeatureDescription = styled.p`
   font-size: 16px;
@@ -132,21 +132,21 @@ export const FeatureDescription = styled.p`
   font-size: 15px;
   text-align: left;
   width: 100%;
-`;
+`
 
 export const Img = styled.img`
   width: 33px;
   height: 29px;
-`;
+`
 
 export const StyledParagraph = styled.p`
   text-transform: uppercase;
   font-weight: 600;
   color: ${secondaryTextColor};
-  margin-top: ${({ isSubscribed }) => isSubscribed && "50px"};
+  margin-top: ${({ isSubscribed }) => isSubscribed && '50px'};
   letter-spacing: 0.22px;
-`;
+`
 
 export const StyledLink = styled.span`
   color: ${themeColor};
-`;
+`

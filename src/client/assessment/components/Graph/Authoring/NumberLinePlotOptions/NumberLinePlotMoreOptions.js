@@ -1,41 +1,43 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import { withNamespaces } from "@edulastic/localization";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { withNamespaces } from '@edulastic/localization'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
-import Extras from "../../../../containers/Extras";
-import { Subtitle } from "../../../../styled/Subtitle";
+import Extras from '../../../../containers/Extras'
+import { Subtitle } from '../../../../styled/Subtitle'
 
-import { ScoreSettings } from "..";
-import Tools from "../../common/Tools";
-import DisplayOptions from "./DisplayOption";
-import Question from "../../../Question";
+import { ScoreSettings } from '..'
+import Tools from '../../common/Tools'
+import DisplayOptions from './DisplayOption'
+import Question from '../../../Question'
 
 class NumberLinePlotMoreOptions extends Component {
-  allControls = ["undo", "redo", "clear", "delete"];
+  allControls = ['undo', 'redo', 'clear', 'delete']
 
   scoringTypes = [
-    { label: "Exact match", value: "exactMatch" },
-    { label: "Partial match", value: "partialMatch" }
+    { label: 'Exact match', value: 'exactMatch' },
+    { label: 'Partial match', value: 'partialMatch' },
     // { label: "Partial match per response", value: "partialMatchV2" }
-  ];
+  ]
 
-  onSelectControl = control => {
-    const { graphData, setControls } = this.props;
-    const { controlbar } = graphData;
+  onSelectControl = (control) => {
+    const { graphData, setControls } = this.props
+    const { controlbar } = graphData
 
-    let newControls = [...controlbar.controls];
+    let newControls = [...controlbar.controls]
     if (newControls.includes(control)) {
-      newControls = newControls.filter(item => item !== control);
+      newControls = newControls.filter((item) => item !== control)
     } else {
-      newControls.push(control);
+      newControls.push(control)
     }
 
     setControls({
       ...controlbar,
-      controls: [...this.allControls.filter(item => newControls.includes(item))]
-    });
-  };
+      controls: [
+        ...this.allControls.filter((item) => newControls.includes(item)),
+      ],
+    })
+  }
 
   render() {
     const {
@@ -48,22 +50,26 @@ class NumberLinePlotMoreOptions extends Component {
       advancedAreOpen,
       setOptions,
       setNumberline,
-      setCanvas
-    } = this.props;
+      setCanvas,
+    } = this.props
 
-    const { canvas, uiStyle, numberlineAxis, controlbar } = graphData;
+    const { canvas, uiStyle, numberlineAxis, controlbar } = graphData
 
     return (
-      <Fragment>
+      <>
         <Question
           section="advanced"
-          label={t("component.graphing.graphControls")}
+          label={t('component.graphing.graphControls')}
           cleanSections={cleanSections}
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.graphControls")}`)}>
-            {t("component.graphing.graphControls")}
+          <Subtitle
+            id={getFormattedAttrId(
+              `${graphData?.title}-${t('component.graphing.graphControls')}`
+            )}
+          >
+            {t('component.graphing.graphControls')}
           </Subtitle>
           <Tools
             toolsAreVisible={false}
@@ -75,7 +81,7 @@ class NumberLinePlotMoreOptions extends Component {
 
         <Question
           section="advanced"
-          label={t("component.options.scoring")}
+          label={t('component.options.scoring')}
           cleanSections={cleanSections}
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
@@ -92,13 +98,17 @@ class NumberLinePlotMoreOptions extends Component {
 
         <Question
           section="advanced"
-          label={t("component.graphing.display")}
+          label={t('component.graphing.display')}
           cleanSections={cleanSections}
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.display")}`)}>
-            {t("component.graphing.display")}
+          <Subtitle
+            id={getFormattedAttrId(
+              `${graphData?.title}-${t('component.graphing.display')}`
+            )}
+          >
+            {t('component.graphing.display')}
           </Subtitle>
           <DisplayOptions
             uiStyle={uiStyle}
@@ -121,8 +131,8 @@ class NumberLinePlotMoreOptions extends Component {
           <Extras.Distractors />
           <Extras.Hints />
         </Extras>
-      </Fragment>
-    );
+      </>
+    )
   }
 }
 
@@ -137,11 +147,11 @@ NumberLinePlotMoreOptions.propTypes = {
   setValidation: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setControls: PropTypes.func.isRequired,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 NumberLinePlotMoreOptions.defaultProps = {
-  advancedAreOpen: false
-};
+  advancedAreOpen: false,
+}
 
-export default withNamespaces("assessment")(NumberLinePlotMoreOptions);
+export default withNamespaces('assessment')(NumberLinePlotMoreOptions)

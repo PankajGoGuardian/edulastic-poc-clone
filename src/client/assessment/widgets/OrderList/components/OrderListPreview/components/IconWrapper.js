@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import styled from "styled-components";
-import { IconCheck } from "../styled/IconCheck";
-import { IconClose } from "../styled/IconClose";
+import React from 'react'
+import styled from 'styled-components'
+import { IconCheck } from '../styled/IconCheck'
+import { IconClose } from '../styled/IconClose'
 
 export const IconWrapper = ({ correct }) => (
   <Wrapper>
     {correct && <IconCheck />}
     {!correct && <IconClose />}
   </Wrapper>
-);
+)
 
 const Wrapper = styled.div`
   width: 30px;
@@ -25,4 +25,4 @@ const Wrapper = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
   }
-`;
+`

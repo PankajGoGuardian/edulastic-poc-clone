@@ -1,46 +1,66 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { notification, TextInputStyled, FlexContainer, FroalaEditor } from "@edulastic/common";
-import { Title, AddNewModuleContainer, AddNewModuleForm, AddBtnsWrapper, StyledButton } from "../styled";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import {
+  notification,
+  TextInputStyled,
+  FlexContainer,
+  FroalaEditor,
+} from '@edulastic/common'
+import {
+  Title,
+  AddNewModuleContainer,
+  AddNewModuleForm,
+  AddBtnsWrapper,
+  StyledButton,
+} from '../styled'
 
 const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
-  const [moduleData, setModuleData] = useState(module || {});
+  const [moduleData, setModuleData] = useState(module || {})
 
-  const handleChangeModuleData = prop => ({ target: { value } }) => {
-    setModuleData({ ...moduleData, [prop]: value });
-  };
+  const handleChangeModuleData = (prop) => ({ target: { value } }) => {
+    setModuleData({ ...moduleData, [prop]: value })
+  }
 
-  const handleChangeDescription = desc => {
+  const handleChangeDescription = (desc) => {
     if (desc) {
-      setModuleData({ ...moduleData, description: desc });
+      setModuleData({ ...moduleData, description: desc })
     }
-  };
+  }
 
   const handleModuleSave = () => {
-    const { moduleGroupName, moduleId, title, description } = moduleData;
+    const { moduleGroupName, moduleId, title, description } = moduleData
     if (!moduleGroupName?.trim()) {
-      return notification({ type: "warning", messageKey: "manageModalGroupNameEmpty" });
+      return notification({
+        type: 'warning',
+        messageKey: 'manageModalGroupNameEmpty',
+      })
     }
 
     if (!moduleId?.trim()) {
-      return notification({ type: "warning", messageKey: "manageModalModuleIDEmpty" });
+      return notification({
+        type: 'warning',
+        messageKey: 'manageModalModuleIDEmpty',
+      })
     }
 
     if (!title?.trim()) {
-      return notification({ type: "warning", messageKey: "manageModalModuleNameEmpty" });
+      return notification({
+        type: 'warning',
+        messageKey: 'manageModalModuleNameEmpty',
+      })
     }
 
-    onSave({ moduleGroupName, moduleId, title, description });
+    onSave({ moduleGroupName, moduleId, title, description })
     if (!isEdit) {
-      setModuleData({});
+      setModuleData({})
     }
-    onCancel();
-  };
+    onCancel()
+  }
 
   const fieldContatinerProp = {
-    flexDirection: "column",
-    alignItems: "flex-start"
-  };
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  }
 
   return (
     <AddNewModuleContainer data-cy="create-new-module-form">
@@ -49,7 +69,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
           <Title>Module Or Chapter Name</Title>
           <TextInputStyled
             data-cy="module-group-name"
-            onChange={handleChangeModuleData("moduleGroupName")}
+            onChange={handleChangeModuleData('moduleGroupName')}
             value={moduleData.moduleGroupName}
             maxLength={24}
           />
@@ -61,7 +81,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
               data-cy="module-id"
               maxLength={4}
               value={moduleData.moduleId}
-              onChange={handleChangeModuleData("moduleId")}
+              onChange={handleChangeModuleData('moduleId')}
             />
           </FlexContainer>
           <FlexContainer flex={3} {...fieldContatinerProp} marginLeft="16px">
@@ -70,14 +90,14 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
               data-cy="module-name"
               value={moduleData.title}
               maxLength={100}
-              onChange={handleChangeModuleData("title")}
+              onChange={handleChangeModuleData('title')}
             />
           </FlexContainer>
         </FlexContainer>
         <FlexContainer {...fieldContatinerProp} width="100%">
           <Title>Description</Title>
           <FroalaEditor
-            value={moduleData.description || ""}
+            value={moduleData.description || ''}
             border="border"
             onChange={handleChangeDescription}
             toolbarId="module-description"
@@ -89,19 +109,19 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
           CANCEL
         </StyledButton>
         <StyledButton key="submit" onClick={handleModuleSave}>
-          {isEdit ? "UPDATE" : "ADD"}
+          {isEdit ? 'UPDATE' : 'ADD'}
         </StyledButton>
       </AddBtnsWrapper>
     </AddNewModuleContainer>
-  );
-};
+  )
+}
 
 ModuleForm.propTypes = {
-  module: PropTypes.object
-};
+  module: PropTypes.object,
+}
 
 ModuleForm.defaultProps = {
-  module: {}
-};
+  module: {},
+}
 
-export default ModuleForm;
+export default ModuleForm

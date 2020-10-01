@@ -1,26 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { find, get, maxBy } from "lodash";
-import { measureText } from "@edulastic/common";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { find, get, maxBy } from 'lodash'
+import { measureText } from '@edulastic/common'
 
-import Toggle from "./Toggle";
-import TextDropdown from "./TextDropdown";
-import TextEntry from "./TextEntry";
-import DragDrop from "./DragDrop";
-import { displayStyles } from "../../constants";
+import Toggle from './Toggle'
+import TextDropdown from './TextDropdown'
+import TextEntry from './TextEntry'
+import DragDrop from './DragDrop'
+import { displayStyles } from '../../constants'
 
-const getChoiceBoxComponents = type => {
+const getChoiceBoxComponents = (type) => {
   switch (type) {
     case displayStyles.DROP_DOWN:
-      return TextDropdown;
+      return TextDropdown
     case displayStyles.TEXT_INPUT:
-      return TextEntry;
+      return TextEntry
     case displayStyles.DRAG_DROP:
-      return DragDrop;
+      return DragDrop
     default:
-      return Toggle;
+      return Toggle
   }
-};
+}
 
 const ChoicesBox = ({ resprops, id }) => {
   const {
@@ -31,41 +31,46 @@ const ChoicesBox = ({ resprops, id }) => {
     item,
     disableResponse,
     isReviewTab,
-    userSelections
-  } = resprops;
+    userSelections,
+  } = resprops
 
-  if (!id) return null;
+  if (!id) return null
   // get user's answer
-  const cAnswers = get(item, "validation.validResponse.value", {});
-  let userAnswer = userSelections[id];
+  const cAnswers = get(item, 'validation.validResponse.value', {})
+  let userAnswer = userSelections[id]
   if (isReviewTab) {
-    userAnswer = cAnswers[id];
+    userAnswer = cAnswers[id]
   }
 
-  const { responseIds, displayStyle } = item;
-  const { placeholder, responsecontainerindividuals } = uiStyle;
-  const { index } = find(responseIds, response => response.id === id);
-  const { heightpx, widthpx, placeholder: iPlaceholder } = responsecontainerindividuals?.[index] || {};
+  const { responseIds, displayStyle } = item
+  const { placeholder, responsecontainerindividuals } = uiStyle
+  const { index } = find(responseIds, (response) => response.id === id)
+  const { heightpx, widthpx, placeholder: iPlaceholder } =
+    responsecontainerindividuals?.[index] || {}
 
-  const optionsById = get(options, `[${id}]`, []);
-  const maxW = maxBy(optionsById.map(op => measureText(op)), d => d.width) || {};
+  const optionsById = get(options, `[${id}]`, [])
+  const maxW =
+    maxBy(
+      optionsById.map((op) => measureText(op)),
+      (d) => d.width
+    ) || {}
 
   const styles = {
     ...btnStyle,
-    overflow: "hidden",
+    overflow: 'hidden',
     minWidth: widthpx || btnStyle.width,
     height: heightpx || btnStyle.height,
-    minWidthpx: maxW.width + 25
-  };
+    minWidthpx: maxW.width + 25,
+  }
 
-  const selectChange = val => {
+  const selectChange = (val) => {
     if (changeAnswers) {
-      changeAnswers(val, index, id);
+      changeAnswers(val, index, id)
     }
-  };
+  }
 
   // response box display style
-  const BoxComponent = getChoiceBoxComponents(displayStyle?.type);
+  const BoxComponent = getChoiceBoxComponents(displayStyle?.type)
   return (
     <BoxComponent
       id={id}
@@ -77,16 +82,16 @@ const ChoicesBox = ({ resprops, id }) => {
       onChange={selectChange}
       displayStyleOption={displayStyle?.option}
     />
-  );
-};
+  )
+}
 
 ChoicesBox.propTypes = {
   resprops: PropTypes.object,
-  id: PropTypes.string.isRequired
-};
+  id: PropTypes.string.isRequired,
+}
 
 ChoicesBox.defaultProps = {
-  resprops: {}
-};
+  resprops: {},
+}
 
-export default ChoicesBox;
+export default ChoicesBox

@@ -9,15 +9,15 @@ import {
   lightGreySecondary,
   secondaryTextColor,
   textColor,
-  themeColor
-} from "@edulastic/colors";
-import { TextField } from "@edulastic/common";
-import { Affix, Icon, Input, Row } from "antd";
-import Modal from "react-responsive-modal";
-import styled from "styled-components";
+  themeColor,
+} from '@edulastic/colors'
+import { TextField } from '@edulastic/common'
+import { Affix, Icon, Input, Row } from 'antd'
+import Modal from 'react-responsive-modal'
+import styled from 'styled-components'
 
 export const Container = styled.div`
-  display: ${({ show }) => (show ? "block" : "none")};
+  display: ${({ show }) => (show ? 'block' : 'none')};
   background: ${lightGreySecondary};
   width: 300px;
   height: calc(100vh - 110px);
@@ -38,9 +38,9 @@ export const Container = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 370px;
   }
-`;
+`
 
-export const AffixContainer = styled(Affix)``;
+export const AffixContainer = styled(Affix)``
 
 export const CloseIcon = styled(Icon)`
   font-size: 24px;
@@ -53,7 +53,7 @@ export const CloseIcon = styled(Icon)`
   @media (min-width: ${desktopWidth}) {
     display: none;
   }
-`;
+`
 
 export const Backdrop = styled.div`
   position: fixed;
@@ -68,7 +68,7 @@ export const Backdrop = styled.div`
   @media (min-width: ${desktopWidth}) {
     display: none;
   }
-`;
+`
 
 export const FixedFilters = styled.div`
   width: 100%;
@@ -82,7 +82,7 @@ export const FixedFilters = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     padding: 20px 50px 0px;
   }
-`;
+`
 
 export const SearchWrapper = styled.div`
   display: flex;
@@ -91,11 +91,11 @@ export const SearchWrapper = styled.div`
   @media (min-width: ${desktopWidth}) {
     padding: 0px;
   }
-`;
+`
 
 export const HeaderRow = styled(Row)`
   width: 100%;
-`;
+`
 
 export const SearchInput = styled(Input.Search)`
   .ant-input {
@@ -103,28 +103,28 @@ export const SearchInput = styled(Input.Search)`
     border: 1px solid ${greyThemeLight};
     border-radius: 2px;
     height: 40px;
-    font-size: ${props => props.theme.smallLinkFontSize};
+    font-size: ${(props) => props.theme.smallLinkFontSize};
 
     @media (min-width: ${extraDesktopWidthMax}) {
-      font-size: ${props => props.theme.smallFontSize};
+      font-size: ${(props) => props.theme.smallFontSize};
     }
   }
   svg {
     fill: ${themeColor};
   }
-`;
+`
 
 export const SearchField = styled.div`
   box-shadow: ${boxShadowDefault};
   border-radius: 0;
-`;
+`
 
 export const TextFieldStyled = styled(TextField)`
   padding: 16px;
   padding-right: 68px;
   outline: none;
   border-radius: 0;
-`;
+`
 
 export const TextFieldSearch = styled(TextField)`
   height: 40px;
@@ -147,12 +147,12 @@ export const TextFieldSearch = styled(TextField)`
       color: ${themeColor};
     }
   }
-`;
+`
 
 export const SearchIcon = styled(Icon)`
   color: ${themeColor};
   font-size: 15px;
-`;
+`
 
 export const FilterButton = styled.div`
   display: block;
@@ -177,7 +177,7 @@ export const FilterButton = styled.div`
   @media (min-width: ${desktopWidth}) {
     display: none;
   }
-`;
+`
 
 export const MainFilter = styled.div`
   margin-top: 19px;
@@ -214,11 +214,11 @@ export const MainFilter = styled.div`
   @media (min-width: ${desktopWidth}) {
     padding: 0px;
   }
-`;
+`
 
 export const MainFilterHeader = styled.div`
   display: flex;
-`;
+`
 
 export const Title = styled.span`
   font-size: 14px;
@@ -227,7 +227,7 @@ export const Title = styled.span`
   font-weight: 600;
   text-transform: uppercase;
   flex: 1;
-`;
+`
 
 export const Clear = styled.div`
   font-size: 12px;
@@ -238,7 +238,7 @@ export const Clear = styled.div`
   cursor: pointer;
   text-transform: uppercase;
   margin: 3px 0 0;
-`;
+`
 
 export const StyledModal = styled(Modal)`
   width: 100%;
@@ -247,14 +247,14 @@ export const StyledModal = styled(Modal)`
   svg {
     fill: red;
   }
-`;
+`
 
 export const StyledModalContainer = styled.div`
   width: calc(100vw - 80px);
-`;
+`
 
 export const StyledModalTitle = styled.div`
   font-size: 22px;
   color: ${themeColor};
   font-weight: 600;
-`;
+`

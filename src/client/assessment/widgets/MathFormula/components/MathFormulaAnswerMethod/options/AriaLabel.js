@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { withNamespaces } from "@edulastic/localization";
-import { Row } from "../../../../../styled/WidgetOptions/Row";
-import { Col } from "../../../../../styled/WidgetOptions/Col";
-import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
-import { TextInputStyled } from "../../../../../styled/InputStyles";
+import { withNamespaces } from '@edulastic/localization'
+import { Row } from '../../../../../styled/WidgetOptions/Row'
+import { Col } from '../../../../../styled/WidgetOptions/Col'
+import { CheckboxLabel } from '../../../../../styled/CheckboxWithLabel'
+import { TextInputStyled } from '../../../../../styled/InputStyles'
 
 const AriaLabelPure = ({ value, onChange, t }) => {
-  const [allowAriaLabel, setAllowAriaLabel] = useState(false);
+  const [allowAriaLabel, setAllowAriaLabel] = useState(false)
 
   useEffect(() => {
     if (value) {
-      setAllowAriaLabel(true);
+      setAllowAriaLabel(true)
     }
-  }, [value]);
+  }, [value])
 
   return (
     <Col span={12}>
@@ -23,14 +23,14 @@ const AriaLabelPure = ({ value, onChange, t }) => {
           <CheckboxLabel
             data-cy="answer-allow-aria-label"
             checked={allowAriaLabel}
-            onChange={e => {
-              setAllowAriaLabel(e.target.checked);
+            onChange={(e) => {
+              setAllowAriaLabel(e.target.checked)
               if (!e.target.checked) {
-                onChange("aria_label", null);
+                onChange('aria_label', null)
               }
             }}
           >
-            {t("component.math.ariaLabel")}
+            {t('component.math.ariaLabel')}
           </CheckboxLabel>
         </Col>
         <Col span={24} marginBottom="0px">
@@ -39,20 +39,20 @@ const AriaLabelPure = ({ value, onChange, t }) => {
             size="large"
             value={value}
             readOnly={!allowAriaLabel}
-            onChange={e => onChange("aria_label", e.target.value)}
+            onChange={(e) => onChange('aria_label', e.target.value)}
           />
         </Col>
       </Row>
     </Col>
-  );
-};
+  )
+}
 
 AriaLabelPure.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
-};
+  t: PropTypes.func.isRequired,
+}
 
-AriaLabelPure.defaultProps = {};
+AriaLabelPure.defaultProps = {}
 
-export const AriaLabel = withNamespaces("assessment")(AriaLabelPure);
+export const AriaLabel = withNamespaces('assessment')(AriaLabelPure)

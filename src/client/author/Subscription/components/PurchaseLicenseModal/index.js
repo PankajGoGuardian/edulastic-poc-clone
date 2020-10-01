@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { StyledPurchaseLicenseModal, Title } from "./styled";
-import { Input, Radio, message } from "antd";
-import { FlexContainer,notification } from "@edulastic/common";
-import { greyishBorder, lightGreySecondary } from "@edulastic/colors";
-import { ThemeButton } from "../styled/commonStyled";
+import { useState } from 'react'
+import { Input, Radio, message } from 'antd'
+import { FlexContainer, notification } from '@edulastic/common'
+import { greyishBorder, lightGreySecondary } from '@edulastic/colors'
+import { StyledPurchaseLicenseModal, Title } from './styled'
+import { ThemeButton } from '../styled/commonStyled'
 
 const getFooterComponent = ({ hideModal, nextAction }) => (
   <FlexContainer width="450px">
@@ -12,34 +12,34 @@ const getFooterComponent = ({ hideModal, nextAction }) => (
       NEXT
     </ThemeButton>
   </FlexContainer>
-);
+)
 
-const PurchaseLicenseModal = props => {
-  const { visible = false, closeModal, openPaymentServiceModal } = props;
+const PurchaseLicenseModal = (props) => {
+  const { visible = false, closeModal, openPaymentServiceModal } = props
 
-  const [currentModalState, setCurrentModalState] = useState(1);
-  const [radioValue, setRadioValue] = useState(null);
-  const [licenseCount, setLicenseCount] = useState();
-  const [email, setEmail] = useState();
-  const [sharedLicenses, setSharedLicenses] = useState();
-  const [inquiryTitle, setInquiryTitle] = useState();
-  const [inquiryDescription, setInquiryDescription] = useState();
+  const [currentModalState, setCurrentModalState] = useState(1)
+  const [radioValue, setRadioValue] = useState(null)
+  const [licenseCount, setLicenseCount] = useState()
+  const [email, setEmail] = useState()
+  const [sharedLicenses, setSharedLicenses] = useState()
+  const [inquiryTitle, setInquiryTitle] = useState()
+  const [inquiryDescription, setInquiryDescription] = useState()
 
   const hideModal = () => {
-    setRadioValue("");
-    setLicenseCount("");
-    setEmail("");
-    setSharedLicenses("");
-    setInquiryTitle("");
-    setInquiryDescription("");
-    closeModal();
-    setCurrentModalState(1);
-  };
+    setRadioValue('')
+    setLicenseCount('')
+    setEmail('')
+    setSharedLicenses('')
+    setInquiryTitle('')
+    setInquiryDescription('')
+    closeModal()
+    setCurrentModalState(1)
+  }
 
-  const isValidEmail = email => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(String(email).toLowerCase());
-  };
+  const isValidEmail = (email) => {
+    const re = /\S+@\S+\.\S+/
+    return re.test(String(email).toLowerCase())
+  }
 
   const nextAction = () => {
     if (currentModalState === 1) {
@@ -48,57 +48,70 @@ const PurchaseLicenseModal = props => {
           if (email) {
             if (isValidEmail(email)) {
               // update store before proceeding
-              setCurrentModalState(prev => prev + 1);
-            } else notification({ type: "warn", messageKey:"enterValidEmail"});
-          } else notification({ type: "warn", messageKey:"emailCantBeEmpty"});
-        } else notification({ type: "warn", messageKey:"lisenceShouldBeNumericValue"});
-      } else notification({ type: "warn", messageKey:"lisenceCountCantBeEmpty"});
-      return; 
+              setCurrentModalState((prev) => prev + 1)
+            } else notification({ type: 'warn', messageKey: 'enterValidEmail' })
+          } else notification({ type: 'warn', messageKey: 'emailCantBeEmpty' })
+        } else
+          notification({
+            type: 'warn',
+            messageKey: 'lisenceShouldBeNumericValue',
+          })
+      } else
+        notification({ type: 'warn', messageKey: 'lisenceCountCantBeEmpty' })
+      return
     }
 
     if (currentModalState === 2) {
       if (radioValue) {
         if (radioValue === 1) {
           // replace hideModal with closeModal and update store before proceeding
-          hideModal();
-          openPaymentServiceModal();
+          hideModal()
+          openPaymentServiceModal()
         } else {
           // update store before proceeding
-          setCurrentModalState(prev => prev + 1);
+          setCurrentModalState((prev) => prev + 1)
         }
-      } else notification({ type: "warn", messageKey:"pleaseChoosePurchaseOption"});
-      return;
+      } else
+        notification({ type: 'warn', messageKey: 'pleaseChoosePurchaseOption' })
+      return
     }
 
     if (currentModalState === 3) {
       if (inquiryTitle) {
         if (inquiryDescription) {
           // update store before proceeding
-        } else notification({ type: "warn", messageKey:"inquiryDescriptionFieldRequired"});
-      } else notification({ type: "warn", messageKey:"inquirySubjectFieldRequired"});
-      
+        } else
+          notification({
+            type: 'warn',
+            messageKey: 'inquiryDescriptionFieldRequired',
+          })
+      } else
+        notification({
+          type: 'warn',
+          messageKey: 'inquirySubjectFieldRequired',
+        })
     }
-  };
+  }
 
   const handleModalAChange = (e, attr) => {
-    if (attr === "licenseCount") {
-      setLicenseCount(e.target.value);
-    } else if (attr === "email") {
-      setEmail(e.target.value);
+    if (attr === 'licenseCount') {
+      setLicenseCount(e.target.value)
+    } else if (attr === 'email') {
+      setEmail(e.target.value)
     } else {
-      setSharedLicenses(e.target.value);
+      setSharedLicenses(e.target.value)
     }
-  };
+  }
 
   const handleModalBChange = (e, attr) => {
-    if (attr === "title") {
-      setInquiryTitle(e.target.value);
+    if (attr === 'title') {
+      setInquiryTitle(e.target.value)
     } else {
-      setInquiryDescription(e.target.value);
+      setInquiryDescription(e.target.value)
     }
-  };
+  }
 
-  const handleRadioChange = e => setRadioValue(e.target.value);
+  const handleRadioChange = (e) => setRadioValue(e.target.value)
 
   return (
     <StyledPurchaseLicenseModal
@@ -111,7 +124,8 @@ const PurchaseLicenseModal = props => {
       {currentModalState === 1 && (
         <>
           <p>
-            Enter email address of the users who need to be upgraded to premium teacher. <br />
+            Enter email address of the users who need to be upgraded to premium
+            teacher. <br />
             The licenses key will be sent to individual users via email.
           </p>
 
@@ -120,13 +134,13 @@ const PurchaseLicenseModal = props => {
           <Input
             placeholder="Enter the no. of license you want to purchase"
             style={{
-              width: "65%",
-              height: "40px",
+              width: '65%',
+              height: '40px',
               background: lightGreySecondary,
-              border: `1px solid ${greyishBorder}`
+              border: `1px solid ${greyishBorder}`,
             }}
             value={licenseCount}
-            onChange={e => handleModalAChange(e, "licenseCount")}
+            onChange={(e) => handleModalAChange(e, 'licenseCount')}
           />
 
           <br />
@@ -136,13 +150,13 @@ const PurchaseLicenseModal = props => {
           <Input
             placeholder="Enter your email ID"
             style={{
-              width: "65%",
-              height: "40px",
+              width: '65%',
+              height: '40px',
               background: lightGreySecondary,
-              border: `1px solid ${greyishBorder}`
+              border: `1px solid ${greyishBorder}`,
             }}
             value={email}
-            onChange={e => handleModalAChange(e, "email")}
+            onChange={(e) => handleModalAChange(e, 'email')}
           />
 
           <br />
@@ -153,13 +167,13 @@ const PurchaseLicenseModal = props => {
             placeholder={`Enter the comma separated email ids like...\nJohn.doe@yourschool.com,\njane.doe@yourschool.com, ...`}
             autoSize={false}
             style={{
-              height: "155px",
+              height: '155px',
               background: lightGreySecondary,
               border: `1px solid ${greyishBorder}`,
-              resize: "none"
+              resize: 'none',
             }}
             value={sharedLicenses}
-            onChange={e => handleModalAChange(e, "sharedLicenses")}
+            onChange={(e) => handleModalAChange(e, 'sharedLicenses')}
           />
         </>
       )}
@@ -181,12 +195,12 @@ const PurchaseLicenseModal = props => {
           <Input
             placeholder="Inquiry about Edulastic Premium"
             style={{
-              height: "40px",
+              height: '40px',
               background: lightGreySecondary,
-              border: `1px solid ${greyishBorder}`
+              border: `1px solid ${greyishBorder}`,
             }}
             value={inquiryTitle}
-            onChange={e => handleModalBChange(e, "title")}
+            onChange={(e) => handleModalBChange(e, 'title')}
           />
           <br />
           <br />
@@ -194,18 +208,18 @@ const PurchaseLicenseModal = props => {
             placeholder={`Hello,\nI'm interested in knowing more about the Premium Version of Edulastic.`}
             autoSize={false}
             style={{
-              height: "155px",
+              height: '155px',
               background: lightGreySecondary,
               border: `1px solid ${greyishBorder}`,
-              resize: "none"
+              resize: 'none',
             }}
             value={inquiryDescription}
-            onChange={e => handleModalBChange(e, "description")}
+            onChange={(e) => handleModalBChange(e, 'description')}
           />
         </>
       )}
     </StyledPurchaseLicenseModal>
-  );
-};
+  )
+}
 
-export default PurchaseLicenseModal;
+export default PurchaseLicenseModal

@@ -1,7 +1,7 @@
-import React from "react";
-import { IconPlus } from "@edulastic/icons";
-import { white } from "@edulastic/colors";
-import { EduButton, FlexContainer } from "@edulastic/common";
+import React from 'react'
+import { IconPlus } from '@edulastic/icons'
+import { white } from '@edulastic/colors'
+import { EduButton, FlexContainer } from '@edulastic/common'
 
 const AddAssignmentButton = ({ onClick }) => (
   <EduButton onClick={onClick} isGhost size="large" style={{ height: 32 }}>
@@ -10,6 +10,6 @@ const AddAssignmentButton = ({ onClick }) => (
       <span>Add new assignment</span>
     </FlexContainer>
   </EduButton>
-);
+)
 
-export default AddAssignmentButton;
+export default AddAssignmentButton

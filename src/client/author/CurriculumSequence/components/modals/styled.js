@@ -1,30 +1,37 @@
-import { Select, Col, Row, Radio } from "antd";
-import styled from "styled-components";
-import { white, secondaryTextColor, themeColor, themeColorLight, red, largeDesktopWidth } from "@edulastic/colors";
+import { Select, Col, Row, Radio } from 'antd'
+import styled from 'styled-components'
+import {
+  white,
+  secondaryTextColor,
+  themeColor,
+  themeColorLight,
+  red,
+  largeDesktopWidth,
+} from '@edulastic/colors'
 
 export const StyledRadioGroup = styled(Radio.Group)`
   label.ant-radio-wrapper {
     font-size: 12px;
   }
-`;
+`
 
 export const Label = styled.label`
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-`;
+`
 
 export const StyledRow = styled(Row)`
   margin-bottom: 32px;
-`;
+`
 
-export const StyledRowLabel = styled(Row)``;
+export const StyledRowLabel = styled(Row)``
 
 export const ColLabel = styled(Col)`
   color: ${secondaryTextColor};
   font-weight: 600;
   margin-bottom: 8px;
-`;
+`
 
 export const StyledSelect = styled(Select)`
   width: 100%;
@@ -63,10 +70,10 @@ export const StyledSelect = styled(Select)`
     }
 
     .ant-select-arrow-icon {
-      font-size: ${props => props.theme.linkFontSize};
+      font-size: ${(props) => props.theme.linkFontSize};
       svg {
         fill: ${themeColor};
       }
     }
   }
-`;
+`

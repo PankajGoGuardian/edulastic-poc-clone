@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
-import MainInfo from "./MainInfo";
-import MetaInfo from "./MetaInfo";
-import Expanded from "./Expanded";
+import React, { Fragment } from 'react'
+import MainInfo from './MainInfo'
+import MetaInfo from './MetaInfo'
+import Expanded from './Expanded'
 
 const ReviewItem = ({
   data,
@@ -18,9 +18,9 @@ const ReviewItem = ({
   toggleExpandRow,
   rows,
   mobile,
-  scoring
+  scoring,
 }) => (
-  <Fragment>
+  <>
     {expand && (
       <Expanded
         metaInfoData={data.meta}
@@ -56,7 +56,7 @@ const ReviewItem = ({
       />
     )}
     <MetaInfo data={data.meta} />
-  </Fragment>
-);
+  </>
+)
 
-export default ReviewItem;
+export default ReviewItem

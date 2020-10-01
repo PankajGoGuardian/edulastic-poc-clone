@@ -1,32 +1,45 @@
-import React from "react";
-import { measureTextWithImage } from "@edulastic/common";
-import { Popover } from "antd";
-import styled from "styled-components";
+import React from 'react'
+import { measureTextWithImage } from '@edulastic/common'
+import { Popover } from 'antd'
+import styled from 'styled-components'
 
 // eslint-disable-next-line max-len
-export function Container({ height: containerHeight, fontSize, width: containerWidth, answers, children }) {
-  const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureTextWithImage({
+export function Container({
+  height: containerHeight,
+  fontSize,
+  width: containerWidth,
+  answers,
+  children,
+}) {
+  const {
+    scrollWidth: contentWidth,
+    scrollHeight: contentHeight,
+  } = measureTextWithImage({
     text: answers,
     style: { fontSize },
-    targetChild: "p",
-    childStyle: { display: "inline" }
-  });
+    targetChild: 'p',
+    childStyle: { display: 'inline' },
+  })
 
-  const widthOverflow = contentWidth > parseInt(containerWidth, 10) - 10;
-  const heightOveflow = contentHeight >= parseInt(containerHeight, 10);
-  const showPopover = widthOverflow || heightOveflow;
+  const widthOverflow = contentWidth > parseInt(containerWidth, 10) - 10
+  const heightOveflow = contentHeight >= parseInt(containerHeight, 10)
+  const showPopover = widthOverflow || heightOveflow
 
   if (showPopover) {
     return (
       <Wrapper>
-        <Popover content={children} placement="bottomLeft" getPopupContainer={triggerNode => triggerNode.parentNode}>
+        <Popover
+          content={children}
+          placement="bottomLeft"
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        >
           <div className="text-wrapper">{children}</div>
         </Popover>
       </Wrapper>
-    );
+    )
   }
 
-  return children;
+  return children
 }
 
 const Wrapper = styled.div`
@@ -38,7 +51,7 @@ const Wrapper = styled.div`
     overflow: hidden;
 
     ::after {
-      content: "...";
+      content: '...';
       position: absolute;
       right: 5px;
       display: flex;
@@ -46,9 +59,9 @@ const Wrapper = styled.div`
       height: 100%;
     }
 
-    div[draggable="true"] {
+    div[draggable='true'] {
       width: max-content !important;
       overflow: unset !important;
     }
   }
-`;
+`

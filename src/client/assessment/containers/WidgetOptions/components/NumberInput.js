@@ -1,28 +1,28 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { withNamespaces } from "@edulastic/localization";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { withNamespaces } from '@edulastic/localization'
 
-import { Label } from "../../../styled/WidgetOptions/Label";
-import CommonInput from "./common/CommonInput";
+import { Label } from '../../../styled/WidgetOptions/Label'
+import CommonInput from './common/CommonInput'
 
 const NumberInput = ({ t, type, value, label, ...restProps }) => (
-  <Fragment>
+  <>
     {label && <Label>{label}</Label>}
     <CommonInput value={value} type={type} data-cy="option" {...restProps} />
-  </Fragment>
-);
+  </>
+)
 
 NumberInput.propTypes = {
   t: PropTypes.func.isRequired,
   value: PropTypes.number,
   type: PropTypes.string,
-  label: PropTypes.string
-};
+  label: PropTypes.string,
+}
 
 NumberInput.defaultProps = {
-  type: "number",
-  label: "",
-  value: 0
-};
+  type: 'number',
+  label: '',
+  value: 0,
+}
 
-export default withNamespaces("assessment")(NumberInput);
+export default withNamespaces('assessment')(NumberInput)

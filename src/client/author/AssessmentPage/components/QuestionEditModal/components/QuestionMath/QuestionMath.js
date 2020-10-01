@@ -1,39 +1,47 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { InputNumber } from "antd";
-import { cloneDeep } from "lodash";
-import { ThemeProvider } from "styled-components";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { InputNumber } from 'antd'
+import { cloneDeep } from 'lodash'
+import { ThemeProvider } from 'styled-components'
 
-import { math } from "@edulastic/constants";
+import { math } from '@edulastic/constants'
 
-import { themes } from "../../../../../../theme";
-import MathFormulaAnswerMethod from "../../../../../../assessment/widgets/MathFormula/components/MathFormulaAnswerMethod";
-import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
-import { QuestionFormWrapper, FormGroup, Points } from "../../common/QuestionForm";
+import { themes } from '../../../../../../theme'
+import MathFormulaAnswerMethod from '../../../../../../assessment/widgets/MathFormula/components/MathFormulaAnswerMethod'
+import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
+import {
+  QuestionFormWrapper,
+  FormGroup,
+  Points,
+} from '../../common/QuestionForm'
 
-const { methods } = math;
+const { methods } = math
 
 const QuestionMath = ({ onUpdate, question }) => {
-  const toggleAdditional = val => {
-    onUpdate({ showAdditional: val });
-  };
+  const toggleAdditional = (val) => {
+    onUpdate({ showAdditional: val })
+  }
 
   const handleAnswerChange = (prop, value) => {
-    const { validation } = question;
-    const nextValidation = cloneDeep(validation);
-    if (prop === "method" && nextValidation.validResponse.value[0][prop] !== value) {
+    const { validation } = question
+    const nextValidation = cloneDeep(validation)
+    if (
+      prop === 'method' &&
+      nextValidation.validResponse.value[0][prop] !== value
+    ) {
       nextValidation.validResponse.value[0] = {
-        [prop]: value
-      };
+        [prop]: value,
+      }
     } else {
-      nextValidation.validResponse.value[0][prop] = value;
+      nextValidation.validResponse.value[0][prop] = value
     }
 
-    if (prop === "value") {
-      const isNumeric = v => /^\d+$/.test(v);
+    if (prop === 'value') {
+      const isNumeric = (v) => /^\d+$/.test(v)
 
       if (!isNumeric(value)) {
-        delete nextValidation?.validResponse?.value?.[0]?.options?.significantDecimalPlaces;
+        delete nextValidation?.validResponse?.value?.[0]?.options
+          ?.significantDecimalPlaces
       }
     }
 
@@ -43,51 +51,51 @@ const QuestionMath = ({ onUpdate, question }) => {
         methods.IS_FACTORISED,
         methods.IS_EXPANDED,
         methods.IS_TRUE,
-        methods.EQUIV_SYNTAX
+        methods.EQUIV_SYNTAX,
       ].includes(nextValidation.validResponse.value[0].method)
     ) {
-      delete nextValidation.validResponse.value[0].value;
+      delete nextValidation.validResponse.value[0].value
     }
 
     const data = {
-      validation: nextValidation
-    };
+      validation: nextValidation,
+    }
 
-    onUpdate(data);
-  };
+    onUpdate(data)
+  }
 
-  const handleScoreChange = score => {
-    const { validResponse } = question.validation;
+  const handleScoreChange = (score) => {
+    const { validResponse } = question.validation
     const data = {
       validation: {
         scoringType: EXACT_MATCH,
         validResponse: {
           ...validResponse,
-          score
+          score,
         },
-        altResponses: []
-      }
-    };
+        altResponses: [],
+      },
+    }
 
-    onUpdate(data);
-  };
+    onUpdate(data)
+  }
 
   const onChangeAllowedOptions = (option, variables) => {
     onUpdate({
-      [`${option}`]: variables
-    });
-  };
+      [`${option}`]: variables,
+    })
+  }
 
-  const onChangeKeypad = keypad => {
+  const onChangeKeypad = (keypad) => {
     const data = {
-      symbols: [keypad]
-    };
-    onUpdate(data);
-  };
+      symbols: [keypad],
+    }
+    onUpdate(data)
+  }
 
-  const { validResponse } = question.validation;
-  const { score } = validResponse;
-  const value = validResponse.value[0];
+  const { validResponse } = question.validation
+  const { score } = validResponse
+  const value = validResponse.value[0]
 
   return (
     <ThemeProvider theme={themes.default}>
@@ -95,7 +103,7 @@ const QuestionMath = ({ onUpdate, question }) => {
         <FormGroup>
           <MathFormulaAnswerMethod
             labelValue="Correct Answer"
-            allowedVariables={question.allowedVariables || ""}
+            allowedVariables={question.allowedVariables || ''}
             allowNumericOnly={question.allowNumericOnly}
             onChange={handleAnswerChange}
             onChangeAllowedOptions={onChangeAllowedOptions}
@@ -103,7 +111,7 @@ const QuestionMath = ({ onUpdate, question }) => {
             item={question}
             index={0}
             toggleAdditional={toggleAdditional}
-            style={{ width: "250px" }}
+            style={{ width: '250px' }}
             isDocbasedSection
             {...value}
           />
@@ -114,12 +122,12 @@ const QuestionMath = ({ onUpdate, question }) => {
         </FormGroup>
       </QuestionFormWrapper>
     </ThemeProvider>
-  );
-};
+  )
+}
 
-export default QuestionMath;
+export default QuestionMath
 
 QuestionMath.propTypes = {
   question: PropTypes.object.isRequired,
-  onUpdate: PropTypes.func.isRequired
-};
+  onUpdate: PropTypes.func.isRequired,
+}

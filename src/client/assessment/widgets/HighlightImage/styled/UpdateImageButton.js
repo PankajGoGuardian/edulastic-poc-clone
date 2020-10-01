@@ -1,5 +1,5 @@
-import { Upload } from "antd";
-import styled from "styled-components";
+import { Upload } from 'antd'
+import styled from 'styled-components'
 
 const UpdateImageButton = styled(Upload.Dragger)`
   &.ant-upload {
@@ -12,6 +12,6 @@ const UpdateImageButton = styled(Upload.Dragger)`
       padding: 0;
     }
   }
-`;
+`
 
-export default UpdateImageButton;
+export default UpdateImageButton

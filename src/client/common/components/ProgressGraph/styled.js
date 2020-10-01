@@ -1,25 +1,25 @@
-import styled from "styled-components";
-import { Progress as AntProgress } from "antd";
-import { FlexContainer, LegendContainer, EduButton } from "@edulastic/common";
+import styled from 'styled-components'
+import { Progress as AntProgress } from 'antd'
+import { FlexContainer, LegendContainer, EduButton } from '@edulastic/common'
 import {
   white,
   mobileWidth,
   mobileWidthLarge,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  title
-} from "@edulastic/colors";
-import { CustomTooltip } from "./CustomTooltip";
+  title,
+} from '@edulastic/colors'
+import { CustomTooltip } from './CustomTooltip'
 
 export const GraphContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 20px;
-  border-bottom: ${props => (props.isCliUser ? "none" : "1px solid #dadae4")};
+  border-bottom: ${(props) => (props.isCliUser ? 'none' : '1px solid #dadae4')};
 
   @media (max-width: ${mobileWidthLarge}) {
     flex-direction: column;
   }
-`;
+`
 
 export const ProgressBarContainer = styled.div`
   /* width: 200px; */
@@ -30,7 +30,7 @@ export const ProgressBarContainer = styled.div`
     align-items: center;
     width: 100%;
   }
-`;
+`
 
 export const BarGraphContainer = styled.div`
   width: 100%;
@@ -40,7 +40,7 @@ export const BarGraphContainer = styled.div`
     align-items: center;
     width: 100%;
   }
-`;
+`
 
 export const GraphTitle = styled.div`
   text-align: center;
@@ -51,17 +51,17 @@ export const GraphTitle = styled.div`
   white-space: nowrap;
   color: ${({ theme }) => theme.textColor};
   font-weight: ${({ theme }) => theme.bold};
-`;
+`
 
 export const Progress = styled(AntProgress)`
-  /* margin: ${props => props.margin || "0 30px 15px 30px"}; */
+  /* margin: ${(props) => props.margin || '0 30px 15px 30px'}; */
   .ant-progress-text {
-    color: ${props => props.textColor || "#434b5d"};
-    font-size: ${props => props.textSize || "#35px"};
+    color: ${(props) => props.textColor || '#434b5d'};
+    font-size: ${(props) => props.textSize || '#35px'};
     margin-top: -7px !important;
     font-weight: bold;
   }
-`;
+`
 
 export const BarGraphWrapper = styled.div`
   width: 100%;
@@ -102,42 +102,42 @@ export const BarGraphWrapper = styled.div`
   }
 
   font-size: 12px;
-`;
+`
 
 export const BarLegendContainer = styled(LegendContainer)`
   margin-bottom: -18px;
   padding-left: 80px;
-`;
+`
 
 export const StyledCustomTooltip = styled(CustomTooltip)`
   padding: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  font-size: ${props => props.theme.commentFontSize};
+  font-size: ${(props) => props.theme.commentFontSize};
   white-space: pre;
   background-color: ${white};
   border-radius: 10px;
 
   .classboard-tooltip-title {
     font-weight: 900;
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
   }
   .classboard-tooltip-value {
     font-weight: 900;
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${(props) => props.theme.smallFontSize};
     .classboard-tooltip-title {
-      font-size: ${props => props.theme.standardFont};
+      font-size: ${(props) => props.theme.standardFont};
     }
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.standardFont};
+    font-size: ${(props) => props.theme.standardFont};
     .classboard-tooltip-title {
-      font-size: ${props => props.theme.titleSectionFontSize};
+      font-size: ${(props) => props.theme.titleSectionFontSize};
     }
   }
-`;
+`
 
 export const ChartNavButton = styled(EduButton)`
   position: absolute;
@@ -147,7 +147,7 @@ export const ChartNavButton = styled(EduButton)`
   width: 32px;
   border-radius: 50%;
   z-index: 1;
-  display: ${({ show }) => (show ? "block" : "none")};
+  display: ${({ show }) => (show ? 'block' : 'none')};
   .ant-btn > .anticon {
     line-height: 0.8;
   }
@@ -155,7 +155,7 @@ export const ChartNavButton = styled(EduButton)`
   @media print {
     display: none;
   }
-`;
+`
 
 export const MessageBox = styled.div`
   background: #f8f8f8;
@@ -168,7 +168,7 @@ export const MessageBox = styled.div`
   border-radius: 4px;
 
   &:after {
-    content: "";
+    content: '';
     top: 40px;
     left: -24px;
     position: absolute;
@@ -182,13 +182,13 @@ export const MessageBox = styled.div`
     border-left-width: 12px;
     border-bottom-width: 10px;
   }
-`;
+`
 
 export const Info = styled.div`
   width: 100%;
   margin-top: 25px;
   text-align: left;
-`;
+`
 
 export const InfoRow = styled.div`
   label {
@@ -204,4 +204,4 @@ export const InfoRow = styled.div`
     color: ${title};
     font-weight: 600;
   }
-`;
+`

@@ -1,13 +1,22 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { themeColor } from "@edulastic/colors";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import { themeColor } from '@edulastic/colors'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconCircleWithPoints = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20.307 21.112" {...props}>
+const IconCircleWithPoints = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20.307 21.112"
+    {...props}
+  >
     <g transform="translate(-0.402 0)">
-      <g transform="translate(2.42 2.421)" fill="none" stroke={props.color || themeColor} strokeWidth="2">
+      <g
+        transform="translate(2.42 2.421)"
+        fill="none"
+        stroke={props.color || themeColor}
+        strokeWidth="2"
+      >
         <circle cx="8.069" cy="8.069" r="8.069" stroke="none" />
         <circle cx="8.069" cy="8.069" r="7.069" fill="none" />
       </g>
@@ -31,6 +40,6 @@ const IconCircleWithPoints = props => (
       </g>
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconCircleWithPoints);
+export default withIconStyles(IconCircleWithPoints)

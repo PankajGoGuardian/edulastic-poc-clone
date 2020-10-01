@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconMultipart = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.555 19.556" {...props}>
+const IconMultipart = (props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 19.555 19.556"
+    {...props}
+  >
     <g transform="translate(0 0)">
       <path
         d="M164.809,13.033a.889.889,0,0,1-.628-1.517l2.369-2.369A4.259,4.259,0,0,0,167.816,6.1,4.322,4.322,0,0,0,163.5,1.778a4.259,4.259,0,0,0-3.048,1.264l-2.372,2.372a.889.889,0,0,1-1.257-1.257l2.369-2.369A6.019,6.019,0,0,1,163.5,0a6.1,6.1,0,0,1,6.1,6.1,6.02,6.02,0,0,1-1.791,4.311l-2.366,2.365a.885.885,0,0,1-.628.261Zm0,0"
@@ -20,6 +24,6 @@ const IconMultipart = props => (
       />
     </g>
   </SVG>
-);
+)
 
-export default withIconStyles(IconMultipart);
+export default withIconStyles(IconMultipart)

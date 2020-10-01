@@ -1,22 +1,30 @@
-import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, EduButton, notification, TypeToConfirmModal } from "@edulastic/common";
-import { SearchInputStyled, SelectInputStyled } from "@edulastic/common/src/components/InputStyles";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Col, Icon, Menu, Row, Select } from "antd";
-import { get, identity, isEmpty, pickBy, unset } from "lodash";
-import * as moment from "moment";
-import React, { Component } from "react";
-import { GiDominoMask } from "react-icons/gi";
-import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
-import { compose } from "redux";
+import { themeColor } from '@edulastic/colors'
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  TypeToConfirmModal,
+} from '@edulastic/common'
+import {
+  SearchInputStyled,
+  SelectInputStyled,
+} from '@edulastic/common/src/components/InputStyles'
+import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+import { Col, Icon, Menu, Row, Select } from 'antd'
+import { get, identity, isEmpty, pickBy, unset } from 'lodash'
+import * as moment from 'moment'
+import React, { Component } from 'react'
+import { GiDominoMask } from 'react-icons/gi'
+import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import {
   StyledActionDropDown,
   StyledClassName,
-  StyledFilterDiv
-} from "../../../../admin/Common/StyledComponents";
-import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
+  StyledFilterDiv,
+} from '../../../../admin/Common/StyledComponents'
+import { UserFormModal as EditStudentFormModal } from '../../../../common/components/UserFormModal/UserFormModal'
 import {
   FilterWrapper,
   LeftFilterDiv,
@@ -26,15 +34,22 @@ import {
   StyledTableButton,
   SubHeaderWrapper,
   StyledPagination,
-  TableContainer
-} from "../../../../common/styled";
-import { getFullNameFromString } from "../../../../common/utils/helpers";
-import { getUserFeatures, isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
-import { proxyUser } from "../../../authUtils";
-import { receiveClassListAction } from "../../../Classes/ducks";
-import { getPolicies, receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
-import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
-import { MergeStudentsModal } from "../../../MergeUsers";
+  TableContainer,
+} from '../../../../common/styled'
+import { getFullNameFromString } from '../../../../common/utils/helpers'
+import {
+  getUserFeatures,
+  isProxyUser as isProxyUserSelector,
+} from '../../../../student/Login/ducks'
+import { proxyUser } from '../../../authUtils'
+import { receiveClassListAction } from '../../../Classes/ducks'
+import {
+  getPolicies,
+  receiveDistrictPolicyAction,
+  receiveSchoolPolicyAction,
+} from '../../../DistrictPolicy/ducks'
+import AddStudentModal from '../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal'
+import { MergeStudentsModal } from '../../../MergeUsers'
 import {
   addFilterAction,
   changeFilterColumnAction,
@@ -53,12 +68,12 @@ import {
   setRoleAction,
   setSearchNameAction,
   setShowActiveUsersAction,
-  updateAdminUserAction
-} from "../../../SchoolAdmin/ducks";
-import { receiveSchoolsAction } from "../../../Schools/ducks";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+  updateAdminUserAction,
+} from '../../../SchoolAdmin/ducks'
+import { receiveSchoolsAction } from '../../../Schools/ducks'
+import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
+import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 import {
   addMultiStudentsRequestAction,
   addStudentsToOtherClassAction,
@@ -68,400 +83,438 @@ import {
   resetFetchedClassDetailsAction,
   setAddStudentsToOtherClassVisiblityAction,
   setMultiStudentsProviderAction,
-  setStudentsDetailsModalVisibleAction
-} from "../../ducks";
-import { AddStudentsToOtherClassModal } from "./AddStudentToOtherClass";
-import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
-import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
-import { StyledMaskButton, StyledStudentTable } from "./styled";
+  setStudentsDetailsModalVisibleAction,
+} from '../../ducks'
+import { AddStudentsToOtherClassModal } from './AddStudentToOtherClass'
+import InviteMultipleStudentModal from './InviteMultipleStudentModal/InviteMultipleStudentModal'
+import StudentsDetailsModal from './StudentsDetailsModal/StudentsDetailsModal'
+import { StyledMaskButton, StyledStudentTable } from './styled'
 
-const menuActive = { mainMenu: "Users", subMenu: "Student" };
+const menuActive = { mainMenu: 'Users', subMenu: 'Student' }
 
-const { Option } = Select;
+const { Option } = Select
 
 const filterStrDD = {
   status: {
     list: [
-      { title: "Select a value", value: undefined, disabled: true },
-      { title: "Active", value: 1, disabled: false },
-      { title: "Inactive", value: 0, disabled: false }
+      { title: 'Select a value', value: undefined, disabled: true },
+      { title: 'Active', value: 1, disabled: false },
+      { title: 'Inactive', value: 0, disabled: false },
     ],
-    placeholder: "Select a value"
-  }
-};
+    placeholder: 'Select a value',
+  },
+}
 
 class StudentTable extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       selectedRowKeys: [],
       addStudentModalVisible: false,
       editStudentModaVisible: false,
       inviteStudentModalVisible: false,
-      editStudentKey: "",
+      editStudentKey: '',
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
       showMergeStudentsModal: false,
       showActive: true,
-      searchByName: "",
+      searchByName: '',
       currentPage: 1,
       filtersData: [
         {
-          filtersColumn: "",
-          filtersValue: "",
-          filterStr: "",
-          filterAdded: false
-        }
+          filtersColumn: '',
+          filtersValue: '',
+          filterStr: '',
+          filterAdded: false,
+        },
       ],
       currentPage: 1,
-      refineButtonActive: false
-    };
-    const { t, isProxyUser } = this.props;
+      refineButtonActive: false,
+    }
+    const { t, isProxyUser } = this.props
     this.columns = [
       {
-        title: t("users.student.name"),
+        title: t('users.student.name'),
         render: (_, { _source }) => {
-          const firstName = get(_source, "firstName", "");
-          const lastName = get(_source, "lastName", "");
+          const firstName = get(_source, 'firstName', '')
+          const lastName = get(_source, 'lastName', '')
           return (
             <span>
-              {firstName === "Anonymous" || isEmpty(firstName) ? "Anonymous" : firstName} {lastName}
+              {firstName === 'Anonymous' || isEmpty(firstName)
+                ? 'Anonymous'
+                : firstName}{' '}
+              {lastName}
             </span>
-          );
+          )
         },
-        sortDirections: ["descend", "ascend"],
+        sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, "_source.firstName", "");
-          const next = get(b, "_source.firstName", "");
-          return next.localeCompare(prev);
-        }
+          const prev = get(a, '_source.firstName', '')
+          const next = get(b, '_source.firstName', '')
+          return next.localeCompare(prev)
+        },
       },
       {
-        title: t("users.student.username"),
-        dataIndex: "_source.username",
-        render: (text, record) => record._source.username || record._source.email,
-        sortDirections: ["descend", "ascend"],
+        title: t('users.student.username'),
+        dataIndex: '_source.username',
+        render: (text, record) =>
+          record._source.username || record._source.email,
+        sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, "_source.username", "");
-          const next = get(b, "_source.username", "");
-          return next.localeCompare(prev);
-        }
+          const prev = get(a, '_source.username', '')
+          const next = get(b, '_source.username', '')
+          return next.localeCompare(prev)
+        },
       },
       {
-        title: t("users.student.sso"),
-        dataIndex: "_source.lastSigninSSO",
-        render: (sso = "N/A") => sso
+        title: t('users.student.sso'),
+        dataIndex: '_source.lastSigninSSO',
+        render: (sso = 'N/A') => sso,
       },
       {
-        title: t("users.student.school"),
-        dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name),
-        width: 250
+        title: t('users.student.school'),
+        dataIndex: '_source.institutionDetails',
+        render: (schools = []) => schools.map((school) => school.name),
+        width: 250,
       },
       {
-        title: t("users.student.classes"),
-        dataIndex: "classCount",
-        align: "center",
+        title: t('users.student.classes'),
+        dataIndex: 'classCount',
+        align: 'center',
         render: (classCount, record) => {
-          const username = get(record, "_source.username", "");
+          const username = get(record, '_source.username', '')
           return (
             <Link
               to={{
-                pathname: "/author/class-enrollment",
+                pathname: '/author/class-enrollment',
                 state: {
-                  filtersColumn: "username",
-                  filtersValue: "eq",
+                  filtersColumn: 'username',
+                  filtersValue: 'eq',
                   filterStr: username,
-                  filterAdded: true
-                }
+                  filterAdded: true,
+                },
               }}
             >
               {classCount}
             </Link>
-          );
-        }
+          )
+        },
       },
       {
-        dataIndex: "_id",
+        dataIndex: '_id',
         render: (id, { _source }) => {
-          const firstName = get(_source, "firstName", "");
-          const lastName = get(_source, "lastName", "");
-          const status = get(_source, "status", "");
+          const firstName = get(_source, 'firstName', '')
+          const lastName = get(_source, 'lastName', '')
+          const status = get(_source, 'status', '')
           const fullName =
-            firstName === "Anonymous" || (isEmpty(firstName) && isEmpty(lastName))
-              ? "Student"
-              : `${firstName} ${lastName}`;
+            firstName === 'Anonymous' ||
+            (isEmpty(firstName) && isEmpty(lastName))
+              ? 'Student'
+              : `${firstName} ${lastName}`
           return (
-            <div style={{ whiteSpace: "nowrap" }}>
-              {status === 1 && (!isProxyUser) ? (
-                <StyledMaskButton onClick={() => this.onProxyStudent(id)} title={`Act as ${fullName}`}>
+            <div style={{ whiteSpace: 'nowrap' }}>
+              {status === 1 && !isProxyUser ? (
+                <StyledMaskButton
+                  onClick={() => this.onProxyStudent(id)}
+                  title={`Act as ${fullName}`}
+                >
                   <GiDominoMask />
                 </StyledMaskButton>
               ) : null}
-              <StyledTableButton onClick={() => this.onEditStudent(id)} title="Edit">
+              <StyledTableButton
+                onClick={() => this.onEditStudent(id)}
+                title="Edit"
+              >
                 <IconPencilEdit color={themeColor} />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
+              <StyledTableButton
+                onClick={() => this.handleDeactivateAdmin(id)}
+                title="Deactivate"
+              >
                 <IconTrash color={themeColor} />
               </StyledTableButton>
             </div>
-          );
-        }
-      }
-    ];
+          )
+        },
+      },
+    ]
 
-    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
+    this.filterTextInputRef = [
+      React.createRef(),
+      React.createRef(),
+      React.createRef(),
+    ]
   }
 
   componentDidMount() {
-    const { dataPassedWithRoute, loadSchoolPolicy, role, loadDistrictPolicy, schoolId, userOrgId } = this.props;
-    if (role === "school-admin") {
-      loadSchoolPolicy(schoolId);
+    const {
+      dataPassedWithRoute,
+      loadSchoolPolicy,
+      role,
+      loadDistrictPolicy,
+      schoolId,
+      userOrgId,
+    } = this.props
+    if (role === 'school-admin') {
+      loadSchoolPolicy(schoolId)
     } else {
-      loadDistrictPolicy({ orgId: userOrgId, orgType: "district" });
+      loadDistrictPolicy({ orgId: userOrgId, orgType: 'district' })
     }
     if (!isEmpty(dataPassedWithRoute)) {
-      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+      this.setState(
+        { filtersData: [{ ...dataPassedWithRoute }] },
+        this.loadFilteredList
+      )
     } else {
-      this.loadFilteredList();
+      this.loadFilteredList()
     }
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps;
+    const { adminUsersData: result } = nextProps
     return {
-      selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
-    };
+      selectedRowKeys: state.selectedRowKeys.filter(
+        (rowKey) => !!result[rowKey]
+      ),
+    }
   }
 
-  onProxyStudent = id => {
-    proxyUser({ userId: id });
-  };
+  onProxyStudent = (id) => {
+    proxyUser({ userId: id })
+  }
 
-  onEditStudent = key => {
+  onEditStudent = (key) => {
     this.setState({
       editStudentModaVisible: true,
-      editStudentKey: key
-    });
-  };
+      editStudentKey: key,
+    })
+  }
 
-  handleDeactivateAdmin = id => {
+  handleDeactivateAdmin = (id) => {
     this.setState({
       selectedAdminsForDeactivate: [id],
-      deactivateAdminModalVisible: true
-    });
-  };
+      deactivateAdminModalVisible: true,
+    })
+  }
 
-  onSelectChange = selectedRowKeys => {
-    this.setState({ selectedRowKeys });
-  };
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys })
+  }
 
   showAddStudentModal = () => {
     this.setState({
-      addStudentModalVisible: true
-    });
-  };
+      addStudentModalVisible: true,
+    })
+  }
 
-  changeActionMode = e => {
-    const { selectedRowKeys } = this.state;
-    const { adminUsersData, setAddStudentsToOtherClassVisiblity, t } = this.props;
-    if (e.key === "add student") {
-      this.setState({ addStudentModalVisible: true });
+  changeActionMode = (e) => {
+    const { selectedRowKeys } = this.state
+    const {
+      adminUsersData,
+      setAddStudentsToOtherClassVisiblity,
+      t,
+    } = this.props
+    if (e.key === 'add student') {
+      this.setState({ addStudentModalVisible: true })
     }
-    if (e.key === "merge user") {
+    if (e.key === 'merge user') {
       const inactiveUsers = Object.values(adminUsersData).filter(
-        u => selectedRowKeys.includes(u._id) && u._source.status !== 1
-      );
+        (u) => selectedRowKeys.includes(u._id) && u._source.status !== 1
+      )
       if (inactiveUsers.length) {
-        notification({ messageKey: "deactivatedUserSelected" });
+        notification({ messageKey: 'deactivatedUserSelected' })
       } else if (selectedRowKeys.length > 1) {
-        this.setState({ showMergeStudentsModal: true });
+        this.setState({ showMergeStudentsModal: true })
       } else {
-        notification({ type: "info", messageKey: "SelectTwoOrMoreStudents" });
+        notification({ type: 'info', messageKey: 'SelectTwoOrMoreStudents' })
       }
     }
-    if (e.key === "edit user") {
+    if (e.key === 'edit user') {
       if (selectedRowKeys.length === 0) {
-
-        notification({ msg: t("users.validations.edituser") });
+        notification({ msg: t('users.validations.edituser') })
       } else if (selectedRowKeys.length === 1) {
-        this.onEditStudent(selectedRowKeys[0]);
+        this.onEditStudent(selectedRowKeys[0])
       } else if (selectedRowKeys.length > 1) {
-        notification({ msg: t("users.validations.editsingleuser") });
+        notification({ msg: t('users.validations.editsingleuser') })
       }
-    } else if (e.key === "deactivate user") {
+    } else if (e.key === 'deactivate user') {
       if (selectedRowKeys.length > 0) {
         this.setState({
           selectedAdminsForDeactivate: selectedRowKeys,
-          deactivateAdminModalVisible: true
-        });
+          deactivateAdminModalVisible: true,
+        })
       } else {
-        notification({ msg: t("users.validations.deleteuser") });
+        notification({ msg: t('users.validations.deleteuser') })
       }
-    } else if (e.key === "addStudentsToAnotherClass") {
+    } else if (e.key === 'addStudentsToAnotherClass') {
       if (selectedRowKeys.length) {
-        setAddStudentsToOtherClassVisiblity(true);
+        setAddStudentsToOtherClassVisiblity(true)
       } else {
-        notification({ messageKey: "pleaseSelectAtleastOneUser" });
+        notification({ messageKey: 'pleaseSelectAtleastOneUser' })
       }
     }
-  };
+  }
 
   closeEditStudentModal = () => {
     this.setState({
-      editStudentModaVisible: false
-    });
-  };
+      editStudentModaVisible: false,
+    })
+  }
 
   showInviteStudentModal = () => {
     this.setState({
-      inviteStudentModalVisible: true
-    });
-  };
+      inviteStudentModalVisible: true,
+    })
+  }
 
   closeInviteStudentModal = () => {
     this.setState({
-      inviteStudentModalVisible: false
-    });
-  };
+      inviteStudentModalVisible: false,
+    })
+  }
 
   closeStudentsDetailModal = () => {
-    this.props.setStudentsDetailsModalVisible(false);
-  };
+    this.props.setStudentsDetailsModalVisible(false)
+  }
 
-  saveFormRef = node => {
-    this.formRef = node;
-  };
+  saveFormRef = (node) => {
+    this.formRef = node
+  }
 
-  setPageNo = page => {
-    this.setState({ currentPage: page }, this.loadFilteredList);
-  };
+  setPageNo = (page) => {
+    this.setState({ currentPage: page }, this.loadFilteredList)
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
 
-  sendInvite = inviteStudentList => {
+  sendInvite = (inviteStudentList) => {
     this.setState({
-      inviteStudentModalVisible: false
-    });
-    const { addMultiStudents, userOrgId } = this.props;
+      inviteStudentModalVisible: false,
+    })
+    const { addMultiStudents, userOrgId } = this.props
 
     const o = {
       addReq: { districtId: userOrgId, data: inviteStudentList },
-      listReq: this.getSearchQuery()
-    };
+      listReq: this.getSearchQuery(),
+    }
 
-    addMultiStudents(o);
-  };
+    addMultiStudents(o)
+  }
 
   createUser = () => {
     if (this.formRef) {
-      const { createAdminUser } = this.props;
-      const { form } = this.formRef.props;
+      const { createAdminUser } = this.props
+      const { form } = this.formRef.props
       form.validateFields((err, values) => {
         if (!err) {
-          const { fullName } = values;
+          const { fullName } = values
 
-          const name = getFullNameFromString(fullName);
-          values.firstName = name.firstName;
-          values.middleName = name.middleName;
-          values.lastName = name.lastName;
+          const name = getFullNameFromString(fullName)
+          values.firstName = name.firstName
+          values.middleName = name.middleName
+          values.lastName = name.lastName
 
-          const contactEmails = get(values, "contactEmails");
+          const contactEmails = get(values, 'contactEmails')
           if (contactEmails) {
-            values.contactEmails = [contactEmails];
+            values.contactEmails = [contactEmails]
           }
 
           if (values.dob) {
-            values.dob = moment(values.dob).format("x");
+            values.dob = moment(values.dob).format('x')
           }
-          unset(values, ["confirmPassword"]);
-          unset(values, ["fullName"]);
+          unset(values, ['confirmPassword'])
+          unset(values, ['fullName'])
 
           const o = {
             createReq: pickBy(values, identity),
-            listReq: this.getSearchQuery()
-          };
+            listReq: this.getSearchQuery(),
+          }
 
-          createAdminUser(o);
-          this.setState({ addStudentModalVisible: false });
+          createAdminUser(o)
+          this.setState({ addStudentModalVisible: false })
         }
-      });
+      })
     }
-  };
+  }
 
   closeAddUserModal = () => {
     this.setState({
-      addStudentModalVisible: false
-    });
-  };
+      addStudentModalVisible: false,
+    })
+  }
 
   onCloseMergeStudentsModal = () => {
-    this.setState({ showMergeStudentsModal: false });
-  };
+    this.setState({ showMergeStudentsModal: false })
+  }
 
   onSubmitMergeStudentsModal = () => {
-    this.handleSearchName(" ");
-    this.onCloseMergeStudentsModal();
-  };
+    this.handleSearchName(' ')
+    this.onCloseMergeStudentsModal()
+  }
 
   confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedAdminsForDeactivate } = this.state;
+    const { deleteAdminUser } = this.props
+    const { selectedAdminsForDeactivate } = this.state
 
     const o = {
-      deleteReq: { userIds: selectedAdminsForDeactivate, role: "student" },
-      listReq: this.getSearchQuery()
-    };
+      deleteReq: { userIds: selectedAdminsForDeactivate, role: 'student' },
+      listReq: this.getSearchQuery(),
+    }
 
-    deleteAdminUser(o);
+    deleteAdminUser(o)
     this.setState({
-      deactivateAdminModalVisible: false
-    });
-  };
+      deactivateAdminModalVisible: false,
+    })
+  }
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive });
-  };
+    this.setState({ refineButtonActive: !this.state.refineButtonActive })
+  }
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
 
-  onChangeSearch = event => {
-    this.setState({ searchByName: event.currentTarget.value });
-  };
+  onChangeSearch = (event) => {
+    this.setState({ searchByName: event.currentTarget.value })
+  }
 
-  handleSearchName = value => {
-    this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
-  };
+  handleSearchName = (value) => {
+    this.setState(
+      { searchByName: value, currentPage: 1 },
+      this.loadFilteredList
+    )
+  }
 
   onSearchFilter = (value, event, i) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === i) {
         return {
           ...item,
-          filterAdded: !!value
-        };
+          filterAdded: !!value,
+        }
       }
-      return item;
-    });
+      return item
+    })
 
     // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
-  };
+    this.setState({ filtersData: _filtersData }, () =>
+      this.filterTextInputRef[i].current.blur()
+    )
+  }
 
   onBlurFilterText = (event, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterAdded: !!event.target.value
-        };
+          filterAdded: !!event.target.value,
+        }
       }
-      return item;
-    });
-    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList)
+  }
 
   changeStatusValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
@@ -469,149 +522,151 @@ class StudentTable extends Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== ""
-        };
+          filterAdded: value !== '',
+        }
       }
-      return item;
-    });
+      return item
+    })
 
-    this.setState({ filtersData: _filtersData }, () => this.loadFilteredList(key));
-  };
+    this.setState({ filtersData: _filtersData }, () =>
+      this.loadFilteredList(key)
+    )
+  }
 
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterStr: e.target.value
-        };
+          filterStr: e.target.value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData })
+  }
 
   changeFilterColumn = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (key === index) {
         const _item = {
           ...item,
-          filtersColumn: value
-        };
-        if (value === "status") _item.filtersValue = "eq";
-        return _item;
+          filtersColumn: value,
+        }
+        if (value === 'status') _item.filtersValue = 'eq'
+        return _item
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
   changeFilterValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filtersValue: value
-        };
+          filtersValue: value,
+        }
       }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
-  };
+      return item
+    })
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList)
+  }
 
-  onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
-  };
+  onChangeShowActive = (e) => {
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList)
+  }
 
   addFilter = () => {
-    const { filtersData } = this.state;
+    const { filtersData } = this.state
     if (filtersData.length < 3) {
       this.setState({
         filtersData: [
           ...filtersData,
           {
-            filtersColumn: "",
-            filtersValue: "",
-            filterStr: "",
-            prevFilterStr: "",
-            filterAdded: false
-          }
-        ]
-      });
+            filtersColumn: '',
+            filtersValue: '',
+            filterStr: '',
+            prevFilterStr: '',
+            filterAdded: false,
+          },
+        ],
+      })
     }
-  };
+  }
 
   removeFilter = (e, key) => {
-    const { filtersData } = this.state;
-    let newFiltersData = [];
+    const { filtersData } = this.state
+    let newFiltersData = []
     if (filtersData.length === 1) {
       newFiltersData.push({
         filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
+        filtersColumn: '',
+        filtersValue: '',
+        filterStr: '',
+      })
     } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
+      newFiltersData = filtersData.filter((item, index) => index != key)
     }
-    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
-  };
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList)
+  }
 
   getSearchQuery = () => {
-    const { userOrgId, location = {} } = this.props;
-    const { filtersData, searchByName, currentPage } = this.state;
-    let { showActive } = this.state;
+    const { userOrgId, location = {} } = this.props
+    const { filtersData, searchByName, currentPage } = this.state
+    let { showActive } = this.state
 
-    const search = {};
+    const search = {}
     for (const [index, item] of filtersData.entries()) {
-      const { filtersColumn, filtersValue, filterStr } = item;
-      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
-        if (filtersColumn === "status") {
-          showActive = filterStr;
-          continue;
+      const { filtersColumn, filtersValue, filterStr } = item
+      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+        if (filtersColumn === 'status') {
+          showActive = filterStr
+          continue
         }
         if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
         } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+          search[filtersColumn].push({ type: filtersValue, value: filterStr })
         }
       }
     }
 
     if (searchByName) {
-      search.name = searchByName;
+      search.name = searchByName
     }
     const queryObj = {
       search,
       districtId: userOrgId,
-      role: "student",
+      role: 'student',
       limit: 25,
-      page: currentPage
+      page: currentPage,
       // uncomment after elastic search is fixed
       // sortField,
       // order
-    };
+    }
 
     if (location.institutionId) {
-      queryObj.institutionId = location.institutionId;
+      queryObj.institutionId = location.institutionId
     }
 
-    queryObj.status = 0;
+    queryObj.status = 0
 
     if (showActive) {
-      queryObj.status = 1;
+      queryObj.status = 1
     }
-    return queryObj;
-  };
+    return queryObj
+  }
 
   loadFilteredList = () => {
-    const { loadAdminData } = this.props;
-    loadAdminData(this.getSearchQuery());
-  };
+    const { loadAdminData } = this.props
+    loadAdminData(this.getSearchQuery())
+  }
 
-  setPageNo = page => {
-    this.setState({ currentPage: page }, this.loadFilteredList);
-  };
+  setPageNo = (page) => {
+    this.setState({ currentPage: page }, this.loadFilteredList)
+  }
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -627,13 +682,13 @@ class StudentTable extends Component {
       showMergeStudentsModal,
       filtersData,
       refineButtonActive,
-      currentPage
-    } = this.state;
+      currentPage,
+    } = this.state
 
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.onSelectChange
-    };
+      onChange: this.onSelectChange,
+    }
 
     const {
       adminUsersData: result,
@@ -652,88 +707,112 @@ class StudentTable extends Component {
       policy,
       totalUsers,
       pageNo,
-      t
-    } = this.props;
+      t,
+    } = this.props
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="add student">{t("users.student.addstudent")}</Menu.Item>
-        <Menu.Item key="edit user">{t("users.student.updateuser")}</Menu.Item>
-        <Menu.Item key="merge user">{t("users.student.mergeuser")}</Menu.Item>
-        <Menu.Item key="deactivate user">{t("users.student.deactivateuser")}</Menu.Item>
-        <Menu.Item key="addStudentsToAnotherClass">{t("users.student.addstudentootherclass")}</Menu.Item>
+        <Menu.Item key="add student">{t('users.student.addstudent')}</Menu.Item>
+        <Menu.Item key="edit user">{t('users.student.updateuser')}</Menu.Item>
+        <Menu.Item key="merge user">{t('users.student.mergeuser')}</Menu.Item>
+        <Menu.Item key="deactivate user">
+          {t('users.student.deactivateuser')}
+        </Menu.Item>
+        <Menu.Item key="addStudentsToAnotherClass">
+          {t('users.student.addstudentootherclass')}
+        </Menu.Item>
       </Menu>
-    );
+    )
 
     const breadcrumbData = [
       {
-        title: "MANAGE DISTRICT",
-        to: "/author/districtprofile"
+        title: 'MANAGE DISTRICT',
+        to: '/author/districtprofile',
       },
       {
-        title: "USERS",
-        to: ""
-      }
-    ];
+        title: 'USERS',
+        to: '',
+      },
+    ]
 
     return (
       <MainContainer>
         <SubHeaderWrapper>
-          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            {t("common.refineresults")}
-            <Icon type={refineButtonActive ? "up" : "down"} />
+          <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+          <StyledButton
+            type="default"
+            shape="round"
+            icon="filter"
+            onClick={this._onRefineResultsCB}
+          >
+            {t('common.refineresults')}
+            <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
         <AdminSubHeader active={menuActive} history={history} />
         {refineButtonActive && (
           <FilterWrapper>
             {filtersData.map((item, i) => {
-              const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
-              const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+              const {
+                filtersColumn,
+                filtersValue,
+                filterStr,
+                filterAdded,
+              } = item
+              const isFilterTextDisable =
+                filtersColumn === '' || filtersValue === ''
               const isAddFilterDisable =
-                filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+                filtersColumn === '' ||
+                filtersValue === '' ||
+                filterStr === '' ||
+                !filterAdded
 
               return (
-                <Row gutter="20" style={{ marginBottom: "5px" }} key={i}>
+                <Row gutter="20" style={{ marginBottom: '5px' }} key={i}>
                   <Col span={6}>
                     <SelectInputStyled
-                      placeholder={t("common.selectcolumn")}
-                      onChange={e => this.changeFilterColumn(e, i)}
+                      placeholder={t('common.selectcolumn')}
+                      onChange={(e) => this.changeFilterColumn(e, i)}
                       value={filtersColumn || undefined}
                       height="32px"
                     >
                       <Option value="other" disabled>
-                        {t("common.selectcolumn")}
+                        {t('common.selectcolumn')}
                       </Option>
-                      <Option value="username">{t("users.student.username")}</Option>
-                      <Option value="email">{t("users.student.email")}</Option>
-                      <Option value="status">{t("users.student.status")}</Option>
+                      <Option value="username">
+                        {t('users.student.username')}
+                      </Option>
+                      <Option value="email">{t('users.student.email')}</Option>
+                      <Option value="status">
+                        {t('users.student.status')}
+                      </Option>
                       {/* TODO: Uncomment after backend is done */}
                       {/* <Option value="institutionNames">School</Option> */}
                     </SelectInputStyled>
                   </Col>
                   <Col span={6}>
                     <SelectInputStyled
-                      placeholder={t("common.selectvalue")}
-                      onChange={e => this.changeFilterValue(e, i)}
+                      placeholder={t('common.selectvalue')}
+                      onChange={(e) => this.changeFilterValue(e, i)}
                       value={filtersValue || undefined}
                       height="32px"
                     >
                       <Option value="" disabled>
-                        {t("common.selectvalue")}
+                        {t('common.selectvalue')}
                       </Option>
-                      <Option value="eq">{t("common.equals")}</Option>
-                      {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
+                      <Option value="eq">{t('common.equals')}</Option>
+                      {!filterStrDD[filtersColumn] ? (
+                        <Option value="cont">{t('common.contains')}</Option>
+                      ) : null}
                     </SelectInputStyled>
                   </Col>
                   <Col span={6}>
                     {!filterStrDD[filtersColumn] ? (
                       <SearchInputStyled
-                        placeholder={t("common.entertext")}
-                        onChange={e => this.changeFilterText(e, i)}
+                        placeholder={t('common.entertext')}
+                        onChange={(e) => this.changeFilterText(e, i)}
                         onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                        onBlur={e => this.onBlurFilterText(e, i)}
+                        onBlur={(e) => this.onBlurFilterText(e, i)}
                         value={filterStr || undefined}
                         disabled={isFilterTextDisable}
                         ref={this.filterTextInputRef[i]}
@@ -742,43 +821,51 @@ class StudentTable extends Component {
                     ) : (
                       <SelectInputStyled
                         placeholder={filterStrDD[filtersColumn].placeholder}
-                        onChange={v => this.changeStatusValue(v, i)}
-                        value={filterStr !== "" ? filterStr : undefined}
+                        onChange={(v) => this.changeStatusValue(v, i)}
+                        value={filterStr !== '' ? filterStr : undefined}
                         height="32px"
                       >
-                        {filterStrDD[filtersColumn].list.map(item => (
-                          <Option key={item.title} value={item.value} disabled={item.disabled}>
+                        {filterStrDD[filtersColumn].list.map((item) => (
+                          <Option
+                            key={item.title}
+                            value={item.value}
+                            disabled={item.disabled}
+                          >
                             {item.title}
                           </Option>
-                          ))}
+                        ))}
                       </SelectInputStyled>
-                      )}
+                    )}
                   </Col>
-                  <Col span={6} style={{ display: "flex" }}>
+                  <Col span={6} style={{ display: 'flex' }}>
                     {i < 2 && (
                       <EduButton
                         type="primary"
                         height="32px"
                         width="50%"
-                        onClick={e => this.addFilter(e, i)}
-                        disabled={isAddFilterDisable || i < filtersData.length - 1}
+                        onClick={(e) => this.addFilter(e, i)}
+                        disabled={
+                          isAddFilterDisable || i < filtersData.length - 1
+                        }
                       >
-                        {t("common.addfilter")}
+                        {t('common.addfilter')}
                       </EduButton>
                     )}
-                    {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                    {((filtersData.length === 1 &&
+                      filtersData[0].filterAdded) ||
+                      filtersData.length > 1) && (
                       <EduButton
                         type="primary"
                         height="32px"
                         width="50%"
-                        onClick={e => this.removeFilter(e, i)}
+                        onClick={(e) => this.removeFilter(e, i)}
                       >
-                        {t("common.removefilter")}
+                        {t('common.removefilter')}
                       </EduButton>
                     )}
                   </Col>
                 </Row>
-              );
+              )
             })}
           </FilterWrapper>
         )}
@@ -786,7 +873,7 @@ class StudentTable extends Component {
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
             <SearchInputStyled
-              placeholder={t("common.searchbyname")}
+              placeholder={t('common.searchbyname')}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
@@ -800,24 +887,26 @@ class StudentTable extends Component {
             <CheckboxLabel
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
-              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+              disabled={
+                !!filtersData.find((item) => item.filtersColumn === 'status')
+              }
             >
-              {t("common.showcurrent")}
+              {t('common.showcurrent')}
             </CheckboxLabel>
             <StyledActionDropDown
-              getPopupContainer={triggerNode => triggerNode.parentNode}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               overlay={actionMenu}
-              trigger={["click"]}
+              trigger={['click']}
             >
               <EduButton isGhost>
-                {t("common.actions")} <Icon type="down" />
+                {t('common.actions')} <Icon type="down" />
               </EduButton>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
         <TableContainer>
           <StyledStudentTable
-            rowKey={record => record._id}
+            rowKey={(record) => record._id}
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
@@ -828,7 +917,7 @@ class StudentTable extends Component {
             current={currentPage}
             pageSize={25}
             total={totalUsers}
-            onChange={page => this.setPageNo(page)}
+            onChange={(page) => this.setPageNo(page)}
             hideOnSinglePage
           />
         </TableContainer>
@@ -877,36 +966,38 @@ class StudentTable extends Component {
             modalVisible={studentDetailsModalVisible}
             closeModal={this.closeStudentsDetailModal}
             role="student"
-            title={t("users.student.studentdetail.title")}
+            title={t('users.student.studentdetail.title')}
           />
         )}
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateAdminModalVisible}
-            title={t("users.student.deactivatestudent.title")}
+            title={t('users.student.deactivatestudent.title')}
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel={t("users.student.deactivatestudent.confirmText")}
-            secondaryLabel={selectedAdminsForDeactivate.map(id => {
-              const { _source: { firstName, lastName } = {} } = result[id];
+            primaryLabel={t('users.student.deactivatestudent.confirmText')}
+            secondaryLabel={selectedAdminsForDeactivate.map((id) => {
+              const { _source: { firstName, lastName } = {} } = result[id]
               return (
                 <StyledClassName key={id}>
                   {firstName} {lastName}
                 </StyledClassName>
-              );
+              )
             })}
             closeModal={() =>
               this.setState({
-                deactivateAdminModalVisible: false
+                deactivateAdminModalVisible: false,
               })
             }
           />
         )}
         <AddStudentsToOtherClassModal
-          titleText={t("users.student.addstudentootherclass")}
-          buttonText={t("users.student.addstudents")}
+          titleText={t('users.student.addstudentootherclass')}
+          buttonText={t('users.student.addstudents')}
           {...addStudentsToOtherClassData}
-          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedRowKeys })}
+          handleSubmit={(classCode) =>
+            putStudentsToOtherClass({ classCode, userDetails: selectedRowKeys })
+          }
           onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           t={t}
@@ -918,18 +1009,22 @@ class StudentTable extends Component {
           onCancel={this.onCloseMergeStudentsModal}
         />
       </MainContainer>
-    );
+    )
   }
 }
 
 const enhance = compose(
-  withNamespaces("manageDistrict"),
+  withNamespaces('manageDistrict'),
   connect(
-    state => ({
+    (state) => ({
       userOrgId: getUserOrgId(state),
       // schoolsData: getSchoolsSelector(state),
       // classList: get(state, ["classesReducer", "data"], []),
-      studentDetailsModalVisible: get(state, ["studentReducer", "studentDetailsModalVisible"], false),
+      studentDetailsModalVisible: get(
+        state,
+        ['studentReducer', 'studentDetailsModalVisible'],
+        false
+      ),
       adminUsersData: getAdminUsersDataSelector(state),
       totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
@@ -939,9 +1034,9 @@ const enhance = compose(
       features: getUserFeatures(state),
       validatedClassDetails: getValidatedClassDetails(state),
       policy: getPolicies(state),
-      schoolId: get(state, "user.saSettingsSchool"),
+      schoolId: get(state, 'user.saSettingsSchool'),
       role: getUserRole(state),
-      isProxyUser: isProxyUserSelector(state)
+      isProxyUser: isProxyUserSelector(state),
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -972,9 +1067,9 @@ const enhance = compose(
       setProvider: setMultiStudentsProviderAction,
       resetClassDetails: resetFetchedClassDetailsAction,
       loadSchoolPolicy: receiveSchoolPolicyAction,
-      loadDistrictPolicy: receiveDistrictPolicyAction
+      loadDistrictPolicy: receiveDistrictPolicyAction,
     }
   )
-);
+)
 
-export default enhance(withRouter(StudentTable));
+export default enhance(withRouter(StudentTable))

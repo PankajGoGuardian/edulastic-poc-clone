@@ -10,15 +10,15 @@ import {
   themeColor,
   title,
   white,
-  themeColorBlue
-} from "@edulastic/colors";
-import { testActivity } from "@edulastic/constants";
-import { IconDownEmptyArrow } from "@edulastic/icons";
-import { Button, Table, Tag } from "antd";
-import styled from "styled-components";
-import { EduTableStyled } from "@edulastic/common";
+  themeColorBlue,
+} from '@edulastic/colors'
+import { testActivity } from '@edulastic/constants'
+import { IconDownEmptyArrow } from '@edulastic/icons'
+import { Button, Table, Tag } from 'antd'
+import styled from 'styled-components'
+import { EduTableStyled } from '@edulastic/common'
 
-const { assignmentStatusBg, lightBlue } = authorAssignment;
+const { assignmentStatusBg, lightBlue } = authorAssignment
 const {
   authorAssignmentConstants: {
     assignmentStatus: {
@@ -31,37 +31,37 @@ const {
       IN_PROGRESS_PAUSED,
       IN_GRADING_PAUSED,
       NOT_GRADED_PAUSED,
-      GRADES_HELD_PAUSED
-    }
-  }
-} = testActivity;
+      GRADES_HELD_PAUSED,
+    },
+  },
+} = testActivity
 
-const defineStatusBg = status => {
+const defineStatusBg = (status) => {
   switch (status) {
     case NOT_OPEN:
-      return assignmentStatusBg.NOT_OPEN;
+      return assignmentStatusBg.NOT_OPEN
     case IN_PROGRESS:
-      return assignmentStatusBg.IN_PROGRESS;
+      return assignmentStatusBg.IN_PROGRESS
     case IN_PROGRESS_PAUSED:
-      return assignmentStatusBg.IN_PROGRESS;
+      return assignmentStatusBg.IN_PROGRESS
     case IN_GRADING:
-      return assignmentStatusBg.IN_GRADING;
+      return assignmentStatusBg.IN_GRADING
     case IN_GRADING_PAUSED:
-      return assignmentStatusBg.IN_GRADING;
+      return assignmentStatusBg.IN_GRADING
     case NOT_GRADED:
-      return assignmentStatusBg.NOT_GRADED;
+      return assignmentStatusBg.NOT_GRADED
     case NOT_GRADED_PAUSED:
-      return assignmentStatusBg.NOT_GRADED;
+      return assignmentStatusBg.NOT_GRADED
     case GRADES_HELD:
-      return assignmentStatusBg.GRADES_HELD;
+      return assignmentStatusBg.GRADES_HELD
     case GRADES_HELD_PAUSED:
-      return assignmentStatusBg.GRADES_HELD;
+      return assignmentStatusBg.GRADES_HELD
     case DONE:
-      return assignmentStatusBg.DONE;
+      return assignmentStatusBg.DONE
     default:
-      return "";
+      return ''
   }
-};
+}
 
 export const Container = styled.div`
   padding-left: 30px;
@@ -69,7 +69,7 @@ export const Container = styled.div`
   right: 0;
   height: 100%;
   width: 100%;
-`;
+`
 
 export const Icon = styled.img`
   width: 15px;
@@ -79,17 +79,17 @@ export const Icon = styled.img`
     width: 18px;
     height: 18px;
   }
-`;
+`
 
 export const TableData = styled(EduTableStyled)`
   .ant-table-body {
     .ant-table-thead > tr {
       & > th {
         @media (min-width: ${mediumDesktopExactWidth}) {
-          font-size: ${props => props.theme.linkFontSize};
+          font-size: ${(props) => props.theme.linkFontSize};
         }
         @media (min-width: ${extraDesktopWidthMax}) {
-          font-size: ${props => props.theme.smallFontSize};
+          font-size: ${(props) => props.theme.smallFontSize};
         }
       }
     }
@@ -111,7 +111,7 @@ export const TableData = styled(EduTableStyled)`
         }
       }
       @media (min-width: ${mediumDesktopExactWidth}) {
-        font-size: ${props => props.theme.smallFontSize};
+        font-size: ${(props) => props.theme.smallFontSize};
       }
     }
   }
@@ -126,7 +126,7 @@ export const TableData = styled(EduTableStyled)`
   .ant-table-tbody > tr > td {
     max-width: 50px;
   }
-`;
+`
 
 export const TestThumbnail = styled.img`
   border-radius: 4px;
@@ -137,7 +137,7 @@ export const TestThumbnail = styled.img`
   @media (min-width: ${mediumDesktopExactWidth}) {
     width: 50px;
   }
-`;
+`
 
 export const AssignmentTD = styled.div`
   text-align: left;
@@ -147,28 +147,28 @@ export const AssignmentTD = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: ${props => props.theme.linkFontSize};
+  font-size: ${(props) => props.theme.linkFontSize};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.bodyFontSize};
+    font-size: ${(props) => props.theme.bodyFontSize};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.standardFont};
+    font-size: ${(props) => props.theme.standardFont};
   }
-`;
+`
 
 export const IconArrowDown = styled.img`
   color: ${themeColor};
   margin-right: 5px;
   width: 6px;
-`;
+`
 
 export const BtnAction = styled(Button)`
   color: ${themeColor};
   border: none;
   box-shadow: 0px 2px 4px 0 rgba(201, 208, 219, 0.5);
   height: 28px;
-  font-size: ${props => props.theme.linkFontSize};
+  font-size: ${(props) => props.theme.linkFontSize};
   font-weight: 600;
   width: 100%;
   padding: 0px;
@@ -178,11 +178,11 @@ export const BtnAction = styled(Button)`
     background-color: ${themeColor};
     color: ${white};
   }
-`;
+`
 
 export const AssignedImg = styled.img`
   color: ${lightBlue};
-`;
+`
 
 export const TypeIcon = styled.span`
   display: flex;
@@ -192,29 +192,33 @@ export const TypeIcon = styled.span`
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props =>
-    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
+  background: ${(props) =>
+    props.type === 'p'
+      ? testTypeColor.practice
+      : props.type === 'c'
+      ? testTypeColor.common
+      : testTypeColor.assessment};
   color: ${white};
   border-radius: 50%;
   font-weight: 600;
-  font-size: ${props => props.theme.bodyFontSize};
+  font-size: ${(props) => props.theme.bodyFontSize};
   align-self: center;
-`;
+`
 
 export const TypeWrapper = styled.span`
-  width: ${props => props.width || "90px"};
+  width: ${(props) => props.width || '90px'};
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justify || "center"};
+  justify-content: ${(props) => props.justify || 'center'};
   margin: auto;
-  padding-left: ${({ paddingLeft }) => paddingLeft || "25px"};
+  padding-left: ${({ paddingLeft }) => paddingLeft || '25px'};
   @media (min-width: ${mediumDesktopExactWidth}) {
-    width: ${props => props.width || "110px"};
+    width: ${(props) => props.width || '110px'};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    width: ${props => props.width || "125px"};
+    width: ${(props) => props.width || '125px'};
   }
-`;
+`
 
 export const TimedTestIndicator = styled.span`
   width: 30px;
@@ -222,21 +226,21 @@ export const TimedTestIndicator = styled.span`
   padding-left: 5px;
   display: flex;
   align-items: center;
-`;
+`
 
 export const IndicatorText = styled.div`
   display: inline-block;
-`;
+`
 
 export const ExpandDivdier = styled.div`
   color: ${themeColor};
   cursor: pointer;
-  font-size: ${props => props.theme.standardFont};
-`;
+  font-size: ${(props) => props.theme.standardFont};
+`
 
 export const TitleCase = styled.div`
   text-transform: Capitalize;
-`;
+`
 
 export const ActionDiv = styled.div`
   display: flex;
@@ -244,7 +248,7 @@ export const ActionDiv = styled.div`
   justify-content: center;
   text-align: center;
   flex: 1;
-`;
+`
 
 export const ActionsWrapper = styled.div`
   display: flex;
@@ -254,12 +258,12 @@ export const ActionsWrapper = styled.div`
       fill: ${themeColorBlue};
     }
   }
-`;
+`
 
 export const GreyFont = styled.div`
-  max-width: ${props => (props.showEllipsis ? "100px" : "auto")};
+  max-width: ${(props) => (props.showEllipsis ? '100px' : 'auto')};
   color: ${title};
-  font-size: ${props => props.theme.linkFontSize};
+  font-size: ${(props) => props.theme.linkFontSize};
   position: relative;
   left: ${({ left }) => left || 0}px;
   white-space: nowrap;
@@ -277,9 +281,9 @@ export const GreyFont = styled.div`
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.bodyFontSize};
+    font-size: ${(props) => props.theme.bodyFontSize};
   }
-`;
+`
 
 export const StatusLabel = styled(Tag)`
   border-width: 1px;
@@ -293,7 +297,7 @@ export const StatusLabel = styled(Tag)`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 0.7em;
   }
-`;
+`
 
 export const ExpandedTable = styled(Table)`
   @media (max-width: ${desktopWidth}) {
@@ -317,8 +321,8 @@ export const ExpandedTable = styled(Table)`
   @media (max-width: ${mobileWidth}) {
     display: none;
   }
-`;
+`
 
 export const IconExpand = styled(IconDownEmptyArrow)`
   cursor: pointer;
-`;
+`

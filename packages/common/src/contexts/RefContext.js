@@ -1,5 +1,5 @@
-import React from "react";
+import React from 'react'
 
-const RefContext = React.createContext();
+const RefContext = React.createContext()
 
-export default RefContext;
+export default RefContext

@@ -1,30 +1,45 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import styled from "styled-components";
+import React from 'react'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
 
-import { withWindowSizes } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
-import { IconBookmark } from "@edulastic/icons";
-import { Tooltip } from "../../../../common/utils/helpers";
-import { Header, FlexContainer, HeaderWrapper, HeaderMainMenu, LogoCompact, MainActionWrapper } from "../../common";
+import { withWindowSizes } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import {
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import { IconBookmark } from '@edulastic/icons'
+import { Tooltip } from '../../../../common/utils/helpers'
+import {
+  Header,
+  FlexContainer,
+  HeaderWrapper,
+  HeaderMainMenu,
+  LogoCompact,
+  MainActionWrapper,
+} from '../../common'
 
-import { MAX_MOBILE_WIDTH } from "../../../constants/others";
+import { MAX_MOBILE_WIDTH } from '../../../constants/others'
 
-import ReviewToolbar from "./ReviewToolbar";
-import SettingMenu from "./SettingMenu";
-import ToolBar from "./ToolBar";
-import Breadcrumb from "../../../../student/sharedComponents/Breadcrumb";
-import { StyledButton, ControlBtn, StyledHeaderTitle, Container } from "./styled";
-import { themes } from "../../../../theme";
+import ReviewToolbar from './ReviewToolbar'
+import SettingMenu from './SettingMenu'
+import ToolBar from './ToolBar'
+import Breadcrumb from '../../../../student/sharedComponents/Breadcrumb'
+import {
+  StyledButton,
+  ControlBtn,
+  StyledHeaderTitle,
+  Container,
+} from './styled'
+import { themes } from '../../../../theme'
 
 const {
-  playerSkin: { parcc }
-} = themes;
-const { header } = parcc;
+  playerSkin: { parcc },
+} = themes
+const { header } = parcc
 
 const PlayerHeader = ({
   t,
@@ -57,61 +72,80 @@ const PlayerHeader = ({
   enableMagnifier,
   timedAssignment,
   utaId,
-  groupId
+  groupId,
 }) => {
-  const totalQuestions = options.length;
-  const totalBookmarks = bookmarks.filter(b => b).length;
-  const totalUnanswered = skipped.filter(s => s).length;
+  const totalQuestions = options.length
+  const totalBookmarks = bookmarks.filter((b) => b).length
+  const totalUnanswered = skipped.filter((s) => s).length
   const filterData = {
-    totalQuestions: totalQuestions > 0 ? ("0" + totalQuestions).slice(-2) : totalQuestions,
-    totalBookmarks: totalBookmarks > 0 ? ("0" + totalBookmarks).slice(-2) : totalBookmarks,
-    totalUnanswered: totalUnanswered > 0 ? ("0" + totalUnanswered).slice(-2) : totalUnanswered
-  };
-  const isFirst = () => (isDocbased ? true : currentItem === 0);
-  const onSettingsChange = e => {
-    if (e.key === "save") {
-      finishTest();
-    } else if (e.key === "enableMagnifier") {
-      handleMagnifier();
+    totalQuestions:
+      totalQuestions > 0 ? `0${totalQuestions}`.slice(-2) : totalQuestions,
+    totalBookmarks:
+      totalBookmarks > 0 ? `0${totalBookmarks}`.slice(-2) : totalBookmarks,
+    totalUnanswered:
+      totalUnanswered > 0 ? `0${totalUnanswered}`.slice(-2) : totalUnanswered,
+  }
+  const isFirst = () => (isDocbased ? true : currentItem === 0)
+  const onSettingsChange = (e) => {
+    if (e.key === 'save') {
+      finishTest()
+    } else if (e.key === 'enableMagnifier') {
+      handleMagnifier()
     }
-  };
+  }
 
-  const breadcrumbData = [{ title: "Assignments", to: "/home/assignments" }, { title: title }];
+  const breadcrumbData = [
+    { title: 'Assignments', to: '/home/assignments' },
+    { title },
+  ]
 
-  const { showMagnifier } = settings;
+  const { showMagnifier } = settings
 
   return (
     <FlexContainer>
       <Header
         ref={headerRef}
-        style={{ background: header.background, flexDirection: "column", padding: "0", zIndex: 505 }}
+        style={{
+          background: header.background,
+          flexDirection: 'column',
+          padding: '0',
+          zIndex: 505,
+        }}
       >
-        <HeaderMainMenu style={{ padding: "0 40px" }}>
+        <HeaderMainMenu style={{ padding: '0 40px' }}>
           <HeaderPracticePlayer>
             <HeaderWrapper justifyContent="space-between">
               <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
                 <MainActionWrapper>
-                  <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
+                  <Tooltip
+                    placement="top"
+                    title="Previous"
+                    overlayStyle={overlayStyle}
+                  >
                     <ControlBtn
                       data-cy="prev"
                       icon="left"
                       disabled={isFirst()}
-                      onClick={e => {
-                        moveToPrev();
-                        e.target.blur();
+                      onClick={(e) => {
+                        moveToPrev()
+                        e.target.blur()
                       }}
                     />
                   </Tooltip>
-                  <Tooltip placement="top" title="Next" overlayStyle={overlayStyle}>
+                  <Tooltip
+                    placement="top"
+                    title="Next"
+                    overlayStyle={overlayStyle}
+                  >
                     <ControlBtn
                       data-cy="next"
                       icon="right"
-                      onClick={e => {
-                        moveToNext();
-                        e.target.blur();
+                      onClick={(e) => {
+                        moveToNext()
+                        e.target.blur()
                       }}
-                      style={{ marginLeft: "5px" }}
+                      style={{ marginLeft: '5px' }}
                     />
                   </Tooltip>
                   {!isDocbased && (
@@ -126,11 +160,15 @@ const PlayerHeader = ({
                         bookmarks={bookmarks}
                       />
                       <StyledButton
-                        onClick={defaultAP ? toggleBookmark : () => toggleBookmark(items[currentItem]?._id)}
+                        onClick={
+                          defaultAP
+                            ? toggleBookmark
+                            : () => toggleBookmark(items[currentItem]?._id)
+                        }
                         active={isBookmarked}
                       >
                         <StyledIconBookmark />
-                        <span>{t("common.test.bookmark")}</span>
+                        <span>{t('common.test.bookmark')}</span>
                       </StyledButton>
                     </Container>
                   )}
@@ -167,27 +205,27 @@ const PlayerHeader = ({
         </StyledHeaderTitle>
       </Header>
     </FlexContainer>
-  );
-};
+  )
+}
 
 PlayerHeader.defaultProps = {
-  onSaveProgress: () => {}
-};
+  onSaveProgress: () => {},
+}
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces("student"),
+  withNamespaces('student'),
   connect(
-    state => ({
+    (state) => ({
       settings: state.test.settings,
-      timedAssignment: state.test?.settings?.timedAssignment
+      timedAssignment: state.test?.settings?.timedAssignment,
     }),
     null
   )
-);
+)
 
-export default enhance(PlayerHeader);
+export default enhance(PlayerHeader)
 
 const HeaderPracticePlayer = styled(FlexContainer)`
   padding: 12px 0px;
@@ -202,15 +240,15 @@ const HeaderPracticePlayer = styled(FlexContainer)`
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     padding: 0px;
   }
-`;
+`
 
 const StyledIconBookmark = styled(IconBookmark)`
   ${({ theme }) => `
     width: ${theme.default.headerBookmarkIconWidth};
     height: ${theme.default.headerBookmarkIconHeight};
   `}
-`;
+`
 
 const BreadcrumbContainer = styled.div`
   flex: 1;
-`;
+`

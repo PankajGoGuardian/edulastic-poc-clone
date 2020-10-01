@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import { Col } from "antd";
-import { greyish, title, themeColorLighter } from "@edulastic/colors";
+import React from 'react'
+import styled from 'styled-components'
+import { Col } from 'antd'
+import { greyish, title, themeColorLighter } from '@edulastic/colors'
 
 const StatItem = ({ heading, value, fontSize }) => (
   <StyledCol fontSize={fontSize}>
@@ -12,9 +12,9 @@ const StatItem = ({ heading, value, fontSize }) => (
       </p>
     </div>
   </StyledCol>
-);
+)
 
-export default StatItem;
+export default StatItem
 
 const StyledCol = styled(Col)`
   flex: 1 1 50%;
@@ -40,7 +40,7 @@ const StyledCol = styled(Col)`
   }
 
   .stats-title {
-    font-size: ${props => props.fontSize || "16px"};
+    font-size: ${(props) => props.fontSize || '16px'};
     font-weight: 600;
     display: block;
     flex: 1 1 auto;
@@ -61,4 +61,4 @@ const StyledCol = styled(Col)`
       font-size: 17px;
     }
   }
-`;
+`

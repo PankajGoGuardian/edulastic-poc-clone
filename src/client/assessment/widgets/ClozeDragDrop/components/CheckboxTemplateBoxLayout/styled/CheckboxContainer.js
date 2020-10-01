@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CheckboxContainer = styled.span`
   p {
@@ -8,6 +8,10 @@ export const CheckboxContainer = styled.span`
     overflow: hidden;
     display: block;
     max-width: ${({ width, showAnswer }) =>
-      width ? (showAnswer ? `${parseInt(width, 10) - 60}px` : `${parseInt(width, 10) - 30}px`) : "auto"};
+      width
+        ? showAnswer
+          ? `${parseInt(width, 10) - 60}px`
+          : `${parseInt(width, 10) - 30}px`
+        : 'auto'};
   }
-`;
+`

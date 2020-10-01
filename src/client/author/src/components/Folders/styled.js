@@ -8,17 +8,17 @@ import {
   white,
   greyThemeDark1,
   mediumDesktopExactWidth,
-  themeColorBlue
-} from "@edulastic/colors";
-import { Button, CustomModalStyled } from "@edulastic/common";
-import { Menu } from "antd";
-import styled from "styled-components";
+  themeColorBlue,
+} from '@edulastic/colors'
+import { Button, CustomModalStyled } from '@edulastic/common'
+import { Menu } from 'antd'
+import styled from 'styled-components'
 
 export const FoldersListWrapper = styled.ul`
   padding: 0px;
   margin: 0px;
   position: relative;
-`;
+`
 
 export const NewFolderButton = styled(Button)`
   min-height: 40px;
@@ -42,12 +42,12 @@ export const NewFolderButton = styled(Button)`
       margin-left: 15px;
     }
   }
-`;
+`
 
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
   min-width: 160px;
-`;
+`
 
 export const CaretUp = styled.i`
   position: absolute;
@@ -55,7 +55,7 @@ export const CaretUp = styled.i`
   color: ${white};
   right: 5px;
   font-size: 30px;
-`;
+`
 
 export const MenuItems = styled(Menu.Item)`
   color: ${title};
@@ -78,19 +78,19 @@ export const MenuItems = styled(Menu.Item)`
       color: ${white};
     }
   }
-`;
+`
 
 export const FolderButton = styled(NewFolderButton)`
   min-width: 100%;
   justify-content: flex-start;
   margin-top: 10px;
   color: ${({ active }) => (active ? black : textColor)};
-  background: ${({ active }) => (active ? fadedGrey : "transparent")};
+  background: ${({ active }) => (active ? fadedGrey : 'transparent')};
   padding: 3px 5px;
   border-radius: 0px;
   &:hover,
   &:focus {
-    background: ${({ active }) => (active ? fadedGrey : "transparent")};
+    background: ${({ active }) => (active ? fadedGrey : 'transparent')};
   }
   svg {
     margin-right: 15px;
@@ -98,7 +98,7 @@ export const FolderButton = styled(NewFolderButton)`
     height: 20px;
     fill: ${({ active }) => (active ? themeColor : tabGrey)};
   }
-`;
+`
 
 export const FolderListItem = styled.li`
   min-height: 34px;
@@ -127,7 +127,7 @@ export const FolderListItem = styled.li`
   }
 
   border-left: ${({ leftBorder }) => leftBorder && `3px solid ${themeColor}`};
-`;
+`
 
 export const FolderListItemTitle = styled.div`
   width: calc(100% - 22px);
@@ -137,14 +137,14 @@ export const FolderListItemTitle = styled.div`
     margin: 0px 15px;
   }
   span {
-    max-width: ${props => (props.ellipsis ? "125px" : "100%")};
+    max-width: ${(props) => (props.ellipsis ? '125px' : '100%')};
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     display: block;
     position: relative;
   }
-`;
+`
 
 export const MoreButton = styled.div`
   min-width: 20px;
@@ -154,7 +154,7 @@ export const MoreButton = styled.div`
   svg {
     fill: ${({ active }) => (active ? black : title)};
   }
-`;
+`
 
 export const ModalTitle = styled.div`
   font-size: 16px;
@@ -164,7 +164,7 @@ export const ModalTitle = styled.div`
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 18px;
   }
-`;
+`
 
 export const Modal = styled(CustomModalStyled)`
   min-width: 560px;
@@ -188,7 +188,7 @@ export const Modal = styled(CustomModalStyled)`
       }
     }
   }
-`;
+`
 
 export const FolderActionButton = styled(Button)`
   min-width: 200px;
@@ -199,7 +199,7 @@ export const FolderActionButton = styled(Button)`
   svg {
     margin-right: 30px;
   }
-`;
+`
 
 export const StyledBoldText = styled.p`
   font-weight: 600;
@@ -207,15 +207,15 @@ export const StyledBoldText = styled.p`
   margin-bottom: 5px;
   text-align: left;
   width: 100%;
-`;
+`
 
 export const AddFolderButton = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
   width: 18px;
-  right: ${({ right }) => right || "24px"};
-  top: ${({ top }) => top || "8px"};
+  right: ${({ right }) => right || '24px'};
+  top: ${({ top }) => top || '8px'};
   cursor: pointer;
 
   & svg {
@@ -226,4 +226,4 @@ export const AddFolderButton = styled.div`
       fill: ${themeColor};
     }
   }
-`;
+`

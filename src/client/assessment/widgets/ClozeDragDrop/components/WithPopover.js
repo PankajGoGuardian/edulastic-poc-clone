@@ -1,10 +1,10 @@
-import React from "react";
-import { Popover } from "antd";
-import PropTypes from "prop-types";
+import React from 'react'
+import { Popover } from 'antd'
+import PropTypes from 'prop-types'
 
-import { measureTextWithImage, MathSpan } from "@edulastic/common";
-import { response } from "@edulastic/constants";
-import { DragHandler, ChoiceItem } from "../../../components/ChoiceItem";
+import { measureTextWithImage, MathSpan } from '@edulastic/common'
+import { response } from '@edulastic/constants'
+import { DragHandler, ChoiceItem } from '../../../components/ChoiceItem'
 
 /**
  *
@@ -19,10 +19,10 @@ import { DragHandler, ChoiceItem } from "../../../components/ChoiceItem";
  */
 
 function getContent(userAnswer, inPopover = false, showDragHandle, itemStyle) {
-  const overrideContainerStyles = {};
+  const overrideContainerStyles = {}
   if (inPopover) {
-    overrideContainerStyles.overflow = "auto";
-    overrideContainerStyles.justifyContent = "flex-start";
+    overrideContainerStyles.overflow = 'auto'
+    overrideContainerStyles.justifyContent = 'flex-start'
   }
 
   return (
@@ -30,7 +30,7 @@ function getContent(userAnswer, inPopover = false, showDragHandle, itemStyle) {
       {showDragHandle && <DragHandler />}
       <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
     </ChoiceItem>
-  );
+  )
 }
 
 /**
@@ -50,31 +50,40 @@ function getContent(userAnswer, inPopover = false, showDragHandle, itemStyle) {
 export function WithPopover({ containerStyle, userAnswer, showDragHandler }) {
   const { scrollWidth: contentWidth } = measureTextWithImage({
     text: userAnswer,
-    targetChild: "p",
-    childStyle: { display: "inline" }
-  });
-  const widthOverflow = containerStyle.maxWidth <= contentWidth;
-  const content = getContent(userAnswer, false, showDragHandler, containerStyle);
-  const popoverContent = getContent(userAnswer, true, showDragHandler, containerStyle);
+    targetChild: 'p',
+    childStyle: { display: 'inline' },
+  })
+  const widthOverflow = containerStyle.maxWidth <= contentWidth
+  const content = getContent(userAnswer, false, showDragHandler, containerStyle)
+  const popoverContent = getContent(
+    userAnswer,
+    true,
+    showDragHandler,
+    containerStyle
+  )
 
   return widthOverflow ? (
-    <Popover key={userAnswer} content={popoverContent} getPopupContainer={triggerNode => triggerNode.parentNode}>
+    <Popover
+      key={userAnswer}
+      content={popoverContent}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
+    >
       {content}
     </Popover>
   ) : (
     content
-  );
+  )
 }
 
 WithPopover.propTypes = {
   containerStyle: PropTypes.object,
   userAnswer: PropTypes.string.isRequired,
-  showDragHandler: PropTypes.bool
-};
+  showDragHandler: PropTypes.bool,
+}
 
 WithPopover.defaultProps = {
   showDragHandler: false,
   containerStyle: {
-    maxWidth: response.maxWidth // 400px
-  }
-};
+    maxWidth: response.maxWidth, // 400px
+  },
+}

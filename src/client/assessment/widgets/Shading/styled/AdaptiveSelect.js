@@ -1,6 +1,6 @@
-import { mobileWidth } from "@edulastic/colors";
-import { Select } from "antd";
-import styled from "styled-components";
+import { mobileWidth } from '@edulastic/colors'
+import { Select } from 'antd'
+import styled from 'styled-components'
 
 export const AdaptiveSelect = styled(Select)`
   width: 140px;
@@ -9,4 +9,4 @@ export const AdaptiveSelect = styled(Select)`
   @media (max-width: ${mobileWidth}) {
     width: 100%;
   }
-`;
+`

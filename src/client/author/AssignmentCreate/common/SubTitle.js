@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { white } from "@edulastic/colors";
+import styled from 'styled-components'
+import { white } from '@edulastic/colors'
 
 export const SubTitle = styled.div`
   display: inline-block;
@@ -10,6 +10,6 @@ export const SubTitle = styled.div`
   line-height: 1.36;
   letter-spacing: normal;
   color: ${white};
-`;
+`
 
-export default SubTitle;
+export default SubTitle

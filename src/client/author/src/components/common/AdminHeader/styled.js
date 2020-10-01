@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Tabs } from "antd";
+import styled from 'styled-components'
+import { Tabs } from 'antd'
 import {
   themeColor,
   white,
@@ -7,10 +7,10 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
   largeDesktopWidth,
-  smallDesktopWidth
-} from "@edulastic/colors";
+  smallDesktopWidth,
+} from '@edulastic/colors'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 export const AdminHeaderWrapper = styled.div`
   position: fixed;
@@ -19,21 +19,21 @@ export const AdminHeaderWrapper = styled.div`
   z-index: 20;
   padding: 0px 30px 0px 130px;
   background: ${themeColor};
-  height: ${props => props.theme.HeaderHeight.xs}px;
+  height: ${(props) => props.theme.HeaderHeight.xs}px;
   display: flex;
   align-items: center;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.theme.HeaderHeight.md}px;
+    height: ${(props) => props.theme.HeaderHeight.md}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => props.theme.HeaderHeight.xl}px;
+    height: ${(props) => props.theme.HeaderHeight.xl}px;
   }
 
   @media (max-width: ${tabletWidth}) {
     padding: 0px 20px;
   }
-`;
+`
 
 export const AdminHeaderContent = styled.div`
   display: flex;
@@ -44,7 +44,7 @@ export const AdminHeaderContent = styled.div`
   .ant-tabs-bar {
     margin: 0px;
   }
-`;
+`
 export const Title = styled.span`
   display: inline-block;
   font-size: 18px;
@@ -56,7 +56,7 @@ export const Title = styled.span`
   @media screen and (min-width: ${mediumDesktopExactWidth}) {
     font-size: 22px;
   }
-`;
+`
 export const StyledTitle = styled.h1`
   color: gray;
   font-size: 22px;
@@ -64,7 +64,7 @@ export const StyledTitle = styled.h1`
   margin: 0;
   padding: 0;
   min-width: 200px;
-`;
+`
 
 export const StyledTabs = styled(Tabs)`
   width: 100%;
@@ -129,9 +129,9 @@ export const StyledTabs = styled(Tabs)`
       }
     }
   }
-`;
+`
 
-export const StyledTabPane = styled(TabPane)``;
+export const StyledTabPane = styled(TabPane)``
 
 export const StyledSubMenu = styled(Tabs)`
   padding: 0 3%;
@@ -140,4 +140,4 @@ export const StyledSubMenu = styled(Tabs)`
     margin-bottom: 0;
     border-color: transparent;
   }
-`;
+`

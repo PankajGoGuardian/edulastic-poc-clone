@@ -1,64 +1,92 @@
-import { groupBy, map, reduce, values, round, capitalize, sumBy, orderBy, filter, keys, uniq } from "lodash";
-import { percentage, getProficiencyBand, testTypeHashMap } from "../../../../common/util";
-import gradesMap from "../static/json/gradesMap.json";
+import {
+  groupBy,
+  map,
+  reduce,
+  values,
+  round,
+  capitalize,
+  sumBy,
+  orderBy,
+  filter,
+  keys,
+  uniq,
+} from 'lodash'
+import {
+  percentage,
+  getProficiencyBand,
+  testTypeHashMap,
+} from '../../../../common/util'
+import gradesMap from '../static/json/gradesMap.json'
 
-const getCourses = classData => {
-  const groupedByCourse = groupBy(classData.filter(c => !!c.courseId), c => `${c.courseId}_${c.termId}`);
-  return Object.values(groupedByCourse).map(course => {
-    const courseId = course[0].courseId;
+const getCourses = (classData) => {
+  const groupedByCourse = groupBy(
+    classData.filter((c) => !!c.courseId),
+    (c) => `${c.courseId}_${c.termId}`
+  )
+  return Object.values(groupedByCourse).map((course) => {
+    const courseId = course[0].courseId
     return {
-      title: course[0].courseName || `(Course ID: ${courseId.substring(courseId.length - 5)})`,
+      title:
+        course[0].courseName ||
+        `(Course ID: ${courseId.substring(courseId.length - 5)})`,
       key: courseId,
-      termId: course[0].termId
-    };
-  });
-};
+      termId: course[0].termId,
+    }
+  })
+}
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {
-    return selectedStudent.title;
+    return selectedStudent.title
   }
-  return `${studInfo.firstName || ""} ${studInfo.lastName || ""}`;
-};
+  return `${studInfo.firstName || ''} ${studInfo.lastName || ''}`
+}
 
 const getTerms = (terms = []) =>
-  map(terms, term => ({
-      title: term.name,
-      key: term._id
-    }));
+  map(terms, (term) => ({
+    title: term.name,
+    key: term._id,
+  }))
 
 export const getFilterOptions = (classData = [], terms = []) => {
-  const courseOptions = getCourses(classData);
-  const termOptions = getTerms(terms);
+  const courseOptions = getCourses(classData)
+  const termOptions = getTerms(terms)
 
   return {
     courseOptions,
-    termOptions
-  };
-};
+    termOptions,
+  }
+}
 
-export const augementAssessmentChartData = (metricInfo = [], bandInfo = [], studentClassData = []) => {
+export const augementAssessmentChartData = (
+  metricInfo = [],
+  bandInfo = [],
+  studentClassData = []
+) => {
   if (!metricInfo.length) {
-    return [];
+    return []
   }
 
-  const groupedByTest = groupBy(metricInfo, "testId");
+  const groupedByTest = groupBy(metricInfo, 'testId')
 
   const groupedTestsByType = reduce(
     groupedByTest,
     (data, value) => {
-      const groupedByType = groupBy(value, "testType");
-      return data.concat(values(groupedByType));
+      const groupedByType = groupBy(value, 'testType')
+      return data.concat(values(groupedByType))
     },
     []
-  );
+  )
 
-  const parsedData = map(groupedTestsByType, assignments => {
-    const assignment = assignments[0] || {};
-    const { testType, testId } = assignment;
-    const scoreAvg = round(percentage(sumBy(assignments, "score"), sumBy(assignments, "maxScore")));
-    const band = getProficiencyBand(scoreAvg, bandInfo);
-    const { standardSet, subject } = studentClassData.find(s => s.studentId === assignment.studentId) || {};
+  const parsedData = map(groupedTestsByType, (assignments) => {
+    const assignment = assignments[0] || {}
+    const { testType, testId } = assignment
+    const scoreAvg = round(
+      percentage(sumBy(assignments, 'score'), sumBy(assignments, 'maxScore'))
+    )
+    const band = getProficiencyBand(scoreAvg, bandInfo)
+    const { standardSet, subject } =
+      studentClassData.find((s) => s.studentId === assignment.studentId) || {}
     return {
       ...assignment,
       score: scoreAvg,
@@ -68,66 +96,84 @@ export const augementAssessmentChartData = (metricInfo = [], bandInfo = [], stud
       band,
       assignments,
       standardSet,
-      subject
-    };
-  });
+      subject,
+    }
+  })
 
-  return parsedData;
-};
+  return parsedData
+}
 
-export const getMaxScale = (scaleInfo = []) => orderBy(scaleInfo, "thresold", ["desc"])[0] || {};
+export const getMaxScale = (scaleInfo = []) =>
+  orderBy(scaleInfo, 'thresold', ['desc'])[0] || {}
 
 export const getOverallMasteryPercentage = (records, maxScale) => {
-  const masteredStandards = filter(records, record => record.scale.masteryName === maxScale.masteryName);
-  return percentage(masteredStandards.length, records.length);
-};
+  const masteredStandards = filter(
+    records,
+    (record) => record.scale.masteryName === maxScale.masteryName
+  )
+  return percentage(masteredStandards.length, records.length)
+}
 
 export const getMasterySummary = (masteryScore, scaleInfo) => {
-  let flag = true;
+  let flag = true
   const masterySummary = {
     masteryScore,
-    masteryName: "",
-    color: ""
-  };
-  scaleInfo.forEach(scale => {
+    masteryName: '',
+    color: '',
+  }
+  scaleInfo.forEach((scale) => {
     if (flag && masteryScore >= scale.threshold) {
-      flag = false;
-      masterySummary.masteryName = scale.masteryName;
-      masterySummary.color = scale.color;
+      flag = false
+      masterySummary.masteryName = scale.masteryName
+      masterySummary.color = scale.color
     }
-  });
-  return masterySummary;
-};
+  })
+  return masterySummary
+}
 
 export const getOverallMasteryCount = (records, maxScale) => {
-  const masteredStandards = filter(records, record => record.scale.masteryName === maxScale.masteryName);
-  return masteredStandards.length;
-};
+  const masteredStandards = filter(
+    records,
+    (record) => record.scale.masteryName === maxScale.masteryName
+  )
+  return masteredStandards.length
+}
 
-export const getStudentPerformancePieData = (metricInfo = [], scaleInfo = []) => {
-  const groupedByMastery = groupBy(metricInfo, metric => metric.scale.masteryLabel);
+export const getStudentPerformancePieData = (
+  metricInfo = [],
+  scaleInfo = []
+) => {
+  const groupedByMastery = groupBy(
+    metricInfo,
+    (metric) => metric.scale.masteryLabel
+  )
   const pieData = map(groupedByMastery, (records, masteryLabel) => {
-    const { masteryName = "", color = "" } = records[0].scale;
+    const { masteryName = '', color = '' } = records[0].scale
     return {
       percentage: round(percentage(records.length, metricInfo.length)),
       count: records.length,
       totalCount: metricInfo.length,
       masteryLabel,
       masteryName,
-      color
-    };
-  });
-  return pieData;
-};
+      color,
+    }
+  })
+  return pieData
+}
 
-export const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInfo) => {
-  const groupedSkillsByStandard = groupBy(skillInfo, "standardId");
+export const augmentStandardMetaInfo = (
+  standards = [],
+  skillInfo = [],
+  scaleInfo
+) => {
+  const groupedSkillsByStandard = groupBy(skillInfo, 'standardId')
 
-  const standardsWithInfo = map(standards, standard => {
-    const currentStandardRecords = groupedSkillsByStandard[standard.standardId] || [];
+  const standardsWithInfo = map(standards, (standard) => {
+    const currentStandardRecords =
+      groupedSkillsByStandard[standard.standardId] || []
     if (currentStandardRecords[0]) {
-      const score = percentage(standard.totalScore, standard.maxScore);
-      const scale = getProficiencyBand(score, scaleInfo);
+      const score = percentage(standard.totalScore, standard.maxScore)
+      const scale = getProficiencyBand(score, scaleInfo)
 
       return {
         ...standard,
@@ -137,30 +183,34 @@ export const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInf
         scoreFormatted: `${round(score)}%`,
         assessmentCount: 0,
         totalQuestions: 0,
-        scale
-      };
-    } 
-      return null;
-    
-  }).filter(standard => standard);
+        scale,
+      }
+    }
+    return null
+  }).filter((standard) => standard)
 
   // returning data in the ascending order of domain and standard.
-  return orderBy(standardsWithInfo, ["domain", "standard"], ["asc", "asc"]);
-};
+  return orderBy(standardsWithInfo, ['domain', 'standard'], ['asc', 'asc'])
+}
 
-export const getDomains = (metricInfo = [], scaleInfo = [], studentClassInfo = {}, asessmentMetricInfo = []) => {
+export const getDomains = (
+  metricInfo = [],
+  scaleInfo = [],
+  studentClassInfo = {},
+  asessmentMetricInfo = []
+) => {
   if (!metricInfo.length) {
-    return [];
+    return []
   }
 
-  const groupedByDomain = groupBy(metricInfo, "domainId");
-  const maxScale = getMaxScale(scaleInfo);
+  const groupedByDomain = groupBy(metricInfo, 'domainId')
+  const maxScale = getMaxScale(scaleInfo)
 
-  const domains = map(keys(groupedByDomain), domainId => {
-    const standards = groupedByDomain[domainId];
-    const { domainName = "", domain = "" } = standards[0] || {};
-    const masteryScore = getOverallMasteryPercentage(standards, maxScale);
-    const masterySummary = getMasterySummary(masteryScore, scaleInfo);
+  const domains = map(keys(groupedByDomain), (domainId) => {
+    const standards = groupedByDomain[domainId]
+    const { domainName = '', domain = '' } = standards[0] || {}
+    const masteryScore = getOverallMasteryPercentage(standards, maxScale)
+    const masterySummary = getMasterySummary(masteryScore, scaleInfo)
 
     return {
       domainId,
@@ -171,16 +221,14 @@ export const getDomains = (metricInfo = [], scaleInfo = [], studentClassInfo = {
       description: domainName,
       subject: studentClassInfo?.subject,
       standardSet: studentClassInfo?.standardSet,
-      assessmentCount: asessmentMetricInfo?.length || 0
-    };
-  });
+      assessmentCount: asessmentMetricInfo?.length || 0,
+    }
+  })
 
-  return domains;
-};
+  return domains
+}
 
 export const getGrades = (studInfo = []) =>
-  uniq(studInfo.flatMap(
-    (s = {}) => s.grades ? s.grades.split(",") : []
-  ))
-  .map(grade => gradesMap[grade])
-  .join();
+  uniq(studInfo.flatMap((s = {}) => (s.grades ? s.grades.split(',') : [])))
+    .map((grade) => gradesMap[grade])
+    .join()

@@ -1,6 +1,6 @@
-import { themeColor, white, desktopWidth } from "@edulastic/colors";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { themeColor, white, desktopWidth } from '@edulastic/colors'
+import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 export const LeftSide = styled.div`
   display: flex;
@@ -10,7 +10,7 @@ export const LeftSide = styled.div`
     padding: 0;
     margin: 0;
   }
-`;
+`
 
 export const RightSide = styled.div`
   text-align: right;
@@ -29,7 +29,7 @@ export const RightSide = styled.div`
     margin-top: 20px;
     flex: auto;
   }
-`;
+`
 
 export const Back = styled(Link)`
   color: ${white};
@@ -41,7 +41,7 @@ export const Back = styled(Link)`
   :hover {
     color: ${themeColor};
   }
-`;
+`
 
 export const TitleNav = styled.div`
   display: flex;
@@ -52,4 +52,4 @@ export const TitleNav = styled.div`
     min-width: 0;
     max-width: calc(100vw - 150px);
   }
-`;
+`

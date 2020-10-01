@@ -1,10 +1,16 @@
-import React from "react";
-import { Tooltip } from "antd";
-import styled from "styled-components";
-import { black } from "@edulastic/colors";
+import React from 'react'
+import { Tooltip } from 'antd'
+import styled from 'styled-components'
+import { black } from '@edulastic/colors'
 
-const CustomTableTooltip = props => {
-  const { className, overlayClassName = "", getCellContents, columnKey, ...attrs } = props;
+const CustomTableTooltip = (props) => {
+  const {
+    className,
+    overlayClassName = '',
+    getCellContents,
+    columnKey,
+    ...attrs
+  } = props
 
   return (
     <Tooltip
@@ -13,8 +19,8 @@ const CustomTableTooltip = props => {
     >
       {getCellContents(props)}
     </Tooltip>
-  );
-};
+  )
+}
 
 const StyledCustomTableTooltip = styled(CustomTableTooltip)`
   max-width: 500px;
@@ -32,6 +38,6 @@ const StyledCustomTableTooltip = styled(CustomTableTooltip)`
       }
     }
   }
-`;
+`
 
-export { StyledCustomTableTooltip as CustomTableTooltip };
+export { StyledCustomTableTooltip as CustomTableTooltip }

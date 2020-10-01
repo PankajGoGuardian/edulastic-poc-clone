@@ -1,35 +1,40 @@
-import React from "react";
-import styled from "styled-components";
-import { greyThemeLighter, themeColorBlue, greyThemeLight, white } from "@edulastic/colors";
-import { Checkbox } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import {
+  greyThemeLighter,
+  themeColorBlue,
+  greyThemeLight,
+  white,
+} from '@edulastic/colors'
+import { Checkbox } from 'antd'
 
-export const CheckBoxGrp = Checkbox.Group;
+export const CheckBoxGrp = Checkbox.Group
 
 export const CheckboxStyle = styled(Checkbox)`
-  width: ${({ width }) => width || "unset"};
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
-  font-weight: ${props => props.theme.widgetOptions.labelFontWeight};
+  width: ${({ width }) => width || 'unset'};
+  font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
+  font-weight: ${(props) => props.theme.widgetOptions.labelFontWeight};
   letter-spacing: -0.4px;
   text-align: left;
-  color: ${props => props.theme.widgetOptions.labelColor};
+  color: ${(props) => props.theme.widgetOptions.labelColor};
   text-transform: uppercase;
-  margin-bottom: ${({ mb }) => mb || "0px"};
-  margin-left: ${({ ml }) => ml || "0px"};
-  margin-top: ${({ mt }) => mt || "0px"};
+  margin-bottom: ${({ mb }) => mb || '0px'};
+  margin-left: ${({ ml }) => ml || '0px'};
+  margin-top: ${({ mt }) => mt || '0px'};
   &.ant-checkbox-wrapper {
     & + .ant-checkbox-wrapper {
       margin-left: 0px;
     }
     .ant-checkbox {
       & + span {
-        font-size: ${props => props.labelFontSize || "12px"};
-        padding: ${props => props.labelPadding || "0px 20px"};
+        font-size: ${(props) => props.labelFontSize || '12px'};
+        padding: ${(props) => props.labelPadding || '0px 20px'};
       }
       .ant-checkbox-inner {
         border-color: ${greyThemeLight};
         background: ${greyThemeLighter};
-        width: ${({ size }) => size || "18px"};
-        height: ${({ size }) => size || "18px"};
+        width: ${({ size }) => size || '18px'};
+        height: ${({ size }) => size || '18px'};
         &:after {
           left: 28%;
         }
@@ -69,8 +74,10 @@ export const CheckboxStyle = styled(Checkbox)`
       }
     }
   }
-`;
+`
 
-const CheckboxLabel = ({ children, ...props }) => <CheckboxStyle {...props}>{children}</CheckboxStyle>;
+const CheckboxLabel = ({ children, ...props }) => (
+  <CheckboxStyle {...props}>{children}</CheckboxStyle>
+)
 
-export default CheckboxLabel;
+export default CheckboxLabel

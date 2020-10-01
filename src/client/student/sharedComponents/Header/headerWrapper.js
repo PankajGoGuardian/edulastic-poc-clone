@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { IconMenuOpenClose } from "@edulastic/icons";
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { connect } from 'react-redux'
+import { IconMenuOpenClose } from '@edulastic/icons'
 import {
   tabletWidth,
   largeDesktopWidth,
@@ -10,10 +10,10 @@ import {
   white,
   extraDesktopWidthMax,
   themeColor,
-  mediumDesktopExactWidth
-} from "@edulastic/colors";
-import { Affix, Layout, Row, Col } from "antd";
-import { toggleSideBarAction } from "../../Sidebar/ducks";
+  mediumDesktopExactWidth,
+} from '@edulastic/colors'
+import { Affix, Layout, Row, Col } from 'antd'
+import { toggleSideBarAction } from '../../Sidebar/ducks'
 
 const HeaderWrapper = ({ children, toggleSideBar, isDocBased }) => (
   <HeaderContainer isDocBased={isDocBased}>
@@ -28,30 +28,29 @@ const HeaderWrapper = ({ children, toggleSideBar, isDocBased }) => (
       </AssignmentsHeader>
     </FixedHeader>
   </HeaderContainer>
-);
+)
 
 HeaderWrapper.propTypes = {
   children: PropTypes.object.isRequired,
-  toggleSideBar: PropTypes.func.isRequired
-};
+  toggleSideBar: PropTypes.func.isRequired,
+}
 
-export default connect(
-  null,
-  { toggleSideBar: toggleSideBarAction }
-)(HeaderWrapper);
+export default connect(null, { toggleSideBar: toggleSideBarAction })(
+  HeaderWrapper
+)
 
 const HeaderContainer = styled.div`
-  height: ${props => props.theme.HeaderHeight.xs}px;
-  margin-bottom: ${props => (props.isDocBased ? "0px" : "16px")};
-  background: ${props => props.theme.header.headerBgColor || themeColor};
+  height: ${(props) => props.theme.HeaderHeight.xs}px;
+  margin-bottom: ${(props) => (props.isDocBased ? '0px' : '16px')};
+  background: ${(props) => props.theme.header.headerBgColor || themeColor};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.theme.HeaderHeight.md}px;
+    height: ${(props) => props.theme.HeaderHeight.md}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => props.theme.HeaderHeight.xl}px;
+    height: ${(props) => props.theme.HeaderHeight.xl}px;
   }
-`;
+`
 
 const FixedHeader = styled(Affix)`
   top: 0;
@@ -67,24 +66,28 @@ const FixedHeader = styled(Affix)`
   @media (max-width: 768px) {
     left: 0;
     padding-left: 70px;
-    background: ${props => props.theme.header.headerBgColor || themeColor};
+    background: ${(props) => props.theme.header.headerBgColor || themeColor};
   }
-`;
+`
 
 const AssignmentsHeader = styled(Layout.Header)`
-  border-bottom: ${props => (props.borderBottom ? props.borderBottom : `2px solid ${props.theme.headerBorderColor}`)};
-  background-color: ${props => props.theme.header.headerBgColor || themeColor};
-  color: ${props => props.theme.header.headerTitleTextColor};
+  border-bottom: ${(props) =>
+    props.borderBottom
+      ? props.borderBottom
+      : `2px solid ${props.theme.headerBorderColor}`};
+  background-color: ${(props) =>
+    props.theme.header.headerBgColor || themeColor};
+  color: ${(props) => props.theme.header.headerTitleTextColor};
   display: flex;
   align-items: center;
-  height: ${props => props.theme.HeaderHeight.xs}px;
-  padding: ${props => (props.isDocBased ? "0px 25px" : "0px 40px")};
+  height: ${(props) => props.theme.HeaderHeight.xs}px;
+  padding: ${(props) => (props.isDocBased ? '0px 25px' : '0px 40px')};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.theme.HeaderHeight.md}px;
+    height: ${(props) => props.theme.HeaderHeight.md}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => props.theme.HeaderHeight.xl}px;
+    height: ${(props) => props.theme.HeaderHeight.xl}px;
   }
   @media (max-width: ${mobileWidthMax}) {
     padding: 0 26px 0 0;
@@ -95,17 +98,17 @@ const AssignmentsHeader = styled(Layout.Header)`
     line-height: 1.2;
     display: flex;
   }
-`;
+`
 
 const StyledCol = styled(Col)`
   align-items: center;
   line-height: 1.2;
   display: flex;
-`;
+`
 
 const HeaderRow = styled(Row)`
   width: 100%;
-`;
+`
 
 const Wrapper = styled.div`
   display: flex;
@@ -118,7 +121,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: flex-start;
   }
-`;
+`
 
 const MenuIcon = styled(IconMenuOpenClose)`
   display: none;
@@ -132,4 +135,4 @@ const MenuIcon = styled(IconMenuOpenClose)`
     top: 22px;
     left: 26px;
   }
-`;
+`

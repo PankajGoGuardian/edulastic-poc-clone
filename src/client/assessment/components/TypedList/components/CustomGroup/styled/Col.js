@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Col = styled.div`
   margin-right: 15px;
@@ -7,4 +7,4 @@ export const Col = styled.div`
   :last-child {
     margin-right: 0;
   }
-`;
+`

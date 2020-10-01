@@ -1,12 +1,17 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { themeColorBlue } from "@edulastic/colors";
-import styled from "styled-components";
-import withIconStyles from "./HOC/withIconStyles";
-import SVG from "./common/SVG";
+import React from 'react'
+import { themeColorBlue } from '@edulastic/colors'
+import styled from 'styled-components'
+import withIconStyles from './HOC/withIconStyles'
+import SVG from './common/SVG'
 
-const IconAddItem = props => (
-  <AddItem style={{ fill: "#1AB394" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.531 16.913" {...props}>
+const IconAddItem = (props) => (
+  <AddItem
+    style={{ fill: '#1AB394' }}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 13.531 16.913"
+    {...props}
+  >
     <g transform="translate(-51)">
       <g transform="translate(51)">
         <path
@@ -17,7 +22,7 @@ const IconAddItem = props => (
       </g>
     </g>
   </AddItem>
-);
+)
 
 const AddItem = styled(SVG)`
   &:hover {
@@ -25,6 +30,6 @@ const AddItem = styled(SVG)`
       fill: ${themeColorBlue};
     }
   }
-`;
+`
 
-export default withIconStyles(IconAddItem);
+export default withIconStyles(IconAddItem)

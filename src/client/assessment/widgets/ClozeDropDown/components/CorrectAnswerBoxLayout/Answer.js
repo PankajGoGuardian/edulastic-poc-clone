@@ -1,9 +1,9 @@
-import React from "react";
-import { Popover } from "antd";
-import PropTypes from "prop-types";
+import React from 'react'
+import { Popover } from 'antd'
+import PropTypes from 'prop-types'
 
-import { MathSpan } from "@edulastic/common";
-import { response } from "@edulastic/constants";
+import { MathSpan } from '@edulastic/common'
+import { response } from '@edulastic/constants'
 
 /**
  *
@@ -13,30 +13,30 @@ import { response } from "@edulastic/constants";
  * @returns a response box showing the correct answer
  */
 function getContent(inPopover, answer) {
-  const style = {};
+  const style = {}
   if (inPopover) {
-    style.maxWidth = `${response.popoverMaxWidth}px`;
-    style.overflow = "auto";
+    style.maxWidth = `${response.popoverMaxWidth}px`
+    style.overflow = 'auto'
   }
   return (
     <div style={style}>
       <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
     </div>
-  );
+  )
 }
 
 function Answer({ answer, showPopover }) {
-  const answerContent = getContent(false, answer);
-  const popoverContent = getContent(true, answer);
+  const answerContent = getContent(false, answer)
+  const popoverContent = getContent(true, answer)
   if (showPopover) {
-    return <Popover content={popoverContent}>{answerContent}</Popover>;
+    return <Popover content={popoverContent}>{answerContent}</Popover>
   }
-  return answerContent;
+  return answerContent
 }
 
 Answer.propTypes = {
   answer: PropTypes.string.isRequired,
-  showPopover: PropTypes.bool.isRequired
-};
+  showPopover: PropTypes.bool.isRequired,
+}
 
-export default Answer;
+export default Answer

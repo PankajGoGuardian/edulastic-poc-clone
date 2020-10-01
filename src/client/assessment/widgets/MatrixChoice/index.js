@@ -1,13 +1,13 @@
-import React, { Fragment, useState, useMemo } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import produce from "immer";
-import { withRouter } from "react-router-dom";
-import { isEmpty } from "lodash";
+import React, { Fragment, useState, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import produce from 'immer'
+import { withRouter } from 'react-router-dom'
+import { isEmpty } from 'lodash'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 import {
   CorrectAnswersContainer,
   MathFormulaDisplay,
@@ -15,30 +15,35 @@ import {
   QuestionSubLabel,
   FlexContainer,
   QuestionContentWrapper,
-  QuestionLabelWrapper
-} from "@edulastic/common";
+  QuestionLabelWrapper,
+} from '@edulastic/common'
 
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { replaceVariables, updateVariables } from "../../utils/variables";
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { replaceVariables, updateVariables } from '../../utils/variables'
 
-import Options from "./components/Options";
-import Preview from "./components/Preview";
-import { checkAnswerAction } from "../../../author/src/actions/testItem";
+import Options from './components/Options'
+import Preview from './components/Preview'
+import { checkAnswerAction } from '../../../author/src/actions/testItem'
 
-import ComposeQuestion from "./ComposeQuestion";
-import MultipleChoiceOptions from "./MultipleChoiceOptions";
-import Steams from "./Steams";
-import Answers from "./Answers";
-import { ContentArea } from "../../styled/ContentArea";
-import { PREVIEW, EDIT, SHOW, CLEAR } from "../../constants/constantsForQuestions";
-import { changePreviewAction } from "../../../author/src/actions/view";
-import { StyledPaperWrapper } from "../../styled/Widget";
-import Instructions from "../../components/Instructions";
+import ComposeQuestion from './ComposeQuestion'
+import MultipleChoiceOptions from './MultipleChoiceOptions'
+import Steams from './Steams'
+import Answers from './Answers'
+import { ContentArea } from '../../styled/ContentArea'
+import {
+  PREVIEW,
+  EDIT,
+  SHOW,
+  CLEAR,
+} from '../../constants/constantsForQuestions'
+import { changePreviewAction } from '../../../author/src/actions/view'
+import { StyledPaperWrapper } from '../../styled/Widget'
+import Instructions from '../../components/Instructions'
 
 const EmptyWrapper = styled.div`
   max-width: 100%;
   width: auto;
-`;
+`
 
 const MatrixChoice = ({
   view,
@@ -62,45 +67,47 @@ const MatrixChoice = ({
   showQuestionNumber,
   ...restProps
 }) => {
-  const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
-  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+  const [feedbackAttempts, setFeedbackAttempts] = useState(
+    item.feedback_attempts
+  )
+  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper
 
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-        updateVariables(draft);
+      produce(item, (draft) => {
+        draft[prop] = uiStyle
+        updateVariables(draft)
       })
-    );
-  };
+    )
+  }
 
-  let answer = userAnswer;
+  let answer = userAnswer
 
   if (isEmpty(userAnswer) && item && item.stems) {
     answer = {
-      value: {}
-    };
+      value: {},
+    }
   }
 
   const _checkAnswer = () => {
     if (isEmpty(userAnswer)) {
-      return;
+      return
     }
 
-    setFeedbackAttempts(feedbackAttempts - 1);
-    checkAnswer();
-  };
+    setFeedbackAttempts(feedbackAttempts - 1)
+    checkAnswer()
+  }
 
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
-  const validResponse = item.validation?.validResponse;
-  const altResponses = item.validation?.altResponses;
+  const validResponse = item.validation?.validResponse
+  const altResponses = item.validation?.altResponses
 
   return (
-    <Fragment>
+    <>
       {view === EDIT && (
         <ContentArea>
-          <Fragment>
+          <>
             <ComposeQuestion
               setQuestionData={setQuestionData}
               fillSections={fillSections}
@@ -136,20 +143,27 @@ const MatrixChoice = ({
               advancedAreOpen={advancedAreOpen}
               item={item}
             />
-          </Fragment>
+          </>
         </ContentArea>
       )}
       {view === PREVIEW && (
         <Wrapper>
           <FlexContainer alignItems="baseline" justifyContent="flex-start">
             <QuestionLabelWrapper>
-              {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+              {showQuestionNumber && (
+                <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+              )}
+              {item.qSubLabel && (
+                <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+              )}
             </QuestionLabelWrapper>
 
             <QuestionContentWrapper>
-              <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-              <div style={{ width: "100%" }}>
+              <MathFormulaDisplay
+                style={{ marginBottom: 20 }}
+                dangerouslySetInnerHTML={{ __html: item.stimulus }}
+              />
+              <div style={{ width: '100%' }}>
                 {previewTab === CLEAR ? (
                   <Preview
                     smallSize={smallSize}
@@ -184,8 +198,11 @@ const MatrixChoice = ({
           {view !== EDIT && <Instructions item={item} />}
 
           {(previewTab === SHOW || isReviewTab) && (
-            <Fragment>
-              <CorrectAnswersContainer item={item} title={t("component.matrix.correctAnswer")}>
+            <>
+              <CorrectAnswersContainer
+                item={item}
+                title={t('component.matrix.correctAnswer')}
+              >
                 <Preview
                   saveAnswer={() => {}}
                   userAnswer={validResponse}
@@ -203,7 +220,9 @@ const MatrixChoice = ({
 
               {altResponses &&
                 altResponses.map((altAnswer, i) => (
-                  <CorrectAnswersContainer title={`${t("component.matrix.alternateAnswer")} ${i + 1}`}>
+                  <CorrectAnswersContainer
+                    title={`${t('component.matrix.alternateAnswer')} ${i + 1}`}
+                  >
                     <Preview
                       saveAnswer={() => {}}
                       userAnswer={altAnswer}
@@ -219,13 +238,13 @@ const MatrixChoice = ({
                     />
                   </CorrectAnswersContainer>
                 ))}
-            </Fragment>
+            </>
           )}
         </Wrapper>
       )}
-    </Fragment>
-  );
-};
+    </>
+  )
+}
 
 MatrixChoice.propTypes = {
   t: PropTypes.func.isRequired,
@@ -246,11 +265,11 @@ MatrixChoice.propTypes = {
   changeView: PropTypes.func.isRequired,
   evaluation: PropTypes.object,
   isReviewTab: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool
-};
+  showQuestionNumber: PropTypes.bool,
+}
 
 MatrixChoice.defaultProps = {
-  previewTab: "clear",
+  previewTab: 'clear',
   testItem: false,
   item: {},
   userAnswer: null,
@@ -262,22 +281,19 @@ MatrixChoice.defaultProps = {
   disableResponse: false,
   evaluation: null,
   isReviewTab: false,
-  showQuestionNumber: false
-};
+  showQuestionNumber: false,
+}
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
-  connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction,
-      checkAnswer: checkAnswerAction,
-      changeView: changePreviewAction
-    }
-  )
-);
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+    checkAnswer: checkAnswerAction,
+    changeView: changePreviewAction,
+  })
+)
 
-const MatrixChoiceContainer = enhance(MatrixChoice);
+const MatrixChoiceContainer = enhance(MatrixChoice)
 
-export { MatrixChoiceContainer as MatrixChoice };
+export { MatrixChoiceContainer as MatrixChoice }

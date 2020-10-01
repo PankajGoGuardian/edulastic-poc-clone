@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Col } from "antd";
-import { getTestAuthorName, getPlaylistAuthorName } from "../../../dataUtils";
-import Item from "../Item/Item";
-import ListItem from "../ListItem/ListItem";
-import { CardBox } from "../Container/styled";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Col } from 'antd'
+import { getTestAuthorName, getPlaylistAuthorName } from '../../../dataUtils'
+import Item from '../Item/Item'
+import ListItem from '../ListItem/ListItem'
+import { CardBox } from '../Container/styled'
 
 class CardWrapper extends Component {
   static propTypes = {
@@ -17,15 +17,15 @@ class CardWrapper extends Component {
     mode: PropTypes.string.isRequired,
     removeTestFromPlaylist: PropTypes.func.isRequired,
     addTestToPlaylist: PropTypes.func.isRequired,
-    owner: PropTypes.object
-  };
+    owner: PropTypes.object,
+  }
 
   static defaultProps = {
     owner: false,
     windowWidth: null,
     isTestAdded: false,
-    blockStyle: ""
-  };
+    blockStyle: '',
+  }
 
   render() {
     const {
@@ -46,22 +46,29 @@ class CardWrapper extends Component {
       handleCheckboxAction,
       moduleTitle,
       onRemoveFromCart,
-      onAddToCart
-    } = this.props;
+      onAddToCart,
+    } = this.props
 
-    const itemId = _id?.substr(_id.length - 6);
+    const itemId = _id?.substr(_id.length - 6)
 
-    const isTestLiked = (!isPlaylist && item?.alreadyLiked) || false;
+    const isTestLiked = (!isPlaylist && item?.alreadyLiked) || false
 
-    if (blockStyle === "tile") {
+    if (blockStyle === 'tile') {
       return (
-        <CardBox data-cy={item._id} key={item._id} style={{ marginBottom: 20 }} isPlaylist={isPlaylist}>
+        <CardBox
+          data-cy={item._id}
+          key={item._id}
+          style={{ marginBottom: 20 }}
+          isPlaylist={isPlaylist}
+        >
           <Item
             owner={owner}
             item={item}
             history={history}
             match={match}
-            authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
+            authorName={
+              isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)
+            }
             testItemId={itemId}
             isPlaylist={isPlaylist}
             windowWidth={windowWidth}
@@ -69,7 +76,7 @@ class CardWrapper extends Component {
             isTestLiked={isTestLiked}
           />
         </CardBox>
-      );
+      )
     }
 
     return (
@@ -84,7 +91,9 @@ class CardWrapper extends Component {
           addTestToPlaylist={addTestToPlaylist}
           isTestAdded={isTestAdded}
           removeTestFromPlaylist={removeTestFromPlaylist}
-          authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
+          authorName={
+            isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)
+          }
           isPlaylist={isPlaylist}
           testItemId={itemId}
           standards={standards}
@@ -96,8 +105,8 @@ class CardWrapper extends Component {
           isTestLiked={isTestLiked}
         />
       </Col>
-    );
+    )
   }
 }
 
-export default CardWrapper;
+export default CardWrapper

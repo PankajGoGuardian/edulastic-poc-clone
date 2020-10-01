@@ -1,21 +1,26 @@
-import { takeEvery, call, put, all, select } from "redux-saga/effects";
-import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { notification } from "@edulastic/common";
-import { createAction, createReducer } from "redux-starter-kit";
-import { keyBy } from "lodash";
-import { getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
+import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import { createSelector } from 'reselect'
+import { reportsApi } from '@edulastic/api'
+import { notification } from '@edulastic/common'
+import { createAction, createReducer } from 'redux-starter-kit'
+import { keyBy } from 'lodash'
+import { getReportsMARSelectedPerformanceBandProfile } from '../common/filterDataDucks'
 
-import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
-import { getClassAndGroupIds } from "../common/utils/transformers";
+import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { getClassAndGroupIds } from '../common/utils/transformers'
 
-const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST = "[reports] get reports performance over time request";
-const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS = "[reports] get reports performance over time success";
-const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR = "[reports] get reports performance over time error";
+const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST =
+  '[reports] get reports performance over time request'
+const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS =
+  '[reports] get reports performance over time success'
+const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR =
+  '[reports] get reports performance over time error'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const getPerformanceOverTimeRequestAction = createAction(GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST);
+export const getPerformanceOverTimeRequestAction = createAction(
+  GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST
+)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -23,17 +28,18 @@ export const getPerformanceOverTimeRequestAction = createAction(GET_REPORTS_PERF
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportReducer.reportPerformanceOverTimeReducer;
+export const stateSelector = (state) =>
+  state.reportReducer.reportPerformanceOverTimeReducer
 
 export const getReportsPerformanceOverTime = createSelector(
   stateSelector,
-  state => state.performanceOverTime
-);
+  (state) => state.performanceOverTime
+)
 
 export const getReportsPerformanceOverTimeLoader = createSelector(
   stateSelector,
-  state => state.loading
-);
+  (state) => state.loading
+)
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
@@ -43,23 +49,23 @@ export const getReportsPerformanceOverTimeLoader = createSelector(
 
 const initialState = {
   performanceOverTime: {},
-  loading: true
-};
+  loading: true,
+}
 
 export const reportPerformanceOverTimeReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: () => initialState,
-  [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: state => {
-    state.loading = true;
+  [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: (state) => {
+    state.loading = true
   },
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false;
-    state.performanceOverTime = payload.performanceOverTime;
+    state.loading = false
+    state.performanceOverTime = payload.performanceOverTime
   },
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false;
-    state.error = payload.error;
-  }
-});
+    state.loading = false
+    state.error = payload.error
+  },
+})
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
@@ -69,39 +75,55 @@ export const reportPerformanceOverTimeReducer = createReducer(initialState, {
 
 function* getReportsPerformanceOverTimeRequest({ payload }) {
   try {
-    const { classIds, groupIds } = getClassAndGroupIds(payload);
-    const performanceOverTime = yield call(reportsApi.fetchPerformanceOverTimeReport, {
-      ...payload,
-      classIds,
-      groupIds
-    });
-    const selectedProfile = yield select(getReportsMARSelectedPerformanceBandProfile);
-    const thresholdNameIndexed = keyBy(selectedProfile?.performanceBand || [], "threshold");
-    const metricInfo = (performanceOverTime?.data?.result?.metricInfo || [])?.map(x => ({
+    const { classIds, groupIds } = getClassAndGroupIds(payload)
+    const performanceOverTime = yield call(
+      reportsApi.fetchPerformanceOverTimeReport,
+      {
+        ...payload,
+        classIds,
+        groupIds,
+      }
+    )
+    const selectedProfile = yield select(
+      getReportsMARSelectedPerformanceBandProfile
+    )
+    const thresholdNameIndexed = keyBy(
+      selectedProfile?.performanceBand || [],
+      'threshold'
+    )
+    const metricInfo = (
+      performanceOverTime?.data?.result?.metricInfo || []
+    )?.map((x) => ({
       ...x,
-      bandName: thresholdNameIndexed[x.bandScore].name
-    }));
+      bandName: thresholdNameIndexed[x.bandScore].name,
+    }))
 
-    performanceOverTime.data.result.bandInfo = selectedProfile?.performanceBand || [];
-    performanceOverTime.data.result.metricInfo = metricInfo;
+    performanceOverTime.data.result.bandInfo =
+      selectedProfile?.performanceBand || []
+    performanceOverTime.data.result.metricInfo = metricInfo
 
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS,
-      payload: { performanceOverTime }
-    });
+      payload: { performanceOverTime },
+    })
   } catch (error) {
-    console.log("err", error.stack);
-    const msg = "Failed to fetch performance over time Please try again...";
-    notification({ msg });
+    console.log('err', error.stack)
+    const msg = 'Failed to fetch performance over time Please try again...'
+    notification({ msg })
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR,
-      payload: { error: msg }
-    });
+      payload: { error: msg },
+    })
   }
 }
 
 export function* reportPerformanceOverTimeSaga() {
-  yield all([yield takeEvery(GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST, getReportsPerformanceOverTimeRequest)]);
+  yield all([
+    yield takeEvery(
+      GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST,
+      getReportsPerformanceOverTimeRequest
+    ),
+  ])
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

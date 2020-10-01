@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 import {
   extraDesktopWidthMax,
   desktopWidth,
@@ -7,13 +7,13 @@ import {
   fadedGrey,
   darkGrey,
   title,
-  greenDark6
-} from "@edulastic/colors";
-import { EduButton, MathFormulaDisplay } from "@edulastic/common";
+  greenDark6,
+} from '@edulastic/colors'
+import { EduButton, MathFormulaDisplay } from '@edulastic/common'
 
 export const Label = styled.span`
   padding: 0 4px;
-`;
+`
 
 export const EditModuleContainer = styled.div`
   background: ${white};
@@ -26,8 +26,8 @@ export const EditModuleContainer = styled.div`
   margin: 8px 0;
   /* box-shadow: 0 0 15px 0 ${fadedGrey}; */
   border-radius: 4px;
-  border: 1px solid #DADAE4;
-`;
+  border: 1px solid #dadae4;
+`
 
 export const ModuleContainer = styled.div`
   background: ${white};
@@ -41,8 +41,9 @@ export const ModuleContainer = styled.div`
   z-index: 1001;
   /* box-shadow: 0 0 10px 0 ${fadedGrey}; */
   border-radius: 4px;
-  border: ${({ dragging }) => (dragging ? `1px solid ${themeColor}` : "1px solid #DADAE4")};
-`;
+  border: ${({ dragging }) =>
+    dragging ? `1px solid ${themeColor}` : '1px solid #DADAE4'};
+`
 
 export const DragHandle = styled.div`
   color: ${themeColor};
@@ -57,16 +58,16 @@ export const DragHandle = styled.div`
   &:active {
     cursor: grabbing;
   }
-`;
+`
 
 export const ModuleContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
+`
 
 export const ModuleID = styled.div`
-  margin-right: ${props => props.marginRight || "10px"};
+  margin-right: ${(props) => props.marginRight || '10px'};
   max-width: 60px;
   color: ${white};
   background: ${greenDark6};
@@ -85,7 +86,7 @@ export const ModuleID = styled.div`
     width: 25px;
     height: 25px;
   }
-`;
+`
 
 export const ModuleGroup = styled.div`
   color: #8e9aa4;
@@ -98,7 +99,7 @@ export const ModuleGroup = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
   }
-`;
+`
 
 export const ModuleTitle = styled.div`
   font-size: 16px;
@@ -108,7 +109,7 @@ export const ModuleTitle = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 14px;
   }
-`;
+`
 
 export const ModuleDescription = styled(MathFormulaDisplay)`
   font-size: 12px;
@@ -120,14 +121,14 @@ export const ModuleDescription = styled(MathFormulaDisplay)`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
   }
-`;
+`
 
 export const ModuleActions = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: flex-end;
   width: 235px;
-`;
+`
 
 export const Title = styled.div`
   margin: 4px 2px;
@@ -138,7 +139,7 @@ export const Title = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 12px;
   }
-`;
+`
 
 export const AddNewModuleContainer = styled.div`
   background: ${white};
@@ -146,28 +147,28 @@ export const AddNewModuleContainer = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
-`;
+`
 
 export const AddNewModuleForm = styled.div`
   padding: 20px;
   width: 100%;
   min-height: 60px;
   border: 1px solid #dadae4;
-`;
+`
 
 export const StyledModuleList = styled.div`
   margin-bottom: 10px;
-`;
+`
 
 export const AddBtnsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
   width: 100%;
-`;
+`
 
 export const StyledButton = styled(EduButton)`
-  width: ${({ IconBtn }) => (IconBtn ? "36px" : "120px")};
+  width: ${({ IconBtn }) => (IconBtn ? '36px' : '120px')};
   height: 36px;
 
   &:first-child {
@@ -175,16 +176,16 @@ export const StyledButton = styled(EduButton)`
   }
 
   @media (max-width: ${extraDesktopWidthMax}) {
-    width: ${({ IconBtn }) => (IconBtn ? "32px" : "")};
+    width: ${({ IconBtn }) => (IconBtn ? '32px' : '')};
     height: 32px;
     font-size: 9px;
   }
-`;
+`
 
 export const StyledSpan = styled.span`
   width: ${({ width }) => width}px;
   font-size: ${({ fSize }) => fSize}px;
-`;
+`
 
 export const ModalContainer = styled.div`
   width: 100%;
@@ -192,13 +193,13 @@ export const ModalContainer = styled.div`
   .ant-input {
     margin-bottom: 10px;
   }
-`;
+`
 
 export const ModalHeader = styled.h3`
   font-size: 20px;
   font-weight: 600;
   padding-bottom: 8px;
-`;
+`
 
 export const ModalContent = styled.div`
   max-height: calc(100vh - 320px);
@@ -218,7 +219,7 @@ export const ModalContent = styled.div`
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
-`;
+`
 
 export const ModalFooter = styled.div`
   display: flex;
@@ -237,4 +238,4 @@ export const ModalFooter = styled.div`
       padding-right: 0px;
     }
   }
-`;
+`

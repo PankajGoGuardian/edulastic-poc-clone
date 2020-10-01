@@ -1,22 +1,22 @@
-import React, { memo, useMemo } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { compose } from "redux";
-import { connect } from "react-redux";
+import React, { memo, useMemo } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 
-import { withNamespaces } from "@edulastic/localization";
+import { withNamespaces } from '@edulastic/localization'
 
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { replaceVariables } from "../../utils/variables";
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { replaceVariables } from '../../utils/variables'
 
-import { ContentArea } from "../../styled/ContentArea";
+import { ContentArea } from '../../styled/ContentArea'
 
-import AdvancedOptions from "./components/AdvancedOptions";
-import VideoPreview from "./VideoPreview";
-import VideoPlayer from "./VideoPlayer";
-import { StyledPaperWrapper } from "../../styled/Widget";
+import AdvancedOptions from './components/AdvancedOptions'
+import VideoPreview from './VideoPreview'
+import VideoPlayer from './VideoPlayer'
+import { StyledPaperWrapper } from '../../styled/Widget'
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div``
 
 const Video = ({
   item,
@@ -30,13 +30,17 @@ const Video = ({
   advancedLink,
   ...restProps
 }) => {
-  const Wrapper = smallSize ? EmptyWrapper : StyledPaperWrapper;
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+  const Wrapper = smallSize ? EmptyWrapper : StyledPaperWrapper
+  const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
-  if (view === "edit") {
+  if (view === 'edit') {
     return (
       <ContentArea>
-        <VideoPlayer item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        <VideoPlayer
+          item={item}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
 
         {advancedLink}
 
@@ -49,15 +53,15 @@ const Video = ({
           advancedAreOpen={advancedAreOpen}
         />
       </ContentArea>
-    );
+    )
   }
 
   return (
     <Wrapper>
       <VideoPreview item={itemForPreview} {...restProps} />
     </Wrapper>
-  );
-};
+  )
+}
 
 Video.propTypes = {
   item: PropTypes.shape({
@@ -73,8 +77,8 @@ Video.propTypes = {
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,
       captionURL: PropTypes.string.isRequired,
-      hideControls: PropTypes.bool.isRequired
-    }).isRequired
+      hideControls: PropTypes.bool.isRequired,
+    }).isRequired,
   }).isRequired,
   view: PropTypes.string.isRequired,
   smallSize: PropTypes.bool,
@@ -83,26 +87,23 @@ Video.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
-};
+  advancedAreOpen: PropTypes.bool,
+}
 
 Video.defaultProps = {
   smallSize: false,
   advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
-};
+  cleanSections: () => {},
+}
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   memo,
-  connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
-  )
-);
+  connect(null, { setQuestionData: setQuestionDataAction })
+)
 
-const VideoContainer = enhance(Video);
+const VideoContainer = enhance(Video)
 
-export { VideoContainer as Video };
+export { VideoContainer as Video }

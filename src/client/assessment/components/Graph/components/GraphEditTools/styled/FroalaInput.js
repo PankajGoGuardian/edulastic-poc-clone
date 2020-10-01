@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { backgrounds, greyThemeLight } from "@edulastic/colors";
+import styled from 'styled-components'
+import { backgrounds, greyThemeLight } from '@edulastic/colors'
 
 export const FroalaInput = styled.div`
   display: flex;
@@ -14,9 +14,9 @@ export const FroalaInput = styled.div`
   .fr-box {
     width: 100%;
   }
-  [class^="fr-"] {
+  [class^='fr-'] {
     height: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-`;
+`

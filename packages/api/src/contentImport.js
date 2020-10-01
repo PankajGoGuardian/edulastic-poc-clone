@@ -1,29 +1,29 @@
-import API from "./utils/API";
+import API from './utils/API'
 
-const api = new API();
-const prefix = "/content";
+const api = new API()
+const prefix = '/content'
 
-const contentImport = data => {
+const contentImport = (data) => {
   return api
     .callApi({
       url: `${prefix}/import`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data: response }) => response);
-};
+    .then(({ data: response }) => response)
+}
 
-const contentImportProgress = data => {
+const contentImportProgress = (data) => {
   return api
     .callApi({
       url: `${prefix}/import-progress`,
-      method: "post",
-      data
+      method: 'post',
+      data,
     })
-    .then(({ data: response }) => response);
-};
+    .then(({ data: response }) => response)
+}
 
 export default {
   contentImport,
-  contentImportProgress
-};
+  contentImportProgress,
+}

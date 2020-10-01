@@ -1,6 +1,6 @@
-import { Select } from "antd";
-import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { Select } from 'antd'
+import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ export const Container = styled.div`
     letter-spacing: 0.2px;
     color: #434b5d;
   }
-`;
+`
 
 export const StyledSelect = styled(Select)`
   display: inline-block;
@@ -46,4 +46,4 @@ export const StyledSelect = styled(Select)`
       box-shadow: unset;
     }
   }
-`;
+`

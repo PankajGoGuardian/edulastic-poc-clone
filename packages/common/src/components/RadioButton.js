@@ -1,15 +1,23 @@
-import React from "react";
-import styled from "styled-components";
-import { greyThemeLighter, themeColorBlue, greyThemeLight, white, extraDesktopWidthMax } from "@edulastic/colors";
-import { Radio } from "antd";
+import React from 'react'
+import styled from 'styled-components'
+import {
+  greyThemeLighter,
+  themeColorBlue,
+  greyThemeLight,
+  white,
+  extraDesktopWidthMax,
+} from '@edulastic/colors'
+import { Radio } from 'antd'
 
-export const RadioGrp = Radio.Group;
+export const RadioGrp = Radio.Group
 
-export const RadioBtn = ({ children, ...props }) => <StyledRadioBtn {...props}>{children}</StyledRadioBtn>;
+export const RadioBtn = ({ children, ...props }) => (
+  <StyledRadioBtn {...props}>{children}</StyledRadioBtn>
+)
 
 const StyledRadioBtn = styled(Radio)`
-  margin-bottom: ${({ mb }) => mb || "0px"};
-  font-size: ${props => props.theme.smallFontSize};
+  margin-bottom: ${({ mb }) => mb || '0px'};
+  font-size: ${(props) => props.theme.smallFontSize};
   text-align: left;
   position: relative;
   &.ant-radio-wrapper {
@@ -22,8 +30,8 @@ const StyledRadioBtn = styled(Radio)`
     .ant-radio {
       margin-right: 10px;
       & + span {
-        font-size: ${props => props.labelFontSize || "12px"};
-        padding: ${props => props.labelPadding || "0px 10px"};
+        font-size: ${(props) => props.labelFontSize || '12px'};
+        padding: ${(props) => props.labelPadding || '0px 10px'};
         text-transform: uppercase;
       }
       .ant-radio-inner {
@@ -74,6 +82,6 @@ const StyledRadioBtn = styled(Radio)`
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.widgetOptions.labelFontSize};
+    font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
   }
-`;
+`

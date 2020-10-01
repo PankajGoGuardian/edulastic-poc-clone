@@ -1,18 +1,27 @@
-import React from "react";
-import StandardTags from "./styled/StandardTags";
-import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
-import { themeColor, grey } from "@edulastic/colors";
+import React from 'react'
+import { themeColor, grey } from '@edulastic/colors'
+import StandardTags from './styled/StandardTags'
+import StandardsWrapper, { RecentStandards } from './styled/StandardsWrapper'
 
-const RecentStandardsList = ({ recentStandardsList, standardsArr, handleAddStandard, isDocBased }) => {
+const RecentStandardsList = ({
+  recentStandardsList,
+  standardsArr,
+  handleAddStandard,
+  isDocBased,
+}) => {
   return (
     <StandardsWrapper isDocBased={isDocBased}>
       <div>RECENTLY USED:</div>
       <RecentStandards>
-        {recentStandardsList.map(recentStandard => (
+        {recentStandardsList.map((recentStandard) => (
           <StandardTags
-            color={standardsArr.includes(recentStandard.identifier) ? grey : themeColor}
+            color={
+              standardsArr.includes(recentStandard.identifier)
+                ? grey
+                : themeColor
+            }
             onClick={() => {
-              handleAddStandard(recentStandard);
+              handleAddStandard(recentStandard)
             }}
           >
             {recentStandard.identifier}
@@ -20,7 +29,7 @@ const RecentStandardsList = ({ recentStandardsList, standardsArr, handleAddStand
         ))}
       </RecentStandards>
     </StandardsWrapper>
-  );
-};
+  )
+}
 
-export default RecentStandardsList;
+export default RecentStandardsList

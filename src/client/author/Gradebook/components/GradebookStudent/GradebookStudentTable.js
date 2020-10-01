@@ -23,6 +23,8 @@ const GradebookStudentTable = ({ t, dataSource = [], windowHeight }) => {
     d.endDate = d.endDate || 0;
   });
 
+ const data = dataSource.filter(el => el.status !== "UN ASSIGNED")
+ 
   const columns = [
     {
       title: "Test Name",
@@ -127,7 +129,7 @@ const GradebookStudentTable = ({ t, dataSource = [], windowHeight }) => {
   return (
     <StyledTable
       columns={columns}
-      dataSource={dataSource}
+      dataSource={data}
       pagination={false}
       scroll={{ y: windowHeight - 350 }}
       urlHasStudent

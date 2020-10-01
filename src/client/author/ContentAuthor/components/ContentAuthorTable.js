@@ -280,7 +280,7 @@ class ContentAuthorTable extends Component {
   };
 
   handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadFilteredList);
+    this.setState({ searchByName: value, currentPage: 1 }, this.loadFilteredList);
   };
 
   onSearchFilter = (value, event, i) => {

@@ -825,7 +825,7 @@ class ClassBoard extends Component {
         )}
         {showRemoveStudentsPopup && (
           <ConfirmationModal
-            title="Remove Students"
+            title="Unassign Students"
             show={showRemoveStudentsPopup}
             onOk={this.handleRemoveStudents}
             onCancel={this.handleCancelRemove}
@@ -1033,7 +1033,7 @@ class ClassBoard extends Component {
                           </MenuItems>
                           <MenuItems data-cy="removeStudents" onClick={this.handleShowRemoveStudentsModal}>
                             <IconRemove />
-                            <span>Remove Students</span>
+                            <span>Unassign Students</span>
                           </MenuItems>
                           <MenuItems
                             data-cy="downloadGrades"

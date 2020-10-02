@@ -2,22 +2,21 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Menu } from 'antd'
 import Modal from 'react-responsive-modal'
+import queryString from 'query-string'
+import { get } from 'lodash'
 import { logoutAction } from '../../../src/actions/auth'
 import CLILogo from '../../assets/svgs/cli-logo.svg'
-import { get } from 'lodash'
-import queryString from 'query-string'
 import {
   BaseText,
   Button,
   EduLogo,
   HighlightedText,
-  IconDropdown, 
+  IconDropdown,
   StyledLogo,
-  StyledSignOut, 
+  StyledSignOut,
   StyledText,
   UserInfo,
   UserName,
-  IconDropdown,
 } from './styled'
 
 const CLIAccessBanner = ({
@@ -26,8 +25,8 @@ const CLIAccessBanner = ({
   lastName = '',
   onClose,
   logout,
-  location, 
-  isCliUser
+  location,
+  isCliUser,
 }) => {
   const [isVisible, setVisible] = useState(false)
 

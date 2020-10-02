@@ -33,6 +33,7 @@ import {
   getUserRole,
   getGroupList,
 } from '../../../src/selectors/user'
+import { getFormattedName } from '../../../Gradebook/transformers'
 
 const StudentsList = ({
   cuId,
@@ -81,13 +82,16 @@ const StudentsList = ({
       width: '20%',
       align: 'left',
       sorter: (a, b) => (b.lastName || '').localeCompare(a.lastName || ''),
-      render: (_, { firstName, lastName }) => (
-        <span>
-          {`${lastName ? `${lastName}, ` : ''}${
-            firstName === 'Anonymous' || firstName === '' ? '-' : firstName
+      render: (_, { firstName, lastName, middleName }) => {
+        const fullName = getFormattedName(firstName, middleName, lastName)
+        return (
+          <span>
+          {`${
+            fullName === 'Anonymous' || fullName === '' ? '-' : fullName
           }`}
         </span>
-      ),
+        )
+      },
     },
     {
       title: 'Username',

@@ -17,6 +17,7 @@ import {
   changeClassAction,
   getCurrentGroup,
 } from '../Login/ducks'
+import { getFormattedName } from '../../author/Gradebook/transformers'
 
 const ClassSelector = ({
   t,
@@ -134,7 +135,7 @@ function StudentSelect({ changeChild, childs, currentChild }) {
       >
         {childs.map((cl) => (
           <Select.Option key={cl._id} value={cl._id}>
-            {cl.name}
+            {getFormattedName(cl.firstName, cl.middleName, cl.lastName)}
           </Select.Option>
         ))}
       </Select>

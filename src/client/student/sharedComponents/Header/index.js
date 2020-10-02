@@ -61,10 +61,10 @@ const Header = ({
             Review Responses
           </EduButton>
         )}
-        {showExit && !showReviewResponses && (
-          <EduButton onClick={onExit}>EXIT</EduButton>
-        )}
       </FlexContainer>
+    )}
+    {showExit && !showReviewResponses && (
+      <EduButton onClick={onExit}>EXIT</EduButton>
     )}
   </MainHeader>
 )

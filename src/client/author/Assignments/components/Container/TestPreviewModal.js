@@ -14,7 +14,8 @@ const TestPreviewModal = ({
   test,
   error,
   closeTestPreviewModal,
-  isStudentReport = false,
+  isShowStudentWork = false,
+  isStudentReport,
   passages,
   studentReportModal,
   currentAssignmentId,
@@ -74,7 +75,7 @@ const TestPreviewModal = ({
           passages={passages}
           preview
           showTools={!isStudentReport}
-          isStudentReport={isStudentReport}
+          isShowStudentWork={isShowStudentWork}
           studentReportModal={studentReportModal}
           currentAssignmentId={currentAssignmentId}
           currentAssignmentClass={currentAssignmentClass}

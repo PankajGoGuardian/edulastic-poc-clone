@@ -37,16 +37,36 @@ import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
 
 class AssessmentPlayerSimple extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showExitPopup: false,
-      testItemState: '',
-      toolsOpenStatus: [0],
-      history: 0,
-      currentItem: 0,
-      enableCrossAction: false,
-    }
+  static propTypes = {
+    theme: PropTypes.object,
+    isLast: PropTypes.func.isRequired,
+    isFirst: PropTypes.func.isRequired,
+    moveToNext: PropTypes.func.isRequired,
+    moveToPrev: PropTypes.func.isRequired,
+    gotoQuestion: PropTypes.func.isRequired,
+    currentItem: PropTypes.any.isRequired,
+    items: PropTypes.any.isRequired,
+    title: PropTypes.string.isRequired,
+    evaluate: PropTypes.any.isRequired,
+    checkAnswer: PropTypes.func.isRequired,
+    itemRows: PropTypes.any,
+    view: PropTypes.string.isRequired,
+    history: PropTypes.object.isRequired,
+    t: PropTypes.func.isRequired,
+  }
+
+  static defaultProps = {
+    theme: themes,
+    itemRows: [],
+  }
+
+  state = {
+    showExitPopup: false,
+    testItemState: '',
+    toolsOpenStatus: [0],
+    history: 0,
+    currentItem: 0,
+    enableCrossAction: false,
   }
 
   headerRef = React.createRef()
@@ -66,7 +86,6 @@ class AssessmentPlayerSimple extends React.Component {
 
   toggleToolsOpenStatus = (tool) => {
     let { toolsOpenStatus, enableCrossAction } = this.state
-    const { hasDrawingResponse } = this.props
     if (tool === 3 || tool === 5) {
       const index = toolsOpenStatus.indexOf(tool)
       if (index !== -1) {
@@ -77,10 +96,7 @@ class AssessmentPlayerSimple extends React.Component {
       if (toolsOpenStatus.includes(5)) {
         const { items, currentItem } = this.props
         if (!isUndefined(currentItem) && Array.isArray(items)) {
-          if (
-            !hasDrawingResponse &&
-            showScratchpadInfoNotification(items[currentItem])
-          ) {
+          if (showScratchpadInfoNotification(items[currentItem])) {
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
@@ -298,29 +314,6 @@ class AssessmentPlayerSimple extends React.Component {
       </ThemeProvider>
     )
   }
-}
-
-AssessmentPlayerSimple.propTypes = {
-  theme: PropTypes.object,
-  isLast: PropTypes.func.isRequired,
-  isFirst: PropTypes.func.isRequired,
-  moveToNext: PropTypes.func.isRequired,
-  moveToPrev: PropTypes.func.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
-  currentItem: PropTypes.any.isRequired,
-  items: PropTypes.any.isRequired,
-  title: PropTypes.string.isRequired,
-  evaluate: PropTypes.any.isRequired,
-  checkAnswer: PropTypes.func.isRequired,
-  itemRows: PropTypes.any,
-  view: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
-}
-
-AssessmentPlayerSimple.defaultProps = {
-  theme: themes,
-  itemRows: [],
 }
 
 const enhance = compose(

@@ -28,7 +28,7 @@ const AssessmentPlayer = ({
   LCBPreviewModal,
   closeTestPreviewModal,
   submitPreviewTest,
-  isStudentReport = false,
+  isShowStudentWork = false,
   showTools,
   startAssessment,
   passages,
@@ -52,7 +52,7 @@ const AssessmentPlayer = ({
       demo,
       test,
       groupId: groupId || currentAssignmentClass,
-      isStudentReport,
+      isShowStudentWork,
       playlistId,
       currentAssignmentId,
       sharedType,
@@ -127,7 +127,7 @@ const AssessmentPlayer = ({
         preview
         demo={demo}
         showTools={showTools}
-        isStudentReport={isStudentReport}
+        showScratchPad={isShowStudentWork}
         passages={passages}
         studentReportModal={studentReportModal}
         {...restProps}

@@ -62,11 +62,42 @@ class AssessmentPlayerDefault extends React.Component {
       defaultContentWidth: 900,
       defaultHeaderHeight: 62,
     }
-    this.scrollContainer = React.createRef()
   }
 
+  static propTypes = {
+    theme: PropTypes.object,
+    scratchPad: PropTypes.any.isRequired,
+    highlights: PropTypes.any.isRequired,
+    isFirst: PropTypes.func.isRequired,
+    moveToNext: PropTypes.func.isRequired,
+    moveToPrev: PropTypes.func.isRequired,
+    currentItem: PropTypes.any.isRequired,
+    items: PropTypes.any.isRequired,
+    gotoQuestion: PropTypes.any.isRequired,
+    itemRows: PropTypes.array.isRequired,
+    evaluation: PropTypes.any.isRequired,
+    showHints: PropTypes.func.isRequired,
+    checkAnswer: PropTypes.func.isRequired,
+    history: PropTypes.func.isRequired,
+    windowWidth: PropTypes.number.isRequired,
+    questions: PropTypes.object.isRequired,
+    userWork: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
+    answerChecksUsedForItem: PropTypes.number.isRequired,
+    previewPlayer: PropTypes.bool.isRequired,
+    saveUserWork: PropTypes.func.isRequired,
+    LCBPreviewModal: PropTypes.any.isRequired,
+    setUserAnswer: PropTypes.func.isRequired,
+    userAnswers: PropTypes.object.isRequired,
+  }
+
+  static defaultProps = {
+    theme: themes,
+  }
+
+  scrollContainer = React.createRef()
+
   changeTool = (val) => {
-    const { hasDrawingResponse } = this.props
     let { currentToolMode, enableCrossAction } = this.state
     if (val === 3 || val === 5) {
       const index = currentToolMode.indexOf(val)
@@ -79,10 +110,7 @@ class AssessmentPlayerDefault extends React.Component {
       if (currentToolMode.includes(5)) {
         const { items, currentItem } = this.props
         if (!isUndefined(currentItem) && Array.isArray(items)) {
-          if (
-            !hasDrawingResponse &&
-            showScratchpadInfoNotification(items[currentItem])
-          ) {
+          if (showScratchpadInfoNotification(items[currentItem])) {
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
@@ -268,7 +296,7 @@ class AssessmentPlayerDefault extends React.Component {
       zoomLevel: _zoomLevel,
       selectedTheme = 'default',
       closeTestPreviewModal,
-      isStudentReport,
+      showScratchPad,
       passage,
       defaultAP,
       playerSkinType,
@@ -316,7 +344,7 @@ class AssessmentPlayerDefault extends React.Component {
       })
     }
 
-    const scratchPadMode = currentToolMode.indexOf(5) !== -1 || isStudentReport
+    const scratchPadMode = currentToolMode.indexOf(5) !== -1 || showScratchPad
 
     // calculate width of question area
     const availableWidth = windowWidth - 70
@@ -547,7 +575,6 @@ class AssessmentPlayerDefault extends React.Component {
                       enableMagnifier={enableMagnifier}
                       updateScratchpadtoStore
                       isPassageWithQuestions={item?.isPassageWithQuestions}
-                      isStudentReport={isStudentReport}
                     />
                   )}
                   {testItemState === 'check' && (
@@ -578,7 +605,6 @@ class AssessmentPlayerDefault extends React.Component {
                       userWork={scratchPad}
                       saveHintUsage={this.saveHintUsage}
                       changePreviewTab={this.handleChangePreview}
-                      isStudentReport={isStudentReport}
                       enableMagnifier={enableMagnifier}
                     />
                   )}
@@ -602,42 +628,11 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentWillUnmount() {
-    const { previewPlayer, clearUserWork, isStudentReport } = this.props
-    if (previewPlayer && !isStudentReport) {
+    const { previewPlayer, clearUserWork, showScratchPad } = this.props
+    if (previewPlayer && !showScratchPad) {
       clearUserWork()
     }
   }
-}
-
-AssessmentPlayerDefault.propTypes = {
-  theme: PropTypes.object,
-  scratchPad: PropTypes.any.isRequired,
-  highlights: PropTypes.any.isRequired,
-  isFirst: PropTypes.func.isRequired,
-  moveToNext: PropTypes.func.isRequired,
-  moveToPrev: PropTypes.func.isRequired,
-  currentItem: PropTypes.any.isRequired,
-  items: PropTypes.any.isRequired,
-  gotoQuestion: PropTypes.any.isRequired,
-  itemRows: PropTypes.array.isRequired,
-  evaluation: PropTypes.any.isRequired,
-  showHints: PropTypes.func.isRequired,
-  checkAnswer: PropTypes.func.isRequired,
-  history: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
-  questions: PropTypes.object.isRequired,
-  userWork: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired,
-  answerChecksUsedForItem: PropTypes.number.isRequired,
-  previewPlayer: PropTypes.bool.isRequired,
-  saveUserWork: PropTypes.func.isRequired,
-  LCBPreviewModal: PropTypes.any.isRequired,
-  setUserAnswer: PropTypes.func.isRequired,
-  userAnswers: PropTypes.object.isRequired,
-}
-
-AssessmentPlayerDefault.defaultProps = {
-  theme: themes,
 }
 
 function getScratchPadfromActivity(state, props) {

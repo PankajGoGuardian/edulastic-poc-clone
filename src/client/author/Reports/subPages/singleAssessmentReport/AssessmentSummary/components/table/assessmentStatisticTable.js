@@ -93,13 +93,14 @@ export const AssessmentStatisticTable = (props) => {
       if (sumTotalScore) {
         avgScore = (sumTotalScore / sumStudentsGraded || 0).toFixed(2)
       }
+
       const result = {
         ...obj,
         avgStudentScore,
         scoreVariance: scoreVariance.toFixed(2),
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
         avgScore,
-        assessmentDate: formatDate(maxAssessmentDate),
+        assessmentDate: formatDate(maxAssessmentDate, true),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,
         studentsGraded: sumStudentsGraded,
@@ -138,11 +139,11 @@ export const AssessmentStatisticTable = (props) => {
       }
 
       if (_tableType.key === 'school' || role === 'teacher') {
-        columns[1].sorter = sortNumbers('avgStudentScore')
-        columns[1].render = (text) => `${text}%`
+        columns[5].sorter = sortNumbers('avgStudentScore')
+        columns[5].render = (text) => `${text}%`
       } else {
-        columns[2].sorter = sortNumbers('avgStudentScore')
-        columns[2].render = (text) => `${text}%`
+        columns[6].sorter = sortNumbers('avgStudentScore')
+        columns[6].render = (text) => `${text}%`
       }
     })
 
@@ -182,7 +183,7 @@ export const AssessmentStatisticTable = (props) => {
       <Row type="flex" justify="start" className="top-area">
         <Col className="top-area-col table-title">
           <StyledH3>
-            Assessment Statistics of {name} by{' '}
+            Assignment Statistics for {name} by{' '}
             <span className="stats-grouped-by">{tableType.title}</span>
           </StyledH3>
         </Col>

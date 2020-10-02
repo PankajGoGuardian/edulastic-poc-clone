@@ -564,6 +564,15 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
+
+    const isCliUser = yield select((state) => state.user?.isCliUser)
+    if (isCliUser) {
+      window.parent.postMessage(
+        JSON.stringify({ type: 'SUBMIT_ASSIGNMENT' }),
+        '*'
+      )
+    }
+
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: '' },
@@ -597,7 +606,6 @@ function* submitTest({ payload }) {
 
     if (preventRouteChange) return
     const test = yield select((state) => state.test)
-    const isCliUser = yield select((state) => state.user?.isCliUser)
 
     if (isCliUser) {
       yield put(

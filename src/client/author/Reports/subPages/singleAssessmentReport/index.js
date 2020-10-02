@@ -38,6 +38,8 @@ import {
   FilterButton,
 } from '../../common/styled'
 
+import { hidePendoBanner } from '../../../../common/utils/helpers'
+
 const INITIAL_DD_FILTERS = {
   gender: 'all',
   frlStatus: 'all',
@@ -79,6 +81,9 @@ const SingleAssessmentReportContainer = (props) => {
     if (isCliUser) {
       updateCliUser(true)
     }
+    
+    hidePendoBanner(isCliUser);
+  
     return () => {
       console.log('Single Assessment Reports Component Unmount')
       resetAllReports()

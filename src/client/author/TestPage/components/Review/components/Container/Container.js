@@ -21,6 +21,7 @@ import {
   setTestItemsAction,
 } from '../../../AddItems/ducks'
 import { getStandardsSelector } from '../../ducks'
+import queryString from 'query-string'
 import {
   setTestDataAction,
   previewCheckAnswerAction,
@@ -55,6 +56,7 @@ import {
 import TestPreviewModal from '../../../../../Assignments/components/Container/TestPreviewModal'
 import ReviewItems from '../ReviewItems'
 import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
+import { hidePendoBanner } from '../../../../../../common/utils/helpers'
 
 class Review extends PureComponent {
   static propTypes = {
@@ -117,7 +119,7 @@ class Review extends PureComponent {
 
   componentDidMount() {
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
-    const { test, addItemsToAutoselectGroupsRequest } = this.props
+    const { test, addItemsToAutoselectGroupsRequest, location } = this.props
     const hasAutoSelectItems = test.itemGroups.some(
       (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
     )
@@ -134,6 +136,11 @@ class Review extends PureComponent {
         isTestPreviewModalVisible: true,
       })
     }
+
+    const query = queryString.parse(location.search);
+    const { cliUser } = query;
+
+    hidePendoBanner(cliUser);
   }
 
   // componentDidUpdate(prevProps, prevState) {

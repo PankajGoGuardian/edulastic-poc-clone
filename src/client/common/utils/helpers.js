@@ -437,3 +437,11 @@ export const checkClientTime = (meta = {}) => {
     }
   })
 }
+
+/** Use this helper to hide edulastic welcome banner for Mahia CLI users. this banner is coming from pendo */
+export const hidePendoBanner = (isCliUser) => {
+  const el = document.getElementById("pendo-base");
+  if (el && isCliUser) {
+    el.style.display = "none";
+  }
+}

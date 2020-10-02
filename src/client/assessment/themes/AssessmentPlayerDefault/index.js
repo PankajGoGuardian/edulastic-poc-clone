@@ -19,7 +19,7 @@ import {
 } from '../../sharedDucks/bookmark'
 import { getSkippedAnswerSelector } from '../../selectors/answers'
 import ReportIssuePopover from '../common/ReportIssuePopover'
-import { isZoomGreator } from '../../../common/utils/helpers'
+import { hidePendoBanner, isZoomGreator } from '../../../common/utils/helpers'
 import SettingsModal from '../../../student/sharedComponents/SettingsModal'
 import { Main, Container, CalculatorContainer } from '../common'
 import TestItemPreview from '../../components/TestItemPreview'
@@ -246,6 +246,11 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     return null
+  }
+
+  componentDidMount() {
+    const { isCliUser } = this.props;
+    hidePendoBanner(isCliUser);
   }
 
   componentDidUpdate(previousProps) {
@@ -725,6 +730,7 @@ const enhance = compose(
       timedAssignment: state.test?.settings?.timedAssignment,
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag,
+      isCliUser: get(state, "user.isCliUser", false)
     }),
     {
       changePreview: changePreviewAction,

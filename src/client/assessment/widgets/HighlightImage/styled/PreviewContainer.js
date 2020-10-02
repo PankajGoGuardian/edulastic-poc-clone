@@ -4,6 +4,6 @@ import { StyledPaperWrapper } from '../../../styled/Widget'
 export const PreviewContainer = styled(StyledPaperWrapper)`
   position: relative;
   border-radius: 0px;
-  overflow: ${({ showOverflow }) => (showOverflow ? 'auto' : 'hidden')};
+  overflow: hidden;
   overflow-x: auto;
 `

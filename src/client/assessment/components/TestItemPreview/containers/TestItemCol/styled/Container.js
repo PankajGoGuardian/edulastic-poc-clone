@@ -3,7 +3,7 @@ import { mobileWidth } from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
-  width: 100%;
+  width: ${({ colWidth }) => colWidth || '100%'};
   flex-direction: column;
   border-right-color: ${(props) =>
     props.theme.testItemPreview.itemColBorderColor};
@@ -13,8 +13,9 @@ export const Container = styled.div`
   min-height: ${(props) => props.isStudentAttempt && 'calc(100vh - 122px)'};
   max-height: ${(props) => props.isStudentAttempt && 'calc(100vh - 122px)'};
   overflow: ${(props) =>
-    props.isStudentAttempt && !props.showScratchpad && 'auto'};
-
+    props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
+      ? 'auto'
+      : 'hidden'};
   @media (max-width: ${mobileWidth}) {
     padding-left: 0px;
     margin-right: ${(props) => !props.value && '20px'};
@@ -26,6 +27,6 @@ export const WidgetContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  height: 100%;
   position: relative;
+  flex-grow: 1;
 `

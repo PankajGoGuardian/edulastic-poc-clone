@@ -210,6 +210,8 @@ class TestItemCol extends Component {
       scratchpadDimensions,
       isPrintPreview,
       isStudentAttempt,
+      isExpressGrader,
+      isStudentReport,
     } = restProps
 
     const widgets =
@@ -221,9 +223,11 @@ class TestItemCol extends Component {
       <Container
         style={style}
         value={value}
-        colCount={colCount}
+        colWidth={colWidth}
         showScratchpad={this.showScratchpad}
         isStudentAttempt={isStudentAttempt}
+        isExpressGrader={isExpressGrader}
+        isStudentReport={isStudentReport}
         className={`test-item-col ${
           col?.tabs?.length ? 'test-item-tab-container' : ''
         }`}

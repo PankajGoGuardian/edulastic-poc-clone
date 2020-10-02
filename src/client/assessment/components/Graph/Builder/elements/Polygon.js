@@ -67,10 +67,7 @@ function create(board, object, polygonPoints, settings = {}) {
           board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
         }
       })
-      border.on('drag', (e) => {
-        if (e.movementX === 0 && e.movementY === 0) {
-          return
-        }
+      border.on('drag', () => {
         border.dragged = true
         board.dragged = true
       })

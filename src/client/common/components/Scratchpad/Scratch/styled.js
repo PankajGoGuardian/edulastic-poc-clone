@@ -13,8 +13,7 @@ export const ScratchpadContainer = styled.div`
 
 export const ZwibblerMain = styled.div`
   width: ${({ width }) => (width ? `${width}px` : '100%')};
-  height: ${({ height, hideToolBar }) =>
-    height ? `${height}px` : hideToolBar ? '100%' : 'calc(100% - 90px)'};
+  height: ${({ height }) => (height ? `${height}px` : '100%')};
   border: ${({ readOnly, deleteMode }) =>
     readOnly ? '0px' : `1px solid ${deleteMode ? darkRed : greyThemeLight}`};
   background: radial-gradient(#b9b9b9 2px, transparent 2px);

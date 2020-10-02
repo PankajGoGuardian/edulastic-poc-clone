@@ -21,26 +21,6 @@ import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
 
 class TestItemPreview extends Component {
-  static propTypes = {
-    cols: PropTypes.array.isRequired,
-    verticalDivider: PropTypes.bool,
-    scrolling: PropTypes.bool,
-    preview: PropTypes.string.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    showFeedback: PropTypes.bool,
-    style: PropTypes.object,
-    questions: PropTypes.object.isRequired,
-    student: PropTypes.object,
-  }
-
-  static defaultProps = {
-    showFeedback: false,
-    verticalDivider: false,
-    scrolling: false,
-    style: { padding: 0, display: 'flex' },
-    student: {},
-  }
-
   constructor(props) {
     super(props)
     const { isPassageWithQuestions, inLCB } = props
@@ -259,32 +239,6 @@ class TestItemPreview extends Component {
     }
   }
 
-  get defaultScratchpadVisibility() {
-    const {
-      cols,
-      viewComponent,
-      isExpressGrader,
-      userWork,
-      disableResponse: isAnswerModifiable,
-    } = this.props
-    const widgets = (cols || []).flatMap((col) => col?.widgets).filter((_) => _)
-    const showScratchpadByDefault = widgets.some(
-      (x) => x.type === questionType.HIGHLIGHT_IMAGE
-    )
-    const isStudentAttempt = ['studentPlayer', 'practicePlayer'].includes(
-      viewComponent
-    )
-    if (showScratchpadByDefault && !isStudentAttempt) {
-      if (isExpressGrader && !isAnswerModifiable) {
-        // return true even if no data, it will create a fresh one to draw
-        return true
-      }
-      // return true only if there is scratchpad data
-      return !!userWork
-    }
-    return false
-  }
-
   render() {
     const {
       cols,
@@ -421,7 +375,9 @@ class TestItemPreview extends Component {
                       metaData={metaData}
                       preview={preview}
                       scratchPadMode={scratchPadMode}
-                      colWidth={collapseDirection ? '50%' : '100%'}
+                      colWidth={
+                        collapseDirection || cols.length == 1 ? '100%' : '50%'
+                      }
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}
                       windowWidth={windowWidth}
@@ -463,6 +419,8 @@ class TestItemPreview extends Component {
                 style={{
                   position: 'relative',
                   'min-width': !isPrintPreview && '265px',
+                  overflowY: isExpressGrader && 'auto',
+                  overflowX: isExpressGrader && 'hidden',
                 }}
                 className="__print-feedback-main-wrapper"
               >
@@ -474,6 +432,26 @@ class TestItemPreview extends Component {
       </ThemeProvider>
     )
   }
+}
+
+TestItemPreview.propTypes = {
+  cols: PropTypes.array.isRequired,
+  verticalDivider: PropTypes.bool,
+  scrolling: PropTypes.bool,
+  preview: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  showFeedback: PropTypes.bool,
+  style: PropTypes.object,
+  questions: PropTypes.object.isRequired,
+  student: PropTypes.object,
+}
+
+TestItemPreview.defaultProps = {
+  showFeedback: false,
+  verticalDivider: false,
+  scrolling: false,
+  style: { padding: 0, display: 'flex' },
+  student: {},
 }
 
 const enhance = compose(

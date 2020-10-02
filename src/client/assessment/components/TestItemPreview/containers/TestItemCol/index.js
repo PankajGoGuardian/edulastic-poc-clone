@@ -154,6 +154,7 @@ class TestItemCol extends Component {
       colIndex,
       colCount,
       col,
+      userWork,
       isPrintPreview,
       isLCBView,
     } = this.props
@@ -171,7 +172,7 @@ class TestItemCol extends Component {
     showScratchpad =
       showScratchpad && !shouldHideScratchpad && !hasDrawingResponse
 
-    return showScratchpad
+    return showScratchpad && !!userWork
   }
 
   get showScratchToolBar() {
@@ -210,6 +211,8 @@ class TestItemCol extends Component {
       scratchpadDimensions,
       isPrintPreview,
       isStudentAttempt,
+      isExpressGrader,
+      isStudentReport,
     } = restProps
 
     const widgets =
@@ -221,9 +224,11 @@ class TestItemCol extends Component {
       <Container
         style={style}
         value={value}
-        colCount={colCount}
+        colWidth={colWidth}
         showScratchpad={this.showScratchpad}
         isStudentAttempt={isStudentAttempt}
+        isExpressGrader={isExpressGrader}
+        isStudentReport={isStudentReport}
         className={`test-item-col ${
           col?.tabs?.length ? 'test-item-tab-container' : ''
         }`}

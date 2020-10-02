@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
+import max from 'lodash/max'
 import { drawTools } from '@edulastic/constants'
 import {
   WithResources,
@@ -357,8 +358,8 @@ const Scratchpad = ({
       setScratchpadRect({
         top: zwibblerDomRect.top,
         left: zwibblerDomRect.left,
-        width: zwibblerDomRect.width,
-        height: zwibblerDomRect.height,
+        width: max(width, zwibblerDomRect.width),
+        height: max(height, zwibblerDomRect.height),
       })
     }
   }, [conatinerWidth])

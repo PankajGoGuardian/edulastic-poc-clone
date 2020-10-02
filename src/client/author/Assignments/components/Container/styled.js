@@ -203,3 +203,14 @@ export const TableWrapper = styled.div`
   position: relative;
   width: 100%;
 `
+
+export const TestItemPreviewContainer = styled(FlexContainer)`
+  width: 100%;
+  margin-bottom: 0px;
+  padding-top: 20px;
+  align-items: stretch;
+  height: 100%;
+  p {
+    padding: 2px 0 0 0;
+  }
+`

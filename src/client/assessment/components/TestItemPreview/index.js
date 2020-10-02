@@ -25,32 +25,12 @@ import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
 
 class TestItemPreview extends Component {
-  static propTypes = {
-    cols: PropTypes.array.isRequired,
-    verticalDivider: PropTypes.bool,
-    scrolling: PropTypes.bool,
-    preview: PropTypes.string.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    showFeedback: PropTypes.bool,
-    style: PropTypes.object,
-    questions: PropTypes.object.isRequired,
-    student: PropTypes.object,
-  }
-
-  static defaultProps = {
-    showFeedback: false,
-    verticalDivider: false,
-    scrolling: false,
-    style: { padding: 0, display: 'flex' },
-    student: {},
-  }
-
   constructor(props) {
     super(props)
-    const { isPassageWithQuestions, inLCB } = props
+    const { isPassageWithQuestions, isLCBView } = props
     const toggleCollapseMode =
       (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions) ||
-      (isPassageWithQuestions && inLCB)
+      (isPassageWithQuestions && isLCBView)
     this.state = {
       toggleCollapseMode,
       collapseDirection: toggleCollapseMode ? 'left' : '',
@@ -449,7 +429,7 @@ class TestItemPreview extends Component {
                       colCount={cols.length}
                       colIndex={i}
                       col={
-                        collapseDirection ? { ...col, dimension: '90%' } : col
+                        collapseDirection ? { ...col, dimension: '100%' } : col
                       }
                       view="preview"
                       metaData={metaData}
@@ -498,7 +478,8 @@ class TestItemPreview extends Component {
           </Container>
           {showScratchpadByDefault &&
             (isLCBView || isExpressGrader) &&
-            history && (
+            history &&
+            showStudentWork && (
               <TimeSpentWrapper margin="0px 12px 12px">
                 <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
                   Show student work
@@ -510,26 +491,45 @@ class TestItemPreview extends Component {
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) ||
-          (!isStudentReport && !isReviewTab)) && (
-          <>
-            {!isCliUser && (
-              <div
-                style={{
-                  position: 'relative',
-                  'min-width': !isPrintPreview && '265px',
-                }}
-                className="__print-feedback-main-wrapper"
-              >
-                {this.renderFeedbacks(showStackedView)}
-              </div>
-            )}
-          </>
-        )}
+          (!isStudentReport && !isReviewTab)) &&
+          showFeedback && (
+            <>
+              {!isCliUser && (
+                <div
+                  style={{
+                    position: 'relative',
+                    'min-width': !isPrintPreview && '265px',
+                  }}
+                  className="__print-feedback-main-wrapper"
+                >
+                  {this.renderFeedbacks(showStackedView)}
+                </div>
+              )}
+            </>
+          )}
       </ThemeProvider>
     )
   }
 }
+TestItemPreview.propTypes = {
+  cols: PropTypes.array.isRequired,
+  verticalDivider: PropTypes.bool,
+  scrolling: PropTypes.bool,
+  preview: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  showFeedback: PropTypes.bool,
+  style: PropTypes.object,
+  questions: PropTypes.object.isRequired,
+  student: PropTypes.object,
+}
 
+TestItemPreview.defaultProps = {
+  showFeedback: false,
+  verticalDivider: false,
+  scrolling: false,
+  style: { padding: 0, display: 'flex' },
+  student: {},
+}
 const enhance = compose(
   withWindowSizes,
   withTheme,

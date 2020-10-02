@@ -3,7 +3,7 @@ import { maxBy } from 'lodash'
 import { Modal } from 'antd'
 import { notification } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
-import { test as testConstants } from '@edulastic/constants'
+import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
 const releaseGradeLabels = testConstants.releaseGradeLabels
 const ARCHIVED_TEST_MSG =
@@ -50,7 +50,8 @@ export const formatAssignment = (assignment) => {
       : {}
     ).closedDate
   }
-  const lastAttempt = maxBy(reports, (o) => parseInt(o.startDate, 10)) || {}
+  const lastAttempt =
+    maxBy(reports, (o) => parseInt(o.startDate, 10) || 0) || {}
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0
   const absent = lastAttempt.status == 2
@@ -218,7 +219,10 @@ const redirectToAssessmentPlayer = (
       testActivityId: lastAttempt._id,
       classId,
     })
-  } else if (attemptCount < maxAttempts) {
+  } else if (
+    attemptCount < maxAttempts ||
+    lastAttempt.status === testActivityStatus.NOT_STARTED
+  ) {
     startAssignment({ testId, assignmentId, testType, classId })
   }
 }

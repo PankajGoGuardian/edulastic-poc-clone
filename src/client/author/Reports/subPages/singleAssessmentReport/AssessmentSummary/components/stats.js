@@ -101,7 +101,7 @@ export const Stats = (props) => {
       >
         <StatItem
           fontSize="14px"
-          heading="Students Assigned"
+          heading="Total Assigned"
           value={state.studentsAssigned}
         />
         <StatItem

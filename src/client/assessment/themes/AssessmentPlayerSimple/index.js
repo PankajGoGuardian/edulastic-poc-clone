@@ -159,7 +159,7 @@ class AssessmentPlayerSimple extends React.Component {
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
-  saveHistory = (sourceId) => (data) => {
+  saveUserWork = (sourceId) => (data) => {
     const {
       saveUserWork,
       items,
@@ -257,7 +257,7 @@ class AssessmentPlayerSimple extends React.Component {
             previewPlayer={previewPlayer}
             finishTest={this.openExitPopup}
             setCrossAction={
-              enableCrossAction ? this.saveHistory('crossAction') : false
+              enableCrossAction ? this.saveUserWork('crossAction') : false
             }
             crossAction={crossAction || {}}
             bookmarks={bookmarksInOrder}
@@ -286,17 +286,17 @@ class AssessmentPlayerSimple extends React.Component {
               highlights={highlights}
               enableCrossAction={enableCrossAction}
               unansweredQuestionCount={unansweredQuestionCount}
-              setHighlights={this.saveHistory('resourceId')}
+              setHighlights={this.saveUserWork('resourceId')}
               setCrossAction={
-                enableCrossAction ? this.saveHistory('crossAction') : false
+                enableCrossAction ? this.saveUserWork('crossAction') : false
               }
               crossAction={crossAction || {}}
               previousQuestionActivities={previousQuestionActivities}
               zoomLevel={zoomLevel}
               windowWidth={windowWidth}
               scratchPadMode={scratchPadMode}
-              saveHistory={this.saveHistory('scratchpad')}
-              saveAttachments={this.saveHistory('attachments')}
+              saveUserWork={this.saveUserWork('scratchpad')}
+              saveAttachments={this.saveUserWork('attachments')}
               attachments={attachments}
               history={scratchPad}
               changePreview={this.handleChangePreview}

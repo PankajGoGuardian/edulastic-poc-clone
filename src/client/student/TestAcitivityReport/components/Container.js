@@ -86,7 +86,7 @@ const ReportListContent = ({
       .flatMap((_item) => _item?.widgets)
       ?.find((_item) => _item?.widgetType === 'resource')
 
-  const { scratchPad: { attachments } = {} } = questionActivity
+  const { scratchPad: { attachments, dimensions } = {} } = questionActivity
 
   return (
     <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
@@ -113,8 +113,9 @@ const ReportListContent = ({
               viewComponent="studentReport"
               evaluation={evaluation}
               passageTestItemID={passageId}
-              history={userWork}
+              userWork={userWork}
               attachments={attachments}
+              scratchpadDimensions={dimensions}
               itemLevelScoring={item?.itemLevelScoring}
             />
             {/* we may need to bring hint button back */}

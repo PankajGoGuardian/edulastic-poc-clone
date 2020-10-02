@@ -186,7 +186,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
-  saveHistory = (sourceId) => (data) => {
+  saveUserWork = (sourceId) => (data) => {
     const {
       saveUserWork,
       items,
@@ -310,6 +310,7 @@ class AssessmentPlayerDefault extends React.Component {
       timedAssignment = false,
       groupId,
       utaId,
+      hasDrawingResponse,
     } = this.props
     const {
       testItemState,
@@ -463,8 +464,8 @@ class AssessmentPlayerDefault extends React.Component {
             tool={currentToolMode}
             changeCaculateMode={this.handleModeCaculate}
             changeTool={this.changeTool}
+            hasDrawingResponse={hasDrawingResponse}
             qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
-            qId={get(items, `[${currentItem}].data.questions[0].id`, null)}
             previewPlayer={previewPlayer}
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}
@@ -551,17 +552,17 @@ class AssessmentPlayerDefault extends React.Component {
                       highlights={highlights}
                       crossAction={crossAction || {}}
                       viewComponent="studentPlayer"
-                      setHighlights={this.saveHistory('resourceId')}
+                      setHighlights={this.saveUserWork('resourceId')}
                       setCrossAction={
                         enableCrossAction
-                          ? this.saveHistory('crossAction')
+                          ? this.saveUserWork('crossAction')
                           : false
                       } // this needs only for MCQ and MSQ
                       scratchPadMode={scratchPadMode}
-                      saveHistory={this.saveHistory('scratchpad')}
-                      saveAttachments={this.saveHistory('attachments')}
+                      saveUserWork={this.saveUserWork('scratchpad')}
+                      saveAttachments={this.saveUserWork('attachments')}
                       attachments={attachments}
-                      history={
+                      userWork={
                         LCBPreviewModal ? scratchpadActivity.data : scratchPad
                       }
                       scratchpadDimensions={
@@ -591,17 +592,17 @@ class AssessmentPlayerDefault extends React.Component {
                       crossAction={crossAction || {}}
                       showCollapseBtn
                       viewComponent="studentPlayer"
-                      setHighlights={this.saveHistory('resourceId')} // this needs only for passage type
+                      setHighlights={this.saveUserWork('resourceId')} // this needs only for passage type
                       setCrossAction={
                         enableCrossAction
-                          ? this.saveHistory('crossAction')
+                          ? this.saveUserWork('crossAction')
                           : false
                       } // this needs only for MCQ and MSQ
                       scratchPadMode={scratchPadMode}
-                      saveHistory={this.saveHistory('scratchpad')}
-                      saveAttachments={this.saveHistory('attachments')}
+                      saveUserWork={this.saveUserWork('scratchpad')}
+                      saveAttachments={this.saveUserWork('attachments')}
                       attachments={attachments}
-                      history={scratchPad}
+                      userWork={scratchPad}
                       saveHintUsage={this.saveHintUsage}
                       changePreviewTab={this.handleChangePreview}
                       enableMagnifier={enableMagnifier}

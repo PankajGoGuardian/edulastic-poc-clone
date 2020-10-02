@@ -15,10 +15,6 @@ import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
 import { Container } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
-import {
-  Scratchpad,
-  ScratchpadTool,
-} from '../../../common/components/Scratchpad'
 import { TimeSpentWrapper } from '../QuestionWrapper'
 import ShowUserWork from '../Common/ShowUserWork'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
@@ -86,11 +82,13 @@ class TestItemPreview extends Component {
   }
 
   renderCollapseButtons = () => {
+    const { isLCBView } = this.props
     const { collapseDirection } = this.state
     return (
       <Divider
         collapseDirection={collapseDirection}
         setCollapseView={this.setCollapseView}
+        hideMiddle={isLCBView}
       />
     )
   }
@@ -266,7 +264,7 @@ class TestItemPreview extends Component {
       cols,
       viewComponent,
       isExpressGrader,
-      history: scratchpadData,
+      userWork,
       disableResponse: isAnswerModifiable,
     } = this.props
     const widgets = (cols || []).flatMap((col) => col?.widgets).filter((_) => _)
@@ -282,7 +280,7 @@ class TestItemPreview extends Component {
         return true
       }
       // return true only if there is scratchpad data
-      return !!scratchpadData
+      return !!userWork
     }
     return false
   }
@@ -297,16 +295,10 @@ class TestItemPreview extends Component {
       questions,
       student,
       metaData,
-      disableResponse,
       evaluation,
       previewTab,
-      LCBPreviewModal,
-      isStudentReport,
       showCollapseBtn = false,
       scratchPadMode,
-      scratchpadDimensions,
-      saveHistory,
-      history,
       fontFamily,
       theme,
       t,
@@ -314,6 +306,8 @@ class TestItemPreview extends Component {
       ...restProps
     } = this.props
     const {
+      isStudentReport,
+      LCBPreviewModal,
       isLCBView,
       isReviewTab,
       isExpressGrader,
@@ -321,6 +315,7 @@ class TestItemPreview extends Component {
       isQuestionView,
       showStudentWork,
       timeSpent,
+      userWork,
       multipartItem,
       itemLevelScoring,
       isPassageWithQuestions,
@@ -345,14 +340,9 @@ class TestItemPreview extends Component {
     // show collapse button only in student player or in author preview mode.
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn
 
-    const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
-    const showScratchpadByDefault = widgets.some(
+    const hasDrawingResponse = widgets.some(
       (x) => x.type === questionType.HIGHLIGHT_IMAGE
     )
-    const showScratchToolBar =
-      (scratchPadMode && !LCBPreviewModal) ||
-      (!disableResponse && isExpressGrader && showScratchpadByDefault)
-
     let showStackedView = false
     if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
       if (multipartItem && !itemLevelScoring) {
@@ -365,24 +355,12 @@ class TestItemPreview extends Component {
       dataSource = dataSource.filter((col) => (col?.widgets || []).length > 0)
     }
 
-    const borderProps = showScratchpadByDefault
+    const borderProps = hasDrawingResponse
       ? {
           border: isLCBView ? '1px solid #DADAE4' : 'none',
           borderRadius: '10px',
         }
       : {}
-
-    const shouldHideScratchpad = isLCBView && !!hasResourceTypeQuestion
-    const scratchpadHeight = get(scratchpadDimensions, 'height', null)
-    if (
-      scratchpadHeight &&
-      !isStudentAttempt &&
-      isLCBView &&
-      isSingleQuestionView &&
-      style
-    ) {
-      style.height = scratchpadHeight + 20
-    }
 
     return (
       <ThemeProvider theme={{ ...themes.default }}>
@@ -395,20 +373,18 @@ class TestItemPreview extends Component {
             flexGrow: 1,
             width: '100%',
             overflow: !isStudentAttempt && !isPrintPreview && 'auto', // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
-            background:
-              isExpressGrader && showScratchpadByDefault ? white : null,
-            'margin-bottom': showScratchpadByDefault && '10px',
+            background: isExpressGrader && hasDrawingResponse ? white : null,
+            'margin-bottom': hasDrawingResponse && '10px',
           }}
           className="__print-item-fix-width"
         >
-          {showScratchToolBar && <ScratchpadTool />}
           <Container
             width={windowWidth}
             style={{
               ...style,
               padding: 0,
             }}
-            isStudentAttempt={isStudentAttempt}
+            hideOverflow={isStudentAttempt || isExpressGrader}
             isCollapsed={!!collapseDirection}
             ref={this.containerRef}
             className="test-item-preview"
@@ -427,15 +403,7 @@ class TestItemPreview extends Component {
                   (collapseDirection === 'left' && i === 0) ||
                   (collapseDirection === 'right' && i === 1)
                 if (hideColumn && showCollapseButtons) return ''
-                const isOnlyPassage = (col?.widgets || []).every(
-                  (widget) => widget?.type === 'passage'
-                )
-                const widgetCount = (col?.widgets || []).length
-                const fullHeight =
-                  ((isExpressGrader || isLCBView) &&
-                    i === 0 &&
-                    isOnlyPassage) ||
-                  widgetCount === 1
+
                 return (
                   <>
                     {(i > 0 || collapseDirection === 'left') &&
@@ -448,34 +416,24 @@ class TestItemPreview extends Component {
                       key={i}
                       colCount={cols.length}
                       colIndex={i}
-                      col={
-                        collapseDirection ? { ...col, dimension: '90%' } : col
-                      }
+                      col={col}
                       view="preview"
                       metaData={metaData}
                       preview={preview}
+                      scratchPadMode={scratchPadMode}
+                      colWidth={collapseDirection ? '50%' : '100%'}
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}
                       windowWidth={windowWidth}
                       showFeedback={showFeedback}
                       questions={questions}
                       student={student}
-                      disableResponse={disableResponse}
-                      LCBPreviewModal={LCBPreviewModal}
                       previewTab={previewTab}
-                      fullHeight={fullHeight}
                       isSingleQuestionView={isSingleQuestionView}
                       hideInternalOverflow={hideInternalOverflow}
-                      testReviewStyle={{
-                        height: fullHeight ? '100%' : 'auto',
-                        paddingTop: 0,
-                      }}
                       showStackedView={showStackedView}
-                      isPassageWithQuestions={isPassageWithQuestions}
                       teachCherFeedBack={this.renderFeedback}
-                      isStudentReport={isStudentReport}
-                      itemLevelScoring={itemLevelScoring}
-                      showScratchpadByDefault={showScratchpadByDefault}
+                      hasDrawingResponse={hasDrawingResponse}
                       isStudentAttempt={isStudentAttempt}
                     />
                     {collapseDirection === 'right' &&
@@ -485,28 +443,16 @@ class TestItemPreview extends Component {
                 )
               })}
             </div>
-            {(this.defaultScratchpadVisibility || scratchPadMode) &&
-              !shouldHideScratchpad && (
-                <Scratchpad
-                  saveData={saveHistory}
-                  data={history}
-                  hideTools
-                  readOnly={readyOnlyScratchpad}
-                  dimensions={scratchpadDimensions}
-                />
-              )}
           </Container>
-          {showScratchpadByDefault &&
-            (isLCBView || isExpressGrader) &&
-            history && (
-              <TimeSpentWrapper margin="0px 12px 12px">
-                <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
-                  Show student work
-                </ShowUserWork>
-                <IconClockCircularOutline />
-                {timeSpent}s
-              </TimeSpentWrapper>
-            )}
+          {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
+            <TimeSpentWrapper margin="0px 12px 12px">
+              <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
+                Show student work
+              </ShowUserWork>
+              <IconClockCircularOutline />
+              {timeSpent}s
+            </TimeSpentWrapper>
+          )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) ||

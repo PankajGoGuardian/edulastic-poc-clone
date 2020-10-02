@@ -28,11 +28,19 @@ const HighlightImagePreview = ({
   showQuestionNumber,
   viewComponent,
   clearClicked,
-  hideInternalOverflow,
+  isStudentReport,
+  isLCBView,
+  isExpressGrader,
+  saveUserWork,
+  LCBPreviewModal,
+  userWork,
+  disableResponse,
+  scratchpadDimensions,
+  colWidth,
+  scratchPadMode,
 }) => {
   const containerRef = useRef()
   const { image = {} } = item
-
   const { width = 0, height = 0 } = image
 
   const imageContainerDimensions = {
@@ -57,21 +65,36 @@ const HighlightImagePreview = ({
     />
   )
 
-  const showDrawing = viewComponent === 'editQuestion'
+  const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
+  const showDrawing =
+    isLCBView ||
+    isStudentReport ||
+    isExpressGrader ||
+    viewComponent === 'editQuestion' ||
+    scratchPadMode
+  const showToolBar =
+    (showDrawing && !readyOnlyScratchpad && !disableResponse) ||
+    (!disableResponse && isExpressGrader)
 
   return (
     <React.Fragment value={{ getContainer: () => containerRef.current }}>
-      {showDrawing && <ScratchpadTool />}
+      {showToolBar && <ScratchpadTool />}
       <PreviewContainer
-        hideInternalOverflow={
-          hideInternalOverflow || viewComponent === 'authorPreviewPopup'
-        }
         padding={smallSize}
         ref={containerRef}
         boxShadow={smallSize ? 'none' : ''}
+        showOverflow={isExpressGrader}
       >
         {showDrawing && (
-          <Scratchpad clearClicked={clearClicked} hideTools disableResize />
+          <Scratchpad
+            hideTools
+            clearClicked={clearClicked}
+            readOnly={readyOnlyScratchpad}
+            dimensions={scratchpadDimensions}
+            saveData={saveUserWork}
+            conatinerWidth={colWidth}
+            data={userWork}
+          />
         )}
         <FlexContainer justifyContent="flex-start" alignItems="baseline">
           <QuestionLabelWrapper>

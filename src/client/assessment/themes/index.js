@@ -4,7 +4,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Spin, message, Modal, Button } from 'antd'
-import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from 'lodash'
+import {
+  isUndefined,
+  get,
+  isEmpty,
+  isNull,
+  isEqual,
+  isObject,
+  flatMap,
+} from 'lodash'
 import useInterval from '@use-it/interval'
 import {
   test as testTypes,
@@ -477,6 +485,10 @@ const AssessmentContainer = ({
     itemRows = [passage?.structure, ...itemRows]
   }
 
+  const hasDrawingResponse = flatMap(itemRows, (r) => r.widgets).some(
+    (x) => x.type === questionType.HIGHLIGHT_IMAGE
+  )
+
   const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows])
 
   useInterval(() => {
@@ -518,6 +530,7 @@ const AssessmentContainer = ({
     handleMagnifier,
     enableMagnifier,
     studentReportModal,
+    hasDrawingResponse,
     ...restProps,
   }
 

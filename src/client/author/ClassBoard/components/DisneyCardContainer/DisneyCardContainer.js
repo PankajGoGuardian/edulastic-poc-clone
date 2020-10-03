@@ -172,6 +172,11 @@ class DisneyCardContainer extends Component {
           if (_status === 3) {
             return <span style={{ marginTop: '-3px' }}>-</span>
           }
+
+          if(_status === 2){
+            return <span>0</span>
+          }
+
           if (attemptScore >= 0) {
             return <span>{round(attemptScore, 2) || 0}</span>
           }

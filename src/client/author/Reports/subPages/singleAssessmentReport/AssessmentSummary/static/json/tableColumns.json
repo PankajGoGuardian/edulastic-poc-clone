@@ -9,9 +9,10 @@
         "align": "left"
       },
       {
-        "title": "Avg. Student Score (%)",
-        "dataIndex": "avgStudentScore",
-        "key": "avgStudentScore",
+        "title": "Assigned on",
+        "dataIndex": "assessmentDate",
+        "key": "assessmentDate",
+        "className": "assessmentDate",
         "width": 100
       },
       {
@@ -33,10 +34,9 @@
         "width": 70
       },
       {
-        "title": "Assessment Date",
-        "dataIndex": "assessmentDate",
-        "key": "assessmentDate",
-        "className": "assessmentDate",
+        "title": "Avg. Student Score (%)",
+        "dataIndex": "avgStudentScore",
+        "key": "avgStudentScore",
         "width": 100
       },
       {
@@ -88,9 +88,10 @@
         "align": "left"
       },
       {
-        "title": "Avg. Student Score (%)",
-        "dataIndex": "avgStudentScore",
-        "key": "avgStudentScore",
+        "title": "Assigned on",
+        "dataIndex": "assessmentDate",
+        "key": "assessmentDate",
+        "className": "assessmentDate",
         "width": 100
       },
       {
@@ -112,10 +113,9 @@
         "width": 70
       },
       {
-        "title": "Assessment Date",
-        "dataIndex": "assessmentDate",
-        "key": "assessmentDate",
-        "className": "assessmentDate",
+        "title": "Avg. Student Score (%)",
+        "dataIndex": "avgStudentScore",
+        "key": "avgStudentScore",
         "width": 100
       },
       {
@@ -169,10 +169,12 @@
         "align": "left"
       },
       {
-        "title": "Avg. Student Score (%)",
-        "dataIndex": "avgStudentScore",
-        "key": "avgStudentScore",
-        "width": 141
+        "title": "Assigned on",
+        "dataIndex": "assessmentDate",
+        "key": "assessmentDate",
+        "className": "assessmentDate",
+        "width": 110,
+        "align": "left"
       },
       {
         "title": "#Assigned",
@@ -193,11 +195,10 @@
         "width": 70
       },
       {
-        "title": "Assessment Date",
-        "dataIndex": "assessmentDate",
-        "key": "assessmentDate",
-        "className": "assessmentDate",
-        "width": 110
+        "title": "Avg. Student Score (%)",
+        "dataIndex": "avgStudentScore",
+        "key": "avgStudentScore",
+        "width": 141
       },
       {
         "title": "Min. Score",

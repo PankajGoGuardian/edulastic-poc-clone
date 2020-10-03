@@ -185,7 +185,10 @@ class StudentTestPage {
           .click({ force: true })
           .click({ force: true })
     })
-    return cy.url().should('include', '/home/grades')
+    cy.url().should('include', '/home/grades')
+    return cy
+      .get('[data-cy="status"]', { timeout: 120000 })
+      .should('be.visible')
   }
 
   clickOnMenuCheckAns = () => {

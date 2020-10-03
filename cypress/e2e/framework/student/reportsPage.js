@@ -76,7 +76,9 @@ class ReportsPage {
       .find('[data-cy="reviewButton"]')
       .click({ force: true })
 
-    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 })
+    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 }).click({
+      force: true,
+    })
 
     cy.get('[data-cy="questionNumber"]', { timeout: 60000 })
   }

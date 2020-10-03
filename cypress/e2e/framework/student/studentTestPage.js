@@ -134,9 +134,9 @@ class StudentTestPage {
     cy.route('POST', '**/test-activity/**').as('saved')
     cy.wait(300)
     this.getNext().should('be.visible').click()
-    /*  if (isSkipped) {
-      this.clickOnSkipOnPopUp();
-    } */
+    if (isSkipped) {
+      this.clickOnSkipOnPopUp()
+    }
     if (!onlyPreview) return cy.wait('@saved')
   }
 
@@ -770,7 +770,7 @@ class StudentTestPage {
           const currentQue = parseInt($item.attr('data-cy').split('-')[1])
           const queToNavigate = index + 1
           cy.wrap($ele).click({ force: true })
-          // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
+          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp()
           cy.wait('@saved')
         })
       }
@@ -919,7 +919,7 @@ class StudentTestPage {
         if (!txt.includes(`Question ${queToNavigate}/`)) {
           this.getQueDropDown().click({ force: true })
           this.getQuestionDropDownList().eq(index).click({ force: true })
-          // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
+          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp()
           cy.wait('@saved')
         }
       })

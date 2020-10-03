@@ -61,6 +61,7 @@ const ResponseContainers = ({
       borderRadius: 5,
       display: 'flex',
       padding: '5px',
+      zIndex: 21,
     }
 
     return btnStyle
@@ -87,7 +88,7 @@ const ResponseContainers = ({
           index={index}
         >
           {container.label && (
-            <span className="sr-only" role="heading">
+            <span className="sr-only" role="heading" aria-level="3">
               Drop target {container.label}
             </span>
           )}

@@ -539,7 +539,7 @@ class QuestionWrapper extends Component {
           )}
           <div
             className="__print-question-main-wrapper"
-            style={{ height: '100%' }}
+            style={{ height: !isStudentReport && '100%' }}
           >
             <QuestionContainer
               className={`fr-view question-container question-container-id-${data.id}`}

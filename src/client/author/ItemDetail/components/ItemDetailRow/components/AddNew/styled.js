@@ -4,6 +4,8 @@ import {
   themeColor,
   white,
   tabletWidth,
+  cardBg,
+  secondaryTextColor,
 } from '@edulastic/colors'
 
 import { Button } from 'antd'
@@ -12,15 +14,24 @@ import styled from 'styled-components'
 export const Container = styled.div`
   svg {
     margin: 0px 10px;
-    fill: ${white};
+    fill: ${secondaryTextColor};
     &:hover {
-      fill: ${white};
+      fill: ${secondaryTextColor};
     }
   }
   button.ant-btn {
     border-color: ${dashBorderColor};
     &:hover {
       border-color: ${dashBorderColor};
+    }
+  }
+`
+
+export const PassageButtonContainer = styled(Container)`
+  svg {
+    fill: ${white};
+    &:hover {
+      fill: ${white};
     }
   }
 `
@@ -32,9 +43,17 @@ export const AddNewButton = styled(Button)`
   padding: 10px 25px;
   height: auto;
   border-radius: 8px;
+  background-color: ${cardBg};
+  color: ${secondaryTextColor};
+  font-size: 13px;
+  &:hover {
+    color: ${secondaryTextColor};
+  }
+`
+
+export const PassageAddNewButton = styled(AddNewButton)`
   background-color: ${themeColor};
   color: ${white};
-  font-size: 13px;
   margin: 4px 5px;
   &:hover {
     color: ${white};

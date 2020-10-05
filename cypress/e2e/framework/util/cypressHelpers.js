@@ -113,7 +113,7 @@ export default class CypressHelper {
     )
   }
 
-  static getShortId = (item) => item.slice(item.length - 5)
+  static getShortId = (item) => item.slice(item.length - 6)
 
   static checkObjectEquality = (obj1, obj2, message = 'Equal') => {
     expect(obj1, `${obj1} ${message} ${obj2}`).to.deep.eq(obj2)

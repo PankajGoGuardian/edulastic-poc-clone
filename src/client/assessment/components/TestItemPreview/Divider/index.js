@@ -2,10 +2,15 @@ import React from 'react'
 import { IconGraphRightArrow, IconChevronLeft } from '@edulastic/icons'
 import { CollapseBtn, Divider } from './styled'
 
-const DividerContainer = ({ collapseDirection, setCollapseView }) => (
+const DividerContainer = ({
+  collapseDirection,
+  setCollapseView,
+  hideMiddle,
+}) => (
   <Divider
     isCollapsed={!!collapseDirection}
     collapseDirection={collapseDirection}
+    hideMiddle={hideMiddle}
   >
     <div className="button-wrapper">
       <CollapseBtn

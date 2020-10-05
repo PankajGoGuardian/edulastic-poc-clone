@@ -149,7 +149,10 @@ const PDFPreview = ({
       ref={previewContainer}
     >
       <PerfectScrollbar ref={forwardedRef} option={{ wheelSpeed: 0.6 }}>
-        <Droppable drop={handleDropQuestion}>
+        <Droppable
+          drop={handleDropQuestion}
+          className={`${currentAnnotationTool}-tool-selected`}
+        >
           {page.URL === 'blank' && <Preview onClick={handleRemoveHighlight} />}
 
           {page.URL !== 'blank' && (

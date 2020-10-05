@@ -125,6 +125,8 @@ class FeedbackRight extends Component {
         newState = { ...newState, feedback: _feedback }
       }
       return newState
+    } else {
+      return {...newState,score:0};
     }
 
     return newState

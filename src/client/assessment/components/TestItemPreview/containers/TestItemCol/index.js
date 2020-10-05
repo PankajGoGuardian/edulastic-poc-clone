@@ -89,7 +89,6 @@ class TestItemCol extends Component {
       minHeight = '320px'
     }
 
-    // question false undefined false undefined undefined true true
     return (
       <TabContainer
         updatePositionToStore={

@@ -1,10 +1,13 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { get, isEmpty, keyBy, keys, values } from 'lodash'
+import { questionType } from '@edulastic/constants'
 import { takeEvery, put, all, select } from 'redux-saga/effects'
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import { evaluateItem } from '../../author/src/utils/evalution'
+
+const defaultManualGradedType = questionType.manuallyGradableQn
 
 // constants
 export const EVALUATE_CURRENT_ANSWERS =
@@ -40,19 +43,7 @@ export const previewTestQuestionActivities = createSelector(
         if (previewTest.questionActivities[qId]) {
           return previewTest.questionActivities[qId]
         }
-        return {
-          score: 0,
-          timeSpent: 0,
-          graded: true,
-          skipped: true,
-          pendingEvaluation: false,
-          _id: questionsById[qId].id,
-          maxScore: questionsById[qId].itemScore,
-          qLabel: isEmpty(questionsById[qId].qSubLabel)
-            ? questionsById[qId].barLabel
-            : `${questionsById[qId].barLabel}.${questionsById[qId].qSubLabel}`,
-          evaluation: {},
-        }
+        return null
       })
       .filter((x) => !!x)
     return mergedActivities
@@ -102,22 +93,30 @@ function* evaluateTestItemSaga({ payload }) {
       itemLevelScoring,
       itemLevelScore
     )
+    const previewUserWork = yield select(
+      ({ userWork }) => userWork.present[testItemId]
+    )
 
     const activities = questions.map((q) => {
       const activity = {
-        _id: q.id,
+        qid: q.id,
         maxScore,
         timeSpent,
         testItemId,
         graded: true,
         notStarted: false,
         score: answers[q.id] ? score : 0,
-        skipped: isEmpty(answers[q.id]),
-        pendingEvaluation: isEmpty(evaluation),
+        skipped:
+          isEmpty(answers[q.id]) && !defaultManualGradedType.includes(q.type),
+        pendingEvaluation:
+          isEmpty(evaluation) || defaultManualGradedType.includes(q.type),
         qLabel: isEmpty(q.qSubLabel)
           ? q.barLabel
           : `${q.barLabel}.${q.qSubLabel}`,
         evaluation: evaluation[q.id],
+      }
+      if (previewUserWork) {
+        activity.userWork = previewUserWork
       }
       return activity
     })
@@ -125,7 +124,7 @@ function* evaluateTestItemSaga({ payload }) {
     yield put({
       type: UPDATE_PREVIEW_TEST_ACTIVITIES,
       payload: {
-        activities: keyBy(activities, '_id'),
+        activities: keyBy(activities, 'qid'),
         itemScores: {
           [testItemId]: { score },
         },

@@ -23,10 +23,10 @@ import Divider from './Divider'
 class TestItemPreview extends Component {
   constructor(props) {
     super(props)
-    const { isPassageWithQuestions, inLCB } = props
+    const { isPassageWithQuestions, isLCBView } = props
     const toggleCollapseMode =
       (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions) ||
-      (isPassageWithQuestions && inLCB)
+      (isPassageWithQuestions && isLCBView)
     this.state = {
       toggleCollapseMode,
       collapseDirection: toggleCollapseMode ? 'left' : '',
@@ -370,7 +370,9 @@ class TestItemPreview extends Component {
                       key={i}
                       colCount={cols.length}
                       colIndex={i}
-                      col={col}
+                      col={
+                        collapseDirection ? { ...col, dimension: '100%' } : col
+                      }
                       view="preview"
                       metaData={metaData}
                       preview={preview}
@@ -400,40 +402,43 @@ class TestItemPreview extends Component {
               })}
             </div>
           </Container>
-          {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
-            <TimeSpentWrapper margin="0px 12px 12px">
-              <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
-                Show student work
-              </ShowUserWork>
-              <IconClockCircularOutline />
-              {timeSpent}s
-            </TimeSpentWrapper>
-          )}
+          {showScratchpadByDefault &&
+            (isLCBView || isExpressGrader) &&
+            history &&
+            showStudentWork && (
+              <TimeSpentWrapper margin="0px 12px 12px">
+                <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
+                  Show student work
+                </ShowUserWork>
+                <IconClockCircularOutline />
+                {timeSpent}s
+              </TimeSpentWrapper>
+            )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) ||
-          (!isStudentReport && !isReviewTab)) && (
-          <>
-            {!isCliUser && (
-              <div
-                style={{
-                  position: 'relative',
-                  'min-width': !isPrintPreview && '265px',
-                  overflowY: isExpressGrader && 'auto',
-                  overflowX: isExpressGrader && 'hidden',
-                }}
-                className="__print-feedback-main-wrapper"
-              >
-                {this.renderFeedbacks(showStackedView)}
-              </div>
-            )}
-          </>
-        )}
+          (!isStudentReport && !isReviewTab)) &&
+          showFeedback && (
+            <>
+              {!isCliUser && (
+                <div
+                  style={{
+                    position: 'relative',
+                    'min-width': !isPrintPreview && '265px',
+                     overflowY: isExpressGrader && 'auto',
+                    overflowX: isExpressGrader && 'hidden'
+                  }}
+                  className="__print-feedback-main-wrapper"
+                >
+                  {this.renderFeedbacks(showStackedView)}
+                </div>
+              )}
+            </>
+          )}
       </ThemeProvider>
     )
   }
 }
-
 TestItemPreview.propTypes = {
   cols: PropTypes.array.isRequired,
   verticalDivider: PropTypes.bool,
@@ -453,7 +458,6 @@ TestItemPreview.defaultProps = {
   style: { padding: 0, display: 'flex' },
   student: {},
 }
-
 const enhance = compose(
   withWindowSizes,
   withTheme,

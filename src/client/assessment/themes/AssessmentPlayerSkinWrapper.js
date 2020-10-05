@@ -20,7 +20,6 @@ const AssessmentPlayerSkinWrapper = ({
   docUrl,
   playerSkinType = test.playerSkinValues.edulastic,
   handleMagnifier,
-  qId,
   enableMagnifier = false,
   ...restProps
 }) => {
@@ -28,32 +27,19 @@ const AssessmentPlayerSkinWrapper = ({
   const {
     moveToNext,
     moveToPrev,
-    currentItem,
-    qType,
     changeTool,
+    currentItem,
     toggleToolsOpenStatus,
-    tool,
-    toolsOpenStatus,
+    hasDrawingResponse,
   } = restProps
 
   useEffect(() => {
-    const toolsStatusArray = toolsOpenStatus || tool
     const toolToggleFunc = toggleToolsOpenStatus || changeTool
     // 5 is Scratchpad mode
-    if (
-      qType === questionType.HIGHLIGHT_IMAGE &&
-      toolToggleFunc &&
-      !toolsStatusArray?.includes(5)
-    ) {
-      toolToggleFunc(5)
-    } else if (
-      qType !== questionType.HIGHLIGHT_IMAGE &&
-      toolToggleFunc &&
-      toolsStatusArray?.includes(5)
-    ) {
+    if (hasDrawingResponse && toolToggleFunc) {
       toolToggleFunc(5)
     }
-  }, [qType, qId])
+  }, [currentItem])
 
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible)

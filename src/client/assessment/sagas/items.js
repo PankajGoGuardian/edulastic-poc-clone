@@ -28,6 +28,10 @@ import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
 import { getServerTs } from '../../student/utils'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
+import {
+  scratchpadDomRectSelector,
+  resetScratchpadDimensionsAction,
+} from '../../common/components/Scratchpad/duck'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -224,12 +228,8 @@ function* saveUserResponse({ payload }) {
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
 
     if (scratchPadUsed) {
-      const { height, width } = yield select((state) => state.scratchpad)
-      userWorkData = {
-        ...userWorkData,
-        scratchpad: true,
-        dimensions: { height, width },
-      }
+      const dimensions = yield select(scratchpadDomRectSelector)
+      userWorkData = { ...userWorkData, scratchpad: true, dimensions }
       shouldSaveOrUpdateAttachment = true
     }
     activity.userWork = userWorkData
@@ -287,6 +287,7 @@ function* saveUserResponse({ payload }) {
     if (payload?.urlToGo) {
       yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
     }
+    yield put(resetScratchpadDimensionsAction())
     if (shouldClearUserWork) {
       /**
        * if we have two assignments one for practice and one for class assignment with same questions

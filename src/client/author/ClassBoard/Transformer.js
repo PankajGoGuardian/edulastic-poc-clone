@@ -6,7 +6,6 @@ import DotProp from 'dot-prop'
 import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
-import { getFormattedName } from '../Gradebook/transformers'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
@@ -472,8 +471,7 @@ export const transformGradeBookResponse = (
     .map(
       ({
         _id: studentId,
-        firstName,
-        middleName,
+        firstName: studentName,
         lastName,
         email,
         username: userName,
@@ -485,7 +483,9 @@ export const transformGradeBookResponse = (
         if (!testActivity) {
           return false
         }
-        const fullName = getFormattedName(firstName, middleName, lastName)
+        const fullName = `${lastName ? `${lastName}, ` : ''}${
+          studentName ? `${studentName}` : ''
+        }`
         const fakeName = `${fakeFirstName} ${fakeLastName}`
 
         // TODO: for now always present

@@ -670,10 +670,6 @@ class ProfileBody extends React.Component {
                         <DetailData>{user.firstName}</DetailData>
                       </DetailRow>
                       <DetailRow>
-                        <DetailTitle>{t('common.title.middleNameInputLabel')}</DetailTitle>
-                        <DetailData>{user.middleName || ''}</DetailData>
-                      </DetailRow>
-                      <DetailRow>
                         <DetailTitle>
                           {t('common.title.lastNameInputLabel')}
                         </DetailTitle>

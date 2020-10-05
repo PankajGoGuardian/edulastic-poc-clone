@@ -4,7 +4,6 @@ import { compose } from 'redux'
 import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
-import { assignmentApi } from '@edulastic/api'
 import { test } from '@edulastic/constants'
 import {
   getOrgDataSelector,
@@ -29,6 +28,7 @@ import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
+import { duplicateTestRequestAction } from '../../../TestPage/ducks'
 
 export const sharedTypeMap = {
   0: 'PUBLIC',
@@ -86,11 +86,17 @@ class Item extends Component {
     }
   }
 
-  duplicate = async (e) => {
-    e && e.stopPropagation()
-    const { history, item } = this.props
-    const duplicateTest = await assignmentApi.duplicateAssignment(item)
-    history.push(`/author/tests/${duplicateTest._id}`)
+  duplicate = (cloneOption) => {
+    const { item, duplicateTest } = this.props
+    const { _id, title } = item || {}
+    if (_id && title) {
+      duplicateTest({
+        _id,
+        title,
+        redirectToNewTest: true,
+        cloneItems: cloneOption,
+      })
+    }
   }
 
   onDelete = async (e) => {
@@ -352,6 +358,7 @@ const enhance = compose(
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
+      duplicateTest: duplicateTestRequestAction,
     }
   )
 )

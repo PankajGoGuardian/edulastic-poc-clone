@@ -3,7 +3,6 @@
     "title": {
       "userTitleLabel": "Title",
       "firstNameInputLabel": "First Name",
-      "middleNameInputLabel": "Middle Name",
       "lastNameInputLabel": "Last Name",
       "emailUsernameLabel": "Email/Username",
       "emailInputLabel": "Email",

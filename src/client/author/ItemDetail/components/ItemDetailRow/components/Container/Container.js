@@ -29,27 +29,11 @@ import { AddNewButton, Container as ButtonContainer } from '../AddNew/styled'
 // src/client/author/ItemDetail/ducks.js
 
 class Container extends Component {
-  state = {
-    tabIndex: 0,
-  }
-
-  static propTypes = {
-    row: PropTypes.object.isRequired,
-    onAdd: PropTypes.func.isRequired,
-    dragging: PropTypes.bool.isRequired,
-    onDeleteWidget: PropTypes.func.isRequired,
-    onEditWidget: PropTypes.func.isRequired,
-    rowIndex: PropTypes.number.isRequired,
-    itemData: PropTypes.object.isRequired,
-    setItemLevelScore: PropTypes.func.isRequired,
-    view: PropTypes.string.isRequired,
-    previewTab: PropTypes.string.isRequired,
-    changeTabTitle: PropTypes.string.isRequired,
-    isPassageQuestion: PropTypes.bool.isRequired,
-    handleAddToPassage: PropTypes.func.isRequired,
-    hideColumn: PropTypes.func.isRequired,
-    addTabs: PropTypes.func.isRequired,
-    removeTab: PropTypes.func.isRequired,
+  constructor() {
+    super()
+    this.state = {
+      tabIndex: 0,
+    }
   }
 
   handleTabChange = (tabIndex) => {
@@ -196,7 +180,6 @@ class Container extends Component {
       hideColumn,
       addTabs,
       removeTab,
-      passageNavigator,
       showAddItemButton,
     } = this.props
     const { tabIndex } = this.state
@@ -216,7 +199,6 @@ class Container extends Component {
             ADD TABS
           </AddTabButton>
         )}
-        {passageNavigator}
         {row.tabs && row.tabs.length > 0 && (
           <TabContainer>
             <Tabs
@@ -278,6 +260,14 @@ class Container extends Component {
               tabIndex={tabIndex}
             />
           )}
+        {dragging &&
+          row.widgets.filter((w) => w.tabIndex === tabIndex).length === 0 && (
+            <ItemDetailDropTarget
+              widgetIndex={0}
+              rowIndex={rowIndex}
+              tabIndex={tabIndex}
+            />
+          )}
         {this.renderWidgets()}
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
@@ -315,6 +305,25 @@ class Container extends Component {
       </Content>
     )
   }
+}
+
+Container.propTypes = {
+  row: PropTypes.object.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  dragging: PropTypes.bool.isRequired,
+  onDeleteWidget: PropTypes.func.isRequired,
+  onEditWidget: PropTypes.func.isRequired,
+  rowIndex: PropTypes.number.isRequired,
+  itemData: PropTypes.object.isRequired,
+  setItemLevelScore: PropTypes.func.isRequired,
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  changeTabTitle: PropTypes.string.isRequired,
+  isPassageQuestion: PropTypes.bool.isRequired,
+  handleAddToPassage: PropTypes.func.isRequired,
+  hideColumn: PropTypes.func.isRequired,
+  addTabs: PropTypes.func.isRequired,
+  removeTab: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

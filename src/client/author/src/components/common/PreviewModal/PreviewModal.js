@@ -124,7 +124,7 @@ class PreviewModal extends React.Component {
     clearAnswers()
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { flag } = this.state
     const { isVisible } = nextProps
     if (isVisible && !flag) {
@@ -504,6 +504,7 @@ class PreviewModal extends React.Component {
       allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
     )
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade
+    const itemHasAtleastOneQuestion = Object.keys(questions || {}).length > 0
 
     return (
       <PreviewModalWrapper
@@ -538,28 +539,29 @@ class PreviewModal extends React.Component {
           </FlexContainer>
 
           <ModalTopAction>
-            {isPassage && showAddPassageItemToTestButton ? (
-              <EduButton
-                isBlue
-                isGhost={!this.isAddOrRemove}
-                height="28px"
-                justifyContent="center"
-                onClick={this.handleSelection}
-              >
-                {this.isAddOrRemove
-                  ? 'ADD PASSAGE TO TEST'
-                  : 'REMOVE FROM TEST'}
-              </EduButton>
-            ) : (
-              <EduButton
-                isBlue
-                height="28px"
-                justifyContent="center"
-                onClick={this.handleSelection}
-              >
-                {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
-              </EduButton>
-            )}
+            {itemHasAtleastOneQuestion &&
+              (isPassage && showAddPassageItemToTestButton ? (
+                <EduButton
+                  isBlue
+                  isGhost={!this.isAddOrRemove}
+                  height="28px"
+                  justifyContent="center"
+                  onClick={this.handleSelection}
+                >
+                  {this.isAddOrRemove
+                    ? 'ADD PASSAGE TO TEST'
+                    : 'REMOVE FROM TEST'}
+                </EduButton>
+              ) : (
+                <EduButton
+                  isBlue
+                  height="28px"
+                  justifyContent="center"
+                  onClick={this.handleSelection}
+                >
+                  {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
+                </EduButton>
+              ))}
             <ButtonsWrapper
               justifyContent="flex-end"
               wrap="nowrap"
@@ -690,9 +692,9 @@ class PreviewModal extends React.Component {
                       title="Approve"
                       isGhost
                       height="28px"
-                      onClick={() =>
+                      onClick={() => {
                         this.handleApproveOrRejectSingleItem('published')
-                      }
+                      }}
                     >
                       <Icon type="check" color={themeColor} />
                       <span>Approve</span>

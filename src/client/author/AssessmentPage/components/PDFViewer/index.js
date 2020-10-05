@@ -144,7 +144,7 @@ const PDFViewer = ({
       viewerRef.current.appendChild(_page)
       // TODO: dont rely on currentPage number as documentId !!!
       const RENDER_OPTIONS = {
-        documentId: currentPage,
+        documentId: pageNumber,
         pdfDocument,
         scale: pdfScale || 1.33,
         rotate: rotate || 0,
@@ -154,7 +154,7 @@ const PDFViewer = ({
   }, [
     docLoading,
     pdfDocument,
-    currentPage,
+    pageNumber,
     pdfScale,
     rotate,
     annotationsStack.length,

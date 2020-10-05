@@ -286,7 +286,6 @@ const StandardsMasteryReportContainer = (props) => {
                 ddfilter={ddfilter}
                 settings={gradebookSettings}
                 standardsGradebook={standardsGradebook}
-                standardsOrgData={orgData}
               />
             )
           }}
@@ -301,7 +300,6 @@ const StandardsMasteryReportContainer = (props) => {
                 {..._props}
                 settings={gradebookSettings}
                 ddfilter={ddfilterForPerformance}
-                standardsOrgData={orgData}
               />
             )
           }}

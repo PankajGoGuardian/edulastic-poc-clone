@@ -19,6 +19,7 @@ import { connect } from 'react-redux'
 import { getRedirectEndDate, getUserName } from '../utils'
 import { BodyContainer } from './styled'
 import { getIsSpecificStudents } from '../ducks'
+import { gradebookUnSelectAllAction } from '../../src/reducers/gradeBook'
 
 const { redirectPolicy } = testContants
 
@@ -67,6 +68,7 @@ const RedirectPopUp = ({
   testActivity,
   isPremiumUser,
   specificStudents,
+  studentUnselectAll,
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, 'day'))
   const [endDate, setEndDate] = useState(
@@ -159,6 +161,7 @@ const RedirectPopUp = ({
         })
       }
     }
+    studentUnselectAll()
     setLoading(false)
   }, [
     studentsToRedirect,
@@ -379,5 +382,7 @@ export default connect(
     isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
     specificStudents: getIsSpecificStudents(state),
   }),
-  null
+  {
+    studentUnselectAll: gradebookUnSelectAllAction,
+  }
 )(RedirectPopUp)

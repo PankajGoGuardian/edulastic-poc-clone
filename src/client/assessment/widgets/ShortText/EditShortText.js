@@ -26,6 +26,8 @@ const EditShortText = ({
 }) => {
   const [correctTab, setCorrectTab] = useState(0)
 
+  const { matchingRule = '' } = item?.validation?.validResponse || {}
+
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, (draft) => {
@@ -34,7 +36,7 @@ const EditShortText = ({
         }
         draft.validation.altResponses.push({
           score: 1,
-          matchingRule: EXACT_MATCH,
+          matchingRule,
           value: '',
         })
       })
@@ -67,15 +69,14 @@ const EditShortText = ({
     )
   }
 
+  // The "matchingRule" must have same value for both Correct and Alternate answers
   const handleScoringTypeChange = (value) => {
     setQuestionData(
       produce(item, (draft) => {
-        if (correctTab === 0) {
-          draft.validation.validResponse.matchingRule = value
-        } else {
-          draft.validation.altResponses[correctTab - 1].matchingRule = value
-        }
-
+        draft.validation.validResponse.matchingRule = value
+        draft.validation?.altResponses?.forEach((altResp) => {
+          altResp.matchingRule = value
+        })
         updateVariables(draft)
       })
     )
@@ -106,16 +107,13 @@ const EditShortText = ({
         { value: EXACT_MATCH, label: t('component.shortText.exactMatch') },
         { value: CONTAINS, label: t('component.shortText.anyTextContaining') },
       ]}
-      selectValue={
-        correctTab === 0
-          ? item.validation.validResponse.matchingRule
-          : item.validation.altResponses[correctTab - 1].matchingRule
-      }
+      selectValue={matchingRule}
       inputValue={
         correctTab === 0
           ? item.validation.validResponse.value
           : item.validation.altResponses[correctTab - 1].value
       }
+      isCorrectAnsTab={correctTab === 0}
     />
   )
 

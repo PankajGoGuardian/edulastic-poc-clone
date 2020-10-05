@@ -122,7 +122,7 @@ class TableDisplay extends Component {
     const performances = values(
       getStandardWisePerformanceMemoized(testActivities, std)
     )
-    return (sum(performances) / performances.length) * 100
+    return performances.length ? (sum(performances) / performances.length) * 100 : 0;
   }
 
   getMasterySummary = (data) => {

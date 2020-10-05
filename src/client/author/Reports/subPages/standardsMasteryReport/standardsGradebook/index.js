@@ -11,15 +11,11 @@ import {
 } from '../../../../src/selectors/user'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import { StyledCard, StyledH3 } from '../../../common/styled'
-import {
-  getStudentAssignments,
-  processClassAndGroupIds,
-} from '../../../common/util'
+import { getStudentAssignments } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
   getFiltersSelector,
   getSelectedStandardProficiency,
-  getReportsStandardsFiltersLoader,
 } from '../common/filterDataDucks'
 import { getMaxMasteryScore } from '../standardsPerformance/utils/transformers'
 import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
@@ -47,7 +43,6 @@ const StandardsGradebook = ({
   role,
   settings,
   loading,
-  loadingFiltersData,
   selectedStandardProficiency,
   filters,
   getStudentStandards,
@@ -57,7 +52,6 @@ const StandardsGradebook = ({
   pageTitle,
   ddfilter,
   user,
-  standardsOrgData,
 }) => {
   const [chartFilter, setChartFilter] = useState({})
 
@@ -72,11 +66,6 @@ const StandardsGradebook = ({
       getStudentAssignments(selectedStandardProficiency, studentStandardData),
     [selectedStandardProficiency, studentStandardData]
   )
-  const [classIdArr, groupIdArr] = useMemo(
-    () => processClassAndGroupIds(standardsOrgData),
-    [standardsOrgData]
-  )
-
   useEffect(() => {
     if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
       const q = {
@@ -90,18 +79,6 @@ const StandardsGradebook = ({
         get(user, 'role', '') === roleuser.SCHOOL_ADMIN
       ) {
         q.schoolIds = get(user, 'institutionIds', []).join(',')
-      }
-      if (!loadingFiltersData) {
-        Object.assign(q, {
-          classList: classIdArr
-            .slice(1)
-            .map((cId) => cId.key)
-            .join(),
-          groupList: groupIdArr
-            .slice(1)
-            .map((gId) => gId.key)
-            .join(),
-        })
       }
       getStandardsGradebookRequest(q)
     }
@@ -215,7 +192,6 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsStandardsGradebookLoader(state),
-      loadingFiltersData: getReportsStandardsFiltersLoader(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),

@@ -62,6 +62,7 @@ const CheckboxTemplateBoxLayout = ({
           backgroundColor,
           border: `${borderWidth} ${borderStyle} ${borderColor}`,
           borderRadius,
+          display: 'flex',
         }
 
         const indexStr = helpers.getNumeration(index, stemNumeration)

@@ -501,7 +501,8 @@ function* updateStudentScore(payload) {
       graded,
       skipped,
       ...question
-    } of questionActivities) {
+      //update only edited questionActivities
+    } of questionActivities.filter(x => x.testActivityId === testActivityId && x.testItemId=== itemId)) {
       gradeBookTestItemAddPayload.push({
         testActivityId: _testActivityId,
         score: _score,

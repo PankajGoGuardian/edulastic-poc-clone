@@ -154,6 +154,7 @@ function* loadTest({ payload }) {
     isShowStudentWork = false,
     playlistId,
     currentAssignmentId,
+    sharedType = '',
   } = payload
   try {
     if (!preview && !testActivityId) {
@@ -208,7 +209,7 @@ function* loadTest({ payload }) {
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId)
+      : call(testsApi.getPublicTest, testId, { sharedType })
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
     if (!preview) {

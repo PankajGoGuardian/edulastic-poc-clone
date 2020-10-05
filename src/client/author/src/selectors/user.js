@@ -31,7 +31,7 @@ export const getUserNameSelector = createSelector(stateSelector, (state) =>
 
 export const getOrgDataSelector = createSelector(
   stateSelector,
-  (state) => state?.user?.orgData || {}
+  (state) => state.user.orgData
 )
 
 export const getCurrentGroup = createSelector(

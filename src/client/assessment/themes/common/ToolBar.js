@@ -33,6 +33,7 @@ const ToolBar = ({
   handleMagnifier,
   enableMagnifier,
   changeTool,
+  hasDrawingResponse,
 }) => {
   const { calcType, showMagnifier, enableScratchpad } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
@@ -88,7 +89,7 @@ const ToolBar = ({
         hidden
       />
 
-      {enableScratchpad && (
+      {enableScratchpad && !hasDrawingResponse && (
         <ActionButton
           title="Scratch Pad"
           icon={<ScratchPadIcon />}

@@ -397,20 +397,15 @@ class QuestionWrapper extends Component {
       advancedAreOpen,
       userRole,
       disableResponse,
-      isStudentReport,
       showStudentWork,
-      LCBPreviewModal,
       showUserTTS,
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
       scrollContainer,
       loadScratchPad,
-      isQuestionView,
-      isExpressGrader,
       saveHintUsage,
       theme,
-      isLCBView,
       isGrade,
       enableMagnifier,
       playerSkinType = test.playerSkinValues.edulastic,
@@ -420,6 +415,12 @@ class QuestionWrapper extends Component {
       isItemsVisible,
       ...restProps
     } = this.props
+    const {
+      isExpressGrader,
+      isStudentReport,
+      isLCBView,
+      LCBPreviewModal,
+    } = restProps
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
     const { main, advanced, activeTab, page } = this.state
@@ -538,7 +539,7 @@ class QuestionWrapper extends Component {
           )}
           <div
             className="__print-question-main-wrapper"
-            style={{ height: '100%' }}
+            style={{ height: !isStudentReport && '100%' }}
           >
             <QuestionContainer
               className={`fr-view question-container question-container-id-${data.id}`}
@@ -584,7 +585,7 @@ class QuestionWrapper extends Component {
                   boxShadow: 'none',
                   paddingRight: layoutType === COMPACT ? '100px' : null,
                   border:
-                    isLCBView && !restProps.showScratchpadByDefault
+                    isLCBView && !restProps.hasDrawingResponse
                       ? '1px solid #DADAE4'
                       : null,
                 }}
@@ -622,7 +623,7 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!restProps.showScratchpadByDefault &&
+                  {!restProps.hasDrawingResponse &&
                     showFeedback &&
                     !isPrintPreview && (
                       <>

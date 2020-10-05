@@ -3,16 +3,18 @@ import { Menu } from 'antd'
 import { Link } from 'react-router-dom'
 import { assignmentApi } from '@edulastic/api'
 import { get } from 'lodash'
-import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
+
+import { notification } from '@edulastic/common'
 import { IconPrint, IconTrashAlt, IconBarChart } from '@edulastic/icons'
 import { roleuser, test } from '@edulastic/constants'
+
 import classIcon from '../../assets/manage-class.svg'
-import copyItem from '../../assets/copy-item.svg'
 import viewIcon from '../../assets/view.svg'
 import infomationIcon from '../../assets/information.svg'
 import responsiveIcon from '../../assets/responses.svg'
 import { Container, StyledMenu, StyledLink, SpaceElement } from './styled'
+import DuplicateTest from './ItemClone'
 
 const { duplicateAssignment } = assignmentApi
 const { testContentVisibility: testContentVisibilityOptions } = test
@@ -65,8 +67,12 @@ const ActionMenu = ({
     }
   }
 
-  const createDuplicateAssignment = () => {
-    duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title })
+  const createDuplicateAssignment = (cloneItems) => {
+    duplicateAssignment({
+      _id: currentTestId,
+      title: assignmentDetails.title,
+      cloneItems,
+    })
       .then((testItem) => {
         const duplicateTestId = testItem._id
         history.push(`/author/tests/${duplicateTestId}`)
@@ -145,16 +151,8 @@ const ActionMenu = ({
           </Link>
         </Menu.Item>
         {!row.hasAutoSelectGroups && (
-          <Menu.Item
-            data-cy="duplicate"
-            key="duplicate"
-            onClick={createDuplicateAssignment}
-          >
-            <StyledLink target="_blank" rel="noopener noreferrer">
-              <img alt="icon" src={copyItem} />
-              <SpaceElement />
-              Duplicate
-            </StyledLink>
+          <Menu.Item data-cy="duplicate" key="duplicate">
+            <DuplicateTest duplicateTest={createDuplicateAssignment} />
           </Menu.Item>
         )}
 

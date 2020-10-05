@@ -62,42 +62,11 @@ class AssessmentPlayerDefault extends React.Component {
       defaultContentWidth: 900,
       defaultHeaderHeight: 62,
     }
+    this.scrollContainer = React.createRef()
   }
-
-  static propTypes = {
-    theme: PropTypes.object,
-    scratchPad: PropTypes.any.isRequired,
-    highlights: PropTypes.any.isRequired,
-    isFirst: PropTypes.func.isRequired,
-    moveToNext: PropTypes.func.isRequired,
-    moveToPrev: PropTypes.func.isRequired,
-    currentItem: PropTypes.any.isRequired,
-    items: PropTypes.any.isRequired,
-    gotoQuestion: PropTypes.any.isRequired,
-    itemRows: PropTypes.array.isRequired,
-    evaluation: PropTypes.any.isRequired,
-    showHints: PropTypes.func.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
-    history: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    questions: PropTypes.object.isRequired,
-    userWork: PropTypes.object.isRequired,
-    settings: PropTypes.object.isRequired,
-    answerChecksUsedForItem: PropTypes.number.isRequired,
-    previewPlayer: PropTypes.bool.isRequired,
-    saveUserWork: PropTypes.func.isRequired,
-    LCBPreviewModal: PropTypes.any.isRequired,
-    setUserAnswer: PropTypes.func.isRequired,
-    userAnswers: PropTypes.object.isRequired,
-  }
-
-  static defaultProps = {
-    theme: themes,
-  }
-
-  scrollContainer = React.createRef()
 
   changeTool = (val) => {
+    const { hasDrawingResponse } = this.props
     let { currentToolMode, enableCrossAction } = this.state
     if (val === 3 || val === 5) {
       const index = currentToolMode.indexOf(val)
@@ -110,7 +79,10 @@ class AssessmentPlayerDefault extends React.Component {
       if (currentToolMode.includes(5)) {
         const { items, currentItem } = this.props
         if (!isUndefined(currentItem) && Array.isArray(items)) {
-          if (showScratchpadInfoNotification(items[currentItem])) {
+          if (
+            !hasDrawingResponse &&
+            showScratchpadInfoNotification(items[currentItem])
+          ) {
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
@@ -186,7 +158,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
-  saveHistory = (sourceId) => (data) => {
+  saveUserWork = (sourceId) => (data) => {
     const {
       saveUserWork,
       items,
@@ -296,7 +268,7 @@ class AssessmentPlayerDefault extends React.Component {
       zoomLevel: _zoomLevel,
       selectedTheme = 'default',
       closeTestPreviewModal,
-      showScratchPad,
+      isStudentReport,
       passage,
       defaultAP,
       playerSkinType,
@@ -310,6 +282,7 @@ class AssessmentPlayerDefault extends React.Component {
       timedAssignment = false,
       groupId,
       utaId,
+      hasDrawingResponse,
     } = this.props
     const {
       testItemState,
@@ -343,7 +316,7 @@ class AssessmentPlayerDefault extends React.Component {
       })
     }
 
-    const scratchPadMode = currentToolMode.indexOf(5) !== -1 || showScratchPad
+    const scratchPadMode = currentToolMode.indexOf(5) !== -1 || isStudentReport
 
     // calculate width of question area
     const availableWidth = windowWidth - 70
@@ -463,8 +436,8 @@ class AssessmentPlayerDefault extends React.Component {
             tool={currentToolMode}
             changeCaculateMode={this.handleModeCaculate}
             changeTool={this.changeTool}
+            hasDrawingResponse={hasDrawingResponse}
             qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
-            qId={get(items, `[${currentItem}].data.questions[0].id`, null)}
             previewPlayer={previewPlayer}
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}
@@ -551,17 +524,17 @@ class AssessmentPlayerDefault extends React.Component {
                       highlights={highlights}
                       crossAction={crossAction || {}}
                       viewComponent="studentPlayer"
-                      setHighlights={this.saveHistory('resourceId')}
+                      setHighlights={this.saveUserWork('resourceId')}
                       setCrossAction={
                         enableCrossAction
-                          ? this.saveHistory('crossAction')
+                          ? this.saveUserWork('crossAction')
                           : false
                       } // this needs only for MCQ and MSQ
                       scratchPadMode={scratchPadMode}
-                      saveHistory={this.saveHistory('scratchpad')}
-                      saveAttachments={this.saveHistory('attachments')}
+                      saveUserWork={this.saveUserWork('scratchpad')}
+                      saveAttachments={this.saveUserWork('attachments')}
                       attachments={attachments}
-                      history={
+                      userWork={
                         LCBPreviewModal ? scratchpadActivity.data : scratchPad
                       }
                       scratchpadDimensions={
@@ -574,6 +547,7 @@ class AssessmentPlayerDefault extends React.Component {
                       enableMagnifier={enableMagnifier}
                       updateScratchpadtoStore
                       isPassageWithQuestions={item?.isPassageWithQuestions}
+                      isStudentReport={isStudentReport}
                     />
                   )}
                   {testItemState === 'check' && (
@@ -591,19 +565,20 @@ class AssessmentPlayerDefault extends React.Component {
                       crossAction={crossAction || {}}
                       showCollapseBtn
                       viewComponent="studentPlayer"
-                      setHighlights={this.saveHistory('resourceId')} // this needs only for passage type
+                      setHighlights={this.saveUserWork('resourceId')} // this needs only for passage type
                       setCrossAction={
                         enableCrossAction
-                          ? this.saveHistory('crossAction')
+                          ? this.saveUserWork('crossAction')
                           : false
                       } // this needs only for MCQ and MSQ
                       scratchPadMode={scratchPadMode}
-                      saveHistory={this.saveHistory('scratchpad')}
-                      saveAttachments={this.saveHistory('attachments')}
+                      saveUserWork={this.saveUserWork('scratchpad')}
+                      saveAttachments={this.saveUserWork('attachments')}
                       attachments={attachments}
-                      history={scratchPad}
+                      userWork={scratchPad}
                       saveHintUsage={this.saveHintUsage}
                       changePreviewTab={this.handleChangePreview}
+                      isStudentReport={isStudentReport}
                       enableMagnifier={enableMagnifier}
                     />
                   )}
@@ -627,11 +602,42 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentWillUnmount() {
-    const { previewPlayer, clearUserWork, showScratchPad } = this.props
-    if (previewPlayer && !showScratchPad) {
+    const { previewPlayer, clearUserWork, isStudentReport } = this.props
+    if (previewPlayer && !isStudentReport) {
       clearUserWork()
     }
   }
+}
+
+AssessmentPlayerDefault.propTypes = {
+  theme: PropTypes.object,
+  scratchPad: PropTypes.any.isRequired,
+  highlights: PropTypes.any.isRequired,
+  isFirst: PropTypes.func.isRequired,
+  moveToNext: PropTypes.func.isRequired,
+  moveToPrev: PropTypes.func.isRequired,
+  currentItem: PropTypes.any.isRequired,
+  items: PropTypes.any.isRequired,
+  gotoQuestion: PropTypes.any.isRequired,
+  itemRows: PropTypes.array.isRequired,
+  evaluation: PropTypes.any.isRequired,
+  showHints: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  history: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  questions: PropTypes.object.isRequired,
+  userWork: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
+  answerChecksUsedForItem: PropTypes.number.isRequired,
+  previewPlayer: PropTypes.bool.isRequired,
+  saveUserWork: PropTypes.func.isRequired,
+  LCBPreviewModal: PropTypes.any.isRequired,
+  setUserAnswer: PropTypes.func.isRequired,
+  userAnswers: PropTypes.object.isRequired,
+}
+
+AssessmentPlayerDefault.defaultProps = {
+  theme: themes,
 }
 
 function getScratchPadfromActivity(state, props) {

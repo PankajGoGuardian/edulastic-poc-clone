@@ -142,6 +142,7 @@ export const ViewButton = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: auto;
+  position: relative;
 
   @media (max-width: ${tabletWidth}) {
     width: 50%;
@@ -155,6 +156,13 @@ const ButtonStyle = styled(EduButton)`
   ${ButtonStyleCss}
 `
 
+export const AddRemoveBtnContainer = styled.div`
+  .ant-btn.ant-btn-primary {
+    opacity: 0.5;
+    filter: grayscale(1);
+  }
+`
+
 export const AddRemoveBtn = styled(ButtonStyle)`
   &.ant-btn {
     color: ${({ isAddOrRemove }) =>
@@ -163,7 +171,7 @@ export const AddRemoveBtn = styled(ButtonStyle)`
       isAddOrRemove ? themeColor : red} !important;
     background: white !important;
     margin-top: 15px;
-    &:hover {
+    &:not(.disabled):hover {
       border-color: ${({ isAddOrRemove }) =>
         isAddOrRemove ? themeColorBlue : red} !important;
       background: ${({ isAddOrRemove }) =>

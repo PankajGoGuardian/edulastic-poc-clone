@@ -441,7 +441,7 @@ describe(`${FileHelper.getSpecName(
       reportsPage.getTestCardByTesyId(classData.testID)
     })
 
-    it('> Unassign all assignments :', () => {
+    /* it('> Unassign all assignments :', () => {
       cy.login('', Teacher.adminEmail, Teacher.adminPass)
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
@@ -463,10 +463,10 @@ describe(`${FileHelper.getSpecName(
         studData.password
       )
       studAssignmentPage.verifyAbsenceOfTest(classData.testID)
-    })
+    }) */
   })
 
-  context(' > Bulk unassign of assignments', () => {
+  /* context(' > Bulk unassign of assignments', () => {
     before('Login into teacher', () => {
       cy.deleteAllAssignments(undefined, Teacher.email, Teacher.pass)
       cy.login('teacher', Teacher.email, Teacher.pass)
@@ -624,5 +624,5 @@ describe(`${FileHelper.getSpecName(
 
       bulkActionPage.clickUnassignActionButton('15', '15')
     })
-  })
+  }) */
 })

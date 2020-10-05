@@ -413,9 +413,10 @@ describe(`${FileHelper.getSpecName(
     /* Earlier used classes separately where student is part of 2 classes, Here Assigning at the same time */
     before('Login and UnAssign', () => {
       cy.login('teacher', Teacher.email, Teacher.pass)
+      cy.deleteAllAssignments(Student1Class1.email, Teacher.email)
       assignCountForClass1 = 0
-      testLibraryPage.sidebar.clickOnAssignment()
-      authorAssignmentPage.clickOnUnassign()
+      // testLibraryPage.sidebar.clickOnAssignment()
+      // authorAssignmentPage.clickOnUnassign()
     })
     it('Assign- No Duplicate', () => {
       testAssignPage.visitAssignPageById(OriginalTestId)

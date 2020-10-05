@@ -26,7 +26,7 @@ const buttonWrapperExtraStyle = css`
 
 export const Divider = styled.div`
   width: 0px;
-  border: ${({ hideMiddle }) => !hideMiddle && "1px solid #dadae4"};
+  border: ${({ hideMiddle }) => !hideMiddle && '1px solid #dadae4'};
   position: relative;
   background-color: ${(props) =>
     props.isCollapsed ? '#e5e5e5' : 'transparent'};

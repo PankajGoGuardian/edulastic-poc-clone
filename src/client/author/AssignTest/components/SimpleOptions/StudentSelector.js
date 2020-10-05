@@ -11,6 +11,7 @@ import {
   UnselectAll,
   SelectTextInline,
 } from './styled'
+import { getFormattedName } from '../../../Gradebook/transformers'
 
 const StudentsSelector = ({
   students = [],
@@ -46,10 +47,8 @@ const StudentsSelector = ({
     (groupId) => {
       const groupName = groupKeyed[groupId].name
       const studentRows = (studentsGroupedByGroupId[groupId] || []).map(
-        ({ _id, firstName, lastName }) => {
-          const fullName = `${lastName ? `${lastName}, ` : ''}${
-            firstName ? `${firstName}` : ''
-          }`
+        ({ _id, firstName, lastName, middleName }) => {
+          const fullName = getFormattedName(firstName, middleName, lastName)
           return {
             title: fullName || 'Anonymous',
             key: `${groupId}_${_id}`,

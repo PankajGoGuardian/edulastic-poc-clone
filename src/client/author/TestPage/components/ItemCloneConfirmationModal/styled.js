@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 export const CloneModal = styled(ConfirmationModal)`
   .ant-modal-body {
@@ -10,8 +10,8 @@ export const CloneModal = styled(ConfirmationModal)`
   .ant-modal-footer {
     justify-content: flex-end !important;
   }
-`;
+`
 
 export const FullHeightContainer = styled.div`
   height: 100%;
-`;
+`

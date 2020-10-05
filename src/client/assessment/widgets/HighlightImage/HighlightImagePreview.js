@@ -8,7 +8,7 @@ import {
   QuestionSubLabel,
   QuestionContentWrapper,
 } from '@edulastic/common'
-import { max } from 'lodash'
+import { isEmpty, max } from 'lodash'
 import { PREVIEW } from '../../constants/constantsForQuestions'
 import { PreviewContainer } from './styled/PreviewContainer'
 import DEFAULT_IMAGE from '../../assets/highlightImageBackground.svg'
@@ -38,6 +38,7 @@ const HighlightImagePreview = ({
   scratchpadDimensions,
   colWidth,
   scratchPadMode,
+  isStudentAttempt,
 }) => {
   const containerRef = useRef()
   const { image = {} } = item
@@ -66,12 +67,23 @@ const HighlightImagePreview = ({
   )
 
   const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
-  const showDrawing =
+  let showDrawing =
     isLCBView ||
     isStudentReport ||
     isExpressGrader ||
     viewComponent === 'editQuestion' ||
     scratchPadMode
+
+  if (showDrawing && !isStudentAttempt) {
+    if (isExpressGrader && !disableResponse) {
+      showDrawing = true
+    } else {
+      // show scratchpad only if there is data
+      //  in teacher view (LCB, ExpressGrader, etc)
+      showDrawing = !isEmpty(userWork)
+    }
+  }
+
   const showToolBar =
     (showDrawing && !readyOnlyScratchpad && !disableResponse) ||
     (!disableResponse && isExpressGrader)

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, AnswerContext } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
-import { sortBy } from 'lodash'
+import { isEmpty, sortBy } from 'lodash'
 
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
@@ -155,6 +155,10 @@ class TestItemCol extends Component {
       col,
       isPrintPreview,
       isLCBView,
+      isStudentAttempt,
+      isExpressGrader,
+      userWork: scratchpadData,
+      disableResponse: isAnswerModifiable,
     } = this.props
     const widgets =
       (col?.tabs && !!col?.tabs?.length && isPrintPreview
@@ -164,12 +168,26 @@ class TestItemCol extends Component {
       (item) => item && item.widgetType === 'resource'
     )
     const shouldHideScratchpad = isLCBView && !!hasResourceTypeQuestion
+    // only show scratchpad in right panel and signle panel
     let showScratchpad =
       (scratchPadMode && colIndex === 1 && colCount > 1) ||
       (scratchPadMode && colCount === 1)
+    // for drawing response, will render scratchpad in question component
     showScratchpad =
       showScratchpad && !shouldHideScratchpad && !hasDrawingResponse
 
+    // teacher view (LCB, ExpressGrader, etc)
+    if (!isStudentAttempt && showScratchpad) {
+      if (isExpressGrader && !isAnswerModifiable) {
+        // in ExpressGrade modal with editing response on,
+        // we will show scratchpad even though there is no data
+        return showScratchpad
+      }
+      // render scratchpad only if there is data.
+      return !isEmpty(scratchpadData)
+    }
+
+    // student view
     return showScratchpad
   }
 

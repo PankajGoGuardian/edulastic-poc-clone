@@ -173,7 +173,7 @@ class DisneyCardContainer extends Component {
             return <span style={{ marginTop: '-3px' }}>-</span>
           }
 
-          if(_status === 2){
+          if (_status === 2) {
             return <span>0</span>
           }
 

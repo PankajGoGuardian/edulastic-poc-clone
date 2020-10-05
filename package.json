@@ -48,7 +48,10 @@
     "cy:generate-report": "marge --no-code --cdn=true -o=cypress/reports -f=Cypress_Test_Report --ts=fullDate cypress/reports/cypress-report.json",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",
     "storybook": "STORYBOOK_ENABLED=1 NODE_ENV=development start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "prettier": "yarn prettier --write",
+    "prettier:check": "yarn prettier --check \"src/**/*.js|src/**/*.ts\"",
+    "prettier:format": "yarn prettier --write \"src/**/*.js|src/**/*.ts\""
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

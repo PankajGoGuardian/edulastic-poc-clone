@@ -101,6 +101,15 @@ class Helpers {
     const prefix = this.getRamdomString(12, emailStringType)
     return `${prefix}@${domain}`
   }
+
+  static getFormattedFirstLastName = (fullName) => {
+    if (typeof fullName !== 'string') return ''
+    const splitNames = fullName
+      .split(',')
+      .map((s) => s.trim())
+      .map((c) => c.charAt(0).toUpperCase() + c.slice(1).toLowerCase())
+    return splitNames.join(', ')
+  }
 }
 
 export default Helpers

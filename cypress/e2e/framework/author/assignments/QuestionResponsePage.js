@@ -4,6 +4,7 @@ import {
   queColor,
 } from '../../constants/questionTypes'
 import CypressHelper from '../../util/cypressHelpers'
+import Helpers from '../../util/Helpers'
 
 export default class QuestionResponsePage {
   // *** ELEMENTS START ***
@@ -35,7 +36,7 @@ export default class QuestionResponsePage {
   getQuestionContainerByStudent = (studentName) =>
     cy
       .get('[data-cy="studentName"]')
-      .contains(studentName)
+      .contains(Helpers.getFormattedFirstLastName(studentName))
       .closest('[data-cy="student-question-container"]')
       .should(($ele) => expect(Cypress.dom.isAttached($ele)).to.be.true)
 
@@ -51,6 +52,7 @@ export default class QuestionResponsePage {
     card.find('[data-cy="updateButton"]').click({ force: true })
 
   selectStudent = (studentName) => {
+    studentName = Helpers.getFormattedFirstLastName(studentName)
     let index = -1
     cy.server()
     cy.route('GET', '**/test-activity/**').as('test-activity')
@@ -619,11 +621,15 @@ export default class QuestionResponsePage {
     card.should('not.contain', 'Correct Answer')
 
   verifyNoQuestionResponseCard = (studentName) => {
-    cy.get('[data-cy="studentName"]').contains(studentName).should('not.exist')
+    cy.get('[data-cy="studentName"]')
+      .contains(Helpers.getFormattedFirstLastName(studentName))
+      .should('not.exist')
   }
 
   verifyQuestionResponseCardExist = (studentName) => {
-    cy.get('[data-cy="studentName"]').contains(studentName).should('exist')
+    cy.get('[data-cy="studentName"]')
+      .contains(Helpers.getFormattedFirstLastName(studentName))
+      .should('exist')
   }
 
   verifyQuestionResponseCard = (

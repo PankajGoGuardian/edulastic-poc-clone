@@ -10,6 +10,7 @@ import {
   getPerformanceBandAndColor,
   getMasteryStatus,
 } from '../../constants/constantFunctions'
+import Helpers from '../../util/Helpers'
 
 const { _ } = Cypress
 
@@ -134,7 +135,10 @@ export default class StudentsReportCard {
     this.getTestName().should('have.text', testname)
 
   verifyStudentName = (studentName) =>
-    this.getStudentName().should('contain.text', studentName)
+    this.getStudentName().should(
+      'contain.text',
+      Helpers.getFormattedFirstLastName(studentName)
+    )
 
   verifySubject = (subjects) =>
     this.getSubjects().should('have.text', subjects.join(', '))

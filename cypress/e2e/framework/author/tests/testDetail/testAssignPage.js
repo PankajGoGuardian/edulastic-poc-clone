@@ -1,5 +1,6 @@
 import CypressHelper from '../../../util/cypressHelpers'
 import TeacherSideBar from '../../SideBarPage'
+import Helpers from '../../../util/Helpers'
 
 export default class TestAssignPage {
   constructor() {
@@ -119,11 +120,15 @@ export default class TestAssignPage {
     } else if (Cypress._.isArray(students)) {
       students.forEach((student) => {
         // this.clickOnDropDownOptionByText(student);
-        cy.get(`[title="${student}"]`).click({ force: true })
+        cy.get(
+          `[title="${Helpers.getFormattedFirstLastName(student)}"]`
+        ).click({ force: true })
       })
     } else {
       // this.clickOnDropDownOptionByText(students);
-      cy.get(`[title="${students}"]`).click({ force: true })
+      cy.get(`[title="${Helpers.getFormattedFirstLastName(students)}"]`).click({
+        force: true,
+      })
     }
     cy.focused().blur()
   }

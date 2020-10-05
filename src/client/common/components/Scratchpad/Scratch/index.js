@@ -334,6 +334,10 @@ const Scratchpad = ({
          * readonly mode views (lcb, expressGrader(edit response off), etc...)
          */
         zwibbler.load(data)
+      } else if (!data && (readOnly || expressGrader)) {
+        // readonly mode views LCB, expressGrader(edit response off) with no data,
+        // will clear previous data and create fresh one.
+        zwibbler.newDocument()
       }
     }
   }, [data, zwibbler, currentItem])

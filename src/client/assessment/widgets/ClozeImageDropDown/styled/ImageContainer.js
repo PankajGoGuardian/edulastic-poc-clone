@@ -8,4 +8,8 @@ export const ImageContainer = styled.div`
   min-height: ${(props) => (props.imageUrl ? '100%' : '400px')};
   padding: 0px;
   overflow: hidden;
+
+  div[id^='drag-input-'] {
+    z-index: 21;
+  }
 `

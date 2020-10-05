@@ -13,15 +13,7 @@
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
-        "width": 90,
-        "align": "left"
-      },
-      {
-        "title": "Due on",
-        "dataIndex": "dueTime",
-        "key": "dueTime",
-        "className": "dueTime",
-        "width": 70
+        "width": 100
       },
       {
         "title": "#Assigned",
@@ -33,7 +25,7 @@
         "title": "#Submitted",
         "dataIndex": "studentsGraded",
         "key": "studentsGraded",
-        "width": 80
+        "width": 70
       },
       {
         "title": "#Absent",
@@ -100,15 +92,7 @@
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
-        "width": 90,
-        "align": "left"
-      },
-      {
-        "title": "Due on",
-        "dataIndex": "dueTime",
-        "key": "dueTime",
-        "className": "dueTime",
-        "width": 70
+        "width": 100
       },
       {
         "title": "#Assigned",
@@ -120,7 +104,7 @@
         "title": "#Submitted",
         "dataIndex": "studentsGraded",
         "key": "studentsGraded",
-        "width": 80
+        "width": 70
       },
       {
         "title": "#Absent",
@@ -189,15 +173,8 @@
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
-        "width": 90,
+        "width": 110,
         "align": "left"
-      },
-      {
-        "title": "Due on",
-        "dataIndex": "dueTime",
-        "key": "dueTime",
-        "className": "dueTime",
-        "width": 70
       },
       {
         "title": "#Assigned",
@@ -209,7 +186,7 @@
         "title": "#Submitted",
         "dataIndex": "studentsGraded",
         "key": "studentsGraded",
-        "width": 80
+        "width": 70
       },
       {
         "title": "#Absent",

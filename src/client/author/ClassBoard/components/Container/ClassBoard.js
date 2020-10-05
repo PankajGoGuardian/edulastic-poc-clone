@@ -111,7 +111,6 @@ import {
   SwitchBox,
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
-import { clearUserWorkAction } from '../../../../assessment/actions/userWork'
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -854,7 +853,6 @@ class ClassBoard extends Component {
       loadTestActivity,
       isCliUser,
       isShowAllStudents,
-      clearUserWork,
     } = this.props
 
     const {
@@ -1372,7 +1370,6 @@ class ClassBoard extends Component {
                         selectedStudent={selectedStudentId}
                         studentResponse={qActivityByStudent}
                         handleChange={(value, _testActivityId) => {
-                          clearUserWork()
                           setCurrentTestActivityId(_testActivityId)
                           getAllTestActivitiesForStudent({
                             studentId: value,
@@ -1683,7 +1680,6 @@ const enhance = compose(
       markSubmitted: markSubmittedAction,
       downloadGradesResponse: downloadGradesResponseAction,
       setShowAllStudents: setShowAllStudentsAction,
-      clearUserWork: clearUserWorkAction,
     }
   )
 )

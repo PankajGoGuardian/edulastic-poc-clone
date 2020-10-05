@@ -38,6 +38,7 @@ const HighlightImagePreview = ({
   scratchpadDimensions,
   colWidth,
   scratchPadMode,
+  isStudentAttempt,
 }) => {
   const containerRef = useRef()
   const { image = {} } = item
@@ -66,12 +67,23 @@ const HighlightImagePreview = ({
   )
 
   const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
-  const showDrawing =
+  let showDrawing =
     isLCBView ||
     isStudentReport ||
     isExpressGrader ||
     viewComponent === 'editQuestion' ||
     scratchPadMode
+
+  if (showDrawing && !isStudentAttempt) {
+    if (isExpressGrader && !disableResponse) {
+      showDrawing = true
+    } else {
+      // show scratchpad only if there is data
+      //  in teacher view (LCB, ExpressGrader, etc)
+      showDrawing = !!userWork
+    }
+  }
+
   const showToolBar =
     (showDrawing && !readyOnlyScratchpad && !disableResponse) ||
     (!disableResponse && isExpressGrader)

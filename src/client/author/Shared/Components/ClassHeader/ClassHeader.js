@@ -661,8 +661,7 @@ class ClassHeader extends Component {
                   placeHolder="Type the action"
                   onInputChange={this.handleValidateInput}
                   expectedVal="PAUSE"
-                  showConfirmationText
-                  hideUndoneText
+                  canUndone
                   bodyText={
                     <div>
                       Are you sure you want to pause? Once paused,no student
@@ -708,8 +707,7 @@ class ClassHeader extends Component {
                     </div>
                   }
                   okText="Yes, Close"
-                  showConfirmationText
-                  hideUndoneText
+                  canUndone
                 />
               </StyledDiv>
             </RightSideButtonWrapper>

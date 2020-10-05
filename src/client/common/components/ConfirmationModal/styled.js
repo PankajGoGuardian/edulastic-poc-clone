@@ -15,8 +15,6 @@ export const LightGreenSpan = styled.span`
 `
 
 export const StyledCol = styled(Col)`
-  width: 100%;
-  padding: 10px 50px;
   justify-content: center;
   display: flex;
 `
@@ -39,11 +37,11 @@ export const StyledInput = styled(Input)`
 `
 
 export const StyledDiv = styled.div`
-  width: 100%;
+  width: 90%;
   text-align: left;
   margin-top: 20px;
   margin-bottom: 5px;
-  padding: 0px 50px;
+  margin-left: 45px;
 `
 
 export const StyledClassName = styled.p`

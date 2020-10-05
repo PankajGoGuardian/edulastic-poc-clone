@@ -25,8 +25,7 @@ const ConfirmationModal = ({
   expectedVal,
   bodyText,
   okText = '',
-  showConfirmationText,
-  hideUndoneText,
+  canUndone,
   bodyStyle = {},
   bodyTextStyle,
   placeHolder,
@@ -60,10 +59,10 @@ const ConfirmationModal = ({
         <Col span={24}>
           <StyledDiv>
             {bodyText}&nbsp;
-            {hideUndoneText ? null : <span>This action can NOT be undone.</span>}
+            {canUndone ? null : <span>This action can NOT be undone.</span>}
           </StyledDiv>
 
-          {showConfirmationText ? (
+          {canUndone ? (
             <StyledDiv style={bodyTextStyle}>
               If Yes, type<LightGreenSpan> {expectedVal} </LightGreenSpan>
               in the space given below and proceed.

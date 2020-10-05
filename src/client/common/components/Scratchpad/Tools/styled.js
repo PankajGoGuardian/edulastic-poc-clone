@@ -4,12 +4,14 @@ import { Button, Select } from 'antd'
 import { white, secondaryTextColor, smallDesktopWidth } from '@edulastic/colors'
 import icons from './assets/images/icons.png'
 
-export const ToolBoxContainer = styled(FlexContainer)`
+export const ToolBoxContainer = styled.div`
   position: relative;
+  z-index: 999;
 `
 
 export const MainToolBoxContainer = styled(FlexContainer)`
   height: 45px;
+  min-width: 710px;
   padding: 2px;
   padding-right: 12.5px;
   background: #6e7380;
@@ -20,6 +22,7 @@ export const MainToolBoxContainer = styled(FlexContainer)`
 export const SubToolBoxContainer = styled(FlexContainer)`
   height: 45px;
   padding: 0px 8px;
+  min-width: 710px;
   user-select: none;
   background-color: #ededed;
   border-bottom: 1px solid #b3b3b3;
@@ -88,7 +91,8 @@ export const Sprite = styled.div`
 
 export const StyledSelect = styled(Select).attrs({
   showArrow: false,
-  getPopupContainer: (triggerNode) => triggerNode.parentNode,
+  dropdownStyle: { zIndex: 1100 },
+  // getPopupContainer: (triggerNode) => triggerNode.parentNode
 })`
   margin-left: 6px;
   height: 24px;

@@ -2,18 +2,20 @@ import styled from 'styled-components'
 import { mobileWidth } from '@edulastic/colors'
 
 export const Container = styled.div`
-  width: ${({ width }) => width};
   display: flex;
+  width: ${({ colWidth }) => colWidth || '100%'};
   flex-direction: column;
   border-right-color: ${(props) =>
     props.theme.testItemPreview.itemColBorderColor};
-  background-color: ${(props) => props.hasCollapseButtons && '#fff'};
-  border-radius: ${(props) => props.hasCollapseButtons && '10px'};
-  min-height: ${(props) => props.hasCollapseButtons && 'calc(100vh - 122px)'};
-  max-height: ${(props) => props.hasCollapseButtons && 'calc(100vh - 122px)'};
-  padding-top: ${(props) => props.hasCollapseButtons && '15px'};
-  overflow: ${(props) => props.hasCollapseButtons && 'auto'};
-  ${({ height }) => height && `height: ${height}`};
+  background-color: ${(props) => props.isStudentAttempt && '#fff'};
+  border-radius: ${(props) => props.isStudentAttempt && '8px'};
+  margin-top: ${(props) => props.isStudentAttempt && '8px'};
+  min-height: ${(props) => props.isStudentAttempt && 'calc(100vh - 122px)'};
+  max-height: ${(props) => props.isStudentAttempt && 'calc(100vh - 122px)'};
+  overflow: ${(props) =>
+    props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
+      ? 'auto'
+      : 'hidden'};
   @media (max-width: ${mobileWidth}) {
     padding-left: 0px;
     margin-right: ${(props) => !props.value && '20px'};
@@ -24,7 +26,7 @@ export const Container = styled.div`
 export const WidgetContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  padding-top: 20px;
-  ${({ style }) => style};
+  align-items: flex-start;
+  position: relative;
+  flex-grow: 1;
 `

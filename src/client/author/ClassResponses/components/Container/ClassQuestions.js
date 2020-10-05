@@ -102,9 +102,9 @@ function Preview({
         isLCBView={isLCBView}
         timeSpent={timeSpent}
         attachments={attachments}
-        history={userWork[target]}
+        userWork={userWork[target]}
         scratchpadDimensions={scratchpadDimensions}
-        saveHistory={() => {}}
+        saveUserWork={() => {}}
         {...scoringProps}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}

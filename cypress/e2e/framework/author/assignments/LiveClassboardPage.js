@@ -8,8 +8,8 @@ import {
 import QuestionResponsePage from './QuestionResponsePage'
 import { attemptTypes, queColor } from '../../constants/questionTypes'
 import RediectPopup from './redirectPopupPage'
-import TeacherSideBar from '../SideBarPage'
 import LCBtestSettings from './lcbTestSettings'
+import Helpers from '../../util/Helpers'
 
 class LiveClassboardPage {
   constructor() {
@@ -29,11 +29,13 @@ class LiveClassboardPage {
   getCardIndex = (studentName) =>
     cy
       .get('[data-cy="studentName"]')
-      .contains(studentName)
+      .contains(Helpers.getFormattedFirstLastName(studentName))
       .then((ele) => Cypress.$('[data-cy="studentName"]').index(ele))
 
   getStudentCardByStudentName = (studentName) => {
-    const selector = `[data-cy="student-card-${studentName}"]`
+    const selector = `[data-cy="student-card-${Helpers.getFormattedFirstLastName(
+      studentName
+    )}"]`
     return cy.get(selector)
   }
 
@@ -436,7 +438,10 @@ class LiveClassboardPage {
             cy.wait('@test-activity')
             cy.get('.ant-select-selection-selected-value')
               .eq(0)
-              .should('have.text', studentName)
+              .should(
+                'have.text',
+                Helpers.getFormattedFirstLastName(studentName)
+              )
           })
         this.clickOnCardViewTab()
         // } else this.getViewResponseByIndex(index).should("not.be.exist");

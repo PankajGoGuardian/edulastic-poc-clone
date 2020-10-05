@@ -5,6 +5,7 @@ import {
 } from '../../constants/questionTypes'
 import LiveClassboardPage from './LiveClassboardPage'
 import StudentTestPage from '../../student/studentTestPage'
+import Helpers from '../../util/Helpers'
 
 const TEI_Attempt = 'TEI'
 const CR_Questions = 'Constructed Response'
@@ -23,7 +24,10 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   // *** ELEMENTS START ***
 
   getGridRowByStudent = (student) =>
-    cy.contains('div', student).closest('tr').as(this.rowAlias)
+    cy
+      .contains('div', Helpers.getFormattedFirstLastName(student))
+      .closest('tr')
+      .as(this.rowAlias)
 
   getScoreInputBox = () => cy.get('[data-cy="scoreInput"]')
 

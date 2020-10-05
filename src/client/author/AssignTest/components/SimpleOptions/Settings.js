@@ -167,7 +167,11 @@ const Settings = ({
   }
 
   useEffect(() => {
-    const { scoringType, penalty } = assignmentSettings
+    const { scoringType: _scoringType, penalty: _penalty } = tempTestSettings
+    const {
+      scoringType = _scoringType,
+      penalty = _penalty,
+    } = assignmentSettings
     if (scoringType === PARTIAL_CREDIT && !penalty)
       overRideSettings('scoringType', PARTIAL_CREDIT_IGNORE_INCORRECT)
   }, [])

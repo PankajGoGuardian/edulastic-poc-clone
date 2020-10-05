@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Col, Icon, Row, Select, Tooltip } from 'antd'
 import moment from 'moment'
@@ -47,7 +47,7 @@ export const releaseGradeKeys = [
 ]
 export const nonPremiumReleaseGradeKeys = ['DONT_RELEASE', 'WITH_ANSWERS']
 
-const { releaseGradeTypes } = testConst
+const { releaseGradeTypes, evalTypeLabels } = testConst
 
 function LCBAssignmentSettings({
   additionalData = {},
@@ -80,12 +80,26 @@ function LCBAssignmentSettings({
     }
   }, [additionalData])
 
+  const assignmentSettings = useMemo(() => {
+    const { scoringType, penalty } = assignment || {}
+    if (scoringType === evalTypeLabels.PARTIAL_CREDIT && !penalty) {
+      return {
+        ...assignment,
+        scoringType: evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
+      }
+    }
+    return assignment
+  }, [assignment])
+
   const [showSettings, setShowSettings] = useState(false)
   const [showClassSettings, toggleClassSettings] = useState(true)
 
   const { startDate, endDate, status, dueDate } =
     assignment?.['class']?.[0] || {}
   const changeField = (key) => (value) => {
+    if (key === 'scoringType') {
+      return
+    }
     if (
       key === 'openPolicy' &&
       value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
@@ -269,7 +283,7 @@ function LCBAssignmentSettings({
 
             {showSettings && (
               <Settings
-                assignmentSettings={assignment || {}}
+                assignmentSettings={assignmentSettings || {}}
                 updateAssignmentSettings={() => {}}
                 forClassLevel
                 hideClassLevelOptions

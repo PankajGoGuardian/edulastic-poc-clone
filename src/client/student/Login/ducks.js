@@ -642,7 +642,10 @@ function getValidRedirectRouteByRole(_url, user) {
     case roleuser.TEACHER:
       return url.match(/^\/author\//) ? url : '/author/dashboard'
     case roleuser.STUDENT:
-      return url.match(/^\/home\//) ? url : '/home/assignments'
+      return url.match(/^\/home\//) ||
+        url.includes('/author/tests/tab/review/id/')
+        ? url
+        : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:
       return url.match(/^\/admin\//) ? url : '/admin/proxyUser'
     case roleuser.EDULASTIC_CURATOR:

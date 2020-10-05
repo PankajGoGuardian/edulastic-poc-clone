@@ -27,7 +27,13 @@ export default ({
       <IconEye width={18} height={18} />
     </ActionButton>
     {isEditable && (
-      <ActionButton isGhost title="Remove" data-cy="delete" onClick={onDelete}>
+      <ActionButton
+        isGhost
+        title="Remove"
+        data-cy="delete"
+        onClick={onDelete}
+        onMouseDown={(e) => e && e.preventDefault()}
+      >
         <IconTrash width={15} height={15} />
       </ActionButton>
     )}

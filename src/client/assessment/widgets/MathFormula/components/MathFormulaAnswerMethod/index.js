@@ -201,6 +201,16 @@ const MathFormulaAnswerMethod = ({
               label={t('component.math.isMixedFraction')}
             />
           )
+        case 'isImproperFraction':
+          return (
+            <CheckOption
+              dataCy="answer-is-improper-fraction"
+              optionKey="isImproperFraction"
+              options={options}
+              onChange={changeOptions}
+              label={t('component.math.isImproperFraction')}
+            />
+          )  
         case 'isExpanded':
           return (
             <CheckOption

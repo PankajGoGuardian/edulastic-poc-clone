@@ -17,8 +17,7 @@ import styled from 'styled-components'
 import { resetMyPasswordAction } from '../../Login/ducks'
 import { Wrapper } from '../../styled'
 import Photo from './Photo'
-import { getFormattedName } from '../../../author/Gradebook/transformers';
-
+import { getFormattedName } from '../../../author/Gradebook/transformers'
 
 const FormItem = Form.Item
 class ProfileContainer extends React.Component {
@@ -102,7 +101,9 @@ class ProfileContainer extends React.Component {
                   <DetailData>{user.firstName || 'Anonymous'}</DetailData>
                 </DetailRow>
                 <DetailRow>
-                  <DetailTitle>{t('common.title.middleNameInputLabel')}</DetailTitle>
+                  <DetailTitle>
+                    {t('common.title.middleNameInputLabel')}
+                  </DetailTitle>
                   <DetailData>{user.middleName}</DetailData>
                 </DetailRow>
                 <DetailRow>
@@ -194,7 +195,11 @@ function ChildrenTable({ childs }) {
     {
       title: 'Name',
       key: 'name',
-      render: data => <a>{getFormattedName(data.firstName, data.middleName, data.lastName)}</a>
+      render: (data) => (
+        <a>
+          {getFormattedName(data.firstName, data.middleName, data.lastName)}
+        </a>
+      ),
     },
     {
       title: 'Grade',
@@ -216,7 +221,10 @@ function ChildrenTable({ childs }) {
       key: 'districts',
       // In case of parent role table will be displayed and
       // for parent we can user first district to get the name
-      render: orgData => orgData?.districts?.map(x => <Tag key={x._id}> {x.districtName}</Tag>)
+      render: (orgData) =>
+        orgData?.districts?.map((x) => (
+          <Tag key={x._id}> {x.districtName}</Tag>
+        )),
     },
   ]
 

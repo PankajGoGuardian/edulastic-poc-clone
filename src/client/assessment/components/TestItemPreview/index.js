@@ -425,8 +425,8 @@ class TestItemPreview extends Component {
                   style={{
                     position: 'relative',
                     'min-width': !isPrintPreview && '265px',
-                     overflowY: isExpressGrader && 'auto',
-                    overflowX: isExpressGrader && 'hidden'
+                    overflowY: isExpressGrader && 'auto',
+                    overflowX: isExpressGrader && 'hidden',
                   }}
                   className="__print-feedback-main-wrapper"
                 >

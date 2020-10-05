@@ -86,10 +86,8 @@ const StudentsList = ({
         const fullName = getFormattedName(firstName, middleName, lastName)
         return (
           <span>
-          {`${
-            fullName === 'Anonymous' || fullName === '' ? '-' : fullName
-          }`}
-        </span>
+            {`${fullName === 'Anonymous' || fullName === '' ? '-' : fullName}`}
+          </span>
         )
       },
     },

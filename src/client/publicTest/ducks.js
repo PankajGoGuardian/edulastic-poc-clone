@@ -108,9 +108,9 @@ export const publicTestReducer = createReducer(initialState, {
 
 // sagas
 function* fetchPublicTest({ payload }) {
-  const { testId, ...params } = payload
+  const { testId } = payload
   try {
-    const test = yield call(testsApi.getPublicTest, testId, params)
+    const test = yield call(testsApi.getPublicTest, testId)
     yield put({ type: FETCH_PUBLIC_TEST_SUCCESS, payload: { test } })
   } catch (err) {
     yield put({ type: FETCH_PUBLIC_TEST_FAILURE, payload: err })

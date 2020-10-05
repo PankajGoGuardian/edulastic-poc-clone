@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   EduButton,
   ScrollContext,
@@ -58,16 +59,6 @@ import {
  * we need to set ScrollContext for each case.
  */
 class AuthorTestItemPreview extends Component {
-  static defaultProps = {
-    showFeedback: false,
-    fullModal: false,
-    verticalDivider: false,
-    scrolling: false,
-    style: { padding: 0, display: 'flex' },
-    qIndex: null,
-    student: {},
-  }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -576,7 +567,7 @@ class AuthorTestItemPreview extends Component {
     scratchpadData,
     saveScratchpad,
   }) => {
-    const { cols, passageNavigator } = this.props
+    const { cols } = this.props
     const { collapseDirection } = this.state
 
     return cols.map((col, i) => {
@@ -599,7 +590,6 @@ class AuthorTestItemPreview extends Component {
           }
         >
           <ColumnContentArea>
-            {i === 1 && passageNavigator}
             {i === 0
               ? this.renderLeftButtons(showScratch, showNotification)
               : this.renderRightButtons()}
@@ -657,6 +647,17 @@ class AuthorTestItemPreview extends Component {
     )
   }
 }
+
+AuthorTestItemPreview.defaultProps = {
+  showFeedback: false,
+  fullModal: false,
+  verticalDivider: false,
+  scrolling: false,
+  style: { padding: 0, display: 'flex' },
+  qIndex: null,
+  student: {},
+}
+
 const enhance = compose(
   withWindowSizes,
   connect(

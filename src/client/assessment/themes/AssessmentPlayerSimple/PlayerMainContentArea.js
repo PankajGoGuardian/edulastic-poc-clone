@@ -38,7 +38,7 @@ const PlayerContentArea = ({
   zoomLevel,
   windowWidth,
   scratchPadMode,
-  saveHistory,
+  saveUserWork,
   saveAttachments,
   attachments,
   history,
@@ -84,8 +84,8 @@ const PlayerContentArea = ({
                 showCollapseBtn
                 highlights={highlights}
                 scratchPadMode={scratchPadMode}
-                saveHistory={saveHistory}
-                history={history}
+                saveUserWork={saveUserWork}
+                userWork={history}
                 saveAttachments={saveAttachments}
                 attachments={attachments}
                 viewComponent="practicePlayer"
@@ -103,8 +103,8 @@ const PlayerContentArea = ({
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn
                 scratchPadMode={scratchPadMode}
-                saveHistory={saveHistory}
-                history={history}
+                saveUserWork={saveUserWork}
+                userWork={history}
                 saveAttachments={saveAttachments}
                 attachments={attachments}
                 evaluation={evaluation}

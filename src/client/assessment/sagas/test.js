@@ -82,6 +82,67 @@ const getQuestions = (testItems = []) => {
   return allQuestions
 }
 
+const getSettings = (test, testActivity, preview) => {
+  const { assignmentSettings = {} } = testActivity || {}
+  const calcType = preview ? assignmentSettings.calcType : test.calcType
+  // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
+  const calcProvider =
+    calcType === testContants.calculatorTypes.GRAPHING
+      ? 'DESMOS'
+      : preview
+      ? test.calculatorProvider
+      : testActivity?.calculatorProvider
+
+  const maxAnswerChecks = preview
+    ? test.maxAnswerChecks
+    : assignmentSettings.maxAnswerChecks
+  const passwordPolicy = preview
+    ? test.passwordPolicy
+    : assignmentSettings.passwordPolicy
+  const testType = preview ? test.testType : assignmentSettings.testType
+  const playerSkinType = preview
+    ? test.playerSkinType
+    : assignmentSettings.playerSkinType
+  const showMagnifier = preview
+    ? test.showMagnifier
+    : assignmentSettings.showMagnifier
+  const timedAssignment = preview
+    ? test.timedAssignment
+    : assignmentSettings.timedAssignment
+  const allowedTime = preview
+    ? test.allowedTime
+    : assignmentSettings.allowedTime
+  const pauseAllowed = preview
+    ? test.pauseAllowed
+    : assignmentSettings.pauseAllowed
+  const enableScratchpad = preview
+    ? test.enableScratchpad
+    : assignmentSettings.enableScratchpad
+  const releaseScore = preview
+    ? test.releaseScore
+    : testActivity?.testActivity?.releaseScore
+
+  return {
+    testType,
+    calcProvider,
+    playerSkinType,
+    showMagnifier,
+    timedAssignment,
+    allowedTime,
+    pauseAllowed,
+    enableScratchpad,
+    calcType: calcType || testContants.calculatorTypes.NONE,
+    maxAnswerChecks: maxAnswerChecks || 0,
+    passwordPolicy:
+      passwordPolicy ||
+      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+    showPreviousAttempt: assignmentSettings.showPreviousAttempt || 'NONE',
+    endDate: assignmentSettings.endDate,
+    closePolicy: assignmentSettings.closePolicy,
+    releaseScore,
+  }
+}
+
 function* loadTest({ payload }) {
   const {
     testActivityId,
@@ -257,35 +318,8 @@ function* loadTest({ payload }) {
     }
     // eslint-disable-next-line prefer-const
     let { testItems, passages, testType } = test
-    const settings = {
-      // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
-      calcProvider:
-        testActivity?.testActivity?.calcType ===
-          testContants.calculatorTypes.GRAPHING ||
-        test.calcType === testContants.calculatorTypes.GRAPHING
-          ? 'DESMOS'
-          : testActivity?.calculatorProvider,
-      calcType:
-        testActivity?.assignmentSettings?.calcType ||
-        test.calcType ||
-        testContants.calculatorTypes.NONE,
-      maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
-      passwordPolicy:
-        testActivity?.assignmentSettings?.passwordPolicy ||
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-      showPreviousAttempt:
-        testActivity?.assignmentSettings?.showPreviousAttempt || 'NONE',
-      testType: testActivity?.assignmentSettings?.testType,
-      playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
-      showMagnifier: testActivity?.assignmentSettings?.showMagnifier,
-      endDate: testActivity?.assignmentSettings?.endDate,
-      closePolicy: testActivity?.assignmentSettings?.closePolicy,
-      timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
-      allowedTime: testActivity?.assignmentSettings?.allowedTime,
-      pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
-      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
-      releaseScore: testActivity?.testActivity?.releaseScore,
-    }
+
+    const settings = getSettings(test, testActivity, preview)
 
     const answerCheckByItemId = {}
     ;(testActivity.questionActivities || []).forEach((item) => {

@@ -58,6 +58,7 @@ const PlayerHeader = ({
   handleMagnifier,
   enableMagnifier,
   timedAssignment,
+  hasDrawingResponse,
   utaId,
   groupId,
   location,
@@ -181,6 +182,7 @@ const PlayerHeader = ({
                         enableMagnifier={enableMagnifier}
                         timedAssignment={timedAssignment}
                         utaId={utaId}
+                        hasDrawingResponse={hasDrawingResponse}
                         groupId={groupId}
                       />
                     )}

@@ -7,7 +7,7 @@ export const Content = styled(Paper)`
   left: 0;
   right: 0;
   width: 100%;
-  max-height: calc(100vh - 135px);
+  max-height: calc(100vh - 170px);
   padding: ${(props) => (props.padding ? props.padding : '0px')};
   overflow: auto;
   position: relative;

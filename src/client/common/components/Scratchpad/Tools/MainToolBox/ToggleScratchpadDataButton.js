@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { AssessmentPlayerContext } from '@edulastic/common'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -9,9 +10,13 @@ import { TogglerWrapper } from '../styled'
 function Toggler({ userRole, hideData, toggleVisibility }) {
   const isTeacher = userRole === 'teacher'
   const state = hideData ? 'show' : 'hide'
+  const { isStudentAttempt } = useContext(AssessmentPlayerContext)
 
   return (
-    <TogglerWrapper onClick={toggleVisibility} isTeacher={isTeacher}>
+    <TogglerWrapper
+      onClick={toggleVisibility}
+      isTeacher={isTeacher && !isStudentAttempt}
+    >
       {state} student work
     </TogglerWrapper>
   )
@@ -25,7 +30,7 @@ Toggler.propTypes = {
 
 const mapStateToProps = (state) => ({
   userRole: getUserRole(state),
-  hideData: state?.scratchpad?.hideData,
+  hideData: state.scratchpad.hideData,
 })
 
 const mapDispatchToProps = {

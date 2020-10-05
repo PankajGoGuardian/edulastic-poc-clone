@@ -29,6 +29,7 @@ const ClassCreatePage = ({
   user,
   fetchClassList,
   googleAllowedInstitutions,
+  isClassLink,
 }) => {
   const { name } = recentInstitute
 
@@ -61,22 +62,24 @@ const ClassCreatePage = ({
               <Link to="/author/manageClass/createClass">
                 <EduButton isBlue>CREATE NEW CLASS</EduButton>
               </Link>
-              {googleAllowedInstitutions?.length > 0 && !isCleverDistrict && (
-                <GoogleLogin
-                  clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-                  render={(renderProps) => (
-                    <EduButton isBlue onClick={renderProps.onClick}>
-                      <IconGoogleClassroom />
-                      <span>SYNC WITH GOOGLE CLASSROOM</span>
-                    </EduButton>
-                  )}
-                  scope={scopes}
-                  onSuccess={handleLoginSucess}
-                  onFailure={handleError}
-                  prompt={isUserGoogleLoggedIn ? '' : 'consent'}
-                  responseType="code"
-                />
-              )}
+              {googleAllowedInstitutions?.length > 0 &&
+                !isCleverDistrict &&
+                !isClassLink && (
+                  <GoogleLogin
+                    clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                    render={(renderProps) => (
+                      <EduButton isBlue onClick={renderProps.onClick}>
+                        <IconGoogleClassroom />
+                        <span>SYNC WITH GOOGLE CLASSROOM</span>
+                      </EduButton>
+                    )}
+                    scope={scopes}
+                    onSuccess={handleLoginSucess}
+                    onFailure={handleError}
+                    prompt={isUserGoogleLoggedIn ? '' : 'consent'}
+                    responseType="code"
+                  />
+                )}
             </ButtonsContainer>
           </>
         )}

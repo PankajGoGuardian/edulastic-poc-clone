@@ -39,6 +39,7 @@ const Header = ({
   canvasAllowedInstitution,
   user,
   handleCanvasBulkSync,
+  isClassLink,
 }) => {
   const { orgData } = user
   const { isCleverDistrict } = orgData
@@ -135,7 +136,8 @@ const Header = ({
           )}
           {googleAllowedInstitutions?.length > 0 &&
             !isCleverDistrict &&
-            !enableCleverSync && (
+            !enableCleverSync &&
+            !isClassLink && (
               <GoogleLogin
                 clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                 buttonText="Sync with Google Classroom"
@@ -154,7 +156,8 @@ const Header = ({
             )}
           {canvasAllowedInstitution?.length > 0 &&
             !isCleverDistrict &&
-            !enableCleverSync && (
+            !enableCleverSync &&
+            !isClassLink && (
               <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
                 <img
                   alt="Canvas"

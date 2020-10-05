@@ -40,6 +40,7 @@ const ClassList = ({
   canvasAllowedInstitution,
   handleCanvasBulkSync,
   isCleverUser,
+  studentsList,
 }) => {
   const recentInstitute = institutions[institutions.length - 1]
   const findGrade = (_grade = []) =>
@@ -177,6 +178,9 @@ const ClassList = ({
     setCurrentTab(value)
   }
 
+  const isClassLink =
+    studentsList && studentsList.filter((id) => id?.atlasId).length > 0
+
   return (
     <>
       <Header
@@ -193,6 +197,7 @@ const ClassList = ({
         enableCleverSync={isCleverUser}
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
+        isClassLink={isClassLink}
       />
       <MainContentWrapper>
         <SubHeader>
@@ -230,6 +235,7 @@ const ClassList = ({
                   user={user}
                   fetchClassList={fetchClassList}
                   googleAllowedInstitutions={googleAllowedInstitutions}
+                  isClassLink={isClassLink}
                 />
               )}
             </>
@@ -271,6 +277,7 @@ const enhance = compose(
         state
       ),
       isCleverUser: getCleverLibraryUserSelector(state),
+      studentsList: get(state, 'manageClass.studentsList', {}),
     }),
     {
       fetchClassList: fetchClassListAction,

@@ -354,7 +354,6 @@ function* receiveStudentQuestionSaga({ payload }) {
         yield put(setTeacherEditedScore({ [qid]: score }))
       }
     }
-
     if (feedbackResponse) {
       const scratchpadUsedItems = []
       if (Array.isArray(feedbackResponse)) {
@@ -372,7 +371,7 @@ function* receiveStudentQuestionSaga({ payload }) {
         // item having single question
         const {
           qType,
-          scratchPad,
+          scratchPad = {},
           _id: uqaId,
           testItemId,
           testActivityId,

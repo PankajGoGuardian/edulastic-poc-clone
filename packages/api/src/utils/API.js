@@ -169,6 +169,10 @@ export default class API {
         const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
         const serverAppVersion = response.headers['server-version'] || ''
 
+        // store the info in window object
+        window.__CLIENT_VERSION__ = appVersion
+        window.__SERVER_VERSION__ = serverAppVersion
+
         // if the server version is higher than the client version, then try to resync
         if (
           appVersion &&

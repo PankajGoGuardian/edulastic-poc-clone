@@ -56,7 +56,7 @@ const TestActivityPreview = ({
     let passage = {}
     if (testItem.passageId && passages) {
       passage = passages.find((p) => p._id === testItem.passageId)
-      questionsKeyed = { ...questionsKeyed, ...keyBy(passage.data, 'id') }
+      questionsKeyed = { ...questionsKeyed, ...keyBy(passage?.data, 'id') }
       itemRows = [passage?.structure, ...itemRows]
     }
 
@@ -119,6 +119,7 @@ const enhanced = compose(
   withNamespaces('student'),
   connect(
     (state) => ({
+      test: state.test,
       title: state.test.title,
       testItems: state.test.items,
       testActivity: previewTestActivitySelector(state),

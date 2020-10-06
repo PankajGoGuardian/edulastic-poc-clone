@@ -84,7 +84,8 @@ const CreateClassPage = ({
         <p>Create new class</p>
       </EduButton>
       {(allowGoogleLogin || enableCleverSync || enableCanvasSync) &&
-        !isCleverDistrict && !isClassLink && <StyledP>OR</StyledP>}
+        !isCleverDistrict &&
+        !isClassLink && <StyledP>OR</StyledP>}
       {allowGoogleLogin !== false && !isCleverDistrict && !isClassLink && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}

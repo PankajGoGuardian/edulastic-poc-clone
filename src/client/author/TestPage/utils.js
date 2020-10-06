@@ -25,7 +25,7 @@ const getStandardWiseSummary = (question, point) => {
       ({ domains, isEquivalentStandard = false, curriculumId }) =>
         flatMap(domains, ({ standards }) =>
           map(standards, ({ name }) => ({
-            curriculumId: `${curriculumId}`,
+            curriculumId,
             identifier: name,
             totalPoints: points,
             totalQuestions: 1,
@@ -75,7 +75,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       const standardSumm = map(standardSummary, (objects, curriculumId) => {
         const obj = groupBy(objects, 'identifier')
         const standardObj = map(obj, (elements, identifier) => ({
-          curriculumId,
+          curriculumId: parseInt(curriculumId),
           identifier,
           totalQuestions: sumBy(elements, 'totalQuestions'),
           totalPoints: sumBy(elements, 'totalPoints'),

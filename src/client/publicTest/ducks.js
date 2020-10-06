@@ -16,6 +16,8 @@ import { transformAssignmentForRedirect } from '../student/Assignments/ducks'
 import { assignmentSchema } from '../student/sharedDucks/AssignmentModule/ducks'
 
 import { reportSchema } from '../student/sharedDucks/ReportsModule/ducks'
+import { testActivityStatus } from '@edulastic/constants'
+import { activeAssignmentClassIdentifiers } from './utils'
 
 const FETCH_PUBLIC_TEST = '[test] fetch publicly shared test'
 const FETCH_PUBLIC_TEST_SUCCESS = '[test] success fetch publicly shared test'
@@ -32,8 +34,23 @@ export const fetchAssignmentsByTestAction = createAction(
 
 // selector
 const getCurrentUserId = createSelectorator(['user.user._id'], (r) => r)
-const reportsSelector = (state) =>
+const reportsById = (state) =>
   get(state, 'publicTest.assignments.reportsObj', {})
+
+const reportsSelector = createSelector(reportsById, (reports) => {
+  const filteredReports = {}
+  if (!Object.keys(reports).length) {
+    return filteredReports
+  }
+  for (const r in reports) {
+    if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
+      continue
+    }
+    filteredReports[r] = reports[r]
+  }
+  return filteredReports
+})
+
 export const assignmentsSelector = (state) =>
   get(state, 'publicTest.assignments.assignmentObj', {})
 
@@ -45,8 +62,12 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, currentUserId) => {
+    const classIdentifiers = activeAssignmentClassIdentifiers(assignmentsObj)
+    const reports = values(reportsObj).filter(
+      (item) => classIdentifiers[item.assignmentClassIdentifier]
+    )
     const groupedReports = groupBy(
-      values(reportsObj),
+      reports,
       (item) => `${item.assignmentId}_${item.groupId}`
     )
     const assignments = values(assignmentsObj).flatMap((assignment) => {
@@ -128,13 +149,15 @@ function* fetchAssignmentsByTest({ payload }) {
       call(assignmentApi.fetchAssigned, groupId, testId),
       call(reportsApi.fetchReports, groupId, testId),
     ])
-
+    const reportsToTransform = reports.filter(
+      (r) => r.status !== testActivityStatus.NOT_STARTED
+    )
     const reportsGroupedByClassIdentifier = groupBy(
-      reports,
+      reportsToTransform,
       'assignmentClassIdentifier'
     )
     const groupedReportsByAssignmentId = groupBy(
-      reports,
+      reportsToTransform,
       (item) => `${item.assignmentId}_${item.groupId}`
     )
 

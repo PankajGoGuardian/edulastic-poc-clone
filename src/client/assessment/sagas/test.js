@@ -544,6 +544,8 @@ function* loadTest({ payload }) {
     if (err.status) {
       if (err.status === 400) {
         messageKey = 'invalidAction'
+      } else if (err.status === 302) {
+        messageKey = 'testPausedByTeacher'
       }
     }
     if (userRole === roleuser.STUDENT) {

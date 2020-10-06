@@ -1112,6 +1112,7 @@ function* logout() {
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
       sessionStorage.removeItem('filters[Assignments]')
+      sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()
       TokenStorage.removeTokens()

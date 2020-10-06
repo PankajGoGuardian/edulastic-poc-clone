@@ -20,7 +20,9 @@ import { setSettingsModalVisibilityAction } from '../../../student/Sidebar/ducks
 import TimedTestTimer from './TimedTestTimer'
 
 export function useUtaPauseAllowed(utaId) {
-  utaId = utaId || 'undefined'
+  if (!utaId) {
+    return true
+  }
   const firestoreCollectionName = 'timedAssignmentUTAs'
   const uta = Fbs.useFirestoreRealtimeDocument(
     (db) => db.collection(firestoreCollectionName).doc(utaId),

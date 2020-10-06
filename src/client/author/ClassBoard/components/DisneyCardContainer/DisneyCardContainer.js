@@ -389,7 +389,7 @@ class DisneyCardContainer extends Component {
                   </PerfomanceSection>
                 </PaginationInfoS>
                 <PaginationInfoT data-cy="questions">
-                  {!student.redirected &&
+                  {!student.redirected && student.status !== 'redirected' && !recentAttemptsGrouped?.[student.studentId]?.length  &&
                     student.questionActivities
                       .filter((x) => !x.disabled)
                       .map((questionAct, questionIndex) => {

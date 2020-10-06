@@ -16,7 +16,7 @@ const mcqMultiplePage = new MCQMultiplePage()
 
 const { _ } = Cypress
 
-export function createtestandAssign(testname, testtitle, className) {
+export function createTestAndAssign(testname, testtitle, className) {
   return testLibraryPage.createTest(testname, false).then((id) => {
     testLibraryPage.header.clickOnDescription()
     testLibraryPage.testSummary.setName(testtitle)

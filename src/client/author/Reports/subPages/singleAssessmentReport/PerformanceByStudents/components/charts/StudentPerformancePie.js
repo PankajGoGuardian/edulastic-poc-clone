@@ -26,7 +26,7 @@ const renderCustomizedLabel = ({
       textAnchor={x > cx ? 'start' : 'end'}
       dominantBaseline="central"
     >
-      {`${(percent * 100).toFixed(0)}%`}
+      {Math.round(percent * 100) ? `${Math.round(percent * 100)}%` : ''}
     </text>
   )
 }
@@ -55,13 +55,11 @@ const StudentPerformancePie = ({ data, bands, onSelect }) => {
 
   const bandData = useMemo(() => {
     const groupByBand = groupBy(data, 'proficiencyBand')
-    return bands
-      .map((band) => ({
-        name: band.name,
-        value: groupByBand[band.name]?.length || 0,
-        sum: data.length,
-      }))
-      .filter((d) => d.value)
+    return bands.map((band) => ({
+      name: band.name,
+      value: groupByBand[band.name]?.length || 0,
+      sum: data.length,
+    }))
   }, [data, bands])
 
   const handleOnSelect = ({ name }) => {

@@ -86,7 +86,8 @@ const AudioControls = ({
       sound.on('load', () => {
         resolve(sound)
       })
-      sound.on('onplayerror', (...args) => {
+
+      sound.on('playerror', (...args) => {
         reject({ args, url })
       })
       sound.on('loaderror', (...args) => {
@@ -114,7 +115,7 @@ const AudioControls = ({
       _howl?.once('end', () => {
         resolve(_howl)
       })
-      _howl?.on('onplayerror', (...args) => {
+      _howl?.on('playerror', (...args) => {
         reject({ args })
       })
       setCurrentHowl(_howl)

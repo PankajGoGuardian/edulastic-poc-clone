@@ -5,6 +5,7 @@ import { Button } from 'antd'
 import { Howl, Howler } from 'howler'
 import styled, { css } from 'styled-components'
 import { connect } from 'react-redux'
+import * as Sentry from '@sentry/browser'
 
 import { questionType } from '@edulastic/constants'
 import { EduButton } from '@edulastic/common'
@@ -75,8 +76,8 @@ const AudioControls = ({
   const [pageHowls, setPageHowls] = useState([])
 
   // Loading audio
-  const audioLoadResolve = (url) =>
-    new Promise((resolve, reject) => {
+  const audioLoadResolve = (url) => {
+    const _prom = new Promise((resolve, reject) => {
       const sound = new Howl({
         src: url,
         html5: true,
@@ -85,20 +86,52 @@ const AudioControls = ({
       sound.on('load', () => {
         resolve(sound)
       })
-      sound.on('loaderror', (id, e) => {
-        reject({ id, e, url })
+      sound.on('onplayerror', (...args) => {
+        reject({ args, url })
+      })
+      sound.on('loaderror', (...args) => {
+        reject({ args, url })
       })
     })
 
+    _prom.catch((err) => {
+      Sentry.withScope((scope) => {
+        scope.setExtra('error', err)
+        setLoading(false)
+        Sentry.captureException(
+          new Error('[AudioControls] audio load failure.')
+        )
+      })
+    })
+
+    return _prom
+  }
+
   // Playing audio
-  const audioPlayResolve = (_howl) =>
-    new Promise((resolve) => {
+  const audioPlayResolve = (_howl) => {
+    const _prom = new Promise((resolve, reject) => {
       _howl?.play()
       _howl?.once('end', () => {
         resolve(_howl)
       })
+      _howl?.on('onplayerror', (...args) => {
+        reject({ args })
+      })
       setCurrentHowl(_howl)
     })
+
+    _prom.catch((err) => {
+      Sentry.withScope((scope) => {
+        setLoading(false)
+        scope.setExtra('error', err)
+        Sentry.captureException(
+          new Error('[AudioControls] audio playing failure.')
+        )
+      })
+    })
+
+    return _prom
+  }
 
   // Stop all audios
   const stopAllAudios = () => {
@@ -156,6 +189,7 @@ const AudioControls = ({
         setLoading(false)
       }
     })
+
     return () => {
       setCurrentPlayingDetails()
       stopAllAudios()

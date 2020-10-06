@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
 
 import { questionType } from '@edulastic/constants'
-import { EduButton } from '@edulastic/common'
+import { EduButton, notification } from '@edulastic/common'
 import { themeColor, white } from '@edulastic/colors'
 import {
   IconPlayFilled,
@@ -93,9 +93,7 @@ const AudioControls = ({
       sound.on('loaderror', (...args) => {
         reject({ args, url })
       })
-    })
-
-    _prom.catch((err) => {
+    }).catch((err) => {
       Sentry.withScope((scope) => {
         scope.setExtra('error', err)
         setLoading(false)
@@ -103,6 +101,7 @@ const AudioControls = ({
           new Error('[AudioControls] audio load failure.')
         )
       })
+      notification({ messageKey: 'ttsErrorMessage' })
     })
 
     return _prom

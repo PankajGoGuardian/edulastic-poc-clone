@@ -5,10 +5,14 @@ import { isEmpty } from 'lodash'
 import { Divider } from 'antd'
 import styled from 'styled-components'
 import { yellow, greenDark3, red } from '@edulastic/colors'
-import { IconCorrect, IconRemove, IconWrong } from '@edulastic/icons'
+import { IconCorrect, IconWrong, IconCarets } from '@edulastic/icons'
 import { assignmentPolicyOptions } from '@edulastic/constants'
 import { redirectPolicySelector } from '../selectors/test'
 
+const {
+  STUDENT_RESPONSE_AND_FEEDBACK,
+  SCORE_RESPONSE_AND_FEEDBACK,
+} = assignmentPolicyOptions.showPreviousAttemptOptions
 const TeacherResponseContainer = ({
   correct,
   answerIcon,
@@ -22,16 +26,13 @@ const TeacherResponseContainer = ({
     <FlexBox>
       <div>
         {correct !== undefined && (
-          <span>
-            {answerIcon} {`  ${answer}`}
-          </span>
+          <>
+            <span>
+              {answerIcon} {' Prior Attempt'}
+            </span>
+          </>
         )}
       </div>
-      {isResponseVisible && (
-        <div>
-          <IconRemove data-cy="remove" height={20} width={20} />
-        </div>
-      )}
     </FlexBox>
     {(prevScore || prevScore === 0) && (
       <FlexBox column>
@@ -59,7 +60,11 @@ const FeedBackContainer = ({
     setFeedbackView(!feedbackView)
   }
   useEffect(() => {
-    setFeedbackView(false)
+    if (redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK) {
+      setFeedbackView(true)
+    } else {
+      setFeedbackView(false)
+    }
   }, [itemId])
 
   const iconHeight = feedbackView ? 12 : 40
@@ -68,7 +73,7 @@ const FeedBackContainer = ({
     correct === true
       ? prevScore === prevMaxScore
         ? {
-            answer: 'Correct',
+            answer: 'Prior Attempt',
             answerIcon: (
               <IconCorrect
                 height={iconHeight}
@@ -78,7 +83,7 @@ const FeedBackContainer = ({
             ),
           }
         : {
-            answer: 'Partially Correct',
+            answer: 'Prior Attempt',
             answerIcon: (
               <IconCorrect
                 height={iconHeight}
@@ -88,15 +93,14 @@ const FeedBackContainer = ({
             ),
           }
       : {
-          answer: 'Incorrect',
+          answer: 'Prior Attempt',
           answerIcon: (
             <IconWrong height={iconHeight2} width={iconHeight2} color={red} />
           ),
         }
   const isResponseVisible =
-    redirectPolicy ===
-    assignmentPolicyOptions.showPreviousAttemptOptions
-      .STUDENT_RESPONSE_AND_FEEDBACK
+    redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK ||
+    redirectPolicy === SCORE_RESPONSE_AND_FEEDBACK
   const props = {
     correct,
     answerIcon,
@@ -111,7 +115,6 @@ const FeedBackContainer = ({
     return null
   }
   if (!isResponseVisible) {
-    // return here if all contents are blank
     if (
       !prevFeedback?.text &&
       correct === undefined &&
@@ -124,26 +127,26 @@ const FeedBackContainer = ({
       </Wrapper>
     )
   }
+  const showNavArrow = redirectPolicy === SCORE_RESPONSE_AND_FEEDBACK
   return (
-    <Wrapper onClick={toggleFeedbackView} visible>
+    <Wrapper visible>
       {!feedbackView && correct !== undefined && (
         <div style={{ width: '100px' }}>
-          <div
-            data-cy="answerIcon"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: '15px',
-            }}
-          >
-            {answerIcon}
-          </div>
+          <IconWrapper data-cy="answerIcon">{answerIcon}</IconWrapper>
           <div data-cy="answerType" style={{ textAlign: 'center' }}>
-            {`Thats ${answer}`}
+            Prior Attempt
           </div>
         </div>
       )}
       {feedbackView && <TeacherResponseContainer {...props} />}
+      {showNavArrow && (
+        <div
+          style={{ textAlign: 'center', cursor: 'pointer' }}
+          onClick={toggleFeedbackView}
+        >
+          <IconCarets.IconCaretRight />
+        </div>
+      )}
     </Wrapper>
   )
 }
@@ -164,6 +167,11 @@ export default connect(
   null
 )(FeedBackContainer)
 
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+`
 const Wrapper = styled.div`
   position: fixed;
   right: 40px;

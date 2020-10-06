@@ -23,7 +23,6 @@ const EmptyWrapper = styled.div``
 // Do not change id here
 const PassageWrapper = styled(Paper).attrs(() => ({
   id: 'passage-wrapper',
-  className: 'passage-wrapper',
 }))`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? 'transparent' : white)};

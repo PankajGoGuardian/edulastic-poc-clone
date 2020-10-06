@@ -975,8 +975,7 @@ class ClassBoard extends Component {
               </div>
             }
             okText="Yes, Submit"
-            showConfirmationText
-            hideUndoneText
+            canUndone
           />
         )}
         {showMarkAbsentPopup && (
@@ -1009,11 +1008,11 @@ class ClassBoard extends Component {
             placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="REMOVE"
-            hideUndoneText
             bodyText={
               <span>
-                You are about to remove the selected student(s) from this assignment. The 
-                selected student responses will be DELETED and this action cannot be undone.
+                You are about to remove the selected student(s) from this
+                assessment.Student&apos;s responses will be deleted. Do you
+                still want to proceed?
               </span>
             }
             okText="Yes, Remove"

@@ -1,19 +1,12 @@
 html {
   box-sizing: border-box;
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
 }
 
 *,
 *:after,
 *:before {
   box-sizing: inherit;
-}
-
-*:not(.passage-wrapper, .passage-content) {
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  -ms-user-select: text !important;
 }
 
 a#logo {
@@ -27,7 +20,7 @@ a[disabled] {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #ffffff;
@@ -256,9 +249,9 @@ select {
  * Correct the inability to style clickable types in iOS and Safari.
  */
 
-[type='button'],
-[type='reset'],
-[type='submit'],
+[type="button"],
+[type="reset"],
+[type="submit"],
 button {
   -webkit-appearance: button;
 }
@@ -267,9 +260,9 @@ button {
  * Remove the inner border and padding in Firefox.
  */
 
-[type='button']::-moz-focus-inner,
-[type='reset']::-moz-focus-inner,
-[type='submit']::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner,
 button::-moz-focus-inner {
   border-style: none;
   padding: 0;
@@ -278,9 +271,9 @@ button::-moz-focus-inner {
 /**
  * Restore the focus styles unset by the previous rule.
  */
-[type='button']:-moz-focusring,
-[type='reset']:-moz-focusring,
-[type='submit']:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring,
 button:-moz-focusring {
   outline: 1px dotted ButtonText;
 }
@@ -336,8 +329,8 @@ textarea {
  * 2. Remove the padding in IE 10.
  */
 
-[type='checkbox'],
-[type='radio'] {
+[type="checkbox"],
+[type="radio"] {
   box-sizing: border-box;
   /* 1 */
   padding: 0;
@@ -348,8 +341,8 @@ textarea {
  * Correct the cursor style of increment and decrement buttons in Chrome.
  */
 
-[type='number']::-webkit-inner-spin-button,
-[type='number']::-webkit-outer-spin-button {
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
   height: auto;
 }
 
@@ -358,7 +351,7 @@ textarea {
  * 2. Correct the outline style in Safari.
  */
 
-[type='search'] {
+[type="search"] {
   -webkit-appearance: textfield;
   /* 1 */
   outline-offset: -2px;
@@ -369,7 +362,7 @@ textarea {
  * Remove the inner padding in Chrome and Safari on macOS.
  */
 
-[type='search']::-webkit-search-decoration {
+[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
@@ -421,7 +414,7 @@ template {
 [hidden] {
   display: none;
 }
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .toolgroup {
   background: white;
@@ -522,7 +515,7 @@ span.ql-table {
 }
 
 span.ql-table::after {
-  content: 'TABLE';
+  content: "TABLE";
   line-height: 24px;
 }
 
@@ -549,19 +542,19 @@ button.ql-insertInput span {
 }
 
 .ql-picker.ql-table .ql-picker-label::before {
-  content: 'TABLE';
+  content: "TABLE";
 }
 
 span.ql-contain::after {
-  content: 'WRAP';
+  content: "WRAP";
 }
 
 span.ql-table-insert-rows::after {
-  content: 'ROWS+';
+  content: "ROWS+";
 }
 
 span.ql-table-insert-columns::after {
-  content: 'COLS+';
+  content: "COLS+";
 }
 
 .ql-contain,
@@ -673,7 +666,7 @@ table.quill-table td {
   background: #0288d1;
 }
 
-input[type='checkbox'] {
+input[type="checkbox"] {
   zoom: 1.3;
   margin-right: 5px;
 }
@@ -686,7 +679,7 @@ input[type='checkbox'] {
   cursor: pointer;
 }
 
-.draggable_box div[draggable='true'] {
+.draggable_box div[draggable="true"] {
   padding: 8px 20px;
 }
 
@@ -958,23 +951,23 @@ response {
 }
 
 response::after {
-  content: 'Response';
+  content: "Response";
 }
 
 mathinput::after {
-  content: 'Math Input';
+  content: "Math Input";
 }
 
 mathunit::after {
-  content: 'Math w/ unit';
+  content: "Math w/ unit";
 }
 
 textdropdown::after {
-  content: 'Text Dropdown';
+  content: "Text Dropdown";
 }
 
 textinput::after {
-  content: 'Text Input';
+  content: "Text Input";
 }
 
 response::after,
@@ -1017,7 +1010,7 @@ textinput::before {
   box-sizing: border-box;
 }
 
-[draggable='true'] {
+[draggable="true"] {
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -1224,7 +1217,7 @@ textinput::before {
 #mainQuill .ql-formats:not(:last-child)::after {
   background: transparent !important;
   display: block;
-  content: '|';
+  content: "|";
   font-weight: 600;
   font-size: 18px;
   position: absolute;
@@ -1422,8 +1415,8 @@ span.token.active-word {
 .isKeyboardUser a:focus,
 .isKeyboardUser button:focus,
 .isKeyboardUser input:focus,
-.isKeyboardUser input[type='checkbox']:focus + label,
-.isKeyboardUser input[type='radio']:focus + span,
+.isKeyboardUser input[type="checkbox"]:focus + label,
+.isKeyboardUser input[type="radio"]:focus + span,
 .isKeyboardUser select:focus,
 .isKeyboardUser:focus {
   outline: 1px dashed #000;
@@ -1611,7 +1604,7 @@ span.token.active-word {
 }
 
 .liveinspect-keydata .kds-parentheses {
-  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-family: "Arial Narrow", Arial, sans-serif;
   font-size: 300%;
   font-weight: normal;
   position: relative;
@@ -1627,7 +1620,7 @@ span.token.active-word {
 }
 
 .liveinspect-keydata .kds-pi {
-  font-family: 'Times New Roman', serif;
+  font-family: "Times New Roman", serif;
   font-size: 1.2em;
 }
 
@@ -1964,23 +1957,23 @@ span.token.active-word {
   background-color: #1ab394;
 }
 
-.fr-toolbar .fr-command.fr-btn[data-cmd='response'],
-.fr-toolbar .fr-command.fr-btn[data-cmd='responseBoxes'],
-.fr-toolbar .fr-command.fr-btn[data-cmd='textdropdown'],
-.fr-toolbar .fr-command.fr-btn[data-cmd='textinput'] {
+.fr-toolbar .fr-command.fr-btn[data-cmd="response"],
+.fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"],
+.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"],
+.fr-toolbar .fr-command.fr-btn[data-cmd="textinput"] {
   border: 1px #000 dotted;
   height: 34px;
   padding: 0 4px;
   top: 4px;
 }
 
-.fr-toolbar .fr-command.fr-btn[data-cmd='responseBoxes']::after {
+.fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"]::after {
   right: 4px !important;
   top: 14px !important;
 }
 
-.fr-toolbar .fr-command.fr-btn[data-cmd='textdropdown']::after {
-  content: '';
+.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"]::after {
+  content: "";
   width: 0;
   height: 0;
   border-color: #5f5f5f;
@@ -2173,7 +2166,7 @@ iframe {
   padding: 0px;
 }
 
-div[class*='_pendo'] button {
+div[class*="_pendo"] button {
   cursor: pointer;
 }
 
@@ -2455,7 +2448,7 @@ div[class*='_pendo'] button {
   color: #1ab394;
 }
 
-.drop-target-box:not([id*='null']):hover {
+.drop-target-box:not([id*="null"]):hover {
   border-color: #1a73e8 !important;
 }
 

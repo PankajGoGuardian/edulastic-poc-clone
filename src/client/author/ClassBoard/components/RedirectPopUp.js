@@ -29,10 +29,9 @@ const QuestionDelivery = {
 }
 
 const ShowPreviousAttempt = {
-  FEEDBACK_ONLY: 'Teacher feedback only',
-  SCORE_AND_FEEDBACK: 'Student score & teacher feedback',
-  STUDENT_RESPONSE_AND_FEEDBACK: 'Student response & teacher feedback',
-  SCORE_RESPONSE_AND_FEEDBACK: 'Student score, response & teacher feedback',
+  FEEDBACK_ONLY: 'Teacher Feedback only',
+  SCORE_AND_FEEDBACK: 'Score & Teacher Feedback',
+  STUDENT_RESPONSE_AND_FEEDBACK: 'Student Response & Teacher Feedback',
 }
 
 const Option = Select.Option
@@ -80,7 +79,7 @@ const RedirectPopUp = ({
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents)
   const [qDeliveryState, setQDeliveryState] = useState('ALL')
   const [showPrevAttempt, setshowPrevAttempt] = useState(
-    isPremiumUser ? 'SCORE_RESPONSE_AND_FEEDBACK' : 'FEEDBACK_ONLY'
+    isPremiumUser ? 'FEEDBACK_ONLY' : 'STUDENT_RESPONSE_AND_FEEDBACK'
   )
   const [allowedTime, setAllowedTime] = useState(
     additionalData.allowedTime || 1

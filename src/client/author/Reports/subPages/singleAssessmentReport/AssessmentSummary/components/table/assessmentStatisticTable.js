@@ -10,7 +10,6 @@ import {
   getVariance,
   downloadCSV,
   formatDate,
-  formatTime,
 } from '../../../../../common/util'
 import { StyledH3 } from '../../../../../common/styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
@@ -101,8 +100,7 @@ export const AssessmentStatisticTable = (props) => {
         scoreVariance: scoreVariance.toFixed(2),
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
         avgScore,
-        assessmentDate: formatDate(maxAssessmentDate),
-        dueTime: formatTime(maxAssessmentDate),
+        assessmentDate: formatDate(maxAssessmentDate, true),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,
         studentsGraded: sumStudentsGraded,
@@ -141,11 +139,11 @@ export const AssessmentStatisticTable = (props) => {
       }
 
       if (_tableType.key === 'school' || role === 'teacher') {
+        columns[5].sorter = sortNumbers('avgStudentScore')
+        columns[5].render = (text) => `${text}%`
+      } else {
         columns[6].sorter = sortNumbers('avgStudentScore')
         columns[6].render = (text) => `${text}%`
-      } else {
-        columns[7].sorter = sortNumbers('avgStudentScore')
-        columns[7].render = (text) => `${text}%`
       }
     })
 

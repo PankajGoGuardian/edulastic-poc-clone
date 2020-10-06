@@ -63,6 +63,7 @@ const PerformanceByStudents = ({
   filters,
   t,
   customStudentUserId,
+  isCliUser,
 }) => {
   const bandInfo =
     performanceBandProfiles.find(
@@ -278,23 +279,25 @@ const PerformanceByStudents = ({
                 xl={12}
                 className="dropdown-container"
               >
-                <FeaturesSwitch
-                  inputFeatures="studentGroups"
-                  actionOnInaccessible="hidden"
-                >
-                  <StyledDropDownContainer>
-                    <EduButton
-                      style={{
-                        height: '31px',
-                        padding: '0 15px 0 10px',
-                        marginRight: '5px',
-                      }}
-                      onClick={handleAddToGroupClick}
-                    >
-                      <IconPlusCircle /> Add To Student Group
-                    </EduButton>
-                  </StyledDropDownContainer>
-                </FeaturesSwitch>
+                {!isCliUser && (
+                  <FeaturesSwitch
+                    inputFeatures="studentGroups"
+                    actionOnInaccessible="hidden"
+                  >
+                    <StyledDropDownContainer>
+                      <EduButton
+                        style={{
+                          height: '31px',
+                          padding: '0 15px 0 10px',
+                          marginRight: '5px',
+                        }}
+                        onClick={handleAddToGroupClick}
+                      >
+                        <IconPlusCircle /> Add To Student Group
+                      </EduButton>
+                    </StyledDropDownContainer>
+                  </FeaturesSwitch>
+                )}
                 <StyledDropDownContainer>
                   <ControlDropDown
                     prefix="Proficiency Band - "

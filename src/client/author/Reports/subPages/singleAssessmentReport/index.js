@@ -290,6 +290,7 @@ const SingleAssessmentReportContainer = (props) => {
                   pageTitle={loc}
                   filters={ddfilter}
                   customStudentUserId={customStudentUserId}
+                  isCliUser={isCliUser}
                 />
               )}
             />

@@ -173,7 +173,7 @@ class DisneyCardContainer extends Component {
             return <span style={{ marginTop: '-3px' }}>-</span>
           }
 
-          if (_status === 2) {
+          if(_status === 2){
             return <span>0</span>
           }
 
@@ -389,7 +389,7 @@ class DisneyCardContainer extends Component {
                   </PerfomanceSection>
                 </PaginationInfoS>
                 <PaginationInfoT data-cy="questions">
-                  {student.questionActivities
+                  {!student.redirected && student.questionActivities
                     .filter((x) => !x.disabled)
                     .map((questionAct, questionIndex) => {
                       const weight = questionAct.weight

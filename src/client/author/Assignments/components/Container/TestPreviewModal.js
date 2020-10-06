@@ -62,7 +62,7 @@ const TestPreviewModal = ({
       centered
     >
       {showStudentPerformancePreview && (
-        <TestActivityPreview test={test} onClose={handleCloseModal} />
+        <TestActivityPreview onClose={handleCloseModal} />
       )}
       {!showStudentPerformancePreview && (
         <AssessmentPlayer

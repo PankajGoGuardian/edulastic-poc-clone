@@ -64,13 +64,15 @@ const TimedTestTimer = ({
   const [upstreamUta, setUpstreamUta] = useState()
   const [autoSubmitPopUp, setAutoSubmitpopUp] = useState(false)
   const [currentAssignmentTime, setCurrentAssignmentTime] = useState(null)
-  const docRef = useRef(db.collection(firestoreCollectionName).doc(utaId))
+  const docRef = useRef(
+    db.collection(firestoreCollectionName).doc(utaId || 'NONEXISTENT')
+  )
 
   useEffect(() => {
     let unsubscribe = () => {}
     unsubscribe = db
       .collection(firestoreCollectionName)
-      .doc(utaId)
+      .doc(utaId || 'NONEXISTENT')
       .onSnapshot((_doc) => setUpstreamUta(_doc.data()))
     return () => unsubscribe()
   }, [])

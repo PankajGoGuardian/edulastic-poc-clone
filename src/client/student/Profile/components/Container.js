@@ -101,7 +101,9 @@ class ProfileContainer extends React.Component {
                   <DetailData>{user.firstName || 'Anonymous'}</DetailData>
                 </DetailRow>
                 <DetailRow>
-                  <DetailTitle>{t('common.title.middleNameInputLabel')}</DetailTitle>
+                  <DetailTitle>
+                    {t('common.title.middleNameInputLabel')}
+                  </DetailTitle>
                   <DetailData>{user.middleName}</DetailData>
                 </DetailRow>
                 <DetailRow>

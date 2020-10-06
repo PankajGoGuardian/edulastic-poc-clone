@@ -81,6 +81,7 @@ const MyClasses = ({
   user,
   showCleverSyncModal,
   setShowCleverSyncModal,
+  teacherData,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
@@ -113,6 +114,9 @@ const MyClasses = ({
       <Card data={item} />
     </Col>
   ))
+
+  const isClassLink =
+    teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
   return (
     <MainContentWrapper padding="30px">
@@ -156,6 +160,7 @@ const MyClasses = ({
           setShowCleverSyncModal={setShowCleverSyncModal}
           handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
           user={user}
+          isClassLink={isClassLink}
         />
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
@@ -193,6 +198,7 @@ export default compose(
       defaultGrades: getInterestedGradesSelector(state),
       defaultSubjects: getInterestedSubjectsSelector(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      teacherData: get(state, 'dashboardTeacher.data', {}),
     }),
     {
       fetchClassList: fetchClassListAction,

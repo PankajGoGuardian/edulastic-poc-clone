@@ -27,6 +27,7 @@ const syntaxes = {
   DECIMAL: 'isDecimal',
   SIMPLE_FRACTION: 'isSimpleFraction',
   MIXED_FRACTION: 'isMixedFraction',
+  IMPROPER_FRACTION: 'isImproperFraction',
   EXPONENT: 'isExponent',
   STANDARD_FORM: 'isStandardForm',
   SLOPE_INTERCEPT_FORM: 'isSlopeInterceptForm',
@@ -127,6 +128,7 @@ const methodOptions = {
     'isExpanded',
     'isSimplified',
     'isMixedFraction',
+    'isImproperFraction',
     'ignoreAlphabeticCharacter',
     'inverseResult',
     'interpretAsSet',
@@ -207,10 +209,11 @@ const methodOptions = {
 const methodOptionsGrouped = {
   [methods.EQUIV_SYMBOLIC]: {
     'STUDENT’S RESPONSE SHOULD BE: ': [
-      'isFactorised',
-      'isExpanded',
       'isSimplified',
       'isMixedFraction',
+      'isImproperFraction',
+      'isFactorised',
+      'isExpanded',
       'isRationalized',
       'requireIntervalNotation',
     ],

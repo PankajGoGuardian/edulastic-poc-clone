@@ -744,6 +744,7 @@ class Container extends Component {
                   useTabsLeft={useTabsLeft}
                   addItemToPassage={this.addItemToPassage}
                   showAddItemButton={showAddItemButton}
+                  isPassageWithQuestions={passageWithQuestions}
                 />
               </>
             ))}

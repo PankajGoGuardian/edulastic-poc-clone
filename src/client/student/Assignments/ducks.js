@@ -13,7 +13,11 @@ import {
   testActivityApi,
   testsApi,
 } from '@edulastic/api'
-import { test as testConst, testActivityStatus } from '@edulastic/constants'
+import {
+  test as testConst,
+  testActivityStatus,
+  assignmentStatusOptions,
+} from '@edulastic/constants'
 import { Effects, notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import {
@@ -223,6 +227,28 @@ export const assignmentIdsByTestIdSelector = createSelector(
 export const filterSelector = (state) => state.studentAssignment.filter
 export const stateSelector = (state) => state.studentAssignment
 
+const getAssignmentClassStatus = (assignment, classId) => {
+  const statusMap = {
+    'NOT OPEN': 0,
+    'IN PROGRESS': 1,
+    'IN GRADING': 2,
+    DONE: 3,
+    ARCHIVED: 4,
+  }
+  let currentStatus = 'ARCHIVED'
+  let currentStatusValue = 4
+  for (const clazz of assignment.class) {
+    if (clazz._id === classId) {
+      const statusValue = statusMap[clazz.status]
+      if (statusValue < currentStatusValue) {
+        currentStatusValue = statusValue
+        currentStatus = clazz.status
+      }
+    }
+  }
+  return currentStatus
+}
+
 /**
  *
  * @param {*} assignment - assignment being looped
@@ -234,6 +260,15 @@ export const stateSelector = (state) => state.studentAssignment
  *
  */
 export const isLiveAssignment = (assignment, classIds, userId) => {
+  let { endDate, class: groups = [], classId: currentGroup } = assignment
+  const assignmentStatus = getAssignmentClassStatus(assignment, currentGroup)
+  if (
+    [assignmentStatusOptions.DONE, assignmentStatusOptions.ARCHIVED].includes(
+      assignmentStatus
+    )
+  ) {
+    return false
+  }
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1
@@ -241,7 +276,7 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
   const lastAttempt = _maxBy(assignment.reports, 'createdAt') || {}
   const serverTimeStamp = getServerTs(assignment)
   // eslint-disable-next-line
-  let { endDate, class: groups = [], classId: currentGroup } = assignment
+
   // when attempts over no need to check for any other condition to hide assignment from assignments page
   if (maxAttempts <= attempts && lastAttempt.status !== 0) return false
   if (!endDate) {

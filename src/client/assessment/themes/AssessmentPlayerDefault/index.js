@@ -159,15 +159,7 @@ class AssessmentPlayerDefault extends React.Component {
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
   saveUserWork = (sourceId) => (data) => {
-    const {
-      saveUserWork,
-      items,
-      currentItem,
-      setUserAnswer,
-      userAnswers,
-      userWork,
-      passage,
-    } = this.props
+    const { saveUserWork, items, currentItem, userWork, passage } = this.props
     this.setState(({ history }) => ({ history: history + 1 }))
 
     // resourceId(passage) will use passage._id
@@ -180,10 +172,6 @@ class AssessmentPlayerDefault extends React.Component {
     saveUserWork({
       [userWorkId]: { ...userWork, [sourceId]: data },
     })
-    const qId = items[currentItem].data.questions[0].id
-    if (!userAnswers[qId]) {
-      setUserAnswer(qId, [])
-    }
   }
 
   saveHintUsage = (hintUsage) => {
@@ -632,8 +620,6 @@ AssessmentPlayerDefault.propTypes = {
   previewPlayer: PropTypes.bool.isRequired,
   saveUserWork: PropTypes.func.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
-  setUserAnswer: PropTypes.func.isRequired,
-  userAnswers: PropTypes.object.isRequired,
 }
 
 AssessmentPlayerDefault.defaultProps = {

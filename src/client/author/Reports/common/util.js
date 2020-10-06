@@ -352,11 +352,12 @@ export const getStudentAssignments = (
   return [...assignments, overallAssignmentDetail]
 }
 
-export const formatDate = (milliseconds, showTime) => {
-  if (showTime && milliseconds) {
-    return moment(parseInt(milliseconds)).format('MMM DD, YYYY, h:mm a')
-  }
+export const formatDate = (milliseconds) => {
   return milliseconds
     ? moment(parseInt(milliseconds)).format('MMM DD, YYYY')
     : 'NA'
+}
+
+export const formatTime = (milliseconds) => {
+  return milliseconds ? moment(parseInt(milliseconds)).format('h:mm a') : 'NA'
 }

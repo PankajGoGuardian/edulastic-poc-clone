@@ -4,15 +4,15 @@ import { compose } from 'redux'
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { IconPlusCircle } from '@edulastic/icons'
-import { Container, AddNewButton } from './styled'
+import { PassageButtonContainer, PassageAddNewButton } from './styled'
 
 const AddNewItem = ({ onClick, t }) => (
-  <Container>
-    <AddNewButton onClick={onClick}>
+  <PassageButtonContainer>
+    <PassageAddNewButton onClick={onClick}>
       <IconPlusCircle style={{ fill: `${white}` }} />
       {t('component.itemDetail.addNewItemToPassage')}
-    </AddNewButton>
-  </Container>
+    </PassageAddNewButton>
+  </PassageButtonContainer>
 )
 
 AddNewItem.propTypes = {

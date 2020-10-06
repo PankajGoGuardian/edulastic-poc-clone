@@ -8,7 +8,7 @@ import {
   QuestionSubLabel,
   QuestionContentWrapper,
 } from '@edulastic/common'
-import { max } from 'lodash'
+import { isEmpty, max } from 'lodash'
 import { PREVIEW } from '../../constants/constantsForQuestions'
 import { PreviewContainer } from './styled/PreviewContainer'
 import DEFAULT_IMAGE from '../../assets/highlightImageBackground.svg'
@@ -80,7 +80,7 @@ const HighlightImagePreview = ({
     } else {
       // show scratchpad only if there is data
       //  in teacher view (LCB, ExpressGrader, etc)
-      showDrawing = !!userWork
+      showDrawing = !isEmpty(userWork)
     }
   }
 

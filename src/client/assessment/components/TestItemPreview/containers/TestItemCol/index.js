@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, AnswerContext } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
-import { sortBy } from 'lodash'
+import { isEmpty, sortBy } from 'lodash'
 
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
@@ -184,7 +184,7 @@ class TestItemCol extends Component {
         return showScratchpad
       }
       // render scratchpad only if there is data.
-      return !!scratchpadData
+      return !isEmpty(scratchpadData)
     }
 
     // student view

@@ -2,17 +2,31 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import { IconPlusCircle } from '@edulastic/icons'
-import { white } from '@edulastic/colors'
-import { Container, AddNewButton } from './styled'
+import {
+  IconEdit,
+  IconLayout,
+  IconMath,
+  IconNewList,
+  IconSelection,
+  IconTarget,
+} from '@edulastic/icons'
+import { Container, AddNewButton, TextWrapper } from './styled'
 
 const AddNew = ({ onClick, t, isAddFirstPart }) => (
   <Container>
     <AddNewButton onClick={onClick}>
-      <IconPlusCircle style={{ fill: `${white}` }} />
-      {isAddFirstPart
-        ? t('component.itemDetail.addFirstPart')
-        : t('component.itemDetail.addNew')}
+      <TextWrapper>
+        +{' '}
+        {isAddFirstPart
+          ? t('component.itemDetail.addFirstPartMultipart')
+          : t('component.itemDetail.addNewPartMultipart')}
+      </TextWrapper>
+      <IconNewList />
+      <IconSelection />
+      <IconLayout />
+      <IconEdit />
+      <IconTarget />
+      <IconMath />
     </AddNewButton>
   </Container>
 )

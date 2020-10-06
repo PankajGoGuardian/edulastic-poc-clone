@@ -58,8 +58,11 @@ const ViewPasswordModal = ({
 
   useEffect(() => {
     if (isViewPassword && isDynamicPassword && !isNaN(passwordExpireTime)) {
-      setTimer(passwordExpireTime - Date.now())
-      setCanGenerate(false)
+      const timeRemaining = passwordExpireTime - Date.now()
+      if (timeRemaining > 0) {
+        setTimer(timeRemaining)
+        setCanGenerate(false)
+      }
     }
   }, [passwordExpireTime])
 

@@ -2,9 +2,18 @@ set -e
 
 cd ~/edulastic-poc
 yarn install --frozen-lockfile --silent --non-interactive
+
 if [ $? -ne 0 ]
  then
   echo "Yarn install failed...exiting script"
+  exit 1
+fi
+
+yarn run prettier:check
+
+if [ $? -ne 0 ]
+ then
+  echo "Prettier check failed...exiting script"
   exit 1
 fi
 

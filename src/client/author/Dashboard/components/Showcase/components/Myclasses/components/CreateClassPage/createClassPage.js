@@ -24,6 +24,7 @@ const CreateClassPage = ({
   handleCanvasBulkSync,
   user,
   history,
+  isClassLink,
 }) => {
   const { orgData } = user
   const { isCleverDistrict } = orgData
@@ -83,8 +84,8 @@ const CreateClassPage = ({
         <p>Create new class</p>
       </EduButton>
       {(allowGoogleLogin || enableCleverSync || enableCanvasSync) &&
-        !isCleverDistrict && <StyledP>OR</StyledP>}
-      {allowGoogleLogin !== false && !isCleverDistrict && (
+        !isCleverDistrict && !isClassLink && <StyledP>OR</StyledP>}
+      {allowGoogleLogin !== false && !isCleverDistrict && !isClassLink && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
           render={(renderProps) => (
@@ -106,7 +107,7 @@ const CreateClassPage = ({
           <p>Sync Class Roster from Clever</p>
         </SyncClassDiv>
       )}
-      {enableCanvasSync && !isCleverDistrict && (
+      {enableCanvasSync && !isCleverDistrict && !isClassLink && (
         <SyncClassDiv onClick={handleSyncWithCanvas}>
           <img
             alt="Canvas"

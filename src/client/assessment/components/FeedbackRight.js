@@ -239,8 +239,8 @@ class FeedbackRight extends Component {
   }
 
   preCheckSubmit = () => {
-    const { changed } = this.state
-    if (changed) {
+    const { changed, showFeedbackSaveBtn } = this.state
+    if (changed || showFeedbackSaveBtn) {
       this.setState({ submitted: true }, this.onFeedbackSubmit)
     }
     this.setState({ showFeedbackSaveBtn: false })

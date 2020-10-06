@@ -7,7 +7,10 @@ import { omitBy, isUndefined, isEmpty, invert, set, get, maxBy } from 'lodash'
 import {
   assignmentPolicyOptions,
   assignmentStatusOptions,
+  test as testConst,
 } from '@edulastic/constants'
+
+const { passwordPolicy: passwordPolicyOptions } = testConst
 
 const slice = createSlice({
   initialState: {
@@ -186,6 +189,9 @@ function getSettingsSelector(state) {
     answerOnPaper,
     maxAttempts,
     maxAnswerChecks,
+    assignmentPassword,
+    passwordPolicy,
+    passwordExpireIn,
   } = assignment
   return omitBy(
     {
@@ -201,9 +207,40 @@ function getSettingsSelector(state) {
       answerOnPaper,
       maxAttempts,
       maxAnswerChecks,
+      assignmentPassword,
+      passwordPolicy,
+      passwordExpireIn,
     },
     isUndefined
   )
+}
+
+function getPasswordSettings(state) {
+  const assignment = state.LCBAssignmentSettings?.updateSettings || {}
+  const original = state.LCBAssignmentSettings?.originalAssignment || {}
+  const { passwordPolicy, assignmentPassword, passwordExpireIn } = assignment
+  const passwordSettings = {}
+  if (
+    passwordPolicy !== undefined ||
+    assignmentPassword !== undefined ||
+    passwordExpireIn !== undefined
+  ) {
+    passwordSettings.passwordPolicy = passwordPolicy ?? original.passwordPolicy
+    if (
+      passwordSettings.passwordPolicy ===
+      passwordPolicyOptions.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
+      passwordSettings.assignmentPassword =
+        assignmentPassword ?? original.assignmentPassword
+    } else if (
+      passwordSettings.passwordPolicy ===
+      passwordPolicyOptions.REQUIRED_PASSWORD_POLICY_DYNAMIC
+    ) {
+      passwordSettings.passwordExpireIn =
+        passwordExpireIn ?? original.passwordExpireIn ?? 900
+    }
+  }
+  return passwordSettings
 }
 
 function* updateAssignmentClassSettingsSaga({ payload }) {
@@ -214,10 +251,12 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
       notification({ messageKey: 'noChangesToBeSaved' })
       return
     }
+    const passwordSettings = yield select(getPasswordSettings)
+    const updatedSettings = { ...settings, ...passwordSettings }
     yield call(assignmentApi.updateClassSettings, {
       assignmentId,
       classId,
-      settings,
+      settings: updatedSettings,
     })
     yield put(slice.actions.updateAssignmentClassSettingsSucess())
     notification({

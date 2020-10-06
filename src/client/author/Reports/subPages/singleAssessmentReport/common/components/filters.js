@@ -14,6 +14,7 @@ import { roleuser } from '@edulastic/constants'
 
 import { AutocompleteDropDown } from '../../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
+import SchoolAutoComplete from './SchoolAutoComplete'
 import {
   StyledFilterWrapper,
   StyledGoButton,
@@ -286,6 +287,12 @@ const SingleAssessmentReportFilters = ({
     [SARFilterData, filters]
   )
 
+  const selectedSchool = useMemo(
+    () =>
+      filters.schoolId !== 'All' &&
+      dropDownData.schools.find((s) => s.key === filters.schoolId)
+  )
+
   processedTestIds = useMemo(
     () =>
       processTestIds(
@@ -424,11 +431,9 @@ const SingleAssessmentReportFilters = ({
           <>
             <SearchField>
               <FilterLabel>School</FilterLabel>
-              <AutocompleteDropDown
-                prefix="School"
-                by={filters.schoolId}
+              <SchoolAutoComplete
+                selectedSchool={selectedSchool}
                 selectCB={(e) => updateFilterDropdownCB(e, 'schoolId')}
-                data={dropDownData.schools}
               />
             </SearchField>
             <SearchField>

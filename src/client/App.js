@@ -93,6 +93,7 @@ const CLIAccessBanner = lazy(() =>
   import('./author/Dashboard/components/CLIAccessBanner')
 )
 const PublicTest = lazy(() => import('./publicTest/container'))
+const AudioTagPlayer = lazy(() => import('./AudioTagPlayer'))
 const Loading = () => (
   <div>
     <Spin />
@@ -584,6 +585,10 @@ class App extends Component {
               <Route
                 path="/public/view-test/:testId"
                 render={(props) => <PublicTest {...props} />}
+              />
+              <Route
+                path="/audio-test"
+                render={() => <AudioTagPlayer />}
               />
               <Redirect exact to={defaultRoute} />
             </Switch>

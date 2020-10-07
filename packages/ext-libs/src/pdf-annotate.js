@@ -1137,7 +1137,7 @@ const { themeColor } = require('@edulastic/colors')
           if (!svg) {
             return
           }
-          var elements = svg.querySelectorAll('[data-pdf-annotate-type]')
+          var elements = svg.querySelectorAll('svg[data-pdf-annotate-type]')
 
           // Find a target element within SVG
           for (var i = 0, l = elements.length; i < l; i++) {
@@ -2373,11 +2373,11 @@ const { themeColor } = require('@edulastic/colors')
           return obj && obj.__esModule ? obj : { default: obj }
         }
 
-        var SIZE = 25;
+        var SIZE = 25
         var commentSvg = `<svg class="svg-icon" id="comment" width="25" height="25">
           <rect id="svg_2" height="25.34537" width="25.31416" y="-0.17269" x="-0.15708" stroke-width="0" stroke="#EFA12C" fill="#EFA12C"/>
           <path stroke="#ffffff" id="svg_1" stroke-width="0.5" fill="#ffffff" d="m5.96968,15.58726a7.20087,7.20087 0 0 1 -0.30932,-0.76781l-0.01549,0a7.2261,7.2261 0 0 1 6.53852,-9.5306l0,0a7.21843,7.21843 0 1 1 0.34661,14.42916a7.14054,7.14054 0 0 1 -3.07121,-0.69102c-3.76223,0.74368 -3.46937,0.69102 -3.55492,0.69102a0.61863,0.61863 0 0 1 -0.60656,-0.74037l0.67237,-3.39039z"/>
-        </svg>`;
+        </svg>`
 
         function renderPoint(a) {
           var div = document.createElement('div')
@@ -3018,6 +3018,10 @@ const { themeColor } = require('@edulastic/colors')
           var svg = document.querySelector(
             'svg[data-pdf-annotate-page="' + pageNumber + '"]'
           )
+          if (!svg) {
+            return
+          }
+
           var rect = svg.getBoundingClientRect()
           y = (0, _utils.scaleUp)(svg, { y: y }).y + rect.top
           x = (0, _utils.scaleUp)(svg, { x: x }).x + rect.left
@@ -5162,7 +5166,7 @@ const { themeColor } = require('@edulastic/colors')
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj }
         }
-        var SIZE = 25;
+        var SIZE = 25
         var videoSvg = `<svg class="svg-icon" id="video" width="25" height="25">
           <rect id="svg_7" height="25.34268" width="25.18643" y="-0.21763" x="-0.10918" stroke-opacity="0" stroke-width="null" stroke="#1AB395" fill="#1AB395"/>          
           <g stroke="null" id="svg_6">
@@ -5173,7 +5177,7 @@ const { themeColor } = require('@edulastic/colors')
             <path stroke="#ffffff" d="m15.38739,9.69493l4.20289,-2.43409a0.47342,0.47342 0 0 1 0.53039,0.03351a0.68708,0.68708 0 0 1 0.25807,0.55301l0,9.21685a0.68708,0.68708 0 0 1 -0.26058,0.55553a0.48515,0.48515 0 0 1 -0.2874,0.09636a0.4776,0.4776 0 0 1 -0.24718,-0.06954l-4.20289,-2.52375l0.0067,-5.42789z" fill="#ffffff" id="svg_4"/>
             </g>
           </g>          
-      </svg>`;
+      </svg>`
 
         function renderPoint(a) {
           var div = document.createElement('div')
@@ -5384,7 +5388,7 @@ const { themeColor } = require('@edulastic/colors')
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj }
         }
-        var SIZE = 25;
+        var SIZE = 25
         var imageSvg = `<svg class="svg-icon" id="image" width="25" height="25">
           <rect id="svg_6" height="25.20663" width="25.24921" y="-0.05995" x="-0.12507" stroke-opacity="0" stroke-width="null" stroke="#E53F61" fill="#E53F61"/>
           <g stroke="null" id="svg_7">
@@ -5395,7 +5399,7 @@ const { themeColor } = require('@edulastic/colors')
             <circle stroke="#ffffff" stroke-width="0.5" id="svg_5" fill="#ffffff" r="1.72059" cy="10.77941" cx="9.6325"/>
           </g>
           </g>
-        </svg>`;
+        </svg>`
 
         function renderPoint(a) {
           var div = document.createElement('div')

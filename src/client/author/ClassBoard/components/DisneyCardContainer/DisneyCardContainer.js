@@ -389,48 +389,49 @@ class DisneyCardContainer extends Component {
                   </PerfomanceSection>
                 </PaginationInfoS>
                 <PaginationInfoT data-cy="questions">
-                  {student.questionActivities
-                    .filter((x) => !x.disabled)
-                    .map((questionAct, questionIndex) => {
-                      const weight = questionAct.weight
-                      if (
-                        questionAct.notStarted ||
-                        student.status === 'redirected'
-                      ) {
-                        return <SquareColorDisabled key={questionIndex} />
-                      }
-                      if (questionAct.skipped && questionAct.score === 0) {
-                        return (
-                          <SquareColorDivGray
-                            title="skipped"
-                            weight={weight}
-                            key={questionIndex}
-                          />
-                        )
-                      }
-                      if (
-                        questionAct.graded === false ||
-                        questionAct.pendingEvaluation
-                      ) {
-                        return <SquareColorBlue key={questionIndex} />
-                      }
-                      if (
-                        questionAct.score === questionAct.maxScore &&
-                        questionAct.score > 0
-                      ) {
-                        return <SquareColorDivGreen key={questionIndex} />
-                      }
-                      if (
-                        questionAct.score > 0 &&
-                        questionAct.score < questionAct.maxScore
-                      ) {
-                        return <SquareColorDivYellow key={questionIndex} />
-                      }
-                      if (questionAct.score === 0) {
-                        return <SquareColorDivPink key={questionIndex} />
-                      }
-                      return null
-                    })}
+                  {!student.redirected && student.status !== 'redirected' && !recentAttemptsGrouped?.[student.studentId]?.length  &&
+                    student.questionActivities
+                      .filter((x) => !x.disabled)
+                      .map((questionAct, questionIndex) => {
+                        const weight = questionAct.weight
+                        if (
+                          questionAct.notStarted ||
+                          student.status === 'redirected'
+                        ) {
+                          return <SquareColorDisabled key={questionIndex} />
+                        }
+                        if (questionAct.skipped && questionAct.score === 0) {
+                          return (
+                            <SquareColorDivGray
+                              title="skipped"
+                              weight={weight}
+                              key={questionIndex}
+                            />
+                          )
+                        }
+                        if (
+                          questionAct.graded === false ||
+                          questionAct.pendingEvaluation
+                        ) {
+                          return <SquareColorBlue key={questionIndex} />
+                        }
+                        if (
+                          questionAct.score === questionAct.maxScore &&
+                          questionAct.score > 0
+                        ) {
+                          return <SquareColorDivGreen key={questionIndex} />
+                        }
+                        if (
+                          questionAct.score > 0 &&
+                          questionAct.score < questionAct.maxScore
+                        ) {
+                          return <SquareColorDivYellow key={questionIndex} />
+                        }
+                        if (questionAct.score === 0) {
+                          return <SquareColorDivPink key={questionIndex} />
+                        }
+                        return null
+                      })}
                 </PaginationInfoT>
               </div>
               {(recentAttemptsGrouped?.[student.studentId]?.length > 0 ||

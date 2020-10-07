@@ -106,10 +106,15 @@ export const getMathHtml = (latex) => {
    * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
    */
   _latex = addSpaceMatrixFraction(_latex)
-  let katexString = window.katex.renderToString(_latex, {
-    throwOnError: false,
-    displayMode: true,
-  })
+  let katexString = '<span></span>'
+  try{
+    katexString = window.katex.renderToString(_latex, {
+      throwOnError: false,
+      displayMode: true,
+    })
+  }catch(e){
+    console.warn("Katex parse error : ", _latex, e)
+  }
   // styles are applied to stimulus in itemBank/testReview(collapsed view)
   // it was affecting math content as well and EV-10152 was caused
   // we can use this class to omit styles from being applied to math

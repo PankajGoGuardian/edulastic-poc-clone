@@ -257,6 +257,7 @@ class TestItemPreview extends Component {
       theme,
       t,
       isCliUser,
+      showPreviousAttempt,
       ...restProps
     } = this.props
     const {
@@ -311,9 +312,9 @@ class TestItemPreview extends Component {
 
     const borderProps = hasDrawingResponse
       ? {
-          border: isLCBView ? '1px solid #DADAE4' : 'none',
-          borderRadius: '10px',
-        }
+        border: isLCBView ? '1px solid #DADAE4' : 'none',
+        borderRadius: '10px',
+      }
       : {}
 
     return (
@@ -415,7 +416,7 @@ class TestItemPreview extends Component {
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) ||
           (!isStudentReport && !isReviewTab)) &&
-          showFeedback && (
+          (showFeedback || (showPreviousAttempt !== "NONE" && isStudentAttempt && !isStudentReport)) && (
             <>
               {!isCliUser && (
                 <div
@@ -463,6 +464,7 @@ const enhance = compose(
   withNamespaces('student'),
   connect((state) => ({
     isCliUser: get(state, 'user.isCliUser', false),
+    showPreviousAttempt: get(state, "test.settings.showPreviousAttempt", "NONE")
   }))
 )
 

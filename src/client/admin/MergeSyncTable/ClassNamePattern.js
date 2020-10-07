@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Select } from 'antd'
 import CancelApplyActions from './CancelApplyActions'
-import {
-  CLASS_NAME_PATTERN_CONFIG,
-  deltaSyncConfig,
-  DISABLE_SUBMIT_TITLE,
-} from '../Data'
-import { CheckboxLabel } from '@edulastic/common'
+import { CLASS_NAME_PATTERN_CONFIG, DISABLE_SUBMIT_TITLE } from '../Data'
 
 const { Option } = Select
 
@@ -15,15 +10,11 @@ export default function ClassNamePattern({
   orgType,
   applyClassNamesSync,
   classNamePattern = 0,
-  overrideClassName = false,
   disableFields,
   isClasslink,
 }) {
   const [selectState, setSelectState] = useState(
     CLASS_NAME_PATTERN_CONFIG[classNamePattern]
-  )
-  const [overrideClassNameState, setOverrideClassNameState] = useState(
-    overrideClassName
   )
   const cancelApplyButtonProps = disableFields
     ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE }
@@ -40,22 +31,11 @@ export default function ClassNamePattern({
       orgId,
       orgType,
       classNamePattern: selectState,
-      overrideClassName: overrideClassNameState,
       isClasslink,
     })
-  const onOverrideChange = ({ target }) => {
-    setOverrideClassNameState(target.checked)
-  }
 
   return (
     <>
-      <CheckboxLabel
-        style={{ margin: '10px 0px 20px 0px' }}
-        checked={overrideClassNameState}
-        onChange={onOverrideChange}
-      >
-        Override Class Name
-      </CheckboxLabel>
       <h3>Edulastic Class Names</h3>
       <Select
         value={selectState}

@@ -304,7 +304,6 @@ function MergeSyncTable({
                 orgType={rosterSyncConfig.orgType}
                 applyClassNamesSync={applyClassNamesSync}
                 classNamePattern={rosterSyncConfig.classNamePattern}
-                overrideClassName={rosterSyncConfig.overrideClassName}
                 disableFields={syncEnabled}
                 isClasslink={isClasslink}
               />

@@ -9,12 +9,14 @@ if [ $? -ne 0 ]
   exit 1
 fi
 
-yarn run prettier:check
+if [[ -z "${SKIP_PRETTIER_CHECK}" ]]; then
+  yarn run prettier:check
 
-if [ $? -ne 0 ]
- then
-  echo "Prettier check failed...exiting script"
-  exit 1
+  if [ $? -ne 0 ]
+  then
+    echo "Prettier check failed...exiting script"
+    exit 1
+  fi
 fi
 
 dir_name=build-$(date +"%d-%m-%y-%H-%M")

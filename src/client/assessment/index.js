@@ -36,6 +36,7 @@ const AssessmentPlayer = ({
   studentReportModal,
   currentAssignmentId,
   currentAssignmentClass,
+  sharedType,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id
@@ -54,6 +55,7 @@ const AssessmentPlayer = ({
       isStudentReport,
       playlistId,
       currentAssignmentId,
+      sharedType,
     })
   }, [testId])
 

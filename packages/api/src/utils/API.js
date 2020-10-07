@@ -150,6 +150,7 @@ export default class API {
     })
     this.instance.interceptors.request.use((_config) => {
       _config['client-epoch'] = Date.now().toString()
+      _config.headers['X-Client-Time'] = new Date().toISOString()
       const token =
         getParentsStudentToken(_config) || defaultToken || getAccessToken()
       if (token) {

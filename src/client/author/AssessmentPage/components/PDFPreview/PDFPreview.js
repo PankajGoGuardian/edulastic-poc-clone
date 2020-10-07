@@ -179,7 +179,7 @@ const PDFPreview = ({
               {annotations
                 .filter(
                   (item) =>
-                    item.toolbarMode === 'question' && item.page === page.pageNo
+                    item.toolbarMode === 'question' && item.page === currentPage
                 )
                 .map(({ uuid, qIndex, x, y, questionId }) => (
                   <div

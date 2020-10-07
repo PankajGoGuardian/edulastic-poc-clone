@@ -143,7 +143,8 @@ export const StyledTable = styled(Table)`
             }
 
             th:nth-child(1),
-            th:nth-child(2) {
+            th:nth-child(2),
+            th:nth-child(3) {
               &.ant-table-column-has-actions.ant-table-column-has-sorters {
                 padding: 0px !important;
               }
@@ -152,7 +153,8 @@ export const StyledTable = styled(Table)`
             th:nth-child(2),
             th:nth-child(3),
             th:nth-child(4),
-            th:nth-child(5) {
+            th:nth-child(5),
+            th:nth-child(6) {
               .ant-table-header-column {
                 word-break: keep-all;
                 white-space: normal;

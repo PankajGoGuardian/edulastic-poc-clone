@@ -9,11 +9,18 @@
         "align": "left"
       },
       {
-        "title": "Assigned on",
+        "title": "Assigned On",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
-        "width": 100
+        "width": 150
+      },
+      {
+        "title": "Due On",
+        "dataIndex": "dueDate",
+        "key": "dueDate",
+        "className": "dueDate",
+        "width": 150
       },
       {
         "title": "#Assigned",
@@ -88,11 +95,18 @@
         "align": "left"
       },
       {
-        "title": "Assigned on",
+        "title": "Assigned On",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
-        "width": 100
+        "width": 150
+      },
+      {
+        "title": "Due On",
+        "dataIndex": "dueDate",
+        "key": "dueDate",
+        "className": "dueDate",
+        "width": 150
       },
       {
         "title": "#Assigned",
@@ -169,11 +183,19 @@
         "align": "left"
       },
       {
-        "title": "Assigned on",
+        "title": "Assigned On",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
-        "width": 110,
+        "width": 150,
+        "align": "left"
+      },
+      {
+        "title": "Due On",
+        "dataIndex": "dueDate",
+        "key": "dueDate",
+        "className": "dueDate",
+        "width": 150,
         "align": "left"
       },
       {

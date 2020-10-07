@@ -45,6 +45,7 @@ export const AssessmentStatisticTable = (props) => {
       const obj = { ...__data[0], key }
 
       let maxAssessmentDate = 0
+      let maxDueDate = 0
       let sumTotalScore = 0
       let sumTotalMaxScore = 0
       let sumStudentsAbsent = 0
@@ -59,6 +60,7 @@ export const AssessmentStatisticTable = (props) => {
           totalScore = 0,
           totalMaxScore = 0,
           assessmentDate,
+          dueDate,
           studentsAbsent,
           studentsAssigned,
           studentsGraded,
@@ -72,6 +74,8 @@ export const AssessmentStatisticTable = (props) => {
 
         if (maxAssessmentDate < assessmentDate)
           maxAssessmentDate = assessmentDate
+
+        if (maxDueDate < dueDate) maxDueDate = dueDate
 
         sumStudentsAbsent += studentsAbsent
         sumStudentsAssigned += studentsAssigned
@@ -101,6 +105,7 @@ export const AssessmentStatisticTable = (props) => {
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
         avgScore,
         assessmentDate: formatDate(maxAssessmentDate, true),
+        dueDate: formatDate(maxDueDate, true),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,
         studentsGraded: sumStudentsGraded,
@@ -139,11 +144,11 @@ export const AssessmentStatisticTable = (props) => {
       }
 
       if (_tableType.key === 'school' || role === 'teacher') {
-        columns[5].sorter = sortNumbers('avgStudentScore')
-        columns[5].render = (text) => `${text}%`
-      } else {
         columns[6].sorter = sortNumbers('avgStudentScore')
         columns[6].render = (text) => `${text}%`
+      } else {
+        columns[7].sorter = sortNumbers('avgStudentScore')
+        columns[7].render = (text) => `${text}%`
       }
     })
 

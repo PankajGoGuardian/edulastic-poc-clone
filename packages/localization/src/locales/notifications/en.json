@@ -1759,8 +1759,8 @@
     "message": "Clever Login failed",
     "description": ""
   },
-  "classlinkLoginFailed": {
-    "message": "Classlink Login failed",
+  "atlasLoginFailed": {
+    "message": "Atlas Login failed",
     "description": ""
   },
   "failedToFetchUserData": {

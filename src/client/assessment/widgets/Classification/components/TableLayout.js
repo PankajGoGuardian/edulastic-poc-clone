@@ -94,7 +94,7 @@ const TableLayout = ({
                       dragHandle={dragHandle}
                       valid={isReviewTab ? true : valid}
                       preview={preview}
-                      key={answerIndex}
+                      key={resp?.id || answerIndex}
                       item={(resp && resp.value) || ''}
                       disableResponse={disableResponse}
                       {...dragItemSize}

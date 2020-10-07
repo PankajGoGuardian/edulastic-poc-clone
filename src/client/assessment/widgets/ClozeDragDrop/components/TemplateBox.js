@@ -119,9 +119,13 @@ const TemplateBox = ({ resprops, id }) => {
     imageDimensions.height > boxHeight || contentHeight > boxHeight
   const showPopover = label && (widthOverflow || heightOverflow)
 
+  const itemValue = !hasGroupResponses
+    ? getData('value')
+    : getDataForGroup('value')
+
   const itemData = !hasGroupResponses
-    ? `${getData('value')}_${dropTargetIndex}_fromResp`
-    : `${getDataForGroup('value')}_${
+    ? `${itemValue}_${dropTargetIndex}_fromResp`
+    : `${itemValue}_${
         userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].group
       }_${dropTargetIndex}_fromResp`
 
@@ -135,16 +139,18 @@ const TemplateBox = ({ resprops, id }) => {
       maxWidth={style.maxWidth}
       index={dropTargetIndex}
     >
-      <StyledDragItem data={itemData}>
-        <ResponseContainer>
-          {showPopover && (
-            <Popover placement="bottomLeft" content={getContent(true)}>
-              {getContent(true, style.maxHeight)}
-            </Popover>
-          )}
-          {!showPopover && getContent()}
-        </ResponseContainer>
-      </StyledDragItem>
+      {itemValue && (
+        <StyledDragItem data={itemData}>
+          <ResponseContainer>
+            {showPopover && (
+              <Popover placement="bottomLeft" content={getContent(true)}>
+                {getContent(true, style.maxHeight)}
+              </Popover>
+            )}
+            {!showPopover && getContent()}
+          </ResponseContainer>
+        </StyledDragItem>
+      )}
     </StyledDropContainer>
   )
 }

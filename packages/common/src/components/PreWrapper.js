@@ -11,7 +11,7 @@ const PreWrapper = styled.pre`
     .jsx-parser {
       & p,
       & span:not(.index) {
-        color: ${title} !important;
+        color: ${title};
       }
     }
   }

@@ -6,7 +6,12 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { get, debounce } from 'lodash'
 import { ActionCreators } from 'redux-undo'
-import { withWindowSizes, notification, helpers } from '@edulastic/common'
+import {
+  WithResources,
+  withWindowSizes,
+  notification,
+  helpers,
+} from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Modal, Button } from 'antd'
@@ -42,6 +47,7 @@ import {
   uploadToDriveAction,
 } from '../../../AssessmentCreate/ducks'
 import PDFAnnotationTools from '../PDFAnnotationTools'
+import AppConfig from '../../../../../../app-config'
 
 const swap = (array, i, j) => {
   const copy = array.slice()
@@ -85,41 +91,20 @@ class WorksheetComponent extends React.Component {
   constructor(props) {
     super(props)
     this.pdfRef = React.createRef()
-  }
-
-  static propTypes = {
-    setTestData: PropTypes.func.isRequired,
-    userWork: PropTypes.object.isRequired,
-    questions: PropTypes.array.isRequired,
-    questionsById: PropTypes.object.isRequired,
-    answersById: PropTypes.object,
-    pageStructure: PropTypes.array,
-    review: PropTypes.bool,
-    noCheck: PropTypes.bool,
-    annotations: PropTypes.array,
-  }
-
-  static defaultProps = {
-    review: false,
-    annotations: [],
-    noCheck: false,
-    pageStructure: [],
-    answersById: {},
+    this.state = {
+      currentPage: 0,
+      highlightedQuestion: undefined,
+      history: 0,
+      selected: 0,
+      uploadModal: false,
+      isAddPdf: false,
+      deleteConfirmation: false,
+      minimized: true,
+      isToolBarVisible: true,
+    }
   }
 
   cancelUpload
-
-  state = {
-    currentPage: 0,
-    highlightedQuestion: undefined,
-    history: 0,
-    selected: 0,
-    uploadModal: false,
-    isAddPdf: false,
-    deleteConfirmation: false,
-    minimized: true,
-    isToolBarVisible: true,
-  }
 
   componentDidMount() {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props
@@ -772,8 +757,37 @@ class WorksheetComponent extends React.Component {
   }
 }
 
+WorksheetComponent.propTypes = {
+  setTestData: PropTypes.func.isRequired,
+  userWork: PropTypes.object.isRequired,
+  questions: PropTypes.array.isRequired,
+  questionsById: PropTypes.object.isRequired,
+  answersById: PropTypes.object,
+  pageStructure: PropTypes.array,
+  review: PropTypes.bool,
+  noCheck: PropTypes.bool,
+  annotations: PropTypes.array,
+}
+
+WorksheetComponent.defaultProps = {
+  review: false,
+  annotations: [],
+  noCheck: false,
+  pageStructure: [],
+  answersById: {},
+}
+
 const withForwardedRef = (Component) => {
-  const handle = (props, ref) => <Component {...props} forwardedRef={ref} />
+  const handle = (props, ref) => (
+    <WithResources
+      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+      fallBack={<span />}
+      onLoaded={() => null}
+    >
+      {' '}
+      <Component {...props} forwardedRef={ref} />{' '}
+    </WithResources>
+  )
 
   const name = Component.displayName || Component.name
   handle.displayName = `withForwardedRef(${name})`

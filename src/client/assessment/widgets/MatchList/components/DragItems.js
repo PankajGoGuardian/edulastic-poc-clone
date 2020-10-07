@@ -3,7 +3,6 @@ import DragItem from './DragItem'
 
 function DragItems({
   dragItems,
-  onDropHandler,
   getStyles,
   disableResponse,
   changePreviewTab,
@@ -14,8 +13,7 @@ function DragItems({
       dragItems.includes(item) && (
         <DragItem
           flag="dragItems"
-          onDrop={onDropHandler}
-          key={ind}
+          key={item?.value || ind}
           renderIndex={ind}
           item={item}
           getStyles={getStyles}

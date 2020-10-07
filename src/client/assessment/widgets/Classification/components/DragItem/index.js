@@ -70,6 +70,7 @@ DragItemContainer.defaultProps = {
   disableDrag: false,
   isTransparent: false,
   dragHandle: false,
+  valid: false,
   width: null,
 }
 

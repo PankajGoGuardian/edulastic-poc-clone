@@ -171,7 +171,7 @@ const TableRow = ({
               const valid = get(evaluation, [column.id, responseId], undefined)
               return (
                 <DragItem
-                  key={answerIndex}
+                  key={resp?.id || answerIndex}
                   isTransparent={isTransparent}
                   dragHandle={dragHandle}
                   valid={isReviewTab ? true : valid}

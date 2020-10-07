@@ -1,20 +1,37 @@
 import React, { useEffect, useContext, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDrag } from 'react-dnd'
+import styled, { css } from 'styled-components'
+import { themeColorHoverBlue } from '@edulastic/colors'
+import { isEqual } from 'lodash'
 import { AnswerContext } from '@edulastic/common'
 import { getEmptyImage } from 'react-dnd-html5-backend'
+import { DndStateContext } from './CustomDndProvider'
 
-const getStyles = (isDragging) => ({
-  opacity: isDragging ? 0.2 : 1,
-})
-
-const DragItem = ({ data, children, disabled, ...rest }) => {
+const DragItem = ({
+  data,
+  children,
+  disabled,
+  activeItem,
+  onClick,
+  ...rest
+}) => {
   const { isAnswerModifiable } = useContext(AnswerContext)
-  const [itemSize, setItemSize] = useState()
+  const {
+    state: { actived },
+    setItem,
+  } = useContext(DndStateContext)
+
+  const [itemData, setItemData] = useState({
+    data,
+    type: 'item',
+    preview: children,
+  })
+
   const [{ isDragging }, drag, preview] = useDrag({
-    item: { type: 'item', data, dimensions: itemSize, preview: children },
+    item: itemData,
     canDrag() {
-      return isAnswerModifiable && !disabled
+      return isAnswerModifiable && !disabled && !window.isMobileDevice
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -24,9 +41,13 @@ const DragItem = ({ data, children, disabled, ...rest }) => {
   const attach = useCallback(
     (element) => {
       if (element) {
-        setItemSize({
+        const dimensions = {
           width: element.clientWidth,
           height: element.clientHeight,
+        }
+        setItemData({
+          ...itemData,
+          dimensions,
         })
         drag(element)
       }
@@ -38,15 +59,29 @@ const DragItem = ({ data, children, disabled, ...rest }) => {
     preview(getEmptyImage(), { captureDraggingState: true })
   }, [])
 
+  const onClickHandler = (e) => {
+    if (window.isMobileDevice) {
+      setItem({ type: 'SET_ACTIVE_DRAG_ITEM', data: itemData })
+    }
+    if (onClick) {
+      onClick(e)
+    }
+  }
+
+  const isActivated = actived && isEqual(actived.data, data)
+
   return (
-    <div
+    <DragItemContainer
       data-cy="drag-item"
+      data-dnd="edu-dragitem"
+      isDragging={isDragging}
+      isActivated={isActivated}
       ref={attach}
-      style={getStyles(isDragging)}
+      onClick={onClickHandler}
       {...rest}
     >
       {children}
-    </div>
+    </DragItemContainer>
   )
 }
 
@@ -63,3 +98,17 @@ DragItem.defaultProps = {
 }
 
 export default DragItem
+
+const activeStyle = css`
+  &.activated {
+    & * {
+      color: ${themeColorHoverBlue} !important;
+    }
+  }
+`
+const DragItemContainer = styled.div.attrs((props) => ({
+  className: props.isActivated ? 'activated' : '',
+}))`
+  opacity: ${({ isDragging }) => (isDragging ? 0.2 : 1)};
+  ${({ isActivated }) => isActivated && activeStyle}
+`

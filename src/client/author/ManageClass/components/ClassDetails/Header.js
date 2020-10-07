@@ -86,6 +86,7 @@ const Header = ({
     districtName = '',
     cleverId,
     active,
+    atlasId = '',
   } = selectedClass
   const { exitPath } = location?.state || {}
 
@@ -328,12 +329,14 @@ const Header = ({
                   <IconPencilEdit />
                   <span>{type === 'class' ? 'Edit Class' : 'Edit Group'}</span>
                 </MenuItems>
-                <MenuItems onClick={() => setShowModal(true)}>
-                  <IconArchive />
-                  <span>
-                    {type === 'class' ? 'Archive Class' : 'Archive Group'}
-                  </span>
-                </MenuItems>
+                {!atlasId && !cleverId && (
+                  <MenuItems onClick={() => setShowModal(true)}>
+                    <IconArchive />
+                    <span>
+                      {type === 'class' ? 'Archive Class' : 'Archive Group'}
+                    </span>
+                  </MenuItems>
+                )}
                 <MenuItems onClick={handleActionMenuClick}>
                   <IconPlusCircle />
                   <span>Add a Co-Teacher</span>

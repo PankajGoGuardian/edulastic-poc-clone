@@ -34,6 +34,8 @@ const SubHeader = ({
   studentsList,
   userId,
   lastTeacher,
+  atlasId,
+  cleverId,
 }) => {
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false)
   const { exitPath } = location?.state || {}
@@ -95,7 +97,7 @@ const SubHeader = ({
         </CodeWrapper>
       )}
       <RightContent>
-        {active !== 1 && (
+        {active !== 1 && !atlasId && !cleverId && (
           <ClassLink onClick={() => setShowUnarchiveModal(true)}>
             UNARCHIVE
           </ClassLink>

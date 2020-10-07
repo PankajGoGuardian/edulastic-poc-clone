@@ -70,7 +70,6 @@ class FeedbackRight extends Component {
 
     let { maxScore } = props?.widget?.activity || {}
     const { score } = props?.widget?.activity || {}
-
     if (!maxScore) {
       maxScore = props?.widget?.validation?.validResponse?.score || 0
     }
@@ -87,6 +86,12 @@ class FeedbackRight extends Component {
   }
 
   static contextType = AnswerContext
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps?.widget?.activity && !this.props?.widget?.activity) {
+      this.setState({ score: 0 })
+    }
+  }
 
   componentDidMount() {
     if (this.context?.expressGrader === true) {

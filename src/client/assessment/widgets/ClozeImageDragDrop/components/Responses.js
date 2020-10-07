@@ -8,28 +8,6 @@ import { MathSpan } from '@edulastic/common'
 import { ChoiceItem, DragHandler } from '../../../components/ChoiceItem'
 
 class Responses extends React.Component {
-  static propTypes = {
-    responses: PropTypes.array.isRequired,
-    dragHandler: PropTypes.bool,
-    fontSize: PropTypes.string,
-    heightpx: PropTypes.number.isRequired,
-    maxWidth: PropTypes.number.isRequired,
-    minWidth: PropTypes.number.isRequired,
-    overflow: PropTypes.string,
-    shuffleOptions: PropTypes.bool,
-    transparentResponses: PropTypes.bool,
-    width: PropTypes.number.isRequired,
-    widthpx: PropTypes.number.isRequired,
-  }
-
-  static defaultProps = {
-    dragHandler: false,
-    overflow: 'hidden',
-    shuffleOptions: false,
-    transparentResponses: false,
-    fontSize: '13px',
-  }
-
   shouldComponentUpdate(nextProps) {
     const { responses: currentResponses } = this.props
     const { responses: nextResponses } = nextProps
@@ -51,7 +29,7 @@ class Responses extends React.Component {
     return dragItems.map((option = '', index) => (
       <DragItem
         id={`response-item-${index}`}
-        key={`response-item-${index}`}
+        key={option?.id}
         data={{ option, fromRespIndex: index }}
         size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
       >
@@ -67,6 +45,28 @@ class Responses extends React.Component {
       </DragItem>
     ))
   }
+}
+
+Responses.propTypes = {
+  responses: PropTypes.array.isRequired,
+  dragHandler: PropTypes.bool,
+  fontSize: PropTypes.string,
+  heightpx: PropTypes.number.isRequired,
+  maxWidth: PropTypes.number.isRequired,
+  minWidth: PropTypes.number.isRequired,
+  overflow: PropTypes.string,
+  shuffleOptions: PropTypes.bool,
+  transparentResponses: PropTypes.bool,
+  width: PropTypes.number.isRequired,
+  widthpx: PropTypes.number.isRequired,
+}
+
+Responses.defaultProps = {
+  dragHandler: false,
+  overflow: 'hidden',
+  shuffleOptions: false,
+  transparentResponses: false,
+  fontSize: '13px',
 }
 
 export default Responses

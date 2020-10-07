@@ -5,19 +5,12 @@ import queryString from 'query-string'
 import PropTypes from 'prop-types'
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { DndProvider } from 'react-dnd'
-import TouchBackend from 'react-dnd-touch-backend'
-import HTML5Backend from 'react-dnd-html5-backend'
 import { compose } from 'redux'
 import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
 import { test, signUpState, roleuser } from '@edulastic/constants'
-import {
-  isMobileDevice,
-  OfflineNotifier,
-  notification,
-} from '@edulastic/common'
+import { OfflineNotifier, notification, DragDrop } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -157,8 +150,6 @@ const getCurrentPath = () => {
   return `${location.pathname}${location.search}${location.hash}`
 }
 
-const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend
-
 function isLocationInTestRedirectRoutes(loc) {
   return testRedirectRoutes.find(
     (x) =>
@@ -191,20 +182,12 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
 }
 
 class App extends Component {
-  static propTypes = {
-    user: PropTypes.object.isRequired,
-    tutorial: PropTypes.object,
-    location: PropTypes.object.isRequired,
-    fetchUser: PropTypes.func.isRequired,
-  }
-
-  static defaultProps = {
-    tutorial: null,
-  }
-
-  state = {
-    showAppUpdate: false,
-    canShowCliBanner: true,
+  constructor(props) {
+    super(props)
+    this.state = {
+      showAppUpdate: false,
+      canShowCliBanner: true,
+    }
   }
 
   componentDidMount() {
@@ -400,13 +383,7 @@ class App extends Component {
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
         )}
         <Suspense fallback={<Loading />}>
-          <DndProvider
-            backend={dndBackend}
-            options={{
-              enableTouchEvents: true,
-              enableMouseEvents: true,
-            }}
-          >
+          <DragDrop.Provider>
             {isProxyUser && (
               <Banner
                 text={`You are currently acting as ${fullName} (${_userRole})`}
@@ -587,7 +564,7 @@ class App extends Component {
               />
               <Redirect exact to={defaultRoute} />
             </Switch>
-          </DndProvider>
+          </DragDrop.Provider>
           {cliBannerVisible &&
             canShowCliBanner &&
             !sessionStorage.cliBannerShown && (
@@ -604,6 +581,17 @@ class App extends Component {
       </div>
     )
   }
+}
+
+App.propTypes = {
+  user: PropTypes.object.isRequired,
+  tutorial: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  fetchUser: PropTypes.func.isRequired,
+}
+
+App.defaultProps = {
+  tutorial: null,
 }
 
 const enhance = compose(

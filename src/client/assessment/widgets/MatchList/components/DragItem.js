@@ -106,6 +106,7 @@ const DragItem = ({
           sourceIndex: renderIndex,
         },
         flag,
+        key: item.value,
       }
     : {}
 

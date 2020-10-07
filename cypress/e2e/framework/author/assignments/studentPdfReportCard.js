@@ -22,7 +22,9 @@ export default class StudentsReportCard {
 
   /* GET ELEMENTS START */
   getReportContainerByStudent = (studName) =>
-    cy.get(`[data-cy="${studName}"]`).as('report-container-by-student-name')
+    cy
+      .get(`[data-cy="${Helpers.getFormattedFirstLastName(studName)}"]`)
+      .as('report-container-by-student-name')
 
   selectedReportContainer = () => cy.get('@report-container-by-student-name')
 

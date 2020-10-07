@@ -7,7 +7,9 @@ import {
   put,
   select,
   takeLatest,
+  take,
 } from 'redux-saga/effects'
+import { eventChannel, END } from 'redux-saga'
 import { createSelector } from 'reselect'
 import { notification } from '@edulastic/common'
 import { get, findIndex, keyBy } from 'lodash'
@@ -18,6 +20,7 @@ import {
   userApi,
   canvasApi,
   cleverApi,
+  authApi,
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
@@ -161,6 +164,10 @@ export const REMOVE_CLASS_SYNC_NOTIFICATION =
   '[manageClass] remove class sync notification'
 
 export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
+export const SET_ATLAS_SYNC_MODAL = '[manageClass] set atlas sync modal'
+
+export const STORE_ATLAS_INFO = '[manageClass] store atlas info'
+export const LOG_IN_ATLAS_USER = '[manageClass] log in atlas user'
 
 // action creators
 
@@ -178,6 +185,9 @@ export const createClassSuccessAction = createAction(CREATE_CLASS_SUCCESS)
 export const updateClassAction = createAction(UPDATE_CLASS_REQUEST)
 export const updateClassSuccessAction = createAction(UPDATE_CLASS_SUCCESS)
 export const updateClassFailedAction = createAction(UPDATE_CLASS_FAILED)
+
+export const logInAtlasUserAction = createAction(LOG_IN_ATLAS_USER)
+export const storeAtlasInfoAction = createAction(STORE_ATLAS_INFO)
 
 export const fetchStudentsByIdAction = createAction(
   FETCH_STUDENTS_BY_ID_REQUEST
@@ -272,6 +282,7 @@ export const removeClassSyncNotificationAction = createAction(
 )
 
 export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
+export const setShowAtlasSyncModalAction = createAction(SET_ATLAS_SYNC_MODAL)
 
 // initial State
 const initialState = {
@@ -297,10 +308,15 @@ const initialState = {
   classNotFoundError: false,
   unarchivingClass: false,
   showCleverSyncModal: false,
+  showAtlasSyncModal: null,
 }
 
 const setShowCleverSyncModal = (state, { payload }) => {
   state.showCleverSyncModal = payload
+}
+
+const setShowAtlasSyncModal = (state, { payload }) => {
+  state.showAtlasSyncModal = payload
 }
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -540,6 +556,7 @@ export default createReducer(initialState, {
     state.unarchivingClass = false
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
+  [SET_ATLAS_SYNC_MODAL]: setShowAtlasSyncModal,
 })
 
 function* fetchClassList({ payload }) {
@@ -916,6 +933,47 @@ function* removeClassSyncNotification() {
   }
 }
 
+function checkIfWindowClosed(atlasWindow) {
+  return eventChannel((emitter) => {
+    const timer = setInterval(() => {
+      if (atlasWindow.closed) {
+        clearInterval(timer)
+        emitter(END)
+      }
+    }, 1000)
+    return () => {
+      clearInterval(timer)
+    }
+  })
+}
+
+function* logInAtlasUser({ payload }) {
+  try {
+    payload.loginMode = 'sync'
+    const res = yield call(authApi.atlasLogin, payload)
+    const atlasLoginWindow = window.open(res, '_blank')
+    const windowCloseTimer = yield call(checkIfWindowClosed, atlasLoginWindow)
+    try {
+      while (true) {
+        yield take(windowCloseTimer)
+      }
+    } finally {
+      const atlasCode = localStorage.getItem('atlasCode')
+      if (atlasCode) {
+        yield put(setShowAtlasSyncModalAction({ code: atlasCode }))
+        localStorage.removeItem('atlasCode')
+      }
+    }
+  } catch (e) {
+    notification({ messageKey: 'atlasLoginFailed' })
+  }
+}
+
+function storeAtlasInfo({ payload }) {
+  localStorage.setItem('atlasCode', payload.code)
+  window.close()
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -930,6 +988,8 @@ export function* watcherSaga() {
     yield takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
     yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
     yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest),
+    yield takeLatest(LOG_IN_ATLAS_USER, logInAtlasUser),
+    yield takeLatest(STORE_ATLAS_INFO, storeAtlasInfo),
     yield takeLatest(
       GET_CANVAS_COURSE_LIST_REQUEST,
       getCanvasCourseListRequestSaga

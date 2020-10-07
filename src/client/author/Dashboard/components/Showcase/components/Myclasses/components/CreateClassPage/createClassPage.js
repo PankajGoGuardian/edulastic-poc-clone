@@ -13,6 +13,7 @@ import styled from 'styled-components'
 import { CreateCardBox, SyncClassDiv } from './styled'
 import { scopes } from '../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage'
 import authorizeCanvas from '../../../../../../../../common/utils/CanavsAuthorizationModule'
+import schoologyIcon from '../../../../../../../../student/assets/schoology.png'
 
 const CreateClassPage = ({
   allowGoogleLogin,
@@ -20,8 +21,10 @@ const CreateClassPage = ({
   isUserGoogleLoggedIn,
   fetchClassList,
   enableCleverSync,
+  enableSchoologySync,
   setShowCleverSyncModal,
   handleCanvasBulkSync,
+  handleSyncWithAtlas,
   user,
   history,
   isClassLink,
@@ -83,7 +86,10 @@ const CreateClassPage = ({
         <IconPlusCircle width={20} height={20} />
         <p>Create new class</p>
       </EduButton>
-      {(allowGoogleLogin || enableCleverSync || enableCanvasSync) &&
+      {(allowGoogleLogin ||
+        enableCleverSync ||
+        enableCanvasSync ||
+        enableSchoologySync) &&
         !isCleverDistrict &&
         !isClassLink && <StyledP>OR</StyledP>}
       {allowGoogleLogin !== false && !isCleverDistrict && !isClassLink && (
@@ -117,6 +123,12 @@ const CreateClassPage = ({
             height={18}
           />
           <p>Sync with Canvas</p>
+        </SyncClassDiv>
+      )}
+      {enableSchoologySync && (
+        <SyncClassDiv onClick={handleSyncWithAtlas}>
+          <img alt="Schoology" src={schoologyIcon} width={18} height={18} />
+          <p>Sync with Schoology</p>
         </SyncClassDiv>
       )}
     </CreateCardBox>

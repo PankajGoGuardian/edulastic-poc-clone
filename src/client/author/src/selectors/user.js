@@ -289,6 +289,11 @@ export const getCanvasAllowedInstitutionPoliciesSelector = createSelector(
   (state) => state.filter((s) => !!s.allowCanvas)
 )
 
+export const getSchoologyAllowedInstitutionPoliciesSelector = createSelector(
+  getInstitutionPoliciesSelector,
+  (state) => state.filter((s) => !!s.allowSchoology)
+)
+
 export const getCleverLibraryUserSelector = createSelector(
   getUser,
   getOrgDataSelector,

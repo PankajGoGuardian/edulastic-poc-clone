@@ -29,6 +29,7 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
   setShowCleverSyncModalAction,
+  logInAtlasUserAction,
 } from '../../../../../ManageClass/ducks'
 import { receiveTeacherDashboardAction } from '../../../../duck'
 import {
@@ -37,6 +38,7 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getCleverLibraryUserSelector,
+  getSchoologyAllowedInstitutionPoliciesSelector,
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
@@ -64,6 +66,7 @@ const MyClasses = ({
   districtId,
   googleAllowedInstitutions,
   canvasAllowedInstitutions,
+  schoologyAllowedInstitutions,
   courseList,
   loadingCleverClassList,
   cleverClassList,
@@ -82,6 +85,7 @@ const MyClasses = ({
   showCleverSyncModal,
   setShowCleverSyncModal,
   teacherData,
+  logInAtlasUser,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
@@ -155,10 +159,12 @@ const MyClasses = ({
           history={history}
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
           allowGoogleLogin={googleAllowedInstitutions.length > 0}
+          enableSchoologySync={schoologyAllowedInstitutions.length > 0}
           canvasAllowedInstitutions={canvasAllowedInstitutions}
           enableCleverSync={isCleverUser}
           setShowCleverSyncModal={setShowCleverSyncModal}
           handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
+          handleSyncWithAtlas={() => logInAtlasUser({ districtId })}
           user={user}
           isClassLink={isClassLink}
         />
@@ -191,6 +197,9 @@ export default compose(
       canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
       courseList: get(state, 'coursesReducer.searchResult'),
       isCleverUser: getCleverLibraryUserSelector(state),
+      schoologyAllowedInstitutions: getSchoologyAllowedInstitutionPoliciesSelector(
+        state
+      ),
       loadingCleverClassList: get(state, 'manageClass.loadingCleverClassList'),
       cleverClassList: getCleverClassListSelector(state),
       getStandardsListBySubject: (subject) =>
@@ -210,6 +219,7 @@ export default compose(
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       setShowCleverSyncModal: setShowCleverSyncModalAction,
+      logInAtlasUser: logInAtlasUserAction,
     }
   )
 )(MyClasses)

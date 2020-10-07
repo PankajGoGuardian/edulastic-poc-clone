@@ -42,7 +42,14 @@ export function duplicateAndAssignTests(option, testid, testids, aType, cls) {
   })
 }
 
-export function studentAttempt(testids, aType, aStatus, students, aData) {
+export function studentAttempt(
+  testids,
+  aType,
+  aStatus,
+  students,
+  aData,
+  isRegradeAdded = 0
+) {
   aStatus.forEach((status, ind) => {
     if (status !== studentSide.NOT_STARTED) {
       const { email } = students.filter(
@@ -52,10 +59,13 @@ export function studentAttempt(testids, aType, aStatus, students, aData) {
       testids.forEach((id, index) => {
         assignmentsPage.sidebar.clickOnAssignment()
         assignmentsPage.clickOnAssigmentByTestId(id)
-
         if (status === studentSide.SUBMITTED) {
-          studentTestPage.attemptQuestion('MCQ_MULTI', aType[index], aData)
-          studentTestPage.clickOnNext(false, aType[index] === attemptTypes.SKIP)
+          if (!isRegradeAdded)
+            studentTestPage.attemptQuestion('MCQ_MULTI', aType[index], aData)
+          studentTestPage.clickOnNext(
+            false,
+            isRegradeAdded || aType[index] === attemptTypes.SKIP
+          )
           studentTestPage.submitTest()
         } else studentTestPage.clickOnExitTest()
       })
@@ -165,12 +175,31 @@ export function updateEval(assignedtestids, versionedtestids, itemId, option) {
   })
 }
 
+export function addItemAndRegrade(testids, versionids, itemId, option) {
+  testids.forEach((id) => {
+    testLibraryPage.visitTestById(id)
+    testLibraryPage.publishedToDraftAssigned()
+    testLibraryPage.getVersionedTestID().then((versionedtest) => {
+      versionids.push(versionedtest)
+    })
+
+    testLibraryPage.header.clickOnAddItems()
+    testLibraryPage.testAddItem.searchFilters.clearAll()
+    testLibraryPage.testAddItem.addItemById(itemId)
+
+    testLibraryPage.header.clickRegradePublish()
+    regrade.checkRadioByValue(option)
+    regrade.applyRegrade()
+  })
+}
+
 export function verifyStudentSide(
   data,
   attemptType,
   student,
   versionedtestids,
-  attemptData
+  attemptData,
+  isRegradeAdded = 0
 ) {
   const { stuStatus, email } = student
   context(`> for Student,'${stuStatus}'`, () => {
@@ -185,6 +214,7 @@ export function verifyStudentSide(
           assignmentsPage.clickOnAssigmentByTestId(
             versionedtestids[attempIndex]
           )
+          if (isRegradeAdded) studentTestPage.getQuestionByIndex(1, 1)
           studentTestPage.attemptQuestion('MCQ_MULTI', attempt, attemptData)
           studentTestPage.clickOnNext(false, attempt === attemptTypes.SKIP)
           studentTestPage.submitTest()
@@ -193,7 +223,9 @@ export function verifyStudentSide(
         reportsPage.verifyPercentageOnTestCardByTestId(
           versionedtestids[attempIndex],
           _.round(
-            (data.student[stuStatus][`${attempt}`] / data.points) * 100,
+            (data.student[stuStatus][`${attempt}`] /
+              (data.points + (isRegradeAdded ? 2 : 0))) *
+              100,
             2
           )
         )
@@ -202,10 +234,10 @@ export function verifyStudentSide(
           versionedtestids[attempIndex]
         )
         reportsPage.verifyAchievedScoreOfQueByIndex(
-          0,
+          isRegradeAdded,
           data.student[stuStatus][`${attempt}`]
         )
-        reportsPage.verifyMaxScoreOfQueByIndex(0, data.points)
+        reportsPage.verifyMaxScoreOfQueByIndex(isRegradeAdded, data.points)
       })
     })
   })

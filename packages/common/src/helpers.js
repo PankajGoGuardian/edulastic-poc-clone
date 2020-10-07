@@ -522,13 +522,20 @@ export const clearSelection = () => {
 export const highlightSelectedText = (
   className = 'token active-word',
   tag = 'span',
-  style
+  style,
+  container
 ) => {
   const selection = getSelection()
   if (!selection.rangeCount) {
     console.log('Unable to find a native DOM range from the current selection.')
     return
   }
+
+  let selectionContainer = document.body
+  if (container) {
+    selectionContainer = container
+  }
+
   const range = selection.getRangeAt(0)
   const {
     endContainer,
@@ -544,6 +551,14 @@ export const highlightSelectedText = (
 
   if (get(commonAncestorContainer, 'offsetParent.tagName', null) === 'TABLE') {
     notification({ messageKey: 'selectionError' })
+    clearSelection()
+    return
+  }
+
+  if (
+    (endContainer && !selectionContainer.contains(endContainer)) ||
+    (startContainer && !selectionContainer.contains(startContainer))
+  ) {
     clearSelection()
     return
   }

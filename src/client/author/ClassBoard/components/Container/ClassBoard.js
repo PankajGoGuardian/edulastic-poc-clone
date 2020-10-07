@@ -78,6 +78,7 @@ import {
   getDisableMarkAsAbsentSelector,
   getLCBStudentsList,
   getEnrollmentStatus,
+  getFirstQuestionEntitiesSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -853,6 +854,7 @@ class ClassBoard extends Component {
       loadTestActivity,
       isCliUser,
       isShowAllStudents,
+      firstQuestionEntities,
     } = this.props
 
     const {
@@ -905,11 +907,7 @@ class ClassBoard extends Component {
       testActivity,
       selectedStudentId || firstStudentId
     )
-    const firstQuestionEntities = get(
-      testActivity,
-      [0, 'questionActivities'],
-      []
-    )
+
     const unselectedStudents = testActivity.filter(
       (x) => !selectedStudents[x.studentId]
     )
@@ -1205,9 +1203,7 @@ class ClassBoard extends Component {
                       REDIRECT
                     </RedirectButton>
                     <Dropdown
-                      getPopupContainer={(triggerNode) =>
-                        triggerNode.parentNode
-                      }
+                      getPopupContainer={(el) => el.parentNode}
                       overlay={
                         <DropMenu>
                           <FeaturesSwitch
@@ -1664,6 +1660,7 @@ const enhance = compose(
         false
       ),
       activeAssignedStudents: getActiveAssignedStudents(state),
+      firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

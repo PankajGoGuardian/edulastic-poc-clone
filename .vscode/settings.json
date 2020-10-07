@@ -1,0 +1,57 @@
+{
+  // Place your settings in this file to overwrite default and user settings.
+  "editor.renderIndentGuides": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": true,
+  "editor.useTabStops": true,
+  "javascript.format.enable": false,
+  "javascript.validate.enable": false,
+  "search.exclude": {
+    "**/coverage": true,
+    "**/coverages": true,
+    "**/bower_components": true,
+    "**/.history": true,
+    "**/build-src": true,
+    "**/.happypack": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/flow-typed": true
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/bower_components": true,
+    "**/jspm_packages": true,
+    "**/.history": true,
+    "**/.happypack": true
+  },
+  "files.watcherExclude": {
+    "**/.git/**": true,
+    "**/node_modules/**": true
+  },
+  "git.ignoreLimitWarning": true,
+  "prettier.tabWidth": 2,
+  "prettier.singleQuote": true,
+  "prettier.semi": false,
+  "prettier.useTabs": false,
+  "prettier.trailingComma": "es5",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

@@ -34,7 +34,7 @@ class TestItemCol extends Component {
   renderTabContent = (
     widget,
     flowLayout,
-    itemIndex,
+    widgetIndex,
     showStackedView,
     lengthOfwidgets
   ) => {
@@ -101,8 +101,8 @@ class TestItemCol extends Component {
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
         minHeight={minHeight}
-        itemIndex={itemIndex}
-        marginTop={itemIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
+        itemIndex={widgetIndex}
+        marginTop={widgetIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
         showBorder={!hasDrawingResponse && isLCBView}
       >
         <QuestionWrapper
@@ -112,7 +112,7 @@ class TestItemCol extends Component {
           type={widget.type}
           view="preview"
           qIndex={qIndex}
-          itemIndex={itemIndex}
+          itemIndex={widgetIndex}
           previewTab={previewTab || preview}
           timespent={timespent}
           questionId={widget.reference}
@@ -129,9 +129,11 @@ class TestItemCol extends Component {
           {...restProps}
           hasDrawingResponse={hasDrawingResponse}
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
-          tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
+          // widgetIndex was needed for passages if it has multiple tabs and widgets
+          widgetIndex={widgetIndex}
         />
-        {/*  on the student side, show feedback for each question only when item level scoring is off */}
+        {/* on the student side, show feedback for each question
+        only when item level scoring is off */}
         {isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}

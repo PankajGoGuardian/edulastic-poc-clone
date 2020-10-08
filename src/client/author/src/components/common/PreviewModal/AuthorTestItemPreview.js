@@ -210,7 +210,8 @@ class AuthorTestItemPreview extends Component {
     //       // need to remove the resource count fromt the subCount
     //       // because resources should not have labels
     //       // hence, reduce that many from the question's subCount    (EV-10560)
-    //       qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : "" // show subIndex if multipart, otherwise nothing
+    //       qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : ""
+    // show subIndex if multipart, otherwise nothing
     //     };
     if (!question) {
       return <div />
@@ -242,7 +243,8 @@ class AuthorTestItemPreview extends Component {
           LCBPreviewModal={LCBPreviewModal}
           borderRadius={borderRadius}
           {...restProps}
-          tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
+          // widgetIndex was needed for passages if it has multiple tabs and widgets
+          widgetIndex={widgetIndex}
         />
       </Tabs.TabContainer>
     )

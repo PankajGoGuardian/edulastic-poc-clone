@@ -10,7 +10,7 @@ const defaultConf = {
   className: 'customized-notification',
   message: '',
   description: '',
-  type: 'error',
+  type: 'warn',
   buttonLink: '',
   buttonText: '',
   showButton: false,

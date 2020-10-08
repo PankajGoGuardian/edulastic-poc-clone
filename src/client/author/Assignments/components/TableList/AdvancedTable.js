@@ -39,6 +39,7 @@ import {
 } from './styled'
 
 class AdvancedTable extends Component {
+  // eslint-disable-next-line react/state-in-constructor
   state = {
     enableRowClick: true,
     perPage: 20,
@@ -213,11 +214,16 @@ class AdvancedTable extends Component {
           const assignmentTest = assignmentsSummary.find(
             (at) => at.testId === row.testId
           )
+          const currentAssignment = {
+            _id: row.assignmentIds[0],
+            testId: row.testId,
+          }
           return (
             <ActionDiv data-cy="testActions">
               <Dropdown
                 data-cy="actionDropDown"
                 overlay={ActionMenu({
+                  currentAssignment,
                   onOpenReleaseScoreSettings,
                   row,
                   history,

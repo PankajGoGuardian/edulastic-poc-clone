@@ -211,6 +211,7 @@ const PassageView = ({
         <RefContext.Provider value={{ forwardedRef: mainContentsRef }}>
           <Stimulus
             id="mainContents"
+            className="passage-content"
             dangerouslySetInnerHTML={{ __html: content }}
             userSelect={!disableResponse}
           />

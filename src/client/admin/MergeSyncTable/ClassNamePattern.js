@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Select } from 'antd'
 import CancelApplyActions from './CancelApplyActions'
-import {
-  CLASS_NAME_PATTERN_CONFIG,
-  deltaSyncConfig,
-  DISABLE_SUBMIT_TITLE,
-} from '../Data'
+import { CLASS_NAME_PATTERN_CONFIG, DISABLE_SUBMIT_TITLE } from '../Data'
 import { CheckboxLabel } from '@edulastic/common'
 
 const { Option } = Select
@@ -63,7 +59,7 @@ export default function ClassNamePattern({
         onChange={(value) => setSelectState(value)}
       >
         <Option value="DEFAULT">
-          {`Default ${isClasslink ? 'Classlink' : 'Clever'} Names`}
+          {`Default ${isClasslink ? 'Edlink' : 'Clever'} Names`}
         </Option>
         <Option value="CNAME_TLNAME_PERIOD">
           Course Name - Teacher LastName - Period

@@ -408,7 +408,7 @@ const ActionContainer = ({
         )}
         {atlasId && (
           <CleverInfoBox>
-            <IconInfo /> This is a Classlink Synced class.
+            <IconInfo /> This is a Edlink Synced class.
           </CleverInfoBox>
         )}
 

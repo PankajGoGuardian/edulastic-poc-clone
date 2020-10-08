@@ -361,14 +361,14 @@ function* fetchEnableDisableSync({ payload }) {
         notification({
           type: 'success',
           msg: `Enabled ${
-            isClasslink ? 'classlink' : 'clever'
+            isClasslink ? 'Edlink' : 'clever'
           } sync for ${districtName}`,
         })
       } else {
         notification({
           type: 'success',
           msg: `Disabled ${
-            isClasslink ? 'classlink' : 'clever'
+            isClasslink ? 'Edlink' : 'clever'
           } sync for ${districtName}`,
         })
       }

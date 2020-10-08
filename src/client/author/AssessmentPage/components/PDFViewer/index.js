@@ -155,6 +155,7 @@ const PDFViewer = ({
     docLoading,
     pdfDocument,
     pageNumber,
+    currentPage,
     pdfScale,
     rotate,
     annotationsStack.length,

@@ -398,8 +398,21 @@ class Container extends Component {
   }
 
   handleDeleteWidget = (i) => (widgetIndex) => {
-    const { deleteWidget } = this.props
-    deleteWidget(i, widgetIndex)
+    const { deleteWidget, item = {}, location, match, isTestFlow } = this.props
+    const { _id: testItemId } = item
+    const { testId } = match.params
+
+    /**
+     * trying to replicate data being sent while saveItem
+     * src/client/author/ItemDetail/components/Container/index.js
+     */
+    const updateData = {
+      testItemId,
+      testId,
+      isTestFlow,
+      locationState: location?.state,
+    }
+    deleteWidget(i, widgetIndex, updateData)
   }
 
   handleDeletePassageWidget = (widgetIndex) => {
@@ -625,7 +638,8 @@ class Container extends Component {
       pathname: isTestFlow
         ? `/author/tests/${testId}/editItem/${_id}`
         : `/author/items/${_id}/item-detail`,
-      state: { isTestFlow, previousTestId, fadeSidebar },
+      // To stop view changes, while using pagination buttons
+      state: { isTestFlow, previousTestId, fadeSidebar, resetView: false },
     })
   }
 
@@ -733,9 +747,9 @@ class Container extends Component {
                   windowWidth={windowWidth}
                   onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
-                  onEditTabTitle={(tabIndex, value) =>
-                    updateTabTitle({ rowIndex: i, tabIndex, value })
-                  }
+                  onEditTabTitle={(tabIndex, value) => {
+                    return updateTabTitle({ rowIndex: i, tabIndex, value })
+                  }}
                   hideColumn={
                     (collapseLeft && !passageWithQuestions && i === 0) ||
                     (collapseRight && (i === 1 || passageWithQuestions))

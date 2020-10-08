@@ -248,10 +248,19 @@ export const updateItemDetailByIdAction = (
   testId,
   addToTest = false,
   locationState = false,
-  redirect = true
+  redirect = true,
+  redirectOnDeleteQuestion = true
 ) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId, addToTest, redirect, locationState },
+  payload: {
+    id,
+    data,
+    testId,
+    addToTest,
+    redirect,
+    locationState,
+    redirectOnDeleteQuestion,
+  },
 })
 
 export const updateItemDetailSuccess = (item) => ({
@@ -274,9 +283,9 @@ export const setItemDetailDraggingAction = (dragging) => ({
   payload: { dragging },
 })
 
-export const deleteWidgetAction = (rowIndex, widgetIndex) => ({
+export const deleteWidgetAction = (rowIndex, widgetIndex, updateData = {}) => ({
   type: DELETE_ITEM_DETAIL_WIDGET,
-  payload: { rowIndex, widgetIndex },
+  payload: { rowIndex, widgetIndex, updateData },
 })
 
 export const updateTabTitleAction = ({ rowIndex, tabIndex, value }) => ({
@@ -1009,8 +1018,14 @@ export function* deleteItemSaga({ payload }) {
     notification({ type: 'success', messageKey: 'itemDeletedSuccessfully' })
     if (isItemPrevew) return
 
-    if (isTestFlow) {
-      yield put(push(`/author/tests/${testId}/editItem/${redirectId}`))
+    // Note: testId could be "undefined" (string value)
+    if (testId && isTestFlow) {
+      if (redirectId) {
+        yield put(push(`/author/tests/${testId}/editItem/${redirectId}`))
+      } else {
+        // when test no test item to redirect, back ot description
+        yield put(push(`/author/tests/create/description`))
+      }
       return
     }
     if (redirectId) {
@@ -1289,17 +1304,21 @@ export function* updateItemSaga({ payload }) {
       if (!payload.testId || payload.testId === 'undefined') {
         yield put(setTestDataAndUpdateAction({ addToTest: true, item }))
       } else {
+        // When deleting question from passage item should not go to test preview
+        const { redirectOnDeleteQuestion } = payload
         yield put(setCreatedItemToTestAction(item))
-        yield put(
-          push({
-            pathname: `/author/tests/tab/review/id/${payload.testId}${
-              oldTestId ? `/old/${oldTestId}` : ''
-            }`,
-            state: {
-              isAuthoredNow: true,
-            },
-          })
-        )
+        if (redirectOnDeleteQuestion) {
+          yield put(
+            push({
+              pathname: `/author/tests/tab/review/id/${payload.testId}${
+                oldTestId ? `/old/${oldTestId}` : ''
+              }`,
+              state: {
+                isAuthoredNow: true,
+              },
+            })
+          )
+        }
       }
       yield put(changeViewAction('edit'))
       return
@@ -1575,7 +1594,7 @@ function* publishTestItemSaga({ payload }) {
   }
 }
 
-function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
+function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
   const newState = yield select((state) => state.itemDetail)
   const targetId = newState.item.rows[rowIndex].widgets[widgetIndex].reference
 
@@ -1585,6 +1604,20 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
   })
 
   yield put(deleteQuestionAction(targetId))
+  const testItem = yield select((state) => getItemDetailSelector(state)) // Get latest data of item after deletion of widget
+  const { testItemId, testId, isTestFlow, locationState } = updateData
+
+  yield put(
+    updateItemDetailByIdAction(
+      testItemId,
+      testItem,
+      testId,
+      isTestFlow,
+      locationState,
+      true,
+      false
+    )
+  )
 }
 
 function* convertToMultipartSaga({ payload }) {

@@ -30,9 +30,23 @@ export const duplicateTestItemPreviewRequestAction = createAction(
 )
 
 export const stateSelector = (state) => state.testItemPreview
+export const archivedItemsSelector = (state) =>
+  get(state, 'testsAddItems.archivedItems', [])
+
 export const getPassageSelector = createSelector(
   stateSelector,
-  (state) => state.passage
+  archivedItemsSelector,
+  (state, archivedItems) => {
+    const { passage = {} } = state
+    // Filtering archived testItems from passage testItems after deletion
+    if (passage) {
+      passage.testItems = (passage?.testItems || []).filter(
+        (id) => !archivedItems.includes(id)
+      )
+      return passage
+    }
+    return null
+  }
 )
 
 export const getItemDetailSelectorForPreview = (state, id, page) => {
@@ -111,7 +125,8 @@ function* duplicateItemRequestSaga({ payload }) {
     const itemId = data.id
     let duplicatedItem = {}
     if (passage) {
-      // Current item selected in preview modal or all test items based on duplicateWholePassage (flag)
+      // Current item selected in preview modal 
+      // or all test items based on duplicateWholePassage (flag)
       const testItemsToDuplicate = duplicateWholePassage
         ? passage.testItems
         : currentItem

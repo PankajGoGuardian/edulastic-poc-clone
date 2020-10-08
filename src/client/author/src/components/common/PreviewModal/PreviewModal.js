@@ -64,6 +64,7 @@ import ScoreBlock from '../ScoreBlock'
 import AuthorTestItemPreview from './AuthorTestItemPreview'
 import {
   addPassageAction,
+  archivedItemsSelector,
   clearPreviewAction,
   duplicateTestItemPreviewRequestAction,
   getItemDetailSelectorForPreview,
@@ -112,10 +113,27 @@ class PreviewModal extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { item: newItem } = this.props
-    const { item: oldItem } = prevProps
+    const {
+      item: newItem,
+      archivedItems: oldArchivedItems,
+      updateCurrentItemFromPassagePagination,
+      passage,
+      clearPreview,
+    } = this.props
+    const { item: oldItem, archivedItems: newArchivedItems } = prevProps
     if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
       this.loadPassage(newItem.passageId)
+    }
+    /** Watching changes in "testsAddItems.archivedItems"
+     * and updating testItemPreview for passages
+     * */
+    if (oldArchivedItems?.length !== newArchivedItems?.length) {
+      const { testItems = [] } = passage || {}
+      if (testItems.length) {
+        updateCurrentItemFromPassagePagination(testItems[0])
+      } else {
+        clearPreview()
+      }
     }
   }
 
@@ -456,6 +474,9 @@ class PreviewModal extends React.Component {
       writableCollections,
     } = this.props
 
+    const { testItems = [] } = passage || {}
+    const hasMultipleTestItems = testItems.length > 1
+
     const {
       passageLoading,
       showHints,
@@ -662,7 +683,9 @@ class PreviewModal extends React.Component {
                     height="28px"
                     width="28px"
                     onClick={this.handleDeleteItem}
-                    disabled={deleting}
+                    disabled={
+                      isPassage ? !hasMultipleTestItems || deleting : deleting
+                    }
                   >
                     <IconTrash title="Delete item" />
                     {/* <span>delete</span> */}
@@ -846,6 +869,7 @@ const enhance = compose(
         userFeatures: getUserFeatures(state),
         deleting: getItemDeletingSelector(state),
         writableCollections: getWritableCollectionsSelector(state),
+        archivedItems: archivedItemsSelector(state),
       }
     },
     {

@@ -15,8 +15,7 @@ export const ZwibblerMain = styled.div`
   width: ${({ width }) => (width ? `${width}px` : '100%')};
   height: ${({ height }) => (height ? `${height}px` : '100%')};
   border: ${({ readOnly, deleteMode }) =>
-    readOnly ? '0px' : `1px solid ${deleteMode ? darkRed : greyThemeLight}`};
-  background: radial-gradient(#b9b9b9 2px, transparent 2px);
+    readOnly ? '0px' : `2px dashed ${deleteMode ? darkRed : greyThemeLight}`};
   background-size: 30px 30px;
 
   &:focus {

@@ -1010,8 +1010,9 @@ class ClassBoard extends Component {
             hideUndoneText
             bodyText={
               <span>
-                You are about to remove the selected student(s) from this assignment. The 
-                selected student responses will be DELETED and this action cannot be undone.
+                You are about to remove the selected student(s) from this
+                assignment. The selected student responses will be DELETED and
+                this action cannot be undone.
               </span>
             }
             okText="Yes, Remove"

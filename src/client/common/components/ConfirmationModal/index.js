@@ -60,7 +60,9 @@ const ConfirmationModal = ({
         <Col span={24}>
           <StyledDiv>
             {bodyText}&nbsp;
-            {hideUndoneText ? null : <span>This action can NOT be undone.</span>}
+            {hideUndoneText ? null : (
+              <span>This action can NOT be undone.</span>
+            )}
           </StyledDiv>
 
           {showConfirmationText ? (

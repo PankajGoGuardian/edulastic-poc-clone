@@ -59,6 +59,8 @@ const EssayPlainTextPreview = ({
   disableResponse,
   isReviewTab,
   isPrintPreview,
+  isStudentAttempt,
+  isFeedbackVisible,
 }) => {
   const [text, setText] = useState(isString(userAnswer) ? userAnswer : '')
 
@@ -199,7 +201,11 @@ const EssayPlainTextPreview = ({
             )}
           </QuestionTitleWrapper>
 
-          <EssayPlainTextBoxContainer>
+          <EssayPlainTextBoxContainer
+            reduceWidth={
+              isStudentAttempt && isFeedbackVisible ? '150px' : '0px'
+            }
+          >
             {!disableResponse && (
               <EssayToolbar reviewTab={reviewTab} borderRadiusOnlyTop>
                 <FlexContainer
@@ -323,6 +329,8 @@ EssayPlainTextPreview.propTypes = {
   qIndex: PropTypes.number,
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool.isRequired,
+  isFeedbackVisible: PropTypes.bool,
+  isStudentAttempt: PropTypes.bool,
 }
 
 EssayPlainTextPreview.defaultProps = {
@@ -331,6 +339,8 @@ EssayPlainTextPreview.defaultProps = {
   testItem: false,
   showQuestionNumber: false,
   qIndex: null,
+  isFeedbackVisible: false,
+  isStudentAttempt: false,
 }
 
 const enhance = compose(withNamespaces('assessment'), withTheme)
@@ -345,7 +355,7 @@ const StyledPrintAnswerBox = styled.div`
 `
 
 const EssayPlainTextBoxContainer = styled.div`
-  width: 100%;
+  width: ${({ reduceWidth }) => `calc(100% - ${reduceWidth})`};
   border-radius: 4px;
   border: 1px solid ${lightGrey12};
 `

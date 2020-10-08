@@ -61,6 +61,7 @@ class TestItemCol extends Component {
       isStudentAttempt,
       isStudentReport,
       isLCBView,
+      isFeedbackVisible,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question = questions[widget.reference]
@@ -131,6 +132,8 @@ class TestItemCol extends Component {
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
           // widgetIndex was needed for passages if it has multiple tabs and widgets
           widgetIndex={widgetIndex}
+          isStudentAttempt={isStudentAttempt}
+          isFeedbackVisible={isFeedbackVisible}
         />
         {/* on the student side, show feedback for each question
         only when item level scoring is off */}

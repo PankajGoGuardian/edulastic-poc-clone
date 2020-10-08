@@ -32,8 +32,10 @@ class TestItemPreview extends Component {
       collapseDirection: toggleCollapseMode ? 'left' : '',
       value: 0,
       dimensions: { height: 0, width: 0 },
+      isFeedbackVisible: false,
     }
     this.containerRef = React.createRef()
+    this.feedbackRef = React.createRef()
   }
 
   getStyle = (first) => {
@@ -171,6 +173,7 @@ class TestItemPreview extends Component {
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
         itemId={itemId}
+        ref={this.feedbackRef}
       />
     ) : null
   }
@@ -212,6 +215,15 @@ class TestItemPreview extends Component {
           dimensions: { height: currentHeight, width: currentWidth },
         })
       }
+    }
+
+    /**
+     * https://snapwiz.atlassian.net/browse/EV-20465
+     * When feedbackElem is getting rendered we can say it is visible
+     * */
+    const feedbackElem = this.feedbackRef.current
+    if (feedbackElem) {
+      this.setState({ isFeedbackVisible: true })
     }
   }
 
@@ -276,6 +288,8 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       isPrintPreview,
     } = restProps
+
+    const { isFeedbackVisible } = this.state
 
     const { collapseDirection } = this.state
     const widgets = (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
@@ -394,6 +408,7 @@ class TestItemPreview extends Component {
                       teachCherFeedBack={this.renderFeedback}
                       hasDrawingResponse={hasDrawingResponse}
                       isStudentAttempt={isStudentAttempt}
+                      isFeedbackVisible={isFeedbackVisible}
                     />
                     {collapseDirection === 'right' &&
                       showCollapseButtons &&

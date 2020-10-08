@@ -5,7 +5,7 @@ import { lightGrey, themeColor, white } from '@edulastic/colors'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { FlexContainer } from './styled'
 
-const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
+const ShowSyncDetailsModal = ({ syncClassResponse, visible, close, type }) => {
   const columns = [
     {
       title: 'Name',
@@ -33,6 +33,8 @@ const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
       dataIndex: 'status',
     },
   ]
+
+  const isSchoology = type === 'schoology'
 
   return (
     <Modal
@@ -71,8 +73,9 @@ const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
           >
             <div>
               <b> {`#${index + 1} `}</b>
-              The class section <b>{syncClassResponse[group].groupName}</b>
-              {` is synced with Google Class `}
+              The class section{' '}
+              <b>{syncClassResponse[group].groupName || index + 1}</b>
+              {` is synced with ${isSchoology ? 'Schoology' : 'Google'} Class `}
               <b>{group}</b>
               {`. Below are the synced student details: `}
             </div>
@@ -99,6 +102,6 @@ const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
 ShowSyncDetailsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
-  syncClassResponse: PropTypes.object,
+  syncClassResponse: PropTypes.object.isRequired,
 }
 export default ShowSyncDetailsModal

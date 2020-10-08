@@ -14,6 +14,7 @@ import {
   getSchoologyCourseListAction,
   cancelAtlasSyncAction,
   syncAtlasClassesAction,
+  setShowSchoologySyncResponseAction,
 } from '../../ducks'
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { getUserDetails } from '../../../../student/Login/ducks'
@@ -68,6 +69,9 @@ const ClassListContainer = ({
   schoologyClassList,
   syncAtlasClasses,
   districtId,
+  schoologySyncResponse,
+  showSchoologySyncResponse,
+  setShowSchoologySyncResponse,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
@@ -181,6 +185,12 @@ const ClassListContainer = ({
         visible={showDetails}
         close={() => setShowDetails(false)}
       />
+      <ShowSyncDetailsModal
+        syncClassResponse={schoologySyncResponse}
+        visible={showSchoologySyncResponse}
+        type="schoology"
+        close={() => setShowSchoologySyncResponse(false)}
+      />
       <ClassList
         groups={groups}
         setShowDetails={setShowDetails}
@@ -228,6 +238,12 @@ export default connect(
     ),
     districtId: state.user.user?.orgData?.districtIds?.[0],
     schoologyClassList: get(state, 'manageClass.schoologyClassList', []),
+    schoologySyncResponse: get(state, 'manageClass.schoologySyncResponse', {}),
+    showSchoologySyncResponse: get(
+      state,
+      'manageClass.showSchoologySyncResponse',
+      false
+    ),
   }),
   {
     fetchCleverClassList: fetchCleverClassListRequestAction,
@@ -239,5 +255,6 @@ export default connect(
     getSchoologyCourseList: getSchoologyCourseListAction,
     cancelAtlasSync: cancelAtlasSyncAction,
     syncAtlasClasses: syncAtlasClassesAction,
+    setShowSchoologySyncResponse: setShowSchoologySyncResponseAction,
   }
 )(ClassListContainer)

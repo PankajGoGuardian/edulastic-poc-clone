@@ -176,6 +176,10 @@ export const SET_LOADING_SCHOOLOGY_CLASSLIST =
 export const SET_SCHOOLOGY_CLASSLIST = '[manageClass] set schoology classlist'
 export const CANCEL_ATLAS_SYNC = '[manageClass] cancel atlas sync'
 export const SYNC_ATLAS_CLASSES = '[manageClass] sync atlas classes'
+export const SET_SHOW_SCHOOLOGY_SYNC_RESPONSE =
+  '[manageClass] set show schoology sync response'
+export const SET_SCHOOLOGY_SYNC_RESPONSE =
+  '[manageClass] set schoology sync response'
 
 // action creators
 
@@ -300,6 +304,12 @@ export const setLoadingSchoologyClassListAction = createAction(
 export const setSchoologyClassListAction = createAction(SET_SCHOOLOGY_CLASSLIST)
 export const cancelAtlasSyncAction = createAction(CANCEL_ATLAS_SYNC)
 export const syncAtlasClassesAction = createAction(SYNC_ATLAS_CLASSES)
+export const setShowSchoologySyncResponseAction = createAction(
+  SET_SHOW_SCHOOLOGY_SYNC_RESPONSE
+)
+export const setSchoologySyncResponseAction = createAction(
+  SET_SCHOOLOGY_SYNC_RESPONSE
+)
 
 // initial State
 const initialState = {
@@ -329,6 +339,8 @@ const initialState = {
   showAtlasSyncModal: false,
   loadingSchoologyClassList: false,
   schoologyClassList: [],
+  showSchoologySyncResponse: false,
+  schoologySyncResponse: {},
 }
 
 const setShowCleverSyncModal = (state, { payload }) => {
@@ -597,6 +609,12 @@ export default createReducer(initialState, {
     state.loadingSchoologyClassList = false
     state.showAtlasSyncModal = false
     state.atlasInfo = null
+  },
+  [SET_SCHOOLOGY_SYNC_RESPONSE]: (state, { payload }) => {
+    state.schoologySyncResponse = payload
+  },
+  [SET_SHOW_SCHOOLOGY_SYNC_RESPONSE]: (state, { payload }) => {
+    state.showSchoologySyncResponse = payload
   },
 })
 
@@ -1036,11 +1054,13 @@ function* syncAtlasClasses({ payload }) {
       institutionId,
       refreshPage,
     } = payload
-    yield call(atlasApi.bulkSyncClasses, {
+    const res = yield call(atlasApi.bulkSyncClasses, {
       bulkClassSyncData,
       institutionId,
       districtId,
     })
+    yield put(setSchoologySyncResponseAction(res.result))
+    yield put(setShowSchoologySyncResponseAction(true))
     notification({ type: 'success', messageKey: 'syncWithSchoologyIsComplete' })
     switch (refreshPage) {
       case 'dashboard':

@@ -15,6 +15,7 @@ import CardTextContent from './components/CardTextContent/cardTextContent'
 import CreateClassPage from './components/CreateClassPage/createClassPage'
 import Launch from '../../../LaunchHangout/Launch'
 import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
+import ShowSyncDetailsModal from '../../../../../ManageClass/components/ClassListContainer/ShowSyncDetailsModal'
 import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
 // static data
 
@@ -33,6 +34,7 @@ import {
   getSchoologyCourseListAction,
   cancelAtlasSyncAction,
   syncAtlasClassesAction,
+  setShowSchoologySyncResponseAction,
 } from '../../../../../ManageClass/ducks'
 import { receiveTeacherDashboardAction } from '../../../../duck'
 import {
@@ -96,6 +98,9 @@ const MyClasses = ({
   loadingSchoologyClassList,
   schoologyClassList,
   syncAtlasClasses,
+  schoologySyncResponse,
+  showSchoologySyncResponse,
+  setShowSchoologySyncResponse,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
@@ -187,6 +192,12 @@ const MyClasses = ({
         defaultSubjects={defaultSubjects}
         allowedInstitutions={schoologyAllowedInstitutions}
       />
+      <ShowSyncDetailsModal
+        syncClassResponse={schoologySyncResponse}
+        visible={showSchoologySyncResponse}
+        type="schoology"
+        close={() => setShowSchoologySyncResponse(false)}
+      />
       <CanvasClassSelectModal
         visible={showCanvasSyncModal}
         onCancel={() => setShowCanvasSyncModal(false)}
@@ -265,6 +276,16 @@ export default compose(
       ),
       schoologyClassList: get(state, 'manageClass.schoologyClassList', []),
       teacherData: get(state, 'dashboardTeacher.data', {}),
+      schoologySyncResponse: get(
+        state,
+        'manageClass.schoologySyncResponse',
+        {}
+      ),
+      showSchoologySyncResponse: get(
+        state,
+        'manageClass.showSchoologySyncResponse',
+        false
+      ),
     }),
     {
       fetchClassList: fetchClassListAction,
@@ -280,6 +301,7 @@ export default compose(
       getSchoologyCourseList: getSchoologyCourseListAction,
       cancelAtlasSync: cancelAtlasSyncAction,
       syncAtlasClasses: syncAtlasClassesAction,
+      setShowSchoologySyncResponse: setShowSchoologySyncResponseAction,
     }
   )
 )(MyClasses)

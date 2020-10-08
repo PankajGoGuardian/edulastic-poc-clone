@@ -51,11 +51,7 @@ const getPostionOfEelement = (em) => {
 
   // top and left will be used to set position of color picker
   const top = em.offsetTop + deltaTop + em.offsetHeight - 70 // -70 is height of picker
-  let left = $(em).width() / 2 + em.offsetLeft + deltaLeft - 106 // -106 is half of width of picker;
-
-  if (left < 0) {
-    left = 0
-  }
+  const left = $(em).width() / 2 + em.offsetLeft + deltaLeft - 106 // -106 is half of width of picker;
 
   const bg = rgbToHexc($(em).css('backgroundColor'))
   return { top, left, bg }
@@ -134,7 +130,6 @@ const PassageView = ({
     if (isEmpty(_highlights)) {
       return content
         ?.replace(/(<p>)/g, '')
-        ?.replace(/(<p (.*?)>)/g, '')
         ?.replace(/(<\/p>)/g, '<br/>')
         ?.replace(/background-color: (.*?);/g, '')
     }
@@ -154,14 +149,9 @@ const PassageView = ({
 
   const onChangeColor = (color) => {
     if (color !== 'remove') {
-      highlightSelectedText(
-        'text-heighlight',
-        highlightTag,
-        {
-          background: color,
-        },
-        mainContentsRef.current
-      )
+      highlightSelectedText('text-heighlight', highlightTag, {
+        background: color,
+      })
       saveHistory()
     }
     clearSelection()

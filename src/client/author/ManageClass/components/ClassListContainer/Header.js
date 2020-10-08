@@ -25,11 +25,14 @@ import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
 import { ButtonsWrapper } from './styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
+import schoologyIcon from '../../../../student/assets/schoology.png'
 import { scopes } from './ClassCreatePage'
 
 const Header = ({
   fetchGoogleClassList,
   googleAllowedInstitutions,
+  schoologyAllowedInstitutions,
+  handleSyncWithAtlas,
   isUserGoogleLoggedIn,
   setShowCleverSyncModal,
   t,
@@ -166,6 +169,20 @@ const Header = ({
                   height={18}
                 />
                 <span>SYNC WITH CANVAS</span>
+              </EduButton>
+            )}
+          {schoologyAllowedInstitutions?.length > 0 &&
+            !isCleverDistrict &&
+            !enableCleverSync &&
+            !isClassLink && (
+              <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
+                <img
+                  alt="Schoology"
+                  src={schoologyIcon}
+                  width={18}
+                  height={18}
+                />
+                <span>SYNC WITH SCHOOLOGY</span>
               </EduButton>
             )}
         </>

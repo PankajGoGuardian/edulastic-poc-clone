@@ -907,6 +907,10 @@
     "message": "Sync with Clever is complete.",
     "description": ""
   },
+  "syncWithSchoologyIsComplete": {
+    "message": "Sync with Schoology is complete.",
+    "description": ""
+  },
   "classSuccessfullyUnarchived": {
     "message": "Class successfully unarchived.",
     "description": ""

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
+import { get, pick } from 'lodash'
 
 // ducks
 import {
@@ -11,11 +11,14 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
   setShowCleverSyncModalAction,
+  getSchoologyCourseListAction,
+  cancelAtlasSyncAction,
+  syncAtlasClassesAction,
 } from '../../ducks'
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
-
+import { getSchoologyAllowedInstitutionPoliciesSelector } from '../../../src/selectors/user'
 // components
 import ClassList from './ClassList'
 import ClassSelectModal from './ClassSelectModal'
@@ -29,6 +32,7 @@ const ClassListContainer = ({
   googleCourseList,
   courseList,
   googleAllowedInstitutions,
+  schoologyAllowedInstitutions,
   closeGoogleModal,
   syncClassResponse,
   showBanner,
@@ -56,6 +60,14 @@ const ClassListContainer = ({
   fetchGroups,
   showCleverSyncModal,
   setShowCleverSyncModal,
+  showAtlasSyncModal,
+  getSchoologyCourseList,
+  atlasInfo,
+  cancelAtlasSync,
+  loadingSchoologyClassList,
+  schoologyClassList,
+  syncAtlasClasses,
+  districtId,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
@@ -67,6 +79,13 @@ const ClassListContainer = ({
   }, [showCleverSyncModal])
 
   useEffect(() => {
+    if (atlasInfo && atlasInfo.code) {
+      const { code } = atlasInfo
+      getSchoologyCourseList({ code })
+    }
+  }, [atlasInfo])
+
+  useEffect(() => {
     if (bulkSyncCanvasStatus === 'SUCCESS') fetchGroups()
   }, [bulkSyncCanvasStatus])
 
@@ -76,6 +95,24 @@ const ClassListContainer = ({
   const syncedCleverIds = groups
     .filter((g) => !!g.cleverId)
     .map((g) => g.cleverId)
+  const syncedAtlasIds = groups.filter((g) => !!g.atlasId).map((g) => g.atlasId)
+
+  const onAtlasSyncSubmit = (data) => {
+    const properties = [
+      'grades',
+      'name',
+      'standardSets',
+      'subject',
+      'courseId',
+      'atlasCode',
+      'thumbnail',
+      'class',
+    ]
+    const bulkClassSyncData = data.classList.map((each) => {
+      return pick(each, properties)
+    })
+    syncAtlasClasses({ ...data, districtId, bulkClassSyncData })
+  }
 
   return (
     <>
@@ -112,6 +149,22 @@ const ClassListContainer = ({
         allowedInstitutions={googleAllowedInstitutions}
         defaultGrades={defaultGrades}
         defaultSubjects={defaultSubjects}
+      />
+      <ClassSelectModal
+        type="schoology"
+        visible={showAtlasSyncModal}
+        onSubmit={onAtlasSyncSubmit}
+        onCancel={cancelAtlasSync}
+        syncedIds={syncedAtlasIds}
+        loading={loadingSchoologyClassList}
+        classListToSync={schoologyClassList}
+        courseList={courseList}
+        getStandardsListBySubject={getStandardsListBySubject}
+        refreshPage="manageClass"
+        existingGroups={groups}
+        defaultGrades={defaultGrades}
+        defaultSubjects={defaultSubjects}
+        allowedInstitutions={schoologyAllowedInstitutions}
       />
       <CanvasClassSelectModal
         visible={showCanvasSyncModal}
@@ -163,6 +216,18 @@ export default connect(
     institutionIds: get(state, 'user.user.institutionIds', []),
     bulkSyncCanvasStatus: get(state, 'signup.bulkSyncCanvasStatus', false),
     showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+    showAtlasSyncModal: get(state, 'manageClass.showAtlasSyncModal', false),
+    atlasInfo: get(state, 'manageClass.atlasInfo', null),
+    loadingSchoologyClassList: get(
+      state,
+      'manageClass.loadingSchoologyClassList',
+      false
+    ),
+    schoologyAllowedInstitutions: getSchoologyAllowedInstitutionPoliciesSelector(
+      state
+    ),
+    districtId: state.user.user?.orgData?.districtIds?.[0],
+    schoologyClassList: get(state, 'manageClass.schoologyClassList', []),
   }),
   {
     fetchCleverClassList: fetchCleverClassListRequestAction,
@@ -171,5 +236,8 @@ export default connect(
     getCanvasSectionListRequest: getCanvasSectionListRequestAction,
     fetchGroups: fetchGroupsAction,
     setShowCleverSyncModal: setShowCleverSyncModalAction,
+    getSchoologyCourseList: getSchoologyCourseListAction,
+    cancelAtlasSync: cancelAtlasSyncAction,
+    syncAtlasClasses: syncAtlasClassesAction,
   }
 )(ClassListContainer)

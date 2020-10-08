@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, pick } from 'lodash'
 
 // components
 import { Col, Row, Spin } from 'antd'
@@ -30,6 +30,9 @@ import {
   getCanvasSectionListRequestAction,
   setShowCleverSyncModalAction,
   logInAtlasUserAction,
+  getSchoologyCourseListAction,
+  cancelAtlasSyncAction,
+  syncAtlasClassesAction,
 } from '../../../../../ManageClass/ducks'
 import { receiveTeacherDashboardAction } from '../../../../duck'
 import {
@@ -86,6 +89,13 @@ const MyClasses = ({
   setShowCleverSyncModal,
   teacherData,
   logInAtlasUser,
+  showAtlasSyncModal,
+  getSchoologyCourseList,
+  atlasInfo,
+  cancelAtlasSync,
+  loadingSchoologyClassList,
+  schoologyClassList,
+  syncAtlasClasses,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
@@ -95,6 +105,13 @@ const MyClasses = ({
       fetchCleverClassList()
     }
   }, [showCleverSyncModal])
+
+  useEffect(() => {
+    if (atlasInfo && atlasInfo.code) {
+      const { code } = atlasInfo
+      getSchoologyCourseList({ code })
+    }
+  }, [atlasInfo])
 
   useEffect(() => {
     getTeacherDashboard()
@@ -122,6 +139,23 @@ const MyClasses = ({
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
+  const onAtlasSyncSubmit = (data) => {
+    const properties = [
+      'grades',
+      'name',
+      'standardSets',
+      'subject',
+      'courseId',
+      'atlasCode',
+      'thumbnail',
+      'class',
+    ]
+    const bulkClassSyncData = data.classList.map((each) => {
+      return pick(each, properties)
+    })
+    syncAtlasClasses({ ...data, districtId, bulkClassSyncData })
+  }
+
   return (
     <MainContentWrapper padding="30px">
       <ClassSelectModal
@@ -137,6 +171,21 @@ const MyClasses = ({
         existingGroups={allClasses}
         defaultGrades={defaultGrades}
         defaultSubjects={defaultSubjects}
+      />
+      <ClassSelectModal
+        type="schoology"
+        visible={showAtlasSyncModal}
+        onSubmit={onAtlasSyncSubmit}
+        onCancel={cancelAtlasSync}
+        loading={loadingSchoologyClassList}
+        classListToSync={schoologyClassList}
+        courseList={courseList}
+        getStandardsListBySubject={getStandardsListBySubject}
+        refreshPage="dashboard"
+        existingGroups={allClasses}
+        defaultGrades={defaultGrades}
+        defaultSubjects={defaultSubjects}
+        allowedInstitutions={schoologyAllowedInstitutions}
       />
       <CanvasClassSelectModal
         visible={showCanvasSyncModal}
@@ -207,6 +256,14 @@ export default compose(
       defaultGrades: getInterestedGradesSelector(state),
       defaultSubjects: getInterestedSubjectsSelector(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      showAtlasSyncModal: get(state, 'manageClass.showAtlasSyncModal', false),
+      atlasInfo: get(state, 'manageClass.atlasInfo', null),
+      loadingSchoologyClassList: get(
+        state,
+        'manageClass.loadingSchoologyClassList',
+        false
+      ),
+      schoologyClassList: get(state, 'manageClass.schoologyClassList', []),
       teacherData: get(state, 'dashboardTeacher.data', {}),
     }),
     {
@@ -220,6 +277,9 @@ export default compose(
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       setShowCleverSyncModal: setShowCleverSyncModalAction,
       logInAtlasUser: logInAtlasUserAction,
+      getSchoologyCourseList: getSchoologyCourseListAction,
+      cancelAtlasSync: cancelAtlasSyncAction,
+      syncAtlasClasses: syncAtlasClassesAction,
     }
   )
 )(MyClasses)

@@ -19,7 +19,6 @@ import {
   googleLoginAction,
   getUserDataAction,
 } from '../Login/ducks'
-import { storeAtlasInfoAction } from '../../author/ManageClass/ducks'
 
 class SsoLogin extends React.Component {
   componentDidMount() {
@@ -29,7 +28,6 @@ class SsoLogin extends React.Component {
       cleverSSOLogin,
       msoSSOLogin,
       atlasSSOLogin,
-      storeAtlasInfo,
     } = this.props
     const { addAccount, addAccountTo } = JSON.parse(
       sessionStorage.getItem('addAccountDetails') || '{}'
@@ -62,7 +60,8 @@ class SsoLogin extends React.Component {
       if (state) {
         const stateJSON = JSON.parse(state)
         if (stateJSON.loginMode === 'sync') {
-          storeAtlasInfo({ code: payload.code })
+          localStorage.setItem('atlasCode', payload.code)
+          window.close()
         } else {
           payload.state = stateJSON
           atlasSSOLogin(payload)
@@ -124,7 +123,6 @@ const enhance = compose(
       atlasSSOLogin: atlasSSOLoginAction,
       googleLogin: googleLoginAction,
       getUserData: getUserDataAction,
-      storeAtlasInfo: storeAtlasInfoAction,
     }
   )
 )

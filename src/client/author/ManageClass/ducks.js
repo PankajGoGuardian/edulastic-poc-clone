@@ -21,6 +21,7 @@ import {
   canvasApi,
   cleverApi,
   authApi,
+  atlasApi,
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
@@ -166,8 +167,15 @@ export const REMOVE_CLASS_SYNC_NOTIFICATION =
 export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
 export const SET_ATLAS_SYNC_MODAL = '[manageClass] set atlas sync modal'
 
-export const STORE_ATLAS_INFO = '[manageClass] store atlas info'
 export const LOG_IN_ATLAS_USER = '[manageClass] log in atlas user'
+export const SET_ATLAS_INFO = '[manageClass] set atlas info'
+export const GET_SCHOOLOGY_COURSE_LIST =
+  '[manageClass] get schoology course list'
+export const SET_LOADING_SCHOOLOGY_CLASSLIST =
+  '[manageClass] set loading schoology classlist'
+export const SET_SCHOOLOGY_CLASSLIST = '[manageClass] set schoology classlist'
+export const CANCEL_ATLAS_SYNC = '[manageClass] cancel atlas sync'
+export const SYNC_ATLAS_CLASSES = '[manageClass] sync atlas classes'
 
 // action creators
 
@@ -187,7 +195,10 @@ export const updateClassSuccessAction = createAction(UPDATE_CLASS_SUCCESS)
 export const updateClassFailedAction = createAction(UPDATE_CLASS_FAILED)
 
 export const logInAtlasUserAction = createAction(LOG_IN_ATLAS_USER)
-export const storeAtlasInfoAction = createAction(STORE_ATLAS_INFO)
+export const setAtlasInfoAction = createAction(SET_ATLAS_INFO)
+export const getSchoologyCourseListAction = createAction(
+  GET_SCHOOLOGY_COURSE_LIST
+)
 
 export const fetchStudentsByIdAction = createAction(
   FETCH_STUDENTS_BY_ID_REQUEST
@@ -283,6 +294,12 @@ export const removeClassSyncNotificationAction = createAction(
 
 export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
 export const setShowAtlasSyncModalAction = createAction(SET_ATLAS_SYNC_MODAL)
+export const setLoadingSchoologyClassListAction = createAction(
+  SET_LOADING_SCHOOLOGY_CLASSLIST
+)
+export const setSchoologyClassListAction = createAction(SET_SCHOOLOGY_CLASSLIST)
+export const cancelAtlasSyncAction = createAction(CANCEL_ATLAS_SYNC)
+export const syncAtlasClassesAction = createAction(SYNC_ATLAS_CLASSES)
 
 // initial State
 const initialState = {
@@ -308,7 +325,10 @@ const initialState = {
   classNotFoundError: false,
   unarchivingClass: false,
   showCleverSyncModal: false,
-  showAtlasSyncModal: null,
+  atlasInfo: null,
+  showAtlasSyncModal: false,
+  loadingSchoologyClassList: false,
+  schoologyClassList: [],
 }
 
 const setShowCleverSyncModal = (state, { payload }) => {
@@ -317,6 +337,10 @@ const setShowCleverSyncModal = (state, { payload }) => {
 
 const setShowAtlasSyncModal = (state, { payload }) => {
   state.showAtlasSyncModal = payload
+}
+
+const setAtlasInfo = (state, { payload }) => {
+  state.atlasInfo = payload
 }
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -557,6 +581,23 @@ export default createReducer(initialState, {
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
   [SET_ATLAS_SYNC_MODAL]: setShowAtlasSyncModal,
+  [SET_ATLAS_INFO]: setAtlasInfo,
+  [GET_SCHOOLOGY_COURSE_LIST]: (state) => {
+    state.showAtlasSyncModal = true
+    state.loadingSchoologyClassList = true
+  },
+  [SET_LOADING_SCHOOLOGY_CLASSLIST]: (state, { payload }) => {
+    state.loadingSchoologyClassList = payload
+  },
+  [SET_SCHOOLOGY_CLASSLIST]: (state, { payload }) => {
+    state.schoologyClassList = payload
+  },
+  [CANCEL_ATLAS_SYNC]: (state) => {
+    state.schoologyClassList = []
+    state.loadingSchoologyClassList = false
+    state.showAtlasSyncModal = false
+    state.atlasInfo = null
+  },
 })
 
 function* fetchClassList({ payload }) {
@@ -960,18 +1001,62 @@ function* logInAtlasUser({ payload }) {
     } finally {
       const atlasCode = localStorage.getItem('atlasCode')
       if (atlasCode) {
-        yield put(setShowAtlasSyncModalAction({ code: atlasCode }))
+        yield put(setAtlasInfoAction({ code: atlasCode }))
         localStorage.removeItem('atlasCode')
       }
     }
   } catch (e) {
+    yield put(setAtlasInfoAction(null))
     notification({ messageKey: 'atlasLoginFailed' })
   }
 }
 
-function storeAtlasInfo({ payload }) {
-  localStorage.setItem('atlasCode', payload.code)
-  window.close()
+function* fetchSchoologyCourseList({ payload }) {
+  try {
+    const { code } = payload
+    const res = yield call(atlasApi.getCourseList, { code })
+    if (res?.result?.courseDetails) {
+      yield put(setSchoologyClassListAction(res.result.courseDetails))
+      yield put(setLoadingSchoologyClassListAction(false))
+    }
+  } catch (e) {
+    yield put(setLoadingSchoologyClassListAction(false))
+    yield put(setShowAtlasSyncModalAction(false))
+    yield put(setAtlasInfoAction(null))
+    const errorMessage = 'Error while loading Atlas courses'
+    notification({ msg: errorMessage })
+  }
+}
+
+function* syncAtlasClasses({ payload }) {
+  try {
+    const {
+      bulkClassSyncData,
+      districtId,
+      institutionId,
+      refreshPage,
+    } = payload
+    yield call(atlasApi.bulkSyncClasses, {
+      bulkClassSyncData,
+      institutionId,
+      districtId,
+    })
+    notification({ type: 'success', messageKey: 'syncWithSchoologyIsComplete' })
+    switch (refreshPage) {
+      case 'dashboard':
+        yield put(receiveTeacherDashboardAction())
+        break
+      case 'manageClass':
+        yield put(fetchGroupsAction())
+        break
+
+      // no default
+    }
+  } catch (e) {
+    yield put(setAtlasInfoAction(null))
+    const errorMessage = 'Error while syncing Atlas classes'
+    notification({ msg: errorMessage })
+  }
 }
 
 // watcher saga
@@ -989,7 +1074,8 @@ export function* watcherSaga() {
     yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
     yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest),
     yield takeLatest(LOG_IN_ATLAS_USER, logInAtlasUser),
-    yield takeLatest(STORE_ATLAS_INFO, storeAtlasInfo),
+    yield takeLatest(GET_SCHOOLOGY_COURSE_LIST, fetchSchoologyCourseList),
+    yield takeLatest(SYNC_ATLAS_CLASSES, syncAtlasClasses),
     yield takeLatest(
       GET_CANVAS_COURSE_LIST_REQUEST,
       getCanvasCourseListRequestSaga

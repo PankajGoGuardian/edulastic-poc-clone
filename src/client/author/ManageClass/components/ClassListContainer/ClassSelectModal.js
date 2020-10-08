@@ -72,6 +72,40 @@ const ClassSelectModal = ({
       )
       setSelectedRows(classListToSync.map((c, i) => i))
     }
+    if (type === 'schoology') {
+      setClassListData(
+        classListToSync.map((c, index) => {
+          const data = {
+            name: c.name,
+            key: index,
+            atlasCode: c.id,
+            standards: [],
+            standardSets: [],
+            class: 'class',
+            courseId: '',
+            thumbnail: c.icon_url,
+            disabled: syncedIds.includes(c.id),
+          }
+          if (syncedIds.includes(c.id)) {
+            const group = existingGroups.find((o) => o.cleverId === c.id)
+            c.grades = group ? group.grades : defaultGrades
+            c.subject = group ? group.subject : defaultSubjects[0]
+            return {
+              ...data,
+              subject: c.subject,
+              grades: c.grades,
+              disabled: syncedIds.includes(c.id),
+            }
+          }
+          return {
+            ...data,
+            subject: defaultSubjects[0],
+            grades: defaultGrades,
+            disabled: false,
+          }
+        })
+      )
+    }
     if (type === 'googleClassroom') {
       setClassListData(
         classListToSync.map((c, index) => {
@@ -360,7 +394,18 @@ const ClassSelectModal = ({
     </InstitutionSelectWrapper>
   )
 
-  const disableImport = isEmpty(selectedRows)
+  const isSchoology = type === 'schoology'
+  const disableImport = isEmpty(selectedRows) || (isSchoology && !institutionId)
+
+  const title =
+    type === 'clever' ? 'Clever' : isSchoology ? 'Schoology' : 'Google'
+
+  const subHeader =
+    type === 'clever'
+      ? 'Clever'
+      : isSchoology
+      ? 'Schoology'
+      : 'Google Classroom'
 
   return (
     <ClassListModal
@@ -377,10 +422,7 @@ const ClassSelectModal = ({
                 style={{ position: 'absolute', left: '20px' }}
               />
             )}
-            <span>
-              Import Classes and Students from{' '}
-              {type === 'clever' ? 'Clever' : 'Google'}
-            </span>
+            <span>{`Import Classes and Students from ${title}`}</span>
             <IconClose
               height={20}
               width={20}
@@ -389,17 +431,15 @@ const ClassSelectModal = ({
             />
           </div>
           <p>
-            The following classes will be imported from you{' '}
-            {type === 'clever' ? 'Clever' : 'Google Classroom'} account.
+            {`The following classes will be imported from your ${subHeader} account.`}
           </p>
           <p>
             Please enter/update class name, grade and subject to import and
             create classes in Edulastic. Once import is successful, Students
             accounts will be automatically created in Edulastic.
           </p>
-          {type === 'googleClassroom' && allowedInstitutions.length > 1 && (
-            <InstitutionSelection />
-          )}
+          {(type === 'googleClassroom' || type === 'schoology') &&
+            allowedInstitutions.length > 1 && <InstitutionSelection />}
         </>
       }
       footer={[

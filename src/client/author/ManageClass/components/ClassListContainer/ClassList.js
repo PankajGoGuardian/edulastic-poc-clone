@@ -11,7 +11,7 @@ import ClassSelector from './ClassSelector'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import ClassCreatePage from './ClassCreatePage'
 import { TableWrapper, ClassListTable, Tags, SubHeader } from './styled'
-import { fetchClassListAction } from '../../ducks'
+import { fetchClassListAction, logInAtlasUserAction } from '../../ducks'
 import GoogleBanner from './GoogleBanner'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import Header from './Header'
@@ -19,6 +19,7 @@ import {
   getGoogleAllowedInstitionPoliciesSelector,
   getCanvasAllowedInstitutionPoliciesSelector,
   getCleverLibraryUserSelector,
+  getSchoologyAllowedInstitutionPoliciesSelector,
 } from '../../../src/selectors/user'
 
 const { allGrades, allSubjects } = selectsData
@@ -38,9 +39,12 @@ const ClassList = ({
   googleAllowedInstitutions,
   setShowCleverSyncModal,
   canvasAllowedInstitution,
+  schoologyAllowedInstitutions,
   handleCanvasBulkSync,
   isCleverUser,
   studentsList,
+  logInAtlasUser,
+  districtId,
 }) => {
   const recentInstitute = institutions[institutions.length - 1]
   const findGrade = (_grade = []) =>
@@ -192,12 +196,14 @@ const ClassList = ({
         isUserGoogleLoggedIn={isUserGoogleLoggedIn}
         googleAllowedInstitutions={googleAllowedInstitutions}
         canvasAllowedInstitution={canvasAllowedInstitution}
+        schoologyAllowedInstitutions={schoologyAllowedInstitutions}
         fetchGoogleClassList={fetchClassList}
         setShowCleverSyncModal={setShowCleverSyncModal}
         enableCleverSync={isCleverUser}
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
         isClassLink={isClassLink}
+        handleSyncWithAtlas={() => logInAtlasUser({ districtId })}
       />
       <MainContentWrapper>
         <SubHeader>
@@ -276,11 +282,16 @@ const enhance = compose(
       canvasAllowedInstitution: getCanvasAllowedInstitutionPoliciesSelector(
         state
       ),
+      schoologyAllowedInstitutions: getSchoologyAllowedInstitutionPoliciesSelector(
+        state
+      ),
+      districtId: state.user.user?.orgData?.districtIds?.[0],
       isCleverUser: getCleverLibraryUserSelector(state),
       studentsList: get(state, 'manageClass.studentsList', {}),
     }),
     {
       fetchClassList: fetchClassListAction,
+      logInAtlasUser: logInAtlasUserAction,
     }
   )
 )

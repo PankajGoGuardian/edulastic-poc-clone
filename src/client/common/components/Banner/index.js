@@ -34,6 +34,10 @@ const BannerContainer = styled.div`
   z-index: 1;
   display: flex;
   align-items: center;
+
+  @media print {
+    display: none;
+  }
 `
 
 const BannerText = styled.div`

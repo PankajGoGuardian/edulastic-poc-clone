@@ -344,7 +344,7 @@ const MatchListPreview = ({
         ? direction.replace(/row/gi, 'column')
         : direction,
     alignItems: horizontallyAligned ? 'flex-start' : 'center',
-    width: isPrintPreview ? '100%' : horizontallyAligned ? 1050 : 750,
+    width: isPrintPreview ? 'max-content' : horizontallyAligned ? 1050 : 750,
   }
 
   const showEvaluate =

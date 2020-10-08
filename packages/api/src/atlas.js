@@ -21,7 +21,17 @@ const bulkSyncClasses = (payload) =>
     })
     .then(({ data }) => data)
 
+const syncClass = (payload) =>
+  api
+    .callApi({
+      url: `${atlasPrefix}/sync-class`,
+      method: 'post',
+      data: payload,
+    })
+    .then(({ data }) => data)
+
 export default {
   getCourseList,
   bulkSyncClasses,
+  syncClass,
 }

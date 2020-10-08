@@ -180,6 +180,7 @@ export const SET_SHOW_SCHOOLOGY_SYNC_RESPONSE =
   '[manageClass] set show schoology sync response'
 export const SET_SCHOOLOGY_SYNC_RESPONSE =
   '[manageClass] set schoology sync response'
+export const SYNC_ATLAS_CLASS = '[manageClass] sync atlas class'
 
 // action creators
 
@@ -310,6 +311,7 @@ export const setShowSchoologySyncResponseAction = createAction(
 export const setSchoologySyncResponseAction = createAction(
   SET_SCHOOLOGY_SYNC_RESPONSE
 )
+export const syncAtlasClassAction = createAction(SYNC_ATLAS_CLASS)
 
 // initial State
 const initialState = {
@@ -1041,7 +1043,7 @@ function* fetchSchoologyCourseList({ payload }) {
     yield put(setLoadingSchoologyClassListAction(false))
     yield put(setShowAtlasSyncModalAction(false))
     yield put(setAtlasInfoAction(null))
-    const errorMessage = 'Error while loading Atlas courses'
+    const errorMessage = 'Error while loading Schoology courses'
     notification({ msg: errorMessage })
   }
 }
@@ -1074,7 +1076,19 @@ function* syncAtlasClasses({ payload }) {
     }
   } catch (e) {
     yield put(setAtlasInfoAction(null))
-    const errorMessage = 'Error while syncing Atlas classes'
+    const errorMessage = 'Error while syncing Schoology classes'
+    notification({ msg: errorMessage })
+  }
+}
+
+function* syncAtlasClass({ payload }) {
+  try {
+    console.log(payload)
+    yield call(atlasApi.syncClass, payload)
+    yield put(fetchGroupsAction())
+    notification({ type: 'success', messageKey: 'syncWithSchoologyIsComplete' })
+  } catch (e) {
+    const errorMessage = 'Error while syncing Schoology class'
     notification({ msg: errorMessage })
   }
 }
@@ -1096,6 +1110,7 @@ export function* watcherSaga() {
     yield takeLatest(LOG_IN_ATLAS_USER, logInAtlasUser),
     yield takeLatest(GET_SCHOOLOGY_COURSE_LIST, fetchSchoologyCourseList),
     yield takeLatest(SYNC_ATLAS_CLASSES, syncAtlasClasses),
+    yield takeLatest(SYNC_ATLAS_CLASS, syncAtlasClass),
     yield takeLatest(
       GET_CANVAS_COURSE_LIST_REQUEST,
       getCanvasCourseListRequestSaga

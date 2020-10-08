@@ -171,20 +171,12 @@ const Header = ({
                 <span>SYNC WITH CANVAS</span>
               </EduButton>
             )}
-          {schoologyAllowedInstitutions?.length > 0 &&
-            !isCleverDistrict &&
-            !enableCleverSync &&
-            !isClassLink && (
-              <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
-                <img
-                  alt="Schoology"
-                  src={schoologyIcon}
-                  width={18}
-                  height={18}
-                />
-                <span>SYNC WITH SCHOOLOGY</span>
-              </EduButton>
-            )}
+          {schoologyAllowedInstitutions?.length > 0 && (
+            <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
+              <img alt="Schoology" src={schoologyIcon} width={18} height={18} />
+              <span>SYNC WITH SCHOOLOGY</span>
+            </EduButton>
+          )}
         </>
         <Link
           to={{

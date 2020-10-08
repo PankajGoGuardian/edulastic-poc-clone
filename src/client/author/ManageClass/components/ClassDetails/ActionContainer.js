@@ -406,11 +406,14 @@ const ActionContainer = ({
             <IconInfo /> This is a Clever Synced class.
           </CleverInfoBox>
         )}
-        {atlasId && (
-          <CleverInfoBox>
-            <IconInfo /> This is a Classlink Synced class.
-          </CleverInfoBox>
-        )}
+        {
+          // add check for schoology or classlink
+          atlasId && (
+            <CleverInfoBox>
+              <IconInfo /> This is a Classlink Synced class.
+            </CleverInfoBox>
+          )
+        }
 
         <ButtonsWrapper>
           {checkForAddStudent && (

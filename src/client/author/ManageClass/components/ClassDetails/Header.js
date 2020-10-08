@@ -38,6 +38,7 @@ import {
 } from './styled'
 
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
+import schoologyIcon from '../../../../student/assets/schoology.png'
 import { scopes } from '../ClassListContainer/ClassCreatePage'
 import AddCoTeacher from './AddCoTeacher/AddCoTeacher'
 
@@ -46,6 +47,7 @@ const Option = Select.Option
 const CANVAS = 'canvas'
 const GOOGLE = 'google'
 const CLEVER = 'clever'
+const SCHOOLOGY = 'schoology'
 
 const modalStatus = {}
 
@@ -66,6 +68,8 @@ const Header = ({
   location,
   history,
   entity,
+  syncAtlasClass,
+  allowSchoology,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -86,6 +90,8 @@ const Header = ({
     districtName = '',
     cleverId,
     active,
+    atlasId,
+    _id: groupId,
   } = selectedClass
   const { exitPath } = location?.state || {}
 
@@ -161,6 +167,15 @@ const Header = ({
     syncClassesWithClever({ classList })
   }
 
+  const handleSchoologySync = () => {
+    syncAtlasClass({
+      atlasCode: atlasId,
+      groupId,
+      institutionId,
+      districtId,
+    })
+  }
+
   const getAssignmentsByClass = (classId = '') => () => {
     const filter = {
       classId,
@@ -175,11 +190,13 @@ const Header = ({
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId
   const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false
   const showCanvasSyncButton = showSyncButtons && allowCanvasLogin
+  const showSchoologySyncButton = showSyncButtons && allowSchoology && atlasId
 
   const options = {
     [CLEVER]: showCleverSyncButton,
     [GOOGLE]: showGoogleSyncButton,
     [CANVAS]: showCanvasSyncButton,
+    [SCHOOLOGY]: showSchoologySyncButton,
   }
 
   Object.keys(options).forEach((o) => {
@@ -248,6 +265,23 @@ const Header = ({
                   </Option>
                 )
               }
+              if (option === SCHOOLOGY) {
+                return (
+                  <Option
+                    key={index}
+                    data-cy={`sync-option-${index}`}
+                    onClick={handleSchoologySync}
+                  >
+                    <span className="menu-label">Sync with Schoology</span>
+                    <img
+                      alt="Schoology"
+                      src={schoologyIcon}
+                      width={18}
+                      height={18}
+                    />
+                  </Option>
+                )
+              }
               if (option === CANVAS) {
                 return (
                   <Option
@@ -299,6 +333,18 @@ const Header = ({
                   responseType="code"
                 />
               ))}
+            {showSchoologySyncButton && (
+              <EduButton isBlue isGhost onClick={handleSchoologySync}>
+                <img
+                  alt="Schoology"
+                  src={schoologyIcon}
+                  width={18}
+                  height={18}
+                  style={{ marginRight: '10px' }}
+                />
+                <span>Sync with Schoology</span>
+              </EduButton>
+            )}
             {showCanvasSyncButton && (
               <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
                 <img

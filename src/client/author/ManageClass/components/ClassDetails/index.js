@@ -32,6 +32,7 @@ import {
   setClassNotFoundErrorAction,
   unarchiveClassAction,
   getCanvasFetchingStateSelector,
+  syncAtlasClassAction,
 } from '../../ducks'
 import { getCleverLibraryUserSelector } from '../../../src/selectors/user'
 
@@ -60,6 +61,7 @@ const ClassDetails = ({
   unarchiveClass,
   isFetchingCanvasData,
   isCleverUser,
+  syncAtlasClass,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const { name, type, cleverId, institutionId, districtId } = selectedClass
@@ -69,6 +71,7 @@ const ClassDetails = ({
   const {
     allowGoogleClassroom: allowGoogleLogin,
     allowCanvas: allowCanvasLogin,
+    allowSchoology,
     searchAndAddStudents,
   } = useMemo(
     () =>
@@ -271,6 +274,8 @@ const ClassDetails = ({
               syncClassesWithClever={syncClassesWithClever}
               archiveClass={archiveClass}
               entity={selectedClass}
+              allowSchoology={allowSchoology}
+              syncAtlasClass={syncAtlasClass}
             />
           </div>
           <MainContentWrapper>
@@ -348,6 +353,7 @@ const enhance = compose(
       syncClassesWithClever: syncClassesWithCleverAction,
       setClassNotFoundError: setClassNotFoundErrorAction,
       unarchiveClass: unarchiveClassAction,
+      syncAtlasClass: syncAtlasClassAction,
     }
   )
 )

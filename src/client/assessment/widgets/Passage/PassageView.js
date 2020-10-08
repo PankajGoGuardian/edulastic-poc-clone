@@ -129,6 +129,8 @@ const PassageView = ({
     content = decodeHTML(content)
     if (isEmpty(_highlights)) {
       return content
+        ?.replace(/(<div (.*?)>)/g, '')
+        ?.replace(/(<\/div>)/g, '')
         ?.replace(/(<p>)/g, '')
         ?.replace(/(<\/p>)/g, '<br/>')
         ?.replace(/background-color: (.*?);/g, '')

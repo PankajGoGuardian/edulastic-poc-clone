@@ -587,9 +587,9 @@ export const stateExpressGraderAnswerSelector = (state) => state.answers
 export const stateQuestionAnswersSelector = (state) =>
   state.classQuestionResponse
 
-const getTestItemsDataKeyed = createSelector(
+const getTestItemsData = createSelector(
   stateTestActivitySelector,
-  (state) => state?.data?.testItemsDataKeyed || {}
+  (state) => state?.data?.testItemsData || []
 )
 
 export const getClassResponseSelector = createSelector(
@@ -889,8 +889,9 @@ export const getActiveAssignedStudents = createSelector(
 
 export const getFirstQuestionEntitiesSelector = createSelector(
   getTestActivitySelector,
-  getTestItemsDataKeyed,
-  (uta, itemsKeyed) => {
+  getTestItemsData,
+  (uta, itemsData) => {
+    const itemsKeyed = keyBy(itemsData, '_id')
     const uqa = get(uta, [0, 'questionActivities'], [])
     const result = uqa.filter((_uqa) => {
       const { testItemId } = _uqa

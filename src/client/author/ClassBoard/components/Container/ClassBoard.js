@@ -1586,10 +1586,9 @@ class ClassBoard extends Component {
                           classId: _classId,
                         } = match.params
 
-                        const {
-                          _id: qid,
-                          testItemId,
-                        } = testActivity[0].questionActivities[value]
+                        const { _id: qid, testItemId } = firstQuestionEntities[
+                          value
+                        ]
                         history.push(
                           `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
                             isCliUser ? '?cliUser=true' : ''

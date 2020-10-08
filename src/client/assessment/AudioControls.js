@@ -163,7 +163,7 @@ const AudioControls = ({
     const isSupported = Howler.codecs('mp3')
 
     if (!isSupported) {
-      notification({ type: 'error', mst: 'Audio format is not supported.' })
+      notification({ type: 'error', msg: 'Audio format is not supported.' })
       Sentry.captureException(new Error('[AudioControls] Mp3 not supported.'))
     }
   }, [])

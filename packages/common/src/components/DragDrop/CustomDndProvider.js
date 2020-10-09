@@ -3,8 +3,6 @@ import { DndProvider } from 'react-dnd'
 import TouchBackend from 'react-dnd-touch-backend'
 import HTML5Backend from 'react-dnd-html5-backend'
 
-const dndBackend = window.isMobileDevice ? TouchBackend : HTML5Backend
-
 export const DndStateContext = React.createContext()
 
 const initState = { actived: null }
@@ -24,6 +22,8 @@ const dndState = (state, action) => {
 
 function CustomDndProvider({ children }) {
   const [state, setItem] = React.useReducer(dndState, initState)
+  const dndBackend = window.isMobileDevice ? TouchBackend : HTML5Backend
+
   const handleClickOutDroparea = (e) => {
     if (window.$ && window.isMobileDevice) {
       const dropContainers = jQuery('*[data-dnd="edu-droparea"]').toArray()

@@ -41,7 +41,7 @@ const notification = (options) => {
     ? ''
     : i18n.t(`notifications:${messageKey}.description`)
 
-  if (restOptions.type === 'error' && translatedMessage !== 'Incorrect') {
+  if (restOptions.type === 'error') {
     translatedMessage = `${translatedMessage} Please contact Edulastic support.`
   }
 

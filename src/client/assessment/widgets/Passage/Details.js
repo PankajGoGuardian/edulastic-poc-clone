@@ -155,6 +155,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               value={item.content}
               additionalToolbarOptions={['paragraphNumber']}
               border="border"
+              sanitizeClipboardHtml
               toolbarId="passage_content"
             />
           </div>

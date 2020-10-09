@@ -495,7 +495,7 @@ export const defaultTheme = {
     mathInputMathBorderColor: greyThemeLight,
     mathInputMathClearBgColor: clearIconColor,
     mathInputMathWrongBgColor: wrongBgColor,
-    mathInputMathSuccessBgColor: rightIconColor,
+    mathInputMathSuccessBgColor: rightBgColor,
     mathInputBgColor: greyThemeLighter,
     mathResponseEmbedFontSize: questionTextnormalFontSize,
     mathResponseEmbedCharBgColor: noAnswerIconColor,
@@ -1053,7 +1053,7 @@ export const defaultTheme = {
     },
     mathFormula: {
       inputColor: greyThemeLighter,
-      inputCorrectColor: rightIconColor,
+      inputCorrectColor: rightBgColor,
       inputCorrectBorderColor: rightBorderColor,
       inputIncorrectColor: wrongBgColor,
       inputIncorrectBorderColor: wrongBorderColor,

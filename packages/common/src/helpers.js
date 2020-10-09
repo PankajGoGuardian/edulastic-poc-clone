@@ -35,6 +35,41 @@ export const ALPHABET = [
   'Z',
 ]
 
+export const BLOCK_LEVEL_TAGS = [
+  'TABLE',
+  'TR',
+  'TD',
+  'UL',
+  'LI',
+  'OL',
+  'DIV',
+  'ADDRESS',
+  'FIELDSET',
+  'FIGCAPTION',
+  'FORM',
+  'DIALOG',
+  'HR',
+  'DT ',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'ARTICLE',
+  'MAIN',
+  'ASIDE',
+  'FIGURE',
+  'NAV',
+  'BLOCKQUOTE',
+  'DETAILS',
+  'PRE',
+  'DL',
+  'HEADER',
+  'SECTION',
+  'HGROUP',
+]
+
 const REGEXP = /[xy]/g
 const PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
 
@@ -538,6 +573,19 @@ export const highlightSelectedText = (
     commonAncestorContainer,
   } = range
   if (startOffset === endOffset) {
+    clearSelection()
+    return
+  }
+
+  const cloned = range.cloneContents()
+  const childNodeNames = [...get(cloned, 'childNodes', {})]
+    .map((childElement) => childElement.tagName)
+    .filter((x) => x)
+  const hasBlockedNode = BLOCK_LEVEL_TAGS.some((n) =>
+    childNodeNames.includes(n)
+  )
+
+  if (hasBlockedNode) {
     clearSelection()
     return
   }

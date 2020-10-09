@@ -90,6 +90,7 @@ class ComposeQuestion extends Component {
           placeholder={t('component.tokenHighlight.enterQuestion')}
           onChange={(stimulus) => handleItemChangeChange('stimulus', stimulus)}
           value={item.stimulus}
+          sanitizeClipboardHtml
           toolbarId="compose-question"
           border="border"
         />

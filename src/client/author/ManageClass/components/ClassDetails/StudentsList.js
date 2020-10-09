@@ -74,12 +74,18 @@ const StudentsList = ({
       )
     : students
 
+  const isPremium = isFeatureAccessible({
+    features,
+    inputFeatures: 'searchAndAddStudent',
+    groupId,
+    groupList,
+  })
+
   const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
       defaultSortOrder: 'descend',
-      width: '20%',
       align: 'left',
       sorter: (a, b) => (b.lastName || '').localeCompare(a.lastName || ''),
       render: (_, { firstName, lastName, middleName }) => {
@@ -97,7 +103,7 @@ const StudentsList = ({
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.username > b.username,
       render: (username) => <span>{username}</span>,
-      width: '20%',
+      width: isPremium ? '20%' : '25%',
       align: 'left',
     },
     {
@@ -113,7 +119,7 @@ const StudentsList = ({
           )}
         </span>
       ),
-      width: 150,
+      width: '15%',
     },
 
     ...(allowCanvasLogin
@@ -132,7 +138,7 @@ const StudentsList = ({
                 )}
               </span>
             ),
-            width: 150,
+            width: '20%',
           },
         ]
       : []),
@@ -141,7 +147,7 @@ const StudentsList = ({
       dataIndex: 'enrollmentStatus',
       align: 'center',
       defaultSortOrder: 'descend',
-      width: '20%',
+      width: isPremium ? '15%' : '20%',
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
       render: (enrollmentStatus, { enrollmentUpdatedAt, status }) => (
         <span>
@@ -182,15 +188,10 @@ const StudentsList = ({
     },
   ]
 
-  const isPremium = isFeatureAccessible({
-    features,
-    inputFeatures: 'searchAndAddStudent',
-    groupId,
-    groupList,
-  })
   if (!isPremium) {
     pullAt(columns, 2)
   }
+
   const rowKey = (recode) => recode.email || recode.username
   const showStudentsHandler = () => {
     setShowCurrentStudents((show) => !show)

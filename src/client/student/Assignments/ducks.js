@@ -49,6 +49,7 @@ import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type
+const { DONE, ARCHIVED, NOT_OPEN } = assignmentStatusOptions
 // constants
 export const FILTERS = {
   ALL: 'all',
@@ -260,13 +261,10 @@ const getAssignmentClassStatus = (assignment, classId) => {
  *
  */
 export const isLiveAssignment = (assignment, classIds, userId) => {
-  let { endDate, class: groups = [], classId: currentGroup } = assignment
+  let { endDate } = assignment
+  const { class: groups = [], classId: currentGroup } = assignment
   const assignmentStatus = getAssignmentClassStatus(assignment, currentGroup)
-  if (
-    [assignmentStatusOptions.DONE, assignmentStatusOptions.ARCHIVED].includes(
-      assignmentStatus
-    )
-  ) {
+  if ([DONE, ARCHIVED, NOT_OPEN].includes(assignmentStatus)) {
     return false
   }
   // max attempts should be less than total attempts made

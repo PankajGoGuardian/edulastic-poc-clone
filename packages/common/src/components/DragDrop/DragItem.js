@@ -68,7 +68,8 @@ const DragItem = ({
     }
   }
 
-  const isActivated = actived && isEqual(actived.data, data)
+  const isActivated =
+    actived && isEqual(actived.data, data) && !window.isMobileDevice
 
   return (
     <DragItemContainer

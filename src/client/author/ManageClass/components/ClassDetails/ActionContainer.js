@@ -333,7 +333,7 @@ const ActionContainer = ({
     )
   }
 
-  const atlasId = selectedClass.atlasId
+  const { atlasId, atlasProviderName } = selectedClass || {}
 
   return (
     <>
@@ -408,7 +408,7 @@ const ActionContainer = ({
         )}
         {atlasId && (
           <CleverInfoBox>
-            <IconInfo /> This is a Edlink Synced class.
+            <IconInfo /> {`This is a ${atlasProviderName} Synced class.`}
           </CleverInfoBox>
         )}
 

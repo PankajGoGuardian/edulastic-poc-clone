@@ -270,6 +270,9 @@ class ItemListPage {
       case queTypes.CLOZE_DRAG_DROP:
         qType = 'Drag & Drop'
         break
+      case queTypes.CHOICE_MATRIX_STANDARD:
+        qType = 'Matching Table'
+        break
       default:
         assert.fail(1, 2, 'failed to match que type key in question card')
         break
@@ -292,6 +295,9 @@ class ItemListPage {
       case queTypes.CLOZE_DRAG_DROP:
         qType = 'Drag & Drop'
         break
+      case queTypes.CHOICE_MATRIX_STANDARD:
+        qType = 'Matching Table'
+        break
       default:
         assert.fail(1, 2, 'failed to match que type key in question drop down')
         break
@@ -311,7 +317,7 @@ class ItemListPage {
   verifyQuestionTypeAllItemsInCurrentPage = (qType) => {
     const queType = this.mapQueTypeKeyToUITextInItemCard(qType)
     this.getAllItemsInListContainer().each(($ele) => {
-      cy.wrap($ele).find('[data-cy="ques-type"]').should('have.text', queType)
+      cy.wrap($ele).find('[data-cy="ques-type"]').should('contain', queType)
     })
   }
 

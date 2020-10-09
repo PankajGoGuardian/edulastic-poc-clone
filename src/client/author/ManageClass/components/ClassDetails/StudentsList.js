@@ -61,9 +61,7 @@ const StudentsList = ({
     getCheckboxProps: () => ({
       disabled: !active,
     }),
-    selectedRowKeys: selectedStudent.map(
-      ({ email, username }) => email || username
-    ),
+    selectedRowKeys: selectedStudent.map(({ _id }) => _id),
   }
 
   const empty = isEmpty(students)

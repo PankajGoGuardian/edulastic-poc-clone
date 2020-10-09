@@ -120,11 +120,14 @@ const AudioControls = ({
   const audioPlayResolve = (_howl) => {
     const _prom = new Promise((resolve, reject) => {
       _howl?.load()
+
       if (_howl?.state() === 'loading' || _howl?.state() === 'unloaded') {
         _howl.on('load', () => {
-          if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+          _howl?.play()
         })
-      } else if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+      } else {
+        _howl?.play()
+      }
 
       _howl?.on('playerror', (...args) => {
         reject({ args })

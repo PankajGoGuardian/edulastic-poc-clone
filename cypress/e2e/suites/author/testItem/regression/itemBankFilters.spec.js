@@ -481,6 +481,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
           questionTypeKey.CLOZE_DRAG_DROP
         )
       })
+
+      it("> verify question type with 'Choice Matrix Standard'", () => {
+        const customFilter = { queType: questionTypeKey.CHOICE_MATRIX_STANDARD }
+        customFilter.queType = itemlist.mapQueTypeKeyToUITextInDropDown(
+          customFilter.queType
+        )
+
+        itemlist.searchFilters.clearAll()
+        itemlist.searchFilters.setFilters(customFilter)
+        itemlist.verifyQuestionTypeAllItemsInCurrentPage(
+          questionTypeKey.CHOICE_MATRIX_STANDARD
+        )
+      })
     })
 
     context(`> standards on item cards`, () => {

@@ -50,6 +50,9 @@ import {
   ShareUrlDiv,
   TitleCopy,
   FlexWrapperUrlBox,
+  FlexWrapperClassroomBox,
+  FlexTitleBox,
+  FlexShareMessage,
 } from './styled'
 
 import ImageCard from './ImageCard'
@@ -224,8 +227,10 @@ class SuccessPage extends React.Component {
       collections,
       published,
       history,
+      syncWithGoogleClassroomInProgress,
     } = this.props
-    const { isShareModalVisible } = this.state
+
+    const { isShareModalVisible, shareWithGCEnable } = this.state
     const { title, _id, status, grades, subjects, authors = [] } = isPlaylist
       ? playlist
       : test
@@ -545,6 +550,28 @@ class SuccessPage extends React.Component {
                     </TitleCopy>
                   </FlexShareBox>
                 </FlexWrapperUrlBox>
+                {isAssignSuccess && (
+                  <FlexWrapperClassroomBox>
+                    <FlexTitleBox>
+                      <FlexShareTitle>
+                        Share with Google Classroom
+                      </FlexShareTitle>
+                      <FlexShareMessage>
+                        Click on Google Classroom button to share the assignment
+                      </FlexShareMessage>
+                    </FlexTitleBox>
+                    <EduButton
+                      isGhost
+                      data-cy="Share with Google Classroom"
+                      onClick={this.shareWithGoogleClassroom}
+                      disabled={
+                        syncWithGoogleClassroomInProgress || !shareWithGCEnable
+                      }
+                    >
+                      Google Classroom
+                    </EduButton>
+                  </FlexWrapperClassroomBox>
+                )}
               </FlexShareContainer>
             </FlexContainerWrapperRight>
           </FlexContainerWrapper>

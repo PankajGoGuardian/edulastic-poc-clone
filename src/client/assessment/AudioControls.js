@@ -226,7 +226,6 @@ const AudioControls = ({
 
   const handlePlayPauseAudio = () => {
     if (loading || !currentHowl) {
-      notification({ msg: 'Audio stream is still loading, Please wait.' })
       return
     }
 
@@ -254,23 +253,23 @@ const AudioControls = ({
             await audioPlayResolve(choiceAudioHowl)
             await audioPlayResolve(optionHowl[item])
           }
-          setCurrentPlayingDetails()
         }
         asyncPlay()
+        setCurrentPlayingDetails(qId)
       })
     } else if (questionData.type === questionType.PASSAGE) {
       if (page > 1) {
         audioPlayResolve(pageHowls[page - 1]).then(() =>
-          setCurrentPlayingDetails()
+          setCurrentPlayingDetails(qId)
         )
       } else {
         audioPlayResolve(stimulusHowl).then(async () => {
           await audioPlayResolve(pageHowls[page - 1])
-          setCurrentPlayingDetails()
+          setCurrentPlayingDetails(qId)
         })
       }
     } else {
-      audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails())
+      audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails(qId))
     }
   }
 

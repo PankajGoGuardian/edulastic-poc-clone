@@ -1,6 +1,7 @@
 // @ts-check
 import {
   call,
+  put,
   fork,
   actionChannel,
   take,
@@ -10,7 +11,7 @@ import {
 import { buffers } from 'redux-saga'
 
 function delay(ms) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve()
     }, ms)
@@ -25,9 +26,8 @@ function delay(ms) {
  */
 export function throttleAction(ms, action, task) {
   return fork(function* () {
-    const buffer = buffers.sliding(1)
-    const throttleChannel = yield actionChannel(action, buffer)
-    let retryCount = 0
+    const throttleChannel = yield actionChannel(action, buffers.sliding(1))
+
     while (true) {
       const action = yield take(throttleChannel)
       let raceResult = {}
@@ -39,14 +39,9 @@ export function throttleAction(ms, action, task) {
       } catch (e) {
         console.warn('error', e)
       }
+
       if ('taskResult' in raceResult) {
         /* const discarded = */ yield flush(throttleChannel)
-        retryCount = 0
-      } else if (retryCount === 0 && buffer.isEmpty()) {
-        retryCount++
-        buffer.put(action)
-      } else if (retryCount > 0) {
-        retryCount = 0
       }
     }
   })

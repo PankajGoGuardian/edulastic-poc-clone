@@ -487,6 +487,7 @@ class DisneyCardContainer extends Component {
                                 attempt.status === SUBMITTED &&
                                 'attempt-container'
                               }
+                              data-cy="attempt-container"
                               key={attempt._id || attempt.id}
                               onClick={(e) => {
                                 if (attempt.status === ABSENT) return

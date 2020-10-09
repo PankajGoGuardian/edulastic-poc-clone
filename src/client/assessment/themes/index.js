@@ -174,7 +174,7 @@ const AssessmentContainer = ({
      * requires current assignment id in store (studentAssignment.current)
      * TODO: Use studentAssignment.assignment to store current assignment data
      */
-    if (!assignmentById[currentAssignment]) {
+    if (!assignmentById[currentAssignment] && !preview) {
       fetchAssignments()
     }
 

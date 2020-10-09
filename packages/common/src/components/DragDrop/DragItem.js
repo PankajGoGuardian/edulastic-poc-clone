@@ -33,7 +33,7 @@ const DragItem = ({
   const [{ isDragging }, drag, preview] = useDrag({
     item: itemData,
     canDrag() {
-      return isAnswerModifiable && !disabled && !window.isMobileDevice
+      return isAnswerModifiable && !disabled
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),

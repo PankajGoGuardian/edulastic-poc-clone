@@ -89,7 +89,7 @@ describe(`>${FileHelper.getSpecName(
     },
   }
   const attemptAfterRegrade = { Q1: attemptTypes.WRONG }
-  const test = '5f0dae1897ac060008638370'
+  const test = '5f7f42fcd3a3c500083e7f32'
   let test1
   let test2
   const initialMaxattempt = 2
@@ -186,8 +186,8 @@ tests:{
             const [attempNum, attempCount] =
               status === studentSide.SUBMITTED ? [2, '2'] : [1, '1']
             const [maxAllowedAttempts, titleAdjust] = overidden
-              ? [3, 'not ']
-              : [2, '']
+              ? [initialMaxattempt, '']
+              : [regardedMaxAttempt, 'not ']
             it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- '${maxAllowedAttempts} times'`, () => {
               studentTestPage.attemptAssignment(
                 email,
@@ -304,7 +304,7 @@ tests:{
           )
           studentTestPage.clickOnNext()
           studentTestPage.submitTest()
-          reportsPage.validateStats(1, `3/3`, undefined, '0')
+          reportsPage.validateStats(3, `3/3`, undefined, '0')
           assignmentsPage.sidebar.clickOnAssignment()
           cy.contains(
             "You don't have any currently assigned or completed assignments."
@@ -377,7 +377,7 @@ tests:{
         testlibaryPage.testSettings.setMaxAttempt(regardedMaxAttempt)
         testlibaryPage.header.clickRegradePublish()
         /* select to include overidden test */
-        regrade.checkRadioByValue(regradeOptions.settings.excludeOveridden)
+        regrade.checkRadioByValue(regradeOptions.settings.chooseAll)
         regrade.applyRegrade()
       })
 

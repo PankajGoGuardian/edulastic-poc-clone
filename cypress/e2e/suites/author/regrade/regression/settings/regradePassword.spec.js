@@ -172,12 +172,9 @@ describe(`>${FileHelper.getSpecName(
             index === 1 ? '' : 'not '
           }overidden' assignment`, () => {
             cy.login('student', email)
-            const option =
-              status === studentSide.IN_PROGRESS
-                ? {}
-                : overidden
-                ? { pass: staticPassword_1 }
-                : { pass: dynamicPassword }
+            const option = overidden
+              ? { pass: staticPassword_1 }
+              : { pass: dynamicPassword }
             assignmentsPage.clickOnAssigmentByTestId(versionedTest1, option)
             studentTestPage.clickOnExitTest()
           })
@@ -277,10 +274,7 @@ describe(`>${FileHelper.getSpecName(
             overidden ? '' : 'not '
           }overidden' assignment`, () => {
             cy.login('student', email)
-            const option =
-              status === studentSide.IN_PROGRESS
-                ? {}
-                : { pass: staticPassword_1 }
+            const option = { pass: staticPassword_1 }
             assignmentsPage.clickOnAssigmentByTestId(versionedTest2, option)
             studentTestPage.clickOnExitTest()
           })

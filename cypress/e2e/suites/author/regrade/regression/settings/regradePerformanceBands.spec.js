@@ -218,7 +218,7 @@ describe(`>${FileHelper.getSpecName(
       ;[attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(
           `> verify lcb/reports '${
-            studentdata[0].overidden ? 'not ' : ''
+            studentdata[0].overidden ? '' : 'not '
           }overidden' assignment`,
           () => {
             before('> click on lcb', () => {
@@ -251,6 +251,7 @@ describe(`>${FileHelper.getSpecName(
                 const band = studentdata[0].overidden
                   ? overiddenBand
                   : regradedBand
+
                 const bands = performanceBand[band]
                 it(`>${name} - student ${status},expected- '${bands[attempt]}'`, () => {
                   pdfReportCard.getReportContainerByStudent(name)

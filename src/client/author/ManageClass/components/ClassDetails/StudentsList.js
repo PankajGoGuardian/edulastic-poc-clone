@@ -192,7 +192,7 @@ const StudentsList = ({
     pullAt(columns, 2)
   }
 
-  const rowKey = (recode) => recode.email || recode.username
+  const rowKey = (record) => record._id
   const showStudentsHandler = () => {
     setShowCurrentStudents((show) => !show)
   }

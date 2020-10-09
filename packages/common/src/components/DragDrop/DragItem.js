@@ -28,6 +28,8 @@ const DragItem = ({
     preview: children,
   })
 
+  const [startDragging, setStartDragging] = useState()
+
   const [{ isDragging }, drag, preview] = useDrag({
     item: itemData,
     canDrag() {
@@ -45,6 +47,7 @@ const DragItem = ({
           width: element.clientWidth,
           height: element.clientHeight,
         }
+
         setItemData({
           ...itemData,
           dimensions,
@@ -52,7 +55,7 @@ const DragItem = ({
         drag(element)
       }
     },
-    [drag]
+    [drag, startDragging]
   )
 
   useEffect(() => {
@@ -68,7 +71,16 @@ const DragItem = ({
     }
   }
 
-  const isActivated = actived && isEqual(actived.data, data)
+  const onMouseEnterHandler = () => {
+    setStartDragging(true)
+  }
+
+  const onMouseLeaveHandler = () => {
+    setStartDragging(false)
+  }
+
+  const isActivated =
+    actived && isEqual(actived.data, data) && !window.isMobileDevice
 
   return (
     <DragItemContainer
@@ -78,6 +90,10 @@ const DragItem = ({
       isActivated={isActivated}
       ref={attach}
       onClick={onClickHandler}
+      onMouseEnter={onMouseEnterHandler}
+      onTouchStart={onMouseEnterHandler}
+      onMouseMove={onMouseLeaveHandler}
+      onTouchEnd={onMouseLeaveHandler}
       {...rest}
     >
       {children}

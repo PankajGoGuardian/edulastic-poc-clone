@@ -268,7 +268,7 @@ const AssessmentContainer = ({
       return []
     }
     return questions.filter((q) => {
-      const qAnswers = answersById[q.id]
+      const qAnswers = answersById[q.id] || userPrevAnswer[q.id]
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return (
@@ -344,7 +344,7 @@ const AssessmentContainer = ({
           return keys.some((key) => !qAnswers[key])
         }
         default:
-          return isEmpty(answersById[q.id])
+          return isEmpty(qAnswers)
       }
     })
   }

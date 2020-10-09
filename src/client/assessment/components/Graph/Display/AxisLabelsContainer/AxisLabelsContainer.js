@@ -37,6 +37,7 @@ import {
   getAdjustedV1AnnotationCoordinatesForRender,
 } from '../../common/utils'
 import AppConfig from '../../../../../../../app-config'
+import { roundPointToNearestValue } from '../Utils'
 
 const v1Dimenstions = {
   v1Height: 432,
@@ -124,7 +125,8 @@ class AxisLabelsContainer extends PureComponent {
     this.axisLabelsContainerRef = React.createRef()
   }
 
-  // -2 done to make room for the border when width is an integer but the actual width is slightly less
+  // -2 done to make room for the border when width is an integer
+  // but the actual width is slightly less
   get parentHeight() {
     return this.axisLabelsContainerRef?.current?.clientHeight || 0
   }
@@ -316,7 +318,20 @@ class AxisLabelsContainer extends PureComponent {
 
   updateValues() {
     const conf = this._graph.getMarks()
-    const { setValue, setElementsStash } = this.props
+    const { setValue, setElementsStash, numberlineAxis, canvas } = this.props
+    const { ticksDistance, minorTicks } = numberlineAxis
+    const { xMin, xMax } = canvas
+    if (Array.isArray(conf)) {
+      conf.forEach((obj) => {
+        obj.position = roundPointToNearestValue({
+          ticksDistance,
+          minorTicks,
+          point: obj.position,
+          xMin,
+          xMax,
+        })
+      })
+    }
     setValue(conf)
     setElementsStash(conf, this.getStashId())
   }

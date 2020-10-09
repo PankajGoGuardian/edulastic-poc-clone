@@ -31,7 +31,7 @@ const DragItem = ({
   const [{ isDragging }, drag, preview] = useDrag({
     item: itemData,
     canDrag() {
-      return isAnswerModifiable && !disabled && !window.isMobileDevice
+      return isAnswerModifiable && !disabled
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -52,7 +52,7 @@ const DragItem = ({
         drag(element)
       }
     },
-    [drag]
+    [drag, data]
   )
 
   useEffect(() => {
@@ -68,7 +68,8 @@ const DragItem = ({
     }
   }
 
-  const isActivated = actived && isEqual(actived.data, data)
+  const isActivated =
+    actived && isEqual(actived.data, data) && !window.isMobileDevice
 
   return (
     <DragItemContainer

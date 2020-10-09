@@ -37,7 +37,6 @@ const DragItem = ({
   )
 
   const handleOnHover = (ev) => {
-    ev.stopPropagation()
     if (['mouseenter', 'touchstart'].includes(ev?.type)) {
       setActive(true)
       return
@@ -81,6 +80,7 @@ const DragItem = ({
     <div
       className="drag-drop-item-match-list"
       data-cy={`drag-drop-item-${renderIndex}`}
+      ref={currentActiveItem}
       style={getStyles({ flag, _preview: preview, correct, width })}
     >
       {correct !== undefined && preview && showAnswer && (
@@ -114,15 +114,9 @@ const DragItem = ({
 
   return (
     <DragItemCont {...dragItemProps}>
-      <div
-        className="__prevent-page-break"
-        ref={currentActiveItem}
-        style={{ maxWidth: '100%' }}
-      >
-        <Popover visible={showPopover && !!isActive} content={getContent}>
-          {getContent}
-        </Popover>
-      </div>
+      <Popover visible={showPopover && !!isActive} content={getContent}>
+        {getContent}
+      </Popover>
     </DragItemCont>
   )
 }

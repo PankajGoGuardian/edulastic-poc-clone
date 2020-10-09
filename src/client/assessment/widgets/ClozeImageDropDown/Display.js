@@ -278,40 +278,31 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         smallSize={smallSize}
-        width={isPrintPreview ? '' : containerWidth}
+        width={containerWidth}
         fontSize={fontSize}
-        height={isPrintPreview ? '' : containerHeight}
+        height={containerHeight}
       >
         <StyledPreviewContainer
-          width={isPrintPreview ? '' : containerWidth}
+          width={containerWidth}
           smallSize={smallSize}
-          height={isPrintPreview ? '' : containerHeight}
+          height={containerHeight}
         >
-          {!isPrintPreview ? (
-            <StyledPreviewImage
-              data-cy="imageInpreviewContainer"
-              imageSrc={imageUrl || ''}
-              width={this.getWidth()}
-              height={this.getHeight()}
-              alt={imageAlterText}
-              setAnswers={setAnswers}
-              maxHeight={maxHeight}
-              maxWidth={maxWidth}
-              style={{
-                position: 'absolute',
-                top: imageOptions.y || 0,
-                left: imageOptions.x || 0,
-              }}
-            />
-          ) : (
-            <img
-              src={imageUrl}
-              alt={imageAlterText}
-              style={{
-                width: '100%',
-              }}
-            />
-          )}
+          <StyledPreviewImage
+            data-cy="imageInpreviewContainer"
+            imageSrc={imageUrl || ''}
+            width={this.getWidth()}
+            height={this.getHeight()}
+            alt={imageAlterText}
+            setAnswers={setAnswers}
+            maxHeight={maxHeight}
+            maxWidth={maxWidth}
+            style={{
+              position: 'absolute',
+              top: imageOptions.y || 0,
+              left: imageOptions.x || 0,
+            }}
+          />
+
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
               const {
@@ -345,16 +336,10 @@ class Display extends Component {
                 smallSize
               )
               const btnStyle = {
-                height: isPrintPreview
-                  ? `${(height / containerHeight) * 100}%`
-                  : height,
-                width: isPrintPreview
-                  ? `${(width / containerWidth) * 100}%`
-                  : width,
-                top: isPrintPreview ? `${(top / containerHeight) * 100}%` : top,
-                left: isPrintPreview
-                  ? `${(left / containerWidth) * 100}%`
-                  : left,
+                height,
+                width,
+                top,
+                left,
                 border: showDropItemBorder
                   ? showDashedBorder
                     ? `2px dashed ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`

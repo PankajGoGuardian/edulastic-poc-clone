@@ -17,6 +17,7 @@ const QuestionTextArea = ({
   fontSize,
   buttons,
   allowQuickInsert,
+  sanitizeClipboardHtml,
 }) => (
   <FroalaEditor
     placeholder={placeholder}
@@ -33,6 +34,7 @@ const QuestionTextArea = ({
     fontSize={fontSize}
     buttons={buttons}
     allowQuickInsert={allowQuickInsert}
+    sanitizeClipboardHtml={sanitizeClipboardHtml}
   />
 )
 
@@ -47,6 +49,7 @@ QuestionTextArea.propTypes = {
   border: PropTypes.string,
   imageDefaultWidth: PropTypes.number,
   allowQuickInsert: PropTypes.bool,
+  sanitizeClipboardHtml: PropTypes.bool,
 }
 
 QuestionTextArea.defaultProps = {
@@ -58,6 +61,7 @@ QuestionTextArea.defaultProps = {
   border: 'none',
   imageDefaultWidth: 300,
   allowQuickInsert: true,
+  sanitizeClipboardHtml: false,
 }
 
 export default memo(QuestionTextArea)

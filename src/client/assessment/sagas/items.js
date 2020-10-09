@@ -190,13 +190,15 @@ function* saveUserResponse({ payload }) {
       itemAnswers[question] = answers[question]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
-      if (
-        redirectPolicy ===
-          assignmentPolicyOptions.showPreviousAttemptOptions
-            .STUDENT_RESPONSE_AND_FEEDBACK &&
-        !answers[question] &&
-        !!userPrevAnswer[question]
-      ) {
+      const {
+        STUDENT_RESPONSE_AND_FEEDBACK,
+        SCORE_RESPONSE_AND_FEEDBACK,
+      } = assignmentPolicyOptions.showPreviousAttemptOptions
+      const hasPrevResponse = [
+        STUDENT_RESPONSE_AND_FEEDBACK,
+        SCORE_RESPONSE_AND_FEEDBACK,
+      ].includes(redirectPolicy)
+      if (hasPrevResponse && !answers[question] && !!userPrevAnswer[question]) {
         itemAnswers[question] = userPrevAnswer[question]
       }
       if (shuffledOptions[question]) {

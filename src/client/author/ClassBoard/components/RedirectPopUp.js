@@ -80,7 +80,7 @@ const RedirectPopUp = ({
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents)
   const [qDeliveryState, setQDeliveryState] = useState('ALL')
   const [showPrevAttempt, setshowPrevAttempt] = useState(
-    isPremiumUser ? 'SCORE_RESPONSE_AND_FEEDBACK' : 'FEEDBACK_ONLY'
+    isPremiumUser ? 'STUDENT_RESPONSE_AND_FEEDBACK' : 'FEEDBACK_ONLY'
   )
   const [allowedTime, setAllowedTime] = useState(
     additionalData.allowedTime || 1
@@ -240,9 +240,12 @@ const RedirectPopUp = ({
           <SelectInputStyled
             showSearch
             optionFilterProp="data"
-            filterOption={(input, option) =>
-              option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              return (
+                option.props.data.toLowerCase().indexOf(input.toLowerCase()) >=
+                0
+              )
+            }}
             mode="multiple"
             disabled={type !== 'specificStudents'}
             style={{ width: '100%' }}

@@ -16,8 +16,6 @@ const {
 const TeacherResponseContainer = ({
   correct,
   answerIcon,
-  answer,
-  isResponseVisible,
   prevScore,
   prevMaxScore,
   prevFeedback,
@@ -105,7 +103,6 @@ const FeedBackContainer = ({
     correct,
     answerIcon,
     answer,
-    isResponseVisible,
     prevScore,
     prevMaxScore,
     prevFeedback,
@@ -114,13 +111,15 @@ const FeedBackContainer = ({
   if (!isEmpty(currentUserAnswer)) {
     return null
   }
+  if (
+    !prevFeedback?.text &&
+    correct === undefined &&
+    !(prevScore || prevScore === 0)
+  ) {
+    return null
+  }
+
   if (!isResponseVisible) {
-    if (
-      !prevFeedback?.text &&
-      correct === undefined &&
-      !(prevScore || prevScore === 0)
-    )
-      return ''
     return (
       <Wrapper visible>
         <TeacherResponseContainer {...props} />

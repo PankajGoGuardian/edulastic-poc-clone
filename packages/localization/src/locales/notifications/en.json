@@ -1926,9 +1926,5 @@
   "signInUserNotFound": {
     "message": "It seems you are new to Edulastic! Please select your role.",
     "description": ""
-  },
-  "ttsErrorMessage": {
-    "message": "Can not load read aloud text-to-speech, internet connection is slow.",
-    "description": ""
   }
 }

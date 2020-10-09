@@ -1915,6 +1915,10 @@
     "message": "Failed to load test.",
     "description": ""
   },
+  "testPausedOrClosedByTeacher": {
+    "message": "Assessment is paused or closed by teacher.",
+    "description": ""
+  },
   "invalidAction": {
     "message": "Invalid Action.",
     "description": ""

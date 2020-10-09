@@ -191,13 +191,24 @@ function* loadTest({ payload }) {
       },
     })
 
+    const studentAssesment = yield select((state) =>
+      (state.router.location.pathname || '').match(
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+      )
+    )
+
     // for urls that doesnt have groupId, fallback
     const groupId =
       groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses))
 
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview
-      ? call(testActivityApi.getById, testActivityId, groupId)
+      ? call(
+          testActivityApi.getById,
+          testActivityId,
+          groupId,
+          !!studentAssesment
+        )
       : false
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
@@ -544,6 +555,8 @@ function* loadTest({ payload }) {
     if (err.status) {
       if (err.status === 400) {
         messageKey = 'invalidAction'
+      } else if (err.status === 302) {
+        messageKey = 'testPausedOrClosedByTeacher'
       }
     }
     if (userRole === roleuser.STUDENT) {

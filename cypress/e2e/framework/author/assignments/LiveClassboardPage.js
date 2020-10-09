@@ -132,15 +132,18 @@ class LiveClassboardPage {
   }
 
   clickonQuestionsTab = () => {
+    const randomString = Helpers.getRamdomString(2)
     cy.server()
-    cy.route('GET', /\bitem\b.*\bgroup\b/).as('getFirstQuestion')
-    cy.route('GET', '**/test/**').as('get-test-data')
+    cy.route('GET', /\bitem\b.*\bgroup\b/).as(
+      `getFirstQuestion-${randomString}`
+    )
+    cy.route('GET', '**/test/**').as(`get-test-data-${randomString}`)
     this.getQuestionsTab()
       .click({ force: true })
       .should('have.css', 'background-color', queColor.BLUE_2)
-    cy.wait('@get-test-data')
+    cy.wait(`@get-test-data-${randomString}`)
     return cy
-      .wait('@getFirstQuestion')
+      .wait(`@getFirstQuestion-${randomString}`)
       .then(
         (xhr) =>
           xhr.response.body.result[0] && xhr.response.body.result[0].testItemId

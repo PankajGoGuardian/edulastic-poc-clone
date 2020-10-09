@@ -219,6 +219,7 @@ export default class QuestionResponsePage {
     inExpGrader = false
   ) => {
     cy.server()
+    const randomString = Helpers.getRamdomString(2)
     const stringAdjust = inExpGrader ? '' : '{esc}'
     this.getScoreInput(this.getQuestionContainerByStudent(studentName)).then(
       ($Currestscore) => {
@@ -231,13 +232,15 @@ export default class QuestionResponsePage {
           )
         ) {
           cy.wait(1000)
-          cy.route('PUT', '**/response-entry-and-score').as('scoreEntry')
+          cy.route('PUT', '**/response-entry-and-score').as(
+            `scoreEntry-${randomString}`
+          )
 
           this.getScoreInput(
             this.getQuestionContainerByStudent(studentName)
           ).type(`{selectall}{del}${score}${stringAdjust}`, { force: true })
           inExpGrader ? cy.contains('Student Feedback!').click() : undefined
-          cy.wait('@scoreEntry').then((xhr) => {
+          cy.wait(`@scoreEntry-${randomString}`).then((xhr) => {
             expect(
               xhr.status,
               `score update ${xhr.status === 200 ? 'success' : 'fialed'}`
@@ -259,12 +262,12 @@ export default class QuestionResponsePage {
 
     if (feedback) {
       cy.wait(1000)
-      cy.route('PUT', '**/feedback').as('feedback')
+      cy.route('PUT', '**/feedback').as(`feedback-${randomString}`)
       this.getFeedbackArea(
         this.getQuestionContainerByStudent(studentName)
       ).type(`{selectall}${feedback}${stringAdjust}`, { force: true })
       inExpGrader ? cy.contains('Student Feedback!').click() : undefined
-      cy.wait('@feedback').then((xhr) => {
+      cy.wait(`@feedback-${randomString}`).then((xhr) => {
         expect(
           xhr.status,
           `feed back update ${xhr.status === 200 ? 'success' : 'fialed'}`

@@ -111,14 +111,16 @@ export default class TestLibrary {
       this.getTestCardById(id).find('button').contains('More')
     )
 
-  getAllTestCardsInCurrentPage = () =>
-    cy.get('[data-cy="test-id"]').closest('.ant-card').parent()
+  getAllTestCardsInCurrentPage = () => cy.get('[data-cy="test-title"]')
 
   getTestCardInCurrentPageByIndex = (index) =>
     this.getAllTestCardsInCurrentPage().eq(index)
 
   getTestIdOfCardInCurrentPageByIndex = (index) =>
-    this.getTestCardInCurrentPageByIndex(index).invoke('attr', 'data-cy')
+    this.getTestCardInCurrentPageByIndex(index)
+      .closest('.ant-card')
+      .parent()
+      .invoke('attr', 'data-cy')
 
   getCloseTestCardPopUpButton = () =>
     cy.get(`button[class^="styles_closeButton"]`)
@@ -408,6 +410,7 @@ export default class TestLibrary {
     cy.server()
     cy.route('POST', '**/test/**').as('duplicateTest')
     this.getDuplicateButtonInReview().should('be.visible').click()
+    cy.contains('span', 'Continue to clone').click({ force: true })
     cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
   }
 

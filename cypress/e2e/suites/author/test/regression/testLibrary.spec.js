@@ -44,12 +44,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
     'ESSAY_RICH.5',
   ]
   const allItemIds = [
-    '5ef9e0cbbdb4670008918fcc',
-    '5ef9e0f5001ccf00089aa924',
-    '5ef9e11ebdb4670008918fd1',
-    '5ef9e14bdd76ba0007172288',
-    '5ef9e1827defa0000735450a',
-    '5ef9e1c4fa583c000763bdc9',
+    '5f7f2ba0ccd6350008284f7c',
+    '5f7f2be05e3b2d0008dc6c19',
+    '5f7f2c33ccd6350008284f81',
+    '5f7f2c76ccd6350008284f84',
+    '5f7f2cd16d7fae0007ac847d',
+    '5f7f2d2e6d7fae0007ac8480',
   ]
 
   const alltags = [
@@ -69,7 +69,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.default', 'ESSAY_RICH.2', 'ESSAY_RICH.5'],
       name: 'test_1',
       description: 'This is test_1',
-      id: '5ef9e308dd76ba000717229b',
+      id: '5f7f30cf19d89500084669ac',
     },
     test_2: {
       subjects: ['ELA', 'Mathematics'],
@@ -78,7 +78,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.1', 'ESSAY_RICH.3', 'ESSAY_RICH.5'],
       name: 'test_2',
       description: 'This is test_2',
-      id: '5ef9e327dd76ba00071722a0',
+      id: '5f7f30f757ab4b0008eeb19b',
     },
     test_3: {
       subjects: ['ELA', 'Mathematics'],
@@ -87,7 +87,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.default', 'ESSAY_RICH.2', 'ESSAY_RICH.3'],
       name: 'test_3',
       description: 'This is test_3',
-      id: '5ef9e34b7defa0000735450f',
+      id: '5f7f312a57ab4b0008eeb1a7',
     },
     test_4: {
       subjects: ['ELA', 'Mathematics'],
@@ -96,7 +96,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.2', 'ESSAY_RICH.4', 'ESSAY_RICH.1'],
       name: 'test_4',
       description: 'This is test_4',
-      id: '5ef9e3717defa00007354515',
+      id: '5f7f316a19d89500084669bc',
     },
     test_5: {
       subjects: ['ELA', 'Mathematics'],
@@ -111,7 +111,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.default', 'ESSAY_RICH.3', 'ESSAY_RICH.1'],
       name: 'test_5',
       description: 'This is test_5',
-      id: '5ef9e3aec0931b00085c59ea',
+      id: '5f7f31ca19d89500084669c2',
     },
     test_6: {
       subjects: ['ELA', 'Mathematics'],
@@ -120,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.1', 'ESSAY_RICH.2', 'ESSAY_RICH.3'],
       name: 'test_6',
       description: 'This is test_6',
-      id: '5ef9e3e3c0931b00085c59ef',
+      id: '5f7f321d19d89500084669cd',
     },
   }
 
@@ -287,6 +287,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
   context('> test card in pop up view', () => {
     before('> search and get test', () => {
       studentTestPage.clickOnExitTest(true)
+      testLibraryPage.sidebar.clickOnDashboard()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+
       currentTestKey = _.shuffle(_.keys(testData))[0]
       const { id } = testData[currentTestKey]
       testLibraryPage.clickOnTileView()
@@ -341,6 +344,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
     it('> assign button', () => {
       cy.deleteAllAssignments(undefined, teacher)
       studentTestPage.clickOnExitTest(true)
+      testLibraryPage.sidebar.clickOnDashboard()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+
+      const { id } = testData[currentTestKey]
+      testLibraryPage.clickOnTileView()
+      testLibraryPage.searchFilters.clearAll()
+      testLibraryPage.searchFilters.typeInSearchBox(id)
+      testLibraryPage.clickOnTestCardById(id)
+
       testLibraryPage.clickAssignOnTestCardPopUp()
       testLibraryPage.assignPage.selectClass('Class')
       testLibraryPage.assignPage.clickOnAssign()
@@ -605,6 +617,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
 
     context('> entire library', () => {
       beforeEach('> clear filters', () => {
+        testLibraryPage.clickOnTileView()
         testLibraryPage.searchFilters.clearAll()
         randomIndices = []
         for (let i = 0; i < testsTobeVerified; i++) {

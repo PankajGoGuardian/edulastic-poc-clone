@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "12.38.0",
+  "version": "12.38.1",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -14,6 +14,7 @@
     ]
   },
   "scripts": {
+    "bump": "./bump.sh",
     "lint": "eslint src/**/*.js",
     "lint-fix": "eslint src/**/*.js --fix",
     "format": "prettier --write 'src/client/**/*.js' !src/client/public/**/*.js",
@@ -55,6 +56,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#6d7e39a8d8588d3ff32572e3e9a73af0a5199cca",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
@@ -79,7 +81,6 @@
     "d3-array": "^2.0.3",
     "dotenv": "^8.2.0",
     "eslint-plugin-cypress": "^2.1.2",
-    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#6d7e39a8d8588d3ff32572e3e9a73af0a5199cca",
     "faker": "^4.1.0",
     "fetch-mock": "^7.2.5",
     "firebase": "^7.13.2",
@@ -211,10 +212,10 @@
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.12.0",
-    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.0.2",
     "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.2",
     "file-loader": "^2.0.0",
     "flow-bin": "^0.86.0",

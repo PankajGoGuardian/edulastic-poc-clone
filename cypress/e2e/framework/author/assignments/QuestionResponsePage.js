@@ -298,7 +298,7 @@ export default class QuestionResponsePage {
   verifyOptionDisabled = (option) => {
     this.getDropDown().eq(0).click()
     this.getDropDownMenu()
-      .contains(option)
+      .contains(Helpers.getFormattedFirstLastName(option))
       .should('have.class', 'ant-select-dropdown-menu-item-disabled')
   }
 

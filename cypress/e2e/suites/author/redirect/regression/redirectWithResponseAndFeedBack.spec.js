@@ -23,7 +23,11 @@ const studentTestPage = new StudentTestPage()
 const students = {
   1: {
     email: 'student.respandfeed1@snapwiz.com',
-    stuName: 'student',
+    stuName: 'student1',
+  },
+  2: {
+    email: 'student2.respandfeed1@snapwiz.com',
+    stuName: 'student2',
   },
 }
 
@@ -46,6 +50,11 @@ const redirectTestData = {
       attempt: { ...allWrong },
       status: studentSide.GRADED,
       ...students[1],
+    },
+    {
+      attempt: { ...allWrong },
+      status: studentSide.IN_PROGRESS,
+      ...students[2],
     },
   ],
 
@@ -98,7 +107,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
     })
   })
 
-  before(' > login as teacher and add feedback for all student', () => {
+  before(' > login as teacher and add feedback for student 1', () => {
     cy.login('teacher', teacher, password)
     teacherSidebar.clickOnAssignment()
     authorAssignmentPage.clcikOnPresenatationIconByIndex(0)
@@ -147,12 +156,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         attempt1.score,
         attempt1.perf,
         attempt1.attempt,
-        email
+        email,
+        true
       )
       lcb.verifyRedirectIcon(stuName)
     })
     ;[0, 1].forEach((i) => {
-      it(`> hover and verify card attempt-${i ? 'not started' : 1}`, () => {
+      it(`> verify student card attempt view for attempt-${
+        i ? 'not started' : 1
+      }`, () => {
         const attempt = !i
           ? {
               perf: studentSide.NOT_STARTED,
@@ -160,14 +172,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
             }
           : attempt1
         lcb.clickOnCardViewTab()
-        lcb.showMulipleAttemptsByStuName(stuName)
+        // lcb.showMulipleAttemptsByStuName(stuName) --> commenting since by-default multi attempt view should come now
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
         lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
         lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)
       })
     })
 
-    it(` > verify student centric view-${stuName},should be shown with attempt1`, () => {
+    it(` > verify student centric view for - ${stuName}-should be disabled,before attempt2 start`, () => {
+      lcb.clickOnStudentsTab()
+      lcb.verifyStudentCentricCard(stuName, undefined, undefined, false)
+    })
+
+    it(` > verify question centric view, should not have student card, before attempt2 start`, () => {
+      lcb.clickonQuestionsTab()
+      Object.keys(allRight).forEach((queNum) => {
+        lcb.questionResponsePage.selectQuestion(queNum)
+        lcb.questionResponsePage.verifyNoQuestionResponseCard(stuName)
+      })
+    })
+
+    /* it(` > verify student centric view-${stuName},should be shown with attempt1`, () => {
       lcb.clickOnStudentsTab()
       lcb.verifyStudentCentricCard(
         stuName,
@@ -197,7 +222,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
           stuName
         )
       })
-    })
+    }) */
 
     it(' > attempt by redirected students and verify feedback,response,score is shown', () => {
       cy.login('student', email, password)
@@ -205,13 +230,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       Object.keys(attempt).forEach((queNum) => {
         const [queType] = questionTypeMap[queNum].queKey.split('.')
         const { attemptData, points } = questionTypeMap[queNum]
-        // verify evaluation message
-        studentTestPage
-          .verifyResponseEvaluation(attempt1.attempt[queNum])
-          .click({ force: true })
+        // // verify evaluation message
+        // studentTestPage
+        //   .verifyResponseEvaluation(attempt1.attempt[queNum])
+        //   .click({ force: true })
         // verify that previous response was retained and score
         studentTestPage.report.verifyQuestionResponseCard(
-          points,
+          false,
           queType,
           attempt1.attempt[queNum],
           attemptData,
@@ -240,8 +265,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         attempt2.score,
         attempt2.perf,
         attempt2.attempt,
-        email
+        email,
+        true
       )
+      lcb.verifyRedirectIcon(stuName)
     })
 
     /* 
@@ -257,10 +284,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       });
     }); */
     ;[0, 1].forEach((i) => {
-      it(`> hover and verify card attempt-${i ? 2 : 1}`, () => {
+      it(`> verify student card attempt view for attempt-${i ? 2 : 1}`, () => {
         const attempt = !i ? attempt2 : attempt1
         lcb.clickOnCardViewTab()
-        lcb.showMulipleAttemptsByStuName(stuName)
+        // lcb.showMulipleAttemptsByStuName(stuName) --> commenting since by-default multi attempt view should come now
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
         lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
         lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)

@@ -24,7 +24,11 @@ const studentTestPage = new StudentTestPage()
 const students = {
   1: {
     email: 'student.skipped@snapwiz.com',
-    stuName: 'student',
+    stuName: 'student1',
+  },
+  2: {
+    email: 'student2.skipped@snapwiz.com',
+    stuName: 'student2',
   },
 }
 
@@ -47,6 +51,11 @@ const redirectTestData = {
       attempt: { Q1: 'right', Q2: 'skip', Q3: 'wrong' },
       status: studentSide.GRADED,
       ...students[1],
+    },
+    {
+      attempt: { Q1: 'right', Q2: 'right', Q3: 'right' },
+      status: studentSide.IN_PROGRESS,
+      ...students[2],
     },
   ],
 
@@ -150,12 +159,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         attempt1.score,
         attempt1.perf,
         attempt1.attempt,
-        email
+        email,
+        true
       )
       lcb.verifyRedirectIcon(stuName)
     })
     ;[0, 1].forEach((i) => {
-      it(`> hover and verify card attempt-${i ? 'not started' : 1}`, () => {
+      it(`> verify student card attempt view for attempt-${
+        i ? 'not started' : 1
+      }`, () => {
         const attempt = !i
           ? {
               perf: studentSide.NOT_STARTED,
@@ -163,44 +175,57 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
             }
           : attempt1
         lcb.clickOnCardViewTab()
-        lcb.showMulipleAttemptsByStuName(stuName)
+        // lcb.showMulipleAttemptsByStuName(stuName) --> commenting since by-default multi attempt view should come now
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
         lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
         lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)
       })
     })
 
-    it(` > verify student centric view-${stuName},should be shown with attempt1`, () => {
+    it(` > verify student centric view for - ${stuName}-should be disabled,before attempt2 start`, () => {
       lcb.clickOnStudentsTab()
-      lcb.verifyStudentCentricCard(
-        stuName,
-        attempt1.attempt,
-        questionTypeMap,
-        true
-      )
-      // verify scores of current attemp and no improvement
-      lcb.questionResponsePage.verifyTotalScoreAndImprovement(
-        attempt1.totalScore,
-        attempt1.maxScore,
-        false
-      )
+      lcb.verifyStudentCentricCard(stuName, undefined, undefined, false)
     })
 
-    it(` > verify question centric view,should be shown with attempt reset`, () => {
+    it(` > verify question centric view, should not have student card, before attempt2 start`, () => {
       lcb.clickonQuestionsTab()
-      _.keys(attempt1.attempt).forEach((queNum) => {
+      Object.keys(allRight).forEach((queNum) => {
         lcb.questionResponsePage.selectQuestion(queNum)
-        const { queKey, attemptData, points } = questionTypeMap[queNum]
-        lcb.questionResponsePage.verifyQuestionResponseCard(
-          points,
-          queKey,
-          noattempt[queNum],
-          attemptData,
-          false,
-          stuName
-        )
+        lcb.questionResponsePage.verifyNoQuestionResponseCard(stuName)
       })
     })
+
+    // it(` > verify student centric view-${stuName},should be shown with attempt1`, () => {
+    //   lcb.clickOnStudentsTab()
+    //   lcb.verifyStudentCentricCard(
+    //     stuName,
+    //     attempt1.attempt,
+    //     questionTypeMap,
+    //     true
+    //   )
+    //   // verify scores of current attemp and no improvement
+    //   lcb.questionResponsePage.verifyTotalScoreAndImprovement(
+    //     attempt1.totalScore,
+    //     attempt1.maxScore,
+    //     false
+    //   )
+    // })
+
+    // it(` > verify question centric view,should be shown with attempt reset`, () => {
+    //   lcb.clickonQuestionsTab()
+    //   _.keys(attempt1.attempt).forEach((queNum) => {
+    //     lcb.questionResponsePage.selectQuestion(queNum)
+    //     const { queKey, attemptData, points } = questionTypeMap[queNum]
+    //     lcb.questionResponsePage.verifyQuestionResponseCard(
+    //       points,
+    //       queKey,
+    //       noattempt[queNum],
+    //       attemptData,
+    //       false,
+    //       stuName
+    //     )
+    //   })
+    // })
 
     it(' > attempt by redirected students and verify skipped and wrong question', () => {
       cy.login('student', email, password)
@@ -234,8 +259,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         attempt2.score,
         attempt2.perf,
         attempt2.attempt,
-        email
+        email,
+        true
       )
+      lcb.verifyRedirectIcon(stuName)
     })
 
     /*
@@ -251,10 +278,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       });
     }); */
     ;[0, 1].forEach((i) => {
-      it(`> hover and verify card attempt-${i ? 2 : 1}`, () => {
+      it(`> verify student card attempt view for attempt-${i ? 2 : 1}`, () => {
         const attempt = !i ? attempt2 : attempt1
         lcb.clickOnCardViewTab()
-        lcb.showMulipleAttemptsByStuName(stuName)
+        // lcb.showMulipleAttemptsByStuName(stuName) --> commenting since by-default multi attempt view should come now
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
         lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
         lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)

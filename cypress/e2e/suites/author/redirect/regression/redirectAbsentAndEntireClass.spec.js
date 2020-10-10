@@ -135,13 +135,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         attempt1.score,
         attempt1.perf,
         attempt1.attempt,
-        email
+        email,
+        true
       )
       lcb.verifyRedirectIcon(stuName)
     })
     ;[0, 1].forEach((i) => {
       it(`> hover and verify card attempt-${
-        i ? 'not started(redirected)' : 'absent'
+        !i ? 'not started(redirected)' : 'absent'
       }`, () => {
         const attempt = !i
           ? {
@@ -150,13 +151,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
             }
           : { perf: '0%', score: `- / ${statsMap[stuName].maxScore}` }
         lcb.clickOnCardViewTab()
-        lcb.showMulipleAttemptsByStuName(stuName)
+        // lcb.showMulipleAttemptsByStuName(stuName) --> commenting since by-default multi attempt view should come now
         lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
         lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
         lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)
       })
     })
 
+    it(` > verify student centric view for - ${stuName}-should be disabled`, () => {
+      lcb.clickOnStudentsTab()
+      lcb.verifyStudentCentricCard(stuName, undefined, undefined, false)
+    })
+
+    it(` > verify question centric view, should not have student card`, () => {
+      lcb.clickonQuestionsTab()
+      Object.keys(allRight).forEach((queNum) => {
+        lcb.questionResponsePage.selectQuestion(queNum)
+        lcb.questionResponsePage.verifyNoQuestionResponseCard(stuName)
+      })
+    })
+
+    /*  // TODO : revisit here to confrim
     it(` > verify student centric view,should be shown`, () => {
       lcb.clickOnStudentsTab()
       lcb.verifyStudentCentricCard(
@@ -173,6 +188,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       )
     })
 
+    // TODO : revisit here to confrim
     it(` > verify question centric view,should be shown`, () => {
       lcb.clickonQuestionsTab()
       _.keys(attempt1.attempt).forEach((queNum) => {
@@ -187,7 +203,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
           stuName
         )
       })
-    })
+    }) */
   })
 
   describe(`> redirect entire class - status checks only`, () => {
@@ -230,7 +246,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
           score,
           perf,
           allSkipped,
-          user.email
+          user.email,
+          true
         )
         lcb.verifyRedirectIcon(user.stuName)
       })
@@ -274,7 +291,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
           score,
           perf,
           allSkipped,
-          user.email
+          user.email,
+          true
         )
         lcb.verifyRedirectIcon(user.stuName)
       })

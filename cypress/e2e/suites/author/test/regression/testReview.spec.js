@@ -248,7 +248,11 @@ describe(`${FileHelper.getSpecName(
           points[0] = EDITED_POINTS[3]
           testLibraryPage.searchFilters.routeSearch()
           editItemPage.header.saveAndgetId(true).then((itemId) => {
-            expect(itemId).eq(itemIds[0])
+            expect(
+              itemId,
+              `item should create new version on edit from test review`
+            ).not.eq(itemIds[0])
+            cy.saveItemDetailToDelete(itemId)
             // testLibraryPage.searchFilters.waitForSearchResponse();
             // testAddItemTab.header.clickOnReview();
             testReviewTab.verifyQustionById(itemIds[0])

@@ -19,7 +19,10 @@ class SidebarPage {
 
   clickOnGrades = () => {
     cy.get('[data-cy="Grades"]').click({ force: true }).click({ force: true })
-    return cy.get('[data-cy="title"]').contains('Grades')
+    cy.get('[data-cy="title"]').contains('Grades')
+    return cy
+      .get('[data-cy="status"]', { timeout: 120000 })
+      .should('be.visible')
   }
 
   clickOnSkillMastery = () => {

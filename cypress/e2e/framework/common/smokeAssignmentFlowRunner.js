@@ -313,7 +313,7 @@ export function testRunner(
         sidebarPage.clickOnGrades()
         report.validateStats('1', '1/1', score, perfValue)
         report.clickOnReviewButtonButton()
-        report.getQUestionInStudentReportPage().click()
+        // report.getQUestionInStudentReportPage().click()
         Object.keys(updatedAttempt).forEach((queNum) => {
           const attemptType = updatedAttempt[queNum]
           report.selectQuestion(queNum)

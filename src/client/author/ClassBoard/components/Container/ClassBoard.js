@@ -1204,7 +1204,9 @@ class ClassBoard extends Component {
                       REDIRECT
                     </RedirectButton>
                     <Dropdown
-                      getPopupContainer={(el) => el.parentNode}
+                      getPopupContainer={(triggerNode) => {
+                        return triggerNode.parentNode
+                      }}
                       overlay={
                         <DropMenu>
                           <FeaturesSwitch
@@ -1346,6 +1348,8 @@ class ClassBoard extends Component {
                     open={showAddStudentsPopup}
                     groupId={classId}
                     closePolicy={additionalData.closePolicy}
+                    classEndDate={additionalData.endDate}
+                    serverTimeStamp={additionalData.ts}
                     assignmentId={assignmentId}
                     closePopup={this.handleHideAddStudentsPopup}
                     disabledList={existingStudents}

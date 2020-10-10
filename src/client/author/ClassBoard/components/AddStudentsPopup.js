@@ -29,18 +29,26 @@ const AddStudentsPopup = ({
   fetchGroupMembers,
   studentsList,
   addStudents,
+  classEndDate,
+  serverTimeStamp: dateNow,
 }) => {
   const [selectedStudents, setSelectedStudent] = useState([])
-  const [endDate, setEndDate] = useState(moment().add(1, 'day'))
+  const [endDate, setEndDate] = useState(moment().add(2, 'day'))
   useEffect(() => {
     fetchGroupMembers({ classId: groupId })
   }, [])
 
-  const disabledEndDate = (endDate) => {
-    if (!endDate) {
+  useEffect(() => {
+    if (classEndDate && dateNow < classEndDate) {
+      setEndDate(moment(classEndDate))
+    }
+  }, [classEndDate])
+
+  const disabledEndDate = (_endDate) => {
+    if (!_endDate) {
       return false
     }
-    return endDate < moment().startOf('day')
+    return _endDate < moment().startOf('day')
   }
 
   const submitAction = () => {
@@ -79,9 +87,12 @@ const AddStudentsPopup = ({
             data-cy="selectStudents"
             showSearch
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              return (
+                option.props.data.toLowerCase().indexOf(input.toLowerCase()) >=
+                0
+              )
+            }}
             mode="multiple"
             onChange={(value) => setSelectedStudent(value)}
             placeholder="Select the students"

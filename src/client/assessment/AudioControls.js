@@ -131,7 +131,9 @@ const AudioControls = ({
       })
 
       setCurrentHowl(_howl)
-      resolve(_howl)
+      _howl?.once('end', () => {
+        resolve(_howl)
+      })
     })
 
     _prom.catch((err) => {

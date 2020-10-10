@@ -143,7 +143,7 @@ const testRedirectRoutes = [
   '/demo/assessmentPreview',
   '/d/ap',
   '/d/cp',
-  '//#renderResource/close/',
+  '#renderResource/close/',
   '/#assessmentQuestions/close/',
 ]
 const getCurrentPath = () => {

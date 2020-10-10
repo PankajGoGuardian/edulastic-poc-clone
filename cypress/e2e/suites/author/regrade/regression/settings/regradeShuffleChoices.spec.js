@@ -4,6 +4,7 @@ import Regrade from '../../../../../framework/author/tests/regrade/regrade'
 import {
   regradeOptions,
   studentSide,
+  redirectType,
 } from '../../../../../framework/constants/assignmentStatus'
 import { attemptTypes } from '../../../../../framework/constants/questionTypes'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
@@ -333,6 +334,7 @@ describe(`>${FileHelper.getSpecName(
             it('> redirect student', () => {
               lcb.selectCheckBoxByStudentName(studentdata[0].name)
               lcb.clickOnRedirect()
+              lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
               lcb.clickOnRedirectSubmit()
             })
 
@@ -593,6 +595,7 @@ describe(`>${FileHelper.getSpecName(
             it('> redirect student', () => {
               lcb.selectCheckBoxByStudentName(studentdata[0].name)
               lcb.clickOnRedirect()
+              lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
               lcb.clickOnRedirectSubmit()
             })
 

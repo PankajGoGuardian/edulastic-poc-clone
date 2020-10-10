@@ -284,7 +284,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       });
     }); */
     ;[0, 1].forEach((i) => {
-      it(`> verify student card attempt view for attempt-${i ? 2 : 1}`, () => {
+      it(`> verify student card attempt view after attempt2,for attempt-${
+        i ? 2 : 1
+      }`, () => {
         const attempt = !i ? attempt2 : attempt1
         lcb.clickOnCardViewTab()
         // lcb.showMulipleAttemptsByStuName(stuName) --> commenting since by-default multi attempt view should come now

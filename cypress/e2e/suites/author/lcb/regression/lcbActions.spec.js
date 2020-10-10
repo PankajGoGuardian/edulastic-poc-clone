@@ -289,7 +289,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       // select inprogress student
       lcb.selectCheckBoxByStudentName(removeStudent[2].stuName)
       // click on Remove and assert
-      lcb.clickOnRemove(false, true)
+      lcb.clickOnRemove(false)
     })
 
     it(" > removing 'In progress' student verify", () => {
@@ -299,7 +299,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       // select inprogress student
       lcb.selectCheckBoxByStudentName(removeStudent[2].stuName)
       // click on Remove and assert
-      lcb.clickOnRemove(false)
+      lcb.clickOnRemove(false, true)
       /*    // assert student card should not be present
       lcb
         .getStudentCardByStudentName(removeStudent[2].stuName)

@@ -361,7 +361,9 @@ const AssessmentContainer = ({
       hideHints()
       setCurrentItem(index)
       const timeSpent = Date.now() - lastTime.current
-      evaluateForPreview({ currentItem, timeSpent })
+      if (!demo) {
+        evaluateForPreview({ currentItem, timeSpent })
+      }
     } else {
       const unansweredQs = getUnAnsweredQuestions()
       if (

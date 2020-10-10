@@ -952,10 +952,10 @@ class StudentTestPage {
       .should(
         'contain.text',
         attemptType === attemptTypes.RIGHT
-          ? 'Thats Correct'
+          ? 'Correct'
           : attemptType === attemptTypes.PARTIAL_CORRECT
-          ? 'Thats Partially Correct'
-          : 'Thats Incorrect'
+          ? 'Partially Correct'
+          : 'Incorrect'
       )
 
   assertCalcType = (type) => {

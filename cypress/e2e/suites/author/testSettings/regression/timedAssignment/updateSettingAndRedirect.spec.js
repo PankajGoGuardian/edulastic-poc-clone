@@ -4,6 +4,7 @@ import AssignmentsPage from '../../../../../framework/student/assignmentsPage'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
 import AuthorAssignmentPage from '../../../../../framework/author/assignments/AuthorAssignmentPage'
 import LiveClassboardPage from '../../../../../framework/author/assignments/LiveClassboardPage'
+import { redirectType } from '../../../../../framework/constants/assignmentStatus'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -130,6 +131,9 @@ describe(`${FileHelper.getSpecName(
         liveClassboardPage.checkSelectAllCheckboxOfStudent()
         liveClassboardPage.clickOnRedirect()
         liveClassboardPage.verifyTimeWhileRedirectIs(10)
+        liveClassboardPage.redirectPopup.selectRedirectPolicy(
+          redirectType.FEEDBACK_ONLY
+        )
         liveClassboardPage.clickOnRedirectSubmit()
       })
 

@@ -76,9 +76,11 @@ export const releaseGradeTypes = {
 }
 
 export const redirectType = {
-  SCORE_AND_FEEDBACK: 'Score & Teacher Feedback',
-  STUDENT_RESPONSE_AND_FEEDBACK: 'Student Response & Teacher Feedback',
-  FEEDBACK_ONLY: 'Teacher Feedback only',
+  FEEDBACK_ONLY: 'Teacher feedback only',
+  STUDENT_SCORE_AND_FEEDBACK: 'Student score & teacher feedback',
+  STUDENT_RESPONSE_AND_FEEDBACK: 'Student response & teacher feedback',
+  STUDENT_SCORE_RESPONSE_AND_FEEDBACK:
+    'Student score, response & teacher feedback',
 }
 
 export const questionDeliveryType = {

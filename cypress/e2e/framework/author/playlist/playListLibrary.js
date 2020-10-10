@@ -198,7 +198,10 @@ export default class PlayListLibrary {
         module2:[...testids]
       }
     }; */
-      this.reviewTab.searchContainer.setFilters({ subject: 'Mathematics' })
+      this.reviewTab.searchContainer.setFilters({
+        subject: 'Mathematics',
+        authoredByme: true,
+      })
       _.values(playListData.moduledata).forEach((tests, mod) => {
         tests.forEach((test) => {
           this.reviewTab.dragTestFromSearchToModule(mod + 1, test)
@@ -219,7 +222,7 @@ export default class PlayListLibrary {
     cy.wait('@search-students')
   }
 
-  searchAndClickOnDropDownByStudent = (name, clas) => {
+  searchAndClickOnDropDownByStudent = (name) => {
     this.checkDropByStudent()
     CypressHelper.selectDropDownByAttribute('selectStudent', name)
   }

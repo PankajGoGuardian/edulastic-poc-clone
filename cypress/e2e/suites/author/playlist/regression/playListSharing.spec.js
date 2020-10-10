@@ -5,7 +5,8 @@ import { COLLECTION as collection } from '../../../../framework/constants/questi
 
 const userData = require('../../../../../fixtures/users')
 
-const { dis1: dist1, dis2: dist2 } = userData.playListSharing
+// const { dis1: dist1, dis2: dist2 } = userData.playListSharing
+const { dis1: dist1 } = userData.playListSharing
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -14,10 +15,10 @@ describe(`${FileHelper.getSpecName(
   const testlibraryPage = new TestLibrary()
 
   let playlistid
-  const testToCreate = ['search_1', 'search_1']
+  // const testToCreate = ['search_1', 'search_1']
   const originalTestIds = [
-    '5f44aa907132d70008e7ee6e',
-    '5f44aabb0b91a40008254207',
+    '5f8014d8d4fda900088beb95',
+    '5f801527d4fda900088bebaf',
   ]
   const playlistdata = {
     metadata: {
@@ -38,18 +39,18 @@ describe(`${FileHelper.getSpecName(
   const teacher3 = 'Teacher3'
 
   const dist1_school1 = dist1[school1]
-  const dist2_school1 = dist2[school1]
+  // const dist2_school1 = dist2[school1]
   const dist1_school2 = dist1[school2]
 
   const Author = dist1_school1[teacher1]
-  /*  before("create tests", () => {
-    cy.login("teacher", Author.email, Author.pass);
-      testToCreate.forEach((test, i) => {
-      testlibraryPage.createTest(test).then(id => {
-        originalTestIds[i] = id;
-      });
-    });
-  }); */
+  /* before('create tests', () => {
+    cy.login('teacher', Author.email, Author.pass)
+    testToCreate.forEach((test, i) => {
+      testlibraryPage.createTest(test).then((id) => {
+        originalTestIds[i] = id
+      })
+    })
+  }) */
   before('>login as author and creat playlist', () => {
     cy.login('teacher', Author.email, Author.pass)
     playlistdata.moduledata.module1 = originalTestIds
@@ -266,7 +267,8 @@ describe(`${FileHelper.getSpecName(
       })
     })
 
-    context('> public level share', () => {
+    // public share is disabled in app
+    /*  context('> public level share', () => {
       before('>login as author and get playlist', () => {
         cy.login('teacher', Author[email], Author[pass])
         playlistlibraryPage.seachAndClickPlayListById(playlistid)
@@ -305,6 +307,6 @@ describe(`${FileHelper.getSpecName(
         playlistlibraryPage.reviewTab.clickExpandByModule(1)
         playlistlibraryPage.verifyViewOnlyPermission()
       })
-    })
+    }) */
   })
 })

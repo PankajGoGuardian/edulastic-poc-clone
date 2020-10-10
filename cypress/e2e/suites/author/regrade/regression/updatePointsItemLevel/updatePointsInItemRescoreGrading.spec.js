@@ -11,6 +11,7 @@ import {
   duplicateAndAssignTests,
   studentAttempt,
   verifyStudentSide,
+  verifyTeacherSide,
 } from '../../../../../framework/author/tests/regrade/regradeCommonActions'
 
 const { MCQ_MULTI } = require('../../../../../../fixtures/questionAuthoring')
@@ -58,12 +59,16 @@ describe(`${FileHelper.getSpecName(
 
   const aType = [attemptTypes.RIGHT, attemptTypes.WRONG]
   const aStatus = [studentSide.SUBMITTED, studentSide.IN_PROGRESS]
+  const usedStudents = students.filter(({ stuStatus }) =>
+    aStatus.includes(stuStatus)
+  )
+  const testidByAttempt = {}
   const testids = []
   const vertestids = []
   const testname = 'REGRADE_EDITED_ITEM'
   const regradeOption = regradeOptions.edited.AUTO_POINTS
-
   const aData = MCQ_MULTI['5'].attemptData
+
   let itemId
   let testid
 
@@ -104,6 +109,33 @@ describe(`${FileHelper.getSpecName(
 
       if (aStatus.includes(studentSide.NOT_STARTED))
         verifyStudentSide(data, aType, students[2], vertestids, aData)
+    })
+
+    context('> verify teacherside', () => {
+      before('login', () => {
+        aType.forEach((att, ind) => {
+          testidByAttempt[att] = vertestids[ind]
+        })
+        cy.login('teacher', Teacher.username, Teacher.password)
+      })
+      if (aType.includes(attemptTypes.RIGHT))
+        verifyTeacherSide(
+          data,
+          testidByAttempt,
+          usedStudents,
+          attemptTypes.RIGHT,
+          aStatus,
+          aData
+        )
+      if (aType.includes(attemptTypes.WRONG))
+        verifyTeacherSide(
+          data,
+          testidByAttempt,
+          usedStudents,
+          attemptTypes.WRONG,
+          aStatus,
+          aData
+        )
     })
   })
 })

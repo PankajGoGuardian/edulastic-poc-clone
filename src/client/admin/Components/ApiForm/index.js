@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { Alert, Button, Form } from 'antd'
 import Field from './Field'
@@ -7,6 +7,20 @@ import { FirstDiv, H2, OuterDiv } from '../../Common/StyledComponents'
 const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
   const [data, setData] = useState({})
   const [errors, setErrors] = useState([])
+
+  useEffect(() => {
+    // Set deault field values on mount
+    const defaultFields = (fields || []).filter((f) => f.defaultValue)
+    const defaultData = {}
+    defaultFields.forEach((_field) => {
+      const { name: _name, defaultValue } = _field
+      if (_name && defaultValue) {
+        defaultData[_name] = defaultValue
+      }
+    })
+    setData({ ...data, ...defaultData })
+  }, [])
+
   const onChange = (value, type) => {
     setData({ ...data, [type]: value })
   }

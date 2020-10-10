@@ -31,21 +31,21 @@ const attemptData = [
   {
     stuName: students[0].name,
     attempt: {
-      Q1: "skip"
+      Q1: 'skip',
     },
     status: 'Submitted',
   },
   {
     stuName: students[1].name,
     attempt: {
-      Q1: "skip"
+      Q1: 'skip',
     },
     status: studentSide.SUBMITTED,
   },
   {
     stuName: students[2].name,
     attempt: {
-      Q1: "skip"
+      Q1: 'skip',
     },
     status: studentSide.SUBMITTED,
   },

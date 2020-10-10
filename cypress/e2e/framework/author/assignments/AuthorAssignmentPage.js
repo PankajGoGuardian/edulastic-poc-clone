@@ -107,6 +107,8 @@ class AuthorAssignmentPage {
 
     this.getOptionInDropDownByAttribute('duplicate').click({ force: true })
 
+    cy.contains('Continue to clone').click()
+
     return cy.wait('@duplicate').then((xhr) => {
       expect(xhr.status).to.eq(200)
       return cy
@@ -361,6 +363,7 @@ class AuthorAssignmentPage {
     cy.wait(5000).then(() =>
       cy.url().then((newUrl) => {
         // expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
+        // expect(newUrl).to.include(`tests/tab/review/id/${oldTestId}`);
         expect(newUrl).to.include(`tests/tab/review/id/${oldTestId}`)
       })
     )

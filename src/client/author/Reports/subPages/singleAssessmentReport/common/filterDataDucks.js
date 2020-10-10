@@ -1,7 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
-import { groupBy, set, get } from 'lodash'
+import { groupBy, get } from 'lodash'
 import * as Sentry from '@sentry/browser'
 
 import { reportsApi } from '@edulastic/api'
@@ -19,10 +19,6 @@ const RESET_REPORTS_SAR_FILTER_DATA = '[reports] reset reports sar filter data'
 const RESET_REPORTS_SAR_FILTERS = '[reports] reset reports sar filters'
 const SET_REPORTS_PREV_SAR_FILTER_DATA =
   '[reports] set reports prev sar filter data'
-const SET_REPORTS_FILTER_PB_PROFILE =
-  '[reports] set performance band profile filter'
-const SET_REPORTS_FILTER_SP_PROFILE =
-  '[reports] set standards proficiency profile filter'
 
 const SET_FILTERS = '[reports] set sar filters'
 const SET_TEST_ID = '[reports] set sar testId'
@@ -39,12 +35,6 @@ export const setPrevSARFilterDataAction = createAction(
 
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setTestIdAction = createAction(SET_TEST_ID)
-export const setPerformanceBandProfileFilterAction = createAction(
-  SET_REPORTS_FILTER_PB_PROFILE
-)
-export const setStandardsProficiencyProfileFilterAction = createAction(
-  SET_REPORTS_FILTER_SP_PROFILE
-)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -133,7 +123,7 @@ const initialState = {
 const setFiltersReducer = (state, { payload }) => {
   if (payload.filters && payload.orgDataArr) {
     const byGroupId = groupBy(
-      payload.orgDataArr.filter((item, index) => {
+      payload.orgDataArr.filter((item) => {
         const checkForGrades =
           (item.grades || '')
             .split(',')
@@ -149,6 +139,7 @@ const setFiltersReducer = (state, { payload }) => {
         ) {
           return true
         }
+        return false
       }),
       'groupId'
     )
@@ -179,7 +170,7 @@ const setTestIdReducer = (state, { payload }) => {
 }
 
 export const reportSARFilterDataReducer = createReducer(initialState, {
-  [GET_REPORTS_SAR_FILTER_DATA_REQUEST]: (state, { payload }) => {
+  [GET_REPORTS_SAR_FILTER_DATA_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -191,17 +182,13 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
     state.error = payload.error
   },
   [SET_FILTERS]: setFiltersReducer,
-  [SET_REPORTS_FILTER_PB_PROFILE]: (state, { payload }) => {
-    set(state, 'filters.performanceBandProfile', payload)
-  },
-  [SET_REPORTS_FILTER_SP_PROFILE]: (state, { payload }) => {
-    set(state, 'filters.standardsProficiencyProfile', payload)
-  },
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_REPORTS_SAR_FILTER_DATA]: (state, { payload }) => {
+  [RESET_REPORTS_SAR_FILTER_DATA]: (state) => {
     state.SARFilterData = {}
   },
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state) => {
+    state = initialState
+  },
   [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
     state.prevSARFilterData = payload
   },

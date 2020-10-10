@@ -39,8 +39,6 @@ import {
   setTestIdAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
-  setPerformanceBandProfileFilterAction,
-  setStandardsProficiencyProfileFilterAction,
 } from '../filterDataDucks'
 import {
   getUserRole,
@@ -81,8 +79,6 @@ const SingleAssessmentReportFilters = ({
   history,
   setPrevSARFilterData,
   prevSARFilterData,
-  setPerformanceBand,
-  setStandardsProficiency,
   performanceBandRequired,
   isStandardProficiencyRequired = false,
   extraFilters,
@@ -339,14 +335,20 @@ const SingleAssessmentReportFilters = ({
     return `${splitted.join('/')}/`
   }
 
-  const updateFilterDropdownCB = (selected, keyName) => {
+  const updateFilterDropdownCB = (
+    selected,
+    keyName,
+    updateFilterData = true
+  ) => {
     const _filters = {
       ...filters,
       [keyName]: selected.key,
     }
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    const q = pickBy(_filters, (f) => f !== 'All' && !isEmpty(f))
-    getSARFilterDataRequest(q)
+    if (updateFilterData) {
+      history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
+      const q = pickBy(_filters, (f) => f !== 'All' && !isEmpty(f))
+      getSARFilterDataRequest(q)
+    }
     setFilters(_filters)
   }
 
@@ -469,7 +471,9 @@ const SingleAssessmentReportFilters = ({
                 filters.standardsProficiencyProfile ||
                 standardProficiencyProfiles[0]?._id
               }
-              selectCB={({ key }) => setStandardsProficiency(key)}
+              selectCB={(e) =>
+                updateFilterDropdownCB(e, 'standardsProficiencyProfile', false)
+              }
               data={standardProficiencyList}
               prefix="Standard Proficiency"
               showPrefixOnSelected={false}
@@ -485,7 +489,9 @@ const SingleAssessmentReportFilters = ({
                   filters.performanceBandProfile ||
                   performanceBandProfiles[0]?._id,
               }}
-              selectCB={({ key }) => setPerformanceBand(key)}
+              selectCB={(e) =>
+                updateFilterDropdownCB(e, 'performanceBandProfile', false)
+              }
               data={performanceBandProfiles.map((profile) => ({
                 key: profile._id,
                 title: profile.name,
@@ -569,8 +575,6 @@ const enhance = compose(
       setFilters: setFiltersAction,
       setTestId: setTestIdAction,
       setPrevSARFilterData: setPrevSARFilterDataAction,
-      setPerformanceBand: setPerformanceBandProfileFilterAction,
-      setStandardsProficiency: setStandardsProficiencyProfileFilterAction,
     }
   )
 )

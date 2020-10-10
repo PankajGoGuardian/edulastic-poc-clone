@@ -11,6 +11,7 @@ import {
   verifyStudentSide,
   createTestAndAssign,
   addItemAndRegrade,
+  verifyTeacherSide,
 } from '../../../../../framework/author/tests/regrade/regradeCommonActions'
 import ItemListPage from '../../../../../framework/author/itemList/itemListPage'
 
@@ -64,7 +65,10 @@ describe(`${FileHelper.getSpecName(
   const vertestids = []
   const testname = 'REGRADE_EDITED_ITEM'
   const regradeOption = regradeOptions.added.MANUAL_POINTS
-
+  const usedStudents = students.filter(({ stuStatus }) =>
+    aStatus.includes(stuStatus)
+  )
+  const testidByAttempt = {}
   const aData = MCQ_MULTI['5'].attemptData
   let itemId
   let testid
@@ -108,6 +112,24 @@ describe(`${FileHelper.getSpecName(
 
       if (aStatus.includes(studentSide.NOT_STARTED))
         verifyStudentSide(data, aType, students[2], vertestids, aData, 1)
+    })
+
+    context('> verify teacherside', () => {
+      const param1 = [data, testidByAttempt, usedStudents]
+      const param2 = [aStatus, aData, false, 1, true]
+
+      before('login', () => {
+        cy.login('teacher', Teacher.username, Teacher.password)
+        aType.forEach((att, ind) => {
+          testidByAttempt[att] = vertestids[ind]
+        })
+      })
+
+      if (aType.includes(attemptTypes.RIGHT))
+        verifyTeacherSide(...param1, attemptTypes.RIGHT, ...param2)
+
+      if (aType.includes(attemptTypes.WRONG))
+        verifyTeacherSide(...param1, attemptTypes.WRONG, ...param2)
     })
   })
 })

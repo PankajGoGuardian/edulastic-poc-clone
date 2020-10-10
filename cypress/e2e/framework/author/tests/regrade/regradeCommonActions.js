@@ -28,6 +28,7 @@ const lcb = new LiveClassboardPage()
 const { _ } = Cypress
 let attemptsData
 const queCentric = {}
+let questions
 
 export function createTestAndAssign(testname, testtitle, className) {
   return testLibraryPage.createTest(testname, false).then((id) => {
@@ -290,21 +291,35 @@ export function verifyStudentSide(
     })
   })
 }
-export function mapScoreToAttemptdata(data, status, attempt, students) {
+export function mapScoreToAttemptdata(
+  data,
+  status,
+  attemptType,
+  students,
+  isAddedItemRegrade = false,
+  isRegradeNoPoints = false
+) {
   return _.entries(data.student)
     .filter((e) => status.includes(e[0]))
-    .map((e) => e[1])
-    .map((e) => e[attempt])
     .map(function (e) {
+      const attempt =
+        isRegradeNoPoints && e[0] === studentSide.SUBMITTED
+          ? attemptTypes.SKIP
+          : e[1][attemptType] === ''
+          ? attemptTypes.MANUAL_GRADE
+          : e[1][attemptType] === data.points
+          ? attemptTypes.RIGHT
+          : e[1][attemptType] === 0
+          ? attemptTypes.WRONG
+          : attemptTypes.PARTIAL_CORRECT
+
+      if (isAddedItemRegrade)
+        return {
+          Q1: attemptTypes.SKIP,
+          Q2: attempt,
+        }
       return {
-        Q1:
-          e === ''
-            ? attemptTypes.MANUAL_GRADE
-            : e === data.points
-            ? attemptTypes.RIGHT
-            : !e
-            ? attemptTypes.WRONG
-            : attemptTypes.PARTIAL_CORRECT,
+        Q1: attempt,
       }
     })
     .map((e, i) => {
@@ -323,7 +338,9 @@ export function verifyTeacherSide(
   aType,
   status,
   attemptData,
-  isAnsUpdated = false
+  isAnsUpdated = false,
+  isAddedItem = 0,
+  isRegradeNoPoints = false
 ) {
   /* 
   data:{
@@ -360,36 +377,47 @@ export function verifyTeacherSide(
       before('>click assignments', () => {
         testLibraryPage.sidebar.clickOnAssignment()
         authorAssignmentsPage.clickOnLCBbyTestId(testidByAttempt[aType])
-        attemptsData = mapScoreToAttemptdata(data, status, aType, students)
+        attemptsData = mapScoreToAttemptdata(
+          data,
+          status,
+          aType,
+          students,
+          isAddedItem,
+          isRegradeNoPoints
+        )
+        questions = isAddedItem ? ['Q1', 'Q2'] : ['Q1']
       })
       students.forEach((student, ind) => {
         const { stuStatus } = student
-        it(`> verif lcb card view for ${stuStatus}, before regrade`, () => {
+        it(`> verif lcb card view for ${stuStatus} student, before regrade`, () => {
           lcb.verifyScoreByStudentIndex(
             ind,
             data.teacher[stuStatus][aType],
-            data.points
+            isAddedItem ? data.points + 2 : data.points
           )
 
-          lcb.getQuestionsByIndex(0).find('div').should('have.length', 1)
-          barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, [
-            'Q1',
-          ])
+          lcb
+            .getQuestionsByIndex(ind)
+            .find('div')
+            .should('have.length', questions.length)
+          barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(
+            attemptsData,
+            questions
+          )
 
           lcb.verifyQuestionCards(ind, _.values(attemptsData[ind].attempt))
         })
       })
       students.forEach((student, ind) => {
         const { name, stuStatus } = student
-        it(`> verify student centric view, for ${stuStatus}, before regrade`, () => {
-          const attempType =
-            isAnsUpdated &&
-            aType === attemptTypes.RIGHT &&
-            stuStatus === studentSide.SUBMITTED
+        it(`> verify student centric view, for ${stuStatus} student, before regrade`, () => {
+          let attempType = aType
+          if (stuStatus === studentSide.SUBMITTED)
+            attempType = isAddedItem
+              ? attemptTypes.SKIP
+              : isAnsUpdated && aType === attemptTypes.RIGHT
               ? attemptTypes.WRONG
-              : isAnsUpdated &&
-                aType === attemptTypes.WRONG &&
-                stuStatus === studentSide.SUBMITTED
+              : isAnsUpdated && aType === attemptTypes.WRONG
               ? attemptTypes.RIGHT
               : aType
 
@@ -404,30 +432,44 @@ export function verifyTeacherSide(
             .should('have.text', `${data.teacher[stuStatus][aType]}`)
           lcb.questionResponsePage
             .getMaxScore()
-            .should('have.text', `${data.points}`)
+            .should(
+              'have.text',
+              `${isAddedItem ? data.points + 2 : data.points}`
+            )
 
           itemPreview.verifyQuestionResponseCard(
             'MCQ_MULTI',
             attemptData,
-            attempType
+            attempType,
+            false,
+            isAddedItem
+          )
+
+          lcb.questionResponsePage
+            .getQuestionContainer(isAddedItem)
+            .as('updatecard')
+
+          lcb.questionResponsePage.verifyScoreAndPointsByCard(
+            cy.get('@updatecard'),
+            data.student[stuStatus][`${aType}`],
+            data.points
           )
           barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(
             attemptsData[ind],
-            ['Q1']
+            questions
           )
         })
       })
       students.forEach((student, ind) => {
         const { name, stuStatus } = student
-        it(`> verify Question centric view, ${stuStatus}, before regrade`, () => {
-          const attempType =
-            isAnsUpdated &&
-            aType === attemptTypes.RIGHT &&
-            stuStatus === studentSide.SUBMITTED
+        it(`> verify Question centric view, ${stuStatus} student, before regrade`, () => {
+          let attempType = aType
+          if (stuStatus === studentSide.SUBMITTED)
+            attempType = isAddedItem
+              ? attemptTypes.SKIP
+              : isAnsUpdated && aType === attemptTypes.RIGHT
               ? attemptTypes.WRONG
-              : isAnsUpdated &&
-                aType === attemptTypes.WRONG &&
-                stuStatus === studentSide.SUBMITTED
+              : isAnsUpdated && aType === attemptTypes.WRONG
               ? attemptTypes.RIGHT
               : aType
 
@@ -435,12 +477,15 @@ export function verifyTeacherSide(
             lcb.clickonQuestionsTab()
             cy.wait(3000)
             lcb.questionResponsePage.getDropDown().click({ force: true })
-            CypressHelper.getDropDownList().then((questions) => {
-              expect(questions).to.have.lengthOf(1)
+            CypressHelper.getDropDownList().then((questionsInDropDown) => {
+              expect(questionsInDropDown).to.have.lengthOf(questions.length)
+              if (isAddedItem) lcb.questionResponsePage.selectQuestion('Q2')
             })
 
             lcb.getQuestionCentricData(attemptsData, queCentric)
-            barGraphs.verifyQueBarBasedOnQueAttemptData(queCentric.Q1)
+            barGraphs.verifyQueBarBasedOnQueAttemptData(
+              queCentric[`${isAddedItem ? 'Q2' : 'Q1'}`]
+            )
           }
 
           lcb.questionResponsePage
@@ -462,22 +507,39 @@ export function verifyTeacherSide(
         })
       })
       students.forEach((student, _ind) => {
-        it('> verify express grader view', () => {
-          const { name, stuStatus } = student
+        it(`> verify express grader view for -${student.stuStatus} student, before regrade`, () => {
+          let { name } = student
+          const { stuStatus } = student
+          name = name.split(',').reverse().join(', ')
           lcb.header.clickOnExpressGraderTab()
 
-          expressGrader.getGridRowByStudent(
-            name.split(',').reverse().join(', ')
-          )
+          expressGrader.getGridRowByStudent(name)
           expressGrader.verifyScoreAndPerformance(
-            `${data.teacher[stuStatus][`${aType}`]}/${data.points}`,
+            `${data.teacher[stuStatus][`${aType}`]}/${
+              isAddedItem ? data.points + 2 : data.points
+            }`,
             _.round(
-              (data.teacher[stuStatus][`${aType}`] / data.points) * 100,
+              (data.teacher[stuStatus][`${aType}`] /
+                (isAddedItem ? data.points + 2 : data.points)) *
+                100,
               2
             )
           )
 
-          expressGrader.verifyNumberOfQuestions(1)
+          expressGrader.verifyNumberOfQuestions(questions.length)
+          expressGrader.verifyScoreGridColor(name, attemptsData[_ind].attempt)
+
+          _.entries(attemptsData[_ind].attempt).forEach((entry) => {
+            const score =
+              entry[1] === attemptTypes.MANUAL_GRADE ||
+              entry[1] === attemptTypes.SKIP
+                ? '-'
+                : data.teacher[stuStatus][`${aType}`]
+            this.getScoreforQueNum(entry[0]).should(
+              'have.text',
+              score.toString()
+            )
+          })
         })
       })
     }

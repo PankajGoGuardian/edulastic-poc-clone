@@ -251,8 +251,20 @@ const AudioControls = ({
           for (const i in mapOptById) {
             const item = mapOptById[i]
             const choiceAudioHowl = optionHowl[`choice_${i}`]
-            await audioPlayResolve(choiceAudioHowl)
-            await audioPlayResolve(optionHowl[item])
+
+            if (choiceAudioHowl) await audioPlayResolve(choiceAudioHowl)
+            else
+              Sentry.captureException(
+                new Error(
+                  `[AudioControls] Option audio missing for choice_${i}`
+                )
+              )
+
+            if (optionHowl[item]) await audioPlayResolve(optionHowl[item])
+            else
+              Sentry.captureException(
+                new Error(`[AudioControls] Option audio missing for ${item}`)
+              )
           }
         }
         asyncPlay()

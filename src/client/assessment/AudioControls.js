@@ -118,6 +118,8 @@ const AudioControls = ({
 
   // Playing audio
   const audioPlayResolve = (_howl) => {
+    if (!_howl) return
+
     const _prom = new Promise((resolve, reject) => {
       _howl?.load()
       if (_howl?.state() === 'loading' || _howl?.state() === 'unloaded') {
@@ -131,7 +133,9 @@ const AudioControls = ({
       })
 
       setCurrentHowl(_howl)
-      resolve(_howl)
+      _howl?.once('end', () => {
+        resolve(_howl)
+      })
     })
 
     _prom.catch((err) => {
@@ -247,8 +251,20 @@ const AudioControls = ({
           for (const i in mapOptById) {
             const item = mapOptById[i]
             const choiceAudioHowl = optionHowl[`choice_${i}`]
-            await audioPlayResolve(choiceAudioHowl)
-            await audioPlayResolve(optionHowl[item])
+
+            if (choiceAudioHowl) await audioPlayResolve(choiceAudioHowl)
+            else
+              Sentry.captureException(
+                new Error(
+                  `[AudioControls] Option audio missing for choice_${i}`
+                )
+              )
+
+            if (optionHowl[item]) await audioPlayResolve(optionHowl[item])
+            else
+              Sentry.captureException(
+                new Error(`[AudioControls] Option audio missing for ${item}`)
+              )
           }
         }
         asyncPlay()

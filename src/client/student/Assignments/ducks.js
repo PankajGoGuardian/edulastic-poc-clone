@@ -12,6 +12,7 @@ import {
   reportsApi,
   testActivityApi,
   testsApi,
+  TokenStorage,
 } from '@edulastic/api'
 import {
   test as testConst,
@@ -431,6 +432,30 @@ export const getLoadAssignmentSelector = createSelector(
   (state) => state.loadAssignment
 )
 
+function isSEB() {
+  return window.navigator.userAgent.includes('SEB')
+}
+
+function redirectToUrl(url) {
+  window.location.href = url
+}
+
+function getSebUrl({
+  testId,
+  testType,
+  assignmentId,
+  testActivityId,
+  groupId,
+}) {
+  const token = TokenStorage.getAccessToken()
+  return `${process.env.POI_APP_API_URI.replace(
+    'http',
+    'seb'
+  )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}${
+    testActivityId ? `/testActivity/${testActivityId}` : ``
+  }/token/${token}/settings.seb?classId=${groupId}`
+}
+
 // sagas
 // fetch and load assignments and reports for the student
 function* fetchAssignments() {
@@ -497,7 +522,21 @@ function* startAssignment({ payload }) {
       classId,
       isPlaylist = false,
       studentRecommendation,
+      safeBrowser,
     } = payload
+
+    if (safeBrowser && !isSEB()) {
+      const sebUrl = getSebUrl({
+        testId,
+        testType,
+        assignmentId,
+        groupId: classId,
+      })
+      yield put(push(`/home/assignments`))
+      yield call(redirectToUrl(sebUrl))
+      return
+    }
+
     if (!isPlaylist && !studentRecommendation) {
       if (!assignmentId || !testId) throw new Error('insufficient data')
     } else if (!testId) throw new Error('insufficient data')
@@ -806,17 +845,30 @@ function* launchAssignment({ payload }) {
         timedAssignment,
         hasInstruction,
         instruction,
+        safeBrowser = false,
       } = assignment
       if (lastActivity && lastActivity.status === 0) {
-        yield put(
-          resumeAssignmentAction({
+        if (safeBrowser && !isSEB()) {
+          yield put(push(`/home/assignments`))
+          const sebUrl = getSebUrl({
             testId,
             testType,
-            assignmentId,
             testActivityId: lastActivity._id,
-            classId: groupId,
+            assignmentId,
+            groupId,
           })
-        )
+          yield call(redirectToUrl, sebUrl)
+        } else {
+          yield put(
+            resumeAssignmentAction({
+              testId,
+              testType,
+              assignmentId,
+              testActivityId: lastActivity._id,
+              classId: groupId,
+            })
+          )
+        }
       } else {
         let maxAttempt
         if (assignment.maxAttempts) {
@@ -850,6 +902,7 @@ function* launchAssignment({ payload }) {
               assignmentId,
               testType,
               classId: groupId,
+              safeBrowser,
             })
           )
         } else {

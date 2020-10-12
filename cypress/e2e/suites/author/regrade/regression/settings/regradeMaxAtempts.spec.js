@@ -4,6 +4,7 @@ import Regrade from '../../../../../framework/author/tests/regrade/regrade'
 import {
   regradeOptions,
   studentSide,
+  redirectType,
 } from '../../../../../framework/constants/assignmentStatus'
 import {
   attemptTypes,
@@ -290,6 +291,7 @@ tests:{
         it('> redirect student', () => {
           lcb.selectCheckBoxByStudentName(attemptsdata2[0].name)
           lcb.clickOnRedirect()
+          lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
           lcb.clickOnRedirectSubmit()
         })
         it('> verify redirected student,', () => {

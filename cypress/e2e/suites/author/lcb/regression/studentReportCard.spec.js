@@ -481,8 +481,8 @@ describe(`${FileHelper.getSpecName(
       studentReportsCardPage.navigateBacktolcb()
       lcb.clickOnCardViewTab()
       lcb.selectCheckBoxByStudentName(students[1].name)
-      lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
       lcb.clickOnRedirect()
+      lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
       lcb.clickOnRedirectSubmit()
     })
     before('> login as student2 and attempt test', () => {

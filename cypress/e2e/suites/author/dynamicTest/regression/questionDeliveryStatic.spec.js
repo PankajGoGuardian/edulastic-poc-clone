@@ -15,6 +15,7 @@ import {
 import CypressHelper from '../../../../framework/util/cypressHelpers'
 import StandardBasedReportPage from '../../../../framework/author/assignments/standardBasedReportPage'
 import TestSettings from '../../../../framework/author/tests/testDetail/testSettingsPage'
+import { redirectType } from '../../../../framework/constants/assignmentStatus'
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const testLibraryPage = new TestLibrary()
@@ -588,6 +589,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           lcb.clickOnCardViewTab()
           lcb.checkSelectAllCheckboxOfStudent()
           lcb.clickOnRedirect()
+          lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
           lcb.clickOnRedirectSubmit()
         })
         it('> login as each student attempt and verify item delivered sequence for redirected test', () => {

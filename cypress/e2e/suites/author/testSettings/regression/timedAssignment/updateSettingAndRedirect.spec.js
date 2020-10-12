@@ -232,6 +232,9 @@ describe(`${FileHelper.getSpecName(
       liveClassboardPage.clickOnRedirect()
       liveClassboardPage.verifyTimeWhileRedirectIs(3)
       liveClassboardPage.updateTimeWhileRedirect(updatedtime)
+      liveClassboardPage.redirectPopup.selectRedirectPolicy(
+        redirectType.FEEDBACK_ONLY
+      )
       liveClassboardPage.clickOnRedirectSubmit()
     })
 

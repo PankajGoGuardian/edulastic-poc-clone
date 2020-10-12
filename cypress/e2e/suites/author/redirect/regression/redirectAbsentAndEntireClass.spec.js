@@ -141,7 +141,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.verifyRedirectIcon(stuName)
     })
     ;[0, 1].forEach((i) => {
-      it(`> hover and verify card attempt-${
+      it(`> verify student card attempt view for attempt-${
         !i ? 'not started(redirected)' : 'absent'
       }`, () => {
         const attempt = !i

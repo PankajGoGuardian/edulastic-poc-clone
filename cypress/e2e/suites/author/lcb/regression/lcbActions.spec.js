@@ -299,8 +299,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       // select inprogress student
       lcb.selectCheckBoxByStudentName(removeStudent[2].stuName)
       // click on Remove and assert
-      lcb.clickOnRemove()
-      // assert student card should not be present
+      lcb.clickOnRemove(false, true)
+      /*    // assert student card should not be present
       lcb
         .getStudentCardByStudentName(removeStudent[2].stuName)
         .should(
@@ -318,7 +318,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
 
       // verify student side assignment entry
       cy.login('student', removeStudent[2].email, password)
-      test.assignmentPage.getAssignmentButton().should('not.be.visible')
+      test.assignmentPage.getAssignmentButton().should('not.be.visible') */
     })
 
     it(" > removing 'Not Started' student verify", () => {

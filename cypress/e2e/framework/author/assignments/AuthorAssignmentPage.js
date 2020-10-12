@@ -105,7 +105,7 @@ class AuthorAssignmentPage {
 
     this.clickOnActions()
 
-    this.getOptionInDropDownByAttribute('duplicate').click({ force: true })
+    this.getOptionInDropDownByAttribute('duplicate').click()
 
     cy.contains('Continue to clone').click()
 

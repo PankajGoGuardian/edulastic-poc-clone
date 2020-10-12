@@ -270,7 +270,7 @@ describe(`${FileHelper.getSpecName(
             testReviewTab.clickOnExpandRow()
             // Verify All questions' presence along with thier correct answers and points
             testReviewTab.verifyQustionById(itemIds[index])
-            attempt[index].itemId = itemIds[index]
+            attempt[index].item = itemIds[index]
             itemPreview.verifyQuestionResponseCard(
               itemKeysInTest[index],
               attempt[index],
@@ -282,13 +282,30 @@ describe(`${FileHelper.getSpecName(
           })
         })
       })
+
+      context('> assignment summary', () => {
+        before('> click reports summary button', () => {
+          cy.login('teacher', Teacher.email, Teacher.pass)
+          testLibraryPage.sidebar.clickOnAssignment()
+          authorAssignmentPage.clickAssignmentSummary()
+        })
+        it('> verify navigation', () => {
+          cy.url().should(
+            'contain',
+            `author/reports/performance-by-students/test/${OriginalTestId}`
+          )
+          cy.get('[title="Insights"]').should('exist')
+        })
+      })
+
       context('> edit test', () => {
         before('> create an item', () => {
           item.createItem(newItemKey).then((id) => {
             // New Item Details
             newItemId = id
             testLibraryPage.sidebar.clickOnAssignment()
-            authorAssignmentPage.clickOnEditTest()
+            // TODO : below edit causing 403 in cleanup stage in automation, to be revert once https://snapwiz.atlassian.net/browse/EV-20572 is fixed
+            authorAssignmentPage.clickOnEditTest(true) // to remove 'true' later
             authorAssignmentPage.verifyEditTestURLUnAttempted(OriginalTestId)
           })
         })
@@ -364,21 +381,9 @@ describe(`${FileHelper.getSpecName(
           reportsPage.verifyMaxScoreOfQueByIndex(itemIds.length - 1, points[itemIds.length - 1]);
         }); */
       })
-      context('> assignment summary', () => {
-        before('> click reports summary button', () => {
-          cy.login('teacher', Teacher.email, Teacher.pass)
-          testLibraryPage.sidebar.clickOnAssignment()
-          authorAssignmentPage.clickAssignmentSummary()
-        })
-        it('> verify navigation', () => {
-          cy.url().should(
-            'contain',
-            `author/reports/performance-by-students/test/${newTestId}`
-          )
-          cy.get('[title="Insights"]').should('exist')
-        })
-      })
-      context('> unassign', () => {
+
+      // unasign dropdown option is removed from assignment page
+      context('> unassign from lcb', () => {
         before('login as teacher and unassign', () => {
           cy.login('teacher', Teacher.email, Teacher.pass)
           testLibraryPage.sidebar.clickOnAssignment()

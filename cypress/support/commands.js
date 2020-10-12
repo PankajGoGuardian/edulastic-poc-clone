@@ -185,7 +185,7 @@ Cypress.Commands.add(
     cy.server()
     cy.route('GET', '**/test-activity/**').as(`testActivity${++login_index}`)
     cy.route('GET', '**curriculum**').as('apiLoad')
-    cy.route('GET', '**assignments**').as('assignment')
+    cy.route('GET', '**assignments**').as(`assignment-${login_index}`)
     cy.route('POST', '**/auth/**').as('auth')
     cy.route('POST', '**/search/courses').as('searchCourse')
     cy.route('GET', '**/dashboard/**').as('teacherDashboard')
@@ -204,6 +204,7 @@ Cypress.Commands.add(
         break
 
       case 'student':
+        cy.wait(`@assignment-${login_index}`, { timeout: 120000 })
         cy.wait(`@testActivity${login_index}`, { timeout: 120000 })
         break
 
@@ -214,6 +215,7 @@ Cypress.Commands.add(
       default:
         break
     }
+    cy.route('GET', '**assignments**').as('assignment')
     // conditionally closing pendo guide if pops up
     if (Cypress.$('._pendo-close-guide').length > 0) {
       Cypress.$('._pendo-close-guide').click()

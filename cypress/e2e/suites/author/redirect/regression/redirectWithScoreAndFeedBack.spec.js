@@ -264,7 +264,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         attempt2.score,
         attempt2.perf,
         attempt2.attempt,
-        email
+        email,
+        true
       )
     })
 

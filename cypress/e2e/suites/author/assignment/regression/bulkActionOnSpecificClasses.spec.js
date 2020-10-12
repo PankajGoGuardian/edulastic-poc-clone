@@ -178,7 +178,9 @@ describe(`${FileHelper.getSpecName(
         getRandomStudent(classData.className, studData.username, 16, 30),
         studData.password
       )
-      studAssignmentPage.verifyAssignmentIslocked()
+      // NOT OPEN assignment should not be listed now
+      // studAssignmentPage.verifyAssignmentIslocked()
+      studAssignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
     it("> Pause 'in progress' assignments :", () => {
@@ -252,7 +254,9 @@ describe(`${FileHelper.getSpecName(
         getRandomStudent(classData.className, studData.username, 16, 30),
         studData.password
       )
-      studAssignmentPage.verifyAssignmentIslocked()
+      // NOT OPEN assignment should not be listed now
+      // studAssignmentPage.verifyAssignmentIslocked()
+      studAssignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
     it('> Open Paused assignments :', () => {

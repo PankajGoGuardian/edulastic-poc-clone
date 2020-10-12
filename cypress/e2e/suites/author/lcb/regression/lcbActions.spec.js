@@ -185,7 +185,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
         absentStudent[1].email
       )
       // verify student side assignment entry
-      cy.login('student', submitStudent[1].email, password)
+      cy.login('student', absentStudent[1].email, password)
       test.assignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
@@ -346,7 +346,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
         )
 
       // verify student side assignment entry
-      cy.login('student', removeStudent[2].email, password)
+      cy.login('student', removeStudent[3].email, password)
       test.assignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
@@ -438,9 +438,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
           `${++addStuCount} Submitted`,
           'after adding student total student count should change'
         )
-      // verify student side assignment entry
+      // NOT OPEN assingment should not be listed at student side now
       cy.login('student', students[2].email, password)
-      test.assignmentPage.verifyAssignmentIslocked()
+      test.assignmentPage.getAssignmentButton().should('not.be.visible')
+      // test.assignmentPage.verifyAssignmentIslocked()
+
+      // open the assingment and verify
       cy.login('teacher', teacher, password)
       teacherSidebar.clickOnAssignment()
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0)

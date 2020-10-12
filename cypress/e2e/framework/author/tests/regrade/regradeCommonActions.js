@@ -546,7 +546,6 @@ export function verifyTeacherSide(
 
           let { name } = student
           const { stuStatus } = student
-          const { attempt } = attemptsData[_ind]
           const questionTypeMap = {}
           let attempType = aType
 
@@ -602,11 +601,6 @@ export function verifyTeacherSide(
           })
 
           expressGrader.setToggleToResponse()
-          expressGrader.verifyResponseGrid(
-            isAnsUpdated ? { Q1: attempType } : attempt,
-            questionTypeMap,
-            name
-          )
 
           expressGrader
             .getScoreforQueNum(`${isAddedItem ? 'Q2' : 'Q1'}`)
@@ -726,7 +720,7 @@ export function manualEvaluation(
         )
 
         expressGrader.verifyScoreGridColor(student, attemptsData[0].attempt)
-
+        expressGrader.setToggleToScore()
         expressGrader
           .getScoreforQueNum(`${isAddedItem ? 'Q2' : 'Q1'}`)
           .should('have.text', data.manualpoints.toString())

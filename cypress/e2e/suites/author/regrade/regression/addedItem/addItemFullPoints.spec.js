@@ -117,7 +117,7 @@ describe(`${FileHelper.getSpecName(
 
     context('> verify teacherside', () => {
       const param1 = [data, testidByAttempt, usedStudents]
-      const param2 = [aStatus, aData, false, 1, true]
+      const param2 = [aStatus, aData, false, 1]
 
       before('login', () => {
         cy.login('teacher', Teacher.username, Teacher.password)

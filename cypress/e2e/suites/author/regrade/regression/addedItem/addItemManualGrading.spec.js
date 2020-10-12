@@ -12,6 +12,7 @@ import {
   createTestAndAssign,
   addItemAndRegrade,
   verifyTeacherSide,
+  manualEvaluation,
 } from '../../../../../framework/author/tests/regrade/regradeCommonActions'
 import ItemListPage from '../../../../../framework/author/itemList/itemListPage'
 
@@ -116,7 +117,7 @@ describe(`${FileHelper.getSpecName(
 
     context('> verify teacherside', () => {
       const param1 = [data, testidByAttempt, usedStudents]
-      const param2 = [aStatus, aData, false, 1, true]
+      const param2 = [aStatus, aData, false, 1]
 
       before('login', () => {
         cy.login('teacher', Teacher.username, Teacher.password)
@@ -125,11 +126,19 @@ describe(`${FileHelper.getSpecName(
         })
       })
 
-      if (aType.includes(attemptTypes.RIGHT))
+      if (aType.includes(attemptTypes.RIGHT)) {
         verifyTeacherSide(...param1, attemptTypes.RIGHT, ...param2)
 
-      if (aType.includes(attemptTypes.WRONG))
+        if (aStatus.includes(studentSide.SUBMITTED))
+          manualEvaluation(...param1, attemptTypes.RIGHT, aStatus, 1)
+      }
+
+      if (aType.includes(attemptTypes.WRONG)) {
         verifyTeacherSide(...param1, attemptTypes.WRONG, ...param2)
+
+        if (aStatus.includes(studentSide.SUBMITTED))
+          manualEvaluation(...param1, attemptTypes.WRONG, aStatus, 1)
+      }
     })
   })
 })

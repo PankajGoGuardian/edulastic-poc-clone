@@ -12,6 +12,7 @@ import {
   createTestAndAssign,
   updateEval,
   verifyTeacherSide,
+  manualEvaluation,
 } from '../../../../../framework/author/tests/regrade/regradeCommonActions'
 
 const { MCQ_MULTI } = require('../../../../../../fixtures/questionAuthoring')
@@ -111,30 +112,28 @@ describe(`${FileHelper.getSpecName(
     })
 
     context('> verify teacherside', () => {
+      const param1 = [data, testidByAttempt, usedStudents]
+      const param2 = [aStatus, aData]
+
       before('login', () => {
         cy.login('teacher', Teacher.username, Teacher.password)
         aType.forEach((att, ind) => {
           testidByAttempt[att] = vertestids[ind]
         })
       })
-      if (aType.includes(attemptTypes.RIGHT))
-        verifyTeacherSide(
-          data,
-          testidByAttempt,
-          usedStudents,
-          attemptTypes.RIGHT,
-          aStatus,
-          aData
-        )
-      if (aType.includes(attemptTypes.WRONG))
-        verifyTeacherSide(
-          data,
-          testidByAttempt,
-          usedStudents,
-          attemptTypes.WRONG,
-          aStatus,
-          aData
-        )
+
+      if (aType.includes(attemptTypes.RIGHT)) {
+        verifyTeacherSide(...param1, attemptTypes.RIGHT, ...param2)
+
+        if (aStatus.includes(studentSide.SUBMITTED))
+          manualEvaluation(...param1, attemptTypes.RIGHT, aStatus)
+      }
+      if (aType.includes(attemptTypes.WRONG)) {
+        verifyTeacherSide(...param1, attemptTypes.WRONG, ...param2)
+
+        if (aStatus.includes(studentSide.SUBMITTED))
+          manualEvaluation(...param1, attemptTypes.WRONG, aStatus)
+      }
     })
   })
 })

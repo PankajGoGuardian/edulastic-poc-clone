@@ -535,10 +535,9 @@ export function verifyTeacherSide(
               entry[1] === attemptTypes.SKIP
                 ? '-'
                 : data.teacher[stuStatus][`${aType}`]
-            this.getScoreforQueNum(entry[0]).should(
-              'have.text',
-              score.toString()
-            )
+            expressGrader
+              .getScoreforQueNum(entry[0])
+              .should('have.text', score.toString())
           })
         })
       })

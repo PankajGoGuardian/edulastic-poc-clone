@@ -1,4 +1,4 @@
-// @ts-check
+ 
 import { black, themeColor, white } from '@edulastic/colors'
 import { AutoComplete, Icon, Input } from 'antd'
 import { some } from 'lodash'

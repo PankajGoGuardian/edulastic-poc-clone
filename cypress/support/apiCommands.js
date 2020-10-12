@@ -1,7 +1,8 @@
 /// <reference types="Cypress"/>
 
 import uuidv4 from 'uuid/v4'
-import { getAccessToken } from '../../packages/api/src/utils/Storage'
+import { getAccessToken } from '@edulastic/api/src/utils/Storage'
+
 
 const ENV = Cypress.env('ENVIRONMENT') || 'local'
 const BASE_URL = Cypress.config('API_URL')

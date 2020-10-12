@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 var pdfjsViewer = require('pdfjs-dist/web/pdf_viewer.js') // pdfjs-dist - v2.1.266
 var { aws } = require('@edulastic/constants')
 var { uploadToS3 } = require('@edulastic/common')

@@ -45,7 +45,7 @@ import Tools from '../../common/Tools'
 import GraphEditTools from '../../components/GraphEditTools'
 import DrawingObjects from './DrawingObjects'
 import { ElementSettingsMenu } from './ElementSettingsMenu'
-import AppConfig from '../../../../../../../app-config'
+import AppConfig from '../../../../../../app-config'
 
 const trueColor = '#1fe3a1'
 const errorColor = '#ee1658'

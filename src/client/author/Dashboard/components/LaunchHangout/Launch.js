@@ -160,8 +160,8 @@ const Launch = ({
       return
     }
 
-    const CLIENT_ID = process.env.POI_APP_GOOGLE_CLIENT_ID
-    const API_KEY = process.env.POI_APP_GOOGLE_API_KEY
+    const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
+    const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
     if (CLIENT_ID && API_KEY) {
       const loadGapiClient = new Promise((resolve) => {
         window.gapi.load('client:auth2', resolve)

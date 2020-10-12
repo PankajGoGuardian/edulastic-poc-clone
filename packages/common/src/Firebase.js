@@ -1,9 +1,8 @@
-// @ts-check
 import * as Firebase from 'firebase/app'
 // Required for side-effects
 import 'firebase/firestore'
 import { useState, useEffect } from 'react'
-import { firebaseConfig } from '../../../app-config'
+import { firebaseConfig } from '../../../src/app-config'
 
 Firebase.initializeApp({
   apiKey: firebaseConfig.apiKey,

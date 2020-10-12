@@ -7,7 +7,7 @@ import { notification } from '@edulastic/common'
 
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../app-config'
 
 const RedirectToTest = ({ location: { search }, history, user }) => {
   const handleFailed = (e) => {

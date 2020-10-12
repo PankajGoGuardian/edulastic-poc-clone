@@ -26,7 +26,7 @@ import MathTool from './MathTool'
 import protractorImg from './assets/protractor.png'
 import centimeterImg from './assets/ruler.png'
 
-import AppConfig from '../../../../../../app-config'
+import AppConfig from '../../../../../app-config'
 
 const lineTypes = [
   drawTools.FREE_DRAW,

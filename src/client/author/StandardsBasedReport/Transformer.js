@@ -1,4 +1,4 @@
-// @ts-check
+ 
 import { groupBy } from 'lodash'
 import memoizeOne from 'memoize-one'
 

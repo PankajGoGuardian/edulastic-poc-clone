@@ -1,6 +1,6 @@
 import API from './utils/API'
 
-const api = new API(`${process.env.POI_APP_API_URI}`)
+const api = new API(`${process.env.REACT_APP_API_URI}`)
 const convertLatex2Js = '/math/convertLatex2Js'
 
 const convert = (data) =>

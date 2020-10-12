@@ -5,7 +5,7 @@ import { MathKeyboard, reformatMathInputLatex, offset } from '@edulastic/common'
 import { MathInputStyles, DraggableKeyboard, EmptyDiv } from './MathInputStyles'
 
 import { WithResources } from '../../HOC/withResources'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../../src/app-config'
 
 const StaticMath = ({
   style,

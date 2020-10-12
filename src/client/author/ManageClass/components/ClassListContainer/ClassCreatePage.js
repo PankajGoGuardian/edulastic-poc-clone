@@ -66,7 +66,7 @@ const ClassCreatePage = ({
                 !isCleverDistrict &&
                 !isClassLink && (
                   <GoogleLogin
-                    clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                     render={(renderProps) => (
                       <EduButton isBlue onClick={renderProps.onClick}>
                         <IconGoogleClassroom />

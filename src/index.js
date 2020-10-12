@@ -13,12 +13,13 @@ import 'antd/dist/antd.css'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import { init as SentryInit } from '@sentry/browser'
 import { Integrations } from '@sentry/tracing'
-import './index.css'
+import './client/index.css'
 import { updateSentryScope } from '@edulastic/api/src/utils/Storage'
-import App from './App'
-import configureStore, { history } from './configureStore'
-import AppConfig from '../../app-config'
-import { isMobileDevice, isIOS } from './platform'
+import App from './client/App'
+import configureStore, { history } from './client/configureStore'
+import AppConfig from './app-config'
+import { isMobileDevice, isIOS } from './client/platform'
+import * as serviceWorker from './serviceWorker'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -122,23 +123,9 @@ const RootComp = () => (
   </I18nextProvider>
 )
 ReactDOM.render(<RootComp />, document.getElementById('react-app'))
-// hmr
-if (module.hot) {
-  module.hot.accept('./App', () => {
-    const NextApp = require('./App').default // eslint-disable-line global-require
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <NextApp />
-          </ConnectedRouter>
-        </Provider>
-      </I18nextProvider>,
-      document.getElementById('react-app')
-    )
-  })
-}
 
 if (window.Cypress) {
   window.store = store
 }
+
+serviceWorker.register()

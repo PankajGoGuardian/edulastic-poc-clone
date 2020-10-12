@@ -1,4 +1,4 @@
-// @ts-check
+ 
 import { connect } from 'react-redux'
 import {
   realtimeGradebookActivityAddAction,

@@ -1,6 +1,6 @@
 import { get, without, countBy } from 'lodash'
 import { createHmac } from 'crypto-browserify'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../../src/app-config'
 
 const allowedRoles = ['teacher', 'school-admin', 'district-admin']
 const minFeatures = 5

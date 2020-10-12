@@ -1,10 +1,10 @@
 // Don't put any sensitive information
 // https://edupoc.s3.amazonaws.com/edulasticv2-development/JS/thirdpartylib/ev2-scientificcalc/CalcSS3.js
 const cdnURI =
-  process.env.POI_APP_CDN_URI ||
+  process.env.REACT_APP_CDN_URI ||
   'https://cdnedupoc.snapwiz.net/edulasticv2-development'
-const appEnv = process.env.POI_APP_ENV
-const appStage = process.env.POI_APP_STAGE
+const appEnv = process.env.REACT_APP_ENV
+const appStage = process.env.REACT_APP_STAGE
 // __CLIENT_VERSION__ is injected to envs in poi.config.js
 // using it to avoid importing json for just version
 const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
@@ -21,25 +21,25 @@ const sentryWhiteListURLRegex =
 const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`
 
 const sentryURI =
-  process.env.POI_APP_SENTRY_DSN || process.env.POI_APP_SENTRY_URI
+  process.env.REACT_APP_SENTRY_DSN || process.env.REACT_APP_SENTRY_URI
 const segmentURI =
-  process.env.POI_APP_SEGMENT_URI ||
+  process.env.REACT_APP_SEGMENT_URI ||
   `${thirdPartyLibPath}/segmentjs/v4.2.2/analytics.js`
-const segmentVersion = process.env.POI_APP_SEGMENT_VERSION || '4.2.2'
-const isSegmentEnabled = process.env.POI_APP_ENABLE_SEGMENT === 'true'
+const segmentVersion = process.env.REACT_APP_SEGMENT_VERSION || '4.2.2'
+const isSegmentEnabled = process.env.REACT_APP_ENABLE_SEGMENT === 'true'
 const segmentHashSecret =
-  process.env.POI_APP_SEGMENT_HASH_SECRET ||
+  process.env.REACT_APP_SEGMENT_HASH_SECRET ||
   'ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH'
 const v1RedirectDecryptSalt = process.env.REDIRECT_DECRYPT_SALT || 436792765
 
 export const firebaseConfig = {
   apiKey:
     process.env
-      .POI_APP_FIREBASE_API_KEY /* || "AIzaSyA_2mdY_l-tHgy5LvQigdNmVmqABdx7458" */,
+      .REACT_APP_FIREBASE_API_KEY /* || "AIzaSyA_2mdY_l-tHgy5LvQigdNmVmqABdx7458" */,
   authDomain:
     process.env
-      .POI_APP_FIREBASE_AUTH_DOMAIN /* || "ev2-dev-88215.firebaseapp.com" */,
-  projectId: process.env.POI_APP_FIREBASE_PROJECT_ID /* || "ev2-dev-88215" */,
+      .REACT_APP_FIREBASE_AUTH_DOMAIN /* || "ev2-dev-88215.firebaseapp.com" */,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID /* || "ev2-dev-88215" */,
 }
 
 const sentryIgnoreErrors = ['ResizeObserver loop limit exceeded']

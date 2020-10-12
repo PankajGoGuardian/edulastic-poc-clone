@@ -1,4 +1,4 @@
-// @ts-check
+ 
 import { sortTestItemQuestions } from '../author/dataUtils'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')

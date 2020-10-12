@@ -11,7 +11,6 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
 const path = require('path')
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 const packageJson = require('./package.json')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 
@@ -99,6 +98,16 @@ module.exports = override(
     // override with our config
     config.module.rules = setIn(config.module.rules, [1, 'oneOf'], rules)
 
+    config.plugins = config.plugins.filter(
+      (plugin) => !(plugin instanceof webpack.optimize.AggressiveMergingPlugin)
+    )
+
+    if (isProduction) {
+      config.plugins.unshift(
+        new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly
+      )
+    }
+
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env': {
@@ -112,13 +121,7 @@ module.exports = override(
         __TEST__: false,
       })
     )
-    config.plugins.push(
-      new LodashModuleReplacementPlugin({
-        caching: true,
-        collections: true,
-        shorthands: true,
-      })
-    )
+
     config.plugins.push(new MomentLocalesPlugin())
 
     // config.plugins.push(
@@ -138,6 +141,50 @@ module.exports = override(
 
     config.plugins.push(new ProgressBarPlugin())
 
+    /* eslint-enable no-param-reassign */
+
+    if (process.env.QUICK_BUILD) {
+      config.output.sourceMap = false
+      config.output.minimize = false
+    }
+
+    config.output.path = path.resolve(__dirname, 'dist')
+
+    // chunking optimization
+    if (!isProduction) {
+      config.output.filename = 'app.js'
+      config.output.chunkFilename = '[name].chunk.js'
+    } else {
+      config.devtool = false // disable sourcemaps on production
+      config.output.filename = 'app.[chunkhash:8].js'
+      config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
+      // add chunk split optimizations
+      config.optimization = {
+        ...(config.optimization || {}),
+        runtimeChunk: 'single',
+        splitChunks: {
+          chunks: 'all',
+          maxInitialRequests: Infinity,
+          minSize: 0,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name(module) {
+                // get the name. E.g. node_modules/packageName/not/this/part.js
+                // or node_modules/packageName
+                const packageName = module.context.match(
+                  /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+                )[1]
+
+                // npm package names are URL-safe, but some servers don't like @ symbols
+                return `vendor.lib.${packageName.replace('@', '')}`
+              },
+            },
+          },
+        },
+      }
+    }
+
     /** Uncomment to have a copy of files written on disk */
     // fs.writeFileSync(
     // 	path.resolve(__dirname, `./cra_wp_compiled.js`),
@@ -151,17 +198,6 @@ module.exports = override(
     // 	}
     // )
     /** Uncomment to have a copy of files written on disk */
-
-    /* eslint-enable no-param-reassign */
-
-    if (process.env.PUBLIC_URL) {
-      config.output.publicUrl = process.env.PUBLIC_URL
-    }
-
-    if (process.env.QUICK_BUILD) {
-      config.output.sourceMap = false
-      config.output.minimize = false
-    }
 
     return config
   }

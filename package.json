@@ -23,7 +23,7 @@
     "dev:extension": "webpack-dev-server --open --config src/chrome-extension/webpack.config.js",
     "build:extension": "webpack --config src/chrome-extension/webpack.config.js",
     "start": "APP_MODE_DEV=1 react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "NODE_ENV=production react-app-rewired --max_old_space_size=4096 build",
     "prod-serve": "serve -s dist -p 3001",
     "test": "jest --coverage && ava",
     "jest": "jest",
@@ -89,7 +89,6 @@
     "jsxgraph": "^0.99.7",
     "keyboardevent-key-polyfill": "^1.1.0",
     "loadjs": "^4.2.0",
-    "lodash-webpack-plugin": "^0.11.5",
     "lodash": "^4.17.11",
     "mathjs": "^5.8.0",
     "mathquill": "^0.10.1-a",
@@ -161,6 +160,9 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "postcss-flexbugs-fixes": "^4.1.0",
+    "postcss-loader": "3.0.0",
+    "postcss-preset-env": "^6.6.0",
     "@babel/core": "^7.11.6",
     "@commitlint/cli": "11.0.0",
     "@storybook/addon-actions": "^5.0.11",

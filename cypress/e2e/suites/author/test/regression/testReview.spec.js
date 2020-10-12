@@ -255,8 +255,8 @@ describe(`${FileHelper.getSpecName(
             cy.saveItemDetailToDelete(itemId)
             // testLibraryPage.searchFilters.waitForSearchResponse();
             // testAddItemTab.header.clickOnReview();
-            testReviewTab.verifyQustionById(itemIds[0])
-            testReviewTab.asesrtPointsByid(itemIds[0], points[0])
+            testReviewTab.verifyQustionById(itemId)
+            testReviewTab.asesrtPointsByid(itemId, points[0])
           })
         })
         it('>verify summary after edit', () => {

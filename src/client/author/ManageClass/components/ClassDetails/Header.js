@@ -152,13 +152,18 @@ const Header = ({
 
   const classDetails = (
     <>
-      <div>{name}</div>
+      {name}
       <Institution>
         {districtName ? `${districtName}, ` : ''}
         {institutionName}
       </Institution>
     </>
   )
+
+  const district = districtName ? `${districtName}, ` : '' ;
+
+  const classDetail = name + "\n" +
+  district + institutionName;
 
   const handleCleverSync = () => {
     const classList = [{ ...selectedClass, course: selectedClass?.course?.id }]
@@ -201,7 +206,7 @@ const Header = ({
   }
 
   return (
-    <MainHeader Icon={IconManage} headingText={classDetails}>
+    <MainHeader Icon={IconManage} titleText={classDetail} titleMaxWidth="650px" headingText={classDetails}>
       <div style={{ display: 'flex', alignItems: 'right' }}>
         {showDropDown ? (
           <SelectStyled

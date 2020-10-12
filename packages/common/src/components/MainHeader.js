@@ -20,10 +20,15 @@ import { toggleSideBarAction } from '../../../../src/client/author/src/actions/t
 const MainHeader = ({
   children,
   headingText,
+  titleText ,
   Icon,
   toggleSideBar,
   ...restProps
-}) => (
+}) => {
+
+const title= titleText ?  titleText : headingText;
+
+  return (
   <HeaderWrapper {...restProps}>
     <Affix
       className="fixed-header"
@@ -42,7 +47,7 @@ const MainHeader = ({
                 <Icon />
               </TitleIcon>
             )}
-            <TitleWrapper {...restProps} title={headingText} data-cy="title">
+            <TitleWrapper {...restProps} title={title} data-cy="title">
               {headingText}
             </TitleWrapper>
             {restProps.headingSubContent}
@@ -52,7 +57,8 @@ const MainHeader = ({
       </Container>
     </Affix>
   </HeaderWrapper>
-)
+);
+}
 
 MainHeader.propTypes = {
   children: PropTypes.any.isRequired,

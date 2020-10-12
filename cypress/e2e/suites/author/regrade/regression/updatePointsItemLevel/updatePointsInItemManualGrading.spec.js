@@ -129,7 +129,7 @@ describe(`${FileHelper.getSpecName(
           manualEvaluation(...param1, attemptTypes.RIGHT, aStatus)
       }
       if (aType.includes(attemptTypes.PARTIAL_CORRECT)) {
-        verifyTeacherSide(...param1, attemptTypes.WRONG, ...param2)
+        verifyTeacherSide(...param1, attemptTypes.PARTIAL_CORRECT, ...param2)
 
         if (aStatus.includes(studentSide.SUBMITTED))
           manualEvaluation(...param1, attemptTypes.PARTIAL_CORRECT, aStatus)

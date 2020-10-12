@@ -57,7 +57,7 @@ describe(`${FileHelper.getSpecName(
     },
   }
 
-  const aType = [attemptTypes.RIGHT, attemptTypes.PARTIAL_CORRECT]
+  const aType = [attemptTypes.RIGHT, attemptTypes.WRONG]
   const aStatus = [studentSide.SUBMITTED, studentSide.IN_PROGRESS]
   const testids = []
   const vertestids = []

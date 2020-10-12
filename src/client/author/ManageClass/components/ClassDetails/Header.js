@@ -3,6 +3,7 @@ import {
   EduButton,
   TypeToConfirmModal,
   notification,
+  SimpleConfirmModal
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -64,6 +65,7 @@ const Header = ({
   added,
   archiveClass,
   location,
+  unarchiveClass,
   history,
   entity,
 }) => {
@@ -78,6 +80,7 @@ const Header = ({
 
   const { _id, districtId } = entity
   const [showModal, setShowModal] = useState(false)
+  const [showUnarchiveModal, setShowUnarchiveModal] = useState(false)
   const {
     name,
     type,
@@ -188,6 +191,14 @@ const Header = ({
   })
 
   const showDropDown = Object.values(options).filter((o) => o).length > 1
+
+  const handleUnarchiveClass = () => {
+    unarchiveClass({ groupId: _id, exitPath, isGroup: type !== 'class' })
+    setShowUnarchiveModal(false)
+  }
+  const handleUnarchiveClassCancel = () => {
+    setShowUnarchiveModal(false)
+  }
 
   return (
     <MainHeader Icon={IconManage} headingText={classDetails}>
@@ -319,6 +330,26 @@ const Header = ({
             <IconPlusCircle />
             Add Co-Teacher
           </EduButton>
+        )}
+        {active !== 1 && (
+          <EduButton isBlue onClick={() => setShowUnarchiveModal(true)}>
+            UNARCHIVE
+          </EduButton>
+        )}
+        {showUnarchiveModal && (
+          <SimpleConfirmModal
+            visible={showUnarchiveModal}
+            title={`Unarchive ${typeText}`}
+            description={
+              <p style={{ margin: '5px 0' }}>
+                Are you sure you want to Unarchive{' '}
+                <LightGreenSpan>{name}</LightGreenSpan>?
+              </p>
+            }
+            buttonText="Unarchive"
+            onProceed={handleUnarchiveClass}
+            onCancel={handleUnarchiveClassCancel}
+          />
         )}
         {active === 1 && (
           <Dropdown

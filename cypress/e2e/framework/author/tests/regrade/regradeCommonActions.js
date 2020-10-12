@@ -602,7 +602,11 @@ export function verifyTeacherSide(
           })
 
           expressGrader.setToggleToResponse()
-          expressGrader.verifyResponseGrid(attempt, questionTypeMap, name)
+          expressGrader.verifyResponseGrid(
+            isAnsUpdated ? { Q1: attempType } : attempt,
+            questionTypeMap,
+            name
+          )
 
           expressGrader
             .getScoreforQueNum(`${isAddedItem ? 'Q2' : 'Q1'}`)

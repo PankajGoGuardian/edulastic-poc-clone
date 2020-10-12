@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, keyBy, uniqBy } from 'lodash'
+import { get, isEmpty, keyBy, uniqBy, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Select, Spin } from 'antd'
@@ -231,7 +231,10 @@ const StandardsFilters = ({
     if (standardsFilteresReceiveCount.current === 0) {
       const search = qs.parse(location.search.substring(1))
       // filters fetched on page load
-      const onLoadFilters = get(standardsFilters, 'filters', [])
+      const onLoadFilters = pickBy(
+        get(standardsFilters, 'filters', {}),
+        (f) => f !== 'All' && !isEmpty(f)
+      )
       const onLoadTestIds = get(standardsFilters, 'testIds')
       // check if testIds in url are valid (present in the array)
       const urlTestIds = onLoadTestIds || search.testIds || []

@@ -79,6 +79,7 @@ const SortableQuestionItem = SortableElement(
     groupId,
     qId,
     clearHighlighted,
+    resetTimeSpentOnQuestion,
   }) => (
     <div
       onClick={() => {
@@ -119,6 +120,7 @@ const SortableQuestionItem = SortableElement(
         groupId={groupId}
         qId={qId}
         clearHighlighted={clearHighlighted}
+        resetTimeSpentOnQuestion={resetTimeSpentOnQuestion}
       />
     </div>
   )
@@ -293,33 +295,13 @@ class Questions extends React.Component {
   constructor(props) {
     super(props)
     this.containerRef = React.createRef()
+    this.state = {
+      currentEditQuestionIndex: -1,
+    }
   }
 
-  static propTypes = {
-    list: PropTypes.array,
-    questionsById: PropTypes.object,
-    addQuestion: PropTypes.func.isRequired,
-    updateQuestion: PropTypes.func.isRequired,
-    deleteQuestion: PropTypes.func.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
-    changePreview: PropTypes.func.isRequired,
-    previewMode: PropTypes.string.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    noCheck: PropTypes.bool,
-    answersById: PropTypes.object,
-    highlighted: PropTypes.string,
-  }
-
-  static defaultProps = {
-    list: [],
-    questionsById: {},
-    noCheck: false,
-    answersById: {},
-    highlighted: undefined,
-  }
-
-  state = {
-    currentEditQuestionIndex: -1,
+  componentDidMount() {
+    this.resetTimeSpentOnQuestion()
   }
 
   scrollToBottom = () => {
@@ -330,6 +312,10 @@ class Questions extends React.Component {
         elem.scrollTop = elem.scrollHeight - elem.clientHeight
       }
     }
+  }
+
+  resetTimeSpentOnQuestion = () => {
+    window.localStorage.setItem('docAssessmentLastTimestamp', Date.now())
   }
 
   handleAddQuestion = (
@@ -591,6 +577,7 @@ class Questions extends React.Component {
                     clearHighlighted={clearHighlighted}
                     groupId={groupId}
                     qId={qId}
+                    resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
                   />
                 )
               )}
@@ -636,6 +623,29 @@ class Questions extends React.Component {
       </>
     )
   }
+}
+
+Questions.propTypes = {
+  list: PropTypes.array,
+  questionsById: PropTypes.object,
+  addQuestion: PropTypes.func.isRequired,
+  updateQuestion: PropTypes.func.isRequired,
+  deleteQuestion: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  changePreview: PropTypes.func.isRequired,
+  previewMode: PropTypes.string.isRequired,
+  viewMode: PropTypes.string.isRequired,
+  noCheck: PropTypes.bool,
+  answersById: PropTypes.object,
+  highlighted: PropTypes.string,
+}
+
+Questions.defaultProps = {
+  list: [],
+  questionsById: {},
+  noCheck: false,
+  answersById: {},
+  highlighted: undefined,
 }
 
 const enhance = compose(

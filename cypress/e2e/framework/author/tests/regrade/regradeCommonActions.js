@@ -30,6 +30,8 @@ const barGraphs = new BarGraph()
 const itemPreview = new PreviewItemPopup()
 const lcb = new LiveClassboardPage()
 
+const questData = require('../../../../../fixtures/questionAuthoring')
+
 const { _ } = Cypress
 let attemptsData
 const queCentric = {}
@@ -406,6 +408,7 @@ export function verifyTeacherSide(
     }' item regrade-'attempted as ${aType}', and submitted`,
     () => {
       before('>click assignments', () => {
+        expressGrader.clickOnExit()
         testLibraryPage.sidebar.clickOnAssignment()
         authorAssignmentsPage.clickOnLCBbyTestId(testidByAttempt[aType])
         attemptsData = mapScoreToAttemptdata(
@@ -539,11 +542,37 @@ export function verifyTeacherSide(
       })
       students.forEach((student, _ind) => {
         it(`> verify express grader view for -"${student.stuStatus}" student, before regrade`, () => {
+          expressGrader.clickOnExit()
+
           let { name } = student
           const { stuStatus } = student
+          const { attempt } = attemptsData[_ind]
+          const questionTypeMap = {}
+          let attempType = aType
+
+          if (stuStatus === studentSide.SUBMITTED)
+            attempType = isAddedItem
+              ? attemptTypes.SKIP
+              : isAnsUpdated && aType === attemptTypes.RIGHT
+              ? attemptTypes.WRONG
+              : isAnsUpdated && aType === attemptTypes.WRONG
+              ? attemptTypes.RIGHT
+              : aType
+
+          lcb.getQuestionTypeMap(
+            isAddedItem
+              ? ['MCQ_MULTI.5', 'MCQ_MULTI.5']
+              : isAnsUpdated
+              ? ['MCQ_MULTI.6']
+              : ['MCQ_MULTI.5'],
+            questData,
+            questionTypeMap
+          )
+
           name = name.split(',').reverse().join(', ')
           lcb.header.clickOnExpressGraderTab()
 
+          expressGrader.setToggleToScore()
           expressGrader.getGridRowByStudent(name)
           expressGrader.verifyScoreAndPerformance(
             `${data.teacher[stuStatus][`${aType}`]}/${
@@ -571,6 +600,21 @@ export function verifyTeacherSide(
               .getScoreforQueNum(entry[0])
               .should('have.text', score.toString())
           })
+
+          expressGrader.setToggleToResponse()
+          expressGrader.verifyResponseGrid(attempt, questionTypeMap, name)
+
+          expressGrader
+            .getScoreforQueNum(`${isAddedItem ? 'Q2' : 'Q1'}`)
+            .click()
+          expressGrader.questionResponsePage.verifyQuestionResponseCard(
+            undefined,
+            'MCQ_MULTI',
+            attempType,
+            attemptData,
+            false,
+            name
+          )
         })
       })
     }
@@ -589,6 +633,7 @@ export function manualEvaluation(
     '> update and verify points in question centric view, for student "submitted" before regrade',
     () => {
       before('> set attempt data', () => {
+        expressGrader.clickOnExit()
         testLibraryPage.sidebar.clickOnDashboard()
         testLibraryPage.sidebar.clickOnAssignment()
         authorAssignmentsPage.clickOnLCBbyTestId(testidByAttempt[aType])

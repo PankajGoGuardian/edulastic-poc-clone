@@ -6,7 +6,6 @@ import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getOrgDataFromSARFilter } from '../common/filterDataDucks'
 
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST =
   '[reports] get reports performance by students request'
@@ -30,15 +29,10 @@ export const getPerformanceByStudentsRequestAction = createAction(
 export const stateSelector = (state) =>
   state.reportReducer.reportPerformanceByStudentsReducer
 
-const _getReportsPerformanceByStudents = createSelector(
+export const getReportsPerformanceByStudents = createSelector(
   stateSelector,
   (state) => state.performanceByStudents
 )
-
-export const getReportsPerformanceByStudents = (state) => ({
-  ..._getReportsPerformanceByStudents(state),
-  metaInfo: getOrgDataFromSARFilter(state),
-})
 
 export const getReportsPerformanceByStudentsLoader = createSelector(
   stateSelector,
@@ -66,8 +60,8 @@ const initialState = {
 }
 
 export const reportPerformanceByStudentsReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS]: (

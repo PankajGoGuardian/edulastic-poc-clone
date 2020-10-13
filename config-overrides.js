@@ -9,7 +9,6 @@ const {
 const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
-// const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
 const path = require('path')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const packageJson = require('./package.json')
@@ -35,12 +34,9 @@ module.exports = override(
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
 
-    // config.module.rules[0].parser.requireEnsure = true
+    config.module.rules[0].parser.requireEnsure = true
 
-    config.module.noParse = /pdfjs-dist/
-    // config.resolve.plugins = config.resolve.plugins.filter(
-    //   (plugin) => !(plugin instanceof ModuleScopePlugin)
-    // )
+    // config.module.noParse = /pdfjs-dist/
 
     // add our global node modules if in workspace
     // config.resolve.modules.push(rootNodeModDir)
@@ -99,15 +95,11 @@ module.exports = override(
     // override with our config
     config.module.rules = setIn(config.module.rules, [1, 'oneOf'], rules)
 
-    // config.plugins = config.plugins.filter(
-    //   (plugin) => !(plugin instanceof webpack.optimize.AggressiveMergingPlugin)
-    // )
-
-    // if (isProduction) {
-    //   config.plugins.unshift(
-    //     new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly
-    //   )
-    // }
+    if (isProduction) {
+      config.plugins.unshift(
+        new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly
+      )
+    }
 
     config.plugins.push(
       new webpack.DefinePlugin({

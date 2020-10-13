@@ -13,6 +13,7 @@ import {
   StyledCard,
   StyledH3,
   StyledSignedBarContainer,
+  NoDataContainer,
 } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
@@ -129,6 +130,10 @@ const PeerPerformance = ({
   }
 
   const assessmentName = get(settings, 'selectedTest.title', '')
+
+  if (settings.selectedTest && !settings.selectedTest.key) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
+  }
 
   return (
     <div>

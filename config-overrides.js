@@ -35,8 +35,9 @@ module.exports = override(
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
 
-    config.module.rules[0].parser.requireEnsure = true
+    // config.module.rules[0].parser.requireEnsure = true
 
+    config.module.noParse = /pdfjs-dist/
     // config.resolve.plugins = config.resolve.plugins.filter(
     //   (plugin) => !(plugin instanceof ModuleScopePlugin)
     // )

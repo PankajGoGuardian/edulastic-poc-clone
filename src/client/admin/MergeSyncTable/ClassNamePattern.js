@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Select } from 'antd'
+import { CheckboxLabel } from '@edulastic/common'
 import CancelApplyActions from './CancelApplyActions'
 import { CLASS_NAME_PATTERN_CONFIG, DISABLE_SUBMIT_TITLE } from '../Data'
-import { CheckboxLabel } from '@edulastic/common'
 
 const { Option } = Select
 
@@ -36,7 +36,7 @@ export default function ClassNamePattern({
       orgId,
       orgType,
       classNamePattern: selectState,
-      overrideClassName: overrideClassNameState,
+      // overrideClassName: overrideClassNameState,
       isClasslink,
     })
   const onOverrideChange = ({ target }) => {

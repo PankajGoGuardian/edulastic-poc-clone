@@ -8,7 +8,7 @@ const {
 } = require('customize-cra')
 const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
-// const { setIn, getIn } = require('timm')
+const { setIn, getIn } = require('timm')
 // const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
 const path = require('path')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
@@ -44,59 +44,59 @@ module.exports = override(
     // add our global node modules if in workspace
     // config.resolve.modules.push(rootNodeModDir)
 
-    // let rules = getIn(config.module.rules, [1, 'oneOf'])
+    let rules = getIn(config.module.rules, [1, 'oneOf'])
 
-    // rules = rules.map((rule) => {
-    //   // remove the presets already in babel and rely on our preset
-    //   if (
-    //     rule.test &&
-    //     rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
-    //   ) {
-    //     const overrideRule = { ...rule }
+    rules = rules.map((rule) => {
+      // remove the presets already in babel and rely on our preset
+      if (
+        rule.test &&
+        rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
+      ) {
+        const overrideRule = { ...rule }
 
-    //     delete overrideRule.options.presets
-    //     delete overrideRule.options.plugins
-    //     // rely on our babelrc for transforms
-    //     overrideRule.options.extends = path.resolve(
-    //       __dirname,
-    //       './babel.config.js'
-    //     )
+        delete overrideRule.options.presets
+        delete overrideRule.options.plugins
+        // rely on our babelrc for transforms
+        overrideRule.options.extends = path.resolve(
+          __dirname,
+          './babel.config.js'
+        )
 
-    //     return overrideRule
-    //   }
+        return overrideRule
+      }
 
-    //   if (rule.test && rule.test.toString() === /\.(js|mjs)$/.toString()) {
-    //     const overrideRule = { ...rule }
+      if (rule.test && rule.test.toString() === /\.(js|mjs)$/.toString()) {
+        const overrideRule = { ...rule }
 
-    //     delete overrideRule.options.presets
+        delete overrideRule.options.presets
 
-    //     // rely on our babelrc for transforms
-    //     overrideRule.options.extends = path.resolve(
-    //       __dirname,
-    //       './babel.config.js'
-    //     )
+        // rely on our babelrc for transforms
+        overrideRule.options.extends = path.resolve(
+          __dirname,
+          './babel.config.js'
+        )
 
-    //     return overrideRule
-    //   }
+        return overrideRule
+      }
 
-    //   if (isProduction) {
-    //     /** These are dev deps and only used in development.
-    //      * Exclude from prod vendors */
-    //     config.externals = {
-    //       'redux-freeze': 'redux-freeze',
-    //       '@welldone-software/why-did-you-render':
-    //         '@welldone-software/why-did-you-render',
-    //     }
-    //   }
+      if (isProduction) {
+        /** These are dev deps and only used in development.
+         * Exclude from prod vendors */
+        config.externals = {
+          'redux-freeze': 'redux-freeze',
+          '@welldone-software/why-did-you-render':
+            '@welldone-software/why-did-you-render',
+        }
+      }
 
-    //   // add strict context on this imports - ideally for isomorphic-unfetch
-    //   config.module.strictThisContextOnImports = true
+      // add strict context on this imports - ideally for isomorphic-unfetch
+      // config.module.strictThisContextOnImports = true
 
-    //   return rule
-    // })
+      return rule
+    })
 
     // override with our config
-    // config.module.rules = setIn(config.module.rules, [1, 'oneOf'], rules)
+    config.module.rules = setIn(config.module.rules, [1, 'oneOf'], rules)
 
     // config.plugins = config.plugins.filter(
     //   (plugin) => !(plugin instanceof webpack.optimize.AggressiveMergingPlugin)

@@ -170,7 +170,7 @@ const AssessmentContainer = ({
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
-  const assignmentObj = assignmentById[currentAssignment]
+  const assignmentObj = currentAssignment && assignmentById[currentAssignment]
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
@@ -573,7 +573,7 @@ const AssessmentContainer = ({
     }
   }, [savingResponse])
 
-  if (loading || !assignmentObj) {
+  if (loading || (!assignmentObj && !preview)) {
     return <Spin />
   }
 

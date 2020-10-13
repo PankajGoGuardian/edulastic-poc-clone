@@ -573,7 +573,7 @@ const AssessmentContainer = ({
     }
   }, [savingResponse])
 
-  if (loading || (assignmentObj && !preview)) {
+  if (loading || (!assignmentObj && !preview)) {
     return <Spin />
   }
 

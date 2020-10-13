@@ -50,7 +50,7 @@ import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type
-const { DONE, ARCHIVED, NOT_OPEN } = assignmentStatusOptions
+const { DONE, ARCHIVED, NOT_OPEN, IN_PROGRESS } = assignmentStatusOptions
 // constants
 export const FILTERS = {
   ALL: 'all',
@@ -241,13 +241,20 @@ const getAssignmentClassStatus = (assignment, classId) => {
   let currentStatusValue = 4
   for (const clazz of assignment.class) {
     if (clazz._id === classId) {
+      const { startDate } = clazz
+      const isStartDateElapsed = startDate && startDate < Date.now()
       const statusValue = statusMap[clazz.status]
       if (statusValue < currentStatusValue) {
         currentStatusValue = statusValue
         currentStatus = clazz.status
+        if (isStartDateElapsed && clazz.status === NOT_OPEN) {
+          currentStatus = IN_PROGRESS
+          currentStatusValue = statusMap[IN_PROGRESS]
+        }
       }
     }
   }
+
   return currentStatus
 }
 

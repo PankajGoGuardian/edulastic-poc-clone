@@ -1,5 +1,4 @@
 import { IconSend } from '@edulastic/icons'
-import queryString from 'query-string'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
@@ -20,6 +19,8 @@ import {
 } from '../common'
 import HeaderMainMenu from '../common/HeaderMainMenu'
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown'
+
+const queryString = require('query-string')
 
 const PlayerHeader = ({
   LCBPreviewModal,

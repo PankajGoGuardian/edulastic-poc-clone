@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import { Spin } from 'antd'
 import { withRouter } from 'react-router'
-import qs from 'query-string'
 import { testsApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import AppConfig from '../../app-config'
+
+const qs = require('query-string')
 
 const RedirectToTest = ({ location: { search }, history, user }) => {
   const handleFailed = (e) => {

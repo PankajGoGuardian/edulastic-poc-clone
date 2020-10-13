@@ -1,7 +1,6 @@
 import React, { Component, Suspense, lazy, useEffect } from 'react'
 import { capitalize, get, isUndefined, isEmpty } from 'lodash'
 import qs from 'qs'
-import queryString from 'query-string'
 import PropTypes from 'prop-types'
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -36,6 +35,8 @@ import ClassSyncNotification from './author/Classes/components/ClassSyncNotifica
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
+
+const queryString = require('query-string')
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting

@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
 import { Pagination, Spin } from 'antd'
-import Qs from 'query-string'
 import { roleuser, sortOptions } from '@edulastic/constants'
 import {
   withWindowSizes,
@@ -82,6 +81,8 @@ import { getDefaultInterests, setDefaultInterests } from '../../../dataUtils'
 import HeaderFilter from '../../../ItemList/components/HeaderFilter'
 import PreviewModal from '../../../src/components/common/PreviewModal'
 import SortMenu from '../../../ItemList/components/SortMenu'
+
+const Qs = require('query-string')
 
 class AddItems extends PureComponent {
   static propTypes = {

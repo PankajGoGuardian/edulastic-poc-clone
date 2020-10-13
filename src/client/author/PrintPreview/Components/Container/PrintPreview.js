@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import queryString from 'query-string'
 import { mobileWidthMax } from '@edulastic/colors'
 import { PrintActionWrapper } from '@edulastic/common'
 import StudentQuestionContainer from '../StudentQuestionContiner/StudentQuestionContainer'
@@ -25,6 +24,8 @@ import {
   getAdditionalDataSelector,
   getAssignmentClassIdSelector,
 } from '../../../ClassBoard/ducks'
+
+const queryString = require('query-string')
 
 class PrintPreview extends Component {
   componentDidMount() {

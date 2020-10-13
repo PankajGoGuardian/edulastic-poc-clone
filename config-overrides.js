@@ -159,26 +159,24 @@ module.exports = override(
       config.output.filename = 'app.[chunkhash:8].js'
       config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
 
-      config.optimization = {
-        // splitChunks: {
-        //   chunks(chunk) {
-        //     // exclude `my-excluded-chunk`
-        //     return !chunk.name.match(/auth/)
-        //   },
-        // },
-        optimization: {
-          splitChunks: {
-            cacheGroups: {
-              vendor: {
-                chunks: 'initial',
-                test: /[\\/]node_modules[\\/]/,
-                name: 'vendor',
-                enforce: true,
-              },
-            },
-          },
-        },
-      }
+      // config.optimization = {
+      //   // splitChunks: {
+      //   //   chunks(chunk) {
+      //   //     // exclude `my-excluded-chunk`
+      //   //     return !chunk.name.match(/auth/)
+      //   //   },
+      //   // },
+      //   splitChunks: {
+      //     cacheGroups: {
+      //       vendor: {
+      //         chunks: 'initial',
+      //         test: /[\\/]node_modules[\\/]/,
+      //         name: 'vendor',
+      //         enforce: true,
+      //       },
+      //     },
+      //   },
+      // }
 
       config.optimization = {
         ...(config.optimization || {}),

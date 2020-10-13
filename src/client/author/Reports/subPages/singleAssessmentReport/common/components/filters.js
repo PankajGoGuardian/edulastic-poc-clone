@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, Fragment } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
@@ -6,12 +6,14 @@ import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Tooltip, Spin } from 'antd'
 
-import { IconGroup, IconClass } from '@edulastic/icons'
-import { greyThemeDark1 } from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'
 
 import { AutocompleteDropDown } from '../../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
+import ClassAutoComplete from './ClassAutoComplete'
+import SchoolAutoComplete from './SchoolAutoComplete'
+import CourseAutoComplete from './CourseAutoComplete'
+import TeacherAutoComplete from './TeacherAutoComplete'
 import {
   StyledFilterWrapper,
   StyledGoButton,
@@ -85,6 +87,9 @@ const SingleAssessmentReportFilters = ({
   firstLoad,
   setFirstLoad,
 }) => {
+  const [selectedClass, setSelectedClass] = useState(null)
+  const [selectedGroup, setSelectedGroup] = useState(null)
+
   const testDataOverflow = get(
     SARFilterData,
     'data.result.testDataOverflow',
@@ -153,7 +158,15 @@ const SingleAssessmentReportFilters = ({
     }
 
     if (firstLoad) {
-      search = { ...savedFilters, ...search }
+      // TODO: this needs to be changed
+      // when persistence is re-implemented for autocomplete components
+      search = {
+        termId: savedFilters.termId,
+        subject: savedFilters.subject,
+        grade: savedFilters.grade,
+        assessmentType: savedFilters.assessmentType,
+        ...search,
+      }
     }
 
     dropDownData = getDropDownData(SARFilterData, user)
@@ -175,40 +188,6 @@ const SingleAssessmentReportFilters = ({
       key: 'All',
       title: 'All Grades',
     }
-    const urlCourseId = dropDownData.courses.find(
-      (item) => item.key === search.courseId
-    ) || {
-      key: 'All',
-      title: 'All Courses',
-    }
-    const urlClassId = dropDownData.classes.find(
-      (item) => item.key === search.classId
-    ) || {
-      key: 'All',
-      title: 'All Classes',
-    }
-    const urlGroupId = dropDownData.groups.find(
-      (item) => item.key === search.groupId
-    ) || {
-      key: 'All',
-      title: 'All Groups',
-    }
-    let urlSchoolId = { key: 'All', title: 'All Schools' }
-    let urlTeacherId = { key: 'All', title: 'All Teachers' }
-    if (role !== 'teacher') {
-      urlSchoolId = dropDownData.schools.find(
-        (item) => item.key === search.schoolId
-      ) || {
-        key: 'All',
-        title: 'All Schools',
-      }
-      urlTeacherId = dropDownData.teachers.find(
-        (item) => item.key === search.teacherId
-      ) || {
-        key: 'All',
-        title: 'All Schools',
-      }
-    }
     const urlAssessmentType = staticDropDownData.assessmentType.find(
       (item) => item.key === search.assessmentType
     ) || {
@@ -226,11 +205,11 @@ const SingleAssessmentReportFilters = ({
       termId: urlSchoolYear.key,
       subject: urlSubject.key,
       grade: urlGrade.key,
-      courseId: urlCourseId.key,
-      classId: urlClassId.key,
-      groupId: urlGroupId.key,
-      schoolId: urlSchoolId.key,
-      teacherId: urlTeacherId.key,
+      courseId: search.courseId || 'All',
+      classId: search.classId || 'All',
+      groupId: search.groupId || 'All',
+      schoolId: search.schoolId || 'All',
+      teacherId: search.teacherId || 'All',
       assessmentType: urlAssessmentType.key,
     }
 
@@ -355,6 +334,11 @@ const SingleAssessmentReportFilters = ({
     setTestId(_testId)
   }
 
+  const updateSearchableFilter = (selected, id, callback) => {
+    updateFilterDropdownCB(selected, id)
+    callback(selected)
+  }
+
   const standardProficiencyList = useMemo(
     () =>
       standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
@@ -424,20 +408,20 @@ const SingleAssessmentReportFilters = ({
           <>
             <SearchField>
               <FilterLabel>School</FilterLabel>
-              <AutocompleteDropDown
-                prefix="School"
-                by={filters.schoolId}
+              <SchoolAutoComplete
+                selectedSchoolId={
+                  filters.schoolId !== 'All' && filters.schoolId
+                }
                 selectCB={(e) => updateFilterDropdownCB(e, 'schoolId')}
-                data={dropDownData.schools}
               />
             </SearchField>
             <SearchField>
               <FilterLabel>Teacher</FilterLabel>
-              <AutocompleteDropDown
-                prefix="Teacher"
-                by={filters.teacherId}
+              <TeacherAutoComplete
+                selectedTeacherId={
+                  filters.teacherId !== 'All' && filters.teacherId
+                }
                 selectCB={(e) => updateFilterDropdownCB(e, 'teacherId')}
-                data={dropDownData.teachers}
               />
             </SearchField>
           </>
@@ -501,45 +485,34 @@ const SingleAssessmentReportFilters = ({
         )}
         <SearchField>
           <FilterLabel>Course</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Course"
-            by={filters.courseId}
+          <CourseAutoComplete
+            selectedCourseId={filters.courseId !== 'All' && filters.courseId}
             selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
-            data={dropDownData.courses}
           />
         </SearchField>
         <SearchField>
           <FilterLabel>Class</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Class"
-            by={filters.classId}
-            selectCB={(e) => updateFilterDropdownCB(e, 'classId')}
-            data={dropDownData.classes}
-            dropdownMenuIcon={
-              <IconClass
-                width={13}
-                height={14}
-                color={greyThemeDark1}
-                margin="0 10px 0 0"
-              />
-            }
+          <ClassAutoComplete
+            grade={filters.grade !== 'All' && filters.grade}
+            subject={filters.subject !== 'All' && filters.subject}
+            school={filters.schoolId !== 'All' && filters.schoolId}
+            selectedClass={selectedClass}
+            selectCB={(e) => {
+              updateSearchableFilter(e, 'classId', setSelectedClass)
+            }}
           />
         </SearchField>
         <SearchField>
           <FilterLabel>Group</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Group"
-            by={filters.groupId}
-            selectCB={(e) => updateFilterDropdownCB(e, 'groupId')}
-            data={dropDownData.groups}
-            dropdownMenuIcon={
-              <IconGroup
-                width={20}
-                height={19}
-                color={greyThemeDark1}
-                margin="0 7px 0 0"
-              />
-            }
+          <ClassAutoComplete
+            type="custom"
+            grade={filters.grade !== 'All' && filters.grade}
+            subject={filters.subject !== 'All' && filters.subject}
+            school={filters.schoolId !== 'All' && filters.schoolId}
+            selectedClass={selectedGroup}
+            selectCB={(e) => {
+              updateSearchableFilter(e, 'groupId', setSelectedGroup)
+            }}
           />
         </SearchField>
         {extraFilters}

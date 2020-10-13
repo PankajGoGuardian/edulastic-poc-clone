@@ -186,9 +186,7 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
   [RESET_REPORTS_SAR_FILTER_DATA]: (state) => {
     state.SARFilterData = {}
   },
-  [RESET_ALL_REPORTS]: (state) => {
-    state = initialState
-  },
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
     state.prevSARFilterData = payload
   },

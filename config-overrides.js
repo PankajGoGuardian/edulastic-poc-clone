@@ -8,11 +8,11 @@ const {
 } = require('customize-cra')
 const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
-const { setIn, getIn } = require('timm')
-const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
+// const { setIn, getIn } = require('timm')
+// const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
 const path = require('path')
-const packageJson = require('./package.json')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
+const packageJson = require('./package.json')
 
 /** Uncomment to have a copy of files written on disk */
 // const util = require('util')
@@ -37,76 +37,76 @@ module.exports = override(
 
     // config.module.rules[0].parser.requireEnsure = true
 
-    config.resolve.plugins = config.resolve.plugins.filter(
-      (plugin) => !(plugin instanceof ModuleScopePlugin)
-    )
+    // config.resolve.plugins = config.resolve.plugins.filter(
+    //   (plugin) => !(plugin instanceof ModuleScopePlugin)
+    // )
 
     // add our global node modules if in workspace
     // config.resolve.modules.push(rootNodeModDir)
 
-    let rules = getIn(config.module.rules, [1, 'oneOf'])
+    // let rules = getIn(config.module.rules, [1, 'oneOf'])
 
-    rules = rules.map((rule) => {
-      // remove the presets already in babel and rely on our preset
-      if (
-        rule.test &&
-        rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
-      ) {
-        const overrideRule = { ...rule }
+    // rules = rules.map((rule) => {
+    //   // remove the presets already in babel and rely on our preset
+    //   if (
+    //     rule.test &&
+    //     rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
+    //   ) {
+    //     const overrideRule = { ...rule }
 
-        delete overrideRule.options.presets
-        delete overrideRule.options.plugins
-        // rely on our babelrc for transforms
-        overrideRule.options.extends = path.resolve(
-          __dirname,
-          './babel.config.js'
-        )
+    //     delete overrideRule.options.presets
+    //     delete overrideRule.options.plugins
+    //     // rely on our babelrc for transforms
+    //     overrideRule.options.extends = path.resolve(
+    //       __dirname,
+    //       './babel.config.js'
+    //     )
 
-        return overrideRule
-      }
+    //     return overrideRule
+    //   }
 
-      if (rule.test && rule.test.toString() === /\.(js|mjs)$/.toString()) {
-        const overrideRule = { ...rule }
+    //   if (rule.test && rule.test.toString() === /\.(js|mjs)$/.toString()) {
+    //     const overrideRule = { ...rule }
 
-        delete overrideRule.options.presets
+    //     delete overrideRule.options.presets
 
-        // rely on our babelrc for transforms
-        overrideRule.options.extends = path.resolve(
-          __dirname,
-          './babel.config.js'
-        )
+    //     // rely on our babelrc for transforms
+    //     overrideRule.options.extends = path.resolve(
+    //       __dirname,
+    //       './babel.config.js'
+    //     )
 
-        return overrideRule
-      }
+    //     return overrideRule
+    //   }
 
-      if (isProduction) {
-        /** These are dev deps and only used in development.
-         * Exclude from prod vendors */
-        config.externals = {
-          'redux-freeze': 'redux-freeze',
-          '@welldone-software/why-did-you-render':
-            '@welldone-software/why-did-you-render',
-        }
-      }
+    //   if (isProduction) {
+    //     /** These are dev deps and only used in development.
+    //      * Exclude from prod vendors */
+    //     config.externals = {
+    //       'redux-freeze': 'redux-freeze',
+    //       '@welldone-software/why-did-you-render':
+    //         '@welldone-software/why-did-you-render',
+    //     }
+    //   }
 
-      // add strict context on this imports - ideally for isomorphic-unfetch
-      config.module.strictThisContextOnImports = true
+    //   // add strict context on this imports - ideally for isomorphic-unfetch
+    //   config.module.strictThisContextOnImports = true
 
-      return rule
-    })
+    //   return rule
+    // })
 
     // override with our config
-    config.module.rules = setIn(config.module.rules, [1, 'oneOf'], rules)
+    // config.module.rules = setIn(config.module.rules, [1, 'oneOf'], rules)
 
-    config.plugins = config.plugins.filter(
-      (plugin) => !(plugin instanceof webpack.optimize.AggressiveMergingPlugin)
-    )
+    // config.plugins = config.plugins.filter(
+    //   (plugin) => !(plugin instanceof webpack.optimize.AggressiveMergingPlugin)
+    // )
 
-    if (isProduction) {
-      config.plugins.unshift(
-        new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly
-      )
-    }
+    // if (isProduction) {
+    //   config.plugins.unshift(
+    //     new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly
+    //   )
+    // }
 
     config.plugins.push(
       new webpack.DefinePlugin({
@@ -158,6 +158,38 @@ module.exports = override(
       config.devtool = false // disable sourcemaps on production
       config.output.filename = 'app.[chunkhash:8].js'
       config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
+
+      config.optimization = {
+        // splitChunks: {
+        //   chunks(chunk) {
+        //     // exclude `my-excluded-chunk`
+        //     return !chunk.name.match(/auth/)
+        //   },
+        // },
+        optimization: {
+          splitChunks: {
+            cacheGroups: {
+              vendor: {
+                chunks: 'initial',
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendor',
+                enforce: true,
+              },
+            },
+          },
+        },
+      }
+
+      config.optimization = {
+        ...(config.optimization || {}),
+        splitChunks: {
+          chunks: 'all',
+        },
+        // Keep the runtime chunk seperated to enable long term caching
+        // https://twitter.com/wSokra/status/969679223278505985
+        runtimeChunk: true,
+      }
+
       // add chunk split optimizations
       // config.optimization = {
       //   ...(config.optimization || {}),

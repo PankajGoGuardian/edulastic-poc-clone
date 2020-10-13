@@ -3,9 +3,10 @@ import React, { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import queryString from 'query-string'
 
 import { bootstrapAssessmentAction } from './Assignments/ducks'
+
+const queryString = require('query-string')
 
 const DeepLink = ({ bootstrap, match }) => {
   // alert("rendering deeplink 1");

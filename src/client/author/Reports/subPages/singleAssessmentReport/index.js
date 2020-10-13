@@ -8,7 +8,6 @@ import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
-import queryString from 'query-string'
 import ResponseFrequency from './ResponseFrequency'
 import AssessmentSummary from './AssessmentSummary'
 import PeerPerformance from './PeerPerformance'
@@ -45,6 +44,8 @@ const INITIAL_DD_FILTERS = {
   iepStatus: 'all',
   race: 'all',
 }
+
+const queryString = require('query-string')
 
 const SingleAssessmentReportContainer = (props) => {
   const {

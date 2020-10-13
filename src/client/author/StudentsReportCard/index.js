@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Moment from 'moment'
 import { get } from 'lodash'
-import queryString from 'query-string'
 import { PrintActionWrapper } from '@edulastic/common'
 
 import { receiveTestActivitydAction } from '../src/actions/classBoard'
@@ -11,6 +10,8 @@ import { getSortedTestActivitySelector } from '../ClassBoard/ducks'
 import StudentReportPage from './components/StudentReportPage'
 import { getDefaultTestSettingsAction } from '../TestPage/ducks'
 import { performanceBandSelector } from '../AssignTest/duck'
+
+const queryString = require('query-string')
 
 const StudentsReportCard = ({
   location,

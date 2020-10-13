@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Dropdown, Menu } from 'antd'
 import Modal from 'react-responsive-modal'
 import { get } from 'lodash'
-import queryString from 'query-string'
 import { logoutAction } from '../../../src/actions/auth'
 import CLILogo from '../../assets/svgs/cli-logo.svg'
 import {
@@ -18,6 +17,8 @@ import {
   UserInfo,
   UserName,
 } from './styled'
+
+const queryString = require('query-string')
 
 const CLIAccessBanner = ({
   visible = false,

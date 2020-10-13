@@ -7,7 +7,6 @@ import { withNamespaces } from '@edulastic/localization'
 import { Row, Col } from 'antd'
 import { Redirect } from 'react-router-dom'
 import qs from 'qs'
-import queryString from 'query-string'
 
 // components
 import { EduButton, SpinLoader, notification } from '@edulastic/common'
@@ -26,6 +25,7 @@ import SimpleBarChartContainer from './components/charts/SimpleBarChartContainer
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import PerformanceBandPieChart from './components/charts/StudentPerformancePie'
+
 
 // ducks & helpers
 import {
@@ -48,6 +48,8 @@ import {
 } from '../common/filterDataDucks'
 
 import columns from './static/json/tableColumns.json'
+
+const queryString = require('query-string')
 
 const PerformanceByStudents = ({
   loading,

@@ -3,7 +3,6 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Row, Col } from 'antd'
-import queryString from 'query-string'
 
 import { withRouter } from 'react-router-dom'
 import { testsApi } from '@edulastic/api'
@@ -23,6 +22,8 @@ import {
 } from '../src/selectors/user'
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants
+
+const queryString = require('query-string')
 
 function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
   const [testDetails, setTestDetails] = useState(null)

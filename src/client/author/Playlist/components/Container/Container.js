@@ -6,7 +6,6 @@ import { Button, Input, Row, Spin } from 'antd'
 import { debounce, get, pick, isEqual } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import * as qs from 'query-string'
 import React, { Component } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
@@ -95,6 +94,9 @@ function getUrlFilter(filter) {
   }
   return ''
 }
+
+const qs = require('query-string')
+
 class TestList extends Component {
   static propTypes = {
     playlists: PropTypes.array.isRequired,

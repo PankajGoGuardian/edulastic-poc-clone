@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find, isEmpty, get } from 'lodash'
 import { Dropdown } from 'antd'
-import * as qs from 'query-string'
 import { withWindowSizes, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { authorAssignment } from '@edulastic/colors'
@@ -65,6 +64,8 @@ import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAss
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 
 const { assignmentStatusBg } = authorAssignment
+
+const qs = require('query-string')
 
 class AssignmentAdvanced extends Component {
   state = {

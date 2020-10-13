@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { uniqBy } from 'lodash'
-import * as qs from 'query-string'
 import {
   FireBaseService as Fbs,
   notification as antdNotification,
@@ -20,6 +19,8 @@ import {
   notificationMessage,
 } from '../../../../common/components/Notification'
 import { setAssignmentBulkActionStatus } from '../../ducks'
+
+const qs = require('query-string')
 
 const collectionName = 'AssignmentBulkActionEvents'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'

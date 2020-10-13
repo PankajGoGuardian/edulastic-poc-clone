@@ -6,7 +6,6 @@ import styled, { ThemeProvider } from 'styled-components'
 import { Layout } from 'antd'
 import { connect } from 'react-redux'
 import { mobileWidthLarge } from '@edulastic/colors'
-import queryString from 'query-string'
 // import { getZoomedTheme } from "./zoomTheme";
 import Sidebar from './Sidebar/SideMenu'
 import { Assignment } from './Assignments'
@@ -28,6 +27,8 @@ import {
   isProxyUser as isProxyUserSelector,
   updateCliUserAction,
 } from './Login/ducks'
+
+const queryString = require('query-string')
 
 const StudentApp = ({
   match,

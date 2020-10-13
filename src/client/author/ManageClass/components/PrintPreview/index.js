@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom'
 import { Table } from 'antd'
 import { connect } from 'react-redux'
 import { get, isInteger, floor, isEmpty } from 'lodash'
-import queryString from 'query-string'
 import { PrintActionWrapper } from '@edulastic/common'
 import Title from './Title'
 import StudentCard from './StudentCard'
@@ -22,6 +21,8 @@ import {
 } from './styled'
 
 import { fetchStudentsByIdAction } from '../../ducks'
+
+const queryString = require('query-string')
 
 const columns = [
   {

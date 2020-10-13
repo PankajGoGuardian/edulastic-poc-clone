@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, Fragment } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
-import queryString from 'query-string'
 import qs from 'qs'
 
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -52,6 +51,8 @@ import { receivePerformanceBandAction } from '../../../../../PerformanceBand/duc
 import { receiveStandardsProficiencyAction } from '../../../../../StandardsProficiency/ducks'
 
 import staticDropDownData from '../static/staticDropDownData.json'
+
+const queryString = require('query-string')
 
 const getTestIdFromURL = (url) => {
   if (url.length > 16) {

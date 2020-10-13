@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { keyBy as _keyBy, get } from 'lodash'
-import queryString from 'query-string'
 import { questionType } from '@edulastic/constants'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import { getRows } from '../../../sharedDucks/itemDetail'
@@ -10,6 +9,8 @@ import { QuestionDiv, Content } from './styled'
 import { formatQuestionLists } from '../../../PrintAssessment/utils'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
+
+const queryString = require('query-string')
 
 function Preview({ item, passages, evaluation }) {
   const rows = getRows(item)

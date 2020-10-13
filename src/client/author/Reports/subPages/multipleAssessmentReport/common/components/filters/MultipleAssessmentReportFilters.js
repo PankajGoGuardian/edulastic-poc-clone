@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, Fragment } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { find, get, isEmpty, map, pickBy } from 'lodash'
-import queryString from 'query-string'
 
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Tooltip, Spin } from 'antd'
@@ -45,6 +44,8 @@ import {
 import { getUserRole, getUser } from '../../../../../../src/selectors/user'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
+
+const queryString = require('query-string')
 
 const SingleAssessmentReportFilters = ({
   loading,

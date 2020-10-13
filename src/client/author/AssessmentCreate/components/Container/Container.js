@@ -4,9 +4,8 @@ import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Spin, message } from 'antd'
+import { Spin } from 'antd'
 import { debounce } from 'lodash'
-import qs from 'query-string'
 import { MainHeader, MainContentWrapper, notification } from '@edulastic/common'
 
 import { withNamespaces } from 'react-i18next'
@@ -25,6 +24,8 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction,
 } from '../../ducks'
+
+const qs = require('query-string')
 
 const breadcrumbStyle = {
   position: 'static',

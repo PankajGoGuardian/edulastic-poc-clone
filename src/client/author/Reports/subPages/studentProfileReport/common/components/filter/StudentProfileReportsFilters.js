@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react'
-import queryString from 'query-string'
 import { connect } from 'react-redux'
 import { get, find, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
@@ -40,6 +39,8 @@ import {
 } from '../../../../../common/styled'
 
 import staticDropDownData from '../../../../singleAssessmentReport/common/static/staticDropDownData.json'
+
+const queryString = require('query-string')
 
 const { subjects: subjectOptions, grades: gradeOptions } = staticDropDownData
 

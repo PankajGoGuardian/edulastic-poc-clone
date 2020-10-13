@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
 // eslint-disable-next-line
-import pdfjsLib from 'pdfjs-dist'
+import pdfjsLib from 'pdfjs-dist/es5/build/pdf'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { BLANK_URL } from '../Worksheet/Worksheet'
 import PdfStoreAdapter from './PdfStoreAdapter'

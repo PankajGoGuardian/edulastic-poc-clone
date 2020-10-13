@@ -4,7 +4,7 @@ import { call, put, all, takeLatest, select } from 'redux-saga/effects'
 import nanoid from 'nanoid'
 import { push } from 'react-router-redux'
 // eslint-disable-next-line
-import pdfjs from 'pdfjs-dist'
+import pdfjs from 'pdfjs-dist/es5/build/pdf'
 import produce from 'immer'
 import { get, without, omit } from 'lodash'
 

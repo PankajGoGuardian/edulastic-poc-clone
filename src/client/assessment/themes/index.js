@@ -7,7 +7,7 @@ import { Spin, message, Modal, Button } from 'antd'
 import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from 'lodash'
 import useInterval from '@use-it/interval'
 import {
-  test as testTypes,
+  test as testConstants,
   assignmentPolicyOptions,
   questionType,
   roleuser,
@@ -48,6 +48,8 @@ import { evaluateCurrentAnswersForPreviewAction } from '../sharedDucks/previewTe
 import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
+
+const { playerSkinValues } = testConstants
 
 const shouldAutoSave = (itemRows) => {
   if (!itemRows) {
@@ -118,7 +120,6 @@ const AssessmentContainer = ({
   submitPreviewTest,
   testletType,
   testletState,
-  testletConfig,
   testType,
   test,
   groupId,
@@ -554,14 +555,10 @@ const AssessmentContainer = ({
         {...props}
       />
     )
-  } else if (
-    testType === testTypes.type.TESTLET ||
-    test.testType === testTypes.type.TESTLET
-  ) {
+  } else if (playerSkinType === playerSkinValues.testlet) {
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
-        testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}

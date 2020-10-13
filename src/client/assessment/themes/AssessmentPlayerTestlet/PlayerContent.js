@@ -211,17 +211,19 @@ const PlayerContent = ({
 
   const saveUserResponse = () => {
     if (!LCBPreviewModal && !previewPlayer) {
-      const { currentPageIds } = frameController
+      const { currentPageIds, response } = frameController
+      const extData = {}
       for (const scoringId in currentPageIds) {
         if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
           const eduQuestions = getEduQuestions(scoringId.trim())
           if (isEmpty(eduQuestions)) {
             continue
           }
+          extData[scoringId] = response[scoringId]
           eduQuestions.forEach((eduQuestion) => {
             if (eduQuestion) {
               const timeSpent = Date.now() - lastTime.current
-              onSubmitAnswer(eduQuestion.id, timeSpent, groupId)
+              onSubmitAnswer(eduQuestion.id, timeSpent, groupId, { extData })
             }
           })
         }
@@ -258,20 +260,15 @@ const PlayerContent = ({
       return
     }
     const { currentPageIds, response } = frameController
-    console.clear()
     for (const scoringId in currentPageIds) {
       if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
         const eduQuestions = getEduQuestions(scoringId.trim())
-        console.log(scoringId)
-        console.log((currentPageIds[scoringId] || []).join(','))
         if (isEmpty(eduQuestions)) {
           continue
         }
-        console.log(response[scoringId])
 
         eduQuestions.forEach((eduQuestion) => {
           const data = getUserResponse(eduQuestion, response)
-          console.log(data)
           if (!previewPlayer && !isEmpty(data)) {
             setUserAnswer(eduQuestion.id, data)
           }
@@ -299,8 +296,6 @@ const PlayerContent = ({
   useEffect(() => {
     if (testletData.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState
-
-      // initState.pageNum = 23;
 
       frameController = new ParentController(
         testletData.testletId,

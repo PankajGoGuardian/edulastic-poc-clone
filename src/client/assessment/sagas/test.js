@@ -288,8 +288,10 @@ function* loadTest({ payload }) {
       enableSkipAlert: testActivity?.assignmentSettings?.enableSkipAlert,
       releaseScore: testActivity?.testActivity?.releaseScore,
       testletData: {
-        testletId: metadata?.testletId,
-        testletURL: metadata?.testletURL,
+        testletId: metadata?.testletId || 'MAT8_EMCeres_LF34',
+        testletURL:
+          metadata?.testletURL ||
+          'testlets/testlet-extendedmissiontoceres/main.html',
         hasSubmitButton: metadata?.hasSubmitButton,
       },
     }

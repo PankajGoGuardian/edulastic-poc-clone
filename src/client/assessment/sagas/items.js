@@ -84,6 +84,7 @@ function* saveUserResponse({ payload }) {
       isPlaylist = false,
       callback,
       pausing,
+      extData,
     } = payload
     const itemIndex = payload.itemId
     const assignmentsByIds = yield select(
@@ -217,6 +218,10 @@ function* saveUserResponse({ payload }) {
       timesSpent,
       shuffledOptions: shuffles,
       bookmarked,
+    }
+
+    if (!isEmpty(extData)) {
+      activity.extData = extData
     }
 
     let userWorkData = { ..._userWork, scratchpad: false }
